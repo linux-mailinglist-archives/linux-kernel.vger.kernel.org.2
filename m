@@ -2,148 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D70D3A865B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2B23A8665
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhFOQ0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 12:26:31 -0400
-Received: from mail-eopbgr70133.outbound.protection.outlook.com ([40.107.7.133]:22279
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229979AbhFOQ0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:26:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X58YzWD5wvuaK3C+FXJ7tE52PY2SuCBxVheCq4HByNIlwE8+bZTKsE/XiMlUd/d49MlIdCa0t8T2Tic/sQdxMGLpjsetgA4//KvjE2Jm+4Vg0TXRagAxbPdR36X3qkg++96ATMfJ4ckHZico+D/IiJX8FtLp90GidY1Ie+g9+ZdFSdE42yUoz1VdKfHJDak4SsvNtW9/c3Rp4UG0AYdRJxTs/rAStn0f48X6/C5spmbhdoWTuyixyQtErDF2UCfD6Id0JNhb5kKq1fGFIseZS4Sb/IFRWogMf4057Gj0e3jVU5u3iaVg6vlphsrgVLSrFz6Mpsdgh05rpqO72MdwAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MHxPmIjaaBLp1fD/ieBONCB+4VPYGkNbYcj0B8pUs0g=;
- b=HUNz4bneXcGZMiaV4U/kWfcbJwhMsTqNFPD+9oFnEFmM9N71ma512COJZlS8Qskd/awl3JzKr/dM10O4pSAt4PT+CGLmmL7YijsZgjPK/3z8JAXa7d0BcVZoSr4YfMbezJMLkQs3O0zfzq2g8DqGQpVTdnPxIFI9dA6yLHCCaNvyJIw18BAw1pBYKyM5JRuZLeghC5s8MRtpVhtX9LFs2UvH4rhMWRRJqGA8u9va2PKq427KsIhFaod9JtUbEixZKfixqzYaHGJk8yM+8rMa5Ef/E4NaOuPGQ7qzbDeAutG0uBd/d6PeaKHmNw4oXgcwgKs0AT+HfPVO1fCJxY+RYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MHxPmIjaaBLp1fD/ieBONCB+4VPYGkNbYcj0B8pUs0g=;
- b=OxgRQd5DbZPHiVnqZ/VOXUXoKQiG/WyO2LGbpY0+FzxYl0A3j5KZpjaGgHeBePTqF1nT6ggXogRFH2Nv52V+3m3cF5KNq/+bi27I7Gy1BR9oFV53dpt2gxNn7U8GSEmacsJBBQtF2cTtBFVq2Fhf2QeNU2Ut+UPuZds4nQqM2fI=
-Authentication-Results: geanix.com; dkim=none (message not signed)
- header.d=none;geanix.com; dmarc=none action=none header.from=prevas.dk;
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
- by AM0PR10MB1873.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:48::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Tue, 15 Jun
- 2021 16:24:23 +0000
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::888d:190b:b3b5:1ad2]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::888d:190b:b3b5:1ad2%3]) with mapi id 15.20.4219.025; Tue, 15 Jun 2021
- 16:24:23 +0000
-Subject: Re: commit 3d5bfbd97163 versus -rt
-From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-rt-users@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Esben Haabendal <esben@geanix.com>
-References: <5afbc89e-dbc4-3f47-4e61-63a77165aaec@prevas.dk>
- <20210615113312.0dad32bb@oasis.local.home>
- <b66ff695-7f75-2a70-7feb-0df4f5ea0608@prevas.dk>
-Message-ID: <37e28373-c6ec-2602-ec5c-cb0b65ce6697@prevas.dk>
-Date:   Tue, 15 Jun 2021 18:24:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <b66ff695-7f75-2a70-7feb-0df4f5ea0608@prevas.dk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [81.216.59.226]
-X-ClientProxiedBy: HE1PR06CA0129.eurprd06.prod.outlook.com
- (2603:10a6:7:16::16) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:3f::10)
+        id S230517AbhFOQ1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 12:27:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33173 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230028AbhFOQ1T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 12:27:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623774314;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5TJCPjEidVWzxkM0+NmjXZOz7EQ71DB13hrYr+2WF6U=;
+        b=htZ8OfUhiOMq4W5zxfDfGtszXu2LULxRGYBExhGUEaowRi2D2pdZO114/swR+Es/cI2Fk0
+        EM7qWkNtYl2L9Rkwxge/dXhbgjJKFhiiO2qonm4v5hSneP90INQOawp6pxNcyIriwUi4Jq
+        Zu4UXw/03xSM2j/VECsK/s572/JIDH0=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-337-d_Y2iIFlNb6-HyYkvlBzbA-1; Tue, 15 Jun 2021 12:25:12 -0400
+X-MC-Unique: d_Y2iIFlNb6-HyYkvlBzbA-1
+Received: by mail-qk1-f199.google.com with SMTP id y5-20020a37af050000b02903a9c3f8b89fso28346735qke.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:25:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5TJCPjEidVWzxkM0+NmjXZOz7EQ71DB13hrYr+2WF6U=;
+        b=YDnfVjnami9ZcOxCuzFvNJybMQ0OjeCAnV/1htDEseU3k2Rpg0QXOW8Fw4CwyLo3p9
+         /lbS87EieOWvLaRn1j61ikSBtzcf6dQWXC1Nmtibk9d2knj7ml2nFT0qbYO5FFg5QDBV
+         8saCItSW2ZBdw5fvNUvA/z9IvgHMSh8N75xroy3TRcXzuT935UkOrECS6dsw6vGK746O
+         Lzk5JByBLWwQOIg/ATNwyW0YAlbww5uOaMOK/+AQIxzsxGqkyvzRyQBFIUKkM4bSax+8
+         K30mD+7IFW7R+PJ+8+TzeofYvcIXtfMs44plHRhlcW8odjjfEVY03blxwFDi9saeTj3U
+         Z1Uw==
+X-Gm-Message-State: AOAM530NV6NDkolPJzmXOZ2OIMswNnb6rl2kGuo0ycWbEWgDwrLRoaVr
+        uzr8kBiAEOAZnU+/nIpqbE7mcaa7uOzOTOjWv/dMsefPfAGqnt2Y6cjj1F1gC1ghako0PgFww0r
+        S+++8oNeRVXMkSBhk2Q25jeLc
+X-Received: by 2002:a37:89c5:: with SMTP id l188mr456241qkd.27.1623774311894;
+        Tue, 15 Jun 2021 09:25:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwKREFaGIRhGK50fieBbGZSTbD+JCw3YRoqFGroI7qv0zKzfl/OIsNnSOlBkjagcoRStXPh/Q==
+X-Received: by 2002:a37:89c5:: with SMTP id l188mr456219qkd.27.1623774311607;
+        Tue, 15 Jun 2021 09:25:11 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id n9sm6484913qke.8.2021.06.15.09.25.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 09:25:10 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 12:25:09 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        rcampbell@nvidia.com, linux-doc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, hughd@google.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        hch@infradead.org, bskeggs@redhat.com, jgg@nvidia.com,
+        shakeelb@google.com, jhubbard@nvidia.com, willy@infradead.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v10 07/10] mm: Device exclusive memory access
+Message-ID: <YMjUZX8Sy0PuPt6j@t490s>
+References: <20210607075855.5084-1-apopple@nvidia.com>
+ <2683185.ETRjo6vMkr@nvdebian>
+ <YMN61r0wdg88OM8r@t490s>
+ <7383392.6iZ9WBDLDo@nvdebian>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.17.20.67] (81.216.59.226) by HE1PR06CA0129.eurprd06.prod.outlook.com (2603:10a6:7:16::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Tue, 15 Jun 2021 16:24:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 87a1ae6a-3d72-4499-d8af-08d9301a094a
-X-MS-TrafficTypeDiagnostic: AM0PR10MB1873:
-X-Microsoft-Antispam-PRVS: <AM0PR10MB1873AE24679340F7C5C0FFB393309@AM0PR10MB1873.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lHFxhAoDeZ7UwHBdn/3+B4qbI/c/aGu2VkEZ7DP7+HpjNHysGpMS0XC1f+IySJcpd95+XZ4xG0qX/XTucjgUGfxojGp3ANpsIRUlYpTlSQEwH+4hiKti1gthlc7mTk+AdnRAgkpXEjQlMZgc1zJHloNmnuB6+D0pHUv9xrLNUqKTixnTTMnIrGI9DGlSKbljWpL/Xz2vTdVNZl41TvJooSPNCC6FYsKC8euy1AaZ1EfB0PbYpVnQoc7ez/Ag/T7EBXygW6mCLLxa08mmU9XRo62+Ox/24G1AJ4RCzuYZM25ZpLLUUiemYIlW28eut8AjmeXNO+8RrLmnhHJhA4vcUcoN65Kjb7DJf1y4wOV0OSBLXd0vR7bHJKM23WgaZ8V0EGwVWRfJm4XHjM79n3w/MqEGo9uu9MlBSVIFdMZz8IQyTCoGdK/U5ZzSQjqT9u8+JfdjA7FMrtzvlBH0FwAreQgMYIoXhCMfEqN0eAAgjRFTUbuQKPKOxzGdHgVW7pQnKNoct6OwKJqv68rn0vOr4k1W4eu09Rt9GTuw1xTYJUMf77UqpBv9cM81QE4BiAj+m46fkdZQsTfqeJLfXtaL/DEBASHDEwJMYRgdPCUSVr/163P+U70bYDMLXg1U+0kHfY8iNdIk+K2mQZZucABXzdubs7xfMJhxxpQ76P0j0eKRySSXOvwbSLqgvar2oh6mBbJqQrYMCz5bDJSk9N/Dwg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39840400004)(376002)(396003)(366004)(346002)(136003)(2906002)(478600001)(38100700002)(6486002)(38350700002)(52116002)(26005)(86362001)(54906003)(8676002)(36756003)(66556008)(956004)(83380400001)(31696002)(6916009)(66946007)(2616005)(66476007)(186003)(316002)(4326008)(8976002)(16576012)(8936002)(5660300002)(31686004)(44832011)(16526019)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?xB+jA6W6GYHCnkkPcDVP7BW9ddzxFtKV8GEtZK4Il7P+L0m6ZBQHM4QZ?=
- =?Windows-1252?Q?+RRmpGmGQc63uAs1UM42XRB1t+8QUkoNDjROLA27muIWRBO+aL5Rj2e6?=
- =?Windows-1252?Q?FNqccYGJMRN/HJqWwlhnbyRpNG1spsoMFzJB9+0ggDJxc1RDV9Ymx6xs?=
- =?Windows-1252?Q?9rYU0K6vt2ucPBeZPKp47iAA7TnreDjO45zarxyWx8FVRdtzPbgB+N4V?=
- =?Windows-1252?Q?zrexaMkzgjvy/hyMVuZiXL2lf6v9EpEWfYKY8HM9qdeqme36VF4S7bfk?=
- =?Windows-1252?Q?TxvgUvFNOaNBH5AKMOvayc3CiiTPP9Q6+0bbxsBCNw+tHTt7t+1jp4J8?=
- =?Windows-1252?Q?KfVFHskZDB2Z/AM6zuKDX2WaXbEXNbCdzsb4vRT7MU95eUmmOjJ/QXBO?=
- =?Windows-1252?Q?o2Hym1x0buox3ciLM5/+MZ/yye3ucGu19xFg2TOU1mt7fJ2+VlnSC01I?=
- =?Windows-1252?Q?0H0l4dVlqEth5n2G3g0QGnDd9rvRLQX0qBPWq5bMyTl80I6Kv/UCMWRC?=
- =?Windows-1252?Q?7CHwPv3lDagH2S38aKg6jaEGTltquKeBdilae42GJDAMfUyLtDIunKOU?=
- =?Windows-1252?Q?OqW/0nRvZoKzZ33bLkzxKjqTUkJMEhhG+jvDy0AhZV2h9dLy4ZBiBaaN?=
- =?Windows-1252?Q?mlXBDK5wcRqeo2Y/qba1rSBBDAurZaUldTvKdronciL3Uoj1OhUyL2KK?=
- =?Windows-1252?Q?v7lmrDigf9k9Az6Fnc7zxbr4/w+ZtOZQhDboM0F2bZcsAHPAxEroQT5E?=
- =?Windows-1252?Q?euhxVZPgR0D91z5x/9gKKki0LKcZQ5dapXYYUWx+zuIZoyCU9rUq8vkC?=
- =?Windows-1252?Q?8b3ZrnGK6Cyc0iMyMeN8r6AlnfsViaX3xbSyDzEf0B2IGeM2F79Fc7AZ?=
- =?Windows-1252?Q?BT5e+tnQTeriq002df1OTZNCIGSKxiszqrlLF8DS+/HBphb9XuS9p5v9?=
- =?Windows-1252?Q?rfLSqMCAmM1nEBVJVrQP2kqGn81bx/r0bQhi9MceYVmDrTLcIItCI4Py?=
- =?Windows-1252?Q?m1w4HhVwC3v6FfFNM9rAZc+UQeAQNi5YtNq3mvsMv5KcQpZ0FUv/rK7j?=
- =?Windows-1252?Q?kSrI/LvIIIg7YJRBfwchRPUiJwJtz+1Qa5ifSnPR/UDMY8NrQReMGHRq?=
- =?Windows-1252?Q?lWGf+PoY0IxFc78O9R56XJnWlP6p7GxGUvf0o3j/nJXqHtUH6MHFDE6V?=
- =?Windows-1252?Q?QWSWVQMM+RuJO3yK0099tqGMhkPW2pJAUJT3vcssW3K2ndjN5ON8PJkY?=
- =?Windows-1252?Q?QzX9dOVpdvChohaaqEJ/ZYEWKnXUsIC7CaWCWCA7HoS3TPkWDectLMRe?=
- =?Windows-1252?Q?rnEtAnyqSNpHT0gp3c2SBEauf/d2CYRjXbnnB08CWrk7ACK3/l/TdKNe?=
- =?Windows-1252?Q?Lk5BFqN2gc/0I0PO4ve3hsHhn5nYcdQJOtCodHyWsZXUkwYMz7yidCTk?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87a1ae6a-3d72-4499-d8af-08d9301a094a
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2021 16:24:23.3878
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fICpZ8x/ZoyBAwk1wR7CxqsDlsiw3pIKTNrjEzcG3iRVl3wBsienQQ5mjGQ7vDO6PxtwyDX/XHrlyA08B/ow2LUVhFlV5L12/fxG9jJlw9Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB1873
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7383392.6iZ9WBDLDo@nvdebian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/06/2021 17.57, Rasmus Villemoes wrote:
-> On 15/06/2021 17.33, Steven Rostedt wrote:
->> On Tue, 15 Jun 2021 14:35:27 +0200
->> Rasmus Villemoes <rasmus.villemoes@prevas.dk> wrote:
->>
->>> Reverting commit 3d5bfbd9716318b1ca5c38488aa69f64d38a9aa5 (gpio:
->>> mpc8xxx: change the gpio interrupt flags.) makes it go away, as does
->>> disabling CONFIG_PREEMPT_RT or simply booting a vanilla v5.10.42 (where
->>> that option exists but cannot be selected).
->>
->> I'm curious if it will also trigger on vanilla v5.10.42 but add to the
->> kernel command line: threadirqs
->>
->> Make sure you have CONFIG_IRQ_FORCED_THREADING set too.
->>
->> Because it appears to be an issue with that being called by the generic
->> threaded irq infrastructure, which PREEMPT_RT enables automatically.
+On Tue, Jun 15, 2021 at 01:08:11PM +1000, Alistair Popple wrote:
+> On Saturday, 12 June 2021 1:01:42 AM AEST Peter Xu wrote:
+> > On Fri, Jun 11, 2021 at 01:43:20PM +1000, Alistair Popple wrote:
+> > > On Friday, 11 June 2021 11:00:34 AM AEST Peter Xu wrote:
+> > > > On Fri, Jun 11, 2021 at 09:17:14AM +1000, Alistair Popple wrote:
+> > > > > On Friday, 11 June 2021 9:04:19 AM AEST Peter Xu wrote:
+> > > > > > On Fri, Jun 11, 2021 at 12:21:26AM +1000, Alistair Popple wrote:
+> > > > > > > > Hmm, the thing is.. to me FOLL_SPLIT_PMD should have similar effect to explicit
+> > > > > > > > call split_huge_pmd_address(), afaict.  Since both of them use __split_huge_pmd()
+> > > > > > > > internally which will generate that unwanted CLEAR notify.
+> > > > > > >
+> > > > > > > Agree that gup calls __split_huge_pmd() via split_huge_pmd_address()
+> > > > > > > which will always CLEAR. However gup only calls split_huge_pmd_address() if it
+> > > > > > > finds a thp pmd. In follow_pmd_mask() we have:
+> > > > > > >
+> > > > > > >       if (likely(!pmd_trans_huge(pmdval)))
+> > > > > > >               return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
+> > > > > > >
+> > > > > > > So I don't think we have a problem here.
+> > > > > >
+> > > > > > Sorry I didn't follow here..  We do FOLL_SPLIT_PMD after this check, right?  I
+> > > > > > mean, if it's a thp for the current mm, afaict pmd_trans_huge() should return
+> > > > > > true above, so we'll skip follow_page_pte(); then we'll check FOLL_SPLIT_PMD
+> > > > > > and do the split, then the CLEAR notify.  Hmm.. Did I miss something?
+> > > > >
+> > > > > That seems correct - if the thp is not mapped with a pmd we won't split and we
+> > > > > won't CLEAR. If there is a thp pmd we will split and CLEAR, but in that case it
+> > > > > is fine - we will retry, but the retry will won't CLEAR because the pmd has
+> > > > > already been split.
+> > > >
+> > > > Aha!
+> > > >
+> > > > >
+> > > > > The issue arises with doing it unconditionally in make device exclusive is that
+> > > > > you *always* CLEAR even if there is no thp pmd to split. Or at least that's my
+> > > > > understanding, please let me know if it doesn't make sense.
+> > > >
+> > > > Exactly.  But if you see what I meant here, even if it can work like this, it
+> > > > sounds still fragile, isn't it?  I just feel something is slightly off there..
+> > > >
+> > > > IMHO split_huge_pmd() checked pmd before calling __split_huge_pmd() for
+> > > > performance, afaict, because if it's not a thp even without locking, then it
+> > > > won't be, so further __split_huge_pmd() is not necessary.
+> > > >
+> > > > IOW, it's very legal if someday we'd like to let split_huge_pmd() call
+> > > > __split_huge_pmd() directly, then AFAIU device exclusive API will be the 1st
+> > > > one to be broken with that seems-to-be-irrelevant change I'm afraid..
+> > >
+> > > Well I would argue the performance of memory notifiers is becoming increasingly
+> > > important, and a change that causes them to be called unnecessarily is
+> > > therefore not very legal. Likely the correct fix here is to optimise
+> > > __split_huge_pmd() to only call the notifier if it's actually going to split a
+> > > pmd. As you said though that's a completely different story which I think would
+> > > be best done as a separate series.
+> > 
+> > Right, maybe I can look a bit more into that later; but my whole point was to
+> > express that one functionality shouldn't depend on such a trivial detail of
+> > implementation of other modules (thp split in this case).
+> > 
+> > >
+> > > > This lets me goes back a step to think about why do we need this notifier at
+> > > > all to cover this whole range of make_device_exclusive() procedure..
+> > > >
+> > > > What I am thinking is, we're afraid some CPU accesses this page so the pte got
+> > > > quickly restored when device atomic operation is carrying on.  Then with this
+> > > > notifier we'll be able to cancel it.  Makes perfect sense.
+> > > >
+> > > > However do we really need to register this notifier so early?  The thing is the
+> > > > GPU driver still has all the page locks, so even if there's a race to restore
+> > > > the ptes, they'll block at taking the page lock until the driver releases it.
+> > > >
+> > > > IOW, I'm wondering whether the "non-fragile" way to do this is not do
+> > > > mmu_interval_notifier_insert() that early: what if we register that notifier
+> > > > after make_device_exclusive_range() returns but before page_unlock() somehow?
+> > > > So before page_unlock(), race is protected fully by the lock itself; after
+> > > > that, it's done by mmu notifier.  Then maybe we don't need to worry about all
+> > > > these notifications during marking exclusive (while we shouldn't)?
+> > >
+> > > The notifier is needed to protect against races with pte changes. Once a page
+> > > has been marked for exclusive access the driver will update it's page tables to
+> > > allow atomic access to the page. However in the meantime the page could become
+> > > unmapped entirely or write protected.
+> > >
+> > > As I understand things the page lock won't protect against these kind of pte
+> > > changes, hence the need for mmu_interval_read_begin/retry which allows the
+> > > driver to hold a mutex protecting against invalidations via blocking the
+> > > notifier until the device page tables have been updated.
+> > 
+> > Indeed, I suppose you mean change_pte_range() and zap_pte_range()
+> > correspondingly.
 > 
-> It doesn't:
+> Right.
 > 
-> ~ # uname -r
-> 5.10.42-00001-g10216cf63a12
-> ~ # grep -ow threadirqs /proc/cmdline
-> threadirqs
-> ~ # zcat /proc/config.gz | grep FORCED_THREADING
-> CONFIG_IRQ_FORCED_THREADING=y
-> ~ # dmesg | grep WARNING
-> ~ #
+> > Do you think we can restore pte right before wr-protect or zap?  Then all
+> > things serializes with page lock (btw: it's already an insane userspace to
+> > either unmap a page or wr-protect a page if it knows the device is using it!).
+> > If these are the only two cases, it still sounds a cleaner approach to me than
+> > the current approach.
+> 
+> Perhaps we could but it would make {zap|change}_pte_range() much more complex as
+> we can't sleep taking the page lock whilst holding the ptl, so we'd have to
+> implement a retry scheme similar to copy_pte_range() in both those functions as
+> well.
 
-And as an extra data point, it also doesn't trigger on 5.10.41-rt42
-configured without PREEMPT_RT but with threadirqs on the command line.
+Yes, but shouldn't be hard to do so, imho. E.g., see when __tlb_remove_page()
+returns true in zap_pte_range(), so we already did something like that.  IMHO
+it's not uncommon to have such facilities as we do have requirements to sleep
+during a spinlock critical section for a lot of places in mm, so we release
+them when needed and retake.
 
-Rasmus
+> Given mmu_interval_read_begin/retry was IMHO added to solve this type of
+> problem (freezing pte's to safely program device pte's) it seems like the
+> better option rather than adding more complex code to generic mm paths.
+> 
+> It's also worth noting i915 seems to use mmu_interval_read_begin/retry() with
+> gup to sync mappings so this isn't an entirely new concept. I'm not an expert
+> in that driver but I imagine changing gup to generate unconditional mmu notifier
+> invalidates would also cause issues there. So I think overall this is the
+> cleanest solution as it reduces the amount of code (particularly in generic mm
+> paths).
+
+I could be wrong somewhere, but to me depending on mmu notifiers being
+"accurate" in general is fragile..
+
+Take an example of change_pte_range(), which will generate PROTECTION_VMA
+notifies.  Let's imaging an userspace calls mprotect() e.g. twice or even more
+times with the same PROT_* and upon the same region, we know very possibly the
+2nd,3rd,... calls will generate those notifies with totally no change to the
+pgtable at all as they're all done on the 1st shot.  However we'll generate mmu
+notifies anyways for the 2nd,3rd,... calls.  It means mmu notifiers should
+really be tolerant of false positives as it does happen, and such thing can be
+triggered even from userspace system calls very easily like this.  That's why I
+think any kernel facility that depends on mmu notifiers being accurate is
+probably not the right approach..
+
+But yeah as you said I think it's working as is with the series (I think the
+follow_pmd_mask() checking pmd_trans_huge before calling split_huge_pmd is a
+double safety-net for it, so even if the GUP split_huge_pmd got replaced with
+__split_huge_pmd it should still work with the one-retry logic), not sure
+whether it matters a lot, as it's not common mm path; I think I'll step back so
+Andrew could still pick it up as wish, I'm just still not fully convinced it's
+the best solution to have for a long term to depend on that..
+
+> 
+> > This also reminded me that right now the cpu pgtable recovery is lazy - it
+> > happens either from fork() or a cpu page fault.  Even after device finished
+> > using it, swap ptes keep there.
+> > 
+> > What if the device tries to do atomic op on the same page twice?  I am not sure
+> > whether it means we may also want to teach both GUP (majorly follow_page_pte()
+> > for now before pmd support) and process of page_make_device_exclusive() with
+> > understanding the device exclusive entries too?  Another option seems to be
+> > restoring pte after device finish using it, as long as the device knows when.
+> 
+> I don't think we need to complicate follow_page_pte() with knowledge of
+> exclusive entries. GUP will just restore the original pte via the normal
+> fault path - follow_page_pte() will return NULL for an exclusive entry,
+> resulting in handle_mm_path() getting called via faultin_page(). Therefore
+> a driver calling make_device_exclusive() twice on the same page won't cause an
+> issue. Also the device shouldn't fault on subsequent accesses if the exclusive
+> entry is still in place anyway.
+
+Right, looks good then.
+
+> 
+> We can't restore the pte when the device is finished with it because there is
+> no way of knowing when a device is done using an exclusive entry - device
+> pte's work much the same as cpu pte's in that regard.
+
+I see, I feel like I understand how it works slightly better now, thanks.
+
+One last pure question: I see nouveau_atomic_range_fault() will call the other
+nvif_object_ioctl() which seems to do the device pgtable mapping, am I right?
+Then I see the notifier is quickly removed before nouveau_atomic_range_fault()
+returns.  What happens if CPU access happens after mmu notifier removed?  Or is
+it not possible to happen?
+
+-- 
+Peter Xu
+
