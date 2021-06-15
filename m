@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A563A8788
+	by mail.lfdr.de (Postfix) with ESMTP id E63F93A8789
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhFORb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:31:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53576 "EHLO mail.kernel.org"
+        id S230452AbhFORcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:32:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229492AbhFORbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:31:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C47E66140B;
-        Tue, 15 Jun 2021 17:29:50 +0000 (UTC)
+        id S230442AbhFORb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 13:31:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57694610A3;
+        Tue, 15 Jun 2021 17:29:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623778191;
-        bh=38JelWkBVrb1iUB2+ACoZ3vPaIr4XdmxQrI+4XMqupc=;
+        s=k20201202; t=1623778193;
+        bh=y/udLKFYHLJaB0XXSTV3/plG0EFz9UjFo4yY54gp2DE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UJt1n0ls189Ad/QEKwY8yffRNrbFNvA299X0mCuS0dchWw3DEmzx4Tn5o8Vd1KZEV
-         7AonNI8LZf4voHiR2PmQ5jaFHX6yc6Ger1stDvkPoDdi5iHFlt/uGKCyniGR084MgE
-         IzFd5d6zpuqmXeG3iloKzWfmP1XOcvKjtxQQ7kvIEj+dx/MLO2o6i5bV3Y88NsNhio
-         yRmny0UtHQRaPswoDSURxQxC6j+9KhWGnNmKXdPNJ+QSueKcQXugGP1OedZzzowFh4
-         B7TcRCVgEE304oR4nvHRidUG/Uvu9xeB01t3oIk5EbrjNB3zjsjyKE59GfTJDU6D6O
-         01p08OkPBBXEA==
+        b=iKbe5gtHeI1ioWirQJv2hdt5aroFC7VAq/EzTP+bv2jLRdhbT9GOaBVf71yFrjha8
+         2P72WTy73lhUAnX158rxBGOF2g2+KBfWc2qmGuhcFUi7R3PHncaAhwH4i/mppOruNi
+         fqQUBk44I5tABAa2HYoqe2WFz4srpeEffk4G3jqzV15xf6SLew3ALpehsZB7TUYM5X
+         disxMy9aiPN21Z3MNsFmAqNEI0GfiXO9LnMEtLQrUFDCdNEAtMTFYicS9NWsHTOnI+
+         ozR7X2O+m2IRRCUrLgHMhnaVtXbbf0OiiUY6r0b/057iI85gvt83PWaCUZD/woaoro
+         XVbL5N2Q29gwA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com
-Subject: Re: [PATCH v2] ASoC: codecs: wcd938x: remove incorrect module interdependency
-Date:   Tue, 15 Jun 2021 18:29:19 +0100
-Message-Id: <162377763944.21612.1027421204392314156.b4-ty@kernel.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+Subject: Re: [PATCH -next 1/5] ASoC: img-i2s-in: Use devm_platform_get_and_ioremap_resource()
+Date:   Tue, 15 Jun 2021 18:29:20 +0100
+Message-Id: <162377763944.21612.10913621772984918294.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210615132829.23067-1-srinivas.kandagatla@linaro.org>
-References: <20210615132829.23067-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210615135200.1661695-1-yangyingliang@huawei.com>
+References: <20210615135200.1661695-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,15 +40,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 14:28:29 +0100, Srinivas Kandagatla wrote:
-> For some reason we ended up with cyclic dependency between snd_soc_wcd938x
-> and snd_soc_wcd938x_sdw modules.
-> 
-> Remove this cyclic dependency by handling them in respective modules.
-> Without this below error is reported during make modules_install
-> 
-> depmod: ERROR: Cycle detected: snd_soc_wcd938x -> snd_soc_wcd938x_sdw -> snd_soc_wcd938x
-> depmod: ERROR: Found 2 modules in dependency cycles!
+On Tue, 15 Jun 2021 21:51:56 +0800, Yang Yingliang wrote:
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
 
 Applied to
 
@@ -57,8 +50,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: wcd938x: remove incorrect module interdependency
-      commit: b90d9398d6ff6f518f352c39176450dbaf99e276
+[1/5] ASoC: img-i2s-in: Use devm_platform_get_and_ioremap_resource()
+      commit: e43805c28df6394254d1f49a388a1c70cae208a1
+[2/5] ASoC: img-i2s-out: Use devm_platform_get_and_ioremap_resource()
+      commit: ef43f463ddb3dc0acaf1447db22db85df5100380
+[3/5] ASoC: img-parallel-out: Use devm_platform_get_and_ioremap_resource()
+      commit: a444a902b06a361d646e608136efb35119922445
+[4/5] ASoC: img-spdif-in: Use devm_platform_get_and_ioremap_resource()
+      commit: c481f3838acc3e1b28fc228f9fbb2f569e3d8d0c
+[5/5] ASoC: img-spdif-out: Use devm_platform_get_and_ioremap_resource()
+      commit: 942f2671c573904066ddbc699ff8812b3df70a9c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
