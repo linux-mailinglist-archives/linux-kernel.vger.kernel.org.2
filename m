@@ -2,86 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916B23A741F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 274D53A741C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhFOCix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:38:53 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:6365 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFOCiv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:38:51 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G3ryR64tQz62vQ;
-        Tue, 15 Jun 2021 09:56:15 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 10:00:13 +0800
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 10:00:12 +0800
-Subject: Re: [PATCH -next] drm/nouveau/svm: Remove set but not used variable
- 'ret'
-To:     <bskeggs@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>
-References: <20210531023811.477542-1-libaokun1@huawei.com>
-From:   "libaokun (A)" <libaokun1@huawei.com>
-Message-ID: <aff157a6-d301-fe4f-d25c-f4ea0705f5a1@huawei.com>
-Date:   Tue, 15 Jun 2021 10:00:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <20210531023811.477542-1-libaokun1@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+        id S231165AbhFOCil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:38:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229829AbhFOCik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 22:38:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02336613FA;
+        Tue, 15 Jun 2021 02:00:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1623722433;
+        bh=7xF3tLg4trnpNvzypuC15OrE9KArJ5qA7ubwj4+GG1c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jGz/ZdF0fpxmdpjjD4gaadDILCbK94CQ9OqZ+PqHP43Puv/u/fsfprJ/mkBZPqYVC
+         eJOSkK2ibVP6OPtjSPwv2eq9BjJcjQVSRMNRYctH8dKb0OuNrpIPfpIfvNR8VBwoMY
+         bjEtsK+msfuz1jR3wvMJecK4mWL6HHPbTtZpAfHA=
+Date:   Mon, 14 Jun 2021 19:00:32 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        stable@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with
+ split_huge_page()
+Message-Id: <20210614190032.09d8b7ac530c8b14ace44b82@linux-foundation.org>
+In-Reply-To: <20210615012014.1100672-1-jannh@google.com>
+References: <20210615012014.1100672-1-jannh@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping
+On Tue, 15 Jun 2021 03:20:14 +0200 Jann Horn <jannh@google.com> wrote:
 
-在 2021/5/31 10:38, Baokun Li 写道:
-> Fixes gcc '-Wunused-but-set-variable' warning:
+> try_grab_compound_head() is used to grab a reference to a page from
+> get_user_pages_fast(), which is only protected against concurrent
+> freeing of page tables (via local_irq_save()), but not against
+> concurrent TLB flushes, freeing of data pages, or splitting of compound
+> pages.
+> 
+> Because no reference is held to the page when try_grab_compound_head()
+> is called, the page may have been freed and reallocated by the time its
+> refcount has been elevated; therefore, once we're holding a stable
+> reference to the page, the caller re-checks whether the PTE still points
+> to the same page (with the same access rights).
+> 
+> The problem is that try_grab_compound_head() has to grab a reference on
+> the head page; but between the time we look up what the head page is and
+> the time we actually grab a reference on the head page, the compound
+> page may have been split up (either explicitly through split_huge_page()
+> or by freeing the compound page to the buddy allocator and then
+> allocating its individual order-0 pages).
+> If that happens, get_user_pages_fast() may end up returning the right
+> page but lifting the refcount on a now-unrelated page, leading to
+> use-after-free of pages.
+> 
+> To fix it:
+> Re-check whether the pages still belong together after lifting the
+> refcount on the head page.
+> Move anything else that checks compound_head(page) below the refcount
+> increment.
+> 
+> This can't actually happen on bare-metal x86 (because there, disabling
+> IRQs locks out remote TLB flushes), but it can happen on virtualized x86
+> (e.g. under KVM) and probably also on arm64. The race window is pretty
+> narrow, and constantly allocating and shattering hugepages isn't exactly
+> fast; for now I've only managed to reproduce this in an x86 KVM guest with
+> an artificially widened timing window (by adding a loop that repeatedly
+> calls `inl(0x3f8 + 5)` in `try_get_compound_head()` to force VM exits,
+> so that PV TLB flushes are used instead of IPIs).
+> 
+> As requested on the list, also replace the existing VM_BUG_ON_PAGE()
+> with a warning and bailout. Since the existing code only performed the
+> BUG_ON check on DEBUG_VM kernels, ensure that the new code also only
+> performs the check under that configuration - I don't want to mix two
+> logically separate changes together too much.
+> The macro VM_WARN_ON_ONCE_PAGE() doesn't return a value on !DEBUG_VM,
+> so wrap the whole check in an #ifdef block.
+> An alternative would be to change the VM_WARN_ON_ONCE_PAGE() definition
+> for !DEBUG_VM such that it always returns false, but since that would
+> differ from the behavior of the normal WARN macros, it might be too
+> confusing for readers.
+> 
+> ...
 >
-> drivers/gpu/drm/nouveau/nouveau_svm.c: In function 'nouveau_pfns_map':
-> drivers/gpu/drm/nouveau/nouveau_svm.c:814:6: warning:
->   variable ‘ret’ set but not used [-Wunused-but-set-variable]
->
-> It never used since introduction.
->
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
->   drivers/gpu/drm/nouveau/nouveau_svm.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
-> index 84726a89e665..16fbf90f9f31 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-> @@ -921,7 +921,6 @@ nouveau_pfns_map(struct nouveau_svmm *svmm, struct mm_struct *mm,
->   		 unsigned long addr, u64 *pfns, unsigned long npages)
->   {
->   	struct nouveau_pfnmap_args *args = nouveau_pfns_to_args(pfns);
-> -	int ret;
->   
->   	args->p.addr = addr;
->   	args->p.size = npages << PAGE_SHIFT;
-> @@ -929,7 +928,7 @@ nouveau_pfns_map(struct nouveau_svmm *svmm, struct mm_struct *mm,
->   	mutex_lock(&svmm->mutex);
->   
->   	svmm->vmm->vmm.object.client->super = true;
-> -	ret = nvif_object_ioctl(&svmm->vmm->vmm.object, args, sizeof(*args) +
-> +	nvif_object_ioctl(&svmm->vmm->vmm.object, args, sizeof(*args) +
->   				npages * sizeof(args->p.phys[0]), NULL);
->   	svmm->vmm->vmm.object.client->super = false;
->   
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -43,8 +43,25 @@ static void hpage_pincount_sub(struct page *page, int refs)
+>  
+>  	atomic_sub(refs, compound_pincount_ptr(page));
+>  }
+>  
+> +/* Equivalent to calling put_page() @refs times. */
+> +static void put_page_refs(struct page *page, int refs)
+> +{
+> +#ifdef CONFIG_DEBUG_VM
+> +	if (VM_WARN_ON_ONCE_PAGE(page_ref_count(page) < refs, page))
+> +		return;
+> +#endif
+
+Well dang those ifdefs.
+
+With CONFIG_DEBUG_VM=n, this expands to
+
+	if (((void)(sizeof((__force long)(page_ref_count(page) < refs))))
+		return;
+
+which will fail with "void value not ignored as it ought to be". 
+Because VM_WARN_ON_ONCE_PAGE() is an rval with CONFIG_DEBUG_VM=y and is
+not an rval with CONFIG_DEBUG_VM=n.    So the ifdefs are needed.
+
+I know we've been around this loop before, but it still sucks!  Someone
+please remind me of the reasoning?
+
+Can we do
+
+#define VM_WARN_ON_ONCE_PAGE(cond, page) {
+	BUILD_BUG_ON_INVALID(cond);
+	cond;
+}
+
+?
+
