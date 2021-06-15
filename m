@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BB33A7EF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68773A7EFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhFONRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:17:39 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52290 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhFONRi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:17:38 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E9871219CC;
-        Tue, 15 Jun 2021 13:15:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623762932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y98G+xkTVHvfFDvbuoCaFeuLgRNF6e9aZ5lRPBsj2Dk=;
-        b=aR9QypVO5CAePnszn4q5Uy/IQYJiGZd+ODGojzKoSHS2oEuRrYOGWAle1XLx1LjXXlMxwu
-        13yvqddOnMTTdVyAE9MQwIqqTSNn2ivFC9kDmzEmlwr2e5WgZVitRCto0jbHLf7Y08tfB9
-        5LUKOcR/XOT+3LzEkUoO6/6V+M82ELE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623762932;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y98G+xkTVHvfFDvbuoCaFeuLgRNF6e9aZ5lRPBsj2Dk=;
-        b=f3lKq3qxohBo8r+30Ij1xYLWK21iqvYRoyg+7op5AgJMIDdL9fefdmjR5fojjkF2C1wlUv
-        YoR+ApIZ558A6fBQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id D2871118DD;
-        Tue, 15 Jun 2021 13:15:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623762932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y98G+xkTVHvfFDvbuoCaFeuLgRNF6e9aZ5lRPBsj2Dk=;
-        b=aR9QypVO5CAePnszn4q5Uy/IQYJiGZd+ODGojzKoSHS2oEuRrYOGWAle1XLx1LjXXlMxwu
-        13yvqddOnMTTdVyAE9MQwIqqTSNn2ivFC9kDmzEmlwr2e5WgZVitRCto0jbHLf7Y08tfB9
-        5LUKOcR/XOT+3LzEkUoO6/6V+M82ELE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623762932;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y98G+xkTVHvfFDvbuoCaFeuLgRNF6e9aZ5lRPBsj2Dk=;
-        b=f3lKq3qxohBo8r+30Ij1xYLWK21iqvYRoyg+7op5AgJMIDdL9fefdmjR5fojjkF2C1wlUv
-        YoR+ApIZ558A6fBQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id k/aMM/SnyGAtCwAALh3uQQ
-        (envelope-from <bp@suse.de>); Tue, 15 Jun 2021 13:15:32 +0000
-Date:   Tue, 15 Jun 2021 15:15:16 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
+        id S230364AbhFONSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:18:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230283AbhFONSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:18:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C568B6145C;
+        Tue, 15 Jun 2021 13:15:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623762956;
+        bh=dchN3E2UTlpS+DwezOC1PTVnurTZSQKkAeFRPW+8iiA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f1xpTMPSlPEw0DwElXJZkyFAxzSwG9KiNZlM/T5LHSENUOC8h30UsEui3KxzRSNvM
+         eOvh0izsLlEki2UJ5EXWho1nQPt86a9+5eJOlSig4F0uDaIbu1QSX7W+gYx7ZLNSz2
+         VIs1JsedUoF/xbVsDQut6rf/r/DMXxTSsps+KlRjTgtVYZZp8J1xJjXeGurSaWM/nl
+         nhXGrYC7mZpAEg6mxOIv5a+jnnL3oAjG/NuvnVZ5UypMOXEhA3rGglsgC4QLmNZM9C
+         UtBEKhtT9M2iE2FrufniT+yaxUdJfvTE4I0IedrxNTqv7dTmKmx9q2fACq/qeULNsg
+         iDXZ9CCnavC+A==
+Date:   Tue, 15 Jun 2021 16:15:53 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V2 03/52] x86/pkeys: Revert a5eff7259790 ("x86/pkeys: Add
- PKRU value to init_fpstate")
-Message-ID: <YMin5Pe8jVL+qxt3@zn.tnic>
-References: <20210614154408.673478623@linutronix.de>
- <20210614155353.984120664@linutronix.de>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 5/5] selftests/sgx: Refine the test enclave to have
+ storage
+Message-ID: <20210615131553.5y3jssldqc3sv2ge@kernel.org>
+References: <20210610083021.392269-1-jarkko@kernel.org>
+ <20210610083021.392269-5-jarkko@kernel.org>
+ <b1bf69f5-e203-d69e-d15d-3fb5e98b63dd@linuxfoundation.org>
+ <20210615131359.zrfvi36sjdpxghzl@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210614155353.984120664@linutronix.de>
+In-Reply-To: <20210615131359.zrfvi36sjdpxghzl@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 05:44:11PM +0200, Thomas Gleixner wrote:
-> This cannot work and it's unclear how that ever made a difference.
+On Tue, Jun 15, 2021 at 04:14:02PM +0300, Jarkko Sakkinen wrote:
+> On Mon, Jun 14, 2021 at 02:16:15PM -0600, Shuah Khan wrote:
+> > On 6/10/21 2:30 AM, Jarkko Sakkinen wrote:
+> > > Extend the enclave to have two operations: ENCL_OP_PUT and ENCL_OP_GET.
+> > > ENCL_OP_PUT stores value inside the enclave address space and
+> > > ENCL_OP_GET reads it. The internal buffer can be later extended to be
+> > > variable size, and allow reclaimer tests.
+> > > 
+> > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > ---
+> > >   tools/testing/selftests/sgx/defines.h     | 10 ++++
+> > >   tools/testing/selftests/sgx/main.c        | 57 ++++++++++++++++++-----
+> > >   tools/testing/selftests/sgx/test_encl.c   | 19 +++++++-
+> > >   tools/testing/selftests/sgx/test_encl.lds |  3 +-
+> > >   4 files changed, 74 insertions(+), 15 deletions(-)
+> > > 
+> > 
+> > Test output before applying the series:
+> > 
+> > TAP version 13
+> > 1..1
+> > # selftests: sgx: test_sgx
+> > # Unable to open /dev/sgx_enclave: No such file or directory
+> > # 1..0 # SKIP cannot load enclaves
+> > ok 1 selftests: sgx: test_sgx # SKIP
+> > 
+> > Test output after applying second patch
+> > 
+> > selftests/sgx: Migrate to kselftest harness
+> > 
+> > Output changes to the following. It doesn't look like the second
+> > patch adds any new tests. What is the point in running the tests
+> > that fail if /dev/sgx_enclave is missing.
+> > 
+> > Unfortunately this series doesn't have a cover letter that explains
+> > what this series is doing. I don't like the fact that the test
+> > output and behavior changes when migrating the test to kselftest
+> > harness. Shouldn't the output stay the same as in skip the tests
+> > if /dev/sgx_enclave fails.
 > 
-> init_fpstate.xsave.header.xfeatures is always 0 so get_xsave_addr() will
-> always return a NULL pointer, which will prevent storing the default PKRU
-> value in initfp_state.
+> I get what you are saying but actually I do not know how with
+> fixtures I can skip "the rest" when FIXTURE_SETUP() fails.
 > 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> V2: Fix subject
-> ---
->  arch/x86/kernel/cpu/common.c |    5 -----
->  arch/x86/mm/pkeys.c          |    6 ------
->  2 files changed, 11 deletions(-)
+> The reason for the output below is that with fixtures for all
+> tests enclave is initialized for each test case. And it kind of
+> makes sense because all tests start from the clean expected
+> state.
+> 
+> I don't how to do that with zero change in the output.
+> 
+> The reason to do this change is to make it easy to add more tests,
+> and return correct status codes to the framework.
 
-Reviewed-by: Borislav Petkov <bp@suse.de>
+To add: everything I did I based purely to the existing kernel
+documentation, following the examples on how to use fixture.
 
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+/Jarkko
