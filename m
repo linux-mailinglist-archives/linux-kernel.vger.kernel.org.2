@@ -2,123 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 597233A7592
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 06:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0CD3A75A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 06:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbhFOEIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 00:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
+        id S229497AbhFOENn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 00:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhFOEId (ORCPT
+        with ESMTP id S229461AbhFOENm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 00:08:33 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDFBC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 21:06:30 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id e18so21678621qvm.10
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 21:06:30 -0700 (PDT)
+        Tue, 15 Jun 2021 00:13:42 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3EFC0617AF
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 21:11:38 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id s15so8306929edt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 21:11:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YDA/6rYFbIzGwN3DJJ3v30Ilg60B464lccTuq9RZZyA=;
-        b=fMG07OU4hKhOT0Ejr3qOHcrU08EN3G1+RpniZ8liKpsJESj8tYmvpPMQZbf905Arqa
-         jTNjk7/cw8NTc05aXCrTOb4W4H63TAdnEqedfWvkUqde8aQCNzpKVfF+WTvNV5ptv2qS
-         TsIum45Bdbkm1pBXJPvJDobZEXMxEtOKj24Zc=
+        bh=Xf+ppaOavJa4FbRMvUgbiviXSm9wb7B+jcy4AwONiss=;
+        b=DPjp73xj0bPxaDO+CvFruBinLpBb3nksSn7akB9av9XgXboAVlbY2kueaTReVJgbzE
+         E5SeaeC06kK2HRHdeZQo4uZLqja9s3tuKn8Q5fSSU8PtYC8RMLqYHW5AdED01lL2vuCJ
+         ke9PJxHEKRCRl+yYCU0TXkHZtYh3JzgzVDJ4uoBTDmAd77neFXEbo+MDG8DhT03mGLTu
+         JQB8Chg7IRCJF6dt29HcRwC2URl6+cuPwE8SnOONyfAzxuDEg5hUvHmhKd5PWcWxh/4D
+         mRu8SdRkO2Hl3km+NGHZ6ECeWZQ31qq1X+TuZufyuLrw4LhI+rMYYlKKWJSSQgMaDcFP
+         /RNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YDA/6rYFbIzGwN3DJJ3v30Ilg60B464lccTuq9RZZyA=;
-        b=SyFdRgqyd80JlQI0gh72dW60j1CCcsFF/iveSd45V1QkT6GOC7pQCqONkQgXZhp62n
-         U3YfePdQKMdlhGnYQ4UFdtL8HzGcRs/WK7aMXN72ABDk9T83zza+3fPCd0gwjeR1CZT5
-         4zyLLTFaUPlOFenU7qiRFnkgj3t4mWPFLIpZdws/a7oZeMCNDcC7lFlRcwGY+0SZY3b+
-         4uZ5FotVN87Bmfx8qs9BTS3iLkG0u2trS1v1ddIs2iFaHKY18xH5kkzKhyEZcstrmJqW
-         wXKIOPdRMhjvNTTSNpsFHb9gLfu1wiMRU+sqH42d2rsSrT3XgxFWTpSVQ4ZdesS8jWhP
-         Ph4A==
-X-Gm-Message-State: AOAM532i6OS7Xk5DcKTWY67/5NCkV2WroT3FB1mKa7P4NnMIkveWc/P0
-        Wn0ie6ETyT08+D2S/LoRa/RWGMb750F+WA==
-X-Google-Smtp-Source: ABdhPJxKQ+SMM4PsEgAzzhHy1mOdreKSuJIoKivcF1tpJnWk/v/H023EfjS0ArA/OaxzJTLe2Cx/5A==
-X-Received: by 2002:a05:6214:428:: with SMTP id a8mr2597918qvy.3.1623729989093;
-        Mon, 14 Jun 2021 21:06:29 -0700 (PDT)
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com. [209.85.160.173])
-        by smtp.gmail.com with ESMTPSA id u17sm9155912qkk.119.2021.06.14.21.06.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 21:06:28 -0700 (PDT)
-Received: by mail-qt1-f173.google.com with SMTP id r7so1858589qta.12
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 21:06:28 -0700 (PDT)
-X-Received: by 2002:a02:384b:: with SMTP id v11mr19686288jae.90.1623729977741;
- Mon, 14 Jun 2021 21:06:17 -0700 (PDT)
+        bh=Xf+ppaOavJa4FbRMvUgbiviXSm9wb7B+jcy4AwONiss=;
+        b=U4EmOLlpamtwKWDmxFIRllW64xSDOAzqizBOcJP7dAyErebHpI/G/4VeZfgr45lpw3
+         03f1DfiEFFrzQmlQewKhi2OObpSDk2q6AWvHeNVBVA13Q79y3SN2A5+ZqrfrABoJe2dM
+         VWDpMzbwT+1TI+5Gc/G3wcuz7vQhCwee9J19gflt00kNmanTaHUxSbZ+WRAsuvhOLvQz
+         Sh2fDN3N91OzAS9/TZimyk3t8nZXRhPY+JcZPrTEEADYvyA+PNPVBLHlm4rmi+wAKPHv
+         4UOeYGxrOg5XGL5EODtJukpphoFatd/IS3DdyXOcAVc9WEPzsd/ao1Jh0veatE7AnCBI
+         ohgA==
+X-Gm-Message-State: AOAM531X+AWpxpo6cmC0P9jwAHJC62P8WR5v8gHXaaKvE08uCeLnWCuN
+        vQTWgNMN4sI0FjLaLkA/6lW2bXfko5VZJ4CVD8l/NA==
+X-Google-Smtp-Source: ABdhPJwEM6M1ppIVZKMbekWPKdaG8sqBBdieF8fvmVvz67P3jkdBWzyGmFEBHtPraZkh0JtVKsxyrSNpTcHuZvp4apY=
+X-Received: by 2002:a05:6402:220d:: with SMTP id cq13mr12550897edb.52.1623730297198;
+ Mon, 14 Jun 2021 21:11:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210611152659.2142983-1-tientzu@chromium.org>
- <20210611152659.2142983-2-tientzu@chromium.org> <20210614061644.GA28343@lst.de>
-In-Reply-To: <20210614061644.GA28343@lst.de>
-From:   Claire Chang <tientzu@chromium.org>
-Date:   Tue, 15 Jun 2021 12:06:06 +0800
-X-Gmail-Original-Message-ID: <CALiNf29cE-T7xf+nUZF2pjT8osaXj+wb4MibtdSkAU_K13wuMw@mail.gmail.com>
-Message-ID: <CALiNf29cE-T7xf+nUZF2pjT8osaXj+wb4MibtdSkAU_K13wuMw@mail.gmail.com>
-Subject: Re: [PATCH v9 01/14] swiotlb: Refactor swiotlb init functions
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
+References: <20210614161424.091266895@linuxfoundation.org>
+In-Reply-To: <20210614161424.091266895@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 15 Jun 2021 09:41:26 +0530
+Message-ID: <CA+G9fYsfvtr7NNcb0bvEZpYYotdY7Uf+wMY22iLhr0weZ8Om3g@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/130] 5.10.44-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
+        Peter Chen <peter.chen@kernel.org>,
+        Jack Pham <jackp@codeaurora.org>,
+        Felipe Balbi <balbi@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 2:16 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Fri, Jun 11, 2021 at 11:26:46PM +0800, Claire Chang wrote:
-> > +     spin_lock_init(&mem->lock);
-> > +     for (i = 0; i < mem->nslabs; i++) {
-> > +             mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
-> > +             mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
-> > +             mem->slots[i].alloc_size = 0;
-> > +     }
-> > +
-> > +     if (memory_decrypted)
-> > +             set_memory_decrypted((unsigned long)vaddr, bytes >> PAGE_SHIFT);
-> > +     memset(vaddr, 0, bytes);
->
-> We don't really need to do this call before the memset.  Which means we
-> can just move it to the callers that care instead of having a bool
-> argument.
->
-> Otherwise looks good:
->
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+Hi Greg,
 
-Thanks for the review. Will wait more days for other reviews and send
-v10 to address the comments in this and other patches.
+On Mon, 14 Jun 2021 at 21:45, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.44 release.
+> There are 130 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 16 Jun 2021 16:13:59 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.44-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+The following kernel crash reported on stable rc 5.10.44-rc2 arm64 db845c board.
+
+[    5.127966] dwc3-qcom a6f8800.usb: failed to get usb-ddr path: -517
+[    5.145567] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000002
+[    5.154451] Mem abort info:
+[    5.157296]   ESR = 0x96000004
+[    5.160401]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    5.165771]   SET = 0, FnV = 0
+[    5.168873]   EA = 0, S1PTW = 0
+[    5.172064] Data abort info:
+[    5.174980]   ISV = 0, ISS = 0x00000004
+[    5.178860]   CM = 0, WnR = 0
+[    5.181872] [0000000000000002] user address but active_mm is swapper
+[    5.188293] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[    5.193922] Modules linked in:
+[    5.197022] CPU: 4 PID: 57 Comm: kworker/4:3 Not tainted 5.10.44-rc2 #1
+[    5.203697] Hardware name: Thundercomm Dragonboard 845c (DT)
+[    5.204022] ufshcd-qcom 1d84000.ufshc: ufshcd_print_pwr_info:[RX,
+TX]: gear=[3, 3], lane[2, 2], pwr[FAST MODE, FAST MODE], rate = 2
+[    5.209434] Workqueue: events deferred_probe_work_func
+[    5.221786] ufshcd-qcom 1d84000.ufshc:
+ufshcd_find_max_sup_active_icc_level: Regulator capability was not
+set, actvIccLevel=0
+[    5.226541] pstate: 60c00005 (nZCv daif +PAN +UAO -TCO BTYPE=--)
+[    5.226551] pc : inode_permission+0x2c/0x178
+[    5.226559] lr : lookup_one_len_common+0xac/0x100
+
+ref:
+https://lkft.validation.linaro.org/scheduler/job/2899138#L2873
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+There is a crash like this reported and discussed on the mailing thread.
+https://lore.kernel.org/linux-usb/20210608105656.10795-1-peter.chen@kernel.org/
+
+metadata:
+  git branch: linux-5.10.y
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+  git commit: 3f05ff8b337097d73b2c408d60befe39dac31bb8
+  git describe: v5.10.43-131-g3f05ff8b3370
+  make_kernelversion: 5.10.44-rc2
+  kernel-config: https://builds.tuxbuild.com/1twkN9cmRWOK3boqZes7Yi1t0OO/config
+
+--
+Linaro LKFT
+https://lkft.linaro.org
