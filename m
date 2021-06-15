@@ -2,85 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159783A7B96
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45143A7BA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhFOKRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231289AbhFOKRb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:17:31 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3FFC061767;
-        Tue, 15 Jun 2021 03:15:22 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G442G0j9dz9sTD;
-        Tue, 15 Jun 2021 20:15:17 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623752119;
-        bh=k2vAbMQ0xTRaV5s6fEqcJacuK5VKqphXKy7600hIAhw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lT54zzRmSI4DiKrdY61DUcnmjMWq3iJ/1ufbKdHXuDUaqJlQ7OFoNSpWNFVTVyzTa
-         pKV/5cv7j34jMp/j2IQ3jAEQmum5+FtEX+VjmU8JcSAsH4mHZNox4lKH6fGoEkUBst
-         64aZJ+I+h1+bJ0GJYcl06EJTM4pJANW6t2tt2ToNSP5R6w4gmMJWh3LE9FvWXXdQRJ
-         LJ8UXq9mI74PiVYMzkXCRNXPfs5GCYSxN/WwDna2YBTZnnYzNKv4sVYnXIvqijdWoc
-         jWzRACYTiuGJW1v0yO9RmZOpEEARAVsZbajTT7RBu/iqTBKlWgghdT3A82hJJj8zIw
-         SoRZFkxjl8pHA==
-Date:   Tue, 15 Jun 2021 20:15:16 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the pstore tree
-Message-ID: <20210615201516.56c760fa@canb.auug.org.au>
+        id S231548AbhFOKTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:19:43 -0400
+Received: from mga06.intel.com ([134.134.136.31]:54852 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231152AbhFOKTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 06:19:42 -0400
+IronPort-SDR: zJvxWL3SMzkKDtL/UTjKqMOjFpoqv/Zv9MGM8erslzeyqmvn7lXsymXXYm+nFFhLicjdtf9p51
+ Ay6m3iDVYo9A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="267110232"
+X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
+   d="scan'208";a="267110232"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 03:17:37 -0700
+IronPort-SDR: 0jGvotN3Aeu01qs4h7Jw8N0+w6kDLY+14kGthGCf+lfI89+P2rMfbVL+lz2RWQSfbgdx9SHip3
+ oWzbeM7Olieg==
+X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
+   d="scan'208";a="421079165"
+Received: from tmonfort-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.212.223.245])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 03:17:35 -0700
+From:   Kai Huang <kai.huang@intel.com>
+To:     linux-sgx@vger.kernel.org, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, bp@alien8.de, seanjc@google.com,
+        jarkko@kernel.org, dave.hansen@intel.com, tglx@linutronix.de,
+        mingo@redhat.com, Yang Zhong <yang.zhong@intel.com>,
+        Kai Huang <kai.huang@intel.com>
+Subject: [PATCH] x86/sgx: Add missing xa_destroy() when virtual EPC is destroyed
+Date:   Tue, 15 Jun 2021 22:16:39 +1200
+Message-Id: <20210615101639.291929-1-kai.huang@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7+pNxeXmJy+uKvjSF1EreTd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7+pNxeXmJy+uKvjSF1EreTd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+xa_destroy() needs to be called to destroy virtual EPC's page arra
+before calling kfree() to free the virtual EPC.  Currently it is not
+calaled.  Add the missing xa_destroy() to fix.
 
-Hi all,
+Fixes: 540745ddbc70 ("x86/sgx: Introduce virtual EPC for use by KVM guests")
+Tested-by: Yang Zhong <yang.zhong@intel.com>
+Signed-off-by: Kai Huang <kai.huang@intel.com>
+---
+ arch/x86/kernel/cpu/sgx/virt.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-After merging the pstore tree, today's linux-next build (htmldocs)
-produced this warning:
+diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
+index 6ad165a5c0cc..64511c4a5200 100644
+--- a/arch/x86/kernel/cpu/sgx/virt.c
++++ b/arch/x86/kernel/cpu/sgx/virt.c
+@@ -212,6 +212,7 @@ static int sgx_vepc_release(struct inode *inode, struct file *file)
+ 		list_splice_tail(&secs_pages, &zombie_secs_pages);
+ 	mutex_unlock(&zombie_secs_pages_lock);
+ 
++	xa_destroy(&vepc->page_array);
+ 	kfree(vepc);
+ 
+ 	return 0;
+-- 
+2.31.1
 
-fs/pstore/blk.c:1: warning: no structured comments found
-
-Introduced by commit
-
-  38c18fec13fb ("pstore/blk: Use the normal block device I/O path")
-
-The last kernedoc comment in this file is removed by this commit.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/7+pNxeXmJy+uKvjSF1EreTd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDIfbQACgkQAVBC80lX
-0GyfKgf9Ejml6UqYRL4VyDKhtofakgNUc+91sw+XW5DstjoorwiNkP84ufvCLDRo
-QtqboosZXax6ehFjPMdsBD+nNrkAQdsra170rL+f2ymQ3xp7HMUsp0z2TeSXcAEQ
-5PsogOQBxaz8vj+Q/dZgflVXItJ5sRts1uHAIDR04FoXmAMJOQ6/CYKpKYk3oYTM
-EgoujeBgS2f9HdrckLyW2E4uiRN+pwNG9a25Zbwp7xJ2zuMvrEAB1NEUgZXtVyXY
-3oyB5jZV5TmgMHV6qtrQXxvh/RsZDRrURa3zoCz7egrR0UlMjNtUY9mwiQTRWHQn
-bRTCJgzvsjYk9S9l2Z7JmUGbAHjiyg==
-=1VAf
------END PGP SIGNATURE-----
-
---Sig_/7+pNxeXmJy+uKvjSF1EreTd--
