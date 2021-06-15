@@ -2,200 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141C03A73A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF233A73D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhFOCZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:25:28 -0400
-Received: from mail-am6eur05on2041.outbound.protection.outlook.com ([40.107.22.41]:14049
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231283AbhFOCZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:25:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dVyApvEOcdJ1bTvJHH65HiWNzUn1MZwutdkt4y3ZtoSA82bYM9BELvvjkT/RsYVmBP3D+Arued1mpE1T4qFNsif7mzb7pae7YCSFFB/HDu8HmKqyOYNaWGTK1YkDJmyDMBf1lmYagprIfEIL0qid1hKCv9gdS7fA0iCawZt4jgBJrscHxuoGln+zwqj/uyX8pWlMTi/EN59Zi+SE9efTbUUyscM6KqYdD+QgG+iHQJu8IQeBmA+0GfoF3qsFSK/xhnCTqRg+fXYaWwjypiq/vIHllYASBsLjwWSqcQ0j9p27fmfK9ForccOcUqoUafoV1M9LIfzimKNhX0mp6s6t1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jxzlMe/z11qLSL3X1GucDjwlN3Je0Dol/PL/riAG12s=;
- b=cP0cBdX6eRzkJqe4U1v+xBmJmenwyuDyzblLhyq8LoHCP+rKp44cwuTZ4qS8Bb3WPODH/ySWaE5RV7rEoIo6iotrSqHniI6HU98DhXl34N1ZAmvqAqhHLlw9qnjTQ9fAVHDAc1hRcbRBXFNULb5/iSc3vledWBKqTLA1XjIfNoSAFTVOJYKt2jttYCDjscTxiu1IYRew8yR3x8iUmeegbyioC5CeUjoUFMnM8tXffRvDg+ZU970PLPyFJy5QYGiAkRylqa54sajiq2X0q5627c4NQ1CsU8GtFyWiylu5FejocawxvasdmHxVXVhDhg0xqks54oD6q/u2wJjZ6vSaqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jxzlMe/z11qLSL3X1GucDjwlN3Je0Dol/PL/riAG12s=;
- b=QjeP+Qf1QH1hQbIsK5OWGhoPW50dYMERF/8uD6CazJ+hameSViPSgmpw6MXCvzEPksrs/kfKjKftkTF7nDX/Z5Wes+Y9mJsfDlRZUBTdqG14c0sDJoTehxz2n9j8FMOva++qCvRODoyqssDrNR6cSa+5hLofewB2klRDE5fnwHI=
-Received: from VE1PR04MB6688.eurprd04.prod.outlook.com (2603:10a6:803:127::25)
- by VE1PR04MB7392.eurprd04.prod.outlook.com (2603:10a6:800:1b2::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Tue, 15 Jun
- 2021 01:55:29 +0000
-Received: from VE1PR04MB6688.eurprd04.prod.outlook.com
- ([fe80::ed27:a6b2:74fc:8ef2]) by VE1PR04MB6688.eurprd04.prod.outlook.com
- ([fe80::ed27:a6b2:74fc:8ef2%6]) with mapi id 15.20.4219.025; Tue, 15 Jun 2021
- 01:55:29 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     Fabio Estevam <festevam@gmail.com>
-CC:     Vinod <vkoul@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>,
-        =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH v14 00/12] add ecspi ERR009165 for i.mx6/7 soc family
-Thread-Topic: [PATCH v14 00/12] add ecspi ERR009165 for i.mx6/7 soc family
-Thread-Index: AQHXK33LUkqD6t3KUUabL8+87acFPqsPOqgAgAV+imA=
-Date:   Tue, 15 Jun 2021 01:55:29 +0000
-Message-ID: <VE1PR04MB6688017E125D42C5DCB3C17D89309@VE1PR04MB6688.eurprd04.prod.outlook.com>
-References: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
- <CAOMZO5CNjpek0vkDrMyTmfbnr2cLcquck6QQBqXLBiyTDKPXvA@mail.gmail.com>
-In-Reply-To: <CAOMZO5CNjpek0vkDrMyTmfbnr2cLcquck6QQBqXLBiyTDKPXvA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a18d0e51-5508-401b-e2da-08d92fa0a720
-x-ms-traffictypediagnostic: VE1PR04MB7392:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB7392354B754FF1E8857FB46C89309@VE1PR04MB7392.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cAi4K12uTIoze9sLfMKMNMcJpjWc8EH+qPECiizWVgVcKdWlTVEbXnVQrC8CoXlycoPbVwIcA3T+7l7Fsn2MVfwj8J6ZOHOrl+Pxl9Iw0KyE4+OuRh54OCqXcs9L4WD8lonIrvFRYfgcpcezE3Mk4dQ88N3IlszEgjDuyWa8MnjdPtszAvu/qZb8SrsqambOdvx4C+wFwmNEc3Ld7JLFaQlnCtjASplEkjj8LRcJElWSa/n6VKu1GAoUrvXGV3ho1Wi1OborcIVBhsecojGcj0zZYLC1kvVK6vDt846iJottlbwITtAaxeKf3Dc4QxYdgLKI2Cxw2b+8kDQinljPCjGqyfdMwKAeXvCtqlCGc0DTN0jCAse6rCZ7am8p5LTEcvAeO6cpAkrAb/yWQPW4tJlZ9px+T+lv55x6pcM+M0zV4fUOP8mtpKpY/c0aWYjSsJKlLUuH2ZRWrNHeN7Vibm85OkrVDuyZhL5x/sAdE1NymxlB5AIint6k5ftjVhqyOqhkzus7DIgN4PRa8dkck26xeRVeLfPaQt9gbN3bXIFntBQkZ2Ff9e29GGUIsfBhua5zuYwx22FbvAvrQQcu0YCNthbUuqh2LGZ4jkrOaxB4YA/N75jqKGg9D0/WdsGfVfh9ePHtLNIB7t7JpMuQWQIDig4Jy6h/sQ4es/m+zEBb0RTeAzUWDBpMSfTf9tb5+HRSpglJrJpSl2Z3mDC4lcOAOAB3Zwa2mPwRue7k9XjS2cc8D/TfC788duCLu0K9
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6688.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(366004)(346002)(122000001)(2906002)(4326008)(38100700002)(86362001)(64756008)(66556008)(6916009)(186003)(66446008)(76116006)(26005)(8676002)(66476007)(8936002)(71200400001)(52536014)(966005)(55016002)(83380400001)(7416002)(478600001)(7696005)(33656002)(66946007)(6506007)(45080400002)(54906003)(53546011)(316002)(9686003)(5660300002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?8WWkhgBAK5O7QxiWgrMn4UIxSrUsBxlD2PvrdMWEKbUOMOCPf1m/YbYXcA?=
- =?iso-8859-1?Q?DV186jNrsqn23B/fvS1s6Sh+LDIA4UOZvDjoSCyUDzk/enLjcRmktroBW2?=
- =?iso-8859-1?Q?F3S5OHRWyrenMDbadjYp6uLPBeV4Em8ZROffi3G5MbtYdtUlC4Up0r664F?=
- =?iso-8859-1?Q?q6CnaOwxdE844ot46DKG5MDxNOxO427uF9eB/+CGblZR6YepXDNj8NugS9?=
- =?iso-8859-1?Q?uBpaWF6PqRyow8r/mioiC9XZ7FfLqgb8uj6lX+zAzgzLyoV3dXTqx9Z6bF?=
- =?iso-8859-1?Q?jGGFCl6UojkjKVaVIw1QeFWu+lDPSNBTx3NTgl1YJhyVjiRArU7Ib9RpR/?=
- =?iso-8859-1?Q?hn5JRXkqNZ8PFnw+H+STTgTGXcHCHkFhxzHGWQQ6gcRYNOxD4+2ppi829A?=
- =?iso-8859-1?Q?T6my9i7N6QXt9TUtSnWebXhyrbMm83apBf5R2kI99oYVwW9+njBssW6nVh?=
- =?iso-8859-1?Q?Z3UXvqTCsQZK8OrkvHuZ+OTpfjm4X1tHPB+F3xIXHBEixopF7WcZ0fuCxx?=
- =?iso-8859-1?Q?4lVsIofldwvR69bSLCG7UOUoNvLBTSmUGN8bD6tLAtpD25pyw6UTfEKN1n?=
- =?iso-8859-1?Q?fpKC98YkBVlAWz796pj7txDyPeuhP5dQbNdWPsbZbKo7ymyCw7ROBseNfd?=
- =?iso-8859-1?Q?CldJKXxnbo2o8YpXirJtZbrD3Yt45r8jWIAHr05t6P3Z6yVDWBmHDhOEA2?=
- =?iso-8859-1?Q?4Wt6eM9FSmwbzUhOPu5F6ZpIjVEcfW7BqwwZKf0ElK2StOOd5qoGFbeahB?=
- =?iso-8859-1?Q?u91p/Mt8p+8owRxkD/gs0TT4qtAUSTXLfTjpUOpt2ifmANdRUy945DPUVh?=
- =?iso-8859-1?Q?tLgAz9wkgUtU6W9BT7Y8ml1ftJZwwm842dI7mQ7zatOHTw7kKuQL4yr/Tl?=
- =?iso-8859-1?Q?pMlS1DeUU7AUKBEq9iGDVRB+eatYjvHjnR7vIOrik43k3J2FAZnCFb+yuQ?=
- =?iso-8859-1?Q?wdvFT3BwT/zTz3lNsJasfm04lSE8DAVWQZVIZkBM9x58kEEdBoORLGrC/A?=
- =?iso-8859-1?Q?dRujH7KDaCSvqKpvnybXznGZfL0gB+pyU1SFXqJiG8cSzwpJBsN4gpaDj+?=
- =?iso-8859-1?Q?FBbJm8ZU/6j0sGRyKjMiBOeMllg+FgFG/lL2rlOQlX4ArUEv3190h3t/Ta?=
- =?iso-8859-1?Q?idKWaPXWWUantvW88ENcwMIw9EvfnVoN2UaNIXxErW0ae9/ykIBHlhBG+W?=
- =?iso-8859-1?Q?BCwaEzsBZdBBxyNAjGdHZdHWdeqYN8QCZch50Tbd8vXnttWCLkQvvWbBtc?=
- =?iso-8859-1?Q?K1w9zAJHBqt1k5u91SJ5ShbtBslcU6DCDJQrmHlk26Px9HRe/LIs+apsw7?=
- =?iso-8859-1?Q?uuHuRMAZZXd5FIiazc9JjDO5RNxOMwfqvBIUiKBmmK3p/0U=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S230486AbhFOC0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230141AbhFOC0s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 22:26:48 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A351C061767;
+        Mon, 14 Jun 2021 19:24:44 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id q21so18237515ybg.8;
+        Mon, 14 Jun 2021 19:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=brCiM+F9mGjut7Dannz5jBzKbs3SodWAdjrUja4GsqQ=;
+        b=HEnAn1olYigaQNwMq7Pg7M9qQXgha1+G3M8Te9QROcv+UPfHbzA+pyQiY/uyUplDho
+         syI/EJ0aS5ILxHohmJkYvgPeUXUvFw0UJ+48gj22wbC9kvUQClmfmZLzrrJbqUr54NI0
+         XIPfavRvfpItyC7jNpihhrsAwdizq3bVqYy7pjJaGlXxf3djw8Jxhaht1pwkyi2g4zHJ
+         FBd13UJ9//BjvbwrXSxXwhNaY/NP7dlPuCEN+qXeWFvbgTzpKowrQL5FWyqdTsKjKqa6
+         /fQvn05zs7IeWE/WtYl+/6FFwsh8P8pcdZxWFaHG//HqMHlmCCUOI3OY9ukreN48hS1s
+         4Y1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=brCiM+F9mGjut7Dannz5jBzKbs3SodWAdjrUja4GsqQ=;
+        b=hu7Lgg6fZKxGOCmF2jPdWlZstPkRcwPzYuATAMWfheKB57NJo2cicr+7zXfuhrXirU
+         HEPOU62W6QVb7OGmmov2p2YbZNIAMSb0FpZgqA6P15U+fMJs/mrzMrMzZGznv33XWt+l
+         186CPmfgGHV6F+aBUQOFWTB08tYWNwuiwk1aksSjI5JoP90ExJwMsTKp/qeE/4kR+eDu
+         d2ztqTg/VH1id77/VnKwSErlcXuGnWTWz5Zvv7xcPYTQn3CfPLrT4tONmsY/aPnl5V10
+         MgF0EalZInTFTYc7tQtD1yOBEvdRd37Gt+RRwt6jafersu8bGX0uFwqxJmIhYbEdMbgQ
+         RFKQ==
+X-Gm-Message-State: AOAM531pbXe1C0qX/8ya7qst07n5HlKT3r8JJ5qkXYpC3vnx9E9xXYU9
+        BwCVsIpuZVPL6vEHMwbjTXFmSh+tH2zm0mvUjtPfPg3I1QncL5G6dVo=
+X-Google-Smtp-Source: ABdhPJyUqha2rTwXMjRmWbkZlGSaerkycxLOhzZXfvz9QhQZI+3ohv8S/fa3vJSq4wM88YAm4nAw8FYUi/yX/sKJTsg=
+X-Received: by 2002:a9d:730a:: with SMTP id e10mr13703661otk.97.1623722136501;
+ Mon, 14 Jun 2021 18:55:36 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6688.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a18d0e51-5508-401b-e2da-08d92fa0a720
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2021 01:55:29.2710
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XQY9AWa6C7ZElcMF4NdeIu2rqXAPI5G5u1vqH8FjUiiY7v8RzmwCZVVVFPsTN0ds+DO4fj9VBWGXrJAaa5j5NA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7392
+Received: by 2002:a9d:f03:0:0:0:0:0 with HTTP; Mon, 14 Jun 2021 18:55:35 -0700 (PDT)
+In-Reply-To: <202106141503.B3144DFE@keescook>
+References: <20210608171221.276899-1-keescook@chromium.org>
+ <20210614100234.12077-1-youling257@gmail.com> <202106140826.7912F27CD@keescook>
+ <202106140941.7CE5AE64@keescook> <CAOzgRdZJeN6sQWP=Ou0H3bTrp+7ijKuJikG-f4eer5f1oVjrCQ@mail.gmail.com>
+ <202106141503.B3144DFE@keescook>
+From:   youling 257 <youling257@gmail.com>
+Date:   Tue, 15 Jun 2021 09:55:35 +0800
+Message-ID: <CAOzgRdahaEjtk4jS5N=FQEDbsZVnB+-=xD+-WtV9zD9Tgbm0Hg@mail.gmail.com>
+Subject: Re: [PATCH] proc: Track /proc/$pid/attr/ opener mm_struct
+To:     Kees Cook <keescook@chromium.org>
+Cc:     torvalds@linux-foundation.org, christian.brauner@ubuntu.com,
+        andrea.righi@canonical.com, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, regressions@lists.linux.dev,
+        linux-security-module@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/21 21:51 Fabio Estevam <festevam@gmail.com> wrote:=20
-> Hi Robin,
->=20
-> On Wed, Apr 7, 2021 at 4:15 AM Robin Gong <yibin.gong@nxp.com> wrote:
-> >
-> > There is ecspi ERR009165 on i.mx6/7 soc family, which cause FIFO
-> > transfer to be send twice in DMA mode. Please get more information from=
-:
-> > https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww=
-.
-> >
-> nxp.com%2Fdocs%2Fen%2Ferrata%2FIMX6DQCE.pdf&amp;data=3D04%7C01%7
-> Cyibin.g
-> >
-> ong%40nxp.com%7Cab59d4a2e95a4351e48708d92cdffc09%7C686ea1d3bc2
-> b4c6fa92
-> >
-> cd99c5c301635%7C0%7C1%7C637590162781662129%7CUnknown%7CTWF
-> pbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVC
-> I6Mn0%3D%7C1000&amp;sdata=3DDIbrrAYvpoJ4lKrkDJYvyoixR9DcMCgVDwuW
-> gI5fuVw%3D&amp;reserved=3D0. The workaround is adding new sdma ram
-> script which works in XCH  mode as PIO inside sdma instead of SMC mode,
-> meanwhile, 'TX_THRESHOLD' should be 0. The issue should be exist on all
-> legacy i.mx6/7 soc family before i.mx6ul.
-> > NXP fix this design issue from i.mx6ul, so newer chips including
-> > i.mx6ul/ 6ull/6sll do not need this workaroud anymore. All other
-> > i.mx6/7/8 chips still need this workaroud. This patch set add new
-> 'fsl,imx6ul-ecspi'
-> > for ecspi driver and 'ecspi_fixed' in sdma driver to choose if need
-> > errata or not.
-> > The first two reverted patches should be the same issue, though, it
-> > seems 'fixed' by changing to other shp script. Hope Sean or Sascha
-> > could have the chance to test this patch set if could fix their issues.
-> > Besides, enable sdma support for i.mx8mm/8mq and fix ecspi1 not work
-> > on i.mx8mm because the event id is zero.
-> >
-> > PS:
-> >    Please get sdma firmware from below linux-firmware and copy it to
-> > your local rootfs /lib/firmware/imx/sdma.
-> > https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit=
-.
-> >
-> kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ffirmware%2Flinux-fir
-> mw
-> >
-> are.git%2Ftree%2Fimx%2Fsdma&amp;data=3D04%7C01%7Cyibin.gong%40nxp.c
-> om%7C
-> >
-> ab59d4a2e95a4351e48708d92cdffc09%7C686ea1d3bc2b4c6fa92cd99c5c301
-> 635%7C
-> >
-> 0%7C1%7C637590162781662129%7CUnknown%7CTWFpbGZsb3d8eyJWIjoi
-> MC4wLjAwMDA
-> >
-> iLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DuL
-> %2F
-> >
-> 6w%2F7JF76dqTfKYk4BT%2F5flWr0d3U2O86ABSq2UhI%3D&amp;reserved=3D0
->=20
-> Without this series, SPI DMA does not work on i.MX8MM:
->=20
->  [   41.315984] spi_master spi1: I/O Error in DMA RX
->=20
-> I applied your series and SPI DMA works now:
->=20
-> Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Thanks Fabio.
-Hello Vinod, Mark,=20
-Is my patch set good enough to merge? I remember someone else are
-requesting it from last year like Fabio.=20
+if try to find problem on userspace, i used linux 5.13rc6 on old
+android 7 cm14.1, not aosp android 11.
+http://git.osdn.net/view?p=android-x86/system-core.git;a=blob;f=init/service.cpp;h=a5334f447fc2fc34453d2f6a37523bedccadc690;hb=refs/heads/cm-14.1-x86#l457
 
+ 457         if (!seclabel_.empty()) {
+ 458             if (setexeccon(seclabel_.c_str()) < 0) {
+ 459                 ERROR("cannot setexeccon('%s'): %s\n",
+ 460                       seclabel_.c_str(), strerror(errno));
+ 461                 _exit(127);
+ 462             }
+ 463         }
+
+2021-06-15 6:50 GMT+08:00, Kees Cook <keescook@chromium.org>:
+> On Tue, Jun 15, 2021 at 02:46:19AM +0800, youling 257 wrote:
+>> I test this patch cause "init: cannot setexeccon(u:r:ueventd:s0)
+>> operation not permitted.
+>> init ctrl_write_limited.
+>
+> Thanks for testing!
+>
+> This appears to come from here:
+> https://github.com/aosp-mirror/platform_system_core/blob/master/init/service.cpp#L242
+>
+>
+> In setexeccon(), I see (pid=0, attr="exec"):
+>
+>         fd = openattr(pid, attr, O_RDWR | O_CLOEXEC);
+> ...
+>                         ret = write(fd, context2, strlen(context2) + 1);
+> ...
+>         close(fd);
+>
+>
+> and openattr() is doing:
+> ...
+>                 rc = asprintf(&path, "/proc/thread-self/attr/%s", attr);
+>                 if (rc < 0)
+>                         return -1;
+>                 fd = open(path, flags | O_CLOEXEC);
+> ...
+>
+> I'm not sure how the above could fail. (mm_access() always allows
+> introspection...)
+>
+> The only way I can understand the check failing is if a process did:
+>
+> open, exec, write
+>
+> But setexeccon() is not doing anything between the open and the write...
+>
+> I will keep looking...
+>
+> -Kees
+>
+> --
+> Kees Cook
+>
