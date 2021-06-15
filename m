@@ -2,108 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E6D3A7D76
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA603A7D77
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhFOLrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57980 "EHLO
+        id S230079AbhFOLrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhFOLrq (ORCPT
+        with ESMTP id S229947AbhFOLrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:47:46 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC68C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:45:41 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id l1so21992599ejb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:45:41 -0700 (PDT)
+        Tue, 15 Jun 2021 07:47:47 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF96C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:45:42 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id t3so50709642edc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:45:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p1eH0Ej+5T7porb0G6RAMCsURpi7I/GRLLvy18cQifk=;
-        b=DfGsCnLzOTYcQNI244P2gyMDnho2hr4KC/+Zzx9z+Ow7ozz2e93vsnW4OJuyXIZUp2
-         DZKO3BpCHgOjL3G4cmTTmbShPS2zTKyR8LHxLVJa5Z962GEdD5c8Sno4StglcTX8IYeO
-         Zm+N+qa5TuJC+dKMwOeshVaKQe8bY/02E8ZqCSeuy/wZTG8/7HMZOrgMc825hgLZva8q
-         2SVlvJ95+UqGBUMKy1U4PkbSkFR5i6+y/4IqwA8J+vKlQ3wX2IyjEmSnyQiBnQ9GbWrY
-         VrV54AXvikpWbyO88Ui1TeAfe0meUSczu2KUpjRbUQZegiWisTnWkQ+Z3Tp5/jdGjPgu
-         Z9Iw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5D/6RpZ0CBKmM6q27QzR8lVWMKF+tf59W0tNVEeHUkI=;
+        b=RQuzMP4Y7ST0DiBwa2uoK897Wxi8exvgtS9yfYnhReV13YJgv9WoD75eGNmolwY66L
+         wTrzUuX89sN/tOKGo3NK7EBS1XtoD7LjBK1BfyM9mCit/tRFj1zn7lCt2fZZ+AaYJs/Z
+         eoyWGrU7zRPSRaI3/aoQUE3Q1Zyk96r5/gpyZBGHmXBAu8MV1vje7bhl3G/VEM/UH6VH
+         u2Lz2GqDp8DHPTCumRU1D42gPlsshsqtjAWCy5lFOOi1J9qQMewukKomhPCMJPCIRgXq
+         g+XY0pHUsF33Mw7ud57EuRYZrzWM4lpshJkJOjqvvY+nl4lYa55lpSgOYB0dUHXF/tRh
+         9g6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p1eH0Ej+5T7porb0G6RAMCsURpi7I/GRLLvy18cQifk=;
-        b=phve+tX3BMiSYQqdZ86OYLnHe4p9ceiIHpeKslZZ1uWON0MtG7733AwhZ20llFG25P
-         jJtvYkeCTldbTNi2jSgFPe7FTznEny7TZsKYX3RRwnYUxItzp8S7GhPi8B4KEX5jm9S4
-         LDK+Khw9E1c1HEg6kieCo9YHPPTtyk7ZF27jFeq+RXynophyeQMi9//Amh0sdkZQonRn
-         7WzrgtWM76qkprZFgkEAxLsg1T61AaTG2HHKLsNEDg89601YLNx5Kf1VKkzucyTuQTLt
-         7FT6R6ouGyoZIeSkZV7wotZo5MHBlkyTazF4TgsyYJTFj1lz5wzMluupvHNvondHO8BZ
-         R+dA==
-X-Gm-Message-State: AOAM531KMYlFgMq46Bu9ogrRsMrs1MNKayj+3s5lP8d70x8qKT/l2biS
-        NiSGgxrjMw11LPayo1rCTATLfHC9TzhEvg==
-X-Google-Smtp-Source: ABdhPJy0F0ZTJ1mVbFIcLibf8PfNhpU/5igmzTMwuUxzQiVU8nvl91UoOwfA1CgazjCF9V9Kr63+qQ==
-X-Received: by 2002:a17:906:f298:: with SMTP id gu24mr20021153ejb.452.1623757540008;
-        Tue, 15 Jun 2021 04:45:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5D/6RpZ0CBKmM6q27QzR8lVWMKF+tf59W0tNVEeHUkI=;
+        b=divtFlfhzHshaOKf9TFIEUKqdJCUhBJqzEBiMPyU66ddV24VSAgEi7f5UFWtM9gIZA
+         eQfc77rNgocEbxn/1gQrcBfRyvTyKmhEtXnmjL4ZCIp/q7YmqsLdS16HDHOuvhGunB7d
+         nJ+AmEIsJJw08PDbc9s8L+A0QjRW6ez5AAriV1LZfqZaj1SAHCj3COtlPmfHfmfw0rwx
+         LtdilCKY/KCxkJFIcUz/cxVZO1gf2YOPsTN0atDJFALTTgKnuAZQFYtJjGDksYxszpYh
+         D5hPkBDqefMrYngEF5zZrDcsP86ot/HjxF5SfVSFm5VxbPRcwsLR2pgx+VvQynK1Xrt4
+         4jXA==
+X-Gm-Message-State: AOAM533+pIGNMWNIHnP6XAGNbwGRMIB/7iMGeBrfRrqO5+O1zloJg0zm
+        ehuaXkyZOKbVJOcM+5n28lZ5IhbV5LkROw==
+X-Google-Smtp-Source: ABdhPJzBZYD2xGg1ZUBPx6MEf26TO8DAnTN2Zhzolm0qA3msILuY2E5mMOy1P96HM1QVd+Cw4ZNx4g==
+X-Received: by 2002:a05:6402:896:: with SMTP id e22mr3640244edy.201.1623757541293;
+        Tue, 15 Jun 2021 04:45:41 -0700 (PDT)
 Received: from agape ([5.171.72.142])
-        by smtp.gmail.com with ESMTPSA id u21sm7145699eja.59.2021.06.15.04.45.39
+        by smtp.gmail.com with ESMTPSA id g11sm7579533edz.12.2021.06.15.04.45.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 04:45:39 -0700 (PDT)
+        Tue, 15 Jun 2021 04:45:41 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/8] staging: rtl8723bs: remove unneeded files from tree
-Date:   Tue, 15 Jun 2021 13:45:30 +0200
-Message-Id: <cover.1623756906.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 1/8] staging: rtl8723bs: remove unused debug macro
+Date:   Tue, 15 Jun 2021 13:45:31 +0200
+Message-Id: <4d1e9ad759fc4b66fa3309637b3b4c8eb81d2ea9.1623756906.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1623756906.git.fabioaiuto83@gmail.com>
+References: <cover.1623756906.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset removes some unneeded files.
+remove unused debug macro definition in
+include/autoconf.h
 
-autoconf.h seems to be the output of some automatic
-header file generation foreign to the linux kernel
-configuration and build system.
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ drivers/staging/rtl8723bs/include/autoconf.h | 6 ------
+ 1 file changed, 6 deletions(-)
 
-To toggle some part of code one is asked to
-force an edit by hand on this file.
-
-Other unneeded definitions were deleted recently,
-now we complete the job.
-
-Removed core/rtw_eeprom.c and include/drv_conf.h as well,
-for they are excluded from the build process.
-
-Tested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-
-Fabio Aiuto (8):
-  staging: rtl8723bs: remove unused debug macro
-  staging: rtl8723bs: remove unneeded comments
-  staging: rtl8723bs: remove unused WAKEUP_GPIO_IDX macro definition
-  staging: rtl8723bs: remove unneeded DISABLE_BB_RF macro
-  staging: rtl8723bs: remove HAL_{BB,MAC,RF,FW}_ENABLE macros
-  staging: rtl8723bs: move LPS_RPWM_WAIT_MS macro
-  staging: rtl8723bs: remove include/autoconf.h header file from tree
-  staging: rtl8723bs: remove two unused files from tree
-
- drivers/staging/rtl8723bs/core/rtw_eeprom.c   | 208 ------------------
- .../staging/rtl8723bs/hal/HalPhyRf_8723B.c    |   7 -
- .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   |  16 --
- drivers/staging/rtl8723bs/hal/sdio_halinit.c  |  15 --
- drivers/staging/rtl8723bs/include/autoconf.h  |  50 -----
- drivers/staging/rtl8723bs/include/drv_conf.h  |  19 --
- drivers/staging/rtl8723bs/include/drv_types.h |   1 -
- .../staging/rtl8723bs/include/hal_btcoex.h    |   2 +
- drivers/staging/rtl8723bs/include/hal_phy.h   |  14 --
- .../staging/rtl8723bs/include/rtl8723b_spec.h |   2 -
- 10 files changed, 2 insertions(+), 332 deletions(-)
- delete mode 100644 drivers/staging/rtl8723bs/core/rtw_eeprom.c
- delete mode 100644 drivers/staging/rtl8723bs/include/autoconf.h
- delete mode 100644 drivers/staging/rtl8723bs/include/drv_conf.h
-
+diff --git a/drivers/staging/rtl8723bs/include/autoconf.h b/drivers/staging/rtl8723bs/include/autoconf.h
+index 944a7d2a1e53..aeb9479d1327 100644
+--- a/drivers/staging/rtl8723bs/include/autoconf.h
++++ b/drivers/staging/rtl8723bs/include/autoconf.h
+@@ -40,11 +40,5 @@
+  */
+ #define WAKEUP_GPIO_IDX	12	/* WIFI Chip Side */
+ 
+-/*
+- * Debug Related Config
+- */
+-
+-#define DBG	0	/*  for ODM & BTCOEX debug */
+-
+ /* define DBG_XMIT_BUF */
+ /* define DBG_XMIT_BUF_EXT */
 -- 
 2.20.1
 
