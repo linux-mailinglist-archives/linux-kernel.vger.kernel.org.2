@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3ED3A7492
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A3C3A748B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhFODDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:03:45 -0400
-Received: from mga06.intel.com ([134.134.136.31]:17186 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230239AbhFODDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:03:43 -0400
-IronPort-SDR: lnNlg34FW+HwZ5EmtZUEoYAzADRX7/RPy/1LuQN6+F4YVcZNYxrV0hBWa7uzLewPXpMEtMMOYd
- bR+lCSphEEwQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="267061685"
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="267061685"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 20:01:39 -0700
-IronPort-SDR: 2zxwgzIKUButR+cSc++48nHEBY5oAxhdeto+x8ckC1MS+0DOtEm4UzOxp/+y60zXfn8yi6A2RH
- zimvGzIb6bAw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="484296028"
-Received: from pl-dbox.sh.intel.com (HELO pl-dbox) ([10.239.159.39])
-  by orsmga001.jf.intel.com with ESMTP; 14 Jun 2021 20:01:38 -0700
-Date:   Tue, 15 Jun 2021 10:55:03 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     kernel test robot <lkp@intel.com>, x86-ml <x86@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [tip:tip] BUILD SUCCESS 3a1176a9af5a1b7d7a0a40b0975412008eb221c3
-Message-ID: <20210615025503.GA507303@pl-dbox>
-References: <60c3c723.X+QEHxMuTiZ6Pqj9%lkp@intel.com>
- <YMPMFUsmj0F8btKc@zn.tnic>
+        id S230313AbhFODDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:03:21 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:52191 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230239AbhFODDR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 23:03:17 -0400
+X-UUID: a1200e2a633a473c888e2293e4ade251-20210615
+X-UUID: a1200e2a633a473c888e2293e4ade251-20210615
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <wenbin.mei@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1742974138; Tue, 15 Jun 2021 11:00:42 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 15 Jun 2021 11:00:39 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 15 Jun 2021 11:00:39 +0800
+From:   Wenbin Mei <wenbin.mei@mediatek.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>
+Subject: [PATCH v1] dt-bindings: mmc: change compatiable string for MT8195 mmc host IP
+Date:   Tue, 15 Jun 2021 11:00:33 +0800
+Message-ID: <1623726033-16073-2-git-send-email-wenbin.mei@mediatek.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1623726033-16073-1-git-send-email-wenbin.mei@mediatek.com>
+References: <1623726033-16073-1-git-send-email-wenbin.mei@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMPMFUsmj0F8btKc@zn.tnic>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 10:48:21PM +0200, Borislav Petkov wrote:
-> On Sat, Jun 12, 2021 at 04:27:15AM +0800, kernel test robot wrote:
-> > tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tip
-> > branch HEAD: 3a1176a9af5a1b7d7a0a40b0975412008eb221c3  auto-x86-next: Rename x86/seves to x86/sev
-> 
-> 0day folks:
-> 
-> if you have a way to exclude the 0day bot from testing some branches,
-> this branch is one of them as it doesn't get code but only tip internal
-> tracking changes and thus doesn't need to get tested by you so that you
-> can save some infra for the real branches.
-Got it, Boris, we will disable the testing of this tip branch, any branch
-else that you think we can ignore?
+MT8195 mmc host IP is compatible with MT8183, and currently it shows:
+properties:
+  compatible:
+    oneOf:
+...
+      - items:
+         - const: mediatek,mt8192-mmc
+         - const: mediatek,mt8195-mmc
+         - const: mediatek,mt8183-mmc
+which means the compatible string in the device tree would be:
+	compatible = "mediatek,mt8192-mmc", "mediatek,mt8195-mmc",
+		     "mediatek,mt8183-mmc";
+The bindings is wrong and that isn't the result we want.
+instead we want:
+properties:
+  compatible:
+    oneOf:
+...
+      - items:
+         - const: mediatek,mt8192-mmc
+         - const: mediatek,mt8183-mmc
+      - items:
+         - const: mediatek,mt8195-mmc
+         - const: mediatek,mt8183-mmc
+which would give us:
+	compatible = "mediatek,mt8192-mmc", "mediatek,mt8183-mmc";
+and
+	compatible = "mediatek,mt8195-mmc", "mediatek,mt8183-mmc";
 
-So far, the configuration is below
+Fixes: eb9cb7227e5c (dt-bindings: mmc: Add compatible for Mediatek MT8195)
+Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+---
+ Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-branch_denylist: auto-.*|tmp-.*|base-.*|test.*|.*-for-linus|tip
+diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+index 8648d48..adaba90 100644
+--- a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
++++ b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+@@ -31,6 +31,8 @@ properties:
+           - const: mediatek,mt2701-mmc
+       - items:
+           - const: mediatek,mt8192-mmc
++          - const: mediatek,mt8183-mmc
++      - items:
+           - const: mediatek,mt8195-mmc
+           - const: mediatek,mt8183-mmc
+ 
+-- 
+1.9.1
 
-Thanks
-
-> 
-> Thx.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
