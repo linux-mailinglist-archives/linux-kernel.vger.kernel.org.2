@@ -2,167 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F94C3A82B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E64B3A82BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbhFOO1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:27:33 -0400
+        id S231477AbhFOO2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:28:00 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231495AbhFOO1L (ORCPT
+        with ESMTP id S231355AbhFOO1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:27:11 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7D0C06115B;
-        Tue, 15 Jun 2021 07:18:07 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso14391971oto.12;
-        Tue, 15 Jun 2021 07:18:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sJVfISVEAo4JYp+mcOTwuzwAUOscDkKkqgdru4mktaY=;
-        b=HjhRmve41RdRloXtoYvcLwqjuYzgi4Yboi50lCsiqhUQTQDjht85QI9vAXsnukJmsx
-         1UOrC5gtyUS0hceJZpKkCezdgZRa8/R/uIoyAzdrYUrdsyuKywltgztqGJ5mv95NDp29
-         QKnWAs6SJe3EppFAZBqBvwMTeBBV8GjDzWe9RS57/nHmN1WoFeTHOxefD+KOIeowflIa
-         wgQHJMZC6mCJ54poL+zPlrk07WC6TJUXTKKerV1xDO5NXdeDax5qhWsBhy+/fWyb7Cpo
-         QA87Wjx5ydjQ0TKDpZQ4LtzcjPVpiXEJSsIz+q1buJm4cumkEa4sM8Kq4RmuCjYsBqUV
-         pxmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=sJVfISVEAo4JYp+mcOTwuzwAUOscDkKkqgdru4mktaY=;
-        b=mVrE+nspil1x2DV5jZfeibrfQAhbDBR3GJzezrtXL0EIVDpGivI/aJfvYK0Q22U/DD
-         /hIaAUuAdeHW3+yQN71pAj/Z9NjYwMuWgRETY64xvFK1jfcTmyEEtP4PWwNk0ZGPWZrn
-         rbLBzGAOIT1QBjklump3Whu1e3JRXMjy+0xkDZPGmEmXfJcf3cEuN6JxU2dHCCg1umlY
-         5k7P1XR5UF70ZDh/xXMlpiIf3qu99Xtk1YMYm/iaftqbl/zkfKUV1W9dpjibl2RadUXT
-         KCW8K/PgrQAuas84T92i9hjyrQTQjtskwLukw/54FQXywt4yoPW0ZNST0UuqVx9IwpJX
-         x2KQ==
-X-Gm-Message-State: AOAM531fTrgzMIrVuAiGbh8MJAjd15rTjvX0N+8pUpwyce+Tht55T3ph
-        zE+9QxM+Y/kkHW/kpsNLPYY=
-X-Google-Smtp-Source: ABdhPJyV6/rdIISBgV1gWqBC4JaEtdD6175LeHdH2N10Ka1X3gdTMThBddSgxnWhoidVX7ln6SfktA==
-X-Received: by 2002:a9d:4c0a:: with SMTP id l10mr18907559otf.363.1623766687345;
-        Tue, 15 Jun 2021 07:18:07 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u42sm3449201oiw.50.2021.06.15.07.18.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 07:18:06 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 15 Jun 2021 07:18:03 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Cc:     wim@linux-watchdog.org, shawnguo@kernel.org,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] watchdog: introduce watchdog_dev_suspend/resume
-Message-ID: <20210615141803.GA957871@roeck-us.net>
-References: <20210615123904.2568052-1-grzegorz.jaszczyk@linaro.org>
- <20210615123904.2568052-2-grzegorz.jaszczyk@linaro.org>
+        Tue, 15 Jun 2021 10:27:44 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5D6FAC0698DF;
+        Tue, 15 Jun 2021 07:19:05 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 4FC5E9200B3; Tue, 15 Jun 2021 16:19:03 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 49ADF92009D;
+        Tue, 15 Jun 2021 16:19:03 +0200 (CEST)
+Date:   Tue, 15 Jun 2021 16:19:03 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] serial: 8250: Fixes for Oxford Semiconductor 950
+ UARTs
+In-Reply-To: <YMiX7LAEtL0uQuVl@kroah.com>
+Message-ID: <alpine.DEB.2.21.2106151602120.61948@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2106071700090.1601@angie.orcam.me.uk> <YMiX7LAEtL0uQuVl@kroah.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615123904.2568052-2-grzegorz.jaszczyk@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 02:39:03PM +0200, Grzegorz Jaszczyk wrote:
-> The watchdog drivers often disable wdog clock during suspend and then
-> enable it again during resume. Nevertheless the ping worker is still
-> running and can issue low-level ping while the wdog clock is disabled
-> causing the system hang. To prevent such condition introduce
-> watchdog_dev_suspend/resume which can be used by any wdog driver and
-> actually cancel ping worker during suspend and restore it back, if
-> needed, during resume.
-> 
+On Tue, 15 Jun 2021, Greg Kroah-Hartman wrote:
 
-I'll have to look into this further, but I don't think this is the correct
-solution. Most likely the watchdog core needs to have its own independent
-suspend/resule functions and suspend the high resolution timer on
-suspend and restore it on resume. This may require an additional flag
-to be set by drivers to indicate that the timer should be stopped on
-suspend.
+> This patch series causes the following build warning to be added:
+> 
+> drivers/tty/serial/8250/8250_pci.c: In function ‘pci_oxsemi_tornado_setup’:
+> drivers/tty/serial/8250/8250_pci.c:1258:32: warning: unsigned conversion from ‘int’ to ‘unsigned char’ changes value from ‘-129’ to ‘127’ [-Woverflow]
+>  1258 |                 up->mcr_mask = ~UART_MCR_CLKSEL;
+>       |                                ^
+> 
+> 
+> Can you fix this up and resend?
 
-> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> ---
->  drivers/watchdog/watchdog_dev.c | 49 +++++++++++++++++++++++++++++++++
->  include/linux/watchdog.h        |  2 ++
->  2 files changed, 51 insertions(+)
-> 
-> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
-> index 2946f3a63110..3feca1567281 100644
-> --- a/drivers/watchdog/watchdog_dev.c
-> +++ b/drivers/watchdog/watchdog_dev.c
-> @@ -1219,6 +1219,55 @@ void __exit watchdog_dev_exit(void)
->  	kthread_destroy_worker(watchdog_kworker);
->  }
->  
-> +int watchdog_dev_suspend(struct watchdog_device *wdd)
-> +{
-> +	struct watchdog_core_data *wd_data = wdd->wd_data;
-> +	int ret;
-> +
-> +	if (!wdd->wd_data)
-> +		return -ENODEV;
-> +
-> +	/* ping for the last time before suspend */
-> +	mutex_lock(&wd_data->lock);
-> +	if (watchdog_worker_should_ping(wd_data))
-> +		ret = __watchdog_ping(wd_data->wdd);
-> +	mutex_unlock(&wd_data->lock);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * make sure that watchdog worker will not kick in when the wdog is
-> +	 * suspended
-> +	 */
-> +	hrtimer_cancel(&wd_data->timer);
-> +	kthread_cancel_work_sync(&wd_data->work);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(watchdog_dev_suspend);
-> +
-> +int watchdog_dev_resume(struct watchdog_device *wdd)
-> +{
-> +	struct watchdog_core_data *wd_data = wdd->wd_data;
-> +	int ret;
-> +
-> +	if (!wdd->wd_data)
-> +		return -ENODEV;
-> +
-> +	/*
-> +	 * __watchdog_ping will also retrigger hrtimer and therefore restore the
-> +	 * ping worker if needed.
-> +	 */
-> +	mutex_lock(&wd_data->lock);
-> +	if (watchdog_worker_should_ping(wd_data))
-> +		ret = __watchdog_ping(wd_data->wdd);
-> +	mutex_unlock(&wd_data->lock);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(watchdog_dev_resume);
-> +
->  module_param(handle_boot_enabled, bool, 0444);
->  MODULE_PARM_DESC(handle_boot_enabled,
->  	"Watchdog core auto-updates boot enabled watchdogs before userspace takes over (default="
-> diff --git a/include/linux/watchdog.h b/include/linux/watchdog.h
-> index 9b19e6bb68b5..febfde3b1ff6 100644
-> --- a/include/linux/watchdog.h
-> +++ b/include/linux/watchdog.h
-> @@ -209,6 +209,8 @@ extern int watchdog_init_timeout(struct watchdog_device *wdd,
->  				  unsigned int timeout_parm, struct device *dev);
->  extern int watchdog_register_device(struct watchdog_device *);
->  extern void watchdog_unregister_device(struct watchdog_device *);
-> +int watchdog_dev_suspend(struct watchdog_device *wdd);
-> +int watchdog_dev_resume(struct watchdog_device *wdd);
->  
->  int watchdog_set_last_hw_keepalive(struct watchdog_device *, unsigned int);
->  
-> -- 
-> 2.29.0
-> 
+ I've seen that, but that's not a problem with my change, but rather with 
+<linux/serial_reg.h> making this macro (and the remaining ones from this 
+group) expand to a signed constant (0x80 rather than 0x80u).
+
+ I can fix the header, but that would be a separate change, and mind too 
+that this is a user header, so it's not clear to me what the impact might 
+be on user apps making use of it.
+
+ We could use a GCC pragma to suppress the warning temporarily across this 
+piece of code, but it's not clear to me either what our policy has been on 
+such approach.
+
+ Thoughts?
+
+ NB casting UART_MCR_CLKSEL here to an unsigned type does not help as GCC
+still sees the original constant through the cast; I've already tried that 
+of course.
+
+ Last but not least: do we need to have this warning enabled in the first 
+place?
+
+  Maciej
