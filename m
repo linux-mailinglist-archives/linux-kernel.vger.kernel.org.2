@@ -2,118 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249403A77C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57773A77C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhFOHQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:16:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhFOHQp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:16:45 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3290C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:14:39 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id gt18so2302433ejc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:14:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=euuI3sy0vUASeXoR3VF/cB0ofsJ2xtWE3m2SATxLwmE=;
-        b=AomJNf88QS9O+s+qQw3D2dxQMVlYRACJ3W6XV/Qfc9QG0D0RMI5MlxK9IjvvJIfClI
-         5zXWKP6nSPEoagEG9oFTv/mhIC7PoaOzqpANzJ5ugqNtCLdKU6Jlc9TgwIf0qa3UIqnp
-         YEc2nN5Za8ELHgcu0qqnD0SgUiv8OTTTmTsiY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=euuI3sy0vUASeXoR3VF/cB0ofsJ2xtWE3m2SATxLwmE=;
-        b=RkndxXsa6zD1lMhC4XZ6E8lIj7sKNY8u/bA6AzitLgB9hC/bbKqIOHBbR86QiEtMoG
-         Mj6pbHHxjHuCLhXjp4BPNjIDn6168Uk1unUg7J6g+xyuIC+Bj22Wfh4SRgwkW5tTDqC1
-         7OgntIh/3DSJuG3KYSmSi36SRXCLilrt7cEMB0eJm8NTatrOsv6VHInApFrnu+KolcI4
-         gCrUnoSeegnhRTKybFNKU/IBwE2L+Zs+0k5gHkUd9lRGNfUa+aZNdyybl7vq2J3qReBC
-         mjaN1tx/ojNUKPq/rxtaWRZ981VIiYrcquUk2hK/e5oNfD5hWrrmHU4RLTFkV2RsyDPD
-         qSVA==
-X-Gm-Message-State: AOAM531yA5LXbzCJHEzXnPQ5WFbeXOOpzdZM0kbvh85bY3KiLBxE87jA
-        rP3jgBJUNakJP++f8MXEYRLgOA==
-X-Google-Smtp-Source: ABdhPJzjxFXKFZC7HNcQTYqrBtjgNTWh3xNtZtvIBwbS9EkxpwWTAToHGPC1F1FjdetgeI8BTV58aQ==
-X-Received: by 2002:a17:906:25db:: with SMTP id n27mr18868513ejb.170.1623741278609;
-        Tue, 15 Jun 2021 00:14:38 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.64.110])
-        by smtp.gmail.com with ESMTPSA id br21sm9160791ejb.124.2021.06.15.00.14.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 00:14:38 -0700 (PDT)
-Subject: Re: [PATCH RFCv3 2/3] lib/vsprintf.c: make %pD print full path for
- file
-To:     Justin He <Justin.He@arm.com>, Petr Mladek <pmladek@suse.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <20210611155953.3010-1-justin.he@arm.com>
- <20210611155953.3010-3-justin.he@arm.com> <YMd4ixry8ztzlG/e@alley>
- <AM6PR08MB4376D26EFD5886B7CF21EFCFF7309@AM6PR08MB4376.eurprd08.prod.outlook.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <113d9380-8493-1bde-9c76-992f4ce675d9@rasmusvillemoes.dk>
-Date:   Tue, 15 Jun 2021 09:14:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230223AbhFOHRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:17:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229983AbhFOHRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 03:17:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B054661410;
+        Tue, 15 Jun 2021 07:15:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623741304;
+        bh=5I69aLkfh7wRBLYUEPesd4Ifny0KH1GH0zZzxOMwnPY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M+8zIGk2vZ8olyNM2MkoaWHRzPN3cP2hVii1FBQ6FkceUPdYodypCLJliyCfhDka7
+         rm2QHYawDh7ZarGXeoHxkMNe96WAdS56B1jfyhSHnl/oSnNLjW2YMSL/q+8Dr1XSY9
+         qPRyAvFL9npDbzSFJY+/kgW+e9rkldcmiBtk/ric=
+Date:   Tue, 15 Jun 2021 09:15:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     maz@kernel.org, vkoul@kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>
+Subject: Re: [PATCH] usb: renesas-xhci: Fix handling of unknown ROM state
+Message-ID: <YMhTddYjJwDcNau/@kroah.com>
+References: <20210615022514.245274-1-mdf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <AM6PR08MB4376D26EFD5886B7CF21EFCFF7309@AM6PR08MB4376.eurprd08.prod.outlook.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615022514.245274-1-mdf@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/06/2021 08.48, Justin He wrote:
-> Hi Petr
+On Mon, Jun 14, 2021 at 07:25:14PM -0700, Moritz Fischer wrote:
+> If the ROM status returned is unknown (RENESAS_ROM_STATUS_NO_RESULT)
+> we need to attempt loading the firmware rather than just skipping
+> it all together.
+
+How can this happen?  Can you provide more information here?
+
 > 
-
->>> +   /* no filling space at all */
->>> +   if (buf >= end || !buf)
->>> +           return buf + reserved_size;
->>> +
->>> +   /* small space for long name */
->>> +   if (buf < end && prepend_len < 0)
->>> +           return string_truncate(buf, end, p, dpath_len, spec);
->>
->> We need this only because we allowed to write the path behind
->> spec.field_width. Do I get it right?
+> Cc: stable@vger.kernel.org
+> Cc: Mathias Nyman <mathias.nyman@intel.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
+> Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> ---
+>  drivers/usb/host/xhci-pci-renesas.c | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
 > 
-> Both of field_width and precision:
-> "%.14pD" or "%8.14pD"
+> diff --git a/drivers/usb/host/xhci-pci-renesas.c b/drivers/usb/host/xhci-pci-renesas.c
+> index f97ac9f52bf4..dfe54f0afc4b 100644
+> --- a/drivers/usb/host/xhci-pci-renesas.c
+> +++ b/drivers/usb/host/xhci-pci-renesas.c
+> @@ -207,7 +207,8 @@ static int renesas_check_rom_state(struct pci_dev *pdev)
+>  			return 0;
+>  
+>  		case RENESAS_ROM_STATUS_NO_RESULT: /* No result yet */
+> -			return 0;
+> +			dev_dbg(&pdev->dev, "Unknown ROM status ...\n");
+> +			break;
+>  
+>  		case RENESAS_ROM_STATUS_ERROR: /* Error State */
+>  		default: /* All other states are marked as "Reserved states" */
+> @@ -224,13 +225,11 @@ static int renesas_fw_check_running(struct pci_dev *pdev)
+>  	u8 fw_state;
+>  	int err;
+>  
+> -	/* Check if device has ROM and loaded, if so skip everything */
+> -	err = renesas_check_rom(pdev);
+> -	if (err) { /* we have rom */
+> -		err = renesas_check_rom_state(pdev);
+> -		if (!err)
+> -			return err;
+> -	}
+> +	/* Only if device has ROM and loaded FW we can skip loading and
+> +	 * return success. Otherwise (even unknown state), attempt to load FW.
+> +	 */
 
-Precision is never gonna be used with %p (or any of its kernel
-extensions) because gcc would tell you
+Nit, but please use the correct comment style format, like is used a few
+lines below:
 
-foo.c:5:13: warning: precision used with ‘%p’ gnu_printf format [-Wformat=]
-    5 |  printf("%.5p\n", foo);
+> +	if (renesas_check_rom(pdev) && !renesas_check_rom_state(pdev))
+> +		return 0;
+>  
+>  	/*
+>  	 * Test if the device is actually needing the firmware. As most
 
-and there's no way -Wformat is going to be turned off to allow that usage.
+This isn't the networking tree :)
 
-IOW, there's no need to add complexity to make "%.3pD" of something that
-would normally print "/foo/bar" merely print "/fo", similar to what a
-precision with %s would mean.
+thanks,
 
-As for field width, I don't know if it's worth honouring, but IIRC the
-original %pd and %pD did that (that's where we have widen_string etc. from).
-
-Other %p extensions put the field with to some other use (e.g. the
-bitmap and hex string printing), so they obviously cannot simultaneously
-use it in the traditional sense.
-
-Rasmus
+greg k-h
