@@ -2,147 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 734793A83AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA103A83B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhFOPLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
+        id S231186AbhFOPON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231222AbhFOPL3 (ORCPT
+        with ESMTP id S230076AbhFOPOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:11:29 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C20C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:09:24 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id j62so28490004qke.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:09:24 -0700 (PDT)
+        Tue, 15 Jun 2021 11:14:11 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1543DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:12:07 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id e33so6985138pgm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:12:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nB65CDqdsHbyItu4RdozG+XSpv/r8syDO6kFDqu5AyM=;
-        b=MFgu9632Ue99EFPLgrgePPoMbwNBeQsMDiDQxfB/ioBKFh8qXKcGup9QvrQAWEnuyY
-         cOHvFqxQNq6bA4oEh3WzVpYF89pz38zk6JkYdDyU3lvBLWe5+5RBiaizzNqg7Fas5EfF
-         KcQ71ELJNySY+wleSpQWcq0rjZbrbWXYYmpcz1WNivQ8NOlqNhWNlUuPjuE3RQaGwa5z
-         vZ+BidfipwEVOQLVdV3cLYhVkRWaU1nVD7Q30kQg7P4oZEHi7V15LfTeIux0zt7Nffku
-         YycjSsKDZsV0zA93Ltaxr645Vm3iME1RZ6YYtZbU7wmPfcvmI4hW/II+5H0003a/r5xA
-         j0jw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Eu/8Z6gF7JMgCtFuTXnnRycRhPLQbvQUaq3zZY+wYG0=;
+        b=SJZxKifR/KdssaCl7Xuxy5Wc63x9pUUuC12pTPG9yZtMaOC5+YB3WDTtjSWcC5GLxF
+         Ba6TXcDveT+Kl+TCdNFiIHc6tYsS+8RO9U9Txk08A/lHzBHZkihoLcjvYIToJglwpyP+
+         S19Lwq0NuSlgcYC87JkPJ1a0xyGKJotYJ7YGooXrs74kaewDmb8t36+oSAkrg/03+iKD
+         9mE5PTA7Le/RQQsm9SbgPcKy+3eYyIPBAufm4H1yfX5YJgbrPVod+04ktbg+cgObHDgy
+         EAvbDf/BgDgjBwMiglN0b/v7EzzGJl7Fv72qc9Lu/Uuk8+q5SvNT//+Vbd2zXNNhNoJ0
+         CH6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nB65CDqdsHbyItu4RdozG+XSpv/r8syDO6kFDqu5AyM=;
-        b=oeO93mFF7bqyoKlkTKFT91YMV6YF2tzIzKVChCo9LiKAR8T/r42lhA1RpD8qjG7SeF
-         V1RjMEBiLsT6IytPb8HXQ5KnaFnBekZRwPHWaVCymMNdHtYnqkKMpHJqUPE0xMcHe5cK
-         Gh1Y4y0F0dkpFcvH9i97azW/j1hO647+mdtb/0Es8NIH+9r0F9Yhyad4zurrNr1yUXl3
-         uK4L8H/M9nnL0uprJ+IHF6sqeeux/fgiyexpmsBMR5np9ER2H9PKYcv3eZG99UPCOTSM
-         grVFu10smsAy1E/g+An9mI2QtAvD7NBdV4cjQNAx7ARbTHpbYffyt8dXgfCuKMn1v1PF
-         SF2Q==
-X-Gm-Message-State: AOAM531u8sU0hgg+EaNWHj63uf4j/VT7QZBjgzHj5orXmbGTis6kccOX
-        MgfAEcqquVS3UcX5SbNyQrkQccXv0kYO+rP/bf5CuQ==
-X-Google-Smtp-Source: ABdhPJyiAb1yM3ODv0mAtMra0XHn5poqaIbBdYItxwHe3oBJs88y/zPNBwnUIMjZBeEp2Bw05pihKwnEP1cXGswXViw=
-X-Received: by 2002:a05:620a:a83:: with SMTP id v3mr92673qkg.360.1623769764016;
- Tue, 15 Jun 2021 08:09:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Eu/8Z6gF7JMgCtFuTXnnRycRhPLQbvQUaq3zZY+wYG0=;
+        b=e4yjKqihqNu6yKU+FArF0iQV8s55e1ENb2e3bZrUj82ucAPRfhzrQF914B5J2lC8p+
+         zNnB3S7KtH77HYDxf59QLEl0yPt/F9f6MXeOWjgykjaoyQEOrL41UTc6ohyrr1w9dIe8
+         Cn/qL/W4RJE08KA4y4Oqtb/YJAEsKavY6YkjxPRtXoPMaU40+gtqe9kGKJ/0+q1HfRZp
+         5NiffwyP0Gok0fXrggvj4fmM6YLZq+QScbcH3A08BuKqthw3ILJENl5LVvqHDlcECfac
+         QqeZZE6rFngdGyHM501+eELal3nXid1Ehk9vyDWoo1cFr3U4lnEorolMO4MwWXKflEk2
+         ZyDA==
+X-Gm-Message-State: AOAM533gPmm6tk0pVPZsWiN2XMbIGp86rexD8WB3m7MPuHfMo8UCAHlY
+        woarH7ljIhmWMZztk8u7XE5x
+X-Google-Smtp-Source: ABdhPJwbVbM/owpKFGfN2MXaqBf7f5OdgZx94yrXHbdl1FI8U+Ee4yH5VVInD44kx6K5Jh90apl7dQ==
+X-Received: by 2002:a62:5b41:0:b029:2cb:70a7:a8ce with SMTP id p62-20020a625b410000b02902cb70a7a8cemr4921093pfb.77.1623769926326;
+        Tue, 15 Jun 2021 08:12:06 -0700 (PDT)
+Received: from thinkpad ([2409:4072:85:d63b:767d:943:faf7:b89d])
+        by smtp.gmail.com with ESMTPSA id h8sm2376683pgc.60.2021.06.15.08.12.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 08:12:05 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 20:41:58 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        smohanad@codeaurora.org
+Subject: Re: [PATCH] PCI: endpoint: Add custom notifier support
+Message-ID: <20210615151158.GA93671@thinkpad>
+References: <20210615133704.88169-1-manivannan.sadhasivam@linaro.org>
+ <9021212f-aa5d-770d-c455-c632dd79e7f8@ti.com>
 MIME-Version: 1.0
-References: <20210613183520.2247415-1-mw@semihalf.com> <20210613183520.2247415-2-mw@semihalf.com>
- <YMZdvt4xlev3JQhF@lunn.ch> <CAHp75VdMsYJMCwH2o14e7nJBTj6A38dkcZJ+0WQfnW=keOyoAg@mail.gmail.com>
-In-Reply-To: <CAHp75VdMsYJMCwH2o14e7nJBTj6A38dkcZJ+0WQfnW=keOyoAg@mail.gmail.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Tue, 15 Jun 2021 17:09:12 +0200
-Message-ID: <CAPv3WKeubNaxpv442d57bEqA1ZtPcTXOswcsuCsregW_2Akdww@mail.gmail.com>
-Subject: Re: [net-next: PATCH 1/3] net: mvmdio: add ACPI support
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "jaz@semihalf.com" <jaz@semihalf.com>,
-        "gjb@semihalf.com" <gjb@semihalf.com>,
-        "upstream@semihalf.com" <upstream@semihalf.com>,
-        "Samer.El-Haj-Mahmoud@arm.com" <Samer.El-Haj-Mahmoud@arm.com>,
-        "jon@solid-run.com" <jon@solid-run.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9021212f-aa5d-770d-c455-c632dd79e7f8@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Kishon,
 
-niedz., 13 cze 2021 o 22:08 Andy Shevchenko
-<andy.shevchenko@gmail.com> napisa=C5=82(a):
->
->
->
-> On Sunday, June 13, 2021, Andrew Lunn <andrew@lunn.ch> wrote:
->>
->> > @@ -336,7 +338,7 @@ static int orion_mdio_probe(struct platform_device=
- *pdev)
->> >                       dev_warn(&pdev->dev,
->> >                                "unsupported number of clocks, limiting=
- to the first "
->> >                                __stringify(ARRAY_SIZE(dev->clk)) "\n")=
-;
->> > -     } else {
->> > +     } else if (!has_acpi_companion(&pdev->dev)) {
->> >               dev->clk[0] =3D clk_get(&pdev->dev, NULL);
->> >               if (PTR_ERR(dev->clk[0]) =3D=3D -EPROBE_DEFER) {
->> >                       ret =3D -EPROBE_DEFER;
->>
->> Is this needed? As you said, there are no clocks when ACPI is used, So
->> doesn't clk_get() return -ENODEV? Since this is not EPRODE_DEFER, it
->> keeps going. The clk_prepare_enable() won't be called.
->
+On Tue, Jun 15, 2021 at 08:31:48PM +0530, Kishon Vijay Abraham I wrote:
+> Hi Manivannan,
+> 
+> On 15/06/21 7:07 pm, Manivannan Sadhasivam wrote:
+> > Add support for passing the custom notifications between the endpoint
+> > controller and the function driver. This helps in passing the
+> > notifications that are more specific to the controller and corresponding
+> > function driver. The opaque `data` arugument in pci_epc_custom_notify()
+> > function can be used to carry the event specific data that helps in
+> > differentiating the events.
+> > 
+> > For instance, the Qcom EPC device generates specific events such as
+> > MHI_A7, BME, DSTATE_CHANGE, PM_TURNOFF etc... These events needs to be
+> > passed to the function driver for proper handling. Hence, this custom
+> > notifier can be used to pass these events.
+> 
+> Bus master enable and PME events sounds generic events and not QCOM
+> specific.
 
-Indeed, I'll double check if it works and will keep the if {} else {} intac=
-t.
+Yes, that's correct! I thought about adding the notifiers for them but not sure
+about the convetion in EP stack. So went with an opaque notifier but I don't
+have any issue in adding them.
 
->
->
-> The better approach is to switch to devm_get_clk_optional() as I have don=
-e in several drivers, IIRC recently in mvpp2
->
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commi=
-t/?id=3Dcf3399b731d36bc780803ff63e4d480a1efa33ac
->
+> Also this patch should be sent along with how it's going to be
+> used in function driver.
+> 
 
-Yes, this would be a nice improvement, however the
-devm_get_clk_optional requires clock name (type char *) - mvmdio uses
-raw indexes, so this helper unfortunately seems to be not applicable.
+The function driver which is going to use this notifier is under development but
+I can share a snippet if that helps.
 
->>
->> > -     ret =3D of_mdiobus_register(bus, pdev->dev.of_node);
->> > +     if (pdev->dev.of_node)
->> > +             ret =3D of_mdiobus_register(bus, pdev->dev.of_node);
->> > +     else if (is_acpi_node(pdev->dev.fwnode))
->> > +             ret =3D acpi_mdiobus_register(bus, pdev->dev.fwnode);
->> > +     else
->> > +             ret =3D -EINVAL;
->> >       if (ret < 0) {
->> >               dev_err(&pdev->dev, "Cannot register MDIO bus (%d)\n", r=
-et);
->> >               goto out_mdio;
->> > @@ -383,6 +390,9 @@ static int orion_mdio_probe(struct platform_device=
- *pdev)
->> >       if (dev->err_interrupt > 0)
->> >               writel(0, dev->regs + MVMDIO_ERR_INT_MASK);
->> >
->> > +     if (has_acpi_companion(&pdev->dev))
->> > +             return ret;
->> > +
->>
->> I think this can also be removed for the same reason.
->>
->> We should try to avoid adding has_acpi_companion() and
->> !pdev->dev.of_node whenever we can. It makes the driver code too much
->> of a maze.
+> In general my preference would be to add only well defined notifiers
+> given that the endpoint function drivers are generic.
+> 
 
-Clock routines silently accept NULL pointers, so it will be safe to
-drop this addition in v2.
+Not all functions are generic ones. For example, on Qcom modems there is a MHI
+function driver which transports the IP packets to the host and talks to the
+MHI host stack[1].
 
-Best regards,
-Marcin
+So for sure we need to have a custom notifier for vendor specific events.
+
+Thanks,
+Mani
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/bus/mhi
+
+> Thanks
+> Kishon
+> 
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/pci/endpoint/pci-epc-core.c | 19 +++++++++++++++++++
+> >  include/linux/pci-epc.h             |  1 +
+> >  include/linux/pci-epf.h             |  1 +
+> >  3 files changed, 21 insertions(+)
+> > 
+> > diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
+> > index adec9bee72cf..86b6934c6297 100644
+> > --- a/drivers/pci/endpoint/pci-epc-core.c
+> > +++ b/drivers/pci/endpoint/pci-epc-core.c
+> > @@ -658,6 +658,25 @@ void pci_epc_init_notify(struct pci_epc *epc)
+> >  }
+> >  EXPORT_SYMBOL_GPL(pci_epc_init_notify);
+> >  
+> > +/**
+> > + * pci_epc_custom_notify() - Notify the EPF device about the custom events
+> > + *			     in the EPC device
+> > + * @epc: EPC device that generates the custom notification
+> > + * @data: Data for the custom notifier
+> > + *
+> > + * Invoke to notify the EPF device about the custom events in the EPC device.
+> > + * This notifier can be used to pass the EPC specific custom events that are
+> > + * shared with the EPF device.
+> > + */
+> > +void pci_epc_custom_notify(struct pci_epc *epc, void *data)
+> > +{
+> > +	if (!epc || IS_ERR(epc))
+> > +		return;
+> > +
+> > +	atomic_notifier_call_chain(&epc->notifier, CUSTOM, data);
+> > +}
+> > +EXPORT_SYMBOL_GPL(pci_epc_custom_notify);
+> > +
+> >  /**
+> >   * pci_epc_destroy() - destroy the EPC device
+> >   * @epc: the EPC device that has to be destroyed
+> > diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
+> > index b82c9b100e97..13140fdbcdf6 100644
+> > --- a/include/linux/pci-epc.h
+> > +++ b/include/linux/pci-epc.h
+> > @@ -203,6 +203,7 @@ int pci_epc_add_epf(struct pci_epc *epc, struct pci_epf *epf,
+> >  		    enum pci_epc_interface_type type);
+> >  void pci_epc_linkup(struct pci_epc *epc);
+> >  void pci_epc_init_notify(struct pci_epc *epc);
+> > +void pci_epc_custom_notify(struct pci_epc *epc, void *data);
+> >  void pci_epc_remove_epf(struct pci_epc *epc, struct pci_epf *epf,
+> >  			enum pci_epc_interface_type type);
+> >  int pci_epc_write_header(struct pci_epc *epc, u8 func_no,
+> > diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
+> > index 6833e2160ef1..8d740c5cf0e3 100644
+> > --- a/include/linux/pci-epf.h
+> > +++ b/include/linux/pci-epf.h
+> > @@ -20,6 +20,7 @@ enum pci_epc_interface_type;
+> >  enum pci_notify_event {
+> >  	CORE_INIT,
+> >  	LINK_UP,
+> > +	CUSTOM,
+> >  };
+> >  
+> >  enum pci_barno {
+> > 
