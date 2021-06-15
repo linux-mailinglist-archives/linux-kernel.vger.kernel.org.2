@@ -2,72 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C193A7B94
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159783A7B96
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhFOKRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:17:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231289AbhFOKRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:17:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51BB861443;
-        Tue, 15 Jun 2021 10:15:18 +0000 (UTC)
-Date:   Tue, 15 Jun 2021 11:15:15 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Rustam Kovhaev <rkovhaev@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, dvyukov@google.com,
-        gregkh@linuxfoundation.org
-Subject: Re: kmemleak memory scanning
-Message-ID: <20210615101515.GC26027@arm.com>
-References: <YMe8ktUsdtwFKHuF@nuc10>
+        id S231499AbhFOKRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231289AbhFOKRb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 06:17:31 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3FFC061767;
+        Tue, 15 Jun 2021 03:15:22 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G442G0j9dz9sTD;
+        Tue, 15 Jun 2021 20:15:17 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623752119;
+        bh=k2vAbMQ0xTRaV5s6fEqcJacuK5VKqphXKy7600hIAhw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lT54zzRmSI4DiKrdY61DUcnmjMWq3iJ/1ufbKdHXuDUaqJlQ7OFoNSpWNFVTVyzTa
+         pKV/5cv7j34jMp/j2IQ3jAEQmum5+FtEX+VjmU8JcSAsH4mHZNox4lKH6fGoEkUBst
+         64aZJ+I+h1+bJ0GJYcl06EJTM4pJANW6t2tt2ToNSP5R6w4gmMJWh3LE9FvWXXdQRJ
+         LJ8UXq9mI74PiVYMzkXCRNXPfs5GCYSxN/WwDna2YBTZnnYzNKv4sVYnXIvqijdWoc
+         jWzRACYTiuGJW1v0yO9RmZOpEEARAVsZbajTT7RBu/iqTBKlWgghdT3A82hJJj8zIw
+         SoRZFkxjl8pHA==
+Date:   Tue, 15 Jun 2021 20:15:16 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the pstore tree
+Message-ID: <20210615201516.56c760fa@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMe8ktUsdtwFKHuF@nuc10>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/7+pNxeXmJy+uKvjSF1EreTd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rustam,
+--Sig_/7+pNxeXmJy+uKvjSF1EreTd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 14, 2021 at 01:31:14PM -0700, Rustam Kovhaev wrote:
-> a) kmemleak scans struct page (kmemleak.c:1462), but it does not scan
-> the actual contents (page_address(page)) of the page.
-> if we allocate an object with kmalloc(), then allocate page with
-> alloc_page(), and if we put kmalloc pointer somewhere inside that page, 
-> kmemleak will report kmalloc pointer as a false positive.
-> should we improve kmemleak and make it scan page contents?
-> or will this bring too many false negatives?
+Hi all,
 
-This is indeed on purpose otherwise (1) we'd get a lot of false
-negatives and (2) the scanning would take significantly longer. There
-are a lot more pages allocated for user processes than used in the
-kernel, we don't need to scan them all.
+After merging the pstore tree, today's linux-next build (htmldocs)
+produced this warning:
 
-We do have a few places where we explicitly call kmemleak_alloc():
-neigh_hash_alloc(), alloc_page_ext(), blk_mq_alloc_rqs(),
-early_amd_iommu_init().
+fs/pstore/blk.c:1: warning: no structured comments found
 
-> b) when kmemleak object gets created (kmemleak.c:598) it gets checksum
-> of 0, by the time user requests kmemleak "scan" via debugfs the pointer
-> will be most likely changed to some value by the kernel and during
-> first scan kmemleak won't report the object as orphan even if it did not
-> find any reference to it, because it will execute update_checksum() and
-> after that will proceed to updating object->count (kmemleak.c:1502).
-> and so the user will have to initiate a second "scan" via debugfs and
-> only then kmemleak will produce the report.
-> should we document this?
+Introduced by commit
 
-That's a mitigation against false positives. Lot's of objects that get
-allocated just prior to a memory scan have a tendency to be reported as
-leaks before they get referenced via e.g. a list (and the in-object
-list_head structure updated). So you'd need to get the checksum
-identical in two consecutive scans to report it as a leak.
+  38c18fec13fb ("pstore/blk: Use the normal block device I/O path")
 
-We should probably document this.
+The last kernedoc comment in this file is removed by this commit.
 
--- 
-Catalin
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/7+pNxeXmJy+uKvjSF1EreTd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDIfbQACgkQAVBC80lX
+0GyfKgf9Ejml6UqYRL4VyDKhtofakgNUc+91sw+XW5DstjoorwiNkP84ufvCLDRo
+QtqboosZXax6ehFjPMdsBD+nNrkAQdsra170rL+f2ymQ3xp7HMUsp0z2TeSXcAEQ
+5PsogOQBxaz8vj+Q/dZgflVXItJ5sRts1uHAIDR04FoXmAMJOQ6/CYKpKYk3oYTM
+EgoujeBgS2f9HdrckLyW2E4uiRN+pwNG9a25Zbwp7xJ2zuMvrEAB1NEUgZXtVyXY
+3oyB5jZV5TmgMHV6qtrQXxvh/RsZDRrURa3zoCz7egrR0UlMjNtUY9mwiQTRWHQn
+bRTCJgzvsjYk9S9l2Z7JmUGbAHjiyg==
+=1VAf
+-----END PGP SIGNATURE-----
+
+--Sig_/7+pNxeXmJy+uKvjSF1EreTd--
