@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11923A89E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994723A89ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhFOUDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 16:03:54 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:48151 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229898AbhFOUDx (ORCPT
+        id S230079AbhFOUFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 16:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhFOUFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 16:03:53 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 01D77E09;
-        Tue, 15 Jun 2021 16:01:47 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 15 Jun 2021 16:01:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pbarker.dev; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=7ualycgfS9SsVG5r3CGGFNY9Ey
-        g7pdelPCnID2r514o=; b=vbcXakdn0TjjxcVQ1c7qEky0OKHiGTaTm1ZahtfEpW
-        QhEJfUZKw8orHFkp9XoZcy34X1loX1+z0e1QAbl1bz9vRGtq2pdPedehkQyzJGtx
-        10vQW6SZase4LY22ek03udwyWMZ5D/fK50mzHOJ+z5pbFmJkmi7Wby26KBNp0dAH
-        GCYGcuT0bElNkjS+21NwMeZnuVXJnluna/jdCLALZCEZOm1Npfcu+34GqoSubM4z
-        NVQOP4PSfzeRRbLnl9KSudE0/F8N6yxjQmS6QoNHiaNl+XZzDz0TfL5YjoPDK0wR
-        dwaOyVQkBaGA8sITh3u9ohNJywJPcTu8Q0gNL0sE9bOQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=7ualycgfS9SsVG5r3
-        CGGFNY9Eyg7pdelPCnID2r514o=; b=HwX78l9xpHpZ2cBHBPutnvYuQay4FnfAg
-        ctQksHFDhHyoYrPUHOFFd9rVS5HZ86SyhIZFjeHyWBTs1oJHPw7ua9lksU6Bu7Xl
-        L7VMRJLAvKhzOPFGFw7QIEGb6w9euholQJor1OATxjGvRha4WCiEmHF7u9+muXpx
-        ezMldHBNas3eaFlFzFrLjQkYjth0j1nuSgiN1Kg5kJX+LvJWHORbIRwjR/zaFWip
-        pLzPZ5t1L2IEFcyXX36r28OcsQwDHOe1+IyDy9yEVmdQ9Fzse3Y8LuwcK8WwnCZl
-        AZftHH5X/S1tc9QjAxwZBGjvD6XbHHBlCAyln/zmR+Po7mrDZaNiw==
-X-ME-Sender: <xms:KgfJYEDsnM25oNwLWZe4Ijo6aHXveR0LyyVX6Jh83gP8WC-ifQ2pDA>
-    <xme:KgfJYGgzCBsyMitqMq6ncXSTtkSjut56XX7Ioqmg9QqyiOeuIffmPdanDrNj3gZPm
-    fZVs5ZaFoIzGDNG6jw>
-X-ME-Received: <xmr:KgfJYHmr7Wv3DFTdrWaBZAzkIWDWS09w0O5o_2mGxBaxKfjtHEVmnvEs5NvREk2-eOT0Kk2jCVDtG7fwSvRHxW6YhBkrzBMGdBLSGngrONbs5S2lLhjHDIUPoB4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvjedgudeghecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheprfgruhhluceu
-    rghrkhgvrhcuoehprghulhesphgsrghrkhgvrhdruggvvheqnecuggftrfgrthhtvghrnh
-    epgfdvgeevgffhjedtkedtfeffteeftdejfeejveetveevtedtfeelieeuteekledtnecu
-    ffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehprghulhesphgsrghrkhgvrhdruggvvh
-X-ME-Proxy: <xmx:KgfJYKwksML5THonYj36EOMGuRVibLMJA48fGZLeuuU7Um4jjjiBig>
-    <xmx:KgfJYJTpxVgmWGGiUUkpA4dRr8rTIroKmLuUvXGGEZzmJ8MABTXtmw>
-    <xmx:KgfJYFYIdslelQsRL8gmO9OM99wWcSAYTxrymsgbZMlDfzYdgP6uCg>
-    <xmx:KgfJYEcVxciSOfiusH1_yEWkMocYwdH8aw_G7740QulCOarNfOLleQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 15 Jun 2021 16:01:45 -0400 (EDT)
-From:   Paul Barker <paul@pbarker.dev>
-To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Paul Barker <paul@pbarker.dev>
-Subject: [RFC PATCH] MAINTAINERS: Add note on patches to MAINTAINERS itself
-Date:   Tue, 15 Jun 2021 21:01:41 +0100
-Message-Id: <20210615200141.8573-1-paul@pbarker.dev>
-X-Mailer: git-send-email 2.32.0
+        Tue, 15 Jun 2021 16:05:41 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F26C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:03:34 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id r14so371359ljd.10
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:03:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H1Hrr3f9fv/XXkIZU+MLNVsm0U18tLCQbKfp3yrHWT8=;
+        b=YiMM+MC6BQRVEChXL7+wtKkdr+F4h4WDN6eVeYv2RufmZ+UMBbJzKxUsZlajx1uZxz
+         N75NUvGyE2GCltiGwjgLOsN1J1rReAzyxNOC5kS4p7QwKajkJg0sQZksW8FyFLfhqAzv
+         JCAWSROzB3Vzwfs4yFLokKeJV7QESCayhuTLMpS90sJKbPcITclklyVP6DwdjbC1c32D
+         krls5wanQmpzZ87ZUL92g7VFZ1Td0USLzblVpGCmWbaRQdeo9YtyOXLwIzrkjnxi+Kg9
+         4X003EuuClFQUEv8qZ965MraCpA41G2aX+ZqY19L60T5/ousdJhPqTK8E0ok2f4cQpMk
+         yhQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H1Hrr3f9fv/XXkIZU+MLNVsm0U18tLCQbKfp3yrHWT8=;
+        b=kHFHISEvNn4tsusqaDk4jCaywmkWdU4JVN9pJGvlpWVjAmkDfYyQ38/GNN2qbwLiZb
+         nEdUrC9c5bNwzu4FrvuWI6eAj0OFB5qkL3RLkbY7UTYgItrKyQ+L7K7EzJlRSAMo/y28
+         +KLEsq0cGtKVNg0sZte6nOC1pmXMW9c2hsHn1jhK56cJKxZ7jgC1jU1qVTHRG1PglgUw
+         PxG3GIS/SyIYQhkT/n15PaodMaeaqQ0Hw2iIx4kptg87U78QVZX4zGxxOFgH7rKjtXW1
+         l2NqDrqa1md84x1d3FfkhWtJZoNebcks2sTWXgTtWuDcUQXetEGDle+H/IwxRltH23Sf
+         Zu/Q==
+X-Gm-Message-State: AOAM531zh7L41KvBaYB+FHYXNYFKJB7OwbWCKH3UDjsXppdJy35t9b9f
+        MLAIXqGo2n25bF7iaK+GGOn4i19yiYndCNSAK2zUjg==
+X-Google-Smtp-Source: ABdhPJz9cEbar1mnjekAl0Ye6iZkMzcSVk6zFhLVSrlKgTFdwFsO1h2OGqDzrM3sDl4B3S7MrPN8jgt+/57igMwVU/M=
+X-Received: by 2002:a2e:7811:: with SMTP id t17mr1187761ljc.368.1623787413246;
+ Tue, 15 Jun 2021 13:03:33 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1975; h=from:subject; bh=CQdGsYdn7Jszdx1S122LNT1PZKXWpsAGlZ2LHEujeLs=; b=owGbwMvMwCG2OjnkzdxdX/IYT6slMSScZFeyNtp3S51FvqegsfdlCeveNxKuSkxGvkU+kTzpjzNT WS93lLIwiHEwyIopsmzu+Xr/aa8jb0bILQWYOaxMIEMYuDgFYCIivxkZZljJP1AxMJFzUPM/XXzqMv t777kzhO/c+uWuwCH3bsPS84wM70X/Lbl2cIla9/Q1CV7qUc5b5e7F97XuXuwskalZW8/BBQA=
-X-Developer-Key: i=paul@pbarker.dev; a=openpgp; fpr=98B2AAC100AC3F82BB5D546774975C81B7E66BAC
-Content-Transfer-Encoding: 8bit
+References: <cover.1623326176.git.viresh.kumar@linaro.org> <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
+ <20210611035623.z4f2ynumzozigqnv@vireshk-i7> <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
+ <20210611080122.tlkidv6bowuka6fw@vireshk-i7> <CAMuHMdVL4VH09ixPcpqqokNJeYd68Th2Y6Lz4PZTF7h06OOBGw@mail.gmail.com>
+ <20210615111551.7tcz7teqp4olhodf@vireshk-i7>
+In-Reply-To: <20210615111551.7tcz7teqp4olhodf@vireshk-i7>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 15 Jun 2021 22:03:21 +0200
+Message-ID: <CACRpkdbyybnxP9p3Jh2TbJMhK+kfLyed-YyrZq9JbOqu1csmww@mail.gmail.com>
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
+        Alistair Strachan <astrachan@google.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since there is no entry in the maintainers list for the MAINTAINERS file
-itself, we should add a short note on how to handle patches to this
-file.
+On Tue, Jun 15, 2021 at 1:15 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
 
-Signed-off-by: Paul Barker <paul@pbarker.dev>
----
+> I am now wondering how interrupts can be made to work here. Do you
+> have anything in mind for that ?
 
-I'm in the process of updating device tree files as part of $JOB and
-would like to add relevant entries to the MAINTAINERS file. I've
-searched through the maintainer list, read what I can find in the docs
-and ran scripts/get_maintainer.pl but I can't see a clear statement of
-where to send patches which modify MAINTAINERS. Looking at a couple of
-examples of previous patches which modified MAINTAINERS and looking up
-the relevant emails on lore.kernel.org I've made my best guess on how
-these changes should be handled. This patch adds that best guess as a
-note to the MAINTAINERS list so it's easy for folks to find in the
-future.
+The aggregator does not aggregate interrupts only lines for now.
 
-This is an RFC as others probably know the correct way to handle patches
-to the MAINTAINERS file. Even if this "best guess" is wrong I hope it
-highlights that such a note would be useful. I've treated this patch as
-a docs patch, please let me know if it should be sent to different
-maintainers/lists.
+> GPIO sysfs already supports interrupts, (...)
 
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+I hope that doesn't make you tempted to use sysfs to get interrupts,
+those are awful, they use sysfs_notify_dirent() which means that
+if two IRQs happen in  fast succession you will miss one of them
+and think it was only one.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bc0ceef87b73..b7873dad9997 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -143,6 +143,12 @@ Maintainers List
-           first. When adding to this list, please keep the entries in
-           alphabetical order.
- 
-+.. note:: There is no entry in this list for the MAINTAINERS file itself.
-+          Patches which modify existing MAINTAINERS entries should be sent to
-+          all other maintainers in the relevant entry. When adding new
-+          MAINTAINERS entries please use ``scripts/get_maintainer.pl`` to find
-+          other maintainers with overlapping entries in this list.
-+
- 3C59X NETWORK DRIVER
- M:	Steffen Klassert <klassert@kernel.org>
- L:	netdev@vger.kernel.org
--- 
-2.32.0
+The GPIO character device supports low latency events forwarding
+interrupts to userspace including QEMU & similar, timestamps the
+events as close in time as possible to when they actually happen
+(which is necessary for any kind of industrial control) and will never
+miss an event if the hardware can register it. See:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/gpio/gpio-event-mon.c
 
+Yours,
+Linus Walleij
