@@ -2,145 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097F83A7B55
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D38F3A7B57
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhFOKCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:02:54 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:38962 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231152AbhFOKCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:02:52 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623751248; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=yEtEJbG7Tsld/ZdtEB4tMGLswtoHTcN3VZl3xMrng/8=;
- b=DC2sOboilk1VV26lt4UDaS4VUAp6hA7md20c9iYZfP8zwrtQzvKHIFwGUa8HXWDvpKBVtm8O
- tgxqviWhtJT3vOeKKckvLti+4bNvyYH2JZgNejAQvsSHvVVBPV+Z8oBBlgzYpnIXm82KJS93
- Ih56PVNPZ3kOtMFl9cKQqdnuX88=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60c87a2ae27c0cc77ff5cd97 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 10:00:10
- GMT
-Sender: sbhanu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B693EC433F1; Tue, 15 Jun 2021 10:00:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sbhanu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8478DC433D3;
-        Tue, 15 Jun 2021 10:00:07 +0000 (UTC)
+        id S231396AbhFOKDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231308AbhFOKDT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 06:03:19 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06663C061574;
+        Tue, 15 Jun 2021 03:01:15 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id ho18so21578897ejc.8;
+        Tue, 15 Jun 2021 03:01:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6z4408/6oQsiDbv7fByF9r7biAOY0o4N+GInpU23pkI=;
+        b=H06GhBmxY91XwIBiT6QAmQpAftMWvSYiSkZ1ikjQiL/ABWIc6qzGO96hKW2gZMGb8i
+         LPGM6p3HrLH5zBeTr2aFA0tc7/l3iZL3/+l4qB8ZwulLOQD6sIaU1oJA8GKcNaMWsbws
+         lFSjtNYGjK63ptwBFN6XZPDIMY0jwp+KT/8bJMylNwfW3yTyqtzDS4rgcNqti4cqu8hF
+         8F/XzvIhvRLhlw0Jw9BjtkyUHnGGJaIToVlmnZ7F3q3QjBRHXYnfJW4kOUCUtrc4W3nd
+         GZRDASpUW3UpxKzXgTBfVY7kj4UzzdGgjJq/j3NKG1CqGI9Zg0Ql29g3cC7NLxBnJp/+
+         JdPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6z4408/6oQsiDbv7fByF9r7biAOY0o4N+GInpU23pkI=;
+        b=LO6ee3JC4uo0tiYbDDRIKnYnuIseQ4BuJRSgZHtpWgme3KCRm9MzZBmAyHy8TXpJ8Q
+         GGpk4BeYdC71KDdudKBh7iVSP8souO9ZVwpIaf7mwfk5LNQnxDKoC4T/kvItEUQ/wvpN
+         VZYZN4N2mGrna03zJySk1O5AXSRuoKnkG4VuOlvtzHIK/jxGr4+BrhPz9q3U2KavWMQ8
+         RW/P6zVItC9HqPrPJVEAw8O/rV+A9We1Ypu3gc3HP2Ti7wmqGLLly8c+is1MxpM7YYmH
+         /Hs6K/Q4wPFfvZW4ogHd/EiwhKuQknv2NLYDIhGQAtQ3jlFFZ9b/reQbJI9KFixUbOiY
+         Vrhg==
+X-Gm-Message-State: AOAM531L5T8/p2TDAPestyLdZv9kgdzlEqM+XlIiBcrBGyP1X+2PHKHT
+        tPNHXezKoI+iz+2WZSYhfPGsRNX6LNWaSf/orRk=
+X-Google-Smtp-Source: ABdhPJw8+LEtoar+pUf2dCxfuXnKoD7N5HCuiqVYRWxj5aO6xnN+gaJI4iET9GPlCrNM0Q0X32v18zP6Ztg1Aywjybk=
+X-Received: by 2002:a17:906:c293:: with SMTP id r19mr20197055ejz.252.1623751273558;
+ Tue, 15 Jun 2021 03:01:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 15 Jun 2021 15:30:07 +0530
-From:   sbhanu@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, asutoshd@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        rampraka@codeaurora.org, sayalil@codeaurora.org,
-        sartgarg@codeaurora.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, sibis@codeaurora.org,
-        okukatla@codeaurora.org, djakov@kernel.org, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        agross@kernel.org
-Subject: Re: [PATCH V1] arm64: dts: qcom: sc7180: Added xo clock for eMMC and
- Sd card
-In-Reply-To: <YMeEPg7EPC5E/MfW@builder.lan>
-References: <1623309107-27833-1-git-send-email-sbhanu@codeaurora.org>
- <YMLm96edhIYOJF+E@builder.lan>
- <1230be3c7f350b1f33110df2a9744e15@codeaurora.org>
- <YMeEPg7EPC5E/MfW@builder.lan>
-Message-ID: <f24b5538fb28595ab1d9353a6a8e429d@codeaurora.org>
-X-Sender: sbhanu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <CAOuPNLi8_PDyxtt+=j8AsX9pwLWcT4LmVWKj+UcyFOnj4RDBzg@mail.gmail.com>
+ <dacd3fd3-faf5-9795-1bf9-92b1a237626b@gmail.com> <CAOuPNLjCB2m7+b9CJxqTr-THggs-kTPp=0AX727QJ5CTs5OC0w@mail.gmail.com>
+In-Reply-To: <CAOuPNLjCB2m7+b9CJxqTr-THggs-kTPp=0AX727QJ5CTs5OC0w@mail.gmail.com>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Tue, 15 Jun 2021 15:31:01 +0530
+Message-ID: <CAOuPNLio33vrJ_1am-hbgMunUJereC5GOy3QVU6PDDk-3QeneA@mail.gmail.com>
+Subject: Re: Kernel 4.14: SQUASHFS error: xz decompression failed, data
+ probably corrupt
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Sean Nyekjaer <sean@geanix.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-14 22:00, Bjorn Andersson wrote:
-> On Mon 14 Jun 06:55 CDT 2021, sbhanu@codeaurora.org wrote:
-> 
->> On 2021-06-11 10:00, Bjorn Andersson wrote:
->> > On Thu 10 Jun 02:11 CDT 2021, Shaik Sajida Bhanu wrote:
->> >
->> > > Added xo clock for eMMC and Sd card.
->> >
->> > Was about to push out my branch of patches, but before I do. Can you
->> > please describe WHY this is needed?
->> >
->> > Regards,
->> > Bjorn
->> 
->> We are making use of this clock in dll register value calculation,
->> The default PoR value is also same as calculated value for
->> HS200/HS400/SDR104 modes.
->> But just not to rely on default register values we need this entry.
->> 
-> 
-> That is the perfect thing to include in a commit message!
-> 
-> I rewrote yours and applied the change, but please next time do 
-> describe
-> the "why" of your change.
-> 
-> Regards,
-> Bjorn
-Sure
-> 
->> >
->> > >
->> > > Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
->> > > ---
->> > >  arch/arm64/boot/dts/qcom/sc7180.dtsi | 10 ++++++----
->> > >  1 file changed, 6 insertions(+), 4 deletions(-)
->> > >
->> > > diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> > > b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> > > index 295844e..5bb6bd4 100644
->> > > --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> > > +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> > > @@ -701,8 +701,9 @@
->> > >  			interrupt-names = "hc_irq", "pwr_irq";
->> > >
->> > >  			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
->> > > -					<&gcc GCC_SDCC1_AHB_CLK>;
->> > > -			clock-names = "core", "iface";
->> > > +					<&gcc GCC_SDCC1_AHB_CLK>,
->> > > +					<&rpmhcc RPMH_CXO_CLK>;
->> > > +			clock-names = "core", "iface","xo";
->> > >  			interconnects = <&aggre1_noc MASTER_EMMC 0 &mc_virt SLAVE_EBI1 0>,
->> > >  					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_EMMC_CFG 0>;
->> > >  			interconnect-names = "sdhc-ddr","cpu-sdhc";
->> > > @@ -2666,8 +2667,9 @@
->> > >  			interrupt-names = "hc_irq", "pwr_irq";
->> > >
->> > >  			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
->> > > -					<&gcc GCC_SDCC2_AHB_CLK>;
->> > > -			clock-names = "core", "iface";
->> > > +					<&gcc GCC_SDCC2_AHB_CLK>,
->> > > +					<&rpmhcc RPMH_CXO_CLK>;
->> > > +			clock-names = "core", "iface", "xo";
->> > >
->> > >  			interconnects = <&aggre1_noc MASTER_SDCC_2 0 &mc_virt SLAVE_EBI1
->> > > 0>,
->> > >  					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_SDCC_2 0>;
->> > > --
->> > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
->> > > member
->> > > of Code Aurora Forum, hosted by The Linux Foundation
->> > >
+On Tue, 15 Jun 2021 at 10:42, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+>
+> On Tue, 15 Jun 2021 at 03:53, Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >
+> >
+> >
+> > On 6/14/2021 3:39 AM, Pintu Agarwal wrote:
+> > > Hi All,
+> > >
+> > > With Kernel 4.14 we are getting squashfs error during bootup resulting
+> > > in kernel panic.
+> > > The details are below:
+> > > Device: ARM-32 board with Cortex-A7 (Single Core)
+> > > Storage: NAND Flash 512MiB
+> > > Kernel Version: 4.14.170 (maybe with some Linaro updates)
+> > > File system: Simple busybox with systemd (without Android)
+> > > File system type: UBIFS + SQUASHFS
+> > > UBI Volumes supported: rootfs (ro), others (rw)
+> > > -------------------
+> > >
+> > > When we try to flash the UBI images and then try to boot the device,
+> > > we observe the below errors:
+> >
+> > Someone in The OpenWrt community seems to have run into this problem,
+> > possibly on the exact same QCOM SoC than you and came up with the following:
+> >
+> > https://forum.openwrt.org/t/patch-squashfs-data-probably-corrupt/70480
+> >
+> Thanks!
+> Yes I have already seen this and even one more.
+> https://www.programmersought.com/article/31513579159/
+>
+> But I think these changes are not yet in the mainline right ?
+>
+> So, I wanted to know which are the exact patches which are already
+> accepted in mainline ?
+> Or, is it already mainlined ?
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/fs/squashfs?h=next-20210611
+> From here, I see that we are only till this:
+> ==> 2018-08-02: Squashfs: Compute expected length from inode size
+> rather than block length
+>
+@Phillip Lougher, do you have any suggestions/comments on these errors ?
+Why do you think these errors occur ?
+Also, I noticed that even if these errors occur, the device may boot normally.
+However, for some people it does not boot at all.
+
+Thanks,
+Pintu
