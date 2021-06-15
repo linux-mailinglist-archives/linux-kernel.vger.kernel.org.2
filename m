@@ -2,74 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6E83A8CE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407223A8CE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhFOXuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 19:50:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229898AbhFOXuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:50:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D8F161369;
-        Tue, 15 Jun 2021 23:48:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1623800898;
-        bh=MU+QgBNSQeAjAwvNJgbwfAcrLw//Mv1kPExB4e8vCXw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=q8ADG2ZIioieYx3NSlF5YDr8udzfRscNEhba5uzHy7LSg1cPwM8N945yJ+Wxr0dtd
-         8fV16UuhlsOzrMAqwr7h1oACCbfGvRddETpDuM9H+DwDfoMFtqr2sZiWUCk1fhISq6
-         GBOMPKVCvUFKlXp2cHQj+GJdtqrH+CNR57OmbIL8=
-Date:   Tue, 15 Jun 2021 16:48:18 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     HORIGUCHI =?UTF-8?B?TkFPWUE=?= (=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=) 
-        <naoya.horiguchi@nec.com>
-Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] mm/hwpoison: do not lock page again when
- me_huge_page() successfully recovers
-Message-Id: <20210615164818.24d5c07c95ece3fcf82e7805@linux-foundation.org>
-In-Reply-To: <20210615035846.GA1807446@hori.linux.bs1.fc.nec.co.jp>
-References: <20210609072029.74645-1-nao.horiguchi@gmail.com>
-        <20210610165059.6618498250f60674c1bb9c03@linux-foundation.org>
-        <20210611002329.GA1201351@hori.linux.bs1.fc.nec.co.jp>
-        <20210614193528.c2cc50d92eb76c4bea1b40e8@linux-foundation.org>
-        <20210615035846.GA1807446@hori.linux.bs1.fc.nec.co.jp>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        id S231589AbhFOXxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 19:53:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230082AbhFOXxi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 19:53:38 -0400
+Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331C3C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:51:30 -0700 (PDT)
+Received: from [192.168.1.101] (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id ECC0D1F568;
+        Wed, 16 Jun 2021 01:51:26 +0200 (CEST)
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: Add support for SONY Xperia 1 II
+ / 5 II (Edo platform)
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+References: <20210612192358.62602-1-konrad.dybcio@somainline.org>
+ <20210612192358.62602-3-konrad.dybcio@somainline.org>
+ <YMk7rf4/03AcIghT@builder.lan>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <1455b8ba-f075-e0f4-885e-3e57a42c75cf@somainline.org>
+Date:   Wed, 16 Jun 2021 01:51:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YMk7rf4/03AcIghT@builder.lan>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 03:58:47 +0000 HORIGUCHI NAOYA(堀口　直也) <naoya.horiguchi@nec.com> wrote:
 
-> > Should Tony's patchset also be targeted to -stable?  If so then OK.
-> 
-> Yes, that's fine. And I think that the first two patches
-> (mm-memory-failure-use-a-mutex-to-avoid-memory_failure-races.pathc and
-> mmhwpoison-return-ehwpoison-to-denote-that-the-page-has-already-been-poisoned.patch)
-> can be marked to stable, but 3/3 (mmhwpoison-send-sigbus-with-error-virutal-address.patch)
-> may not because it's a little too large and not the main part of the fixes.
+On 16.06.2021 01:45, Bjorn Andersson wrote:
+> On Sat 12 Jun 14:23 CDT 2021, Konrad Dybcio wrote:
+>
+>> Add support for SONY Xperia 1 II and 5 II smartphones (read one/five mark two).
+>> They are based on the Qualcomm SM8250 chipset and both feature 5G modems. There
+>> also exists a third Edo board, namely the Xperia PRO (PDX204), but it's $2500
+>> and no developers have obtained it so far (to my knowledge).
+>>
+>> The devices are affected by a scary UFS behaviour where sending a certain UFS
+>> command (which is worked around on downstream) renders the device unbootable,
+>> by effectively erasing the bootloader. Therefore UFS AND UFSPHY are strictly
+>> disabled for now.
+>>
+> Ouch, that's expensive paper weights. Let's hope someone can shed some
+> light on the UFS situation.
 
-OK, thanks, I queued
+Angelo expressed his concerns here [1], and is trying to resolve the situation
 
-mm-memory-failure-use-a-mutex-to-avoid-memory_failure-races.patch
-mm-memory-failure-use-a-mutex-to-avoid-memory_failure-races-fix.patch
-mmhwpoison-return-ehwpoison-to-denote-that-the-page-has-already-been-poisoned.patch
-#
-mm-hwpoison-do-not-lock-page-again-when-me_huge_page-successfully-recovers.patch
+in a sane(-ish, it's not possible for it to be completely sane..)  way. Hopefully
 
-for 5.13 with cc:stable and
+more updates can follow suit and we won't have to stick to SD cards forever..
 
-mmhwpoison-send-sigbus-with-error-virutal-address.patch
-mmhwpoison-send-sigbus-with-error-virutal-address-fix.patch
 
-for 5.14.
+[1] https://lkml.org/lkml/2021/6/11/1114
+
+
+Konrad
+
