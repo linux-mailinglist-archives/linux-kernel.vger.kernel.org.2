@@ -2,70 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414663A74E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E347B3A74E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhFODTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:19:25 -0400
-Received: from mga11.intel.com ([192.55.52.93]:14782 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229868AbhFODTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:19:24 -0400
-IronPort-SDR: pTqv5eVJDgwHO1ZWtKU0xqM2AZJPqjw3cehDiuSF7LhhEq+Eyvdf7A9z7hXFc1LKobELBHgSV4
- pfT9E5TWAMaw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="202879192"
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="202879192"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 18:08:57 -0700
-IronPort-SDR: m8YrB9Yd4usLrMSp/h4lqUHwCbGVQo7pLituvmU1gNRLs8LagHH5JCFvkOw23mRlA4Jsrwgnrq
- Gp1VlLZVuD1g==
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="450065067"
-Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 18:08:55 -0700
-Date:   Tue, 15 Jun 2021 09:08:53 +0800
-From:   kernel test robot <rong.a.chen@intel.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Support Opensource <support.opensource@diasemi.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: [tip:tmp.tmp2 302/364] drivers/video/backlight/rave-sp-backlight.c:
- linux/backlight.h is included more than once.
-Message-ID: <20210615010853.GM237458@shao2-debian>
+        id S230465AbhFODUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:20:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29067 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231207AbhFODUR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 23:20:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623727093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qDOARxyjp3s81AcKrTJyYh6uHmxeKnBGbL+eKwM0n80=;
+        b=M+615BTGRbWnSKxy1FyShuEXK0/XyFOxAtx1XYdVPWlis85K/NhNKuok66zaStI202QFIZ
+        tNNC/Gig5dbX53sdLygo6ljeq5wlrZ8SQSvJCnDL8cJwiFSAmuGOmXhwrTKmUdDKTs3Vfe
+        YMQSiwyAxg/XaHFHx3XFsqJD589+61g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-33-BqHktxwGPLGxLWUNnXHH0w-1; Mon, 14 Jun 2021 21:09:09 -0400
+X-MC-Unique: BqHktxwGPLGxLWUNnXHH0w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8146E800D55;
+        Tue, 15 Jun 2021 01:09:03 +0000 (UTC)
+Received: from localhost (ovpn-12-172.pek2.redhat.com [10.72.12.172])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2648A5C1A3;
+        Tue, 15 Jun 2021 01:08:58 +0000 (UTC)
+Date:   Tue, 15 Jun 2021 09:08:56 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kexec@lists.infradead.org, akpm@linux-foundation.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, vgoyal@redhat.com,
+        x86@kernel.org, Eric Biederman <ebiederm@xmission.com>,
+        dyoung@redhat.com
+Subject: Re: [PATCH v3] Documentation: kdump: update kdump guide
+Message-ID: <20210615010856.GA630506@MiWiFi-R3L-srv>
+References: <20210609083218.GB591017@MiWiFi-R3L-srv>
+ <878s3dbbuz.fsf@meer.lwn.net>
+ <87sg1l9vo5.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87sg1l9vo5.fsf@meer.lwn.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tmp.tmp2
-head:   adcceb5eb7aee38e4a9c15bdf599655f0e1b1324
-commit: 3fb8658426ac271948eb757e1c5a5554afdc5cf8 [302/364] sched/headers, fb: Simplify <linux/fb.h> dependencies
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+On 06/13/21 at 05:44pm, Jonathan Corbet wrote:
+> Jonathan Corbet <corbet@lwn.net> writes:
+> 
+> > Baoquan He <bhe@redhat.com> writes:
+> >
+> >> Some parts of the guide are aged, hence need be updated.
+> >>
+> >> 1) The backup area of the 1st 640K on X86_64 has been removed
+> >>    by below commits, update the description accordingly.
+> >>
+> >>    commit 7c321eb2b843 ("x86/kdump: Remove the backup region handling")
+> >>    commit 6f599d84231f ("x86/kdump: Always reserve the low 1M when the crashkernel option is specified")
+> >>
+> >> 2) Sort out the descripiton of "crashkernel syntax" part.
+> >>
+> >> 3) And some other minor cleanups.
+> >>
+> >> Signed-off-by: Baoquan He <bhe@redhat.com>
+> >
+> > Applied, thanks.
+> 
+> Actually, this patch added a docs build warning:
+> 
+>   /stuff/k/git/kernel/Documentation/admin-guide/kdump/kdump.rst:286: WARNING: Literal block ends without a blank line; unexpected unindent.
+> 
+> I've gone ahead and inserted the blank line to fix this.  In the future,
+> please build-test your changes to make sure that you are not adding new
+> warnings.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Thanks, jon. I didn't know doc change can cause build failure, so didn't
+build. Will remember this.
 
-
-includecheck warnings: (new ones prefixed by >>)
->> drivers/video/backlight/rave-sp-backlight.c: linux/backlight.h is included more than once.
---
->> drivers/video/backlight/lm3639_bl.c: linux/backlight.h is included more than once.
---
->> drivers/video/backlight/kb3886_bl.c: linux/backlight.h is included more than once.
---
->> drivers/video/backlight/da9052_bl.c: linux/backlight.h is included more than once.
---
->> drivers/video/backlight/cr_bllcd.c: linux/backlight.h is included more than once.
-
-Please review and possibly fold the followup patch.
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
