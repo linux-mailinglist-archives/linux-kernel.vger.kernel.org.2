@@ -2,87 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF33C3A7948
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C43A3A7944
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhFOIrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 04:47:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230502AbhFOIrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:47:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2D9B613D9;
-        Tue, 15 Jun 2021 08:45:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623746747;
-        bh=euu46a5HmIGMgUUgLt4AGXGV7qIelJ+jWdnF2TyhCgg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JLEdEbVvKwso5c+26NS5xce3UvtFRd81H0tncwj8JIbfIos+F7vkOhB5UHGJbdPMF
-         DOtHqMquRv0S5aWWUEg6z/5PxSNs9SGXLxhH8bCrctgk+l3miXeNbuqbtK2L5VRH7p
-         XPKbjFLE9Y1pP0kIXiT9m+S3sdpORYvz1Q0qtfi41Wkg0B+uyFoy5uZg9jk9S2VIcp
-         9OFVy8EKni+2iM0Dm04SXOuvfBWTTGyoeRAl9SdOHGC0wqM6fCabkZ21OVfpMd9ItI
-         nEC08xtBRf4/rxpp09drbo0+QHfJ+muHDPG36Gu5yOladHup/YmFD5TxiN7wrdE83c
-         znh8QLtoceKAQ==
-Received: by mail-wr1-f45.google.com with SMTP id c9so17373794wrt.5;
-        Tue, 15 Jun 2021 01:45:47 -0700 (PDT)
-X-Gm-Message-State: AOAM530OQ2wV3m+CYxve9SoGlUbhsAZVniil3iPxsQlAzFanCuZ5vuX6
-        SlVA6RcQgrgjsa0waQSLiPuNM2H8If4/uUcx9vw=
-X-Google-Smtp-Source: ABdhPJw+QLMgXeE31DnC/gXDVzuLKSe8HXzA+bDPY1jQioViACBluaP0ozszto46RsU0ZGQccBLP7EnooEuRM6ToECk=
-X-Received: by 2002:a5d:4050:: with SMTP id w16mr23823101wrp.99.1623746746586;
- Tue, 15 Jun 2021 01:45:46 -0700 (PDT)
+        id S231178AbhFOIql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 04:46:41 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:63812 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230482AbhFOIqk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 04:46:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1623746677; x=1655282677;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=CRwcKW462aqnup9Wgun7j7A4f1r96joB5tUbtlSR6ys=;
+  b=q0IW98KqqsUUUk882KM/QD3mqhWOeUBJ9AswMB0nSRzaOpXRZAlHaLz/
+   JeLcB4vbdEDjSyiXR5IaKo7JHigIGMvyUYvCZ0WN0CXFodD18MZXnceO/
+   EZjs0qjUP0fwS3tTgipzrXvsmZFiB24v86ucXdweovZEOtcE4/lw09hlM
+   o=;
+X-IronPort-AV: E=Sophos;i="5.83,275,1616457600"; 
+   d="scan'208";a="140175126"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1d-2c665b5d.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 15 Jun 2021 08:44:29 +0000
+Received: from EX13MTAUEE001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-2c665b5d.us-east-1.amazon.com (Postfix) with ESMTPS id 57EF6A1F61;
+        Tue, 15 Jun 2021 08:44:25 +0000 (UTC)
+Received: from EX13D08UEB001.ant.amazon.com (10.43.60.245) by
+ EX13MTAUEE001.ant.amazon.com (10.43.62.226) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Tue, 15 Jun 2021 08:44:18 +0000
+Received: from EX13D18EUA001.ant.amazon.com (10.43.165.58) by
+ EX13D08UEB001.ant.amazon.com (10.43.60.245) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Tue, 15 Jun 2021 08:44:18 +0000
+Received: from EX13D18EUA001.ant.amazon.com ([10.43.165.58]) by
+ EX13D18EUA001.ant.amazon.com ([10.43.165.58]) with mapi id 15.00.1497.018;
+ Tue, 15 Jun 2021 08:44:17 +0000
+From:   "Stamatis, Ilias" <ilstam@amazon.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>
+CC:     "jmattson@google.com" <jmattson@google.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        "zamsden@gmail.com" <zamsden@gmail.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>
+Subject: Re: [PATCH v4 00/11] KVM: Implement nested TSC scaling
+Thread-Topic: [PATCH v4 00/11] KVM: Implement nested TSC scaling
+Thread-Index: AQHXUl9IK3DwWR2B+EmNcn/om5/gnKsU4FUA
+Date:   Tue, 15 Jun 2021 08:44:17 +0000
+Message-ID: <cbb1272d6fc5713b5d53972ae55c1220f903595f.camel@amazon.com>
+References: <20210526184418.28881-1-ilstam@amazon.com>
+In-Reply-To: <20210526184418.28881-1-ilstam@amazon.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.165.21]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3000B4B3338C8041B593659E7D3B4FD4@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210614103409.3154127-1-arnd@kernel.org> <20210614103409.3154127-5-arnd@kernel.org>
- <YMeLlvALJ5nJbQGg@pendragon.ideasonboard.com>
-In-Reply-To: <YMeLlvALJ5nJbQGg@pendragon.ideasonboard.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 15 Jun 2021 10:43:41 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1+cWFn8=xyGwZ0c7fWr6+tdEF_sXtMpPCZypDBA_UryA@mail.gmail.com>
-Message-ID: <CAK8P3a1+cWFn8=xyGwZ0c7fWr6+tdEF_sXtMpPCZypDBA_UryA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/8] media: subdev: remove VIDIOC_DQEVENT_TIME32 handling
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-staging@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 7:02 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> On Mon, Jun 14, 2021 at 12:34:05PM +0200, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Converting the VIDIOC_DQEVENT_TIME32/VIDIOC_DQEVENT32/
-> > VIDIOC_DQEVENT32_TIME32 arguments to the canonical form is done in common
-> > code, but for some reason I ended up adding another conversion helper to
-> > subdev_do_ioctl() as well. I must have concluded that this does not go
-> > through the common conversion, but it has done that since the ioctl
-> > handler was first added.
-> >
-> > I assume this one is harmless as there should be no way to arrive here
-> > from user space, but since it is dead code, it should just get removed.
->
-> If I'm not mistaken, this could be reached when
-> !CONFIG_COMPAT_32BIT_TIME, can't it ? Still, there's no need for this
-> code in that case, so it seems fine to me.
-
-Yes, that is correct, I missed that condition. We definitely should not handle
-the command in that case.
-
-Hans, since you mentioned you would pick up this patch, I assume  you
-are going to reword the patch as you see fit. If you prefer me to resend it,
-let me know.
-
-       Arnd
+T24gV2VkLCAyMDIxLTA1LTI2IGF0IDE5OjQ0ICswMTAwLCBJbGlhcyBTdGFtYXRpcyB3cm90ZToN
+Cj4gS1ZNIGN1cnJlbnRseSBzdXBwb3J0cyBoYXJkd2FyZS1hc3Npc3RlZCBUU0Mgc2NhbGluZyBi
+dXQgb25seSBmb3IgTDE7DQo+IHRoZSBmZWF0dXJlIGlzIG5vdCBleHBvc2VkIHRvIG5lc3RlZCBn
+dWVzdHMuIFRoaXMgcGF0Y2ggc2VyaWVzIGFkZHMNCj4gc3VwcG9ydCBmb3IgbmVzdGVkIFRTQyBz
+Y2FsaW5nIGFuZCBhbGxvd3MgYm90aCBMMSBhbmQgTDIgdG8gYmUgc2NhbGVkDQo+IHdpdGggZGlm
+ZmVyZW50IHNjYWxpbmcgZmFjdG9ycy4gVGhhdCBpcyBhY2hpZXZlZCBieSAibWVyZ2luZyIgdGhl
+IDAxIGFuZA0KPiAwMiB2YWx1ZXMgdG9nZXRoZXIuDQo+IA0KPiBNb3N0IG9mIHRoZSBsb2dpYyBp
+biB0aGlzIHNlcmllcyBpcyBpbXBsZW1lbnRlZCBpbiBjb21tb24gY29kZSAoYnkgZG9pbmcNCj4g
+dGhlIG5lY2Vzc2FyeSByZXN0cnVjdHVyaW5ncyksIGhvd2V2ZXIgdGhlIHBhdGNoZXMgYWRkIHN1
+cHBvcnQgZm9yIFZNWA0KPiBvbmx5LiBBZGRpbmcgc3VwcG9ydCBmb3IgU1ZNIHNob3VsZCBiZSBl
+YXN5IGF0IHRoaXMgcG9pbnQgYW5kIE1heGltDQo+IExldml0c2t5IGhhcyB2b2x1bnRlZXJlZCB0
+byBkbyB0aGlzICh0aGFua3MhKS4NCj4gDQo+IENoYW5nZWxvZzoNCj4gDQo+IE9ubHkgcGF0Y2gg
+OSBuZWVkcyByZXZpZXdpbmcgYXQgdGhpcyBwb2ludCwgYnV0IEkgYW0gcmUtc2VuZGluZyB0aGUN
+Cj4gd2hvbGUgc2VyaWVzIGFzIEkgYWxzbyBhcHBsaWVkIG5pdHBpY2tzIHN1Z2dlc3RlZCB0byBz
+b21lIG9mIHRoZSBvdGhlcg0KPiBwYXRoY2VzLg0KPiANCj4gdjQ6DQo+ICAgLSBBZGRlZCB2ZW5k
+b3IgY2FsbGJhY2tzIGZvciB3cml0aW5nIHRoZSBUU0MgbXVsdGlwbGllcg0KPiAgIC0gTW92ZWQg
+dGhlIFZNQ1MgbXVsdGlwbGllciB3cml0ZXMgZnJvbSB0aGUgVk1DUyBsb2FkIHBhdGggdG8gY29t
+bW9uDQo+ICAgICBjb2RlIHRoYXQgb25seSBnZXRzIGNhbGxlZCBvbiBUU0MgcmF0aW8gY2hhbmdl
+cw0KPiAgIC0gTWVyZ2VkIHRvZ2V0aGVyIHBhdGNoZXMgMTAgYW5kIDExIG9mIHYzDQo+ICAgLSBB
+cHBsaWVkIGFsbCBuaXRwaWNrLWZlZWRiYWNrIG9mIHRoZSBwcmV2aW91cyB2ZXJzaW9ucw0KPiAN
+Cj4gdjM6DQo+ICAgLSBBcHBsaWVkIFNlYW4ncyBmZWVkYmFjaw0KPiAgIC0gUmVmYWN0b3JlZCBw
+YXRjaGVzIDcgdG8gMTANCj4gDQo+IHYyOg0KPiAgIC0gQXBwbGllZCBhbGwgb2YgTWF4aW0ncyBm
+ZWVkYmFjaw0KPiAgIC0gQWRkZWQgYSBtdWxfczY0X3U2NF9zaHIgZnVuY3Rpb24gaW4gbWF0aDY0
+LmgNCj4gICAtIEFkZGVkIGEgc2VwYXJhdGUga3ZtX3NjYWxlX3RzY19sMSBmdW5jdGlvbiBpbnN0
+ZWFkIG9mIHBhc3NpbmcgYW4NCj4gICAgIGFyZ3VtZW50IHRvIGt2bV9zY2FsZV90c2MNCj4gICAt
+IEltcGxlbWVudGVkIHRoZSAwMiBmaWVsZHMgY2FsY3VsYXRpb25zIGluIGNvbW1vbiBjb2RlDQo+
+ICAgLSBNb3ZlZCBhbGwgb2Ygd3JpdGVfbDFfdHNjX29mZnNldCdzIGxvZ2ljIHRvIGNvbW1vbiBj
+b2RlDQo+ICAgLSBBZGRlZCBhIGNoZWNrIGZvciB3aGV0aGVyIHRoZSBUU0MgaXMgc3RhYmxlIGlu
+IHBhdGNoIDEwDQo+ICAgLSBVc2VkIGEgcmFuZG9tIEwxIGZhY3RvciBhbmQgYSBuZWdhdGl2ZSBv
+ZmZzZXQgaW4gcGF0Y2ggMTANCj4gDQo+IElsaWFzIFN0YW1hdGlzICgxMSk6DQo+ICAgbWF0aDY0
+Lmg6IEFkZCBtdWxfczY0X3U2NF9zaHIoKQ0KPiAgIEtWTTogWDg2OiBTdG9yZSBMMSdzIFRTQyBz
+Y2FsaW5nIHJhdGlvIGluICdzdHJ1Y3Qga3ZtX3ZjcHVfYXJjaCcNCj4gICBLVk06IFg4NjogUmVu
+YW1lIGt2bV9jb21wdXRlX3RzY19vZmZzZXQoKSB0bw0KPiAgICAga3ZtX2NvbXB1dGVfbDFfdHNj
+X29mZnNldCgpDQo+ICAgS1ZNOiBYODY6IEFkZCBhIHJhdGlvIHBhcmFtZXRlciB0byBrdm1fc2Nh
+bGVfdHNjKCkNCj4gICBLVk06IG5WTVg6IEFkZCBhIFRTQyBtdWx0aXBsaWVyIGZpZWxkIGluIFZN
+Q1MxMg0KPiAgIEtWTTogWDg2OiBBZGQgZnVuY3Rpb25zIGZvciByZXRyaWV2aW5nIEwyIFRTQyBm
+aWVsZHMgZnJvbSBjb21tb24gY29kZQ0KPiAgIEtWTTogWDg2OiBBZGQgZnVuY3Rpb25zIHRoYXQg
+Y2FsY3VsYXRlIHRoZSBuZXN0ZWQgVFNDIGZpZWxkcw0KPiAgIEtWTTogWDg2OiBNb3ZlIHdyaXRl
+X2wxX3RzY19vZmZzZXQoKSBsb2dpYyB0byBjb21tb24gY29kZSBhbmQgcmVuYW1lDQo+ICAgICBp
+dA0KPiAgIEtWTTogWDg2OiBBZGQgdmVuZG9yIGNhbGxiYWNrcyBmb3Igd3JpdGluZyB0aGUgVFND
+IG11bHRpcGxpZXINCj4gICBLVk06IG5WTVg6IEVuYWJsZSBuZXN0ZWQgVFNDIHNjYWxpbmcNCj4g
+ICBLVk06IHNlbGZ0ZXN0czogeDg2OiBBZGQgdm14X25lc3RlZF90c2Nfc2NhbGluZ190ZXN0DQo+
+IA0KPiAgYXJjaC94ODYvaW5jbHVkZS9hc20va3ZtLXg4Ni1vcHMuaCAgICAgICAgICAgIHwgICA1
+ICstDQo+ICBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9rdm1faG9zdC5oICAgICAgICAgICAgICAgfCAg
+MTUgKy0NCj4gIGFyY2gveDg2L2t2bS9zdm0vc3ZtLmMgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAzNSArKy0NCj4gIGFyY2gveDg2L2t2bS92bXgvbmVzdGVkLmMgICAgICAgICAgICAgICAgICAg
+ICB8ICAzMyArKy0NCj4gIGFyY2gveDg2L2t2bS92bXgvdm1jczEyLmMgICAgICAgICAgICAgICAg
+ICAgICB8ICAgMSArDQo+ICBhcmNoL3g4Ni9rdm0vdm14L3ZtY3MxMi5oICAgICAgICAgICAgICAg
+ICAgICAgfCAgIDQgKy0NCj4gIGFyY2gveDg2L2t2bS92bXgvdm14LmMgICAgICAgICAgICAgICAg
+ICAgICAgICB8ICA1NSArKy0tDQo+ICBhcmNoL3g4Ni9rdm0vdm14L3ZteC5oICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgMTEgKy0NCj4gIGFyY2gveDg2L2t2bS94ODYuYyAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICB8IDExNCArKysrKysrLS0NCj4gIGluY2x1ZGUvbGludXgvbWF0aDY0Lmgg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAxOSArKw0KPiAgdG9vbHMvdGVzdGluZy9zZWxmdGVz
+dHMva3ZtLy5naXRpZ25vcmUgICAgICAgIHwgICAxICsNCj4gIHRvb2xzL3Rlc3Rpbmcvc2VsZnRl
+c3RzL2t2bS9NYWtlZmlsZSAgICAgICAgICB8ICAgMSArDQo+ICAuLi4va3ZtL3g4Nl82NC92bXhf
+bmVzdGVkX3RzY19zY2FsaW5nX3Rlc3QuYyAgfCAyNDIgKysrKysrKysrKysrKysrKysrDQo+ICAx
+MyBmaWxlcyBjaGFuZ2VkLCA0NTEgaW5zZXJ0aW9ucygrKSwgODUgZGVsZXRpb25zKC0pDQo+ICBj
+cmVhdGUgbW9kZSAxMDA2NDQgdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMva3ZtL3g4Nl82NC92bXhf
+bmVzdGVkX3RzY19zY2FsaW5nX3Rlc3QuYw0KPiANCg0KSGVsbG8sDQoNCldoYXQgaXMgdGhlIHN0
+YXR1cyBvZiB0aGVzZT8gSSB0aGluayBhbGwgcGF0Y2hlcyBoYXZlIGJlZW4gcmV2aWV3ZWQgYW5k
+DQphcHByb3ZlZCBhdCB0aGlzIHBvaW50Lg0KDQooVGhlcmUncyBhIG5ldyByZXZpc2lvbiB2NiBv
+ZiBwYXRjaCA5IHRoYXQgaGFzIGJlZW4gcmV2aWV3ZWQgdG9vKQ0KDQpUaGFua3MsDQpJbGlhcw0K
