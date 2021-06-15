@@ -2,104 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3274D3A7494
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9553A74F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhFODDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhFODDs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:03:48 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66909C0617AF;
-        Mon, 14 Jun 2021 20:01:44 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id x196so16678122oif.10;
-        Mon, 14 Jun 2021 20:01:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lbogKHW8qkKdGG4ctidnUD+FZuRlje0jwgTya1yLZHg=;
-        b=X7ekhUySfyrlRCdPDw/Egqzv7vbiolEHNPnzmqO7fUlO+/7gvmKgPMqc1FK7EMjPzV
-         2MwjNcrADpX3M9K5iGiziyeRju65eYqDCJXGGgiOdQ8I9ppRsdq8As9IHfdAp9mWFV+T
-         zWaS3BlP2EP8kmolk0N469EDqkznplPXvE+6bK0tmRge/jwNCGoeNeISZXamiS/UG6cq
-         P3ijHqleogyY4vgO/JY0wabhEWGfc7eD7ilk7sXpLno/aDV03tZllCRe1wWibYGvANG5
-         6CFqIFSYwrhfwczVdgcecox/FTZCj9/hHmDJGDgS1bHIdIaxB8mE2/f5youniiHbYa1b
-         Anvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lbogKHW8qkKdGG4ctidnUD+FZuRlje0jwgTya1yLZHg=;
-        b=KaMH3DMXHzxgHxCPhfBy29r0bdMc4HyuN/Zwv0L4dxnEgcKN6tqYYIKJ6MiYARoiWC
-         mWwKNYp5sQsq7xdAmu1NFAV3apzb1lec/Bcc9R0lyWIDLD9NgeEigUdJOdLr3pYBO88F
-         vn3YHZLOTkif4byrzb/qwhLjvCwM5TyzCGbsS4XLKeOUyJF1+eqzDjBnl4yDPjE+Out9
-         vy9P77v8FE8BPE3O9GkKaO4At56v0j8AEjjrijzlhoCs5iCTdS+cSjE+h72jqwUtxGvq
-         nqcGquenYPPn0lG2rQ6qisMXbjv5hIlEwwiVUAb+342L0pNFMCz4TcROQadehYQIjVsH
-         Ob1w==
-X-Gm-Message-State: AOAM532W+X+Z2XLYUYO3gRoU3b6CaIfCpuoXuz96uZX3ZuKBdMr6xmN8
-        Sej2/ZrWJaCdf5RC6T54+wMOAkhO7Nc=
-X-Google-Smtp-Source: ABdhPJxDBwIMy8iwqDMz6AAOdUim8Bj9gK04mPA0FlYScIl9x96g48ZX/tIHm5ZzOjcDppMf/dyBFg==
-X-Received: by 2002:a17:90a:aa8c:: with SMTP id l12mr2077416pjq.90.1623719444134;
-        Mon, 14 Jun 2021 18:10:44 -0700 (PDT)
-Received: from localhost ([2601:647:4600:1ed4:adaa:7ff5:893e:b91])
-        by smtp.gmail.com with ESMTPSA id n129sm13416200pfn.167.2021.06.14.18.10.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 18:10:43 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 18:10:42 -0700
-From:   Isaku Yamahata <isaku.yamahata@gmail.com>
-To:     Erdem Aktas <erdemaktas@google.com>
-Cc:     "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, x86 <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Kai Huang <kai.huang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@linux.intel.com>
-Subject: Re: [RFC PATCH 64/67] KVM: TDX: Add "basic" support for building and
- running Trust Domains
-Message-ID: <20210615011042.GA4075334@private.email.ne.jp>
-References: <cover.1605232743.git.isaku.yamahata@intel.com>
- <b7004ea31380e113f38965f21f86a10cb7be1dc9.1605232743.git.isaku.yamahata@intel.com>
- <CAAYXXYwHp-wiAsSjfsLngriGZpdQHUVY6o7zdGrN2fNm_RJZAQ@mail.gmail.com>
- <CAAYXXYxX_ns-D_OJCOkA+jgzSV6Hb=oHyLDb5fYMwF-2X5QAgQ@mail.gmail.com>
+        id S231241AbhFODWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:22:45 -0400
+Received: from mga09.intel.com ([134.134.136.24]:46188 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230117AbhFODWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 23:22:42 -0400
+IronPort-SDR: 1c8071spFasEp8Nuku5vMKjWnEAOnjOjLNL7+nN6ckwiJ2xvnLy6KX9WX9fpDZ31BZqjvHXxXJ
+ acWV9VCUH9Vw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="205862619"
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="205862619"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 18:11:06 -0700
+IronPort-SDR: /sxm9bRqYIa+f0QOYbxLqrhu5qKS1DBi2hF+SiQXWVT9sAmF1B7FtoQ7dSLRaeqdPkijPVo6Vp
+ hZf4sSp7i5xw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="451793981"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga008.fm.intel.com with ESMTP; 14 Jun 2021 18:11:03 -0700
+Date:   Tue, 15 Jun 2021 09:11:03 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>, Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org, lkp@lists.01.org,
+        Peter Xu <peterx@redhat.com>
+Subject: Re: [PATCH] mm: relocate 'write_protect_seq' in struct mm_struct
+Message-ID: <20210615011102.GA38780@shbuild999.sh.intel.com>
+References: <1623376482-92265-1-git-send-email-feng.tang@intel.com>
+ <20210611170917.GW1002214@nvidia.com>
+ <20210614032738.GA72794@shbuild999.sh.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAYXXYxX_ns-D_OJCOkA+jgzSV6Hb=oHyLDb5fYMwF-2X5QAgQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210614032738.GA72794@shbuild999.sh.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 07:33:29PM -0700,
-Erdem Aktas <erdemaktas@google.com> wrote:
-
-> some more feedback on KVM_TDX_INIT_MEM_REGION:
+On Mon, Jun 14, 2021 at 11:27:39AM +0800, Feng Tang wrote:
+> > 
+> > It seems Ok to me, but didn't we earlier add the has_pinned which
+> > would have changed the layout too? Are we chasing performance delta's
+> > nobody cares about?
 > 
-> KVM_TDX_INIT_MEM_REGION requires a source and destination address
-> which is a little counterintuitive (debatable). I think this requires
-> better documentation to explain the usage better. I was wrongly
-> expecting to provide the guest memory which has the code as a pointer
-> and expecting it to be in-place measured and encrypted.
+> Good point! I checked my email folder for 0day's reports, and haven't
+> found a report related with Peter's commit 008cfe4418b3 ("mm: Introduce
+> mm_struct.has_pinned) which adds 'has_pinned' field. 
 > 
-> KVM_TDX_INIT_MEM_REGION crashes the host when:
-> * Target gpa is not valid or not backed by a page
-> * When source and destination overlap
+> Will run the same test for it and report back.
 
+I run the same will-it-scale/mmap1 case for Peter's commit 008cfe4418b3
+and its parent commit, and there is no obvious performance diff:
 
-Thanks for feedback.
-On next respin, I'm going to document new API more.
+a1bffa48745afbb5 008cfe4418b3dbda2ff820cdd7b 
+---------------- --------------------------- 
 
--- 
-Isaku Yamahata <isaku.yamahata@gmail.com>
+    344353            -0.4%     342929        will-it-scale.48.threads
+      7173            -0.4%       7144        will-it-scale.per_thread_ops
+
+And from the pahole info for the 2 kernels, Peter's commit adds the
+'has_pinned' is put into an existing 4 bytes hole, so all other following 
+fields keep their alignment unchanged. Peter may do it purposely 
+considering the alignment. So no performance change is expected.
+
+Pahole info for kernel before 008cfe4418b3:
+
+struct mm_struct {
+	...
+	/* --- cacheline 1 boundary (64 bytes) --- */
+	long unsigned int  task_size;            /*    64     8 */
+	long unsigned int  highest_vm_end;       /*    72     8 */
+	pgd_t *            pgd;                  /*    80     8 */
+	atomic_t           membarrier_state;     /*    88     4 */
+	atomic_t           mm_users;             /*    92     4 */
+	atomic_t           mm_count;             /*    96     4 */
+
+	/* XXX 4 bytes hole, try to pack */
+
+	atomic_long_t      pgtables_bytes;       /*   104     8 */
+	int                map_count;            /*   112     4 */
+	spinlock_t         page_table_lock;      /*   116     4 */
+	struct rw_semaphore mmap_lock;           /*   120    40 */
+	/* --- cacheline 2 boundary (128 bytes) was 32 bytes ago --- */
+
+pahold info with 008cfe4418b3:
+
+struct mm_struct {
+	...
+	/* --- cacheline 1 boundary (64 bytes) --- */
+	long unsigned int  task_size;            /*    64     8 */
+	long unsigned int  highest_vm_end;       /*    72     8 */
+	pgd_t *            pgd;                  /*    80     8 */
+	atomic_t           membarrier_state;     /*    88     4 */
+	atomic_t           mm_users;             /*    92     4 */
+	atomic_t           mm_count;             /*    96     4 */
+	atomic_t           has_pinned;           /*   100     4 */
+	atomic_long_t      pgtables_bytes;       /*   104     8 */
+	int                map_count;            /*   112     4 */
+	spinlock_t         page_table_lock;      /*   116     4 */
+	struct rw_semaphore mmap_lock;           /*   120    40 */
+	/* --- cacheline 2 boundary (128 bytes) was 32 bytes ago --- */
+	
+Thanks,
+Feng
+
+ 
+
