@@ -2,74 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1CD3A75FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 06:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EEE3A7609
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 06:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhFOEjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 00:39:18 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:39441 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229488AbhFOEjR (ORCPT
+        id S229659AbhFOEnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 00:43:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhFOEnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 00:39:17 -0400
-X-UUID: 78e40e087f014655a02336ed96a4c73c-20210615
-X-UUID: 78e40e087f014655a02336ed96a4c73c-20210615
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1056129317; Tue, 15 Jun 2021 12:37:10 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 15 Jun 2021 12:37:08 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 15 Jun 2021 12:37:08 +0800
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Subject: [PATCH 4/4] soc: mediatek: pm-domains: Remove unused macro
-Date:   Tue, 15 Jun 2021 12:36:03 +0800
-Message-ID: <20210615043603.20412-5-chun-jie.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210615043603.20412-1-chun-jie.chen@mediatek.com>
-References: <20210615043603.20412-1-chun-jie.chen@mediatek.com>
+        Tue, 15 Jun 2021 00:43:46 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C7AC061767
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 21:41:43 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so13127727otl.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 21:41:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wEg+VoqwL+a1eo1ktmnPpcNUwlMmnMzGqqtS4STsyQM=;
+        b=hJ0/5WyG+8/NR9t7aDL0awG0SsSTahlq4na9Ll+lOD1M88IJAo7R3IICOZZETF7QB7
+         stDCm5tF/Jsgc6iL4gwUou+mJRDTRRv6Av6PeOMML+/w13dSyGQC3IWd2fc153btcLJW
+         9zpZ0DIZFhKjS8YlsUIL1xqGeFetm8c84skQKwE4YIIecOgdCIHZ+7TruyBFc0z6JAgJ
+         1KsV9Gcvcqd5zBFBEE7RtzLT2X6SaNb6/SCxdhQrZQ/NCNJwdAcmXuLymA0prqdrDslE
+         4/zTGtdpItnVBIk+l10QuTQZ0Rmy6bsCBl2CGeJlqS9/pDsievWkh11gUDhyI8xgPIyr
+         ylIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wEg+VoqwL+a1eo1ktmnPpcNUwlMmnMzGqqtS4STsyQM=;
+        b=M2Gf1yXcWuWPlV7mDO0fMPEW7u3IGDM9cAXH5Cl4UkTC3ON3zBccFjXxNUtv66u2mB
+         JKrV+TjSPoLA3IyZTIb7pMHU5iybK2gjL/VU50VOvNEWjtCY3Gny1/7GnZq86XM5apZj
+         hgoP2lTId751mCv3BynpaY8VovQId69U2EiLohE0MvChwNnHDHogGuYcN3OQeRtO0pBJ
+         o4lyvIAml9YJhCL6KDgr+XsMmk+PW7TUyqDsgH5u5Z66xqP0z3KNCaE5JLgc1BVOCaqn
+         ydthqNX3InitmDpBj9oVMRGjh8a/zOKkm3D+BncUN97+v8CqsvzSDgQ4IyqttFD/3Qp1
+         yUhQ==
+X-Gm-Message-State: AOAM532J/WN3faeytJ76ru3kbhQCFsz7XRhqhZ0/l72l5RMhanaOwtzk
+        QYZ3homeWYWWkY6CPqYdEsZF0rLLMfd9NhJ/gRLB2g==
+X-Google-Smtp-Source: ABdhPJzOZz+3JAdGaUZujLoYtRIssOq5IDy2Ja04KYFxPa+nq7/kRp+YlyQKRLWlQ8X0NNXpnRW930PBNGPvA2H/Y4E=
+X-Received: by 2002:a9d:74d4:: with SMTP id a20mr15877413otl.28.1623732102331;
+ Mon, 14 Jun 2021 21:41:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
+ <20210607113840.15435-9-bhupesh.sharma@linaro.org> <YMLJsieGd+G+/kxK@builder.lan>
+In-Reply-To: <YMLJsieGd+G+/kxK@builder.lan>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Tue, 15 Jun 2021 10:11:31 +0530
+Message-ID: <CAH=2Ntyi=a0tiyW0D-MvGW+dDdWjNVS4EAcrWZBc=fU8bRphng@mail.gmail.com>
+Subject: Re: [PATCH 8/8] arm64: dts: qcom: sa8155p-adp: Add base dts file
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        bhupesh.linux@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to clk resource data will be allocated dynamically by
-searching parent count of clk in power domain node, so remove
-the unused marco MAX_SUBSYS_CLKS for static allocation.
+On Fri, 11 Jun 2021 at 07:55, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
+>
+> > Add base DTS file for sa8155p-adp and enable boot to console,
+>
+> Please spell out "sa8155-adp", i.e. "Add base DTS for SA8155p Automotive
+> Development Platform."
+>
+> > tlmm reserved range and also include pmic file(s).
+> >
+> > SA8155p-adp board is based on sm8150 Qualcomm Snapdragon SoC.
+> >
+>
+> It's not based on sm8150, it's based on sa8155p, so let's express this
+> as "The SA8155p platform is similar to the SM8150, so use this as base
+> for now", to document why we decided to do this.
+>
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
+> > Cc: Liam Girdwood <lgirdwood@gmail.com>
+> > Cc: Mark Brown <broonie@kernel.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Andy Gross <agross@kernel.org>
+> > Cc: devicetree@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: linux-gpio@vger.kernel.org
+> > Cc: bhupesh.linux@gmail.com
 
-Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
----
- drivers/soc/mediatek/mtk-pm-domains.h | 2 --
- 1 file changed, 2 deletions(-)
+<..snip..>
 
-diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
-index caaa38100093..1b8967b9829e 100644
---- a/drivers/soc/mediatek/mtk-pm-domains.h
-+++ b/drivers/soc/mediatek/mtk-pm-domains.h
-@@ -72,8 +72,6 @@ struct scpsys_bus_prot_data {
- 	bool ignore_clr_ack;
- };
- 
--#define MAX_SUBSYS_CLKS 10
--
- /**
-  * struct scpsys_domain_data - scp domain data for power on/off flow
-  * @name: The name of the power domain.
--- 
-2.18.0
+> > +&apps_rsc {
+> > +     pmm8155au-1-rpmh-regulators {
+> > +             compatible = "qcom,pmm8155au-1-rpmh-regulators";
+> > +             qcom,pmic-id = "a";
+> > +
+> > +             vdd-s1-supply = <&vreg_3p3>;
+> > +             vdd-s2-supply = <&vreg_3p3>;
+> > +             vdd-s3-supply = <&vreg_3p3>;
+> > +             vdd-s4-supply = <&vreg_3p3>;
+> > +             vdd-s5-supply = <&vreg_3p3>;
+> > +             vdd-s6-supply = <&vreg_3p3>;
+> > +             vdd-s7-supply = <&vreg_3p3>;
+> > +             vdd-s8-supply = <&vreg_3p3>;
+> > +             vdd-s9-supply = <&vreg_3p3>;
+> > +             vdd-s10-supply = <&vreg_3p3>;
+> > +
+> > +             vdd-l1-l8-l11-supply = <&vreg_s6a_0p92>;
+> > +             vdd-l2-l10-supply = <&vreg_3p3>;
+> > +             vdd-l3-l4-l5-l18-supply = <&vreg_s6a_0p92>;
+> > +             vdd-l6-l9-supply = <&vreg_s6a_0p92>;
+> > +             vdd-l7-l12-l14-l15-supply = <&vreg_s5a_2p04>;
+> > +             vdd-l13-l16-l17-supply = <&vreg_3p3>;
+> > +
+> > +             vreg_s5a_2p04: smps5 {
+> > +                     regulator-min-microvolt = <1904000>;
+> > +                     regulator-max-microvolt = <2000000>;
+> > +             };
+> > +
+> > +             vreg_s6a_0p92: smps6 {
+> > +                     regulator-min-microvolt = <920000>;
+> > +                     regulator-max-microvolt = <1128000>;
+> > +             };
+> > +
+> > +             vdda_wcss_pll:
+>
+> This is the "label" of the pad which the regulator typically is
+> connected to (rather than a denotion of which regulator it is). So even
+> though we have these in some of the other boards, I would prefer if you
+> skip them and only use the vreg_xyz_abc variant.
 
+Lets keep the 'vdd_xx_abc labels' though which are used as input
+supply pads for peripherals, for e.g.:
+
+&usb_1_hsphy {
+    status = "okay";
+    vdda-pll-supply = <&vdd_usb_hs_core>;
+    vdda33-supply = <&vdda_usb_hs_3p1>;
+    vdda18-supply = <&vdda_usb_hs_1p8>;
+};
+
+IMO, here it makes sense to retain labels 'vdda_usb_hs_3p1' and
+'vdda_usb_hs_1p8' in the dts (also making it easier to trace the same
+in schematics).
+
+I will send the v2 with the other suggested changes shortly.
+
+Regards,
+Bhupesh
+
+
+
+<..snip..>
