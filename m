@@ -2,108 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051683A78E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09EA3A78E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhFOISv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 04:18:51 -0400
-Received: from out28-50.mail.aliyun.com ([115.124.28.50]:43064 "EHLO
-        out28-50.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbhFOISt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:18:49 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08489759|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.494894-0.00593734-0.499169;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.KSX0zZM_1623745001;
-Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KSX0zZM_1623745001)
-          by smtp.aliyun-inc.com(10.147.41.138);
-          Tue, 15 Jun 2021 16:16:42 +0800
-Date:   Tue, 15 Jun 2021 16:16:39 +0800
-From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     hminas@synopsys.com, paul@crapouillou.net,
-        linux-mips@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com,
-        Dragan =?UTF-8?B?xIxlxI1hdmFj?= <dragancecavac@yahoo.com>
-Subject: Re: [PATCH] USB: DWC2: Add VBUS overcurrent detection control.
-Message-ID: <20210615161456.2dd501a1@zhouyanjie-virtual-machine>
-In-Reply-To: <YFoJ0Z6K4B5smbQx@kroah.com>
-References: <1616513066-62025-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <YFoJ0Z6K4B5smbQx@kroah.com>
-X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S231171AbhFOITW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 04:19:22 -0400
+Received: from comms.puri.sm ([159.203.221.185]:48442 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230494AbhFOITT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 04:19:19 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 479C0E11DD;
+        Tue, 15 Jun 2021 01:17:15 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RoN7WlA-jzVk; Tue, 15 Jun 2021 01:17:14 -0700 (PDT)
+Message-ID: <3e12f5d22e7940f4143cb9c55367724cb8cf349a.camel@puri.sm>
+Subject: Re: [PATCH v4.1 3/3] arm64: dts: imx8mq: add mipi csi phy and csi
+ bridge descriptions
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     devicetree@vger.kernel.org, festevam@gmail.com,
+        kernel@pengutronix.de, kernel@puri.sm, krzk@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, m.felsch@pengutronix.de,
+        mchehab@kernel.org, phone-devel@vger.kernel.org, robh@kernel.org,
+        shawnguo@kernel.org, slongerbeam@gmail.com
+Date:   Tue, 15 Jun 2021 10:17:06 +0200
+In-Reply-To: <YMfT+swqNAm67EmS@pendragon.ideasonboard.com>
+References: <20210614121522.2944593-4-martin.kepplinger@puri.sm>
+         <20210614122517.2945532-1-martin.kepplinger@puri.sm>
+         <YMfT+swqNAm67EmS@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-Sorry for taking so long to reply.
-
-于 Tue, 23 Mar 2021 16:31:29 +0100
-Greg KH <gregkh@linuxfoundation.org> 写道:
-
-> On Tue, Mar 23, 2021 at 11:24:26PM +0800, 周琰杰 (Zhou Yanjie) wrote:
-> > Introduce configurable option for enabling GOTGCTL register
-> > bits VbvalidOvEn and VbvalidOvVal. Once selected it disables
-> > VBUS overcurrent detection.
+Am Dienstag, dem 15.06.2021 um 01:11 +0300 schrieb Laurent Pinchart:
+> Hi Martin,
+> 
+> Thank you for the patch.
+> 
+> On Mon, Jun 14, 2021 at 02:25:17PM +0200, Martin Kepplinger wrote:
+> > Describe the 2 available CSI interfaces on the i.MX8MQ with the
+> > MIPI-CSI2
+> > receiver and the CSI Bridge that provides the user buffers, where
+> > the
+> > existing driver can directly be used.
 > > 
-> > This patch is derived from Dragan Čečavac (in the kernel 3.18
-> > tree of CI20). It is very useful for the MIPS Creator CI20(r1).
-> > Without this patch, CI20's OTG port has a great probability to
-> > face overcurrent warning, which breaks the OTG functionality.
+> > An image sensor is to be connected to the MIPIs' second port,
+> > described in
+> > board files.
 > > 
-> > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> > Signed-off-by: Dragan Čečavac <dragancecavac@yahoo.com>
+> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
 > > ---
-> >  drivers/usb/dwc2/Kconfig | 6 ++++++
-> >  drivers/usb/dwc2/core.c  | 9 +++++++++
-> >  2 files changed, 15 insertions(+)
 > > 
-> > diff --git a/drivers/usb/dwc2/Kconfig b/drivers/usb/dwc2/Kconfig
-> > index c131719..e40d187 100644
-> > --- a/drivers/usb/dwc2/Kconfig
-> > +++ b/drivers/usb/dwc2/Kconfig
-> > @@ -94,4 +94,10 @@ config USB_DWC2_DEBUG_PERIODIC
-> >  	  non-periodic transfers, but of course the debug logs
-> > will be incomplete. Note that this also disables some debug messages
-> >  	  for which the transfer type cannot be deduced.
+> > sorry, the csi compatible addition suggested by Marco was missing
+> > in
+> > v4 3/3. here is 3/3 updated.
+> > 
+> > 
+> > 
+> >  arch/arm64/boot/dts/freescale/imx8mq.dtsi | 102
+> > ++++++++++++++++++++++
+> >  1 file changed, 102 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > index 91df9c5350ae..fa83e8294b20 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > @@ -1099,6 +1099,108 @@ uart4: serial@30a60000 {
+> >                                 status = "disabled";
+> >                         };
+> >  
+> > +                       mipi_csi1: csi@30a70000 {
+> > +                               compatible = "fsl,imx8mq-mipi-
+> > csi2";
+> > +                               reg = <0x30a70000 0x1000>;
+> > +                               clocks = <&clk
+> > IMX8MQ_CLK_CSI1_CORE>,
+> > +                                  <&clk IMX8MQ_CLK_CSI1_ESC>,
+> > +                                  <&clk IMX8MQ_CLK_CSI1_PHY_REF>,
+> > +                                  <&clk IMX8MQ_CLK_CLKO2>;
+> > +                               clock-names = "core", "esc", "pxl",
+> > "clko2";
+> 
+> I can't figure out what the clko2 clock is used for based on the
+> datasheet. It seems to be a clock output by the SoC on GPIO1_IO15,
+> and
+> doesn't seem to belong here.
+
+oh, no it doesn't, I'm sorry, that was just a hack that I forgot about!
+That clock is only used by the sensor I'm using -.- I'll remove it
+here. thanks a lot for looking closely.
+
+> 
+> Regarding core, esc and pix, do these clock correspond to the clk,
+> clk_esc and clk_ui listed in table 13-36 (section 13.8.3.3.1 "RX
+> Local
+> Interface Description") of the TRM ? If so, should they be renamed
+> accordingly, to either "clk", "clk_esc" and "clk_ui", or, if we want
+> to
+> drop the prefixes, "core", "esc" and "ui" ?
+
+yes, I think so.
+
+> 
+> > +                               assigned-clocks = <&clk
+> > IMX8MQ_CLK_CSI1_CORE>,
+> > +                                   <&clk IMX8MQ_CLK_CSI1_PHY_REF>,
+> > +                                   <&clk IMX8MQ_CLK_CSI1_ESC>;
+> > +                               assigned-clock-rates = <266000000>,
+> > <333000000>, <66000000>;
+> > +                               assigned-clock-parents = <&clk
+> > IMX8MQ_SYS1_PLL_266M>,
+> > +                                       <&clk
+> > IMX8MQ_SYS2_PLL_1000M>,
+> > +                                       <&clk
+> > IMX8MQ_SYS1_PLL_800M>;
+> > +                               power-domains = <&pgc_mipi_csi1>;
+> > +                               resets = <&src>;
+> 
+> The src node has #reset-cells set to 1, I think you're missing
+> something
+> here.
+
+yes, thank you!
+
+> 
+> > +                               fsl,mipi-phy-gpr = <&iomuxc_gpr
+> > 0x88>;
+> > +                               interconnects = <&noc
+> > IMX8MQ_ICM_CSI1 &noc IMX8MQ_ICS_DRAM>;
+> > +                               interconnect-names = "dram";
+> > +                               status = "disabled";
 > > +
-> > +config USB_DWC2_DISABLE_VOD
-> > +	bool "Disable VBUS overcurrent detection"
-> > +	help
-> > +	  Say Y here to switch off VBUS overcurrent detection. It
-> > enables USB
-> > +	  functionality blocked by overcurrent detection.  
-> 
-> Why would this be a configuration option?  Shouldn't this be dynamic
-> and just work properly automatically?
-> 
-> You should not have to do this on a build-time basis, it should be
-> able to be detected and handled properly at run-time for all devices.
+> > +                               ports {
+> > +                                       #address-cells = <1>;
+> > +                                       #size-cells = <0>;
+> > +
+> > +                                       port@0 {
+> > +                                               reg = <0>;
+> > +
+> > +                                               csi1_mipi_ep:
+> > endpoint {
+> > +                                                       remote-
+> > endpoint = <&csi1_ep>;
+> > +                                               };
+> > +                                       };
+> > +                               };
+> > +                       };
+> > +
+> > +                       csi1: csi@30a90000 {
+> > +                               compatible = "fsl,imx8mq-csi",
+> > "fsl,imx7-csi";
+> > +                               reg = <0x30a90000 0x10000>;
+> > +                               interrupts = <GIC_SPI 42
+> > IRQ_TYPE_LEVEL_HIGH>;
+> > +                               clocks = <&clk
+> > IMX8MQ_CLK_CSI1_ROOT>;
+> > +                               clock-names = "mclk";
+> > +                               status = "disabled";
+> > +
+> > +                               port {
+> > +                                       csi1_ep: endpoint {
+> > +                                               remote-endpoint =
+> > <&csi1_mipi_ep>;
+> > +                                       };
+> > +                               };
+> > +                       };
+> > +
+> > +                       mipi_csi2: csi@30b60000 {
+> > +                               compatible = "fsl,imx8mq-mipi-
+> > csi2";
+> > +                               reg = <0x30b60000 0x1000>;
+> > +                               clocks = <&clk
+> > IMX8MQ_CLK_CSI2_CORE>,
+> > +                                  <&clk IMX8MQ_CLK_CSI2_ESC>,
+> > +                                  <&clk IMX8MQ_CLK_CSI2_PHY_REF>,
+> > +                                  <&clk IMX8MQ_CLK_CLKO2>;
+> > +                               clock-names = "core", "esc", "pxl",
+> > "clko2";
+> > +                               assigned-clocks = <&clk
+> > IMX8MQ_CLK_CSI2_CORE>,
+> > +                                   <&clk IMX8MQ_CLK_CSI2_PHY_REF>,
+> > +                                   <&clk IMX8MQ_CLK_CSI2_ESC>;
+> > +                               assigned-clock-rates = <266000000>,
+> > <333000000>, <66000000>;
+> > +                               assigned-clock-parents = <&clk
+> > IMX8MQ_SYS1_PLL_266M>,
+> > +                                       <&clk
+> > IMX8MQ_SYS2_PLL_1000M>,
+> > +                                       <&clk
+> > IMX8MQ_SYS1_PLL_800M>;
+> > +                               power-domains = <&pgc_mipi_csi2>;
+> > +                               resets = <&src>;
+> > +                               fsl,mipi-phy-gpr = <&iomuxc_gpr
+> > 0xa4>;
+> > +                               interconnects = <&noc
+> > IMX8MQ_ICM_CSI2 &noc IMX8MQ_ICS_DRAM>;
+> > +                               interconnect-names = "dram";
+> > +                               status = "disabled";
+> > +
+> > +                               ports {
+> > +                                       #address-cells = <1>;
+> > +                                       #size-cells = <0>;
+> > +
+> > +                                       port@0 {
+> > +                                               reg = <0>;
+> > +
+> > +                                               csi2_mipi_ep:
+> > endpoint {
+> > +                                                       remote-
+> > endpoint = <&csi2_ep>;
+> > +                                               };
+> > +                                       };
+> > +                               };
+> > +                       };
+> > +
+> > +                       csi2: csi@30b80000 {
+> > +                               compatible = "fsl,imx8mq-csi",
+> > "fsl,imx7-csi";
+> > +                               reg = <0x30b80000 0x10000>;
+> > +                               interrupts = <GIC_SPI 43
+> > IRQ_TYPE_LEVEL_HIGH>;
+> > +                               clocks = <&clk
+> > IMX8MQ_CLK_CSI2_ROOT>;
+> > +                               clock-names = "mclk";
+> > +                               status = "disabled";
+> > +
+> > +                               port {
+> > +                                       csi2_ep: endpoint {
+> > +                                               remote-endpoint =
+> > <&csi2_mipi_ep>;
+> > +                                       };
+> > +                               };
+> > +                       };
+> > +
+> >                         mu: mailbox@30aa0000 {
+> >                                 compatible = "fsl,imx8mq-mu",
+> > "fsl,imx6sx-mu";
+> >                                 reg = <0x30aa0000 0x10000>;
 > 
 
-I consulted the original author Dragan Čečavac, he think since this is
-a feature which disables overcurrent detection, so we are not sure if
-it could be harmful for some devices. Therefore he advise against
-enabling it in runtime, and in favor that user explicitely has to
-enable it.
 
-> If you know this is needed for a specific type of device, detect it
-> and make the change then, otherwise this could break working systems,
-> right?
-
-According to the information provided by Dragan Čečavac, this function
-(select whether to enable over-current detection through the otgctl
-register) don't seem to be available for all dwc2 controllers, so it
-might make sense to add MACH_INGENIC dependency to
-USB_DWC2_DISABLE_VOD, which could provide additional protection from
-unwanted usage.
-
-Thanks and best regards!
-
-> 
-> thanks,
-> 
-> greg k-h
