@@ -2,97 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9030D3A739B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57FD3A73EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbhFOCPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:15:31 -0400
-Received: from ozlabs.org ([203.11.71.1]:33965 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229743AbhFOCP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:15:29 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G3sL36lcMz9sW4;
-        Tue, 15 Jun 2021 12:13:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623723196;
-        bh=9MlykeVUCwRGDxv70LGHNLyJkE65EThzOtrBU3H2PtU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Lt9xx+m/jyTYBvXduV4MF4nSK6XmHymI0gNNPwSpUvmhpNV6GNCx5yhttSThtMZlW
-         eMmwyU8bIOjo84X26MSCd14KtvigY1Kh9bzWZ0mvCKoJ0s/yQuW01VpTkGMqaNbf9k
-         PG9RSccotwoTCdO6SyVMeHFLFrqgPulDM5Pu4RryrP3qrp7BVDoWuEEe8ufKfZxGRf
-         3HM61OqkdBmax5/10unk5wL9ZqQvvwIe3vRLGitjyWDi8Pv4WSyWLH0ozkDmUx4bdw
-         L0ne7RmR45Fml8Q97XDi7gmSR/tTjHaxg6VI2CcPGL38zzC+vWl6JI44uVQerOcyj2
-         MaO0d3kftl6wQ==
-Date:   Tue, 15 Jun 2021 12:13:14 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the block tree
-Message-ID: <20210615121314.6b711d8e@canb.auug.org.au>
+        id S230467AbhFOC2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:28:54 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:6364 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230181AbhFOC2w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 22:28:52 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G3rZS16pFz62Gt;
+        Tue, 15 Jun 2021 09:38:56 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 09:42:53 +0800
+Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
+ 2021 09:42:53 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Paul Moore <paul@paul-moore.com>,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH -next v3] netlabel: Fix memory leak in netlbl_mgmt_add_common
+Date:   Tue, 15 Jun 2021 10:14:44 +0800
+Message-ID: <20210615021444.2306687-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/120syJlJlrS85xtlj/.J.0=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/120syJlJlrS85xtlj/.J.0=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hulk Robot reported memory leak in netlbl_mgmt_add_common.
+The problem is non-freed map in case of netlbl_domhsh_add() failed.
 
-Hi all,
+BUG: memory leak
+unreferenced object 0xffff888100ab7080 (size 96):
+  comm "syz-executor537", pid 360, jiffies 4294862456 (age 22.678s)
+  hex dump (first 32 bytes):
+    05 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    fe 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01  ................
+  backtrace:
+    [<0000000008b40026>] netlbl_mgmt_add_common.isra.0+0xb2a/0x1b40
+    [<000000003be10950>] netlbl_mgmt_add+0x271/0x3c0
+    [<00000000c70487ed>] genl_family_rcv_msg_doit.isra.0+0x20e/0x320
+    [<000000001f2ff614>] genl_rcv_msg+0x2bf/0x4f0
+    [<0000000089045792>] netlink_rcv_skb+0x134/0x3d0
+    [<0000000020e96fdd>] genl_rcv+0x24/0x40
+    [<0000000042810c66>] netlink_unicast+0x4a0/0x6a0
+    [<000000002e1659f0>] netlink_sendmsg+0x789/0xc70
+    [<000000006e43415f>] sock_sendmsg+0x139/0x170
+    [<00000000680a73d7>] ____sys_sendmsg+0x658/0x7d0
+    [<0000000065cbb8af>] ___sys_sendmsg+0xf8/0x170
+    [<0000000019932b6c>] __sys_sendmsg+0xd3/0x190
+    [<00000000643ac172>] do_syscall_64+0x37/0x90
+    [<000000009b79d6dc>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-After merging the block tree, today's linux-next build (arm
-multi_v7_defconfig) produced this warning:
+Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+---
+v1->v2: According to Dongliang's and Paul's advices, simplify the code.
+v2->v3: Fix the style error.
 
-In file included from include/linux/kernel.h:15,
-                 from fs/io_uring.c:42:
-fs/io_uring.c: In function 'io_alloc_page_table':
-include/linux/minmax.h:20:28: warning: comparison of distinct pointer types=
- lacks a cast
-   20 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
-      |                            ^~
-include/linux/minmax.h:26:4: note: in expansion of macro '__typecheck'
-   26 |   (__typecheck(x, y) && __no_side_effects(x, y))
-      |    ^~~~~~~~~~~
-include/linux/minmax.h:36:24: note: in expansion of macro '__safe_cmp'
-   36 |  __builtin_choose_expr(__safe_cmp(x, y), \
-      |                        ^~~~~~~~~~
-include/linux/minmax.h:45:19: note: in expansion of macro '__careful_cmp'
-   45 | #define min(x, y) __careful_cmp(x, y, <)
-      |                   ^~~~~~~~~~~~~
-fs/io_uring.c:7095:28: note: in expansion of macro 'min'
- 7095 |   unsigned int this_size =3D min(size, PAGE_SIZE);
-      |                            ^~~
+ net/netlabel/netlabel_mgmt.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-Introduced by commit
+diff --git a/net/netlabel/netlabel_mgmt.c b/net/netlabel/netlabel_mgmt.c
+index e664ab990941..032b7d7b32c7 100644
+--- a/net/netlabel/netlabel_mgmt.c
++++ b/net/netlabel/netlabel_mgmt.c
+@@ -76,6 +76,7 @@ static const struct nla_policy netlbl_mgmt_genl_policy[NLBL_MGMT_A_MAX + 1] = {
+ static int netlbl_mgmt_add_common(struct genl_info *info,
+ 				  struct netlbl_audit *audit_info)
+ {
++	void *pmap = NULL;
+ 	int ret_val = -EINVAL;
+ 	struct netlbl_domaddr_map *addrmap = NULL;
+ 	struct cipso_v4_doi *cipsov4 = NULL;
+@@ -175,6 +176,7 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
+ 			ret_val = -ENOMEM;
+ 			goto add_free_addrmap;
+ 		}
++		pmap = map;
+ 		map->list.addr = addr->s_addr & mask->s_addr;
+ 		map->list.mask = mask->s_addr;
+ 		map->list.valid = 1;
+@@ -183,10 +185,8 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
+ 			map->def.cipso = cipsov4;
+ 
+ 		ret_val = netlbl_af4list_add(&map->list, &addrmap->list4);
+-		if (ret_val != 0) {
+-			kfree(map);
+-			goto add_free_addrmap;
+-		}
++		if (ret_val != 0)
++			goto add_free_map;
+ 
+ 		entry->family = AF_INET;
+ 		entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
+@@ -223,6 +223,7 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
+ 			ret_val = -ENOMEM;
+ 			goto add_free_addrmap;
+ 		}
++		pmap = map;
+ 		map->list.addr = *addr;
+ 		map->list.addr.s6_addr32[0] &= mask->s6_addr32[0];
+ 		map->list.addr.s6_addr32[1] &= mask->s6_addr32[1];
+@@ -235,10 +236,8 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
+ 			map->def.calipso = calipso;
+ 
+ 		ret_val = netlbl_af6list_add(&map->list, &addrmap->list6);
+-		if (ret_val != 0) {
+-			kfree(map);
+-			goto add_free_addrmap;
+-		}
++		if (ret_val != 0)
++			goto add_free_map;
+ 
+ 		entry->family = AF_INET6;
+ 		entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
+@@ -248,10 +247,12 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
+ 
+ 	ret_val = netlbl_domhsh_add(entry, audit_info);
+ 	if (ret_val != 0)
+-		goto add_free_addrmap;
++		goto add_free_map;
+ 
+ 	return 0;
+ 
++add_free_map:
++	kfree(pmap);
+ add_free_addrmap:
+ 	kfree(addrmap);
+ add_doi_put_def:
+-- 
+2.18.0.huawei.25
 
-  9123c8ffce16 ("io_uring: add helpers for 2 level table alloc")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/120syJlJlrS85xtlj/.J.0=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDIDLoACgkQAVBC80lX
-0Gwzbwf/T14z+2CkFXv7FWlkIc7bHFnqEXL5FBiDAaE2uXcztZA/YoG7e1BM3e2V
-kFs9SCHIUe5aHXxy+/ssA561Kf4Ou1bFzLCPe18P/H5g8hJi3Dq7sImnqJVj8fO7
-FpqLTecLChkFvBy6GzOSUz7jkogBUJLJqUqAsFIG/w7Iu1WkVkVd9eDnoJqFFrq6
-w8KZ3T1LsMYSCv3Pi2FUjKhjwosgpaHcL6LMVROpWe20YL3VFdu47oGnB/AWOdH8
-rR6rVnmt/0eTF4lA2I91puQTiBVHHlCVkmVonuWGVVH2H6Mh8TrKkTM8R9zflfdN
-Z6NC5JGCPL483xukLQpgtzh5YEzIbg==
-=Ek/O
------END PGP SIGNATURE-----
-
---Sig_/120syJlJlrS85xtlj/.J.0=--
