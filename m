@@ -2,103 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541AF3A8BE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 00:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6B93A8BE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 00:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhFOWhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 18:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36526 "EHLO
+        id S230321AbhFOWiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 18:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbhFOWhb (ORCPT
+        with ESMTP id S229868AbhFOWiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 18:37:31 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239BAC061574;
-        Tue, 15 Jun 2021 15:35:26 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id g22so317658pgk.1;
-        Tue, 15 Jun 2021 15:35:26 -0700 (PDT)
+        Tue, 15 Jun 2021 18:38:20 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239B7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 15:36:14 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id y13-20020a1c4b0d0000b02901c20173e165so533715wma.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 15:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vchL1M+HPGlNWBtVdvON9ynumPv6rYV8n+FcAt7BSyA=;
-        b=Y36LJfDYZimfsaEIJSAnjzvd5PzCSteXiNeZu4xHAe9dVcaNbCDWM6h8tpkDEGwAMJ
-         e2OrXqX/s8sNA4rA8OLWCHJ3AvxB07ac6DiQFHolLCjEymo+sz93ZPfJPBjTyYfDXdMz
-         RfWYuas3W0hJ4W/k73As6CeZPty0EFXUJOTV2dM1hkuYZN2sjNHHsGGEMxfu578G4aPK
-         o/Kb8w4tpRiJhMKxFptv/ZYgpdVq5Sj5+NltRiY853RrE30h8UyqF6x4feMDDL9wxV0U
-         liiFLHkuGty5X80IestebJ1knyj3aiV2p9RkJHbMWonefNAHEDpa2ATCaczEKhudOe5i
-         Oo2g==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qeDnHq8ZJBiwEwWDSRdqHUmE3/dIBI2cdiaVs08gMLo=;
+        b=epOWaywLJRBPSH71XG3Vle6CE6NTtTCbAqFfsszHrqBIjjnK9wfKEdnbhvK3aeMDX1
+         00TuqDY+i0CObbK59pTM99vKCmIueuAIBR2udvbMqu4XOl1x/5Y1HFijX1sScw4WfXvV
+         CRzhaw4TnuGwA4kpSEOlZRCh+3k4gm04KINdnqw6rN5l9ZgzXUhiP5BEqpmzfiLkc65f
+         gWG/OXPNYW9VY4jIfPmG48fluyr4uXMQSAs6+Gq7LxZBjYlDI/BsKQRf3ppnTaK0gMw4
+         lYPVnNvo+o7MxIwAueXo+smfuvJFRPP1NtLkl73GRX4ZF77Wzt1ZoAlD4hUQU0Cz+kbH
+         3TTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vchL1M+HPGlNWBtVdvON9ynumPv6rYV8n+FcAt7BSyA=;
-        b=mX4tttdcPTsx6quahJU5/Sn9+kSqNqKQ3qs9zFj2+0cJMKU3a+amsG14XOHaMK13MR
-         aCQ+co3Or/JRd9WBiUidpO5E1yIJ7fuZubkZBw4r8aG+WuU1b+uHBRPgjxCjOeImumUy
-         q0hQcS3k3n1NfvSDqQHCmunwWxj2VVcWQWC9388+XFK0Ss4iJCfb93yrAR4H7Oj7KH0h
-         PSN4Gv+XrMTARbnq84RMHrlI5Xe5DcoXweSHztNJd+qaVkaYAB96Q601yccJjXJabrvR
-         7mGBYyl+LA3kgFZzl91KHg0/0VrFJwKA6q/ZRBeSlVHSZc2vKY0qObJhbcbk7yhq/5Ar
-         N7kQ==
-X-Gm-Message-State: AOAM530K85uS3B4LWcJgQd8D7kX3Q/L+IKgIZvnbQH4ONX2vB+yvnOz7
-        5Hx8L9CKxmje14zptGrSM1RhhDp3JmXubq/Ndrk=
-X-Google-Smtp-Source: ABdhPJzSI6OWPxJl2kB/pEnDW5w6zJpXHaOqPtWJu7uNObfM5CXccVmIq4Jy4DzYxBgOP8+pDY4NzBrkUY5MBSNxfQE=
-X-Received: by 2002:a63:e245:: with SMTP id y5mr1735817pgj.171.1623796525390;
- Tue, 15 Jun 2021 15:35:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qeDnHq8ZJBiwEwWDSRdqHUmE3/dIBI2cdiaVs08gMLo=;
+        b=CCjCoAyb6cNraeD7YmQ4KYff8pdWXZ+6Y4JYXHw6nrHoilOyok+tIS7zyul60UD3VN
+         +ZnGOQF/9jr3/cvxGkhH4DkA2mNMVffFgHXlVG2TZJAmfzU9UC4rL0bfv33WvjUPs1E3
+         RDN5Nr4PNuZFaeD5hJDoHnzrGucI7FZxEfzwhnPLeQRiTKXG1D81usMhsJdkDoP/TOm2
+         CMcxCyM35eYv19ZeGRX15bTLgmFeBgXPC0ursWiqsvCdjU+gjHCKla9vBVEC2yiswUH1
+         mc/pVqc3B+DbESPQpue6FnJLd7faGDL0dSHWmeZN+hZArZq/UQEBr0dCzHsyhErPhrWD
+         TWAw==
+X-Gm-Message-State: AOAM530I/NKn194qNWdxFDAegMIgEuvZMc1KRDJWJA4LxRq+bvwFNpyY
+        eoh65m3B591hhrOReTv7KM09VJE/t/m2vTVY
+X-Google-Smtp-Source: ABdhPJwk1z6ArKvPyCqIhocjUyi3ERhMpYt1WNwYo3S3cQqtshPrUgpdKiEOgfzCNCgZLnaa0VRKtQ==
+X-Received: by 2002:a05:600c:20d:: with SMTP id 13mr1667903wmi.174.1623796572710;
+        Tue, 15 Jun 2021 15:36:12 -0700 (PDT)
+Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id m23sm3934791wml.27.2021.06.15.15.36.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 15:36:12 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH 0/7] Fixup unused variables and warnings
+Date:   Tue, 15 Jun 2021 23:36:00 +0100
+Message-Id: <20210615223607.13863-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210615162346.16032-1-avagin@gmail.com> <877diuq5xb.fsf@disp2133>
-In-Reply-To: <877diuq5xb.fsf@disp2133>
-From:   Andrei Vagin <avagin@gmail.com>
-Date:   Tue, 15 Jun 2021 15:35:14 -0700
-Message-ID: <CANaxB-zVMxxvt8c1XNKfy6-hAUoodxp=ChJpP_Rn5cTD=26p9w@mail.gmail.com>
-Subject: Re: [PATCH] exec/binfmt_script: trip zero bytes from the buffer
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 12:33 PM Eric W. Biederman
-<ebiederm@xmission.com> wrote:
->
-> Andrei Vagin <avagin@gmail.com> writes:
->
-> > Without this fix, if we try to run a script that contains only the
-> > interpreter line, the interpreter is executed with one extra empty
-> > argument.
-> >
-> > The code is written so that i_end has to be set to the end of valuable
-> > data in the buffer.
->
-> Out of curiosity how did you spot this change in behavior?
+This series fixes an empty goto label by removing it and converting its
+associated goto to a return. It also changes a decrement operator to
+prefix to make it clearer, and provide expected behaviour. Finally, it
+removes a lot of unused variables warned about by the kernel test robot,
+which are a result of my previous DBG_88E removal series, and removes an
+entire function as well which is surplus to requirements.
 
-gVisor tests started failing with this change:
-https://github.com/google/gvisor/blob/5e05950c1c520724e2e03963850868befb95efeb/test/syscalls/linux/exec.cc#L307
+Phillip Potter (7):
+  staging: rtl8188eu: remove empty label from
+    mlmeext_joinbss_event_callback
+  staging: rtl8188eu: use prefix decrement operator on trycnt variable
+  staging: rtl8188eu: remove unused variables from core/rtw_efuse.c
+  staging: rtl8188eu: remove unused variables from core/rtw_mlme_ext.c
+  staging: rtl8188eu: remove unused variable from os_dep/ioctl_linux.c
+  staging: rtl8188eu: remove unused variables from hal/rtl8188e_cmd.c
+  staging: rtl8188eu: remove _dbg_dump_tx_info function
 
-We run these tests on Ubuntu 20.04 and this is the reason why we
-caught this issue just a few days ago.
+ drivers/staging/rtl8188eu/core/rtw_efuse.c    | 11 ++--------
+ drivers/staging/rtl8188eu/core/rtw_mlme_ext.c | 20 +++++--------------
+ drivers/staging/rtl8188eu/hal/rtl8188e_cmd.c  |  4 ----
+ drivers/staging/rtl8188eu/hal/rtl8188e_xmit.c | 17 ----------------
+ .../staging/rtl8188eu/hal/rtl8188eu_xmit.c    |  1 -
+ drivers/staging/rtl8188eu/hal/usb_halinit.c   |  2 +-
+ .../staging/rtl8188eu/include/rtl8188e_xmit.h |  3 ---
+ .../staging/rtl8188eu/os_dep/ioctl_linux.c    |  3 ---
+ 8 files changed, 8 insertions(+), 53 deletions(-)
 
->
-> > Fixes: ccbb18b67323 ("exec/binfmt_script: Don't modify bprm->buf and then return -ENOEXEC")
-> > Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-> > Signed-off-by: Andrei Vagin <avagin@gmail.com>
-> > ---
-> >  fs/binfmt_script.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/fs/binfmt_script.c b/fs/binfmt_script.c
-> > index 1b6625e95958..e242680f96e1 100644
-> > --- a/fs/binfmt_script.c
-> > +++ b/fs/binfmt_script.c
-> > @@ -68,6 +68,9 @@ static int load_script(struct linux_binprm *bprm)
-> >               if (!next_terminator(i_end, buf_end))
-> >                       return -ENOEXEC;
-> >               i_end = buf_end;
-> > +             /* Trim zero bytes from i_end */
-> > +             while (i_end[-1] == 0)
-> > +                     i_end--;
-> >       }
-> >       /* Trim any trailing spaces/tabs from i_end */
-> >       while (spacetab(i_end[-1]))
+-- 
+2.30.2
+
