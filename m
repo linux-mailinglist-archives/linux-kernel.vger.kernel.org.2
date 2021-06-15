@@ -2,156 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCAD3A8CBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF5A3A8CC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhFOXlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 19:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbhFOXls (ORCPT
+        id S231510AbhFOXm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 19:42:26 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:49954 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230039AbhFOXmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:41:48 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9E0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:39:42 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id t140so518541oih.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:39:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ul/bka2jdtYOr+6+mrjnF59qa6vN2c7evd5ICsLCQTY=;
-        b=k90rWATbXwMXpvZDjiDnSOm/OONvvKm1J+Frq6NYtOguQ5A9cHqRup9vYFd3s/Eg3X
-         7MEpMnZqPE7FUk87YQS2IYqIPebW9ccEEhnx3l4/cDYVfHeHxO0Ji3YMrK6+Yb9hqPpR
-         4j+LC7OI6Ic2m9P4DkH+bRkm5Wm+0q7BYtaYKhFtza3xYZAKa8lw4CtpT+wHzlQ6qD3z
-         rCt55BBaEKG8LX0ipDridUsoQnpGMrLRnfP5Ok5PuDBf2+fwWCQb4OCLhCyKfhCWkAb0
-         Id+PUAsXCSE7hDJrCxjyyDJbAhXtbw1FNGvUwXaK782FHmq9IpmIePIDVkr2ukQqfWYS
-         iuww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ul/bka2jdtYOr+6+mrjnF59qa6vN2c7evd5ICsLCQTY=;
-        b=eO8NHs/f6FFGU+Pl9ZSIe0+urabq2iRJ9xE7IX1PJCItZl6G7j9GcMjoF4TlD6AOr0
-         RqFQevP+TElb4cUB9n814Vswv0IJsYq6qbqIQesS2qJksjhuXDoEwns2sesyOp6mrl/m
-         KaMuaddOv2K5hl1t05L74IKu21KmwfKUF8uUpA5OsvGc96qUT8GAxBIqZUz/E7k3GyJC
-         AwXOhrz01+yIstHwsEJK37bdllWPqrsN9YSHENCiMuzWnuQASZEf81K+Z05gpdAnCixt
-         Q6hCAbRCrvKh9gbdT+HYqb0STHnwR6dcHNI9tWQdfS/Q/x9o5pEDWMQIYEtrB7u1GAbW
-         FTaw==
-X-Gm-Message-State: AOAM533rHHZ/qxwsVwHvFXAUkM+kSxYxZqL779+PYuChvUqOFf7rYGmf
-        hOyqEnKbkRuOuSnxy4mCvF4dQA==
-X-Google-Smtp-Source: ABdhPJzDIW4lkQu/ywpISJIZTM6b/WRNsbdsG07oLqrkILQLbtGE/mwsdjzwqygLzfu76nKMwciakw==
-X-Received: by 2002:a05:6808:10a:: with SMTP id b10mr4823404oie.65.1623800381917;
-        Tue, 15 Jun 2021 16:39:41 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l12sm92506oig.49.2021.06.15.16.39.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 16:39:41 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 18:39:39 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] arm64: dts: qcom: sm8250: Add SDHCI2 pinctrl
-Message-ID: <YMk6O1HVRfVvX79/@builder.lan>
-References: <20210612192358.62602-1-konrad.dybcio@somainline.org>
- <20210612192358.62602-2-konrad.dybcio@somainline.org>
+        Tue, 15 Jun 2021 19:42:21 -0400
+X-UUID: fffb4e5efa684f19b12ece330d112351-20210616
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=1N+JC1snW7EnO8epve2A7QzbqIbp6/TazBXQRTkssHQ=;
+        b=n82vwoj5rhMqtRsiJZh8+qFglbmTBIRohSuAk/q64M/NVX/l3TiFuZHeDasTD31+GL8FWitoMYCAJ/gnuERTASrK3skKFQNczhi7D0oKPxKLUav/neNe8wkY+CrLtbo/nD8UW8Ob2tJLpU+01euzEs3fDzZw3Pu66i6kVhiaeBo=;
+X-UUID: fffb4e5efa684f19b12ece330d112351-20210616
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <miles.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1541065036; Wed, 16 Jun 2021 07:40:13 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Jun 2021 07:40:12 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 16 Jun 2021 07:40:12 +0800
+Message-ID: <1623800412.8512.16.camel@mtkswgap22>
+Subject: Re: [next] [arm64] kernel BUG at arch/arm64/mm/physaddr.c
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     Mike Rapoport <rppt@linux.ibm.com>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, <lkft-triage@lists.linaro.org>,
+        <regressions@lists.linux.dev>, Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Alistair Popple <apopple@nvidia.com>
+Date:   Wed, 16 Jun 2021 07:40:12 +0800
+In-Reply-To: <20210616093422.31270f1e@canb.auug.org.au>
+References: <CA+G9fYvvm2tW5QAe9hzPgs7sV8udsoufxs0Qu6N0ZjV0Z686vw@mail.gmail.com>
+         <20210615124745.GA47121@C02TD0UTHF1T.local>
+         <20210615131902.GB47121@C02TD0UTHF1T.local>
+         <076665b9-9fb1-71da-5f7d-4d2c7f892103@quicinc.com>
+         <YMj9vHhHOiCVN4BF@linux.ibm.com> <20210616093422.31270f1e@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210612192358.62602-2-konrad.dybcio@somainline.org>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 12 Jun 14:23 CDT 2021, Konrad Dybcio wrote:
+T24gV2VkLCAyMDIxLTA2LTE2IGF0IDA5OjM0ICsxMDAwLCBTdGVwaGVuIFJvdGh3ZWxsIHdyb3Rl
+Og0KPiBIaSBhbGwsDQo+IA0KPiBPbiBUdWUsIDE1IEp1biAyMDIxIDIyOjIxOjMyICswMzAwIE1p
+a2UgUmFwb3BvcnQgPHJwcHRAbGludXguaWJtLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBPbiBUdWUs
+IEp1biAxNSwgMjAyMSBhdCAxMDo1MDozMUFNIC0wNDAwLCBRaWFuIENhaSB3cm90ZToNCj4gPiA+
+IA0KPiA+ID4gT24gNi8xNS8yMDIxIDk6MTkgQU0sIE1hcmsgUnV0bGFuZCB3cm90ZTogIA0KPiA+
+ID4gPiBMb29raW5nIHNvbWUgbW9yZSwgaXQgbG9va3MgbGlrZSB0aGF0J3MgY29ycmVjdCBpbiBp
+c29sYXRpb24sIGJ1dCBpdA0KPiA+ID4gPiBjbGFzaGVzIHdpdGggY29tbWl0Og0KPiA+ID4gPiAN
+Cj4gPiA+ID4gICA1ODMxZWVkYWQyYWM2ZjM4ICgibW06IHJlcGxhY2UgQ09ORklHX05FRURfTVVM
+VElQTEVfTk9ERVMgd2l0aCBDT05GSUdfTlVNQSIpICANCj4gPiA+IA0KPiA+ID4gSnVzdCBhIGRh
+dGEgcG9pbnQuIFJldmVydGluZyB0aGUgY29tbWl0IGFsb25lIGZpeGVkIHRoZSBzYW1lIGNyYXNo
+IGZvciBtZS4gIA0KPiA+IA0KPiA+IFllYWgsIHRoYXQgY29tbWl0IGRpZG4ndCB0YWtlIGludG8g
+dGhlIGFjY291bnQgdGhlIGNoYW5nZSBpbg0KPiA+IHBnZGF0X3RvX3BoeXMoKS4NCj4gPiANCj4g
+PiBUaGUgcGF0Y2ggYmVsb3cgc2hvdWxkIGZpeCBpdC4gSW4gdGhlIGxvbmcgcnVuIEkgdGhpbmsg
+d2Ugc2hvdWxkIGdldCByaWQgb2YNCj4gPiBjb250aWdfcGFnZV9kYXRhIGFuZCBhbGxvY2F0ZSBO
+T0RFX0RBVEEoMCkgZm9yICFOVU1BIGNhc2UgYXMgd2VsbC4NCj4gPiANCj4gPiBBbmRyZXcsIGNh
+biB5b3UgcGxlYXNlIGFkZCB0aGlzIGFzIGEgZml4dXAgdG8gIm1tOiByZXBsYWNlDQo+ID4gQ09O
+RklHX05FRURfTVVMVElQTEVfTk9ERVMgd2l0aCBDT05GSUdfTlVNQSI/DQo+ID4gDQo+ID4gDQo+
+ID4gZGlmZiAtLWdpdCBhL21tL3NwYXJzZS5jIGIvbW0vc3BhcnNlLmMNCj4gPiBpbmRleCBhMGU5
+Y2RiNWJjMzguLjYzMjZjZGYzNmM0ZiAxMDA2NDQNCj4gPiAtLS0gYS9tbS9zcGFyc2UuYw0KPiA+
+ICsrKyBiL21tL3NwYXJzZS5jDQo+ID4gQEAgLTM0Nyw3ICszNDcsNyBAQCBzaXplX3QgbWVtX3Nl
+Y3Rpb25fdXNhZ2Vfc2l6ZSh2b2lkKQ0KPiA+ICANCj4gPiAgc3RhdGljIGlubGluZSBwaHlzX2Fk
+ZHJfdCBwZ2RhdF90b19waHlzKHN0cnVjdCBwZ2xpc3RfZGF0YSAqcGdkYXQpDQo+ID4gIHsNCj4g
+PiAtI2lmbmRlZiBDT05GSUdfTkVFRF9NVUxUSVBMRV9OT0RFUw0KPiA+ICsjaWZuZGVmIENPTkZJ
+R19OVU1BDQo+ID4gIAlyZXR1cm4gX19wYV9zeW1ib2wocGdkYXQpOw0KPiA+ICAjZWxzZQ0KPiA+
+ICAJcmV0dXJuIF9fcGEocGdkYXQpOw0KPiANCj4gQWRkZWQgdG8gbGludXgtbmV4dCB0b2RheS4N
+Cj4gDQoNClNvcnJ5IGZvciBteSBsYXRlIHJlc3BvbnNlLg0KdGhhbmtzIGZvciBkb2luZyB0aGlz
+LiANCg0KTWlsZXMNCg0K
 
-> Add required pins for SDHCI2, so that the interface can work reliably.
-> The configuration comes from a MTP board, which conveniently means it's
-> going to be correct for the vast majority of phones (and other devices).
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
-> Changes since v1:
-> - Separate this into its own patch
-> 
->  arch/arm64/boot/dts/qcom/sm8250.dtsi | 32 ++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> index fc1049c2bb11..fe858abbff5d 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> @@ -8,6 +8,7 @@
->  #include <dt-bindings/clock/qcom,gcc-sm8250.h>
->  #include <dt-bindings/clock/qcom,gpucc-sm8250.h>
->  #include <dt-bindings/clock/qcom,rpmh.h>
-> +#include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/interconnect/qcom,osm-l3.h>
->  #include <dt-bindings/interconnect/qcom,sm8250.h>
->  #include <dt-bindings/mailbox/qcom-ipcc.h>
-> @@ -2157,6 +2158,10 @@ sdhc_2: sdhci@8804000 {
->  			power-domains = <&rpmhpd SM8250_CX>;
->  			operating-points-v2 = <&sdhc2_opp_table>;
->  
-> +			cd-gpios = <&tlmm 77 GPIO_ACTIVE_HIGH>;
-> +			pinctrl-0 = <&sdc2_default_state &sdc2_card_det_n>;
-> +			pinctrl-names = "default";
-> +
->  			status = "disabled";
->  
->  			sdhc2_opp_table: sdhc2-opp-table {
-> @@ -3401,6 +3406,33 @@ ws {
->  					output-high;
->  				};
->  			};
-> +
-> +			sdc2_default_state: sdc2-default {
-> +				clk {
-> +					pins = "sdc2_clk";
-> +					drive-strength = <16>;
-
-The fact that RB5 has these as 16/10/10 seems to show that these should
-be board-specific (as we typically have them). So please follow that.
-
-
-(The sleep state on other hand is not going to change, so that I'm okay
-with you define here for all boards to use).
-
-Regards,
-Bjorn
-
-> +					bias-disable;
-> +				};
-> +
-> +				cmd {
-> +					pins = "sdc2_cmd";
-> +					drive-strength = <16>;
-> +					bias-pull-up;
-> +				};
-> +
-> +				data {
-> +					pins = "sdc2_data";
-> +					drive-strength = <16>;
-> +					bias-pull-up;
-> +				};
-> +			};
-> +
-> +			sdc2_card_det_n: sd-card-det-n {
-> +				pins = "gpio77";
-> +				function = "gpio";
-> +				bias-pull-up;
-> +				drive-strength = <2>;
-> +			};
->  		};
->  
->  		apps_smmu: iommu@15000000 {
-> -- 
-> 2.32.0
-> 
