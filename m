@@ -2,180 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D18A3A7421
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11BAB3A7446
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhFOCjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:39:05 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:22167 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbhFOCjE (ORCPT
+        id S230188AbhFOCse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhFOCs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:39:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623724620; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=htAFHwDS8GLyJOv51qcTukaO+cQ/uyLwy7eNovu50Zw=;
- b=TRi2C6dsHs1S13ZYJ08+/P91xXTo2afjFapo/5EMAbqf3t3EYl4yPaIZ6aCv1qpTf77ZJk+g
- xxCGBbP/+5BFef3OlwlgKs/CmCWPYvcVsMeA/OIgtm7Fww5TkJ710+GPLeiPThXopqJAtPI1
- o8dZGMlCcpA4WC3ZPGM+jm2CrNY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60c8124b2eaeb98b5e1e5e73 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 02:36:58
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7AFFDC43148; Tue, 15 Jun 2021 02:36:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4455C4338A;
-        Tue, 15 Jun 2021 02:36:56 +0000 (UTC)
+        Mon, 14 Jun 2021 22:48:29 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2892C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:46:24 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id gt18so1377291ejc.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:46:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vVu/q50mLKZC8+FmqE6RzI+X9/hmuWYOAB854u4sNe0=;
+        b=lH8grbcFhCAO4tnhWvsAdMiBjS0dTx3HutQQBO9coicIiuYTgrOeRLwpRjHXqMce1/
+         jlap8x9hVMfojCAQL0TmYXz+FyLqz+bqKIlRSJS3e+s2DHZplVtmv0r7hBkVZzC2o+er
+         nxlHTtAb3r4mchIxkgI5MOGYLAzko3i2pecmOL0Z42EF0b3ox+/Pmr1dSd7003L0FrDr
+         aoAuPuvRiIIuj+kiBzu5zJQcJDus9CmYTMuIB9AyBdYK4OnA7adx7M6L4FlbGfyhjdmq
+         I8QALrFxn/N9hR0DJ6Xv8/n4+4+0/0zRI6bM7liU6yRbMP0oPJL0Pt48DtbAVjrqTH/u
+         BxVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vVu/q50mLKZC8+FmqE6RzI+X9/hmuWYOAB854u4sNe0=;
+        b=MWlssjUwyrX1417TslAeDnVWZXx2AkPHF0fgcjBx9x4FEHwY6EjfMJzDGU9cWme/+R
+         k7RoXE8Zahj9YkwuMjZ9ono+1M0iafmG6R7+Sjc4nJez7q+Tif7KulkcT13oSV87bTDF
+         vZRbtq1JaEyIFuyOV+sKuiN5zT7EfG6v68Ou7IoRagKiB7yXhUwpV80vVBNVGujMlZu8
+         aCrB255pqCw/wCbOqbucoiM7o+fEdx05ZCiiHK9qQSdLqQBsOJLkQAKBTFV7jSaJ62AA
+         8MxVroZJTWrxWwWgvLps7Rv+eQFHjBolHA3BC30MkOHXCr005nA1qMtRsgbceuw0R71k
+         5REA==
+X-Gm-Message-State: AOAM533MZRRdIEE6mRMwY0PEftv/AlekNfPQMGjQRwpMJYIFHdFEWJyE
+        mAgiEmqTxfVGw5+7lkOI/vRQE0d/CF4EpuVV9YZ3NYojMlx0gQ==
+X-Google-Smtp-Source: ABdhPJxZ/dgSfmoQFiza4iMe8qVVuP8sYLGcxHmV82OdFool6B9csSY6OkHOGeXlUVIIywTaOOGzKuIwejrZQ+CsBo0=
+X-Received: by 2002:a05:6512:1144:: with SMTP id m4mr14563109lfg.390.1623724714373;
+ Mon, 14 Jun 2021 19:38:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 15 Jun 2021 10:36:56 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-In-Reply-To: <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-9-git-send-email-cang@codeaurora.org>
- <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
- <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
- <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
- <75527f0ba5d315d6edbf800a2ddcf8c7@codeaurora.org>
- <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
-Message-ID: <3fce15502c2742a4388817538eb4db97@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210615012014.1100672-1-jannh@google.com> <20210614190032.09d8b7ac530c8b14ace44b82@linux-foundation.org>
+ <CAG48ez1nZcrJPO-hOLyE08g8HKSGEambCp6mNv6FNR2c9+6sJg@mail.gmail.com>
+In-Reply-To: <CAG48ez1nZcrJPO-hOLyE08g8HKSGEambCp6mNv6FNR2c9+6sJg@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 15 Jun 2021 04:38:08 +0200
+Message-ID: <CAG48ez1uODg-_6LrLsLzCoBr=VEBisfeNhSkTmYgwG0Ldq+Dxg@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with split_huge_page()
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        stable <stable@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
+On Tue, Jun 15, 2021 at 4:36 AM Jann Horn <jannh@google.com> wrote:
+> If you don't like the ifdeffery in this patch, can you please merge
+> the v1 patch? It's not like I was adding a new BUG_ON(), I was just
+> refactoring an existing BUG_ON() into a helper function, so I wasn't
+> making things worse; and I don't want to think about how to best
+> design WARN/BUG macros for the VM subsystem in order to land this
+> bugfix.
 
-On 2021-06-15 02:49, Bart Van Assche wrote:
-> On 6/13/21 7:42 AM, Can Guo wrote:
->> 2. ufshcd_abort() invokes ufshcd_err_handler() synchronously can have 
->> a
->> live lock issue, which is why I chose the asynchronous way (from the 
->> first
->> day I started to fix error handling). The live lock happens when abort
->> happens
->> to a PM request, e.g., a SSU cmd sent from suspend/resume. Because UFS
->> error
->> handler is synchronized with suspend/resume (by calling
->> pm_runtime_get_sync()
->> and lock_system_sleep()), the sequence is like:
->> [1] ufshcd_wl_resume() sends SSU cmd
->> [2] ufshcd_abort() calls UFS error handler
->> [3] UFS error handler calls lock_system_sleep() and 
->> pm_runtime_get_sync()
->> 
->> In above sequence, either lock_system_sleep() or pm_runtime_get_sync()
->> shall
->> be blocked - [3] is blocked by [1], [2] is blocked by [3], while [1] 
->> is
->> blocked by [2].
->> 
->> For PM requests, I chose to abort them fast to unblock suspend/resume,
->> suspend/resume shall fail of course, but UFS error handler recovers
->> PM errors anyways.
-> 
-> In the above sequence, does [2] perhaps refer to aborting the SSU
-> command submitted in step [1] (this is not clear to me)?
-
-Yes, your understanding is right.
-
-> If so, how about breaking the circular waiting cycle as follows:
-> - If it can happen that SSU succeeds after more than scsi_timeout
->   seconds, define a custom timeout handler. From inside the timeout
->   handler, schedule a link check and return BLK_EH_RESET_TIMER. If the
->   link is no longer operational, run the error handler. If the link
->   cannot be recovered by the error handler, fail all pending commands.
->   This will prevent that ufshcd_abort() is called if a SSU command 
-> takes
->   longer than expected. See also commit 0dd0dec1677e.
-> - Modify the UFS error handler such that it accepts a context argument.
->   The context argument specifies whether or not the UFS error handler 
-> is
->   called from inside a system suspend or system resume handler. If the
->   UFS error handler is called from inside a system suspend or resume
->   callback, skip the lock_system_sleep() and unlock_system_sleep()
->   calls.
-> 
-
-I am aware of commit 0dd0dec1677e, I gave my reviewed-by tag. Thank you
-for your suggestion and I believe it can resolve the cycle, because 
-actually
-I've considered the similar way (leverage hba->host->eh_noresume) last 
-year,
-but I didn't take this way due to below reasons:
-
-1. UFS error handler basically does one thing - reset and restore, which
-stops hba [1], resets device [2] and re-probes the device [3]. Stopping 
-hba [1]
-shall complete any pending requests in the doorbell (with error or no 
-error).
-After [1], suspend/resume contexts, blocked by SSU cmd, shall be 
-unblocked
-right away to do whatever it needs to handle the SSU cmd failure 
-(completed
-in [1], so scsi_execute() returns an error), e.g., put link back to the 
-old
-state. call ufshcd_vops_suspend(), turn off irq/clocks/powers and etc...
-However, reset and restore ([2] and [3]) is still running, and it can 
-(most likely)
-be disturbed by suspend/resume. So passing a parameter or using 
-hba->host->eh_noresume
-to skip lock_system_sleep() and unlock_system_sleep() can break the 
-cycle,
-but error handling may run concurrently with suspend/resume. Of course 
-we can
-modify suspend/resume to avoid it, but I was pursuing a minimal change 
-to get this fixed.
-
-2. Whatever way we take to break the cycle, suspend/resume shall fail 
-and
-RPM framework shall save the error to dev.power.runtime_error, leaving
-the device in runtime suspended or active mode permanently. If it is 
-left
-runtime suspended, UFS driver won't accept cmd anymore, while if it is 
-left
-runtime active, powers of UFS device and host will be left ON, leading 
-to power
-penalty. So my main idea is to let suspend/resume contexts, blocked by 
-PM cmds,
-fail fast first and then error handler recover everything back to work.
-
-Thanks,
-
-Can Guo.
-
-> Thanks,
-> 
-> Bart.
+Ah, nevermind, I hadn't seen that you already merged this one.
