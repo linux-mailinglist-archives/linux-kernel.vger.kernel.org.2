@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAFE3A7E51
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C9E3A7E52
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhFOMlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42480 "EHLO
+        id S230197AbhFOMm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhFOMlt (ORCPT
+        with ESMTP id S229951AbhFOMm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:41:49 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266F0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:39:45 -0700 (PDT)
-Received: from [10.88.0.186] (dslb-084-062-104-230.084.062.pools.vodafone-ip.de [84.62.104.230])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: ch@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 8653F80EC6;
-        Tue, 15 Jun 2021 14:39:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1623760783;
-        bh=/himMSkTfivyhxtCVhwVEdFJBtlSgUHF5C534nSY1zc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=OfkEtT3rkWUW/EmOvthWli3dCtmF/VbkMUJ1dTkJQdvYNrLKspj42M9CDfMnqjnu/
-         W4CHBr9KkzsxLIEm/lhDxTg6dMKGhPQpbHBTBBlaBeGz6uTYxhM74YFLwrBuhSHeow
-         XBNmRJ7GJu1jyKCLfebdYHYnc0WfvJsEVZTgtASTuD6W4Ky7/cJD3idrTM88YdseEh
-         /3CG0aloWVFE9D6XMoGdUSlSM3SnvN+pHc1vC9NtmWS7C0enPkBviw3R8IuuV76QZt
-         orETqX2VGOdQEztl+cy1NGy5wYClMqt6Qt+Xe4mr6tmMrEormt49oJHQrURg73v6P+
-         EWyEo9QOq06OA==
-Subject: Re: [PATCH 2/3] ASoC: tlv320aic32x4: add support for TAS2505
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        Marek Vasut <marex@denx.de>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Sia Jee Heng <jee.heng.sia@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Annaliese McDermond <nh6z@nh6z.net>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210615094933.3076392-1-ch@denx.de>
- <20210615094933.3076392-3-ch@denx.de> <20210615122241.GE5149@sirena.org.uk>
-From:   Claudius Heine <ch@denx.de>
-Organization: Denx Software Engineering
-Message-ID: <4b72d6cd-ef07-fcdd-f90b-1cd53a3e3c8b@denx.de>
-Date:   Tue, 15 Jun 2021 14:39:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Tue, 15 Jun 2021 08:42:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7AAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:40:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xxwRxDnh0VFVSsnf3fNZemBZlcC0v4L/I7gFw2Rsxr0=; b=qQpMlxK0xqbmG70o+ix3Upt+LC
+        EHUJjQSjaPIiCOLPWNUqdZS+rtwxovhVzx7paeOOsEQdTI5dGoP9e2ygWsBC05Pf9QQhYRoj3uIE+
+        nUkpQYqLikGOMhnf6NvhhJYXl0DzCVcC6492Vg6L5bCVmrweD9zKRzUxQpuctsDSf4Qj3/9VTU42/
+        mAFpDRxIm3Yzxrugdu0fqowsCbhU8HsTmAgi66hQAcQi11B1p9/WRUiJwH0FtN1TpLRPpSfUCinuA
+        qEIb5nYGxBqxI1SGzzW2kzHRDFTTp0bhnBzx7B3FudymDsHOHaq/yPMA+WxV7E7asgLYh87WJCPKS
+        R8dgPQ4w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lt8Mm-006lyA-PL; Tue, 15 Jun 2021 12:40:32 +0000
+Date:   Tue, 15 Jun 2021 13:40:28 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Youquan Song <youquan.song@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>
+Subject: Re: page refcount race between prep_compound_gigantic_page() and
+ __page_cache_add_speculative()?
+Message-ID: <YMifvD723USsnWRH@casper.infradead.org>
+References: <CAG48ez23q0Jy9cuVnwAe7t_fdhMk2S7N5Hdi-GLcCeq5bsfLxw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210615122241.GE5149@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez23q0Jy9cuVnwAe7t_fdhMk2S7N5Hdi-GLcCeq5bsfLxw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-15 14:22, Mark Brown wrote:
-> On Tue, Jun 15, 2021 at 11:49:31AM +0200, Claudius Heine wrote:
+On Tue, Jun 15, 2021 at 01:03:53PM +0200, Jann Horn wrote:
+> The messier path, as the original commit describes, is "gigantic" page
+> allocation. In that case, we'll go through the following path (if we
+> ignore CMA):
 > 
->> +static int aic32x4_tas2505_spkdrv_putvol(struct snd_kcontrol *kcontrol,
->> +	struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
->> +	struct soc_mixer_control *mc =
->> +		(struct soc_mixer_control *)kcontrol->private_value;
->> +	u8 val;
->> +
->> +	val = (ucontrol->value.integer.value[0] & 0x7f);
->> +	val = mc->invert ? mc->max - val : val;
->> +	val = (val < 0) ? 0 : val;
->> +	snd_soc_component_write(component, TAS2505_SPKVOL1, val);
->> +
->> +	return 0;
->> +}
+>   alloc_fresh_huge_page():
+>     alloc_gigantic_page()
+>       alloc_contig_pages()
+>         __alloc_contig_pages()
+>           alloc_contig_range()
+>             isolate_freepages_range()
+>               split_map_pages()
+>                 post_alloc_hook() [FOR EVERY PAGE]
+>                   set_page_refcounted()
+>                     set_page_count(page, 1)
+>     prep_compound_gigantic_page()
+>       set_page_count(p, 0) [FOR EVERY TAIL PAGE]
 > 
-> Controls should return a boolean indicating if they changed their value
-> when written.  Other than the hard coded register what's device specific
-> here?  It looks like a normal control with a maximum value, it is
-> unclear why this is being open coded.
+> so all the tail pages are initially allocated with refcount 1 by the
+> page allocator, and then we overwrite those refcounts with zeroes.
+> 
+> 
+> Luckily, the only non-__init codepath that can get here is
+> __nr_hugepages_store_common(), which is only invoked from privileged
+> writes to sysfs/sysctls.
 
-Well probably because I didn't knew any better. Will look into it. Thx!
+Argh.  What if we passed __GFP_COMP into alloc_contig_pages()?
+The current callers of alloc_contig_range() do not pass __GFP_COMP,
+so it's no behaviour change for them, and __GFP_COMP implies this
+kind of behaviour.  I think that would imply _not_ calling
+split_map_pages(), which implies not calling post_alloc_hook(),
+which means we probably need to do a lot of the parts of
+post_alloc_hook() in alloc_gigantic_page().  Yuck.
 
-> 
->> +	SOC_DOUBLE_R_S_TLV("HP Driver Gain Playback Volume", AIC32X4_HPLGAIN,
->> +			AIC32X4_HPLGAIN, 0, -0x6, 0x1d, 5, 0,
->> +			tlv_driver_gain),
-> 
-> Drop the Gain.  See control-names.rst.
-> 
-
-Ok.
-
-Thanks!
-Claudius
