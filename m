@@ -2,92 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB383A7334
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 03:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6353F3A73ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbhFOBGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 21:06:00 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:6351 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhFOBF6 (ORCPT
+        id S230393AbhFOC3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231334AbhFOC3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 21:05:58 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G3qjR3bFTz61TF;
-        Tue, 15 Jun 2021 08:59:55 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 09:03:51 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 15 Jun 2021 09:03:50 +0800
-Subject: Re: [PATCH 4.14 00/49] 4.14.237-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210614102641.857724541@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <4074e360-c2a4-7efc-2c20-ca658d502393@huawei.com>
-Date:   Tue, 15 Jun 2021 09:03:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 14 Jun 2021 22:29:10 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A23C0617AF
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:27:06 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id z15so8958746vsn.13
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:27:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=2SPfHND9MVRbWvqH4g5LlYvvBDKL5bi9dBm7W+g4Upk=;
+        b=DIXuHtU8eko6wCGSKtkZmumwiCYDZ3aqLja5/O9z44N7O3BXBMAym+zA3Lfrjuccfo
+         vhX1GvMYYh+BYeDXOTwADCtYAAuGfBwmUmIvGbOaldnWp7mB25x6lMCQWD5pVJ5synZ6
+         HRROGHfh39nFxZTHSz+iTCEgUfmnFPzmXyISg/jaGo9QA12qlPubPXbktKfNit8gPzU2
+         RgmhysNmCOlH12DAxhgM27VcscVWHUzo3iHz34GkL8gJGpGBoabVS3fjDoipNFKcLIu1
+         95+CkHkNAqDrvedML5JrMDb6tMdxTkenlZIOzivupqi5awVRSNikxfah79gUA2RysA8R
+         XeAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=2SPfHND9MVRbWvqH4g5LlYvvBDKL5bi9dBm7W+g4Upk=;
+        b=GGwHnmCsOMc2OjHcordBDRxawa7QqJso0VU1TkpyMtdNGNWCsixFcc7V2Vp9sIjiTZ
+         smWZBRlXFc+45i84QZJsJJfBIBoUqW+WvsqHTCrMVpfp9yYYDi/jGqD+01s9sqUXYJGB
+         CJF91VN4HOWL5fvm4n9sw8D6zffdGO5Qf/fvVFDMutQKrITgzGEB8YabSKnOjDN01ZF+
+         dVP4Umqh6DzGa4zJ/oGXwdP7fIM7ekWG6MXnMkRyKsMn0G4Gi/VwDN46+oTdeH3ta4V+
+         HafekRw/kkCoNHE+n4l1qnMqvbE7AbJT9jCGHianiG3B8dhmdUNL+VG0deMny0VNwOCd
+         T4PA==
+X-Gm-Message-State: AOAM531ZjzWJFA7Yw+PVtlvMjjTURDb4eGQ7fwJ+kt/l802FYFFJPwRJ
+        X5oMnFwqW/i37BxeUH8SEg+TsPbw2tjsJw==
+X-Google-Smtp-Source: ABdhPJzda9M/1b63ZJQR8RGYcwrAtk9NfcH4bd59rj/WQsa81wB6kKEeClWwrcchZZH+MtNwL8BmPg==
+X-Received: by 2002:a62:8c55:0:b029:2ea:2165:503d with SMTP id m82-20020a628c550000b02902ea2165503dmr1882925pfd.68.1623719848453;
+        Mon, 14 Jun 2021 18:17:28 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:4801:c8d0:5db9:f2a7:a913:e1ba])
+        by smtp.gmail.com with ESMTPSA id z15sm14881758pgu.71.2021.06.14.18.17.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 18:17:27 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH 1/3] perf tools: Add read_cgroup_id() function
+Date:   Mon, 14 Jun 2021 18:17:22 -0700
+Message-Id: <20210615011724.672612-2-namhyung@kernel.org>
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
+In-Reply-To: <20210615011724.672612-1-namhyung@kernel.org>
+References: <20210615011724.672612-1-namhyung@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The read_cgroup_id() is to read a cgroup id from a file handle using
+name_to_handle_at(2) for the given cgroup.  It'll be used by bperf
+cgroup stat later.
 
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/cgroup.c | 25 +++++++++++++++++++++++++
+ tools/perf/util/cgroup.h |  9 +++++++++
+ 2 files changed, 34 insertions(+)
 
-On 2021/6/14 18:26, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.237 release.
-> There are 49 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 16 Jun 2021 10:26:30 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.237-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
+index f24ab4585553..ef18c988c681 100644
+--- a/tools/perf/util/cgroup.c
++++ b/tools/perf/util/cgroup.c
+@@ -45,6 +45,31 @@ static int open_cgroup(const char *name)
+ 	return fd;
+ }
+ 
++#ifdef HAVE_FILE_HANDLE
++int read_cgroup_id(struct cgroup *cgrp)
++{
++	char path[PATH_MAX + 1];
++	char mnt[PATH_MAX + 1];
++	struct {
++		struct file_handle fh;
++		uint64_t cgroup_id;
++	} handle;
++	int mount_id;
++
++	if (cgroupfs_find_mountpoint(mnt, PATH_MAX + 1, "perf_event"))
++		return -1;
++
++	scnprintf(path, PATH_MAX, "%s/%s", mnt, cgrp->name);
++
++	handle.fh.handle_bytes = sizeof(handle.cgroup_id);
++	if (name_to_handle_at(AT_FDCWD, path, &handle.fh, &mount_id, 0) < 0)
++		return -1;
++
++	cgrp->id = handle.cgroup_id;
++	return 0;
++}
++#endif  /* HAVE_FILE_HANDLE */
++
+ static struct cgroup *evlist__find_cgroup(struct evlist *evlist, const char *str)
+ {
+ 	struct evsel *counter;
+diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
+index 162906f3412a..707adbe25123 100644
+--- a/tools/perf/util/cgroup.h
++++ b/tools/perf/util/cgroup.h
+@@ -38,4 +38,13 @@ struct cgroup *cgroup__find(struct perf_env *env, uint64_t id);
+ 
+ void perf_env__purge_cgroups(struct perf_env *env);
+ 
++#ifdef HAVE_FILE_HANDLE
++int read_cgroup_id(struct cgroup *cgrp);
++#else
++int read_cgroup_id(struct cgroup *cgrp)
++{
++	return -1;
++}
++#endif  /* HAVE_FILE_HANDLE */
++
+ #endif /* __CGROUP_H__ */
+-- 
+2.32.0.272.g935e593368-goog
 
-Tested on x86 for 4.14.237-rc1,
-
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.14.y
-Version: 4.14.237-rc1
-Commit: cd5358beb13452c589c392a4d3b91a7015a8c5cc
-Compiler: gcc version 7.3.0 (GCC)
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8836
-passed: 8836
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
