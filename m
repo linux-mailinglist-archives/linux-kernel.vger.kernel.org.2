@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1F63A841F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7B93A8427
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhFOPkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhFOPkL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:40:11 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E10AC061574;
-        Tue, 15 Jun 2021 08:38:06 -0700 (PDT)
-Received: from [IPv6:2001:4c4c:2228:2400::1000] (20014C4C222824000000000000001000.catv.pool.telekom.hu [IPv6:2001:4c4c:2228:2400::1000])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hs@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 4CD6582934;
-        Tue, 15 Jun 2021 17:38:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1623771482;
-        bh=Ej4rCqetLA22T9wWq3Szx63Mg97UjXN4quAi/wmiorE=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=w4UPMvakgrKUQLtejM2GLU9QSfH7jmaSn0I5dlhseWNIAOGyl5FisWyRK0pRjCCvl
-         8kvSrxaNS3XltIoG/0EZVeLWo2y27z6TwDiiMIG+a9vBM4FDOixEDgBOR8mzOYu6x0
-         FXpnQ6KY67mpuZk3BWnfo7c9qwa77Oqr3q4sdT4JtPttbeN9GYQ6eItnTnLyuo2tws
-         91yY9sa0utKNYOmT+xsFkYwEpnQqhn2mTwhPHkVJBquSPSvAZZghMrLP8ZRe7aP8r/
-         /uTyW9EMS/JMqUuI+cYr9w/VBZs70HvQbV4LnqrYXdUFcFUgrV4bZOmfFmiYmE4sQN
-         Oq+Ld8PkTfzvA==
-Reply-To: hs@denx.de
-Subject: Re: [PATCH][next] mtd: devices: mchp48l640: Fix return of
- uninitialized value in ret
-To:     Colin King <colin.king@canonical.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210615140652.59521-1-colin.king@canonical.com>
-From:   Heiko Schocher <hs@denx.de>
-Message-ID: <b0d971da-ff2e-7ad4-cba7-32a1406b983d@denx.de>
-Date:   Tue, 15 Jun 2021 17:38:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231639AbhFOPlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41776 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230352AbhFOPlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:41:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DB176148E;
+        Tue, 15 Jun 2021 15:38:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623771536;
+        bh=rgNd9ro+iBH4rkbur/bO3RZ1IPlfddRdvzaAQ0tXikI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bwaiRsjbWTGMIssNvtI9JLxTpQHjMn2x0fKMGqUyKPhjfPnFMsKkSFoECeoh4urJT
+         tjeKB6mrgDHxo6SSsM+z9my6O2ndRYHrPX4CJMfWlJGlt8lBSkzmlzuDSOO9AFNQQL
+         ywt8bbZI06OUCKTa3rQLjpBLJrf8lz4w0bTrm6019yLrmY1tI54JgzPb5963tOyT2N
+         xBlsaCHaw+dsws0vA8W9hW/QbwEkrmO2CIg+R4ijTFDYGw9vbeTx9KPZdEUiTmzcBC
+         Q/rhLf9k1tue4WXGQ8dToIG/bC5+trFyINrvAFFAwagOPff0IOA4nE3o9fnq1BFMRt
+         AcKlcCZ3HF+Bw==
+Date:   Tue, 15 Jun 2021 16:38:37 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
+Message-ID: <20210615153837.GL5149@sirena.org.uk>
+References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
+ <20210611101540.3379937-3-dmitry.baryshkov@linaro.org>
+ <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
+ <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
+ <CAPDyKFoMC_7kJx_Wb4LKgxvRCoqHYFtwsJ2b7Cr4OvjA94DtHg@mail.gmail.com>
+ <20210615111012.GA5149@sirena.org.uk>
+ <CAPDyKFreV-RPzweG8SqFQtvZMOyFbaG2+tMFKc2JkbEj+erb=g@mail.gmail.com>
+ <20210615152620.GH5149@sirena.org.uk>
+ <CAPDyKFrthc_6rXt1UscKTQnctFXw0XjReEF5bqCGot2n=ChKaA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210615140652.59521-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Bzq2cJcN05fcPrs+"
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFrthc_6rXt1UscKTQnctFXw0XjReEF5bqCGot2n=ChKaA@mail.gmail.com>
+X-Cookie: See store for details.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Colin,
 
-On 15.06.21 16:06, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> In the case where the read or write lengths are zero bytes the return
-> value in variable ret has not been initialized and a garbage value
-> is returned. Fix this by initializing ret to zero.
-> 
-> Addresses-Coverity: ("Uninitialized scalar variable")
-> Fixes: 88d125026753 ("mtd: devices: add support for microchip 48l640 EERAM")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/mtd/devices/mchp48l640.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+--Bzq2cJcN05fcPrs+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks!
+On Tue, Jun 15, 2021 at 05:35:01PM +0200, Ulf Hansson wrote:
 
-Reviewed-by: Heiko Schocher <hs@denx.de>
+> Let's see where we end up with this. My concern at this point is that
+> it could spread to more users, which would make it even more difficult
+> to remove.
 
-bye,
-Heiko
--- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
+Perhaps mark it as deprecated while people figure out how to fix the
+existing user?
+
+--Bzq2cJcN05fcPrs+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDIyXwACgkQJNaLcl1U
+h9APSAf+Lh/u48cE9uongDESh5JQD2/iXrn4MOo798Ceppgqi1iB0LraDdA4iuAW
+0MBMsG8o/GnMWLrXu7BOpJWY9lwFYITVBCkkU4dbgDU7fQszhmf/VQFcpjg1t5YQ
+N4lynsK7DMT93LDEYQN1y6uboeaxQcHVxeIGSPBe1NfGmRmrL1HB+oaEu6nmZ3of
+eA0heoYUKz0Cn/Jxzychpn0AzqridSm0KlyMcCNIuOf4BU7yDhPQNFqerQEqnf8J
+1JipyDj+xfJ2Ufss+cUHwduRG/Il9lbyy8CuL+y0iNtm1f65EZ0AL+caM6R2M4BR
+2refhB9vPMwyBtrY1fZgaM5ttZm/qQ==
+=gCbi
+-----END PGP SIGNATURE-----
+
+--Bzq2cJcN05fcPrs+--
