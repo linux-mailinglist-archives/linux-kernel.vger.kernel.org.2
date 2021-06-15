@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A723B3A83EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15C43A83F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhFOP2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:28:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230463AbhFOP2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:28:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A36760FF0;
-        Tue, 15 Jun 2021 15:26:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623770800;
-        bh=RQMXiudVPSpH6wfIxq+VUPwtlfDu0HxJtDbShI6iF/U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UgnMbCLwuzChYeurrAtDkmj0Wb0+3OS+IGq5iU90jNn45JfJol/dIArN7LmFX4CPD
-         ADHjDDHRK34Js0/3wosKOUSnpUEsEsJQ2nljwicWm+T1VVcaKOpWhh0qhHMKU93e1A
-         57cz56FXz35zVcHA+ROCi1GuuiTNYeGtOt/RgDuknq7h5RyDANKTPf3mfc2kNTwlXI
-         jm5JROMMuM7VLrE3puAu6OPxiFB8qM22nD3LtWY40tmZa7iPRYoZ3iUvkaJPiGQJw7
-         GoLXz0wQgHGe5A79utFI7tPJlSRcxdNbYk6SWb2r8DKYC7dONy5eAV9X1G+KFIkBFI
-         SKACX0gd44kAg==
-Date:   Tue, 15 Jun 2021 16:26:21 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
-Message-ID: <20210615152620.GH5149@sirena.org.uk>
-References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
- <20210611101540.3379937-3-dmitry.baryshkov@linaro.org>
- <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
- <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
- <CAPDyKFoMC_7kJx_Wb4LKgxvRCoqHYFtwsJ2b7Cr4OvjA94DtHg@mail.gmail.com>
- <20210615111012.GA5149@sirena.org.uk>
- <CAPDyKFreV-RPzweG8SqFQtvZMOyFbaG2+tMFKc2JkbEj+erb=g@mail.gmail.com>
+        id S231537AbhFOP3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:29:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34815 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231398AbhFOP3f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:29:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623770850;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BBaVLpIdsAFYJF8kqK3yekJ5AzD1bcUpe8+m6jwsVLg=;
+        b=fSBjcT318OH6wnTl6N7EHhkq2zdRp2JFmiKMkBfeMzkl9RXUivf4h6bBXFjih5YpZZRyd8
+        tLoVHSThaHqUDfNUMCMwFZ6UhltYgi71D5VzgNamut0P9PqmnFY6t11WztoVS4WOzY1ePW
+        x5PkBVmK58zFA/Gs96pwClfVxcTOklY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-39-GkoiM_NONY-kgrEj9S9HZA-1; Tue, 15 Jun 2021 11:27:29 -0400
+X-MC-Unique: GkoiM_NONY-kgrEj9S9HZA-1
+Received: by mail-ed1-f69.google.com with SMTP id h23-20020aa7c5d70000b029038fed7b27d5so22326141eds.21
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:27:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BBaVLpIdsAFYJF8kqK3yekJ5AzD1bcUpe8+m6jwsVLg=;
+        b=oIs8vi1QO90uW+yLt/sTblrgv1oayUlk9PrRiOxxjUHcUkSWI9DukIR2uOT8EQoKRn
+         GlmkfjaqtubW/ZIaJD0yhsfd2xtqlwifZtzxMjsexY52fjhGkpZnnFFbbB1O761MukVp
+         8wQgdLS9h3bVAfbiI7SW6DpWyJJNCDwARbZcdWnxCvg6PGcD/fV/XKr/f0FhIRTrURi6
+         cK/pL3B6oktnseNZAHJKxHJxcmPCqmFPVCUlRiM41/Mg+yE8YJCQwRHNi2VQB7iWYTEi
+         K3epSNm1RBWZUr0bgiTRNiNPt4mUWRO6PFc0z6ntNAif0Ncz3LnAokuR0KtAiXS/INKT
+         o5ew==
+X-Gm-Message-State: AOAM533LLUnFL3tU0zs1nDzQmGBD0JoLctTsCzVCqVBmdbAwvGOvbEJu
+        pAtfye2QUGVTT41LXUSxfraDWmVUNMt1s+37Ltq7pGe8Hvx4zEzE5gLjHdHVB6hJAsNziyzE6bC
+        wP68o+uGSscLJZ0pV41ZBArx7
+X-Received: by 2002:a17:907:e8d:: with SMTP id ho13mr40593ejc.387.1623770848248;
+        Tue, 15 Jun 2021 08:27:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyccg0L1KZ9HRDmng0aCPycLedCiLWQMiR/1yuXJ4epefHBw9Kz5GYIcrrgex/qKDfX2NhxbQ==
+X-Received: by 2002:a17:907:e8d:: with SMTP id ho13mr40579ejc.387.1623770848094;
+        Tue, 15 Jun 2021 08:27:28 -0700 (PDT)
+Received: from redhat.com ([77.126.22.11])
+        by smtp.gmail.com with ESMTPSA id y10sm10323681ejm.76.2021.06.15.08.27.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 08:27:26 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 11:27:23 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xie Yongji <xieyongji@bytedance.com>
+Cc:     jasowang@redhat.com, stefanha@redhat.com, axboe@kernel.dk,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] virtio-blk: Add validation for block size in config
+ space
+Message-ID: <20210615112612-mutt-send-email-mst@kernel.org>
+References: <20210615104810.151-1-xieyongji@bytedance.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="AqCDj3hiknadvR6t"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPDyKFreV-RPzweG8SqFQtvZMOyFbaG2+tMFKc2JkbEj+erb=g@mail.gmail.com>
-X-Cookie: See store for details.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210615104810.151-1-xieyongji@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 15, 2021 at 06:48:10PM +0800, Xie Yongji wrote:
+> This ensures that we will not use an invalid block size
+> in config space (might come from an untrusted device).
+> 
+> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
 
---AqCDj3hiknadvR6t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'd say if device presents an unreasonable value,
+and we want to ignore that, then we should not
+negotiate VIRTIO_BLK_F_BLK_SIZE so that host knows.
 
-On Tue, Jun 15, 2021 at 04:55:24PM +0200, Ulf Hansson wrote:
-> On Tue, 15 Jun 2021 at 13:10, Mark Brown <broonie@kernel.org> wrote:
-> > On Tue, Jun 15, 2021 at 12:17:20PM +0200, Ulf Hansson wrote:
+So maybe move the logic to validate_features.
 
-> > > Beyond this, perhaps we should consider removing the
-> > > "regulator-fixed-domain" DT property, as to avoid similar problems
-> > > from cropping up?
+> ---
+>  drivers/block/virtio_blk.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> index b9fa3ef5b57c..85ae3b27ea4b 100644
+> --- a/drivers/block/virtio_blk.c
+> +++ b/drivers/block/virtio_blk.c
+> @@ -827,7 +827,7 @@ static int virtblk_probe(struct virtio_device *vdev)
+>  	err = virtio_cread_feature(vdev, VIRTIO_BLK_F_BLK_SIZE,
+>  				   struct virtio_blk_config, blk_size,
+>  				   &blk_size);
+> -	if (!err)
+> +	if (!err && blk_size >= SECTOR_SIZE && blk_size <= PAGE_SIZE)
+>  		blk_queue_logical_block_size(q, blk_size);
+>  	else
+>  		blk_size = queue_logical_block_size(q);
+> -- 
+> 2.11.0
 
-> > > Mark, what do you think?
-
-> > We need to maintain compatibility for existing users...
-
-> Normally, yes, I would agree.
-
-> In this case, it looks like there is only one user, which is somewhat
-> broken in regards to this, so what's the point of keeping this around?
-
-Only one user in mainline and you were just suggesting removing the
-property (you mean binding I think?) - at the very least we'd need to
-transition that upstream user away to something else before doing
-anything.
-
---AqCDj3hiknadvR6t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDIxpwACgkQJNaLcl1U
-h9CjvQf/ZtO5g8Vauy1TwetzYXVFnoVsisCUiyhX/D5CXU0hLQIKFPPAxx5gqOCd
-UAkVyyCPtCZS6a81dpQou5nrlB/xxa+fafbbHmszxCHMnlYLHe48KsbOUtCeTCVW
-a0KaDBH26WeNQc9YJ5BEANBdi5ddUYog95M6tBhUuf8588jwNM+SVklhepZEcKGe
-jdoUSOXdx5rh2+r0uaM3DsTP4Wq9gwrNZaMHQjSG8EoGWum0siwdxX6qUtwTezol
-OXLYHMdC6fkYTLDd/W6jr0qxBuQEQP6nQnV7aBkWqklxtNbYxq2ep9OA5mY5DFbN
-NLIIzxhA+NDD327u2oo/xTAn2TAMZA==
-=Wq07
------END PGP SIGNATURE-----
-
---AqCDj3hiknadvR6t--
