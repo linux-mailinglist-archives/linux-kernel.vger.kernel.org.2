@@ -2,328 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BDB3A73F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D7A3A739D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhFOC36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
+        id S231264AbhFOCUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhFOC34 (ORCPT
+        with ESMTP id S229743AbhFOCUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:29:56 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EFDC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:27:52 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id v6so10152916qta.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:27:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lHQGUeZhFDoTh7Hq3zo7y7j2Hu4SG3rIYVL9gIYJNLw=;
-        b=P/m0k5sIXF3hUFi9CU9gedE0eSuKde5rJ/cAtjEH9QhIMyMOgGXVy2P8APxEwdN/2/
-         XQpNik2U8u5BNpMjfqCQ7UBAg9x22TcogdFYZ1nGx+AKkrTHh1S7mK2xiUMppuN9tR7c
-         Eg+hQyJw12c4HN8X0iCmXG0aSxRj8Yc+Bhta5QQviCbSwdEMY2VnkPxxzD6zql+kmtJo
-         kuMiL1sXCCbsTFJzQkJFC0Ewb37nGxZQddWTJ4AvAHTEN9boVwO61vOIkoqMiFGbOQ4y
-         RFA3Bb8+SNKMwUfzdsRGwkhOu0Guc5uSUGPLuYLTxT8b1YzWU30f9kFL2rUJstSTK5of
-         EQTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lHQGUeZhFDoTh7Hq3zo7y7j2Hu4SG3rIYVL9gIYJNLw=;
-        b=uOOtk2TtqkHpQcvscqR0ZXYCYJ5KuH4hTO7DrkhjM2BMR5kJXO4dRKszGWs5WYyiNv
-         PunZpFCfCv8Zz0mLqJQ3QQfFLyC6szZUiHJlhk2r9epRE3MQg9B3a4suNyOOkd9Ceuxs
-         7QX9f924wTpHUEjNNd7NZUL5zR5ORWsmqUgZmw1FHVgZ8cV1gielfNBOJQX4/+kIOA1F
-         WSLXLtW3CJZmJvJHLSbH9Wio0aSazMFR++zsT3RMHjPgpFtcV+pl3/R9HfH6NTSBQwFP
-         HHAxe8t2OajPjXik3XAZl5SehLsxvF9h97TVAKrAsr4+hQRi5rr5VMk7Om1vJ/G8tNKL
-         XDSQ==
-X-Gm-Message-State: AOAM533kpFJyP2T2PB+33kGQg57i45w7z1tiko4igBNht3RkJM3SSIbS
-        9zUuUjr0bBjqhvhzlXA3OpZnHwIe1nUVBA==
-X-Google-Smtp-Source: ABdhPJy9SFQfnpdgUuDXAzItK0wkCG5DOQgInCuSQ9aDPxteKWf0mLxjqJaQEDxWSKlxkSvO6YV0xA==
-X-Received: by 2002:a05:620a:4547:: with SMTP id u7mr2061128qkp.439.1623722341355;
-        Mon, 14 Jun 2021 18:59:01 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id v5sm11263588qkh.39.2021.06.14.18.58.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 18:59:00 -0700 (PDT)
-Subject: Re: [PATCH 3/5] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210608222926.2707768-1-thara.gopinath@linaro.org>
- <20210608222926.2707768-4-thara.gopinath@linaro.org>
- <20210614103141.nnrd4sn756os52wh@vireshk-i7>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <5a8f1622-4964-a8e1-f8a1-1dbd38948d45@linaro.org>
-Date:   Mon, 14 Jun 2021 21:58:57 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 14 Jun 2021 22:20:10 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE091C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:18:04 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G3s4529sVz9sWD;
+        Tue, 15 Jun 2021 12:01:09 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1623722469;
+        bh=Ioz32V7w9TF+SY5v/PGD0ofSTEUn3E3EmbxAg40Km+I=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=pJdbSmq1eTCdU+3xkvsZXfkGUrUNxnvqycQiy7TAYrHQqEXe2H1JfXir8hEFvW5PW
+         s0pYoh+OM9KregcJBM84Ab5oRqBWdQUtDxH342pO5rEtShAZ53WHVbnLubImLISSPX
+         azL43TxmUj8r/nu85TSx647r0I/9Ce52y3jc8UhR31Px0eNgiQ7mWSAqkN7gtDcLJv
+         PBaNN5yuaL/LqJq4YmO4s8li+oB1CsNBKXk7uPr4Fe04QRea1XJ836Qioa4Ms98u3w
+         ZNtkNYUXKYmcAvK67benMlLYZ/DddfE95gn6rYDEGO1KVzRp4o3VaA/kwLNXr9rTWW
+         fzv0vjEjM6Low==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        naveen.n.rao@linux.vnet.ibm.com, jniethe5@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 08/12] powerpc: Don't use 'struct ppc_inst' to
+ reference instruction location
+In-Reply-To: <7062722b087228e42cbd896e39bfdf526d6a340a.1621516826.git.christophe.leroy@csgroup.eu>
+References: <cover.1621516826.git.christophe.leroy@csgroup.eu>
+ <7062722b087228e42cbd896e39bfdf526d6a340a.1621516826.git.christophe.leroy@csgroup.eu>
+Date:   Tue, 15 Jun 2021 12:01:08 +1000
+Message-ID: <871r93vqcb.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20210614103141.nnrd4sn756os52wh@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> diff --git a/arch/powerpc/include/asm/inst.h b/arch/powerpc/include/asm/inst.h
+> index 5a0740ebf132..32d318c3b180 100644
+> --- a/arch/powerpc/include/asm/inst.h
+> +++ b/arch/powerpc/include/asm/inst.h
+> @@ -139,7 +139,7 @@ static inline int ppc_inst_len(struct ppc_inst x)
+>   * Return the address of the next instruction, if the instruction @value was
+>   * located at @location.
+>   */
+> -static inline struct ppc_inst *ppc_inst_next(void *location, struct ppc_inst *value)
+> +static inline unsigned int *ppc_inst_next(unsigned int *location, unsigned int *value)
+>  {
+>  	struct ppc_inst tmp;
+>  
 
+It's not visible in the diff, but the rest of the function is:
 
-On 6/14/21 6:31 AM, Viresh Kumar wrote:
-> On 08-06-21, 18:29, Thara Gopinath wrote:
->> Add interrupt support to notify the kernel of h/w initiated frequency
->> throttling by LMh. Convey this to scheduler via thermal presssure
->> interface.
->>
->> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
->> ---
->>   drivers/cpufreq/qcom-cpufreq-hw.c | 100 ++++++++++++++++++++++++++++++
->>   1 file changed, 100 insertions(+)
->>
->> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
->> index f86859bf76f1..95e17330aa9d 100644
->> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
->> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
->> @@ -13,6 +13,7 @@
->>   #include <linux/of_platform.h>
->>   #include <linux/pm_opp.h>
->>   #include <linux/slab.h>
->> +#include <linux/interrupt.h>
->>   
->>   #define LUT_MAX_ENTRIES			40U
->>   #define LUT_SRC				GENMASK(31, 30)
->> @@ -22,10 +23,13 @@
->>   #define CLK_HW_DIV			2
->>   #define LUT_TURBO_IND			1
->>   
->> +#define HZ_PER_KHZ			1000
->> +
->>   struct qcom_cpufreq_soc_data {
->>   	u32 reg_enable;
->>   	u32 reg_freq_lut;
->>   	u32 reg_volt_lut;
->> +	u32 reg_current_vote;
->>   	u32 reg_perf_state;
->>   	u8 lut_row_size;
->>   };
->> @@ -33,7 +37,11 @@ struct qcom_cpufreq_soc_data {
->>   struct qcom_cpufreq_data {
->>   	void __iomem *base;
->>   	struct resource *res;
->> +	struct delayed_work lmh_dcvs_poll_work;
->>   	const struct qcom_cpufreq_soc_data *soc_data;
->> +	cpumask_var_t cpus;
->> +	unsigned long throttled_freq;
->> +	int lmh_dcvs_irq;
->>   };
->>   
->>   static unsigned long cpu_hw_rate, xo_rate;
->> @@ -251,10 +259,79 @@ static void qcom_get_related_cpus(int index, struct cpumask *m)
->>   	}
->>   }
->>   
->> +static inline unsigned long qcom_lmh_vote_to_freq(u32 val)
->> +{
->> +	return (val & 0x3FF) * 19200;
->> +}
->> +
->> +static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
->> +{
->> +	struct cpufreq_policy policy;
->> +	struct dev_pm_opp *opp;
->> +	struct device *dev;
->> +	unsigned long max_capacity, capacity, freq_hz;
->> +	unsigned int val, freq;
->> +
->> +	val = readl_relaxed(data->base + data->soc_data->reg_current_vote);
->> +	freq = qcom_lmh_vote_to_freq(val);
->> +	freq_hz = freq * HZ_PER_KHZ;
->> +
->> +	/* Do I need to calculate ceil and floor ? */
-> 
-> You don't know ?
+	tmp = ppc_inst_read(value);
 
-stray comment! Will remove it.
+	return location + ppc_inst_len(tmp);
+}
 
-> 
->> +	dev = get_cpu_device(cpumask_first(data->cpus));
->> +	opp = dev_pm_opp_find_freq_floor(dev, &freq_hz);
->> +	if (IS_ERR(opp) && PTR_ERR(opp) == -ERANGE)
->> +		opp = dev_pm_opp_find_freq_ceil(dev, &freq_hz);
->> +
->> +	data->throttled_freq = freq_hz / HZ_PER_KHZ;
->> +
-> 
-> What exactly are we trying to do here ? A comment would be good as
-> well.
+And so changing the type of location from void * to int * changes the
+result of that addition, ie. previously it was in units of bytes, now
+it's units of 4 bytes.
 
-You want me to put a comment saying converting frequency in hz to khz ?
+To fix it I've kept location as unsigned int *, and added a cast where
+we do the addition. That way users of the function just see unsigned int *,
+the cast to void * is an implementation detail.
 
-> 
->> +	cpufreq_get_policy(&policy, cpumask_first(data->cpus));
->> +
->> +	/* Update thermal pressure */
->> +	max_capacity = arch_scale_cpu_capacity(cpumask_first(data->cpus));
-> 
-> Set capacity of a single CPU from a policy ?
+We only have a handful of uses of ppc_inst_len(), so maybe that should
+change name and return a result in units of int *. But that can be a
+separate change.
 
-Get maximum capacity of a cpu.
+> diff --git a/arch/powerpc/platforms/86xx/mpc86xx_smp.c b/arch/powerpc/platforms/86xx/mpc86xx_smp.c
+> index 87f524e4b09c..302f2a1e0361 100644
+> --- a/arch/powerpc/platforms/86xx/mpc86xx_smp.c
+> +++ b/arch/powerpc/platforms/86xx/mpc86xx_smp.c
+> @@ -83,7 +83,7 @@ smp_86xx_kick_cpu(int nr)
+>  		mdelay(1);
+>  
+>  	/* Restore the exception vector */
+> -	patch_instruction((struct ppc_inst *)vector, ppc_inst(save_vector));
+> +	patch_instruction(vector, ppc_inst(save_vector));
+>  
+>  	local_irq_restore(flags);
+>  
 
-> 
->> +	capacity = data->throttled_freq * max_capacity;
->> +	capacity /= policy.cpuinfo.max_freq;
->> +	/* Don't pass boost capacity to scheduler */
->> +	if (capacity > max_capacity)
->> +		capacity = max_capacity;
->> +	arch_set_thermal_pressure(data->cpus, max_capacity - capacity);
-> 
-> You should really be using policy->cpus instead of allocating
-> data->cpus..
+There was another usage in here:
 
-Yes I should be. But I still need data->cpus to get the policy.
+ 	/* Setup fake reset vector to call __secondary_start_mpc86xx. */
+ 	target = (unsigned long) __secondary_start_mpc86xx;
+-	patch_branch((struct ppc_inst *)vector, target, BRANCH_SET_LINK);
++	patch_branch(vector, target, BRANCH_SET_LINK);
+ 
+ 	/* Kick that CPU */
+ 	smp_86xx_release_core(nr);
 
-> 
->> +}
->> +
->> +static void qcom_lmh_dcvs_poll(struct work_struct *work)
->> +{
->> +	struct qcom_cpufreq_data *data;
->> +
->> +	data = container_of(work, struct qcom_cpufreq_data, lmh_dcvs_poll_work.work);
->> +
->> +	qcom_lmh_dcvs_notify(data);
-> 
-> You should really move the below stuff the disable_irq_nosync(), it
-> will make your life easier.
+I fixed it up.
 
-I don't understand your comment here. I want to disable irq. call 
-notify. Start polling. And in polling I want to call notify and if the 
-thermal event has passed stop polling else continue polling.
-> 
->> +	/**
->> +	 * If h/w throttled frequency is higher than what cpufreq has requested for, stop
->> +	 * polling and switch back to interrupt mechanism
->> +	 */
->> +	if (data->throttled_freq >= qcom_cpufreq_hw_get(cpumask_first(data->cpus)))
->> +		/* Clear the existing interrupts and enable it back */
->> +		enable_irq(data->lmh_dcvs_irq);
->> +	else
->> +		mod_delayed_work(system_highpri_wq, &data->lmh_dcvs_poll_work,
->> +				 msecs_to_jiffies(10));
->> +}
->> +
->> +static irqreturn_t qcom_lmh_dcvs_handle_irq(int irq, void *data)
->> +{
->> +	struct qcom_cpufreq_data *c_data = data;
->> +
->> +	/* Disable interrupt and enable polling */
->> +	disable_irq_nosync(c_data->lmh_dcvs_irq);
->> +	qcom_lmh_dcvs_notify(c_data);
->> +	mod_delayed_work(system_highpri_wq, &c_data->lmh_dcvs_poll_work, msecs_to_jiffies(10));
->> +
->> +	return 0;
->> +}
->> +
->>   static const struct qcom_cpufreq_soc_data qcom_soc_data = {
->>   	.reg_enable = 0x0,
->>   	.reg_freq_lut = 0x110,
->>   	.reg_volt_lut = 0x114,
->> +	.reg_current_vote = 0x704,
-> 
-> Should this be a different patch ?
-
-Why ? This is the register to read the throttled frequency.
-
-> 
->>   	.reg_perf_state = 0x920,
->>   	.lut_row_size = 32,
->>   };
->> @@ -285,6 +362,7 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->>   	void __iomem *base;
->>   	struct qcom_cpufreq_data *data;
->>   	int ret, index;
->> +	bool lmh_mitigation_enabled = false;
-> 
-> You just overwrite it below, no need to initialize it.
-
-Sure.
-
-> 
->>   
->>   	cpu_dev = get_cpu_device(policy->cpu);
->>   	if (!cpu_dev) {
->> @@ -305,6 +383,8 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->>   
->>   	index = args.args[0];
->>   
->> +	lmh_mitigation_enabled = of_property_read_bool(pdev->dev.of_node, "qcom,support-lmh");
->> +
->>   	res = platform_get_resource(pdev, IORESOURCE_MEM, index);
->>   	if (!res) {
->>   		dev_err(dev, "failed to get mem resource %d\n", index);
->> @@ -329,6 +409,11 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->>   		goto unmap_base;
->>   	}
->>   
->> +	if (!alloc_cpumask_var(&data->cpus, GFP_KERNEL)) {
->> +		ret = -ENOMEM;
->> +		goto unmap_base;
->> +	}
->> +
->>   	data->soc_data = of_device_get_match_data(&pdev->dev);
->>   	data->base = base;
->>   	data->res = res;
->> @@ -347,6 +432,7 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->>   		goto error;
->>   	}
->>   
->> +	cpumask_copy(data->cpus, policy->cpus);
->>   	policy->driver_data = data;
->>   
->>   	ret = qcom_cpufreq_hw_read_lut(cpu_dev, policy);
->> @@ -370,6 +456,20 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->>   			dev_warn(cpu_dev, "failed to enable boost: %d\n", ret);
->>   	}
->>   
->> +	if (lmh_mitigation_enabled) {
-> 
-> Shouldn't you move the allocation and setting of data->cpus here ? I
-> suggest creating a separate routine for all initialization around this
-> stuff.
-
-I should considering nothing else is using data->cpus. Yes I will create 
-a separate init function.
-
-> 
->> +		data->lmh_dcvs_irq = platform_get_irq(pdev, index);
->> +		if (data->lmh_dcvs_irq < 0) {
->> +			ret = data->lmh_dcvs_irq;
->> +			goto error;
->> +		}
->> +		ret = devm_request_irq(dev, data->lmh_dcvs_irq, qcom_lmh_dcvs_handle_irq,
->> +				       0, "dcvsh-irq", data);
-> 
-> I would rather pass policy as data here.
-
-So policy for a cpu can change runtime, right ?
-
-> 
->> +		if (ret) {
->> +			dev_err(dev, "Error %d registering irq %x\n", ret, data->lmh_dcvs_irq);
->> +			goto error;
->> +		}
->> +		INIT_DEFERRABLE_WORK(&data->lmh_dcvs_poll_work, qcom_lmh_dcvs_poll);
->> +	}
->>   	return 0;
->>   error:
->>   	kfree(data);
-> 
-
--- 
-Warm Regards
-Thara (She/Her/Hers)
+cheers
