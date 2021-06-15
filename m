@@ -2,498 +2,438 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81703A8CA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D25F3A8CB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhFOXih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 19:38:37 -0400
-Received: from mga02.intel.com ([134.134.136.20]:42913 "EHLO mga02.intel.com"
+        id S231532AbhFOXkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 19:40:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229966AbhFOXig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:38:36 -0400
-IronPort-SDR: nlXT/1uTTEJBtyvaUcNkK0bxWJeULQMgp1k00oSPvYIFLFNaGrQbj75EfYBT8AWrZXLj4sAEbF
- IH0+km7oxtVg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="193205339"
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="193205339"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 16:36:31 -0700
-IronPort-SDR: 8AGwfTIS5eHnuCRHcmCTLhjBEdmpLZSa6eoD8G3/h5qrMrkwStnarYGFFAKl79GqoMqb20dN51
- gAQP8OKn+xOg==
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="421285734"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 16:36:31 -0700
-Subject: [PATCH v3 5/5] cxl/pmem: Register 'pmem' / cxl_nvdimm devices
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-cxl@vger.kernel.org
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev
-Date:   Tue, 15 Jun 2021 16:36:31 -0700
-Message-ID: <162380012696.3039556.4293801691038740850.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <162379911364.2993820.5684144324426888810.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <162379911364.2993820.5684144324426888810.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S229966AbhFOXkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 19:40:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EF7961350;
+        Tue, 15 Jun 2021 23:38:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1623800289;
+        bh=rjFPyZTYipWietsDaKtPBbLddpwNP6Naf5zN4Mzp6ZY=;
+        h=Date:From:To:Subject:From;
+        b=Ln7jqkmZZrk/0sFG6viAeuDnMcO0IUoFId60q0N8MrsduG2pcKdr7YGB+6KurRWDj
+         vJbVWL+UeMd/A31+q5maYY4M96gHPzuaYbQn2UDguK7Ow6jJL9W0YFw8HrFYa/NAkh
+         NkHKPH1CJviyiNLzTGwp3tCx26ymCT4VYt1fJz6s=
+Date:   Tue, 15 Jun 2021 16:38:08 -0700
+From:   akpm@linux-foundation.org
+To:     aneesh.kumar@linux.ibm.com, linux-alpha@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, mm-commits@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Subject:  +
+ mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t.patch
+ added to -mm tree
+Message-ID: <20210615233808.hzjGO1gF2%akpm@linux-foundation.org>
+User-Agent: s-nail v14.8.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While a memX device on /sys/bus/cxl represents a CXL memory expander
-control interface, a pmemX device represents the persistent memory
-sub-functionality. It bridges the CXL subystem to the libnvdimm nmemX
-control interface.
 
-With this skeleton ndctl can now see persistent memory devices on a
-"CXL" bus. Later patches add support for translating libnvdimm native
-commands to CXL commands.
+The patch titled
+     Subject: mm: rename pud_page_vaddr to pud_pgtable and make it return pmd_t *
+has been added to the -mm tree.  Its filename is
+     mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t.patch
 
-# ndctl list -BDiu -b CXL
-{
-  "provider":"CXL",
-  "dev":"ndbus1",
-  "dimms":[
-    {
-      "dev":"nmem1",
-      "state":"disabled"
-    },
-    {
-      "dev":"nmem0",
-      "state":"disabled"
-    }
-  ]
-}
+This patch should soon appear at
+    https://ozlabs.org/~akpm/mmots/broken-out/mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t.patch
+and later at
+    https://ozlabs.org/~akpm/mmotm/broken-out/mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t.patch
 
-Given nvdimm_bus_unregister() removes all devices on an ndbus0 the
-cxl_pmem infrastructure needs to arrange ->remove() to be triggered on
-cxl_nvdimm devices to keep their enabled state synchronized with the
-registration state of their corresponding device on the nvdimm_bus. In
-other words, always arrange for cxl_nvdimm_driver.remove() to unregister
-nvdimms from an nvdimm_bus ahead of the bus being unregistered.
+Before you just go and hit "reply", please:
+   a) Consider who else should be cc'ed
+   b) Prefer to cc a suitable mailing list as well
+   c) Ideally: find the original patch on the mailing list and do a
+      reply-to-all to that, adding suitable additional cc's
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Link: https://lore.kernel.org/r/162336398605.2462439.17422037666825492593.stgit@dwillia2-desk3.amr.corp.intel.com
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+*** Remember to use Documentation/process/submit-checklist.rst when testing your code ***
+
+The -mm tree is included into linux-next and is updated
+there every 3-4 working days
+
+------------------------------------------------------
+From: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Subject: mm: rename pud_page_vaddr to pud_pgtable and make it return pmd_t *
+
+No functional change in this patch.
+
+Link: https://lkml.kernel.org/r/20210615110859.320299-1-aneesh.kumar@linux.ibm.com
+Link: https://lore.kernel.org/linuxppc-dev/CAHk-=wi+J+iodze9FtjM3Zi4j4OeS+qqbKxME9QN4roxPEXH9Q@mail.gmail.com/
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Cc: <linux-alpha@vger.kernel.org>
+Cc: <linux-kernel@vger.kernel.org>
+Cc: <linux-arm-kernel@lists.infradead.org>
+Cc: <linux-ia64@vger.kernel.org>
+Cc: <linux-m68k@lists.linux-m68k.org>
+Cc: <linux-mips@vger.kernel.org>
+Cc: <linux-parisc@vger.kernel.org>
+Cc: <linuxppc-dev@lists.ozlabs.org>
+Cc: <linux-riscv@lists.infradead.org>
+Cc: <linux-sh@vger.kernel.org>
+Cc: <sparclinux@vger.kernel.org>
+Cc: <linux-um@lists.infradead.org>
+Cc: <linux-arch@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
-Changes in v3:
 
-A bit too aggressive on the header removal. cdev.h is now needed in
-mem.h.
+ arch/alpha/include/asm/pgtable.h             |    8 +++++---
+ arch/arm/include/asm/pgtable-3level.h        |    2 +-
+ arch/arm64/include/asm/pgtable.h             |    4 ++--
+ arch/ia64/include/asm/pgtable.h              |    2 +-
+ arch/m68k/include/asm/motorola_pgtable.h     |    2 +-
+ arch/mips/include/asm/pgtable-64.h           |    4 ++--
+ arch/parisc/include/asm/pgtable.h            |    4 ++--
+ arch/powerpc/include/asm/book3s/64/pgtable.h |    6 +++++-
+ arch/powerpc/include/asm/nohash/64/pgtable.h |    6 +++++-
+ arch/powerpc/mm/book3s64/radix_pgtable.c     |    4 ++--
+ arch/powerpc/mm/pgtable_64.c                 |    2 +-
+ arch/riscv/include/asm/pgtable-64.h          |    4 ++--
+ arch/sh/include/asm/pgtable-3level.h         |    4 ++--
+ arch/sparc/include/asm/pgtable_32.h          |    4 ++--
+ arch/sparc/include/asm/pgtable_64.h          |    6 +++---
+ arch/um/include/asm/pgtable-3level.h         |    2 +-
+ arch/x86/include/asm/pgtable.h               |    4 ++--
+ arch/x86/mm/pat/set_memory.c                 |    4 ++--
+ arch/x86/mm/pgtable.c                        |    2 +-
+ include/asm-generic/pgtable-nopmd.h          |    2 +-
+ include/asm-generic/pgtable-nopud.h          |    2 +-
+ include/linux/pgtable.h                      |    2 +-
+ 22 files changed, 45 insertions(+), 35 deletions(-)
 
- drivers/cxl/core.c |   86 +++++++++++++++++++++++++++++++++++++++++
- drivers/cxl/cxl.h  |   12 +++++-
- drivers/cxl/mem.h  |    2 +
- drivers/cxl/pci.c  |   23 ++++++++---
- drivers/cxl/pmem.c |  108 ++++++++++++++++++++++++++++++++++++++++++++++++----
- 5 files changed, 215 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
-index aaffb390d168..a2e4d54fc7bc 100644
---- a/drivers/cxl/core.c
-+++ b/drivers/cxl/core.c
-@@ -7,6 +7,7 @@
- #include <linux/slab.h>
- #include <linux/idr.h>
- #include "cxl.h"
-+#include "mem.h"
+--- a/arch/alpha/include/asm/pgtable.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/alpha/include/asm/pgtable.h
+@@ -236,8 +236,10 @@ pmd_page_vaddr(pmd_t pmd)
+ #define pmd_page(pmd)	(pfn_to_page(pmd_val(pmd) >> 32))
+ #define pud_page(pud)	(pfn_to_page(pud_val(pud) >> 32))
  
- /**
-  * DOC: cxl core
-@@ -730,6 +731,89 @@ struct cxl_nvdimm_bridge *devm_cxl_add_nvdimm_bridge(struct device *host,
- }
- EXPORT_SYMBOL_GPL(devm_cxl_add_nvdimm_bridge);
+-extern inline unsigned long pud_page_vaddr(pud_t pgd)
+-{ return PAGE_OFFSET + ((pud_val(pgd) & _PFN_MASK) >> (32-PAGE_SHIFT)); }
++static inline pmd_t *pud_pgtable(pud_t pgd)
++{
++	return (pmd_t *)(PAGE_OFFSET + ((pud_val(pgd) & _PFN_MASK) >> (32-PAGE_SHIFT)));
++}
  
-+static void cxl_nvdimm_release(struct device *dev)
-+{
-+	struct cxl_nvdimm *cxl_nvd = to_cxl_nvdimm(dev);
-+
-+	kfree(cxl_nvd);
-+}
-+
-+static const struct attribute_group *cxl_nvdimm_attribute_groups[] = {
-+	&cxl_base_attribute_group,
-+	NULL,
-+};
-+
-+static const struct device_type cxl_nvdimm_type = {
-+	.name = "cxl_nvdimm",
-+	.release = cxl_nvdimm_release,
-+	.groups = cxl_nvdimm_attribute_groups,
-+};
-+
-+bool is_cxl_nvdimm(struct device *dev)
-+{
-+	return dev->type == &cxl_nvdimm_type;
-+}
-+EXPORT_SYMBOL_GPL(is_cxl_nvdimm);
-+
-+struct cxl_nvdimm *to_cxl_nvdimm(struct device *dev)
-+{
-+	if (dev_WARN_ONCE(dev, !is_cxl_nvdimm(dev),
-+			  "not a cxl_nvdimm device\n"))
-+		return NULL;
-+	return container_of(dev, struct cxl_nvdimm, dev);
-+}
-+EXPORT_SYMBOL_GPL(to_cxl_nvdimm);
-+
-+static struct cxl_nvdimm *cxl_nvdimm_alloc(struct cxl_memdev *cxlmd)
-+{
-+	struct cxl_nvdimm *cxl_nvd;
-+	struct device *dev;
-+
-+	cxl_nvd = kzalloc(sizeof(*cxl_nvd), GFP_KERNEL);
-+	if (!cxl_nvd)
-+		return ERR_PTR(-ENOMEM);
-+
-+	dev = &cxl_nvd->dev;
-+	cxl_nvd->cxlmd = cxlmd;
-+	device_initialize(dev);
-+	device_set_pm_not_required(dev);
-+	dev->parent = &cxlmd->dev;
-+	dev->bus = &cxl_bus_type;
-+	dev->type = &cxl_nvdimm_type;
-+
-+	return cxl_nvd;
-+}
-+
-+int devm_cxl_add_nvdimm(struct device *host, struct cxl_memdev *cxlmd)
-+{
-+	struct cxl_nvdimm *cxl_nvd;
-+	struct device *dev;
-+	int rc;
-+
-+	cxl_nvd = cxl_nvdimm_alloc(cxlmd);
-+	if (IS_ERR(cxl_nvd))
-+		return PTR_ERR(cxl_nvd);
-+
-+	dev = &cxl_nvd->dev;
-+	rc = dev_set_name(dev, "pmem%d", cxlmd->id);
-+	if (rc)
-+		goto err;
-+
-+	rc = device_add(dev);
-+	if (rc)
-+		goto err;
-+
-+	dev_dbg(host, "%s: register %s\n", dev_name(dev->parent),
-+		dev_name(dev));
-+
-+	return devm_add_action_or_reset(host, unregister_dev, dev);
-+
-+err:
-+	put_device(dev);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(devm_cxl_add_nvdimm);
-+
- /**
-  * cxl_probe_device_regs() - Detect CXL Device register blocks
-  * @dev: Host device of the @base mapping
-@@ -929,6 +1013,8 @@ static int cxl_device_id(struct device *dev)
+ extern inline int pte_none(pte_t pte)		{ return !pte_val(pte); }
+ extern inline int pte_present(pte_t pte)	{ return pte_val(pte) & _PAGE_VALID; }
+@@ -287,7 +289,7 @@ extern inline pte_t pte_mkyoung(pte_t pt
+ /* Find an entry in the second-level page table.. */
+ extern inline pmd_t * pmd_offset(pud_t * dir, unsigned long address)
  {
- 	if (dev->type == &cxl_nvdimm_bridge_type)
- 		return CXL_DEVICE_NVDIMM_BRIDGE;
-+	if (dev->type == &cxl_nvdimm_type)
-+		return CXL_DEVICE_NVDIMM;
- 	return 0;
+-	pmd_t *ret = (pmd_t *) pud_page_vaddr(*dir) + ((address >> PMD_SHIFT) & (PTRS_PER_PAGE - 1));
++	pmd_t *ret = pud_pgtable(*dir) + ((address >> PMD_SHIFT) & (PTRS_PER_PAGE - 1));
+ 	smp_rmb(); /* see above */
+ 	return ret;
+ }
+--- a/arch/arm64/include/asm/pgtable.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/arm64/include/asm/pgtable.h
+@@ -633,9 +633,9 @@ static inline phys_addr_t pud_page_paddr
+ 	return __pud_to_phys(pud);
  }
  
-diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-index 5da2163ca45f..b6bda39a59e3 100644
---- a/drivers/cxl/cxl.h
-+++ b/drivers/cxl/cxl.h
-@@ -220,6 +220,12 @@ struct cxl_nvdimm_bridge {
- 	enum cxl_nvdimm_brige_state state;
- };
- 
-+struct cxl_nvdimm {
-+	struct device dev;
-+	struct cxl_memdev *cxlmd;
-+	struct nvdimm *nvdimm;
-+};
-+
- /**
-  * struct cxl_port - logical collection of upstream port devices and
-  *		     downstream port devices to construct a CXL memory
-@@ -306,7 +312,8 @@ int __cxl_driver_register(struct cxl_driver *cxl_drv, struct module *owner,
- #define cxl_driver_register(x) __cxl_driver_register(x, THIS_MODULE, KBUILD_MODNAME)
- void cxl_driver_unregister(struct cxl_driver *cxl_drv);
- 
--#define CXL_DEVICE_NVDIMM_BRIDGE 1
-+#define CXL_DEVICE_NVDIMM_BRIDGE	1
-+#define CXL_DEVICE_NVDIMM		2
- 
- #define MODULE_ALIAS_CXL(type) MODULE_ALIAS("cxl:t" __stringify(type) "*")
- #define CXL_MODALIAS_FMT "cxl:t%d"
-@@ -314,4 +321,7 @@ void cxl_driver_unregister(struct cxl_driver *cxl_drv);
- struct cxl_nvdimm_bridge *to_cxl_nvdimm_bridge(struct device *dev);
- struct cxl_nvdimm_bridge *devm_cxl_add_nvdimm_bridge(struct device *host,
- 						     struct cxl_port *port);
-+struct cxl_nvdimm *to_cxl_nvdimm(struct device *dev);
-+bool is_cxl_nvdimm(struct device *dev);
-+int devm_cxl_add_nvdimm(struct device *host, struct cxl_memdev *cxlmd);
- #endif /* __CXL_H__ */
-diff --git a/drivers/cxl/mem.h b/drivers/cxl/mem.h
-index 13868ff7cadf..8f02d02b26b4 100644
---- a/drivers/cxl/mem.h
-+++ b/drivers/cxl/mem.h
-@@ -2,6 +2,8 @@
- /* Copyright(c) 2020-2021 Intel Corporation. */
- #ifndef __CXL_MEM_H__
- #define __CXL_MEM_H__
-+#include <linux/cdev.h>
-+#include "cxl.h"
- 
- /* CXL 2.0 8.2.8.5.1.1 Memory Device Status Register */
- #define CXLMDEV_STATUS_OFFSET 0x0
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index a8f29ce35c2a..f8408e5f0754 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -1332,7 +1332,8 @@ static struct cxl_memdev *cxl_memdev_alloc(struct cxl_mem *cxlm)
- 	return ERR_PTR(rc);
- }
- 
--static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
-+static struct cxl_memdev *devm_cxl_add_memdev(struct device *host,
-+					      struct cxl_mem *cxlm)
+-static inline unsigned long pud_page_vaddr(pud_t pud)
++static inline pmd_t *pud_pgtable(pud_t pud)
  {
- 	struct cxl_memdev *cxlmd;
- 	struct device *dev;
-@@ -1341,7 +1342,7 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
- 
- 	cxlmd = cxl_memdev_alloc(cxlm);
- 	if (IS_ERR(cxlmd))
--		return PTR_ERR(cxlmd);
-+		return cxlmd;
- 
- 	dev = &cxlmd->dev;
- 	rc = dev_set_name(dev, "mem%d", cxlmd->id);
-@@ -1359,8 +1360,10 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
- 	if (rc)
- 		goto err;
- 
--	return devm_add_action_or_reset(dev->parent, cxl_memdev_unregister,
--					cxlmd);
-+	rc = devm_add_action_or_reset(host, cxl_memdev_unregister, cxlmd);
-+	if (rc)
-+		return ERR_PTR(rc);
-+	return cxlmd;
- 
- err:
- 	/*
-@@ -1369,7 +1372,7 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
- 	 */
- 	cxl_memdev_shutdown(cxlmd);
- 	put_device(dev);
--	return rc;
-+	return ERR_PTR(rc);
+-	return (unsigned long)__va(pud_page_paddr(pud));
++	return (pmd_t *)__va(pud_page_paddr(pud));
  }
  
- static int cxl_xfer_log(struct cxl_mem *cxlm, uuid_t *uuid, u32 size, u8 *out)
-@@ -1580,6 +1583,7 @@ static int cxl_mem_identify(struct cxl_mem *cxlm)
+ /* Find an entry in the second-level page table. */
+--- a/arch/arm/include/asm/pgtable-3level.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/arm/include/asm/pgtable-3level.h
+@@ -130,7 +130,7 @@
+ 		flush_pmd_entry(pudp);	\
+ 	} while (0)
  
- static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+-static inline pmd_t *pud_page_vaddr(pud_t pud)
++static inline pmd_t *pud_pgtable(pud_t pud)
  {
-+	struct cxl_memdev *cxlmd;
- 	struct cxl_mem *cxlm;
- 	int rc;
- 
-@@ -1607,7 +1611,14 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (rc)
- 		return rc;
- 
--	return cxl_mem_add_memdev(cxlm);
-+	cxlmd = devm_cxl_add_memdev(&pdev->dev, cxlm);
-+	if (IS_ERR(cxlmd))
-+		return PTR_ERR(cxlmd);
-+
-+	if (range_len(&cxlm->pmem_range) && IS_ENABLED(CONFIG_CXL_PMEM))
-+		rc = devm_cxl_add_nvdimm(&pdev->dev, cxlmd);
-+
-+	return rc;
+ 	return __va(pud_val(pud) & PHYS_MASK & (s32)PAGE_MASK);
  }
+--- a/arch/ia64/include/asm/pgtable.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/ia64/include/asm/pgtable.h
+@@ -273,7 +273,7 @@ ia64_phys_addr_valid (unsigned long addr
+ #define pud_bad(pud)			(!ia64_phys_addr_valid(pud_val(pud)))
+ #define pud_present(pud)		(pud_val(pud) != 0UL)
+ #define pud_clear(pudp)			(pud_val(*(pudp)) = 0UL)
+-#define pud_page_vaddr(pud)		((unsigned long) __va(pud_val(pud) & _PFN_MASK))
++#define pud_pgtable(pud)		((pmd_t *) __va(pud_val(pud) & _PFN_MASK))
+ #define pud_page(pud)			virt_to_page((pud_val(pud) + PAGE_OFFSET))
  
- static const struct pci_device_id cxl_mem_pci_tbl[] = {
-diff --git a/drivers/cxl/pmem.c b/drivers/cxl/pmem.c
-index 8365839856dc..0088e41dd2f3 100644
---- a/drivers/cxl/pmem.c
-+++ b/drivers/cxl/pmem.c
-@@ -3,7 +3,10 @@
- #include <linux/libnvdimm.h>
- #include <linux/device.h>
- #include <linux/module.h>
-+#include <linux/ndctl.h>
-+#include <linux/async.h>
- #include <linux/slab.h>
-+#include "mem.h"
- #include "cxl.h"
+ #if CONFIG_PGTABLE_LEVELS == 4
+--- a/arch/m68k/include/asm/motorola_pgtable.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/m68k/include/asm/motorola_pgtable.h
+@@ -131,7 +131,7 @@ static inline void pud_set(pud_t *pudp,
+ 
+ #define __pte_page(pte) ((unsigned long)__va(pte_val(pte) & PAGE_MASK))
+ #define pmd_page_vaddr(pmd) ((unsigned long)__va(pmd_val(pmd) & _TABLE_MASK))
+-#define pud_page_vaddr(pud) ((unsigned long)__va(pud_val(pud) & _TABLE_MASK))
++#define pud_pgtable(pud) ((pmd_t *)__va(pud_val(pud) & _TABLE_MASK))
+ 
+ 
+ #define pte_none(pte)		(!pte_val(pte))
+--- a/arch/mips/include/asm/pgtable-64.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/mips/include/asm/pgtable-64.h
+@@ -313,9 +313,9 @@ static inline void pud_clear(pud_t *pudp
+ #endif
+ 
+ #ifndef __PAGETABLE_PMD_FOLDED
+-static inline unsigned long pud_page_vaddr(pud_t pud)
++static inline pmd_t *pud_pgtable(pud_t pud)
+ {
+-	return pud_val(pud);
++	return (pmd_t *)pud_val(pud);
+ }
+ #define pud_phys(pud)		virt_to_phys((void *)pud_val(pud))
+ #define pud_page(pud)		(pfn_to_page(pud_phys(pud) >> PAGE_SHIFT))
+--- a/arch/parisc/include/asm/pgtable.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/parisc/include/asm/pgtable.h
+@@ -322,8 +322,8 @@ static inline void pmd_clear(pmd_t *pmd)
+ 
+ 
+ #if CONFIG_PGTABLE_LEVELS == 3
+-#define pud_page_vaddr(pud) ((unsigned long) __va(pud_address(pud)))
+-#define pud_page(pud)	virt_to_page((void *)pud_page_vaddr(pud))
++#define pud_pgtable(pud) ((pmd_t *) __va(pud_address(pud)))
++#define pud_page(pud)	virt_to_page((void *)pud_pgtable(pud))
+ 
+ /* For 64 bit we have three level tables */
+ 
+--- a/arch/powerpc/include/asm/book3s/64/pgtable.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/powerpc/include/asm/book3s/64/pgtable.h
+@@ -1048,9 +1048,13 @@ extern struct page *p4d_page(p4d_t p4d);
+ /* Pointers in the page table tree are physical addresses */
+ #define __pgtable_ptr_val(ptr)	__pa(ptr)
+ 
+-#define pud_page_vaddr(pud)	__va(pud_val(pud) & ~PUD_MASKED_BITS)
+ #define p4d_page_vaddr(p4d)	__va(p4d_val(p4d) & ~P4D_MASKED_BITS)
+ 
++static inline pmd_t *pud_pgtable(pud_t pud)
++{
++	return (pmd_t *)__va(pud_val(pud) & ~PUD_MASKED_BITS);
++}
++
+ #define pte_ERROR(e) \
+ 	pr_err("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
+ #define pmd_ERROR(e) \
+--- a/arch/powerpc/include/asm/nohash/64/pgtable.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/powerpc/include/asm/nohash/64/pgtable.h
+@@ -162,7 +162,11 @@ static inline void pud_clear(pud_t *pudp
+ #define	pud_bad(pud)		(!is_kernel_addr(pud_val(pud)) \
+ 				 || (pud_val(pud) & PUD_BAD_BITS))
+ #define pud_present(pud)	(pud_val(pud) != 0)
+-#define pud_page_vaddr(pud)	(pud_val(pud) & ~PUD_MASKED_BITS)
++
++static inline pmd_t *pud_pgtable(pud_t pud)
++{
++	return (pmd_t *)(pud_val(pud) & ~PUD_MASKED_BITS);
++}
+ 
+ extern struct page *pud_page(pud_t pud);
+ 
+--- a/arch/powerpc/mm/book3s64/radix_pgtable.c~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/powerpc/mm/book3s64/radix_pgtable.c
+@@ -826,7 +826,7 @@ static void __meminit remove_pud_table(p
+ 			continue;
+ 		}
+ 
+-		pmd_base = (pmd_t *)pud_page_vaddr(*pud);
++		pmd_base = pud_pgtable(*pud);
+ 		remove_pmd_table(pmd_base, addr, next);
+ 		free_pmd_table(pmd_base, pud);
+ 	}
+@@ -1111,7 +1111,7 @@ int pud_free_pmd_page(pud_t *pud, unsign
+ 	pmd_t *pmd;
+ 	int i;
+ 
+-	pmd = (pmd_t *)pud_page_vaddr(*pud);
++	pmd = pud_pgtable(*pud);
+ 	pud_clear(pud);
+ 
+ 	flush_tlb_kernel_range(addr, addr + PUD_SIZE);
+--- a/arch/powerpc/mm/pgtable_64.c~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/powerpc/mm/pgtable_64.c
+@@ -115,7 +115,7 @@ struct page *pud_page(pud_t pud)
+ 		VM_WARN_ON(!pud_huge(pud));
+ 		return pte_page(pud_pte(pud));
+ 	}
+-	return virt_to_page(pud_page_vaddr(pud));
++	return virt_to_page(pud_pgtable(pud));
+ }
  
  /*
-@@ -13,6 +16,62 @@
-  */
- static struct workqueue_struct *cxl_pmem_wq;
- 
-+static void unregister_nvdimm(void *nvdimm)
-+{
-+	nvdimm_delete(nvdimm);
-+}
-+
-+static int match_nvdimm_bridge(struct device *dev, const void *data)
-+{
-+	return strcmp(dev_name(dev), "nvdimm-bridge") == 0;
-+}
-+
-+static struct cxl_nvdimm_bridge *cxl_find_nvdimm_bridge(void)
-+{
-+	struct device *dev;
-+
-+	dev = bus_find_device(&cxl_bus_type, NULL, NULL, match_nvdimm_bridge);
-+	if (!dev)
-+		return NULL;
-+	return to_cxl_nvdimm_bridge(dev);
-+}
-+
-+static int cxl_nvdimm_probe(struct device *dev)
-+{
-+	struct cxl_nvdimm *cxl_nvd = to_cxl_nvdimm(dev);
-+	struct cxl_nvdimm_bridge *cxl_nvb;
-+	unsigned long flags = 0;
-+	struct nvdimm *nvdimm;
-+	int rc = -ENXIO;
-+
-+	cxl_nvb = cxl_find_nvdimm_bridge();
-+	if (!cxl_nvb)
-+		return -ENXIO;
-+
-+	device_lock(&cxl_nvb->dev);
-+	if (!cxl_nvb->nvdimm_bus)
-+		goto out;
-+
-+	set_bit(NDD_LABELING, &flags);
-+	nvdimm = nvdimm_create(cxl_nvb->nvdimm_bus, cxl_nvd, NULL, flags, 0, 0,
-+			       NULL);
-+	if (!nvdimm)
-+		goto out;
-+
-+	rc = devm_add_action_or_reset(dev, unregister_nvdimm, nvdimm);
-+out:
-+	device_unlock(&cxl_nvb->dev);
-+	put_device(&cxl_nvb->dev);
-+
-+	return rc;
-+}
-+
-+static struct cxl_driver cxl_nvdimm_driver = {
-+	.name = "cxl_nvdimm",
-+	.probe = cxl_nvdimm_probe,
-+	.id = CXL_DEVICE_NVDIMM,
-+};
-+
- static int cxl_pmem_ctl(struct nvdimm_bus_descriptor *nd_desc,
- 			struct nvdimm *nvdimm, unsigned int cmd, void *buf,
- 			unsigned int buf_len, int *cmd_rc)
-@@ -29,19 +88,34 @@ static bool online_nvdimm_bus(struct cxl_nvdimm_bridge *cxl_nvb)
- 	return cxl_nvb->nvdimm_bus != NULL;
+--- a/arch/riscv/include/asm/pgtable-64.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/riscv/include/asm/pgtable-64.h
+@@ -59,9 +59,9 @@ static inline void pud_clear(pud_t *pudp
+ 	set_pud(pudp, __pud(0));
  }
  
--static void offline_nvdimm_bus(struct cxl_nvdimm_bridge *cxl_nvb)
-+static int cxl_nvdimm_release_driver(struct device *dev, void *data)
+-static inline unsigned long pud_page_vaddr(pud_t pud)
++static inline pmd_t *pud_pgtable(pud_t pud)
  {
--	if (!cxl_nvb->nvdimm_bus)
-+	if (!is_cxl_nvdimm(dev))
-+		return 0;
-+	device_release_driver(dev);
-+	return 0;
-+}
-+
-+static void offline_nvdimm_bus(struct nvdimm_bus *nvdimm_bus)
-+{
-+	if (!nvdimm_bus)
- 		return;
--	nvdimm_bus_unregister(cxl_nvb->nvdimm_bus);
--	cxl_nvb->nvdimm_bus = NULL;
-+
-+	/*
-+	 * Set the state of cxl_nvdimm devices to unbound / idle before
-+	 * nvdimm_bus_unregister() rips the nvdimm objects out from
-+	 * underneath them.
-+	 */
-+	bus_for_each_dev(&cxl_bus_type, NULL, NULL, cxl_nvdimm_release_driver);
-+	nvdimm_bus_unregister(nvdimm_bus);
+-	return (unsigned long)pfn_to_virt(pud_val(pud) >> _PAGE_PFN_SHIFT);
++	return (pmd_t *)pfn_to_virt(pud_val(pud) >> _PAGE_PFN_SHIFT);
  }
  
- static void cxl_nvb_update_state(struct work_struct *work)
+ static inline struct page *pud_page(pud_t pud)
+--- a/arch/sh/include/asm/pgtable-3level.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/sh/include/asm/pgtable-3level.h
+@@ -32,9 +32,9 @@ typedef struct { unsigned long long pmd;
+ #define pmd_val(x)	((x).pmd)
+ #define __pmd(x)	((pmd_t) { (x) } )
+ 
+-static inline unsigned long pud_page_vaddr(pud_t pud)
++static inline pmd_t *pud_pgtable(pud_t pud)
  {
- 	struct cxl_nvdimm_bridge *cxl_nvb =
- 		container_of(work, typeof(*cxl_nvb), state_work);
--	bool release = false;
-+	struct nvdimm_bus *victim_bus = NULL;
-+	bool release = false, rescan = false;
- 
- 	device_lock(&cxl_nvb->dev);
- 	switch (cxl_nvb->state) {
-@@ -50,11 +124,13 @@ static void cxl_nvb_update_state(struct work_struct *work)
- 			dev_err(&cxl_nvb->dev,
- 				"failed to establish nvdimm bus\n");
- 			release = true;
--		}
-+		} else
-+			rescan = true;
- 		break;
- 	case CXL_NVB_OFFLINE:
- 	case CXL_NVB_DEAD:
--		offline_nvdimm_bus(cxl_nvb);
-+		victim_bus = cxl_nvb->nvdimm_bus;
-+		cxl_nvb->nvdimm_bus = NULL;
- 		break;
- 	default:
- 		break;
-@@ -63,6 +139,12 @@ static void cxl_nvb_update_state(struct work_struct *work)
- 
- 	if (release)
- 		device_release_driver(&cxl_nvb->dev);
-+	if (rescan) {
-+		int rc = bus_rescan_devices(&cxl_bus_type);
-+
-+		dev_dbg(&cxl_nvb->dev, "rescan: %d\n", rc);
-+	}
-+	offline_nvdimm_bus(victim_bus);
- 
- 	put_device(&cxl_nvb->dev);
- }
-@@ -118,17 +200,24 @@ static __init int cxl_pmem_init(void)
- 
- 	rc = cxl_driver_register(&cxl_nvdimm_bridge_driver);
- 	if (rc)
--		goto err;
-+		goto err_bridge;
-+
-+	rc = cxl_driver_register(&cxl_nvdimm_driver);
-+	if (rc)
-+		goto err_nvdimm;
- 
- 	return 0;
- 
--err:
-+err_nvdimm:
-+	cxl_driver_unregister(&cxl_nvdimm_bridge_driver);
-+err_bridge:
- 	destroy_workqueue(cxl_pmem_wq);
- 	return rc;
+-	return pud_val(pud);
++	return (pmd_t *)pud_val(pud);
  }
  
- static __exit void cxl_pmem_exit(void)
+ /* only used by the stubbed out hugetlb gup code, should never be called */
+--- a/arch/sparc/include/asm/pgtable_32.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/sparc/include/asm/pgtable_32.h
+@@ -151,13 +151,13 @@ static inline unsigned long pmd_page_vad
+ 	return (unsigned long)__nocache_va(v << 4);
+ }
+ 
+-static inline unsigned long pud_page_vaddr(pud_t pud)
++static inline pmd_t *pud_pgtable(pud_t pud)
  {
-+	cxl_driver_unregister(&cxl_nvdimm_driver);
- 	cxl_driver_unregister(&cxl_nvdimm_bridge_driver);
- 	destroy_workqueue(cxl_pmem_wq);
+ 	if (srmmu_device_memory(pud_val(pud))) {
+ 		return ~0;
+ 	} else {
+ 		unsigned long v = pud_val(pud) & SRMMU_PTD_PMASK;
+-		return (unsigned long)__nocache_va(v << 4);
++		return (pmd_t *)__nocache_va(v << 4);
+ 	}
  }
-@@ -138,3 +227,4 @@ module_init(cxl_pmem_init);
- module_exit(cxl_pmem_exit);
- MODULE_IMPORT_NS(CXL);
- MODULE_ALIAS_CXL(CXL_DEVICE_NVDIMM_BRIDGE);
-+MODULE_ALIAS_CXL(CXL_DEVICE_NVDIMM);
+ 
+--- a/arch/sparc/include/asm/pgtable_64.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/sparc/include/asm/pgtable_64.h
+@@ -841,18 +841,18 @@ static inline unsigned long pmd_page_vad
+ 	return ((unsigned long) __va(pfn << PAGE_SHIFT));
+ }
+ 
+-static inline unsigned long pud_page_vaddr(pud_t pud)
++static inline pmd_t *pud_pgtable(pud_t pud)
+ {
+ 	pte_t pte = __pte(pud_val(pud));
+ 	unsigned long pfn;
+ 
+ 	pfn = pte_pfn(pte);
+ 
+-	return ((unsigned long) __va(pfn << PAGE_SHIFT));
++	return ((pmd_t *) __va(pfn << PAGE_SHIFT));
+ }
+ 
+ #define pmd_page(pmd) 			virt_to_page((void *)pmd_page_vaddr(pmd))
+-#define pud_page(pud) 			virt_to_page((void *)pud_page_vaddr(pud))
++#define pud_page(pud)			virt_to_page((void *)pud_pgtable(pud))
+ #define pmd_clear(pmdp)			(pmd_val(*(pmdp)) = 0UL)
+ #define pud_present(pud)		(pud_val(pud) != 0U)
+ #define pud_clear(pudp)			(pud_val(*(pudp)) = 0UL)
+--- a/arch/um/include/asm/pgtable-3level.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/um/include/asm/pgtable-3level.h
+@@ -83,7 +83,7 @@ static inline void pud_clear (pud_t *pud
+ }
+ 
+ #define pud_page(pud) phys_to_page(pud_val(pud) & PAGE_MASK)
+-#define pud_page_vaddr(pud) ((unsigned long) __va(pud_val(pud) & PAGE_MASK))
++#define pud_pgtable(pud) ((pmd_t *) __va(pud_val(pud) & PAGE_MASK))
+ 
+ static inline unsigned long pte_pfn(pte_t pte)
+ {
+--- a/arch/x86/include/asm/pgtable.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/x86/include/asm/pgtable.h
+@@ -865,9 +865,9 @@ static inline int pud_present(pud_t pud)
+ 	return pud_flags(pud) & _PAGE_PRESENT;
+ }
+ 
+-static inline unsigned long pud_page_vaddr(pud_t pud)
++static inline pmd_t *pud_pgtable(pud_t pud)
+ {
+-	return (unsigned long)__va(pud_val(pud) & pud_pfn_mask(pud));
++	return (pmd_t *)__va(pud_val(pud) & pud_pfn_mask(pud));
+ }
+ 
+ /*
+--- a/arch/x86/mm/pat/set_memory.c~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/x86/mm/pat/set_memory.c
+@@ -1134,7 +1134,7 @@ static void __unmap_pmd_range(pud_t *pud
+ 			      unsigned long start, unsigned long end)
+ {
+ 	if (unmap_pte_range(pmd, start, end))
+-		if (try_to_free_pmd_page((pmd_t *)pud_page_vaddr(*pud)))
++		if (try_to_free_pmd_page(pud_pgtable(*pud)))
+ 			pud_clear(pud);
+ }
+ 
+@@ -1178,7 +1178,7 @@ static void unmap_pmd_range(pud_t *pud,
+ 	 * Try again to free the PMD page if haven't succeeded above.
+ 	 */
+ 	if (!pud_none(*pud))
+-		if (try_to_free_pmd_page((pmd_t *)pud_page_vaddr(*pud)))
++		if (try_to_free_pmd_page(pud_pgtable(*pud)))
+ 			pud_clear(pud);
+ }
+ 
+--- a/arch/x86/mm/pgtable.c~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/arch/x86/mm/pgtable.c
+@@ -801,7 +801,7 @@ int pud_free_pmd_page(pud_t *pud, unsign
+ 	pte_t *pte;
+ 	int i;
+ 
+-	pmd = (pmd_t *)pud_page_vaddr(*pud);
++	pmd = pud_pgtable(*pud);
+ 	pmd_sv = (pmd_t *)__get_free_page(GFP_KERNEL);
+ 	if (!pmd_sv)
+ 		return 0;
+--- a/include/asm-generic/pgtable-nopmd.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/include/asm-generic/pgtable-nopmd.h
+@@ -51,7 +51,7 @@ static inline pmd_t * pmd_offset(pud_t *
+ #define __pmd(x)				((pmd_t) { __pud(x) } )
+ 
+ #define pud_page(pud)				(pmd_page((pmd_t){ pud }))
+-#define pud_page_vaddr(pud)			(pmd_page_vaddr((pmd_t){ pud }))
++#define pud_pgtable(pud)			((pmd_t *)(pmd_page_vaddr((pmd_t){ pud })))
+ 
+ /*
+  * allocating and freeing a pmd is trivial: the 1-entry pmd is
+--- a/include/asm-generic/pgtable-nopud.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/include/asm-generic/pgtable-nopud.h
+@@ -49,7 +49,7 @@ static inline pud_t *pud_offset(p4d_t *p
+ #define __pud(x)				((pud_t) { __p4d(x) })
+ 
+ #define p4d_page(p4d)				(pud_page((pud_t){ p4d }))
+-#define p4d_page_vaddr(p4d)			(pud_page_vaddr((pud_t){ p4d }))
++#define p4d_page_vaddr(p4d)			(pud_pgtable((pud_t){ p4d }))
+ 
+ /*
+  * allocating and freeing a pud is trivial: the 1-entry pud is
+--- a/include/linux/pgtable.h~mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t
++++ a/include/linux/pgtable.h
+@@ -106,7 +106,7 @@ static inline pte_t *pte_offset_kernel(p
+ #ifndef pmd_offset
+ static inline pmd_t *pmd_offset(pud_t *pud, unsigned long address)
+ {
+-	return (pmd_t *)pud_page_vaddr(*pud) + pmd_index(address);
++	return pud_pgtable(*pud) + pmd_index(address);
+ }
+ #define pmd_offset pmd_offset
+ #endif
+_
+
+Patches currently in -mm which might be from aneesh.kumar@linux.ibm.com are
+
+mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t.patch
+mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t.patch
 
