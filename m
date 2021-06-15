@@ -2,97 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F61C3A7E6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3235E3A7E64
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbhFOMyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230236AbhFOMyP (ORCPT
+        id S230303AbhFOMu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:50:56 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:7274 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230052AbhFOMuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:54:15 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79572C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:52:10 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G47W63pNVz9sW4;
-        Tue, 15 Jun 2021 22:52:02 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1623761528;
-        bh=Icb+q+99mGMHkizmtBN1gv1DUcQ6b92Tf4owk9sjY90=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=pnXatRtX3O9PXLI5mzdJsplvq7g1pyZ1+MUMTntplevtUc2nTFaak6uBq7TruCS3a
-         hUeC1OrUOrcf/b55EVfntUE3JV+E/cwO+jML5YibMTYuS/yyyXfx9uR9uDhEwl+1Xh
-         ged7uLvcm1W53IPuFXxEPOgsrmsfTVQI4Qf4ZzqfgYgHdoShCpkwourJZhFyJdkhMU
-         H4ac3kUMnafFLwaf+cEcCsZ8j3sHDjaeNXT8nPXhoU/9l8PI5YHwJpxvfWjaX+v4mE
-         u5QLg70qHyFDAp1OYNE+LZbKRvhDBPb7P4wybPht/I9CgNTXSrzuPUNsoTU1XUI0DZ
-         LdXCFaTT9goyA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Dmitry Safonov <dima@arista.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Subject: Re: [PATCH v3 22/23] powerpc/vdso: Migrate native signals to
- generic vdso_base
-In-Reply-To: <20210611180242.711399-23-dima@arista.com>
-References: <20210611180242.711399-1-dima@arista.com>
- <20210611180242.711399-23-dima@arista.com>
-Date:   Tue, 15 Jun 2021 22:52:00 +1000
-Message-ID: <87mtrrthn3.fsf@mpe.ellerman.id.au>
+        Tue, 15 Jun 2021 08:50:52 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G47KY355fz1BMmJ;
+        Tue, 15 Jun 2021 20:43:45 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 20:48:45 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
+ 2021 20:48:44 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-imx@nxp.com>
+CC:     <shawnguo@kernel.org>
+Subject: [PATCH -next v2 0/2] ARM: imx: free resources
+Date:   Tue, 15 Jun 2021 20:52:37 +0800
+Message-ID: <20210615125239.1348845-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry Safonov <dima@arista.com> writes:
-> Generic way to track the land vma area.
-> Stat speaks for itself.
->
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
-> ---
->  arch/powerpc/Kconfig                          |  1 +
->  arch/powerpc/include/asm/book3s/32/mmu-hash.h |  1 -
->  arch/powerpc/include/asm/book3s/64/mmu.h      |  1 -
->  arch/powerpc/include/asm/mmu_context.h        |  9 ------
->  arch/powerpc/include/asm/nohash/32/mmu-40x.h  |  1 -
->  arch/powerpc/include/asm/nohash/32/mmu-44x.h  |  1 -
->  arch/powerpc/include/asm/nohash/32/mmu-8xx.h  |  1 -
->  arch/powerpc/include/asm/nohash/mmu-book3e.h  |  1 -
->  arch/powerpc/kernel/signal_32.c               |  8 ++---
->  arch/powerpc/kernel/signal_64.c               |  4 +--
->  arch/powerpc/kernel/vdso.c                    | 31 +------------------
->  arch/powerpc/perf/callchain_32.c              |  8 ++---
->  arch/powerpc/perf/callchain_64.c              |  4 +--
->  arch/x86/include/asm/mmu_context.h            |  5 ---
->  include/asm-generic/mm_hooks.h                |  9 ++----
->  mm/mmap.c                                     |  7 -----
->  16 files changed, 16 insertions(+), 76 deletions(-)
+mmdc_base need be unmapped and mmdc_ipg_clk need be disable and unprepared
+in remove and error path.
 
-LGTM.
+v2:
+  hold mmdc_base in structure and free the resources on error path.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Yang Yingliang (2):
+  ARM: imx: add missing iounmap()
+  ARM: imx: add missing clk_disable_unprepare()
 
-cheers
+ arch/arm/mach-imx/mmdc.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
+
