@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2921E3A7D7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBC33A7D7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhFOLsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58022 "EHLO
+        id S230259AbhFOLsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhFOLry (ORCPT
+        with ESMTP id S230218AbhFOLr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:47:54 -0400
+        Tue, 15 Jun 2021 07:47:56 -0400
 Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589B7C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:45:49 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id gt18so3575191ejc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:45:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54864C0613A4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:45:50 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id ho18so22066648ejc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:45:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pRuZDIg2uoOYU/MtepM0z4ZBXdIMOOorbT3kliJwsAM=;
-        b=XgP/U8yi63ecYBWNXYonH7yuG1QT3KaLDofZd3F2st9eI+4F9vI6Nfa63bVyx2fsWC
-         SNvv2I5K5/JyBQKRTGdhfcHetKGrHZMoxAx9aACF3IG5TMgBlpA/DjEeTz4DTB86bh8I
-         BZs14cjZkEfDaYT5KoajJBYvCKaN5MYfp4zdOw+Y5G7jKSkydriTcMQnIg+4DqRLhVG3
-         egBkLatzc2XBClHTJv5VTVuclfq/Y0YgPxhH8UXONjMkkIRib2weQdJrEdy53iYXARW3
-         /pQtsPeN/+IOdQE8CGa8A1oGFYJKF6fj3eAeQj1J7wMgmurEVQukcgkuFXxqqiYTm6yh
-         hwSQ==
+        bh=xg4lh6FzY/x6mpAMMiRuRSWrAaG34s4GEztF8UfIitg=;
+        b=ucMVTfLZZRtvzlrcYQcji6yqz4vgTroBuv6Z7GrUAH3bQQCdI9meMivVrhJjqcJqDm
+         prEgw6+RtbdB9fxZWQUTwnhY5MdEvZY/hFw/iAglcqN01jhZAwBLR+sqghFcSedyx4a3
+         nuSsfKtZiIO20O4a8LmqSoBIqxhDTE3QznrnocMkrCxm8iKogfmIJRe0e3K+CEZBiLFj
+         mc9JainTmffKDqf3a/jOlsV5cVCLPGHmZ+SicKiaffngf9ysRP7YGDSJgSHKYg/p/A7h
+         RzkENz2yUf0oVkMZ4fF/OHAnKSEl9g/Y74rzFJknTdptYwILLTfYO5wy/Ou8Z2k8sUwU
+         L7TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pRuZDIg2uoOYU/MtepM0z4ZBXdIMOOorbT3kliJwsAM=;
-        b=j6Ihi8J1K7YM7rexwP+VQDR32MrMJROwCxnlcvsRymcGTH9qHTioLyfBuJXeHVB+R6
-         vsNqvVLN9DV6kXYToFKwbcqSEiqSaUE4wgETycp9XiUfXEfFeZnO6sxNz70LSyGLzBzy
-         nH3d1Ko/TQ4ux8PmDOsn/nQdR0N1sLIr2ka52PfSCNPK5Txcpf9X1+BYHcq66YDLQRDh
-         gfW4AZAXpc5UOFGyNh2KY2CqUbVVz9shp+p5d0yAhzD1rgRB9qV5HkjUkUzk9/tGa03n
-         +neYqb6SVnL/gsSSmegKV2mpMS0kTMtw9qhqYmCSmiEP7Baoj/o99blNpkXSGBCGHCf/
-         1ATA==
-X-Gm-Message-State: AOAM5303UJBrAIlHhlGCeRjRLHhWZxpmGacQ5/2bUNwoqT35P8GS7Vqn
-        XLwQFB9wcFVkooWMRLb0+vgk1qswB7/JVQ==
-X-Google-Smtp-Source: ABdhPJwPiYq+TTCVtwsKSEwLWN0vBukybPI3Dc0AyxEfcL8F4IRVjiw06jm50MlcbYAn0KGJ+BxtWw==
-X-Received: by 2002:a17:907:9487:: with SMTP id dm7mr20117647ejc.349.1623757547693;
-        Tue, 15 Jun 2021 04:45:47 -0700 (PDT)
+        bh=xg4lh6FzY/x6mpAMMiRuRSWrAaG34s4GEztF8UfIitg=;
+        b=XX0YH9Y1Qe3aQtaHnRY1FHGU3S0jRrKRs5U5H3QQBb6nqIkyCxS2nTe6pcp4DfcupN
+         mOXOWoBrhxtdZxEOzx0l0tffQ1HsS2cs1g35iayWwONMmwm15GnZGzB5VAAR1y7y4zL1
+         WkuN+NX6sMsao4jJa97gkDYbLX28AWGgdhhLzUIdCZjwCvllHxTk80f8DAPutpIjvVNU
+         /VN/61I+VftlYZWZJtPgcQX8NUZm8+psQpDVOMp8V0Klz1Tq0TPiZIC/ANY5Ru3Pxla/
+         yfNORsUE1gV+t/vc9TprWQhBGksB6gyRH1wTwA9mNWjXUf57FUf7enYJxlZlRBcBq6LS
+         4Xaw==
+X-Gm-Message-State: AOAM5332chBvqtBdcy51dOWGNM1vODqYIKx2T9KG7jh+2HEvV2N4MhHW
+        WVu0jXYaRhwloIKm3vYU8WhQSq4C++4ncQ==
+X-Google-Smtp-Source: ABdhPJwgBEZX2GOeAWxZZpjCIY/R/gut+lHCeRDJpDujG75wREiLcDlcquAs6gnZbxQUXwW8EOLfpw==
+X-Received: by 2002:a17:906:22c6:: with SMTP id q6mr20234786eja.275.1623757548819;
+        Tue, 15 Jun 2021 04:45:48 -0700 (PDT)
 Received: from agape ([5.171.72.142])
-        by smtp.gmail.com with ESMTPSA id br21sm9766980ejb.124.2021.06.15.04.45.47
+        by smtp.gmail.com with ESMTPSA id g11sm11864726eds.24.2021.06.15.04.45.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 04:45:47 -0700 (PDT)
+        Tue, 15 Jun 2021 04:45:48 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/8] staging: rtl8723bs: remove HAL_{BB,MAC,RF,FW}_ENABLE macros
-Date:   Tue, 15 Jun 2021 13:45:35 +0200
-Message-Id: <04248acbd22f9be30d21891926e134490b34036a.1623756906.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 6/8] staging: rtl8723bs: move LPS_RPWM_WAIT_MS macro
+Date:   Tue, 15 Jun 2021 13:45:36 +0200
+Message-Id: <5756b958b5d279f1cc8cea7887f50d003b17b94e.1623756906.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1623756906.git.fabioaiuto83@gmail.com>
 References: <cover.1623756906.git.fabioaiuto83@gmail.com>
@@ -64,84 +64,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove HAL_{BB,MAC,RF,FW}_ENABLE macros.
-They are used to turn on/off by hand some core
-capabilities we want to be always 'on'.
-
-So remove usages and definitions.
+move LPS_RPWM_WAIT_MS macro from include/autoconf.h to
+include/hal_btcoex.h in order to empty unneeded
+autoconf.h.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/hal/sdio_halinit.c | 6 ------
- drivers/staging/rtl8723bs/include/autoconf.h | 4 ----
- drivers/staging/rtl8723bs/include/hal_phy.h  | 8 --------
- 3 files changed, 18 deletions(-)
+ drivers/staging/rtl8723bs/include/hal_btcoex.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/staging/rtl8723bs/hal/sdio_halinit.c b/drivers/staging/rtl8723bs/hal/sdio_halinit.c
-index 38acde4be94d..3738727feb60 100644
---- a/drivers/staging/rtl8723bs/hal/sdio_halinit.c
-+++ b/drivers/staging/rtl8723bs/hal/sdio_halinit.c
-@@ -683,29 +683,23 @@ static u32 rtl8723bs_hal_init(struct adapter *padapter)
- 	/*  <Roger_Notes> Current Channel will be updated again later. */
- 	pHalData->CurrentChannel = 6;
+diff --git a/drivers/staging/rtl8723bs/include/hal_btcoex.h b/drivers/staging/rtl8723bs/include/hal_btcoex.h
+index eb9d0ba861a5..849fb90b43b7 100644
+--- a/drivers/staging/rtl8723bs/include/hal_btcoex.h
++++ b/drivers/staging/rtl8723bs/include/hal_btcoex.h
+@@ -9,6 +9,8 @@
  
--#if (HAL_MAC_ENABLE == 1)
- 	ret = PHY_MACConfig8723B(padapter);
- 	if (ret != _SUCCESS)
- 		return ret;
--#endif
- 	/*  */
- 	/* d. Initialize BB related configurations. */
- 	/*  */
--#if (HAL_BB_ENABLE == 1)
- 	ret = PHY_BBConfig8723B(padapter);
- 	if (ret != _SUCCESS)
- 		return ret;
--#endif
+ #include <drv_types.h>
  
- 	/*  If RF is on, we need to init RF. Otherwise, skip the procedure. */
- 	/*  We need to follow SU method to change the RF cfg.txt. Default disable RF TX/RX mode. */
- 	/* if (pHalData->eRFPowerState == eRfOn) */
- 	{
--#if (HAL_RF_ENABLE == 1)
- 		ret = PHY_RFConfig8723B(padapter);
- 		if (ret != _SUCCESS)
- 			return ret;
--#endif
- 	}
- 
- 	/*  */
-diff --git a/drivers/staging/rtl8723bs/include/autoconf.h b/drivers/staging/rtl8723bs/include/autoconf.h
-index d1a97fea8065..8587b746c720 100644
---- a/drivers/staging/rtl8723bs/include/autoconf.h
-+++ b/drivers/staging/rtl8723bs/include/autoconf.h
-@@ -12,7 +12,3 @@
-  * Auto Config Section
-  */
- #define LPS_RPWM_WAIT_MS 300
--
--#define HAL_MAC_ENABLE	1
--#define HAL_BB_ENABLE	1
--#define HAL_RF_ENABLE	1
-diff --git a/drivers/staging/rtl8723bs/include/hal_phy.h b/drivers/staging/rtl8723bs/include/hal_phy.h
-index e9944ffed100..19221289b8ce 100644
---- a/drivers/staging/rtl8723bs/include/hal_phy.h
-+++ b/drivers/staging/rtl8723bs/include/hal_phy.h
-@@ -6,14 +6,6 @@
-  ******************************************************************************/
- #ifndef __HAL_PHY_H__
- #define __HAL_PHY_H__
--
--
--/*  FPGA_PHY and ASIC */
--#define	HAL_FW_ENABLE	1
--#define	HAL_MAC_ENABLE	1
--#define	HAL_BB_ENABLE	1
--#define	HAL_RF_ENABLE	1
--
- /*  */
- /*  Antenna detection method, i.e., using single tone detection or RSSI reported from each antenna detected. */
- /*  Added by Roger, 2013.05.22. */
++#define LPS_RPWM_WAIT_MS	300
++
+ /*  Some variables can't get from outsrc BT-Coex, */
+ /*  so we need to save here */
+ struct bt_coexist {
 -- 
 2.20.1
 
