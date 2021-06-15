@@ -2,59 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2364F3A74C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C391A3A7491
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhFODPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:15:25 -0400
-Received: from mga14.intel.com ([192.55.52.115]:63354 "EHLO mga14.intel.com"
+        id S230370AbhFODDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:03:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230443AbhFODPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:15:19 -0400
-IronPort-SDR: Fb3eur3N0dwluBs/05royNhEUUg0v81T7BQPf9DwufqWGEchJVQ2Yhzk6xs8sF2H1xeCa1v2/C
- jePKiibhtbdw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="205722369"
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="205722369"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 18:05:12 -0700
-IronPort-SDR: 2zse7mf9tkOW3LdMJvevbzlpaBofK1/+VfNPxJAiJXj5CAkAjTjQcbvkqMtsLaLJJj8FUqVJIW
- 3nkmC2u4AyNQ==
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="450064521"
-Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 18:05:10 -0700
-Date:   Tue, 15 Jun 2021 09:05:08 +0800
-From:   kernel test robot <rong.a.chen@intel.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Subject: [tip:tmp.tmp2 223/364] fs/namei.c: linux/audit.h is included more
- than once.
-Message-ID: <20210615010508.GI237458@shao2-debian>
+        id S230239AbhFODDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 23:03:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5E20611AB;
+        Tue, 15 Jun 2021 01:05:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623719122;
+        bh=JowlqCnPSb4zz316zjuQPncCWVeSVEJsJRR6AJAI1SE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FtZQP1L3wOJJQ3lQRa2yCPA79Dj1fEvpClc3UBsJNhL/ydK/dIdi7RAXlq7aiHl+4
+         KfxN293mMtTchVS+AZCvuFFNolo8Ho3YA/csiLLs/rM0TFwmZ5TFbAEL2xFmZV77wJ
+         Lj9LtrZ9R+GmIRRpcJB4TAhJT2HfvoPSanuCBJ37oK5Gatmx5as3Rh0Nphj7EsY5ur
+         Src7pu9r2MT+7RboovQmnX18jreeLiLL15t86RVaJqI6EP8OzSOYIQJCaOZK/yR38+
+         baN7BwXVOiIRVCDve3dDel5iX7uBs6V7hjVoaGp4q1DPqgu4igQvGw6TXXPexDuGAd
+         Q/5DntGx/u5iw==
+Date:   Tue, 15 Jun 2021 09:05:16 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] usb: phy: tegra: Wait for VBUS wakeup status
+ deassertion on suspend
+Message-ID: <20210615010516.GA28352@nchen>
+References: <20210613145936.9902-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210613145936.9902-1-digetx@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tmp.tmp2
-head:   adcceb5eb7aee38e4a9c15bdf599655f0e1b1324
-commit: 25f492130c2aeb29ca88f0207dd616730af84ea9 [223/364] sched/headers, audit: Uninline audit_inode_child()
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+On 21-06-13 17:59:35, Dmitry Osipenko wrote:
+> Some devices need an extra delay after losing VBUS, otherwise VBUS may
+> be detected as active at suspend time, preventing the PHY's suspension
+> by the VBUS detection sensor. This problem was found on Asus Transformer
+> TF700T (Tegra30) tablet device, where the USB PHY wakes up immediately
+> from suspend because VBUS sensor continues to detect VBUS as active after
+> disconnection. We need to poll the PHY's VBUS wakeup status until it's
+> deasserted before suspending PHY in order to fix this minor trouble.
+> 
+> Fixes: 35192007d28d ("usb: phy: tegra: Support waking up from a low power mode")
+> Reported-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
+> Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/usb/phy/phy-tegra-usb.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
+> index fc5c6cab58ba..ff482c694200 100644
+> --- a/drivers/usb/phy/phy-tegra-usb.c
+> +++ b/drivers/usb/phy/phy-tegra-usb.c
+> @@ -64,6 +64,7 @@
+>  #define   A_VBUS_VLD_WAKEUP_EN			BIT(30)
+>  
+>  #define USB_PHY_VBUS_WAKEUP_ID			0x408
+> +#define   VBUS_WAKEUP_STS			BIT(10)
+>  #define   VBUS_WAKEUP_WAKEUP_EN			BIT(30)
+>  
+>  #define USB1_LEGACY_CTRL			0x410
+> @@ -645,6 +646,15 @@ static int utmi_phy_power_off(struct tegra_usb_phy *phy)
+>  	void __iomem *base = phy->regs;
+>  	u32 val;
+>  
+> +	/*
+> +	 * Give hardware time to settle down after VBUS disconnection,
+> +	 * otherwise PHY will immediately wake up from suspend.
+> +	 */
+> +	if (phy->wakeup_enabled && phy->mode != USB_DR_MODE_HOST)
+> +		readl_relaxed_poll_timeout(base + USB_PHY_VBUS_WAKEUP_ID,
+> +					   val, !(val & VBUS_WAKEUP_STS),
+> +					   5000, 100000);
+> +
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Where will clear VBUS_WAKEUP_STS? Or it will be cleared by HW after VBUS lower than
+B Session Valid?
 
+-- 
 
-includecheck warnings: (new ones prefixed by >>)
->> fs/namei.c: linux/audit.h is included more than once.
+Thanks,
+Peter Chen
 
-Please review and possibly fold the followup patch.
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
