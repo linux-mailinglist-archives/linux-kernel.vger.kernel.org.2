@@ -2,77 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29A63A7CF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82DD3A7CFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhFOLQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:16:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229977AbhFOLQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:16:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5031661019;
-        Tue, 15 Jun 2021 11:14:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623755684;
-        bh=do5/Ft0Ug2QKKV16pIjm1Cav55ZqsPnnwJ2SakLmvUs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s5659nm7mU8dbxL5ejjETuQPnC819oWthIJGpuxoabBaVSQZEW67rqKNug+7bEK6p
-         70b7X9PRCzK5cXOMptsXhWm7vN/I3GRo9emqOZNo3amltpwwkP777VMUVTDwM4y91F
-         PCjbtDFwjk3B8zPdN3UxZCqMA7mcYd9LTEyglBgm092Z+smm3naHWPj9rUtJ7Uuefk
-         oWdwi+U/f+GbYFThQBY3oGcf8U/YDxZOT0yblQOqm2IPthiSWH59Vn5AA92gCztV81
-         bYOgY5bxw0QLMNv7nOt93OT4E8nAb2G8DoXLEiSDwehLcQQ/OFTxlM96TpaB/SkKuK
-         dSeNH+HRii2Pw==
-Date:   Tue, 15 Jun 2021 12:14:26 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Mason Zhang <mason.zhang@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, wsd_upstream@mediatek.com,
-        hanks.chen@mediatek.com, linux-kernel@vger.kernel.org,
-        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] dt-binding: mediatek: mt6779: update spi document
-Message-ID: <20210615111426.GC5149@sirena.org.uk>
-References: <1623721803.24597.9.camel@mbjsdccf07>
+        id S230349AbhFOLSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhFOLR7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 07:17:59 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B9DC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:15:55 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id h12so8290872plf.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:15:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=i84JjlRo2D2f/v7VuRGvpKj9m4FZoDnu564HcAYYGaY=;
+        b=VTHFnc+4SnsSRV0D5jDxumRtE49WlOQLlikQFoE39XX8Wb5j25weHyQksV4/4Bn/f/
+         2BlH2QShf5TXe7zDKdkjS+Gs3tE+RPTxzPeLwN6/cgZpqkATlyaJxVgB4UH0wPf327ZK
+         3sg02GpQY+QtWBfJzL0HKJd0UvY+5w37Y3noV/Tr0+AqPol3BIvomuMAHNODERgZAoqL
+         i/Vs7+tAbxxbfDyLn0N9FCKTiBr4s+0yLA7s9wxgR5BNyxKwXe1WIRfmXQ9vO7+XwMz+
+         fRkr+bY9h/tbHmcW6rwAiRQ/L8eR4C2H9AUb+8oXl5chJm9EhUjEwS6TWkLgYkE2AW3p
+         2uvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=i84JjlRo2D2f/v7VuRGvpKj9m4FZoDnu564HcAYYGaY=;
+        b=kVQNbHkOIGoLLyTwPziN9ruupJranPQGD6y8SY7Y1m76hYkgk0yOZBsm+rXWNStNog
+         JJ6IvygKeGJ87YspdjCVPg+7CBPqrR3bC6rJ++NdjqZtIbZ9i+X2cMURqgu8qsNRdNPK
+         ciAL7DF8JzRhUpwSBoiFTyNNu/ni8HUJ+u/1wg10GPJXhhQzjXg2bnkJHHBJQRVZyhqt
+         J3QNrBSUBLXc2b4ESu9LiJaH3OkLD2jOFmIwks9Vco25cISqMhFacCFvFclKpK3eDxpc
+         SGiNzetzl74RN12cvddHl46ykbBxaDkLrhlY6PCpYUzy90Ig0mXYnmJbk1+na79Rhy5h
+         Lu2Q==
+X-Gm-Message-State: AOAM531x38e400uCzrulXlntc582nuNgPNPW3VMDf0bJ0bMyXm2vG7yG
+        y3VrGphdV7KG+4TerTyg2JFk7Q==
+X-Google-Smtp-Source: ABdhPJyprFGOjuuA6oVBkx5SM8o2ljPT3jBLG+8fzP8YN3F1g2qb2jzWJ2heaZFu4ovB1sQ+xoLJ2A==
+X-Received: by 2002:a17:90b:2504:: with SMTP id ns4mr4466637pjb.39.1623755754669;
+        Tue, 15 Jun 2021 04:15:54 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id g8sm15949343pgo.10.2021.06.15.04.15.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 04:15:53 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 16:45:51 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
+        Alistair Strachan <astrachan@google.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+Message-ID: <20210615111551.7tcz7teqp4olhodf@vireshk-i7>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
+ <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
+ <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
+ <20210611080122.tlkidv6bowuka6fw@vireshk-i7>
+ <CAMuHMdVL4VH09ixPcpqqokNJeYd68Th2Y6Lz4PZTF7h06OOBGw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="s9fJI615cBHmzTOP"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1623721803.24597.9.camel@mbjsdccf07>
-X-Cookie: See store for details.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAMuHMdVL4VH09ixPcpqqokNJeYd68Th2Y6Lz4PZTF7h06OOBGw@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11-06-21, 10:22, Geert Uytterhoeven wrote:
+> The same reasoning can apply to your backend daemon, so when using
+> the GPIO aggregator, you can just control a full gpiochip, without
+> having to implement access control on individual GPIO lines.
 
---s9fJI615cBHmzTOP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I tried to look at it and it surely looks very temping and may fit
+well and reduce size of my backend :)
 
-On Tue, Jun 15, 2021 at 09:50:03AM +0800, Mason Zhang wrote:
->=20
-> this patch update spi document for MT6779 SOC.
+I am now wondering how interrupts can be made to work here. Do you
+have anything in mind for that ?
 
-I don't have either patch 1 or a cover letter, what's the story with
-dependencies here?
+GPIO sysfs already supports interrupts, just that you need to register
+irq for the specific GPIO pins inside the aggregator ?
 
---s9fJI615cBHmzTOP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDIi5EACgkQJNaLcl1U
-h9DQ+wf/Yux273+r+yGK72dvXlm0Ap8q0DbSKRRXYm+S8/dxa/Z4yP6+Oj994oi6
-AS5dArwtt0+KTpwXnxX/J9oEhOtSMfE2alLqgJ02tjbog38w1z00WH07fe34Ni1C
-XH49gqs9bN6JhcXFeDI1VgwzzKDS+6/ZG9CFWlv3394hE4pKtxs2s2plneaqj106
-voLcaPSGCJrwtiXG+xUmZO+KzBZhx/ZKAOYZ66k172OuC3eGzGbUANSDlnp7MdPv
-IuKwLhwGPQDzr721R7jq8/7zVfrj+hv4lzgrV9lDCBQvpwM/hR9sPFKBbCUM+S9l
-nh9imKNN80d/DKW/HQWZ2IwMTWhAyw==
-=ux+v
------END PGP SIGNATURE-----
-
---s9fJI615cBHmzTOP--
+-- 
+viresh
