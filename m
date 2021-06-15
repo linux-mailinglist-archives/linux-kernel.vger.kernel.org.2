@@ -2,47 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B34B3A72CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 02:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6DD3A72D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 02:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhFOAIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 20:08:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39898 "EHLO mail.kernel.org"
+        id S229870AbhFOAQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 20:16:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229536AbhFOAIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 20:08:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A705A60FEA;
-        Tue, 15 Jun 2021 00:06:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623715590;
-        bh=RMii/VLLTCvCVHMFN18fdNCg3G9EDAUjvrxZCNvuRiU=;
+        id S229536AbhFOAQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 20:16:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CFB3611CE;
+        Tue, 15 Jun 2021 00:13:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1623716032;
+        bh=se15b76/aO5F2KF29EEk9PwTwphIiHEyGbjleL82ixY=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eM8VGoGxy9VEGIi37hrK9bCogcybs+WFEIp5s1KM+D/nkUtkRhZzJglMixPb2Ywgl
-         PUkeX6o/AR2d8OKT5cHbsUaSosbRVnxWEbVw7yjBukm8OQFPK9ms3ZgrCRvUVPFPlY
-         RuTguB4fu4PaN7A5ks+skd9K49g7t0p1krCpj5F4LJ2n3kAlcocWih3rYL5HIENKbK
-         p1bG0cvT0aycIKs2cLLqKZ5URSmXYcT7Jc9yXbU6bybHqQRBzp9rSvnu/APbQZ1HCG
-         K1+IoIq8qcOPAI4JryPVkPuWVXQO1lvITATzvQVUWfBrxULh+Zq+PmDfkLE/o6H72m
-         OOzw932zSr3fQ==
-Date:   Tue, 15 Jun 2021 09:06:26 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>, ast@kernel.org,
-        bpf@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, kernel-team@fb.com,
-        kuba@kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        Abhishek Sagar <sagar.abhishek@gmail.com>, tglx@linutronix.de,
-        X86 ML <x86@kernel.org>, yhs@fb.com
-Subject: Re: [PATCH -tip v7 03/13] kprobes: treewide: Remove
- trampoline_address from kretprobe_trampoline_handler()
-Message-Id: <20210615090626.f2b536ce7c5cf8b31264451c@kernel.org>
-In-Reply-To: <1623685371.y5qy4nxer2.naveen@linux.ibm.com>
-References: <162209754288.436794.3904335049560916855.stgit@devnote2>
-        <162209757191.436794.12654958417415894884.stgit@devnote2>
-        <1623685371.y5qy4nxer2.naveen@linux.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        b=tmS0lMh/VywKn2t8cjW762qsXrHuoTR/DXI+eYIY2xEWlKn+4r8XTI1T7FfSNbq7b
+         s20wu3oBOjhC5s/81saZyD8vF2BkQw1E/oEK7AtKSq9vpMRcUxmGpBA+GghcD3azo5
+         TOiEqP0rjplZ3Q2VUu8UmANEdKmZsenGTnNnZQoE=
+Date:   Mon, 14 Jun 2021 17:13:51 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Arm64 crash while reading memory sysfs
+Message-Id: <20210614171351.8c778c335896285020846666@linux-foundation.org>
+In-Reply-To: <YMcSkvXrsDMPLicd@linux.ibm.com>
+References: <CY4PR0201MB35539FF5EE729283C4241F5A8E249@CY4PR0201MB3553.namprd02.prod.outlook.com>
+        <YK6EXNZHY1xt7Kjs@linux.ibm.com>
+        <d55f915c-ad01-e729-1e29-b57d78257cbb@quicinc.com>
+        <YK9e0LgDOfCFo6TM@linux.ibm.com>
+        <ce5a5920-3046-21b5-42c0-2237ec1eef13@quicinc.com>
+        <YK/HKMgajBCwpLt8@linux.ibm.com>
+        <20210527175047.GK8661@arm.com>
+        <20210527155644.7792b4eaa16ec56645e1080c@linux-foundation.org>
+        <YLB8AvgC2Ov6N6Pt@linux.ibm.com>
+        <daaf6faa-b5c1-b201-28c9-07f8e1fe4a82@arm.com>
+        <YMcSkvXrsDMPLicd@linux.ibm.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -50,76 +54,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 21:16:26 +0530
-"Naveen N. Rao" <naveen.n.rao@linux.ibm.com> wrote:
+On Mon, 14 Jun 2021 11:25:54 +0300 Mike Rapoport <rppt@linux.ibm.com> wrote:
 
-> Hi Masami,
-> 
-> Masami Hiramatsu wrote:
-> > Remove trampoline_address from kretprobe_trampoline_handler().
-> > Instead of passing the address, kretprobe_trampoline_handler()
-> > can use new kretprobe_trampoline_addr().
+> On Tue, Jun 08, 2021 at 12:36:21PM +0530, Anshuman Khandual wrote:
 > > 
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > Tested-by: Andrii Nakryik <andrii@kernel.org>
-> > ---
-> >  Changes in v3:
-> >    - Remove wrong kretprobe_trampoline declaration from
-> >      arch/x86/include/asm/kprobes.h.
-> >  Changes in v2:
-> >    - Remove arch_deref_entry_point() from comment.
-> > ---
-> >  arch/arc/kernel/kprobes.c          |    2 +-
-> >  arch/arm/probes/kprobes/core.c     |    3 +--
-> >  arch/arm64/kernel/probes/kprobes.c |    3 +--
-> >  arch/csky/kernel/probes/kprobes.c  |    2 +-
-> >  arch/ia64/kernel/kprobes.c         |    5 ++---
-> >  arch/mips/kernel/kprobes.c         |    3 +--
-> >  arch/parisc/kernel/kprobes.c       |    4 ++--
-> >  arch/powerpc/kernel/kprobes.c      |    2 +-
-> >  arch/riscv/kernel/probes/kprobes.c |    2 +-
-> >  arch/s390/kernel/kprobes.c         |    2 +-
-> >  arch/sh/kernel/kprobes.c           |    2 +-
-> >  arch/sparc/kernel/kprobes.c        |    2 +-
-> >  arch/x86/include/asm/kprobes.h     |    1 -
-> >  arch/x86/kernel/kprobes/core.c     |    2 +-
-> >  include/linux/kprobes.h            |   18 +++++++++++++-----
-> >  kernel/kprobes.c                   |    3 +--
-> >  16 files changed, 29 insertions(+), 27 deletions(-)
 > > 
+> > On 5/28/21 10:43 AM, Mike Rapoport wrote:
+> > > On Thu, May 27, 2021 at 03:56:44PM -0700, Andrew Morton wrote:
+> > >> On Thu, 27 May 2021 18:50:48 +0100 Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > >>
+> > >>>> Can you please try Anshuman's patch "arm64/mm: Drop HAVE_ARCH_PFN_VALID":
+> > >>>>
+> > >>>> https://lore.kernel.org/lkml/1621947349-25421-1-git-send-email-anshuman.khandual@arm.com
+> > >>>>
+> > >>>> It seems to me that the check for memblock_is_memory() in
+> > >>>> arm64::pfn_valid() is what makes init_unavailable_range() to bail out for
+> > >>>> section parts that are not actually populated and then we have
+> > >>>> VM_BUG_ON_PAGE(PagePoisoned(p)) for these pages.
+> > >>>
+> > >>> I acked Anshuman's patch, I think they all need to go in together.
+> > >>
+> > >> That's neat.   Specifically which patches are we referring to here?
+> > > 
+> > > arm64: drop pfn_valid_within() and simplify pfn_valid():
+> > > https://lore.kernel.org/lkml/20210511100550.28178-5-rppt@kernel.org
+> > > 
+> > > arm64/mm: Drop HAVE_ARCH_PFN_VALID:
+> > > https://lore.kernel.org/lkml/1621947349-25421-1-git-send-email-anshuman.khandual@arm.com
+> > 
+> > I dont see the above patch (which drops HAVE_ARCH_PFN_VALID on arm64) on linux-next
+> > i.e. next-20210607. I might have missed some earlier context here but do not we want
+> > to fallback on generic pfn_valid() after Mike's series ?
 > 
-> <snip>
+> Andrew,
 > 
-> > diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-> > index d65c041b5c22..65dadd4238a2 100644
-> > --- a/include/linux/kprobes.h
-> > +++ b/include/linux/kprobes.h
-> > @@ -205,15 +205,23 @@ extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
-> >  				   struct pt_regs *regs);
-> >  extern int arch_trampoline_kprobe(struct kprobe *p);
-> >  
-> > +void kretprobe_trampoline(void);
-> > +/*
-> > + * Since some architecture uses structured function pointer,
-> > + * use dereference_function_descriptor() to get real function address.
-> > + */
-> > +static nokprobe_inline void *kretprobe_trampoline_addr(void)
-> > +{
-> > +	return dereference_function_descriptor(kretprobe_trampoline);
-> 
-> I'm afraid this won't work correctly. For kernel functions, please use 
-> dereference_kernel_function_descriptor() which checks if the function 
-> has a descriptor before dereferencing it.
+> Can you please pick the two patches above?
 
-Oops, there is *kernel_function* version, I didn't notice that.
-Thank you for reviewing! I'll fix that.
+I already had
 
-> 
-> 
-> Thanks,
-> Naveen
-> 
+include-linux-mmzoneh-add-documentation-for-pfn_valid.patch
+memblock-update-initialization-of-reserved-pages.patch
+arm64-decouple-check-whether-pfn-is-in-linear-map-from-pfn_valid.patch
+arm64-drop-pfn_valid_within-and-simplify-pfn_valid.patch
 
+and I just added
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+arm64-mm-drop-have_arch_pfn_valid.patch
+
+so I think we're all good now?
+
+and I don't think any of this is needed in 5.13 or -stable, correct?
+
+I still have question marks over
+
+https://lkml.kernel.org/r/YJ0Fhs5krPJ0FgiV@kernel.org and
+https://lkml.kernel.org/r/d55f915c-ad01-e729-1e29-b57d78257cbb@quicinc.com
+
+Is this all OK now?
