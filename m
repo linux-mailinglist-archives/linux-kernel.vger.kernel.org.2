@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D723A7DD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10ADB3A7DD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbhFOMIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:08:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41652 "EHLO mail.kernel.org"
+        id S230236AbhFOMI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:08:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229557AbhFOMIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:08:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0895961437;
-        Tue, 15 Jun 2021 12:06:47 +0000 (UTC)
+        id S230179AbhFOMIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 08:08:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6AE66140C;
+        Tue, 15 Jun 2021 12:06:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623758808;
-        bh=C59SXF8kM4HNcdZxrEa6z376xr37BIWP3ZfoDwC39DE=;
+        s=k20201202; t=1623758811;
+        bh=/daMUTS8B/5YNsD/HuXDLshXDtUc1JGW3xyBGeJw/yM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ehE4e8soru4vX7YvJZiz5Nmi1Uq/jGfeAvHK2X+uJx9wmR8JrtAIzTzIe4L35Ca1t
-         Dt+cmGHyoiZXrwMlLmrbO6XWsKLsumD6uGKiy30ZROwC4Cu1dooG9uhI3MnO6RuFh3
-         Tou4xN+SlMDkBA/KOP6GHhAtsKUbOKNhE7HJDotffruyOt+YxgMYQ+ar0F3LIO0TiI
-         8PXqq5QqgjBGE98tKRZkUYM+PiBAQn3Ul5fZDMkZ80YjabUdry+R90bbJr5pfGjspC
-         8Tvw1ldCE7PX67+au4fk5oOvyvLgf8Al6eCSv07ClotTCiPbCoZv1MZnAtcvG/geoD
-         2lMBZafWmHmgg==
+        b=hkVDK9KWawPhP92D2ldhtMc+k8ajdcN9uO0ANsOwNPl9XCIVuM4zjCqpMCAq7udOb
+         Uo9H5kL16cqzDCAnmHjb9p0H8vzYsizFRmjuT68SX0688y5IU3Q5OYXBWZAfKhxhMj
+         DPFk5zozzj2Aai8BLWobghkX0HPN8uvUkJ8ctHlS0h7Lh5Q6YurnTZ7/WxID8u32mX
+         /HH8P0Fpkg5qB76uJd590AVzepWFmabjJmDJ9ryN29WEsxTSpGXVB4zzQHvvdSHTL6
+         PNsS2wkVlvLUP9Y9mPw8DSa0vtc4wC8x3ri5ff/LIzu41z1vz0WdLrblD1yG+YId/p
+         COE1EBQEcqqcg==
 From:   Mark Brown <broonie@kernel.org>
-To:     devicetree@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: fsl,spdif: Add compatible string for imx8ulp
-Date:   Tue, 15 Jun 2021 13:06:25 +0100
-Message-Id: <162375817571.30661.10673881585496337751.b4-ty@kernel.org>
+To:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ion Agorria <ion@agorria.com>, Takashi Iwai <tiwai@suse.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v6 0/4] Unify NVIDIA Tegra ASoC machine drivers
+Date:   Tue, 15 Jun 2021 13:06:26 +0100
+Message-Id: <162375817572.30661.13025882740801686844.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1622613849-10271-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1622613849-10271-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20210529154649.25936-1-digetx@gmail.com>
+References: <20210529154649.25936-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,8 +46,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Jun 2021 14:04:09 +0800, Shengjiu Wang wrote:
-> Add compatible string for imx8ulp, which supports spdif module
+On Sat, 29 May 2021 18:46:45 +0300, Dmitry Osipenko wrote:
+> This series squashes all the ASoC machine drivers into a single one,
+> this change was suggested by Jon Hunter. It also sets driver_name and
+> components string of each card, allowing userspace alsa-lib to find
+> UCMs at predictable path.
+> 
+> Changelog:
+> 
+> [...]
 
 Applied to
 
@@ -50,8 +62,14 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: fsl,spdif: Add compatible string for imx8ulp
-      commit: cb7d734ea9b85f49f26d04d8de09ece363cbd6fc
+[1/4] ASoC: tegra: Set driver_name=tegra for all machine drivers
+      commit: f6eb84fa596abf28959fc7e0b626f925eb1196c7
+[2/4] ASoC: tegra: Unify ASoC machine drivers
+      commit: cc8f70f5603986a99e7775f3cc4a10d337b82a4d
+[3/4] ASoC: tegra: Specify components string for each card
+      commit: c16aab8ddc645f129880a266c1626b07b41f7c55
+[4/4] ASoC: tegra: Squash utils into common machine driver
+      commit: 8c1b3b159300cc5ef6ba0d4b039ef68e766d46e3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
