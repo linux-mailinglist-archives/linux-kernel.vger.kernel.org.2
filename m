@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4B73A7A92
+	by mail.lfdr.de (Postfix) with ESMTP id E621E3A7A93
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhFOJbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:31:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55097 "EHLO
+        id S231474AbhFOJbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:31:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35064 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231409AbhFOJbm (ORCPT
+        by vger.kernel.org with ESMTP id S231461AbhFOJbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:31:42 -0400
+        Tue, 15 Jun 2021 05:31:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623749378;
+        s=mimecast20190719; t=1623749383;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BIponc5QGrcPAwb19nseDoFq0ahiW3+gw68JDK4N8z4=;
-        b=R40bh22jDtL+NzCToXEq+vpASkLOF1JMgaJSV0L2vRupo720FN42bGFaFF0pE4WF9f1rMc
-        O0tgJt5GQtxpjQ2OoJrsAzgfaCa0KBWejlwxwickENs8VPvXzCCnT/B8uyoT8IholePAvW
-        uEe6tv0MKLm0ZECK/FSLdZLSc5fsM3M=
+        bh=R1IHBMVsoZ6NTFHP8Fj2eSbIUTpxY/Gj+BnrTwpb5u8=;
+        b=WgQ4MD7yqEsITTuEvvyqtTtkTtJRn8WhioWgshs6o/5O/SIVM+TdBKQkykESLa1jQ/NHnG
+        mVmIY4M9djldAbg0iJcIoUx9McZDf24jRyguIfD9H7uCZYyN3b8qezWih6sb91dtiWoZ2R
+        9XZFVkgslCQuZ3VrPqCngIJxSKxooVg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-553-I2ESP4TDPhG91f9ioXCEoQ-1; Tue, 15 Jun 2021 05:29:37 -0400
-X-MC-Unique: I2ESP4TDPhG91f9ioXCEoQ-1
+ us-mta-436-uYG1BkWIOb-dbENxcuZuVQ-1; Tue, 15 Jun 2021 05:29:41 -0400
+X-MC-Unique: uYG1BkWIOb-dbENxcuZuVQ-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 863F7101C8AE;
-        Tue, 15 Jun 2021 09:29:35 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 480329F92E;
+        Tue, 15 Jun 2021 09:29:40 +0000 (UTC)
 Received: from x1.com (ovpn-113-40.rdu2.redhat.com [10.10.113.40])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 507235D6AD;
-        Tue, 15 Jun 2021 09:29:31 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D8BD45D6AD;
+        Tue, 15 Jun 2021 09:29:35 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@redhat.com>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Phil Auld <pauld@redhat.com>,
@@ -51,9 +51,9 @@ Cc:     Phil Auld <pauld@redhat.com>,
         Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V4 06/12] trace: Add a generic function to read/write u64 values from tracefs
-Date:   Tue, 15 Jun 2021 11:28:45 +0200
-Message-Id: <681a2fb508b3dad2979ac705c3df633f14abb9b2.1623746916.git.bristot@redhat.com>
+Subject: [PATCH V4 07/12] trace/hwlat: Use trace_min_max_param for width and window params
+Date:   Tue, 15 Jun 2021 11:28:46 +0200
+Message-Id: <fc6971c67ccc4f904ec7c4a13167ce841c80b484.1623746916.git.bristot@redhat.com>
 In-Reply-To: <cover.1623746916.git.bristot@redhat.com>
 References: <cover.1623746916.git.bristot@redhat.com>
 MIME-Version: 1.0
@@ -63,52 +63,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hwlat detector and (in preparation for) the osnoise/timerlat tracers
-have a set of u64 parameters that the user can read/write via tracefs.
-For instance, we have hwlat_detector's window and width.
+Use the trace_min_max_param to reduce code duplication.
 
-To reduce the code duplication, hwlat's window and width share the same
-read function. However, they do not share the write functions because
-they do different parameter checks. For instance, the width needs to
-be smaller than the window, while the window needs to be larger
-than the window. The same pattern repeats on osnoise/timerlat, and
-a large portion of the code was devoted to the write function.
-
-Despite having different checks, the write functions have the same
-structure:
-
-   read a user-space buffer
-   take the lock that protects the value
-   check for minimum and maximum acceptable values
-      save the value
-   release the lock
-   return success or error
-
-To reduce the code duplication also in the write functions, this patch
-provides a generic read and write implementation for u64 values that
-need to be within some minimum and/or maximum parameters, while
-(potentially) being protected by a lock.
-
-To use this interface, the structure trace_min_max_param needs to be
-filled:
-
- struct trace_min_max_param {
-         struct mutex    *lock;
-         u64             *val;
-         u64             *min;
-         u64             *max;
- };
-
-The desired value is stored on the variable pointed by *val. If *min
-points to a minimum acceptable value, it will be checked during the
-write operation. Likewise, if *max points to a maximum allowable value,
-it will be checked during the write operation. Finally, if *lock points
-to a mutex, it will be taken at the beginning of the operation and
-released at the end.
-
-The definition of a trace_min_max_param needs to passed as the
-(private) *data for tracefs_create_file(), and the trace_min_max_fops
-(added by this patch) as the *fops file_operations.
+No functional change.
 
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Steven Rostedt <rostedt@goodmis.org>
@@ -126,134 +83,186 @@ Cc: linux-doc@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
 ---
- kernel/trace/trace.c | 86 ++++++++++++++++++++++++++++++++++++++++++++
- kernel/trace/trace.h | 18 ++++++++++
- 2 files changed, 104 insertions(+)
+ kernel/trace/trace_hwlat.c | 145 ++++++-------------------------------
+ 1 file changed, 24 insertions(+), 121 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index c094865e2f71..e03343e8f332 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -7545,6 +7545,92 @@ static const struct file_operations snapshot_raw_fops = {
- 
- #endif /* CONFIG_TRACER_SNAPSHOT */
- 
-+/*
-+ * trace_min_max_write - Write a u64 value to a trace_min_max_param struct
-+ * @filp: The active open file structure
-+ * @ubuf: The userspace provided buffer to read value into
-+ * @cnt: The maximum number of bytes to read
-+ * @ppos: The current "file" position
-+ *
-+ * This function implements the write interface for a struct trace_min_max_param.
-+ * The filp->private_data must point to a trace_min_max_param structure that
-+ * defines where to write the value, the min and the max acceptable values,
-+ * and a lock to protect the write.
-+ */
-+static ssize_t
-+trace_min_max_write(struct file *filp, const char __user *ubuf, size_t cnt, loff_t *ppos)
-+{
-+	struct trace_min_max_param *param = filp->private_data;
-+	u64 val;
-+	int err;
-+
-+	if (!param)
-+		return -EFAULT;
-+
-+	err = kstrtoull_from_user(ubuf, cnt, 10, &val);
-+	if (err)
-+		return err;
-+
-+	if (param->lock)
-+		mutex_lock(param->lock);
-+
-+	if (param->min && val < *param->min)
-+		err = -EINVAL;
-+
-+	if (param->max && val > *param->max)
-+		err = -EINVAL;
-+
-+	if (!err)
-+		*param->val = val;
-+
-+	if (param->lock)
-+		mutex_unlock(param->lock);
-+
-+	if (err)
-+		return err;
-+
-+	return cnt;
-+}
-+
-+/*
-+ * trace_min_max_read - Read a u64 value from a trace_min_max_param struct
-+ * @filp: The active open file structure
-+ * @ubuf: The userspace provided buffer to read value into
-+ * @cnt: The maximum number of bytes to read
-+ * @ppos: The current "file" position
-+ *
-+ * This function implements the read interface for a struct trace_min_max_param.
-+ * The filp->private_data must point to a trace_min_max_param struct with valid
-+ * data.
-+ */
-+static ssize_t
-+trace_min_max_read(struct file *filp, char __user *ubuf, size_t cnt,
-+		      loff_t *ppos)
-+{
-+	struct trace_min_max_param *param = filp->private_data;
-+	char buf[ULL_STR_SIZE];
-+	u64 val;
-+        int len;
-+
-+        if (!param)
-+                return -EFAULT;
-+
-+	val = *param->val;
-+
-+        if (cnt > sizeof(buf))
-+                cnt = sizeof(buf);
-+
-+        len = snprintf(buf, sizeof(buf), "%llu\n", val);
-+
-+        return simple_read_from_buffer(ubuf, cnt, ppos, buf, len);
-+}
-+
-+const struct file_operations trace_min_max_fops = {
-+	.open		= tracing_open_generic,
-+	.read		= trace_min_max_read,
-+	.write		= trace_min_max_write,
-+};
-+
- #define TRACING_LOG_ERRS_MAX	8
- #define TRACING_LOG_LOC_MAX	128
- 
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index cd80d046c7a5..7bfb50461d5e 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1952,4 +1952,22 @@ static inline bool is_good_name(const char *name)
- 	return true;
+diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
+index 9fcfd588c4f6..0ab6acf6ae9a 100644
+--- a/kernel/trace/trace_hwlat.c
++++ b/kernel/trace/trace_hwlat.c
+@@ -556,115 +556,6 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
+ 	return retval;
  }
  
+-/*
+- * hwlat_read - Wrapper read function for reading both window and width
+- * @filp: The active open file structure
+- * @ubuf: The userspace provided buffer to read value into
+- * @cnt: The maximum number of bytes to read
+- * @ppos: The current "file" position
+- *
+- * This function provides a generic read implementation for the global state
+- * "hwlat_data" structure filesystem entries.
+- */
+-static ssize_t hwlat_read(struct file *filp, char __user *ubuf,
+-			  size_t cnt, loff_t *ppos)
+-{
+-	char buf[U64STR_SIZE];
+-	u64 *entry = filp->private_data;
+-	u64 val;
+-	int len;
+-
+-	if (!entry)
+-		return -EFAULT;
+-
+-	if (cnt > sizeof(buf))
+-		cnt = sizeof(buf);
+-
+-	val = *entry;
+-
+-	len = snprintf(buf, sizeof(buf), "%llu\n", val);
+-
+-	return simple_read_from_buffer(ubuf, cnt, ppos, buf, len);
+-}
+-
+-/**
+- * hwlat_width_write - Write function for "width" entry
+- * @filp: The active open file structure
+- * @ubuf: The user buffer that contains the value to write
+- * @cnt: The maximum number of bytes to write to "file"
+- * @ppos: The current position in @file
+- *
+- * This function provides a write implementation for the "width" interface
+- * to the hardware latency detector. It can be used to configure
+- * for how many us of the total window us we will actively sample for any
+- * hardware-induced latency periods. Obviously, it is not possible to
+- * sample constantly and have the system respond to a sample reader, or,
+- * worse, without having the system appear to have gone out to lunch. It
+- * is enforced that width is less that the total window size.
+- */
+-static ssize_t
+-hwlat_width_write(struct file *filp, const char __user *ubuf,
+-		  size_t cnt, loff_t *ppos)
+-{
+-	u64 val;
+-	int err;
+-
+-	err = kstrtoull_from_user(ubuf, cnt, 10, &val);
+-	if (err)
+-		return err;
+-
+-	mutex_lock(&hwlat_data.lock);
+-	if (val < hwlat_data.sample_window)
+-		hwlat_data.sample_width = val;
+-	else
+-		err = -EINVAL;
+-	mutex_unlock(&hwlat_data.lock);
+-
+-	if (err)
+-		return err;
+-
+-	return cnt;
+-}
+-
+-/**
+- * hwlat_window_write - Write function for "window" entry
+- * @filp: The active open file structure
+- * @ubuf: The user buffer that contains the value to write
+- * @cnt: The maximum number of bytes to write to "file"
+- * @ppos: The current position in @file
+- *
+- * This function provides a write implementation for the "window" interface
+- * to the hardware latency detector. The window is the total time
+- * in us that will be considered one sample period. Conceptually, windows
+- * occur back-to-back and contain a sample width period during which
+- * actual sampling occurs. Can be used to write a new total window size. It
+- * is enforced that any value written must be greater than the sample width
+- * size, or an error results.
+- */
+-static ssize_t
+-hwlat_window_write(struct file *filp, const char __user *ubuf,
+-		   size_t cnt, loff_t *ppos)
+-{
+-	u64 val;
+-	int err;
+-
+-	err = kstrtoull_from_user(ubuf, cnt, 10, &val);
+-	if (err)
+-		return err;
+-
+-	mutex_lock(&hwlat_data.lock);
+-	if (hwlat_data.sample_width < val)
+-		hwlat_data.sample_window = val;
+-	else
+-		err = -EINVAL;
+-	mutex_unlock(&hwlat_data.lock);
+-
+-	if (err)
+-		return err;
+-
+-	return cnt;
+-}
+-
+ static void *s_mode_start(struct seq_file *s, loff_t *pos)
+ {
+ 	int mode = *pos;
+@@ -789,16 +680,28 @@ static ssize_t hwlat_mode_write(struct file *filp, const char __user *ubuf,
+ 	return ret;
+ }
+ 
+-static const struct file_operations width_fops = {
+-	.open		= tracing_open_generic,
+-	.read		= hwlat_read,
+-	.write		= hwlat_width_write,
 +/*
-+ * This is a generic way to read and write a u64 value from a file in tracefs.
-+ *
-+ * The value is stored on the variable pointed by *val. The value needs
-+ * to be at least *min and at most *max. The write is protected by an
-+ * existing *lock.
++ * The width parameter is read/write using the generic trace_min_max_param
++ * method. The *val is protected by the hwlat_data lock and is upper
++ * bounded by the window parameter.
 + */
-+struct trace_min_max_param {
-+	struct mutex	*lock;
-+	u64		*val;
-+	u64		*min;
-+	u64		*max;
-+};
-+
-+#define ULL_STR_SIZE		22	/* 20 digits max */
-+
-+extern const struct file_operations trace_min_max_fops;
-+
- #endif /* _LINUX_KERNEL_TRACE_H */
++static struct trace_min_max_param hwlat_width = {
++	.lock		= &hwlat_data.lock,
++	.val		= &hwlat_data.sample_width,
++	.max		= &hwlat_data.sample_window,
++	.min		= NULL,
+ };
+ 
+-static const struct file_operations window_fops = {
+-	.open		= tracing_open_generic,
+-	.read		= hwlat_read,
+-	.write		= hwlat_window_write,
++/*
++ * The window parameter is read/write using the generic trace_min_max_param
++ * method. The *val is protected by the hwlat_data lock and is lower
++ * bounded by the width parameter.
++ */
++static struct trace_min_max_param hwlat_window = {
++	.lock		= &hwlat_data.lock,
++	.val		= &hwlat_data.sample_window,
++	.max		= NULL,
++	.min		= &hwlat_data.sample_width,
+ };
+ 
+ static const struct file_operations thread_mode_fops = {
+@@ -831,15 +734,15 @@ static int init_tracefs(void)
+ 
+ 	hwlat_sample_window = tracefs_create_file("window", 0640,
+ 						  top_dir,
+-						  &hwlat_data.sample_window,
+-						  &window_fops);
++						  &hwlat_window,
++						  &trace_min_max_fops);
+ 	if (!hwlat_sample_window)
+ 		goto err;
+ 
+ 	hwlat_sample_width = tracefs_create_file("width", 0644,
+ 						 top_dir,
+-						 &hwlat_data.sample_width,
+-						 &width_fops);
++						 &hwlat_width,
++						 &trace_min_max_fops);
+ 	if (!hwlat_sample_width)
+ 		goto err;
+ 
 -- 
 2.31.1
 
