@@ -2,139 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4AA03A7759
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4853A7757
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhFOGtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 02:49:49 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:57382 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhFOGtq (ORCPT
+        id S230043AbhFOGtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 02:49:43 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:34620 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229494AbhFOGti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 02:49:46 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15F6jXB7116543;
-        Tue, 15 Jun 2021 06:47:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=PdOJ7uhVLoKJ8IudTXgqsqb8p8KH82LJt1NWmmnufdk=;
- b=qxtukR5YNH/ei1lKq8QmbjHHldRsKE5p6sZMtv2WQUJzt47FtOiYHIDcuEDABFpky0sm
- 8mvIIH+KvzwD32bj1kWGKADuY+slP+1+9YFqMriNbo5Vp6Qaqe8ok9rKxtF2QiofZsbD
- BF5nJr8wONuJH/6vj4qnQl/3qWf2RMqj2Irc1d/N8h6kEaxJG6sxXnMPbWSavx50YMIi
- KQSd0f8U+mYA9nL3R0ulABjWSrVV17Vxp3woviQG318JLg3WnTpBAkouhOMmlMdWWXXY
- ltWoVa0CR4SiwqLnoQxmEXfXdSo9Rwmu+zZxwoMUnaFSa63qNwLZRQY0kMCgdT5ps+vn LQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 394jecdawf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Jun 2021 06:47:34 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15F6jDnX067338;
-        Tue, 15 Jun 2021 06:47:33 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 3959ckamh0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Jun 2021 06:47:33 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15F6lXwv072668;
-        Tue, 15 Jun 2021 06:47:33 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 3959ckamg3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Jun 2021 06:47:33 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 15F6lQ8k001325;
-        Tue, 15 Jun 2021 06:47:27 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 14 Jun 2021 23:47:26 -0700
-Date:   Tue, 15 Jun 2021 09:47:19 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Martin Kaiser <martin@kaiser.cx>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/6] staging: rtl8188eu: fix usb_submit_urb error handling
-Message-ID: <20210615064719.GA2120@kadam>
-References: <20210612180019.20387-1-martin@kaiser.cx>
- <20210612180019.20387-2-martin@kaiser.cx>
- <YMdr0alJDEGfsqOA@kroah.com>
+        Tue, 15 Jun 2021 02:49:38 -0400
+X-UUID: 51aefbf2839041f3823ad97494ef4af6-20210615
+X-UUID: 51aefbf2839041f3823ad97494ef4af6-20210615
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1787216130; Tue, 15 Jun 2021 14:47:31 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 15 Jun 2021 14:47:23 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 15 Jun 2021 14:47:23 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <rostedt@goodmis.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Matt Helsley <mhelsley@vmware.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
+        <peterz@infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <yj.chiang@mediatek.com>
+Subject: [PATCH v2] recordmcount: Correct st_shndx handling
+Date:   Tue, 15 Jun 2021 14:47:20 +0800
+Message-ID: <20210615064720.21950-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMdr0alJDEGfsqOA@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: lURhPgTfq9QPm6nTf8f0uMKvBx1t_uCK
-X-Proofpoint-GUID: lURhPgTfq9QPm6nTf8f0uMKvBx1t_uCK
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10015 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 phishscore=0
- bulkscore=0 clxscore=1015 mlxlogscore=999 adultscore=0 malwarescore=0
- spamscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106150040
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 04:46:41PM +0200, Greg Kroah-Hartman wrote:
-> On Sat, Jun 12, 2021 at 08:00:15PM +0200, Martin Kaiser wrote:
-> > -EPERM should be handled like any other error.
-> 
-> Why?  This is not "any other error" for the usb core, right?
-> 
+One should only use st_shndx when >SHN_UNDEF and <SHN_LORESERVE. When
+SHN_XINDEX, then use .symtab_shndx. Otherwise use 0.
 
-Yeah.  It's a fair point that this commit message doesn't say why to do
-it or explain the implications.
+This handles the case: st_shndx >= SHN_LORESERVE && st_shndx != SHN_XINDEX.
 
-> > 
-> > Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> > ---
-> >  drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c | 7 +++----
-> >  1 file changed, 3 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c b/drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c
-> > index ec07b2017fb7..0ceb05f3884f 100644
-> > --- a/drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c
-> > +++ b/drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c
-> > @@ -366,7 +366,6 @@ u32 usb_read_port(struct adapter *adapter, u32 addr, struct recv_buf *precvbuf)
-> >  	struct usb_device *pusbd = pdvobj->pusbdev;
-> >  	int err;
-> >  	unsigned int pipe;
-> > -	u32 ret = _SUCCESS;
-> >  
-> >  	if (adapter->bDriverStopped || adapter->bSurpriseRemoved ||
-> >  	    adapter->pwrctrlpriv.pnp_bstop_trx) {
-> > @@ -403,10 +402,10 @@ u32 usb_read_port(struct adapter *adapter, u32 addr, struct recv_buf *precvbuf)
-> >  			  precvbuf);/* context is precvbuf */
-> >  
-> >  	err = usb_submit_urb(purb, GFP_ATOMIC);
-> > -	if ((err) && (err != (-EPERM)))
-> > -		ret = _FAIL;
-> 
-> if -EPERM returns from this function, someone set the "reject" bit on
-> the urb.
-> 
-> Can this driver do that?  Where did this check originally come from, as
-> it feels like this was added for a good reason.
-> 
+Reported-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+---
+ scripts/recordmcount.h | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-Yeah.  It can cancel urbs in rtw_hal_inirp_deinit().  That function used
-to have a better name, "usb_read_port_cancel" and in retrospect the
-original name was probably better.
-
-I think the reason for that -EPERM was treated differently was because
-originally there were some error messages printed if usb_submit_urb()
-failed.  (They were't actually printed because this code is buggy).  The
-authors probably didn't want to print the error messages but
-accidentally made it return success as well.
-
-There is only one caller that checks the return and it only affects the
-behavior if we race against open.  Can that even happen?  I'm pretty
-sure that returning a failure is the correct behavior but I'm going to
-leave it to Martin to check for absolutely sure.  :P
-
-regards,
-dan carpenter
+diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+index f9b19524da11..ef9c3425f86b 100644
+--- a/scripts/recordmcount.h
++++ b/scripts/recordmcount.h
+@@ -194,13 +194,18 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
+ 	unsigned long offset;
+ 	int index;
+ 
+-	if (sym->st_shndx != SHN_XINDEX)
++	if (w2(sym->st_shndx) > SHN_UNDEF &&
++	    w2(sym->st_shndx) < SHN_LORESERVE)
+ 		return w2(sym->st_shndx);
+ 
+-	offset = (unsigned long)sym - (unsigned long)symtab;
+-	index = offset / sizeof(*sym);
++	if (w2(sym->st_shndx) == SHN_XINDEX) {
++		offset = (unsigned long)sym - (unsigned long)symtab;
++		index = offset / sizeof(*sym);
+ 
+-	return w(symtab_shndx[index]);
++		return w(symtab_shndx[index]);
++	}
++
++	return 0;
+ }
+ 
+ static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
+-- 
+2.18.0
 
