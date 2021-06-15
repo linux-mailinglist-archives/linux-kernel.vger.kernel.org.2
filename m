@@ -2,95 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A74723A811D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6E53A8128
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhFONpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:45:05 -0400
-Received: from verein.lst.de ([213.95.11.211]:49407 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231931AbhFONoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:44:16 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3D5CB67373; Tue, 15 Jun 2021 15:42:09 +0200 (CEST)
-Date:   Tue, 15 Jun 2021 15:42:08 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v10 10/12] swiotlb: Add restricted DMA alloc/free
- support
-Message-ID: <20210615134208.GJ20389@lst.de>
-References: <20210615132711.553451-1-tientzu@chromium.org> <20210615132711.553451-11-tientzu@chromium.org>
+        id S231256AbhFONpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:45:50 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:60546 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231295AbhFONo6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:44:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623764573; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=fBg3Q6qMpWy0ix/BOTxexwlZllzXH0IwcYdedtXwM6A=;
+ b=s7KZ/7oIPfGFr91Mq7FjX8N5Tffwed+Uga37LHYAp84LGWI6eEqWoUgK3Bbo7Ry/lUg2KlD+
+ Jn8OjGq6pbXF7fZmNzbYGg3hhPBECaPQGD+akm9oVSCTcOsU7G6f7pPJ3tRP9RRi9KweMImN
+ izwvT5OIWC60rIuaDcJTb1h8YdE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60c8ae45f726fa4188a40305 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:42:29
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7A50BC43460; Tue, 15 Jun 2021 13:42:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3F5DC433F1;
+        Tue, 15 Jun 2021 13:42:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D3F5DC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615132711.553451-11-tientzu@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH V2] rsi: fix AP mode with WPA failure due to encrypted
+ EAPOL
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1622564459-24430-1-git-send-email-martin.fuzzey@flowbird.group>
+References: <1622564459-24430-1-git-send-email-martin.fuzzey@flowbird.group>
+To:     Martin Fuzzey <martin.fuzzey@flowbird.group>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>, stable@vger.kernel.org,
+        Siva Rebbagondla <siva8118@gmail.com>,
+        Marek Vasut <marex@denx.de>, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210615134228.7A50BC43460@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 13:42:28 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 09:27:09PM +0800, Claire Chang wrote:
-> Add the functions, swiotlb_{alloc,free} to support the memory allocation
-> from restricted DMA pool.
+Martin Fuzzey <martin.fuzzey@flowbird.group> wrote:
+
+> In AP mode WPA2-PSK connections were not established.
 > 
-> The restricted DMA pool is preferred if available.
+> The reason was that the AP was sending the first message
+> of the 4 way handshake encrypted, even though no pairwise
+> key had (correctly) yet been set.
 > 
-> Note that since coherent allocation needs remapping, one must set up
-> another device coherent pool by shared-dma-pool and use
-> dma_alloc_from_dev_coherent instead for atomic coherent allocation.
+> Encryption was enabled if the "security_enable" driver flag
+> was set and encryption was not explicitly disabled by
+> IEEE80211_TX_INTFL_DONT_ENCRYPT.
+> 
+> However security_enable was set when *any* key, including
+> the AP GTK key, had been set which was causing unwanted
+> encryption even if no key was avaialble for the unicast
+> packet to be sent.
+> 
+> Fix this by adding a check that we have a key and drop
+> the old security_enable driver flag which is insufficient
+> and redundant.
+> 
+> The Redpine downstream out of tree driver does it this way too.
+> 
+> Regarding the Fixes tag the actual code being modified was
+> introduced earlier, with the original driver submission, in
+> dad0d04fa7ba ("rsi: Add RS9113 wireless driver"), however
+> at that time AP mode was not yet supported so there was
+> no bug at that point.
+> 
+> So I have tagged the introduction of AP support instead
+> which was part of the patch set "rsi: support for AP mode" [1]
+> 
+> It is not clear whether AP WPA has ever worked, I can see nothing
+> on the kernel side that broke it afterwards yet the AP support
+> patch series says "Tests are performed to confirm aggregation,
+> connections in WEP and WPA/WPA2 security."
+> 
+> One possibility is that the initial tests were done with a modified
+> userspace (hostapd).
+> 
+> [1] https://www.spinics.net/lists/linux-wireless/msg165302.html
+> 
+> Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
+> Fixes: 38ef62353acb ("rsi: security enhancements for AP mode")
+> CC: stable@vger.kernel.org
 
-Note: when applied this should go before the next patch to make sure
-bisection works fine.
+Patch applied to wireless-drivers-next.git, thanks.
 
->  #ifdef CONFIG_DMA_RESTRICTED_POOL
-> +struct page *swiotlb_alloc(struct device *dev, size_t size)
-> +{
-> +	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-> +	phys_addr_t tlb_addr;
-> +	int index;
-> +
-> +	/*
-> +	 * Skip io_tlb_default_mem since swiotlb_alloc doesn't support atomic
-> +	 * coherent allocation. Otherwise might break existing devices.
-> +	 * One must set up another device coherent pool by shared-dma-pool and
-> +	 * use dma_alloc_from_dev_coherent instead for atomic coherent
-> +	 * allocation to avoid mempry remapping.
+314538041b56 rsi: fix AP mode with WPA failure due to encrypted EAPOL
 
-s/mempry/memory/g
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/1622564459-24430-1-git-send-email-martin.fuzzey@flowbird.group/
 
-Otherwise looks good:
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
