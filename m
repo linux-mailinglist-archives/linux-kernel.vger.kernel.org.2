@@ -2,149 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64B73A7B69
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2AD3A7B6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231442AbhFOKK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:10:58 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:6375 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbhFOKK4 (ORCPT
+        id S231510AbhFOKLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231396AbhFOKLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:10:56 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G43pC3n99z63ZS;
-        Tue, 15 Jun 2021 18:04:51 +0800 (CST)
-Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 18:08:43 +0800
-Received: from [10.174.187.128] (10.174.187.128) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 18:08:43 +0800
-Subject: Re: [PATCH] KVM: arm64: Fix inconsistency from function comment of
- __unmap_stage2_range
-To:     Marc Zyngier <maz@kernel.org>
-CC:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
-        <yuzenghui@huawei.com>, <wanghaibin.wang@huawei.com>
-References: <20210615090436.13916-1-wangyanan55@huawei.com>
- <87mtrrihgl.wl-maz@kernel.org>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <d10107ec-6448-e69c-ecad-6d24c3dd42ae@huawei.com>
-Date:   Tue, 15 Jun 2021 18:08:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 15 Jun 2021 06:11:17 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3935CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:09:12 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso13727069otu.10
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:09:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D/L9M46eaaH0QBqlJTDr9j5/a1oRGHp298rEoHobuSk=;
+        b=W/lfR0zLReQdc7PHjJRVB6Z9hn6GJnOFkroA8pyiE5Y0liNQOgHCt87KS4/bkAX7eE
+         ruHOuoF3srORlhSJjFmg2JbJjF5kGBzDUdqoQ0xbY3+7U7KDtUEKQoFIW1wmxShxQmod
+         7IyMraVpNr1qagN5T38H67gQWcRWPStkYlkY11tL5rOY+XXsGhRyP8nZUCYVpimFgaQE
+         TDDfZ1AGYIcueALqYy5l63YjogRbXNbuef49nv3KDRdF0RjbjFT7pI243T186J46J90u
+         GYwjsGeX4c5nDZ3pG35tX5Es3IqFrw8pDn67QjzsbdqHfe/JYmQpn0mp/7J6DK3wRnbU
+         rLsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D/L9M46eaaH0QBqlJTDr9j5/a1oRGHp298rEoHobuSk=;
+        b=hLcuH17v7hXrjPwC7mcy7OeyNu5IBz4O9BYl+Kb1fuwtWg0Dyh1Kvf5RfR2+rZ5wzV
+         rg/C7nBOHAC8/i0f/DCRLYxNgpxxpEHp2j91RWkElZRmbXQNDjDHvlv3/877tdhQAE9q
+         ezjDndWZvkqcW/2se1dERZ8p3IQeiaRheh2JDBKUrWW1l7DsRuGQbCOuAxaJd1Kx9gQK
+         Sd/VjZJJnSrGEVu+koqSuFkTDRaSpKv1bUGcjmOLM8gM2hyta19iTAJTUOJNnPIj6nrt
+         +nvncQzbihjIeqGYT+jDyVZeUwfnEjKvPsadA5GS3gYuikyy9a6l6qkTcVwP4lw+kzwl
+         GIwA==
+X-Gm-Message-State: AOAM530K/+B6HzGWJsPEYDt2YSErgeya7tVmUpfGybDAR29Yzkf3CC6f
+        EvYMDvqoVauE4uBGQkeU30PFzWvyDW1wpeuJoe5SmA==
+X-Google-Smtp-Source: ABdhPJxoyp0dtnWruW4n6Mt2ds9c4qUeqUilzebp8wuisHioo9OHuACmSktOGVx8KTei3SgLqyvF0y6ZD0IXk1FVzz0=
+X-Received: by 2002:a05:6830:1c7b:: with SMTP id s27mr17651144otg.233.1623751751394;
+ Tue, 15 Jun 2021 03:09:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87mtrrihgl.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
- dggpemm500023.china.huawei.com (7.185.36.83)
-X-CFilter-Loop: Reflected
+References: <20210615014705.2234866-1-dja@axtens.net> <20210615014705.2234866-3-dja@axtens.net>
+In-Reply-To: <20210615014705.2234866-3-dja@axtens.net>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 15 Jun 2021 12:08:59 +0200
+Message-ID: <CANpmjNN2=gdDBPzYQYsmOtLQVVjSz2qFcwcTMEqB=s_ZWndJLg@mail.gmail.com>
+Subject: Re: [PATCH v12 2/6] kasan: allow architectures to provide an outline
+ readiness check
+To:     Daniel Axtens <dja@axtens.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        aneesh.kumar@linux.ibm.com, Balbir Singh <bsingharora@gmail.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/6/15 17:51, Marc Zyngier wrote:
-> On Tue, 15 Jun 2021 10:04:36 +0100,
-> Yanan Wang <wangyanan55@huawei.com> wrote:
->> Commit 'b5331379bc626'
->> (KVM: arm64: Only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is not set)
->> has converted the original function name 'unmap_stage2_range' to
->> '__unmap_stage2_range', but leaving the corresponding function comment
->> unadjusted. So fix it for code readability.
->>
->> Incidentally, we also tewak some comment identation by using tabs instead
->> of spaces to be consistent with the other functions.
->>
->> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
-> Same as the previous patch. The first hunk is OK, as it fixes an
-> actual defect (wrong documentation), and adjusting the alignment is OK
-> as your changing the context.
+On Tue, 15 Jun 2021 at 03:47, Daniel Axtens <dja@axtens.net> wrote:
 >
-> However, the last 3 are just noise. Please drop them.
-Ok, will drop them.
-
-Thanks,
-Yanan
-> Thanks,
+> Allow architectures to define a kasan_arch_is_ready() hook that bails
+> out of any function that's about to touch the shadow unless the arch
+> says that it is ready for the memory to be accessed. This is fairly
+> uninvasive and should have a negligible performance penalty.
 >
-> 	M.
+> This will only work in outline mode, so an arch must specify
+> ARCH_DISABLE_KASAN_INLINE if it requires this.
 >
->> ---
->>   arch/arm64/kvm/mmu.c | 18 +++++++++---------
->>   1 file changed, 9 insertions(+), 9 deletions(-)
->>
->> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->> index 5742ba765ff9..80040af147a2 100644
->> --- a/arch/arm64/kvm/mmu.c
->> +++ b/arch/arm64/kvm/mmu.c
->> @@ -151,11 +151,11 @@ static void *kvm_host_va(phys_addr_t phys)
->>    * does.
->>    */
->>   /**
->> - * unmap_stage2_range -- Clear stage2 page table entries to unmap a range
->> - * @mmu:   The KVM stage-2 MMU pointer
->> - * @start: The intermediate physical base address of the range to unmap
->> - * @size:  The size of the area to unmap
->> - * @may_block: Whether or not we are permitted to block
->> + * __unmap_stage2_range -- Clear stage2 page table entries to unmap a range
->> + * @mmu:	The KVM stage-2 MMU pointer
->> + * @start:	The intermediate physical base address of the range to unmap
->> + * @size:	The size of the area to unmap
->> + * @may_block:	Whether or not we are permitted to block
->>    *
->>    * Clear a range of stage-2 mappings, lowering the various ref-counts.  Must
->>    * be called while holding mmu_lock (unless for freeing the stage2 pgd before
->> @@ -190,7 +190,7 @@ static void stage2_flush_memslot(struct kvm *kvm,
->>   
->>   /**
->>    * stage2_flush_vm - Invalidate cache for pages mapped in stage 2
->> - * @kvm: The struct kvm pointer
->> + * @kvm:	The struct kvm pointer
->>    *
->>    * Go through the stage 2 page tables and invalidate any cache lines
->>    * backing memory already mapped to the VM.
->> @@ -527,7 +527,7 @@ static void stage2_unmap_memslot(struct kvm *kvm,
->>   
->>   /**
->>    * stage2_unmap_vm - Unmap Stage-2 RAM mappings
->> - * @kvm: The struct kvm pointer
->> + * @kvm:	The struct kvm pointer
->>    *
->>    * Go through the memregions and unmap any regular RAM
->>    * backing memory already mapped to the VM.
->> @@ -578,7 +578,7 @@ void kvm_free_stage2_pgd(struct kvm_s2_mmu *mmu)
->>    * @guest_ipa:	The IPA at which to insert the mapping
->>    * @pa:		The physical address of the device
->>    * @size:	The size of the mapping
->> - * @writable:   Whether or not to create a writable mapping
->> + * @writable:	Whether or not to create a writable mapping
->>    */
->>   int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
->>   			  phys_addr_t pa, unsigned long size, bool writable)
->> @@ -616,7 +616,7 @@ int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
->>   
->>   /**
->>    * stage2_wp_range() - write protect stage2 memory region range
->> - * @mmu:        The KVM stage-2 MMU pointer
->> + * @mmu:	The KVM stage-2 MMU pointer
->>    * @addr:	Start address of range
->>    * @end:	End address of range
->>    */
->> -- 
->> 2.23.0
->>
->>
+> Cc: Balbir Singh <bsingharora@gmail.com>
+> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
+> Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Daniel Axtens <dja@axtens.net>
+>
+> --
+>
+> I discuss the justfication for this later in the series. Also,
+> both previous RFCs for ppc64 - by 2 different people - have
+> needed this trick! See:
+>  - https://lore.kernel.org/patchwork/patch/592820/ # ppc64 hash series
+>  - https://patchwork.ozlabs.org/patch/795211/      # ppc radix series
+> ---
+>  mm/kasan/common.c  | 4 ++++
+>  mm/kasan/generic.c | 3 +++
+>  mm/kasan/kasan.h   | 4 ++++
+>  mm/kasan/shadow.c  | 4 ++++
+>  4 files changed, 15 insertions(+)
+>
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 10177cc26d06..0ad615f3801d 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -331,6 +331,10 @@ static inline bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
+>         u8 tag;
+>         void *tagged_object;
+>
+> +       /* Bail if the arch isn't ready */
+> +       if (!kasan_arch_is_ready())
+> +               return false;
+> +
+>         tag = get_tag(object);
+>         tagged_object = object;
+>         object = kasan_reset_tag(object);
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index 53cbf28859b5..c3f5ba7a294a 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -163,6 +163,9 @@ static __always_inline bool check_region_inline(unsigned long addr,
+>                                                 size_t size, bool write,
+>                                                 unsigned long ret_ip)
+>  {
+> +       if (!kasan_arch_is_ready())
+> +               return true;
+> +
+>         if (unlikely(size == 0))
+>                 return true;
+>
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 8f450bc28045..19323a3d5975 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -449,6 +449,10 @@ static inline void kasan_poison_last_granule(const void *address, size_t size) {
+>
+>  #endif /* CONFIG_KASAN_GENERIC */
+>
+> +#ifndef kasan_arch_is_ready
+> +static inline bool kasan_arch_is_ready(void)   { return true; }
+> +#endif
+> +
+>  /*
+>   * Exported functions for interfaces called from assembly or from generated
+>   * code. Declarations here to avoid warning about missing declarations.
+> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+> index 082ee5b6d9a1..74134b657d7d 100644
+> --- a/mm/kasan/shadow.c
+> +++ b/mm/kasan/shadow.c
+> @@ -73,6 +73,10 @@ void kasan_poison(const void *addr, size_t size, u8 value, bool init)
+>  {
+>         void *shadow_start, *shadow_end;
+>
+> +       /* Don't touch the shadow memory if arch isn't ready */
+> +       if (!kasan_arch_is_ready())
+> +               return;
+> +
 
+What about kasan_poison_last_granule()? kasan_unpoison() currently
+seems to potentially trip on that.
