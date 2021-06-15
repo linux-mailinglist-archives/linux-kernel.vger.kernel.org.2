@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2E13A77F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D093A77FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhFOHbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:31:04 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:11663 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229908AbhFOHbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:31:02 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G40LK5WyBzBBQy;
-        Tue, 15 Jun 2021 09:28:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id utAMxQNL3e0X; Tue, 15 Jun 2021 09:28:57 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G40LK2Q82zBBDH;
-        Tue, 15 Jun 2021 09:28:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 364218B7A3;
-        Tue, 15 Jun 2021 09:28:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id HMyoXwMPJYV4; Tue, 15 Jun 2021 09:28:57 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BFA318B7A2;
-        Tue, 15 Jun 2021 09:28:56 +0200 (CEST)
-Subject: Re: [PATCH 5/7] signal: Add unsafe_copy_siginfo_to_user()
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <b813c1f4d3dab2f51300eac44d99029aa8e57830.1623739212.git.christophe.leroy@csgroup.eu>
- <684939dcfef612fac573d1b983a977215b71f64d.1623739212.git.christophe.leroy@csgroup.eu>
- <YMhOMoKKvew0YYCt@infradead.org>
- <7061fbee-cc82-2699-cf12-e5a4ae46940f@csgroup.eu>
- <YMhU3Df7foVo9BaM@infradead.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <ce8f56c6-3312-8fb6-7389-1498d6bb9cb7@csgroup.eu>
-Date:   Tue, 15 Jun 2021 09:28:54 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230301AbhFOHcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:32:03 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6504 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229788AbhFOHcC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 03:32:02 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G40J53PsgzZgWd;
+        Tue, 15 Jun 2021 15:27:01 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 15:29:53 +0800
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 15:29:52 +0800
+Subject: Re: [PATCH -next] acpi/nvs: fix doc warnings in nvs.c
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "ACPI Devel Maling List" <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        "Yue Haibing" <yuehaibing@huawei.com>, <yangjihong1@huawei.com>,
+        yu kuai <yukuai3@huawei.com>
+References: <20210608023841.2746826-1-libaokun1@huawei.com>
+ <CAJZ5v0iPcSwjswJ7+1gPk-CKowLST7LG-4RQx_LkwFV+fUW6Gg@mail.gmail.com>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+Message-ID: <5114c2aa-e198-419f-c5f0-68e989dbb6fc@huawei.com>
+Date:   Tue, 15 Jun 2021 15:29:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <YMhU3Df7foVo9BaM@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+In-Reply-To: <CAJZ5v0iPcSwjswJ7+1gPk-CKowLST7LG-4RQx_LkwFV+fUW6Gg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thank you for your advice.
+
+I'm about to send a patch v2 with the changes suggested by you.
+
+Best Regards.
 
 
-Le 15/06/2021 à 09:21, Christoph Hellwig a écrit :
-> On Tue, Jun 15, 2021 at 09:03:42AM +0200, Christophe Leroy wrote:
+在 2021/6/9 21:12, Rafael J. Wysocki 写道:
+> On Tue, Jun 8, 2021 at 4:29 AM Baokun Li <libaokun1@huawei.com> wrote:
+>> Fixes the following W=1 kernel build warning(s):
 >>
+>>   drivers/acpi/nvs.c:94: warning: Function parameter or
+>>    member 'start' not described in 'suspend_nvs_register'
+>>   drivers/acpi/nvs.c:94: warning: Function parameter or
+>>    member 'size' not described in 'suspend_nvs_register'
 >>
->> Le 15/06/2021 ?? 08:52, Christoph Hellwig a ??crit??:
->>> On Tue, Jun 15, 2021 at 06:41:01AM +0000, Christophe Leroy wrote:
->>>> +	unsafe_copy_to_user(__ucs_to, __ucs_from,			\
->>>> +			    sizeof(struct kernel_siginfo), label);	\
->>>> +	unsafe_clear_user(__ucs_expansion, SI_EXPANSION_SIZE, label);	\
->>>> +} while (0)
->>>
->>> unsafe_clear_user does not exist at this point, and even your later
->>> patch only adds it for powerpc.
->>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   drivers/acpi/nvs.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
 >>
->> You missed below chunck I guess:
+>> diff --git a/drivers/acpi/nvs.c b/drivers/acpi/nvs.c
+>> index 9f8712a557b3..4609a8a2e42d 100644
+>> --- a/drivers/acpi/nvs.c
+>> +++ b/drivers/acpi/nvs.c
+>> @@ -83,8 +83,8 @@ static LIST_HEAD(nvs_list);
 >>
->>> diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
->>> index c05e903cef02..37073caac474 100644
->>> --- a/include/linux/uaccess.h
->>> +++ b/include/linux/uaccess.h
->>> @@ -398,6 +398,7 @@ long strnlen_user_nofault(const void __user *unsafe_addr, long count);
->>>    #define unsafe_put_user(x,p,e) unsafe_op_wrap(__put_user(x,p),e)
->>>    #define unsafe_copy_to_user(d,s,l,e) unsafe_op_wrap(__copy_to_user(d,s,l),e)
->>>    #define unsafe_copy_from_user(d,s,l,e) unsafe_op_wrap(__copy_from_user(d,s,l),e)
->>> +#define unsafe_clear_user(d, l, e) unsafe_op_wrap(__clear_user(d, l), e)
-> 
-> That doesn't help with architectures that define user_access_begin but
-> do not define unsafe_clear_user. (i.e. x86).
-> 
-
-Yes, the day they want to use unsafe_copy_siginfo_to_user() they'll have to implement 
-unsafe_clear_user().
-
-Until that day, they don't need unsafe_clear_user() and I'm sure the result would be disastrous if a 
-poor powerpc guy like me was trying to implement some low level x86 code.
-
-Similar to unsafe_get_compat_sigset(), an arch wanting to use it has to implement 
-unsafe_copy_from_user().
+>>   /**
+>>    *     suspend_nvs_register - register platform NVS memory region to save
+>> - *     @start - physical address of the region
+>> - *     @size - size of the region
+>> + *     @start: physical address of the region
+>> + *     @size: size of the region
+> The format of this kerneldoc comment is still not following the common
+> style after your change.
+>
+> Please fix it completely.
+>
+>>    *
+>>    *     The NVS region need not be page-aligned (both ends) and we arrange
+>>    *     things so that the data from page-aligned addresses in this region will
+>> --
+>> 2.31.1
+>>
+> .
