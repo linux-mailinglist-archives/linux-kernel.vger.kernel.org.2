@@ -2,147 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBC73A7F17
+	by mail.lfdr.de (Postfix) with ESMTP id 056263A7F16
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhFONVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:21:47 -0400
-Received: from mail-ua1-f51.google.com ([209.85.222.51]:45865 "EHLO
-        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFONVo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:21:44 -0400
-Received: by mail-ua1-f51.google.com with SMTP id v17so2258750uar.12;
-        Tue, 15 Jun 2021 06:19:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hwbhacSscetqLBTLgthyShGc1NVfqwfpItyjtKy47b4=;
-        b=oB7/cUqeCoPjlotpzegS64bEK2g0W7gdwGbGoj7JLqZsNokxIJ/HajGH4iEPq2OuYj
-         uifeei4qCiFD0NJMoPUyHjgEXUUUafTNZ+JkO6FmfC1vnEwkxBOnDolf8PfH7bSjl7+c
-         J2UyYSiOvVxXhv0KgQAOPHpk6SqtucmOw5EG7oR6YJm3bVTKhYoIEmXim0fSoB9q6B/o
-         cnp75a7F7vHz5oQEyFlWdLTf0VqRy9/ulvkCR+wF9cCgl4G1k8TYAotybtjjVYOD1lLW
-         W6+v1U2XhUUQxCKm4do0Z1xhCrvBlyOb9uU9mJNG0YNlhmg5403lJgjmOL2AUwIJqDOv
-         eM+g==
-X-Gm-Message-State: AOAM531onW6xBrWHRP3rcwO/yTKAjDXTc5qH4rrHtGegYejzAmU5Vn3m
-        SdLhvmxQSrgsh0rF4gc1oTT0sQOdvUm526PqBjU=
-X-Google-Smtp-Source: ABdhPJzx0IHLF5Qs1kLRoM3ndyDSsmRQ/L3tZsFxSpTdBz/sGirmBpBGoDZABz+NRthYCP5Pg+lEcqqowARL4/piAq0=
-X-Received: by 2002:ab0:63d9:: with SMTP id i25mr17823298uap.106.1623763179009;
- Tue, 15 Jun 2021 06:19:39 -0700 (PDT)
+        id S230523AbhFONVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:21:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230012AbhFONVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:21:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6E186145D;
+        Tue, 15 Jun 2021 13:19:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623763178;
+        bh=QUjTO9qA9P0XSpHtk0ljNgiuHJvfQJgoZdIkwhL9kVk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AABeXVMvFm01gQQ4tEeRo70Ttojrt+hEBRyC0NqQk7OqaJvsZ8+YT7ytnzFr9xwus
+         358Hr6OOpRmOT4HQeYP45/NavjEX8UyhzYqE2YLJR3Z8YZ+IccNRJw4jYpakzzOB+D
+         EgFRZZlKZk1YAFaOBtxCst6+hLobhIsAo+02IP4g=
+Date:   Tue, 15 Jun 2021 15:19:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] serial: core, 8250: Add a hook for extra port
+ property reporting
+Message-ID: <YMio51m/EaS0vIsb@kroah.com>
+References: <alpine.DEB.2.21.2105181800170.3032@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2105190414160.29169@angie.orcam.me.uk>
 MIME-Version: 1.0
-References: <20210419005539.22729-1-mick@ics.forth.gr> <20210419005539.22729-6-mick@ics.forth.gr>
-In-Reply-To: <20210419005539.22729-6-mick@ics.forth.gr>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 15 Jun 2021 15:19:27 +0200
-Message-ID: <CAMuHMdW=23SPXwqcjD+30M_d0azdze2=ChZM-PF1brf9bCNtrA@mail.gmail.com>
-Subject: Re: [PATCH v4 5/5] RISC-V: Add crash kernel support
-To:     Nick Kossifidis <mick@ics.forth.gr>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2105190414160.29169@angie.orcam.me.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
-
-CC rob, dt
-
-Thanks for your patch, which is now commit 5640975003d0234d ("RISC-V:
-Add crash kernel support") in v5.13-rc1.
-
-On Mon, Apr 19, 2021 at 2:56 AM Nick Kossifidis <mick@ics.forth.gr> wrote:
-> This patch allows Linux to act as a crash kernel for use with
-> kdump. Userspace will let the crash kernel know about the
-> memory region it can use through linux,usable-memory property
-> on the /memory node (overriding its reg property), and about the
-> memory region where the elf core header of the previous kernel
-> is saved, through a reserved-memory node with a compatible string
-> of "linux,elfcorehdr". This approach is the least invasive and
-> re-uses functionality already present.
-
-This does not match
-https://github.com/devicetree-org/dt-schema/blob/master/schemas/chosen.yaml#L77:
-
-    $ref: types.yaml#/definitions/uint64-array
-    maxItems: 2
-    description:
-      This property (currently used only on arm64) holds the memory range,
-      the address and the size, of the elf core header which mainly describes
-      the panicked kernel\'s memory layout as PT_LOAD segments of elf format.
-
-Hence "linux,elfcorehdr" should be a property of the /chosen node,
-instead of a memory node with a compatible value of "linux,elfcorehdr".
-
-> I tested this on riscv64 qemu and it works as expected, you
-> may test it by retrieving the dmesg of the previous kernel
-> through /proc/vmcore, using the vmcore-dmesg utility from
-> kexec-tools.
->
-> v4:
->  * Rebase on top of "fixes" branch
->
-> v3:
->  * Rebase
->
-> v2:
->  * Use linux,usable-memory on /memory instead of a new binding
-
-This part seems to have been removed in v3 and later?
-Note that "linux,usable-memory-range" should be a property of the
-/chosen node, too, cfr.
-https://github.com/devicetree-org/dt-schema/blob/master/schemas/chosen.yaml#L85
-
->  * Use a reserved-memory node for ELF core header
->
-> Signed-off-by: Nick Kossifidis <mick@ics.forth.gr>
-
-
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -653,6 +666,26 @@ static void __init reserve_crashkernel(void)
+On Thu, Jun 10, 2021 at 08:38:44PM +0200, Maciej W. Rozycki wrote:
+> Add a hook for `uart_report_port' to let serial ports report extra 
+> properties beyond `irq' and `base_baud'.  Use it with the 8250 backend 
+> to report extra baud rates supported above the base rate for ports with 
+> the UPF_MAGIC_MULTIPLIER property, so that people have a way to find out 
+> that they are supported with their system, e.g.:
+> 
+> Serial: 8250/16550 driver, 5 ports, IRQ sharing enabled
+> printk: console [ttyS0] disabled
+> serial8250.0: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200 [+230400, 460800]) is a 16550A
+> printk: console [ttyS0] enabled
+> printk: console [ttyS0] enabled
+> printk: bootconsole [uart8250] disabled
+> printk: bootconsole [uart8250] disabled
+> serial8250.0: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200 [+230400, 460800]) is a 16550A
+> serial8250.0: ttyS2 at MMIO 0x1f000900 (irq = 20, base_baud = 230400) is a 16550A
+> 
+> Otherwise there is no clear way to figure this out.
+> 
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> ---
+>  drivers/tty/serial/8250/8250_core.c |   10 ++++++++++
+>  drivers/tty/serial/serial_core.c    |   11 +++++++++--
+>  include/linux/serial_core.h         |    3 +++
+>  3 files changed, 22 insertions(+), 2 deletions(-)
+> 
+> linux-serial-core-baud-extra.diff
+> Index: linux-malta-cbus-uart/drivers/tty/serial/8250/8250_core.c
+> ===================================================================
+> --- linux-malta-cbus-uart.orig/drivers/tty/serial/8250/8250_core.c
+> +++ linux-malta-cbus-uart/drivers/tty/serial/8250/8250_core.c
+> @@ -952,6 +952,13 @@ static struct uart_8250_port *serial8250
+>  	return NULL;
 >  }
->  #endif /* CONFIG_KEXEC_CORE */
->
-> +#ifdef CONFIG_CRASH_DUMP
-> +/*
-> + * We keep track of the ELF core header of the crashed
-> + * kernel with a reserved-memory region with compatible
-> + * string "linux,elfcorehdr". Here we register a callback
-> + * to populate elfcorehdr_addr/size when this region is
-> + * present. Note that this region will be marked as
-> + * reserved once we call early_init_fdt_scan_reserved_mem()
-> + * later on.
-> + */
-> +static int elfcore_hdr_setup(struct reserved_mem *rmem)
+>  
+> +static void serial8250_report_magic(struct uart_port *port,
+> +				    char *report_buf, size_t report_size)
 > +{
-> +       elfcorehdr_addr = rmem->base;
-> +       elfcorehdr_size = rmem->size;
-> +       return 0;
+> +	snprintf(report_buf, report_size,
+> +		 " [+%d, %d]", port->uartclk / 8, port->uartclk / 4);
 > +}
 > +
-> +RESERVEDMEM_OF_DECLARE(elfcorehdr, "linux,elfcorehdr", elfcore_hdr_setup);
-> +#endif
-> +
->  void __init paging_init(void)
+>  static void serial_8250_overrun_backoff_work(struct work_struct *work)
 >  {
->         setup_vm_final();
-> --
-> 2.26.2
+>  	struct uart_8250_port *up =
+> @@ -1048,6 +1055,9 @@ int serial8250_register_8250_port(struct
+>  			}
+>  		}
+>  
+> +		if (up->port.flags & UPF_MAGIC_MULTIPLIER)
+> +			uart->port.report_extra = serial8250_report_magic;
+> +
+>  		serial8250_set_defaults(uart);
+>  
+>  		/* Possibly override default I/O functions.  */
+> Index: linux-malta-cbus-uart/drivers/tty/serial/serial_core.c
+> ===================================================================
+> --- linux-malta-cbus-uart.orig/drivers/tty/serial/serial_core.c
+> +++ linux-malta-cbus-uart/drivers/tty/serial/serial_core.c
+> @@ -2309,6 +2309,7 @@ int uart_resume_port(struct uart_driver
+>  static inline void
+>  uart_report_port(struct uart_driver *drv, struct uart_port *port)
+>  {
+> +	char report_extra[64];
+>  	char address[64];
+>  
+>  	switch (port->iotype) {
+> @@ -2333,11 +2334,17 @@ uart_report_port(struct uart_driver *drv
+>  		break;
+>  	}
+>  
+> -	pr_info("%s%s%s at %s (irq = %d, base_baud = %d) is a %s\n",
+> +	if (port->report_extra)
+> +		port->report_extra(port, report_extra, sizeof(report_extra));
+> +	else
+> +		report_extra[0] = '\0';
+> +
+> +	pr_info("%s%s%s at %s (irq = %d, base_baud = %d%s) is a %s\n",
+>  	       port->dev ? dev_name(port->dev) : "",
+>  	       port->dev ? ": " : "",
+>  	       port->name,
+> -	       address, port->irq, port->uartclk / 16, uart_type(port));
+> +	       address, port->irq, port->uartclk / 16, report_extra,
+> +	       uart_type(port));
 
-Gr{oetje,eeting}s,
+Ick, really?  What relies on this print message?  Why do we need a whole
+new uart port hook for this?
 
-                        Geert
+Isn't there some other way for your specific variant to print out
+another message if you really want to do something "odd" like this?
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+And you did not document what your new change did anywhere in the tree,
+so people are going to be confused.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+I've taken the other patches here, but not this one.
+
+thanks,
+
+greg k-h
