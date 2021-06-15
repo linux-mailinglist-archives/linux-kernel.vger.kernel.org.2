@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259B33A836F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FAE3A836A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbhFOO6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231779AbhFOO6F (ORCPT
+        id S231767AbhFOO5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:57:54 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:62259 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231556AbhFOO5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:58:05 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B67DC06121D
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:56:01 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id x8so9954904vso.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:56:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6NlGGyHdfmhmT6ya+5jwsZDiCyDLrqcnWCoZ2x8RsE4=;
-        b=v8vTFNRHvwUmBQ6w8rLfF8DHOx+02bK0BmujOz72D+iq0il8hrgQllhSxbvoJyCshL
-         U2VUbKTQvaheXYUWFpFebpPVuvHNj7oLMcmIzXUM1AVOg6JVnwczsh1FHzKI0rx/FHUB
-         5w5cwdhgB4KDu+texrBEgDR3m+6B7PMU7KI+IKfHIIMnN/fbDBtNL1ANO82BBoldOqgI
-         SuidCyXsDfNF9DKvW3tl649EtyoBialHwDL0aOCR5p/VSF1H7K/t2d7YQfWbVPulBtdN
-         p296CQ0UCZst/3b6L21Ii7zg6ZSmVH+3xVKFUZafBTMnr+HximS0lFijEdYIgaTMJzEV
-         c4mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6NlGGyHdfmhmT6ya+5jwsZDiCyDLrqcnWCoZ2x8RsE4=;
-        b=Zr++Iix+vWUZfEvij8jFQhihAmUuwF2cKQYcufHQSCSYYBpchdYfMgw7enZ3JVTSMH
-         vIMCz1YdDMwlq99ZoY0cCGH+Uj155kpilK2d+XO/J6NeGRtPo6oeJIQWScnNezhomftE
-         8fSjxOEKbBRKcoGdACjNZPqr/pzSDHFQrB+a3EuT/L8YM5lwa2D6CGnkvyASx9LRSvfj
-         OglkZ5eukEIKlFLZrvEP2WS42ntGiPXt6JKJ4lL6/LAZLG6ZJdkCKXdf51V67DXdKIS5
-         uUbo0fBmMJm7HQm/CrDhBrlIs8+Gx52ywhs97bc5+LkORpoNUqII+KsCIEyBFJe7JhrU
-         eyZg==
-X-Gm-Message-State: AOAM5304Mwkw+OEba1H0RmUfja4Mfdjh7cCDvo3EOX9chgJIrKr31PIc
-        9Sk7H/pmHEnh5YajqoNPJNZLDstj0S07GFkDn5djAw==
-X-Google-Smtp-Source: ABdhPJwsi2xYFmituAXmkUFGyeCyfsNRM/VoJt6N+a5mCeHjNkY5Bf+20vC2pDDRay4zMFl8ffDhDguroQ9W8j6LsTQ=
-X-Received: by 2002:a67:1087:: with SMTP id 129mr5712761vsq.42.1623768960305;
- Tue, 15 Jun 2021 07:56:00 -0700 (PDT)
+        Tue, 15 Jun 2021 10:57:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1623768935; x=1655304935;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CAScRMwXGy/5WJwei+wqJXkunlKO14sj2Xx4DA6Q4YI=;
+  b=O49m8F3PETyZF9xetc5u4/7mYoecZprobzur1AEawBtjdeVxeKfS9/3d
+   g1uW8KkASfAdxSIdPomWJYm2Ogg5tA3O0CF5oqzjVn2lai6SACVMb18f7
+   xFa0H+cPJMB01rpHiCa6xzQeKJfETocsuSspDojMVMU18enPSzyHKBfi7
+   jic8yr4DqiDt19rDOC0fFCY4T8wR8ekIh0+IS7GHRJsockvj3YvE+/tlA
+   lNsVEqFhcwOhKZ57b4+Lw2pcvjdhpMHftlXGbg284p5f/Djjzuc/k/53h
+   Q2bZf21q30R5dT11cPaBhEKkpSZ54xCoGT6AHwctSUMB9FodOSwsTd/Kg
+   w==;
+IronPort-SDR: LdMMSRUKT6AsN98wSF/VR5crrtdqFiTw3YEbI4xZqKbW2R1ev19xjVDu8zVTCqYzd+rZPe3qZI
+ vPbsB4ad+OKizFjx93psBGxijgKxi9Wg4nzBXqTAK9R0saSjYVnw4XhyhqXQ+uihUs1alzTDss
+ Sikuj3dUAulEcW5zBICWq796MFrXnab0nzy9XKvkvkHvVBgC3SANHZbeWwDzkVn1fLVSO6MMm7
+ 941mq5G5OLMBvHVMaw1qCA4JqJIiFw/37/E52wbaGbQt6A7I+l7vL/2krngkssqC9LaCUaI3tD
+ xdI=
+X-IronPort-AV: E=Sophos;i="5.83,275,1616428800"; 
+   d="scan'208";a="171974924"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Jun 2021 22:55:34 +0800
+IronPort-SDR: gDN/qpYnI6on7duatOTmgVrbK/ywhoAzrPt1kVJpE9c370YjPNmLu4kDyGjSZJfNzHZZLI5MZp
+ VQ/rdKshcZhF0hpF/hq44aCjWV3thOkmEpQ9YzaISKB/r5+YAM59Ldk7jx16SabQp0WeCw3JsO
+ ENnTw69Q/oJvQX+kRJ1QeDQudFmBY16Hnao/IcAwSt+TiCHIyDn91pQ50S0laGOpweU4Jrj9jF
+ RC+3sDVZEHGD1wNRkiX47brV5RFbQkEi0Kkge7DBG/w/WL84tSIuHWMbp6PTfbMLAmde9qgbRC
+ pHqcihfoqPAieRPZlQABXxFY
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 07:33:05 -0700
+IronPort-SDR: MEP1if1cYyXjFTD/Dhbttg2NWDaGnYmPA2Pm3tX0YHy/y3Oop5pEWacWiFoPEHjwTa3DespzA/
+ 6z4WDqnjahyZePKqHcVXjcLUHyeOJqk3yzYe6AoXCObp/ae3M7bKv20BHeEpvTvJMkjH477Dgw
+ ZqU7UeeKRmTZKZw8OvmaKXsljchGF4KeK6/ZW5otijQEmwKfLGz9s8GZPkv4Dn3JWXpmGRCHLz
+ qcdgnexmi6wdxzgWTGhxgcwFNqvBROFV+woqW9WFQX7Q3z/XB8ABWMgwBRYVbsnBWqE96qnjiY
+ GMs=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip02.wdc.com with ESMTP; 15 Jun 2021 07:55:35 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 0/3] mcb changes for 5.14
+Date:   Tue, 15 Jun 2021 23:55:27 +0900
+Message-Id: <cover.1623768541.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
- <20210611101540.3379937-3-dmitry.baryshkov@linaro.org> <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
- <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
- <CAPDyKFoMC_7kJx_Wb4LKgxvRCoqHYFtwsJ2b7Cr4OvjA94DtHg@mail.gmail.com> <20210615111012.GA5149@sirena.org.uk>
-In-Reply-To: <20210615111012.GA5149@sirena.org.uk>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 15 Jun 2021 16:55:24 +0200
-Message-ID: <CAPDyKFreV-RPzweG8SqFQtvZMOyFbaG2+tMFKc2JkbEj+erb=g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 at 13:10, Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Jun 15, 2021 at 12:17:20PM +0200, Ulf Hansson wrote:
->
-> > Beyond this, perhaps we should consider removing the
-> > "regulator-fixed-domain" DT property, as to avoid similar problems
-> > from cropping up?
->
-> > Mark, what do you think?
->
-> We need to maintain compatibility for existing users...
+Hi Greg,
 
-Normally, yes, I would agree.
+Here are the collected patches for mcb for 5.14.
 
-In this case, it looks like there is only one user, which is somewhat
-broken in regards to this, so what's the point of keeping this around?
+The following changes since commit 009c9aa5be652675a06d5211e1640e02bbb1c33d:
 
-Kind regards
-Uffe
+  Linux 5.13-rc6 (2021-06-13 14:43:10 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/jth/linux.git mcb-for-5.14
+
+for you to fetch changes up to fe520620eeddaa2ed8c669125f9b673c89d6b5a5:
+
+  mcb: Remove trailing semicolon in macros (2021-06-15 23:43:47 +0900)
+
+----------------------------------------------------------------
+
+Alternatively the broken out patches are in this thread.
+
+Dan Carpenter (1):
+  mcb: fix error handling in mcb_alloc_bus()
+
+Huilong Deng (1):
+  mcb: Remove trailing semicolon in macros
+
+Zhen Lei (1):
+  mcb: Use DEFINE_RES_MEM() to simplify code
+
+ drivers/mcb/mcb-core.c | 12 ++++++------
+ drivers/mcb/mcb-lpc.c  | 13 ++-----------
+ include/linux/mcb.h    |  2 +-
+ 3 files changed, 9 insertions(+), 18 deletions(-)
+
+-- 
+2.31.1
+
