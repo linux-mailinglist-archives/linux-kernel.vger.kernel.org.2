@@ -2,164 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C9B3A7B99
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8413A7B67
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbhFOKRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:17:51 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:46883 "EHLO
-        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231289AbhFOKRt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:17:49 -0400
-Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 7B9CECC5B1;
-        Tue, 15 Jun 2021 10:06:54 +0000 (UTC)
-Received: (Authenticated sender: paul@opendingux.net)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id ABEC0C0010;
-        Tue, 15 Jun 2021 10:06:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opendingux.net;
-        s=gm1; t=1623751590;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XuVVJBxzTq/nezMzQHmQ1iVQtTJi09b38NBbn1HjEvw=;
-        b=JHYLsSG9c/DxPug2+3SS07gd9NSKQdIOHICPsS6HGrJIp5dhUaBO4zub1qz10DE6zncynR
-        MAot7LCUhW/EFVNxL0XBzz51PoBF6avWqVYnPEkGmRRfgViAKEg79y9sFwxNhftod0dWIU
-        Uby73qZbDhZZC2Q0XIHgTBadil6EHZEBEWQO2q16MYtxJCQHyg4yYiYmKNZ7V+80Dm5uZK
-        KM/s42LdGBMV8JceVMNeTMfX3Y530BiykAx/xqHcVU/Z6BiO5/262Gab7IZXWJNoKqZQba
-        x+OYathox+vQMl54ravzHVrSAUfD6zrJzz1g/qBNA0U/GB7DPey2ecs24cSt2g==
-Date:   Tue, 15 Jun 2021 11:06:17 +0100
-From:   Paul Cercueil <paul@opendingux.net>
-Subject: Re: [PATCH] USB: DWC2: Add VBUS overcurrent detection control.
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
-        hminas@synopsys.com, paul@crapouillou.net,
-        linux-mips@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com,
-        Dragan =?iso-8859-2?b?yGXoYXZhYw==?= <dragancecavac@yahoo.com>
-Message-Id: <HQMQUQ.3AEG9G7WVQKQ2@opendingux.net>
-In-Reply-To: <YMh3bpRjyTZC2Hsd@kroah.com>
-References: <1616513066-62025-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <YFoJ0Z6K4B5smbQx@kroah.com>
-        <20210615161456.2dd501a1@zhouyanjie-virtual-machine>
-        <8BJQUQ.QJOE5WOSWVBU@opendingux.net> <YMh3bpRjyTZC2Hsd@kroah.com>
-X-Mailer: geary/40.0
+        id S231376AbhFOKJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:09:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:58274 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231152AbhFOKJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 06:09:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31602D6E;
+        Tue, 15 Jun 2021 03:07:42 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D1E83F694;
+        Tue, 15 Jun 2021 03:07:39 -0700 (PDT)
+Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
+To:     Josh Don <joshdon@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210608231132.32012-1-joshdon@google.com>
+ <e3fc3338-c469-0c0c-ada2-a0bbc9f969fe@arm.com>
+ <CABk29Nu=mxz3tugjhDV9xCF7DRsMi9U747H+BqubviEva36RUw@mail.gmail.com>
+ <7222c20a-5cbb-d443-a2fd-19067652a38e@arm.com>
+ <CABk29NtVRG8cotfbK=R0kKXuKCnkEG514H=6ncri=CM8Qr9uiQ@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <f48b5233-ce60-7e1a-02e6-1bfbcc852271@arm.com>
+Date:   Tue, 15 Jun 2021 12:06:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CABk29NtVRG8cotfbK=R0kKXuKCnkEG514H=6ncri=CM8Qr9uiQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On 12/06/2021 01:34, Josh Don wrote:
+> On Fri, Jun 11, 2021 at 9:43 AM Dietmar Eggemann
+> <dietmar.eggemann@arm.com> wrote:
+>>
+>> On 10/06/2021 21:14, Josh Don wrote:
+>>> Hey Dietmar,
+>>>
+>>> On Thu, Jun 10, 2021 at 5:53 AM Dietmar Eggemann
+>>> <dietmar.eggemann@arm.com> wrote:
+>>>>
+>>>> Any reason why this should only work on cgroup-v2?
+>>>
+>>> My (perhaps incorrect) assumption that new development should not
+>>> extend v1. I'd actually prefer making this work on v1 as well; I'll
+>>> add that support.
+>>>
+>>>> struct cftype cpu_legacy_files[] vs. cpu_files[]
+>>>>
+>>>> [...]
+>>>>
+>>>>> @@ -11340,10 +11408,14 @@ void init_tg_cfs_entry(struct task_group *tg, struct cfs_rq *cfs_rq,
+>>>>>
+>>>>>  static DEFINE_MUTEX(shares_mutex);
+>>>>>
+>>>>> -int sched_group_set_shares(struct task_group *tg, unsigned long shares)
+>>>>> +#define IDLE_WEIGHT sched_prio_to_weight[ARRAY_SIZE(sched_prio_to_weight) - 1]
+>>>>
+>>>> Why not 3 ? Like for tasks (WEIGHT_IDLEPRIO)?
+>>>>
+>>>> [...]
+>>>
+>>> Went back and forth on this; on second look, I do think it makes sense
+>>> to use the IDLEPRIO weight of 3 here. This gets converted to a 0,
+>>> rather than a 1 for display of cpu.weight, which is also actually a
+>>> nice property.
+>>
+>> I'm struggling to see the benefit here.
+>>
+>> For a taskgroup A: Why setting A/cpu.idle=1 to force a minimum A->shares
+>> when you can set it directly via A/cpu.weight (to 1 (minimum))?
+>>
+>> WEIGHT     cpu.weight   tg->shares
+>>
+>> 3          0            3072
+>>
+>> 15         1            15360
+>>
+>>            1            10240
+>>
+>> `A/cpu.weight` follows cgroup-v2's `weights` `resource distribution
+>> model`* but I can only see `A/cpu.idle` as a layer on top of it forcing
+>> `A/cpu.weight` to get its minimum value?
+>>
+>> *Documentation/admin-guide/cgroup-v2.rst
+> 
+> Setting cpu.idle carries additional properties in addition to just the
+> weight. Currently, it primarily includes (a) special wakeup preemption
+> handling, and (b) contribution to idle_h_nr_running for the purpose of
+> marking a cpu as a sched_idle_cpu(). Essentially, the current
+> SCHED_IDLE mechanics. I've also discussed with Peter a potential
+> extension to SCHED_IDLE to manipulate vruntime.
 
-Le mar., juin 15 2021 at 11:48:30 +0200, Greg KH=20
-<gregkh@linuxfoundation.org> a =C3=A9crit :
-> On Tue, Jun 15, 2021 at 09:52:20AM +0100, Paul Cercueil wrote:
->>  Hi Zhou,
->>=20
->>  Le mar., juin 15 2021 at 16:16:39 +0800, =E5=91=A8=E7=90=B0=E6=9D=B0=20
->> <zhouyanjie@wanyeetech.com>
->>  a =C3=A9crit :
->>  > Hi Greg,
->>  >
->>  > Sorry for taking so long to reply.
->>  >
->>  > =E4=BA=8E Tue, 23 Mar 2021 16:31:29 +0100
->>  > Greg KH <gregkh@linuxfoundation.org> =E5=86=99=E9=81=93:
->>  >
->>  > >  On Tue, Mar 23, 2021 at 11:24:26PM +0800, =E5=91=A8=E7=90=B0=E6=9D=
-=B0 (Zhou=20
->> Yanjie)
->>  > > wrote:
->>  > >  > Introduce configurable option for enabling GOTGCTL register
->>  > >  > bits VbvalidOvEn and VbvalidOvVal. Once selected it disables
->>  > >  > VBUS overcurrent detection.
->>  > >  >
->>  > >  > This patch is derived from Dragan =C4=8Ce=C4=8Davac (in the kern=
-el=20
->> 3.18
->>  > >  > tree of CI20). It is very useful for the MIPS Creator=20
->> CI20(r1).
->>  > >  > Without this patch, CI20's OTG port has a great probability=20
->> to
->>  > >  > face overcurrent warning, which breaks the OTG functionality.
->>  > >  >
->>  > >  > Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)=20
->> <zhouyanjie@wanyeetech.com>
->>  > >  > Signed-off-by: Dragan =C4=8Ce=C4=8Davac <dragancecavac@yahoo.com=
->
->>  > >  > ---
->>  > >  >  drivers/usb/dwc2/Kconfig | 6 ++++++
->>  > >  >  drivers/usb/dwc2/core.c  | 9 +++++++++
->>  > >  >  2 files changed, 15 insertions(+)
->>  > >  >
->>  > >  > diff --git a/drivers/usb/dwc2/Kconfig=20
->> b/drivers/usb/dwc2/Kconfig
->>  > >  > index c131719..e40d187 100644
->>  > >  > --- a/drivers/usb/dwc2/Kconfig
->>  > >  > +++ b/drivers/usb/dwc2/Kconfig
->>  > >  > @@ -94,4 +94,10 @@ config USB_DWC2_DEBUG_PERIODIC
->>  > >  >  	  non-periodic transfers, but of course the debug logs
->>  > >  > will be incomplete. Note that this also disables some debug
->>  > > messages
->>  > >  >  	  for which the transfer type cannot be deduced.
->>  > >  > +
->>  > >  > +config USB_DWC2_DISABLE_VOD
->>  > >  > +	bool "Disable VBUS overcurrent detection"
->>  > >  > +	help
->>  > >  > +	  Say Y here to switch off VBUS overcurrent detection. It
->>  > >  > enables USB
->>  > >  > +	  functionality blocked by overcurrent detection.
->>  > >
->>  > >  Why would this be a configuration option?  Shouldn't this be=20
->> dynamic
->>  > >  and just work properly automatically?
->>  > >
->>  > >  You should not have to do this on a build-time basis, it=20
->> should be
->>  > >  able to be detected and handled properly at run-time for all
->>  > > devices.
->>  > >
->>  >
->>  > I consulted the original author Dragan =C4=8Ce=C4=8Davac, he think si=
-nce=20
->> this is
->>  > a feature which disables overcurrent detection, so we are not=20
->> sure if
->>  > it could be harmful for some devices. Therefore he advise against
->>  > enabling it in runtime, and in favor that user explicitely has to
->>  > enable it.
->>=20
->>  This could still be enabled at runtime, though, via a module=20
->> parameter.
->>  Leave it enabled by default, and those who want to disable it can=20
->> do it.
->=20
-> This is not the 1990's, please NEVER add new module parameters,
+Right, I forgot about (b).
 
-First time I hear this.
+But IMHO, (a) could be handled with this special tg->shares value for
+SCHED_IDLE.
 
-> especially ones that are somehow supposed to be device-specific.
->=20
-> Remember, module options are code-wide, not device-specific.
-
-Right. I thought "just make the option available on devices that=20
-support it" but that's not how it works.
-
--Paul
-
-> Just do this based on the device type, or something else dynamic, do=20
-> NOT
-> make this be forced to be selected by a kernel configuration option=20
-> or a
-> random module option at runtime.
->=20
-> thanks,
->=20
-> greg k-h
+If there would be a way to open up `cpu.weight`, `cpu.weight.nice` (and
+`cpu,shares` for v1) to take a special value for SCHED_IDLE, then you
+won't need cpu.idle.
+And you could handle the functionality from sched_group_set_idle()
+directly in sched_group_set_shares().
+In this case sched_group_set_shares() wouldn't have to be rejected on an
+idle tg.
+A tg would just become !idle by writing a different cpu.weight value.
+Currently, if you !idle a tg it gets the default NICE_0_LOAD.
 
 
+I guess cpu.weight [1, 10000] would be easy, 0 could be taken for that
+and mapped into weight = WEIGHT_IDLEPRIO (3, 3072) to call
+sched_group_set_shares(..., scale_load(weight).
+cpu.weight = 1 maps to (10, 10240)
+
+cpu.weight.nice [-20, 19] would be already more complicated, 20?
+
+And for cpu.shares [2, 2 << 18] 0 could be used. The issue here is that
+WEIGHT_IDLEPRIO (3, 3072) is a valid value already for shares.
+
+> We set the cgroup weight here, since by definition SCHED_IDLE entities
+> have the least scheduling weight. From the perspective of your
+> question, the analogous statement for tasks would be that we set task
+> weight to the min when doing setsched(SCHED_IDLE), even though we
+> already have a renice mechanism.
+
+I agree. `cpu.idle = 1` is like setting the task policy to SCHED_IDLE.
+And there is even the `cpu.weight.nice` to support the `task - tg`
+analogy on nice values.
+
+I'm just wondering if integrating this into `cpu.weight` and friends
+would be better to make the code behind this easier to grasp.
