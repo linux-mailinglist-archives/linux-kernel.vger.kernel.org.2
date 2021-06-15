@@ -2,169 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7BA3A8342
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FB03A8346
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhFOOxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:53:50 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:39629 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbhFOOxt (ORCPT
+        id S230352AbhFOOz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230079AbhFOOz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:53:49 -0400
-Received: by mail-ua1-f46.google.com with SMTP id c10so6771849uan.6;
-        Tue, 15 Jun 2021 07:51:45 -0700 (PDT)
+        Tue, 15 Jun 2021 10:55:27 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA9AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:53:20 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id i34so11649937pgl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:53:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=f+mb8hE5qEI8SFYdKsdXmbC7vnzJ890l7d6jep5B66Y=;
+        b=LYh/29XOkqDQNUxW1cp+diIVw/W6KBSo0Tt0wzhVafr9ep70jVeKOqGPOmVZyi8LNI
+         YU+ZmHf+sdXXG0BvM3oihR5dZbZmc+gKejJC7bNHHV3046IM6W4GzWJZPMOFuS/PGQOi
+         NHdh3swAubUq5MwD5q7yaSEUMLGgmCCUkj97MUYAaT5wVOEtoGBr0NCL1sK0M1wlC8cH
+         Pwn0IB8ttE8UCiWt2utkOCjJnXCycYY1rv0gMV16iVT+MU2Ks2F3fmTIXv7Rheew4TCp
+         SbTCwp0p8fE2FLjvExh/vs06HiOnvfpV06OVgCUSX0nnF1hZ3KNopdcz/Dcz700GwJk2
+         6WgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VRuDeOUfZ6B0u10ffnqTPMqKC8c9Vta/YzdAIyumZr4=;
-        b=nGB42WUcJGGEgEnVnicySd1EuOPCyqkDJV8+S+d92WWQ7l7SiNuPBP7N9xhEPEEmmX
-         /vHQMglWoQGDe2VhugJ48FZJhoi59uVo9ORF84Bxo89ottxpehC8q6SgWI2Vv5JU2AfY
-         G+IItPP71cFmZgaiyw3QRnq50elnJr2TYjYHUctkRdBM3GSFY2Q7ASauNCgOwx1AlKFa
-         otO3LHnUctOVGUn5YRsVtIjaISJ0pJ8yyeIQOB90KnOAp/S+PprOXEW0HsQ3729tLEva
-         yofPimzYDKXZhrZCN19lJ2CIkhpVkPH2n16I87w43W12n9i3NMokeT/7wRwQzGAHfluu
-         qQJw==
-X-Gm-Message-State: AOAM533ageoz5zc/SqzIhKtHkHb4nWdAhnMvSCKF/1yq9WGpx0rr6P32
-        njQGmpMyYy9BkEHXMWrwup1/UboIRIafWKg6NEU=
-X-Google-Smtp-Source: ABdhPJyMlEwcIPhRuOKgllmjsxF0JpzWIGKXY3MQGgAhU31dK3Mc0jsRrYJl2Yc0tBi6Y8M6CDuHe5zvmJbjZnwnuDg=
-X-Received: by 2002:ab0:63d9:: with SMTP id i25mr18418485uap.106.1623768704802;
- Tue, 15 Jun 2021 07:51:44 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f+mb8hE5qEI8SFYdKsdXmbC7vnzJ890l7d6jep5B66Y=;
+        b=XmxkjmBeRVMFhVGFXY7tAIN/xU2S6mdXx483SxyexRITOrcglcMpgc/ws3K+xYW7kR
+         Y0rR2zkeq1p3Xm7l+MFK56SP/vAHHDRvjhu4klwihwIZgh6rp12SygjfEMfnkbrcygTd
+         WgTlvGsVCAvglQz95wlneZO7YqGYwqFp6uAwvEmSGgAVho+ChsEvlsN0+wnCj+WY7lhd
+         2+AF3WHMsQcycF4dXS4d9qo6aD5WWU/Y3q/0fXcG7Oi0C247/VoL+nS4r+OPhBgwsJwY
+         lO2UZcKAWFxi5I6/NI/sIKmqankrrJTV2LLqzi4/k2jNrT8JHfHXdR5ZgLl2wwwt0VFj
+         9Njg==
+X-Gm-Message-State: AOAM53249DZ+qPpV9FRJmquTFGaD3cRkOEGSQVO4IfjC257MmcQcHYoy
+        bpl+HBKTRJb7+WfUOVEPfF6LaQ==
+X-Google-Smtp-Source: ABdhPJwOAV4Cy4XCSyqnDXDu9WbAj0nWVCvnYftwqVtM4oOSh2fUoWF3gKPbJ5G7kIYo+Yruveq+gA==
+X-Received: by 2002:a63:2ac4:: with SMTP id q187mr22527029pgq.370.1623768799808;
+        Tue, 15 Jun 2021 07:53:19 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id gf10sm15331746pjb.35.2021.06.15.07.53.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 07:53:19 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 14:53:15 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Siddharth Chandrasekaran <sidcha@amazon.de>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: hyper-v: housekeeping: Remove unnecessary type cast
+Message-ID: <YMi+2z+v6YLY/P55@google.com>
+References: <20210603132712.518-1-sidcha@amazon.de>
 MIME-Version: 1.0
-References: <20210317113130.2554368-1-geert+renesas@glider.be> <CAL_JsqL3NRDpzPbOxwvP6N+K76UXmrxs=e9-1rK-PbAKUx7f6w@mail.gmail.com>
-In-Reply-To: <CAL_JsqL3NRDpzPbOxwvP6N+K76UXmrxs=e9-1rK-PbAKUx7f6w@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 15 Jun 2021 16:51:33 +0200
-Message-ID: <CAMuHMdUdB-Ux9UpeaN3H0_UWDH7_9r3s72ZP01++XzOvrwavHg@mail.gmail.com>
-Subject: Re: [PATCH v3] ARM: Parse kdump DT properties
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Simon Horman <horms@verge.net.au>,
-        Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Lukasz Stelmach <l.stelmach@samsung.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kexec@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603132712.518-1-sidcha@amazon.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Thu, Jun 03, 2021, Siddharth Chandrasekaran wrote:
+> Remove unnecessary type cast of 'u8 instructions[]' to
+> 'unsigned char *'.
+> 
+> Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
+> ---
 
-On Mon, Mar 22, 2021 at 5:59 PM Rob Herring <robh+dt@kernel.org> wrote:
-> On Wed, Mar 17, 2021 at 5:31 AM Geert Uytterhoeven
-> <geert+renesas@glider.be> wrote:
-> > Parse the following DT properties in the crash dump kernel, to provide a
-> > modern interface between kexec and the crash dump kernel:
-> >   - linux,elfcorehdr: ELF core header segment, similar to the
-> >     "elfcorehdr=" kernel parameter.
-> >   - linux,usable-memory-range: Usable memory reserved for the crash dump
-> >     kernel.
-> >     This makes the memory reservation explicit.  If present, Linux no
-> >     longer needs to mask the program counter, and rely on the "mem="
-> >     kernel parameter to obtain the start and size of usable memory.
-> >
-> > For backwards compatibility, the traditional method to derive the start
-> > of memory is still used if "linux,usable-memory-range" is absent, and
-> > the "elfcorehdr=" and "mem=" kernel parameters are still parsed.
-> >
-> > Loosely based on the ARM64 version by Akashi Takahiro.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-> > --- a/arch/arm/mm/init.c
-> > +++ b/arch/arm/mm/init.c
-> > @@ -4,6 +4,7 @@
-> >   *
-> >   *  Copyright (C) 1995-2005 Russell King
-> >   */
-> > +#include <linux/crash_dump.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/errno.h>
-> >  #include <linux/swap.h>
-> > @@ -210,8 +211,95 @@ void check_cpu_icache_size(int cpuid)
-> >  }
-> >  #endif
-> >
-> > +#ifdef CONFIG_OF_EARLY_FLATTREE
-> > +static int __init early_init_dt_scan_usablemem(unsigned long node,
-> > +               const char *uname, int depth, void *data)
-> > +{
-> > +       struct memblock_region *usablemem = data;
-> > +       const __be32 *reg;
-> > +       int len;
-> > +
-> > +       if (depth != 1 || strcmp(uname, "chosen") != 0)
-> > +               return 0;
->
-> We have libfdt now, just get the '/chosen' node rather than using
-> of_scan_flat_dt().
->
->
-> > +
-> > +       reg = of_get_flat_dt_prop(node, "linux,usable-memory-range", &len);
-> > +       if (!reg || (len < (dt_root_addr_cells + dt_root_size_cells)))
-> > +               return 1;
-> > +
-> > +       usablemem->base = dt_mem_next_cell(dt_root_addr_cells, &reg);
-> > +       usablemem->size = dt_mem_next_cell(dt_root_size_cells, &reg);
-> > +       return 1;
-> > +}
-> > +
-> > +static void __init fdt_enforce_memory_region(void)
-> > +{
-> > +       struct memblock_region reg = {
-> > +               .size = 0,
-> > +       };
-> > +
-> > +       of_scan_flat_dt(early_init_dt_scan_usablemem, &reg);
-> > +
-> > +       if (reg.size)
-> > +               memblock_cap_memory_range(reg.base, reg.size);
->
-> We should be able to do this in the DT core code. It doesn't matter
-> that these properties are arm* only. Other arches won't find the
-> properties.
->
-> Also, note that there is now a drivers/of/kexec.c (in -next) though
-> not sure if all this would go there or stay in fdt.c with the rest of
-> the memory parsing.
-
-It's gonna be the latter, as that file handles the FDT during early
-kernel startup, for both normal and kdump kernels.
-
-Despite the name, drivers/of/kexec.c is not for kexec, but for
-kexec_file.  This is the "new" fancy syscall that prepares the DTB
-for the new kernel itself, unlike the classic kexec syscall, where
-userspace is responsible for preparing the DTB for the new kernel.
-
-> > +#if defined(CONFIG_CRASH_DUMP) && defined(CONFIG_OF_EARLY_FLATTREE)
-> > +static int __init early_init_dt_scan_elfcorehdr(unsigned long node,
-> > +               const char *uname, int depth, void *data)
->
-> Same comments as above.
-
-This one can indeed be handled easily by drivers/of/fdt.c.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Reviewed-by: Sean Christopherson <seanjc@google.com>
