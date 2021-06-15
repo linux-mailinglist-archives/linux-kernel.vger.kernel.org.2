@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE1F3A85B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2077F3A85BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbhFOP6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:58:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53128 "EHLO mail.kernel.org"
+        id S232527AbhFOP6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:58:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232224AbhFOP4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:56:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC0136142E;
-        Tue, 15 Jun 2021 15:54:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623772458;
-        bh=r0ldxIgnVptKvktdaumFeqndWM3HUh9JGLZIgdw7Ze0=;
+        id S232457AbhFOP47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:56:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41EEA608FE;
+        Tue, 15 Jun 2021 15:54:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623772494;
+        bh=L8bTOqo7KA+9IcGkt64VA1pcvn0+H8VF6Rsg+u5M0Sw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HbsqM6WmkalyEE4zfkMUNbxuOz9T7wdg/X+rk2W82im0zXLxu1fNUSyK2WKTsVYQm
-         Gv7nOzd/sPaM6yJdQp2MoxXMFK2ubb/akBfr2ldz3K5TZtaqxlh3ukQAo7WKDxe28I
-         rDLl6Yaa+UZF02sS/trIa5uffQJ7fBt/jTHUVTxs=
-Date:   Tue, 15 Jun 2021 17:54:16 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Guy Zadicario <guy.zadicario@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "olof@lixom.net" <olof@lixom.net>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        "Shefi-simchon, Yochai" <yochai.shefi-simchon@intel.com>
-Subject: Re: [PATCH v2 00/15] misc: nnpi: New PCIe driver for Intel's NNP-I
- pcie device
-Message-ID: <YMjNKAojoGsQ8Z9J@kroah.com>
-References: <20210513085725.45528-1-guy.zadicario@intel.com>
- <YJ4121X/fkSkeHaj@kroah.com>
- <20210615145755.GA25911@aipg-stp-03.iil.intel.com>
+        b=VOhcYfeMd9kMPw0gbr7RcZ0GCNof3c6mQDq527AAfbhgPWgXgZIVCUg8LPEgTRU+c
+         tJYOwMOQy3XRenRJ4+CzDGrE152NOxatKBQ293Beve8gsoggiT3PUa4Yzw7nyrPY8W
+         yRjAeMFU4NBGwZcDgCCffv1uHfW2iLnb+qIMxOTzdpyyEhX7E9pY7skm4TO/9v8f7O
+         wRFBnBvm2QdFJC/4ZiOfrFNBfC/mfxCh8QPLpp4hwltsUOG793Q4ms4Flldp4Pom2Z
+         tBWKNUuixjgAqGhpT6AD26CxBc+5zW+D4u2cpUuP7WvwaYy4RvepPisgZkIExMKmUm
+         nVzgYq/dcG2Uw==
+Date:   Tue, 15 Jun 2021 16:54:36 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Dmitry Osipenko <digetx@gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.12 02/33] regulator: max77620: Silence deferred
+ probe error
+Message-ID: <20210615155436.GM5149@sirena.org.uk>
+References: <20210615154824.62044-1-sashal@kernel.org>
+ <20210615154824.62044-2-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Qgof7w7UksPF5inF"
 Content-Disposition: inline
-In-Reply-To: <20210615145755.GA25911@aipg-stp-03.iil.intel.com>
+In-Reply-To: <20210615154824.62044-2-sashal@kernel.org>
+X-Cookie: See store for details.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 05:58:09PM +0300, Guy Zadicario wrote:
-> On Fri, May 14, 2021 at 11:33:31AM +0300, Greg KH wrote:
-> > On Thu, May 13, 2021 at 11:57:10AM +0300, Guy Zadicario wrote:
-> > > Hi,
-> > > 
-> > > The following series is a driver for a new PCIe device from Intel named NNP-I
-> > > (Nirvana Neural Processor for Inference). NNP-I is a PCIe connected compute
-> > > device used for acceleration of AI deep learning inference applications in the
-> > > data-center.
-> > 
-> > How does this differ from the "intel_gna" driver being proposed here:
-> > 	https://lore.kernel.org/linux-doc/20210513110040.2268-1-maciej.kwapulinski@linux.intel.com/
-> > 
-> > Please work together to come up with a unified userspace api for these
-> > devices, and hopefully, shared kernel code as well.
-> > 
-> Ok, after consulting, we will try to share api and some kernel code
-> between the two drivers.
-> 
-> The plan is to suggest a common framework for both devices
-> and let each device driver register with that framework,
-> some functionality will be common and some will be device driver
-> specific (same model as drm for gpus). At first I think the common part
-> will be small and will deal only with host memory management, later,
-> it might grow, if/when some other drivers will adopt it as well.
-> 
-> We will first change the NNP-I driver to use this framework.
-> The GNA driver will wait for this API to be accepted and only then will
-> adopt it and request to upstream.
 
-Great, can you also look into what it would take to move the habanna
-code to this new api as well?  A new api doesn't mean much if there is
-only one user :)
+--Qgof7w7UksPF5inF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+On Tue, Jun 15, 2021 at 11:47:53AM -0400, Sasha Levin wrote:
+> From: Dmitry Osipenko <digetx@gmail.com>
+>=20
+> [ Upstream commit 62499a94ce5b9a41047dbadaad885347b1176079 ]
+>=20
+> One of previous changes to regulator core causes PMIC regulators to
+> re-probe until supply regulator is registered. Silence noisy error
+> message about the deferred probe.
 
-greg k-h
+This really doesn't look like stable material...
+
+--Qgof7w7UksPF5inF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDIzTsACgkQJNaLcl1U
+h9AeAAf/X7cX3Hnuq4+91l5S2PBDfenr48Qqp+59oDHaw/Rf+W+zhf0fGiIUsUIB
+851urvhCDyyL4pL8aRLrGhrX9jtaK4pG2QLoya9yDX+OkaIfMzSUQsgm8b3KpZx9
+u8sd23hOfZbON7Nq5stOz81lScDzed9RreL/S8OFG9dFlZGsf65tDTUBK33C/MCI
+qYaO0O/7inAKCQKYzECAZuTgIVh6KR3vavxk7TF6Wdch1GeARRcGGYNy1V0yiZDF
+PFuhsPhkUjF/SO6omXrA+VsbXOjZ6JDXfJM1u574iyLZbvrK/nwcp0HFFCW2NuvI
+qRraFwroG2VS/cWIe3LHCpkWpoJiIA==
+=44Yz
+-----END PGP SIGNATURE-----
+
+--Qgof7w7UksPF5inF--
