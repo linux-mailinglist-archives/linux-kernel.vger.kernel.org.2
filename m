@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633E73A7CBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197383A7CC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhFOLJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:09:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:60548 "EHLO foss.arm.com"
+        id S230425AbhFOLJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:09:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:60572 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230317AbhFOLJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:09:20 -0400
+        id S231150AbhFOLJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 07:09:23 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC2331042;
-        Tue, 15 Jun 2021 04:07:15 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 65EF531B;
+        Tue, 15 Jun 2021 04:07:18 -0700 (PDT)
 Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D3C893F719;
-        Tue, 15 Jun 2021 04:07:13 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 302013F719;
+        Tue, 15 Jun 2021 04:07:16 -0700 (PDT)
 From:   Andre Przywara <andre.przywara@arm.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@gmail.com>
@@ -24,13 +24,12 @@ Cc:     Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
         Samuel Holland <samuel@sholland.org>,
         linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
         linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org
-Subject: [PATCH v7 07/19] rtc: sun6i: Add Allwinner H616 support
-Date:   Tue, 15 Jun 2021 12:06:24 +0100
-Message-Id: <20210615110636.23403-8-andre.przywara@arm.com>
+        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH v7 08/19] dt-bindings: net: sun8i-emac: Add H616 compatible string
+Date:   Tue, 15 Jun 2021 12:06:25 +0100
+Message-Id: <20210615110636.23403-9-andre.przywara@arm.com>
 X-Mailer: git-send-email 2.14.1
 In-Reply-To: <20210615110636.23403-1-andre.przywara@arm.com>
 References: <20210615110636.23403-1-andre.przywara@arm.com>
@@ -38,53 +37,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The H616 RTC changes its day storage to the newly introduced linear day
-scheme, so pair the new compatible string with this feature flag.
-The clock part is missing an external 32768 Hz oscillator input pin,
-for future expansion we must thus ignore any provided clock for now.
+Add the obvious compatible name to the existing EMAC binding, and pair
+it with the existing A64 fallback compatible string, as the devices are
+compatible.
+
+On the way use enums to group the compatible devices together.
 
 Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- drivers/rtc/rtc-sun6i.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ .../devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml    | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
-index 1fabb3c69041..25dae50019af 100644
---- a/drivers/rtc/rtc-sun6i.c
-+++ b/drivers/rtc/rtc-sun6i.c
-@@ -392,6 +392,23 @@ static void __init sun50i_h6_rtc_clk_init(struct device_node *node)
- CLK_OF_DECLARE_DRIVER(sun50i_h6_rtc_clk, "allwinner,sun50i-h6-rtc",
- 		      sun50i_h6_rtc_clk_init);
+diff --git a/Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml b/Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml
+index 7f2578d48e3f..0ccdab103f59 100644
+--- a/Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml
++++ b/Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml
+@@ -19,7 +19,9 @@ properties:
+       - const: allwinner,sun8i-v3s-emac
+       - const: allwinner,sun50i-a64-emac
+       - items:
+-          - const: allwinner,sun50i-h6-emac
++          - enum:
++              - allwinner,sun50i-h6-emac
++              - allwinner,sun50i-h616-emac
+           - const: allwinner,sun50i-a64-emac
  
-+static const struct sun6i_rtc_clk_data sun50i_h616_rtc_data = {
-+	.rc_osc_rate = 16000000,
-+	.fixed_prescaler = 32,
-+	.has_prescaler = 1,
-+	.has_out_clk = 1,
-+	.export_iosc = 1,
-+	.no_ext_losc = 1,
-+};
-+
-+static void __init sun50i_h616_rtc_clk_init(struct device_node *node)
-+{
-+	sun6i_rtc_clk_init(node, &sun50i_h616_rtc_data);
-+}
-+
-+CLK_OF_DECLARE_DRIVER(sun50i_h616_rtc_clk, "allwinner,sun50i-h616-rtc",
-+		      sun50i_h616_rtc_clk_init);
-+
- /*
-  * The R40 user manual is self-conflicting on whether the prescaler is
-  * fixed or configurable. The clock diagram shows it as fixed, but there
-@@ -797,6 +814,8 @@ static const struct of_device_id sun6i_rtc_dt_ids[] = {
- 	{ .compatible = "allwinner,sun8i-v3-rtc" },
- 	{ .compatible = "allwinner,sun50i-h5-rtc" },
- 	{ .compatible = "allwinner,sun50i-h6-rtc" },
-+	{ .compatible = "allwinner,sun50i-h616-rtc",
-+		.data = (void *)RTC_LINEAR_DAY },
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, sun6i_rtc_dt_ids);
+   reg:
 -- 
 2.17.5
 
