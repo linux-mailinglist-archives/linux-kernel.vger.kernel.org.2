@@ -2,107 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872333A892E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DF43A8933
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhFOTHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 15:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhFOTHT (ORCPT
+        id S231502AbhFOTI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 15:08:28 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:52587 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229749AbhFOTI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 15:07:19 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654E7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 12:05:13 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id h12so196110pfe.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 12:05:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=bedgGZfvHTDG3utqka5ZC/z/HrI2g7jOruJT77//JN4=;
-        b=KGNhS2wRptJPNS3Sx2q5hBAcAv0CPqiiJ6J5Bw69bIfK4C0hwP8h9atByP2SirnvvU
-         gfdLjLt2ESmDYtkrkTP2rALRPhsjy+5iVG0x6NoYX6xvUiV6UZ6fj6I6FnTqkcV7/JOt
-         OHTduTztQOKd2TPZHLTJT11mg/nVZdJ2iti7JsJey/cyTPBDxHTrmo4MS6bun7hkVpHH
-         khDkXT4B9dTL/CJjUkiLF0VvWej712DS3tTM5Ygt8C+uoZ8JHju5IyO8f++8qyTqxH/+
-         2EJf9PMLMReZ1OejYnQvcqDyew+mYBbO/USajmPsrGemzluGtyKyZ1eRUSwr9DWnRfzO
-         iHDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=bedgGZfvHTDG3utqka5ZC/z/HrI2g7jOruJT77//JN4=;
-        b=mkOG/Cg1P7SProwHYuf8cSU9FMsqBXeByBDPWbciRWcDQ3zvO9+9QNFmbQC1hVYTEE
-         YmgAJgVB8/zErqzIlpjj3s6wwsPc1VuMpoyU7SsGMm3XGLKN+ynok2jeg9s2+dDJJRel
-         IrgTAhY9WNgMZS+w8xI1dHAiXuvN0ovDxrQfwOMMu9vnC6Bz7Z2ODiOH5y6SVoSOZ7TM
-         KFIM0yXt9d39FrouLq0vGoExkLTNTiHK0lozl9mT3PIiAxK8WSn4CrAZNZRePR7VXejQ
-         0E8DZbcbD/DRlssYKEu0/bwKVeBemuXjkW6OAt6XBvHSZFKEPWUMqScYLJnBJUD3FT5R
-         oBxQ==
-X-Gm-Message-State: AOAM533tuysgc+PryycGYSng/TicqZ+3BhjdhBPlrxqCwhUzQGMWep7n
-        1yeeOCVLYbvrcFzhK2fHb2A=
-X-Google-Smtp-Source: ABdhPJw+kc1wTNNf1KoBk7ErUKM1wCKsgTlMM/yOOKbvzqGiE1ia/ImVwyXo4iPcUxKiP6iLflMfxg==
-X-Received: by 2002:a05:6a00:1a88:b029:2ea:548:5ed4 with SMTP id e8-20020a056a001a88b02902ea05485ed4mr4345549pfv.47.1623783912769;
-        Tue, 15 Jun 2021 12:05:12 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id d12sm15829068pfo.113.2021.06.15.12.05.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Jun 2021 12:05:12 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH v3 3/6] iommu: Improve iommu_iotlb_gather helpers
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <07969028-d807-cad1-2a01-8efc87390157@arm.com>
-Date:   Tue, 15 Jun 2021 12:05:11 -0700
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Jiajun Cao <caojiajun@vmware.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <25B4DBA5-72A3-4122-8678-AF3500F5023E@gmail.com>
-References: <20210607182541.119756-1-namit@vmware.com>
- <20210607182541.119756-4-namit@vmware.com>
- <07969028-d807-cad1-2a01-8efc87390157@arm.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Tue, 15 Jun 2021 15:08:26 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id 01CA816BF;
+        Tue, 15 Jun 2021 15:06:19 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 15 Jun 2021 15:06:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=A/aaGMWFGZ2Bau4QDRpBps+jvw5
+        3hglCBdw4WtZRV1g=; b=k0D3mqjyfwPE5G7i6QauQw1e9chZZGE5grNG0eToCOp
+        pxc9sA9N3+Z/1G7DvyMg/c9dyutiY5bLGN1nAHP/7fHqzr7ATjIc6gW00VlpLtso
+        Xq/urilWHRTDoGlb7G4upmIShR/IwU26vwTHkEMGG97P8m1e+vYcyBAs5p+A95zd
+        9jRfvBevb/YCAKgy3uxvmGtb0KmW8fnVfWv3wuztfzOfsS8cGh0HGCcqx3pjIUN5
+        2ka59ld9YBaJYeOxoL52//4FTeulLd39g+2LfUIrnkvo9Tq/p8qW9Xmx1T3c1yfq
+        /oPMOO5Wr2WbKhb1ht6eo4MakZhYNHkBpD16YAX3f2A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=A/aaGM
+        WFGZ2Bau4QDRpBps+jvw53hglCBdw4WtZRV1g=; b=m1X0COef4Wh/KQm9R7md13
+        s1nD+YxMjQyGdiGMKbkkCjBu237o6KR233R734lGyw/551ohTEh0HeUFdTjkahpT
+        aF30Q5TUbQye8HYTKevmPzmkIl+R6vZqI0eMh/FKk463nEwOqNb08/Ie9QCi6MNH
+        GF6lJlqZdp+E7MhSUhzbBIPE+FkJjdYU/tFvlCxv5robKNtqkJmDwDxjnQcDRlte
+        Bvma/hO2AnWImfU576UqwYc6NY+sBmjtBtbzSsv57sHlPqTYHLdYibAb14Xnt0bi
+        XzR7v+i8jklghjMz7qo4gDKrs0UmJiZ+n9mXbjiM2EYY/uLAw2neNdAUPNdn86fw
+        ==
+X-ME-Sender: <xms:K_rIYKwznbyxVxx8X_ZFi4Z1goldtRSKO1O5w7MOwcDm5zflca3iJA>
+    <xme:K_rIYGSk4Z0KR5RSqUaggAYm8tgYxgvWpuX-6Cx7TVYLZ2S7IPDnnJkNpZcRoc7nP
+    NbPMa9cxDIvYw>
+X-ME-Received: <xmr:K_rIYMUuVS4tUvv_NFmaRDOU0Hhj_EVXLghXqFWGlRJcUuHl1I4KGB3NMixgHN8GCZ3uOdv6lCXFZU4KZtLyg0kwwufdB7c1>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvjedgudeffecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
+    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:K_rIYAhUyXrSQL-7mFhaKdXADQPLgA8xZiY4_e5R3XsySGRo3hFepw>
+    <xmx:K_rIYMC728wvLj5B9ESkZoRPgNkQvm6vsMi_FHdgSd8EwAVTFvlR3Q>
+    <xmx:K_rIYBINJLp-lDOcP2MNyLxOgQCM2hbkSh2fvgb5M_H_e8Jf6aGptg>
+    <xmx:K_rIYGyhaFoK14gMKeJ1Uv5tEN2xWfK-Tcy_O-AmGv5elJxE4F2Fk4ybloE>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 15 Jun 2021 15:06:19 -0400 (EDT)
+Date:   Tue, 15 Jun 2021 21:06:16 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Siddharth Gupta <sidgup@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, ohad@wizery.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, psodagud@codeaurora.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v4 2/4] remoteproc: core: Move validate before device add
+Message-ID: <YMj6KOb2uNdA9Tpj@kroah.com>
+References: <1623783824-13395-1-git-send-email-sidgup@codeaurora.org>
+ <1623783824-13395-3-git-send-email-sidgup@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1623783824-13395-3-git-send-email-sidgup@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 15, 2021 at 12:03:42PM -0700, Siddharth Gupta wrote:
+> We can validate whether the remoteproc is correctly setup before
+> making the cdev_add and device_add calls. This saves us the
+> trouble of cleaning up later on.
+> 
+> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
 
+Why is this relevant for stable?  What commit does this fix?  Please put
+a Fixes: tag for that.
 
-> On Jun 15, 2021, at 3:42 AM, Robin Murphy <robin.murphy@arm.com> =
-wrote:
->=20
-> On 2021-06-07 19:25, Nadav Amit wrote:
->> From: Robin Murphy <robin.murphy@arm.com>
->> The Mediatek driver is not the only one which might want a basic
->> address-based gathering behaviour, so although it's arguably simple
->> enough to open-code, let's factor it out for the sake of cleanliness.
->> Let's also take this opportunity to document the intent of these
->> helpers for clarity.
->> Cc: Joerg Roedel <joro@8bytes.org>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Jiajun Cao <caojiajun@vmware.com>
->> Cc: Robin Murphy <robin.murphy@arm.com>
->> Cc: Lu Baolu <baolu.lu@linux.intel.com>
->> Cc: iommu@lists.linux-foundation.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
->=20
-> Nit: missing your signoff.
->=20
->> ---
->> Changes from Robin's version:
->> * Added iommu_iotlb_gather_add_range() stub !CONFIG_IOMMU_API
->=20
-> Out of curiosity, is there any config in which a stub is actually =
-needed? Unlike iommu_iotlb_gather_init(), I would have thought that =
-these helpers should only ever be called by driver code which already =
-depends on IOMMU_API.
+thanks,
 
-Indeed, this was only done as a defensive step.
-
-I will remove it. I see no reason for it. Sorry for ruining your patch.
-
+greg k-h
