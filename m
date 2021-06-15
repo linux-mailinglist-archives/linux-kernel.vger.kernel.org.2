@@ -2,155 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1C23A7A8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 120B13A7A82
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhFOJbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:31:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41601 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231386AbhFOJb3 (ORCPT
+        id S231351AbhFOJaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:30:52 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:10072 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231338AbhFOJau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:31:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623749365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ixkqrIKMQSntHkRSmfPmSF6qX7bW09wmkdMsRAwdhZk=;
-        b=JVwwcotmQWwtOQ5IrFUB6UD/8e7sF0LA7EwpKZpOUObIqpvU3YVCWc2PxDm+SnahAmVITn
-        lo7PMScJ9UoCvZnFG5ta9dik5sYVcvW+Xe582MvMq3NXPI2GKmlRESEFjJt1CA3m/w+9+6
-        lSQ9zLl/bdrYBLB+OAxwQLDtWAsAuFQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-133-rfsY0M7KMe6iw6PneYPP7Q-1; Tue, 15 Jun 2021 05:29:23 -0400
-X-MC-Unique: rfsY0M7KMe6iw6PneYPP7Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C1241084F60;
-        Tue, 15 Jun 2021 09:29:22 +0000 (UTC)
-Received: from x1.com (ovpn-113-40.rdu2.redhat.com [10.10.113.40])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4B2895D6AD;
-        Tue, 15 Jun 2021 09:29:18 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Phil Auld <pauld@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Kate Carcia <kcarcia@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V4 03/12] trace/hwlat: Switch disable_migrate to mode none
-Date:   Tue, 15 Jun 2021 11:28:42 +0200
-Message-Id: <b4e499fb2e0a5409049869c4330c7466e71427ba.1623746916.git.bristot@redhat.com>
-In-Reply-To: <cover.1623746916.git.bristot@redhat.com>
-References: <cover.1623746916.git.bristot@redhat.com>
+        Tue, 15 Jun 2021 05:30:50 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G42x94bJCzZfBH;
+        Tue, 15 Jun 2021 17:25:49 +0800 (CST)
+Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 17:28:44 +0800
+Received: from [10.67.102.248] (10.67.102.248) by
+ dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 17:28:43 +0800
+Subject: Re: [PATCH v3] perf annotate: Add itrace options support
+To:     Adrian Hunter <adrian.hunter@intel.com>, <acme@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>
+References: <20210615024036.181427-1-yangjihong1@huawei.com>
+ <2cbf0c35-f600-22b6-0695-02eec3f81960@intel.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <5b0e6138-854a-2996-3551-7e10ba0ce2b7@huawei.com>
+Date:   Tue, 15 Jun 2021 17:28:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <2cbf0c35-f600-22b6-0695-02eec3f81960@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.248]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm000003.china.huawei.com (7.185.36.128)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When in the round-robin mode, if the tracer detects a change in the
-hwlatd thread affinity by an external tool, e.g., taskset, the
-round-robin logic is disabled. The disable_migrate variable currently
-tracks this.
+Hello, Adrain,
 
-With the addition of the "mode" config and the mode "none," the
-disable_migrate logic is equivalent to switch to the "none" mode.
+On 2021/6/15 16:22, Adrian Hunter wrote:
+> On 15/06/21 5:40 am, Yang Jihong wrote:
+>> The "auxtrace_info" and "auxtrace" functions are not set in "tool" member of
+>> "annotate". As a result, perf annotate does not support parsing itrace data.
+>>
+>> Before:
+>>
+>>    # perf record -e arm_spe_0/branch_filter=1/ -a sleep 1
+>>    [ perf record: Woken up 9 times to write data ]
+>>    [ perf record: Captured and wrote 20.874 MB perf.data ]
+>>    # perf annotate --stdio
+>>    Error:
+>>    The perf.data data has no samples!
+>>
+>> Solution:
+>> 1.Add itrace options in help,
+>> 2.Set hook functions of "auxtrace_info" and "auxtrace" in perf_tool.
+>>
+>> After:
+>>
+>>    # perf record --all-user -e arm_spe_0/branch_filter=1/ ls
+>>    Couldn't synthesize bpf events.
+>>    perf.data
+>>    [ perf record: Woken up 1 times to write data ]
+>>    [ perf record: Captured and wrote 0.010 MB perf.data ]
+>>    # perf annotate --stdio
+>>     Percent |      Source code & Disassembly of libc-2.28.so for branch-miss (1 samples, percent: local period)
+>>    ------------------------------------------------------------------------------------------------------------
+>>             :
+>>             :
+>>             :
+>>             :           Disassembly of section .text:
+>>             :
+>>             :           0000000000066180 <__getdelim@@GLIBC_2.17>:
+>>        0.00 :   66180:  stp     x29, x30, [sp, #-96]!
+>>        0.00 :   66184:  cmp     x0, #0x0
+>>        0.00 :   66188:  ccmp    x1, #0x0, #0x4, ne  // ne = any
+>>        0.00 :   6618c:  mov     x29, sp
+>>        0.00 :   66190:  stp     x24, x25, [sp, #56]
+>>
+>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>> ---
+>>
+>> Changes since v2:
+>>   - Updating tools/perf/Documentation/perf-annotate.txt.
+>>   - Add test result to commit message.
+>>
+>> Changes since v1:
+>>   - Adjust spaces to maintain alignment in "tool".
+>>
+>>   tools/perf/Documentation/perf-annotate.txt |  7 +++++++
+>>   tools/perf/builtin-annotate.c              | 10 ++++++++++
+>>   2 files changed, 17 insertions(+)
+>>
+>> diff --git a/tools/perf/Documentation/perf-annotate.txt b/tools/perf/Documentation/perf-annotate.txt
+>> index 80c1be5d566c..33c2521cba4a 100644
+>> --- a/tools/perf/Documentation/perf-annotate.txt
+>> +++ b/tools/perf/Documentation/perf-annotate.txt
+>> @@ -58,6 +58,13 @@ OPTIONS
+>>   --ignore-vmlinux::
+>>   	Ignore vmlinux files.
+>>   
+>> +--itrace::
+>> +	Options for decoding instruction tracing data. The options are:
+>> +
+>> +include::itrace.txt[]
+>> +
+>> +	To disable decoding entirely, use --no-itrace.
+>> +
+>>   -m::
+>>   --modules::
+>>           Load module symbols. WARNING: use only with -k and LIVE kernel.
+>> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+>> index 49627a7bed7c..8f87658eff31 100644
+>> --- a/tools/perf/builtin-annotate.c
+>> +++ b/tools/perf/builtin-annotate.c
+>> @@ -474,6 +474,8 @@ int cmd_annotate(int argc, const char **argv)
+>>   			.attr	= perf_event__process_attr,
+>>   			.build_id = perf_event__process_build_id,
+>>   			.tracing_data   = perf_event__process_tracing_data,
+>> +			.auxtrace_info	= perf_event__process_auxtrace_info,
+>> +			.auxtrace	= perf_event__process_auxtrace,
+> 
+> For sample mode, Intel PT also needs:
+> 
+> 			.id_index	 = perf_event__process_id_index,
+> 
+Thanks for testing this patch in the Intel PT environment.
+OK, I add the id_index processing function to the v4 patch:
+https://lore.kernel.org/patchwork/patch/1446727/
 
-Hence, instead of using a hidden variable to track this behavior,
-switch the mode to none, informing the user about this change.
-
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc: Clark Willaims <williams@redhat.com>
-Cc: John Kacur <jkacur@redhat.com>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: x86@kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
----
- kernel/trace/trace_hwlat.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index 43a436d85a01..bae74b95cf55 100644
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -286,7 +286,6 @@ static int get_sample(void)
- }
- 
- static struct cpumask save_cpumask;
--static bool disable_migrate;
- 
- static void move_to_next_cpu(void)
- {
-@@ -294,15 +293,13 @@ static void move_to_next_cpu(void)
- 	struct trace_array *tr = hwlat_trace;
- 	int next_cpu;
- 
--	if (disable_migrate)
--		return;
- 	/*
- 	 * If for some reason the user modifies the CPU affinity
- 	 * of this thread, then stop migrating for the duration
- 	 * of the current test.
- 	 */
- 	if (!cpumask_equal(current_mask, current->cpus_ptr))
--		goto disable;
-+		goto change_mode;
- 
- 	get_online_cpus();
- 	cpumask_and(current_mask, cpu_online_mask, tr->tracing_cpumask);
-@@ -313,7 +310,7 @@ static void move_to_next_cpu(void)
- 		next_cpu = cpumask_first(current_mask);
- 
- 	if (next_cpu >= nr_cpu_ids) /* Shouldn't happen! */
--		goto disable;
-+		goto change_mode;
- 
- 	cpumask_clear(current_mask);
- 	cpumask_set_cpu(next_cpu, current_mask);
-@@ -321,8 +318,9 @@ static void move_to_next_cpu(void)
- 	sched_setaffinity(0, current_mask);
- 	return;
- 
-- disable:
--	disable_migrate = true;
-+ change_mode:
-+	hwlat_data.thread_mode = MODE_NONE;
-+	pr_info(BANNER "cpumask changed while in round-robin mode, switching to mode none\n");
- }
- 
- /*
-@@ -744,7 +742,6 @@ static int hwlat_tracer_init(struct trace_array *tr)
- 
- 	hwlat_trace = tr;
- 
--	disable_migrate = false;
- 	hwlat_data.count = 0;
- 	tr->max_latency = 0;
- 	save_tracing_thresh = tracing_thresh;
--- 
-2.31.1
-
+Thanks,
+Jihong
