@@ -2,117 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA7F3A888B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF733A888C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbhFOS1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 14:27:45 -0400
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:35698 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhFOS1o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:27:44 -0400
-Received: by mail-pf1-f169.google.com with SMTP id h12so111258pfe.2;
-        Tue, 15 Jun 2021 11:25:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=t75Eshf3FtAd9dxRc0GBGh60Gm8DFewQEc7KQ6oYmIA=;
-        b=QOSBKLSwG2Qy/wdwE977/nkGvih6E+zlzRL/SpF9Vtn+qM8nqxDwreKfqUyxJC09ha
-         Bo+N+1SlEWDCHTkTt1wFHDhC8rpeM4lJFGWkxEeq3UdvryBZxEtJh5jX7HYInJ3yv3q0
-         s+wHtH/+7+Hwdx9c5kHUTrHJJ5iTDP0YqXksP74gC0kQZ64ykJhkkDxVOhG8M0XBkr/E
-         64EJhRu3/H3TttxFKMYoOPVlBEvU9Rw+NjZG5U+J1s6XxSWQTTSAzVRUkdkgheRF3XB/
-         okMp6j7mIgmsaXRgMWcu09bMzgtnsuLUX9CJHYklt/VgWspAfvfRLnV7uvNQuS8FWLHL
-         E6Ng==
-X-Gm-Message-State: AOAM532BTP+UihbbkAfKt7TVeumaLS8mWsfsxchGMq1c6kqCBr/T8y3h
-        PC7lRCJaTZYPAEP1T7Re9qkFAYsF97Y=
-X-Google-Smtp-Source: ABdhPJzbIqqApABK6kJsbgY1wlf09wbEJRIegcgc/CHe0hvJu33GcwyzEMSz1TZ/JYp0ErfNd3vEug==
-X-Received: by 2002:a63:1004:: with SMTP id f4mr804224pgl.115.1623781537577;
-        Tue, 15 Jun 2021 11:25:37 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id h4sm3515370pjv.55.2021.06.15.11.25.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 11:25:36 -0700 (PDT)
-Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-9-git-send-email-cang@codeaurora.org>
- <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
- <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
- <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
- <75527f0ba5d315d6edbf800a2ddcf8c7@codeaurora.org>
- <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
- <3fce15502c2742a4388817538eb4db97@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <fabc70f8-6bb8-4b62-3311-f6e0ce9eb2c3@acm.org>
-Date:   Tue, 15 Jun 2021 11:25:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <3fce15502c2742a4388817538eb4db97@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
+        id S231491AbhFOS3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 14:29:02 -0400
+Received: from mail-dm6nam12on2089.outbound.protection.outlook.com ([40.107.243.89]:30497
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230000AbhFOS3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 14:29:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fp0ut11fVwKWEQMr86bRt972n+hLvUrSnC0BEXkQ/gHRQAN1RUCgXJjqKEt1m3jrk0Y6/x76M4KJeiC1SIKEwLW0T0UkbahEoHWx9aPWLvvdyuzBuPCc2m4m9psOfz6SvkdLhtmu83ZEJp85QRqzMvfpM+ks3OInG65RsYTp5wxXCQ0v01tsDhVlfGGYlAwFmaJD2Pq5In0YFZ0M4hyiHQLpzeNFvH87chj8nehxiAzq/skTnStVJFhNGCQwm/jVmzt9ILJ7YqzQeof7nKtUecBeszo39tDjSJGhhQ8lO6NuQwbFC7m1rf5qKuBrfWNMojZzQfxIyd4aiLVIchShzA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=okgxJ6qPkV8E89QdkgA3Wqdpgcntk1SACtCCv4uwCXU=;
+ b=h4SIg5C13OJWL/E4lAAf20YAp0lp9AMJN1/cFVUJIwMb2HvatYuBa62WBcNrxx9wbPLeMtFDf7u1VBkNU+d1jar/QwRIvMJi1wTrqVueOQbXpos/QdoWLQ++kowM/7aLOeI8D07V7HQ7teHA3pThXL7BBxU5/wuFiiGTEc505HHnnQzlu6cVsKlMx0g/Fm+6UGTF/yBpllEBApjGejNGcD9Pec1XPoz5tcPRYNds/d2zHLUUtbp9UdLILiRww6OzB3i6ooV2v6AvJwNbihZRxY7/gitzP+ZfxrAIYxd9VybK07Nz6p6FPuZApoPPf3PA6oYl+03nPfaDm7KSUeaZ1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=okgxJ6qPkV8E89QdkgA3Wqdpgcntk1SACtCCv4uwCXU=;
+ b=THFb+M3DvF3Pmqrh75KbqJr/SJVyCuKXh0/F7Nras1qkwCV0pExoBbhSQW9UIm3uTXlDfdbJ/QBdjzWus+gnZ3qJryWHAs1fNo49Q6iq9/+wLygnHRo3fjkJwEkcCsX31kiAYNW/l/mLoPcL7gui0FEmfLje2bxmVf5XBsa/lZ4=
+Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
+ by BYAPR05MB5942.namprd05.prod.outlook.com (2603:10b6:a03:c5::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.12; Tue, 15 Jun
+ 2021 18:26:48 +0000
+Received: from BY3PR05MB8531.namprd05.prod.outlook.com
+ ([fe80::1c28:6a3d:d0d6:42fd]) by BY3PR05MB8531.namprd05.prod.outlook.com
+ ([fe80::1c28:6a3d:d0d6:42fd%3]) with mapi id 15.20.4242.016; Tue, 15 Jun 2021
+ 18:26:48 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+CC:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Jiajun Cao <caojiajun@vmware.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/6] iommu/amd: Do not use flush-queue when NpCache is
+ on
+Thread-Topic: [PATCH v3 2/6] iommu/amd: Do not use flush-queue when NpCache is
+ on
+Thread-Index: AQHXYeeGFQSEW5jijEOqPsAjk0RPs6sVZDGA
+Date:   Tue, 15 Jun 2021 18:26:48 +0000
+Message-ID: <13D6A169-4323-435A-A858-A9A78E85DF2D@vmware.com>
+References: <20210607182541.119756-1-namit@vmware.com>
+ <20210607182541.119756-3-namit@vmware.com>
+ <afd4e764-a003-32eb-c50e-a77543772db0@arm.com>
+In-Reply-To: <afd4e764-a003-32eb-c50e-a77543772db0@arm.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.100.0.2.22)
+authentication-results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=vmware.com;
+x-originating-ip: [24.6.216.183]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 60392745-632c-48d7-b4ae-08d9302b2336
+x-ms-traffictypediagnostic: BYAPR05MB5942:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR05MB594224B87545071A70B57F3AD0309@BYAPR05MB5942.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TXxyeFddOYcAZQamPEk3GcUWXl75Q7TRKuj2fLiRVtbjzWCvy2Q//OEAmI/6olo4ctcv8alCCkzBxKUjc7okmq4S8lSBdARJklSOUJc5lGFk9r3F+AsyueUsLINZ3+TLyyQWDSCeImcXE6NYCPsc6O8bOtolZiQsP1Y824Lz/3sTjJy5JplwXsMvMf2fx44P+hT8l+1ktW2JdMAG3+4B05DdQBy8C8DlR1oGssGkiLXQeslx2MA4EQ8AZnyuiZ+oh2JTQtYdR8WxID37iJr240bHatIwx0UJbgo1Y9q2tYvqXWFd17xfHv7ifO/KhdIAp/btshZqkO83ml6XQL9Jxl0Rt4KB2btA6puLGjzgSu9zag1pWcMwzaOquBZhpbqorjArg5BEjZ/bBWszCfehHPdSng5YoDleYyZ3ABo2dqfd5hSyaCnNgWSEaCDmNPm6IsUJqtywqyu0Lm9AlpOxUg4/zrmYywnEIBdaBDcKZmf7zGrmkIWngOygB97esbCwEE5ry7huYjiKNEQfQDxLcaLWwTq6UnKPp7rsDhidwyBhTFPOn2kYyu6ja/e78xRpAUkrIhC/5GgAq2GSBJy/eKYHZjRHI95CEV3Exlwlq3u5IR/y2k6OzEbIrbO6sny0UTD2Y5/mB+PdtceXHue6/Nf0Y/5Oq9W+RMeBuTki9/o=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(4636009)(39860400002)(366004)(136003)(396003)(346002)(376002)(38100700002)(122000001)(4326008)(8676002)(36756003)(6486002)(54906003)(478600001)(316002)(6916009)(186003)(2616005)(33656002)(66556008)(83380400001)(5660300002)(8936002)(66476007)(66446008)(53546011)(6506007)(86362001)(6512007)(26005)(71200400001)(76116006)(2906002)(66946007)(64756008)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UUxKMnNRcXd0cE9JcjBPYjJjcEp0MnQrTkN5THBBTG85S3UzaDlXbmFWckNX?=
+ =?utf-8?B?b2xlK1FaaVlwOGJqK2QxN3dBRXBYL3N0K3dnRm5nVmZReTRMckg5UEJDTGUy?=
+ =?utf-8?B?RHF3TkpxbHMzcUpDV0NTbUg1eWtmM3dFZGtuQlZsdlNrQnJDckNBRUtVdVY5?=
+ =?utf-8?B?QUsxcEJQeTVuK2I0OS9rNUl5M0xJcHdYR0psWlV0YmdFUFY4cGhkVnM4Kyts?=
+ =?utf-8?B?ZGNJVlJWUkt4MjdQN3RaNTE5T2sxWENYRVd5WmlEdzdyY2tGZDdLc3JmVC95?=
+ =?utf-8?B?NWdVOFZoeDZpNzZHTmR5T2U3SXdRdStUU0s0dXo2cUhPelRWWkZGMzV6VXNM?=
+ =?utf-8?B?UE00bEIyRDF6ZEFHRyt5NlAwTVBuN0loRVNYZDJMOEtFUCtIR2YzY3IwS0Zs?=
+ =?utf-8?B?bVpKU2lRZitMUGlhdS9ERUdCZDVTdW4xU0xwRzRYWnNBNHF5VW5kamhIYWVL?=
+ =?utf-8?B?T0l6b1lSRmVnWDJGSXYxb0ZqNE4zTWVGeWZuVGJiZFdWWGZHQXNFeXJyVXJO?=
+ =?utf-8?B?M01XYSt4UVl0ZlY5d3VCU05zeFczQkorTlV1VFF1OFFhODZoaUdyNmlpYndZ?=
+ =?utf-8?B?b3BnVklHTEd2ZEhDMWdYbXJ1TTJXY05SYVBVdDA1dDVUUjg0VVFVc3VtSExS?=
+ =?utf-8?B?L2w1aTN3VVFwNEhzRGZ4dnMrVHgxN2RFUVFPeWgxQnBhczRKTk5BNlF3QVZx?=
+ =?utf-8?B?QVdSUVZmNWg0WGVrUVB5N1hBTjltajM4clo1cUUwV1V3eTVJd2tLMWR1NGJ5?=
+ =?utf-8?B?Q1FFdGdYaUNhaGF6bisyRHlXSDNxemNxWXVQait3d3NqMWNhalphbzRRam1J?=
+ =?utf-8?B?K3NZaTF6MUZyZGU0WWhpRnE1bUZsUDFmNnEyZWFwV0MvUUVOVGVSVDFUakIx?=
+ =?utf-8?B?NVFzLysyZVFTcTZNMmxZUkw5UWFWQTQ1akkyT2RoZFY2UkRNU1N2dkx1QTNG?=
+ =?utf-8?B?VUJMUmViVHpRZit3ZnBPaW9wb0wycGJvUThjdDhOblZUaERoaW5NWWsyTVND?=
+ =?utf-8?B?ZTdKMUsyYjZTcEsxRlNpLytFTHgyQUpPOWxaK0ROM0s1d2x4aVh5Mm1vZGdE?=
+ =?utf-8?B?NWwxKzNWQmdISTVCSDFpTEhVZlJWaG9sR29PdGFJMzhBS2trVmhNZHIrVjhK?=
+ =?utf-8?B?MXRic2tVNm5zWm1kUTMwZ1FVdjRuRGJIUDNOZmxleEVxRzFNbXNZU2J4VEFN?=
+ =?utf-8?B?dHBLa1BLK3JHREVmVHJCaXRaMk95WnJTVFFpLy9HVG1md25PRC9md0s4Tlgy?=
+ =?utf-8?B?NkhsUmFNQmlWa1huajhYMG5QbzJ4NzZjK254RWpFRE9pellDTG9iUVp4MXRo?=
+ =?utf-8?B?bXJ6RWYvTkE2MTI5SUJqeXdWQ1hvVTc0Vmp0cUJocktCNmNjMmpmQk5pQUdW?=
+ =?utf-8?B?Z3J0WVJBbUdVcSs5MjZDbVZMTi9vcGpoNVdsQjErUFYrLzRaZ2Y5N0NBUkdV?=
+ =?utf-8?B?SkF2T0pnRVh4MjgzNEd2NHdTTW1vd2FrK2RKMGVxelc1eXJPaXZtTVZwZ1U2?=
+ =?utf-8?B?U0wvQkhFUHZ5ZlhhNkNsaEErMVNFSGNVTFMyZE9ZTFlkZkxJakNWR0VEMEE4?=
+ =?utf-8?B?b3RyL1RKODlwVXZBL1MvalFTT2E0SVQyQURlZlhwQ1FoSXlJeEZnbzVjZDJk?=
+ =?utf-8?B?QnV0eXFqckNtRGg0SkZ1T2E3YnJIaDB1T1Y0YW5ZUTVFbFhNYml4YTFNUXNI?=
+ =?utf-8?B?eTkvbXJBYXV5Q0FOb1kxQW9hMlVqOGlEdmxCbnVRWXpoTytzd1pCR3k0YVFy?=
+ =?utf-8?Q?yz9QXXU66xD9hVvB7XXqJKrpN7VTWUS9P35Z9h1?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8C9F3EFB7CEFD04084935D57FEE8301C@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY3PR05MB8531.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60392745-632c-48d7-b4ae-08d9302b2336
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2021 18:26:48.1453
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qQSKc4oUxofr8HwADq8HowoxGowTsM/x8lOZZZmDQJxkU2gKn0KHmol2wJTXK3I/0Z2r04csIbGxe81Ey2tC2A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB5942
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/14/21 7:36 PM, Can Guo wrote:
-> I've considered the similar way (leverage hba->host->eh_noresume) last
-> year,
-> but I didn't take this way due to below reasons:
-> 
-> 1. UFS error handler basically does one thing - reset and restore, which
-> stops hba [1], resets device [2] and re-probes the device [3]. Stopping
-> hba [1]
-> shall complete any pending requests in the doorbell (with error or no
-> error).
-> After [1], suspend/resume contexts, blocked by SSU cmd, shall be unblocked
-> right away to do whatever it needs to handle the SSU cmd failure (completed
-> in [1], so scsi_execute() returns an error), e.g., put link back to the old
-> state. call ufshcd_vops_suspend(), turn off irq/clocks/powers and etc...
-> However, reset and restore ([2] and [3]) is still running, and it can
-> (most likely)
-> be disturbed by suspend/resume. So passing a parameter or using
-> hba->host->eh_noresume
-> to skip lock_system_sleep() and unlock_system_sleep() can break the cycle,
-> but error handling may run concurrently with suspend/resume. Of course
-> we can
-> modify suspend/resume to avoid it, but I was pursuing a minimal change
-> to get this fixed.
-> 
-> 2. Whatever way we take to break the cycle, suspend/resume shall fail and
-> RPM framework shall save the error to dev.power.runtime_error, leaving
-> the device in runtime suspended or active mode permanently. If it is left
-> runtime suspended, UFS driver won't accept cmd anymore, while if it is left
-> runtime active, powers of UFS device and host will be left ON, leading
-> to power
-> penalty. So my main idea is to let suspend/resume contexts, blocked by
-> PM cmds,
-> fail fast first and then error handler recover everything back to work.
-
-Hi Can,
-
-Has it been considered to make the UFS error handler fail pending
-commands with an error code that causes the SCSI core to resubmit the
-SCSI command, e.g. DID_IMM_RETRY or DID_TRANSPORT_DISRUPTED? I want to
-prevent that power management or suspend/resume callbacks fail if the
-error handler succeeds with recovering the UFS transport.
-
-Thanks,
-
-Bart.
+DQoNCj4gT24gSnVuIDE1LCAyMDIxLCBhdCA2OjA4IEFNLCBSb2JpbiBNdXJwaHkgPHJvYmluLm11
+cnBoeUBhcm0uY29tPiB3cm90ZToNCj4gDQo+IE9uIDIwMjEtMDYtMDcgMTk6MjUsIE5hZGF2IEFt
+aXQgd3JvdGU6DQo+PiBGcm9tOiBOYWRhdiBBbWl0IDxuYW1pdEB2bXdhcmUuY29tPg0KPj4gRG8g
+bm90IHVzZSBmbHVzaC1xdWV1ZSBvbiB2aXJ0dWFsaXplZCBlbnZpcm9ubWVudHMsIHdoZXJlIHRo
+ZSBOcENhY2hlDQo+PiBjYXBhYmlsaXR5IG9mIHRoZSBJT01NVSBpcyBzZXQuIFRoaXMgaXMgcmVx
+dWlyZWQgdG8gcmVkdWNlDQo+PiB2aXJ0dWFsaXphdGlvbiBvdmVyaGVhZHMuDQo+PiBUaGlzIGNo
+YW5nZSBmb2xsb3dzIGEgc2ltaWxhciBjaGFuZ2UgdG8gSW50ZWwncyBWVC1kIGFuZCBhIGRldGFp
+bGVkDQo+PiBleHBsYW5hdGlvbiBhcyBmb3IgdGhlIHJhdGlvbmFsZSBpcyBkZXNjcmliZWQgaW4g
+Y29tbWl0IDI5YjMyODM5NzI1Zg0KPj4gKCJpb21tdS92dC1kOiBEbyBub3QgdXNlIGZsdXNoLXF1
+ZXVlIHdoZW4gY2FjaGluZy1tb2RlIGlzIG9uIikuDQo+PiBDYzogSm9lcmcgUm9lZGVsIDxqb3Jv
+QDhieXRlcy5vcmc+DQo+PiBDYzogV2lsbCBEZWFjb24gPHdpbGxAa2VybmVsLm9yZz4NCj4+IENj
+OiBKaWFqdW4gQ2FvIDxjYW9qaWFqdW5Adm13YXJlLmNvbT4NCj4+IENjOiBSb2JpbiBNdXJwaHkg
+PHJvYmluLm11cnBoeUBhcm0uY29tPg0KPj4gQ2M6IEx1IEJhb2x1IDxiYW9sdS5sdUBsaW51eC5p
+bnRlbC5jb20+DQo+PiBDYzogaW9tbXVAbGlzdHMubGludXgtZm91bmRhdGlvbi5vcmcNCj4+IENj
+OiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+PiBTaWduZWQtb2ZmLWJ5OiBOYWRhdiBB
+bWl0IDxuYW1pdEB2bXdhcmUuY29tPg0KPj4gLS0tDQo+PiAgZHJpdmVycy9pb21tdS9hbWQvaW5p
+dC5jIHwgNyArKysrKystDQo+PiAgMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgMSBk
+ZWxldGlvbigtKQ0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW9tbXUvYW1kL2luaXQuYyBiL2Ry
+aXZlcnMvaW9tbXUvYW1kL2luaXQuYw0KPj4gaW5kZXggZDAwNjcyNGY0ZGMyLi5iYTNiNzZlZDc3
+NmQgMTAwNjQ0DQo+PiAtLS0gYS9kcml2ZXJzL2lvbW11L2FtZC9pbml0LmMNCj4+ICsrKyBiL2Ry
+aXZlcnMvaW9tbXUvYW1kL2luaXQuYw0KPj4gQEAgLTE4NTAsOCArMTg1MCwxMyBAQCBzdGF0aWMg
+aW50IF9faW5pdCBpb21tdV9pbml0X3BjaShzdHJ1Y3QgYW1kX2lvbW11ICppb21tdSkNCj4+ICAJ
+aWYgKHJldCkNCj4+ICAJCXJldHVybiByZXQ7DQo+PiAgLQlpZiAoaW9tbXUtPmNhcCAmICgxVUwg
+PDwgSU9NTVVfQ0FQX05QQ0FDSEUpKQ0KPj4gKwlpZiAoaW9tbXUtPmNhcCAmICgxVUwgPDwgSU9N
+TVVfQ0FQX05QQ0FDSEUpKSB7DQo+PiArCQlpZiAoIWFtZF9pb21tdV91bm1hcF9mbHVzaCkNCj4+
+ICsJCQlwcl93YXJuX29uY2UoIklPTU1VIGJhdGNoaW5nIGlzIGRpc2FibGVkIGR1ZSB0byB2aXJ0
+dWFsaXphdGlvbiIpOw0KPiANCj4gTml0OiB5b3UgY2FuIGp1c3QgdXNlIHByX3dhcm4oKSAob3Ig
+YXJndWFibHkgcHJfaW5mbygpKSBzaW5jZSB0aGUgZXhwbGljaXQgY29uZGl0aW9ucyBhbHJlYWR5
+IG9ubHkgbWF0Y2ggb25jZS4NCg0KWWVzLCBteSBiYWQuIEkgd2lsbCBmaXggaXQgaW4gdGhlIG5l
+eHQgdmVyc2lvbi4NCg0KPiBTcGVha2luZyBvZiB3aGljaCwgaXQgbWlnaHQgYmUgYmV0dGVyIHRv
+IHVzZSBhbWRfaW9tbXVfbnBfY2FjaGUgaW5zdGVhZCwgc2luY2Ugb3RoZXIgcGF0Y2hlcyBhcmUg
+cGxhbm5pbmcgdG8gY2xlYW4gdXAgdGhlIGxhc3QgcmVtbmFudHMgb2YgYW1kX2lvbW11X3VubWFw
+X2ZsdXNoLg0KDQpJIHByZWZlciB0aGF0IHRoZSBvdGhlciBwYXRjaGVzICh0aGF0IHJlbW92ZSBh
+bWRfaW9tbXVfdW5tYXBfZmx1c2gpIHdvdWxkIGFkZHJlc3MgdGhpcyBjb2RlIGFzIHdlbGwuIEkg
+Y2VydGFpbmx5IGRvIG5vdCB3YW50IHRvIGVtYmVkIGFtZF9pb21tdV9ucF9jYWNoZSBkZWVwIGlu
+dG8gdGhlIGZsdXNoaW5nIGxvZ2ljLiBJT1c6IEkgZG9u4oCZdCBrbm93IHdoYXQgeW91IGhhdmUg
+ZXhhY3RseSBpbiBtaW5kLCBidXQgSSBwcmVmZXIgdGhlIGNvZGUgd291bGQgYmUgY2xlYXIuDQoN
+ClRoaXMgY29kZSBmb2xsb3dzIChjb3BpZXM/KSB0aGUgc2FtZSBwYXR0ZXJuK2xvZ2ljIGZyb20g
+Y29tbWl0IDVmMzExNmVhOGI1ICgiaW9tbXUvdnQtZDogRG8gbm90IHVzZSBmbHVzaC1xdWV1ZSB3
+aGVuIGNhY2hpbmctbW9kZSBpcyBvbuKAnSkuIEkgc2VlIHRoYXQgY2hhbmdlZCB0aGUgY29kZSBp
+biBjb21taXQgNTMyNTVlNTQ1ODA3YyAoImlvbW11OiByZW1vdmUgRE9NQUlOX0FUVFJfRE1BX1VT
+RV9GTFVTSF9RVUVVReKAnSksIGJ1dCBkaWQgbm90IGdldCByaWQgb2YgaW50ZWxfaW9tbXVfc3Ry
+aWN0LCBzbyBwbGVhc2UgYWxsb3cgbWUgdG8gdXNlIGFtZF9pb21tdV91bm1hcF9mbHVzaC4NCg0K
+VG8gcmVtaW5kIHlvdS9tZS93aG9ldmVyOiBkaXNhYmxpbmcgYmF0Y2hpbmcgZHVlIHRvIGNhY2hp
+bmctbW9kZS9OUC1jYWNoZSBpcyBub3QgaW5oZXJlbnRseSBuZWVkZWQuIEl0IHdhcyBub3QgbmVl
+ZGVkIGZvciBxdWl0ZSBzb21lIHRpbWUgb24gSW50ZWwsIGJ1dCBzb21laG93IGFsb25nIHRoZSB3
+YXkgdGhlIGNvbnNvbGlkYXRlZCBmbHVzaGluZyBjb2RlIGJyb2tlIGl0LCBhbmQgbm93IGl0IGlz
+IG5lZWRlZCAod2l0aG91dCBpbnRydXNpdmUgY29kZSBjaGFuZ2VzKS4NCg0K
