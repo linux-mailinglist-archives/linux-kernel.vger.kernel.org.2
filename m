@@ -2,29 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9C63A8841
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2C03A8842
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhFOSJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 14:09:52 -0400
-Received: from mga03.intel.com ([134.134.136.65]:49511 "EHLO mga03.intel.com"
+        id S231294AbhFOSKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 14:10:34 -0400
+Received: from mga04.intel.com ([192.55.52.120]:8494 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229947AbhFOSJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:09:51 -0400
-IronPort-SDR: 7gnpVFo/UvS44MN3sKN2thUKI98WpWHV0g0LUfcryRbxNoWuWzPrvbAH6vFjwf0XGuazFR2Zst
- XhM+H5kGKhIQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206080330"
+        id S229481AbhFOSKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 14:10:31 -0400
+IronPort-SDR: yjCf7fH2UC4hB+N1dv/hx2zE+q4Z+RfDkpqDGvZ8aix0zmUHeWI60EionaCn9Ai8GPCX2uPEJd
+ 5ADi4QRh/6Dg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="204214731"
 X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="206080330"
+   d="scan'208";a="204214731"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 11:07:46 -0700
-IronPort-SDR: OGpEapkgwJ2ija8VunQ5NTZdtY4ZHImtRdAf9IeAOjWn66ynwYuLmRmCYFlXu0+bD1GYtifBQ6
- hA1eacoM1JbQ==
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 11:08:17 -0700
+IronPort-SDR: ngBHJ8PvHNIQ1V/kAIE99CkLaYLqAG4azbnScU/5Sz/KT77kNJP8uGldDW4JtwmNQcKexAm3m5
+ dlBmqpFBrg6w==
 X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="554528620"
+   d="scan'208";a="554528686"
 Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.184.247]) ([10.212.184.247])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 11:07:45 -0700
-Subject: Re: [PATCH v4 02/24] x86/resctrl: Split struct rdt_domain
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 11:08:16 -0700
+Subject: Re: [PATCH v4 05/24] x86/resctrl: Label the resources with their
+ configuration type
 To:     James Morse <james.morse@arm.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Fenghua Yu <fenghua.yu@intel.com>,
@@ -37,14 +38,14 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         D Scott Phillips OS <scott@os.amperecomputing.com>,
         lcherian@marvell.com
 References: <20210614200941.12383-1-james.morse@arm.com>
- <20210614200941.12383-3-james.morse@arm.com>
+ <20210614200941.12383-6-james.morse@arm.com>
 From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <317be161-3316-729f-5c49-4a3275226e01@intel.com>
-Date:   Tue, 15 Jun 2021 11:07:45 -0700
+Message-ID: <bddb1c5a-005b-3ef9-443e-2b603582e927@intel.com>
+Date:   Tue, 15 Jun 2021 11:08:15 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210614200941.12383-3-james.morse@arm.com>
+In-Reply-To: <20210614200941.12383-6-james.morse@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -55,29 +56,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hi James,
 
 On 6/14/2021 1:09 PM, James Morse wrote:
-> resctrl is the defacto Linux ABI for SoC resource partitioning features.
-> 
-> To support it on another architecture, it needs to be abstracted from
-> the features provided by Intel RDT and AMD PQoS, and moved to /fs/.
-> struct rdt_resource contains a mix of architecture private details
-> and properties of the filesystem interface user-space users.
+...
 
-rdt_resource -> rdt_domain ?
-user-space users -> user-space uses ?
+> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+> index 425e7913dc8d..81073d0751c9 100644
+> --- a/include/linux/resctrl.h
+> +++ b/include/linux/resctrl.h
+> @@ -15,6 +15,14 @@ int proc_resctrl_show(struct seq_file *m,
+>   
+>   #endif
+>   
+> +enum resctrl_conf_type {
+> +	/* No prioritisation, both code and data are controlled or monitored. */
+> +	CDP_NONE,
+> +
+> +	CDP_CODE,
+> +	CDP_DATA,
+> +};
+> +
 
-> 
-> Continue by splitting struct rdt_domain, into an architecture private
-> 'hw' struct, which contains the common resctrl structure that would be
-> used by any architecture. The hardware values in ctrl_val and mbps_val
-> need to be accessed via helpers to allow another architecture to convert
-> these into a different format if necessary. After this split, filesystem
-> code paths touching a 'hw' struct indicates where an abstraction
-> is needed.
-> 
-> Splitting this structure only moves types around, and should not lead
-> to any change in behaviour.
-> 
-> Reviewed-by: Jamie Iles <jamie@nuviainc.com>
-> Signed-off-by: James Morse <james.morse@arm.com>
+
+Please follow style of the rest of this file - please no inline 
+documentation, use proper kernel-doc instead.
 
 Reinette
