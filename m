@@ -2,123 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595FE3A857A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDF13A856F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhFOPzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:55:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:39130 "EHLO foss.arm.com"
+        id S232065AbhFOPzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:55:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231766AbhFOPw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:52:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71922143D;
-        Tue, 15 Jun 2021 08:50:24 -0700 (PDT)
-Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C1CAC3F694;
-        Tue, 15 Jun 2021 08:50:19 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Jia He <justin.he@arm.com>
-Subject: [PATCH RFCv4 4/4] lib/test_printf.c: add test cases for '%pD'
-Date:   Tue, 15 Jun 2021 23:49:52 +0800
-Message-Id: <20210615154952.2744-5-justin.he@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210615154952.2744-1-justin.he@arm.com>
-References: <20210615154952.2744-1-justin.he@arm.com>
+        id S232209AbhFOPw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:52:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3079E61883;
+        Tue, 15 Jun 2021 15:50:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623772212;
+        bh=9BY+7FlAR/W7EiBSFe7ISrft7bHXbXUdoK/bMZJNjuw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Krs5EhRYGaisd+KNgXWF9vNq9dcrcQmqjg0zQnKuP3N3aww2MLz9AfsfSSD+B7e8q
+         92YauaiPdLWDEAAOapeqN/9CCplfuzybI2uoPdz2fp97Gw/93UkkRkZovkJsS6F5PM
+         5joTzcSkH+CLYT6VTLT6vuIwJrF9Wf3mqi8dTea9mQzhFhmw+OTETRzcSc8nzLWq5o
+         I7p/CeyVEtWhL9EJXxCbXi65xz3T8DjKsnG1eQzUCLif6zw8frXWGRp8bgQ1GTR6lU
+         omKhywm7gkCxy31tJ/2zVHZ3t+cgc+XJQr5JHh+CqwDRERwN8qbPhsOoDuEiGmr0aO
+         rZFOhHnlGC/pg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jack Yu <jack.yu@realtek.com>, Oder Chiou <oder_chiou@realtek.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 4.19 01/12] ASoC: rt5659: Fix the lost powers for the HDA header
+Date:   Tue, 15 Jun 2021 11:49:58 -0400
+Message-Id: <20210615155009.62894-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the behaviour of specifier '%pD' is changed to print full path
-of struct file, the related test cases are also updated.
+From: Jack Yu <jack.yu@realtek.com>
 
-Given the string of '%pD' is prepended from the end of the buffer, the
-check of "wrote beyond the nul-terminator" should be skipped.
+[ Upstream commit 6308c44ed6eeadf65c0a7ba68d609773ed860fbb ]
 
-Signed-off-by: Jia He <justin.he@arm.com>
+The power of "LDO2", "MICBIAS1" and "Mic Det Power" were powered off after
+the DAPM widgets were added, and these powers were set by the JD settings
+"RT5659_JD_HDA_HEADER" in the probe function. In the codec probe function,
+these powers were ignored to prevent them controlled by DAPM.
+
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Jack Yu <jack.yu@realtek.com>
+Message-Id: <15fced51977b458798ca4eebf03dafb9@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/test_printf.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5659.c | 26 +++++++++++++++++++++-----
+ 1 file changed, 21 insertions(+), 5 deletions(-)
 
-diff --git a/lib/test_printf.c b/lib/test_printf.c
-index d1d2f898ebae..9f851a82b3af 100644
---- a/lib/test_printf.c
-+++ b/lib/test_printf.c
-@@ -16,6 +16,7 @@
- 
- #include <linux/bitmap.h>
- #include <linux/dcache.h>
-+#include <linux/fs.h>
- #include <linux/socket.h>
- #include <linux/in.h>
- 
-@@ -34,6 +35,7 @@ KSTM_MODULE_GLOBALS();
- 
- static char *test_buffer __initdata;
- static char *alloced_buffer __initdata;
-+static bool is_prepended_buf __initdata;
- 
- extern bool no_hash_pointers;
- 
-@@ -78,7 +80,7 @@ do_test(int bufsize, const char *expect, int elen,
- 		return 1;
- 	}
- 
--	if (memchr_inv(test_buffer + written + 1, FILL_CHAR, bufsize - (written + 1))) {
-+	if (!is_prepended_buf && memchr_inv(test_buffer + written + 1, FILL_CHAR, bufsize - (written + 1))) {
- 		pr_warn("vsnprintf(buf, %d, \"%s\", ...) wrote beyond the nul-terminator\n",
- 			bufsize, fmt);
- 		return 1;
-@@ -501,6 +503,27 @@ dentry(void)
- 	test("  bravo/alfa|  bravo/alfa", "%12pd2|%*pd2", &test_dentry[2], 12, &test_dentry[2]);
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index b331b3ba61a9..ab73f84b5970 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -2473,13 +2473,18 @@ static int set_dmic_power(struct snd_soc_dapm_widget *w,
+ 	return 0;
  }
  
-+static struct vfsmount test_vfsmnt __initdata = {};
-+
-+static struct file test_file __initdata = {
-+	.f_path = { .dentry = &test_dentry[2],
-+		    .mnt = &test_vfsmnt,
-+	},
+-static const struct snd_soc_dapm_widget rt5659_dapm_widgets[] = {
++static const struct snd_soc_dapm_widget rt5659_particular_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("LDO2", RT5659_PWR_ANLG_3, RT5659_PWR_LDO2_BIT, 0,
+ 		NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("PLL", RT5659_PWR_ANLG_3, RT5659_PWR_PLL_BIT, 0,
+-		NULL, 0),
++	SND_SOC_DAPM_SUPPLY("MICBIAS1", RT5659_PWR_ANLG_2, RT5659_PWR_MB1_BIT,
++		0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("Mic Det Power", RT5659_PWR_VOL,
+ 		RT5659_PWR_MIC_DET_BIT, 0, NULL, 0),
 +};
 +
-+static void __init
-+f_d_path(void)
-+{
-+	test("(null)", "%pD", NULL);
-+	test("(efault)", "%pD", PTR_INVALID);
-+
-+	is_prepended_buf = true;
-+	test("/bravo/alfa   |/bravo/alfa   ", "%-14pD|%*pD", &test_file, -14, &test_file);
-+	test("   /bravo/alfa|   /bravo/alfa", "%14pD|%*pD", &test_file, 14, &test_file);
-+	test("   /bravo/alfa|/bravo/alfa   ", "%14pD|%-14pD", &test_file, &test_file);
-+	is_prepended_buf = false;
-+}
-+
- static void __init
- struct_va_format(void)
++static const struct snd_soc_dapm_widget rt5659_dapm_widgets[] = {
++	SND_SOC_DAPM_SUPPLY("PLL", RT5659_PWR_ANLG_3, RT5659_PWR_PLL_BIT, 0,
++		NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("Mono Vref", RT5659_PWR_ANLG_1,
+ 		RT5659_PWR_VREF3_BIT, 0, NULL, 0),
+ 
+@@ -2504,8 +2509,6 @@ static const struct snd_soc_dapm_widget rt5659_dapm_widgets[] = {
+ 		RT5659_ADC_MONO_R_ASRC_SFT, 0, NULL, 0),
+ 
+ 	/* Input Side */
+-	SND_SOC_DAPM_SUPPLY("MICBIAS1", RT5659_PWR_ANLG_2, RT5659_PWR_MB1_BIT,
+-		0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("MICBIAS2", RT5659_PWR_ANLG_2, RT5659_PWR_MB2_BIT,
+ 		0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("MICBIAS3", RT5659_PWR_ANLG_2, RT5659_PWR_MB3_BIT,
+@@ -3700,10 +3703,23 @@ static int rt5659_set_bias_level(struct snd_soc_component *component,
+ 
+ static int rt5659_probe(struct snd_soc_component *component)
  {
-@@ -784,6 +807,7 @@ test_pointer(void)
- 	ip();
- 	uuid();
- 	dentry();
-+	f_d_path();
- 	struct_va_format();
- 	time_and_date();
- 	struct_clk();
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
+ 	struct rt5659_priv *rt5659 = snd_soc_component_get_drvdata(component);
+ 
+ 	rt5659->component = component;
+ 
++	switch (rt5659->pdata.jd_src) {
++	case RT5659_JD_HDA_HEADER:
++		break;
++
++	default:
++		snd_soc_dapm_new_controls(dapm,
++			rt5659_particular_dapm_widgets,
++			ARRAY_SIZE(rt5659_particular_dapm_widgets));
++		break;
++	}
++
+ 	return 0;
+ }
+ 
 -- 
-2.17.1
+2.30.2
 
