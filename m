@@ -2,64 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDF43A79BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AABC3A79C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhFOJEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:04:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231271AbhFOJEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:04:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B98BB61425
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:02:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623747749;
-        bh=PiMcnDcsnM6jPd+cPJEchuNOA4RbUjHCcDIS7gKq6cY=;
-        h=From:To:Subject:Date:From;
-        b=meql4ImJIoCpAzlIdGU1vLa3slRN7uNk74BLJiS8YG5s5u9jRr41LGyWNUMlH9hcb
-         rsjoEdyYsE/DvaTeJQsl/RRks/kod6Wvf39aslLBwKB+FowutBl1pG/sJTbJorodIP
-         L7jTDEcUiD+BtMHbetvbtWQFdBt3/FkiGcdZf9Pnl/5GxzvgxRdhu8hD/VL1sQJoIM
-         Po04OrBYSKbR/mL436y2UPx0Pyf+z8rgwvC16LZrn4M//jEgneZGbBmzfhMWTBUygk
-         7FFeRc1ekbMVSJOYw/YG443FGJQ4Hq2lrIh9W5MSr3xE0uhh1K99/nt8sTDwOeAbKH
-         vv6sfYltYTD7A==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH] habanalabs: remove a rogue #ifdef
-Date:   Tue, 15 Jun 2021 12:02:25 +0300
-Message-Id: <20210615090225.20530-1-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S231298AbhFOJG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:06:59 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4913 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230332AbhFOJG6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 05:06:58 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G42PM3B31z704v;
+        Tue, 15 Jun 2021 17:01:43 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 17:04:43 +0800
+Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 17:04:40 +0800
+From:   Yanan Wang <wangyanan55@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
+        <yuzenghui@huawei.com>, <wanghaibin.wang@huawei.com>,
+        Yanan Wang <wangyanan55@huawei.com>
+Subject: [PATCH] KVM: arm64: Fix inconsistency from function comment of __unmap_stage2_range
+Date:   Tue, 15 Jun 2021 17:04:36 +0800
+Message-ID: <20210615090436.13916-1-wangyanan55@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There was a rogue #ifdef that crept into the upstream code for
-backwards compatibility which isn't needed of course.
+Commit 'b5331379bc626'
+(KVM: arm64: Only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is not set)
+has converted the original function name 'unmap_stage2_range' to
+'__unmap_stage2_range', but leaving the corresponding function comment
+unadjusted. So fix it for code readability.
 
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Incidentally, we also tewak some comment identation by using tabs instead
+of spaces to be consistent with the other functions.
+
+Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
 ---
- drivers/misc/habanalabs/common/memory.c | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/arm64/kvm/mmu.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
-index eb004d19f638..14d12bbecc84 100644
---- a/drivers/misc/habanalabs/common/memory.c
-+++ b/drivers/misc/habanalabs/common/memory.c
-@@ -1387,12 +1387,7 @@ int hl_hw_block_mmap(struct hl_fpriv *hpriv, struct vm_area_struct *vma)
- 	/* Driver only allows mapping of a complete HW block */
- 	block_size = vma->vm_end - vma->vm_start;
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index 5742ba765ff9..80040af147a2 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -151,11 +151,11 @@ static void *kvm_host_va(phys_addr_t phys)
+  * does.
+  */
+ /**
+- * unmap_stage2_range -- Clear stage2 page table entries to unmap a range
+- * @mmu:   The KVM stage-2 MMU pointer
+- * @start: The intermediate physical base address of the range to unmap
+- * @size:  The size of the area to unmap
+- * @may_block: Whether or not we are permitted to block
++ * __unmap_stage2_range -- Clear stage2 page table entries to unmap a range
++ * @mmu:	The KVM stage-2 MMU pointer
++ * @start:	The intermediate physical base address of the range to unmap
++ * @size:	The size of the area to unmap
++ * @may_block:	Whether or not we are permitted to block
+  *
+  * Clear a range of stage-2 mappings, lowering the various ref-counts.  Must
+  * be called while holding mmu_lock (unless for freeing the stage2 pgd before
+@@ -190,7 +190,7 @@ static void stage2_flush_memslot(struct kvm *kvm,
  
--#ifdef _HAS_TYPE_ARG_IN_ACCESS_OK
--	if (!access_ok(VERIFY_WRITE,
--		(void __user *) (uintptr_t) vma->vm_start, block_size)) {
--#else
- 	if (!access_ok((void __user *) (uintptr_t) vma->vm_start, block_size)) {
--#endif
- 		dev_err(hdev->dev,
- 			"user pointer is invalid - 0x%lx\n",
- 			vma->vm_start);
+ /**
+  * stage2_flush_vm - Invalidate cache for pages mapped in stage 2
+- * @kvm: The struct kvm pointer
++ * @kvm:	The struct kvm pointer
+  *
+  * Go through the stage 2 page tables and invalidate any cache lines
+  * backing memory already mapped to the VM.
+@@ -527,7 +527,7 @@ static void stage2_unmap_memslot(struct kvm *kvm,
+ 
+ /**
+  * stage2_unmap_vm - Unmap Stage-2 RAM mappings
+- * @kvm: The struct kvm pointer
++ * @kvm:	The struct kvm pointer
+  *
+  * Go through the memregions and unmap any regular RAM
+  * backing memory already mapped to the VM.
+@@ -578,7 +578,7 @@ void kvm_free_stage2_pgd(struct kvm_s2_mmu *mmu)
+  * @guest_ipa:	The IPA at which to insert the mapping
+  * @pa:		The physical address of the device
+  * @size:	The size of the mapping
+- * @writable:   Whether or not to create a writable mapping
++ * @writable:	Whether or not to create a writable mapping
+  */
+ int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
+ 			  phys_addr_t pa, unsigned long size, bool writable)
+@@ -616,7 +616,7 @@ int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
+ 
+ /**
+  * stage2_wp_range() - write protect stage2 memory region range
+- * @mmu:        The KVM stage-2 MMU pointer
++ * @mmu:	The KVM stage-2 MMU pointer
+  * @addr:	Start address of range
+  * @end:	End address of range
+  */
 -- 
-2.25.1
+2.23.0
 
