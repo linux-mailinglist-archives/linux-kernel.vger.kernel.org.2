@@ -2,169 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113613A8A57
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3147D3A8A5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbhFOUnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 16:43:40 -0400
-Received: from mga07.intel.com ([134.134.136.100]:49406 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229965AbhFOUnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 16:43:39 -0400
-IronPort-SDR: 0HWDmH40JguQDCUTzJ+uAz7Iqzdy1OfNTEmraX8pEe5twsGNVsSj2WXWVobGn2qnxpZo3LfsPH
- GrPWF4ejX7Cg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="269914818"
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="269914818"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 13:41:33 -0700
-IronPort-SDR: /hSkReECSqWv/rCkZp2GbefM6oQT3192AOk7kOVrkfvIP2z2UaChDBjHzwhEjXL4+w0CDZiUPk
- koqubvrfOvwg==
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="554565107"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.184.247]) ([10.212.184.247])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 13:41:24 -0700
-Subject: Re: [PATCH v2] x86/resctrl: Fix kernel-doc in internal.h
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-References: <20210614154438.17075-1-fmdefrancesco@gmail.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <4f1825cc-5d80-c1b1-b56b-7f2535e406f7@intel.com>
-Date:   Tue, 15 Jun 2021 13:41:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231226AbhFOUo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 16:44:27 -0400
+Received: from mail-dm6nam12on2063.outbound.protection.outlook.com ([40.107.243.63]:58464
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229965AbhFOUoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 16:44:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YZtLWCGLJHdFHLNgEPeTzo0A4oYVT6hlGqXXiAt9yxcGFJ50CPJXcnFaaPd58H1R39uV6wIXRcsIi4TXrOUfYUio2FG+Gwlo3uom4VB5yxthS5YmE6O+3KXvJT3FpuEHf5rjs5YjOUzk5eqYl6jfCxoflegPBHNSztCuEku849xrjPGK/ypDcn/iewlgkcpR24jmK4tGLOiGoOBRg7RWzqkn1qiRWIMGvWyu8o+r0GiiRotGgypjsqGE+IoxXELxgJFQycrE/jDP75oMZZWIDnE6ixuicX5R4Wr9jy46aIXxSUbf4jxge/18M8tn0oRTyANYp/Ga2dWJ03KhhyzlmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OZ7q8ovbkGW8vskFpaRtZ7jOqJbxUBOfOjCUN27rkTo=;
+ b=NFg0Q3PoH6lnjwqZxIgTKwtXk0p2tD1l/rOaEYV+I25Kele0hmyJ3houFv4V/MdCeoDd3wxXVPKkuuD7lC37PWABhO4YUkDVx1+EXpOG1m8NMZSaY0dInEeeIJaSxwhQSNlx87RxYy0oV40z33dHIv/5VM23smIN3BF3KvtcqYDN41c/CWH70t+L92yA49THcWx2j+s3qDbOJfghpd87kEUJyj5kIy8JGaglmPABYdBaTa5h7zkumpcNefGxPuqijZkWu3UOIKSMfhiurCps9IpUG9oMUssR7zxP1vy4sa2TTg5kcQvwd9ygfFjpSX75TQWBlbQU0pU7B8Ac26de5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OZ7q8ovbkGW8vskFpaRtZ7jOqJbxUBOfOjCUN27rkTo=;
+ b=Gd573HoNlJn3w4klQbUAAbmwTlj0l3G1cZwUYPD3hEoymr4bKqNdRPM117BANsFldyCKwfTEDSctsNO93NKFGcxGQONz+Vquqg8t289guNBZ/eawB/dQIOTAFJijbeYhrxP12LoXMRa20pj4I9VaYT8fP5kK+zB8XnwQ03ToM2TcbInT4Y+zG4N1kwnhf1jFlfVG+hhqeeANb7Vg1LhGymT2WmzIZApJL4+y0WrzA82puiRa8KtWrQm7nPbjPhlDFuMCLwYOxnlgEXCLeUxM+LTk6d/+d4Wn3REy+OeeA92gLjIZ76lBl4Yok9fyfFEDiELoDnA5Hdk98DGYqZeZFw==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5096.namprd12.prod.outlook.com (2603:10b6:208:316::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15; Tue, 15 Jun
+ 2021 20:42:19 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4242.016; Tue, 15 Jun 2021
+ 20:42:19 +0000
+Date:   Tue, 15 Jun 2021 17:42:16 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        aviadye@nvidia.com, oren@nvidia.com, shahafs@nvidia.com,
+        parav@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
+        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
+        kevin.tian@intel.com, hch@infradead.org, targupta@nvidia.com,
+        shameerali.kolothum.thodi@huawei.com, liulongfang@huawei.com,
+        yan.y.zhao@intel.com
+Subject: Re: [PATCH 09/11] PCI: add matching checks for driver_override
+ binding
+Message-ID: <20210615204216.GY1002214@nvidia.com>
+References: <20210603160809.15845-10-mgurtovoy@nvidia.com>
+ <20210608152643.2d3400c1.alex.williamson@redhat.com>
+ <20210608224517.GQ1002214@nvidia.com>
+ <20210608192711.4956cda2.alex.williamson@redhat.com>
+ <117a5e68-d16e-c146-6d37-fcbfe49cb4f8@nvidia.com>
+ <20210614124250.0d32537c.alex.williamson@redhat.com>
+ <70a1b23f-764d-8b3e-91a4-bf5d67ac9f1f@nvidia.com>
+ <20210615090029.41849d7a.alex.williamson@redhat.com>
+ <20210615150458.GR1002214@nvidia.com>
+ <20210615102049.71a3c125.alex.williamson@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615102049.71a3c125.alex.williamson@redhat.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YT2PR01CA0022.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:38::27) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <20210614154438.17075-1-fmdefrancesco@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT2PR01CA0022.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:38::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Tue, 15 Jun 2021 20:42:18 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ltFt2-007EHS-R4; Tue, 15 Jun 2021 17:42:16 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8d48221d-48ae-4aeb-3123-08d9303e1173
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5096:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5096257D6F51BC6DC3E40891C2309@BL1PR12MB5096.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ANeBmg06aP7A5xYS2p77UWZ9S06sjg1muj1pYi/q9EW0ltS3N3pYvumPNCVMk3PLqGfPTrfahZ8XHeHOeKy6umjxTUbZ/9JmlNXtFa3y/gr1HAk2dGQldjr0AAMANWkBF4FqHVSzklg5wK3LHVQE/FDj6lFTY830uJ1FMYy3QzFXgTEX8dyJfkcpV1zXgSX0JF/cCVz83WYptxbmudr7k1NVxOH931gsEaHgrpwd73uLW6THI4OF7ek4uT5x6LGup6qGSvIXtyo/iRtdSXMVhRQDqnOnl/I08B4ONjI2KtaZVPwSpdprqb82C03g4ypyi60izFWDrc9CXYn5rn1B/sWzXjpF/eTlSj9gZwrtZQrcmkbXgpNKrXIfd7SBXG/d/J5bRvAOL1N+LAOfoQQfOIXq/zNRt5F/LkYCUvDahwP/Tiq5UnXEVRzi5Qs76EoKDBtzVbfEplBDutkNChANFhpFzDng16dpBzeZg/AZNcCh52TFArqftZ2Bx8vtQjZqe70LS/P3UIpcWVzqeS8TN3qkAl683vN4nxJy2GEf60CDiekay8pGRG91DIztTkuPRndrrKf99RBaLWV1OS3bjOanpHeY6inkqtuGq5QHzDs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(396003)(136003)(366004)(1076003)(9746002)(5660300002)(316002)(26005)(66946007)(9786002)(36756003)(2616005)(8676002)(186003)(66476007)(66556008)(33656002)(86362001)(2906002)(6916009)(8936002)(426003)(38100700002)(478600001)(83380400001)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nTvg+bFNVCXz20YYA9lFKSL2KCXHDmfki/dL0URHnLQ2njFPm+7oNBMFp281?=
+ =?us-ascii?Q?N79e78ndjP9YRHpblgPNhQJlIhY66IY/4s/bjC8vsfrR4G+Sr8+ZYmQ9r85F?=
+ =?us-ascii?Q?1n5LQJpEdjOMvnSi8gATxZ5if59mtZJ+qkdGs6gbG9Eu2+COFWTB3IJWxuW0?=
+ =?us-ascii?Q?E7/v1e85NEP9bdgIwhJBlL3YjgNt6wZoo3lwGY1XV+kDB5itnlEcOR5zOvyY?=
+ =?us-ascii?Q?Bl7G8+xmRDns9am0J0BwJdEoEhjrVA2PtGEHu4iGaFT/N3KChww4R0kDaG/w?=
+ =?us-ascii?Q?LagfdFW1IRdYe/ZSwyGK/UutKJSjkArwyi1zsopTHC8zmwTfgxcrI4C0Nt7F?=
+ =?us-ascii?Q?Ke3hmmqK6cylOboiP0qL3PcG1hdZV3YCOT+ShwwZOIp/biCKoOn9lu0RJGVV?=
+ =?us-ascii?Q?X7dALts0GyoJIHwFcGmUAPKtwfas4/NVJM8ZCpgN2KKeP98Zbd7qRK46stUn?=
+ =?us-ascii?Q?SYlzg8B/hkOsxHlJz/ydfepzBHyrg3Pc9hjjRvmx9ql27gsVee/BFvNybSO4?=
+ =?us-ascii?Q?sLoQYiUNFhOiCsdMah19KPj+l/+81OCui/C438duXMeP+PnXUuVcykSWMQxU?=
+ =?us-ascii?Q?odp6NPr8VJxAj90GJmdklUF2gx9CzuD5zHwJrfPjsm4hq6JurBAYRMvMC5vp?=
+ =?us-ascii?Q?2+DOEDpiz5cvrMigvyRYYStfp1yP4CUmdnaEB0Gf6DJOECLqHFkpwohzdnOW?=
+ =?us-ascii?Q?uoy36VwIGrx9B7H+tJ5QCOajnGtq40m8oIzD5cTn1KXhGNdFs0Z6Pwdc+BET?=
+ =?us-ascii?Q?Z2hLE2gnKyXMV+w1SY2E7w2uzJg48MjCxgg3VWbLc/Qvtk0N8Y+aebiBf4wa?=
+ =?us-ascii?Q?+CsA1AOAFJJMJUt7vdhqQei2UKfq8fSsZ2uCeI0kbWEImxkBoKpiKQ46LCa2?=
+ =?us-ascii?Q?HeIl93IzjnEx4WZWWSjzsjQMdo727BOhfjbEiMkMJ2eY/fsyd3kpSsSVHUDa?=
+ =?us-ascii?Q?8MjrYXP/GdRkS0V+l2bBZa0WLaoycPz2PJDRSd9l4IXxDhGl7sWLeyCaktRP?=
+ =?us-ascii?Q?oY7C5i3ce25cEO3L+eyBLNbthVPjkvQg+fFJQjw+YFbBI7t6arhgwCWChAlM?=
+ =?us-ascii?Q?e13pwLgvOCtzws+IP1hUeCRhLoiB41phh1AMMhH4rkrsLk28wb1PXD0Exrc0?=
+ =?us-ascii?Q?A0NTCZ8q4/cBbssNMZj18pVp4x7O1K0x/DeMAQ9Go55InHblSy1pZoZmxHPU?=
+ =?us-ascii?Q?htzmn6Wzri4TthfFThM8KEax/8Qd3AEacp14obd297MgM+LJ1g+GSdlcyqPH?=
+ =?us-ascii?Q?2HJH9za2HhqWdo/0d69b5d5vic0LwILcZbjJ4FJLG13vUe1hG1chpg2ui1cG?=
+ =?us-ascii?Q?mLPoQQH65Cy7FNW8Vp+6EEd/?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d48221d-48ae-4aeb-3123-08d9303e1173
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2021 20:42:19.1062
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: szPbh2mKiVEnDDKHgVgXWSXU8bUnPyU4L7V3K5dUxOx73PRMWDRrfKlqlPAffnbM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio,
-
-On 6/14/2021 8:44 AM, Fabio M. De Francesco wrote:
-> Add description of undocumented parameters. Issues detected by
-> scripts/kernel-doc.
+On Tue, Jun 15, 2021 at 10:20:49AM -0600, Alex Williamson wrote:
+> On Tue, 15 Jun 2021 12:04:58 -0300
+> Jason Gunthorpe <jgg@nvidia.com> wrote:
 > 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
+> > On Tue, Jun 15, 2021 at 09:00:29AM -0600, Alex Williamson wrote:
+> > 
+> > > "vfio" override in PCI-core plays out for other override types.  Also I
+> > > don't think dynamic IDs should be handled uniquely, new_id_store()
+> > > should gain support for flags and userspace should be able to add new
+> > > dynamic ID with override-only matches to the table.  Thanks,  
+> > 
+> > Why? Once all the enforcement is stripped out the only purpose of the
+> > new flag is to signal a different prepration of modules.alias - which
+> > won't happen for the new_id path anyhow
 > 
-> v1->v2: According to a first review by Reinette Chartre, remove changes
-> unrelated to the subject of this patch and modify the descriptions of
-> two parameters.
->   
->   arch/x86/kernel/cpu/resctrl/internal.h | 23 +++++++++++++++--------
->   1 file changed, 15 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index c4d320d02fd5..ac691af0174b 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -70,6 +70,7 @@ DECLARE_STATIC_KEY_FALSE(rdt_mon_enable_key);
->    * struct mon_evt - Entry in the event list of a resource
->    * @evtid:		event id
->    * @name:		name of the event
-> + * @list:		entry in &rdt_resource->evt_list
->    */
->   struct mon_evt {
->   	u32			evtid;
-> @@ -78,10 +79,13 @@ struct mon_evt {
->   };
->   
->   /**
-> - * struct mon_data_bits - Monitoring details for each event file
-> - * @rid:               Resource id associated with the event file.
-> + * union mon_data_bits - Monitoring details for each event file
-> + * @priv:	       Used to store monitoring event data in @u
-> + * 		       as kernfs private data
-> + * @rid:               Resource id associated with the event file
->    * @evtid:             Event id associated with the event file
->    * @domid:             The domain to which the event file belongs
-> + * @u:		       Name of the bit fields struct
->    */
+> Because new_id allows the admin to insert a new pci_device_id which has
+> been extended to include a flags field and intentionally handling
+> dynamic IDs differently from static IDs seems like generally a bad
+> thing.  
 
-This snippet is whitespace damaged. Your changes add tabs as well as 
-spaces while the existing code uses just spaces. Please follow existing 
-style of this area and just use spaces. As a note for any future 
-changes, in one line you add spaces before tabs, that is generally not 
-the right formatting in kernel-doc - running scripts/checkpatch.pl on 
-this patch would also warn about this.
+I'd agree with you if there was a functional difference at runtime,
+but since that was all removed, I don't think we should touch new_id.
 
->   union mon_data_bits {
->   	void *priv;
-> @@ -119,6 +123,7 @@ enum rdt_group_type {
->    * @RDT_MODE_PSEUDO_LOCKSETUP: Resource group will be used for Pseudo-Locking
->    * @RDT_MODE_PSEUDO_LOCKED: No sharing of this resource group's allocations
->    *                          allowed AND the allocations are Cache Pseudo-Locked
-> + * @RDT_NUM_MODES: Total number of modes
->    *
->    * The mode of a resource group enables control over the allowed overlap
->    * between allocations associated with different resource groups (classes
-> @@ -142,7 +147,7 @@ enum rdtgrp_mode {
->   
->   /**
->    * struct mongroup - store mon group's data in resctrl fs.
-> - * @mon_data_kn		kernlfs node for the mon_data directory
-> + * @mon_data_kn:		kernlfs node for the mon_data directory
+This ends up effectively being only a kbuild related patch that
+changes how modules.alias is built.
 
-Sorry I did not notice this before, could you please also fix the typo 
-kernlfs -> kernfs ?
-
->    * @parent:			parent rdtgrp
->    * @crdtgrp_list:		child rdtgroup node list
->    * @rmid:			rmid for this rdtgroup
-> @@ -282,11 +287,11 @@ struct rftype {
->   /**
->    * struct mbm_state - status for each MBM counter in each domain
->    * @chunks:	Total data moved (multiply by rdt_group.mon_scale to get bytes)
-> - * @prev_msr	Value of IA32_QM_CTR for this RMID last time we read it
-> + * @prev_msr:	Value of IA32_QM_CTR for this RMID last time we read it
->    * @prev_bw_msr:Value of previous IA32_QM_CTR for bandwidth counting
-> - * @prev_bw	The most recent bandwidth in MBps
-> - * @delta_bw	Difference between the current and previous bandwidth
-> - * @delta_comp	Indicates whether to compute the delta_bw
-> + * @prev_bw:	The most recent bandwidth in MBps
-> + * @delta_bw:	Difference between the current and previous bandwidth
-> + * @delta_comp:	Indicates whether to compute the delta_bw
->    */
->   struct mbm_state {
->   	u64	chunks;
-> @@ -450,17 +455,19 @@ struct rdt_parse_data {
->    * @name:		Name to use in "schemata" file
->    * @num_closid:		Number of CLOSIDs available
->    * @cache_level:	Which cache level defines scope of this resource
-> - * @default_ctrl:	Specifies default cache cbm or memory B/W percent.
-> + * @default_ctrl:	Specifies default cache cbm or memory B/W percent
->    * @msr_base:		Base MSR address for CBMs
->    * @msr_update:		Function pointer to update QOS MSRs
->    * @data_width:		Character width of data when displaying
->    * @domains:		All domains for this resource
->    * @cache:		Cache allocation related data
-> + * @membw:		Memory bandwidth allocation related data
->    * @format_str:		Per resource format string to show domain value
->    * @parse_ctrlval:	Per resource function pointer to parse control values
->    * @evt_list:		List of monitoring events
->    * @num_rmid:		Number of RMIDs available
->    * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
-> + * @mbm_width:		Width of memory bandwidth monitoring hardware counter
->    * @fflags:		flags to choose base and info files
->    */
-
-Fixes to membw and mbm_width are also arriving via another patch series 
-(see commit 
-https://lore.kernel.org/lkml/20210614200941.12383-2-james.morse@arm.com/).
-To make it easier to merge that patch and yours could you please inherit 
-the descriptions from there?
-
-@mbm_width: Monitor width, to detect and correct for overflow.
-@membw: If the component has bandwidth controls, their properties.
-
-Thank you
-
-Reinette
+Jason
