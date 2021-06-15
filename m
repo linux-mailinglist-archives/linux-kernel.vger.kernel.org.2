@@ -2,132 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DBF3A8C45
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0A53A8C49
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhFOXNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 19:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhFOXNF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:13:05 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 300F2C061574;
-        Tue, 15 Jun 2021 16:10:59 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id nd37so483306ejc.3;
-        Tue, 15 Jun 2021 16:10:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AOuKGzIskjJRbFedWFW/C+I5PYhV95WPLhId+SvqihU=;
-        b=Me2pvvkHKVtdhQPvq+vIdIjnZAeubKot8b/msdA4OqCL1eyPpVYMJhSJuwehR5FBtp
-         zGQpbV5sNiw7tpr5PC9fuj0INw/rDTiZOnbpOKe3rN4J+7xRnaMpUSlp0lw7nzBjIzof
-         XR9ZGP6GO2VbPNBm0LzcqY69dN2IVr5yvQpPs/ChBWQthPwRm9dRLowiuYIur5sPJAI5
-         su4rRk+RoRx+/IFezW+YNI4eF/ydVlTryAMjvre8g1ginl+2jCSfGopyI4safI3wohhG
-         1c2BnEG2yu4pdwJ0xZS5g4VM2eazl8SxMDP7YHBqqsHmC/iqzg9udNztQWaLc28Y8imH
-         c+5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AOuKGzIskjJRbFedWFW/C+I5PYhV95WPLhId+SvqihU=;
-        b=YFeWDYlUPpQXi99cUegW74+PA7NTO2X7KpPEVX4kHmimzTICLc79xUn5S59VGiWYR8
-         vE4UxmInboEAeLguzeoH/E/aND0wuYQnLGqfd315PYZiWAKliBqJPLba8Mvki00EL3HE
-         IAda7cJez2ATx3/3ieO0dOEdZg5IqiETfmtwIfHzKHGjQPUEE6orkd3TobM5m6LxOW1q
-         bVzpWaGleR/MWmvjK3mI4Qai64qXhAwH9GWttWW47bE1TV+p3pNbLMdY+s1PFoCxWPFs
-         Ip7IlxvFCzFcJFauL/tVQefhxYrGk93qgalQTvvYRmzn8oY3oz3RifJvUq+GHQfKjBsz
-         s8Yg==
-X-Gm-Message-State: AOAM532PQU0EfxW/pED61uFMMaj3IuyVCcmkohNlOwVEM/XzKewGnv0k
-        LAHqR/muIY0BtYuynMgLhax/dmkuQTeaHcQcLGs=
-X-Google-Smtp-Source: ABdhPJzHX1BNpwnfCqqm59hp1H0X6TtuHe5B6/m0KBULTJlIVinWp8ZuuFM8L436LMgFXdlox6fVRlHjxCbLiYTB1uA=
-X-Received: by 2002:a17:907:9d1:: with SMTP id bx17mr1956080ejc.238.1623798657801;
- Tue, 15 Jun 2021 16:10:57 -0700 (PDT)
+        id S230350AbhFOXQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 19:16:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229811AbhFOXQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 19:16:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3ED36137D;
+        Tue, 15 Jun 2021 23:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623798864;
+        bh=fHZtWrarsnH1NG9vOVFLLDZo2mVyvlintqGnbzRbg2c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XOqBFcDOZZZELWHZLPOLVAolVXVdM+GUUCmbh5xM+eyINgiorFkmf5Fq4uEgkoGrk
+         HWtEVtAKTUrKF4w8phabp6DHVkq4TtgwK81JUMv40Ndp+Ou7L4Qn7QiKU/Z/kzyyq6
+         SqCym6Sgz1ogie48kGOeTd40wJW8tiu7HlNyGeKbgQn08vXcBe3LfXqrZWuaZuUBEp
+         G3qlRtnRVlEXtWSxEtY5S51tGPGoiuA3vAnGSGBXUY5tR7B+r4SEOuFAil1SORoTxq
+         geym+XmOjCgtShFxFCtIOwQoInOZyG4vi2GqY6SJpQf31+JAf13XB8yeVl34R5KNX0
+         AFvwu9x+f6TZw==
+Received: by mail-ej1-f43.google.com with SMTP id gt18so427480ejc.11;
+        Tue, 15 Jun 2021 16:14:24 -0700 (PDT)
+X-Gm-Message-State: AOAM530lZCaHLF+2a2ciCmJOtRyphKMCfT+u6VyPZ0fmjMTuWNRR8yhC
+        aFuJAtKI9RZint55gXM1fD7jb5O+WxUtgt/xnw==
+X-Google-Smtp-Source: ABdhPJw3/gDFI5x2HFueMq3B9VYK1sY3WMe+9Pcj94vrZkWqoggoPGqEb4VUSE4jvvly4f7LQT4RV7ETSQlA+GtPq1E=
+X-Received: by 2002:a17:907:9620:: with SMTP id gb32mr1957537ejc.127.1623798863315;
+ Tue, 15 Jun 2021 16:14:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210615012014.1100672-1-jannh@google.com> <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
- <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
-In-Reply-To: <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 15 Jun 2021 16:10:46 -0700
-Message-ID: <CAHbLzkomex+fgC8RyogXu-s5o2UrORMO6D2yTsSXW5Wo5z9WRA@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with split_huge_page()
-To:     Jann Horn <jannh@google.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jan Kara <jack@suse.cz>, stable <stable@vger.kernel.org>
+References: <20210615173233.26682-1-tinghan.shen@mediatek.com> <20210615173233.26682-16-tinghan.shen@mediatek.com>
+In-Reply-To: <20210615173233.26682-16-tinghan.shen@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 16 Jun 2021 07:14:12 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9M7bpvYM1bmZjkari=3f1uxAjOzs_UFhv10JTR0X4orw@mail.gmail.com>
+Message-ID: <CAAOTY_9M7bpvYM1bmZjkari=3f1uxAjOzs_UFhv10JTR0X4orw@mail.gmail.com>
+Subject: Re: [PATCH 16/27] arm64: dts: mt8195: add display node
+To:     Tinghan Shen <tinghan.shen@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DTML <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>, wenst@google.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Jason-JH Lin <jason-jh.lin@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 5:10 AM Jann Horn <jannh@google.com> wrote:
->
-> On Tue, Jun 15, 2021 at 8:37 AM John Hubbard <jhubbard@nvidia.com> wrote:
-> > On 6/14/21 6:20 PM, Jann Horn wrote:
-> > > try_grab_compound_head() is used to grab a reference to a page from
-> > > get_user_pages_fast(), which is only protected against concurrent
-> > > freeing of page tables (via local_irq_save()), but not against
-> > > concurrent TLB flushes, freeing of data pages, or splitting of compound
-> > > pages.
-> [...]
-> > Reviewed-by: John Hubbard <jhubbard@nvidia.com>
->
-> Thanks!
->
-> [...]
-> > > @@ -55,8 +72,23 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
-> > >       if (WARN_ON_ONCE(page_ref_count(head) < 0))
-> > >               return NULL;
-> > >       if (unlikely(!page_cache_add_speculative(head, refs)))
-> > >               return NULL;
-> > > +
-> > > +     /*
-> > > +      * At this point we have a stable reference to the head page; but it
-> > > +      * could be that between the compound_head() lookup and the refcount
-> > > +      * increment, the compound page was split, in which case we'd end up
-> > > +      * holding a reference on a page that has nothing to do with the page
-> > > +      * we were given anymore.
-> > > +      * So now that the head page is stable, recheck that the pages still
-> > > +      * belong together.
-> > > +      */
-> > > +     if (unlikely(compound_head(page) != head)) {
-> >
-> > I was just wondering about what all could happen here. Such as: page gets split,
-> > reallocated into a different-sized compound page, one that still has page pointing
-> > to head. I think that's OK, because we don't look at or change other huge page
-> > fields.
-> >
-> > But I thought I'd mention the idea in case anyone else has any clever ideas about
-> > how this simple check might be insufficient here. It seems fine to me, but I
-> > routinely lack enough imagination about concurrent operations. :)
->
-> Hmmm... I think the scariest aspect here is probably the interaction
-> with concurrent allocation of a compound page on architectures with
-> store-store reordering (like ARM). *If* the page allocator handled
-> compound pages with lockless, non-atomic percpu freelists, I think it
-> might be possible that the zeroing of tail_page->compound_head in
-> put_page() could be reordered after the page has been freed,
-> reallocated and set to refcount 1 again?
->
-> That shouldn't be possible at the moment, but it is still a bit scary.
+Hi, Tinghan:
 
-It might be possible after Mel's "mm/page_alloc: Allow high-order
-pages to be stored on the per-cpu lists" patch
-(https://patchwork.kernel.org/project/linux-mm/patch/20210611135753.GC30378@techsingularity.net/).
+Tinghan Shen <tinghan.shen@mediatek.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=881=
+6=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=885:37=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> From: Jason-JH Lin <jason-jh.lin@mediatek.com>
+>
+> add display node.
+>
+> Signed-off-by: Jason-JH Lin <jason-jh.lin@mediatek.com>
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8195.dtsi | 76 ++++++++++++++++++++++++
+>  1 file changed, 76 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/d=
+ts/mediatek/mt8195.dtsi
+> index 856b0e938009..f362288ad828 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+> @@ -1911,6 +1911,82 @@
+>                         #clock-cells =3D <1>;
+>                 };
+>
+> +               vdosys_config@1c01a000 {
+> +                       compatible =3D "mediatek,mt8195-vdosys";
 
->
->
-> I think the lockless page cache code also has to deal with somewhat
-> similar ordering concerns when it uses page_cache_get_speculative(),
-> e.g. in mapping_get_entry() - first it looks up a page pointer with
-> xas_load(), and any access to the page later on would be a _dependent
-> load_, but if the page then gets freed, reallocated, and inserted into
-> the page cache again before the refcount increment and the re-check
-> using xas_reload(), then there would be no data dependency from
-> xas_reload() to the following use of the page...
->
+Where is the definition of this compatible?
+
+> +                       reg =3D <0 0x1c01a000 0 0x1000>;
+> +                       reg-names =3D "vdosys0_config";
+> +                       iommus =3D <&iommu_vdo M4U_PORT_L0_DISP_RDMA0>;
+> +                       power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSY=
+S0>;
+> +               };
+> +
+> +               mutex: disp_mutex0@1c016000 {
+> +                       compatible =3D "mediatek,mt8195-disp-mutex";
+
+Ditto.
+
+> +                       reg =3D <0 0x1c016000 0 0x1000>;
+> +                       reg-names =3D "vdo0_mutex";
+> +                       clocks =3D <&vdosys0 CLK_VDO0_DISP_MUTEX0>;
+> +                       power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSY=
+S0>;
+> +                       clock-names =3D "vdo0_mutex";
+> +                       interrupts =3D <GIC_SPI 658 IRQ_TYPE_LEVEL_HIGH 0=
+>;
+> +               };
+> +
+> +               ovl0: disp_ovl@1c000000 {
+> +                       compatible =3D "mediatek,mt8195-disp-ovl";
+
+Ditto.
+
+> +                       reg =3D <0 0x1c000000 0 0x1000>;
+> +                       interrupts =3D <GIC_SPI 636 IRQ_TYPE_LEVEL_HIGH 0=
+>;
+> +                       clocks =3D <&vdosys0 CLK_VDO0_DISP_OVL0>;
+> +                       power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSY=
+S0>;
+> +                       iommus =3D <&iommu_vdo M4U_PORT_L0_DISP_OVL0_RDMA=
+0>;
+> +               };
+> +
+> +               rdma0: disp_rdma@1c002000 {
+> +                       compatible =3D "mediatek,mt8195-disp-rdma";
+
+Ditto.
+
+> +                       reg =3D <0 0x1c002000 0 0x1000>;
+> +                       interrupts =3D <GIC_SPI 638 IRQ_TYPE_LEVEL_HIGH 0=
+>;
+> +                       clocks =3D <&vdosys0 CLK_VDO0_DISP_RDMA0>;
+> +                       power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSY=
+S0>;
+> +                       iommus =3D <&iommu_vdo M4U_PORT_L0_DISP_RDMA0>;
+> +               };
+> +
+> +               color0: disp_color@1c003000 {
+> +                       compatible =3D "mediatek,mt8195-disp-color";
+
+Ditto.
+
+> +                       reg =3D <0 0x1c003000 0 0x1000>;
+> +                       interrupts =3D <GIC_SPI 639 IRQ_TYPE_LEVEL_HIGH 0=
+>;
+> +                       clocks =3D <&vdosys0 CLK_VDO0_DISP_COLOR0>;
+> +                       power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSY=
+S0>;
+> +               };
+> +
+> +               ccorr0: disp_ccorr@1c004000 {
+> +                       compatible =3D "mediatek,mt8195-disp-ccorr";
+
+Ditto.
+
+> +                       reg =3D <0 0x1c004000 0 0x1000>;
+> +                       interrupts =3D <GIC_SPI 640 IRQ_TYPE_LEVEL_HIGH 0=
+>;
+> +                       clocks =3D <&vdosys0 CLK_VDO0_DISP_CCORR0>;
+> +                       power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSY=
+S0>;
+> +               };
+> +
+> +               aal0: disp_aal@1c005000 {
+> +                       compatible =3D "mediatek,mt8195-disp-aal";
+
+Ditto.
+
+> +                       reg =3D <0 0x1c005000 0 0x1000>;
+> +                       interrupts =3D <GIC_SPI 641 IRQ_TYPE_LEVEL_HIGH 0=
+>;
+> +                       clocks =3D <&vdosys0 CLK_VDO0_DISP_AAL0>;
+> +                       power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSY=
+S0>;
+> +               };
+> +
+> +               gamma0: disp_gamma@1c006000 {
+> +                       compatible =3D "mediatek,mt8195-disp-gamma";
+
+Ditto.
+
+> +                       reg =3D <0 0x1c006000 0 0x1000>;
+> +                       interrupts =3D <GIC_SPI 642 IRQ_TYPE_LEVEL_HIGH 0=
+>;
+> +                       clocks =3D <&vdosys0 CLK_VDO0_DISP_GAMMA0>;
+> +                       power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSY=
+S0>;
+> +               };
+> +
+> +               dither0: disp_dither@1c007000 {
+> +                       compatible =3D "mediatek,mt8195-disp-dither";
+
+Ditto.
+
+> +                       reg =3D <0 0x1c007000 0 0x1000>;
+> +                       interrupts =3D <GIC_SPI 643 IRQ_TYPE_LEVEL_HIGH 0=
+>;
+> +                       clocks =3D <&vdosys0 CLK_VDO0_DISP_DITHER0>;
+> +                       power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSY=
+S0>;
+> +               };
+> +
+>                 smi_common0: smi@1c01b000 {
+>                         compatible =3D "mediatek,mt8195-smi-common";
+
+Ditto.
+
+Regards,
+Chun-Kuang.
+
+>                         mediatek,common-id =3D <0>;
+> --
+> 2.18.0
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
