@@ -2,113 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0599A3A7BF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8186D3A7BFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhFOKd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231615AbhFOKdT (ORCPT
+        id S231599AbhFOKen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:34:43 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:40626 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231220AbhFOKem (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:33:19 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C7FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:31:15 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id p5-20020a9d45450000b029043ee61dce6bso6697719oti.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:31:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QY2/939t5WrgTBjBlWlTUN2kXiGUMSX5srdzV+Tkpzg=;
-        b=YHM+AxYLU1vo0wyn+Xcdbnd4wDcDCXRBgefB95WMmxeVpB3BvW4yvfwfwVluV1Uzct
-         6K0x9n3XOqRv8uQH8AEMEuII+L+xTyvkNwtmz4LEduSbH1p++oLjK3B5ahJY0azvywOM
-         T31KEOBH92t02N1PEbDaLty+7/fh5xSj5xUDRQatrCmFDyNj2RrjeuLyF00I3rcEzBT5
-         y4copCCRCT3PrDQibV1nipJBlHCII3CNu463NSgQeBzirVTKyhueU8FaItBT3K9Jt5Tu
-         gXYPLJbUVtIOL6dEEh/yYa6kKqJpNoQ4et+caeyUly9uTAL32yzZbThnjCQGUCk32+3P
-         6DNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QY2/939t5WrgTBjBlWlTUN2kXiGUMSX5srdzV+Tkpzg=;
-        b=NNf6+deqLjnTLcS8IM1YHSm/L7HHFBo35yK1WYDiHAOem4NsWGc//J9ekGUCoSSeCK
-         GKZUYblZ1PSht1mQYlVnKAHDd8Nt3sz+gi9OEbfJQTV2Mf+A2v3pRoD59/5zZrMVE5GQ
-         NoWtbIG/aFS+j/rNKrGOrKClQCop2ZYRuAuu9l42z8QSUTt0ySsBXHzpN7L6XylcOz6O
-         Iubd4hqxOmv4Ff1njme7kbRflYAR8P0UE0Xbam6yXgRnX0L9oH29W6dP8zk3Swf1z5ip
-         xSBi69arxbfakl/BtZt2ckgZXXtpPQmpjFIPvsMzbe4Gpo3gt0Yd9nwTBZXmyt/gtnKc
-         tr8A==
-X-Gm-Message-State: AOAM531MQJuVISCPZprY4MXEvZNnxbq4obQ+12DnQI9ThiOOH5xPnpEB
-        ko0QfPsWHMWDTk/aA8Zirsqx4SkYw+/Ei5IFU3EhqQ==
-X-Google-Smtp-Source: ABdhPJy0fOalbu0NNzzqQsmoqmUKuJjfDqFf3ggFxXrfL2cRyMZXd7VINleb2XaFbl/rrryoGYhGPaIVwz4Mi8joh90=
-X-Received: by 2002:a05:6830:93:: with SMTP id a19mr17226203oto.17.1623753073778;
- Tue, 15 Jun 2021 03:31:13 -0700 (PDT)
+        Tue, 15 Jun 2021 06:34:42 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15FAV50d136911;
+        Tue, 15 Jun 2021 10:32:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=YqA7deJno7CPO0cosA3BNyUNopRBc/bCcLt6020Hge0=;
+ b=R+1dSmNuj4rpFizddZeZk4iZDaih6fdKwDb1s4M1v4UQ/DslCj8Iq71yV/5XWUYGn2R6
+ ykrrEmAJ/ELF1rUQE8Z4xTCX8jqPbVOgE1ds35F/rvfx2++KgKTJSKaty2CsqdX6IXSk
+ NpB9/WzwU1QxOqMTkJXb3/bmTxAeNWcK0zElM4365fh0vTYPqop/qFe7kRdMrVFe6flx
+ WrzFwTqOXSLkFvxBv9xLRb3hTNFt36VCdYcI0+9qQDQY69bfv0AVFAfb6d2yxTbW6dAj
+ 4QJWe0SfjaKdRbbtZAH3fp/0rsfbNM54MDJQph2pMJl6LKjj6805Z8alkISTyZUphMl5 BA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 394mbsdung-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Jun 2021 10:32:25 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15FAVDur072219;
+        Tue, 15 Jun 2021 10:32:24 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 3959ckj09m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Jun 2021 10:32:24 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15FAWNdd074621;
+        Tue, 15 Jun 2021 10:32:23 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 3959ckj09a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Jun 2021 10:32:23 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15FAWK6K028912;
+        Tue, 15 Jun 2021 10:32:22 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 15 Jun 2021 03:32:20 -0700
+Date:   Tue, 15 Jun 2021 13:32:13 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH 03/28] staging: rtl8188eu: remove all DBG_88E calls from
+ core/rtw_mlme_ext.c
+Message-ID: <20210615103213.GA1861@kadam>
+References: <20210615001507.1171-1-phil@philpotter.co.uk>
+ <20210615001507.1171-4-phil@philpotter.co.uk>
 MIME-Version: 1.0
-References: <20210615014705.2234866-1-dja@axtens.net>
-In-Reply-To: <20210615014705.2234866-1-dja@axtens.net>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 15 Jun 2021 12:31:02 +0200
-Message-ID: <CANpmjNO9EdwPEiNPu630a2kgsxMXYiNU_phKH2=7Z5YFRCSR1A@mail.gmail.com>
-Subject: Re: [PATCH v12 0/6] KASAN core changes for ppc64 radix KASAN
-To:     Daniel Axtens <dja@axtens.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        aneesh.kumar@linux.ibm.com, Balbir Singh <bsingharora@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615001507.1171-4-phil@philpotter.co.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: 5Fw1oaoIQUzojGY7jftn-vFwGZD3GOly
+X-Proofpoint-GUID: 5Fw1oaoIQUzojGY7jftn-vFwGZD3GOly
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10015 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
+ malwarescore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 adultscore=0 bulkscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106150066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Cc Andrey]
+On Tue, Jun 15, 2021 at 01:14:42AM +0100, Phillip Potter wrote:
+> @@ -4510,8 +4311,7 @@ void mlmeext_joinbss_event_callback(struct adapter *padapter, int join_res)
+>  	rtw_lps_ctrl_wk_cmd(padapter, LPS_CTRL_CONNECT, 0);
+>  
+>  exit_mlmeext_joinbss_event_callback:
+> -
+> -	DBG_88E("=>%s\n", __func__);
+> +	return;
+>  }
 
-On Tue, 15 Jun 2021 at 03:47, Daniel Axtens <dja@axtens.net> wrote:
->
-> Building on the work of Christophe, Aneesh and Balbir, I've ported
-> KASAN to 64-bit Book3S kernels running on the Radix MMU.
->
-> I've been trying this for a while, but we keep having collisions
-> between the kasan code in the mm tree and the code I want to put in to
-> the ppc tree. So my aim here is for patches 1 through 4 or 1 through 5
-> to go in via the mm tree.
+You'll have to delete the return and the exit_mlmeext_joinbss_event_callback
+label in a follow on patch because it introduces a checkpatch warning.
 
-I think this is reasonable. I'd suggest just sending non-ppc patches
-separately (i.e. split the series explicitly) to KASAN maintainers,
-and ensure to Cc Andrew, too. Just point at this series to illustrate
-how it'll be used.
+(I'm not concerned about introducing checkpatch warnings in this patch
+too much because fixing them in one got makes the patch a little more
+complicated to review.  So it's not necessarily even a wrong thing to
+introduce a checkpatch warning.  Just remember to remove it later.  Or
+don't remember because eventually someone else will take care of it).
 
-I think the patches are fine, but I'm not entirely sure about the
-current placements of kasan_arch_is_ready(), so hopefully Andrey can
-also have a look.
+regards,
+dan carpenter
 
-
-> I will then propose the powerpc changes for
-> a later cycle. (I have attached them to this series as an RFC, and
-> there are still outstanding review comments I need to attend to.)
->
-> v12 applies to next-20210611. There should be no noticable changes to
-> other platforms.
->
-> Kind regards,
-> Daniel
->
-> Daniel Axtens (6):
->   kasan: allow an architecture to disable inline instrumentation
->   kasan: allow architectures to provide an outline readiness check
->   kasan: define and use MAX_PTRS_PER_* for early shadow tables
-
-^^ Up to here could be a separate series to go through -mm.
-
->   kasan: Document support on 32-bit powerpc
-
-^^ The Documentation changes are minimal and not just confined to
-kasan.rst it seems. In fact your "powerpc: Book3S .." patch changes
-Documentation more. So you could just take "kasan: Document support on
-32-bit powerpc" through ppc tree as well.
-
->   powerpc/mm/kasan: rename kasan_init_32.c to init_32.c
->   [RFC] powerpc: Book3S 64-bit outline-only KASAN support
+>  
+>  void mlmeext_sta_add_event_callback(struct adapter *padapter, struct sta_info *psta)
+ 
