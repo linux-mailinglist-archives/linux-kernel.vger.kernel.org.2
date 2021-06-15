@@ -2,261 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35333A7556
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF123A755A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhFODpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhFODpM (ORCPT
+        id S229931AbhFODqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:46:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26191 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229659AbhFODqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:45:12 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4F8C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 20:43:08 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id p15so3303205ybe.6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 20:43:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HWe2X0y0YUq0l4++qPnBz+nFUQIa1PU/QJq3rGd+Lnw=;
-        b=m0x9I947UdRTN7gNTRJs0p0OmI0GR2AxRLR8J5RUVvjDtCzhqjsT9QpJIzvbRLH7Rl
-         hG7XtWL2iyGBG/Ichpqx/05zZE4WmzNsh3iciij+L4w/w3j0yzqBmHmFhzOIoPmmDD7l
-         ObgTfU/Q5MUP5woqy8TA47hpVNdNkY5eb7efUOjUIpQq/4g9tk7i69kiCDW3B3e7rdL8
-         jhRYGy9zFuw7EzyLuxrNsAoW0FMIe7cT4anWCn+sa08tKYZe+J0XtlI94VefbyqXeG72
-         PZF5Wi4Jw6DoMemUTKF96zyeXDoPnBpBkvpfyif/aLO8r3JBz7PQ6ES4qT/wk2ClQMsz
-         NWVQ==
+        Mon, 14 Jun 2021 23:46:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623728641;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aHGbJbj0ebE6QT9Ys/qhv9gUQ2vgyk5k0OjPBMHdeRg=;
+        b=Kkfv5hng7EIRy8SgK2v0nzyy63XDc8Cuuw1W+ctL2e+45s+cLEcAS6DmV0ZugZuX+MITIn
+        KfzuVtUMhMuk/0t0mrnqyeNE2MtsqtUhJQsxRYtLS/DLAsJXU41BL6bti5ycpzWyv+ZBT2
+        TBaMHOkBHGCD5pELyo2duAwsbgfudCs=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-220-vnS2PL6dM6CcaEzxdZBsYw-1; Mon, 14 Jun 2021 23:43:59 -0400
+X-MC-Unique: vnS2PL6dM6CcaEzxdZBsYw-1
+Received: by mail-qk1-f200.google.com with SMTP id v1-20020a372f010000b02903aa9be319adso17554659qkh.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 20:43:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HWe2X0y0YUq0l4++qPnBz+nFUQIa1PU/QJq3rGd+Lnw=;
-        b=GpGJaSJIVBs6GtfdvEaFKjMRNcK3kyKFSLZLcNtzJ5aoFEbl6uWIRWrJS6tz5478KS
-         AhK13dudycHt2BBsNiJLrSzg3mpX8tQTMKqbb09gHhOYrU1wuYUxawbEKlfyT4d18RCL
-         3ouKMah2DssG3/iQBvvhvIxZhiGCJbBF7SPWMzeOA7RBLMALUqD8huQvKdfqadRw9hbQ
-         tg0eMMU6H3KvfYxUQVUxrJItp+rq6Jyva2UjDN2+0kkff9w9ff+Lo6ZBu+7io/jXrxyy
-         HT9poqYb5EX9YZct9kfxXPK9gWoVxfNze8pUN3gR74+j947rvUWifgcOsKLjD0dI5Ffu
-         aiJA==
-X-Gm-Message-State: AOAM530FzSOJKolbER8ebJmfG3OLJlPW8nlZXQrmg0EwLowU0inSMT4O
-        P255D2hqCPopDqNVbEsl7UqV/GXtIK0DI8VlIE4=
-X-Google-Smtp-Source: ABdhPJwbiq2FXxTUWAG8SH9UwxNtbpDSaUW3COawwr08aIRDEk92doET3EMlRoDB5iXodagSIEz3tO5jWpNPZZQdiDw=
-X-Received: by 2002:a25:3103:: with SMTP id x3mr29191194ybx.8.1623728587324;
- Mon, 14 Jun 2021 20:43:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1621516826.git.christophe.leroy@csgroup.eu> <d8425fb42a4adebc35b7509f121817eeb02fac31.1621516826.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <d8425fb42a4adebc35b7509f121817eeb02fac31.1621516826.git.christophe.leroy@csgroup.eu>
-From:   Jordan Niethe <jniethe5@gmail.com>
-Date:   Tue, 15 Jun 2021 13:42:56 +1000
-Message-ID: <CACzsE9pBMPnZsDwUZ9MWWMSgn5q2m9x_W9D3+d+Q3-s=-6DJjw@mail.gmail.com>
-Subject: Re: [PATCH v2 07/12] powerpc/lib/code-patching: Don't use struct
- 'ppc_inst' for runnable code in tests.
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=aHGbJbj0ebE6QT9Ys/qhv9gUQ2vgyk5k0OjPBMHdeRg=;
+        b=qxM+Cb6ZRAgvS0m9DbHPMSsE0XalNsHXj6p76kjg6QgnDHc7hMZs/ScDY7cqFsGSI2
+         L5M32gDMlxtEVBG0kFZ0kQTZ0531FH79F9wlyHuYXEi7wS80drHUdFJovQTzWNXyZgcv
+         rZcvcBub2RQK0AuoX4EsgikD7IVkp7wpj+s7qCRS3Zl42VGEuMLcDmeSXfW0/4pSginW
+         wzvmyJlEx46/7w+0WJiIW8wwzSmk/bPqIqYDxEoHxLLKh51LAA/JjRn98Tx3+n+0IaFE
+         9MFEc4OVMs0/E4CaftH0VWoHTO90lHJrDkiwFjMVhr8sDGlc5A6zwVgF8Weh+fg2+iGQ
+         Efjw==
+X-Gm-Message-State: AOAM5312GHB5Px6VURNtxfaW6qZpz8Pmh5vKDVoeu2JzNloe+QQsTuo9
+        KGamsJDAH2NEqkS1LiwaINjESq93plInRacC/zO590mjC4LjbnR9B4hH/hSs6rRvl4aLOBujyXc
+        ouPhzu86bTnoE2+4W8/YEuRgi
+X-Received: by 2002:a05:6214:321:: with SMTP id j1mr2711520qvu.38.1623728639294;
+        Mon, 14 Jun 2021 20:43:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzuw2F0Hwmy8HsE3YZyb+Uzm7Uyn8BYHYIjsreErLv1PghnFw3ohtOSlSt4INE1txfNq/9atw==
+X-Received: by 2002:a05:6214:321:: with SMTP id j1mr2711504qvu.38.1623728639099;
+        Mon, 14 Jun 2021 20:43:59 -0700 (PDT)
+Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id p3sm11128331qti.31.2021.06.14.20.43.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 20:43:58 -0700 (PDT)
+Message-ID: <f3824dfa4b4d40d66e0ab56713ba168fc7952e0d.camel@redhat.com>
+Subject: Re: [PATCH] drm: nouveau: fix nouveau_backlight compiling error
+From:   Lyude Paul <lyude@redhat.com>
+To:     Chen Jiahao <chenjiahao16@huawei.com>, bskeggs@redhat.com,
+        airlied@linux.ie, daniel@ffwll.ch, airlied@redhat.com,
+        nikola.cornij@amd.com, ville.syrjala@linux.intel.com,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     heying24@huawei.com
+Date:   Mon, 14 Jun 2021 23:43:57 -0400
+In-Reply-To: <20210615031658.176218-1-chenjiahao16@huawei.com>
+References: <20210615031658.176218-1-chenjiahao16@huawei.com>
+Organization: Red Hat
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:50 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
-> 'struct ppc_inst' is meant to represent an instruction internally, it
-> is not meant to dereference code in memory.
->
-> For testing code patching, use patch_instruction() to properly
-> write into memory the code to be tested.
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+This needs a fixes tag:
+
+	Fixes: 6eca310e8924 ("drm/nouveau/kms/nv50-: Add basic DPCD backlight support for nouveau")
+
+with that fixed:
+
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+
+On Tue, 2021-06-15 at 11:16 +0800, Chen Jiahao wrote:
+> There is a compiling error in disp.c while not selecting
+> CONFIG_DRM_NOUVEAU_BACKLIGHT:
+> 
+> drivers/gpu/drm/nouveau/dispnv50/disp.c: In function
+> ‘nv50_sor_atomic_disable’:
+> drivers/gpu/drm/nouveau/dispnv50/disp.c:1665:52: error:
+> ‘struct nouveau_connector’ has no member named ‘backlight’
+>  1665 |  struct nouveau_backlight *backlight = nv_connector->backlight;
+>       |                                                    ^~
+> drivers/gpu/drm/nouveau/dispnv50/disp.c:1670:28: error: dereferencing
+> pointer
+> to incomplete type ‘struct nouveau_backlight’
+>  1670 |  if (backlight && backlight->uses_dpcd) {
+>       |                            ^~
+> 
+> The problem is solved by adding the CONFIG_DRM_NOUVEAU_BACKLIGHT dependency
+> where struct nouveau_backlight is used.
+> 
+> Signed-off-by: Chen Jiahao <chenjiahao16@huawei.com>
 > ---
->  arch/powerpc/lib/code-patching.c | 95 ++++++++++++++++++--------------
->  1 file changed, 53 insertions(+), 42 deletions(-)
->
-> diff --git a/arch/powerpc/lib/code-patching.c b/arch/powerpc/lib/code-patching.c
-> index 82f2c1edb498..508e9511ca96 100644
-> --- a/arch/powerpc/lib/code-patching.c
-> +++ b/arch/powerpc/lib/code-patching.c
-> @@ -422,9 +422,9 @@ static void __init test_branch_iform(void)
->  {
->         int err;
->         struct ppc_inst instr;
-> -       unsigned long addr;
-> -
-> -       addr = (unsigned long)&instr;
-> +       unsigned int tmp[2];
-> +       struct ppc_inst *iptr = (struct ppc_inst *)tmp;
-> +       unsigned long addr = (unsigned long)tmp;
->
->         /* The simplest case, branch to self, no flags */
->         check(instr_is_branch_iform(ppc_inst(0x48000000)));
-> @@ -445,52 +445,57 @@ static void __init test_branch_iform(void)
->         check(!instr_is_branch_iform(ppc_inst(0x7bfffffd)));
->
->         /* Absolute branch to 0x100 */
-> -       instr = ppc_inst(0x48000103);
-> -       check(instr_is_branch_to_addr(&instr, 0x100));
-> +       patch_instruction(iptr, ppc_inst(0x48000103));
-> +       check(instr_is_branch_to_addr(iptr, 0x100));
->         /* Absolute branch to 0x420fc */
-> -       instr = ppc_inst(0x480420ff);
-> -       check(instr_is_branch_to_addr(&instr, 0x420fc));
-> +       patch_instruction(iptr, ppc_inst(0x480420ff));
-> +       check(instr_is_branch_to_addr(iptr, 0x420fc));
->         /* Maximum positive relative branch, + 20MB - 4B */
-> -       instr = ppc_inst(0x49fffffc);
-> -       check(instr_is_branch_to_addr(&instr, addr + 0x1FFFFFC));
-> +       patch_instruction(iptr, ppc_inst(0x49fffffc));
-> +       check(instr_is_branch_to_addr(iptr, addr + 0x1FFFFFC));
->         /* Smallest negative relative branch, - 4B */
-> -       instr = ppc_inst(0x4bfffffc);
-> -       check(instr_is_branch_to_addr(&instr, addr - 4));
-> +       patch_instruction(iptr, ppc_inst(0x4bfffffc));
-> +       check(instr_is_branch_to_addr(iptr, addr - 4));
->         /* Largest negative relative branch, - 32 MB */
-> -       instr = ppc_inst(0x4a000000);
-> -       check(instr_is_branch_to_addr(&instr, addr - 0x2000000));
-> +       patch_instruction(iptr, ppc_inst(0x4a000000));
-> +       check(instr_is_branch_to_addr(iptr, addr - 0x2000000));
->
->         /* Branch to self, with link */
-> -       err = create_branch(&instr, &instr, addr, BRANCH_SET_LINK);
-> -       check(instr_is_branch_to_addr(&instr, addr));
-> +       err = create_branch(&instr, iptr, addr, BRANCH_SET_LINK);
-> +       patch_instruction(iptr, instr);
-> +       check(instr_is_branch_to_addr(iptr, addr));
->
->         /* Branch to self - 0x100, with link */
-> -       err = create_branch(&instr, &instr, addr - 0x100, BRANCH_SET_LINK);
-> -       check(instr_is_branch_to_addr(&instr, addr - 0x100));
-> +       err = create_branch(&instr, iptr, addr - 0x100, BRANCH_SET_LINK);
-> +       patch_instruction(iptr, instr);
-> +       check(instr_is_branch_to_addr(iptr, addr - 0x100));
->
->         /* Branch to self + 0x100, no link */
-> -       err = create_branch(&instr, &instr, addr + 0x100, 0);
-> -       check(instr_is_branch_to_addr(&instr, addr + 0x100));
-> +       err = create_branch(&instr, iptr, addr + 0x100, 0);
-> +       patch_instruction(iptr, instr);
-> +       check(instr_is_branch_to_addr(iptr, addr + 0x100));
->
->         /* Maximum relative negative offset, - 32 MB */
-> -       err = create_branch(&instr, &instr, addr - 0x2000000, BRANCH_SET_LINK);
-> -       check(instr_is_branch_to_addr(&instr, addr - 0x2000000));
-> +       err = create_branch(&instr, iptr, addr - 0x2000000, BRANCH_SET_LINK);
-> +       patch_instruction(iptr, instr);
-> +       check(instr_is_branch_to_addr(iptr, addr - 0x2000000));
->
->         /* Out of range relative negative offset, - 32 MB + 4*/
-> -       err = create_branch(&instr, &instr, addr - 0x2000004, BRANCH_SET_LINK);
-> +       err = create_branch(&instr, iptr, addr - 0x2000004, BRANCH_SET_LINK);
->         check(err);
->
->         /* Out of range relative positive offset, + 32 MB */
-> -       err = create_branch(&instr, &instr, addr + 0x2000000, BRANCH_SET_LINK);
-> +       err = create_branch(&instr, iptr, addr + 0x2000000, BRANCH_SET_LINK);
->         check(err);
->
->         /* Unaligned target */
-> -       err = create_branch(&instr, &instr, addr + 3, BRANCH_SET_LINK);
-> +       err = create_branch(&instr, iptr, addr + 3, BRANCH_SET_LINK);
->         check(err);
->
->         /* Check flags are masked correctly */
-> -       err = create_branch(&instr, &instr, addr, 0xFFFFFFFC);
-> -       check(instr_is_branch_to_addr(&instr, addr));
-> +       err = create_branch(&instr, iptr, addr, 0xFFFFFFFC);
-> +       patch_instruction(iptr, instr);
-> +       check(instr_is_branch_to_addr(iptr, addr));
->         check(ppc_inst_equal(instr, ppc_inst(0x48000000)));
->  }
->
-> @@ -513,9 +518,10 @@ static void __init test_branch_bform(void)
->         int err;
->         unsigned long addr;
->         struct ppc_inst *iptr, instr;
-> +       unsigned int tmp[2];
->         unsigned int flags;
->
-> -       iptr = &instr;
-> +       iptr = (struct ppc_inst *)tmp;
->         addr = (unsigned long)iptr;
->
->         /* The simplest case, branch to self, no flags */
-> @@ -528,39 +534,43 @@ static void __init test_branch_bform(void)
->         check(!instr_is_branch_bform(ppc_inst(0x7bffffff)));
->
->         /* Absolute conditional branch to 0x100 */
-> -       instr = ppc_inst(0x43ff0103);
-> -       check(instr_is_branch_to_addr(&instr, 0x100));
-> +       patch_instruction(iptr, ppc_inst(0x43ff0103));
-> +       check(instr_is_branch_to_addr(iptr, 0x100));
->         /* Absolute conditional branch to 0x20fc */
-> -       instr = ppc_inst(0x43ff20ff);
-> -       check(instr_is_branch_to_addr(&instr, 0x20fc));
-> +       patch_instruction(iptr, ppc_inst(0x43ff20ff));
-> +       check(instr_is_branch_to_addr(iptr, 0x20fc));
->         /* Maximum positive relative conditional branch, + 32 KB - 4B */
-> -       instr = ppc_inst(0x43ff7ffc);
-> -       check(instr_is_branch_to_addr(&instr, addr + 0x7FFC));
-> +       patch_instruction(iptr, ppc_inst(0x43ff7ffc));
-> +       check(instr_is_branch_to_addr(iptr, addr + 0x7FFC));
->         /* Smallest negative relative conditional branch, - 4B */
-> -       instr = ppc_inst(0x43fffffc);
-> -       check(instr_is_branch_to_addr(&instr, addr - 4));
-> +       patch_instruction(iptr, ppc_inst(0x43fffffc));
-> +       check(instr_is_branch_to_addr(iptr, addr - 4));
->         /* Largest negative relative conditional branch, - 32 KB */
-> -       instr = ppc_inst(0x43ff8000);
-> -       check(instr_is_branch_to_addr(&instr, addr - 0x8000));
-> +       patch_instruction(iptr, ppc_inst(0x43ff8000));
-> +       check(instr_is_branch_to_addr(iptr, addr - 0x8000));
->
->         /* All condition code bits set & link */
->         flags = 0x3ff000 | BRANCH_SET_LINK;
->
->         /* Branch to self */
->         err = create_cond_branch(&instr, iptr, addr, flags);
-> -       check(instr_is_branch_to_addr(&instr, addr));
-> +       patch_instruction(iptr, instr);
-> +       check(instr_is_branch_to_addr(iptr, addr));
->
->         /* Branch to self - 0x100 */
->         err = create_cond_branch(&instr, iptr, addr - 0x100, flags);
-> -       check(instr_is_branch_to_addr(&instr, addr - 0x100));
-> +       patch_instruction(iptr, instr);
-> +       check(instr_is_branch_to_addr(iptr, addr - 0x100));
->
->         /* Branch to self + 0x100 */
->         err = create_cond_branch(&instr, iptr, addr + 0x100, flags);
-> -       check(instr_is_branch_to_addr(&instr, addr + 0x100));
-> +       patch_instruction(iptr, instr);
-> +       check(instr_is_branch_to_addr(iptr, addr + 0x100));
->
->         /* Maximum relative negative offset, - 32 KB */
->         err = create_cond_branch(&instr, iptr, addr - 0x8000, flags);
-> -       check(instr_is_branch_to_addr(&instr, addr - 0x8000));
-> +       patch_instruction(iptr, instr);
-> +       check(instr_is_branch_to_addr(iptr, addr - 0x8000));
->
->         /* Out of range relative negative offset, - 32 KB + 4*/
->         err = create_cond_branch(&instr, iptr, addr - 0x8004, flags);
-> @@ -576,7 +586,8 @@ static void __init test_branch_bform(void)
->
->         /* Check flags are masked correctly */
->         err = create_cond_branch(&instr, iptr, addr, 0xFFFFFFFC);
-> -       check(instr_is_branch_to_addr(&instr, addr));
-> +       patch_instruction(iptr, instr);
-> +       check(instr_is_branch_to_addr(iptr, addr));
->         check(ppc_inst_equal(instr, ppc_inst(0x43FF0000)));
->  }
->
-> --
-> 2.25.0
->
-Reviewed by: Jordan Niethe <jniethe5@gmail.com>
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> index 093e1f7163b3..d266b7721e29 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> @@ -1662,17 +1662,21 @@ nv50_sor_atomic_disable(struct drm_encoder *encoder,
+> struct drm_atomic_state *st
+>         struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
+>         struct nouveau_crtc *nv_crtc = nouveau_crtc(nv_encoder->crtc);
+>         struct nouveau_connector *nv_connector =
+> nv50_outp_get_old_connector(state, nv_encoder);
+> +#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
+>         struct nouveau_backlight *backlight = nv_connector->backlight;
+> +#endif
+>         struct drm_dp_aux *aux = &nv_connector->aux;
+>         int ret;
+>         u8 pwr;
+>  
+> +#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
+>         if (backlight && backlight->uses_dpcd) {
+>                 ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
+>                 if (ret < 0)
+>                         NV_ERROR(drm, "Failed to disable backlight on
+> [CONNECTOR:%d:%s]: %d\n",
+>                                  nv_connector->base.base.id, nv_connector-
+> >base.name, ret);
+>         }
+> +#endif
+>  
+>         if (nv_encoder->dcb->type == DCB_OUTPUT_DP) {
+>                 int ret = drm_dp_dpcd_readb(aux, DP_SET_POWER, &pwr);
+
+-- 
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
+
