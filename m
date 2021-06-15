@@ -2,84 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1E63A7F0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84D33A7F0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhFONUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:20:43 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:26458 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230360AbhFONUl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:20:41 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mtapsc-3-4Fuj9aaaNA-wL3sLBMdlZw-1; Tue, 15 Jun 2021 14:18:34 +0100
-X-MC-Unique: 4Fuj9aaaNA-wL3sLBMdlZw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 15 Jun
- 2021 14:18:34 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Tue, 15 Jun 2021 14:18:34 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Bin Meng' <bmeng.cn@gmail.com>
-CC:     Matteo Croce <mcroce@linux.microsoft.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        "Emil Renner Berthing" <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        "Drew Fustini" <drew@beagleboard.org>
-Subject: RE: [PATCH 1/3] riscv: optimized memcpy
-Thread-Topic: [PATCH 1/3] riscv: optimized memcpy
-Thread-Index: AQHXYY/3XkdMIImxVUmoQbZ37iIZIqsUw3iggAA3zwCAABG+cA==
-Date:   Tue, 15 Jun 2021 13:18:33 +0000
-Message-ID: <1632006872b04c64be828fa0c4e4eae0@AcuMS.aculab.com>
-References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
- <20210615023812.50885-2-mcroce@linux.microsoft.com>
- <6cff2a895db94e6fadd4ddffb8906a73@AcuMS.aculab.com>
- <CAEUhbmV+Vi0Ssyzq1B2RTkbjMpE21xjdj2MSKdLydgW6WuCKtA@mail.gmail.com>
-In-Reply-To: <CAEUhbmV+Vi0Ssyzq1B2RTkbjMpE21xjdj2MSKdLydgW6WuCKtA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S230457AbhFONU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:20:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229977AbhFONUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:20:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 696A06145C;
+        Tue, 15 Jun 2021 13:18:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623763130;
+        bh=cyUcW2oXT2KCRlpSFEeoLemdK9iMlf71Q0+DZT5CQpg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HnaARLy7SadXp251JZ5yL6IPorkdn/Ai04tEBaZz/+zmoDCuOkBFq/ghSsrK1cS6r
+         URyzW3SP//eI50b6wBDKb3mR3mJX6vJehQ0kjF33YwPiucW7gd5DcrVlLWsqS1o3f0
+         OHZ0OeLlu0BaJBMUbTlMYJJxv/+alLMMdjY6oJDu33UIlNzFzzHh0J7TjBp+6DzHPU
+         tNM5GDzUmwjHCGkztO2qSp81WGbNSCtYlK7YiMJWPHs3FbvpoqmoV1hhTU0UHTEa+H
+         9XwfLbMxseMsZaBtAlimeFgFobPd60uK9kpgpT/O5DUNTPHMBkk3ZhcEbjYHVkEdRR
+         z/6YdTu9jqbfg==
+Date:   Tue, 15 Jun 2021 16:18:48 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        kernel@axis.com, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] tpm: Fix crash on tmprm release
+Message-ID: <20210615131848.cynblt5qindtvtiz@kernel.org>
+References: <20210615091410.17007-1-vincent.whitchurch@axis.com>
+ <20210615091410.17007-2-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615091410.17007-2-vincent.whitchurch@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQmluIE1lbmcNCj4gU2VudDogMTUgSnVuZSAyMDIxIDE0OjA5DQo+IA0KPiBPbiBUdWUs
-IEp1biAxNSwgMjAyMSBhdCA0OjU3IFBNIERhdmlkIExhaWdodCA8RGF2aWQuTGFpZ2h0QGFjdWxh
-Yi5jb20+IHdyb3RlOg0KPiA+DQouLi4NCj4gPiBJJ20gc3VycHJpc2VkIHRoYXQgdGhlIEMgbG9v
-cDoNCj4gPg0KPiA+ID4gKyAgICAgICAgICAgICBmb3IgKDsgY291bnQgPj0gYnl0ZXNfbG9uZzsg
-Y291bnQgLT0gYnl0ZXNfbG9uZykNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAqZC51bG9u
-ZysrID0gKnMudWxvbmcrKzsNCj4gPg0KPiA+IGVuZHMgdXAgYmVpbmcgZmFzdGVyIHRoYW4gdGhl
-IEFTTSAncmVhZCBsb3RzJyAtICd3cml0ZSBsb3RzJyBsb29wLg0KPiANCj4gSSBiZWxpZXZlIHRo
-YXQncyBiZWNhdXNlIHRoZSBhc3NlbWJseSB2ZXJzaW9uIGhhcyBzb21lIHVuYWxpZ25lZA0KPiBh
-Y2Nlc3MgY2FzZXMsIHdoaWNoIGVuZCB1cCBiZWluZyB0cmFwLW4tZW11bGF0ZWQgaW4gdGhlIE9w
-ZW5TQkkNCj4gZmlybXdhcmUsIGFuZCB0aGF0IGlzIGEgYmlnIG92ZXJoZWFkLg0KDQpBaCwgdGhh
-dCB3b3VsZCBtYWtlIHNlbnNlIHNpbmNlIHRoZSBhc20gdXNlciBjb3B5IGNvZGUNCndhcyBicm9r
-ZW4gZm9yIG1pc2FsaWduZWQgY29waWVzLg0KSSBzdXNwZWN0IG1lbWNweSgpIHdhcyBicm9rZW4g
-dGhlIHNhbWUgd2F5Lg0KDQpJJ20gc3VycHJpc2VkIElQX05FVF9BTElHTiBpc24ndCBzZXQgdG8g
-MiB0byB0cnkgdG8NCmF2b2lkIGFsbCB0aGVzZSBtaXNhbGlnbmVkIGNvcGllcyBpbiB0aGUgbmV0
-d29yayBzdGFjay4NCkFsdGhvdWdoIGF2b2lkaW5nIDhuKzQgYWxpZ25lZCBkYXRhIGlzIHJhdGhl
-ciBoYXJkZXIuDQoNCk1pc2FsaWduZWQgY29waWVzIGFyZSBqdXN0IGJlc3QgYXZvaWRlZCAtIHJl
-YWxseSBldmVuIG9uIHg4Ni4NClRoZSAncmVhbCBmdW4nIGlzIHdoZW4gdGhlIGFjY2VzcyBjcm9z
-c2VzIFRMQiBib3VuZGFyaWVzLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
-a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
-IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Tue, Jun 15, 2021 at 11:14:09AM +0200, Vincent Whitchurch wrote:
+> If the tpm_tis module is removed (or a system shutdown is triggered)
+> while the tpmrm device is use, the kernel crashes due to chip->ops being
+> NULL:
+> 
+>  # exec 3<>/dev/tpmrm0
+>  # rmmod tpm_tis
+>  # exit
+>  ==================================================================
+>  BUG: KASAN: null-ptr-deref in tpm_chip_start+0x2d/0x120 [tpm]
+>  Read of size 8 at addr 0000000000000060 by task sh/994
+> 
+>  Call Trace:
+>   kasan_report.cold.13+0x10f/0x111
+>   tpm_chip_start+0x2d/0x120 [tpm]
+>   tpm2_del_space+0x2c/0xa0 [tpm]
+>   tpmrm_release+0x3f/0x50 [tpm]
+>   __fput+0x110/0x3c0
+>   task_work_run+0x94/0xd0
+>   do_exit+0x683/0x13e0
+>   do_group_exit+0x8b/0x140
+>   do_syscall_64+0x3c/0x80
+>  ==================================================================
+> 
+> Fix this by making tpm2_del_space() use tpm_try_get_ops().  The latter
+> already includes the calls to tpm_chip_start() and tpm_chip_stop().
 
+This lacks explanation why migrating to tpm_try_get_ops() fixes the
+issue. Saying that doing something fixes something is not good enough
+explanation. So, can you extend this paragraph just a bit in the next
+version?
+
+> 
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> ---
+>  drivers/char/tpm/tpm2-space.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm2-space.c b/drivers/char/tpm/tpm2-space.c
+> index 784b8b3cb903..e1111261021f 100644
+> --- a/drivers/char/tpm/tpm2-space.c
+> +++ b/drivers/char/tpm/tpm2-space.c
+> @@ -58,12 +58,10 @@ int tpm2_init_space(struct tpm_space *space, unsigned int buf_size)
+>  
+>  void tpm2_del_space(struct tpm_chip *chip, struct tpm_space *space)
+>  {
+> -	mutex_lock(&chip->tpm_mutex);
+> -	if (!tpm_chip_start(chip)) {
+> +	if (!tpm_try_get_ops(chip)) {
+>  		tpm2_flush_sessions(chip, space);
+> -		tpm_chip_stop(chip);
+> +		tpm_put_ops(chip);
+>  	}
+> -	mutex_unlock(&chip->tpm_mutex);
+>  	kfree(space->context_buf);
+>  	kfree(space->session_buf);
+>  }
+> -- 
+> 2.28.0
+> 
+> 
+
+/Jarkko
