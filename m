@@ -2,91 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF5A3A8CC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF733A8CC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhFOXm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 19:42:26 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:49954 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230039AbhFOXmV (ORCPT
+        id S231607AbhFOXnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 19:43:01 -0400
+Received: from mail-il1-f182.google.com ([209.85.166.182]:33789 "EHLO
+        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230039AbhFOXm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:42:21 -0400
-X-UUID: fffb4e5efa684f19b12ece330d112351-20210616
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=1N+JC1snW7EnO8epve2A7QzbqIbp6/TazBXQRTkssHQ=;
-        b=n82vwoj5rhMqtRsiJZh8+qFglbmTBIRohSuAk/q64M/NVX/l3TiFuZHeDasTD31+GL8FWitoMYCAJ/gnuERTASrK3skKFQNczhi7D0oKPxKLUav/neNe8wkY+CrLtbo/nD8UW8Ob2tJLpU+01euzEs3fDzZw3Pu66i6kVhiaeBo=;
-X-UUID: fffb4e5efa684f19b12ece330d112351-20210616
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1541065036; Wed, 16 Jun 2021 07:40:13 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 16 Jun 2021 07:40:12 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 16 Jun 2021 07:40:12 +0800
-Message-ID: <1623800412.8512.16.camel@mtkswgap22>
-Subject: Re: [next] [arm64] kernel BUG at arch/arm64/mm/physaddr.c
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     Mike Rapoport <rppt@linux.ibm.com>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, <lkft-triage@lists.linaro.org>,
-        <regressions@lists.linux.dev>, Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Alistair Popple <apopple@nvidia.com>
-Date:   Wed, 16 Jun 2021 07:40:12 +0800
-In-Reply-To: <20210616093422.31270f1e@canb.auug.org.au>
-References: <CA+G9fYvvm2tW5QAe9hzPgs7sV8udsoufxs0Qu6N0ZjV0Z686vw@mail.gmail.com>
-         <20210615124745.GA47121@C02TD0UTHF1T.local>
-         <20210615131902.GB47121@C02TD0UTHF1T.local>
-         <076665b9-9fb1-71da-5f7d-4d2c7f892103@quicinc.com>
-         <YMj9vHhHOiCVN4BF@linux.ibm.com> <20210616093422.31270f1e@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 15 Jun 2021 19:42:58 -0400
+Received: by mail-il1-f182.google.com with SMTP id z1so747774ils.0;
+        Tue, 15 Jun 2021 16:40:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KktScGLfwYqDmTgp0+euNKnnKCv+ORCggyGnw//dZVE=;
+        b=t1lXUaij+heClw2LhpAfHBcHu/Fg2p2QzCbxc8x1FlpPg9aJLINxRS1fDvfo8VwZ0/
+         Ps1ojFpfUjxlP4zyi7ZlQ/o7TKBWL1NjSeibqFHqOzY0B8LsbAmlhklVYscaLJNh1mEX
+         NLHfqvtMQuvLx6rnlvyu6kGDXD/LkvbtGk6pbUHNmbKp55kbpK3fxfrvn3+ygzVUZ1AR
+         vri9i1JWvyMqFuWKfLlH5/0LUCGLIYrtKGopGLmPPPy+RnIvBuZJs4OvcxRBWom/hCvo
+         j43ARJY3D/HtfXTgKZ97IsFtOG+mlR2ASQPLzTfUo/VeYbe954gjeFvQvtNQBNJmZ0IZ
+         FWQg==
+X-Gm-Message-State: AOAM533T9kr+8ncafQ4MeOQ9E3oY8T4pm0zBngtzEIetxrZ3qEaZZ7qV
+        eN3QEwZYYz4GrTw8AxOQBw==
+X-Google-Smtp-Source: ABdhPJyJ2oSvUbWTQmXG9OJo4c9tMR9ZFoLJXABAWZda+rPw4vz7JbTFJdeejg8YGgC2q/DfhQ6/XA==
+X-Received: by 2002:a92:7510:: with SMTP id q16mr1347061ilc.291.1623800451982;
+        Tue, 15 Jun 2021 16:40:51 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id j18sm289799ioo.3.2021.06.15.16.40.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 16:40:51 -0700 (PDT)
+Received: (nullmailer pid 1680952 invoked by uid 1000);
+        Tue, 15 Jun 2021 23:40:48 -0000
+Date:   Tue, 15 Jun 2021 17:40:48 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Nelson Costa <Nelson.Costa@synopsys.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: Re: [PATCH 2/9] dt-bindings: media: Document Synopsys DesignWare
+ HDMI RX
+Message-ID: <20210615234048.GA1668783@robh.at.kernel.org>
+References: <cover.1622631488.git.nelson.costa@synopsys.com>
+ <a5a52c738db7a4b3125225ac27e5aaff19604aec.1622631488.git.nelson.costa@synopsys.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a5a52c738db7a4b3125225ac27e5aaff19604aec.1622631488.git.nelson.costa@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA2LTE2IGF0IDA5OjM0ICsxMDAwLCBTdGVwaGVuIFJvdGh3ZWxsIHdyb3Rl
-Og0KPiBIaSBhbGwsDQo+IA0KPiBPbiBUdWUsIDE1IEp1biAyMDIxIDIyOjIxOjMyICswMzAwIE1p
-a2UgUmFwb3BvcnQgPHJwcHRAbGludXguaWJtLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBPbiBUdWUs
-IEp1biAxNSwgMjAyMSBhdCAxMDo1MDozMUFNIC0wNDAwLCBRaWFuIENhaSB3cm90ZToNCj4gPiA+
-IA0KPiA+ID4gT24gNi8xNS8yMDIxIDk6MTkgQU0sIE1hcmsgUnV0bGFuZCB3cm90ZTogIA0KPiA+
-ID4gPiBMb29raW5nIHNvbWUgbW9yZSwgaXQgbG9va3MgbGlrZSB0aGF0J3MgY29ycmVjdCBpbiBp
-c29sYXRpb24sIGJ1dCBpdA0KPiA+ID4gPiBjbGFzaGVzIHdpdGggY29tbWl0Og0KPiA+ID4gPiAN
-Cj4gPiA+ID4gICA1ODMxZWVkYWQyYWM2ZjM4ICgibW06IHJlcGxhY2UgQ09ORklHX05FRURfTVVM
-VElQTEVfTk9ERVMgd2l0aCBDT05GSUdfTlVNQSIpICANCj4gPiA+IA0KPiA+ID4gSnVzdCBhIGRh
-dGEgcG9pbnQuIFJldmVydGluZyB0aGUgY29tbWl0IGFsb25lIGZpeGVkIHRoZSBzYW1lIGNyYXNo
-IGZvciBtZS4gIA0KPiA+IA0KPiA+IFllYWgsIHRoYXQgY29tbWl0IGRpZG4ndCB0YWtlIGludG8g
-dGhlIGFjY291bnQgdGhlIGNoYW5nZSBpbg0KPiA+IHBnZGF0X3RvX3BoeXMoKS4NCj4gPiANCj4g
-PiBUaGUgcGF0Y2ggYmVsb3cgc2hvdWxkIGZpeCBpdC4gSW4gdGhlIGxvbmcgcnVuIEkgdGhpbmsg
-d2Ugc2hvdWxkIGdldCByaWQgb2YNCj4gPiBjb250aWdfcGFnZV9kYXRhIGFuZCBhbGxvY2F0ZSBO
-T0RFX0RBVEEoMCkgZm9yICFOVU1BIGNhc2UgYXMgd2VsbC4NCj4gPiANCj4gPiBBbmRyZXcsIGNh
-biB5b3UgcGxlYXNlIGFkZCB0aGlzIGFzIGEgZml4dXAgdG8gIm1tOiByZXBsYWNlDQo+ID4gQ09O
-RklHX05FRURfTVVMVElQTEVfTk9ERVMgd2l0aCBDT05GSUdfTlVNQSI/DQo+ID4gDQo+ID4gDQo+
-ID4gZGlmZiAtLWdpdCBhL21tL3NwYXJzZS5jIGIvbW0vc3BhcnNlLmMNCj4gPiBpbmRleCBhMGU5
-Y2RiNWJjMzguLjYzMjZjZGYzNmM0ZiAxMDA2NDQNCj4gPiAtLS0gYS9tbS9zcGFyc2UuYw0KPiA+
-ICsrKyBiL21tL3NwYXJzZS5jDQo+ID4gQEAgLTM0Nyw3ICszNDcsNyBAQCBzaXplX3QgbWVtX3Nl
-Y3Rpb25fdXNhZ2Vfc2l6ZSh2b2lkKQ0KPiA+ICANCj4gPiAgc3RhdGljIGlubGluZSBwaHlzX2Fk
-ZHJfdCBwZ2RhdF90b19waHlzKHN0cnVjdCBwZ2xpc3RfZGF0YSAqcGdkYXQpDQo+ID4gIHsNCj4g
-PiAtI2lmbmRlZiBDT05GSUdfTkVFRF9NVUxUSVBMRV9OT0RFUw0KPiA+ICsjaWZuZGVmIENPTkZJ
-R19OVU1BDQo+ID4gIAlyZXR1cm4gX19wYV9zeW1ib2wocGdkYXQpOw0KPiA+ICAjZWxzZQ0KPiA+
-ICAJcmV0dXJuIF9fcGEocGdkYXQpOw0KPiANCj4gQWRkZWQgdG8gbGludXgtbmV4dCB0b2RheS4N
-Cj4gDQoNClNvcnJ5IGZvciBteSBsYXRlIHJlc3BvbnNlLg0KdGhhbmtzIGZvciBkb2luZyB0aGlz
-LiANCg0KTWlsZXMNCg0K
+On Wed, Jun 02, 2021 at 01:24:20PM +0200, Nelson Costa wrote:
+> Document the device tree bindings for the Synopsys DesignWare HDMI RX
+> Controller.
+> 
+> Signed-off-by: Jose Abreu <jose.abreu@synopsys.com>
+> Signed-off-by: Nelson Costa <nelson.costa@synopsys.com>
+> ---
+>  .../devicetree/bindings/media/snps,dw-hdmi-rx.yaml | 98 ++++++++++++++++++++++
+>  1 file changed, 98 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.yaml b/Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.yaml
+> new file mode 100644
+> index 0000000..4f2169e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.yaml
+> @@ -0,0 +1,98 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/snps,dw-hdmi-rx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Synopsys DesignWare HDMI RX Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Jose Abreu <jose.abreu@synopsys.com>
+> +  - Nelson Costa <nelson.costa@synopsys.com>
+> +
+> +description: |
+> +  The Synopsys DesignWare HDMI RX Controller and PHYs e405/e406 is an HDMI 2.0
+> +  Receiver solution that is able to decode video and audio.
+> +
+> +properties:
+> +  compatible:
+> +    const: snps,dw-hdmi-rx
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +    description: |
+> +      phandle to the configuration clock
+> +
+> +  clock-names:
+> +    const: cfg
+> +
+> +  phys:
+> +    maxItems: 1
+> +    description: |
+> +      phandle for the HDMI RX PHY
+> +
+> +  phy-names:
+> +    const: hdmi-phy
 
+You don't need *-names when there is only one generally.
+
+> +
+> +  port:
+> +    $ref: /schemas/graph.yaml#/properties/port
+> +    description: |
+> +      Input port node, multiple endpoints describing the HDMI RX data connected
+> +      to the HDMI PHY receiver.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - phys
+> +  - phy-names
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    hdmi_rx: hdmi-rx@0 {
+> +        compatible = "snps,dw-hdmi-rx";
+> +        reg = <0x0 0x10000>;
+> +        interrupts = <1 2>;
+> +
+> +        clocks = <&dw_hdmi_refclk>;
+> +        clock-names = "cfg";
+> +
+> +        phys = <&hdmi_e406_phy>;
+> +        phy-names = "hdmi-phy";
+> +
+> +        port {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            hdmi_rx_0: endpoint@0 {
+> +                reg = <0>;
+> +                remote-endpoint = <&hdmi_e406_phy_0>;
+> +            };
+
+I don't get why you have a connection to the phy with 'phys' and OF 
+graph? The connection should be to the remote device generating the HDMI 
+data with a PHY being somewhat transparent to that data flow.
+
+> +
+> +            hdmi_rx_1: endpoint@1 {
+> +                reg = <1>;
+> +                remote-endpoint = <&hdmi_e406_phy_1>;
+> +            };
+> +
+> +            hdmi_rx_2: endpoint@2 {
+> +                reg = <2>;
+> +                remote-endpoint = <&hdmi_e406_phy_2>;
+> +            };
+> +
+> +            hdmi_rx_3: endpoint@3 {
+> +                reg = <3>;
+> +                remote-endpoint = <&hdmi_e406_phy_3>;
+> +            };
+> +        };
+> +    };
+> -- 
+> 2.7.4
