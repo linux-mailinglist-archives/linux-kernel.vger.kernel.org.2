@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830D63A8808
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA6A3A880C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbhFORro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:47:44 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:36678 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbhFORrn (ORCPT
+        id S231487AbhFORs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229919AbhFORsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:47:43 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15FHjapU062259;
-        Tue, 15 Jun 2021 12:45:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623779136;
-        bh=xq8N0+Ag0aM5XxV7oawpiSjnWkX3GbNwWzSoJIYFQd8=;
-        h=Subject:CC:References:From:Date:In-Reply-To;
-        b=Su2d/xQ9Zdk3sxKs1sPPML8QQdiZOHiufpaJ6FKRMYdwHkWlOvPsAo0iIgCvWpZFb
-         Y6UIhcayMLy5Llt+7DvqRy0R5kxT4RBDQxa2c1GzUI2DFL1y8rpeH5/W9e5z80Eixe
-         /d2mahAMWrMQpuUZBIchf5hTuf81gNM//Z9ilAI8=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15FHjauL055665
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Jun 2021 12:45:36 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 15
- Jun 2021 12:45:35 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 15 Jun 2021 12:45:35 -0500
-Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15FHjUqq114642;
-        Tue, 15 Jun 2021 12:45:31 -0500
-Subject: Re: [PATCH v3 0/3] AM64: Update the locations of various elements in
- SRAM
-CC:     Vignesh Raghavendra <vigneshr@ti.com>, Suman Anna <s-anna@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210615155115.28902-1-a-govindraju@ti.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <779294d5-e3e3-1c12-4ab7-7130341f41e1@ti.com>
-Date:   Tue, 15 Jun 2021 23:15:29 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 15 Jun 2021 13:48:25 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C68CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:46:20 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id x13so10279141vsf.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:46:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nyGASXjZK6+KaCFSY7M57pQho7eXR3tu7GtXUlEdjrI=;
+        b=L/qX46GD8snGzvccBZlifarMswFYhBDW1qSLHsFffckOgg/GzJ9C1qZ2SlxXCnbF3n
+         aCAGRoAuHyruQsWR0hf0CwR9tUuPFMOuIOc+X6R32nl1hJrf9gNNSXI2ldriRak6CcrA
+         ldORFDeCc5ect6ffiKNvx9xS24m4v2ncV6hULVja935vO1q0otxWMuI+fWY4nDaRA/65
+         ANfSnKLKO1CMeop3L99hLm59yObrVS/8nneMIFyxD1pNveTGvr2PE04sXtzo8p7+Kwaa
+         i9D9H4ugxuTV9VBZ+e3jDKSfzGDXVrVFZTt8xJQFzxwyFfYwB4V5u9Mlv71Hq0pQQvj7
+         uo0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nyGASXjZK6+KaCFSY7M57pQho7eXR3tu7GtXUlEdjrI=;
+        b=TDh+lamLUN8kNWZ3vlVPLiSQO/olxpJK+I/s69np77mWvGnXpXKMHlUJQtS6pY/M12
+         gWjGGx8i2ttOfuzHq5jh4ONE9XI3tKCEiOz0I8LZOGUGQBEf73KniukYD8XnFrPo3aF+
+         W13Xy1NmmGV+HHZ/VrHJUlHNGpH2o9uiGq3kZx8SgH9o6UN5s5sPoNSf1V/vG3/87zOB
+         CpYLG61yjh13moaZwuymD3f9zRSbEZlAgMAv9aj1d9XwwcNRgaC96R+3HTx8x+2hgMSa
+         wQe4csDYAsoBYlf2eoHSuVlF4rpQbLK7goBvi7U/a0rZVk7cG5/1VfDz4XlpHAeJHqHz
+         kcpA==
+X-Gm-Message-State: AOAM530zIhK5/i2hhR42sK0DmE15wF5Ir6KUXn5g/cIn9X5MXvXmeBvC
+        SUi+hzCdsZC559p04fn0TejPbsQHI+tz0AP3hUnidg==
+X-Google-Smtp-Source: ABdhPJxAHcDuOVlus4gjMRwSFbeAYLv4eiEq85ZPvI766hdWcE2C0hfBadGUAp2NzI/VRs4/2rcp1fFkxQfkI1hZ3OA=
+X-Received: by 2002:a67:df93:: with SMTP id x19mr6894195vsk.49.1623779179091;
+ Tue, 15 Jun 2021 10:46:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210615155115.28902-1-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210615173206.1646477-1-kyletso@google.com>
+In-Reply-To: <20210615173206.1646477-1-kyletso@google.com>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Tue, 15 Jun 2021 10:45:42 -0700
+Message-ID: <CAPTae5KaCiXEOdNY-Ct3a0uaCDd8onmtM_bSaGzy0fkooJMC1g@mail.gmail.com>
+Subject: Re: [PATCH] usb: typec: tcpm: Ignore Vsafe0v in PR_SWAP_SNK_SRC_SOURCE_ON
+ state
+To:     Kyle Tso <kyletso@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On 15/06/21 9:21 pm, Aswath Govindraju wrote:
-> The following series of patches,
-> - Increase the maximum size of TF-A
-> - Update the location of TF-A due to a limitation for DFU boot
-> - Indicate reserved locations for DMSC code and secure proxy
-> 
-> changes since v2:
-> - split the patches into three
-> - added regions for indicating memory regions reserved for
->   dmsc and secure proxy
-> - moved the TFA location to 0x701c4000
-> 
-
-Posted respin(v4) after correcting the titles of patches 1 and 2.
-
-Thanks,
-Aswath
-
-> Aswath Govindraju (3):
->   dts: ti: k3-am64-main: Update TF-A's maximum size and node name
->   arm64: dts: ti: k3-am64-main: Indicate the memory reserved for
->     DMSC-lite code and secure proxy communication buffer
->   arm64: dts: ti: k3-am64-main: Update the location of TF-A
-> 
->  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-
+On Tue, Jun 15, 2021 at 10:32 AM Kyle Tso <kyletso@google.com> wrote:
+>
+> In PR_SWAP_SNK_SRC_SOURCE_ON state, Vsafe0v is expected as well so do
+> nothing here to avoid state machine going into SNK_UNATTACHED.
+>
+> Fixes: 28b43d3d746b ("usb: typec: tcpm: Introduce vsafe0v for vbus")
+> Signed-off-by: Kyle Tso <kyletso@google.com>
+Reviewed-by: Badhri Jagan Sridharan <badhri@google.com>
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 197556038ba4..e11e9227107d 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -5212,6 +5212,7 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
+>                 }
+>                 break;
+>         case PR_SWAP_SNK_SRC_SINK_OFF:
+> +       case PR_SWAP_SNK_SRC_SOURCE_ON:
+>                 /* Do nothing, vsafe0v is expected during transition */
+>                 break;
+>         default:
+> --
+> 2.32.0.272.g935e593368-goog
+>
