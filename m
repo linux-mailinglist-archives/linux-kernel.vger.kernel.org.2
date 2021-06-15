@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB713A8B5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44FE3A8B5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhFOVrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbhFOVrk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:47:40 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C27C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:45:34 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so415691otl.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:45:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5z1OJyGYVNhUMVsV/L9Wls14EjTqIU84oTFQp0rkHAc=;
-        b=VkKU5yMDFq4US0C9KONfXVdRCtY0+kipg42sQcFeGsqacuY1j8e8tqQGqn4cmYNQp9
-         KTULjm6g+fN/d2VxBcmbViu0T/pyX040MkLWgEZ9oirG21z3MYJYje+iahPKlQDLH/+r
-         C9RvziKLOSsdVhkHo2GaI4lnGLd/xPLS4+1NdkdHMMJVujKYn0UdKsJrIICxxKgY/5Nv
-         7VNVYTjpa09EnJzYJI+++fW43q/DUe5oLOJN7SBIk161z/06ib2z7iE7BhPUjOh5RK0H
-         u5WjuL/Ynrtf+mt1QF4+dJicVxwoG6DvjW0CttG6EPpJmRl7BVYBSqlarF9wTzZVtg3j
-         3qOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5z1OJyGYVNhUMVsV/L9Wls14EjTqIU84oTFQp0rkHAc=;
-        b=K5FZgN9f73eKvS69sCKq6pvmrrJUwQkdN3fTCJpPqIOgbNoI3UjnPq3KDDPqI030qU
-         O3Vzor7sbVnp4RnEVjwM1Dww3qKYOyRiyAV8LXfotMEX18Mj4aXPpLLt3WkOy2pRxB/F
-         ITzK9JDY3s68Ey6wJIHoq+PqXedCAo2QkLF2Knrvx0+oEDEZX2EdavOf6a6sgeYQGr8G
-         pOVwzuA/FruuE1fNJikF5Sp6KOXmHGHRqHGab1h+vXAhVoHwox6iTH3o3Gn52qZpbHsv
-         dOQJETx0BDPW1Fm0VXwvFW8NwPEP8IwUaskslD0KhAVXVX0/MLIZVYbe6N9h6QK7HZN5
-         DFSw==
-X-Gm-Message-State: AOAM5303lIKswnyF9cCrJiIQVo7CYTaHzQZGVSj3yaSpXP7Jby+QXPwa
-        D0ZRC3SxJSkQy7cymXg4AiwwGQ==
-X-Google-Smtp-Source: ABdhPJzZ0m5J5y9ayP1ilal9XmMwFN9BTPg0P9DMT3IMVEBW+f5P6hjCIzGH8NaOsG6QxJ1NDTOmlA==
-X-Received: by 2002:a9d:1e4:: with SMTP id e91mr1033309ote.211.1623793534208;
-        Tue, 15 Jun 2021 14:45:34 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id t18sm43054otl.80.2021.06.15.14.45.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 14:45:33 -0700 (PDT)
-Subject: Re: [PATCH -next] ide-cd: fix warning: variable 'stat' set but not
- used
-To:     Baokun Li <libaokun1@huawei.com>, davem@davemloft.net,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     weiyongjun1@huawei.com, yuehaibing@huawei.com,
-        yangjihong1@huawei.com, yukuai3@huawei.com
-References: <20210529061729.2824082-1-libaokun1@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <bba1a668-227d-7dd4-59b3-6a90a169f4da@kernel.dk>
-Date:   Tue, 15 Jun 2021 15:45:32 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230262AbhFOVvT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 17:51:19 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:52244 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229829AbhFOVvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 17:51:17 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1ltGvk-0002Ci-Or; Tue, 15 Jun 2021 23:49:08 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Punit Agrawal <punitagrawal@gmail.com>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>, wqu@suse.com,
+        Robin Murphy <robin.murphy@arm.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Shawn Lin <shawn.lin@rock-chips.com>
+Subject: Re: [PATCH v3 4/4] arm64: dts: rockchip: Update PCI host bridge window to 32-bit address memory
+Date:   Tue, 15 Jun 2021 23:49:07 +0200
+Message-ID: <3238453.R1toDxpfAE@diego>
+In-Reply-To: <CAL_JsqL8iDo5sLmgNVuXs5wt3TpVJbKHfk7gE740DidmvLOwiQ@mail.gmail.com>
+References: <20210607112856.3499682-1-punitagrawal@gmail.com> <3105233.izSxrag8PF@diego> <CAL_JsqL8iDo5sLmgNVuXs5wt3TpVJbKHfk7gE740DidmvLOwiQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210529061729.2824082-1-libaokun1@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/29/21 12:17 AM, Baokun Li wrote:
-> Fixes gcc '-Wunused-but-set-variable' warning:
+Am Dienstag, 15. Juni 2021, 23:29:12 CEST schrieb Rob Herring:
+> On Thu, Jun 10, 2021 at 3:50 PM Heiko St�bner <heiko@sntech.de> wrote:
+> >
+> > Hi,
+> >
+> > Am Montag, 7. Juni 2021, 13:28:56 CEST schrieb Punit Agrawal:
+> > > The PCIe host bridge on RK3399 advertises a single 64-bit memory
+> > > address range even though it lies entirely below 4GB.
+> > >
+> > > Previously the OF PCI range parser treated 64-bit ranges more
+> > > leniently (i.e., as 32-bit), but since commit 9d57e61bf723 ("of/pci:
+> > > Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses")
+> > > the code takes a stricter view and treats the ranges as advertised in
+> > > the device tree (i.e, as 64-bit).
+> > >
+> > > The change in behaviour causes failure when allocating bus addresses
+> > > to devices connected behind a PCI-to-PCI bridge that require
+> > > non-prefetchable memory ranges. The allocation failure was observed
+> > > for certain Samsung NVMe drives connected to RockPro64 boards.
+> > >
+> > > Update the host bridge window attributes to treat it as 32-bit address
+> > > memory. This fixes the allocation failure observed since commit
+> > > 9d57e61bf723.
+> > >
+> > > Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> > > Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com
+> > > Suggested-by: Robin Murphy <robin.murphy@arm.com>
+> > > Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> > > Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> > > Cc: Heiko Stuebner <heiko@sntech.de>
+> > > Cc: Rob Herring <robh+dt@kernel.org>
+> >
+> > just for clarity, should I just pick this patch separately for 5.13-rc to
+> > make it easy for people using current kernel devicetrees, or should
+> > this wait for the update mentioned in the cover-letter response
+> > and should go all together through the PCI tree?
 > 
-> drivers/ide/ide-cd_ioctl.c: In function 'ide_cdrom_select_speed':
-> drivers/ide/ide-cd_ioctl.c:212:6: warning:
->  variable ‘stat’ set but not used [-Wunused-but-set-variable]
+> This was dropped from v4, but should still be applied IMO.
+
+It was probably dropped because I applied it ;-)
+
+It's part of armsoc already [0] and should make its way into
+5.13 shortly.
+
+
+Heiko
+
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git/commit/?h=arm/fixes&id=8efe01b4386ab38a36b99cfdc1dc02c38a8898c3
+
 > 
-> It never used since introduction.
+> Acked-by: Rob Herring <robh@kernel.org>
+> 
 
-This code is being removed shortly, so better to just leave it alone.
 
--- 
-Jens Axboe
+
 
