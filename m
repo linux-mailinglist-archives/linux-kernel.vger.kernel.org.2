@@ -2,124 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C833A7FE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73243A7F91
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbhFONdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbhFONc6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:32:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F660C06124A;
-        Tue, 15 Jun 2021 06:30:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=D2NyEkivGq35/XB8ZrKpJ9lVXxzvPgI+FDaHZRBySGE=; b=TmNRQKLnud3uwzyjMydzbSJfrh
-        BUJXCHnte2MFC4FMcAP4A1XLTem5f5unb3GakJLVQjDAN1tGxdFV9ldX7NbhePbfXRxc+YviESftx
-        lQSLQeNMSjVpsxcE7PsIejk3HMOwXBsuKnWULutnUyjxA+Xr3jfFu8t0WH2PS7NJAR00Cte32oJNZ
-        cd0vi+AVGJ2ollCE2ajdR53U/4ikrSGYTIUiMuNIV4zc/hNhZwk22PyjHQswkruthZMIdTTrnU9cL
-        f5EG4dS8FfWOCpsXXVe/20Bz+yXVXj85HBXD5K0vQU5nasd6XeTvybt/aZaN2igE/rZ/VAHr89gKf
-        ypDTe0Tw==;
-Received: from [2001:4bb8:19b:fdce:9045:1e63:20f0:ca9] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lt98X-006oIn-SA; Tue, 15 Jun 2021 13:29:57 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>, Thomas Gleixner <tglx@linutronix.de>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geoff Levand <geoff@infradead.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Dongsheng Yang <dongsheng.yang@easystack.cn>,
-        Mike Snitzer <snitzer@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        ceph-devel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: [PATCH 12/18] block: remove bvec_kmap_irq and bvec_kunmap_irq
-Date:   Tue, 15 Jun 2021 15:24:50 +0200
-Message-Id: <20210615132456.753241-13-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210615132456.753241-1-hch@lst.de>
-References: <20210615132456.753241-1-hch@lst.de>
+        id S231390AbhFONah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:30:37 -0400
+Received: from m12-13.163.com ([220.181.12.13]:50992 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230511AbhFONaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:30:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=qs27p
+        JeZ1mQL9K5taQuwUm0jcorZc4N6MuyH4mgHdZA=; b=ESGAdfqMZVyII+6Z1+StY
+        THC0VBvpH9S2OYzs3kkIS8jA94HoAADUyKzGjKfw9OYfnvBu63YeQJOqwtRDkxyL
+        7nlK0lgNbfA6yIqohpv6AUa87K8qBBJXgLQ5sCXa9+MdY59D42Mz0PKZgDUx8v5C
+        Tr/w87c9E6NcwUv9lKck9Q=
+Received: from yangjunlin.ccdomain.com (unknown [218.17.89.92])
+        by smtp9 (Coremail) with SMTP id DcCowABne6ygqshgs5gvGg--.38926S2;
+        Tue, 15 Jun 2021 21:26:58 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH] mfd: 88pm860x-core: Remove unneeded variable:"ret"
+Date:   Tue, 15 Jun 2021 21:26:26 +0800
+Message-Id: <20210615132626.1386-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-CM-TRANSID: DcCowABne6ygqshgs5gvGg--.38926S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7WF13JFW8tr4xXF1Dtw43Jrb_yoW8CF4kp3
+        ZrWayjyrZ5Jw17Ww4DJryfur1akF48Kay8WF48Aasag3W5t39YkF1qgryUZF1rGF97GFWa
+        y3y2qFyrCF4jyr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jBc_-UUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbixgKyI13bmh81XAAAs-
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These two helpers are entirely unused now.
+From: Junlin Yang <yangjunlin@yulong.com>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+The variable "ret" is initialized to -EIO and then returned.
+So remove the "ret" variable and return -EIO.
+
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
 ---
- include/linux/bio.h | 42 ------------------------------------------
- 1 file changed, 42 deletions(-)
+ drivers/mfd/88pm860x-core.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/bio.h b/include/linux/bio.h
-index d2b98efb5cc5..8070f3f77c14 100644
---- a/include/linux/bio.h
-+++ b/include/linux/bio.h
-@@ -5,7 +5,6 @@
- #ifndef __LINUX_BIO_H
- #define __LINUX_BIO_H
+diff --git a/drivers/mfd/88pm860x-core.c b/drivers/mfd/88pm860x-core.c
+index b1e829e..1e69279 100644
+--- a/drivers/mfd/88pm860x-core.c
++++ b/drivers/mfd/88pm860x-core.c
+@@ -651,7 +651,6 @@ static void device_irq_exit(struct pm860x_chip *chip)
  
--#include <linux/highmem.h>
- #include <linux/mempool.h>
- #include <linux/ioprio.h>
- /* struct bio, bio_vec and BIO_* flags are defined in blk_types.h */
-@@ -519,47 +518,6 @@ static inline void bio_clone_blkg_association(struct bio *dst,
- 					      struct bio *src) { }
- #endif	/* CONFIG_BLK_CGROUP */
+ int pm8606_osc_enable(struct pm860x_chip *chip, unsigned short client)
+ {
+-	int ret = -EIO;
+ 	struct i2c_client *i2c = (chip->id == CHIP_PM8606) ?
+ 		chip->client : chip->companion;
  
--#ifdef CONFIG_HIGHMEM
--/*
-- * remember never ever reenable interrupts between a bvec_kmap_irq and
-- * bvec_kunmap_irq!
-- */
--static inline char *bvec_kmap_irq(struct bio_vec *bvec, unsigned long *flags)
--{
--	unsigned long addr;
--
--	/*
--	 * might not be a highmem page, but the preempt/irq count
--	 * balancing is a lot nicer this way
--	 */
--	local_irq_save(*flags);
--	addr = (unsigned long) kmap_atomic(bvec->bv_page);
--
--	BUG_ON(addr & ~PAGE_MASK);
--
--	return (char *) addr + bvec->bv_offset;
--}
--
--static inline void bvec_kunmap_irq(char *buffer, unsigned long *flags)
--{
--	unsigned long ptr = (unsigned long) buffer & PAGE_MASK;
--
--	kunmap_atomic((void *) ptr);
--	local_irq_restore(*flags);
--}
--
--#else
--static inline char *bvec_kmap_irq(struct bio_vec *bvec, unsigned long *flags)
--{
--	return page_address(bvec->bv_page) + bvec->bv_offset;
--}
--
--static inline void bvec_kunmap_irq(char *buffer, unsigned long *flags)
--{
--	*flags = 0;
--}
--#endif
--
- /*
-  * BIO list management for use by remapping drivers (e.g. DM or MD) and loop.
-  *
+@@ -680,19 +679,18 @@ int pm8606_osc_enable(struct pm860x_chip *chip, unsigned short client)
+ 	}
+ 	mutex_unlock(&chip->osc_lock);
+ 
+-	dev_dbg(chip->dev, "%s(A): vote=0x%x status=%d ret=%d\n",
++	dev_dbg(chip->dev, "%s(A): vote=0x%x status=%d\n",
+ 			__func__, chip->osc_vote,
+-			chip->osc_status, ret);
++			chip->osc_status);
+ 	return 0;
+ out:
+ 	mutex_unlock(&chip->osc_lock);
+-	return ret;
++	return -EIO;
+ }
+ EXPORT_SYMBOL(pm8606_osc_enable);
+ 
+ int pm8606_osc_disable(struct pm860x_chip *chip, unsigned short client)
+ {
+-	int ret = -EIO;
+ 	struct i2c_client *i2c = (chip->id == CHIP_PM8606) ?
+ 		chip->client : chip->companion;
+ 
+@@ -721,13 +719,13 @@ int pm8606_osc_disable(struct pm860x_chip *chip, unsigned short client)
+ 	}
+ 	mutex_unlock(&chip->osc_lock);
+ 
+-	dev_dbg(chip->dev, "%s(A): vote=0x%x status=%d ret=%d\n",
++	dev_dbg(chip->dev, "%s(A): vote=0x%x status=%d\n",
+ 			__func__, chip->osc_vote,
+-			chip->osc_status, ret);
++			chip->osc_status);
+ 	return 0;
+ out:
+ 	mutex_unlock(&chip->osc_lock);
+-	return ret;
++	return -EIO;
+ }
+ EXPORT_SYMBOL(pm8606_osc_disable);
+ 
 -- 
-2.30.2
+1.9.1
+
 
