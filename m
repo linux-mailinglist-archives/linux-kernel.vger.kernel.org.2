@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598523A7434
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925A13A743B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhFOCoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
+        id S230184AbhFOCpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbhFOCn4 (ORCPT
+        with ESMTP id S229965AbhFOCpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:43:56 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2204AC0613A2;
-        Mon, 14 Jun 2021 19:41:51 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id s19so32054681ioc.3;
-        Mon, 14 Jun 2021 19:41:51 -0700 (PDT)
+        Mon, 14 Jun 2021 22:45:23 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D78C061574;
+        Mon, 14 Jun 2021 19:43:18 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id x24so18761569lfr.10;
+        Mon, 14 Jun 2021 19:43:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/6YobJtysgNkHHP/8jtP3hdJ8X5o/uVgs51N6mNDXC4=;
-        b=jackmsGVoua19MvudgiAJcjQkrwhdHF+zCUTXh4uSSel9BygAYCBnpY+R6CEtn+rm2
-         gAQ/yg601IDmk2b1kK4Ms4nEJRuskiGqbwJZPxOIBLUFTj7MYe65CESBXj8wE+PtH4DD
-         fg19mr+Z6PY1sYWvYWeMQW5lDMH6VtFhoR/UT7aTcXjsXn9xWZzL2G9Lch1YdQn+TnnT
-         BTBRi+7cqc0xcT9915o+RMc0rwdsdlfdcA8phMEDdoA3lIkud2uS8zW/tjU+RczFvnjl
-         touF09cqDYBiwey2n6P14BvhxfIeGkd0xdBIvs1YMW9mhPFjWQhamx3QdvJ97bmVFacu
-         +RSQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7xvsLbXf65mdyb3qLUmqZwn3t2ST568AmCGF279evdw=;
+        b=mPte5ivMY13f4aHDh4e9CUXMO6E4zLQKcMuVaSfSD8gJ1LV2QGHNXsgvlYt6x4zJe9
+         ZbdVWvL71MVSwlEqrAczZWJ8UIbLR8s3G4Pk6JEKyOQLgW3iLhmzCkfhlYNfT8fh+M4c
+         tgsuT3GzuUwaVlVM05zw6KYVUYN7g8B+ga7LaWV+fjMPky8fgPtRyjd0Vx52mzwcHUfN
+         i0p0uP29sNA0EjVQ49ZYemjN0D9TKrbKVI9FfTOlyhvo1tGh7EBuv0YIJlikw3IX6F6X
+         CYKritPkVEMP8OaanyeoaNFMli9ICXEM4TnXRvth/mIlIjXbYtJfwt96ca32cbBAdrF8
+         TuOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/6YobJtysgNkHHP/8jtP3hdJ8X5o/uVgs51N6mNDXC4=;
-        b=gOyqrNGhcY+p56LQgbidNFqW6l6pGnz/V0RrODhjpT9UxpeUTV7sQZLMWJK5n+jXdy
-         vHqjPSw9yxS95whnzBHy+++ox5N2KRj3lfAI3uL5d9dWuuJKjf8b5qpRkuu6BBCGwziR
-         mOcKS7Tymg4D0zHVdPrTOkWEqrVrr+jO8viQbU/3sZA/B3dkXGvVzTbHLA7LaUryT9Pq
-         IIpnijABdbq24SazO7Wlnd1eaEMU1c613OfrUBDxE0J/kMqxL3BZKcNiaknBXDlACVva
-         WfzgkkmqktwVNp6zh2VHQmkYRJZh8HphdYr0mLCasxdbRpB/1pGiRjEcwNImrX47/Tlr
-         llxg==
-X-Gm-Message-State: AOAM530X2OEvOb/kpWTk7ztuKKluDyF0RUu5nYaHk4M4HlYKiFfljW0y
-        UrJQMuw1ylDvnf/8paTN0MKqZfcK5uP2vw==
-X-Google-Smtp-Source: ABdhPJzZ/oY/79h/RnnXGhRrQfg3q4zOpJgHIeYfmJ7+cljb8nBTHmCJFVJSchThYPmqB3y3Ngm0Vg==
-X-Received: by 2002:a63:4915:: with SMTP id w21mr19925512pga.363.1623722808540;
-        Mon, 14 Jun 2021 19:06:48 -0700 (PDT)
-Received: from yanshuaijun.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id u9sm622478pjy.33.2021.06.14.19.06.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 19:06:47 -0700 (PDT)
-From:   Herman <herman.yim88@gmail.com>
-X-Google-Original-From: Herman <yanshuaijun@yulong.com>
-To:     a.hajda@samsung.com, mchehab@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Herman <yanshuaijun@yulong.com>
-Subject: [PATCH v2] drivers/media/platform/s5p-mfc/s5p_mfc_opr_v5.c : fix typo 'in deed imporant' > 'indeed important'
-Date:   Tue, 15 Jun 2021 10:06:36 +0800
-Message-Id: <20210615020636.526-1-yanshuaijun@yulong.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7xvsLbXf65mdyb3qLUmqZwn3t2ST568AmCGF279evdw=;
+        b=En3Mh6IAbzcDfwKNAB1jiGL3gA4h9Spdszi3WNwfkoWN/EwAYxnbBqzRzmIYnFR+vQ
+         /s7bWl8qayG8rEwDWid9cZh63PEP7wLcP7AxTa1VYo31TIXzvrhExtxkruDddVzs4i2p
+         4Hymv6vd9AFajw9wWDn7CBFhbujk5l4Zjk97kZazZRpBL9l7FXpTZ7BFVNsePV+Yi1A0
+         lAcQcpt9AOQdPW3Bxl81leWa5TapKlU6YsFeSgT2gs7cMLXm60zEjud0pqgsaAm7BreR
+         zzjYVKiI9weHzhtcCWZuBOdoqZTagzLhJEn4drRMfa4mnvI+LKDwa36bq02v3EoUuwRy
+         8Ltg==
+X-Gm-Message-State: AOAM532i9YBC2v0svS3TXVYQJ2b7WyHnFkExqR9zWJr01V4kvs3oIKq6
+        RF0A1zk2SzqqoueJ9o0LoxUnzHVmUUAs0md3h/EmoCV5GBaOSQ==
+X-Google-Smtp-Source: ABdhPJxyKlOZpgSD8mTvCMHfxQgeU7FRe81qS8OkPHT5YyuLuoBqn1hSl1lR0cDDsmOfJI+GcTA0YKZ7+laCcXh5+Sk=
+X-Received: by 2002:a2e:97d1:: with SMTP id m17mr11254855ljj.490.1623723167236;
+ Mon, 14 Jun 2021 19:12:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
+In-Reply-To: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 14 Jun 2021 23:12:36 -0300
+Message-ID: <CAOMZO5CVyaOXNxwv9hKV3RB9Q4kzW4VchEeBj1=b9PvHkskcow@mail.gmail.com>
+Subject: Re: [PATCH v14 00/12] add ecspi ERR009165 for i.mx6/7 soc family
+To:     Robin Gong <yibin.gong@nxp.com>
+Cc:     Vinod <vkoul@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Martin Fuzzey <martin.fuzzey@flowbird.group>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        dmaengine@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change 'imporant' into 'important'.
+Hi Robin,
 
-Signed-off-by: Herman <yanshuaijun@yulong.com>
----
+On Wed, Apr 7, 2021 at 4:15 AM Robin Gong <yibin.gong@nxp.com> wrote:
+>
+> There is ecspi ERR009165 on i.mx6/7 soc family, which cause FIFO
+> transfer to be send twice in DMA mode. Please get more information from:
+> https://www.nxp.com/docs/en/errata/IMX6DQCE.pdf. The workaround is adding
+> new sdma ram script which works in XCH  mode as PIO inside sdma instead
+> of SMC mode, meanwhile, 'TX_THRESHOLD' should be 0. The issue should be
 
-v1: Change 'imporant' into 'important'
-v2: Change 'in deed' into 'indeed'.
+Could you please confirm whether the sdma-imx7d.bin firmware available at
+https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/log/imx/sdma/sdma-imx7d.bin
 
- drivers/media/platform/s5p-mfc/s5p_mfc_opr_v5.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+contains the "new sdma ram script which works in XCH  mode as PIO
+inside sdma instead
+of SMC mode" fix?
 
-diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc_opr_v5.c b/drivers/media/platform/s5p-mfc/s5p_mfc_opr_v5.c
-index 49503c20d320..28a06dc343fd 100644
---- a/drivers/media/platform/s5p-mfc/s5p_mfc_opr_v5.c
-+++ b/drivers/media/platform/s5p-mfc/s5p_mfc_opr_v5.c
-@@ -1418,7 +1418,7 @@ static void s5p_mfc_try_run_v5(struct s5p_mfc_dev *dev)
- 		if (test_and_clear_bit(0, &dev->hw_lock) == 0)
- 			mfc_err("Failed to unlock hardware\n");
- 
--		/* This is in deed imporant, as no operation has been
-+		/* This is indeed important, as no operation has been
- 		 * scheduled, reduce the clock count as no one will
- 		 * ever do this, because no interrupt related to this try_run
- 		 * will ever come from hardware. */
--- 
-2.25.1
+Thanks,
 
+Fabio Estevam
