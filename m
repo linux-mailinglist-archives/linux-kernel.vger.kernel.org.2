@@ -2,72 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545893A8456
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C2A3A84B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhFOPuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:50:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44366 "EHLO mail.kernel.org"
+        id S232173AbhFOPvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:51:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230267AbhFOPuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:50:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B7136148E;
-        Tue, 15 Jun 2021 15:48:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623772091;
-        bh=0dr+xOxeQVMtzD8qXKJLgyftKOPEn+gUdjrEiokt9lc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RMjcVvJIV8PeQl0Zu9CGK/Vf/tdgZumtTLgzvPNKPXBSRzA3f3BtPyEW6aUYFIDIM
-         39wpjGj1mpdzRTfhGChUc7+PixGWT8pl1YRErl6WuXudmn2kw5deaTkRKdQT7WUSki
-         l6/xCuBizaI/1NvA55Q3YTo7cfBxks6l+TLJ4IPk=
-Date:   Tue, 15 Jun 2021 17:48:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Huilong Deng <denghuilong@cdjrlc.com>,
-        Johannes Thumshirn <jth@kernel.org>
-Subject: Re: [PATCH 3/3] mcb: Remove trailing semicolon in macros
-Message-ID: <YMjLuWRuRuMiIBjv@kroah.com>
-References: <cover.1623768541.git.johannes.thumshirn@wdc.com>
- <fe520620eeddaa2ed8c669125f9b673c89d6b5a5.1623768541.git.johannes.thumshirn@wdc.com>
+        id S231645AbhFOPuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:50:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D8E46162E;
+        Tue, 15 Jun 2021 15:48:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623772128;
+        bh=3LWTFrPqZrRejivSLKDXE5jWosmTTHgrAR+hU/+DOrs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=i85V35cHN64elZY9jq9QJsxmUM2auycXAqmHTaXQyD6yjMpM38pamgSmyHnE809+p
+         R4RT0qe+Rf22kzlyJ58KbSEIyV9nIiRF9btWThhlJDM0PC4OXfQZZwlXDwCNB9+BOZ
+         jpeiXwgGFfKvZwlij2e+9eq+PyoR0w+qiVaucf5I0nYGEYpqHEwRxAAv1SuNA9JgRT
+         uVGdWtDtabHDpC4f/D+htqc7qtHZBONUhICuv2atUo4j7c2QG0itcsERpfePWU6g9C
+         QD2DVE3/9j594NwRDYYIDStCZvcliilcrqQi7L+89xNXnJXlAaCZ2eAZgP3SkugWWN
+         xOqsTz4CsvCPw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 19/33] regulator: rt4801: Fix NULL pointer dereference if priv->enable_gpios is NULL
+Date:   Tue, 15 Jun 2021 11:48:10 -0400
+Message-Id: <20210615154824.62044-19-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210615154824.62044-1-sashal@kernel.org>
+References: <20210615154824.62044-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe520620eeddaa2ed8c669125f9b673c89d6b5a5.1623768541.git.johannes.thumshirn@wdc.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 11:55:30PM +0900, Johannes Thumshirn wrote:
-> From: Huilong Deng <denghuilong@cdjrlc.com>
-> 
-> Macros should not use a trailing semicolon.
-> 
-> Signed-off-by: Huilong Deng <denghuilong@cdjrlc.com>
-> Signed-off-by: Johannes Thumshirn <jth@kernel.org>
-> ---
->  include/linux/mcb.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/mcb.h b/include/linux/mcb.h
-> index 71dd10a3d928..f6efb16f9d1b 100644
-> --- a/include/linux/mcb.h
-> +++ b/include/linux/mcb.h
-> @@ -120,7 +120,7 @@ extern int __must_check __mcb_register_driver(struct mcb_driver *drv,
->  	__mcb_register_driver(driver, THIS_MODULE, KBUILD_MODNAME)
->  extern void mcb_unregister_driver(struct mcb_driver *driver);
->  #define module_mcb_driver(__mcb_driver)		\
-> -	module_driver(__mcb_driver, mcb_register_driver, mcb_unregister_driver);
-> +	module_driver(__mcb_driver, mcb_register_driver, mcb_unregister_driver)
->  extern void mcb_bus_add_devices(const struct mcb_bus *bus);
->  extern int mcb_device_register(struct mcb_bus *bus, struct mcb_device *dev);
->  extern struct mcb_bus *mcb_alloc_bus(struct device *carrier);
-> -- 
-> 2.31.1
-> 
+From: Axel Lin <axel.lin@ingics.com>
 
-I've applied this one, feel free to resend the first 2 as emails.
+[ Upstream commit cb2381cbecb81a8893b2d1e1af29bc2e5531df27 ]
 
-thanks,
+devm_gpiod_get_array_optional may return NULL if no GPIO was assigned.
 
-greg k-h
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/20210603094944.1114156-1-axel.lin@ingics.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/regulator/rt4801-regulator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/regulator/rt4801-regulator.c b/drivers/regulator/rt4801-regulator.c
+index 2055a9cb13ba..7a87788d3f09 100644
+--- a/drivers/regulator/rt4801-regulator.c
++++ b/drivers/regulator/rt4801-regulator.c
+@@ -66,7 +66,7 @@ static int rt4801_enable(struct regulator_dev *rdev)
+ 	struct gpio_descs *gpios = priv->enable_gpios;
+ 	int id = rdev_get_id(rdev), ret;
+ 
+-	if (gpios->ndescs <= id) {
++	if (!gpios || gpios->ndescs <= id) {
+ 		dev_warn(&rdev->dev, "no dedicated gpio can control\n");
+ 		goto bypass_gpio;
+ 	}
+@@ -88,7 +88,7 @@ static int rt4801_disable(struct regulator_dev *rdev)
+ 	struct gpio_descs *gpios = priv->enable_gpios;
+ 	int id = rdev_get_id(rdev);
+ 
+-	if (gpios->ndescs <= id) {
++	if (!gpios || gpios->ndescs <= id) {
+ 		dev_warn(&rdev->dev, "no dedicated gpio can control\n");
+ 		goto bypass_gpio;
+ 	}
+-- 
+2.30.2
+
