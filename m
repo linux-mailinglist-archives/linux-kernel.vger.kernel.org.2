@@ -2,156 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0253A8051
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C1E3A8056
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhFONiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:38:21 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:59015 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231437AbhFONiQ (ORCPT
+        id S231355AbhFONit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231452AbhFONin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:38:16 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id t9Eblm3twhqltt9Eflrn3Z; Tue, 15 Jun 2021 15:36:10 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1623764170; bh=TYZsxWK3pyuuhL9w4imZapk5ZEIWECc0wzFBU2fCKpM=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=rHJ0usjNf3YcqQjumM4sQB8OAegejpxDtk06UkoA9pGImM3uFaLcj013ZiGAsguKR
-         b6liFsu0UbsdWl6nssQU3gmm2Tns1QbV05FRdwbVw+WOqIb0xEtLux1N4G9SU8s3Uz
-         99ohpaG4eOpWj+0R02QoZ2oJQM8jV53GCLrawzBbviUR6z5+PuP8NCVlfmJeXy6z4Y
-         LZhne5wmE8Ut3f68pKbjYNKgR5EkAIy/lSEGlyO5Eal8BrxvsvcPDc+GPhYkIiv3Eu
-         73aEdWflfpX9eixE6HcuzRiDK7F4HZYGdSeBmhYdC+MSLtqAXnfQE33K0ZRoYH48xh
-         weo7l0YVrfA0A==
-Subject: Re: [PATCH] media: Fix Media Controller API config checks
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com,
-        dan.carpenter@oracle.com, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-References: <20210611015849.42589-1-skhan@linuxfoundation.org>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <3745852a-a14d-3e66-dd9f-409ec7e43f48@xs4all.nl>
-Date:   Tue, 15 Jun 2021 15:36:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Tue, 15 Jun 2021 09:38:43 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00F9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:36:37 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so1829490pjn.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:36:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=2AFaTBkHP+fiyETNPHNRLPn45kJUgrb2oh8W/22IFfs=;
+        b=j/Fy6ZBN6qlzdjiBWqbnW+wCteHKu76xMVJEp9DQJuJ4wxVO804Wowa5x5nM926niT
+         jzLo7zVMZjyVmFxxBMq5HJbe1b0tLcnoxPh2FvfUikIFgjUxRFfqakrlKjZIbuwEidJb
+         FEOOkOuQRbE0HD4gtObijKJoJbFrOOZWXL3f4TlKnl+Pg2nV4zoEhkOr1hilheNPFJDv
+         pyUHNRPAeW/aC9eNNPX7SIVkyjiXlPntsnKY22ZFN6V3NC4mwbpMBofU6f/2cUr/HtzF
+         ExFo/IINLEzP3geGlzIlztI9H1mRiw0kMhw+IXjV7JF8q0+B76PvCBLCQmFe02PLPBmw
+         jPCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=2AFaTBkHP+fiyETNPHNRLPn45kJUgrb2oh8W/22IFfs=;
+        b=Qw96TO+eN9oYivj4dvP1vL3Y58ipuykBcNgT/L8wjZth1t+AYNwEAuqTVcqeD0QyX9
+         +EqCBfwwzmT6Dyow+3L6eXV0O6u4LkXwZQaTh5LloeKCygdS9pMW2LzZ3pUkRXn/l+oV
+         /93lobtf6RqJW/eZdWJSZ3R72H+xt6qaINpvmgs37hKnbX06DcnejdJisDocfYafM5tW
+         Urh5WZ/ffxOwxDOj5yOMyY11bobg3kw4P6Ht/4VBoexBu2moXkM8jCXtrX9wbed0lnjQ
+         UOMf9+QJ66QokwKwqrV3CeW+MROK2jKqTyhjMRQoEbs6YOXKPYW3ZKcCRrJMOaAaiNF6
+         UbhA==
+X-Gm-Message-State: AOAM531JVkM+gFTXmKxT6S3IfXdxRqlDIuyicqYz7PiNCG12QSMj94eI
+        FjKoJ+PPTTj8rBYp3kPE1dMTSFzi/GriJA==
+X-Google-Smtp-Source: ABdhPJxp8DDUMiBk+vuKI7BcJTXV0dh80SYDop4A/rYDqRfQjL5KPUAWpbYg9LtSbmGcegKlzw9fmg==
+X-Received: by 2002:a17:90a:b795:: with SMTP id m21mr25231412pjr.143.1623764197158;
+        Tue, 15 Jun 2021 06:36:37 -0700 (PDT)
+Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
+        by smtp.gmail.com with ESMTPSA id y2sm6668090pfa.195.2021.06.15.06.36.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 06:36:36 -0700 (PDT)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     pmladek@suse.com, senozhatsky@chromium.org, rostedt@goodmis.org,
+        john.ogness@linutronix.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] printk: Move EXPORT_SYMBOL() closer to vprintk definition
+References: <20210614235635.887365-1-punitagrawal@gmail.com>
+        <8c16059d-6e58-a3e4-25ef-7e2bcabecd86@rasmusvillemoes.dk>
+Date:   Tue, 15 Jun 2021 22:36:33 +0900
+In-Reply-To: <8c16059d-6e58-a3e4-25ef-7e2bcabecd86@rasmusvillemoes.dk> (Rasmus
+        Villemoes's message of "Tue, 15 Jun 2021 08:50:45 +0200")
+Message-ID: <87im2ftfku.fsf@stealth>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210611015849.42589-1-skhan@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfIY3fpQsqyTxg/12EwjXTdXJ4H4fQhDvhvUsUDPDNaiFJn7cFHi+oEO5t9qlFvaoCNJitZT/UimCmnJLCJGf9mat5FDlGkx0DTVritfHTWTeawb5H0Qi
- 19R0pAfngkCvuuMLWdD/91NTVXYfe15e8v89srtADlTf77TA9YasfbTs1CGh+KtWDLVRvmaen/cK1do/S4crI8Blx85vwD93cRFHyZ+uNSs370zGpEXSBtHt
- K0zFAelyLKtpCadoGqjOMPXXfCijHFMrbE+bE/CHJCUI0DWEQECP9BoIi4WOF6VQqTBCdlJfyJVHjL1Lwqmm01m8aRQ9qslIDkUrd117sWrbO/ZjJuEr/Bp5
- jdFoShJhQTZS3SupGa2qw4xs2eIPo2lDuXUci7wAH17x+OIXM0tRTFrgbEvWzXuCMKoPnmyX5vpgYzA+oZwpuMrgFyc0KhuGLdmKmNSedc0zSMTZeHeCb+26
- VOX5e4xC3D68ah1M
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shuah,
+Hi Rasmus,
 
-On 11/06/2021 03:58, Shuah Khan wrote:
-> Smatch static checker warns that "mdev" can be null:
-> 
-> sound/usb/media.c:287 snd_media_device_create()
->     warn: 'mdev' can also be NULL
-> 
-> If CONFIG_MEDIA_CONTROLLER is disabled, this file should not be included
-> in the build.
-> 
-> The below conditions in the sound/usb/Makefile are in place to ensure that
-> media.c isn't included in the build.
-> 
-> sound/usb/Makefile:
-> snd-usb-audio-$(CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER) += media.o
-> 
-> select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER &&
->        (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND_USB_AUDIO)
-> 
-> The following config check in include/media/media-dev-allocator.h is
-> in place to enable the API only when CONFIG_MEDIA_CONTROLLER and
-> CONFIG_USB are enabled.
-> 
->  #if defined(CONFIG_MEDIA_CONTROLLER) && defined(CONFIG_USB)
-> 
-> This check doesn't work as intended when CONFIG_USB=m. When CONFIG_USB=m,
-> CONFIG_USB_MODULE is defined and CONFIG_USB is not. The above config check
-> doesn't catch that CONFIG_USB is defined as a module and disables the API.
-> This results in sound/usb enabling Media Controller specific ALSA driver
-> code, while Media disables the Media Controller API.
-> 
-> Fix the problem requires two changes:
-> 
-> 1. Change the check to use IS_ENABLED to detect when CONFIG_USB is enabled
->    as a module or static. Since CONFIG_MEDIA_CONTROLLER is a bool, leave
->    the check unchanged to be consistent with drivers/media/Makefile.
-> 
-> 2. Change the drivers/media/mc/Makefile to include mc-dev-allocator.o
->    in mc-objs when CONFIG_USB is y or m.
+Rasmus Villemoes <linux@rasmusvillemoes.dk> writes:
 
-If I test this patch, then I get:
+> On 15/06/2021 01.56, Punit Agrawal wrote:
+>> Commit 28e1745b9fa2 ("printk: rename vprintk_func to vprintk") while
+>> improving readability by removing vprintk indirection, inadvertently
+>> placed the EXPORT_SYMBOL() for the newly renamed function at the end
+>> of the file.
+>> 
+>> For reader sanity, and as is convention move the EXPORT_SYMBOL()
+>> declaration just after the end of the function.
+>> 
+>> Fixes: 28e1745b9fa2 ("printk: rename vprintk_func to vprintk")
+>> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+>> --
+>> Hi,
+>> 
+>> The out-of-place EXPORT_SYMBOL() caused an unexpected conflict while
+>> attempting to rebase the RT patches onto newer kernels.
+>> 
+>> Generally I avoid sending trivial changes on their own but this one is
+>> a little hard to overlook. Also it felt like an obvious oversight in
+>> the original patch.
+>
+> Yes, indeed, sorry about that, and thanks for fixing it.
+>
+>> Please consider merging.
+>
+> Petr, as this is causing trouble for the -rt patchset, please consider
+> if this could make it to Linus before v5.13 release.
+>
+> Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-drivers/media/mc/mc-dev-allocator.c:97:22: error: redefinition of 'media_device_usb_allocate'
-   97 | struct media_device *media_device_usb_allocate(struct usb_device *udev,
-      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from drivers/media/mc/mc-dev-allocator.c:24:
-include/media/media-dev-allocator.h:55:36: note: previous definition of 'media_device_usb_allocate' was here
-   55 | static inline struct media_device *media_device_usb_allocate(
-      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/media/mc/mc-dev-allocator.c:119:6: error: redefinition of 'media_device_delete'
-  119 | void media_device_delete(struct media_device *mdev, const char *module_name,
-      |      ^~~~~~~~~~~~~~~~~~~
-In file included from drivers/media/mc/mc-dev-allocator.c:24:
-include/media/media-dev-allocator.h:59:20: note: previous definition of 'media_device_delete' was here
-   59 | static inline void media_device_delete(
-      |                    ^~~~~~~~~~~~~~~~~~~
+Thanks for the quick response.
 
-The .config has:
-
-# CONFIG_USB_SUPPORT is not set
-CONFIG_MEDIA_CONTROLLER=y
-
-Regards,
-
-	Hans
-
-> 
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Link: https://lore.kernel.org/alsa-devel/YLeAvT+R22FQ%2FEyw@mwanda/
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> ---
->  drivers/media/mc/Makefile           | 2 +-
->  include/media/media-dev-allocator.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/mc/Makefile b/drivers/media/mc/Makefile
-> index 119037f0e686..140f0a78540e 100644
-> --- a/drivers/media/mc/Makefile
-> +++ b/drivers/media/mc/Makefile
-> @@ -3,7 +3,7 @@
->  mc-objs	:= mc-device.o mc-devnode.o mc-entity.o \
->  	   mc-request.o
->  
-> -ifeq ($(CONFIG_USB),y)
-> +ifeq ($(CONFIG_USB),$(filter $(CONFIG_USB),y m))
->  	mc-objs += mc-dev-allocator.o
->  endif
->  
-> diff --git a/include/media/media-dev-allocator.h b/include/media/media-dev-allocator.h
-> index b35ea6062596..2ab54d426c64 100644
-> --- a/include/media/media-dev-allocator.h
-> +++ b/include/media/media-dev-allocator.h
-> @@ -19,7 +19,7 @@
->  
->  struct usb_device;
->  
-> -#if defined(CONFIG_MEDIA_CONTROLLER) && defined(CONFIG_USB)
-> +#if defined(CONFIG_MEDIA_CONTROLLER) && IS_ENABLED(CONFIG_USB)
->  /**
->   * media_device_usb_allocate() - Allocate and return struct &media device
->   *
-> 
-
+Punit
