@@ -2,81 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432253A8B37
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A193A8B3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhFOVkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbhFOVkI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:40:08 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F7FC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:38:03 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso348281oto.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ktvid5LXIM7drztkwdX9ozDIlIDeMyLQZst/rY14IM4=;
-        b=zD1aW/O4VDuKIIKdFuwz2Ojl7wf3CLuun/3va6xMimNA6l8jhK6SPx2l8+AWtJNAKp
-         BhsSSs78peO1Fd/zmAZIhyfwOYNzotlnR6FYf6A86m2vhSJJDIE/regKtTzQRYtet52U
-         TfsTx8jGr/P7ajZMHEoeizhVU9l22/k86jbVbhvZceGzDIc0sTVpiBIldvz/lyBubWlL
-         ETdEkf4HL30x3OPOnJxR9xtnsdm7jC/EFJ5BnfUAMYX8j+3A2rK8gHr4M2UxkoO1mIAM
-         ZV2+fzIcak2q4i+rNRHLQKcT1WcU+cDjIJUIcX8H1yrOKPFnVdiF/+45TCpzMqEssVpY
-         IxKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ktvid5LXIM7drztkwdX9ozDIlIDeMyLQZst/rY14IM4=;
-        b=dFypvkF/Doq40fk3Zn81xKC6OV5RNMBsg+6uPc7Rx34ScOBXjc89fveMdtNTKddD1q
-         2shUhxmEYvsOXVvmx93H7goU4Ae+KOGO1a7R4PsSGnsh9FgaazNvCcGqOMzQVOzas/ZO
-         pUFYJKtBaXQYVmNRTNBW+EfCWqr+bf8BItJTFZs4HBVnoQFfJJ/d4WYzZe8se+EIq2zg
-         Y/EEqIRSlLHzGF5nySANZpQ8DOcHEbSqTPVorbnBJI5rGnkYVDCWVlLb9t2LKHvawMmf
-         /tsuRfefrUzKBDWiZ2YX4TKwn+G2ItG+ZbK6U3PeeW06RSUpIYiQQA0mR6olKQrMt3JF
-         nMgQ==
-X-Gm-Message-State: AOAM531Wu1uc+8XiyZhWKpE76rhIJ/zVILuQlILPErJTeS6p3wbLehW+
-        dnq3UZqkCWbEQR+AWCdR85ocalL9pwB3Mw==
-X-Google-Smtp-Source: ABdhPJytngzhKqyqU5m/g9kKa33OJYlC3KL/VMY2NdSzLTOIkMokegs/VZiBqv1cSCyDJRGsl5rMzg==
-X-Received: by 2002:a9d:355:: with SMTP id 79mr1071698otv.101.1623793082643;
-        Tue, 15 Jun 2021 14:38:02 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id d20sm42457otq.62.2021.06.15.14.38.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 14:38:02 -0700 (PDT)
-Subject: Re: [PATCH] io-wq: remove redundant initialization of variable ret
-To:     Colin King <colin.king@canonical.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210615143424.60449-1-colin.king@canonical.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <532fcdf3-2b7a-a9c6-039a-5dcfb32a61e1@kernel.dk>
-Date:   Tue, 15 Jun 2021 15:38:01 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231439AbhFOVkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:40:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230039AbhFOVkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 17:40:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 979D761159;
+        Tue, 15 Jun 2021 21:38:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623793097;
+        bh=WsnjQxBiIqhUROeHutNepvY82vWn5+Gb/nJxmlw1okQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G54nkd1ForQLhHRyA3xmzkzQ/I3ZTEMbs3gzY14C/QuPikahuDvGy05v8VOm+cB1I
+         He+r68OrgXgLYhrWZW2vUwDM+Y/ekqLde5qIQapr/6aaO0clZO2XH1oG8oXy6FMYjG
+         lT5HLVEuN80FuhPXro1El3ACmr1wW8RDfIfdoRmaHh5SPkrUfihxd19JzI4zblWXSE
+         iESMg0YLder2JKhvedkWNuJjwJKP2Nnn2C1lVI0NNhqcCfker106IdMF5UkzrvD/OV
+         hQaXqLv55Cp4pstc0+buH8K/s0gez6civkJZ3nvEVJPgsKAMXIp1fjKYtDCejGdI0p
+         Z0OgN5xmj/tkw==
+Date:   Tue, 15 Jun 2021 14:38:15 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Edward Cree <ecree.xilinx@gmail.com>,
+        Kurt Manucredo <fuzzybritches0@gmail.com>,
+        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
+        keescook@chromium.org, yhs@fb.com, dvyukov@google.com,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        nathan@kernel.org, ndesaulniers@google.com,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, kasan-dev@googlegroups.com
+Subject: Re: [PATCH v5] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
+Message-ID: <YMkdx1VB0i+fhjAY@gmail.com>
+References: <752cb1ad-a0b1-92b7-4c49-bbb42fdecdbe@fb.com>
+ <CACT4Y+a592rxFmNgJgk2zwqBE8EqW1ey9SjF_-U3z6gt3Yc=oA@mail.gmail.com>
+ <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com>
+ <202106101002.DF8C7EF@keescook>
+ <CAADnVQKMwKYgthoQV4RmGpZm9Hm-=wH3DoaNqs=UZRmJKefwGw@mail.gmail.com>
+ <85536-177443-curtm@phaethon>
+ <bac16d8d-c174-bdc4-91bd-bfa62b410190@gmail.com>
+ <YMkAbNQiIBbhD7+P@gmail.com>
+ <dbcfb2d3-0054-3ee6-6e76-5bd78023a4f2@iogearbox.net>
+ <YMkcYn4dyZBY/ze+@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210615143424.60449-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMkcYn4dyZBY/ze+@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 8:34 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Tue, Jun 15, 2021 at 02:32:18PM -0700, Eric Biggers wrote:
+> On Tue, Jun 15, 2021 at 11:08:18PM +0200, Daniel Borkmann wrote:
+> > On 6/15/21 9:33 PM, Eric Biggers wrote:
+> > > On Tue, Jun 15, 2021 at 07:51:07PM +0100, Edward Cree wrote:
+> > > > 
+> > > > As I understand it, the UBSAN report is coming from the eBPF interpreter,
+> > > >   which is the *slow path* and indeed on many production systems is
+> > > >   compiled out for hardening reasons (CONFIG_BPF_JIT_ALWAYS_ON).
+> > > > Perhaps a better approach to the fix would be to change the interpreter
+> > > >   to compute "DST = DST << (SRC & 63);" (and similar for other shifts and
+> > > >   bitnesses), thus matching the behaviour of most chips' shift opcodes.
+> > > > This would shut up UBSAN, without affecting JIT code generation.
+> > > 
+> > > Yes, I suggested that last week
+> > > (https://lkml.kernel.org/netdev/YMJvbGEz0xu9JU9D@gmail.com).  The AND will even
+> > > get optimized out when compiling for most CPUs.
+> > 
+> > Did you check if the generated interpreter code for e.g. x86 is the same
+> > before/after with that?
 > 
-> The variable ret is being initialized with a value that is never read, the
-> assignment is redundant and can be removed.
+> Yes, on x86_64 with gcc 10.2.1, the disassembly of ___bpf_prog_run() is the same
+> both before and after (with UBSAN disabled).  Here is the patch I used:
+> 
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 5e31ee9f7512..996db8a1bbfb 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -1407,12 +1407,30 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+>  		DST = (u32) DST OP (u32) IMM;	\
+>  		CONT;
+>  
+> +	/*
+> +	 * Explicitly mask the shift amounts with 63 or 31 to avoid undefined
+> +	 * behavior.  Normally this won't affect the generated code.
+> +	 */
+> +#define ALU_SHIFT(OPCODE, OP)		\
+> +	ALU64_##OPCODE##_X:		\
+> +		DST = DST OP (SRC & 63);\
+> +		CONT;			\
+> +	ALU_##OPCODE##_X:		\
+> +		DST = (u32) DST OP ((u32)SRC & 31);	\
+> +		CONT;			\
+> +	ALU64_##OPCODE##_K:		\
+> +		DST = DST OP (IMM & 63);	\
+> +		CONT;			\
+> +	ALU_##OPCODE##_K:		\
+> +		DST = (u32) DST OP ((u32)IMM & 31);	\
+> +		CONT;
+> +
+>  	ALU(ADD,  +)
+>  	ALU(SUB,  -)
+>  	ALU(AND,  &)
+>  	ALU(OR,   |)
+> -	ALU(LSH, <<)
+> -	ALU(RSH, >>)
+> +	ALU_SHIFT(LSH, <<)
+> +	ALU_SHIFT(RSH, >>)
+>  	ALU(XOR,  ^)
+>  	ALU(MUL,  *)
+>  #undef ALU
+> 
 
-Applied, thanks.
+Note, I missed the arithmetic right shifts later on in the function.  Same
+result there, though.
 
--- 
-Jens Axboe
-
+- Eric
