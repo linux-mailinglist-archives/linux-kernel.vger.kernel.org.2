@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238CC3A77F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2E13A77F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhFOHaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:30:13 -0400
-Received: from mga05.intel.com ([192.55.52.43]:2501 "EHLO mga05.intel.com"
+        id S230285AbhFOHbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:31:04 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:11663 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhFOHaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:30:09 -0400
-IronPort-SDR: m9j6sfytZgW/aQrWbkFRpR6p5vFRpvNbf7QTGOh0h0YbFzR5xQ2Qet9nIrilewS8rGPVjGghgV
- /lMUfbiSPUCw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="291572678"
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="291572678"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 00:27:53 -0700
-IronPort-SDR: NhPtFRnH3Fzy5OVQxBazWhogkyHcuZquz8oQL1Qi6xEiNOXLelQQ3/bGTsFOjDJYnIzoy2wska
- cSHMVG53fLEw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="554359035"
-Received: from unknown (HELO [10.239.159.118]) ([10.239.159.118])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Jun 2021 00:27:51 -0700
-Cc:     baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linuxarm@huawei.com,
-        thunder.leizhen@huawei.com, chenxiang66@hisilicon.com
-Subject: Re: [PATCH v12 3/5] iommu/vt-d: Add support for IOMMU default DMA
- mode build options
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org, dwmw2@infradead.org, robin.murphy@arm.com
-References: <1623414043-40745-1-git-send-email-john.garry@huawei.com>
- <1623414043-40745-4-git-send-email-john.garry@huawei.com>
- <f3940a3f-d1c1-148d-e4b5-51cecf924ff5@linux.intel.com>
- <03675e2f-c3a6-ce33-ef96-f9ae544b2d13@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <824db374-dc82-a9ea-b162-2f51e70ef999@linux.intel.com>
-Date:   Tue, 15 Jun 2021 15:26:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229908AbhFOHbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 03:31:02 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4G40LK5WyBzBBQy;
+        Tue, 15 Jun 2021 09:28:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id utAMxQNL3e0X; Tue, 15 Jun 2021 09:28:57 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4G40LK2Q82zBBDH;
+        Tue, 15 Jun 2021 09:28:57 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 364218B7A3;
+        Tue, 15 Jun 2021 09:28:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id HMyoXwMPJYV4; Tue, 15 Jun 2021 09:28:57 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BFA318B7A2;
+        Tue, 15 Jun 2021 09:28:56 +0200 (CEST)
+Subject: Re: [PATCH 5/7] signal: Add unsafe_copy_siginfo_to_user()
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <b813c1f4d3dab2f51300eac44d99029aa8e57830.1623739212.git.christophe.leroy@csgroup.eu>
+ <684939dcfef612fac573d1b983a977215b71f64d.1623739212.git.christophe.leroy@csgroup.eu>
+ <YMhOMoKKvew0YYCt@infradead.org>
+ <7061fbee-cc82-2699-cf12-e5a4ae46940f@csgroup.eu>
+ <YMhU3Df7foVo9BaM@infradead.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <ce8f56c6-3312-8fb6-7389-1498d6bb9cb7@csgroup.eu>
+Date:   Tue, 15 Jun 2021 09:28:54 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <03675e2f-c3a6-ce33-ef96-f9ae544b2d13@huawei.com>
+In-Reply-To: <YMhU3Df7foVo9BaM@infradead.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
 
-On 6/14/21 4:03 PM, John Garry wrote:
-> On 12/06/2021 03:14, Lu Baolu wrote:
->> On 2021/6/11 20:20, John Garry wrote:
->>> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
->>> index 2a71347611d4..4467353f981b 100644
->>> --- a/drivers/iommu/Kconfig
->>> +++ b/drivers/iommu/Kconfig
->>> @@ -94,6 +94,7 @@ choice
->>>       prompt "IOMMU default DMA mode"
->>>       depends on IOMMU_DMA
->>> +    default IOMMU_DEFAULT_LAZY if INTEL_IOMMU
->>>       default IOMMU_DEFAULT_STRICT
+
+Le 15/06/2021 à 09:21, Christoph Hellwig a écrit :
+> On Tue, Jun 15, 2021 at 09:03:42AM +0200, Christophe Leroy wrote:
 >>
->> If two default values are different. Which one will be overridden?
+>>
+>> Le 15/06/2021 ?? 08:52, Christoph Hellwig a ??crit??:
+>>> On Tue, Jun 15, 2021 at 06:41:01AM +0000, Christophe Leroy wrote:
+>>>> +	unsafe_copy_to_user(__ucs_to, __ucs_from,			\
+>>>> +			    sizeof(struct kernel_siginfo), label);	\
+>>>> +	unsafe_clear_user(__ucs_expansion, SI_EXPANSION_SIZE, label);	\
+>>>> +} while (0)
+>>>
+>>> unsafe_clear_user does not exist at this point, and even your later
+>>> patch only adds it for powerpc.
+>>>
+>>
+>> You missed below chunck I guess:
+>>
+>>> diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+>>> index c05e903cef02..37073caac474 100644
+>>> --- a/include/linux/uaccess.h
+>>> +++ b/include/linux/uaccess.h
+>>> @@ -398,6 +398,7 @@ long strnlen_user_nofault(const void __user *unsafe_addr, long count);
+>>>    #define unsafe_put_user(x,p,e) unsafe_op_wrap(__put_user(x,p),e)
+>>>    #define unsafe_copy_to_user(d,s,l,e) unsafe_op_wrap(__copy_to_user(d,s,l),e)
+>>>    #define unsafe_copy_from_user(d,s,l,e) unsafe_op_wrap(__copy_from_user(d,s,l),e)
+>>> +#define unsafe_clear_user(d, l, e) unsafe_op_wrap(__clear_user(d, l), e)
 > 
-> If I understand your question correctly, I think you are asking if both 
-> are set:
-> CONFIG_IOMMU_DEFAULT_LAZY=y
-> CONFIG_IOMMU_DEFAULT_STRICT=y
+> That doesn't help with architectures that define user_access_begin but
+> do not define unsafe_clear_user. (i.e. x86).
 > 
-> If this happens, then make defconfig complains about both being set, and 
-> selects the 2nd, whatever that is.
 
-On x86, Intel or AMD, this will be
+Yes, the day they want to use unsafe_copy_siginfo_to_user() they'll have to implement 
+unsafe_clear_user().
 
-	prompt "IOMMU default DMA mode"
-	  depends on IOMMU_DMA
-	  default IOMMU_DEFAULT_LAZY
-	  default IOMMU_DEFAULT_STRICT
+Until that day, they don't need unsafe_clear_user() and I'm sure the result would be disastrous if a 
+poor powerpc guy like me was trying to implement some low level x86 code.
 
-which will be default, LAZY or STRICT? Will it cause complains?
-
-> 
-> If neither are set, then IOMMU_DEFAULT_LAZY is set if INTEL_IOMMU is 
-> set, otherwise IOMMU_DEFAULT_STRICT.
-> 
-> Thanks,
-> John
-
-Best regards,
-baolu
+Similar to unsafe_get_compat_sigset(), an arch wanting to use it has to implement 
+unsafe_copy_from_user().
