@@ -2,92 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8FF3A85F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98D13A8607
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbhFOQDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 12:03:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32974 "EHLO
+        id S231301AbhFOQGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 12:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231486AbhFOQDu (ORCPT
+        with ESMTP id S231657AbhFOQG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:03:50 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BD5C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:01:46 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id f70so27289100qke.13
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:01:46 -0700 (PDT)
+        Tue, 15 Jun 2021 12:06:26 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CFDC061767
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:04:21 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id u18so8081708plc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:04:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7C7EVveR2N28ai5r9/J+2yOqz+gY5pQumT6AbxDu9NQ=;
-        b=BMDmDwevRAQ/jZtfGP7p38zmpe9NJVDCl+GWwBgJ4KO/Ve2LeGgmD7Qj6TTdeSUewV
-         rmTwm91IMkKMHCOrZXNL0KEmd1YUcfnCR6Y18iF/KIN6Y0mnI+Fh4YURVYOn071j2bTw
-         FJF8aUtMSOX4S+wBwhW/LG3zFECq46pFpONoo=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=gw2oHDXVQvWw8DrWhZyesLBZX3xqY81dz1Mhcj9xl+k=;
+        b=JUj8pZ1qVRjRKHnjaHS6ATWMhYGJXuJFfwnPVcwawU8F2l82PYCA0YXSokUWXzlDYw
+         4Qoeg1yhPj/ROVk2H8Dvdf7baXXiS3XBOnWcwSEHJVrIGuh0QhysI7TuvwVfXq1z2fWR
+         LjwsPmoJ2izkzV0M79i3QbpKU9hNx5rnq/DNg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7C7EVveR2N28ai5r9/J+2yOqz+gY5pQumT6AbxDu9NQ=;
-        b=hnoNQq9hBMV/yMhuYNeLs8snizJTgsizqoswvXotxk6VQO+AMGl5FF34hxB6klIWsm
-         2CDqEW4Hz5fkR/dHy2xl2MbeVEm5gWdqBMWK3z1Ggoa7yzeE9w/Euhd2DWlTlVNpXkdo
-         dmKCpehtJxdZtn0Fb6jthruqXl7uyRkLWjEUIsHY8IGswiBQRkzAYGqqUNhGe5bYJi+n
-         hRbwl9hkvYB31z3jl1tWR3jCV4HqeXKM5rmy4zpGuoy6LtfGb5veveU4YaOsdOMkq60O
-         1BQ+lRoPGC5+tzPINBiDgHFTCWdrlFcFEjrTpDAaeA1SKYXS0WFDwgDRmqAbMHT9h0Dc
-         VdLA==
-X-Gm-Message-State: AOAM5338MA+vG35Ma1qX2ERkeeWBRu/IcuvF5us/QawnIyx/zQhEuZ2T
-        ayxFcqk7Ivd7KsRIQ3WouO+H4F7kpcSmh5MkYPiM4w==
-X-Google-Smtp-Source: ABdhPJwMhLK3ojmLgXGBYK7lXx8LuQWFcV18TBkTwaLl6+qHJap0zIeFZXk+ggFYSjpX/FOfrM6i9m3q1kO7mfCsLi8=
-X-Received: by 2002:a05:620a:a87:: with SMTP id v7mr340087qkg.468.1623772905288;
- Tue, 15 Jun 2021 09:01:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=gw2oHDXVQvWw8DrWhZyesLBZX3xqY81dz1Mhcj9xl+k=;
+        b=tG6NV49z1l/Ltouv6299jnX3cj3cxJp9P3crO4bJWtDX1Yw9LoHzJiEK0ABgL7uBEr
+         9HFLXjF9MPbhTWQl9HBrjYcmAUd9W/iWfs3PPZvCiUcxwYZtmItVTQM4vXkTi4O4FUx/
+         QkwrUO1N4io5Hyc0ovQpju0vp81/00srIwbOURphqKtcZ2dd8gq/OUEmacSNTxGqDm0D
+         /VVrdAdZNdqJ9H8X27QfW/NaS52JJ/q6lbu5SI5LhqET0RfNlvqwN7lk+eJNlYOE7EfE
+         TCcIS+ouW0ZtvJIYram007Y0O58V4Nz8jZpeM6/BXKOXxlFLA9dAxx30uH60yRKcX1L0
+         9UXQ==
+X-Gm-Message-State: AOAM532x2CQEcujsa9vu4FOzpholO850HsYLDjlILm6ajzeBPhqo/6Xv
+        fMr/pmtsWmb6Y8LyE6B10Cm9gA==
+X-Google-Smtp-Source: ABdhPJz2rstwVgeIvxg+8DgWOqz5xdzUNTzL+mT2t2ebQfbCN6I6QmLAsdV7xTYxLJni7w57LHv67A==
+X-Received: by 2002:a17:90a:f013:: with SMTP id bt19mr5421357pjb.201.1623773061310;
+        Tue, 15 Jun 2021 09:04:21 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id ei10sm15551868pjb.8.2021.06.15.09.04.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 09:04:20 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 09:04:19 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        WeiXiong Liao <gmpy.liaowx@gmail.com>, axboe@kernel.dk,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] pstore/blk: Use the normal block device I/O path
+Message-ID: <202106150854.30F58015@keescook>
+References: <20210614200421.2702002-1-keescook@chromium.org>
+ <20210615123118.GA14239@lst.de>
 MIME-Version: 1.0
-References: <CAFr9PXnBb7OmOAMumDodC+0usWqRT-RXwC+YUHZ2Y43Xe_uTQQ@mail.gmail.com>
- <20210615152840.GD11724@lx2k>
-In-Reply-To: <20210615152840.GD11724@lx2k>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Wed, 16 Jun 2021 01:03:49 +0900
-Message-ID: <CAFr9PXkeqryzutzpV6woskee_SwbDMJFgxPtspvTk0-VS6A5xA@mail.gmail.com>
-Subject: Re: [GIT PULL] ARM: mstar for v5.14 v2
-To:     Olof Johansson <olof@lixom.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>, SoC Team <soc@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Romain Perier <romain.perier@gmail.com>,
-        Mohammed Billoo <mohammed.billoo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210615123118.GA14239@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Olof,
+On Tue, Jun 15, 2021 at 02:31:18PM +0200, Christoph Hellwig wrote:
+> > -	if (!dev || !dev->total_size || !dev->read || !dev->write)
+> > +	if (!dev || !dev->total_size || !dev->read || !dev->write) {
+> > +		if (!dev)
+> > +			pr_err("NULL device info\n");
+> > +		else {
+> > +			if (!dev->total_size)
+> > +				pr_err("zero sized device\n");
+> > +			if (!dev->read)
+> > +				pr_err("no read handler for device\n");
+> > +			if (!dev->write)
+> > +				pr_err("no write handler for device\n");
+> > +		}
+> >  		return -EINVAL;
+> > +	}
+> 
+> This is completely unrelated and should be a separate patch.  And it
+> also looks rather strange, I'd at very least split the dev check out
+> and return early without the weird compound statement, but would probably
+> handle each one separate.  All assuming that we really need all these
+> debug printks.
 
-On Wed, 16 Jun 2021 at 00:31, Olof Johansson <olof@lixom.net> wrote:
-> This time it seems like you based your branch on 5.14-rc5, which is a newer -rc
-> than what we have the rest of our trees on. The general rule of thumb is to
-> base it on the oldest meaningful rc for the release (rc1 or rc2, most of the
-> time). We normally base our tree on rc2 or so, in this case I went forward to
-> rc3 earlier.
+Agreed -- I've moved it to a separate patch.
 
-Sorry, I hadn't even thought of that but it makes sense.
+> >  /*
+> >   * This takes its configuration only from the module parameters now.
+> >   */
+> >  static int __register_pstore_blk(void)
+> 
+> This needs a __init annotation now.
 
-> (Maybe you had the same base last time around, and I missed it -- my tooling
-> failed out on the S-o-b checking before I noticed)
+Ah yes, good point. I've rearranged things to avoid this.
 
-Last one was rc5 too.
+> >  {
+> > +	struct pstore_device_info dev = {
+> > +		.read = psblk_generic_blk_read,
+> > +		.write = psblk_generic_blk_write,
+> > +	};
+> 
+> On-stack method tables are a little odd..
 
-> To avoid another roundtrip here, I'll apply the two patches directly, but
-> please keep it in mind in the future, especially once you have more material
-> for a cycle.
+struct pstore_device_info is mainly an argument passing structure, not
+an ops structure. There is some weird over-engineering here, which I'll
+fix up in a follow-up patch.
 
-Thanks for doing that and the hand holding. I think I can manage to
-get it right next time. :)
+> > +	if (!__is_defined(MODULE)) {
+> 
+> This looks a little weird.  Can we define a rapper for this in config.h
+> that is a little more self-explanatory, e.g. in_module()?
 
-I have one DTS patch I would like to get into 5.14 for the watchdog
-driver that was recently accepted.
-Is it still ok to send a PR for that one or is it too late now? I
-think I read the cut off is around rc6.
+I've adjusted this.
 
-Thanks,
+> 
+> > +	if (!psblk_file->f_mapping)
+> > +		pr_err("missing f_mapping\n");
+> 
+> Can't ever be true.
+> 
+> > +	else if (!psblk_file->f_mapping->host)
+> > +		pr_err("missing host\n");
+> 
+> Can't ever be true either.
+> 
+> > +	else if (!I_BDEV(psblk_file->f_mapping->host))
+> > +		pr_err("missing I_BDEV\n");
+> > +	else if (!I_BDEV(psblk_file->f_mapping->host)->bd_inode)
+> > +		pr_err("missing bd_inode\n");
+> 
+> І_BDEV just does pointer arithmetics, so it can't ever return NULL.
+> And there are no block device inodes without bd_inode either.  And
+> all of this is per definition present for open S_ISBLK inodes.
 
-Daniel
+Okay, good. There were a lot of dead-ends in here, and after the removal
+of i_bdev, it wasn't obvious which things were going to exist. I've
+removed all these checks.
+
+One thing I noticed it that it seems we're missing a global helper for
+"->f_mapping->host", which I see repeated a lot. (There is a local
+helper bdev_file_inode().)
+
+$ git grep '\bf_mapping->host\b' | wc -l
+149
+
+
+Thanks for the review! I'll send a v2 series.
+
+-- 
+Kees Cook
