@@ -2,164 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DF73A8A6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA413A8A6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhFOUtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 16:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhFOUtv (ORCPT
+        id S230503AbhFOUui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 16:50:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38410 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229898AbhFOUui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 16:49:51 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AB0C061574;
-        Tue, 15 Jun 2021 13:47:46 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id v9so69722wrx.6;
-        Tue, 15 Jun 2021 13:47:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pv+gm9xDaMhQpoizgc0lp2cOTulVOFNanGwYqtdnjlI=;
-        b=qT1amIc0uTPuqFTDflzSF7bcrf/Ppt5Idz9VagguvZdVZ4iVWgGgBCwcGhTiSEnUCq
-         EydrtbiroD30qLVHoJhc3jRfg4s9MT492ziZwMhAVFybsr5EojFt/5KmrtfGbolmrXBH
-         b9fx6T2HrUCeRxkXyEFdR2ESoOF02uEqIKB+Vg/aLXUy0mZVFkjZYL12UkbeNVIomffp
-         /12nRJ1cwn99qq5OtJN0gIV9Umuve9uAnU6GXmTV5NyB5onGTPMzioWN01kSaVL5Ldn9
-         GkI+26T6EDAPGzZf4LlZVT0+vT1RxuG3BgSGELRNnkWUeh2d43P0vyXyh9tRwgfjVMuT
-         cX/w==
+        Tue, 15 Jun 2021 16:50:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623790112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KQ07UnerLYYg5xbQ2D5ZXpRlZkXdV15KKy3dzWwHbIQ=;
+        b=attKP6X/C6O43WgAOZ246NJ0T+bY9nH4n1CNdnqRCLxDf8+YI9FUF/JveNLK4/cWXIrLc4
+        Lfad0dT1Mha1Sd3S37FvuYND59adziY0DLkEGQ77abFcyzesjA+vMdSW7ELAiHCqPQUC7D
+        mxM6p3JVkzhiy4uA7RmT6aqJE3RDqjY=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-58-kw1jDIQRNmek1hdnuQtfxQ-1; Tue, 15 Jun 2021 16:48:31 -0400
+X-MC-Unique: kw1jDIQRNmek1hdnuQtfxQ-1
+Received: by mail-oo1-f71.google.com with SMTP id d12-20020a4aeb8c0000b029023bbaaddcbbso202534ooj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:48:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pv+gm9xDaMhQpoizgc0lp2cOTulVOFNanGwYqtdnjlI=;
-        b=Vlkat6Ym6IgIubWykDSJmgOOu986bloIs9BVJKx5bL845rGaSV0wPCMbwraTDXnJyr
-         76ChjvcnRTc9CIqsPC6M7ZMAqe8GEh3M4G/0X5H47wwlNCrH3dfvIsERdYWb3waWpdjB
-         NrGUFM17FMisQ14q1RLt07V1Uao3T47g9dR2aB0eEb/wVim8HK5IbZvwhcf3BCf3xI5P
-         KDfSnSXBMInA9PmmbHB8MF2JwBZL4/H2JpuMREbFYp1DakOhX3Cwpdr3cuNM+YeAoW4T
-         zWogpEdkeZJU48gbLfUXgk0ytBdGQhng5XAtanl2Y2BGZQb2bQoyK7kGgBc4QkNe9Giv
-         d6qw==
-X-Gm-Message-State: AOAM531ztB45hxMEfBKR5lT/gMlf/zsSRr5eIu0zmROKKPXbAKeu/9+i
-        PSGvyz/fTYd1rcW2S7kIcqMpQThFJssB3ZrxdWA=
-X-Google-Smtp-Source: ABdhPJzi4dNLm8JUfC/BUZyZh05JZKtpCZuUVzJwHYKgnbzLCUnkN7wCA04TN40B4Xohixcq2Ba6Z3aEimcXDivJv8I=
-X-Received: by 2002:adf:f6d1:: with SMTP id y17mr1170948wrp.250.1623790065304;
- Tue, 15 Jun 2021 13:47:45 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=KQ07UnerLYYg5xbQ2D5ZXpRlZkXdV15KKy3dzWwHbIQ=;
+        b=MtmDsR+Fi0Oc2GsDeAi5ovg+cXM3/WW46Ka5tnRQ27TE5X/FlIKW3U9ymatCAZkD2R
+         dgzMwqFY7nIENGDqshyElwfnFY8o/fTiILQuMjtl5yVUdprt4tkuhoUAE1VyfaYipJeA
+         Wj8fNDt38jVW3StZYTOJi1cnG2CDIYuxTLeggJWOew3Zb8P7zk9FHW7jvdPRXA4xvUUz
+         /IIoSqhZzviwopJLEjXz8Ue0FNeGA5CZcEASK9RqiLDrAAgRQZr72fs4D/YL0iBP/xKH
+         tMGSCHVkS3Ijd1nkyGSfsxBTzc/2qScx6Ze5krRBsWhTaXl/BO9BQZjpRPyS6esF7692
+         fyYA==
+X-Gm-Message-State: AOAM532keEC+78Vrkj1gHvK+bjn+8mKbGinlABo1sO6e3ROB8HpPDnt/
+        /RLKy8wsmhy6DMiPrTS132mMp4vFghTbVViXvjOfoU6SAqzBao6D2Ta/Hx39od6rlPY4eqZGxxL
+        WsFv4FP2+dHzs+RGpqiKksEzF
+X-Received: by 2002:a05:6830:1f05:: with SMTP id u5mr876287otg.322.1623790110353;
+        Tue, 15 Jun 2021 13:48:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzvrGdxE+mzotrdFHuMpTK34RUPz5I1mTgC8N7HwfPe918vRPs0JpOJGFEIPWIQK4ioxDj+rg==
+X-Received: by 2002:a05:6830:1f05:: with SMTP id u5mr876264otg.322.1623790110110;
+        Tue, 15 Jun 2021 13:48:30 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id i26sm1364oig.13.2021.06.15.13.48.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 13:48:29 -0700 (PDT)
+Subject: Re: [PATCH v4 1/4] fpga: dfl: reorganize to subdir layout
+To:     "Wu, Hao" <hao.wu@intel.com>, "mdf@kernel.org" <mdf@kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "krzysztof.kozlowski@canonical.com" 
+        <krzysztof.kozlowski@canonical.com>,
+        "nava.manne@xilinx.com" <nava.manne@xilinx.com>,
+        "Xu, Yilun" <yilun.xu@intel.com>,
+        "davidgow@google.com" <davidgow@google.com>,
+        "fpacheco@redhat.com" <fpacheco@redhat.com>,
+        "Gong, Richard" <richard.gong@intel.com>,
+        "luca@lucaceresoli.net" <luca@lucaceresoli.net>
+Cc:     "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210614201648.3358206-1-trix@redhat.com>
+ <20210614201648.3358206-3-trix@redhat.com>
+ <DM6PR11MB381964374223D0D2958AFA6985309@DM6PR11MB3819.namprd11.prod.outlook.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <d64b0fb8-5f83-2995-7ee9-b4ed2932ef60@redhat.com>
+Date:   Tue, 15 Jun 2021 13:48:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210615154952.2744-1-justin.he@arm.com> <20210615154952.2744-5-justin.he@arm.com>
-In-Reply-To: <20210615154952.2744-5-justin.he@arm.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 15 Jun 2021 23:47:29 +0300
-Message-ID: <CAHp75VeB68UUfz=6dO31zf59p6_5wGBX7etWJEV_xtLYsy=hBQ@mail.gmail.com>
-Subject: Re: [PATCH RFCv4 4/4] lib/test_printf.c: add test cases for '%pD'
-To:     Jia He <justin.he@arm.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <DM6PR11MB381964374223D0D2958AFA6985309@DM6PR11MB3819.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 6:55 PM Jia He <justin.he@arm.com> wrote:
->
-> After the behaviour of specifier '%pD' is changed to print full path
-> of struct file, the related test cases are also updated.
->
-> Given the string of '%pD' is prepended from the end of the buffer, the
-> check of "wrote beyond the nul-terminator" should be skipped.
->
-> Signed-off-by: Jia He <justin.he@arm.com>
-> ---
->  lib/test_printf.c | 26 +++++++++++++++++++++++++-
->  1 file changed, 25 insertions(+), 1 deletion(-)
->
-> diff --git a/lib/test_printf.c b/lib/test_printf.c
-> index d1d2f898ebae..9f851a82b3af 100644
-> --- a/lib/test_printf.c
-> +++ b/lib/test_printf.c
-> @@ -16,6 +16,7 @@
->
->  #include <linux/bitmap.h>
->  #include <linux/dcache.h>
-> +#include <linux/fs.h>
->  #include <linux/socket.h>
->  #include <linux/in.h>
->
-> @@ -34,6 +35,7 @@ KSTM_MODULE_GLOBALS();
->
->  static char *test_buffer __initdata;
->  static char *alloced_buffer __initdata;
-> +static bool is_prepended_buf __initdata;
->
->  extern bool no_hash_pointers;
->
-> @@ -78,7 +80,7 @@ do_test(int bufsize, const char *expect, int elen,
->                 return 1;
->         }
->
-> -       if (memchr_inv(test_buffer + written + 1, FILL_CHAR, bufsize - (written + 1))) {
 
-> +       if (!is_prepended_buf && memchr_inv(test_buffer + written + 1, FILL_CHAR, bufsize - (written + 1))) {
-
-Can it be parametrized? I don't like the custom test case being
-involved here like this.
-
->                 pr_warn("vsnprintf(buf, %d, \"%s\", ...) wrote beyond the nul-terminator\n",
->                         bufsize, fmt);
->                 return 1;
-> @@ -501,6 +503,27 @@ dentry(void)
->         test("  bravo/alfa|  bravo/alfa", "%12pd2|%*pd2", &test_dentry[2], 12, &test_dentry[2]);
->  }
+On 6/15/21 1:08 AM, Wu, Hao wrote:
+>> Subject: [PATCH v4 1/4] fpga: dfl: reorganize to subdir layout
+>>
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> Follow drivers/net/ethernet/ which has control configs
+>> NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+>> Since fpgas do not have many vendors, drop the 'VENDOR' and use
+>> FPGA_BLA.
+> Hi Tom,
 >
-> +static struct vfsmount test_vfsmnt __initdata = {};
-> +
-> +static struct file test_file __initdata = {
-> +       .f_path = { .dentry = &test_dentry[2],
-> +                   .mnt = &test_vfsmnt,
-> +       },
-> +};
-> +
-> +static void __init
-> +f_d_path(void)
-> +{
-> +       test("(null)", "%pD", NULL);
-> +       test("(efault)", "%pD", PTR_INVALID);
-> +
-> +       is_prepended_buf = true;
-> +       test("/bravo/alfa   |/bravo/alfa   ", "%-14pD|%*pD", &test_file, -14, &test_file);
-> +       test("   /bravo/alfa|   /bravo/alfa", "%14pD|%*pD", &test_file, 14, &test_file);
-> +       test("   /bravo/alfa|/bravo/alfa   ", "%14pD|%-14pD", &test_file, &test_file);
-> +       is_prepended_buf = false;
-> +}
-> +
->  static void __init
->  struct_va_format(void)
->  {
-> @@ -784,6 +807,7 @@ test_pointer(void)
->         ip();
->         uuid();
->         dentry();
-> +       f_d_path();
->         struct_va_format();
->         time_and_date();
->         struct_clk();
-> --
-> 2.17.1
+> Thanks for this patch. : )
+>
+> DFL is not a vendor, but something can be shared/reused. It's possible that
+> other vendors reuse the same concepts and the drivers of DFL. If vendor
+> drivers need to be moved inside sub folders, then maybe it's better to
+> leave DFL in the parent folder?
+
+xrt is also not a vendor, more a subdevice framework like dfl.
+
+I am not sure what you mean by other dfl vendors can you give an example ?
+
+>> There are several new subdirs
+>> altera/
+>> dfl/
+>> lattice/
+>> xilinx/
+>>
+>> Each subdir has a Kconfig that has a new/reused
+>>
+>> if FPGA_BLA
+>>    ... existing configs ...
+>> endif FPGA_BLA
+>>
+>> Which is sourced into the main fpga/Kconfig
+>>
+>> Each subdir has a Makefile whose transversal is controlled in the
+>> fpga/Makefile by
+>>
+>> obj-$(CONFIG_FPGA_BLA) += bla/
+>>
+>> This is the dfl/ subdir part.
+>>
+>> Create a dfl/ subdir
+>> Move dfl-* files to it.
+>> Add a Kconfig and Makefile
+>>
+>> Because FPGA_DFL is now used in dfl/Kconfig in a if/endif
+>> block, all the other configs in dfl/Kconfig implicitly depend
+>> on FPGA_DFL.  So the explicit dependence can be removed.  Also
+>> since FPGA_DFL depends on HAS_IOMEM, it can be removed from the
+>> other configs.
+> Hm.. sounds like this change (remove HAS_IOMEM) is better to be split
+> into another patch. How do you think?
+
+I'll drop this from the patchset so this so patchset does the one thing 
+of moving stuff around and do the HAS_IOMEM change after stuff settles.
+
+Tom
+
+>
+> Thanks
+> Hao
 >
 
-
--- 
-With Best Regards,
-Andy Shevchenko
