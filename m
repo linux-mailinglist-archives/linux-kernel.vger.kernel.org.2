@@ -2,86 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59C53A7DC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C433A7DCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhFOMFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhFOMFm (ORCPT
+        id S230215AbhFOMF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:05:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50560 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229520AbhFOMFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:05:42 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F87C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:03:37 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id c5so18012681wrq.9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:03:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=wyIIvKZl5BU0mdJybfMDo3xuQw5ZjyZpAFg5HLA2+90=;
-        b=d+lI8zvaqA8qGqsKGY1MeonI6Jr9dGvTxWiMBaewwYhEhrEz1qQF/ZZFZwOeXq+uK2
-         +asDyzp7NJhXGspp1CeQOpNEsPISsS9k2VoNXZdc8YPIWffcls2msiAdL8sgi9qYVcYl
-         sfq1z7sTUF9yoglPl3Lm/B8n7cB63giwUCWLsMeMsM4qjqSxLTVUM7sAiVHFHl0VJWRo
-         2GhcoODInJ1bwdw3ha+OANdcEHtHr6iA9ejDvfepscqsm6c61tj/CMDbFSlujVOsDTbc
-         42ZSo8jletyqIwkXQ/gtKHgJSST48FKOtFmNpNm1Hx5+RBbc5u3PlkP2y0KjKcgLushy
-         HqtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wyIIvKZl5BU0mdJybfMDo3xuQw5ZjyZpAFg5HLA2+90=;
-        b=q08pv8DTE4dMgAAnm2WRDURFkbc6gCDXHIv1gCSSmqU5W7zWAfZ98I7dFXIK7JfXch
-         Y2O+5g6ra3HJAQLrbxnO4+ZZQSCX5qNloP/Ealv1KQ85CqntZvmI+6j5DyC661hGWwwb
-         LAxqoBLGJ9hvz61QjBIcdkCUmPfN5FThWFEHsd0JfG9J1d42I85/2XoDkkq1Py+mZafv
-         Or/tBRe+QPD9bDP3bE0ab9RFdc+Qao9PTSXEOjO/EcPmPurm3zzgh7CYva9aRoHN2ZAf
-         Ki3QuoqNinnVLEa847A4vrYPJDNGnGhchY3FAWdS/lOpMmOYjCR7aK+KtX7qQbfB3OQ2
-         Sx/Q==
-X-Gm-Message-State: AOAM531Td0/12kXM+dwG9WcWCKu/ub4fOkCA9Oxs6DX9NwtTmW+oZ0I5
-        JGmf+jJstLO85DXrYc4d3EQpyg==
-X-Google-Smtp-Source: ABdhPJxPeyIUmKPLSggSjsvfaGfsexGfhawi/3oVaSLwlBl8ZoXDObYvEk6VoiUjddiThO2WdTKl9Q==
-X-Received: by 2002:adf:de91:: with SMTP id w17mr25188729wrl.352.1623758616242;
-        Tue, 15 Jun 2021 05:03:36 -0700 (PDT)
-Received: from dell ([91.110.221.170])
-        by smtp.gmail.com with ESMTPSA id h15sm18670554wrq.88.2021.06.15.05.03.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 05:03:35 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 13:03:33 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     patches <patches@opensource.cirrus.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/9] mfd: pcf50633: use DEVICE_ATTR_ADMIN_RO macro
-Message-ID: <YMiXFVk7gSTbPJvE@dell>
-References: <20210602114339.11223-1-thunder.leizhen@huawei.com>
- <20210602114339.11223-6-thunder.leizhen@huawei.com>
+        Tue, 15 Jun 2021 08:05:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623758630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z2Ni9+cw0tnXNVdw4RqCqoRUHbdvK7otr3HFN81fzT0=;
+        b=fNEnJxxGGuD36u75+gBOisvITNEZgA4yZIAssno003CoJsR8fokmabp6BnJ+6MQmMmnHBR
+        F7jZmoBPIvgQw9e2xqcsC7PF4GpDN/rpHhKYw84Hli+iahW0vbLnCeBPEWoJ6DKfZr2LFC
+        ZvY3LSaETJPBN6wjd5sP75QNCf9DdqI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-495-Y4fgjC7NPY-rsSMgNj19ZA-1; Tue, 15 Jun 2021 08:03:49 -0400
+X-MC-Unique: Y4fgjC7NPY-rsSMgNj19ZA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 907CF800D55;
+        Tue, 15 Jun 2021 12:03:47 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DC25C60861;
+        Tue, 15 Jun 2021 12:03:45 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+In-Reply-To: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
+References: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
+To:     torvalds@linux-foundation.org
+Cc:     dhowells@redhat.com, Hulk Robot <hulkci@huawei.com>,
+        Zheng Zengkai <zhengzengkai@huawei.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Tom Rix <trix@redhat.com>, linux-afs@lists.infradead.org,
+        marc.dionne@auristor.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] afs: fix no return statement in function returning non-void
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210602114339.11223-6-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <654874.1623758571.1@warthog.procyon.org.uk>
+From:   David Howells <dhowells@redhat.com>
+Date:   Tue, 15 Jun 2021 13:03:45 +0100
+Message-ID: <654943.1623758625@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Jun 2021, Zhen Lei wrote:
+Hi Linus,
 
-> Use DEVICE_ATTR_ADMIN_RO macro helper instead of plain DEVICE_ATTR, which
-> makes the code a bit shorter and easier to read.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  drivers/mfd/pcf50633-core.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+Note that this isn't really a fix, so can wait to the next merge window if you
+prefer.
 
-Applied, thanks.
+David
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
