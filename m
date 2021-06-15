@@ -2,104 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82DD3A7CFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E183A7CFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhFOLSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:18:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFOLR7 (ORCPT
+        id S230361AbhFOLSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:18:20 -0400
+Received: from outbound-smtp55.blacknight.com ([46.22.136.239]:55311 "EHLO
+        outbound-smtp55.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230079AbhFOLSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:17:59 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B9DC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:15:55 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id h12so8290872plf.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:15:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=i84JjlRo2D2f/v7VuRGvpKj9m4FZoDnu564HcAYYGaY=;
-        b=VTHFnc+4SnsSRV0D5jDxumRtE49WlOQLlikQFoE39XX8Wb5j25weHyQksV4/4Bn/f/
-         2BlH2QShf5TXe7zDKdkjS+Gs3tE+RPTxzPeLwN6/cgZpqkATlyaJxVgB4UH0wPf327ZK
-         3sg02GpQY+QtWBfJzL0HKJd0UvY+5w37Y3noV/Tr0+AqPol3BIvomuMAHNODERgZAoqL
-         i/Vs7+tAbxxbfDyLn0N9FCKTiBr4s+0yLA7s9wxgR5BNyxKwXe1WIRfmXQ9vO7+XwMz+
-         fRkr+bY9h/tbHmcW6rwAiRQ/L8eR4C2H9AUb+8oXl5chJm9EhUjEwS6TWkLgYkE2AW3p
-         2uvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=i84JjlRo2D2f/v7VuRGvpKj9m4FZoDnu564HcAYYGaY=;
-        b=kVQNbHkOIGoLLyTwPziN9ruupJranPQGD6y8SY7Y1m76hYkgk0yOZBsm+rXWNStNog
-         JJ6IvygKeGJ87YspdjCVPg+7CBPqrR3bC6rJ++NdjqZtIbZ9i+X2cMURqgu8qsNRdNPK
-         ciAL7DF8JzRhUpwSBoiFTyNNu/ni8HUJ+u/1wg10GPJXhhQzjXg2bnkJHHBJQRVZyhqt
-         J3QNrBSUBLXc2b4ESu9LiJaH3OkLD2jOFmIwks9Vco25cISqMhFacCFvFclKpK3eDxpc
-         SGiNzetzl74RN12cvddHl46ykbBxaDkLrhlY6PCpYUzy90Ig0mXYnmJbk1+na79Rhy5h
-         Lu2Q==
-X-Gm-Message-State: AOAM531x38e400uCzrulXlntc582nuNgPNPW3VMDf0bJ0bMyXm2vG7yG
-        y3VrGphdV7KG+4TerTyg2JFk7Q==
-X-Google-Smtp-Source: ABdhPJyprFGOjuuA6oVBkx5SM8o2ljPT3jBLG+8fzP8YN3F1g2qb2jzWJ2heaZFu4ovB1sQ+xoLJ2A==
-X-Received: by 2002:a17:90b:2504:: with SMTP id ns4mr4466637pjb.39.1623755754669;
-        Tue, 15 Jun 2021 04:15:54 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id g8sm15949343pgo.10.2021.06.15.04.15.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 04:15:53 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 16:45:51 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+        Tue, 15 Jun 2021 07:18:17 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp55.blacknight.com (Postfix) with ESMTPS id A065DFA8F9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 12:16:12 +0100 (IST)
+Received: (qmail 9638 invoked from network); 15 Jun 2021 11:16:12 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Jun 2021 11:16:12 -0000
+Date:   Tue, 15 Jun 2021 12:16:11 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Ziljstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Alistair Strachan <astrachan@google.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-Message-ID: <20210615111551.7tcz7teqp4olhodf@vireshk-i7>
-References: <cover.1623326176.git.viresh.kumar@linaro.org>
- <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
- <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
- <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
- <20210611080122.tlkidv6bowuka6fw@vireshk-i7>
- <CAMuHMdVL4VH09ixPcpqqokNJeYd68Th2Y6Lz4PZTF7h06OOBGw@mail.gmail.com>
+        Valentin Schneider <valentin.schneider@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH v2] sched/fair: Age the average idle time
+Message-ID: <20210615111611.GH30378@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdVL4VH09ixPcpqqokNJeYd68Th2Y6Lz4PZTF7h06OOBGw@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-06-21, 10:22, Geert Uytterhoeven wrote:
-> The same reasoning can apply to your backend daemon, so when using
-> the GPIO aggregator, you can just control a full gpiochip, without
-> having to implement access control on individual GPIO lines.
+From: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-I tried to look at it and it surely looks very temping and may fit
-well and reduce size of my backend :)
+This is a partial forward-port of Peter Ziljstra's work first posted
+at https://lore.kernel.org/lkml/20180530142236.667774973@infradead.org/.
+His Signed-off has been removed because it is modified but will be restored
+if he says it's still ok.
 
-I am now wondering how interrupts can be made to work here. Do you
-have anything in mind for that ?
+Currently select_idle_cpu()'s proportional scheme uses the average idle
+time *for when we are idle*, that is temporally challenged.  When a CPU
+is not at all idle, we'll happily continue using whatever value we did
+see when the CPU goes idle. To fix this, introduce a separate average
+idle and age it (the existing value still makes sense for things like
+new-idle balancing, which happens when we do go idle).
 
-GPIO sysfs already supports interrupts, just that you need to register
-irq for the specific GPIO pins inside the aggregator ?
+The overall goal is to not spend more time scanning for idle CPUs than
+we're idle for. Otherwise we're inhibiting work. This means that we need to
+consider the cost over all the wake-ups between consecutive idle periods.
+To track this, the scan cost is subtracted from the estimated average
+idle time.
 
--- 
-viresh
+The impact of this patch is related to workloads that have domains that
+are fully busy or overloaded. Without the patch, the scan depth may be
+too high because a CPU is not reaching idle.
+
+Due to the nature of the patch, this is a regression magnet. It
+potentially wins when domains are almost fully busy or overloaded --
+at that point searches are likely to fail but idle is not being aged
+as CPUs are active so search depth is too large and useless. It will
+potentially show regressions when there are idle CPUs and a deep search is
+beneficial. This tbench result on a 2-socket broadwell machine partially
+illustates the problem
+
+                          5.13.0-rc2             5.13.0-rc2
+                             vanilla     sched-avgidle-v1r5
+Hmean     1        445.02 (   0.00%)      451.36 *   1.42%*
+Hmean     2        830.69 (   0.00%)      846.03 *   1.85%*
+Hmean     4       1350.80 (   0.00%)     1505.56 *  11.46%*
+Hmean     8       2888.88 (   0.00%)     2586.40 * -10.47%*
+Hmean     16      5248.18 (   0.00%)     5305.26 *   1.09%*
+Hmean     32      8914.03 (   0.00%)     9191.35 *   3.11%*
+Hmean     64     10663.10 (   0.00%)    10192.65 *  -4.41%*
+Hmean     128    18043.89 (   0.00%)    18478.92 *   2.41%*
+Hmean     256    16530.89 (   0.00%)    17637.16 *   6.69%*
+Hmean     320    16451.13 (   0.00%)    17270.97 *   4.98%*
+
+Note that 8 was a regression point where a deeper search would have helped
+but it gains for high thread counts when searches are useless. Hackbench
+is a more extreme example although not perfect as the tasks idle rapidly
+
+hackbench-process-pipes
+                          5.13.0-rc2             5.13.0-rc2
+                             vanilla     sched-avgidle-v1r5
+Amean     1        0.3950 (   0.00%)      0.3887 (   1.60%)
+Amean     4        0.9450 (   0.00%)      0.9677 (  -2.40%)
+Amean     7        1.4737 (   0.00%)      1.4890 (  -1.04%)
+Amean     12       2.3507 (   0.00%)      2.3360 *   0.62%*
+Amean     21       4.0807 (   0.00%)      4.0993 *  -0.46%*
+Amean     30       5.6820 (   0.00%)      5.7510 *  -1.21%*
+Amean     48       8.7913 (   0.00%)      8.7383 (   0.60%)
+Amean     79      14.3880 (   0.00%)     13.9343 *   3.15%*
+Amean     110     21.2233 (   0.00%)     19.4263 *   8.47%*
+Amean     141     28.2930 (   0.00%)     25.1003 *  11.28%*
+Amean     172     34.7570 (   0.00%)     30.7527 *  11.52%*
+Amean     203     41.0083 (   0.00%)     36.4267 *  11.17%*
+Amean     234     47.7133 (   0.00%)     42.0623 *  11.84%*
+Amean     265     53.0353 (   0.00%)     47.7720 *   9.92%*
+Amean     296     60.0170 (   0.00%)     53.4273 *  10.98%*
+Stddev    1        0.0052 (   0.00%)      0.0025 (  51.57%)
+Stddev    4        0.0357 (   0.00%)      0.0370 (  -3.75%)
+Stddev    7        0.0190 (   0.00%)      0.0298 ( -56.64%)
+Stddev    12       0.0064 (   0.00%)      0.0095 ( -48.38%)
+Stddev    21       0.0065 (   0.00%)      0.0097 ( -49.28%)
+Stddev    30       0.0185 (   0.00%)      0.0295 ( -59.54%)
+Stddev    48       0.0559 (   0.00%)      0.0168 (  69.92%)
+Stddev    79       0.1559 (   0.00%)      0.0278 (  82.17%)
+Stddev    110      1.1728 (   0.00%)      0.0532 (  95.47%)
+Stddev    141      0.7867 (   0.00%)      0.0968 (  87.69%)
+Stddev    172      1.0255 (   0.00%)      0.0420 (  95.91%)
+Stddev    203      0.8106 (   0.00%)      0.1384 (  82.92%)
+Stddev    234      1.1949 (   0.00%)      0.1328 (  88.89%)
+Stddev    265      0.9231 (   0.00%)      0.0820 (  91.11%)
+Stddev    296      1.0456 (   0.00%)      0.1327 (  87.31%)
+
+Again, higher thread counts benefit and the standard deviation
+shows that results are also a lot more stable when the idle
+time is aged.
+
+The patch potentially matters when a socket was multiple LLCs as the
+maximum search depth is lower. However, some of the test results were
+suspiciously good (e.g. specjbb2005 gaining 50% on a Zen1 machine) and
+other results were not dramatically different to other mcahines.
+
+Given the nature of the patch, Peter's full series is not being forward
+ported as each part should stand on its own. Preferably they would be
+merged at different times to reduce the risk of false bisections.
+
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+---
+Changelog since v1
+o No major change, rebase to 5.13-rc5 and retest, still passed
+
+ kernel/sched/core.c  |  5 +++++
+ kernel/sched/fair.c  | 25 +++++++++++++++++++++----
+ kernel/sched/sched.h |  3 +++
+ 3 files changed, 29 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5226cc26a095..6a3fdb9f4380 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2979,6 +2979,9 @@ static void ttwu_do_wakeup(struct rq *rq, struct task_struct *p, int wake_flags,
+ 		if (rq->avg_idle > max)
+ 			rq->avg_idle = max;
+ 
++		rq->wake_stamp = jiffies;
++		rq->wake_avg_idle = rq->avg_idle / 2;
++
+ 		rq->idle_stamp = 0;
+ 	}
+ #endif
+@@ -8215,6 +8218,8 @@ void __init sched_init(void)
+ 		rq->online = 0;
+ 		rq->idle_stamp = 0;
+ 		rq->avg_idle = 2*sysctl_sched_migration_cost;
++		rq->wake_stamp = jiffies;
++		rq->wake_avg_idle = rq->avg_idle;
+ 		rq->max_idle_balance_cost = sysctl_sched_migration_cost;
+ 
+ 		INIT_LIST_HEAD(&rq->cfs_tasks);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 3248e24a90b0..cc7d1144a356 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6172,9 +6172,10 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+ {
+ 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
+ 	int i, cpu, idle_cpu = -1, nr = INT_MAX;
++	struct rq *this_rq = this_rq();
+ 	int this = smp_processor_id();
+ 	struct sched_domain *this_sd;
+-	u64 time;
++	u64 time = 0;
+ 
+ 	this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
+ 	if (!this_sd)
+@@ -6184,12 +6185,21 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+ 
+ 	if (sched_feat(SIS_PROP) && !has_idle_core) {
+ 		u64 avg_cost, avg_idle, span_avg;
++		unsigned long now = jiffies;
+ 
+ 		/*
+-		 * Due to large variance we need a large fuzz factor;
+-		 * hackbench in particularly is sensitive here.
++		 * If we're busy, the assumption that the last idle period
++		 * predicts the future is flawed; age away the remaining
++		 * predicted idle time.
+ 		 */
+-		avg_idle = this_rq()->avg_idle / 512;
++		if (unlikely(this_rq->wake_stamp < now)) {
++			while (this_rq->wake_stamp < now && this_rq->wake_avg_idle) {
++				this_rq->wake_stamp++;
++				this_rq->wake_avg_idle >>= 1;
++			}
++		}
++
++		avg_idle = this_rq->wake_avg_idle;
+ 		avg_cost = this_sd->avg_scan_cost + 1;
+ 
+ 		span_avg = sd->span_weight * avg_idle;
+@@ -6221,6 +6231,13 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+ 
+ 	if (sched_feat(SIS_PROP) && !has_idle_core) {
+ 		time = cpu_clock(this) - time;
++
++		/*
++		 * Account for the scan cost of wakeups against the average
++		 * idle time.
++		 */
++		this_rq->wake_avg_idle -= min(this_rq->wake_avg_idle, time);
++
+ 		update_avg(&this_sd->avg_scan_cost, time);
+ 	}
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index a189bec13729..7bc20e5541cf 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1017,6 +1017,9 @@ struct rq {
+ 	u64			idle_stamp;
+ 	u64			avg_idle;
+ 
++	unsigned long		wake_stamp;
++	u64			wake_avg_idle;
++
+ 	/* This is used to determine avg_idle's max value */
+ 	u64			max_idle_balance_cost;
+ 
