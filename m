@@ -2,123 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 725B43A8C7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A513A8C83
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbhFOXbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 19:31:38 -0400
-Received: from mailgate.ics.forth.gr ([139.91.1.2]:20887 "EHLO
-        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhFOXbb (ORCPT
+        id S231590AbhFOXcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 19:32:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhFOXb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:31:31 -0400
-Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
-        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 15FNTPsb058465
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:29:25 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
-        q=dns/txt; i=@ics.forth.gr; t=1623799760; x=1626391760;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ysvqs1/K9ONe++S7r+yMb/Oe/Rgd4xGI6L/tmzqZrik=;
-        b=BmPCIklcetMBqB07S7nUkB/zCCNdq6q9TT74SEG8aIJj+UwPy9eCcJj5j48XMZiX
-        AYKr30lgIDymdSumCyZ85PIJUDc/Y3tQI1bHMrr/iPbkwX/LmXPDqJtkIi4dvrlD
-        10Xh9i838pmKVpkoFQjM8oFdUoQMUxfqqOiYMnNzP13ihKCvt5jvAHTJ6EPuy0wr
-        Qp0ZI3vPRfeTSTTYar9tooQMlO38NGFafmuE6Ol+055P8bF/0203SBPSYc+acNBq
-        KM3xu+gSiKziOkAbwhz8JfhgJOXitxt1iO2iAABE+gdQCptk5gfNaBJKnmuvx4uP
-        doxY+aS3kJdLj9yvNF/ffQ==;
-X-AuditID: 8b5b014d-962f1700000067b6-5b-60c937d07ad1
-Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 5D.05.26550.0D739C06; Wed, 16 Jun 2021 02:29:20 +0300 (EEST)
-X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
+        Tue, 15 Jun 2021 19:31:59 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD957C061574;
+        Tue, 15 Jun 2021 16:29:53 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id d7so219966edx.0;
+        Tue, 15 Jun 2021 16:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dMu6Ebpu3T3ImGY3emMLa/ibwH7Jz5A6ZlvdLonFw94=;
+        b=JQbC59Bt9iZ2ofmMkX7Kl9HL7wZA/xVTJDwwp0xpvuMwo3pba02UrjnNg9d0zCKfaD
+         4JHyjgm+fvkt0QAozm0OGqxqsBPAGJoSnlb0bIQz6uj7Z72RNQMiPbdy4MfmqnmL38Aj
+         Ou986wZdevoaPTBs4B//uhLDseLwl1c6b6gZY3zloQsCd13iAANAM4/dG8lO4whN3fGu
+         NlR4704c85iQ3g17AcdaSdqFJN1NK2k1NI1c3xmTCPPdqhOu44itOnKwBlvaScfLYepe
+         3rhHqQqlMbSbSL+BKlzLolRqG6uTd/1idpXMkHRjbDL9LeQPt4EZXzoz/2vB7Q+IWvf1
+         GSvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dMu6Ebpu3T3ImGY3emMLa/ibwH7Jz5A6ZlvdLonFw94=;
+        b=CQ68oiAatZjpOyxArxpXtU3WGljyxGdn0VN0pSSEdE+s2mJEpc2Hju3RW0JtIaftXh
+         oK1wcdysDTVY0emR9OJAMZjbJ08TMtcvhnT/gACBZTPz2gymyitatimTvF8FnQzpahUj
+         UzmlbHh+WTzmdqBN8Z/P6bTT5ZrmZs5Ca8nfA5kmcfRhf1qc3RcAI17oEP67oH+ME+ls
+         Un7HCliy6Lh34WaNNqf1TDGHuwuGcbqWnMHzXMtkjbiVQdB4gBzfLvLCL05M6qs/tPCv
+         CAfTRUq5d9e3UWCCqFfYSwPhnqzmajlqv8S/t6rRjhA0ml7KzCEA+k/88P9/4o8pZv5k
+         86fg==
+X-Gm-Message-State: AOAM531IKMWEtirigwA2tOYFoiKWZm1RW7I9T7c3yOiYlkT24nHCgiql
+        gU1ALuuywnI8VHF2UtJ62sQ=
+X-Google-Smtp-Source: ABdhPJyr9pJPFLX4drWnvJMzUHLNg4ImgihZ1B8LGDBTk8opezpzsSyrD4Z2oro8ZkFoOcKUrN15wQ==
+X-Received: by 2002:aa7:d344:: with SMTP id m4mr667424edr.281.1623799792558;
+        Tue, 15 Jun 2021 16:29:52 -0700 (PDT)
+Received: from skbuf ([188.26.224.68])
+        by smtp.gmail.com with ESMTPSA id dh18sm313170edb.92.2021.06.15.16.29.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 16:29:52 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 02:29:49 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
+        edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
+        ap420073@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
+        mkl@pengutronix.de, linux-can@vger.kernel.org, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
+        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
+        a.fatoum@pengutronix.de, atenart@kernel.org,
+        alexander.duyck@gmail.com, hdanton@sina.com, jgross@suse.com,
+        JKosina@suse.com, mkubecek@suse.cz, bjorn@kernel.org,
+        alobakin@pm.me
+Subject: Re: [PATCH net-next v2 0/3] Some optimization for lockless qdisc
+Message-ID: <20210615232949.2ntjv5kh3g7z2ua2@skbuf>
+References: <1622684880-39895-1-git-send-email-linyunsheng@huawei.com>
+ <20210603113548.2d71b4d3@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <20210608125349.7azp7zeae3oq3izc@skbuf>
+ <64aaa011-41a3-1e06-af02-909ff329ef7a@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 16 Jun 2021 02:29:19 +0300
-From:   Nick Kossifidis <mick@ics.forth.gr>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v4 5/5] RISC-V: Add crash kernel support
-Organization: FORTH
-In-Reply-To: <CAL_JsqLHOmZ6az0bYGC3dg__YX3aq=+Un4_x4+R2nNksc0hM2g@mail.gmail.com>
-References: <20210419005539.22729-1-mick@ics.forth.gr>
- <20210419005539.22729-6-mick@ics.forth.gr>
- <CAMuHMdW=23SPXwqcjD+30M_d0azdze2=ChZM-PF1brf9bCNtrA@mail.gmail.com>
- <fe02eb618eee141e8bc021e8e30906fc@mailhost.ics.forth.gr>
- <CAMuHMdXtT1L3yfzkTkbhqz3zgUQj89Bcm7mqz+m126NprAsK8Q@mail.gmail.com>
- <CAL_JsqLHOmZ6az0bYGC3dg__YX3aq=+Un4_x4+R2nNksc0hM2g@mail.gmail.com>
-Message-ID: <a488d802940f7fc2ae34a4fe583ec187@mailhost.ics.forth.gr>
-X-Sender: mick@mailhost.ics.forth.gr
-User-Agent: Roundcube Webmail/1.3.16
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrELMWRmVeSWpSXmKPExsXSHT1dWfeC+ckEg+NnRCzmHznHavHs1l4m
-        i8u75rBZbPvcwmbR/O4cu8XLyz3MFm2z+C1a9x5hd+DwePPyJYvHw02XmDw2repk8zh0uIPR
-        Y/OSeo9LzdfZPT5vkgtgj+KySUnNySxLLdK3S+DKaLzxkq3gM2/Fzj+t7A2MT7m6GDk5JARM
-        JM6+vc7SxcjFISRwlFGia9kaFoiEqcTsvZ2MIDavgKDEyZlPwOLMAhYSU6/sZ4Sw5SWat85m
-        BrFZBFQlrmzbDVbDJqApMf/SQTBbREBFYsPzW8wgC5gFFjJLbGqcwgqSEBawkbi14AhYEb+A
-        sMSnuxfB4pwCgRJ90/aBLRAS+Mwk0b5TCOIIF4npbz4zQRynIvHh9wP2LkYODlEge/NcpQmM
-        grOQnDoLyamzkJy6gJF5FaNAYpmxXmZysV5aflFJhl560SZGcDQw+u5gvL35rd4hRiYOxkOM
-        EhzMSiK8usUnEoR4UxIrq1KL8uOLSnNSiw8xSnOwKInz8upNiBcSSE8sSc1OTS1ILYLJMnFw
-        SjUwWZtYB72fs+ZY+caL2j/vh7Nka6TyvfXnO3dqQkXNtQSxMrXJxTzthqcfvX0s2dicWjLn
-        kepi3mXWV9VTpkxSurBKatf6/Wa8BulXNX7MXdoWHd37V4X9+4f62yyKuf8PejTuyT54dNfM
-        0+H3Nz3OWubd+SetYbH7/wKujAXf7QpmlZwuubN3/96GG32MoUI/zQp76z/GNaan9zH8z2v8
-        PmVu/Ytjjf57j0RNenPi++m5f04rzujpcufRW/bg/uKc/PCt7/c95Steu9Yl9ZaAzp05xYm6
-        RS3rbCIYyg7P8E5ymbBJ5JbRkv138+ey/XRYfLaWNffj1SVHkw9ucRQoLLC+Xvl0p9f2htAT
-        QY7MU5RYijMSDbWYi4oTAWVGe4v1AgAA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64aaa011-41a3-1e06-af02-909ff329ef7a@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Στις 2021-06-15 22:21, Rob Herring έγραψε:
-> On Tue, Jun 15, 2021 at 12:48 PM Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
->> 
->> Hi Nick,
->> 
->> On Tue, Jun 15, 2021 at 8:29 PM Nick Kossifidis <mick@ics.forth.gr> 
->> wrote:
->> > Στις 2021-06-15 16:19, Geert Uytterhoeven έγραψε:
->> > > This does not match
->> > > https://github.com/devicetree-org/dt-schema/blob/master/schemas/chosen.yaml#L77:
->> > >
->> > >     $ref: types.yaml#/definitions/uint64-array
->> > >     maxItems: 2
->> > >     description:
->> > >       This property (currently used only on arm64) holds the memory
->> > > range,
->> > >       the address and the size, of the elf core header which mainly
->> > > describes
->> > >       the panicked kernel\'s memory layout as PT_LOAD segments of elf
->> > > format.
->> > >
->> > > Hence "linux,elfcorehdr" should be a property of the /chosen node,
->> > > instead of a memory node with a compatible value of "linux,elfcorehdr".
->> > >
->> >
->> > That's a binding for a property on the /chosen node, that as the text
->> > says it's defined for arm64 only and the code that handled it was also
->> 
->> That doesn't mean it must not be used on other architectures ;-)
->> Arm64 was just the first one to use it...
-> 
-> It is used on arm64 because memory is often passed by UEFI tables and
-> not with /memory node. As riscv is also supporting EFI, I'd think they
-> would do the same.
-> 
+On Wed, Jun 09, 2021 at 09:31:39AM +0800, Yunsheng Lin wrote:
+> By the way, I did not pick up your "Tested-by" from previous
+> RFC version because there is some change between those version
+> that deserves a retesting. So it would be good to have a
+> "Tested-by" from you after confirming no out of order happening
+> for this version, thanks.
 
-We've had this discussion before, riscv uses /memory for now and even if 
-we switched to getting memory from ACPI/UEFI tables, the elf core header 
-is passed from the crashed kernel to the kdump kernel, it has nothing to 
-do with UEFI since the bootloader is the kernel itself. Am I missing 
-something ?
-
-Regards,
-Nick
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com> # flexcan
