@@ -2,180 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89AF63A7678
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 07:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 409263A7681
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 07:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbhFOF2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 01:28:16 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:56890 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhFOF2P (ORCPT
+        id S229977AbhFOFd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 01:33:56 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29684 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229463AbhFOFdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 01:28:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623734771; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=doO/lOyS2nno44eUAbzgpveEi+a60C/4rJxR/gZVDKM=;
- b=A7yTS+5qWQj+mqHz+H/oJd18Rmc1S4aYOd5EEwIEzd74uboCxu5JB9vqiesIEnLmsOTc7spH
- tCOd5eLIMzBjptOOmeOwODChiETNEjS1MYHJTXN3CBCGMQ+sfeOU8djqLwRgM/2Mm2Ih8PDp
- Fco5heWkOL3w927yc13slBbyRnA=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60c839edf726fa418829cd38 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 05:26:05
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E239BC4338A; Tue, 15 Jun 2021 05:26:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4A5C5C433D3;
-        Tue, 15 Jun 2021 05:26:03 +0000 (UTC)
+        Tue, 15 Jun 2021 01:33:55 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15F52two066095;
+        Tue, 15 Jun 2021 01:31:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=4Jo+wloOhTVpusr0tEvEX1Il4b2ovzD+qqFolo8u2Qw=;
+ b=otetFQybVWYPMWV9+gjzOVHXhIKEvv9WfEl7CxaLjEdmQiCoZPWJLVgtV+4IsXGq1i4D
+ 60C0tJlqDUSsnkOgNeLizN03/3IiEVC1Iuh2oOozM7TB0Imr9U4RgRcOwFhdH78uzQBu
+ ZO++809G9UrjNJy7YVW2nAIwJ8KCFRFmGQNC6yujOHT/cEFU39e52xsrQmtNnSaT8cME
+ hE10jclvpBk8cGUoW9MDz2h02vbNRzqUQr3kFuoNFyZfx1+Gn4UgfsAtT5DmKEgzaOTK
+ 8jjLqlcRPy5bahDu7CSXKdoUI8KKSeTLjJWYhbVfiazoV/dPLZ8QnhaoM5KbMNiF2zbL eA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 396jvqm919-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Jun 2021 01:31:43 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15F53F8E067435;
+        Tue, 15 Jun 2021 01:31:42 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 396jvqm90e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Jun 2021 01:31:42 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15F54F88011819;
+        Tue, 15 Jun 2021 05:09:55 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 394mj8gpse-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Jun 2021 05:09:55 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15F59qp923462324
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Jun 2021 05:09:52 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B12EEAE053;
+        Tue, 15 Jun 2021 05:09:52 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B498AAE045;
+        Tue, 15 Jun 2021 05:09:50 +0000 (GMT)
+Received: from pratiks-thinkpad.ibmuc.com (unknown [9.85.73.10])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 15 Jun 2021 05:09:50 +0000 (GMT)
+From:   "Pratik R. Sampat" <psampat@linux.ibm.com>
+To:     mpe@ellerman.id.au, rjw@rjwysocki.net, linux-pm@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        psampat@linux.ibm.com, pratik.r.sampat@gmail.com
+Subject: [PATCH] cpufreq:powernv: Fix init_chip_info initialization in numa=off
+Date:   Tue, 15 Jun 2021 10:39:49 +0530
+Message-Id: <20210615050949.10071-1-psampat@linux.ibm.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 15 Jun 2021 10:56:03 +0530
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        mgautam@codeaurora.org, dianders@chromium.org, mka@chromium.org
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc7280: Add PCIe and PHY related
- nodes
-In-Reply-To: <YLxI3NTvgTJ3qt7h@builder.lan>
-References: <1620382648-17395-1-git-send-email-pmaliset@codeaurora.org>
- <1620382648-17395-3-git-send-email-pmaliset@codeaurora.org>
- <CAE-0n530bSPupOHVDzwpd_JVVN0tOfrAOm9dAt1ZGj7zaXOZ6A@mail.gmail.com>
- <3b3701bb1e23dec88f2231722872fc40@codeaurora.org>
- <CAE-0n50k9z0ZFqP_pOmQjp0s3NCSKYHTmHvZ5rxLb3MzqgavrA@mail.gmail.com>
- <YLxI3NTvgTJ3qt7h@builder.lan>
-Message-ID: <108a693b952c6dd84f60130f83a572d7@codeaurora.org>
-X-Sender: pmaliset@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: SKDaanE3us43nTJ6FyQPr1iywCTVjCJa
+X-Proofpoint-ORIG-GUID: lfsQl-IxXxWbt6VI71loKXch2L3mrSBW
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-15_03:2021-06-14,2021-06-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ priorityscore=1501 suspectscore=0 mlxscore=0 lowpriorityscore=0
+ malwarescore=0 phishscore=0 adultscore=0 spamscore=0 bulkscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106150029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-06 09:32, Bjorn Andersson wrote:
-> On Fri 04 Jun 16:43 CDT 2021, Stephen Boyd wrote:
-> 
->> Quoting Prasad Malisetty (2021-05-21 02:57:00)
->> > On 2021-05-08 01:36, Stephen Boyd wrote:
->> > > Quoting Prasad Malisetty (2021-05-07 03:17:27)
->> > >> Add PCIe controller and PHY nodes for sc7280 SOC.
->> > >>
->> > >> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
->> > >> ---
->> > >>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 138
->> > >> +++++++++++++++++++++++++++++++++++
->> > >>  1 file changed, 138 insertions(+)
->> > >>
->> > >> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> > >> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> > >> index 2cc4785..a9f25fc1 100644
->> > >> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> > >> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> > >> @@ -12,6 +12,7 @@
->> > >>  #include <dt-bindings/power/qcom-aoss-qmp.h>
->> > >>  #include <dt-bindings/power/qcom-rpmpd.h>
->> > >>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
->> > >> +#include <dt-bindings/gpio/gpio.h>
->> > >>
->> > >>  / {
->> > >>         interrupt-parent = <&intc>;
->> > >> @@ -316,6 +317,118 @@
->> > >>                         };
->> > >>                 };
->> > >>
->> > > [...]
->> > >> +
->> > >> +               pcie1_phy: phy@1c0e000 {
->> > >> +                       compatible =
->> > >> "qcom,sm8250-qmp-gen3x2-pcie-phy";
->> > >> +                       reg = <0 0x01c0e000 0 0x1c0>;
->> > >> +                       #address-cells = <2>;
->> > >> +                       #size-cells = <2>;
->> > >> +                       ranges;
->> > >> +                       clocks = <&gcc GCC_PCIE_1_AUX_CLK>,
->> > >> +                                <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
->> > >> +                                <&gcc GCC_PCIE_CLKREF_EN>,
->> > >> +                                <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
->> > >> +                       clock-names = "aux", "cfg_ahb", "ref",
->> > >> "refgen";
->> > >> +
->> > >> +                       resets = <&gcc GCC_PCIE_1_PHY_BCR>;
->> > >> +                       reset-names = "phy";
->> > >> +
->> > >> +                       assigned-clocks = <&gcc
->> > >> GCC_PCIE1_PHY_RCHNG_CLK>;
->> > >> +                       assigned-clock-rates = <100000000>;
->> > >> +
->> > >> +                       status = "disabled";
->> > >
->> > > I think the style is to put status disabled close to the compatible?
->> >
->> > Generally I have added status disabled in end as like many nodes. just
->> > curious to ask is there any specific reason to put close to compatible.
->> 
->> It's really up to qcom maintainers, which I am not.
->> 
-> 
-> I like when it's the last item, as it lends itself nicely to be
-> surrounded by empty lines and thereby easy to spot...
-> 
->> Sure, I will change as like previous one.
+In the numa=off kernel command-line configuration init_chip_info() loops
+around the number of chips and attempts to copy the cpumask of that node
+which is NULL for all iterations after the first chip.
 
-> Regards,
-> Bjorn
-> 
->> > >> +                               };
->> > >> +
->> > >> +                               reset-n {
->> > >> +                                       pins = "gpio2";
->> > >> +                                       function = "gpio";
->> > >> +
->> > >> +                                       drive-strength = <16>;
->> > >> +                                       output-low;
->> > >> +                                       bias-disable;
->> > >> +                               };
->> > >> +
->> > >> +                               wake-n {
->> > >> +                                       pins = "gpio3";
->> > >> +                                       function = "gpio";
->> > >> +
->> > >> +                                       drive-strength = <2>;
->> > >> +                                       bias-pull-up;
->> > >> +                               };
->> > >
->> > > These last two nodes with the pull-up and drive-strength settings
->> > > should
->> > > be in the board files, like the idp one, instead of here in the SoC
->> > > file. That way board designers can take the SoC and connect the pcie to
->> > > an external device using these pins and set the configuration they want
->> > > on these pins, or choose not to connect them to the SoC at all and use
->> > > those pins for something else.
->> > >
->> > > In addition, it looks like the reset could be a reset-gpios property
->> > > instead of an output-low config.
->> > >
->> > we are using reset property as perst gpio in pcie node.
->> 
->> Ok, perst-gpios should be fine. Presumably perst-gpios should be in 
->> the
->> board and not in the SoC because of what I wrote up above.
+Hence adding a check to bail out after the first initialization if there
+is only one node.
 
->> Sure, I will move perst into board specific file
+Fixes: 053819e0bf84 ("cpufreq: powernv: Handle throttling due to Pmax capping at chip level")
+Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
+Reported-by: Shirisha Ganta <shirishaganta1@ibm.com>
+---
+ drivers/cpufreq/powernv-cpufreq.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
+index e439b43c19eb..663f9c4b5e3a 100644
+--- a/drivers/cpufreq/powernv-cpufreq.c
++++ b/drivers/cpufreq/powernv-cpufreq.c
+@@ -1078,6 +1078,8 @@ static int init_chip_info(void)
+ 		INIT_WORK(&chips[i].throttle, powernv_cpufreq_work_fn);
+ 		for_each_cpu(cpu, &chips[i].mask)
+ 			per_cpu(chip_info, cpu) =  &chips[i];
++		if (num_possible_nodes() == 1)
++			break;
+ 	}
+ 
+ free_and_return:
+-- 
+2.30.2
+
