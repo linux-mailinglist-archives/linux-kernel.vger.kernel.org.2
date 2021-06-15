@@ -2,235 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0CA3A89F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805C03A89F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhFOUHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 16:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
+        id S230205AbhFOUKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 16:10:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFOUHs (ORCPT
+        with ESMTP id S229898AbhFOUKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 16:07:48 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1B1C061574;
-        Tue, 15 Jun 2021 13:05:42 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id m9so22313193ybo.5;
-        Tue, 15 Jun 2021 13:05:42 -0700 (PDT)
+        Tue, 15 Jun 2021 16:10:04 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5291EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:07:58 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id r16so19124745oiw.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:07:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=N5VCAx2ejRAPyd939YDrkTNPfYVoGPr0KKSHqvl1T2Q=;
-        b=R+bYyRXxw9FK0m8+JK8As/RPSVy//Gu6HNaVpkGVnrFTkj4PXKmhfB3/KwfbIDX65H
-         Cym9a8oNlEfZetkPHxWZT049sv+hWUcKxXV6DZPmQ5rouYkl4L9HU3HJ8rrvUol078vk
-         DqyQF4QrXOXQztCC8+0UadtPD8aet/xh9d0CASts5IuJ93jjw5/HzIzm1xQizwARAyC6
-         IhkXkOUAnkmbxUcI2HX5miuKC05kuVnQz0Eu66+w6iHg0scyX7+EFNVOwZ4xkUJtR6T9
-         RE+ZOFRhOd1ORwjSrL/RDiy7TEKE2xN9j3Q1gulHSyExo+Ry8emhVr4JJAhBiECxay/T
-         XMmQ==
+        bh=grpU+dQ6BtmxyQhqwU8VFa14I3/A2Q4X/WY+Pgyf6LU=;
+        b=i95F7m9fSgaCfK1vBEfApT1tlSEjk19eUCHmQCgPU3lENBPylJ9IljD7V+1hDtpIO5
+         J4uwdhfHQawtz00tf4AJG2xJtxkqbDEXVB/nzknIAC8tn4mLbSg78YlColMLDNlsU0YG
+         n4qT4l8cL+iGNVLmK3F2JPDYMh6l+tybd/5ma6JdsmK+VXL5hPS8zJ2zDDCc/Ex7v0Wh
+         GAGq4dHALmIoRnt6YDZyaE514UwJPJmK0EcyCobAHk/8F4elgtR/4/YWyGg4zHxZn4AE
+         wGiFddT9qzc20CpHvC1HHdidvwAoSXmXQN0rmU4VRdYtqaDjg+M4YengxDYlj/gESBIf
+         hQow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=N5VCAx2ejRAPyd939YDrkTNPfYVoGPr0KKSHqvl1T2Q=;
-        b=KvUoDyVgJ9TQmvuiwN7sUTcgWEC1Ki1G3OyKQ4gBJxBl41XHnmLSM3LMG7vQ70vUxz
-         FcLA5Xihky1q0NFpXAH3tIiamFBdyHyMsygOnhFdgst0d53ZebNkQg8j/GdeOtTsIb8/
-         7EUpYmWH4v8xD+HUwV2wrjo9edjTRrvjkOlchy5Mdr6g5skgGnWveyk7vxk9QXS1s/A/
-         I62UL8Ckve3MyCq7YxVp9rMCiBFOOW9auuC5eWGOW30NNbUY/+mh/mh5JsXfSir5MI7e
-         1+e/Z4JifEm/pSkrM5YMQb6mFfdX5woQynxKtcFSv0g6xyrmyWbBzJ3JisAM//TDndvm
-         DcaQ==
-X-Gm-Message-State: AOAM533xP/PH7z1G9R6kyxSE3M40EPVvt1ap0dCr/HtCaR8/53IX3jEc
-        Xttgd6n86jtHksazSq5mlo7SzfofeuBzq2pg2Kc=
-X-Google-Smtp-Source: ABdhPJzALElWNASnknAITECzJwW1pwNkzMGctnek8KmOMf3vb/rh2vAAwGmM6XmtZYO23NhSe+ZKQTpC3KkB88Pzo1M=
-X-Received: by 2002:a25:df82:: with SMTP id w124mr1176142ybg.425.1623787541395;
- Tue, 15 Jun 2021 13:05:41 -0700 (PDT)
+        bh=grpU+dQ6BtmxyQhqwU8VFa14I3/A2Q4X/WY+Pgyf6LU=;
+        b=GMCLMO3CPf0RfjphGb2dX3uHTBi5hUVrtrFKIUta0n4L0V5xoemhLQ091wsI6hVou5
+         R+6px4RanWGABvlip4bW64LeIgN3FdORWMLsgxpR/6fw/0WP5E+5pZofdlrO7mpvKgZf
+         cYvGMTzrXSEt/OI1NoI90nuE7RQ9x/JvFGv1dP5OTcRNT2DY1CO/86tjId0XlaF4zIos
+         +LeVbpQG1ONtn6twiE0JQWIersB6DkxR4EW4TR70jvHdIYqT5nMMnZcV/kjTbZs1pF97
+         BT0czdaXbKFe52sD8xVqVo4OC4xB+OiHs+ltNsye/GAzj3d1PAQT1OocQmeDKZ5L0qz8
+         04Hg==
+X-Gm-Message-State: AOAM533Ity+m7JKBnDJ91tbxXTWAFV0NDpX2pPAAf9+NyIw+UrlWRVvO
+        89NXy6ZQIKQGG7ID2dFo5/X8qh5O6rZIClra0PE=
+X-Google-Smtp-Source: ABdhPJwzP9efs2U6D7VzGqrlTEr9BDxh02uo2PpPnHgBG/J7KcRFMiuDelbPo7UwGsMyezXZFRpLA4KQlSdsxMJnIkA=
+X-Received: by 2002:a05:6808:999:: with SMTP id a25mr556675oic.123.1623787677732;
+ Tue, 15 Jun 2021 13:07:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEf4BzZk8bcSZ9hmFAmgjbrQt0Yj1usCHmuQTfU-pwZkYQgztA@mail.gmail.com>
- <YLFIW9fd9ZqbR3B9@kernel.org> <CAEf4BzYCCWM0WBz0w+vL1rVBjGvLZ7wVtgJCUVr3D-NmVK0MEg@mail.gmail.com>
- <YLjtwB+nGYvcCfgC@kernel.org> <CAEf4BzbQ9w2smTMK5uwGGjyZ_mjDy-TGxd6m8tiDd3T_nJ7khQ@mail.gmail.com>
- <YL4dGFsfb0ZzgxlR@kernel.org> <CAEf4BzYLXyjkmO6ZySUxFHu1HcctPQK3j3vAPXVWFJ8qvGe8kw@mail.gmail.com>
- <YL9pxDFIYQEUODM5@kernel.org> <YMj5CzF92pTjcbhO@kernel.org>
- <CAEf4BzaDNim+kFQx64i9EZogctGZNFigQBsog7eC6DjrfjTbEA@mail.gmail.com> <YMkBpBfqW+AcpyNN@kernel.org>
-In-Reply-To: <YMkBpBfqW+AcpyNN@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 15 Jun 2021 13:05:30 -0700
-Message-ID: <CAEf4Bza1XwHhjW6yzf9JTMQKkUFO3z23hb36B3HCHaJVR5gk4g@mail.gmail.com>
-Subject: Re: Parallelizing vmlinux BTF encoding. was Re: [RFT] Testing 1.22
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210615114410.7708-1-wanjiabing@vivo.com> <20210615125402.nhvl2g7q2da4sb3r@outlook.office365.com>
+In-Reply-To: <20210615125402.nhvl2g7q2da4sb3r@outlook.office365.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 15 Jun 2021 16:07:46 -0400
+Message-ID: <CADnq5_P7petfdwXgfe-JK4NYgQoojHB6tpJ2ejrt+1Fyg6TDrA@mail.gmail.com>
+Subject: Re: [PATCH] drm: display: Fix duplicate field initialization in dcn31
+To:     Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Cc:     Wan Jiabing <wanjiabing@vivo.com>,
+        Yongqiang Sun <yongqiang.sun@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>, Zhan Liu <zhan.liu@amd.com>,
+        Roman Li <roman.li@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Nikola Cornij <nikola.cornij@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 12:38 PM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
+Applied.  Thanks!
+
+
+On Tue, Jun 15, 2021 at 8:54 AM Rodrigo Siqueira
+<Rodrigo.Siqueira@amd.com> wrote:
 >
-> Em Tue, Jun 15, 2021 at 12:13:55PM -0700, Andrii Nakryiko escreveu:
-> > On Tue, Jun 15, 2021 at 12:01 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
->
-> > > Em Tue, Jun 08, 2021 at 09:59:48AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > > Em Mon, Jun 07, 2021 at 05:53:59PM -0700, Andrii Nakryiko escreveu:
-> > > > > I think it's very fragile and it will be easy to get
-> > > > > broken/invalid/incomplete BTF. Yonghong already brought up the case
->
-> > > > I thought about that as it would be almost like the compiler generating
-> > > > BTF, but you are right, the vmlinux prep process is a complex beast and
-> > > > probably it is best to go with the second approach I outlined and you
-> > > > agreed to be less fragile, so I'll go with that, thanks for your
-> > > > comments.
->
-> > > So, just to write some notes here from what I saw so far:
->
-> > > 1. In the LTO cases there are inter-CU references, so the current code
-> > > combines all CUs into one and we end up not being able to parallelize
-> > > much. LTO is expensive, so... I'll leave it for later, but yeah, I don't
-> > > think the current algorithm is ideal, can be improved.
->
-> > Yeah, let's worry about LTO later.
->
-> > > 2. The case where there's no inter CU refs, which so far is the most
-> > > common, seems easier, we create N threads, all sharing the dwarf_loader
-> > > state and the btf_encoder, as-is now. we can process one CU per thread,
-> > > and as soon as we finish it, just grab a lock and call
-> > > btf_encoder__encode_cu() with the just produced CU data structures
-> > > (tags, types, functions, variables, etc), consume them and delete the
-> > > CU.
-> > >
-> > > So each thread will consume one CU, push it to the 'struct btf' class
-> > > as-is now and then ask for the next CU, using the dwarf_loader state,
-> > > still under that lock, then go back to processing dwarf tags, then
-> > > lock, btf add types, rinse, repeat.
+> On 06/15, Wan Jiabing wrote:
+> > Fix the following coccicheck warning:
+> > drivers/gpu/drm/amd/display/dc/dcn31/dcn31_resource.c:917:56-57:
+> > pstate_enabled: first occurrence line 935, second occurrence line 937
 > >
-> > Hmm... wouldn't keeping a "local" per-thread struct btf and just keep
-> > appending to it for each processed CU until we run out of CUs be
-> > simpler?
->
-> I thought about this as a logical next step, I would love to have a
-> 'btf__merge_argv(struct btf *btf[]), is there one?
->
-> But from what I've read after this first paragraph of yours, lemme try
-> to rephrase:
->
-> 1. pahole calls btf_encoder__new(...)
->
->    Creates a single struct btf.
->
-> 2. dwarf_loader will create N threads, each will call a
-> dwarf_get_next_cu() that is locked and will return a CU to process, when
-> it finishes this CU, calls btf_encoder__encode_cu() under an all-threads
-> lock. Rinse repeat.
->
-> Until all the threads have consumed all CUs.
->
-> then btf_encoder__encode(), which should be probably renamed to
-> btf_econder__finish() will call btf__dedup(encoder->btf) and write ELF
-> or raw file.
->
-> My first reaction to your first paragraph was:
->
-> Yeah, we can have multiple 'struct btf' instances, one per thread, that
-> will each contain a subset of DWARF CU's encoded as BTF, and then I have
-> to merge the per-thread BTF and then dedup. O think my rephrase above is
-> better, no?
-
-I think I understood what you want to do from the previous email, so
-you didn't have to re-phrase it, it's pretty clear already. I just
-don't feel like having per-thread struct btf adds any complexity at
-all and gives more flexibility and more parallelism. The next most
-expensive thing after loading DWARF is string deduplication
-(btf__add_str()), so it would be good to do that at per-thread level
-as well as much as possible.
-
->
-> > So each thread does as much as possible locally without any
-> > locks. And only at the very end we merge everything together and then
-> > dedup. Or we can even dedup inside each worker before merging final
-> > btf, that probably would give quite a lot of speed up and some memory
-> > saving. Would be interesting to experiment with that.
+> > Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> > ---
+> >  drivers/gpu/drm/amd/display/dc/dcn31/dcn31_resource.c | 1 -
+> >  1 file changed, 1 deletion(-)
 > >
-> > So I like the idea of a fixed pool of threads (can be customized, and
-> > I'd default to num_workers == num_cpus), but I think we can and should
-> > keep them independent for as long as possible.
+> > diff --git a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_resource.c b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_resource.c
+> > index 0d6cb6caad81..c67bc9544f5d 100644
+> > --- a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_resource.c
+> > +++ b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_resource.c
+> > @@ -934,7 +934,6 @@ static const struct dc_debug_options debug_defaults_drv = {
+> >       .dmub_command_table = true,
+> >       .pstate_enabled = true,
+> >       .use_max_lb = true,
+> > -     .pstate_enabled = true,
+> >       .enable_mem_low_power = {
+> >               .bits = {
+> >                       .vga = false,
+> > --
+> > 2.20.1
+> >
 >
-> Sure, this should map the whatever the user passes to -j in the kernel
-> make command line, if nothing is passed as an argument, then default to
-> getconf(_NPROCESSORS_ONLN).
+> Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
 >
-
-Yep, cool. I've been told that `make -j` puts no upper limit on number
-of jobs, so we shouldn't follow make model completely :-P
-
-> There is a nice coincidence here where we probably don't care about -J
-> anymore and want to deal only with -j (detached btf) that is the same as
-> what 'make' expects to state how many "jobs" (thread pool size) the user
-> wants 8-)
+> Thanks
 >
-> > Another disadvantage of generating small struct btf and then lock +
-> > merge is that we don't get as efficient string re-use, we'll churn
-> > more on string memory allocation. Keeping bigger local struct btfs
-> > allow for more efficient memory re-use (and probably a tiny bit of CPU
-> > savings).
->
-> I think we're in the same page, the contention for adding the CU to a
-> single 'struct btf' (amongst all DWARF loading threads) after we just
-> produced it should be minimal, so we grab all the advantages: locality
-> of reference, minimal contention as DWARF reading/creating the pahole
-> internal, neutral, data structures should be higher than adding
-> types/functions/variables via the libbpf BTF API.
-
-I disagree, I think contention might be noticeable because merging
-BTFs is still a relatively expensive/slow operation. But feel free to
-start with that, I just thought that doing per-thread struct btf
-wouldn't add any complexity, which is why I mentioned that.
-
->
-> I.e. we can leave paralellizing the BTF _encoding_ for later, what we're
-> trying to do now is to paralellize the DWARF _loading_, right?
-
-We are trying to speed up DWARF-to-BTF generation in general, not
-specifically DWARF loading. DWARF loading is an obvious most expensive
-part, string deduplication is the next one, if you look at profiling
-data. The third one will be btf__dedup, which is why I mentioned that
-it might be faster still to do pre-dedup in each thread at the very
-end, right before we do final dedup. Each individual dedup will
-probably significantly reduce total size of data/strings, so I have a
-feeling that it will result in a very nice speed-ups in the end.
-
-So just my 2 cents.
-
->
-> > So please consider that, it also seems simpler overall.
->
-> > > The ordering will be different than what we have now, as some smaller
-> > > CUs (object files with debug) will be processed faster so will get its
-> > > btf encoding slot faster, but that, at btf__dedup() time shouldn't make
-> > > a difference, right?
->
-> > Right, order doesn't matter.
->
-> > > I think I'm done with refactoring the btf_encoder code, which should be
-> > > by now a thin layer on top of the excellent libbpf BTF API, just getting
-> > > what the previous loader (DWARF) produced and feeding libbpf.
->
-> > Great.
->
-> > > I thought about fancy thread pools, etc, researching some pre-existing
-> > > thing or doing some kthread + workqueue lifting from the kernel but will
-> > > instead start with the most spartan code, we can improve later.
->
-> > Agree, simple is good. Really curious how much faster we can get. I
-> > think anything fancy will give a relatively small improvement. The
-> > biggest one will come from any parallelization.
->
-> And I think that is possible, modulo elfutils libraries saying no, I
-> hope that will not be the case.
-
-You can't imagine how eagerly I'm awaiting this bright future of
-faster BTF generation step in the kernel build process. :)
-
->
-> - Arnaldo
+> --
+> Rodrigo Siqueira
+> https://siqueira.tech
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
