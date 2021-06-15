@@ -2,83 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADEF3A8797
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DE93A87D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhFOReU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbhFOReT (ORCPT
+        id S231686AbhFORgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:36:15 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:34965 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231310AbhFORe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:34:19 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0791EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:32:14 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id w14-20020a056902100eb029054d7f164a2fso9813709ybt.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=O2Nrrj9xXoMKaRCg57APzWi66P/7IsIGYrlkbQqeHys=;
-        b=HCTQA3LhOBFMcnebLh802AH4yyFsQaSM6PDKeEem2QGWGHzV0VVbTuWKuA+bIqpFys
-         50QmLl73EcryXb+Zcm75cxq4um/MtQl/6GxvecG/HfZnD+hlG9OUbXRQnmenNAca9tVy
-         whycFOdCuC2mBl4szs+YanuV3hYvjRc0hBFbb0WbVVaH054Vwvj8X5BAcIeMub6dihFo
-         8I6PrsZQZzWzmP20NA5dYNtt2BbXFZ/jYJvodJNHe+BVDysVJTkTzlpRELKRUkB7KyZm
-         9iWbQPEieEJWHnTjutDFqkqpqqMkv8QAK5l7Qjxcd7wfYpX4ZwYXnlJQskBNYRAI9fuI
-         J+Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=O2Nrrj9xXoMKaRCg57APzWi66P/7IsIGYrlkbQqeHys=;
-        b=RLmimHxZBDSb4J61bPyzpuIgTdGafjfTYbYkEMP8358dlQqj/d/92EMPNuDwykjII9
-         q3MTswUfvB3C8/Oa2se6+gfNyr+ZaVVNroJsZ9EHFvMfNb/5eVXl7fsgVruTKEe8Jldz
-         iaBJ1lTQxbtx5p0RtyNxrm8w/prMZsrC8M4JmP6XgV5KAuLmptdA2pgUeiSjZ72JFl/T
-         ZFg8p6h5v2KYuuyYzQ3+BeMx/xXBvhNiraAKHb5bsubTFbbL9Ot/djXF+cD8A577OBcv
-         bT40jGmiEjDU1eUoTdK+AIKE1PRX1pM1vgGWDjXBNLNmvRQTLj+KgLJrIigOGfv1VR0t
-         18Sw==
-X-Gm-Message-State: AOAM531yHLhTVSxIapFFNN72a6PJKqgfuTBMjKann8ls6AAFC0i5Ntff
-        vyboQyi1snDE38eiZi/d3EU98fc6v6eP
-X-Google-Smtp-Source: ABdhPJzHlTT2KEs466gBdtcdD0cKscO5Xry/sQ03CBnORmzZbcRFCJGCP2BmRfKTLuuXIYMZ5fmWBDG0NLMv
-X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:8824:3d53:8367:ada5])
- (user=kyletso job=sendgmr) by 2002:a5b:ac9:: with SMTP id a9mr329288ybr.475.1623778334010;
- Tue, 15 Jun 2021 10:32:14 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 01:32:06 +0800
-Message-Id: <20210615173206.1646477-1-kyletso@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
-Subject: [PATCH] usb: typec: tcpm: Ignore Vsafe0v in PR_SWAP_SNK_SRC_SOURCE_ON state
-From:   Kyle Tso <kyletso@google.com>
-To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kyle Tso <kyletso@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 15 Jun 2021 13:34:59 -0400
+X-UUID: bf25e5c96581468d96a59c8cc0e1598a-20210616
+X-UUID: bf25e5c96581468d96a59c8cc0e1598a-20210616
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <tinghan.shen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1821328680; Wed, 16 Jun 2021 01:32:49 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Jun 2021 01:32:42 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 16 Jun 2021 01:32:42 +0800
+From:   Tinghan Shen <tinghan.shen@mediatek.com>
+To:     <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
+CC:     <devicetree@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <seiya.wang@mediatek.com>, <wenst@google.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: arm64: dts: mt8195: Add Mediatek SoC MT8195 device nodes
+Date:   Wed, 16 Jun 2021 01:32:07 +0800
+Message-ID: <20210615173233.26682-1-tinghan.shen@mediatek.com>
+X-Mailer: git-send-email 2.15.GIT
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In PR_SWAP_SNK_SRC_SOURCE_ON state, Vsafe0v is expected as well so do
-nothing here to avoid state machine going into SNK_UNATTACHED.
+This series is a collection of device nodes for Mediatek SoC MT8195 and
+depends on patches[1][2][3].
 
-Fixes: 28b43d3d746b ("usb: typec: tcpm: Introduce vsafe0v for vbus")
-Signed-off-by: Kyle Tso <kyletso@google.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 1 +
- 1 file changed, 1 insertion(+)
+The dependency list is not complete.
+some dependencies are still under working.
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 197556038ba4..e11e9227107d 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -5212,6 +5212,7 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
- 		}
- 		break;
- 	case PR_SWAP_SNK_SRC_SINK_OFF:
-+	case PR_SWAP_SNK_SRC_SOURCE_ON:
- 		/* Do nothing, vsafe0v is expected during transition */
- 		break;
- 	default:
--- 
-2.32.0.272.g935e593368-goog
+[1] arm64: dts: Add Mediatek SoC MT8195 and evaluation board dts and Makefile
+    https://patchwork.kernel.org/project/linux-mediatek/patch/20210601075350.31515-2-seiya.wang@mediatek.com/
+
+[2] dt-bindings: power: Add MT8195 power domains
+    https://patchwork.kernel.org/project/linux-mediatek/patch/20210610023614.5375-3-chun-jie.chen@mediatek.com/
+
+[3] dt-bindings: pinctrl: mt8195: add pinctrl file and binding document
+    https://patchwork.kernel.org/project/linux-mediatek/patch/20210413055702.27535-2-zhiyong.tao@mediatek.com/
+
 
