@@ -2,359 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4142D3A77E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465583A77EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbhFOHYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:24:10 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:23828 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229781AbhFOHYJ (ORCPT
+        id S230301AbhFOHZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230144AbhFOHZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:24:09 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Af8MZ26nhWe7nYkRHS9oYRUlmwz7pDfIQ3DAb?=
- =?us-ascii?q?v31ZSRFFG/Fw9vre+MjzsCWYtN9/Yh8dcK+7UpVoLUm8yXcX2/h1AV7BZniEhI?=
- =?us-ascii?q?LAFugLgrcKqAeQeREWmNQ86Y5QN4B6CPDVSWNxlNvG5mCDeOoI8Z2q97+JiI7l?=
- =?us-ascii?q?o0tQcQ=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.83,275,1616428800"; 
-   d="scan'208";a="109611955"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 15 Jun 2021 15:22:03 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id D0B0C4C369F7;
-        Tue, 15 Jun 2021 15:22:01 +0800 (CST)
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 15 Jun 2021 15:21:50 +0800
-Received: from irides.mr.mr.mr (10.167.225.141) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Tue, 15 Jun 2021 15:21:50 +0800
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-To:     <darrick.wong@oracle.com>
-CC:     <ruansy.fnst@fujitsu.com>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <djwong@kernel.org>, <hch@lst.de>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>, <linux-xfs@vger.kernel.org>,
-        <rgoldwyn@suse.de>, <viro@zeniv.linux.org.uk>,
-        <willy@infradead.org>
-Subject: [PATCH v6.1 6/7] fs/xfs: Handle CoW for fsdax write() path
-Date:   Tue, 15 Jun 2021 15:21:47 +0800
-Message-ID: <20210615072147.73852-1-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <OSBPR01MB2920A2BCD568364C1363AFA6F4369@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-References: <OSBPR01MB2920A2BCD568364C1363AFA6F4369@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+        Tue, 15 Jun 2021 03:25:44 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D79AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:23:39 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id i94so17081827wri.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:23:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q+UTvS88khTZNXDF+y6Ps9tqeyz2Uy/4nnjR+qNnvTE=;
+        b=qGhVX4FJqo0aZ9xI+lU7yDAtZ/zmAB3uU4LZHpxTVSZA30nq6Fnv/N7ef+0mhEZF14
+         4902DVJqMqKUIlgYG5yIQlhwGi6qVXHZcCFS9tpos8Ip6nGG6vMMdGoYd+Wlo9tnEifa
+         y8r/OsUdyvRUrrSUgyVkaT6b36cfeH+aAdrfKmyHaJeQ9fX+O1orbt7cwz39xbAqTtWk
+         wCYNVDBAPTuI5iZ4wGZZLhASKHJEkIZ8QKLY2MdDy9kL/pUBqxK5589lIf9op7FP6eNJ
+         1UXPRWk4ICbHdWlJI4C6rZ25BKlBeaHzFhKn51wSiEzI5CGdaM1AZFzSf36Bm5vaQHfq
+         jL9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q+UTvS88khTZNXDF+y6Ps9tqeyz2Uy/4nnjR+qNnvTE=;
+        b=W/7MkS3trVtfApH9ZVdDqlDLJqfEv+pqhNIsr7djFDW0S4dUt/riG42nfuLLhX5Y5U
+         +7anl0F9RUimATaAdJhbEtkGByZYcVFkO0q1UN3jKQ6XdP6xFdctCLJjDGv13D1u9Q2R
+         Ibb6Es9zKIOYU7TENxGD66dWIAmsxZ2AJ1d9OSESn4iePmrFJ6tyAJG6tGQzNRKbK9QF
+         Zd0wofkb65qK17SXWYq0QRlVO7jxZEM8UxNA050/k6F5z1ZkDAeRZZlJdS9hB5RVNmcw
+         6k714UKPfIQrDXx6vUF7ZLbaFpD6818CoyOi/SRcyw/A78D2GttHA/QrCjE085RshvAS
+         JRdw==
+X-Gm-Message-State: AOAM530p4mze7izdmKaVAZ4vxkw13IQZ9h7HIO/tArUShiQ4HHTZpuxY
+        XI7LPjZjSnby3rTnbCAtz3DpURlbphETljFjE87kqQ==
+X-Google-Smtp-Source: ABdhPJyWRpNiJOhhrt9OoInk4hONQHxKx40cBuyw3GTOzH9U6tCvFlzHy/ZBsckfW3YXlH2SXbnm2b8R8ipPKguOZfg=
+X-Received: by 2002:a5d:6c6d:: with SMTP id r13mr23084963wrz.350.1623741816400;
+ Tue, 15 Jun 2021 00:23:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: D0B0C4C369F7.A1B47
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+References: <20210614223317.999867-1-tyhicks@linux.microsoft.com>
+In-Reply-To: <20210614223317.999867-1-tyhicks@linux.microsoft.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Tue, 15 Jun 2021 09:23:25 +0200
+Message-ID: <CAHUa44ErgoxT3L1W-ouoQwUg1fNC-zagOOgy=KBuGN_pETnYaw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/8] tee: Improve support for kexec and kdump
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Allen Pais <apais@linux.microsoft.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Darrick,
+Hi Tyler,
 
-Since other patches looks good, I post this RFC patch singly to hot-fix the
-problem in xfs_dax_write_iomap_ops->iomap_end() of v6 that the error code was
-ingored. I will split this in two patches(changes in iomap and xfs
-respectively) in next formal version if it looks ok.
+On Tue, Jun 15, 2021 at 12:33 AM Tyler Hicks
+<tyhicks@linux.microsoft.com> wrote:
+>
+> v5:
+> - Picked up Reviewed-by's from Jens.
+> - Added 'Cc: stable@vger.kernel.org' to all commits as this is intended
+>   to be a bug fix series. I'm happy to sort out backports with the
+>   stable team.
+> - Got rid of the bool is_mapped parameter of optee_disable_shm_cache()
+>   by abstracting out the function with two wrappers. One
+>   (optee_disable_shm_cache()) for normal case where the shm cache is
+>   fully mapped and another (optee_disable_unmapped_shm_cache()) for the
+>   unusual case of the shm cache having potentially invalid entries.
+> - Replaced my previous 'tee: Support kernel shm registration without
+>   dma-buf' patch with a cleaner implementation ('tee: Correct
+>   inappropriate usage of TEE_SHM_DMA_BUF flag') from Sumit Garg.
+> v4: https://lore.kernel.org/lkml/20210610210913.536081-1-tyhicks@linux.microsoft.com/
+> v3: https://lore.kernel.org/lkml/20210609002326.210024-1-tyhicks@linux.microsoft.com/
+> v2: https://lore.kernel.org/lkml/20210225090610.242623-1-allen.lkml@gmail.com/
+> v1: https://lore.kernel.org/lkml/20210217092714.121297-1-allen.lkml@gmail.com/
+>
+> This series fixes several bugs uncovered while exercising the OP-TEE
+> (Open Portable Trusted Execution Environment), ftpm (firmware TPM), and
+> tee_bnxt_fw (Broadcom BNXT firmware manager) drivers with kexec and
+> kdump (emergency kexec) based workflows.
+>
+> The majority of the problems are caused by missing .shutdown hooks in
+> the drivers. The .shutdown hooks are used by the normal kexec code path
+> to let the drivers clean up prior to executing the target kernel. The
+> .remove hooks, which are already implemented in these drivers, are not
+> called as part of the kexec code path. This resulted in shared memory
+> regions, that were cached and/or registered with OP-TEE, not being
+> cleared/unregistered prior to kexec. The new kernel would then run into
+> problems when handling the previously cached virtual addresses or trying
+> to register newly allocated shared memory objects that overlapped with
+> the previously registered virtual addresses. The TEE didn't receive
+> notification that the old virtual addresses were no longer meaningful
+> and that a new kernel, with a new address space, would soon be running.
+>
+> However, implementing .shutdown hooks was not enough for supporting
+> kexec. There was an additional problem caused by the TEE driver's
+> reliance on the dma-buf subsystem for multi-page shared memory objects
+> that were registered with the TEE. Shared memory objects backed by a
+> dma-buf use a different mechanism for reference counting. When the final
+> reference is released, work is scheduled to be executed to unregister
+> the shared memory with the TEE but that work is only completed prior to
+> the current task returning the userspace. In the case of a kexec
+> operation, the current task that's calling the driver .shutdown hooks
+> never returns to userspace prior to the kexec operation so the shared
+> memory was never unregistered. This eventually caused problems from
+> overlapping shared memory regions that were registered with the TEE
+> after several kexec operations. The large 4M contiguous region
+> allocated by the tee_bnxt_fw driver reliably ran into this issue on the
+> fourth kexec on a system with 8G of RAM.
+>
+> The use of dma-buf makes sense for shared memory that's in use by
+> userspace but dma-buf's aren't needed for shared memory that will only
+> used by the driver. This series separates dma-buf backed shared memory
+> allocated by the kernel from multi-page shared memory that the kernel
+> simply needs registered with the TEE for private use.
+>
+> One other noteworthy change in this series is to completely refuse to
+> load the OP-TEE driver in the kdump kernel. This is needed because the
+> secure world may have had all of its threads in suspended state when the
+> regular kernel crashed. The kdump kernel would then hang during boot
+> because the OP-TEE driver's .probe function would attempt to use a
+> secure world thread when they're all in suspended state. Another problem
+> is that shared memory allocations could fail under the kdump kernel
+> because the previously registered were not unregistered (the .shutdown
+> hook is not called when kexec'ing into the kdump kernel).
+>
+> The first patch in the series fixes potential memory leaks that are not
+> directly related to kexec or kdump but were noticed during the
+> development of this series.
+>
+> Tyler
+>
+> Allen Pais (2):
+>   optee: fix tee out of memory failure seen during kexec reboot
+>   firmware: tee_bnxt: Release TEE shm, session, and context during kexec
+>
+> Jens Wiklander (1):
+>   tee: add tee_shm_alloc_kernel_buf()
+>
+> Sumit Garg (1):
+>   tee: Correct inappropriate usage of TEE_SHM_DMA_BUF flag
+>
+> Tyler Hicks (4):
+>   optee: Fix memory leak when failing to register shm pages
+>   optee: Refuse to load the driver under the kdump kernel
+>   optee: Clear stale cache entries during initialization
+>   tpm_ftpm_tee: Free and unregister TEE shared memory during kexec
+>
+>  drivers/char/tpm/tpm_ftpm_tee.c         |  8 ++---
+>  drivers/firmware/broadcom/tee_bnxt_fw.c | 14 ++++++--
+>  drivers/tee/optee/call.c                | 38 +++++++++++++++++++---
+>  drivers/tee/optee/core.c                | 43 ++++++++++++++++++++++++-
+>  drivers/tee/optee/optee_private.h       |  1 +
+>  drivers/tee/optee/rpc.c                 |  5 +--
+>  drivers/tee/optee/shm_pool.c            | 20 +++++++++---
+>  drivers/tee/tee_shm.c                   | 20 +++++++++++-
+>  include/linux/tee_drv.h                 |  2 ++
+>  9 files changed, 132 insertions(+), 19 deletions(-)
+>
+> --
+ > 2.25.1
+>
 
-====
+It looks like we're almost done now. Thanks for your patience to see
+this through.
 
-Introduce a new interface called "iomap_post_actor()" in iomap_ops.  And call it
-between ->actor() and ->iomap_end().  It is mean to handle the error code
-returned from ->actor().  In this patchset, it is used to remap or cancel the
-CoW extents according to the error code.
+I suppose it makes most sense to take this via my tree, but before I
+can do that I'll need acks from the maintainers of
+drivers/char/tpm/tpm_ftpm_tee.c ("tpm_ftpm_tee: Free and unregister
+TEE shared memory during kexec") and
+drivers/firmware/broadcom/tee_bnxt_fw.c ("firmware: tee_bnxt: Release
+TEE shm, session, and context during kexec").
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- fs/dax.c               | 27 ++++++++++++++++++---------
- fs/iomap/apply.c       |  4 ++++
- fs/xfs/xfs_bmap_util.c |  3 +--
- fs/xfs/xfs_file.c      |  5 +++--
- fs/xfs/xfs_iomap.c     | 33 ++++++++++++++++++++++++++++++++-
- fs/xfs/xfs_iomap.h     | 24 ++++++++++++++++++++++++
- fs/xfs/xfs_iops.c      |  7 +++----
- fs/xfs/xfs_reflink.c   |  3 +--
- include/linux/iomap.h  |  8 ++++++++
- 9 files changed, 94 insertions(+), 20 deletions(-)
-
-diff --git a/fs/dax.c b/fs/dax.c
-index 93f16210847b..0740c2610b6f 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -1537,7 +1537,7 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
- 	struct iomap iomap = { .type = IOMAP_HOLE };
- 	struct iomap srcmap = { .type = IOMAP_HOLE };
- 	unsigned flags = IOMAP_FAULT;
--	int error;
-+	int error, copied = PAGE_SIZE;
- 	bool write = vmf->flags & FAULT_FLAG_WRITE;
- 	vm_fault_t ret = 0, major = 0;
- 	void *entry;
-@@ -1598,7 +1598,7 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
- 	ret = dax_fault_actor(vmf, pfnp, &xas, &entry, false, flags,
- 			      &iomap, &srcmap);
- 	if (ret == VM_FAULT_SIGBUS)
--		goto finish_iomap;
-+		goto finish_iomap_actor;
- 
- 	/* read/write MAPPED, CoW UNWRITTEN */
- 	if (iomap.flags & IOMAP_F_NEW) {
-@@ -1607,10 +1607,16 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
- 		major = VM_FAULT_MAJOR;
- 	}
- 
-+ finish_iomap_actor:
-+	if (ops->iomap_post_actor) {
-+		if (ret & VM_FAULT_ERROR)
-+			copied = 0;
-+		ops->iomap_post_actor(inode, pos, PMD_SIZE, copied, flags,
-+				      &iomap, &srcmap);
-+	}
-+
- finish_iomap:
- 	if (ops->iomap_end) {
--		int copied = PAGE_SIZE;
--
- 		if (ret & VM_FAULT_ERROR)
- 			copied = 0;
- 		/*
-@@ -1677,7 +1683,7 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
- 	pgoff_t max_pgoff;
- 	void *entry;
- 	loff_t pos;
--	int error;
-+	int error, copied = PMD_SIZE;
- 
- 	/*
- 	 * Check whether offset isn't beyond end of file now. Caller is
-@@ -1736,12 +1742,15 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
- 	ret = dax_fault_actor(vmf, pfnp, &xas, &entry, true, flags,
- 			      &iomap, &srcmap);
- 
-+	if (ret == VM_FAULT_FALLBACK)
-+		copied = 0;
-+	if (ops->iomap_post_actor) {
-+		ops->iomap_post_actor(inode, pos, PMD_SIZE, copied, flags,
-+				      &iomap, &srcmap);
-+	}
-+
- finish_iomap:
- 	if (ops->iomap_end) {
--		int copied = PMD_SIZE;
--
--		if (ret == VM_FAULT_FALLBACK)
--			copied = 0;
- 		/*
- 		 * The fault is done by now and there's no way back (other
- 		 * thread may be already happily using PMD we have installed).
-diff --git a/fs/iomap/apply.c b/fs/iomap/apply.c
-index 0493da5286ad..26a54ded184f 100644
---- a/fs/iomap/apply.c
-+++ b/fs/iomap/apply.c
-@@ -84,6 +84,10 @@ iomap_apply(struct inode *inode, loff_t pos, loff_t length, unsigned flags,
- 	written = actor(inode, pos, length, data, &iomap,
- 			srcmap.type != IOMAP_HOLE ? &srcmap : &iomap);
- 
-+	if (ops->iomap_post_actor) {
-+		written = ops->iomap_post_actor(inode, pos, length, written,
-+						flags, &iomap, &srcmap);
-+	}
- out:
- 	/*
- 	 * Now the data has been copied, commit the range we've copied.  This
-diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
-index a5e9d7d34023..2a36dc93ff27 100644
---- a/fs/xfs/xfs_bmap_util.c
-+++ b/fs/xfs/xfs_bmap_util.c
-@@ -965,8 +965,7 @@ xfs_free_file_space(
- 		return 0;
- 	if (offset + len > XFS_ISIZE(ip))
- 		len = XFS_ISIZE(ip) - offset;
--	error = iomap_zero_range(VFS_I(ip), offset, len, NULL,
--			&xfs_buffered_write_iomap_ops);
-+	error = xfs_iomap_zero_range(ip, offset, len, NULL);
- 	if (error)
- 		return error;
- 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index 396ef36dcd0a..89406ec6741b 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -684,11 +684,12 @@ xfs_file_dax_write(
- 	pos = iocb->ki_pos;
- 
- 	trace_xfs_file_dax_write(iocb, from);
--	ret = dax_iomap_rw(iocb, from, &xfs_direct_write_iomap_ops);
-+	ret = dax_iomap_rw(iocb, from, &xfs_dax_write_iomap_ops);
- 	if (ret > 0 && iocb->ki_pos > i_size_read(inode)) {
- 		i_size_write(inode, iocb->ki_pos);
- 		error = xfs_setfilesize(ip, pos, ret);
- 	}
-+
- out:
- 	if (iolock)
- 		xfs_iunlock(ip, iolock);
-@@ -1309,7 +1310,7 @@ __xfs_filemap_fault(
- 
- 		ret = dax_iomap_fault(vmf, pe_size, &pfn, NULL,
- 				(write_fault && !vmf->cow_page) ?
--				 &xfs_direct_write_iomap_ops :
-+				 &xfs_dax_write_iomap_ops :
- 				 &xfs_read_iomap_ops);
- 		if (ret & VM_FAULT_NEEDDSYNC)
- 			ret = dax_finish_sync_fault(vmf, pe_size, pfn);
-diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-index d154f42e2dc6..2f322e2f8544 100644
---- a/fs/xfs/xfs_iomap.c
-+++ b/fs/xfs/xfs_iomap.c
-@@ -761,7 +761,8 @@ xfs_direct_write_iomap_begin(
- 
- 		/* may drop and re-acquire the ilock */
- 		error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
--				&lockmode, flags & IOMAP_DIRECT);
-+				&lockmode,
-+				(flags & IOMAP_DIRECT) || IS_DAX(inode));
- 		if (error)
- 			goto out_unlock;
- 		if (shared)
-@@ -854,6 +855,36 @@ const struct iomap_ops xfs_direct_write_iomap_ops = {
- 	.iomap_begin		= xfs_direct_write_iomap_begin,
- };
- 
-+static int
-+xfs_dax_write_iomap_post_actor(
-+	struct inode		*inode,
-+	loff_t			pos,
-+	loff_t			length,
-+	ssize_t			written,
-+	unsigned int		flags,
-+	struct iomap		*iomap,
-+	struct iomap		*srcmap)
-+{
-+	int			error = 0;
-+	struct xfs_inode	*ip = XFS_I(inode);
-+	bool			cow = xfs_is_cow_inode(ip);
-+
-+	if (written <= 0) {
-+		if (cow)
-+			xfs_reflink_cancel_cow_range(ip, pos, length, true);
-+		return written;
-+	}
-+
-+	if (cow)
-+		error = xfs_reflink_end_cow(ip, pos, written);
-+	return error ?: written;
-+}
-+
-+const struct iomap_ops xfs_dax_write_iomap_ops = {
-+	.iomap_begin		= xfs_direct_write_iomap_begin,
-+	.iomap_post_actor	= xfs_dax_write_iomap_post_actor,
-+};
-+
- static int
- xfs_buffered_write_iomap_begin(
- 	struct inode		*inode,
-diff --git a/fs/xfs/xfs_iomap.h b/fs/xfs/xfs_iomap.h
-index 7d3703556d0e..fbacf638ab21 100644
---- a/fs/xfs/xfs_iomap.h
-+++ b/fs/xfs/xfs_iomap.h
-@@ -42,8 +42,32 @@ xfs_aligned_fsb_count(
- 
- extern const struct iomap_ops xfs_buffered_write_iomap_ops;
- extern const struct iomap_ops xfs_direct_write_iomap_ops;
-+extern const struct iomap_ops xfs_dax_write_iomap_ops;
- extern const struct iomap_ops xfs_read_iomap_ops;
- extern const struct iomap_ops xfs_seek_iomap_ops;
- extern const struct iomap_ops xfs_xattr_iomap_ops;
- 
-+static inline int
-+xfs_iomap_zero_range(
-+	struct xfs_inode	*ip,
-+	loff_t			offset,
-+	loff_t			len,
-+	bool			*did_zero)
-+{
-+	return iomap_zero_range(VFS_I(ip), offset, len, did_zero,
-+			IS_DAX(VFS_I(ip)) ? &xfs_dax_write_iomap_ops
-+					  : &xfs_buffered_write_iomap_ops);
-+}
-+
-+static inline int
-+xfs_iomap_truncate_page(
-+	struct xfs_inode	*ip,
-+	loff_t			pos,
-+	bool			*did_zero)
-+{
-+	return iomap_truncate_page(VFS_I(ip), pos, did_zero,
-+			IS_DAX(VFS_I(ip)) ? &xfs_dax_write_iomap_ops
-+					  : &xfs_buffered_write_iomap_ops);
-+}
-+
- #endif /* __XFS_IOMAP_H__*/
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index dfe24b7f26e5..6d936c3e1a6e 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -911,8 +911,8 @@ xfs_setattr_size(
- 	 */
- 	if (newsize > oldsize) {
- 		trace_xfs_zero_eof(ip, oldsize, newsize - oldsize);
--		error = iomap_zero_range(inode, oldsize, newsize - oldsize,
--				&did_zeroing, &xfs_buffered_write_iomap_ops);
-+		error = xfs_iomap_zero_range(ip, oldsize, newsize - oldsize,
-+				&did_zeroing);
- 	} else {
- 		/*
- 		 * iomap won't detect a dirty page over an unwritten block (or a
-@@ -924,8 +924,7 @@ xfs_setattr_size(
- 						     newsize);
- 		if (error)
- 			return error;
--		error = iomap_truncate_page(inode, newsize, &did_zeroing,
--				&xfs_buffered_write_iomap_ops);
-+		error = xfs_iomap_truncate_page(ip, newsize, &did_zeroing);
- 	}
- 
- 	if (error)
-diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-index d25434f93235..9a780948dbd0 100644
---- a/fs/xfs/xfs_reflink.c
-+++ b/fs/xfs/xfs_reflink.c
-@@ -1266,8 +1266,7 @@ xfs_reflink_zero_posteof(
- 		return 0;
- 
- 	trace_xfs_zero_eof(ip, isize, pos - isize);
--	return iomap_zero_range(VFS_I(ip), isize, pos - isize, NULL,
--			&xfs_buffered_write_iomap_ops);
-+	return xfs_iomap_zero_range(ip, isize, pos - isize, NULL);
- }
- 
- /*
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index 95562f863ad0..58f2e1c78018 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -135,6 +135,14 @@ struct iomap_ops {
- 			unsigned flags, struct iomap *iomap,
- 			struct iomap *srcmap);
- 
-+	/*
-+	 * Handle the error code from actor(). Do the finishing jobs for extra
-+	 * operations, such as CoW, according to whether written is negative.
-+	 */
-+	int (*iomap_post_actor)(struct inode *inode, loff_t pos, loff_t length,
-+			ssize_t written, unsigned flags, struct iomap *iomap,
-+			struct iomap *srcmap);
-+
- 	/*
- 	 * Commit and/or unreserve space previous allocated using iomap_begin.
- 	 * Written indicates the length of the successful write operation which
--- 
-2.31.1
-
-
-
+Cheers,
+Jens
