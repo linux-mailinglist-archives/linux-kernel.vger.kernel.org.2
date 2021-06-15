@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1682E3A83C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D003A83C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhFOPRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:17:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33826 "EHLO mail.kernel.org"
+        id S231486AbhFOPRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:17:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230079AbhFOPRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:17:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2306261601;
-        Tue, 15 Jun 2021 15:15:25 +0000 (UTC)
+        id S230079AbhFOPRe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:17:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3FF361603;
+        Tue, 15 Jun 2021 15:15:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623770126;
-        bh=MYHkuK3uOLVum0xq/JwRmdO5KG2CRJaEP6NvhWxooE8=;
+        s=k20201202; t=1623770129;
+        bh=sfA/mRzFumjOz9kbWz70761Nc8lsiKZ4a9I7LArzfdU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TPSx70679wc2SPyTAXJQTTB8qN/99EfO0JW9u82hiEOlZk/mk2Ajj6KRPrMYgPvTy
-         D8sLD5KFGZ6nmWRWqDMcUnXauquzMCPTEkw7GtweMvRgcC10pNUaJERbACHXBZ5VTF
-         byb47NodJuZy5YeECNhOvspv9SwipYRLohFH3gGp7zwqJOYshex5Lk5qgABCmHfUXr
-         E8yIgsVmy5SVqbdpPHN1NOR81f2o61M85v65BG/GShv6W8iUM5/0sEdc1ikwz+E5Rk
-         GDu6qw8xu8WRAdYaZmRYa5yoAq2/vdBYnQZcZoAnWxkKCpuNVHTREm63329dAmmmu8
-         ApHmeyGMyOG8g==
+        b=PCcS8E14gb4WssndiWJcRFxUH5w/rDXeGcqSMLhxzAHcvEB6XiAQjJozvdu2x26V/
+         hMCqdOS5JNCcnvjtTETxRPqQyA8msRkwPdgPkWk7DrnZkQbsXkxYYJRfie8SkPCQes
+         Upb63aJy0EiTJsccPzUpUzvwdeSh+BGlK67AaQYu0c2ZOoRMH20Rp9Bk1ota39lbtn
+         ENipT5Xj4HRq7Ac0Iu/knaf7vNUk6E5Y5c4YpiQPTGmPXWCihXy1RqC6dsje3SRXGJ
+         g4Rcc8/sx0uVewaGy6XQXefpXu/f4uL9FVWO5Q53V90vA9a6kwOllw+nbiiqnZNIKQ
+         0K0ciybpsT4Bw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        patrice.chotard@foss.st.com
+To:     Axel Lin <axel.lin@ingics.com>
 Cc:     Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        christophe.kerello@foss.st.com, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH] spi: stm32-qspi: Remove unused qspi field of struct stm32_qspi_flash
-Date:   Tue, 15 Jun 2021 16:15:05 +0100
-Message-Id: <162376589204.36516.7751226518675364305.b4-ty@kernel.org>
+        ChiYuan Huang <cy_huang@richtek.com>,
+        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [PATCH] regulator: rt6160: Remove vsel_active_low from struct rt6160_priv
+Date:   Tue, 15 Jun 2021 16:15:06 +0100
+Message-Id: <162376572819.36399.17993990572863185568.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210615090115.30702-1-patrice.chotard@foss.st.com>
-References: <20210615090115.30702-1-patrice.chotard@foss.st.com>
+In-Reply-To: <20210615103947.3387994-1-axel.lin@ingics.com>
+References: <20210615103947.3387994-1-axel.lin@ingics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,17 +41,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 11:01:15 +0200, patrice.chotard@foss.st.com wrote:
-> Remove struct stm32_qspi_flash's field qspi which is not used.
+On Tue, 15 Jun 2021 18:39:47 +0800, Axel Lin wrote:
+> Use a local variable instead is enough, this simplifies the code.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] spi: stm32-qspi: Remove unused qspi field of struct stm32_qspi_flash
-      commit: 6a5976f23dc38749afcb62cc3acf5e3e2b53d5ba
+[1/1] regulator: rt6160: Remove vsel_active_low from struct rt6160_priv
+      commit: f3f4f37d53be578c65dd32a1ffad432b33aef236
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
