@@ -2,101 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15C43A83F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81493A8402
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbhFOP3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:29:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34815 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231398AbhFOP3f (ORCPT
+        id S231272AbhFOPdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230267AbhFOPdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:29:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623770850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BBaVLpIdsAFYJF8kqK3yekJ5AzD1bcUpe8+m6jwsVLg=;
-        b=fSBjcT318OH6wnTl6N7EHhkq2zdRp2JFmiKMkBfeMzkl9RXUivf4h6bBXFjih5YpZZRyd8
-        tLoVHSThaHqUDfNUMCMwFZ6UhltYgi71D5VzgNamut0P9PqmnFY6t11WztoVS4WOzY1ePW
-        x5PkBVmK58zFA/Gs96pwClfVxcTOklY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-39-GkoiM_NONY-kgrEj9S9HZA-1; Tue, 15 Jun 2021 11:27:29 -0400
-X-MC-Unique: GkoiM_NONY-kgrEj9S9HZA-1
-Received: by mail-ed1-f69.google.com with SMTP id h23-20020aa7c5d70000b029038fed7b27d5so22326141eds.21
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:27:29 -0700 (PDT)
+        Tue, 15 Jun 2021 11:33:22 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273FBC061767
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:31:17 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id j19so5044685vkj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:31:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ugXKpj4LHdrdyG4UTDs7VBf4QAJNhOpaAQVCLfFAeJw=;
+        b=J2VlRf6J4osy2PHigG6h59M178uVc3xlDfkFnJCqh43wYbiOesVkB/V0ZbK3cymc/q
+         PiJPytY5WQmxpMKI5bqOCjErVxADBBlqmzzEnV5iKGdvWzgHRQIoCcdglRrob/KSA0fk
+         cZ5AcJAWFT1ngmNWfYziwDSPoaRksFXrIxqEtURPVg0GOfOSDRUDI65uh5H4W488Elul
+         owJ/F6CZ7dpUZvoMWYg/wAyUdGbyCLMUu3vjwi82d/7yuusYsotw+u48pNxlMlYVOlLo
+         MjPAcRy0LVDhbxLLtV5YDTIJ8cR9US673/EP8Fw4ZmsUefZL8XEb7a8D1wm6sPYMUAF7
+         5jHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BBaVLpIdsAFYJF8kqK3yekJ5AzD1bcUpe8+m6jwsVLg=;
-        b=oIs8vi1QO90uW+yLt/sTblrgv1oayUlk9PrRiOxxjUHcUkSWI9DukIR2uOT8EQoKRn
-         GlmkfjaqtubW/ZIaJD0yhsfd2xtqlwifZtzxMjsexY52fjhGkpZnnFFbbB1O761MukVp
-         8wQgdLS9h3bVAfbiI7SW6DpWyJJNCDwARbZcdWnxCvg6PGcD/fV/XKr/f0FhIRTrURi6
-         cK/pL3B6oktnseNZAHJKxHJxcmPCqmFPVCUlRiM41/Mg+yE8YJCQwRHNi2VQB7iWYTEi
-         K3epSNm1RBWZUr0bgiTRNiNPt4mUWRO6PFc0z6ntNAif0Ncz3LnAokuR0KtAiXS/INKT
-         o5ew==
-X-Gm-Message-State: AOAM533LLUnFL3tU0zs1nDzQmGBD0JoLctTsCzVCqVBmdbAwvGOvbEJu
-        pAtfye2QUGVTT41LXUSxfraDWmVUNMt1s+37Ltq7pGe8Hvx4zEzE5gLjHdHVB6hJAsNziyzE6bC
-        wP68o+uGSscLJZ0pV41ZBArx7
-X-Received: by 2002:a17:907:e8d:: with SMTP id ho13mr40593ejc.387.1623770848248;
-        Tue, 15 Jun 2021 08:27:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyccg0L1KZ9HRDmng0aCPycLedCiLWQMiR/1yuXJ4epefHBw9Kz5GYIcrrgex/qKDfX2NhxbQ==
-X-Received: by 2002:a17:907:e8d:: with SMTP id ho13mr40579ejc.387.1623770848094;
-        Tue, 15 Jun 2021 08:27:28 -0700 (PDT)
-Received: from redhat.com ([77.126.22.11])
-        by smtp.gmail.com with ESMTPSA id y10sm10323681ejm.76.2021.06.15.08.27.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 08:27:26 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 11:27:23 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Xie Yongji <xieyongji@bytedance.com>
-Cc:     jasowang@redhat.com, stefanha@redhat.com, axboe@kernel.dk,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] virtio-blk: Add validation for block size in config
- space
-Message-ID: <20210615112612-mutt-send-email-mst@kernel.org>
-References: <20210615104810.151-1-xieyongji@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ugXKpj4LHdrdyG4UTDs7VBf4QAJNhOpaAQVCLfFAeJw=;
+        b=clfTTik1K0Sf0VulvrHiu8sbqTCxM2wbFjWigQIBl0p8QYEYeRiJ4+eikh/cRAuA+z
+         MnIVFJTYfCPL88ndC4vqzK8CbMmiy7186pOLLbRhEgAyMEddy0EHrp7eskdr/pHlb9ih
+         N9+0t0Hxr05XIAt/iKQNTopMLHKr9/eHKDfAjqmbBVfS3OmH99gNunLS2XTK1Cw77huQ
+         /0ISSmBY6zzGJfhUWR5tCPCwMTOPRuaOJrB8mjK8v+uvty9YLix4Q0oTUCxfyhaBIZ9Q
+         vFW0nja9HSaRqgaHCqe1insf+wC81/TXOC220C4mqWrNajr0hXkVrWmk+znoeb8ztKB7
+         /bEA==
+X-Gm-Message-State: AOAM532J70dM/YAI/EQGG6nDHIrmOuaid/VnE/Fnx4lxXWL7gPOe6+Ok
+        RclMfLLplGGe54gXbGd2fjp9IGgCleZ3u8QzloZaJA==
+X-Google-Smtp-Source: ABdhPJza0EQ2TeCd6JjfNlVbN2ByJUzxeMD7nS/4Vzz5V2GthoFIZGFj77c+/UVrW9+fkmE/4Mf8Ei+A/+oKjy1gGQg=
+X-Received: by 2002:a1f:9542:: with SMTP id x63mr5023349vkd.15.1623771075445;
+ Tue, 15 Jun 2021 08:31:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615104810.151-1-xieyongji@bytedance.com>
+References: <20210602192758.38735-1-alcooperx@gmail.com> <20210602192758.38735-2-alcooperx@gmail.com>
+ <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com>
+ <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com> <CAPDyKFpEtvjS1mWC68gRBWD64dq2M1LO84UWE5uDLTzbGz1g8Q@mail.gmail.com>
+ <6acd480a-8928-89bb-0f40-d278294973a1@gmail.com> <CAPDyKFqk23xg5R2k9GwQrnamwWYbMkmrbWYsHPF9VBQTAbvQHw@mail.gmail.com>
+ <a1199e99-eb29-125b-2bac-f0abb4803c9b@gmail.com> <CAPDyKFq-rofbCyAhcQGt2xZykip6Le+CUDXgDwAisVOj=Tt-uA@mail.gmail.com>
+ <b4c36944-8f41-1f30-10b4-b3efe0aade01@gmail.com> <CAPDyKFpR1GZcqCO5=-h7jvG0TysPLfJOP6rDJBagHvg9HFxnSQ@mail.gmail.com>
+ <e25164b4-fa0c-b1c1-e40b-0f0c71641976@gmail.com>
+In-Reply-To: <e25164b4-fa0c-b1c1-e40b-0f0c71641976@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 15 Jun 2021 17:30:39 +0200
+Message-ID: <CAPDyKFq92mp4CXj8-QHw=DEQ8bcAjtrmLyowrGKSJL2Fch1cJQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: sdhci-iproc: Add support for the legacy sdhci
+ controller on the BCM7211
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Al Cooper <alcooperx@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Ray Jui <rjui@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
+        Scott Branden <sbranden@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 06:48:10PM +0800, Xie Yongji wrote:
-> This ensures that we will not use an invalid block size
-> in config space (might come from an untrusted device).
-> 
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+[...]
 
-I'd say if device presents an unreasonable value,
-and we want to ignore that, then we should not
-negotiate VIRTIO_BLK_F_BLK_SIZE so that host knows.
+> >
+> >>
+> >> In all honesty, I am a bit surprised that the Linux device driver model
+> >> does not try to default the absence of a ->shutdown() to a ->suspend()
+> >> call since in most cases they are functionally equivalent, or should be,
+> >> in that they need to save power and quiesce the hardware, or leave
+> >> enough running to support a wake-up event.
+> >
+> > Well, the generall assumption is that the platform is going to be
+> > entirely powered off, thus moving things into a low power state would
+> > just be a waste of execution cycles. Of course, that's not the case
+> > for your platform.
+>
+> That assumption may hold true for ACPI-enabled machines but power off is
+> offered as a general function towards other more flexible and snowflaky
+> systems (read embedded) as well.
+>
+> >
+> > As I have stated earlier, to me it looks a bit questionable to use the
+> > kernel_power_off() path to support the use case you describe. On the
+> > other hand, we may not have a better option at this point.
+>
+> Correct, there is not really anything better and I am not sure what the
+> semantics of something better could be anyway.
+>
+> >
+> > Just a few things, from the top of my head, that we certainly are
+> > missing to support your use case through kernel_power_off() path
+> > (there are certainly more):
+> > 1. In general, subsystems/drivers don't care about moving things into
+> > lower power modes from their ->shutdown() callbacks.
+> > 2. System wakeups and devices being affected in the wakeup path, needs
+> > to be respected properly. Additionally, userspace should be able to
+> > decide if system wakeups should be enabled or not.
+> > 3. PM domains don't have ->shutdown() callbacks, thus it's likely that
+> > they remain powered on.
+> > 4. Etc...
+>
+> For the particular eMMC driver being discussed here this is a no-brainer
+ > because  it is not a wake-up source, therefore there is no reason not to
+> power if off if we can. It also seems proper to have it done by the
+> kernel as opposed to firmware.
 
-So maybe move the logic to validate_features.
+Okay, I have applied the $subject patch onto my next branch, along
+with patch 1/2 (the DT doc change).
 
-> ---
->  drivers/block/virtio_blk.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> index b9fa3ef5b57c..85ae3b27ea4b 100644
-> --- a/drivers/block/virtio_blk.c
-> +++ b/drivers/block/virtio_blk.c
-> @@ -827,7 +827,7 @@ static int virtblk_probe(struct virtio_device *vdev)
->  	err = virtio_cread_feature(vdev, VIRTIO_BLK_F_BLK_SIZE,
->  				   struct virtio_blk_config, blk_size,
->  				   &blk_size);
-> -	if (!err)
-> +	if (!err && blk_size >= SECTOR_SIZE && blk_size <= PAGE_SIZE)
->  		blk_queue_logical_block_size(q, blk_size);
->  	else
->  		blk_size = queue_logical_block_size(q);
-> -- 
-> 2.11.0
+However, I still think we should look for a proper long term solution,
+because the kernel_power_off() path does not currently support your
+use case, with system wakeups etc.
 
+I guess it could be a topic that is easier to bring up at the Linux
+Plumbers Conf, for example.
+
+Kind regards
+Uffe
