@@ -2,471 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236EA3A7877
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191123A7838
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhFOHwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
+        id S230074AbhFOHsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbhFOHwK (ORCPT
+        with ESMTP id S229613AbhFOHsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:52:10 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DCBC061280
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:50:05 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id v12so8009873plo.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:50:05 -0700 (PDT)
+        Tue, 15 Jun 2021 03:48:33 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269D4C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:46:29 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so13474412otl.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:46:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GMhPu3BiG5kAU5dJHB11IoT/djSJ1XjVnSCY4gcI06g=;
-        b=YyZVwktBXjMFhvQVZcpFcEEzN+k8Lfb+ohGd0bWY+HDCI27+MopnD3GskmC+JxVGXI
-         u0zzEqcL6cV/YSpTbUT5jjzA7CZHzRnfAvzYYUQAcrGFY0x2jUa/qmGCf1ry4bIwc4et
-         QyzAu5wseC5LVC/2Z/qPUrnWdyC0M1B2z5SXh97W/dQVg4qqtFZ4V72Q7vmR/BPZ4EhO
-         Es+w93w9SbgdwtuCn1LQHvgGt/epBLJhpWNde/q6+KvZrmqwCYXldl7TSSL7ZMHIEYKD
-         JqlBoUOWcMQ0dPPONZ5p97hLLadA+pYpLvUJ06Sqd4WnTVMMLBx/K3i7tJUHgpohUGho
-         IgfQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iSVyAacN7l8MRU6+yXnglhfZd0yPT6M71q0qhoSn658=;
+        b=Ma5dk7dw0py0KMSezsjczrNLk2CqZKg10JsIjyEe3U1pEvt5ydu0bUCARaRJ4qeU5L
+         IWbS57fwsWyMAKpwDOsj0Al0AZWttPfUdRJkX/g9LsxM8DhlXrWVFVngFvAlaFRPd+bM
+         wCI3fJ8zFZDal4fw1RhxmNpYqgXqmsSz+hIfI6J/WkJcINCWTgPji8QxdTaE4ViYxLab
+         X9cpI1EvtyDDoAgzipck4FVqQrEau2v5WXDpkNVBzo0kBpK8oVI+qy+O0otdYEFni1Ba
+         rYtoVW/wNEsmiX0tg4zEatuiCYZw8BMmHJwXeSBCbG85/X43XF0gkIYlWj4u4EreqbZ4
+         CrmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GMhPu3BiG5kAU5dJHB11IoT/djSJ1XjVnSCY4gcI06g=;
-        b=iRxc274aoY5N4QHGUNFRH0vcptYfCK8YHFTumPE9e7jhXxBQ0cQEsnkl8GIDV0ku45
-         0CN+gIy6q1b4fde9Yy1Nr1vXTwSq4hEPNnGc2f7RpdSA6IK94YI+8LhDKyRhxcvgZdDR
-         Qak2KYWWMzZRKkOqK6GXgaKxMvELP8FTFnllHsukjtxQt4yz8QFTINoDuQ/MOp6PdPVt
-         AQ0FF39/ZTqxxESNzoVCCD4YoUTxYWXjkWUsIMaJDxXrUv9wT70MlaFCYwR0OSOU16gg
-         GokbKwXDEMJqHvkz8yvJ/QMd95CV726nAxZvZaBJyvdmXd8thdaI18dCmeuvuW+Btge2
-         D5/Q==
-X-Gm-Message-State: AOAM530s83jHsnugaGlU1DHzKZAkQvEAt7rDmHkeTiVHmGkkBlsYc9XJ
-        WCpnAa99zoNdqJSUPRMD4/nt2Q==
-X-Google-Smtp-Source: ABdhPJzMLLh2FGnKBaUEAk1b5liA91SuEiLtD/c3udH4Ljtz82RNPfydMj7VPHHjLlS0rfdL0piNUw==
-X-Received: by 2002:a17:902:d3ca:b029:104:ebfd:a554 with SMTP id w10-20020a170902d3cab0290104ebfda554mr2325454plb.13.1623743405280;
-        Tue, 15 Jun 2021 00:50:05 -0700 (PDT)
-Received: from localhost.localdomain.name ([122.177.197.114])
-        by smtp.gmail.com with ESMTPSA id c25sm14273097pfo.130.2021.06.15.00.50.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 00:50:04 -0700 (PDT)
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>
-Subject: [PATCH v2 10/10] arm64: dts: qcom: sa8155p-adp: Add base dts file
-Date:   Tue, 15 Jun 2021 13:15:43 +0530
-Message-Id: <20210615074543.26700-11-bhupesh.sharma@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
-References: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iSVyAacN7l8MRU6+yXnglhfZd0yPT6M71q0qhoSn658=;
+        b=B0XgRxY4CEJn5fhIPP/mTkV7w5q0/OprFWPd0Xubs+Drfo/mEONWUUGBiAoyclstr/
+         afkHeLr+znQj4kM01U3EiUkY+sytsQ6Aux5pPhEbBdwm7f7FF76FQU3lk8z5mQHMu0w7
+         E1m+bIfxJ0tOo9JLL34g84Y5mvl548F7vtKBaGOragB3UypwsM+n8E9+v9lv5GctRvjH
+         bKNKkblddfymqYHU0Zvd4qopVLXGtm+7re4YbZpT3VwXJFICKX50g/UFu38jevNFCQvF
+         H3w3nRK9vJxs8R/f2vLL3+1ysFrUEkM7iZch884HEttNNVFhzPv2Pv9aJT98QL/xBG06
+         KS8Q==
+X-Gm-Message-State: AOAM530vM8y6FCch9TL4qRtT0AJJgiJtwiv7jiezFNLXsI/fGiZC68Oz
+        sLty5gm3qCnqKl8K9UX3iILbVljOQVxGpImI7OOpWw==
+X-Google-Smtp-Source: ABdhPJxTwVuYpOsUHB/zZCmNgAEl0R34kaWfPaSAc5XQzSsCOzmFbbJ5xQFNjbnBZfWDTPH1mExgV8EmLRtJfclXSTU=
+X-Received: by 2002:a05:6830:93:: with SMTP id a19mr16704693oto.17.1623743188202;
+ Tue, 15 Jun 2021 00:46:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210615014705.2234866-1-dja@axtens.net> <20210615014705.2234866-2-dja@axtens.net>
+In-Reply-To: <20210615014705.2234866-2-dja@axtens.net>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 15 Jun 2021 09:46:16 +0200
+Message-ID: <CANpmjNOa-a=M-EgdkneiWDD0eCF-DELjMFxAeJzGQz6AgCdNWg@mail.gmail.com>
+Subject: Re: [PATCH v12 1/6] kasan: allow an architecture to disable inline instrumentation
+To:     Daniel Axtens <dja@axtens.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        aneesh.kumar@linux.ibm.com, Balbir Singh <bsingharora@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add base DTS file for SA8155p Automotive Development Platform.
-It enables boot to console, adds tlmm reserved range and ufs flash.
-It also includes pmic file.
+On Tue, 15 Jun 2021 at 03:47, Daniel Axtens <dja@axtens.net> wrote:
+>
+> For annoying architectural reasons, it's very difficult to support inline
+> instrumentation on powerpc64.
+>
+> Add a Kconfig flag to allow an arch to disable inline. (It's a bit
+> annoying to be 'backwards', but I'm not aware of any way to have
+> an arch force a symbol to be 'n', rather than 'y'.)
+>
+> We also disable stack instrumentation in this case as it does things that
+> are functionally equivalent to inline instrumentation, namely adding
+> code that touches the shadow directly without going through a C helper.
+>
+> Signed-off-by: Daniel Axtens <dja@axtens.net>
+> ---
+>  lib/Kconfig.kasan | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>
+> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+> index cffc2ebbf185..935814f332a7 100644
+> --- a/lib/Kconfig.kasan
+> +++ b/lib/Kconfig.kasan
+> @@ -12,6 +12,15 @@ config HAVE_ARCH_KASAN_HW_TAGS
+>  config HAVE_ARCH_KASAN_VMALLOC
+>         bool
+>
+> +# Sometimes an architecture might not be able to support inline instrumentation
+> +# but might be able to support outline instrumentation. This option allows an
+> +# arch to prevent inline and stack instrumentation from being enabled.
 
-SA8155p-adp board is based on sa8155p Qualcomm Snapdragon SoC.
-SA8155p platform is similar to the SM8150, so use this as base
-for now.
+This comment could be moved into 'help' of this new config option.
 
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Andy Gross <agross@kernel.org>
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
----
- arch/arm64/boot/dts/qcom/Makefile        |   1 +
- arch/arm64/boot/dts/qcom/sa8155p-adp.dts | 355 +++++++++++++++++++++++
- 2 files changed, 356 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/sa8155p-adp.dts
+> +# ppc64 turns on virtual memory late in boot, after calling into generic code
+> +# like the device-tree parser, so it uses this in conjuntion with a hook in
+> +# outline mode to avoid invalid access early in boot.
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 456502aeee49..666f3528697d 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -32,6 +32,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-oneplus-dumpling.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-1000.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-4000.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qrb5165-rb5.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sa8155p-adp.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-idp.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r1-lte.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-new file mode 100644
-index 000000000000..95e0a6612e6b
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-@@ -0,0 +1,355 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2021, Linaro Limited
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+#include <dt-bindings/gpio/gpio.h>
-+#include "sm8150.dtsi"
-+#include "pmm8155au_1.dtsi"
-+#include "pmm8155au_2.dtsi"
-+
-+/ {
-+	model = "Qualcomm Technologies, Inc. SA8155P ADP";
-+	compatible = "qcom,sa8155p-adp", "qcom,sa8155p";
-+
-+	aliases {
-+		serial0 = &uart2;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	vreg_3p3: vreg_3p3_regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vreg_3p3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+	};
-+
-+	/*
-+	 * S4A is always on and not controllable through RPMh.
-+	 * So model it as a fixed regulator.
-+	 */
-+	vreg_s4a_1p8: smps4 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vreg_s4a_1p8";
-+
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+
-+		regulator-always-on;
-+		regulator-boot-on;
-+
-+		vin-supply = <&vreg_3p3>;
-+	};
-+};
-+
-+&apps_rsc {
-+	pmm8155au-1-rpmh-regulators {
-+		compatible = "qcom,pmm8155au-rpmh-regulators";
-+		qcom,pmic-id = "a";
-+
-+		vdd-s1-supply = <&vreg_3p3>;
-+		vdd-s2-supply = <&vreg_3p3>;
-+		vdd-s3-supply = <&vreg_3p3>;
-+		vdd-s4-supply = <&vreg_3p3>;
-+		vdd-s5-supply = <&vreg_3p3>;
-+		vdd-s6-supply = <&vreg_3p3>;
-+		vdd-s7-supply = <&vreg_3p3>;
-+		vdd-s8-supply = <&vreg_3p3>;
-+		vdd-s9-supply = <&vreg_3p3>;
-+		vdd-s10-supply = <&vreg_3p3>;
-+
-+		vdd-l1-l8-l11-supply = <&vreg_s6a_0p92>;
-+		vdd-l2-l10-supply = <&vreg_3p3>;
-+		vdd-l3-l4-l5-l18-supply = <&vreg_s6a_0p92>;
-+		vdd-l6-l9-supply = <&vreg_s6a_0p92>;
-+		vdd-l7-l12-l14-l15-supply = <&vreg_s5a_2p04>;
-+		vdd-l13-l16-l17-supply = <&vreg_3p3>;
-+
-+		vreg_s5a_2p04: smps5 {
-+			regulator-name = "vreg_s5a_2p04";
-+			regulator-min-microvolt = <1904000>;
-+			regulator-max-microvolt = <2000000>;
-+		};
-+
-+		vreg_s6a_0p92: smps6 {
-+			regulator-name = "vreg_s6a_0p92";
-+			regulator-min-microvolt = <920000>;
-+			regulator-max-microvolt = <1128000>;
-+		};
-+
-+		vreg_l1a_0p752: ldo1 {
-+			regulator-name = "vreg_l1a_0p752";
-+			regulator-min-microvolt = <752000>;
-+			regulator-max-microvolt = <752000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vdda_usb_hs_3p1:
-+		vreg_l2a_3p072: ldo2 {
-+			regulator-name = "vreg_l2a_3p072";
-+			regulator-min-microvolt = <3072000>;
-+			regulator-max-microvolt = <3072000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l3a_0p8: ldo3 {
-+			regulator-name = "vreg_l3a_0p8";
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vdd_usb_hs_core:
-+		vdda_usb_ss_dp_core_1:
-+		vreg_l5a_0p88: ldo5 {
-+			regulator-name = "vreg_l5a_0p88";
-+			regulator-min-microvolt = <880000>;
-+			regulator-max-microvolt = <880000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7a_1p8: ldo7 {
-+			regulator-name = "vreg_l7a_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l10a_2p96: ldo10 {
-+			regulator-name = "vreg_l10a_2p96";
-+			regulator-min-microvolt = <2504000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l11a_0p8: ldo11 {
-+			regulator-name = "vreg_l11a_0p8";
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vdda_usb_hs_1p8:
-+		vreg_l12a_1p8: ldo12 {
-+			regulator-name = "vreg_l12a_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l13a_2p7: ldo13 {
-+			regulator-name = "vreg_l13a_2p7";
-+			regulator-min-microvolt = <2704000>;
-+			regulator-max-microvolt = <2704000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l15a_1p7: ldo15 {
-+			regulator-name = "vreg_l15a_1p7";
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <1704000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l16a_2p7: ldo16 {
-+			regulator-name = "vreg_l16a_2p7";
-+			regulator-min-microvolt = <2704000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l17a_2p96: ldo17 {
-+			regulator-name = "vreg_l17a_2p96";
-+			regulator-min-microvolt = <2504000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+
-+	pmm8155au-2-rpmh-regulators {
-+		compatible = "qcom,pmm8155au-rpmh-regulators";
-+		qcom,pmic-id = "c";
-+
-+		vdd-s1-supply = <&vreg_3p3>;
-+		vdd-s2-supply = <&vreg_3p3>;
-+		vdd-s3-supply = <&vreg_3p3>;
-+		vdd-s4-supply = <&vreg_3p3>;
-+		vdd-s5-supply = <&vreg_3p3>;
-+		vdd-s6-supply = <&vreg_3p3>;
-+		vdd-s7-supply = <&vreg_3p3>;
-+		vdd-s8-supply = <&vreg_3p3>;
-+		vdd-s9-supply = <&vreg_3p3>;
-+		vdd-s10-supply = <&vreg_3p3>;
-+
-+		vdd-l1-l8-l11-supply = <&vreg_s4c_1p352>;
-+		vdd-l2-l10-supply = <&vreg_3p3>;
-+		vdd-l3-l4-l5-l18-supply = <&vreg_s4c_1p352>;
-+		vdd-l6-l9-supply = <&vreg_s6c_1p128>;
-+		vdd-l7-l12-l14-l15-supply = <&vreg_s5c_2p04>;
-+		vdd-l13-l16-l17-supply = <&vreg_3p3>;
-+
-+		vreg_s4c_1p352: smps4 {
-+			regulator-name = "vreg_s4c_1p352";
-+			regulator-min-microvolt = <1352000>;
-+			regulator-max-microvolt = <1352000>;
-+		};
-+
-+		vreg_s5c_2p04: smps5 {
-+			regulator-name = "vreg_s5c_2p04";
-+			regulator-min-microvolt = <1904000>;
-+			regulator-max-microvolt = <2000000>;
-+		};
-+
-+		vreg_s6c_1p128: smps6 {
-+			regulator-name = "vreg_s6c_1p128";
-+			regulator-min-microvolt = <1128000>;
-+			regulator-max-microvolt = <1128000>;
-+		};
-+
-+		vreg_l1c_1p304: ldo1 {
-+			regulator-name = "vreg_l1c_1p304";
-+			regulator-min-microvolt = <1304000>;
-+			regulator-max-microvolt = <1304000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2c_1p808: ldo2 {
-+			regulator-name = "vreg_l2c_1p808";
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l5c_1p2: ldo5 {
-+			regulator-name = "vreg_l5c_1p2";
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7c_1p8: ldo7 {
-+			regulator-name = "vreg_l7c_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l8c_1p2: ldo8 {
-+			regulator-name = "vreg_l8c_1p2";
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l10c_3p3: ldo10 {
-+			regulator-name = "vreg_l10c_3p3";
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3312000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l11c_0p8: ldo11 {
-+			regulator-name = "vreg_l11c_0p8";
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l12c_1p808: ldo12 {
-+			regulator-name = "vreg_l12c_1p808";
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l13c_2p96: ldo13 {
-+			regulator-name = "vreg_l13c_2p96";
-+			regulator-min-microvolt = <2504000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l15c_1p9: ldo15 {
-+			regulator-name = "vreg_l15c_1p9";
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l16c_3p008: ldo16 {
-+			regulator-name = "vreg_l16c_3p008";
-+			regulator-min-microvolt = <3008000>;
-+			regulator-max-microvolt = <3008000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l18c_0p88: ldo18 {
-+			regulator-name = "vreg_l18c_0p88";
-+			regulator-min-microvolt = <880000>;
-+			regulator-max-microvolt = <880000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+};
-+
-+&tlmm {
-+	gpio-reserved-ranges = <0 4>;
-+};
-+
-+&uart2 {
-+	status = "okay";
-+};
-+
-+&ufs_mem_hc {
-+	status = "okay";
-+
-+	reset-gpios = <&tlmm 175 GPIO_ACTIVE_LOW>;
-+
-+	vcc-supply = <&vreg_l10a_2p96>;
-+	vcc-max-microamp = <750000>;
-+	vccq-supply = <&vreg_l5c_1p2>;
-+	vccq-max-microamp = <700000>;
-+	vccq2-supply = <&vreg_s4a_1p8>;
-+	vccq2-max-microamp = <750000>;
-+};
-+
-+&ufs_mem_phy {
-+	status = "okay";
-+
-+	vdda-phy-supply = <&vreg_l8c_1p2>;
-+	vdda-max-microamp = <87100>;
-+	vdda-pll-supply = <&vreg_l5a_0p88>;
-+	vdda-pll-max-microamp = <18300>;
-+};
-+
-+
-+&usb_1_hsphy {
-+	status = "okay";
-+	vdda-pll-supply = <&vdd_usb_hs_core>;
-+	vdda33-supply = <&vdda_usb_hs_3p1>;
-+	vdda18-supply = <&vdda_usb_hs_1p8>;
-+};
-+
-+&usb_1_qmpphy {
-+	status = "okay";
-+	vdda-phy-supply = <&vreg_l8c_1p2>;
-+	vdda-pll-supply = <&vdda_usb_ss_dp_core_1>;
-+};
-+
-+&usb_1 {
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3 {
-+	dr_mode = "peripheral";
-+};
-+
-+&qupv3_id_1 {
-+	status = "okay";
-+};
--- 
-2.31.1
+I think the ppc64-related comment isn't necessary and can be moved to
+arch/ppc64 somewhere, if there isn't one already.
 
+> +config ARCH_DISABLE_KASAN_INLINE
+> +       bool
+> +
+>  config CC_HAS_KASAN_GENERIC
+>         def_bool $(cc-option, -fsanitize=kernel-address)
+>
+> @@ -130,6 +139,7 @@ config KASAN_OUTLINE
+>
+>  config KASAN_INLINE
+>         bool "Inline instrumentation"
+> +       depends on !ARCH_DISABLE_KASAN_INLINE
+>         help
+>           Compiler directly inserts code checking shadow memory before
+>           memory accesses. This is faster than outline (in some workloads
+> @@ -141,6 +151,7 @@ endchoice
+>  config KASAN_STACK
+>         bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
+>         depends on KASAN_GENERIC || KASAN_SW_TAGS
+> +       depends on !ARCH_DISABLE_KASAN_INLINE
+>         default y if CC_IS_GCC
+>         help
+>           The LLVM stack address sanitizer has a know problem that
+> @@ -154,6 +165,9 @@ config KASAN_STACK
+>           but clang users can still enable it for builds without
+>           CONFIG_COMPILE_TEST.  On gcc it is assumed to always be safe
+>           to use and enabled by default.
+> +         If the architecture disables inline instrumentation, this is
+> +         also disabled as it adds inline-style instrumentation that
+> +         is run unconditionally.
+>
+>  config KASAN_SW_TAGS_IDENTIFY
+>         bool "Enable memory corruption identification"
+> --
+> 2.27.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210615014705.2234866-2-dja%40axtens.net.
