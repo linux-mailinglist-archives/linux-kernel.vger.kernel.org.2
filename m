@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E594E3A8C9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC713A8CA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhFOXhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 19:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231476AbhFOXhF (ORCPT
+        id S231663AbhFOXhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 19:37:13 -0400
+Received: from mail-il1-f174.google.com ([209.85.166.174]:46709 "EHLO
+        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231626AbhFOXhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:37:05 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8FFC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:35:00 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so650252otk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:35:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1SXIGYOCCwrEprlwkDNLeMzP1j174DyS0Qx64mDoDE4=;
-        b=rRPv7dwDzwEkml4dxzWW2W/z7tVfDa8081oNKZR22oUeYQqc2fIaT4Szmz56crLMtn
-         k+kC21OH+DIQBM5I/IYsVDnyoDa+ly4rStuTfGtNe/WKcL2o5bo4XRfRBbe7VCHkILQ+
-         S/qX/Rp7jZiFeD20tkbe6pZV2p7UrbJ26bhVUlTe+t5STalnCY3SzONNJbfIa7ZQ42mr
-         m+Qn2Dg5r0bFLT43Rflk2RaNRa1ymx5DQu/3zdP6CvTRNlqSmd57qI9xq+0ZWJJFDoyU
-         m7BNt9wgLT/xJ0kv8WDbXGo9tGbhvIdvysO62d1NKgAonKRkTUNh2Hysi8U2xofLc/95
-         32fw==
+        Tue, 15 Jun 2021 19:37:12 -0400
+Received: by mail-il1-f174.google.com with SMTP id i12so649795ila.13;
+        Tue, 15 Jun 2021 16:35:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=1SXIGYOCCwrEprlwkDNLeMzP1j174DyS0Qx64mDoDE4=;
-        b=ewZ6nS6p30xN+MpkgT7i8TEmQVqplsyqPXG2gjBszfSMPFcFpcXf3S+P6oG/0xc0Kr
-         LxY0h5xEhSzGjieJ3/6Rdp1KYDaD0Mhoe7UTBztOOVMhw5+7hRgU5IktrRuOpFq7nWb4
-         yYlyr3n5b9IwhgR1PkgDwGoAa4QHXifKSdQUna+tw7jgz3B5GK2CsQUgZ0EYFgyeamni
-         DIyvfNT0rjtKm+w+zIzLbt+pcmdLusRi9ke12xQylbCY+uU+xiuU1h0b6J8lVbMjcxI9
-         /qDWjqfos+/xp6Xxwri3rg2S9Eu05KGEXN9GR3N8jNhVWFQSCmLsSpwsQHfWVZhBD5q2
-         0EbQ==
-X-Gm-Message-State: AOAM533mhf8tw7cWEhFZYtenz3gWbno7EyU8iJtpZMYBoL9GqpQLgsgW
-        h4TjrUA5D6JX2jdhLL0+lGxLcg==
-X-Google-Smtp-Source: ABdhPJwJoUtletQNmpDSr4lg8tKxRbP8aCDUPUswS+TTyMYWUpvAPneZi4UEbbTZBqsOMaYE9wMiwg==
-X-Received: by 2002:a05:6830:1d0:: with SMTP id r16mr1423471ota.116.1623800099792;
-        Tue, 15 Jun 2021 16:34:59 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id p17sm102666otp.73.2021.06.15.16.34.58
+        bh=M7mtpARxZOramxjxaW7DY3FJniUk5KYYeFWsUiBQS4s=;
+        b=fjSNvdgiXnv7cpBQKSKkpBLyU1Kf1efASmKSxyNAOglchJMiHmVRLTlboUUT5ZMPoU
+         SH7Ub5stQoCQs2WJjzSgs9qFpJeyvbGLyKhFXK0DwiAAX7Id2crkxnWvY6p2mB5FFm5P
+         UlleEbzgA0IrEReVhoOnbz3JLPDY1hrExIUx9QBt5kUu4khTXryKy5J+LopZsxwIUfX5
+         Zb2m+dLMtvcIUreHz6WtV8i5eHrcZk+Nv1vFZ8bi3w4JYdKk04me0Tx/o57ibg0TpH+d
+         YLXLVQbxYAQ2hZYH/XP2z6c4zgH9KKyDZ8rtogr6fQBUTI86FTEF9XGzs7RJ948w2VkE
+         4IKg==
+X-Gm-Message-State: AOAM532rJs6SWxWBm2rdMoNXO6ASBlon8VorYtdNixXNmZ2kDFiurDgs
+        7xQw3IpAO7UvnFpj3f/dDA==
+X-Google-Smtp-Source: ABdhPJzZpda2GZV56qSibl8HTwsctfk6cpz/tUqIyo+rWfUorW+b8tZ2HGW4F0404Loq2ti7RNgU4Q==
+X-Received: by 2002:a05:6e02:1d82:: with SMTP id h2mr1452459ila.180.1623800105906;
+        Tue, 15 Jun 2021 16:35:05 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id a17sm263693ilb.57.2021.06.15.16.35.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 16:34:59 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 18:34:57 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dmaengine: qcom: gpi: Add SM8250 compatible
-Message-ID: <YMk5ISpTel58qGqx@builder.lan>
-References: <20210614235358.444834-1-konrad.dybcio@somainline.org>
- <20210614235358.444834-2-konrad.dybcio@somainline.org>
+        Tue, 15 Jun 2021 16:35:05 -0700 (PDT)
+Received: (nullmailer pid 1649131 invoked by uid 1000);
+        Tue, 15 Jun 2021 23:35:02 -0000
+Date:   Tue, 15 Jun 2021 17:35:02 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v7 03/19] dt-bindings: rtc: sun6i: Add H616 compatible
+ string
+Message-ID: <20210615233502.GA1630203@robh.at.kernel.org>
+References: <20210615110636.23403-1-andre.przywara@arm.com>
+ <20210615110636.23403-4-andre.przywara@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210614235358.444834-2-konrad.dybcio@somainline.org>
+In-Reply-To: <20210615110636.23403-4-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14 Jun 18:53 CDT 2021, Konrad Dybcio wrote:
-
-> SM8250 seems to work just fine, so add a shiny new compatible for it.
+On Tue, Jun 15, 2021 at 12:06:20PM +0100, Andre Przywara wrote:
+> Add the obvious compatible name to the existing RTC binding.
+> The actual RTC part of the device uses a different day/month/year
+> storage scheme, so it's not compatible with the previous devices.
+> Also the clock part is quite different, as there is no external 32K LOSC
+> oscillator input.
 > 
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 > ---
->  drivers/dma/qcom/gpi.c | 1 +
->  1 file changed, 1 insertion(+)
+>  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml     | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
 > 
-> diff --git a/drivers/dma/qcom/gpi.c b/drivers/dma/qcom/gpi.c
-> index 43ac3ab23d4c..1a1b7d8458c9 100644
-> --- a/drivers/dma/qcom/gpi.c
-> +++ b/drivers/dma/qcom/gpi.c
-> @@ -2282,6 +2282,7 @@ static int gpi_probe(struct platform_device *pdev)
->  static const struct of_device_id gpi_of_match[] = {
->  	{ .compatible = "qcom,sdm845-gpi-dma" },
->  	{ .compatible = "qcom,sm8150-gpi-dma" },
-> +	{ .compatible = "qcom,sm8250-gpi-dma" },
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(of, gpi_of_match);
+> diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> index b1b0ee769b71..2c3fd72e17ee 100644
+> --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> @@ -26,6 +26,7 @@ properties:
+>            - const: allwinner,sun50i-a64-rtc
+>            - const: allwinner,sun8i-h3-rtc
+>        - const: allwinner,sun50i-h6-rtc
+> +      - const: allwinner,sun50i-h616-rtc
+>  
+>    reg:
+>      maxItems: 1
+> @@ -105,6 +106,20 @@ allOf:
+>            minItems: 3
+>            maxItems: 3
+>  
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: allwinner,sun50i-h616-rtc
+> +
+> +    then:
+> +      properties:
+> +        clock-output-names:
+> +          minItems: 3
+> +          maxItems: 3
+> +        clocks:
+> +          maxItems: 0
+
+clocks: false
+
+if forbidding clocks is what you want.
+
+> +
+>    - if:
+>        properties:
+>          compatible:
 > -- 
-> 2.32.0
-> 
+> 2.17.5
