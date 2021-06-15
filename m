@@ -2,68 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7F33A7771
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72563A7774
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhFOG6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 02:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhFOG6K (ORCPT
+        id S229960AbhFOG63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 02:58:29 -0400
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:37522 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhFOG61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 02:58:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D88C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 23:56:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GCTN830Yp9doPgPY7pu2XF+Fwldsm+mzIOYdbShiloE=; b=gMNzpGI3YiXqfEOvxDoQ/kfFiy
-        xwichaSc9hs+Oh//p75TJLSFdwWG4+mPqDVSZnXmmfIx0lQmouL8L27PQyduFKtudue5EW0s1a/Dv
-        LrU6ZE/x1U6rz+Rzkx2Cfbhs4ooUh1kBl1NVoHdaYxlrnBeOD8gPmWGUW3+6Rkfv3bOTtH6vU+awZ
-        a39leE69VA2pzrgLSWj+LJIOlxfDzf96fSClPQSj4El+Nc4eCJ0l812CcwakOMa9OAAzk/YLNDDVL
-        eW26t4P1Jvwm6r4VLAEUZric599ENx7GpAQUgvO5E1KOtptJ0qPZq82OKj6vDTgrfLN72II8KDlw0
-        TylkxA9w==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lt2yw-006BSj-GV; Tue, 15 Jun 2021 06:55:37 +0000
-Date:   Tue, 15 Jun 2021 07:55:30 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/7] powerpc/signal: Use unsafe_copy_siginfo_to_user()
-Message-ID: <YMhO4oiqh4F+ZEW8@infradead.org>
-References: <b813c1f4d3dab2f51300eac44d99029aa8e57830.1623739212.git.christophe.leroy@csgroup.eu>
- <8b4b640746523f5efb1c9a9fd97465bac4f00cae.1623739212.git.christophe.leroy@csgroup.eu>
+        Tue, 15 Jun 2021 02:58:27 -0400
+Received: by mail-lf1-f52.google.com with SMTP id p7so25238232lfg.4;
+        Mon, 14 Jun 2021 23:56:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=j00yDKFRObYyA/b4kREgAOqG+iHTmLKQXoPW6ou7r8c=;
+        b=brql9yswnj4RgtT+EtUkZX9C/62dW0WyAgHgkLPhLsC4gmi1Ibk868kQQwfbp4buTJ
+         sxOPcxQSLAiYCaaH4kO9H5L09XBLAiKYjJf6tZ4RAfX0KSW19ArOBxc/wcB5+QoLkHTm
+         Yg+817smYRcICwnTaCc8QZuuGHIpNh9NrIJQY+HkEJ+Ga4f8Fq9jwUNI9Dd8sL9c0D1/
+         sV4pG8Fps36Z5/n4fCe5ouYj6/xxL7X8FiNrG+7b7lGAH+Gv6PBYZiqUX1bpXadKwefp
+         /GFQXIeRCH3YA3qrl54vMBEBoxnyOkDSUJEIPF9biH0v7LBBRZuoG3h4BYlAuAo8x6eZ
+         BnNA==
+X-Gm-Message-State: AOAM533QyGFa+FkXQ1EXhlhIVRXD4Fkj+nl6CQhTcjqzcLwfP2ZU2h8b
+        bYnqQX8C+YJ6El3xrJHZ23zgfse7YD0=
+X-Google-Smtp-Source: ABdhPJxheD2SFrmAJOYzOWf+6x7l+4UvQRWbn30OUFlVYLgjCYZ8DjXXy9RFg4ti/HuZVvkNrMXofg==
+X-Received: by 2002:ac2:43c5:: with SMTP id u5mr15512555lfl.156.1623740181831;
+        Mon, 14 Jun 2021 23:56:21 -0700 (PDT)
+Received: from [10.68.32.192] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.gmail.com with ESMTPSA id q6sm1707271lfj.88.2021.06.14.23.56.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 23:56:21 -0700 (PDT)
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Denis Efremov <efremov@linux.com>
+Subject: [GIT PULL] Floppy changes for 5.14
+Message-ID: <2f80871f-a1a5-7c02-52f9-118a0e68d84c@linux.com>
+Date:   Tue, 15 Jun 2021 09:56:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8b4b640746523f5efb1c9a9fd97465bac4f00cae.1623739212.git.christophe.leroy@csgroup.eu>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @@ -836,14 +830,19 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
->  		asm("dcbst %y0; sync; icbi %y0; sync" :: "Z" (mctx->mc_pad[0]));
->  	}
->  	unsafe_put_sigset_t(&frame->uc.uc_sigmask, oldset, failed);
-> +#ifndef CONFIG_COMPAT
-> +	unsafe_copy_siginfo_to_user(&frame->info, &ksig->info, failed);
-> +#endif
->  
->  	/* create a stack frame for the caller of the handler */
->  	unsafe_put_user(regs->gpr[1], newsp, failed);
->  
->  	user_access_end();
->  
-> -	if (copy_siginfo_to_user(&frame->info, &ksig->info))
-> +#ifdef CONFIG_COMPAT
-> +	if (copy_siginfo_to_user32(&frame->info, &ksig->info))
->  		goto badframe;
-> +#endif
+Hi Jens,
 
-Shouldn't the compat case be handled the same way?
+The following changes since commit d07f3b081ee632268786601f55e1334d1f68b997:
+
+  mark pstore-blk as broken (2021-06-14 08:26:03 -0600)
+
+are available in the Git repository at:
+
+  https://github.com/evdenis/linux-floppy.git tags/floppy-for-5.14
+
+for you to fetch changes up to 2c9bdf6e4771a5966a4f0d6bea45a1c7f38312d7:
+
+  floppy: Fix fall-through warning for Clang (2021-06-15 09:18:55 +0300)
+
+Please pull
+
+----------------------------------------------------------------
+Floppy patches for 5.14
+
+Two oneliners to fix clang warnings:
+- -Wimplicit-fallthrough warning fix from Gustavo A. R. Silva.
+- Redundant assignment warning fix from Jiapeng Chong.
+
+No semantic and behavioural changes.
+
+----------------------------------------------------------------
+Gustavo A. R. Silva (1):
+      floppy: Fix fall-through warning for Clang
+
+Jiapeng Chong (1):
+      floppy: cleanup: remove redundant assignment to nr_sectors
+
+ drivers/block/floppy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
