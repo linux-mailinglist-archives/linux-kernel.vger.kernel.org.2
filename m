@@ -2,376 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1E73A7BCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0FB3A7BD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbhFOK3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:29:20 -0400
-Received: from mga03.intel.com ([134.134.136.65]:11576 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231682AbhFOK3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:29:09 -0400
-IronPort-SDR: w9JP9fHEP2fP/X1qdzponsvWMyyKgG520b+hMN1u+BHuFoJTZFIaLTx1shgoA3qA1K7yLSl77b
- 6/m4cVGTt86Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="205996701"
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="205996701"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 03:27:04 -0700
-IronPort-SDR: Dc/UuwqYpLexUGovS688c3ElHBenjKQ7uy5lnV/W1IHYteDbWngiahi7lYcqSGeNOVRYno2YTF
- WRs53V2gyQEg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="487735848"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by fmsmga002.fm.intel.com with ESMTP; 15 Jun 2021 03:26:59 -0700
-Subject: Re: [PATCH v4] perf annotate: Add itrace options support
-To:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210615091704.259202-1-yangjihong1@huawei.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <1e2f6d0e-e171-e0be-4f33-02722b0c50d9@intel.com>
-Date:   Tue, 15 Jun 2021 13:27:25 +0300
+        id S231551AbhFOKaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:30:19 -0400
+Received: from mail-mw2nam08on2048.outbound.protection.outlook.com ([40.107.101.48]:43711
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231214AbhFOKaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 06:30:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ASMeDguOMjcogjR8nQlF8iBXpSi6x+BFQCE8CjA8PZV+E+Pe0BJZjOFCqKYmUzXFKJuwkifOqUBYLvXHQ+rcZ1KNYJHHAl1Fg3uDulHyw6/92lj2a28dfV833BevWg979cQEJYjWuza6gj/Zz1kA/ZdxE4en12/GSaRhRUFd1y5xtJAp8AK+0dNPd/5FLUAJz8WzPuGBAtlobVc71VpdX+N/ivIcmdRqCuBclRz6ZW8ANL9dSeaJUpvFx1IsZnx9Z5bke0+IepJBTQYbcMWXoVwyFQfl4CLJYoM7+4+DAtsYcUrSMMj9AlIjmgLW5HcE0b086hUww/F8ct/zLIvMkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i48EyGuRKvrnsH72iCq5e9g0xr3MjABLlr8jLJu2Rbg=;
+ b=XQcfwo3WD+Wfp2fCXcFV8hIr+vXvXpGyrIwdEHSAGshNylhenw+XDqbDYlAXUHszPdCX1wCYJcDzVXPz9y9kknfqBHK0U6kuAfFPMWEU/yNmt7rlmnM6t76c0H7VmGOn4Cgh8G7kUhmqPEq3PDfAEY9ElWc9pJKGUs+CBum/u9tWcLtammZ7H4bXnVMa6s5bFQ+8mfs0pr1BtH0m5ggd2R33dAHYRS4ELfivxRe5LILFvrXqLeI7hzHxF5UhbiMRAox5DGyvv7atyFzVXjlAeSHCCEsRdKfrYpglngTS+Oa/au2TuUO3WvJfNBz8IzjdrRzgaattg1IlJm+9x6I1jw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=xilinx.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i48EyGuRKvrnsH72iCq5e9g0xr3MjABLlr8jLJu2Rbg=;
+ b=nj20JCwRqY/C++CqZY2jXSG8JmJOizEwvZ1KghsPLzvF0fKXwVNeP4x6d7xwmWelreWKUcQ604j0g0mu7dbHdgzg0BP0ba2H3C12oFgjtvV3pvaWKhVZBPY02FzHD90PU5RkkxB57gKrx29YUIBuic8WMIWVnrWh0GL8aFmUpVc=
+Received: from SN6PR04CA0108.namprd04.prod.outlook.com (2603:10b6:805:f2::49)
+ by BYAPR02MB5800.namprd02.prod.outlook.com (2603:10b6:a03:124::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20; Tue, 15 Jun
+ 2021 10:28:11 +0000
+Received: from SN1NAM02FT0044.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:805:f2:cafe::ea) by SN6PR04CA0108.outlook.office365.com
+ (2603:10b6:805:f2::49) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend
+ Transport; Tue, 15 Jun 2021 10:28:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=pass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT0044.mail.protection.outlook.com (10.97.5.46) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4219.21 via Frontend Transport; Tue, 15 Jun 2021 10:28:11 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 03:28:10 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 15 Jun 2021 03:28:10 -0700
+Envelope-to: git@xilinx.com,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org,
+ linux-gpio@vger.kernel.org,
+ robh+dt@kernel.org,
+ bgolaszewski@baylibre.com,
+ linus.walleij@linaro.org
+Received: from [172.30.17.109] (port=33904)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1lt6Ii-0007uT-TC; Tue, 15 Jun 2021 03:28:09 -0700
+Subject: Re: [PATCH 1/2] dt-bindings: gpio: Add binding documentation for
+ modepin
+To:     Piyush Mehta <piyush.mehta@xilinx.com>, <linus.walleij@linaro.org>,
+        <bgolaszewski@baylibre.com>, <robh+dt@kernel.org>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>, <git@xilinx.com>,
+        <sgoud@xilinx.com>, <michal.simek@xilinx.com>
+References: <20210615080553.2021061-1-piyush.mehta@xilinx.com>
+ <20210615080553.2021061-2-piyush.mehta@xilinx.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <d41f65d5-cb5d-4854-fb51-2808865d042c@xilinx.com>
+Date:   Tue, 15 Jun 2021 12:28:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210615091704.259202-1-yangjihong1@huawei.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210615080553.2021061-2-piyush.mehta@xilinx.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7c30edf3-8e70-48bb-36d6-08d92fe84685
+X-MS-TrafficTypeDiagnostic: BYAPR02MB5800:
+X-Microsoft-Antispam-PRVS: <BYAPR02MB58004E3840DA7B9CD204C54EC6309@BYAPR02MB5800.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TnWdf0wNpBIawnTX8h/TgxeQ/Uq25aSps8VUBy515SePcEPGGZTXHz16ZV3D+XuNFOooVzsgNb358RBv3qs5/eLvYgafwtOL3mswzIxUdLN2WeyBnU6iu11nnMk6tgxhuyL7xbVMr0SGbqB/pfcNWXj1Vpxz4pNzloqYDvodOpLTnDLomIPUFCPwitwYmyqeWVUAy/7SqDUNvKLZFfrnReBnwH1vD2zuVcr9xofm0itC3Uqlc83MTQueykOc+AJtBerbJLKT3YLQM84pAmDGSkIZzTzAO3kEd8jk8QzDueetQhOdodcHRDcXJ9YyndOYEuVvUf3o6EAsN8QUNl43fjtCmpeBurmOHtupB0+Vkdjn02as0mRAYcnaZwwfUnjPqUJOWxSNdwOQBtnrHN83u3I3mPkPP2SJLyMByA+BNX/ZSoX+5QOVSI/BbHktCoGeutwGT0l9fY1SHSHZUPV+/tydPs3X6fnUnXfIycJ7XpXuGlYOOQC6eAi2mZETyhU+cBLp+I0HuA9AV/K+2he9Cue+wpaYC/aoM1Ebgs+FZLi+vTuWKiLZZOES3Z+sx/eKmbMat+6TXiN+PGU1K8b7LsgXTFWTj0JDo+kJBCimlIXL7xmwaI64vqQ5+j9TJTlpEpRpHJ5UQ9JbKqkCrv2kR6fauexo5BRC2s0FSJeUOsniAkuxDlRm27dOCaotq2hqxWrtnlFWFg0NaBQjCncn1wdrSm+VvKOcaKi5DwSGjJUQ+fmr/kH9V+0voAS9HOUiSyK8muN8xAPKgqmyp3G4VVpPcsehwfwRubO0Xgo0CPuYE65jr53uzBSFT/cohiOAW/kPSNO6jV6//ePcn98O+98MrenA4U674pdTfTI5NPvmKEHMps+ALt8eTeRAT0KS
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(39850400004)(376002)(46966006)(36840700001)(26005)(110136005)(54906003)(31696002)(8676002)(36756003)(186003)(478600001)(82740400003)(36906005)(70206006)(31686004)(356005)(316002)(6666004)(70586007)(53546011)(7636003)(5660300002)(107886003)(83380400001)(2616005)(47076005)(2906002)(8936002)(9786002)(36860700001)(44832011)(336012)(4326008)(426003)(82310400003)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2021 10:28:11.0889
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c30edf3-8e70-48bb-36d6-08d92fe84685
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0044.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB5800
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/06/21 12:17 pm, Yang Jihong wrote:
-> The "auxtrace_info" and "auxtrace" functions are not set in "tool" member of
-> "annotate". As a result, perf annotate does not support parsing itrace data.
-> 
-> Before:
-> 
->   # perf record -e arm_spe_0/branch_filter=1/ -a sleep 1
->   [ perf record: Woken up 9 times to write data ]
->   [ perf record: Captured and wrote 20.874 MB perf.data ]
->   # perf annotate --stdio
->   Error:
->   The perf.data data has no samples!
-> 
-> Solution:
-> 1.Add itrace options in help,
-> 2.Set hook functions of "id_index", "auxtrace_info" and "auxtrace" in perf_tool.
-> 
-> After:
-> 
->   # perf record --all-user -e arm_spe_0/branch_filter=1/ ls
->   Couldn't synthesize bpf events.
->   perf.data
->   [ perf record: Woken up 1 times to write data ]
->   [ perf record: Captured and wrote 0.010 MB perf.data ]
->   # perf annotate --stdio
->    Percent |      Source code & Disassembly of libc-2.28.so for branch-miss (1 samples, percent: local period)
->   ------------------------------------------------------------------------------------------------------------
->            :
->            :
->            :
->            :           Disassembly of section .text:
->            :
->            :           0000000000066180 <__getdelim@@GLIBC_2.17>:
->       0.00 :   66180:  stp     x29, x30, [sp, #-96]!
->       0.00 :   66184:  cmp     x0, #0x0
->       0.00 :   66188:  ccmp    x1, #0x0, #0x4, ne  // ne = any
->       0.00 :   6618c:  mov     x29, sp
->       0.00 :   66190:  stp     x24, x25, [sp, #56]
->       0.00 :   66194:  stp     x26, x27, [sp, #72]
->       0.00 :   66198:  str     x28, [sp, #88]
->       0.00 :   6619c:  b.eq    66450 <__getdelim@@GLIBC_2.17+0x2d0>  // b.none
->       0.00 :   661a0:  stp     x22, x23, [x29, #40]
->       0.00 :   661a4:  mov     x22, x1
->       0.00 :   661a8:  ldr     w1, [x3]
->       0.00 :   661ac:  mov     w23, w2
->       0.00 :   661b0:  stp     x20, x21, [x29, #24]
->       0.00 :   661b4:  mov     x20, x3
->       0.00 :   661b8:  mov     x21, x0
->       0.00 :   661bc:  tbnz    w1, #15, 66360 <__getdelim@@GLIBC_2.17+0x1e0>
->       0.00 :   661c0:  ldr     x0, [x3, #136]
->       0.00 :   661c4:  ldr     x2, [x0, #8]
->       0.00 :   661c8:  str     x19, [x29, #16]
->       0.00 :   661cc:  mrs     x19, tpidr_el0
->       0.00 :   661d0:  sub     x19, x19, #0x700
->       0.00 :   661d4:  cmp     x2, x19
->       0.00 :   661d8:  b.eq    663f0 <__getdelim@@GLIBC_2.17+0x270>  // b.none
->       0.00 :   661dc:  mov     w1, #0x1                        // #1
->       0.00 :   661e0:  ldaxr   w2, [x0]
->       0.00 :   661e4:  cmp     w2, #0x0
->       0.00 :   661e8:  b.ne    661f4 <__getdelim@@GLIBC_2.17+0x74>  // b.any
->       0.00 :   661ec:  stxr    w3, w1, [x0]
->       0.00 :   661f0:  cbnz    w3, 661e0 <__getdelim@@GLIBC_2.17+0x60>
->       0.00 :   661f4:  b.ne    66448 <__getdelim@@GLIBC_2.17+0x2c8>  // b.any
->       0.00 :   661f8:  ldr     x0, [x20, #136]
->       0.00 :   661fc:  ldr     w1, [x20]
->       0.00 :   66200:  ldr     w2, [x0, #4]
->       0.00 :   66204:  str     x19, [x0, #8]
->       0.00 :   66208:  add     w2, w2, #0x1
->       0.00 :   6620c:  str     w2, [x0, #4]
->       0.00 :   66210:  tbnz    w1, #5, 66388 <__getdelim@@GLIBC_2.17+0x208>
->       0.00 :   66214:  ldr     x19, [x29, #16]
->       0.00 :   66218:  ldr     x0, [x21]
->       0.00 :   6621c:  cbz     x0, 66228 <__getdelim@@GLIBC_2.17+0xa8>
->       0.00 :   66220:  ldr     x0, [x22]
->       0.00 :   66224:  cbnz    x0, 6623c <__getdelim@@GLIBC_2.17+0xbc>
->       0.00 :   66228:  mov     x0, #0x78                       // #120
->       0.00 :   6622c:  str     x0, [x22]
->       0.00 :   66230:  bl      20710 <malloc@plt>
->       0.00 :   66234:  str     x0, [x21]
->       0.00 :   66238:  cbz     x0, 66428 <__getdelim@@GLIBC_2.17+0x2a8>
->       0.00 :   6623c:  ldr     x27, [x20, #8]
->       0.00 :   66240:  str     x19, [x29, #16]
->       0.00 :   66244:  ldr     x19, [x20, #16]
->       0.00 :   66248:  sub     x19, x19, x27
->       0.00 :   6624c:  cmp     x19, #0x0
->       0.00 :   66250:  b.le    66398 <__getdelim@@GLIBC_2.17+0x218>
->       0.00 :   66254:  mov     x25, #0x0                       // #0
->       0.00 :   66258:  b       662d8 <__getdelim@@GLIBC_2.17+0x158>
->       0.00 :   6625c:  nop
->       0.00 :   66260:  add     x24, x19, x25
->       0.00 :   66264:  ldr     x3, [x22]
->       0.00 :   66268:  add     x26, x24, #0x1
->       0.00 :   6626c:  ldr     x0, [x21]
->       0.00 :   66270:  cmp     x3, x26
->       0.00 :   66274:  b.cs    6629c <__getdelim@@GLIBC_2.17+0x11c>  // b.hs, b.nlast
->       0.00 :   66278:  lsl     x3, x3, #1
->       0.00 :   6627c:  cmp     x3, x26
->       0.00 :   66280:  csel    x26, x3, x26, cs  // cs = hs, nlast
->       0.00 :   66284:  mov     x1, x26
->       0.00 :   66288:  bl      206f0 <realloc@plt>
->       0.00 :   6628c:  cbz     x0, 66438 <__getdelim@@GLIBC_2.17+0x2b8>
->       0.00 :   66290:  str     x0, [x21]
->       0.00 :   66294:  ldr     x27, [x20, #8]
->       0.00 :   66298:  str     x26, [x22]
->       0.00 :   6629c:  mov     x2, x19
->       0.00 :   662a0:  mov     x1, x27
->       0.00 :   662a4:  add     x0, x0, x25
->       0.00 :   662a8:  bl      87390 <explicit_bzero@@GLIBC_2.25+0x50>
->       0.00 :   662ac:  ldr     x0, [x20, #8]
->       0.00 :   662b0:  add     x19, x0, x19
->       0.00 :   662b4:  str     x19, [x20, #8]
->       0.00 :   662b8:  cbnz    x28, 66410 <__getdelim@@GLIBC_2.17+0x290>
->       0.00 :   662bc:  mov     x0, x20
->       0.00 :   662c0:  bl      73b80 <__underflow@@GLIBC_2.17>
->       0.00 :   662c4:  cmn     w0, #0x1
->       0.00 :   662c8:  b.eq    66410 <__getdelim@@GLIBC_2.17+0x290>  // b.none
->       0.00 :   662cc:  ldp     x27, x19, [x20, #8]
->       0.00 :   662d0:  mov     x25, x24
->       0.00 :   662d4:  sub     x19, x19, x27
->       0.00 :   662d8:  mov     x2, x19
->       0.00 :   662dc:  mov     w1, w23
->       0.00 :   662e0:  mov     x0, x27
->       0.00 :   662e4:  bl      807b0 <memchr@@GLIBC_2.17>
->       0.00 :   662e8:  cmp     x0, #0x0
->       0.00 :   662ec:  mov     x28, x0
->       0.00 :   662f0:  sub     x0, x0, x27
->       0.00 :   662f4:  csinc   x19, x19, x0, eq  // eq = none
->       0.00 :   662f8:  mov     x0, #0x7fffffffffffffff         // #9223372036854775807
->       0.00 :   662fc:  sub     x0, x0, x25
->       0.00 :   66300:  cmp     x19, x0
->       0.00 :   66304:  b.lt    66260 <__getdelim@@GLIBC_2.17+0xe0>  // b.tstop
->       0.00 :   66308:  adrp    x0, 17f000 <sys_sigabbrev@@GLIBC_2.17+0x320>
->       0.00 :   6630c:  ldr     x0, [x0, #3624]
->       0.00 :   66310:  mrs     x2, tpidr_el0
->       0.00 :   66314:  ldr     x19, [x29, #16]
->       0.00 :   66318:  mov     w3, #0x4b                       // #75
->       0.00 :   6631c:  ldr     w1, [x20]
->       0.00 :   66320:  mov     x24, #0xffffffffffffffff        // #-1
->       0.00 :   66324:  str     w3, [x2, x0]
->       0.00 :   66328:  tbnz    w1, #15, 66340 <__getdelim@@GLIBC_2.17+0x1c0>
->       0.00 :   6632c:  ldr     x0, [x20, #136]
->       0.00 :   66330:  ldr     w1, [x0, #4]
->       0.00 :   66334:  sub     w1, w1, #0x1
->       0.00 :   66338:  str     w1, [x0, #4]
->       0.00 :   6633c:  cbz     w1, 663b8 <__getdelim@@GLIBC_2.17+0x238>
->       0.00 :   66340:  mov     x0, x24
->       0.00 :   66344:  ldr     x28, [sp, #88]
->       0.00 :   66348:  ldp     x20, x21, [x29, #24]
->       0.00 :   6634c:  ldp     x22, x23, [x29, #40]
->       0.00 :   66350:  ldp     x24, x25, [sp, #56]
->       0.00 :   66354:  ldp     x26, x27, [sp, #72]
->       0.00 :   66358:  ldp     x29, x30, [sp], #96
->       0.00 :   6635c:  ret
->     100.00 :   66360:  tbz     w1, #5, 66218 <__getdelim@@GLIBC_2.17+0x98>
->       0.00 :   66364:  ldp     x20, x21, [x29, #24]
->       0.00 :   66368:  mov     x24, #0xffffffffffffffff        // #-1
->       0.00 :   6636c:  ldp     x22, x23, [x29, #40]
->       0.00 :   66370:  mov     x0, x24
->       0.00 :   66374:  ldp     x24, x25, [sp, #56]
->       0.00 :   66378:  ldp     x26, x27, [sp, #72]
->       0.00 :   6637c:  ldr     x28, [sp, #88]
->       0.00 :   66380:  ldp     x29, x30, [sp], #96
->       0.00 :   66384:  ret
->       0.00 :   66388:  mov     x24, #0xffffffffffffffff        // #-1
->       0.00 :   6638c:  ldr     x19, [x29, #16]
->       0.00 :   66390:  b       66328 <__getdelim@@GLIBC_2.17+0x1a8>
->       0.00 :   66394:  nop
->       0.00 :   66398:  mov     x0, x20
->       0.00 :   6639c:  bl      73b80 <__underflow@@GLIBC_2.17>
->       0.00 :   663a0:  cmn     w0, #0x1
->       0.00 :   663a4:  b.eq    66438 <__getdelim@@GLIBC_2.17+0x2b8>  // b.none
->       0.00 :   663a8:  ldp     x27, x19, [x20, #8]
->       0.00 :   663ac:  sub     x19, x19, x27
->       0.00 :   663b0:  b       66254 <__getdelim@@GLIBC_2.17+0xd4>
->       0.00 :   663b4:  nop
->       0.00 :   663b8:  str     xzr, [x0, #8]
->       0.00 :   663bc:  ldxr    w2, [x0]
->       0.00 :   663c0:  stlxr   w3, w1, [x0]
->       0.00 :   663c4:  cbnz    w3, 663bc <__getdelim@@GLIBC_2.17+0x23c>
->       0.00 :   663c8:  cmp     w2, #0x1
->       0.00 :   663cc:  b.le    66340 <__getdelim@@GLIBC_2.17+0x1c0>
->       0.00 :   663d0:  mov     x1, #0x81                       // #129
->       0.00 :   663d4:  mov     x2, #0x1                        // #1
->       0.00 :   663d8:  mov     x3, #0x0                        // #0
->       0.00 :   663dc:  mov     x8, #0x62                       // #98
->       0.00 :   663e0:  svc     #0x0
->       0.00 :   663e4:  ldp     x20, x21, [x29, #24]
->       0.00 :   663e8:  ldp     x22, x23, [x29, #40]
->       0.00 :   663ec:  b       66370 <__getdelim@@GLIBC_2.17+0x1f0>
->       0.00 :   663f0:  ldr     w2, [x0, #4]
->       0.00 :   663f4:  add     w2, w2, #0x1
->       0.00 :   663f8:  str     w2, [x0, #4]
->       0.00 :   663fc:  tbz     w1, #5, 66214 <__getdelim@@GLIBC_2.17+0x94>
->       0.00 :   66400:  mov     x24, #0xffffffffffffffff        // #-1
->       0.00 :   66404:  ldr     x19, [x29, #16]
->       0.00 :   66408:  b       66330 <__getdelim@@GLIBC_2.17+0x1b0>
->       0.00 :   6640c:  nop
->       0.00 :   66410:  ldr     x0, [x21]
->       0.00 :   66414:  strb    wzr, [x0, x24]
->       0.00 :   66418:  ldr     w1, [x20]
->       0.00 :   6641c:  ldr     x19, [x29, #16]
->       0.00 :   66420:  b       66328 <__getdelim@@GLIBC_2.17+0x1a8>
->       0.00 :   66424:  nop
->       0.00 :   66428:  mov     x24, #0xffffffffffffffff        // #-1
->       0.00 :   6642c:  ldr     w1, [x20]
->       0.00 :   66430:  b       66328 <__getdelim@@GLIBC_2.17+0x1a8>
->       0.00 :   66434:  nop
->       0.00 :   66438:  mov     x24, #0xffffffffffffffff        // #-1
->       0.00 :   6643c:  ldr     w1, [x20]
->       0.00 :   66440:  ldr     x19, [x29, #16]
->       0.00 :   66444:  b       66328 <__getdelim@@GLIBC_2.17+0x1a8>
->       0.00 :   66448:  bl      e3ba0 <pthread_setcanceltype@@GLIBC_2.17+0x30>
->       0.00 :   6644c:  b       661f8 <__getdelim@@GLIBC_2.17+0x78>
->       0.00 :   66450:  adrp    x0, 17f000 <sys_sigabbrev@@GLIBC_2.17+0x320>
->       0.00 :   66454:  ldr     x0, [x0, #3624]
->       0.00 :   66458:  mrs     x1, tpidr_el0
->       0.00 :   6645c:  mov     w2, #0x16                       // #22
->       0.00 :   66460:  mov     x24, #0xffffffffffffffff        // #-1
->       0.00 :   66464:  str     w2, [x1, x0]
->       0.00 :   66468:  b       66370 <__getdelim@@GLIBC_2.17+0x1f0>
->       0.00 :   6646c:  ldr     w1, [x20]
->       0.00 :   66470:  mov     x4, x0
->       0.00 :   66474:  tbnz    w1, #15, 6648c <__getdelim@@GLIBC_2.17+0x30c>
->       0.00 :   66478:  ldr     x0, [x20, #136]
->       0.00 :   6647c:  ldr     w1, [x0, #4]
->       0.00 :   66480:  sub     w1, w1, #0x1
->       0.00 :   66484:  str     w1, [x0, #4]
->       0.00 :   66488:  cbz     w1, 66494 <__getdelim@@GLIBC_2.17+0x314>
->       0.00 :   6648c:  mov     x0, x4
->       0.00 :   66490:  bl      20e40 <gnu_get_libc_version@@GLIBC_2.17+0x130>
->       0.00 :   66494:  str     xzr, [x0, #8]
->       0.00 :   66498:  ldxr    w2, [x0]
->       0.00 :   6649c:  stlxr   w3, w1, [x0]
->       0.00 :   664a0:  cbnz    w3, 66498 <__getdelim@@GLIBC_2.17+0x318>
->       0.00 :   664a4:  cmp     w2, #0x1
->       0.00 :   664a8:  b.le    6648c <__getdelim@@GLIBC_2.17+0x30c>
->       0.00 :   664ac:  mov     x1, #0x81                       // #129
->       0.00 :   664b0:  mov     x2, #0x1                        // #1
->       0.00 :   664b4:  mov     x3, #0x0                        // #0
->       0.00 :   664b8:  mov     x8, #0x62                       // #98
->       0.00 :   664bc:  svc     #0x0
->       0.00 :   664c0:  b       6648c <__getdelim@@GLIBC_2.17+0x30c>
-> 
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> Tested-by: Leo Yan <leo.yan@linaro.org>
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+On 6/15/21 10:05 AM, Piyush Mehta wrote:
+> Add DT binding document for modepin GPIO controller.
+> 
+> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+> State: pending
+
+note: this shouldn't be the part of commit message.
+But please wait when dt guys review this file and then send v2.
+
+M
 
 > ---
+>  .../bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml    | 41 ++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
 > 
-> Changes since v3:
->  - Set hook function of "id_index" for Intel PT sample mode.
-> 
-> Changes since v2:
->  - Updating tools/perf/Documentation/perf-annotate.txt.
->  - Add test result to commit message.
-> 
-> Changes since v1:
->  - Adjust spaces to maintain alignment in "tool".
-> 
->  tools/perf/Documentation/perf-annotate.txt |  7 +++++++
->  tools/perf/builtin-annotate.c              | 11 +++++++++++
->  2 files changed, 18 insertions(+)
-> 
-> diff --git a/tools/perf/Documentation/perf-annotate.txt b/tools/perf/Documentation/perf-annotate.txt
-> index 80c1be5d566c..33c2521cba4a 100644
-> --- a/tools/perf/Documentation/perf-annotate.txt
-> +++ b/tools/perf/Documentation/perf-annotate.txt
-> @@ -58,6 +58,13 @@ OPTIONS
->  --ignore-vmlinux::
->  	Ignore vmlinux files.
->  
-> +--itrace::
-> +	Options for decoding instruction tracing data. The options are:
+> diff --git a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
+> new file mode 100644
+> index 0000000..39d78f8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
+> @@ -0,0 +1,41 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/gpio/xlnx,zynqmp-gpio-modepin.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 > +
-> +include::itrace.txt[]
+> +title: ZynqMP Mode Pin GPIO controller
 > +
-> +	To disable decoding entirely, use --no-itrace.
+> +description:
+> +  PS_MODE is 4-bits boot mode pins sampled on POR deassertion. Mode Pin
+> +  GPIO controller with configurable from numbers of pins (from 0 to 3 per
+> +  PS_MODE). Every pin can be configured as input/output.
 > +
->  -m::
->  --modules::
->          Load module symbols. WARNING: use only with -k and LIVE kernel.
-> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-> index 49627a7bed7c..cebb861be3e3 100644
-> --- a/tools/perf/builtin-annotate.c
-> +++ b/tools/perf/builtin-annotate.c
-> @@ -474,6 +474,9 @@ int cmd_annotate(int argc, const char **argv)
->  			.attr	= perf_event__process_attr,
->  			.build_id = perf_event__process_build_id,
->  			.tracing_data   = perf_event__process_tracing_data,
-> +			.id_index	= perf_event__process_id_index,
-> +			.auxtrace_info	= perf_event__process_auxtrace_info,
-> +			.auxtrace	= perf_event__process_auxtrace,
->  			.feature	= process_feature_event,
->  			.ordered_events = true,
->  			.ordering_requires_timestamps = true,
-> @@ -483,6 +486,9 @@ int cmd_annotate(int argc, const char **argv)
->  	struct perf_data data = {
->  		.mode  = PERF_DATA_MODE_READ,
->  	};
-> +	struct itrace_synth_opts itrace_synth_opts = {
-> +		.set = 0,
-> +	};
->  	struct option options[] = {
->  	OPT_STRING('i', "input", &input_name, "file",
->  		    "input file name"),
-> @@ -547,6 +553,9 @@ int cmd_annotate(int argc, const char **argv)
->  	OPT_CALLBACK(0, "percent-type", &annotate.opts, "local-period",
->  		     "Set percent type local/global-period/hits",
->  		     annotate_parse_percent_type),
-> +	OPT_CALLBACK_OPTARG(0, "itrace", &itrace_synth_opts, NULL, "opts",
-> +			    "Instruction Tracing options\n" ITRACE_HELP,
-> +			    itrace_parse_synth_opts),
->  
->  	OPT_END()
->  	};
-> @@ -591,6 +600,8 @@ int cmd_annotate(int argc, const char **argv)
->  	if (IS_ERR(annotate.session))
->  		return PTR_ERR(annotate.session);
->  
-> +	annotate.session->itrace_synth_opts = &itrace_synth_opts;
+> +maintainers:
+> +  - Piyush Mehta <piyush.mehta@xilinx.com>
 > +
->  	annotate.has_br_stack = perf_header__has_feat(&annotate.session->header,
->  						      HEADER_BRANCH_STACK);
->  
+> +properties:
+> +  compatible:
+> +    const: xlnx,zynqmp-gpio-modepin
+> +
+> +  gpio-controller: true
+> +
+> +  "#gpio-cells":
+> +    const: 2
+> +
+> +required:
+> +  - compatible
+> +  - gpio-controller
+> +  - "#gpio-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    modepin_gpio: gpio {
+> +        compatible = "xlnx,zynqmp-gpio-modepin";
+> +        gpio-controller;
+> +        #gpio-cells = <2>;
+> +    };
+> +
+> +...
 > 
-
