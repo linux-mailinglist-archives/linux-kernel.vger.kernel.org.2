@@ -2,146 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB4B3A740E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DCE3A740B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhFOChE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:37:04 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:6488 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhFOCg7 (ORCPT
+        id S230390AbhFOCgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:36:47 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:48848 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229809AbhFOCgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:36:59 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G3sKd50G2zZcKn;
-        Tue, 15 Jun 2021 10:12:53 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 10:15:48 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 10:15:47 +0800
-Subject: Re: [PATCH v3 0/6] ARM: mm: cleanup page fault and fix pxn process
- issue
-To:     Russell King <linux@armlinux.org.uk>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Mon, 14 Jun 2021 22:36:46 -0400
+X-UUID: b244fbb211c9499e8c058deaf065f444-20210615
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=JNXKNmpy51jBAsMEkhMZ98xjcuU+lc4j1vj8Rx5Ai8I=;
+        b=pGi71SOzJXO1tj0nUNmn32NhoizTYmfootxQ2xckZVUdU2xFVvllMrFugcJ87D9CmVpL9c26088cfc/PJAah0GkL22rKI8CRTUxbxez/KcJNGLvnHLM5K3Up/oBR1wiuZKZjXOMr77ls8v6yiX+HkasoK/VZeSwrHBu3zVIC6RU=;
+X-UUID: b244fbb211c9499e8c058deaf065f444-20210615
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1001541838; Tue, 15 Jun 2021 10:34:38 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 15 Jun 2021 10:34:37 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 15 Jun 2021 10:34:37 +0800
+Message-ID: <c8e8535cef67adeaefcfe943bbd8287806921e03.camel@mediatek.com>
+Subject: Re: [PATCH v9 01/22] dt-bindings: ARM: Mediatek: Add new document
+ bindings of imp i2c wrapper controller
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>
+CC:     Nicolas Boichat <drinkcat@chromium.org>,
+        <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jungseung Lee <js07.lee@gmail.com>,
-        Will Deacon <will@kernel.org>
-References: <20210610123556.171328-1-wangkefeng.wang@huawei.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <b00d0123-673a-0bc8-9ac2-282af64e7131@huawei.com>
-Date:   Tue, 15 Jun 2021 10:15:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>
+Date:   Tue, 15 Jun 2021 10:34:37 +0800
+In-Reply-To: <de082c64-ace3-30b5-7404-1f4b607a83e1@gmail.com>
+References: <20210524122053.17155-1-chun-jie.chen@mediatek.com>
+         <20210524122053.17155-2-chun-jie.chen@mediatek.com>
+         <20210602171201.GA3566462@robh.at.kernel.org>
+         <66e017401ab93aa02c5d2bbf11be9589b36649ac.camel@mediatek.com>
+         <1f59ed31-4a0e-9719-bf84-1fe4cdd6c57d@gmail.com>
+         <162334689784.9598.2709970788186333494@swboyd.mtv.corp.google.com>
+         <de082c64-ace3-30b5-7404-1f4b607a83e1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-In-Reply-To: <20210610123556.171328-1-wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+T24gRnJpLCAyMDIxLTA2LTExIGF0IDExOjU2ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMTAvMDYvMjAyMSAxOTo0MSwgU3RlcGhlbiBCb3lkIHdyb3RlOg0KPiA+IFF1
+b3RpbmcgTWF0dGhpYXMgQnJ1Z2dlciAoMjAyMS0wNi0wOCAwNzo0NTo0OSkNCj4gPiA+IA0KPiA+
+ID4gDQo+ID4gPiBPbiAwNy8wNi8yMDIxIDA3OjIwLCBDaHVuLUppZSBDaGVuIHdyb3RlOg0KPiA+
+ID4gPiBPbiBXZWQsIDIwMjEtMDYtMDIgYXQgMTI6MTIgLTA1MDAsIFJvYiBIZXJyaW5nIHdyb3Rl
+Og0KPiA+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gK2Rlc2NyaXB0aW9uOg0KPiA+ID4gPiA+ID4g
+KyAgVGhlIE1lZGlhdGVrIGltcCBpMmMgd3JhcHBlciBjb250cm9sbGVyIHByb3ZpZGVzDQo+ID4g
+PiA+ID4gPiBmdW5jdGlvbmFsDQo+ID4gPiA+ID4gPiBjb25maWd1cmF0aW9ucyBhbmQgY2xvY2tz
+IHRvIHRoZSBzeXN0ZW0uDQo+ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiArcHJvcGVydGllczoN
+Cj4gPiA+ID4gPiA+ICsgIGNvbXBhdGlibGU6DQo+ID4gPiA+ID4gPiArICAgIGl0ZW1zOg0KPiA+
+ID4gPiA+ID4gKyAgICAgIC0gZW51bToNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgLSBtZWRpYXRl
+ayxtdDgxOTItaW1wX2lpY193cmFwX2MNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgLSBtZWRpYXRl
+ayxtdDgxOTItaW1wX2lpY193cmFwX2UNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgLSBtZWRpYXRl
+ayxtdDgxOTItaW1wX2lpY193cmFwX3MNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgLSBtZWRpYXRl
+ayxtdDgxOTItaW1wX2lpY193cmFwX3dzDQo+ID4gPiA+ID4gPiArICAgICAgICAgIC0gbWVkaWF0
+ZWssbXQ4MTkyLWltcF9paWNfd3JhcF93DQo+ID4gPiA+ID4gPiArICAgICAgICAgIC0gbWVkaWF0
+ZWssbXQ4MTkyLWltcF9paWNfd3JhcF9uDQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gTG9va3MgdG8g
+bWUgbGlrZSB0aGVzZSBhcmUgYWxsIHRoZSBzYW1lIGgvdywgYnV0IGp1c3QgaGF2ZQ0KPiA+ID4g
+PiA+IGRpZmZlcmluZyANCj4gPiA+ID4gPiBzZXRzIG9mIGNsb2Nrcy4gVGhhdCdzIG5vdCByZWFs
+bHkgYSByZWFzb24gdG8gaGF2ZSBkaWZmZXJlbnQgDQo+ID4gPiA+ID4gY29tcGF0aWJsZXMuIA0K
+PiA+ID4gPiA+IA0KPiA+ID4gPiA+IElmIHlvdSBuZWVkIHRvIGtub3cgd2hhdCBjbG9ja3MgYXJl
+IHByZXNlbnQsIHlvdSBjYW4gd2FsayB0aGUNCj4gPiA+ID4gPiBEVCBmb3IgDQo+ID4gPiA+ID4g
+YWxsICdjbG9ja3MnIHByb3BlcnRpZXMgbWF0Y2hpbmcgdGhpcyBjbG9jayBjb250cm9sbGVyDQo+
+ID4gPiA+ID4gaW5zdGFuY2UuIE9yDQo+ID4gPiA+ID4gdXNlIA0KPiA+ID4gPiA+ICdjbG9jay1p
+bmRpY2VzJyB0byBkZWZpbmUgd2hpY2ggb25lcyBhcmUgcHJlc2VudC4NCj4gPiANCj4gPiBJcyB0
+aGUgaWRlYSB0byB1c2UgY2xvY2staW5kaWNlcyBhbmQgdGhlbiBsaXN0IGFsbCB0aGUgY2xvY2sg
+aWRzIGluDQo+ID4gdGhlcmUgYW5kIG1hdGNoIHRoZW0gdXAgYXQgZHJpdmVyIHByb2JlIHRpbWUg
+dG8gcmVnaXN0ZXIgdGhlIGNsb2Nrcw0KPiA+IHByb3ZpZGVkIGJ5IHRoZSBJTyByZWdpb24/IEZl
+ZWxzIGxpa2Ugd2UnbGwgZG8gYSBsb3Qgb2YgcGFyc2luZyBhdA0KPiA+IGVhY2gNCj4gPiBib290
+IHRvIG1hdGNoIHVwIHN0cnVjdHVyZXMgYW5kIHJlZ2lzdGVyIGNsa3Mgd2l0aCB0aGUgY2xrDQo+
+ID4gZnJhbWV3b3JrLg0KPiA+IA0KPiA+IElmIGl0J3MgbGlrZSBvdGhlciBTb0NzIHRoZW4gdGhl
+IGNsayBpZCBtYXBzIHRvIGEgaGFyZCBtYWNybyBmb3IgYQ0KPiA+IHR5cGUNCj4gPiBvZiBjbGss
+IGFuZCB0aG9zZSBoYXJkIG1hY3JvcyBoYXZlIGJlZW4gZ2x1ZWQgdG9nZXRoZXIgd2l0aCBvdGhl
+cg0KPiA+IGNsa3MNCj4gPiBhbmQgdGhlbiBwYXJ0aXRpb25lZCBpbnRvIGRpZmZlcmVudCBJTyBy
+ZWdpb25zIHRvIG1ha2UgdXAgYSBjbG9jaw0KPiA+IGNvbnRyb2xsZXIuIE9yIG1heWJlIGluIHRo
+aXMgY2FzZSwgdGhvc2UgY2xrIGhhcmQgbWFjcm9zIGhhdmUgYmVlbg0KPiA+IHNjYXR0ZXJlZCBp
+bnRvIGVhY2ggSVAgYmxvY2sgbGlrZSBTUEksIGkyYywgdWFydCwgZXRjLiBzbyB0aGF0IHRoZQ0K
+PiA+IGNsb2NrDQo+ID4gY29udHJvbGxlciBkb2Vzbid0IHJlYWxseSBleGlzdCBhbmQgbWVyZWx5
+IHRoZSBnYXRlcyBhbmQgcmF0ZQ0KPiA+IGNvbnRyb2wNCj4gPiAobXV4L2RpdmlkZXIpIGZvciB0
+aGUgY2xrIHRoYXQncyBjbG9ja2luZyBzb21lIHBhcnRpY3VsYXIgSVAgYmxvY2sNCj4gPiBhbGwN
+Cj4gPiBsaXZlIGluc2lkZSB0aGUgSVAgd3JhcHBlci4gSWYgaXQncyB0aGlzIGNhc2UgdGhlbiBJ
+IGhvcGUgdGhlcmUgYXJlDQo+ID4gYQ0KPiA+IGJ1bmNoIG9mIFBMTHMgdGhhdCBhcmUgZml4ZWQg
+cmF0ZSBzbyB0aGF0IHRoZSBpMmMgY2xrIGRvZXNuJ3QgaGF2ZQ0KPiA+IHRvIGdvDQo+ID4gb3V0
+c2lkZSB0aGUgd3JhcHBlciB0byBjaGFuZ2UgZnJlcXVlbmN5IChvZiB3aGljaCB0aGVyZSBzaG91
+bGQgYmUNCj4gPiB0d28NCj4gPiAic3RhbmRhcmQiIGZyZXF1ZW5jaWVzIGFueXdheSkuDQo+ID4g
+DQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gUm9iDQo+ID4gPiA+IA0KPiA+ID4gPiBTb21lIG1vZHVs
+ZSBpcyBkaXZpZGVkIHRvIHN1Yi1tb2R1bGVzIHdoaWNoIGFyZSBkZXNpZ25lZCBpbg0KPiA+ID4g
+PiBkaWZmZXJlbnQNCj4gPiA+ID4gaC93IGJsb2NrcyBmb3IgZGlmZmVyZW50IHVzYWdlLCBhbmQg
+aWYgd2Ugd2FudCB0byB1c2UgdGhlIHNhbWUNCj4gPiA+ID4gY29tcGF0aWJsZSB0byBwcmVzZW50
+IHRoZXNlIGgvdyBibG9ja3MsIHdlIG5lZWQgdG8gbW92ZSB0aGUNCj4gPiA+ID4gY2xvY2sgZGF0
+YQ0KPiA+ID4gPiBwcm92aWRlZCBieSB0aGVzZSBoL3cgYmxvY2tzIHRvIGR0cywgYnV0IHdlIHVz
+dWFsbHkgdXNlDQo+ID4gPiA+IGRpZmZlcmVudA0KPiA+ID4gPiBjb21wYXRpYmxlIHRvIGdldCB0
+aGUgaC93IGJsb2NrcyBkYXRhIGluDQo+ID4gPiA+IE1lZGlhdGVrJ3MgY2xvY2sgZHJpdmVyLCBz
+byBkbyB5b3Ugc3VnZ2VzdCB0byByZWdpc3RlciBjbG9jaw0KPiA+ID4gPiBwcm92aWRlZA0KPiA+
+ID4gPiBieSBkaWZmZXJlbnQgaC93IGJsb2NrcyB1c2luZyBzYW1lIGNvbXBhdGlibGU/DQo+ID4g
+PiA+IA0KPiA+ID4gDQo+ID4gPiBUaGUgbWFwcGluZyBvZiB0aGVtIGlzIGFzIGZvbGxvd2luZzoN
+Cj4gPiA+IGltcF9paWNfd3JhcF9jOiAgMTEwMDcwMDANCj4gPiA+IGltcF9paWNfd3JhcF9lOiAg
+MTFjYjEwMDANCj4gPiA+IGltcF9paWNfd3JhcF9zOiAgMTFkMDMwMDANCj4gPiA+IGltcF9paWNf
+d3JhcF93czogMTFkMjMwMDANCj4gPiA+IGltcF9paWNfd3JhcF93OiAgMTFlMDEwMDANCj4gPiA+
+IGltcF9paWNfd3JhcF9uOiAgMTFmMDIwMDANCj4gPiA+IA0KPiA+IA0KPiA+IFN1cmUuIFdoYXQg
+aXMgdGhlaXIgcHVycG9zZSB0aG91Z2g/IEFyZSB0aGV5IHNpbXBseSBhIGJ1bmNoIG9mDQo+ID4g
+ZGlmZmVyZW50DQo+ID4gaTJjIGNsa3M/DQo+ID4gDQo+IA0KPiBUaGF0IHdvdWxkIGJlIG5lZWQg
+dG8gYmUgYW5zd2VyZWQgYnkgTWVkaWFUZWsgYXMgSSBkb24ndCBoYXZlIGFjY2Vzcw0KPiB0byBh
+bnkNCj4gZG9jdW1lbnRhdGlvbi4NCj4gDQo+IFJlZ2FyZHMsDQo+IE1hdHRoaWFzDQoNCldlIGRl
+c2NyaWJlIHdoaWNoIGNsb2NrIGNvbnRyb2xsZXJzIGFyZSBleGlzdCBpbiBkdHMgYW5kDQpnZXQg
+dGhlIGNsb2NrIGRhdGEgcHJvdmlkZWQgYnkgY2xvY2sgY29udHJvbGxlciBpbiBkcml2ZXIgZGF0
+YQ0KYnkgbWF0Y2hpbmcgZGV2aWNlIGNvbXBhdGlibGUuDQoNClRoZSBjbG9jayBkYXRhIGNvbnRh
+aW5zIHNldmVyYWwgY2xvY2tzIHdoaWNoIGluY2x1ZGVzIHRoZSBjbG9jayBpbmRleCwNCnBhcmVu
+dCBjbG9jayBzb3VyY2UgYW5kIHRoZSBkZXRhaWxzIG9mIHJlZyBjb250cm9sIGluc2lkZSB0aGUg
+SVAgYmxvY2sNCm9mIGNsb2NrIGNvbnRyb2xsZXIuDQoNCkluIE1UODE5MiBwbGF0Zm9ybSwgc29t
+ZSBJUCBibG9jayBpcyBkaXZpZGUgdG8gc2V2ZXJhbCBzdWItYmxvY2tzIGFuZA0KZWFjaCBzdWIt
+YmxvY2sgcHJvdmlkZXMgY2xvY2sgY29udHJvbCBieSBpdHNlbGYuDQoNCkJlc3QgUmVnYXJkcywN
+CkNodW4tSmllDQo=
 
-On 2021/6/10 20:35, Kefeng Wang wrote:
-> The patchset cleanup ARM page fault handle to improve readability,
-> fix the page table entries printing and fix infinite loop in the
-> page fault handler when user code execution with privilege mode if
-> ARM_LPAE enabled.
->
-> echo EXEC_USERSPACE > /sys/kernel/debug/provoke-crash/DIRECT
->
-> Before:
-> -------
->   lkdtm: Performing direct entry EXEC_USERSPACE
->   lkdtm: attempting ok execution at c0717674
->   lkdtm: attempting bad execution at b6fd6000
->   rcu: INFO: rcu_sched self-detected stall on CPU
->   rcu:	1-....: (2100 ticks this GP) idle=7e2/1/0x40000002 softirq=136/136 fqs=1050
-> 	(t=2101 jiffies g=-1027 q=16)
->   NMI backtrace for cpu 1
->   CPU: 1 PID: 57 Comm: sh Not tainted 5.13.0-rc4 #126
->   ...
->    r9:c1f04000 r8:c0e04cc8 r7:c1f05cbc r6:ffffffff r5:60000113 r4:c03724f8
->   [<c03722e0>] (handle_mm_fault) from [<c02152f4>] (do_page_fault+0x1a0/0x3d8)
->    r10:c180ec48 r9:c11b1aa0 r8:c11b1ac0 r7:8000020f r6:b6fd6000 r5:c180ec00
->    r4:c1f05df8
->   [<c0215154>] (do_page_fault) from [<c02157cc>] (do_PrefetchAbort+0x40/0x94)
->    r10:0000000f r9:c1f04000 r8:c1f05df8 r7:b6fd6000 r6:c0215154 r5:0000020f
->    r4:c0e09b18
->   [<c021578c>] (do_PrefetchAbort) from [<c0200c50>] (__pabt_svc+0x50/0x80)
->   Exception stack(0xc1f05df8 to 0xc1f05e40)
->   5de0: 0000002b 2e34f000
->   5e00: 3ee77213 3ee77213 b6fd6000 c0b51020 c140d000 c0a4b5dc 0000000f c1f05f58
->   5e20: 0000000f c1f05e64 c1f05d88 c1f05e48 c0717a6c b6fd6000 60000013 ffffffff
->    r8:0000000f r7:c1f05e2c r6:ffffffff r5:60000013 r4:b6fd6000
->   [<c07179a8>] (lkdtm_EXEC_USERSPACE) from [<c09a51b8>] (lkdtm_do_action+0x48/0x4c)
->    r4:00000027
->   ...
->
->
-> After:
-> -------
->   lkdtm: Performing direct entry EXEC_USERSPACE
->   lkdtm: attempting ok execution at c07176d4
->   lkdtm: attempting bad execution at b6f57000
->   8<--- cut here ---
->   Unable to handle kernel execution of memory at virtual address b6f57000
->   pgd = 81e20f00
->   [b6f57000] *pgd=81e23003, *pmd=13ee9c003
->   Internal error: Oops: 8000020f [#1] SMP ARM
->   Modules linked in:
->   CPU: 0 PID: 57 Comm: sh Not tainted 5.13.0-rc4+ #127
->   Hardware name: ARM-Versatile Express
->   PC is at 0xb6f57000
->   LR is at lkdtm_EXEC_USERSPACE+0xc4/0xd4
->   pc : [<b6f57000>]    lr : [<c0717acc>]    psr: 60000013
->   sp : c1f3de48  ip : c1f3dd88  fp : c1f3de64
->   r10: 0000000f  r9 : c1f3df58  r8 : 0000000f
->   r7 : c0a4b5dc  r6 : c1f1d000  r5 : c0b51070  r4 :b6f57000
->   r3 : 7e62f7da  r2 : 7e62f7da  r1 : 2e330000  r0 :0000002b
->   Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
->   ...
-
-Hi Russell， I fix patches according your comment.
-
-Especially the patch 6，any new suggest about it, thanks.
-
-
->
-> v3:
-> - drop the fix about page table printing
-> - kill page table base print instead of printing the physical address
-> - only die when permission fault both kernel-mode and user code execution
->    with privilege mode
-> - drop LPAE specific
->
-> v2:
-> - split patch into smaller changes suggested by Russell
-> - fix page table printing in show_pte()
-> - add new die_kernel_fault() helper
-> - report "execution of user memory" when user code execution with
->    privilege mode
->
->
-> Kefeng Wang (6):
->    ARM: mm: Rafactor the __do_page_fault()
->    ARM: mm: Kill task_struct argument for __do_page_fault()
->    ARM: mm: Cleanup access_error()
->    ARM: mm: Kill page table base print in show_pte()
->    ARM: mm: Provide die_kernel_fault() helper
->    ARM: mm: Fix PXN process with LPAE feature
->
->   arch/arm/mm/fault.c | 119 +++++++++++++++++++++++---------------------
->   arch/arm/mm/fault.h |   4 ++
->   2 files changed, 67 insertions(+), 56 deletions(-)
->
