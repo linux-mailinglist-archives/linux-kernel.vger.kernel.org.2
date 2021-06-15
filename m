@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E84F3A79EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14C43A79F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhFOJSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:18:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51072 "EHLO mail.kernel.org"
+        id S231302AbhFOJTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:19:06 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:33944 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231174AbhFOJSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:18:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E704761245;
-        Tue, 15 Jun 2021 09:16:38 +0000 (UTC)
-Date:   Tue, 15 Jun 2021 11:16:35 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH] quota: finish disable quotactl_path syscall
-Message-ID: <20210615091635.moujr4zgfy3gqc6j@wittgenstein>
-References: <20210614153712.313707-1-marcin@juszkiewicz.com.pl>
- <20210614164454.GC29751@quack2.suse.cz>
- <20210615084728.GG29751@quack2.suse.cz>
+        id S231280AbhFOJTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 05:19:05 -0400
+Received: from zn.tnic (p200300ec2f0f2700c2d40b448c69f909.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:2700:c2d4:b44:8c69:f909])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C4DB61EC04CC;
+        Tue, 15 Jun 2021 11:16:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623748619;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=hqIYPsMwV7tG6Ke4inrHNWrKVe2HcOY1FBNTW2EP1K8=;
+        b=MYGKSP2mEXE480lkbMjFysAOLu325KtlnsVqcDX1+2Xy4APTwDlG4IC5hyO0jaW9GaLSvc
+        xIz/ftNhxNKi4cvMi1DQHoRU1lxaB94iyHNT0XBrnp0ZiDdXzlT3Cf6tI6Ovu3NqyIhMxQ
+        C2JLW5g8oK5noF6ikjPxooEd1Zi5VyY=
+Date:   Tue, 15 Jun 2021 11:16:49 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+        Robert Richter <rric@kernel.org>
+Subject: Re: [PATCH] EDAC/mce_amd: Reduce unnecessary spew in dmesg if SMCA
+ feature bit is not exposed
+Message-ID: <YMhwAZaFr4d1QOGG@zn.tnic>
+References: <20210614212129.227698-1-Smita.KoralahalliChannabasappa@amd.com>
+ <YMfRxX/M4rJ5gM/R@zn.tnic>
+ <16a34b6834f94f139444c2ff172645e9@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210615084728.GG29751@quack2.suse.cz>
+In-Reply-To: <16a34b6834f94f139444c2ff172645e9@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 10:47:28AM +0200, Jan Kara wrote:
-> On Mon 14-06-21 18:44:54, Jan Kara wrote:
-> > On Mon 14-06-21 17:37:12, Marcin Juszkiewicz wrote:
-> > > In commit 5b9fedb31e47 ("quota: Disable quotactl_path syscall") Jan Kara
-> > > disabled quotactl_path syscall on several architectures.
-> > > 
-> > > This commit disables it on all architectures using unified list of
-> > > system calls:
-> > > 
-> > > - arm64
-> > > - arc
-> > > - csky
-> > > - h8300
-> > > - hexagon
-> > > - nds32
-> > > - nios2
-> > > - openrisc
-> > > - riscv (32/64)
-> > > 
-> > > CC: Jan Kara <jack@suse.cz>
-> > > CC: Christian Brauner <christian.brauner@ubuntu.com>
-> > > CC: Sascha Hauer <s.hauer@pengutronix.de>
-> > > Link: https://lore.kernel.org/lkml/20210512153621.n5u43jsytbik4yze@wittgenstein
-> > > 
-> > > Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
-> > 
-> > Aha, I've missed that one. Thanks for catching this. Arnd, will you take
-> > this patch or should I take it through my tree?
-> 
-> OK, I want this to make it for rc7 so I've pulled this patch to my tree and
-> will push it to Linus in a few days.
+On Mon, Jun 14, 2021 at 10:25:36PM +0000, Luck, Tony wrote:
+> I expect all the Intel EDAC drivers that load based on CPU model have similar
+> issues. Maybe they aren't whining as loudly about not being able to find the
+> memory controller devices?
 
-Looks good, thanks!
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Right.
 
-> 
-> 								Honza
-> 
-> > > diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-> > > index 6de5a7fc066b..d2a942086fcb 100644
-> > > --- a/include/uapi/asm-generic/unistd.h
-> > > +++ b/include/uapi/asm-generic/unistd.h
-> > > @@ -863,8 +863,7 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
-> > >  __SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
-> > >  #define __NR_mount_setattr 442
-> > >  __SYSCALL(__NR_mount_setattr, sys_mount_setattr)
-> > > -#define __NR_quotactl_path 443
-> > > -__SYSCALL(__NR_quotactl_path, sys_quotactl_path)
-> > > +/* 443 is reserved for quotactl_path */
-> > >  
-> > >  #define __NR_landlock_create_ruleset 444
-> > >  __SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
-> > > -- 
-> > > 2.31.1
-> > > 
-> > -- 
-> > Jan Kara <jack@suse.com>
-> > SUSE Labs, CR
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> Though perhaps this is an issue outside of EDAC and x86_match_cpu()
+> could do the HYPERVISOR check and return no match. The few callers
+> who want to believe the fictional CPU model number passed in by the
+> VMM would need to use some new variant of the call?
+
+Yeah, we could do
+
+X86_MATCH_VENDOR_FAM_MODEL_STEPPINGS_NOT_FEATURE
+
+notice the "NOT" and have a x86_cpu_id.not_feature which to match
+X86_FEATURE_HYPERVISOR. I'm not sure it is worth it, though, for a
+handful of drivers.
+
+The whole thing is a meh, why bother, but I got tired of this particular
+intent of people wanting to shut this error message up just because they
+should not load that driver in a VM in the first place.
+
+But what happens is they boot a guest with -cpu host and in that case
+that's a new CPU - family 0x19 - so it doesn't have a case 0x19 for the
+pr_warn_once() there.
+
+And instead of keep adding adding families there, I'd simply check
+X86_FEATURE_HYPERVISOR.
+
+Oh and that thing - mce_amd.c - doesn't use x86_match_cpu() so it has to
+be an explicit check on function entry.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
