@@ -2,170 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D723A78FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159B83A78FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhFOIYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 04:24:43 -0400
-Received: from mga01.intel.com ([192.55.52.88]:4943 "EHLO mga01.intel.com"
+        id S230490AbhFOI1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 04:27:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:56602 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230523AbhFOIYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:24:41 -0400
-IronPort-SDR: diO6FMzYXYSgFgNGHS2GclJFuwrqO7xuNib0LFgkIXrpvRBOyYgKN/My3ohrZN8+iIvAddxGxd
- usz7cIZOG1lQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="227411697"
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="227411697"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 01:22:17 -0700
-IronPort-SDR: sk/4WqhudFR+Mhh+onAg4uQ3wpUcyfUQuHnFCwKGFqY5QkO0j6JhDi8MfN7OHRMFKTIRsBRi3i
- pfddGXp1+q4Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="487695156"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by fmsmga002.fm.intel.com with ESMTP; 15 Jun 2021 01:22:14 -0700
-Subject: Re: [PATCH v3] perf annotate: Add itrace options support
-To:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210615024036.181427-1-yangjihong1@huawei.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <2cbf0c35-f600-22b6-0695-02eec3f81960@intel.com>
-Date:   Tue, 15 Jun 2021 11:22:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230190AbhFOI1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 04:27:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C362D6E;
+        Tue, 15 Jun 2021 01:25:17 -0700 (PDT)
+Received: from [10.57.9.136] (unknown [10.57.9.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF4AC3F694;
+        Tue, 15 Jun 2021 01:25:15 -0700 (PDT)
+Subject: Re: [PATCH v12 3/5] iommu/vt-d: Add support for IOMMU default DMA
+ mode build options
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org, dwmw2@infradead.org
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linuxarm@huawei.com, thunder.leizhen@huawei.com,
+        chenxiang66@hisilicon.com
+References: <1623414043-40745-1-git-send-email-john.garry@huawei.com>
+ <1623414043-40745-4-git-send-email-john.garry@huawei.com>
+ <f3940a3f-d1c1-148d-e4b5-51cecf924ff5@linux.intel.com>
+ <03675e2f-c3a6-ce33-ef96-f9ae544b2d13@huawei.com>
+ <824db374-dc82-a9ea-b162-2f51e70ef999@linux.intel.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <c3e1bb30-e1a9-08d7-0787-06a0bb119461@arm.com>
+Date:   Tue, 15 Jun 2021 09:25:10 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210615024036.181427-1-yangjihong1@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <824db374-dc82-a9ea-b162-2f51e70ef999@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/06/21 5:40 am, Yang Jihong wrote:
-> The "auxtrace_info" and "auxtrace" functions are not set in "tool" member of
-> "annotate". As a result, perf annotate does not support parsing itrace data.
+On 2021-06-15 08:26, Lu Baolu wrote:
+> Hi John,
 > 
-> Before:
+> On 6/14/21 4:03 PM, John Garry wrote:
+>> On 12/06/2021 03:14, Lu Baolu wrote:
+>>> On 2021/6/11 20:20, John Garry wrote:
+>>>> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+>>>> index 2a71347611d4..4467353f981b 100644
+>>>> --- a/drivers/iommu/Kconfig
+>>>> +++ b/drivers/iommu/Kconfig
+>>>> @@ -94,6 +94,7 @@ choice
+>>>>       prompt "IOMMU default DMA mode"
+>>>>       depends on IOMMU_DMA
+>>>> +    default IOMMU_DEFAULT_LAZY if INTEL_IOMMU
+>>>>       default IOMMU_DEFAULT_STRICT
+>>>
+>>> If two default values are different. Which one will be overridden?
+>>
+>> If I understand your question correctly, I think you are asking if 
+>> both are set:
+>> CONFIG_IOMMU_DEFAULT_LAZY=y
+>> CONFIG_IOMMU_DEFAULT_STRICT=y
+>>
+>> If this happens, then make defconfig complains about both being set, 
+>> and selects the 2nd, whatever that is.
 > 
->   # perf record -e arm_spe_0/branch_filter=1/ -a sleep 1
->   [ perf record: Woken up 9 times to write data ]
->   [ perf record: Captured and wrote 20.874 MB perf.data ]
->   # perf annotate --stdio
->   Error:
->   The perf.data data has no samples!
+> On x86, Intel or AMD, this will be
 > 
-> Solution:
-> 1.Add itrace options in help,
-> 2.Set hook functions of "auxtrace_info" and "auxtrace" in perf_tool.
+>      prompt "IOMMU default DMA mode"
+>        depends on IOMMU_DMA
+>        default IOMMU_DEFAULT_LAZY
+>        default IOMMU_DEFAULT_STRICT
 > 
-> After:
-> 
->   # perf record --all-user -e arm_spe_0/branch_filter=1/ ls
->   Couldn't synthesize bpf events.
->   perf.data
->   [ perf record: Woken up 1 times to write data ]
->   [ perf record: Captured and wrote 0.010 MB perf.data ]
->   # perf annotate --stdio
->    Percent |      Source code & Disassembly of libc-2.28.so for branch-miss (1 samples, percent: local period)
->   ------------------------------------------------------------------------------------------------------------
->            :
->            :
->            :
->            :           Disassembly of section .text:
->            :
->            :           0000000000066180 <__getdelim@@GLIBC_2.17>:
->       0.00 :   66180:  stp     x29, x30, [sp, #-96]!
->       0.00 :   66184:  cmp     x0, #0x0
->       0.00 :   66188:  ccmp    x1, #0x0, #0x4, ne  // ne = any
->       0.00 :   6618c:  mov     x29, sp
->       0.00 :   66190:  stp     x24, x25, [sp, #56]
-> 
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> ---
-> 
-> Changes since v2:
->  - Updating tools/perf/Documentation/perf-annotate.txt.
->  - Add test result to commit message.
-> 
-> Changes since v1:
->  - Adjust spaces to maintain alignment in "tool".
-> 
->  tools/perf/Documentation/perf-annotate.txt |  7 +++++++
->  tools/perf/builtin-annotate.c              | 10 ++++++++++
->  2 files changed, 17 insertions(+)
-> 
-> diff --git a/tools/perf/Documentation/perf-annotate.txt b/tools/perf/Documentation/perf-annotate.txt
-> index 80c1be5d566c..33c2521cba4a 100644
-> --- a/tools/perf/Documentation/perf-annotate.txt
-> +++ b/tools/perf/Documentation/perf-annotate.txt
-> @@ -58,6 +58,13 @@ OPTIONS
->  --ignore-vmlinux::
->  	Ignore vmlinux files.
->  
-> +--itrace::
-> +	Options for decoding instruction tracing data. The options are:
-> +
-> +include::itrace.txt[]
-> +
-> +	To disable decoding entirely, use --no-itrace.
-> +
->  -m::
->  --modules::
->          Load module symbols. WARNING: use only with -k and LIVE kernel.
-> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-> index 49627a7bed7c..8f87658eff31 100644
-> --- a/tools/perf/builtin-annotate.c
-> +++ b/tools/perf/builtin-annotate.c
-> @@ -474,6 +474,8 @@ int cmd_annotate(int argc, const char **argv)
->  			.attr	= perf_event__process_attr,
->  			.build_id = perf_event__process_build_id,
->  			.tracing_data   = perf_event__process_tracing_data,
-> +			.auxtrace_info	= perf_event__process_auxtrace_info,
-> +			.auxtrace	= perf_event__process_auxtrace,
+> which will be default, LAZY or STRICT? Will it cause complains?
 
-For sample mode, Intel PT also needs:
+See Documentation/kbuild/kconfig-language.rst:
 
-			.id_index	 = perf_event__process_id_index,
+   A config option can have any number of default values. If multiple
+   default values are visible, only the first defined one is active.
 
 
->  			.feature	= process_feature_event,
->  			.ordered_events = true,
->  			.ordering_requires_timestamps = true,
-> @@ -483,6 +485,9 @@ int cmd_annotate(int argc, const char **argv)
->  	struct perf_data data = {
->  		.mode  = PERF_DATA_MODE_READ,
->  	};
-> +	struct itrace_synth_opts itrace_synth_opts = {
-> +		.set = 0,
-> +	};
->  	struct option options[] = {
->  	OPT_STRING('i', "input", &input_name, "file",
->  		    "input file name"),
-> @@ -547,6 +552,9 @@ int cmd_annotate(int argc, const char **argv)
->  	OPT_CALLBACK(0, "percent-type", &annotate.opts, "local-period",
->  		     "Set percent type local/global-period/hits",
->  		     annotate_parse_percent_type),
-> +	OPT_CALLBACK_OPTARG(0, "itrace", &itrace_synth_opts, NULL, "opts",
-> +			    "Instruction Tracing options\n" ITRACE_HELP,
-> +			    itrace_parse_synth_opts),
->  
->  	OPT_END()
->  	};
-> @@ -591,6 +599,8 @@ int cmd_annotate(int argc, const char **argv)
->  	if (IS_ERR(annotate.session))
->  		return PTR_ERR(annotate.session);
->  
-> +	annotate.session->itrace_synth_opts = &itrace_synth_opts;
-> +
->  	annotate.has_br_stack = perf_header__has_feat(&annotate.session->header,
->  						      HEADER_BRANCH_STACK);
->  
-> 
-
+Robin.
