@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A8F3A7FDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF75F3A7FEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhFONdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:33:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
+        id S231704AbhFONdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbhFONcy (ORCPT
+        with ESMTP id S230187AbhFONdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:32:54 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC42CC0613A3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:30:49 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id fy24-20020a17090b0218b029016c5a59021fso1837610pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UDZeAXhtUGNxVigPWnCAmqvhZ5xmOZkpwoxu/kotpBc=;
-        b=BkGuougKdpvJFSjPDCYcuDM+EfC9+Z6Iw8t63OKFUyvGcy9WEOaTZOyzUjDtlqxxWx
-         b+f6+GiSSKCn4V8zlclen8CemZkaZyLB8FJKB0g3go6na2Mkb6J76IEsPQg2PB5YFP++
-         oJX8/uFYscqhRRWgaBEXbZGZq7TD88YFqCsf4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UDZeAXhtUGNxVigPWnCAmqvhZ5xmOZkpwoxu/kotpBc=;
-        b=mhF+P5AxfFqWg1gX6iG99wcjb6LB+bqEsj3nQcy3sjsq97GNVxhcA/EfInY5fYxQkW
-         vD+i5VYZ82A0qdc1GX0kHDf1hKoJFWJCui7RvWwhT4GTQnmPzOMs+z8E69qo4evLJ8dj
-         gurTY73UQO5UcfmiDrG2Xwb5iLI9iVmNsaVQDWWOq4qTSx25HVx0xWXb1AtY43O4k3aX
-         1pUH0/5aIg9pD2bNWOkXUaUZ5VGLR2WOd1Cq0dh4oajevvUEHugttJ4xh7UUFkTjeZmN
-         Eg5yRYXfZWYEnJcfrKqB6AyMVEJ/wwugJXOHRsudMulvFZn3moxrLlkBNwhSHXa48kgS
-         pDIA==
-X-Gm-Message-State: AOAM533R1e5Tf73Q7L4MxLfXwV4kVtI2nkjBLuTt2iKqjNsnXOofSB1m
-        qvjvuAwZiJApu2CHSQYPTxLBmqidg9XfmA==
-X-Google-Smtp-Source: ABdhPJxfml3Fqsrf3jLtipA51ToLJqViCTKS855/iP1nrQer+0Ky6R+3iiDFs1ISrhhH4wjEWSREUg==
-X-Received: by 2002:a17:902:860b:b029:103:b23b:f1c3 with SMTP id f11-20020a170902860bb0290103b23bf1c3mr4306912plo.34.1623763849259;
-        Tue, 15 Jun 2021 06:30:49 -0700 (PDT)
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com. [209.85.215.176])
-        by smtp.gmail.com with ESMTPSA id b21sm13258134pgj.74.2021.06.15.06.30.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 06:30:47 -0700 (PDT)
-Received: by mail-pg1-f176.google.com with SMTP id t9so11442807pgn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:30:46 -0700 (PDT)
-X-Received: by 2002:a05:6e02:219d:: with SMTP id j29mr17936278ila.64.1623763835517;
- Tue, 15 Jun 2021 06:30:35 -0700 (PDT)
+        Tue, 15 Jun 2021 09:33:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ECC0C0613A2;
+        Tue, 15 Jun 2021 06:31:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=rADL90S3oRiyRdCFkcJ9oLhZvXcChQZEzORShMtqGjI=; b=XAkxYShyFl3Yvr1dnBp7XvRpkB
+        qSquvmmDJ6/T+WVpbxDkhyzGsiibmReOK5vCy8Nh7B9HMQ5Pj8fUJhD7UsXfi69vc1X0dVwkns/PI
+        /rrhMP7m44kHM8c8VtorOapnH8Ze4ZTA3OIAavXCEBu3G75QlAsZO1cic4/cgFEaCIX50yfYen1b9
+        c57XNXTHy45fTQhu7/8gKpFWTJA3bus8t5RM7TSC+Hxw03tl0waaUrTMlvGa8HOKRYESPiuAGLK+A
+        +kKwh6FJokJ3DVkOEvwMVt8/0J/yzKIOvQBxHaK9nBhqL0iqcoigsfH1jRQH0UCw6Ucwp6Si5NM9J
+        nCY48npA==;
+Received: from [2001:4bb8:19b:fdce:9045:1e63:20f0:ca9] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lt98u-006oLz-5Y; Tue, 15 Jun 2021 13:30:16 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>, Thomas Gleixner <tglx@linutronix.de>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geoff Levand <geoff@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Mike Snitzer <snitzer@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        ceph-devel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: [PATCH 13/18] block: rewrite bio_copy_data_iter to use bvec_kmap_local and memcpy_to_bvec
+Date:   Tue, 15 Jun 2021 15:24:51 +0200
+Message-Id: <20210615132456.753241-14-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210615132456.753241-1-hch@lst.de>
+References: <20210615132456.753241-1-hch@lst.de>
 MIME-Version: 1.0
-References: <20210611152659.2142983-1-tientzu@chromium.org>
-In-Reply-To: <20210611152659.2142983-1-tientzu@chromium.org>
-From:   Claire Chang <tientzu@chromium.org>
-Date:   Tue, 15 Jun 2021 21:30:24 +0800
-X-Gmail-Original-Message-ID: <CALiNf28fb4rZ0Afun8wAWRYJY4gqc+-vRvDBZT3x2JgSPL_iVQ@mail.gmail.com>
-Message-ID: <CALiNf28fb4rZ0Afun8wAWRYJY4gqc+-vRvDBZT3x2JgSPL_iVQ@mail.gmail.com>
-Subject: Re: [PATCH v9 00/14] Restricted DMA
-To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v10 here: https://lore.kernel.org/patchwork/cover/1446882/
+Use the proper helpers instead of open coding the copy.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ block/bio.c | 28 ++++++++--------------------
+ 1 file changed, 8 insertions(+), 20 deletions(-)
+
+diff --git a/block/bio.c b/block/bio.c
+index 1d7abdb83a39..c14d2e66c084 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -1186,27 +1186,15 @@ EXPORT_SYMBOL(bio_advance);
+ void bio_copy_data_iter(struct bio *dst, struct bvec_iter *dst_iter,
+ 			struct bio *src, struct bvec_iter *src_iter)
+ {
+-	struct bio_vec src_bv, dst_bv;
+-	void *src_p, *dst_p;
+-	unsigned bytes;
+-
+ 	while (src_iter->bi_size && dst_iter->bi_size) {
+-		src_bv = bio_iter_iovec(src, *src_iter);
+-		dst_bv = bio_iter_iovec(dst, *dst_iter);
+-
+-		bytes = min(src_bv.bv_len, dst_bv.bv_len);
+-
+-		src_p = kmap_atomic(src_bv.bv_page);
+-		dst_p = kmap_atomic(dst_bv.bv_page);
+-
+-		memcpy(dst_p + dst_bv.bv_offset,
+-		       src_p + src_bv.bv_offset,
+-		       bytes);
+-
+-		kunmap_atomic(dst_p);
+-		kunmap_atomic(src_p);
+-
+-		flush_dcache_page(dst_bv.bv_page);
++		struct bio_vec src_bv = bio_iter_iovec(src, *src_iter);
++		struct bio_vec dst_bv = bio_iter_iovec(dst, *dst_iter);
++		unsigned int bytes = min(src_bv.bv_len, dst_bv.bv_len);
++		void *src_buf;
++
++		src_buf = bvec_kmap_local(&src_bv);
++		memcpy_to_bvec(&dst_bv, src_buf);
++		kunmap_local(src_buf);
+ 
+ 		bio_advance_iter_single(src, src_iter, bytes);
+ 		bio_advance_iter_single(dst, dst_iter, bytes);
+-- 
+2.30.2
+
