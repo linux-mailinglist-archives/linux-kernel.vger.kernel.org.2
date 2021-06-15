@@ -2,224 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A1F3A7811
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E963A7814
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhFOHir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:38:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229781AbhFOHif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:38:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79B136140B;
-        Tue, 15 Jun 2021 07:36:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623742591;
-        bh=8XU2Pup+XtMsuXUCeq2FwUCixSw98N2PyhrkftAHkOE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iuFepYdlXDjgrrGfDX7TfoLxuWI1hMhHTv+CCW8zJrzChRyVQ/71VWYLXJeryZSRi
-         b2EhUwPUM1ZZfFydB6YKii21+JCGS/hGwmQ3Tk9HP2kySJCOOlShgSH4td6J0q97b6
-         NzrBigVuhU/GAnoNdHDbmGhBhNkwiV9CI5Nz4/74=
-Date:   Tue, 15 Jun 2021 09:36:28 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     trix@redhat.com
-Cc:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net,
-        michal.simek@xilinx.com, krzysztof.kozlowski@canonical.com,
-        nava.manne@xilinx.com, yilun.xu@intel.com, davidgow@google.com,
-        fpacheco@redhat.com, richard.gong@intel.com, luca@lucaceresoli.net,
-        linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 2/4] fpga: xilinx: reorganize to subdir layout
-Message-ID: <YMhYfCgOAthEqPXs@kroah.com>
-References: <20210614201648.3358206-1-trix@redhat.com>
- <20210614201648.3358206-4-trix@redhat.com>
+        id S230322AbhFOHki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:40:38 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:34671 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229488AbhFOHkh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 03:40:37 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 44FD658076A;
+        Tue, 15 Jun 2021 03:38:32 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 15 Jun 2021 03:38:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=ric6YdDEXdz8WBuoGrKfe35LOR5
+        WAM61KVVhVs/q73k=; b=LFaeHKxx6ml2cAopsamh5pbpK0US75LJ+BJKi5ap7QA
+        YYlQ153qPfMiUvbtaxzZlu0/yEk4okApSse1Rdds+tomHdvTfC+o2PnvZeGaL1M+
+        l5TayE3DxkYWYkKs+3bRECcLu1lrWNO7rxSoWTvJtjo0dq+A4vKP4Y+PJLIfY4bu
+        5o9LqSh+ndG5Zt1h/h9gUwZ7veC28aEhhIUTYq1rKiS79vcUEA/S06p2dt9ZD0fW
+        q9HhP5oZjwGdZJFyVdU3oLUupj1ls3t9ytRYd+HZTlY9rupWwnc9Bu7Jzu647Jxb
+        6W84bWbNqRcdSflvZlPPigsanCFvFxp7XkEq2t40+xA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ric6Yd
+        DEXdz8WBuoGrKfe35LOR5WAM61KVVhVs/q73k=; b=WieSnIROYYNJLnYd7mBMLs
+        DWiU3p0oYKe35vJ30B0Z257ggz7AyApT/+I3CZEdblancA8UZ8ILHlbyvT7ueWsV
+        QXw58fGfTLk/mVf3wZ71VtreKoofpaSdQjomzci2Tj1fnb6+a5+5RKS3l3GYaaWG
+        NbDdxIa7N7jfyf5jhhfp1oLguH0B0HejZ5KYw48t2AEgL+UlMl1YG9uRzjDqxeu7
+        Pl/u+mSrd0HZmb8SJXeHfB71mX3CssZuweSW6XDpO8icgUYCF/0NfTUPPUdEXfhw
+        n2xoGGzu3denuEcIVfeKt5NfNmMeEJXpbJvQyoFdkiF0DVXGzan7r75BCTd5YNXQ
+        ==
+X-ME-Sender: <xms:91jIYDX_nrKU4NS1bPeSvVbL9vmM50Oi_OUUn2Gaf96TtWZJZC9OsQ>
+    <xme:91jIYLljzmn8Yt5JV0W2wrICpmZ57TjukvrFR4zzB9GoeNUHllQ6w-NoFxQptP_rv
+    n4ifVX1ektvMQ>
+X-ME-Received: <xmr:91jIYPYDZc4e0Eekczk0RLySWfn-apSAzIu5fRK76aXUUoNDhYx4_q3RWGbx221yj_MPRsIP1cPDPr9HDty6zhsuKX6LllPe>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedviedguddvgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
+    ertddttddvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhm
+    qeenucggtffrrghtthgvrhhnpeevueehjefgfffgiedvudekvdektdelleelgefhleejie
+    eugeegveeuuddukedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:91jIYOUfPeLbHvRxkQFglnVWgZEM9-Rd8RDLINs5lffBxbL_2lapPw>
+    <xmx:91jIYNkWDng012_RcE8LH3KdwaMkb83u2jiLLDSM7B2U4vW-kX1h5A>
+    <xmx:91jIYLdMeYVCwFJHQHCxOUdvdAhZpFTivOwhGuCugUFweyfo0oG9KQ>
+    <xmx:-FjIYC8Emc1txAz24Nl9LBYnzr3wT4fVgj-o8bmBj_cW03CNg2EJyw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 15 Jun 2021 03:38:31 -0400 (EDT)
+Date:   Tue, 15 Jun 2021 09:38:28 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     steve.glendinning@shawell.net, davem@davemloft.net,
+        kuba@kernel.org, paskripkin@gmail.com, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: usb: fix possible use-after-free in smsc75xx_bind
+Message-ID: <YMhY9NHf1itQyup7@kroah.com>
+References: <20210614153712.2172662-1-mudongliangabcd@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210614201648.3358206-4-trix@redhat.com>
+In-Reply-To: <20210614153712.2172662-1-mudongliangabcd@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 01:16:46PM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On Mon, Jun 14, 2021 at 11:37:12PM +0800, Dongliang Mu wrote:
+> The commit 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+> fails to clean up the work scheduled in smsc75xx_reset->
+> smsc75xx_set_multicast, which leads to use-after-free if the work is
+> scheduled to start after the deallocation. In addition, this patch also
+> removes one dangling pointer - dev->data[0].
 > 
-> Follow drivers/net/ethernet/ which has control configs
-> NET_VENDOR_BLA that map to drivers/net/ethernet/bla
-> Since fpgas do not have many vendors, drop the 'VENDOR' and use
-> FPGA_BLA.
+> This patch calls cancel_work_sync to cancel the schedule work and set
+> the dangling pointer to NULL.
 > 
-> There are several new subdirs
-> altera/
-> dfl/
-> lattice/
-> xilinx/
-> 
-> Each subdir has a Kconfig that has a new/reused
-> 
-> if FPGA_BLA
->   ... existing configs ...
-> endif FPGA_BLA
-> 
-> Which is sourced into the main fpga/Kconfig
-> 
-> Each subdir has a Makefile whose transversal is controlled in the
-> fpga/Makefile by
-> 
-> obj-$(CONFIG_FPGA_BLA) += bla/
-> 
-> This is the xilinx/ subdir part
-> 
-> Create a xilinx/ subdir
-> Move xilinx-* and zynq* files to it.
-> Add a Kconfig and Makefile
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> Fixes: 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 > ---
->  drivers/fpga/Kconfig                          | 40 +-------------
->  drivers/fpga/Makefile                         |  5 +-
->  drivers/fpga/xilinx/Kconfig                   | 55 +++++++++++++++++++
->  drivers/fpga/xilinx/Makefile                  |  6 ++
->  .../fpga/{ => xilinx}/xilinx-pr-decoupler.c   |  0
->  drivers/fpga/{ => xilinx}/xilinx-spi.c        |  0
->  drivers/fpga/{ => xilinx}/zynq-fpga.c         |  0
->  drivers/fpga/{ => xilinx}/zynqmp-fpga.c       |  0
->  8 files changed, 63 insertions(+), 43 deletions(-)
->  create mode 100644 drivers/fpga/xilinx/Kconfig
->  create mode 100644 drivers/fpga/xilinx/Makefile
->  rename drivers/fpga/{ => xilinx}/xilinx-pr-decoupler.c (100%)
->  rename drivers/fpga/{ => xilinx}/xilinx-spi.c (100%)
->  rename drivers/fpga/{ => xilinx}/zynq-fpga.c (100%)
->  rename drivers/fpga/{ => xilinx}/zynqmp-fpga.c (100%)
+>  drivers/net/usb/smsc75xx.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> index 7a290b2234576..28c261807b428 100644
-> --- a/drivers/fpga/Kconfig
-> +++ b/drivers/fpga/Kconfig
-> @@ -52,25 +52,12 @@ config FPGA_MGR_ALTERA_CVP
->  	  FPGA manager driver support for Arria-V, Cyclone-V, Stratix-V,
->  	  Arria 10 and Stratix10 Altera FPGAs using the CvP interface over PCIe.
+> diff --git a/drivers/net/usb/smsc75xx.c b/drivers/net/usb/smsc75xx.c
+> index b286993da67c..f81740fcc8d5 100644
+> --- a/drivers/net/usb/smsc75xx.c
+> +++ b/drivers/net/usb/smsc75xx.c
+> @@ -1504,7 +1504,10 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
+>  	return 0;
 >  
-> -config FPGA_MGR_ZYNQ_FPGA
-> -	tristate "Xilinx Zynq FPGA"
-> -	depends on ARCH_ZYNQ || COMPILE_TEST
-> -	help
-> -	  FPGA manager driver support for Xilinx Zynq FPGAs.
-> -
->  config FPGA_MGR_STRATIX10_SOC
->  	tristate "Intel Stratix10 SoC FPGA Manager"
->  	depends on (ARCH_INTEL_SOCFPGA && INTEL_STRATIX10_SERVICE)
->  	help
->  	  FPGA manager driver support for the Intel Stratix10 SoC.
->  
-> -config FPGA_MGR_XILINX_SPI
-> -	tristate "Xilinx Configuration over Slave Serial (SPI)"
-> -	depends on SPI
-> -	help
-> -	  FPGA manager driver support for Xilinx FPGA configuration
-> -	  over slave serial interface.
-> -
->  config FPGA_MGR_ICE40_SPI
->  	tristate "Lattice iCE40 SPI"
->  	depends on OF && SPI
-> @@ -113,23 +100,6 @@ config ALTERA_FREEZE_BRIDGE
->  	  isolate one region of the FPGA from the busses while that
->  	  region is being reprogrammed.
->  
-> -config XILINX_PR_DECOUPLER
-> -	tristate "Xilinx LogiCORE PR Decoupler"
-> -	depends on FPGA_BRIDGE
-> -	depends on HAS_IOMEM
-> -	help
-> -	  Say Y to enable drivers for Xilinx LogiCORE PR Decoupler
-> -	  or Xilinx Dynamic Function eXchnage AIX Shutdown Manager.
-> -	  The PR Decoupler exists in the FPGA fabric to isolate one
-> -	  region of the FPGA from the busses while that region is
-> -	  being reprogrammed during partial reconfig.
-> -	  The Dynamic Function eXchange AXI shutdown manager prevents
-> -	  AXI traffic from passing through the bridge. The controller
-> -	  safely handles AXI4MM and AXI4-Lite interfaces on a
-> -	  Reconfigurable Partition when it is undergoing dynamic
-> -	  reconfiguration, preventing the system deadlock that can
-> -	  occur if AXI transactions are interrupted by DFX.
-> -
->  config FPGA_REGION
->  	tristate "FPGA Region"
->  	depends on FPGA_BRIDGE
-> @@ -146,14 +116,6 @@ config OF_FPGA_REGION
->  	  overlay.
->  
->  source "drivers/fpga/dfl/Kconfig"
-> -
-> -config FPGA_MGR_ZYNQMP_FPGA
-> -	tristate "Xilinx ZynqMP FPGA"
-> -	depends on ZYNQMP_FIRMWARE || (!ZYNQMP_FIRMWARE && COMPILE_TEST)
-> -	help
-> -	  FPGA manager driver support for Xilinx ZynqMP FPGAs.
-> -	  This driver uses the processor configuration port(PCAP)
-> -	  to configure the programmable logic(PL) through PS
-> -	  on ZynqMP SoC.
-> +source "drivers/fpga/xilinx/Kconfig"
->  
->  endif # FPGA
-> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-> index bda74e54ce390..0868c7c4264d8 100644
-> --- a/drivers/fpga/Makefile
-> +++ b/drivers/fpga/Makefile
-> @@ -15,9 +15,6 @@ obj-$(CONFIG_FPGA_MGR_SOCFPGA)		+= socfpga.o
->  obj-$(CONFIG_FPGA_MGR_SOCFPGA_A10)	+= socfpga-a10.o
->  obj-$(CONFIG_FPGA_MGR_STRATIX10_SOC)	+= stratix10-soc.o
->  obj-$(CONFIG_FPGA_MGR_TS73XX)		+= ts73xx-fpga.o
-> -obj-$(CONFIG_FPGA_MGR_XILINX_SPI)	+= xilinx-spi.o
-> -obj-$(CONFIG_FPGA_MGR_ZYNQ_FPGA)	+= zynq-fpga.o
-> -obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+= zynqmp-fpga.o
->  obj-$(CONFIG_ALTERA_PR_IP_CORE)         += altera-pr-ip-core.o
->  obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
->  
-> @@ -25,10 +22,10 @@ obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
->  obj-$(CONFIG_FPGA_BRIDGE)		+= fpga-bridge.o
->  obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE)	+= altera-hps2fpga.o altera-fpga2sdram.o
->  obj-$(CONFIG_ALTERA_FREEZE_BRIDGE)	+= altera-freeze-bridge.o
-> -obj-$(CONFIG_XILINX_PR_DECOUPLER)	+= xilinx-pr-decoupler.o
->  
->  # High Level Interfaces
->  obj-$(CONFIG_FPGA_REGION)		+= fpga-region.o
->  obj-$(CONFIG_OF_FPGA_REGION)		+= of-fpga-region.o
->  
->  obj-$(CONFIG_FPGA_DFL) += dfl/
-> +obj-$(CONFIG_FPGA_XILINX) += xilinx/
-> diff --git a/drivers/fpga/xilinx/Kconfig b/drivers/fpga/xilinx/Kconfig
-> new file mode 100644
-> index 0000000000000..e016d450539a0
-> --- /dev/null
-> +++ b/drivers/fpga/xilinx/Kconfig
-> @@ -0,0 +1,55 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +config FPGA_XILINX
-> +	bool "Xilinx FPGAs"
+>  err:
+> +	cancel_work_sync(&pdata->set_multicast);
+>  	kfree(pdata);
+> +	pdata = NULL;
 
-"Xilinx FPGA drivers"
-
-> +	default y
-> +	help
-> +	  If you have a xilinx fpga, say Y.
-
-"Xilix FPGA"
-
-But how about being a bit more descriptive here:
-
-"Select this option if you want to enable support for Xilinx FPGA
-drivers"
-
-> +	  Note that the answer to this question doesn't directly affect the
-> +	  kernel: saying N will just cause the configurator to skip all
-> +	  the questions about xilinx fpgas. If you say Y, you will be asked
-> +	  for your specific device in the following questions.
-
-Why this "note"?  Do networking drivers have this type of description?
-
-Same for the other patches in this series.
+Why do you have to set pdata to NULL afterward?
 
 thanks,
 
