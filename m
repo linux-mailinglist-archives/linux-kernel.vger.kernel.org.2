@@ -2,57 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A93D3A7769
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5943A3A7727
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbhFOG4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 02:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbhFOGz7 (ORCPT
+        id S229943AbhFOGit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 02:38:49 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4912 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhFOGiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 02:55:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CB6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 23:53:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6LV9BM3Pp04bKu2UoJ3ix0LclPXqE12gKen1uMnIsOs=; b=M25VAanLtpaXgntkN8Qf+Wt8ZI
-        dktarA5AKe+TZ3bnF1bMS18t4h0YDZgtYjpV49hYatGmyAW1TuO31f5dM3blXZ9+I8qplH81hwJHg
-        hxDRsnRM8GBHA8ZjuMqH+/pzOquOfj0Nv9GqDHPLAv4kfDubE/mlYKQP1dJ7Mqn7AZw5NP7e45rMr
-        JFnOj+0j35MeAzCxCHEsryXkUyY6ajxlYZ73OTArbbbLSMmwe9gHPieS3frliTgL8vIeYtc/99fZi
-        B/9I8AFjZ3iloa8gnLwZjHb8iwAyPOQvAUcVL1I/JbB+l+MVlCY+qAm1N6XQuFpxBrUE/Rxt/ig67
-        aYZrJp+g==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lt2wq-006BNx-Ar; Tue, 15 Jun 2021 06:53:23 +0000
-Date:   Tue, 15 Jun 2021 07:53:20 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] powerpc/uaccess: Add unsafe_clear_user()
-Message-ID: <YMhOYKM5+s0wUoeP@infradead.org>
-References: <b813c1f4d3dab2f51300eac44d99029aa8e57830.1623739212.git.christophe.leroy@csgroup.eu>
- <67eedb69ca81e5a4b16459a4c61f99e64cb42675.1623739212.git.christophe.leroy@csgroup.eu>
+        Tue, 15 Jun 2021 02:38:46 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G3z6M5RwZz6yq5;
+        Tue, 15 Jun 2021 14:33:31 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 14:36:40 +0800
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 14:36:39 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <bp@alien8.de>, <mchehab@kernel.org>, <tony.luck@intel.com>,
+        <james.morse@arm.com>, <rric@kernel.org>
+CC:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] edac: Convert list_for_each to entry variant
+Date:   Tue, 15 Jun 2021 14:55:10 +0800
+Message-ID: <1623740110-15764-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67eedb69ca81e5a4b16459a4c61f99e64cb42675.1623739212.git.christophe.leroy@csgroup.eu>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 06:41:02AM +0000, Christophe Leroy wrote:
-> Implement unsafe_clear_user() for powerpc.
-> It's a copy/paste of unsafe_copy_to_user() with value 0 as source.
-> 
-> It may be improved in a later patch by using 'dcbz' instruction
-> to zeroize full cache lines at once.
+convert list_for_each() to list_for_each_entry() where
+applicable.
 
-Please add this to common code insted of making it powerpc specific.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/edac/edac_device.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/edac/edac_device.c b/drivers/edac/edac_device.c
+index 8c4d947..e8b33c3 100644
+--- a/drivers/edac/edac_device.c
++++ b/drivers/edac/edac_device.c
+@@ -245,13 +245,10 @@ EXPORT_SYMBOL_GPL(edac_device_free_ctl_info);
+ static struct edac_device_ctl_info *find_edac_device_by_dev(struct device *dev)
+ {
+ 	struct edac_device_ctl_info *edac_dev;
+-	struct list_head *item;
+ 
+ 	edac_dbg(0, "\n");
+ 
+-	list_for_each(item, &edac_device_list) {
+-		edac_dev = list_entry(item, struct edac_device_ctl_info, link);
+-
++	list_for_each_entry(edac_dev, &edac_device_list, link) {
+ 		if (edac_dev->dev == dev)
+ 			return edac_dev;
+ 	}
+-- 
+2.6.2
 
