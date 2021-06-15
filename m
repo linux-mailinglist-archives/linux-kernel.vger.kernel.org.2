@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8369A3A8896
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC9A3A88AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhFOScK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 14:32:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231202AbhFOScI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:32:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 09A6661241;
-        Tue, 15 Jun 2021 18:30:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623781804;
-        bh=v5h7MPUXi06R05KquUDYydTT6Ws84glO6Sqno5wx7dY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tF2cAxVE5fOCVnpbvAqkqrqgAhwdj7vDTU7m/s6fB6pzAcNBVeC+4cCU6KR0ilmY3
-         05mE7+kPAIIqGiZ7tfb/kmXdV+botLXFKCFQYDd8G4FpdDpVdKlmNKXiT5fvoJPMSI
-         CMUz5tp6BxymDSsrlJFmFQ6whmFMhXucWcBDWrLRusiCtPowjcaRqLQz6I3wj5nb86
-         WmUG928PIjzYVo3Tcn0N7wx3tpMNJa8LeQsq2savZPUFyaklkyS6ZR2G8fl0YQ3FgL
-         9mxYNtc+/73WkSkYa8NGYxxsB83Hlxt3xyAbzzaHUzzx1rym7M0ffQs5V1K9UktSwb
-         JKAsq8IkG1woA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 014A0609E4;
-        Tue, 15 Jun 2021 18:30:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231649AbhFOSgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 14:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231661AbhFOSgO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 14:36:14 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA3FC061767
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:34:08 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id if15so196244qvb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:34:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ci8pTDsI4+1dl8hd8DPpx4lfE/2PNymYi+7s+L/rCno=;
+        b=PK99xqIi4vOJCiwjyFx7sp/rvE4QciQ9VOYWadYlda8ip8BShy10QYGLAjNTlX6yj4
+         NpuPKMftibD60GvE085PX/7Drph1xMAHMwToXAmI5pJhp1P0RgnZCkkOHwQ3/vJaU+1W
+         ctUknv+wA4Cnp1nbxaQurmpCYJZtTHdtSBrJc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ci8pTDsI4+1dl8hd8DPpx4lfE/2PNymYi+7s+L/rCno=;
+        b=HBiPaCWwuCGEtLLYF+lT6Kea2Ia08Au+yks/cONBzgVOYHSZzCmuN1kmOszVUVIPAj
+         SQLWMIU+X2+u9z0LUyYfNev2WQREuGUCPF3AFHZtvjtmqlUxzpe+aah0vFv7Xcx1fbCr
+         RYirg4DYc304/fOQf6jddsUBzP/MC9pUsFcsjqEJYJJndCIh1RYQ3lesipGFtKgYYszJ
+         49Gd03jrkI2Qfrh74fq9Bj/lgn/1CXSUWqm8aVqcV0JMpDJmujR3mXwN/7xF7FcoVBpn
+         tT8f31v2TvcTCgym3wnQXjk9ybHkAU2Lgtft7YAflf2AIsAVnjYGyepVhx7+I39i2XgZ
+         htqg==
+X-Gm-Message-State: AOAM530NXlqcqP3o6a/kpk+m2eQkJQOkRIrEU0BUlh/V3u0mNZSoEPEa
+        yEcy7/uY1+rfb8bMIirp0Zgwyw==
+X-Google-Smtp-Source: ABdhPJyHWGn07W9hcHEIH999jGrYf+wW2jw6aRdNw2u5boIr2c5TmIFSEKWlZQrl7KeRgxw5C3vtRg==
+X-Received: by 2002:a0c:e8cd:: with SMTP id m13mr6841876qvo.52.1623782047319;
+        Tue, 15 Jun 2021 11:34:07 -0700 (PDT)
+Received: from nitro.local ([89.36.78.230])
+        by smtp.gmail.com with ESMTPSA id g24sm11940010qts.60.2021.06.15.11.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 11:34:06 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 14:34:05 -0400
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
+        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
+        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+Message-ID: <20210615183405.rchiaaybuhx244qa@nitro.local>
+References: <YLEIKk7IuWu6W4Sy@casper.infradead.org>
+ <YH2hs6EsPTpDAqXc@mit.edu>
+ <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
+ <YIx7R6tmcRRCl/az@mit.edu>
+ <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
+ <YK+esqGjKaPb+b/Q@kroah.com>
+ <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
+ <1745326.1623409807@warthog.procyon.org.uk>
+ <e47706ee-3e4b-8f15-963f-292b5e47cb1d@metux.net>
+ <YMjxqEY25A6bm47s@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][V2] net: dsa: b53: remove redundant null check on dev
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162378180400.31286.14718530027815032783.git-patchwork-notify@kernel.org>
-Date:   Tue, 15 Jun 2021 18:30:04 +0000
-References: <20210615090516.5906-1-colin.king@canonical.com>
-In-Reply-To: <20210615090516.5906-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     f.fainelli@gmail.com, andrew@lunn.ch, vivien.didelot@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YMjxqEY25A6bm47s@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Tue, 15 Jun 2021 10:05:16 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Tue, Jun 15, 2021 at 07:30:00PM +0100, Matthew Wilcox wrote:
+> > Wouldn't just taking prophylatic meds like CDS or HCQ and/or hi-dose
+> > vitamins (C, D3+K2) be way more cost effective and flexible than to
+> > charter a whole plane ?
 > 
-> The pointer dev can never be null, the null check is redundant
-> and can be removed. Cleans up a static analysis warning that
-> pointer priv is dereferencing dev before dev is being null
-> checked.
-> 
-> [...]
+> Why don't you just shine a bright light up your arse?  It'll have the
+> same effect.
 
-Here is the summary with links:
-  - [V2] net: dsa: b53: remove redundant null check on dev
-    https://git.kernel.org/netdev/net-next/c/11b57faf951c
+Please stop.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I do not have ability to ban people across all cc'd lists, but I will for sure
+start adding people to block filters on the infra to which I have access if
+this wildly off-topic discussion continues and especially if things continue
+to deteriorate into name-calling.
 
-
+-K
