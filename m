@@ -2,233 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F7D3A8C42
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DBF3A8C45
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhFOXMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 19:12:05 -0400
-Received: from mga02.intel.com ([134.134.136.20]:40925 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229898AbhFOXMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:12:03 -0400
-IronPort-SDR: LJXbWeXxn62n0uRndfJyzl0vD0WDI5j3z5Kk9fFz4KbstEC7Y3wNRmaiKlmwdW1cCJh5Uus8aE
- 1NOSPllY5T/A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="193201923"
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="193201923"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 16:09:58 -0700
-IronPort-SDR: 6wz0HwKpfFbmWBVtbb+tRgJ3JoS0cT2G/Cdj1MDWqcc705r8Mzg4CSGMq4OivTbBwtrolvKcer
- TTvfguHh9XQg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="484646732"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 15 Jun 2021 16:09:56 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ltIBv-0000gu-Vb; Tue, 15 Jun 2021 23:09:55 +0000
-Date:   Wed, 16 Jun 2021 07:09:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/sev] BUILD SUCCESS
- 07570cef5e5c3fcec40f82a9075abb4c1da63319
-Message-ID: <60c9333a.JrGdqtJVArnHc77V%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231309AbhFOXNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 19:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhFOXNF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 19:13:05 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 300F2C061574;
+        Tue, 15 Jun 2021 16:10:59 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id nd37so483306ejc.3;
+        Tue, 15 Jun 2021 16:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AOuKGzIskjJRbFedWFW/C+I5PYhV95WPLhId+SvqihU=;
+        b=Me2pvvkHKVtdhQPvq+vIdIjnZAeubKot8b/msdA4OqCL1eyPpVYMJhSJuwehR5FBtp
+         zGQpbV5sNiw7tpr5PC9fuj0INw/rDTiZOnbpOKe3rN4J+7xRnaMpUSlp0lw7nzBjIzof
+         XR9ZGP6GO2VbPNBm0LzcqY69dN2IVr5yvQpPs/ChBWQthPwRm9dRLowiuYIur5sPJAI5
+         su4rRk+RoRx+/IFezW+YNI4eF/ydVlTryAMjvre8g1ginl+2jCSfGopyI4safI3wohhG
+         1c2BnEG2yu4pdwJ0xZS5g4VM2eazl8SxMDP7YHBqqsHmC/iqzg9udNztQWaLc28Y8imH
+         c+5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AOuKGzIskjJRbFedWFW/C+I5PYhV95WPLhId+SvqihU=;
+        b=YFeWDYlUPpQXi99cUegW74+PA7NTO2X7KpPEVX4kHmimzTICLc79xUn5S59VGiWYR8
+         vE4UxmInboEAeLguzeoH/E/aND0wuYQnLGqfd315PYZiWAKliBqJPLba8Mvki00EL3HE
+         IAda7cJez2ATx3/3ieO0dOEdZg5IqiETfmtwIfHzKHGjQPUEE6orkd3TobM5m6LxOW1q
+         bVzpWaGleR/MWmvjK3mI4Qai64qXhAwH9GWttWW47bE1TV+p3pNbLMdY+s1PFoCxWPFs
+         Ip7IlxvFCzFcJFauL/tVQefhxYrGk93qgalQTvvYRmzn8oY3oz3RifJvUq+GHQfKjBsz
+         s8Yg==
+X-Gm-Message-State: AOAM532PQU0EfxW/pED61uFMMaj3IuyVCcmkohNlOwVEM/XzKewGnv0k
+        LAHqR/muIY0BtYuynMgLhax/dmkuQTeaHcQcLGs=
+X-Google-Smtp-Source: ABdhPJzHX1BNpwnfCqqm59hp1H0X6TtuHe5B6/m0KBULTJlIVinWp8ZuuFM8L436LMgFXdlox6fVRlHjxCbLiYTB1uA=
+X-Received: by 2002:a17:907:9d1:: with SMTP id bx17mr1956080ejc.238.1623798657801;
+ Tue, 15 Jun 2021 16:10:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210615012014.1100672-1-jannh@google.com> <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
+ <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
+In-Reply-To: <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 15 Jun 2021 16:10:46 -0700
+Message-ID: <CAHbLzkomex+fgC8RyogXu-s5o2UrORMO6D2yTsSXW5Wo5z9WRA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with split_huge_page()
+To:     Jann Horn <jannh@google.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jan Kara <jack@suse.cz>, stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sev
-branch HEAD: 07570cef5e5c3fcec40f82a9075abb4c1da63319  x86/sev: Propagate #GP if getting linear instruction address failed
+On Tue, Jun 15, 2021 at 5:10 AM Jann Horn <jannh@google.com> wrote:
+>
+> On Tue, Jun 15, 2021 at 8:37 AM John Hubbard <jhubbard@nvidia.com> wrote:
+> > On 6/14/21 6:20 PM, Jann Horn wrote:
+> > > try_grab_compound_head() is used to grab a reference to a page from
+> > > get_user_pages_fast(), which is only protected against concurrent
+> > > freeing of page tables (via local_irq_save()), but not against
+> > > concurrent TLB flushes, freeing of data pages, or splitting of compound
+> > > pages.
+> [...]
+> > Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+>
+> Thanks!
+>
+> [...]
+> > > @@ -55,8 +72,23 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
+> > >       if (WARN_ON_ONCE(page_ref_count(head) < 0))
+> > >               return NULL;
+> > >       if (unlikely(!page_cache_add_speculative(head, refs)))
+> > >               return NULL;
+> > > +
+> > > +     /*
+> > > +      * At this point we have a stable reference to the head page; but it
+> > > +      * could be that between the compound_head() lookup and the refcount
+> > > +      * increment, the compound page was split, in which case we'd end up
+> > > +      * holding a reference on a page that has nothing to do with the page
+> > > +      * we were given anymore.
+> > > +      * So now that the head page is stable, recheck that the pages still
+> > > +      * belong together.
+> > > +      */
+> > > +     if (unlikely(compound_head(page) != head)) {
+> >
+> > I was just wondering about what all could happen here. Such as: page gets split,
+> > reallocated into a different-sized compound page, one that still has page pointing
+> > to head. I think that's OK, because we don't look at or change other huge page
+> > fields.
+> >
+> > But I thought I'd mention the idea in case anyone else has any clever ideas about
+> > how this simple check might be insufficient here. It seems fine to me, but I
+> > routinely lack enough imagination about concurrent operations. :)
+>
+> Hmmm... I think the scariest aspect here is probably the interaction
+> with concurrent allocation of a compound page on architectures with
+> store-store reordering (like ARM). *If* the page allocator handled
+> compound pages with lockless, non-atomic percpu freelists, I think it
+> might be possible that the zeroing of tail_page->compound_head in
+> put_page() could be reordered after the page has been freed,
+> reallocated and set to refcount 1 again?
+>
+> That shouldn't be possible at the moment, but it is still a bit scary.
 
-elapsed time: 722m
+It might be possible after Mel's "mm/page_alloc: Allow high-order
+pages to be stored on the per-cpu lists" patch
+(https://patchwork.kernel.org/project/linux-mm/patch/20210611135753.GC30378@techsingularity.net/).
 
-configs tested: 171
-configs skipped: 69
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      chrp32_defconfig
-powerpc                  mpc866_ads_defconfig
-mips                     cu1000-neo_defconfig
-ia64                        generic_defconfig
-arm                       versatile_defconfig
-arm                         lpc32xx_defconfig
-arm                         socfpga_defconfig
-powerpc                     sbc8548_defconfig
-arm                  colibri_pxa270_defconfig
-m68k                        stmark2_defconfig
-powerpc                        icon_defconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                   bluestone_defconfig
-sh                          r7785rp_defconfig
-sh                        sh7785lcr_defconfig
-m68k                          hp300_defconfig
-ia64                                defconfig
-powerpc                     tqm8560_defconfig
-mips                        vocore2_defconfig
-mips                         cobalt_defconfig
-mips                        bcm63xx_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                        cell_defconfig
-powerpc                     mpc512x_defconfig
-mips                      maltaaprp_defconfig
-h8300                            allyesconfig
-mips                  cavium_octeon_defconfig
-um                           x86_64_defconfig
-arm                          pcm027_defconfig
-powerpc                      ppc64e_defconfig
-xtensa                  audio_kc705_defconfig
-powerpc                     powernv_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                         s3c2410_defconfig
-arm                         nhk8815_defconfig
-xtensa                generic_kc705_defconfig
-powerpc                 mpc8540_ads_defconfig
-arm                        oxnas_v6_defconfig
-s390                                defconfig
-arm                        multi_v7_defconfig
-arm                            lart_defconfig
-sh                          sdk7786_defconfig
-xtensa                    smp_lx200_defconfig
-arm                          collie_defconfig
-powerpc                 mpc85xx_cds_defconfig
-nds32                               defconfig
-powerpc                          g5_defconfig
-arm                            hisi_defconfig
-xtensa                          iss_defconfig
-powerpc                     kmeter1_defconfig
-mips                      fuloong2e_defconfig
-arm                      tct_hammer_defconfig
-m68k                       m5249evb_defconfig
-arm                   milbeaut_m10v_defconfig
-sh                            shmin_defconfig
-m68k                        m5307c3_defconfig
-arm                       aspeed_g5_defconfig
-mips                      bmips_stb_defconfig
-powerpc                        fsp2_defconfig
-ia64                             alldefconfig
-i386                                defconfig
-sparc                       sparc32_defconfig
-powerpc64                        alldefconfig
-mips                 decstation_r4k_defconfig
-powerpc                   lite5200b_defconfig
-arm                        neponset_defconfig
-mips                           ip27_defconfig
-m68k                        mvme16x_defconfig
-arm                           omap1_defconfig
-mips                             allmodconfig
-arm                         palmz72_defconfig
-arc                     nsimosci_hs_defconfig
-arm                            zeus_defconfig
-m68k                          atari_defconfig
-arm                        mvebu_v5_defconfig
-ia64                            zx1_defconfig
-powerpc                     ksi8560_defconfig
-h8300                       h8s-sim_defconfig
-x86_64                           allyesconfig
-arm                           u8500_defconfig
-powerpc                       holly_defconfig
-parisc                           alldefconfig
-sh                             espt_defconfig
-arm                      pxa255-idp_defconfig
-csky                                defconfig
-m68k                       m5275evb_defconfig
-arm                        keystone_defconfig
-powerpc                mpc7448_hpc2_defconfig
-s390                             alldefconfig
-riscv             nommu_k210_sdcard_defconfig
-powerpc                        warp_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                     mpc5200_defconfig
-m68k                             alldefconfig
-sh                        dreamcast_defconfig
-arm                         hackkit_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                      katmai_defconfig
-arm                           viper_defconfig
-s390                          debug_defconfig
-sparc                       sparc64_defconfig
-riscv                          rv32_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a001-20210615
-x86_64               randconfig-a004-20210615
-x86_64               randconfig-a002-20210615
-x86_64               randconfig-a003-20210615
-x86_64               randconfig-a006-20210615
-x86_64               randconfig-a005-20210615
-i386                 randconfig-a002-20210615
-i386                 randconfig-a006-20210615
-i386                 randconfig-a004-20210615
-i386                 randconfig-a001-20210615
-i386                 randconfig-a005-20210615
-i386                 randconfig-a003-20210615
-i386                 randconfig-a015-20210615
-i386                 randconfig-a013-20210615
-i386                 randconfig-a016-20210615
-i386                 randconfig-a012-20210615
-i386                 randconfig-a014-20210615
-i386                 randconfig-a011-20210615
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210615
-x86_64               randconfig-a015-20210615
-x86_64               randconfig-a011-20210615
-x86_64               randconfig-a012-20210615
-x86_64               randconfig-a014-20210615
-x86_64               randconfig-a016-20210615
-x86_64               randconfig-a013-20210615
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+>
+> I think the lockless page cache code also has to deal with somewhat
+> similar ordering concerns when it uses page_cache_get_speculative(),
+> e.g. in mapping_get_entry() - first it looks up a page pointer with
+> xas_load(), and any access to the page later on would be a _dependent
+> load_, but if the page then gets freed, reallocated, and inserted into
+> the page cache again before the refcount increment and the re-check
+> using xas_reload(), then there would be no data dependency from
+> xas_reload() to the following use of the page...
+>
