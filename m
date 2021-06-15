@@ -2,123 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6CC3A783B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2D13A7841
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbhFOHtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
+        id S230401AbhFOHtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhFOHs7 (ORCPT
+        with ESMTP id S230323AbhFOHtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:48:59 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126E4C061574;
-        Tue, 15 Jun 2021 00:46:54 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id m18so17187612wrv.2;
-        Tue, 15 Jun 2021 00:46:53 -0700 (PDT)
+        Tue, 15 Jun 2021 03:49:39 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E749C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:47:34 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id s6so49780197edu.10
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:47:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=pRCUOT/E8dqT2MS7y5hoVrqgciUSYOFKJMYzhW2YrY0=;
-        b=BUpGoGIdoZpn2ImUTqpffiio8OZDr5JbkFW8k/xHRF9GAAJUnmd9rAnGoSwpTUuvDB
-         stmDherc+TKEVSA9qEE94rGf0dcp112iBjhlYegLViNu2n/zjrJc0dtk+iurkwzK2H58
-         l3vHqMBcLRizS4l7b+qX/OuWkt/uXKV2AWZUxjdhT0gQvJdd/8aWBZ4Z3j7HQ4WHR/d7
-         UEDXtd95ZWKpjyAVE8RPU3cv59Pw6VJ9PVnPaSdWKzDsKQEU3MdagDq3/iVMHvJZv0lY
-         frrjxJzYmAOT1do53v0c41IvcsLpagrPkrA+3GV1KGhom6NEafGnC3CWFDl7v+gGWrMl
-         iD9w==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KBRdVIOa/asDmbEumkxjOA8DSurhtMGcGIoG3TYPT2Y=;
+        b=Crcal5RtkkBcDXdj5iAxnD1gvaFJfEwDwRgm8xZ3EAOu4RtYaSVDFtFHKFShRPlhAl
+         npephrwP1CJpcdeyMS//t5/d1phcMaiAJQmWJAdCIIH0UP6ZQqOIwmnPf8VuFtbWJR9B
+         5jD6Ol1iZrpaHrkafsh7V369VJXsflwxQ6TBM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=pRCUOT/E8dqT2MS7y5hoVrqgciUSYOFKJMYzhW2YrY0=;
-        b=P/Z+tKcSQTsLZauxJvRJcS5FvFu3LUMP9u8q8/yz4dnPLWokkw4tuaza+P3+Gr52Oh
-         XP3PP4nWCMCq0U7vrvcxUZ9CtK0gYTxkIzJ7d/2cLwUrT9+gbTx/nsiX0nB3KxNMazg6
-         Z57zdjrS7E1IF96AivBbtEHIhxAcSykCJPq4974WeUoYYcgwK8xeBqlFsvXtwR6UoYgv
-         XLhRb+ymKzhQWHMzGpUBTuXf6rff5s454beX3rg58sU9mHqzslrwmUpbq+L56klhHaut
-         LsFXNw2rripmKueUeKAQyIORsdrF7iCvKJgV1T/1cEYjLz2OybImhXmJcCzkI3EDdhEf
-         mzpQ==
-X-Gm-Message-State: AOAM530djnHFjiHrXRd6jIzElmCfonqxBXDN2CJt2hxLZVgY3BOdE3JF
-        1vEH2KNM8k9/DFFjZnjQMvq5iK5C7KWkDA==
-X-Google-Smtp-Source: ABdhPJzVQjaR4UNBmnankTfifAG+EcgUpU8iXQyXV68r1OMtobZ5+Lk1teiAowYKEhMIVpNfaln12w==
-X-Received: by 2002:adf:b648:: with SMTP id i8mr23498034wre.425.1623743212694;
-        Tue, 15 Jun 2021 00:46:52 -0700 (PDT)
-Received: from [192.168.1.21] ([195.245.23.224])
-        by smtp.gmail.com with ESMTPSA id o26sm14337442wms.27.2021.06.15.00.46.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 00:46:52 -0700 (PDT)
-Message-ID: <9bf87ee0e1c2a97b0a1b98734e34e456f84ea3d7.camel@gmail.com>
-Subject: Re: [PATCH 3/7] Input: ep93xx_keypad: Prepare clock before using it
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 15 Jun 2021 09:46:51 +0200
-In-Reply-To: <YMfQR8iM9be5Qg8+@google.com>
-References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
-         <20210613233041.128961-4-alexander.sverdlin@gmail.com>
-         <YMfQR8iM9be5Qg8+@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.2 
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KBRdVIOa/asDmbEumkxjOA8DSurhtMGcGIoG3TYPT2Y=;
+        b=kC0CScFLrIXtcwJowz9RM6BUgXkZDx0sSS6D3Q0fwODP0yGu4s7unCw5iciTSS/NJA
+         ncvGrHLyylDvN8X9PREvcwGSfPzqYzvnKHWothY3OpGpub5EF+qXcGzQ18TSxCB9S+lX
+         JhgK2k/H/W0ZA8+sBoSKXHjTNwkTQl0+rTiPvDS61RzTT9fFCYehlBOBD9+QtfXyArzy
+         GlXc6phI1fLxgazBEpXgIeI61n3RaCIZwjUvqM8I3FNUNCOJAEYD6LHFH2112+86w/Hq
+         Mc70x0HSsN0Txb2djr6wqSOm8PzN2g2pNzU1r/8CIN+LsxsbLbPqANRiZ3MKbOgT7Dkh
+         INOw==
+X-Gm-Message-State: AOAM532js7WqTFAMO2/6v/wCAWTHas1ioekeMaPJXNJiP7qcwe4wDYTA
+        bB4yBq7R6pumTJUzxoxDHJ8I/g==
+X-Google-Smtp-Source: ABdhPJwNMbkXylErvIagkPbri2w/XvfHjlohoakbcrmNIZJjV8B28X6xTCIhWQnNhW0EWElzSW60cw==
+X-Received: by 2002:aa7:c1da:: with SMTP id d26mr21437105edp.92.1623743253307;
+        Tue, 15 Jun 2021 00:47:33 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.64.110])
+        by smtp.gmail.com with ESMTPSA id cf26sm9394124ejb.38.2021.06.15.00.47.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 00:47:32 -0700 (PDT)
+Subject: Re: [PATCH RFCv3 3/3] lib/test_printf: add test cases for '%pD'
+To:     Justin He <Justin.He@arm.com>, Petr Mladek <pmladek@suse.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+References: <20210611155953.3010-1-justin.he@arm.com>
+ <20210611155953.3010-4-justin.he@arm.com> <YMd5StgkBINLlb8E@alley>
+ <AM6PR08MB4376096643BA02A1AE2BA8F4F7309@AM6PR08MB4376.eurprd08.prod.outlook.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <55513987-4ec5-be80-a458-28f275cb4f72@rasmusvillemoes.dk>
+Date:   Tue, 15 Jun 2021 09:47:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <AM6PR08MB4376096643BA02A1AE2BA8F4F7309@AM6PR08MB4376.eurprd08.prod.outlook.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dmitry!
-
-On Mon, 2021-06-14 at 14:55 -0700, Dmitry Torokhov wrote:
-> > Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
-> > to Common Clock Framework.
+On 15/06/2021 09.07, Justin He wrote:
+> Hi Petr
 > 
-> Can this be merged standalone?
 
-In principle, yes, but I thought it would be easier if the patches
-would go via the same path as CCF conversion.
-
-> > Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> > ---
-> >   drivers/input/keyboard/ep93xx_keypad.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/input/keyboard/ep93xx_keypad.c b/drivers/input/keyboard/ep93xx_keypad.c
-> > index c8194333d612..e0e931e796fa 100644
-> > --- a/drivers/input/keyboard/ep93xx_keypad.c
-> > +++ b/drivers/input/keyboard/ep93xx_keypad.c
-> > @@ -157,7 +157,7 @@ static int ep93xx_keypad_open(struct input_dev *pdev)
-> >   
-> >         if (!keypad->enabled) {
-> >                 ep93xx_keypad_config(keypad);
-> > -               clk_enable(keypad->clk);
-> > +               clk_prepare_enable(keypad->clk);
-> >                 keypad->enabled = true;
-> >         }
-> >   
-> > @@ -169,7 +169,7 @@ static void ep93xx_keypad_close(struct input_dev *pdev)
-> >         struct ep93xx_keypad *keypad = input_get_drvdata(pdev);
-> >   
-> >         if (keypad->enabled) {
-> > -               clk_disable(keypad->clk);
-> > +               clk_disable_unprepare(keypad->clk);
-> >                 keypad->enabled = false;
+>>> +static void __init
+>>> +f_d_path(void)
+>>> +{
+>>> +   test("(null)", "%pD", NULL);
+>>> +   test("(efault)", "%pD", PTR_INVALID);
+>>> +
+>>> +   is_prepend_buf = true;
+>>> +   test("/bravo/alfa   |/bravo/alfa   ", "%-14pD|%*pD", &test_file, -14,
+>> &test_file);
+>>> +   test("   /bravo/alfa|   /bravo/alfa", "%14pD|%*pD", &test_file, 14,
+>> &test_file);
+>>> +   test("   /bravo/alfa|/bravo/alfa   ", "%14pD|%-14pD", &test_file,
+>> &test_file);
+>>
+>> Please, add more test for scenarios when the path does not fit into
+>> the buffer or when there are no limitations, ...
 > 
-> While we are at it, I wonder about handling suspend/resume. I see that
-> we disable the clock even if keyboard is configured as a wakeup source.
-> Is it really capable of waking up the system when clock is off?
+> Indeed, thanks
 
-That what "EP93xx User’s Guide" says:
+Doesn't the existing test() helper do this for you automatically?
 
-26.2.4 Low Power Mode
-The key scanning block also supports a low power wake-up mode. In this mode, a key press
-generates a wake up interrupt. The key scan interrupt should be masked. Because the wake
-up interrupt is asynchronous, and depends on external keypad lines which may have a large
-capacitance value, glitches may occur on the interrupt when transitioning to low power mode.
-After transitioning, all clocks to the key scanning circuitry can be shut down.
+        /*
+         * Every fmt+args is subjected to four tests: Three where we
+         * tell vsnprintf varying buffer sizes (plenty, not quite
+         * enough and 0), and then we also test that kvasprintf would
+         * be able to print it as expected.
+         */
 
--- 
-Alexander Sverdlin.
+I don't see why one would need to do anything special for %pD.
 
-
+Rasmus
