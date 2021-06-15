@@ -2,74 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82813A877A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF65A3A877C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbhFOR1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:27:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230084AbhFOR1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:27:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C8CF61413;
-        Tue, 15 Jun 2021 17:25:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623777940;
-        bh=Eci6k0g98Hgau9oCi1zhhBUfXGggZ42HI8rbMPNXZKI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y4qkUho5RFYScbT9ZStz7qn9cL97C2AbBgI051qEdWClV5xzZzT4FCl9mCzDWnHvq
-         60qYEehCUxccqwY/CLKr1GTq/cEduItxmS+7E/HgEc2rNFttwWgHrQpvZzYm2/HCvF
-         FTQ1IbzpsjN6J7N9M+6mrVUYivLQK4icUxFhdpT2Q6Hh+t0rtYs44Lz1LkFHBJcjh8
-         1wlFSHGVjPn1sGePXp8TEYVJ0YCdrVG8ADo0kTRtrWY0bBGtRJC9z3UMlSTZsuGrJV
-         4JpA6TN1vnWW38dwLf8N9LTMthLVL6RLCwdfuWJiJxfAah8IoKWedhLRbC7lOdVt2e
-         4+xSkmA/UqryA==
-Date:   Tue, 15 Jun 2021 10:25:37 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Brian Cain <bcain@codeaurora.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     'Nick Desaulniers' <ndesaulniers@google.com>,
-        linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 0/3] hexagon: Fix build error with CONFIG_STACKDEPOT and
- select CONFIG_ARCH_WANT_LD_ORPHAN_WARN
-Message-ID: <YMjikYQsA9DmyRm8@MSI.localdomain>
-References: <20210521011239.1332345-1-nathan@kernel.org>
- <0f3ac242-d187-57b5-e715-ea25933dbd52@kernel.org>
- <09a301d75899$daf244f0$90d6ced0$@codeaurora.org>
+        id S230286AbhFOR2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:28:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230058AbhFOR2I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 13:28:08 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E221BC061574;
+        Tue, 15 Jun 2021 10:26:02 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0f270048ecafc2d258032c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:2700:48ec:afc2:d258:32c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 859DF1EC030E;
+        Tue, 15 Jun 2021 19:26:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623777961;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=xH8sUazIxzaovKLfiQftgZitdVavZKBYSHXtkR2AkLI=;
+        b=mE9aVezxi1CKEkQdM/Nv2RkUwuh2FsSENzA2o4vsQrE4Kx4D0YgavaWSorAerScoj1vy5X
+        QQqG12MNdHmYIgyEZxDigAOoySJJdGKkL7EJLSXhRmNBxsYywBsQvTgp/m8dVO2zpDreaI
+        xO/EX3kcRdjftoykItEaF/skvaa5lek=
+Date:   Tue, 15 Jun 2021 19:25:57 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     "Luck, Tony" <tony.luck@intel.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>
+Subject: Re: [PATCH] EDAC/mce_amd: Reduce unnecessary spew in dmesg if SMCA
+ feature bit is not exposed
+Message-ID: <YMjipVYQO93i46HJ@zn.tnic>
+References: <20210614212129.227698-1-Smita.KoralahalliChannabasappa@amd.com>
+ <YMfRxX/M4rJ5gM/R@zn.tnic>
+ <16a34b6834f94f139444c2ff172645e9@intel.com>
+ <YMhwAZaFr4d1QOGG@zn.tnic>
+ <20210615150846.GA409@aus-x-yghannam.amd.com>
+ <YMjE2iwRFWVrfzLL@zn.tnic>
+ <20210615160009.GA29258@aus-x-yghannam.amd.com>
+ <YMjRGFiqp2HNWUrZ@zn.tnic>
+ <20210615163221.GA2991@aus-x-yghannam.amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <09a301d75899$daf244f0$90d6ced0$@codeaurora.org>
+In-Reply-To: <20210615163221.GA2991@aus-x-yghannam.amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 11:59:43AM -0500, Brian Cain wrote:
-> > -----Original Message-----
-> > From: Nathan Chancellor <nathan@kernel.org>
-> ...
-> > On 5/20/2021 6:12 PM, Nathan Chancellor wrote:
-> > > Hi all,
-> ...
-> > Brian, did you have any comments on this series? ARCH=hexagon defconfig
-> > is currently broken in -next, it would be a real shame if this continued
-> > to regress after you just got Hexagon building in mainline. These
-> > patches seem like they would be worthy of a 5.13 pull request.
-> 
-> I have started the internal review process to get these queued up in my tree.  But I don't know if I would have it in time for 5.13.
-> 
-> > Otherwise, Andrew could pick them up with your ack and stick them in
-> > front of "mm/slub: use stackdepot to save stack trace in objects" so
-> > that there is no build regression.
-> 
-> Of course: I'll send my ack for the sake of keeping the build green.
-> 
-> -Brian
+On Tue, Jun 15, 2021 at 12:32:21PM -0400, Yazen Ghannam wrote:
+> Yes, I agree. I was a bit confused about the X86_FEATURE_HYPERVISOR
+> thing, but I think I get it. This definitely looks simple to do.
 
-Andrew, is there any way you can pick this up so that the Hexagon build
-can start being green? I explained the issue in the cover letter so that
-you know where to stick this patch set in your stack. If you have any
-more questions, please let me know.
+Yeah, if you look at the qemu repo:
 
-Cheers,
-Nathan
+kvm_arch_get_supported_cpuid:
+
+...
+
+    } else if (function == 1 && reg == R_ECX) {
+        /* We can set the hypervisor flag, even if KVM does not return it on
+         * GET_SUPPORTED_CPUID
+         */
+        ret |= CPUID_EXT_HYPERVISOR;
+
+
+so long story short, that thing is set by the HV and there's an
+"agreement" of sorts and APM v3 even says so:
+
+"CPUID Fn0000_0001_ECX Feature Identifiers
+
+...
+
+31:	RAZ. Reserved for use by hypervisor to indicate guest status."
+
+HTH.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
