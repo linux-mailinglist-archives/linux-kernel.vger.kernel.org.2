@@ -2,92 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDC93A7E4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A8A3A7E4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhFOMlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
+        id S230188AbhFOMlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhFOMlS (ORCPT
+        with ESMTP id S229983AbhFOMlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:41:18 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55ADBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:39:13 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id q20so11950122lfo.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:39:13 -0700 (PDT)
+        Tue, 15 Jun 2021 08:41:19 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FD9C0617AF
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:39:14 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id s22so24807805ljg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:39:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UuCiW2orTCucTZCp6O8CDD9AXD/9H9Otzbi//Cqg1DA=;
-        b=VZ3GcXveZakLxHce86jM4RSuS7T16Lj1tuDnRPjjD6LmGpt28d1lvFZtSU3p7z0M1p
-         ReRbsQU4aVs4CX7VFzsuAIKAuJuvEBZfqLFZAhOCb0mt7DZrfKtiZGkkVZ0uNrLZ+dY1
-         luUe8J/JKZuqKjFiY1V+aiYKkwFMJtMvVHz50fSPUv2+LoFm+fL2cYZoLhoavVaMcnJp
-         53C879XsXgpQeNsOLnsK/jCocXn6Lbilb9UCJpfDqXFZr83N9k5sPbKzhl9sjnOtyrbn
-         ykxZsh28MK7EPMorjJGsGTZwre6MCu6c0GgBoCpNHt7Cq7+wQBsVAU1WIBfp8FIUsLin
-         Ofyg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3pEsLcQ/8PBueEyiqA/kBMEdoALnX+fHc+Skgy5Wse4=;
+        b=Lo9MxugjizgQOg5AcVDyMzvLOktI70lW6BqlHYqn00ELIrDqv7V6Ov0lEQBnp5sUVD
+         MEPCbDZuIh8/nel5c0auOPPLNOU1H5uIjDc5vhxFBss4iCdhMUGN4yXFTkQTjBA5tCqL
+         QSweT1vPd5k3r6/wIVz2sAPIKrLLhjUZoy0MdVzBIqa6GfCi7DXrgMbCvsglVKzATE/v
+         U2ntj3TKpDWL/fdjmifyV7fEFa9yXls5YSBx9Z7CfljNUaX8KAokcCIBmkJWHmifwOxZ
+         Zo5LCFEfPs+mr2AHHq8fv1wP4akbn6uuxYtycGEU+5Q2vfV0FpH0JafAhiXQ/edCTEyb
+         YM3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UuCiW2orTCucTZCp6O8CDD9AXD/9H9Otzbi//Cqg1DA=;
-        b=meph747etS8IJVHjCxxyTCveUm9LTDs2PLGnToW8ZhYU2sXPrVwzG9Ea0Y0i2qYnYJ
-         3CFc5blJvgWkao4SS4CUpbYQxshHfvanKW38iS+SyQ3vjSW32Oa5HWJVI707EXdDVJ2m
-         XZsLrZrLyyzn0WvUi1xSYYI3Xu34s99sXytQrNLH0sYnE+zWrQ0aveECnPIlDUj/T/LH
-         s2WP00DwSKn8afFjPxP4dvKyzpv6oc9gJNDSK4pg6fi7axqHn3JcuhKFSqWIDwZfg6wf
-         hOh3eUbU06Fa4EPnKTx5uDPFK5bKGRa3G57sXiCBkl2e4lZgWrY2sDKoHU5qJxxhQ6LF
-         D72A==
-X-Gm-Message-State: AOAM532Ga3vh5n0ZnmR8Oe0YK3c5JwSbmOLuxtF/r4W7N+QW46LhIBZj
-        LcI016AcUNPvioRsedRw2Ve4/Q==
-X-Google-Smtp-Source: ABdhPJwDSx5g6S/Z3ibqwuHIj/X45vbYi1g0IUdok+X6ST8l1GlMDaBjW2PeiJeQ28sxtJaAY2HhRg==
-X-Received: by 2002:a05:6512:36d8:: with SMTP id e24mr10216306lfs.8.1623760751686;
-        Tue, 15 Jun 2021 05:39:11 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3pEsLcQ/8PBueEyiqA/kBMEdoALnX+fHc+Skgy5Wse4=;
+        b=F9kIIDD1OJhEMFMAoq6ZdSzcr4nzUGsxEad4tTYzd4U4WcjXicl1HFO0GxvTntNYul
+         CF3RZeAVBu/eSDa52W8g+wihsW1TlG2CJBPtT+4YQ/VZZUFBwAup3/1wmXNrl9STIYsJ
+         gIJ05WT09to/olQQVQld/pRuNnuJWDNWjpnAHymdIs1DtFQgDF0kDNCDhfJhdD2NPoqy
+         zAFFRQdmQLkpSGTNdPSYGyRbE+Vfg4tqY3n+WQaFQjbbZHQ2U9Es+y+kijrrdFywcUX2
+         i7ZWhxHJTkk27OVlwkcXttXzzpIsPtdwynmkLJcMopq9aV2/qoBPOzS7LoC4kC6Qh6Fq
+         VxFg==
+X-Gm-Message-State: AOAM5316lhcpQg7JLuV41dA4Pj9joC0IiBE/EBuO5CPIL2Wl2p1kdXkC
+        /HFLKeMkUJNHyHYGGJgBsbitk+sUFB+k7A==
+X-Google-Smtp-Source: ABdhPJwRsf+yNOWqXkRPrg7C6+J4ziUSxP9L+WvAbfpgF/03zjoPDhYxMZParIYV9z2a3UBO/FrilQ==
+X-Received: by 2002:a2e:6c0e:: with SMTP id h14mr17848984ljc.267.1623760752547;
+        Tue, 15 Jun 2021 05:39:12 -0700 (PDT)
 Received: from gilgamesh.lab.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id m12sm811418lfb.231.2021.06.15.05.39.10
+        by smtp.gmail.com with ESMTPSA id m12sm811418lfb.231.2021.06.15.05.39.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 05:39:11 -0700 (PDT)
+        Tue, 15 Jun 2021 05:39:12 -0700 (PDT)
 From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
 To:     wim@linux-watchdog.org, linux@roeck-us.net, shawnguo@kernel.org
 Cc:     linux-watchdog@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         grzegorz.jaszczyk@linaro.org
-Subject: [PATCH 0/2] introduce watchdog_dev_suspend/resume
-Date:   Tue, 15 Jun 2021 14:39:02 +0200
-Message-Id: <20210615123904.2568052-1-grzegorz.jaszczyk@linaro.org>
+Subject: [PATCH 1/2] watchdog: introduce watchdog_dev_suspend/resume
+Date:   Tue, 15 Jun 2021 14:39:03 +0200
+Message-Id: <20210615123904.2568052-2-grzegorz.jaszczyk@linaro.org>
 X-Mailer: git-send-email 2.29.0
+In-Reply-To: <20210615123904.2568052-1-grzegorz.jaszczyk@linaro.org>
+References: <20210615123904.2568052-1-grzegorz.jaszczyk@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+The watchdog drivers often disable wdog clock during suspend and then
+enable it again during resume. Nevertheless the ping worker is still
+running and can issue low-level ping while the wdog clock is disabled
+causing the system hang. To prevent such condition introduce
+watchdog_dev_suspend/resume which can be used by any wdog driver and
+actually cancel ping worker during suspend and restore it back, if
+needed, during resume.
 
-This patch-set fixes system hang which occurs when the ping worker fires after
-wdog suspend and before wdog resume. This happens because the ping worker can
-issue low-level ping while the wdog clk was disabled by the suspend routine
-(accessing hw wdog registers while they are not fed by the clk).
-
-To overcome this issue two patches were introduced. Patch #1 provides
-watchdog_dev_suspend/resume function, which can be used in wdog drivers. First
-function allows to cancel watchdog ping worker during suspend, preventing
-watchdog_dev from issuing low-level ping and second one restores ping worker if
-needed.
-
-Patch #2 introduces relevant changes to imx2_wdt driver and takes advantage of
-just introduced routines.
-
-Grzegorz Jaszczyk (2):
-  watchdog: introduce watchdog_dev_suspend/resume
-  watchdog: imx2_wdg: notify wdog subsystem about wdog suspend/resume
-
- drivers/watchdog/imx2_wdt.c     | 20 ++++++++++----
+Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+---
  drivers/watchdog/watchdog_dev.c | 49 +++++++++++++++++++++++++++++++++
  include/linux/watchdog.h        |  2 ++
- 3 files changed, 66 insertions(+), 5 deletions(-)
+ 2 files changed, 51 insertions(+)
 
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+index 2946f3a63110..3feca1567281 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -1219,6 +1219,55 @@ void __exit watchdog_dev_exit(void)
+ 	kthread_destroy_worker(watchdog_kworker);
+ }
+ 
++int watchdog_dev_suspend(struct watchdog_device *wdd)
++{
++	struct watchdog_core_data *wd_data = wdd->wd_data;
++	int ret;
++
++	if (!wdd->wd_data)
++		return -ENODEV;
++
++	/* ping for the last time before suspend */
++	mutex_lock(&wd_data->lock);
++	if (watchdog_worker_should_ping(wd_data))
++		ret = __watchdog_ping(wd_data->wdd);
++	mutex_unlock(&wd_data->lock);
++
++	if (ret)
++		return ret;
++
++	/*
++	 * make sure that watchdog worker will not kick in when the wdog is
++	 * suspended
++	 */
++	hrtimer_cancel(&wd_data->timer);
++	kthread_cancel_work_sync(&wd_data->work);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(watchdog_dev_suspend);
++
++int watchdog_dev_resume(struct watchdog_device *wdd)
++{
++	struct watchdog_core_data *wd_data = wdd->wd_data;
++	int ret;
++
++	if (!wdd->wd_data)
++		return -ENODEV;
++
++	/*
++	 * __watchdog_ping will also retrigger hrtimer and therefore restore the
++	 * ping worker if needed.
++	 */
++	mutex_lock(&wd_data->lock);
++	if (watchdog_worker_should_ping(wd_data))
++		ret = __watchdog_ping(wd_data->wdd);
++	mutex_unlock(&wd_data->lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(watchdog_dev_resume);
++
+ module_param(handle_boot_enabled, bool, 0444);
+ MODULE_PARM_DESC(handle_boot_enabled,
+ 	"Watchdog core auto-updates boot enabled watchdogs before userspace takes over (default="
+diff --git a/include/linux/watchdog.h b/include/linux/watchdog.h
+index 9b19e6bb68b5..febfde3b1ff6 100644
+--- a/include/linux/watchdog.h
++++ b/include/linux/watchdog.h
+@@ -209,6 +209,8 @@ extern int watchdog_init_timeout(struct watchdog_device *wdd,
+ 				  unsigned int timeout_parm, struct device *dev);
+ extern int watchdog_register_device(struct watchdog_device *);
+ extern void watchdog_unregister_device(struct watchdog_device *);
++int watchdog_dev_suspend(struct watchdog_device *wdd);
++int watchdog_dev_resume(struct watchdog_device *wdd);
+ 
+ int watchdog_set_last_hw_keepalive(struct watchdog_device *, unsigned int);
+ 
 -- 
 2.29.0
 
