@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6F03A8858
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089453A8862
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhFOSRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 14:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35164 "EHLO
+        id S231446AbhFOSTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 14:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhFOSRf (ORCPT
+        with ESMTP id S230303AbhFOSTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:17:35 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9CFC061574;
-        Tue, 15 Jun 2021 11:15:30 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id g22so7057294pgk.1;
-        Tue, 15 Jun 2021 11:15:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VENcnHrIpqVN7W2ZnNshC5Gck0m4VD57ATl1tW4bxjU=;
-        b=NHA1damOaUqGWmDiJIHtKH5TnjulokP6hupL3KtyVJex5Y2h2A2tLDTnh0kQvsb/QI
-         M+Cy7fQIHov3faBKlnYrwaKBsT0APioDikv7lU8v8CIdVUXSRhaE6V5j6yJ055bnTHR/
-         vavxiaLb5IVL5s5/sSQUT5nBzE4dw+uB4ruqhKE7Cuu9aEOtWVsVQcaTnU5kriWxbtsZ
-         0AOVHOQxZGIymZDvLxMuIsmfockb7x8xevpp8KQmeY27M151964Wuf84wbKSr/UZrI7G
-         2sOz0BgkOlpSqCyTvB7QWdkp3M9zBwNflfZbNTL34lc3zXkEFQRPp+MNTIqpSSKntS7/
-         SVyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VENcnHrIpqVN7W2ZnNshC5Gck0m4VD57ATl1tW4bxjU=;
-        b=b6t19Sghj8Ct4FKzQrt2CuIIAL77pFmooyhiHSUEANXIrXU4an6Vd00eaQ6PPWDlQH
-         5eaVlJhPSXx7M9dcwGi6GSJv7JKNjLc7c7S3iVd4rKsqgZf/0ULFlDVRJ1t973dNF5wE
-         CCJhe6JFlRxMaaRZhgDVJGFQY7uLteV69u4YXbY/lY3ZzvT63R9/6D9ajCEdsZR5uO+t
-         q6yGbe61IVBl4fryALguBOhRPlkSKrVPYsCfYF/3v65KP93c9mOB6u/1sEkhI0y1DBMC
-         xiukWD8AgShVAYqQUMaMrJZbuM2Mzy5mJPrDP7NG+ZDecnjOCZg2gAzQK0fS7fgvOtSV
-         FKrg==
-X-Gm-Message-State: AOAM530TVW30GNK4YZ0unHgZb7zgIA/rR5fGAlBzZx52R8mqjLou3oHl
-        rbztChEIRRRBSEl0LyMrpps=
-X-Google-Smtp-Source: ABdhPJxnhYpBHFp7o805jqU+q5nNgZsrr+rwOFS4X0NCvnt2yolKM/4LXuYatjFiMLxzAsy9CGcD8Q==
-X-Received: by 2002:a63:db43:: with SMTP id x3mr736959pgi.383.1623780929601;
-        Tue, 15 Jun 2021 11:15:29 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:c700:bb55:c690:c756])
-        by smtp.gmail.com with ESMTPSA id z24sm16735625pfk.149.2021.06.15.11.15.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 11:15:28 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 11:15:26 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Yizhuo Zhai <yzhai003@ucr.edu>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: hideep - fix the uninitialized use in
- hideep_nvm_unlock()
-Message-ID: <YMjuPtKtiaVLLO0q@google.com>
-References: <CABvMjLRuGPgEJ3Ef7=sBk3m3oa+3HuyV9mVY0ZCYuHK=rJRA4w@mail.gmail.com>
+        Tue, 15 Jun 2021 14:19:51 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08992C0613A3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:17:45 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:bda0:7de0:767e:26f9])
+        by michel.telenet-ops.be with bizsmtp
+        id HWHe2500A4N5gS306WHefl; Tue, 15 Jun 2021 20:17:42 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ltDd4-00HYOO-4w; Tue, 15 Jun 2021 20:17:38 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ltDd3-005qAB-MU; Tue, 15 Jun 2021 20:17:37 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 0/3] Add generic-support for linux,elfcorehdr and fix riscv
+Date:   Tue, 15 Jun 2021 20:17:24 +0200
+Message-Id: <cover.1623780059.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABvMjLRuGPgEJ3Ef7=sBk3m3oa+3HuyV9mVY0ZCYuHK=rJRA4w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yizhuo,
+	Hi all,
 
-On Tue, Jun 15, 2021 at 10:26:09AM -0700, Yizhuo Zhai wrote:
-> Inside function hideep_nvm_unlock(), variable "unmask_code" could
-> be uninitialized if hideep_pgm_r_reg() returns error, however, it
-> is used in the later if statement after an "and" operation, which
-> is potentially unsafe.
+While working on v4 of "[PATCH v3] ARM: Parse kdump DT properties", I
+noticed the recently (v5.13-rc1) introduced RISC-V crash kernel support
+uses "linux,elfcorehdr" in a non-standard way.  Instead of relying on a
+"linux,elfcorehdr" property under the "/chosen" node, RISC-V uses a
+reserved memory node with the "linux,elfcorehdr" compatible value.
 
-I do not think that simply initializing the variable makes the code
-behave any better. If we want to fix this properly we need to check for
-errors returned by hideep_pgm_r_reg() and hideep_pgm_w_reg() and exit
-this function early, signalling the caller about errors.
+As we may want to fix riscv before the release of v5.13, I decided not
+to wait until my full v4 is ready, but fast-track generic
+"linux,elfcorehdr" handling instead.
 
-> 
-> Signed-off-by: Yizhuo <yzhai003@ucr.edu>
-> ---
->  drivers/input/touchscreen/hideep.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/touchscreen/hideep.c
-> b/drivers/input/touchscreen/hideep.c
-> index ddad4a82a5e5..49b713ad4384 100644
-> --- a/drivers/input/touchscreen/hideep.c
-> +++ b/drivers/input/touchscreen/hideep.c
-> @@ -363,7 +363,7 @@ static int hideep_enter_pgm(struct hideep_ts *ts)
-> 
->  static void hideep_nvm_unlock(struct hideep_ts *ts)
->  {
-> -       u32 unmask_code;
-> +       u32 unmask_code = 0;
-> 
->         hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_SFR_RPAGE);
->         hideep_pgm_r_reg(ts, 0x0000000C, &unmask_code);
-> -- 
-> 2.17.1
+This series consists of 3 patches:
+  1. Generic handling of "linux,elfcorehdr", as requested by Rob in a
+     review comment for [1],
+  2. Drop the non-standard code from riscv.  It can just use the generic
+     code instead (needs corresponding changes to WIP kexec-tools),
+  3. Drop the now duplicate code from arm64.  This can be postponed, as
+     it can co-exist safely with the generic code.
 
-Thanks.
+This has been tested on arm32 (with a WIP successor of [1]), and
+compile-tested on riscv64 and arm64.
+
+Thanks for your comments!
+
+[1] "[PATCH v3] ARM: Parse kdump DT properties"
+    https://lore.kernel.org/linux-devicetree/20210317113130.2554368-1-geert+renesas@glider.be/
+
+Geert Uytterhoeven (3):
+  of: fdt: Add generic support for parsing elf core header properties
+  riscv: Remove non-standard linux,elfcorehdr handling
+  arm64: kdump: Remove custom linux,elfcorehdr parsing
+
+ Documentation/devicetree/bindings/chosen.txt |  6 ++--
+ arch/arm64/mm/init.c                         | 21 -----------
+ arch/riscv/mm/init.c                         | 20 -----------
+ drivers/of/fdt.c                             | 37 ++++++++++++++++++--
+ 4 files changed, 37 insertions(+), 47 deletions(-)
 
 -- 
-Dmitry
+2.25.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
