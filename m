@@ -2,123 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A793A3A8B64
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0B93A8B68
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbhFOVws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbhFOVwr (ORCPT
+        id S231441AbhFOVxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:53:21 -0400
+Received: from fgw21-7.mail.saunalahti.fi ([62.142.5.82]:42402 "EHLO
+        fgw21-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231354AbhFOVxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:52:47 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A5FC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:50:42 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id fy24-20020a17090b0218b029016c5a59021fso2730753pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:50:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kAd/yfjnZAJnZ1i9PxYoWIcrrD32M0xPaFynNraifo8=;
-        b=TTsvJNuqQMhrf0yczwugM/OX3X5T887jaoeU16Dyq1hM7HpduS6R9dGOlaKseXfo5X
-         MU6zYiDkXNoF+6j8/+NuvuGgRVPA4s6s7nQ/vD+qNtnI/fG/mSqUSJKfdQUSDDF6JSLH
-         2Z/u+jmcGeMetKZkZO240THoxgYUber3JRYt8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kAd/yfjnZAJnZ1i9PxYoWIcrrD32M0xPaFynNraifo8=;
-        b=iirbnr8E/Ji/mUcNrDVsI8l06vsE6rEPe7iDHXMO1gmkUXvFBz127/Re83l2aW1UQj
-         jKyRIBTJ03ES0cHJnPAh0CNt2aBAbaSc5f15WyznIxLmgm1ncO7z2ZRZHMbthRr0AoMv
-         j7r8s1ckthYuuWAw0TA0dknl/adymmPtOkymyMRskbaOkXl4/3m8X/4qPIcbu3zl1XcR
-         /7msYJgl0WjBz8kLTZYq8UUHYeRh9U8ulWTgefo6Ey2LeRM3DpnmWCCwkzeapei/++CU
-         s8ZEAMbtQLb3kRgASTWC2zhIoZ0OeshY0gn9raSRrK8ueEr8xihnDZyggrLFJRjG8Lb0
-         xtBw==
-X-Gm-Message-State: AOAM532EV8jR7sCJPA8AdQ9qOajfJPX8oCC6UcrvxT9NlGstdd/Ao6Nl
-        y3IsC7Ppx50kU3Gbee3owpUd/A==
-X-Google-Smtp-Source: ABdhPJwA4Aam+DpKsfJ7yu4Vz9gKY1XlFRnMbj84CDb4K5smYJN0jRdOx199dU1dc1kdlB96istrpQ==
-X-Received: by 2002:a17:90a:1a:: with SMTP id 26mr7076831pja.187.1623793841662;
-        Tue, 15 Jun 2021 14:50:41 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a9sm119023pfo.69.2021.06.15.14.50.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 14:50:40 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 14:50:39 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     youling 257 <youling257@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>, regressions@lists.linux.dev,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>
-Subject: Re: [PATCH] proc: Track /proc/$pid/attr/ opener mm_struct
-Message-ID: <202106151449.816D7DA682@keescook>
-References: <20210608171221.276899-1-keescook@chromium.org>
- <20210614100234.12077-1-youling257@gmail.com>
- <202106140826.7912F27CD@keescook>
- <202106140941.7CE5AE64@keescook>
- <CAOzgRdZJeN6sQWP=Ou0H3bTrp+7ijKuJikG-f4eer5f1oVjrCQ@mail.gmail.com>
- <202106141503.B3144DFE@keescook>
- <CAOzgRdahaEjtk4jS5N=FQEDbsZVnB+-=xD+-WtV9zD9Tgbm0Hg@mail.gmail.com>
- <CAHk-=winAqy0sjgog9oEsjoBWOGJscFYEc3-=nvtzbyjTw_b+g@mail.gmail.com>
+        Tue, 15 Jun 2021 17:53:20 -0400
+Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
+        by fgw21.mail.saunalahti.fi (Halon) with ESMTP
+        id cdd81c57-ce23-11eb-9eb8-005056bdd08f;
+        Wed, 16 Jun 2021 00:51:13 +0300 (EEST)
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v2 1/1] platform/chrome: cros_ec_typec: Put fwnode in error case during ->probe()
+Date:   Wed, 16 Jun 2021 00:51:11 +0300
+Message-Id: <20210615215111.377348-1-andy.shevchenko@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=winAqy0sjgog9oEsjoBWOGJscFYEc3-=nvtzbyjTw_b+g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 11:19:04AM -0700, Linus Torvalds wrote:
-> On Mon, Jun 14, 2021 at 6:55 PM youling 257 <youling257@gmail.com> wrote:
-> >
-> > if try to find problem on userspace, i used linux 5.13rc6 on old
-> > android 7 cm14.1, not aosp android 11.
-> > http://git.osdn.net/view?p=android-x86/system-core.git;a=blob;f=init/service.cpp;h=a5334f447fc2fc34453d2f6a37523bedccadc690;hb=refs/heads/cm-14.1-x86#l457
-> >
-> >  457         if (!seclabel_.empty()) {
-> >  458             if (setexeccon(seclabel_.c_str()) < 0) {
-> >  459                 ERROR("cannot setexeccon('%s'): %s\n",
-> >  460                       seclabel_.c_str(), strerror(errno));
-> >  461                 _exit(127);
-> >  462             }
-> >  463         }
-> 
-> I have no idea where the cm14.1 libraries are. Does anybody know where
-> the matching source code for setexeccon() would be?
-> 
-> For me - obviously not on cm14.1 - all "setexeccon()" does is
-> 
->    n = openat(AT_FDCWD, "/proc/thread-self/attr/exec", O_RDWR|O_CLOEXEC)
->    write(n, string, len)
->    close(n)
-> 
-> and if that fails, it would seem to indicate that proc_mem_open()
-> failed. Which would be mm_access() failing. But I don't see how that
-> can be the case, because mm_access() explicitly allows "mm ==
-> current->mm" (which the above clearly should be).
+device_for_each_child_node() bumps a reference counting of a returned variable.
+We have to balance it whenever we return to the caller.
 
-Yeah, that was what I saw too.
+Fixes: fdc6b21e2444 ("platform/chrome: Add Type C connector class driver")
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Prashant Malani <pmalani@chromium.org>
+---
+v2: added comment (Prashant), added Rb tag (Prashant)
+ drivers/platform/chrome/cros_ec_typec.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> youling, can you double-check with the current -git tree? But as far
-> as I can tell, my minimal patch is exactly the same as Kees' patch
-> (just smaller and simpler).
-
-FWIW, for that patch:
-
-Acked-by: Kees Cook <keescook@chromium.org>
-Cc: stable@vger.kernel.org
-
-> 
-> Kees, do you see anything?
-
-No, I haven't been able to reproduce the failure. :(
-
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index 27c068c4c38d..99fdc1156392 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -375,6 +375,8 @@ static int cros_typec_init_ports(struct cros_typec_data *typec)
+ 	return 0;
+ 
+ unregister_ports:
++	/* Drop the referece that bumped by device_for_each_child_node() */
++	fwnode_handle_put(fwnode);
+ 	cros_unregister_ports(typec);
+ 	return ret;
+ }
 -- 
-Kees Cook
+2.32.0
+
