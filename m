@@ -2,111 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A847D3A8B4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F863A8B4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbhFOVmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:42:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230081AbhFOVmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:42:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0551D610A2;
-        Tue, 15 Jun 2021 21:40:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623793249;
-        bh=/oWKsJvcxdMz4Rzoy3pE+j7Iv7xWCF+ZYupP97KOmKo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aXR0SfR6dp9FSdmaNvBHqVz5z8mnf/59BkVJt86UYIU+BSZg1J9jqV0YZyRBggCCY
-         deA2wkpV7slrL1m5RFdACByKIx00u6VNdusvpHIFF5c74mZu7Y5xWfmnAOx8ZUI9P5
-         033jQAWEknB1kr+QzXRiqTyX+tPaEZvoz9ArleVckiZm6J4iJ+aMNg8z91qpPYUMbQ
-         OBEPSjWULqgs5M4bp+qX3ywFFj3HjJadoBqH5om/V1INIU4S28x9gAwLsWuoUG/3Qh
-         7bq8GzfljmU2sHmL6w/7VgxxuKVWa9+pvZdHVi0BOaWjaApMvmqfKAvKthsjqeTP20
-         g9d66GgdII56g==
-Received: by mail-qk1-f177.google.com with SMTP id c18so441632qkc.11;
-        Tue, 15 Jun 2021 14:40:48 -0700 (PDT)
-X-Gm-Message-State: AOAM530csdEHuU+c0oHSdWvqqTA8ckCygCGIwF5FxBgybvnZmAPklGqw
-        EK9isBpxSFmWDwVQVcGDzsun0TwsQwLnS6qO3g==
-X-Google-Smtp-Source: ABdhPJz/0cruuS8J7a6V1fXkhT9dT8IPshEj5fOX6o+PdZ6Rz1bo0/Pa0u1uPJxt+3RO+D9aKPcUX5aWfodohh+B8wk=
-X-Received: by 2002:a37:a2d3:: with SMTP id l202mr1708344qke.311.1623793248238;
- Tue, 15 Jun 2021 14:40:48 -0700 (PDT)
+        id S231311AbhFOVnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhFOVnP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 17:43:15 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72519C061574;
+        Tue, 15 Jun 2021 14:41:09 -0700 (PDT)
+From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1623793266;
+        bh=1XbtmOAvAq8GkpzE6f8SSUVkBGQfOCKy1KoLG/I4mBs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PAAHFlJPvAJIhoKTws2F1t6LknnNKWdgaYSDF0tJTdkl15nXE6KLd58NsOxvjwnPF
+         l9JAX7lz08EKym0COkqBvuJvDiLCn9NdkY7DoaHNzDtvOGC8xfqLJ2P9NxiBV8lhth
+         XWFOvpeiRXzBwJ2rLxtzB/dJRrb1PQSZq56uH3FE=
+To:     linux-input@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] HID: input: Add support for Programmable Buttons
+Date:   Tue, 15 Jun 2021 23:41:03 +0200
+Message-Id: <20210615214103.1031479-1-linux@weissschuh.net>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210603103814.95177-1-manivannan.sadhasivam@linaro.org>
- <20210603103814.95177-3-manivannan.sadhasivam@linaro.org> <YLw744UeM6fj/xoS@builder.lan>
-In-Reply-To: <YLw744UeM6fj/xoS@builder.lan>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 15 Jun 2021 15:40:36 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq++bSPiKcgWUr6AJbJfidPNpUSFCtarRGEV4GP7fb8yPw@mail.gmail.com>
-Message-ID: <CAL_Jsq++bSPiKcgWUr6AJbJfidPNpUSFCtarRGEV4GP7fb8yPw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] PCI: dwc: Add Qualcomm PCIe Endpoint controller driver
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Siddartha Mohanadoss <smohanad@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 9:07 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Thu 03 Jun 05:38 CDT 2021, Manivannan Sadhasivam wrote:
->
-> > Add driver support for Qualcomm PCIe Endpoint controller driver based on
-> > the Designware core with added Qualcomm specific wrapper around the
-> > core. The driver support is very basic such that it supports only
-> > enumeration, PCIe read/write, and MSI. There is no ASPM and PM support
-> > for now but these will be added later.
-> >
-> > The driver is capable of using the PERST# and WAKE# side-band GPIOs for
-> > operation and written on top of the DWC PCI framework.
-> >
-> > Co-developed-by: Siddartha Mohanadoss <smohanad@codeaurora.org>
-> > Signed-off-by: Siddartha Mohanadoss <smohanad@codeaurora.org>
-> > [mani: restructured the driver and fixed several bugs for upstream]
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->
-> Really nice to see this working!
+Map them to KEY_MACRO# event codes.
 
-[...]
+These buttons are defined by HID as follows:
+"The user defines the function of these buttons to control software applications or GUI objects."
 
-> > +static void qcom_pcie_ep_configure_tcsr(struct qcom_pcie_ep *pcie_ep)
-> > +{
-> > +     writel_relaxed(0x0, pcie_ep->tcsr + TCSR_PCIE_PERST_EN);
->
-> Please avoid _relaxed accessor unless there's a strong reason, and if so
-> document it.
+This matches the semantics of the KEY_MACRO# input event codes that Linux supports.
 
-Uhhh, what!? That's the wrong way around from what I've ever seen
-anyone say. Have you ever looked at the resulting code on arm32 with
-OMAP enabled? It's just a memory barrier and an indirect function call
-on every access.
+Also add support for HID "Named Array" collections.
+Also add hid-debug support for KEY_MACRO#.
 
-Use readl/writel if you have an ordering requirement WRT DMA,
-otherwise use relaxed variants.
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
 
-> > +     writel_relaxed(0x0, pcie_ep->tcsr + TCSR_PERST_SEPARATION_ENABLE);
-> > +}
-> > +
+---
 
-[...]
+v1: https://lore.kernel.org/linux-input/20210519160349.609690-1-linux@weissschuh.net/
 
-> > +static struct platform_driver qcom_pcie_ep_driver = {
-> > +     .probe  = qcom_pcie_ep_probe,
-> > +     .driver = {
-> > +             .name           = "qcom-pcie-ep",
->
-> Skip the indentation of the '='.
->
-> > +             .suppress_bind_attrs = true,
->
-> Why do we suppress_bind_attrs?
+v1 -> v2: Only handle the 30 keys known
 
-Because remove is not handled.
+v2: https://lore.kernel.org/linux-input/20210519174345.614467-1-linux@weissschuh.net/
 
-Rob
+v2 -> v3:
+ * Use hex constants for consistency
+ * Validate that the button is part of a "Programmable Buttons" Named Array.
+   Otherwise the condition would also apply to "Function Buttons".
+ * Ignore non-"Programmable Buttons" buttons.
+
+v3: https://lore.kernel.org/linux-input/20210520084805.685486-1-linux@weissschuh.net/
+
+v3 -> v4:
+ * Mention new support for HID "Named Array" collections in commit message.
+ * Mention new support KEY_MACRO# in hid-debug.
+
+
+ drivers/hid/hid-debug.c | 11 +++++++++++
+ drivers/hid/hid-input.c | 22 ++++++++++++++++++++++
+ include/linux/hid.h     |  1 +
+ 3 files changed, 34 insertions(+)
+
+diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
+index a311fb87b02a..fa57d05badf7 100644
+--- a/drivers/hid/hid-debug.c
++++ b/drivers/hid/hid-debug.c
+@@ -122,6 +122,7 @@ static const struct hid_usage_entry hid_usage_table[] = {
+   {  9, 0, "Button" },
+   { 10, 0, "Ordinal" },
+   { 12, 0, "Consumer" },
++      {0, 0x003, "ProgrammableButtons"},
+       {0, 0x238, "HorizontalWheel"},
+   { 13, 0, "Digitizers" },
+     {0, 0x01, "Digitizer"},
+@@ -942,6 +943,16 @@ static const char *keys[KEY_MAX + 1] = {
+ 	[KEY_KBDINPUTASSIST_NEXTGROUP] = "KbdInputAssistNextGroup",
+ 	[KEY_KBDINPUTASSIST_ACCEPT] = "KbdInputAssistAccept",
+ 	[KEY_KBDINPUTASSIST_CANCEL] = "KbdInputAssistCancel",
++	[KEY_MACRO1] = "Macro1", [KEY_MACRO2] = "Macro2", [KEY_MACRO3] = "Macro3",
++	[KEY_MACRO4] = "Macro4", [KEY_MACRO5] = "Macro5", [KEY_MACRO6] = "Macro6",
++	[KEY_MACRO7] = "Macro7", [KEY_MACRO8] = "Macro8", [KEY_MACRO9] = "Macro9",
++	[KEY_MACRO10] = "Macro10", [KEY_MACRO11] = "Macro11", [KEY_MACRO12] = "Macro12",
++	[KEY_MACRO13] = "Macro13", [KEY_MACRO14] = "Macro14", [KEY_MACRO15] = "Macro15",
++	[KEY_MACRO16] = "Macro16", [KEY_MACRO17] = "Macro17", [KEY_MACRO18] = "Macro18",
++	[KEY_MACRO19] = "Macro19", [KEY_MACRO20] = "Macro20", [KEY_MACRO21] = "Macro21",
++	[KEY_MACRO22] = "Macro22", [KEY_MACRO23] = "Macro23", [KEY_MACRO24] = "Macro24",
++	[KEY_MACRO25] = "Macro25", [KEY_MACRO26] = "Macro26", [KEY_MACRO27] = "Macro27",
++	[KEY_MACRO28] = "Macro28", [KEY_MACRO29] = "Macro29", [KEY_MACRO30] = "Macro30",
+ };
+ 
+ static const char *relatives[REL_MAX + 1] = {
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index abbfa91e73e4..99557641be80 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -567,6 +567,16 @@ static void hidinput_update_battery(struct hid_device *dev, int value)
+ }
+ #endif	/* CONFIG_HID_BATTERY_STRENGTH */
+ 
++static bool hidinput_field_in_collection(struct hid_device *device, struct hid_field *field,
++					 unsigned int type, unsigned int usage)
++{
++	struct hid_collection *collection;
++
++	collection = &device->collection[field->usage->collection_index];
++
++	return collection->type == type && collection->usage == usage;
++}
++
+ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_field *field,
+ 				     struct hid_usage *usage)
+ {
+@@ -632,6 +642,18 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+ 				else
+ 					code += BTN_TRIGGER_HAPPY - 0x10;
+ 				break;
++		case HID_CP_CONSUMER_CONTROL:
++				if (hidinput_field_in_collection(device, field,
++								 HID_COLLECTION_NAMED_ARRAY,
++								 HID_CP_PROGRAMMABLEBUTTONS)) {
++					if (code <= 0x1d)
++						code += KEY_MACRO1;
++					else
++						code += BTN_TRIGGER_HAPPY - 0x1e;
++				} else {
++					goto ignore;
++				}
++				break;
+ 		default:
+ 			switch (field->physical) {
+ 			case HID_GD_MOUSE:
+diff --git a/include/linux/hid.h b/include/linux/hid.h
+index 10e922cee4eb..f05bf96a0d21 100644
+--- a/include/linux/hid.h
++++ b/include/linux/hid.h
+@@ -102,6 +102,7 @@ struct hid_item {
+ #define HID_COLLECTION_PHYSICAL		0
+ #define HID_COLLECTION_APPLICATION	1
+ #define HID_COLLECTION_LOGICAL		2
++#define HID_COLLECTION_NAMED_ARRAY	4
+ 
+ /*
+  * HID report descriptor global item tags
+
+base-commit: 231bc539066760aaa44d46818c85b14ca2f56d9f
+-- 
+2.32.0
+
