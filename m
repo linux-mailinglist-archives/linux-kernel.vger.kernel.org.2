@@ -2,99 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD213A79CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C723A79CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhFOJHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:07:15 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44896 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhFOJHN (ORCPT
+        id S231334AbhFOJH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:07:26 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:51627 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231169AbhFOJHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:07:13 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 535311FD58;
-        Tue, 15 Jun 2021 09:05:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623747908; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BoLaFr9L6D8rCqvKm61qwafxG4D1Hm1B5OnYqiOpR0M=;
-        b=jNaJPNL5OSfxR50ZoFgrnTyMSztqz79CTK8I12ZgNma3Gx83X3flMLW7JdNWZvNa1rrsP2
-        tfFLFs7ipiOapFTZkCzcHxvweg5AjxtCMJDUiLjYXCeh9Y35dP5pxQ8p98iw0qKhJ1u4+X
-        9k5VQpwLs+9l0Ob9PCdf+ANkg8kfp+w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623747908;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BoLaFr9L6D8rCqvKm61qwafxG4D1Hm1B5OnYqiOpR0M=;
-        b=fqAeHTy09GWGVexdXIY6yMqCOE0GrI/RWvSrnh4psCdDx1UtvZRxfS3Ww3JX/GhAvGJdpZ
-        x1lmf5SW4RZmDUBA==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 475AEA3B87;
-        Tue, 15 Jun 2021 09:05:08 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 2F5D71F2C88; Tue, 15 Jun 2021 11:05:08 +0200 (CEST)
-Date:   Tue, 15 Jun 2021 11:05:08 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Jan Kara <jack@suse.cz>,
-        Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH] quota: finish disable quotactl_path syscall
-Message-ID: <20210615090508.GI29751@quack2.suse.cz>
-References: <20210614153712.313707-1-marcin@juszkiewicz.com.pl>
- <20210614164454.GC29751@quack2.suse.cz>
- <CAK8P3a3XbbJ8WnzdsE5f4Uk-O5Z_mBsjc21E6AKuVavvF-_3Cw@mail.gmail.com>
+        Tue, 15 Jun 2021 05:07:24 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lt50W-0003X9-Qg; Tue, 15 Jun 2021 09:05:16 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][V2] net: dsa: b53: remove redundant null check on dev
+Date:   Tue, 15 Jun 2021 10:05:16 +0100
+Message-Id: <20210615090516.5906-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3XbbJ8WnzdsE5f4Uk-O5Z_mBsjc21E6AKuVavvF-_3Cw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15-06-21 10:45:38, Arnd Bergmann wrote:
-> On Mon, Jun 14, 2021 at 6:45 PM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Mon 14-06-21 17:37:12, Marcin Juszkiewicz wrote:
-> > > In commit 5b9fedb31e47 ("quota: Disable quotactl_path syscall") Jan Kara
-> > > disabled quotactl_path syscall on several architectures.
-> > >
-> > > This commit disables it on all architectures using unified list of
-> > > system calls:
-> > >
-> > > - arm64
-> > > - arc
-> > > - csky
-> > > - h8300
-> > > - hexagon
-> > > - nds32
-> > > - nios2
-> > > - openrisc
-> > > - riscv (32/64)
-> > >
-> > > CC: Jan Kara <jack@suse.cz>
-> > > CC: Christian Brauner <christian.brauner@ubuntu.com>
-> > > CC: Sascha Hauer <s.hauer@pengutronix.de>
-> > > Link: https://lore.kernel.org/lkml/20210512153621.n5u43jsytbik4yze@wittgenstein
-> > >
-> > > Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
-> >
-> > Aha, I've missed that one. Thanks for catching this. Arnd, will you take
-> > this patch or should I take it through my tree?
-> 
-> I don't have any other fixes for 5.13 at the moment, so I would prefer it if
-> you could pick it up.
+From: Colin Ian King <colin.king@canonical.com>
 
-OK, thanks for letting me know. I've picked it up.
+The pointer dev can never be null, the null check is redundant
+and can be removed. Cleans up a static analysis warning that
+pointer priv is dereferencing dev before dev is being null
+checked.
 
-								Honza
+Addresses-Coverity: ("Dereference before null check")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+
+V2: Remove null check rather than add b53_srab_intr_set call into a null
+    check statement block.
+    Rephrase commit Subject to reflect the change in the fix.
+
+---
+ drivers/net/dsa/b53/b53_srab.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/dsa/b53/b53_srab.c b/drivers/net/dsa/b53/b53_srab.c
+index aaa12d73784e..3f4249de70c5 100644
+--- a/drivers/net/dsa/b53/b53_srab.c
++++ b/drivers/net/dsa/b53/b53_srab.c
+@@ -632,8 +632,7 @@ static int b53_srab_remove(struct platform_device *pdev)
+ 	struct b53_srab_priv *priv = dev->priv;
+ 
+ 	b53_srab_intr_set(priv, false);
+-	if (dev)
+-		b53_switch_remove(dev);
++	b53_switch_remove(dev);
+ 
+ 	return 0;
+ }
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.31.1
+
