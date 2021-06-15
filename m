@@ -2,141 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3453A86F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41E63A86F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhFOQ5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 12:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
+        id S231261AbhFOQ5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 12:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbhFOQ5d (ORCPT
+        with ESMTP id S229937AbhFOQ5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:57:33 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DB1C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:55:28 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id k21-20020a4a2a150000b029024955603642so3673036oof.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:55:28 -0700 (PDT)
+        Tue, 15 Jun 2021 12:57:49 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BA7C061574;
+        Tue, 15 Jun 2021 09:55:44 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id g24so2837pji.4;
+        Tue, 15 Jun 2021 09:55:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+RaZJtsUnxE0LQhLgGIH6UV1neEgEYWyhmaxMuF1UDE=;
-        b=VrBoYlpG3wNUBP3sbRO2ADGwvl9BBKp0P2yGMmzY7ZCUOuwgg6oK5YUVcBo+fj3gnR
-         avZWr4kNiTMUNJu6BWEbsO/e5Wno19s/0EUzN2BPM3GHCrrBTmwJlI3Hzwp178w9TGnt
-         K8tAjo7+V2O8iquaV5Xmf5PZfKJvh76wfBpNE=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6cywzrtxF0WoS/TsTMjJVX6mN6n2DyrDVFTqSDjlabI=;
+        b=RsGRtTv7lk16CJn72Vtd/rg3VR6kcIy3bg1xWznNey3sK1oHA+TO28eHK8Xjy8rXBK
+         vqMv3f1uNIH69dOvSyWpsNOjDYsyxcDUmkmW4+21QbyzhD4fAVdP3nBI8f16RS/9NSMc
+         oGDcJGfjSMu7rbpKrTb+GUe5WZh1DO+3aMVst5dma3EQkWvH2xW1h2T7a9tiGmJRTx/A
+         Ibk2ivGAE6/X9PMzfPu+e+ay+dgTZ+gHOCpAYyLkXHjeQ5YdRWjdQb7Ab/DxUeuyHGxC
+         yjRdB9KV+PQmXzKpWd7L+x6m012PflvfJgb6t7DjWpS8dlkQD1ppUmNYcOZ7C6zHtQUe
+         LdFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+RaZJtsUnxE0LQhLgGIH6UV1neEgEYWyhmaxMuF1UDE=;
-        b=fE2HSlmrZgIzO91CA0JdFwBs8Th78+AfEutV5jnvVpFkt3M3DvyhyVbMgNENzyPb31
-         DFWCkNHgZBZ6HWjP2sIDkrmP3aReVuU3tJo9U0DlU8WOlMWo/LpBnnn+7WDtNcISaErC
-         xXqNM2tgE9dqzcTU/fBPDLrznsTn3eteDwLGIe+rC2fBag6MHXIH2UOE/496vrlF4Gf3
-         9NUstMnsgJ30Oiz+7qGepT25y27aCcYVKgDmUuhGwk4TO5cZI2wU3vqLFq/s2Ofh9f3T
-         C4gXwLaF/7jIEhSlp9munIUWARhlmeGu2KG97Ml4GcP82c83eg9IBEgbeUUKwpux86MS
-         0W7g==
-X-Gm-Message-State: AOAM533EaFa5EM5kiBU5uo84O0nhjorHu+LhXqZWDNL2B6JT1Za/I93S
-        g5D+TFDTYDu45v6cC65CVGfgLw==
-X-Google-Smtp-Source: ABdhPJzYUKrrelOAEP5pQNrS0CNPNMjjx7cG2nUYfg+jzD3ZgZoSWPchkoTPjLj3kiiadimBxRdE6A==
-X-Received: by 2002:a4a:df47:: with SMTP id j7mr109033oou.79.1623776127691;
-        Tue, 15 Jun 2021 09:55:27 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l10sm4135693otj.17.2021.06.15.09.55.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 09:55:27 -0700 (PDT)
-Subject: Re: [PATCH] media: Fix Media Controller API config checks
-To:     Hans Verkuil <hverkuil@xs4all.nl>, sakari.ailus@linux.intel.com,
-        laurent.pinchart@ideasonboard.com, dan.carpenter@oracle.com,
-        mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20210611015849.42589-1-skhan@linuxfoundation.org>
- <3745852a-a14d-3e66-dd9f-409ec7e43f48@xs4all.nl>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <ee53183f-6c44-4ddb-a8b1-40d650772c73@linuxfoundation.org>
-Date:   Tue, 15 Jun 2021 10:55:26 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6cywzrtxF0WoS/TsTMjJVX6mN6n2DyrDVFTqSDjlabI=;
+        b=dHmobvTDe/7NORQBzriOa99q+N+w8cYQJ0qQ16iYEhf2LajTaY0Ks8y1aaHAtG9Tma
+         SS6ES0fmJ2AO3hrqEcYe24odfNGmIu5ucvuHnqllBeJ114O2FqGjZlmSkZU6GlXMxJ7L
+         CidQziJ1ED55H+mxloVl9AaR1RFVuHx7utymt/Qkpe9QBfZ8OsEL8TNKVFVBPZqiukCL
+         /mveZT6H8GSdb3+lnHdmJb+/VMh9nzr+ulnqkHUNgJjVYiTO9SjxY0v5jK9z25UYGX1u
+         P+nRSJ1vy7f9rXLM2sIbsz4tr0jv4WAUI+nCPOB+P7hOkdPAORfWZsFQQgcVb9GrDbek
+         l61g==
+X-Gm-Message-State: AOAM531HEFwuJAVhP4Bq6g+oy30eoemyWzKuaqZFMhdTyoa3aZiVyGT5
+        x6tVz4B4L4NduKCEFO2HqiVfBLax8Hg=
+X-Google-Smtp-Source: ABdhPJxYBdu1stVVzBtq3ZF/NpgCCqC2WRzTqVIYhz6Su4DYWxEgSsfWZfetgssnpPZqihRmLnHQUw==
+X-Received: by 2002:a17:90a:de16:: with SMTP id m22mr5747131pjv.60.1623776143758;
+        Tue, 15 Jun 2021 09:55:43 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:2a26:15ba:dc71:c4ba])
+        by smtp.gmail.com with ESMTPSA id s13sm16318287pjm.34.2021.06.15.09.55.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 09:55:42 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 09:55:39 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     linux-input@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.d, pinglinux@gmail.com,
+        tatsunosuke.tobita@wacom.com, junkpainting@gmail.com,
+        ping.cheng@wacom.com, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v6 3/9] Input: wacom_i2c - Add device tree support to
+ wacom_i2c
+Message-ID: <YMjbi2sz/y0RFG3z@google.com>
+References: <20210615103014.798-1-alistair@alistair23.me>
+ <20210615103014.798-4-alistair@alistair23.me>
 MIME-Version: 1.0
-In-Reply-To: <3745852a-a14d-3e66-dd9f-409ec7e43f48@xs4all.nl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615103014.798-4-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 7:36 AM, Hans Verkuil wrote:
-> Hi Shuah,
+On Tue, Jun 15, 2021 at 08:30:08PM +1000, Alistair Francis wrote:
+> Allow the wacom-i2c device to be exposed via device tree.
 > 
-> On 11/06/2021 03:58, Shuah Khan wrote:
->> Smatch static checker warns that "mdev" can be null:
->>
->> sound/usb/media.c:287 snd_media_device_create()
->>      warn: 'mdev' can also be NULL
->>
->> If CONFIG_MEDIA_CONTROLLER is disabled, this file should not be included
->> in the build.
->>
->> The below conditions in the sound/usb/Makefile are in place to ensure that
->> media.c isn't included in the build.
->>
->> sound/usb/Makefile:
->> snd-usb-audio-$(CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER) += media.o
->>
->> select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER &&
->>         (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND_USB_AUDIO)
->>
->> The following config check in include/media/media-dev-allocator.h is
->> in place to enable the API only when CONFIG_MEDIA_CONTROLLER and
->> CONFIG_USB are enabled.
->>
->>   #if defined(CONFIG_MEDIA_CONTROLLER) && defined(CONFIG_USB)
->>
->> This check doesn't work as intended when CONFIG_USB=m. When CONFIG_USB=m,
->> CONFIG_USB_MODULE is defined and CONFIG_USB is not. The above config check
->> doesn't catch that CONFIG_USB is defined as a module and disables the API.
->> This results in sound/usb enabling Media Controller specific ALSA driver
->> code, while Media disables the Media Controller API.
->>
->> Fix the problem requires two changes:
->>
->> 1. Change the check to use IS_ENABLED to detect when CONFIG_USB is enabled
->>     as a module or static. Since CONFIG_MEDIA_CONTROLLER is a bool, leave
->>     the check unchanged to be consistent with drivers/media/Makefile.
->>
->> 2. Change the drivers/media/mc/Makefile to include mc-dev-allocator.o
->>     in mc-objs when CONFIG_USB is y or m.
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  drivers/input/touchscreen/wacom_i2c.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> If I test this patch, then I get:
-> 
-> drivers/media/mc/mc-dev-allocator.c:97:22: error: redefinition of 'media_device_usb_allocate'
->     97 | struct media_device *media_device_usb_allocate(struct usb_device *udev,
->        |                      ^~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/media/mc/mc-dev-allocator.c:24:
-> include/media/media-dev-allocator.h:55:36: note: previous definition of 'media_device_usb_allocate' was here
->     55 | static inline struct media_device *media_device_usb_allocate(
->        |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/media/mc/mc-dev-allocator.c:119:6: error: redefinition of 'media_device_delete'
->    119 | void media_device_delete(struct media_device *mdev, const char *module_name,
->        |      ^~~~~~~~~~~~~~~~~~~
-> In file included from drivers/media/mc/mc-dev-allocator.c:24:
-> include/media/media-dev-allocator.h:59:20: note: previous definition of 'media_device_delete' was here
->     59 | static inline void media_device_delete(
->        |                    ^~~~~~~~~~~~~~~~~~~
-> 
-> The .config has:
-> 
-> # CONFIG_USB_SUPPORT is not set
-> CONFIG_MEDIA_CONTROLLER=y
+> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
+> index 22826c387da5..6053595f2b30 100644
+> --- a/drivers/input/touchscreen/wacom_i2c.c
+> +++ b/drivers/input/touchscreen/wacom_i2c.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/irq.h>
+>  #include <linux/interrupt.h>
+> +#include <linux/of.h>
+>  #include <asm/unaligned.h>
+>  
+>  #define WACOM_CMD_QUERY0	0x04
+> @@ -241,10 +242,17 @@ static const struct i2c_device_id wacom_i2c_id[] = {
+>  };
+>  MODULE_DEVICE_TABLE(i2c, wacom_i2c_id);
+>  
+> +static const struct of_device_id wacom_i2c_of_match_table[] = {
+> +	{ .compatible = "wacom,i2c-30" },
+
+What is this compatible?
+
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, wacom_i2c_of_match_table);
+> +
+>  static struct i2c_driver wacom_i2c_driver = {
+>  	.driver	= {
+>  		.name	= "wacom_i2c",
+>  		.pm	= &wacom_i2c_pm,
+> +		.of_match_table = wacom_i2c_of_match_table,
+>  	},
+>  
+>  	.probe		= wacom_i2c_probe,
+> -- 
+> 2.31.1
 > 
 
-Hans,
-
-Can you share your full config with me?
-
-thanks,
--- Shuah
-
+-- 
+Dmitry
