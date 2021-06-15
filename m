@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C00843A8886
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA7F3A888B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhFOS0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 14:26:41 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:50967 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbhFOS0k (ORCPT
+        id S231657AbhFOS1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 14:27:45 -0400
+Received: from mail-pf1-f169.google.com ([209.85.210.169]:35698 "EHLO
+        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230000AbhFOS1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:26:40 -0400
-Received: from [192.168.1.155] ([95.115.9.120]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MS4WT-1lixGP0g7H-00TTUD; Tue, 15 Jun 2021 20:23:58 +0200
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-To:     David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
-        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
-References: <YLEIKk7IuWu6W4Sy@casper.infradead.org> <YH2hs6EsPTpDAqXc@mit.edu>
- <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
- <YIx7R6tmcRRCl/az@mit.edu>
- <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
- <YK+esqGjKaPb+b/Q@kroah.com>
- <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
- <1745326.1623409807@warthog.procyon.org.uk>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <e47706ee-3e4b-8f15-963f-292b5e47cb1d@metux.net>
-Date:   Tue, 15 Jun 2021 20:23:55 +0200
+        Tue, 15 Jun 2021 14:27:44 -0400
+Received: by mail-pf1-f169.google.com with SMTP id h12so111258pfe.2;
+        Tue, 15 Jun 2021 11:25:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=t75Eshf3FtAd9dxRc0GBGh60Gm8DFewQEc7KQ6oYmIA=;
+        b=QOSBKLSwG2Qy/wdwE977/nkGvih6E+zlzRL/SpF9Vtn+qM8nqxDwreKfqUyxJC09ha
+         Bo+N+1SlEWDCHTkTt1wFHDhC8rpeM4lJFGWkxEeq3UdvryBZxEtJh5jX7HYInJ3yv3q0
+         s+wHtH/+7+Hwdx9c5kHUTrHJJ5iTDP0YqXksP74gC0kQZ64ykJhkkDxVOhG8M0XBkr/E
+         64EJhRu3/H3TttxFKMYoOPVlBEvU9Rw+NjZG5U+J1s6XxSWQTTSAzVRUkdkgheRF3XB/
+         okMp6j7mIgmsaXRgMWcu09bMzgtnsuLUX9CJHYklt/VgWspAfvfRLnV7uvNQuS8FWLHL
+         E6Ng==
+X-Gm-Message-State: AOAM532BTP+UihbbkAfKt7TVeumaLS8mWsfsxchGMq1c6kqCBr/T8y3h
+        PC7lRCJaTZYPAEP1T7Re9qkFAYsF97Y=
+X-Google-Smtp-Source: ABdhPJzbIqqApABK6kJsbgY1wlf09wbEJRIegcgc/CHe0hvJu33GcwyzEMSz1TZ/JYp0ErfNd3vEug==
+X-Received: by 2002:a63:1004:: with SMTP id f4mr804224pgl.115.1623781537577;
+        Tue, 15 Jun 2021 11:25:37 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id h4sm3515370pjv.55.2021.06.15.11.25.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 11:25:36 -0700 (PDT)
+Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
+ ufshcd_abort() for PM requests
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-9-git-send-email-cang@codeaurora.org>
+ <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
+ <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
+ <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
+ <75527f0ba5d315d6edbf800a2ddcf8c7@codeaurora.org>
+ <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
+ <3fce15502c2742a4388817538eb4db97@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <fabc70f8-6bb8-4b62-3311-f6e0ce9eb2c3@acm.org>
+Date:   Tue, 15 Jun 2021 11:25:35 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <1745326.1623409807@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:l1dWw5GINi5d9D6KdR/MfM5/FegWRbfl0vjxnR2yUdW9Vwv9oLT
- MEAHr8PyP8YcC6o+Yqn4LF4f1dF2zEYvYGt60YROchUahACz9shvV58vHwPsKWuLb8rGm3P
- IR2CxVWI5mN7CFH8hcq3ue3m5Nn8F7oX0u8tjkhXfP1fB4XQ+9VueDbHjcVaZZ82YsvanSM
- rftvqMwBTus20ymBQFk4Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ic+UfAApxeg=:xMi+C1LWXRsimoNEKsnwKG
- 5mxcU0vHtj9Zm5HEjCy9h9sUq5qPtpjfzWgy0mhHsk86qbr9dJQfN7QAj9Quv1JbUcrcCRzdl
- bUfQvSEb0KC+9hi+WwMlV38TArCl/DAouSqiCQNao7pvtjN1M9CC8E86nLAHtrAMf6E9XI1dc
- tCA5UBAou1Z1Dm02ZUCUDV1JdZcL91ADBpOOiJ64NaVXgv2BB42jpmTg8pubJ2MJSkM4dDY1G
- wrLS0oWdW9mIun9Og6RY3Bg0NUo09Wl5QXxyzpWw8WVYkbSpnHxhumPCGcbJMAJyLToVBeWwi
- AC8dECaRBRfRBTG4medz4Eow5RSIuY6dBBIXI+dkdb/zBvt60HeWrL9FU76+szy+iBNrtxLYd
- Du0Z+O4kxMoxbR+xZ9b3KnABes+BV82fRKnWKuHb9E3I6whEmhwV3KVhx3wDjdJwqTyaMePQi
- zx08rCWC2amopXPxWcwFxvphs2Mox2d2bgIaZWix19xu5b2A6NEeZ9Y/RDvnpxnGWOKM5t0td
- cE2C39N+fJT2AJRCXYwZLE=
+In-Reply-To: <3fce15502c2742a4388817538eb4db97@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.06.21 13:10, David Howells wrote:
-
-> One thing that concerns me about flying to the US is going through multiple
-> busy international airports - take Heathrow which didn't separate incoming
-> travellers from red-listed countries from those of amber- or green- until like
-> a week ago.
+On 6/14/21 7:36 PM, Can Guo wrote:
+> I've considered the similar way (leverage hba->host->eh_noresume) last
+> year,
+> but I didn't take this way due to below reasons:
 > 
-> Would it be practical/economical to charter a plane to fly, say, from a less
-> busy airport in Europe to a less busy airport in the US and back again if we
-> could get enough delegates together to make it worthwhile?
+> 1. UFS error handler basically does one thing - reset and restore, which
+> stops hba [1], resets device [2] and re-probes the device [3]. Stopping
+> hba [1]
+> shall complete any pending requests in the doorbell (with error or no
+> error).
+> After [1], suspend/resume contexts, blocked by SSU cmd, shall be unblocked
+> right away to do whatever it needs to handle the SSU cmd failure (completed
+> in [1], so scsi_execute() returns an error), e.g., put link back to the old
+> state. call ufshcd_vops_suspend(), turn off irq/clocks/powers and etc...
+> However, reset and restore ([2] and [3]) is still running, and it can
+> (most likely)
+> be disturbed by suspend/resume. So passing a parameter or using
+> hba->host->eh_noresume
+> to skip lock_system_sleep() and unlock_system_sleep() can break the cycle,
+> but error handling may run concurrently with suspend/resume. Of course
+> we can
+> modify suspend/resume to avoid it, but I was pursuing a minimal change
+> to get this fixed.
+> 
+> 2. Whatever way we take to break the cycle, suspend/resume shall fail and
+> RPM framework shall save the error to dev.power.runtime_error, leaving
+> the device in runtime suspended or active mode permanently. If it is left
+> runtime suspended, UFS driver won't accept cmd anymore, while if it is left
+> runtime active, powers of UFS device and host will be left ON, leading
+> to power
+> penalty. So my main idea is to let suspend/resume contexts, blocked by
+> PM cmds,
+> fail fast first and then error handler recover everything back to work.
 
-Wouldn't just taking prophylatic meds like CDS or HCQ and/or hi-dose
-vitamins (C, D3+K2) be way more cost effective and flexible than to
-charter a whole plane ?
+Hi Can,
 
-Don't have personal experience w/ HCQ yet, but CDS is pretty cheap and
-easy to use (prescription free). Of course, one should dig a bit into
-the specialist literature, before playing around - and take a few days
-for finding the right personal dose. especially when one's cumbered w/ 
-parasites (herxheimer)
+Has it been considered to make the UFS error handler fail pending
+commands with an error code that causes the SCSI core to resubmit the
+SCSI command, e.g. DID_IMM_RETRY or DID_TRANSPORT_DISRUPTED? I want to
+prevent that power management or suspend/resume callbacks fail if the
+error handler succeeds with recovering the UFS transport.
 
+Thanks,
 
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Bart.
