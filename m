@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886223A7B0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AA53A7B14
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhFOJtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:49:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231494AbhFOJtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:49:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFE0C60FEA;
-        Tue, 15 Jun 2021 09:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623750422;
-        bh=0NgUrEQmnusO9U4XUcIRjeQHHVusUVV7w7uNhE6McsM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iC/A7xvdit46bvr/3dyO2a+85Yj4BZ5XmJRPud5aXFD0D5gc7AOAqMmydpCXPyOI0
-         /31zzTRyNq9f0MYmfSsf9LMyFqU5bkZQfPRv3yOJKtiSF9IZQEBAle8Pj8ous7AqzR
-         aOnsGrC/oNyUJjNURCMfpKMtCwn1dxT1mwIBpKbk=
-Date:   Tue, 15 Jun 2021 11:46:59 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     hminas@synopsys.com, paul@crapouillou.net,
-        linux-mips@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com,
-        Dragan =?utf-8?B?xIxlxI1hdmFj?= <dragancecavac@yahoo.com>
-Subject: Re: [PATCH] USB: DWC2: Add VBUS overcurrent detection control.
-Message-ID: <YMh3Ezr86NLPH+Aj@kroah.com>
-References: <1616513066-62025-1-git-send-email-zhouyanjie@wanyeetech.com>
- <YFoJ0Z6K4B5smbQx@kroah.com>
- <20210615161456.2dd501a1@zhouyanjie-virtual-machine>
+        id S231557AbhFOJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231316AbhFOJtm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 05:49:42 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59054C0613A2;
+        Tue, 15 Jun 2021 02:47:36 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id c18-20020a05600c0ad2b02901cee262e45fso716923wmr.4;
+        Tue, 15 Jun 2021 02:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5s24YduTPQUCOlxF8wsHy3Qgh5jZvUWHVZCaONw0MXE=;
+        b=rcT+h6YEzv6+ZfD/x+7fkZ9RckGCNngfqbYj+Rn5SGBIVOw28om/HcysaYQGqsaB2o
+         jSsG6R4o81C2V4tDlTORc4eGjA/0yBKFDyxSuZ1eooADK2i81XPJ14iW0hLob0IGU98l
+         Jqv+P2hGkE9CMB4Vf7WUrTkmuMUeg35tNstIHDIeK11bpcUWXhqqe8ErONpwxhyR7ODD
+         MeHesFDBhnZYlDp75xwWwvospX6XQUSyuEte09YhfxR29awtK28oqqLMihz9ZSFDwwxR
+         7voTSJVqzGnkREstpsIcaofKzygIlAp4CScWQdXuiLOQqQKzcnbkvrhYq02+9aYeR1u7
+         brpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5s24YduTPQUCOlxF8wsHy3Qgh5jZvUWHVZCaONw0MXE=;
+        b=aJhgWN3a8mZJ99Vk+9HYvYkTdmIz6b3nDL2Xl7m09312o4Gc4IEgZloQUrG/mGyavA
+         xFqny+i+0ANrfsJV3w0n5RqEzkcZQO+RaG+y/7qE0ITV4Y93Gt6gZi5hOLf4TU4MwRz4
+         W6wJu/W4DF5IkIN8q0kKfxGxG7rRNBVm99kUKhtmfv0mZvJCknaxM+1LWVY7POJso1oi
+         nRdUzBGSUDCE0cQZ0C4l1ALi/J+O5r94k6shDet72h1aHb87MJrM9VJgqKxpF6d9thSz
+         C3buRZSEHL3VwrHxLAydqPt735NZpWLHaMffpixa8oO5yKWR/m4BEwn54Qq/CvEWtNlk
+         STQQ==
+X-Gm-Message-State: AOAM532JR9bUqgQU08GKSM8rhSD54Js773bqmhS79IWRO8qo/Gn1vDcM
+        K/VPQW6+DnsAR7KmotGRcDs=
+X-Google-Smtp-Source: ABdhPJyAVU4OhYEeBq4wo1CAtyDD0Puj3qN9LA1zJ49lNIXdzVPret9b7N6TKWXbcJB4rjXbseyP7Q==
+X-Received: by 2002:a05:600c:350a:: with SMTP id h10mr21635367wmq.164.1623750454934;
+        Tue, 15 Jun 2021 02:47:34 -0700 (PDT)
+Received: from debian (host-84-13-31-66.opaltelecom.net. [84.13.31.66])
+        by smtp.gmail.com with ESMTPSA id l13sm19096051wrz.34.2021.06.15.02.47.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 02:47:34 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 10:47:32 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/67] 4.19.195-rc1 review
+Message-ID: <YMh3NP2af96pLMXy@debian>
+References: <20210614102643.797691914@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210615161456.2dd501a1@zhouyanjie-virtual-machine>
+In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 04:16:39PM +0800, 周琰杰 wrote:
-> Hi Greg,
-> 
-> Sorry for taking so long to reply.
-> 
-> 于 Tue, 23 Mar 2021 16:31:29 +0100
-> Greg KH <gregkh@linuxfoundation.org> 写道:
-> 
-> > On Tue, Mar 23, 2021 at 11:24:26PM +0800, 周琰杰 (Zhou Yanjie) wrote:
-> > > Introduce configurable option for enabling GOTGCTL register
-> > > bits VbvalidOvEn and VbvalidOvVal. Once selected it disables
-> > > VBUS overcurrent detection.
-> > > 
-> > > This patch is derived from Dragan Čečavac (in the kernel 3.18
-> > > tree of CI20). It is very useful for the MIPS Creator CI20(r1).
-> > > Without this patch, CI20's OTG port has a great probability to
-> > > face overcurrent warning, which breaks the OTG functionality.
-> > > 
-> > > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> > > Signed-off-by: Dragan Čečavac <dragancecavac@yahoo.com>
-> > > ---
-> > >  drivers/usb/dwc2/Kconfig | 6 ++++++
-> > >  drivers/usb/dwc2/core.c  | 9 +++++++++
-> > >  2 files changed, 15 insertions(+)
-> > > 
-> > > diff --git a/drivers/usb/dwc2/Kconfig b/drivers/usb/dwc2/Kconfig
-> > > index c131719..e40d187 100644
-> > > --- a/drivers/usb/dwc2/Kconfig
-> > > +++ b/drivers/usb/dwc2/Kconfig
-> > > @@ -94,4 +94,10 @@ config USB_DWC2_DEBUG_PERIODIC
-> > >  	  non-periodic transfers, but of course the debug logs
-> > > will be incomplete. Note that this also disables some debug messages
-> > >  	  for which the transfer type cannot be deduced.
-> > > +
-> > > +config USB_DWC2_DISABLE_VOD
-> > > +	bool "Disable VBUS overcurrent detection"
-> > > +	help
-> > > +	  Say Y here to switch off VBUS overcurrent detection. It
-> > > enables USB
-> > > +	  functionality blocked by overcurrent detection.  
-> > 
-> > Why would this be a configuration option?  Shouldn't this be dynamic
-> > and just work properly automatically?
-> > 
-> > You should not have to do this on a build-time basis, it should be
-> > able to be detected and handled properly at run-time for all devices.
-> > 
-> 
-> I consulted the original author Dragan Čečavac, he think since this is
-> a feature which disables overcurrent detection, so we are not sure if
-> it could be harmful for some devices. Therefore he advise against
-> enabling it in runtime, and in favor that user explicitely has to
-> enable it.
+Hi Greg,
 
-That will not work AT ALL for systems that build a generic kernel for
-multiple devices (i.e. Android kernels), so please make this a runtime
-determination based on the hardware capabilities.
-
-> > If you know this is needed for a specific type of device, detect it
-> > and make the change then, otherwise this could break working systems,
-> > right?
+On Mon, Jun 14, 2021 at 12:26:43PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.195 release.
+> There are 67 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> According to the information provided by Dragan Čečavac, this function
-> (select whether to enable over-current detection through the otgctl
-> register) don't seem to be available for all dwc2 controllers, so it
-> might make sense to add MACH_INGENIC dependency to
-> USB_DWC2_DISABLE_VOD, which could provide additional protection from
-> unwanted usage.
+> Responses should be made by Wed, 16 Jun 2021 10:26:30 +0000.
+> Anything received after that time might be too late.
 
-Again, make this dynamic and only happen for devices that know it will
-work on, based on some hardware information (device type of DT value).
-Do not make this happen based on a Kconfig option.
+Build test:
+mips (gcc version 11.1.1 20210523): 63 configs -> no failure
+arm (gcc version 11.1.1 20210523): 116 configs -> no new failure
+arm64 (gcc version 11.1.1 20210523): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
-thanks,
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
 
-greg k-h
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
+
