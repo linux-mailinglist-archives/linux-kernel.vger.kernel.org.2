@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3493A74EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1C43A74EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhFODV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:21:29 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4777 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhFODV2 (ORCPT
+        id S230364AbhFODWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:22:09 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4909 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230017AbhFODWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:21:28 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G3rxZ6km8zXg13;
-        Tue, 15 Jun 2021 09:55:30 +0800 (CST)
+        Mon, 14 Jun 2021 23:22:08 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G3s0r4QBGz6yrZ;
+        Tue, 15 Jun 2021 09:58:20 +0800 (CST)
 Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 10:00:30 +0800
+ 15.1.2176.2; Tue, 15 Jun 2021 10:01:23 +0800
 Received: from [10.174.177.174] (10.174.177.174) by
  dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 10:00:29 +0800
-Subject: Re: [PATCH -next] powerpc/spider-pci: Remove set but not used
- variable 'val'
-To:     <arnd@arndb.de>, <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
-        <paulus@samba.org>, <linuxppc-dev@lists.ozlabs.org>,
+ 15.1.2176.2; Tue, 15 Jun 2021 10:01:22 +0800
+Subject: Re: [PATCH -next] drm/nouveau:disp: Remove set but not used variable
+ 'ret'
+To:     <bskeggs@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <lyude@redhat.com>, <airlied@redhat.com>, <jajones@nvidia.com>,
+        <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
         <yangjihong1@huawei.com>, <yukuai3@huawei.com>
-References: <20210601085319.140461-1-libaokun1@huawei.com>
+References: <20210515090155.186083-1-libaokun1@huawei.com>
 From:   "libaokun (A)" <libaokun1@huawei.com>
-Message-ID: <29287300-6b6b-1773-a950-61ea20f1959c@huawei.com>
-Date:   Tue, 15 Jun 2021 10:00:29 +0800
+Message-ID: <caf4d2ad-f8ff-d014-360b-0945ee374304@huawei.com>
+Date:   Tue, 15 Jun 2021 10:01:22 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210601085319.140461-1-libaokun1@huawei.com>
+In-Reply-To: <20210515090155.186083-1-libaokun1@huawei.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  dggpeml500020.china.huawei.com (7.185.36.88)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -50,33 +51,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 ping
 
-在 2021/6/1 16:53, Baokun Li 写道:
+在 2021/5/15 17:01, Baokun Li 写道:
+> From: "libaokun1@huawei.com" <libaokun1@huawei.com>
+>
 > Fixes gcc '-Wunused-but-set-variable' warning:
 >
-> arch/powerpc/platforms/cell/spider-pci.c: In function 'spiderpci_io_flush':
-> arch/powerpc/platforms/cell/spider-pci.c:28:6: warning:
-> variable ‘val’ set but not used [-Wunused-but-set-variable]
+> drivers/gpu/drm/nouveau/dispnv50/disp.c: In function 'nv50_mstm_cleanup':
+> drivers/gpu/drm/nouveau/dispnv50/disp.c:1389:6: warning:
+>   variable ‘ret’ set but not used [-Wunused-but-set-variable]
+>
+> drivers/gpu/drm/nouveau/dispnv50/disp.c: In function 'nv50_mstm_prepare':
+> drivers/gpu/drm/nouveau/dispnv50/disp.c:1413:6: warning:
+>   variable ‘ret’ set but not used [-Wunused-but-set-variable]
 >
 > It never used since introduction.
 >
 > Signed-off-by: Baokun Li <libaokun1@huawei.com>
 > ---
->   arch/powerpc/platforms/cell/spider-pci.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+>   drivers/gpu/drm/nouveau/dispnv50/disp.c | 9 +++------
+>   1 file changed, 3 insertions(+), 6 deletions(-)
 >
-> diff --git a/arch/powerpc/platforms/cell/spider-pci.c b/arch/powerpc/platforms/cell/spider-pci.c
-> index 93ea41680f54..a1c293f42a1f 100644
-> --- a/arch/powerpc/platforms/cell/spider-pci.c
-> +++ b/arch/powerpc/platforms/cell/spider-pci.c
-> @@ -25,10 +25,9 @@ struct spiderpci_iowa_private {
->   static void spiderpci_io_flush(struct iowa_bus *bus)
+> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> index 1c9c0cdf85db..5ee3f1fc76d7 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> @@ -1386,12 +1386,10 @@ nv50_mstm_cleanup(struct nv50_mstm *mstm)
 >   {
->   	struct spiderpci_iowa_private *priv;
-> -	u32 val;
+>   	struct nouveau_drm *drm = nouveau_drm(mstm->outp->base.base.dev);
+>   	struct drm_encoder *encoder;
+> -	int ret;
 >   
->   	priv = bus->private;
-> -	val = in_be32(priv->regs + SPIDER_PCI_DUMMY_READ);
-> +	in_be32(priv->regs + SPIDER_PCI_DUMMY_READ);
->   	iosync();
->   }
+>   	NV_ATOMIC(drm, "%s: mstm cleanup\n", mstm->outp->base.base.name);
+> -	ret = drm_dp_check_act_status(&mstm->mgr);
+> -
+> -	ret = drm_dp_update_payload_part2(&mstm->mgr);
+> +	drm_dp_check_act_status(&mstm->mgr);
+> +	drm_dp_update_payload_part2(&mstm->mgr);
 >   
+>   	drm_for_each_encoder(encoder, mstm->outp->base.base.dev) {
+>   		if (encoder->encoder_type == DRM_MODE_ENCODER_DPMST) {
+> @@ -1410,10 +1408,9 @@ nv50_mstm_prepare(struct nv50_mstm *mstm)
+>   {
+>   	struct nouveau_drm *drm = nouveau_drm(mstm->outp->base.base.dev);
+>   	struct drm_encoder *encoder;
+> -	int ret;
+>   
+>   	NV_ATOMIC(drm, "%s: mstm prepare\n", mstm->outp->base.base.name);
+> -	ret = drm_dp_update_payload_part1(&mstm->mgr);
+> +	drm_dp_update_payload_part1(&mstm->mgr);
+>   
+>   	drm_for_each_encoder(encoder, mstm->outp->base.base.dev) {
+>   		if (encoder->encoder_type == DRM_MODE_ENCODER_DPMST) {
