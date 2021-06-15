@@ -2,115 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D38F3A7B57
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECAB3A7B59
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhFOKDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
+        id S231415AbhFOKDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhFOKDT (ORCPT
+        with ESMTP id S231439AbhFOKDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:03:19 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06663C061574;
-        Tue, 15 Jun 2021 03:01:15 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id ho18so21578897ejc.8;
-        Tue, 15 Jun 2021 03:01:14 -0700 (PDT)
+        Tue, 15 Jun 2021 06:03:42 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCCAC061574;
+        Tue, 15 Jun 2021 03:01:32 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id f16-20020a05600c1550b02901b00c1be4abso1343046wmg.2;
+        Tue, 15 Jun 2021 03:01:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6z4408/6oQsiDbv7fByF9r7biAOY0o4N+GInpU23pkI=;
-        b=H06GhBmxY91XwIBiT6QAmQpAftMWvSYiSkZ1ikjQiL/ABWIc6qzGO96hKW2gZMGb8i
-         LPGM6p3HrLH5zBeTr2aFA0tc7/l3iZL3/+l4qB8ZwulLOQD6sIaU1oJA8GKcNaMWsbws
-         lFSjtNYGjK63ptwBFN6XZPDIMY0jwp+KT/8bJMylNwfW3yTyqtzDS4rgcNqti4cqu8hF
-         8F/XzvIhvRLhlw0Jw9BjtkyUHnGGJaIToVlmnZ7F3q3QjBRHXYnfJW4kOUCUtrc4W3nd
-         GZRDASpUW3UpxKzXgTBfVY7kj4UzzdGgjJq/j3NKG1CqGI9Zg0Ql29g3cC7NLxBnJp/+
-         JdPQ==
+        h=to:references:from:subject:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=6m2622jH6xxUBqqW7CQu925QgNn7I6YBkLdVIXOmSOk=;
+        b=kWzBnPerdDME4nff5nC4aP50OIa/17pFnPzgC4+LOTFo6y+XyVXyFrkAdVNtcb517V
+         gN3RU0+gPjwuAfVKbrY68WRvDqcGCx7CxLF54Zna5XUzRTMjbXNd7wZ/SY9zktecm8JW
+         yT3C4R3B8MIaxdXmXxvYmqnbWc2F1QXy297XuroOCeZ/E1hYMj+nDRC0FV7DlqFHDuRM
+         Dv6rHyz+YxkPJnq6cRadxV0D5QJOo4+lvX0ZDn6RvvXxHjKoVIrB/ocXrNcWVTHwv9NH
+         Tnrj9G04nW30tajrJK4njmEDaF/N69cfrF/QhNcADUkqLflOxXXzPl2laV5ANExMkfFf
+         Ct1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6z4408/6oQsiDbv7fByF9r7biAOY0o4N+GInpU23pkI=;
-        b=LO6ee3JC4uo0tiYbDDRIKnYnuIseQ4BuJRSgZHtpWgme3KCRm9MzZBmAyHy8TXpJ8Q
-         GGpk4BeYdC71KDdudKBh7iVSP8souO9ZVwpIaf7mwfk5LNQnxDKoC4T/kvItEUQ/wvpN
-         VZYZN4N2mGrna03zJySk1O5AXSRuoKnkG4VuOlvtzHIK/jxGr4+BrhPz9q3U2KavWMQ8
-         RW/P6zVItC9HqPrPJVEAw8O/rV+A9We1Ypu3gc3HP2Ti7wmqGLLly8c+is1MxpM7YYmH
-         /Hs6K/Q4wPFfvZW4ogHd/EiwhKuQknv2NLYDIhGQAtQ3jlFFZ9b/reQbJI9KFixUbOiY
-         Vrhg==
-X-Gm-Message-State: AOAM531L5T8/p2TDAPestyLdZv9kgdzlEqM+XlIiBcrBGyP1X+2PHKHT
-        tPNHXezKoI+iz+2WZSYhfPGsRNX6LNWaSf/orRk=
-X-Google-Smtp-Source: ABdhPJw8+LEtoar+pUf2dCxfuXnKoD7N5HCuiqVYRWxj5aO6xnN+gaJI4iET9GPlCrNM0Q0X32v18zP6Ztg1Aywjybk=
-X-Received: by 2002:a17:906:c293:: with SMTP id r19mr20197055ejz.252.1623751273558;
- Tue, 15 Jun 2021 03:01:13 -0700 (PDT)
+        h=x-gm-message-state:to:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6m2622jH6xxUBqqW7CQu925QgNn7I6YBkLdVIXOmSOk=;
+        b=a8n9rn4tPqP5TGWZYCfmYd9RxuBBBOIGw+fiunIMrnE4g5I7j/Iq4YxV4rPac9hydG
+         M4HdhcAUMrIkj0nH85mscnn586yunvpa8kUEselgb2tupk6Y3jafWWV7SSa88zXC0JkY
+         Lg3heZNu6XeRvojLEkqoM4ZS8pxr+UbtV43HVoSpYX2cVbaGlRmcGuwGt4biZjoePTcN
+         3FrvAoZeK2QTk3iEPHXYdNGubhcl2ANsaOU8dZSsr9EM0NHbt60EtfxjdwQq1Qq4vAqf
+         2PAb6wXOmREQuvSRiEvZ4hs4AaAYhH7wqe+m5oCfPpvhfax5nHBn7XGwO1ArljdHq0x1
+         1rJw==
+X-Gm-Message-State: AOAM5307sXGL4ibaiIIv3CGtla/jeSLo8GrtHfeO91p/JMEdwd/e30JH
+        QRXrrDunI/NUQXTQZltqqeA3XTKb13GmHTZu
+X-Google-Smtp-Source: ABdhPJx1Q1EkRg1RqLbBc92fgSmR/QPjpjk4+H6BdPAFtshEb5sy1Ggzn7bgpDmwmYDUAbVXLe5DQQ==
+X-Received: by 2002:a1c:f613:: with SMTP id w19mr4087753wmc.136.1623751290861;
+        Tue, 15 Jun 2021 03:01:30 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.209])
+        by smtp.gmail.com with ESMTPSA id 73sm19402122wrk.17.2021.06.15.03.01.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 03:01:30 -0700 (PDT)
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <60c83c12.1c69fb81.e3bea.0806SMTPIN_ADDED_MISSING@mx.google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH] io_uring: store back buffer in case of failure
+Message-ID: <93256513-08d8-5b15-aa98-c1e83af60b54@gmail.com>
+Date:   Tue, 15 Jun 2021 11:01:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <CAOuPNLi8_PDyxtt+=j8AsX9pwLWcT4LmVWKj+UcyFOnj4RDBzg@mail.gmail.com>
- <dacd3fd3-faf5-9795-1bf9-92b1a237626b@gmail.com> <CAOuPNLjCB2m7+b9CJxqTr-THggs-kTPp=0AX727QJ5CTs5OC0w@mail.gmail.com>
-In-Reply-To: <CAOuPNLjCB2m7+b9CJxqTr-THggs-kTPp=0AX727QJ5CTs5OC0w@mail.gmail.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Tue, 15 Jun 2021 15:31:01 +0530
-Message-ID: <CAOuPNLio33vrJ_1am-hbgMunUJereC5GOy3QVU6PDDk-3QeneA@mail.gmail.com>
-Subject: Re: Kernel 4.14: SQUASHFS error: xz decompression failed, data
- probably corrupt
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <60c83c12.1c69fb81.e3bea.0806SMTPIN_ADDED_MISSING@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 at 10:42, Pintu Agarwal <pintu.ping@gmail.com> wrote:
->
-> On Tue, 15 Jun 2021 at 03:53, Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >
-> >
-> >
-> > On 6/14/2021 3:39 AM, Pintu Agarwal wrote:
-> > > Hi All,
-> > >
-> > > With Kernel 4.14 we are getting squashfs error during bootup resulting
-> > > in kernel panic.
-> > > The details are below:
-> > > Device: ARM-32 board with Cortex-A7 (Single Core)
-> > > Storage: NAND Flash 512MiB
-> > > Kernel Version: 4.14.170 (maybe with some Linaro updates)
-> > > File system: Simple busybox with systemd (without Android)
-> > > File system type: UBIFS + SQUASHFS
-> > > UBI Volumes supported: rootfs (ro), others (rw)
-> > > -------------------
-> > >
-> > > When we try to flash the UBI images and then try to boot the device,
-> > > we observe the below errors:
-> >
-> > Someone in The OpenWrt community seems to have run into this problem,
-> > possibly on the exact same QCOM SoC than you and came up with the following:
-> >
-> > https://forum.openwrt.org/t/patch-squashfs-data-probably-corrupt/70480
-> >
-> Thanks!
-> Yes I have already seen this and even one more.
-> https://www.programmersought.com/article/31513579159/
->
-> But I think these changes are not yet in the mainline right ?
->
-> So, I wanted to know which are the exact patches which are already
-> accepted in mainline ?
-> Or, is it already mainlined ?
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/fs/squashfs?h=next-20210611
-> From here, I see that we are only till this:
-> ==> 2018-08-02: Squashfs: Compute expected length from inode size
-> rather than block length
->
-@Phillip Lougher, do you have any suggestions/comments on these errors ?
-Why do you think these errors occur ?
-Also, I noticed that even if these errors occur, the device may boot normally.
-However, for some people it does not boot at all.
+On 6/11/21 8:46 PM, Olivier Langlois wrote:
+> the man page says the following:
+> 
+>     If succesful, the resulting CQE will have IORING_CQE_F_BUFFER set
+> in the flags part of the struct, and the upper IORING_CQE_BUFFER_SHIFT
+> bits will contain the ID of the selected buffers.
+> 
+> in order to respect this contract, the buffer is stored back in case of
+> an error. There are several reasons to do that:
+> 
+> 1. doing otherwise is counter-intuitive and error-prone (I cannot think
+> of a single example of a syscall failing and still require the user to
+> free the allocated resources). Especially when the documention
+> explicitly mention that this is the behavior to expect.
+> 
+> 2. it is inefficient because the buffer is unneeded since there is no
+> data to transfer back to the user and the buffer will need to be
+> returned back to io_uring to avoid a leak.
+> 
+> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+> ---
+>  fs/io_uring.c | 97 +++++++++++++++++++++++++++++++++------------------
+>  1 file changed, 64 insertions(+), 33 deletions(-)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 42380ed563c4..502d7cd81a8c 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+[...]
+> +static unsigned int io_put_kbuf(struct io_kiocb *req, struct io_buffer *kbuf,
+> +				u16 bgid, long res, unsigned int issue_flags)
+>  {
+>  	unsigned int cflags;
+> +	struct io_ring_ctx *ctx = req->ctx;
+> +	struct io_buffer *head;
+> +	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
+>  
+>  	cflags = kbuf->bid << IORING_CQE_BUFFER_SHIFT;
+>  	cflags |= IORING_CQE_F_BUFFER;
+>  	req->flags &= ~REQ_F_BUFFER_SELECTED;
+> -	kfree(kbuf);
+> +
+> +	/*
+> +	 * Theoritically, res == 0 could be included as well but that would
+> +	 * break the contract established in the man page saying that
+> +	 * a buffer is returned if the operation is successful.
+> +	 */
+> +	if (unlikely(res < 0)) {
+> +		io_ring_submit_lock(ctx, !force_nonblock);
 
-Thanks,
-Pintu
+io_complete_rw() is called from an IRQ context, so it can't sleep/wait.
+
+> +
+> +		lockdep_assert_held(&ctx->uring_lock);
+> +
+> +		head = xa_load(&ctx->io_buffers, bgid);
+> +		if (head) {
+> +			list_add_tail(&kbuf->list, &head->list);
+> +			cflags = 0;
+> +		} else {
+> +			INIT_LIST_HEAD(&kbuf->list);
+> +			if (!xa_insert(&ctx->io_buffers, bgid, kbuf, GFP_KERNEL))
+> +				cflags = 0;
+> +		}
+> +		io_ring_submit_unlock(ctx, !force_nonblock);
+> +	}
+> +	if (cflags)
+> +		kfree(kbuf);
+>  	return cflags;
+>  }
+>  
+[...]
+> -static inline void io_rw_done(struct kiocb *kiocb, ssize_t ret)
+> +static inline void io_rw_done(struct kiocb *kiocb, ssize_t ret,
+> +			      unsigned int issue_flags)
+>  {
+>  	switch (ret) {
+>  	case -EIOCBQUEUED:
+> @@ -2728,7 +2775,7 @@ static inline void io_rw_done(struct kiocb *kiocb, ssize_t ret)
+>  		ret = -EINTR;
+>  		fallthrough;
+>  	default:
+> -		kiocb->ki_complete(kiocb, ret, 0);
+> +		kiocb->ki_complete(kiocb, ret, issue_flags);
+
+Don't remember what the second argument of .ki_complete is for,
+but it definitely should not be used for issue_flags. E.g. because
+we get two different meanings for it depending on a context --
+either a result from the block layer or issue_flags.
+
+-- 
+Pavel Begunkov
