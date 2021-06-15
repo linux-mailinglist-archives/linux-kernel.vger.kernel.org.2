@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3973A73F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9030D3A739B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhFOCbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:31:22 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:10057 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbhFOCbU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:31:20 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G3sD16pGXzZdcf;
-        Tue, 15 Jun 2021 10:08:01 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 10:10:56 +0800
-Received: from [10.67.109.184] (10.67.109.184) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 10:10:56 +0800
-Subject: Re: [PATCH -next] drm/hyperv: Remove unused variable
-To:     Deepak Rawat <drawat.floss@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>
-CC:     <zhangjinhao2@huawei.com>, <linux-hyperv@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
-References: <20210609024940.34933-1-pulehui@huawei.com>
- <078d9bb5-e7af-4961-f4c1-cd3ab415cff4@suse.de>
- <2bf51ac723cb097685dd4c89926599d939d31765.camel@gmail.com>
-From:   Pu Lehui <pulehui@huawei.com>
-Message-ID: <5944abf7-7535-f425-fdc3-58e6bd032186@huawei.com>
-Date:   Tue, 15 Jun 2021 10:10:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230515AbhFOCPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:15:31 -0400
+Received: from ozlabs.org ([203.11.71.1]:33965 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229743AbhFOCP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 22:15:29 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G3sL36lcMz9sW4;
+        Tue, 15 Jun 2021 12:13:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623723196;
+        bh=9MlykeVUCwRGDxv70LGHNLyJkE65EThzOtrBU3H2PtU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Lt9xx+m/jyTYBvXduV4MF4nSK6XmHymI0gNNPwSpUvmhpNV6GNCx5yhttSThtMZlW
+         eMmwyU8bIOjo84X26MSCd14KtvigY1Kh9bzWZ0mvCKoJ0s/yQuW01VpTkGMqaNbf9k
+         PG9RSccotwoTCdO6SyVMeHFLFrqgPulDM5Pu4RryrP3qrp7BVDoWuEEe8ufKfZxGRf
+         3HM61OqkdBmax5/10unk5wL9ZqQvvwIe3vRLGitjyWDi8Pv4WSyWLH0ozkDmUx4bdw
+         L0ne7RmR45Fml8Q97XDi7gmSR/tTjHaxg6VI2CcPGL38zzC+vWl6JI44uVQerOcyj2
+         MaO0d3kftl6wQ==
+Date:   Tue, 15 Jun 2021 12:13:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the block tree
+Message-ID: <20210615121314.6b711d8e@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <2bf51ac723cb097685dd4c89926599d939d31765.camel@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/120syJlJlrS85xtlj/.J.0=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/120syJlJlrS85xtlj/.J.0=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2021/6/14 22:01, Deepak Rawat wrote:
-> On Wed, 2021-06-09 at 09:46 +0200, Thomas Zimmermann wrote:
->> Hi
->>
->> Am 09.06.21 um 04:49 schrieb Pu Lehui:
->>> Fixes gcc '-Wunused-const-variable' warning:
->>>     drivers/gpu/drm/hyperv/hyperv_drm_modeset.c:152:23: warning:
->>>       'hyperv_modifiers' defined but not used [-Wunused-const-
->>> variable=]
->>>
->>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->>> ---
->>>    drivers/gpu/drm/hyperv/hyperv_drm_modeset.c | 5 -----
->>>    1 file changed, 5 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
->>> b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
->>> index 02718e3e859e..3f83493909e6 100644
->>> --- a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
->>> +++ b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
->>> @@ -149,11 +149,6 @@ static const uint32_t hyperv_formats[] = {
->>>          DRM_FORMAT_XRGB8888,
->>>    };
->>>    
->>> -static const uint64_t hyperv_modifiers[] = {
->>> -       DRM_FORMAT_MOD_LINEAR,
->>> -       DRM_FORMAT_MOD_INVALID
->>> -};
->>
->> This constant should rather be used in the call to
->> drm_simple_display_pipe_init(). [1]
->>
->> Best regards
->> Thomas
->>
->> [1]
->> https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c#n161
->>
->>
-> 
-> Hi Pu,
-> 
-> Thanks for the patch. Is it possible to send another patch as per
-> suggestion by Thomas. There is a kernel test robot failure as well.
-> 
-> Deepak
-> 
-> .
-> 
-Hi Deepak,
+After merging the block tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
 
-Thanks for your reply, I will send v2 soon.
+In file included from include/linux/kernel.h:15,
+                 from fs/io_uring.c:42:
+fs/io_uring.c: In function 'io_alloc_page_table':
+include/linux/minmax.h:20:28: warning: comparison of distinct pointer types=
+ lacks a cast
+   20 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
+      |                            ^~
+include/linux/minmax.h:26:4: note: in expansion of macro '__typecheck'
+   26 |   (__typecheck(x, y) && __no_side_effects(x, y))
+      |    ^~~~~~~~~~~
+include/linux/minmax.h:36:24: note: in expansion of macro '__safe_cmp'
+   36 |  __builtin_choose_expr(__safe_cmp(x, y), \
+      |                        ^~~~~~~~~~
+include/linux/minmax.h:45:19: note: in expansion of macro '__careful_cmp'
+   45 | #define min(x, y) __careful_cmp(x, y, <)
+      |                   ^~~~~~~~~~~~~
+fs/io_uring.c:7095:28: note: in expansion of macro 'min'
+ 7095 |   unsigned int this_size =3D min(size, PAGE_SIZE);
+      |                            ^~~
 
-Best regards
-Lehui
+Introduced by commit
+
+  9123c8ffce16 ("io_uring: add helpers for 2 level table alloc")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/120syJlJlrS85xtlj/.J.0=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDIDLoACgkQAVBC80lX
+0Gwzbwf/T14z+2CkFXv7FWlkIc7bHFnqEXL5FBiDAaE2uXcztZA/YoG7e1BM3e2V
+kFs9SCHIUe5aHXxy+/ssA561Kf4Ou1bFzLCPe18P/H5g8hJi3Dq7sImnqJVj8fO7
+FpqLTecLChkFvBy6GzOSUz7jkogBUJLJqUqAsFIG/w7Iu1WkVkVd9eDnoJqFFrq6
+w8KZ3T1LsMYSCv3Pi2FUjKhjwosgpaHcL6LMVROpWe20YL3VFdu47oGnB/AWOdH8
+rR6rVnmt/0eTF4lA2I91puQTiBVHHlCVkmVonuWGVVH2H6Mh8TrKkTM8R9zflfdN
+Z6NC5JGCPL483xukLQpgtzh5YEzIbg==
+=Ek/O
+-----END PGP SIGNATURE-----
+
+--Sig_/120syJlJlrS85xtlj/.J.0=--
