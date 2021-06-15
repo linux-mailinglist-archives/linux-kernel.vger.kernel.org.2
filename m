@@ -2,90 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D653A8652
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726533A8660
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhFOQZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 12:25:27 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:60368 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229757AbhFOQZZ (ORCPT
+        id S230437AbhFOQ1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 12:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229689AbhFOQ1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:25:25 -0400
-X-UUID: 4c58e13843204dc49794def372562b3f-20210616
-X-UUID: 4c58e13843204dc49794def372562b3f-20210616
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1553996560; Wed, 16 Jun 2021 00:23:16 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 16 Jun 2021 00:23:15 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 16 Jun 2021 00:23:15 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <rostedt@goodmis.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <mark-pk.tsai@mediatek.com>,
-        <matthias.bgg@gmail.com>, <mhelsley@vmware.com>,
-        <peterz@infradead.org>, <samitolvanen@google.com>,
-        <yj.chiang@mediatek.com>
-Subject: [PATCH v3] recordmcount: Correct st_shndx handling
-Date:   Wed, 16 Jun 2021 00:23:13 +0800
-Message-ID: <20210615162313.26081-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 15 Jun 2021 12:27:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA2CC061574;
+        Tue, 15 Jun 2021 09:24:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=hoq0JoTPz7p7CotYaN2gPzifXVA9YFY41r8VJShbg1w=; b=VCKPt1yAPXlhTOt1jSQCoiIFD4
+        CmB795grsvoik5GzignNpSKEy2HWZz1tX8LVNU4d6lnO+XH/GDaRj+iXTG2thqk5vP5KB23YbCOhE
+        d+IrWqtZAHK4rW+5EEcRNUKSnsjySYDx3+wjbFDw+vwS7AyKXC1c8a7PDCnbVKBw+Mdrfj8Y8K0B/
+        VTVuy/5zYDp7pmgis/nCJ7Tp4b547XKjxIK2lkB6zBNBIYD5Hilp9+qG8zTXk/EUo3DsmnkrimyF3
+        wpagSHmmyBpFBnS9SVKBEnIWv9EDk7DzZsWc5W5uH5S6iyPZ07JrOq7qaj43bX9xtnH8Kz6cwDjcR
+        UU2VBL8w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltBqt-0070I8-Tx; Tue, 15 Jun 2021 16:23:54 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH 0/6] Further set_page_dirty cleanups
+Date:   Tue, 15 Jun 2021 17:23:36 +0100
+Message-Id: <20210615162342.1669332-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+Prompted by Christoph's recent patches, here are some more patches to
+improve the state of set_page_dirty().  They're all from the folio tree,
+so they've been tested to a certain extent.
 
-One should only use st_shndx when >SHN_UNDEF and <SHN_LORESERVE. When
-SHN_XINDEX, then use .symtab_shndx. Otherwise use 0.
+Matthew Wilcox (Oracle) (6):
+  mm/writeback: Move __set_page_dirty() to core mm
+  mm/writeback: Use __set_page_dirty in __set_page_dirty_nobuffers
+  iomap: Use __set_page_dirty_nobuffers
+  fs: Remove anon_set_page_dirty()
+  fs: Remove noop_set_page_dirty()
+  mm: Move page dirtying prototypes from mm.h
 
-This handles the case: st_shndx >= SHN_LORESERVE && st_shndx != SHN_XINDEX.
+ drivers/dax/device.c    |  2 +-
+ fs/buffer.c             | 24 ------------------------
+ fs/ext2/inode.c         |  2 +-
+ fs/ext4/inode.c         |  2 +-
+ fs/fuse/dax.c           |  3 ++-
+ fs/gfs2/aops.c          |  2 +-
+ fs/iomap/buffered-io.c  | 27 +--------------------------
+ fs/libfs.c              | 27 +--------------------------
+ fs/xfs/xfs_aops.c       |  4 ++--
+ fs/zonefs/super.c       |  4 ++--
+ include/linux/fs.h      |  1 -
+ include/linux/iomap.h   |  1 -
+ include/linux/mm.h      |  4 ----
+ include/linux/pagemap.h |  4 ++++
+ mm/page-writeback.c     | 37 +++++++++++++++++++++++++++----------
+ 15 files changed, 43 insertions(+), 101 deletions(-)
 
-Reported-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-[handle endianness of sym->st_shndx]
-Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
----
- scripts/recordmcount.h | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-index f9b19524da11..ef9c3425f86b 100644
---- a/scripts/recordmcount.h
-+++ b/scripts/recordmcount.h
-@@ -194,13 +194,18 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
- 	unsigned long offset;
- 	int index;
- 
--	if (sym->st_shndx != SHN_XINDEX)
-+	if (w2(sym->st_shndx) > SHN_UNDEF &&
-+	    w2(sym->st_shndx) < SHN_LORESERVE)
- 		return w2(sym->st_shndx);
- 
--	offset = (unsigned long)sym - (unsigned long)symtab;
--	index = offset / sizeof(*sym);
-+	if (w2(sym->st_shndx) == SHN_XINDEX) {
-+		offset = (unsigned long)sym - (unsigned long)symtab;
-+		index = offset / sizeof(*sym);
- 
--	return w(symtab_shndx[index]);
-+		return w(symtab_shndx[index]);
-+	}
-+
-+	return 0;
- }
- 
- static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
 -- 
-2.18.0
+2.30.2
 
