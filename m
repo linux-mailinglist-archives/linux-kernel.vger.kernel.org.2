@@ -2,72 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530C33A7D19
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F513A7D1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFOL2L convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 07:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
+        id S230045AbhFOL2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhFOL2K (ORCPT
+        with ESMTP id S229689AbhFOL2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:28:10 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE15C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:26:05 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lt7CU-0003gA-A2; Tue, 15 Jun 2021 13:25:46 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lt7CQ-0004AZ-TV; Tue, 15 Jun 2021 13:25:42 +0200
-Message-ID: <869864f6f85c1f1d3427bf6be32d703758bdad71.camel@pengutronix.de>
-Subject: Re: [PATCH v7 13/19] phy: sun4i-usb: Allow reset line to be shared
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Andre Przywara <andre.przywara@arm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-phy@lists.infradead.org,
-        linux-usb@vger.kernel.org
-Date:   Tue, 15 Jun 2021 13:25:42 +0200
-In-Reply-To: <20210615110636.23403-14-andre.przywara@arm.com>
-References: <20210615110636.23403-1-andre.przywara@arm.com>
-         <20210615110636.23403-14-andre.przywara@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Tue, 15 Jun 2021 07:28:49 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C96C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:26:44 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id h24so21987969ejy.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:26:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Blp/IrsrSShZRKUsMEp/iJdzOG+tUUDSwjzDuCyoAwk=;
+        b=xX411P79z/T56H3ueR41/3ATmURuhk9lY0Zqm8WA8n0z449r9OJ+eLJpY1Xin8ZKyG
+         dHhQAPfj8o4kT0lWHzFUIjXUa+dM35JdLFAWg8Xv68u+KWFfo2Pw3lkcTwYYDKCh7YeG
+         tdVrmZWWIbABT2zvE5+EnT6W57ixhegoZ657XwEFCrgHOIJxFLf6edio4WKDZQNa/9X0
+         nyroe5B54Djn9vGULpI1nzoIDbmAMUc/jXkBpFAmbu6haeY64pBEWBTR2qpHB8WrK+O3
+         VKW8aNaPWt2tvOBj+uY5lmrjk2JrRb5wy3/j795Sakn692JspyTEE49tsd9hf1dORKor
+         3pSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Blp/IrsrSShZRKUsMEp/iJdzOG+tUUDSwjzDuCyoAwk=;
+        b=IKlj2l8JyuyymHWnWTxq8MYbgluSNxGfI54MqD1FBMVRByWVh/4zPH+zUelgrnkKkU
+         hHnNf+fJ0BcYNJowRO21bRdZ+0rHe1HOjJmNSipU75x3lAaYy8WBrfemZpFTsThnkecb
+         G/uvk7TQlX6kow0Z54g6BEbMHC0rrbY+WXF+R1V9gM37p9ERsjG2iBxUu63QUzJk+iJE
+         QfP31x5ron5kcuC/zVBSdyfoTbxhAKXHc9RbILF7MWGUKBED79DGBqwJUzTgwzgQTpZn
+         p+0OZmyvBh/wY/PBP+xyPUwKcGx3Yb8y4g8oG2I+Fh2BRCSdd3o68pMu1Agm9thp/OBm
+         L9lg==
+X-Gm-Message-State: AOAM530Fyy4U2i4D1AJsza2+4/nuBTZgLroEKKe2XKh1AAkyTi2ZbFBS
+        0cAbyRSdeI+EIIfouBkem1nufr5AploNgFlOtuV2lA==
+X-Google-Smtp-Source: ABdhPJySGALxoxfe1c0PKH/BE3HG448iqXZfqzm4W3zQEc1OEoF6taRfIyCS5e5Zy6u6tlSLIohV3PLljO9l7JJrkfU=
+X-Received: by 2002:a17:906:480a:: with SMTP id w10mr3772979ejq.18.1623756402663;
+ Tue, 15 Jun 2021 04:26:42 -0700 (PDT)
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <CA+G9fYurEcTfV7Z=co2Ki-TubF4d-Ext7ivZPaQT9SR5XazUtQ@mail.gmail.com>
+In-Reply-To: <CA+G9fYurEcTfV7Z=co2Ki-TubF4d-Ext7ivZPaQT9SR5XazUtQ@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 15 Jun 2021 16:56:31 +0530
+Message-ID: <CA+G9fYschBRxbugv19pZegUG6+Y10dJfJr7RHQE7M+Z_3RgqrQ@mail.gmail.com>
+Subject: Re: [next] [arm64] Unable to handle kernel NULL pointer dereference
+ at virtual address 0000000000000068
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, lkft-triage@lists.linaro.org,
+        regressions@lists.linux.dev
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-06-15 at 12:06 +0100, Andre Przywara wrote:
-> The USB HCIs (and PHYs?) in Allwinner's newer generation SoCs (H616)
-> rely on the reset line of USB PHY 2 to be de-asserted, even when only
-> one of the other PHYs is actually in use.
-> 
-> To make those ports work, we include this reset line in the HCIs' resets
-> property, which requires this line to be shareable.
-> 
-> Change the call to allocate the reset line to mark it as shared, to
-> enable the other ports on those SoCs.
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+On Tue, 15 Jun 2021 at 16:49, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> Following kernel crash reported while booting linux next 20210615 tag
+> on qemu_arm64.
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+Similar crash reported while booting Linux next 20210615 tag kernel on
+the qemu arm.
 
-regards
-Philipp
+https://lkft.validation.linaro.org/scheduler/job/2901326#L441
+
+>
+> Crash log:
+> -------------
+> [    0.767379] Unable to handle kernel NULL pointer dereference at
+> virtual address 0000000000000068
+> [    0.769815] Mem abort info:
+> [    0.770735]   ESR = 0x96000004
+> [    0.771598]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [    0.773008]   SET = 0, FnV = 0
+> [    0.773865]   EA = 0, S1PTW = 0
+> [    0.774844]   FSC = 0x04: level 0 translation fault
+> [    0.776195] Data abort info:
+> [    0.776968]   ISV = 0, ISS = 0x00000004
+> [    0.778010]   CM = 0, WnR = 0
+> [    0.778961] [0000000000000068] user address but active_mm is swapper
+> [    0.780643] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> [    0.782189] Modules linked in:
+> [    0.783098] CPU: 2 PID: 1 Comm: swapper/0 Not tainted
+> 5.13.0-rc6-next-20210615 #1
+> [    0.785239] Hardware name: linux,dummy-virt (DT)
+> [    0.786626] pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
+> [    0.788352] pc : blk_finish_plug+0x88/0x270
+> [    0.789598] lr : blk_queue_write_cache+0x34/0x80
+d.com/1tyksDCCPiTvc0x6psxC3JvSWqJ/config
+
+- Naresh
