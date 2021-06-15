@@ -2,243 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442173A78B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C562E3A78C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbhFOIGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 04:06:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23039 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230443AbhFOIGq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:06:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623744281;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BQ3dVIBtoSwO39R+hFiZcOjeq+PcftU2mloldEk3r0o=;
-        b=J6t0YRRPtuMjZ8itpydrMr+EcPfb7w249LQl548y7jNAgI1r2aA2/MwSTCV+2qfN4LchO6
-        peuwNfZ2nZnazwrmKOgeMAnkSbk10AnSC3YRcuoTeTRSul1kSiD/3bUT69tU/AA83YgGJ1
-        L68/P+XIicqmetBq8Vp+oAmG8IRC+2E=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-331-7vnL53kePY-6z1MhDjG5XQ-1; Tue, 15 Jun 2021 04:04:39 -0400
-X-MC-Unique: 7vnL53kePY-6z1MhDjG5XQ-1
-Received: by mail-wm1-f69.google.com with SMTP id j6-20020a05600c1906b029019e9c982271so230973wmq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 01:04:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=BQ3dVIBtoSwO39R+hFiZcOjeq+PcftU2mloldEk3r0o=;
-        b=dUZXTVcFJMkL6XhFh97mWdiEDLjHy2gHuzJnhvwWSNaNTsKHcr4jYnbZdb78M8GKAt
-         OmBYIZ6K2sc6fmD4Ht0UMDvvI5PZKeDcH6lRTD6kMjz4OaSFXCh+M2zsJUgJMBh3+5u5
-         /z9yAW3Vr2RRT5RtjwC0O6mfo6QmUMSXzVrEIwY6fNgA9SPNRw8jheLfkvn9EkkQ+WW1
-         K0JEqJUW2QmFO9fx9av+y1ZGI1pGGBAqu/XfGAuvQzSzjqTQQ0ompJT4MEGaF/+wHQi3
-         izWOj4YG/mXjyMVxYlBbAhIZKrfCbAaHZKtsX01McIvTTmg3UBVFpWSLITaglBds2sSf
-         MdIA==
-X-Gm-Message-State: AOAM530aA8s0rjeecTC+OBSqc5QCbxxFvgAnjJ19ZAKNYn7EvfAXF1Cr
-        3lLHi8mOvoY/WZ6vX60F160V5e18oI/L7aw2lYaK1wucodah7LeyeWCqTmwwSBbYTSd4cnpVHZP
-        SU+4fHavRaQe9Kt2nBGKy+ajR
-X-Received: by 2002:a1c:7c13:: with SMTP id x19mr3705093wmc.96.1623744278016;
-        Tue, 15 Jun 2021 01:04:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy8zKcj+0CHWNbpopi15qK/VY149FzjCqfOGVYh24AlZU3SNfDxUiS6IcZoR2LoqC+8dPMiWA==
-X-Received: by 2002:a1c:7c13:: with SMTP id x19mr3705056wmc.96.1623744277769;
-        Tue, 15 Jun 2021 01:04:37 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6136.dip0.t-ipconnect.de. [91.12.97.54])
-        by smtp.gmail.com with ESMTPSA id s1sm1510041wmj.8.2021.06.15.01.04.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 01:04:37 -0700 (PDT)
-Subject: =?UTF-8?B?UmU6IOetlOWkjTogW1BBVENIIHY0XSBtbS9jb21wYWN0aW9uOiBsZXQg?=
- =?UTF-8?Q?proactive_compaction_order_configurable?=
-To:     "Chu,Kaiping" <chukaiping@baidu.com>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "yzaikin@google.com" <yzaikin@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "nigupta@nvidia.com" <nigupta@nvidia.com>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "khalid.aziz@oracle.com" <khalid.aziz@oracle.com>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "mateusznosek0@gmail.com" <mateusznosek0@gmail.com>,
-        "sh_def@163.com" <sh_def@163.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-References: <1619576901-9531-1-git-send-email-chukaiping@baidu.com>
- <a3f6628a-8165-429f-0383-c522b4c49197@redhat.com>
- <af26c999229a4c0dbb8c772ce50f60e4@baidu.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <3d4f59ce-8f83-4892-c210-649780b247f3@redhat.com>
-Date:   Tue, 15 Jun 2021 10:04:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230526AbhFOIJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 04:09:26 -0400
+Received: from mail-co1nam11on2045.outbound.protection.outlook.com ([40.107.220.45]:48641
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230446AbhFOIJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 04:09:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WA+KVaPv/3aIQmAfHUikAj9c2ExbFxWHGS0ZnoHVSATUncd8fNnoJUgMWg7JgnndOcdwslP+YlqT9EHk7AYzdkYmokxaV6vWOyODmhTuWVal8su8TmUrRpQQau4ATEIDgEmXyh/g4isxlqd94YyZb+G+RbIoSGVFBm6ef6cmtmcyWSn8qfNbMRgwPNJD5yII0vcDZnbcPFLXE5fe4g5psgukNDVpJula1QqwUVYNHkTpded2Ro7E65lMTg3Itlgm9Wj5DdvsncwI+1olUsmArUaOLFEVnKKJ+Qy+zjQ6T5mcBWC3wBHkLoyaFaksdz/vD/3O1aPC6c1ZfN5Y+1JVNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2RIoUWTn5ZoPkrDMOuUzzoXF1yDaaK2EFy2Rc7aEziY=;
+ b=Fu30lVfFN5OsrMRFC/eSwnUyf//qf5TnwRfVKP5erxjEqRAhOH8q0xVSmVn/5hPtTmn/CJ6hDeSkMCo1S1Qd+6AL8kQtpGevOALw4aXPR2lAl1l25wdA7D+HhlbMYt4htR9ncxPkdJG4glQXhSN6U6AS7V3XmJOoEboU/pPzK8ajeS/uFGrxtvQehW0pfMKqTRud6yKFOjqL4QpKOKf+JODTvd9DMwflkIQgK9m5GfUEYr2dtXzyAKUAU2+WqzaTRhb+HIMYYjC101d+A9a0kbYhYsEs3y+4md5Sth23tKRl7VDl8fSGkXUj35v7lf0waoVMDh2h+Q0+E4819/Qb4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=linaro.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2RIoUWTn5ZoPkrDMOuUzzoXF1yDaaK2EFy2Rc7aEziY=;
+ b=KqG58F/RqrqBg+w33r7cqOBT0ybEYmXps7DWv5s3fFbHzAeOmmpRKY1SdU4FB6YqrNvLegek/RLQatNpVmfwtdFUEqcEN8cNAOJK+wWi1L1tzmxAah8d0sosNSs55BWVTEW//rR+sQGC7mK+9IBv/BwIVYvT+04mW/9Q+KPTpCE=
+Received: from BN0PR02CA0044.namprd02.prod.outlook.com (2603:10b6:408:e5::19)
+ by BN7PR02MB4177.namprd02.prod.outlook.com (2603:10b6:406:f6::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.23; Tue, 15 Jun
+ 2021 08:07:14 +0000
+Received: from BN1NAM02FT037.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:408:e5:cafe::40) by BN0PR02CA0044.outlook.office365.com
+ (2603:10b6:408:e5::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend
+ Transport; Tue, 15 Jun 2021 08:07:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ BN1NAM02FT037.mail.protection.outlook.com (10.13.2.148) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4219.21 via Frontend Transport; Tue, 15 Jun 2021 08:07:14 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 01:06:36 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 15 Jun 2021 01:06:36 -0700
+Envelope-to: git@xilinx.com,
+ linus.walleij@linaro.org,
+ bgolaszewski@baylibre.com,
+ robh+dt@kernel.org,
+ linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Received: from [10.140.6.35] (port=43350 helo=xhdsaipava40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <piyush.mehta@xilinx.com>)
+        id 1lt45j-0002dn-Hh; Tue, 15 Jun 2021 01:06:35 -0700
+From:   Piyush Mehta <piyush.mehta@xilinx.com>
+To:     <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+        <robh+dt@kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>, <git@xilinx.com>,
+        <sgoud@xilinx.com>, <michal.simek@xilinx.com>,
+        Piyush Mehta <piyush.mehta@xilinx.com>
+Subject: [PATCH 0/2] gpio: modepin: Add driver support for modepin GPIO controller
+Date:   Tue, 15 Jun 2021 13:35:51 +0530
+Message-ID: <20210615080553.2021061-1-piyush.mehta@xilinx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <af26c999229a4c0dbb8c772ce50f60e4@baidu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ba270420-c1d5-49f4-c0c4-08d92fd49602
+X-MS-TrafficTypeDiagnostic: BN7PR02MB4177:
+X-Microsoft-Antispam-PRVS: <BN7PR02MB4177A24FD462FD702F59F45ED4309@BN7PR02MB4177.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LQVIQMEJ1TBwZ86E/yPGjDEyCt5T7gz1KK2KRUPoKFGFWqo1O8p75mu2bX8zQic3jtRvRT+KYubV7i6rJRYqPL89elPYoKttR1lxVbtqJ+eW1hZuENUX6zkkgQirgxIS/CfSX7avW4/t0s909tyT22CclFTbTRVFtAC8ExTO4g5ZKviQrLvZClxqo7MJz8EHuJo/wdNpHmVnEyR2ruoaLLI438z9CpHp0lcJOUsKG62YQkCjm+oyEA7Vs9datSMY5/068MzVEDmQf0St3zot32UajgyIzCgwowwWeVpIVq5fo0QZv7mg31FG3irzO8NvetLY96NF+G+B1gzgVXLGZ8Wspd1GeFrlTVkVAGug8eU3K9B5/fXOklTBoV1A4GuxJLVuDkuEQ0IzhEefhIpb0ljNW+N413VvA3Zlz40OUvAmxhn21A3OrLKisDTTqlSKiuwFbWwZXA4uJ3xI0DNELWXVKCm47TQK2AfNxyBXm8iZyN4dhVRROZcRKD1Of3LkyMKNeW2Htb4P+vxnGh4vFF+hP0IGbOhhcVpPguThIznbG4N+/08E0uWhpWWvGL5VmblU1OriTy/BxF5w+7RQkinZNaJpzZjgvONJBz4q6gaOew94I1G6I/3xyJWrm71PRDIgp3ysFCklKrwMT0j53v9uDfmd/719wPZB+gKRItAT5itFt2wjYWYeLDloUWg8
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(39850400004)(346002)(36840700001)(46966006)(426003)(356005)(9786002)(2616005)(7636003)(82740400003)(107886003)(316002)(82310400003)(36906005)(47076005)(1076003)(36756003)(186003)(26005)(70206006)(2906002)(36860700001)(478600001)(7696005)(54906003)(4326008)(4744005)(110136005)(336012)(44832011)(70586007)(8676002)(8936002)(6666004)(5660300002)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2021 08:07:14.4411
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba270420-c1d5-49f4-c0c4-08d92fd49602
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT037.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR02MB4177
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.06.21 03:11, Chu,Kaiping wrote:
-> 
-> 
->> -----邮件原件-----
->> 发件人: David Hildenbrand <david@redhat.com>
->> 发送时间: 2021年6月9日 18:45
->> 收件人: Chu,Kaiping <chukaiping@baidu.com>; mcgrof@kernel.org;
->> keescook@chromium.org; yzaikin@google.com; akpm@linux-foundation.org;
->> vbabka@suse.cz; nigupta@nvidia.com; bhe@redhat.com;
->> khalid.aziz@oracle.com; iamjoonsoo.kim@lge.com;
->> mateusznosek0@gmail.com; sh_def@163.com
->> 抄送: linux-kernel@vger.kernel.org; linux-fsdevel@vger.kernel.org;
->> linux-mm@kvack.org
->> 主题: Re: [PATCH v4] mm/compaction: let proactive compaction order
->> configurable
->>
->> On 28.04.21 04:28, chukaiping wrote:
->>> Currently the proactive compaction order is fixed to
->>> COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
->>> normal 4KB memory, but it's too high for the machines with small
->>> normal memory, for example the machines with most memory configured as
->>> 1GB hugetlbfs huge pages. In these machines the max order of free
->>> pages is often below 9, and it's always below 9 even with hard
->>> compaction. This will lead to proactive compaction be triggered very
->>> frequently. In these machines we only care about order of 3 or 4.
->>> This patch export the oder to proc and let it configurable by user,
->>> and the default value is still COMPACTION_HPAGE_ORDER.
->>>
->>> Signed-off-by: chukaiping <chukaiping@baidu.com>
->>> Reported-by: kernel test robot <lkp@intel.com>
->>> ---
->>>
->>> Changes in v4:
->>>       - change the sysctl file name to proactive_compation_order
->>>
->>> Changes in v3:
->>>       - change the min value of compaction_order to 1 because the
->> fragmentation
->>>         index of order 0 is always 0
->>>       - move the definition of max_buddy_zone into #ifdef
->>> CONFIG_COMPACTION
->>>
->>> Changes in v2:
->>>       - fix the compile error in ia64 and powerpc, move the initialization
->>>         of sysctl_compaction_order to kcompactd_init because
->>>         COMPACTION_HPAGE_ORDER is a variable in these architectures
->>>       - change the hard coded max order number from 10 to MAX_ORDER -
->> 1
->>>
->>>    include/linux/compaction.h |    1 +
->>>    kernel/sysctl.c            |   10 ++++++++++
->>>    mm/compaction.c            |   12 ++++++++----
->>>    3 files changed, 19 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
->>> index ed4070e..a0226b1 100644
->>> --- a/include/linux/compaction.h
->>> +++ b/include/linux/compaction.h
->>> @@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int
->> order)
->>>    #ifdef CONFIG_COMPACTION
->>>    extern int sysctl_compact_memory;
->>>    extern unsigned int sysctl_compaction_proactiveness;
->>> +extern unsigned int sysctl_proactive_compaction_order;
->>>    extern int sysctl_compaction_handler(struct ctl_table *table, int write,
->>>    			void *buffer, size_t *length, loff_t *ppos);
->>>    extern int sysctl_extfrag_threshold; diff --git a/kernel/sysctl.c
->>> b/kernel/sysctl.c index 62fbd09..ed9012e 100644
->>> --- a/kernel/sysctl.c
->>> +++ b/kernel/sysctl.c
->>> @@ -196,6 +196,7 @@ enum sysctl_writes_mode {
->>>    #endif /* CONFIG_SCHED_DEBUG */
->>>
->>>    #ifdef CONFIG_COMPACTION
->>> +static int max_buddy_zone = MAX_ORDER - 1;
->>>    static int min_extfrag_threshold;
->>>    static int max_extfrag_threshold = 1000;
->>>    #endif
->>> @@ -2871,6 +2872,15 @@ int proc_do_static_key(struct ctl_table *table,
->> int write,
->>>    		.extra2		= &one_hundred,
->>>    	},
->>>    	{
->>> +		.procname       = "proactive_compation_order",
->>> +		.data           = &sysctl_proactive_compaction_order,
->>> +		.maxlen         = sizeof(sysctl_proactive_compaction_order),
->>> +		.mode           = 0644,
->>> +		.proc_handler   = proc_dointvec_minmax,
->>> +		.extra1         = SYSCTL_ONE,
->>> +		.extra2         = &max_buddy_zone,
->>> +	},
->>> +	{
->>>    		.procname	= "extfrag_threshold",
->>>    		.data		= &sysctl_extfrag_threshold,
->>>    		.maxlen		= sizeof(int),
->>> diff --git a/mm/compaction.c b/mm/compaction.c index e04f447..171436e
->>> 100644
->>> --- a/mm/compaction.c
->>> +++ b/mm/compaction.c
->>> @@ -1925,17 +1925,18 @@ static bool kswapd_is_running(pg_data_t
->>> *pgdat)
->>>
->>>    /*
->>>     * A zone's fragmentation score is the external fragmentation wrt to
->>> the
->>> - * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
->>> + * sysctl_proactive_compaction_order. It returns a value in the range
->>> + * [0, 100].
->>>     */
->>>    static unsigned int fragmentation_score_zone(struct zone *zone)
->>>    {
->>> -	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
->>> +	return extfrag_for_order(zone, sysctl_proactive_compaction_order);
->>>    }
->>>
->>>    /*
->>>     * A weighted zone's fragmentation score is the external
->>> fragmentation
->>> - * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
->>> - * returns a value in the range [0, 100].
->>> + * wrt to the sysctl_proactive_compaction_order scaled by the zone's size.
->>> + * It returns a value in the range [0, 100].
->>>     *
->>>     * The scaling factor ensures that proactive compaction focuses on larger
->>>     * zones like ZONE_NORMAL, rather than smaller, specialized zones
->>> like @@ -2666,6 +2667,7 @@ static void compact_nodes(void)
->>>     * background. It takes values in the range [0, 100].
->>>     */
->>>    unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
->>> +unsigned int __read_mostly sysctl_proactive_compaction_order;
->>>
->>>    /*
->>>     * This is the entry point for compacting all nodes via @@ -2958,6
->>> +2960,8 @@ static int __init kcompactd_init(void)
->>>    	int nid;
->>>    	int ret;
->>>
->>> +	sysctl_proactive_compaction_order = COMPACTION_HPAGE_ORDER;
->>> +
->>>    	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
->>>    					"mm/compaction:online",
->>>    					kcompactd_cpu_online, NULL);
->>>
->>
->> Hm, do we actually want to put an upper limit to the order a user can supply?
-> No，we should allow user to configure the order from 1 to MAX_ORDER - 1.
+This patch adds support for the mode pin GPIO controller and documented
+for the same. GPIO Modepin driver set and get the value and status of
+the PS_MODE pin, based on device-tree pin configuration.
+These 4-bits boot-mode pins are dedicated configurable as input/output.
+After the stabilization of the system,these mode pins are sampled.
 
-Ah, I missed that we enforce an upper limit of "MAX_ORDER - 1" -- thanks.
+Piyush Mehta (2):
+  dt-bindings: gpio: Add binding documentation for modepin
+  gpio: modepin: Add driver support for modepin GPIO controller
 
+ .../bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml    |  41 ++++++
+ drivers/gpio/Kconfig                               |  12 ++
+ drivers/gpio/Makefile                              |   1 +
+ drivers/gpio/gpio-zynqmp-modepin.c                 | 154 +++++++++++++++++++++
+ 4 files changed, 208 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
+ create mode 100644 drivers/gpio/gpio-zynqmp-modepin.c
 
 -- 
-Thanks,
-
-David / dhildenb
+2.7.4
 
