@@ -2,77 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C81F3A88C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D353A88CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhFOStk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 14:49:40 -0400
-Received: from mga03.intel.com ([134.134.136.65]:52782 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229943AbhFOStj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:49:39 -0400
-IronPort-SDR: ZFyBuM88ohB2RGJKlRXfYksR66mFIgQZi6pLL40Rqu0GRHErQeF6lDnovXiEWCy66+5hlFSaYr
- 7xassry9wXtw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206086527"
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="206086527"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 11:47:34 -0700
-IronPort-SDR: Js4fX3MbHcXLEdJe0tpEIdjPJhsY+edHugjqkLvbBLemKbwxHEub34zOXlB732I35sZY+R8hBf
- 7Jos7iPy7ydw==
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="554540662"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.184.247]) ([10.212.184.247])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 11:47:33 -0700
-Subject: Re: [PATCH v2] x86/resctrl: Fix kernel-doc in pseudo_lock.c
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210608234902.9316-1-fmdefrancesco@gmail.com>
- <4de714ab-47f4-97e3-c35f-184b1218e681@intel.com>
- <2668591.RLH4pUzd2n@linux.local>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <371b8786-6ed5-ae75-efb3-bd1631491a20@intel.com>
-Date:   Tue, 15 Jun 2021 11:47:27 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230363AbhFOSuY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 14:50:24 -0400
+Received: from mail-vk1-f174.google.com ([209.85.221.174]:43650 "EHLO
+        mail-vk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhFOSuW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 14:50:22 -0400
+Received: by mail-vk1-f174.google.com with SMTP id d13so47084vkl.10;
+        Tue, 15 Jun 2021 11:48:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WGPi/wXiZjPo5w4DPHF3qlaSDaruBYsxDZl7JrnERyE=;
+        b=B3+g0pU00IZQP4X7tQaOCngXVEoTtgAJZnGTV9vxndMkQnpI5JsSNxfYrOrfAIuDvg
+         fcmqkTKrIWlaCjtvKAOxmNHEseG8rzxJIKFQBoKj0bhi/tKswE+2YJO5u/KKu0VQux4M
+         5KY12RdQvn0G5GjahOAJt9JcWw1VQIcjF/4HRZUkCmmuCLJMyw8wP+Jw1LgdHBIy6iD9
+         B+OgrlgCE/11KK1yIuwQXJS/86uCE+y2MAF3FQIpVpz/RJ/lzWZhkv+SILAgC1FBASke
+         hJNnKMLwzmhGxAEBy2oLWH97Nin94Fzg5RoY3wsfEBFCi8o3mzb9TkmYV5pSmQDW2FiM
+         kBtA==
+X-Gm-Message-State: AOAM531unPSb/iuEkiD1B83dp96jm969x/WiBJoRcKQTUIG7YaeU5pSq
+        SQaK6Lxhb23bbwWl+mysyAz6mawzSfgSW8ssC2s=
+X-Google-Smtp-Source: ABdhPJyw49VknPdSZNzySmsqz3tuP81/+LXhX25/+RNCDBWNub6bhsIxOQ6G6dXG++0p/CUhpt03g4wh6B0nCOy678U=
+X-Received: by 2002:a1f:ac45:: with SMTP id v66mr6243318vke.1.1623782896276;
+ Tue, 15 Jun 2021 11:48:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2668591.RLH4pUzd2n@linux.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210419005539.22729-1-mick@ics.forth.gr> <20210419005539.22729-6-mick@ics.forth.gr>
+ <CAMuHMdW=23SPXwqcjD+30M_d0azdze2=ChZM-PF1brf9bCNtrA@mail.gmail.com> <fe02eb618eee141e8bc021e8e30906fc@mailhost.ics.forth.gr>
+In-Reply-To: <fe02eb618eee141e8bc021e8e30906fc@mailhost.ics.forth.gr>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 15 Jun 2021 20:48:05 +0200
+Message-ID: <CAMuHMdXtT1L3yfzkTkbhqz3zgUQj89Bcm7mqz+m126NprAsK8Q@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] RISC-V: Add crash kernel support
+To:     Nick Kossifidis <mick@ics.forth.gr>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio
+Hi Nick,
 
-On 6/14/2021 7:52 AM, Fabio M. De Francesco wrote:
+On Tue, Jun 15, 2021 at 8:29 PM Nick Kossifidis <mick@ics.forth.gr> wrote:
+> Στις 2021-06-15 16:19, Geert Uytterhoeven έγραψε:
+> > This does not match
+> > https://github.com/devicetree-org/dt-schema/blob/master/schemas/chosen.yaml#L77:
+> >
+> >     $ref: types.yaml#/definitions/uint64-array
+> >     maxItems: 2
+> >     description:
+> >       This property (currently used only on arm64) holds the memory
+> > range,
+> >       the address and the size, of the elf core header which mainly
+> > describes
+> >       the panicked kernel\'s memory layout as PT_LOAD segments of elf
+> > format.
+> >
+> > Hence "linux,elfcorehdr" should be a property of the /chosen node,
+> > instead of a memory node with a compatible value of "linux,elfcorehdr".
+> >
+>
+> That's a binding for a property on the /chosen node, that as the text
+> says it's defined for arm64 only and the code that handled it was also
 
-> For what is related to style, if you agree with me, I'd like to have it
-> consistent: always capitalize the first word which describes a parameter, and
-> always use consistent punctuation among different lines and comments, so I'd
-> prepare a patch (or a series) to the files in resctrl. I could called them
-> "Make consistent use of capitalization and punctuation". What about it?
+That doesn't mean it must not be used on other architectures ;-)
+Arm64 was just the first one to use it...
 
-While I surely would consider such a submission I wonder if your energy 
-may not be better spent on other areas where there are higher priority 
-work needed? What is your goal with this work? I understand that you are 
-new to Linux kernel development and want to learn but it is not clear to 
-me fixing capitalization and punctuation would be a good use of your energy.
+> on arm64. Instead the reserved-region binding I used is a standard
+> binding, if you don't like the name used for the compatible string
+> because it overlaps with that property we can change it. I want to use a
+> reserved-region for this because we'll have to reserve it anyway so
+> using a property on /chosen and then using that property to reserve the
+> region seemed suboptimal.
+>
+> >> v2:
+> >>  * Use linux,usable-memory on /memory instead of a new binding
+> >
+> > This part seems to have been removed in v3 and later?
+> > Note that "linux,usable-memory-range" should be a property of the
+> > /chosen node, too, cfr.
+> > https://github.com/devicetree-org/dt-schema/blob/master/schemas/chosen.yaml#L85
+> >
+>
+> No special handling is needed when using linux,usable-memory on /memory,
+> limiting the available memory is handled by generic code at
+> drivers/of/fdt.c
 
-> I've also noticed some minor grammar issues (e.g., exist -> exits (in
-> pseudo_lock.c, line 752 - pseudo-lock -> pseudo-locked in many other lines).
-> What do you think if I make a "Fix English grammar" patch? So what about this
-> other too?
+It was my understanding both properties under /chosen are the
+recommended methods for new platforms... Let's see what Rob has
+to say...
 
-This work would make the comments easier to read and a welcome addition. 
-Please consider this a lower priority if you come across functional 
-issues that could benefit your attention.
+Anyway, I sent a patch series to switch to generic "linux,elfcorehdr"
+handling
+https://lore.kernel.org/r/cover.1623780059.git.geert+renesas@glider.be/
 
-Thank you very much
+Thanks!
 
-Reinette
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
