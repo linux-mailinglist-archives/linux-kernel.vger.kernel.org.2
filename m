@@ -2,438 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB14F3A7955
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716BA3A7950
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbhFOIuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 04:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhFOIuF (ORCPT
+        id S231224AbhFOItf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 04:49:35 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41400 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhFOIte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:50:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE181C061574;
-        Tue, 15 Jun 2021 01:48:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ewaQ0uVDHyF24zdop2deubSxXdGfzaIXdpCh01W+00g=; b=jpJR3X0+Gm7ws+kDjkHlqoT4Za
-        lQjBOdiOv3theTd9xclOXr0+zRsCpF6btI8d2vfaPeTDKCxMB98tN6OkyeZ5LziIZUSfllQSIBkrM
-        hYXjCm2yB/SD6kfHwMiwtfiLyrs3ayYVeJjWEeaTmM8ccW8mHkG5iS2eHTB0nYJukBnTbKIKqoxD+
-        hFmXMrP1UwA+vqSRyAtwk/hPV04fACwT+7OBSfsgp0eMdPj9F7tfjnGor5v9Ydbk0lcYX7vxGEZC1
-        ibfxKV9fricZQ/WdsAdszhqwSIUtXoLI6uY4Zl9c/DxeYFO1CenhFcKkK8QVQHAikF7DWb0Yd+Ic6
-        La2j3dHw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lt4jD-006Fl8-ET; Tue, 15 Jun 2021 08:47:28 +0000
-Date:   Tue, 15 Jun 2021 09:47:23 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, smfrench@gmail.com,
-        stfrench@microsoft.com, willy@infradead.org,
-        aurelien.aptel@gmail.com, linux-cifsd-devel@lists.sourceforge.net,
-        senozhatsky@chromium.org, sandeen@sandeen.net, aaptel@suse.com,
-        hch@infradead.org, viro@zeniv.linux.org.uk,
-        ronniesahlberg@gmail.com, hch@lst.de, dan.carpenter@oracle.com,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Hyunchul Lee <hyc.lee@gmail.com>
-Subject: Re: [PATCH v4 08/10] cifsd: add file operations
-Message-ID: <YMhpG/sAjO3WKKc3@infradead.org>
-References: <20210602034847.5371-1-namjae.jeon@samsung.com>
- <CGME20210602035820epcas1p3c444b34a6b6a4252c9091e0bf6c0c167@epcas1p3.samsung.com>
- <20210602034847.5371-9-namjae.jeon@samsung.com>
+        Tue, 15 Jun 2021 04:49:34 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 236491FD55;
+        Tue, 15 Jun 2021 08:47:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623746849; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qsvBIKoBBDJEgHaKCzoXt6uHkCjR8pMwpup6Tl3TIWY=;
+        b=WwJmRcCYbA8r2cbd0yxaLSp4lsozxpCGL6nszt9InMByAVOLQ/Z5d+2k2XuFYFh9HPjXJD
+        ZodOGPzRpVMMb+SBx07LnMHJGoFS8aBCCnfqwQQHjppmJdh5iubbNnO5S+9AxJSi+GvAWD
+        WFdnDJP4wNe97E9c7jicUkbKP4kyxSM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623746849;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qsvBIKoBBDJEgHaKCzoXt6uHkCjR8pMwpup6Tl3TIWY=;
+        b=PYlBYDzM/Z9Ap6CCtY2GQf8IZ/Q159Cmyb0cRvl9Ay1zffhPvWJ8EV5idnd2VUgJOBjczc
+        i1zl/1p02vC2Q5DQ==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 12232A3BA5;
+        Tue, 15 Jun 2021 08:47:29 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id C9A6F1F2C88; Tue, 15 Jun 2021 10:47:28 +0200 (CEST)
+Date:   Tue, 15 Jun 2021 10:47:28 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH] quota: finish disable quotactl_path syscall
+Message-ID: <20210615084728.GG29751@quack2.suse.cz>
+References: <20210614153712.313707-1-marcin@juszkiewicz.com.pl>
+ <20210614164454.GC29751@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210602034847.5371-9-namjae.jeon@samsung.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210614164454.GC29751@quack2.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 12:48:45PM +0900, Namjae Jeon wrote:
-> +#include <linux/rwlock.h>
-> +
-> +#include "glob.h"
-> +#include "buffer_pool.h"
-> +#include "connection.h"
-> +#include "mgmt/ksmbd_ida.h"
-> +
-> +static struct kmem_cache *filp_cache;
-> +
-> +struct wm {
-> +	struct list_head	list;
-> +	unsigned int		sz;
-> +	char			buffer[0];
+On Mon 14-06-21 18:44:54, Jan Kara wrote:
+> On Mon 14-06-21 17:37:12, Marcin Juszkiewicz wrote:
+> > In commit 5b9fedb31e47 ("quota: Disable quotactl_path syscall") Jan Kara
+> > disabled quotactl_path syscall on several architectures.
+> > 
+> > This commit disables it on all architectures using unified list of
+> > system calls:
+> > 
+> > - arm64
+> > - arc
+> > - csky
+> > - h8300
+> > - hexagon
+> > - nds32
+> > - nios2
+> > - openrisc
+> > - riscv (32/64)
+> > 
+> > CC: Jan Kara <jack@suse.cz>
+> > CC: Christian Brauner <christian.brauner@ubuntu.com>
+> > CC: Sascha Hauer <s.hauer@pengutronix.de>
+> > Link: https://lore.kernel.org/lkml/20210512153621.n5u43jsytbik4yze@wittgenstein
+> > 
+> > Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+> 
+> Aha, I've missed that one. Thanks for catching this. Arnd, will you take
+> this patch or should I take it through my tree?
 
-This should use buffer[];
+OK, I want this to make it for rc7 so I've pulled this patch to my tree and
+will push it to Linus in a few days.
 
-> +};
-> +
-> +struct wm_list {
-> +	struct list_head	list;
-> +	unsigned int		sz;
-> +
-> +	spinlock_t		wm_lock;
-> +	int			avail_wm;
-> +	struct list_head	idle_wm;
-> +	wait_queue_head_t	wm_wait;
-> +};
+								Honza
 
-What does wm stand for?
-
-This looks like arbitrary caching of vmalloc buffers.  I thought we
-decided to just make vmalloc suck less rather than papering over that?
-
-> +static LIST_HEAD(wm_lists);
-> +static DEFINE_RWLOCK(wm_lists_lock);
-
-Especially as this isn't going to scale at all using global loists and
-locks.
-
-> +void ksmbd_free_file_struct(void *filp)
-> +{
-> +	kmem_cache_free(filp_cache, filp);
-> +}
-> +
-> +void *ksmbd_alloc_file_struct(void)
-> +{
-> +	return kmem_cache_zalloc(filp_cache, GFP_KERNEL);
-> +}
-
-These are only ued in vfs_cache.c . So I'd suggest to just move
-filp_cache there and drop these wrappers.
-
-> +}
-> +
-> +static void ksmbd_vfs_inherit_owner(struct ksmbd_work *work,
-> +				    struct inode *parent_inode,
-> +				    struct inode *inode)
-> +{
-> +	if (!test_share_config_flag(work->tcon->share_conf,
-> +				    KSMBD_SHARE_FLAG_INHERIT_OWNER))
-> +		return;
-> +
-> +	i_uid_write(inode, i_uid_read(parent_inode));
-> +}
-
-Can you explain this a little more?  When do the normal create/mdir
-fail to inherit the owner?
-
-int ksmbd_vfs_inode_permission(struct dentry *dentry, int acc_mode, bool delete)
-> +{
-> +	int mask, ret = 0;
-> +
-> +	mask = 0;
-> +	acc_mode &= O_ACCMODE;
-> +
-> +	if (acc_mode == O_RDONLY)
-> +		mask = MAY_READ;
-> +	else if (acc_mode == O_WRONLY)
-> +		mask = MAY_WRITE;
-> +	else if (acc_mode == O_RDWR)
-> +		mask = MAY_READ | MAY_WRITE;
-
-How about already setting up the MAY_ flags in smb2_create_open_flags
-and returning them in extra argument?  That keeps the sm to Linux
-translation in a single place.
-
-> +
-> +	if (inode_permission(&init_user_ns, d_inode(dentry), mask | MAY_OPEN))
-> +		return -EACCES;
-
-And this call can be open coded in the only caller.
-
-> +	if (delete) {
-
-And this block could be split into a nice self-contained helper.
-
-> +		struct dentry *child, *parent;
-> +
-> +		parent = dget_parent(dentry);
-> +		inode_lock_nested(d_inode(parent), I_MUTEX_PARENT);
-> +		child = lookup_one_len(dentry->d_name.name, parent,
-> +				       dentry->d_name.len);
-> +		if (IS_ERR(child)) {
-> +			ret = PTR_ERR(child);
-> +			goto out_lock;
-> +		}
-> +
-> +		if (child != dentry) {
-> +			ret = -ESTALE;
-> +			dput(child);
-> +			goto out_lock;
-> +		}
-> +		dput(child);
-
-That being said I do not understand the need for this re-lookup at all.
-
-> +	if (!inode_permission(&init_user_ns, d_inode(dentry), MAY_OPEN | MAY_WRITE))
-
-All these inode_permission lines have overly long lines.  It might be
-worth to pass the user_namespace to this function, not only to shorten
-the code, but also to prepare for user namespace support.
-
-> +	parent = dget_parent(dentry);
-> +	inode_lock_nested(d_inode(parent), I_MUTEX_PARENT);
-> +	child = lookup_one_len(dentry->d_name.name, parent,
-> +			       dentry->d_name.len);
-> +	if (IS_ERR(child)) {
-> +		ret = PTR_ERR(child);
-> +		goto out_lock;
-> +	}
-> +
-> +	if (child != dentry) {
-> +		ret = -ESTALE;
-> +		dput(child);
-> +		goto out_lock;
-> +	}
-> +	dput(child);
-
-This is the same weird re-lookup dance as above.  IFF there is a good
-rationale for it it needs to go into a self-contained and well
-documented helper.
-
-> +int ksmbd_vfs_create(struct ksmbd_work *work, const char *name, umode_t mode)
-> +{
-> +	struct path path;
-> +	struct dentry *dentry;
-> +	int err;
-> +
-> +	dentry = kern_path_create(AT_FDCWD, name, &path, 0);
-
-Curious:  why is this using absolute or CWD based path instead of
-doing lookups based off the parent as done by e.g. nfsd?  Same also
-for mkdir and co.
-
-> +{
-> +	struct file *filp;
-> +	ssize_t nbytes = 0;
-> +	char *rbuf;
-> +	struct inode *inode;
-> +
-> +	rbuf = work->aux_payload_buf;
-> +	filp = fp->filp;
-> +	inode = file_inode(filp);
-
-These can be initialized on the declaration lines to make the code a
-little easier to read.
-
-> +	if (!work->tcon->posix_extensions) {
-> +		spin_lock(&src_dent->d_lock);
-> +		list_for_each_entry(dst_dent, &src_dent->d_subdirs, d_child) {
-> +			struct ksmbd_file *child_fp;
-> +
-> +			if (d_really_is_negative(dst_dent))
-> +				continue;
-> +
-> +			child_fp = ksmbd_lookup_fd_inode(d_inode(dst_dent));
-> +			if (child_fp) {
-> +				spin_unlock(&src_dent->d_lock);
-> +				ksmbd_debug(VFS, "Forbid rename, sub file/dir is in use\n");
-> +				return -EACCES;
-> +			}
-> +		}
-> +		spin_unlock(&src_dent->d_lock);
-> +	}
-
-This begs for being split into a self-contained helper.
-
-> +int ksmbd_vfs_lock(struct file *filp, int cmd, struct file_lock *flock)
-> +{
-> +	ksmbd_debug(VFS, "calling vfs_lock_file\n");
-> +	return vfs_lock_file(filp, cmd, flock, NULL);
-> +}
-> +
-> +int ksmbd_vfs_readdir(struct file *file, struct ksmbd_readdir_data *rdata)
-> +{
-> +	return iterate_dir(file, &rdata->ctx);
-> +}
-> +
-> +int ksmbd_vfs_alloc_size(struct ksmbd_work *work, struct ksmbd_file *fp,
-> +			 loff_t len)
-> +{
-> +	smb_break_all_levII_oplock(work, fp, 1);
-> +	return vfs_fallocate(fp->filp, FALLOC_FL_KEEP_SIZE, 0, len);
-> +}
-
-Please avoid such trivial wrappers that just make the code hard to
-follow.
-
-> +int ksmbd_vfs_fqar_lseek(struct ksmbd_file *fp, loff_t start, loff_t length,
-> +			 struct file_allocated_range_buffer *ranges,
-> +			 int in_count, int *out_count)
-
-What is fqar?
-
-> +
-> +/*
-> + * ksmbd_vfs_get_logical_sector_size() - get logical sector size from inode
-> + * @inode: inode
-> + *
-> + * Return: logical sector size
-> + */
-> +unsigned short ksmbd_vfs_logical_sector_size(struct inode *inode)
-> +{
-> +	struct request_queue *q;
-> +	unsigned short ret_val = 512;
-> +
-> +	if (!inode->i_sb->s_bdev)
-> +		return ret_val;
-> +
-> +	q = inode->i_sb->s_bdev->bd_disk->queue;
-> +
-> +	if (q && q->limits.logical_block_size)
-> +		ret_val = q->limits.logical_block_size;
-> +
-> +	return ret_val;
-
-I don't think a CIFS server has any business poking into the block
-layer.  What is this trying to do?
-
-> +struct posix_acl *ksmbd_vfs_posix_acl_alloc(int count, gfp_t flags)
-> +{
-> +#if IS_ENABLED(CONFIG_FS_POSIX_ACL)
-> +	return posix_acl_alloc(count, flags);
-> +#else
-> +	return NULL;
-> +#endif
-> +}
-> +
-> +struct posix_acl *ksmbd_vfs_get_acl(struct inode *inode, int type)
-> +{
-> +#if IS_ENABLED(CONFIG_FS_POSIX_ACL)
-> +	return get_acl(inode, type);
-> +#else
-> +	return NULL;
-> +#endif
-> +}
-> +
-> +int ksmbd_vfs_set_posix_acl(struct inode *inode, int type,
-> +			    struct posix_acl *acl)
-> +{
-> +#if IS_ENABLED(CONFIG_FS_POSIX_ACL)
-> +	return set_posix_acl(&init_user_ns, inode, type, acl);
-> +#else
-> +	return -EOPNOTSUPP;
-> +#endif
-> +}
-
-Please avoid these pointless wrappers and just use large code block
-ifdefs or IS_ENABLED checks.
-
-> +int ksmbd_vfs_copy_file_range(struct file *file_in, loff_t pos_in,
-> +			      struct file *file_out, loff_t pos_out, size_t len)
-> +{
-> +	struct inode *inode_in = file_inode(file_in);
-> +	struct inode *inode_out = file_inode(file_out);
-> +	int ret;
-> +
-> +	ret = vfs_copy_file_range(file_in, pos_in, file_out, pos_out, len, 0);
-> +	/* do splice for the copy between different file systems */
-> +	if (ret != -EXDEV)
-> +		return ret;
-> +
-> +	if (S_ISDIR(inode_in->i_mode) || S_ISDIR(inode_out->i_mode))
-> +		return -EISDIR;
-> +	if (!S_ISREG(inode_in->i_mode) || !S_ISREG(inode_out->i_mode))
-> +		return -EINVAL;
-> +
-> +	if (!(file_in->f_mode & FMODE_READ) ||
-> +	    !(file_out->f_mode & FMODE_WRITE))
-> +		return -EBADF;
-> +
-> +	if (len == 0)
-> +		return 0;
-> +
-> +	file_start_write(file_out);
-> +
-> +	/*
-> +	 * skip the verification of the range of data. it will be done
-> +	 * in do_splice_direct
-> +	 */
-> +	ret = do_splice_direct(file_in, &pos_in, file_out, &pos_out,
-> +			       len > MAX_RW_COUNT ? MAX_RW_COUNT : len, 0);
-
-vfs_copy_file_range already does this type of fallback, so this is dead
-code.
-
-> +#define XATTR_NAME_STREAM_LEN		(sizeof(XATTR_NAME_STREAM) - 1)
-> +
-> +enum {
-> +	XATTR_DOSINFO_ATTRIB		= 0x00000001,
-> +	XATTR_DOSINFO_EA_SIZE		= 0x00000002,
-> +	XATTR_DOSINFO_SIZE		= 0x00000004,
-> +	XATTR_DOSINFO_ALLOC_SIZE	= 0x00000008,
-> +	XATTR_DOSINFO_CREATE_TIME	= 0x00000010,
-> +	XATTR_DOSINFO_CHANGE_TIME	= 0x00000020,
-> +	XATTR_DOSINFO_ITIME		= 0x00000040
-> +};
-> +
-> +struct xattr_dos_attrib {
-> +	__u16	version;
-> +	__u32	flags;
-> +	__u32	attr;
-> +	__u32	ea_size;
-> +	__u64	size;
-> +	__u64	alloc_size;
-> +	__u64	create_time;
-> +	__u64	change_time;
-> +	__u64	itime;
-> +};
-
-These looks like on-disk structures.  Any chance you could re-order
-the headers so that things like on-disk, on the wire and netlink uapi
-structures all have a dedicated and well documented header for
-themselves?
-
-> +	read_lock(&ci->m_lock);
-> +	list_for_each(cur, &ci->m_fp_list) {
-> +		lfp = list_entry(cur, struct ksmbd_file, node);
-
-Please use list_for_each_entry.  There are very few places left where
-using list_for_each makes sense.
-
-> +		if (inode == FP_INODE(lfp)) {
-> +			atomic_dec(&ci->m_count);
-> +			read_unlock(&ci->m_lock);
-> +			return lfp;
-> +		}
-> +	}
-> +	atomic_dec(&ci->m_count);
-> +	read_unlock(&ci->m_lock);
-
-So a successful find increments m_count, but a miss decreases it?
-Isn't this going to create an underflow?
-
-> +	if (!fp->f_ci) {
-> +		ksmbd_free_file_struct(fp);
-> +		return ERR_PTR(-ENOMEM);
-> +	}
-> +
-> +	ret = __open_id(&work->sess->file_table, fp, OPEN_ID_TYPE_VOLATILE_ID);
-> +	if (ret) {
-> +		ksmbd_inode_put(fp->f_ci);
-> +		ksmbd_free_file_struct(fp);
-> +		return ERR_PTR(ret);
-> +	}
-> +
-> +	atomic_inc(&work->conn->stats.open_files_count);
-> +	return fp;
-
-Please use goto based unwinding instead of duplicating the resoure
-cleanup.
-
-> +static bool tree_conn_fd_check(struct ksmbd_tree_connect *tcon, struct ksmbd_file *fp)
-
-Overly long line.
-
-> +{
-> +	return fp->tcon != tcon;
-> +}
-> +
-> +static bool session_fd_check(struct ksmbd_tree_connect *tcon, struct ksmbd_file *fp)
-
-Same.
+> > diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+> > index 6de5a7fc066b..d2a942086fcb 100644
+> > --- a/include/uapi/asm-generic/unistd.h
+> > +++ b/include/uapi/asm-generic/unistd.h
+> > @@ -863,8 +863,7 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
+> >  __SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
+> >  #define __NR_mount_setattr 442
+> >  __SYSCALL(__NR_mount_setattr, sys_mount_setattr)
+> > -#define __NR_quotactl_path 443
+> > -__SYSCALL(__NR_quotactl_path, sys_quotactl_path)
+> > +/* 443 is reserved for quotactl_path */
+> >  
+> >  #define __NR_landlock_create_ruleset 444
+> >  __SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
+> > -- 
+> > 2.31.1
+> > 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
