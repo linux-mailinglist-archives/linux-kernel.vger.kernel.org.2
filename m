@@ -2,299 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2952B3A7463
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D18A3A7421
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhFOCvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbhFOCvQ (ORCPT
+        id S231324AbhFOCjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:39:05 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:22167 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230302AbhFOCjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:51:16 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F062C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:49:12 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id t140so16627266oih.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:49:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5mB54G1f2BMqsk/PpgeMUBY34ptNTL2FTGaPiB4Yuzg=;
-        b=JzJ8Iuxsx3z0run2VPvrs1YOCVAzy6p5rjt9trA8nj1oMCeAxaymq8i1lqihTyDhND
-         q6K1IHpI/90SVIdLxLBFQPB0ZMPoM6zrIos9JGmck2Ji0fNnP/Ps+D6Cv4gh9ZItgNGv
-         P09JhtSZzvWj89m1762Z9KXmlYdtsJbgqbvquBWdVPzrcSqlS6eyBOlANiSOis6c+73l
-         Fh0ObkTayhLnCBkqp5P7WimHEIscsVqu2tWE9BZseZtEFMRT5FEdEcDhN2Fef0LS2gou
-         D6efwLz6SxohFFRI6dPeGQL/dZ6TgP5AL6jbsLcSMQFnZ1lmI0aWkQFHZNVL8FOmmPuH
-         0wFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5mB54G1f2BMqsk/PpgeMUBY34ptNTL2FTGaPiB4Yuzg=;
-        b=cdkPYXvZ2Xn46/PIRzbElaLh+RdxTOuQIhGxadvKQy6jkDOalcD6GunCKGwXe+Pver
-         4R9lF5d69ApKfkuZqrPkIdLRrBMt/Exzofm1pKjzYwHFtjtsVss6d8gGBFRq0Zfu1Ov+
-         ALDwVQV8fJYRuac0+ZfoWdu2QMLFxbjAZndG7FSaecPkV9/6y7/El7+9kl8RAx251wUY
-         EsWQFjrlfQgQdP1NrsmfR0NFvdSp/WtGyc77n6aeUnxJp2wkSt5PK9XR+rLh5k6PNJcb
-         fSdLmhwiiGklDgruyY+0mGkgX6fColt10eyG7u6wwmMxT4jvFuPvANRrwLGxtcRjo72g
-         fJjQ==
-X-Gm-Message-State: AOAM531+9Jdr0kMOBhYmqI/ywvUi1STKqvQ4Bozvk/Sd9plvC6gAX6CH
-        1bxs6YlFMsqM+ndLSqXVOcFypS/YFXUHPKEzO4E=
-X-Google-Smtp-Source: ABdhPJwKHBPhRor0uBHBiT3Sc9lmWQ4R/sBqLW16QjtJF3wH74+3EGUShH6H4OB2pSMYnNl6znN5ag==
-X-Received: by 2002:a17:90a:ae15:: with SMTP id t21mr2445346pjq.55.1623724747504;
-        Mon, 14 Jun 2021 19:39:07 -0700 (PDT)
-Received: from localhost.localdomain ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id b133sm14102623pfb.36.2021.06.14.19.39.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 19:39:07 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        emil.l.velikov@gmail.com, Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH v2 2/2] drm: Protect drm_master pointers in drm_lease.c
-Date:   Tue, 15 Jun 2021 10:36:45 +0800
-Message-Id: <20210615023645.6535-3-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210615023645.6535-1-desmondcheongzx@gmail.com>
-References: <20210615023645.6535-1-desmondcheongzx@gmail.com>
+        Mon, 14 Jun 2021 22:39:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623724620; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=htAFHwDS8GLyJOv51qcTukaO+cQ/uyLwy7eNovu50Zw=;
+ b=TRi2C6dsHs1S13ZYJ08+/P91xXTo2afjFapo/5EMAbqf3t3EYl4yPaIZ6aCv1qpTf77ZJk+g
+ xxCGBbP/+5BFef3OlwlgKs/CmCWPYvcVsMeA/OIgtm7Fww5TkJ710+GPLeiPThXopqJAtPI1
+ o8dZGMlCcpA4WC3ZPGM+jm2CrNY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60c8124b2eaeb98b5e1e5e73 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 02:36:58
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7AFFDC43148; Tue, 15 Jun 2021 02:36:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4455C4338A;
+        Tue, 15 Jun 2021 02:36:56 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 15 Jun 2021 10:36:56 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
+ ufshcd_abort() for PM requests
+In-Reply-To: <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-9-git-send-email-cang@codeaurora.org>
+ <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
+ <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
+ <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
+ <75527f0ba5d315d6edbf800a2ddcf8c7@codeaurora.org>
+ <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
+Message-ID: <3fce15502c2742a4388817538eb4db97@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch ensures that the device's master mutex is acquired before
-accessing pointers to struct drm_master that are subsequently
-dereferenced. Without the mutex, the struct drm_master may be freed
-concurrently by another process calling drm_setmaster_ioctl(). This
-could then lead to use-after-free errors.
+Hi Bart,
 
-Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
----
- drivers/gpu/drm/drm_lease.c | 58 +++++++++++++++++++++++++++----------
- 1 file changed, 43 insertions(+), 15 deletions(-)
+On 2021-06-15 02:49, Bart Van Assche wrote:
+> On 6/13/21 7:42 AM, Can Guo wrote:
+>> 2. ufshcd_abort() invokes ufshcd_err_handler() synchronously can have 
+>> a
+>> live lock issue, which is why I chose the asynchronous way (from the 
+>> first
+>> day I started to fix error handling). The live lock happens when abort
+>> happens
+>> to a PM request, e.g., a SSU cmd sent from suspend/resume. Because UFS
+>> error
+>> handler is synchronized with suspend/resume (by calling
+>> pm_runtime_get_sync()
+>> and lock_system_sleep()), the sequence is like:
+>> [1] ufshcd_wl_resume() sends SSU cmd
+>> [2] ufshcd_abort() calls UFS error handler
+>> [3] UFS error handler calls lock_system_sleep() and 
+>> pm_runtime_get_sync()
+>> 
+>> In above sequence, either lock_system_sleep() or pm_runtime_get_sync()
+>> shall
+>> be blocked - [3] is blocked by [1], [2] is blocked by [3], while [1] 
+>> is
+>> blocked by [2].
+>> 
+>> For PM requests, I chose to abort them fast to unblock suspend/resume,
+>> suspend/resume shall fail of course, but UFS error handler recovers
+>> PM errors anyways.
+> 
+> In the above sequence, does [2] perhaps refer to aborting the SSU
+> command submitted in step [1] (this is not clear to me)?
 
-diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
-index da4f085fc09e..3e6f689236e5 100644
---- a/drivers/gpu/drm/drm_lease.c
-+++ b/drivers/gpu/drm/drm_lease.c
-@@ -107,10 +107,16 @@ static bool _drm_has_leased(struct drm_master *master, int id)
-  */
- bool _drm_lease_held(struct drm_file *file_priv, int id)
- {
-+	bool ret;
-+
- 	if (!file_priv || !file_priv->master)
- 		return true;
- 
--	return _drm_lease_held_master(file_priv->master, id);
-+	mutex_lock(&file_priv->master->dev->master_mutex);
-+	ret = _drm_lease_held_master(file_priv->master, id);
-+	mutex_unlock(&file_priv->master->dev->master_mutex);
-+
-+	return ret;
- }
- 
- /**
-@@ -132,10 +138,12 @@ bool drm_lease_held(struct drm_file *file_priv, int id)
- 	if (!file_priv || !file_priv->master || !file_priv->master->lessor)
- 		return true;
- 
-+	mutex_lock(&file_priv->master->dev->master_mutex);
- 	master = file_priv->master;
- 	mutex_lock(&master->dev->mode_config.idr_mutex);
- 	ret = _drm_lease_held_master(master, id);
- 	mutex_unlock(&master->dev->mode_config.idr_mutex);
-+	mutex_unlock(&file_priv->master->dev->master_mutex);
- 	return ret;
- }
- 
-@@ -158,6 +166,7 @@ uint32_t drm_lease_filter_crtcs(struct drm_file *file_priv, uint32_t crtcs_in)
- 	if (!file_priv || !file_priv->master || !file_priv->master->lessor)
- 		return crtcs_in;
- 
-+	mutex_lock(&file_priv->master->dev->master_mutex);
- 	master = file_priv->master;
- 	dev = master->dev;
- 
-@@ -177,6 +186,7 @@ uint32_t drm_lease_filter_crtcs(struct drm_file *file_priv, uint32_t crtcs_in)
- 		count_in++;
- 	}
- 	mutex_unlock(&master->dev->mode_config.idr_mutex);
-+	mutex_unlock(&file_priv->master->dev->master_mutex);
- 	return crtcs_out;
- }
- 
-@@ -490,7 +500,7 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
- 	size_t object_count;
- 	int ret = 0;
- 	struct idr leases;
--	struct drm_master *lessor = lessor_priv->master;
-+	struct drm_master *lessor;
- 	struct drm_master *lessee = NULL;
- 	struct file *lessee_file = NULL;
- 	struct file *lessor_file = lessor_priv->filp;
-@@ -502,12 +512,6 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
- 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
- 		return -EOPNOTSUPP;
- 
--	/* Do not allow sub-leases */
--	if (lessor->lessor) {
--		DRM_DEBUG_LEASE("recursive leasing not allowed\n");
--		return -EINVAL;
--	}
--
- 	/* need some objects */
- 	if (cl->object_count == 0) {
- 		DRM_DEBUG_LEASE("no objects in lease\n");
-@@ -519,12 +523,23 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
- 		return -EINVAL;
- 	}
- 
-+	mutex_lock(&dev->master_mutex);
-+	lessor = lessor_priv->master;
-+	/* Do not allow sub-leases */
-+	if (lessor->lessor) {
-+		DRM_DEBUG_LEASE("recursive leasing not allowed\n");
-+		ret = -EINVAL;
-+		goto unlock;
-+	}
-+
- 	object_count = cl->object_count;
- 
- 	object_ids = memdup_user(u64_to_user_ptr(cl->object_ids),
- 			array_size(object_count, sizeof(__u32)));
--	if (IS_ERR(object_ids))
--		return PTR_ERR(object_ids);
-+	if (IS_ERR(object_ids)) {
-+		ret = PTR_ERR(object_ids);
-+		goto unlock;
-+	}
- 
- 	idr_init(&leases);
- 
-@@ -535,14 +550,15 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
- 	if (ret) {
- 		DRM_DEBUG_LEASE("lease object lookup failed: %i\n", ret);
- 		idr_destroy(&leases);
--		return ret;
-+		goto unlock;
- 	}
- 
- 	/* Allocate a file descriptor for the lease */
- 	fd = get_unused_fd_flags(cl->flags & (O_CLOEXEC | O_NONBLOCK));
- 	if (fd < 0) {
- 		idr_destroy(&leases);
--		return fd;
-+		ret = fd;
-+		goto unlock;
- 	}
- 
- 	DRM_DEBUG_LEASE("Creating lease\n");
-@@ -578,6 +594,7 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
- 	/* Hook up the fd */
- 	fd_install(fd, lessee_file);
- 
-+	mutex_unlock(&dev->master_mutex);
- 	DRM_DEBUG_LEASE("drm_mode_create_lease_ioctl succeeded\n");
- 	return 0;
- 
-@@ -587,6 +604,8 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
- out_leases:
- 	put_unused_fd(fd);
- 
-+unlock:
-+	mutex_unlock(&dev->master_mutex);
- 	DRM_DEBUG_LEASE("drm_mode_create_lease_ioctl failed: %d\n", ret);
- 	return ret;
- }
-@@ -609,7 +628,7 @@ int drm_mode_list_lessees_ioctl(struct drm_device *dev,
- 	struct drm_mode_list_lessees *arg = data;
- 	__u32 __user *lessee_ids = (__u32 __user *) (uintptr_t) (arg->lessees_ptr);
- 	__u32 count_lessees = arg->count_lessees;
--	struct drm_master *lessor = lessor_priv->master, *lessee;
-+	struct drm_master *lessor, *lessee;
- 	int count;
- 	int ret = 0;
- 
-@@ -620,6 +639,8 @@ int drm_mode_list_lessees_ioctl(struct drm_device *dev,
- 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
- 		return -EOPNOTSUPP;
- 
-+	mutex_lock(&dev->master_mutex);
-+	lessor = lessor_priv->master;
- 	DRM_DEBUG_LEASE("List lessees for %d\n", lessor->lessee_id);
- 
- 	mutex_lock(&dev->mode_config.idr_mutex);
-@@ -643,6 +664,7 @@ int drm_mode_list_lessees_ioctl(struct drm_device *dev,
- 		arg->count_lessees = count;
- 
- 	mutex_unlock(&dev->mode_config.idr_mutex);
-+	mutex_unlock(&dev->master_mutex);
- 
- 	return ret;
- }
-@@ -662,7 +684,7 @@ int drm_mode_get_lease_ioctl(struct drm_device *dev,
- 	struct drm_mode_get_lease *arg = data;
- 	__u32 __user *object_ids = (__u32 __user *) (uintptr_t) (arg->objects_ptr);
- 	__u32 count_objects = arg->count_objects;
--	struct drm_master *lessee = lessee_priv->master;
-+	struct drm_master *lessee;
- 	struct idr *object_idr;
- 	int count;
- 	void *entry;
-@@ -676,6 +698,8 @@ int drm_mode_get_lease_ioctl(struct drm_device *dev,
- 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
- 		return -EOPNOTSUPP;
- 
-+	mutex_lock(&dev->master_mutex);
-+	lessee = lessee_priv->master;
- 	DRM_DEBUG_LEASE("get lease for %d\n", lessee->lessee_id);
- 
- 	mutex_lock(&dev->mode_config.idr_mutex);
-@@ -703,6 +727,7 @@ int drm_mode_get_lease_ioctl(struct drm_device *dev,
- 		arg->count_objects = count;
- 
- 	mutex_unlock(&dev->mode_config.idr_mutex);
-+	mutex_unlock(&dev->master_mutex);
- 
- 	return ret;
- }
-@@ -721,7 +746,7 @@ int drm_mode_revoke_lease_ioctl(struct drm_device *dev,
- 				void *data, struct drm_file *lessor_priv)
- {
- 	struct drm_mode_revoke_lease *arg = data;
--	struct drm_master *lessor = lessor_priv->master;
-+	struct drm_master *lessor;
- 	struct drm_master *lessee;
- 	int ret = 0;
- 
-@@ -731,8 +756,10 @@ int drm_mode_revoke_lease_ioctl(struct drm_device *dev,
- 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
- 		return -EOPNOTSUPP;
- 
-+	mutex_lock(&dev->master_mutex);
- 	mutex_lock(&dev->mode_config.idr_mutex);
- 
-+	lessor = lessor_priv->master;
- 	lessee = _drm_find_lessee(lessor, arg->lessee_id);
- 
- 	/* No such lessee */
-@@ -751,6 +778,7 @@ int drm_mode_revoke_lease_ioctl(struct drm_device *dev,
- 
- fail:
- 	mutex_unlock(&dev->mode_config.idr_mutex);
-+	mutex_unlock(&dev->master_mutex);
- 
- 	return ret;
- }
--- 
-2.25.1
+Yes, your understanding is right.
 
+> If so, how about breaking the circular waiting cycle as follows:
+> - If it can happen that SSU succeeds after more than scsi_timeout
+>   seconds, define a custom timeout handler. From inside the timeout
+>   handler, schedule a link check and return BLK_EH_RESET_TIMER. If the
+>   link is no longer operational, run the error handler. If the link
+>   cannot be recovered by the error handler, fail all pending commands.
+>   This will prevent that ufshcd_abort() is called if a SSU command 
+> takes
+>   longer than expected. See also commit 0dd0dec1677e.
+> - Modify the UFS error handler such that it accepts a context argument.
+>   The context argument specifies whether or not the UFS error handler 
+> is
+>   called from inside a system suspend or system resume handler. If the
+>   UFS error handler is called from inside a system suspend or resume
+>   callback, skip the lock_system_sleep() and unlock_system_sleep()
+>   calls.
+> 
+
+I am aware of commit 0dd0dec1677e, I gave my reviewed-by tag. Thank you
+for your suggestion and I believe it can resolve the cycle, because 
+actually
+I've considered the similar way (leverage hba->host->eh_noresume) last 
+year,
+but I didn't take this way due to below reasons:
+
+1. UFS error handler basically does one thing - reset and restore, which
+stops hba [1], resets device [2] and re-probes the device [3]. Stopping 
+hba [1]
+shall complete any pending requests in the doorbell (with error or no 
+error).
+After [1], suspend/resume contexts, blocked by SSU cmd, shall be 
+unblocked
+right away to do whatever it needs to handle the SSU cmd failure 
+(completed
+in [1], so scsi_execute() returns an error), e.g., put link back to the 
+old
+state. call ufshcd_vops_suspend(), turn off irq/clocks/powers and etc...
+However, reset and restore ([2] and [3]) is still running, and it can 
+(most likely)
+be disturbed by suspend/resume. So passing a parameter or using 
+hba->host->eh_noresume
+to skip lock_system_sleep() and unlock_system_sleep() can break the 
+cycle,
+but error handling may run concurrently with suspend/resume. Of course 
+we can
+modify suspend/resume to avoid it, but I was pursuing a minimal change 
+to get this fixed.
+
+2. Whatever way we take to break the cycle, suspend/resume shall fail 
+and
+RPM framework shall save the error to dev.power.runtime_error, leaving
+the device in runtime suspended or active mode permanently. If it is 
+left
+runtime suspended, UFS driver won't accept cmd anymore, while if it is 
+left
+runtime active, powers of UFS device and host will be left ON, leading 
+to power
+penalty. So my main idea is to let suspend/resume contexts, blocked by 
+PM cmds,
+fail fast first and then error handler recover everything back to work.
+
+Thanks,
+
+Can Guo.
+
+> Thanks,
+> 
+> Bart.
