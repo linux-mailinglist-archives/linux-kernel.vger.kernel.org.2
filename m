@@ -2,183 +2,438 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478AD3A7946
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB14F3A7955
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbhFOIr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 04:47:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:56892 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230332AbhFOIr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:47:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B4522D6E;
-        Tue, 15 Jun 2021 01:45:24 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC4F53F694;
-        Tue, 15 Jun 2021 01:45:22 -0700 (PDT)
-Subject: Re: [PATCH v4] PCI: of: Clear 64-bit flag for non-prefetchable memory
- below 4GB
-To:     Punit Agrawal <punitagrawal@gmail.com>, helgaas@kernel.org,
-        robh+dt@kernel.org
-Cc:     maz@kernel.org, leobras.c@gmail.com,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, wqu@suse.com, robin.murphy@arm.com,
-        pgwipeout@gmail.com, ardb@kernel.org, briannorris@chromium.org,
-        shawn.lin@rock-chips.com, Bjorn Helgaas <bhelgaas@google.com>
-References: <20210614230457.752811-1-punitagrawal@gmail.com>
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Message-ID: <888ca9e9-a1c0-3992-7c01-bbb7400e8dc0@arm.com>
-Date:   Tue, 15 Jun 2021 09:46:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231253AbhFOIuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 04:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231168AbhFOIuF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 04:50:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE181C061574;
+        Tue, 15 Jun 2021 01:48:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ewaQ0uVDHyF24zdop2deubSxXdGfzaIXdpCh01W+00g=; b=jpJR3X0+Gm7ws+kDjkHlqoT4Za
+        lQjBOdiOv3theTd9xclOXr0+zRsCpF6btI8d2vfaPeTDKCxMB98tN6OkyeZ5LziIZUSfllQSIBkrM
+        hYXjCm2yB/SD6kfHwMiwtfiLyrs3ayYVeJjWEeaTmM8ccW8mHkG5iS2eHTB0nYJukBnTbKIKqoxD+
+        hFmXMrP1UwA+vqSRyAtwk/hPV04fACwT+7OBSfsgp0eMdPj9F7tfjnGor5v9Ydbk0lcYX7vxGEZC1
+        ibfxKV9fricZQ/WdsAdszhqwSIUtXoLI6uY4Zl9c/DxeYFO1CenhFcKkK8QVQHAikF7DWb0Yd+Ic6
+        La2j3dHw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lt4jD-006Fl8-ET; Tue, 15 Jun 2021 08:47:28 +0000
+Date:   Tue, 15 Jun 2021 09:47:23 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Namjae Jeon <namjae.jeon@samsung.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, smfrench@gmail.com,
+        stfrench@microsoft.com, willy@infradead.org,
+        aurelien.aptel@gmail.com, linux-cifsd-devel@lists.sourceforge.net,
+        senozhatsky@chromium.org, sandeen@sandeen.net, aaptel@suse.com,
+        hch@infradead.org, viro@zeniv.linux.org.uk,
+        ronniesahlberg@gmail.com, hch@lst.de, dan.carpenter@oracle.com,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Hyunchul Lee <hyc.lee@gmail.com>
+Subject: Re: [PATCH v4 08/10] cifsd: add file operations
+Message-ID: <YMhpG/sAjO3WKKc3@infradead.org>
+References: <20210602034847.5371-1-namjae.jeon@samsung.com>
+ <CGME20210602035820epcas1p3c444b34a6b6a4252c9091e0bf6c0c167@epcas1p3.samsung.com>
+ <20210602034847.5371-9-namjae.jeon@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20210614230457.752811-1-punitagrawal@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602034847.5371-9-namjae.jeon@samsung.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Punit,
+On Wed, Jun 02, 2021 at 12:48:45PM +0900, Namjae Jeon wrote:
+> +#include <linux/rwlock.h>
+> +
+> +#include "glob.h"
+> +#include "buffer_pool.h"
+> +#include "connection.h"
+> +#include "mgmt/ksmbd_ida.h"
+> +
+> +static struct kmem_cache *filp_cache;
+> +
+> +struct wm {
+> +	struct list_head	list;
+> +	unsigned int		sz;
+> +	char			buffer[0];
 
-Thank you for working on this!
+This should use buffer[];
 
-On 6/15/21 12:04 AM, Punit Agrawal wrote:
-> Alexandru and Qu reported this resource allocation failure on
-> ROCKPro64 v2 and ROCK Pi 4B, both based on the RK3399:
->
->   pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
->   pci 0000:00:00.0: PCI bridge to [bus 01]
->   pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
->   pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
->
-> "BAR 14" is the PCI bridge's 32-bit non-prefetchable window, and our
-> PCI allocation code isn't smart enough to allocate it in a host
-> bridge window marked as 64-bit, even though this should work fine.
->
-> A DT host bridge description includes the windows from the CPU
-> address space to the PCI bus space.  On a few architectures
-> (microblaze, powerpc, sparc), the DT may also describe PCI devices
-> themselves, including their BARs.
->
-> Before 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource
-> flags for 64-bit memory addresses"), of_bus_pci_get_flags() ignored
-> the fact that some DT addresses described 64-bit windows and BARs.
-> That was a problem because the virtio virtual NIC has a 32-bit BAR
-> and a 64-bit BAR, and the driver couldn't distinguish them.
->
-> 9d57e61bf723 set IORESOURCE_MEM_64 for those 64-bit DT ranges, which
-> fixed the virtio driver.  But it also set IORESOURCE_MEM_64 for host
-> bridge windows, which exposed the fact that the PCI allocator isn't
-> smart enough to put 32-bit resources in those 64-bit windows.
->
-> Clear IORESOURCE_MEM_64 from host bridge windows since we don't need
-> that information.
+> +};
+> +
+> +struct wm_list {
+> +	struct list_head	list;
+> +	unsigned int		sz;
+> +
+> +	spinlock_t		wm_lock;
+> +	int			avail_wm;
+> +	struct list_head	idle_wm;
+> +	wait_queue_head_t	wm_wait;
+> +};
 
-I've tested the patch on my rockpro64. Kernel built from tag v5.13-rc6:
+What does wm stand for?
 
-[    0.345676] pci 0000:01:00.0: 8.000 Gb/s available PCIe bandwidth, limited by
-2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe
-x4 link)
-[    0.359300] pci_bus 0000:01: busn_res: [bus 01-1f] end is updated to 01
-[    0.359343] pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
-[    0.359365] pci 0000:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
-[    0.359387] pci 0000:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
-[    0.359407] pci 0000:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
-[    0.359428] pci 0000:00:00.0: PCI bridge to [bus 01]
-[    0.359862] pcieport 0000:00:00.0: PME: Signaling with IRQ 76
-[    0.360190] pcieport 0000:00:00.0: AER: enabled with IRQ 76
+This looks like arbitrary caching of vmalloc buffers.  I thought we
+decided to just make vmalloc suck less rather than papering over that?
 
-Kernel built from tag v5.13-rc6 with this patch applied:
+> +static LIST_HEAD(wm_lists);
+> +static DEFINE_RWLOCK(wm_lists_lock);
 
-[    0.345434] pci 0000:01:00.0: 8.000 Gb/s available PCIe bandwidth, limited by
-2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe
-x4 link)
-[    0.359081] pci_bus 0000:01: busn_res: [bus 01-1f] end is updated to 01
-[    0.359128] pci 0000:00:00.0: BAR 14: assigned [mem 0xfa000000-0xfa0fffff]
-[    0.359155] pci 0000:01:00.0: BAR 0: assigned [mem 0xfa000000-0xfa003fff 64bit]
-[    0.359217] pci 0000:00:00.0: PCI bridge to [bus 01]
-[    0.359239] pci 0000:00:00.0:   bridge window [mem 0xfa000000-0xfa0fffff]
-[    0.359422] pcieport 0000:00:00.0: enabling device (0000 -> 0002)
-[    0.359687] pcieport 0000:00:00.0: PME: Signaling with IRQ 76
-[    0.360001] pcieport 0000:00:00.0: AER: enabled with IRQ 76
+Especially as this isn't going to scale at all using global loists and
+locks.
 
-And the NVME on the PCIE expansion card works as expected:
+> +void ksmbd_free_file_struct(void *filp)
+> +{
+> +	kmem_cache_free(filp_cache, filp);
+> +}
+> +
+> +void *ksmbd_alloc_file_struct(void)
+> +{
+> +	return kmem_cache_zalloc(filp_cache, GFP_KERNEL);
+> +}
 
-Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
+These are only ued in vfs_cache.c . So I'd suggest to just move
+filp_cache there and drop these wrappers.
 
-Thanks,
+> +}
+> +
+> +static void ksmbd_vfs_inherit_owner(struct ksmbd_work *work,
+> +				    struct inode *parent_inode,
+> +				    struct inode *inode)
+> +{
+> +	if (!test_share_config_flag(work->tcon->share_conf,
+> +				    KSMBD_SHARE_FLAG_INHERIT_OWNER))
+> +		return;
+> +
+> +	i_uid_write(inode, i_uid_read(parent_inode));
+> +}
 
-Alex
+Can you explain this a little more?  When do the normal create/mdir
+fail to inherit the owner?
 
->
-> Fixes: 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses")
-> Reported-at: https://lore.kernel.org/lkml/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com/
-> Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> Reported-by: Qu Wenruo <wqu@suse.com>
-> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> ---
-> Hi,
->
-> The patch is an updated version to fix the PCI allocation issues on
-> RK3399 based platforms. Previous postings can be found at [0][1][2].
->
-> The updated patch instead of clearing the 64-bit flag for
-> non-prefetchable memory below 4GB does it unconditionally on the basis
-> that PCI allocation logic cannot deal with the 64-bit flag (although
-> it should be able to). The result is a simpler patch that restores the
-> input to the allocation logic to be identical to before 9d57e61bf723.
->
-> Tested locally on a RockPro64 on top of v5.13-rc6. Please consider
-> merging.
->
-> Thanks,
-> Punit
->
-> Changes:
-> v4:
->
-> * Updated Patch 1 based on Bjorn's suggestion. Also dropped the
->   Tested-by tags due to the change of logic
-> * Dropped patch 2 and 3 from the series as it's not critical to the
->   series
-> * Dropped the device tree changes (Patch 4) as they are already queued
->   in the soc tree
->
-> v3:
-> * Improved commit log for clarity (Patch 1)
-> * Added Tested-by tags
->
-> v2:
-> * Check ranges PCI / bus addresses rather than CPU addresses
-> * (new) Restrict 32-bit size warnings on ranges that don't have the 64-bit attribute set
-> * Refactor the 32-bit size warning to the range parsing loop. This
->   change also prints the warnings right after the window mappings are
->   logged.
->
-> [0] https://lore.kernel.org/linux-arm-kernel/20210527150541.3130505-1-punitagrawal@gmail.com/
-> [1] https://lore.kernel.org/linux-pci/20210531221057.3406958-1-punitagrawal@gmail.com/
-> [2] https://lore.kernel.org/linux-pci/20210607112856.3499682-1-punitagrawal@gmail.com/
->
->  drivers/pci/of.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> index 85dcb7097da4..a143b02b2dcd 100644
-> --- a/drivers/pci/of.c
-> +++ b/drivers/pci/of.c
-> @@ -353,6 +353,8 @@ static int devm_of_pci_get_host_bridge_resources(struct device *dev,
->  				dev_warn(dev, "More than one I/O resource converted for %pOF. CPU base address for old range lost!\n",
->  					 dev_node);
->  			*io_base = range.cpu_addr;
-> +		} else if (resource_type(res) == IORESOURCE_MEM) {
-> +			res->flags &= ~IORESOURCE_MEM_64;
->  		}
->  
->  		pci_add_resource_offset(resources, res,	res->start - range.pci_addr);
+int ksmbd_vfs_inode_permission(struct dentry *dentry, int acc_mode, bool delete)
+> +{
+> +	int mask, ret = 0;
+> +
+> +	mask = 0;
+> +	acc_mode &= O_ACCMODE;
+> +
+> +	if (acc_mode == O_RDONLY)
+> +		mask = MAY_READ;
+> +	else if (acc_mode == O_WRONLY)
+> +		mask = MAY_WRITE;
+> +	else if (acc_mode == O_RDWR)
+> +		mask = MAY_READ | MAY_WRITE;
+
+How about already setting up the MAY_ flags in smb2_create_open_flags
+and returning them in extra argument?  That keeps the sm to Linux
+translation in a single place.
+
+> +
+> +	if (inode_permission(&init_user_ns, d_inode(dentry), mask | MAY_OPEN))
+> +		return -EACCES;
+
+And this call can be open coded in the only caller.
+
+> +	if (delete) {
+
+And this block could be split into a nice self-contained helper.
+
+> +		struct dentry *child, *parent;
+> +
+> +		parent = dget_parent(dentry);
+> +		inode_lock_nested(d_inode(parent), I_MUTEX_PARENT);
+> +		child = lookup_one_len(dentry->d_name.name, parent,
+> +				       dentry->d_name.len);
+> +		if (IS_ERR(child)) {
+> +			ret = PTR_ERR(child);
+> +			goto out_lock;
+> +		}
+> +
+> +		if (child != dentry) {
+> +			ret = -ESTALE;
+> +			dput(child);
+> +			goto out_lock;
+> +		}
+> +		dput(child);
+
+That being said I do not understand the need for this re-lookup at all.
+
+> +	if (!inode_permission(&init_user_ns, d_inode(dentry), MAY_OPEN | MAY_WRITE))
+
+All these inode_permission lines have overly long lines.  It might be
+worth to pass the user_namespace to this function, not only to shorten
+the code, but also to prepare for user namespace support.
+
+> +	parent = dget_parent(dentry);
+> +	inode_lock_nested(d_inode(parent), I_MUTEX_PARENT);
+> +	child = lookup_one_len(dentry->d_name.name, parent,
+> +			       dentry->d_name.len);
+> +	if (IS_ERR(child)) {
+> +		ret = PTR_ERR(child);
+> +		goto out_lock;
+> +	}
+> +
+> +	if (child != dentry) {
+> +		ret = -ESTALE;
+> +		dput(child);
+> +		goto out_lock;
+> +	}
+> +	dput(child);
+
+This is the same weird re-lookup dance as above.  IFF there is a good
+rationale for it it needs to go into a self-contained and well
+documented helper.
+
+> +int ksmbd_vfs_create(struct ksmbd_work *work, const char *name, umode_t mode)
+> +{
+> +	struct path path;
+> +	struct dentry *dentry;
+> +	int err;
+> +
+> +	dentry = kern_path_create(AT_FDCWD, name, &path, 0);
+
+Curious:  why is this using absolute or CWD based path instead of
+doing lookups based off the parent as done by e.g. nfsd?  Same also
+for mkdir and co.
+
+> +{
+> +	struct file *filp;
+> +	ssize_t nbytes = 0;
+> +	char *rbuf;
+> +	struct inode *inode;
+> +
+> +	rbuf = work->aux_payload_buf;
+> +	filp = fp->filp;
+> +	inode = file_inode(filp);
+
+These can be initialized on the declaration lines to make the code a
+little easier to read.
+
+> +	if (!work->tcon->posix_extensions) {
+> +		spin_lock(&src_dent->d_lock);
+> +		list_for_each_entry(dst_dent, &src_dent->d_subdirs, d_child) {
+> +			struct ksmbd_file *child_fp;
+> +
+> +			if (d_really_is_negative(dst_dent))
+> +				continue;
+> +
+> +			child_fp = ksmbd_lookup_fd_inode(d_inode(dst_dent));
+> +			if (child_fp) {
+> +				spin_unlock(&src_dent->d_lock);
+> +				ksmbd_debug(VFS, "Forbid rename, sub file/dir is in use\n");
+> +				return -EACCES;
+> +			}
+> +		}
+> +		spin_unlock(&src_dent->d_lock);
+> +	}
+
+This begs for being split into a self-contained helper.
+
+> +int ksmbd_vfs_lock(struct file *filp, int cmd, struct file_lock *flock)
+> +{
+> +	ksmbd_debug(VFS, "calling vfs_lock_file\n");
+> +	return vfs_lock_file(filp, cmd, flock, NULL);
+> +}
+> +
+> +int ksmbd_vfs_readdir(struct file *file, struct ksmbd_readdir_data *rdata)
+> +{
+> +	return iterate_dir(file, &rdata->ctx);
+> +}
+> +
+> +int ksmbd_vfs_alloc_size(struct ksmbd_work *work, struct ksmbd_file *fp,
+> +			 loff_t len)
+> +{
+> +	smb_break_all_levII_oplock(work, fp, 1);
+> +	return vfs_fallocate(fp->filp, FALLOC_FL_KEEP_SIZE, 0, len);
+> +}
+
+Please avoid such trivial wrappers that just make the code hard to
+follow.
+
+> +int ksmbd_vfs_fqar_lseek(struct ksmbd_file *fp, loff_t start, loff_t length,
+> +			 struct file_allocated_range_buffer *ranges,
+> +			 int in_count, int *out_count)
+
+What is fqar?
+
+> +
+> +/*
+> + * ksmbd_vfs_get_logical_sector_size() - get logical sector size from inode
+> + * @inode: inode
+> + *
+> + * Return: logical sector size
+> + */
+> +unsigned short ksmbd_vfs_logical_sector_size(struct inode *inode)
+> +{
+> +	struct request_queue *q;
+> +	unsigned short ret_val = 512;
+> +
+> +	if (!inode->i_sb->s_bdev)
+> +		return ret_val;
+> +
+> +	q = inode->i_sb->s_bdev->bd_disk->queue;
+> +
+> +	if (q && q->limits.logical_block_size)
+> +		ret_val = q->limits.logical_block_size;
+> +
+> +	return ret_val;
+
+I don't think a CIFS server has any business poking into the block
+layer.  What is this trying to do?
+
+> +struct posix_acl *ksmbd_vfs_posix_acl_alloc(int count, gfp_t flags)
+> +{
+> +#if IS_ENABLED(CONFIG_FS_POSIX_ACL)
+> +	return posix_acl_alloc(count, flags);
+> +#else
+> +	return NULL;
+> +#endif
+> +}
+> +
+> +struct posix_acl *ksmbd_vfs_get_acl(struct inode *inode, int type)
+> +{
+> +#if IS_ENABLED(CONFIG_FS_POSIX_ACL)
+> +	return get_acl(inode, type);
+> +#else
+> +	return NULL;
+> +#endif
+> +}
+> +
+> +int ksmbd_vfs_set_posix_acl(struct inode *inode, int type,
+> +			    struct posix_acl *acl)
+> +{
+> +#if IS_ENABLED(CONFIG_FS_POSIX_ACL)
+> +	return set_posix_acl(&init_user_ns, inode, type, acl);
+> +#else
+> +	return -EOPNOTSUPP;
+> +#endif
+> +}
+
+Please avoid these pointless wrappers and just use large code block
+ifdefs or IS_ENABLED checks.
+
+> +int ksmbd_vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+> +			      struct file *file_out, loff_t pos_out, size_t len)
+> +{
+> +	struct inode *inode_in = file_inode(file_in);
+> +	struct inode *inode_out = file_inode(file_out);
+> +	int ret;
+> +
+> +	ret = vfs_copy_file_range(file_in, pos_in, file_out, pos_out, len, 0);
+> +	/* do splice for the copy between different file systems */
+> +	if (ret != -EXDEV)
+> +		return ret;
+> +
+> +	if (S_ISDIR(inode_in->i_mode) || S_ISDIR(inode_out->i_mode))
+> +		return -EISDIR;
+> +	if (!S_ISREG(inode_in->i_mode) || !S_ISREG(inode_out->i_mode))
+> +		return -EINVAL;
+> +
+> +	if (!(file_in->f_mode & FMODE_READ) ||
+> +	    !(file_out->f_mode & FMODE_WRITE))
+> +		return -EBADF;
+> +
+> +	if (len == 0)
+> +		return 0;
+> +
+> +	file_start_write(file_out);
+> +
+> +	/*
+> +	 * skip the verification of the range of data. it will be done
+> +	 * in do_splice_direct
+> +	 */
+> +	ret = do_splice_direct(file_in, &pos_in, file_out, &pos_out,
+> +			       len > MAX_RW_COUNT ? MAX_RW_COUNT : len, 0);
+
+vfs_copy_file_range already does this type of fallback, so this is dead
+code.
+
+> +#define XATTR_NAME_STREAM_LEN		(sizeof(XATTR_NAME_STREAM) - 1)
+> +
+> +enum {
+> +	XATTR_DOSINFO_ATTRIB		= 0x00000001,
+> +	XATTR_DOSINFO_EA_SIZE		= 0x00000002,
+> +	XATTR_DOSINFO_SIZE		= 0x00000004,
+> +	XATTR_DOSINFO_ALLOC_SIZE	= 0x00000008,
+> +	XATTR_DOSINFO_CREATE_TIME	= 0x00000010,
+> +	XATTR_DOSINFO_CHANGE_TIME	= 0x00000020,
+> +	XATTR_DOSINFO_ITIME		= 0x00000040
+> +};
+> +
+> +struct xattr_dos_attrib {
+> +	__u16	version;
+> +	__u32	flags;
+> +	__u32	attr;
+> +	__u32	ea_size;
+> +	__u64	size;
+> +	__u64	alloc_size;
+> +	__u64	create_time;
+> +	__u64	change_time;
+> +	__u64	itime;
+> +};
+
+These looks like on-disk structures.  Any chance you could re-order
+the headers so that things like on-disk, on the wire and netlink uapi
+structures all have a dedicated and well documented header for
+themselves?
+
+> +	read_lock(&ci->m_lock);
+> +	list_for_each(cur, &ci->m_fp_list) {
+> +		lfp = list_entry(cur, struct ksmbd_file, node);
+
+Please use list_for_each_entry.  There are very few places left where
+using list_for_each makes sense.
+
+> +		if (inode == FP_INODE(lfp)) {
+> +			atomic_dec(&ci->m_count);
+> +			read_unlock(&ci->m_lock);
+> +			return lfp;
+> +		}
+> +	}
+> +	atomic_dec(&ci->m_count);
+> +	read_unlock(&ci->m_lock);
+
+So a successful find increments m_count, but a miss decreases it?
+Isn't this going to create an underflow?
+
+> +	if (!fp->f_ci) {
+> +		ksmbd_free_file_struct(fp);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	ret = __open_id(&work->sess->file_table, fp, OPEN_ID_TYPE_VOLATILE_ID);
+> +	if (ret) {
+> +		ksmbd_inode_put(fp->f_ci);
+> +		ksmbd_free_file_struct(fp);
+> +		return ERR_PTR(ret);
+> +	}
+> +
+> +	atomic_inc(&work->conn->stats.open_files_count);
+> +	return fp;
+
+Please use goto based unwinding instead of duplicating the resoure
+cleanup.
+
+> +static bool tree_conn_fd_check(struct ksmbd_tree_connect *tcon, struct ksmbd_file *fp)
+
+Overly long line.
+
+> +{
+> +	return fp->tcon != tcon;
+> +}
+> +
+> +static bool session_fd_check(struct ksmbd_tree_connect *tcon, struct ksmbd_file *fp)
+
+Same.
