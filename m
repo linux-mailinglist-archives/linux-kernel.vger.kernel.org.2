@@ -2,147 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F043A79E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4C23A79E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhFOJQa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 05:16:30 -0400
-Received: from out28-123.mail.aliyun.com ([115.124.28.123]:50984 "EHLO
-        out28-123.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbhFOJQY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:16:24 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07603748|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.166083-0.00128143-0.832635;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.KSYsb6a_1623748456;
-Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KSYsb6a_1623748456)
-          by smtp.aliyun-inc.com(10.147.42.197);
-          Tue, 15 Jun 2021 17:14:17 +0800
-Date:   Tue, 15 Jun 2021 17:14:14 +0800
-From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-To:     Paul Cercueil <paul@opendingux.net>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, hminas@synopsys.com,
-        paul@crapouillou.net, linux-mips@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        sernia.zhou@foxmail.com,
-        Dragan =?UTF-8?B?xIxlxI1hdmFj?= <dragancecavac@yahoo.com>
-Subject: Re: [PATCH] USB: DWC2: Add VBUS overcurrent detection control.
-Message-ID: <20210615171414.2020ad9b@zhouyanjie-virtual-machine>
-In-Reply-To: <8BJQUQ.QJOE5WOSWVBU@opendingux.net>
-References: <1616513066-62025-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <YFoJ0Z6K4B5smbQx@kroah.com>
-        <20210615161456.2dd501a1@zhouyanjie-virtual-machine>
-        <8BJQUQ.QJOE5WOSWVBU@opendingux.net>
-X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S231262AbhFOJRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:17:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230519AbhFOJRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 05:17:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61B1F61417;
+        Tue, 15 Jun 2021 09:14:55 +0000 (UTC)
+Date:   Tue, 15 Jun 2021 11:14:51 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Tejun Heo <tj@kernel.org>, Waiman Long <longman@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin <hpa@zytor.com>, Rafael J. Wysocki " 
+        <rafael@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>, x86@kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/4] cgroup/cpuset: Allow cpuset to bound displayed cpu
+ info
+Message-ID: <20210615091451.afmrpuk3sbh7wjbc@wittgenstein>
+References: <20210614152306.25668-1-longman@redhat.com>
+ <YMe/cGV4JPbzFRk0@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YMe/cGV4JPbzFRk0@slm.duckdns.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-于 Tue, 15 Jun 2021 09:52:20 +0100
-Paul Cercueil <paul@opendingux.net> 写道:
-
-> Hi Zhou,
+On Mon, Jun 14, 2021 at 04:43:28PM -0400, Tejun Heo wrote:
+> Hello,
 > 
-> Le mar., juin 15 2021 at 16:16:39 +0800, 周琰杰 
-> <zhouyanjie@wanyeetech.com> a écrit :
-> > Hi Greg,
+> On Mon, Jun 14, 2021 at 11:23:02AM -0400, Waiman Long wrote:
+> > The current container management system is able to create the illusion
+> > that applications running within a container have limited resources and
+> > devices available for their use. However, one thing that is hard to hide
+> > is the number of CPUs available in the system. In fact, the container
+> > developers are asking for the kernel to provide such capability.
 > > 
-> > Sorry for taking so long to reply.
+> > There are two places where cpu information are available for the
+> > applications to see - /proc/cpuinfo and /sys/devices/system/cpu sysfs
+> > directory.
 > > 
-> > 于 Tue, 23 Mar 2021 16:31:29 +0100
-> > Greg KH <gregkh@linuxfoundation.org> 写道:
-> >   
-> >>  On Tue, Mar 23, 2021 at 11:24:26PM +0800, 周琰杰 (Zhou Yanjie) 
-> >> wrote:  
-> >>  > Introduce configurable option for enabling GOTGCTL register
-> >>  > bits VbvalidOvEn and VbvalidOvVal. Once selected it disables
-> >>  > VBUS overcurrent detection.
-> >>  >
-> >>  > This patch is derived from Dragan Čečavac (in the kernel 3.18
-> >>  > tree of CI20). It is very useful for the MIPS Creator CI20(r1).
-> >>  > Without this patch, CI20's OTG port has a great probability to
-> >>  > face overcurrent warning, which breaks the OTG functionality.
-> >>  >
-> >>  > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> >>  > Signed-off-by: Dragan Čečavac <dragancecavac@yahoo.com>
-> >>  > ---
-> >>  >  drivers/usb/dwc2/Kconfig | 6 ++++++
-> >>  >  drivers/usb/dwc2/core.c  | 9 +++++++++
-> >>  >  2 files changed, 15 insertions(+)
-> >>  >
-> >>  > diff --git a/drivers/usb/dwc2/Kconfig b/drivers/usb/dwc2/Kconfig
-> >>  > index c131719..e40d187 100644
-> >>  > --- a/drivers/usb/dwc2/Kconfig
-> >>  > +++ b/drivers/usb/dwc2/Kconfig
-> >>  > @@ -94,4 +94,10 @@ config USB_DWC2_DEBUG_PERIODIC
-> >>  >  	  non-periodic transfers, but of course the debug logs
-> >>  > will be incomplete. Note that this also disables some debug   
-> >> messages  
-> >>  >  	  for which the transfer type cannot be deduced.
-> >>  > +
-> >>  > +config USB_DWC2_DISABLE_VOD
-> >>  > +	bool "Disable VBUS overcurrent detection"
-> >>  > +	help
-> >>  > +	  Say Y here to switch off VBUS overcurrent detection.
-> >>  > It enables USB
-> >>  > +	  functionality blocked by overcurrent detection.  
-> >> 
-> >>  Why would this be a configuration option?  Shouldn't this be
-> >> dynamic and just work properly automatically?
-> >> 
-> >>  You should not have to do this on a build-time basis, it should be
-> >>  able to be detected and handled properly at run-time for all 
-> >> devices.
-> >>   
-> > 
-> > I consulted the original author Dragan Čečavac, he think since this 
-> > is
-> > a feature which disables overcurrent detection, so we are not sure
-> > if it could be harmful for some devices. Therefore he advise against
-> > enabling it in runtime, and in favor that user explicitely has to
-> > enable it.  
+> > This patchset introduces a new sysctl parameter cpuset_bound_cpuinfo
+> > which, when set, will limit the amount of information disclosed by
+> > /proc/cpuinfo and /sys/devices/system/cpu.
 > 
-> This could still be enabled at runtime, though, via a module
-> parameter. Leave it enabled by default, and those who want to disable
-> it can do it.
-> 
-> Also, overcurrent detection is just "detection", so enabling or 
-> disabling it won't change the fact that you can get overcurrent 
-> conditions, right?
+> The goal of cgroup has never been masquerading system information so that
+> applications can pretend that they own the whole system and the proposed
+> solution requires application changes anyway. The information being provided
+> is useful but please do so within the usual cgroup interface - e.g.
+> cpuset.stat. The applications (or libraries) that want to determine its
+> confined CPU availability can locate the file through /proc/self/cgroup.
 
-emmm, the main problem now is that there is a phenomenon on CI20 r1
-(JZ4780) and CU1000 (X1000) that even if there is no overcurrent
-(nothing is connected), there is still a high probability (about every
-10 times it will be 6 to 7 times) an overcurrent warning appears (even
-when just finish detect the OTG driver during the kernel startup),
-which then causes the OTG function to not work normally before the
-system restarts.
+Fyi, there's another concurrent push going on to provide a new file
+/proc/self/meminfo that is a subset of /proc/meminfo (cf. [1]) and
+virtualizes based on cgroups as well.
 
-Thanks and best regards!
+But there it's a new file not virtualizing exisiting files and
+directories so there things seem to be out of sync between these groups
+at the same company.
 
-> 
-> -Paul
-> 
-> >>  If you know this is needed for a specific type of device, detect
-> >> it and make the change then, otherwise this could break working 
-> >> systems,
-> >>  right?  
-> > 
-> > According to the information provided by Dragan Čečavac, this 
-> > function
-> > (select whether to enable over-current detection through the otgctl
-> > register) don't seem to be available for all dwc2 controllers, so it
-> > might make sense to add MACH_INGENIC dependency to
-> > USB_DWC2_DISABLE_VOD, which could provide additional protection from
-> > unwanted usage.
-> > 
-> > Thanks and best regards!
-> >   
-> >> 
-> >>  thanks,
-> >> 
-> >>  greg k-h  
-> 
+In any case I would like to point out that this has a complete solution
+in userspace. We have had this problem of providing virtualized
+information to containers since they started existing. So we created
+LXCFS in 2014 (cf. [2]) a tiny fuse fileystem to provide a virtualized
+view based on cgroups and other information for containers.
 
+The two patchsets seems like they're on the way trying to move 1:1 what
+we're already doing in userspace into the kernel. LXCFS is quite well
+known and widely used so it's suprising to not see it mentioned at all.
+
+And the container people will want more then just the cpu and meminfo
+stuff sooner or later. Just look at what we currently virtualize:
+
+/proc/cpuinfo
+/proc/diskstats
+/proc/meminfo
+/proc/stat
+/proc/swaps
+/proc/uptime
+/proc/slabinfo
+/sys/devices/system/cpu
+
+## So for example /proc/cpuinfo
+#### Host
+brauner@wittgenstein|~
+> grep ^processor /proc/cpuinfo
+processor       : 0
+processor       : 1
+processor       : 2
+processor       : 3
+processor       : 4
+processor       : 5
+processor       : 6
+processor       : 7
+
+#### Container
+brauner@wittgenstein|~
+> lxc exec f1 -- grep ^processor /proc/cpuinfo
+processor       : 0
+processor       : 1
+
+## and for /sys/devices/system/cpu
+#### Host
+brauner@wittgenstein|~
+> ls -al /sys/devices/system/cpu/ | grep cpu[[:digit:]]
+drwxr-xr-x 10 root root    0 Jun 14 21:22 cpu0
+drwxr-xr-x 10 root root    0 Jun 14 21:22 cpu1
+drwxr-xr-x 10 root root    0 Jun 14 21:22 cpu2
+drwxr-xr-x 10 root root    0 Jun 14 21:22 cpu3
+drwxr-xr-x 10 root root    0 Jun 14 21:22 cpu4
+drwxr-xr-x 10 root root    0 Jun 14 21:22 cpu5
+drwxr-xr-x 10 root root    0 Jun 14 21:22 cpu6
+drwxr-xr-x 10 root root    0 Jun 14 21:22 cpu7
+
+#### Container
+brauner@wittgenstein|~
+> lxc exec f1 -- ls -al /sys/devices/system/cpu/ | grep cpu[[:digit:]]
+drwxr-xr-x  2 nobody nogroup   0 Jun 15 09:07 cpu3
+drwxr-xr-x  2 nobody nogroup   0 Jun 15 09:07 cpu4
+
+We have a wide variety of users from various distros.
+
+[1]: https://lore.kernel.org/containers/f62b652c-3f6f-31ba-be0f-5f97b304599f@metux.net
+[2]: https://github.com/lxc/lxcfs
