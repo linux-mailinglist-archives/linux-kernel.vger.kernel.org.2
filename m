@@ -2,113 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140F93A7736
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2FC43A7778
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFOGm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 02:42:27 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4782 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhFOGmS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 02:42:18 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G3z8J0jrbzXg4G;
-        Tue, 15 Jun 2021 14:35:12 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 14:40:09 +0800
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 15 Jun 2021 14:40:08 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <valentina.manea.m@gmail.com>, <shuah@kernel.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] usbip: tools: Convert list_for_each to entry variant
-Date:   Tue, 15 Jun 2021 14:58:39 +0800
-Message-ID: <1623740319-15988-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S229925AbhFOHC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:02:27 -0400
+Received: from m12-13.163.com ([220.181.12.13]:46556 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229797AbhFOHCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 03:02:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=0d+6Q
+        DjQqm2k4gejTiAFSIHmhOWpq1SXRcL3sEt28mY=; b=SpIBUvU/4WSAc5AD0CZg+
+        a/n83z3nMPeZYqrW2YTqLZdpPmU0CGldrfLxB+2wzJIrc5R2QDXNbKE8wcwM1PAy
+        4icsvKKjHCzbexKWWNYlodCMzYcaePw3686eHZ69zwdDGQo8doroWRpr6OUnY3QL
+        W/147Ap8qJAmJbUEPMeWOw=
+Received: from localhost.localdomain (unknown [218.17.89.111])
+        by smtp9 (Coremail) with SMTP id DcCowAAXK6ziT8hgk2j+GQ--.4532S2;
+        Tue, 15 Jun 2021 14:59:52 +0800 (CST)
+From:   ChunyouTang <tangchunyou@163.com>
+To:     robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        tangchunyou <tangchunyou@163.icubecorp.cn>
+Subject: [PATCH 2/2] drm/panfrost:report the full raw fault information instead
+Date:   Tue, 15 Jun 2021 14:59:36 +0800
+Message-Id: <20210615065936.897-1-tangchunyou@163.com>
+X-Mailer: git-send-email 2.30.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DcCowAAXK6ziT8hgk2j+GQ--.4532S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Xw15XrWrZFy3Kry3Cw17Wrg_yoWfZwc_u3
+        W7ZrnxXrsIyFn0kwsayan7urySvryUZw40yw1xGr9Fk3W5A3sFg3s2vrs8Zr18Ww45ZF1D
+        tanFqF1Fyry7KjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5QzV5UUUUU==
+X-Originating-IP: [218.17.89.111]
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbiHgiyUVSIvNiP8gAAsw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-convert list_for_each() to list_for_each_entry() where
-applicable.
+From: tangchunyou <tangchunyou@163.icubecorp.cn>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+of the low 8 bits.
+
+Signed-off-by: tangchunyou <tangchunyou@163.icubecorp.cn>
 ---
- tools/usb/usbip/libsrc/usbip_host_common.c | 4 +---
- tools/usb/usbip/src/usbipd.c               | 8 ++------
- 2 files changed, 3 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/usb/usbip/libsrc/usbip_host_common.c b/tools/usb/usbip/libsrc/usbip_host_common.c
-index ca78aa3..80f16f0 100644
---- a/tools/usb/usbip/libsrc/usbip_host_common.c
-+++ b/tools/usb/usbip/libsrc/usbip_host_common.c
-@@ -267,12 +267,10 @@ int usbip_export_device(struct usbip_exported_device *edev, int sockfd)
- struct usbip_exported_device *usbip_generic_get_device(
- 		struct usbip_host_driver *hdriver, int num)
- {
--	struct list_head *i;
- 	struct usbip_exported_device *edev;
- 	int cnt = 0;
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index 1fffb6a0b24f..d2d287bbf4e7 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -33,7 +33,7 @@ static irqreturn_t panfrost_gpu_irq_handler(int irq, void *data)
+ 		address |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO);
  
--	list_for_each(i, &hdriver->edev_list) {
--		edev = list_entry(i, struct usbip_exported_device, node);
-+	list_for_each_entry(edev, &hdriver->edev_list, node) {
- 		if (num == cnt)
- 			return edev;
- 		cnt++;
-diff --git a/tools/usb/usbip/src/usbipd.c b/tools/usb/usbip/src/usbipd.c
-index 48398a7..438346e 100644
---- a/tools/usb/usbip/src/usbipd.c
-+++ b/tools/usb/usbip/src/usbipd.c
-@@ -93,7 +93,6 @@ static int recv_request_import(int sockfd)
- 	struct op_import_request req;
- 	struct usbip_exported_device *edev;
- 	struct usbip_usb_device pdu_udev;
--	struct list_head *i;
- 	int found = 0;
- 	int status = ST_OK;
- 	int rc;
-@@ -107,8 +106,7 @@ static int recv_request_import(int sockfd)
- 	}
- 	PACK_OP_IMPORT_REQUEST(0, &req);
+ 		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at 0x%016llx\n",
+-			 fault_status & 0xFF, panfrost_exception_name(pfdev, fault_status & 0xFF),
++			 fault_status, panfrost_exception_name(pfdev, fault_status & 0xFF),
+ 			 address);
  
--	list_for_each(i, &driver->edev_list) {
--		edev = list_entry(i, struct usbip_exported_device, node);
-+	list_for_each_entry(edev, &driver->edev_list, node) {
- 		if (!strncmp(req.busid, edev->udev.busid, SYSFS_BUS_ID_SIZE)) {
- 			info("found requested device: %s", req.busid);
- 			found = 1;
-@@ -160,7 +158,6 @@ static int send_reply_devlist(int connfd)
- 	struct usbip_usb_device pdu_udev;
- 	struct usbip_usb_interface pdu_uinf;
- 	struct op_devlist_reply reply;
--	struct list_head *j;
- 	int rc, i;
- 
- 	/*
-@@ -174,8 +171,7 @@ static int send_reply_devlist(int connfd)
- 
- 	reply.ndev = 0;
- 	/* number of exported devices */
--	list_for_each(j, &driver->edev_list) {
--		edev = list_entry(j, struct usbip_exported_device, node);
-+	list_for_each_entry(edev, &driver->edev_list, node) {
- 		if (edev->status != SDEV_ST_USED)
- 			reply.ndev += 1;
- 	}
+ 		if (state & GPU_IRQ_MULTIPLE_FAULT)
 -- 
-2.6.2
+2.25.1
+
 
