@@ -2,193 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF063A86FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFDC3A8701
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhFORBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:01:30 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:40496 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbhFORB3 (ORCPT
+        id S230318AbhFORCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229659AbhFORCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:01:29 -0400
-Received: by mail-io1-f70.google.com with SMTP id l15-20020a5e820f0000b02904bd1794d00eso18295817iom.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:59:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=rGxznhI0w7LBzj6R5sKdYvHHJscUEONUGoZbkAaKxqA=;
-        b=VrvA42v9yBVHsvCedmcUQgZvsgSHOA4ZbyFeEcHgZVKHa+W5b04VrG4BschIHIXlYp
-         g4uA4+dWeML/moY/tYr0z8t6Kx+0dXBvApROJ0Qjrpbh7mVUzHZEi+QNV18CKO3XhGYV
-         gx4FjJaPm7l8ZiuZFC3PLnBQ/KEVbOj7uEaagLN8W9ZiHROMQWQ2wE/V8dFzqeFQYlRB
-         E8R1t73XsP67mOmXEeJFSq/zTOTLFpZwa98CZWTCn/GQKPsUvH9PDq+T577PWUERulxr
-         JNQxywk+lYP6yfjl6VCcD/gAGJ1roJqmgjbOEoC2YryTgocGO3UUGqOIy1FSmx9I2xh5
-         2LVQ==
-X-Gm-Message-State: AOAM530iEl1cwTfYjORSZGqKaK5iwCuW0LI/Qv7vkntvGc284CobBpAo
-        0Xliwanp0/c+XzQ92AF7DCIaRD++aYuXx4eTJSlgU8MA0NPh
-X-Google-Smtp-Source: ABdhPJyF9BzOygF+qxBRiTJ5lg7+I/K5V93Ne4DR9E91o9QX6GEFSKkUNUURtyjlGXKplQcdkKXz6HwmnMf398XPtY4BhDl7Fg83
+        Tue, 15 Jun 2021 13:02:36 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D233CC061574;
+        Tue, 15 Jun 2021 10:00:31 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0f270048ecafc2d258032c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:2700:48ec:afc2:d258:32c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 677A71EC030E;
+        Tue, 15 Jun 2021 19:00:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623776430;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=onzUHvWAib5qjHU1iwKoE0eYbOwKpExBMeNv+Wbsql8=;
+        b=CSzaLYB0elLRBCVES5hERQOT+7sq+r/IBg6Pd3T+WKGenvu5ox2CLqsttKJ9Frc5IuAdZ4
+        02aFI5DKrQeb+6op5u4Ub5oDHj9NbQIUAoQPFVYq+9me15DeFWmDM3j2m11cq7MUS28cQn
+        gRunOGu4JZ3e+F7zeVyJpiGH1DxOhmA=
+Date:   Tue, 15 Jun 2021 19:00:20 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>
+Subject: Re: [PATCH] EDAC/Intel: Do not load EDAC driver when running as a
+ guest
+Message-ID: <YMjcpCDF1ZIGYinq@zn.tnic>
+References: <20210614212129.227698-1-Smita.KoralahalliChannabasappa@amd.com>
+ <YMfRxX/M4rJ5gM/R@zn.tnic>
+ <16a34b6834f94f139444c2ff172645e9@intel.com>
+ <YMhwAZaFr4d1QOGG@zn.tnic>
+ <20210615150846.GA409@aus-x-yghannam.amd.com>
+ <YMjE2iwRFWVrfzLL@zn.tnic>
+ <20210615160009.GA29258@aus-x-yghannam.amd.com>
+ <YMjRGFiqp2HNWUrZ@zn.tnic>
+ <20210615163221.GA2991@aus-x-yghannam.amd.com>
+ <20210615164525.GA1087213@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ddc6:: with SMTP id d6mr326208ilr.51.1623776364578;
- Tue, 15 Jun 2021 09:59:24 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 09:59:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000067d24205c4d0e599@google.com>
-Subject: [syzbot] possible deadlock in mnt_want_write (2)
-From:   syzbot <syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210615164525.GA1087213@agluck-desk2.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Jun 15, 2021 at 09:45:25AM -0700, Luck, Tony wrote:
+> There's little to no point in loading an EDAC driver running in a guest:
+> 1) The CPU model reported by CPUID may not represent actual h/w
+> 2) The hypervisor likely does not pass in access to memory controller devices
+> 3) Hypervisors generally do not pass corrected error details to guests
+> 
+> Add a check in each of the Intel EDAC drivers for X86_FEATURE_HYPERVISOR
+> and simply return -ENODEV in the init routine.
+> 
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  drivers/edac/i10nm_base.c | 3 +++
+>  drivers/edac/pnd2_edac.c  | 3 +++
+>  drivers/edac/sb_edac.c    | 3 +++
+>  drivers/edac/skx_base.c   | 3 +++
+>  4 files changed, 12 insertions(+)
 
-syzbot found the following issue on:
+If you insist... I mean, those drivers won't load for other reasons but
+sure.
 
-HEAD commit:    06af8679 coredump: Limit what can interrupt coredumps
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=162f99afd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=547a5e42ca601229
-dashboard link: https://syzkaller.appspot.com/bug?extid=b42fe626038981fb7bfa
-compiler:       Debian clang version 11.0.1-2
+> diff --git a/drivers/edac/i10nm_base.c b/drivers/edac/i10nm_base.c
+> index 238a4ad1e526..fa08622ff2a8 100644
+> --- a/drivers/edac/i10nm_base.c
+> +++ b/drivers/edac/i10nm_base.c
+> @@ -278,6 +278,9 @@ static int __init i10nm_init(void)
+>  	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+>  		return -EBUSY;
+>  
+> +	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Can you change that to cpu_feature_enabled() everywhere pls?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com
+We're going to use that single API for checking CPU features from now on
+and slowly move away from the others to simplify things.
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.13.0-rc5-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.1/21398 is trying to acquire lock:
-ffff8881485a6460 (sb_writers#5){.+.+}-{0:0}, at: mnt_want_write+0x3b/0x80 fs/namespace.c:375
+With that changed you can add:
 
-but task is already holding lock:
-ffff888034945bc0 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x75a/0x1ba0 security/integrity/ima/ima_main.c:253
+Acked-by: Borislav Petkov <bp@suse.de>
 
-which lock already depends on the new lock.
+Thx.
 
+-- 
+Regards/Gruss,
+    Boris.
 
-the existing dependency chain (in reverse order) is:
-
--> #1 (&iint->mutex){+.+.}-{3:3}:
-       lock_acquire+0x17f/0x720 kernel/locking/lockdep.c:5512
-       __mutex_lock_common+0x1bf/0x3100 kernel/locking/mutex.c:959
-       __mutex_lock kernel/locking/mutex.c:1104 [inline]
-       mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:1119
-       process_measurement+0x75a/0x1ba0 security/integrity/ima/ima_main.c:253
-       ima_file_check+0xe0/0x130 security/integrity/ima/ima_main.c:499
-       do_open fs/namei.c:3363 [inline]
-       path_openat+0x293d/0x39b0 fs/namei.c:3494
-       do_filp_open+0x221/0x460 fs/namei.c:3521
-       do_sys_openat2+0x124/0x460 fs/open.c:1187
-       do_sys_open fs/open.c:1203 [inline]
-       __do_sys_open fs/open.c:1211 [inline]
-       __se_sys_open fs/open.c:1207 [inline]
-       __x64_sys_open+0x221/0x270 fs/open.c:1207
-       do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (sb_writers#5){.+.+}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:2938 [inline]
-       check_prevs_add+0x4f9/0x5b60 kernel/locking/lockdep.c:3061
-       validate_chain kernel/locking/lockdep.c:3676 [inline]
-       __lock_acquire+0x4307/0x6040 kernel/locking/lockdep.c:4902
-       lock_acquire+0x17f/0x720 kernel/locking/lockdep.c:5512
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1763 [inline]
-       sb_start_write+0x4f/0x180 include/linux/fs.h:1833
-       mnt_want_write+0x3b/0x80 fs/namespace.c:375
-       ovl_maybe_copy_up+0x117/0x180 fs/overlayfs/copy_up.c:996
-       ovl_open+0xa2/0x200 fs/overlayfs/file.c:149
-       do_dentry_open+0x7cb/0x1010 fs/open.c:826
-       vfs_open fs/open.c:940 [inline]
-       dentry_open+0xc6/0x120 fs/open.c:956
-       ima_calc_file_hash+0x157/0x1b00 security/integrity/ima/ima_crypto.c:557
-       ima_collect_measurement+0x283/0x520 security/integrity/ima/ima_api.c:252
-       process_measurement+0xf79/0x1ba0 security/integrity/ima/ima_main.c:330
-       ima_file_check+0xe0/0x130 security/integrity/ima/ima_main.c:499
-       do_open fs/namei.c:3363 [inline]
-       path_openat+0x293d/0x39b0 fs/namei.c:3494
-       do_filp_open+0x221/0x460 fs/namei.c:3521
-       do_sys_openat2+0x124/0x460 fs/open.c:1187
-       do_sys_open fs/open.c:1203 [inline]
-       __do_sys_open fs/open.c:1211 [inline]
-       __se_sys_open fs/open.c:1207 [inline]
-       __x64_sys_open+0x221/0x270 fs/open.c:1207
-       do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&iint->mutex);
-                               lock(sb_writers#5);
-                               lock(&iint->mutex);
-  lock(sb_writers#5);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor.1/21398:
- #0: ffff888034945bc0 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x75a/0x1ba0 security/integrity/ima/ima_main.c:253
-
-stack backtrace:
-CPU: 0 PID: 21398 Comm: syz-executor.1 Not tainted 5.13.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x202/0x31e lib/dump_stack.c:120
- print_circular_bug+0xb17/0xdc0 kernel/locking/lockdep.c:2007
- check_noncircular+0x2cc/0x390 kernel/locking/lockdep.c:2129
- check_prev_add kernel/locking/lockdep.c:2938 [inline]
- check_prevs_add+0x4f9/0x5b60 kernel/locking/lockdep.c:3061
- validate_chain kernel/locking/lockdep.c:3676 [inline]
- __lock_acquire+0x4307/0x6040 kernel/locking/lockdep.c:4902
- lock_acquire+0x17f/0x720 kernel/locking/lockdep.c:5512
- percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
- __sb_start_write include/linux/fs.h:1763 [inline]
- sb_start_write+0x4f/0x180 include/linux/fs.h:1833
- mnt_want_write+0x3b/0x80 fs/namespace.c:375
- ovl_maybe_copy_up+0x117/0x180 fs/overlayfs/copy_up.c:996
- ovl_open+0xa2/0x200 fs/overlayfs/file.c:149
- do_dentry_open+0x7cb/0x1010 fs/open.c:826
- vfs_open fs/open.c:940 [inline]
- dentry_open+0xc6/0x120 fs/open.c:956
- ima_calc_file_hash+0x157/0x1b00 security/integrity/ima/ima_crypto.c:557
- ima_collect_measurement+0x283/0x520 security/integrity/ima/ima_api.c:252
- process_measurement+0xf79/0x1ba0 security/integrity/ima/ima_main.c:330
- ima_file_check+0xe0/0x130 security/integrity/ima/ima_main.c:499
- do_open fs/namei.c:3363 [inline]
- path_openat+0x293d/0x39b0 fs/namei.c:3494
- do_filp_open+0x221/0x460 fs/namei.c:3521
- do_sys_openat2+0x124/0x460 fs/open.c:1187
- do_sys_open fs/open.c:1203 [inline]
- __do_sys_open fs/open.c:1211 [inline]
- __se_sys_open fs/open.c:1207 [inline]
- __x64_sys_open+0x221/0x270 fs/open.c:1207
- do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665d9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f28cc64c188 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
-RDX: 0000000000000000 RSI: 0000000000000003 RDI: 0000000020000200
-RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffdd1759cef R14: 00007f28cc64c300 R15: 0000000000022000
-overlayfs: upperdir is in-use as upperdir/workdir of another mount, mount with '-o index=off' to override exclusive upperdir protection.
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+https://people.kernel.org/tglx/notes-about-netiquette
