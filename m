@@ -2,279 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6902F3A8697
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A7F3A8695
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhFOQhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 12:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbhFOQhY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:37:24 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACF2C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:35:18 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id c14so21424880ybk.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:35:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XrIsCHyX+bwWzHgbgovzre+ZaaHXJKaZn7XOa25gCec=;
-        b=PatCXQETHYY9XZ53afwA59txjpJweu9t/dPWH0nW1HR1SILNwO2DdXJtbx9J85d7QI
-         U7tij/eGyHFT+l7qc7GooDpf5c60GchUnckhE8JJKnO5TDShvhzAsONxp/jt0LzWv4s2
-         C2PeXQoIO6RSoOvBXqc/Cz3fM7tRxUGRaCbF2hJvLM/STZID1CiOHG43t5fBmWnpY+vz
-         w31s09Ap9J1yAKXMZ5gGYrR7HwB5Vb0WgMhSx5uzwTgG7osSm3ePD2SPurgEm4wVIOAN
-         hkRpiesf9uAip3kNQQ+9/6a6LXSu/L8PodQEecQL/nEkNrStRlSBkGdMzTSTXJHI6L1g
-         jV3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XrIsCHyX+bwWzHgbgovzre+ZaaHXJKaZn7XOa25gCec=;
-        b=oBlDD9T8fwH4EZXG3nYh9p2Ey3eNuYL4Unj9RmAhk+pHKhBdhFZjB32DHcSqK/G6xk
-         TcigPQh3T9dulEQX4MUBWFe4fyCPSgq6WbToEOoAPiJvOKpKjwlr+eimmDmyiiobl2eo
-         OLvZN6fDMlRxnDJ3hl+y7yv1u3D/F864WeZ28D02prV7gkMbJVaAY9Gkny9/23Mq7RKV
-         nJSBaXHXkH5F0dZ7h15yiLq8lVVPbf2bh/uDJSgKXknXFBjttGtxIeMcQIIsnxh5xH/T
-         AWuLLtXA3Eb54YxL/14nIH6ymOvFOSDx3ER8RfwykXjSc67ofvyZ2dyf+evnnWH6x9y4
-         3Y+A==
-X-Gm-Message-State: AOAM532GLa1NQsrTB/k9Ca/C0PDD7t/Fawy6Rc1nPJNo5S0PCGGLNufR
-        Y1hT5SPWBB2mhhnZTO+st6ne3sop//lb5LFDTaXO2g==
-X-Google-Smtp-Source: ABdhPJwyQ8m9Ejz1YcCBf9T7Kr9DLxB3/0BYL2DarvqJ36C7cAcoJIt/7AFjv3HJlKAazPAs4JIc1SNyHVjleVgV+0U=
-X-Received: by 2002:a25:bb4e:: with SMTP id b14mr20894ybk.412.1623774917738;
- Tue, 15 Jun 2021 09:35:17 -0700 (PDT)
+        id S230205AbhFOQhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 12:37:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229557AbhFOQhQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 12:37:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 599536162F;
+        Tue, 15 Jun 2021 16:35:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623774912;
+        bh=KPwWGxmpg2+R/ZLS2IDl8iiCzE/7WD8JZk2bGE/QMts=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Nf0favd4DH8amnrkqvYZtkQsxecrIcgxrLVmUpQZ86PzvVVLINtyJ45MrWRej3GDG
+         nAtaJHtv01DWFr6rjxS1G2jWitSV6AknO1SdAd2m0hpE+cNxGOTuUzg22mRf541gBn
+         YjUyTpwlMQ6/eQFabXktOQ2tlvOF+15QyrTRQeCazzrEjOvDlHmQq4Kk1yOFqGpE48
+         g4la3mowcBBeE6H6XXpUGXgf6RyAJJPM89VpBMmLCqM+TL092qGoy1zgkrdYAfAJZg
+         3mJtr78hLntyDieS6N+tUK3Yern2ZiLzShW11po9rlaIvyPB51YoaorKUC7/Wsl7Gw
+         VuFEEkKmmUtmg==
+Received: by mail-lf1-f42.google.com with SMTP id r5so28066057lfr.5;
+        Tue, 15 Jun 2021 09:35:12 -0700 (PDT)
+X-Gm-Message-State: AOAM5312RAM0PWsZ1PQ9jyb2xxYvFJtxckMrbFXzwS01YX0UexGAkab1
+        bZsnqNiKUdalEDTmMCfiOF6g09yEi6aamHsmAQ==
+X-Google-Smtp-Source: ABdhPJzb1scuGBg1iwO9bred1d9KdCKkO1Pyyif8+6ImMU2HmLcKnkChTF+SHSnUN48zXPgPQaZ3dRPFNNA//lNpsiE=
+X-Received: by 2002:a50:9345:: with SMTP id n5mr354653eda.289.1623774900181;
+ Tue, 15 Jun 2021 09:35:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210615155009.62894-1-sashal@kernel.org> <20210615155009.62894-5-sashal@kernel.org>
-In-Reply-To: <20210615155009.62894-5-sashal@kernel.org>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 15 Jun 2021 09:34:41 -0700
-Message-ID: <CAGETcx9-ahe0OBaHvxV+YP6cYpQQ3qsFjJFnZWPjTEWXr278MQ@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 4.19 05/12] drm/sun4i: dw-hdmi: Make HDMI PHY into
- a platform device
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Ondrej Jirman <megous@megous.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Allwinner sunXi SoC support" 
-        <linux-sunxi@lists.linux.dev>
+References: <20210221174930.27324-1-nramas@linux.microsoft.com>
+ <20210221174930.27324-6-nramas@linux.microsoft.com> <CAMuHMdVSuNS4edh-zM0_sbC0i1AAjQ9Y0n_8Mjz=3CALkW4pgg@mail.gmail.com>
+ <CAL_JsqJ2x7zbyP3fAacdfHOWjCVjg6XhraV2YkoBJdZ2jXAMEA@mail.gmail.com> <54efb4fce5aac7efbd0b1b3885e9098b1d4ea745.camel@linux.microsoft.com>
+In-Reply-To: <54efb4fce5aac7efbd0b1b3885e9098b1d4ea745.camel@linux.microsoft.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 15 Jun 2021 10:34:48 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJEucP043eViq0Y1kAeqWNTqP5fLjfjz7+ksYx7QP_V5w@mail.gmail.com>
+Message-ID: <CAL_JsqJEucP043eViq0Y1kAeqWNTqP5fLjfjz7+ksYx7QP_V5w@mail.gmail.com>
+Subject: Re: [PATCH v19 05/13] of: Add a common kexec FDT setup function
+To:     nramas <nramas@linux.microsoft.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>, dmitry.kasatkin@gmail.com,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allison Randal <allison@lohutok.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Prakhar Srivastava <prsriva@linux.microsoft.com>,
+        balajib@linux.microsoft.com,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 8:50 AM Sasha Levin <sashal@kernel.org> wrote:
+On Tue, Jun 15, 2021 at 10:13 AM nramas <nramas@linux.microsoft.com> wrote:
 >
-> From: Saravana Kannan <saravanak@google.com>
->
-> [ Upstream commit 9bf3797796f570b34438235a6a537df85832bdad ]
->
-> On sunxi boards that use HDMI output, HDMI device probe keeps being
-> avoided indefinitely with these repeated messages in dmesg:
->
->   platform 1ee0000.hdmi: probe deferral - supplier 1ef0000.hdmi-phy
->     not ready
->
-> There's a fwnode_link being created with fw_devlink=on between hdmi
-> and hdmi-phy nodes, because both nodes have 'compatible' property set.
->
-> Fw_devlink code assumes that nodes that have compatible property
-> set will also have a device associated with them by some driver
-> eventually. This is not the case with the current sun8i-hdmi
-> driver.
+> On Tue, 2021-06-15 at 08:01 -0600, Rob Herring wrote:
+> > On Tue, Jun 15, 2021 at 6:18 AM Geert Uytterhoeven <
+> > geert@linux-m68k.org> wrote:
+> > >
+> > > > +void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
+> > > > +                                  unsigned long
+> > > > initrd_load_addr,
+> > > > +                                  unsigned long initrd_len,
+> > > > +                                  const char *cmdline, size_t
+> > > > extra_fdt_size)
+> > > > +{
+> > > > +       /* Did we boot using an initrd? */
+> > > > +       prop = fdt_getprop(fdt, chosen_node, "linux,initrd-
+> > > > start", NULL);
+> > > > +       if (prop) {
+> > > > +               u64 tmp_start, tmp_end, tmp_size;
+> > > > +
+> > > > +               tmp_start = fdt64_to_cpu(*((const fdt64_t *)
+> > > > prop));
+> > > > +
+> > > > +               prop = fdt_getprop(fdt, chosen_node,
+> > > > "linux,initrd-end", NULL);
+> > > > +               if (!prop) {
+> > > > +                       ret = -EINVAL;
+> > > > +                       goto out;
+> > > > +               }
+> > > > +
+> > > > +               tmp_end = fdt64_to_cpu(*((const fdt64_t *)
+> > > > prop));
+> > >
+> > > Some kernel code assumes "linux,initrd-{start,end}" are 64-bit,
+> > > other code assumes 32-bit.
+> >
+> > It can be either. The above code was a merge of arm64 and powerpc
+> > both
+> > of which use 64-bit and still only runs on those arches. It looks
+> > like
+> > some powerpc platforms may use 32-bit, but this would have been
+> > broken
+> > before.
+> of_kexec_alloc_and_setup_fdt() is called from elf_64.c (in
+> arch/powerpc/kexec) which is for 64-bit powerpc platform only.
 
-Not needed. fw_devlink isn't present in 4.19.
+64-bit PPC could be writing 32-bit property values. The architecture
+size doesn't necessarily matter. And if the values came from the
+bootloader, who knows what size it used.
 
--Saravana
+This code is 32-bit powerpc only?:
 
->
-> This commit makes sun8i-hdmi-phy into a proper platform device
-> and fixes the display pipeline probe on sunxi boards that use HDMI.
->
-> More context: https://lkml.org/lkml/2021/5/16/203
->
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Ondrej Jirman <megous@megous.com>
-> Tested-by: Andre Przywara <andre.przywara@arm.com>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> Link: https://patchwork.freedesktop.org/patch/msgid/20210607085836.2827429-1-megous@megous.com
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c  | 31 ++++++++++++++++---
->  drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h  |  5 ++--
->  drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c | 41 ++++++++++++++++++++++----
->  3 files changed, 66 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-> index 5073622cbb56..ab048f9412e7 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-> +++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-> @@ -144,7 +144,7 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
->                 goto err_disable_clk_tmds;
->         }
->
-> -       ret = sun8i_hdmi_phy_probe(hdmi, phy_node);
-> +       ret = sun8i_hdmi_phy_get(hdmi, phy_node);
->         of_node_put(phy_node);
->         if (ret) {
->                 dev_err(dev, "Couldn't get the HDMI PHY\n");
-> @@ -179,7 +179,6 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
->
->  cleanup_encoder:
->         drm_encoder_cleanup(encoder);
-> -       sun8i_hdmi_phy_remove(hdmi);
->  err_disable_clk_tmds:
->         clk_disable_unprepare(hdmi->clk_tmds);
->  err_assert_ctrl_reset:
-> @@ -194,7 +193,6 @@ static void sun8i_dw_hdmi_unbind(struct device *dev, struct device *master,
->         struct sun8i_dw_hdmi *hdmi = dev_get_drvdata(dev);
->
->         dw_hdmi_unbind(hdmi->hdmi);
-> -       sun8i_hdmi_phy_remove(hdmi);
->         clk_disable_unprepare(hdmi->clk_tmds);
->         reset_control_assert(hdmi->rst_ctrl);
->  }
-> @@ -230,7 +228,32 @@ static struct platform_driver sun8i_dw_hdmi_pltfm_driver = {
->                 .of_match_table = sun8i_dw_hdmi_dt_ids,
->         },
->  };
-> -module_platform_driver(sun8i_dw_hdmi_pltfm_driver);
-> +
-> +static int __init sun8i_dw_hdmi_init(void)
-> +{
-> +       int ret;
-> +
-> +       ret = platform_driver_register(&sun8i_dw_hdmi_pltfm_driver);
-> +       if (ret)
-> +               return ret;
-> +
-> +       ret = platform_driver_register(&sun8i_hdmi_phy_driver);
-> +       if (ret) {
-> +               platform_driver_unregister(&sun8i_dw_hdmi_pltfm_driver);
-> +               return ret;
-> +       }
-> +
-> +       return ret;
-> +}
-> +
-> +static void __exit sun8i_dw_hdmi_exit(void)
-> +{
-> +       platform_driver_unregister(&sun8i_dw_hdmi_pltfm_driver);
-> +       platform_driver_unregister(&sun8i_hdmi_phy_driver);
-> +}
-> +
-> +module_init(sun8i_dw_hdmi_init);
-> +module_exit(sun8i_dw_hdmi_exit);
->
->  MODULE_AUTHOR("Jernej Skrabec <jernej.skrabec@siol.net>");
->  MODULE_DESCRIPTION("Allwinner DW HDMI bridge");
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-> index aadbe0a10b0c..41355bf3aca8 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-> +++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-> @@ -179,14 +179,15 @@ struct sun8i_dw_hdmi {
->         struct reset_control            *rst_ctrl;
->  };
->
-> +extern struct platform_driver sun8i_hdmi_phy_driver;
-> +
->  static inline struct sun8i_dw_hdmi *
->  encoder_to_sun8i_dw_hdmi(struct drm_encoder *encoder)
->  {
->         return container_of(encoder, struct sun8i_dw_hdmi, encoder);
->  }
->
-> -int sun8i_hdmi_phy_probe(struct sun8i_dw_hdmi *hdmi, struct device_node *node);
-> -void sun8i_hdmi_phy_remove(struct sun8i_dw_hdmi *hdmi);
-> +int sun8i_hdmi_phy_get(struct sun8i_dw_hdmi *hdmi, struct device_node *node);
->
->  void sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy);
->  const struct dw_hdmi_phy_ops *sun8i_hdmi_phy_get_ops(void);
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-> index dc9b1398adb9..7e7a81f9d29a 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-> +++ b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-> @@ -5,6 +5,7 @@
->
->  #include <linux/delay.h>
->  #include <linux/of_address.h>
-> +#include <linux/of_platform.h>
->
->  #include "sun8i_dw_hdmi.h"
->
-> @@ -433,10 +434,30 @@ static const struct of_device_id sun8i_hdmi_phy_of_table[] = {
->         { /* sentinel */ }
->  };
->
-> -int sun8i_hdmi_phy_probe(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
-> +int sun8i_hdmi_phy_get(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
-> +{
-> +       struct platform_device *pdev = of_find_device_by_node(node);
-> +       struct sun8i_hdmi_phy *phy;
-> +
-> +       if (!pdev)
-> +               return -EPROBE_DEFER;
-> +
-> +       phy = platform_get_drvdata(pdev);
-> +       if (!phy)
-> +               return -EPROBE_DEFER;
-> +
-> +       hdmi->phy = phy;
-> +
-> +       put_device(&pdev->dev);
-> +
-> +       return 0;
-> +}
-> +
-> +static int sun8i_hdmi_phy_probe(struct platform_device *pdev)
->  {
->         const struct of_device_id *match;
-> -       struct device *dev = hdmi->dev;
-> +       struct device *dev = &pdev->dev;
-> +       struct device_node *node = dev->of_node;
->         struct sun8i_hdmi_phy *phy;
->         struct resource res;
->         void __iomem *regs;
-> @@ -540,7 +561,7 @@ int sun8i_hdmi_phy_probe(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
->                 clk_prepare_enable(phy->clk_phy);
->         }
->
-> -       hdmi->phy = phy;
-> +       platform_set_drvdata(pdev, phy);
->
->         return 0;
->
-> @@ -564,9 +585,9 @@ int sun8i_hdmi_phy_probe(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
->         return ret;
->  }
->
-> -void sun8i_hdmi_phy_remove(struct sun8i_dw_hdmi *hdmi)
-> +static int sun8i_hdmi_phy_remove(struct platform_device *pdev)
->  {
-> -       struct sun8i_hdmi_phy *phy = hdmi->phy;
-> +       struct sun8i_hdmi_phy *phy = platform_get_drvdata(pdev);
->
->         clk_disable_unprepare(phy->clk_mod);
->         clk_disable_unprepare(phy->clk_bus);
-> @@ -580,4 +601,14 @@ void sun8i_hdmi_phy_remove(struct sun8i_dw_hdmi *hdmi)
->         clk_put(phy->clk_pll1);
->         clk_put(phy->clk_mod);
->         clk_put(phy->clk_bus);
-> +       return 0;
->  }
-> +
-> +struct platform_driver sun8i_hdmi_phy_driver = {
-> +       .probe  = sun8i_hdmi_phy_probe,
-> +       .remove = sun8i_hdmi_phy_remove,
-> +       .driver = {
-> +               .name = "sun8i-hdmi-phy",
-> +               .of_match_table = sun8i_hdmi_phy_of_table,
-> +       },
-> +};
-> --
-> 2.30.2
->
+arch/powerpc/boot/main.c-       /* Tell the kernel initrd address via
+device tree */
+arch/powerpc/boot/main.c:       setprop_val(chosen,
+"linux,initrd-start", (u32)(initrd_addr));
+arch/powerpc/boot/main.c-       setprop_val(chosen,
+"linux,initrd-end", (u32)(initrd_addr+initrd_size));
+
+Rob
