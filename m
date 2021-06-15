@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC093A856E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A203A855D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232139AbhFOPzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:55:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46738 "EHLO mail.kernel.org"
+        id S232524AbhFOPzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:55:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:39002 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232377AbhFOPw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:52:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 341026191D;
-        Tue, 15 Jun 2021 15:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623772209;
-        bh=4N5XB1kMClR4uHWK6xi+bP3P4je3OwE/wcElNSnGzR8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rTuTLioXjVOnh8N7+yYc7Nia8m4/7naXE24r4mVPcAX6u20HyYjSrVHJVSSYmvtC5
-         lL9+JNHKftEY8zlZUTv3yz/6x5DeDE7YkS87ai8rskzpUchCtSKIRVhibV6pa/ftCy
-         jVVz268zIQsfAns5DMf0+ppPzQWgPL/t+4TQwiWFO0Mib3EK6QHBR0njtA3vqNjqXm
-         MuerTdg3b61euAMjB8ELbomJ7qgtztspC9m0DCa0ytzOPK5NnTDeny2uHlGT0z/A4h
-         bD9dTmkp5KaQutKDGXmtDG4K52odUbbiPRNUqdH5yownolzEkzwKkThrzn/ZfTpnJ2
-         vyHCtu5W7p/xw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Riwen Lu <luriwen@kylinos.cn>, Xin Chen <chenxin@kylinos.cn>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>, linux-hwmon@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 15/15] hwmon: (scpi-hwmon) shows the negative temperature properly
-Date:   Tue, 15 Jun 2021 11:49:47 -0400
-Message-Id: <20210615154948.62711-15-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210615154948.62711-1-sashal@kernel.org>
-References: <20210615154948.62711-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S232169AbhFOPwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:52:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B60E913A1;
+        Tue, 15 Jun 2021 08:50:03 -0700 (PDT)
+Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 102773F694;
+        Tue, 15 Jun 2021 08:49:58 -0700 (PDT)
+From:   Jia He <justin.he@arm.com>
+To:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Jia He <justin.he@arm.com>
+Subject: [PATCH RFCv4 0/4] make '%pD' print full path for file
+Date:   Tue, 15 Jun 2021 23:49:48 +0800
+Message-Id: <20210615154952.2744-1-justin.he@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riwen Lu <luriwen@kylinos.cn>
+Background
+==========
+Linus suggested printing full path for file instead of printing
+the components as '%pd'.
 
-[ Upstream commit 78d13552346289bad4a9bf8eabb5eec5e5a321a5 ]
+Typically, there is no need for printk specifiers to take any real locks
+(ie mount_lock or rename_lock). So I introduce a new helper d_path_fast
+which is similar to d_path except it doesn't take any seqlock/spinlock.
 
-The scpi hwmon shows the sub-zero temperature in an unsigned integer,
-which would confuse the users when the machine works in low temperature
-environment. This shows the sub-zero temperature in an signed value and
-users can get it properly from sensors.
+This series is based on Al Viro's d_path cleanup patches [1] which
+lifted the inner lockless loop into a new helper. 
 
-Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
-Tested-by: Xin Chen <chenxin@kylinos.cn>
-Link: https://lore.kernel.org/r/20210604030959.736379-1-luriwen@kylinos.cn
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/hwmon/scpi-hwmon.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+[1] https://lkml.org/lkml/2021/5/18/1260
 
-diff --git a/drivers/hwmon/scpi-hwmon.c b/drivers/hwmon/scpi-hwmon.c
-index 25aac40f2764..919877970ae3 100644
---- a/drivers/hwmon/scpi-hwmon.c
-+++ b/drivers/hwmon/scpi-hwmon.c
-@@ -99,6 +99,15 @@ scpi_show_sensor(struct device *dev, struct device_attribute *attr, char *buf)
+Test
+====
+The cases I tested:
+1. print '%pD' with full path of ext4 file
+2. mount a ext4 filesystem upon a ext4 filesystem, and print the file
+   with '%pD'
+3. all test_print selftests, including the new '%14pD' '%-14pD'
+4. kasnprintf
+   
+Changelog
+=========
+v4:
+- don't support spec.precision anymore for '%pD'
+- add Rasmus's patch into this series
  
- 	scpi_scale_reading(&value, sensor);
- 
-+	/*
-+	 * Temperature sensor values are treated as signed values based on
-+	 * observation even though that is not explicitly specified, and
-+	 * because an unsigned u64 temperature does not really make practical
-+	 * sense especially when the temperature is below zero degrees Celsius.
-+	 */
-+	if (sensor->info.class == TEMPERATURE)
-+		return sprintf(buf, "%lld\n", (s64)value);
-+
- 	return sprintf(buf, "%llu\n", value);
- }
- 
+v3:
+- implement new d_path_unsafe to use [buf, end] instead of stack space for
+  filling bytes (by Matthew)
+- add new test cases for '%pD'
+- drop patch "hmcdrv: remove the redundant directory path" before removing rfc.
+
+v2: 
+- implement new d_path_fast based on Al Viro's patches
+- add check_pointer check (by Petr)
+- change the max full path size to 256 in stack space
+v1: https://lkml.org/lkml/2021/5/8/122
+
+Jia He (4):
+  fs: introduce helper d_path_unsafe()
+  lib/vsprintf.c: make '%pD' print full path for file
+  lib/test_printf.c: split write-beyond-buffer check in two
+  lib/test_printf.c: add test cases for '%pD'
+
+ Documentation/core-api/printk-formats.rst |  5 +-
+ fs/d_path.c                               | 83 ++++++++++++++++++++++-
+ include/linux/dcache.h                    |  1 +
+ lib/test_printf.c                         | 31 ++++++++-
+ lib/vsprintf.c                            | 37 ++++++++--
+ 5 files changed, 148 insertions(+), 9 deletions(-)
+
 -- 
-2.30.2
+2.17.1
 
