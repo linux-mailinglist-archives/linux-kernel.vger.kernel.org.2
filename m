@@ -2,131 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D90B3A7F36
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245F53A7F46
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbhFON2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53722 "EHLO
+        id S231229AbhFON32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbhFON2q (ORCPT
+        with ESMTP id S230298AbhFON30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:28:46 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F1DC0613A3;
-        Tue, 15 Jun 2021 06:26:38 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id r5so27055663lfr.5;
-        Tue, 15 Jun 2021 06:26:38 -0700 (PDT)
+        Tue, 15 Jun 2021 09:29:26 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74DAC0617AF
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:27:21 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id h12-20020a17090aa88cb029016400fd8ad8so2212411pjq.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:27:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9HvxVYMyqvCV0x9W883eCIZ13wMRf8cylhu7PNwXAR4=;
-        b=PXeokba/hMpZquDHF8BjKdeV/fK3ppLU5sQNQuEBYes6BQIPsVu6/23DUFZ4Esu6yk
-         B3QZQ0MwBgUI892uok+j5Bfau+/M74FhrxwG8LedJUAjIbORYmEelY+n7Pb7B1UiYuiA
-         N4477LDPl36e10y95F+vSHMZEG22UW5mpbfk5LuxGv0PO62Bz8gViNpPIXOVI5r/+0Ja
-         hdzqsePpw/n+Wf+9X97ZPMLGzOVvnHw9rGIexj3c1HMoheAsgJEbdHw3PaMph89E/g+W
-         /fGC+003DZQObylZ0BAzK4cVGR0+viMh3Wm2rqzZn4xSSFtdjs46+dH/9uO7iffgYKoJ
-         y0hQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ju6S8lgCxf3St5TjBpM/zWBg3zY1k2oOfdLAzP6ctcg=;
+        b=S0KOTmQ1dyMFUgjraAGrRI0c2Mihsv8RUfx+tMl8U8V5wwFpZrXslfg71+0gtaQ4MS
+         920rIvXLA/w2InlV9cjhFj31GrTJmfYtMvDEkxHMkIU3x8/eylAN0MxowVG16KZdI3xd
+         R6EZBcTiAFbROkN0bkdkSLOWCWkPs3n3Q835U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9HvxVYMyqvCV0x9W883eCIZ13wMRf8cylhu7PNwXAR4=;
-        b=DGozaTsBGwcBHD65/zuN7AAmDCArLkv55P+bzLSOO/fHA9qPUyVYCGwokCUGIrWl02
-         6ERat432OqckWtX4iFUUDa+Y4clwRwTJ6Uc5Z8Zl2eGG8gZYgfphD1B+oWWN0x07i7Gl
-         DyQZH7lP2tibUu/Hol/Z5wxGX4oE9vjDKHiHHdVSQDTMhWLbDlftBZrj71di3WZ1uRW3
-         YOA+/rgGLZLacMSCehI//dOmwUlyvzIW/0i2PfPN2cLuqOQCWT6N7m3V2rgS0yoW0ugt
-         l36aW/mmxEu7KJKXwJ7Sf5CloPiB2y0/A+6SIo/A5NtUbsim6YNMjywMzMtbccfUzwgm
-         LWEA==
-X-Gm-Message-State: AOAM531/jfMBi2Uo4Re6zLePIvjSn73jKUKIrCzpJWCVCi0RmPnfW8yh
-        BilOXMYqsoCcOgPi15lMo8xVjUuZlOY=
-X-Google-Smtp-Source: ABdhPJzbWJugA7ORfj/DabW4obeg6otmqxkKzg0iJ3rPlUAInL30kMRPms2h8HMKoSMSFNx983kK9w==
-X-Received: by 2002:a19:c34a:: with SMTP id t71mr15641415lff.499.1623763596983;
-        Tue, 15 Jun 2021 06:26:36 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-31-25.dynamic.spd-mgts.ru. [94.29.31.25])
-        by smtp.googlemail.com with ESMTPSA id e21sm2156796ljl.26.2021.06.15.06.26.36
+        bh=ju6S8lgCxf3St5TjBpM/zWBg3zY1k2oOfdLAzP6ctcg=;
+        b=qz4P9bOMyVBUdBdPjQ5i0nclcl/f7hdfsl7kE9Xd5yVB8C6hmoJFwH81a2OywMaBew
+         RcPnpDernEGMZFHepeT0UA83fdHvTyRZ42w9chZGRvatESDFqBaiitqSpdPw4Tp+R+c7
+         kCIuY4Nh+usmlMLxvWD1m3l5ymCDVu9KeLGeQ5izM1NDFljhALtRKndakUDVae6CoMiF
+         LCxaP1oUrOQavT2sa+n+00pHx9eMhVyMoNbinKsLp4tEYg0I3O+UZBNg6zMRy8AsFqPP
+         x0P8cmtVN/NK7EZqC+4YG3DT1shfor9Ga3asejzvtIKOHtPUyhb0yX/q7JbzHjo7qMvc
+         DOjw==
+X-Gm-Message-State: AOAM532CO7oK/RTgIaHBPVcp5rgtRiN1WEUGpESowVZFn5EaA88exw7w
+        rmDGIQ0nupbwyacTBmUFu5V5iA==
+X-Google-Smtp-Source: ABdhPJxr9A5pl6/ZdjjYY9mlXXb/uiYKpVxDCD4IZ9OsbKJOMyQWEYEFuItILAhw43oMKDFA7z0SMA==
+X-Received: by 2002:a17:90a:be0b:: with SMTP id a11mr25279126pjs.197.1623763641154;
+        Tue, 15 Jun 2021 06:27:21 -0700 (PDT)
+Received: from localhost ([2401:fa00:95:205:1846:5274:e444:139e])
+        by smtp.gmail.com with UTF8SMTPSA id k70sm16257566pgd.41.2021.06.15.06.27.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 06:26:36 -0700 (PDT)
-Subject: Re: [PATCH v1 03/10] ARM: tegra: acer-a500: Bump thermal trips by 10C
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210510202600.12156-1-digetx@gmail.com>
- <20210510202600.12156-4-digetx@gmail.com>
- <20210514211601.GA1969@qmqm.qmqm.pl>
- <ecc89faf-97f5-65e9-0eb8-93c8414c69e5@linaro.org>
- <eedb5792-d3a5-78b3-ec89-b26d2e45f9c4@gmail.com>
- <c65a732d-b203-a1a0-e90b-0aa0664cfb55@linaro.org>
- <e73b64b2-77a8-3671-1fc6-0bf77e2287c4@gmail.com>
- <1abadc69-1dd1-5939-c089-37a84be4781b@linaro.org>
- <60a280c3-e67f-ff3a-9f0e-7d12fc125c5b@gmail.com>
- <8091014b-fe1b-9c4c-7a91-6aae5b4037e5@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <53edd54a-4aa4-2100-c902-d1c8bde64a1a@gmail.com>
-Date:   Tue, 15 Jun 2021 16:26:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 15 Jun 2021 06:27:20 -0700 (PDT)
+From:   Claire Chang <tientzu@chromium.org>
+To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        tientzu@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, jxgao@google.com,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
+Subject: [PATCH v10 00/12] Restricted DMA
+Date:   Tue, 15 Jun 2021 21:26:59 +0800
+Message-Id: <20210615132711.553451-1-tientzu@chromium.org>
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
 MIME-Version: 1.0
-In-Reply-To: <8091014b-fe1b-9c4c-7a91-6aae5b4037e5@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.06.2021 16:05, Daniel Lezcano пишет:
-> On 15/06/2021 14:53, Dmitry Osipenko wrote:
->> 13.06.2021 21:19, Daniel Lezcano пишет:
->>> On 13/06/2021 02:25, Dmitry Osipenko wrote:
->>>
->>> [ ... ]
->>>
->>>>> You should set the trip points close to the functioning boundary
->>>>> temperature given in the hardware specification whatever the resulting
->>>>> heating effect is on the device.
->>>>>
->>>>> The thermal zone is there to protect the silicon and the system from a
->>>>> wild reboot.
->>>>>
->>>>> If the Nexus 7 is too hot after the changes, then you may act on the
->>>>> sources of the heat. For instance, set the the highest OPP to turbo or
->>>>> remove it, or, if there is one, change the thermal daemon to reduce the
->>>>> overall power consumption.
->>>>> In case you are interested in: https://lwn.net/Articles/839318/
->>>>
->>>> The DTPM is a very interesting approach. For now Tegra still misses some
->>>> basics in mainline kernel which have a higher priority, so I think it
->>>> should be good enough to perform the in-kernel thermal management for
->>>> the starter. We may consider a more complex solutions later on if will
->>>> be necessary.
->>>>
->>>> What I'm currently thinking to do is:
->>>>
->>>> 1. Set up the trips of SoC/CPU core thermal zones in accordance to the
->>>> silicon limits.
->>>>
->>>> 2. Set up the skin trips in accordance to the device limits.
->>>>
->>>> The breached skin trips will cause a mild throttling, while the SoC/CPU
->>>> trips will be allowed to cause the severe throttling. Does this sound
->>>> good to you?
->>>
->>> The skin temperature must be managed from userspace. The kernel is
->>> unable to do a smart thermal management given different thermal zones
->>> but if the goal is to go forward and prevent the tablet to be hot
->>> temporarily until the other hardware support is there, I think it is
->>> acceptable.
->>
->> The current goal is to get maximum from what we already have, thank you.
-> 
-> maximum of performance or maximum of mitigation ?
+This series implements mitigations for lack of DMA access control on
+systems without an IOMMU, which could result in the DMA accessing the
+system memory at unexpected times and/or unexpected addresses, possibly
+leading to data leakage or corruption.
 
-The best balance of both. Maximum performance + no risk of damaging
-hardware + pleasant body temperature from a user perspective.
+For example, we plan to use the PCI-e bus for Wi-Fi and that PCI-e bus is
+not behind an IOMMU. As PCI-e, by design, gives the device full access to
+system memory, a vulnerability in the Wi-Fi firmware could easily escalate
+to a full system exploit (remote wifi exploits: [1a], [1b] that shows a
+full chain of exploits; [2], [3]).
+
+To mitigate the security concerns, we introduce restricted DMA. Restricted
+DMA utilizes the existing swiotlb to bounce streaming DMA in and out of a
+specially allocated region and does memory allocation from the same region.
+The feature on its own provides a basic level of protection against the DMA
+overwriting buffer contents at unexpected times. However, to protect
+against general data leakage and system memory corruption, the system needs
+to provide a way to restrict the DMA to a predefined memory region (this is
+usually done at firmware level, e.g. MPU in ATF on some ARM platforms [4]).
+
+[1a] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_4.html
+[1b] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_11.html
+[2] https://blade.tencent.com/en/advisories/qualpwn/
+[3] https://www.bleepingcomputer.com/news/security/vulnerabilities-found-in-highly-popular-firmware-for-wifi-chips/
+[4] https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
+
+v10:
+Address the comments in v9 to
+  - fix the dev->dma_io_tlb_mem assignment
+  - propagate swiotlb_force setting into io_tlb_default_mem->force
+  - move set_memory_decrypted out of swiotlb_init_io_tlb_mem
+  - move debugfs_dir declaration into the main CONFIG_DEBUG_FS block
+  - add swiotlb_ prefix to find_slots and release_slots
+  - merge the 3 alloc/free related patches
+  - move the CONFIG_DMA_RESTRICTED_POOL later
+
+v9:
+Address the comments in v7 to
+  - set swiotlb active pool to dev->dma_io_tlb_mem
+  - get rid of get_io_tlb_mem
+  - dig out the device struct for is_swiotlb_active
+  - move debugfs_create_dir out of swiotlb_create_debugfs
+  - do set_memory_decrypted conditionally in swiotlb_init_io_tlb_mem
+  - use IS_ENABLED in kernel/dma/direct.c
+  - fix redefinition of 'of_dma_set_restricted_buffer'
+https://lore.kernel.org/patchwork/cover/1445081/
+
+v8:
+- Fix reserved-memory.txt and add the reg property in example.
+- Fix sizeof for of_property_count_elems_of_size in
+  drivers/of/address.c#of_dma_set_restricted_buffer.
+- Apply Will's suggestion to try the OF node having DMA configuration in
+  drivers/of/address.c#of_dma_set_restricted_buffer.
+- Fix typo in the comment of drivers/of/address.c#of_dma_set_restricted_buffer.
+- Add error message for PageHighMem in
+  kernel/dma/swiotlb.c#rmem_swiotlb_device_init and move it to
+  rmem_swiotlb_setup.
+- Fix the message string in rmem_swiotlb_setup.
+https://lore.kernel.org/patchwork/cover/1437112/
+
+v7:
+Fix debugfs, PageHighMem and comment style in rmem_swiotlb_device_init
+https://lore.kernel.org/patchwork/cover/1431031/
+
+v6:
+Address the comments in v5
+https://lore.kernel.org/patchwork/cover/1423201/
+
+v5:
+Rebase on latest linux-next
+https://lore.kernel.org/patchwork/cover/1416899/
+
+v4:
+- Fix spinlock bad magic
+- Use rmem->name for debugfs entry
+- Address the comments in v3
+https://lore.kernel.org/patchwork/cover/1378113/
+
+v3:
+Using only one reserved memory region for both streaming DMA and memory
+allocation.
+https://lore.kernel.org/patchwork/cover/1360992/
+
+v2:
+Building on top of swiotlb.
+https://lore.kernel.org/patchwork/cover/1280705/
+
+v1:
+Using dma_map_ops.
+https://lore.kernel.org/patchwork/cover/1271660/
+
+
+Claire Chang (12):
+  swiotlb: Refactor swiotlb init functions
+  swiotlb: Refactor swiotlb_create_debugfs
+  swiotlb: Set dev->dma_io_tlb_mem to the swiotlb pool used
+  swiotlb: Update is_swiotlb_buffer to add a struct device argument
+  swiotlb: Update is_swiotlb_active to add a struct device argument
+  swiotlb: Use is_dev_swiotlb_force for swiotlb data bouncing
+  swiotlb: Move alloc_size to swiotlb_find_slots
+  swiotlb: Refactor swiotlb_tbl_unmap_single
+  swiotlb: Add restricted DMA pool initialization
+  swiotlb: Add restricted DMA alloc/free support
+  dt-bindings: of: Add restricted DMA pool
+  of: Add plumbing for restricted DMA pool
+
+ .../reserved-memory/reserved-memory.txt       |  36 ++-
+ drivers/base/core.c                           |   4 +
+ drivers/gpu/drm/i915/gem/i915_gem_internal.c  |   2 +-
+ drivers/gpu/drm/nouveau/nouveau_ttm.c         |   2 +-
+ drivers/iommu/dma-iommu.c                     |  12 +-
+ drivers/of/address.c                          |  33 +++
+ drivers/of/device.c                           |   3 +
+ drivers/of/of_private.h                       |   6 +
+ drivers/pci/xen-pcifront.c                    |   2 +-
+ drivers/xen/swiotlb-xen.c                     |   2 +-
+ include/linux/device.h                        |   4 +
+ include/linux/swiotlb.h                       |  40 ++-
+ kernel/dma/Kconfig                            |  14 +
+ kernel/dma/direct.c                           |  60 +++--
+ kernel/dma/direct.h                           |   8 +-
+ kernel/dma/swiotlb.c                          | 255 +++++++++++++-----
+ 16 files changed, 380 insertions(+), 103 deletions(-)
+
+-- 
+2.32.0.272.g935e593368-goog
+
