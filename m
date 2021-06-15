@@ -2,251 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD2C3A8A49
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113613A8A57
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhFOUnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 16:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbhFOUnD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 16:43:03 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA181C061574;
-        Tue, 15 Jun 2021 13:40:58 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id y7so48239wrh.7;
-        Tue, 15 Jun 2021 13:40:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IMjvX9hfQnFo8c8T6Oa+lxK8589Rb/CvuLF9yLKTHb0=;
-        b=i8ulPueW4eSGAFNJIGTawwLwOUCCF/68M+vbfBTbNh7rYA2OciLl13aiU1qhCwmjTZ
-         a9AqZiwmKd+yxIEqPXOswQJU7ZaG9kMSxh5HIzOIiwDXMwGCiwk20O7qRzvEVDHgeTBG
-         EJV6hna4JKRc04XiJN60p3ucTJ9JZ98yo6WLKnrToeV9uCFSa+j/qp1RQmo2oOuimOrO
-         zfLWSXNkg7Xk8zGWnmOL0FdIKtNiWXVB87NnOBg5q0IvwTHSFjrfSTHa2uN/spazmAXI
-         SWPXUwH1MWO2xpgN/njwGXrEKf+zED2dmjHT59V5r+NZ5JTiIfzm8AFHGLdrPFDXvrLI
-         MA7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IMjvX9hfQnFo8c8T6Oa+lxK8589Rb/CvuLF9yLKTHb0=;
-        b=ocO8Fdte1OD5UCC5JKq4nTZCSqLzPTdhxEeNDidY4iRXL7TqCoFEm67J4C+QrzEfxZ
-         qHdzKcIBAQffZYLv5mmJmnL/sTmyidwLUrmzHdfrO6eg6ZRHh0gR3CcrTYEUPAQwxvXn
-         XfHavZYm/t0ZZPH2PnrRv4c5TQiLY8TSrFvSrRKpGwSxKAt9DjuKONIpkrypudkqHAAE
-         qkRWZd9lGD1U2blMOMagzhQxN6FDtODz1nOfE1/TrdTkryhsuSxFl9MQjS2NYtHdY1dg
-         1vrhpWafVrDQ1ETqJqgvIWbztyfFbDXsm4rPskO4U6HSgNoP0srFQxG5TfPZEJt/4g2o
-         T4mQ==
-X-Gm-Message-State: AOAM533E2quDSBJ3cR3Ynirg1HenBA7Eo6t7whBYQIjxMDYYwwA4bQJ+
-        aUBvOonPH1BUuB1HnnLvMkzd3wUxzWIXhNrfQE4=
-X-Google-Smtp-Source: ABdhPJxqp/ESz5upedV1r3eEylaoPl9d6aaSFyarULArTgNIHSCANEcBAVEybt1O9EzcyPkkeiHgO1n03ajaP4sbIlM=
-X-Received: by 2002:adf:f6d1:: with SMTP id y17mr1145358wrp.250.1623789657126;
- Tue, 15 Jun 2021 13:40:57 -0700 (PDT)
+        id S231200AbhFOUnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 16:43:40 -0400
+Received: from mga07.intel.com ([134.134.136.100]:49406 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229965AbhFOUnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 16:43:39 -0400
+IronPort-SDR: 0HWDmH40JguQDCUTzJ+uAz7Iqzdy1OfNTEmraX8pEe5twsGNVsSj2WXWVobGn2qnxpZo3LfsPH
+ GrPWF4ejX7Cg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="269914818"
+X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
+   d="scan'208";a="269914818"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 13:41:33 -0700
+IronPort-SDR: /hSkReECSqWv/rCkZp2GbefM6oQT3192AOk7kOVrkfvIP2z2UaChDBjHzwhEjXL4+w0CDZiUPk
+ koqubvrfOvwg==
+X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
+   d="scan'208";a="554565107"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.184.247]) ([10.212.184.247])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 13:41:24 -0700
+Subject: Re: [PATCH v2] x86/resctrl: Fix kernel-doc in internal.h
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+References: <20210614154438.17075-1-fmdefrancesco@gmail.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <4f1825cc-5d80-c1b1-b56b-7f2535e406f7@intel.com>
+Date:   Tue, 15 Jun 2021 13:41:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210615154952.2744-1-justin.he@arm.com> <20210615154952.2744-2-justin.he@arm.com>
-In-Reply-To: <20210615154952.2744-2-justin.he@arm.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 15 Jun 2021 23:40:40 +0300
-Message-ID: <CAHp75Vdpw6A0r0cjJKF8XhGL0-PccXHS1BXL1w04P37-027jUw@mail.gmail.com>
-Subject: Re: [PATCH RFCv4 1/4] fs: introduce helper d_path_unsafe()
-To:     Jia He <justin.he@arm.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210614154438.17075-1-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 6:56 PM Jia He <justin.he@arm.com> wrote:
->
-> This helper is similar to d_path except that it doesn't take any
-> seqlock/spinlock. It is typical for debugging purpose. Besides,
+Hi Fabio,
 
-purposes
-
-> an additional return value *prenpend_len* is used to get the full
-> path length of the dentry.
->
-> prepend_name_with_len() enhances the behavior of prepend_name().
-> Previously it will skip the loop at once in __prepen_path() when the
-> space is not enough. __prepend_path() gets the full length of dentry
-> together with the parent recusively.
-
-recursively
-
->
-> Besides, if someone invokes snprintf with small but positive space,
-> prepend_name_with() needs to move and copy the string partially.
->
-> More than that, kasnprintf will pass NULL _buf_ and _end_, hence
-
-kasprintf()
-
-> it returns at the very beginning with false in this case;
->
-> Suggested-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Jia He <justin.he@arm.com>
+On 6/14/2021 8:44 AM, Fabio M. De Francesco wrote:
+> Add description of undocumented parameters. Issues detected by
+> scripts/kernel-doc.
+> 
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 > ---
->  fs/d_path.c            | 83 +++++++++++++++++++++++++++++++++++++++++-
->  include/linux/dcache.h |  1 +
->  2 files changed, 82 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/d_path.c b/fs/d_path.c
-> index 23a53f7b5c71..4fc224eadf58 100644
-> --- a/fs/d_path.c
-> +++ b/fs/d_path.c
-> @@ -68,9 +68,66 @@ static bool prepend_name(struct prepend_buffer *p, const struct qstr *name)
->         return true;
->  }
->
-> +static bool prepend_name_with_len(struct prepend_buffer *p, const struct qstr *name,
-> +                        int orig_buflen)
-> +{
-> +       const char *dname = smp_load_acquire(&name->name); /* ^^^ */
+> 
+> v1->v2: According to a first review by Reinette Chartre, remove changes
+> unrelated to the subject of this patch and modify the descriptions of
+> two parameters.
+>   
+>   arch/x86/kernel/cpu/resctrl/internal.h | 23 +++++++++++++++--------
+>   1 file changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> index c4d320d02fd5..ac691af0174b 100644
+> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> @@ -70,6 +70,7 @@ DECLARE_STATIC_KEY_FALSE(rdt_mon_enable_key);
+>    * struct mon_evt - Entry in the event list of a resource
+>    * @evtid:		event id
+>    * @name:		name of the event
+> + * @list:		entry in &rdt_resource->evt_list
+>    */
+>   struct mon_evt {
+>   	u32			evtid;
+> @@ -78,10 +79,13 @@ struct mon_evt {
+>   };
+>   
+>   /**
+> - * struct mon_data_bits - Monitoring details for each event file
+> - * @rid:               Resource id associated with the event file.
+> + * union mon_data_bits - Monitoring details for each event file
+> + * @priv:	       Used to store monitoring event data in @u
+> + * 		       as kernfs private data
+> + * @rid:               Resource id associated with the event file
+>    * @evtid:             Event id associated with the event file
+>    * @domid:             The domain to which the event file belongs
+> + * @u:		       Name of the bit fields struct
+>    */
 
-What does this funny comment mean?
+This snippet is whitespace damaged. Your changes add tabs as well as 
+spaces while the existing code uses just spaces. Please follow existing 
+style of this area and just use spaces. As a note for any future 
+changes, in one line you add spaces before tabs, that is generally not 
+the right formatting in kernel-doc - running scripts/checkpatch.pl on 
+this patch would also warn about this.
 
-> +       int dlen = READ_ONCE(name->len);
-> +       char *s;
-> +       int last_len = p->len;
-> +
-> +       p->len -= dlen + 1;
-> +
-> +       if (unlikely(!p->buf))
-> +               return false;
-> +
-> +       if (orig_buflen <= 0)
-> +               return false;
-> +       /*
-> +        * The first time we overflow the buffer. Then fill the string
-> +        * partially from the beginning
-> +        */
-> +       if (unlikely(p->len < 0)) {
-> +               int buflen = strlen(p->buf);
-> +
-> +               s = p->buf;
-> +
-> +               /* Still have small space to fill partially */
-> +               if (last_len > 0) {
-> +                       p->buf -= last_len;
-> +                       buflen += last_len;
-> +               }
-> +
-> +               if (buflen > dlen + 1) {
-> +                       /* This dentry name can be fully filled */
-> +                       memmove(p->buf + dlen + 1, s, buflen - dlen - 1);
-> +                       p->buf[0] = '/';
-> +                       memcpy(p->buf + 1, dname, dlen);
-> +               } else if (buflen > 0) {
-> +                       /* Partially filled, and drop last dentry name */
-> +                       p->buf[0] = '/';
-> +                       memcpy(p->buf + 1, dname, buflen - 1);
-> +               }
-> +
-> +               return false;
-> +       }
-> +
-> +       s = p->buf -= dlen + 1;
-> +       *s++ = '/';
+>   union mon_data_bits {
+>   	void *priv;
+> @@ -119,6 +123,7 @@ enum rdt_group_type {
+>    * @RDT_MODE_PSEUDO_LOCKSETUP: Resource group will be used for Pseudo-Locking
+>    * @RDT_MODE_PSEUDO_LOCKED: No sharing of this resource group's allocations
+>    *                          allowed AND the allocations are Cache Pseudo-Locked
+> + * @RDT_NUM_MODES: Total number of modes
+>    *
+>    * The mode of a resource group enables control over the allowed overlap
+>    * between allocations associated with different resource groups (classes
+> @@ -142,7 +147,7 @@ enum rdtgrp_mode {
+>   
+>   /**
+>    * struct mongroup - store mon group's data in resctrl fs.
+> - * @mon_data_kn		kernlfs node for the mon_data directory
+> + * @mon_data_kn:		kernlfs node for the mon_data directory
 
-> +       while (dlen--) {
-> +               char c = *dname++;
-> +
-> +               if (!c)
-> +                       break;
-> +               *s++ = c;
+Sorry I did not notice this before, could you please also fix the typo 
+kernlfs -> kernfs ?
 
-I'm wondering why can't memcpy() be used here as well.
+>    * @parent:			parent rdtgrp
+>    * @crdtgrp_list:		child rdtgroup node list
+>    * @rmid:			rmid for this rdtgroup
+> @@ -282,11 +287,11 @@ struct rftype {
+>   /**
+>    * struct mbm_state - status for each MBM counter in each domain
+>    * @chunks:	Total data moved (multiply by rdt_group.mon_scale to get bytes)
+> - * @prev_msr	Value of IA32_QM_CTR for this RMID last time we read it
+> + * @prev_msr:	Value of IA32_QM_CTR for this RMID last time we read it
+>    * @prev_bw_msr:Value of previous IA32_QM_CTR for bandwidth counting
+> - * @prev_bw	The most recent bandwidth in MBps
+> - * @delta_bw	Difference between the current and previous bandwidth
+> - * @delta_comp	Indicates whether to compute the delta_bw
+> + * @prev_bw:	The most recent bandwidth in MBps
+> + * @delta_bw:	Difference between the current and previous bandwidth
+> + * @delta_comp:	Indicates whether to compute the delta_bw
+>    */
+>   struct mbm_state {
+>   	u64	chunks;
+> @@ -450,17 +455,19 @@ struct rdt_parse_data {
+>    * @name:		Name to use in "schemata" file
+>    * @num_closid:		Number of CLOSIDs available
+>    * @cache_level:	Which cache level defines scope of this resource
+> - * @default_ctrl:	Specifies default cache cbm or memory B/W percent.
+> + * @default_ctrl:	Specifies default cache cbm or memory B/W percent
+>    * @msr_base:		Base MSR address for CBMs
+>    * @msr_update:		Function pointer to update QOS MSRs
+>    * @data_width:		Character width of data when displaying
+>    * @domains:		All domains for this resource
+>    * @cache:		Cache allocation related data
+> + * @membw:		Memory bandwidth allocation related data
+>    * @format_str:		Per resource format string to show domain value
+>    * @parse_ctrlval:	Per resource function pointer to parse control values
+>    * @evt_list:		List of monitoring events
+>    * @num_rmid:		Number of RMIDs available
+>    * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
+> + * @mbm_width:		Width of memory bandwidth monitoring hardware counter
+>    * @fflags:		flags to choose base and info files
+>    */
 
-> +       }
-> +       return true;
-> +}
->  static int __prepend_path(const struct dentry *dentry, const struct mount *mnt,
->                           const struct path *root, struct prepend_buffer *p)
->  {
-> +       int orig_buflen = p->len;
-> +
->         while (dentry != root->dentry || &mnt->mnt != root->mnt) {
->                 const struct dentry *parent = READ_ONCE(dentry->d_parent);
->
-> @@ -97,8 +154,7 @@ static int __prepend_path(const struct dentry *dentry, const struct mount *mnt,
->                         return 3;
->
->                 prefetch(parent);
-> -               if (!prepend_name(p, &dentry->d_name))
-> -                       break;
-> +               prepend_name_with_len(p, &dentry->d_name, orig_buflen);
->                 dentry = parent;
->         }
->         return 0;
-> @@ -263,6 +319,29 @@ char *d_path(const struct path *path, char *buf, int buflen)
->  }
->  EXPORT_SYMBOL(d_path);
->
-> +/**
-> + * d_path_unsafe - fast return the full path of a dentry without taking
-> + * any seqlock/spinlock. This helper is typical for debugging purpose.
+Fixes to membw and mbm_width are also arriving via another patch series 
+(see commit 
+https://lore.kernel.org/lkml/20210614200941.12383-2-james.morse@arm.com/).
+To make it easier to merge that patch and yours could you please inherit 
+the descriptions from there?
 
-purposes
+@mbm_width: Monitor width, to detect and correct for overflow.
+@membw: If the component has bandwidth controls, their properties.
 
-Haven't you got kernel doc validation warnings? Please, describe
-parameters as well.
+Thank you
 
-> + */
-> +char *d_path_unsafe(const struct path *path, char *buf, int buflen,
-> +                   int *prepend_len)
-> +{
-> +       struct path root;
-> +       struct mount *mnt = real_mount(path->mnt);
-> +       DECLARE_BUFFER(b, buf, buflen);
-> +
-> +       rcu_read_lock();
-> +       get_fs_root_rcu(current->fs, &root);
-> +
-> +       prepend(&b, "", 1);
-> +       __prepend_path(path->dentry, mnt, &root, &b);
-> +       rcu_read_unlock();
-> +
-> +       *prepend_len = b.len;
-> +
-> +       return b.buf;
-> +}
-> +
->  /*
->   * Helper function for dentry_operations.d_dname() members
->   */
-> diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-> index 9e23d33bb6f1..ec118b684055 100644
-> --- a/include/linux/dcache.h
-> +++ b/include/linux/dcache.h
-> @@ -301,6 +301,7 @@ char *dynamic_dname(struct dentry *, char *, int, const char *, ...);
->  extern char *__d_path(const struct path *, const struct path *, char *, int);
->  extern char *d_absolute_path(const struct path *, char *, int);
->  extern char *d_path(const struct path *, char *, int);
-> +extern char *d_path_unsafe(const struct path *, char *, int, int*);
->  extern char *dentry_path_raw(const struct dentry *, char *, int);
->  extern char *dentry_path(const struct dentry *, char *, int);
->
-> --
-> 2.17.1
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Reinette
