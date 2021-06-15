@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72563A7774
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C792F3A7731
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbhFOG63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 02:58:29 -0400
-Received: from mail-lf1-f52.google.com ([209.85.167.52]:37522 "EHLO
-        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhFOG61 (ORCPT
+        id S230043AbhFOGkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 02:40:37 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:10070 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229494AbhFOGkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 02:58:27 -0400
-Received: by mail-lf1-f52.google.com with SMTP id p7so25238232lfg.4;
-        Mon, 14 Jun 2021 23:56:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=j00yDKFRObYyA/b4kREgAOqG+iHTmLKQXoPW6ou7r8c=;
-        b=brql9yswnj4RgtT+EtUkZX9C/62dW0WyAgHgkLPhLsC4gmi1Ibk868kQQwfbp4buTJ
-         sxOPcxQSLAiYCaaH4kO9H5L09XBLAiKYjJf6tZ4RAfX0KSW19ArOBxc/wcB5+QoLkHTm
-         Yg+817smYRcICwnTaCc8QZuuGHIpNh9NrIJQY+HkEJ+Ga4f8Fq9jwUNI9Dd8sL9c0D1/
-         sV4pG8Fps36Z5/n4fCe5ouYj6/xxL7X8FiNrG+7b7lGAH+Gv6PBYZiqUX1bpXadKwefp
-         /GFQXIeRCH3YA3qrl54vMBEBoxnyOkDSUJEIPF9biH0v7LBBRZuoG3h4BYlAuAo8x6eZ
-         BnNA==
-X-Gm-Message-State: AOAM533QyGFa+FkXQ1EXhlhIVRXD4Fkj+nl6CQhTcjqzcLwfP2ZU2h8b
-        bYnqQX8C+YJ6El3xrJHZ23zgfse7YD0=
-X-Google-Smtp-Source: ABdhPJxheD2SFrmAJOYzOWf+6x7l+4UvQRWbn30OUFlVYLgjCYZ8DjXXy9RFg4ti/HuZVvkNrMXofg==
-X-Received: by 2002:ac2:43c5:: with SMTP id u5mr15512555lfl.156.1623740181831;
-        Mon, 14 Jun 2021 23:56:21 -0700 (PDT)
-Received: from [10.68.32.192] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id q6sm1707271lfj.88.2021.06.14.23.56.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 23:56:21 -0700 (PDT)
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   Denis Efremov <efremov@linux.com>
-Subject: [GIT PULL] Floppy changes for 5.14
-Message-ID: <2f80871f-a1a5-7c02-52f9-118a0e68d84c@linux.com>
-Date:   Tue, 15 Jun 2021 09:56:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 15 Jun 2021 02:40:35 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G3z8k69SSzZdyb;
+        Tue, 15 Jun 2021 14:35:34 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 14:38:29 +0800
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 14:38:28 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <hca@linux.ibm.com>, <gor@linux.ibm.com>, <borntraeger@de.ibm.com>,
+        <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
+        <vneethv@linux.ibm.com>, <dsterba@suse.com>,
+        <oberpar@linux.ibm.com>
+CC:     <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] s390/sclp: convert list_for_each to entry variant
+Date:   Tue, 15 Jun 2021 14:57:00 +0800
+Message-ID: <1623740220-15846-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
+convert list_for_each() to list_for_each_entry() where
+applicable.
 
-The following changes since commit d07f3b081ee632268786601f55e1334d1f68b997:
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/s390/char/sclp_tty.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-  mark pstore-blk as broken (2021-06-14 08:26:03 -0600)
-
-are available in the Git repository at:
-
-  https://github.com/evdenis/linux-floppy.git tags/floppy-for-5.14
-
-for you to fetch changes up to 2c9bdf6e4771a5966a4f0d6bea45a1c7f38312d7:
-
-  floppy: Fix fall-through warning for Clang (2021-06-15 09:18:55 +0300)
-
-Please pull
-
-----------------------------------------------------------------
-Floppy patches for 5.14
-
-Two oneliners to fix clang warnings:
-- -Wimplicit-fallthrough warning fix from Gustavo A. R. Silva.
-- Redundant assignment warning fix from Jiapeng Chong.
-
-No semantic and behavioural changes.
-
-----------------------------------------------------------------
-Gustavo A. R. Silva (1):
-      floppy: Fix fall-through warning for Clang
-
-Jiapeng Chong (1):
-      floppy: cleanup: remove redundant assignment to nr_sectors
-
- drivers/block/floppy.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+diff --git a/drivers/s390/char/sclp_tty.c b/drivers/s390/char/sclp_tty.c
+index 162127f..6be9de8 100644
+--- a/drivers/s390/char/sclp_tty.c
++++ b/drivers/s390/char/sclp_tty.c
+@@ -284,15 +284,13 @@ static unsigned int
+ sclp_tty_chars_in_buffer(struct tty_struct *tty)
+ {
+ 	unsigned long flags;
+-	struct list_head *l;
+ 	struct sclp_buffer *t;
+ 	unsigned int count = 0;
+ 
+ 	spin_lock_irqsave(&sclp_tty_lock, flags);
+ 	if (sclp_ttybuf != NULL)
+ 		count = sclp_chars_in_buffer(sclp_ttybuf);
+-	list_for_each(l, &sclp_tty_outqueue) {
+-		t = list_entry(l, struct sclp_buffer, list);
++	list_for_each_entry(t, &sclp_tty_outqueue, list) {
+ 		count += sclp_chars_in_buffer(t);
+ 	}
+ 	spin_unlock_irqrestore(&sclp_tty_lock, flags);
+-- 
+2.6.2
 
