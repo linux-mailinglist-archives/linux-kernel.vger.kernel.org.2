@@ -2,89 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A049C3A7C7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5138B3A7C7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhFOKzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
+        id S231777AbhFOKyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231486AbhFOKzI (ORCPT
+        with ESMTP id S231759AbhFOKy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:55:08 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6866C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:53:04 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id b12so8253000plg.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:53:04 -0700 (PDT)
+        Tue, 15 Jun 2021 06:54:26 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F21C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:52:22 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id m9so19859896ybo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:52:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=77abVvtdAdpsdW3TjnJbPbQceAD3ngpH/aIswkPaxEg=;
-        b=Tds1GT4722acJuoNKaEMvAWaA5jVqpeaFseEXRr4CEjsZ+sfaupbI4X1/nZ6k0dr9y
-         OYfv7o4sX3rV3oWwgL5Z6vG3F7Fpf+9kWzj3krKou8Ng04U5gjxRPPjOJ0bivqaNR0p0
-         EQLz5jB2n8Sfqm0XEnOdk7og6nyuMMD905ZP8mZhRwh0H0gezjRmQVQzfkguifvE/IP2
-         1aDMqRsWalb9xqDVyl/g6yjTZE2mf10cSyPLbjBhV4fUqdXtlPrsFFuwO7Kp0wX3DHtu
-         Gq1T8Y4Pf+PhX39zYEeouiXnjg38o8KJpcERHDaVrTwDE5WpL7uVdDrpsvJM5uoW3NMk
-         trgw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=QBxx2ju1GQ6WZbCqnoiarCyC5y6kr9krkWXy/VTWi0LlCI9ekEuKEvK0BJJrcHeS4O
+         uvU+4SZFceaSkajdOWvkWpSy1O4LYdZcsGi/zJIhtHW4eSwgp9SWbWfNpXSQ6RSXfsMp
+         5PcVd6YcRdXXwn5isskpQLcTpYQ9gd5Y9ckhlKn1FVsGo0Gq36UXusIGFOc/jQnS3xGF
+         MUjragD64Oc9rkkdCjMAPaGVLQGK7JZNj6FGS+qnIlij07w8rysFCQsWsutcBj80R3fK
+         vfZahtGPBTwy+8TjdVehZs0nKFgBw8AxsTYvq9oFRU4gNjP5NVFtVFHxaNq0py+/CXb9
+         u9Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=77abVvtdAdpsdW3TjnJbPbQceAD3ngpH/aIswkPaxEg=;
-        b=V2ANYeDRhvi1hVeQhOuzNgotidSERXYBjRXpdacpt+Gw0oub7yQmWUkK1Rv5PuyHsU
-         Ej06zuDn72mqJe5maCR+RXs0Sf+avS3w584EqMxeMz20zfQgNpKTr8qP4+sLD4ZvSv4s
-         U47mnOZxCTwz+tFXsp0g2W6AggRJqWttI8XV9To/Up8tQXrdds7Ms+Z8KxUOXM5fnNo4
-         0IydZ2sA7KQPgnhCcaICoFNhynxMf19HTuGuA2/XrGOUrm69gO/6EqSwr25cZry3eTZ7
-         i4V4WdA61IRkv3q8+HWwG5HAIjbRn84CjdGcotNBtswuQGpt2WIl6IielgrvyES0dssy
-         SieQ==
-X-Gm-Message-State: AOAM532moujeSiFNUoufhGbLxqEiFUoNyNhrO5Ej7HuPDSn7tRlRwEas
-        JfkKLMugluGZyX/Tatakvac9
-X-Google-Smtp-Source: ABdhPJzseDWG1hjfL7mLTTag7psIODvVANSAUopVS9dBKHkwKyJbNHvAanyQPDK+CDEj8Lfxl/ttsg==
-X-Received: by 2002:a17:902:c3d5:b029:100:742f:fce9 with SMTP id j21-20020a170902c3d5b0290100742ffce9mr3438730plj.46.1623754384193;
-        Tue, 15 Jun 2021 03:53:04 -0700 (PDT)
-Received: from localhost ([61.120.150.78])
-        by smtp.gmail.com with ESMTPSA id g6sm15522184pfq.110.2021.06.15.03.53.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 03:53:03 -0700 (PDT)
-From:   Xie Yongji <xieyongji@bytedance.com>
-To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] virtio_scsi: Add validation for residual bytes from response
-Date:   Tue, 15 Jun 2021 18:52:18 +0800
-Message-Id: <20210615105218.214-1-xieyongji@bytedance.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=HGXhLXp4S4mZueFkaTf9G9wy0hJyZrj+oD9D29Z+3063NfIYJldmE5lgqcTicBMI39
+         afq6poJkyHbpk0qkMnVVH3vDJKdg6XRcuCiuur4scGiFTYsqTLO+hp2T6V0kRyglpX1u
+         hMKs0HcW6MauwgNropWr4yS2zqKgT96WZU8+MMiJCUnoHFAD21My9ULLrQNBDnqd/IA0
+         y0VA1DkaDskO6K0uM5Z3qLBG2FlxzfgWjN2NIzBVGIJEXA4qiuj1pGzF2x0WELe9thNV
+         ub0eVzQgufU6bWzeRqmHFI9+YXXSrfMQrTbUvxntxF6yQZtU8AGx/e22q42fDFvcGTBA
+         q60w==
+X-Gm-Message-State: AOAM531GZ/7MmZbsHoxxbA13sbKeGX/frje3vZaS23oegw7kCMYdYOr3
+        uppD/BmtfCBxKxW/lEQNErNgs2+vulgRvYLeonk=
+X-Google-Smtp-Source: ABdhPJxNhPWPVWqx1mM7zcDysmIyh/1rDowb/fg6j9gkCGS0MQw+kjai96obMEg/ndx6Py+85RCKWfw5hOsT+KhEMd8=
+X-Received: by 2002:a25:ca0a:: with SMTP id a10mr14994116ybg.5.1623754341813;
+ Tue, 15 Jun 2021 03:52:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a25:ca07:0:0:0:0:0 with HTTP; Tue, 15 Jun 2021 03:52:21
+ -0700 (PDT)
+Reply-To: victoriandersonoffice@aol.com
+From:   Mary Victoria Anderson <maryandersonoffice104@gmail.com>
+Date:   Tue, 15 Jun 2021 03:52:21 -0700
+Message-ID: <CAEky5pu_kCt3MhQqzysr7OscviEtEMCxjan7rtOjxfgVxvffUw@mail.gmail.com>
+Subject: Good Morning, Did you received my first email ?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This ensures that the residual bytes in response (might come
-from an untrusted device) will not exceed the data buffer length.
-
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/scsi/virtio_scsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
-index b9c86a7e3b97..2badc3c80d73 100644
---- a/drivers/scsi/virtio_scsi.c
-+++ b/drivers/scsi/virtio_scsi.c
-@@ -97,7 +97,7 @@ static inline struct Scsi_Host *virtio_scsi_host(struct virtio_device *vdev)
- static void virtscsi_compute_resid(struct scsi_cmnd *sc, u32 resid)
- {
- 	if (resid)
--		scsi_set_resid(sc, resid);
-+		scsi_set_resid(sc, min(resid, scsi_bufflen(sc)));
- }
- 
- /*
--- 
-2.11.0
 
