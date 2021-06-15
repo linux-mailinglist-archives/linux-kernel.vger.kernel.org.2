@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F783A8084
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B96243A8090
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhFONki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:40:38 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:36708 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231751AbhFONjl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:39:41 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3FBC920B83DE;
-        Tue, 15 Jun 2021 06:37:36 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3FBC920B83DE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623764257;
-        bh=nodB4PIcC8nFUjJXE/cS3JeyunNLJfPdZ+FTM5WBP3o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pUbGylFgj3+J+uh7xGxRVT1Qj+gghypKLZLYKaJlegBjtTjotBcjFgeI10Kj+CGjM
-         fW+seh8raZWTSLPTEZpLC5WNgYdMbBBqtEHpdGHpsd646kJgDPVngkOGnaVEOU0f9u
-         c8aarTUQ4MlJ7ey484Y/rIhfU+XaT7LaB74/ZfEI=
-Date:   Tue, 15 Jun 2021 08:37:34 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org
-Cc:     Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 0/8] tee: Improve support for kexec and kdump
-Message-ID: <20210615133734.GY4910@sequoia>
-References: <20210614223317.999867-1-tyhicks@linux.microsoft.com>
- <CAHUa44ErgoxT3L1W-ouoQwUg1fNC-zagOOgy=KBuGN_pETnYaw@mail.gmail.com>
+        id S231744AbhFONks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:40:48 -0400
+Received: from verein.lst.de ([213.95.11.211]:49069 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231817AbhFONkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:40:09 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 4EF4667373; Tue, 15 Jun 2021 15:37:58 +0200 (CEST)
+Date:   Tue, 15 Jun 2021 15:37:58 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        jxgao@google.com, joonas.lahtinen@linux.intel.com,
+        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        matthew.auld@intel.com, rodrigo.vivi@intel.com,
+        thomas.hellstrom@linux.intel.com
+Subject: Re: [PATCH v10 01/12] swiotlb: Refactor swiotlb init functions
+Message-ID: <20210615133758.GA20389@lst.de>
+References: <20210615132711.553451-1-tientzu@chromium.org> <20210615132711.553451-2-tientzu@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHUa44ErgoxT3L1W-ouoQwUg1fNC-zagOOgy=KBuGN_pETnYaw@mail.gmail.com>
+In-Reply-To: <20210615132711.553451-2-tientzu@chromium.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-15 09:23:25, Jens Wiklander wrote:
-> It looks like we're almost done now. Thanks for your patience to see
-> this through.
-> 
-> I suppose it makes most sense to take this via my tree, but before I
-> can do that I'll need acks from the maintainers of
-> drivers/char/tpm/tpm_ftpm_tee.c ("tpm_ftpm_tee: Free and unregister
-> TEE shared memory during kexec") and
-> drivers/firmware/broadcom/tee_bnxt_fw.c ("firmware: tee_bnxt: Release
-> TEE shm, session, and context during kexec").
+On Tue, Jun 15, 2021 at 09:27:00PM +0800, Claire Chang wrote:
+> Add a new function, swiotlb_init_io_tlb_mem, for the io_tlb_mem struct
+> initialization to make the code reusable.
 
-@Rafał Miłecki, we just need an ack from you for the tee_bnxt_fw.c
-change:
+Looks good,
 
- https://lore.kernel.org/lkml/20210614223317.999867-9-tyhicks@linux.microsoft.com/
-
-Jarkko just gave us an ack for tpm_ftpm_tee.c on the v4 series:
-
- https://lore.kernel.org/lkml/20210615130411.hvpnaxnhimjloiz3@kernel.org/
-
-The patch tpm_ftpm_tee.c patch didn't change from v4 to v5 and the
-underlying concept of not using TEE_SHM_DMA_BUF remained the same so I
-don't think we need a separate v5 ack.
-
-Tyler
-
-> 
-> Cheers,
-> Jens
-> 
+Reviewed-by: Christoph Hellwig <hch@lst.de>
