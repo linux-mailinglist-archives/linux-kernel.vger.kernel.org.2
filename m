@@ -2,621 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22283A8CE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096B13A8CE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhFOXxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 19:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231499AbhFOXxw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:53:52 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D83C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:51:46 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id u11so513765oiv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:51:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sLE+4KuWdjdZeNW3Ge8wUFy7N0024JkI5RTLUyFycfM=;
-        b=hPIdAfa+xdHoNOeaThp5YDfrhnPE1c5eB78tqwMUW4kHmq0hLDgZ1zgBHUbp3f8575
-         q7oM6vLBezohkdTYTq/4n4Wb/HdI/DSXvlsPWU94i85QEe9Zb7rQJfxR++2foQMCgxgd
-         a6Xaf4yyAfP+85QAaCZfehSX+VXKWj+jnGi3/3Z5KWddKgcf+gYUcbpz8UErqLn0g/BQ
-         /p6AoBQlPHu7o0We0+FUox70s9MudnTOMBdWFVfhiNEQuAZMl3efbg75zMmMUZ69eQ+u
-         1MYFVobeyuyH05XSEuA0147ihaUQyoT5Dcy9eCt3O+izZT5bKDVFtcBR/zSpllYBzYMc
-         A2tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sLE+4KuWdjdZeNW3Ge8wUFy7N0024JkI5RTLUyFycfM=;
-        b=MD3TPu8nnN1mHWZ+JJDUH8cIHzXgUgkvF0+I2WvIS+QTwfSJVP6Me+yRXZcTgcFXac
-         AY3qT5rMZ861KmMVD9Z6RnwUoyie6vAxY+4aB8dxcIu75WF3BbJbBjeTOwnbVVkjJdys
-         6W7J1EQOOT1352jX4G4GXzIILQHJozqwB9R/Bla72djbnr/glrKtAmb7lqBan/6r4Rxl
-         7tEkDy/3V+Jk1afQ7OgFJnXwHEVwdnF3GAKszzsfA0y4MDSCwnwlfQDb/Id+o7nmlTkC
-         td8BNLkzs67bo8kUnkcYqEfTHxcQ3MKsfMgTQs0XfP0cZ9NHSM0HpXyJl+lXtYwlmnHu
-         FvrQ==
-X-Gm-Message-State: AOAM5317gaAZ0EZQaIvtB9wWDp0eCOEKclFGMc9VqwK74Med97j4kFZs
-        9ViQj+7odtiKba3FxcQIb4BJYA==
-X-Google-Smtp-Source: ABdhPJzxqRvD1ysPAPIqicKnDn1NEbcmJ0L20LCW/G5K2pkfl/1iLf7GWdjeVqitIiCTS4WM6C1dwA==
-X-Received: by 2002:aca:4c5:: with SMTP id 188mr1037328oie.95.1623801106117;
-        Tue, 15 Jun 2021 16:51:46 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c205sm102053oib.20.2021.06.15.16.51.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 16:51:45 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 18:51:43 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>, vkoul@kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        id S231672AbhFOXye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 19:54:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:44021 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231189AbhFOXyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 19:54:32 -0400
+IronPort-SDR: eSI/6LUD/1je9I9fySIm6y5qIpgUQK9FyZqhqaUjlhQcoyKp5Y7oOXC8PnHQ/P5QDTrAbVjp7e
+ utFMakVdIi+A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="193207080"
+X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
+   d="scan'208";a="193207080"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 16:52:27 -0700
+IronPort-SDR: mmLZYrPa22/oF5BpWdy14ofruaz+xU4EYx9JBuiMJRQQW43bLfOuEGITJsDDJBGNO9pNRpvzFs
+ uHBIYlqvRXfw==
+X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
+   d="scan'208";a="478881678"
+Received: from reschenk-mobl1.amr.corp.intel.com ([10.255.230.223])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 16:52:25 -0700
+Date:   Tue, 15 Jun 2021 16:52:25 -0700 (PDT)
+From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+cc:     matthieu.baerts@tessares.net, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, mptcp@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: sm8250: Add DMA to I2C/SPI
-Message-ID: <YMk9D7hR9+uiDotz@builder.lan>
-References: <20210615142249.170512-1-konrad.dybcio@somainline.org>
+Subject: Re: [PATCH] mptcp: Remove redundant assignment to remaining
+In-Reply-To: <1623754538-85616-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Message-ID: <66162447-1f70-a6b9-f18a-179a54f8e97@linux.intel.com>
+References: <1623754538-85616-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615142249.170512-1-konrad.dybcio@somainline.org>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15 Jun 09:22 CDT 2021, Konrad Dybcio wrote:
 
-> Add dma properties to I2C and SPI nodes to make sure DMA transfers can go
-> through. While at it, fix up the property order in SPI nodes to make #address-
-> and #size-cells go after all the meaningful properties.
-> 
+On Tue, 15 Jun 2021, Jiapeng Chong wrote:
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-
-But I'll have to wait until Vinod has merged the compatible addition in
-the driver - or given me an Ack to include the pair here.
-
-Thanks,
-Bjorn
-
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Variable remaining is assigned, but this value is never read as it is
+> not used later on, hence it is a redundant assignment and can be
+> removed.
+>
+> Clean up the following clang-analyzer warning:
+>
+> net/mptcp/options.c:779:3: warning: Value stored to 'remaining' is never
+> read [clang-analyzer-deadcode.DeadStores].
+>
+> net/mptcp/options.c:547:3: warning: Value stored to 'remaining' is never
+> read [clang-analyzer-deadcode.DeadStores].
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 > ---
-> Depends on this GPI DMA series:
-> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=500245
-> 
->  arch/arm64/boot/dts/qcom/sm8250.dtsi | 200 +++++++++++++++++++++------
->  1 file changed, 160 insertions(+), 40 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> index 806973d6ba55..1e8ad0017f58 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> @@ -561,6 +561,9 @@ i2c14: i2c@880000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c14_default>;
->  				interrupts = <GIC_SPI 373 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma2 0 0 QCOM_GPI_I2C>,
-> +				       <&gpi_dma2 1 0 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -572,10 +575,13 @@ spi14: spi@880000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP2_S0_CLK>;
->  				interrupts = <GIC_SPI 373 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma2 0 0 QCOM_GPI_SPI>,
-> +				       <&gpi_dma2 1 0 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -587,6 +593,9 @@ i2c15: i2c@884000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c15_default>;
->  				interrupts = <GIC_SPI 583 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma2 0 1 QCOM_GPI_I2C>,
-> +				       <&gpi_dma2 1 1 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -598,10 +607,13 @@ spi15: spi@884000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP2_S1_CLK>;
->  				interrupts = <GIC_SPI 583 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma2 0 1 QCOM_GPI_SPI>,
-> +				       <&gpi_dma2 1 1 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -613,6 +625,9 @@ i2c16: i2c@888000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c16_default>;
->  				interrupts = <GIC_SPI 584 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma2 0 2 QCOM_GPI_I2C>,
-> +				       <&gpi_dma2 1 2 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -624,10 +639,13 @@ spi16: spi@888000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP2_S2_CLK>;
->  				interrupts = <GIC_SPI 584 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma2 0 2 QCOM_GPI_SPI>,
-> +				       <&gpi_dma2 1 2 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -639,6 +657,9 @@ i2c17: i2c@88c000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c17_default>;
->  				interrupts = <GIC_SPI 585 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma2 0 3 QCOM_GPI_I2C>,
-> +				       <&gpi_dma2 1 3 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -650,10 +671,13 @@ spi17: spi@88c000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP2_S3_CLK>;
->  				interrupts = <GIC_SPI 585 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma2 0 3 QCOM_GPI_SPI>,
-> +				       <&gpi_dma2 1 3 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -678,6 +702,9 @@ i2c18: i2c@890000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c18_default>;
->  				interrupts = <GIC_SPI 586 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma2 0 4 QCOM_GPI_I2C>,
-> +				       <&gpi_dma2 1 4 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -689,10 +716,13 @@ spi18: spi@890000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP2_S4_CLK>;
->  				interrupts = <GIC_SPI 586 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma2 0 4 QCOM_GPI_SPI>,
-> +				       <&gpi_dma2 1 4 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -717,6 +747,9 @@ i2c19: i2c@894000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c19_default>;
->  				interrupts = <GIC_SPI 587 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma2 0 5 QCOM_GPI_I2C>,
-> +				       <&gpi_dma2 1 5 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -728,10 +761,13 @@ spi19: spi@894000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP2_S5_CLK>;
->  				interrupts = <GIC_SPI 587 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma2 0 5 QCOM_GPI_SPI>,
-> +				       <&gpi_dma2 1 5 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  		};
-> @@ -779,6 +815,9 @@ i2c0: i2c@980000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c0_default>;
->  				interrupts = <GIC_SPI 601 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma0 0 0 QCOM_GPI_I2C>,
-> +				       <&gpi_dma0 1 0 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -790,10 +829,13 @@ spi0: spi@980000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP0_S0_CLK>;
->  				interrupts = <GIC_SPI 601 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma0 0 0 QCOM_GPI_SPI>,
-> +				       <&gpi_dma0 1 0 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -805,6 +847,9 @@ i2c1: i2c@984000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c1_default>;
->  				interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma0 0 1 QCOM_GPI_I2C>,
-> +				       <&gpi_dma0 1 1 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -816,10 +861,13 @@ spi1: spi@984000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP0_S1_CLK>;
->  				interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma0 0 1 QCOM_GPI_SPI>,
-> +				       <&gpi_dma0 1 1 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -831,6 +879,9 @@ i2c2: i2c@988000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c2_default>;
->  				interrupts = <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma0 0 2 QCOM_GPI_I2C>,
-> +				       <&gpi_dma0 1 2 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -842,10 +893,13 @@ spi2: spi@988000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP0_S2_CLK>;
->  				interrupts = <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma0 0 2 QCOM_GPI_SPI>,
-> +				       <&gpi_dma0 1 2 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -870,6 +924,9 @@ i2c3: i2c@98c000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c3_default>;
->  				interrupts = <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma0 0 3 QCOM_GPI_I2C>,
-> +				       <&gpi_dma0 1 3 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -881,10 +938,13 @@ spi3: spi@98c000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP0_S3_CLK>;
->  				interrupts = <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma0 0 3 QCOM_GPI_SPI>,
-> +				       <&gpi_dma0 1 3 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -896,6 +956,9 @@ i2c4: i2c@990000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c4_default>;
->  				interrupts = <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma0 0 4 QCOM_GPI_I2C>,
-> +				       <&gpi_dma0 1 4 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -907,10 +970,13 @@ spi4: spi@990000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP0_S4_CLK>;
->  				interrupts = <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma0 0 4 QCOM_GPI_SPI>,
-> +				       <&gpi_dma0 1 4 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -922,6 +988,9 @@ i2c5: i2c@994000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c5_default>;
->  				interrupts = <GIC_SPI 606 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma0 0 5 QCOM_GPI_I2C>,
-> +				       <&gpi_dma0 1 5 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -933,10 +1002,13 @@ spi5: spi@994000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP0_S5_CLK>;
->  				interrupts = <GIC_SPI 606 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma0 0 5 QCOM_GPI_SPI>,
-> +				       <&gpi_dma0 1 5 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -948,6 +1020,9 @@ i2c6: i2c@998000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c6_default>;
->  				interrupts = <GIC_SPI 607 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma0 0 6 QCOM_GPI_I2C>,
-> +				       <&gpi_dma0 1 6 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -959,10 +1034,13 @@ spi6: spi@998000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP0_S6_CLK>;
->  				interrupts = <GIC_SPI 607 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma0 0 6 QCOM_GPI_SPI>,
-> +				       <&gpi_dma0 1 6 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -987,6 +1065,9 @@ i2c7: i2c@99c000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c7_default>;
->  				interrupts = <GIC_SPI 608 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma0 0 7 QCOM_GPI_I2C>,
-> +				       <&gpi_dma0 1 7 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -998,10 +1079,13 @@ spi7: spi@99c000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP0_S7_CLK>;
->  				interrupts = <GIC_SPI 608 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma0 0 7 QCOM_GPI_SPI>,
-> +				       <&gpi_dma0 1 7 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  		};
-> @@ -1046,6 +1130,9 @@ i2c8: i2c@a80000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c8_default>;
->  				interrupts = <GIC_SPI 353 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma1 0 0 QCOM_GPI_I2C>,
-> +				       <&gpi_dma1 1 0 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -1057,10 +1144,13 @@ spi8: spi@a80000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP1_S0_CLK>;
->  				interrupts = <GIC_SPI 353 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma1 0 0 QCOM_GPI_SPI>,
-> +				       <&gpi_dma1 1 0 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -1072,6 +1162,9 @@ i2c9: i2c@a84000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c9_default>;
->  				interrupts = <GIC_SPI 354 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma1 0 1 QCOM_GPI_I2C>,
-> +				       <&gpi_dma1 1 1 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -1083,10 +1176,13 @@ spi9: spi@a84000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP1_S1_CLK>;
->  				interrupts = <GIC_SPI 354 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma1 0 1 QCOM_GPI_SPI>,
-> +				       <&gpi_dma1 1 1 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -1098,6 +1194,9 @@ i2c10: i2c@a88000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c10_default>;
->  				interrupts = <GIC_SPI 355 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma1 0 2 QCOM_GPI_I2C>,
-> +				       <&gpi_dma1 1 2 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -1109,10 +1208,13 @@ spi10: spi@a88000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP1_S2_CLK>;
->  				interrupts = <GIC_SPI 355 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma1 0 2 QCOM_GPI_SPI>,
-> +				       <&gpi_dma1 1 2 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -1124,6 +1226,9 @@ i2c11: i2c@a8c000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c11_default>;
->  				interrupts = <GIC_SPI 356 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma1 0 3 QCOM_GPI_I2C>,
-> +				       <&gpi_dma1 1 3 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -1135,10 +1240,13 @@ spi11: spi@a8c000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP1_S3_CLK>;
->  				interrupts = <GIC_SPI 356 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma1 0 3 QCOM_GPI_SPI>,
-> +				       <&gpi_dma1 1 3 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -1150,6 +1258,9 @@ i2c12: i2c@a90000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c12_default>;
->  				interrupts = <GIC_SPI 357 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma1 0 4 QCOM_GPI_I2C>,
-> +				       <&gpi_dma1 1 4 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -1161,10 +1272,13 @@ spi12: spi@a90000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP1_S4_CLK>;
->  				interrupts = <GIC_SPI 357 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma1 0 4 QCOM_GPI_SPI>,
-> +				       <&gpi_dma1 1 4 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -1189,6 +1303,9 @@ i2c13: i2c@a94000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&qup_i2c13_default>;
->  				interrupts = <GIC_SPI 358 IRQ_TYPE_LEVEL_HIGH>;
-> +				dmas = <&gpi_dma1 0 5 QCOM_GPI_I2C>,
-> +				       <&gpi_dma1 1 5 QCOM_GPI_I2C>;
-> +				dma-names = "tx", "rx";
->  				#address-cells = <1>;
->  				#size-cells = <0>;
->  				status = "disabled";
-> @@ -1200,10 +1317,13 @@ spi13: spi@a94000 {
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP1_S5_CLK>;
->  				interrupts = <GIC_SPI 358 IRQ_TYPE_LEVEL_HIGH>;
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> +				dmas = <&gpi_dma1 0 5 QCOM_GPI_SPI>,
-> +				       <&gpi_dma1 1 5 QCOM_GPI_SPI>;
-> +				dma-names = "tx", "rx";
->  				power-domains = <&rpmhpd SM8250_CX>;
->  				operating-points-v2 = <&qup_opp_table>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
->  				status = "disabled";
->  			};
->  		};
+> net/mptcp/options.c | 2 --
+> 1 file changed, 2 deletions(-)
+>
+> diff --git a/net/mptcp/options.c b/net/mptcp/options.c
+> index 9b263f2..f99272f 100644
+> --- a/net/mptcp/options.c
+> +++ b/net/mptcp/options.c
+> @@ -544,7 +544,6 @@ static bool mptcp_established_options_dss(struct sock *sk, struct sk_buff *skb,
+>
+> 		map_size = TCPOLEN_MPTCP_DSS_BASE + TCPOLEN_MPTCP_DSS_MAP64;
+>
+> -		remaining -= map_size;
+
+Hi Jiapeng, thank you for your MPTCP patch!
+
+This change in mptcp_established_options_dss() removes the only reference 
+to 'remaining' in that function, so the variable should also be removed 
+from the function parameters. It also appears to be unused in 
+mptcp_established_options_mp().
+
+I'd like to handle this patch through the MPTCP tree so we can manage 
+conflicts with other in-progress patches. This patch does apply to 
+net-next cleanly but not our subsystem branch. You can find our git repo 
+at https://github.com/multipath-tcp/mptcp_net-next, and develop patches 
+using the 'export' branch. If you email a v2 patch to 
+mptcp@lists.linux.dev (no need to cc other lists), Matthieu and I can make 
+sure it is integrated in the MPTCP repository and handle sending it to 
+netdev along with other patches from the MPTCP community.
+
+> 		dss_size = map_size;
+> 		if (mpext)
+> 			opts->ext_copy = *mpext;
+> @@ -776,7 +775,6 @@ bool mptcp_established_options(struct sock *sk, struct sk_buff *skb,
+>
+> 	if (mptcp_established_options_mp_prio(sk, &opt_size, remaining, opts)) {
+> 		*size += opt_size;
+> -		remaining -= opt_size;
+> 		ret = true;
+> 	}
+>
 > -- 
-> 2.32.0
-> 
+> 1.8.3.1
+
+Best regards,
+
+--
+Mat Martineau
+Intel
