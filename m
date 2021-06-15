@@ -2,155 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E843A8A96
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C0C3A8A9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhFOVIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44824 "EHLO
+        id S231258AbhFOVIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhFOVID (ORCPT
+        with ESMTP id S231210AbhFOVIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:08:03 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3490EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:05:58 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id m18so130649wrv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:05:58 -0700 (PDT)
+        Tue, 15 Jun 2021 17:08:50 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6461DC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:06:45 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id x196so12179oif.10
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=2Wx+tcZvz91pXnw6InT/qEG2moWHuT1szhDanRgENzU=;
-        b=q7X5wN73PsE/0wdrcnvqy58p30gqci/187A+7D6QCS3Ifuwa4NVOtbQc94lwbFC/MM
-         up16BfbxkdIXi+GJ70F8/Ql6y9eHBgjDyD+hj51V6m9g7tVCe80Tb2Jh7xHG7+fWaX8O
-         8iS8RaXyQXuU3VQG97xseJ0yKbnXY/Dllbl6ip7mvzfACgYtrpRZi5vyrxAAhHlhIoZz
-         ZmPWXgV/w4jWoNL09L0JShha+sojoCLO5rNzlgBvGpmt3bAJfehcaj7cRpUvyQ2rd1pc
-         jI8ytb0VgQUfkqivNyx+BzZtz/O4aI5B/LMEKwBCkqIpC90A3hL4/Z5gvxPWLIDG2mmu
-         OVuA==
+        bh=gXO9eB5fahpZxebB81kgmu3FiItJh+tZXgWUfrGSFSs=;
+        b=D7EI5bwvKftbjo/TlMed7v9USmCw6INQJZSE4p6MplPtrvTmI4mc+EX9WB2nilQrwh
+         HQkzxANoZCBQjKs1Q7FJBdamLAyw3H9cngxOLoiDqaWaBICwv1safhs+ObTdZSeqI8xt
+         wEIzWTFz7JESbyCXxarfYr9dxVuNmtmH9+IdijDXsDZx9HME8Gwvku/c4udoS7kyGFj9
+         zN1EHLZVaO3Wb7Ap7/9s1IbkfGRVJ8IbEVzXrwjVK8quztUOtObUBVoijG6oUdiamJUu
+         NdDrHvMYvbGPXTkDr2LWTeFbOLlQsdgDvBOJYdZbaq9TbJuwjbnLALNnusi7+Y46ozgy
+         78xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=2Wx+tcZvz91pXnw6InT/qEG2moWHuT1szhDanRgENzU=;
-        b=l3hcuIkALP6Ws1mhsqTArdAkynfdCFA2ADeHjK68kN45iiSTfd/1ueEVFl6iZdCpHF
-         KqGqdrN6/dO9jDTED+SVOWgAnNUDHZ/fz9lmaXVeuWCe17zw2JahI06zdgE6OSCebBvQ
-         jzKx/DSOQjRfgIOpr5Gkwe+Lf8iA5FsUk/L9f+zMH+bTbYgreviQ3rkQj6dsNTNExIoV
-         CZxKfJIDZupPxa3iVAcm/Rny2QboiRuuMQYLAQyDiWmzHt5CSX2b0Eg77pm8tIK9Q68T
-         jkM+g+wX4Q8DbZS/xoyx973i57iiEPJJvtnZUKIkNhpsJo/Jg67RtJRg7/S06phwrf5d
-         sEcg==
-X-Gm-Message-State: AOAM533Z444/udvfrT0/W2ntzKUujeMP3KgOLX6s7DCy6QZE1Av+l1lF
-        YmtJm8hhT0LWEW9DEf89Yt8TKg==
-X-Google-Smtp-Source: ABdhPJxymK3GdbVzZZzHAQdd8YBUWaMFNr+5eWNHc7AD0J1uHlr7WKKeulRwm2UG/M3C+B+2i5APkA==
-X-Received: by 2002:adf:ea4c:: with SMTP id j12mr1226600wrn.64.1623791156825;
-        Tue, 15 Jun 2021 14:05:56 -0700 (PDT)
-Received: from KernelVM (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
-        by smtp.gmail.com with ESMTPSA id n7sm2943744wmq.37.2021.06.15.14.05.56
+        bh=gXO9eB5fahpZxebB81kgmu3FiItJh+tZXgWUfrGSFSs=;
+        b=FLFiPy3ydmn7t02NYw0gxLYJ9twx3G8I8ngIZAWRTw21kbszeEarDKH+3eghJfX3Fb
+         Qy4ZBUilH7GrHMrtsqzy1tGWjX4Dg8MDeFLG4h4iSg9ZxsgS0W3MLrfwIpQnuFmLYsxl
+         XvJuWiiem1XhBRYd1vzJU+T8aYaoMtvCfMD90RNYSlvVa1MT+VTMrgDv9g3qdo7fWpP2
+         0zfb0BspHsdFLJC14cmmsmHqFhEeuKsBIOHgWBm7n7RbxP3YwTHZmsEKmQrM2xVOL+El
+         QxPzV3pqcVPq0QcC0Y+NfUYponouDLsCGcDNewyY86nBFfVbrnB/H5iQ73QxQ3uL+t63
+         7TSw==
+X-Gm-Message-State: AOAM531YwO7OfQMpyK5DS4pFCILchQCOw2b87brkpHFy6wOpjzugIjr1
+        BR5GEH26HmddsJkuJY5+0xS/gw==
+X-Google-Smtp-Source: ABdhPJxG/vVTBa+LwuR6IRQ2qq3ncRTBPUo0AQ3qeK+b2EMjEG2uK3yDTjNwzvrr2vu9LIAjoLU69g==
+X-Received: by 2002:a54:4609:: with SMTP id p9mr697812oip.107.1623791204795;
+        Tue, 15 Jun 2021 14:06:44 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id q11sm13844ooc.27.2021.06.15.14.06.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 14:05:56 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 22:05:54 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH 00/28] staging: rtl8188eu: remove DBG_88E callers and
- macro
-Message-ID: <YMkWMsE/m99cM47/@KernelVM>
-References: <20210615001507.1171-1-phil@philpotter.co.uk>
- <YMiVtgVTGQSb+iC2@kroah.com>
+        Tue, 15 Jun 2021 14:06:44 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 16:06:42 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH v2 05/10] regulator: qcom-rpmh: Cleanup terminator line
+ commas
+Message-ID: <YMkWYkrwHilEX0ck@builder.lan>
+References: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
+ <20210615074543.26700-6-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMiVtgVTGQSb+iC2@kroah.com>
+In-Reply-To: <20210615074543.26700-6-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 01:57:42PM +0200, Greg KH wrote:
-> On Tue, Jun 15, 2021 at 01:14:39AM +0100, Phillip Potter wrote:
-> > This patch series removes DBG_88E calls from all places in the driver,
-> > and then removes the DBG_88E macro definition itself. It also takes two
-> > prior patches where I convered DBG_88E calls into netdev_dbg calls, and
-> > removes these calls too.
-> > 
-> > It cleans up subsuently unused local variables along the way, removes an
-> > unused static function too, and also contains a reissue of my previous
-> > patch to remove core/rtw_debug.c which is entirely unused by the driver
-> > and thus is dead code.
-> > 
-> > Phillip Potter (28):
-> >   staging: rtl8188eu: remove all DBG_88E calls from core/rtw_efuse.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from core/rtw_xmit.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from core/rtw_mlme_ext.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from core/rtw_wlan_util.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from core/rtw_ap.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from core/rtw_pwrctrl.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from core/rtw_ieee80211.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from core/rtw_security.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from core/rtw_ioctl_set.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from core/rtw_mlme.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from os_dep/ioctl_linux.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from os_dep/usb_intf.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from os_dep/os_intfs.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from os_dep/mlme_linux.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from os_dep/xmit_linux.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from os_dep/rtw_android.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from hal/hal_intf.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from hal/rtl8188e_cmd.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from hal/pwrseqcmd.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from
-> >     hal/rtl8188e_hal_init.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from hal/rtl8188e_xmit.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from hal/usb_halinit.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from hal/rtl8188eu_recv.c
-> >   staging: rtl8188eu: remove all DBG_88E calls from hal/rtl8188eu_xmit.c
-> >   staging: rtl8188eu: remove converted netdev_dbg calls from
-> >     core/rtw_recv.c
-> >   staging: rtl8188eu: remove converted netdev_dbg calls from
-> >     core/rtw_sta_mgt.c
-> >   staging: rtl8188eu: remove core/rtw_debug.c
-> >   staging: rtl8188eu: remove DBG_88E macro definition
-> > 
-> >  drivers/staging/rtl8188eu/Makefile            |   1 -
-> >  drivers/staging/rtl8188eu/core/rtw_ap.c       |  78 +-----
-> >  drivers/staging/rtl8188eu/core/rtw_debug.c    | 187 -------------
-> >  drivers/staging/rtl8188eu/core/rtw_efuse.c    |  15 +-
-> >  .../staging/rtl8188eu/core/rtw_ieee80211.c    |  38 +--
-> >  .../staging/rtl8188eu/core/rtw_ioctl_set.c    |   8 -
-> >  drivers/staging/rtl8188eu/core/rtw_mlme.c     |  54 +---
-> >  drivers/staging/rtl8188eu/core/rtw_mlme_ext.c | 262 ++----------------
-> >  drivers/staging/rtl8188eu/core/rtw_pwrctrl.c  |  40 +--
-> >  drivers/staging/rtl8188eu/core/rtw_recv.c     |  66 +----
-> >  drivers/staging/rtl8188eu/core/rtw_security.c |   2 -
-> >  drivers/staging/rtl8188eu/core/rtw_sta_mgt.c  |   9 -
-> >  .../staging/rtl8188eu/core/rtw_wlan_util.c    |  80 ++----
-> >  drivers/staging/rtl8188eu/core/rtw_xmit.c     |  40 +--
-> >  drivers/staging/rtl8188eu/hal/hal_intf.c      |   3 -
-> >  drivers/staging/rtl8188eu/hal/pwrseqcmd.c     |   4 +-
-> >  drivers/staging/rtl8188eu/hal/rtl8188e_cmd.c  |  42 +--
-> >  .../staging/rtl8188eu/hal/rtl8188e_hal_init.c |  45 +--
-> >  drivers/staging/rtl8188eu/hal/rtl8188e_xmit.c |  15 -
-> >  .../staging/rtl8188eu/hal/rtl8188eu_recv.c    |   8 -
-> >  .../staging/rtl8188eu/hal/rtl8188eu_xmit.c    |   5 -
-> >  drivers/staging/rtl8188eu/hal/usb_halinit.c   |  51 +---
-> >  drivers/staging/rtl8188eu/include/rtw_debug.h |  31 ---
-> >  .../staging/rtl8188eu/os_dep/ioctl_linux.c    | 144 +---------
-> >  drivers/staging/rtl8188eu/os_dep/mlme_linux.c |   4 -
-> >  drivers/staging/rtl8188eu/os_dep/os_intfs.c   |  26 --
-> >  .../staging/rtl8188eu/os_dep/rtw_android.c    |  15 +-
-> >  drivers/staging/rtl8188eu/os_dep/usb_intf.c   |   1 -
-> >  drivers/staging/rtl8188eu/os_dep/xmit_linux.c |   8 +-
-> >  29 files changed, 86 insertions(+), 1196 deletions(-)
-> >  delete mode 100644 drivers/staging/rtl8188eu/core/rtw_debug.c
-> 
-> Deleting that many lines of code is always nice, thanks for doing this,
-> now all applied.
-> 
-> greg k-h
+On Tue 15 Jun 02:45 CDT 2021, Bhupesh Sharma wrote:
 
-Dear Greg,
+> Cleanup the qcom-rpmh regulator driver:
+> - remove comma(s) at the end of the terminator line.
+> - add missing terminator in instances of
+>   pm7325x_vreg_data[] arrays.
 
-Thanks for taking the patches, happy to help.
+This second part needs a:
+
+Fixes: c4e5aa3dbee5 ("regulator: qcom-rpmh: Add PM7325/PMR735A regulator support")
+
+So it's up to Mark if he wants both parts in a single patch.
+
+> 
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Andy Gross <agross@kernel.org>
+
+I don't think these Cc tags serves a purpose here. The patch itself
+looks good though
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
 Regards,
-Phil
+Bjorn
+
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>  drivers/regulator/qcom-rpmh-regulator.c | 26 +++++++++++++------------
+>  1 file changed, 14 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
+> index 22fec370fa61..af41a517da99 100644
+> --- a/drivers/regulator/qcom-rpmh-regulator.c
+> +++ b/drivers/regulator/qcom-rpmh-regulator.c
+> @@ -811,12 +811,12 @@ static const struct rpmh_vreg_init_data pm8998_vreg_data[] = {
+>  	RPMH_VREG("ldo28",  "ldo%s28", &pmic4_pldo,      "vdd-l16-l28"),
+>  	RPMH_VREG("lvs1",   "vs%s1",   &pmic4_lvs,       "vin-lvs-1-2"),
+>  	RPMH_VREG("lvs2",   "vs%s2",   &pmic4_lvs,       "vin-lvs-1-2"),
+> -	{},
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pmi8998_vreg_data[] = {
+>  	RPMH_VREG("bob",    "bob%s1",  &pmic4_bob,       "vdd-bob"),
+> -	{},
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pm8005_vreg_data[] = {
+> @@ -824,7 +824,7 @@ static const struct rpmh_vreg_init_data pm8005_vreg_data[] = {
+>  	RPMH_VREG("smps2",  "smp%s2",  &pmic4_ftsmps426, "vdd-s2"),
+>  	RPMH_VREG("smps3",  "smp%s3",  &pmic4_ftsmps426, "vdd-s3"),
+>  	RPMH_VREG("smps4",  "smp%s4",  &pmic4_ftsmps426, "vdd-s4"),
+> -	{},
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pm8150_vreg_data[] = {
+> @@ -856,7 +856,7 @@ static const struct rpmh_vreg_init_data pm8150_vreg_data[] = {
+>  	RPMH_VREG("ldo16",  "ldo%s16", &pmic5_pldo,      "vdd-l13-l16-l17"),
+>  	RPMH_VREG("ldo17",  "ldo%s17", &pmic5_pldo,      "vdd-l13-l16-l17"),
+>  	RPMH_VREG("ldo18",  "ldo%s18", &pmic5_nldo,      "vdd-l3-l4-l5-l18"),
+> -	{},
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pm8150l_vreg_data[] = {
+> @@ -880,7 +880,7 @@ static const struct rpmh_vreg_init_data pm8150l_vreg_data[] = {
+>  	RPMH_VREG("ldo10",  "ldo%s10", &pmic5_pldo,      "vdd-l9-l10"),
+>  	RPMH_VREG("ldo11",  "ldo%s11", &pmic5_pldo,      "vdd-l7-l11"),
+>  	RPMH_VREG("bob",    "bob%s1",  &pmic5_bob,       "vdd-bob"),
+> -	{},
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pm8350_vreg_data[] = {
+> @@ -906,7 +906,7 @@ static const struct rpmh_vreg_init_data pm8350_vreg_data[] = {
+>  	RPMH_VREG("ldo8",   "ldo%s8",  &pmic5_nldo,      "vdd-l8"),
+>  	RPMH_VREG("ldo9",   "ldo%s9",  &pmic5_nldo,      "vdd-l6-l9-l10"),
+>  	RPMH_VREG("ldo10",  "ldo%s10", &pmic5_nldo,      "vdd-l6-l9-l10"),
+> -	{},
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pm8350c_vreg_data[] = {
+> @@ -934,7 +934,7 @@ static const struct rpmh_vreg_init_data pm8350c_vreg_data[] = {
+>  	RPMH_VREG("ldo12",  "ldo%s12", &pmic5_pldo_lv,   "vdd-l1-l12"),
+>  	RPMH_VREG("ldo13",  "ldo%s13", &pmic5_pldo,      "vdd-l3-l4-l5-l7-l13"),
+>  	RPMH_VREG("bob",    "bob%s1",  &pmic5_bob,       "vdd-bob"),
+> -	{},
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pm8009_vreg_data[] = {
+> @@ -947,7 +947,7 @@ static const struct rpmh_vreg_init_data pm8009_vreg_data[] = {
+>  	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_pldo,      "vdd-l5-l6"),
+>  	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_pldo,      "vdd-l5-l6"),
+>  	RPMH_VREG("ldo7",   "ldo%s7",  &pmic5_pldo_lv,   "vdd-l7"),
+> -	{},
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pm8009_1_vreg_data[] = {
+> @@ -960,7 +960,7 @@ static const struct rpmh_vreg_init_data pm8009_1_vreg_data[] = {
+>  	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_pldo,      "vdd-l5-l6"),
+>  	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_pldo,      "vdd-l5-l6"),
+>  	RPMH_VREG("ldo7",   "ldo%s6",  &pmic5_pldo_lv,   "vdd-l7"),
+> -	{},
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pm6150_vreg_data[] = {
+> @@ -988,7 +988,7 @@ static const struct rpmh_vreg_init_data pm6150_vreg_data[] = {
+>  	RPMH_VREG("ldo17",  "ldo%s17", &pmic5_pldo,   "vdd-l5-l16-l17-l18-l19"),
+>  	RPMH_VREG("ldo18",  "ldo%s18", &pmic5_pldo,   "vdd-l5-l16-l17-l18-l19"),
+>  	RPMH_VREG("ldo19",  "ldo%s19", &pmic5_pldo,   "vdd-l5-l16-l17-l18-l19"),
+> -	{},
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pm6150l_vreg_data[] = {
+> @@ -1012,7 +1012,7 @@ static const struct rpmh_vreg_init_data pm6150l_vreg_data[] = {
+>  	RPMH_VREG("ldo10",  "ldo%s10", &pmic5_pldo,      "vdd-l9-l10"),
+>  	RPMH_VREG("ldo11",  "ldo%s11", &pmic5_pldo,      "vdd-l7-l11"),
+>  	RPMH_VREG("bob",    "bob%s1",  &pmic5_bob,       "vdd-bob"),
+> -	{},
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pmx55_vreg_data[] = {
+> @@ -1039,7 +1039,7 @@ static const struct rpmh_vreg_init_data pmx55_vreg_data[] = {
+>  	RPMH_VREG("ldo14",   "ldo%s14",   &pmic5_nldo,      "vdd-l14"),
+>  	RPMH_VREG("ldo15",   "ldo%s15",   &pmic5_nldo,      "vdd-l15"),
+>  	RPMH_VREG("ldo16",   "ldo%s16",   &pmic5_pldo,      "vdd-l16"),
+> -	{},
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pm7325_vreg_data[] = {
+> @@ -1070,6 +1070,7 @@ static const struct rpmh_vreg_init_data pm7325_vreg_data[] = {
+>  	RPMH_VREG("ldo17",  "ldo%s17", &pmic5_pldo_lv,   "vdd-l11-l17-l18-l19"),
+>  	RPMH_VREG("ldo18",  "ldo%s18", &pmic5_pldo_lv,   "vdd-l11-l17-l18-l19"),
+>  	RPMH_VREG("ldo19",  "ldo%s19", &pmic5_pldo_lv,   "vdd-l11-l17-l18-l19"),
+> +	{}
+>  };
+>  
+>  static const struct rpmh_vreg_init_data pmr735a_vreg_data[] = {
+> @@ -1083,6 +1084,7 @@ static const struct rpmh_vreg_init_data pmr735a_vreg_data[] = {
+>  	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_nldo,      "vdd-l5-l6"),
+>  	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_nldo,      "vdd-l5-l6"),
+>  	RPMH_VREG("ldo7",   "ldo%s7",  &pmic5_pldo,      "vdd-l7-bob"),
+> +	{}
+>  };
+>  
+>  static int rpmh_regulator_probe(struct platform_device *pdev)
+> -- 
+> 2.31.1
+> 
