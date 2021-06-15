@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73243A7F91
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D90B3A7F36
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbhFONah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:30:37 -0400
-Received: from m12-13.163.com ([220.181.12.13]:50992 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230511AbhFONaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:30:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=qs27p
-        JeZ1mQL9K5taQuwUm0jcorZc4N6MuyH4mgHdZA=; b=ESGAdfqMZVyII+6Z1+StY
-        THC0VBvpH9S2OYzs3kkIS8jA94HoAADUyKzGjKfw9OYfnvBu63YeQJOqwtRDkxyL
-        7nlK0lgNbfA6yIqohpv6AUa87K8qBBJXgLQ5sCXa9+MdY59D42Mz0PKZgDUx8v5C
-        Tr/w87c9E6NcwUv9lKck9Q=
-Received: from yangjunlin.ccdomain.com (unknown [218.17.89.92])
-        by smtp9 (Coremail) with SMTP id DcCowABne6ygqshgs5gvGg--.38926S2;
-        Tue, 15 Jun 2021 21:26:58 +0800 (CST)
-From:   angkery <angkery@163.com>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
-Subject: [PATCH] mfd: 88pm860x-core: Remove unneeded variable:"ret"
-Date:   Tue, 15 Jun 2021 21:26:26 +0800
-Message-Id: <20210615132626.1386-1-angkery@163.com>
-X-Mailer: git-send-email 2.24.0.windows.2
+        id S231140AbhFON2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230364AbhFON2q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:28:46 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F1DC0613A3;
+        Tue, 15 Jun 2021 06:26:38 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id r5so27055663lfr.5;
+        Tue, 15 Jun 2021 06:26:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9HvxVYMyqvCV0x9W883eCIZ13wMRf8cylhu7PNwXAR4=;
+        b=PXeokba/hMpZquDHF8BjKdeV/fK3ppLU5sQNQuEBYes6BQIPsVu6/23DUFZ4Esu6yk
+         B3QZQ0MwBgUI892uok+j5Bfau+/M74FhrxwG8LedJUAjIbORYmEelY+n7Pb7B1UiYuiA
+         N4477LDPl36e10y95F+vSHMZEG22UW5mpbfk5LuxGv0PO62Bz8gViNpPIXOVI5r/+0Ja
+         hdzqsePpw/n+Wf+9X97ZPMLGzOVvnHw9rGIexj3c1HMoheAsgJEbdHw3PaMph89E/g+W
+         /fGC+003DZQObylZ0BAzK4cVGR0+viMh3Wm2rqzZn4xSSFtdjs46+dH/9uO7iffgYKoJ
+         y0hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9HvxVYMyqvCV0x9W883eCIZ13wMRf8cylhu7PNwXAR4=;
+        b=DGozaTsBGwcBHD65/zuN7AAmDCArLkv55P+bzLSOO/fHA9qPUyVYCGwokCUGIrWl02
+         6ERat432OqckWtX4iFUUDa+Y4clwRwTJ6Uc5Z8Zl2eGG8gZYgfphD1B+oWWN0x07i7Gl
+         DyQZH7lP2tibUu/Hol/Z5wxGX4oE9vjDKHiHHdVSQDTMhWLbDlftBZrj71di3WZ1uRW3
+         YOA+/rgGLZLacMSCehI//dOmwUlyvzIW/0i2PfPN2cLuqOQCWT6N7m3V2rgS0yoW0ugt
+         l36aW/mmxEu7KJKXwJ7Sf5CloPiB2y0/A+6SIo/A5NtUbsim6YNMjywMzMtbccfUzwgm
+         LWEA==
+X-Gm-Message-State: AOAM531/jfMBi2Uo4Re6zLePIvjSn73jKUKIrCzpJWCVCi0RmPnfW8yh
+        BilOXMYqsoCcOgPi15lMo8xVjUuZlOY=
+X-Google-Smtp-Source: ABdhPJzbWJugA7ORfj/DabW4obeg6otmqxkKzg0iJ3rPlUAInL30kMRPms2h8HMKoSMSFNx983kK9w==
+X-Received: by 2002:a19:c34a:: with SMTP id t71mr15641415lff.499.1623763596983;
+        Tue, 15 Jun 2021 06:26:36 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-31-25.dynamic.spd-mgts.ru. [94.29.31.25])
+        by smtp.googlemail.com with ESMTPSA id e21sm2156796ljl.26.2021.06.15.06.26.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 06:26:36 -0700 (PDT)
+Subject: Re: [PATCH v1 03/10] ARM: tegra: acer-a500: Bump thermal trips by 10C
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210510202600.12156-1-digetx@gmail.com>
+ <20210510202600.12156-4-digetx@gmail.com>
+ <20210514211601.GA1969@qmqm.qmqm.pl>
+ <ecc89faf-97f5-65e9-0eb8-93c8414c69e5@linaro.org>
+ <eedb5792-d3a5-78b3-ec89-b26d2e45f9c4@gmail.com>
+ <c65a732d-b203-a1a0-e90b-0aa0664cfb55@linaro.org>
+ <e73b64b2-77a8-3671-1fc6-0bf77e2287c4@gmail.com>
+ <1abadc69-1dd1-5939-c089-37a84be4781b@linaro.org>
+ <60a280c3-e67f-ff3a-9f0e-7d12fc125c5b@gmail.com>
+ <8091014b-fe1b-9c4c-7a91-6aae5b4037e5@linaro.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <53edd54a-4aa4-2100-c902-d1c8bde64a1a@gmail.com>
+Date:   Tue, 15 Jun 2021 16:26:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <8091014b-fe1b-9c4c-7a91-6aae5b4037e5@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowABne6ygqshgs5gvGg--.38926S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7WF13JFW8tr4xXF1Dtw43Jrb_yoW8CF4kp3
-        ZrWayjyrZ5Jw17Ww4DJryfur1akF48Kay8WF48Aasag3W5t39YkF1qgryUZF1rGF97GFWa
-        y3y2qFyrCF4jyr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jBc_-UUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbixgKyI13bmh81XAAAs-
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junlin Yang <yangjunlin@yulong.com>
+15.06.2021 16:05, Daniel Lezcano пишет:
+> On 15/06/2021 14:53, Dmitry Osipenko wrote:
+>> 13.06.2021 21:19, Daniel Lezcano пишет:
+>>> On 13/06/2021 02:25, Dmitry Osipenko wrote:
+>>>
+>>> [ ... ]
+>>>
+>>>>> You should set the trip points close to the functioning boundary
+>>>>> temperature given in the hardware specification whatever the resulting
+>>>>> heating effect is on the device.
+>>>>>
+>>>>> The thermal zone is there to protect the silicon and the system from a
+>>>>> wild reboot.
+>>>>>
+>>>>> If the Nexus 7 is too hot after the changes, then you may act on the
+>>>>> sources of the heat. For instance, set the the highest OPP to turbo or
+>>>>> remove it, or, if there is one, change the thermal daemon to reduce the
+>>>>> overall power consumption.
+>>>>> In case you are interested in: https://lwn.net/Articles/839318/
+>>>>
+>>>> The DTPM is a very interesting approach. For now Tegra still misses some
+>>>> basics in mainline kernel which have a higher priority, so I think it
+>>>> should be good enough to perform the in-kernel thermal management for
+>>>> the starter. We may consider a more complex solutions later on if will
+>>>> be necessary.
+>>>>
+>>>> What I'm currently thinking to do is:
+>>>>
+>>>> 1. Set up the trips of SoC/CPU core thermal zones in accordance to the
+>>>> silicon limits.
+>>>>
+>>>> 2. Set up the skin trips in accordance to the device limits.
+>>>>
+>>>> The breached skin trips will cause a mild throttling, while the SoC/CPU
+>>>> trips will be allowed to cause the severe throttling. Does this sound
+>>>> good to you?
+>>>
+>>> The skin temperature must be managed from userspace. The kernel is
+>>> unable to do a smart thermal management given different thermal zones
+>>> but if the goal is to go forward and prevent the tablet to be hot
+>>> temporarily until the other hardware support is there, I think it is
+>>> acceptable.
+>>
+>> The current goal is to get maximum from what we already have, thank you.
+> 
+> maximum of performance or maximum of mitigation ?
 
-The variable "ret" is initialized to -EIO and then returned.
-So remove the "ret" variable and return -EIO.
-
-Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
----
- drivers/mfd/88pm860x-core.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mfd/88pm860x-core.c b/drivers/mfd/88pm860x-core.c
-index b1e829e..1e69279 100644
---- a/drivers/mfd/88pm860x-core.c
-+++ b/drivers/mfd/88pm860x-core.c
-@@ -651,7 +651,6 @@ static void device_irq_exit(struct pm860x_chip *chip)
- 
- int pm8606_osc_enable(struct pm860x_chip *chip, unsigned short client)
- {
--	int ret = -EIO;
- 	struct i2c_client *i2c = (chip->id == CHIP_PM8606) ?
- 		chip->client : chip->companion;
- 
-@@ -680,19 +679,18 @@ int pm8606_osc_enable(struct pm860x_chip *chip, unsigned short client)
- 	}
- 	mutex_unlock(&chip->osc_lock);
- 
--	dev_dbg(chip->dev, "%s(A): vote=0x%x status=%d ret=%d\n",
-+	dev_dbg(chip->dev, "%s(A): vote=0x%x status=%d\n",
- 			__func__, chip->osc_vote,
--			chip->osc_status, ret);
-+			chip->osc_status);
- 	return 0;
- out:
- 	mutex_unlock(&chip->osc_lock);
--	return ret;
-+	return -EIO;
- }
- EXPORT_SYMBOL(pm8606_osc_enable);
- 
- int pm8606_osc_disable(struct pm860x_chip *chip, unsigned short client)
- {
--	int ret = -EIO;
- 	struct i2c_client *i2c = (chip->id == CHIP_PM8606) ?
- 		chip->client : chip->companion;
- 
-@@ -721,13 +719,13 @@ int pm8606_osc_disable(struct pm860x_chip *chip, unsigned short client)
- 	}
- 	mutex_unlock(&chip->osc_lock);
- 
--	dev_dbg(chip->dev, "%s(A): vote=0x%x status=%d ret=%d\n",
-+	dev_dbg(chip->dev, "%s(A): vote=0x%x status=%d\n",
- 			__func__, chip->osc_vote,
--			chip->osc_status, ret);
-+			chip->osc_status);
- 	return 0;
- out:
- 	mutex_unlock(&chip->osc_lock);
--	return ret;
-+	return -EIO;
- }
- EXPORT_SYMBOL(pm8606_osc_disable);
- 
--- 
-1.9.1
-
-
+The best balance of both. Maximum performance + no risk of damaging
+hardware + pleasant body temperature from a user perspective.
