@@ -2,180 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C4E3A7E45
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDC93A7E4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbhFOMhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:37:39 -0400
-Received: from mail-eopbgr130130.outbound.protection.outlook.com ([40.107.13.130]:31526
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229601AbhFOMhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:37:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Npx+Jp7H/0xuVPre6TvcidK2MyA6Lp3K4UPM/xIRO7Y6cpuU9nhe4NYtLcrVOwxbdct6TwHZsz3vDrZf6ZTs0E9KC/6aXNO3pmIhBf1+DUZHcFsmiddafNza0HwDemiwRdnpksrz5Y7N3CjMG22FfDStI4YVdaFclmgRI3wGElxN7L+Ed0FJzxZUEh77ZryhAbh8HBkgFYi3tnY8r0CzwQ9Jt3L5XdiSHwS/4DRfBQurJev2c6mGnUuii2g4DzMQ5rp9RaSGWHHaGGg4Za59yDgIn7m2H7s/3XpmR3nrP/6R+whBY4vZ3P2oCvV0Tr5AxGRPTUxwbIq6iSxT8HPAtw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YR/W+lBW3yAL5ILw1XhetJW2HoBUap/ALoRGtn6EcWU=;
- b=NVBHcO1qdjhsUkGvKT/FilP8anl9XDGaVBp8F/2slw0yuMZTiM4MZIfI/SViRZk3fahmMHtJInD5fhkX83A8GV1xw+gxEzsIUvmdimJh7NTqWCSnbwGuczfG6bi5Qwj2iyTB1O0c4PQTOI7LLFIIazkxAfxalBDId5Po0UWYslMLmyohXB1EFkdZUVRqRSsJgZ+9bfZ516UKnxcP7PqzkF3EpxJzLpcewP2yNRGzvwGzCl4i1dgex1WxFCyqJ5gVffYtP3jQlG1CsQtbD+xCiTJpDs5mxunQVUzPQzcDmByK/xU6eyCJqDtyOgQ3YBk+WcerhGp05CnqmmWzymrWZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YR/W+lBW3yAL5ILw1XhetJW2HoBUap/ALoRGtn6EcWU=;
- b=T7IqrIg1yHXhwnspgLW/pr4xEaEwB2Fk+QqYrmrOAo4y8u5kJvxGW7dmzhR4m7okk2VP3F8itxJbpP9dXo7XrksaPOkMJi4qCr5DWbCllo3N3MWVNozOgnWxX5vCJrdk4r9hVxGdmKEtctals3DT2vBaypIxeQBooRvBhkS+0QY=
-Authentication-Results: geanix.com; dkim=none (message not signed)
- header.d=none;geanix.com; dmarc=none action=none header.from=prevas.dk;
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
- by AM0PR10MB3172.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:17f::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.23; Tue, 15 Jun
- 2021 12:35:29 +0000
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::888d:190b:b3b5:1ad2]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::888d:190b:b3b5:1ad2%3]) with mapi id 15.20.4219.025; Tue, 15 Jun 2021
- 12:35:29 +0000
-To:     Song Hui <hui.song_1@nxp.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-rt-users@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Esben Haabendal <esben@geanix.com>
-From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Subject: commit 3d5bfbd97163 versus -rt
-Message-ID: <5afbc89e-dbc4-3f47-4e61-63a77165aaec@prevas.dk>
-Date:   Tue, 15 Jun 2021 14:35:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [80.208.64.110]
-X-ClientProxiedBy: AM5PR0601CA0057.eurprd06.prod.outlook.com
- (2603:10a6:206::22) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:3f::10)
+        id S230052AbhFOMlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229943AbhFOMlS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 08:41:18 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55ADBC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:39:13 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id q20so11950122lfo.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:39:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UuCiW2orTCucTZCp6O8CDD9AXD/9H9Otzbi//Cqg1DA=;
+        b=VZ3GcXveZakLxHce86jM4RSuS7T16Lj1tuDnRPjjD6LmGpt28d1lvFZtSU3p7z0M1p
+         ReRbsQU4aVs4CX7VFzsuAIKAuJuvEBZfqLFZAhOCb0mt7DZrfKtiZGkkVZ0uNrLZ+dY1
+         luUe8J/JKZuqKjFiY1V+aiYKkwFMJtMvVHz50fSPUv2+LoFm+fL2cYZoLhoavVaMcnJp
+         53C879XsXgpQeNsOLnsK/jCocXn6Lbilb9UCJpfDqXFZr83N9k5sPbKzhl9sjnOtyrbn
+         ykxZsh28MK7EPMorjJGsGTZwre6MCu6c0GgBoCpNHt7Cq7+wQBsVAU1WIBfp8FIUsLin
+         Ofyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UuCiW2orTCucTZCp6O8CDD9AXD/9H9Otzbi//Cqg1DA=;
+        b=meph747etS8IJVHjCxxyTCveUm9LTDs2PLGnToW8ZhYU2sXPrVwzG9Ea0Y0i2qYnYJ
+         3CFc5blJvgWkao4SS4CUpbYQxshHfvanKW38iS+SyQ3vjSW32Oa5HWJVI707EXdDVJ2m
+         XZsLrZrLyyzn0WvUi1xSYYI3Xu34s99sXytQrNLH0sYnE+zWrQ0aveECnPIlDUj/T/LH
+         s2WP00DwSKn8afFjPxP4dvKyzpv6oc9gJNDSK4pg6fi7axqHn3JcuhKFSqWIDwZfg6wf
+         hOh3eUbU06Fa4EPnKTx5uDPFK5bKGRa3G57sXiCBkl2e4lZgWrY2sDKoHU5qJxxhQ6LF
+         D72A==
+X-Gm-Message-State: AOAM532Ga3vh5n0ZnmR8Oe0YK3c5JwSbmOLuxtF/r4W7N+QW46LhIBZj
+        LcI016AcUNPvioRsedRw2Ve4/Q==
+X-Google-Smtp-Source: ABdhPJwDSx5g6S/Z3ibqwuHIj/X45vbYi1g0IUdok+X6ST8l1GlMDaBjW2PeiJeQ28sxtJaAY2HhRg==
+X-Received: by 2002:a05:6512:36d8:: with SMTP id e24mr10216306lfs.8.1623760751686;
+        Tue, 15 Jun 2021 05:39:11 -0700 (PDT)
+Received: from gilgamesh.lab.semihalf.net ([83.142.187.85])
+        by smtp.gmail.com with ESMTPSA id m12sm811418lfb.231.2021.06.15.05.39.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 05:39:11 -0700 (PDT)
+From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+To:     wim@linux-watchdog.org, linux@roeck-us.net, shawnguo@kernel.org
+Cc:     linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        grzegorz.jaszczyk@linaro.org
+Subject: [PATCH 0/2] introduce watchdog_dev_suspend/resume
+Date:   Tue, 15 Jun 2021 14:39:02 +0200
+Message-Id: <20210615123904.2568052-1-grzegorz.jaszczyk@linaro.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.149] (80.208.64.110) by AM5PR0601CA0057.eurprd06.prod.outlook.com (2603:10a6:206::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Tue, 15 Jun 2021 12:35:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e0e43228-8ec4-4b94-261f-08d92ffa0f6c
-X-MS-TrafficTypeDiagnostic: AM0PR10MB3172:
-X-Microsoft-Antispam-PRVS: <AM0PR10MB31727CF387E51F424BDCEED393309@AM0PR10MB3172.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yb8Lx4g5AayMO8eJ3k/UaiYvb5SoBbRn1QliUforTbRycjM8zEQ7KQ6CxLEfIXsVUwEi9PFxIbPFkBxndv3OrXmj1iLtWKqVHUDsup3/y3BQ8kZAAfmM2MFySmpQksp0D3Rx7eFj1i4uNQfsWviDz+nrsaYrEfoCFwbHchu3Ql58cpR8DJakX+CQEqqJRZLPd1ciGD291aBcLXfYCBwChFshrrAJAxVMV5LH+P+099eSbfHV0mtPUtjEWSJwQ7LDOuHFXYs10MBq1yXeF9MfEJrpxvlZvB/IC/Gz5+jyPWOKK9xdka66jpJg5TGuMBUoYMVH1d8eZuN+aTBYXR80BC53JY++kug3FQKyrlubHkowB/SnBi4BnQFOcnG3DHi1508IGkK9bgBm+fBoJq+CdfF78RB15cJm1cebnMSy1gcrqShye2w9cFx7GERpTeIavPLbJUL3uA/RJOfEKc/fSeYuBmAJ0BLSU5n0oBGu0TyJMj2TtyoiEksfg94aKgJh0T/Wjrh3mIOVc3q1sZ0nbJPi9NNi8tdIg4Rhi5bOzDas8cuXwiiHnLsWgmMFxgzLMU6jJdTwn5oNF20Pq4Odugn5PIItUT5MiDR5viFAeAe+NOjnNO8TSLEBdDQhoHYy/ZiqTZX056TP4/zXo2bEnE5LdNztavvdgaRiwe/yNZuRoQfxYqxRtXgQe9qD/4UYAv0mRy8dCmKmRSbObYXQpA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(376002)(396003)(39840400004)(346002)(136003)(66556008)(44832011)(4326008)(66476007)(52116002)(38350700002)(38100700002)(8936002)(8976002)(66946007)(6486002)(478600001)(86362001)(83380400001)(5660300002)(2616005)(31696002)(8676002)(956004)(16576012)(31686004)(45080400002)(2906002)(26005)(186003)(16526019)(110136005)(36756003)(54906003)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?fvw5kfjxtixNvaOOpoKlgvblN0rDczzCRgGSBUuyVqUyZla32DTFeKiB?=
- =?Windows-1252?Q?tUk1NqUa/HJ7gw0hSeCQ1985rBHEzNDOB77wBYF+FISwC/lJFAI4xp/c?=
- =?Windows-1252?Q?Yxym+QxLcXpUQ/ue1mA/4wOuCsVMz97FSmqbsDaVUmUpKKDPfSyYr4Vp?=
- =?Windows-1252?Q?GtpHBkVOImS0ZH+f00+EdPcfcONJ0X6G6oIkzJBEPhgFz1Favmb5ytjK?=
- =?Windows-1252?Q?Evr5rsfzmi1b2gUQjHDwZSC1Uufqw4qFWS9WIgjELtinjFVZ2XuS0QeO?=
- =?Windows-1252?Q?2um7r0xmTmeXz0n6tM5hD2p7Bye+Vo9NoBqKrpK6EGABKDMWPQB2UVzY?=
- =?Windows-1252?Q?2g8bBy9lVsRa1McWN9Q0yxYyoYXxtqG3SAfQbrHfVpS8LRCvuW6Y8na8?=
- =?Windows-1252?Q?uY34MK8vcY4SRahy/o6C2GRTM7SzCB/ankbBdnr5eRAcsQyb+c9OSBAb?=
- =?Windows-1252?Q?Zc6RDMcyy0N7+T0st4vpXY0W8nrC+kDfx210Zn2AtZMOIC69S6j41MO0?=
- =?Windows-1252?Q?nCMAW+R6FNocmNlKl67ofe9pLl6s2nAbZCXQt4FKH9c5AHRNGohU1Eh0?=
- =?Windows-1252?Q?9V7MMbiTV1Wsj8Em8eVeWrulSXPBpgO3bFbGXexEXJtMQxrySO2E2BNu?=
- =?Windows-1252?Q?Musirz3C80Ya4C5RgpAW7cqWyTws6v1KGYG7yMnUGs+sOzcKzkzwi3PD?=
- =?Windows-1252?Q?j5J6E/8bQzrkuKxLWCQqCuWvhBma3cCet1LeaIbf84gIRMJT0R2ge6WB?=
- =?Windows-1252?Q?aeot6fqU2bgtSRIaLMPb8PV9LNSdHEHGOsD0LLjxujkUve4/OoiSJajs?=
- =?Windows-1252?Q?lB8JQLzyxNj8drl8Kn/InxUrd2Vmd7eHp4njac9cE45Wq0qorU6bUh0j?=
- =?Windows-1252?Q?4BZHic1WXFbrxeomZIu9ZlkytDLOfjixVI2eHGDetzqa0LR4oAzD4KCC?=
- =?Windows-1252?Q?SHILmB4+IgG5xtvXrY9jWk6QwyIA1GeB6wz35tMWT1sCkEamZTV8VVir?=
- =?Windows-1252?Q?T+ZY4kovqc0viSVO/WiQNrMh68its4bUPxDpyHFN5VWdMQK5Cm4WfvXy?=
- =?Windows-1252?Q?PE2q2KNk8bWOJ4fp0ei+3oAAnquu4gcHN1L+riTl+KfoqVdbVelKmYbh?=
- =?Windows-1252?Q?y3o9Nvm2X/wkcWbQeKQ2GY9X5Ini/v3EmP8bO5kKGKCQbS7WFhxxhY2e?=
- =?Windows-1252?Q?ETIif7PopZwdPyGEEZ9ifaTqh/fMwhIuZiJkcQ/TLI3wUnnmrl0WhWUK?=
- =?Windows-1252?Q?u+kAbrNK2RuWr+liBoBqo7gvs28FiKT0Xj3rFoYH4hGBeZO85gIV/nqQ?=
- =?Windows-1252?Q?kFYLOxr1PIdktIieTJ1Wb6q2CXdWxey4+oHXUXxrzNTBZ9insMBX1Be5?=
- =?Windows-1252?Q?/7QmO1AjCDmkghtFCNmNszePHsIx2dBjGUWY4NAzrnKEcjDwThEGFi8T?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0e43228-8ec4-4b94-261f-08d92ffa0f6c
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2021 12:35:29.8919
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tMthMQq+uWK1p30QOznvoBsIDNsFDGvi56Z6tx6WJthQDcJmnVMMTQrzjw+75DswmifP7y3nz4QguFGj7x6bmoqe54dPnsrfqXa1Y3DqTC0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3172
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Hi All,
 
-Booting 5.10.41-rt42 with CONFIG_PREEMPT_RT=y gives this splat:
+This patch-set fixes system hang which occurs when the ping worker fires after
+wdog suspend and before wdog resume. This happens because the ping worker can
+issue low-level ping while the wdog clk was disabled by the suspend routine
+(accessing hw wdog registers while they are not fed by the clk).
 
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 29 at kernel/irq/handle.c:159
-__handle_irq_event_percpu+0x1ec/0x27c
- irq 66 handler irq_default_primary_handler+0x0/0x1c enabled interrupts
- Modules linked in:
- CPU: 0 PID: 29 Comm: irq/45-gpio-cas Not tainted
-5.10.41-rt42-00001-g3ce830134091 #495
- Hardware name: Freescale LS1021A
- Backtrace:
- [<806ad420>] (dump_backtrace) from [<806ad7c4>] (show_stack+0x20/0x24)
-  r7:80abad04 r6:60070013 r5:00000000 r4:80abad04
- [<806ad7a4>] (show_stack) from [<806b0a94>] (dump_stack+0x88/0xa4)
- [<806b0a0c>] (dump_stack) from [<8011d424>] (__warn+0xd4/0x100)
-  r7:80e3fe14 r6:00000000 r5:00000009 r4:80170c48
- [<8011d350>] (__warn) from [<806ade3c>] (warn_slowpath_fmt+0x88/0xcc)
-  r9:ffffe000 r8:807e5943 r7:00000009 r6:80170c48 r5:0000009f r4:807e596a
- [<806addb8>] (warn_slowpath_fmt) from [<80170c48>]
-(__handle_irq_event_percpu+0x1ec/0x27c)
-  r8:80e3fe80 r7:80fff800 r6:00000042 r5:00000002 r4:80ea2000
- [<80170a5c>] (__handle_irq_event_percpu) from [<80170d38>]
-(handle_irq_event_percpu+0x60/0xc0)
-  r10:80ae2508 r9:80171c48 r8:80e3e000 r7:80e282e4 r6:00000000 r5:80fff800
-  r4:00000000
- [<80170cd8>] (handle_irq_event_percpu) from [<80170e2c>]
-(handle_irq_event+0x94/0xb8)
-  r7:80e282e4 r6:80fff878 r5:80fff818 r4:80fff800
- [<80170d98>] (handle_irq_event) from [<801761a4>]
-(handle_edge_irq+0xec/0x10c)
-  r7:80e282e4 r6:80fff878 r5:80fff818 r4:80fff800
- [<801760b8>] (handle_edge_irq) from [<8016fbb8>]
-(generic_handle_irq+0x38/0x48)
-  r7:80e282e4 r6:ffffe000 r5:80e3a640 r4:0000000c
- [<8016fb80>] (generic_handle_irq) from [<8043e98c>]
-(mpc8xxx_gpio_irq_cascade+0xac/0xd0)
- [<8043e8e0>] (mpc8xxx_gpio_irq_cascade) from [<80171c80>]
-(irq_forced_thread_fn+0x38/0x8c)
-  r5:80e282c0 r4:80deda00
- [<80171c48>] (irq_forced_thread_fn) from [<80171eb4>]
-(irq_thread+0x11c/0x238)
-  r7:80e282e4 r6:ffffe000 r5:80e282c0 r4:80deda00
- [<80171d98>] (irq_thread) from [<8013d9bc>] (kthread+0x18c/0x19c)
-  r10:80e121c0 r9:80e282c0 r8:80171d98 r7:80d15bf4 r6:80e28300 r5:80e3e000
-  r4:80e28340
- [<8013d830>] (kthread) from [<80100130>] (ret_from_fork+0x14/0x24)
- Exception stack(0x80e3ffb0 to 0x80e3fff8)
- ffa0:                                     00000000 00000000 00000000
-00000000
- ffc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
- ffe0: 00000000 00000000 00000000 00000000 00000013 00000000
-  r10:00000000 r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:8013d830
-  r4:80e28300 r3:80e121c0
- ---[ end trace 0000000000000002 ]---
+To overcome this issue two patches were introduced. Patch #1 provides
+watchdog_dev_suspend/resume function, which can be used in wdog drivers. First
+function allows to cancel watchdog ping worker during suspend, preventing
+watchdog_dev from issuing low-level ping and second one restores ping worker if
+needed.
 
-Reverting commit 3d5bfbd9716318b1ca5c38488aa69f64d38a9aa5 (gpio:
-mpc8xxx: change the gpio interrupt flags.) makes it go away, as does
-disabling CONFIG_PREEMPT_RT or simply booting a vanilla v5.10.42 (where
-that option exists but cannot be selected).
+Patch #2 introduces relevant changes to imx2_wdt driver and takes advantage of
+just introduced routines.
 
-This seems to be the kind of thing where an -rt expert can immediately
-see what's wrong and how to fix it. Ideas anyone?
+Grzegorz Jaszczyk (2):
+  watchdog: introduce watchdog_dev_suspend/resume
+  watchdog: imx2_wdg: notify wdog subsystem about wdog suspend/resume
 
-Thanks,
-Rasmus
+ drivers/watchdog/imx2_wdt.c     | 20 ++++++++++----
+ drivers/watchdog/watchdog_dev.c | 49 +++++++++++++++++++++++++++++++++
+ include/linux/watchdog.h        |  2 ++
+ 3 files changed, 66 insertions(+), 5 deletions(-)
+
+-- 
+2.29.0
+
