@@ -2,65 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126CA3A80E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B65523A80E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231810AbhFONmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:42:32 -0400
-Received: from verein.lst.de ([213.95.11.211]:49322 "EHLO verein.lst.de"
+        id S231596AbhFONmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:42:49 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:49104 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230361AbhFONmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:42:09 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id BE0D967373; Tue, 15 Jun 2021 15:40:02 +0200 (CEST)
-Date:   Tue, 15 Jun 2021 15:40:02 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v10 08/12] swiotlb: Refactor swiotlb_tbl_unmap_single
-Message-ID: <20210615134002.GH20389@lst.de>
-References: <20210615132711.553451-1-tientzu@chromium.org> <20210615132711.553451-9-tientzu@chromium.org>
+        id S231731AbhFONm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:42:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623764423; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=a1WlzaO82iLMRE52JxldZdL+R8HjpJo5eZ9dZVqlH+E=;
+ b=cnhx2AHuTObxhiHLMjy6XEyAXQLqb7jzWwHSQ9DVDtxo+b5qFxfvBdS+oZr3qjKqOikr+uXz
+ VTEeTimtlzzpp3UTBhSZQH3MFOKgID05K0FOmKaGI0anIpBBAVE6nzBo2AlmYF7/TR0vV1OV
+ 4GSygjdw0z1Bw/tM9EMMTAsfq4c=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60c8adb7e27c0cc77f2475bd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:40:07
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5EC85C43144; Tue, 15 Jun 2021 13:40:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6BB2AC43460;
+        Tue, 15 Jun 2021 13:40:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6BB2AC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615132711.553451-9-tientzu@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] rtlwifi: Remove redundant assignments to ul_enc_algo
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1621303199-1542-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1621303199-1542-1-git-send-email-yang.lee@linux.alibaba.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     pkshih@realtek.com, davem@davemloft.net, kuba@kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Yang Li <yang.lee@linux.alibaba.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210615134006.5EC85C43144@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 13:40:06 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,
+Yang Li <yang.lee@linux.alibaba.com> wrote:
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Variable ul_enc_algo is being initialized with a value that is never
+> read, it is being set again in the following switch statements in
+> all of the case and default paths. Hence the unitialization is
+> redundant and can be removed.
+> 
+> Clean up clang warning:
+> 
+> drivers/net/wireless/realtek/rtlwifi/cam.c:170:6: warning: Value stored
+> to 'ul_enc_algo' during its initialization is never read
+> [clang-analyzer-deadcode.DeadStores]
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+
+Patch applied to wireless-drivers-next.git, thanks.
+
+a99086057e03 rtlwifi: Remove redundant assignments to ul_enc_algo
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/1621303199-1542-1-git-send-email-yang.lee@linux.alibaba.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
