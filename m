@@ -2,229 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542093A780E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A1F3A7811
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhFOHiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbhFOHiI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:38:08 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B6EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:36:03 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id c14so19152986ybk.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:36:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FiHlyLuUa3tZCav6PYZXXh3LRDHbc9dbclb37lqJuto=;
-        b=Lj091RFix2zPvpogz5p5LdebddNeJdjYhl7ike3heeve0IV+zr8FbvMfa5boUhBvEn
-         8Qohw188DvTIWj4YwES6CQDgWN0sjfaGD7khAw9mneew6Nw7ZxI46rxNEZ9NS8Yaf8WM
-         JSBXF2f1QT/0aaGmZLdg+VC2jqY4H4ObDhNT5MYtYDZjsRsDDMbKd+gCtylEtvv9YW1E
-         cd/W6r0h5fWQchAhXH+Mf9n3tKmVL36oOXP/Sv/5+3+5dHIY7MT0Uv/YH9YjfgKi5ZK0
-         0WOlUUgPef88x0WTH5FP1teaX/lm+cKHTqXAbpM19uUqZhAuZXKfGkeulLqxW+btnu+z
-         aUQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FiHlyLuUa3tZCav6PYZXXh3LRDHbc9dbclb37lqJuto=;
-        b=uehGuSvTmPZTZRNA6DzQgaGgX6egOOthyq9OxwhqS6weT8l7p3a3REROlD0sq95jor
-         jjf3O5/TLAeIQos5We8wAKqedH0Hdjjnrbahg1R1J3EMpLTMA/9YMskVL4ANU44R9uxm
-         UFNb/xowDqjgk+Yw8O9KpYQ9GpGoYs+DocN4ejnu1iWoKXKiWttFoCYy3idE3h+Dh+oF
-         YxEdgdXhkSNku5lC4qb17Ncpm9AUeutEPm8CHApGxedaQReQWeq7BQ0OebWO4yh9DeWD
-         5mgtEtJj+6GLMpfGVFFo+aGa/D9csRjkSj34/8lf0BdQ4+nKzmKiWCw2ktFKEfIPolah
-         K8zg==
-X-Gm-Message-State: AOAM5314rT7LpcfTZtBOYbV+J2xziF8aAU6p1L4PBmyTgOLIUcpIrRTj
-        rAzWuDvZpeBqcy6ZPu4AiejDTAB3BsvfKrZn0WZyZw==
-X-Google-Smtp-Source: ABdhPJzdGFQxWe21ANRSmXBVitacBxnIOPRm3MIDlYfUzjRXfQG5wsicrDB8szqBrZNCFfB3zfTRQ1PXAtmq1DMVEGo=
-X-Received: by 2002:a25:bb84:: with SMTP id y4mr28981183ybg.450.1623742562323;
- Tue, 15 Jun 2021 00:36:02 -0700 (PDT)
+        id S230390AbhFOHir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:38:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229781AbhFOHif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 03:38:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79B136140B;
+        Tue, 15 Jun 2021 07:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623742591;
+        bh=8XU2Pup+XtMsuXUCeq2FwUCixSw98N2PyhrkftAHkOE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iuFepYdlXDjgrrGfDX7TfoLxuWI1hMhHTv+CCW8zJrzChRyVQ/71VWYLXJeryZSRi
+         b2EhUwPUM1ZZfFydB6YKii21+JCGS/hGwmQ3Tk9HP2kySJCOOlShgSH4td6J0q97b6
+         NzrBigVuhU/GAnoNdHDbmGhBhNkwiV9CI5Nz4/74=
+Date:   Tue, 15 Jun 2021 09:36:28 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     trix@redhat.com
+Cc:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net,
+        michal.simek@xilinx.com, krzysztof.kozlowski@canonical.com,
+        nava.manne@xilinx.com, yilun.xu@intel.com, davidgow@google.com,
+        fpacheco@redhat.com, richard.gong@intel.com, luca@lucaceresoli.net,
+        linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 2/4] fpga: xilinx: reorganize to subdir layout
+Message-ID: <YMhYfCgOAthEqPXs@kroah.com>
+References: <20210614201648.3358206-1-trix@redhat.com>
+ <20210614201648.3358206-4-trix@redhat.com>
 MIME-Version: 1.0
-References: <20210604015238.2422145-1-zenczykowski@gmail.com> <20210604015238.2422145-2-zenczykowski@gmail.com>
-In-Reply-To: <20210604015238.2422145-2-zenczykowski@gmail.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Tue, 15 Jun 2021 00:35:51 -0700
-Message-ID: <CANP3RGc8PmPOjTGkDmbjzEVBezcQuNMcg17qpJx2aLU9juM_5w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] bpf: do not change gso_size during bpf_skb_change_proto()
-To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Dongseok Yi <dseok.yi@samsung.com>,
-        Willem de Bruijn <willemb@google.com>, yhs@fb.com,
-        kpsingh@kernel.org, andrii@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, songliubraving@fb.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614201648.3358206-4-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 6:52 PM Maciej =C5=BBenczykowski
-<zenczykowski@gmail.com> wrote:
->
-> From: Maciej =C5=BBenczykowski <maze@google.com>
->
-> This is technically a backwards incompatible change in behaviour,
-> but I'm going to argue that it is very unlikely to break things,
-> and likely to fix *far* more then it breaks.
->
-> In no particular order, various reasons follow:
->
-> (a) I've long had a bug assigned to myself to debug a super rare kernel
-> crash on Android Pixel phones which can (per stacktrace) be traced back
-> to bpf clat ipv6 to ipv4 protocol conversion causing some sort of ugly
-> failure much later on during transmit deep in the GSO engine, AFAICT
-> precisely because of this change to gso_size, though I've never been able
-> to manually reproduce it.
-> I believe it may be related to the particular network offload support
-> of attached usb ethernet dongle being used for tethering off of an
-> IPv6-only cellular connection.  The reason might be we end up with more
-> segments than max permitted, or with a gso packet with only one segment..=
-.
-> (either way we break some assumption and hit a BUG_ON)
->
-> (b) There is no check that the gso_size is > 20 when reducing it by 20,
-> so we might end up with a negative (or underflowing) gso_size or
-> a gso_size of 0.  This can't possibly be good.
-> Indeed this is probably somehow exploitable (or at least can result
-> in a kernel crash) by delivering crafted packets and perhaps triggering
-> an infinite loop or a divide by zero...
-> As a reminder: gso_size (mss) is related to mtu, but not directly
-> derived from it: gso_size/mss may be significantly smaller then
-> one would get by deriving from local mtu.  And on some nics (which
-> do loose mtu checking on receive, it may even potentially be larger,
-> for example my work pc with 1500 mtu can receive 1520 byte frames
-> [and sometimes does due to bugs in a vendor plat46 implementation]).
-> Indeed even just going from 21 to 1 is potentially problematic because
-> it increases the number of segments by a factor of 21 (think DoS,
-> or some other crash due to too many segments).
->
-> (c) It's always safe to not increase the gso_size, because it doesn't
-> result in the max packet size increasing.  So the skb_increase_gso_size()
-> call was always unnecessary for correctness (and outright undesirable, se=
-e
-> later).  As such the only part which is potentially dangerous (ie. could
-> cause backwards compatibility issues) is the removal of the
-> skb_decrease_gso_size() call.
->
-> (d) If the packets are ultimately destined to the local device, then
-> there is absolutely no benefit to playing around with gso_size.
-> It only matters if the packets will egress the device.  ie. we're
-> either forwarding, or transmitting from the device.
->
-> (e) This logic only triggers for packets which are GSO.  It does not
-> trigger for skbs which are not GSO.  It will not convert a non-GSO mtu
-> sized packet into a GSO packet (and you don't even know what the mtu is,
-> so you can't even fix it).  As such your transmit path must *already* be
-> able to handle an mtu 20 bytes larger then your receive path (for ipv4
-> to ipv6 translation) - and indeed 28 bytes larger due to ipv4 fragments.
-> Thus removing the skb_decrease_gso_size() call doesn't actually increase
-> the size of the packets your transmit side must be able to handle.
-> ie. to handle non-GSO max-mtu packets, the ipv4/ipv6 device/route mtus
-> must already be set correctly.  Since for example with an ipv4 egress mtu
-> of 1500, ipv4 to ipv6 translation will already build 1520 byte ipv6 frame=
-s,
-> so you need a 1520 byte device mtu.  This means if your ipv6 device's
-> egress mtu is 1280, your ipv4 route must be 1260 (and actually 1252,
-> because of the need to handle fragments).  This is to handle normal non-G=
-SO
-> packets.  Thus the reduction is simply not needed for GSO packets,
-> because when they're correctly built, they will already be the right size=
-.
->
-> (f) TSO/GSO should be able to exactly undo GRO: the number of packets
-> (TCP segments) should not be modified, so that TCP's mss counting works
-> correctly (this matters for congestion control).
-> If protocol conversion changes the gso_size, then the number of TCP segme=
-nts
-> may increase or decrease.  Packet loss after protocol conversion can resu=
-lt
-> in partial loss of mss segments that the sender sent.  How's the sending
-> TCP stack going to react to receiving ACKs/SACKs in the middle of the
-> segments it sent?
->
-> (g) skb_{decrease,increase}_gso_size() are already no-ops for GSO_BY_FRAG=
-S
-> case (besides triggering WARN_ON_ONCE). This means you already cannot
-> guarantee that gso_size (and thus resulting packet mtu) is changed.
-> ie. you must assume it won't be changed.
->
-> (h) changing gso_size is outright buggy for UDP GSO packets, where framin=
-g
-> matters (I believe that's also the case for SCTP, but it's already exclud=
-ed
-> by [g]).  So the only remaining case is TCP, which also doesn't want it
-> (see [f]).
->
-> (i) see also the reasoning on the previous attempt at fixing this
-> (commit fa7b83bf3b156c767f3e4a25bbf3817b08f3ff8e) which shows
-> that the current behaviour causes TCP packet loss:
->
->   In the forwarding path GRO -> BPF 6 to 4 -> GSO for TCP traffic, the
->   coalesced packet payload can be > MSS, but < MSS + 20.
->
->   bpf_skb_proto_6_to_4() will upgrade the MSS and it can be > the payload
->   length. After then tcp_gso_segment checks for the payload length if it
->   is <=3D MSS. The condition is causing the packet to be dropped.
->
->   tcp_gso_segment():
->     [...]
->     mss =3D skb_shinfo(skb)->gso_size;
->     if (unlikely(skb->len <=3D mss)) goto out;
->     [...]
->
-> Thus changing the gso_size is simply a very bad idea.
-> Increasing is unnecessary and buggy, and decreasing can go negative.
->
-> Cc: Dongseok Yi <dseok.yi@samsung.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Willem de Bruijn <willemb@google.com>
-> Fixes: 6578171a7ff0 ("bpf: add bpf_skb_change_proto helper")
-> Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
+On Mon, Jun 14, 2021 at 01:16:46PM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> Follow drivers/net/ethernet/ which has control configs
+> NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+> Since fpgas do not have many vendors, drop the 'VENDOR' and use
+> FPGA_BLA.
+> 
+> There are several new subdirs
+> altera/
+> dfl/
+> lattice/
+> xilinx/
+> 
+> Each subdir has a Kconfig that has a new/reused
+> 
+> if FPGA_BLA
+>   ... existing configs ...
+> endif FPGA_BLA
+> 
+> Which is sourced into the main fpga/Kconfig
+> 
+> Each subdir has a Makefile whose transversal is controlled in the
+> fpga/Makefile by
+> 
+> obj-$(CONFIG_FPGA_BLA) += bla/
+> 
+> This is the xilinx/ subdir part
+> 
+> Create a xilinx/ subdir
+> Move xilinx-* and zynq* files to it.
+> Add a Kconfig and Makefile
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
 > ---
->  net/core/filter.c | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 04848de3e058..953b6c31b803 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -3263,8 +3263,6 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb=
-)
->                         shinfo->gso_type |=3D  SKB_GSO_TCPV6;
->                 }
->
-> -               /* Due to IPv6 header, MSS needs to be downgraded. */
-> -               skb_decrease_gso_size(shinfo, len_diff);
->                 /* Header must be checked, and gso_segs recomputed. */
->                 shinfo->gso_type |=3D SKB_GSO_DODGY;
->                 shinfo->gso_segs =3D 0;
-> @@ -3304,8 +3302,6 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb=
-)
->                         shinfo->gso_type |=3D  SKB_GSO_TCPV4;
->                 }
->
-> -               /* Due to IPv4 header, MSS can be upgraded. */
-> -               skb_increase_gso_size(shinfo, len_diff);
->                 /* Header must be checked, and gso_segs recomputed. */
->                 shinfo->gso_type |=3D SKB_GSO_DODGY;
->                 shinfo->gso_segs =3D 0;
-> --
-> 2.32.0.rc1.229.g3e70b5a671-goog
+>  drivers/fpga/Kconfig                          | 40 +-------------
+>  drivers/fpga/Makefile                         |  5 +-
+>  drivers/fpga/xilinx/Kconfig                   | 55 +++++++++++++++++++
+>  drivers/fpga/xilinx/Makefile                  |  6 ++
+>  .../fpga/{ => xilinx}/xilinx-pr-decoupler.c   |  0
+>  drivers/fpga/{ => xilinx}/xilinx-spi.c        |  0
+>  drivers/fpga/{ => xilinx}/zynq-fpga.c         |  0
+>  drivers/fpga/{ => xilinx}/zynqmp-fpga.c       |  0
+>  8 files changed, 63 insertions(+), 43 deletions(-)
+>  create mode 100644 drivers/fpga/xilinx/Kconfig
+>  create mode 100644 drivers/fpga/xilinx/Makefile
+>  rename drivers/fpga/{ => xilinx}/xilinx-pr-decoupler.c (100%)
+>  rename drivers/fpga/{ => xilinx}/xilinx-spi.c (100%)
+>  rename drivers/fpga/{ => xilinx}/zynq-fpga.c (100%)
+>  rename drivers/fpga/{ => xilinx}/zynqmp-fpga.c (100%)
+> 
+> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> index 7a290b2234576..28c261807b428 100644
+> --- a/drivers/fpga/Kconfig
+> +++ b/drivers/fpga/Kconfig
+> @@ -52,25 +52,12 @@ config FPGA_MGR_ALTERA_CVP
+>  	  FPGA manager driver support for Arria-V, Cyclone-V, Stratix-V,
+>  	  Arria 10 and Stratix10 Altera FPGAs using the CvP interface over PCIe.
+>  
+> -config FPGA_MGR_ZYNQ_FPGA
+> -	tristate "Xilinx Zynq FPGA"
+> -	depends on ARCH_ZYNQ || COMPILE_TEST
+> -	help
+> -	  FPGA manager driver support for Xilinx Zynq FPGAs.
+> -
+>  config FPGA_MGR_STRATIX10_SOC
+>  	tristate "Intel Stratix10 SoC FPGA Manager"
+>  	depends on (ARCH_INTEL_SOCFPGA && INTEL_STRATIX10_SERVICE)
+>  	help
+>  	  FPGA manager driver support for the Intel Stratix10 SoC.
+>  
+> -config FPGA_MGR_XILINX_SPI
+> -	tristate "Xilinx Configuration over Slave Serial (SPI)"
+> -	depends on SPI
+> -	help
+> -	  FPGA manager driver support for Xilinx FPGA configuration
+> -	  over slave serial interface.
+> -
+>  config FPGA_MGR_ICE40_SPI
+>  	tristate "Lattice iCE40 SPI"
+>  	depends on OF && SPI
+> @@ -113,23 +100,6 @@ config ALTERA_FREEZE_BRIDGE
+>  	  isolate one region of the FPGA from the busses while that
+>  	  region is being reprogrammed.
+>  
+> -config XILINX_PR_DECOUPLER
+> -	tristate "Xilinx LogiCORE PR Decoupler"
+> -	depends on FPGA_BRIDGE
+> -	depends on HAS_IOMEM
+> -	help
+> -	  Say Y to enable drivers for Xilinx LogiCORE PR Decoupler
+> -	  or Xilinx Dynamic Function eXchnage AIX Shutdown Manager.
+> -	  The PR Decoupler exists in the FPGA fabric to isolate one
+> -	  region of the FPGA from the busses while that region is
+> -	  being reprogrammed during partial reconfig.
+> -	  The Dynamic Function eXchange AXI shutdown manager prevents
+> -	  AXI traffic from passing through the bridge. The controller
+> -	  safely handles AXI4MM and AXI4-Lite interfaces on a
+> -	  Reconfigurable Partition when it is undergoing dynamic
+> -	  reconfiguration, preventing the system deadlock that can
+> -	  occur if AXI transactions are interrupted by DFX.
+> -
+>  config FPGA_REGION
+>  	tristate "FPGA Region"
+>  	depends on FPGA_BRIDGE
+> @@ -146,14 +116,6 @@ config OF_FPGA_REGION
+>  	  overlay.
+>  
+>  source "drivers/fpga/dfl/Kconfig"
+> -
+> -config FPGA_MGR_ZYNQMP_FPGA
+> -	tristate "Xilinx ZynqMP FPGA"
+> -	depends on ZYNQMP_FIRMWARE || (!ZYNQMP_FIRMWARE && COMPILE_TEST)
+> -	help
+> -	  FPGA manager driver support for Xilinx ZynqMP FPGAs.
+> -	  This driver uses the processor configuration port(PCAP)
+> -	  to configure the programmable logic(PL) through PS
+> -	  on ZynqMP SoC.
+> +source "drivers/fpga/xilinx/Kconfig"
+>  
+>  endif # FPGA
+> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+> index bda74e54ce390..0868c7c4264d8 100644
+> --- a/drivers/fpga/Makefile
+> +++ b/drivers/fpga/Makefile
+> @@ -15,9 +15,6 @@ obj-$(CONFIG_FPGA_MGR_SOCFPGA)		+= socfpga.o
+>  obj-$(CONFIG_FPGA_MGR_SOCFPGA_A10)	+= socfpga-a10.o
+>  obj-$(CONFIG_FPGA_MGR_STRATIX10_SOC)	+= stratix10-soc.o
+>  obj-$(CONFIG_FPGA_MGR_TS73XX)		+= ts73xx-fpga.o
+> -obj-$(CONFIG_FPGA_MGR_XILINX_SPI)	+= xilinx-spi.o
+> -obj-$(CONFIG_FPGA_MGR_ZYNQ_FPGA)	+= zynq-fpga.o
+> -obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+= zynqmp-fpga.o
+>  obj-$(CONFIG_ALTERA_PR_IP_CORE)         += altera-pr-ip-core.o
+>  obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
+>  
+> @@ -25,10 +22,10 @@ obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
+>  obj-$(CONFIG_FPGA_BRIDGE)		+= fpga-bridge.o
+>  obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE)	+= altera-hps2fpga.o altera-fpga2sdram.o
+>  obj-$(CONFIG_ALTERA_FREEZE_BRIDGE)	+= altera-freeze-bridge.o
+> -obj-$(CONFIG_XILINX_PR_DECOUPLER)	+= xilinx-pr-decoupler.o
+>  
+>  # High Level Interfaces
+>  obj-$(CONFIG_FPGA_REGION)		+= fpga-region.o
+>  obj-$(CONFIG_OF_FPGA_REGION)		+= of-fpga-region.o
+>  
+>  obj-$(CONFIG_FPGA_DFL) += dfl/
+> +obj-$(CONFIG_FPGA_XILINX) += xilinx/
+> diff --git a/drivers/fpga/xilinx/Kconfig b/drivers/fpga/xilinx/Kconfig
+> new file mode 100644
+> index 0000000000000..e016d450539a0
+> --- /dev/null
+> +++ b/drivers/fpga/xilinx/Kconfig
+> @@ -0,0 +1,55 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +
+> +config FPGA_XILINX
+> +	bool "Xilinx FPGAs"
 
-This patch series (ie. this patch and the previous revert) seems to
-have gotten no response, and we're running out of time, since it
-reverts the newly added api.
+"Xilinx FPGA drivers"
 
-Opinions?
+> +	default y
+> +	help
+> +	  If you have a xilinx fpga, say Y.
+
+"Xilix FPGA"
+
+But how about being a bit more descriptive here:
+
+"Select this option if you want to enable support for Xilinx FPGA
+drivers"
+
+> +	  Note that the answer to this question doesn't directly affect the
+> +	  kernel: saying N will just cause the configurator to skip all
+> +	  the questions about xilinx fpgas. If you say Y, you will be asked
+> +	  for your specific device in the following questions.
+
+Why this "note"?  Do networking drivers have this type of description?
+
+Same for the other patches in this series.
+
+thanks,
+
+greg k-h
