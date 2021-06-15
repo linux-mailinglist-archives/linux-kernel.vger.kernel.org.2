@@ -2,138 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B035A3A81EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA42B3A81F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhFOOM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35996 "EHLO
+        id S231461AbhFOOMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhFOOMB (ORCPT
+        with ESMTP id S231228AbhFOOMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:12:01 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36286C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:09:53 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso14362614oto.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:09:53 -0700 (PDT)
+        Tue, 15 Jun 2021 10:12:22 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C32C0617AF
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:10:15 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id s6so51306638edu.10
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:10:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G03LeVSqzx4r6UWRg21tN37T3lMTHXfodYVAYedgndk=;
-        b=CQWma7GynKiGTf/Cfus0SAXooczcUtAUWmj8IMcII3ayR0fKCmZlvQCTp2kl51BNqC
-         UBRoHcbAAUBRK+qrsVV2EAsxHEOBbQnbH9nChYvVvUDW34ReH9str/1pEbuzDJXnn6x2
-         LE5uC+WvITpjeejAf1fIDtVu5tyUBV5lx0kGE=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Z7ERoyZlszjmyu3iV/Mmi1jHGzP+hRT7oKekWXQSxYI=;
+        b=fSHp8+D+TzQvipTX3sw9SFjSToDoa/gXDp5DdIMHITuusSh+W54p/Bq03Azr5IK0kj
+         gPLbtxkiYwD7WxHKSGZo7z9zRwaPWfX/3nDfs0vRH9iyNA1bJR/6dbrqFvKv2g74KE87
+         R9In7ovBzKiDBWZY6u9nkqJ5OEzZTGJMXZVfX/sGf2LKfXG3CRbb+Lg2Vkam2+CIrQ8G
+         LE898AX8+NBExSdsiQ4JPvY6Pex7Mb3YwvwzIGFTo7z6stXCFjqQfgIbFZxlVXcAz79h
+         N2pYdp14UGs9eCagySzy5nUWQBKADpZGrhtUvxXqkdAgElmWMye9MxoFyuF7bxqevml7
+         tX4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G03LeVSqzx4r6UWRg21tN37T3lMTHXfodYVAYedgndk=;
-        b=G7aiTCA7pxmDAkSTJKTTb6wB+Nx7obIesxyuTuHPcrJeWXYhi4xNv4rXxOgBIJZPfu
-         jdsKTYgcRKN19xUwybfxD4d4y++Sz5PfuhW4gE9h0riruag3/KjLUuIsF0QjKsjXZ5o4
-         I7sVaxJjK0AQyR1TV1DZg8y+J/1nLYCI9OIBEL9i+50HQw1gzQvXYEZEprE68AK/leiW
-         nYgvh0Uy7/8OMRSG1IJF26PzO2ABaHTx6WE/C6pS1NPNWdbYbbC3B0VMBCZO+t/vMABm
-         3L//9w+FKeVQMU0nFU3Y18T8winLPS71Ec8574JKu6J7lZe9ns/FSMAQ5fE51UgPfSEc
-         osHg==
-X-Gm-Message-State: AOAM530Em6j4Hn+Nedwkv1DySvmWhDUtsn/28gOQMEmpq3HtfF7FQtJN
-        Wc1z3Sy5x3Bf2NG18rBU11iqYPscUNhwVw==
-X-Google-Smtp-Source: ABdhPJzif/rlAZ6AcdzlQfzAzDQSxFh0lbrTGIvzUs2Bf5Btgj19yIiD+Dgccd+ZOgiGbJJ3LAy97g==
-X-Received: by 2002:a05:6830:17c8:: with SMTP id p8mr17682543ota.167.1623766192538;
-        Tue, 15 Jun 2021 07:09:52 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id k8sm3760778ool.5.2021.06.15.07.09.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 07:09:51 -0700 (PDT)
-Subject: Re: [PATCH] media: Fix Media Controller API config checks
-To:     Hans Verkuil <hverkuil@xs4all.nl>, sakari.ailus@linux.intel.com,
-        laurent.pinchart@ideasonboard.com, dan.carpenter@oracle.com,
-        mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20210611015849.42589-1-skhan@linuxfoundation.org>
- <3745852a-a14d-3e66-dd9f-409ec7e43f48@xs4all.nl>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <04f0ce7b-71c3-948c-fdb0-72e234f8c7da@linuxfoundation.org>
-Date:   Tue, 15 Jun 2021 08:09:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Z7ERoyZlszjmyu3iV/Mmi1jHGzP+hRT7oKekWXQSxYI=;
+        b=X4pDQRulNXlzvreTF2DPWVMXCjnNt6nymEZV9MOytvXuoPQYqbBrMnUDGoiH3eSxFt
+         xt32bZAHhqyWRDnNhLQ1J30NwPPaQXveXBKNCKiTJKAfU4T2KzbPtawGwREh5FfXMqHR
+         d8BNlRBKXEa7k69/yhDQxdej8AvVfzKWPIlJoPy4K0hUxzKQxusaMrwYbOprIywqyeEL
+         XNbvDKKFX81uirmPnwlWDgLmpm5sWNp5cecVJS3QZG8Z1Nrids9WXkzlI6XrnqOmHMgU
+         GXIbpgucaaslr60ZuseTeTGWpbNLeCqG17s5qRt1OzXz7Ab6gQ79nvhqmRbz94SRTo0Z
+         rthQ==
+X-Gm-Message-State: AOAM532V5zqujEMar1xCh8Lbb79caNP2pP2qB1dCGCQ7ZAD1vzftm9Ia
+        1Kr9lD8tVqEtdcyiysiEBF9TfGTR68JNQr7Yz03dYQ==
+X-Google-Smtp-Source: ABdhPJwzC/zxm0+VSm+Z5QkQpN2MCu+AWiPsD9juTr0IDIXspmLXX034Ws5YLgo6dOm8MAvA6IiAHdd5/HWeKBfGpf8=
+X-Received: by 2002:a05:6402:152:: with SMTP id s18mr23209607edu.221.1623766213710;
+ Tue, 15 Jun 2021 07:10:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3745852a-a14d-3e66-dd9f-409ec7e43f48@xs4all.nl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210615060657.351134482@linuxfoundation.org>
+In-Reply-To: <20210615060657.351134482@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 15 Jun 2021 19:40:02 +0530
+Message-ID: <CA+G9fYu=x-8OXBev2gKGXh1Ee+TvuKvZ+gkvm_N3cQg5d_Yf0Q@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/41] 4.9.273-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 7:36 AM, Hans Verkuil wrote:
-> Hi Shuah,
-> 
-> On 11/06/2021 03:58, Shuah Khan wrote:
->> Smatch static checker warns that "mdev" can be null:
->>
->> sound/usb/media.c:287 snd_media_device_create()
->>      warn: 'mdev' can also be NULL
->>
->> If CONFIG_MEDIA_CONTROLLER is disabled, this file should not be included
->> in the build.
->>
->> The below conditions in the sound/usb/Makefile are in place to ensure that
->> media.c isn't included in the build.
->>
->> sound/usb/Makefile:
->> snd-usb-audio-$(CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER) += media.o
->>
->> select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER &&
->>         (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND_USB_AUDIO)
->>
->> The following config check in include/media/media-dev-allocator.h is
->> in place to enable the API only when CONFIG_MEDIA_CONTROLLER and
->> CONFIG_USB are enabled.
->>
->>   #if defined(CONFIG_MEDIA_CONTROLLER) && defined(CONFIG_USB)
->>
->> This check doesn't work as intended when CONFIG_USB=m. When CONFIG_USB=m,
->> CONFIG_USB_MODULE is defined and CONFIG_USB is not. The above config check
->> doesn't catch that CONFIG_USB is defined as a module and disables the API.
->> This results in sound/usb enabling Media Controller specific ALSA driver
->> code, while Media disables the Media Controller API.
->>
->> Fix the problem requires two changes:
->>
->> 1. Change the check to use IS_ENABLED to detect when CONFIG_USB is enabled
->>     as a module or static. Since CONFIG_MEDIA_CONTROLLER is a bool, leave
->>     the check unchanged to be consistent with drivers/media/Makefile.
->>
->> 2. Change the drivers/media/mc/Makefile to include mc-dev-allocator.o
->>     in mc-objs when CONFIG_USB is y or m.
-> 
-> If I test this patch, then I get:
-> 
-> drivers/media/mc/mc-dev-allocator.c:97:22: error: redefinition of 'media_device_usb_allocate'
->     97 | struct media_device *media_device_usb_allocate(struct usb_device *udev,
->        |                      ^~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/media/mc/mc-dev-allocator.c:24:
-> include/media/media-dev-allocator.h:55:36: note: previous definition of 'media_device_usb_allocate' was here
->     55 | static inline struct media_device *media_device_usb_allocate(
->        |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/media/mc/mc-dev-allocator.c:119:6: error: redefinition of 'media_device_delete'
->    119 | void media_device_delete(struct media_device *mdev, const char *module_name,
->        |      ^~~~~~~~~~~~~~~~~~~
-> In file included from drivers/media/mc/mc-dev-allocator.c:24:
-> include/media/media-dev-allocator.h:59:20: note: previous definition of 'media_device_delete' was here
->     59 | static inline void media_device_delete(
->        |                    ^~~~~~~~~~~~~~~~~~~
-> 
-> The .config has:
-> 
-> # CONFIG_USB_SUPPORT is not set
-> CONFIG_MEDIA_CONTROLLER=y
+On Tue, 15 Jun 2021 at 11:37, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-Oops. I tried different combinations of CONFIG_USB and didn't try this
-one. Will send v2.
+> This is the start of the stable review cycle for the 4.9.273 release.
+> There are 41 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 17 Jun 2021 06:06:45 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.273-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-thanks,
--- Shuah
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.9.273-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.9.y
+* git commit: c59bf94474162a1e1dfc71da00c35fc2eb3d6e81
+* git describe: v4.9.272-42-gc59bf9447416
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+72-42-gc59bf9447416
+
+## Regressions (compared to v4.9.272-43-g69603f537df7)
+
+## Fixes (compared to v4.9.272-43-g69603f537df7)
+
+## Test result summary
+ total: 60444, pass: 47320, fail: 1141, skip: 10719, xfail: 1264,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
