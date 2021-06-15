@@ -2,71 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D7E3A816A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F363D3A814D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhFONyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:54:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229937AbhFONyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:54:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF2226105A;
-        Tue, 15 Jun 2021 13:51:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623765116;
-        bh=gyk+gW3hsWR9nvhsJkoEzP/weUoAI4+NXfCjLM+KHRI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ITFZOrRgCAqQuNh58PTnq39skr8I2alda4wwdQLbxDk8wxPP3/ZBk3azvd2IbxPdy
-         fkgqOsRFBZl4cYMq8X4LesVPb1XniFtrPRUdaDw/G5ir4C3mh9VOMuVIJ/623R7kfO
-         axnYdbHZTAFUqsB3pGLFslEDsotl1heNMxJ7Cmyk=
-Date:   Tue, 15 Jun 2021 15:51:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] PM: domains: call mutex_destroy when removing the
- genpd
-Message-ID: <YMiweYHi1zgv6rd+@kroah.com>
-References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
- <20210611101540.3379937-2-dmitry.baryshkov@linaro.org>
+        id S231584AbhFONuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:50:18 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:6379 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230211AbhFONuO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:50:14 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G48gB5yyzz63c6;
+        Tue, 15 Jun 2021 21:44:06 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 21:48:05 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
+ 2021 21:48:04 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>
+Subject: [PATCH -next 1/5] ASoC: img-i2s-in: Use devm_platform_get_and_ioremap_resource()
+Date:   Tue, 15 Jun 2021 21:51:56 +0800
+Message-ID: <20210615135200.1661695-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611101540.3379937-2-dmitry.baryshkov@linaro.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 01:15:39PM +0300, Dmitry Baryshkov wrote:
-> It is a good practice to destroy mutexes with mutex_destroy, so call
-> this function for releasing genpd->mlock.
-> 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  drivers/base/power/domain.c | 25 ++++++++++++++++++++-----
->  1 file changed, 20 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index b6a782c31613..74219d032910 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -1910,6 +1910,11 @@ static void genpd_lock_init(struct generic_pm_domain *genpd)
->  	}
->  }
->  
-> +static void genpd_lock_destroy(struct generic_pm_domain *genpd) {
-> +	if (!(genpd->flags & GENPD_FLAG_IRQ_SAFE))
-> +		mutex_destroy(&genpd->mlock);
-> +}
+Use devm_platform_get_and_ioremap_resource() to simplify
+code.
 
-Did you run this through checkpatch.pl???
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ sound/soc/img/img-i2s-in.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-And what does mutex_destroy() do that is required here?
+diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
+index fd3432a1d6ab..1bf5d6edbd32 100644
+--- a/sound/soc/img/img-i2s-in.c
++++ b/sound/soc/img/img-i2s-in.c
+@@ -434,8 +434,7 @@ static int img_i2s_in_probe(struct platform_device *pdev)
+ 
+ 	i2s->dev = dev;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	base = devm_ioremap_resource(dev, res);
++	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+ 
+-- 
+2.25.1
 
-thanks,
-
-greg k-h
