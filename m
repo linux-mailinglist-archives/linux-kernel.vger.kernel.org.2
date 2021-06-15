@@ -2,208 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA093A7BB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DBE3A7BB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhFOKZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:25:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
+        id S231555AbhFOK0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhFOKZX (ORCPT
+        with ESMTP id S231220AbhFOK0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:25:23 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539FFC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:23:19 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id k7so21670765ejv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:23:19 -0700 (PDT)
+        Tue, 15 Jun 2021 06:26:49 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5615C061574;
+        Tue, 15 Jun 2021 03:24:44 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id r7so35944615edv.12;
+        Tue, 15 Jun 2021 03:24:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=usz2c56Y/wB4bto+kslcF/GgjVmyI3SGKASmM8Xx/Io=;
-        b=wKGjX10p4qWqmLfJrTedvaRtB3EcWZp4IdTTIkXH4UzqSLnbltG6BZXyTil5tjlhpb
-         vyvp0DRluxgeXMX5gELdjlISIgbTKz1H/1fScucOZlDBx3zFYSR9bKhHjA+59Em2pE9Y
-         7jrI9OJaFqLv+w/8xmDNjPnyH3fsNt30T7hpoP8P9JvzJO6ZgQuG6aSBp908zYbwYuTk
-         6QxmnozOCm32pIpMTgUAjep4MY2on78HRyaR1Cw+WYrRNLTK1CtvQcqtOtR+6BoBNUX/
-         AnaeujsCCZ4v6IwTW5e1ACsLKvD/mPQew3Qb/vFXqdjZ6TexILk2mRHtlGh0TXziHNR5
-         5y2Q==
+         :cc;
+        bh=TjaB6i8KcUeUiC7lYhVxV/Olnmn95eEJM+cZhPD4C0Y=;
+        b=cbnPlPiC0Rx83GFLUflqeNHgYzJEAm3xXMUb9Wz7NhfX7rwqEx4EEDIvtGaC3m3Hv0
+         UNqsJP+LBT+8gm2Uq3aUB/Pfstb0PpO0i0NR7uI9cUIYMFsj30DPnFsm3sIhcQ4Guc4e
+         H/T5WOaS/3tyL3daOxiCTLvL2A8Ujd6wp7p9YSXoIo5PIqKL/QpSiOUG8t7D+THq0eKp
+         j14HXAzqEchVot/+2x0Eyj9WFhZIzyweTJkm8KCdSYX0L+Uc9CibfmdOQNYDWn50fHzg
+         tD4QSWEFpOE3iKzwWIVVuTrgEpNtg6bDnmTt/09AI96/244D6dzx8kEsHn7ZU+m4NKhC
+         Fy4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=usz2c56Y/wB4bto+kslcF/GgjVmyI3SGKASmM8Xx/Io=;
-        b=O+D1ny4ZOC9mh2sXXpp9yjeGmwJvGES+Joiwv/UR0NGqu3NTRO09ZKpkOZxlwSOcrV
-         L+3bEZHiVdHUyZklgFatfvnwbOijoDv4WpytO02SMYXZQhA84VnSni4mwOLcI/oGH761
-         j8y5QD33Pl894XBZ4iSSZ1hMk/jxXXLr8peEFE1TiLPED3I2xgTJPArGc59EvKZHpXCB
-         gVANJ/dHcomQvlvluZrASbD0VbIbemAx7C3bzNH+ispfE2NEF7KZFa//FUq2WoYlpnfE
-         mbU0TS0JLR40r4yuXmKsZ+rbTAOHCVZt53TWSqgsfwkUBKgJWN10GDYFO2Fe/t7n6i4C
-         2i7A==
-X-Gm-Message-State: AOAM530gq7F77CzHc2ciCXBpsO7ZYmtqD4dearR0/8rLhMFoCPy9SIeB
-        D21K1BvbT8nODl1GhJW4frCOCgX3yi9LCVzCeicoW2f+gcvXnYqA
-X-Google-Smtp-Source: ABdhPJwuEB5SRBpNyjYskEwIC0fbNuMsMHmMWxrm2CG6Yui6DJrC1tjFcmy1pw3YxaPdVHy418atg5mYogyCj3asMEM=
-X-Received: by 2002:a17:906:25db:: with SMTP id n27mr19581971ejb.170.1623752597414;
- Tue, 15 Jun 2021 03:23:17 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=TjaB6i8KcUeUiC7lYhVxV/Olnmn95eEJM+cZhPD4C0Y=;
+        b=ie3Oo16/J+x/YlKUTpT2cx1d94us+xY7RbMT3+Alj6jWdIJR9qZ5nsgsFFa4vnU3uX
+         jYApaLvwA9D5ScM+7fRClwtkCRATaJu7mgSeUhoiOguK2UMpeBsIFWkfUi6qbXSuPZTW
+         JKmWBDjdAidelYOKEeovQczW7CMR2ym9vPOniu3EiEG3s5lgSe5Yp9HtVebYUyCgjdeW
+         pSnHPR+NHYU11AOWGfLQWM6HXvQUZXDCaDVLbAShVbwUuByt4Gd6BwdOXDSUYazQjMSO
+         nEqW482CkpYE/gqlzS+myA2GCfRfCUmTGqgqcw2y8W6Jqr35VhL150IqELTH6CagYBq4
+         /qAw==
+X-Gm-Message-State: AOAM533CuUFW3x9XI/3DGqX43KIhnBTJd5CeE1yuVvAee+q8rZhhXgGH
+        pU1YG1DFJsxJYdMxnxeHCs+dFy/oyOfbP8eQhnQ=
+X-Google-Smtp-Source: ABdhPJzC5dkoL0r1Ed2pK8uwvcgbsL7Ji/Wrjdq+kwtKyvNu3acf7xF77SLRv8n4lhbeiD0Wey0OcT8+DmobYBCsd3I=
+X-Received: by 2002:aa7:ce86:: with SMTP id y6mr22324805edv.309.1623752683473;
+ Tue, 15 Jun 2021 03:24:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210614102641.582612289@linuxfoundation.org>
-In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 15 Jun 2021 15:53:06 +0530
-Message-ID: <CA+G9fYvsE8eAZ43c+K51=UvoERh6pZh6nf=wG1XyYnp8PAgg2Q@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/34] 4.4.273-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <20210614153712.2172662-1-mudongliangabcd@gmail.com>
+ <YMhY9NHf1itQyup7@kroah.com> <CAD-N9QVfDQQo0rRiaa6Cx-xO80yox9hNzK91_UVj0KNgkhpvnQ@mail.gmail.com>
+ <YMh2b0LvT9H7SuNC@kroah.com> <CAD-N9QV+GMURatPx4qJT2nMsKHQhj+BXC9C-ZyQed3pN8a9YUA@mail.gmail.com>
+In-Reply-To: <CAD-N9QV+GMURatPx4qJT2nMsKHQhj+BXC9C-ZyQed3pN8a9YUA@mail.gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Tue, 15 Jun 2021 18:24:17 +0800
+Message-ID: <CAD-N9QW6LhRO+D-rr4xCCuq+m=jtD7LS_+GDVs9DkHe5paeSOg@mail.gmail.com>
+Subject: Re: [PATCH] net: usb: fix possible use-after-free in smsc75xx_bind
+To:     Greg KH <greg@kroah.com>
+Cc:     Steve Glendinning <steve.glendinning@shawell.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 at 15:59, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Jun 15, 2021 at 6:10 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
 >
-> This is the start of the stable review cycle for the 4.4.273 release.
-> There are 34 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Tue, Jun 15, 2021 at 5:44 PM Greg KH <greg@kroah.com> wrote:
+> >
+> > On Tue, Jun 15, 2021 at 03:56:32PM +0800, Dongliang Mu wrote:
+> > > On Tue, Jun 15, 2021 at 3:38 PM Greg KH <greg@kroah.com> wrote:
+> > > >
+> > > > On Mon, Jun 14, 2021 at 11:37:12PM +0800, Dongliang Mu wrote:
+> > > > > The commit 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+> > > > > fails to clean up the work scheduled in smsc75xx_reset->
+> > > > > smsc75xx_set_multicast, which leads to use-after-free if the work is
+> > > > > scheduled to start after the deallocation. In addition, this patch also
+> > > > > removes one dangling pointer - dev->data[0].
+> > > > >
+> > > > > This patch calls cancel_work_sync to cancel the schedule work and set
+> > > > > the dangling pointer to NULL.
+> > > > >
+> > > > > Fixes: 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+> > > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > > > > ---
+> > > > >  drivers/net/usb/smsc75xx.c | 3 +++
+> > > > >  1 file changed, 3 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/net/usb/smsc75xx.c b/drivers/net/usb/smsc75xx.c
+> > > > > index b286993da67c..f81740fcc8d5 100644
+> > > > > --- a/drivers/net/usb/smsc75xx.c
+> > > > > +++ b/drivers/net/usb/smsc75xx.c
+> > > > > @@ -1504,7 +1504,10 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
+> > > > >       return 0;
+> > > > >
+> > > > >  err:
+> > > > > +     cancel_work_sync(&pdata->set_multicast);
+> > > > >       kfree(pdata);
+> > > > > +     pdata = NULL;
+> > > >
+> > > > Why do you have to set pdata to NULL afterward?
+> > > >
+> > >
+> > > It does not have to. pdata will be useless when the function exits. I
+> > > just referred to the implementation of smsc75xx_unbind.
+> >
+> > It's wrong there too :)
 >
-> Responses should be made by Wed, 16 Jun 2021 10:26:30 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.273-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> /: I will fix such two sites in the v2 patch.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Hi gregkh,
 
-## Build
-* kernel: 4.4.273-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.4.y
-* git commit: c652289a55a0a8cf744f33b45528413e6adaf0cf
-* git describe: v4.4.272-35-gc652289a55a0
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
-72-35-gc652289a55a0
+If the schedule_work is not invoked, can I call
+``cancel_work_sync(&pdata->set_multicast)''? If not, is there any
+method to verify if the schedule_work is already called?
 
-## No regressions (compared to v4.4.272)
-
-
-## No fixes (compared to v4.4.272)
-
-## Test result summary
- total: 36565, pass: 29186, fail: 372, skip: 6230, xfail: 777,
-
-## Build Summary
-* arm: 96 total, 96 passed, 0 failed
-* arm64: 23 total, 23 passed, 0 failed
-* i386: 13 total, 13 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 13 total, 13 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Best regards,
+Dongliang Mu
