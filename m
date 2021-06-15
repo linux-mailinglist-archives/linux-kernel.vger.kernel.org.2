@@ -2,112 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D7A3A739D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 232E43A73DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhFOCUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbhFOCUK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:20:10 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE091C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:18:04 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S231894AbhFOC1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:27:04 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:29611 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230236AbhFOC1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 22:27:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623723899; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=7AVFaHjxCJ/6AvhCZOucjSTW7hCiM13UsTsxjJ8QvtU=; b=qIchDMU5MQm82N+7N1P1h9HDurHRmy7DIXlBHCRqqEwQOkmg2wRQ5TrkpJ+7qJd9/kxUqwBj
+ chxC8gjWlFxSlnh1GXE6Q7yKNGzJf1bmQfvHEp2Y7jp43SLPG0f2C4hUWHoSxy3ELYCPzCqa
+ oE7I9E7wFbqddaZAhTiE1UXt0n0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60c80bc0ed59bf69cce4debb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 02:09:04
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 72666C433D3; Tue, 15 Jun 2021 02:09:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from sidgup-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G3s4529sVz9sWD;
-        Tue, 15 Jun 2021 12:01:09 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1623722469;
-        bh=Ioz32V7w9TF+SY5v/PGD0ofSTEUn3E3EmbxAg40Km+I=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=pJdbSmq1eTCdU+3xkvsZXfkGUrUNxnvqycQiy7TAYrHQqEXe2H1JfXir8hEFvW5PW
-         s0pYoh+OM9KregcJBM84Ab5oRqBWdQUtDxH342pO5rEtShAZ53WHVbnLubImLISSPX
-         azL43TxmUj8r/nu85TSx647r0I/9Ce52y3jc8UhR31Px0eNgiQ7mWSAqkN7gtDcLJv
-         PBaNN5yuaL/LqJq4YmO4s8li+oB1CsNBKXk7uPr4Fe04QRea1XJ836Qioa4Ms98u3w
-         ZNtkNYUXKYmcAvK67benMlLYZ/DddfE95gn6rYDEGO1KVzRp4o3VaA/kwLNXr9rTWW
-         fzv0vjEjM6Low==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        naveen.n.rao@linux.vnet.ibm.com, jniethe5@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 08/12] powerpc: Don't use 'struct ppc_inst' to
- reference instruction location
-In-Reply-To: <7062722b087228e42cbd896e39bfdf526d6a340a.1621516826.git.christophe.leroy@csgroup.eu>
-References: <cover.1621516826.git.christophe.leroy@csgroup.eu>
- <7062722b087228e42cbd896e39bfdf526d6a340a.1621516826.git.christophe.leroy@csgroup.eu>
-Date:   Tue, 15 Jun 2021 12:01:08 +1000
-Message-ID: <871r93vqcb.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6C7F4C433F1;
+        Tue, 15 Jun 2021 02:09:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6C7F4C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, agross@kernel.org
+Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, psodagud@codeaurora.org
+Subject: [PATCH 0/2] remoteproc: qcom: Minidump improvements
+Date:   Mon, 14 Jun 2021 19:08:48 -0700
+Message-Id: <1623722930-29354-1-git-send-email-sidgup@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> diff --git a/arch/powerpc/include/asm/inst.h b/arch/powerpc/include/asm/inst.h
-> index 5a0740ebf132..32d318c3b180 100644
-> --- a/arch/powerpc/include/asm/inst.h
-> +++ b/arch/powerpc/include/asm/inst.h
-> @@ -139,7 +139,7 @@ static inline int ppc_inst_len(struct ppc_inst x)
->   * Return the address of the next instruction, if the instruction @value was
->   * located at @location.
->   */
-> -static inline struct ppc_inst *ppc_inst_next(void *location, struct ppc_inst *value)
-> +static inline unsigned int *ppc_inst_next(unsigned int *location, unsigned int *value)
->  {
->  	struct ppc_inst tmp;
->  
+This patchset adds a fallback mechanism to the minidump flow for
+remoteprocs which do not support minidump in its firmware.
 
-It's not visible in the diff, but the rest of the function is:
+Patch 1: Export the base coredump APIs to allow for fallback mechanism.
+Patch 2: Fallback to full coredumps when SMEM is not initialized at all.
 
-	tmp = ppc_inst_read(value);
+Siddharth Gupta (2):
+  remoteproc: core: Export the rproc coredump APIs
+  remoteproc: qcom: Add full coredump fallback mechanism
 
-	return location + ppc_inst_len(tmp);
-}
+ drivers/remoteproc/qcom_common.c         | 9 +++++++--
+ drivers/remoteproc/qcom_q6v5_pas.c       | 1 +
+ drivers/remoteproc/remoteproc_coredump.c | 2 ++
+ drivers/remoteproc/remoteproc_internal.h | 4 ----
+ include/linux/remoteproc.h               | 4 ++++
+ 5 files changed, 14 insertions(+), 6 deletions(-)
 
-And so changing the type of location from void * to int * changes the
-result of that addition, ie. previously it was in units of bytes, now
-it's units of 4 bytes.
+-- 
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-To fix it I've kept location as unsigned int *, and added a cast where
-we do the addition. That way users of the function just see unsigned int *,
-the cast to void * is an implementation detail.
-
-We only have a handful of uses of ppc_inst_len(), so maybe that should
-change name and return a result in units of int *. But that can be a
-separate change.
-
-> diff --git a/arch/powerpc/platforms/86xx/mpc86xx_smp.c b/arch/powerpc/platforms/86xx/mpc86xx_smp.c
-> index 87f524e4b09c..302f2a1e0361 100644
-> --- a/arch/powerpc/platforms/86xx/mpc86xx_smp.c
-> +++ b/arch/powerpc/platforms/86xx/mpc86xx_smp.c
-> @@ -83,7 +83,7 @@ smp_86xx_kick_cpu(int nr)
->  		mdelay(1);
->  
->  	/* Restore the exception vector */
-> -	patch_instruction((struct ppc_inst *)vector, ppc_inst(save_vector));
-> +	patch_instruction(vector, ppc_inst(save_vector));
->  
->  	local_irq_restore(flags);
->  
-
-There was another usage in here:
-
- 	/* Setup fake reset vector to call __secondary_start_mpc86xx. */
- 	target = (unsigned long) __secondary_start_mpc86xx;
--	patch_branch((struct ppc_inst *)vector, target, BRANCH_SET_LINK);
-+	patch_branch(vector, target, BRANCH_SET_LINK);
- 
- 	/* Kick that CPU */
- 	smp_86xx_release_core(nr);
-
-I fixed it up.
-
-cheers
