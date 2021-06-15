@@ -2,76 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61ADA3A78F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB563A78F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhFOIV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 04:21:28 -0400
-Received: from mga09.intel.com ([134.134.136.24]:42149 "EHLO mga09.intel.com"
+        id S231186AbhFOIWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 04:22:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230190AbhFOIV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:21:26 -0400
-IronPort-SDR: S2qHGS77UfT2DfsWk9lCSCz6sRTmBSgC9hLfM/joYT++v6StAhtObcPTJ9C8u2VjxYFjqRDYle
- hZgf42WLHfJw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="205904582"
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="205904582"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 01:19:21 -0700
-IronPort-SDR: Olkw6z4fiz+gyu28336Axd1RWoyW1OLqxuG5K+u8s6XkfGkXy+wEytgBgVByyIIb2AQKY+6Fmu
- 3/NrWcFtewRA==
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="621281055"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 01:19:18 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lt4Hy-002SbW-Od; Tue, 15 Jun 2021 11:19:14 +0300
-Date:   Tue, 15 Jun 2021 11:19:14 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Justin He <Justin.He@arm.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH RFCv3 3/3] lib/test_printf: add test cases for '%pD'
-Message-ID: <YMhigpkyU+a6eqB5@smile.fi.intel.com>
-References: <20210611155953.3010-1-justin.he@arm.com>
- <20210611155953.3010-4-justin.he@arm.com>
- <YMd5StgkBINLlb8E@alley>
- <AM6PR08MB4376096643BA02A1AE2BA8F4F7309@AM6PR08MB4376.eurprd08.prod.outlook.com>
- <55513987-4ec5-be80-a458-28f275cb4f72@rasmusvillemoes.dk>
- <AM6PR08MB4376DCEC0F689A5736597B40F7309@AM6PR08MB4376.eurprd08.prod.outlook.com>
+        id S230446AbhFOIWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 04:22:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54E866140C;
+        Tue, 15 Jun 2021 08:20:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623745205;
+        bh=6qlVPjKem+YjQuGn5zYB2vtwj+uNKyedBoyYSXCKGSA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=S34jP6sbFZmtwkYXkIU5282qhkM0jsjYqliP5d3ijlrI28IqZAbkUVFAf85ul3GF3
+         33bNaHzNSiO5eoeqmWJ8Oex48gFwLF+Pc1bqMCckPKuTXqe5sMoxZ41SzBUM0EmkhI
+         1sTrTMCR4rBKKq1uHvq+O8DDNcLhcRg6ci+u3vwaqqyUTJz608xagoa8KxCF2ovTyh
+         XMWdDxceOMhkOQSF35Iwj077g9937lFgtqM+Y9QFc7WicW1y5l555X7Ob1fU6YoVZ7
+         cmRHBdyTUYzAhtCg+DgxWBSXzDuGFPZ7NTV9AS4XtjEc0+oPP55WhxsUbsBEo5w9Tr
+         tBKcPSRZxqM3A==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>
+Subject: [PATCH 1/2] habanalabs: define uAPI to export FD for DMA-BUF
+Date:   Tue, 15 Jun 2021 11:19:50 +0300
+Message-Id: <20210615081951.5359-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM6PR08MB4376DCEC0F689A5736597B40F7309@AM6PR08MB4376.eurprd08.prod.outlook.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 07:56:01AM +0000, Justin He wrote:
-> > From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > Sent: Tuesday, June 15, 2021 3:48 PM
-> > On 15/06/2021 09.07, Justin He wrote:
+From: Oded Gabbay <ogabbay@habana.ai>
 
-> IMPORTANT NOTICE: The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium. Thank you.
+User process might want to share the device memory with another
+driver/device, and to allow it to access it over PCIe (P2P).
 
-Just a reminder that you still have this footer that prevents (some) people to
-respond to your messages.
+To enable this, we utilize the dma-buf mechanism and add a dma-buf
+exporter support, so the other driver can import the device memory and
+access it.
 
+The device memory is allocated using our existing allocation uAPI,
+where the user will get a handle that represents the allocation.
+
+The user will then need to call the new
+uAPI (HL_MEM_OP_EXPORT_DMABUF_FD) and give the handle as a parameter.
+
+The driver will return a FD that represents the DMA-BUF object that
+was created to match that allocation.
+
+Signed-off-by: Oded Gabbay <ogabbay@habana.ai>
+Reviewed-by: Tomer Tayar <ttayar@habana.ai>
+---
+ include/uapi/misc/habanalabs.h | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
+
+diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
+index a47a731e4527..aa3d8e0ba060 100644
+--- a/include/uapi/misc/habanalabs.h
++++ b/include/uapi/misc/habanalabs.h
+@@ -808,6 +808,10 @@ union hl_wait_cs_args {
+ #define HL_MEM_OP_UNMAP			3
+ /* Opcode to map a hw block */
+ #define HL_MEM_OP_MAP_BLOCK		4
++/* Opcode to create DMA-BUF object for an existing device memory allocation
++ * and to export an FD of that DMA-BUF back to the caller
++ */
++#define HL_MEM_OP_EXPORT_DMABUF_FD	5
+ 
+ /* Memory flags */
+ #define HL_MEM_CONTIGUOUS	0x1
+@@ -878,11 +882,26 @@ struct hl_mem_in {
+ 			/* Virtual address returned from HL_MEM_OP_MAP */
+ 			__u64 device_virt_addr;
+ 		} unmap;
++
++		/* HL_MEM_OP_EXPORT_DMABUF_FD */
++		struct {
++			/* Handle returned from HL_MEM_OP_ALLOC. In Gaudi,
++			 * where we don't have MMU for the device memory, the
++			 * driver expects a physical address (instead of
++			 * a handle) in the device memory space.
++			 */
++			__u64 handle;
++			/* Size of memory allocation. Relevant only for GAUDI */
++			__u64 mem_size;
++		} export_dmabuf_fd;
+ 	};
+ 
+ 	/* HL_MEM_OP_* */
+ 	__u32 op;
+-	/* HL_MEM_* flags */
++	/* HL_MEM_* flags.
++	 * For the HL_MEM_OP_EXPORT_DMABUF_FD opcode, this field holds the
++	 * DMA-BUF file/FD flags.
++	 */
+ 	__u32 flags;
+ 	/* Context ID - Currently not in use */
+ 	__u32 ctx_id;
+@@ -919,6 +938,13 @@ struct hl_mem_out {
+ 
+ 			__u32 pad;
+ 		};
++
++		/* Returned in HL_MEM_OP_EXPORT_DMABUF_FD. Represents the
++		 * DMA-BUF object that was created to describe a memory
++		 * allocation on the device's memory space. The FD should be
++		 * passed to the importer driver
++		 */
++		__u64 fd;
+ 	};
+ };
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
