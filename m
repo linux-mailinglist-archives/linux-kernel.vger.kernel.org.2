@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFED3A7A96
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAFF3A7A99
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhFOJb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:31:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36246 "EHLO
+        id S231530AbhFOJcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:32:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44998 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231494AbhFOJbw (ORCPT
+        by vger.kernel.org with ESMTP id S231503AbhFOJb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:31:52 -0400
+        Tue, 15 Jun 2021 05:31:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623749388;
+        s=mimecast20190719; t=1623749392;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oZVlLGY0kqQAYmVdD+6nEDNmFy2iD2bHg+txa/b3qk8=;
-        b=MY6mc6h4umwaSFpK6efuz8T9HM1KzxrPZEwQC64ELcT7XMALOdKNy9C8OhiQ6tQYoIFwVv
-        ZG/OJeW8RrR13ScqKzLF59sTv6XoTGJqYl27vAb3oOSEFdV7B2T5f3ETjDXdt4l2Vm3ahX
-        DcuThrPgQJqdtl75GAM9s/wrOkmhYaI=
+        bh=WfZs1T64mXM3Zq7p6ZsbJ6lpb0Tom2b/OOqSUKAQnS4=;
+        b=hDhrQDn4rtDdSuGcuNTgUuDGbSzWj2qDcPdWu6yACp2FYbr3vyV062qypbcg6RtDnZuhHP
+        auBjSI9+273/gKehhqTar2Q4Lz44s2/ViAx2jfrtJUs3TpVLswVzyPTD0tZu3M8uG4ncDy
+        w/Be2HDRdJy0PkTiwfrEu0HBgf4rT0s=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-445-NaBsZni7PTKROpxqWbz96Q-1; Tue, 15 Jun 2021 05:29:46 -0400
-X-MC-Unique: NaBsZni7PTKROpxqWbz96Q-1
+ us-mta-449-q7ltiwDCNhOxX07hC7bQvw-1; Tue, 15 Jun 2021 05:29:51 -0400
+X-MC-Unique: q7ltiwDCNhOxX07hC7bQvw-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D359100C660;
-        Tue, 15 Jun 2021 09:29:45 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9E819F92D;
+        Tue, 15 Jun 2021 09:29:49 +0000 (UTC)
 Received: from x1.com (ovpn-113-40.rdu2.redhat.com [10.10.113.40])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B2E1D5D6AD;
-        Tue, 15 Jun 2021 09:29:40 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 819E05D6AD;
+        Tue, 15 Jun 2021 09:29:45 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@redhat.com>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Phil Auld <pauld@redhat.com>,
@@ -51,9 +51,9 @@ Cc:     Phil Auld <pauld@redhat.com>,
         Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V4 08/12] trace/hwlat: Remove printk from sampling loop
-Date:   Tue, 15 Jun 2021 11:28:47 +0200
-Message-Id: <ed452f4329d99cce4581417bb484f89759f302e7.1623746916.git.bristot@redhat.com>
+Subject: [PATCH V4 09/12] trace: Add __print_ns_to_secs() and __print_ns_without_secs() helpers
+Date:   Tue, 15 Jun 2021 11:28:48 +0200
+Message-Id: <1c432d129da06c1c1ccc9051e39f9b75c2219cd3.1623746916.git.bristot@redhat.com>
 In-Reply-To: <cover.1623746916.git.bristot@redhat.com>
 References: <cover.1623746916.git.bristot@redhat.com>
 MIME-Version: 1.0
@@ -63,16 +63,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hwlat has some time operation checks on the sample loop, and it is
-currently using pr_err (printk) to report them. The problem is that
-this can lead the system to an unresponsible state due to an overflow of
-printk messages. This problem can be mitigated by writing the error
-message to the trace buffer.
+From: Steven Rostedt <rostedt@goodmis.org>
 
-Remove the printk messages from the sampling loop, switching the to
-messages in the trace buffer.
+To have nanosecond output displayed in a more human readable format, its
+nicer to convert it to a seconds format (XXX.YYYYYYYYY). The problem is that
+to do so, the numbers must be divided by NSEC_PER_SEC, and moded too. But as
+these numbers are 64 bit, this can not be done simply with '/' and '%'
+operators, but must use do_div() instead.
 
-No functional change.
+Instead of performing the expensive do_div() in the hot path of the
+tracepoint, it is more efficient to perform it during the output phase. But
+passing in do_div() can confuse the parser, and do_div() doesn't work
+exactly like a normal C function. It modifies the number in place, and we
+don't want to modify the actual values in the ring buffer.
+
+Two helper functions are now created:
+
+  __print_ns_to_secs() and __print_ns_without_secs()
+
+They both take a value of nanoseconds, and the former will return that
+number divided by NSEC_PER_SEC, and the latter will mod it with NSEC_PER_SEC
+giving a way to print a nice human readable format:
+
+ __print_fmt("time=%llu.%09u",
+	__print_ns_to_secs(REC->nsec_val),
+	__print_ns_without_secs(REC->nsec_val))
 
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Steven Rostedt <rostedt@goodmis.org>
@@ -88,57 +103,54 @@ Cc: "H. Peter Anvin" <hpa@zytor.com>
 Cc: x86@kernel.org
 Cc: linux-doc@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
 ---
- kernel/trace/trace_hwlat.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ include/trace/trace_events.h | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index 0ab6acf6ae9a..86e8541d4331 100644
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -182,6 +182,15 @@ void trace_hwlat_callback(bool enter)
- 		kdata->nmi_count++;
- }
+diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
+index 8268bf747d6f..acc17194c160 100644
+--- a/include/trace/trace_events.h
++++ b/include/trace/trace_events.h
+@@ -358,6 +358,21 @@ TRACE_MAKE_SYSTEM_STR();
+ 	trace_print_hex_dump_seq(p, prefix_str, prefix_type,		\
+ 				 rowsize, groupsize, buf, len, ascii)
+ 
++#undef __print_ns_to_secs
++#define __print_ns_to_secs(value)			\
++	({						\
++		u64 ____val = (u64)(value);		\
++		do_div(____val, NSEC_PER_SEC);		\
++		____val;				\
++	})
++
++#undef __print_ns_without_secs
++#define __print_ns_without_secs(value)			\
++	({						\
++		u64 ____val = (u64)(value);		\
++		(u32) do_div(____val, NSEC_PER_SEC);	\
++	})
++
+ #undef DECLARE_EVENT_CLASS
+ #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
+ static notrace enum print_line_t					\
+@@ -736,6 +751,16 @@ static inline void ftrace_test_probe_##call(void)			\
+ #undef __print_array
+ #undef __print_hex_dump
  
 +/*
-+ * hwlat_err - report a hwlat error.
++ * The below is not executed in the kernel. It is only what is
++ * displayed in the print format for userspace to parse.
 + */
-+#define hwlat_err(msg) ({							\
-+	struct trace_array *tr = hwlat_trace;					\
-+										\
-+	trace_array_printk_buf(tr->array_buffer.buffer, _THIS_IP_, msg);	\
-+})
++#undef __print_ns_to_secs
++#define __print_ns_to_secs(val) (val) / 1000000000UL
 +
- /**
-  * get_sample - sample the CPU TSC and look for likely hardware latencies
-  *
-@@ -225,7 +234,7 @@ static int get_sample(void)
- 			outer_diff = time_to_us(time_sub(t1, last_t2));
- 			/* This shouldn't happen */
- 			if (outer_diff < 0) {
--				pr_err(BANNER "time running backwards\n");
-+				hwlat_err(BANNER "time running backwards\n");
- 				goto out;
- 			}
- 			if (outer_diff > outer_sample)
-@@ -237,7 +246,7 @@ static int get_sample(void)
- 
- 		/* Check for possible overflows */
- 		if (total < last_total) {
--			pr_err("Time total overflowed\n");
-+			hwlat_err("Time total overflowed\n");
- 			break;
- 		}
- 		last_total = total;
-@@ -253,7 +262,7 @@ static int get_sample(void)
- 
- 		/* This shouldn't happen */
- 		if (diff < 0) {
--			pr_err(BANNER "time running backwards\n");
-+			hwlat_err(BANNER "time running backwards\n");
- 			goto out;
- 		}
++#undef __print_ns_without_secs
++#define __print_ns_without_secs(val) (val) % 1000000000UL
++
+ #undef TP_printk
+ #define TP_printk(fmt, args...) "\"" fmt "\", "  __stringify(args)
  
 -- 
 2.31.1
