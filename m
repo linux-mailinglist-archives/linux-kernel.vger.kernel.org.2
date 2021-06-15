@@ -2,154 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2AD3A7B6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A433A7B6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhFOKLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbhFOKLR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231485AbhFOKLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 15 Jun 2021 06:11:17 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3935CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:09:12 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso13727069otu.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:09:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D/L9M46eaaH0QBqlJTDr9j5/a1oRGHp298rEoHobuSk=;
-        b=W/lfR0zLReQdc7PHjJRVB6Z9hn6GJnOFkroA8pyiE5Y0liNQOgHCt87KS4/bkAX7eE
-         ruHOuoF3srORlhSJjFmg2JbJjF5kGBzDUdqoQ0xbY3+7U7KDtUEKQoFIW1wmxShxQmod
-         7IyMraVpNr1qagN5T38H67gQWcRWPStkYlkY11tL5rOY+XXsGhRyP8nZUCYVpimFgaQE
-         TDDfZ1AGYIcueALqYy5l63YjogRbXNbuef49nv3KDRdF0RjbjFT7pI243T186J46J90u
-         GYwjsGeX4c5nDZ3pG35tX5Es3IqFrw8pDn67QjzsbdqHfe/JYmQpn0mp/7J6DK3wRnbU
-         rLsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D/L9M46eaaH0QBqlJTDr9j5/a1oRGHp298rEoHobuSk=;
-        b=hLcuH17v7hXrjPwC7mcy7OeyNu5IBz4O9BYl+Kb1fuwtWg0Dyh1Kvf5RfR2+rZ5wzV
-         rg/C7nBOHAC8/i0f/DCRLYxNgpxxpEHp2j91RWkElZRmbXQNDjDHvlv3/877tdhQAE9q
-         ezjDndWZvkqcW/2se1dERZ8p3IQeiaRheh2JDBKUrWW1l7DsRuGQbCOuAxaJd1Kx9gQK
-         Sd/VjZJJnSrGEVu+koqSuFkTDRaSpKv1bUGcjmOLM8gM2hyta19iTAJTUOJNnPIj6nrt
-         +nvncQzbihjIeqGYT+jDyVZeUwfnEjKvPsadA5GS3gYuikyy9a6l6qkTcVwP4lw+kzwl
-         GIwA==
-X-Gm-Message-State: AOAM530K/+B6HzGWJsPEYDt2YSErgeya7tVmUpfGybDAR29Yzkf3CC6f
-        EvYMDvqoVauE4uBGQkeU30PFzWvyDW1wpeuJoe5SmA==
-X-Google-Smtp-Source: ABdhPJxoyp0dtnWruW4n6Mt2ds9c4qUeqUilzebp8wuisHioo9OHuACmSktOGVx8KTei3SgLqyvF0y6ZD0IXk1FVzz0=
-X-Received: by 2002:a05:6830:1c7b:: with SMTP id s27mr17651144otg.233.1623751751394;
- Tue, 15 Jun 2021 03:09:11 -0700 (PDT)
+Received: from smtp-out2.suse.de ([195.135.220.29]:39122 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231396AbhFOKLP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 06:11:15 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E87251FD2A;
+        Tue, 15 Jun 2021 10:09:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623751750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KDL1wVF9bJANau7hVbUKw7g0vTRPh8Xhz8VAUx4fNrI=;
+        b=mQqL16G7p/jd5oXo4A2EyZOd2suj+AfB/Mm3Qh9YDlqAqKrVpUNAuSgVD6D4adH6fixCP+
+        4+97gNItYZtziDtGeo3pTRhhpBxuoLaXIzDDfGJ7NlmUP15k9vpISQd9v9q06Hc04pEcYg
+        k2WzfKQ1bRlQ/jEATJH2PCWo3uyjR1Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623751750;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KDL1wVF9bJANau7hVbUKw7g0vTRPh8Xhz8VAUx4fNrI=;
+        b=wI9fDY34eP4LHswxyBnlhCJ81dzK2c/ZaEhopBQsEnNe1AkduGuPMeiQAxwC+KOqOGeGnC
+        WY8YCQXptLVnhTAw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id D1424118DD;
+        Tue, 15 Jun 2021 10:09:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623751750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KDL1wVF9bJANau7hVbUKw7g0vTRPh8Xhz8VAUx4fNrI=;
+        b=mQqL16G7p/jd5oXo4A2EyZOd2suj+AfB/Mm3Qh9YDlqAqKrVpUNAuSgVD6D4adH6fixCP+
+        4+97gNItYZtziDtGeo3pTRhhpBxuoLaXIzDDfGJ7NlmUP15k9vpISQd9v9q06Hc04pEcYg
+        k2WzfKQ1bRlQ/jEATJH2PCWo3uyjR1Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623751750;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KDL1wVF9bJANau7hVbUKw7g0vTRPh8Xhz8VAUx4fNrI=;
+        b=wI9fDY34eP4LHswxyBnlhCJ81dzK2c/ZaEhopBQsEnNe1AkduGuPMeiQAxwC+KOqOGeGnC
+        WY8YCQXptLVnhTAw==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id Gw9xMkZ8yGAFFQAALh3uQQ
+        (envelope-from <bp@suse.de>); Tue, 15 Jun 2021 10:09:10 +0000
+Date:   Tue, 15 Jun 2021 12:09:00 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch 09/41] x86/kvm: Avoid looking up PKRU in XSAVE buffer
+Message-ID: <YMh8PAomWPzHx3Nt@zn.tnic>
+References: <20210611161523.508908024@linutronix.de>
+ <20210611163111.931697147@linutronix.de>
+ <YMcuzOOCGl+nKysP@zn.tnic>
+ <918268bd-8092-7511-f0b8-d981143b7610@intel.com>
 MIME-Version: 1.0
-References: <20210615014705.2234866-1-dja@axtens.net> <20210615014705.2234866-3-dja@axtens.net>
-In-Reply-To: <20210615014705.2234866-3-dja@axtens.net>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 15 Jun 2021 12:08:59 +0200
-Message-ID: <CANpmjNN2=gdDBPzYQYsmOtLQVVjSz2qFcwcTMEqB=s_ZWndJLg@mail.gmail.com>
-Subject: Re: [PATCH v12 2/6] kasan: allow architectures to provide an outline
- readiness check
-To:     Daniel Axtens <dja@axtens.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        aneesh.kumar@linux.ibm.com, Balbir Singh <bsingharora@gmail.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <918268bd-8092-7511-f0b8-d981143b7610@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 at 03:47, Daniel Axtens <dja@axtens.net> wrote:
->
-> Allow architectures to define a kasan_arch_is_ready() hook that bails
-> out of any function that's about to touch the shadow unless the arch
-> says that it is ready for the memory to be accessed. This is fairly
-> uninvasive and should have a negligible performance penalty.
->
-> This will only work in outline mode, so an arch must specify
-> ARCH_DISABLE_KASAN_INLINE if it requires this.
->
-> Cc: Balbir Singh <bsingharora@gmail.com>
-> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
-> Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Signed-off-by: Daniel Axtens <dja@axtens.net>
->
-> --
->
-> I discuss the justfication for this later in the series. Also,
-> both previous RFCs for ppc64 - by 2 different people - have
-> needed this trick! See:
->  - https://lore.kernel.org/patchwork/patch/592820/ # ppc64 hash series
->  - https://patchwork.ozlabs.org/patch/795211/      # ppc radix series
-> ---
->  mm/kasan/common.c  | 4 ++++
->  mm/kasan/generic.c | 3 +++
->  mm/kasan/kasan.h   | 4 ++++
->  mm/kasan/shadow.c  | 4 ++++
->  4 files changed, 15 insertions(+)
->
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 10177cc26d06..0ad615f3801d 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -331,6 +331,10 @@ static inline bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
->         u8 tag;
->         void *tagged_object;
->
-> +       /* Bail if the arch isn't ready */
-> +       if (!kasan_arch_is_ready())
-> +               return false;
-> +
->         tag = get_tag(object);
->         tagged_object = object;
->         object = kasan_reset_tag(object);
-> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> index 53cbf28859b5..c3f5ba7a294a 100644
-> --- a/mm/kasan/generic.c
-> +++ b/mm/kasan/generic.c
-> @@ -163,6 +163,9 @@ static __always_inline bool check_region_inline(unsigned long addr,
->                                                 size_t size, bool write,
->                                                 unsigned long ret_ip)
->  {
-> +       if (!kasan_arch_is_ready())
-> +               return true;
-> +
->         if (unlikely(size == 0))
->                 return true;
->
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index 8f450bc28045..19323a3d5975 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -449,6 +449,10 @@ static inline void kasan_poison_last_granule(const void *address, size_t size) {
->
->  #endif /* CONFIG_KASAN_GENERIC */
->
-> +#ifndef kasan_arch_is_ready
-> +static inline bool kasan_arch_is_ready(void)   { return true; }
-> +#endif
-> +
->  /*
->   * Exported functions for interfaces called from assembly or from generated
->   * code. Declarations here to avoid warning about missing declarations.
-> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-> index 082ee5b6d9a1..74134b657d7d 100644
-> --- a/mm/kasan/shadow.c
-> +++ b/mm/kasan/shadow.c
-> @@ -73,6 +73,10 @@ void kasan_poison(const void *addr, size_t size, u8 value, bool init)
->  {
->         void *shadow_start, *shadow_end;
->
-> +       /* Don't touch the shadow memory if arch isn't ready */
-> +       if (!kasan_arch_is_ready())
-> +               return;
-> +
+On Mon, Jun 14, 2021 at 12:34:31PM -0700, Dave Hansen wrote:
+> I gave that a shot.  Two wrinkles: The PKRU memcpy() needs 'offset' from
+> cpuid_count() and the PKRU case also needs the 'valid -=' manipulation.
+>  The result is attached, and while it makes the diff look better, I
+> don't think the resulting code is an improvement.
 
-What about kasan_poison_last_granule()? kasan_unpoison() currently
-seems to potentially trip on that.
+Bah, that was too much wishful and faulty thinking on my part, forget
+what I said.
+
+> I *think* these are already stored in xfeature_uncompacted_offset[].  It
+> would be a pretty simple matter to export it.  I just assumed that this
+> is a slow enough path that the KVM folks don't care.
+
+I guess. Yeah, let's cleanup the FPU mess first and then see what makes
+sense or not.
+
+> I'm happy to change it, but I usually like to separate declarations from
+> pure code.  Although, I guess that's a bit inconsistent in that file.
+
+No, this is what I mean:
+
++			src = get_xsave_addr(xsave, xfeature_nr);
++			if (src)
++				memcpy(dest + offset, src, size);
+
+vs
+
++			void *dest = get_xsave_addr(xsave, xfeature_nr);
++
++			if (dest)
+ 				memcpy(dest, src + offset, size);
+
+both in your patch.
+
+It is a lot easier when reading the code to have the error handling
+glued together with the previous function call.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
