@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA9C3A7D62
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE2C3A7D88
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhFOLjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:39:52 -0400
-Received: from mail-vs1-f44.google.com ([209.85.217.44]:34428 "EHLO
-        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhFOLjv (ORCPT
+        id S229977AbhFOLvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:51:15 -0400
+Received: from mail-m118208.qiye.163.com ([115.236.118.208]:65032 "EHLO
+        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229909AbhFOLvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:39:51 -0400
-Received: by mail-vs1-f44.google.com with SMTP id q2so9600903vsr.1;
-        Tue, 15 Jun 2021 04:37:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dEMwKaBtIH7S3fAHfNJawJ0VDIFQVTRz5VU7710Dgcs=;
-        b=B+0zDrwsNnKxdnPYBuIeYJBCvXer+SpPMtRQGVQTLKVTv3fNWk4QgI0C4Wf41vskdI
-         cJiqaIQ9ohZse7DuX2+Q4rsv+whkef7HR2QuThVLsn0Iw5bb8vfAkxe5Ew21fWE5t61n
-         AyxCdg2QzAaNAxv5HGEwt13DfqKzwMopaVYImBj3aMBbTJfwAM7iC7LCmhVulAia9xqn
-         k4RFPRiH9KEWI2z3zMvF3RxRddvS1L+P78mW5ORnQBwi+hXVRgaSiB7hXfeSNA5H9SaQ
-         ArBqNSvQQnxBqDe1VbYM7C/VApLZBTk2kVYnkclmBxWnIzWq35Z4fItggVN1niRYZNv+
-         ugxQ==
-X-Gm-Message-State: AOAM533RwyKuTgarMNSJGfsho4IjYkT8xB2bZdZcZq25DN5/odh69WvK
-        Jh9tY32vdlfx8oTiM7BLKYluNF05Fa8I8KteliI=
-X-Google-Smtp-Source: ABdhPJzWu0ZzQHuXV4PYNLkuX4/zyAG0cMCexlumQE0LzgSqdbPE35wZuXi0z3ynFv+/B+I3sIMNXeQKnTb1W0uliBA=
-X-Received: by 2002:a05:6102:c4c:: with SMTP id y12mr4274193vss.18.1623757067039;
- Tue, 15 Jun 2021 04:37:47 -0700 (PDT)
+        Tue, 15 Jun 2021 07:51:14 -0400
+X-Greylist: delayed 446 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Jun 2021 07:51:14 EDT
+Received: from [0.0.0.0] (unknown [116.24.56.76])
+        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 2419AE00AB;
+        Tue, 15 Jun 2021 19:41:39 +0800 (CST)
+Subject: Re: [PATCH v1 1/6] mm/hwpoison: mf_mutex for soft offline and
+ unpoison
+To:     Naoya Horiguchi <nao.horiguchi@gmail.com>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+References: <20210614021212.223326-1-nao.horiguchi@gmail.com>
+ <20210614021212.223326-2-nao.horiguchi@gmail.com>
+From:   Ding Hui <dinghui@sangfor.com.cn>
+Message-ID: <b827a97a-661a-be04-f154-49be6087aa57@sangfor.com.cn>
+Date:   Tue, 15 Jun 2021 19:41:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <cover.1623326176.git.viresh.kumar@linaro.org> <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
- <20210611035623.z4f2ynumzozigqnv@vireshk-i7> <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
- <20210611080122.tlkidv6bowuka6fw@vireshk-i7> <CAMuHMdVL4VH09ixPcpqqokNJeYd68Th2Y6Lz4PZTF7h06OOBGw@mail.gmail.com>
- <20210615111551.7tcz7teqp4olhodf@vireshk-i7>
-In-Reply-To: <20210615111551.7tcz7teqp4olhodf@vireshk-i7>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 15 Jun 2021 13:37:35 +0200
-Message-ID: <CAMuHMdUKNgRgH+=fHW9RZijdFT9syPu-FD=EyA-PkrtUrg3AdQ@mail.gmail.com>
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Alistair Strachan <astrachan@google.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210614021212.223326-2-nao.horiguchi@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGh0YT1YYThgeTEJMTEMZT0NVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mz46ASo4SD8VFUhKSQwJDxo9
+        GkwaCxxVSlVKTUlITE5MSEtLSkxIVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+        QVlKSk1VSU9VTk1VTE1ZV1kIAVlBSU9CQzcG
+X-HM-Tid: 0a7a0f7a20632c17kusn2419ae00ab
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+On 2021/6/14 10:12, Naoya Horiguchi wrote:
 
-On Tue, Jun 15, 2021 at 1:15 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> On 11-06-21, 10:22, Geert Uytterhoeven wrote:
-> > The same reasoning can apply to your backend daemon, so when using
-> > the GPIO aggregator, you can just control a full gpiochip, without
-> > having to implement access control on individual GPIO lines.
->
-> I tried to look at it and it surely looks very temping and may fit
-> well and reduce size of my backend :)
->
-> I am now wondering how interrupts can be made to work here. Do you
-> have anything in mind for that ?
->
-> GPIO sysfs already supports interrupts, just that you need to register
-> irq for the specific GPIO pins inside the aggregator ?
+>   
+> @@ -2171,6 +2177,8 @@ int soft_offline_page(unsigned long pfn, int flags)
+>   		return -EIO;
+>   	}
+>   
+> +	mutex_lock(&mf_mutex);
+> +
+>   	if (PageHWPoison(page)) {
+>   		pr_info("%s: %#lx page already poisoned\n", __func__, pfn);
+>   		put_ref_page(ref_page);
 
-So far I hadn't considered interrupts.
-Will think about it...
+Did you miss mutex_unlock() here when page already poisoned ?
 
-Gr{oetje,eeting}s,
+> @@ -2194,5 +2202,7 @@ int soft_offline_page(unsigned long pfn, int flags)
+>   			 __func__, pfn, page->flags, &page->flags);
+>   	}
+>   
+> +	mutex_unlock(&mf_mutex);
+> +
+>   	return ret;
+>   }
+> 
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--
+Thanks,
+- Ding Hui
