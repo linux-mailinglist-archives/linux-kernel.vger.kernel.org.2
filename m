@@ -2,151 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992713A8825
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B993A882B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhFOR5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:57:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbhFOR5o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:57:44 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C446C061574;
-        Tue, 15 Jun 2021 10:55:39 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso15118180oto.12;
-        Tue, 15 Jun 2021 10:55:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=CRI05j+5T2aqXEW9ArA8iI3525TNmhlSCKGX7OS+rXQ=;
-        b=W8B5sNgOR6tXolvHuxTawhXRruFzBrahFDKBjKzfRvideKowSB+Z61I4QY7LkB3d7V
-         FU0EaB2Aknq/VMZFh7f4ODKbVyW3hjFQLmFdic5ITHZ9sWMb9/l4g/ikBYozr/3XMR+C
-         NIggVvVAxlZlQpe3XnoGO82vBxaiXukrQ0tZ0yllEH5MrkFxN5nm79rFOPye/yeydcsn
-         xL7mBXyA5Sn3HosG9gXcO09zOrZqCwiBrZKPToBJoimpe8ZKIS+keImLI0FJERBQ+JNr
-         RLLTFqpsq+w8R/PvinQ/SeruFz904N9f3rma2ph1PIwaNtcZ+VcXC7kvYFTBnsEcKY1h
-         zGnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=CRI05j+5T2aqXEW9ArA8iI3525TNmhlSCKGX7OS+rXQ=;
-        b=biaksoBzF6WVNbcCLRMD/al2DLLWyYgDfyWd02uX0K5zONg9PJA2YQ5A31/kvu4AJy
-         28XjOtS4khe8aIXUqHPLccqY7ibJKjkzkdGJ646vVUlGf8b9QX57lXnWctEHAA9ubx9Q
-         a7UqRXb81lW70y5dmm+gEhOERk94AG7XGM+3aNJ6fEnp1BGGD9Kh5MkclaP/6PHCCcCb
-         D0JRb7cIvchombsAIgJPRbWddb/eUAlhYdcTrsa/jd7NQpD4RNigJ8PlGFIgbf9qaCQd
-         eOxLKBrx5aXr5ZgNIUczfnFAc1JftvZvzRYKG0qhOyvKL7H/T0pSEGErfHR6j2QDRel5
-         S+ZQ==
-X-Gm-Message-State: AOAM532wAUOZQUyFOlW44UEwJziieIIdP+Mlx1Le6v0ErVFAb/XOsOda
-        hWrZjIEYtQxtWH4RZKHVh1+fR1xPM03u
-X-Google-Smtp-Source: ABdhPJzDbqs4NXHsM7buoHD+Hib0P1dnwGqEWUqRrqrTeHpkfAQJK1jg2gPAePNDUfXLvPB/qw6izw==
-X-Received: by 2002:a9d:945:: with SMTP id 63mr382284otp.47.1623779737814;
-        Tue, 15 Jun 2021 10:55:37 -0700 (PDT)
-Received: from threadripper.novatech-llc.local ([216.21.169.52])
-        by smtp.gmail.com with ESMTPSA id d136sm3810592oib.4.2021.06.15.10.55.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Jun 2021 10:55:37 -0700 (PDT)
-From:   George McCollister <george.mccollister@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        George McCollister <george.mccollister@gmail.com>
-Subject: [PATCH net-next] net: dsa: xrs700x: forward HSR supervision frames
-Date:   Tue, 15 Jun 2021 12:55:26 -0500
-Message-Id: <20210615175526.19829-1-george.mccollister@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S231287AbhFOSA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 14:00:27 -0400
+Received: from mga11.intel.com ([192.55.52.93]:63575 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229981AbhFOSA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 14:00:26 -0400
+IronPort-SDR: KBlLT0qaWG7Hen/GhURBBzfiar+x3HOEBJYctebPdMD2ctpJicrIySZ5nbfms97mA+XtqI6CSc
+ r5iWuHg5LLOQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="203021160"
+X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
+   d="scan'208";a="203021160"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 10:58:21 -0700
+IronPort-SDR: /NWBIAGO6My8nHyPT2PCq4JegKFeeQF10gNYT09Fgl7o+A8upGQtsR7NncRmorl3F+zNiBJGmG
+ 10gW0/LhMtmQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
+   d="scan'208";a="553767173"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by orsmga004.jf.intel.com with ESMTP; 15 Jun 2021 10:58:20 -0700
+Date:   Tue, 15 Jun 2021 10:58:35 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Borislav Petkov <bp@alien8.de>, Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] TSX force abort
+Message-ID: <20210615175835.gdtcxodvqjd2xwht@gupta-dev2.localdomain>
+References: <cover.b592910a3829c87c83cf5605718c415c80c0c4a9.1623704845.git-series.pawan.kumar.gupta@linux.intel.com>
+ <87pmwngpwo.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <87pmwngpwo.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Forward supervision frames between redunant HSR ports. This was broken
-in the last commit.
+On 15.06.2021 16:31, Thomas Gleixner wrote:
+>On Mon, Jun 14 2021 at 14:11, Pawan Gupta wrote:
+>> v1->v2:
+>> - Avoid Reading TSX_FORCE_ABORT MSR for detecting new microcode.
+>> - In tsx_init() move force abort detection before cmdline parsing.
+>> - Drop tsx=fake patch, not enough use cases to justify the patch.
+>> - Rebase to v5.13-rc6.
+>
+>Aside of the "/* Network style" comment in 2/3 this looks good!
+>
+>Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 
-Fixes: 1a42624aecba ("net: dsa: xrs700x: allow HSR/PRP supervision dupes
-for node_table")
-Signed-off-by: George McCollister <george.mccollister@gmail.com>
----
- drivers/net/dsa/xrs700x/xrs700x.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/dsa/xrs700x/xrs700x.c b/drivers/net/dsa/xrs700x/xrs700x.c
-index a79066174a77..130abb0f1438 100644
---- a/drivers/net/dsa/xrs700x/xrs700x.c
-+++ b/drivers/net/dsa/xrs700x/xrs700x.c
-@@ -337,7 +337,8 @@ static int xrs700x_port_add_bpdu_ipf(struct dsa_switch *ds, int port)
-  * This is required to correctly populate the HSR/PRP node_table.
-  * Leave the policy disabled, it will be enabled as needed.
-  */
--static int xrs700x_port_add_hsrsup_ipf(struct dsa_switch *ds, int port)
-+static int xrs700x_port_add_hsrsup_ipf(struct dsa_switch *ds, int port,
-+				       int fwdport)
- {
- 	struct xrs700x *priv = ds->priv;
- 	unsigned int val = 0;
-@@ -368,6 +369,9 @@ static int xrs700x_port_add_hsrsup_ipf(struct dsa_switch *ds, int port)
- 	if (ret)
- 		return ret;
- 
-+	if (fwdport >= 0)
-+		val |= BIT(fwdport);
-+
- 	/* Allow must be set prevent duplicate discard */
- 	ret = regmap_write(priv->regmap, XRS_ETH_ADDR_FWD_ALLOW(port, 1), val);
- 	if (ret)
-@@ -405,10 +409,6 @@ static int xrs700x_port_setup(struct dsa_switch *ds, int port)
- 		ret = xrs700x_port_add_bpdu_ipf(ds, port);
- 		if (ret)
- 			return ret;
--
--		ret = xrs700x_port_add_hsrsup_ipf(ds, port);
--		if (ret)
--			return ret;
- 	}
- 
- 	return 0;
-@@ -562,6 +562,7 @@ static int xrs700x_hsr_join(struct dsa_switch *ds, int port,
- 	struct net_device *slave;
- 	int ret, i, hsr_pair[2];
- 	enum hsr_version ver;
-+	bool fwd = false;
- 
- 	ret = hsr_get_version(hsr, &ver);
- 	if (ret)
-@@ -607,6 +608,7 @@ static int xrs700x_hsr_join(struct dsa_switch *ds, int port,
- 	if (ver == HSR_V1) {
- 		val &= ~BIT(partner->index);
- 		val &= ~BIT(port);
-+		fwd = true;
- 	}
- 	val &= ~BIT(dsa_upstream_port(ds, port));
- 	regmap_write(priv->regmap, XRS_PORT_FWD_MASK(partner->index), val);
-@@ -616,10 +618,19 @@ static int xrs700x_hsr_join(struct dsa_switch *ds, int port,
- 			    XRS_PORT_FORWARDING);
- 	regmap_fields_write(priv->ps_forward, port, XRS_PORT_FORWARDING);
- 
--	/* Enable inbound policy added by xrs700x_port_add_hsrsup_ipf()
--	 * which allows HSR/PRP supervision forwarding to the CPU port without
--	 * discarding duplicates.
-+	/* Enable inbound policy which allows HSR/PRP supervision forwarding
-+	 * to the CPU port without discarding duplicates. Continue to
-+	 * forward to redundant ports when in HSR mode while discarding
-+	 * duplicates.
- 	 */
-+	ret = xrs700x_port_add_hsrsup_ipf(ds, partner->index, fwd ? port : -1);
-+	if (ret)
-+		return ret;
-+
-+	ret = xrs700x_port_add_hsrsup_ipf(ds, port, fwd ? partner->index : -1);
-+	if (ret)
-+		return ret;
-+
- 	regmap_update_bits(priv->regmap,
- 			   XRS_ETH_ADDR_CFG(partner->index, 1), 1, 1);
- 	regmap_update_bits(priv->regmap, XRS_ETH_ADDR_CFG(port, 1), 1, 1);
--- 
-2.11.0
-
+Many thanks for the review Thomas, Boris, Tony and Andi.
