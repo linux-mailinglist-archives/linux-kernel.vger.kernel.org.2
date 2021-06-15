@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A95C3A7F1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB9A3A7F1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhFONY4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 09:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhFONYy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:24:54 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48348C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:22:50 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lt91e-0008I0-IR; Tue, 15 Jun 2021 15:22:42 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lt91b-00014w-Rg; Tue, 15 Jun 2021 15:22:39 +0200
-Message-ID: <2800a872ff4260fc7a942f2f2ea1c9e3603b13d7.camel@pengutronix.de>
-Subject: Re: [PATCH net-next v4 02/10] net: sparx5: add the basic sparx5
- driver
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Steen Hegelund <steen.hegelund@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Simon Horman <simon.horman@netronome.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>
-Date:   Tue, 15 Jun 2021 15:22:39 +0200
-In-Reply-To: <20210615085034.1262457-3-steen.hegelund@microchip.com>
-References: <20210615085034.1262457-1-steen.hegelund@microchip.com>
-         <20210615085034.1262457-3-steen.hegelund@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S230350AbhFONZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:25:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230012AbhFONZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:25:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D6B16145D;
+        Tue, 15 Jun 2021 13:23:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623763426;
+        bh=njAVyJRWhBO8YU/Or9Lp1K4CKrYWEHtrBeO7xM2r8bs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Oq6jCPTrRIN3sdQDVBmIOAKW5zx24/7UOmZRhFhNCFDc+7TF+K7QCsRh5bH7jr+ZO
+         YjfnbG0ZRhB2byC0AN97v/XZWoP+SvTfI0gx0I4oNnKvWq6kgfWrW/leAR88JzkEGP
+         YFZCGdC5o1qIglx5y6NfBie68elEo9NPBEv96H4U=
+Date:   Tue, 15 Jun 2021 15:23:44 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/8] staging: rtl8723bs: move LPS_RPWM_WAIT_MS macro
+Message-ID: <YMip4N/RW1FYvnkd@kroah.com>
+References: <cover.1623756906.git.fabioaiuto83@gmail.com>
+ <5756b958b5d279f1cc8cea7887f50d003b17b94e.1623756906.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5756b958b5d279f1cc8cea7887f50d003b17b94e.1623756906.git.fabioaiuto83@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steen,
-
-On Tue, 2021-06-15 at 10:50 +0200, Steen Hegelund wrote:
-> This adds the Sparx5 basic SwitchDev driver framework with IO range
-> mapping, switch device detection and core clock configuration.
+On Tue, Jun 15, 2021 at 01:45:36PM +0200, Fabio Aiuto wrote:
+> move LPS_RPWM_WAIT_MS macro from include/autoconf.h to
+> include/hal_btcoex.h in order to empty unneeded
+> autoconf.h.
 > 
-> Support for ports, phylink, netdev, mactable etc. are in the following
-> patches.
+> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> ---
+>  drivers/staging/rtl8723bs/include/hal_btcoex.h | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-[...]
-> diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
-> new file mode 100644
-> index 000000000000..892bbbaacbd6
-> --- /dev/null
-> +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
-> @@ -0,0 +1,743 @@
-[...]
-> +static int mchp_sparx5_probe(struct platform_device *pdev)
-> +{
-[...]
-> +	/* Do switch core reset if available */
-> +	reset = devm_reset_control_get_optional_shared(&pdev->dev, "switch");
+> diff --git a/drivers/staging/rtl8723bs/include/hal_btcoex.h b/drivers/staging/rtl8723bs/include/hal_btcoex.h
+> index eb9d0ba861a5..849fb90b43b7 100644
+> --- a/drivers/staging/rtl8723bs/include/hal_btcoex.h
+> +++ b/drivers/staging/rtl8723bs/include/hal_btcoex.h
+> @@ -9,6 +9,8 @@
+>  
+>  #include <drv_types.h>
+>  
+> +#define LPS_RPWM_WAIT_MS	300
+> +
+>  /*  Some variables can't get from outsrc BT-Coex, */
+>  /*  so we need to save here */
+>  struct bt_coexist {
+> -- 
+> 2.20.1
+> 
+> 
 
-Please don't ignore errors here. For example:
+Note, this did not "move" anything, it just added it.
 
-	if (IS_ERR(reset))
-		return dev_err_probe(&pdev->dev, PTR_ERR(reset),
-				     "Failed to get reset.\n");
+I'll take it, but be more careful in the future please.
 
-> 	reset_control_reset(reset);
+thanks,
 
-regards
-Philipp
+greg k-h
