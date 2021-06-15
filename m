@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7443A840F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 213203A8419
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbhFOPgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:36:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230462AbhFOPgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:36:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6686A61628;
-        Tue, 15 Jun 2021 15:34:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623771283;
-        bh=d14cFwvkQ17tOfAPl+ebV2HVKfhjCmFSqPChii5qe7M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SKu14XdOOA47tRQMguyFzEJ3OzKkBC+Ps8qbRQBDaruZIC0Ou72N6yruCm1fpFrou
-         J1nK78JAgG/ubli/RssrL3mRRUyTNNtvRvjhDtMu0/ftpfTIs5n7FJ5aUIMDga6TuH
-         ntEnrmYrLTAxn/mqcgEscurp5uq+bscNrGodhTjb0TYxsjMUzmmCLJwrygrRi9Sv3t
-         THQlw0O89PfAUNGXBG2gHqqEI1CT+dnVXqe0H8uaEOlh54IKT6VGHQ8YcdVDPCakT6
-         C+XgzmSXrq5RCqPgevB0RABJFVo1cfJUssMPnG5F14W9tk3y92PqWmG7dO45wxGkVI
-         0I+E2A26Jv3PQ==
-Date:   Tue, 15 Jun 2021 16:34:24 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     =?utf-8?B?Y3lfaHVhbmco6buD5ZWf5Y6fKQ==?= <cy_huang@richtek.com>
-Cc:     "axel.lin@ingics.com" <axel.lin@ingics.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] regulator: rt6160: Remove vsel_active_low from struct
- rt6160_priv
-Message-ID: <20210615153424.GJ5149@sirena.org.uk>
-References: <20210615103947.3387994-1-axel.lin@ingics.com>
- <162376572819.36399.17993990572863185568.b4-ty@kernel.org>
- <1623770667.4571.4.camel@richtek.com>
+        id S231688AbhFOPhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhFOPho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:37:44 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0901AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:35:39 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id n25so1065230vkl.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:35:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=12lusgJKqZ+mFXJMQojBCjBzeRiohhHShT1Rj6cPMlA=;
+        b=KdTeL4xhOG1Ni08Mf6x0ZpT6rt9j9qQv+4GuFufpy9Ao2aplllacUO3i6KB3Pr9Rgk
+         cjToMFZjWR8QRk/rF8v8/zAq0KQUiUUIut6Il99rIFXXsL0A6iRURQpQwmP7JLNU9dGV
+         16lYhsXZqzVIHA6Nd1LZ3FHGpIGSUOztR2O2pGXx+032trMRf7rBFhneKGe4kPt95zFV
+         R5FllI9cUcq7JTYkk0/oNUCDgZZyvZOQzcsEvNMaJTtmrS27nJcDGWbx0svynNj/g3zd
+         0znOSVeB+ZGyrQQqpqmr5qg1dHMHomeu919bunVoA21KJ2U2g4qqzTFVRE0g/iSNt6nA
+         khZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=12lusgJKqZ+mFXJMQojBCjBzeRiohhHShT1Rj6cPMlA=;
+        b=VXOWKwD0MmapJfqxd6wvkwQWKleB4A6oPrYWVJJmTBLcFGgceEXLqqnfC2DuPBrL1y
+         kjIQltcF5MNaHQs/LxyH6buflG5JujD94VbN5fNwTLJHZyQK/C1BtQIdgzD2eJdOh8Pc
+         aauQKhPjvkJKZ1mCotJpXu6Ug2qdBZQ6OlgQ9FRGIXBdpKGJ5D/I8+nNpvP/jZDLGM0Q
+         G0c6wGg6XBii6WqEN+xgJDVcTbE64MVUAOp26UUU2KOJqm6atPU/2HRldSLoq3OWxtuq
+         46BokX76CCmQOOiaphu5gNEEIZWArXJydMo809jNH+ZozefYRWQRt3VVNsR+FDMzX9VZ
+         a7ew==
+X-Gm-Message-State: AOAM533+zkSWBTR4mgAQC7lo4N/ztzgAztHqSpxZydWSAZavcXLxRe8i
+        GXocpyldTLYMEkagsNNM0y6Db9hEk0L/O7ePefzmhw==
+X-Google-Smtp-Source: ABdhPJyEAEOe6I6qtvLHO5Hm3e/awBYGqKLv+Jhmw2CzujYFMTLYGKPub/BltgkGnQPNw58/mXrSs/TP1Z6+jggvyRM=
+X-Received: by 2002:a1f:3dd8:: with SMTP id k207mr4287282vka.7.1623771338193;
+ Tue, 15 Jun 2021 08:35:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="F4+N/OgRSdC8YnqX"
-Content-Disposition: inline
-In-Reply-To: <1623770667.4571.4.camel@richtek.com>
-X-Cookie: See store for details.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
+ <20210611101540.3379937-3-dmitry.baryshkov@linaro.org> <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
+ <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
+ <CAPDyKFoMC_7kJx_Wb4LKgxvRCoqHYFtwsJ2b7Cr4OvjA94DtHg@mail.gmail.com>
+ <20210615111012.GA5149@sirena.org.uk> <CAPDyKFreV-RPzweG8SqFQtvZMOyFbaG2+tMFKc2JkbEj+erb=g@mail.gmail.com>
+ <20210615152620.GH5149@sirena.org.uk>
+In-Reply-To: <20210615152620.GH5149@sirena.org.uk>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 15 Jun 2021 17:35:01 +0200
+Message-ID: <CAPDyKFrthc_6rXt1UscKTQnctFXw0XjReEF5bqCGot2n=ChKaA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 15 Jun 2021 at 17:26, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Jun 15, 2021 at 04:55:24PM +0200, Ulf Hansson wrote:
+> > On Tue, 15 Jun 2021 at 13:10, Mark Brown <broonie@kernel.org> wrote:
+> > > On Tue, Jun 15, 2021 at 12:17:20PM +0200, Ulf Hansson wrote:
+>
+> > > > Beyond this, perhaps we should consider removing the
+> > > > "regulator-fixed-domain" DT property, as to avoid similar problems
+> > > > from cropping up?
+>
+> > > > Mark, what do you think?
+>
+> > > We need to maintain compatibility for existing users...
+>
+> > Normally, yes, I would agree.
+>
+> > In this case, it looks like there is only one user, which is somewhat
+> > broken in regards to this, so what's the point of keeping this around?
+>
+> Only one user in mainline and you were just suggesting removing the
+> property (you mean binding I think?) - at the very least we'd need to
+> transition that upstream user away to something else before doing
+> anything.
 
---F4+N/OgRSdC8YnqX
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, I am referring to the binding.
 
-On Tue, Jun 15, 2021 at 03:24:27PM +0000, cy_huang(=E9=BB=83=E5=95=9F=E5=8E=
-=9F) wrote:
+Let's see where we end up with this. My concern at this point is that
+it could spread to more users, which would make it even more difficult
+to remove.
 
-> No, you may misunderstand it.
-> If vsel active is high, the normal voltage output register is vselh regis=
-ter,
-> and the suspend voltage is vsell register. Else, reverse.
->=20
-> Axel's change will cause the normal/suspend voltage be configured for the=
- same
-> register. It's not for our reference usage.
-
-OK, can you please send a patch fixing this and explaining what the
-problem was?
-
---F4+N/OgRSdC8YnqX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDIyH8ACgkQJNaLcl1U
-h9B6ugf+JGEBnLVQDW5JP5tJ7NZ6H8b6MBADE/YCQuMdtWIwnp6tul0W9OO5wTzd
-rvUWTg45gq5UJxFTPBVx5TsWDQexKhNq91q24cg6XNLXCHqih8qoywi09BX8q9R4
-Lu/MQCp10q9lgjnrprpDoPo/6lZCwKU38Yjf5poWPtYIcIWMkuOb1S/Rv4RAMESV
-K4gdxt54rdBp6LbKikWbtB4n7+lpX6yJp8Y3YAYTr+5EChGWP2E1+n551Nv2y1Qe
-OZs0j/E2Bb/bSshzYY0Xas1gIUS6Rp39xU1JbTPkFwamgUl4sUgXvk1h/8pJWzLE
-R/2GYzjUMxjTxk0CD/QmSeIIME3eOQ==
-=o3JP
------END PGP SIGNATURE-----
-
---F4+N/OgRSdC8YnqX--
+Kind regards
+Uffe
