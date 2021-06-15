@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68953A8347
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA1B3A834B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhFOOzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45740 "EHLO
+        id S231345AbhFOOzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbhFOOzd (ORCPT
+        with ESMTP id S230079AbhFOOzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:55:33 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F62C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:53:28 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623768807;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e93NAi6ZEiulkbcdd6o8Ahtb1+0Pma6KZlwIxXZGnpI=;
-        b=jMoV7aWk49uxTY1kg2gMCOHt6ChpE95KIyYuXqF7ZNR9YOEtc1hivB2tT/UfbmF+ao8xyH
-        rGGvCDZrjZlPpSBnMsqlt56FNz2+b/GG1hGeTSBOzV41a7RQuG0KDA9pmxx6Ghx9hpMqOv
-        yWhJXETSXYYwus6sLsqKclWgG7TmNDBmtgoVCLhin5qK9PRC2hlISJ1NEDXN79Kzmj5ewt
-        POBCJTmeykB3twO5sk6X7WfHiEvXuWY8CblQ2QkJCDbptyksDXLvHnohYoZYNUJ/lt6skR
-        rsD3A9ftbVsCJBZQJVyGa0fswFhLiRhG2fYvoH7LAAZj0vQ4ghfl9xvz8qzoNQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623768807;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e93NAi6ZEiulkbcdd6o8Ahtb1+0Pma6KZlwIxXZGnpI=;
-        b=JvI/9XwPrTpEfCpYz9x6ibWwJYy1EBrVh1uz2bHbaTVcVQ9kzkrtYCUmiaxXlC0q6ic9s7
-        iGMhUWdmX5dvB2Cg==
-To:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zhang Yi <wetpzy@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Neel Natu <neelnatu@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm, futex: Fix shared futex pgoff on shmem huge page
-In-Reply-To: <b17d946b-d09-326e-b42a-52884c36df32@google.com>
-References: <45e8fd67-51fd-7828-fe43-d261d6c33727@google.com> <YMTdtRZG+7q8OtkK@casper.infradead.org> <b17d946b-d09-326e-b42a-52884c36df32@google.com>
-Date:   Tue, 15 Jun 2021 16:53:27 +0200
-Message-ID: <87mtrrgowo.ffs@nanos.tec.linutronix.de>
+        Tue, 15 Jun 2021 10:55:49 -0400
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74974C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:53:45 -0700 (PDT)
+Received: from [192.168.1.101] (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 2D2733F43E;
+        Tue, 15 Jun 2021 16:53:42 +0200 (CEST)
+Subject: Re: [PATCH v2 10/10] arm64: dts: qcom: sa8155p-adp: Add base dts file
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     bhupesh.linux@gmail.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>
+References: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
+ <20210615074543.26700-11-bhupesh.sharma@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <0b012d77-8d61-f852-f455-8b6cceb03ebf@somainline.org>
+Date:   Tue, 15 Jun 2021 16:53:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210615074543.26700-11-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12 2021 at 20:16, Hugh Dickins wrote:
-> If more than one futex is placed on a shmem huge page, it can happen that
-> waking the second wakes the first instead, and leaves the second waiting:
-> the key's shared.pgoff is wrong.
->
-> When 3.11 commit 13d60f4b6ab5 ("futex: Take hugepages into account when
-> generating futex_key"), the only shared huge pages came from hugetlbfs,
-> and the code added to deal with its exceptional page->index was put into
-> hugetlb source.  Then that was missed when 4.8 added shmem huge pages.
->
-> page_to_pgoff() is what others use for this nowadays: except that, as
-> currently written, it gives the right answer on hugetlbfs head, but
-> nonsense on hugetlbfs tails.  Fix that by calling hugetlbfs-specific
-> hugetlb_basepage_index() on PageHuge tails as well as on head.
->
-> Yes, it's unconventional to declare hugetlb_basepage_index() there in
-> pagemap.h, rather than in hugetlb.h; but I do not expect anything but
-> page_to_pgoff() ever to need it.
->
-> Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
-> Reported-by: Neel Natu <neelnatu@google.com>
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: <stable@vger.kernel.org>
+Hi,
 
-Assuming this goes through mm:
 
-Acked-by: Thomas Gleixner <tglx@linutronix.de>
+> +
+> +	reset-gpios = <&tlmm 175 GPIO_ACTIVE_LOW>;
+> +
+> +	vcc-supply = <&vreg_l10a_2p96>;
+> +	vcc-max-microamp = <750000>;
+> +	vccq-supply = <&vreg_l5c_1p2>;
+> +	vccq-max-microamp = <700000>;
+> +	vccq2-supply = <&vreg_s4a_1p8>;
+> +	vccq2-max-microamp = <750000>;
+
+You need to add "regulator-allow-set-load;" to the mentioned supplies,
+
+as you're controlling the amperage here.
+
+
+> +};
+> +
+> +&ufs_mem_phy {
+> +	status = "okay";
+> +
+> +	vdda-phy-supply = <&vreg_l8c_1p2>;
+> +	vdda-max-microamp = <87100>;
+> +	vdda-pll-supply = <&vreg_l5a_0p88>;
+> +	vdda-pll-max-microamp = <18300>;
+
+Ditto
+
+
+Konrad
