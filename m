@@ -2,94 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC6B3A777B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036203A777D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbhFOHCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhFOHCx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:02:53 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967D4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:00:48 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id y13-20020a1c4b0d0000b02901c20173e165so1347050wma.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uxV9YrfPTMckE68tXN+z29g+tg5T03Yl2qalXJXkNkc=;
-        b=r1wXG2g3Ij7IpQjP3ce3rAGLFuR/t7fpjpPV3DAsvtb0rvkoXniW0jXUy+NFu5v6an
-         x/aIbngSA6Xg7x/oLGbVkkYcRzXPDK5ehnrd9eM/25bUwjs8Y522tphG2C8cfXnne7cV
-         xYpaXi3tIr/v9hFceGqOcf3cmqMGNeB5OhuSQPWArWyZo7OL3/WlWSn2Okuae5hbnq3V
-         w6HUmWtV46Zm7eZnxeEHgBVovzkqzs24QKVAq3w7iUtVgpsCplS98uWkG/9iCS6Bhwf6
-         2jTsZeaM3ZocTTRy2Qly0vGDBHFL/M+tjK+eo7swwiNa25dlYsPKVLTybPI84W9C1ghE
-         ZCiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uxV9YrfPTMckE68tXN+z29g+tg5T03Yl2qalXJXkNkc=;
-        b=Tv6/cHy2nI2pJJj34gYuZM+4e3A0n5M2E7s/QeeeCiqTgvMVilfaWX/NMXddp31A8G
-         wg9KFatnQ4thLXvYMMRVRkBM1R8k9z64F9DhHyijsm8tEwIFry4iyKg2lUUexlUi9cXi
-         VOx0KOTk99PkSt9K5McoMJY0BpKsMo/yelrl//3d84XEESo38vjH5qmJkYDvwVmrWZDS
-         w10wHN8TDSvwwBuXmujZgWxQOqgytnXJ73RfNUwq8zBBBFPyCaTZ7CVTK4pz6zyTrB++
-         7UGidNHTQcCCtqNJ4rR+ou2LhX63EodOhIgtChKGnnvFHj/pN6ojG59g7oPyLDS1eav6
-         kaPg==
-X-Gm-Message-State: AOAM5332+wOTw+MCbNzciCL5cXuAGDIQ8wPVLkK1kKy/uH+OjUh8aKSp
-        +QUfeRAvxK50fSZGqjxAMYXAYyPxZH8N73lXjyHOBg==
-X-Google-Smtp-Source: ABdhPJywx870VvTJLcC/IUKQvu1pmDshczTbWjQNPyhg5UovPLLVsbpeCyE2WdcabCSWVbVPXbT8GqEPYMFv9vt2Oh4=
-X-Received: by 2002:a1c:41c5:: with SMTP id o188mr3401371wma.60.1623740447101;
- Tue, 15 Jun 2021 00:00:47 -0700 (PDT)
+        id S230212AbhFOHDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:03:15 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:28958 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229488AbhFOHDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 03:03:15 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4G3zkG2nzhzB9VX;
+        Tue, 15 Jun 2021 09:01:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id vOWfko6GyBBp; Tue, 15 Jun 2021 09:01:10 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4G3zkG1sbQz9t3p;
+        Tue, 15 Jun 2021 09:01:10 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 073EF8B7A2;
+        Tue, 15 Jun 2021 09:01:05 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Vmwdfs1dKPwR; Tue, 15 Jun 2021 09:01:04 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8C5758B7A0;
+        Tue, 15 Jun 2021 09:01:04 +0200 (CEST)
+Subject: Re: [PATCH 7/7] powerpc/signal: Use unsafe_copy_siginfo_to_user()
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <b813c1f4d3dab2f51300eac44d99029aa8e57830.1623739212.git.christophe.leroy@csgroup.eu>
+ <8b4b640746523f5efb1c9a9fd97465bac4f00cae.1623739212.git.christophe.leroy@csgroup.eu>
+ <YMhO4oiqh4F+ZEW8@infradead.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <68f4251c-2803-67b8-e8df-1a977ec368ba@csgroup.eu>
+Date:   Tue, 15 Jun 2021 09:00:58 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210614223317.999867-1-tyhicks@linux.microsoft.com> <20210614223317.999867-5-tyhicks@linux.microsoft.com>
-In-Reply-To: <20210614223317.999867-5-tyhicks@linux.microsoft.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Tue, 15 Jun 2021 09:00:36 +0200
-Message-ID: <CAHUa44HeJu9_33H3V=ms5=Z4tKSgQ8=3nWqUDvvNgJvaUB4H=A@mail.gmail.com>
-Subject: Re: [PATCH v5 4/8] optee: Clear stale cache entries during initialization
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YMhO4oiqh4F+ZEW8@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 12:33 AM Tyler Hicks
-<tyhicks@linux.microsoft.com> wrote:
->
-> The shm cache could contain invalid addresses if
-> optee_disable_shm_cache() was not called from the .shutdown hook of the
-> previous kernel before a kexec. These addresses could be unmapped or
-> they could point to mapped but unintended locations in memory.
->
-> Clear the shared memory cache, while being careful to not translate the
-> addresses returned from OPTEE_SMC_DISABLE_SHM_CACHE, during driver
-> initialization. Once all pre-cache shm objects are removed, proceed with
-> enabling the cache so that we know that we can handle cached shm objects
-> with confidence later in the .shutdown hook.
->
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> ---
->  drivers/tee/optee/call.c          | 36 ++++++++++++++++++++++++++++---
->  drivers/tee/optee/core.c          |  9 ++++++++
->  drivers/tee/optee/optee_private.h |  1 +
->  3 files changed, 43 insertions(+), 3 deletions(-)
 
-Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
+
+Le 15/06/2021 à 08:55, Christoph Hellwig a écrit :
+>> @@ -836,14 +830,19 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
+>>   		asm("dcbst %y0; sync; icbi %y0; sync" :: "Z" (mctx->mc_pad[0]));
+>>   	}
+>>   	unsafe_put_sigset_t(&frame->uc.uc_sigmask, oldset, failed);
+>> +#ifndef CONFIG_COMPAT
+>> +	unsafe_copy_siginfo_to_user(&frame->info, &ksig->info, failed);
+>> +#endif
+>>   
+>>   	/* create a stack frame for the caller of the handler */
+>>   	unsafe_put_user(regs->gpr[1], newsp, failed);
+>>   
+>>   	user_access_end();
+>>   
+>> -	if (copy_siginfo_to_user(&frame->info, &ksig->info))
+>> +#ifdef CONFIG_COMPAT
+>> +	if (copy_siginfo_to_user32(&frame->info, &ksig->info))
+>>   		goto badframe;
+>> +#endif
+> 
+> Shouldn't the compat case be handled the same way?
+> 
+
+It would be best, but it is not that easy to convert. So for the time being it is left aside, anyway 
+compat is for compatibility, so performance doesn't matter so much.
