@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B673A8903
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290083A8904
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhFOTAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 15:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44774 "EHLO
+        id S231220AbhFOTAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 15:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhFOTAK (ORCPT
+        with ESMTP id S229749AbhFOTAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 15:00:10 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6444AC061574;
-        Tue, 15 Jun 2021 11:58:04 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id k7so24223281ejv.12;
-        Tue, 15 Jun 2021 11:58:04 -0700 (PDT)
+        Tue, 15 Jun 2021 15:00:33 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD05C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:58:27 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id d2so101320ljj.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:58:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0xCBSrZTq3lR+Z5Xk389LhiHH2/uglF9MoazKFAcyjw=;
-        b=oaY5gWBCgLbXI4bRJ4AHMdbKlyI4aNBDcdO/P9RrpfAy7pJO1r9Ia+xEGyhb2BGQcL
-         w3Wm9hRMs5Qt6QRYD2Lg+0cCJaLbiJ4/QEv1o/C9Ysmv6WVuGSgIoFFwss7hGfVjUeoc
-         wNTJtzDV06PDlRYest8XrNgvPFG7T9p/XvB7hMWmP7VbLhkeFpOH6uVto/ovYIHcBq/i
-         M9n1FN/ZQVTUYvFkH1uMkHCX2fcky07i7cUSb8cuOr9XaXWIFef8cc9e5HBXOIwfMbqU
-         BD0rSrdZ+OZ9rLVW8/TwaIaXR+NZpZUqfKbqxQuIRoQeHjxNLOwRSZwhRX47iy23yP7m
-         bHXg==
+        bh=1l+TgcrG/jdNtGh4+CRzkkljCRvQxHjsEK+JJYiByBA=;
+        b=LeOtkEe2qCTRiSUbmrVYGdezN28DWEjzRKVMpSKPUoMKO5sarME9uuvGA+Xu/4fZab
+         6sUPm17bdDXupF8j34YgPJZC7dl6pnQCAvWTO8ZY3CI/IqfcMDaeTlF/sznaqGuKaV20
+         Z25w2/CyVTKmjCufViJQceIjwLuoSgvtpvtn8dGNH/ULl1m7aC1OOpCjFcKD1iPzzfG4
+         f9niEENYEuJIL9ZkOAr9bbMa6Zrbr7EqDYAy0dc2hcaJebR7dz03mgZISznGNywX3Gol
+         q6kYk/yB999ezNN5WS1Bgyps4S20EwdwCAf3Iy0HoL8SgLfPbYw+hROCIcPKhLpsE4YG
+         UspQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0xCBSrZTq3lR+Z5Xk389LhiHH2/uglF9MoazKFAcyjw=;
-        b=GZYsrgUwEFxbL9/yc/kAeeSXjwG0N+A7ZCWwjBeQN3AfJEFzT1ZC4mc6oJRyQ3JAse
-         4ne3ksF69UDQ3uwGOfcZ+GGpvEXhGjjK3mjZLKO9qq4iYYiAA5R3jV+BogawaiO2Sp18
-         OgfMoPse3sOq6bNopEw+G2o7OfC0iodPm+JHvXVVWJ7fouAeJbUReOliTPRf9WWxlTdg
-         LLNAcrM2pgi0TSDHO9RHOsPcD7jzYEOGQXoRsJZImGVtiVQDQwohM/iIcHWi0/Ts3cuP
-         1HQpnmph83wl1Wr8N/dx6mCKPdgY7xewE+lY5NCw3ARMXB8eWveRN3JEZcWYbLVNqRvH
-         qubQ==
-X-Gm-Message-State: AOAM533MsAvSaErFqkn217983RMFhgQFwgmQolECVE/DnDsZsbpcbgn0
-        fzmzdcLEOyHDmCVj//4ouNPifF/XugMe1KhgNOjL96c=
-X-Google-Smtp-Source: ABdhPJzNlge3ea+4G8oidJAyC9M1zdt9+7pRNlfUsDyqWIV2NfzdKLU1B3Ue4V9rtTG8FCaBt20XOY+0zNIKuhXDw9U=
-X-Received: by 2002:a17:906:85d5:: with SMTP id i21mr1104005ejy.360.1623783482956;
- Tue, 15 Jun 2021 11:58:02 -0700 (PDT)
+        bh=1l+TgcrG/jdNtGh4+CRzkkljCRvQxHjsEK+JJYiByBA=;
+        b=cpjfjEoXWJ+RPYBAOpAuRm9rLip8rruHl3jX0HswkdMg5EAbkguaFJaq7rheqsUPAb
+         OdW/9tNL2FBe7rbaZVIWiLEjPlRfEu5nmRlwVGgEVWzAQz62XZ3TT5zj6l96pJmyH0/X
+         zTCZ49Zin0YdB8nsbsZu6Ik1LYKNVmkp9h0aC2FVID+XnLiviNVcnNPVrsKh+R43Su88
+         K8Nvwbp6zZkfqocmqwlpEq+xxNNaYPCUSEQQKctbFkFoEjU19HOdm01/Q8LxGNrSw/uj
+         g4Lub6QPJL63Es+fk/LzbKvu307J+KFuARkkFm82PT07BQ5egJmhId0xGKXmsEpQx22g
+         FNNA==
+X-Gm-Message-State: AOAM533AItEVMEHjXIafMnrtzn4DmBPXmOxsB114EjlgPvAS852EukNt
+        d3loqy15ijbs7LMt+UE0NIJ5ZaNSmqmhZ35SLRs=
+X-Google-Smtp-Source: ABdhPJyvP6iSzbvLqJWGeB7GRLHfxxsakEjiSQpqQ9BOexXX6dWfUu+K+giVos/YlN8xnIPOuq34vhLExwFhtILZPlc=
+X-Received: by 2002:a05:651c:288:: with SMTP id b8mr932295ljo.482.1623783506171;
+ Tue, 15 Jun 2021 11:58:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210615125958.541c275c@canb.auug.org.au> <20210615184704.4204347f@xps13>
-In-Reply-To: <20210615184704.4204347f@xps13>
-From:   Rob Herring <robherring2@gmail.com>
-Date:   Tue, 15 Jun 2021 12:57:51 -0600
-Message-ID: <CAL_Jsq+G-gF9MbmF9_XWTjVu7LOgJ1YpuPqAAf7vGdvzvZ6dwg@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the devicetree tree with the mtd tree
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
+References: <20210615185206.7701-1-paul@pbarker.dev>
+In-Reply-To: <20210615185206.7701-1-paul@pbarker.dev>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Wed, 16 Jun 2021 00:28:14 +0530
+Message-ID: <CABJPP5Ch4oTnrVZxSO3qLXO2M0xawLJpBO-T5+L7EJDRH3s1Hg@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: Use python3 to run spdxcheck.py
+To:     Paul Barker <paul@pbarker.dev>
+Cc:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 10:47 AM Miquel Raynal
-<miquel.raynal@bootlin.com> wrote:
+On Wed, Jun 16, 2021 at 12:22 AM Paul Barker <paul@pbarker.dev> wrote:
 >
-> Hi Stephen,
+> Since commit d0259c42abff ("spdxcheck.py: Use Python 3"), the shebang
+> line in scripts/spdxcheck.py says the script should run with `python3`.
+> However, checkpatch has been explicitly running this script with
+> `python` so it needs updating to ensure that Python 3 is used on all
+> distros.
 >
-> Stephen Rothwell <sfr@canb.auug.org.au> wrote on Tue, 15 Jun 2021
-> 12:59:58 +1000:
+> Signed-off-by: Paul Barker <paul@pbarker.dev>
+> ---
+>  scripts/checkpatch.pl | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> > Hi all,
-> >
-> > Today's linux-next merge of the devicetree tree got a conflict in:
-> >
-> >   Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
-> >
-> > between commit:
-> >
-> >   6947ad674944 ("dt-bindings: mtd: Convert ti, am654-hbmc.txt to YAML schema")
-> >
-> > from the mtd tree and commit:
-> >
-> >   9b358af7c818 ("dt-bindings: mux: Convert mux controller bindings to schema")
-> >
-> > from the devicetree tree.
-> >
-> > I fixed it up (the latter removed the file, so I just did that) and can
-> > carry the fix as necessary. This is now fixed as far as linux-next is
-> > concerned, but any non trivial conflicts should be mentioned to your
-> > upstream maintainer when your tree is submitted for merging.  You may
-> > also want to consider cooperating with the maintainer of the conflicting
-> > tree to minimise any particularly complex conflicts.
-> >
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 23697a6b1eaa..5e5e3a53461b 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -1084,10 +1084,10 @@ sub is_maintained_obsolete {
+>  sub is_SPDX_License_valid {
+>         my ($license) = @_;
 >
-> Thanks for the warning. Indeed the txt file being touched by
-> 9b358af7c818 is being updated into a yaml file which does not reference
-> the mux binding anymore.
+> -       return 1 if (!$tree || which("python") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
+> +       return 1 if (!$tree || which("python3") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
 >
-> Rob, how do you want to proceed?
+>         my $root_path = abs_path($root);
+> -       my $status = `cd "$root_path"; echo "$license" | python scripts/spdxcheck.py -`;
+> +       my $status = `cd "$root_path"; echo "$license" | python3 scripts/spdxcheck.py -`;
+>         return 0 if ($status ne "");
+>         return 1;
+>  }
+> --
 
-It shouldn't be an issue merging as taking the deleted file is simple
-enough to resolve.
+Hello,
+This change was already added by Commit c739ec2da1ea
+("checkpatch: scripts/spdxcheck.py now requires python3")
+in linux-next.
 
-Rob
+Thanks,
+Dwaipayan.
