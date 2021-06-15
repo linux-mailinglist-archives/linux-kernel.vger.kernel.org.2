@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796FB3A844A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E4D3A845C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbhFOPrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:47:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56601 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231694AbhFOPry (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:47:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623771949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rwmXEsTbN240xGcOS39WntWwEOMy1r0XQYbSoFpZcHw=;
-        b=B5oX3RZj0P5N15UZjt7DdEXDtu6jGfurzY5xAHjdWSVRmdGeQjn+GoQf5OaUHebGvWUaN3
-        PzMbdIv+/N22eVUcggWVjqjWPoxHZSM9tr5MQKMnBIUBxFpREF9rKzh7R4US9UHBJsNDWo
-        dpEermf8JT0zhjPsGEeS+QnsG5pxezs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-tQAQoeIWMwisaHstoUOl7w-1; Tue, 15 Jun 2021 11:45:45 -0400
-X-MC-Unique: tQAQoeIWMwisaHstoUOl7w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B0D18015DB;
-        Tue, 15 Jun 2021 15:45:43 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.212])
-        by smtp.corp.redhat.com (Postfix) with SMTP id E6FFA1007606;
-        Tue, 15 Jun 2021 15:45:40 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue, 15 Jun 2021 17:45:43 +0200 (CEST)
-Date:   Tue, 15 Jun 2021 17:45:39 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
-        Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH] freezer,sched: Rewrite core freezer logic
-Message-ID: <20210615154539.GA30333@redhat.com>
-References: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
- <20210614154246.GB13677@redhat.com>
- <20210614161221.GC68749@worktop.programming.kicks-ass.net>
- <20210614165422.GC13677@redhat.com>
- <20210614183801.GE68749@worktop.programming.kicks-ass.net>
+        id S231787AbhFOPub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:50:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231700AbhFOPua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:50:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D71136142E;
+        Tue, 15 Jun 2021 15:48:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623772106;
+        bh=UkDxa+fl9rFOLo1Io0faeV/fqWbjlXYKuHxxv5ocWTY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gjQmNDQNwGw9yLyJR8Xn4C6Mkz1THWhrFrI1VOxR9PRRltGMIu3JVJNgLBzwpOmci
+         vpjIxM2ZFfw7Fvc5JESGeT8rDugAUMUWBhuoYmYYtB+3cxmZjvlxxsGWD2B/y/KiUm
+         nxK1uUCWNH2k7CAEMQwECWUUqeKQ/JQDwkSkSZikGRaHP9yXOEX971q0CHfZhUe9Ol
+         5YwuqLEfwEWoo1GjY3o8D3q0T+GSRrpWh8UwJzKtLMue8B0623XVbExiPwvhF29ETt
+         ovCVgXHpLIrkt/dnS193vJPqFS7IyV+GxHOBn/Gg9R+A6oU8p2+wIo/5gprKHMpX/0
+         HsfqY0//REp3w==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 01/33] regulator: cros-ec: Fix error code in dev_err message
+Date:   Tue, 15 Jun 2021 11:47:52 -0400
+Message-Id: <20210615154824.62044-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210614183801.GE68749@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/14, Peter Zijlstra wrote:
->
-> One more thing; if I add additional state bits to preserve
-> __TASK_{TRACED,STOPPED}, then I need to figure out at thaw time if we've
-> missed a wakeup or not.
->
-> Do we have sufficient state for that? If so, don't we then also not have
-> sufficient state to tell if a task should've been TRACED/STOPPED in the
-> first place?
+From: Axel Lin <axel.lin@ingics.com>
 
-Not sure I understand you, probably not, but I think the answer is "no" ;)
+[ Upstream commit 3d681804efcb6e5d8089a433402e19179347d7ae ]
 
-But this reminds me... can't we implement selective wakeups? So that if a
-task T sleeps in state = STOPPED | FROZEN, then ttwu(T, FROZEN) won't wake
-it up, it will only clear FROZEN from T->state. Similarly, ttwu(T, STOPPED)
-will leave this task with state == FROZEN.
+Show proper error code instead of 0.
 
-See also
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/20210512075824.620580-1-axel.lin@ingics.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/regulator/cros-ec-regulator.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-	https://lore.kernel.org/lkml/20131112162136.GA29065@redhat.com/
-	https://lore.kernel.org/lkml/20131113170724.GA17739@redhat.com/
-
-just to remind you that we already discussed TASK_FROZEN a little bit almost
-10 years ago ;)
-
-What has been shall be, and what has been done is what will be done, and
-there is nothing new under the sun.
-
-Oleg.
+diff --git a/drivers/regulator/cros-ec-regulator.c b/drivers/regulator/cros-ec-regulator.c
+index eb3fc1db4edc..c4754f3cf233 100644
+--- a/drivers/regulator/cros-ec-regulator.c
++++ b/drivers/regulator/cros-ec-regulator.c
+@@ -225,8 +225,9 @@ static int cros_ec_regulator_probe(struct platform_device *pdev)
+ 
+ 	drvdata->dev = devm_regulator_register(dev, &drvdata->desc, &cfg);
+ 	if (IS_ERR(drvdata->dev)) {
++		ret = PTR_ERR(drvdata->dev);
+ 		dev_err(&pdev->dev, "Failed to register regulator: %d\n", ret);
+-		return PTR_ERR(drvdata->dev);
++		return ret;
+ 	}
+ 
+ 	platform_set_drvdata(pdev, drvdata);
+-- 
+2.30.2
 
