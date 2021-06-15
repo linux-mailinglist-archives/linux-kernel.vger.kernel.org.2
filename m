@@ -2,115 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE553A8422
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1F63A841F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbhFOPkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:40:21 -0400
-Received: from mail-pj1-f50.google.com ([209.85.216.50]:45584 "EHLO
-        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231583AbhFOPkO (ORCPT
+        id S231499AbhFOPkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhFOPkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:40:14 -0400
-Received: by mail-pj1-f50.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso2460644pjb.4;
-        Tue, 15 Jun 2021 08:38:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ow9MwHDQZoCtOkYmSlGoPU4JHie/Q0V/L+qPA/bMQ6w=;
-        b=kc8gYQUatONyY9L74kWNGuLWWzMasFlU1eKuhpPrRYo3+yzx0Ji8P65Qp7w3Mzg19j
-         3TlU0fXUfbclxvYAmEBvcjdkljFWL7z6WdoLYl+W9gO3+wCJOnBM6He8eI0/B/3/CDRb
-         EolpewBssOPvVvTgHO5JKCmGrO7sm8GTJsv+R0dmsRSZEapEreeSeEqyDxxOBjZi5uE3
-         nhyUhTwHQyLpcY7RD2l1LNnN8nuV3J5oh4bWX2/zoPh56e62SONRBgoqv8ZVj0i8FIKn
-         l95xSL5WrDpb6lr04WdSP6oLMgdqmOlK3ltqyD1B6qtAZfxUHWjpw4b2DSyqDgZLrUGq
-         OT8Q==
-X-Gm-Message-State: AOAM532kVgQ1lsSybp7YjfLc+/lpSzZXgY4jVFWfCO8Oo+q0bpvuS+vj
-        qrLSSflECEnjIw6AZYmUHLI=
-X-Google-Smtp-Source: ABdhPJwOyhUXvKnijqXnXKcuWwbGxnK0gtDWu+9QVWG397Kj0iksDNcl+cmOgoqMp9P/059e26TmDQ==
-X-Received: by 2002:a17:90b:1285:: with SMTP id fw5mr5528543pjb.35.1623771488441;
-        Tue, 15 Jun 2021 08:38:08 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id m16sm12844491pgb.92.2021.06.15.08.38.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 08:38:07 -0700 (PDT)
-From:   Moritz Fischer <mdf@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     maz@kernel.org, vkoul@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, moritzf@google.com,
-        Moritz Fischer <mdf@kernel.org>, stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@intel.com>
-Subject: [PATCH v2] usb: renesas-xhci: Fix handling of unknown ROM state
-Date:   Tue, 15 Jun 2021 08:37:58 -0700
-Message-Id: <20210615153758.253572-1-mdf@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 15 Jun 2021 11:40:11 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E10AC061574;
+        Tue, 15 Jun 2021 08:38:06 -0700 (PDT)
+Received: from [IPv6:2001:4c4c:2228:2400::1000] (20014C4C222824000000000000001000.catv.pool.telekom.hu [IPv6:2001:4c4c:2228:2400::1000])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hs@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 4CD6582934;
+        Tue, 15 Jun 2021 17:38:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1623771482;
+        bh=Ej4rCqetLA22T9wWq3Szx63Mg97UjXN4quAi/wmiorE=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=w4UPMvakgrKUQLtejM2GLU9QSfH7jmaSn0I5dlhseWNIAOGyl5FisWyRK0pRjCCvl
+         8kvSrxaNS3XltIoG/0EZVeLWo2y27z6TwDiiMIG+a9vBM4FDOixEDgBOR8mzOYu6x0
+         FXpnQ6KY67mpuZk3BWnfo7c9qwa77Oqr3q4sdT4JtPttbeN9GYQ6eItnTnLyuo2tws
+         91yY9sa0utKNYOmT+xsFkYwEpnQqhn2mTwhPHkVJBquSPSvAZZghMrLP8ZRe7aP8r/
+         /uTyW9EMS/JMqUuI+cYr9w/VBZs70HvQbV4LnqrYXdUFcFUgrV4bZOmfFmiYmE4sQN
+         Oq+Ld8PkTfzvA==
+Reply-To: hs@denx.de
+Subject: Re: [PATCH][next] mtd: devices: mchp48l640: Fix return of
+ uninitialized value in ret
+To:     Colin King <colin.king@canonical.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210615140652.59521-1-colin.king@canonical.com>
+From:   Heiko Schocher <hs@denx.de>
+Message-ID: <b0d971da-ff2e-7ad4-cba7-32a1406b983d@denx.de>
+Date:   Tue, 15 Jun 2021 17:38:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210615140652.59521-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ROM load sometimes seems to return an unknown status
-(RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
+Hello Colin,
 
-If the ROM load indeed failed this leads to failures when trying to
-communicate with the controller later on.
+On 15.06.21 16:06, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> In the case where the read or write lengths are zero bytes the return
+> value in variable ret has not been initialized and a garbage value
+> is returned. Fix this by initializing ret to zero.
+> 
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: 88d125026753 ("mtd: devices: add support for microchip 48l640 EERAM")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/mtd/devices/mchp48l640.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Attempt to load firmware using RAM load in those cases.
+Thanks!
 
-Cc: stable@vger.kernel.org
-Cc: Mathias Nyman <mathias.nyman@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Vinod Koul <vkoul@kernel.org>
-Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
-Tested-by: Vinod Koul <vkoul@kernel.org>
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
----
+Reviewed-by: Heiko Schocher <hs@denx.de>
 
-Changes from v1:
-- Added Vinod's Tested-by and Reviewed-by
-- Reworded commit message with more detail
-- Fixed up comment formatting
-
----
- drivers/usb/host/xhci-pci-renesas.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/usb/host/xhci-pci-renesas.c b/drivers/usb/host/xhci-pci-renesas.c
-index f97ac9f52bf4..431213cdf9e0 100644
---- a/drivers/usb/host/xhci-pci-renesas.c
-+++ b/drivers/usb/host/xhci-pci-renesas.c
-@@ -207,7 +207,8 @@ static int renesas_check_rom_state(struct pci_dev *pdev)
- 			return 0;
- 
- 		case RENESAS_ROM_STATUS_NO_RESULT: /* No result yet */
--			return 0;
-+			dev_dbg(&pdev->dev, "Unknown ROM status ...\n");
-+			break;
- 
- 		case RENESAS_ROM_STATUS_ERROR: /* Error State */
- 		default: /* All other states are marked as "Reserved states" */
-@@ -224,13 +225,12 @@ static int renesas_fw_check_running(struct pci_dev *pdev)
- 	u8 fw_state;
- 	int err;
- 
--	/* Check if device has ROM and loaded, if so skip everything */
--	err = renesas_check_rom(pdev);
--	if (err) { /* we have rom */
--		err = renesas_check_rom_state(pdev);
--		if (!err)
--			return err;
--	}
-+	/*
-+	 * Only if device has ROM and loaded FW we can skip loading and
-+	 * return success. Otherwise (even unknown state), attempt to load FW.
-+	 */
-+	if (renesas_check_rom(pdev) && !renesas_check_rom_state(pdev))
-+		return 0;
- 
- 	/*
- 	 * Test if the device is actually needing the firmware. As most
+bye,
+Heiko
 -- 
-2.31.1
-
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
