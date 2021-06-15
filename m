@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0159B3A77D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DCA3A77B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhFOHUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbhFOHU3 (ORCPT
+        id S230146AbhFOHMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:12:22 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:6370 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhFOHMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:20:29 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF02CC0617AF
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:18:24 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G40653jP4z9sRK;
-        Tue, 15 Jun 2021 17:18:21 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1623741503;
-        bh=PCjfL32gackDGGhjAkNyZ/DL6oMl+o8NKneVCsc9Szg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=H9Rn/WzGnluUtjcD4uSOsgVxG5L2reh9ymNdmNEBhQrT68Ie8SLd0LzUVOalYh2bH
-         UlYm+iokrvjQ3nkBM6JAfWR4kslk0683JjsivYK4JlfzBkbgBraxUan7VCA0mXDKKw
-         OXnv/acYi9KIw1RnMyQExJ329XkUUqhADqTzEF/ZL4q+VKJR6H5s3rS/KVurJsMDGi
-         zC54DYBYWLL22h5yE+IyJP9QNKadC9ZVE6UX7tnf0CLsoeI099Oro9e0idzXknMsUG
-         2I64WdzP5b8bPRGdBrl2ABFojf+Y3eU6LCV7qAHtwLFWgmeGGYeoSvBqIPd3kGudao
-         2p8d7yZjjcpIQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        naveen.n.rao@linux.vnet.ibm.com, jniethe5@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 00/12] powerpc: Cleanup use of 'struct ppc_inst'
-In-Reply-To: <cover.1621516826.git.christophe.leroy@csgroup.eu>
-References: <cover.1621516826.git.christophe.leroy@csgroup.eu>
-Date:   Tue, 15 Jun 2021 17:18:17 +1000
-Message-ID: <87r1h3tx3a.fsf@mpe.ellerman.id.au>
+        Tue, 15 Jun 2021 03:12:21 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G3zr80FSRz62cd;
+        Tue, 15 Jun 2021 15:06:16 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 15:10:13 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
+ 2021 15:10:13 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <rjw@rjwysocki.net>, <lenb@kernel.org>,
+        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>
+Subject: [PATCH -next v2] ACPI: sysfs: fix doc warnings in device_sysfs.c
+Date:   Tue, 15 Jun 2021 15:19:14 +0800
+Message-ID: <20210615071914.3067407-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> This series is a cleanup of the use of 'struct ppc_inst'.
->
-> A confusion is made between internal representation of powerpc
-> instructions with 'struct ppc_inst' and in-memory code which is
-> and will always be an array of 'unsigned int'.
+Fixes the following W=1 kernel build warning(s):
 
-Why don't we use u32 *, to make it even more explicit what the expected
-size is?
+ drivers/acpi/device_sysfs.c:278: warning: Function parameter or
+  member 'dev' not described in 'acpi_device_uevent_modalias'
+ drivers/acpi/device_sysfs.c:278: warning: Function parameter or
+  member 'env' not described in 'acpi_device_uevent_modalias'
+ drivers/acpi/device_sysfs.c:323: warning: Function parameter or
+  member 'dev' not described in 'acpi_device_modalias'
+ drivers/acpi/device_sysfs.c:323: warning: Function parameter or
+  member 'buf' not described in 'acpi_device_modalias'
+ drivers/acpi/device_sysfs.c:323: warning: Function parameter or
+  member 'size' not described in 'acpi_device_modalias'
 
-cheers
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+V1->V2:
+	Make comments more appropriate
+
+ drivers/acpi/device_sysfs.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index a393e0e09381..d96e38b2a0d1 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -268,6 +268,8 @@ int __acpi_device_uevent_modalias(struct acpi_device *adev,
+ 
+ /**
+  * acpi_device_uevent_modalias - uevent modalias for ACPI-enumerated devices.
++ * @dev: Struct device to get acpi device node.
++ * @env: Environment variables of the kobject uevent.
+  *
+  * Create the uevent modalias field for ACPI-enumerated devices.
+  *
+@@ -313,6 +315,9 @@ static int __acpi_device_modalias(struct acpi_device *adev, char *buf, int size)
+ 
+ /**
+  * acpi_device_modalias - modalias sysfs attribute for ACPI-enumerated devices.
++ * @dev: Struct device to get acpi device node.
++ * @buf: The buffer to save pnp_modalias and of_modalias.
++ * @size: Size of buffer.
+  *
+  * Create the modalias sysfs attribute for ACPI-enumerated devices.
+  *
+-- 
+2.31.1
+
