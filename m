@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C763A7AB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6AB3A7AB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhFOJh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:37:29 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:6506 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbhFOJhR (ORCPT
+        id S231214AbhFOJhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:37:37 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:6374 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231337AbhFOJhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:37:17 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G434c2nQQzZhT6;
-        Tue, 15 Jun 2021 17:32:16 +0800 (CST)
+        Tue, 15 Jun 2021 05:37:18 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G433P1dhVz63Yq;
+        Tue, 15 Jun 2021 17:31:13 +0800 (CST)
 Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
  15.1.2176.2; Tue, 15 Jun 2021 17:35:11 +0800
 Received: from localhost.localdomain (10.69.192.56) by
@@ -29,9 +29,9 @@ To:     <alexander.shishkin@linux.intel.com>, <mathieu.poirier@linaro.org>,
         <f.fangjian@huawei.com>
 CC:     <linux-kernel@vger.kernel.org>, <coresight@lists.linaro.org>,
         <linuxarm@huawei.com>, <liuqi115@huawei.com>
-Subject: [RFC PATCH 2/4] ultrasoc: add ultrasoc core layer framework
-Date:   Tue, 15 Jun 2021 17:34:42 +0800
-Message-ID: <1623749684-65432-3-git-send-email-liuqi115@huawei.com>
+Subject: [RFC PATCH 3/4] ultrasoc: Add ultrasoc AXI Communicator driver
+Date:   Tue, 15 Jun 2021 17:34:43 +0800
+Message-ID: <1623749684-65432-4-git-send-email-liuqi115@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1623749684-65432-1-git-send-email-liuqi115@huawei.com>
 References: <1623749684-65432-1-git-send-email-liuqi115@huawei.com>
@@ -45,111 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces a platform driver for the top device of Ultrasoc
-SubSystem. It also provides a framework to manage Ultrasoc communictors,
-and a set of standard attributes of communicators to access the service
-data and to configure the communictor drivers.
-Once a Ultrasoc Communictor driver register itself into the framework,
-these attributes will be added into communicator devices.
+This patch adds driver for ultrasoc AXI Communicator. It includes
+a platform driver to probe AXI Communicator device, a set of
+operations to access the service data, and a service work entry
+which will be called by the standard communicator service.
 
 Signed-off-by: Jonathan Zhou <jonathan.zhouwen@huawei.com>
 Signed-off-by: Qi Liu <liuqi115@huawei.com>
 ---
- MAINTAINERS                           |   7 +
- drivers/Makefile                      |   1 +
- drivers/hwtracing/Kconfig             |   2 +
- drivers/hwtracing/ultrasoc/Kconfig    |  16 ++
- drivers/hwtracing/ultrasoc/Makefile   |   7 +
- drivers/hwtracing/ultrasoc/ultrasoc.c | 518 ++++++++++++++++++++++++++++++++++
- drivers/hwtracing/ultrasoc/ultrasoc.h | 168 +++++++++++
- 7 files changed, 719 insertions(+)
- create mode 100644 drivers/hwtracing/ultrasoc/Kconfig
- create mode 100644 drivers/hwtracing/ultrasoc/Makefile
- create mode 100644 drivers/hwtracing/ultrasoc/ultrasoc.c
- create mode 100644 drivers/hwtracing/ultrasoc/ultrasoc.h
+ drivers/hwtracing/ultrasoc/Kconfig            |   9 +
+ drivers/hwtracing/ultrasoc/Makefile           |   3 +
+ drivers/hwtracing/ultrasoc/ultrasoc-axi-com.c | 334 ++++++++++++++++++++++++++
+ drivers/hwtracing/ultrasoc/ultrasoc-axi-com.h |  66 +++++
+ 4 files changed, 412 insertions(+)
+ create mode 100644 drivers/hwtracing/ultrasoc/ultrasoc-axi-com.c
+ create mode 100644 drivers/hwtracing/ultrasoc/ultrasoc-axi-com.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 88c2c4d..d799f6e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8324,6 +8324,13 @@ S:	Maintained
- F:	drivers/misc/hisi_hikey_usb.c
- F:	Documentation/devicetree/bindings/misc/hisilicon-hikey-usb.yaml
- 
-+SIEMENS EMBEDDED ANALYTICS DRIVER
-+M:	Jonathan Zhou <Jonathan.zhouwen@huawei.com>
-+M:	Qi Liu <liuqi115@huawei.com>
-+S:	Supported
-+F:	Documentation/trace/ultrasoc-trace.rst
-+F:	drivers/hwtracing/ultrasoc/
-+
- HISILICON PMU DRIVER
- M:	Shaokun Zhang <zhangshaokun@hisilicon.com>
- S:	Supported
-diff --git a/drivers/Makefile b/drivers/Makefile
-index 5a6d613..4c132a7 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -176,6 +176,7 @@ obj-$(CONFIG_PERF_EVENTS)	+= perf/
- obj-$(CONFIG_RAS)		+= ras/
- obj-$(CONFIG_USB4)		+= thunderbolt/
- obj-$(CONFIG_CORESIGHT)		+= hwtracing/coresight/
-+obj-y				+= hwtracing/ultrasoc/
- obj-y				+= hwtracing/intel_th/
- obj-$(CONFIG_STM)		+= hwtracing/stm/
- obj-$(CONFIG_ANDROID)		+= android/
-diff --git a/drivers/hwtracing/Kconfig b/drivers/hwtracing/Kconfig
-index 1308583..3829030 100644
---- a/drivers/hwtracing/Kconfig
-+++ b/drivers/hwtracing/Kconfig
-@@ -5,4 +5,6 @@ source "drivers/hwtracing/stm/Kconfig"
- 
- source "drivers/hwtracing/intel_th/Kconfig"
- 
-+source "drivers/hwtracing/ultrasoc/Kconfig"
-+
- endmenu
 diff --git a/drivers/hwtracing/ultrasoc/Kconfig b/drivers/hwtracing/ultrasoc/Kconfig
-new file mode 100644
-index 0000000..90a3934
---- /dev/null
+index 90a3934..77429f3 100644
+--- a/drivers/hwtracing/ultrasoc/Kconfig
 +++ b/drivers/hwtracing/ultrasoc/Kconfig
-@@ -0,0 +1,16 @@
-+# SPDX-License-Identifier: MIT
-+#
-+# ultrasoc configuration
-+#
-+
-+menuconfig ULTRASOC
-+	tristate "Ultrasoc Tracing Support"
-+	select CORESIGHT
+@@ -13,4 +13,13 @@ menuconfig ULTRASOC
+ 	  specification and configure the right series of components when a
+ 	  trace source gets enabled.
+ 
++if ULTRASOC
++config ULTRASOC_AXI_COM
++	tristate "Ultrasoc AXI communicator drivers"
 +	help
-+	  This framework provides a kernel interface for the Ultrasoc trace
-+	  drivers to register themselves with. It's intended to build
-+	  a topological view of the Ultrasoc components based on ACPI
-+	  specification and configure the right series of components when a
-+	  trace source gets enabled.
++	  This config enables support for Ultrasoc AXI Bus Communicator
++	  drivers. The AXI Communicator has upstream and downstream channels,
++	  the upstream channel is used to transmit user configuration, and
++	  downstream channel to carry response and trace data to the users.
 +
-+endif
+ endif
 diff --git a/drivers/hwtracing/ultrasoc/Makefile b/drivers/hwtracing/ultrasoc/Makefile
-new file mode 100644
-index 0000000..a747171
---- /dev/null
+index a747171..54711a7b 100644
+--- a/drivers/hwtracing/ultrasoc/Makefile
 +++ b/drivers/hwtracing/ultrasoc/Makefile
-@@ -0,0 +1,7 @@
-+# # SPDX-License-Identifier: MIT
-+#
-+# Makefile for ultrasoc drivers.
-+#
+@@ -5,3 +5,6 @@
+ 
+ obj-$(CONFIG_ULTRASOC) += ultrasoc-drv.o
+ ultrasoc-drv-objs := ultrasoc.o
 +
-+obj-$(CONFIG_ULTRASOC) += ultrasoc-drv.o
-+ultrasoc-drv-objs := ultrasoc.o
-diff --git a/drivers/hwtracing/ultrasoc/ultrasoc.c b/drivers/hwtracing/ultrasoc/ultrasoc.c
++obj-$(CONFIG_ULTRASOC_AXI_COM) += ultrasoc-axi-com-drv.o
++ultrasoc-axi-com-drv-objs := ultrasoc-axi-com.o
+diff --git a/drivers/hwtracing/ultrasoc/ultrasoc-axi-com.c b/drivers/hwtracing/ultrasoc/ultrasoc-axi-com.c
 new file mode 100644
-index 0000000..191c3ec
+index 0000000..af153dd
 --- /dev/null
-+++ b/drivers/hwtracing/ultrasoc/ultrasoc.c
-@@ -0,0 +1,518 @@
++++ b/drivers/hwtracing/ultrasoc/ultrasoc-axi-com.c
+@@ -0,0 +1,334 @@
 +// SPDX-License-Identifier: MIT
 +/*
 + * Copyright (C) 2021 Hisilicon Limited Permission is hereby granted, free of
@@ -179,501 +125,317 @@ index 0000000..191c3ec
 + * their intellectual property. This paragraph may not be removed or modified
 + * in any way without permission from Siemens Digital Industries Software Ltd.
 + */
-+#include <linux/delay.h>
++#include <linux/acpi.h>
 +#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/kthread.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
++#include <linux/kernel.h>
 +#include <linux/platform_device.h>
++#include <asm/unaligned.h>
 +
-+#include "ultrasoc.h"
++#include "ultrasoc-axi-com.h"
 +
-+static ssize_t com_mux_store(struct device *dev, struct device_attribute *attr,
-+			     const char *buf, size_t size)
++static void axi_com_enable_hw(struct axi_com_drv_data *drvdata)
 +{
-+	struct ultrasoc_drv_data *drvdata = dev_get_drvdata(dev);
-+	long val;
-+	int ret;
++	u32 val;
 +
-+	ret = kstrtol(buf, 0, &val);
-+	if (ret)
-+		return -EINVAL;
++	val = readl(drvdata->base + AXIC_US_CTL);
++	val |= AXIC_US_CTL_EN;
++	writel(val, drvdata->base + AXIC_US_CTL);
 +
-+	writel(val & 0xffffffff, drvdata->com_mux);
-+	return size;
++	val = readl(drvdata->base + AXIC_DS_CTL);
++	val |= AXIC_DS_CTL_EN;
++	writel(val, drvdata->base + AXIC_DS_CTL);
 +}
 +
-+static ssize_t com_mux_show(struct device *dev, struct device_attribute *attr,
-+			    char *buf)
++static void axi_com_disable_hw(struct axi_com_drv_data *drvdata)
 +{
-+	struct ultrasoc_drv_data *drvdata = dev_get_drvdata(dev);
++	u32 val;
 +
-+	return sysfs_emit(buf, "0x%x\n", readl(drvdata->com_mux));
-+}
-+static DEVICE_ATTR_RW(com_mux);
++	val = readl(drvdata->base + AXIC_US_CTL);
++	val &= ~AXIC_US_CTL_EN;
++	writel(val, drvdata->base + AXIC_US_CTL);
 +
-+static umode_t ultrasoc_com_mux_is_visible(struct kobject *kobj,
-+					   struct attribute *attr, int unused)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct ultrasoc_drv_data *drvdata = dev_get_drvdata(dev);
-+
-+	if (IS_ERR(drvdata->com_mux))
-+		return 0;
-+
-+	return attr->mode;
++	val = readl(drvdata->base + AXIC_DS_CTL);
++	val &= ~AXIC_DS_CTL_EN;
++	writel(val, drvdata->base + AXIC_DS_CTL);
 +}
 +
-+static struct attribute *ultrasoc_com_mux_attr[] = {
-+	&dev_attr_com_mux.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group ultrasoc_com_mux_group = {
-+	.attrs = ultrasoc_com_mux_attr,
-+	.is_visible = ultrasoc_com_mux_is_visible,
-+};
-+
-+static const struct attribute_group *ultrasoc_global_groups[] = {
-+	&ultrasoc_com_mux_group,
-+	NULL,
-+};
-+
-+static int ultrasoc_probe(struct platform_device *pdev)
++static inline bool axi_com_us_buf_full(struct axi_com_drv_data *drvdata)
 +{
-+	struct ultrasoc_drv_data *drvdata;
++	return readl(drvdata->base + AXIC_US_BUF_STS) & BIT(0);
++}
 +
-+	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
-+	drvdata->dev = &pdev->dev;
-+	INIT_LIST_HEAD(&drvdata->ultrasoc_com_head);
++static inline bool axi_com_ds_buf_full(struct axi_com_drv_data *drvdata)
++{
++	return readl(drvdata->base + AXIC_DS_BUF_STS) & BIT(0);
++}
 +
-+	drvdata->com_mux = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(drvdata->com_mux)) {
-+		dev_err(&pdev->dev, "Failed to ioremap for com_mux resource.\n");
-+		return PTR_ERR(drvdata->com_mux);
++static int axi_com_try_send_msg(struct axi_com_drv_data *drvdata)
++{
++	struct msg_descp *msg;
++	struct list_head *node;
++	int index = 0;
++	int unsent;
++	u32 data;
++
++	if (axi_com_us_buf_full(drvdata)) {
++		dev_err_once(drvdata->dev, "No room for upstream buffer.\n");
++		return US_SERVICE_IDLE;
 +	}
-+	/* switch ultrasoc commucator mux for on-chip drivers. */
-+	writel(US_SELECT_ONCHIP, drvdata->com_mux);
-+	platform_set_drvdata(pdev, drvdata);
 +
-+	return 0;
-+}
-+
-+static int ultrasoc_remove(struct platform_device *pdev)
-+{
-+	struct ultrasoc_drv_data *pdata = platform_get_drvdata(pdev);
-+
-+	/* switch back to external debuger users if necessary.*/
-+	if (!IS_ERR(pdata->com_mux))
-+		writel(0, pdata->com_mux);
-+
-+	return 0;
-+}
-+
-+static struct acpi_device_id ultrasoc_acpi_match[] = {
-+	{"HISI0391", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, ultrasoc_acpi_match);
-+
-+static struct platform_driver ultrasoc_driver = {
-+	.driver = {
-+		.name = "ultrasoc",
-+		.acpi_match_table = ultrasoc_acpi_match,
-+		.dev_groups = ultrasoc_global_groups,
-+	},
-+	.probe = ultrasoc_probe,
-+	.remove = ultrasoc_remove,
-+};
-+module_platform_driver(ultrasoc_driver);
-+
-+static const char * const ultrasoc_com_type_string[] = {
-+	"UNKNOWN",
-+	"UP-DOWN-BOTH",
-+	"DOWN-ONLY",
-+};
-+
-+static const char * const ultrasoc_com_service_status_string[] = {
-+	"stopped",
-+	"sleeping",
-+	"running normal",
-+};
-+
-+/*
-+ * To avoid communicator buffer overflow, we create a service thread
-+ * to do the communicator work. This is the service thread entry.
-+ */
-+static int ultrasoc_com_service(void *arg)
-+{
-+	unsigned int deep_sleep = 0;
-+	struct ultrasoc_com *com;
-+	int ud_flag = 0;
-+	int core;
-+
-+	core = smp_processor_id();
-+	com = (struct ultrasoc_com *)arg;
-+	if (!com->com_work) {
-+		dev_err(com->dev,
-+			 "This communicator do not have a work entry.\n");
-+		com->service_status = ULTRASOC_COM_SERVICE_STOPPED;
-+		return -EINVAL;
++	spin_lock(&drvdata->us_msg_list_lock);
++	if (list_empty(&drvdata->us_msg_head)) {
++		spin_unlock(&drvdata->us_msg_list_lock);
++		return US_SERVICE_IDLE;
 +	}
-+	dev_dbg(com->dev, "ultrasoc com service %s run on core %d.\n",
-+		com->name,  core);
 +
-+	while (true) {
-+		set_current_state(TASK_INTERRUPTIBLE);
-+		spin_lock(&com->service_lock);
-+		if (com->service_status == ULTRASOC_COM_SERVICE_SLEEPING) {
-+			spin_unlock(&com->service_lock);
-+			schedule();
-+			spin_lock(&com->service_lock);
-+		}
++	node = drvdata->us_msg_head.next;
++	list_del(node);
++	drvdata->us_msg_cur--;
++	msg = container_of(node, struct msg_descp, node);
++	spin_unlock(&drvdata->us_msg_list_lock);
 +
++	unsent = msg->msg_len;
++	dev_dbg(drvdata->dev, "Length of send msg: %d.\n", msg->msg_len);
++	while (unsent > 0) {
++		data = get_unaligned_le32(&msg->msg_buf[index++]);
++		writel(data, drvdata->base + AXIC_US_DATA);
++		unsent -= AXIC_MSG_LEN_PER_SEND;
++	}
++	kfree(msg);
++
++	return US_SERVICE_ONWORK;
++}
++
++static int axi_com_try_recv_msg(struct axi_com_drv_data *drvdata)
++{
++	struct msg_descp tmp_msg = {0};
++	struct msg_descp *msg;
++	bool lost = false;
++	u32 index = 0;
++	u32 status, entries, data;
++
++	if (!axi_com_ds_buf_full(drvdata))
++		return US_SERVICE_IDLE;
++
++	msg = kzalloc(sizeof(*msg), GFP_KERNEL);
++	if (!msg) {
 +		/*
-+		 * Since this thread service might be woken up with a status
-+		 * of STOP, we check the status again to avoid setting an error
-+		 * status
++		 * create local variable tmp_msg to read and clear
++		 * the downstream message.
 +		 */
-+		if (com->service_status == ULTRASOC_COM_SERVICE_SLEEPING) {
-+			com->service_status =
-+				ULTRASOC_COM_SERVICE_RUNNING_NORMAL;
-+			deep_sleep = 0;
-+		}
-+		spin_unlock(&com->service_lock);
-+		__set_current_state(TASK_RUNNING);
++		msg = &tmp_msg;
++		lost = true;
++	}
 +
-+		if (com->service_status == ULTRASOC_COM_SERVICE_STOPPED)
++	do {
++		if (index == USMSG_MAX_IDX) {
++			dev_warn(drvdata->dev, "Illegal message.\n");
 +			break;
-+
-+		ud_flag = com->com_work(com);
-+		if (!ud_flag) {
-+			usleep_range(10, 100);
-+			deep_sleep++;
-+		} else {
-+			deep_sleep = 0;
-+			usleep_range(1, 4);
 +		}
-+		if (deep_sleep > com->timeout)
-+			com->service_status = ULTRASOC_COM_SERVICE_SLEEPING;
-+		if (kthread_should_stop())
-+			break;
-+	}
-+	com->service_status = ULTRASOC_COM_SERVICE_STOPPED;
++		data = readl(drvdata->base + AXIC_DS_DATA);
++		put_unaligned_le32(data, &msg->msg_buf[index++]);
++		status = readl(drvdata->base + AXIC_DS_RD_STS);
++		entries = status & GENMASK(7, 4);
++		msg->msg_len += AXIC_MSG_LEN_PER_REC;
++	} while (entries != 0);
 +
-+	return 0;
-+}
-+
-+static void com_try_stop_service(struct ultrasoc_com *com)
-+{
-+	if (com->service_status != ULTRASOC_COM_SERVICE_STOPPED) {
-+		spin_lock(&com->service_lock);
-+		com->service_status = ULTRASOC_COM_SERVICE_STOPPED;
-+		spin_unlock(&com->service_lock);
-+		kthread_stop(com->service);
-+		com->service = NULL;
-+	}
-+}
-+
-+static void com_try_start_service(struct ultrasoc_com *com)
-+{
-+	if (com->service &&
-+	    com->service_status != ULTRASOC_COM_SERVICE_STOPPED) {
-+		dev_notice(com->dev, "Service is already running on %ld.\n",
-+			   com->core_bind);
-+		wake_up_process(com->service);
-+		return;
++	if (!lost) {
++		spin_lock(&drvdata->ds_msg_list_lock);
++		drvdata->ds_msg_cur++;
++		drvdata->ds_msg_counter++;
++		list_add_tail(&msg->node, &drvdata->ds_msg_head);
++		spin_unlock(&drvdata->ds_msg_list_lock);
 +	}
 +
-+	dev_dbg(com->dev, "Starting service %s on core %ld.\n",	com->name,
-+		com->core_bind);
-+	com->service = kthread_create(ultrasoc_com_service, com, "%s_service",
-+				      com->name);
-+	if (IS_ERR(com->service)) {
-+		spin_lock(&com->service_lock);
-+		com->service_status = ULTRASOC_COM_SERVICE_STOPPED;
-+		spin_unlock(&com->service_lock);
-+		dev_err(com->dev, "Failed to start service.\n");
-+	}
-+
-+	if (com->core_bind != -1)
-+		kthread_bind(com->service, com->core_bind);
-+
-+	spin_lock(&com->service_lock);
-+	com->service_status = ULTRASOC_COM_SERVICE_RUNNING_NORMAL;
-+	spin_unlock(&com->service_lock);
-+	wake_up_process(com->service);
++	return US_SERVICE_ONWORK;
 +}
 +
-+static void com_service_restart(struct ultrasoc_com *com)
++static int axi_com_work(struct ultrasoc_com *uscom)
 +{
-+	com_try_stop_service(com);
-+	com_try_start_service(com);
++	struct axi_com_drv_data *drvdata = ultrasoc_com_get_drvdata(uscom);
++	int us_ds_flag;
++
++	us_ds_flag = axi_com_try_recv_msg(drvdata);
++	us_ds_flag |= axi_com_try_send_msg(drvdata);
++
++	return us_ds_flag;
 +}
 +
-+static ssize_t ultrasoc_com_status(struct ultrasoc_com *com, char *buf)
++static ssize_t axi_com_show_status(struct ultrasoc_com *uscom, char *buf,
++				   ssize_t wr_size)
 +{
-+	enum ultrasoc_com_service_status status = com->service_status;
-+	enum ultrasoc_com_type type = com->com_type;
-+	ssize_t wr_size;
++	struct axi_com_drv_data *drvdata = ultrasoc_com_get_drvdata(uscom);
 +
-+	wr_size = sysfs_emit(buf, "%-20s: %s\n", "com-type",
-+			     ultrasoc_com_type_string[type]);
-+	wr_size += sysfs_emit_at(buf, wr_size, "%-20s: %s\n", "service status",
-+				 ultrasoc_com_service_status_string[status]);
-+	wr_size += uscom_ops_com_status(com, buf, wr_size);
++	wr_size += sysfs_emit_at(buf, wr_size, "%-20s: %d\n",
++				 "ds msg list num", drvdata->ds_msg_cur);
++	wr_size += sysfs_emit_at(buf, wr_size, "%-20s: %d\n",
++				 "us msg list num", drvdata->us_msg_cur);
 +
 +	return wr_size;
 +}
 +
-+ULTRASOC_COM_ATTR_WO_OPS(start, com_try_start_service);
-+ULTRASOC_COM_ATTR_WO_OPS(stop, com_try_stop_service);
-+ULTRASOC_COM_ATTR_WO_OPS(restart, com_service_restart);
-+ULTRASOC_COM_ATTR_RO_OPS(com_status, ultrasoc_com_status);
-+
-+struct ultrasoc_com *ultrasoc_find_com_by_dev(struct device *com_dev)
++static void axi_com_put_raw_msg(struct ultrasoc_com *uscom, int msg_size,
++			unsigned long long msg_data)
 +{
-+	struct ultrasoc_drv_data *pdata = dev_get_drvdata(com_dev->parent);
-+	struct list_head *com_head = &pdata->ultrasoc_com_head;
-+	struct ultrasoc_com *com;
-+	struct list_head *cur;
++	struct axi_com_drv_data *drvdata = ultrasoc_com_get_drvdata(uscom);
++	struct msg_descp *p_msg;
 +
-+	list_for_each(cur, com_head) {
-+		com = list_entry(cur, struct ultrasoc_com, node);
-+		if (com->dev == com_dev)
-+			return com;
-+	}
++	p_msg = kmalloc(sizeof(*p_msg), GFP_KERNEL);
++	if (!p_msg)
++		return;
 +
-+	dev_err(com_dev, "Unable to find com associated with this device!\n");
-+	return NULL;
++	p_msg->msg_len = msg_size;
++	put_unaligned_le64(msg_data, &p_msg->msg_buf[0]);
++	spin_lock(&drvdata->us_msg_list_lock);
++	list_add_tail(&p_msg->node, &drvdata->us_msg_head);
++	drvdata->us_msg_cur++;
++	spin_unlock(&drvdata->us_msg_list_lock);
++
++	if (uscom->service_status != ULTRASOC_COM_SERVICE_STOPPED)
++		wake_up_process(uscom->service);
++	else
++		dev_warn(uscom->dev, "Com service is not running.\n");
 +}
 +
-+static ssize_t core_bind_store(struct device *dev,
-+			       struct device_attribute *attr, const char *buf,
-+			       size_t size)
-+{
-+	struct ultrasoc_com *com = ultrasoc_find_com_by_dev(dev);
-+	long core_bind;
-+	int ret;
-+
-+	if (!com)
-+		return 0;
-+
-+	ret = kstrtol(buf, 0, &core_bind);
-+	if (!ret)
-+		com->core_bind = core_bind;
-+
-+	return size;
-+}
-+
-+static ssize_t core_bind_show(struct device *dev,
-+			      struct device_attribute *attr, char *buf)
-+{
-+	struct ultrasoc_com *com = ultrasoc_find_com_by_dev(dev);
-+
-+	if (!com)
-+		return 0;
-+
-+	return sysfs_emit(buf, "%#lx", com->core_bind);
-+}
-+static DEVICE_ATTR_RW(core_bind);
-+
-+static ssize_t message_store(struct device *dev, struct device_attribute *attr,
-+			     const char *buf, size_t size)
-+{
-+	struct ultrasoc_com *com = ultrasoc_find_com_by_dev(dev);
-+	u64 msg, msg_len;
-+	int elements;
-+
-+	elements = sscanf(buf, "%llx %llx", &msg, &msg_len);
-+	if (elements < 2)
-+		return -EINVAL;
-+
-+	com->com_ops->put_raw_msg(com, msg_len, msg);
-+	dev_dbg(dev, "Set message %#llx, length is %#llx.\n", msg, msg_len);
-+
-+	return size;
-+}
-+static DEVICE_ATTR_WO(message);
-+
-+static umode_t ultrasoc_com_message_is_visible(struct kobject *kobj,
-+					   struct attribute *attr, int unused)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct ultrasoc_com *com = ultrasoc_find_com_by_dev(dev);
-+
-+	if (com->com_type != ULTRASOC_COM_TYPE_BOTH)
-+		return 0;
-+
-+	return attr->mode;
-+}
-+
-+static struct attribute *ultrasoc_com_global_attrs[] = {
-+	&dev_attr_com_status.attr,
-+	NULL,
++static struct uscom_ops axi_com_ops = {
++	.com_status = axi_com_show_status,
++	.put_raw_msg = axi_com_put_raw_msg,
 +};
 +
-+static struct attribute *ultrasoc_com_service_attrs[] = {
-+	&dev_attr_core_bind.attr,
-+	&dev_attr_start.attr,
-+	&dev_attr_stop.attr,
-+	&dev_attr_restart.attr,
-+	NULL,
-+};
-+
-+static struct attribute *ultrasoc_com_message_attrs[] = {
-+	&dev_attr_message.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group ultrasoc_com_global_group = {
-+	.attrs = ultrasoc_com_global_attrs,
-+};
-+
-+static const struct attribute_group ultrasoc_com_service_group = {
-+	.attrs = ultrasoc_com_service_attrs,
-+	.name = "service",
-+};
-+
-+static const struct attribute_group ultrasoc_com_message_group = {
-+	.attrs = ultrasoc_com_message_attrs,
-+	.is_visible = ultrasoc_com_message_is_visible,
-+};
-+
-+static const struct attribute_group *ultrasoc_com_attr[] = {
-+	&ultrasoc_com_global_group,
-+	&ultrasoc_com_service_group,
-+	&ultrasoc_com_message_group,
-+	NULL,
-+};
-+
-+static int ultrasoc_validate_com_descp(struct ultrasoc_com_descp *com_descp)
-+{
-+	if (!com_descp->uscom_ops)
-+		return -EINVAL;
-+
-+	if (com_descp->com_type == ULTRASOC_COM_TYPE_BOTH) {
-+		if (!com_descp->uscom_ops->put_raw_msg ||
-+		    !com_descp->default_route_msg)
-+			return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int wait_com_service_stop(struct ultrasoc_com *com)
-+{
-+	u32 timeout = 0;
-+
-+	if (com->service_status != ULTRASOC_COM_SERVICE_STOPPED)
-+		com_try_stop_service(com);
-+	while (com->service_status != ULTRASOC_COM_SERVICE_STOPPED) {
-+		usleep_range(10, 100);
-+		timeout++;
-+		if (timeout > com->timeout)
-+			return -ETIMEDOUT;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * ultrasoc_register_com - register a ultrasoc communicator for communication
-+ * between usmsg bus devices and platform bus devices.
-+ *
-+ * @top_dev: the ultrasoc top platform device to manage all communicator.
-+ * @com_descp: the communicator description to be registered.
-+ * Return: the pointer to a new communicator if register ok, NULL if failure.
++/*
++ * Config hardwares on the tracing path, using DSM calls to avoid exposing
++ * hardware message format.
 + */
-+struct ultrasoc_com *ultrasoc_register_com(struct device *top_dev,
-+					   struct ultrasoc_com_descp *com_descp)
++static int axi_com_config_inport(struct axi_com_drv_data *drvdata, bool enable)
 +{
-+	struct ultrasoc_drv_data *drv_data = dev_get_drvdata(top_dev);
-+	struct ultrasoc_com *com;
-+	int ret;
++	struct device *dev = drvdata->dev;
++	u32 flag = enable ? 1 : 0;
++	union acpi_object *obj;
++	guid_t guid;
 +
-+	if (!drv_data)
-+		return ERR_PTR(-EBUSY);
-+
-+	ret = ultrasoc_validate_com_descp(com_descp);
-+	if (ret)
-+		return ERR_PTR(-EINVAL);
-+
-+	com = devm_kzalloc(top_dev, sizeof(*com), GFP_KERNEL);
-+	if (!com)
-+		return ERR_PTR(-ENOMEM);
-+
-+	com->name = com_descp->name;
-+	com->com_type = com_descp->com_type;
-+	com->com_ops = com_descp->uscom_ops;
-+	com->com_work = com_descp->com_work;
-+	com->timeout = US_SERVICE_TIMEOUT;
-+	com->core_bind = -1;
-+	com->root = top_dev;
-+	com->dev = com_descp->com_dev;
-+	spin_lock_init(&com->service_lock);
-+
-+	device_lock(top_dev);
-+	list_add_tail(&com->node, &drv_data->ultrasoc_com_head);
-+	device_unlock(top_dev);
-+
-+	if (com->com_type == ULTRASOC_COM_TYPE_BOTH && !drv_data->def_up_com) {
-+		/*
-+		 * There is one ULTRASOC_COM_TYPE_BOTH device per ultrasoc
-+		 * system, so race will not happen.
-+		 */
-+		drv_data->def_up_com = com;
-+		/* start the default communicator service. */
-+		com_try_start_service(com);
-+		/* set ultrasoc route all msgs to port 1 as default*/
-+		com->com_ops->put_raw_msg(com, US_ROUTE_LENGTH,
-+					  com_descp->default_route_msg);
++	if (guid_parse("82ae1283-7f6a-4cbe-aa06-53e8fb24db18", &guid)) {
++		dev_err(dev, "Get GUID failed.\n");
++		return -EINVAL;
 +	}
 +
-+	ret = device_add_groups(com->dev, ultrasoc_com_attr);
-+	if (ret)
-+		return  ERR_PTR(ret);
++	obj = acpi_evaluate_dsm(ACPI_HANDLE(dev), &guid, 0, flag, NULL);
++	if (!obj)
++		dev_err(dev, "ACPI handle failed!\n");
 +
-+	return com;
-+}
-+EXPORT_SYMBOL_GPL(ultrasoc_register_com);
-+
-+int ultrasoc_unregister_com(struct ultrasoc_com *com)
-+{
-+	struct ultrasoc_drv_data *pdata = dev_get_drvdata(com->root);
-+	struct device *com_dev = com->dev;
-+	struct device *dev = com->root;
-+
-+	if (wait_com_service_stop(com)) {
-+		dev_err(com_dev, "Com service is still running.\n");
-+		return -EBUSY;
-+	}
-+
-+	if (pdata->def_up_com == com)
-+		pdata->def_up_com = NULL;
-+
-+	device_lock(dev);
-+	list_del(&com->node);
-+	device_unlock(dev);
-+	device_remove_groups(com_dev, ultrasoc_com_attr);
++	ACPI_FREE(obj);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(ultrasoc_unregister_com);
 +
-+MODULE_DESCRIPTION("Ultrasoc driver");
++static int axi_com_config_com_descp(struct platform_device *pdev,
++				    struct axi_com_drv_data *drvdata)
++{
++	struct device *parent = pdev->dev.parent;
++	struct ultrasoc_com_descp com_descp = {0};
++	struct device *dev = &pdev->dev;
++	struct ultrasoc_com *com;
++
++	com_descp.name = pdev->name;
++	com_descp.com_type = ULTRASOC_COM_TYPE_BOTH;
++	com_descp.com_dev = dev;
++	com_descp.uscom_ops = &axi_com_ops;
++	com_descp.com_work = axi_com_work;
++
++	if (device_property_read_u64(dev, "ultrasoc,default_route",
++				     &com_descp.default_route_msg)) {
++		dev_err(dev, "Failed to read default_route!\n");
++		return -EINVAL;
++	}
++
++	com = ultrasoc_register_com(parent, &com_descp);
++	if (IS_ERR(com)) {
++		dev_err(dev, "Failed to register to ultrasoc.\n");
++		return PTR_ERR(com);
++	}
++
++	/*
++	 * record the returned com point in drvdata,
++	 * it will be used to unregister the com
++	 * from ultrasoc.
++	 */
++	drvdata->com = com;
++	return 0;
++}
++
++static int axi_com_probe(struct platform_device *pdev)
++{
++	struct axi_com_drv_data *drvdata;
++	int ret;
++
++	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
++	if (!drvdata)
++		return -ENOMEM;
++
++	drvdata->base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(drvdata->base)) {
++		dev_err(&pdev->dev, "Failed to ioremap resource.\n");
++		return PTR_ERR(drvdata->base);
++	}
++
++	drvdata->dev = &pdev->dev;
++	spin_lock_init(&drvdata->ds_msg_list_lock);
++	spin_lock_init(&drvdata->us_msg_list_lock);
++	INIT_LIST_HEAD(&drvdata->us_msg_head);
++	INIT_LIST_HEAD(&drvdata->ds_msg_head);
++
++	axi_com_enable_hw(drvdata);
++	ret = axi_com_config_inport(drvdata, true);
++	if (ret)
++		return ret;
++
++	platform_set_drvdata(pdev, drvdata);
++	return axi_com_config_com_descp(pdev, drvdata);
++}
++
++static int axi_com_remove(struct platform_device *pdev)
++{
++	struct axi_com_drv_data *drvdata = platform_get_drvdata(pdev);
++	int ret;
++
++	if (ultrasoc_unregister_com(drvdata->com) == -EBUSY)
++		return -EBUSY;
++
++	ret = axi_com_config_inport(drvdata, false);
++	if (ret)
++		return ret;
++
++	axi_com_disable_hw(drvdata);
++	usmsg_list_realse_all(&drvdata->ds_msg_head);
++	usmsg_list_realse_all(&drvdata->us_msg_head);
++
++	return 0;
++}
++
++static const struct acpi_device_id ultrasoc_axi_com_acpi_match[] = {
++	{"HISI03B1", },
++	{},
++};
++
++static struct platform_driver axi_com_driver = {
++	.driver = {
++		.name = "ultrasoc,axi-com",
++		.acpi_match_table = ultrasoc_axi_com_acpi_match,
++	},
++	.probe = axi_com_probe,
++	.remove = axi_com_remove,
++};
++module_platform_driver(axi_com_driver);
++
++MODULE_DESCRIPTION("Ultrasoc AXI COM driver");
 +MODULE_LICENSE("Dual MIT/GPL");
 +MODULE_AUTHOR("Jonathan Zhou <jonathan.zhouwen@huawei.com>");
 +MODULE_AUTHOR("Qi Liu <liuqi115@huawei.com>");
-diff --git a/drivers/hwtracing/ultrasoc/ultrasoc.h b/drivers/hwtracing/ultrasoc/ultrasoc.h
+diff --git a/drivers/hwtracing/ultrasoc/ultrasoc-axi-com.h b/drivers/hwtracing/ultrasoc/ultrasoc-axi-com.h
 new file mode 100644
-index 0000000..2831e14
+index 0000000..64bcf83
 --- /dev/null
-+++ b/drivers/hwtracing/ultrasoc/ultrasoc.h
-@@ -0,0 +1,168 @@
++++ b/drivers/hwtracing/ultrasoc/ultrasoc-axi-com.h
+@@ -0,0 +1,66 @@
 +/* SPDX-License-Identifier: MIT */
 +/*
 + * Copyright (C) 2021 Hisilicon Limited Permission is hereby granted, free of
@@ -703,143 +465,41 @@ index 0000000..2831e14
 + * their intellectual property. This paragraph may not be removed or modified
 + * in any way without permission from Siemens Digital Industries Software Ltd.
 + */
++#ifndef ULTRASOC_AXI_COM_H
++#define ULTRASOC_AXI_COM_H
 +
-+#ifndef _LINUX_ULTRASOC_H
-+#define _LINUX_ULTRASOC_H
++#include "ultrasoc.h"
 +
-+#include <linux/device.h>
-+#include <linux/list.h>
-+#include <linux/slab.h>
++#define AXIC_US_CTL 0X0 /* Upstream general control */
++#define AXIC_US_DATA 0XC /* Upstream message data */
++#define AXIC_US_BUF_STS 0X10 /* Upstream buffer status */
 +
-+struct ultrasoc_drv_data {
++#define AXIC_DS_CTL 0X80 /* Downstream general contral */
++#define AXIC_DS_DATA 0X8C /* Downstream message data */
++#define AXIC_DS_BUF_STS 0X90 /* Downstream buffer status */
++#define AXIC_DS_RD_STS 0X94 /* Downstream read status */
++
++#define AXIC_MSG_LEN_PER_SEND		4
++#define AXIC_MSG_LEN_PER_REC		4
++#define AXIC_US_CTL_EN 0x1
++#define AXIC_DS_CTL_EN 0x1
++
++struct axi_com_drv_data {
++	void __iomem *base;
++
 +	struct device *dev;
-+	void __iomem *com_mux;
-+	struct list_head ultrasoc_com_head;
-+	struct ultrasoc_com *def_up_com;
-+	const char *dev_data_path;
-+	spinlock_t spinlock;
++	struct ultrasoc_com *com;
++
++	u32 ds_msg_counter;
++
++	u32 us_msg_cur;
++	spinlock_t us_msg_list_lock;
++	struct list_head us_msg_head;
++
++	u32 ds_msg_cur;
++	spinlock_t ds_msg_list_lock;
++	struct list_head ds_msg_head;
 +};
-+
-+enum ultrasoc_com_type {
-+	ULTRASOC_COM_TYPE_BOTH,
-+	ULTRASOC_COM_TYPE_DOWN,
-+};
-+
-+struct ultrasoc_com_descp {
-+	const char *name;
-+	enum ultrasoc_com_type com_type;
-+	struct device *com_dev;
-+	struct uscom_ops *uscom_ops;
-+	int (*com_work)(struct ultrasoc_com *com);
-+	u64 default_route_msg;
-+};
-+
-+enum ultrasoc_com_service_status {
-+	ULTRASOC_COM_SERVICE_STOPPED,
-+	ULTRASOC_COM_SERVICE_SLEEPING,
-+	ULTRASOC_COM_SERVICE_RUNNING_NORMAL,
-+};
-+
-+#define USMSG_MAX_IDX				9
-+struct msg_descp {
-+	unsigned int msg_len;
-+	__le32 msg_buf[USMSG_MAX_IDX];
-+	struct list_head node;
-+};
-+
-+static inline void usmsg_list_realse_all(struct list_head *msg_head)
-+{
-+	struct msg_descp *msgd, *next;
-+
-+	list_for_each_entry_safe(msgd, next, msg_head, node) {
-+		list_del(&msgd->node);
-+		kfree(msgd);
-+	}
-+}
-+
-+struct ultrasoc_com {
-+	const char *name;
-+	enum ultrasoc_com_type com_type;
-+	struct device *root;
-+	struct device *dev;
-+
-+	long core_bind;
-+	int (*com_work)(struct ultrasoc_com *com);
-+	spinlock_t service_lock;
-+	struct task_struct *service;
-+	int service_status;
-+	unsigned int timeout;
-+
-+	char *data_path;
-+	struct uscom_ops *com_ops;
-+
-+	struct list_head node;
-+};
-+
-+struct uscom_ops {
-+	ssize_t (*com_status)(struct ultrasoc_com *com, char *buf,
-+			      ssize_t size);
-+	void (*put_raw_msg)(struct ultrasoc_com *com, int msg_size,
-+			    unsigned long long msg);
-+};
-+
-+#define uscom_ops_com_status(uscom, buf, size)                           \
-+	(((uscom)->com_ops && (uscom)->com_ops->com_status) ?            \
-+		 (uscom)->com_ops->com_status(uscom, buf, size) : 0)
-+
-+static inline void *ultrasoc_com_get_drvdata(struct ultrasoc_com *uscom)
-+{
-+	return dev_get_drvdata(uscom->dev);
-+}
-+
-+struct ultrasoc_com *
-+ultrasoc_register_com(struct device *root_dev,
-+		      struct ultrasoc_com_descp *com_descp);
-+int ultrasoc_unregister_com(struct ultrasoc_com *com);
-+int ultrasoc_com_del_usmsg_device(struct ultrasoc_com *com, int index);
-+
-+struct ultrasoc_com *ultrasoc_find_com_by_dev(struct device *com_dev);
-+
-+#define ULTRASOC_COM_ATTR_WO_OPS(attr_name, com_ops)                           \
-+	static ssize_t attr_name##_store(struct device *dev,                   \
-+					 struct device_attribute *attr,        \
-+					 const char *buf, size_t size)         \
-+	{                                                                      \
-+		struct ultrasoc_com *com = ultrasoc_find_com_by_dev(dev);      \
-+		long attr_name;                                                \
-+		int ret;                                                       \
-+		if (!com)                                                      \
-+			return 0;                                              \
-+		ret = kstrtol(buf, 0, &attr_name);                             \
-+		if (ret) {                                                     \
-+			return size;                                           \
-+		}                                                              \
-+		if (attr_name == 1) {                                          \
-+			com_ops(com);                                          \
-+		}                                                              \
-+		return size;                                                   \
-+	}                                                                      \
-+	static DEVICE_ATTR_WO(attr_name)
-+
-+#define ULTRASOC_COM_ATTR_RO_OPS(attr_name, com_ops)                           \
-+	static ssize_t attr_name##_show(struct device *dev,                    \
-+					struct device_attribute *attr,         \
-+					char *buf)                             \
-+	{                                                                      \
-+		struct ultrasoc_com *com = ultrasoc_find_com_by_dev(dev);      \
-+		if (!com)                                                      \
-+			return 0;                                              \
-+		return com_ops(com, buf);                                      \
-+	}                                                                      \
-+	static DEVICE_ATTR_RO(attr_name)
-+
-+/* 1000 * (10us ~ 100us) */
-+#define US_SERVICE_TIMEOUT		1000
-+/* communicator service work status */
-+#define US_SERVICE_ONWORK		1
-+#define US_SERVICE_IDLE			0
-+#define US_ROUTE_LENGTH			11
-+#define US_SELECT_ONCHIP		0x3
 +
 +#endif
 -- 
