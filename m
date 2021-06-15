@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43ABF3A73BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182EA3A739C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbhFOC0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:26:06 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:41346 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231797AbhFOCZ6 (ORCPT
+        id S231214AbhFOCPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:15:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229743AbhFOCPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:25:58 -0400
-X-UUID: f95a4ba443ea497ab512c9a865d15da8-20210615
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:Date:CC:To:From:Subject:Message-ID; bh=vcOTu5+KGfLnMxqxtlJOi6bOOZBO6ZblZKmflxHCESY=;
-        b=BvGK1MCGX6YQI4UrrI8CrsCGaESRU3WdaGyUVyd+DbfAxcKTleG+K8ZvI4Ro4OVSmu81o4XcuSImRWazev0Uz5OaZ8tydWQZEDC+ARnQPtxLtCuIvExB7sh5M3O7kQiY5xepJgav424SvTMQcnXuJmNXwzZHRQ4P1SAipoQz+k8=;
-X-UUID: f95a4ba443ea497ab512c9a865d15da8-20210615
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 373625899; Tue, 15 Jun 2021 10:02:49 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 15 Jun 2021 10:02:48 +0800
-Received: from [10.15.20.246] (10.15.20.246) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 15 Jun 2021 10:02:47 +0800
-Message-ID: <1623721709.24597.8.camel@mbjsdccf07>
-Subject: [PATCH v3 1/1] arm64: dts: mediatek: add MT6779 spi master dts node
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        <hanks.chen@mediatek.com>, <mason.zhang@mediatek.com>,
-        Mason Zhang <Mason.Zhang@mediatek.com>
-Date:   Tue, 15 Jun 2021 09:48:29 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Mon, 14 Jun 2021 22:15:37 -0400
+Received: from ozlabs.org (unknown [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E71C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:13:29 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G3rnx5X1hz9sCD;
+        Tue, 15 Jun 2021 11:48:53 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1623721734;
+        bh=Bl3XHAS0bQtI+6g13gkACgICPslVhebB4ZXpE+X695Y=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Ep0XF0NFMgmx7oI70j7Ccn7QSx4ln77fHPJldlNbo/qwJmwsQXkJGdFjSSYKAzKQz
+         il7/UdavTO905wqZRRqzvtTn/zNF2h1WZlaOySLEbyCt+MJUel8Z+LKySzCjueJrAg
+         tubenPnGVZKbyfbvs4j1njr8UxP45mNJke8msYpHAWwa50DdHqL12mHXLiuipm5ZlK
+         glRriVXjb8aY/WEqIUOPnlx9sSuI50PxJj91i5noJKkRoHNLfiVRbSCuTYA8WRU915
+         1jSptRsjdKJAXcICZjx5nySyznFRceANtPrYXD2CKUmSXEBi9WWl5vGIrbqDcuJCIE
+         sSrSNWMPBYPOA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        naveen.n.rao@linux.vnet.ibm.com, jniethe5@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v1 10/12] powerpc/lib/feature-fixups: Use PPC_RAW_xxx()
+ macros
+In-Reply-To: <e79cd8e111ca13bf8c61a384bac365aa7e207647.1621506159.git.christophe.leroy@csgroup.eu>
+References: <5d146b31b943e7ad674894421db4feef54804b9b.1621506159.git.christophe.leroy@csgroup.eu>
+ <e79cd8e111ca13bf8c61a384bac365aa7e207647.1621506159.git.christophe.leroy@csgroup.eu>
+Date:   Tue, 15 Jun 2021 11:48:49 +1000
+Message-ID: <874kdzvqwu.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpGcm9tOiBNYXNvbiBaaGFuZyA8TWFzb24uWmhhbmdAbWVkaWF0ZWsuY29tPg0KDQpUaGlzIHBh
-dGNoIGFkZCBzcGkgbWFzdGVyIGR0cyBub2RlIGZvciBNVDY3NzkgU09DLg0KDQpTaWduZWQtb2Zm
-LWJ5OiBNYXNvbiBaaGFuZyA8TWFzb24uWmhhbmdAbWVkaWF0ZWsuY29tPg0KLS0tDQogYXJjaC9h
-cm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaSB8IDExMiArKysrKysrKysrKysrKysr
-KysrKysrKw0KIDEgZmlsZSBjaGFuZ2VkLCAxMTIgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0
-IGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaSBiL2FyY2gvYXJtNjQv
-Ym9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kNCmluZGV4IDM3MGYzMDlkMzJkZS4uYzgxZTc2
-ODY1ZDFiIDEwMDY0NA0KLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3Nzku
-ZHRzaQ0KKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaQ0KQEAg
-LTIxOSw2ICsyMTksMTE4IEBADQogCQkJc3RhdHVzID0gImRpc2FibGVkIjsNCiAJCX07DQogDQor
-CQlzcGkwOiBzcGkwQDExMDBhMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3
-OS1zcGkiLA0KKwkJCQkgICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCisJCQkjYWRkcmVzcy1j
-ZWxscyA9IDwxPjsNCisJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCisJCQltZWRpYXRlayxwYWQtc2Vs
-ZWN0ID0gPDA+Ow0KKwkJCXJlZyA9IDwwIDB4MTEwMGEwMDAgMCAweDEwMDA+Ow0KKwkJCWludGVy
-cnVwdHMgPSA8R0lDX1NQSSAxNDMgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KKwkJCWNsb2NrcyA9
-IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCisJCQkJPCZ0b3Bja2dlbiBDTEtf
-VE9QX1NQST4sDQorCQkJCTwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX1NQSTA+Ow0KKwkJCWNsb2Nr
-LW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCisJCX07DQorDQor
-CQlzcGkxOiBzcGkxQDExMDEwMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3
-OS1zcGkiLA0KKwkJCQkgICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCisJCQkjYWRkcmVzcy1j
-ZWxscyA9IDwxPjsNCisJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCisJCQltZWRpYXRlayxwYWQtc2Vs
-ZWN0ID0gPDA+Ow0KKwkJCXJlZyA9IDwwIDB4MTEwMTAwMDAgMCAweDEwMDA+Ow0KKwkJCWludGVy
-cnVwdHMgPSA8R0lDX1NQSSAxNDcgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KKwkJCWNsb2NrcyA9
-IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCisJCQkJPCZ0b3Bja2dlbiBDTEtf
-VE9QX1NQST4sDQorCQkJCTwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX1NQSTE+Ow0KKwkJCWNsb2Nr
-LW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCisJCX07DQorDQor
-CQlzcGkyOiBzcGkyQDExMDEyMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3
-OS1zcGkiLA0KKwkJCQkgICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCisJCQkjYWRkcmVzcy1j
-ZWxscyA9IDwxPjsNCisJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCisJCQltZWRpYXRlayxwYWQtc2Vs
-ZWN0ID0gPDA+Ow0KKwkJCXJlZyA9IDwwIDB4MTEwMTIwMDAgMCAweDEwMDA+Ow0KKwkJCWludGVy
-cnVwdHMgPSA8R0lDX1NQSSAxNTIgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KKwkJCWNsb2NrcyA9
-IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCisJCQkJIDwmdG9wY2tnZW4gQ0xL
-X1RPUF9TUEk+LA0KKwkJCQk8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9TUEkyPjsNCisJCQljbG9j
-ay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQorCQl9Ow0KKw0K
-KwkJc3BpMzogc3BpM0AxMTAxMzAwMCB7DQorCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3
-Nzktc3BpIiwNCisJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQorCQkJI2FkZHJlc3Mt
-Y2VsbHMgPSA8MT47DQorCQkJI3NpemUtY2VsbHMgPSA8MD47DQorCQkJbWVkaWF0ZWsscGFkLXNl
-bGVjdCA9IDwwPjsNCisJCQlyZWcgPSA8MCAweDExMDEzMDAwIDAgMHgxMDAwPjsNCisJCQlpbnRl
-cnJ1cHRzID0gPEdJQ19TUEkgMTUzIElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCisJCQljbG9ja3Mg
-PSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQorCQkJCSA8JnRvcGNrZ2VuIENM
-S19UT1BfU1BJPiwNCisJCQkJIDwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX1NQSTM+Ow0KKwkJCWNs
-b2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCisJCX07DQor
-DQorCQlzcGk0OiBzcGk0QDExMDE4MDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10
-Njc3OS1zcGkiLA0KKwkJCQkgICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCisJCQkjYWRkcmVz
-cy1jZWxscyA9IDwxPjsNCisJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCisJCQltZWRpYXRlayxwYWQt
-c2VsZWN0ID0gPDA+Ow0KKwkJCXJlZyA9IDwwIDB4MTEwMTgwMDAgMCAweDEwMDA+Ow0KKwkJCWlu
-dGVycnVwdHMgPSA8R0lDX1NQSSAxNTYgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KKwkJCWNsb2Nr
-cyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCisJCQkJIDwmdG9wY2tnZW4g
-Q0xLX1RPUF9TUEk+LA0KKwkJCQkgPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJND47DQorCQkJ
-Y2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJzZWwtY2xrIiwgInNwaS1jbGsiOw0KKwkJfTsN
-CisNCisJCXNwaTU6IHNwaTVAMTEwMTkwMDAgew0KKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWss
-bXQ2Nzc5LXNwaSIsDQorCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KKwkJCSNhZGRy
-ZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXplLWNlbGxzID0gPDA+Ow0KKwkJCW1lZGlhdGVrLHBh
-ZC1zZWxlY3QgPSA8MD47DQorCQkJcmVnID0gPDAgMHgxMTAxOTAwMCAwIDB4MTAwMD47DQorCQkJ
-aW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1NyBJUlFfVFlQRV9MRVZFTF9MT1cgMD47DQorCQkJY2xv
-Y2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KKwkJCQk8JnRvcGNrZ2Vu
-IENMS19UT1BfU1BJPiwNCisJCQkJPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJNT47DQorCQkJ
-Y2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJzZWwtY2xrIiwgInNwaS1jbGsiOw0KKwkJfTsN
-CisNCisJCXNwaTY6IHNwaTZAMTEwMWQwMDAgew0KKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWss
-bXQ2Nzc5LXNwaSIsDQorCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KKwkJCSNhZGRy
-ZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXplLWNlbGxzID0gPDA+Ow0KKwkJCW1lZGlhdGVrLHBh
-ZC1zZWxlY3QgPSA8MD47DQorCQkJcmVnID0gPDAgMHgxMTAxZDAwMCAwIDB4MTAwMD47DQorCQkJ
-aW50ZXJydXB0cyA9IDxHSUNfU1BJIDE0NCBJUlFfVFlQRV9MRVZFTF9MT1cgMD47DQorCQkJY2xv
-Y2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KKwkJCQkgPCZ0b3Bja2dl
-biBDTEtfVE9QX1NQST4sDQorCQkJCSA8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9TUEk2PjsNCisJ
-CQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQorCQl9
-Ow0KKw0KKwkJc3BpNzogc3BpN0AxMTAxZTAwMCB7DQorCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRl
-ayxtdDY3Nzktc3BpIiwNCisJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQorCQkJI2Fk
-ZHJlc3MtY2VsbHMgPSA8MT47DQorCQkJI3NpemUtY2VsbHMgPSA8MD47DQorCQkJbWVkaWF0ZWss
-cGFkLXNlbGVjdCA9IDwwPjsNCisJCQlyZWcgPSA8MCAweDExMDFlMDAwIDAgMHgxMDAwPjsNCisJ
-CQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTQ1IElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCisJCQlj
-bG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQorCQkJCSA8JnRvcGNr
-Z2VuIENMS19UT1BfU1BJPiwNCisJCQkJIDwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX1NQSTc+Ow0K
-KwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCisJ
-CX07DQorDQogCQlhdWRpbzogY2xvY2stY29udHJvbGxlckAxMTIxMDAwMCB7DQogCQkJY29tcGF0
-aWJsZSA9ICJtZWRpYXRlayxtdDY3NzktYXVkaW8iLCAic3lzY29uIjsNCiAJCQlyZWcgPSA8MCAw
-eDExMjEwMDAwIDAgMHgxMDAwPjsNCg0KRGVhciBNYXR0aGlhczoNCgkNCglJJ20gc29ycnkgdG8g
-Ym90aGVyIHlvdSBhZ2FpbiwgSSBoYXZlIHVwZGF0ZSBjb21taXQgbWVzc2FnZSBmb3IgdGhpcw0K
-cGF0Y2gsIElzIHRoZXJlIGFueSBwcm9ibGVtIHdpdGggdGhpcyBwYXRjaD8NCg0KVGhhbmtzDQpN
-YXNvbg0KDQo=
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> diff --git a/arch/powerpc/lib/feature-fixups.c b/arch/powerpc/lib/feature-fixups.c
+> index fe26f2fa0f3f..f0fc521b82ae 100644
+> --- a/arch/powerpc/lib/feature-fixups.c
+> +++ b/arch/powerpc/lib/feature-fixups.c
+> @@ -180,32 +180,31 @@ static void do_stf_exit_barrier_fixups(enum stf_barrier_type types)
+>  	start = PTRRELOC(&__start___stf_exit_barrier_fixup);
+>  	end = PTRRELOC(&__stop___stf_exit_barrier_fixup);
+>  
+> -	instrs[0] = 0x60000000; /* nop */
+> -	instrs[1] = 0x60000000; /* nop */
+> -	instrs[2] = 0x60000000; /* nop */
+> -	instrs[3] = 0x60000000; /* nop */
+> -	instrs[4] = 0x60000000; /* nop */
+> -	instrs[5] = 0x60000000; /* nop */
+> +	instrs[0] = PPC_RAW_NOP();
+> +	instrs[1] = PPC_RAW_NOP();
+> +	instrs[2] = PPC_RAW_NOP();
+> +	instrs[3] = PPC_RAW_NOP();
+> +	instrs[4] = PPC_RAW_NOP();
+> +	instrs[5] = PPC_RAW_NOP();
+>  
+>  	i = 0;
+>  	if (types & STF_BARRIER_FALLBACK || types & STF_BARRIER_SYNC_ORI) {
+>  		if (cpu_has_feature(CPU_FTR_HVMODE)) {
+> -			instrs[i++] = 0x7db14ba6; /* mtspr 0x131, r13 (HSPRG1) */
+> -			instrs[i++] = 0x7db04aa6; /* mfspr r13, 0x130 (HSPRG0) */
+> +			instrs[i++] = PPC_RAW_MTSPR(SPRN_HSPRG1, _R13);
+> +			instrs[i++] = PPC_RAW_MFSPR(_R13, SPRN_HSPRG0);
+>  		} else {
+> -			instrs[i++] = 0x7db243a6; /* mtsprg 2,r13	*/
+> -			instrs[i++] = 0x7db142a6; /* mfsprg r13,1    */
+> +			instrs[i++] = PPC_RAW_MTSPR(SPRN_SPRG2, _R13);
+> +			instrs[i++] = PPC_RAW_MFSPR(_R13, SPRN_SPRG1);
+>  	        }
+> -		instrs[i++] = 0x7c0004ac; /* hwsync		*/
+> -		instrs[i++] = 0xe9ad0000; /* ld r13,0(r13)	*/
+...
+> +		instrs[i++] = PPC_RAW_LD(_R10, _R13, 0);
 
+This conversion was wrong, r13 became r10.
+
+I fixed it up.
+
+cheers
