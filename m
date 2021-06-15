@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C8F3A7E54
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D303A7E56
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhFOMnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:43:40 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:44552 "EHLO pegase1.c-s.fr"
+        id S230272AbhFOMoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:44:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:34450 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229977AbhFOMnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:43:39 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G47H21f3wzBDWb;
-        Tue, 15 Jun 2021 14:41:34 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id e9IboDGy1ZCO; Tue, 15 Jun 2021 14:41:34 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G47H20khjzBDRW;
-        Tue, 15 Jun 2021 14:41:34 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E917C8B7BA;
-        Tue, 15 Jun 2021 14:41:33 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 3PfSUpvszx5u; Tue, 15 Jun 2021 14:41:33 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6C6648B7B9;
-        Tue, 15 Jun 2021 14:41:33 +0200 (CEST)
-Subject: Re: [PATCH] vmxnet3: prevent building with 256K pages
-To:     Michael Ellerman <mpe@ellerman.id.au>, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
-        pv-drivers@vmware.com, doshir@vmware.com
-References: <20210615123504.547106-1-mpe@ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <76ccb9fc-dc43-46e1-6465-637b72253385@csgroup.eu>
-Date:   Tue, 15 Jun 2021 14:41:34 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230175AbhFOMoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 08:44:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EBC51063;
+        Tue, 15 Jun 2021 05:41:59 -0700 (PDT)
+Received: from [10.57.9.136] (unknown [10.57.9.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5FDAC3F719;
+        Tue, 15 Jun 2021 05:41:58 -0700 (PDT)
+Subject: Re: [PATCH v3 3/6] iommu: Improve iommu_iotlb_gather helpers
+To:     Yong Wu <yong.wu@mediatek.com>, Nadav Amit <nadav.amit@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Jiajun Cao <caojiajun@vmware.com>,
+        Will Deacon <will@kernel.org>
+References: <20210607182541.119756-1-namit@vmware.com>
+ <20210607182541.119756-4-namit@vmware.com>
+ <1623760166.24285.1.camel@mhfsdcap03>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <5f176808-20ab-1d51-fcae-eb2307117f5b@arm.com>
+Date:   Tue, 15 Jun 2021 13:41:51 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210615123504.547106-1-mpe@ellerman.id.au>
+In-Reply-To: <1623760166.24285.1.camel@mhfsdcap03>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 15/06/2021 à 14:35, Michael Ellerman a écrit :
-> This driver assigns PAGE_SIZE to a u16, which can't work when the page
-> size is 256K. As reported by lkp:
+On 2021-06-15 13:29, Yong Wu wrote:
+> On Mon, 2021-06-07 at 11:25 -0700, Nadav Amit wrote:
+>> From: Robin Murphy <robin.murphy@arm.com>
+>>
+>> The Mediatek driver is not the only one which might want a basic
+>> address-based gathering behaviour, so although it's arguably simple
+>> enough to open-code, let's factor it out for the sake of cleanliness.
+>> Let's also take this opportunity to document the intent of these
+>> helpers for clarity.
+>>
+>> Cc: Joerg Roedel <joro@8bytes.org>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Jiajun Cao <caojiajun@vmware.com>
+>> Cc: Robin Murphy <robin.murphy@arm.com>
+>> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+>> Cc: iommu@lists.linux-foundation.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+>>
+>> ---
+>>
+>> Changes from Robin's version:
+>> * Added iommu_iotlb_gather_add_range() stub !CONFIG_IOMMU_API
+>> * Use iommu_iotlb_gather_add_range() in iommu_iotlb_gather_add_page()
+>> ---
+>>   drivers/iommu/mtk_iommu.c |  5 +----
+>>   include/linux/iommu.h     | 43 ++++++++++++++++++++++++++++++++++-----
+>>   2 files changed, 39 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+>> index e06b8a0e2b56..0af4a91ac7da 100644
+>> --- a/drivers/iommu/mtk_iommu.c
+>> +++ b/drivers/iommu/mtk_iommu.c
+>> @@ -523,10 +523,7 @@ static size_t mtk_iommu_unmap(struct iommu_domain *domain,
+>>   	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
+>>   	unsigned long end = iova + size - 1;
 > 
->   drivers/net/vmxnet3/vmxnet3_drv.c: In function 'vmxnet3_rq_init':
->   arch/powerpc/include/asm/page.h:24:20: warning: conversion from 'long unsigned int' to 'u16' changes value from '262144' to '0'
->   drivers/net/vmxnet3/vmxnet3_drv.c:1784:29: note: in expansion of macro 'PAGE_SIZE'
->    1784 |    rq->buf_info[0][i].len = PAGE_SIZE;
->                                       ^~~~~~~~~
-> 
-> Simliar to what was done previously in commit fbdf0e28d061 ("vmxnet3:
-> prevent building with 64K pages"), prevent the driver from building when
-> 256K pages are enabled.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-> ---
->   drivers/net/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
-> index 74dc8e249faa..da46898f060a 100644
-> --- a/drivers/net/Kconfig
-> +++ b/drivers/net/Kconfig
-> @@ -549,7 +549,7 @@ config VMXNET3
->   	depends on PCI && INET
->   	depends on !(PAGE_SIZE_64KB || ARM64_64K_PAGES || \
->   		     IA64_PAGE_SIZE_64KB || MICROBLAZE_64K_PAGES || \
-> -		     PARISC_PAGE_SIZE_64KB || PPC_64K_PAGES)
-> +		     PARISC_PAGE_SIZE_64KB || PPC_64K_PAGES || PPC_256K_PAGES)
+> Please also help delete this "end".
 
-Maybe we should also exclude hexagon, same as my patch on BTRFS 
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu/
+Yes, that was part of my original patch - not sure what happened here :/
 
->   	help
->   	  This driver supports VMware's vmxnet3 virtual ethernet NIC.
->   	  To compile this driver as a module, choose M here: the
+Robin.
+
+>>   
+>> -	if (gather->start > iova)
+>> -		gather->start = iova;
+>> -	if (gather->end < end)
+>> -		gather->end = end;
+>> +	iommu_iotlb_gather_add_range(gather, iova, size);
+>>   	return dom->iop->unmap(dom->iop, iova, size, gather);
+>>   }
+> 
+> [snip]
+> 
+> 
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
 > 
