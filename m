@@ -2,139 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B8A3A8971
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB27A3A897F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhFOTX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 15:23:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhFOTX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 15:23:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D64EF6109D;
-        Tue, 15 Jun 2021 19:21:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623784911;
-        bh=MiyNMOqe8D+Qv1ZCBNXEEXX1PzZVvhgk3ba2lE4oIg8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mtoG7zNPtpZsvQbvGP8yhZylUX75lhUTO0D3sGutRFQw4YsC/rBkyY/aHqAa3/x7Z
-         FUurSl0cAWCim2VhAR/W2YM/ZVElxcCC+RoJMkLqlo/GGM6ZlLYp8X9q15baYqri3U
-         L5CQGt0K11TGkZbZ5SoMB6QxIOE4JFnnUbIULj71aWTCQ+Pkgp4CKF4lIy9Qy3qk5j
-         F0Y83bsO/aP731wd93GFUKpUYngFSP8I+RcM6jiYeT93Qa+yMWv5R7HY9BEYjPKDxk
-         Vwoth1qDiFUPTHKq0BBr9yUiKBh2VWI+mRLPR1zl4Jv/ibpCeJOcOk3pCG+yYPK4GU
-         rGBWtfIiEGdag==
-Received: by mail-ej1-f52.google.com with SMTP id k7so24327321ejv.12;
-        Tue, 15 Jun 2021 12:21:51 -0700 (PDT)
-X-Gm-Message-State: AOAM5318De7cuvVvG31s6wJX1cZB5VLmLlXVvbw4EebV8ILKJCAT/IFh
-        UTXs2rofUHGiguQI9mo70kFv/0aOETaMN/hPCA==
-X-Google-Smtp-Source: ABdhPJwa2eewtgu6uySopO4xXVRmZ/yjtkv5h1exXtdSD1u+7n88m1i55KAd4hYrQJiPXyTsdD6k57DUi86pkmYzJdA=
-X-Received: by 2002:a17:907:2059:: with SMTP id pg25mr1204414ejb.130.1623784910428;
- Tue, 15 Jun 2021 12:21:50 -0700 (PDT)
+        id S230043AbhFOTcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 15:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhFOTcD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 15:32:03 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FED7C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 12:29:57 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id u30so53781qke.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 12:29:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=b1NdNJmbQ9vufxbdq46R0yQ5rOWLcgcQTrxTuRLsRs4=;
+        b=kZmQdCqtAe6i6mcTzPE2G1TnxW5S3b3u7NHWwpD/z6z+rVhlqxQofe38Zav7pYflCb
+         6TjmJhRoa0BXLTlDnKddSVw7zM/k74Plwu1Q4dNQn5RRpBWMyBbKtApXtgOUdOW+PsP2
+         i3+fbThoD6+KVR8g8QPHi6Rkizkxw2FQpC0R7pXdyz7mIH5K5spJvHcPMeVOQv8JENu0
+         tYtQFQ9eyCT9WqDme2JdoLd9kwKp2xnWipBrKHag4G8AY6i7Cz/mf2UVWkvHpmHgVEtg
+         bgGU4fEzFlzDrN8NXje4+5ygkO87UjYU+B58pIvX82JJ5I3InE44LSHwHZfL9L+L8YdK
+         bNBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b1NdNJmbQ9vufxbdq46R0yQ5rOWLcgcQTrxTuRLsRs4=;
+        b=bj7VJ889U1pZZl7C4c6GIDMJA5xWQwRJ+02QN6vZxmlbiuWBRvV1WCl/WbMW2Z8w0g
+         ZObYIrjjtkFmrNLqW1oEim2yUyu9RO1ftqiNUfvPJJAYnGgGkxfTLQJnNxtDysLjsM86
+         LYIH/viC2MnbrXNOsOizfKcMdaTbY1mxNq8RoEv2NNelTpTrORgW86MCeD5QLHHN6OYq
+         NO8H4sWaZVbB8ZJxYL/0x/8tyS1uO4YmEoCBG+hfwyE+wFxCK7ZaNLMxkH3x646P5YZ2
+         u56PgY9XHGX3aLVlgT4SZ2iGNnuWsClurDRcskFScdhsk9P43+Am0N4yh0BMu8CeNs8e
+         wHMg==
+X-Gm-Message-State: AOAM533bZfN9hq9ezoSUPlqPWslVftHURIjea2MsXJfo6rW+pZlGwZq2
+        D78AbzIr7O4xR58VqEskKuYr+A==
+X-Google-Smtp-Source: ABdhPJxP3yHeFpozEvcuka46Iijje/SKXPkiGMZdItJHdDhI9CQNqB/bOJ9eNYsjEGTObmJeG86+cA==
+X-Received: by 2002:ae9:d608:: with SMTP id r8mr1245226qkk.279.1623785396646;
+        Tue, 15 Jun 2021 12:29:56 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id y128sm10310870qke.113.2021.06.15.12.29.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 12:29:55 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 15:29:55 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] memcg: periodically flush the memcg stats
+Message-ID: <YMj/s26uF+cQOB2D@cmpxchg.org>
+References: <20210615174435.4174364-1-shakeelb@google.com>
+ <20210615174435.4174364-2-shakeelb@google.com>
 MIME-Version: 1.0
-References: <20210419005539.22729-1-mick@ics.forth.gr> <20210419005539.22729-6-mick@ics.forth.gr>
- <CAMuHMdW=23SPXwqcjD+30M_d0azdze2=ChZM-PF1brf9bCNtrA@mail.gmail.com>
- <fe02eb618eee141e8bc021e8e30906fc@mailhost.ics.forth.gr> <CAMuHMdXtT1L3yfzkTkbhqz3zgUQj89Bcm7mqz+m126NprAsK8Q@mail.gmail.com>
-In-Reply-To: <CAMuHMdXtT1L3yfzkTkbhqz3zgUQj89Bcm7mqz+m126NprAsK8Q@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 15 Jun 2021 13:21:38 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLHOmZ6az0bYGC3dg__YX3aq=+Un4_x4+R2nNksc0hM2g@mail.gmail.com>
-Message-ID: <CAL_JsqLHOmZ6az0bYGC3dg__YX3aq=+Un4_x4+R2nNksc0hM2g@mail.gmail.com>
-Subject: Re: [PATCH v4 5/5] RISC-V: Add crash kernel support
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615174435.4174364-2-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 12:48 PM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Nick,
->
-> On Tue, Jun 15, 2021 at 8:29 PM Nick Kossifidis <mick@ics.forth.gr> wrote=
-:
-> > =CE=A3=CF=84=CE=B9=CF=82 2021-06-15 16:19, Geert Uytterhoeven =CE=AD=CE=
-=B3=CF=81=CE=B1=CF=88=CE=B5:
-> > > This does not match
-> > > https://github.com/devicetree-org/dt-schema/blob/master/schemas/chose=
-n.yaml#L77:
-> > >
-> > >     $ref: types.yaml#/definitions/uint64-array
-> > >     maxItems: 2
-> > >     description:
-> > >       This property (currently used only on arm64) holds the memory
-> > > range,
-> > >       the address and the size, of the elf core header which mainly
-> > > describes
-> > >       the panicked kernel\'s memory layout as PT_LOAD segments of elf
-> > > format.
-> > >
-> > > Hence "linux,elfcorehdr" should be a property of the /chosen node,
-> > > instead of a memory node with a compatible value of "linux,elfcorehdr=
-".
-> > >
-> >
-> > That's a binding for a property on the /chosen node, that as the text
-> > says it's defined for arm64 only and the code that handled it was also
->
-> That doesn't mean it must not be used on other architectures ;-)
-> Arm64 was just the first one to use it...
+Hey Shakeel,
 
-It is used on arm64 because memory is often passed by UEFI tables and
-not with /memory node. As riscv is also supporting EFI, I'd think they
-would do the same.
+On Tue, Jun 15, 2021 at 10:44:35AM -0700, Shakeel Butt wrote:
+> At the moment memcg stats are read in four contexts:
+> 
+> 1. memcg stat user interfaces
+> 2. dirty throttling
+> 3. page fault
+> 4. memory reclaim
+> 
+> Currently the kernel flushes the stats for first two cases. Flushing the
+> stats for remaining two casese may have performance impact. Always
+> flushing the memcg stats on the page fault code path may negatively
+> impacts the performance of the applications. In addition flushing in the
+> memory reclaim code path, though treated as slowpath, can become the
+> source of contention for the global lock taken for stat flushing because
+> when system or memcg is under memory pressure, many tasks may enter the
+> reclaim path.
+> 
+> Instead of synchronously flushing the stats, this patch adds support of
+> asynchronous periodic flushing of the memcg stats. For now the flushing
+> period is hardcoded to 2*HZ but that can be changed later through maybe
+> sysctl if need arise.
 
-> > on arm64. Instead the reserved-region binding I used is a standard
-> > binding, if you don't like the name used for the compatible string
-> > because it overlaps with that property we can change it. I want to use =
-a
-> > reserved-region for this because we'll have to reserve it anyway so
-> > using a property on /chosen and then using that property to reserve the
-> > region seemed suboptimal.
-> >
-> > >> v2:
-> > >>  * Use linux,usable-memory on /memory instead of a new binding
-> > >
-> > > This part seems to have been removed in v3 and later?
-> > > Note that "linux,usable-memory-range" should be a property of the
-> > > /chosen node, too, cfr.
-> > > https://github.com/devicetree-org/dt-schema/blob/master/schemas/chose=
-n.yaml#L85
-> > >
-> >
-> > No special handling is needed when using linux,usable-memory on /memory=
-,
-> > limiting the available memory is handled by generic code at
-> > drivers/of/fdt.c
->
-> It was my understanding both properties under /chosen are the
-> recommended methods for new platforms... Let's see what Rob has
-> to say...
->
-> Anyway, I sent a patch series to switch to generic "linux,elfcorehdr"
-> handling
-> https://lore.kernel.org/r/cover.1623780059.git.geert+renesas@glider.be/
->
-> Thanks!
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
+I'm concerned that quite a lot can happen in terms of reclaim and page
+faults in 2 seconds. It's conceivable that the error of a fixed 2s
+flush can actually exceed the error of a fixed percpu batch size.
+
+The way the global vmstat implementation manages error is doing both:
+ratelimiting and timelimiting. It uses percpu batching to limit the
+error when it gets busy, and periodic flushing to limit the length of
+time consumers of those stats could be stuck trying to reach a state
+that the batching would otherwise prevent from being reflected.
+
+Maybe we can use a combination of ratelimiting and timelimiting too?
+
+We shouldn't flush on every fault, but what about a percpu ratelimit
+that would at least bound the error to NR_CPU instead of nr_cgroups?
+
+For thundering herds during reclaim: as long as they all tried to
+flush from the root, only one of them would actually need to do the
+work, and we could use trylock. If the lock is already taken, you can
+move on knowing that somebody is already doing the shared flush work.
