@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA703A7F04
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA913A7F0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhFONTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:19:13 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:48705 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230012AbhFONTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:19:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623763028; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=Mn6nyIhRes4TN6bFvP57pyiLCo8HSXb1369OByUf/mI=;
- b=nQlUSA/sDazy77rz9kuTeqBBkEWK7aIWUT1eyd8RJTk8Olkes6KCz8gqoIIYF+pSmZIhnAT/
- 0X5hNw2XbSl24lhNFxbl+wWoIuzb9JH7XkLrSTNmpilZ67ZFwhunnSJYldWheaajanOfIVC7
- eMhSXJFdA+tK9hDCVKR1dLVhric=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60c8a83ded59bf69ccddb67c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:16:45
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CDD41C433D3; Tue, 15 Jun 2021 13:16:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2F857C433F1;
-        Tue, 15 Jun 2021 13:16:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2F857C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S230314AbhFONUd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 09:20:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230084AbhFONUa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:20:30 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0506EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:18:25 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lt8xD-0007qa-D2; Tue, 15 Jun 2021 15:18:07 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lt8xB-0000Sh-75; Tue, 15 Jun 2021 15:18:05 +0200
+Message-ID: <2e369015776577c6c32ec2f7d05e35f796edf713.camel@pengutronix.de>
+Subject: Re: [PATCH 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Ban Tao <fengzheng923@gmail.com>, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        mripard@kernel.org, wens@csie.org, jernej.skrabec@gmail.com,
+        samuel@sholland.org, krzk@kernel.org
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Date:   Tue, 15 Jun 2021 15:18:05 +0200
+In-Reply-To: <20210615130326.2044-1-fengzheng923@gmail.com>
+References: <20210615130326.2044-1-fengzheng923@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [1/3] libertas: remove leading spaces before tabs
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1621407345-10625-2-git-send-email-tanghui20@huawei.com>
-References: <1621407345-10625-2-git-send-email-tanghui20@huawei.com>
-To:     Hui Tang <tanghui20@huawei.com>
-Cc:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <tanghui20@huawei.com>, Ganapathi Bhat <ganapathi.bhat@nxp.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210615131644.CDD41C433D3@smtp.codeaurora.org>
-Date:   Tue, 15 Jun 2021 13:16:44 +0000 (UTC)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hui Tang <tanghui20@huawei.com> wrote:
+Hi Ban,
 
-> There are a few leading spaces before tabs and remove it by running the
-> following commard:
+On Tue, 2021-06-15 at 21:03 +0800, Ban Tao wrote:
+> The Allwinner H6 and later SoCs have an DMIC block
+> which is capable of capture.
 > 
-> 	$ find . -name '*.c' | xargs sed -r -i 's/^[ ]+\t/\t/'
-> 	$ find . -name '*.h' | xargs sed -r -i 's/^[ ]+\t/\t/'
-> 
-> Cc: Ganapathi Bhat <ganapathi.bhat@nxp.com>
-> Signed-off-by: Hui Tang <tanghui20@huawei.com>
+> Signed-off-by: Ban Tao <fengzheng923@gmail.com>
+[...]
+> diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
+> new file mode 100644
+> index 000000000000..78d512d93974
+> --- /dev/null
+> +++ b/sound/soc/sunxi/sun50i-dmic.c
+> @@ -0,0 +1,408 @@
+[...]
+> +	host->rst = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
+> +	if (IS_ERR(host->rst) && PTR_ERR(host->rst) == -EPROBE_DEFER) {
+> +		ret = -EPROBE_DEFER;
+> +		dev_err(&pdev->dev, "Failed to get reset: %d\n", ret);
+> +		return ret;
+> +	}
 
-3 patches applied to wireless-drivers-next.git, thanks.
+Please don't ignore errors. For example:
 
-bd65fe550973 libertas: remove leading spaces before tabs
-084eb606dbcf rt2x00: remove leading spaces before tabs
-7b7362ba27a2 wlcore: remove leading spaces before tabs
+	if (IS_ERR(host->rst))
+		return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
+				     "Failed to  get reset\n");
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/1621407345-10625-2-git-send-email-tanghui20@huawei.com/
+devm_reset_control_get_optional_exclusive() will return NULL if no reset
+is specified in the device tree.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> +	if (!IS_ERR(host->rst))
+> +		reset_control_deassert(host->rst);
 
+Then this is not necessary. Just use:
+
+	reset_control_deassert(host->rst);
+
+regards
+Philipp
