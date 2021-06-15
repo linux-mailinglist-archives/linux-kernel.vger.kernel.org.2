@@ -2,73 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E903A7DD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A361C3A7DCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhFOMJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:09:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41888 "EHLO mail.kernel.org"
+        id S229951AbhFOMIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:08:38 -0400
+Received: from phobos.denx.de ([85.214.62.61]:53924 "EHLO phobos.denx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230151AbhFOMI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:08:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FFD161241;
-        Tue, 15 Jun 2021 12:06:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623758814;
-        bh=2MYmjJV9kAgn72HGkFP0R9jgnz9kNJ3Xe1//XX3a8f8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WoY9S/pQjlqu+ItTrh1MNzzt7UVqQL8NVJdXc1d0E6QVoMlQ4toGCsu+CDnvoymxD
-         xLs5QP+qnERBjzPdzNGWcUIVmbY7tiMzcUbZFRcaBY4Cl+4/gcKao123EfYd8RQzQY
-         T3XBXqtAoW6VykGUdozFuIc8RRS84euwrgxy7k4FIorBycyp5Nhg4yAFhUY7AMvNgR
-         3nDzXGRQBN1hfCeVXEOmmHQruKIrdqWuwUzHqjCD3YxRpg345T7djnrtRvLT0pXmMt
-         M+NGtW5S3cnKSqjfGAeQZ73Wfj6+Iamey8658EOuHJ1VmRQkCk/yEKpr7HdrsgHoEq
-         6OywpKOIBbhww==
-From:   Mark Brown <broonie@kernel.org>
-To:     devicetree@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: fsl-sai: Add compatible string for imx8mm/8mn/8mp/8ulp
-Date:   Tue, 15 Jun 2021 13:06:27 +0100
-Message-Id: <162375817571.30661.11566703557624039707.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1622613770-10220-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1622613770-10220-1-git-send-email-shengjiu.wang@nxp.com>
+        id S229557AbhFOMIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 08:08:37 -0400
+Received: from [10.88.0.186] (dslb-084-062-104-230.084.062.pools.vodafone-ip.de [84.62.104.230])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: ch@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 21FAD81249;
+        Tue, 15 Jun 2021 14:06:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1623758791;
+        bh=dWaYxNZ7Ro9xr/pNtB1Q08hiDs2nyh+0Dls0ENGlbRs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=wePmA+OF/i3IITNVBaahj2vBUdygQswycdQHdo6wNsv8QQZOdoVDbVNIIXS1IaTSp
+         unfn5UOCllYXnrLUjilB5CUonIU5saosGc1hLsvxCnvUrbhG8R0sqd3qeV9a1XX2Xr
+         kBvCYBvb8dESS22C4IRoBLQO/whP9JkvmnYvngCutMkgmECxP2qRqDTXa3VWiq/Y3x
+         irnq3zwamU9psotPDU91/0s5/d5hjW42HQV51N9UpMGDwocKDP2xU7bS8RLAtXdHjl
+         1tbiGHIvB2Xnvww7SPiP8DknBA1JvkO6ma04M1h7oaTpkfDSIwab41Dwkq/jvQ6YoB
+         g3r1+yRIZZUng==
+Subject: Re: [PATCH 1/3] ASoC: tlv320aic32x4: prepare driver for different
+ device variants
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        Marek Vasut <marex@denx.de>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Sia Jee Heng <jee.heng.sia@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Annaliese McDermond <nh6z@nh6z.net>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210615094933.3076392-1-ch@denx.de>
+ <20210615094933.3076392-2-ch@denx.de> <20210615115438.GD5149@sirena.org.uk>
+From:   Claudius Heine <ch@denx.de>
+Organization: Denx Software Engineering
+Message-ID: <32b82dae-45ea-c6d4-77b7-c8a234cbf803@denx.de>
+Date:   Tue, 15 Jun 2021 14:06:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210615115438.GD5149@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Jun 2021 14:02:50 +0800, Shengjiu Wang wrote:
-> Add compatible string for imx8mm/8mn/8mp/8ulp, these platforms all
-> support SAI IP.
+Hi Mark,
 
-Applied to
+On 2021-06-15 13:54, Mark Brown wrote:
+> On Tue, Jun 15, 2021 at 11:49:30AM +0200, Claudius Heine wrote:
+> 
+>> With this change it will be possible to add different code paths for
+>> similar devices.
+> 
+>>   static const struct i2c_device_id aic32x4_i2c_id[] = {
+>> -	{ "tlv320aic32x4", 0 },
+>> -	{ "tlv320aic32x6", 1 },
+>> +	{ "tlv320aic32x4", (kernel_ulong_t)AIC32X4_TYPE_AIC32X4 },
+>> +	{ "tlv320aic32x6", (kernel_ulong_t)AIC32X4_TYPE_AIC32X6 },
+>>   	{ /* sentinel */ }
+> 
+> It appears that the device already supports multiple variants?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Those values aren't used anywhere as far as I can see.
 
-Thanks!
-
-[1/1] ASoC: dt-bindings: fsl-sai: Add compatible string for imx8mm/8mn/8mp/8ulp
-      commit: 6f73de7da10b9476232820558fb7b3eb6bb9afe4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+regards,
+Claudius
