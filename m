@@ -2,88 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACA83A7699
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 07:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82AF53A76C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 07:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhFOFtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 01:49:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37088 "EHLO mail.kernel.org"
+        id S230306AbhFOFx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 01:53:27 -0400
+Received: from m12-16.163.com ([220.181.12.16]:43848 "EHLO m12-16.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229463AbhFOFtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 01:49:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DBD661410;
-        Tue, 15 Jun 2021 05:47:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623736059;
-        bh=f4qCOZWRuH4vKOgiIZVgeX8l6HC+JRWZLecahwNFIPA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jAGcVW+OgL6SuL5Uk7TiQp0WiD8SkaSxqUu7+LT2Tu6Qod/OkeErSqBYgqDqkDAQi
-         G4zqh7TnOAl8XbCvBD01IiXZFJnx+gj8C4h/63gE53zPZAuFkX+VKiPvET5T1LnxkN
-         fRIGLHAbnNbaI60HKilOKNbZ67w9S+BDNThFdMl5KGq1yOeDU9aYQe5evJPQLoGa7w
-         jnPCNkmAzl3zdbi2VFoeRZwKTBHfH1fuQL3M4hF1bexn9AMjHkCGeWSxJzcHKjzge8
-         yyYW2iLO8p2bNoKOPqM8+gy983hDb2p5mVie5LlwAqyz9qxNVLwvK3pnn+/GXl4Kft
-         diDjRtcYuJzyw==
-Date:   Tue, 15 Jun 2021 14:47:37 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Anton Blanchard <anton@ozlabs.org>
-Subject: Re: [PATCH 1/2] trace/kprobe: Fix count of missed kretprobes in
- kprobe_profile
-Message-Id: <20210615144737.087d11e9f901e68cadcb91c5@kernel.org>
-In-Reply-To: <2905f923966229953e6dc162b0a036853a420172.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-References: <cover.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-        <2905f923966229953e6dc162b0a036853a420172.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230079AbhFOFxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 01:53:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=0d+6Q
+        DjQqm2k4gejTiAFSIHmhOWpq1SXRcL3sEt28mY=; b=Yu99bC6yZYtPa/iKCnt0K
+        JgWGk3bhr6KGDH8N3Y83GP/ekHQBBUX6oomTvUqteGhWGkIqWJ31HrLTOsPWKUVo
+        tubUkrw41jNeWgfEY9mv9j7A2D60vJc4IJeWQ0i5lNomFFv8lS7Tsug+ozFC/zJO
+        e+Qf5brkT6ccLtQ6KpDQ+M=
+Received: from localhost.localdomain (unknown [218.17.89.111])
+        by smtp12 (Coremail) with SMTP id EMCowADXJjJ4P8hgdEa1xQ--.61515S2;
+        Tue, 15 Jun 2021 13:49:58 +0800 (CST)
+From:   ChunyouTang <tangchunyou@163.com>
+To:     robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        tangchunyou@icubecorp.cn,
+        tangchunyou <tangchunyou@163.icubecorp.cn>
+Subject: [PATCH 2/2] drm/panfrost:report the full raw fault information instead
+Date:   Tue, 15 Jun 2021 13:49:31 +0800
+Message-Id: <20210615054931.707-1-tangchunyou@163.com>
+X-Mailer: git-send-email 2.30.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowADXJjJ4P8hgdEa1xQ--.61515S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Xw15XrWrZFy3Kry3Cw17Wrg_yoWfZwc_u3
+        W7ZrnxXrsIyFn0kwsayan7urySvryUZw40yw1xGr9Fk3W5A3sFg3s2vrs8Zr18Ww45ZF1D
+        tanFqF1Fyry7KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU58R67UUUUU==
+X-Originating-IP: [218.17.89.111]
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbiTh2xUVUDKIBvdwABsU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 23:33:28 +0530
-"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+From: tangchunyou <tangchunyou@163.icubecorp.cn>
 
-> For a kretprobe, the miss count includes the number of times the probe
-> on function entry was missed, as well as the number of times we ran out
-> of kretprobe_instance structures due to maxactive being too low.
-> 
-> Fixes: cd7e7bd5e44718 ("tracing: Add kprobes event profiling interface")
-> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+of the low 8 bits.
 
-Good catch!
+Signed-off-by: tangchunyou <tangchunyou@163.icubecorp.cn>
+---
+ drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  kernel/trace/trace_kprobe.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index ea6178cb5e334d..0475e2a6d0825e 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -1192,7 +1192,8 @@ static int probes_profile_seq_show(struct seq_file *m, void *v)
->  	seq_printf(m, "  %-44s %15lu %15lu\n",
->  		   trace_probe_name(&tk->tp),
->  		   trace_kprobe_nhit(tk),
-> -		   tk->rp.kp.nmissed);
-> +		   trace_kprobe_is_return(tk) ? tk->rp.kp.nmissed + tk->rp.nmissed
-> +					      : tk->rp.kp.nmissed);
-
-Can you add a static trace_kprobe_nmissed(tk) for wrapping this ?
-
-Thank you,
-
->  
->  	return 0;
->  }
-> -- 
-> 2.31.1
-> 
-
-
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index 1fffb6a0b24f..d2d287bbf4e7 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -33,7 +33,7 @@ static irqreturn_t panfrost_gpu_irq_handler(int irq, void *data)
+ 		address |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO);
+ 
+ 		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at 0x%016llx\n",
+-			 fault_status & 0xFF, panfrost_exception_name(pfdev, fault_status & 0xFF),
++			 fault_status, panfrost_exception_name(pfdev, fault_status & 0xFF),
+ 			 address);
+ 
+ 		if (state & GPU_IRQ_MULTIPLE_FAULT)
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.25.1
+
+
