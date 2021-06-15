@@ -2,121 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BED33A7832
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3C43A784D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhFOHqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:46:11 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31120 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229613AbhFOHqD (ORCPT
+        id S230332AbhFOHvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229613AbhFOHvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:46:03 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15F7Y2cs021359;
-        Tue, 15 Jun 2021 03:43:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=adpqRCpixsBPI3Dmqt4EnbXaGR6Lwwm/ncIPBJTljRo=;
- b=K8fqDSWkY3SpbX0evoEuUWYMCGpLpFWAtXcDoD2vN9A1n18L5rJfS82np778hm04yJyD
- mClIe8SUWmiwvzjG0yhHtW2ab6rYLdTTiI/tkW771PAWRwZq5ggXqYxwajBwVkAfmgWa
- vpZ4sPPAL5C8ZXWfIUOtxrgV2iTdAFOMNLW/gCGRmDWCPIr+ne5rWpjTCtGt8x6uvunq
- cLEp4UMFlUZJKlK0lNjSnmyHeP2pfOvpb5hCObO3BOIuHcTdgaHUpekmTi6pL0Mv/nGS
- B27lR2Z31SRRT8tDV9DFAow/kVpVsXWWBjjuCvRAs9aYPLWRhS8/ReZmyIVAANEbwnSz OQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 396qn48rpf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 03:43:55 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15F7Z26T024989;
-        Tue, 15 Jun 2021 03:43:55 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 396qn48rnv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 03:43:55 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15F7giQN022028;
-        Tue, 15 Jun 2021 07:43:53 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03fra.de.ibm.com with ESMTP id 394mj90qtb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 07:43:53 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15F7hogq33882496
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Jun 2021 07:43:50 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 334264C04A;
-        Tue, 15 Jun 2021 07:43:50 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 957CD4C04E;
-        Tue, 15 Jun 2021 07:43:49 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.85.205])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Jun 2021 07:43:49 +0000 (GMT)
-Subject: Re: [PATCH 1/3] s390/vfio-ap: clean up mdev resources when remove
- callback invoked
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210609224634.575156-1-akrowiak@linux.ibm.com>
- <20210609224634.575156-2-akrowiak@linux.ibm.com>
- <20210611164854.GT1002214@nvidia.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <fb6a3aa4-c12b-5b38-54a5-36941d5d8dbd@de.ibm.com>
-Date:   Tue, 15 Jun 2021 09:43:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 15 Jun 2021 03:51:16 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13660C0617AF
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:49:12 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id u18so12603916pfk.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yi7OHXhBXq95N0WFRTZ77wBUGgmmCYv0yiDj8kMTwxI=;
+        b=srRY54M2c2VSFFaofvFl/3SRQy3o440qDy79ayxphODg+jGWZ33IW502mKUIsI6ps9
+         b5/x827Q652MFdtKL9tuVAgO1dJ7H8JYXc3hrhEOb1AEga8XOx4fzBA0HPQUpmuk3EDV
+         c9P0erJq+2YHvarzjxyAWvA327ghRlhuJsUCwUbSgH2H/nw6wnMvuYEmezZKQ4aGLlyZ
+         p1ih2KJvew9itY2x7TRkciJI7qp3Z/UCho3pU6QcY2SMaJ39QJd9f0mJ846ty5Ai/egI
+         PyQa1nrISbBDL5akhHXRdDe0q0GDgCn9AySB6sREn48EAEtCV1gZ4Fg6FqxQFOj0mHp4
+         gJxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yi7OHXhBXq95N0WFRTZ77wBUGgmmCYv0yiDj8kMTwxI=;
+        b=AUjfeJkoWGSFi4JvrGnYqA/sa1S8MQezCVHlrl09XzY572eojrQ9NDG6BaHc+Nt37C
+         g1Rctk7If4ma6OCGAFMau6S0ejSX+Fvj8LqHLNycJGOr6hbCyQcfIrlJgcoDzjtESKvP
+         yYzzN4P0tWg2vb1dPMTKY4gPLtQdbC+G0lzEfUIlQf+1LrAcvbR/NvLjkl82wa/xNIhF
+         A8VJWxLspkUvPiP/xXYqKIwffMsaCcS/RxYOjnYzs73YJfJKqmg6G252JIU19L/A2hQ6
+         ooVX7W7ANQTTgWKsjFwn8dnBBm810WNupytfTWafuPrsCp5fbhqvJsKKU5xayorIkbLD
+         KuUg==
+X-Gm-Message-State: AOAM5327yeVJR5UqYHpssU0glCQq/bqJXTWwrrdQJZyjxhM53CEJ9EvS
+        Wu/g9w8gEw6uQF+uOxlu9Ibejg==
+X-Google-Smtp-Source: ABdhPJx7Y3NwVfBiOxQbbaqIBe71EtZOEtumAmDrx4dKBJ3dWj41D/oBytNabZb9f5v1haw0rLxAhA==
+X-Received: by 2002:a63:d053:: with SMTP id s19mr11713395pgi.326.1623743351592;
+        Tue, 15 Jun 2021 00:49:11 -0700 (PDT)
+Received: from localhost.localdomain.name ([122.177.197.114])
+        by smtp.gmail.com with ESMTPSA id c25sm14273097pfo.130.2021.06.15.00.49.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 00:49:11 -0700 (PDT)
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>
+Subject: [PATCH v2 00/10] arm64: dts: qcom: Add SA8155p-adp board DTS
+Date:   Tue, 15 Jun 2021 13:15:33 +0530
+Message-Id: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210611164854.GT1002214@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: zMOFSxYXPb8cCdSg2C0a_8mZ9PkHfm_L
-X-Proofpoint-ORIG-GUID: Mfu71SqRO_FJkulYxDIM_5DwDDXPDnMY
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-15_04:2021-06-14,2021-06-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- phishscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 spamscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106150045
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds DTS for SA8155p-adp board which is based on
+Qualcomm snapdragon sa8155p SoC which is simiar to sm8150 SoC. 
 
+This patchset also includes DTS for the new PMIC PMM8155AU
+found on the adp board.
 
-On 11.06.21 18:48, Jason Gunthorpe wrote:
-> On Wed, Jun 09, 2021 at 06:46:32PM -0400, Tony Krowiak wrote:
->> The mdev remove callback for the vfio_ap device driver bails out with
->> -EBUSY if the mdev is in use by a KVM guest (i.e., the KVM pointer in the
->> struct ap_matrix_mdev is not NULL). The intended purpose was
->> to prevent the mdev from being removed while in use. There are two
->> problems with this scenario:
->>
->> 1. Returning a non-zero return code from the remove callback does not
->>     prevent the removal of the mdev.
->>
->> 2. The KVM pointer in the struct ap_matrix_mdev will always be NULL because
->>     the remove callback will not get invoked until the mdev fd is closed.
->>     When the mdev fd is closed, the mdev release callback is invoked and
->>     clears the KVM pointer from the struct ap_matrix_mdev.
->>
->> Let's go ahead and remove the check for KVM in the remove callback and
->> allow the cleanup of mdev resources to proceed.
->>
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> ---
->>   drivers/s390/crypto/vfio_ap_ops.c | 10 ----------
->>   1 file changed, 10 deletions(-)
-> 
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Andy Gross <agross@kernel.org>
 
-Jason, I guess you want this patch still in 5.13, the other 2 can be 5.14?
+Bhupesh Sharma (10):
+  dt-bindings: qcom: rpmh-regulator: Add compatible for SA8155p-adp
+    board pmic
+  dt-bindings: pinctrl: qcom,pmic-gpio: Add compatible for SA8155p-adp
+  dt-bindings: arm: qcom: Add compatible for sm8150-mtp board
+  dt-bindings: arm: qcom: Add compatible for SA8155p-adp board
+  regulator: qcom-rpmh: Cleanup terminator line commas
+  regulator: qcom-rpmh: Add new regulator found on SA8155p adp board
+  pinctrl: qcom/pinctrl-spmi-gpio: Add compatible for pmic-gpio on
+    SA8155p-adp
+  arm64: dts: qcom: pmm8155au_1: Add base dts file
+  arm64: dts: qcom: pmm8155au_2: Add base dts file
+  arm64: dts: qcom: sa8155p-adp: Add base dts file
+
+ .../devicetree/bindings/arm/qcom.yaml         |  13 +
+ .../bindings/pinctrl/qcom,pmic-gpio.txt       |   2 +
+ .../regulator/qcom,rpmh-regulator.yaml        |   1 +
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi     | 134 +++++++
+ arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi     | 107 ++++++
+ arch/arm64/boot/dts/qcom/sa8155p-adp.dts      | 355 ++++++++++++++++++
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c      |   1 +
+ drivers/regulator/qcom-rpmh-regulator.c       |  62 ++-
+ 9 files changed, 664 insertions(+), 12 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/sa8155p-adp.dts
+
+-- 
+2.31.1
+
