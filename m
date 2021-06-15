@@ -2,324 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F3F3A795E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70C73A7961
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhFOIvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 04:51:52 -0400
-Received: from mga01.intel.com ([192.55.52.88]:6935 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230479AbhFOIvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:51:51 -0400
-IronPort-SDR: QUclSmPZWMESoXFrpyRelj4UqpNKVvoM4vt+HCvb9LCk5HQ0tznqlLeY12gkPa+MmANeD3m4zF
- sLKTYBDRmniQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="227415106"
+        id S231209AbhFOIwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 04:52:53 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:42471 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230332AbhFOIwv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 04:52:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1623747047; x=1655283047;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9b0yrD49PQCsO1lyUsJQBwEWd/f+MKJwcnBj+96927c=;
+  b=XSe0FHZA9q9z+I6NYvvNFsuAKnCsWDQXVMXQHqlaf5A4ZZKw8dV0UbRx
+   H8CzB42INVHF251Ew3p6ssQaMOpN3AylzvSEkO6jcW+FvWkAnw4nJBnmt
+   nbaF+9CXMsWuXaqZ/X/A1tfU2r4HKQy4oe9vSl+VCaG1bnzauZgDl2G7K
+   ZRhzcf8liIh00lUT4VQwD1xfmtqvW8JbB65nZMgSNIYRXoXTPRCFHNI1n
+   oksmJsCAbg4A85UylAW03uk6QEks/mdNSqCRmP15xvfk1BpQsHbY8JrRG
+   bAJKrJhGsKcybWjiZfeAhhmNMvM1XMQ1jfZlJik9CrTYzhS2LCVxO5Rsm
+   A==;
+IronPort-SDR: v7ff03hzlXDskGaA8czZoQD2/6fyyCSY2lH0a2c8zVF+XDXW1dPcJ8y4nK+E2GJ8Ey20+TkUTn
+ WdP8nPQXuWoEMYXgwX8iPaIeDMTa9Wt4NjMLvx9urbkSmycwbL5F6Ik/1FkW8kgsDaIRHiZdOk
+ gPav+1nfT7ZFApnFrKh8MVnXrb0L/b0HI+5mfUiKpc1cGLvuLT5UMEap0o9fP9DSulkXsQnj7G
+ Ch82ypDtOi0mQvuKsObmCgNynuUgDTIKClCsQ904hlLpBzwtNB/zmJv/BOYX6z/JkoONNdM+MB
+ 7NE=
 X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="227415106"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 01:49:45 -0700
-IronPort-SDR: JjwfIJYkGED7vy5B6rDgnQxL6q4UmEvMeNQhLc1O40gMrUyGeBeK536fmDiNACXNS3A44AJWym
- yL7EEbYFJkaw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="484392886"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 15 Jun 2021 01:49:40 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lt4lP-0000Ic-Jx; Tue, 15 Jun 2021 08:49:39 +0000
-Date:   Tue, 15 Jun 2021 16:48:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 1d3156396cf6ea0873145092f4e040374ff1d862
-Message-ID: <60c8697a.GmMDfUd1Ia8b+/md%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="58958462"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Jun 2021 01:50:46 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 01:50:46 -0700
+Received: from den-dk-m31857.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 15 Jun 2021 01:50:43 -0700
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Steen Hegelund <steen.hegelund@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Simon Horman" <simon.horman@netronome.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH net-next v4 00/10] Adding the Sparx5 Switch Driver
+Date:   Tue, 15 Jun 2021 10:50:24 +0200
+Message-ID: <20210615085034.1262457-1-steen.hegelund@microchip.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: 1d3156396cf6ea0873145092f4e040374ff1d862  x86/sgx: Correct kernel-doc's arg name in sgx_encl_release()
+This series provides the Microchip Sparx5 Switch Driver
 
-elapsed time: 5752m
+The Sparx5 Carrier Ethernet and Industrial switch family delivers 64
+Ethernet ports and up to 200 Gbps of switching bandwidth.
 
-configs tested: 262
-configs skipped: 3
+It provides a rich set of Ethernet switching features such as hierarchical
+QoS, hardware-based OAM  and service activation testing, protection
+switching, IEEE 1588, and Synchronous Ethernet.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Using provider bridging (Q-in-Q) and MPLS/MPLS-TP technology, it delivers
+MEF CE
+2.0 Ethernet virtual connections (EVCs) and features advanced TCAM
+  classification in both ingress and egress.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                    amigaone_defconfig
-powerpc                        fsp2_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                      katmai_defconfig
-arc                              allyesconfig
-sh                          kfr2r09_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                        spear3xx_defconfig
-arm                          moxart_defconfig
-powerpc                      bamboo_defconfig
-powerpc                      ppc6xx_defconfig
-mips                          ath25_defconfig
-powerpc                     kmeter1_defconfig
-sh                          sdk7786_defconfig
-m68k                         amcore_defconfig
-arm                        mini2440_defconfig
-x86_64                            allnoconfig
-arm                          collie_defconfig
-m68k                        m5307c3_defconfig
-powerpc                      acadia_defconfig
-sh                     sh7710voipgw_defconfig
-riscv                               defconfig
-arm                          pxa3xx_defconfig
-arm64                            alldefconfig
-powerpc                      cm5200_defconfig
-m68k                            mac_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                  iss476-smp_defconfig
-powerpc                     sequoia_defconfig
-arm                      jornada720_defconfig
-powerpc                    klondike_defconfig
-csky                             alldefconfig
-powerpc                 mpc837x_mds_defconfig
-arm                       spear13xx_defconfig
-arm                          pxa910_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                      chrp32_defconfig
-nios2                         10m50_defconfig
-arm                           omap1_defconfig
-csky                                defconfig
-sh                     magicpanelr2_defconfig
-sh                         ap325rxa_defconfig
-powerpc                      ep88xc_defconfig
-m68k                       m5475evb_defconfig
-powerpc                       ppc64_defconfig
-sh                         ecovec24_defconfig
-mips                      maltasmvp_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc64                           defconfig
-arm                            hisi_defconfig
-ia64                      gensparse_defconfig
-sh                           se7721_defconfig
-m68k                        m5407c3_defconfig
-arm                             mxs_defconfig
-arm                            pleb_defconfig
-arm                         palmz72_defconfig
-sh                          polaris_defconfig
-arm                            qcom_defconfig
-m68k                       m5249evb_defconfig
-sparc                            alldefconfig
-arm                           spitz_defconfig
-powerpc                     stx_gp3_defconfig
-mips                  maltasmvp_eva_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                      loongson3_defconfig
-mips                           ci20_defconfig
-arc                          axs103_defconfig
-arm                             pxa_defconfig
-arm                      tct_hammer_defconfig
-m68k                          sun3x_defconfig
-mips                            gpr_defconfig
-powerpc                 mpc836x_mds_defconfig
-xtensa                generic_kc705_defconfig
-arm                        shmobile_defconfig
-arm                       imx_v6_v7_defconfig
-ia64                          tiger_defconfig
-mips                         tb0226_defconfig
-arm                           sunxi_defconfig
-s390                       zfcpdump_defconfig
-sparc                               defconfig
-microblaze                          defconfig
-arm                      footbridge_defconfig
-arm                        multi_v7_defconfig
-sh                           se7780_defconfig
-sh                                  defconfig
-sh                          rsk7203_defconfig
-mips                      fuloong2e_defconfig
-sh                        edosk7760_defconfig
-sh                   rts7751r2dplus_defconfig
-xtensa                  nommu_kc705_defconfig
-x86_64                           alldefconfig
-mips                        bcm47xx_defconfig
-sh                           se7619_defconfig
-powerpc                     ppa8548_defconfig
-mips                         bigsur_defconfig
-sh                             sh03_defconfig
-powerpc                     taishan_defconfig
-arm                          ixp4xx_defconfig
-mips                        nlm_xlp_defconfig
-sh                          rsk7269_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                     eseries_pxa_defconfig
-mips                  decstation_64_defconfig
-arm                      integrator_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                          g5_defconfig
-mips                           rs90_defconfig
-arm                            mps2_defconfig
-mips                      malta_kvm_defconfig
-arm                          pcm027_defconfig
-powerpc                      ppc40x_defconfig
-arm                          simpad_defconfig
-sh                          rsk7201_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                      walnut_defconfig
-m68k                        mvme16x_defconfig
-arm                         mv78xx0_defconfig
-arm                            dove_defconfig
-arm                        spear6xx_defconfig
-mips                           jazz_defconfig
-arm                        trizeps4_defconfig
-powerpc                    ge_imp3a_defconfig
-mips                        omega2p_defconfig
-xtensa                       common_defconfig
-sh                        dreamcast_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210611
-x86_64               randconfig-a001-20210611
-x86_64               randconfig-a004-20210611
-x86_64               randconfig-a003-20210611
-x86_64               randconfig-a006-20210611
-x86_64               randconfig-a005-20210611
-i386                 randconfig-a002-20210611
-i386                 randconfig-a006-20210611
-i386                 randconfig-a004-20210611
-i386                 randconfig-a001-20210611
-i386                 randconfig-a005-20210611
-i386                 randconfig-a003-20210611
-i386                 randconfig-a002-20210613
-i386                 randconfig-a006-20210613
-i386                 randconfig-a001-20210613
-i386                 randconfig-a004-20210613
-i386                 randconfig-a005-20210613
-i386                 randconfig-a003-20210613
-i386                 randconfig-a002-20210612
-i386                 randconfig-a006-20210612
-i386                 randconfig-a001-20210612
-i386                 randconfig-a004-20210612
-i386                 randconfig-a005-20210612
-i386                 randconfig-a003-20210612
-i386                 randconfig-a002-20210614
-i386                 randconfig-a006-20210614
-i386                 randconfig-a004-20210614
-i386                 randconfig-a001-20210614
-i386                 randconfig-a005-20210614
-i386                 randconfig-a003-20210614
-x86_64               randconfig-a015-20210612
-x86_64               randconfig-a011-20210612
-x86_64               randconfig-a014-20210612
-x86_64               randconfig-a012-20210612
-x86_64               randconfig-a013-20210612
-x86_64               randconfig-a016-20210612
-i386                 randconfig-a015-20210611
-i386                 randconfig-a013-20210611
-i386                 randconfig-a016-20210611
-i386                 randconfig-a014-20210611
-i386                 randconfig-a012-20210611
-i386                 randconfig-a011-20210611
-i386                 randconfig-a015-20210612
-i386                 randconfig-a013-20210612
-i386                 randconfig-a016-20210612
-i386                 randconfig-a014-20210612
-i386                 randconfig-a012-20210612
-i386                 randconfig-a011-20210612
-i386                 randconfig-a015-20210613
-i386                 randconfig-a013-20210613
-i386                 randconfig-a016-20210613
-i386                 randconfig-a014-20210613
-i386                 randconfig-a012-20210613
-i386                 randconfig-a011-20210613
-i386                 randconfig-a015-20210614
-i386                 randconfig-a013-20210614
-i386                 randconfig-a016-20210614
-i386                 randconfig-a012-20210614
-i386                 randconfig-a014-20210614
-i386                 randconfig-a011-20210614
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                      rhel-8.3-kbuiltin
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Per-EVC features include advanced L3-aware classification, a rich set of
+statistics, OAM for end-to-end performance monitoring, and dual-rate
+policing and shaping.
 
-clang tested configs:
-x86_64               randconfig-b001-20210611
-x86_64               randconfig-b001-20210614
-x86_64               randconfig-b001-20210610
-x86_64               randconfig-b001-20210612
-x86_64               randconfig-a001-20210614
-x86_64               randconfig-a004-20210614
-x86_64               randconfig-a002-20210614
-x86_64               randconfig-a003-20210614
-x86_64               randconfig-a006-20210614
-x86_64               randconfig-a005-20210614
-x86_64               randconfig-a015-20210611
-x86_64               randconfig-a011-20210611
-x86_64               randconfig-a012-20210611
-x86_64               randconfig-a014-20210611
-x86_64               randconfig-a016-20210611
-x86_64               randconfig-a013-20210611
-x86_64               randconfig-a015-20210613
-x86_64               randconfig-a011-20210613
-x86_64               randconfig-a014-20210613
-x86_64               randconfig-a012-20210613
-x86_64               randconfig-a013-20210613
-x86_64               randconfig-a016-20210613
-x86_64               randconfig-a002-20210612
-x86_64               randconfig-a004-20210612
-x86_64               randconfig-a001-20210612
-x86_64               randconfig-a003-20210612
-x86_64               randconfig-a006-20210612
-x86_64               randconfig-a005-20210612
+Time sensitive networking (TSN) is supported through a comprehensive set of
+features including frame preemption, cut-through, frame replication and
+elimination for reliability, enhanced scheduling: credit-based shaping,
+time-aware shaping, cyclic queuing, and forwarding, and per-stream policing
+and filtering.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Together with IEEE 1588 and IEEE 802.1AS support, this guarantees
+low-latency deterministic networking for Fronthaul, Carrier, and Industrial
+Ethernet.
+
+The Sparx5 switch family consists of following SKUs:
+
+- VSC7546 Sparx5-64 up to 64 Gbps of bandwidth with the following primary
+  port configurations:
+  - 6 *10G
+  - 16 * 2.5G + 2 * 10G
+  - 24 * 1G + 4 * 10G
+
+- VSC7549 Sparx5-90 up to 90 Gbps of bandwidth with the following primary
+  port configurations:
+  - 9 * 10G
+  - 16 * 2.5G + 4 * 10G
+  - 48 * 1G + 4 * 10G
+
+- VSC7552 Sparx5-128 up to 128 Gbps of bandwidth with the following primary
+  port configurations:
+  - 12 * 10G
+  - 16 * 2.5G + 8 * 10G
+  - 48 * 1G + 8 * 10G
+
+- VSC7556 Sparx5-160 up to 160 Gbps of bandwidth with the following primary
+  port configurations:
+  - 16 * 10G
+  - 10 * 10G + 2 * 25G
+  - 16 * 2.5G + 10 * 10G
+  - 48 * 1G + 10 * 10G
+
+- VSC7558 Sparx5-200 up to 200 Gbps of bandwidth with the following primary
+  port configurations:
+  - 20 * 10G
+  - 8 * 25G
+
+In addition, the device supports one 10/100/1000/2500/5000 Mbps
+SGMII/SerDes node processor interface (NPI) Ethernet port.
+
+The Sparx5 support is developed on the PCB134 and PCB135 evaluation boards.
+
+- PCB134 main networking features:
+  - 12x SFP+ front 10G module slots (connected to Sparx5 through SFI).
+  - 8x SFP28 front 25G module slots (connected to Sparx5 through SFI high
+    speed).
+  - Optional, one additional 10/100/1000BASE-T (RJ45) Ethernet port
+    (on-board VSC8211 PHY connected to Sparx5 through SGMII).
+
+- PCB135 main networking features:
+  - 48x1G (10/100/1000M) RJ45 front ports using 12xVSC8514 QuadPHY’s each
+    connected to VSC7558 through QSGMII.
+  - 4x10G (1G/2.5G/5G/10G) RJ45 front ports using the AQR407 10G QuadPHY
+    each port connects to VSC7558 through SFI.
+  - 4x SFP28 25G module slots on back connected to VSC7558 through SFI high
+    speed.
+  - Optional, one additional 1G (10/100/1000M) RJ45 port using an on-board
+    VSC8211 PHY, which can be connected to VSC7558 NPI port through SGMII
+    using a loopback add-on PCB)
+
+This series provides support for:
+  - SFPs and DAC cables via PHYLINK with a number of 5G, 10G and 25G
+    devices and media types.
+  - Port module configuration for 10M to 25G speeds with SGMII, QSGMII,
+    1000BASEX, 2500BASEX and 10GBASER as appropriate for these modes.
+  - SerDes configuration via the Sparx5 SerDes driver (see below).
+  - Host mode providing register based injection and extraction.
+  - Switch mode providing MAC/VLAN table learning and Layer2 switching
+    offloaded to the Sparx5 switch.
+  - STP state, VLAN support, host/bridge port mode, Forwarding DB, and
+    configuration and statistics via ethtool.
+
+More support will be added at a later stage.
+
+The Sparx5 Chip Register Model can be browsed at this location:
+https://github.com/microchip-ung/sparx-5_reginfo
+and the datasheet is available here:
+https://ww1.microchip.com/downloads/en/DeviceDoc/SparX-5_Family_L2L3_Enterprise_10G_Ethernet_Switches_Datasheet_00003822B.pdf
+
+The series depends on the following series currently on their way
+into the kernel:
+
+- 25G Base-R phy mode
+  Link: https://lore.kernel.org/r/20210611125453.313308-1-steen.hegelund@microchip.com/
+- Sparx5 Reset Driver
+  Link: https://lore.kernel.org/r/20210416084054.2922327-1-steen.hegelund@microchip.com/
+
+ChangeLog:
+v4:
+    - basic driver:
+        Using devm_reset_control_get_optional_shared to get the reset
+        control, and let the reset framework check if it is valid.
+    - host mode (phylink):
+        Use the PCS operations to get state and update configuration.
+        Removed the setting of interface modes.  Let phylink control this.
+        Using the new 5gbase-r and 25gbase-r modes.
+        Using a helper function to check if one of the 3 base-r modes has
+        been selected.
+        Currently it will not be possible to change the interface mode by
+        changing the speed (e.g via ethtool).  This will be added later.
+v3:
+    - basic driver:
+        - removed unneeded braces
+        - release reference to ports node after use
+        - use dev_err_probe to handle DEFER
+        - update error value when bailing out (a few cases)
+        - updated formatting of port struct and grouping of bool values
+        - simplified the spx5_rmw and spx5_inst_rmw inline functions
+    - host mode (netdev):
+        - removed lockless flag
+        - added port timer init
+    - host mode (packet - manual injection):
+        - updated error counters in error situations
+        - implemented timer handling of watermark threshold: stop and
+          restart netif queues.
+        - fixed error message handling (rate limited)
+        - fixed comment style error
+        - used DIV_ROUND_UP macro
+        - removed a debug message for open ports
+
+v2:
+    - Updated bindings:
+        - drop minItems for the reg property
+    - Statistics implementation:
+        - Reorganized statistics into ethtool groups:
+            eth-phy, eth-mac, eth-ctrl, rmon
+          as defined by the IEEE 802.3 categories and RFC 2819.
+        - The remaining statistics are provided by the classic ethtool
+          statistics command.
+    - Hostmode support:
+        - Removed netdev renaming
+        - Validate ethernet address in sparx5_set_mac_address()
+
+Steen Hegelund (10):
+  dt-bindings: net: sparx5: Add sparx5-switch bindings
+  net: sparx5: add the basic sparx5 driver
+  net: sparx5: add hostmode with phylink support
+  net: sparx5: add port module support
+  net: sparx5: add mactable support
+  net: sparx5: add vlan support
+  net: sparx5: add switching support
+  net: sparx5: add calendar bandwidth allocation support
+  net: sparx5: add ethtool configuration and statistics support
+  arm64: dts: sparx5: Add the Sparx5 switch node
+
+ .../bindings/net/microchip,sparx5-switch.yaml |  226 +
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |   94 +-
+ .../dts/microchip/sparx5_pcb134_board.dtsi    |  481 +-
+ .../dts/microchip/sparx5_pcb135_board.dtsi    |  621 ++-
+ drivers/net/ethernet/microchip/Kconfig        |    2 +
+ drivers/net/ethernet/microchip/Makefile       |    2 +
+ drivers/net/ethernet/microchip/sparx5/Kconfig |    9 +
+ .../net/ethernet/microchip/sparx5/Makefile    |   10 +
+ .../microchip/sparx5/sparx5_calendar.c        |  596 +++
+ .../microchip/sparx5/sparx5_ethtool.c         | 1227 +++++
+ .../microchip/sparx5/sparx5_mactable.c        |  500 ++
+ .../ethernet/microchip/sparx5/sparx5_main.c   |  857 +++
+ .../ethernet/microchip/sparx5/sparx5_main.h   |  373 ++
+ .../microchip/sparx5/sparx5_main_regs.h       | 4642 +++++++++++++++++
+ .../ethernet/microchip/sparx5/sparx5_netdev.c |  249 +
+ .../ethernet/microchip/sparx5/sparx5_packet.c |  320 ++
+ .../microchip/sparx5/sparx5_phylink.c         |  209 +
+ .../ethernet/microchip/sparx5/sparx5_port.c   | 1149 ++++
+ .../ethernet/microchip/sparx5/sparx5_port.h   |   93 +
+ .../microchip/sparx5/sparx5_switchdev.c       |  508 ++
+ .../ethernet/microchip/sparx5/sparx5_vlan.c   |  224 +
+ 21 files changed, 12308 insertions(+), 84 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/microchip,sparx5-switch.yaml
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/Kconfig
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/Makefile
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_calendar.c
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_ethtool.c
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_main.c
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_main.h
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_main_regs.h
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_packet.c
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_phylink.c
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_port.c
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_port.h
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_switchdev.c
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_vlan.c
+
+-- 
+2.32.0
+
