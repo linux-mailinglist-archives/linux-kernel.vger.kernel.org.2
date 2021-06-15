@@ -2,183 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD67B3A86F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF063A86FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhFOQ6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 12:58:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49637 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229734AbhFOQ6L (ORCPT
+        id S230259AbhFORBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:01:30 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:40496 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230012AbhFORB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:58:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623776166;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tZvxaMeoVcMZyEFg7QVxXPrZUcScONdAV0vv4yiFQ3I=;
-        b=QhSUVWA3Ao/GrAvtECBpz/ze/pVeI7s51bRVJ4DyXwEqMw8X2QlqWzOqCpmlEGqnsUghvu
-        cxvdmXNAQJUhEZ5tDUk90jwqttR1wphiALJ+sdJZHxBq0sla99qjNdZhlA1Mi+Sjr9g8YX
-        zJr1hBSSYK7hWk0siWUwad7/Oe3svoI=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-485-hGttLU6oNkuRvOb8DJtB0g-1; Tue, 15 Jun 2021 12:56:05 -0400
-X-MC-Unique: hGttLU6oNkuRvOb8DJtB0g-1
-Received: by mail-ot1-f72.google.com with SMTP id n4-20020a9d6f040000b029041298cb18cdso7576286otq.21
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:56:05 -0700 (PDT)
+        Tue, 15 Jun 2021 13:01:29 -0400
+Received: by mail-io1-f70.google.com with SMTP id l15-20020a5e820f0000b02904bd1794d00eso18295817iom.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:59:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=tZvxaMeoVcMZyEFg7QVxXPrZUcScONdAV0vv4yiFQ3I=;
-        b=GdoCSsR6l0iXAy6QFEsgUVeLM0pMrIm5c+vC2V0hfE+9sn+CxiFHMykX20e+xzwirN
-         1fFY5myyE4gxoGM7DYbDPFthKyYZw17i7qGzOrtN0IFO3R5OnoTIJlNKhA4oAFd1fCYd
-         KXg1WH4SZOyypLBpfDEaCaCaua8kaFQ58or4NSsW4ae1PVPQ3O/J6V5Ttlu5c8nYP2AY
-         kqPmQ5abeNfLEZ+XxdTOm7ZCdMiA2f7Gp32LczDvAQqiv3goi45Xk4wVEbkRLu0m3i7t
-         HDc+8H0rqNLwOLgmF+POvO1vjaWiqE9RocdR08tVuBZOnszW8TSZuSiRqwQh7OhJJBfm
-         SVrA==
-X-Gm-Message-State: AOAM532NLTxHuZLv1+T12HYIwrfWC3oBo1EtU2G3G5/cwwZZG75sDL5D
-        jyPG9qTdmf5BndSAq4m7jEvy+WP3AK/WBRVm99E6uTV5SyxeKRl+kqZERBlbrfLTT0cmppLLT3K
-        WcTRdvgj2R3eaEQmJRQ3hFx3/
-X-Received: by 2002:a05:6830:1643:: with SMTP id h3mr226895otr.76.1623776164388;
-        Tue, 15 Jun 2021 09:56:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJySTCQEIkpHgxR7ihbT8TXIfNDOtXfaAzp/M9djykvPAQhJp1svTbBP66qBFBmasifCO52RQA==
-X-Received: by 2002:a05:6830:1643:: with SMTP id h3mr226864otr.76.1623776164075;
-        Tue, 15 Jun 2021 09:56:04 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id n21sm1462475oig.18.2021.06.15.09.56.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 09:56:03 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 10:56:01 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shenming Lu <lushenming@huawei.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: Plan for /dev/ioasid RFC v2
-Message-ID: <20210615105601.4d7b8906.alex.williamson@redhat.com>
-In-Reply-To: <MWHPR11MB1886A6B3AC4AD249405E5B178C309@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <YMDC8tOMvw4FtSek@8bytes.org>
-        <20210609150009.GE1002214@nvidia.com>
-        <YMDjfmJKUDSrbZbo@8bytes.org>
-        <20210609101532.452851eb.alex.williamson@redhat.com>
-        <20210609102722.5abf62e1.alex.williamson@redhat.com>
-        <20210609184940.GH1002214@nvidia.com>
-        <20210610093842.6b9a4e5b.alex.williamson@redhat.com>
-        <BN6PR11MB187579A2F88C77ED2131CEF08C349@BN6PR11MB1875.namprd11.prod.outlook.com>
-        <20210611153850.7c402f0b.alex.williamson@redhat.com>
-        <MWHPR11MB1886C2A0A8AA3000EBD5F8E18C319@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210614133819.GH1002214@nvidia.com>
-        <MWHPR11MB1886A6B3AC4AD249405E5B178C309@MWHPR11MB1886.namprd11.prod.outlook.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=rGxznhI0w7LBzj6R5sKdYvHHJscUEONUGoZbkAaKxqA=;
+        b=VrvA42v9yBVHsvCedmcUQgZvsgSHOA4ZbyFeEcHgZVKHa+W5b04VrG4BschIHIXlYp
+         g4uA4+dWeML/moY/tYr0z8t6Kx+0dXBvApROJ0Qjrpbh7mVUzHZEi+QNV18CKO3XhGYV
+         gx4FjJaPm7l8ZiuZFC3PLnBQ/KEVbOj7uEaagLN8W9ZiHROMQWQ2wE/V8dFzqeFQYlRB
+         E8R1t73XsP67mOmXEeJFSq/zTOTLFpZwa98CZWTCn/GQKPsUvH9PDq+T577PWUERulxr
+         JNQxywk+lYP6yfjl6VCcD/gAGJ1roJqmgjbOEoC2YryTgocGO3UUGqOIy1FSmx9I2xh5
+         2LVQ==
+X-Gm-Message-State: AOAM530iEl1cwTfYjORSZGqKaK5iwCuW0LI/Qv7vkntvGc284CobBpAo
+        0Xliwanp0/c+XzQ92AF7DCIaRD++aYuXx4eTJSlgU8MA0NPh
+X-Google-Smtp-Source: ABdhPJyF9BzOygF+qxBRiTJ5lg7+I/K5V93Ne4DR9E91o9QX6GEFSKkUNUURtyjlGXKplQcdkKXz6HwmnMf398XPtY4BhDl7Fg83
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:ddc6:: with SMTP id d6mr326208ilr.51.1623776364578;
+ Tue, 15 Jun 2021 09:59:24 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 09:59:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000067d24205c4d0e599@google.com>
+Subject: [syzbot] possible deadlock in mnt_want_write (2)
+From:   syzbot <syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 01:21:35 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
+Hello,
 
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Monday, June 14, 2021 9:38 PM
-> > 
-> > On Mon, Jun 14, 2021 at 03:09:31AM +0000, Tian, Kevin wrote:
-> >   
-> > > If a device can be always blocked from accessing memory in the IOMMU
-> > > before it's bound to a driver or more specifically before the driver
-> > > moves it to a new security context, then there is no need for VFIO
-> > > to track whether IOASIDfd has taken over ownership of the DMA
-> > > context for all devices within a group.  
-> > 
-> > I've been assuming we'd do something like this, where when a device is
-> > first turned into a VFIO it tells the IOMMU layer that this device
-> > should be DMA blocked unless an IOASID is attached to
-> > it. Disconnecting an IOASID returns it to blocked.  
-> 
-> Or just make sure a device is in block-DMA when it's unbound from a
-> driver or a security context. Then no need to explicitly tell IOMMU layer 
-> to do so when it's bound to a new driver.
-> 
-> Currently the default domain type applies even when a device is not
-> bound. This implies that if iommu=passthrough a device is always 
-> allowed to access arbitrary system memory with or without a driver.
-> I feel the current domain type (identity, dma, unmanged) should apply
-> only when a driver is loaded...
+syzbot found the following issue on:
 
-Note that vfio does not currently require all devices in the group to
-be bound to drivers.  Other devices within the group, those bound to
-vfio drivers, can be used in this configuration.  This is not
-necessarily recommended though as a non-vfio, non-stub driver binding
-to one of those devices can trigger a BUG_ON.
+HEAD commit:    06af8679 coredump: Limit what can interrupt coredumps
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=162f99afd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=547a5e42ca601229
+dashboard link: https://syzkaller.appspot.com/bug?extid=b42fe626038981fb7bfa
+compiler:       Debian clang version 11.0.1-2
 
-> > > If this works I didn't see the need for vfio to keep the sequence.
-> > > VFIO still keeps group fd to claim ownership of all devices in a
-> > > group.  
-> > 
-> > As Alex says you still have to deal with the problem that device A in
-> > a group can gain control of device B in the same group.  
-> 
-> There is no isolation in the group then how could vfio prevent device
-> A from gaining control of device B? for example when both are attached
-> to the same GPA address space with device MMIO bar included, devA
-> can do p2p to devB. It's all user's policy how to deal with devices within
-> the group. 
+Unfortunately, I don't have any reproducer for this issue yet.
 
-The latter is user policy, yes, but it's a system security issue that
-the user cannot use device A to control device B if the user doesn't
-have access to both devices, ie. doesn't own the group.  vfio would
-prevent this by not allowing access to device A while device B is
-insecure and would require that all devices within the group remain in
-a secure, user owned state for the extent of access to device A.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com
 
-> > This means device A and B can not be used from to two different
-> > security contexts.  
-> 
-> It depends on how the security context is defined. From iommu layer
-> p.o.v, an IOASID is a security context which isolates a device from
-> the rest of the system (but not the sibling in the same group). As you
-> suggested earlier, it's completely sane if an user wants to attach
-> devices in a group to different IOASIDs. Here I just talk about this fact.
+======================================================
+WARNING: possible circular locking dependency detected
+5.13.0-rc5-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.1/21398 is trying to acquire lock:
+ffff8881485a6460 (sb_writers#5){.+.+}-{0:0}, at: mnt_want_write+0x3b/0x80 fs/namespace.c:375
 
-This is sane, yes, but that doesn't give us license to allow the user
-to access device A regardless of the state of device B.
+but task is already holding lock:
+ffff888034945bc0 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x75a/0x1ba0 security/integrity/ima/ima_main.c:253
 
-> > 
-> > If the /dev/iommu FD is the security context then the tracking is
-> > needed there.
-> >   
-> 
-> As I replied to Alex, my point is that VFIO doesn't need to know the
-> attaching status of each device in a group before it can allow user to
-> access a device. As long as a device in a group either in block DMA
-> or switch to a new address space created via /dev/iommu FD, there's
-> no problem to allow user accessing it. User cannot do harm to the
-> world outside of the group. User knows there is no isolation within
-> the group. that is it.
+which lock already depends on the new lock.
 
-This is self contradictory, "vfio doesn't need to know the attachment
-status"... "[a]s long as a device in a group either in block DMA or
-switch to a new address space".  So vfio does need to know the latter.
-How does it know that?  Thanks,
 
-Alex
+the existing dependency chain (in reverse order) is:
 
+-> #1 (&iint->mutex){+.+.}-{3:3}:
+       lock_acquire+0x17f/0x720 kernel/locking/lockdep.c:5512
+       __mutex_lock_common+0x1bf/0x3100 kernel/locking/mutex.c:959
+       __mutex_lock kernel/locking/mutex.c:1104 [inline]
+       mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:1119
+       process_measurement+0x75a/0x1ba0 security/integrity/ima/ima_main.c:253
+       ima_file_check+0xe0/0x130 security/integrity/ima/ima_main.c:499
+       do_open fs/namei.c:3363 [inline]
+       path_openat+0x293d/0x39b0 fs/namei.c:3494
+       do_filp_open+0x221/0x460 fs/namei.c:3521
+       do_sys_openat2+0x124/0x460 fs/open.c:1187
+       do_sys_open fs/open.c:1203 [inline]
+       __do_sys_open fs/open.c:1211 [inline]
+       __se_sys_open fs/open.c:1207 [inline]
+       __x64_sys_open+0x221/0x270 fs/open.c:1207
+       do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #0 (sb_writers#5){.+.+}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:2938 [inline]
+       check_prevs_add+0x4f9/0x5b60 kernel/locking/lockdep.c:3061
+       validate_chain kernel/locking/lockdep.c:3676 [inline]
+       __lock_acquire+0x4307/0x6040 kernel/locking/lockdep.c:4902
+       lock_acquire+0x17f/0x720 kernel/locking/lockdep.c:5512
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1763 [inline]
+       sb_start_write+0x4f/0x180 include/linux/fs.h:1833
+       mnt_want_write+0x3b/0x80 fs/namespace.c:375
+       ovl_maybe_copy_up+0x117/0x180 fs/overlayfs/copy_up.c:996
+       ovl_open+0xa2/0x200 fs/overlayfs/file.c:149
+       do_dentry_open+0x7cb/0x1010 fs/open.c:826
+       vfs_open fs/open.c:940 [inline]
+       dentry_open+0xc6/0x120 fs/open.c:956
+       ima_calc_file_hash+0x157/0x1b00 security/integrity/ima/ima_crypto.c:557
+       ima_collect_measurement+0x283/0x520 security/integrity/ima/ima_api.c:252
+       process_measurement+0xf79/0x1ba0 security/integrity/ima/ima_main.c:330
+       ima_file_check+0xe0/0x130 security/integrity/ima/ima_main.c:499
+       do_open fs/namei.c:3363 [inline]
+       path_openat+0x293d/0x39b0 fs/namei.c:3494
+       do_filp_open+0x221/0x460 fs/namei.c:3521
+       do_sys_openat2+0x124/0x460 fs/open.c:1187
+       do_sys_open fs/open.c:1203 [inline]
+       __do_sys_open fs/open.c:1211 [inline]
+       __se_sys_open fs/open.c:1207 [inline]
+       __x64_sys_open+0x221/0x270 fs/open.c:1207
+       do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&iint->mutex);
+                               lock(sb_writers#5);
+                               lock(&iint->mutex);
+  lock(sb_writers#5);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.1/21398:
+ #0: ffff888034945bc0 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x75a/0x1ba0 security/integrity/ima/ima_main.c:253
+
+stack backtrace:
+CPU: 0 PID: 21398 Comm: syz-executor.1 Not tainted 5.13.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x202/0x31e lib/dump_stack.c:120
+ print_circular_bug+0xb17/0xdc0 kernel/locking/lockdep.c:2007
+ check_noncircular+0x2cc/0x390 kernel/locking/lockdep.c:2129
+ check_prev_add kernel/locking/lockdep.c:2938 [inline]
+ check_prevs_add+0x4f9/0x5b60 kernel/locking/lockdep.c:3061
+ validate_chain kernel/locking/lockdep.c:3676 [inline]
+ __lock_acquire+0x4307/0x6040 kernel/locking/lockdep.c:4902
+ lock_acquire+0x17f/0x720 kernel/locking/lockdep.c:5512
+ percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+ __sb_start_write include/linux/fs.h:1763 [inline]
+ sb_start_write+0x4f/0x180 include/linux/fs.h:1833
+ mnt_want_write+0x3b/0x80 fs/namespace.c:375
+ ovl_maybe_copy_up+0x117/0x180 fs/overlayfs/copy_up.c:996
+ ovl_open+0xa2/0x200 fs/overlayfs/file.c:149
+ do_dentry_open+0x7cb/0x1010 fs/open.c:826
+ vfs_open fs/open.c:940 [inline]
+ dentry_open+0xc6/0x120 fs/open.c:956
+ ima_calc_file_hash+0x157/0x1b00 security/integrity/ima/ima_crypto.c:557
+ ima_collect_measurement+0x283/0x520 security/integrity/ima/ima_api.c:252
+ process_measurement+0xf79/0x1ba0 security/integrity/ima/ima_main.c:330
+ ima_file_check+0xe0/0x130 security/integrity/ima/ima_main.c:499
+ do_open fs/namei.c:3363 [inline]
+ path_openat+0x293d/0x39b0 fs/namei.c:3494
+ do_filp_open+0x221/0x460 fs/namei.c:3521
+ do_sys_openat2+0x124/0x460 fs/open.c:1187
+ do_sys_open fs/open.c:1203 [inline]
+ __do_sys_open fs/open.c:1211 [inline]
+ __se_sys_open fs/open.c:1207 [inline]
+ __x64_sys_open+0x221/0x270 fs/open.c:1207
+ do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f28cc64c188 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000000000000 RSI: 0000000000000003 RDI: 0000000020000200
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffdd1759cef R14: 00007f28cc64c300 R15: 0000000000022000
+overlayfs: upperdir is in-use as upperdir/workdir of another mount, mount with '-o index=off' to override exclusive upperdir protection.
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
