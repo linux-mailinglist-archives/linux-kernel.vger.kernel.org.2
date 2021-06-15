@@ -2,49 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8343A7CF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E29A63A7CF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhFOLOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:14:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49694 "EHLO mail.kernel.org"
+        id S230130AbhFOLQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:16:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230436AbhFOLOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:14:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16B996145A;
-        Tue, 15 Jun 2021 11:12:46 +0000 (UTC)
+        id S229977AbhFOLQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 07:16:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5031661019;
+        Tue, 15 Jun 2021 11:14:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623755567;
-        bh=WxY5rkcQS0EHPv/TtiTjUoaRUw6sqGDv93IItc7eQDQ=;
+        s=k20201202; t=1623755684;
+        bh=do5/Ft0Ug2QKKV16pIjm1Cav55ZqsPnnwJ2SakLmvUs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uiONthO1S4skT70c+w+dfv0BbT+jk4V1NWc8h1S5xPPjiyUp18prJoR5GYWJ5xrHq
-         7h8hwjOIvzILTpBA50BTHIvkmy2dkVwFqfZN3TzBW6UbK8YUP5dPCPC+Zv/d0fQLsP
-         v/Q1o01nm2x2ANUcVeP83+m7vOHvd0oyixcQEmOhc/XRq++U0eSf+s3BdRfXStVlsQ
-         GSy5BTH3iHqYWc/k3wO+KFRcBII0MG0ovXWcIRvtUxMfFXyR3+fV2mqEC63Ves++q+
-         F9/7rX41b1rUhRm06YDMpLG6Vs9Bil9dVfsReTDvtI1K9fAD2h2LsyeODPqDNJwGW7
-         h9l1nUworz8LQ==
-Date:   Tue, 15 Jun 2021 12:12:28 +0100
+        b=s5659nm7mU8dbxL5ejjETuQPnC819oWthIJGpuxoabBaVSQZEW67rqKNug+7bEK6p
+         70b7X9PRCzK5cXOMptsXhWm7vN/I3GRo9emqOZNo3amltpwwkP777VMUVTDwM4y91F
+         PCjbtDFwjk3B8zPdN3UxZCqMA7mcYd9LTEyglBgm092Z+smm3naHWPj9rUtJ7Uuefk
+         oWdwi+U/f+GbYFThQBY3oGcf8U/YDxZOT0yblQOqm2IPthiSWH59Vn5AA92gCztV81
+         bYOgY5bxw0QLMNv7nOt93OT4E8nAb2G8DoXLEiSDwehLcQQ/OFTxlM96TpaB/SkKuK
+         dSeNH+HRii2Pw==
+Date:   Tue, 15 Jun 2021 12:14:26 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH v2 06/10] regulator: qcom-rpmh: Add new regulator found
- on SA8155p adp board
-Message-ID: <20210615111228.GB5149@sirena.org.uk>
-References: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
- <20210615074543.26700-7-bhupesh.sharma@linaro.org>
+To:     Mason Zhang <mason.zhang@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, wsd_upstream@mediatek.com,
+        hanks.chen@mediatek.com, linux-kernel@vger.kernel.org,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/2] dt-binding: mediatek: mt6779: update spi document
+Message-ID: <20210615111426.GC5149@sirena.org.uk>
+References: <1623721803.24597.9.camel@mbjsdccf07>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="0eh6TmSyL6TZE2Uz"
+        protocol="application/pgp-signature"; boundary="s9fJI615cBHmzTOP"
 Content-Disposition: inline
-In-Reply-To: <20210615074543.26700-7-bhupesh.sharma@linaro.org>
+In-Reply-To: <1623721803.24597.9.camel@mbjsdccf07>
 X-Cookie: See store for details.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
@@ -52,33 +48,31 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---0eh6TmSyL6TZE2Uz
+--s9fJI615cBHmzTOP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 15, 2021 at 01:15:39PM +0530, Bhupesh Sharma wrote:
+On Tue, Jun 15, 2021 at 09:50:03AM +0800, Mason Zhang wrote:
+>=20
+> this patch update spi document for MT6779 SOC.
 
-> +	{
-> +		.compatible = "qcom,pmm8155au-rpmh-regulators",
-> +		.data = pmm8155au_vreg_data,
-> +	},
+I don't have either patch 1 or a cover letter, what's the story with
+dependencies here?
 
-This is adding a new compatible so it needs a matching update to the DT
-binding.
-
---0eh6TmSyL6TZE2Uz
+--s9fJI615cBHmzTOP
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDIixwACgkQJNaLcl1U
-h9DmWwf+I+6UuRxm1bqPiKDzx81Hg6sNX9011K7cArsSXzcFymC7fLz4D3UUJ4IQ
-pmA3xcRHxfCUkTS4xwDaNXMY6QaS6q/G9/UaWn64DWcfF4AIdgOwj/oxFypoAt8f
-48Jt7NyaMYK1EFHoZan91D49xCu+dAMrKo+6jI29kH6ZrP+XzoVxAN8KXPKLxa+M
-VqQKyWg73/97XppC6FJnv8xleWHDrkO8FXPDDXeMB0r+TnGzG7fjvUlFenkxDdbS
-39Vh6uuyvRyuxpQBXSOyV2BNvhXqhFVjhyrzC1c4+T6p0nn//rIclqVzwalZy9Xi
-dyV7IuGmP//Y7nii3Kqo86AtpwKyKA==
-=nLmw
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDIi5EACgkQJNaLcl1U
+h9DQ+wf/Yux273+r+yGK72dvXlm0Ap8q0DbSKRRXYm+S8/dxa/Z4yP6+Oj994oi6
+AS5dArwtt0+KTpwXnxX/J9oEhOtSMfE2alLqgJ02tjbog38w1z00WH07fe34Ni1C
+XH49gqs9bN6JhcXFeDI1VgwzzKDS+6/ZG9CFWlv3394hE4pKtxs2s2plneaqj106
+voLcaPSGCJrwtiXG+xUmZO+KzBZhx/ZKAOYZ66k172OuC3eGzGbUANSDlnp7MdPv
+IuKwLhwGPQDzr721R7jq8/7zVfrj+hv4lzgrV9lDCBQvpwM/hR9sPFKBbCUM+S9l
+nh9imKNN80d/DKW/HQWZ2IwMTWhAyw==
+=ux+v
 -----END PGP SIGNATURE-----
 
---0eh6TmSyL6TZE2Uz--
+--s9fJI615cBHmzTOP--
