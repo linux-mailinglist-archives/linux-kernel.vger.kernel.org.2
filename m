@@ -2,128 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB673A8973
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B8A3A8971
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhFOTYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 15:24:31 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20882 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229946AbhFOTY3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 15:24:29 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15FJ3ige068549;
-        Tue, 15 Jun 2021 15:21:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=CbeQvqjWYMEKIm/ohd1i/mP8vgkL07rDKlVpu0ojC1c=;
- b=EbTJXgQyBbHny+WfsPb8xFRbI2X5tr2lfEa+Yo5wMgLKy2+q4VNDKTABBouQmxV/J1Gk
- 1BrV87Gb/sTAQcL8BDrgB9g6t8oP/gaKKGBIg4JCEDyiSsPNIv/qnF7oO4dpyIw90nyJ
- VvVaq3LXfV63g3IYLpBu797ZoDKggVGeHqTaPJwTaIMoznSbWE9e5Jw/OkTE/Pbh6rGS
- xW26tnb/4c6TARHVeTrGPSJgjw/hs4PdOe6lNOhVnuPUit1OqiXqp83QQx5IvC3+blKw
- QuH+XzOxslnHvHPTtzgVvpgaiZd4hU5Jg3RiA3Tsh+8QBlH4niLJw7crK/+KWbhnT+5A gQ== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3970pmk4nh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 15:21:44 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15FJLfc7019130;
-        Tue, 15 Jun 2021 19:21:41 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 394mj90wsf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 19:21:41 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15FJKYbP26149338
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Jun 2021 19:20:34 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 191DC4C044;
-        Tue, 15 Jun 2021 19:21:39 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 64A1F4C040;
-        Tue, 15 Jun 2021 19:21:35 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.174.39])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 15 Jun 2021 19:21:35 +0000 (GMT)
-Date:   Tue, 15 Jun 2021 22:21:32 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Qian Cai <quic_qiancai@quicinc.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Miles Chen <miles.chen@mediatek.com>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, lkft-triage@lists.linaro.org,
-        regressions@lists.linux.dev,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: Re: [next] [arm64] kernel BUG at arch/arm64/mm/physaddr.c
-Message-ID: <YMj9vHhHOiCVN4BF@linux.ibm.com>
-References: <CA+G9fYvvm2tW5QAe9hzPgs7sV8udsoufxs0Qu6N0ZjV0Z686vw@mail.gmail.com>
- <20210615124745.GA47121@C02TD0UTHF1T.local>
- <20210615131902.GB47121@C02TD0UTHF1T.local>
- <076665b9-9fb1-71da-5f7d-4d2c7f892103@quicinc.com>
+        id S230319AbhFOTX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 15:23:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229946AbhFOTX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 15:23:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D64EF6109D;
+        Tue, 15 Jun 2021 19:21:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623784911;
+        bh=MiyNMOqe8D+Qv1ZCBNXEEXX1PzZVvhgk3ba2lE4oIg8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mtoG7zNPtpZsvQbvGP8yhZylUX75lhUTO0D3sGutRFQw4YsC/rBkyY/aHqAa3/x7Z
+         FUurSl0cAWCim2VhAR/W2YM/ZVElxcCC+RoJMkLqlo/GGM6ZlLYp8X9q15baYqri3U
+         L5CQGt0K11TGkZbZ5SoMB6QxIOE4JFnnUbIULj71aWTCQ+Pkgp4CKF4lIy9Qy3qk5j
+         F0Y83bsO/aP731wd93GFUKpUYngFSP8I+RcM6jiYeT93Qa+yMWv5R7HY9BEYjPKDxk
+         Vwoth1qDiFUPTHKq0BBr9yUiKBh2VWI+mRLPR1zl4Jv/ibpCeJOcOk3pCG+yYPK4GU
+         rGBWtfIiEGdag==
+Received: by mail-ej1-f52.google.com with SMTP id k7so24327321ejv.12;
+        Tue, 15 Jun 2021 12:21:51 -0700 (PDT)
+X-Gm-Message-State: AOAM5318De7cuvVvG31s6wJX1cZB5VLmLlXVvbw4EebV8ILKJCAT/IFh
+        UTXs2rofUHGiguQI9mo70kFv/0aOETaMN/hPCA==
+X-Google-Smtp-Source: ABdhPJwa2eewtgu6uySopO4xXVRmZ/yjtkv5h1exXtdSD1u+7n88m1i55KAd4hYrQJiPXyTsdD6k57DUi86pkmYzJdA=
+X-Received: by 2002:a17:907:2059:: with SMTP id pg25mr1204414ejb.130.1623784910428;
+ Tue, 15 Jun 2021 12:21:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <076665b9-9fb1-71da-5f7d-4d2c7f892103@quicinc.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7__BV3WxWPyUURMkkduVQYEarOn1Xzpx
-X-Proofpoint-ORIG-GUID: 7__BV3WxWPyUURMkkduVQYEarOn1Xzpx
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-15_07:2021-06-15,2021-06-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
- priorityscore=1501 adultscore=0 lowpriorityscore=0 bulkscore=0
- mlxlogscore=999 spamscore=0 malwarescore=0 impostorscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106150119
+References: <20210419005539.22729-1-mick@ics.forth.gr> <20210419005539.22729-6-mick@ics.forth.gr>
+ <CAMuHMdW=23SPXwqcjD+30M_d0azdze2=ChZM-PF1brf9bCNtrA@mail.gmail.com>
+ <fe02eb618eee141e8bc021e8e30906fc@mailhost.ics.forth.gr> <CAMuHMdXtT1L3yfzkTkbhqz3zgUQj89Bcm7mqz+m126NprAsK8Q@mail.gmail.com>
+In-Reply-To: <CAMuHMdXtT1L3yfzkTkbhqz3zgUQj89Bcm7mqz+m126NprAsK8Q@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 15 Jun 2021 13:21:38 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLHOmZ6az0bYGC3dg__YX3aq=+Un4_x4+R2nNksc0hM2g@mail.gmail.com>
+Message-ID: <CAL_JsqLHOmZ6az0bYGC3dg__YX3aq=+Un4_x4+R2nNksc0hM2g@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] RISC-V: Add crash kernel support
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 10:50:31AM -0400, Qian Cai wrote:
-> 
-> 
-> On 6/15/2021 9:19 AM, Mark Rutland wrote:
-> > Looking some more, it looks like that's correct in isolation, but it
-> > clashes with commit:
-> > 
-> >   5831eedad2ac6f38 ("mm: replace CONFIG_NEED_MULTIPLE_NODES with CONFIG_NUMA")
-> 
-> Just a data point. Reverting the commit alone fixed the same crash for me.
+On Tue, Jun 15, 2021 at 12:48 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Nick,
+>
+> On Tue, Jun 15, 2021 at 8:29 PM Nick Kossifidis <mick@ics.forth.gr> wrote=
+:
+> > =CE=A3=CF=84=CE=B9=CF=82 2021-06-15 16:19, Geert Uytterhoeven =CE=AD=CE=
+=B3=CF=81=CE=B1=CF=88=CE=B5:
+> > > This does not match
+> > > https://github.com/devicetree-org/dt-schema/blob/master/schemas/chose=
+n.yaml#L77:
+> > >
+> > >     $ref: types.yaml#/definitions/uint64-array
+> > >     maxItems: 2
+> > >     description:
+> > >       This property (currently used only on arm64) holds the memory
+> > > range,
+> > >       the address and the size, of the elf core header which mainly
+> > > describes
+> > >       the panicked kernel\'s memory layout as PT_LOAD segments of elf
+> > > format.
+> > >
+> > > Hence "linux,elfcorehdr" should be a property of the /chosen node,
+> > > instead of a memory node with a compatible value of "linux,elfcorehdr=
+".
+> > >
+> >
+> > That's a binding for a property on the /chosen node, that as the text
+> > says it's defined for arm64 only and the code that handled it was also
+>
+> That doesn't mean it must not be used on other architectures ;-)
+> Arm64 was just the first one to use it...
 
-Yeah, that commit didn't take into the account the change in
-pgdat_to_phys().
+It is used on arm64 because memory is often passed by UEFI tables and
+not with /memory node. As riscv is also supporting EFI, I'd think they
+would do the same.
 
-The patch below should fix it. In the long run I think we should get rid of
-contig_page_data and allocate NODE_DATA(0) for !NUMA case as well.
-
-Andrew, can you please add this as a fixup to "mm: replace
-CONFIG_NEED_MULTIPLE_NODES with CONFIG_NUMA"?
-
-
-diff --git a/mm/sparse.c b/mm/sparse.c
-index a0e9cdb5bc38..6326cdf36c4f 100644
---- a/mm/sparse.c
-+++ b/mm/sparse.c
-@@ -347,7 +347,7 @@ size_t mem_section_usage_size(void)
- 
- static inline phys_addr_t pgdat_to_phys(struct pglist_data *pgdat)
- {
--#ifndef CONFIG_NEED_MULTIPLE_NODES
-+#ifndef CONFIG_NUMA
- 	return __pa_symbol(pgdat);
- #else
- 	return __pa(pgdat);
-
--- 
-Sincerely yours,
-Mike.
+> > on arm64. Instead the reserved-region binding I used is a standard
+> > binding, if you don't like the name used for the compatible string
+> > because it overlaps with that property we can change it. I want to use =
+a
+> > reserved-region for this because we'll have to reserve it anyway so
+> > using a property on /chosen and then using that property to reserve the
+> > region seemed suboptimal.
+> >
+> > >> v2:
+> > >>  * Use linux,usable-memory on /memory instead of a new binding
+> > >
+> > > This part seems to have been removed in v3 and later?
+> > > Note that "linux,usable-memory-range" should be a property of the
+> > > /chosen node, too, cfr.
+> > > https://github.com/devicetree-org/dt-schema/blob/master/schemas/chose=
+n.yaml#L85
+> > >
+> >
+> > No special handling is needed when using linux,usable-memory on /memory=
+,
+> > limiting the available memory is handled by generic code at
+> > drivers/of/fdt.c
+>
+> It was my understanding both properties under /chosen are the
+> recommended methods for new platforms... Let's see what Rob has
+> to say...
+>
+> Anyway, I sent a patch series to switch to generic "linux,elfcorehdr"
+> handling
+> https://lore.kernel.org/r/cover.1623780059.git.geert+renesas@glider.be/
+>
+> Thanks!
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
