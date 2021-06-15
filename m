@@ -2,90 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5CF3A861B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A271D3A861E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhFOQNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 12:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbhFOQNU (ORCPT
+        id S230171AbhFOQO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 12:14:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23456 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230076AbhFOQOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:13:20 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C0BC061574;
-        Tue, 15 Jun 2021 09:11:15 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0f270048ecafc2d258032c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:2700:48ec:afc2:d258:32c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E20811EC01A8;
-        Tue, 15 Jun 2021 18:11:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623773473;
+        Tue, 15 Jun 2021 12:14:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623773540;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=CB+Ne3gzXhLcGr5cw3T1uZe9C7ABTcqDxUDiv2De+S8=;
-        b=Kp3xTiw1pxFOtNydsEO0BZWgrWdEvABKB/6hAmzJqs3jL7Wh+GnHrAMR7hD4O+irIokWEq
-        5mxQiHiyRpKh5QQtQxSlw6S66zlmT8aKcB4QBwWGRm6TTzMBtKTzz61nO641P6+w1g2cx9
-        fuLPl0m3LdydOGSVD844LDERnvfdTzk=
-Date:   Tue, 15 Jun 2021 18:11:04 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>
-Subject: Re: [PATCH] EDAC/mce_amd: Reduce unnecessary spew in dmesg if SMCA
- feature bit is not exposed
-Message-ID: <YMjRGFiqp2HNWUrZ@zn.tnic>
-References: <20210614212129.227698-1-Smita.KoralahalliChannabasappa@amd.com>
- <YMfRxX/M4rJ5gM/R@zn.tnic>
- <16a34b6834f94f139444c2ff172645e9@intel.com>
- <YMhwAZaFr4d1QOGG@zn.tnic>
- <20210615150846.GA409@aus-x-yghannam.amd.com>
- <YMjE2iwRFWVrfzLL@zn.tnic>
- <20210615160009.GA29258@aus-x-yghannam.amd.com>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t1h4oaOaNjcSHr4pWVXRGjORB7JTz/dPNT4qeEP5NqE=;
+        b=IJ248b/DuuANqKw+4VlRegMZGgI61vI+uNQKwbx3A7F+VjeqjDKVK3TJa+CjEhOSEH39jd
+        aJ6mVKmdkqQBX1XkAkFhSN5oEAnaMNc6gWwQ0UawkrV3p1+RFVOdoRdM0AceAbKmqnNvkC
+        6u9D+mdFHdu91gmEPM9qEUIRvo2qgDk=
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
+ [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-280-l5xYmi8lMo6aUQIimviIJQ-1; Tue, 15 Jun 2021 12:12:19 -0400
+X-MC-Unique: l5xYmi8lMo6aUQIimviIJQ-1
+Received: by mail-oo1-f69.google.com with SMTP id 185-20020a4a09c20000b029024ac8624e53so4653441ooa.16
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:12:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=t1h4oaOaNjcSHr4pWVXRGjORB7JTz/dPNT4qeEP5NqE=;
+        b=uaWrF6O+GyrdK9xQi31ZSD4Z6Py6hCbugsJjegcRkAtvXq1rfPhL8BC/+i+Ovb5dj6
+         VcuvGyXoGBM0I9otTblnmLt96e+Isb78Ji431/G/yfVdL95wBCok/JQauxBcQ76OQFsH
+         OVbD68SBSjXNGhL3mJulcuFTxdf95SEMifHMcb88yXQz+HzzOCz25kCRkUtlj2Zx7kdT
+         lXgTYGRgtFHHwheM7gWCvubG6v2IZB+bKNlCb9lo6jsM3B68no3+emx/BrVf0VpNlsAW
+         wj/xdI0ui+0DMLTf94VTtudxnfBjWktxza50TDZKU/6uBa/qu0L3czJ+DTAgg+vdUjs5
+         90+Q==
+X-Gm-Message-State: AOAM530SoNYo3PjJdivGQR+lzbgZd4km8uaFmPeF8OVUVH6qqmTcwRDv
+        UFzMObE7ERwcI1OnsXXbeG5lhUL1Se6Tg2JvB6ATB/Vrt3yz+p6TXGYzKU8bbo6BGmLGri3B0vC
+        uxzL90Mkw+rnUODCjxiRM/lmQ
+X-Received: by 2002:a05:6808:1285:: with SMTP id a5mr3881779oiw.135.1623773538189;
+        Tue, 15 Jun 2021 09:12:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywdycWyypsQ+NgzKG3B8q8Z4V3YXX5WMl7m7rmxWMexxqdhxjANJ6c7RhDJcxfIwMnlsSa5Q==
+X-Received: by 2002:a05:6808:1285:: with SMTP id a5mr3881757oiw.135.1623773538003;
+        Tue, 15 Jun 2021 09:12:18 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id p1sm3953745oou.14.2021.06.15.09.12.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 09:12:17 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 10:12:15 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Joerg Roedel <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        "Jason Wang" <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "David Woodhouse" <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>
+Subject: Re: Plan for /dev/ioasid RFC v2
+Message-ID: <20210615101215.4ba67c86.alex.williamson@redhat.com>
+In-Reply-To: <MWHPR11MB1886239C82D6B66A732830B88C309@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <20210609150009.GE1002214@nvidia.com>
+        <YMDjfmJKUDSrbZbo@8bytes.org>
+        <20210609101532.452851eb.alex.williamson@redhat.com>
+        <20210609102722.5abf62e1.alex.williamson@redhat.com>
+        <20210609184940.GH1002214@nvidia.com>
+        <20210610093842.6b9a4e5b.alex.williamson@redhat.com>
+        <20210611164529.GR1002214@nvidia.com>
+        <20210611133828.6c6e8b29.alex.williamson@redhat.com>
+        <20210612012846.GC1002214@nvidia.com>
+        <20210612105711.7ac68c83.alex.williamson@redhat.com>
+        <20210614140711.GI1002214@nvidia.com>
+        <20210614102814.43ada8df.alex.williamson@redhat.com>
+        <MWHPR11MB1886239C82D6B66A732830B88C309@MWHPR11MB1886.namprd11.prod.outlook.com>
+Organization: Red Hat
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210615160009.GA29258@aus-x-yghannam.amd.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 12:00:09PM -0400, Yazen Ghannam wrote:
-> So I think we can downgrade this warning to a debug message, if the
-> module stays builtin. And/or we change the default config option to
-> module, and we make sure the module only autoloads in the proper cases.
+On Tue, 15 Jun 2021 02:31:39 +0000
+"Tian, Kevin" <kevin.tian@intel.com> wrote:
+
+> > From: Alex Williamson <alex.williamson@redhat.com>
+> > Sent: Tuesday, June 15, 2021 12:28 AM
+> >   
+> [...]
+> > > IOASID. Today the group fd requires an IOASID before it hands out a
+> > > device_fd. With iommu_fd the device_fd will not allow IOCTLs until it
+> > > has a blocked DMA IOASID and is successefully joined to an iommu_fd.  
+> > 
+> > Which is the root of my concern.  Who owns ioctls to the device fd?
+> > It's my understanding this is a vfio provided file descriptor and it's
+> > therefore vfio's responsibility.  A device-level IOASID interface
+> > therefore requires that vfio manage the group aspect of device access.
+> > AFAICT, that means that device access can therefore only begin when all
+> > devices for a given group are attached to the IOASID and must halt for
+> > all devices in the group if any device is ever detached from an IOASID,
+> > even temporarily.  That suggests a lot more oversight of the IOASIDs by
+> > vfio than I'd prefer.
+> >   
 > 
-> What do you think?
+> This is possibly the point that is worthy of more clarification and
+> alignment, as it sounds like the root of controversy here.
+> 
+> I feel the goal of vfio group management is more about ownership, i.e. 
+> all devices within a group must be assigned to a single user. Following
+> the three rules defined by Jason, what we really care is whether a group
+> of devices can be isolated from the rest of the world, i.e. no access to
+> memory/device outside of its security context and no access to its 
+> security context from devices outside of this group. This can be achieved
+> as long as every device in the group is either in block-DMA state when 
+> it's not attached to any security context or attached to an IOASID context 
+> in IOMMU fd.
+> 
+> As long as group-level isolation is satisfied, how devices within a group 
+> are further managed is decided by the user (unattached, all attached to 
+> same IOASID, attached to different IOASIDs) as long as the user 
+> understands the implication of lacking of isolation within the group. This 
+> is what a device-centric model comes to play. Misconfiguration just hurts 
+> the user itself.
+> 
+> If this rationale can be agreed, then I didn't see the point of having VFIO
+> to mandate all devices in the group must be attached/detached in
+> lockstep. 
 
-I think, as I said before, that we should simply not load this in
-guests. Then this will be taken care of once and for all and we can do
-whatever we want on baremetal, as to what error message to issue and how
-many times to issue it, whether the decoder is builtin or default y or
-yadda yadda.
+In theory this sounds great, but there are still too many assumptions
+and too much hand waving about where isolation occurs for me to feel
+like I really have the complete picture.  So let's walk through some
+examples.  Please fill in and correct where I'm wrong.
 
-Because even if you say in a guest:
+1) A dual-function PCIe e1000e NIC where the functions are grouped
+   together due to ACS isolation issues.
 
-	pr_warn_once("Decoding supported only on Scalable MCA processors.\n");
+   a) Initial state: functions 0 & 1 are both bound to e1000e driver.
 
-you're kinda misleading because the guest might be an SMCA processor but
-not all features are emulated, including SMCA. So it is not really an
-SMCA processor but some not really existant hybrid or so.
+   b) Admin uses driverctl to bind function 1 to vfio-pci, creating
+      vfio device file, which is chmod'd to grant to a user.
 
-So since this whole SMCA thing does not apply to virtualization, we
-should simply not load on virt and be done with it.
+   c) User opens vfio function 1 device file and an iommu_fd, binds
+   device_fd to iommu_fd.
 
-Thx.
+   Does this succeed?
+     - if no, specifically where does it fail?
+     - if yes, vfio can now allow access to the device?
 
--- 
-Regards/Gruss,
-    Boris.
+   d) Repeat b) for function 0.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+   e) Repeat c), still using function 1, is it different?  Where?  Why?
+
+2) The same NIC as 1)
+
+   a) Initial state: functions 0 & 1 bound to vfio-pci, vfio device
+      files granted to user, user has bound both device_fds to the same
+      iommu_fd.
+
+   AIUI, even though not bound to an IOASID, vfio can now enable access
+   through the device_fds, right?  What specific entity has placed these
+   devices into a block DMA state, when, and how?
+
+   b) Both devices are attached to the same IOASID.
+
+   Are we assuming that each device was atomically moved to the new
+   IOMMU context by the IOASID code?  What if the IOMMU cannot change
+   the domain atomically?
+
+   c) The device_fd for function 1 is detached from the IOASID.
+
+   Are we assuming the reverse of b) performed by the IOASID code?
+
+   d) The device_fd for function 1 is unbound from the iommu_fd.
+
+   Does this succeed?
+     - if yes, what is the resulting IOMMU context of the device and
+       who owns it?
+     - if no, well, that results in numerous tear-down issues.
+
+   e) Function 1 is unbound from vfio-pci.
+
+   Does this work or is it blocked?  If blocked, by what entity
+   specifically?
+
+   f) Function 1 is bound to e1000e driver.
+
+   We clearly have a violation here, specifically where and by who in
+   this path should have prevented us from getting here or who pushes
+   the BUG_ON to abort this?
+
+3) A dual-function conventional PCI e1000 NIC where the functions are
+   grouped together due to shared RID.
+
+   a) Repeat 2.a) and 2.b) such that we have a valid, user accessible
+      devices in the same IOMMU context.
+
+   b) Function 1 is detached from the IOASID.
+
+   I think function 1 cannot be placed into a different IOMMU context
+   here, does the detach work?  What's the IOMMU context now?
+
+   c) A new IOASID is alloc'd within the existing iommu_fd and function
+      1 is attached to the new IOASID.
+
+   Where, how, by whom does this fail?
+
+If vfio gets to offload all of it's group management to IOASID code,
+that's great, but I'm afraid that IOASID is so focused on a
+device-level API that we're instead just ignoring the group dynamics
+and vfio will be forced to provide oversight to maintain secure
+userspace access.  Thanks,
+
+Alex
+
