@@ -2,105 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002813A842A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566553A842D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbhFOPlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:41:51 -0400
-Received: from mga07.intel.com ([134.134.136.100]:23954 "EHLO mga07.intel.com"
+        id S231710AbhFOPmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:42:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231710AbhFOPlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:41:46 -0400
-IronPort-SDR: j+xVz7YG42gX1G4tYmG92qCNLxCjZc/hLAzo4hqQ30f5kheWXMRs4pX2gVNU2tr7XEDGuzAq/C
- QDPttbTvu1pw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="269863634"
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="269863634"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 08:39:40 -0700
-IronPort-SDR: I6qi31Hn+J/PaU33aOsMTIMHIhHSR9WLEfNLflvesg8MAkSALUVvQx1CGPpOBlZzuPGe/SjCZm
- CNOWylnD7LlQ==
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="404262004"
-Received: from habdelma-mobl.amr.corp.intel.com (HELO [10.209.8.208]) ([10.209.8.208])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 08:39:38 -0700
-Subject: Re: [PATCH] x86/sgx: Add missing xa_destroy() when virtual EPC is
- destroyed
-To:     Kai Huang <kai.huang@intel.com>, linux-sgx@vger.kernel.org,
-        x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, bp@alien8.de, seanjc@google.com,
-        jarkko@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        Yang Zhong <yang.zhong@intel.com>
-References: <20210615101639.291929-1-kai.huang@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <89b29a2b-0050-cef4-8bf7-0b3bc2f5c170@intel.com>
-Date:   Tue, 15 Jun 2021 08:39:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230076AbhFOPmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:42:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AB39614A7;
+        Tue, 15 Jun 2021 15:40:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623771627;
+        bh=0/iJJ3+XKp5sJZc5AAbZZ9NFk2IBuJKpX+hA7dyq40M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tNrGFppXsNH+JBIHX758FGJ+LI6sg4aM4/1kkUhVps3ZQmpj49/65AJiC2iaCV7j8
+         CH0F0U8bFbwR8GTd6/qmD0qhAQ3YW45Fj+jJkmLxYng/DOutmWRq3kB6czxT2jRBCs
+         soyu0TrfiGY3ZT/H97RbCL+0xqRqMwqsXAd9NaSM=
+Date:   Tue, 15 Jun 2021 17:40:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alex Nemirovsky <Alex.Nemirovsky@cortina-access.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Jason Li <jason.li@cortina-access.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
+Subject: Re: [PATCH v4 1/3] tty: serial: Add UART driver for Cortina-Access
+ platform
+Message-ID: <YMjJ6bWIGCUrhjfb@kroah.com>
+References: <20210509184519.15816-1-alex.nemirovsky@cortina-access.com>
+ <YMiUgpRbfwMHCqD+@kroah.com>
+ <DA86E839-4208-4535-B70C-ACFC94438BEB@cortina-access.com>
+ <YMi1mIwOTLYs8h8/@kroah.com>
+ <49AAFE67-C151-4A7D-AE6D-E8981CBC9503@cortina-access.com>
 MIME-Version: 1.0
-In-Reply-To: <20210615101639.291929-1-kai.huang@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <49AAFE67-C151-4A7D-AE6D-E8981CBC9503@cortina-access.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 3:16 AM, Kai Huang wrote:
-> xa_destroy() needs to be called to destroy virtual EPC's page arra
-> before calling kfree() to free the virtual EPC.  Currently it is not
-> calaled.  Add the missing xa_destroy() to fix.
+A: http://en.wikipedia.org/wiki/Top_post
+Q: Were do I find info about this thing called top-posting?
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing in e-mail?
 
-Looks good Kai, thanks for fixing this.
+A: No.
+Q: Should I include quotations after my reply?
 
-Could you please take a good look through the sgx_release() and the vpec
-equivalent and see if anything else stands out as possibly being missed?
- Also, is this the kind of thing that a simple open/add/close selftest
-might have found?
+http://daringfireball.net/2007/07/on_top
 
-Maybe we should beef up the selftests a bit.
+On Tue, Jun 15, 2021 at 02:33:57PM +0000, Alex Nemirovsky wrote:
+> Does the serial driver portion in the first patch, require any more changes from your point of view
+> as the serial driver maintainer?  If there are no issues with the driver itself, we can engage with the DT team to figure out why they have not 
+> ACK or provided any feedback on the DT portion.   Are you good with the content of the serial driver itself minus the lack of ACK from the DT team?
 
-Acked-by: Dave Hansen <dave.hansen@intel.com>
+I was waiting for the DT review before I looked at the serial driver
+again.
+
+thanks,
+
+greg k-h
