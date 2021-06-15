@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9DF3A8785
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFE93A8787
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhFORbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53452 "EHLO mail.kernel.org"
+        id S230409AbhFORby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:31:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229492AbhFORbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:31:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0F9C6140B;
-        Tue, 15 Jun 2021 17:29:45 +0000 (UTC)
+        id S230312AbhFORbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 13:31:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BB7D613FA;
+        Tue, 15 Jun 2021 17:29:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623778186;
-        bh=nQ6dLrkLl3lmk53t/eWVpXauQeo5excqr23JPiTwhVs=;
+        s=k20201202; t=1623778188;
+        bh=GEAwyVbCu9FzP4tJk0ycazZjAaockIItbW1zOcgtnD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DjkD6kuRbgxZKIgpzr8Bks7IP5xh6tl+7O//oOh+fbyv/t6FAnkwAbVDC7L9gydVn
-         v7g0FbdXcPfiS1ueDLT68yKA9P/RDAw9xHx8r/6Gp6U3bSWjtyUBAcLPoVTm77coRk
-         K7QCVZXoZ8rTTzOdd69A+kP2SYK2E6vKLBYN/RaWBouutacM7716RRHxDjo5tJWnTn
-         DGjJzQkEqZikXWj4hlCQIN5+oO5S5mNJaBPlsbIPKJOWMM8ttzu9R5EyD6gTcRkoCw
-         lpWFAILii6SwgcqBxBwMBqsPovbVPuh1atJ6VyCFzcxnff3EE3Yh72Pu55PxvUCROR
-         41VyeG/h5f5EA==
+        b=eX1MFs5SdRZYdboOArHyCe3KH+hld9wSZdB6J9XsMl//rcSw/eheZf04JLhr+JzBo
+         smRhD2+nsvraIGjpvAlWC24r381xwFlFL/00BduN8OOcPRVCoB93VVEy4lh+pquCTk
+         ZWziAgcGx57J0mf+acJuobuCaRlq3ecc9qcDKGXirKp9KngvF34rju4CRPnZ0oEu5A
+         QMjMBCqdqzHif1R5jLXGHQg+0edA0LeWBCfVgci2sQOsRHoulsZgaIHSCTA6szTDun
+         tyABhZE4caX7WdvDpDv71jqYaWSvaNDHU8COul+I5JMlxeiHs1uI+1iUdI+dbChB/G
+         eyu/DIPvmXnSA==
 From:   Mark Brown <broonie@kernel.org>
-To:     lee.jones@linaro.org, Alistair Francis <alistair@alistair23.me>,
-        linux-imx@nxp.com, lgirdwood@gmail.com, kernel@pengutronix.de,
-        robh+dt@kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alistair23@gmail.com
-Subject: Re: (subset) [PATCH v6 1/5] dt-bindings: mfd: Initial commit of silergy,sy7636a.yaml
-Date:   Tue, 15 Jun 2021 18:29:17 +0100
-Message-Id: <162377794811.21860.17738475490023059029.b4-ty@kernel.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+Subject: Re: [PATCH -next] ASoC: hisilicon: Use devm_platform_get_and_ioremap_resource()
+Date:   Tue, 15 Jun 2021 18:29:18 +0100
+Message-Id: <162377763944.21612.17506249147724784597.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210615103400.946-1-alistair@alistair23.me>
-References: <20210615103400.946-1-alistair@alistair23.me>
+In-Reply-To: <20210615133515.1376290-1-yangyingliang@huawei.com>
+References: <20210615133515.1376290-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,18 +40,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 20:33:56 +1000, Alistair Francis wrote:
-> Initial support for the Silergy SY7636A Power Management chip
-> and regulator.
+On Tue, 15 Jun 2021 21:35:15 +0800, Yang Yingliang wrote:
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[3/5] regulator: sy7636a: Initial commit
-      commit: 8c485bedfb7852fa4de2a34aac2a6fd911f539f4
+[1/1] ASoC: hisilicon: Use devm_platform_get_and_ioremap_resource()
+      commit: afc3a0b4c408b00787d60225e6d667e1e6f93b6a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
