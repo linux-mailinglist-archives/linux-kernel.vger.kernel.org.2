@@ -2,193 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5EC3A7FB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289C23A7F7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbhFONbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231613AbhFONbO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:31:14 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE094C0613A3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:29:08 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id h12so8465043plf.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:29:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JTiG8Mo/Nik+wIMq7cgtIy70t0SMnfIMs1UdiPtMcT8=;
-        b=eMMTD49WILvEJwNkbyXll1fUBPjpxlVSOhGaqL9TwmPYonPep8XftjIi5HAggU5srI
-         CLNpua3pQ7CwLVSW3dv0uDNKq24FS4175dYppaWlWO3XqF6T9hZPazFJ1he0aV5H6ErX
-         dgTORgnp7aFTod/O8rpuewIUUw+E6SucoIApk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JTiG8Mo/Nik+wIMq7cgtIy70t0SMnfIMs1UdiPtMcT8=;
-        b=NS/CrBpmi+/vdGtBMQarGHK+tH8F1dMwXNFzjXn8Kjpgt+CJAPBhY8S4MtNN1mDMOq
-         V5ITeYODQz0MQZ9yDKW2HOQ4L6IAhYppR1aTFScqtOcKAT8RNP47DIkAN9m87TlB24R6
-         CEdEjNi0yJRCRcKrHYLNeC5i/ZZnHKNNmeCeCHnJWbwQHF9VllzoeewRE1hBLmpopJ+/
-         MYQquXRouhyK1EZ6JDuTxrTB/KSqhKnsjHQwQFlhCxNWygA7x4dQGEdtMRg6imLoFq9d
-         gmKJY8ZBBW1QEE39gjFasg7JBvTNZodHePd58dmR47tv7ybj8WdtNihGv9P5u2v/rZu3
-         cJ+w==
-X-Gm-Message-State: AOAM530+GcCMDna+3MJBduN/Nyy3kTPMyzuPs9HmBbj/kP1Vn762ZbOW
-        G559maBUBUGUtShPrcpGBKqKTA==
-X-Google-Smtp-Source: ABdhPJzXEtYDRC2fz4fUhVok40FY/FvrMnNmlVHfb+TKFwVcW+8fDTaQF2I0RwRDZ7J7BoI70NFDeg==
-X-Received: by 2002:a17:902:e289:b029:10c:97e9:2c74 with SMTP id o9-20020a170902e289b029010c97e92c74mr4206776plc.34.1623763748216;
-        Tue, 15 Jun 2021 06:29:08 -0700 (PDT)
-Received: from localhost ([2401:fa00:95:205:1846:5274:e444:139e])
-        by smtp.gmail.com with UTF8SMTPSA id w27sm16447396pfq.117.2021.06.15.06.29.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 06:29:07 -0700 (PDT)
-From:   Claire Chang <tientzu@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        tientzu@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, jxgao@google.com,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-Subject: [PATCH v10 12/12] of: Add plumbing for restricted DMA pool
-Date:   Tue, 15 Jun 2021 21:27:11 +0800
-Message-Id: <20210615132711.553451-13-tientzu@chromium.org>
-X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
-In-Reply-To: <20210615132711.553451-1-tientzu@chromium.org>
-References: <20210615132711.553451-1-tientzu@chromium.org>
+        id S231185AbhFONaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:30:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231453AbhFONaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:30:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6CA261468;
+        Tue, 15 Jun 2021 13:28:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623763684;
+        bh=s4DCRr6gd8QdC/cIRhXmf9yOcNT5lHnTgdw2ssrVcfc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eS3N8PXWeiD9ris3hzIoJuLWn2NGjTdShLrljniwaPU6/GCsQx081P3i9GY/GGoi0
+         1QZbWqrKpygg5tCF3Jxy2C6o6uSt6t2e0Ijc+IQ2MNOKlCurBgbGtnjdcpVouHaw2o
+         srePOQA4J+SyUl/UYh5XamQCK8rigmbn50YQdt1U=
+Date:   Tue, 15 Jun 2021 15:28:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] tty: Fix out-of-bound vmalloc access in imageblit
+Message-ID: <YMiq4eucvkSGgSCp@kroah.com>
+References: <20210614131859.9511-1-igormtorrente@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614131859.9511-1-igormtorrente@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a device is not behind an IOMMU, we look up the device node and set
-up the restricted DMA when the restricted-dma-pool is presented.
+On Mon, Jun 14, 2021 at 10:18:59AM -0300, Igor Matheus Andrade Torrente wrote:
+> This issue happens when a userspace program does an ioctl
+> FBIOPUT_VSCREENINFO passing the fb_var_screeninfo struct
+> containing only the fields xres, yres, and bits_per_pixel
+> with values.
+> 
+> If this struct is the same as the previous ioctl, the
+> vc_resize() detects it and doesn't call the resize_screen(),
+> leaving the fb_var_screeninfo incomplete. And this leads to
+> the updatescrollmode() calculates a wrong value to
+> fbcon_display->vrows, which makes the real_y() return a
+> wrong value of y, and that value, eventually, causes
+> the imageblit to access an out-of-bound address value.
+> 
+> To solve this issue I made the resize_screen() be called
+> even if the screen does not need any resizing, so it will
+> "fix and fill" the fb_var_screeninfo independently.
+> 
+> Reported-and-tested-by: syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
+> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+> ---
+> v2: It Tries to avoid the problem found by Greg in the previous
+>     patch.
+> ---
+>  drivers/tty/vt/vt.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+> index fa1548d4f94b..e522f9b249e5 100644
+> --- a/drivers/tty/vt/vt.c
+> +++ b/drivers/tty/vt/vt.c
+> @@ -1219,8 +1219,10 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
+>  	new_row_size = new_cols << 1;
+>  	new_screen_size = new_row_size * new_rows;
+>  
+> -	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
+> -		return 0;
+> +	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows) {
+> +		err = resize_screen(vc, new_cols, new_rows, user);
+> +		return err;
 
-Signed-off-by: Claire Chang <tientzu@chromium.org>
----
- drivers/of/address.c    | 33 +++++++++++++++++++++++++++++++++
- drivers/of/device.c     |  3 +++
- drivers/of/of_private.h |  6 ++++++
- 3 files changed, 42 insertions(+)
+Shouldn't this just be a single line change to:
+		return resize_screen(vc, new_cols, new_rows, user);
+?
 
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index 3b2acca7e363..c8066d95ff0e 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -8,6 +8,7 @@
- #include <linux/logic_pio.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/pci.h>
- #include <linux/pci_regs.h>
- #include <linux/sizes.h>
-@@ -1001,6 +1002,38 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
- 	of_node_put(node);
- 	return ret;
- }
-+
-+int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np)
-+{
-+	struct device_node *node, *of_node = dev->of_node;
-+	int count, i;
-+
-+	count = of_property_count_elems_of_size(of_node, "memory-region",
-+						sizeof(u32));
-+	/*
-+	 * If dev->of_node doesn't exist or doesn't contain memory-region, try
-+	 * the OF node having DMA configuration.
-+	 */
-+	if (count <= 0) {
-+		of_node = np;
-+		count = of_property_count_elems_of_size(
-+			of_node, "memory-region", sizeof(u32));
-+	}
-+
-+	for (i = 0; i < count; i++) {
-+		node = of_parse_phandle(of_node, "memory-region", i);
-+		/*
-+		 * There might be multiple memory regions, but only one
-+		 * restricted-dma-pool region is allowed.
-+		 */
-+		if (of_device_is_compatible(node, "restricted-dma-pool") &&
-+		    of_device_is_available(node))
-+			return of_reserved_mem_device_init_by_idx(dev, of_node,
-+								  i);
-+	}
-+
-+	return 0;
-+}
- #endif /* CONFIG_HAS_DMA */
- 
- /**
-diff --git a/drivers/of/device.c b/drivers/of/device.c
-index c5a9473a5fb1..2defdca418ec 100644
---- a/drivers/of/device.c
-+++ b/drivers/of/device.c
-@@ -165,6 +165,9 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
- 
- 	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
- 
-+	if (!iommu)
-+		return of_dma_set_restricted_buffer(dev, np);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(of_dma_configure_id);
-diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-index 631489f7f8c0..376462798f7e 100644
---- a/drivers/of/of_private.h
-+++ b/drivers/of/of_private.h
-@@ -163,12 +163,18 @@ struct bus_dma_region;
- #if defined(CONFIG_OF_ADDRESS) && defined(CONFIG_HAS_DMA)
- int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map);
-+int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np);
- #else
- static inline int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map)
- {
- 	return -ENODEV;
- }
-+static inline int of_dma_set_restricted_buffer(struct device *dev,
-+					       struct device_node *np)
-+{
-+	return -ENODEV;
-+}
- #endif
- 
- void fdt_init_reserved_mem(void);
--- 
-2.32.0.272.g935e593368-goog
+But this also should get a big comment, as it looks odd that if the size
+isn't changing, why this function should be called at all.  At first
+glance at just the code, this looks wrong, so please document this
+really well here.
+
+thanks,
+
+greg k-h
 
