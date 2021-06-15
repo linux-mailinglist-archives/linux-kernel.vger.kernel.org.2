@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DE83A89B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03033A89B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFOToE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 15:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhFOToB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 15:44:01 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705BEC061574;
-        Tue, 15 Jun 2021 12:41:55 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso317368pjp.2;
-        Tue, 15 Jun 2021 12:41:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f6/i5s8IOzCUxNSyaYvlK4MuXc588RPfZhmyhczPhoM=;
-        b=WBPbfro2NwATm3JEz1Lg4fLKfLoX9TbPrF2j5G6OvxuIWu42YzPvjntCGsNjz+hlRd
-         OCMLh+uE8u7spUQyarI/anBiSczOW3GVEkR4erCABZJ0Zgrzh9F3ZvxRFfimRRR0Y1cz
-         rpPPtbnlrZyB3qU0YGCwDJnD1VIi6fejznBKQ0SYBb/NR23U/2hWucitbpc1nkw5XJna
-         Ob9Q5ZDVZmU02N653mtAnfxUXiaK6YSNOU+bn/8I8oGryfv8nvn2KOPSIdxth6CwkWqJ
-         PrVWhedUUw67dIhd/VZebA4YdrsD4tu6HlvlVMu4ViGGxbHpXl/zPjabcD26F5AnB9Gh
-         KC2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f6/i5s8IOzCUxNSyaYvlK4MuXc588RPfZhmyhczPhoM=;
-        b=tF0+6iuzAUpr7oso4O8vNd65TBbSgBNfrlbSg9i/xK3nZBmTQU2RXRnq8+djJWeoAB
-         kcHOUq5V6+O3+V4pDeQOz0WWDoNn6LaeVgronQ1E+ix1VrqePkur276xEu9A86Z/Aubc
-         oLtcC5wPm5v++ZqvD8d0o6lzB2bZ4GechYjJTppeJTwOZHDs4XkVJ5/WRn41HOhmbpuF
-         56PF67Z6+LZ3FxTRyQ/hHXow5sQwZML5866MKYD7aGbfXz1wvoXGz7nCnzrLHeRGBbJ3
-         vXwo0Tz4x5+5sdfb7WY9WH/s5R+dI0LNqA2jFeq7fQAnZmKGjCRSIxwobrGuMzkPkiIJ
-         uYNw==
-X-Gm-Message-State: AOAM533j2zkWYZPGdBa9FV0pJOFt+1CWkr+S9jjumhQxCBq3AhFbyLlo
-        /uIlcSRFQQ8CHK0kqdxs0Zo=
-X-Google-Smtp-Source: ABdhPJwGP9achyFY7LVCoQp+gaF/JatGoWlCKrtrfiNATf+SFZF8Hi0GvRMlCM+ICP1uQ4JVzP6Bbg==
-X-Received: by 2002:a17:902:b181:b029:fc:c069:865c with SMTP id s1-20020a170902b181b02900fcc069865cmr5728006plr.28.1623786114824;
-        Tue, 15 Jun 2021 12:41:54 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:c700:bb55:c690:c756])
-        by smtp.gmail.com with ESMTPSA id n69sm16483124pfd.132.2021.06.15.12.41.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 12:41:53 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 12:41:51 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Yizhuo Zhai <yzhai003@ucr.edu>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: hideep - fix the uninitialized use in
- hideep_nvm_unlock()
-Message-ID: <YMkCfykNyHtuMUkY@google.com>
-References: <CABvMjLRuGPgEJ3Ef7=sBk3m3oa+3HuyV9mVY0ZCYuHK=rJRA4w@mail.gmail.com>
- <YMjuPtKtiaVLLO0q@google.com>
- <CABvMjLSKe2ojoVTZOwv_Dr4P4rsDa334vBc_-T8sMTPUJ-f==g@mail.gmail.com>
+        id S231132AbhFOToX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 15:44:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229898AbhFOToQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 15:44:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 060B261166;
+        Tue, 15 Jun 2021 19:42:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623786131;
+        bh=F7vbSprOP5Rudz4mCUZIL34WYECvKuqqAhRsSQFYsyo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=X8WBzy5JguRPGV3D65bv6IZ3C+Tud3fIsIiQVU4QjPBOn1VLl8NKFd4HoLJdIFqrz
+         BpnR+DZV8X4/zBxMFDUPcbrmnFpDxe7O0JQuulOM3rcdsItfiRNGwFegFv9o7X5m5l
+         wHpmJhNVC+OB24rFnFoJzxskveEXsAa9N9qk+StXgVwOEtjSekoF+rDGcke/IamgMN
+         kr+bvlxXxcn4DfYW6lW5KBe05UjCQ6KV+67uWp6Nk7SNO7/doLJi+GNr/7iIN1PyVO
+         cQaC4r+E94/3s7Ct0c+LCxWL8moqaNYAR/j6E2aNaPrfquUDn2hOJq7isvW/KER/bq
+         wM8z+QIkprkag==
+Date:   Tue, 15 Jun 2021 14:42:09 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Vidya Sagar <vidyas@nvidia.com>, lorenzo.pieralisi@arm.com,
+        bhelgaas@google.com, robh+dt@kernel.org,
+        amurray@thegoodpenguin.co.uk, gustavo.pimentel@synopsys.com,
+        jingoohan1@gmail.com, Joao.Pinto@synopsys.com,
+        Thierry Reding <treding@nvidia.com>,
+        Krishna Thota <kthota@nvidia.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Query regarding the use of pcie-designware-plat.c file
+Message-ID: <20210615194209.GA2908457@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABvMjLSKe2ojoVTZOwv_Dr4P4rsDa334vBc_-T8sMTPUJ-f==g@mail.gmail.com>
+In-Reply-To: <2970bdf2-bef2-bdcb-6ee3-ac1181d97b78@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 11:57:36AM -0700, Yizhuo Zhai wrote:
-> Hi Demitry:
+On Wed, Jun 09, 2021 at 05:54:38PM +0100, Jon Hunter wrote:
 > 
-> Thanks for your quick response, following your advice, a careful way
-> is changing the return type of  "hideep_nvm_unlock()" from void to
-> int, and its caller "hideep_program_nvm()" also needs to add the
-> return check.
+> On 09/06/2021 17:30, Bjorn Helgaas wrote:
+> > On Wed, Jun 09, 2021 at 12:52:37AM +0530, Vidya Sagar wrote:
+> >> Hi,
+> >> I would like to know what is the use of pcie-designware-plat.c file. This
+> >> looks like a skeleton file and can't really work with any specific hardware
+> >> as such.
+> >> Some context for this mail thread is, if the config CONFIG_PCIE_DW_PLAT is
+> >> enabled in a system where a Synopsys DesignWare IP based PCIe controller is
+> >> present and its configuration is enabled (Ex:- Tegra194 system with
+> >> CONFIG_PCIE_TEGRA194_HOST enabled), then, it can so happen that the probe of
+> >> pcie-designware-plat.c called first (because all DWC based PCIe controller
+> >> nodes have "snps,dw-pcie" compatibility string) and can crash the system.
+> > 
+> > What's the crash?  If a device claims to be compatible with
+> > "snps,dw-pcie" and pcie-designware-plat.c claims to know how to
+> > operate "snps,dw-pcie" devices, it seems like something is wrong.
+> > 
+> > "snps,dw-pcie" is a generic device type, so pcie-designware-plat.c
+> > might not know how to operate device-specific details of some of those
+> > devices, but basic functionality should work and it certainly
+> > shouldn't crash.
 > 
-> If this sounds ok, I would go ahead to modify the patch accordingly.
+> It is not really a crash but a hang when trying to access the hardware
+> before it has been properly initialised.
 
-Yes, this sounds right.
+This doesn't really answer my question.
 
-> 
-> On Tue, Jun 15, 2021 at 11:15 AM Dmitry Torokhov
-> <dmitry.torokhov@gmail.com> wrote:
-> >
-> > Hi Yizhuo,
-> >
-> > On Tue, Jun 15, 2021 at 10:26:09AM -0700, Yizhuo Zhai wrote:
-> > > Inside function hideep_nvm_unlock(), variable "unmask_code" could
-> > > be uninitialized if hideep_pgm_r_reg() returns error, however, it
-> > > is used in the later if statement after an "and" operation, which
-> > > is potentially unsafe.
-> >
-> > I do not think that simply initializing the variable makes the code
-> > behave any better. If we want to fix this properly we need to check for
-> > errors returned by hideep_pgm_r_reg() and hideep_pgm_w_reg() and exit
-> > this function early, signalling the caller about errors.
-> >
-> > >
-> > > Signed-off-by: Yizhuo <yzhai003@ucr.edu>
-> > > ---
-> > >  drivers/input/touchscreen/hideep.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/input/touchscreen/hideep.c
-> > > b/drivers/input/touchscreen/hideep.c
-> > > index ddad4a82a5e5..49b713ad4384 100644
-> > > --- a/drivers/input/touchscreen/hideep.c
-> > > +++ b/drivers/input/touchscreen/hideep.c
-> > > @@ -363,7 +363,7 @@ static int hideep_enter_pgm(struct hideep_ts *ts)
-> > >
-> > >  static void hideep_nvm_unlock(struct hideep_ts *ts)
-> > >  {
-> > > -       u32 unmask_code;
-> > > +       u32 unmask_code = 0;
-> > >
-> > >         hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_SFR_RPAGE);
-> > >         hideep_pgm_r_reg(ts, 0x0000000C, &unmask_code);
-> > > --
-> > > 2.17.1
-> >
-> > Thanks.
-> >
-> > --
-> > Dmitry
-> 
-> 
-> 
-> -- 
-> Kind Regards,
-> 
-> Yizhuo Zhai
-> 
-> Computer Science, Graduate Student
-> University of California, Riverside
+If the hardware claims to be compatible with "snps,dw-pcie" and a
+driver knows how to operate "snps,dw-pcie" devices, it should work.
 
--- 
-Dmitry
+If the hardware requires initialization that is not part of the
+"snps,dw-pcie" programming model, it should not claim to be compatible
+with "snps,dw-pcie".  Or, if pcie-designware-plat.c is missing some
+init that *is* part of the programming model, maybe it needs to be
+enhanced?
+
+> The scenario I saw was that if the Tegra194 PCIe driver was built as a
+> module but the pcie-designware-plat.c was built into the kernel, then on
+> boot we would attempt to probe the pcie-designware-plat.c driver because
+> module was not available yet and this would hang. Hence, I removed the
+> "snps,dw-pcie" compatible string for Tegra194 to avoid this and ONLY
+> probe the Tegra194 PCIe driver.
+
+Maybe something like driver_override (I know this is supported via
+sysfs, but maybe not via a kernel parameter) or a module parameter for
+pcie-designware-plat.c to keep it from claiming devices?
+
+> Sagar is wondering why this hang is only seen/reported for Tegra and
+> could this happen to other platforms? I think that is potentially could.
+
+Maybe pcie-designware-plat.c works on other platforms, i.e., they
+don't require the hardware init?
