@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8593A88E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E873A88E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhFOSxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 14:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbhFOSxb (ORCPT
+        id S230493AbhFOSyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 14:54:21 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:45567 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230130AbhFOSyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:53:31 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD10C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:51:26 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 3-20020a05600c0243b029019f2f9b2b8aso204508wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:51:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=uwIcPiwJdf3jh813ElBB+grh5aH2j38/LFNqkrYcIlU=;
-        b=SNM+6i9dSydccRVYue2Eyioctg9Arn8GAmZtmj7X4nOpxWlP1Be22Kc9kdAuBA8FKV
-         a+8qa8gUG+FijhNizuPt6TMZuefrvkpv0SjwA8XM+Oo5dugNFE1MzsvryIpeS5TPdBJr
-         2EatG4YlZW6Voqw4G8V4h7R5I8RZ5bGrQC+FD9eRDSgBUBROo8ES6E2dZBVBeF+wsK5j
-         0VaoetlhOTz7qgKk55Le44cxbEPo9k221U7/9On09HY/grPIOWC39tBDI0GCJLso0E3r
-         +quGQw8b1LSRYZ+nGQU2syJf9Mb182jAdn5eFRHNcH+W24h2pPUgSPDScYnU9umkIHFE
-         8Liw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=uwIcPiwJdf3jh813ElBB+grh5aH2j38/LFNqkrYcIlU=;
-        b=uQ7d5d/SUtMBld8a1xvgAQhG+1W9ypmZMaPEg68/3zE6CppBG3mrRcABxPzlzFFnWP
-         VtKyStGTUBuHqknhdd75Gxj9wLTXhlkWWPjHAfRYZHYahxL1J1ACJ3rgkbE04q29yQDh
-         +yx9fCNgzVHIyX+uUIX173nJ6RvGxsJ8Ajlg+bWTFBqKyaJSLnpTGgkDlhRBYJwnhY8J
-         6p+fBsTU/vgKdzTv1oY/srLRNWmFumnzAeqqgsDp0Xw7V8snedWtTcNFkzlamdN2i7MJ
-         YHtxQb30w/LXIGoUktPshVdX/Z8NEgylskFsYa/5SdE+oKWGFQeHlqTj7xso6jk9SCRB
-         V6vA==
-X-Gm-Message-State: AOAM5320+0ikL7lx4lD0qsUetAkeJ2TumGGWP0RdHTC3pK93iDJxOMTz
-        yotvX1NmWp5NoQpJdUoqEIFCug==
-X-Google-Smtp-Source: ABdhPJwU9DENtfQ4wuryNf4W2aw/IXAhNb/BXtgIIcVGtewfEuj9HVGn8YOQKgMmF7i8j9lSUiwt1w==
-X-Received: by 2002:a7b:c10b:: with SMTP id w11mr6922360wmi.186.1623783084817;
-        Tue, 15 Jun 2021 11:51:24 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:87fa:cbf4:21a6:1e70])
-        by smtp.gmail.com with ESMTPSA id j5sm11544847wro.73.2021.06.15.11.51.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 11:51:24 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 20:51:18 +0200
-From:   Marco Elver <elver@google.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>, boqun.feng@gmail.com,
-        will@kernel.org, glider@google.com, dvyukov@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/7] kcsan: Introduce CONFIG_KCSAN_PERMISSIVE
-Message-ID: <YMj2pj9Pbsta15pc@elver.google.com>
-References: <20210607125653.1388091-1-elver@google.com>
- <20210609123810.GA37375@C02TD0UTHF1T.local>
- <20210615181946.GA2727668@paulmck-ThinkPad-P17-Gen-1>
+        Tue, 15 Jun 2021 14:54:20 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 17C5816C1;
+        Tue, 15 Jun 2021 14:52:15 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 15 Jun 2021 14:52:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pbarker.dev; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=No2oPqsZrvr6CiRabUxNkxWZak
+        +tZm7HbUK9/oBsRyk=; b=K9lIIelszi8a/hegsYuPPKK0HlCQT8ULuR+lRSAYLq
+        UJ0+U/dmUBfm8QInuwyvjmdmAu8xm6Jq45UA+b2OBD/STLLH9F3owz8HRAV+qq0s
+        kiT6V4d29pUy1WuVqlcJabIQWy8LlI9UuV9fxRrutEf80vB+XXOrTJ12hycfB2pJ
+        TRcsJG01EScpCfcF1a1l2lCGSBF9c+yhwVGJ8K5ZtJoaqdzsqBrGX4e6lzBv/bR5
+        qKM1tIqNlkgByC0Q1OrUJT8RJZwUpzjeIzxBjtgTb0U+Rh+QJWV4pIjlZRFDVmMV
+        B7aBCkoXxKpQGFM5XLIIvD3czHVi4bkxrhquYi6NAuCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=No2oPqsZrvr6CiRab
+        UxNkxWZak+tZm7HbUK9/oBsRyk=; b=Nho+0Qjk4BjBEGDFxiMuIsO9Z+2Rxc/R+
+        0aGchN7kQdggf8Z1Cf0fdR3T3c5vJ7aa53g9HiKAwU9nQKSZ/Ftrw9fb+G0Z60iS
+        jw5LBFSxrGq8SU/iguTvXi8Tv2QI/i7iYatTxWpt6nQlKtOESp5Lv9UaomyiFQQl
+        Id7JXkCVbi16xw/+fK63ZugRbICBCfxAHxIVbgu3LJEGRyFSYYSh04DhV3IsOWrQ
+        9jGTR0rBP+qO70uD/NChuizkGRKO7qXL60iLm7m0DIt+kfII4LD6ixWflcAgSCN7
+        ztpGzlOKGQN89RwyE/fhibX8XvgP2+c2TWF9049f/LeZ/hXnRcezQ==
+X-ME-Sender: <xms:3vbIYKLL8ZVxhRgzz6FJe_i0fu9r_2mu-7YkJ7Bsy_IibZMvvkxT8A>
+    <xme:3vbIYCJcNZJ-1DjvLl5AsjSJtOu3kN5i6ETlUNcUL88l3pCeq917Hr8UHjtEY_0cA
+    9c8an1rTnT37uCzb0A>
+X-ME-Received: <xmr:3vbIYKseN5Qnoi8QMzWsxrorQf3itzWIvInZmht4tf686_idryykf8o1jcKZ-tvVjdXr0A0P503vUWsP0PbTAMhsJKYfqO8afBeGeTmj9Uwqw5s4NpgsTMMWah8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvjedgudefudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheprfgruhhluceu
+    rghrkhgvrhcuoehprghulhesphgsrghrkhgvrhdruggvvheqnecuggftrfgrthhtvghrnh
+    epteefleelheeugeejudegiedttddvffdvleefgfdvudegkeduleegudeihfeijedunecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepphgruhhlse
+    hpsggrrhhkvghrrdguvghv
+X-ME-Proxy: <xmx:3vbIYPYcjXUCS-Vv6QRSAhNjxHrWno94t_sGX523ARGvsSJZive8rw>
+    <xmx:3vbIYBYdJhi_5TvjqVylbCqqzMAJikRhu6LzkHSGntfjX7_WxjLcPg>
+    <xmx:3vbIYLDCiuv28oQLiQ3KO-mCXR_2FYDWvIAJeYNNEge90Y5g6b5cPQ>
+    <xmx:3vbIYAU-4hy9F0fol1JNVx_MNjXYGhZP_nwAWIV6PqR92fctn8vu4g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 15 Jun 2021 14:52:13 -0400 (EDT)
+From:   Paul Barker <paul@pbarker.dev>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Paul Barker <paul@pbarker.dev>
+Subject: [PATCH] checkpatch: Use python3 to run spdxcheck.py
+Date:   Tue, 15 Jun 2021 19:52:06 +0100
+Message-Id: <20210615185206.7701-1-paul@pbarker.dev>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615181946.GA2727668@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 11:19AM -0700, Paul E. McKenney wrote:
-[...]
-> Queued and pushed for v5.15, thank you both!
-> 
-> I also queued the following patch making use of CONFIG_KCSAN_STRICT, and I
-> figured that I should run it past you guys to make check my understanding.
-> 
-> Thoughts?
+Since commit d0259c42abff ("spdxcheck.py: Use Python 3"), the shebang
+line in scripts/spdxcheck.py says the script should run with `python3`.
+However, checkpatch has been explicitly running this script with
+`python` so it needs updating to ensure that Python 3 is used on all
+distros.
 
-You still need CONFIG_KCSAN_INTERRUPT_WATCHER=y, but otherwise looks
-good.
-
-I thought I'd leave that out for now, but now thinking about it, we
-might as well imply interruptible watchers. If you agree, feel free to
-queue the below patch ahead of yours.
-
-Thanks,
--- Marco
-
------- >8 ------
-
-From: Marco Elver <elver@google.com>
-Date: Tue, 15 Jun 2021 20:39:38 +0200
-Subject: [PATCH] kcsan: Make strict mode imply interruptible watchers
-
-If CONFIG_KCSAN_STRICT=y, select CONFIG_KCSAN_INTERRUPT_WATCHER as well.
-
-With interruptible watchers, we'll also report same-CPU data races; if
-we requested strict mode, we might as well show these, too.
-
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Paul Barker <paul@pbarker.dev>
 ---
- lib/Kconfig.kcsan | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ scripts/checkpatch.pl | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
-index 26f03c754d39..e0a93ffdef30 100644
---- a/lib/Kconfig.kcsan
-+++ b/lib/Kconfig.kcsan
-@@ -150,7 +150,8 @@ config KCSAN_SKIP_WATCH_RANDOMIZE
- 	  KCSAN_WATCH_SKIP.
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 23697a6b1eaa..5e5e3a53461b 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -1084,10 +1084,10 @@ sub is_maintained_obsolete {
+ sub is_SPDX_License_valid {
+ 	my ($license) = @_;
  
- config KCSAN_INTERRUPT_WATCHER
--	bool "Interruptible watchers"
-+	bool "Interruptible watchers" if !KCSAN_STRICT
-+	default KCSAN_STRICT
- 	help
- 	  If enabled, a task that set up a watchpoint may be interrupted while
- 	  delayed. This option will allow KCSAN to detect races between
+-	return 1 if (!$tree || which("python") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
++	return 1 if (!$tree || which("python3") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
+ 
+ 	my $root_path = abs_path($root);
+-	my $status = `cd "$root_path"; echo "$license" | python scripts/spdxcheck.py -`;
++	my $status = `cd "$root_path"; echo "$license" | python3 scripts/spdxcheck.py -`;
+ 	return 0 if ($status ne "");
+ 	return 1;
+ }
 -- 
-2.32.0.272.g935e593368-goog
+2.32.0
 
