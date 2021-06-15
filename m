@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A76F3A86C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0673A86CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbhFOQrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 12:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
+        id S230364AbhFOQrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 12:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhFOQrn (ORCPT
+        with ESMTP id S230205AbhFOQrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:47:43 -0400
+        Tue, 15 Jun 2021 12:47:47 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38250C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:45:39 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id v28-20020a25fc1c0000b0290547fac9371fso20605439ybd.14
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:45:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB62C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:45:41 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id r5-20020a2582850000b02905381b1b616eso20912944ybk.6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:45:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=6HZGdFlUWM4LdlL5+cotm9rGAhlwZSYKVNXCJc52TBE=;
-        b=j9bMtMZ1Zel3jGQWMxvx1581g0LAM3fjKvw5SnIg00Xsbe8bVn93dunrjWw2rMq4Cq
-         54LEK/RU6P5miLuqCTjGED3cKTaOFH6cujbzfx5TG8ZdK8oHbwmlDEREd9SMOpC/9U1d
-         EGizH6qQAYuM4z0uv5FOWe6aus8noEzFaeqk+3QO+BsiC8Y3lJ6HZxTwTlcvCYA7eEdF
-         +LQERTO2dF7s5x2EXYjOH3mKHZEWEWch1/IfYT0WbqRXWSJiIgKct4XSNjdcklUbml7y
-         u9ZGazlneZshx1D54e8I5se/YmQtztExmgR7VN/TmGVF/I8mSqpQPROmqkxS+6V/xxoS
-         GV8Q==
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=KoATQjf1bqJX5+Cn3Pm5jquL1TOAr2SZYGD15c6rjGI=;
+        b=i8b5Rxvb8TY33lBOb2tS3EkwWuF2Wot9rZRAyYQvgF4is7spcEvT+E5xX5qaHgplJf
+         /oTkbqp2GWi259MVdZkiunqm3ZPf82XNW4yuibpf5bLVsr0a2vQhhsme5la0C0mDQAKz
+         e/RqVpQ8qUz0vPJ5h4OI00Smty6GASYEiG0FLschtY50a7SX3NiuUFy/8hIhvz0RG4FW
+         kVAe10AFzCivihB9+pV4MUUK3HfPwG6om1vCKbVpYOFQZX7liv6ripc1aRM84Ux/9cMM
+         w1wetKMj68BHuEyHzsSmgXKHgPsxk7tLs6JxNmV02iOk3ZrOxwoeO7sHWKJBVl9brvfd
+         /Bpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=6HZGdFlUWM4LdlL5+cotm9rGAhlwZSYKVNXCJc52TBE=;
-        b=sZbzQ9oJFhfirSaNw/b+es1Vnkw9+1v1QiTmCuuxEpElxX1+hz4MXPf4f1h7heObpE
-         BF7cS3nf0Dyld3SPcqxXiTSYygyVcL26PxbGcm8GOIKcISyssOX8nxGaVGpFHfnYz3Kh
-         rxlHNoA1nJ5dYBtu+Ku/OZFBiSZvwIcYRZfsZc9vudHTPWVewhlIoffXq0eUjziddry6
-         9RuiBCveWYMrv4tXYw5by/o8lfvOpXkvTMr0hxDK4/izhx3frfqEQoYpAE2R98jw9Lo1
-         XrcToubRRQsVfdzAoa+LU+okyKdXbyYORX5pGudXmySEFtkEA0n1OADh9CP+tsZse8+U
-         aGvA==
-X-Gm-Message-State: AOAM533vCoPlGeW+OUaaq/AxIrLiVM/oW/Q/IYe0fB0KjJS0eaDMu0Bc
-        GCYdRH3IxBdooi/aMtVQFSxjg4ugDbM=
-X-Google-Smtp-Source: ABdhPJwijPv+0zQjSxRmkTTlgNWU/8MzeoSZ7RLtDFw5X8sp1a318M/0ZuE7ovu43XIh5DcZM4x+lJGK6bI=
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=KoATQjf1bqJX5+Cn3Pm5jquL1TOAr2SZYGD15c6rjGI=;
+        b=MF8fvMP2jI1LV009lBo4IHg1dChxfsJcCqo/CQgrb+wMUaGEGfdnUDCNerUpagiPF9
+         wPiSN9gw9z6HqDIhQuByeCZ/pt5zA70Cgb7rXiCQWdzLcjOuj1j233ZZ5I4/5nxrR6GS
+         +FzQxRqt5zDGKGkc9YmEg7MPqACOl/j/f6gmJhWW853wn5GlmRAJVQX4E0vNE1umR/z1
+         jA6j0HTU1olZNoXijwzl9rLMEqlXgC0mU8z2wtVsZIn0xqCgsbmYHQaNJDYvF2pwkGMq
+         tCrs88zBCvtmNAeaZYLFb0d9Z+wllI6aJxMcjE/ShtE8Wi10G4s20Yj89RcpZywcvF8Q
+         MJkw==
+X-Gm-Message-State: AOAM531w6zDK7vpsAaWotMCHrv0rB2Sp3SDUJoCkT4LchZOXWVuVdmzK
+        vMhpk95X2Q5bV89mhYr830xinlwzCz0=
+X-Google-Smtp-Source: ABdhPJzMuxBn6CbXj7dqEDl/F6v5foDuq6XtTIS9K1vgrOxspUwq2OsoSvuLlfBrfAomFRe15lFYc5UdzeA=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:13fc:a8bd:9d6b:e5])
- (user=seanjc job=sendgmr) by 2002:a25:ec12:: with SMTP id j18mr45215ybh.267.1623775538389;
- Tue, 15 Jun 2021 09:45:38 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:dc8f:: with SMTP id y137mr108064ybe.248.1623775540537;
+ Tue, 15 Jun 2021 09:45:40 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 15 Jun 2021 09:45:31 -0700
-Message-Id: <20210615164535.2146172-1-seanjc@google.com>
+Date:   Tue, 15 Jun 2021 09:45:32 -0700
+In-Reply-To: <20210615164535.2146172-1-seanjc@google.com>
+Message-Id: <20210615164535.2146172-2-seanjc@google.com>
 Mime-Version: 1.0
+References: <20210615164535.2146172-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
-Subject: [PATCH 0/4] KVM: x86: Require EFER.NX support unless EPT is on
+Subject: [PATCH 1/4] KVM: VMX: Refuse to load kvm_intel if EPT and NX are disabled
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -63,31 +66,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM has silently required EFER.NX support for shadow paging for well over
-a year, and for NPT for roughly the same amount of time.  Attempting to
-run any VM with shadow paging on a system without NX support will fail due
-to invalid state, while enabling nx_huge_pages with NPT and no NX will
-explode due to setting a reserved bit in the page tables.
+Refuse to load KVM if NX support is not available and EPT is not enabled.
+Shadow paging has assumed NX support since commit 9167ab799362 ("KVM:
+vmx, svm: always run with EFER.NXE=1 when shadow paging is active"), so
+for all intents and purposes this has been a de facto requirement for
+over a year.
 
-I really, really wanted to require NX across the board, because the lack
-of bug reports for the shadow paging change strongly suggests no one is
-running KVM on a CPU that truly doesn't have NX.  But, Intel CPUs let
-firmware disable NX via MISC_ENABLES, so it's plausible that there are
-users running KVM with EPT and no NX.
+Do not require NX support if EPT is enabled purely because Intel CPUs let
+firmware disable NX support via MSR_IA32_MISC_ENABLES.  If not for that,
+VMX (and KVM as a whole) could require NX support with minimal risk to
+breaking userspace.
 
-Sean Christopherson (4):
-  KVM: VMX: Refuse to load kvm_intel if EPT and NX are disabled
-  KVM: SVM: Refuse to load kvm_amd if NX support is not available
-  KVM: x86: WARN and reject loading KVM if NX is supported but not
-    enabled
-  KVM: x86: Simplify logic to handle lack of host NX support
+Fixes: 9167ab799362 ("KVM: vmx, svm: always run with EFER.NXE=1 when shadow paging is active")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/vmx/vmx.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
- arch/x86/kvm/cpuid.c   | 13 +++++--------
- arch/x86/kvm/svm/svm.c | 13 ++++++++++---
- arch/x86/kvm/vmx/vmx.c |  6 ++++++
- arch/x86/kvm/x86.c     |  3 +++
- 4 files changed, 24 insertions(+), 11 deletions(-)
-
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 68a72c80bd3f..889e83f71235 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7723,6 +7723,12 @@ static __init int hardware_setup(void)
+ 	    !cpu_has_vmx_invept_global())
+ 		enable_ept = 0;
+ 
++	/* NX support is required for shadow paging. */
++	if (!enable_ept && !boot_cpu_has(X86_FEATURE_NX)) {
++		pr_err_ratelimited("kvm: NX (Execute Disable) not supported\n");
++		return -EOPNOTSUPP;
++	}
++
+ 	if (!cpu_has_vmx_ept_ad_bits() || !enable_ept)
+ 		enable_ept_ad_bits = 0;
+ 
 -- 
 2.32.0.272.g935e593368-goog
 
