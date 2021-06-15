@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C2B3A80AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797933A80D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhFONlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:41:39 -0400
-Received: from verein.lst.de ([213.95.11.211]:49213 "EHLO verein.lst.de"
+        id S231819AbhFONmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:42:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:39379 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231760AbhFONlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:41:10 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3CF0668AFE; Tue, 15 Jun 2021 15:39:03 +0200 (CEST)
-Date:   Tue, 15 Jun 2021 15:39:02 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v10 05/12] swiotlb: Update is_swiotlb_active to add a
- struct device argument
-Message-ID: <20210615133902.GE20389@lst.de>
-References: <20210615132711.553451-1-tientzu@chromium.org> <20210615132711.553451-6-tientzu@chromium.org>
+        id S231761AbhFONls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:41:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623764384; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=9JAPvoFh2W6yNK07dOvGWNDxKnIUNbVDxB1h5jwB69w=;
+ b=U8kggiWAvqgUiu498heATVOKZbEVVbOPI3XC1tFmaT6NpK78iV0vXFgWn4GR2CiO3404fHjo
+ YSuTD57KSiQ17oAR4tDMSZambcSUSrf2H0UuZZFtS5rwxsnxj9MuaLTgK0IgwyAC+I1z003V
+ zDE4Up/O8QOHsxjcfzCozhJkK1Q=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60c8ad86b6ccaab75328e980 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:39:18
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B19D2C43146; Tue, 15 Jun 2021 13:39:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3217EC43151;
+        Tue, 15 Jun 2021 13:39:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3217EC43151
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615132711.553451-6-tientzu@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [10/11] wl1251: Fix missing function name in comments
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210517050141.61488-11-shenyang39@huawei.com>
+References: <20210517050141.61488-11-shenyang39@huawei.com>
+To:     Yang Shen <shenyang39@huawei.com>
+Cc:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Yang Shen" <shenyang39@huawei.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210615133918.B19D2C43146@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 13:39:18 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 09:27:04PM +0800, Claire Chang wrote:
-> Update is_swiotlb_active to add a struct device argument. This will be
-> useful later to allow for different pools.
+Yang Shen <shenyang39@huawei.com> wrote:
+
+> Fixes the following W=1 kernel build warning(s):
 > 
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
+>  drivers/net/wireless/ti/wl1251/cmd.c:15: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  drivers/net/wireless/ti/wl1251/cmd.c:62: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  drivers/net/wireless/ti/wl1251/cmd.c:103: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  drivers/net/wireless/ti/wl1251/cmd.c:141: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> 
+> Signed-off-by: Yang Shen <shenyang39@huawei.com>
 
-Looks good,
+Patch applied to wireless-drivers-next.git, thanks.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+c362dd84013e wl1251: Fix missing function name in comments
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210517050141.61488-11-shenyang39@huawei.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
