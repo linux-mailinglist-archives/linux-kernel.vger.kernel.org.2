@@ -2,108 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A2D3A8A41
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9C93A8A46
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhFOUl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 16:41:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229898AbhFOUl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 16:41:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D9A7611C0;
-        Tue, 15 Jun 2021 20:39:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623789591;
-        bh=6+oMK7wCi10jdQ9Pp1G7b0FDyy4ILCTJVB7zAEjdXsw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dR8pjiWuDoDqOmvOvHj7Lwj2jKs6IKEcw078eWGs3AQs2GR4DHlnwzmuwbN5xYDRA
-         SIustUX6eCQcd8Xto3LFXibZTjzAr5Qr+jfgI9fva+QiY4ESHqvNE6clT2/O0sFjgG
-         nmTJLszr0U4qCgjfFe8hBuwIP2tqqdbVTL2F6tm1Cp2Ox3iOXXiEsymxz4aDGurLOI
-         eCn5Q6khmLekWnluqBClw/gSP6y6LK9/ASsWD6ULDvuMyzy/QErUQ1zIp6sAmp8+u4
-         Qkx6lfGH/xJE7tkeyIkSnF6tBrCkeQhsWpCE6ozHyB6ibaTe5zrLr1nHs4tqqo1zpS
-         /CTYJhOf9+Ptg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 040C35C02A9; Tue, 15 Jun 2021 13:39:51 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 13:39:51 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, boqun.feng@gmail.com,
-        will@kernel.org, glider@google.com, dvyukov@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/7] kcsan: Introduce CONFIG_KCSAN_PERMISSIVE
-Message-ID: <20210615203951.GU4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210607125653.1388091-1-elver@google.com>
- <20210609123810.GA37375@C02TD0UTHF1T.local>
- <20210615181946.GA2727668@paulmck-ThinkPad-P17-Gen-1>
- <YMj2pj9Pbsta15pc@elver.google.com>
+        id S230508AbhFOUmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 16:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230466AbhFOUm1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 16:42:27 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FD6C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:40:21 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id q20so383957lfo.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mI+Uy62aXOt4Prq2PUS7VjWc/+uB2vw7iQueiUDdSS8=;
+        b=Mh7FeTdwsPNuQXmG7HfR3LIBdVoplRNF5u49c3WP1H7V7D/qBiWT4GvO9Y7dzzPcn+
+         ew8Ag5oOZ8bgypyaT2/P1u8tQ5PbJetE4Ut9i9UzFsBjnbjO828Gsuq37QBJEu78eKOt
+         Sp3tWASzcB6xeHqyrYFLI808p9ELdvkHism3yPJsmQz8MOMrKe1ixjfHTBXT4yZdKdad
+         tmLWT5MqbxYcCWpyR9XO7lri4REO9Y3KpaIZEiuveOuK65fvCplnDv4onYmdaK+gwiIu
+         akr9s0n4/tEXQMlUWmPYPh6ACLN6zEHT5SysQUapNW7MvBt2OJGJs8yxLcrVSVFROIPr
+         rCoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mI+Uy62aXOt4Prq2PUS7VjWc/+uB2vw7iQueiUDdSS8=;
+        b=S0vPLF/VNXPSc78EEXzGMst1ccDN/yMvk18kqWfMnr1DWPCK2e3vCgTD92gCOOkeR+
+         eY9ABTvXUxqtV2HuOzJCUiFRIfDv1pEJcJGFqnE1NlPKyOCha1gv/qWsWjDFqM6cbCJO
+         S5NaXq+BMKHndkDvzRi/yVMQ2BumhKpOyxReGOSaoHZEOPQjRd4TBAJb8A47Ys/DPjVo
+         0N5Y/mvZnLmIVfhsMb0k2Y2qa3PgHzQOeGXJ1TzDrNw16wcq9dVTM7DdlW3qVZ+V5FIi
+         bMXYu1g6MdzxzGB2nlLugnWYra7fWC8J4io1WLHQpAoOycXbsXkcOoa6k1tFRBPF3Oo9
+         QlXw==
+X-Gm-Message-State: AOAM530SMtCHi61kWpgiutBbZF4cW1AWDGDgxAbLjQq6GC5wpJ9PWFkO
+        R3IDCBqhBj/GRTwTddHc/Y7W9gTce7YECDKAyXY9hg==
+X-Google-Smtp-Source: ABdhPJx1gbrC8KfLRm7B88Z6r8LHurBrUrh8s9fWk20QPNqr6pDnATaWEh20Le8JHYfS0fYEB46Ujv1/uF4jUbe2hao=
+X-Received: by 2002:a05:6512:3287:: with SMTP id p7mr830016lfe.213.1623789620074;
+ Tue, 15 Jun 2021 13:40:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMj2pj9Pbsta15pc@elver.google.com>
+References: <20210513193204.816681-1-davidgow@google.com> <20210513193204.816681-9-davidgow@google.com>
+In-Reply-To: <20210513193204.816681-9-davidgow@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 15 Jun 2021 13:40:09 -0700
+Message-ID: <CAFd5g46n10ELbGYf8gR_uUT0kfxDDe4nFoGh-t64zzX747pnUA@mail.gmail.com>
+Subject: Re: [PATCH v2 09/10] apparmor: test: Remove some casts which are
+ no-longer required
+To:     David Gow <davidgow@google.com>
+Cc:     Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 08:51:18PM +0200, Marco Elver wrote:
-> On Tue, Jun 15, 2021 at 11:19AM -0700, Paul E. McKenney wrote:
-> [...]
-> > Queued and pushed for v5.15, thank you both!
-> > 
-> > I also queued the following patch making use of CONFIG_KCSAN_STRICT, and I
-> > figured that I should run it past you guys to make check my understanding.
-> > 
-> > Thoughts?
-> 
-> You still need CONFIG_KCSAN_INTERRUPT_WATCHER=y, but otherwise looks
-> good.
+On Thu, May 13, 2021 at 12:36 PM David Gow <davidgow@google.com> wrote:
+>
+> With some of the stricter type checking in KUnit's EXPECT macros
+> removed, several casts in policy_unpack_test are no longer required.
+>
+> Remove the unnecessary casts, making the conditions clearer.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
 
-I knew I was missing something...  :-/
-
-> I thought I'd leave that out for now, but now thinking about it, we
-> might as well imply interruptible watchers. If you agree, feel free to
-> queue the below patch ahead of yours.
-
-That works for me!  I have queued the patch below and rebased it to
-precede my change to the torture-test infrastructure.
-
-							Thanx, Paul
-
-> Thanks,
-> -- Marco
-> 
-> ------ >8 ------
-> 
-> From: Marco Elver <elver@google.com>
-> Date: Tue, 15 Jun 2021 20:39:38 +0200
-> Subject: [PATCH] kcsan: Make strict mode imply interruptible watchers
-> 
-> If CONFIG_KCSAN_STRICT=y, select CONFIG_KCSAN_INTERRUPT_WATCHER as well.
-> 
-> With interruptible watchers, we'll also report same-CPU data races; if
-> we requested strict mode, we might as well show these, too.
-> 
-> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
->  lib/Kconfig.kcsan | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
-> index 26f03c754d39..e0a93ffdef30 100644
-> --- a/lib/Kconfig.kcsan
-> +++ b/lib/Kconfig.kcsan
-> @@ -150,7 +150,8 @@ config KCSAN_SKIP_WATCH_RANDOMIZE
->  	  KCSAN_WATCH_SKIP.
->  
->  config KCSAN_INTERRUPT_WATCHER
-> -	bool "Interruptible watchers"
-> +	bool "Interruptible watchers" if !KCSAN_STRICT
-> +	default KCSAN_STRICT
->  	help
->  	  If enabled, a task that set up a watchpoint may be interrupted while
->  	  delayed. This option will allow KCSAN to detect races between
-> -- 
-> 2.32.0.272.g935e593368-goog
-> 
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
