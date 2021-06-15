@@ -2,104 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C1E3A8056
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6823A805A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhFONit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbhFONin (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:38:43 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00F9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:36:37 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so1829490pjn.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:36:37 -0700 (PDT)
+        id S230410AbhFONiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:38:55 -0400
+Received: from mail-eopbgr1310055.outbound.protection.outlook.com ([40.107.131.55]:26965
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231332AbhFONir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:38:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PePvpXt5FdgGEhDho8MIuJhOCYHJPkNiyr6HFABRkOBGlnwfzKD/XurSo7Mp+pWl8eM8l7IZ2a3sZdaoN8ES36eJGAmofoz0oZ1sBOW6qV+9iUWTg863LHGRoxMCs1wpsh7wLz5No0+KvS3LLnFW/3QtifCcMbpAgYPwbLrmE68rmmJne8SbG0LH+ZQv3LS/+add083N9c6GmiiaiC5SzJ0oOJ3YsPx5NxFVVz999+vJwB8CV7ggnkdC1ksUzArxS6RXxgDQ74IRrD5YmQxLRcilvRChqgrZlF2Jxe11Em24+p0QxwVveQwNJfYHo2puO492h0jcuDn6yrQsmeaOzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T8Wjs/E1MOr8TeAc0Pnv4x8Tp7pBB377exdISLaEf2g=;
+ b=Y1rqcM6oXN4rKLHBpMMgVWp5072L7UZeDrXtiX9VsaiyhqZz+kqAJqJF3cn1B8oZ/PpfHR4fu7jhoOnfn+eCK6MLNzrXTvbX9b85Du4t3DvCSeiTUkSRsOWD6cnh1pMMjomUqJYZm0MDdkybJMTAUt4udMBefhSMzl8zzscnc5KZmsIbhSR0dx6iQfBKuaHDsH0R1oMLgs078RtovNqxeldI8zhN/aLeMo4qAZy36J5lvngtxyUlUjFw8nUFDafoiFH1YVfMSuAMtXQxU6K0sjLvC04Pp8DMySfUy40e54aZn+DrfDXddpfvCEg4eJXDDx9UbOX65jhtJhiJUoSiZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cortina-access.com; dmarc=pass action=none
+ header.from=cortina-access.com; dkim=pass header.d=cortina-access.com;
+ arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=2AFaTBkHP+fiyETNPHNRLPn45kJUgrb2oh8W/22IFfs=;
-        b=j/Fy6ZBN6qlzdjiBWqbnW+wCteHKu76xMVJEp9DQJuJ4wxVO804Wowa5x5nM926niT
-         jzLo7zVMZjyVmFxxBMq5HJbe1b0tLcnoxPh2FvfUikIFgjUxRFfqakrlKjZIbuwEidJb
-         FEOOkOuQRbE0HD4gtObijKJoJbFrOOZWXL3f4TlKnl+Pg2nV4zoEhkOr1hilheNPFJDv
-         pyUHNRPAeW/aC9eNNPX7SIVkyjiXlPntsnKY22ZFN6V3NC4mwbpMBofU6f/2cUr/HtzF
-         ExFo/IINLEzP3geGlzIlztI9H1mRiw0kMhw+IXjV7JF8q0+B76PvCBLCQmFe02PLPBmw
-         jPCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=2AFaTBkHP+fiyETNPHNRLPn45kJUgrb2oh8W/22IFfs=;
-        b=Qw96TO+eN9oYivj4dvP1vL3Y58ipuykBcNgT/L8wjZth1t+AYNwEAuqTVcqeD0QyX9
-         +EqCBfwwzmT6Dyow+3L6eXV0O6u4LkXwZQaTh5LloeKCygdS9pMW2LzZ3pUkRXn/l+oV
-         /93lobtf6RqJW/eZdWJSZ3R72H+xt6qaINpvmgs37hKnbX06DcnejdJisDocfYafM5tW
-         Urh5WZ/ffxOwxDOj5yOMyY11bobg3kw4P6Ht/4VBoexBu2moXkM8jCXtrX9wbed0lnjQ
-         UOMf9+QJ66QokwKwqrV3CeW+MROK2jKqTyhjMRQoEbs6YOXKPYW3ZKcCRrJMOaAaiNF6
-         UbhA==
-X-Gm-Message-State: AOAM531JVkM+gFTXmKxT6S3IfXdxRqlDIuyicqYz7PiNCG12QSMj94eI
-        FjKoJ+PPTTj8rBYp3kPE1dMTSFzi/GriJA==
-X-Google-Smtp-Source: ABdhPJxp8DDUMiBk+vuKI7BcJTXV0dh80SYDop4A/rYDqRfQjL5KPUAWpbYg9LtSbmGcegKlzw9fmg==
-X-Received: by 2002:a17:90a:b795:: with SMTP id m21mr25231412pjr.143.1623764197158;
-        Tue, 15 Jun 2021 06:36:37 -0700 (PDT)
-Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id y2sm6668090pfa.195.2021.06.15.06.36.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 06:36:36 -0700 (PDT)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     pmladek@suse.com, senozhatsky@chromium.org, rostedt@goodmis.org,
-        john.ogness@linutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: Move EXPORT_SYMBOL() closer to vprintk definition
-References: <20210614235635.887365-1-punitagrawal@gmail.com>
-        <8c16059d-6e58-a3e4-25ef-7e2bcabecd86@rasmusvillemoes.dk>
-Date:   Tue, 15 Jun 2021 22:36:33 +0900
-In-Reply-To: <8c16059d-6e58-a3e4-25ef-7e2bcabecd86@rasmusvillemoes.dk> (Rasmus
-        Villemoes's message of "Tue, 15 Jun 2021 08:50:45 +0200")
-Message-ID: <87im2ftfku.fsf@stealth>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+ d=CortinaAccess.onmicrosoft.com; s=selector2-CortinaAccess-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T8Wjs/E1MOr8TeAc0Pnv4x8Tp7pBB377exdISLaEf2g=;
+ b=httOltSecBL4qMb/tfc2UWk3Q3uRKVKjsnxBo1lMuexEkzBp/Bid1dhX5iSERMNQdabnKbCZHWWr1QGHK4KG3Snho4w9BXNBCbT+qx5vuEIVCUXAH8Wpzh9pGQcCPN/vNTUih0tFyST9x1bPbPS2riTSOPq5uEtRpKSNR6/Fh14=
+Received: from PS2PR01MB2504.apcprd01.prod.exchangelabs.com
+ (2603:1096:300:3e::11) by PSAPR01MB3928.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:4c::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.25; Tue, 15 Jun
+ 2021 13:36:39 +0000
+Received: from PS2PR01MB2504.apcprd01.prod.exchangelabs.com
+ ([fe80::e9b5:6b16:ec29:6101]) by PS2PR01MB2504.apcprd01.prod.exchangelabs.com
+ ([fe80::e9b5:6b16:ec29:6101%2]) with mapi id 15.20.4195.032; Tue, 15 Jun 2021
+ 13:36:39 +0000
+From:   Alex Nemirovsky <Alex.Nemirovsky@cortina-access.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Jason Li <jason.li@cortina-access.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 2/3] dt-bindings: serial: Convert Cortina-Access UART
+ to json-schema
+Thread-Topic: [PATCH v4 2/3] dt-bindings: serial: Convert Cortina-Access UART
+ to json-schema
+Thread-Index: AQHXRQOEXSJdPocm00OQib3aojINxasVL/wAgAAc6oA=
+Date:   Tue, 15 Jun 2021 13:36:39 +0000
+Message-ID: <CFD14D63-4537-4A91-861C-71B74E2CFAE6@cortina-access.com>
+References: <20210509184519.15816-1-alex.nemirovsky@cortina-access.com>
+ <20210509184519.15816-2-alex.nemirovsky@cortina-access.com>
+ <YMiUpK/+PjsoCU1W@kroah.com>
+In-Reply-To: <YMiUpK/+PjsoCU1W@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=cortina-access.com;
+x-originating-ip: [70.58.207.205]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ca909abb-5768-4eeb-517f-08d930029ac1
+x-ms-traffictypediagnostic: PSAPR01MB3928:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PSAPR01MB39282E5F2892D5387AA14456CB309@PSAPR01MB3928.apcprd01.prod.exchangelabs.com>
+x-ld-processed: 0694623c-6669-497c-89c3-3a32a9934313,ExtAddr
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uQQnxOmliS9Qu6doPA54Z4+gMWj5ZuKF9HNY5fhX7qm78W4zeKbV8IgjWot1SZ0mzERUm/DnobE8PQZEo0/3IQrb0QTQkk980/VYDiO1MTaB8dgd16KlYNPnxnTMNGutbyS84xIUtMQ9wXVQiB+Be51qh7mYWDGXmHcJ56MqtY9zARwk/SAVeijfudJiXxGvwNZUVkSVlSaHvvmMQ3K1C0WtwLJL0/jJPMTyMtBrAp586afMPsTJb1mKuy8rQVmHCQFhh1iJ9k0xK7xpwgV5HiBbPfqSgmiDIZXVFs2NH4gJEip8UlnjPRF7UO2Q1NwmdbzrpjST6SgvyP4OykHtdZI91qE+6dLxSdmTOilktV5VrX3cK9jc8JQhbzsahj5Q6T2TpKYFe5nTBpv76ZE9ymPPF8+CIpc/DllrQoM+h8rm8gFR41W0SL7HqRUJypOWdXrlqSsv6vikU30F68Osqf0XJGahJ/YPhx9sy8C+l+4eLrCHXeMak0g8pHnCeayrk6kB0kLag/FfWP4eG9dhnDusJUINZy+EMcyrodkyStXcOn54sfSAmtNSFaSAG3uabsC/jUd8dycYlOVX+dIr4guZTqccNVBp4rjczBB710E=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS2PR01MB2504.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(76116006)(66446008)(64756008)(53546011)(66476007)(83380400001)(8676002)(36756003)(6506007)(54906003)(6486002)(26005)(38100700002)(6916009)(91956017)(498600001)(66556008)(2906002)(122000001)(86362001)(8936002)(186003)(4326008)(6512007)(2616005)(71200400001)(5660300002)(33656002)(4744005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?8gqsQKqdoFQjJwV2guFLTqoZwZWnTSGyzJBGHr7EdlKsd4djb0eDg0MSPCIp?=
+ =?us-ascii?Q?fo/uTsf9shatLJxQMwLcXdAnXJYsFiNV+AkVvfnG0T8peiiSGRKVxmITZkw6?=
+ =?us-ascii?Q?mVqou1OF8RglhZvwrlp+pLVNfg0ryyW+YnGLCHsVlIefZB/6kAU682WdVF9v?=
+ =?us-ascii?Q?+BiOja+QDwYclozodL0eZzPlsy7j04+gWlerOrM4YraDXtsqB0yUNW5tHI9T?=
+ =?us-ascii?Q?i7JqWSiBIVwds0XYIQt2A0UNa3hUuDnXgya7YlD0lWMxj54Yo2mAAdxK1vFU?=
+ =?us-ascii?Q?HsLYwQuZBqaWprIroNW9q6bpeaccI9lErCa7EFSL1wsjHL22xKsN4lyi5L0X?=
+ =?us-ascii?Q?niP/oEcqLkr1us+IpWLDYLc+c9Cegr0VuAS/qAggzixxygOgGzT4d48PQddJ?=
+ =?us-ascii?Q?bWW8X7kiXksRcYPAI9zf6iWoCXkElRA76xP1pMR/A2kt3SiVkZG+2lMhmRdH?=
+ =?us-ascii?Q?H/7BBG88U20Kc3aEiB8TmAB8KtLLZiGTgwznwXS+t7IosP21kFo8PZMG9amX?=
+ =?us-ascii?Q?sRQg/HkLNf5e0X3Hm/8yWr9QPdTSB4w/TivpvJU3mWVoK7SZcm9TqKmyNIKV?=
+ =?us-ascii?Q?mdRFKnoOSKUj8MBBcDj2XB1iFjRd6lDZ0rEDekTVHln4txTs/JT9BMno4B4G?=
+ =?us-ascii?Q?KQ9r2QLGZP3vtoyCwkNdlREhY7ajq20IDXvwRLvI+P26ho17e1rpDcHpACxi?=
+ =?us-ascii?Q?BueoAVGUMp9h9WVjgafUynOZd2ZzwKYh8tWDICXzOV5U6jkExYKqFJaEpj5l?=
+ =?us-ascii?Q?y+3jnG57doz1zVDS+yRz0FlPQ60bzs2AY1OXggcovjmX2WWWfcYqMqVB7gmR?=
+ =?us-ascii?Q?g8o6vvCZDLgAydJPikt76lJqpW1WzVIGKflFMWpP/jqQ6I+WNOJ+LrsuEBvB?=
+ =?us-ascii?Q?z0oxAnusJLo0aeLfKGgrXqMrs2o+BfZQ/+5K6L+55KHBIgY8QRA1jjsi+yu6?=
+ =?us-ascii?Q?4LPfgMHWSRu/MyqbTm8P9YNO+WoBG+kp6W3hLslqSx2zWGBByhdTW4NFI05v?=
+ =?us-ascii?Q?/EZMZZ9WJLEsG3trj3ChfLGAA6RfF7njyXsNcSnjZVqTeg1puikjnZOm6eOR?=
+ =?us-ascii?Q?eDRhyXC4scpu91iROpGOFeJwDs5QDyjfLnxN8kqgd89rsIVfDXViMOo3ZjZg?=
+ =?us-ascii?Q?+3CKeyc7YuwmjaN1Vw0Eepd14A8kJ2eVHIhrXGqAU88GAdAdOmb5VEwC9Jl5?=
+ =?us-ascii?Q?Npplprr627zXT4u5P/Htph1ZHMQNDvMIgoQ8B0ctBEg2ZdRNQDooW1tzY3lW?=
+ =?us-ascii?Q?zSitQY756KrPshM65q3dOym9UMtLV9XuSCDbU6K0yTu9Uq7awOZIaZ/KKIJ9?=
+ =?us-ascii?Q?4Nnupgysgziq4txVWw7CLdC6?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <A7CEF5F6AF38354F8CC648FA7C8215D8@apcprd01.prod.exchangelabs.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: CORTINA-ACCESS.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PS2PR01MB2504.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca909abb-5768-4eeb-517f-08d930029ac1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2021 13:36:39.2285
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0694623c-6669-497c-89c3-3a32a9934313
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3u+QnqZCJHzS8eHSFZ7RvWb4wrXoK2c1sQh0yDezG+S3yXCeX7Yc70CwrgQSVc+RpGQ4vCmaLngeS3anM/cDzhmCbbEY6cjAqY0cBGkr16UdVGykBB8pCBZNwGzrzzhh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR01MB3928
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rasmus,
+MAINTAINERS modification was made in the initial version 1.  We made no cha=
+nges to it since then,
+thus not sure what we could at to  Changelog which would add value or clari=
+ty for others
+from the v1.
 
-Rasmus Villemoes <linux@rasmusvillemoes.dk> writes:
+> On Jun 15, 2021, at 4:53 AM, Greg Kroah-Hartman <gregkh@linuxfoundation.o=
+rg> wrote:
+>=20
+> On Sun, May 09, 2021 at 11:45:17AM -0700, Alex Nemirovsky wrote:
+>> From: Jason Li <jason.li@cortina-access.com>
+>>=20
+>> Convert the Cortina-Access UART binding to DT schema format.
+>>=20
+>> Signed-off-by: Jason Li <jason.li@cortina-access.com>
+>> ---
+>> .../serial/cortina-access,serial.yaml         | 46 +++++++++++++++++++
+>> .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+>> MAINTAINERS                                   |  6 +++
+>=20
+> You are also adding a MAINTAINERS entry here, which is not listed in the
+> changelog text, so I couldn't take it anyway :(
+>=20
+> greg k-h
 
-> On 15/06/2021 01.56, Punit Agrawal wrote:
->> Commit 28e1745b9fa2 ("printk: rename vprintk_func to vprintk") while
->> improving readability by removing vprintk indirection, inadvertently
->> placed the EXPORT_SYMBOL() for the newly renamed function at the end
->> of the file.
->> 
->> For reader sanity, and as is convention move the EXPORT_SYMBOL()
->> declaration just after the end of the function.
->> 
->> Fixes: 28e1745b9fa2 ("printk: rename vprintk_func to vprintk")
->> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
->> --
->> Hi,
->> 
->> The out-of-place EXPORT_SYMBOL() caused an unexpected conflict while
->> attempting to rebase the RT patches onto newer kernels.
->> 
->> Generally I avoid sending trivial changes on their own but this one is
->> a little hard to overlook. Also it felt like an obvious oversight in
->> the original patch.
->
-> Yes, indeed, sorry about that, and thanks for fixing it.
->
->> Please consider merging.
->
-> Petr, as this is causing trouble for the -rt patchset, please consider
-> if this could make it to Linus before v5.13 release.
->
-> Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-
-Thanks for the quick response.
-
-Punit
