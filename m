@@ -2,216 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A403A764F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 07:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4AEC3A7658
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 07:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhFOFRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 01:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
+        id S230425AbhFOFSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 01:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhFOFRk (ORCPT
+        with ESMTP id S230405AbhFOFSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 01:17:40 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C0CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 22:15:36 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id o20so10331119qtr.8
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 22:15:36 -0700 (PDT)
+        Tue, 15 Jun 2021 01:18:23 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D612C0613A3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 22:16:18 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id 69so7832304plc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 22:16:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R0wAP9EOwe53ziCwYyTPzQod1ybR+EAoh8nvLC2RE/U=;
-        b=pyJzjUWHLEKplY05J/dGDBz62Lc4PMwKMUaIZMtL9LDPVwMQgadZl6Ew84ERUTqCkK
-         L3rIUagVLAKyKm99kmfxOJtY1iWAy4nq8ac2zt9sYSwWoK086GipVkVfZkoA2QS7q2PU
-         914/S4AUq1CFHUD7tgIXS9ugUZXrFo97MmixGNKzBJjWtQolgQCQx+AiiaKzq4GFKWKy
-         jgYCZuADfMBD/+RDBf9qoOqLy95Tf6x98N3Z/adzjuoJ2dV7WwUvXM2Kmr8MVEi1yFcV
-         x26fYXTQsxGeh/GC79wR+t+jE8bkKiVwx5c0me8gLsDgv7Y+Xq0xuyzYzCX5BkK9TbfV
-         /NPw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MF/9GnXqxvuZpa6ITiz3hC8SrxhwYLiu/agW3G5WgBY=;
+        b=sjZv+V7kIk0a7879L2xpzGWf8dhpSEDL+ygwsf10R4byp60E4h+FhJuiQb1i5PDVC7
+         tVST2s3orPfaYP4eWk2d3qoq8irlNmlwnkEke6k/G/Ky2nyVQMml4K4Z2Zroc3WqNkJu
+         QtfZaoOCvsAoKwp6nag4+sy8s6V6BammMpYkIjA55fdYPMX7RVZysXT9pyACQLQdrNX9
+         luFd4r465tBSQ+qjfEpgR1wYiwDYo8bwci1v8D1PF7gzpFF3qRjMu+SQq2VtmtiYlUpN
+         Rm71AIKWaiqMI2xBQyeFAuMUe/oHy2g11fgoGJB+jTKrG7UOmAVHMirKcJYo5Ugki78y
+         AjCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R0wAP9EOwe53ziCwYyTPzQod1ybR+EAoh8nvLC2RE/U=;
-        b=Q8lmnO85Bms6jJVCo3sEInCpfbUnU/FKUlcCbxdA0yi3rXvnVFJbbS9hw3OPLmow6Z
-         rB8UV54GiR5nS6TAq5e+2muBBNYhso6VlOsr7NhAhcSQdKEc99ulB1mJKUqmgaO2r8gp
-         vtlvsvLbiBNSjfEVq8PhdnAVN2RE7AfXqbgkirh1lPiWxTg0deC+12K7egRJOwEQV9sq
-         c9x45+fRu3+qee/Mg9GRdzTp9RAWZTf6yfprcc+ngwkDRvUy9zlDyWD9MVBvWrDE90I2
-         hLRbk7cEPnkob4wdvj5LMHRooZa5Y8YQdA+E93bv/OELa3ZA8e2T3brAlQr5OPnGUci8
-         K2Jg==
-X-Gm-Message-State: AOAM530Vp7Nbq28P0GobgBhcfgNesiA11WfOl79XaJ0G12PC1ll0DkGm
-        VuMwd3kvpCW1ETliV6+2aIEaMiS+kcshrTKutwCyesbigd1ZQA==
-X-Google-Smtp-Source: ABdhPJyVp5fM6tkAzUnPPlLhc3CK5IVsP8w1kRWIvqxqM1LK2gcvuvzu58pgFfNGUkXfSRlqPbIV0KYnUTd4dIoBl5U=
-X-Received: by 2002:ac8:5949:: with SMTP id 9mr2405020qtz.67.1623734135120;
- Mon, 14 Jun 2021 22:15:35 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MF/9GnXqxvuZpa6ITiz3hC8SrxhwYLiu/agW3G5WgBY=;
+        b=RdF6NFqfu4AYR+CKAzJojd33LP04ZYJbv1ddIwbUFwDHpRFl7AZYqgkQdKdjNhPI42
+         6t0MLNPMtrh//IoTK5ibjzfBYWQfk6ArurizZYByG1Ou2GoqVxrT0sdg0dP8KytYIN1j
+         bElqtZ1HezdlHJH0u3nkqZjYWlsGztwt3R0SRFvMxztJRLV1YfkstoPZoSpKReXr/KA7
+         5FEog3kF8BQUpPzw95E8UHHjXumpcf09Cxivqq3gYgmBflb0OuOeFLLp1PhZreWf1PhK
+         SBVtxPEOuAliCLMWorL8UlMxXcJcqaxTyL/9OMS0xMx3dJo9CArH21rp1X6jWZKXVIOi
+         P9/w==
+X-Gm-Message-State: AOAM531Uh6t8tc5QT+BbDcnIyWOmvcH27XF2Q6ww5FawWEHOQI6EMJdi
+        8fbKaQIYifGWDWnCHuTaFP4Ing==
+X-Google-Smtp-Source: ABdhPJwkqPSy21YHAlu9KXouDIGVIWiNd+lplxfQA1z0yDh03lzNgcNVye1XHseNyBqlgDKyYlw5Sg==
+X-Received: by 2002:a17:902:aa04:b029:ec:f779:3a2b with SMTP id be4-20020a170902aa04b02900ecf7793a2bmr2674218plb.44.1623734178006;
+        Mon, 14 Jun 2021 22:16:18 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id a66sm14765359pfb.162.2021.06.14.22.16.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 22:16:17 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 10:46:15 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 3/5] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support
+Message-ID: <20210615051615.kiec62zmxomomv2l@vireshk-i7>
+References: <20210608222926.2707768-1-thara.gopinath@linaro.org>
+ <20210608222926.2707768-4-thara.gopinath@linaro.org>
+ <20210614103141.nnrd4sn756os52wh@vireshk-i7>
+ <5a8f1622-4964-a8e1-f8a1-1dbd38948d45@linaro.org>
 MIME-Version: 1.0
-References: <YMe8ktUsdtwFKHuF@nuc10>
-In-Reply-To: <YMe8ktUsdtwFKHuF@nuc10>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 15 Jun 2021 07:15:24 +0200
-Message-ID: <CACT4Y+ZjSbioNS8oPwUcyOrLhB6-Sf-WZmadAoAm0H-JYRLo1g@mail.gmail.com>
-Subject: Re: kmemleak memory scanning
-To:     Rustam Kovhaev <rkovhaev@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5a8f1622-4964-a8e1-f8a1-1dbd38948d45@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 10:31 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
->
-> hello Catalin, Andrew!
->
-> while troubleshooting a false positive syzbot kmemleak report i have
-> noticed an interesting behavior in kmemleak and i wonder whether it is
-> behavior by design and should be documented, or maybe something to
-> improve.
-> apologies if some of the questions do not make sense, i am still going
-> through kmemleak code..
->
-> a) kmemleak scans struct page (kmemleak.c:1462), but it does not scan
-> the actual contents (page_address(page)) of the page.
-> if we allocate an object with kmalloc(), then allocate page with
-> alloc_page(), and if we put kmalloc pointer somewhere inside that page,
-> kmemleak will report kmalloc pointer as a false positive.
-> should we improve kmemleak and make it scan page contents?
-> or will this bring too many false negatives?
+On 14-06-21, 21:58, Thara Gopinath wrote:
+> On 6/14/21 6:31 AM, Viresh Kumar wrote:
+> > On 08-06-21, 18:29, Thara Gopinath wrote:
+> > > +static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
+> > > +{
+> > > +	struct cpufreq_policy policy;
+> > > +	struct dev_pm_opp *opp;
+> > > +	struct device *dev;
+> > > +	unsigned long max_capacity, capacity, freq_hz;
+> > > +	unsigned int val, freq;
+> > > +
+> > > +	val = readl_relaxed(data->base + data->soc_data->reg_current_vote);
+> > > +	freq = qcom_lmh_vote_to_freq(val);
+> > > +	freq_hz = freq * HZ_PER_KHZ;
+> > > +
+> > > +	/* Do I need to calculate ceil and floor ? */
+> > 
+> > You don't know ?
+> 
+> stray comment! Will remove it.
+> 
+> > 
+> > > +	dev = get_cpu_device(cpumask_first(data->cpus));
+> > > +	opp = dev_pm_opp_find_freq_floor(dev, &freq_hz);
+> > > +	if (IS_ERR(opp) && PTR_ERR(opp) == -ERANGE)
+> > > +		opp = dev_pm_opp_find_freq_ceil(dev, &freq_hz);
+> > > +
+> > > +	data->throttled_freq = freq_hz / HZ_PER_KHZ;
+> > > +
+> > 
+> > What exactly are we trying to do here ? A comment would be good as
+> > well.
+> 
+> You want me to put a comment saying converting frequency in hz to khz ?
 
-Hi Rustam,
+Not that, but for the entire routine. What exactly are we looking to
+do here and why?
 
-Nice debugging!
-I assume lots of pages are allocated for slab and we don't want to
-scan the whole page if only a few slab objects are alive on the page.
-However alloc_pages() can be called by end kernel code as well.
-I grepped for any kmemleak annotations around existing calls to
-alloc_pages, but did not find any...
-Does it require an explicit kmemleak_alloc() after allocating the page
-and kmemleak_free () before freeing the page?
-If there are more than one use case for this, I guess we could add
-some GFP flag for this maybe.
+> > 
+> > > +	cpufreq_get_policy(&policy, cpumask_first(data->cpus));
+> > > +
+> > > +	/* Update thermal pressure */
+> > > +	max_capacity = arch_scale_cpu_capacity(cpumask_first(data->cpus));
+> > 
+> > Set capacity of a single CPU from a policy ?
+> 
+> Get maximum capacity of a cpu.
 
+Ahh, I thought you are setting it :(
 
+> > 
+> > > +	capacity = data->throttled_freq * max_capacity;
+> > > +	capacity /= policy.cpuinfo.max_freq;
+> > > +	/* Don't pass boost capacity to scheduler */
+> > > +	if (capacity > max_capacity)
+> > > +		capacity = max_capacity;
+> > > +	arch_set_thermal_pressure(data->cpus, max_capacity - capacity);
+> > 
+> > You should really be using policy->cpus instead of allocating
+> > data->cpus..
+> 
+> Yes I should be. But I still need data->cpus to get the policy.
 
+From the comment which comes later on, you shall get the policy here
+anyway.
+ 
+> > > +}
+> > > +
+> > > +static void qcom_lmh_dcvs_poll(struct work_struct *work)
+> > > +{
+> > > +	struct qcom_cpufreq_data *data;
+> > > +
+> > > +	data = container_of(work, struct qcom_cpufreq_data, lmh_dcvs_poll_work.work);
+> > > +
+> > > +	qcom_lmh_dcvs_notify(data);
+> > 
+> > You should really move the below stuff the disable_irq_nosync(), it
+> > will make your life easier.
 
+Damn, s/disable_irq_nosync/qcom_lmh_dcvs_notify/
 
-> b) when kmemleak object gets created (kmemleak.c:598) it gets checksum
-> of 0, by the time user requests kmemleak "scan" via debugfs the pointer
-> will be most likely changed to some value by the kernel and during
-> first scan kmemleak won't report the object as orphan even if it did not
-> find any reference to it, because it will execute update_checksum() and
-> after that will proceed to updating object->count (kmemleak.c:1502).
-> and so the user will have to initiate a second "scan" via debugfs and
-> only then kmemleak will produce the report.
-> should we document this?
->
-> below i am attaching a simplified reproducer for the false positive
-> kmemleak report (a).
-> i could have done it in the module, but i found it to be easier and
-> faster to test when done in a syscall, so that i did not have to
-> modprobe/modprobe -r.
->
-> tyvm!
->
-> ---
->  arch/x86/entry/syscalls/syscall_64.tbl |  1 +
->  include/linux/syscalls.h               |  1 +
->  mm/Makefile                            |  2 +-
->  mm/kmemleak_test.c                     | 45 ++++++++++++++++++++++++++
->  4 files changed, 48 insertions(+), 1 deletion(-)
->  create mode 100644 mm/kmemleak_test.c
->
-> diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-> index ce18119ea0d0..da967a87eb78 100644
-> --- a/arch/x86/entry/syscalls/syscall_64.tbl
-> +++ b/arch/x86/entry/syscalls/syscall_64.tbl
-> @@ -343,6 +343,7 @@
->  332    common  statx                   sys_statx
->  333    common  io_pgetevents           sys_io_pgetevents
->  334    common  rseq                    sys_rseq
-> +335    common  kmemleak_test           sys_kmemleak_test
->  # don't use numbers 387 through 423, add new calls after the last
->  # 'common' entry
->  424    common  pidfd_send_signal       sys_pidfd_send_signal
-> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-> index 050511e8f1f8..0602308aabf4 100644
-> --- a/include/linux/syscalls.h
-> +++ b/include/linux/syscalls.h
-> @@ -1029,6 +1029,7 @@ asmlinkage long sys_statx(int dfd, const char __user *path, unsigned flags,
->                           unsigned mask, struct statx __user *buffer);
->  asmlinkage long sys_rseq(struct rseq __user *rseq, uint32_t rseq_len,
->                          int flags, uint32_t sig);
-> +asmlinkage long sys_kmemleak_test()
->  asmlinkage long sys_open_tree(int dfd, const char __user *path, unsigned flags);
->  asmlinkage long sys_move_mount(int from_dfd, const char __user *from_path,
->                                int to_dfd, const char __user *to_path,
-> diff --git a/mm/Makefile b/mm/Makefile
-> index bf71e295e9f6..878783838fa1 100644
-> --- a/mm/Makefile
-> +++ b/mm/Makefile
-> @@ -97,7 +97,7 @@ obj-$(CONFIG_CGROUP_HUGETLB) += hugetlb_cgroup.o
->  obj-$(CONFIG_GUP_TEST) += gup_test.o
->  obj-$(CONFIG_MEMORY_FAILURE) += memory-failure.o
->  obj-$(CONFIG_HWPOISON_INJECT) += hwpoison-inject.o
-> -obj-$(CONFIG_DEBUG_KMEMLEAK) += kmemleak.o
-> +obj-$(CONFIG_DEBUG_KMEMLEAK) += kmemleak.o kmemleak_test.o
->  obj-$(CONFIG_DEBUG_RODATA_TEST) += rodata_test.o
->  obj-$(CONFIG_DEBUG_VM_PGTABLE) += debug_vm_pgtable.o
->  obj-$(CONFIG_PAGE_OWNER) += page_owner.o
-> diff --git a/mm/kmemleak_test.c b/mm/kmemleak_test.c
-> new file mode 100644
-> index 000000000000..828246e20b7f
-> --- /dev/null
-> +++ b/mm/kmemleak_test.c
-> @@ -0,0 +1,45 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +
-> +#include <linux/sched.h>
-> +#include <linux/syscalls.h>
-> +#include <linux/types.h>
-> +#include <linux/mm.h>
-> +
-> +struct kmemleak_check {
-> +       unsigned long canary;
-> +       struct work_struct work;
-> +       struct page **pages;
-> +};
-> +
-> +static void work_func(struct work_struct *work)
-> +{
-> +       struct page **pages;
-> +       struct kmemleak_check *ptr;
-> +
-> +       set_current_state(TASK_INTERRUPTIBLE);
-> +       schedule_timeout(3600*HZ);
-> +
-> +       ptr = container_of(work, struct kmemleak_check, work);
-> +       pages = ptr->pages;
-> +       __free_page(pages[0]);
-> +       kvfree(pages);
-> +}
-> +
-> +SYSCALL_DEFINE0(kmemleak_test)
-> +{
-> +       struct page **pages, *page;
-> +       struct kmemleak_check *ptr;
-> +
-> +       pages = kzalloc(sizeof(*pages), GFP_KERNEL);
-> +       page = alloc_page(GFP_KERNEL);
-> +       pages[0] = page;
-> +       ptr = page_address(page);
-> +       ptr->canary = 0x00FF00FF00FF00FF;
-> +       ptr->pages = pages;
-> +       pr_info("DEBUG: pages %px page %px ptr %px\n", pages, page, ptr);
-> +
-> +       INIT_WORK(&ptr->work, work_func);
-> +       schedule_work(&ptr->work);
-> +
-> +       return 0;
-> +}
-> --
-> 2.30.2
->
+> I don't understand your comment here. I want to disable irq. call notify.
+> Start polling. And in polling I want to call notify and if the thermal event
+> has passed stop polling else continue polling.
+
+Yeah, I messed up in the comment. I was asking to move the enable-irq
+and mod_delayed_work to qcom_lmh_dcvs_notify() itself.
+
+> > > +	/**
+> > > +	 * If h/w throttled frequency is higher than what cpufreq has requested for, stop
+> > > +	 * polling and switch back to interrupt mechanism
+> > > +	 */
+> > > +	if (data->throttled_freq >= qcom_cpufreq_hw_get(cpumask_first(data->cpus)))
+> > > +		/* Clear the existing interrupts and enable it back */
+> > > +		enable_irq(data->lmh_dcvs_irq);
+> > > +	else
+> > > +		mod_delayed_work(system_highpri_wq, &data->lmh_dcvs_poll_work,
+> > > +				 msecs_to_jiffies(10));
+> > > +}
+> > > +
+> > > +static irqreturn_t qcom_lmh_dcvs_handle_irq(int irq, void *data)
+> > > +{
+> > > +	struct qcom_cpufreq_data *c_data = data;
+> > > +
+> > > +	/* Disable interrupt and enable polling */
+> > > +	disable_irq_nosync(c_data->lmh_dcvs_irq);
+> > > +	qcom_lmh_dcvs_notify(c_data);
+> > > +	mod_delayed_work(system_highpri_wq, &c_data->lmh_dcvs_poll_work, msecs_to_jiffies(10));
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > >   static const struct qcom_cpufreq_soc_data qcom_soc_data = {
+> > >   	.reg_enable = 0x0,
+> > >   	.reg_freq_lut = 0x110,
+> > >   	.reg_volt_lut = 0x114,
+> > > +	.reg_current_vote = 0x704,
+> > 
+> > Should this be a different patch ?
+> 
+> Why ? This is the register to read the throttled frequency.
+
+Okay, it looked this is separate. Leave it.
+
+> > > +		ret = devm_request_irq(dev, data->lmh_dcvs_irq, qcom_lmh_dcvs_handle_irq,
+> > > +				       0, "dcvsh-irq", data);
+> > 
+> > I would rather pass policy as data here.
+> 
+> So policy for a cpu can change runtime, right ?
+
+No, it is allocated just once.
+
+-- 
+viresh
