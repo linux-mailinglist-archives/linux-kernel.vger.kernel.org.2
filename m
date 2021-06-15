@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685463A876D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F04F3A876F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhFORWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:22:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229494AbhFORWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:22:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3D30610A3;
-        Tue, 15 Jun 2021 17:20:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623777602;
-        bh=xfpYdTiFtO6fupidTDpKVikPPyV2ma0JS7KlyV5pg6o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CIeWhp6tD03WqalHtlwknpiyM2Z5gPTxDisxzhoCPCztpaexvsR+KnJhA/2OzpLp6
-         XFtHaQbtxPFVxrwIkBpFUDS8YH6QLJ9kt6Q6/9RjyvZsya9B91S605Vijojg1l21Zl
-         XhySo+nF+3l6PUh5f3IbllxwDQeCXUhSixPOa/7E=
-Date:   Tue, 15 Jun 2021 19:19:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] iomap: Use __set_page_dirty_nobuffers
-Message-ID: <YMjhP+Bk5PY5yqm7@kroah.com>
-References: <20210615162342.1669332-1-willy@infradead.org>
- <20210615162342.1669332-4-willy@infradead.org>
+        id S230187AbhFORWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:22:38 -0400
+Received: from mail-il1-f173.google.com ([209.85.166.173]:42817 "EHLO
+        mail-il1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229494AbhFORWf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 13:22:35 -0400
+Received: by mail-il1-f173.google.com with SMTP id h3so15969116ilc.9;
+        Tue, 15 Jun 2021 10:20:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Az/0fozoY6b7RLZTi5Hm+i0pDrgxovZi8IAn2kV+mrc=;
+        b=izLxy3RYEeI64sV1IvUiZUfON9g80Y+5hxzDbeAi+pghoyQDQ6WI5PudLsgFBcz2ED
+         cMKF+/9Z0mxfp/69QlP7OZTMChz8JOAZXplkVD4FxrDD1Np7TyzgMyWndFrRNo6CUC+r
+         U/wmTUYIf5GB36pb6dMqJ7AyR+QXADY54lYfh1qpzcTkk512RcjUx6Ah/GFIu1qUHRgH
+         C7we33bYpgHUD/fl6cuQamQsDx36Od5fPWoPhd1G/9Rno7cJjHTMzYNvO5I2ivsiV3ts
+         yNMJEwZPcdbWLHukrWOMCvsUj8BgrL8O+cxaocOs7wsqS5ckeI5+snD7mAL5Eb2RK4Lj
+         R0+Q==
+X-Gm-Message-State: AOAM5327/gK4QWGKXQojAU2cT5vwRo7ssSSBYmK83wjZd3Rah2o9vXEP
+        DKD5++NZeFdxv2wPzNh7v9FCPVAIaA==
+X-Google-Smtp-Source: ABdhPJzwWLRquhqTkFno9O36gYQT7R6u6UI+7WWzQbtuZguRVivlUj9UTrTFrfLyeVs0smDCgLpx+A==
+X-Received: by 2002:a05:6e02:1d1c:: with SMTP id i28mr421242ila.13.1623777627685;
+        Tue, 15 Jun 2021 10:20:27 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.248])
+        by smtp.googlemail.com with ESMTPSA id z8sm10540503ilq.30.2021.06.15.10.20.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 10:20:26 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH] dt-bindings: spmi: Correct 'reg' schema
+Date:   Tue, 15 Jun 2021 11:20:24 -0600
+Message-Id: <20210615172024.856360-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615162342.1669332-4-willy@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 05:23:39PM +0100, Matthew Wilcox (Oracle) wrote:
-> The only difference between iomap_set_page_dirty() and
-> __set_page_dirty_nobuffers() is that the latter includes a debugging
-> check that a !Uptodate page has private data.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/gfs2/aops.c         |  2 +-
->  fs/iomap/buffered-io.c | 27 +--------------------------
->  fs/xfs/xfs_aops.c      |  2 +-
->  fs/zonefs/super.c      |  2 +-
->  include/linux/iomap.h  |  1 -
->  5 files changed, 4 insertions(+), 30 deletions(-)
-> 
-> diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
-> index 50dd1771d00c..746b78c3a91d 100644
-> --- a/fs/gfs2/aops.c
-> +++ b/fs/gfs2/aops.c
-> @@ -784,7 +784,7 @@ static const struct address_space_operations gfs2_aops = {
->  	.writepages = gfs2_writepages,
->  	.readpage = gfs2_readpage,
->  	.readahead = gfs2_readahead,
-> -	.set_page_dirty = iomap_set_page_dirty,
-> +	.set_page_dirty = __set_page_dirty_nobuffers,
+'reg' is defined to be N address entries of M cells each. For SPMI, N is 1
+and M is 1 or 2. The schema fails to define the number of entries as it
+only specifies the inner cell(s). To fix, add an outer items list with 1
+entry.
 
-Using __ functions in structures in different modules feels odd to me.
-Why not just have iomap_set_page_dirty be a #define to this function now
-if you want to do this?
+Cc: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/spmi/spmi.yaml | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-Or take the __ off of the function name?
+diff --git a/Documentation/devicetree/bindings/spmi/spmi.yaml b/Documentation/devicetree/bindings/spmi/spmi.yaml
+index 173940930719..1d243faef2f8 100644
+--- a/Documentation/devicetree/bindings/spmi/spmi.yaml
++++ b/Documentation/devicetree/bindings/spmi/spmi.yaml
+@@ -40,14 +40,15 @@ patternProperties:
+ 
+     properties:
+       reg:
+-        minItems: 1
+-        maxItems: 2
+         items:
+-          - minimum: 0
+-            maximum: 0xf
+-          - enum: [ 0 ]
+-            description: |
+-              0 means user ID address. 1 is reserved for group ID address.
++          - minItems: 1
++            items:
++              - minimum: 0
++                maximum: 0xf
++              - enum: [ 0 ]
++                description:
++                  0 means user ID address. 1 is reserved for group ID
++                  address.
+ 
+     required:
+       - reg
+-- 
+2.27.0
 
-Anyway, logic here is fine, but feels odd.
-
-greg k-h
