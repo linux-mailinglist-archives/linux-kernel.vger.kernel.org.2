@@ -2,57 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A833A840B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7443A840F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbhFOPfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:35:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39770 "EHLO mail.kernel.org"
+        id S231538AbhFOPgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:36:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230076AbhFOPfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:35:19 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A94D761603;
-        Tue, 15 Jun 2021 15:33:14 +0000 (UTC)
-Date:   Tue, 15 Jun 2021 11:33:12 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc:     Song Hui <hui.song_1@nxp.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-rt-users@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Esben Haabendal <esben@geanix.com>
-Subject: Re: commit 3d5bfbd97163 versus -rt
-Message-ID: <20210615113312.0dad32bb@oasis.local.home>
-In-Reply-To: <5afbc89e-dbc4-3f47-4e61-63a77165aaec@prevas.dk>
-References: <5afbc89e-dbc4-3f47-4e61-63a77165aaec@prevas.dk>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230462AbhFOPgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:36:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6686A61628;
+        Tue, 15 Jun 2021 15:34:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623771283;
+        bh=d14cFwvkQ17tOfAPl+ebV2HVKfhjCmFSqPChii5qe7M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SKu14XdOOA47tRQMguyFzEJ3OzKkBC+Ps8qbRQBDaruZIC0Ou72N6yruCm1fpFrou
+         J1nK78JAgG/ubli/RssrL3mRRUyTNNtvRvjhDtMu0/ftpfTIs5n7FJ5aUIMDga6TuH
+         ntEnrmYrLTAxn/mqcgEscurp5uq+bscNrGodhTjb0TYxsjMUzmmCLJwrygrRi9Sv3t
+         THQlw0O89PfAUNGXBG2gHqqEI1CT+dnVXqe0H8uaEOlh54IKT6VGHQ8YcdVDPCakT6
+         C+XgzmSXrq5RCqPgevB0RABJFVo1cfJUssMPnG5F14W9tk3y92PqWmG7dO45wxGkVI
+         0I+E2A26Jv3PQ==
+Date:   Tue, 15 Jun 2021 16:34:24 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     =?utf-8?B?Y3lfaHVhbmco6buD5ZWf5Y6fKQ==?= <cy_huang@richtek.com>
+Cc:     "axel.lin@ingics.com" <axel.lin@ingics.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] regulator: rt6160: Remove vsel_active_low from struct
+ rt6160_priv
+Message-ID: <20210615153424.GJ5149@sirena.org.uk>
+References: <20210615103947.3387994-1-axel.lin@ingics.com>
+ <162376572819.36399.17993990572863185568.b4-ty@kernel.org>
+ <1623770667.4571.4.camel@richtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="F4+N/OgRSdC8YnqX"
+Content-Disposition: inline
+In-Reply-To: <1623770667.4571.4.camel@richtek.com>
+X-Cookie: See store for details.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 14:35:27 +0200
-Rasmus Villemoes <rasmus.villemoes@prevas.dk> wrote:
 
-> Reverting commit 3d5bfbd9716318b1ca5c38488aa69f64d38a9aa5 (gpio:
-> mpc8xxx: change the gpio interrupt flags.) makes it go away, as does
-> disabling CONFIG_PREEMPT_RT or simply booting a vanilla v5.10.42 (where
-> that option exists but cannot be selected).
+--F4+N/OgRSdC8YnqX
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm curious if it will also trigger on vanilla v5.10.42 but add to the
-kernel command line: threadirqs
+On Tue, Jun 15, 2021 at 03:24:27PM +0000, cy_huang(=E9=BB=83=E5=95=9F=E5=8E=
+=9F) wrote:
 
-Make sure you have CONFIG_IRQ_FORCED_THREADING set too.
+> No, you may misunderstand it.
+> If vsel active is high, the normal voltage output register is vselh regis=
+ter,
+> and the suspend voltage is vsell register. Else, reverse.
+>=20
+> Axel's change will cause the normal/suspend voltage be configured for the=
+ same
+> register. It's not for our reference usage.
 
-Because it appears to be an issue with that being called by the generic
-threaded irq infrastructure, which PREEMPT_RT enables automatically.
+OK, can you please send a patch fixing this and explaining what the
+problem was?
 
+--F4+N/OgRSdC8YnqX
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- Steve
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDIyH8ACgkQJNaLcl1U
+h9B6ugf+JGEBnLVQDW5JP5tJ7NZ6H8b6MBADE/YCQuMdtWIwnp6tul0W9OO5wTzd
+rvUWTg45gq5UJxFTPBVx5TsWDQexKhNq91q24cg6XNLXCHqih8qoywi09BX8q9R4
+Lu/MQCp10q9lgjnrprpDoPo/6lZCwKU38Yjf5poWPtYIcIWMkuOb1S/Rv4RAMESV
+K4gdxt54rdBp6LbKikWbtB4n7+lpX6yJp8Y3YAYTr+5EChGWP2E1+n551Nv2y1Qe
+OZs0j/E2Bb/bSshzYY0Xas1gIUS6Rp39xU1JbTPkFwamgUl4sUgXvk1h/8pJWzLE
+R/2GYzjUMxjTxk0CD/QmSeIIME3eOQ==
+=o3JP
+-----END PGP SIGNATURE-----
+
+--F4+N/OgRSdC8YnqX--
