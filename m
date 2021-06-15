@@ -2,65 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925DD3A7329
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 03:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222253A732E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 03:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhFOBET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 21:04:19 -0400
-Received: from mga03.intel.com ([134.134.136.65]:40922 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhFOBEQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 21:04:16 -0400
-IronPort-SDR: H9o49PTXy+TOPo+ZDC7IuD7tO3tY3axPNoe+IuJ2n7xwgOcqKdY2q1Bd8vsaFDLeQQ/wBC/ux4
- 1DIgANq3pm3Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="205935439"
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="205935439"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 18:02:12 -0700
-IronPort-SDR: gWi7wELD4hY5fAHK+hnPQekxydcF9nDneMIhodwwa0wRFN7WS0spoq3aGwtgIwjQbssuLqsspz
- hQ7Z24Be5MIw==
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="450063862"
-Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 18:02:09 -0700
-Date:   Tue, 15 Jun 2021 09:02:07 +0800
-From:   kernel test robot <rong.a.chen@intel.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [tip:tmp.tmp2 42/364] arch/x86/include/asm/processor.h:
- linux/sched/thread.h is included more than once.
-Message-ID: <20210615010206.GE237458@shao2-debian>
+        id S230084AbhFOBEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 21:04:54 -0400
+Received: from relay01.th.seeweb.it ([5.144.164.162]:57035 "EHLO
+        relay01.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhFOBEw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 21:04:52 -0400
+Received: from [192.168.1.101] (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 0BDDA1F960;
+        Tue, 15 Jun 2021 03:02:46 +0200 (CEST)
+Subject: Re: [PATCH v4] arm64: dts: qcom: sc7280: Add venus DT node
+To:     Dikshita Agarwal <dikshita@codeaurora.org>, david.brown@linaro.org,
+        robh+dt@kernel.org, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org
+References: <1623650391-28144-1-git-send-email-dikshita@codeaurora.org>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <f78c3873-37aa-c744-6ebd-6595b9f0fbaa@somainline.org>
+Date:   Tue, 15 Jun 2021 03:02:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <1623650391-28144-1-git-send-email-dikshita@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tmp.tmp2
-head:   adcceb5eb7aee38e4a9c15bdf599655f0e1b1324
-commit: 0e04b3ebeb185beeb77ebc6f70f6a5eef9ecdb3d [42/364] sched/headers: Convert task_struct::thread to a per_task() field
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Hi,
 
 
-includecheck warnings: (new ones prefixed by >>)
->> arch/x86/include/asm/processor.h: linux/sched/thread.h is included more than once.
+> @@ -850,6 +855,76 @@
+>  			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
+>  		};
+>  
+> +		venus: video-codec@0aa00000 {
 
-Please review and possibly fold the followup patch.
+Please remove the leading 0 after the "@" sign
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+
+> +			compatible = "qcom,sc7280-venus";
+> +			reg = <0 0x0aa00000 0 0xd0600>;
+> +			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
+> +				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
+> +				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
+> +				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
+> +				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
+> +			clock-names = "core", "bus", "iface",
+> +				      "vcodec_core", "vcodec_bus";
+> +
+> +			power-domains = <&videocc MVSC_GDSC>,
+> +					<&videocc MVS0_GDSC>;
+> +					<&rpmhpd SC7280_CX>;
+> +			power-domain-names = "venus", "vcodec0", "cx";
+
+Unless there was a newer revision of [1], the cx pd will most likely
+
+be unused due to it not being specified under opp_pmdomain.
+
+
+
+> +			operating-points-v2 = <&venus_opp_table>;
+> +
+> +			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
+> +					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
+> +			interconnect-names = "cpu-cfg", "video-mem";
+> +
+> +			iommus = <&apps_smmu 0x2180 0x20>,
+> +				 <&apps_smmu 0x2184 0x20>;
+> +			memory-region = <&video_mem>;
+> +
+> +			video-decoder {
+> +				compatible = "venus-decoder";
+> +			};
+> +
+> +			video-encoder {
+> +				compatible = "venus-encoder";
+> +			};
+> +
+> +			video-firmware {
+> +				iommus = <&apps_smmu 0x21a2 0x0>;
+> +			};
+> +
+> +			venus_opp_table: venus-opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				opp-133330000 {
+> +					opp-hz = /bits/ 64 <133330000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +				};
+> +
+> +				opp-240000000 {
+> +					opp-hz = /bits/ 64 <240000000>;
+> +					required-opps = <&rpmhpd_opp_svs>;
+> +				};
+> +
+> +				opp-335000000 {
+> +					opp-hz = /bits/ 64 <335000000>;
+> +					required-opps = <&rpmhpd_opp_svs_l1>;
+> +				};
+> +
+> +				opp-424000000 {
+> +					opp-hz = /bits/ 64 <424000000>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +				};
+> +
+> +				opp-460000000 {
+> +					opp-hz = /bits/ 64 <460000000>;
+> +					required-opps = <&rpmhpd_opp_turbo>;
+> +				};
+> +			};
+> +
+> +		};
+>
+>
+Is there a downstream kernel source available for sc7280 to compare against?
+
+I don't see it in sm8350 releases and it's hard to tell out of thin air what values
+
+should be in there.. Unless qcom decides to share some documentation ;)
+
+
+Besides that, I don't see the driver part being merged neither in linux-next, nor media-next but I may be looking at the wrong tree.
+
+
+[1] https://lkml.org/lkml/2021/5/19/364
+
+
+Konrad
+
