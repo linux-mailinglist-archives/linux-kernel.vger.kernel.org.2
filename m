@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7C93A8B26
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7843A8B2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhFOVfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:35:30 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36164 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhFOVf3 (ORCPT
+        id S230238AbhFOViQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhFOViP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:35:29 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623792803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AdxnA8Skq8VjRrrCsfx8g/tR/LgI4RM8IniA+FYR8z0=;
-        b=Ir3emsOWCdf0ZxOb90hwf94lq9e7eF/XTcV05u6spmRLGSwXc3QGGtjOmfG7rjqcs0L9qc
-        AyT9OzzXe5SJE4DB6Wy0ZYyu/bQGHgyiBDHrCuq/HReAmCjszOZ9/cVrrOqY3CcgB3T2Vt
-        Ra4PdIMZIYOGGI98irsQ+PflFN8jM3SPrqdiMC7LfnGkWyR86tu3fG08ZgmyX2x9JSg3NO
-        BY5PXyI3PaE/YoNNXoJu3Yg06xQvEA+7KEZsvJw304eVT8CJEaiUTwdpZK8Uwy2Xf/UZJJ
-        zU6+CTy2bxZms42EzgOEcswIqZgnrHh3XOQQK+/phf2vp0EHOhoAZhxJoZU74Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623792803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AdxnA8Skq8VjRrrCsfx8g/tR/LgI4RM8IniA+FYR8z0=;
-        b=zIvhq3oegviT8Sc8mMGNwW2VHg2/ekAvBi4TuJaReWhhxqVjE9EwL4xVTaCjFiklRz6Wal
-        eShPFV5MZWPXngCA==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH next v3 1/2] dump_stack: move cpu lock to printk.c
-In-Reply-To: <20210615174947.32057-2-john.ogness@linutronix.de>
-References: <20210615174947.32057-1-john.ogness@linutronix.de> <20210615174947.32057-2-john.ogness@linutronix.de>
-Date:   Tue, 15 Jun 2021 23:39:23 +0206
-Message-ID: <8735tiq0d8.fsf@jogness.linutronix.de>
+        Tue, 15 Jun 2021 17:38:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CA1C061574;
+        Tue, 15 Jun 2021 14:36:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Wi0fmY7/5hNcSRx+LpL3yzYhlga9NyYasEWcqt5QiSM=; b=LTiLUzP37yrcJqmTwnAMCelrFi
+        BHKUcaRiw5KI29DxzdAonJTD7rlvY0U7iEOEJ17385Tj3gF8vD4gKyzDjfoZDHAKxIEXl6yjDKtMX
+        DIBJR+sebgpwpmmNAY2aQfUnk0zk/Xe595kYMGrBfTLLB9Bq/fgpW70lJc+nzsyJAGXMBuADF/5xG
+        2HObnUtO3Iko6GERvvDa5W8r5ZsJEPmZTxfPSVYrgq7prwS+v3+Hp9g3Dv/5gPBwUlWbND3B0m8yk
+        29nK+Eiga3ixQzkSUf0y+jgIhRg2PB3KbZHi+kzhAByMGcdS6oTWODSQDguwLOJt7+XIf5ZtyaHKs
+        Zkd9ELyA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltGiH-00876K-55; Tue, 15 Jun 2021 21:35:38 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 94202982227; Tue, 15 Jun 2021 23:35:18 +0200 (CEST)
+Date:   Tue, 15 Jun 2021 23:35:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
+        Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH] freezer,sched: Rewrite core freezer logic
+Message-ID: <20210615213518.GC4272@worktop.programming.kicks-ass.net>
+References: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
+ <20210614154246.GB13677@redhat.com>
+ <20210614161221.GC68749@worktop.programming.kicks-ass.net>
+ <20210614165422.GC13677@redhat.com>
+ <20210614183801.GE68749@worktop.programming.kicks-ass.net>
+ <20210615154539.GA30333@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615154539.GA30333@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-15, John Ogness <john.ogness@linutronix.de> wrote:
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 114e9963f903..5369d8f33299 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3532,3 +3532,70 @@ void kmsg_dump_rewind(struct kmsg_dump_iter *iter)
->  EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
->  
->  #endif
-> +
-> +#ifdef CONFIG_SMP
-> +static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
-> +static bool printk_cpulock_nested;
+On Tue, Jun 15, 2021 at 05:45:39PM +0200, Oleg Nesterov wrote:
 
-I just realized that @printk_cpulock_nested will need to be an atomic_t
-counter to allow multiple nested levels since nesting can also occur
-because of recursion and not only because of an interrupting NMI
-context. So a v4 will be needed for that simple change. But please still
-comment on the rest.
+> But this reminds me... can't we implement selective wakeups? So that if a
+> task T sleeps in state = STOPPED | FROZEN, then ttwu(T, FROZEN) won't wake
+> it up, it will only clear FROZEN from T->state. Similarly, ttwu(T, STOPPED)
+> will leave this task with state == FROZEN.
 
-Thanks.
+All this started because I didn't want to touch the wakeup path for
+freezing :/
 
-John Ogness
+> See also
+> 
+> 	https://lore.kernel.org/lkml/20131112162136.GA29065@redhat.com/
+> 	https://lore.kernel.org/lkml/20131113170724.GA17739@redhat.com/
+> 
+> just to remind you that we already discussed TASK_FROZEN a little bit almost
+> 10 years ago ;)
+> 
+> What has been shall be, and what has been done is what will be done, and
+> there is nothing new under the sun.
+
+Ha!, I had completely forgotten.
