@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21E33A7FD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A8F3A7FDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhFONcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54540 "EHLO
+        id S231652AbhFONdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbhFONcf (ORCPT
+        with ESMTP id S231363AbhFONcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:32:35 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D583C061283
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:30:19 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id g6so13277286pfq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:30:19 -0700 (PDT)
+        Tue, 15 Jun 2021 09:32:54 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC42CC0613A3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:30:49 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id fy24-20020a17090b0218b029016c5a59021fso1837610pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:30:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qfA//XDHk1xzo5Tdw2AS+yBhajvzEWoalpaqlgn4ZH0=;
-        b=gPhSVWLgF5fmuFfMChFsixIyyamjYlbXA1ogmmbfKRpMI72JJpEo5nDz5Ah5ae/38A
-         TM0Pz6hsqamnQl7m0DqLgchNiyBXadmyNBw/Dn6U1IFskDAa0gXqviVuNA25NzS2c+5x
-         ZuRWXHDdxXieBzI9oddMhk7f8ku5gcDTwH6ikWbvlubq6fIixE8jD+zl7IWdbJQ8eSuD
-         04+jfXxDgLNNGtoVb0ZbZsWCjypI8Ck1Pp2IOrdchZDWacDaGHDwYvz4PHyRJ1/4c1Vn
-         W+SerYVYPqow41piW+23bhm8qTNsWtpPQwnuPpkofc3cCz4dTHrl2Q+Hq/lfUWHRvAs/
-         lYig==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UDZeAXhtUGNxVigPWnCAmqvhZ5xmOZkpwoxu/kotpBc=;
+        b=BkGuougKdpvJFSjPDCYcuDM+EfC9+Z6Iw8t63OKFUyvGcy9WEOaTZOyzUjDtlqxxWx
+         b+f6+GiSSKCn4V8zlclen8CemZkaZyLB8FJKB0g3go6na2Mkb6J76IEsPQg2PB5YFP++
+         oJX8/uFYscqhRRWgaBEXbZGZq7TD88YFqCsf4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qfA//XDHk1xzo5Tdw2AS+yBhajvzEWoalpaqlgn4ZH0=;
-        b=Uoa5UOQkQ+EGq0OwMlnKpv26dVVV7YJUtgiwTj06Uz3CI9mA1iMHWECYPhVAnUsuyQ
-         8vsNVsqyLMIYnidFu71vhXiexyoh4moow5tWn7B0p88EOurHQC8KUVzi2oH7pOG2biVq
-         qRda5g4E5DxJpJmkEy/7zIr3KCyaTbn36AlmOaMu2ZEdGlvLLD+h2+ECnHhItvPfAh0Q
-         mxgTpBbbPxQKQkCqyq5TEO3nOLbxpadwxyMgzPUz0K2tG4ZKFGA7vIzYKmj4adXvv9/i
-         ee2bjzbufNnTYKHs2fCJjuwt7APYLEz3r2g53BnTfl7HHvFENLwyWNeYe34SiLR6ZLBJ
-         Zo1Q==
-X-Gm-Message-State: AOAM531dktSpk/9nVJyF5e38Q0EMTQJaZo0Hv7f8P54gZbo67i+/BI1k
-        GueXEIp1QQ4syelCdL3p2usdlHf6jLTbVk40
-X-Google-Smtp-Source: ABdhPJx77s94sOI0pzxLaFZciG7hr0v347H3P247gjMUa/VBBOQAToIVBHmz0N/LRNTEr4eZ2ZsxgA==
-X-Received: by 2002:aa7:9983:0:b029:2e9:e086:7917 with SMTP id k3-20020aa799830000b02902e9e0867917mr4487116pfh.57.1623763818835;
-        Tue, 15 Jun 2021 06:30:18 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id n69sm15914245pfd.132.2021.06.15.06.30.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 06:30:18 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] regulator: mt6315: Fix checking return value of devm_regmap_init_spmi_ext
-Date:   Tue, 15 Jun 2021 21:29:34 +0800
-Message-Id: <20210615132934.3453965-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UDZeAXhtUGNxVigPWnCAmqvhZ5xmOZkpwoxu/kotpBc=;
+        b=mhF+P5AxfFqWg1gX6iG99wcjb6LB+bqEsj3nQcy3sjsq97GNVxhcA/EfInY5fYxQkW
+         vD+i5VYZ82A0qdc1GX0kHDf1hKoJFWJCui7RvWwhT4GTQnmPzOMs+z8E69qo4evLJ8dj
+         gurTY73UQO5UcfmiDrG2Xwb5iLI9iVmNsaVQDWWOq4qTSx25HVx0xWXb1AtY43O4k3aX
+         1pUH0/5aIg9pD2bNWOkXUaUZ5VGLR2WOd1Cq0dh4oajevvUEHugttJ4xh7UUFkTjeZmN
+         Eg5yRYXfZWYEnJcfrKqB6AyMVEJ/wwugJXOHRsudMulvFZn3moxrLlkBNwhSHXa48kgS
+         pDIA==
+X-Gm-Message-State: AOAM533R1e5Tf73Q7L4MxLfXwV4kVtI2nkjBLuTt2iKqjNsnXOofSB1m
+        qvjvuAwZiJApu2CHSQYPTxLBmqidg9XfmA==
+X-Google-Smtp-Source: ABdhPJxfml3Fqsrf3jLtipA51ToLJqViCTKS855/iP1nrQer+0Ky6R+3iiDFs1ISrhhH4wjEWSREUg==
+X-Received: by 2002:a17:902:860b:b029:103:b23b:f1c3 with SMTP id f11-20020a170902860bb0290103b23bf1c3mr4306912plo.34.1623763849259;
+        Tue, 15 Jun 2021 06:30:49 -0700 (PDT)
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com. [209.85.215.176])
+        by smtp.gmail.com with ESMTPSA id b21sm13258134pgj.74.2021.06.15.06.30.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 06:30:47 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id t9so11442807pgn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:30:46 -0700 (PDT)
+X-Received: by 2002:a05:6e02:219d:: with SMTP id j29mr17936278ila.64.1623763835517;
+ Tue, 15 Jun 2021 06:30:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210611152659.2142983-1-tientzu@chromium.org>
+In-Reply-To: <20210611152659.2142983-1-tientzu@chromium.org>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Tue, 15 Jun 2021 21:30:24 +0800
+X-Gmail-Original-Message-ID: <CALiNf28fb4rZ0Afun8wAWRYJY4gqc+-vRvDBZT3x2JgSPL_iVQ@mail.gmail.com>
+Message-ID: <CALiNf28fb4rZ0Afun8wAWRYJY4gqc+-vRvDBZT3x2JgSPL_iVQ@mail.gmail.com>
+Subject: Re: [PATCH v9 00/14] Restricted DMA
+To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_regmap_init_spmi_ext() returns ERR_PTR() on error.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- drivers/regulator/mt6315-regulator.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/regulator/mt6315-regulator.c b/drivers/regulator/mt6315-regulator.c
-index 865a292bedcb..284c229e1aa4 100644
---- a/drivers/regulator/mt6315-regulator.c
-+++ b/drivers/regulator/mt6315-regulator.c
-@@ -223,8 +223,8 @@ static int mt6315_regulator_probe(struct spmi_device *pdev)
- 	int i;
- 
- 	regmap = devm_regmap_init_spmi_ext(pdev, &mt6315_regmap_config);
--	if (!regmap)
--		return -ENODEV;
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
- 
- 	chip = devm_kzalloc(dev, sizeof(struct mt6315_chip), GFP_KERNEL);
- 	if (!chip)
--- 
-2.25.1
-
+v10 here: https://lore.kernel.org/patchwork/cover/1446882/
