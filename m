@@ -2,135 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53863A7D6F
+	by mail.lfdr.de (Postfix) with ESMTP id 5D92B3A7D6E
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhFOLoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:44:16 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57110 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhFOLoK (ORCPT
+        id S230038AbhFOLoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:44:15 -0400
+Received: from mail-vs1-f45.google.com ([209.85.217.45]:38807 "EHLO
+        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229976AbhFOLoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:44:10 -0400
-Received: from mail-wr1-f70.google.com ([209.85.221.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <dimitri.ledkov@canonical.com>)
-        id 1lt7SH-0007bo-OE
-        for linux-kernel@vger.kernel.org; Tue, 15 Jun 2021 11:42:05 +0000
-Received: by mail-wr1-f70.google.com with SMTP id z4-20020adfe5440000b0290114f89c9931so8450062wrm.17
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:42:05 -0700 (PDT)
+        Tue, 15 Jun 2021 07:44:09 -0400
+Received: by mail-vs1-f45.google.com with SMTP id x8so9599058vso.5;
+        Tue, 15 Jun 2021 04:42:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CYDncFNuUvtFCPbJvAJNhxcp0bRwM7nHPoRx8JOBLSQ=;
-        b=n2Msq6X+bCvq+wTFh/JKBguZaSbIizNkAEqUBi4EKygEgeXDXWHEJfHQq5uCzmKRT9
-         wC2nOtDP4NW+rmooI1QjXE+qk4ZLF4AtKZBtQS65XwN2yntsco6noNAhzaI0pQMn2IjF
-         P7U23iUhLVFE2WQAXUGSYwnGlUa//qwJFJsQ6g0kkEnslDc2KMx6LebG0eRIFs5DdClz
-         79Xcm06ouEAwTKa+O2J5q3q6dchlHsDudAwC9vzSChM56+nc5txuzmun9POCKqkuA1JO
-         4iIgf8HxFdsdcy7inN0jGr3rhJRjZ0sWpmD69K3dd3JrbdPG22rkeA6g/iYi+UP9XJzZ
-         5kVQ==
-X-Gm-Message-State: AOAM5326tdex8G+Q1BCcWoewp0frEf8d7CE54sXLrnsOsVJEIcNPu1O8
-        NtefxU6S9EKZZ53qIXY80iWCuYsrxp3gdJ6foTCECnp4APjcYaDTMrb5ZLHKcQMNW8n1feG1Cro
-        07RQIFR7eusO8TfOw7P9CGI1AncOcCmW3AOn2qgz/bQ==
-X-Received: by 2002:adf:f990:: with SMTP id f16mr25183219wrr.340.1623757325208;
-        Tue, 15 Jun 2021 04:42:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzOYE9lZAw7L+BTijLcTg5ei2l1NBa58a2BDZyzq1Dzi2zpfv/VgRp5Qc3iid2UXmV/5e3ACw==
-X-Received: by 2002:adf:f990:: with SMTP id f16mr25183194wrr.340.1623757324976;
-        Tue, 15 Jun 2021 04:42:04 -0700 (PDT)
-Received: from localhost ([2a01:4b00:85fd:d700:dc22:6ba5:a376:4d8d])
-        by smtp.gmail.com with ESMTPSA id r2sm19428181wrv.39.2021.06.15.04.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 04:42:04 -0700 (PDT)
-From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: [PATCH] s390/boot: add zstd support
-Date:   Tue, 15 Jun 2021 12:41:50 +0100
-Message-Id: <20210615114150.325080-1-dimitri.ledkov@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6cLFWPwpottSL5NyBrmyH12rIdn1diKeLgL8Kz1B3hs=;
+        b=XbgzFv/0XAiDJFknqvh7iiqPXKU9CathZ6CLVdj9Iw6K63UYemCwpGJlVUJf0vU7/E
+         QUUYhyx6J6YulCWEE7l1E6LzfM8iCrZiLDehzqH/Daqxr222qDQ6v5RSeNSxZkDfNXij
+         kb29Oaj4TO6+nNfCeTubbNvqBU/VOgKH/1dZs/Bb2AJ8ISk1XjpKp+jQ2ImGxTL156Ii
+         YoVgblU5nPJw2lrgzmGZM4zNqd6x5FDCxzZxQgXwZxaVhWL25Bl74d9Z9r02ynXGUqrk
+         mkaWxW5TGNjSMghed6CHgY5zzOuiHghXvdX42nhFxlavyblluZ2PjOFw6glcliIhcmQk
+         8fLQ==
+X-Gm-Message-State: AOAM532LxrpEHenRDCCogw+Lt6SAeCdolhSiyd8nKVyDRjkgAxpfs2yX
+        dvie72/uohvrGbYluTfmQ4Xa7v4xGywXIDmJNjaX9dp1FF8=
+X-Google-Smtp-Source: ABdhPJznuEjA8rihIMbbzhrVXLV05AmmQE+goCl46rfP2wIOnP/fUciGjhBT/1Kzp4dchtm5tTMtBoSZNwhqYUvmAU8=
+X-Received: by 2002:a67:3c2:: with SMTP id 185mr4432436vsd.42.1623757324455;
+ Tue, 15 Jun 2021 04:42:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210615110859.320299-1-aneesh.kumar@linux.ibm.com>
+In-Reply-To: <20210615110859.320299-1-aneesh.kumar@linux.ibm.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 15 Jun 2021 13:41:53 +0200
+Message-ID: <CAMuHMdVdG10w4mUP_nLpPkDCP-tb3waPg_AOSJPch9b7AsLGsw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] mm: rename pud_page_vaddr to pud_pgtable and make
+ it return pmd_t *
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable ztsd support in s390/boot, to enable booting with zstd
-compressed kernel when configured with CONFIG_KERNEL_ZSTD=y.
+On Tue, Jun 15, 2021 at 1:32 PM Aneesh Kumar K.V
+<aneesh.kumar@linux.ibm.com> wrote:
+> No functional change in this patch.
 
-BugLink: https://bugs.launchpad.net/bugs/1931725
-Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-cc: Heiko Carstens <hca@linux.ibm.com>
-cc: Vasily Gorbik <gor@linux.ibm.com>
-cc: Christian Borntraeger <borntraeger@de.ibm.com>
-cc: linux-s390@vger.kernel.org
----
- arch/s390/Kconfig                        | 1 +
- arch/s390/boot/compressed/Makefile       | 4 ++++
- arch/s390/boot/compressed/decompressor.c | 4 ++++
- 3 files changed, 9 insertions(+)
+> Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index b4c7c34069f8..fdbf584e13eb 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -172,6 +172,7 @@ config S390
- 	select HAVE_KERNEL_LZO
- 	select HAVE_KERNEL_UNCOMPRESSED
- 	select HAVE_KERNEL_XZ
-+	select HAVE_KERNEL_ZSTD
- 	select HAVE_KPROBES
- 	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_KRETPROBES
-diff --git a/arch/s390/boot/compressed/Makefile b/arch/s390/boot/compressed/Makefile
-index de18dab518bb..75660aaaa7a3 100644
---- a/arch/s390/boot/compressed/Makefile
-+++ b/arch/s390/boot/compressed/Makefile
-@@ -14,6 +14,7 @@ obj-y	:= $(if $(CONFIG_KERNEL_UNCOMPRESSED),,decompressor.o) info.o
- obj-all := $(obj-y) piggy.o syms.o
- targets	:= vmlinux.lds vmlinux vmlinux.bin vmlinux.bin.gz vmlinux.bin.bz2
- targets += vmlinux.bin.xz vmlinux.bin.lzma vmlinux.bin.lzo vmlinux.bin.lz4
-+targets += vmlinux.bin.zst
- targets += info.bin syms.bin vmlinux.syms $(obj-all)
- 
- KBUILD_AFLAGS := $(KBUILD_AFLAGS_DECOMPRESSOR)
-@@ -63,6 +64,7 @@ suffix-$(CONFIG_KERNEL_LZ4)  := .lz4
- suffix-$(CONFIG_KERNEL_LZMA)  := .lzma
- suffix-$(CONFIG_KERNEL_LZO)  := .lzo
- suffix-$(CONFIG_KERNEL_XZ)  := .xz
-+suffix-$(CONFIG_KERNEL_ZSTD)  := .zst
- 
- $(obj)/vmlinux.bin.gz: $(vmlinux.bin.all-y) FORCE
- 	$(call if_changed,gzip)
-@@ -76,6 +78,8 @@ $(obj)/vmlinux.bin.lzo: $(vmlinux.bin.all-y) FORCE
- 	$(call if_changed,lzo)
- $(obj)/vmlinux.bin.xz: $(vmlinux.bin.all-y) FORCE
- 	$(call if_changed,xzkern)
-+$(obj)/vmlinux.bin.zst: $(vmlinux.bin.all-y) FORCE
-+	$(call if_changed,zstd22)
- 
- OBJCOPYFLAGS_piggy.o := -I binary -O elf64-s390 -B s390:64-bit --rename-section .data=.vmlinux.bin.compressed
- $(obj)/piggy.o: $(obj)/vmlinux.bin$(suffix-y) FORCE
-diff --git a/arch/s390/boot/compressed/decompressor.c b/arch/s390/boot/compressed/decompressor.c
-index 3061b11c4d27..02fd0d245c7e 100644
---- a/arch/s390/boot/compressed/decompressor.c
-+++ b/arch/s390/boot/compressed/decompressor.c
-@@ -61,6 +61,10 @@ static unsigned long free_mem_end_ptr = (unsigned long) _end + BOOT_HEAP_SIZE;
- #include "../../../../lib/decompress_unxz.c"
- #endif
- 
-+#ifdef CONFIG_KERNEL_ZSTD
-+#include "../../../../lib/decompress_unzstd.c"
-+#endif
-+
- #define decompress_offset ALIGN((unsigned long)_end + BOOT_HEAP_SIZE, PAGE_SIZE)
- 
- unsigned long mem_safe_offset(void)
+>  arch/m68k/include/asm/motorola_pgtable.h     | 2 +-
+
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.27.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
