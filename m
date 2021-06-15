@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477243A7641
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 07:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C913A7644
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 07:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhFOFGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 01:06:24 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50656 "EHLO deadmen.hmeau.com"
+        id S230240AbhFOFKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 01:10:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229463AbhFOFGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 01:06:22 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1lt1Ec-0006cw-4n; Tue, 15 Jun 2021 13:03:34 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1lt1E3-0001MR-0g; Tue, 15 Jun 2021 13:02:59 +0800
-Date:   Tue, 15 Jun 2021 13:02:59 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Ira Weiny <ira.weiny@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geoff Levand <geoff@infradead.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Dongsheng Yang <dongsheng.yang@easystack.cn>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        ceph-devel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        linux-arch@vger.kernel.org, Tero Kristo <t-kristo@ti.com>,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH 09/16] ps3disk: use memcpy_{from,to}_bvec
-Message-ID: <20210615050258.GA5208@gondor.apana.org.au>
-References: <20210608160603.1535935-1-hch@lst.de>
- <20210608160603.1535935-10-hch@lst.de>
- <20210609014822.GT3697498@iweiny-DESK2.sc.intel.com>
- <20210611065338.GA31210@lst.de>
- <20210612040743.GG1600546@iweiny-DESK2.sc.intel.com>
+        id S229659AbhFOFKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 01:10:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 795236124B;
+        Tue, 15 Jun 2021 05:08:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623733723;
+        bh=5kFE330+23kMptN9HbNNWQMTPI9CdBPnkIgY+SruPBo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ge3dORCzCE1Dr1+BfbVTPnYwkHlQFN2bAhPJQ3dH4Bbk76TB+BuoUA7wRpThsL+Ea
+         G8zRZQhyrLKUaxNuuAQyGoUnsAC3aT9SpKX/TXjfHHk2rVErA40ESA2V9PTCTUxoZi
+         oWrui0xJYq4EkeoGmAFeyAQu0YDFID3eb+K4ro0T+dFlT+qxH/fKGLYqM42r2yVAn4
+         yJyF1oRXJUKbM+r3E8U9Yux+mLaOZgfjUc0Bzo7zWjiX+dBXhbbwuFUX43D3PfFWqe
+         HIf+u7x043QzN732HjnjjenJma+R6GjYrOPmrnrjBvTd2aD5FwnyusGynr/i7UUvp6
+         /uszxz8R/nR1w==
+Date:   Tue, 15 Jun 2021 08:08:39 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Anand Khoje <anand.a.khoje@oracle.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>
+Subject: Re: [PATCH v3 3/3] IB/core: Obtain subnet_prefix from cache in IB
+ devices.
+Message-ID: <YMg111mLzwqu8P0o@unreal>
+References: <20210609055534.855-1-anand.a.khoje@oracle.com>
+ <20210609055534.855-4-anand.a.khoje@oracle.com>
+ <YMB9gxlKbDvdynUE@unreal>
+ <MWHPR1001MB2096CA7F29DCF86DE921903EC5369@MWHPR1001MB2096.namprd10.prod.outlook.com>
+ <YMCakSCQLqUbcQ1H@unreal>
+ <30CD8612-2030-44C1-A879-9A1EC668FC9C@oracle.com>
+ <YMcEbBrDyDgmYEPu@unreal>
+ <CAEBEBEC-795E-4626-A842-2BD156EBB9FE@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210612040743.GG1600546@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEBEBEC-795E-4626-A842-2BD156EBB9FE@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 09:07:43PM -0700, Ira Weiny wrote:
->
-> More recently this was added:
+On Mon, Jun 14, 2021 at 04:29:09PM +0000, Haakon Bugge wrote:
 > 
-> 7e34e0bbc644 crypto: omap-crypto - fix userspace copied buffer access
 > 
-> I'm CC'ing Tero and Herbert to see why they added the SLAB check.
+> > On 14 Jun 2021, at 09:25, Leon Romanovsky <leon@kernel.org> wrote:
+> > 
+> > On Mon, Jun 14, 2021 at 03:32:39AM +0000, Haakon Bugge wrote:
+> >> 
+> >> 
+> >>> On 9 Jun 2021, at 12:40, Leon Romanovsky <leon@kernel.org> wrote:
+> >>> 
+> >>> On Wed, Jun 09, 2021 at 09:26:03AM +0000, Anand Khoje wrote:
+> >>>> Hi Leon,
+> >>> 
+> >>> Please don't do top-posting.
+> >>> 
+> >>> 
+> >>>> 
+> >>>> The set_bit()/clear_bit() and enum ib_port_data_flags  has been added as a device that can be used for future enhancements. 
+> >>>> Also, usage of set_bit()/clear_bit() ensures the operations on this bit is atomic.
+> >>> 
+> >>> The bitfield variables are better suit this use case.
+> >>> Let's don't overcomplicate code without the reason.
+> >> 
+> >> The problem is always that people tend to build on what's in there. For example, look at the bitfields in rdma_id_private, tos_set,  timeout_set, and min_rnr_timer_set.
+> >> 
+> >> What do you think will happen when, let's say, rdma_set_service_type() and rdma_set_ack_timeout() are called in close proximity in time? There is no locking, and the RMW will fail intermittently.
+> > 
+> > We are talking about device initialization flow that shouldn't be
+> > performed in parallel to another initialization of same device, so the
+> > comparison to rdma-cm is not valid here.
+> 
+> I can agree to that. And it is probably not worthwhile to fix the bit-fields in rdma_id_private?
 
-Probably because the generic Crypto API has the same check.  This
-all goes back to
+Before this article [1], I would say no, we don't need to fix.
+Now, I'm not sure about that.
 
-commit 4f3e797ad07d52d34983354a77b365dfcd48c1b4
-Author: Herbert Xu <herbert@gondor.apana.org.au>
-Date:   Mon Feb 9 14:22:14 2009 +1100
+"He also notes that even though the design flaws are difficult to exploit
+ on their own, they can be combined with the other flaws found to make for
+ a much more serious problem."
 
-    crypto: scatterwalk - Avoid flush_dcache_page on slab pages
+and 
 
-    It's illegal to call flush_dcache_page on slab pages on a number
-    of architectures.  So this patch avoids doing so if PageSlab is
-    true.
+"In other words, people did notice this vulnerability and a defense was standardized,
+ but in practice the defense was never adopted. This is a good example that security
+ defenses must be adopted before attacks become practical."
 
-    In future we can move the flush_dcache_page call to those page
-    cache users that actually need it.
+Thanks
 
-    Reported-by: David S. Miller <davem@davemloft.net>
-    Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+[1] https://lwn.net/Articles/856044/ - Holes in WiFi
 
-But I can't find any emails discussing this so let me ask Dave
-directly and see if he can tell us what the issue was or might
-have been.
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> 
+> 
+> Thxs, Håkon
+> 
