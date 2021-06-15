@@ -2,129 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF063A8A13
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B813A8A16
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhFOUU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 16:20:59 -0400
-Received: from fgw21-7.mail.saunalahti.fi ([62.142.5.82]:45329 "EHLO
-        fgw21-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229931AbhFOUU6 (ORCPT
+        id S230360AbhFOUV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 16:21:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24462 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230236AbhFOUVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 16:20:58 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw21.mail.saunalahti.fi (Halon) with ESMTP
-        id e5ba8ddc-ce16-11eb-9eb8-005056bdd08f;
-        Tue, 15 Jun 2021 23:18:51 +0300 (EEST)
-Date:   Tue, 15 Jun 2021 23:18:50 +0300
-From:   andy@surfacebook.localdomain
-To:     Ioana Ciornei <ciorneiioana@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, hkallweit1@gmail.com,
-        netdev@vger.kernel.org, Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        calvin.johnson@oss.nxp.com,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux.cj@gmail.com, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: Re: [PATCH net-next v9 13/15] net: phylink: introduce
- phylink_fwnode_phy_connect()
-Message-ID: <YMkLKt42M6Wjut3O@surfacebook.localdomain>
-References: <20210611105401.270673-1-ciorneiioana@gmail.com>
- <20210611105401.270673-14-ciorneiioana@gmail.com>
+        Tue, 15 Jun 2021 16:21:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623788358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4OP+kXa7j7VmEib/1s/iK6tFrNtW3KF8Er88jDxAmgM=;
+        b=DO0IxwWhjeCIu+yRi/TTtDYD9b801edmASR+BANJ105O09rrTPkncscWQcslsfM1sBNa7W
+        BxHcHYJ/dtyDzM05KaHU49Mu5zKBiU97vFYKOS4vk+5vgl7kk60vi/KicZvvS2x369Z/ax
+        e897BZeTzqEjP/J+IzMq1otnt7OErzg=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-9Vre0UiRNH6y1py-7_9-tA-1; Tue, 15 Jun 2021 16:19:16 -0400
+X-MC-Unique: 9Vre0UiRNH6y1py-7_9-tA-1
+Received: by mail-ot1-f70.google.com with SMTP id o26-20020a9d6d1a0000b02903e61e3de711so61850otp.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:19:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=4OP+kXa7j7VmEib/1s/iK6tFrNtW3KF8Er88jDxAmgM=;
+        b=E1gIiOA9AR3MrArUtiBcTqTo/XpxvuFjQQt7jQUYN2ClJrLs7fS9SZkCUXucFLlKP7
+         Qy/OrLlFl/2tmjwxSJow2jQmo6MpYY3MZ7Tdw3Ts5K7RhJEs4J1f1cb3dZqKt1IXYW11
+         96T2iJwhY3HyO/rBkATRcirV4dvv0gUsBhdihjKVYwbXEwU41jnpqhER/jhdSFqlYToz
+         VaY4SaF4dqznFnBWqnGXDPC8pmJlLuzilfXzMjyj0Iocw/CMloPz7SldK0VDd3aXBjX/
+         pNt/uyWp8qFfc9TeggG5I+JZxNmywX973jErDL7XeRtKsxM/5t+HF0lwSPesJopDmmoU
+         nWTQ==
+X-Gm-Message-State: AOAM530c1AmzGghg7fCZfDTofCkVn5QyG427gUqJIesGEXNz4hymo2gy
+        LAldH85Ty1nmTz95r+uxUW09+gKjlePd4dUvrmLwxLC8D5wMXb+PvqTDfwY4ylp7hCYHW/vlk8a
+        lh7L1nf6Twy5I20fXQLZJ5nkK
+X-Received: by 2002:aca:3116:: with SMTP id x22mr4505083oix.133.1623788356054;
+        Tue, 15 Jun 2021 13:19:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwwwPbnuyI6YudjokAwUqRQtYf1k04oNrXQJJvSmUCF56DnYq438Sd2W0glU3maXdkqoYw/Ug==
+X-Received: by 2002:aca:3116:: with SMTP id x22mr4505062oix.133.1623788355771;
+        Tue, 15 Jun 2021 13:19:15 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id v1sm1926804ota.22.2021.06.15.13.19.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 13:19:14 -0700 (PDT)
+Subject: Re: [PATCH v4 2/4] fpga: xilinx: reorganize to subdir layout
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net,
+        michal.simek@xilinx.com, krzysztof.kozlowski@canonical.com,
+        nava.manne@xilinx.com, yilun.xu@intel.com, davidgow@google.com,
+        fpacheco@redhat.com, richard.gong@intel.com, luca@lucaceresoli.net,
+        linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210614201648.3358206-1-trix@redhat.com>
+ <20210614201648.3358206-4-trix@redhat.com> <YMhYfCgOAthEqPXs@kroah.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <4fa2a233-e429-1b41-fc9b-1f4c6d9a05ae@redhat.com>
+Date:   Tue, 15 Jun 2021 13:19:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611105401.270673-14-ciorneiioana@gmail.com>
+In-Reply-To: <YMhYfCgOAthEqPXs@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fri, Jun 11, 2021 at 01:53:59PM +0300, Ioana Ciornei kirjoitti:
-> From: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> 
-> Define phylink_fwnode_phy_connect() to connect phy specified by
-> a fwnode to a phylink instance.
 
-...
+On 6/15/21 12:36 AM, Greg KH wrote:
+> On Mon, Jun 14, 2021 at 01:16:46PM -0700, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> Follow drivers/net/ethernet/ which has control configs
+>> NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+>> Since fpgas do not have many vendors, drop the 'VENDOR' and use
+>> FPGA_BLA.
+>>
+>> There are several new subdirs
+>> altera/
+>> dfl/
+>> lattice/
+>> xilinx/
+>>
+>> Each subdir has a Kconfig that has a new/reused
+>>
+>> if FPGA_BLA
+>>    ... existing configs ...
+>> endif FPGA_BLA
+>>
+>> Which is sourced into the main fpga/Kconfig
+>>
+>> Each subdir has a Makefile whose transversal is controlled in the
+>> fpga/Makefile by
+>>
+>> obj-$(CONFIG_FPGA_BLA) += bla/
+>>
+>> This is the xilinx/ subdir part
+>>
+>> Create a xilinx/ subdir
+>> Move xilinx-* and zynq* files to it.
+>> Add a Kconfig and Makefile
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>   drivers/fpga/Kconfig                          | 40 +-------------
+>>   drivers/fpga/Makefile                         |  5 +-
+>>   drivers/fpga/xilinx/Kconfig                   | 55 +++++++++++++++++++
+>>   drivers/fpga/xilinx/Makefile                  |  6 ++
+>>   .../fpga/{ => xilinx}/xilinx-pr-decoupler.c   |  0
+>>   drivers/fpga/{ => xilinx}/xilinx-spi.c        |  0
+>>   drivers/fpga/{ => xilinx}/zynq-fpga.c         |  0
+>>   drivers/fpga/{ => xilinx}/zynqmp-fpga.c       |  0
+>>   8 files changed, 63 insertions(+), 43 deletions(-)
+>>   create mode 100644 drivers/fpga/xilinx/Kconfig
+>>   create mode 100644 drivers/fpga/xilinx/Makefile
+>>   rename drivers/fpga/{ => xilinx}/xilinx-pr-decoupler.c (100%)
+>>   rename drivers/fpga/{ => xilinx}/xilinx-spi.c (100%)
+>>   rename drivers/fpga/{ => xilinx}/zynq-fpga.c (100%)
+>>   rename drivers/fpga/{ => xilinx}/zynqmp-fpga.c (100%)
+>>
+>> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+>> index 7a290b2234576..28c261807b428 100644
+>> --- a/drivers/fpga/Kconfig
+>> +++ b/drivers/fpga/Kconfig
+>> @@ -52,25 +52,12 @@ config FPGA_MGR_ALTERA_CVP
+>>   	  FPGA manager driver support for Arria-V, Cyclone-V, Stratix-V,
+>>   	  Arria 10 and Stratix10 Altera FPGAs using the CvP interface over PCIe.
+>>   
+>> -config FPGA_MGR_ZYNQ_FPGA
+>> -	tristate "Xilinx Zynq FPGA"
+>> -	depends on ARCH_ZYNQ || COMPILE_TEST
+>> -	help
+>> -	  FPGA manager driver support for Xilinx Zynq FPGAs.
+>> -
+>>   config FPGA_MGR_STRATIX10_SOC
+>>   	tristate "Intel Stratix10 SoC FPGA Manager"
+>>   	depends on (ARCH_INTEL_SOCFPGA && INTEL_STRATIX10_SERVICE)
+>>   	help
+>>   	  FPGA manager driver support for the Intel Stratix10 SoC.
+>>   
+>> -config FPGA_MGR_XILINX_SPI
+>> -	tristate "Xilinx Configuration over Slave Serial (SPI)"
+>> -	depends on SPI
+>> -	help
+>> -	  FPGA manager driver support for Xilinx FPGA configuration
+>> -	  over slave serial interface.
+>> -
+>>   config FPGA_MGR_ICE40_SPI
+>>   	tristate "Lattice iCE40 SPI"
+>>   	depends on OF && SPI
+>> @@ -113,23 +100,6 @@ config ALTERA_FREEZE_BRIDGE
+>>   	  isolate one region of the FPGA from the busses while that
+>>   	  region is being reprogrammed.
+>>   
+>> -config XILINX_PR_DECOUPLER
+>> -	tristate "Xilinx LogiCORE PR Decoupler"
+>> -	depends on FPGA_BRIDGE
+>> -	depends on HAS_IOMEM
+>> -	help
+>> -	  Say Y to enable drivers for Xilinx LogiCORE PR Decoupler
+>> -	  or Xilinx Dynamic Function eXchnage AIX Shutdown Manager.
+>> -	  The PR Decoupler exists in the FPGA fabric to isolate one
+>> -	  region of the FPGA from the busses while that region is
+>> -	  being reprogrammed during partial reconfig.
+>> -	  The Dynamic Function eXchange AXI shutdown manager prevents
+>> -	  AXI traffic from passing through the bridge. The controller
+>> -	  safely handles AXI4MM and AXI4-Lite interfaces on a
+>> -	  Reconfigurable Partition when it is undergoing dynamic
+>> -	  reconfiguration, preventing the system deadlock that can
+>> -	  occur if AXI transactions are interrupted by DFX.
+>> -
+>>   config FPGA_REGION
+>>   	tristate "FPGA Region"
+>>   	depends on FPGA_BRIDGE
+>> @@ -146,14 +116,6 @@ config OF_FPGA_REGION
+>>   	  overlay.
+>>   
+>>   source "drivers/fpga/dfl/Kconfig"
+>> -
+>> -config FPGA_MGR_ZYNQMP_FPGA
+>> -	tristate "Xilinx ZynqMP FPGA"
+>> -	depends on ZYNQMP_FIRMWARE || (!ZYNQMP_FIRMWARE && COMPILE_TEST)
+>> -	help
+>> -	  FPGA manager driver support for Xilinx ZynqMP FPGAs.
+>> -	  This driver uses the processor configuration port(PCAP)
+>> -	  to configure the programmable logic(PL) through PS
+>> -	  on ZynqMP SoC.
+>> +source "drivers/fpga/xilinx/Kconfig"
+>>   
+>>   endif # FPGA
+>> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+>> index bda74e54ce390..0868c7c4264d8 100644
+>> --- a/drivers/fpga/Makefile
+>> +++ b/drivers/fpga/Makefile
+>> @@ -15,9 +15,6 @@ obj-$(CONFIG_FPGA_MGR_SOCFPGA)		+= socfpga.o
+>>   obj-$(CONFIG_FPGA_MGR_SOCFPGA_A10)	+= socfpga-a10.o
+>>   obj-$(CONFIG_FPGA_MGR_STRATIX10_SOC)	+= stratix10-soc.o
+>>   obj-$(CONFIG_FPGA_MGR_TS73XX)		+= ts73xx-fpga.o
+>> -obj-$(CONFIG_FPGA_MGR_XILINX_SPI)	+= xilinx-spi.o
+>> -obj-$(CONFIG_FPGA_MGR_ZYNQ_FPGA)	+= zynq-fpga.o
+>> -obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+= zynqmp-fpga.o
+>>   obj-$(CONFIG_ALTERA_PR_IP_CORE)         += altera-pr-ip-core.o
+>>   obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
+>>   
+>> @@ -25,10 +22,10 @@ obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
+>>   obj-$(CONFIG_FPGA_BRIDGE)		+= fpga-bridge.o
+>>   obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE)	+= altera-hps2fpga.o altera-fpga2sdram.o
+>>   obj-$(CONFIG_ALTERA_FREEZE_BRIDGE)	+= altera-freeze-bridge.o
+>> -obj-$(CONFIG_XILINX_PR_DECOUPLER)	+= xilinx-pr-decoupler.o
+>>   
+>>   # High Level Interfaces
+>>   obj-$(CONFIG_FPGA_REGION)		+= fpga-region.o
+>>   obj-$(CONFIG_OF_FPGA_REGION)		+= of-fpga-region.o
+>>   
+>>   obj-$(CONFIG_FPGA_DFL) += dfl/
+>> +obj-$(CONFIG_FPGA_XILINX) += xilinx/
+>> diff --git a/drivers/fpga/xilinx/Kconfig b/drivers/fpga/xilinx/Kconfig
+>> new file mode 100644
+>> index 0000000000000..e016d450539a0
+>> --- /dev/null
+>> +++ b/drivers/fpga/xilinx/Kconfig
+>> @@ -0,0 +1,55 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +
+>> +config FPGA_XILINX
+>> +	bool "Xilinx FPGAs"
+> "Xilinx FPGA drivers"
+>
+>> +	default y
+>> +	help
+>> +	  If you have a xilinx fpga, say Y.
+> "Xilix FPGA"
+Ok.
+> But how about being a bit more descriptive here:
+>
+> "Select this option if you want to enable support for Xilinx FPGA
+> drivers"
+ok
+>
+>> +	  Note that the answer to this question doesn't directly affect the
+>> +	  kernel: saying N will just cause the configurator to skip all
+>> +	  the questions about xilinx fpgas. If you say Y, you will be asked
+>> +	  for your specific device in the following questions.
+> Why this "note"?  Do networking drivers have this type of description?
 
-> +/**
-> + * phylink_fwnode_phy_connect() - connect the PHY specified in the fwnode.
-> + * @pl: a pointer to a &struct phylink returned from phylink_create()
-> + * @fwnode: a pointer to a &struct fwnode_handle.
-> + * @flags: PHY-specific flags to communicate to the PHY device driver
-> + *
-> + * Connect the phy specified @fwnode to the phylink instance specified
-> + * by @pl.
-> + *
-> + * Returns 0 on success or a negative errno.
-> + */
-> +int phylink_fwnode_phy_connect(struct phylink *pl,
-> +			       struct fwnode_handle *fwnode,
-> +			       u32 flags)
-> +{
-> +	struct fwnode_handle *phy_fwnode;
-> +	struct phy_device *phy_dev;
-> +	int ret;
-> +
-> +	/* Fixed links and 802.3z are handled without needing a PHY */
-> +	if (pl->cfg_link_an_mode == MLO_AN_FIXED ||
-> +	    (pl->cfg_link_an_mode == MLO_AN_INBAND &&
-> +	     phy_interface_mode_is_8023z(pl->link_interface)))
-> +		return 0;
-> +
-> +	phy_fwnode = fwnode_get_phy_node(fwnode);
-> +	if (IS_ERR(phy_fwnode)) {
-> +		if (pl->cfg_link_an_mode == MLO_AN_PHY)
-> +			return -ENODEV;
-> +		return 0;
-> +	}
-> +
-> +	phy_dev = fwnode_phy_find_device(phy_fwnode);
-> +	/* We're done with the phy_node handle */
-> +	fwnode_handle_put(phy_fwnode);
+Yes, the NET_VENDOR_* configs all have this boilerplate.
 
-As per previous mail, who and when acquire this reference counting? Can it be
-possible that caller will never call phylink_fwnode_phy_connect() and hence
-reference counting will become disbalances?
+Tom
 
-We need to fix all this before the release.
-
-> +	if (!phy_dev)
-> +		return -ENODEV;
-> +
-> +	ret = phy_attach_direct(pl->netdev, phy_dev, flags,
-> +				pl->link_interface);
-> +	if (ret) {
-> +		phy_device_free(phy_dev);
-> +		return ret;
-> +	}
-> +
-> +	ret = phylink_bringup_phy(pl, phy_dev, pl->link_config.interface);
-> +	if (ret)
-> +		phy_detach(phy_dev);
-> +
-> +	return ret;
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> Same for the other patches in this series.
+> thanks,
+>
+> greg k-h
+>
 
