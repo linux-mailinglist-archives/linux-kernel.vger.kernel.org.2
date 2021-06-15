@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF1A3A8A3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A2D3A8A41
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhFOUh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 16:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbhFOUh6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 16:37:58 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E25CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:35:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y9Ixb/cYf5RX0Tp/tP70zOnE6mzcN4QC3xP7A4EcpOM=; b=psQSCREALaH4CR8APq/w7wq4ZT
-        SDD6PylWn6G44+BiGmH+K1rw+0LYRxRo8TaSDCaoWUBbMVPqPhA2r82oYtpY3jrVWTWSkg1k5cBQ9
-        Gv8IPuE50SnrrQ3ddZATNhlEQK+eUJkOSqXIIIwGmghgc/qdtBV86ng57rYRxO9iaiUFyle8iO8gi
-        go+6+KLknvAYmWtgeT4b+joVSSwRgjXiqqr5A9kY56f33QwuHK3LrAU1cX7NQ1b7yByPzQMUbHNfF
-        ljwrApZ1DaK1VX2v3QaoBQGBXL6huvM6zFsbucMFN634KyJxD1owN2Wu7zONxdRe+PTZnZwqwi8xn
-        VKQ0HpZw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltFmT-00865s-8r; Tue, 15 Jun 2021 20:35:36 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AA61B9863C9; Tue, 15 Jun 2021 22:35:34 +0200 (CEST)
-Date:   Tue, 15 Jun 2021 22:35:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     vincent.guittot@linaro.org, mingo@redhat.com,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] sched, fair: try to prevent migration thread from
- preempting non-cfs task
-Message-ID: <20210615203534.GA4272@worktop.programming.kicks-ass.net>
-References: <20210615121551.31138-1-laoar.shao@gmail.com>
+        id S230352AbhFOUl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 16:41:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229898AbhFOUl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 16:41:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D9A7611C0;
+        Tue, 15 Jun 2021 20:39:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623789591;
+        bh=6+oMK7wCi10jdQ9Pp1G7b0FDyy4ILCTJVB7zAEjdXsw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dR8pjiWuDoDqOmvOvHj7Lwj2jKs6IKEcw078eWGs3AQs2GR4DHlnwzmuwbN5xYDRA
+         SIustUX6eCQcd8Xto3LFXibZTjzAr5Qr+jfgI9fva+QiY4ESHqvNE6clT2/O0sFjgG
+         nmTJLszr0U4qCgjfFe8hBuwIP2tqqdbVTL2F6tm1Cp2Ox3iOXXiEsymxz4aDGurLOI
+         eCn5Q6khmLekWnluqBClw/gSP6y6LK9/ASsWD6ULDvuMyzy/QErUQ1zIp6sAmp8+u4
+         Qkx6lfGH/xJE7tkeyIkSnF6tBrCkeQhsWpCE6ozHyB6ibaTe5zrLr1nHs4tqqo1zpS
+         /CTYJhOf9+Ptg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 040C35C02A9; Tue, 15 Jun 2021 13:39:51 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 13:39:51 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, boqun.feng@gmail.com,
+        will@kernel.org, glider@google.com, dvyukov@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/7] kcsan: Introduce CONFIG_KCSAN_PERMISSIVE
+Message-ID: <20210615203951.GU4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210607125653.1388091-1-elver@google.com>
+ <20210609123810.GA37375@C02TD0UTHF1T.local>
+ <20210615181946.GA2727668@paulmck-ThinkPad-P17-Gen-1>
+ <YMj2pj9Pbsta15pc@elver.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210615121551.31138-1-laoar.shao@gmail.com>
+In-Reply-To: <YMj2pj9Pbsta15pc@elver.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 08:15:51PM +0800, Yafang Shao wrote:
-> ---
->  kernel/sched/fair.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+On Tue, Jun 15, 2021 at 08:51:18PM +0200, Marco Elver wrote:
+> On Tue, Jun 15, 2021 at 11:19AM -0700, Paul E. McKenney wrote:
+> [...]
+> > Queued and pushed for v5.15, thank you both!
+> > 
+> > I also queued the following patch making use of CONFIG_KCSAN_STRICT, and I
+> > figured that I should run it past you guys to make check my understanding.
+> > 
+> > Thoughts?
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 3248e24a90b0..597c7a940746 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9797,6 +9797,20 @@ static int load_balance(int this_cpu, struct rq *this_rq,
->  			/* Record that we found at least one task that could run on this_cpu */
->  			env.flags &= ~LBF_ALL_PINNED;
+> You still need CONFIG_KCSAN_INTERRUPT_WATCHER=y, but otherwise looks
+> good.
+
+I knew I was missing something...  :-/
+
+> I thought I'd leave that out for now, but now thinking about it, we
+> might as well imply interruptible watchers. If you agree, feel free to
+> queue the below patch ahead of yours.
+
+That works for me!  I have queued the patch below and rebased it to
+precede my change to the torture-test infrastructure.
+
+							Thanx, Paul
+
+> Thanks,
+> -- Marco
+> 
+> ------ >8 ------
+> 
+> From: Marco Elver <elver@google.com>
+> Date: Tue, 15 Jun 2021 20:39:38 +0200
+> Subject: [PATCH] kcsan: Make strict mode imply interruptible watchers
+> 
+> If CONFIG_KCSAN_STRICT=y, select CONFIG_KCSAN_INTERRUPT_WATCHER as well.
+> 
+> With interruptible watchers, we'll also report same-CPU data races; if
+> we requested strict mode, we might as well show these, too.
+> 
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>  lib/Kconfig.kcsan | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
+> index 26f03c754d39..e0a93ffdef30 100644
+> --- a/lib/Kconfig.kcsan
+> +++ b/lib/Kconfig.kcsan
+> @@ -150,7 +150,8 @@ config KCSAN_SKIP_WATCH_RANDOMIZE
+>  	  KCSAN_WATCH_SKIP.
 >  
-> +			/*
-> +			 * There may be a race between load balance starting migration
-> +			 * thread to pull the cfs running thread and the RT thread
-> +			 * waking up and preempting cfs task before migration threads
-> +			 * which then preempt the RT thread.
-> +			 * We'd better do the last minute check before starting
-> +			 * migration thread to avoid preempting latency-sensitive thread.
-> +			 */
-> +			if (busiest->curr->sched_class != &fair_sched_class) {
-> +				raw_spin_unlock_irqrestore(&busiest->lock,
-> +							   flags);
-
-This won't apply.
-
-Also, there's still a race window, you've just shrunk it, not fixed it.
-Busiest can reschedule between the mandatory rq unlock and doing the
-stopper wakeup.
-
-An actual fix might be to have the active migration done by a FIFO-1
-task, instead of stopper. The obvious down-side is that that would mean
-spawning yet another per-cpu kthread.
-
-How much do we care?
+>  config KCSAN_INTERRUPT_WATCHER
+> -	bool "Interruptible watchers"
+> +	bool "Interruptible watchers" if !KCSAN_STRICT
+> +	default KCSAN_STRICT
+>  	help
+>  	  If enabled, a task that set up a watchpoint may be interrupted while
+>  	  delayed. This option will allow KCSAN to detect races between
+> -- 
+> 2.32.0.272.g935e593368-goog
+> 
