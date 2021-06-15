@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 124433A81C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7E83A81CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhFOOHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:07:11 -0400
-Received: from mail-il1-f172.google.com ([209.85.166.172]:45647 "EHLO
-        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbhFOOHD (ORCPT
+        id S231466AbhFOOH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:07:28 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:12162 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231421AbhFOOHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:07:03 -0400
-Received: by mail-il1-f172.google.com with SMTP id b5so15349391ilc.12;
-        Tue, 15 Jun 2021 07:04:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=P7f4PIAriLzauXRZaRCNZKSfNkQTAx55TUjfutsfWbU=;
-        b=YTPx7dUuxZGZvIDNgvt0TcIYSEWqPhG6AmoSjB/w0Qedf0viSJSuiz+AFCvO7+GFpm
-         U/ykckdgieaQhy7a8qqhW7mFds9Qw+8eZ3QiJ0tSdIxtrF+2HfBYBO8pfa+g8KvQ6p4A
-         mi9cC3is04v31PKFrZtwBMdmwQvapQ21cK7ReR9lkuEWvkRzGM1fhgU6QmIXPlpHkFj1
-         FzI4v0NxQWC1bMk0jU3W/X6OjIA9TPkAfvODVvMlCLtiX3QCBfY6S0+dN44L+Fu8un19
-         Jijsrcl/D1fUoHuMmtjPM2Nv8T8xLImX/ZM2DfXxS7+wKDyytewGUa+q8R/KCXlpaVRT
-         WajQ==
-X-Gm-Message-State: AOAM533iC9/X1X6iCc7CwrSTNL+WEJOTElpHxRaNd7l+BReIKIkIstnt
-        h1WkD8jp+LhpIHU0ZwjiDw==
-X-Google-Smtp-Source: ABdhPJyfSHlrhhZrXCQVJV+wh8fp7Ii0Fv12GxhX2inTTiFj3bAb8quyDCvZ+yaqv0o9BcmPvEOz6A==
-X-Received: by 2002:a92:8e04:: with SMTP id c4mr18390330ild.219.1623765897739;
-        Tue, 15 Jun 2021 07:04:57 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id u14sm4118371ilk.15.2021.06.15.07.04.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 07:04:57 -0700 (PDT)
-Received: (nullmailer pid 487345 invoked by uid 1000);
-        Tue, 15 Jun 2021 14:04:53 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     heiko@sntech.de, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        kishon@ti.com, vkoul@kernel.org, kernel@collabora.com,
-        linux-phy@lists.infradead.org, robh+dt@kernel.org,
-        pgwipeout@gmail.com, linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20210614154359.805555-2-benjamin.gaignard@collabora.com>
-References: <20210614154359.805555-1-benjamin.gaignard@collabora.com> <20210614154359.805555-2-benjamin.gaignard@collabora.com>
-Subject: Re: [PATCH 1/4] dt-bindings: phy: rockchip: USB2: remove useless #phy-cells property
-Date:   Tue, 15 Jun 2021 08:04:53 -0600
-Message-Id: <1623765893.351779.487344.nullmailer@robh.at.kernel.org>
+        Tue, 15 Jun 2021 10:07:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623765912; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=taXBYyfoEZsgbWtAduieW5mkQkokeO4e0zurDPuaqE4=;
+ b=DiWpjaSXA73dS5koSPCBXzfnwAGvMUqNDphXW4rHITml+nijlhxGmWgmbO5+TgxORNYsVC+3
+ 8TVwqoqe2tC1DOx1FGSVu8h44iJaUOAgPiZILEy/jgNepITXPkyBuFmGj6v4MMdBlcf5f6WT
+ SrJq0sPsJCV+Hx2mzJgp7WKaOv4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60c8b38ded59bf69cc1ceffc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 14:05:01
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 05B31C4323A; Tue, 15 Jun 2021 14:05:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 78BD9C43460;
+        Tue, 15 Jun 2021 14:04:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 78BD9C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH net-next] ath10k: Use
+ devm_platform_get_and_ioremap_resource()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210605110227.2429420-1-yangyingliang@huawei.com>
+References: <20210605110227.2429420-1-yangyingliang@huawei.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210615140501.05B31C4323A@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 14:05:01 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 17:43:56 +0200, Benjamin Gaignard wrote:
-> '#phy-cells' property is needed in host-port and otg-port nodes but
-> not in parent nodes. Remove it from the JSON schema.
+Yang Yingliang <yangyingliang@huawei.com> wrote:
+
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  .../devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml         | 2 --
->  1 file changed, 2 deletions(-)
-> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Patch applied to ath-next branch of ath.git, thanks.
 
-yamllint warnings/errors:
+ea1c2023efbc ath10k: Use devm_platform_get_and_ioremap_resource()
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.example.dt.yaml: usb2-phy@e450: '#phy-cells' is a required property
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/phy/phy-provider.yaml
-\ndoc reference errors (make refcheckdocs):
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210605110227.2429420-1-yangyingliang@huawei.com/
 
-See https://patchwork.ozlabs.org/patch/1491757
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
