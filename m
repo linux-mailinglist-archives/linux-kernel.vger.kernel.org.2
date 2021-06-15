@@ -2,105 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E963A7814
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD5B3A7816
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhFOHki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:40:38 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:34671 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229488AbhFOHkh (ORCPT
+        id S230332AbhFOHmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:42:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44236 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229781AbhFOHmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:40:37 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 44FD658076A;
-        Tue, 15 Jun 2021 03:38:32 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Tue, 15 Jun 2021 03:38:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=ric6YdDEXdz8WBuoGrKfe35LOR5
-        WAM61KVVhVs/q73k=; b=LFaeHKxx6ml2cAopsamh5pbpK0US75LJ+BJKi5ap7QA
-        YYlQ153qPfMiUvbtaxzZlu0/yEk4okApSse1Rdds+tomHdvTfC+o2PnvZeGaL1M+
-        l5TayE3DxkYWYkKs+3bRECcLu1lrWNO7rxSoWTvJtjo0dq+A4vKP4Y+PJLIfY4bu
-        5o9LqSh+ndG5Zt1h/h9gUwZ7veC28aEhhIUTYq1rKiS79vcUEA/S06p2dt9ZD0fW
-        q9HhP5oZjwGdZJFyVdU3oLUupj1ls3t9ytRYd+HZTlY9rupWwnc9Bu7Jzu647Jxb
-        6W84bWbNqRcdSflvZlPPigsanCFvFxp7XkEq2t40+xA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ric6Yd
-        DEXdz8WBuoGrKfe35LOR5WAM61KVVhVs/q73k=; b=WieSnIROYYNJLnYd7mBMLs
-        DWiU3p0oYKe35vJ30B0Z257ggz7AyApT/+I3CZEdblancA8UZ8ILHlbyvT7ueWsV
-        QXw58fGfTLk/mVf3wZ71VtreKoofpaSdQjomzci2Tj1fnb6+a5+5RKS3l3GYaaWG
-        NbDdxIa7N7jfyf5jhhfp1oLguH0B0HejZ5KYw48t2AEgL+UlMl1YG9uRzjDqxeu7
-        Pl/u+mSrd0HZmb8SJXeHfB71mX3CssZuweSW6XDpO8icgUYCF/0NfTUPPUdEXfhw
-        n2xoGGzu3denuEcIVfeKt5NfNmMeEJXpbJvQyoFdkiF0DVXGzan7r75BCTd5YNXQ
-        ==
-X-ME-Sender: <xms:91jIYDX_nrKU4NS1bPeSvVbL9vmM50Oi_OUUn2Gaf96TtWZJZC9OsQ>
-    <xme:91jIYLljzmn8Yt5JV0W2wrICpmZ57TjukvrFR4zzB9GoeNUHllQ6w-NoFxQptP_rv
-    n4ifVX1ektvMQ>
-X-ME-Received: <xmr:91jIYPYDZc4e0Eekczk0RLySWfn-apSAzIu5fRK76aXUUoNDhYx4_q3RWGbx221yj_MPRsIP1cPDPr9HDty6zhsuKX6LllPe>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedviedguddvgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhm
-    qeenucggtffrrghtthgvrhhnpeevueehjefgfffgiedvudekvdektdelleelgefhleejie
-    eugeegveeuuddukedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:91jIYOUfPeLbHvRxkQFglnVWgZEM9-Rd8RDLINs5lffBxbL_2lapPw>
-    <xmx:91jIYNkWDng012_RcE8LH3KdwaMkb83u2jiLLDSM7B2U4vW-kX1h5A>
-    <xmx:91jIYLdMeYVCwFJHQHCxOUdvdAhZpFTivOwhGuCugUFweyfo0oG9KQ>
-    <xmx:-FjIYC8Emc1txAz24Nl9LBYnzr3wT4fVgj-o8bmBj_cW03CNg2EJyw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 15 Jun 2021 03:38:31 -0400 (EDT)
-Date:   Tue, 15 Jun 2021 09:38:28 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     steve.glendinning@shawell.net, davem@davemloft.net,
-        kuba@kernel.org, paskripkin@gmail.com, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: usb: fix possible use-after-free in smsc75xx_bind
-Message-ID: <YMhY9NHf1itQyup7@kroah.com>
-References: <20210614153712.2172662-1-mudongliangabcd@gmail.com>
+        Tue, 15 Jun 2021 03:42:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623742797;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tf+WxfDAC8RDdxV/HmQmbtlveiKFYYWCFXXFOPqcUcw=;
+        b=hPrKv8J9Ee6WBq0UKYf673B7RYlXQhmNhyNINzDwCRIYNmIzu3q3pECs5xl8yDxY9EZ5it
+        M+5G3K1wxg8wfX9Mk3Ce4iKEI88Cw5PORomgqcOtjlUz9Y7ZwQ9eApln77H1DpPK+ho8Py
+        3ubCYX751FSgF2vq0V717aUKEacP4BM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-494-WOm38uHMNKmiehy_4UyVfg-1; Tue, 15 Jun 2021 03:39:55 -0400
+X-MC-Unique: WOm38uHMNKmiehy_4UyVfg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B82D81084F46;
+        Tue, 15 Jun 2021 07:39:54 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4DE005D6DC;
+        Tue, 15 Jun 2021 07:39:53 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] afs: Fix an IS_ERR() vs NULL check
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-afs@lists.infradead.org, dhowells@redhat.com,
+        marc.dionne@auristor.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 15 Jun 2021 08:39:52 +0100
+Message-ID: <162374279240.549176.3013926133275425458.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210614153712.2172662-1-mudongliangabcd@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 11:37:12PM +0800, Dongliang Mu wrote:
-> The commit 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
-> fails to clean up the work scheduled in smsc75xx_reset->
-> smsc75xx_set_multicast, which leads to use-after-free if the work is
-> scheduled to start after the deallocation. In addition, this patch also
-> removes one dangling pointer - dev->data[0].
-> 
-> This patch calls cancel_work_sync to cancel the schedule work and set
-> the dangling pointer to NULL.
-> 
-> Fixes: 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
->  drivers/net/usb/smsc75xx.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/net/usb/smsc75xx.c b/drivers/net/usb/smsc75xx.c
-> index b286993da67c..f81740fcc8d5 100644
-> --- a/drivers/net/usb/smsc75xx.c
-> +++ b/drivers/net/usb/smsc75xx.c
-> @@ -1504,7 +1504,10 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
->  	return 0;
->  
->  err:
-> +	cancel_work_sync(&pdata->set_multicast);
->  	kfree(pdata);
-> +	pdata = NULL;
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-Why do you have to set pdata to NULL afterward?
+The proc_symlink() function returns NULL on error, it doesn't return
+error pointers.
 
-thanks,
+Fixes: 5b86d4ff5dce ("afs: Implement network namespacing")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: linux-afs@lists.infradead.org
+Link: https://lore.kernel.org/r/YLjMRKX40pTrJvgf@mwanda/
+---
 
-greg k-h
+ fs/afs/main.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/afs/main.c b/fs/afs/main.c
+index b2975256dadb..179004b15566 100644
+--- a/fs/afs/main.c
++++ b/fs/afs/main.c
+@@ -203,8 +203,8 @@ static int __init afs_init(void)
+ 		goto error_fs;
+ 
+ 	afs_proc_symlink = proc_symlink("fs/afs", NULL, "../self/net/afs");
+-	if (IS_ERR(afs_proc_symlink)) {
+-		ret = PTR_ERR(afs_proc_symlink);
++	if (!afs_proc_symlink) {
++		ret = -ENOMEM;
+ 		goto error_proc;
+ 	}
+ 
+
+
