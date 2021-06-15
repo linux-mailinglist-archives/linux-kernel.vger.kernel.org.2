@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F23A3A87A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C943D3A87D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhFORe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:34:58 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:34885 "EHLO
+        id S231871AbhFORgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:36:08 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:34916 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229728AbhFORex (ORCPT
+        with ESMTP id S231308AbhFORe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:34:53 -0400
-X-UUID: 0187e62bc676475d959a10ce8ba042a7-20210616
-X-UUID: 0187e62bc676475d959a10ce8ba042a7-20210616
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        Tue, 15 Jun 2021 13:34:59 -0400
+X-UUID: 00ff0ee9a06641ecac3fc873d0fa480a-20210616
+X-UUID: 00ff0ee9a06641ecac3fc873d0fa480a-20210616
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
         (envelope-from <tinghan.shen@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2133741345; Wed, 16 Jun 2021 01:32:45 +0800
+        with ESMTP id 985036743; Wed, 16 Jun 2021 01:32:49 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
  15.0.1497.2; Wed, 16 Jun 2021 01:32:43 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 16 Jun 2021 01:32:43 +0800
+ Transport; Wed, 16 Jun 2021 01:32:44 +0800
 From:   Tinghan Shen <tinghan.shen@mediatek.com>
 To:     <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
 CC:     <devicetree@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
@@ -31,10 +31,10 @@ CC:     <devicetree@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
         <seiya.wang@mediatek.com>, <wenst@google.com>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Leilk Liu <leilk.liu@mediatek.com>
-Subject: [PATCH 09/27] arm64: dts: mt8195: add spi controller
-Date:   Wed, 16 Jun 2021 01:32:15 +0800
-Message-ID: <20210615173233.26682-9-tinghan.shen@mediatek.com>
+        Jianjun Wang <jianjun.wang@mediatek.com>
+Subject: [PATCH 10/27] arm64: dts: mt8195: add PCIe phy device node
+Date:   Wed, 16 Jun 2021 01:32:16 +0800
+Message-ID: <20210615173233.26682-10-tinghan.shen@mediatek.com>
 X-Mailer: git-send-email 2.15.GIT
 In-Reply-To: <20210615173233.26682-1-tinghan.shen@mediatek.com>
 References: <20210615173233.26682-1-tinghan.shen@mediatek.com>
@@ -45,132 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leilk Liu <leilk.liu@mediatek.com>
+From: Jianjun Wang <jianjun.wang@mediatek.com>
 
-add spi controller node into mt8195 SoC
+Add PCIe phy device node for mt8195 SoC.
 
-Signed-off-by: Leilk Liu <leilk.liu@mediatek.com>
+Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8195.dtsi | 106 +++++++++++++++++++++++
- 1 file changed, 106 insertions(+)
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-index 9b002bb6d344..80a272703879 100644
+index 80a272703879..dd5644410fea 100644
 --- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
 +++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-@@ -818,6 +818,112 @@
- 			#clock-cells = <1>;
+@@ -1107,6 +1107,7 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+ 			ranges = <0 0 0x11e30000 0xe00>;
++			power-domains = <&spm MT8195_POWER_DOMAIN_SSUSB_PCIE_PHY>;
+ 			status = "disabled";
+ 
+ 			u2port1: usb-phy@0 {
+@@ -1146,6 +1147,19 @@
+ 			};
  		};
  
-+		spi0: spi@1100a000 {
-+			compatible = "mediatek,mt8195-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x1100a000 0 0x100>;
-+			interrupts = <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI_SEL>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI0>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		pciephy: phy@11e80000 {
++			compatible = "mediatek,mt8195-pcie-phy";
++			#address-cells = <2>;
++			#size-cells = <2>;
++			#phy-cells = <0>;
++			reg = <0 0x11e80000 0 0x10000>,
++			      <0 0x11e90000 0 0x10000>;
++			reg-names = "phy-sif", "phy-ckm";
++
++			power-domains = <&spm MT8195_POWER_DOMAIN_PCIE_PHY>;
 +			status = "disabled";
 +		};
 +
-+		spi1: spi@11010000 {
-+			compatible = "mediatek,mt8195-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11010000 0 0x100>;
-+			interrupts = <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI_SEL>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI1>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi2: spi@11012000 {
-+			compatible = "mediatek,mt8195-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11012000 0 0x100>;
-+			interrupts = <GIC_SPI 193 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI_SEL>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI2>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi3: spi@11013000 {
-+			compatible = "mediatek,mt8195-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11013000 0 0x100>;
-+			interrupts = <GIC_SPI 194 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI_SEL>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI3>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi4: spi@11018000 {
-+			compatible = "mediatek,mt8195-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11018000 0 0x100>;
-+			interrupts = <GIC_SPI 195 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI_SEL>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI4>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi5: spi@11019000 {
-+			compatible = "mediatek,mt8195-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11019000 0 0x100>;
-+			interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI_SEL>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI5>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spis0: spi@1101d000 {
-+			compatible = "mediatek,mt8195-spi-slave";
-+			reg = <0 0x1101d000 0 0x100>;
-+			interrupts = <GIC_SPI 197 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&infracfg_ao CLK_INFRA_AO_SPIS0>;
-+			clock-names = "spi";
-+			assigned-clocks = <&topckgen CLK_TOP_SPIS_SEL>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D6>;
-+			status = "disabled";
-+		};
-+
-+		spis1: spi@1101e000 {
-+			compatible = "mediatek,mt8195-spi-slave";
-+			reg = <0 0x1101e000 0 0x100>;
-+			interrupts = <GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&infracfg_ao CLK_INFRA_AO_SPIS1>;
-+			clock-names = "spi";
-+			assigned-clocks = <&topckgen CLK_TOP_SPIS_SEL>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D6>;
-+			status = "disabled";
-+		};
-+
- 		mmc0: mmc@11230000 {
- 			compatible = "mediatek,mt8195-mmc", "mediatek,mt8192-mmc";
- 			reg = <0 0x11230000 0 0x10000>,
+ 		ufsphy: phy@11fa0000 {
+ 			compatible = "mediatek,mt8195-ufsphy", "mediatek,mt8183-ufsphy";
+ 			reg = <0 0x11fa0000 0 0xc000>;
 -- 
 2.18.0
 
