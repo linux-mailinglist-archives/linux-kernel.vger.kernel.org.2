@@ -2,112 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016653A7540
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D18D3A754C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhFODfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:35:08 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:45396 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhFODfB (ORCPT
+        id S230301AbhFODj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:39:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33499 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230168AbhFODj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:35:01 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 08DE1D1B6F;
-        Tue, 15 Jun 2021 11:32:56 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P16485T139918997178112S1623727973863966_;
-        Tue, 15 Jun 2021 11:32:56 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <1cae7781f93ca7962ff2bd83330aa5a9>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: broonie@kernel.org
-X-RCPT-COUNT: 9
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     broonie@kernel.org
-Cc:     jon.lin@rock-chips.com, heiko@sntech.de, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v8 6/6] spi: rockchip: Support SPI_CS_HIGH
-Date:   Tue, 15 Jun 2021 11:32:52 +0800
-Message-Id: <20210615033252.14555-2-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210615033252.14555-1-jon.lin@rock-chips.com>
-References: <20210615033213.14241-1-jon.lin@rock-chips.com>
- <20210615033252.14555-1-jon.lin@rock-chips.com>
+        Mon, 14 Jun 2021 23:39:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623728273;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XDHNc5Tyf/BE3LnU7xQVP8PWodTzMsA3/eBC7eGEh90=;
+        b=drOpg6wSZXJ9P9XiXtgS5mvPv5N+N7U7yAFSqy2aXixS+5si5VbPSzK/SM6aDr0lnbH98Z
+        rORMTJTdRzyxPm8L+MZ5kZyWdkUI06rqJ+t3K4ZpypO4NJVfQhXRfiBY9vCrEQVAZ+/S+C
+        7KsiscWUbQgQuMO3JYFRHw99p0PPPi4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-114-5sCKDPAAPk6I8Nedw6j_Og-1; Mon, 14 Jun 2021 23:37:51 -0400
+X-MC-Unique: 5sCKDPAAPk6I8Nedw6j_Og-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5CB34801B21;
+        Tue, 15 Jun 2021 03:37:50 +0000 (UTC)
+Received: from T590 (ovpn-12-39.pek2.redhat.com [10.72.12.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4D6CA18F0A;
+        Tue, 15 Jun 2021 03:37:43 +0000 (UTC)
+Date:   Tue, 15 Jun 2021 11:37:39 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH] blk-mq: Do not lookup ctx with invalid index
+Message-ID: <YMggg+0mVwA0Gl4j@T590>
+References: <20210608183339.70609-1-dwagner@suse.de>
+ <20210614113706.astexefgfo4tuejr@beryllium.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614113706.astexefgfo4tuejr@beryllium.lan>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.Add standard spi-cs-high support
-2.Refer to spi-controller.yaml for details
+On Mon, Jun 14, 2021 at 01:37:06PM +0200, Daniel Wagner wrote:
+> On Tue, Jun 08, 2021 at 08:33:39PM +0200, Daniel Wagner wrote:
+> > cpumask_first_and() returns >= nr_cpu_ids if the two provided masks do
+> > not share a common bit. Verify we get a valid value back from
+> > cpumask_first_and().
+> 
+> So I got feedback on this issue (but not on the patch itself yet). The
+> system starts with 16 virtual CPU cores and during the test 4 cores are
+> removed[1] and as soon there is an error on the storage side, the reset
+> code on the host ends up in this path and crashes. I still don't
+> understand why the CPU removal is not updating the CPU mask correctly
+> before we hit the reset path. I'll continue to investigate.
 
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
+We don't update hctx->cpumask when CPU is added/removed, and that is
+assigned against cpu_possible_mask from beginning.
 
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
+It is one long-term issue, which can be triggered when all cpus in
+hctx->cpumask become offline. The thing is that only nvmf_connect_io_queue()
+allocates request via specified hctx.
 
- drivers/spi/spi-rockchip.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-index 48b666d42d8a..d64cca34eef7 100644
---- a/drivers/spi/spi-rockchip.c
-+++ b/drivers/spi/spi-rockchip.c
-@@ -108,6 +108,8 @@
- #define CR0_OPM_MASTER				0x0
- #define CR0_OPM_SLAVE				0x1
- 
-+#define CR0_SOI_OFFSET				23
-+
- #define CR0_MTM_OFFSET				0x21
- 
- /* Bit fields in SER, 2bit */
-@@ -238,7 +240,7 @@ static void rockchip_spi_set_cs(struct spi_device *spi, bool enable)
- {
- 	struct spi_controller *ctlr = spi->controller;
- 	struct rockchip_spi *rs = spi_controller_get_devdata(ctlr);
--	bool cs_asserted = !enable;
-+	bool cs_asserted = spi->mode & SPI_CS_HIGH ? enable : !enable;
- 
- 	/* Return immediately for no-op */
- 	if (cs_asserted == rs->cs_asserted[spi->chip_select])
-@@ -509,6 +511,8 @@ static int rockchip_spi_config(struct rockchip_spi *rs,
- 	cr0 |= (spi->mode & 0x3U) << CR0_SCPH_OFFSET;
- 	if (spi->mode & SPI_LSB_FIRST)
- 		cr0 |= CR0_FBM_LSB << CR0_FBM_OFFSET;
-+	if (spi->mode & SPI_CS_HIGH)
-+		cr0 |= BIT(spi->chip_select) << CR0_SOI_OFFSET;
- 
- 	if (xfer->rx_buf && xfer->tx_buf)
- 		cr0 |= CR0_XFM_TR << CR0_XFM_OFFSET;
-@@ -787,7 +791,7 @@ static int rockchip_spi_probe(struct platform_device *pdev)
- 
- 	ctlr->auto_runtime_pm = true;
- 	ctlr->bus_num = pdev->id;
--	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LOOP | SPI_LSB_FIRST;
-+	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LOOP | SPI_LSB_FIRST | SPI_CS_HIGH;
- 	if (slave_mode) {
- 		ctlr->mode_bits |= SPI_NO_CS;
- 		ctlr->slave_abort = rockchip_spi_slave_abort;
--- 
-2.17.1
-
-
+thanks,
+Ming
 
