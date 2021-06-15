@@ -2,92 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9F53A81DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B035A3A81EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhFOOKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:10:37 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:50504 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230120AbhFOOKf (ORCPT
+        id S230452AbhFOOM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230487AbhFOOMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:10:35 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-10-0BSCW0PNMeiUs_3ZDkVtBw-1; Tue, 15 Jun 2021 15:08:28 +0100
-X-MC-Unique: 0BSCW0PNMeiUs_3ZDkVtBw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 15 Jun
- 2021 15:08:27 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Tue, 15 Jun 2021 15:08:27 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Bin Meng' <bmeng.cn@gmail.com>, Gary Guo <gary@garyguo.net>
-CC:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "nickhu@andestech.com" <nickhu@andestech.com>,
-        "nylon7@andestech.com" <nylon7@andestech.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] riscv: fix memmove and optimise memcpy when misalign
-Thread-Topic: [PATCH] riscv: fix memmove and optimise memcpy when misalign
-Thread-Index: AQHXT3WL0lTofUR6TU66MVYMSFr0J6rxS6gAgCPtaRCAAANAsA==
-Date:   Tue, 15 Jun 2021 14:08:27 +0000
-Message-ID: <44e4e70491164ef5b777d06f48b6684f@AcuMS.aculab.com>
-References: <20210522232256.00003f08@garyguo.net>
- <mhng-fdda10f7-fc83-4654-a0b2-e9c86b92c37e@palmerdabbelt-glaptop>
- <17637b10e71b41b89126cbb1b2fa61cf@AcuMS.aculab.com>
- <20210525153431.0000508d@garyguo.net>
- <CAEUhbmXvYdVSsY3oH=XdyT2fOC1X9=-Rh0P1Q5TP1DcmzFfRrQ@mail.gmail.com>
-In-Reply-To: <CAEUhbmXvYdVSsY3oH=XdyT2fOC1X9=-Rh0P1Q5TP1DcmzFfRrQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 15 Jun 2021 10:12:01 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36286C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:09:53 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso14362614oto.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:09:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G03LeVSqzx4r6UWRg21tN37T3lMTHXfodYVAYedgndk=;
+        b=CQWma7GynKiGTf/Cfus0SAXooczcUtAUWmj8IMcII3ayR0fKCmZlvQCTp2kl51BNqC
+         UBRoHcbAAUBRK+qrsVV2EAsxHEOBbQnbH9nChYvVvUDW34ReH9str/1pEbuzDJXnn6x2
+         LE5uC+WvITpjeejAf1fIDtVu5tyUBV5lx0kGE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G03LeVSqzx4r6UWRg21tN37T3lMTHXfodYVAYedgndk=;
+        b=G7aiTCA7pxmDAkSTJKTTb6wB+Nx7obIesxyuTuHPcrJeWXYhi4xNv4rXxOgBIJZPfu
+         jdsKTYgcRKN19xUwybfxD4d4y++Sz5PfuhW4gE9h0riruag3/KjLUuIsF0QjKsjXZ5o4
+         I7sVaxJjK0AQyR1TV1DZg8y+J/1nLYCI9OIBEL9i+50HQw1gzQvXYEZEprE68AK/leiW
+         nYgvh0Uy7/8OMRSG1IJF26PzO2ABaHTx6WE/C6pS1NPNWdbYbbC3B0VMBCZO+t/vMABm
+         3L//9w+FKeVQMU0nFU3Y18T8winLPS71Ec8574JKu6J7lZe9ns/FSMAQ5fE51UgPfSEc
+         osHg==
+X-Gm-Message-State: AOAM530Em6j4Hn+Nedwkv1DySvmWhDUtsn/28gOQMEmpq3HtfF7FQtJN
+        Wc1z3Sy5x3Bf2NG18rBU11iqYPscUNhwVw==
+X-Google-Smtp-Source: ABdhPJzif/rlAZ6AcdzlQfzAzDQSxFh0lbrTGIvzUs2Bf5Btgj19yIiD+Dgccd+ZOgiGbJJ3LAy97g==
+X-Received: by 2002:a05:6830:17c8:: with SMTP id p8mr17682543ota.167.1623766192538;
+        Tue, 15 Jun 2021 07:09:52 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id k8sm3760778ool.5.2021.06.15.07.09.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 07:09:51 -0700 (PDT)
+Subject: Re: [PATCH] media: Fix Media Controller API config checks
+To:     Hans Verkuil <hverkuil@xs4all.nl>, sakari.ailus@linux.intel.com,
+        laurent.pinchart@ideasonboard.com, dan.carpenter@oracle.com,
+        mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20210611015849.42589-1-skhan@linuxfoundation.org>
+ <3745852a-a14d-3e66-dd9f-409ec7e43f48@xs4all.nl>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <04f0ce7b-71c3-948c-fdb0-72e234f8c7da@linuxfoundation.org>
+Date:   Tue, 15 Jun 2021 08:09:50 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <3745852a-a14d-3e66-dd9f-409ec7e43f48@xs4all.nl>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQmluIE1lbmcNCj4gU2VudDogMTUgSnVuZSAyMDIxIDE0OjQwDQouLi4NCj4gPiBJIHBy
-ZWZlciBDIHZlcnNpb25zIGFzIHdlbGwsIGFuZCBhY3R1YWxseSBiZWZvcmUgY29tbWl0IDA0MDkx
-ZDYgd2UgYXJlDQo+ID4gaW5kZWVkIHVzaW5nIHRoZSBnZW5lcmljIEMgdmVyc2lvbi4gVGhlIGlz
-c3VlIGlzIHRoYXQgMDQwOTFkNg0KPiA+IGludHJvZHVjZXMgYW4gYXNzZW1ibHkgdmVyc2lvbiB0
-aGF0J3MgdmVyeSBicm9rZW4uIEl0IGRvZXMgbm90IG9mZmVyDQo+ID4gYW5kIHBlcmZvcm1hbmNl
-IGltcHJvdmVtZW50IHRvIHRoZSBDIHZlcnNpb24sIGFuZCBicmVha3MgYWxsIHByb2Nlc3NvcnMN
-Cj4gPiB3aXRob3V0IGhhcmR3YXJlIG1pc2FsaWdubWVudCBzdXBwb3J0DQoNClRoZXJlIG1heSBu
-ZWVkIHRvIGJlIGEgZmV3IEMgaW1wbGVtZW50YXRpb25zIGZvciBkaWZmZXJlbnQgY3B1DQppbnN0
-cnVjdGlvbiBzZXRzLg0KV2hpbGUgdGhlIGNvbXBpbGVyIG1pZ2h0IG1hbmFnZSB0byBEVFJUIChv
-ciB0aGUgd3JvbmcgdGhpbmcgZ2l2ZW4NCnRoZSByaWdodCBzb3VyY2UpIHVzaW5nIGEgbG9vcCB0
-aGF0IG1hdGNoZXMgdGhlIGluc3RydWN0aW9uIHNldA0KaXMgYSBnb29kIGlkZWEuDQoNCkZvciBp
-bnN0YW5jZSwgeDg2IGNhbiBkbyAqKHJlZ18xICsgcmVnXzIgKiAoMXwyfDR8OCkgKyBjb25zdGFu
-dCkNCnNvIHlvdSBjYW4gaW5jcmVtZW50IHJlZ18yIGFuZCB1c2UgaXQgZm9yIGJvdGggYnVmZmVy
-cyB3aGlsZQ0Kc3RpbGwgdW5yb2xsaW5nIGVub3VnaCB0byBoaXQgbWVtb3J5IGJhbmR3aWR0aC4N
-Cg0KV2l0aCBvbmx5ICoocmVnXzEgKyBjb25zdGFudCkgeW91IG5lZWQgdG8gaW5jcmVtZW50IGJv
-dGggdGhlDQpzb3VyY2UgYW5kIGRlc3RpbmF0aW9uIGFkZHJlc3Nlcy4NCg0KT1RPSCB5b3UgY2Fu
-IHNhdmUgYW4gaW5zdHJ1Y3Rpb24gb24geDg2IGJ5IGFkZGluZyB0byAncmVnXzInDQp1bnRpbCBp
-dCBiZWNvbWVzIHplcm8gKHNvIHlvdSBkb24ndCBuZWVkIGFkZCwgY21wIGFuZCBqbXApLg0KDQpC
-dXQgYSBtaXBzLWxpa2UgaW5zdHJ1Y3Rpb24gc2V0IChpbmNsdWRlcyByaXNjdiBhbmQgbmlvczIp
-DQpoYXMgJ2NvbXBhcmUgYW5kIGJyYW5jaCcgc28geW91IG9ubHkgZXZlciBuZWVkIG9uZSBpbnN0
-cnVjdGlvbg0KYXQgdGhlIGVuZCBvZiB0aGUgbG9vcC4NCg0KSGF2aW5nIHRvIGhhbmRsZSBtaXNh
-bGlnbmVkIGNvcGllcyBpcyBhbm90aGVyIGRpc3RpbmN0IGlzc3VlLg0KRm9yIHNvbWUgMzJiaXQg
-Y3B1IGJ5dGUgY29waWVzIG1heSBiZSBhcyBmYXN0IGFzIGFueSBzaGlmdA0KYW5kIG1hc2sgY29k
-ZS4NCg0KPiA+ICh5ZXMsIGZpcm13YXJlIGlzIGV4cGVjdGVkIHRvDQo+ID4gdHJhcCBhbmQgaGFu
-ZGxlIHRoZXNlLCBidXQgdGhleSBhcmUgcGFpbmZ1bGx5IHNsb3cpLg0KDQpZZXMsIHRvIHRoZSBw
-b2ludCB3aGVyZSB0aGUgc3lzdGVtIHNob3VsZCBqdXN0IHBhbmljIGFuZA0KZm9yY2UgeW91IHRv
-IGZpeCB0aGUgY29kZS4NCg0KV2hlbiBJIHdlcmUgYSBsYWQgd2UgZm9yY2VkIGV2ZXJ5b25lIHRv
-IGZpeCB0aGVyZSBjb2RlDQpzbyBpdCB3b3VsZCBydW4gb24gc3BhcmMuDQoNCglEYXZpZA0KDQot
-DQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwg
-TWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2Fs
-ZXMpDQo=
+On 6/15/21 7:36 AM, Hans Verkuil wrote:
+> Hi Shuah,
+> 
+> On 11/06/2021 03:58, Shuah Khan wrote:
+>> Smatch static checker warns that "mdev" can be null:
+>>
+>> sound/usb/media.c:287 snd_media_device_create()
+>>      warn: 'mdev' can also be NULL
+>>
+>> If CONFIG_MEDIA_CONTROLLER is disabled, this file should not be included
+>> in the build.
+>>
+>> The below conditions in the sound/usb/Makefile are in place to ensure that
+>> media.c isn't included in the build.
+>>
+>> sound/usb/Makefile:
+>> snd-usb-audio-$(CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER) += media.o
+>>
+>> select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER &&
+>>         (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND_USB_AUDIO)
+>>
+>> The following config check in include/media/media-dev-allocator.h is
+>> in place to enable the API only when CONFIG_MEDIA_CONTROLLER and
+>> CONFIG_USB are enabled.
+>>
+>>   #if defined(CONFIG_MEDIA_CONTROLLER) && defined(CONFIG_USB)
+>>
+>> This check doesn't work as intended when CONFIG_USB=m. When CONFIG_USB=m,
+>> CONFIG_USB_MODULE is defined and CONFIG_USB is not. The above config check
+>> doesn't catch that CONFIG_USB is defined as a module and disables the API.
+>> This results in sound/usb enabling Media Controller specific ALSA driver
+>> code, while Media disables the Media Controller API.
+>>
+>> Fix the problem requires two changes:
+>>
+>> 1. Change the check to use IS_ENABLED to detect when CONFIG_USB is enabled
+>>     as a module or static. Since CONFIG_MEDIA_CONTROLLER is a bool, leave
+>>     the check unchanged to be consistent with drivers/media/Makefile.
+>>
+>> 2. Change the drivers/media/mc/Makefile to include mc-dev-allocator.o
+>>     in mc-objs when CONFIG_USB is y or m.
+> 
+> If I test this patch, then I get:
+> 
+> drivers/media/mc/mc-dev-allocator.c:97:22: error: redefinition of 'media_device_usb_allocate'
+>     97 | struct media_device *media_device_usb_allocate(struct usb_device *udev,
+>        |                      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from drivers/media/mc/mc-dev-allocator.c:24:
+> include/media/media-dev-allocator.h:55:36: note: previous definition of 'media_device_usb_allocate' was here
+>     55 | static inline struct media_device *media_device_usb_allocate(
+>        |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/media/mc/mc-dev-allocator.c:119:6: error: redefinition of 'media_device_delete'
+>    119 | void media_device_delete(struct media_device *mdev, const char *module_name,
+>        |      ^~~~~~~~~~~~~~~~~~~
+> In file included from drivers/media/mc/mc-dev-allocator.c:24:
+> include/media/media-dev-allocator.h:59:20: note: previous definition of 'media_device_delete' was here
+>     59 | static inline void media_device_delete(
+>        |                    ^~~~~~~~~~~~~~~~~~~
+> 
+> The .config has:
+> 
+> # CONFIG_USB_SUPPORT is not set
+> CONFIG_MEDIA_CONTROLLER=y
+>
+Oops. I tried different combinations of CONFIG_USB and didn't try this
+one. Will send v2.
 
+thanks,
+-- Shuah
