@@ -2,91 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289C23A7F7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8377C3A7FAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhFONaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:30:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231453AbhFONaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:30:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6CA261468;
-        Tue, 15 Jun 2021 13:28:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623763684;
-        bh=s4DCRr6gd8QdC/cIRhXmf9yOcNT5lHnTgdw2ssrVcfc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eS3N8PXWeiD9ris3hzIoJuLWn2NGjTdShLrljniwaPU6/GCsQx081P3i9GY/GGoi0
-         1QZbWqrKpygg5tCF3Jxy2C6o6uSt6t2e0Ijc+IQ2MNOKlCurBgbGtnjdcpVouHaw2o
-         srePOQA4J+SyUl/UYh5XamQCK8rigmbn50YQdt1U=
-Date:   Tue, 15 Jun 2021 15:28:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] tty: Fix out-of-bound vmalloc access in imageblit
-Message-ID: <YMiq4eucvkSGgSCp@kroah.com>
-References: <20210614131859.9511-1-igormtorrente@gmail.com>
+        id S231570AbhFONbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231484AbhFONbA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:31:00 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3630C0611C3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:28:54 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id z8so18354682wrp.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T+ZBfjNZ6RVCUMCqyMKxAFRbxUFsjkm4bDvJhAhi6Mo=;
+        b=gJCWhvG0trZGmdFS8qp6GD/DyxLD997cSOh9vJBIEZ7dUTKcNqJ8MRslZ1gQwvKrMX
+         9qAO6kg/rQDf0+cvWzZ6EkabPI5CybTfv/5lhffEhhrrh3e8/YETU56bgNY+Vx3RQGfm
+         QwuRVs5i4gczeywUObgfHdYG4qzR6Dtu1Tf6H9v5SkcfZBysBDawIQcp5YTkMDMXPext
+         O0Q9HwXgV6+r1slWfVYcfIOjAXjniWOAz81YKBHwm5DyUcgmDiUnRSnmRXVK5cg0u3mi
+         yFoztK2uY9w7kpCetrxSGADPag6sqG9aNTdlol5j1maBNUyXX7RodQuH5aTUi+4cnWBX
+         YANg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T+ZBfjNZ6RVCUMCqyMKxAFRbxUFsjkm4bDvJhAhi6Mo=;
+        b=O7NvgGXaDJpTQdsNGFQpUK+KcVu2dxlVqy7gyYahS4nL0rs0PtfDhXYTCkIZoKLE3h
+         CQfUYfyydVCTaBQ7fmmEcqt7l+3kqBA1twSuhqhReUcQwK/JxHigRAZe5tpIJxF/X6Dg
+         bxvCjkx8i8QBJwYBYqO7BXYctAjeUkUP1HtJiPZJy6uCD4NJewufWo/e8tkplMNRfYoB
+         ycdIbBFuLlbuIBU73cPFN4mHBIxUzFer+Ad0xBKwBRnOpWeuOj7hqw4wd1AkiOoeguAz
+         Ppdp0+WEIW2ondsPBPoHRwlBtmg1AWtl3D6lXi/2xrrXhYDU+epmfFDc7TDZLHSwSZK8
+         Ozjg==
+X-Gm-Message-State: AOAM531D0IheWcUMgcgKxTtjeYMmAcFoijujj9hE1ZxLVWMZ0HwjjkTP
+        8jsaq/s1E0h9FfLgLc1GpHfpGw==
+X-Google-Smtp-Source: ABdhPJyWg1bDgJUfWRsHMUg6+jsrtUK+wN9wS8tdwfKLmUtKjDpeKPg1IzKFYpVO+Mbs6l7J138zCw==
+X-Received: by 2002:adf:ff88:: with SMTP id j8mr25287530wrr.10.1623763725369;
+        Tue, 15 Jun 2021 06:28:45 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id u7sm22583054wrt.18.2021.06.15.06.28.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 06:28:44 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH v2] ASoC: codecs: wcd938x: remove incorrect module interdependency
+Date:   Tue, 15 Jun 2021 14:28:29 +0100
+Message-Id: <20210615132829.23067-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210614131859.9511-1-igormtorrente@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 10:18:59AM -0300, Igor Matheus Andrade Torrente wrote:
-> This issue happens when a userspace program does an ioctl
-> FBIOPUT_VSCREENINFO passing the fb_var_screeninfo struct
-> containing only the fields xres, yres, and bits_per_pixel
-> with values.
-> 
-> If this struct is the same as the previous ioctl, the
-> vc_resize() detects it and doesn't call the resize_screen(),
-> leaving the fb_var_screeninfo incomplete. And this leads to
-> the updatescrollmode() calculates a wrong value to
-> fbcon_display->vrows, which makes the real_y() return a
-> wrong value of y, and that value, eventually, causes
-> the imageblit to access an out-of-bound address value.
-> 
-> To solve this issue I made the resize_screen() be called
-> even if the screen does not need any resizing, so it will
-> "fix and fill" the fb_var_screeninfo independently.
-> 
-> Reported-and-tested-by: syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
-> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-> ---
-> v2: It Tries to avoid the problem found by Greg in the previous
->     patch.
-> ---
->  drivers/tty/vt/vt.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-> index fa1548d4f94b..e522f9b249e5 100644
-> --- a/drivers/tty/vt/vt.c
-> +++ b/drivers/tty/vt/vt.c
-> @@ -1219,8 +1219,10 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
->  	new_row_size = new_cols << 1;
->  	new_screen_size = new_row_size * new_rows;
->  
-> -	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
-> -		return 0;
-> +	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows) {
-> +		err = resize_screen(vc, new_cols, new_rows, user);
-> +		return err;
+For some reason we ended up with cyclic dependency between snd_soc_wcd938x
+and snd_soc_wcd938x_sdw modules.
 
-Shouldn't this just be a single line change to:
-		return resize_screen(vc, new_cols, new_rows, user);
-?
+Remove this cyclic dependency by handling them in respective modules.
+Without this below error is reported during make modules_install
 
-But this also should get a big comment, as it looks odd that if the size
-isn't changing, why this function should be called at all.  At first
-glance at just the code, this looks wrong, so please document this
-really well here.
+depmod: ERROR: Cycle detected: snd_soc_wcd938x -> snd_soc_wcd938x_sdw -> snd_soc_wcd938x
+depmod: ERROR: Found 2 modules in dependency cycles!
 
-thanks,
+Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+Changes since v1:
+	- included irq.h as x86 allmodconfig build reported implicit declaration
+	 of function handle_nested_irq
 
-greg k-h
+ sound/soc/codecs/wcd938x-sdw.c | 20 +++++++++++++-------
+ sound/soc/codecs/wcd938x.c     | 27 +++++----------------------
+ sound/soc/codecs/wcd938x.h     |  4 +---
+ 3 files changed, 19 insertions(+), 32 deletions(-)
+
+diff --git a/sound/soc/codecs/wcd938x-sdw.c b/sound/soc/codecs/wcd938x-sdw.c
+index d82c40ec6898..d8d4caf48dc7 100644
+--- a/sound/soc/codecs/wcd938x-sdw.c
++++ b/sound/soc/codecs/wcd938x-sdw.c
+@@ -9,6 +9,7 @@
+ #include <linux/component.h>
+ #include <sound/soc.h>
+ #include <linux/pm_runtime.h>
++#include <linux/irq.h>
+ #include <linux/irqdomain.h>
+ #include <linux/of.h>
+ #include <linux/soundwire/sdw.h>
+@@ -176,8 +177,19 @@ static int wcd9380_interrupt_callback(struct sdw_slave *slave,
+ 				      struct sdw_slave_intr_status *status)
+ {
+ 	struct wcd938x_sdw_priv *wcd = dev_get_drvdata(&slave->dev);
++	struct irq_domain *slave_irq = wcd->slave_irq;
++	struct regmap *regmap = dev_get_regmap(&slave->dev, NULL);
++	u32 sts1, sts2, sts3;
+ 
+-	return wcd938x_handle_sdw_irq(wcd);
++	do {
++		handle_nested_irq(irq_find_mapping(slave_irq, 0));
++		regmap_read(regmap, WCD938X_DIGITAL_INTR_STATUS_0, &sts1);
++		regmap_read(regmap, WCD938X_DIGITAL_INTR_STATUS_1, &sts2);
++		regmap_read(regmap, WCD938X_DIGITAL_INTR_STATUS_2, &sts3);
++
++	} while (sts1 || sts2 || sts3);
++
++	return IRQ_HANDLED;
+ }
+ 
+ static struct sdw_slave_ops wcd9380_slave_ops = {
+@@ -239,16 +251,10 @@ static int wcd9380_probe(struct sdw_slave *pdev,
+ 					SDW_SCP_INT1_PARITY;
+ 	pdev->prop.lane_control_support = true;
+ 	if (wcd->is_tx) {
+-		struct regmap *rm;
+-
+ 		pdev->prop.source_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
+ 		pdev->prop.src_dpn_prop = wcd938x_dpn_prop;
+ 		wcd->ch_info = &wcd938x_sdw_tx_ch_info[0];
+ 		pdev->prop.wake_capable = true;
+-
+-		rm = devm_regmap_init_sdw(pdev, &wcd938x_regmap_config);
+-		if (IS_ERR(rm))
+-			return PTR_ERR(rm);
+ 	} else {
+ 		pdev->prop.sink_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
+ 		pdev->prop.sink_dpn_prop = wcd938x_dpn_prop;
+diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
+index a2c76dc8fd89..24afe93830ce 100644
+--- a/sound/soc/codecs/wcd938x.c
++++ b/sound/soc/codecs/wcd938x.c
+@@ -1198,7 +1198,7 @@ static bool wcd938x_volatile_register(struct device *dev, unsigned int reg)
+ 	return false;
+ }
+ 
+-struct regmap_config wcd938x_regmap_config = {
++static struct regmap_config wcd938x_regmap_config = {
+ 	.name = "wcd938x_csr",
+ 	.reg_bits = 32,
+ 	.val_bits = 8,
+@@ -1211,7 +1211,6 @@ struct regmap_config wcd938x_regmap_config = {
+ 	.volatile_reg = wcd938x_volatile_register,
+ 	.can_multi_write = true,
+ };
+-EXPORT_SYMBOL_GPL(wcd938x_regmap_config);
+ 
+ static const struct regmap_irq wcd938x_irqs[WCD938X_NUM_IRQS] = {
+ 	REGMAP_IRQ_REG(WCD938X_IRQ_MBHC_BUTTON_PRESS_DET, 0, 0x01),
+@@ -3472,24 +3471,6 @@ static int wcd938x_reset(struct wcd938x_priv *wcd938x)
+ 	return 0;
+ }
+ 
+-int wcd938x_handle_sdw_irq(struct wcd938x_sdw_priv *wcd)
+-{
+-	struct wcd938x_priv *wcd938x = wcd->wcd938x;
+-	struct irq_domain *slave_irq = wcd938x->virq;
+-	u32 sts1, sts2, sts3;
+-
+-	do {
+-		handle_nested_irq(irq_find_mapping(slave_irq, 0));
+-		regmap_read(wcd938x->regmap, WCD938X_DIGITAL_INTR_STATUS_0, &sts1);
+-		regmap_read(wcd938x->regmap, WCD938X_DIGITAL_INTR_STATUS_1, &sts2);
+-		regmap_read(wcd938x->regmap, WCD938X_DIGITAL_INTR_STATUS_2, &sts3);
+-
+-	} while (sts1 || sts2 || sts3);
+-
+-	return IRQ_HANDLED;
+-}
+-EXPORT_SYMBOL_GPL(wcd938x_handle_sdw_irq);
+-
+ static int wcd938x_codec_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
+@@ -3573,6 +3554,7 @@ static int wcd938x_bind(struct device *dev)
+ 	}
+ 	wcd938x->sdw_priv[AIF1_PB] = dev_get_drvdata(wcd938x->rxdev);
+ 	wcd938x->sdw_priv[AIF1_PB]->wcd938x = wcd938x;
++	wcd938x->sdw_priv[AIF1_PB]->slave_irq = wcd938x->virq;
+ 
+ 	wcd938x->txdev = wcd938x_sdw_device_get(wcd938x->txnode);
+ 	if (!wcd938x->txdev) {
+@@ -3581,6 +3563,7 @@ static int wcd938x_bind(struct device *dev)
+ 	}
+ 	wcd938x->sdw_priv[AIF1_CAP] = dev_get_drvdata(wcd938x->txdev);
+ 	wcd938x->sdw_priv[AIF1_CAP]->wcd938x = wcd938x;
++	wcd938x->sdw_priv[AIF1_CAP]->slave_irq = wcd938x->virq;
+ 	wcd938x->tx_sdw_dev = dev_to_sdw_dev(wcd938x->txdev);
+ 	if (!wcd938x->tx_sdw_dev) {
+ 		dev_err(dev, "could not get txslave with matching of dev\n");
+@@ -3607,8 +3590,8 @@ static int wcd938x_bind(struct device *dev)
+ 		return -EINVAL;
+ 	}
+ 
+-	wcd938x->regmap = dev_get_regmap(wcd938x->txdev, NULL);
+-	if (!wcd938x->regmap) {
++	wcd938x->regmap = devm_regmap_init_sdw(wcd938x->tx_sdw_dev, &wcd938x_regmap_config);
++	if (IS_ERR(wcd938x->regmap)) {
+ 		dev_err(dev, "%s: tx csr regmap not found\n", __func__);
+ 		return PTR_ERR(wcd938x->regmap);
+ 	}
+diff --git a/sound/soc/codecs/wcd938x.h b/sound/soc/codecs/wcd938x.h
+index 9db3ab6e47a6..07b08de4cebf 100644
+--- a/sound/soc/codecs/wcd938x.h
++++ b/sound/soc/codecs/wcd938x.h
+@@ -663,11 +663,9 @@ struct wcd938x_sdw_priv {
+ 	int num_ports;
+ 	bool is_tx;
+ 	struct wcd938x_priv *wcd938x;
++	struct irq_domain *slave_irq;
+ };
+ 
+-extern struct regmap_config wcd938x_regmap_config;
+-int wcd938x_handle_sdw_irq(struct wcd938x_sdw_priv *priv);
+-
+ #if IS_ENABLED(CONFIG_SND_SOC_WCD938X_SDW)
+ int wcd938x_sdw_free(struct wcd938x_sdw_priv *wcd,
+ 		     struct snd_pcm_substream *substream,
+-- 
+2.21.0
 
