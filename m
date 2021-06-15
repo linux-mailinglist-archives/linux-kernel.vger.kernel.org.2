@@ -2,88 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D7A3A8B1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6333A8B22
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhFOVeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFOVeW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:34:22 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7687C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:32:17 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623792735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cRCLZ+ASV1LhD0HIdD+zuLHJeLCBmnyjypiNSx38540=;
-        b=c572isNHPCMvxGC2WvAPXs9aNQ9Qq5mRBQG0kbzRKaTgNHPYuZo00ecwmTanow7AGAs/9a
-        xrFR01E0mpYh2OD4d2IAxXqDfsgPEL6VjJzDG/X87l0jyOSpzR6JqFqCH8GNl72bsEecA/
-        D3MYTj8U+9L0YEgJxnE0v3xD+FMQUJWFhDFRCVWieCI6lxAphbP5GpK786cdsnAztjMD69
-        uEc5eK2bLF9bH1Q1b4lqJZLNcX2D778xVAz4Ik+FLY4pMVF7wFaZpFkK+HOi9Pf+mQhyO/
-        TWCQ37S5L8GF8bUbP3us1Udm5hx13j6NSAcSJXdICdLCYmRZZxhxZSDsRewfnQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623792735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cRCLZ+ASV1LhD0HIdD+zuLHJeLCBmnyjypiNSx38540=;
-        b=WPOnp4HMoNfDAl+V8Jnlx1NfSohoHLEltWTd7EsJZ2nRkkm3oo1oFZS6kf5l4proA3aEVX
-        rtFQAqVEXChMd1AQ==
-To:     Borislav Petkov <bp@suse.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V2 08/52] x86/fpu: Sanitize xstateregs_set()
-In-Reply-To: <YMjmHcW1HPbHfkMF@zn.tnic>
-References: <20210614154408.673478623@linutronix.de> <20210614155354.534061373@linutronix.de> <YMjmHcW1HPbHfkMF@zn.tnic>
-Date:   Tue, 15 Jun 2021 23:32:14 +0200
-Message-ID: <87bl86hl0h.ffs@nanos.tec.linutronix.de>
+        id S231310AbhFOVea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:34:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231210AbhFOVeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 17:34:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2820A610C8;
+        Tue, 15 Jun 2021 21:32:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623792740;
+        bh=i5Dzwh4R7u8Hux0pDFY82Jkn6xw5B0DTb3vLlAOHoIo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dlg4FUfRo9hV/zrpXMd23py0f7gyZIfAi4a1dmPPDEXP14KNn3rHcYp2YuCcrgb/b
+         2QVfy17hXrB2ChiCQ8FAWFEaYqUAJomcNw14czQK2aQ8MoyIA4n4GaPLxWgkc4qBex
+         qdXt5HMvHS6cHX+s80JuQttJWXEli1w5FYAkqknuSpWK7N9Xl3fkfhz8zimYHxQgyu
+         3qN2aonq0vILOcdCF/gFEqUBJwxsNZbSvdAaDMqWRvZBsx65247jvOU/wBaElF3YWx
+         Y6g/1lDoXdEMBxmdA+IVR81dItsbshaBXhTXlbGhjs/oiARlfC4pXITLSVxhO62mlG
+         +C6qYF0swVzWA==
+Date:   Tue, 15 Jun 2021 14:32:18 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Edward Cree <ecree.xilinx@gmail.com>,
+        Kurt Manucredo <fuzzybritches0@gmail.com>,
+        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
+        keescook@chromium.org, yhs@fb.com, dvyukov@google.com,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        nathan@kernel.org, ndesaulniers@google.com,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, kasan-dev@googlegroups.com
+Subject: Re: [PATCH v5] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
+Message-ID: <YMkcYn4dyZBY/ze+@gmail.com>
+References: <202106091119.84A88B6FE7@keescook>
+ <752cb1ad-a0b1-92b7-4c49-bbb42fdecdbe@fb.com>
+ <CACT4Y+a592rxFmNgJgk2zwqBE8EqW1ey9SjF_-U3z6gt3Yc=oA@mail.gmail.com>
+ <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com>
+ <202106101002.DF8C7EF@keescook>
+ <CAADnVQKMwKYgthoQV4RmGpZm9Hm-=wH3DoaNqs=UZRmJKefwGw@mail.gmail.com>
+ <85536-177443-curtm@phaethon>
+ <bac16d8d-c174-bdc4-91bd-bfa62b410190@gmail.com>
+ <YMkAbNQiIBbhD7+P@gmail.com>
+ <dbcfb2d3-0054-3ee6-6e76-5bd78023a4f2@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dbcfb2d3-0054-3ee6-6e76-5bd78023a4f2@iogearbox.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15 2021 at 19:40, Borislav Petkov wrote:
-> On Mon, Jun 14, 2021 at 05:44:16PM +0200, Thomas Gleixner wrote:
->> @@ -108,10 +110,10 @@ int xstateregs_set(struct task_struct *t
->>  		  const void *kbuf, const void __user *ubuf)
->>  {
->>  	struct fpu *fpu = &target->thread.fpu;
->> -	struct xregs_state *xsave;
->> +	struct xregs_state *tmpbuf = NULL;
->>  	int ret;
->>  
->> -	if (!boot_cpu_has(X86_FEATURE_XSAVE))
->> +	if (!static_cpu_has(X86_FEATURE_XSAVE))
->
-> cpu_feature_enabled() - we're going to use only that thing from now on
-> for simplicity.
+On Tue, Jun 15, 2021 at 11:08:18PM +0200, Daniel Borkmann wrote:
+> On 6/15/21 9:33 PM, Eric Biggers wrote:
+> > On Tue, Jun 15, 2021 at 07:51:07PM +0100, Edward Cree wrote:
+> > > 
+> > > As I understand it, the UBSAN report is coming from the eBPF interpreter,
+> > >   which is the *slow path* and indeed on many production systems is
+> > >   compiled out for hardening reasons (CONFIG_BPF_JIT_ALWAYS_ON).
+> > > Perhaps a better approach to the fix would be to change the interpreter
+> > >   to compute "DST = DST << (SRC & 63);" (and similar for other shifts and
+> > >   bitnesses), thus matching the behaviour of most chips' shift opcodes.
+> > > This would shut up UBSAN, without affecting JIT code generation.
+> > 
+> > Yes, I suggested that last week
+> > (https://lkml.kernel.org/netdev/YMJvbGEz0xu9JU9D@gmail.com).  The AND will even
+> > get optimized out when compiling for most CPUs.
+> 
+> Did you check if the generated interpreter code for e.g. x86 is the same
+> before/after with that?
 
-Sure, I just run sed over the set.
+Yes, on x86_64 with gcc 10.2.1, the disassembly of ___bpf_prog_run() is the same
+both before and after (with UBSAN disabled).  Here is the patch I used:
 
->> +	fpu__prepare_write(fpu);
->
-> Yikes, why isn't this function called
->
-> fpu_invalidate_state(fpu)
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 5e31ee9f7512..996db8a1bbfb 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1407,12 +1407,30 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+ 		DST = (u32) DST OP (u32) IMM;	\
+ 		CONT;
+ 
++	/*
++	 * Explicitly mask the shift amounts with 63 or 31 to avoid undefined
++	 * behavior.  Normally this won't affect the generated code.
++	 */
++#define ALU_SHIFT(OPCODE, OP)		\
++	ALU64_##OPCODE##_X:		\
++		DST = DST OP (SRC & 63);\
++		CONT;			\
++	ALU_##OPCODE##_X:		\
++		DST = (u32) DST OP ((u32)SRC & 31);	\
++		CONT;			\
++	ALU64_##OPCODE##_K:		\
++		DST = DST OP (IMM & 63);	\
++		CONT;			\
++	ALU_##OPCODE##_K:		\
++		DST = (u32) DST OP ((u32)IMM & 31);	\
++		CONT;
++
+ 	ALU(ADD,  +)
+ 	ALU(SUB,  -)
+ 	ALU(AND,  &)
+ 	ALU(OR,   |)
+-	ALU(LSH, <<)
+-	ALU(RSH, >>)
++	ALU_SHIFT(LSH, <<)
++	ALU_SHIFT(RSH, >>)
+ 	ALU(XOR,  ^)
+ 	ALU(MUL,  *)
+ #undef ALU
 
-Because...
+> 
+> How does UBSAN detect this in general? I would assume generated code for
+> interpreter wrt DST = DST << SRC would not really change as otherwise all
+> valid cases would be broken as well, given compiler has not really room
+> to optimize or make any assumptions here, in other words, it's only
+> propagating potential quirks under such cases from underlying arch.
 
->> +	/* mxcsr reserved bits must be masked to zero for historical reasons. */
->
-> Wasn't that comment supposed to get some love?
+UBSAN inserts code that checks that shift amounts are in range.
 
-See the next patch ...
+In theory there are cases where the undefined behavior of out-of-range shift
+amounts could cause problems.  For example, a compiler could make the following
+function always return true, as it can assume that 'b' is in the range [0, 31].
+
+	bool foo(int a, int b, int *c)
+	{
+		*c = a << b;
+		return b < 32;
+	}
+
+- Eric
