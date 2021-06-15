@@ -2,72 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD813A7B9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB143A7BA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbhFOKTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:19:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231152AbhFOKTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:19:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E26461426;
-        Tue, 15 Jun 2021 10:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623752236;
-        bh=h/OhBuRJp1n80pXmzsW7V7YT5v9wdMx+nLtKRZZvje4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tflOmO1j3m7wSBM1cbG1DaCU1L5jL8vr3Ef4oR3cSFPARYnd+jdUitN81uSmlVkzt
-         PJOs9J/gyjoXly3yK+wdLUEml+9HRDdKiwyr0CDuw0G6y63pwe4XvxNPQQK4jYvVfB
-         667TCKpXc9x4l+20h1fmYd4CcoaAiY9rAr5l63wc=
-Date:   Tue, 15 Jun 2021 12:17:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] cxgb4: fix wrong shift.
-Message-ID: <YMh+KitE/UXqidNn@kroah.com>
-References: <20210615095651.GA7479@duo.ucw.cz>
+        id S231582AbhFOKUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231460AbhFOKUB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 06:20:01 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A253C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:17:57 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id 68so9483980vsu.6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:17:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4ycQAbO6p4bExQOpnHZuZ98GiyPnKVZH7WksiZsubcI=;
+        b=OAWYmdMR+lzuI/2N3Hrh/k34hHE6Hg5GE85Z94ZydbX78Un59yv/u51BDlaeYr6BrO
+         UUQnL75Gf7OYEefvBwVnuJMK5CLvfaPFoYgpGOAtt9EEp7rEb0OnELcf2snIjU6TOVrO
+         5WxxailuHcjrR2LEAX5g9ke9/8oDcD0/WzHZiLHlRjDpo7FNb7P9SeXdb9J5pHq65JAb
+         rNi9ZVzGN9aU0K7ceFOZGEfNgMH+MhRElgDbO7qgrKI8m2eGQSKk5VowP33TuXdfy0Gz
+         e1En/kzvM4XUDg+0dZWkGTN5ILHsjxRjOY/PxezSKZsibc9LrB+QgeOKKv1F6LfCys42
+         3kzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4ycQAbO6p4bExQOpnHZuZ98GiyPnKVZH7WksiZsubcI=;
+        b=nLRpb+HzCJherI+hFP4q/REcberbXhDPzBzVOyfvaTIXTlF9HgA9+2WNB75IUnjom7
+         Oe965qoTJADAp3k9R2+JLpVH9aqZB4WYcd3zbzejxqkUY1nRPvWYhWlgnsC2L1+SFD8k
+         WZK2CyAOhowdwVSZUcOAM4azLJ0sOGHzeu8umJhv64Wq6gDDA1HEz1nEKMj0GV+lFXQq
+         adbl+FL/LzIjwi1w1dG1LiDnTWwzHJ/ICXMBw1qKnwX2aE9eMXPZlUWTO1LhRhihmv9x
+         PhcWpAQRtDAyvPqkLYnwpyjuDXGrlQ6VPoVIgyae6/396NCQCzqJMxmLwe4VrT2J0NJS
+         HyDA==
+X-Gm-Message-State: AOAM532tvu+MHgrCLe0z1AoDQxE4GyscGYPLoL3WEVdu4M5XHO5mp5UD
+        S6Ry1cYDT+SLkHBjJAgl8t7ym0yzHUYgOPej/gKvQQ==
+X-Google-Smtp-Source: ABdhPJxfzQqYhfDxw8f4Il9mcR5kvZ52D3jI7cTgR32qDD+E8u+OOd8AJs/61Ru7I9TZcVQvqt31S3h0CNnJ4tQB7h8=
+X-Received: by 2002:a67:e359:: with SMTP id s25mr4018222vsm.55.1623752276591;
+ Tue, 15 Jun 2021 03:17:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615095651.GA7479@duo.ucw.cz>
+References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
+ <20210611101540.3379937-3-dmitry.baryshkov@linaro.org> <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
+ <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
+In-Reply-To: <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 15 Jun 2021 12:17:20 +0200
+Message-ID: <CAPDyKFoMC_7kJx_Wb4LKgxvRCoqHYFtwsJ2b7Cr4OvjA94DtHg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 11:56:51AM +0200, Pavel Machek wrote:
-> While fixing coverity warning, commit
-> dd2c79677375c37f8f9f8d663eb4708495d595ef introduced typo in shift
-> value. Fix that.
->     
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> 
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-> index 22c9ac922eba..6260b3bebd2b 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-> @@ -198,7 +198,7 @@ static void set_nat_params(struct adapter *adap, struct filter_entry *f,
->  				      WORD_MASK, f->fs.nat_lip[3] |
->  				      f->fs.nat_lip[2] << 8 |
->  				      f->fs.nat_lip[1] << 16 |
-> -				      (u64)f->fs.nat_lip[0] << 25, 1);
-> +				      (u64)f->fs.nat_lip[0] << 24, 1);
->  		}
->  	}
->  
-> 
++ Mark
 
+On Fri, 11 Jun 2021 at 16:34, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> Added Stephen to Cc list
+>
+> On Fri, 11 Jun 2021 at 16:50, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >
+> > On Fri, 11 Jun 2021 at 12:15, Dmitry Baryshkov
+> > <dmitry.baryshkov@linaro.org> wrote:
+> > >
+> > > In case of nested genpds it is easy to get the following warning from
+> > > lockdep, because all genpd's mutexes share same locking class. Use the
+> > > per-genpd locking class to stop lockdep from warning about possible
+> > > deadlocks. It is not possible to directly use genpd nested locking, as
+> > > it is not the genpd code calling genpd. There are interim calls to
+> > > regulator core.
+> > >
+> > > [    3.030219] ============================================
+> > > [    3.030220] WARNING: possible recursive locking detected
+> > > [    3.030221] 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480 Not tainted
+> > > [    3.030222] --------------------------------------------
+> > > [    3.030223] kworker/u16:0/7 is trying to acquire lock:
+> > > [    3.030224] ffffde0eabd29aa0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
+> > > [    3.030236]
+> > > [    3.030236] but task is already holding lock:
+> > > [    3.030236] ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
+> > > [    3.030240]
+> > > [    3.030240] other info that might help us debug this:
+> > > [    3.030240]  Possible unsafe locking scenario:
+> > > [    3.030240]
+> > > [    3.030241]        CPU0
+> > > [    3.030241]        ----
+> > > [    3.030242]   lock(&genpd->mlock);
+> > > [    3.030243]   lock(&genpd->mlock);
+> > > [    3.030244]
+> > > [    3.030244]  *** DEADLOCK ***
+> > > [    3.030244]
+> > > [    3.030244]  May be due to missing lock nesting notation
+> > > [    3.030244]
+> > > [    3.030245] 6 locks held by kworker/u16:0/7:
+> > > [    3.030246]  #0: ffff6cca00010938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
+> > > [    3.030252]  #1: ffff8000100c3db0 (deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
+> > > [    3.030255]  #2: ffff6cca00ce3188 (&dev->mutex){....}-{3:3}, at: __device_attach+0x3c/0x184
+> > > [    3.030260]  #3: ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
+> > > [    3.030264]  #4: ffff8000100c3968 (regulator_ww_class_acquire){+.+.}-{0:0}, at: regulator_lock_dependent+0x6c/0x1b0
+> > > [    3.030270]  #5: ffff6cca00a59158 (regulator_ww_class_mutex){+.+.}-{3:3}, at: regulator_lock_recursive+0x94/0x1d0
+> > > [    3.030273]
+> > > [    3.030273] stack backtrace:
+> > > [    3.030275] CPU: 6 PID: 7 Comm: kworker/u16:0 Not tainted 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480
+> > > [    3.030276] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
+> > > [    3.030278] Workqueue: events_unbound deferred_probe_work_func
+> > > [    3.030280] Call trace:
+> > > [    3.030281]  dump_backtrace+0x0/0x1a0
+> > > [    3.030284]  show_stack+0x18/0x24
+> > > [    3.030286]  dump_stack+0x108/0x188
+> > > [    3.030289]  __lock_acquire+0xa20/0x1e0c
+> > > [    3.030292]  lock_acquire.part.0+0xc8/0x320
+> > > [    3.030294]  lock_acquire+0x68/0x84
+> > > [    3.030296]  __mutex_lock+0xa0/0x4f0
+> > > [    3.030299]  mutex_lock_nested+0x40/0x50
+> > > [    3.030301]  genpd_lock_mtx+0x18/0x2c
+> > > [    3.030303]  dev_pm_genpd_set_performance_state+0x94/0x1a0
+> > > [    3.030305]  reg_domain_enable+0x28/0x4c
+> > > [    3.030308]  _regulator_do_enable+0x420/0x6b0
+> > > [    3.030310]  _regulator_enable+0x178/0x1f0
+> > > [    3.030312]  regulator_enable+0x3c/0x80
+> >
+> > At a closer look, I am pretty sure that it's the wrong code design
+> > that triggers this problem, rather than that we have a real problem in
+> > genpd. To put it simply, the code in genpd isn't designed to work like
+> > this. We will end up in circular looking paths, leading to deadlocks,
+> > sooner or later if we allow the above code path.
+> >
+> > To fix it, the regulator here needs to be converted to a proper PM
+> > domain. This PM domain should be assigned as the parent to the one
+> > that is requested to be powered on.
+>
+> This more or less resembles original design, replaced per review
+> request to use separate regulator
+> (https://lore.kernel.org/linux-arm-msm/160269659638.884498.4031967462806977493@swboyd.mtv.corp.google.com/,
+> https://lore.kernel.org/linux-arm-msm/20201023131925.334864-1-dmitry.baryshkov@linaro.org/).
 
-<formletter>
+Thanks for the pointers. In hindsight, it looks like the
+"regulator-fixed-domain" DT binding wasn't the right thing.
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+Fortunately, it looks like the problem can be quite easily fixed, by
+moving to a correct model of the domain hierarchy.
 
-</formletter>
+Beyond this, perhaps we should consider removing the
+"regulator-fixed-domain" DT property, as to avoid similar problems
+from cropping up?
+
+Mark, what do you think?
+
+>
+> Stephen, would it be fine to you to convert the mmcx regulator into
+> the PM domain?
+>
+> > > [    3.030314]  gdsc_toggle_logic+0x30/0x124
+> > > [    3.030317]  gdsc_enable+0x60/0x290
+> > > [    3.030318]  _genpd_power_on+0xc0/0x134
+> > > [    3.030320]  genpd_power_on.part.0+0xa4/0x1f0
+> > > [    3.030322]  __genpd_dev_pm_attach+0xf4/0x1b0
+> > > [    3.030324]  genpd_dev_pm_attach+0x60/0x70
+> > > [    3.030326]  dev_pm_domain_attach+0x54/0x5c
+> > > [    3.030329]  platform_probe+0x50/0xe0
+> > > [    3.030330]  really_probe+0xe4/0x510
+> > > [    3.030332]  driver_probe_device+0x64/0xcc
+> > > [    3.030333]  __device_attach_driver+0xb8/0x114
+> > > [    3.030334]  bus_for_each_drv+0x78/0xd0
+> > > [    3.030337]  __device_attach+0xdc/0x184
+> > > [    3.030338]  device_initial_probe+0x14/0x20
+> > > [    3.030339]  bus_probe_device+0x9c/0xa4
+> > > [    3.030340]  deferred_probe_work_func+0x88/0xc4
+> > > [    3.030342]  process_one_work+0x298/0x730
+> > > [    3.030343]  worker_thread+0x74/0x470
+> > > [    3.030344]  kthread+0x168/0x170
+> > > [    3.030346]  ret_from_fork+0x10/0x34
+> > >
+> > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+[...]
+
+Kind regards
+Uffe
