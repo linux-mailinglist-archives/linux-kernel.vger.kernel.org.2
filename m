@@ -2,171 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0B83A8632
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCBB3A863A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhFOQSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 12:18:36 -0400
-Received: from mga03.intel.com ([134.134.136.65]:39896 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhFOQSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:18:33 -0400
-IronPort-SDR: gg/nElMzdfw2o3fbc2MxXQbST+UeErYqi9jXrxBXwct+fOTh7dT3iyl4WIh8dZW86152PAEmdX
- OGnstrWTjFdw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206058713"
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="206058713"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 09:16:28 -0700
-IronPort-SDR: fsyKbGifdqE0wpviHHTveo7Gkd1sZqSj30rjA3TOvQb8EI2szo5NpvyJZ2Yb5q/KAv2KTCKLSY
- +I6rW0EGfm0Q==
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="554497724"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.184.247]) ([10.212.184.247])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 09:16:26 -0700
-Subject: Re: [PATCH v4 00/24] x86/resctrl: Merge the CDP resources
-To:     James Morse <james.morse@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        lcherian@marvell.com, "Luck, Tony" <tony.luck@intel.com>
-References: <20210614200941.12383-1-james.morse@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <cc452592-491f-3ddf-983a-8669ad12df9a@intel.com>
-Date:   Tue, 15 Jun 2021 09:16:25 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230130AbhFOQUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 12:20:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229979AbhFOQUb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 12:20:31 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F44C0617AF
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:18:25 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id o3so18984000wri.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:18:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1ZQF286KDf3vsAW/1vOHKbnKaEK4bPamrOWEdser+to=;
+        b=R8NtmSj/KkG3mZwDtMueKosy4Ydw4GrSJwNmFCP/2GAiGlPKGRrYuCH4M9tj1lzpdZ
+         TOQzAmKvUS8t+X/VHs3BmDJH2G11gZymuYsJjEzOuae3PctlCZBbm7TXTiH4qCAeA8XM
+         zbObW0fr3fxlVZDjAwR4LRTLCj9/G4Hd4L/cm4/59omnvLGiL4ScAwHoupztlmqyhwz8
+         iU8eLBA0ppEdUc9vlzOpFeefz+fLv9yeZQSajgNS89mmGX/EmOteYaGcFLuDSkj382Fv
+         Q2eaNToG4DnSQXV49vCehLHK3qjJ8EpC8gu3diPhxsFpv6ZpTCN3/txAmxqE2wRyNJvO
+         Vi7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1ZQF286KDf3vsAW/1vOHKbnKaEK4bPamrOWEdser+to=;
+        b=HpDY5plwuXZ8ulitBZ0B1TLSJAucBF3HA9xlRatPN9/4yExUiTs9SpSffdA9L7Dj6O
+         4vTWYkjhomu0TIB4uSqv07SC/BHP6VDJ+fqKvXm89noR1YPS7IITzB4RvuBKGZCrbjGQ
+         1g23xLvSlckppVM/xvXlFY5WinO7C520nb0LSfZ7FeTx1gRKwE1uhdRCacQh9sjFkMp7
+         /ZwBQNG8iN05QNsY90ib8nXlsbPQBDgRKtnbRhmpePACGjVEivjIWyjRlnAAV2fasjyP
+         eNp6SSqCZ/Sh+6KxTicMTa3wvC4hYVpz9kjnd9Z2OwFjP6p+cPLYj7F/Hh6RhitLP5zz
+         I7vA==
+X-Gm-Message-State: AOAM533pXNWHvJxiwk3zQgiO0Fc/VshRgnnBuff8fkO0f1eoJnAjdq/Q
+        n+FI+AQyEpl2ESvpgm4y4/fnkg==
+X-Google-Smtp-Source: ABdhPJyDj5Em8ISoY6sbUQhzWQmsq+vp6ZTuVD0IHEcxEiux87fcQosE1ZHaKf/7wRcEOUNSE00SIg==
+X-Received: by 2002:adf:c393:: with SMTP id p19mr26505314wrf.92.1623773903610;
+        Tue, 15 Jun 2021 09:18:23 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:613a:6939:5f7f:dceb? ([2a01:e34:ed2f:f020:613a:6939:5f7f:dceb])
+        by smtp.googlemail.com with ESMTPSA id n6sm2473026wme.21.2021.06.15.09.18.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 09:18:23 -0700 (PDT)
+Subject: Re: [PATCH v3 4/7] thermal/drivers/tegra: Add driver for Tegra30
+ thermal sensor
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Ihor Didenko <tailormoon@rambler.ru>,
+        Ion Agorria <ion@agorria.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210529170955.32574-1-digetx@gmail.com>
+ <20210529170955.32574-5-digetx@gmail.com>
+ <6f2b6290-095a-bd39-c160-1616a0ff89b1@linaro.org>
+ <20210615102626.dja3agclwzxv2sj4@vireshk-i7>
+ <595f5e53-b872-bcc6-e886-ed225e26e9fe@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <fbdc3b56-4465-6d3e-74db-1d5082813b9c@linaro.org>
+Date:   Tue, 15 Jun 2021 18:18:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210614200941.12383-1-james.morse@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <595f5e53-b872-bcc6-e886-ed225e26e9fe@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
-
-On 6/14/2021 1:09 PM, James Morse wrote:
-> This series re-folds the resctrl code so the CDP resources (L3CODE et al)
-> behaviour is all contained in the filesystem parts, with a minimum amount
-> of arch specific code.
+On 15/06/2021 15:01, Dmitry Osipenko wrote:
+> 15.06.2021 13:26, Viresh Kumar пишет:
+>> On 15-06-21, 12:03, Daniel Lezcano wrote:
+>>>
+>>> [Cc Viresh]
+>>>
+>>> On 29/05/2021 19:09, Dmitry Osipenko wrote:
+>>>> All NVIDIA Tegra30 SoCs have a two-channel on-chip sensor unit which
+>>>> monitors temperature and voltage of the SoC. Sensors control CPU frequency
+>>>> throttling, which is activated by hardware once preprogrammed temperature
+>>>> level is breached, they also send signal to Power Management controller to
+>>>> perform emergency shutdown on a critical overheat of the SoC die. Add
+>>>> driver for the Tegra30 TSENSOR module, exposing it as a thermal sensor
+>>>> and a cooling device.
+>>>
+>>> IMO it does not make sense to expose the hardware throttling mechanism
+>>> as a cooling device because it is not usable anywhere from the thermal
+>>> framework.
+>>>
+>>> Moreover, that will collide with the thermal / cpufreq framework
+>>> mitigation (hardware sets the frequency but the software thinks the freq
+>>> is different), right ?
 > 
-> Arm have some CPU support for dividing caches into portions, and
-> applying bandwidth limits at various points in the SoC. The collective term
-> for these features is MPAM: Memory Partitioning and Monitoring.
+> H/w mitigation is additional and should be transparent to the software
+> mitigation. The software mitigation is much more flexible, but it has
+> latency. Software also could crash and hang.
 > 
-> MPAM is similar enough to Intel RDT, that it should use the defacto linux
-> interface: resctrl. This filesystem currently lives under arch/x86, and is
-> tightly coupled to the architecture.
-> Ultimately, my plan is to split the existing resctrl code up to have an
-> arch<->fs abstraction, then move all the bits out to fs/resctrl. From there
-> MPAM can be wired up.
+> Hardware mitigation doesn't have latency and it will continue to work
+> regardless of the software state.
+
+Yes, I agree. Both solutions have their pros and cons. However, I don't
+think they can co-exist sanely.
+
+> The CCF driver is aware about the h/w cooling status [1], hence software
+> sees the actual frequency.
+>
+> [1]
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit?id=344d5df34f5abd468267daa98f041abf90b2f660
+
+Ah interesting, thanks for the pointer.
+
+What I'm worried about is the consistency with cpufreq.
+
+Probably cpufreq_update_limits() should be called from the interrupt
+handler.
+
+>> I am not even sure what the cooling device is doing here:
+>>
+>> tegra_tsensor_set_cur_state() is not implemented and it says hardware
+>> changed it by itself. What is the benefit you are getting out of the
+>> cooling device here ?
 > 
-> x86 might have two resources with cache controls, (L2 and L3) but has
-> extra copies for CDP: L{2,3}{CODE,DATA}, which are marked as enabled
-> if CDP is enabled for the corresponding cache.
+> It allows userspace to check whether hardware cooling is active via the
+> cooling_device sysfs. Otherwise we don't have ability to check whether
+> h/w cooling is active, I think it's a useful information. It's also
+> interesting to see the cooling_device stats, showing how many times h/w
+> mitigation was active.
+
+Actually the stats are for software mitigation. For the driver, create a
+debugfs entry like what do the other drivers or a module parameter with
+the stats.
+
+>>> The hardware limiter should let know the cpufreq framework about the
+>>> frequency change.
+>>>
+>>> 	https://lkml.org/lkml/2021/6/8/1792
+>>>
+>>> May be post the sensor without the hw limiter for now and address that
+>>> in a separate series ?
+>>
 > 
-> MPAM has an equivalent feature to CDP, but its a property of the CPU,
-> not the cache. Resctrl needs to have x86's odd/even behaviour, as that
-> its the ABI, but this isn't how the MPAM hardware works. It is entirely
-> possible that an in-kernel user of MPAM would not be using CDP, whereas
-> resctrl is.
+> I wasn't aware about existence of the thermal pressure, thank you for
+> pointing at it. At a quick glance it should be possible to benefit from
+> the information about the additional pressure.
 > 
-> Pretending L3CODE and L3DATA are entirely separate resources is a neat
-> trick, but doing this is specific to x86.
-> Doing this leaves the arch code in control of various parts of the
-> filesystem ABI: the resources names, and the way the schemata are parsed.
-> Allowing this stuff to vary between architectures is bad for user space.
-> 
-> This series collapses the CODE/DATA resources, moving all the user-visible
-> resctrl ABI into what becomes the filesystem code. CDP becomes the type of
-> configuration being applied to a cache. This is done by adding a
-> struct resctrl_schema to the parts of resctrl that will move to fs. This
-> holds the arch-code resource that is in use for this schema, along with
-> other properties like the name, and whether the configuration being applied
-> is CODE/DATA/BOTH.
-> 
-> This lets us fold the extra resources out of the arch code so that they
-> don't need to be duplicated if the equivalent feature to CDP is missing, or
-> implemented in a different way.
-> 
-> 
-> The first two patches split the resource and domain structs to have an
-> arch specific 'hw' portion, and the rest that is visible to resctrl.
-> Future series massage the resctrl code so there are no accesses to 'hw'
-> structures in the parts of resctrl that will move to fs, providing helpers
-> where necessary.
-> 
-> This series adds temporary scaffolding, which it removes a few patches
-> later. This is to allow things like the ctrlval arrays and resources to be
-> merged separately, which should make is easier to bisect. These things
-> are marked temporary, and should all be gone by the end of the series.
-> 
-> This series is a little rough around the monitors, would a fake
-> struct resctrl_schema for the monitors simplify things, or be a source
-> of bugs?
-> 
-> This series is based on v5.12-rc6, and can be retrieved from:
-> git://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git mpam/resctrl_merge_cdp/v4
-> 
-> v3: https://lore.kernel.org/lkml/20210519162424.27654-1-james.morse@arm.com/
-> v2: https://lore.kernel.org/lkml/20210312175849.8327-1-james.morse@arm.com/
-> v1: https://lore.kernel.org/lkml/20201030161120.227225-1-james.morse@arm.com/
-> 
-> Parts were previously posted as an RFC here:
-> https://lore.kernel.org/lkml/20200214182947.39194-1-james.morse@arm.com/
-> 
+> Seems the current thermal pressure API assumes that there is only one
+> user of the API. So it's impossible to aggregate the pressure from
+> different sources, like software cpufreq pressure + h/w freq pressure.
+> Correct? If yes, then please let me know yours thoughts about the best
+> approach of supporting the aggregation.
 
-For the most part I think this series looks good. The one thing I am 
-concerned about is the resctrl user interface change. On a system that 
-supports L3 CDP there is a visible change when CDP is not enabled:
+That is a good question. IMO, first step would be to call
+cpufreq_update_limits().
 
-Before this series:
-# cat schemata
-     L3:0=fffff;1=fffff
+[ Cc Thara who implemented the thermal pressure ]
 
-After this series:
-# cat schemata
-L3:0=fffff;1=fffff
+May be Thara has an idea about how to aggregate both? There is another
+series floating around with hardware limiter [1] and the same problematic.
 
-There are a few user space tools that parse the resctrl schemata file 
-and it may be easier to keep the interface consistent than to find and 
-audit them all to ensure they will keep working.
+ [1] https://lkml.org/lkml/2021/6/8/1791
 
-Apart from that, I do think that the dmesg change that Babu pointed out 
-deserves a mention in the cover letter. I agree with your response in 
-this regard but this is indeed a user visible change and if anybody has 
-issue with that then mentioning it in the cover letter will hopefully 
-catch it sooner.
-
-A heads-up is that there are some kernel-doc fixups in the works that 
-will conflict with your series. You yourself fix at least one of these 
-kernel-doc issues in this series - the description of mbm_width in the 
-first patch. I will ask the submitter of the kernel-doc fixups to use 
-your text to help with the merging.
-
-Finally, I did catch a few typos that I will respond to individually.
-
-Thank you very much James
-
-Reinette
+> I'll factor out the h/w limiter from this patchset and prepare the v4.
+> Thank you all for taking a look at the patches.
 
 
 
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-
-
-
-
-
-
-
-
-
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
