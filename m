@@ -2,135 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428C83A7508
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CF03A74D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhFOD2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:28:01 -0400
-Received: from m12-15.163.com ([220.181.12.15]:34740 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229609AbhFOD2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:28:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=PENobBzBavAaoCQQ+h
-        lNAZa+b822kaDMPQDWCLqrhaw=; b=mOANcSqelRHiehVPBETs8E0tGh64MHLs5a
-        mEDE3TqVDinnseNvAvwbgrNFbhA0pNvfXZWg1DmsYOwJQT6W6Rj/29jOkkIZbu98
-        qkKWOnmTa+fOjxbYp39MQnkk0GtD3eNKjiniOQ6CE6FCheqLg7tnUnsRDxW/HDRW
-        /tbF+3u10=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp11 (Coremail) with SMTP id D8CowABXX3_xB8hgEmjxAg--.74S2;
-        Tue, 15 Jun 2021 09:53:04 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     charles.gorand@effinnov.com, krzysztof.kozlowski@canonical.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] NFC: nxp-nci: remove unnecessary labels
-Date:   Tue, 15 Jun 2021 09:52:56 +0800
-Message-Id: <20210615015256.13944-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: D8CowABXX3_xB8hgEmjxAg--.74S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tr18Cw43CFyfZw4DWr4kWFg_yoW8tr17pF
-        nxXFyayryrJr97WFn5Ar12vFZ5tw18J39rGr9rt393X3WYyryjqr1kCFW0vFWrJrZakFya
-        yr4IvFyDuF17JaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jQWrJUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/xtbBLBmysV++MNL80QAAsY
+        id S230136AbhFODRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:17:08 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4905 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229869AbhFODRG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 23:17:06 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G3rxH3x8kz6yrs;
+        Tue, 15 Jun 2021 09:55:15 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 09:58:24 +0800
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 09:58:23 +0800
+Subject: Re: [PATCH -next] drm/nouveau: Remove set but not used variable 'dev'
+To:     <bskeggs@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <sumit.semwal@linaro.org>, <christian.koenig@amd.com>,
+        <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linaro-mm-sig@lists.linaro.org>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>
+References: <20210525082511.580068-1-libaokun1@huawei.com>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+Message-ID: <cee44d34-81c1-4972-e68b-e6b193598763@huawei.com>
+Date:   Tue, 15 Jun 2021 09:58:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <20210525082511.580068-1-libaokun1@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+ping
 
-Some labels are meaningless, so we delete them and use the
-return statement instead of the goto statement.
-
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/nfc/nxp-nci/core.c | 39 +++++++++++++--------------------------
- 1 file changed, 13 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/nfc/nxp-nci/core.c b/drivers/nfc/nxp-nci/core.c
-index a0ce95a..2b0c723 100644
---- a/drivers/nfc/nxp-nci/core.c
-+++ b/drivers/nfc/nxp-nci/core.c
-@@ -70,21 +70,16 @@ static int nxp_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
- 	struct nxp_nci_info *info = nci_get_drvdata(ndev);
- 	int r;
- 
--	if (!info->phy_ops->write) {
--		r = -ENOTSUPP;
--		goto send_exit;
--	}
-+	if (!info->phy_ops->write)
-+		return -EOPNOTSUPP;
- 
--	if (info->mode != NXP_NCI_MODE_NCI) {
--		r = -EINVAL;
--		goto send_exit;
--	}
-+	if (info->mode != NXP_NCI_MODE_NCI)
-+		return -EINVAL;
- 
- 	r = info->phy_ops->write(info->phy_id, skb);
- 	if (r < 0)
- 		kfree_skb(skb);
- 
--send_exit:
- 	return r;
- }
- 
-@@ -104,10 +99,8 @@ int nxp_nci_probe(void *phy_id, struct device *pdev,
- 	int r;
- 
- 	info = devm_kzalloc(pdev, sizeof(struct nxp_nci_info), GFP_KERNEL);
--	if (!info) {
--		r = -ENOMEM;
--		goto probe_exit;
--	}
-+	if (!info)
-+		return -ENOMEM;
- 
- 	info->phy_id = phy_id;
- 	info->pdev = pdev;
-@@ -120,31 +113,25 @@ int nxp_nci_probe(void *phy_id, struct device *pdev,
- 	if (info->phy_ops->set_mode) {
- 		r = info->phy_ops->set_mode(info->phy_id, NXP_NCI_MODE_COLD);
- 		if (r < 0)
--			goto probe_exit;
-+			return r;
- 	}
- 
- 	info->mode = NXP_NCI_MODE_COLD;
- 
- 	info->ndev = nci_allocate_device(&nxp_nci_ops, NXP_NCI_NFC_PROTOCOLS,
- 					 NXP_NCI_HDR_LEN, 0);
--	if (!info->ndev) {
--		r = -ENOMEM;
--		goto probe_exit;
--	}
-+	if (!info->ndev)
-+		return -ENOMEM;
- 
- 	nci_set_parent_dev(info->ndev, pdev);
- 	nci_set_drvdata(info->ndev, info);
- 	r = nci_register_device(info->ndev);
--	if (r < 0)
--		goto probe_exit_free_nci;
-+	if (r < 0) {
-+		nci_free_device(info->ndev);
-+		return r;
-+	}
- 
- 	*ndev = info->ndev;
--
--	goto probe_exit;
--
--probe_exit_free_nci:
--	nci_free_device(info->ndev);
--probe_exit:
- 	return r;
- }
- EXPORT_SYMBOL(nxp_nci_probe);
--- 
-1.9.1
-
+在 2021/5/25 16:25, Baokun Li 写道:
+> Fixes gcc '-Wunused-but-set-variable' warning:
+>
+> drivers/gpu/drm/nouveau/nouveau_bo.c: In function 'nouveau_ttm_tt_populate':
+> drivers/gpu/drm/nouveau/nouveau_bo.c:1258:17: warning:
+>   variable ‘dev’ set but not used [-Wunused-but-set-variable]
+>
+> drivers/gpu/drm/nouveau/nouveau_bo.c: In function 'nouveau_ttm_tt_unpopulate':
+> drivers/gpu/drm/nouveau/nouveau_bo.c:1281:17: warning:
+>   variable ‘dev’ set but not used [-Wunused-but-set-variable]
+>
+> It never used since introduction.
+>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>   drivers/gpu/drm/nouveau/nouveau_bo.c | 4 ----
+>   1 file changed, 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
+> index 7a2624c0ba4c..51f9a2e6532e 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_bo.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
+> @@ -1254,7 +1254,6 @@ nouveau_ttm_tt_populate(struct ttm_device *bdev,
+>   {
+>   	struct ttm_tt *ttm_dma = (void *)ttm;
+>   	struct nouveau_drm *drm;
+> -	struct device *dev;
+>   	bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
+>   
+>   	if (ttm_tt_is_populated(ttm))
+> @@ -1267,7 +1266,6 @@ nouveau_ttm_tt_populate(struct ttm_device *bdev,
+>   	}
+>   
+>   	drm = nouveau_bdev(bdev);
+> -	dev = drm->dev->dev;
+>   
+>   	return ttm_pool_alloc(&drm->ttm.bdev.pool, ttm, ctx);
+>   }
+> @@ -1277,14 +1275,12 @@ nouveau_ttm_tt_unpopulate(struct ttm_device *bdev,
+>   			  struct ttm_tt *ttm)
+>   {
+>   	struct nouveau_drm *drm;
+> -	struct device *dev;
+>   	bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
+>   
+>   	if (slave)
+>   		return;
+>   
+>   	drm = nouveau_bdev(bdev);
+> -	dev = drm->dev->dev;
+>   
+>   	return ttm_pool_free(&drm->ttm.bdev.pool, ttm);
+>   }
