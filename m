@@ -2,685 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7553A8CD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8323A8CD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbhFOXsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 19:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbhFOXr7 (ORCPT
+        id S231676AbhFOXsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 19:48:09 -0400
+Received: from mail-il1-f176.google.com ([209.85.166.176]:36549 "EHLO
+        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230039AbhFOXsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:47:59 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25347C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:45:53 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so670375otk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:45:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nuYoqTIAzRrihVCVrYQ2bpvzH0ZCKvgvxnUTC4QZzZg=;
-        b=TwrUOLF1DPhXdoBbGd67znieBTsE7wHcD7IEXGHg+o1NPNs66nCOohumbAMqACzZ3v
-         DHEYjUm53Q+0jo3k0rQoKaV3Jab0tFIYk+rIdnqjNt3egZAixt/OzMJ6F6rF+LSGtZiU
-         YGEv539hmFFMWREAQCJTuJUD4tDwT+qVc/Kr79hhX0wwXK4dOC+3uUf98FD6pEWwEK4L
-         IcvPSr2O+m4ap0dMO/RCLMUA5fo/JGaA/uY44oayXGeTWZ5ynIZRAX0XjlBhMhQfgVn0
-         oHrHtW7+f+wTk+0A451VfD9T6XOoUW47yFEdJdV1yN8tk9QeoL0JOEiR1pPr47afQRf1
-         fm+A==
+        Tue, 15 Jun 2021 19:48:08 -0400
+Received: by mail-il1-f176.google.com with SMTP id i13so716595ilk.3;
+        Tue, 15 Jun 2021 16:46:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nuYoqTIAzRrihVCVrYQ2bpvzH0ZCKvgvxnUTC4QZzZg=;
-        b=VxgxImomxhi79VLNdAOmLaSPnsvGjYSQZe55vBqRdTtoclCQOtvkfz34YwQQpx+eKZ
-         Ln6pT215+3n+VGcYcyMWefc8mDGryqUCNkx0OjQyzAqVDZrHWz+oS/wVXZPlXa+zJV79
-         BQahliJGYBEm5HnCp9VZRW63OG3uHA1MQIiTlq2SzNBu6a8erf38SrOPBbJHqobo6o+p
-         Ba4Ul4oPr5DetgT/KVVKo59X5T+CNuSVNTztkOgKlL/+JYVS44Nx6LBPP52XN9MfpGHm
-         zenA8yUuSPQ8PT+8M+Z5O7lwH+/354L0zyBubXAQtOzYUCq7/5RmlGcjHkkHTW37Hh0i
-         ZAbA==
-X-Gm-Message-State: AOAM530c3I+fxxx7/f9GcXLKtRWbS/N7ZXApwEa1ckRsDCcKVKDAsKhF
-        4xEzk+4n9OXJXPdgvRzUMz4zLw==
-X-Google-Smtp-Source: ABdhPJyyF7GQi0K6DdkkS6NhONnYG8Dl+VKeKYRGcCH6qrbq2dIzbF3OOtgbLgaN9y8v6yMi4vAwiQ==
-X-Received: by 2002:a05:6830:18c1:: with SMTP id v1mr1398694ote.275.1623800752390;
-        Tue, 15 Jun 2021 16:45:52 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id p7sm123759otq.9.2021.06.15.16.45.51
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=IxoqOsNJ75k0GQHgGLPCm6Z9fqv9YPGeM9uGjBR2SB4=;
+        b=WN3jxWZU+oyLqxOTydXfDY4BRbxCN2tbaVighxC7fGuPJjNP6cI/m0i0BTLEH5zRLQ
+         GKCQcXsD4JvbwV3p3s7kIIGy4iXPM0RIxEXb2ptZ+M1+66VWQwRvA2W876EidqofBv9N
+         xht2mQrUk8AnI7FSVqv9u5X85n1Wy8vNVS/B0A6LC03f/vcsq+0N3vlboCaNak1NahTh
+         vkTZM8/pTa8A3xbWdnNfyQ2MMcJ+V8q2ZzQng0PSm0eSca0ZDrlfgK/17umjZvw3jMs7
+         yE3cYcLEl+M/GfTzZbLuXquhvQzAR8M47LGpis0W9ZHy3xk5O/qd+6ZEck4LFygZAVlM
+         A1Wg==
+X-Gm-Message-State: AOAM533Nh//yU6xpEo71LSYg/zsYHs+LFB6bPGKJasgnDzkPJxwS3BLb
+        CNoRGDZtQe6O/qpzv/oz8g==
+X-Google-Smtp-Source: ABdhPJwuLO4eZtDNH6Y/srXAR52sBRbuH205MCodrCXRe0YEbNTnncPBeANZ6HBMpV1t3jMhr2/EAQ==
+X-Received: by 2002:a05:6e02:1207:: with SMTP id a7mr1439702ilq.91.1623800762073;
+        Tue, 15 Jun 2021 16:46:02 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id b23sm298811ior.4.2021.06.15.16.45.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 16:45:51 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 18:45:49 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: Add support for SONY Xperia 1
- II / 5 II (Edo platform)
-Message-ID: <YMk7rf4/03AcIghT@builder.lan>
-References: <20210612192358.62602-1-konrad.dybcio@somainline.org>
- <20210612192358.62602-3-konrad.dybcio@somainline.org>
+        Tue, 15 Jun 2021 16:46:01 -0700 (PDT)
+Received: (nullmailer pid 1687930 invoked by uid 1000);
+        Tue, 15 Jun 2021 23:45:58 -0000
+Date:   Tue, 15 Jun 2021 17:45:58 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        openbmc@lists.ozlabs.org, Tomer Maimon <tmaimon77@gmail.com>,
+        Joel Stanley <joel@jms.id.au>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] dt-bindings: pinctrl: Add Nuvoton WPCM450
+Message-ID: <20210615234558.GA1684841@robh.at.kernel.org>
+References: <20210602120329.2444672-1-j.neuschaefer@gmx.net>
+ <20210602120329.2444672-5-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210612192358.62602-3-konrad.dybcio@somainline.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210602120329.2444672-5-j.neuschaefer@gmx.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 12 Jun 14:23 CDT 2021, Konrad Dybcio wrote:
-
-> Add support for SONY Xperia 1 II and 5 II smartphones (read one/five mark two).
-> They are based on the Qualcomm SM8250 chipset and both feature 5G modems. There
-> also exists a third Edo board, namely the Xperia PRO (PDX204), but it's $2500
-> and no developers have obtained it so far (to my knowledge).
+On Wed, Jun 02, 2021 at 02:03:25PM +0200, Jonathan Neuschäfer wrote:
+> This binding is heavily based on the one for NPCM7xx, because the
+> hardware is similar. One notable difference is that there are no
+> sub-nodes for GPIO banks, because the GPIO registers are arranged
+> differently.
 > 
-> The devices are affected by a scary UFS behaviour where sending a certain UFS
-> command (which is worked around on downstream) renders the device unbootable,
-> by effectively erasing the bootloader. Therefore UFS AND UFSPHY are strictly
-> disabled for now.
+> Certain pins support blink patterns in hardware. This is currently not
+> modelled in the DT binding.
 > 
-
-Ouch, that's expensive paper weights. Let's hope someone can shed some
-light on the UFS situation.
-
-
-The rest looks really nice!
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Thanks,
-Bjorn
-
-> Downstream workaround:
-> https://github.com/kholk/kernel/commit/2e7a9ee1c91a016baa0b826a7752ec45663a0561
-> 
-> Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 > ---
-> Changes since v1:
-> - Separate the sdhci2 pinctrl part
-> - Fix up some regulator settings and comments
-> - Add Marijn's t-b
+>  .../pinctrl/nuvoton,wpcm450-pinctrl.yaml      | 142 ++++++++++++++++++
+>  1 file changed, 142 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/nuvoton,wpcm450-pinctrl.yaml
 > 
->  arch/arm64/boot/dts/qcom/Makefile             |   2 +
->  .../qcom/sm8250-sony-xperia-edo-pdx203.dts    |  15 +
->  .../qcom/sm8250-sony-xperia-edo-pdx206.dts    |  24 +
->  .../boot/dts/qcom/sm8250-sony-xperia-edo.dtsi | 494 ++++++++++++++++++
->  4 files changed, 535 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> index 456502aeee49..a3b832d9fc0c 100644
-> --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -73,5 +73,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-hdk.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-mtp.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-sony-xperia-edo-pdx203.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-sony-xperia-edo-pdx206.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-hdk.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-mtp.dtb
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dts b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dts
+> diff --git a/Documentation/devicetree/bindings/pinctrl/nuvoton,wpcm450-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/nuvoton,wpcm450-pinctrl.yaml
 > new file mode 100644
-> index 000000000000..79afeb07f4a2
+> index 0000000000000..0664fe2b90db6
 > --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dts
-> @@ -0,0 +1,15 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sm8250-sony-xperia-edo.dtsi"
-> +
-> +/ {
-> +	model = "Sony Xperia 1 II";
-> +	compatible = "sony,pdx203-generic", "qcom,sm8250";
-> +};
-> +
-> +/delete-node/ &vreg_l7f_1p8;
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dts b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dts
-> new file mode 100644
-> index 000000000000..999b662f4679
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dts
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sm8250-sony-xperia-edo.dtsi"
-> +
-> +/ {
-> +	model = "Sony Xperia 5 II";
-> +	compatible = "sony,pdx206-generic", "qcom,sm8250";
-> +};
-> +
-> +&framebuffer {
-> +	width = <1080>;
-> +	height = <2520>;
-> +	stride = <(1080 * 4)>;
-> +};
-> +
-> +&vreg_l2f_1p3 {
-> +	regulator-min-microvolt = <1200000>;
-> +	regulator-max-microvolt = <1200000>;
-> +};
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
-> new file mode 100644
-> index 000000000000..df251b51b106
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
-> @@ -0,0 +1,494 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
-> + */
-> +
-> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-> +#include "sm8250.dtsi"
-> +#include "pm8150.dtsi"
-> +#include "pm8150b.dtsi"
-> +#include "pm8150l.dtsi"
-> +#include "pm8009.dtsi"
-> +
-> +/delete-node/ &adsp_mem;
-> +/delete-node/ &spss_mem;
-> +/delete-node/ &cdsp_secure_heap;
-> +
-> +/ {
-> +	qcom,msm-id = <356 0x20001>; /* SM8250 v2.1 */
-> +	qcom,board-id = <0x10008 0>;
-> +
-> +	chosen {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		framebuffer: framebuffer@9c000000 {
-> +			compatible = "simple-framebuffer";
-> +			reg = <0 0x9c000000 0 0x2300000>;
-> +			width = <1644>;
-> +			height = <3840>;
-> +			stride = <(1644 * 4)>;
-> +			format = "a8r8g8b8";
-> +			/*
-> +			 * That's a lot of clocks, but it's necessary due
-> +			 * to unused clk cleanup & no panel driver yet..
-> +			 */
-> +			clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +				 <&gcc GCC_DISP_HF_AXI_CLK>,
-> +				 <&gcc GCC_DISP_SF_AXI_CLK>,
-> +				 <&dispcc DISP_CC_MDSS_VSYNC_CLK>,
-> +				 <&dispcc DISP_CC_MDSS_MDP_CLK>,
-> +				 <&dispcc DISP_CC_MDSS_BYTE0_CLK>,
-> +				 <&dispcc DISP_CC_MDSS_BYTE0_INTF_CLK>,
-> +				 <&dispcc DISP_CC_MDSS_PCLK0_CLK>,
-> +				 <&dispcc DISP_CC_MDSS_ESC0_CLK>;
-> +			power-domains = <&dispcc MDSS_GDSC>;
-> +		};
-> +	};
-> +
-> +	vph_pwr: vph-pwr-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vph_pwr";
-> +		regulator-min-microvolt = <3700000>;
-> +		regulator-max-microvolt = <3700000>;
-> +	};
-> +
-> +	/* S6c is really ebi.lvl but it's there for supply map completeness sake. */
-> +	vreg_s6c_0p88: smpc6-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vreg_s6c_0p88";
-> +
-> +		regulator-min-microvolt = <880000>;
-> +		regulator-max-microvolt = <880000>;
-> +		regulator-always-on;
-> +		vin-supply = <&vph_pwr>;
-> +	};
-> +
-> +	reserved-memory {
-> +		adsp_mem: memory@8a100000 {
-> +			reg = <0x0 0x8a100000 0x0 0x2500000>;
-> +			no-map;
-> +		};
-> +
-> +		spss_mem: memory@8c600000 {
-> +			reg = <0x0 0x8c600000 0x0 0x100000>;
-> +			no-map;
-> +		};
-> +
-> +		cdsp_secure_heap: memory@8c700000 {
-> +			reg = <0x0 0x8c700000 0x0 0x4600000>;
-> +			no-map;
-> +		};
-> +
-> +		cont_splash_mem: memory@9c000000 {
-> +			reg = <0x0 0x9c000000 0x0 0x2300000>;
-> +			no-map;
-> +		};
-> +
-> +		ramoops@ffc00000 {
-> +			compatible = "ramoops";
-> +			reg = <0x0 0xffc00000 0x0 0x100000>;
-> +			record-size = <0x1000>;
-> +			console-size = <0x40000>;
-> +			msg-size = <0x20000 0x20000>;
-> +			ecc-size = <16>;
-> +			no-map;
-> +		};
-> +	};
-> +};
-> +
-> +&apps_rsc {
-> +	pm8150-rpmh-regulators {
-> +		compatible = "qcom,pm8150-rpmh-regulators";
-> +		qcom,pmic-id = "a";
-> +
-> +		vdd-s1-supply = <&vph_pwr>;
-> +		vdd-s2-supply = <&vph_pwr>;
-> +		vdd-s3-supply = <&vph_pwr>;
-> +		vdd-s4-supply = <&vph_pwr>;
-> +		vdd-s5-supply = <&vph_pwr>;
-> +		vdd-s6-supply = <&vph_pwr>;
-> +		vdd-s7-supply = <&vph_pwr>;
-> +		vdd-s8-supply = <&vph_pwr>;
-> +		vdd-s9-supply = <&vph_pwr>;
-> +		vdd-s10-supply = <&vph_pwr>;
-> +		vdd-l1-l8-l11-supply = <&vreg_s6c_0p88>;
-> +		vdd-l2-l10-supply = <&vreg_bob>;
-> +		vdd-l3-l4-l5-l18-supply = <&vreg_s6a_0p6>;
-> +		vdd-l6-l9-supply = <&vreg_s8c_1p2>;
-> +		vdd-l7-l12-l14-l15-supply = <&vreg_s5a_1p9>;
-> +		vdd-l13-l16-l17-supply = <&vreg_bob>;
-> +
-> +		/* (S1+S2+S3) - cx.lvl (ARC) */
-> +
-> +		vreg_s4a_1p8: smps4 {
-> +			regulator-name = "vreg_s4a_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1920000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_s5a_1p9: smps5 {
-> +			regulator-name = "vreg_s5a_1p9";
-> +			regulator-min-microvolt = <1824000>;
-> +			regulator-max-microvolt = <2040000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_s6a_0p6: smps6 {
-> +			regulator-name = "vreg_s6a_0p6";
-> +			regulator-min-microvolt = <600000>;
-> +			regulator-max-microvolt = <1128000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l2a_3p1: ldo2 {
-> +			regulator-name = "vreg_l2a_3p1";
-> +			regulator-min-microvolt = <3072000>;
-> +			regulator-max-microvolt = <3072000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l3a_0p9: ldo3 {
-> +			regulator-name = "vreg_l3a_0p9";
-> +			regulator-min-microvolt = <928000>;
-> +			regulator-max-microvolt = <932000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		/* L4 - lmx.lvl (ARC) */
-> +
-> +		vreg_l5a_0p88: ldo5 {
-> +			regulator-name = "vreg_l5a_0p88";
-> +			regulator-min-microvolt = <880000>;
-> +			regulator-max-microvolt = <880000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l6a_1p2: ldo6 {
-> +			regulator-name = "vreg_l6a_1p2";
-> +			regulator-min-microvolt = <1200000>;
-> +			regulator-max-microvolt = <1200000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		/* L7 is unused. */
-> +
-> +		vreg_l9a_1p2: ldo9 {
-> +			regulator-name = "vreg_l9a_1p2";
-> +			regulator-min-microvolt = <1200000>;
-> +			regulator-max-microvolt = <1200000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		/* L10 is unused, L11 - lcx.lvl (ARC) */
-> +
-> +		vreg_l12a_1p8: ldo12 {
-> +			regulator-name = "vreg_l12a_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1800000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		/* L13 is unused. */
-> +
-> +		vreg_l14a_1p8: ldo14 {
-> +			regulator-name = "vreg_l14a_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1880000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		/* L15 & L16 are unused. */
-> +
-> +		vreg_l17a_3p0: ldo17 {
-> +			regulator-name = "vreg_l17a_3p0";
-> +			regulator-min-microvolt = <2496000>;
-> +			regulator-max-microvolt = <3008000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l18a_0p9: ldo18 {
-> +			regulator-name = "vreg_l18a_0p9";
-> +			regulator-min-microvolt = <800000>;
-> +			regulator-max-microvolt = <920000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +	};
-> +
-> +	/*
-> +	 * Remaining regulators that are not yet supported:
-> +	 * OLEDB: 4925000-8100000
-> +	 * ab: 4600000-6100000
-> +	 * ibb: 800000-5400000
-> +	 */
-> +	pm8150l-rpmh-regulators {
-> +		compatible = "qcom,pm8150l-rpmh-regulators";
-> +		qcom,pmic-id = "c";
-> +
-> +		vdd-s1-supply = <&vph_pwr>;
-> +		vdd-s2-supply = <&vph_pwr>;
-> +		vdd-s3-supply = <&vph_pwr>;
-> +		vdd-s4-supply = <&vph_pwr>;
-> +		vdd-s5-supply = <&vph_pwr>;
-> +		vdd-s6-supply = <&vph_pwr>;
-> +		vdd-s7-supply = <&vph_pwr>;
-> +		vdd-s8-supply = <&vph_pwr>;
-> +		vdd-l1-l8-supply = <&vreg_s4a_1p8>;
-> +		vdd-l2-l3-supply = <&vreg_s8c_1p2>;
-> +		vdd-l4-l5-l6-supply = <&vreg_bob>;
-> +		vdd-l7-l11-supply = <&vreg_bob>;
-> +		vdd-l9-l10-supply = <&vreg_bob>;
-> +		vdd-bob-supply = <&vph_pwr>;
-> +
-> +		vreg_bob: bob {
-> +			regulator-name = "vreg_bob";
-> +			regulator-min-microvolt = <3350000>;
-> +			regulator-max-microvolt = <3960000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_AUTO>;
-> +		};
-> +
-> +		/*
-> +		 * S1-S6 are ARCs:
-> +		 * (S1+S2) - gfx.lvl,
-> +		 * S3 - mx.lvl,
-> +		 * (S4+S5) - mmcx.lvl,
-> +		 * S6 - ebi.lvl
-> +		 */
-> +
-> +		vreg_s7c_0p35: smps7 {
-> +			regulator-name = "vreg_s7c_0p35";
-> +			regulator-min-microvolt = <348000>;
-> +			regulator-max-microvolt = <1000000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_s8c_1p2: smps8 {
-> +			regulator-name = "vreg_s8c_1p2";
-> +			regulator-min-microvolt = <1200000>;
-> +			regulator-max-microvolt = <1400000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l1c_1p8: ldo1 {
-> +			regulator-name = "vreg_l1c_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1800000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		/* L2-4 are unused. */
-> +
-> +		vreg_l5c_1p8: ldo5 {
-> +			regulator-name = "vreg_l5c_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <2800000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l6c_2p9: ldo6 {
-> +			regulator-name = "vreg_l6c_2p9";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <2960000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +			regulator-allow-set-load;
-> +		};
-> +
-> +		vreg_l7c_2p85: ldo7 {
-> +			regulator-name = "vreg_l7c_2p85";
-> +			regulator-min-microvolt = <2856000>;
-> +			regulator-max-microvolt = <3104000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l8c_1p8: ldo8 {
-> +			regulator-name = "vreg_l8c_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1800000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l9c_2p9: ldo9 {
-> +			regulator-name = "vreg_l9c_2p9";
-> +			regulator-min-microvolt = <2704000>;
-> +			regulator-max-microvolt = <2960000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +			regulator-allow-set-load;
-> +		};
-> +
-> +		vreg_l10c_3p3: ldo10 {
-> +			regulator-name = "vreg_l10c_3p3";
-> +			regulator-min-microvolt = <3296000>;
-> +			regulator-max-microvolt = <3296000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l11c_3p0: ldo11 {
-> +			regulator-name = "vreg_l11c_3p0";
-> +			regulator-min-microvolt = <3000000>;
-> +			regulator-max-microvolt = <3000000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +	};
-> +
-> +	pm8009-rpmh-regulators {
-> +		compatible = "qcom,pm8009-rpmh-regulators";
-> +		qcom,pmic-id = "f";
-> +
-> +		vdd-s1-supply = <&vph_pwr>;
-> +		vdd-s2-supply = <&vreg_bob>;
-> +		vdd-l2-supply = <&vreg_s8c_1p2>;
-> +		vdd-l5-l6-supply = <&vreg_bob>;
-> +		vdd-l7-supply = <&vreg_s4a_1p8>;
-> +
-> +		vreg_s1f_1p2: smps1 {
-> +			regulator-name = "vreg_s1f_1p2";
-> +			regulator-min-microvolt = <1200000>;
-> +			regulator-max-microvolt = <1200000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_s2f_0p5: smps2 {
-> +			regulator-name = "vreg_s2f_0p5";
-> +			regulator-min-microvolt = <512000>;
-> +			regulator-max-microvolt = <1100000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		/* L1 is unused. */
-> +
-> +		vreg_l2f_1p3: ldo2 {
-> +			regulator-name = "vreg_l2f_1p3";
-> +			regulator-min-microvolt = <1304000>;
-> +			regulator-max-microvolt = <1304000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		/* L3 & L4 are unused. */
-> +
-> +		vreg_l5f_2p8: ldo5 {
-> +			regulator-name = "vreg_l5f_2p85";
-> +			regulator-min-microvolt = <2800000>;
-> +			regulator-max-microvolt = <2800000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l6f_2p8: ldo6 {
-> +			regulator-name = "vreg_l6f_2p8";
-> +			regulator-min-microvolt = <2800000>;
-> +			regulator-max-microvolt = <2800000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l7f_1p8: ldo7 {
-> +			regulator-name = "vreg_l7f_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1800000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +	};
-> +};
-> +
-> +&i2c1 {
-> +	status = "okay";
-> +	clock-frequency = <400000>;
-> +
-> +	/* NXP PN553 NFC @ 28 */
-> +};
-> +
-> +&i2c2 {
-> +	status = "okay";
-> +	clock-frequency = <1000000>;
-> +
-> +	/* Dual Cirrus Logic CS35L41 amps @ 40, 41 */
-> +};
-> +
-> +&i2c5 {
-> +	status = "okay";
-> +	clock-frequency = <400000>;
-> +
-> +	/* Dialog SLG51000 CMIC @ 75 */
-> +};
-> +
-> +&i2c9 {
-> +	status = "okay";
-> +	clock-frequency = <400000>;
-> +
-> +	/* AMS TCS3490 RGB+IR color sensor @ 72 */
-> +};
-> +
-> +&i2c13 {
-> +	status = "okay";
-> +	clock-frequency = <400000>;
-> +
-> +	/* Samsung touchscreen @ 48 */
-> +};
-> +
-> +&i2c15 {
-> +	status = "okay";
-> +	clock-frequency = <400000>;
-> +
-> +	/* Qcom SMB1390 @ 10 */
-> +	/* Silicon Labs SI4704 FM Radio Receiver @ 11 */
-> +	/* Qcom SMB1390_slave @ 18 */
-> +	/* HALO HL6111R Qi charger @ 25 */
-> +	/* Richwave RTC6226 FM Radio Receiver @ 64 */
-> +};
-> +
-> +&qupv3_id_0 {
-> +	status = "okay";
-> +};
-> +
-> +&qupv3_id_1 {
-> +	status = "okay";
-> +};
-> +
-> +&qupv3_id_2 {
-> +	status = "okay";
-> +};
-> +
-> +&sdhc_2 {
-> +	status = "okay";
-> +
-> +	vmmc-supply = <&vreg_l9c_2p9>;
-> +	vqmmc-supply = <&vreg_l6c_2p9>;
-> +	bus-width = <4>;
-> +	no-sdio;
-> +	no-emmc;
-> +};
-> +
-> +&tlmm {
-> +	gpio-reserved-ranges = <40 4>, <52 4>;
-> +};
-> +
-> +&uart12 {
-> +	status = "okay";
-> +};
-> +
-> +/* BIG WARNING! DO NOT TOUCH UFS, YOUR DEVICE WILL DIE! */
-> +&ufs_mem_hc { status = "disabled"; };
-> +&ufs_mem_phy { status = "disabled"; };
-> +
-> +&usb_1 {
-> +	status = "okay";
-> +};
-> +
-> +&usb_1_dwc3 {
-> +	dr_mode = "peripheral";
-> +};
-> +
-> +&usb_1_hsphy {
-> +	status = "okay";
-> +
-> +	vdda-pll-supply = <&vreg_l5a_0p88>;
-> +	vdda18-supply = <&vreg_l12a_1p8>;
-> +	vdda33-supply = <&vreg_l2a_3p1>;
-> +};
-> +
-> +&usb_1_qmpphy {
-> +	status = "okay";
-> +
-> +	vdda-phy-supply = <&vreg_l9a_1p2>;
-> +	vdda-pll-supply = <&vreg_l18a_0p9>;
-> +};
-> -- 
-> 2.32.0
-> 
+> +++ b/Documentation/devicetree/bindings/pinctrl/nuvoton,wpcm450-pinctrl.yaml
+> @@ -0,0 +1,142 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/nuvoton,wpcm450-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Nuvoton WPCM450 pin control and GPIO
+> +
+> +maintainers:
+> +  - Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> +
+> +properties:
+> +  compatible:
+> +    const: "nuvoton,wpcm450-pinctrl"
+
+Don't need quotes.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    const: 2
+> +
+> +  interrupt-controller: true
+> +
+> +  "#interrupt-cells":
+> +    const: 2
+> +
+> +  interrupts: true
+> +
+> +patternProperties:
+> +  # There are two kinds of subnodes:
+> +  # 1. a pinmux node configures pin muxing for a group of pins (e.g. rmii2)
+> +  # 2. a pinctrl node configures properties of a single pin
+> +  "^.*$":
+> +    if:
+> +      type: object
+> +    then:
+
+Don't do this hack for new bindings. Pick a node name pattern you can 
+match on.
+
+> +      allOf:
+> +        - $ref: pincfg-node.yaml#
+> +        - $ref: pinmux-node.yaml#
+> +      properties:
+> +        groups:
+> +          description:
+> +            One or more groups of pins to mux to a certain function
+> +          minItems: 1
+> +          items:
+> +            enum: [ smb3, smb4, smb5, scs1, scs2, scs3, smb0, smb1, smb2, bsp,
+> +                    hsp1, hsp2, r1err, r1md, rmii2, r2err, r2md, kbcc, dvo,
+> +                    clko, smi, uinc, gspi, mben, xcs2, xcs1, sdio, sspi, fi0,
+> +                    fi1, fi2, fi3, fi4, fi5, fi6, fi7, fi8, fi9, fi10, fi11,
+> +                    fi12, fi13, fi14, fi15, pwm0, pwm1, pwm2, pwm3, pwm4, pwm5,
+> +                    pwm6, pwm7, hg0, hg1, hg2, hg3, hg4, hg5, hg6, hg7 ]
+> +        function:
+> +          description:
+> +            The function that a group of pins is muxed to
+> +          enum: [ smb3, smb4, smb5, scs1, scs2, scs3, smb0, smb1, smb2, bsp,
+> +                  hsp1, hsp2, r1err, r1md, rmii2, r2err, r2md, kbcc, dvo0,
+> +                  dvo1, dvo2, dvo3, dvo4, dvo5, dvo6, dvo7, clko, smi, uinc,
+> +                  gspi, mben, xcs2, xcs1, sdio, sspi, fi0, fi1, fi2, fi3, fi4,
+> +                  fi5, fi6, fi7, fi8, fi9, fi10, fi11, fi12, fi13, fi14, fi15,
+> +                  pwm0, pwm1, pwm2, pwm3, pwm4, pwm5, pwm6, pwm7, hg0, hg1,
+> +                  hg2, hg3, hg4, hg5, hg6, hg7 ]
+> +
+> +        pins:
+> +          description:
+> +            A list of pins to configure in certain ways, such as enabling
+> +            debouncing
+> +          minItems: 1
+> +          items:
+> +            enum: [ gpio0, gpio1, gpio2, gpio3, gpio4, gpio5, gpio6, gpio7,
+> +                    gpio8, gpio9, gpio10, gpio11, gpio12, gpio13, gpio14,
+> +                    gpio15, gpio16, gpio17, gpio18, gpio19, gpio20, gpio21,
+> +                    gpio22, gpio23, gpio24, gpio25, gpio26, gpio27, gpio28,
+> +                    gpio29, gpio30, gpio31, gpio32, gpio33, gpio34, gpio35,
+> +                    gpio36, gpio37, gpio38, gpio39, gpio40, gpio41, gpio42,
+> +                    gpio43, gpio44, gpio45, gpio46, gpio47, gpio48, gpio49,
+> +                    gpio50, gpio51, gpio52, gpio53, gpio54, gpio55, gpio56,
+> +                    gpio57, gpio58, gpio59, gpio60, gpio61, gpio62, gpio63,
+> +                    gpio64, gpio65, gpio66, gpio67, gpio68, gpio69, gpio70,
+> +                    gpio71, gpio72, gpio73, gpio74, gpio75, gpio76, gpio77,
+> +                    gpio78, gpio79, gpio80, gpio81, gpio82, gpio83, gpio84,
+> +                    gpio85, gpio86, gpio87, gpio88, gpio89, gpio90, gpio91,
+> +                    gpio92, gpio93, gpio94, gpio95, gpio96, gpio97, gpio98,
+> +                    gpio99, gpio100, gpio101, gpio102, gpio103, gpio104,
+> +                    gpio105, gpio106, gpio107, gpio108, gpio109, gpio110,
+> +                    gpio111, gpio112, gpio113, gpio114, gpio115, gpio116,
+> +                    gpio117, gpio118, gpio119, gpio120, gpio121, gpio122,
+> +                    gpio123, gpio124, gpio125, gpio126, gpio127 ]
+> +
+> +        input-debounce: true
+> +        phandle: true
+
+Needing this should be fixed now.
+
+> +
+> +      dependencies:
+> +        groups: [ function ]
+> +        function: [ groups ]
+> +
+> +      additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    pinctrl: pinctrl@b8003000 {
+> +      compatible = "nuvoton,wpcm450-pinctrl";
+> +      reg = <0xb8003000 0x1000>;
+> +      gpio-controller;
+> +      #gpio-cells = <2>;
+> +      interrupts = <2 IRQ_TYPE_LEVEL_HIGH
+> +                    3 IRQ_TYPE_LEVEL_HIGH
+> +                    4 IRQ_TYPE_LEVEL_HIGH
+> +                    5 IRQ_TYPE_LEVEL_HIGH>;
+> +      rmii2 {
+> +        groups = "rmii2";
+> +        function = "rmii2";
+> +      };
+> +
+> +      pinctrl_uid: uid {
+> +        pins = "gpio14";
+> +        input-debounce = <1>;
+> +      };
+> +    };
+> +
+> +    gpio-keys {
+> +      compatible = "gpio-keys";
+> +      pinctrl-names = "default";
+> +      pinctrl-0 = <&pinctrl_uid>;
+> +
+> +      uid {
+> +        label = "UID";
+> +        linux,code = <102>;
+> +        gpios = <&pinctrl 14 GPIO_ACTIVE_HIGH>;
+> +      };
+> +    };
+> --
+> 2.30.2
