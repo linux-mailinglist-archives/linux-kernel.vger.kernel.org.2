@@ -2,254 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6653A755E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB193A755F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhFODtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:49:16 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:6501 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhFODtP (ORCPT
+        id S230447AbhFODuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:50:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229659AbhFODt6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:49:15 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G3vM22nwQzZh5D;
-        Tue, 15 Jun 2021 11:44:14 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 11:47:08 +0800
-Received: from [127.0.0.1] (10.40.192.162) by dggpemm500001.china.huawei.com
- (7.185.36.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
- 2021 11:47:08 +0800
-Subject: Re: [PATCH v7] ACPI / APEI: fix the regression of synchronous
- external aborts occur in user-mode
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        James Morse <james.morse@arm.com>
-References: <1623415027-36130-1-git-send-email-tanxiaofei@huawei.com>
- <CAJZ5v0gvzZ-64AJuEsOg2M=veZYz+9ciG5wFEQT7ghki2SNpPA@mail.gmail.com>
-CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, "Tony Luck" <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-Message-ID: <d38b018d-2adf-9549-ba55-44289c816fed@huawei.com>
-Date:   Tue, 15 Jun 2021 11:47:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 14 Jun 2021 23:49:58 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED206C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 20:47:53 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id b9so18484151ybg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 20:47:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=honLpRS5BN/c2OkeqRE0xa+BxqCXma5P6oZc4YqSaPE=;
+        b=Mg+8v23pivt6Zp5p5+GDfXoaCDNdSAUyb5ugGA1H4TvgXOxNuc3e+P73Ee2LrcGqdr
+         Q9cKeOEF020LWaK3asdbZwnCBnswvyl7yJqQw5+ewetqrkt0XodouzDJ0Zi7RlYLeg7z
+         82S9yycBLPt5+WPIiWkXXEdxWaWns8XQoEzBxpdgqREQeYFsVISK2s5zrJ9MNBrcO3Uk
+         22qUxIfTZBp55zMJfWyLPHiQqixxk873ENISYpesziAAWVrvcZuoWmr44+G4rE4hcFRL
+         PORcweIU8HS0Hp8aVdRi2uVVscqlBX3Sj6FRiGGWZ5A73TRoUMx0jQgKZCRpJE1w2fV4
+         l5VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=honLpRS5BN/c2OkeqRE0xa+BxqCXma5P6oZc4YqSaPE=;
+        b=Q/BfwU0porbM7B8NDhcohWeFEGv9MhC6DgR5zjm+Z0WoJW7oByOOjdubXQXlEz+0NQ
+         bV4FKG0y7ilvD51p7F5YqPJsjM0C2Dj93EJfznomTwoPvZqns3bS0JMdCAQYSlUVQ+Xw
+         uhEQdKvVAH4PWY6CTqPQ5wS5v9pQZAP37shGh/tMXiO5NON5eCng0MVLgEMw09fov5Gj
+         Eo6OEWMY8DinRkPAIkxA7icoK+fQCrITPQ7KONYPo3xSINJDPbma3sYqrqj6UBMD1E6A
+         4XqTSRKbEv/H+oxfJtLa04VQiYZeuDSH/hciCivZjao/O2J40+SVyUYUV+dUstBPuZpd
+         t2EA==
+X-Gm-Message-State: AOAM532HRWLKihVYJhdPPT1RcrhnEeLn1hIdwfjgpgG/34Du2NhbMUEK
+        laNnHUp5/FvPPoq9marE3gfXAXeOSm6xHj2D/iE=
+X-Google-Smtp-Source: ABdhPJx60/JHwFkAApq2VGhT0raLJZpQSP3Rn44dJUEOtivCEVQESrJ+p6+YiIgMvdLOSAxeMzaxSeSzrDsQsOhh/3Y=
+X-Received: by 2002:a25:694d:: with SMTP id e74mr4751923ybc.377.1623728872887;
+ Mon, 14 Jun 2021 20:47:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0gvzZ-64AJuEsOg2M=veZYz+9ciG5wFEQT7ghki2SNpPA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.192.162]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+References: <cover.1621516826.git.christophe.leroy@csgroup.eu>
+ <7062722b087228e42cbd896e39bfdf526d6a340a.1621516826.git.christophe.leroy@csgroup.eu>
+ <871r93vqcb.fsf@mpe.ellerman.id.au>
+In-Reply-To: <871r93vqcb.fsf@mpe.ellerman.id.au>
+From:   Jordan Niethe <jniethe5@gmail.com>
+Date:   Tue, 15 Jun 2021 13:47:41 +1000
+Message-ID: <CACzsE9pajbu70rm4AAk8=S1zDj6LCfSwemEd+dhRyPw2F4WF+A@mail.gmail.com>
+Subject: Re: [PATCH v2 08/12] powerpc: Don't use 'struct ppc_inst' to
+ reference instruction location
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
-
-On 2021/6/14 23:46, Rafael J. Wysocki wrote:
-> On Fri, Jun 11, 2021 at 2:40 PM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
->>
->> Before commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
->> synchronise with APEI's irq work"), do_sea() would unconditionally
->> signal the affected task from the arch code. Since that change,
->> the GHES driver sends the signals.
->>
->> This exposes a problem as errors the GHES driver doesn't understand
->> or doesn't handle effectively are silently ignored. It will cause
->> the errors get taken again, and circulate endlessly. User-space task
->> get stuck in this loop.
->>
->> Existing firmware on Kunpeng9xx systems reports cache errors with the
->> 'ARM Processor Error' CPER records.
->>
->> Do memory failure handling for ARM Processor Error Section just like
->> for Memory Error Section.
+On Tue, Jun 15, 2021 at 12:01 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
 >
-> Still, I'm not convinced that this is the right way to address the problem.
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> > diff --git a/arch/powerpc/include/asm/inst.h b/arch/powerpc/include/asm/inst.h
+> > index 5a0740ebf132..32d318c3b180 100644
+> > --- a/arch/powerpc/include/asm/inst.h
+> > +++ b/arch/powerpc/include/asm/inst.h
+> > @@ -139,7 +139,7 @@ static inline int ppc_inst_len(struct ppc_inst x)
+> >   * Return the address of the next instruction, if the instruction @value was
+> >   * located at @location.
+> >   */
+> > -static inline struct ppc_inst *ppc_inst_next(void *location, struct ppc_inst *value)
+> > +static inline unsigned int *ppc_inst_next(unsigned int *location, unsigned int *value)
+> >  {
+> >       struct ppc_inst tmp;
+> >
 >
-> In particular, is it guaranteed that "ARM Processor Error" will always
-> mean "memory failure" on all platforms?
+> It's not visible in the diff, but the rest of the function is:
 >
-
-There are two sources for ARM Processor cache errors(no second case for the platform that doesn't support poison mechanism).
-1.occur in the cache. If it is transient, we have a chance to recover by doing memory failure.
-If it is persistent, we have to handle in other place, such as do cache way isolation in firmware,
-or trigger cpu core isolation in user space. I think most platform can't support such feature,
-so the most simple and effective way is report as fatal error and do isolation during firmware start-up phase.
-
-2.error transferred from other RAS node. If it is from DDR, i think there is no doubt, and this is
-the most cases we met before.If it is from other place of SoC, such as internal SRAM(the probability is very little compare to DDR),
-the error is still in the hardware. But the RAS node that detected the SRAM error will also report the error.
-
-To sum up the above, it is effective for most situation, and no harm for the others.
-
-> If not, doing a platform-specific quirk might be better.
+>         tmp = ppc_inst_read(value);
 >
-> James, I need you to hear from you here I suppose.
+>         return location + ppc_inst_len(tmp);
+> }
 >
->> Fixes: 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea() synchronise with APEI's irq work")
->> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
->> Reviewed-by: James Morse <james.morse@arm.com>
->>
->> ---
->> Changes since v5:
->> - Do some changes following James's suggestions: 1) optimize commit log
->> 2) use err_info->length instead of err_info++' 3) some coding style
->> advice.
->>
->> Changes since v4:
->> - 1. Change the patch name from " ACPI / APEI: do memory failure on the
->> physical address reported by ARM processor error section" to this
->> more proper one.
->> - 2. Add a comment in the code to tell why not filter out corrected
->> error in an uncorrected section.
->>
->> Changes since v3:
->> - Print unhandled error following James Morse's advice.
->>
->> Changes since v2:
->> - Updated commit log
->> ---
->>  drivers/acpi/apei/ghes.c | 81 ++++++++++++++++++++++++++++++++++++++----------
->>  1 file changed, 64 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
->> index fce7ade..0c8330e 100644
->> --- a/drivers/acpi/apei/ghes.c
->> +++ b/drivers/acpi/apei/ghes.c
->> @@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
->>         gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
->>  }
->>
->> -static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
->> -                                      int sev)
->> +static bool ghes_do_memory_failure(u64 physical_addr, int flags)
->>  {
->>         unsigned long pfn;
->> -       int flags = -1;
->> -       int sec_sev = ghes_severity(gdata->error_severity);
->> -       struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
->>
->>         if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
->>                 return false;
->>
->> -       if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
->> -               return false;
->> -
->> -       pfn = mem_err->physical_addr >> PAGE_SHIFT;
->> +       pfn = PHYS_PFN(physical_addr);
->>         if (!pfn_valid(pfn)) {
->>                 pr_warn_ratelimited(FW_WARN GHES_PFX
->>                 "Invalid address in generic error data: %#llx\n",
->> -               mem_err->physical_addr);
->> +               physical_addr);
->>                 return false;
->>         }
->>
->> +       memory_failure_queue(pfn, flags);
->> +       return true;
->> +}
->> +
->> +static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
->> +                                      int sev)
->> +{
->> +       int flags = -1;
->> +       int sec_sev = ghes_severity(gdata->error_severity);
->> +       struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
->> +
->> +       if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
->> +               return false;
->> +
->>         /* iff following two events can be handled properly by now */
->>         if (sec_sev == GHES_SEV_CORRECTED &&
->>             (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
->> @@ -470,14 +477,56 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
->>         if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
->>                 flags = 0;
->>
->> -       if (flags != -1) {
->> -               memory_failure_queue(pfn, flags);
->> -               return true;
->> -       }
->> +       if (flags != -1)
->> +               return ghes_do_memory_failure(mem_err->physical_addr, flags);
->>
->>         return false;
->>  }
->>
->> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
->> +{
->> +       struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
->> +       bool queued = false;
->> +       int sec_sev, i;
->> +       char *p;
->> +
->> +       log_arm_hw_error(err);
->> +
->> +       sec_sev = ghes_severity(gdata->error_severity);
->> +       if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
->> +               return false;
->> +
->> +       p = (char *)(err + 1);
->> +       for (i = 0; i < err->err_info_num; i++) {
->> +               struct cper_arm_err_info *err_info = (struct cper_arm_err_info *)p;
->> +               bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
->> +               bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
->> +               const char *error_type = "unknown error";
->> +
->> +               /*
->> +                * The field (err_info->error_info & BIT(26)) is fixed to set to
->> +                * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
->> +                * firmware won't mix corrected errors in an uncorrected section,
->> +                * and don't filter out 'corrected' error here.
->> +                */
->> +               if (is_cache && has_pa) {
->> +                       queued = ghes_do_memory_failure(err_info->physical_fault_addr, 0);
->> +                       p += err_info->length;
->> +                       continue;
->> +               }
->> +
->> +               if (err_info->type < ARRAY_SIZE(cper_proc_error_type_strs))
->> +                       error_type = cper_proc_error_type_strs[err_info->type];
->> +
->> +               pr_warn_ratelimited(FW_WARN GHES_PFX
->> +                                   "Unhandled processor error type: %s\n",
->> +                                   error_type);
->> +               p += err_info->length;
->> +       }
->> +
->> +       return queued;
->> +}
->> +
->>  /*
->>   * PCIe AER errors need to be sent to the AER driver for reporting and
->>   * recovery. The GHES severities map to the following AER severities and
->> @@ -605,9 +654,7 @@ static bool ghes_do_proc(struct ghes *ghes,
->>                         ghes_handle_aer(gdata);
->>                 }
->>                 else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
->> -                       struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
->> -
->> -                       log_arm_hw_error(err);
->> +                       queued = ghes_handle_arm_hw_error(gdata, sev);
->>                 } else {
->>                         void *err = acpi_hest_get_payload(gdata);
->>
->> --
->> 2.8.1
->>
+> And so changing the type of location from void * to int * changes the
+> result of that addition, ie. previously it was in units of bytes, now
+> it's units of 4 bytes.
 >
-> .
+> To fix it I've kept location as unsigned int *, and added a cast where
+> we do the addition. That way users of the function just see unsigned int *,
+> the cast to void * is an implementation detail.
 >
-
+> We only have a handful of uses of ppc_inst_len(), so maybe that should
+> change name and return a result in units of int *. But that can be a
+> separate change.
+>
+> > diff --git a/arch/powerpc/platforms/86xx/mpc86xx_smp.c b/arch/powerpc/platforms/86xx/mpc86xx_smp.c
+> > index 87f524e4b09c..302f2a1e0361 100644
+> > --- a/arch/powerpc/platforms/86xx/mpc86xx_smp.c
+> > +++ b/arch/powerpc/platforms/86xx/mpc86xx_smp.c
+> > @@ -83,7 +83,7 @@ smp_86xx_kick_cpu(int nr)
+> >               mdelay(1);
+> >
+> >       /* Restore the exception vector */
+> > -     patch_instruction((struct ppc_inst *)vector, ppc_inst(save_vector));
+> > +     patch_instruction(vector, ppc_inst(save_vector));
+> >
+> >       local_irq_restore(flags);
+> >
+>
+> There was another usage in here:
+>
+>         /* Setup fake reset vector to call __secondary_start_mpc86xx. */
+>         target = (unsigned long) __secondary_start_mpc86xx;
+> -       patch_branch((struct ppc_inst *)vector, target, BRANCH_SET_LINK);
+> +       patch_branch(vector, target, BRANCH_SET_LINK);
+>
+>         /* Kick that CPU */
+>         smp_86xx_release_core(nr);
+>
+> I fixed it up.
+>
+> cheers
+fwiw
+Reviewed by: Jordan Niethe <jniethe5@gmail.com>
