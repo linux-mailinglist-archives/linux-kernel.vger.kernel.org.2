@@ -2,276 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B685D3A8BBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 00:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96093A8BD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 00:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhFOWZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 18:25:22 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:58402 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229760AbhFOWZV (ORCPT
+        id S230137AbhFOW2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 18:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhFOW2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 18:25:21 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15FMCFLr031533;
-        Tue, 15 Jun 2021 22:22:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=Ewm2kPzkQXJo0QWHDfmpQUI+ONPvdfpRUyKyuic890s=;
- b=p9mJd6PS1dtlQ8F8vvfEP4dxRcC4JhBZvdxEX50hBkUl4ZBanGC491pLxBqW0zTtC50m
- ZQ/StQp8s6rBTSRosKg2cxueparkh2/RpFFNOfksGyhoM5jZ8OKm/DG4x5QrATvxL+pY
- Y+jIy8ndjCNyy88sS4ZxWhcmaac2dbS3SkDcYKI2IpIpXfRS9RSxpaTbhCY+huHW6r7J
- NwK4MluAUpAwvCgShkDepUawqfpj+/0vCn6GsbAxfpfyOa6IqYJRhXhsndYDpx3dzrXL
- Yr4aMuQtBskxrjSN+rbUpgxesyWRaezjaxefbEza9e+RWZW1ApDn0Ike2qvilpmpc70P HQ== 
-Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 395x06hgrj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Jun 2021 22:22:01 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15FMM0fF177365;
-        Tue, 15 Jun 2021 22:22:00 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2107.outbound.protection.outlook.com [104.47.70.107])
-        by userp3030.oracle.com with ESMTP id 396wan2uq2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Jun 2021 22:21:59 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CjD5IZWjw6xLx8cXH9X5sGRYBkzibgo9DwaaGCnuTRBXFQ7gzbZI6TG2wl+rZpYDyMuAQA9SIbHVTSmC4erudeIrngYgfp5tQU28Tfn67E4k9k0i9LUdKJ/YxaEUrVwCSpKDd8D0dC1ruLWvFJIvWwxrje6QpMFzQIDsLeSiEFOjC433NUjQBRFvaY1X3iHg1AMRiVV6bnNQhV0T3S/51709QW3eePX3MFNCZrtznBZt8F9Gv27JYlgPX/NMlAlUdFkGvisf7JsUp/anlNiSpPp5QDB/uM2uqXyiroBd9UhPQVlKeBAGEmFwcMwsMwCPm80KOI43LpD7aLKS5lvDBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ewm2kPzkQXJo0QWHDfmpQUI+ONPvdfpRUyKyuic890s=;
- b=QvY2wxrghSsAxqlgUAUPoHUiS/FaHfr7Ky8yvkaFgP/AcgAEn1W6GEzBVyGpXg9lnu1Tx062pdqsgDm7p8dA2RCGNre8aOhPBh0OcAf6/ca5/WxFjjvMa6PBlJGnNwIm17nKu8HfQxkaa5ZuzYAwfQe2NsmFCvRjF1KdFy2EYmRbLWTUrKe3Pegb1J7B3oqmRe64wfYecYOmo+m95BeV283pI3YdeDGXBoBG7F1kwXEuCkb9pm+ACWXghBV/zg330hlCNsZfc6iZ5xQaFYDC3QHk6Lck7x3NALD+XbEF1kIQgIODeHtJ+CmA7p/FcspsjA7XY7VOoRiDek05y5mReQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 15 Jun 2021 18:28:49 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A262C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 15:26:43 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so497907otu.6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 15:26:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ewm2kPzkQXJo0QWHDfmpQUI+ONPvdfpRUyKyuic890s=;
- b=rzJh0+Ud8oWUbFWOJwf8IhtTX7ACTfqPmY5tDMMLcBrbhfKjzDVD7LQ4nZWiAm8Y+RBdXJfWZdRu3F6fXqDSqOWYweNGugnPdGDds+LOb8x/XvqwDEIO8f7dbNWQXyd1oUpNfnxZXFPU6/2aDaLLozF71KvVy0frh2J1jBCGVWA=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
- by BY5PR10MB3764.namprd10.prod.outlook.com (2603:10b6:a03:1f9::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.23; Tue, 15 Jun
- 2021 22:21:56 +0000
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::8111:d8f1:c262:808d]) by BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::8111:d8f1:c262:808d%6]) with mapi id 15.20.4219.025; Tue, 15 Jun 2021
- 22:21:56 +0000
-Date:   Tue, 15 Jun 2021 18:21:41 -0400
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v10 03/12] swiotlb: Set dev->dma_io_tlb_mem to the
- swiotlb pool used
-Message-ID: <YMkn9YIJqKxelVRI@char.us.oracle.com>
-References: <20210615132711.553451-1-tientzu@chromium.org>
- <20210615132711.553451-4-tientzu@chromium.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615132711.553451-4-tientzu@chromium.org>
-X-Originating-IP: [138.3.200.0]
-X-ClientProxiedBy: SN4PR0801CA0019.namprd08.prod.outlook.com
- (2603:10b6:803:29::29) To BYAPR10MB2999.namprd10.prod.outlook.com
- (2603:10b6:a03:85::27)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FsiIJ6gH+cU3t60sFGR1DbzvdELnSg+yPMk5670wQXo=;
+        b=Q0ofkRTFT3ZDOnLZVY81r3O4q6S/NA+MJPZJyS+9u2Wmk/gMwjefLFQD9jzG1+EAWG
+         ASYilro20kQ3DTU+4XhNFViaqKSfYHL3FXGLFRx251gh3kWGW6BXVsOXavgVUpCt5gLR
+         5O9czH5I8/sb0SEohtAVK4oUTERJ3TRpyPuO/SezbrnelMyRJIqagkavgRo3ir1SoqUq
+         CmFcQkffAZfuWktrzyof5vcrUN7Br7c8Z4FgERElv36W1u3VzvTgAHCzzAldcmp93pwl
+         Or3pN7A5ispeSPdvHYooDwj4ifekDi2EUOwE3dR2GWqU+owXzqzqmh+FIGBpMWhhlfla
+         PgdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FsiIJ6gH+cU3t60sFGR1DbzvdELnSg+yPMk5670wQXo=;
+        b=PTNSPwLa+/Ia2P/XTK2SsYnPrVncteSXK5Aqj/vUwPD/uvSR5ecG9JdosalPvDUuPi
+         ITgOtCLEJ31ukfXhEYi28djeKJdNtCkJPzb8kEiWoA0bulujIwEydQW6MBG0eH273qc7
+         CVnRXKio2FcjR9qwNcPCeCp0RZyNQLu3NvbBl+SEHwX0OJSdssSF6R/HNS1IKHOjM9E8
+         MvyNOl/rhlnHFyL7HEmmgAnm/9gWnDFXwyDDN/buUlnSkXUeRQgSsp/ZnXbzHnKQCo+X
+         r2TJvcWaIvnWIIkLihX0IhS9hD+04Fy9Y6QADo9apR9s7AO2nVvADpYcJ6Xwp7E81QTh
+         CasA==
+X-Gm-Message-State: AOAM532BRaG8yPhkXU2bwawJ9SDdkaX95hSUaaCZqgaFGEKsLg2gkxWb
+        CxJw+eyxFdk8YZqrWjwSHSB4peq+D+Bt+zac69mJ9A==
+X-Google-Smtp-Source: ABdhPJxjzOP1d/z0YZzl/rWoWGhPgD57DFtqJMJ9o7bNgqRLegLC4LRLdyYe7A4Hx7rgPx1ytOs2uhlPmRKSDxHtpZs=
+X-Received: by 2002:a05:6830:2011:: with SMTP id e17mr1143000otp.295.1623796002490;
+ Tue, 15 Jun 2021 15:26:42 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from char.us.oracle.com (138.3.200.0) by SN4PR0801CA0019.namprd08.prod.outlook.com (2603:10b6:803:29::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Tue, 15 Jun 2021 22:21:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a84e40bf-de30-4457-be50-08d9304bfc37
-X-MS-TrafficTypeDiagnostic: BY5PR10MB3764:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR10MB3764EA085563323CCCF5D9FF89309@BY5PR10MB3764.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xF7BAeumBgA6E0VmbmaA3ioSAel2CytzKgdt1uIT9go9/NjNmeodkwaht6aelOZ9E6scx0YZtTQJdAXDmSneU9vu0wGcmTbUifhBUrkdlayQ6hRr/E6GKZdwmaf98Lpbj4tPlrlH1G6ZMfFQzfF0vZ5k/QVDLjMt/D9pAwjKPVWj2OoiSeud5q+Ax7HLo5os8kWWjR5DU6ih+dUDtHJ2B8UMhT2PbCAvBENqWz5H3daD9fYUgSLa9w7LeHsX0Vp8xdlQF60I0q32HPuFnlbblyWJtflvBBqu4KIWD0ALZ5jZQpKFyPZ70w2bTLf1DiPYNVR9+93noh7OsqeNiE05ClsMH7CIzUUKEIQ5k6HbzVX3wLFQQsR9fr+WKbljW96LJwkmZ2OVakWgej494Os0WvTLBO1BI4iP6FlbtrDOqPOOmCtKY6wAlvUKZIF13wPHDwFIBua4bkwooVntdBV63ohucyAmS/e5VVeI/9MjQTAzBdKXuT/6fR4ALhvqNUgSvJL8wAIXeUyk9tA8t/Rgbm9sOCAIyYxM0RpGWEcAIDmDvfaXxtrMtQCeDO/tW6GsQOgTfGz0Y+QKYcpP1BN4/975osQRX+C3Fs8t6GjNVmIa8tWn05O8vQ/DPtBpKo8nhQcvpphkFhRwJt403BvZOg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(39860400002)(396003)(366004)(376002)(2906002)(6666004)(26005)(16526019)(83380400001)(186003)(7406005)(7366002)(7416002)(52116002)(7696005)(38350700002)(4326008)(66556008)(5660300002)(316002)(6916009)(8676002)(956004)(55016002)(66476007)(54906003)(38100700002)(478600001)(86362001)(66946007)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yDIPw9DQZfFEwfQNMtXbYoN7a1mXxAcENcJ+ekAkoDUjpxnaKujqkd8PSIcL?=
- =?us-ascii?Q?ibYS1fAosw19N/jQFKEvQ4r7kaHdcY35TcjNe3oFHnbcs0I5mEuSqWMp7tRL?=
- =?us-ascii?Q?x4aVmjTd2p8303jAsK7aKx0kMXGZc1nwKJDCphVkHCrH0gqwZRw0j6nWTkfi?=
- =?us-ascii?Q?HTBbHsrXn+KghJ7EfpJg5QO9WBCEH+mMki3nAYPMxq8GilorBPlS6Vp7iiIi?=
- =?us-ascii?Q?sOZ+dL5k3tj8WZAm8w9fN2iRYjBP2E3k6pXttRTINm/yq3ON0Gy3HsPZ0oNX?=
- =?us-ascii?Q?jAs7wdw0Kj/p0e4Z7fY3NGivEmyTEEpJsG0ZNbAx4GOrtBlOnUpimbFdqEmR?=
- =?us-ascii?Q?aK+Hz1ce0ySqp1ugn8ATZ3ThiW+lJkre3AsmkPZcL2miur3Mr5BHPcqiLFG3?=
- =?us-ascii?Q?h6ZZ+UUJHCj5iBt12pNXoKc7+o3chgv7vTVBMpb2+SmtHYlrVuG2X9M23y33?=
- =?us-ascii?Q?qtX/0e5IxDyK9RJmI4671ZDydFhjsAa/yEppblayzVwm+hw94Y0vTxoPxrb5?=
- =?us-ascii?Q?qSRXj/iDDgKSVbuCufE2s4khdvZS+yO2/5D05Vv06Uj/Mm2z52Gby9CL/ZUK?=
- =?us-ascii?Q?Erycb4ZrnqmQyEZus4oZlt5N4gkhp1nq22o2tDliqXgofkuDaDe71PSDAEQ5?=
- =?us-ascii?Q?nIBIvIwhpqc0uWHPcOKk6ILycH4IOFRynQf39o34DDW380BvOSpFRz+6uM3W?=
- =?us-ascii?Q?XA0wGPMOcGLFSE+6LjIMHnr7OekrceqvnNej/rUPrfq1CSdYGRMfQ0uRSXKU?=
- =?us-ascii?Q?Ve+QJhcl9yqQwIl+Ykn4w2Pr9xf5G0FUGgp+Mw+/CkZqE5vCx2lYEO20HhNI?=
- =?us-ascii?Q?Dqd1qzm61djsVaJH+1OfA303dEMRYhXjM+b0ZQnmqKUdAieDlwWm5ScjnfSt?=
- =?us-ascii?Q?6IGcK/3fzTM0tjVZyNMizspT4Gnn6fP0ZlUSpT+3d9d2IKLYwthcs5I7RDAw?=
- =?us-ascii?Q?cPDUf9CaH/zEmBqtRKmZWjTCbthafxumpzy0LSiGJ3eZMxMzszsOayP6FlP3?=
- =?us-ascii?Q?eAEHQjYuBmxSnUj7OhtP8AB7xWUQwC1gQN/RkeIJRg/3eS+kLNI935eiBUQM?=
- =?us-ascii?Q?McdkFy5jDJyvGzHY5MSV1NVn7QxEsqaqB/7dY83kZHZkSKRrC3LRvRXQaIOq?=
- =?us-ascii?Q?WuPumsCb+EvsTY/4+eaPKLL2gRgXi4e1KIPm4eACiVtjTQOTev4uF87KfcjI?=
- =?us-ascii?Q?vbf+eNbI6dLHDatf8rIQNhfzHiXsPR2CKYkWFfgCrS7rCgXd4miSbKuDkIgo?=
- =?us-ascii?Q?TgGG6GbecvN9yyDoTbA5ywNChqeMUCt1pJHVEgeQiyvwDrAOGgG21NxIf1mL?=
- =?us-ascii?Q?Kc1HG8uqCIPyZdyggjFPlkni?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a84e40bf-de30-4457-be50-08d9304bfc37
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2021 22:21:56.4536
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gqDAXHWgJql7g0jEA30LQdjzpX2coNygHrx1GTLbl89x8Z5+jOR2M1o7u9p+TRdkzzgjCPG584j1WtU+wXlolA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3764
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10016 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 spamscore=0 adultscore=0 bulkscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106150137
-X-Proofpoint-ORIG-GUID: vAX6Oun_7Zlja7oqlv8C5OTIAkc2TKkM
-X-Proofpoint-GUID: vAX6Oun_7Zlja7oqlv8C5OTIAkc2TKkM
+References: <20210615164535.2146172-1-seanjc@google.com> <20210615164535.2146172-2-seanjc@google.com>
+In-Reply-To: <20210615164535.2146172-2-seanjc@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 15 Jun 2021 15:26:31 -0700
+Message-ID: <CALMp9eR8mos-HrkBO_hdbH6YmEKfFHAzYtRzhfGaq8hEwM-LVg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] KVM: VMX: Refuse to load kvm_intel if EPT and NX are disabled
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 09:27:02PM +0800, Claire Chang wrote:
-> Always have the pointer to the swiotlb pool used in struct device. This
-> could help simplify the code for other pools.
-
-Applying: swiotlb: Set dev->dma_io_tlb_mem to the swiotlb pool used
-error: patch failed: kernel/dma/swiotlb.c:339
-error: kernel/dma/swiotlb.c: patch does not apply
-..
-
-Would you be OK rebasing this against devel/for-linus-5.14 please?
-(And please send out with the Reviewed-by from Christopher)
-
-Thank you!
-> 
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
-> ---
->  drivers/base/core.c    | 4 ++++
->  include/linux/device.h | 4 ++++
->  kernel/dma/swiotlb.c   | 8 ++++----
->  3 files changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index b8a8c96dca58..eeb2d49d3aa3 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -27,6 +27,7 @@
->  #include <linux/netdevice.h>
->  #include <linux/sched/signal.h>
->  #include <linux/sched/mm.h>
-> +#include <linux/swiotlb.h>
->  #include <linux/sysfs.h>
->  #include <linux/dma-map-ops.h> /* for dma_default_coherent */
->  
-> @@ -2846,6 +2847,9 @@ void device_initialize(struct device *dev)
->      defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
->  	dev->dma_coherent = dma_default_coherent;
->  #endif
-> +#ifdef CONFIG_SWIOTLB
-> +	dev->dma_io_tlb_mem = io_tlb_default_mem;
-> +#endif
->  }
->  EXPORT_SYMBOL_GPL(device_initialize);
->  
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index 4443e12238a0..2e9a378c9100 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -432,6 +432,7 @@ struct dev_links_info {
->   * @dma_pools:	Dma pools (if dma'ble device).
->   * @dma_mem:	Internal for coherent mem override.
->   * @cma_area:	Contiguous memory area for dma allocations
-> + * @dma_io_tlb_mem: Pointer to the swiotlb pool used.  Not for driver use.
->   * @archdata:	For arch-specific additions.
->   * @of_node:	Associated device tree node.
->   * @fwnode:	Associated device node supplied by platform firmware.
-> @@ -540,6 +541,9 @@ struct device {
->  #ifdef CONFIG_DMA_CMA
->  	struct cma *cma_area;		/* contiguous memory area for dma
->  					   allocations */
-> +#endif
-> +#ifdef CONFIG_SWIOTLB
-> +	struct io_tlb_mem *dma_io_tlb_mem;
->  #endif
->  	/* arch specific additions */
->  	struct dev_archdata	archdata;
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index 97c6ad50fdc2..949a6bb21343 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -339,7 +339,7 @@ void __init swiotlb_exit(void)
->  static void swiotlb_bounce(struct device *dev, phys_addr_t tlb_addr, size_t size,
->  			   enum dma_data_direction dir)
->  {
-> -	struct io_tlb_mem *mem = io_tlb_default_mem;
-> +	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
->  	int index = (tlb_addr - mem->start) >> IO_TLB_SHIFT;
->  	phys_addr_t orig_addr = mem->slots[index].orig_addr;
->  	size_t alloc_size = mem->slots[index].alloc_size;
-> @@ -421,7 +421,7 @@ static unsigned int wrap_index(struct io_tlb_mem *mem, unsigned int index)
->  static int find_slots(struct device *dev, phys_addr_t orig_addr,
->  		size_t alloc_size)
->  {
-> -	struct io_tlb_mem *mem = io_tlb_default_mem;
-> +	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
->  	unsigned long boundary_mask = dma_get_seg_boundary(dev);
->  	dma_addr_t tbl_dma_addr =
->  		phys_to_dma_unencrypted(dev, mem->start) & boundary_mask;
-> @@ -498,7 +498,7 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
->  		size_t mapping_size, size_t alloc_size,
->  		enum dma_data_direction dir, unsigned long attrs)
->  {
-> -	struct io_tlb_mem *mem = io_tlb_default_mem;
-> +	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
->  	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
->  	unsigned int i;
->  	int index;
-> @@ -549,7 +549,7 @@ void swiotlb_tbl_unmap_single(struct device *hwdev, phys_addr_t tlb_addr,
->  			      size_t mapping_size, enum dma_data_direction dir,
->  			      unsigned long attrs)
->  {
-> -	struct io_tlb_mem *mem = io_tlb_default_mem;
-> +	struct io_tlb_mem *mem = hwdev->dma_io_tlb_mem;
->  	unsigned long flags;
->  	unsigned int offset = swiotlb_align_offset(hwdev, tlb_addr);
->  	int index = (tlb_addr - offset - mem->start) >> IO_TLB_SHIFT;
-> -- 
-> 2.32.0.272.g935e593368-goog
-> 
+On Tue, Jun 15, 2021 at 9:45 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Refuse to load KVM if NX support is not available and EPT is not enabled.
+> Shadow paging has assumed NX support since commit 9167ab799362 ("KVM:
+> vmx, svm: always run with EFER.NXE=1 when shadow paging is active"), so
+> for all intents and purposes this has been a de facto requirement for
+> over a year.
+>
+> Do not require NX support if EPT is enabled purely because Intel CPUs let
+> firmware disable NX support via MSR_IA32_MISC_ENABLES.  If not for that,
+> VMX (and KVM as a whole) could require NX support with minimal risk to
+> breaking userspace.
+>
+> Fixes: 9167ab799362 ("KVM: vmx, svm: always run with EFER.NXE=1 when shadow paging is active")
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
