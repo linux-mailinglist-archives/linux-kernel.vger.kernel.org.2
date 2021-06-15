@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13923A8865
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC7E3A8868
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbhFOSVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 14:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhFOSVa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:21:30 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627A1C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:19:25 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id i13so5236405lfc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:19:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Av+6lPQlyv+Sn6WN/JAS+BG6bGNrpjaP5opx8sV0nnc=;
-        b=WQuQwtCiT/eoKl6qV5lHYx4lH+0EDr7+nOJYQ1h6yvBunl0woPiervNHkI2DWuHNMS
-         q2DNf1dI8WkF30DAo2o970Na/Exs7H+KKRGluFxJ9QUdoPaAT85CHvggye+xAbjL8yy7
-         H4ASmIp9BBpePbCJfnUYj3imRXf4Pc4Dds7lg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Av+6lPQlyv+Sn6WN/JAS+BG6bGNrpjaP5opx8sV0nnc=;
-        b=M/AEAtwu0bkiUQJfVjx5m8kUUkTjGhZ46L1q9JeX6qWm43GFAbvsCCZIfn7TPTDdQr
-         LnoFxvzDy01YiUh2OJ1JkcB+LqNwrRLHy7+f1fludx5ftsdBhLp9EX1pHzk8011hQNS4
-         rF9cTF1WjLdJef2pZfc/5YyKPfpGGL2ZMIpXOWYfgK7OuTpMK0flhPbyOtF9R6Sna5Su
-         NLWeRN5gFB6tlkKP4WmDOMkxCjbM26ep5zXL13FgRTjsrbeDwNdQ+lb3lJIYdWlaVeL4
-         mu3RvCW5AXvHPbYzK9e3QSfwg7FRUPD61a0IhC/j9swqBCUHP/qUAa8ldgYIS4FrAN+z
-         iEOQ==
-X-Gm-Message-State: AOAM532Asr8/2jj80p0QoL6CgRs1ucTxKfPXExG3taxhm6yG3+TJkWNs
-        lRVDzJnsfrtfg6y68r9+OfDS6MwrMwgpkU+G
-X-Google-Smtp-Source: ABdhPJweSl0Q89PmKC6w+XxeO4vbmQq77v17ImkmzI9dWx4DD14TwStzTm4Nv27wv4Sy/X7AwYHDuQ==
-X-Received: by 2002:ac2:5f7a:: with SMTP id c26mr488292lfc.515.1623781163521;
-        Tue, 15 Jun 2021 11:19:23 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id v19sm1885211lfp.92.2021.06.15.11.19.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 11:19:23 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id j2so28377322lfg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:19:23 -0700 (PDT)
-X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr468018lfs.377.1623781160087;
- Tue, 15 Jun 2021 11:19:20 -0700 (PDT)
+        id S231391AbhFOSVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 14:21:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229983AbhFOSVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 14:21:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7485F613C2;
+        Tue, 15 Jun 2021 18:19:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623781186;
+        bh=zX9gjVzIQE5Qg60Ct1IlcDZSonPE99+/879tzBFpf3Y=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=khqI4M72AOcjdsYzso3OSIFKdpfKVV6MuuN+ntEtY2MWFzX/PVVYGax/Fz4CBTlOL
+         69UMl/niMRKuLHbBu9aqHR/5P/Lpc1FYaNxokCPo6vriTVPo0noVc1Igjl24tNnunH
+         wf4yo2VWmfkVKAbrjQfA4Y164M8qpwoRzEPEud8mQiIrAgLSde3pyxDXJ9REB9127a
+         DEJwMVfPLCMF1tKZXCOMpWN4blGKiq9O3HRArf9Tlz+wLKxKDYR5mQeVHgfRLcqQK6
+         FxRjgrVg24WpX13lPhNEyMRWhU4hZlLd4K68mkrlPDCszlBpj4aHtS7HrKJWGADPCG
+         XKr+RATBHnHxA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 41BDD5C00F7; Tue, 15 Jun 2021 11:19:46 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 11:19:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Marco Elver <elver@google.com>, boqun.feng@gmail.com,
+        will@kernel.org, glider@google.com, dvyukov@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/7] kcsan: Introduce CONFIG_KCSAN_PERMISSIVE
+Message-ID: <20210615181946.GA2727668@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210607125653.1388091-1-elver@google.com>
+ <20210609123810.GA37375@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-References: <20210608171221.276899-1-keescook@chromium.org>
- <20210614100234.12077-1-youling257@gmail.com> <202106140826.7912F27CD@keescook>
- <202106140941.7CE5AE64@keescook> <CAOzgRdZJeN6sQWP=Ou0H3bTrp+7ijKuJikG-f4eer5f1oVjrCQ@mail.gmail.com>
- <202106141503.B3144DFE@keescook> <CAOzgRdahaEjtk4jS5N=FQEDbsZVnB+-=xD+-WtV9zD9Tgbm0Hg@mail.gmail.com>
-In-Reply-To: <CAOzgRdahaEjtk4jS5N=FQEDbsZVnB+-=xD+-WtV9zD9Tgbm0Hg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 15 Jun 2021 11:19:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=winAqy0sjgog9oEsjoBWOGJscFYEc3-=nvtzbyjTw_b+g@mail.gmail.com>
-Message-ID: <CAHk-=winAqy0sjgog9oEsjoBWOGJscFYEc3-=nvtzbyjTw_b+g@mail.gmail.com>
-Subject: Re: [PATCH] proc: Track /proc/$pid/attr/ opener mm_struct
-To:     youling 257 <youling257@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>, regressions@lists.linux.dev,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609123810.GA37375@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 6:55 PM youling 257 <youling257@gmail.com> wrote:
->
-> if try to find problem on userspace, i used linux 5.13rc6 on old
-> android 7 cm14.1, not aosp android 11.
-> http://git.osdn.net/view?p=android-x86/system-core.git;a=blob;f=init/service.cpp;h=a5334f447fc2fc34453d2f6a37523bedccadc690;hb=refs/heads/cm-14.1-x86#l457
->
->  457         if (!seclabel_.empty()) {
->  458             if (setexeccon(seclabel_.c_str()) < 0) {
->  459                 ERROR("cannot setexeccon('%s'): %s\n",
->  460                       seclabel_.c_str(), strerror(errno));
->  461                 _exit(127);
->  462             }
->  463         }
+On Wed, Jun 09, 2021 at 01:38:10PM +0100, Mark Rutland wrote:
+> Hi Marco,
+> 
+> On Mon, Jun 07, 2021 at 02:56:46PM +0200, Marco Elver wrote:
+> > While investigating a number of data races, we've encountered data-racy
+> > accesses on flags variables to be very common. The typical pattern is a
+> > reader masking all but one bit, and the writer setting/clearing only 1
+> > bit (current->flags being a frequently encountered case; mm/sl[au]b.c
+> > disables KCSAN for this reason currently).
+> 
+> As a heads up, I just sent out the series I promised for
+> thread_info::flags, at:
+> 
+>   https://lore.kernel.org/lkml/20210609122001.18277-1-mark.rutland@arm.com/T/#t
+> 
+> ... which I think is complementary to this (IIUC it should help with the
+> multi-bit cases you mention below), and may help to make the checks more
+> stringent in future.
+> 
+> FWIW, for this series:
+> 
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-I have no idea where the cm14.1 libraries are. Does anybody know where
-the matching source code for setexeccon() would be?
+Queued and pushed for v5.15, thank you both!
 
-For me - obviously not on cm14.1 - all "setexeccon()" does is
+I also queued the following patch making use of CONFIG_KCSAN_STRICT, and I
+figured that I should run it past you guys to make check my understanding.
 
-   n = openat(AT_FDCWD, "/proc/thread-self/attr/exec", O_RDWR|O_CLOEXEC)
-   write(n, string, len)
-   close(n)
+Thoughts?
 
-and if that fails, it would seem to indicate that proc_mem_open()
-failed. Which would be mm_access() failing. But I don't see how that
-can be the case, because mm_access() explicitly allows "mm ==
-current->mm" (which the above clearly should be).
+							Thanx, Paul
 
-youling, can you double-check with the current -git tree? But as far
-as I can tell, my minimal patch is exactly the same as Kees' patch
-(just smaller and simpler).
+------------------------------------------------------------------------
 
-Kees, do you see anything?
+commit 023f1604e373575be6335f85abf36fd475d78da3
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Tue Jun 15 11:14:19 2021 -0700
 
-           Linus
+    torture: Apply CONFIG_KCSAN_STRICT to kvm.sh --kcsan argument
+    
+    Currently, the --kcsan argument to kvm.sh applies a laundry list of
+    Kconfig options.  Now that KCSAN provides the CONFIG_KCSAN_STRICT Kconfig
+    option, this commit reduces the laundry list to this one option.
+    
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index b4ac4ee33222..f2bd80391999 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -184,7 +184,7 @@ do
+ 		TORTURE_KCONFIG_KASAN_ARG="CONFIG_DEBUG_INFO=y CONFIG_KASAN=y"; export TORTURE_KCONFIG_KASAN_ARG
+ 		;;
+ 	--kcsan)
+-		TORTURE_KCONFIG_KCSAN_ARG="CONFIG_DEBUG_INFO=y CONFIG_KCSAN=y CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000 CONFIG_KCSAN_INTERRUPT_WATCHER=y CONFIG_KCSAN_VERBOSE=y CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y"; export TORTURE_KCONFIG_KCSAN_ARG
++		TORTURE_KCONFIG_KCSAN_ARG="CONFIG_DEBUG_INFO=y CONFIG_KCSAN=y CONFIG_KCSAN_STRICT=y CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000 CONFIG_KCSAN_VERBOSE=y CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y"; export TORTURE_KCONFIG_KCSAN_ARG
+ 		;;
+ 	--kmake-arg|--kmake-args)
+ 		checkarg --kmake-arg "(kernel make arguments)" $# "$2" '.*' '^error$'
