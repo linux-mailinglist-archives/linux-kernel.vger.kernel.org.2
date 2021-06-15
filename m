@@ -2,163 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50D63A7D00
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFB43A7D02
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhFOLUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:20:43 -0400
-Received: from mail-co1nam11on2072.outbound.protection.outlook.com ([40.107.220.72]:28064
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229983AbhFOLUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:20:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EoDr8YqZlam8oqm02acF8zsOBAXE/lbGRwE0lmltmabq6sz1OMD/ZyU20TsVzQgk0exX0OM5htgF1PaDIpwP4UP6S07WYUreVqK8uHhOl14MNyrLv5wxnhoxh7RLEuyVlcah7vJtAhmG2gsMP24RGH1LRWrhlgZGNIYtJ8t1pbfaf6ES4FJHBcTdUtF0AZWJfFFNATeXuowHQVgHQ+WtxBK9mxvL08e7t4k5ku512A+qRyIMBLKScHaXbbJCp719n2eG6ult8T9yTBq9vCMlcpB8x/EhfnmTQxVhxgCoO5tu1cxHJ0lnaLXG1DgRumsyPxtcdV59eAqx/3jLg9uPaQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O0VwNc6ZJlU8UoTH8cFwCe+AZom8pq+JtSO3MhIfIxw=;
- b=j+TGh/eZ5frTl0kN5rUIYX3O//Pwy/QtrqKSupfz3Cy40+yw26QkpAGNpbz7C+ovN+8MhhqmxMlqBfIkxijnSJTSPy8QQRjG0+M3snt5Dw+lVeLdurI6OQaglcO0eIIpeSK4pNc5H04pEoOgT51UK+ejPguOIa37D6mfiF+tL0YN3G1tFHt4x1fG5Cj/uWn7nDXyPk4jkPQXHiksXsw7CfDGECVfdL/pTPionE/ANk6K7luh01Yw9FzPDpG8qe6aE9oxXH70WxDqEl+O4uKSQYc1Kwe38Mmw1W566elPzL7TRghGBfGmbs+IpsCxucu1VXl2PrEfxqfl2tgBcEuSMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O0VwNc6ZJlU8UoTH8cFwCe+AZom8pq+JtSO3MhIfIxw=;
- b=k5hmHQnRJq8WyNXhuKRCHgimTOJjXpn+xtWDfN7iz4/5TtIYCcRsudLTWGYfUnu1YLKm8iewSPQ7Q0qP9oQmx0Vzn8gcZqz0pDPyGbpyd415Z7XShnqCWpfWY/e/N9k+7pZ0/k8/Q9mQK1ehAN/WPkBcURZdqBylyMdFMQKdpec=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5103.namprd12.prod.outlook.com (2603:10b6:5:392::13)
- by DM8PR12MB5462.namprd12.prod.outlook.com (2603:10b6:8:24::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.24; Tue, 15 Jun
- 2021 11:18:35 +0000
-Received: from DM4PR12MB5103.namprd12.prod.outlook.com
- ([fe80::e065:c90b:5f7:7e95]) by DM4PR12MB5103.namprd12.prod.outlook.com
- ([fe80::e065:c90b:5f7:7e95%6]) with mapi id 15.20.4242.016; Tue, 15 Jun 2021
- 11:18:35 +0000
-Subject: Re: [PATCH v9 3/3] dmaengine: ptdma: Add debugfs entries for PTDMA
-To:     Vinod Koul <vkoul@kernel.org>, Sanjay R Mehta <Sanju.Mehta@amd.com>
-Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
-        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
-        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
-        mchehab+samsung@kernel.org, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-References: <1622654551-9204-1-git-send-email-Sanju.Mehta@amd.com>
- <1622654551-9204-4-git-send-email-Sanju.Mehta@amd.com>
- <YMDLvnCyfo8+StpW@vkoul-mobl>
-From:   Sanjay R Mehta <sanmehta@amd.com>
-Message-ID: <9d326966-a759-5ccf-e488-e66d2119eda7@amd.com>
-Date:   Tue, 15 Jun 2021 16:48:21 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YMDLvnCyfo8+StpW@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.158.249]
-X-ClientProxiedBy: SGXP274CA0001.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::13)
- To DM4PR12MB5103.namprd12.prod.outlook.com (2603:10b6:5:392::13)
+        id S230106AbhFOLWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhFOLWH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 07:22:07 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4085C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:20:02 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id l1so21876979ejb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:20:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=BEeCJM2cPKJxTO4MU9AOQWvAy0+MkYh0MYy81JYGv9Y=;
+        b=qvu/cXi8LAEVvTXCOgV6EdujzUvor9gxWDJoh8e5/wgsdBPRFBJ9L2EK4uKNtfR3ty
+         mVHuBDENDndaLxF2UZ8qTSVE1s+oOADiGbptv31TDjJiWDQ/Cn+TGkj53Afn1OA9neQn
+         MNEm1P9hheTcmMkl/ybxp8hL0LG3TbehBOk2fCBL10FzmFYhkQxp/k/F3CEwaXjIRBpT
+         NtR2B+HyMmjThVRgE+FNQM0rYt4esAmRHBwSekUacelfTowzOOtv45Z+FFjwtv2nrhCg
+         awG7WAKI/rCCH4Zud+Qwe+JNVbOGolpSAz86lci7fAcnEdzylVI8H0jqUV3KDysasJQA
+         LVMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=BEeCJM2cPKJxTO4MU9AOQWvAy0+MkYh0MYy81JYGv9Y=;
+        b=NcSYQgGIuEvMjJHSbMlrlphA6DoSumwrI28ccQHN38+HtcUssB/jpF7Nb2k2pf/VLx
+         QY+TE7oAuLYyOJnSt9vNfDU61PWixMaYBE2lXGe0MOkpd+IZ/dGsNku7euGXgeN0R3tN
+         I8dx19k41/YRPrgqYZ/VusPoAy8B6KjJHbWbgBsmq0bCE7Ui1QSFDmQ3Q88oTSOzrWRC
+         vMToq0EvK8iKMgdGU7vhIsTSARfJCoiQ+5h+qyI+etkvHm9SPuXmbBIBHceck57nmzrR
+         nbx5UehQ4oDgyYGDRpJIRRLh1/Yr1EOPxY9LOf+bpwXGL5kwoyqesspEGcAE5RZe9eoN
+         SE1Q==
+X-Gm-Message-State: AOAM531/pLv90hY32zD/BlPZR443p/z/Vn/ZgaJDJAGXpp36siDr2/NA
+        Za5Ycy65JaBsFpZ0UK/qcMSyBWti3Aa04eGueKyb1Q==
+X-Google-Smtp-Source: ABdhPJzT57iI3YtjjS5AfKOAwwRgoVfgmuebs6puFU4WEFVvmHewgzsj8wKFUxJnNKvCZFnkwFAKaz6nqTh+C7t9qRs=
+X-Received: by 2002:a17:906:480a:: with SMTP id w10mr3748711ejq.18.1623756001316;
+ Tue, 15 Jun 2021 04:20:01 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.253.16] (165.204.158.249) by SGXP274CA0001.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15 via Frontend Transport; Tue, 15 Jun 2021 11:18:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 64198a18-8b30-4862-1df3-08d92fef50cc
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5462:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM8PR12MB5462EA811D1308DC9F9B7EBCE5309@DM8PR12MB5462.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:248;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: P0D0fzwG4yjnaE0BVvz1yOZMg7u4H3aBTEcKaQYQyyu4A+H2gPcTuaKimLo3kX0kOISnuUOlotEkFlt/kbWCzdihJUfTUtbG1Lde80qQ5JHnn2WzbWAb5Z9AAh/KnE5Lz/VBzMMo4uZAeetYt66Ap/MlsfnyJMGPX7k6IrzLdrcSQQOUTw4UBpJATcXJulNpKtoY+Ulh4tYRUQFRmrsT1xIYw5+GSzTW9UzUr2PZjMzHO2Hxwsz2l5tK2LXCiizMwdUsetd9iMaCidmDxOy4l2NWWiLncCAOH6qbF2MLXceH3K4MBYllnMIxxzmc1uUFCYz+8u09acFb/rXT4b4vzYtGVPms8D9arX4xAPbgnj1OKkzdyemid3vpMBsigS7DcJ6vnExF5WYt5K54SZ0gBgQafqMTw0ENj+vTDl0ohtWJyKgvlWdOdrX3f6QYIU0oPNFkWcYM3WIJZ5lk3AQ1WXzyFwCTwtnGxnftkeX4/K5o2jt+whv3RhhH2i8oUrjwz/Xa9f/sZsGeX+xF5ddYn3KVivwqJm34EGLkqLYLpaKq93hKCFCItxwClZFWthKlZim08pr9AiuClmYSUDWMctUAcvQ/X96H9Yp0rAtbZU2lfZzEYnKWuHpH/0iw8Gx9rZKeMsFOUpISA0zJu7IBeqEEz5LSoNmU5qqCXix4vaHt+cnLKJp/ccs8etr/BTs7
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5103.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(136003)(396003)(39860400002)(6636002)(16576012)(66556008)(316002)(2616005)(956004)(66946007)(66476007)(6486002)(5660300002)(38100700002)(36756003)(8676002)(186003)(4326008)(31686004)(4744005)(53546011)(83380400001)(16526019)(8936002)(26005)(6666004)(31696002)(2906002)(110136005)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UFJiZ3BJRGMrOEt5c3VjSUh5Zmk3dERhNG1tcE1zWCt3MEJZaWZYTUVFTFRO?=
- =?utf-8?B?M1RnS3hsc09lTjJVM2tPcjJxVlYyRlBody9wMzdXUU5SMFZld2h6N0dkN0wy?=
- =?utf-8?B?WGhjZ0cweW9Zdko2MGlTd1lsS3N2ZUViOUhGVWR4N01wTTgrN09TQ0cxYnlD?=
- =?utf-8?B?N3hZb05Ld2tQNWgza0VXMHpNc1dvQVQrS3VUYXJsVHpBUFFDZnMxN0dJbVJo?=
- =?utf-8?B?SEJnVmZyWVFORVVCZWQ0SjZDbGpWdmtwRytsOE1SOTdqTlJKNWg1em1yWEdI?=
- =?utf-8?B?M2wzemVyR21kcFc0T1FRQVB3S1lwdjNKR01ab2NpRW1rOHdOTDJYUjgwdWYr?=
- =?utf-8?B?RXdBRjJNOUlxME1waDZIV1l0a0lyRVBOY0xsK3NGQ20zRGdTVnBsckp3eEJU?=
- =?utf-8?B?U3l1bkE3b3h6eVpkeVprOUl5MTVzMjhBYjVvR1dOQ0k3NWNMWUJNdDZ3RDAw?=
- =?utf-8?B?T1RwcTFOUDhmSHRKZVBTeWhMYUlnSkw4WEdWVHBDbUZFS2MrOUxTdUpvMnIx?=
- =?utf-8?B?a2Q3b0NGYjE4RnkwTjlYM0FKRXFmUURBWVJ2eEdFdExiMHRsS0VsRlE4VC9t?=
- =?utf-8?B?UjA4OXFGMTZJcTZBSHlRNms2M0JSaVZpdzNoUkVBelRvUmxQYTRxNENya1NT?=
- =?utf-8?B?NE1XYUg4azZxdnlrN0FKVUJ2RGZ1YWJ5U0htRGxRQXI1aklQbUZ6VG9HYzd6?=
- =?utf-8?B?QTBQSFU3S0V4OWNMOVB3UnJJRGxSc2MxMTNVeTBlTTd3eXAyRnN1MHdtZmlx?=
- =?utf-8?B?akQ3aE9DMW1xWlUxSzhhcWpZSEY4VDNTZkpPZFVld3h2UEsxVkg2cExoOU9N?=
- =?utf-8?B?K0J5NEJ2U1ZMbTFJeS9sbVpkS001YkdMbFF1Nnl1VUFLeFBEbEFYK0dRWUtI?=
- =?utf-8?B?TTRZUHNDMlR4Q013bVVCb2NodFQ0azh0dC9ySUhuVXVMKys4OFlwcHJzVjdS?=
- =?utf-8?B?bnorVlp6blBaRlYxSTNKUGdVanVEVmY1Rk1VTWZKNm5mVjM3aG4ycnU1Rzdl?=
- =?utf-8?B?UUdRL1JtVUUvek92MWE5SmpwdnFRKzlDYm9rbi84RmZzV3h1N0IzZjI4cGZW?=
- =?utf-8?B?SFBQc1MzaHpUTE8xYU9rdXZDM2lVcVdCd2ZJbCtCNVcyYTl1ekF4anorckVq?=
- =?utf-8?B?Z0hMRzRzRy9MTlRITzdsdzk0d1EyRkRVUFQrK1lXOC96Tzk1b1V4OVlqU0Y1?=
- =?utf-8?B?RGN6RDhlc0d3NFVsSXNZOHdRcWVEL2ltdDB6bDd2azlFRWZ0WngwTlhQeDhz?=
- =?utf-8?B?eFpjbFROZmxLVEg2T1dFNkRKM2pKVnFLSjFRZEVUUWVpZmE5bFBCN05VQk1t?=
- =?utf-8?B?TzRkUkNpOGFZN2F4WlFvVFRTOHIxdG5kcG1sNmtmRzY0b053SkVTT2FROGxk?=
- =?utf-8?B?SlJYM29IVXpmN1lsYWpVUUpnTG1MRVlsZ1FJdU9wZkk2NGhPWmtWY3Zlanlt?=
- =?utf-8?B?KzBmS0hGMjJ6bytZU0lWRGFSY0l4bCtlZEU3Q2Z5NHR0TEJoN0tPdStDL29P?=
- =?utf-8?B?aHRSUDBPbFZxUGdtcWZyQ0NmMzBlclU5S0pwZGpMWEo1TGFjSndwUXR5M3pB?=
- =?utf-8?B?K1BIMzFEU05pV0c4aTlWTng1SlRSVHNVZUlVc2Ixa254Z0phZEJJUE56TWh6?=
- =?utf-8?B?RWlsOVlwMGpIVE5lMHRyNjBIT3hqQ252Z1pBMnVPb1FZdDlTQXF4R3daMFp5?=
- =?utf-8?B?VlVnand1VXpVN0pEM1FOWlRhOXJ4dFRZaGcwb01MZWJhckJMRnJ5WVlHN2Jy?=
- =?utf-8?Q?btIQ7mOIgVvI4qxqn6VoJv0f/ZnSOGegBiJiaLB?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64198a18-8b30-4862-1df3-08d92fef50cc
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5103.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2021 11:18:35.3170
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LZxmleUxXx/ARdUdyJycPBsbsP7F8F5iCSSd0t8WejtrYBOpfoejynn/5v6RcrCl3SKgcJpXyFYXfOc4cFAKIA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5462
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 15 Jun 2021 16:49:50 +0530
+Message-ID: <CA+G9fYurEcTfV7Z=co2Ki-TubF4d-Ext7ivZPaQT9SR5XazUtQ@mail.gmail.com>
+Subject: [next] [arm64] Unable to handle kernel NULL pointer dereference at
+ virtual address 0000000000000068
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, lkft-triage@lists.linaro.org,
+        regressions@lists.linux.dev
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Following kernel crash reported while booting linux next 20210615 tag
+on qemu_arm64.
+
+Crash log:
+-------------
+[    0.767379] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000068
+[    0.769815] Mem abort info:
+[    0.770735]   ESR = 0x96000004
+[    0.771598]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    0.773008]   SET = 0, FnV = 0
+[    0.773865]   EA = 0, S1PTW = 0
+[    0.774844]   FSC = 0x04: level 0 translation fault
+[    0.776195] Data abort info:
+[    0.776968]   ISV = 0, ISS = 0x00000004
+[    0.778010]   CM = 0, WnR = 0
+[    0.778961] [0000000000000068] user address but active_mm is swapper
+[    0.780643] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[    0.782189] Modules linked in:
+[    0.783098] CPU: 2 PID: 1 Comm: swapper/0 Not tainted
+5.13.0-rc6-next-20210615 #1
+[    0.785239] Hardware name: linux,dummy-virt (DT)
+[    0.786626] pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
+[    0.788352] pc : blk_finish_plug+0x88/0x270
+[    0.789598] lr : blk_queue_write_cache+0x34/0x80
+[    0.790997] sp : ffff800012aeb9d0
+[    0.791981] x29: ffff800012aeb9d0 x28: ffff0000c088eeb0 x27: ffff800011a27110
+[    0.794067] x26: ffff0000c18511a0 x25: ffff8000114ecaa8 x24: 0000000005a00000
+[    0.796127] x23: ffff8000114ed3c8 x22: 0000000000000000 x21: ffff0000c088fa00
+[    0.798208] x20: 0000000000000000 x19: 0000000000000000 x18: 0000000000000001
+[    0.800239] x17: 7265727574636166 x16: 756e614d202e6b6e x15: ffff0000c0290488
+[    0.802308] x14: ffffffffffffffff x13: ffff0000c088fa2c x12: ffff0000c088fa14
+[    0.804341] x11: 0000000000000026 x10: 0000000000000401 x9 : ffff80001058247c
+[    0.806408] x8 : ffff0000c088fa2c x7 : 0000000000000008 x6 : 0000000000000001
+[    0.808429] x5 : ffff80001258a000 x4 : ffff80001258a260 x3 : 0000000000000068
+[    0.810492] x2 : 0000000000000001 x1 : 0000000000000068 x0 : 0000000000020000
+[    0.813153] Call trace:
+[    0.813878]  blk_finish_plug+0x88/0x270
+[    0.815064]  add_mtd_blktrans_dev+0x258/0x3f0
+[    0.816316]  mtdblock_add_mtd+0x6c/0xb8
+[    0.817428]  blktrans_notify_add+0x50/0x78
+[    0.818666]  add_mtd_device+0x304/0x4d8
+[    0.819790]  mtd_device_parse_register+0x1d8/0x2f0
+[    0.821150]  physmap_flash_probe+0x4c8/0x7a8
+[    0.822431]  platform_probe+0x70/0xe0
+[    0.823494]  really_probe+0xf0/0x4d0
+[    0.824539]  driver_probe_device+0x108/0x178
+[    0.825760]  device_driver_attach+0x7c/0x88
+[    0.827039]  __driver_attach+0xb8/0x190
+[    0.828142]  bus_for_each_dev+0x78/0xd0
+[    0.829254]  driver_attach+0x2c/0x38
+[    0.830381]  bus_add_driver+0x14c/0x230
+[    0.831502]  driver_register+0x6c/0x128
+[    0.832604]  __platform_driver_register+0x30/0x40
+[    0.833952]  physmap_init+0x24/0x30
+[    0.835011]  do_one_initcall+0x50/0x2c8
+[    0.836116]  kernel_init_freeable+0x25c/0x2e4
+[    0.837366]  kernel_init+0x2c/0x138
+[    0.838403]  ret_from_fork+0x10/0x18
+[    0.839453] Code: c8037c22 35ffffa3 17fff238 f9800031 (c85f7c22)
+[    0.841176] ---[ end trace 66ee8a40712bfd28 ]---
+[    0.842563] Kernel panic - not syncing: Attempted to kill init!
+exitcode=0x0000000b
+[    0.844577] SMP: stopping secondary CPUs
+[    0.845707] Kernel Offset: disabled
+[    0.846731] CPU features: 0x10000071,00000846
+[    0.847969] Memory Limit: none
+[    0.848853] ---[ end Kernel panic - not syncing: Attempted to kill
+init! exitcode=0x0000000b ]---
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+ref:
+https://lkft.validation.linaro.org/scheduler/job/2901452#L556
+
+metadata:
+  git branch: master
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+  git describe: next-20210615
+  kernel-config: https://builds.tuxbuild.com/1tyksDCCPiTvc0x6psxC3JvSWqJ/config
+
+build link:
+    https://builds.tuxbuild.com/1tyksDCCPiTvc0x6psxC3JvSWqJ/
+
+Steps to reproduce:
+--------------------------
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
 
 
-On 6/9/2021 7:40 PM, Vinod Koul wrote:
-> [CAUTION: External Email]
-> 
-> On 02-06-21, 12:22, Sanjay R Mehta wrote:
-> 
->> +/* DebugFS helpers */
->> +#define      MAX_NAME_LEN    20
->> +#define      RI_VERSION_NUM  0x0000003F
->> +
->> +#define      RI_NUM_VQM      0x00078000
->> +#define      RI_NVQM_SHIFT   15
->> +
->> +static DEFINE_MUTEX(pt_debugfs_lock);
-> 
-> unused?
-> 
->> +
->> +static int pt_debugfs_info_show(struct seq_file *s, void *p)
->> +{
->> +     struct pt_device *pt = s->private;
->> +     unsigned int regval;
->> +
->> +     if (!pt)
->> +             return 0;
-> 
-> better return an error code?
-> 
->> +
->> +     seq_printf(s, "Device name: %s\n", pt->name);
->> +     seq_printf(s, "   # Queues: %d\n", 1);
->> +     seq_printf(s, "     # Cmds: %d\n", pt->cmd_count);
->> +
->> +     regval = ioread32(pt->io_regs + CMD_PT_VERSION);
-> 
-> how do you ensure your device is not sleeping or you can access iomem
-> safely?
-> 
+tuxmake --runtime podman --target-arch arm64 --toolchain gcc-9
+--kconfig defconfig --kconfig-add
+https://builds.tuxbuild.com/1tyksDCCPiTvc0x6psxC3JvSWqJ/config
 
-This device will never go to sleep state as this DMA device is part of AMD server SOC.
-Hence PM support is not implemented.
-
-- Sanjay
+--
+Linaro LKFT
+https://lkft.linaro.org
