@@ -2,78 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57523A7E40
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A9A3A7E44
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhFOMhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbhFOMhS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:37:18 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1710C061574;
-        Tue, 15 Jun 2021 05:35:13 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4G477f1GRTz9sW6; Tue, 15 Jun 2021 22:35:09 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1623760510;
-        bh=7KFvbFbAzZ/KiBKex4+L6XeZPvYKTbTsjpLGWY2fjo8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=B5qH3Fyp9L7z8XKw9Q6liWDUnL0/ouV/i3DbvCd8lBR8qtjikqdeQAM7zBFCEZycB
-         hnKeuNHyC47xVQ3fqYfkxCPDLT3/BU89tt6EddgGE/ALpieCsq08aYrlR2UGB/tCdc
-         c8GyE5xOl+XJinrDneTL1wqVJud1zV+/VZw1FDvBPi5cLWtduUUbfa69Q6R5GV5a+y
-         W/tiJFoEaII10GaeU4T8VOwDvwAxCSgE9FWYQ41zB4EwS1Uqn5q/vlrVTe57TSzKcC
-         WuBf114RpppT756EZXKNI2Rt6K4MwIfyY57yfN4+YuDg0ZjYow5k2+vLZvL7LKEvlH
-         VtTaIpnXgxugA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
-        pv-drivers@vmware.com, doshir@vmware.com,
-        christophe.leroy@csgroup.eu
-Subject: [PATCH] vmxnet3: prevent building with 256K pages
-Date:   Tue, 15 Jun 2021 22:35:04 +1000
-Message-Id: <20210615123504.547106-1-mpe@ellerman.id.au>
-X-Mailer: git-send-email 2.25.1
+        id S230161AbhFOMhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:37:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229601AbhFOMhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 08:37:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8483261439;
+        Tue, 15 Jun 2021 12:35:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623760530;
+        bh=3Wq2+8NVL2BkUnnxNcF/n58X+TgoV/vpvH/oU15vV7U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nVV1K/cbGczQ8QwJv9mbThJVKX9OaXYWRSR8PYi+0/gCIM+rOPoyA1Cu3LXcJho39
+         m3xHypjuHeWpIJQ8xjLo5HDnaBCQLXMl8MwWNU+UwhQCEyfZSud0dh81t4oOC82S6c
+         xSTNFdYf35WNAVeo+L6ZEv8qWM7+kWGLOWbOducN+uOUaBPy+GTypudmXIp4VepOKv
+         0a/Bs5+0R1OZd7iMWnNaAq5lTa/nQQMrqMo6NWtX7JY5k7FdNjL2tJiuOH9Hu14GWm
+         lmaApRAvGq+Ph5A201h97LmvDs2VXxVEJZ7KPH+7HKCsGA4I9dPdP2bHZPW7LTWzNd
+         3wrn8sk0jqfUQ==
+Date:   Tue, 15 Jun 2021 13:35:11 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com, Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH] ASoC: codecs: wcd938x: remove incorrect module
+ interdependency
+Message-ID: <20210615123206.GA50640@sirena.org.uk>
+References: <20210615094839.27237-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qjNfmADvan18RZcF"
+Content-Disposition: inline
+In-Reply-To: <20210615094839.27237-1-srinivas.kandagatla@linaro.org>
+X-Cookie: Simulated picture.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver assigns PAGE_SIZE to a u16, which can't work when the page
-size is 256K. As reported by lkp:
 
- drivers/net/vmxnet3/vmxnet3_drv.c: In function 'vmxnet3_rq_init':
- arch/powerpc/include/asm/page.h:24:20: warning: conversion from 'long unsigned int' to 'u16' changes value from '262144' to '0'
- drivers/net/vmxnet3/vmxnet3_drv.c:1784:29: note: in expansion of macro 'PAGE_SIZE'
-  1784 |    rq->buf_info[0][i].len = PAGE_SIZE;
-                                     ^~~~~~~~~
+--qjNfmADvan18RZcF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Simliar to what was done previously in commit fbdf0e28d061 ("vmxnet3:
-prevent building with 64K pages"), prevent the driver from building when
-256K pages are enabled.
+On Tue, Jun 15, 2021 at 10:48:39AM +0100, Srinivas Kandagatla wrote:
+> For some reason we ended up with cyclic dependency between snd_soc_wcd938x
+> and snd_soc_wcd938x_sdw modules.
+>=20
+> Remove this cyclic dependency by handling them in respective modules.
+> Without this below error is reported during make modules_install
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
----
- drivers/net/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This breaks an x86 allmodconfig build:
 
-diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
-index 74dc8e249faa..da46898f060a 100644
---- a/drivers/net/Kconfig
-+++ b/drivers/net/Kconfig
-@@ -549,7 +549,7 @@ config VMXNET3
- 	depends on PCI && INET
- 	depends on !(PAGE_SIZE_64KB || ARM64_64K_PAGES || \
- 		     IA64_PAGE_SIZE_64KB || MICROBLAZE_64K_PAGES || \
--		     PARISC_PAGE_SIZE_64KB || PPC_64K_PAGES)
-+		     PARISC_PAGE_SIZE_64KB || PPC_64K_PAGES || PPC_256K_PAGES)
- 	help
- 	  This driver supports VMware's vmxnet3 virtual ethernet NIC.
- 	  To compile this driver as a module, choose M here: the
--- 
-2.25.1
+/mnt/kernel/sound/soc/codecs/wcd938x-sdw.c: In function 'wcd9380_interrupt_=
+callback':
+/mnt/kernel/sound/soc/codecs/wcd938x-sdw.c:184:3: error: implicit declarati=
+on of function 'handle_nested_irq' [-Werror=3Dimplicit-function-declaration]
+   handle_nested_irq(irq_find_mapping(slave_irq, 0));
+   ^~~~~~~~~~~~~~~~~
 
+
+--qjNfmADvan18RZcF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDInn4ACgkQJNaLcl1U
+h9Dicgf/cDl99zA5mgDwaxaR3yr03dF4EsFzPUGjF9mrNYmBCckOJEU0Wg6cA8mZ
+lhYYhyCzxE1aGHrom2kcY+c4h3T5KNzKzqprikedSz5oNldntR2Ld/I4vhkxkIiH
+O6pUUTjRQEZLTN1F0JJnLhy7GeleTSG0hDGKEwPBAX820B1agC5vBYDl0SKB3shQ
+8VG6r8PjNjBC8IccvXAna/yBGA+bF0+ll9wdD9aTzeyGB2wXsbv0vSIYxKl5CetC
+Pcve/AZx5a3nwIqdR6QVqowB/Rj/aIo29L12RJUThDbt9yVCboQW6nPrwtEpb0zM
+oOIHCadWaUu3UxQlje6jPjT0xDWvkg==
+=17D0
+-----END PGP SIGNATURE-----
+
+--qjNfmADvan18RZcF--
