@@ -2,106 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A1F3A88CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5983A88D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231279AbhFOSu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 14:50:28 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:48280 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231179AbhFOSu0 (ORCPT
+        id S231293AbhFOSvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 14:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230387AbhFOSu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:50:26 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15FImEot083098;
-        Tue, 15 Jun 2021 13:48:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623782894;
-        bh=x741ettLoRgaTuq5yGrx+s4FMVNLrPcflAay6gHWjUk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=RyQNSKzis0oY4xhRF4+fmHOJJuukeflRQAjUuD5oJxS9fB8rzxq9g6jea4mPy5i3K
-         Olgqw8ZPo0TsHmLSAnD8w28yybqgjP6hhtoBKglKvuEb9h9UtVk6Ia8Get+gJm/JrV
-         U6Kddcmy3U5zJ9F+L1UdOwaa/I9oyFsfw/x20xO8=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15FImE2N060806
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Jun 2021 13:48:14 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 15
- Jun 2021 13:48:14 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 15 Jun 2021 13:48:14 -0500
-Received: from [10.250.35.153] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15FImEb8084161;
-        Tue, 15 Jun 2021 13:48:14 -0500
-Subject: Re: [PATCH v4 2/3] arm64: dts: ti: k3-am64-main: Reserve OCMRAM for
- DMSC-lite and secure proxy communication
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210615174325.22853-1-a-govindraju@ti.com>
- <20210615174325.22853-3-a-govindraju@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <8206a84c-b5d8-4428-6501-7e114798b1bb@ti.com>
-Date:   Tue, 15 Jun 2021 13:48:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 15 Jun 2021 14:50:59 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85C3C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:48:54 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id q25so135301pfh.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:48:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0JM4+VLgeYRBpYPu+DbbsTsMP4gd2M6j0wYVzMmmmqc=;
+        b=CSPS9dQljg7NwD37B6BvNQO/fek6+ZCZqpqvB/2NgoHreGc9IxF807VzPPjNsTTMZ1
+         MkcCeOQCkoZpZAEW4Kt2CyXmURSyk7htgofRr/2TMGzCxO2Z5x4qevLGIoLsKA4eXGWM
+         jyC5Vx7fOAMRhxYTlRySNa4VVkktWQZteqN6YzO1cn83NMDPWGLvND92FWPvLk8W7dz2
+         7YDHQPch9tLmUjyeLxEDs6blnVi7WlDqH0ryS6XVdi/+MGdFfNOa6N+xD0xSOllPtzeM
+         D7N+lUOwTUNhcq6CPMD52wILETPrB/h15+ULmur/W5UYROHJtvBz/qoU7kkuzTb9xIYN
+         9ODg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0JM4+VLgeYRBpYPu+DbbsTsMP4gd2M6j0wYVzMmmmqc=;
+        b=EukgUBT0bzS83dCdDvjBCxaw43Osvx7/8T1vQq4NdKsM3Be/XFl0NY0vanvTkfAv/N
+         qAa+TR4yl7JsbOHLBi3qrcdiKJxh7aS4c1iaAjby5z3n6KllsobZB9KBRZ8XHiTyoMv7
+         ZJUX5DwnFHTehdrTgFZEvLZNEZQ/roGZV8lYMTf3hdxf1r0SBv/eOdQyog9ydcXVNfOL
+         1TJ1aNIuRCGv16i+mD2fl/YZx8Bwx8iTS0dSflTLmDcUkS2Jh3Jaf/j2dSMhpQtn6dox
+         tOe+T+qwYr0fuB03/HqEEPWf9Z+2ArAGVZYLT7MVpUqmVcKL1VTV03rE1rHc/vSIZ5BR
+         ZxtA==
+X-Gm-Message-State: AOAM530b1DbktMiPIkECdsJnUExHlW50WeGaYfHld1ugbDfoEknehqov
+        q2ApRvMder2xnwYvH5qW0lLfVCu8QukX4aRot7JSGg==
+X-Google-Smtp-Source: ABdhPJycwq+B9IxmHnICIpoOUfF1orYvkEQ0wRNmtPF5XtdiP82GcZBxac+AuSAuanQSbs1E+zB/vxPPtLvBfkDCzqQ=
+X-Received: by 2002:a62:8647:0:b029:2c4:b8d6:843 with SMTP id
+ x68-20020a6286470000b02902c4b8d60843mr5627105pfd.71.1623782934196; Tue, 15
+ Jun 2021 11:48:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210615174325.22853-3-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <cover.1623705308.git.alison.schofield@intel.com> <0246fe923945ba2b8d885f45279d7d3956c46950.1623705308.git.alison.schofield@intel.com>
+In-Reply-To: <0246fe923945ba2b8d885f45279d7d3956c46950.1623705308.git.alison.schofield@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 15 Jun 2021 11:48:43 -0700
+Message-ID: <CAPcyv4houyD9PGG4PKiO7OiHkKEZD81=tVSzr_PTShHBzx956A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] cxl/acpi: Use the ACPI CFMWS to create static decoder objects
+To:     Alison Schofield <alison.schofield@intel.com>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 12:43 PM, Aswath Govindraju wrote:
-> The final 128KB in SRAM is reserved by default for DMSC-lite code and
-> secure proxy communication buffer. The memory region used for DMSC-lite
-> code can be optionally freed up by secure firmware API[1]. However, the
-> buffer for secure proxy communication is not configurable. This default
-> hardware configuration is unique for AM64.
-> 
-> Therefore, indicate the area reserved for DMSC-lite code and secure proxy
-> communication buffer in the oc_sram device tree node.
-> 
-> [1] - http://downloads.ti.com/tisci/esd/latest/6_topic_user_guides/security_handover.html#triggering-security-handover
-> 
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+[ add linu-acpi for variable length array question below ]
 
-Reviewed-by: Suman Anna <s-anna@ti.com>
 
+On Mon, Jun 14, 2021 at 3:57 PM Alison Schofield
+<alison.schofield@intel.com> wrote:
+>
+> The ACPI CXL Early Discovery Table (CEDT) includes a list of CXL memory
+> resources in CXL Fixed Memory Window Structures (CFMWS). Retrieve each
+> CFMWS in the CEDT and add a cxl_decoder object to the root port (root0)
+> for each memory resource.
+>
+> Signed-off-by: Alison Schofield <alison.schofield@intel.com>
 > ---
->  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> index 693fe24e7f7a..6a883f4349cb 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> @@ -27,6 +27,14 @@
->  		tfa-sram@0 {
->  			reg = <0x0 0x1c000>;
->  		};
+>  drivers/cxl/acpi.c | 106 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 106 insertions(+)
+>
+> diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
+> index 16f60bc6801f..ac4b3e37e294 100644
+> --- a/drivers/cxl/acpi.c
+> +++ b/drivers/cxl/acpi.c
+> @@ -8,8 +8,112 @@
+>  #include <linux/pci.h>
+>  #include "cxl.h"
+>
+> +/* Encode defined in CXL 2.0 8.2.5.12.7 HDM Decoder Control Register */
+> +#define CFMWS_INTERLEAVE_WAYS(x)       (1 << (x)->interleave_ways)
+> +#define CFMWS_INTERLEAVE_GRANULARITY(x)        ((x)->granularity + 8)
 > +
-> +		dmsc-sram@1e0000 {
-> +			reg = <0x1e0000 0x1c000>;
-> +		};
+> +/*
+> + * CFMWS Restrictions mapped to CXL Decoder Flags
+> + * Restrictions defined in CXL 2.0 ECN CEDT CFMWS
+> + * Decoder Flags defined in CXL 2.0 8.2.5.12.7 HDM Decoder Control Register
+> + */
+> +#define CFMWS_TO_DECODE_TYPE2(x) ((x & ACPI_CEDT_CFMWS_RESTRICT_TYPE2) << 2)
+> +#define CFMWS_TO_DECODE_TYPE3(x) ((x & ACPI_CEDT_CFMWS_RESTRICT_TYPE3) << 2)
+> +#define CFMWS_TO_DECODE_RAM(x)   ((x & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE) >> 2)
+> +#define CFMWS_TO_DECODE_PMEM(x)         ((x & ACPI_CEDT_CFMWS_RESTRICT_PMEM) >> 2)
+> +#define CFMWS_TO_DECODE_FIXED(x) (x & ACPI_CEDT_CFMWS_RESTRICT_FIXED)
 > +
-> +		sproxy-sram@1fc000 {
-> +			reg = <0x1fc000 0x4000>;
-> +		};
->  	};
->  
->  	main_conf: syscon@43000000 {
-> 
+> +#define CFMWS_TO_DECODER_FLAGS(x) (CFMWS_TO_DECODE_TYPE2(x) | \
+> +                                  CFMWS_TO_DECODE_TYPE3(x) | \
+> +                                  CFMWS_TO_DECODE_RAM(x)   | \
+> +                                  CFMWS_TO_DECODE_PMEM(x)  | \
+> +                                  CFMWS_TO_DECODE_FIXED(x))
 
+I don't understand the approach taken above. It seems to assume that
+the CXL_DECODER_F_* values are fixed. Those flag values are arbitrary
+and mutable. There is no guarantee that today's CXL_DECODER_F_* values
+match tomorrow's so I'd rather not have 2 places to check when / if
+that happens.
+
+> +
+>  static struct acpi_table_header *cedt_table;
+>
+> +static int cxl_acpi_cfmws_verify(struct device *dev,
+> +                                struct acpi_cedt_cfmws *cfmws)
+> +{
+> +       int expected_len;
+> +
+> +       if (cfmws->interleave_arithmetic != ACPI_CEDT_CFMWS_ARITHMETIC_MODULO) {
+> +               dev_err(dev, "CFMWS Unsupported Interleave Arithmetic\n");
+
+I expect the user will want to know more about which decode range is
+not being registered. So, for all of these error messages please print
+out the entry, at least the base and end address.
+
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (!IS_ALIGNED(cfmws->base_hpa, SZ_256M)) {
+> +               dev_err(dev, "CFMWS Base HPA not 256MB aligned\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (!IS_ALIGNED(cfmws->window_size, SZ_256M)) {
+> +               dev_err(dev, "CFMWS Window Size not 256MB aligned\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       expected_len = struct_size((cfmws), interleave_targets,
+> +                                  CFMWS_INTERLEAVE_WAYS(cfmws));
+
+Oh interesting, I was about to say "unfortunately struct_size() can't
+be used", becuase I thought ACPICA could not support variable length
+array. It turns out 'struct acpi_cedt_cfmws' got away with this. Not
+sure if that is going to change in the future, but it's a positive
+sign otherwise.
+
+> +
+> +       if (expected_len != cfmws->header.length) {
+> +               dev_err(dev, "CFMWS interleave ways and targets mismatch\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static void cxl_add_cfmws_decoders(struct device *dev,
+> +                                  struct cxl_port *root_port)
+> +{
+> +       struct acpi_cedt_cfmws *cfmws;
+> +       struct cxl_decoder *cxld;
+> +       acpi_size len, cur = 0;
+> +       void *cedt_base;
+> +       int rc;
+> +
+> +       len = cedt_table->length - sizeof(*cedt_table);
+> +       cedt_base = cedt_table + 1;
+> +
+> +       while (cur < len) {
+> +               struct acpi_cedt_header *c = cedt_base + cur;
+> +
+> +               if (c->type != ACPI_CEDT_TYPE_CFMWS) {
+> +                       cur += c->length;
+> +                       continue;
+> +               }
+> +
+> +               cfmws = cedt_base + cur;
+> +
+> +               if (cfmws->header.length < sizeof(*cfmws)) {
+> +                       dev_err(dev, "Invalid CFMWS header length %u\n",
+> +                               cfmws->header.length);
+> +                       dev_err(dev, "Failed to add decoders\n");
+> +                       return;
+> +               }
+> +
+> +               rc = cxl_acpi_cfmws_verify(dev, cfmws);
+> +               if (rc) {
+> +                       cur += c->length;
+> +                       continue;
+> +               }
+> +
+> +               cxld = devm_cxl_add_decoder(dev, root_port,
+> +                               CFMWS_INTERLEAVE_WAYS(cfmws),
+> +                               cfmws->base_hpa, cfmws->window_size,
+> +                               CFMWS_INTERLEAVE_WAYS(cfmws),
+> +                               CFMWS_INTERLEAVE_GRANULARITY(cfmws),
+> +                               CXL_DECODER_EXPANDER,
+> +                               CFMWS_TO_DECODER_FLAGS(cfmws->restrictions));
+> +
+> +               if (IS_ERR(cxld))
+> +                       dev_err(dev, "Failed to add decoder\n");
+
+This would be another place to print out the CFMWS entry so that the
+user has some record of which address range is offline.
+
+> +               else
+> +                       dev_dbg(dev, "add: %s\n", dev_name(&cxld->dev));
+> +
+> +               cur += c->length;
+> +       }
+> +}
+> +
+>  static struct acpi_cedt_chbs *cxl_acpi_match_chbs(struct device *dev, u32 uid)
+>  {
+>         struct acpi_cedt_chbs *chbs, *chbs_match = NULL;
+> @@ -251,6 +355,8 @@ static int cxl_acpi_probe(struct platform_device *pdev)
+>         if (rc)
+>                 goto out;
+>
+> +       cxl_add_cfmws_decoders(host, root_port);
+> +
+>         /*
+>          * Root level scanned with host-bridge as dports, now scan host-bridges
+>          * for their role as CXL uports to their CXL-capable PCIe Root Ports.
+> --
+> 2.26.2
+>
