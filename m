@@ -2,114 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC3B3A7809
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A973A7833
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhFOHff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbhFOHfc (ORCPT
+        id S230376AbhFOHqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:46:18 -0400
+Received: from relay02.th.seeweb.it ([5.144.164.163]:58273 "EHLO
+        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230074AbhFOHqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:35:32 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E907EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:33:27 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lt3Zb-00029x-1Y; Tue, 15 Jun 2021 09:33:23 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:8a21:1526:9696:549])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id B54E063BCB9;
-        Tue, 15 Jun 2021 07:33:20 +0000 (UTC)
-Date:   Tue, 15 Jun 2021 09:33:19 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     wg@grandegger.com, davem@davemloft.net, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
-Subject: Re: [PATCH] can: mcba_usb: fix memory leak in mcba_usb
-Message-ID: <20210615073319.fvwilowhsztr5hd6@pengutronix.de>
-References: <20210609215833.30393-1-paskripkin@gmail.com>
+        Tue, 15 Jun 2021 03:46:05 -0400
+X-Greylist: delayed 499 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Jun 2021 03:46:04 EDT
+Received: from [10.0.20.3] (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 7B07A1F4B5;
+        Tue, 15 Jun 2021 09:35:38 +0200 (CEST)
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: Add support for SONY Xperia 1 II
+ / 5 II (Edo platform)
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+References: <20210612192358.62602-1-konrad.dybcio@somainline.org>
+ <20210612192358.62602-3-konrad.dybcio@somainline.org>
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+Message-ID: <50fd5f94-f1e6-575d-6ffe-11f89bc35d3d@somainline.org>
+Date:   Tue, 15 Jun 2021 09:35:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dirso6rtm6ed5233"
-Content-Disposition: inline
-In-Reply-To: <20210609215833.30393-1-paskripkin@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210612192358.62602-3-konrad.dybcio@somainline.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 6/12/21 9:23 PM, Konrad Dybcio wrote:
+> Add support for SONY Xperia 1 II and 5 II smartphones (read one/five mark two).
+> They are based on the Qualcomm SM8250 chipset and both feature 5G modems. There
+> also exists a third Edo board, namely the Xperia PRO (PDX204), but it's $2500
+> and no developers have obtained it so far (to my knowledge).
+> 
+> The devices are affected by a scary UFS behaviour where sending a certain UFS
+> command (which is worked around on downstream) renders the device unbootable,
+> by effectively erasing the bootloader. Therefore UFS AND UFSPHY are strictly
+> disabled for now.
+> 
+> Downstream workaround:
+> https://github.com/kholk/kernel/commit/2e7a9ee1c91a016baa0b826a7752ec45663a0561
+> 
+> Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 
---dirso6rtm6ed5233
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
 
-On 10.06.2021 00:58:33, Pavel Skripkin wrote:
-> Syzbot reported memory leak in SocketCAN driver
-> for Microchip CAN BUS Analyzer Tool. The problem
-> was in unfreed usb_coherent.
->=20
-> In mcba_usb_start() 20 coherent buffers are allocated
-> and there is nothing, that frees them:
->=20
-> 	1) In callback function the urb is resubmitted and that's all
-> 	2) In disconnect function urbs are simply killed, but
-> 	   URB_FREE_BUFFER is not set (see mcba_usb_start)
->            and this flag cannot be used with coherent buffers.
->=20
-> Fail log:
-> [ 1354.053291][ T8413] mcba_usb 1-1:0.0 can0: device disconnected
-> [ 1367.059384][ T8420] kmemleak: 20 new suspected memory leaks (see /sys/=
-kernel/debug/kmem)
->=20
-> So, all allocated buffers should be freed with usb_free_coherent()
-> explicitly
->=20
-> NOTE:
-> The same pattern for allocating and freeing coherent buffers
-> is used in drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
->=20
-> Fixes: 51f3baad7de9 ("can: mcba_usb: Add support for Microchip CAN BUS An=
-alyzer")
-> Reported-and-tested-by: syzbot+57281c762a3922e14dfe@syzkaller.appspotmail=
-=2Ecom
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-
-Applied to linux-can/testing.
-
-Tnx,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---dirso6rtm6ed5233
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDIV70ACgkQqclaivrt
-76l/SAf+JoHck2coCr+a3nf8Bwn7M/QOaYiaaDNyjAgHvumc6Ue+Z9CTCxS4yDVJ
-gZkzRSQQY2tRhkzebDIuXKl2NZDmzJDZNu/7x7w4DJqN7MvEqpcPe6pTeJXRQJ8P
-imAR0Dhu9wAH8052P2IDsM6P7IdtawhJjIsMh7upiS4l0bb6wQC7sVcdus4LbR8f
-YlAmkYTr+wNoynjExFZCXf51HouOV2VxUBoXrOyp8yB5e+A2343hfxpffOEzobGS
-oxY3QJgY0ux53F1NuijPXAo8QC/20phLPY22VwPkxv6v0YmPJuzaCBDtB+TWq6Dl
-ZsL1W1PF7PGmCC0qLMIMzbEWs+54rg==
-=Uly6
------END PGP SIGNATURE-----
-
---dirso6rtm6ed5233--
+Thanks!
