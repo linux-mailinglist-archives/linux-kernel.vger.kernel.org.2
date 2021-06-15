@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3143A7916
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9673A7919
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbhFOIfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 04:35:52 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:23497 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231228AbhFOIfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:35:41 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G41mm2RxRzB8jC;
-        Tue, 15 Jun 2021 10:33:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id v6F3RINa3SSx; Tue, 15 Jun 2021 10:33:28 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G41mj6KzbzB2gh;
-        Tue, 15 Jun 2021 10:33:25 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id CEDB08B7AE;
-        Tue, 15 Jun 2021 10:33:25 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id SY7lQGO-YlRd; Tue, 15 Jun 2021 10:33:25 +0200 (CEST)
-Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8E4B78B7A5;
-        Tue, 15 Jun 2021 10:33:25 +0200 (CEST)
-Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 6D67366264; Tue, 15 Jun 2021 08:33:25 +0000 (UTC)
-Message-Id: <1e21c1486087fb1a3c30feafb9371000c860ae13.1623745950.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <8071cd2e2f2bdc0711e6ac435dff4a09ff21fee2.1623745949.git.christophe.leroy@csgroup.eu>
-References: <8071cd2e2f2bdc0711e6ac435dff4a09ff21fee2.1623745949.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 5/5] powerpc/interrupt: Remove prep_irq_for_user_exit()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 15 Jun 2021 08:33:25 +0000 (UTC)
+        id S231252AbhFOIf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 04:35:58 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50875 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231241AbhFOIfo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 04:35:44 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lt4Vs-00013n-RL; Tue, 15 Jun 2021 08:33:36 +0000
+Subject: Re: [PATCH] net: dsa: b53: Fix dereference of null dev
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210612144407.60259-1-colin.king@canonical.com>
+ <20210614112812.GL1955@kadam>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <60c9a7c8-95f1-2673-abd0-73853483acb0@canonical.com>
+Date:   Tue, 15 Jun 2021 09:33:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210614112812.GL1955@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-prep_irq_for_user_exit() has only one caller, squash it
-inside that caller.
+On 14/06/2021 12:28, Dan Carpenter wrote:
+> On Sat, Jun 12, 2021 at 03:44:07PM +0100, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> Currently pointer priv is dereferencing dev before dev is being null
+>> checked so a potential null pointer dereference can occur. Fix this
+>> by only assigning and using priv if dev is not-null.
+>>
+>> Addresses-Coverity: ("Dereference before null check")
+>> Fixes: 16994374a6fc ("net: dsa: b53: Make SRAB driver manage port interrupts")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  drivers/net/dsa/b53/b53_srab.c | 8 +++++---
+>>  1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/dsa/b53/b53_srab.c b/drivers/net/dsa/b53/b53_srab.c
+>> index aaa12d73784e..e77ac598f859 100644
+>> --- a/drivers/net/dsa/b53/b53_srab.c
+>> +++ b/drivers/net/dsa/b53/b53_srab.c
+>> @@ -629,11 +629,13 @@ static int b53_srab_probe(struct platform_device *pdev)
+>>  static int b53_srab_remove(struct platform_device *pdev)
+>>  {
+>>  	struct b53_device *dev = platform_get_drvdata(pdev);
+>> -	struct b53_srab_priv *priv = dev->priv;
+>>  
+>> -	b53_srab_intr_set(priv, false);
+>> -	if (dev)
+>> +	if (dev) {
+> 
+> This is the remove function and "dev" can't be NULL at this point.
+> Better to just remove the NULL check.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/interrupt.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+Will do.
 
-diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
-index 05831d99bf26..de335da7ab52 100644
---- a/arch/powerpc/kernel/interrupt.c
-+++ b/arch/powerpc/kernel/interrupt.c
-@@ -75,18 +75,6 @@ static notrace __always_inline bool prep_irq_for_enabled_exit(bool restartable)
- 	return true;
- }
- 
--static notrace __always_inline bool prep_irq_for_user_exit(void)
--{
--	bool ret;
--
--	user_enter_irqoff();
--	ret = prep_irq_for_enabled_exit(true);
--	if (!ret)
--		user_exit_irqoff();
--
--	return ret;
--}
--
- /* Has to run notrace because it is entered not completely "reconciled" */
- notrace long system_call_exception(long r3, long r4, long r5,
- 				   long r6, long r7, long r8,
-@@ -276,7 +264,9 @@ interrupt_exit_user_prepare_main(struct pt_regs *regs, unsigned long ret)
- 		}
- 	}
- 
--	if (!prep_irq_for_user_exit()) {
-+	user_enter_irqoff();
-+	if (!prep_irq_for_enabled_exit(true)) {
-+		user_exit_irqoff();
- 		local_irq_enable();
- 		local_irq_disable();
- 		goto again;
--- 
-2.25.0
+> 
+> regards,
+> dan carpenter
+> 
 
