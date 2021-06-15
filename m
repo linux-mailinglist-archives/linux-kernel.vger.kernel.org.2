@@ -2,155 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA643A8B08
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F233A8AE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhFOVXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
+        id S231419AbhFOVRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhFOVXc (ORCPT
+        with ESMTP id S231416AbhFOVRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:23:32 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D999C06124C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:21:26 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id q25so454511pfh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:21:26 -0700 (PDT)
+        Tue, 15 Jun 2021 17:17:46 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7054BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:15:40 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id 11so9119365plk.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:15:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1WsCoFrZUeCb0I6fGREpg1RRrP6pUhfJxmr65OEW+zI=;
-        b=ExHsShelnJC1ZujVqA5L/hh0NvxQMBhXN2MULuE6mmK+LgF0GZw9HVc3a8QIkI3dKf
-         rQcXcD7kGknLCUvv8mNZBl38OHiy9EPcaWssQ7LcN0xvLIKgsVw7ETKXgxoO9LStcKQh
-         8gilmRAKZkmJOi+h73XODDh65FCzh7QUsySwg=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3Awujr/Y6+41OzNXavuItFD+FkpQLXtfnUO7aKQrUyQ=;
+        b=vCqncKYL64Z3hdL1T/RremxZ/laqN4mZ1Xq01ai0PehoiSc72IBK66XLU3mh+asdzl
+         zGmN1ZFs+BfygglD7iWme0kObzmQGVbw2vzqY/HzvuHGFoa9l27UgLkOVVnuaZWoWLYM
+         26QTN4oS38B7KZBVbmgcj3otPU+XV4T5NNOohJnGUVfS7olFLQNTyXgQ0IoZOUDpYxVY
+         I73HGM/ntPoVSnAB9F0uyYZqkvC4t+4YAP9vL6WabHmmwL42X5VpjOCUkBWKjx38KFw6
+         UdYD7TpneUDoNRrzZsmZAl49FEfFlgz9axyElHyDXUm7kNYnzy+bjOxqqhnw4OKvqPh+
+         NS+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1WsCoFrZUeCb0I6fGREpg1RRrP6pUhfJxmr65OEW+zI=;
-        b=WQ/nItS1ZRbPOwo5nmU9D/YJsy6o479pWKl9NvrjbZFs9UFC0yCamL71lSsqN/S9C1
-         YkdjlVm9lP27Rf0/2ovQBCe16yqZwE1xItBfOUtZLOewCG1bijCu6eNHQAIxCut8uLdF
-         UVgzd8lwYrepTjMFl5NxTP+OUxxfaCmoPViZ0rfoTZG5gwC67tfPL3A0GVkK72cZsYRy
-         ym0GkcNoNJddO7ydlTyKGt2uMBO4KRP8kS1EMBk6p0mtdu90WgU03IPO0WmEXcuQY3Mn
-         Za38M+q7tpx0ZBB5op2gQHQYCjL0my2n+TSpNrrNDL47vCoN0AMA27GWGBM16qXWGGr3
-         7SkA==
-X-Gm-Message-State: AOAM531CqcdRyPFKlauP6CSq8i/0TMhiEmTRouM1d5z2j9M50lE0A19j
-        3IvBRUE+BgQjhwqRGhLgtjR25w==
-X-Google-Smtp-Source: ABdhPJwZ6dQpDmP5yqVDdThGzD8bpvZ2yTrYL5QSdc6qOqCFdVutpzCaBenqXSN3cOdGGaWGzve9vg==
-X-Received: by 2002:a63:d305:: with SMTP id b5mr1507673pgg.67.1623792085651;
-        Tue, 15 Jun 2021 14:21:25 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k6sm80428pfa.215.2021.06.15.14.21.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 14:21:24 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>, Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>, gmpy.liaowx@gmail.com,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-doc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 4/4] pstore/blk: Fix kerndoc and redundancy on blkdev param
-Date:   Tue, 15 Jun 2021 14:21:21 -0700
-Message-Id: <20210615212121.1200820-5-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210615212121.1200820-1-keescook@chromium.org>
-References: <20210615212121.1200820-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3Awujr/Y6+41OzNXavuItFD+FkpQLXtfnUO7aKQrUyQ=;
+        b=MVZK5zPdHLTgmrr2LnoS4EP8A+eNPAHn1wZmAvH/ejIrE+v5YALUJs3rj+ER6qfpeB
+         ZeWymOf2z7e62FeiYjvFWGCwklITFQWkS7Pe5X3rQ8nMSR9wIskE3vUY3q3eYKg/h5LC
+         UHOwG3GQ1aSH6WpUpe+sNjw1K8k7FUwnccNGsV+NeRZKO3tyLm+/Y/J31lnKVE+Si2w1
+         mVmaSS5KLuBNRmTvH44u0cgj0iPLzdi9g7Q4FbfLxTNQpRZYmj07uIE3zkY+JXGNFdEy
+         P50kjHTi1MI95VpRu/wAlclqguA6wZdEIDdA3ainXuhFaF2otTlmI+wxgQpPW7qgSAI9
+         DRPw==
+X-Gm-Message-State: AOAM530l+ehVaS9LRP7s4bvNIEYWZdTWld/YLbQOGcnrtHEpF4tyR7JF
+        0ZQFW+FOAGWTB3UoCEN+oA07nCqpK/BSgP96Cn814Q==
+X-Google-Smtp-Source: ABdhPJxSzZS+wrIPhY+5NnQUhoVVzdwp3Dc4ASKWYsDBYDqysYzUUVvKNTfWgmLVaUS+sHOA0/gLohfuFbOTj/UCfzI=
+X-Received: by 2002:a17:90a:d590:: with SMTP id v16mr1205348pju.205.1623791739791;
+ Tue, 15 Jun 2021 14:15:39 -0700 (PDT)
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=40eac1b7c9cd225ba517a3879c498704663ed315; i=yTEuvN+d2QlI+CgetW2A/mnEULnwbC3Uy5kOoKgmB9Q=; m=yIDjiAw9ImVPRu6Ts4rM6ctqS+8yW+yfMUIAkNmTcxE=; p=TXx6XCuoWJyqy7rsksng3VTp82hOVpLmF4DnpkYUm+I=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDJGdAACgkQiXL039xtwCabvA//f2d ouRC3eMe4By1s5gm+kgCGLji4A5jmvfWvuteZkPHrsEAhxzfe5FDa8OXvGRvElGR/imgzjGKMCaFu 3LDUFU5/2igZpyDqhOFZas4pGIgmgNFmxdS/a0KdkXwQiTTdKe8hffEGtZtwW2v6q2MSxnh3DcIxJ iPMFxWRz7TXHJQuBmVNlOCCCVJ+lE5oZy0VMo8GlcbMZrDqQ71eMGvEW0venFXiLrHrAukJUj+OHx Ks5XzrUSZdPgVN8clVdt7+Jfrh1r+HrdTjq8CE8mmvwNL/su/1i2CH52msFFHn4MF/yn3OjNxTzfi kmqwJmlKC7bx5C+D1mpIvNav5DTupfQGafxkYtyhuQfiPGi/Lp72svaD1wTTjY7AEMG51Zqy1IsKk qPC16uxbn3VAtGEDtT3KvDocAciZdTg7EQ6MwjgznzKWO2kHQY0XqZo2/yqtzDcQyLo9HB8JGjNmr P7w4VmVmtZL0idygwnih2lzc2MpD9Buzeik3jOk57K1e6PF6+EFlIDeRTKpbO/JbuhBTRab4G9USD Km/i/73fVcgRXEIt+isU8smkNLPfEQk9RK/gzlIByu+sPQJsYqSQRQ0tfzlpy1gjTCISXkBVU/ClM ZAuaMtt9Qc07acYesdxXHuGQajsdrCjZcPmxYLzi4szH1kvQoSrwp5lMyhBkA85k=
-Content-Transfer-Encoding: 8bit
+References: <20210615133229.213064-1-stephan@gerhold.net> <20210615133229.213064-4-stephan@gerhold.net>
+In-Reply-To: <20210615133229.213064-4-stephan@gerhold.net>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Tue, 15 Jun 2021 23:24:41 +0200
+Message-ID: <CAMZdPi8JuyqoF3GwJHcdXhdn0e7ks_f2WiUFpmn3E8HH7T_Gng@mail.gmail.com>
+Subject: Re: [PATCH net-next 3/3] net: wwan: Allow WWAN drivers to provide
+ blocking tx and poll function
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        M Chetan Kumar <m.chetan.kumar@intel.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        phone-devel@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove redundant details of blkdev and fix up resulting kerndoc.
+Hi Stephan,
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- Documentation/admin-guide/pstore-blk.rst | 14 +++++++-------
- fs/pstore/blk.c                          | 24 +-----------------------
- 2 files changed, 8 insertions(+), 30 deletions(-)
+On Tue, 15 Jun 2021 at 15:34, Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> At the moment, the WWAN core provides wwan_port_txon/off() to implement
+> blocking writes. The tx() port operation should not block, instead
+> wwan_port_txon/off() should be called when the TX queue is full or has
+> free space again.
+>
+> However, in some cases it is not straightforward to make use of that
+> functionality. For example, the RPMSG API used by rpmsg_wwan_ctrl.c
+> does not provide any way to be notified when the TX queue has space
+> again. Instead, it only provides the following operations:
+>
+>   - rpmsg_send(): blocking write (wait until there is space)
+>   - rpmsg_trysend(): non-blocking write (return error if no space)
+>   - rpmsg_poll(): set poll flags depending on TX queue state
+>
+> Generally that's totally sufficient for implementing a char device,
+> but it does not fit well to the currently provided WWAN port ops.
+>
+> Most of the time, using the non-blocking rpmsg_trysend() in the
+> WWAN tx() port operation works just fine. However, with high-frequent
+> writes to the char device it is possible to trigger a situation
+> where this causes issues. For example, consider the following
+> (somewhat unrealistic) example:
+>
+>  # dd if=/dev/zero bs=1000 of=/dev/wwan0p2QMI
+>  dd: error writing '/dev/wwan0p2QMI': Resource temporarily unavailable
+>  1+0 records out
+>
+> This fails immediately after writing the first record. It's likely
+> only a matter of time until this triggers issues for some real application
+> (e.g. ModemManager sending a lot of large QMI packets).
+>
+> The rpmsg_char device does not have this problem, because it uses
+> rpmsg_trysend() and rpmsg_poll() to support non-blocking operations.
+> Make it possible to use the same in the RPMSG WWAN driver by extending
+> the tx() operation with a "nonblock" parameter and adding an optional
+> poll() callback. This integrates nicely with the RPMSG API and does
+> not break other WWAN drivers.
+>
+> With these changes, the dd example above blocks instead of exiting
+> with an error.
+>
+> Cc: Loic Poulain <loic.poulain@linaro.org>
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> ---
+> Note that rpmsg_poll() is an optional callback currently only implemented
+> by the qcom_smd RPMSG provider. However, it should be easy to implement
+> this for other RPMSG providers when needed.
+>
+> Another potential solution suggested by Loic Poulain in [1] is to always
+> use the blocking rpmsg_send() from a workqueue/kthread and disable TX
+> until it is done. I think this could also work (perhaps a bit more
+> difficult to implement) but the main disadvantage is that I don't see
+> a way to return any kind of error to the client with this approach.
+> I assume we return immediately from the write() to the char device
+> after scheduling the rpmsg_send(), so we already reported success
+> when rpmsg_send() returns.
+>
+> At the end all that matters to me is that it works properly, so I'm
+> open for any other suggestions. :)
+>
+> [1]: https://lore.kernel.org/linux-arm-msm/CAMZdPi_-Qa=JnThHs_h-144dAfSAjF5s+QdBawdXZ3kk8Mx8ng@mail.gmail.com/
+> ---
+>  drivers/net/wwan/iosm/iosm_ipc_port.c |  3 ++-
+>  drivers/net/wwan/mhi_wwan_ctrl.c      |  3 ++-
+>  drivers/net/wwan/rpmsg_wwan_ctrl.c    | 17 +++++++++++++++--
+>  drivers/net/wwan/wwan_core.c          |  9 ++++++---
+>  drivers/net/wwan/wwan_hwsim.c         |  3 ++-
+>  include/linux/wwan.h                  | 13 +++++++++----
+>  6 files changed, 36 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/net/wwan/iosm/iosm_ipc_port.c b/drivers/net/wwan/iosm/iosm_ipc_port.c
+> index beb944847398..2f874e41ceff 100644
+> --- a/drivers/net/wwan/iosm/iosm_ipc_port.c
+> +++ b/drivers/net/wwan/iosm/iosm_ipc_port.c
+> @@ -31,7 +31,8 @@ static void ipc_port_ctrl_stop(struct wwan_port *port)
+>  }
+>
+>  /* transfer control data to modem */
+> -static int ipc_port_ctrl_tx(struct wwan_port *port, struct sk_buff *skb)
+> +static int ipc_port_ctrl_tx(struct wwan_port *port, struct sk_buff *skb,
+> +                           bool nonblock)
+>  {
+>         struct iosm_cdev *ipc_port = wwan_port_get_drvdata(port);
+>
+> diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
+> index 1bc6b69aa530..9754f014d348 100644
+> --- a/drivers/net/wwan/mhi_wwan_ctrl.c
+> +++ b/drivers/net/wwan/mhi_wwan_ctrl.c
+> @@ -139,7 +139,8 @@ static void mhi_wwan_ctrl_stop(struct wwan_port *port)
+>         mhi_unprepare_from_transfer(mhiwwan->mhi_dev);
+>  }
+>
+> -static int mhi_wwan_ctrl_tx(struct wwan_port *port, struct sk_buff *skb)
+> +static int mhi_wwan_ctrl_tx(struct wwan_port *port, struct sk_buff *skb,
+> +                           bool nonblock)
+>  {
+>         struct mhi_wwan_dev *mhiwwan = wwan_port_get_drvdata(port);
+>         int ret;
+> diff --git a/drivers/net/wwan/rpmsg_wwan_ctrl.c b/drivers/net/wwan/rpmsg_wwan_ctrl.c
+> index de226cdb69fd..63f431eada39 100644
+> --- a/drivers/net/wwan/rpmsg_wwan_ctrl.c
+> +++ b/drivers/net/wwan/rpmsg_wwan_ctrl.c
+> @@ -54,12 +54,16 @@ static void rpmsg_wwan_ctrl_stop(struct wwan_port *port)
+>         rpwwan->ept = NULL;
+>  }
+>
+> -static int rpmsg_wwan_ctrl_tx(struct wwan_port *port, struct sk_buff *skb)
+> +static int rpmsg_wwan_ctrl_tx(struct wwan_port *port, struct sk_buff *skb,
+> +                             bool nonblock)
+>  {
+>         struct rpmsg_wwan_dev *rpwwan = wwan_port_get_drvdata(port);
+>         int ret;
+>
+> -       ret = rpmsg_trysend(rpwwan->ept, skb->data, skb->len);
+> +       if (nonblock)
+> +               ret = rpmsg_trysend(rpwwan->ept, skb->data, skb->len);
+> +       else
+> +               ret = rpmsg_send(rpwwan->ept, skb->data, skb->len);
+>         if (ret)
+>                 return ret;
+>
+> @@ -67,10 +71,19 @@ static int rpmsg_wwan_ctrl_tx(struct wwan_port *port, struct sk_buff *skb)
+>         return 0;
+>  }
+>
+> +static __poll_t rpmsg_wwan_ctrl_poll(struct wwan_port *port, struct file *filp,
+> +                                    poll_table *wait)
+> +{
+> +       struct rpmsg_wwan_dev *rpwwan = wwan_port_get_drvdata(port);
+> +
+> +       return rpmsg_poll(rpwwan->ept, filp, wait);
+> +}
+> +
+>  static const struct wwan_port_ops rpmsg_wwan_pops = {
+>         .start = rpmsg_wwan_ctrl_start,
+>         .stop = rpmsg_wwan_ctrl_stop,
+>         .tx = rpmsg_wwan_ctrl_tx,
+> +       .poll = rpmsg_wwan_ctrl_poll,
+>  };
+>
+>  static struct device *rpmsg_wwan_find_parent(struct device *dev)
+> diff --git a/drivers/net/wwan/wwan_core.c b/drivers/net/wwan/wwan_core.c
+> index 7e728042fc41..c7fd0b897f87 100644
+> --- a/drivers/net/wwan/wwan_core.c
+> +++ b/drivers/net/wwan/wwan_core.c
+> @@ -500,7 +500,8 @@ static void wwan_port_op_stop(struct wwan_port *port)
+>         mutex_unlock(&port->ops_lock);
+>  }
+>
+> -static int wwan_port_op_tx(struct wwan_port *port, struct sk_buff *skb)
+> +static int wwan_port_op_tx(struct wwan_port *port, struct sk_buff *skb,
+> +                          bool nonblock)
+>  {
+>         int ret;
+>
+> @@ -510,7 +511,7 @@ static int wwan_port_op_tx(struct wwan_port *port, struct sk_buff *skb)
+>                 goto out_unlock;
+>         }
+>
+> -       ret = port->ops->tx(port, skb);
+> +       ret = port->ops->tx(port, skb, nonblock);
+>
+>  out_unlock:
+>         mutex_unlock(&port->ops_lock);
+> @@ -637,7 +638,7 @@ static ssize_t wwan_port_fops_write(struct file *filp, const char __user *buf,
+>                 return -EFAULT;
+>         }
+>
+> -       ret = wwan_port_op_tx(port, skb);
+> +       ret = wwan_port_op_tx(port, skb, !!(filp->f_flags & O_NONBLOCK));
+>         if (ret) {
+>                 kfree_skb(skb);
+>                 return ret;
+> @@ -659,6 +660,8 @@ static __poll_t wwan_port_fops_poll(struct file *filp, poll_table *wait)
+>                 mask |= EPOLLIN | EPOLLRDNORM;
+>         if (!port->ops)
+>                 mask |= EPOLLHUP | EPOLLERR;
+> +       else if (port->ops->poll)
+> +               mask |= port->ops->poll(port, filp, wait);
 
-diff --git a/Documentation/admin-guide/pstore-blk.rst b/Documentation/admin-guide/pstore-blk.rst
-index 49d8149f8d32..2d22ead9520e 100644
---- a/Documentation/admin-guide/pstore-blk.rst
-+++ b/Documentation/admin-guide/pstore-blk.rst
-@@ -45,15 +45,18 @@ blkdev
- The block device to use. Most of the time, it is a partition of block device.
- It's required for pstore/blk. It is also used for MTD device.
- 
--It accepts the following variants for block device:
-+When pstore/blk is built as a module, "blkdev" accepts the following variants:
- 
--1. <hex_major><hex_minor> device number in hexadecimal represents itself; no
--   leading 0x, for example b302.
--#. /dev/<disk_name> represents the device number of disk
-+1. /dev/<disk_name> represents the device number of disk
- #. /dev/<disk_name><decimal> represents the device number of partition - device
-    number of disk plus the partition number
- #. /dev/<disk_name>p<decimal> - same as the above; this form is used when disk
-    name of partitioned disk ends with a digit.
-+
-+When pstore/blk is built into the kernel, "blkdev" accepts the following variants:
-+
-+#. <hex_major><hex_minor> device number in hexadecimal representation,
-+   with no leading 0x, for example b302.
- #. PARTUUID=00112233-4455-6677-8899-AABBCCDDEEFF represents the unique id of
-    a partition if the partition table provides it. The UUID may be either an
-    EFI/GPT UUID, or refer to an MSDOS partition using the format SSSSSSSS-PP,
-@@ -227,8 +230,5 @@ For developer reference, here are all the important structures and APIs:
- .. kernel-doc:: include/linux/pstore_zone.h
-    :internal:
- 
--.. kernel-doc:: fs/pstore/blk.c
--   :internal:
--
- .. kernel-doc:: include/linux/pstore_blk.h
-    :internal:
-diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
-index e5ed118683b1..ccfb11ee4d50 100644
---- a/fs/pstore/blk.c
-+++ b/fs/pstore/blk.c
-@@ -58,29 +58,7 @@ MODULE_PARM_DESC(best_effort, "use best effort to write (i.e. do not require sto
- 
- /*
-  * blkdev - the block device to use for pstore storage
-- *
-- * Usually, this will be a partition of a block device.
-- *
-- * blkdev accepts the following variants, when built as a module:
-- * 1) /dev/<disk_name> represents the device number of disk
-- * 2) /dev/<disk_name><decimal> represents the device number
-- *    of partition - device number of disk plus the partition number
-- * 3) /dev/<disk_name>p<decimal> - same as the above, that form is
-- *    used when disk name of partitioned disk ends on a digit.
-- *
-- * blkdev accepts the following variants when built into the kernel:
-- * 1) <hex_major><hex_minor> device number in hexadecimal representation,
-- *    with no leading 0x, for example b302.
-- * 2) PARTUUID=00112233-4455-6677-8899-AABBCCDDEEFF representing the
-- *    unique id of a partition if the partition table provides it.
-- *    The UUID may be either an EFI/GPT UUID, or refer to an MSDOS
-- *    partition using the format SSSSSSSS-PP, where SSSSSSSS is a zero-
-- *    filled hex representation of the 32-bit "NT disk signature", and PP
-- *    is a zero-filled hex representation of the 1-based partition number.
-- * 3) PARTUUID=<UUID>/PARTNROFF=<int> to select a partition in relation to
-- *    a partition with a known unique id.
-- * 4) <major>:<minor> major and minor number of the device separated by
-- *    a colon.
-+ * See Documentation/admin-guide/pstore-blk.rst for details.
-  */
- static char blkdev[80] = CONFIG_PSTORE_BLK_BLKDEV;
- module_param_string(blkdev, blkdev, 80, 0400);
--- 
-2.25.1
+I'm not sure it useful here because EPOLLOUT flag is already set above, right?
 
+>
+>         return mask;
+>  }
+
+Regards,
+Loic
