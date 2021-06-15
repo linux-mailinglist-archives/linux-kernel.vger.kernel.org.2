@@ -2,203 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB4D3A8C86
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752263A8C87
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhFOXck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 19:32:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229898AbhFOXch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:32:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C0A961356;
-        Tue, 15 Jun 2021 23:30:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623799832;
-        bh=EhsENLIeeDjKwTAN8zz7rBUT0tnSjzg/HSQK5HpPxEw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eU2fOUQo43Ho6rhJgc0WFrfRqjp3ph7sH6Yth2MReQPshU0dxXLFDUMzoF7d4W/dF
-         o4PCdLs8R5DD/cWn0oD+y2R+S3EXokKfwTMcL2N3YGaeJYMj0eGegjEUi5mAF9COgu
-         +q0cPeeUaRsBunJeqBQcfeESYC+42eRQyCytoiGkD8gRVN+md69pzn1WblfX8o0MoP
-         /wmV7rtkVL+wpoHZ0Psp7HEFGUGW7e4TMt9MHidQ4wiv5w1iCzkQ/q+qt0sdbOJgLT
-         iLJ0uosB4LaAZv/CUqtgTx0p/ydf/Bkm/GXlGmTUBZQMZH4IqBPIJLq8Cil1GmKKyf
-         jDZwerpPDGCnw==
-Received: by mail-ed1-f47.google.com with SMTP id s15so126163edt.13;
-        Tue, 15 Jun 2021 16:30:32 -0700 (PDT)
-X-Gm-Message-State: AOAM533b87+si5Bu73Pdl1Lsx53EmMYegUz5rQkGms2eCYGVfAo+vmI7
-        mB/Hmw4Px0o/ofs3y/Jv/TMffMXdi3a3tn53/g==
-X-Google-Smtp-Source: ABdhPJytJV5zNcgsmxY08WCj69qHXAC6m3v5c40a+y+FwBpdmI8H+LqghQfdUkMNHXhWjJXAV5v9T29CSZriZ8UegwI=
-X-Received: by 2002:aa7:db16:: with SMTP id t22mr666261eds.49.1623799830833;
- Tue, 15 Jun 2021 16:30:30 -0700 (PDT)
+        id S231597AbhFOXdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 19:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhFOXdB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 19:33:01 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4E6C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:30:55 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id r19so640260qvw.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:30:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZiBulhyHEqL7H3uqc5V/LUZYaDanCYUuO5RpzcXg368=;
+        b=LxliHIJ5ujEeuMA2FXLHuWsLMym8teFf+Msxt6R+2yI21t/9Kk1Ov9RfruPxnK5Z2g
+         faYmFOHpTpqKE3owCJncWnmIg2t5fud5gYkEFAHCy4A2XoeiIDV+DXEu644cCeTEIbDO
+         75jAvsRF/OA1tTBaXF0rEVjC5+i8GUGzQ7dGOCs1Ev/3V3GnbuuUGgvlSyoflLsmuZDh
+         GjaMuJpeo6XFGyroJXuUaxaDLAyKoYfSO0l5KB22nVbXDBGc52p3N7dbpmCqks287Wrh
+         fxCN0PXukK0re5URKFJK9EKFY+jCEs/dSGossooLfSB++Nh9YtnQPuaFmYj5i9m/Utoa
+         kfkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZiBulhyHEqL7H3uqc5V/LUZYaDanCYUuO5RpzcXg368=;
+        b=hcLFKpQYurQLX60n4ApqWaUU+zXRmYIeQ/ZXMfgGHuTWigz7dll4PAWjXZI8whWVdK
+         V9sXNR0o5InRWgJqoMZBkvsuiKql0xBzNok3KCcYg0nlfD6P2wEtNMZSlnoXWlxBEVdk
+         KDZMhpkhTXKW2ResRnSrAb6E1ZLP03ARVE+BRGWV/m1oEojwczrIfJgpqnjeGKMstCYA
+         giJ0EzHwJfImps4tc3HpfIWmrQw/DnVWbhWcDsgodDSkwPGLD5xVuRe423KSJYcw+Xlp
+         hYJkwcqlPIDZsErQK57UBpFpdMlf1OOlwqQq4Z00uXoSghDSkorgCodO7vmPEXeangAe
+         VF5A==
+X-Gm-Message-State: AOAM531yi16dkyN/h6VPFk9SykzcjxXBf+Uc7oV5gSdvQPS/7yK9/6gz
+        hT/Nb/sezSsqTe95GpIkFW17MIjIg1zNawNypzyEKg==
+X-Google-Smtp-Source: ABdhPJxYto4Tm3pE1FLT21PwVUUWqHFlBnlvUy0Vbl4X8uzwQ5ITYK+j6I73Sf/qW2U8pYES5lG0XvYwpsWl5AqC5Sk=
+X-Received: by 2002:a05:6214:1c0d:: with SMTP id u13mr8047555qvc.49.1623799854221;
+ Tue, 15 Jun 2021 16:30:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210615173233.26682-1-tinghan.shen@mediatek.com> <20210615173233.26682-22-tinghan.shen@mediatek.com>
-In-Reply-To: <20210615173233.26682-22-tinghan.shen@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 16 Jun 2021 07:30:19 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__cE+wz3hjOobWNDNjie29NsDQiytP=mocbLJxuOF2+4Q@mail.gmail.com>
-Message-ID: <CAAOTY__cE+wz3hjOobWNDNjie29NsDQiytP=mocbLJxuOF2+4Q@mail.gmail.com>
-Subject: Re: [PATCH 22/27] arm64: dts: mt8195: add edp nodes
-To:     Tinghan Shen <tinghan.shen@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>, wenst@google.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Jitao Shi <jitao.shi@mediatek.com>
+References: <20210608231132.32012-1-joshdon@google.com> <e3fc3338-c469-0c0c-ada2-a0bbc9f969fe@arm.com>
+ <CABk29Nu=mxz3tugjhDV9xCF7DRsMi9U747H+BqubviEva36RUw@mail.gmail.com>
+ <7222c20a-5cbb-d443-a2fd-19067652a38e@arm.com> <CABk29NtVRG8cotfbK=R0kKXuKCnkEG514H=6ncri=CM8Qr9uiQ@mail.gmail.com>
+ <f48b5233-ce60-7e1a-02e6-1bfbcc852271@arm.com>
+In-Reply-To: <f48b5233-ce60-7e1a-02e6-1bfbcc852271@arm.com>
+From:   Josh Don <joshdon@google.com>
+Date:   Tue, 15 Jun 2021 16:30:43 -0700
+Message-ID: <CABk29NvX8-kygVSB2ePNUsnebThyijrSfjxcEPft9kUfNm01cQ@mail.gmail.com>
+Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Tinghan:
-
-Tinghan Shen <tinghan.shen@mediatek.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=881=
-6=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=885:35=E5=AF=AB=E9=81=93=EF=
-=BC=9A
+On Tue, Jun 15, 2021 at 3:07 AM Dietmar Eggemann
+<dietmar.eggemann@arm.com> wrote:
 >
-> From: Jitao Shi <jitao.shi@mediatek.com>
+> On 12/06/2021 01:34, Josh Don wrote:
+> > On Fri, Jun 11, 2021 at 9:43 AM Dietmar Eggemann
+> > <dietmar.eggemann@arm.com> wrote:
+> >>
+> >> On 10/06/2021 21:14, Josh Don wrote:
+
+[snip]
+
+> > Setting cpu.idle carries additional properties in addition to just the
+> > weight. Currently, it primarily includes (a) special wakeup preemption
+> > handling, and (b) contribution to idle_h_nr_running for the purpose of
+> > marking a cpu as a sched_idle_cpu(). Essentially, the current
+> > SCHED_IDLE mechanics. I've also discussed with Peter a potential
+> > extension to SCHED_IDLE to manipulate vruntime.
 >
-> add edp nodes for mt8195
+> Right, I forgot about (b).
 >
-> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-> ---
->  arch/arm64/boot/dts/mediatek/mt8195.dtsi | 59 +++++++++++++++++++++++-
->  1 file changed, 58 insertions(+), 1 deletion(-)
+> But IMHO, (a) could be handled with this special tg->shares value for
+> SCHED_IDLE.
 >
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/d=
-ts/mediatek/mt8195.dtsi
-> index 256818c4c0bf..d7d2c2a8f461 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-> @@ -23,6 +23,8 @@
+> If there would be a way to open up `cpu.weight`, `cpu.weight.nice` (and
+> `cpu,shares` for v1) to take a special value for SCHED_IDLE, then you
+> won't need cpu.idle.
+> And you could handle the functionality from sched_group_set_idle()
+> directly in sched_group_set_shares().
+> In this case sched_group_set_shares() wouldn't have to be rejected on an
+> idle tg.
+> A tg would just become !idle by writing a different cpu.weight value.
+> Currently, if you !idle a tg it gets the default NICE_0_LOAD.
 >
->         aliases {
->                 dpi1 =3D &disp_dpi1;
-> +               dp-intf0 =3D &dp_intf0;
-> +               dp-intf1 =3D &dp_intf1;
->         };
+> I guess cpu.weight [1, 10000] would be easy, 0 could be taken for that
+> and mapped into weight = WEIGHT_IDLEPRIO (3, 3072) to call
+> sched_group_set_shares(..., scale_load(weight).
+> cpu.weight = 1 maps to (10, 10240)
 >
->         clocks {
-> @@ -1155,6 +1157,29 @@
->                         status =3D "disabled";
->                 };
+> cpu.weight.nice [-20, 19] would be already more complicated, 20?
 >
-> +               disp_pwm0: disp_pwm0@1100e000 {
-> +                       compatible =3D "mediatek,mt8183-disp-pwm";
-
-You should use
-
-compatible =3D "mediatek,mt8195-disp-pwm", "mediatek,mt8183-disp-pwm";
-
-and add definition of "mediatek,mt8195-disp-pwm" in binding document.
-
-> +                       reg =3D <0 0x1100e000 0 0x1000>;
-> +                       interrupts =3D <GIC_SPI 203 IRQ_TYPE_LEVEL_LOW 0>=
-;
-> +                       power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSY=
-S0>;
-> +                       #pwm-cells =3D <2>;
-> +                       clocks =3D <&topckgen CLK_TOP_DISP_PWM0_SEL>,
-> +                                       <&infracfg_ao CLK_INFRA_AO_DISP_P=
-WM>;
-> +                       clock-names =3D "main", "mm";
-> +                       status =3D "disabled";
-> +               };
-> +
-> +               disp_pwm1: disp_pwm1@1100f000 {
-> +                       compatible =3D "mediatek,mt8183-disp-pwm";
-
-Ditto.
-
-> +                       reg =3D <0 0x1100f000 0 0x1000>;
-> +                       interrupts =3D <GIC_SPI 793 IRQ_TYPE_LEVEL_HIGH 0=
->;
-> +                       #pwm-cells =3D <2>;
-> +                       clocks =3D <&topckgen CLK_TOP_DISP_PWM1_SEL>,
-> +                               <&infracfg_ao CLK_INFRA_AO_DISP_PWM1>;
-> +                       clock-names =3D "main", "mm";
-> +                       status =3D "disabled";
-> +               };
-> +
->                 spi1: spi@11010000 {
->                         compatible =3D "mediatek,mt8195-spi",
->                                      "mediatek,mt6765-spi";
-> @@ -2397,6 +2422,30 @@
->                         status =3D "disabled";
->                 };
+> And for cpu.shares [2, 2 << 18] 0 could be used. The issue here is that
+> WEIGHT_IDLEPRIO (3, 3072) is a valid value already for shares.
 >
-> +               dp_intf1: dp_intf1@1c113000 {
-> +                       compatible =3D "mediatek,mt8195-dp-intf";
-
-Where is the definition of this compatible?
-
-> +                       reg =3D <0 0x1c113000 0 0x1000>;
-> +                       interrupts =3D <GIC_SPI 513 IRQ_TYPE_LEVEL_HIGH 0=
->;
-> +                       power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSY=
-S1>;
-> +                       clocks =3D <&vdosys1 CLK_VDO1_DP_INTF0_MM>,
-> +                                <&vdosys1 CLK_VDO1_DPINTF>,
-> +                                <&topckgen CLK_TOP_DP_SEL>,
-> +                                <&topckgen CLK_TOP_TVDPLL2_D2>,
-> +                                <&topckgen CLK_TOP_TVDPLL2_D4>,
-> +                                <&topckgen CLK_TOP_TVDPLL2_D8>,
-> +                                <&topckgen CLK_TOP_TVDPLL2_D16>,
-> +                                <&topckgen CLK_TOP_TVDPLL2>;
-> +                       clock-names =3D "hf_fmm_ck",
-> +                                     "hf_fdp_ck",
-> +                                     "MUX_DP",
-> +                                     "TVDPLL_D2",
-> +                                     "TVDPLL_D4",
-> +                                     "TVDPLL_D8",
-> +                                     "TVDPLL_D16",
-> +                                     "DPI_CK";
-> +                       status =3D "disabled";
-> +               };
-> +
->                 hdmi0: hdmi@1c300000 {
->                         compatible =3D "mediatek,mt8195-hdmi";
->                         reg =3D <0 0x1c300000 0 0x1000>;
-> @@ -2421,11 +2470,19 @@
+> > We set the cgroup weight here, since by definition SCHED_IDLE entities
+> > have the least scheduling weight. From the perspective of your
+> > question, the analogous statement for tasks would be that we set task
+> > weight to the min when doing setsched(SCHED_IDLE), even though we
+> > already have a renice mechanism.
 >
->                 edp_tx: edp_tx@1c500000 {
->                         status =3D "disabled";
-> -                       compatible =3D "mediatek,mt8195-dp_tx";
-> +                       compatible =3D "mediatek,mt8195-edp_tx";
->                         reg =3D <0 0x1c500000 0 0x8000>;
->                         power-domains =3D <&spm MT8195_POWER_DOMAIN_EPD_T=
-X>;
->                         interrupts =3D <GIC_SPI 676 IRQ_TYPE_LEVEL_HIGH 0=
->;
->                 };
-> +
-> +               dp_tx: dp_tx@1c600000 {
-> +                       compatible =3D "mediatek,mt8195-dp_tx";
-
-Ditto.
-
-Regards,
-Chun-Kuang.
-
-> +                       reg =3D <0 0x1c600000 0 0x8000>;
-> +                       power-domains =3D <&spm MT8195_POWER_DOMAIN_DP_TX=
->;
-> +                       interrupts =3D <GIC_SPI 458 IRQ_TYPE_LEVEL_HIGH 0=
->;
-> +                       status =3D "disabled";
-> +               };
->         };
+> I agree. `cpu.idle = 1` is like setting the task policy to SCHED_IDLE.
+> And there is even the `cpu.weight.nice` to support the `task - tg`
+> analogy on nice values.
 >
->         hdmiddc0: ddc_i2c {
-> --
-> 2.18.0
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> I'm just wondering if integrating this into `cpu.weight` and friends
+> would be better to make the code behind this easier to grasp.
+
+Might be confusing that we manipulate cgroup SCHED_IDLE via special
+weight/weight.nice values, whereas task SCHED_IDLE is manipulated via
+setsched (and we would allow nice 20 for cgroups but not for tasks,
+for example).
+
+More importantly, I think it would be better to avoid unintentional
+side effects caused by overloading the weight interfaces. Thoughts on
+that?
+
+Another (less compelling) reason for the separate interface is that it
+allows further extension. For example, negative values in cpu.idle
+could indicate increasingly more latency-sensitive cgroups, which
+could benefit from better wakeup preemption, entity placement, etc.
