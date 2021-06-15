@@ -2,125 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A193A8B3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD6A3A8B41
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhFOVkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:40:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56066 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230039AbhFOVkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:40:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 979D761159;
-        Tue, 15 Jun 2021 21:38:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623793097;
-        bh=WsnjQxBiIqhUROeHutNepvY82vWn5+Gb/nJxmlw1okQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G54nkd1ForQLhHRyA3xmzkzQ/I3ZTEMbs3gzY14C/QuPikahuDvGy05v8VOm+cB1I
-         He+r68OrgXgLYhrWZW2vUwDM+Y/ekqLde5qIQapr/6aaO0clZO2XH1oG8oXy6FMYjG
-         lT5HLVEuN80FuhPXro1El3ACmr1wW8RDfIfdoRmaHh5SPkrUfihxd19JzI4zblWXSE
-         iESMg0YLder2JKhvedkWNuJjwJKP2Nnn2C1lVI0NNhqcCfker106IdMF5UkzrvD/OV
-         hQaXqLv55Cp4pstc0+buH8K/s0gez6civkJZ3nvEVJPgsKAMXIp1fjKYtDCejGdI0p
-         Z0OgN5xmj/tkw==
-Date:   Tue, 15 Jun 2021 14:38:15 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Edward Cree <ecree.xilinx@gmail.com>,
-        Kurt Manucredo <fuzzybritches0@gmail.com>,
-        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
-        keescook@chromium.org, yhs@fb.com, dvyukov@google.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        nathan@kernel.org, ndesaulniers@google.com,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, kasan-dev@googlegroups.com
-Subject: Re: [PATCH v5] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
-Message-ID: <YMkdx1VB0i+fhjAY@gmail.com>
-References: <752cb1ad-a0b1-92b7-4c49-bbb42fdecdbe@fb.com>
- <CACT4Y+a592rxFmNgJgk2zwqBE8EqW1ey9SjF_-U3z6gt3Yc=oA@mail.gmail.com>
- <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com>
- <202106101002.DF8C7EF@keescook>
- <CAADnVQKMwKYgthoQV4RmGpZm9Hm-=wH3DoaNqs=UZRmJKefwGw@mail.gmail.com>
- <85536-177443-curtm@phaethon>
- <bac16d8d-c174-bdc4-91bd-bfa62b410190@gmail.com>
- <YMkAbNQiIBbhD7+P@gmail.com>
- <dbcfb2d3-0054-3ee6-6e76-5bd78023a4f2@iogearbox.net>
- <YMkcYn4dyZBY/ze+@gmail.com>
+        id S231185AbhFOVld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhFOVla (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 17:41:30 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7715FC061574;
+        Tue, 15 Jun 2021 14:39:24 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso351740oto.12;
+        Tue, 15 Jun 2021 14:39:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zJeNxFDQW25gUsK+axdOU+LMUM5LMZyIj86MUl84e4o=;
+        b=LF9+53iLy5sIQQbAlN5ihLtgqVVizux4dTWIzZsojk0Nx9QHrRudxCO97EuYzZjmUm
+         Cx6Wo1fFrj5NnHJZF6DvO445tUX69PJjSCrKgXdXtV5BsFz1myDjGnjMzllrD/PjyOKr
+         k1xO71/Y0nHyMcdfe8qbuP6x34wHrKToA4ajt9Ed8UPsZQonN9kyz75jQeCAxX8N1ogl
+         QBS+8IIF4rtlNxiSiHzCAQQkk/wEPOfEju9LnwX2PAfGnee7yfcqzk7hCuEZ0O/TNzSQ
+         N7Cp0DNGueDEoKrAwwnX1qfhb+Giy8SYudlvzZeA3A5sTjUktyjIpCxyz4uCh6G2Cgza
+         tO3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=zJeNxFDQW25gUsK+axdOU+LMUM5LMZyIj86MUl84e4o=;
+        b=EQqAxrVLGfs+wlpqzIi0g0uSqFGNljphPkQgxOg7AoumBzgSNhJymVIjTG9iDI6lMH
+         LKxGiUwtTaY0yoyQhuWXo1Tt4G3qZxS0+pjgEO9Z5znusgOaiRc3kwCK97aYOu4muNe+
+         Dqd5MgBBZ9nGcdaanufEMdoRPPuHXNZczXUmjVmxJgMo6b+m4vM0zsnhnyHyQXMNpqRe
+         VP6v4CvTBRNVr0CJOf+m3AyFqOC1NSfmLchRQ4lohkJgIDSrcZSoHIoqRLKQJsqw6faq
+         fvl+XuinUba8Isdpu+ShkbEMesymHrgh67kyIb3oHOIbDoxZTJ9nDSbtJOKJA3irCCFy
+         DJEQ==
+X-Gm-Message-State: AOAM531dGm3rTwGCBTsqHQItu4NqC3VoZz+Q33jClgC02Eji2yeHaCKq
+        3hlhv4OpUdmMLY8+tksBVR8=
+X-Google-Smtp-Source: ABdhPJzUUGSVi2YGb+x/x24cOVxZntHkPmmPjkN6cZx8tCXFSM/c4sQXMyvw655S6Lo3/5qPtKaCbA==
+X-Received: by 2002:a9d:6c91:: with SMTP id c17mr1084102otr.48.1623793163861;
+        Tue, 15 Jun 2021 14:39:23 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 16sm41638otm.57.2021.06.15.14.39.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 14:39:22 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 15 Jun 2021 14:39:20 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+        badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: tcpm: Ignore Vsafe0v in
+ PR_SWAP_SNK_SRC_SOURCE_ON state
+Message-ID: <20210615213920.GA969448@roeck-us.net>
+References: <20210615173206.1646477-1-kyletso@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMkcYn4dyZBY/ze+@gmail.com>
+In-Reply-To: <20210615173206.1646477-1-kyletso@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 02:32:18PM -0700, Eric Biggers wrote:
-> On Tue, Jun 15, 2021 at 11:08:18PM +0200, Daniel Borkmann wrote:
-> > On 6/15/21 9:33 PM, Eric Biggers wrote:
-> > > On Tue, Jun 15, 2021 at 07:51:07PM +0100, Edward Cree wrote:
-> > > > 
-> > > > As I understand it, the UBSAN report is coming from the eBPF interpreter,
-> > > >   which is the *slow path* and indeed on many production systems is
-> > > >   compiled out for hardening reasons (CONFIG_BPF_JIT_ALWAYS_ON).
-> > > > Perhaps a better approach to the fix would be to change the interpreter
-> > > >   to compute "DST = DST << (SRC & 63);" (and similar for other shifts and
-> > > >   bitnesses), thus matching the behaviour of most chips' shift opcodes.
-> > > > This would shut up UBSAN, without affecting JIT code generation.
-> > > 
-> > > Yes, I suggested that last week
-> > > (https://lkml.kernel.org/netdev/YMJvbGEz0xu9JU9D@gmail.com).  The AND will even
-> > > get optimized out when compiling for most CPUs.
-> > 
-> > Did you check if the generated interpreter code for e.g. x86 is the same
-> > before/after with that?
+On Wed, Jun 16, 2021 at 01:32:06AM +0800, Kyle Tso wrote:
+> In PR_SWAP_SNK_SRC_SOURCE_ON state, Vsafe0v is expected as well so do
+> nothing here to avoid state machine going into SNK_UNATTACHED.
 > 
-> Yes, on x86_64 with gcc 10.2.1, the disassembly of ___bpf_prog_run() is the same
-> both before and after (with UBSAN disabled).  Here is the patch I used:
-> 
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 5e31ee9f7512..996db8a1bbfb 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1407,12 +1407,30 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
->  		DST = (u32) DST OP (u32) IMM;	\
->  		CONT;
->  
-> +	/*
-> +	 * Explicitly mask the shift amounts with 63 or 31 to avoid undefined
-> +	 * behavior.  Normally this won't affect the generated code.
-> +	 */
-> +#define ALU_SHIFT(OPCODE, OP)		\
-> +	ALU64_##OPCODE##_X:		\
-> +		DST = DST OP (SRC & 63);\
-> +		CONT;			\
-> +	ALU_##OPCODE##_X:		\
-> +		DST = (u32) DST OP ((u32)SRC & 31);	\
-> +		CONT;			\
-> +	ALU64_##OPCODE##_K:		\
-> +		DST = DST OP (IMM & 63);	\
-> +		CONT;			\
-> +	ALU_##OPCODE##_K:		\
-> +		DST = (u32) DST OP ((u32)IMM & 31);	\
-> +		CONT;
-> +
->  	ALU(ADD,  +)
->  	ALU(SUB,  -)
->  	ALU(AND,  &)
->  	ALU(OR,   |)
-> -	ALU(LSH, <<)
-> -	ALU(RSH, >>)
-> +	ALU_SHIFT(LSH, <<)
-> +	ALU_SHIFT(RSH, >>)
->  	ALU(XOR,  ^)
->  	ALU(MUL,  *)
->  #undef ALU
-> 
+> Fixes: 28b43d3d746b ("usb: typec: tcpm: Introduce vsafe0v for vbus")
+> Signed-off-by: Kyle Tso <kyletso@google.com>
 
-Note, I missed the arithmetic right shifts later on in the function.  Same
-result there, though.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-- Eric
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 197556038ba4..e11e9227107d 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -5212,6 +5212,7 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
+>  		}
+>  		break;
+>  	case PR_SWAP_SNK_SRC_SINK_OFF:
+> +	case PR_SWAP_SNK_SRC_SOURCE_ON:
+>  		/* Do nothing, vsafe0v is expected during transition */
+>  		break;
+>  	default:
+> -- 
+> 2.32.0.272.g935e593368-goog
+> 
