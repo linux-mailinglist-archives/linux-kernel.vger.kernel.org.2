@@ -2,101 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45E83A8043
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623443A7FEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhFONhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:37:37 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:21704 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbhFONhX (ORCPT
+        id S231671AbhFONdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:33:44 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:6377 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231315AbhFONd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:37:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623764119; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=UKtsXMpVK9SiGqVXzkLqYeEov0vtg1GMx8MgB0t1nN0=;
- b=MLShO3+UES8OEfvhY2fsgUHXSmVk82vI1eNHjjdw9YoO38HetqIY29eZKn9TBAJ126RX3twV
- bY5LKuNHYAilO5BuIipF+ZqMWcRuYqX5EaHqkSCOUMW2oVoW62dB8uu9UDCuAcIJ7DjskPj8
- McZC17JDGr0dgQb1qaqTqN7pX6c=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60c8ac88ed59bf69ccf64753 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:35:04
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1900CC4314A; Tue, 15 Jun 2021 13:35:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E82F4C43143;
-        Tue, 15 Jun 2021 13:34:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E82F4C43143
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Tue, 15 Jun 2021 09:33:29 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G48Hw0xzdz63cB;
+        Tue, 15 Jun 2021 21:27:24 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 21:31:22 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
+ 2021 21:31:21 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>
+Subject: [PATCH -next] ASoC: hisilicon: Use devm_platform_get_and_ioremap_resource()
+Date:   Tue, 15 Jun 2021 21:35:15 +0800
+Message-ID: <20210615133515.1376290-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2] ipw2x00: Minor documentation update
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1619348088-6887-1-git-send-email-jrdr.linux@gmail.com>
-References: <1619348088-6887-1-git-send-email-jrdr.linux@gmail.com>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     stas.yakovlev@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210615133504.1900CC4314A@smtp.codeaurora.org>
-Date:   Tue, 15 Jun 2021 13:35:03 +0000 (UTC)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Souptick Joarder <jrdr.linux@gmail.com> wrote:
+Use devm_platform_get_and_ioremap_resource() to simplify
+code.
 
-> Kernel test robot throws below warning ->
-> 
-> drivers/net/wireless/intel/ipw2x00/ipw2100.c:5359: warning: This comment
-> starts with '/**', but isn't a kernel-doc comment. Refer
-> Documentation/doc-guide/kernel-doc.rst
-> 
-> Minor update in documentation.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ sound/soc/hisilicon/hi6210-i2s.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Fails to apply, please rebase.
-
-Recorded preimage for 'drivers/net/wireless/intel/ipw2x00/ipw2100.c'
-error: Failed to merge in the changes.
-hint: Use 'git am --show-current-patch' to see the failed patch
-Applying: ipw2x00: Minor documentation update
-Using index info to reconstruct a base tree...
-M	drivers/net/wireless/intel/ipw2x00/ipw2100.c
-Falling back to patching base and 3-way merge...
-Auto-merging drivers/net/wireless/intel/ipw2x00/ipw2100.c
-CONFLICT (content): Merge conflict in drivers/net/wireless/intel/ipw2x00/ipw2100.c
-Patch failed at 0001 ipw2x00: Minor documentation update
-
-Patch set to Changes Requested.
-
+diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
+index ff05b9779e4b..a297d4af5099 100644
+--- a/sound/soc/hisilicon/hi6210-i2s.c
++++ b/sound/soc/hisilicon/hi6210-i2s.c
+@@ -556,8 +556,7 @@ static int hi6210_i2s_probe(struct platform_device *pdev)
+ 	i2s->dev = dev;
+ 	spin_lock_init(&i2s->lock);
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	i2s->base = devm_ioremap_resource(dev, res);
++	i2s->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(i2s->base))
+ 		return PTR_ERR(i2s->base);
+ 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/1619348088-6887-1-git-send-email-jrdr.linux@gmail.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.25.1
 
