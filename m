@@ -2,115 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D915F3A873F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1873A8746
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbhFOROw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49276 "EHLO
+        id S229966AbhFORQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhFOROu (ORCPT
+        with ESMTP id S229494AbhFORQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:14:50 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 559ECC061574;
-        Tue, 15 Jun 2021 10:12:46 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 0891C92009C; Tue, 15 Jun 2021 19:12:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 01F2592009B;
-        Tue, 15 Jun 2021 19:12:44 +0200 (CEST)
-Date:   Tue, 15 Jun 2021 19:12:44 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        Tue, 15 Jun 2021 13:16:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3449DC06175F;
+        Tue, 15 Jun 2021 10:14:39 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 17:14:36 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623777277;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SafpwjhBp7YaFsWBnaN9wDAKx7ugIqiUCTrxkxn6ZjE=;
+        b=NXV3XFGnf/HGSM12rH+h0NmZg7KMr/EeNfO/oxUib79ecPfSQRxUWugK0UqlNYi3XJgA2G
+        Yw8gQkkYpVEOdApteUiiBZsWlN8IdziENHzM6g5Ljn78aWBWSRz8I9LmBRqRdVsAFPYWBI
+        FwiNQ7IDYTTEtPTsGTApxjHnMgLfDHE0SN5mr3uytRs/TtWV7q2FGLKmoUMo46yCBfdlvk
+        /lZDayDViNKpqvzmkPbvD2WMK60KpbkP2bQdQeX2/JwStw5rxq0xq/9BGt0BcJl1brPo2b
+        9hhvjur4Rcb/YOqHYWTu5cs71QwMiBIK0Sy9iBz8mnirYS1Pk8AfeWPmHlv/zA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623777277;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SafpwjhBp7YaFsWBnaN9wDAKx7ugIqiUCTrxkxn6ZjE=;
+        b=n2r0mpT2Spx8jR4CAwmQNtk4Bxhka79zrShvuT/KpzFzxBQ0LhFZ3yoJXYoWDDlnFMwDfc
+        lF31AaA6ZZDVlfBg==
+From:   "tip-bot2 for Pawan Gupta" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/events/intel: Do not deploy TSX force abort
+ workaround when TSX is deprecated
+Cc:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Neelima Krishnan <neelima.krishnan@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] serial: 8250: Fixes for Oxford Semiconductor 950
- UARTs
-In-Reply-To: <YMjMpQtLeP3xceYR@kroah.com>
-Message-ID: <alpine.DEB.2.21.2106151805460.61948@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2106071700090.1601@angie.orcam.me.uk> <YMiX7LAEtL0uQuVl@kroah.com> <alpine.DEB.2.21.2106151602120.61948@angie.orcam.me.uk> <YMjMpQtLeP3xceYR@kroah.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+In-Reply-To: =?utf-8?q?=3Ce4d410f786946280ced02dd07c74e0a74f1d10cb=2E16237?=
+ =?utf-8?q?04845=2Egit-series=2Epawan=2Ekumar=2Egupta=40linux=2Eintel=2Eco?=
+ =?utf-8?q?m=3E?=
+References: =?utf-8?q?=3Ce4d410f786946280ced02dd07c74e0a74f1d10cb=2E162370?=
+ =?utf-8?q?4845=2Egit-series=2Epawan=2Ekumar=2Egupta=40linux=2Eintel=2Ecom?=
+ =?utf-8?q?=3E?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Message-ID: <162377727686.19906.13579403063424613180.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021, Greg Kroah-Hartman wrote:
+The following commit has been merged into the x86/cpu branch of tip:
 
-> > > This patch series causes the following build warning to be added:
-> > > 
-> > > drivers/tty/serial/8250/8250_pci.c: In function ‘pci_oxsemi_tornado_setup’:
-> > > drivers/tty/serial/8250/8250_pci.c:1258:32: warning: unsigned conversion from ‘int’ to ‘unsigned char’ changes value from ‘-129’ to ‘127’ [-Woverflow]
-> > >  1258 |                 up->mcr_mask = ~UART_MCR_CLKSEL;
-> > >       |                                ^
-> > > 
-> > > 
-> > > Can you fix this up and resend?
-> > 
-> >  I've seen that, but that's not a problem with my change, but rather with 
-> > <linux/serial_reg.h> making this macro (and the remaining ones from this 
-> > group) expand to a signed constant (0x80 rather than 0x80u).
-> 
-> As your change causes it to show up, it must have something to do with
-> it :)
+Commit-ID:     ad3c2e174938d72fded674acead42e2464a3b460
+Gitweb:        https://git.kernel.org/tip/ad3c2e174938d72fded674acead42e2464a3b460
+Author:        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+AuthorDate:    Mon, 14 Jun 2021 14:13:23 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 15 Jun 2021 17:36:03 +02:00
 
- Of course it does, but the problem comes from the data type signedness 
-difference between the `mcr_mask' member of `struct uart_8250_port', the 
-type of which is (rightfully IMO) `unsigned char' (rather than `char' or 
-`signed char') and the UART_MCR_CLKSEL macro, which expands to a signed 
-int.  My change does not introduce this data type difference, hence it's 
-not responsible for the problem, though it does expose it.
+x86/events/intel: Do not deploy TSX force abort workaround when TSX is deprecated
 
-> >  I can fix the header, but that would be a separate change, and mind too 
-> > that this is a user header, so it's not clear to me what the impact might 
-> > be on user apps making use of it.
-> 
-> You can not change the uapi header, why would you want to?
+Earlier workaround added by
 
- To make the data type of the constants it defines such that they can be 
-assigned to program entities they are supposed to be used with without 
-changing the sign at truncation time?
+  400816f60c54 ("perf/x86/intel: Implement support for TSX Force Abort")
 
-> >  We could use a GCC pragma to suppress the warning temporarily across this 
-> > piece of code, but it's not clear to me either what our policy has been on 
-> > such approach.
-> 
-> What pragma?
+for perf counter interactions [1] are not required on some client
+systems which received a microcode update that deprecates TSX.
 
-#pragma GCC diagnostic ignored "-Woverflow"
+Bypass the perf workaround when such microcode is enumerated.
 
-> >  Thoughts?
-> 
-> Why does your change cause this to show up?
+[1] [ bp: Look for document ID 604224, "Performance Monitoring Impact
+      of Intel Transactional Synchronization Extension Memory". Since
+      there's no way for us to have stable links to documents... ]
 
- As I have noted above there is a data type signedness difference between 
-`mcr_mask' and UART_MCR_CLKSEL.  So we have the value of 0x80 (128).  
-Once bitwise-complemented it becomes 0xffffff7f (-129).  Once assigned to 
-`mcr_mask' however it becomes 0x7f (127), which is considered an unsafe 
-conversion between signed and unsigned integers by GCC, which is why the 
-compiler complains about it.
+ [ bp: Massage comment. ]
 
- The same difference exists with say UART_MCR_OUT2 used in a similar
-manner for ALPHA_KLUDGE_MCR, but GCC does not get noisy about it because 
-the constant UART_MCR_OUT2 expands to is 0x08 and therefore the position 
-of the bit set there does not coincide with the sign bit once truncated to 
-8 bits, so the truncation does not cause a sign change.  The same warning 
-would trigger however if the constant were left-shifted by 4 before the 
-bitwise complement operation, so all these constants should be unsigned.  
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Tested-by: Neelima Krishnan <neelima.krishnan@intel.com>
+Link: https://lkml.kernel.org/r/e4d410f786946280ced02dd07c74e0a74f1d10cb.1623704845.git-series.pawan.kumar.gupta@linux.intel.com
+---
+ arch/x86/events/intel/core.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
- It does not make sense IMO to operate on signed values in the context of 
-bit patterns for peripheral hardware registers.
-
- I'll find a way to paper it over if this is what is desired here, e.g. I 
-guess this piece:
-
-		up->mcr_mask = ~0;
-		up->mcr_mask ^= UART_MCR_CLKSEL;
-
-will do, although I find it obscurer than my original proposal, and surely 
-asking for a comment (which I think is a sign of a problem).
-
-  Maciej
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 2521d03..062bf89 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -6015,7 +6015,13 @@ __init int intel_pmu_init(void)
+ 		tsx_attr = hsw_tsx_events_attrs;
+ 		intel_pmu_pebs_data_source_skl(pmem);
+ 
+-		if (boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
++		/*
++		 * Processors with CPUID.RTM_ALWAYS_ABORT have TSX deprecated by default.
++		 * TSX force abort hooks are not required on these systems. Only deploy
++		 * workaround when microcode has not enabled X86_FEATURE_RTM_ALWAYS_ABORT.
++		 */
++		if (boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT) &&
++		   !boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT)) {
+ 			x86_pmu.flags |= PMU_FL_TFA;
+ 			x86_pmu.get_event_constraints = tfa_get_event_constraints;
+ 			x86_pmu.enable_all = intel_tfa_pmu_enable_all;
