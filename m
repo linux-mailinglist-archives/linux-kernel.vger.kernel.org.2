@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265D73A796B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C65E3A797C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhFOIxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 04:53:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231281AbhFOIxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:53:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6136961420;
-        Tue, 15 Jun 2021 08:51:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623747061;
-        bh=9ltkYt84XHRCjiFpqpJbCWEVaJ+GIPrMxTP71kRt3X0=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=hQF8aVQc38/+jJr0BhRdoXZadH20RoSWGiEnAJyqz54m24IN+JXfMsAPyb/hJLTwL
-         sukira08UzgF4THnSI9qHsAw40DyMvObCdXOcfWQXu0eq7Nd+6KMaWFlazHo3sYsSc
-         gnk/ny/AI/p31G5laIzsXLw0SikV++zaJxYqNl5hpdVyx6AMlntqkfZAt7+gfuFnE+
-         XDuneRi7wTFcYOe13GMoPRz3CQxSKSU6rmH+JaVCzqeq4TvQfNtv2S05dRzgSvACKk
-         Ww5lyYsb7CWZLgIyyvrK4iM/0osfj9e2gCcnZhQQf8x9Fw/A9FfyZ/ccVA/e4ZlVO5
-         vrmJZDW7XB7VQ==
-Date:   Tue, 15 Jun 2021 10:50:58 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: usbkbd: Avoid GFP_ATOMIC when GFP_KERNEL is
- possible
-In-Reply-To: <20210529100357.GA46765@hyeyoo>
-Message-ID: <nycvar.YFH.7.76.2106151050520.18969@cbobk.fhfr.pm>
-References: <20210529100357.GA46765@hyeyoo>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S231559AbhFOIyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 04:54:09 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:7269 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231379AbhFOIx1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 04:53:27 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G423b498Fz1BMlD;
+        Tue, 15 Jun 2021 16:46:19 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 16:51:16 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 16:51:15 +0800
+Subject: Re: [PATCH 5.10 000/130] 5.10.44-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210614161424.091266895@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <20502593-4399-008d-dba0-d38b5f3fb189@huawei.com>
+Date:   Tue, 15 Jun 2021 16:51:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210614161424.091266895@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 May 2021, Hyeonggon Yoo wrote:
 
-> usb_kbd_alloc_mem is called in usb_kbd_probe, which is
-> not in atomic context. So constraints can be relaxed here.
+
+On 2021/6/15 0:15, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.44 release.
+> There are 130 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Use GFP_KERNEL instead of GFP_ATOMIC.
+> Responses should be made by Wed, 16 Jun 2021 16:13:59 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> ---
->  drivers/hid/usbhid/usbkbd.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.44-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
-> diff --git a/drivers/hid/usbhid/usbkbd.c b/drivers/hid/usbhid/usbkbd.c
-> index e22434dfc9ef..df02002066ce 100644
-> --- a/drivers/hid/usbhid/usbkbd.c
-> +++ b/drivers/hid/usbhid/usbkbd.c
-> @@ -239,11 +239,11 @@ static int usb_kbd_alloc_mem(struct usb_device *dev, struct usb_kbd *kbd)
->  		return -1;
->  	if (!(kbd->led = usb_alloc_urb(0, GFP_KERNEL)))
->  		return -1;
-> -	if (!(kbd->new = usb_alloc_coherent(dev, 8, GFP_ATOMIC, &kbd->new_dma)))
-> +	if (!(kbd->new = usb_alloc_coherent(dev, 8, GFP_KERNEL, &kbd->new_dma)))
->  		return -1;
->  	if (!(kbd->cr = kmalloc(sizeof(struct usb_ctrlrequest), GFP_KERNEL)))
->  		return -1;
-> -	if (!(kbd->leds = usb_alloc_coherent(dev, 1, GFP_ATOMIC, &kbd->leds_dma)))
-> +	if (!(kbd->leds = usb_alloc_coherent(dev, 1, GFP_KERNEL, &kbd->leds_dma)))
->  		return -1;
->  
->  	return 0;
+> thanks,
+> 
+> greg k-h
+> 
 
-Applied, thanks.
+Tested on arm64 and x86 for 5.10.44-rc2,
 
--- 
-Jiri Kosina
-SUSE Labs
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.44-rc2
+Commit: 3f05ff8b337097d73b2c408d60befe39dac31bb8
+Compiler: gcc version 7.3.0 (GCC)
 
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
