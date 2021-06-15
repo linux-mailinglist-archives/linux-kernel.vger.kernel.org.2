@@ -2,148 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668D13A8385
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE2F3A8389
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhFOPEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:04:05 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:44818 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhFOPED (ORCPT
+        id S231272AbhFOPFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229937AbhFOPFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:04:03 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15FF1r1a077794;
-        Tue, 15 Jun 2021 10:01:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623769313;
-        bh=SMNC3bHLVtX6F1a9DdwqvZyoa3Nt8WWDSWIEdLIOPoU=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=BGdXCCgwQv70d7YqQ/UoGt5nRhae0NBbQ91+EnLDmTQQZkG7h/VGg4ZHtTHv8Hb96
-         i79DIbeKTWxcRoCDOqSQq2rwdzM63C7Z3zrgzDVz8juJ7iUqoXmph6tXY9ftJZ5Qdk
-         M3hRqtJrVI7Z9Mm7tmWEsBiNUHYV+Uiuyu78EjIU=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15FF1rWn003443
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Jun 2021 10:01:53 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 15
- Jun 2021 10:01:53 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 15 Jun 2021 10:01:53 -0500
-Received: from [10.250.233.8] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15FF1nb2003998;
-        Tue, 15 Jun 2021 10:01:50 -0500
-Subject: Re: [PATCH] PCI: endpoint: Add custom notifier support
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <hemantk@codeaurora.org>,
-        <smohanad@codeaurora.org>
-References: <20210615133704.88169-1-manivannan.sadhasivam@linaro.org>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <9021212f-aa5d-770d-c455-c632dd79e7f8@ti.com>
-Date:   Tue, 15 Jun 2021 20:31:48 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 15 Jun 2021 11:05:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE72C061574;
+        Tue, 15 Jun 2021 08:03:36 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623769415;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=a6xyx21xxnuOeb+VMJL8CvX9khm7B/T5rgexDM0SXxE=;
+        b=M/0YttZrgRntJFJx1PMbhnmci98YhVhQHFYf8aXnDl3J6tGeu82dpLeeW5sQO9Qb2tDRfw
+        FoBIINP9lOL8pEEu1YbVYr6Clok1bnp1GOD74gOHT6S3SireYTNNnOthrYEqQFWTY+gLsZ
+        LQb90bJ/aJt++SOLHNJDUSdqCwUKXq/rQ+lOr1C5jLvCGi6F88su/np1sxc8EHhOV9xFZz
+        rgMcEIeiRFNB/kpnRSySnfz8ckUAp2liKLLsoIh4hmAKKHTKAWggNdDqUZ/01EHt2DUcvd
+        z0QVpOvV2bfhk5GaPt7FeGl8sb2/348yxT5aY5CYDgikJAz00YJPp0GNN6HCqw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623769415;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=a6xyx21xxnuOeb+VMJL8CvX9khm7B/T5rgexDM0SXxE=;
+        b=V7fbDvQxi8F2jVjr4FBt71Sb5eAodQQissDqayoWj3maSKWkjkuU8L9qdLg/vCWmQHyUO6
+        6aHLgS1NzEJXzMCA==
+To:     Matthew Wilcox <willy@infradead.org>,
+        David Mozes <david.mozes@silk.us>
+Cc:     "linux-fsdevel\@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: futex/call -to plist_for_each_entry_safe with head=NULL
+In-Reply-To: <YMZkwsa4yQ/SsMW/@casper.infradead.org>
+References: <AM6PR04MB563958D1E2CA011493F4BCC8F1329@AM6PR04MB5639.eurprd04.prod.outlook.com> <YMZkwsa4yQ/SsMW/@casper.infradead.org>
+Date:   Tue, 15 Jun 2021 17:03:34 +0200
+Message-ID: <87k0mvgoft.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210615133704.88169-1-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Manivannan,
+On Sun, Jun 13 2021 at 21:04, Matthew Wilcox wrote:
+> On Sun, Jun 13, 2021 at 12:24:52PM +0000, David Mozes wrote:
+>> Hi *,
+>> Under a very high load of io traffic, we got the below=C2=A0 BUG trace.
+>> We can see that:
+>> plist_for_each_entry_safe(this, next,=C2=A0&hb1->chain, list) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 if (match_futex (&this->key, &key1))
+>> =C2=A0
+>> were called with hb1 =3D NULL at futex_wake_up function.
+>> And there is no protection on the code regarding such a scenario.
+>> =C2=A0
+>> The NULL can=C2=A0 be geting from:
+>> hb1 =3D hash_futex(&key1);
 
-On 15/06/21 7:07 pm, Manivannan Sadhasivam wrote:
-> Add support for passing the custom notifications between the endpoint
-> controller and the function driver. This helps in passing the
-> notifications that are more specific to the controller and corresponding
-> function driver. The opaque `data` arugument in pci_epc_custom_notify()
-> function can be used to carry the event specific data that helps in
-> differentiating the events.
-> 
-> For instance, the Qcom EPC device generates specific events such as
-> MHI_A7, BME, DSTATE_CHANGE, PM_TURNOFF etc... These events needs to be
-> passed to the function driver for proper handling. Hence, this custom
-> notifier can be used to pass these events.
+Definitely not.
 
-Bus master enable and PME events sounds generic events and not QCOM
-specific. Also this patch should be sent along with how it's going to be
-used in function driver.
+>> =C2=A0
+>> How can we protect against such a situation?
+>
+> Can you reproduce it without loading proprietary modules?
+>
+> Your analysis doesn't quite make sense:
+>
+>         hb1 =3D hash_futex(&key1);
+>         hb2 =3D hash_futex(&key2);
+>
+> retry_private:
+>         double_lock_hb(hb1, hb2);
+>
+> If hb1 were NULL, then the oops would come earlier, in double_lock_hb().
 
-In general my preference would be to add only well defined notifiers
-given that the endpoint function drivers are generic.
+Sure, but hash_futex() _cannot_ return a NULL pointer ever.
 
-Thanks
-Kishon
+>> =C2=A0
+>> =C2=A0
+>> This happened in kernel=C2=A0 4.19.149 running on Azure vm
 
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/endpoint/pci-epc-core.c | 19 +++++++++++++++++++
->  include/linux/pci-epc.h             |  1 +
->  include/linux/pci-epf.h             |  1 +
->  3 files changed, 21 insertions(+)
-> 
-> diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
-> index adec9bee72cf..86b6934c6297 100644
-> --- a/drivers/pci/endpoint/pci-epc-core.c
-> +++ b/drivers/pci/endpoint/pci-epc-core.c
-> @@ -658,6 +658,25 @@ void pci_epc_init_notify(struct pci_epc *epc)
->  }
->  EXPORT_SYMBOL_GPL(pci_epc_init_notify);
->  
-> +/**
-> + * pci_epc_custom_notify() - Notify the EPF device about the custom events
-> + *			     in the EPC device
-> + * @epc: EPC device that generates the custom notification
-> + * @data: Data for the custom notifier
-> + *
-> + * Invoke to notify the EPF device about the custom events in the EPC device.
-> + * This notifier can be used to pass the EPC specific custom events that are
-> + * shared with the EPF device.
-> + */
-> +void pci_epc_custom_notify(struct pci_epc *epc, void *data)
-> +{
-> +	if (!epc || IS_ERR(epc))
-> +		return;
-> +
-> +	atomic_notifier_call_chain(&epc->notifier, CUSTOM, data);
-> +}
-> +EXPORT_SYMBOL_GPL(pci_epc_custom_notify);
-> +
->  /**
->   * pci_epc_destroy() - destroy the EPC device
->   * @epc: the EPC device that has to be destroyed
-> diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
-> index b82c9b100e97..13140fdbcdf6 100644
-> --- a/include/linux/pci-epc.h
-> +++ b/include/linux/pci-epc.h
-> @@ -203,6 +203,7 @@ int pci_epc_add_epf(struct pci_epc *epc, struct pci_epf *epf,
->  		    enum pci_epc_interface_type type);
->  void pci_epc_linkup(struct pci_epc *epc);
->  void pci_epc_init_notify(struct pci_epc *epc);
-> +void pci_epc_custom_notify(struct pci_epc *epc, void *data);
->  void pci_epc_remove_epf(struct pci_epc *epc, struct pci_epf *epf,
->  			enum pci_epc_interface_type type);
->  int pci_epc_write_header(struct pci_epc *epc, u8 func_no,
-> diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
-> index 6833e2160ef1..8d740c5cf0e3 100644
-> --- a/include/linux/pci-epf.h
-> +++ b/include/linux/pci-epf.h
-> @@ -20,6 +20,7 @@ enum pci_epc_interface_type;
->  enum pci_notify_event {
->  	CORE_INIT,
->  	LINK_UP,
-> +	CUSTOM,
->  };
->  
->  enum pci_barno {
-> 
+4.19.149 is almost 50 versions behind the latest 4.19.194 stable.
+
+The other question is whether this happens with an less dead kernel as
+well.
+
+Thanks,
+
+        tglx
