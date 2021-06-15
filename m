@@ -2,107 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B693A7EB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918A83A7EBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhFONLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhFONLH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:11:07 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62425C061574;
-        Tue, 15 Jun 2021 06:09:02 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id q21so20368942ybg.8;
-        Tue, 15 Jun 2021 06:09:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sMoUsP+kTPDRNp3NldXN+6OEKu9qLojvf+qqhyJ9SvI=;
-        b=e2K8Av2mPhp/Qeq3KR/ThAvnqvDFvMbejy/3Ex/owuKzje5Y+wwd9CsaR90l/bXbGJ
-         kdqtd2J+YMSQ7wycS5aBVY2UliD5oBSunimr+X4dkG+Wx53oya8zvYk/d+2LuKuQDMHk
-         1divJo+iYnTBNUHIiP1bujE5Wnvj29JmhoW9yQHCmXGmP5S/EtgnVlm/hdHNUvl5CCST
-         SO6xRhB2a2ceKa+8RF02NdHUVs0chn4sbbnG5SNX/cx5vhyW7g2Xm5YGzh8d46vMFZVd
-         vrEDf4jcScYNQ04YJugroFYx+OxQz1Fne/K6s0JaL2BG2N87f3YGPkDYEwn0X1Sv5DUI
-         7Cxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sMoUsP+kTPDRNp3NldXN+6OEKu9qLojvf+qqhyJ9SvI=;
-        b=udUpgEp+CfNSlFBgpZJZ3kiBBVrvU5OudBXBfhYHNPaJNwZnq0KGmNYeT4ru+s4DOJ
-         Wvb0ZJLoXAj3BjfR0ZGEv6/mMZqzIYUdDXaKcLf4c3qKbYhnP/Z1h9KimEoHcrH0vsOy
-         D7y330k8t3SjMMTCzOej2inB35m+gkALbWbAS0U/GikSg3hF2o4X1Emrj8EaCjmOD+3g
-         IZQy64LGTq0nt+MQiSilInly4mgekY6PbNwlZ1TRA9fOVKBDSI3G+4MNk7Rz3vAN+i9O
-         mV/JdXbr8JzeeEoxT94sv+5dn4T0VnDGIN0G8PR7WGpg5Oa9hMfCdtadd6/5fcF17CmU
-         SA0Q==
-X-Gm-Message-State: AOAM532GmibZCod/NbPB6gSHRBx8j2nDLBiHWlpQNkGKGSd54GBeEzV8
-        b0x4FmfTZV67fZ/IfpnzzdqMKhPhuKmln8M/KqVUrAyI
-X-Google-Smtp-Source: ABdhPJzqnqyJZ1wDf7Pt24OTXE9VQutGzT6s5BF+/eUK7LCanbzAlwyIlJMFKWxTx4KlYzWXOWf4uy5yzQIhIDzKAys=
-X-Received: by 2002:a25:2e43:: with SMTP id b3mr31849821ybn.152.1623762541678;
- Tue, 15 Jun 2021 06:09:01 -0700 (PDT)
+        id S230184AbhFONNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:13:39 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:62375 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229951AbhFONNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:13:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623762693; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=pk+1GWuddeuPwpLigg8U6jyX5vPbohEBKNDLt5gnSNg=;
+ b=p4t29XDarIkTAB6CmPwStRqF8w56DtJOddg6h2GGbt5jiqg/nZ/w0AaMEs/oCdmbK0EfYP35
+ Pfy5yXUQKXnIMRpHnuRwHgHAwvtGnMJiYlSbLdXfaB3Qy0i57RCoNfi+4fHKXtY1n/QWevXG
+ HjA2Qn0WqERSysJLnVOKeMJyyCY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60c8a6fce570c05619c8e655 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:11:24
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0E473C433F1; Tue, 15 Jun 2021 13:11:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4732BC433D3;
+        Tue, 15 Jun 2021 13:11:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4732BC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
- <20210615023812.50885-2-mcroce@linux.microsoft.com> <6cff2a895db94e6fadd4ddffb8906a73@AcuMS.aculab.com>
-In-Reply-To: <6cff2a895db94e6fadd4ddffb8906a73@AcuMS.aculab.com>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Tue, 15 Jun 2021 21:08:50 +0800
-Message-ID: <CAEUhbmV+Vi0Ssyzq1B2RTkbjMpE21xjdj2MSKdLydgW6WuCKtA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] riscv: optimized memcpy
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [07/11] libertas_tf: Fix wrong function name in comments
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210517050141.61488-8-shenyang39@huawei.com>
+References: <20210517050141.61488-8-shenyang39@huawei.com>
+To:     Yang Shen <shenyang39@huawei.com>
+Cc:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Yang Shen" <shenyang39@huawei.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210615131124.0E473C433F1@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 13:11:24 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 4:57 PM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Matteo Croce
-> > Sent: 15 June 2021 03:38
-> >
-> > Write a C version of memcpy() which uses the biggest data size allowed,
-> > without generating unaligned accesses.
->
-> I'm surprised that the C loop:
->
-> > +             for (; count >= bytes_long; count -= bytes_long)
-> > +                     *d.ulong++ = *s.ulong++;
->
-> ends up being faster than the ASM 'read lots' - 'write lots' loop.
+Yang Shen <shenyang39@huawei.com> wrote:
 
-I believe that's because the assembly version has some unaligned
-access cases, which end up being trap-n-emulated in the OpenSBI
-firmware, and that is a big overhead.
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/net/wireless/marvell/libertas_tf/if_usb.c:56: warning: expecting prototype for if_usb_wrike_bulk_callback(). Prototype was for if_usb_write_bulk_callback() instead
+> 
+> Signed-off-by: Yang Shen <shenyang39@huawei.com>
 
->
-> Especially since there was an earlier patch to convert
-> copy_to/from_user() to use the ASM 'read lots' - 'write lots' loop
-> instead of a tight single register copy loop.
->
-> I'd also guess that the performance needs to be measured on
-> different classes of riscv cpu.
->
-> A simple cpu will behave differently to one that can execute
-> multiple instructions per clock.
-> Any form of 'out of order' execution also changes things.
-> The other big change is whether the cpu can to a memory
-> read and write in the same clock.
->
-> I'd guess that riscv exist with some/all of those features.
+4 patches applied to wireless-drivers-next.git, thanks.
 
-Regards,
-Bin
+30657b8ee459 libertas_tf: Fix wrong function name in comments
+9a0fb9502f0d rtlwifi: Fix wrong function name in comments
+c707db1b2e7b rsi: Fix missing function name in comments
+c3b67ea3d97a wlcore: Fix missing function name in comments
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210517050141.61488-8-shenyang39@huawei.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
