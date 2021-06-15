@@ -2,86 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C6D3A84AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545893A8456
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232163AbhFOPvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:51:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44930 "EHLO mail.kernel.org"
+        id S231732AbhFOPuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:50:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231702AbhFOPuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:50:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 528ED616E8;
-        Tue, 15 Jun 2021 15:48:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623772126;
-        bh=zoUA+wvVTIZCoxvAcakZ29ec1GrZWdf/ZOAw3Igxb/A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rf7uo6v37UgvvqYBvSqgrunzZqQNo0ZQhEi25Gsl+bSQejOExS1RQj81QkBMI8+Ug
-         JT3rq9xrlSkdwffumWX7yeYggD9Qjm6jBnzB4xKd8ISACwCyrblumKBtiwZPe5S//Z
-         YsyD6wkvP12zcroGUhEhvW51EFPwa+iE26/4QeWoyW2spSnvUS90pSLpnaof5YpTZJ
-         Yk9BsBED08U4qunTsfeKL/Wt2IsCoDZVt6DZbaHc+Smh0VmtIYbqiY2EaqllVgDmxv
-         y0NnwiHPo7nlWlvZV40RBakge1N/RURiy1Lo/zELPGD7bo8WIg4nH74Kqr92+KCMUk
-         WCybfzAEYTYCw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 18/33] NFSv4: Fix second deadlock in nfs4_evict_inode()
-Date:   Tue, 15 Jun 2021 11:48:09 -0400
-Message-Id: <20210615154824.62044-18-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210615154824.62044-1-sashal@kernel.org>
-References: <20210615154824.62044-1-sashal@kernel.org>
+        id S230267AbhFOPuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:50:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B7136148E;
+        Tue, 15 Jun 2021 15:48:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623772091;
+        bh=0dr+xOxeQVMtzD8qXKJLgyftKOPEn+gUdjrEiokt9lc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RMjcVvJIV8PeQl0Zu9CGK/Vf/tdgZumtTLgzvPNKPXBSRzA3f3BtPyEW6aUYFIDIM
+         39wpjGj1mpdzRTfhGChUc7+PixGWT8pl1YRErl6WuXudmn2kw5deaTkRKdQT7WUSki
+         l6/xCuBizaI/1NvA55Q3YTo7cfBxks6l+TLJ4IPk=
+Date:   Tue, 15 Jun 2021 17:48:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Huilong Deng <denghuilong@cdjrlc.com>,
+        Johannes Thumshirn <jth@kernel.org>
+Subject: Re: [PATCH 3/3] mcb: Remove trailing semicolon in macros
+Message-ID: <YMjLuWRuRuMiIBjv@kroah.com>
+References: <cover.1623768541.git.johannes.thumshirn@wdc.com>
+ <fe520620eeddaa2ed8c669125f9b673c89d6b5a5.1623768541.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe520620eeddaa2ed8c669125f9b673c89d6b5a5.1623768541.git.johannes.thumshirn@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+On Tue, Jun 15, 2021 at 11:55:30PM +0900, Johannes Thumshirn wrote:
+> From: Huilong Deng <denghuilong@cdjrlc.com>
+> 
+> Macros should not use a trailing semicolon.
+> 
+> Signed-off-by: Huilong Deng <denghuilong@cdjrlc.com>
+> Signed-off-by: Johannes Thumshirn <jth@kernel.org>
+> ---
+>  include/linux/mcb.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/mcb.h b/include/linux/mcb.h
+> index 71dd10a3d928..f6efb16f9d1b 100644
+> --- a/include/linux/mcb.h
+> +++ b/include/linux/mcb.h
+> @@ -120,7 +120,7 @@ extern int __must_check __mcb_register_driver(struct mcb_driver *drv,
+>  	__mcb_register_driver(driver, THIS_MODULE, KBUILD_MODNAME)
+>  extern void mcb_unregister_driver(struct mcb_driver *driver);
+>  #define module_mcb_driver(__mcb_driver)		\
+> -	module_driver(__mcb_driver, mcb_register_driver, mcb_unregister_driver);
+> +	module_driver(__mcb_driver, mcb_register_driver, mcb_unregister_driver)
+>  extern void mcb_bus_add_devices(const struct mcb_bus *bus);
+>  extern int mcb_device_register(struct mcb_bus *bus, struct mcb_device *dev);
+>  extern struct mcb_bus *mcb_alloc_bus(struct device *carrier);
+> -- 
+> 2.31.1
+> 
 
-[ Upstream commit c3aba897c6e67fa464ec02b1f17911577d619713 ]
+I've applied this one, feel free to resend the first 2 as emails.
 
-If the inode is being evicted but has to return a layout first, then
-that too can cause a deadlock in the corner case where the server
-reboots.
+thanks,
 
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/nfs/nfs4proc.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-index 056d98d1d1a7..420d34461bb8 100644
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -9628,15 +9628,20 @@ int nfs4_proc_layoutreturn(struct nfs4_layoutreturn *lrp, bool sync)
- 			&task_setup_data.rpc_client, &msg);
- 
- 	dprintk("--> %s\n", __func__);
-+	lrp->inode = nfs_igrab_and_active(lrp->args.inode);
- 	if (!sync) {
--		lrp->inode = nfs_igrab_and_active(lrp->args.inode);
- 		if (!lrp->inode) {
- 			nfs4_layoutreturn_release(lrp);
- 			return -EAGAIN;
- 		}
- 		task_setup_data.flags |= RPC_TASK_ASYNC;
- 	}
--	nfs4_init_sequence(&lrp->args.seq_args, &lrp->res.seq_res, 1, 0);
-+	if (!lrp->inode)
-+		nfs4_init_sequence(&lrp->args.seq_args, &lrp->res.seq_res, 1,
-+				   1);
-+	else
-+		nfs4_init_sequence(&lrp->args.seq_args, &lrp->res.seq_res, 1,
-+				   0);
- 	task = rpc_run_task(&task_setup_data);
- 	if (IS_ERR(task))
- 		return PTR_ERR(task);
--- 
-2.30.2
-
+greg k-h
