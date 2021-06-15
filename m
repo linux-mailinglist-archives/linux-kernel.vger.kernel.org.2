@@ -2,135 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2FC3A7426
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4578D3A7461
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbhFOCjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
+        id S231145AbhFOCuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbhFOCjG (ORCPT
+        with ESMTP id S229609AbhFOCtk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:39:06 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF02C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:37:02 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id q20so9515601lfo.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:37:02 -0700 (PDT)
+        Mon, 14 Jun 2021 22:49:40 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC846C0613A2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:47:34 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id 5so41791652ioe.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:47:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SFi/PESNY2XSZin92wkim2B0LZCDsgyMMnEnAZQIW7I=;
-        b=mMeDPg+6+57U2DKhGXBPf7UuJ7VxGkYjJYFJsx1UEL7vvoJ78od1BcqWFXUJ//QZcB
-         5eCSb3mpjkABlGvAfmdz3BFYfLJ6UkJkPB5bEqPXsAW3ZShbx4z2Hq5+j4XwLBbAFwd1
-         puipJO5qVZwaq+C7ydPd60pNBaYwLIM08pYY/7E646HsgOXkaUC570FSj1y0C5INir+X
-         LWd8ekf7FuAaPgqcOslVyJMHqu7LqgHftXlv00cJY7oAiqMEbbgs4qfZ8Ml2NnE5yZkC
-         OJCo7xUvuIPUcZJPwSWpAG7tcN762iJNWKWmh8vZTTDJGgl22uO/JcrZjZJXfdf028m9
-         HJ6A==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XZngOmx3QZGSGE9q4/ABb06fw8+v1CSMYNte3U/V958=;
+        b=j8BK1QDugcRXfg29Tqm6PhfSwlMgaC9EAqEaNluYMNCwd1ZYqElpq+kpbUktZ/urN4
+         MVFmsPENeAISNrJygUJCEH0UF3af93a34tumnmJViTDG/YGE/wodIWkh6IlvmCndB6+C
+         dhDr528Ave7TwpBKkGjCQI5PK87kyPYmJvipI4DE38MSn+6feAKYNBkQV19h8yNjhNDr
+         UYugo4buc+C0+WvrHfvDhza6lHEJ+JjmM2oqHjcwqmDbG1d19wnfbfgHbu/EGX3jc2Tu
+         jTh8f5lXw1t0Dqjad76TQQ7B/0slKvtYlcdMqP/585LM2WdakYuYfAYdSziFLM0+kJIK
+         /K5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SFi/PESNY2XSZin92wkim2B0LZCDsgyMMnEnAZQIW7I=;
-        b=W6gXOWTefx6D1qAzUvw//LWAS7VS54+p9C+fx16JFb2FYIEX5Jo9+Ngc2nJqLrg0bH
-         IdIjZhUjHLlaeEl7yahPM+CkZPXbMX8Ff8m+vhiHS8t60eCfWjzr936t0jUPID8RwNFi
-         Og5nuZP55RFJG5CKQRVE7XDhh6gBAesmJSPWwWrl9XUoupAAnof5AujVOazzFTiKWU2W
-         SO7KgQIDrUI63g1VyqK62XLXi7+ql0979RN429BWyTaEaNGN27kZLFdJV8+FeOPuDDnd
-         YO7YqSbnTP23OW2viunR8oYaJYjR1IpsS60DZcMgq0fazI+3FcYwpiCFKKbMayrgDp8L
-         +v2g==
-X-Gm-Message-State: AOAM533rPRbILkht1HhnLwA9yMWk1TiBaiYALjyhereKwUKv1UcTasVW
-        sENK4i18fyCE2K3Nf8Wd5HCF0qqkB+Wxx+/aox5W6w==
-X-Google-Smtp-Source: ABdhPJyTuea2waJB0BHgIB73YI6EvHTUjvVxEYIOP4nb0whEZHOKept1JC0IVHGYiOzd0U5lI4PmZ3sz8MiNQK5TYXU=
-X-Received: by 2002:a19:ef0a:: with SMTP id n10mr13670605lfh.352.1623724620645;
- Mon, 14 Jun 2021 19:37:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XZngOmx3QZGSGE9q4/ABb06fw8+v1CSMYNte3U/V958=;
+        b=o9YwIkbHJiOccdunhetULPPy68cl+982mgwJh/+CNAErQr49gogDsGGNmoGPXo+lU8
+         LWNzo+8GELTy1eN7YPGMX3BLKV1vzQZf4WK6qe2aiL9lQo+0KlW5LwqDzS373yuLiPp3
+         qN1OVLJtXlI5rTcVdcxQzy3ruv1MQAy0JZIJutM2rVMoMUXXBtKsRP2nFxhVdjNVk6/d
+         5MMWmOwkRfVnDKTDIJkSHS+uOtli5zCTamKq/VKhgQ9FpYO0OUeELcN5p/nJLIECtrqU
+         sjLcX82y71PVWgKyVd4UhQh1ZKispDBcha94fzLpzg8Bfnb6D74iHr81flxJ7FcaF4h0
+         DEEw==
+X-Gm-Message-State: AOAM532QB/zCk9jH+iSQx6iU1Zz+j+1Zo9MH5BOh3ONDC5DMRl2h+qYt
+        fN+2wqkr7KimscWvGL2AWJdwx6ERhyTK4YM6WEg=
+X-Google-Smtp-Source: ABdhPJwkiRcyYOeOqxFuMqJ+7O0OK1G86N3d9NPQLqADbQgmmfevSGkqOf0Dpo41Ig68e77DvD7ZZA==
+X-Received: by 2002:a63:ce07:: with SMTP id y7mr3664904pgf.249.1623724650822;
+        Mon, 14 Jun 2021 19:37:30 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id b133sm14102623pfb.36.2021.06.14.19.37.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 19:37:30 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        emil.l.velikov@gmail.com
+Subject: [PATCH v2 0/2] drm: Address potential UAF bugs with drm_master ptrs
+Date:   Tue, 15 Jun 2021 10:36:43 +0800
+Message-Id: <20210615023645.6535-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210615012014.1100672-1-jannh@google.com> <20210614190032.09d8b7ac530c8b14ace44b82@linux-foundation.org>
-In-Reply-To: <20210614190032.09d8b7ac530c8b14ace44b82@linux-foundation.org>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 15 Jun 2021 04:36:34 +0200
-Message-ID: <CAG48ez1nZcrJPO-hOLyE08g8HKSGEambCp6mNv6FNR2c9+6sJg@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with split_huge_page()
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        stable <stable@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 4:00 AM Andrew Morton <akpm@linux-foundation.org> wrote:
-> On Tue, 15 Jun 2021 03:20:14 +0200 Jann Horn <jannh@google.com> wrote:
-> > --- a/mm/gup.c
-> > +++ b/mm/gup.c
-> > @@ -43,8 +43,25 @@ static void hpage_pincount_sub(struct page *page, int refs)
-> >
-> >       atomic_sub(refs, compound_pincount_ptr(page));
-> >  }
-> >
-> > +/* Equivalent to calling put_page() @refs times. */
-> > +static void put_page_refs(struct page *page, int refs)
-> > +{
-> > +#ifdef CONFIG_DEBUG_VM
-> > +     if (VM_WARN_ON_ONCE_PAGE(page_ref_count(page) < refs, page))
-> > +             return;
-> > +#endif
->
-> Well dang those ifdefs.
->
-> With CONFIG_DEBUG_VM=n, this expands to
->
->         if (((void)(sizeof((__force long)(page_ref_count(page) < refs))))
->                 return;
->
-> which will fail with "void value not ignored as it ought to be".
-> Because VM_WARN_ON_ONCE_PAGE() is an rval with CONFIG_DEBUG_VM=y and is
-> not an rval with CONFIG_DEBUG_VM=n.    So the ifdefs are needed.
->
-> I know we've been around this loop before, but it still sucks!  Someone
-> please remind me of the reasoning?
->
-> Can we do
->
-> #define VM_WARN_ON_ONCE_PAGE(cond, page) {
->         BUILD_BUG_ON_INVALID(cond);
->         cond;
-> }
->
-> ?
+This patch series addresses potential use-after-free errors when dereferencing pointers to struct drm_master. These were identified after one such bug was caught by Syzbot in drm_getunique():
+https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
 
-See also <https://lore.kernel.org/linux-mm/CAG48ez3Vb1BxaZ0EHhR9ctkjCCygMWOQqFMGqt-=Ea2yXrvKiw@mail.gmail.com/>.
+The series is broken up into two patches:
 
-I see basically two issues with your proposal:
+1. Implement a locked version of drm_is_current_master() function that's used within drm_auth.c
 
-1. Even if you use it without "if (...)", the compiler has to generate
-code to evaluate the condition unless it can prove that the condition
-has no side effects. (It can't prove that for stuff like atomic_read()
-or READ_ONCE(), because those are volatile loads and C says you can't
-eliminate those. There are compiler builtins that are more
-fine-grained, but the kernel doesn't use those.)
-
-2. The current version generates no code at all for !DEBUG_VM builds.
-Your proposal would still have the conditional bailout even in
-!DEBUG_VM builds - and if the compiler already has to evaluate the
-condition and generate a conditional branch, I don't know whether
-there is much of a point in omitting the code that prints a warning
-under !DEBUG_VM (although I guess it could impact register spilling
-and assignment).
+2. Identify areas in drm_lease.c where pointers to struct drm_master are dereferenced, and ensure that the master pointers are protected by a mutex
 
 
-If you don't like the ifdeffery in this patch, can you please merge
-the v1 patch? It's not like I was adding a new BUG_ON(), I was just
-refactoring an existing BUG_ON() into a helper function, so I wasn't
-making things worse; and I don't want to think about how to best
-design WARN/BUG macros for the VM subsystem in order to land this
-bugfix.
+Change in v2:
+- Patch 2: Move the lock and assignment before the DRM_DEBUG_LEASE in drm_mode_get_lease_ioctl, as suggested by Emil Velikov
 
-(Also, this patch is intended for stable-backporting, so mixing in
-more changes unrelated to the issue being fixed might make backporting
-more annoying. This v2 patch will already require more fixup than the
-v1 one, because VM_WARN_ON_ONCE_PAGE() was only added recently.)
+Desmond Cheong Zhi Xi (2):
+  drm: Add a locked version of drm_is_current_master
+  drm: Protect drm_master pointers in drm_lease.c
+
+ drivers/gpu/drm/drm_auth.c  | 23 ++++++++++++---
+ drivers/gpu/drm/drm_lease.c | 58 +++++++++++++++++++++++++++----------
+ 2 files changed, 62 insertions(+), 19 deletions(-)
+
+-- 
+2.25.1
+
