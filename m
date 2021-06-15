@@ -2,100 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44FE3A8B5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFAB3A8B67
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbhFOVvT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 17:51:19 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:52244 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229829AbhFOVvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:51:17 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1ltGvk-0002Ci-Or; Tue, 15 Jun 2021 23:49:08 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Punit Agrawal <punitagrawal@gmail.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>, wqu@suse.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Shawn Lin <shawn.lin@rock-chips.com>
-Subject: Re: [PATCH v3 4/4] arm64: dts: rockchip: Update PCI host bridge window to 32-bit address memory
-Date:   Tue, 15 Jun 2021 23:49:07 +0200
-Message-ID: <3238453.R1toDxpfAE@diego>
-In-Reply-To: <CAL_JsqL8iDo5sLmgNVuXs5wt3TpVJbKHfk7gE740DidmvLOwiQ@mail.gmail.com>
-References: <20210607112856.3499682-1-punitagrawal@gmail.com> <3105233.izSxrag8PF@diego> <CAL_JsqL8iDo5sLmgNVuXs5wt3TpVJbKHfk7gE740DidmvLOwiQ@mail.gmail.com>
+        id S231396AbhFOVxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:53:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230081AbhFOVxR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 17:53:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51961C061574;
+        Tue, 15 Jun 2021 14:51:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=N7GqmOX/LrLVjhMA+EGbHb8euLArRMk+/0HSOfKlkms=; b=EYhLqcYbLbuGDX2J4p1lfl4xus
+        1R6WpuzXS1jERG1BFYXYI6Cshp6bERYc2+/1DMJj7EnEM1aKRkI1NwyGU/MKV5GqW8UgMQiuCX2vH
+        e1vjwiuAeWmGEzFIROLjnTUNFjvQSJ3N/E4s9pxSaOe8+Sfu7i8TX1WR7gqNcWbIznRZ/rLSngjUC
+        E1R2CHViHRzY5y3DvRWMK8WE26Dnx+yDC2kVSWW3geZ+Q8HFKCFykqtI4/ps+yBuXR9BCo93VavXc
+        NSMnG/ridpr9iiIfUJrS9wQ/seTzpN3wYakA+z4MnFn5uGyx88mCHUcyI4WAm7RgRVkbeP5eZb/1n
+        dkYOVQ1A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltGwh-007Hsf-5C; Tue, 15 Jun 2021 21:50:11 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 385F3982227; Tue, 15 Jun 2021 23:50:05 +0200 (CEST)
+Date:   Tue, 15 Jun 2021 23:50:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
+        Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH] freezer,sched: Rewrite core freezer logic
+Message-ID: <20210615215005.GD4272@worktop.programming.kicks-ass.net>
+References: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
+ <20210614154246.GB13677@redhat.com>
+ <20210614161221.GC68749@worktop.programming.kicks-ass.net>
+ <20210614165422.GC13677@redhat.com>
+ <20210614183801.GE68749@worktop.programming.kicks-ass.net>
+ <20210615154539.GA30333@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615154539.GA30333@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, 15. Juni 2021, 23:29:12 CEST schrieb Rob Herring:
-> On Thu, Jun 10, 2021 at 3:50 PM Heiko Stübner <heiko@sntech.de> wrote:
+On Tue, Jun 15, 2021 at 05:45:39PM +0200, Oleg Nesterov wrote:
+> On 06/14, Peter Zijlstra wrote:
 > >
-> > Hi,
+> > One more thing; if I add additional state bits to preserve
+> > __TASK_{TRACED,STOPPED}, then I need to figure out at thaw time if we've
+> > missed a wakeup or not.
 > >
-> > Am Montag, 7. Juni 2021, 13:28:56 CEST schrieb Punit Agrawal:
-> > > The PCIe host bridge on RK3399 advertises a single 64-bit memory
-> > > address range even though it lies entirely below 4GB.
-> > >
-> > > Previously the OF PCI range parser treated 64-bit ranges more
-> > > leniently (i.e., as 32-bit), but since commit 9d57e61bf723 ("of/pci:
-> > > Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses")
-> > > the code takes a stricter view and treats the ranges as advertised in
-> > > the device tree (i.e, as 64-bit).
-> > >
-> > > The change in behaviour causes failure when allocating bus addresses
-> > > to devices connected behind a PCI-to-PCI bridge that require
-> > > non-prefetchable memory ranges. The allocation failure was observed
-> > > for certain Samsung NVMe drives connected to RockPro64 boards.
-> > >
-> > > Update the host bridge window attributes to treat it as 32-bit address
-> > > memory. This fixes the allocation failure observed since commit
-> > > 9d57e61bf723.
-> > >
-> > > Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > > Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com
-> > > Suggested-by: Robin Murphy <robin.murphy@arm.com>
-> > > Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
-> > > Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > > Cc: Heiko Stuebner <heiko@sntech.de>
-> > > Cc: Rob Herring <robh+dt@kernel.org>
-> >
-> > just for clarity, should I just pick this patch separately for 5.13-rc to
-> > make it easy for people using current kernel devicetrees, or should
-> > this wait for the update mentioned in the cover-letter response
-> > and should go all together through the PCI tree?
+> > Do we have sufficient state for that? If so, don't we then also not have
+> > sufficient state to tell if a task should've been TRACED/STOPPED in the
+> > first place?
 > 
-> This was dropped from v4, but should still be applied IMO.
+> Not sure I understand you, probably not, but I think the answer is "no" ;)
 
-It was probably dropped because I applied it ;-)
+I was thinking something like the below, such that we can then write
+something like:
 
-It's part of armsoc already [0] and should make its way into
-5.13 shortly.
+void __thaw_special(struct task_struct *p)
+{
+	spin_lock(&t->sighand->siglock);
+
+	if (p->ptrace) {
+		unsigned int state = __TASK_TRACED;
+
+		if (!(p->ptrace & PT_STOPPED))
+			goto unlock;
+
+		if (p->ptrace & PT_STOPPED_FATAL) {
+			state |= TASK_WAKEKILL;
+			if (__fatal_signal_pending(p))
+				goto unlock;
+		}
+
+		set_special_state(state);
+
+	} else if ((p->jobctl & JOBCTL_STOP_PENDING) &&
+		   !__fatal_signal_pending(p)) {
+
+		set_special_state(TASK_STOPPED);
+	}
+
+unlock:
+	spin_unlock(&t->sighand->siglock);
+}
 
 
-Heiko
 
-
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git/commit/?h=arm/fixes&id=8efe01b4386ab38a36b99cfdc1dc02c38a8898c3
-
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
-> 
-
-
-
-
+---
+diff --git a/include/linux/ptrace.h b/include/linux/ptrace.h
+index b5ebf6c01292..2123d6543125 100644
+--- a/include/linux/ptrace.h
++++ b/include/linux/ptrace.h
+@@ -28,30 +28,36 @@ extern int ptrace_access_vm(struct task_struct *tsk, unsigned long addr,
+  * flags.  When the a task is stopped the ptracer owns task->ptrace.
+  */
+ 
+-#define PT_SEIZED	0x00010000	/* SEIZE used, enable new behavior */
+-#define PT_PTRACED	0x00000001
+-#define PT_DTRACE	0x00000002	/* delayed trace (used on m68k, i386) */
++#define PT_PTRACED	0x00000001						// 0x00000001
++#define PT_DTRACE	0x00000002 /* delayed trace (used on m68k, i386) */	// 0x00000002
+ 
+ #define PT_OPT_FLAG_SHIFT	3
+ /* PT_TRACE_* event enable flags */
+ #define PT_EVENT_FLAG(event)	(1 << (PT_OPT_FLAG_SHIFT + (event)))
+-#define PT_TRACESYSGOOD		PT_EVENT_FLAG(0)
+-#define PT_TRACE_FORK		PT_EVENT_FLAG(PTRACE_EVENT_FORK)
+-#define PT_TRACE_VFORK		PT_EVENT_FLAG(PTRACE_EVENT_VFORK)
+-#define PT_TRACE_CLONE		PT_EVENT_FLAG(PTRACE_EVENT_CLONE)
+-#define PT_TRACE_EXEC		PT_EVENT_FLAG(PTRACE_EVENT_EXEC)
+-#define PT_TRACE_VFORK_DONE	PT_EVENT_FLAG(PTRACE_EVENT_VFORK_DONE)
+-#define PT_TRACE_EXIT		PT_EVENT_FLAG(PTRACE_EVENT_EXIT)
+-#define PT_TRACE_SECCOMP	PT_EVENT_FLAG(PTRACE_EVENT_SECCOMP)
+-
+-#define PT_EXITKILL		(PTRACE_O_EXITKILL << PT_OPT_FLAG_SHIFT)
+-#define PT_SUSPEND_SECCOMP	(PTRACE_O_SUSPEND_SECCOMP << PT_OPT_FLAG_SHIFT)
++
++#define PT_TRACESYSGOOD		PT_EVENT_FLAG(0)			        // 0x00000008
++#define PT_TRACE_FORK		PT_EVENT_FLAG(PTRACE_EVENT_FORK)	        // 0x00000010
++#define PT_TRACE_VFORK		PT_EVENT_FLAG(PTRACE_EVENT_VFORK)	        // 0x00000020
++#define PT_TRACE_CLONE		PT_EVENT_FLAG(PTRACE_EVENT_CLONE)	        // 0x00000040
++#define PT_TRACE_EXEC		PT_EVENT_FLAG(PTRACE_EVENT_EXEC)	        // 0x00000080
++#define PT_TRACE_VFORK_DONE	PT_EVENT_FLAG(PTRACE_EVENT_VFORK_DONE)	        // 0x00000100
++#define PT_TRACE_EXIT		PT_EVENT_FLAG(PTRACE_EVENT_EXIT)	        // 0x00000200
++#define PT_TRACE_SECCOMP	PT_EVENT_FLAG(PTRACE_EVENT_SECCOMP)	        // 0x00000400
++
++#define PT_SEIZED		0x00010000 /* SEIZE used, enable new behavior */// 0x00010000
++#define PT_STOPPED		0x00020000					// 0x00020000
++#define PT_STOPPED_FATAL	0x00040000					// 0x00040000
++
++#define PT_STOPPED_MASK		(PT_STOPPED|PT_STOPPED_FATAL)
++
++#define PT_EXITKILL		(PTRACE_O_EXITKILL << PT_OPT_FLAG_SHIFT)	// 0x00800000
++#define PT_SUSPEND_SECCOMP	(PTRACE_O_SUSPEND_SECCOMP << PT_OPT_FLAG_SHIFT) // 0x01000000
+ 
+ /* single stepping state bits (used on ARM and PA-RISC) */
+ #define PT_SINGLESTEP_BIT	31
+-#define PT_SINGLESTEP		(1<<PT_SINGLESTEP_BIT)
++#define PT_SINGLESTEP		(1<<PT_SINGLESTEP_BIT)				// 0x80000000
+ #define PT_BLOCKSTEP_BIT	30
+-#define PT_BLOCKSTEP		(1<<PT_BLOCKSTEP_BIT)
++#define PT_BLOCKSTEP		(1<<PT_BLOCKSTEP_BIT)				// 0x40000000
+ 
+ extern long arch_ptrace(struct task_struct *child, long request,
+ 			unsigned long addr, unsigned long data);
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index 0d7fec79d28f..0cf806030bfd 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -424,6 +424,8 @@ static inline void signal_wake_up(struct task_struct *t, bool resume)
+ }
+ static inline void ptrace_signal_wake_up(struct task_struct *t, bool resume)
+ {
++	if (resume)
++		t->ptrace &= ~PT_STOPPED_MASK;
+ 	signal_wake_up_state(t, resume ? __TASK_TRACED : 0);
+ }
+ 
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 2997ca600d18..4fc4e1f91ecd 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -197,6 +197,8 @@ static bool ptrace_freeze_traced(struct task_struct *task)
+ 	spin_lock_irq(&task->sighand->siglock);
+ 	if (task_is_traced(task) && !looks_like_a_spurious_pid(task) &&
+ 	    !__fatal_signal_pending(task)) {
++		task->ptrace &= ~PT_STOPPED_MASK;
++		task->ptrace |= PT_STOPPED;
+ 		task->state = __TASK_TRACED;
+ 		ret = true;
+ 	}
+@@ -218,10 +220,13 @@ static void ptrace_unfreeze_traced(struct task_struct *task)
+ 	 */
+ 	spin_lock_irq(&task->sighand->siglock);
+ 	if (task->state == __TASK_TRACED) {
+-		if (__fatal_signal_pending(task))
++		if (__fatal_signal_pending(task)) {
++			task->ptrace &= ~PT_STOPPED_MASK;
+ 			wake_up_state(task, __TASK_TRACED);
+-		else
++		} else {
++			task->ptrace |= PT_STOPPED_MASK;
+ 			task->state = TASK_TRACED;
++		}
+ 	}
+ 	spin_unlock_irq(&task->sighand->siglock);
+ }
+@@ -835,8 +840,6 @@ static long ptrace_get_rseq_configuration(struct task_struct *task,
+ static int ptrace_resume(struct task_struct *child, long request,
+ 			 unsigned long data)
+ {
+-	bool need_siglock;
+-
+ 	if (!valid_signal(data))
+ 		return -EIO;
+ 
+@@ -877,13 +880,11 @@ static int ptrace_resume(struct task_struct *child, long request,
+ 	 * status and clears the code too; this can't race with the tracee, it
+ 	 * takes siglock after resume.
+ 	 */
+-	need_siglock = data && !thread_group_empty(current);
+-	if (need_siglock)
+-		spin_lock_irq(&child->sighand->siglock);
++	spin_lock_irq(&child->sighand->siglock);
+ 	child->exit_code = data;
++	child->ptrace &= ~PT_STOPPED_MASK;
+ 	wake_up_state(child, __TASK_TRACED);
+-	if (need_siglock)
+-		spin_unlock_irq(&child->sighand->siglock);
++	spin_unlock_irq(&child->sighand->siglock);
+ 
+ 	return 0;
+ }
+diff --git a/kernel/signal.c b/kernel/signal.c
+index f7c6ffcbd044..35cdb92b7f1d 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2195,6 +2195,7 @@ static void ptrace_stop(int exit_code, int why, int clear_code, kernel_siginfo_t
+ 			return;
+ 	}
+ 
++	current->ptrace |= PT_STOPPED_MASK;
+ 	set_special_state(TASK_TRACED);
+ 
+ 	/*
