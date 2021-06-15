@@ -2,65 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECAB3A7B59
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556653A7B5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbhFOKDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33156 "EHLO
+        id S231496AbhFOKFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbhFOKDm (ORCPT
+        with ESMTP id S231428AbhFOKFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:03:42 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCCAC061574;
-        Tue, 15 Jun 2021 03:01:32 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id f16-20020a05600c1550b02901b00c1be4abso1343046wmg.2;
-        Tue, 15 Jun 2021 03:01:32 -0700 (PDT)
+        Tue, 15 Jun 2021 06:05:38 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4F3C0617AF
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:03:32 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id i94so17598413wri.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:03:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:from:subject:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=6m2622jH6xxUBqqW7CQu925QgNn7I6YBkLdVIXOmSOk=;
-        b=kWzBnPerdDME4nff5nC4aP50OIa/17pFnPzgC4+LOTFo6y+XyVXyFrkAdVNtcb517V
-         gN3RU0+gPjwuAfVKbrY68WRvDqcGCx7CxLF54Zna5XUzRTMjbXNd7wZ/SY9zktecm8JW
-         yT3C4R3B8MIaxdXmXxvYmqnbWc2F1QXy297XuroOCeZ/E1hYMj+nDRC0FV7DlqFHDuRM
-         Dv6rHyz+YxkPJnq6cRadxV0D5QJOo4+lvX0ZDn6RvvXxHjKoVIrB/ocXrNcWVTHwv9NH
-         Tnrj9G04nW30tajrJK4njmEDaF/N69cfrF/QhNcADUkqLflOxXXzPl2laV5ANExMkfFf
-         Ct1w==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KRA5JEo2f5eHwlGrBe+x1mvEfYhwDU4OUZncstnbx6M=;
+        b=abmrGACQlQt5ZE+gApEShYt+RvKsyhEfHJfi5/vT9I3RDbrTqQzmrzTOkQPnsUni7U
+         SzTFW7k7Vqv1fM3wfudlLmKmInuXzgUSrB39C8A+sKFdNR5KYvT9Rtik5Oau0y3aTfZy
+         Mi+akzTENmyInfIMYQi7J+oITLgpkxVU8Wqbi5ixtXTky6kMVqnOuirimUH2PRPZBctc
+         IElKBN1eVyo1Yq94sHzpeibE3VGjXfXlBO3eEU3qFCvAZYROE1bUyC3ccz6XT8cuYNOP
+         mkJ464ru+HtEY6R6eU7nFXJyILxUoYN9HVgfWqZxVqSFCpTajJOQyMubzMqQbCv2hA+w
+         py5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=6m2622jH6xxUBqqW7CQu925QgNn7I6YBkLdVIXOmSOk=;
-        b=a8n9rn4tPqP5TGWZYCfmYd9RxuBBBOIGw+fiunIMrnE4g5I7j/Iq4YxV4rPac9hydG
-         M4HdhcAUMrIkj0nH85mscnn586yunvpa8kUEselgb2tupk6Y3jafWWV7SSa88zXC0JkY
-         Lg3heZNu6XeRvojLEkqoM4ZS8pxr+UbtV43HVoSpYX2cVbaGlRmcGuwGt4biZjoePTcN
-         3FrvAoZeK2QTk3iEPHXYdNGubhcl2ANsaOU8dZSsr9EM0NHbt60EtfxjdwQq1Qq4vAqf
-         2PAb6wXOmREQuvSRiEvZ4hs4AaAYhH7wqe+m5oCfPpvhfax5nHBn7XGwO1ArljdHq0x1
-         1rJw==
-X-Gm-Message-State: AOAM5307sXGL4ibaiIIv3CGtla/jeSLo8GrtHfeO91p/JMEdwd/e30JH
-        QRXrrDunI/NUQXTQZltqqeA3XTKb13GmHTZu
-X-Google-Smtp-Source: ABdhPJx1Q1EkRg1RqLbBc92fgSmR/QPjpjk4+H6BdPAFtshEb5sy1Ggzn7bgpDmwmYDUAbVXLe5DQQ==
-X-Received: by 2002:a1c:f613:: with SMTP id w19mr4087753wmc.136.1623751290861;
-        Tue, 15 Jun 2021 03:01:30 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.209])
-        by smtp.gmail.com with ESMTPSA id 73sm19402122wrk.17.2021.06.15.03.01.29
+        bh=KRA5JEo2f5eHwlGrBe+x1mvEfYhwDU4OUZncstnbx6M=;
+        b=YQ6S+v0h3zzUTpB3tpM/Jx5pOsAn4+vLQqyqmkNaXcoF9f4gu4Yc/SRq5cqeEJS6rq
+         VSIaEo/jlzi7wx8bMyW+Kunlj9xHs2WCkmu0VeAEXO0q473DLQr9X5OgeaKUaENvbXk2
+         XXJpv0FGdyIuQCp+E7hJCPkJs8Rk4acWwTKRMEvP8xCCMehzhDZ6DrNOyOQHHxyCanhR
+         HD7TUkV/XBj/I4adGCp51Eh9IUCI3VZa+6AugyNj+zDnVxPejfleJV2zNAFTUbR/2GQK
+         Eo0+5kRkJ8m9FmzXOvsW3bHeKxwal2IdBR+0Q02a/Zbc2bwE/GJPBA3hgdaex5aL4W2B
+         WfPg==
+X-Gm-Message-State: AOAM533HmnLOQjoC5nTdevuSdutZECfeUhRjhN1ELgVCiUqRAK3HStjy
+        2uTEUHWvtOSZWkt3iNl82fg4OA==
+X-Google-Smtp-Source: ABdhPJxoM9gzPk3IB6/C7ha95cVkrtf3v1G/EmnZeUdJkwy9lR4zpVjozuDW7tuCcTy/nn30hvq6vA==
+X-Received: by 2002:a5d:6208:: with SMTP id y8mr16865170wru.119.1623751410645;
+        Tue, 15 Jun 2021 03:03:30 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:613a:6939:5f7f:dceb? ([2a01:e34:ed2f:f020:613a:6939:5f7f:dceb])
+        by smtp.googlemail.com with ESMTPSA id j131sm1785395wma.40.2021.06.15.03.03.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 03:01:30 -0700 (PDT)
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <60c83c12.1c69fb81.e3bea.0806SMTPIN_ADDED_MISSING@mx.google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH] io_uring: store back buffer in case of failure
-Message-ID: <93256513-08d8-5b15-aa98-c1e83af60b54@gmail.com>
-Date:   Tue, 15 Jun 2021 11:01:18 +0100
+        Tue, 15 Jun 2021 03:03:30 -0700 (PDT)
+Subject: Re: [PATCH v3 4/7] thermal/drivers/tegra: Add driver for Tegra30
+ thermal sensor
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Ihor Didenko <tailormoon@rambler.ru>,
+        Ion Agorria <ion@agorria.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        Viresh Kumar <viresh.kumar@linaro.org>
+References: <20210529170955.32574-1-digetx@gmail.com>
+ <20210529170955.32574-5-digetx@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <6f2b6290-095a-bd39-c160-1616a0ff89b1@linaro.org>
+Date:   Tue, 15 Jun 2021 12:03:28 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <60c83c12.1c69fb81.e3bea.0806SMTPIN_ADDED_MISSING@mx.google.com>
+In-Reply-To: <20210529170955.32574-5-digetx@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -68,95 +82,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/11/21 8:46 PM, Olivier Langlois wrote:
-> the man page says the following:
-> 
->     If succesful, the resulting CQE will have IORING_CQE_F_BUFFER set
-> in the flags part of the struct, and the upper IORING_CQE_BUFFER_SHIFT
-> bits will contain the ID of the selected buffers.
-> 
-> in order to respect this contract, the buffer is stored back in case of
-> an error. There are several reasons to do that:
-> 
-> 1. doing otherwise is counter-intuitive and error-prone (I cannot think
-> of a single example of a syscall failing and still require the user to
-> free the allocated resources). Especially when the documention
-> explicitly mention that this is the behavior to expect.
-> 
-> 2. it is inefficient because the buffer is unneeded since there is no
-> data to transfer back to the user and the buffer will need to be
-> returned back to io_uring to avoid a leak.
-> 
-> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
-> ---
->  fs/io_uring.c | 97 +++++++++++++++++++++++++++++++++------------------
->  1 file changed, 64 insertions(+), 33 deletions(-)
-> 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 42380ed563c4..502d7cd81a8c 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-[...]
-> +static unsigned int io_put_kbuf(struct io_kiocb *req, struct io_buffer *kbuf,
-> +				u16 bgid, long res, unsigned int issue_flags)
->  {
->  	unsigned int cflags;
-> +	struct io_ring_ctx *ctx = req->ctx;
-> +	struct io_buffer *head;
-> +	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
->  
->  	cflags = kbuf->bid << IORING_CQE_BUFFER_SHIFT;
->  	cflags |= IORING_CQE_F_BUFFER;
->  	req->flags &= ~REQ_F_BUFFER_SELECTED;
-> -	kfree(kbuf);
-> +
-> +	/*
-> +	 * Theoritically, res == 0 could be included as well but that would
-> +	 * break the contract established in the man page saying that
-> +	 * a buffer is returned if the operation is successful.
-> +	 */
-> +	if (unlikely(res < 0)) {
-> +		io_ring_submit_lock(ctx, !force_nonblock);
 
-io_complete_rw() is called from an IRQ context, so it can't sleep/wait.
+[Cc Viresh]
 
-> +
-> +		lockdep_assert_held(&ctx->uring_lock);
-> +
-> +		head = xa_load(&ctx->io_buffers, bgid);
-> +		if (head) {
-> +			list_add_tail(&kbuf->list, &head->list);
-> +			cflags = 0;
-> +		} else {
-> +			INIT_LIST_HEAD(&kbuf->list);
-> +			if (!xa_insert(&ctx->io_buffers, bgid, kbuf, GFP_KERNEL))
-> +				cflags = 0;
-> +		}
-> +		io_ring_submit_unlock(ctx, !force_nonblock);
-> +	}
-> +	if (cflags)
-> +		kfree(kbuf);
->  	return cflags;
->  }
->  
-[...]
-> -static inline void io_rw_done(struct kiocb *kiocb, ssize_t ret)
-> +static inline void io_rw_done(struct kiocb *kiocb, ssize_t ret,
-> +			      unsigned int issue_flags)
->  {
->  	switch (ret) {
->  	case -EIOCBQUEUED:
-> @@ -2728,7 +2775,7 @@ static inline void io_rw_done(struct kiocb *kiocb, ssize_t ret)
->  		ret = -EINTR;
->  		fallthrough;
->  	default:
-> -		kiocb->ki_complete(kiocb, ret, 0);
-> +		kiocb->ki_complete(kiocb, ret, issue_flags);
+On 29/05/2021 19:09, Dmitry Osipenko wrote:
+> All NVIDIA Tegra30 SoCs have a two-channel on-chip sensor unit which
+> monitors temperature and voltage of the SoC. Sensors control CPU frequency
+> throttling, which is activated by hardware once preprogrammed temperature
+> level is breached, they also send signal to Power Management controller to
+> perform emergency shutdown on a critical overheat of the SoC die. Add
+> driver for the Tegra30 TSENSOR module, exposing it as a thermal sensor
+> and a cooling device.
 
-Don't remember what the second argument of .ki_complete is for,
-but it definitely should not be used for issue_flags. E.g. because
-we get two different meanings for it depending on a context --
-either a result from the block layer or issue_flags.
+IMO it does not make sense to expose the hardware throttling mechanism
+as a cooling device because it is not usable anywhere from the thermal
+framework.
+
+Moreover, that will collide with the thermal / cpufreq framework
+mitigation (hardware sets the frequency but the software thinks the freq
+is different), right ?
+
+The hardware limiter should let know the cpufreq framework about the
+frequency change.
+
+	https://lkml.org/lkml/2021/6/8/1792
+
+May be post the sensor without the hw limiter for now and address that
+in a separate series ?
+
+  -- Daniel
 
 -- 
-Pavel Begunkov
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
