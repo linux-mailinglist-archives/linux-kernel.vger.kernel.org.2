@@ -2,133 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC4F3A7519
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A44CB3A74EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231256AbhFOD2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:28:47 -0400
-Received: from lucky1.263xmail.com ([211.157.147.135]:44962 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbhFOD2f (ORCPT
+        id S231209AbhFODU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:20:27 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4907 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231186AbhFODUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:28:35 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 0DEB4AD16E;
-        Tue, 15 Jun 2021 11:26:30 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P16485T139919122814720S1623727582436580_;
-        Tue, 15 Jun 2021 11:26:30 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <d29143a024f1d0802144379073477b94>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: broonie@kernel.org
-X-RCPT-COUNT: 9
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     broonie@kernel.org
-Cc:     jon.lin@rock-chips.com, heiko@sntech.de, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v7 4/6] spi: rockchip: Wait for STB status in slave mode tx_xfer
-Date:   Tue, 15 Jun 2021 11:26:18 +0800
-Message-Id: <20210615032620.24769-5-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210615032620.24769-1-jon.lin@rock-chips.com>
-References: <20210607111837.31074-1-jon.lin@rock-chips.com>
- <20210615032620.24769-1-jon.lin@rock-chips.com>
+        Mon, 14 Jun 2021 23:20:22 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G3tjS0sRsz6yjd;
+        Tue, 15 Jun 2021 11:15:08 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
+ (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 15
+ Jun 2021 11:18:16 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Ye Bin <yebin10@huawei.com>
+Subject: [PATCH RFC] ext4:fix warning in mark_buffer_dirty as IO error when mount with errors=continue
+Date:   Tue, 15 Jun 2021 11:27:17 +0800
+Message-ID: <20210615032717.2902675-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After ROCKCHIP_SPI_VER2_TYPE2, SR->STB is a more accurate judgment
-bit for spi slave transmition.
+We test with following step:
+1. dmsetup  create dust1 --table  '0 2097152 dust /dev/sdc 0 4096'
+2. mount  /dev/mapper/dust1  /home/test
+3. dmsetup message dust1 0 addbadblock 0 10
+4. cd /home/test
+5. echo "XXXXXXX" > t
+6. wait a moment we got following warning:
+[   80.654487] end_buffer_async_write: bh=0xffff88842f18bdd0
+[   80.656134] Buffer I/O error on dev dm-0, logical block 0, lost async page write
+[   85.774450] EXT4-fs error (device dm-0): ext4_check_bdev_write_error:193: comm kworker/u16:8: Error while async write back metadata
+[   91.415513] mark_buffer_dirty: bh=0xffff88842f18bdd0
+[   91.417038] ------------[ cut here ]------------
+[   91.418450] WARNING: CPU: 1 PID: 1944 at fs/buffer.c:1092 mark_buffer_dirty.cold+0x1c/0x5e
 
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+[   91.440322] Call Trace:
+[   91.440652]  __jbd2_journal_temp_unlink_buffer+0x135/0x220
+[   91.441354]  __jbd2_journal_unfile_buffer+0x24/0x90
+[   91.441981]  __jbd2_journal_refile_buffer+0x134/0x1d0
+[   91.442628]  jbd2_journal_commit_transaction+0x249a/0x3240
+[   91.443336]  ? put_prev_entity+0x2a/0x200
+[   91.443856]  ? kjournald2+0x12e/0x510
+[   91.444324]  kjournald2+0x12e/0x510
+[   91.444773]  ? woken_wake_function+0x30/0x30
+[   91.445326]  kthread+0x150/0x1b0
+[   91.445739]  ? commit_timeout+0x20/0x20
+[   91.446258]  ? kthread_flush_worker+0xb0/0xb0
+[   91.446818]  ret_from_fork+0x1f/0x30
+[   91.447293] ---[ end trace 66f0b6bf3d1abade ]---
+
+If super block write back with IO error, then will call clear_buffer_uptodate
+clear uptodate flag. But there is no chance to set buffer uptodate again.
+So call set_buffer_uptodate before call jbd2_journal_dirty_metadata to make sure
+that buffer is uptodate when buffer is jbddirty.
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
+ fs/ext4/ext4_jbd2.c | 2 +-
+ fs/ext4/super.c     | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-
- drivers/spi/spi-rockchip.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-index 0887b19ef3ad..950d3bce443b 100644
---- a/drivers/spi/spi-rockchip.c
-+++ b/drivers/spi/spi-rockchip.c
-@@ -116,13 +116,14 @@
- #define BAUDR_SCKDV_MIN				2
- #define BAUDR_SCKDV_MAX				65534
+diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+index be799040a415..b96ecba91899 100644
+--- a/fs/ext4/ext4_jbd2.c
++++ b/fs/ext4/ext4_jbd2.c
+@@ -327,6 +327,7 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
  
--/* Bit fields in SR, 5bit */
--#define SR_MASK						0x1f
-+/* Bit fields in SR, 6bit */
-+#define SR_MASK						0x3f
- #define SR_BUSY						(1 << 0)
- #define SR_TF_FULL					(1 << 1)
- #define SR_TF_EMPTY					(1 << 2)
- #define SR_RF_EMPTY					(1 << 3)
- #define SR_RF_FULL					(1 << 4)
-+#define SR_SLAVE_TX_BUSY				(1 << 5)
+ 	set_buffer_meta(bh);
+ 	set_buffer_prio(bh);
++	set_buffer_uptodate(bh);
+ 	if (ext4_handle_valid(handle)) {
+ 		err = jbd2_journal_dirty_metadata(handle, bh);
+ 		/* Errors can only happen due to aborted journal or a nasty bug */
+@@ -355,7 +356,6 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
+ 					 err);
+ 		}
+ 	} else {
+-		set_buffer_uptodate(bh);
+ 		if (inode)
+ 			mark_buffer_dirty_inode(bh, inode);
+ 		else
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index d29f6aa7d96e..1bd50d3d6a47 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5584,6 +5584,7 @@ static void ext4_update_super(struct super_block *sb)
+ 	spin_unlock(&sbi->s_error_lock);
  
- /* Bit fields in ISR, IMR, ISR, RISR, 5bit */
- #define INT_MASK					0x1f
-@@ -197,13 +198,19 @@ static inline void spi_enable_chip(struct rockchip_spi *rs, bool enable)
- 	writel_relaxed((enable ? 1U : 0U), rs->regs + ROCKCHIP_SPI_SSIENR);
+ 	ext4_superblock_csum_set(sb);
++	set_buffer_uptodate(sbh);
+ 	unlock_buffer(sbh);
  }
  
--static inline void wait_for_idle(struct rockchip_spi *rs)
-+static inline void wait_for_tx_idle(struct rockchip_spi *rs, bool slave_mode)
- {
- 	unsigned long timeout = jiffies + msecs_to_jiffies(5);
- 
- 	do {
--		if (!(readl_relaxed(rs->regs + ROCKCHIP_SPI_SR) & SR_BUSY))
--			return;
-+		if (slave_mode) {
-+			if (!(readl_relaxed(rs->regs + ROCKCHIP_SPI_SR) & SR_SLAVE_TX_BUSY) &&
-+			    !((readl_relaxed(rs->regs + ROCKCHIP_SPI_SR) & SR_BUSY)))
-+				return;
-+		} else {
-+			if (!(readl_relaxed(rs->regs + ROCKCHIP_SPI_SR) & SR_BUSY))
-+				return;
-+		}
- 	} while (!time_after(jiffies, timeout));
- 
- 	dev_warn(rs->dev, "spi controller is in busy state!\n");
-@@ -383,7 +390,7 @@ static void rockchip_spi_dma_txcb(void *data)
- 		return;
- 
- 	/* Wait until the FIFO data completely. */
--	wait_for_idle(rs);
-+	wait_for_tx_idle(rs, ctlr->slave);
- 
- 	spi_enable_chip(rs, false);
- 	spi_finalize_current_transfer(ctlr);
-@@ -545,7 +552,7 @@ static int rockchip_spi_config(struct rockchip_spi *rs,
- 	else
- 		writel_relaxed(rs->fifo_len / 2 - 1, rs->regs + ROCKCHIP_SPI_RXFTLR);
- 
--	writel_relaxed(rs->fifo_len / 2, rs->regs + ROCKCHIP_SPI_DMATDLR);
-+	writel_relaxed(rs->fifo_len / 2 - 1, rs->regs + ROCKCHIP_SPI_DMATDLR);
- 	writel_relaxed(rockchip_spi_calc_burst_size(xfer->len / rs->n_bytes) - 1,
- 		       rs->regs + ROCKCHIP_SPI_DMARDLR);
- 	writel_relaxed(dmacr, rs->regs + ROCKCHIP_SPI_DMACR);
 -- 
-2.17.1
-
-
+2.31.1
 
