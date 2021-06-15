@@ -2,175 +2,632 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283DD3A75F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 06:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F0C3A7601
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 06:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhFOEhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 00:37:00 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:50636 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhFOEg7 (ORCPT
+        id S230084AbhFOEkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 00:40:13 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:59412 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229494AbhFOEkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 00:36:59 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B7EB820B83F2;
-        Mon, 14 Jun 2021 21:34:54 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B7EB820B83F2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623731695;
-        bh=+5cGREKfsRwGm6xee8TbKTa3LAMVBhIOeF/Ae5FICOU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U0tVflP5Qy7qP5N2pu9EdKXos0fpRPwaYWsd5WGMBrLOHA7a0LuZrdgdf3ORqKgCx
-         JjmCuOTWnr1Whrpt8hSDg8GmF3eFB9JxcujunpjQr+SXOkjy8rSzAlZBGyAjX45qfs
-         9UUi0j7vcXarQq1k98icQcHoY5AKRFgwH0pOcztk=
-Date:   Mon, 14 Jun 2021 23:34:50 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        op-tee@lists.trustedfirmware.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 0/8] tee: Improve support for kexec and kdump
-Message-ID: <20210615043450.GX4910@sequoia>
-References: <20210614223317.999867-1-tyhicks@linux.microsoft.com>
- <CAFA6WYOwCRtdvow1xaT6zUZ+7pjBekT7s-v+anRsbMk56WZMAA@mail.gmail.com>
+        Tue, 15 Jun 2021 00:40:12 -0400
+X-UUID: 4694fbe59e514393844634c88ef90b64-20210615
+X-UUID: 4694fbe59e514393844634c88ef90b64-20210615
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 277926831; Tue, 15 Jun 2021 12:36:14 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 15 Jun 2021 12:36:13 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 15 Jun 2021 12:36:13 +0800
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Subject: [PATCH 1/4] soc: mediatek: pm-domains: Move power status offset to power domain data
+Date:   Tue, 15 Jun 2021 12:36:00 +0800
+Message-ID: <20210615043603.20412-2-chun-jie.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210615043603.20412-1-chun-jie.chen@mediatek.com>
+References: <20210615043603.20412-1-chun-jie.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFA6WYOwCRtdvow1xaT6zUZ+7pjBekT7s-v+anRsbMk56WZMAA@mail.gmail.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-15 10:02:39, Sumit Garg wrote:
-> Hi Tyler,
-> 
-> On Tue, 15 Jun 2021 at 04:03, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
-> >
-> > v5:
-> > - Picked up Reviewed-by's from Jens.
-> > - Added 'Cc: stable@vger.kernel.org' to all commits as this is intended
-> >   to be a bug fix series. I'm happy to sort out backports with the
-> >   stable team.
-> > - Got rid of the bool is_mapped parameter of optee_disable_shm_cache()
-> >   by abstracting out the function with two wrappers. One
-> >   (optee_disable_shm_cache()) for normal case where the shm cache is
-> >   fully mapped and another (optee_disable_unmapped_shm_cache()) for the
-> >   unusual case of the shm cache having potentially invalid entries.
-> > - Replaced my previous 'tee: Support kernel shm registration without
-> >   dma-buf' patch with a cleaner implementation ('tee: Correct
-> >   inappropriate usage of TEE_SHM_DMA_BUF flag') from Sumit Garg.
-> > v4: https://lore.kernel.org/lkml/20210610210913.536081-1-tyhicks@linux.microsoft.com/
-> > v3: https://lore.kernel.org/lkml/20210609002326.210024-1-tyhicks@linux.microsoft.com/
-> > v2: https://lore.kernel.org/lkml/20210225090610.242623-1-allen.lkml@gmail.com/
-> > v1: https://lore.kernel.org/lkml/20210217092714.121297-1-allen.lkml@gmail.com/
-> >
-> 
-> This series looks good to me. Feel free to add:
-> 
-> Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+MT8195 has more than 32 power domains so it needs
+two set of pwr_sta and pwr_sta2nd registers,
+so move the register offset from soc data into power domain data.
 
-Thank you for all of your help and patience as I learn about the TEE
-subsystem and begin to scratch the surface of how OP-TEE works. :)
+Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+---
+ drivers/soc/mediatek/mt8167-pm-domains.h | 16 +++++++--
+ drivers/soc/mediatek/mt8173-pm-domains.h | 22 ++++++++++--
+ drivers/soc/mediatek/mt8183-pm-domains.h | 32 +++++++++++++++--
+ drivers/soc/mediatek/mt8192-pm-domains.h | 44 ++++++++++++++++++++++--
+ drivers/soc/mediatek/mtk-pm-domains.c    |  4 +--
+ drivers/soc/mediatek/mtk-pm-domains.h    |  4 +--
+ 6 files changed, 110 insertions(+), 12 deletions(-)
 
-Tyler
+diff --git a/drivers/soc/mediatek/mt8167-pm-domains.h b/drivers/soc/mediatek/mt8167-pm-domains.h
+index 15559ddf26e4..4d6c32759606 100644
+--- a/drivers/soc/mediatek/mt8167-pm-domains.h
++++ b/drivers/soc/mediatek/mt8167-pm-domains.h
+@@ -18,6 +18,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+ 		.name = "mm",
+ 		.sta_mask = PWR_STATUS_DISP,
+ 		.ctl_offs = SPM_DIS_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -30,6 +32,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+ 		.name = "vdec",
+ 		.sta_mask = PWR_STATUS_VDEC,
+ 		.ctl_offs = SPM_VDE_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.caps = MTK_SCPD_ACTIVE_WAKEUP,
+@@ -38,6 +42,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+ 		.name = "isp",
+ 		.sta_mask = PWR_STATUS_ISP,
+ 		.ctl_offs = SPM_ISP_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(13, 12),
+ 		.caps = MTK_SCPD_ACTIVE_WAKEUP,
+@@ -46,6 +52,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+ 		.name = "mfg_async",
+ 		.sta_mask = MT8167_PWR_STATUS_MFG_ASYNC,
+ 		.ctl_offs = SPM_MFG_ASYNC_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = 0,
+ 		.sram_pdn_ack_bits = 0,
+ 		.bp_infracfg = {
+@@ -57,6 +65,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+ 		.name = "mfg_2d",
+ 		.sta_mask = MT8167_PWR_STATUS_MFG_2D,
+ 		.ctl_offs = SPM_MFG_2D_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(15, 12),
+ 	},
+@@ -64,6 +74,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+ 		.name = "mfg",
+ 		.sta_mask = PWR_STATUS_MFG,
+ 		.ctl_offs = SPM_MFG_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(15, 12),
+ 	},
+@@ -71,6 +83,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+ 		.name = "conn",
+ 		.sta_mask = PWR_STATUS_CONN,
+ 		.ctl_offs = SPM_CONN_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = 0,
+ 		.caps = MTK_SCPD_ACTIVE_WAKEUP,
+@@ -85,8 +99,6 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+ static const struct scpsys_soc_data mt8167_scpsys_data = {
+ 	.domains_data = scpsys_domain_data_mt8167,
+ 	.num_domains = ARRAY_SIZE(scpsys_domain_data_mt8167),
+-	.pwr_sta_offs = SPM_PWR_STATUS,
+-	.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ };
+ 
+ #endif /* __SOC_MEDIATEK_MT8167_PM_DOMAINS_H */
+diff --git a/drivers/soc/mediatek/mt8173-pm-domains.h b/drivers/soc/mediatek/mt8173-pm-domains.h
+index 654c717e5467..a4f58c2b44b1 100644
+--- a/drivers/soc/mediatek/mt8173-pm-domains.h
++++ b/drivers/soc/mediatek/mt8173-pm-domains.h
+@@ -15,6 +15,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+ 		.name = "vdec",
+ 		.sta_mask = PWR_STATUS_VDEC,
+ 		.ctl_offs = SPM_VDE_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -22,6 +24,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+ 		.name = "venc",
+ 		.sta_mask = PWR_STATUS_VENC,
+ 		.ctl_offs = SPM_VEN_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(15, 12),
+ 	},
+@@ -29,6 +33,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+ 		.name = "isp",
+ 		.sta_mask = PWR_STATUS_ISP,
+ 		.ctl_offs = SPM_ISP_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(13, 12),
+ 	},
+@@ -36,6 +42,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+ 		.name = "mm",
+ 		.sta_mask = PWR_STATUS_DISP,
+ 		.ctl_offs = SPM_DIS_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -47,6 +55,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+ 		.name = "venc_lt",
+ 		.sta_mask = PWR_STATUS_VENC_LT,
+ 		.ctl_offs = SPM_VEN2_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(15, 12),
+ 	},
+@@ -54,6 +64,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+ 		.name = "audio",
+ 		.sta_mask = PWR_STATUS_AUDIO,
+ 		.ctl_offs = SPM_AUDIO_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(15, 12),
+ 	},
+@@ -61,6 +73,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+ 		.name = "usb",
+ 		.sta_mask = PWR_STATUS_USB,
+ 		.ctl_offs = SPM_USB_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(15, 12),
+ 		.caps = MTK_SCPD_ACTIVE_WAKEUP,
+@@ -69,6 +83,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+ 		.name = "mfg_async",
+ 		.sta_mask = PWR_STATUS_MFG_ASYNC,
+ 		.ctl_offs = SPM_MFG_ASYNC_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = 0,
+ 	},
+@@ -76,6 +92,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+ 		.name = "mfg_2d",
+ 		.sta_mask = PWR_STATUS_MFG_2D,
+ 		.ctl_offs = SPM_MFG_2D_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(13, 12),
+ 	},
+@@ -83,6 +101,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+ 		.name = "mfg",
+ 		.sta_mask = PWR_STATUS_MFG,
+ 		.ctl_offs = SPM_MFG_PWR_CON,
++		.pwr_sta_offs = SPM_PWR_STATUS,
++		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ 		.sram_pdn_bits = GENMASK(13, 8),
+ 		.sram_pdn_ack_bits = GENMASK(21, 16),
+ 		.bp_infracfg = {
+@@ -97,8 +117,6 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+ static const struct scpsys_soc_data mt8173_scpsys_data = {
+ 	.domains_data = scpsys_domain_data_mt8173,
+ 	.num_domains = ARRAY_SIZE(scpsys_domain_data_mt8173),
+-	.pwr_sta_offs = SPM_PWR_STATUS,
+-	.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+ };
+ 
+ #endif /* __SOC_MEDIATEK_MT8173_PM_DOMAINS_H */
+diff --git a/drivers/soc/mediatek/mt8183-pm-domains.h b/drivers/soc/mediatek/mt8183-pm-domains.h
+index 98a9940d05fb..71b8757e552d 100644
+--- a/drivers/soc/mediatek/mt8183-pm-domains.h
++++ b/drivers/soc/mediatek/mt8183-pm-domains.h
+@@ -15,6 +15,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "audio",
+ 		.sta_mask = PWR_STATUS_AUDIO,
+ 		.ctl_offs = 0x0314,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(15, 12),
+ 	},
+@@ -22,6 +24,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "conn",
+ 		.sta_mask = PWR_STATUS_CONN,
+ 		.ctl_offs = 0x032c,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = 0,
+ 		.sram_pdn_ack_bits = 0,
+ 		.bp_infracfg = {
+@@ -33,6 +37,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "mfg_async",
+ 		.sta_mask = PWR_STATUS_MFG_ASYNC,
+ 		.ctl_offs = 0x0334,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = 0,
+ 		.sram_pdn_ack_bits = 0,
+ 	},
+@@ -40,6 +46,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "mfg",
+ 		.sta_mask = PWR_STATUS_MFG,
+ 		.ctl_offs = 0x0338,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.caps = MTK_SCPD_DOMAIN_SUPPLY,
+@@ -48,6 +56,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "mfg_core0",
+ 		.sta_mask = BIT(7),
+ 		.ctl_offs = 0x034c,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -55,6 +65,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "mfg_core1",
+ 		.sta_mask = BIT(20),
+ 		.ctl_offs = 0x0310,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -62,6 +74,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "mfg_2d",
+ 		.sta_mask = PWR_STATUS_MFG_2D,
+ 		.ctl_offs = 0x0348,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -75,6 +89,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "disp",
+ 		.sta_mask = PWR_STATUS_DISP,
+ 		.ctl_offs = 0x030c,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -94,6 +110,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "cam",
+ 		.sta_mask = BIT(25),
+ 		.ctl_offs = 0x0344,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(9, 8),
+ 		.sram_pdn_ack_bits = GENMASK(13, 12),
+ 		.bp_infracfg = {
+@@ -117,6 +135,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "isp",
+ 		.sta_mask = PWR_STATUS_ISP,
+ 		.ctl_offs = 0x0308,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(9, 8),
+ 		.sram_pdn_ack_bits = GENMASK(13, 12),
+ 		.bp_infracfg = {
+@@ -140,6 +160,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "vdec",
+ 		.sta_mask = BIT(31),
+ 		.ctl_offs = 0x0300,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_smi = {
+@@ -153,6 +175,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "venc",
+ 		.sta_mask = PWR_STATUS_VENC,
+ 		.ctl_offs = 0x0304,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(15, 12),
+ 		.bp_smi = {
+@@ -166,6 +190,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "vpu_top",
+ 		.sta_mask = BIT(26),
+ 		.ctl_offs = 0x0324,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -193,6 +219,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "vpu_core0",
+ 		.sta_mask = BIT(27),
+ 		.ctl_offs = 0x33c,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(13, 12),
+ 		.bp_infracfg = {
+@@ -211,6 +239,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ 		.name = "vpu_core1",
+ 		.sta_mask = BIT(28),
+ 		.ctl_offs = 0x0340,
++		.pwr_sta_offs = 0x0180,
++		.pwr_sta2nd_offs = 0x0184,
+ 		.sram_pdn_bits = GENMASK(11, 8),
+ 		.sram_pdn_ack_bits = GENMASK(13, 12),
+ 		.bp_infracfg = {
+@@ -230,8 +260,6 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+ static const struct scpsys_soc_data mt8183_scpsys_data = {
+ 	.domains_data = scpsys_domain_data_mt8183,
+ 	.num_domains = ARRAY_SIZE(scpsys_domain_data_mt8183),
+-	.pwr_sta_offs = 0x0180,
+-	.pwr_sta2nd_offs = 0x0184
+ };
+ 
+ #endif /* __SOC_MEDIATEK_MT8183_PM_DOMAINS_H */
+diff --git a/drivers/soc/mediatek/mt8192-pm-domains.h b/drivers/soc/mediatek/mt8192-pm-domains.h
+index 543dda70de01..558c4ee4784a 100644
+--- a/drivers/soc/mediatek/mt8192-pm-domains.h
++++ b/drivers/soc/mediatek/mt8192-pm-domains.h
+@@ -15,6 +15,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "audio",
+ 		.sta_mask = BIT(21),
+ 		.ctl_offs = 0x0354,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -28,6 +30,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "conn",
+ 		.sta_mask = PWR_STATUS_CONN,
+ 		.ctl_offs = 0x0304,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = 0,
+ 		.sram_pdn_ack_bits = 0,
+ 		.bp_infracfg = {
+@@ -50,6 +54,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "mfg0",
+ 		.sta_mask = BIT(2),
+ 		.ctl_offs = 0x0308,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -57,6 +63,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "mfg1",
+ 		.sta_mask = BIT(3),
+ 		.ctl_offs = 0x030c,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -82,6 +90,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "mfg2",
+ 		.sta_mask = BIT(4),
+ 		.ctl_offs = 0x0310,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -89,6 +99,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "mfg3",
+ 		.sta_mask = BIT(5),
+ 		.ctl_offs = 0x0314,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -96,6 +108,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "mfg4",
+ 		.sta_mask = BIT(6),
+ 		.ctl_offs = 0x0318,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -103,6 +117,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "mfg5",
+ 		.sta_mask = BIT(7),
+ 		.ctl_offs = 0x031c,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -110,6 +126,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "mfg6",
+ 		.sta_mask = BIT(8),
+ 		.ctl_offs = 0x0320,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -117,6 +135,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "disp",
+ 		.sta_mask = BIT(20),
+ 		.ctl_offs = 0x0350,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -146,6 +166,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "ipe",
+ 		.sta_mask = BIT(14),
+ 		.ctl_offs = 0x0338,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -163,6 +185,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "isp",
+ 		.sta_mask = BIT(12),
+ 		.ctl_offs = 0x0330,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -180,6 +204,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "isp2",
+ 		.sta_mask = BIT(13),
+ 		.ctl_offs = 0x0334,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -197,6 +223,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "mdp",
+ 		.sta_mask = BIT(19),
+ 		.ctl_offs = 0x034c,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -214,6 +242,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "venc",
+ 		.sta_mask = BIT(17),
+ 		.ctl_offs = 0x0344,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -231,6 +261,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "vdec",
+ 		.sta_mask = BIT(15),
+ 		.ctl_offs = 0x033c,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -248,6 +280,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "vdec2",
+ 		.sta_mask = BIT(16),
+ 		.ctl_offs = 0x0340,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -255,6 +289,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "cam",
+ 		.sta_mask = BIT(23),
+ 		.ctl_offs = 0x035c,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 		.bp_infracfg = {
+@@ -284,6 +320,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "cam_rawa",
+ 		.sta_mask = BIT(24),
+ 		.ctl_offs = 0x0360,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -291,6 +329,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "cam_rawb",
+ 		.sta_mask = BIT(25),
+ 		.ctl_offs = 0x0364,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -298,6 +338,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ 		.name = "cam_rawc",
+ 		.sta_mask = BIT(26),
+ 		.ctl_offs = 0x0368,
++		.pwr_sta_offs = 0x016c,
++		.pwr_sta2nd_offs = 0x0170,
+ 		.sram_pdn_bits = GENMASK(8, 8),
+ 		.sram_pdn_ack_bits = GENMASK(12, 12),
+ 	},
+@@ -306,8 +348,6 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+ static const struct scpsys_soc_data mt8192_scpsys_data = {
+ 	.domains_data = scpsys_domain_data_mt8192,
+ 	.num_domains = ARRAY_SIZE(scpsys_domain_data_mt8192),
+-	.pwr_sta_offs = 0x016c,
+-	.pwr_sta2nd_offs = 0x0170,
+ };
+ 
+ #endif /* __SOC_MEDIATEK_MT8192_PM_DOMAINS_H */
+diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+index 0af00efa0ef8..2689f02d7a41 100644
+--- a/drivers/soc/mediatek/mtk-pm-domains.c
++++ b/drivers/soc/mediatek/mtk-pm-domains.c
+@@ -60,10 +60,10 @@ static bool scpsys_domain_is_on(struct scpsys_domain *pd)
+ 	struct scpsys *scpsys = pd->scpsys;
+ 	u32 status, status2;
+ 
+-	regmap_read(scpsys->base, scpsys->soc_data->pwr_sta_offs, &status);
++	regmap_read(scpsys->base, pd->data->pwr_sta_offs, &status);
+ 	status &= pd->data->sta_mask;
+ 
+-	regmap_read(scpsys->base, scpsys->soc_data->pwr_sta2nd_offs, &status2);
++	regmap_read(scpsys->base, pd->data->pwr_sta2nd_offs, &status2);
+ 	status2 &= pd->data->sta_mask;
+ 
+ 	/* A domain is on when both status bits are set. */
+diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
+index 21a4e113bbec..8b86ed22ca56 100644
+--- a/drivers/soc/mediatek/mtk-pm-domains.h
++++ b/drivers/soc/mediatek/mtk-pm-domains.h
+@@ -94,13 +94,13 @@ struct scpsys_domain_data {
+ 	u8 caps;
+ 	const struct scpsys_bus_prot_data bp_infracfg[SPM_MAX_BUS_PROT_DATA];
+ 	const struct scpsys_bus_prot_data bp_smi[SPM_MAX_BUS_PROT_DATA];
++	int pwr_sta_offs;
++	int pwr_sta2nd_offs;
+ };
+ 
+ struct scpsys_soc_data {
+ 	const struct scpsys_domain_data *domains_data;
+ 	int num_domains;
+-	int pwr_sta_offs;
+-	int pwr_sta2nd_offs;
+ };
+ 
+ #endif /* __SOC_MEDIATEK_MTK_PM_DOMAINS_H */
+-- 
+2.18.0
 
-> 
-> -Sumit
-> 
-> > This series fixes several bugs uncovered while exercising the OP-TEE
-> > (Open Portable Trusted Execution Environment), ftpm (firmware TPM), and
-> > tee_bnxt_fw (Broadcom BNXT firmware manager) drivers with kexec and
-> > kdump (emergency kexec) based workflows.
-> >
-> > The majority of the problems are caused by missing .shutdown hooks in
-> > the drivers. The .shutdown hooks are used by the normal kexec code path
-> > to let the drivers clean up prior to executing the target kernel. The
-> > .remove hooks, which are already implemented in these drivers, are not
-> > called as part of the kexec code path. This resulted in shared memory
-> > regions, that were cached and/or registered with OP-TEE, not being
-> > cleared/unregistered prior to kexec. The new kernel would then run into
-> > problems when handling the previously cached virtual addresses or trying
-> > to register newly allocated shared memory objects that overlapped with
-> > the previously registered virtual addresses. The TEE didn't receive
-> > notification that the old virtual addresses were no longer meaningful
-> > and that a new kernel, with a new address space, would soon be running.
-> >
-> > However, implementing .shutdown hooks was not enough for supporting
-> > kexec. There was an additional problem caused by the TEE driver's
-> > reliance on the dma-buf subsystem for multi-page shared memory objects
-> > that were registered with the TEE. Shared memory objects backed by a
-> > dma-buf use a different mechanism for reference counting. When the final
-> > reference is released, work is scheduled to be executed to unregister
-> > the shared memory with the TEE but that work is only completed prior to
-> > the current task returning the userspace. In the case of a kexec
-> > operation, the current task that's calling the driver .shutdown hooks
-> > never returns to userspace prior to the kexec operation so the shared
-> > memory was never unregistered. This eventually caused problems from
-> > overlapping shared memory regions that were registered with the TEE
-> > after several kexec operations. The large 4M contiguous region
-> > allocated by the tee_bnxt_fw driver reliably ran into this issue on the
-> > fourth kexec on a system with 8G of RAM.
-> >
-> > The use of dma-buf makes sense for shared memory that's in use by
-> > userspace but dma-buf's aren't needed for shared memory that will only
-> > used by the driver. This series separates dma-buf backed shared memory
-> > allocated by the kernel from multi-page shared memory that the kernel
-> > simply needs registered with the TEE for private use.
-> >
-> > One other noteworthy change in this series is to completely refuse to
-> > load the OP-TEE driver in the kdump kernel. This is needed because the
-> > secure world may have had all of its threads in suspended state when the
-> > regular kernel crashed. The kdump kernel would then hang during boot
-> > because the OP-TEE driver's .probe function would attempt to use a
-> > secure world thread when they're all in suspended state. Another problem
-> > is that shared memory allocations could fail under the kdump kernel
-> > because the previously registered were not unregistered (the .shutdown
-> > hook is not called when kexec'ing into the kdump kernel).
-> >
-> > The first patch in the series fixes potential memory leaks that are not
-> > directly related to kexec or kdump but were noticed during the
-> > development of this series.
-> >
-> > Tyler
-> >
-> > Allen Pais (2):
-> >   optee: fix tee out of memory failure seen during kexec reboot
-> >   firmware: tee_bnxt: Release TEE shm, session, and context during kexec
-> >
-> > Jens Wiklander (1):
-> >   tee: add tee_shm_alloc_kernel_buf()
-> >
-> > Sumit Garg (1):
-> >   tee: Correct inappropriate usage of TEE_SHM_DMA_BUF flag
-> >
-> > Tyler Hicks (4):
-> >   optee: Fix memory leak when failing to register shm pages
-> >   optee: Refuse to load the driver under the kdump kernel
-> >   optee: Clear stale cache entries during initialization
-> >   tpm_ftpm_tee: Free and unregister TEE shared memory during kexec
-> >
-> >  drivers/char/tpm/tpm_ftpm_tee.c         |  8 ++---
-> >  drivers/firmware/broadcom/tee_bnxt_fw.c | 14 ++++++--
-> >  drivers/tee/optee/call.c                | 38 +++++++++++++++++++---
-> >  drivers/tee/optee/core.c                | 43 ++++++++++++++++++++++++-
-> >  drivers/tee/optee/optee_private.h       |  1 +
-> >  drivers/tee/optee/rpc.c                 |  5 +--
-> >  drivers/tee/optee/shm_pool.c            | 20 +++++++++---
-> >  drivers/tee/tee_shm.c                   | 20 +++++++++++-
-> >  include/linux/tee_drv.h                 |  2 ++
-> >  9 files changed, 132 insertions(+), 19 deletions(-)
-> >
-> > --
-> > 2.25.1
-> >
-> 
