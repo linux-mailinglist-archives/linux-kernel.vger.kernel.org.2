@@ -2,81 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DFA3A8052
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0253A8051
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhFONiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:38:24 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:12095 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231482AbhFONiS (ORCPT
+        id S231586AbhFONiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:38:21 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:59015 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231437AbhFONiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:38:18 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623764174; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=oCyt5HP1cG0mwjB/oFPGtagilcICyOfoCjGxAwOTsPg=;
- b=AFfvdpzTPfUojbH2cM/d6oSUVr3AzTKx1Y/kvVk6+wy6KwUJpAd9qWv7Nyc7oxwRm2PA5wxn
- 7XLLT16W3ke25x0QMGi7jUhCjdQTB7ejptq23Fr6aa/iyQgmmBhVz6PHcokBDh1x1s8qSzRK
- c6YTRRq8+PKDiYcjsPo0ra+ofzk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60c8acc3e27c0cc77f1e9b6a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:36:03
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 98B79C43460; Tue, 15 Jun 2021 13:36:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A1A3BC43217;
-        Tue, 15 Jun 2021 13:36:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A1A3BC43217
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Tue, 15 Jun 2021 09:38:16 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id t9Eblm3twhqltt9Eflrn3Z; Tue, 15 Jun 2021 15:36:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1623764170; bh=TYZsxWK3pyuuhL9w4imZapk5ZEIWECc0wzFBU2fCKpM=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=rHJ0usjNf3YcqQjumM4sQB8OAegejpxDtk06UkoA9pGImM3uFaLcj013ZiGAsguKR
+         b6liFsu0UbsdWl6nssQU3gmm2Tns1QbV05FRdwbVw+WOqIb0xEtLux1N4G9SU8s3Uz
+         99ohpaG4eOpWj+0R02QoZ2oJQM8jV53GCLrawzBbviUR6z5+PuP8NCVlfmJeXy6z4Y
+         LZhne5wmE8Ut3f68pKbjYNKgR5EkAIy/lSEGlyO5Eal8BrxvsvcPDc+GPhYkIiv3Eu
+         73aEdWflfpX9eixE6HcuzRiDK7F4HZYGdSeBmhYdC+MSLtqAXnfQE33K0ZRoYH48xh
+         weo7l0YVrfA0A==
+Subject: Re: [PATCH] media: Fix Media Controller API config checks
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com,
+        dan.carpenter@oracle.com, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+References: <20210611015849.42589-1-skhan@linuxfoundation.org>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <3745852a-a14d-3e66-dd9f-409ec7e43f48@xs4all.nl>
+Date:   Tue, 15 Jun 2021 15:36:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210611015849.42589-1-skhan@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2] wl1251: Fix possible buffer overflow in
- wl1251_cmd_scan
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210428115508.25624-1-leegib@gmail.com>
-References: <20210428115508.25624-1-leegib@gmail.com>
-To:     Lee Gibson <leegib@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lee Gibson <leegib@gmail.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210615133602.98B79C43460@smtp.codeaurora.org>
-Date:   Tue, 15 Jun 2021 13:36:02 +0000 (UTC)
+X-CMAE-Envelope: MS4xfIY3fpQsqyTxg/12EwjXTdXJ4H4fQhDvhvUsUDPDNaiFJn7cFHi+oEO5t9qlFvaoCNJitZT/UimCmnJLCJGf9mat5FDlGkx0DTVritfHTWTeawb5H0Qi
+ 19R0pAfngkCvuuMLWdD/91NTVXYfe15e8v89srtADlTf77TA9YasfbTs1CGh+KtWDLVRvmaen/cK1do/S4crI8Blx85vwD93cRFHyZ+uNSs370zGpEXSBtHt
+ K0zFAelyLKtpCadoGqjOMPXXfCijHFMrbE+bE/CHJCUI0DWEQECP9BoIi4WOF6VQqTBCdlJfyJVHjL1Lwqmm01m8aRQ9qslIDkUrd117sWrbO/ZjJuEr/Bp5
+ jdFoShJhQTZS3SupGa2qw4xs2eIPo2lDuXUci7wAH17x+OIXM0tRTFrgbEvWzXuCMKoPnmyX5vpgYzA+oZwpuMrgFyc0KhuGLdmKmNSedc0zSMTZeHeCb+26
+ VOX5e4xC3D68ah1M
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Gibson <leegib@gmail.com> wrote:
+Hi Shuah,
 
-> Function wl1251_cmd_scan calls memcpy without checking the length.
-> Harden by checking the length is within the maximum allowed size.
+On 11/06/2021 03:58, Shuah Khan wrote:
+> Smatch static checker warns that "mdev" can be null:
 > 
-> Signed-off-by: Lee Gibson <leegib@gmail.com>
+> sound/usb/media.c:287 snd_media_device_create()
+>     warn: 'mdev' can also be NULL
+> 
+> If CONFIG_MEDIA_CONTROLLER is disabled, this file should not be included
+> in the build.
+> 
+> The below conditions in the sound/usb/Makefile are in place to ensure that
+> media.c isn't included in the build.
+> 
+> sound/usb/Makefile:
+> snd-usb-audio-$(CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER) += media.o
+> 
+> select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER &&
+>        (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND_USB_AUDIO)
+> 
+> The following config check in include/media/media-dev-allocator.h is
+> in place to enable the API only when CONFIG_MEDIA_CONTROLLER and
+> CONFIG_USB are enabled.
+> 
+>  #if defined(CONFIG_MEDIA_CONTROLLER) && defined(CONFIG_USB)
+> 
+> This check doesn't work as intended when CONFIG_USB=m. When CONFIG_USB=m,
+> CONFIG_USB_MODULE is defined and CONFIG_USB is not. The above config check
+> doesn't catch that CONFIG_USB is defined as a module and disables the API.
+> This results in sound/usb enabling Media Controller specific ALSA driver
+> code, while Media disables the Media Controller API.
+> 
+> Fix the problem requires two changes:
+> 
+> 1. Change the check to use IS_ENABLED to detect when CONFIG_USB is enabled
+>    as a module or static. Since CONFIG_MEDIA_CONTROLLER is a bool, leave
+>    the check unchanged to be consistent with drivers/media/Makefile.
+> 
+> 2. Change the drivers/media/mc/Makefile to include mc-dev-allocator.o
+>    in mc-objs when CONFIG_USB is y or m.
 
-Patch applied to wireless-drivers-next.git, thanks.
+If I test this patch, then I get:
 
-d10a87a3535c wl1251: Fix possible buffer overflow in wl1251_cmd_scan
+drivers/media/mc/mc-dev-allocator.c:97:22: error: redefinition of 'media_device_usb_allocate'
+   97 | struct media_device *media_device_usb_allocate(struct usb_device *udev,
+      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from drivers/media/mc/mc-dev-allocator.c:24:
+include/media/media-dev-allocator.h:55:36: note: previous definition of 'media_device_usb_allocate' was here
+   55 | static inline struct media_device *media_device_usb_allocate(
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/media/mc/mc-dev-allocator.c:119:6: error: redefinition of 'media_device_delete'
+  119 | void media_device_delete(struct media_device *mdev, const char *module_name,
+      |      ^~~~~~~~~~~~~~~~~~~
+In file included from drivers/media/mc/mc-dev-allocator.c:24:
+include/media/media-dev-allocator.h:59:20: note: previous definition of 'media_device_delete' was here
+   59 | static inline void media_device_delete(
+      |                    ^~~~~~~~~~~~~~~~~~~
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210428115508.25624-1-leegib@gmail.com/
+The .config has:
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+# CONFIG_USB_SUPPORT is not set
+CONFIG_MEDIA_CONTROLLER=y
+
+Regards,
+
+	Hans
+
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Link: https://lore.kernel.org/alsa-devel/YLeAvT+R22FQ%2FEyw@mwanda/
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> ---
+>  drivers/media/mc/Makefile           | 2 +-
+>  include/media/media-dev-allocator.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/mc/Makefile b/drivers/media/mc/Makefile
+> index 119037f0e686..140f0a78540e 100644
+> --- a/drivers/media/mc/Makefile
+> +++ b/drivers/media/mc/Makefile
+> @@ -3,7 +3,7 @@
+>  mc-objs	:= mc-device.o mc-devnode.o mc-entity.o \
+>  	   mc-request.o
+>  
+> -ifeq ($(CONFIG_USB),y)
+> +ifeq ($(CONFIG_USB),$(filter $(CONFIG_USB),y m))
+>  	mc-objs += mc-dev-allocator.o
+>  endif
+>  
+> diff --git a/include/media/media-dev-allocator.h b/include/media/media-dev-allocator.h
+> index b35ea6062596..2ab54d426c64 100644
+> --- a/include/media/media-dev-allocator.h
+> +++ b/include/media/media-dev-allocator.h
+> @@ -19,7 +19,7 @@
+>  
+>  struct usb_device;
+>  
+> -#if defined(CONFIG_MEDIA_CONTROLLER) && defined(CONFIG_USB)
+> +#if defined(CONFIG_MEDIA_CONTROLLER) && IS_ENABLED(CONFIG_USB)
+>  /**
+>   * media_device_usb_allocate() - Allocate and return struct &media device
+>   *
+> 
 
