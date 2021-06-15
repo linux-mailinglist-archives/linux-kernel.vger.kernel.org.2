@@ -2,67 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B9B3A7D8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04453A7D8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbhFOLvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:51:41 -0400
-Received: from mail-m121144.qiye.163.com ([115.236.121.144]:50790 "EHLO
-        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhFOLvj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:51:39 -0400
-DKIM-Signature: a=rsa-sha256;
-        b=W1Cvo/+NZqZ9VxbAitK/kHlzo+N9vKHmzeOPazvGGfXugCiajk9i40AgKvnB44vP8M4CdRxWreWXvE0e/U8TRdoKLkWAsrwlyGees9ko2YexUMK0tNwcCjBV1ERDmDUBBltrfIHbsQ6IeprNYSgWiZe6XfFOlF6VnposU90hBNw=;
-        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
-        bh=0/P63dEAOAi+kPvhAWGq4Q0ts3IqPeJedDxz2jbvCbk=;
-        h=date:mime-version:subject:message-id:from;
-Received: from Wanjb.localdomain (unknown [36.152.145.182])
-        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id BFE64AC028E;
-        Tue, 15 Jun 2021 19:49:33 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Wan Jiabing <wanjiabing@vivo.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] cpuidle: remove unneeded semicolon in teo.c
-Date:   Tue, 15 Jun 2021 19:49:20 +0800
-Message-Id: <20210615114921.8340-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.20.1
+        id S229520AbhFOLw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:52:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229869AbhFOLwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 07:52:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEAED6145D;
+        Tue, 15 Jun 2021 11:50:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623757818;
+        bh=80BKNxMl4vfWn+OgvuwBg4oJz0whC/obf0+2MF/CC/g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tjlbJqiCP0gphqnn4Yl4Pybx7ifuZvVN4BXXX2ZNmutWWh8vZsgQv7SDS+W7oHJPv
+         fg5YUHiEz7zGOXrhgSPYzzqMUQBjboE/PlSGo3se/i0+j5pYDJ2fhWz++hVw/HuHak
+         WJvjKgiM6wWmeAcF3YzNzYugMAGHqTIpKBhPWcpQ=
+Date:   Tue, 15 Jun 2021 13:50:15 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     David Kershner <david.kershner@unisys.com>,
+        sparmaintainer@unisys.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v8 RESEND] staging: unisys: visorhba: Convert module from
+ IDR to XArray
+Message-ID: <YMiT9+msL8H2+3yV@kroah.com>
+References: <20210514081112.19542-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQ0NNHlYaQhpOQ0MdHx9JTkNVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NjY6Nww6Az8QN0gpC04cKz05
-        FDxPC0hVSlVKTUlITE5MTExPSkxCVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTkxKNwY+
-X-HM-Tid: 0a7a0f815c41b039kuuubfe64ac028e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514081112.19542-1-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following coccicheck warning:
-drivers/cpuidle/governors/teo.c:315:10-11: Unneeded semicolon
+On Fri, May 14, 2021 at 10:11:11AM +0200, Fabio M. De Francesco wrote:
+> Converted visorhba from IDR to XArray. The abstract data type XArray is
+> more memory-efficient, parallelizable, and cache friendly. It takes
+> advantage of RCU to perform lookups without locking. Furthermore, IDR is
+> deprecated because XArray has a better (cleaner and more consistent)
+> API.
+> 
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/cpuidle/governors/teo.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Given a lack of response from the unisys maintainer, I'll go apply this
+now and see what breaks :)
 
-diff --git a/drivers/cpuidle/governors/teo.c b/drivers/cpuidle/governors/teo.c
-index 1e0b2f828abb..7b91060e82f6 100644
---- a/drivers/cpuidle/governors/teo.c
-+++ b/drivers/cpuidle/governors/teo.c
-@@ -312,7 +312,7 @@ static int teo_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
- 
- 	/* Check if there is any choice in the first place. */
- 	if (drv->state_count < 2) {
--		idx = 0;;
-+		idx = 0;
- 		goto end;
- 	}
- 	if (!dev->states_usage[0].disable) {
--- 
-2.20.1
+thanks,
 
+greg k-h
