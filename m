@@ -2,88 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8DE3A8AA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDB73A8AAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhFOVKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:10:35 -0400
-Received: from www62.your-server.de ([213.133.104.62]:50068 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbhFOVKd (ORCPT
+        id S230466AbhFOVKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231354AbhFOVKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:10:33 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ltGIF-0004xO-Nz; Tue, 15 Jun 2021 23:08:19 +0200
-Received: from [85.7.101.30] (helo=linux-3.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ltGIF-000CCY-9W; Tue, 15 Jun 2021 23:08:19 +0200
-Subject: Re: [PATCH v5] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
-To:     Eric Biggers <ebiggers@kernel.org>,
-        Edward Cree <ecree.xilinx@gmail.com>
-Cc:     Kurt Manucredo <fuzzybritches0@gmail.com>,
-        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
-        keescook@chromium.org, yhs@fb.com, dvyukov@google.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        nathan@kernel.org, ndesaulniers@google.com,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, kasan-dev@googlegroups.com
-References: <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
- <CACT4Y+b=si6NCx=nRHKm_pziXnVMmLo-eSuRajsxmx5+Hy_ycg@mail.gmail.com>
- <202106091119.84A88B6FE7@keescook>
- <752cb1ad-a0b1-92b7-4c49-bbb42fdecdbe@fb.com>
- <CACT4Y+a592rxFmNgJgk2zwqBE8EqW1ey9SjF_-U3z6gt3Yc=oA@mail.gmail.com>
- <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com> <202106101002.DF8C7EF@keescook>
- <CAADnVQKMwKYgthoQV4RmGpZm9Hm-=wH3DoaNqs=UZRmJKefwGw@mail.gmail.com>
- <85536-177443-curtm@phaethon>
- <bac16d8d-c174-bdc4-91bd-bfa62b410190@gmail.com> <YMkAbNQiIBbhD7+P@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <dbcfb2d3-0054-3ee6-6e76-5bd78023a4f2@iogearbox.net>
-Date:   Tue, 15 Jun 2021 23:08:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 15 Jun 2021 17:10:42 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D15C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:08:37 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id y18-20020a4ae7120000b02902496b7708cfso123720oou.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:08:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5H/WIGAt2bcGus6syHjeDpEBJBSWGYGK2ZP5DaJq8HI=;
+        b=Wh0xf1ppQyc5kPm+/1GaRANZM62IHN3p08884tek1zX2shuDsH5dVu1BGEv00Se1Qp
+         vxhbERR6ISRbJFFhkNWgfPND/o3svNBm6LCfX7ik+V6iwSgMmUslOsNPMg1pLiuKM7+v
+         VcHManoDf9yvNpprfKQL8MFyRJP+Nuis1popY+w8HvSh22IgpWcXttSzGuc9u8TZI14E
+         kCOusr5iijIFqnCakDFKTuS0fZVRJWu5zSeL0k+RAMgBpRJ971XMXUbAyTJZuLehxudb
+         KYQYmqUohJOzOeFAZdISMjb6w4vvnQdlwogq4L/tUo4qpJ4I7sK2HHDb6nVjVCwVWUeI
+         R5fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5H/WIGAt2bcGus6syHjeDpEBJBSWGYGK2ZP5DaJq8HI=;
+        b=K7gf8f/0dxCOXJiuNaapqGlsSgefueqY1dfnKBDlpvfOrz3nu9WR3O+icrHuGJUwM5
+         okfYHEWY+u2+Rn1MVVJk8HTL5BagOoRU2vUffAYToMswmrZLI6B60PnOtCtE1go7pcxf
+         IWM33eU2fZrXueMVNfMdGzobkkz7SdvRrdWKXzGnsqY3QKlABAS3xTc8xPBOaOVFARUN
+         6Gm8MrcknE2HWn1kGo/H4Q7KzMk0rtCxCmmQVm0CQM7TSbLyQu1CtbT3oJKUzFO3bMCM
+         PwSsaL6a88teTRH3+FT+eZpI3k0tUawHvfRSLNlEAjXBZOSK1CjGcRVFCzqhedbFWtJN
+         vl/A==
+X-Gm-Message-State: AOAM530n9bFjh1bppoXYo1tiHpzM7nAJ5rF7EnQW5zxbWA1HQECzS99P
+        tNE9uGb0avV5DhTsC/Q7I2btag==
+X-Google-Smtp-Source: ABdhPJyQEfWiQUz1pY9YR1vEOYIO+jkKuQFJseI31f2XPj0vFUAtGN5ui54x6xW9VEQYrzp8AEk2Sw==
+X-Received: by 2002:a4a:49d0:: with SMTP id z199mr909507ooa.67.1623791316982;
+        Tue, 15 Jun 2021 14:08:36 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u1sm14300ooo.18.2021.06.15.14.08.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 14:08:36 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 16:08:34 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH v2 08/10] arm64: dts: qcom: pmm8155au_1: Add base dts file
+Message-ID: <YMkW0mMUk/zTt7jQ@builder.lan>
+References: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
+ <20210615074543.26700-9-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <YMkAbNQiIBbhD7+P@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26202/Tue Jun 15 13:21:24 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615074543.26700-9-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 9:33 PM, Eric Biggers wrote:
-> On Tue, Jun 15, 2021 at 07:51:07PM +0100, Edward Cree wrote:
->>
->> As I understand it, the UBSAN report is coming from the eBPF interpreter,
->>   which is the *slow path* and indeed on many production systems is
->>   compiled out for hardening reasons (CONFIG_BPF_JIT_ALWAYS_ON).
->> Perhaps a better approach to the fix would be to change the interpreter
->>   to compute "DST = DST << (SRC & 63);" (and similar for other shifts and
->>   bitnesses), thus matching the behaviour of most chips' shift opcodes.
->> This would shut up UBSAN, without affecting JIT code generation.
+On Tue 15 Jun 02:45 CDT 2021, Bhupesh Sharma wrote:
+
+> Add base DTS file for pmm8155au_1 along with GPIOs, power-on, rtc and vadc
+> nodes.
 > 
-> Yes, I suggested that last week
-> (https://lkml.kernel.org/netdev/YMJvbGEz0xu9JU9D@gmail.com).  The AND will even
-> get optimized out when compiling for most CPUs.
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 
-Did you check if the generated interpreter code for e.g. x86 is the same
-before/after with that?
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-How does UBSAN detect this in general? I would assume generated code for
-interpreter wrt DST = DST << SRC would not really change as otherwise all
-valid cases would be broken as well, given compiler has not really room
-to optimize or make any assumptions here, in other words, it's only
-propagating potential quirks under such cases from underlying arch.
+Regards,
+Bjorn
 
-Thanks,
-Daniel
+> ---
+>  arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi | 134 ++++++++++++++++++++++
+>  1 file changed, 134 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi b/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+> new file mode 100644
+> index 000000000000..b04c28e54470
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+> @@ -0,0 +1,134 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2021, Linaro Limited
+> + */
+> +
+> +#include <dt-bindings/input/input.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/spmi/spmi.h>
+> +#include <dt-bindings/iio/qcom,spmi-vadc.h>
+> +
+> +/ {
+> +	thermal-zones {
+> +		pmm8155au-1-thermal {
+> +			polling-delay-passive = <100>;
+> +			polling-delay = <0>;
+> +
+> +			thermal-sensors = <&pmm8155au_1_temp>;
+> +
+> +			trips {
+> +				trip0 {
+> +					temperature = <95000>;
+> +					hysteresis = <0>;
+> +					type = "passive";
+> +				};
+> +
+> +				trip1 {
+> +					temperature = <115000>;
+> +					hysteresis = <0>;
+> +					type = "hot";
+> +				};
+> +
+> +				trip2 {
+> +					temperature = <145000>;
+> +					hysteresis = <0>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&spmi_bus {
+> +	pmic@0 {
+> +		compatible = "qcom,pmm8155au", "qcom,spmi-pmic";
+> +		reg = <0x0 SPMI_USID>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		pon: power-on@800 {
+> +			compatible = "qcom,pm8916-pon";
+> +			reg = <0x0800>;
+> +			pwrkey {
+> +				compatible = "qcom,pm8941-pwrkey";
+> +				interrupts = <0x0 0x8 0x0 IRQ_TYPE_EDGE_BOTH>;
+> +				debounce = <15625>;
+> +				bias-pull-up;
+> +				linux,code = <KEY_POWER>;
+> +
+> +				status = "disabled";
+> +			};
+> +		};
+> +
+> +		pmm8155au_1_temp: temp-alarm@2400 {
+> +			compatible = "qcom,spmi-temp-alarm";
+> +			reg = <0x2400>;
+> +			interrupts = <0x0 0x24 0x0 IRQ_TYPE_EDGE_BOTH>;
+> +			io-channels = <&pmm8155au_1_adc ADC5_DIE_TEMP>;
+> +			io-channel-names = "thermal";
+> +			#thermal-sensor-cells = <0>;
+> +		};
+> +
+> +		pmm8155au_1_adc: adc@3100 {
+> +			compatible = "qcom,spmi-adc5";
+> +			reg = <0x3100>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			#io-channel-cells = <1>;
+> +			interrupts = <0x0 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
+> +
+> +			ref-gnd@0 {
+> +				reg = <ADC5_REF_GND>;
+> +				qcom,pre-scaling = <1 1>;
+> +				label = "ref_gnd";
+> +			};
+> +
+> +			vref-1p25@1 {
+> +				reg = <ADC5_1P25VREF>;
+> +				qcom,pre-scaling = <1 1>;
+> +				label = "vref_1p25";
+> +			};
+> +
+> +			die-temp@6 {
+> +				reg = <ADC5_DIE_TEMP>;
+> +				qcom,pre-scaling = <1 1>;
+> +				label = "die_temp";
+> +			};
+> +		};
+> +
+> +		pmm8155au_1_adc_tm: adc-tm@3500 {
+> +			compatible = "qcom,spmi-adc-tm5";
+> +			reg = <0x3500>;
+> +			interrupts = <0x0 0x35 0x0 IRQ_TYPE_EDGE_RISING>;
+> +			#thermal-sensor-cells = <1>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			status = "disabled";
+> +		};
+> +
+> +		pmm8155au_1_rtc: rtc@6000 {
+> +			compatible = "qcom,pm8941-rtc";
+> +			reg = <0x6000>;
+> +			reg-names = "rtc", "alarm";
+> +			interrupts = <0x0 0x61 0x1 IRQ_TYPE_NONE>;
+> +
+> +			status = "disabled";
+> +		};
+> +
+> +		pmm8155au_1_gpios: gpio@c000 {
+> +			compatible = "qcom,pmm8155au-gpio";
+> +			reg = <0xc000>;
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +	};
+> +
+> +	pmic@1 {
+> +		compatible = "qcom,pmm8155au", "qcom,spmi-pmic";
+> +		reg = <0x1 SPMI_USID>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +	};
+> +};
+> -- 
+> 2.31.1
+> 
