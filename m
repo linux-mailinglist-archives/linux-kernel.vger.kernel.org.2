@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0493A8B18
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D7A3A8B1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhFOVba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:31:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229689AbhFOVba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:31:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07F8361078;
-        Tue, 15 Jun 2021 21:29:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623792565;
-        bh=Z8l5pyigZ4sAnWmGuyoEt4UlPIHTvZnCXuw0L/8f19g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=a2814pRmpC9A/dY7FIW1TXMw+SNYEGGICYHjniea7HulIIKgftR8IWPa4cllk80KJ
-         bnKFSdaFURxllZ9BqaeUwoCXTuQVadtvDiRWIQlTG554bqzN/zGLTgSsJj/7jeFZnb
-         E7ydAA47Zyq274qGLkcf1ov3tzuhI6t65y6lAHOpKxRS6qt1ce9JlvSwk6E/ehP8Yg
-         XfXrG47A6zNZQw2JOVJd5KhQWpqbtmYG367TdFCBXkX7X7JkbfBzbcT9OQgCt0Ijk7
-         M5Jj8+K5ya3+0/J3YG+cIulZx4CIqH9CqiWEL5VomGw2CSGI07JLvTa1ftKzL4o2RI
-         MHXvxCHK2grQA==
-Received: by mail-ej1-f53.google.com with SMTP id gt18so75364ejc.11;
-        Tue, 15 Jun 2021 14:29:24 -0700 (PDT)
-X-Gm-Message-State: AOAM530GwU7zVYx79tIsjeljTQL1yQnk9iFU3oxMShHVqCMcVnLDqsCD
-        dntBqdy0qGaHDLArwwS6ZKRqjmHdLHYsEq7PNg==
-X-Google-Smtp-Source: ABdhPJwVoFobxS8FdlynGYavo4IkXRj2LN6HkJlOKOVRHthoC5S/usa5DZkbknsweAGrYK/QFnylIoeJu0eNrrbuMcQ=
-X-Received: by 2002:a17:907:3da4:: with SMTP id he36mr1668881ejc.108.1623792563457;
- Tue, 15 Jun 2021 14:29:23 -0700 (PDT)
+        id S231176AbhFOVeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhFOVeW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 17:34:22 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7687C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:32:17 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623792735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cRCLZ+ASV1LhD0HIdD+zuLHJeLCBmnyjypiNSx38540=;
+        b=c572isNHPCMvxGC2WvAPXs9aNQ9Qq5mRBQG0kbzRKaTgNHPYuZo00ecwmTanow7AGAs/9a
+        xrFR01E0mpYh2OD4d2IAxXqDfsgPEL6VjJzDG/X87l0jyOSpzR6JqFqCH8GNl72bsEecA/
+        D3MYTj8U+9L0YEgJxnE0v3xD+FMQUJWFhDFRCVWieCI6lxAphbP5GpK786cdsnAztjMD69
+        uEc5eK2bLF9bH1Q1b4lqJZLNcX2D778xVAz4Ik+FLY4pMVF7wFaZpFkK+HOi9Pf+mQhyO/
+        TWCQ37S5L8GF8bUbP3us1Udm5hx13j6NSAcSJXdICdLCYmRZZxhxZSDsRewfnQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623792735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cRCLZ+ASV1LhD0HIdD+zuLHJeLCBmnyjypiNSx38540=;
+        b=WPOnp4HMoNfDAl+V8Jnlx1NfSohoHLEltWTd7EsJZ2nRkkm3oo1oFZS6kf5l4proA3aEVX
+        rtFQAqVEXChMd1AQ==
+To:     Borislav Petkov <bp@suse.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V2 08/52] x86/fpu: Sanitize xstateregs_set()
+In-Reply-To: <YMjmHcW1HPbHfkMF@zn.tnic>
+References: <20210614154408.673478623@linutronix.de> <20210614155354.534061373@linutronix.de> <YMjmHcW1HPbHfkMF@zn.tnic>
+Date:   Tue, 15 Jun 2021 23:32:14 +0200
+Message-ID: <87bl86hl0h.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210607112856.3499682-1-punitagrawal@gmail.com>
- <20210607112856.3499682-5-punitagrawal@gmail.com> <3105233.izSxrag8PF@diego>
-In-Reply-To: <3105233.izSxrag8PF@diego>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 15 Jun 2021 15:29:12 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL8iDo5sLmgNVuXs5wt3TpVJbKHfk7gE740DidmvLOwiQ@mail.gmail.com>
-Message-ID: <CAL_JsqL8iDo5sLmgNVuXs5wt3TpVJbKHfk7gE740DidmvLOwiQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] arm64: dts: rockchip: Update PCI host bridge
- window to 32-bit address memory
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Punit Agrawal <punitagrawal@gmail.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>, wqu@suse.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Shawn Lin <shawn.lin@rock-chips.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 3:50 PM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
+On Tue, Jun 15 2021 at 19:40, Borislav Petkov wrote:
+> On Mon, Jun 14, 2021 at 05:44:16PM +0200, Thomas Gleixner wrote:
+>> @@ -108,10 +110,10 @@ int xstateregs_set(struct task_struct *t
+>>  		  const void *kbuf, const void __user *ubuf)
+>>  {
+>>  	struct fpu *fpu = &target->thread.fpu;
+>> -	struct xregs_state *xsave;
+>> +	struct xregs_state *tmpbuf = NULL;
+>>  	int ret;
+>>  
+>> -	if (!boot_cpu_has(X86_FEATURE_XSAVE))
+>> +	if (!static_cpu_has(X86_FEATURE_XSAVE))
 >
-> Hi,
->
-> Am Montag, 7. Juni 2021, 13:28:56 CEST schrieb Punit Agrawal:
-> > The PCIe host bridge on RK3399 advertises a single 64-bit memory
-> > address range even though it lies entirely below 4GB.
-> >
-> > Previously the OF PCI range parser treated 64-bit ranges more
-> > leniently (i.e., as 32-bit), but since commit 9d57e61bf723 ("of/pci:
-> > Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses")
-> > the code takes a stricter view and treats the ranges as advertised in
-> > the device tree (i.e, as 64-bit).
-> >
-> > The change in behaviour causes failure when allocating bus addresses
-> > to devices connected behind a PCI-to-PCI bridge that require
-> > non-prefetchable memory ranges. The allocation failure was observed
-> > for certain Samsung NVMe drives connected to RockPro64 boards.
-> >
-> > Update the host bridge window attributes to treat it as 32-bit address
-> > memory. This fixes the allocation failure observed since commit
-> > 9d57e61bf723.
-> >
-> > Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@ar=
-m.com
-> > Suggested-by: Robin Murphy <robin.murphy@arm.com>
-> > Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
-> > Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > Cc: Heiko Stuebner <heiko@sntech.de>
-> > Cc: Rob Herring <robh+dt@kernel.org>
->
-> just for clarity, should I just pick this patch separately for 5.13-rc to
-> make it easy for people using current kernel devicetrees, or should
-> this wait for the update mentioned in the cover-letter response
-> and should go all together through the PCI tree?
+> cpu_feature_enabled() - we're going to use only that thing from now on
+> for simplicity.
 
-This was dropped from v4, but should still be applied IMO.
+Sure, I just run sed over the set.
 
-Acked-by: Rob Herring <robh@kernel.org>
+>> +	fpu__prepare_write(fpu);
+>
+> Yikes, why isn't this function called
+>
+> fpu_invalidate_state(fpu)
+
+Because...
+
+>> +	/* mxcsr reserved bits must be masked to zero for historical reasons. */
+>
+> Wasn't that comment supposed to get some love?
+
+See the next patch ...
