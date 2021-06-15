@@ -2,233 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E93C3A7AF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9043A7AFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbhFOJnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhFOJnR (ORCPT
+        id S231359AbhFOJqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:46:25 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:41207 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231214AbhFOJqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:43:17 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6334DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 02:41:13 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id h24so21496531ejy.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 02:41:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BLVFHcMOWvwj65JMfhwAAkT+PYDZaPiLtTNguuvICyg=;
-        b=HTZ/lNLjKHLJ4R4/Mmt4xzvvzYDBk43/iQRlrebtrfW7mP3OgkwjlEJOlUHt5eup2m
-         c6kZkV+rDe2KQFAiD9OcXulkpJ2zYEO8Z9qtjG3Wy1hCSbJpFaunbJFOO33rPGHS0D0Y
-         sUXrw9cxInCDUTGIv7oN0zVwItDzQc3XyED2s2gJvby4ywFcVDZs9MKCcAID03Rk2A/R
-         aWn4lk/+IpLZ9qeRMjFQCLKsJx5Foo5u/V5rebxwHEZLHZBngaJNDJ/kZ5d5BGic2tAH
-         dZcRmh+c7KXjRKFWE5XFniroT6DED/XfJ1IsgCcXfu6fueeeX+vneBBBJBJoZ9PKUg6k
-         aciQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BLVFHcMOWvwj65JMfhwAAkT+PYDZaPiLtTNguuvICyg=;
-        b=ao+AKOkW3kW1P+h8mipIjpJypGOCPyzKu30uW68OtmxJg6QXoKc/WTmzzQG3qw0rEY
-         K+/vYCqfPG4NEWYA+H1D4dNVefN0+3eM2KQjbHAN1dZG1UY1dC+I8eFuMSR6fdDCK+fp
-         S0k0yJaSO59QSqvBRethV8fjm2mk5aVC4IVTezKxZ27QuEKtxRjWi7WPQqLGy1V6myl5
-         8jTGiUf2vcEwj42ycRjHm83h4VG/Fc9efyP8vHq4UTNHUzFaneJiUeHRDhQnscLm+ZHN
-         IGg26/17dgW8xGc2FxTR1U5sUhM6+yeJpnx7+VfKN4O/0/3qh72muGhKBxT5h5byTcJ1
-         8cJw==
-X-Gm-Message-State: AOAM5326MOV/7a+s5zLhctmeqmVxVQ7m56pV2jiqCHnY/U7cvpB/0I9Q
-        DClmNsaz8amnPoDIkmVlcD3N15EQ4ovoZ5uqkaUa0A==
-X-Google-Smtp-Source: ABdhPJwx3DEeICIgAcIKorrmXPO9nQe2m5M2+7cZZXQLIkpOU9g94q91YGaFtZTrAUOy8Gpp2SEV8DlDp5W4xcVyePM=
-X-Received: by 2002:a17:906:25db:: with SMTP id n27mr19418931ejb.170.1623750071665;
- Tue, 15 Jun 2021 02:41:11 -0700 (PDT)
+        Tue, 15 Jun 2021 05:46:24 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id BC6F15806F5;
+        Tue, 15 Jun 2021 05:44:19 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Tue, 15 Jun 2021 05:44:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=uPRVNROLX/rJzi54lhE5A5sUE5N
+        81CrRfRMujXEzKCI=; b=YIj48d/M0xtnFPhKoReFlLF2MgTT2wIjG3dCUw0POkS
+        78qjGB7YTQ+QaIgDYrBR9fUM520Frbx6/6oIageDNFmAC0EU3nf1gFlOLgy5oTSr
+        QGA0JSvnIFRwaaIszPRXkaVxCMYEOzpsBlKmqlCICDzSHhr53KT0rW935jFTw7hH
+        PomCPG5vE9clDp+4XSumnRz+oswwZpeE8xXcBmYym7Qedt7Mk9f8KA8VGIBcyZh6
+        tnrxBmiOL2xv3xM9m7DGv+Zl+VusEM0FBVHTs39CQhMT+fcP9JuYHELWTk9FvdDP
+        l2h59pq6+/DyyyFpiOAsgZnFcKqdBlrR5GtpmBVyrQQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=uPRVNR
+        OLX/rJzi54lhE5A5sUE5N81CrRfRMujXEzKCI=; b=bulS1Y6BZFhLrSkfsOFFLi
+        TeJ9+8VKGHf6lca+3/cbsIzdY9d/sTK9Bt4xMOVdKLCirWrnzzbPNE1AtI0V/XSH
+        qiQ9nWX+kL/uLRxg0F61aw4Yr0qVvwEYBsGN0rJhSEcCNcpLYAFr66kHlR1OqBok
+        kZhnsTNzwauj0GaLB5XS2tMqxdJ9AZIsOz/9JTazAIUiBogCCsn6r5kWxms0+0Z9
+        oegcsu/Vq7rjVP//ENmbG/kCvq2VppGSBNtuxSjHWw3dWuqnuWtd8WUtDnKhtuU4
+        ZZa4mA1etS+STeebJbZ6kEso/ADVAyH/YDXT5zJMXT+Jp8ab+JYX6Mreglaw5lTg
+        ==
+X-ME-Sender: <xms:c3bIYFTqrHQwspj04gDRqSjAyWj_oQR6r9vny6dmVAdBAnsWOmFFHQ>
+    <xme:c3bIYOxZjS1yrHkQx0iou-su2V9XtjRE7b2p-ZfeEXbaq2iOjXnCrdh9U4RYgLgAB
+    v_bxyeMV7S15w>
+X-ME-Received: <xmr:c3bIYK2p6ejWeEP5NTgSSkNG3peMXahwVstfUoDy6Aj9muMNyTeY8UhbJctfya0KHnpc5vF5VnkTeo3PfqyEc-FTsYXpn3WP>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvjedgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:c3bIYNAYTtAcvQJSXttGiu6dVqLKrhtvt3gP5VIDs80pUzvUCIUDvQ>
+    <xmx:c3bIYOg0j1fC0EEOhfHXmuSU4Y_vJPpCunkFa4zItYx75TgZ_C49Gw>
+    <xmx:c3bIYBqTSGjDin_gTjlmkeqIBDze3Ha0Mz9OsfznTNz_FmybwU0CCw>
+    <xmx:c3bIYO6RN4PhSIFNLSjwZWeHo5xKXA0ryV5BDva6FJwm9QzbShJTtw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 15 Jun 2021 05:44:18 -0400 (EDT)
+Date:   Tue, 15 Jun 2021 11:44:15 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Steve Glendinning <steve.glendinning@shawell.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: usb: fix possible use-after-free in smsc75xx_bind
+Message-ID: <YMh2b0LvT9H7SuNC@kroah.com>
+References: <20210614153712.2172662-1-mudongliangabcd@gmail.com>
+ <YMhY9NHf1itQyup7@kroah.com>
+ <CAD-N9QVfDQQo0rRiaa6Cx-xO80yox9hNzK91_UVj0KNgkhpvnQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210614102643.797691914@linuxfoundation.org>
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 15 Jun 2021 15:11:00 +0530
-Message-ID: <CA+G9fYvAjapQyx=RR1UK1s3n3EdBQiVNS9Y3DvDfKvGqsqv0fw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/67] 4.19.195-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD-N9QVfDQQo0rRiaa6Cx-xO80yox9hNzK91_UVj0KNgkhpvnQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 at 16:04, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.195 release.
-> There are 67 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 16 Jun 2021 10:26:30 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.195-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, Jun 15, 2021 at 03:56:32PM +0800, Dongliang Mu wrote:
+> On Tue, Jun 15, 2021 at 3:38 PM Greg KH <greg@kroah.com> wrote:
+> >
+> > On Mon, Jun 14, 2021 at 11:37:12PM +0800, Dongliang Mu wrote:
+> > > The commit 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+> > > fails to clean up the work scheduled in smsc75xx_reset->
+> > > smsc75xx_set_multicast, which leads to use-after-free if the work is
+> > > scheduled to start after the deallocation. In addition, this patch also
+> > > removes one dangling pointer - dev->data[0].
+> > >
+> > > This patch calls cancel_work_sync to cancel the schedule work and set
+> > > the dangling pointer to NULL.
+> > >
+> > > Fixes: 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+> > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > > ---
+> > >  drivers/net/usb/smsc75xx.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/drivers/net/usb/smsc75xx.c b/drivers/net/usb/smsc75xx.c
+> > > index b286993da67c..f81740fcc8d5 100644
+> > > --- a/drivers/net/usb/smsc75xx.c
+> > > +++ b/drivers/net/usb/smsc75xx.c
+> > > @@ -1504,7 +1504,10 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
+> > >       return 0;
+> > >
+> > >  err:
+> > > +     cancel_work_sync(&pdata->set_multicast);
+> > >       kfree(pdata);
+> > > +     pdata = NULL;
+> >
+> > Why do you have to set pdata to NULL afterward?
+> >
+> 
+> It does not have to. pdata will be useless when the function exits. I
+> just referred to the implementation of smsc75xx_unbind.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.19.195-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.19.y
-* git commit: 3c1f7bd1707440cbbb07d14370ce120a1a29b79c
-* git describe: v4.19.194-68-g3c1f7bd17074
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.194-68-g3c1f7bd17074
-
-## No regressions (compared to v4.19.194)
-
-
-## No fixes (compared to v4.19.194)
-
-
-## Test result summary
- total: 68535, pass: 53388, fail: 2443, skip: 11628, xfail: 1076,
-
-## Build Summary
-* arm: 97 total, 97 passed, 0 failed
-* arm64: 25 total, 25 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 39 total, 39 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 15 total, 15 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+It's wrong there too :)
