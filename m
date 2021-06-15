@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9233A3A7567
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E122F3A7530
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhFODwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:52:00 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:6502 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhFODv7 (ORCPT
+        id S230382AbhFODe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:34:26 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:33980 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhFODeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:51:59 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G3r7K12ywzZgsy;
-        Tue, 15 Jun 2021 09:18:53 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 09:21:47 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 15 Jun 2021 09:21:46 +0800
-Subject: Re: [PATCH 5.4 00/84] 5.4.126-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210614102646.341387537@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <8e70f6ae-29d1-8cfb-d789-52bed4f1f42d@huawei.com>
-Date:   Tue, 15 Jun 2021 09:21:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+        Mon, 14 Jun 2021 23:34:22 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id E0BDABA865;
+        Tue, 15 Jun 2021 11:32:16 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P16485T139918414178048S1623727934928454_;
+        Tue, 15 Jun 2021 11:32:16 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <88ca8b830136884670bdc08239cae3ae>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: broonie@kernel.org
+X-RCPT-COUNT: 9
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     broonie@kernel.org
+Cc:     jon.lin@rock-chips.com, heiko@sntech.de, robh+dt@kernel.org,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v8 0/6] Support ROCKCHIP SPI new feature
+Date:   Tue, 15 Jun 2021 11:32:07 +0800
+Message-Id: <20210615033213.14241-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2021/6/14 18:26, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.126 release.
-> There are 84 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 16 Jun 2021 10:26:30 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.126-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Changes in v8:
+- There is a problem with the version 7 mail format. resend it
 
-Tested on arm64 and x86 for 5.4.126-rc1,
+Changes in v7:
+- Fall back "rockchip,rv1126-spi" to "rockchip,rk3066-spi"
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.126-rc1
-Commit: 4a2dfe908c1ec200cbcd6d22b4d37a52086af057
-Compiler: gcc version 7.3.0 (GCC)
+Changes in v6:
+- Consider to compatibility, the "rockchip,rk3568-spi" is removed in
+  Series-changes v5, so the commit massage should also remove the
+  corresponding information
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8905
-passed: 8905
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+Changes in v5:
+- Change to leave one compatible id rv1126, and rk3568 is compatible
+  with rv1126
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8905
-passed: 8905
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+Changes in v4:
+- Adjust the order patches
+- Simply commit massage like redundancy "application" content
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+Changes in v3:
+- Fix compile error which is find by Sascha in [v2,2/8]
+
+Jon Lin (6):
+  dt-bindings: spi: spi-rockchip: add description for rv1126
+  spi: rockchip: add compatible string for rv1126
+  spi: rockchip: Set rx_fifo interrupt waterline base on transfer item
+  spi: rockchip: Wait for STB status in slave mode tx_xfer
+  spi: rockchip: Support cs-gpio
+  spi: rockchip: Support SPI_CS_HIGH
+
+ .../devicetree/bindings/spi/spi-rockchip.yaml |  1 +
+ drivers/spi/spi-rockchip.c                    | 95 +++++++++++++++----
+ 2 files changed, 80 insertions(+), 16 deletions(-)
+
+-- 
+2.17.1
+
+
+
