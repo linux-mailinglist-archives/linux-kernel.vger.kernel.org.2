@@ -2,112 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9F53A8706
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA9F3A870A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhFORC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbhFORC4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:02:56 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2DEC0617AF
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:00:51 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id t140so18935881oih.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:00:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OrHpiQTn+IqOBIYO5Pq4UHsLozqCibN36fNoW8gNRD0=;
-        b=w4V+qXiieefOcxwFgrf2VCnoMsgBVXMXyzgY8AURZ60wzDRJPA5ZnwPqtLaoxik+Bm
-         8fnW4ktgfh9cmf77AhchNONIO460nlmJi998joD1MZiXXz+lBlSKrWuuh6cWa0VNUaKt
-         cJo9nMufzTPQtClv0yJ6GGnfXW+Lvgf7eA+50GrQ9RaFKRB8CcvWvPGfrimQZMjCvIpg
-         nd6LJ7BRNrhnS5LCuSvMmbkFwQpdZ0fqcKsMrJpENRAsYEXBvTZOfcFmIb9PlkTLLznc
-         QtEQLqmr1Ywhf6CfQPYZt5aTGvs4fUbh+RRzbexCiMePG6hm9X+TzZoqJ93FFwndXj49
-         HNzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OrHpiQTn+IqOBIYO5Pq4UHsLozqCibN36fNoW8gNRD0=;
-        b=LUCoQ56qBCErn8+nhl7AdW8iVsfUdAHysyz4WRmdmGsQAVvvA6OnY+5jueSgfwQBoe
-         pg7yRYDjszdk730+gQuI77qYO/59MdlF8NmJA6zE2g+t0ZyXWpQHhFsP8CuxsQ+Rm0Yf
-         x9OfwzUO+DYx/9W+B6ngjVlcDEKg8h0oGlXoZzKCpIu9NSDS8EDiMwPGB4pS6I/mW33X
-         OGwTNdGqwq4tIs71i+jp+9laup2uNEUbIYg+lr/jpsXd31FfIEQ3ZCYpfqpf6nh0hjr4
-         7MvBzi3lQ810izcTuP1Y9d+liNa1udTho9t5sz5Gg/8lFUcU82KDgcyex7pP3z6nSsXV
-         rIsA==
-X-Gm-Message-State: AOAM533aJ1Zu8GyymfcUJbPDRz00BCeDhka/ETpmYVmhIYLciqwYMIA1
-        q3ffMfAdwKIYN5nDrT3gpP4c+B8lK3weFNHpWXeC/g==
-X-Google-Smtp-Source: ABdhPJxCnnNnCWSfH0VDaXkPF/u1L+nchxayekHp7hO0jMhZ49QfQK6sS4x7wI7zPaj50rP+V4rbyDHzeAJ3rdd9dHA=
-X-Received: by 2002:aca:4bd7:: with SMTP id y206mr117111oia.40.1623776450766;
- Tue, 15 Jun 2021 10:00:50 -0700 (PDT)
+        id S231186AbhFORDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:03:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229493AbhFORDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 13:03:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D08AF6191D;
+        Tue, 15 Jun 2021 17:01:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623776476;
+        bh=4Q6Y92fZRj5flc5Yj9xaqIZbvJ/uU2szW1HxWt+GQLY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=G8ZskKxWkXu1RWN+HV8uT1RobA+yOjtJ+fz5j+8eAJEn9DgyVD1YOOGC+rUoSa4VV
+         iU+waWLffTNuv7Iosi4ZqwVewVqRSBfzAXkLwCaZnAY3zEcOizOjI5g1AC8VnsyBxp
+         Wehf9TlxT/NtIc4SzW7/MwNmp3ciDY/4AJ+KlSHf9fuWCHmR0y48Zxpsr8sYD6Oxzh
+         wq09cM4aYYKl/3i1KAyTRhILPl/c/YylzUii7VW/T7rdrOmIssvd3aekkE6tdBuIVf
+         IKMEfiblZTNDdvoy+s7v5V6K/jeTHyBFSyE3tNe3V5slJ/cCJziQYmwhQrLppuTj0Y
+         hFaFA5K1d8CzA==
+Message-ID: <a962b43f746fcedc61364cc9244e0be79af203ed.camel@kernel.org>
+Subject: Re: [PATCH 3/3] netfs: fix test for whether we can skip read when
+ writing beyond EOF
+From:   Jeff Layton <jlayton@kernel.org>
+To:     "open list:CEPH DISTRIBUTED..." <ceph-devel@vger.kernel.org>
+Cc:     Andrew W Elble <aweits@rit.edu>, ceph-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        willy@infradead.org
+Date:   Tue, 15 Jun 2021 13:01:14 -0400
+In-Reply-To: <162367683365.460125.4467036947364047314.stgit@warthog.procyon.org.uk>
+References: <162367681795.460125.11729955608839747375.stgit@warthog.procyon.org.uk>
+         <162367683365.460125.4467036947364047314.stgit@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-References: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
- <20210615074543.26700-11-bhupesh.sharma@linaro.org> <0b012d77-8d61-f852-f455-8b6cceb03ebf@somainline.org>
-In-Reply-To: <0b012d77-8d61-f852-f455-8b6cceb03ebf@somainline.org>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Tue, 15 Jun 2021 22:30:39 +0530
-Message-ID: <CAH=2NtzOzA9HmxFUUuhX9Vy=KW3iRSx5HiuD9Cf11v+eijEWsQ@mail.gmail.com>
-Subject: Re: [PATCH v2 10/10] arm64: dts: qcom: sa8155p-adp: Add base dts file
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad,
+On Mon, 2021-06-14 at 14:20 +0100, David Howells wrote:
+> From: Jeff Layton <jlayton@kernel.org>
+> 
+> It's not sufficient to skip reading when the pos is beyond the EOF.
+> There may be data at the head of the page that we need to fill in
+> before the write.
+> 
+> Add a new helper function that corrects and clarifies the logic of
+> when we can skip reads, and have it only zero out the part of the page
+> that won't have data copied in for the write.
+> 
+> Finally, don't set the page Uptodate after zeroing. It's not up to date
+> since the write data won't have been copied in yet.
+> 
+> [DH made the following changes:
+> 
+>  - Prefixed the new function with "netfs_".
+> 
+>  - Don't call zero_user_segments() for a full-page write.
+> 
+>  - Altered the beyond-last-page check to avoid a DIV instruction and got
+>    rid of then-redundant zero-length file check.
+> ]
+> 
+> Fixes: e1b1240c1ff5f ("netfs: Add write_begin helper")
+> Reported-by: Andrew W Elble <aweits@rit.edu>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: ceph-devel@vger.kernel.org
+> Link: https://lore.kernel.org/r/20210613233345.113565-1-jlayton@kernel.org/
+> ---
+> 
+>  fs/netfs/read_helper.c |   49 +++++++++++++++++++++++++++++++++++-------------
+>  1 file changed, 36 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
+> index 725614625ed4..70a5b1a19a50 100644
+> --- a/fs/netfs/read_helper.c
+> +++ b/fs/netfs/read_helper.c
+> @@ -1011,12 +1011,42 @@ int netfs_readpage(struct file *file,
+>  }
+>  EXPORT_SYMBOL(netfs_readpage);
+>  
+> -static void netfs_clear_thp(struct page *page)
+> +/**
+> + * netfs_skip_page_read - prep a page for writing without reading first
+> + * @page: page being prepared
+> + * @pos: starting position for the write
+> + * @len: length of write
+> + *
+> + * In some cases, write_begin doesn't need to read at all:
+> + * - full page write
+> + * - write that lies in a page that is completely beyond EOF
+> + * - write that covers the the page from start to EOF or beyond it
+> + *
+> + * If any of these criteria are met, then zero out the unwritten parts
+> + * of the page and return true. Otherwise, return false.
+> + */
+> +static noinline bool netfs_skip_page_read(struct page *page, loff_t pos, size_t len)
+>  {
+> -	unsigned int i;
+> +	struct inode *inode = page->mapping->host;
+> +	loff_t i_size = i_size_read(inode);
+> +	size_t offset = offset_in_thp(page, pos);
+> +
+> +	/* Full page write */
+> +	if (offset == 0 && len >= thp_size(page))
+> +		return true;
+> +
+> +	/* pos beyond last page in the file */
+> +	if (pos - offset >= i_size)
+> +		goto zero_out;
+> +
+> +	/* Write that covers from the start of the page to EOF or beyond */
+> +	if (offset == 0 && (pos + len) >= i_size)
+> +		goto zero_out;
+>  
+> -	for (i = 0; i < thp_nr_pages(page); i++)
+> -		clear_highpage(page + i);
+> +	return false;
+> +zero_out:
+> +	zero_user_segments(page, 0, offset, offset + len, thp_size(page));
+> +	return true;
+>  }
+>  
+>  /**
+> @@ -1024,7 +1054,7 @@ static void netfs_clear_thp(struct page *page)
+>   * @file: The file to read from
+>   * @mapping: The mapping to read from
+>   * @pos: File position at which the write will begin
+> - * @len: The length of the write in this page
+> + * @len: The length of the write (may extend beyond the end of the page chosen)
+>   * @flags: AOP_* flags
+>   * @_page: Where to put the resultant page
+>   * @_fsdata: Place for the netfs to store a cookie
+> @@ -1061,8 +1091,6 @@ int netfs_write_begin(struct file *file, struct address_space *mapping,
+>  	struct inode *inode = file_inode(file);
+>  	unsigned int debug_index = 0;
+>  	pgoff_t index = pos >> PAGE_SHIFT;
+> -	int pos_in_page = pos & ~PAGE_MASK;
+> -	loff_t size;
+>  	int ret;
+>  
+>  	DEFINE_READAHEAD(ractl, file, NULL, mapping, index);
+> @@ -1090,13 +1118,8 @@ int netfs_write_begin(struct file *file, struct address_space *mapping,
+>  	 * within the cache granule containing the EOF, in which case we need
+>  	 * to preload the granule.
+>  	 */
+> -	size = i_size_read(inode);
+>  	if (!ops->is_cache_enabled(inode) &&
+> -	    ((pos_in_page == 0 && len == thp_size(page)) ||
+> -	     (pos >= size) ||
+> -	     (pos_in_page == 0 && (pos + len) >= size))) {
+> -		netfs_clear_thp(page);
+> -		SetPageUptodate(page);
+> +	    netfs_skip_page_read(page, pos, len)) {
+>  		netfs_stat(&netfs_n_rh_write_zskip);
+>  		goto have_page_no_wait;
+>  	}
+> 
+> 
 
-Thanks for the review.
+I've gone ahead and merged this into the ceph/testing branch since it is
+a data corruptor. Once this patch goes into mainline, we'll drop that
+patch and rebase onto that commit.
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-On Tue, 15 Jun 2021 at 20:23, Konrad Dybcio
-<konrad.dybcio@somainline.org> wrote:
->
-> Hi,
->
->
-> > +
-> > +     reset-gpios = <&tlmm 175 GPIO_ACTIVE_LOW>;
-> > +
-> > +     vcc-supply = <&vreg_l10a_2p96>;
-> > +     vcc-max-microamp = <750000>;
-> > +     vccq-supply = <&vreg_l5c_1p2>;
-> > +     vccq-max-microamp = <700000>;
-> > +     vccq2-supply = <&vreg_s4a_1p8>;
-> > +     vccq2-max-microamp = <750000>;
->
-> You need to add "regulator-allow-set-load;" to the mentioned supplies,
->
-> as you're controlling the amperage here.
-
-Ok, I will fix this in v3.
-
-> > +};
-> > +
-> > +&ufs_mem_phy {
-> > +     status = "okay";
-> > +
-> > +     vdda-phy-supply = <&vreg_l8c_1p2>;
-> > +     vdda-max-microamp = <87100>;
-> > +     vdda-pll-supply = <&vreg_l5a_0p88>;
-> > +     vdda-pll-max-microamp = <18300>;
->
-> Ditto
-
-Sure, I will fix it in v3.
-
-Thanks,
-Bhupesh
