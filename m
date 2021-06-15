@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C203A82DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54623A82F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231256AbhFOObA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:31:00 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34093 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbhFOOa5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:30:57 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1ltA3b-00045E-Fl; Tue, 15 Jun 2021 14:28:47 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ice: remove redundant continue statement in a for-loop
-Date:   Tue, 15 Jun 2021 15:28:47 +0100
-Message-Id: <20210615142847.60161-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S231350AbhFOOfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:35:52 -0400
+Received: from gate.crashing.org ([63.228.1.57]:54008 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231307AbhFOOfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 10:35:51 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 15FEUdaR001580;
+        Tue, 15 Jun 2021 09:30:39 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 15FEUc51001579;
+        Tue, 15 Jun 2021 09:30:38 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 15 Jun 2021 09:30:38 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] module: add elf_check_module_arch for module specific elf arch checks
+Message-ID: <20210615143038.GH5077@gate.crashing.org>
+References: <20210611093959.821525-1-npiggin@gmail.com> <20210611093959.821525-2-npiggin@gmail.com> <YMdGWjBOmcstBwOl@p200300cbcf109700df096d564fe976c3.dip0.t-ipconnect.de> <1623722110.amu32mwaqs.astroid@bobo.none> <YMiaZOqhHck9iy0n@p200300cbcf109700df096d564fe976c3.dip0.t-ipconnect.de> <20210615125057.GF5077@gate.crashing.org> <YMit7PZwiB87ig2u@p200300cbcf109700df096d564fe976c3.dip0.t-ipconnect.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMit7PZwiB87ig2u@p200300cbcf109700df096d564fe976c3.dip0.t-ipconnect.de>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, Jun 15, 2021 at 03:41:00PM +0200, Jessica Yu wrote:
+> +++ Segher Boessenkool [15/06/21 07:50 -0500]:
+> >On Tue, Jun 15, 2021 at 02:17:40PM +0200, Jessica Yu wrote:
+> >>+int __weak elf_check_module_arch(Elf_Ehdr *hdr)
+> >>+{
+> >>+       return 1;
+> >>+}
+> >
+> >But is this a good idea?  It isn't useful to be able to attempt to load
+> >a module not compiled for your architecture, and it increases the attack
+> >surface tremendously.  These checks are one of the few things that can
+> >*not* be weak symbols, imo.
+> 
+> Hm, could you please elaborate a bit more? This patchset is adding
+> extra Elf header checks specifically for powerpc, and the module
+> loader usually provides arch-specific hooks via weak symbols. We are
+> just providing an new hook here, which should act as a no-op if it
+> isn't used.
+> 
+> So if an architecture wants to provide extra header checks, it can do
+> so by overriding the new weak symbol. Otherwise, the weak function acts as
+> a noop. We also already have the existing elf_check_arch() check for each
+> arch and that is *not* a weak symbol.
 
-The continue statement in the for-loop is redundant. Re-work the hw_lock
-check to remove it.
+The way I read your patch the default elf_check_module_arch does not
+call elf_check_arch?  Is that clearly called elsewhere and I'm just
+dumb again?  Sorry for the distraction in that case :-/
 
-Addresses-Coverity: ("Continue has no effect")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/ethernet/intel/ice/ice_ptp_hw.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_ptp_hw.c b/drivers/net/ethernet/intel/ice/ice_ptp_hw.c
-index 267312fad59a..3eca0e4eab0b 100644
---- a/drivers/net/ethernet/intel/ice/ice_ptp_hw.c
-+++ b/drivers/net/ethernet/intel/ice/ice_ptp_hw.c
-@@ -410,13 +410,11 @@ bool ice_ptp_lock(struct ice_hw *hw)
- 	for (i = 0; i < MAX_TRIES; i++) {
- 		hw_lock = rd32(hw, PFTSYN_SEM + (PFTSYN_SEM_BYTES * hw->pf_id));
- 		hw_lock = hw_lock & PFTSYN_SEM_BUSY_M;
--		if (hw_lock) {
--			/* Somebody is holding the lock */
--			usleep_range(10000, 20000);
--			continue;
--		} else {
-+		if (!hw_lock)
- 			break;
--		}
-+
-+		/* Somebody is holding the lock */
-+		usleep_range(10000, 20000);
- 	}
- 
- 	return !hw_lock;
--- 
-2.31.1
-
+Segher
