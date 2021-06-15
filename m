@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634F13A8BF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 00:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE783A8BF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 00:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhFOWmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 18:42:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhFOWmJ (ORCPT
+        id S230334AbhFOWp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 18:45:58 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:55061 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229908AbhFOWp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 18:42:09 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D0FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 15:40:03 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id w127so267366oig.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 15:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FjTlkg9HTKYPNQ6rTdKTsbehN1/6cFTQ2pi4yksTAgk=;
-        b=XDz27kZZX+QjBrZPSqflKRb/wh1fcy/af2rHpxqucNV7a0VTYwcF5FRGpF7bqBHCZB
-         sUBG77qp5izO2Ya46JP6CSIKeYCebRQjdRrjpvOZihNo92WeXwqVKxA6Ip3Ph8511QnD
-         4yGldtUZNWep7+OIVBO9cNh9Zh1BFfJ9LGGDHIQuHg+ib3eJPoxTd7KufYnzzp8gUeTG
-         kYUtfG8S5Ht1H6Fyt6XBrC2XohPQlateJwA/kJ3lL2p0Er355HkG+Ahjih9Pt9i5rMYw
-         qTuj+uIHX8IPlF8wI6bn3EagKA3hUQnVydrGhrXJqFDD84PEBKNPpVzZX6oOHs6o87HX
-         LheQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FjTlkg9HTKYPNQ6rTdKTsbehN1/6cFTQ2pi4yksTAgk=;
-        b=mwjKxGY3DRFNMubPrwj79lOMZqqW9nU1Vycy0RuPkpM7nUnTGr72Dqk1h+1YI8i1YU
-         PT/JTQuxoQXnZQin1ONMZojF3v+6aynJxZiuyTp1sMGwHUJerpGuJzJi7qXgf2p3AmzW
-         Xu/u5qi5ijDFqdKy8711c2NpXDXzERAkCBpVun64ScFI7OI1LYJgsqQGSsjk2+3AoWxp
-         caWEXCEY36xu+esDRn7gEsJZgwHmgJT7Rg+1fH87Js7NAVujhysaWJIoTJ2Zf6UNoXhQ
-         BNvvoPe0qE+u8NKYUfDeqBu14d8ihL/NAOst+SxsIquQMyJQ188U5hZIXj3F0Nz801hH
-         tJtQ==
-X-Gm-Message-State: AOAM5305qA7O4vQrZeOzRRPFt+qFjLLfdfy32kcVgCj12WmOl9ImSv+O
-        RxGneyI00ltMq0IcDLU/Itrvt7YmBi9BS+7oWlpF9A==
-X-Google-Smtp-Source: ABdhPJzT3bm/OStyazgk1zy8otTaykTz1x4356J5GCc8RRL7Ou/AqkZ60+dxhqdXV4LsdHJ+a/m9inZkb/jTvnPp+d0=
-X-Received: by 2002:aca:1201:: with SMTP id 1mr4781940ois.6.1623796802294;
- Tue, 15 Jun 2021 15:40:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210615164535.2146172-1-seanjc@google.com> <20210615164535.2146172-4-seanjc@google.com>
-In-Reply-To: <20210615164535.2146172-4-seanjc@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 15 Jun 2021 15:39:51 -0700
-Message-ID: <CALMp9eSkVaDfCJwW1eds=7H7yn2pKJPKoFVpc1GQcEqGD5S0Dg@mail.gmail.com>
-Subject: Re: [PATCH 3/4] KVM: x86: WARN and reject loading KVM if NX is
- supported but not enabled
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 15 Jun 2021 18:45:57 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D1FE458065E;
+        Tue, 15 Jun 2021 18:43:51 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Tue, 15 Jun 2021 18:43:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=a1n+H/r58DrOu+6wcj/wMJNk6uExtCA
+        2MLS3ZO7f12A=; b=lGj6R/+66HbO6xVEUCX76buv6MYW71elWUJJuPrcmmLSVGg
+        svKC7FWTrs8kgjbZxZeevSFXao36yqVtBxP/SJjx7aqv5whuhtbhcgyvsqYBGnnz
+        POsQYIVK+X62IRl4ktGGovtB/7KclgEiWAsVnWyaWh0y2/KQEKZnWWpJrVd5BFDi
+        j1B1nTeLok8Hej78jMj7Edlesnvkr41HGlvwhBkvIQ5rcjjFMiG21qWzkoOxIbKb
+        FgpLrlZw40QXDDqPj+l4ubawV9pN+Z9CdPoddm+8sO0vKtKOaug8ZhbUn2Mkpxfz
+        oH/uBFekOOTAyJctyhS5ZFS8Duo/IZluq9vzdSg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=a1n+H/
+        r58DrOu+6wcj/wMJNk6uExtCA2MLS3ZO7f12A=; b=GqZUIEzV6YS275fl4SANx+
+        mZErkEiN8pmieruei/4/wp0ZasHnttA8jHvz4L1dfXbZomBqaTVxxXzs4z4sjDJc
+        QOVQWIM8G9gdpT6vIDkOQkfunV00dXbrhn2kAkQrRfPZmqg2KIVUzeTBPt2kJI5d
+        6sFKhkeibJSOLDNU2dKLF9GSdG1L1R/Yq3rv/kwbQZ12oQb+1na1q5WqgbdJx+HU
+        RobnuRNPk+DTNV/zTGAZXpX6+kerNGrABlmtgR80TTjUjKRbNW7xB3ZoSfjaPvrz
+        sUUbpxvh24Op2NBqtJCRfUBGhMC0nWFicI6piKdc71NHLIXjgVn7pSfA42kGZtXA
+        ==
+X-ME-Sender: <xms:JS3JYLFzeUG-G4ItQU95L2gbxSG-t77RqVTH8B4ylREYwkm7YCifLg>
+    <xme:JS3JYIVkyWuKHOZn0IqTg2KlJCobHOa936ZCHz1Q9z4-6s5CDPm3xdyXZz5mWGpVo
+    KY1qwna4kxNwy5APg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvkedguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
+    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:JS3JYNKiC80ZuBJ-BT-1pDa6_TI8kQttNo46T0kSG2r3f0eXEAsJfQ>
+    <xmx:JS3JYJFruDxowjGWIQWZRpqCPBut-k8QluPUfUcVp-IL-wLsjiRGSg>
+    <xmx:JS3JYBXXGa9e4LBN02HKMxWEQ_CXdUYqw4tYUCsqfsjN6sv5AuLivw>
+    <xmx:Jy3JYCUF5sJgpAE65-7bbyiFrhZTXai1EEe-rJYJcUoyN2N-kZyGGQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 6B5F3A00079; Tue, 15 Jun 2021 18:43:49 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <b1b7fd82-3edf-41a6-baa6-530bcf76c3ca@www.fastmail.com>
+In-Reply-To: <20210615184657.GF2921206@minyard.net>
+References: <20210608104757.582199-1-andrew@aj.id.au>
+ <20210615184657.GF2921206@minyard.net>
+Date:   Wed, 16 Jun 2021 08:13:27 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Corey Minyard" <minyard@acm.org>
+Cc:     openipmi-developer@lists.sourceforge.net, openbmc@lists.ozlabs.org,
+        devicetree@vger.kernel.org, "Tomer Maimon" <tmaimon77@gmail.com>,
+        linux-aspeed@lists.ozlabs.org,
+        "Avi Fishman" <avifishman70@gmail.com>,
+        "Patrick Venture" <venture@google.com>,
+        linux-kernel@vger.kernel.org, "Tali Perry" <tali.perry1@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        linux-arm-kernel@lists.infradead.org,
+        "Benjamin Fair" <benjaminfair@google.com>,
+        "Arnd Bergmann" <arnd@arndb.de>, "Zev Weiss" <zweiss@equinix.com>,
+        "Joel Stanley" <joel@jms.id.au>, "CS20 KWLiu" <KWLIU@nuvoton.com>
+Subject: Re: [PATCH v4 00/16] ipmi: Allow raw access to KCS devices
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 9:45 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> WARN if NX is reported as supported but not enabled in EFER.  All flavors
-> of the kernel, including non-PAE 32-bit kernels, set EFER.NX=1 if NX is
-> supported, even if NX usage is disable via kernel command line.  KVM relies
-> on NX being enabled if it's supported, e.g. KVM will generate illegal NPT
-> entries if nx_huge_pages is enabled and NX is supported but not enabled.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/x86.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index acc28473dec7..1f6595df45de 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10981,6 +10981,9 @@ int kvm_arch_hardware_setup(void *opaque)
->         int r;
->
->         rdmsrl_safe(MSR_EFER, &host_efer);
-> +       if (WARN_ON_ONCE(boot_cpu_has(X86_FEATURE_NX) &&
-> +                        !(host_efer & EFER_NX)))
-> +               return -EIO;
 
-Input/output error? Is that really the most appropriate error here?
-Why not, say, -ENOTSUP?
 
-I'm sure there's some arcane convention here that I'm not privy to. :-)
+On Wed, 16 Jun 2021, at 04:16, Corey Minyard wrote:
+> On Tue, Jun 08, 2021 at 08:17:41PM +0930, Andrew Jeffery wrote:
+> > 
+> > Hello,
+> > 
+> > This is the 4th spin of the series refactoring the keyboard-controller-style
+> > device drivers in the IPMI subsystem.
+> 
+> Ok, no comments and everything looks good, I have this queued for the
+> next Linux release.
 
-Reviewed-by: Jim Mattson <jmattson@google.com>
+Thanks!
+
+Andrew
