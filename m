@@ -2,124 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F354A3A7CE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B1F3A7CEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhFOLNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhFOLNm (ORCPT
+        id S229520AbhFOLOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:14:36 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:60045 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229601AbhFOLO2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:13:42 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA8CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:11:37 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id ho18so21911744ejc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=k1SSaOFL103AMAONbChdnTYHUZQvV/y1/SVM/t/fuc4=;
-        b=mWBbAmB0J77L2TOkDbqBoNLfNRJy6g+fNM+blXTiF0xY4cgZW1J2rTKLqw26JVKJ8J
-         ao6Jil/T5PKryfPJqzklFDqBlOLLCEq3leUVetnhfhjLuP1RZyPk3WSsGrWWFdVkWslK
-         2CUiW5IJR72m2ENpUEuc37B7YWR+6oHeqkst7DUjzMxbl3aHyQ0rZuYBrH4M+bnXe0lC
-         R28WUqvZ+zWkTFAyKolJsOJd9epVY2852y1AmN7PXypYQSnuIqlqgUhP51r6F+FK1zjn
-         UYt/eFKh1aBbt0EKO1dyaJVEV1EsXiIjvyx01AAN3+uY3ZdfZL7qDa45YU/XJDb1s26g
-         gxnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=k1SSaOFL103AMAONbChdnTYHUZQvV/y1/SVM/t/fuc4=;
-        b=lmq2p5z4y+K71WIqGcY8xNRhqDulcNQMYoVTst2iU4psEXEEmiEBu59sV/GUfRh9n0
-         yMxIK4ixOrVP07hmAHI5C6WtGGdgGKDHLz+odhIIX1qSd36953BRWB88LOP7iIitSbKl
-         vZ7Q6FT6CeoP35EMn0voKTR6Q/An87BzkQ6G39hoosREtQEo1A19sIzgfp0vxWRlo3j7
-         qpLCn0JU5vGcoviWcPl9/Y03sC9T1hvPZcV5NCwFsOPTGOEQfOTVHFTEGezr6py007el
-         Np5HYhPqUMtbhzMOHl39RzRpQ3tJ4nTG9i3o5xWP/5KEoydEgxQvCKCmFskmN+Rt3RM+
-         gigA==
-X-Gm-Message-State: AOAM531UjBVbfwCnzreGKqgc9VpUdlOhxaiTwB40AobvtSBSF2CbtM6S
-        /TOa+GjQaEqoq/TgRfhwB1/wA4O1GfiFYkE4gEP5OA==
-X-Google-Smtp-Source: ABdhPJzACpUJFPW4Jg/dbptIEAjHCRIid2wjLyxhMrJQ+DpOlTjF33IgJ9FqqaxZOlKgGWumnKTXH/qJTbO8ftH9cec=
-X-Received: by 2002:a17:906:9d05:: with SMTP id fn5mr19815485ejc.133.1623755496317;
- Tue, 15 Jun 2021 04:11:36 -0700 (PDT)
+        Tue, 15 Jun 2021 07:14:28 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2909B5808D9;
+        Tue, 15 Jun 2021 07:12:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 15 Jun 2021 07:12:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=9Q6KDp2HWna3rxZivpNB7NpzF6d
+        wHBZaHCxz9AOstAo=; b=VO1TcpCOxfXH3sxQowoQcl75VH48aPea2qp+QAdYfyN
+        /YH7qGFT+GA1PsFaIbHL7xLq+M/t8KGQinALWSK3ocGOq3mRg6PFtGY6WXIdpXCK
+        XYcx82cKdjEB2OKfrMfglX7zpcQk+M6Yu02RBEFA3pBVVd6rplPtRyLo81WlXVeb
+        5Z5jf/BmyYxiCGw20t+o1P/j9IIz34aMOrOXDdDwFUHdRNnO2fB2+63ACXg4ckhh
+        LdM33XMDpmcI4Qvhc/cJhTg1bR/B/ykLQ5buUUHdMCBZSPXPGuA0aq/zqxONI2yl
+        Qs4VEiSKSmzs168xEtVNJ+yum1vDfvPVHr2rTak1X7g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=9Q6KDp
+        2HWna3rxZivpNB7NpzF6dwHBZaHCxz9AOstAo=; b=W1FCPA7R8Q4QZWMjtIOYbO
+        3essXw18DAQP9FvCgS6bIY37SDq3hNKzEpbuyM8etfT0SjPDoMbh+c0goBNMguWp
+        TcEahIFdsLbm68tksyY+anScdXDmiAygPrjGQxoaAQHetdW78vEgQhmfk+qSxilQ
+        5oPu+z+8zGj5BmleSskJxNuO8PMCWF1kLgqD2prfFNdax09KiI4nQ+eiw7veW/iA
+        Zcd3NEWWeSydTW+qwDXQmaaz5n02y64eZaOZEHdrextyWRJCeyIuU1jmV+uLznKt
+        SSPcj/0yBkyfptjxOfW49U5XRQprEO58o2J3Moo6RQC9ubBl4fqpG1dX5NP/AAZA
+        ==
+X-ME-Sender: <xms:FovIYHI6FQPs744CBPhrLBt-6huMUL7aRIELsQkO21C97HdZ8M5MHA>
+    <xme:FovIYLJqmmf85oR2-hMw4NnOIvhESVlxgrQ-Z6OI6y5oZrHu-fBUAt-6YhQVA_E3J
+    rkEwDzkrvfO9A>
+X-ME-Received: <xmr:FovIYPuxE4jvdI8WJ0sTboB4yOYGp4V7F51QjwPcQS2gJGngZflDsrij7Rrv_FcDG39wuOjR7ay-HsqzkAuOzhBLUOBpOHMS>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvjedgfeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevhefgje
+    eitdfffefhvdegleeigeejgeeiffekieffjeeflefhieegtefhudejueenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:FovIYAa2kaTzgW2gzRSBSbUWKxLRIRfIznpZ6-8HIYmpidSXLOsq2A>
+    <xmx:FovIYOaoXznIKP-7V9MIKnAN_aC7b25sE_J-lROsW-2DbSZcfdcSaw>
+    <xmx:FovIYEAqaAh1O_dViNm1InHclTGi435Ccz5D-ZTOyiE3lKMZdhnNtg>
+    <xmx:F4vIYEy7A4CXP1uTvGbOR77Cbd5zElVCN-w1Y6xZFanI44lm-V0aiA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 15 Jun 2021 07:12:22 -0400 (EDT)
+Date:   Tue, 15 Jun 2021 13:12:20 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Steve Glendinning <steve.glendinning@shawell.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: usb: fix possible use-after-free in smsc75xx_bind
+Message-ID: <YMiLFFRfXfBHpfAF@kroah.com>
+References: <20210614153712.2172662-1-mudongliangabcd@gmail.com>
+ <YMhY9NHf1itQyup7@kroah.com>
+ <CAD-N9QVfDQQo0rRiaa6Cx-xO80yox9hNzK91_UVj0KNgkhpvnQ@mail.gmail.com>
+ <YMh2b0LvT9H7SuNC@kroah.com>
+ <CAD-N9QV+GMURatPx4qJT2nMsKHQhj+BXC9C-ZyQed3pN8a9YUA@mail.gmail.com>
+ <CAD-N9QW6LhRO+D-rr4xCCuq+m=jtD7LS_+GDVs9DkHe5paeSOg@mail.gmail.com>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 15 Jun 2021 16:41:25 +0530
-Message-ID: <CA+G9fYvvm2tW5QAe9hzPgs7sV8udsoufxs0Qu6N0ZjV0Z686vw@mail.gmail.com>
-Subject: [next] [arm64] kernel BUG at arch/arm64/mm/physaddr.c
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, lkft-triage@lists.linaro.org,
-        regressions@lists.linux.dev
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD-N9QW6LhRO+D-rr4xCCuq+m=jtD7LS_+GDVs9DkHe5paeSOg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following kernel crash reported while boot linux next 20210615 tag on qemu_arm64
-with allmodconfig build.
+On Tue, Jun 15, 2021 at 06:24:17PM +0800, Dongliang Mu wrote:
+> On Tue, Jun 15, 2021 at 6:10 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> >
+> > On Tue, Jun 15, 2021 at 5:44 PM Greg KH <greg@kroah.com> wrote:
+> > >
+> > > On Tue, Jun 15, 2021 at 03:56:32PM +0800, Dongliang Mu wrote:
+> > > > On Tue, Jun 15, 2021 at 3:38 PM Greg KH <greg@kroah.com> wrote:
+> > > > >
+> > > > > On Mon, Jun 14, 2021 at 11:37:12PM +0800, Dongliang Mu wrote:
+> > > > > > The commit 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+> > > > > > fails to clean up the work scheduled in smsc75xx_reset->
+> > > > > > smsc75xx_set_multicast, which leads to use-after-free if the work is
+> > > > > > scheduled to start after the deallocation. In addition, this patch also
+> > > > > > removes one dangling pointer - dev->data[0].
+> > > > > >
+> > > > > > This patch calls cancel_work_sync to cancel the schedule work and set
+> > > > > > the dangling pointer to NULL.
+> > > > > >
+> > > > > > Fixes: 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+> > > > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > > > > > ---
+> > > > > >  drivers/net/usb/smsc75xx.c | 3 +++
+> > > > > >  1 file changed, 3 insertions(+)
+> > > > > >
+> > > > > > diff --git a/drivers/net/usb/smsc75xx.c b/drivers/net/usb/smsc75xx.c
+> > > > > > index b286993da67c..f81740fcc8d5 100644
+> > > > > > --- a/drivers/net/usb/smsc75xx.c
+> > > > > > +++ b/drivers/net/usb/smsc75xx.c
+> > > > > > @@ -1504,7 +1504,10 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
+> > > > > >       return 0;
+> > > > > >
+> > > > > >  err:
+> > > > > > +     cancel_work_sync(&pdata->set_multicast);
+> > > > > >       kfree(pdata);
+> > > > > > +     pdata = NULL;
+> > > > >
+> > > > > Why do you have to set pdata to NULL afterward?
+> > > > >
+> > > >
+> > > > It does not have to. pdata will be useless when the function exits. I
+> > > > just referred to the implementation of smsc75xx_unbind.
+> > >
+> > > It's wrong there too :)
+> >
+> > /: I will fix such two sites in the v2 patch.
+> 
+> Hi gregkh,
+> 
+> If the schedule_work is not invoked, can I call
+> ``cancel_work_sync(&pdata->set_multicast)''?
 
-[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]
-[    0.000000] Linux version 5.13.0-rc6-next-20210615
-(tuxmake@ac7978cddede) (aarch64-linux-gnu-gcc (Debian 11.1.0-1)
-11.1.0, GNU ld (GNU Binutils for Debian) 2.36.50.20210601) #1 SMP
-PREEMPT Tue Jun 15 10:20:51 UTC 2021
-[    0.000000] Machine model: linux,dummy-virt
-[    0.000000] earlycon: pl11 at MMIO 0x0000000009000000 (options '')
-[    0.000000] printk: bootconsole [pl11] enabled
-[    0.000000] efi: UEFI not found.
-[    0.000000] NUMA: No NUMA configuration found
-[    0.000000] NUMA: Faking a node at [mem
-0x0000000040000000-0x00000000bfffffff]
-[    0.000000] NUMA: NODE_DATA [mem 0xbfc00d40-0xbfc03fff]
-[    0.000000] ------------[ cut here ]------------
-[    0.000000] kernel BUG at arch/arm64/mm/physaddr.c:27!
-[    0.000000] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-[    0.000000] Modules linked in:
-[    0.000000] CPU: 0 PID: 0 Comm: swapper Tainted: G                T
-5.13.0-rc6-next-20210615 #1 c150a8161d8ff395c5ae7ee0c3c8f22c3689fae4
-[    0.000000] Hardware name: linux,dummy-virt (DT)
-[    0.000000] pstate: 404000c5 (nZcv daIF +PAN -UAO -TCO BTYPE=--)
-[    0.000000] pc : __phys_addr_symbol+0x44/0xc0
-[    0.000000] lr : __phys_addr_symbol+0x44/0xc0
-[    0.000000] sp : ffff800014287b00
-[    0.000000] x29: ffff800014287b00 x28: fc49a9b89db36f0a x27: ffffffffffffffff
-[    0.000000] x26: 0000000000000280 x25: 0000000000000010 x24: ffff8000145a8000
-[    0.000000] x23: 0000000008000000 x22: 0000000000000010 x21: 0000000000000000
-[    0.000000] x20: ffff800010000000 x19: ffff00007fc00d40 x18: 0000000000000000
-[    0.000000] x17: 00000000003ee000 x16: 00000000bfc12000 x15: 0000001000000000
-[    0.000000] x14: 000000000000de8c x13: 0000001000000000 x12: 00000000f1f1f1f1
-[    0.000000] x11: dfff800000000000 x10: ffff700002850eea x9 : 0000000000000000
-[    0.000000] x8 : ffff00007fbe0d40 x7 : 0000000000000000 x6 : 000000000000003f
-[    0.000000] x5 : 0000000000000040 x4 : 0000000000000005 x3 : ffff8000142bb0c0
-[    0.000000] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000000
-[    0.000000] Call trace:
-[    0.000000]  __phys_addr_symbol+0x44/0xc0
-[    0.000000]  sparse_init_nid+0x98/0x6d0
-[    0.000000]  sparse_init+0x460/0x4d4
-[    0.000000]  bootmem_init+0x110/0x340
-[    0.000000]  setup_arch+0x1b8/0x2e0
-[    0.000000]  start_kernel+0x110/0x870
-[    0.000000]  __primary_switched+0xa8/0xb0
-[    0.000000] Code: 940ccf23 eb13029f 54000069 940cce60 (d4210000)
-[    0.000000] random: get_random_bytes called from
-oops_exit+0x54/0xc0 with crng_init=0
-[    0.000000] ---[ end trace 0000000000000000 ]---
-[    0.000000] Kernel panic - not syncing: Oops - BUG: Fatal exception
-[    0.000000] ---[ end Kernel panic - not syncing: Oops - BUG: Fatal
-exception ]---
+Why can you not call this then?
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Did you try it and see?
 
---
-Linaro LKFT
-https://lkft.linaro.org
+thanks,
+
+greg k-h
