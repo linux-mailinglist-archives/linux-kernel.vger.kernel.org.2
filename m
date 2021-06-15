@@ -2,171 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37183A7DDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D2D3A7DDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhFOMJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:09:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230241AbhFOMJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:09:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B67CC61437;
-        Tue, 15 Jun 2021 12:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623758831;
-        bh=06ztI+MTLaXy1iv82xOZiQE88Vi8ZQzLJLj4x4b5etQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PXKvwelSaU9vMTvzZjdjKHMSdeSuz6nQp56HRHJIdpj7cpkU6HAfBNVj6qt9w/+h2
-         LAvJNd/82DooX5hr+TR9vvbKyJgr/V/DdIpZtJ6JehJQj5pPcIhiw6rSG8QzlgkUL5
-         bXm6uVO0WVSo9nXmXT+3rXzFQpHtKwNo8TYXrTkM=
-Date:   Tue, 15 Jun 2021 14:07:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] serial: 8250: Fixes for Oxford Semiconductor 950
- UARTs
-Message-ID: <YMiX7LAEtL0uQuVl@kroah.com>
-References: <alpine.DEB.2.21.2106071700090.1601@angie.orcam.me.uk>
+        id S230431AbhFOMJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229983AbhFOMJm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 08:09:42 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CBBC061574;
+        Tue, 15 Jun 2021 05:07:38 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id g8so22182534ejx.1;
+        Tue, 15 Jun 2021 05:07:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F2WOp7laceuxMILuVpXWmQIN4CP/UaKDpQrNGuoiets=;
+        b=bpIE1xt9f4WHxc1LIBkz+TxemnxivXcZLk3PGwB9kZY3wEhtdoaHdaNGjkp0jFD8k1
+         N1iud+3xq0b+kGQuusZcT2CSyTBCurvuJk3iQ1PecywAzsAAnwEzpDHqQfYUln9+Zoi0
+         6RqzEA8NfkaBoMoOC+vPlk37DoBwqMlk/1m888jTNKYAB1au9ay8aouvG2bYtURbnkZI
+         XCnW5XJDnlQaL4QXdOvH9KsYWG/mwwG3mMRi5kTARQfWRBO8a25rUlvHJAoa3CI6Y+yF
+         8mfFFIGh05/+67prKlVF/nksi253pKlnzlwVxYW5cOG3tQ5G7u5SLvfq73fukSLKP2tP
+         LGMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F2WOp7laceuxMILuVpXWmQIN4CP/UaKDpQrNGuoiets=;
+        b=mgdkzI93KEinQ3qkKM6oUwjO5VJJtysgAA8J8u5VSMhES2fQIjDrgqGXky11cmcP0C
+         /cGm52QwjCZj7WgsEt+U8q4Psza/YD7z4P2A4BRselRqcCMcjsO3SG5Ug0bZWTPVl5zA
+         C56T8WNkWAQ7nhhttAtMoOtHM7uaV1wZt3ucqf47qqgWyIFDiDQpo9G2cOJ1VOPbIYyy
+         FmbwHuJzI57fKsem7uaLiww98d4NXY92lhMJDxYdZMwiA5f0SCMWDLSh+bY/GA7AbHhU
+         Pdq7kW5ve/SR2fzE6NKGoUXqmuHwWPedDwuXLTKyZT5ugOYWfMf8N+oZt/dLwGqhlp4z
+         PUPg==
+X-Gm-Message-State: AOAM531Dti6SR9C8W104FFkno90Vs5HAjDmnzJISH9vHntrw+1RklMJZ
+        zEc0Q3gUJjl7dD9SH2oGCgxNwRWcxTcewYrGdBE=
+X-Google-Smtp-Source: ABdhPJw1witA7P6CqSUgKjswjF/s/f7Lze23dP/muWUzifZszk/k00kEmbKiYr6L65YTPHEo+Jeuo+Kad6fWwCCm+QI=
+X-Received: by 2002:a17:906:7f0e:: with SMTP id d14mr20030316ejr.103.1623758856683;
+ Tue, 15 Jun 2021 05:07:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.DEB.2.21.2106071700090.1601@angie.orcam.me.uk>
+References: <20210614153712.2172662-1-mudongliangabcd@gmail.com>
+ <YMhY9NHf1itQyup7@kroah.com> <CAD-N9QVfDQQo0rRiaa6Cx-xO80yox9hNzK91_UVj0KNgkhpvnQ@mail.gmail.com>
+ <YMh2b0LvT9H7SuNC@kroah.com> <CAD-N9QV+GMURatPx4qJT2nMsKHQhj+BXC9C-ZyQed3pN8a9YUA@mail.gmail.com>
+ <CAD-N9QW6LhRO+D-rr4xCCuq+m=jtD7LS_+GDVs9DkHe5paeSOg@mail.gmail.com> <YMiLFFRfXfBHpfAF@kroah.com>
+In-Reply-To: <YMiLFFRfXfBHpfAF@kroah.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Tue, 15 Jun 2021 20:07:10 +0800
+Message-ID: <CAD-N9QUVCc8Gaw0pTqCCHMby2R4_8VNcVy+QcndoXpYe7vbt0Q@mail.gmail.com>
+Subject: Re: [PATCH] net: usb: fix possible use-after-free in smsc75xx_bind
+To:     Greg KH <greg@kroah.com>
+Cc:     Steve Glendinning <steve.glendinning@shawell.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 08:38:55PM +0200, Maciej W. Rozycki wrote:
-> Hi,
-> 
->  In the course of verifying support for SMSC FDC37M817 Super I/O chip's 
-> data rate of 460800bps with an EXSYS EX-44072 option card based on the 
-> Oxford Semiconductor OXPCIe952 device I have observed the inability to 
-> transfer any data correctly at this rate between the two devices.  Lower 
-> rates, including 230400bps, appeared to work correctly, also with other 
-> kinds of serial ports referred to with my previous patch series, which 
-> strongly indicated something being wrong with the Oxford device.
-> 
->  In the end I have tracked the issue down to our baud base set to 4000000 
-> for the device being off by 2.4%.  Enough for an incorrect divisor value 
-> of 9 to be chosen to yield the bit rate of 460800bps being particularly 
-> inaccurate for the baud base selected and caused the actual rate of 
-> 434027.78bps of being used, -5.8% off.  Consequently the ten bits of data 
-> sent with every 8-bit character were enough for the drift to accumulate up 
-> to the two ends to get out of sync, with the stop bit interpreted as bit 7 
-> of data.  Obviously whoever wrote this code never actually tried higher 
-> data rates, or only connected Oxford devices to each other causing the 
-> systematic errors at both ends to cancel each other.
-> 
->  With the baud base corrected to the chip's default of 3906250 for the 650 
-> mode which we use (the reset default for the initial 450 mode is 115314, 
-> approximated for maximum backwards compatibility with legacy OS drivers by 
-> dividing the device's 62.5MHz clock by 33.875), the new calculated divisor 
-> value and the new actual bit rate became 8 and 488281.25bps respectively.  
-> Now +5.96% off, so the stop bit could be missed causing data corruption 
-> with continuous data streams, but at least that could be worked around by 
-> using two stop bits instead.  Not a good solution though.
-> 
->  So I chose to implement proper clock handling for the chip.  The bit rate 
-> with this device is worked out from the 62.5MHz clock first by choosing an 
-> oversampling rate between 4 and 16 inclusive, then by the clock prescaler 
-> between 1 and 63.875 in increments of 0.125, and finally a 16-bit unsigned 
-> divisor, all of which divide the input clock by the respective value.
-> 
->  By choosing the right values of these three parameters either exact or 
-> highly-accurate actual bit rates can be programmed for standard and many 
-> non-standard rates from 1bps up to 15625000bps, e.g. for the data rate of 
-> 460800bps concerned here I was able to get the accuracy of 0.0064% by 
-> choosing the values of 7, 3.875, and 5 respectively for the oversampling 
-> rate, the clock prescaler, and the clock divisor.
-> 
->  Additionally even with my considerably mighty POWER9 box I have observed 
-> frequent input overruns with the bit rates of 460800bps and higher, and I 
-> have noticed we have the receive interrupt trigger level set particularly 
-> high in terms of FIFO usage percentage for 16C950 UARTs and then we don't 
-> make the levels configurable.  Lowering the default to a saner value made
-> the overruns go away altogether for rates below 921600bps.  As I've only 
-> verified these changes in terminal environment rather than with modems I 
-> could not make use of hardware flow control which this chip supports and 
-> which I presume would prevent overruns from happening even with higher bit 
-> rates.
-> 
->  There's more that could be done here, for example we don't make use of 
-> the 950 mode where FIFO trigger levels can be fine-tuned in increments of 
-> 1, which, interestingly, could help with the lower rate modes as reception 
-> is quite choppy with them, owing to the minimum receive interrupt trigger 
-> level of 16 in the 650 mode.  I gave the 950 mode a try, but it made the 
-> chip freeze frequently until new data was received, so clearly I must have 
-> missed something in the chip's configuration, which I did not investigate.  
-> Something for a different time perhaps then.
-> 
->  I have verified these changes for standard termios rates between 300bps 
-> and 460800bps with my WTI CPM-800 site manager device and my Malta board's 
-> serial ports, as suitable, all working flawlessly in terminal mode now.  
-> I have verified standard termios rates between 500000bps and 4000000bps as 
-> well, however for the lack of other high-speed hardware with a pair of 
-> Oxford devices only.  Except for input overruns noted above and growing in 
-> numbers as the rate increased rates of up to 3500000bps worked flawlessly.  
-> In particular the rate of 576000bps, still without input overruns, gave 
-> this nice feeling as if working with a virtual terminal rather than over a 
-> serial line!
-> 
->  Conversely the rate of 4000000bps showed significant data corruption, 
-> happening randomly, i.e. some characters went through just fine, while 
-> other ones became garbled in no particular pattern, unlike with the rate 
-> inaccuracy described above.  Also with no input overruns whatsoever.  I 
-> have double-checked that all the three parameters making up the bit rate 
-> from the clock rate have been programmed correctly.
-> 
->  Therefore I have concluded this is not an issue with my change (or indeed 
-> any other part the driver) and it is simply that the rate has exceeded 
-> either the maximum frequency the EX-44072 board's serial transceivers 
-> support (I haven't checked the chip types used and I can't persuade myself 
-> to disassemble the system just to have a look at the board again), or the 
-> bandwidth of the transmission line used (a flat 8-core telephone cable of 
-> a standard Cisco console cable assembly).  Not an issue to be addressed in 
-> software and I find it rather astonishing anyway it worked so well for up 
-> to 3.5MHz already!
-> 
->  I have no modems, so I couldn't verify DCE interoperation, but I don't 
-> expect issues with the bit rates being more accurate now, or the default 
-> FIFO receiver trigger level tweaked to be more conservative.
-> 
->  Finally the 16-bit UART_DIV_MAX limitation of the baud rate requested 
-> with `serial8250_get_baud_rate' makes the standard rates of 200bps and 
-> lower inaccessible in the regular way with the baud base of 15625000.  
-> That could be avoided by tweaking our 8250 driver core appropriately, but 
-> I have figured out with modern serial port usage that would not be the 
-> best use of my time.  Someone who does have a real need to use an Oxford 
-> device at these low rates can step in and make the necessary chances.
-> 
->  Meanwhile I took advantage of the ancient spd_cust feature we thankfully 
-> continue supporting and actually did verify not only the standard rates 
-> between 50bps and 200bps, but the rates of 4bps and 2bps as well, using my 
-> old x86 server's serial port with the baud base of 115200.  That was, 
-> ahem, an interesting experience both by itself and also with 2bps, which 
-> revealed a phenomenon with SMSC Super I/O ports not working as documented 
-> (already noted in the preceding patch series).  Eventually I verified the 
-> 2bps rate with a plain ISA multi I/O card and its 16450 UART my EISA 486 
-> box has as the remote console, which does support the divisor value of 
-> 57600 required.
-> 
->  See individual change descriptions for further details including figures.
-> 
->  Please apply.
+On Tue, Jun 15, 2021 at 7:12 PM Greg KH <greg@kroah.com> wrote:
+>
+> On Tue, Jun 15, 2021 at 06:24:17PM +0800, Dongliang Mu wrote:
+> > On Tue, Jun 15, 2021 at 6:10 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > >
+> > > On Tue, Jun 15, 2021 at 5:44 PM Greg KH <greg@kroah.com> wrote:
+> > > >
+> > > > On Tue, Jun 15, 2021 at 03:56:32PM +0800, Dongliang Mu wrote:
+> > > > > On Tue, Jun 15, 2021 at 3:38 PM Greg KH <greg@kroah.com> wrote:
+> > > > > >
+> > > > > > On Mon, Jun 14, 2021 at 11:37:12PM +0800, Dongliang Mu wrote:
+> > > > > > > The commit 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+> > > > > > > fails to clean up the work scheduled in smsc75xx_reset->
+> > > > > > > smsc75xx_set_multicast, which leads to use-after-free if the work is
+> > > > > > > scheduled to start after the deallocation. In addition, this patch also
+> > > > > > > removes one dangling pointer - dev->data[0].
+> > > > > > >
+> > > > > > > This patch calls cancel_work_sync to cancel the schedule work and set
+> > > > > > > the dangling pointer to NULL.
+> > > > > > >
+> > > > > > > Fixes: 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+> > > > > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > > > > > > ---
+> > > > > > >  drivers/net/usb/smsc75xx.c | 3 +++
+> > > > > > >  1 file changed, 3 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/drivers/net/usb/smsc75xx.c b/drivers/net/usb/smsc75xx.c
+> > > > > > > index b286993da67c..f81740fcc8d5 100644
+> > > > > > > --- a/drivers/net/usb/smsc75xx.c
+> > > > > > > +++ b/drivers/net/usb/smsc75xx.c
+> > > > > > > @@ -1504,7 +1504,10 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
+> > > > > > >       return 0;
+> > > > > > >
+> > > > > > >  err:
+> > > > > > > +     cancel_work_sync(&pdata->set_multicast);
+> > > > > > >       kfree(pdata);
+> > > > > > > +     pdata = NULL;
+> > > > > >
+> > > > > > Why do you have to set pdata to NULL afterward?
+> > > > > >
+> > > > >
+> > > > > It does not have to. pdata will be useless when the function exits. I
+> > > > > just referred to the implementation of smsc75xx_unbind.
+> > > >
+> > > > It's wrong there too :)
+> > >
+> > > /: I will fix such two sites in the v2 patch.
+> >
+> > Hi gregkh,
+> >
+> > If the schedule_work is not invoked, can I call
+> > ``cancel_work_sync(&pdata->set_multicast)''?
+>
+> Why can you not call this then?
 
-This patch series causes the following build warning to be added:
+I don't know the internal of schedule_work and cancel_work_sync, so I
+ask this question to confirm my patch does not introduce any new
+issues.
 
-drivers/tty/serial/8250/8250_pci.c: In function ‘pci_oxsemi_tornado_setup’:
-drivers/tty/serial/8250/8250_pci.c:1258:32: warning: unsigned conversion from ‘int’ to ‘unsigned char’ changes value from ‘-129’ to ‘127’ [-Woverflow]
- 1258 |                 up->mcr_mask = ~UART_MCR_CLKSEL;
-      |                                ^
+>
+> Did you try it and see?
 
+Yes, I thought up a method and tested it in my local workspace.
 
-Can you fix this up and resend?
+First, I reproduced the memory leak in smsc75xx_bind [1] since the PoC
+triggered an error before schedule_work.
+Then, I merged two patches, and run the PoC. The result showed that my
+patch does not trigger any new issues even the schedule_work is not
+called.
 
-thanks,
+[1] https://syzkaller.appspot.com/bug?id=c978ec308a1b89089a17ff48183d70b4c840dfb0
 
-greg k-h
+>
+> thanks,
+>
+> greg k-h
