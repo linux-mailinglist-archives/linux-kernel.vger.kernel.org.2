@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6A13A7C76
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A049C3A7C7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbhFOKyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:54:10 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:32768 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbhFOKyD (ORCPT
+        id S231620AbhFOKzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231486AbhFOKzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:54:03 -0400
-Date:   Tue, 15 Jun 2021 10:51:57 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623754318;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xAD78roLTwHJYa2yvPvMrLxKDgh4hQEfB2VKFH9f4io=;
-        b=3uKOqygZU+/8aciF/Ct9OedckyE1DNkaMmeIvrXtz2epsJt3FrsbXOzTDV/XKFDaYeH7wI
-        fq2Z7eXi3+cgB9ltaW/0Pw9g/6t24wf0mdx92XM86+v8NTeL6VlVfJYsU5Ebu7P0eOzy/m
-        N/gxHHeR8HHcx2OfvMSGO7TXmE2yxi2Yz7bCsFpigjU0G+i9tf9xkQxJ5WCxZ7BLnZFrcS
-        SaAVDkaer88L/03HQIQsf2pq0T3ETNRvuYsjiM4CZOV/v7LpJzTNA1UKBvoXY1KseK+YjL
-        hun7AFHamQmK3ouorp4oVOl054cFtL8tvP/H7+bwoZuNCh4FX+SzTyf31HsiNA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623754318;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xAD78roLTwHJYa2yvPvMrLxKDgh4hQEfB2VKFH9f4io=;
-        b=WfIg6306/IBq1MrWBUCD4UXrKdzAiLGRwe0ord+BBex8LZahphIF6ocesnYyNZhaHF7G/1
-        4fWbWK+Dxzfv0PDA==
-From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sev] x86/sev: Fix error message in runtime #VC handler
-Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210614135327.9921-2-joro@8bytes.org>
-References: <20210614135327.9921-2-joro@8bytes.org>
+        Tue, 15 Jun 2021 06:55:08 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6866C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:53:04 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id b12so8253000plg.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:53:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=77abVvtdAdpsdW3TjnJbPbQceAD3ngpH/aIswkPaxEg=;
+        b=Tds1GT4722acJuoNKaEMvAWaA5jVqpeaFseEXRr4CEjsZ+sfaupbI4X1/nZ6k0dr9y
+         OYfv7o4sX3rV3oWwgL5Z6vG3F7Fpf+9kWzj3krKou8Ng04U5gjxRPPjOJ0bivqaNR0p0
+         EQLz5jB2n8Sfqm0XEnOdk7og6nyuMMD905ZP8mZhRwh0H0gezjRmQVQzfkguifvE/IP2
+         1aDMqRsWalb9xqDVyl/g6yjTZE2mf10cSyPLbjBhV4fUqdXtlPrsFFuwO7Kp0wX3DHtu
+         Gq1T8Y4Pf+PhX39zYEeouiXnjg38o8KJpcERHDaVrTwDE5WpL7uVdDrpsvJM5uoW3NMk
+         trgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=77abVvtdAdpsdW3TjnJbPbQceAD3ngpH/aIswkPaxEg=;
+        b=V2ANYeDRhvi1hVeQhOuzNgotidSERXYBjRXpdacpt+Gw0oub7yQmWUkK1Rv5PuyHsU
+         Ej06zuDn72mqJe5maCR+RXs0Sf+avS3w584EqMxeMz20zfQgNpKTr8qP4+sLD4ZvSv4s
+         U47mnOZxCTwz+tFXsp0g2W6AggRJqWttI8XV9To/Up8tQXrdds7Ms+Z8KxUOXM5fnNo4
+         0IydZ2sA7KQPgnhCcaICoFNhynxMf19HTuGuA2/XrGOUrm69gO/6EqSwr25cZry3eTZ7
+         i4V4WdA61IRkv3q8+HWwG5HAIjbRn84CjdGcotNBtswuQGpt2WIl6IielgrvyES0dssy
+         SieQ==
+X-Gm-Message-State: AOAM532moujeSiFNUoufhGbLxqEiFUoNyNhrO5Ej7HuPDSn7tRlRwEas
+        JfkKLMugluGZyX/Tatakvac9
+X-Google-Smtp-Source: ABdhPJzseDWG1hjfL7mLTTag7psIODvVANSAUopVS9dBKHkwKyJbNHvAanyQPDK+CDEj8Lfxl/ttsg==
+X-Received: by 2002:a17:902:c3d5:b029:100:742f:fce9 with SMTP id j21-20020a170902c3d5b0290100742ffce9mr3438730plj.46.1623754384193;
+        Tue, 15 Jun 2021 03:53:04 -0700 (PDT)
+Received: from localhost ([61.120.150.78])
+        by smtp.gmail.com with ESMTPSA id g6sm15522184pfq.110.2021.06.15.03.53.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 03:53:03 -0700 (PDT)
+From:   Xie Yongji <xieyongji@bytedance.com>
+To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] virtio_scsi: Add validation for residual bytes from response
+Date:   Tue, 15 Jun 2021 18:52:18 +0800
+Message-Id: <20210615105218.214-1-xieyongji@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <162375431755.19906.1990117369967751393.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sev branch of tip:
+This ensures that the residual bytes in response (might come
+from an untrusted device) will not exceed the data buffer length.
 
-Commit-ID:     4aca2d99fd27698cf82d55aed4859fde859082ac
-Gitweb:        https://git.kernel.org/tip/4aca2d99fd27698cf82d55aed4859fde859082ac
-Author:        Joerg Roedel <jroedel@suse.de>
-AuthorDate:    Wed, 19 May 2021 15:52:47 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 15 Jun 2021 11:24:07 +02:00
-
-x86/sev: Fix error message in runtime #VC handler
-
-The runtime #VC handler is not "early" anymore. Fix the copy&paste error
-and remove that word from the error message.
-
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210614135327.9921-2-joro@8bytes.org
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- arch/x86/kernel/sev.c | 2 +-
+ drivers/scsi/virtio_scsi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 651b81c..4fd997b 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -1369,7 +1369,7 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
- 		vc_finish_insn(&ctxt);
- 		break;
- 	case ES_UNSUPPORTED:
--		pr_err_ratelimited("Unsupported exit-code 0x%02lx in early #VC exception (IP: 0x%lx)\n",
-+		pr_err_ratelimited("Unsupported exit-code 0x%02lx in #VC exception (IP: 0x%lx)\n",
- 				   error_code, regs->ip);
- 		goto fail;
- 	case ES_VMM_ERROR:
+diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
+index b9c86a7e3b97..2badc3c80d73 100644
+--- a/drivers/scsi/virtio_scsi.c
++++ b/drivers/scsi/virtio_scsi.c
+@@ -97,7 +97,7 @@ static inline struct Scsi_Host *virtio_scsi_host(struct virtio_device *vdev)
+ static void virtscsi_compute_resid(struct scsi_cmnd *sc, u32 resid)
+ {
+ 	if (resid)
+-		scsi_set_resid(sc, resid);
++		scsi_set_resid(sc, min(resid, scsi_bufflen(sc)));
+ }
+ 
+ /*
+-- 
+2.11.0
+
