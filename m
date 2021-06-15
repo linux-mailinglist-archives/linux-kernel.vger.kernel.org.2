@@ -2,133 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67023A7539
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9720D3A753A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbhFODeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:34:37 -0400
-Received: from lucky1.263xmail.com ([211.157.147.132]:53230 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhFODeZ (ORCPT
+        id S230450AbhFODev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229870AbhFODet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:34:25 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 87735F4E69;
-        Tue, 15 Jun 2021 11:32:20 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P16485T139918414178048S1623727934928454_;
-        Tue, 15 Jun 2021 11:32:20 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <efe39b4914dd38387ca7606caba4bd78>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: broonie@kernel.org
-X-RCPT-COUNT: 9
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     broonie@kernel.org
-Cc:     jon.lin@rock-chips.com, heiko@sntech.de, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v8 4/6] spi: rockchip: Wait for STB status in slave mode tx_xfer
-Date:   Tue, 15 Jun 2021 11:32:11 +0800
-Message-Id: <20210615033213.14241-5-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210615033213.14241-1-jon.lin@rock-chips.com>
-References: <20210615033213.14241-1-jon.lin@rock-chips.com>
+        Mon, 14 Jun 2021 23:34:49 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89524C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 20:32:44 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id x24so18919873lfr.10
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 20:32:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=H7TfWuJuxniQYZUFW9bvII5Vr1rgNmizaa/XrNQwKLo=;
+        b=pflB2J1qXM0hkfMuw0yMT8Rp0cX4k3qmhHo1yXlD4iJmIp6ZvDAo0hGldAMKxDftx6
+         RofbeiduvnPuDfVvJv0ZhfmDbJxOw63UomtNC3ZST17xDDrm3rKqiyB0cLCjdClzT0/j
+         3/+TQQCjq1W8rotVQ2RuJpXU8U+Kc1ujQYq7HAhayf/pmCoPAfSRZyFNeenFpuootkh2
+         YZkYewmXgsUUCE0LR/rnUf+22Gs7iGQlZ1O/odfNO4OpmoH0XgyeDUIxraakGQ3pGBWF
+         6HkMKbMg0XKBXTU5Nv8oZsMZdzighyQ9hlzCih8Vg3MaeyXZ2oD3SXFhcbi7g/op5hIU
+         GdQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=H7TfWuJuxniQYZUFW9bvII5Vr1rgNmizaa/XrNQwKLo=;
+        b=Ue02DNgPNoiiDUVCVzXXT0yG4aqzhZvHRfGkPEGhDlRCFYOjzz85hDRIJ+DQzMgHJL
+         f4K7cyTPQskN+13EMuKIuc3uQH/naUTAUA5QZLe/8yhwDg6aiqSXTGmgrHCWcbVI7RFn
+         dnBpzgKmbvqFZWbf7qrrz8/ybhE9zUo4bZOU8ZGcG9WzoIIUk3Ny5x5wZW7qMrdpzALR
+         emBk7JRvR1DlIX/8cv+qcJFLHX0txT/pmMNxRGR0PYeioFSOAqXM87ywpHytVBLFERca
+         368nnB7YlFEZTXU9NN41PbZ0KuwpzU0ywvTiyJzfXRVx73B8l1K1BalWCpKS5ZREgG86
+         xe+w==
+X-Gm-Message-State: AOAM530tMocpi/13wF5SmhlJXZY85hVTHeMeXiHmxkJ5xjOg6/upMZ4k
+        wYQXY6W+lq+LKD4CSzO85WLULwPNswv6wE2N0yuQjPiIm9Vmxg==
+X-Google-Smtp-Source: ABdhPJylVBcZ6rd3AUTSOcNx+OJt5vvjUGWaOSmSYoRLOZwQEgNSPkXhDpAyBFaS+5bfZZA9YkILKjzmaJHr1D1Huyg=
+X-Received: by 2002:a19:4f1a:: with SMTP id d26mr14425707lfb.265.1623727962836;
+ Mon, 14 Jun 2021 20:32:42 -0700 (PDT)
+MIME-Version: 1.0
+From:   "R.F. Burns" <burnsrf@gmail.com>
+Date:   Mon, 14 Jun 2021 23:32:32 -0400
+Message-ID: <CABG1boMsJ+8OaLPmFcNZPRVPRRxd9gasxjZNwUy_3FD07XXO8A@mail.gmail.com>
+Subject: PC speaker
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After ROCKCHIP_SPI_VER2_TYPE2, SR->STB is a more accurate judgment
-bit for spi slave transmition.
-
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
-
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-
- drivers/spi/spi-rockchip.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-index 0887b19ef3ad..950d3bce443b 100644
---- a/drivers/spi/spi-rockchip.c
-+++ b/drivers/spi/spi-rockchip.c
-@@ -116,13 +116,14 @@
- #define BAUDR_SCKDV_MIN				2
- #define BAUDR_SCKDV_MAX				65534
- 
--/* Bit fields in SR, 5bit */
--#define SR_MASK						0x1f
-+/* Bit fields in SR, 6bit */
-+#define SR_MASK						0x3f
- #define SR_BUSY						(1 << 0)
- #define SR_TF_FULL					(1 << 1)
- #define SR_TF_EMPTY					(1 << 2)
- #define SR_RF_EMPTY					(1 << 3)
- #define SR_RF_FULL					(1 << 4)
-+#define SR_SLAVE_TX_BUSY				(1 << 5)
- 
- /* Bit fields in ISR, IMR, ISR, RISR, 5bit */
- #define INT_MASK					0x1f
-@@ -197,13 +198,19 @@ static inline void spi_enable_chip(struct rockchip_spi *rs, bool enable)
- 	writel_relaxed((enable ? 1U : 0U), rs->regs + ROCKCHIP_SPI_SSIENR);
- }
- 
--static inline void wait_for_idle(struct rockchip_spi *rs)
-+static inline void wait_for_tx_idle(struct rockchip_spi *rs, bool slave_mode)
- {
- 	unsigned long timeout = jiffies + msecs_to_jiffies(5);
- 
- 	do {
--		if (!(readl_relaxed(rs->regs + ROCKCHIP_SPI_SR) & SR_BUSY))
--			return;
-+		if (slave_mode) {
-+			if (!(readl_relaxed(rs->regs + ROCKCHIP_SPI_SR) & SR_SLAVE_TX_BUSY) &&
-+			    !((readl_relaxed(rs->regs + ROCKCHIP_SPI_SR) & SR_BUSY)))
-+				return;
-+		} else {
-+			if (!(readl_relaxed(rs->regs + ROCKCHIP_SPI_SR) & SR_BUSY))
-+				return;
-+		}
- 	} while (!time_after(jiffies, timeout));
- 
- 	dev_warn(rs->dev, "spi controller is in busy state!\n");
-@@ -383,7 +390,7 @@ static void rockchip_spi_dma_txcb(void *data)
- 		return;
- 
- 	/* Wait until the FIFO data completely. */
--	wait_for_idle(rs);
-+	wait_for_tx_idle(rs, ctlr->slave);
- 
- 	spi_enable_chip(rs, false);
- 	spi_finalize_current_transfer(ctlr);
-@@ -545,7 +552,7 @@ static int rockchip_spi_config(struct rockchip_spi *rs,
- 	else
- 		writel_relaxed(rs->fifo_len / 2 - 1, rs->regs + ROCKCHIP_SPI_RXFTLR);
- 
--	writel_relaxed(rs->fifo_len / 2, rs->regs + ROCKCHIP_SPI_DMATDLR);
-+	writel_relaxed(rs->fifo_len / 2 - 1, rs->regs + ROCKCHIP_SPI_DMATDLR);
- 	writel_relaxed(rockchip_spi_calc_burst_size(xfer->len / rs->n_bytes) - 1,
- 		       rs->regs + ROCKCHIP_SPI_DMARDLR);
- 	writel_relaxed(dmacr, rs->regs + ROCKCHIP_SPI_DMACR);
--- 
-2.17.1
-
-
-
+Is it possible to write a kernel module which, when loaded, will blow
+the PC speaker?
