@@ -2,102 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0916C3A86B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52303A86BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhFOQmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 12:42:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48136 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230437AbhFOQmJ (ORCPT
+        id S230238AbhFOQoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 12:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhFOQod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:42:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623775204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=R/NreKJZAPN/5iLAX+SP8h+oSm6e2Dm/Te0F8MAMqWA=;
-        b=c/+3TXfYxrftbGyABaHAfNA0pUpA8hbk58A9j2FhmlFzQy3XGqAAS7VvLsWPRU5EkH+uwO
-        0mnY1fIYZ5l5ZvpN5+qwb8uwmj2W2ot7Zrr5b2s1tgqG2Gc9dIxmPll3m5Oe95AdX/BO/9
-        hkv4dBu6VN62uZPgJAFoJum0llDpFT0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-14-Myu5jGp3M6Ct5h92pTa6xA-1; Tue, 15 Jun 2021 12:40:02 -0400
-X-MC-Unique: Myu5jGp3M6Ct5h92pTa6xA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F896C73A7;
-        Tue, 15 Jun 2021 16:40:00 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DF6155D9CA;
-        Tue, 15 Jun 2021 16:39:54 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] netfs: Add MAINTAINERS record
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 15 Jun 2021 17:39:54 +0100
-Message-ID: <162377519404.734878.4912821418522385423.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Tue, 15 Jun 2021 12:44:33 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49F0C061574;
+        Tue, 15 Jun 2021 09:42:28 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id v9so2771815wrx.6;
+        Tue, 15 Jun 2021 09:42:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5HqZgwKlnzHk7eYEZtH1CaDCUYRbqEaAMkPzJHvXqS0=;
+        b=mybjY4le4ctEWGm4xYu2iOggsKW4q3/OyS+MxcoV+4sj4lWFwwnQNlmhPG+4ab8x1U
+         eGsvSWvravHxwru85zseEObBLKnmFFAKleEjMXqFeo/AAKK7F6vHUQiMTj+LkjBYl9CB
+         ElZy+6UTOxwulqLE/1DJtATQRhuNKzyaBTKdMu9bO2tSvsq/EwMG3Qcbm1oHHuWPvkoc
+         JEwU2r3TJyNZ81FlgaipOWrPVgZNpCEz8C5Xr5Id0F15hRR3wGRIexVErFKRcAmYHupS
+         u/NOU4f1YPVY6dlllL4AvnoSJ3H1Xo7QDnLZpOjoPAAN2Fe5nt0pyXyroPiQVTWwjCoM
+         lLjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5HqZgwKlnzHk7eYEZtH1CaDCUYRbqEaAMkPzJHvXqS0=;
+        b=Y1tk3VUNubP4YNdlYYnZN3/+Ol9Z0q3iG8ZOuIrO4Zm8AoGO1bKppmh4i4N0TROIN+
+         QxWtyvDOcJOkYDuFOrYfk9TcO4Y7m/YFsgotABqlAIBFyW8VR0i2ogkSs+gx/blIpDRl
+         gtHJ3KmMoVp3DIH4rxLeG9szbBQz/fceOoSs94N+So/zZh+xrUNMTK8xuYMEUwnwHKZy
+         tEoFi5ceUXMSzgrT2xmmzSP16JmVBA2Zw8oJjyUWoNY/jp+LiS64UO1AQIrwHcpQCXyq
+         Zjrl5oStY1ZOBirMyRbalXet+t/FNltm42slgmZ5rR1d+xfFGNWwVlt/hYyd16z+BqZT
+         ll7Q==
+X-Gm-Message-State: AOAM533RpFDp/ZiyHj6S3ElIgy3t8eku6XaMW6SmGeJTur51mXnZj0X2
+        enBnCfl7Zho6zQa9cVLq2CY=
+X-Google-Smtp-Source: ABdhPJwp84+Gas8I1iFxMF+l7Gvuia2vMA5qr7ms18jAFHC17zcr6iYbk+siFXsqqCOGOhy2a2vdPw==
+X-Received: by 2002:a05:6000:110e:: with SMTP id z14mr26964792wrw.235.1623775347448;
+        Tue, 15 Jun 2021 09:42:27 -0700 (PDT)
+Received: from localhost.localdomain ([185.199.80.151])
+        by smtp.gmail.com with ESMTPSA id t11sm7387549wrz.7.2021.06.15.09.42.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 09:42:26 -0700 (PDT)
+From:   Kurt Manucredo <fuzzybritches0@gmail.com>
+To:     ebiggers@kernel.org,
+        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
+Cc:     Kurt Manucredo <fuzzybritches0@gmail.com>, keescook@chromium.org,
+        yhs@fb.com, dvyukov@google.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, nathan@kernel.org,
+        ndesaulniers@google.com, clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, kasan-dev@googlegroups.com
+Subject: [PATCH v5] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
+Date:   Tue, 15 Jun 2021 16:42:10 +0000
+Message-Id: <85536-177443-curtm@phaethon>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <YMJvbGEz0xu9JU9D@gmail.com>
+References: <87609-531187-curtm@phaethon> <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com> <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com> <CACT4Y+b=si6NCx=nRHKm_pziXnVMmLo-eSuRajsxmx5+Hy_ycg@mail.gmail.com> <202106091119.84A88B6FE7@keescook> <752cb1ad-a0b1-92b7-4c49-bbb42fdecdbe@fb.com> <CACT4Y+a592rxFmNgJgk2zwqBE8EqW1ey9SjF_-U3z6gt3Yc=oA@mail.gmail.com> <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com> <202106101002.DF8C7EF@keescook> <CAADnVQKMwKYgthoQV4RmGpZm9Hm-=wH3DoaNqs=UZRmJKefwGw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a MAINTAINERS record for the new netfs helper library.
+Syzbot detects a shift-out-of-bounds in ___bpf_prog_run()
+kernel/bpf/core.c:1414:2.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-Acked-by: Jeff Layton <jlayton@kernel.org>
-cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-cc: linux-mm@kvack.org
-cc: linux-cachefs@redhat.com
-cc: linux-afs@lists.infradead.org
-cc: linux-nfs@vger.kernel.org
-cc: linux-cifs@vger.kernel.org
-cc: ceph-devel@vger.kernel.org
-cc: v9fs-developer@lists.sourceforge.net
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/162377165897.729347.292567369593752239.stgit@warthog.procyon.org.uk/
+The shift-out-of-bounds happens when we have BPF_X. This means we have
+to go the same way we go when we want to avoid a divide-by-zero. We do
+it in do_misc_fixups().
+
+When we have BPF_K we find divide-by-zero and shift-out-of-bounds guards
+next each other in check_alu_op(). It seems only logical to me that the
+same should be true for BPF_X in do_misc_fixups() since it is there where
+I found the divide-by-zero guard. Or is there a reason I'm not aware of,
+that dictates that the checks should be in adjust_scalar_min_max_vals(),
+as they are now?
+
+This patch was tested by syzbot.
+
+Reported-and-tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
+Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
 ---
 
- MAINTAINERS |    9 +++++++++
- 1 file changed, 9 insertions(+)
+https://syzkaller.appspot.com/bug?id=edb51be4c9a320186328893287bb30d5eed09231
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bc0ceef87b73..364465f20e81 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12878,6 +12878,15 @@ NETWORKING [WIRELESS]
- L:	linux-wireless@vger.kernel.org
- Q:	http://patchwork.kernel.org/project/linux-wireless/list/
+Changelog:
+----------
+v5 - Fix shift-out-of-bounds in do_misc_fixups().
+v4 - Fix shift-out-of-bounds in adjust_scalar_min_max_vals.
+     Fix commit message.
+v3 - Make it clearer what the fix is for.
+v2 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
+     check in check_alu_op() in verifier.c.
+v1 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
+     check in ___bpf_prog_run().
+
+thanks
+
+kind regards
+
+Kurt
+
+ kernel/bpf/verifier.c | 53 +++++++++++++++++++++++++------------------
+ 1 file changed, 31 insertions(+), 22 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 94ba5163d4c5..83c7c1ccaf26 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7496,7 +7496,6 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+ 	u64 umin_val, umax_val;
+ 	s32 s32_min_val, s32_max_val;
+ 	u32 u32_min_val, u32_max_val;
+-	u64 insn_bitness = (BPF_CLASS(insn->code) == BPF_ALU64) ? 64 : 32;
+ 	bool alu32 = (BPF_CLASS(insn->code) != BPF_ALU64);
+ 	int ret;
  
-+NETWORK FILESYSTEM HELPER LIBRARY
-+M:	David Howells <dhowells@redhat.com>
-+M:	Jeff Layton <jlayton@kernel.org>
-+L:	linux-cachefs@redhat.com (moderated for non-subscribers)
-+S:	Supported
-+F:	Documentation/filesystems/netfs_library.rst
-+F:	fs/netfs/
-+F:	include/linux/netfs.h
+@@ -7592,39 +7591,18 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+ 		scalar_min_max_xor(dst_reg, &src_reg);
+ 		break;
+ 	case BPF_LSH:
+-		if (umax_val >= insn_bitness) {
+-			/* Shifts greater than 31 or 63 are undefined.
+-			 * This includes shifts by a negative number.
+-			 */
+-			mark_reg_unknown(env, regs, insn->dst_reg);
+-			break;
+-		}
+ 		if (alu32)
+ 			scalar32_min_max_lsh(dst_reg, &src_reg);
+ 		else
+ 			scalar_min_max_lsh(dst_reg, &src_reg);
+ 		break;
+ 	case BPF_RSH:
+-		if (umax_val >= insn_bitness) {
+-			/* Shifts greater than 31 or 63 are undefined.
+-			 * This includes shifts by a negative number.
+-			 */
+-			mark_reg_unknown(env, regs, insn->dst_reg);
+-			break;
+-		}
+ 		if (alu32)
+ 			scalar32_min_max_rsh(dst_reg, &src_reg);
+ 		else
+ 			scalar_min_max_rsh(dst_reg, &src_reg);
+ 		break;
+ 	case BPF_ARSH:
+-		if (umax_val >= insn_bitness) {
+-			/* Shifts greater than 31 or 63 are undefined.
+-			 * This includes shifts by a negative number.
+-			 */
+-			mark_reg_unknown(env, regs, insn->dst_reg);
+-			break;
+-		}
+ 		if (alu32)
+ 			scalar32_min_max_arsh(dst_reg, &src_reg);
+ 		else
+@@ -12353,6 +12331,37 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 			continue;
+ 		}
+ 
++		/* Make shift-out-of-bounds exceptions impossible. */
++		if (insn->code == (BPF_ALU64 | BPF_LSH | BPF_X) ||
++		    insn->code == (BPF_ALU64 | BPF_RSH | BPF_X) ||
++		    insn->code == (BPF_ALU64 | BPF_ARSH | BPF_X) ||
++		    insn->code == (BPF_ALU | BPF_LSH | BPF_X) ||
++		    insn->code == (BPF_ALU | BPF_RSH | BPF_X) ||
++		    insn->code == (BPF_ALU | BPF_ARSH | BPF_X)) {
++			bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
++			u8 insn_bitness = is64 ? 64 : 32;
++			struct bpf_insn chk_and_shift[] = {
++				/* [R,W]x shift >= 32||64 -> 0 */
++				BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
++					     BPF_JLT | BPF_K, insn->src_reg,
++					     insn_bitness, 2, 0),
++				BPF_ALU32_REG(BPF_XOR, insn->dst_reg, insn->dst_reg),
++				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++				*insn,
++			};
 +
- NETXEN (1/10) GbE SUPPORT
- M:	Manish Chopra <manishc@marvell.com>
- M:	Rahul Verma <rahulv@marvell.com>
-
++			cnt = ARRAY_SIZE(chk_and_shift);
++
++			new_prog = bpf_patch_insn_data(env, i + delta, chk_and_shift, cnt);
++			if (!new_prog)
++				return -ENOMEM;
++
++			delta    += cnt - 1;
++			env->prog = prog = new_prog;
++			insn      = new_prog->insnsi + i + delta;
++			continue;
++		}
++
+ 		/* Implement LD_ABS and LD_IND with a rewrite, if supported by the program type. */
+ 		if (BPF_CLASS(insn->code) == BPF_LD &&
+ 		    (BPF_MODE(insn->code) == BPF_ABS ||
+-- 
+2.30.2
 
