@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368293A8111
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F193A811C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhFONor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:44:47 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:19245 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231181AbhFONny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:43:54 -0400
+        id S231500AbhFONpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:45:02 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:56274 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231864AbhFONoM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:44:12 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623764510; h=Date: Message-Id: Cc: To: References:
+ s=smtp; t=1623764527; h=Date: Message-Id: Cc: To: References:
  In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=2zoi8y9DH7UWPNKBoHX5xlXK7HjEa8Z0Nb+7WOjhtQU=;
- b=V7n/F3A3vhMqx8SeAchCU0IG8XCjvA1cWyn3Qd03QH70jnUBBcWQc8KcWDI+cOTzWBzu8fVB
- fxyGXlDoRgfvc2lcTX+2wwu2zANzPo177wCs+IpEUI4oYzTza1hQq0MxsGPwwg4pxhiBKx5x
- 5mf5nJyZcXJJ0QTrx+YkxAh05lM=
-X-Mailgun-Sending-Ip: 69.72.43.7
+ Content-Type: Sender; bh=LpvfzkgIaVmaQburodx8yVj8C6jCwH9ZkpYikiRXR64=;
+ b=Eu3LSlPVXc3KenV8hf3m7g416h8E3rum7g662+kvt5mp6d7m5F7HmEsMJA8n9ajBAsHn7hN5
+ +YEsHjH7X+Aiha49AdYLs/47Wu4I+gXTAo1+9XVt2oejJf/eLsBAH9+PWno7XIjXN9udjl7i
+ MAo9J70IiCcITetfe/+hjIqOMO4=
+X-Mailgun-Sending-Ip: 198.61.254.9
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60c8ae0ded59bf69ccfdfabb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:41:33
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60c8ae23e27c0cc77f2716fb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:41:55
  GMT
 Sender: kvalo=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1BACCC43460; Tue, 15 Jun 2021 13:41:33 +0000 (UTC)
+        id D73BBC43146; Tue, 15 Jun 2021 13:41:54 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -39,77 +40,43 @@ Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E40B0C43460;
-        Tue, 15 Jun 2021 13:41:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E40B0C43460
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46E92C43144;
+        Tue, 15 Jun 2021 13:41:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 46E92C43144
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] cw1200: Revert unnecessary patches that fix unreal
- use-after-free bugs
+Subject: Re: [PATCH] libertas: use DEVICE_ATTR_RW macro
 From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210521223238.25020-1-zh.nvgt@gmail.com>
-References: <20210521223238.25020-1-zh.nvgt@gmail.com>
-To:     Hang Zhang <zh.nvgt@gmail.com>
-Cc:     unlisted-recipients:; (no To-header on input)
-        Solomon Peachy <pizza@shaftnet.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hang Zhang <zh.nvgt@gmail.com>
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     unlisted-recipients:; (no To-header on input)Solomon Peachy <pizza@shaftnet.org>
-                                                                     ^-missing end of address
+In-Reply-To: <20210523040339.2724-1-yuehaibing@huawei.com>
+References: <20210523040339.2724-1-yuehaibing@huawei.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <davem@davemloft.net>, <kuba@kernel.org>, <yuehaibing@huawei.com>,
+        <libertas-dev@lists.infradead.org>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
 User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210615134133.1BACCC43460@smtp.codeaurora.org>
-Date:   Tue, 15 Jun 2021 13:41:33 +0000 (UTC)
+Message-Id: <20210615134154.D73BBC43146@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 13:41:54 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hang Zhang <zh.nvgt@gmail.com> wrote:
+YueHaibing <yuehaibing@huawei.com> wrote:
 
-> A previous commit 4f68ef64cd7f ("cw1200: Fix concurrency 
-> use-after-free bugs in cw1200_hw_scan()") tried to fix a seemingly
-> use-after-free bug between cw1200_bss_info_changed() and
-> cw1200_hw_scan(), where the former frees a sk_buff pointed
-> to by frame.skb, and the latter accesses the sk_buff
-> pointed to by frame.skb. However, this issue should be a
-> false alarm because:
+> Use DEVICE_ATTR_RW helper instead of plain DEVICE_ATTR,
+> which makes the code a bit shorter and easier to read.
 > 
-> (1) "frame.skb" is not a shared variable between the above 
-> two functions, because "frame" is a local function variable,
-> each of the two functions has its own local "frame" - they
-> just happen to have the same variable name.
-> 
-> (2) the sk_buff(s) pointed to by these two "frame.skb" are
-> also two different object instances, they are individually
-> allocated by different dev_alloc_skb() within the two above
-> functions. To free one object instance will not invalidate 
-> the access of another different one.
-> 
-> Based on these facts, the previous commit should be unnecessary.
-> Moreover, it also introduced a missing unlock which was 
-> addressed in a subsequent commit 51c8d24101c7 ("cw1200: fix missing 
-> unlock on error in cw1200_hw_scan()"). Now that the
-> original use-after-free is unreal, these two commits should
-> be reverted. This patch performs the reversion.
-> 
-> Fixes: 4f68ef64cd7f ("cw1200: Fix concurrency use-after-free bugs in cw1200_hw_scan()")
-> Fixes: 51c8d24101c7 ("cw1200: fix missing unlock on error in cw1200_hw_scan()")
-> Signed-off-by: Hang Zhang <zh.nvgt@gmail.com>
-> Acked-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
 Patch applied to wireless-drivers-next.git, thanks.
 
-3f60f4685699 cw1200: Revert unnecessary patches that fix unreal use-after-free bugs
+8667ab49a6e0 libertas: use DEVICE_ATTR_RW macro
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210521223238.25020-1-zh.nvgt@gmail.com/
+https://patchwork.kernel.org/project/linux-wireless/patch/20210523040339.2724-1-yuehaibing@huawei.com/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
