@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244BF3A7854
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDBC3A7858
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbhFOHve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59608 "EHLO
+        id S230455AbhFOHvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhFOHvV (ORCPT
+        with ESMTP id S229613AbhFOHv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:51:21 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60034C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:49:17 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id g22so5667068pgk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:49:17 -0700 (PDT)
+        Tue, 15 Jun 2021 03:51:27 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4567C06124C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:49:22 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso1699362pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:49:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sGWRVUlazvDnItAZtGGyEDeGtg0J5AyvblHx2w1qXWE=;
-        b=cdpc0EQuXEuwUlrhmkjoKLMumoqgkNHwPdeVjIfON9XSIeeM4DEoj3i0Nd8pST61kl
-         51gE8P3WnLkS1uI01dDdjHF+jjkDHT5dmxzocGjqLO9O3EkW2GSclGgL1YVkAv+8R+Z9
-         PWbbXIIxT2EZPQrae4i+8E+YHtdR0SBDZabmFfWr4IFcTBi1WQGSJv+0JkxnJ4dri2vc
-         rh+13qfJ22ldH+NeIKpWYHGWs7MPR8FTMS8ijkTVdpZAOfTRSTNlk1sH73Y/OGI/yENc
-         9UgdFgiK4jsSFkHQhhFs2MO+n0UFxBSG0HQRxN2IZFMGfAGnB8ay5BnTlEQU99zsFFNg
-         Gg0Q==
+        bh=kToQoYGMVDwEP081PrugIKt6rs2IgkM3tpJJ4Oi9CQ8=;
+        b=bdX2tgiSRbG3C/0M+dK3VoZJ9yu82exbbYqn+vqve8pHvA7wz64EudJoOJ4r2JrOHJ
+         piPnOI/Hk30BTFp5shTse4ClOwAfjd5Aubgf8me24vlWIdBTODuki766Fby8N4kF/IJD
+         88cePNEQSZKHggU52A1/yp52oUpYLM0mEheiqghCniOKl2N6QsjEduf0uBATE6wCmC1r
+         zFLm4WOhGKXfd8bn/KJD5WPQZn4EfZNRenLHFTDfTiDc7yHZa4a3CogTpAIUifXzTa49
+         ZIdvF8YO1l3YOp8BV7PjfFO0aBCPSrHgqPMy9X80HvdFyX95AxnsEw2dSeK80J4puWEP
+         ipDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sGWRVUlazvDnItAZtGGyEDeGtg0J5AyvblHx2w1qXWE=;
-        b=BlbqEFV3mg8mR21d2oK4OcqWSSh+HfZdYp+FAqcAM6zIs7ScLd7wTmVsv0GhTF5YBO
-         S6/yLrbcrcS36xEKJ5QbRYt1pKqTrS/JZenCvx9GUO+AcdJcwR6ceik3Jbr/ViM+8sci
-         lb0pXb2z1U6r1h8vc9QZ5RaLoiKqvmD0AwkIffGIpdbacTsAtDMyGzJf1xUJoFe6+feG
-         f+ABlfDRqetsMNz26w2u55Up5OEtrMHZlKHMXAKcakzH7WkhnaSITP7JUTKH84yfkI+2
-         Lm3MtoqogDQV4HkygKoMVHjQJA96G9ojKQv3U/Pysrw+mLejJo1LyYe0EgMsGz9529fD
-         m3NA==
-X-Gm-Message-State: AOAM531jZSTxAgf7rYrMUDiR0eH/F0vwFYBKnE24LSoXqdALUAYmDqkX
-        VAuN+N9ou7Y2qPJW5fle7QoWlA==
-X-Google-Smtp-Source: ABdhPJxXhtar5jYrL2R4veqD7b36wBBgDGY5dRBtyonFJ2alU8qM6iv+FM2OSswLppu2LDmfEWwowA==
-X-Received: by 2002:a63:515d:: with SMTP id r29mr20931165pgl.56.1623743356898;
-        Tue, 15 Jun 2021 00:49:16 -0700 (PDT)
+        bh=kToQoYGMVDwEP081PrugIKt6rs2IgkM3tpJJ4Oi9CQ8=;
+        b=pnenQO6KDJXnkRzIY63p/qMKfFoD/+8qVWGlChIqL4mtr03Atu67pWF+nDtbiD6V1h
+         dlvqQTTaevjl50xQYZArWKAB2/XEql1hC0UTgTde56JB24vRwlHsvgl5EqsJQo34N3l9
+         ANvX+Te3YkYGX4IVuKfCtEuSYsN1HkouDkHPrpUY8HnxArkg6hLqlAjSdiHo9LTgEfwH
+         5NYssF7ro1x5MB8uPnmui8+Fi8BzjInixZenZaOR0FwdIfmwC4zR+rQe0Qidf8VrlFYx
+         7eG64aXnbzwuOSIin6XCdICt3ZQOzsB+KUQon+op1QbmPz42UzVEZqKwCLerbbc/Pd26
+         yYJQ==
+X-Gm-Message-State: AOAM530PssCoSJOmOCtcgxbQtFiVQYHC1jPv0SrQ6aG34cGqdV4iRhrk
+        KDWrH2CRbm/+NjEZIx3kLjPgpQ==
+X-Google-Smtp-Source: ABdhPJyy4wXKXepB9EppesnsK2i+Om3ZzoI46sCTcbwYfC9Qqk+hmdRFDM3HprWQ9pU/nxT7olvFCw==
+X-Received: by 2002:a17:90a:d102:: with SMTP id l2mr23511799pju.225.1623743362288;
+        Tue, 15 Jun 2021 00:49:22 -0700 (PDT)
 Received: from localhost.localdomain.name ([122.177.197.114])
-        by smtp.gmail.com with ESMTPSA id c25sm14273097pfo.130.2021.06.15.00.49.11
+        by smtp.gmail.com with ESMTPSA id c25sm14273097pfo.130.2021.06.15.00.49.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 00:49:16 -0700 (PDT)
+        Tue, 15 Jun 2021 00:49:22 -0700 (PDT)
 From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
@@ -60,9 +60,9 @@ Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
         Vinod Koul <vkoul@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Andy Gross <agross@kernel.org>
-Subject: [PATCH v2 01/10] dt-bindings: qcom: rpmh-regulator: Add compatible for SA8155p-adp board pmic
-Date:   Tue, 15 Jun 2021 13:15:34 +0530
-Message-Id: <20210615074543.26700-2-bhupesh.sharma@linaro.org>
+Subject: [PATCH v2 02/10] dt-bindings: pinctrl: qcom,pmic-gpio: Add compatible for SA8155p-adp
+Date:   Tue, 15 Jun 2021 13:15:35 +0530
+Message-Id: <20210615074543.26700-3-bhupesh.sharma@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
 References: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
@@ -72,8 +72,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible string for pmm8155au pmic found on
-the SA8155p-adp board.
+Add pmic-gpio compatible string for pmm8155au pmic
+found on the SA8155p-adp board.
 
 Cc: Linus Walleij <linus.walleij@linaro.org>
 Cc: Liam Girdwood <lgirdwood@gmail.com>
@@ -84,21 +84,29 @@ Cc: Rob Herring <robh+dt@kernel.org>
 Cc: Andy Gross <agross@kernel.org>
 Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 ---
- .../devicetree/bindings/regulator/qcom,rpmh-regulator.yaml       | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
-index e561a5b941e4..13dbc8e2fd85 100644
---- a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
-+++ b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
-@@ -55,6 +55,7 @@ properties:
-       - qcom,pm8009-1-rpmh-regulators
-       - qcom,pm8150-rpmh-regulators
-       - qcom,pm8150l-rpmh-regulators
-+      - qcom,pmm8155au-rpmh-regulators
-       - qcom,pm8350-rpmh-regulators
-       - qcom,pm8350c-rpmh-regulators
-       - qcom,pm8998-rpmh-regulators
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+index f6a9760558a6..80b8a66e29d8 100644
+--- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+@@ -27,6 +27,7 @@ PMIC's from Qualcomm.
+ 		    "qcom,pm660l-gpio"
+ 		    "qcom,pm8150-gpio"
+ 		    "qcom,pm8150b-gpio"
++		    "qcom,pmm8155au-gpio"
+ 		    "qcom,pm8350-gpio"
+ 		    "qcom,pm8350b-gpio"
+ 		    "qcom,pm8350c-gpio"
+@@ -116,6 +117,7 @@ to specify in a pin configuration subnode:
+ 					     and gpio8)
+ 		    gpio1-gpio12 for pm8150b (holes on gpio3, gpio4, gpio7)
+ 		    gpio1-gpio12 for pm8150l (hole on gpio7)
++		    gpio1-gpio10 for pmm8155au
+ 		    gpio1-gpio10 for pm8350
+ 		    gpio1-gpio8 for pm8350b
+ 		    gpio1-gpio9 for pm8350c
 -- 
 2.31.1
 
