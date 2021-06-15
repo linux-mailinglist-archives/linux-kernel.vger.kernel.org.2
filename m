@@ -2,342 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6103A7DBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824E93A7DC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhFOMB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:01:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhFOMBz (ORCPT
+        id S230055AbhFOMFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:05:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56110 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229909AbhFOMFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:01:55 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35CBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:59:50 -0700 (PDT)
-Received: from [10.88.0.186] (dslb-084-062-104-230.084.062.pools.vodafone-ip.de [84.62.104.230])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: ch@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 29C6582893;
-        Tue, 15 Jun 2021 13:59:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1623758388;
-        bh=tnuwTY4vQioWVj20GOrjUSAN3a+5fCtqLoAkGUa3w3A=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=dN8UGUxFs7cSLmq+Kg0x1MOCEtbNWxatGXn0KpWHdq/mUkw0Np9hvrIhyg2UJq19t
-         ehYF6WGleEikPAwTpR/giz0hSKpi19I29025WEnY/5Pxq50zvLW9vwXgdnGjGLEkRU
-         0NHd9tPAN5R4lSKUJaU3w9GkLB56Uost++cXjId733HgWikYOVBM8LUYJ3Cbt1F/OH
-         OLBumhGwaBpkBAWL8aKZhZd+RNPAKhqdwokdJ+sCElM+BknXE6i4dqQDfb0kzYv0mM
-         7NVjuypveqxs5P7sSQI/sd+aQlXZ13RGTeDcwYQWOrjjSEHxptwA7NmpNJxZwlw/Jy
-         h4Pgy9sAxMY9A==
-Subject: Re: [PATCH 2/3] ASoC: tlv320aic32x4: add support for TAS2505
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        Marek Vasut <marex@denx.de>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Sia Jee Heng <jee.heng.sia@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Annaliese McDermond <nh6z@nh6z.net>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210615094933.3076392-1-ch@denx.de>
- <20210615094933.3076392-3-ch@denx.de>
-From:   Claudius Heine <ch@denx.de>
-Organization: Denx Software Engineering
-Message-ID: <8545c0a8-3284-25f2-6725-1b3641e0752e@denx.de>
-Date:   Tue, 15 Jun 2021 13:59:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Tue, 15 Jun 2021 08:05:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623758581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yNF6KA8RI97gSFxhNSTM3TXkqeiJ7GynK+A3VyWY4Eo=;
+        b=hYxgglzsdRxUE8fKz/x/QLfH2Eshpst+xkWvMUSRN2CyrOIsOQVEhf2c7PsldJV8Zyt21U
+        3+pF1GcgmmY28I4zASx5N/y/OWnmmfSG9b2xdjgiI1w9RljQfKJctmaaAL6gsTSxtXgntw
+        iSJRo6NXMqpEcXaI7O9klOvBEEgKLBY=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-0OVacZyBNKqRL3FgFbnZXQ-1; Tue, 15 Jun 2021 08:02:59 -0400
+X-MC-Unique: 0OVacZyBNKqRL3FgFbnZXQ-1
+Received: by mail-wm1-f72.google.com with SMTP id y129-20020a1c32870000b029016920cc7087so3125114wmy.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:02:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yNF6KA8RI97gSFxhNSTM3TXkqeiJ7GynK+A3VyWY4Eo=;
+        b=aOC/I5OTp1nNDN7pGyvivQi9vBawszs2oSgYK5qCcGSMjDfI698g7EBqsq+W6UCQPz
+         5HLFtfzYdmPmKSMDrg0Y1fXdnGIKoiDDiOrh2ZzTV6DdIKsVzd9s2FrEQyi8Nm9dTqF2
+         ujzwvi+KYmUbX6VxxVbSAuSXbNw4Ze/42ut5kOhv3iwtfakT5aJopLoF10YMjLTywsS0
+         Kc7YWW1y9HPCrWQTCDcx+40Dvc11tqA2+1wVKuTSh2J7xs3eTAQ1ugnh9o7BCow1Tqne
+         25TpWfcNnVkb030YZSr019T+DJq419Usgco8MDn1a90IC2Qh6Cq5Gxzr5cqrZhj8gyB0
+         YV4w==
+X-Gm-Message-State: AOAM531U7qzoGeZAlyryxVrjTldOJFg9zFkGWsGl8ek9dbdOXEXs1k19
+        guDntDP9wwrtvDVPge4Rf2b2i9Up/FxQT0JhT3yOMtAUk4hR22V9BhBRqmBrBSi7lOfTt67zib+
+        q8R1O6WirVzBkhIsld69PFuA=
+X-Received: by 2002:a7b:c20a:: with SMTP id x10mr21866785wmi.141.1623758578602;
+        Tue, 15 Jun 2021 05:02:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzG5dP8+ZXivDaieUv3qD65f9PSdFx3qdeGSIYtwDeDsYE1IvgNs2BobENDgq60ktfL6H6JMA==
+X-Received: by 2002:a7b:c20a:: with SMTP id x10mr21866761wmi.141.1623758578450;
+        Tue, 15 Jun 2021 05:02:58 -0700 (PDT)
+Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
+        by smtp.gmail.com with ESMTPSA id c13sm2128227wrb.5.2021.06.15.05.02.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 05:02:58 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 13:02:57 +0100
+From:   Aaron Tomlin <atomlin@redhat.com>
+To:     David Rientjes <rientjes@google.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
+        mhocko@suse.com, penguin-kernel@i-love.sakura.ne.jp,
+        llong@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/oom_kill: show oom eligibility when displaying the
+ current memory state of all tasks
+Message-ID: <20210615120257.zkumnojewtrqnx5k@ava.usersys.com>
+X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
+X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
+References: <20210612204634.1102472-1-atomlin@redhat.com>
+ <6fc8beef-4dbb-b49a-4653-90fe564941a6@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210615094933.3076392-3-ch@denx.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6fc8beef-4dbb-b49a-4653-90fe564941a6@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-15 11:49, Claudius Heine wrote:
-> This adds support for TAS2505 and TAS2521 to the tlv320aic32x4 driver.
+On Sun 2021-06-13 16:47 -0700, David Rientjes wrote:
+> On Sat, 12 Jun 2021, Aaron Tomlin wrote:
+> 
+> > diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> > index eefd3f5fde46..094b7b61d66f 100644
+> > --- a/mm/oom_kill.c
+> > +++ b/mm/oom_kill.c
+> > @@ -160,6 +160,27 @@ static inline bool is_sysrq_oom(struct oom_control *oc)
+> >  	return oc->order == -1;
+> >  }
+> >  
+> > +/**
+> > + * is_task_eligible_oom - determine if and why a task cannot be OOM killed
+> > + * @tsk: task to check
+> > + *
+> > + * Needs to be called with task_lock().
+> > + */
+> > +static const char * is_task_oom_eligible(struct task_struct *p)
+> 
+> You should be able to just return a char.
 
-There are some rebase issues here, I will have to fix up.
+I see, sure.
 
-regards,
-Claudius
+> > +{
+> > +	long adj;
+> > +
+> > +	adj = (long)p->signal->oom_score_adj;
+> > +	if (adj == OOM_SCORE_ADJ_MIN)
+> > +		return "S";
+> 
+> The value is already printed in the task dump, this doesn't look to add 
+> any information.
+
+I understand and perhaps it does not make sense; albeit, the reader might
+not understand the meaning of OOM_SCORE_ADJ_MIN.
+
+> > +	else if (test_bit(MMF_OOM_SKIP, &p->mm->flags)
+> > +		return "R";
+> 
+> We should be doing the task dump only when we're killing a victim (unless 
+> we're panicking), so something else has been chosen.  Since we would have 
+> oom killed a process with MMF_OOM_SKIP already, can we simply choose to 
+> not print a line for this process?
+
+I'd prefer not to show such tasks, when displaying potential OOM victims
+(including those in_vfork()) as in my opinion, it can be misleading to the
+reader. That said, a case has been made to maintain their inclusion.
+However, should in_vfork() even be shown in the actual report?
 
 > 
-> Signed-off-by: Claudius Heine <ch@denx.de>
-> ---
->   sound/soc/codecs/tlv320aic32x4-i2c.c |   2 +
->   sound/soc/codecs/tlv320aic32x4.c     | 170 ++++++++++++++++++++++++++-
->   sound/soc/codecs/tlv320aic32x4.h     |   5 +
->   3 files changed, 175 insertions(+), 2 deletions(-)
+> > @@ -401,12 +422,13 @@ static int dump_task(struct task_struct *p, void *arg)
+> >  		return 0;
+> >  	}
+> >  
+> > -	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %s\n",
+> > +	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %13s %s\n",
 > 
-> diff --git a/sound/soc/codecs/tlv320aic32x4-i2c.c b/sound/soc/codecs/tlv320aic32x4-i2c.c
-> index 247fb1e13674..04ad38311360 100644
-> --- a/sound/soc/codecs/tlv320aic32x4-i2c.c
-> +++ b/sound/soc/codecs/tlv320aic32x4-i2c.c
-> @@ -50,6 +50,7 @@ static int aic32x4_i2c_remove(struct i2c_client *i2c)
->   static const struct i2c_device_id aic32x4_i2c_id[] = {
->   	{ "tlv320aic32x4", (kernel_ulong_t)AIC32X4_TYPE_AIC32X4 },
->   	{ "tlv320aic32x6", (kernel_ulong_t)AIC32X4_TYPE_AIC32X6 },
-> +	{ "tas2505", (kernel_ulong_t)AIC32X4_TYPE_TAS2505 },
->   	{ /* sentinel */ }
->   };
->   MODULE_DEVICE_TABLE(i2c, aic32x4_i2c_id);
-> @@ -57,6 +58,7 @@ MODULE_DEVICE_TABLE(i2c, aic32x4_i2c_id);
->   static const struct of_device_id aic32x4_of_id[] = {
->   	{ .compatible = "ti,tlv320aic32x4", .data = (void *)AIC32X4_TYPE_AIC32X4 },
->   	{ .compatible = "ti,tlv320aic32x6", .data = (void *)AIC32X4_TYPE_AIC32X6 },
-> +	{ .compatible = "ti,tas2505", .data = (void *)AIC32X4_TYPE_TAS2505 },
->   	{ /* senitel */ }
->   };
->   MODULE_DEVICE_TABLE(of, aic32x4_of_id);
-> diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-> index 70a1574fb72a..58e773d682d2 100644
-> --- a/sound/soc/codecs/tlv320aic32x4.c
-> +++ b/sound/soc/codecs/tlv320aic32x4.c
-> @@ -221,6 +221,38 @@ static int aic32x4_set_mfp5_gpio(struct snd_kcontrol *kcontrol,
->   	return 0;
->   };
->   
-> +static int aic32x4_tas2505_spkdrv_getvol(struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-> +	struct soc_mixer_control *mc =
-> +		(struct soc_mixer_control *)kcontrol->private_value;
-> +	unsigned int val;
-> +
-> +	val = snd_soc_component_read(component, TAS2505_SPKVOL1);
-> +	val = (val > mc->max) ? mc->max : val;
-> +	val = mc->invert ? mc->max - val : val;
-> +	ucontrol->value.integer.value[0] = val;
-> +
-> +	return 0;
-> +}
-> +
-> +static int aic32x4_tas2505_spkdrv_putvol(struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-> +	struct soc_mixer_control *mc =
-> +		(struct soc_mixer_control *)kcontrol->private_value;
-> +	u8 val;
-> +
-> +	val = (ucontrol->value.integer.value[0] & 0x7f);
-> +	val = mc->invert ? mc->max - val : val;
-> +	val = (val < 0) ? 0 : val;
-> +	snd_soc_component_write(component, TAS2505_SPKVOL1, val);
-> +
-> +	return 0;
-> +}
-> +
->   static const struct snd_kcontrol_new aic32x4_mfp1[] = {
->   	SOC_SINGLE_BOOL_EXT("MFP1 GPIO", 0, aic32x4_get_mfp1_gpio, NULL),
->   };
-> @@ -251,6 +283,9 @@ static DECLARE_TLV_DB_SCALE(tlv_driver_gain, -600, 100, 0);
->   /* -12dB min, 0.5dB steps */
->   static DECLARE_TLV_DB_SCALE(tlv_adc_vol, -1200, 50, 0);
->   
-> +static DECLARE_TLV_DB_LINEAR(tlv_spk_vol, TLV_DB_GAIN_MUTE, 0);
-> +static DECLARE_TLV_DB_SCALE(tlv_amp_vol, 0, 600, 1);
-> +
->   static const char * const lo_cm_text[] = {
->   	"Full Chip", "1.65V",
->   };
-> @@ -1059,6 +1094,130 @@ static const struct snd_soc_component_driver soc_component_dev_aic32x4 = {
->   	.non_legacy_dai_naming	= 1,
->   };
->   
-> +static const struct snd_kcontrol_new aic32x4_tas2505_snd_controls[] = {
-> +	SOC_DOUBLE_R_S_TLV("PCM Playback Volume", AIC32X4_LDACVOL,
-> +			AIC32X4_LDACVOL, 0, -0x7f, 0x30, 7, 0, tlv_pcm),
-> +	SOC_ENUM("DAC Playback PowerTune Switch", l_ptm_enum),
-> +	SOC_DOUBLE_R_S_TLV("HP Driver Gain Playback Volume", AIC32X4_HPLGAIN,
-> +			AIC32X4_HPLGAIN, 0, -0x6, 0x1d, 5, 0,
-> +			tlv_driver_gain),
-> +	SOC_DOUBLE_R("HP DAC Playback Switch", AIC32X4_HPLGAIN,
-> +			AIC32X4_HPLGAIN, 6, 0x01, 1),
-> +
-> +	SOC_SINGLE("Auto-mute Switch", AIC32X4_DACMUTE, 4, 7, 0),
-> +
-> +	SOC_SINGLE_RANGE_EXT_TLV("Speaker Driver Playback Volume", TAS2505_SPKVOL1,
-> +			0, 0, 117, 1, aic32x4_tas2505_spkdrv_getvol,
-> +			aic32x4_tas2505_spkdrv_putvol, tlv_spk_vol),
-> +	SOC_SINGLE_TLV("Speaker Amplifier Playback Volume", TAS2505_SPKVOL2,
-> +			4, 5, 0, tlv_amp_vol),
-> +};
-> +
-> +static const struct snd_kcontrol_new hp_output_mixer_controls[] = {
-> +	SOC_DAPM_SINGLE("DAC Switch", AIC32X4_HPLROUTE, 3, 1, 0),
-> +};
-> +
-> +static const struct snd_soc_dapm_widget aic32x4_tas2505_dapm_widgets[] = {
-> +	SND_SOC_DAPM_DAC("DAC", "Playback", AIC32X4_DACSETUP, 7, 0),
-> +	SND_SOC_DAPM_MIXER("HP Output Mixer", SND_SOC_NOPM, 0, 0,
-> +			   &hp_output_mixer_controls[0],
-> +			   ARRAY_SIZE(hp_output_mixer_controls)),
-> +	SND_SOC_DAPM_PGA("HP Power", AIC32X4_OUTPWRCTL, 5, 0, NULL, 0),
-> +
-> +	SND_SOC_DAPM_PGA("Speaker Driver", TAS2505_SPK, 1, 0, NULL, 0),
-> +
-> +	SND_SOC_DAPM_OUTPUT("HP"),
-> +	SND_SOC_DAPM_OUTPUT("Speaker"),
-> +};
-> +
-> +static const struct snd_soc_dapm_route aic32x4_tas2505_dapm_routes[] = {
-> +	/* Left Output */
-> +	{"HP Output Mixer", "DAC Switch", "DAC"},
-> +
-> +	{"HP Power", NULL, "HP Output Mixer"},
-> +	{"HP", NULL, "HP Power"},
-> +
-> +	{"Speaker Driver", NULL, "DAC"},
-> +	{"Speaker", NULL, "Speaker Driver"},
-> +};
-> +
-> +static struct snd_soc_dai_driver aic32x4_tas2505_dai = {
-> +	.name = "tas2505-hifi",
-> +	.playback = {
-> +			 .stream_name = "Playback",
-> +			 .channels_min = 1,
-> +			 .channels_max = 1,
-> +			 .rates = SNDRV_PCM_RATE_8000_96000,
-> +			 .formats = AIC32X4_FORMATS,},
-> +	.ops = &aic32x4_ops,
-> +	.symmetric_rates = 1,
-> +};
-> +
-> +static int aic32x4_tas2505_component_probe(struct snd_soc_component *component)
-> +{
-> +	struct aic32x4_priv *aic32x4 = snd_soc_component_get_drvdata(component);
-> +	u32 tmp_reg;
-> +	int ret;
-> +
-> +	struct clk_bulk_data clocks[] = {
-> +		{ .id = "codec_clkin" },
-> +		{ .id = "pll" },
-> +		{ .id = "bdiv" },
-> +		{ .id = "mdac" },
-> +	};
-> +
-> +	ret = devm_clk_bulk_get(component->dev, ARRAY_SIZE(clocks), clocks);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (aic32x4->setup)
-> +		aic32x4_setup_gpios(component);
-> +
-> +	clk_set_parent(clocks[0].clk, clocks[1].clk);
-> +	clk_set_parent(clocks[2].clk, clocks[3].clk);
-> +
-> +	/* Power platform configuration */
-> +	if (aic32x4->power_cfg & AIC32X4_PWR_AVDD_DVDD_WEAK_DISABLE)
-> +		snd_soc_component_write(component, AIC32X4_PWRCFG, AIC32X4_AVDDWEAKDISABLE);
-> +
-> +	tmp_reg = (aic32x4->power_cfg & AIC32X4_PWR_AIC32X4_LDO_ENABLE) ?
-> +			AIC32X4_LDOCTLEN : 0;
-> +	snd_soc_component_write(component, AIC32X4_LDOCTL, tmp_reg);
-> +
-> +	tmp_reg = snd_soc_component_read(component, AIC32X4_CMMODE);
-> +	if (aic32x4->power_cfg & AIC32X4_PWR_CMMODE_LDOIN_RANGE_18_36)
-> +		tmp_reg |= AIC32X4_LDOIN_18_36;
-> +	if (aic32x4->power_cfg & AIC32X4_PWR_CMMODE_HP_LDOIN_POWERED)
-> +		tmp_reg |= AIC32X4_LDOIN2HP;
-> +	snd_soc_component_write(component, AIC32X4_CMMODE, tmp_reg);
-> +
-> +	/*
-> +	 * Enable the fast charging feature and ensure the needed 40ms ellapsed
-> +	 * before using the analog circuits.
-> +	 */
-> +	snd_soc_component_write(component, TAS2505_REFPOWERUP,
-> +				AIC32X4_REFPOWERUP_40MS);
-> +	msleep(40);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct snd_soc_component_driver soc_component_dev_aic32x4_tas2505 = {
-> +	.probe			= aic32x4_tas2505_component_probe,
-> +	.set_bias_level		= aic32x4_set_bias_level,
-> +	.controls		= aic32x4_tas2505_snd_controls,
-> +	.num_controls		= ARRAY_SIZE(aic32x4_tas2505_snd_controls),
-> +	.dapm_widgets		= aic32x4_tas2505_dapm_widgets,
-> +	.num_dapm_widgets	= ARRAY_SIZE(aic32x4_tas2505_dapm_widgets),
-> +	.dapm_routes		= aic32x4_tas2505_dapm_routes,
-> +	.num_dapm_routes	= ARRAY_SIZE(aic32x4_tas2505_dapm_routes),
-> +	.suspend_bias_off	= 1,
-> +	.idle_bias_on		= 1,
-> +	.use_pmdown_time	= 1,
-> +	.endianness		= 1,
-> +	.non_legacy_dai_naming	= 1,
-> +};
-> +
->   static int aic32x4_parse_dt(struct aic32x4_priv *aic32x4,
->   		struct device_node *np)
->   {
-> @@ -1250,8 +1409,15 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
->   	if (ret)
->   		goto err_disable_regulators;
->   
-> -	ret = devm_snd_soc_register_component(dev,
-> -			&soc_component_dev_aic32x4, &aic32x4_dai, 1);
-> +	switch (aic32x4->type) {
-> +	case AIC32X4_TYPE_TAS2505:
-> +		ret = devm_snd_soc_register_component(dev,
-> +			&soc_component_dev_aic32x4_tas2505, &aic32x4_tas2505_dai, 1);
-> +		break;
-> +	default:
-> +		ret = devm_snd_soc_register_component(dev,
-> +	}
-> +
->   	if (ret) {
->   		dev_err(dev, "Failed to register component\n");
->   		goto err_disable_regulators;
-> diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
-> index 8a18dbec76a6..e9fd2e55d6c3 100644
-> --- a/sound/soc/codecs/tlv320aic32x4.h
-> +++ b/sound/soc/codecs/tlv320aic32x4.h
-> @@ -13,6 +13,7 @@ struct regmap_config;
->   enum aic32x4_type {
->   	AIC32X4_TYPE_AIC32X4 = 0,
->   	AIC32X4_TYPE_AIC32X6,
-> +	AIC32X4_TYPE_TAS2505,
->   };
->   
->   extern const struct regmap_config aic32x4_regmap_config;
-> @@ -93,6 +94,9 @@ int aic32x4_register_clocks(struct device *dev, const char *mclk_name);
->   #define	AIC32X4_LOLGAIN		AIC32X4_REG(1, 18)
->   #define	AIC32X4_LORGAIN		AIC32X4_REG(1, 19)
->   #define AIC32X4_HEADSTART	AIC32X4_REG(1, 20)
-> +#define TAS2505_SPK		AIC32X4_REG(1, 45)
-> +#define TAS2505_SPKVOL1		AIC32X4_REG(1, 46)
-> +#define TAS2505_SPKVOL2		AIC32X4_REG(1, 48)
->   #define AIC32X4_MICBIAS		AIC32X4_REG(1, 51)
->   #define AIC32X4_LMICPGAPIN	AIC32X4_REG(1, 52)
->   #define AIC32X4_LMICPGANIN	AIC32X4_REG(1, 54)
-> @@ -101,6 +105,7 @@ int aic32x4_register_clocks(struct device *dev, const char *mclk_name);
->   #define AIC32X4_FLOATINGINPUT	AIC32X4_REG(1, 58)
->   #define AIC32X4_LMICPGAVOL	AIC32X4_REG(1, 59)
->   #define AIC32X4_RMICPGAVOL	AIC32X4_REG(1, 60)
-> +#define TAS2505_REFPOWERUP	AIC32X4_REG(1, 122)
->   #define AIC32X4_REFPOWERUP	AIC32X4_REG(1, 123)
->   
->   /* Bits, masks, and shifts */
+> 13 characters for one char output?
+
+This was to maintain some alignment but fair enough.
+
+> >  static void dump_tasks(struct oom_control *oc)
+> >  {
+> >  	pr_info("Tasks state (memory values in pages):\n");
+> > -	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name\n");
+> > +	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj oom eligible? name\n");
 > 
+> Field names are single words.
+
+Understood.
+
+
+
+Kind regards,
 
 -- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-54 Fax: (+49)-8142-66989-80 Email: ch@denx.de
+Aaron Tomlin
 
-            PGP key: 6FF2 E59F 00C6 BC28 31D8 64C1 1173 CB19 9808 B153
-                              Keyserver: hkp://pool.sks-keyservers.net
