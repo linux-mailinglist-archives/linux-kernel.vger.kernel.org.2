@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E213A7B81
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5A73A7B82
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbhFOKMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:12:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbhFOKMs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231591AbhFOKMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:12:54 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:24475 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230519AbhFOKMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Jun 2021 06:12:48 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D404C061574;
-        Tue, 15 Jun 2021 03:10:44 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id u24so50304783edy.11;
-        Tue, 15 Jun 2021 03:10:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oCpcZf2UhB1kUI420Fd2Oz53E4JiY49ICmqCxOkWky8=;
-        b=dJUfgN+8aIX6uooBjZrDuUG21Okd7E9dQDRGfypdUfviFuP/OMdcJ1vDmE84Hoqt+M
-         mwjEs/3Om84dIJp8ClqjoLQUJo40S7iocXGQlxmtx334ZrcWlroUfGO58XmwF8bLTaI/
-         DJsNd6KH8P46m2r+HINUg8CvgMKRFZaDWS/+IjSLCxNNyHOpHFSV+eE0YZdf5JUGO9vK
-         3DlK436iC5HZcJNmhVcFQgkEkM8m+jxjM8DKGSx47tlFc4QV1mVWHltSBJRzIAmI9W4T
-         MtZh+jIOj9xZklgmArRbu0s1dMbV/MygT0QRliJ4BEWtcLYfn1HqJIX/xiGebDfMftsf
-         Ud3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oCpcZf2UhB1kUI420Fd2Oz53E4JiY49ICmqCxOkWky8=;
-        b=IE7m+uuf+V3OD6y3Onokd8uded8+jwlLeqQ52ETwQTb7l8IRgHxp71mUQOu/xUa0je
-         2G8etHry1i8A+L+sXhS1NIi7fPTB1ybhH2JCRXSctT02zMDIxd8RBDKrLzSWoS8LQ9dI
-         EwaGhY7uqRQaRYLVmvKdY1iZh5UtZ+lw9VuSpr6OKHRYcwunaCHFzdeRGDToieFQjTB4
-         A0SM3HwmC0UA48zezGa/gqRfkvKjiuqs641xs16w9eP6bsCq/MoWR+cr9rfBUpcn/++m
-         y28umqJeUoggGJR0rrTGjji4rqse0URNutLLND9BWpjfeKZjJq50oqUEO2giAhsH9KXr
-         MjNg==
-X-Gm-Message-State: AOAM532L1vVkJInlBXTCYQbDpR2yJbnv5FLFuXlXf9+TrUR/+EHILGYx
-        1AJPYJ7oMJxMwF008nHtsIlSmZdP+tXPCxuxM9w=
-X-Google-Smtp-Source: ABdhPJzbrBMJeWPE/dIGJn1IjaQLtUMTyyBT+ZAAB7UoAAAB2vZaDUlUW4xjpic9aPnw+wGMsgsXJ/PmAXy+9dZawsw=
-X-Received: by 2002:a05:6402:54f:: with SMTP id i15mr21915437edx.339.1623751842851;
- Tue, 15 Jun 2021 03:10:42 -0700 (PDT)
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623751844; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=Wnx0dnJAasSI19113sOftFNVrI60o7qtI8hrUanoFFQ=;
+ b=IBsR+klQyXZN6Cw1zr5JaUsTT+XlHUwbfJXU+1Y5KfApEZmp+iC+boRLmiOTGP4vYLgsnuMJ
+ zZry5rkLYQ6xC7Cc7Ml5y9k6KuIdfqkvNHA0m6VXqwjoADUVK3Wf6lAo+EwBTaev2eDiI/cV
+ uPbiIkmLL34v0YVMw1J9v/kEtas=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60c87c918491191eb32b9947 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 10:10:25
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 912B9C43144; Tue, 15 Jun 2021 10:10:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 076C6C4338A;
+        Tue, 15 Jun 2021 10:10:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 076C6C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210614153712.2172662-1-mudongliangabcd@gmail.com>
- <YMhY9NHf1itQyup7@kroah.com> <CAD-N9QVfDQQo0rRiaa6Cx-xO80yox9hNzK91_UVj0KNgkhpvnQ@mail.gmail.com>
- <YMh2b0LvT9H7SuNC@kroah.com>
-In-Reply-To: <YMh2b0LvT9H7SuNC@kroah.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 15 Jun 2021 18:10:16 +0800
-Message-ID: <CAD-N9QV+GMURatPx4qJT2nMsKHQhj+BXC9C-ZyQed3pN8a9YUA@mail.gmail.com>
-Subject: Re: [PATCH] net: usb: fix possible use-after-free in smsc75xx_bind
-To:     Greg KH <greg@kroah.com>
-Cc:     Steve Glendinning <steve.glendinning@shawell.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Pavel Skripkin <paskripkin@gmail.com>, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] ssb: Remove redundant assignment to err
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1619693230-108804-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1619693230-108804-1-git-send-email-yang.lee@linux.alibaba.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     m@bues.ch, nathan@kernel.org, ndesaulniers@google.com,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Yang Li <yang.lee@linux.alibaba.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210615101025.912B9C43144@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 10:10:25 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 5:44 PM Greg KH <greg@kroah.com> wrote:
->
-> On Tue, Jun 15, 2021 at 03:56:32PM +0800, Dongliang Mu wrote:
-> > On Tue, Jun 15, 2021 at 3:38 PM Greg KH <greg@kroah.com> wrote:
-> > >
-> > > On Mon, Jun 14, 2021 at 11:37:12PM +0800, Dongliang Mu wrote:
-> > > > The commit 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
-> > > > fails to clean up the work scheduled in smsc75xx_reset->
-> > > > smsc75xx_set_multicast, which leads to use-after-free if the work is
-> > > > scheduled to start after the deallocation. In addition, this patch also
-> > > > removes one dangling pointer - dev->data[0].
-> > > >
-> > > > This patch calls cancel_work_sync to cancel the schedule work and set
-> > > > the dangling pointer to NULL.
-> > > >
-> > > > Fixes: 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
-> > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > > ---
-> > > >  drivers/net/usb/smsc75xx.c | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > >
-> > > > diff --git a/drivers/net/usb/smsc75xx.c b/drivers/net/usb/smsc75xx.c
-> > > > index b286993da67c..f81740fcc8d5 100644
-> > > > --- a/drivers/net/usb/smsc75xx.c
-> > > > +++ b/drivers/net/usb/smsc75xx.c
-> > > > @@ -1504,7 +1504,10 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
-> > > >       return 0;
-> > > >
-> > > >  err:
-> > > > +     cancel_work_sync(&pdata->set_multicast);
-> > > >       kfree(pdata);
-> > > > +     pdata = NULL;
-> > >
-> > > Why do you have to set pdata to NULL afterward?
-> > >
-> >
-> > It does not have to. pdata will be useless when the function exits. I
-> > just referred to the implementation of smsc75xx_unbind.
->
-> It's wrong there too :)
+Yang Li <yang.lee@linux.alibaba.com> wrote:
 
-/: I will fix such two sites in the v2 patch.
+> Variable 'err' is set to zero but this value is never read as it is
+> overwritten with a new value later on, hence it is a redundant
+> assignment and can be removed.
+> 
+> Clean up the following clang-analyzer warning:
+> 
+> drivers/ssb/main.c:1306:3: warning: Value stored to 'err' is never read
+> [clang-analyzer-deadcode.DeadStores]
+> drivers/ssb/main.c:1312:3: warning: Value stored to 'err' is never read
+> [clang-analyzer-deadcode.DeadStores]
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> Acked-by: Michael Büsch <m@bues.ch>
+
+Patch applied to wireless-drivers-next.git, thanks.
+
+7557dfde1bd1 ssb: Remove redundant assignment to err
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/1619693230-108804-1-git-send-email-yang.lee@linux.alibaba.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
