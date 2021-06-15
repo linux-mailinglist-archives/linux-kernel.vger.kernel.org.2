@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213203A8419
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372F23A8414
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhFOPhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhFOPho (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:37:44 -0400
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0901AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:35:39 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id n25so1065230vkl.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=12lusgJKqZ+mFXJMQojBCjBzeRiohhHShT1Rj6cPMlA=;
-        b=KdTeL4xhOG1Ni08Mf6x0ZpT6rt9j9qQv+4GuFufpy9Ao2aplllacUO3i6KB3Pr9Rgk
-         cjToMFZjWR8QRk/rF8v8/zAq0KQUiUUIut6Il99rIFXXsL0A6iRURQpQwmP7JLNU9dGV
-         16lYhsXZqzVIHA6Nd1LZ3FHGpIGSUOztR2O2pGXx+032trMRf7rBFhneKGe4kPt95zFV
-         R5FllI9cUcq7JTYkk0/oNUCDgZZyvZOQzcsEvNMaJTtmrS27nJcDGWbx0svynNj/g3zd
-         0znOSVeB+ZGyrQQqpqmr5qg1dHMHomeu919bunVoA21KJ2U2g4qqzTFVRE0g/iSNt6nA
-         khZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=12lusgJKqZ+mFXJMQojBCjBzeRiohhHShT1Rj6cPMlA=;
-        b=VXOWKwD0MmapJfqxd6wvkwQWKleB4A6oPrYWVJJmTBLcFGgceEXLqqnfC2DuPBrL1y
-         kjIQltcF5MNaHQs/LxyH6buflG5JujD94VbN5fNwTLJHZyQK/C1BtQIdgzD2eJdOh8Pc
-         aauQKhPjvkJKZ1mCotJpXu6Ug2qdBZQ6OlgQ9FRGIXBdpKGJ5D/I8+nNpvP/jZDLGM0Q
-         G0c6wGg6XBii6WqEN+xgJDVcTbE64MVUAOp26UUU2KOJqm6atPU/2HRldSLoq3OWxtuq
-         46BokX76CCmQOOiaphu5gNEEIZWArXJydMo809jNH+ZozefYRWQRt3VVNsR+FDMzX9VZ
-         a7ew==
-X-Gm-Message-State: AOAM533+zkSWBTR4mgAQC7lo4N/ztzgAztHqSpxZydWSAZavcXLxRe8i
-        GXocpyldTLYMEkagsNNM0y6Db9hEk0L/O7ePefzmhw==
-X-Google-Smtp-Source: ABdhPJyEAEOe6I6qtvLHO5Hm3e/awBYGqKLv+Jhmw2CzujYFMTLYGKPub/BltgkGnQPNw58/mXrSs/TP1Z6+jggvyRM=
-X-Received: by 2002:a1f:3dd8:: with SMTP id k207mr4287282vka.7.1623771338193;
- Tue, 15 Jun 2021 08:35:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
- <20210611101540.3379937-3-dmitry.baryshkov@linaro.org> <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
- <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
- <CAPDyKFoMC_7kJx_Wb4LKgxvRCoqHYFtwsJ2b7Cr4OvjA94DtHg@mail.gmail.com>
- <20210615111012.GA5149@sirena.org.uk> <CAPDyKFreV-RPzweG8SqFQtvZMOyFbaG2+tMFKc2JkbEj+erb=g@mail.gmail.com>
- <20210615152620.GH5149@sirena.org.uk>
-In-Reply-To: <20210615152620.GH5149@sirena.org.uk>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 15 Jun 2021 17:35:01 +0200
-Message-ID: <CAPDyKFrthc_6rXt1UscKTQnctFXw0XjReEF5bqCGot2n=ChKaA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S231602AbhFOPhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:37:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230487AbhFOPhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:37:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF32161628;
+        Tue, 15 Jun 2021 15:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623771320;
+        bh=bdX3AMbWyhVXruwbjaE34McyzOJL3Jr1GERY0z/RZPc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ujZRxkUwNxdzF/KNfASkyHO1e+H5Uz79J4oyEmegDARkcl5tofoaqTxfYyHFo/Wx5
+         UHPDwxKWflhSY2zWNCq9IaPGZsR3yI8HmJU4T1W2ChraltN2nryH0FYTbkoeNHhb/C
+         QYfx4xgi6WovLBGxFWoHPMT/VBdYk42F1A3dTd0zRP2FjsrqUhl0BUQa7mmKfBZJFF
+         XhtcaHvdI0tZcTxuvCpnj30yPXeDy0Ffc8bHuAr4TQsL/7YZCd/H3HdWCzkqOeVGk3
+         CksOX0csLNvG83ogAAeqLDQ+pM3WPopARszbL2jAr5fgs27pwPeNcJBpSj3xNKFcaQ
+         xYX91CtocSb7Q==
+Date:   Tue, 15 Jun 2021 16:35:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH v2 06/10] regulator: qcom-rpmh: Add new regulator found
+ on SA8155p adp board
+Message-ID: <20210615153501.GK5149@sirena.org.uk>
+References: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
+ <20210615074543.26700-7-bhupesh.sharma@linaro.org>
+ <20210615111228.GB5149@sirena.org.uk>
+ <CAH=2NtwAsvU9x3pTKdf2e5YAG7N9=uT4EQZ9aPWp26THXntdNw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1y1tiN5hVw5cPBDe"
+Content-Disposition: inline
+In-Reply-To: <CAH=2NtwAsvU9x3pTKdf2e5YAG7N9=uT4EQZ9aPWp26THXntdNw@mail.gmail.com>
+X-Cookie: See store for details.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 at 17:26, Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Jun 15, 2021 at 04:55:24PM +0200, Ulf Hansson wrote:
-> > On Tue, 15 Jun 2021 at 13:10, Mark Brown <broonie@kernel.org> wrote:
-> > > On Tue, Jun 15, 2021 at 12:17:20PM +0200, Ulf Hansson wrote:
->
-> > > > Beyond this, perhaps we should consider removing the
-> > > > "regulator-fixed-domain" DT property, as to avoid similar problems
-> > > > from cropping up?
->
-> > > > Mark, what do you think?
->
-> > > We need to maintain compatibility for existing users...
->
-> > Normally, yes, I would agree.
->
-> > In this case, it looks like there is only one user, which is somewhat
-> > broken in regards to this, so what's the point of keeping this around?
->
-> Only one user in mainline and you were just suggesting removing the
-> property (you mean binding I think?) - at the very least we'd need to
-> transition that upstream user away to something else before doing
-> anything.
 
-Yes, I am referring to the binding.
+--1y1tiN5hVw5cPBDe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Let's see where we end up with this. My concern at this point is that
-it could spread to more users, which would make it even more difficult
-to remove.
+On Tue, Jun 15, 2021 at 08:08:38PM +0530, Bhupesh Sharma wrote:
+> On Tue, 15 Jun 2021 at 16:42, Mark Brown <broonie@kernel.org> wrote:
 
-Kind regards
-Uffe
+> > This is adding a new compatible so it needs a matching update to the DT
+> > binding.
+
+> Yes, [PATCH v2 01/10] from this series 'dt-bindings: qcom:
+> rpmh-regulator: Add compatible for SA8155p-adp board pmic', updates
+> the dt-binding with the new compatible.
+
+> Please let me know if I am missing something here.
+
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
+
+--1y1tiN5hVw5cPBDe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDIyKUACgkQJNaLcl1U
+h9CG0gf7BGrgHg/iW6D07GqPzhY1z1FAk1LIWWMOa8ljQTOxEVfYStEA0o24Jm6u
+YspeL71jHas7z5tG/tt0OkeynuVl2E/KoS7Dsea3rPcXOVAlA0hqi/pgyss5EwMv
+YFascZLDFcLLrGH9lqsf98XH4TV04dG129M0SremQYo6dYqBXTiiUhO8NDFca2Ik
+nH7czC8zijyGudCgkTJnFtuzghszMZ/GVoxgQt0wZtG5sLdgH4BxVtD+GM0Cly0s
+uxSNISYqna5CaDutBbudjyi3lumRZYIHM+CQqWTVeFBKMysbcghj6Mh7eQuHNcfP
+AUfbTM5GtQBRGcuhoC01fUXT+N1mgw==
+=4ZR0
+-----END PGP SIGNATURE-----
+
+--1y1tiN5hVw5cPBDe--
