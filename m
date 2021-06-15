@@ -2,124 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24CB3A8C62
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB963A8C63
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 01:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhFOXWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 19:22:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50452 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229811AbhFOXWK (ORCPT
+        id S231358AbhFOXW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 19:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhFOXW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:22:10 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15FNESC7130849;
-        Tue, 15 Jun 2021 19:20:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=qkDrRL+kFAdywKSAgJ0+Gvc/rzwjrV+zPz4PbZ+zNSQ=;
- b=JvZF6dUU8BuX394b4Y5NUK3zhFrOunn07TAua2mlsun5i8FF/h77zq4AQvHWRw3dYMVT
- Ji+jH7i5odeVLfhtxMgd0mjlAB9DW3x6ltIr4UmvzK2atA8aas53pP8Wc/B/NR5Iupzx
- xE0x9W5+rP5U0B/5VLNYblYqqYvMrFAhZk8eFbYlFsHvBO84Sy6U3mDo36tlNxpo2UTI
- rJPysUwjYfnnp0IP5lYg2QtUC1Dr/hF9SYdF6XQ71oMGYuZPR78w8U4OHuuvwbrxhoYr
- VnKejuY/sJVz7u38QaBLN05CYbfa3BSPaianmGyiZho7YDG5gGNtOkm5SBljUqvX8jRB UA== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3975py843y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 19:20:03 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15FNCN8O029818;
-        Tue, 15 Jun 2021 23:20:01 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 394mj8gyg7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 23:20:01 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15FNIt0V36176222
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Jun 2021 23:18:55 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5DE552050;
-        Tue, 15 Jun 2021 23:19:57 +0000 (GMT)
-Received: from localhost (unknown [9.171.72.121])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 7BD0C5204F;
-        Tue, 15 Jun 2021 23:19:57 +0000 (GMT)
-Date:   Wed, 16 Jun 2021 01:19:56 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Cc:     linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH] s390/boot: add zstd support
-Message-ID: <your-ad-here.call-01623799196-ext-1245@work.hours>
-References: <20210615114150.325080-1-dimitri.ledkov@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210615114150.325080-1-dimitri.ledkov@canonical.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vOivXIbsRptxIZXNrURxeVztOAwS0VpU
-X-Proofpoint-ORIG-GUID: vOivXIbsRptxIZXNrURxeVztOAwS0VpU
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 15 Jun 2021 19:22:57 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6FFC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:20:52 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id m13-20020a17090b068db02901656cc93a75so2814853pjz.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 16:20:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zd5vgVNz+BmI/+O1FJjX2xJNxwUvhrCsjTqsqRhVW9Y=;
+        b=CrcZsdj6rEXbgOdwBBdjg1x0Eme5binzIOsQkq/2hl+SeN6h0GaGuYWlr1mHOpmorF
+         FId2dpmBgweNYfW9qXSjEBMcpLVIkYFcJ/YyyeT+h+l8zDyk+Zv/BsUdk6Ajt5cRY6Yf
+         QnXQpzmjJSoTTf3Z8jBEFcRnOPIMHiVPM2LpRvdltjtRom3YMK4QbdyeTdqncRvWh3Uh
+         +AGU1EXL/njsND3pc85Aml2RcFDyi8pJnixCESzkWDWL4sDmXar1ZSxukkI4ukHjR6BP
+         iMfHlT2jKaAyIQM27M5km8bKAx0MqS0rxzEFsG4uYCVlg1Ms9G26WSHmkoJazaTb9/bR
+         kegA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zd5vgVNz+BmI/+O1FJjX2xJNxwUvhrCsjTqsqRhVW9Y=;
+        b=ud+AyAEePCLBXxCn7vhBLU3z0juKi9UI84j6sPG4ycIERiShoUHgQdyNmSOaSlVcq3
+         jUa5UlWyoQ0o+TC4l0DOfyIgAiviyez5kocdn8O9nhnoc+s9aGnco+tPwE3TTSqUsael
+         PIS4GZYeERGMFEKSCtmzuKzPRhtZCUOHveJhtUaGDSO55nYvtrWb5z0yJIdl/GR5Mapj
+         uRj7TtCd3AkVNL1Pyx6JjZ5iUiagaqsCcaIyN9hkhd+7Ok7l7xUedP57MhHIquCAsHU/
+         r0uCJDUMPksZe82SmufaOPw5dmjnr4AgDXzJK6SBAESaU0psNED9F8GddzYIdtoiL96L
+         UmSQ==
+X-Gm-Message-State: AOAM533oAcqzvfA73wc2ZnQx0XeIW9otUddPoUrRghhNJVRWZCs8nl2W
+        VgHB5PSK2DAeMG4F9Io5gtxYKWHVUlcIliX/aLTIyagFrnKQhQ==
+X-Google-Smtp-Source: ABdhPJz+py7Ki207LQKkcaYiS/g6TZhrR/NeFcK27HudFHZM+aZpy9smR2p3nJPX2ycC3FVpOMXU9LiZ8BJt+I2gxCU=
+X-Received: by 2002:a17:90a:ea8c:: with SMTP id h12mr7223781pjz.149.1623799252369;
+ Tue, 15 Jun 2021 16:20:52 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-15_07:2021-06-15,2021-06-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- malwarescore=0 adultscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- phishscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106150142
+References: <162379908663.2993820.16543025953842049041.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <162379908663.2993820.16543025953842049041.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 15 Jun 2021 16:20:41 -0700
+Message-ID: <CAPcyv4jPisJ+6hsQn6FGDDtpfcb6K82K2rU2rv3A8HE6z--wvw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] cxl/pmem: Add core infrastructure for PMEM support
+To:     linux-cxl@vger.kernel.org
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 12:41:50PM +0100, Dimitri John Ledkov wrote:
-> Enable ztsd support in s390/boot, to enable booting with zstd
-> compressed kernel when configured with CONFIG_KERNEL_ZSTD=y.
-> 
-> BugLink: https://bugs.launchpad.net/bugs/1931725
-> Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-> cc: Heiko Carstens <hca@linux.ibm.com>
-> cc: Vasily Gorbik <gor@linux.ibm.com>
-> cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> cc: linux-s390@vger.kernel.org
+On Tue, Jun 15, 2021 at 4:18 PM Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> Changes since v1 [1]:
+
+Neglected the v1 link:
+
+https://lore.kernel.org/r/162336395765.2462439.11368504490069925374.stgit@dwillia2-desk3.amr.corp.intel.com
+
+> - cleanup @flush determination in unregister_nvb() (Jonathan)
+> - cleanup online_nvdimm_bus() to return a status code (Jonathan)
+> - drop unnecessary header includes (Jonathan)
+> - drop unused cxl_nvdimm driver data (Jonathan)
+> - rename the bus to be unregistered as @victim_bus in
+>   cxl_nvb_update_state() (Jonathan)
+> - miscellaneous cleanups and pick up reviewed-by's (Jonathan)
+>
 > ---
->  arch/s390/Kconfig                        | 1 +
->  arch/s390/boot/compressed/Makefile       | 4 ++++
->  arch/s390/boot/compressed/decompressor.c | 4 ++++
->  3 files changed, 9 insertions(+)
-
-Reviewing your patch I noticed that we use wrong condition to
-define BOOT_HEAP_SIZE. So I made a tiny fix:
-
-diff --git a/arch/s390/boot/compressed/decompressor.c b/arch/s390/boot/compressed/decompressor.c
-index 3061b11c4d27..cf2571050c68 100644
---- a/arch/s390/boot/compressed/decompressor.c
-+++ b/arch/s390/boot/compressed/decompressor.c
-@@ -29,5 +29,5 @@ extern unsigned char _compressed_start[];
- extern unsigned char _compressed_end[];
- 
--#ifdef CONFIG_HAVE_KERNEL_BZIP2
-+#ifdef CONFIG_KERNEL_BZIP2
- #define BOOT_HEAP_SIZE 0x400000
- #else
-
-And applied your patch with the following changes:
-Added to the commit message:
-"""
-BOOT_HEAP_SIZE is defined to 0x30000 in this case. Actual decompressor
-memory usage with allyesconfig is currently 0x26150.
-"""
-
-diff --git a/arch/s390/boot/compressed/decompressor.c b/arch/s390/boot/compressed/decompressor.c
-index cf2571050c68..37a4a8d33c6c 100644
---- a/arch/s390/boot/compressed/decompressor.c
-+++ b/arch/s390/boot/compressed/decompressor.c
-@@ -31,4 +31,6 @@ extern unsigned char _compressed_end[];
- #ifdef CONFIG_KERNEL_BZIP2
- #define BOOT_HEAP_SIZE 0x400000
-+#elif CONFIG_KERNEL_ZSTD
-+#define BOOT_HEAP_SIZE 0x30000
- #else
- #define BOOT_HEAP_SIZE 0x10000
-
-I hope you are ok with that, thanks!
+>
+> CXL Memory Expander devices (CXL 2.0 Type-3) support persistent memory
+> in addition to volatile memory expansion. The most significant changes
+> this requires of the existing LIBNVDIMM infrastructure, compared to what
+> was needed to support ACPI NFIT defined PMEM, is the ability to
+> dynamically provision regions in addition to namespaces, and a formal
+> model for hotplug.
+>
+> Before region provisioning can be added the CXL enabling needs to
+> enumerate "nvdimm" devices on a CXL nvdimm-bus. This is modeled as a
+> CXL-nvdimm-bridge device (bridging CXL to nvdimm) and an associated
+> driver to activate and deactivate that bus-bridge. Once the bridge is
+> registered it scans for CXL nvdimm devices registered by endpoints.  The
+> CXL core bus is used as a rendezvous for nvdimm bridges and endpoints
+> allowing them to be registered and enabled in any order.
+>
+> At the end of this series the ndctl utility can see CXL nvdimm resources
+> just like any other nvdimm bus.
+>
+>     # ndctl list -BDiu -b CXL
+>     {
+>       "provider":"CXL",
+>       "dev":"ndbus1",
+>       "dimms":[
+>         {
+>           "dev":"nmem1",
+>           "state":"disabled"
+>         },
+>         {
+>           "dev":"nmem0",
+>           "state":"disabled"
+>         }
+>       ]
+>     }
+>
+> Follow-on patches extend the nvdimm core label support for CXL region
+> and namespace labels. For now just add the machinery to register the
+> bus and nvdimm base objects.
+>
+> ---
+>
+> Dan Williams (5):
+>       cxl/core: Add cxl-bus driver infrastructure
+>       cxl/pmem: Add initial infrastructure for pmem support
+>       libnvdimm: Export nvdimm shutdown helper, nvdimm_delete()
+>       libnvdimm: Drop unused device power management support
+>       cxl/pmem: Register 'pmem' / cxl_nvdimm devices
+>
+>
+>  drivers/cxl/Kconfig        |   13 ++
+>  drivers/cxl/Makefile       |    2
+>  drivers/cxl/acpi.c         |   37 ++++++
+>  drivers/cxl/core.c         |  280 ++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/cxl/cxl.h          |   56 +++++++++
+>  drivers/cxl/mem.h          |    1
+>  drivers/cxl/pci.c          |   23 +++-
+>  drivers/cxl/pmem.c         |  230 ++++++++++++++++++++++++++++++++++++
+>  drivers/nvdimm/bus.c       |   64 ++++++----
+>  drivers/nvdimm/dimm_devs.c |   18 +++
+>  include/linux/libnvdimm.h  |    1
+>  11 files changed, 694 insertions(+), 31 deletions(-)
+>  create mode 100644 drivers/cxl/pmem.c
+>
+> base-commit: 87815ee9d0060a91bdf18266e42837a9adb5972e
