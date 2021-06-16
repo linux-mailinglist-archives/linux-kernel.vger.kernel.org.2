@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3F53AA538
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4D33AA542
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233390AbhFPUY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 16:24:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:44864 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233355AbhFPUYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 16:24:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2125D113E;
-        Wed, 16 Jun 2021 13:22:46 -0700 (PDT)
-Received: from [10.57.9.31] (unknown [10.57.9.31])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A493A3F70D;
-        Wed, 16 Jun 2021 13:22:42 -0700 (PDT)
-Subject: Re: [PATCH v4 2/3] sched/fair: Take thermal pressure into account
- while estimating energy
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Quentin Perret <qperret@google.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Beata Michalska <Beata.Michalska@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Amit Kachhap <amit.kachhap@gmail.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-References: <20210614185815.15136-1-lukasz.luba@arm.com>
- <20210614191128.22735-1-lukasz.luba@arm.com>
- <237ef538-c8ca-a103-b2cc-240fc70298fe@arm.com>
- <d214db57-879c-cf3f-caa8-76c2cd369e0d@arm.com>
- <9821712d-be27-a2e7-991c-b0010e23fa70@arm.com>
- <CAKfTPtCpWrubqp2W8NQA0JTh2dJx3oxGuCBJbZ04reFzCbDxEg@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <79dbb2ad-88c1-ff08-59c8-7728d37ee78a@arm.com>
-Date:   Wed, 16 Jun 2021 21:22:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233470AbhFPU2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 16:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233451AbhFPU2B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 16:28:01 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AA9C061574;
+        Wed, 16 Jun 2021 13:25:54 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltc6R-0094hM-5b; Wed, 16 Jun 2021 20:25:35 +0000
+Date:   Wed, 16 Jun 2021 20:25:35 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH 2/2] alpha/ptrace: Add missing switch_stack frames
+Message-ID: <YMpeP0CrRUVKIysE@zeniv-ca.linux.org.uk>
+References: <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+ <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133>
+ <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133>
+ <87zgvqor7d.fsf_-_@disp2133>
+ <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
+ <87mtrpg47k.fsf@disp2133>
+ <87pmwlek8d.fsf_-_@disp2133>
+ <87eed1ek31.fsf_-_@disp2133>
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtCpWrubqp2W8NQA0JTh2dJx3oxGuCBJbZ04reFzCbDxEg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87eed1ek31.fsf_-_@disp2133>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 16, 2021 at 01:32:50PM -0500, Eric W. Biederman wrote:
 
+> -.macro	fork_like name
+> +.macro	allregs name
+>  	.align	4
+>  	.globl	alpha_\name
+>  	.ent	alpha_\name
+> +	.cfi_startproc
+>  alpha_\name:
+>  	.prologue 0
+> -	bsr	$1, do_switch_stack
+> +	SAVE_SWITCH_STACK
+>  	jsr	$26, sys_\name
+> -	ldq	$26, 56($sp)
+> -	lda	$sp, SWITCH_STACK_SIZE($sp)
+> +	RESTORE_SWITCH_STACK
 
-On 6/16/21 8:25 PM, Vincent Guittot wrote:
-> On Wed, 16 Jun 2021 at 19:24, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->>
->> On 15/06/2021 18:09, Lukasz Luba wrote:
->>>
->>> On 6/15/21 4:31 PM, Dietmar Eggemann wrote:
->>>> On 14/06/2021 21:11, Lukasz Luba wrote:
->>
->> [...]
->>
->>>> It's important to highlight that this will only fix this issue between
->>>> schedutil and EAS when it's due to `thermal pressure` (today only via
->>>> CPU cooling). There are other places which could restrict policy->max
->>>> via freq_qos_update_request() and EAS will be unaware of it.
->>>
->>> True, but for this I have some other plans.
->>
->> As long as people are aware of the fact that this was developed to be
->> beneficial for `EAS - IPA` integration, I'm fine with this.
-> 
-> I don't think it's only for EAS - IPA. Thermal_pressure can be used by
-> HW throttling like here:
-> https://lkml.org/lkml/2021/6/8/1791
-> 
-> EAS is involved but not IPA
+	No.  You've just added one hell of an overhead to fork(2),
+for no reason whatsoever.  sys_fork() et.al. does *NOT* modify the
+callee-saved registers; it's plain C.  So this change is complete
+BS.
 
-Thank you Vincent for pointing to Thara's patches. Indeed, this is a
-good example. We will have to provide similar for our SCMI perf
-notifications - these are the plans that I've mentioned. In both
-new examples, the IPA (or other governors) won't be even involved.
+> +allregs exit
+> +allregs exit_group
+
+	Details, please - what exactly makes exit(2) different from
+e.g. open(2)?
