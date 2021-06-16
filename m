@@ -2,95 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048053A939C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CF13A939E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbhFPHTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 03:19:14 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:46802 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231239AbhFPHTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:19:13 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxiuBtpclgNFkSAA--.27863S2;
-        Wed, 16 Jun 2021 15:17:01 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [RFC PATCH] umh: Check if sub_info->path is exist in call_usermodehelper_setup()
-Date:   Wed, 16 Jun 2021 15:17:00 +0800
-Message-Id: <1623827820-21248-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxiuBtpclgNFkSAA--.27863S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7GFWUtrWxKFyfXF47uFW8Xrb_yoW8JF1xpF
-        W3Xr1ayr4rJFn2kas7A3Z5ur15Ar1kGF13XFZ7Z395A34kur1DXr48Ga409FW5KrWSkFW2
-        yr1Fvr4S9F1UGFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4x
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JU4UDLUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S231290AbhFPHTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:19:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47475 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231256AbhFPHTa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 03:19:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623827845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kxGE2L7b0S1BOFAfdffIsHID0G8yx+5uEH+ORuy77bY=;
+        b=btBOJjIjMlcjzIg6ZHjaLEOoD+SmWZ9cLUfDB9xdDUG8kzTQqa7ciRrnEAMtIlQR03cnXP
+        9cjKDp3zjUB77JFl0c+KvKjzAbt0P7KtvQYNfpKcoj4bPUNJkhjfn04ZjWT9ZHSQrSQkyJ
+        cz8Wk8BGLmEcbkZ+HwnvySf7Z6g2/Jw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-N9HmzPWaMXiBdfbBul7a0A-1; Wed, 16 Jun 2021 03:17:24 -0400
+X-MC-Unique: N9HmzPWaMXiBdfbBul7a0A-1
+Received: by mail-ed1-f70.google.com with SMTP id f12-20020a056402150cb029038fdcfb6ea2so502457edw.14
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:17:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kxGE2L7b0S1BOFAfdffIsHID0G8yx+5uEH+ORuy77bY=;
+        b=iIExQ3mHyMJ2UrX0H1dwGy4UnkXB7NFgNC1FMsHHpPTEJEzVvbDw9rr7l7LAusFTCj
+         w5ze8+cJrS3jQXqDU1NYshXOQGi+RkbmqBETj/lthsQxjmzb0YR6SHH1tqqzz9FZ6mu5
+         MvAwVodbOt+PA7SuI9Sqx99Q+7NoxHf/A2uawXXCRNwN8TR6gYZ7gkqy9pdtDww6hsE6
+         bx2J7vdB5dw5uxZHinYIoHtuHcBmso9gKm37OfOi6UhB2kTo6FLn3H95ytg/Ee4XdYXN
+         chTx4xzJupkUcly7EyStHCvF3KndxF1egcqpdmk83H7cuPrK0cDfVAsq8HTzfTrtC+HG
+         6rtg==
+X-Gm-Message-State: AOAM532bEvNYyI3RlgEFqkQwobIAsIFQcwTI3oyjCTzlZDiUzUHbxhIN
+        YVsh86/9VPHPDk8oM/DgX02E8y7+aNt/XhScokrITRcKqlKXXODW+1uqO7WZAcrOJZ5jLfZ9qYi
+        l6oHmfMwQ1CaD8hT4xzkQKzDV
+X-Received: by 2002:a05:6402:40c4:: with SMTP id z4mr2459202edb.364.1623827842850;
+        Wed, 16 Jun 2021 00:17:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxA/rYPg6z9R5Nz+7wuzljU205VTmiezXdLy0eRMI3JtU3AcXflr4Sm2sokA2+2brbrND/vag==
+X-Received: by 2002:a05:6402:40c4:: with SMTP id z4mr2459174edb.364.1623827842666;
+        Wed, 16 Jun 2021 00:17:22 -0700 (PDT)
+Received: from localhost.localdomain.hub ([151.29.48.4])
+        by smtp.gmail.com with ESMTPSA id lu21sm968074ejb.31.2021.06.16.00.17.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 00:17:22 -0700 (PDT)
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     bigeasy@linutronix.de, tglx@linutronix.de
+Cc:     linux-rt-users@vger.kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, bristot@redhat.com,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: [RFC PATCH RT v2 0/2] Add PINNED_HARD mode to hrtimers
+Date:   Wed, 16 Jun 2021 09:17:03 +0200
+Message-Id: <20210616071705.166658-1-juri.lelli@redhat.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In call_usermodehelper_setup(), if strlen(sub_info->path) is not 0,
-but in fact there is no such file, in this case, there is no need to
-execute it, set sub_info->path as empty string to avoid meaningless
-operations in call_usermodehelper_exec().
+Hi,
 
-Here is an example:
-init/do_mounts_initrd.c
-static void __init handle_initrd(void)
-{
-	[...]
-	info = call_usermodehelper_setup("/linuxrc", argv, envp_init,
-					 GFP_KERNEL, init_linuxrc, NULL, NULL);
-	if (!info)
-		return;
-	call_usermodehelper_exec(info, UMH_WAIT_PROC);
-	[...]
-}
+I rebased an RFC series I already proposed a while ago [1] and I'd like
+people to consider it again for inclusion.
 
-$ ls /linuxrc
-ls: cannot access '/linuxrc': No such file or directory
+When running cyclictest on isolated CPUs with timer_migration enabled,
+the following, where CPU0 is one of the housekeeping CPUs and CPU2 is
+isolated, is (of course) happening:
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- kernel/umh.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+     <idle>-0     [000] ... hrtimer_cancel:       hrtimer=0xffffb4a74be7fe70
+     <idle>-0     [000] ... hrtimer_expire_entry: hrtimer=0xffffb4a74be7fe70 now=144805770984 function=hrtimer_wakeup/0x0
+     <idle>-0     [000] ... sched_wakeup:         cyclictest:1171 [4] success=1 CPU:002
+     <idle>-0     [000] ... hrtimer_expire_exit:  hrtimer=0xffffb4a74be7fe70
+     <idle>-0     [002] ... sched_switch:         swapper/2:0 [120] R ==> cyclictest:1171 [4]
+ cyclictest-1171  [002] ... hrtimer_init:         hrtimer=0xffffb4a74be7fe70 clockid=CLOCK_MONOTONIC mode=0x8
+ cyclictest-1171  [002] ... hrtimer_start:        hrtimer=0xffffb4a74be7fe70 function=hrtimer_wakeup/0x0 ...
+ cyclictest-1171  [002] ... sched_switch:         cyclictest:1171 [4] S ==> swapper/2:0 [120]
 
-diff --git a/kernel/umh.c b/kernel/umh.c
-index 36c1233..2312cc0 100644
---- a/kernel/umh.c
-+++ b/kernel/umh.c
-@@ -373,6 +373,17 @@ struct subprocess_info *call_usermodehelper_setup(const char *path, char **argv,
- #else
- 	sub_info->path = path;
- #endif
-+	if (strlen(sub_info->path) != 0) {
-+		struct file *fp;
-+
-+		fp = filp_open(sub_info->path, O_RDONLY, 0);
-+		if (IS_ERR(fp)) {
-+			sub_info->path = "";
-+			return sub_info;
-+		}
-+		filp_close(fp, NULL);
-+	}
-+
- 	sub_info->argv = argv;
- 	sub_info->envp = envp;
- 
+While cyclitest is arming the hrtimer while running on isolated CPU2
+(by means of clock_nanosleep), the hrtimer is then firing on CPU0. This
+is due to the fact that switch_hrtimer_base(), called at hrtimer enqueue
+time, will prefer to enqueue the timer on an housekeeping !idle CPU, if
+the timer is not pinned, as per timer_migration feature.
+
+The problem with this is that we are measuring wake up latencies across
+isolated and !isolated domains, which is against the purpose of
+configuring the latter, while having timer_migration enabled is required
+for certain workloads that are not using timers and don't want to be
+ever interrupted.
+
+Since PREEMPT_RT already forces HARD mode for hrtimers armed by tasks
+running with RT policies, it seems to make sense to also force PINNED
+mode under the same conditions.
+
+This set implements the behavior, achieving something like the
+following:
+
+     <idle>-0     [002] ... hrtimer_cancel:       hrtimer=0xffffafbacc19fe78
+     <idle>-0     [002] ... hrtimer_expire_entry: hrtimer=0xffffafbacc19fe78 now=104335855898 function=hrtimer_wakeup/0x0
+     <idle>-0     [002] ... sched_wakeup:         cyclictest:1165 [4] success=1 CPU:002
+     <idle>-0     [002] ... hrtimer_expire_exit:  hrtimer=0xffffafbacc19fe78
+     <idle>-0     [002] ... sched_switch:         swapper/2:0 [120] R ==> cyclictest:1165 [4]
+ cyclictest-1165  [002] ... hrtimer_init:         hrtimer=0xffffafbacc19fe78 clockid=CLOCK_MONOTONIC mode=0xa
+ cyclictest-1165  [002] ... hrtimer_start:        hrtimer=0xffffafbacc19fe78 function=hrtimer_wakeup/0x0 ...
+ cyclictest-1165  [002] ... sched_switch:         cyclictest:1165 [4] S ==> swapper/2:0 [120]
+
+Sebastian didn't look against the proposed changes, but I didn't follow
+up back then because it looked like we could meet workloads requirements
+at that time w/o this set. Now things have changed, looks like the mix
+of the two types of workloads - interrupt driven and always running - is
+very relevant and we need to accommodate both types on the same system
+setup.
+
+Does this still make sense or do you suggest alternative approaches?
+
+Thanks!
+
+- Juri
+
+1 - https://lore.kernel.org/lkml/20190214133716.10187-1-juri.lelli@redhat.com/
+
+Juri Lelli (2):
+  time/hrtimer: Add PINNED_HARD mode for realtime hrtimers
+  time/hrtimer: Embed hrtimer mode into hrtimer_sleeper
+
+ include/linux/hrtimer.h |  3 +++
+ kernel/time/hrtimer.c   | 13 +++++++------
+ 2 files changed, 10 insertions(+), 6 deletions(-)
+
 -- 
-2.1.0
+2.31.1
 
