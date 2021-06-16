@@ -2,149 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAE23A9E0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7825C3A9E0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbhFPOvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:51:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32099 "EHLO
+        id S234198AbhFPOv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:51:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56195 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234104AbhFPOvJ (ORCPT
+        by vger.kernel.org with ESMTP id S234115AbhFPOv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:51:09 -0400
+        Wed, 16 Jun 2021 10:51:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623854942;
+        s=mimecast20190719; t=1623854959;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lzfT7nwHoU5WPP8h4erJ5hjlDHgEXSMcpZPBsWspfB8=;
-        b=eijK4TJ1IyiZcBkQovvMOmp8YvV7ZHewJAwrR2dJ7W+JFPhMk+ppEjqssPK0PhX2sjszqQ
-        McgU+fmq2qfr8maaNgimjjoH4UurdnanARLdFc2Bm9EbU4IgWLZImMAm5k0caP0o5dY2MU
-        m5qIJfxwxUg4p1w7ANQJrWuMhajq2QQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-LHKai5mIPK26c0zh8pklGg-1; Wed, 16 Jun 2021 10:49:01 -0400
-X-MC-Unique: LHKai5mIPK26c0zh8pklGg-1
-Received: by mail-wr1-f72.google.com with SMTP id u16-20020a5d51500000b029011a6a17cf62so1078603wrt.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:49:01 -0700 (PDT)
+        bh=sznSHfSbu6vIbtyYeAU9SEag45GkUwaYu2SUeh+1s9o=;
+        b=iFo4rGwRVd0dJPcV2UYTioW3HqmJrHolfH6RByYbJpopkAhnnXoh7FrUTy+2ri2zg1zzVC
+        YrvfW47q4JdCGfC/xlSxVTKWd4X1ZyOgR229Ao3P12adC78EkwN5541vggygA7e0QEJyLH
+        rp1nUi8tVlmk7VGn+sYsmaffoNF1EQs=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-cs9hY77SOxe6EaHEmrM4Mw-1; Wed, 16 Jun 2021 10:49:18 -0400
+X-MC-Unique: cs9hY77SOxe6EaHEmrM4Mw-1
+Received: by mail-ej1-f71.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so1065491ejz.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:49:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=lzfT7nwHoU5WPP8h4erJ5hjlDHgEXSMcpZPBsWspfB8=;
-        b=uUpAZ/n7ULjG+LBIh55OmhI+aVxfGz3AbJ7lLWYvt3r3SJlSgBy4zKxOi+UOhDrEE2
-         p9PLvP9Q+goShm9PbSK/Y3jA4v/1As2cEddbjnFcRkprRBvomSHe4mkZkuHAgLvKp2ss
-         LKBf45s2Wr524TOYLr8u25y3AxfZcEzqBrn/IEvHRfKHCo5lCWUyCH758QxeyAnQzt6Z
-         1bmtsXnaLFqwGz06sS0RQNCC5N5hdelQK08M1Tts3PwthyLiu295vwu3CnZuJ+wxwHU0
-         TCEdUqyFAg3dwec3Eiy/lL9TwLD93fXNHz289gecOJbkCzd56C3CTH9n8xwqZLeeAhGW
-         4NQg==
-X-Gm-Message-State: AOAM5311ttb1g6AzIZhXz901BRdCQblGb5oaTRbInaahrJ6YKZUXBhvs
-        ODCL8BO6Kg8+K//fNJUagxHoaVjzQhG7I11bznPGiyd/fg0A0ILdBHDaZ+oF4uNe/DU7s9PVuhj
-        7Dv4cWjDfuKivZQ98wA3ieqUi
-X-Received: by 2002:a1c:9a4b:: with SMTP id c72mr9868159wme.103.1623854940087;
-        Wed, 16 Jun 2021 07:49:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzQHxtYA6RO575unHRv4XD0A04xWGqDoDcaHhKv9Ck0+3Xb+6laZNs9Wd/POdNPmVt+AG4F/w==
-X-Received: by 2002:a1c:9a4b:: with SMTP id c72mr9868144wme.103.1623854939929;
-        Wed, 16 Jun 2021 07:48:59 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id y189sm2057298wmy.25.2021.06.16.07.48.58
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sznSHfSbu6vIbtyYeAU9SEag45GkUwaYu2SUeh+1s9o=;
+        b=Myjpv0BPYpBtsoMLOLVeudk7r8t8vrlQ/EyeFOOF4Lj8yHqX5c5g1nUGRrZlmuzl9R
+         g2mACpBlPpNsHnLgB8lVUL1HsPL1OQCaQwJBdjtRFKUVn+L9dewaMvxfJfoV45iyFhuv
+         z8/N2Tgs2SdDOrr1EIM3EQoCk6ogWACHEzEaaR9LnLW9tuCBrVfSpJYWfIaRDzmRPdFm
+         kO8H80wIKgBIpMj9cHH7rHD7VojiEI0nQm5/MPAAMCXSFxxaTcj/T75NIP1lkxXWs7Eo
+         D8WE1gX2xDsaMLWuqevy73LZMFFL3ckQYmoxAuMlINkdC9H3eqRkcBGXtWNkukBMpb27
+         FQ/A==
+X-Gm-Message-State: AOAM5333K/rlJk5TjbacCjZeuivNZ+AWJzwBMp1ZgNNuj64a5x9I6U4r
+        m5QjucD2Ka7P39EQA+hcVU71ZrgRasaCuBiDUcpi5k7WWa4HodA+JEKsHkkniAhZb5iUpcnzrsD
+        +9mP4cu8D4ndj+bxlqz93SGXpbgu+DfR/7rx87dihZY/XSHvNLL81wVcfAmGQDOfgvdUS5vvY8M
+        Pw
+X-Received: by 2002:a17:906:2da1:: with SMTP id g1mr164441eji.47.1623854957154;
+        Wed, 16 Jun 2021 07:49:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxkbUwdDM3v3utQRGWmdo04bZJQEe7yOBdrvwLR9UYl+hE0nVwW3gd/BDYx5zzZt3e1a9m6Ew==
+X-Received: by 2002:a17:906:2da1:: with SMTP id g1mr164423eji.47.1623854956998;
+        Wed, 16 Jun 2021 07:49:16 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id h19sm1701217ejy.82.2021.06.16.07.49.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 07:48:59 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] locking/lockdep: unlikely bfs error check
-To:     Xiongwei Song <sxwjean@me.com>, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
-References: <20210616144210.278662-1-sxwjean@me.com>
-Message-ID: <a341e1f1-39a5-dca3-9454-8eabe085928b@redhat.com>
-Date:   Wed, 16 Jun 2021 10:48:56 -0400
+        Wed, 16 Jun 2021 07:49:16 -0700 (PDT)
+Subject: Re: [PATCH 4/5] ACPI: scan: Reorganize acpi_device_add()
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <3140195.44csPzL39Z@kreacher> <3392385.iIbC2pHGDl@kreacher>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <df7f7b9d-811f-326c-20bb-86a7c42ef859@redhat.com>
+Date:   Wed, 16 Jun 2021 16:49:16 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210616144210.278662-1-sxwjean@me.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <3392385.iIbC2pHGDl@kreacher>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 10:42 AM, Xiongwei Song wrote:
-> From: Xiongwei Song <sxwjean@gmail.com>
->
-> The error from graph walk is small probability event, so unlikely
-> bfs_error can improve performance a little bit.
->
-> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+Hi,
+
+On 6/16/21 4:24 PM, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Move the invocation of acpi_attach_data() in acpi_device_add()
+> into a separate function.
+> 
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+Thanks, patch looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+
 > ---
->   kernel/locking/lockdep.c | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index 074fd6418c20..af8c9203cd3e 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -2646,7 +2646,7 @@ static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
->   	bfs_init_rootb(&this, prev);
->   
->   	ret = __bfs_backwards(&this, &usage_mask, usage_accumulate, usage_skip, NULL);
-> -	if (bfs_error(ret)) {
-> +	if (unlikely(bfs_error(ret))) {
->   		print_bfs_bug(ret);
->   		return 0;
->   	}
-> @@ -2664,7 +2664,7 @@ static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
->   	bfs_init_root(&that, next);
->   
->   	ret = find_usage_forwards(&that, forward_mask, &target_entry1);
-> -	if (bfs_error(ret)) {
-> +	if (unlikely(bfs_error(ret))) {
->   		print_bfs_bug(ret);
->   		return 0;
->   	}
-> @@ -2679,7 +2679,7 @@ static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
->   	backward_mask = original_mask(target_entry1->class->usage_mask);
->   
->   	ret = find_usage_backwards(&this, backward_mask, &target_entry);
-> -	if (bfs_error(ret)) {
-> +	if (unlikely(bfs_error(ret))) {
->   		print_bfs_bug(ret);
->   		return 0;
->   	}
-> @@ -2998,7 +2998,7 @@ check_prev_add(struct task_struct *curr, struct held_lock *prev,
->   	 * Is the <prev> -> <next> link redundant?
->   	 */
->   	ret = check_redundant(prev, next);
-> -	if (bfs_error(ret))
-> +	if (unlikely(bfs_error(ret)))
->   		return 0;
->   	else if (ret == BFS_RMATCH)
->   		return 2;
-> @@ -3911,7 +3911,7 @@ check_usage_forwards(struct task_struct *curr, struct held_lock *this,
->   
->   	bfs_init_root(&root, this);
->   	ret = find_usage_forwards(&root, usage_mask, &target_entry);
-> -	if (bfs_error(ret)) {
-> +	if (unlikely(bfs_error(ret))) {
->   		print_bfs_bug(ret);
->   		return 0;
->   	}
-> @@ -3946,7 +3946,7 @@ check_usage_backwards(struct task_struct *curr, struct held_lock *this,
->   
->   	bfs_init_rootb(&root, this);
->   	ret = find_usage_backwards(&root, usage_mask, &target_entry);
-> -	if (bfs_error(ret)) {
-> +	if (unlikely(bfs_error(ret))) {
->   		print_bfs_bug(ret);
->   		return 0;
->   	}
-
-I think it is better to put the unlikely() directly into the bfs_error() 
-inline function instead of sprinkling it all over the place.
-
-Cheers,
-Longman
+>  drivers/acpi/scan.c |   31 ++++++++++++++++++++-----------
+>  1 file changed, 20 insertions(+), 11 deletions(-)
+> 
+> Index: linux-pm/drivers/acpi/scan.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/scan.c
+> +++ linux-pm/drivers/acpi/scan.c
+> @@ -640,23 +640,32 @@ static int acpi_device_set_name(struct a
+>  	return 0;
+>  }
+>  
+> +static int acpi_tie_acpi_dev(struct acpi_device *adev)
+> +{
+> +	acpi_handle handle = adev->handle;
+> +	acpi_status status;
+> +
+> +	if (!handle)
+> +		return 0;
+> +
+> +	status = acpi_attach_data(handle, acpi_scan_drop_device, adev);
+> +	if (ACPI_FAILURE(status)) {
+> +		acpi_handle_err(handle, "Unable to attach device data\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  int acpi_device_add(struct acpi_device *device,
+>  		    void (*release)(struct device *))
+>  {
+>  	struct acpi_device_bus_id *acpi_device_bus_id;
+>  	int result;
+>  
+> -	if (device->handle) {
+> -		acpi_status status;
+> -
+> -		status = acpi_attach_data(device->handle, acpi_scan_drop_device,
+> -					  device);
+> -		if (ACPI_FAILURE(status)) {
+> -			acpi_handle_err(device->handle,
+> -					"Unable to attach device data\n");
+> -			return -ENODEV;
+> -		}
+> -	}
+> +	result = acpi_tie_acpi_dev(device);
+> +	if (result)
+> +		return result;
+>  
+>  	/*
+>  	 * Linkage
+> 
+> 
+> 
 
