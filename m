@@ -2,125 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D363A8E70
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B873A8E76
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbhFPBiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 21:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhFPBiA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 21:38:00 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5AFC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 18:35:55 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id f10so1277061iok.6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 18:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7bNjmIPFclZ2FCgec9xd3eJMIjtOz4tBaEzOZZ1tjmI=;
-        b=CQQ7Zg8WS61afNkLnw/NYffYdJhxZ5WM39Sr6PmBhIQH/e67aVU718IDjV5WtVGxiH
-         tHa2UYN386lxPOKDL9x5dVlWi4EEhXCBHC4rOH5vQA7SwaF/YEsr3S9ia+j8o7LlHH1m
-         GVRcUFBtyomUaEDYRm4jWSdxYMkPWo8T3/o4seWwg0BgXjLEmMYdJQB7whHuXPNbtX0U
-         cTRCgr72Hm0vyIu8aiiEJsJ4KJb8yBKU4B+ai3FHX1zdUPNUEEu5mgkSX+M5L1qIdScg
-         M8RrEYPjBHtf/e0cJ8L4jIMmRiqFkwnzN7/lc+F3ADJbS8pMcrBPVolQXJhZt5XRVpCe
-         boFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7bNjmIPFclZ2FCgec9xd3eJMIjtOz4tBaEzOZZ1tjmI=;
-        b=Eyq3gCjjJ6OG3DIqQKYgjiVesweH++tln56IqIeOVBbJSjF3pqAzLTOw0A2MrPfkkK
-         3RXZIe32MN5eBteNdcl2sW9IaAhOPjCxQCcyTg9nnby1fwBPYJ0MgXHk+VYgrd4HevAi
-         sn6t1aHEnLQnwiEmLkh2lGY+PrCWeQMIfPMfNXy9ww3Sb++X6ftBa7Hr7UW0xlffks0H
-         sebW8iTvKMkT7/+uJx6YJDuWV0jG4A1FeldLxZuCpRMk8r5rdkP+eTLlUzGHgNWAW1qh
-         UVh3uewZwKThhG9sGzobnwrZPWVYqBdRHwcwb6l3JnMRLuzvhWPBBv/sa417RotSZzVC
-         g2PA==
-X-Gm-Message-State: AOAM533DKDlzi5tDUXtnJO9qhxVMvGtVaQQ+eoYCCsFRU7pkmgpvG6k+
-        dWCWl4U9ZvAgiRWpRLjowrO8lsck+ECENyct
-X-Google-Smtp-Source: ABdhPJyESIdB78DT0ePZT1DdKJS22IlwGz3IdZmg5v3sBla/5pn1rYkikhBG10Z+SBAjuBJ5Fym9tA==
-X-Received: by 2002:a5d:904c:: with SMTP id v12mr1565434ioq.95.1623807354648;
-        Tue, 15 Jun 2021 18:35:54 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id d12sm402073ilr.38.2021.06.15.18.35.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 18:35:54 -0700 (PDT)
-Subject: Re: [PATCH net-next v2] net: qualcomm: rmnet: Allow partial updates
- of IFLA_FLAGS
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
-        Sean Tranchetti <stranche@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210615232707.835258-1-bjorn.andersson@linaro.org>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <37f0f6f3-3a11-304f-4030-445e2bc578e6@linaro.org>
-Date:   Tue, 15 Jun 2021 20:35:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231809AbhFPBkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 21:40:45 -0400
+Received: from ozlabs.org ([203.11.71.1]:55669 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230371AbhFPBko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 21:40:44 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G4SWd089wz9sXG;
+        Wed, 16 Jun 2021 11:38:36 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623807517;
+        bh=ntMpLfRzfPiBebhmvNxEkqBnOA/8znb4d401tkYzjmw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VET4KqLi3WEoYZPYs6SMGusriHoMB2384EBcYMS759c5l69N7rI3YFi8x3dkKn68v
+         bsJWh6TkzXiKYfA4XiL/eNwRMMiT0NtFhxf2JeHYzI6JaxK82pPwjJRvJC7rtfmSWO
+         eZzn22q8oQw9W8nKbb3IdVEfY9ZZ+g9v8Q0jTDJMpaFns0QP9BTRe3BnIMdAApFuUy
+         OrTRgBgZKdGtDhfybfMhNVmS7Bc3vbGUHB0nWhDaeIti6mWqqlUay+K9tfw1O4BMFk
+         8fxDFSlL0f6cMKFV0IT9nk6CAU+uAWjAmnJJmWDfwGzClkPH2gLLI4XCGej6yXFl9J
+         rfKAmPnFoO73w==
+Date:   Wed, 16 Jun 2021 11:38:35 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Bumyong Lee <bumyong.lee@samsung.com>,
+        Chanho Park <chanho61.park@samsung.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the swiotlb tree
+Message-ID: <20210616113835.0f0d4952@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210615232707.835258-1-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/dfzgBL0PQx.njFrR.cC8VMl";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 6:27 PM, Bjorn Andersson wrote:
-> The idiomatic way to handle the changelink flags/mask pair seems to be
-> allow partial updates of the driver's link flags. In contrast the rmnet
-> driver masks the incoming flags and then use that as the new flags.
-> 
-> Change the rmnet driver to follow the common scheme, before the
-> introduction of IFLA_RMNET_FLAGS handling in iproute2 et al.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+--Sig_/dfzgBL0PQx.njFrR.cC8VMl
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-KS was right, we want the same behavior in both newlink and changelink,
-but aside from that, I like this a lot.
+Hi all,
 
-It looks good to me.
+After merging the swiotlb tree, today's linux-next build (powerpc
+ppc64_defconfig and x86_64 allmodconfig) produced this warning:
 
-Reviewed-by: Alex Elder <elder@linaro.org>
+In file included from arch/powerpc/include/asm/bug.h:109,
+                 from include/linux/bug.h:5,
+                 from arch/powerpc/include/asm/mmu.h:147,
+                 from arch/powerpc/include/asm/lppaca.h:46,
+                 from arch/powerpc/include/asm/paca.h:17,
+                 from arch/powerpc/include/asm/current.h:13,
+                 from include/linux/sched.h:12,
+                 from include/linux/ratelimit.h:6,
+                 from include/linux/dev_printk.h:16,
+                 from include/linux/device.h:15,
+                 from include/linux/dma-mapping.h:7,
+                 from include/linux/dma-direct.h:9,
+                 from kernel/dma/swiotlb.c:24:
+kernel/dma/swiotlb.c: In function 'swiotlb_bounce':
+include/linux/dev_printk.h:242:23: warning: format '%lu' expects argument o=
+f type 'long unsigned int', but argument 4 has type 'unsigned int' [-Wforma=
+t=3D]
+  242 |  WARN_ONCE(condition, "%s %s: " format, \
+      |                       ^~~~~~~~~
+include/asm-generic/bug.h:97:17: note: in definition of macro '__WARN_print=
+f'
+   97 |   __warn_printk(arg);     \
+      |                 ^~~
+include/asm-generic/bug.h:161:3: note: in expansion of macro 'WARN'
+  161 |   WARN(1, format);    \
+      |   ^~~~
+include/linux/dev_printk.h:242:2: note: in expansion of macro 'WARN_ONCE'
+  242 |  WARN_ONCE(condition, "%s %s: " format, \
+      |  ^~~~~~~~~
+kernel/dma/swiotlb.c:355:3: note: in expansion of macro 'dev_WARN_ONCE'
+  355 |   dev_WARN_ONCE(dev, 1,
+      |   ^~~~~~~~~~~~~
 
-> ---
-> 
-> Changes since v1:
-> - Also do the masking dance on newlink, per Subash request
-> - Add "net-next" to subject prefix
-> 
->  drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
-> index 8d51b0cb545c..27b1663c476e 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
-> @@ -163,7 +163,8 @@ static int rmnet_newlink(struct net *src_net, struct net_device *dev,
->  		struct ifla_rmnet_flags *flags;
->  
->  		flags = nla_data(data[IFLA_RMNET_FLAGS]);
-> -		data_format = flags->flags & flags->mask;
-> +		data_format &= ~flags->mask;
-> +		data_format |= flags->flags & flags->mask;
->  	}
->  
->  	netdev_dbg(dev, "data format [0x%08X]\n", data_format);
-> @@ -336,7 +337,8 @@ static int rmnet_changelink(struct net_device *dev, struct nlattr *tb[],
->  
->  		old_data_format = port->data_format;
->  		flags = nla_data(data[IFLA_RMNET_FLAGS]);
-> -		port->data_format = flags->flags & flags->mask;
-> +		port->data_format &= ~flags->mask;
-> +		port->data_format |= flags->flags & flags->mask;
->  
->  		if (rmnet_vnd_update_dev_mtu(port, real_dev)) {
->  			port->data_format = old_data_format;
-> 
+Introduced by commit
 
+  17eb5dcf1f15 ("swiotlb: manipulate orig_addr when tlb_addr has offset")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/dfzgBL0PQx.njFrR.cC8VMl
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDJVhsACgkQAVBC80lX
+0GzqawgAizFVDQMp4DV845O5rEiWkw9rOjMmgZVyoX1oiop/IYfr+494NmsaTNVt
+FgwYw55T4qmtY4juN1AV06MhoA57HrN1HEIg+cuh9+ybErSJR5b3dg3PqgUvmIpd
+tM2oam7l5VxYnx+rqj8zuFvzS45UtmJ0RAiloLXPzLD59QAiP0gpDWNKSZLTwU5b
+kIo2yYUdxPXESMmMlT422dFwf5LLkFcS+By0PEb8YSpiYZwuFeD7DmcofSvDbCkg
+zmpx+kCdhfUuD917N9bHuUCYPEASwgHFdIL9OsJXFH4UTp4CdcuNY1UTpf6rusny
+r+Jwc3lEywxX4p5ZZxPZ7L3wPYibsQ==
+=k7j+
+-----END PGP SIGNATURE-----
+
+--Sig_/dfzgBL0PQx.njFrR.cC8VMl--
