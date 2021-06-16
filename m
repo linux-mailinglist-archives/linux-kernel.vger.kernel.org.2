@@ -2,162 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A5F3A9EF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA793A9F08
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234616AbhFPP1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234611AbhFPP1a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:27:30 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C400C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:25:24 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id d11so782821wrm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:25:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OfWeLRN7aD+diTzZjnigJkvtjWcLavzHiDJB/2euGlY=;
-        b=oHQxH+xBtpko5HraEOFf7/T5l9glLqJy6+t+iQqFulSpBZ/9dx1lPbFrl+GIgzpJxM
-         +ErJ9m8gny4YZmIP2BY+eyVvqwI7lUyB2jIy7bdeahAkF0DQP8Fy3YxmTVnhmjJppPLG
-         8P7F0uMvmN8tN9hEAi9ZR5L6XGKwBNcnFfZRJYs3aiJEAbDVdtJms+iaJVHn0zZKFVja
-         J+GwSqP2HRBUHMGD/0Kpbh06V4fnukgiontoNN/LD2blh7K2SkevmX3DTc7rkXqneoOq
-         90Po9Ceo2QB7gk7Q8/F5rluLaCNh6u6tnNT8A73zE/Tottjn3z2QA/xuLM6rhozU9s71
-         ileg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OfWeLRN7aD+diTzZjnigJkvtjWcLavzHiDJB/2euGlY=;
-        b=B5jKun2AVOQMkGe3An5WLcho8CbrHxyNN33qo8IcDmXDJRHYE2Y1iiszr5D4inqMMF
-         wQsDdFNDgG4+GVJp9TZBFBd3wl/iN3qF+L6ptFMxqrEmE2izQed6kmoSR+B69E9mSGkF
-         RDqcgBQFuVBVgm8F2KGKiDk/04v/+p4rt7qwvCpoZyjC/jJquRLHUaTeRYdGjYNlH3cF
-         25O+YjP/YmuCFMjS1c6MH2pnWQZjAbMYOkydjK6WgYh9l9f3LpwbkUaDClY358A3lmPH
-         5mvUi2eOEQ0lyI0A6MVkM+W2PTjCPmBlYvMFootxW8ZuCFhxWJhEbRqvxZig2ZZ9f0e/
-         q1yw==
-X-Gm-Message-State: AOAM530WuFfBGWwxm8jrhmBlqjxFiu4Iudq88jyaIlZ8NoQ6EJaZzNmz
-        rcm/uY4nZuiH3g78TCad88Q2Ew==
-X-Google-Smtp-Source: ABdhPJxPFcxE+Puc780v17x8JcMWL92WxNwhahUATzTvlaetaNfpVHIrLSnpiydzXAL/vpbteJX0DA==
-X-Received: by 2002:adf:d1c9:: with SMTP id b9mr6154647wrd.101.1623857122469;
-        Wed, 16 Jun 2021 08:25:22 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:60a0:f51c:af6:2dab? ([2a01:e34:ed2f:f020:60a0:f51c:af6:2dab])
-        by smtp.googlemail.com with ESMTPSA id j18sm2498504wrw.30.2021.06.16.08.25.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 08:25:21 -0700 (PDT)
-Subject: Re: [PATCH 1/2] clocksource/drivers/exynos_mct: Prioritise Arm arch
- timer on arm64
-To:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20210608154341.10794-1-will@kernel.org>
- <CGME20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d@epcas1p1.samsung.com>
- <20210608154341.10794-2-will@kernel.org>
- <466bfc19-2260-87c6-c458-b43cf23617e3@samsung.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <2a0181ea-a26e-65e9-16f6-cc233b6b296f@linaro.org>
-Date:   Wed, 16 Jun 2021 17:25:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234629AbhFPP2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:28:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234622AbhFPP2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:28:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B163E61356;
+        Wed, 16 Jun 2021 15:26:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623857195;
+        bh=3xXCvaDbNEswv4P3EZDSCt8erTYvLAXzHOYMuwuz1Ww=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HivM+S84zqbzmTFEAzqlT7DIlrD7ebnQZxgTFVz5lbtq+pTmi1WdNB2HTkn0yNdUt
+         cG1H1f0z5m4zSfT87xw8U+wiPep2IPvNOSl4cktPPnbgnbuVwjS3n7c1p/XSBSAHqV
+         JgOGUyqYTJuzAlapllhHUgY2SHDouwwNw003wFkE+vc40BCq9OOaIIIWPH+nBjEN2q
+         KRKo0HECZfgWedrP9iDhhNZ7iZv4xb3ZhL/HsWMVbjWjB8mN+qzDRI8z7q1Wczz2Xj
+         ZWKfXZ/KT8xJBsNv8zYXXrJiGftXDL0ZDikWgbVHRr4Qx4MoggGsWFVtaTwehnu8rA
+         7rxyz+gCub2DA==
+Received: by mail-ej1-f41.google.com with SMTP id g20so4652145ejt.0;
+        Wed, 16 Jun 2021 08:26:35 -0700 (PDT)
+X-Gm-Message-State: AOAM531m1qbsjN8eUJ+nLEQVO+OAXJhTFe8Ds5FNN6pFu/kZYNkwZylQ
+        O1mENsZz5x+/n9/s1OGlJeBSL5gFIfJv1SdK0A==
+X-Google-Smtp-Source: ABdhPJz8r9vTMquViBFbsmX0qPQixhx4R2ORqm9BLcnS6feAH4JsnSA0IHrStdQYLfDT+jhlfZCtJ6LSbmlkepogdvk=
+X-Received: by 2002:a17:907:264b:: with SMTP id ar11mr28912ejc.525.1623857194363;
+ Wed, 16 Jun 2021 08:26:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <466bfc19-2260-87c6-c458-b43cf23617e3@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210607111837.31074-1-jon.lin@rock-chips.com>
+ <20210615032620.24769-1-jon.lin@rock-chips.com> <20210615032620.24769-2-jon.lin@rock-chips.com>
+In-Reply-To: <20210615032620.24769-2-jon.lin@rock-chips.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 16 Jun 2021 09:26:23 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJWzECC_=xm6OnB63ofnTQC_4VZZO-mhkiTJDYx=93fcw@mail.gmail.com>
+Message-ID: <CAL_JsqJWzECC_=xm6OnB63ofnTQC_4VZZO-mhkiTJDYx=93fcw@mail.gmail.com>
+Subject: Re: [PATCH v7 1/6] dt-bindings: spi: spi-rockchip: add description
+ for rv1126
+To:     Jon Lin <jon.lin@rock-chips.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        "heiko@sntech.de" <heiko@sntech.de>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06/2021 03:03, Chanwoo Choi wrote:
-> Hi,
-> 
-> On 6/9/21 12:43 AM, Will Deacon wrote:
->> All arm64 CPUs feature an architected timer, which offers a relatively
->> low-latency interface to a per-cpu clocksource and timer. For the most
->> part, using this interface is a no-brainer, with the exception of SoCs
->> where it cannot be used to wake up from deep idle state (i.e.
->> CLOCK_EVT_FEAT_C3STOP is set).
->>
->> On the contrary, the Exynos MCT is extremely slow to access yet can be
->> used as a wakeup source. In preparation for using the Exynos MCT as a
->> potential wakeup timer for the Arm architected timer, reduce its ratings
->> so that the architected timer is preferred.
->>
->> This effectively reverts the decision made in 6282edb72bed
->> ("clocksource/drivers/exynos_mct: Increase priority over ARM arch timer")
->> for arm64, as the reasoning for the original change was to work around
->> a 32-bit SoC design.
->>
->> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
->> Cc: Krzysztof Kozlowski <krzk@kernel.org>
->> Cc: Chanwoo Choi <cw00.choi@samsung.com>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Signed-off-by: Will Deacon <will@kernel.org>
->> ---
->>  drivers/clocksource/exynos_mct.c | 13 +++++++++++--
->>  1 file changed, 11 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/clocksource/exynos_mct.c b/drivers/clocksource/exynos_mct.c
->> index fabad79baafc..804d3e01c8f4 100644
->> --- a/drivers/clocksource/exynos_mct.c
->> +++ b/drivers/clocksource/exynos_mct.c
->> @@ -51,6 +51,15 @@
->>  
->>  #define TICK_BASE_CNT	1
->>  
->> +#ifdef CONFIG_ARM
->> +/* Use values higher than ARM arch timer. See 6282edb72bed. */
->> +#define MCT_CLKSOURCE_RATING		450
->> +#define MCT_CLKEVENTS_RATING		500
->> +#else
->> +#define MCT_CLKSOURCE_RATING		350
->> +#define MCT_CLKEVENTS_RATING		350
->> +#endif
->> +
->>  enum {
->>  	MCT_INT_SPI,
->>  	MCT_INT_PPI
->> @@ -206,7 +215,7 @@ static void exynos4_frc_resume(struct clocksource *cs)
->>  
->>  static struct clocksource mct_frc = {
->>  	.name		= "mct-frc",
->> -	.rating		= 450,	/* use value higher than ARM arch timer */
->> +	.rating		= MCT_CLKSOURCE_RATING,
->>  	.read		= exynos4_frc_read,
->>  	.mask		= CLOCKSOURCE_MASK(32),
->>  	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
->> @@ -457,7 +466,7 @@ static int exynos4_mct_starting_cpu(unsigned int cpu)
->>  	evt->set_state_oneshot_stopped = set_state_shutdown;
->>  	evt->tick_resume = set_state_shutdown;
->>  	evt->features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT;
->> -	evt->rating = 500;	/* use value higher than ARM arch timer */
->> +	evt->rating = MCT_CLKEVENTS_RATING,
->>  
->>  	exynos4_mct_write(TICK_BASE_CNT, mevt->base + MCT_L_TCNTB_OFFSET);
->>  
->>
-> 
-> I'm not sure that exynos mct is working without problem
-> such as the case of 6282edb72bed.
-> As described on On ,6282edb72bed the arch timer on exynos SoC
-> depends on Exynos MCT device. the arch timer is not able to work
-> without Exynos MCT because of using the common module.
+On Mon, Jun 14, 2021 at 9:26 PM Jon Lin <jon.lin@rock-chips.com> wrote:
+>
+> The description below will be used for rv1126.dtsi or compatible one in
+> the future
+>
+> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+> ---
+>
+> Changes in v7:
+> - Fall back "rockchip,rv1126-spi" to "rockchip,rk3066-spi"
+>
+> Changes in v6:
+> - Consider to compatibility, the "rockchip,rk3568-spi" is removed in
+>   Series-changes v5, so the commit massage should also remove the
+>   corresponding information
+>
+> Changes in v5:
+> - Change to leave one compatible id rv1126, and rk3568 is compatible
+>   with rv1126
+>
+> Changes in v4:
+> - Adjust the order patches
+> - Simply commit massage like redundancy "application" content
+>
+> Changes in v3:
+> - Fix compile error which is find by Sascha in [v2,2/8]
+>
+>  Documentation/devicetree/bindings/spi/spi-rockchip.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 
-Is it possible to change the DT to have a phandle to the exynos_mct, so
-it will be probed before the arch_arm_timer ?
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Acked-by: Rob Herring <robh@kernel.org>
