@@ -2,70 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D153AA769
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978833AA76C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234552AbhFPXZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 19:25:05 -0400
-Received: from mail-io1-f41.google.com ([209.85.166.41]:34765 "EHLO
-        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234508AbhFPXZE (ORCPT
+        id S234562AbhFPX2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 19:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234350AbhFPX15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 19:25:04 -0400
-Received: by mail-io1-f41.google.com with SMTP id 5so1055192ioe.1;
-        Wed, 16 Jun 2021 16:22:56 -0700 (PDT)
+        Wed, 16 Jun 2021 19:27:57 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0593DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 16:25:50 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id u30so1274480qke.7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 16:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RGJwIcw/q576ovQRK45c7NVrN5akX6pFlIi1oJ6UC88=;
+        b=yjHZdxA08MjiNwf3szPMWYI5SnU3h4eq7AuZyqyZ4L8dFPhdE534qLX8N+JLsJUs7w
+         7hCAlcZpbuZY9G5bdPZcN+4xvOfUCUxWsy7gVpqj7nX18fh1ZBUZiTqiBTbdtdGQt76T
+         itcYc29QtJbbpxc6Cqd8CrBkpEZqfUp0D/04uEy0t3Q+Jxe03DPSgCQdENuhbwEMlaQg
+         Cp1Ry0k4skrj+gmZKCRmhjj7bJBvnB+dY0l022ApSjZap6Wh6zwnly9lfi5IeEJy1gty
+         esyzofFT/9tmSIfqydJqPzOnDZsTfT++Yl1b10PnHc0w3yRohyCwZ9NGD0wx4evWx65X
+         anXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sT55r6CNEZMib5uoieAPwMKrpqQFOR915u+G/id+O8c=;
-        b=ZTouQHEmY6f5xu1dNeNl7sYyszj4p4JiM9b2KKTSadUIW+T+wD0OfreXgCcBKrHFMO
-         oM9XpZYgUpSoG0UXuUp6tk/WMy4bYmggwW1VA/+r7/OhtMGtvW6QKlkeOqhVv84Fp7Mx
-         OQLvFyWr9AEOftvs4HS/3pCR3yR56fp8gztSXW0nIdzyGW/tN7MVOjhWIZ0BAT5E87MT
-         m4guuqDofH8ANKezAAzuYes8zqHXujzCO48gsC+4RTe1UETJANlQr6hPVuNaOLA+eA4W
-         LdX3yjhDjt4B4FwY4uGQCUf/jublR6ucpGUHlRtFr4BZL8bP15ezN4JGq2F3CeWiGv4y
-         9vTw==
-X-Gm-Message-State: AOAM5322fKbdEL0kfY1agHKKMqbnGMVFrfv5aInCUEsdKo1IZ1Y79uO6
-        nlwR62D5TV2TNOPcujEUDigdXczVmw==
-X-Google-Smtp-Source: ABdhPJxz0m48Lc6wge8V7RgY/VykuKzOdsCXuhgzkBYxqe29UMDL46K1NPHO39N8+gpYuvPhjjXiiw==
-X-Received: by 2002:a6b:8f81:: with SMTP id r123mr1108781iod.154.1623885776371;
-        Wed, 16 Jun 2021 16:22:56 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id e4sm1829304iow.47.2021.06.16.16.22.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 16:22:55 -0700 (PDT)
-Received: (nullmailer pid 277485 invoked by uid 1000);
-        Wed, 16 Jun 2021 23:22:53 -0000
-Date:   Wed, 16 Jun 2021 17:22:53 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: arm64: dts: mediatek: Add
- mt8183-kukui-jacuzzi-cerise
-Message-ID: <20210616232253.GA277451@robh.at.kernel.org>
-References: <20210604052312.1040707-1-hsinyi@chromium.org>
- <20210604052312.1040707-2-hsinyi@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RGJwIcw/q576ovQRK45c7NVrN5akX6pFlIi1oJ6UC88=;
+        b=iHof8tJ9rESs3wWncQkCA44AY8ecKwYGuFnUFESwE0IkGXBUR7sGd+ODmdruD4Jhcu
+         vGjqi7zlupR7h3PyDuRHhbfyrBGu0wB7ORnTE2SlnGHvzKTip26kpSYriaGJf17M74i+
+         J0f+fQx0ETJ63gLzBTIue0VGjdNffehK+7lxv/s3HGrVbfSuhg21IG+ZSNp/nasP2Wk6
+         iOF/KY05ghfxXARlpW+79eGM38GOOPYWodwOEqMi9QWquCd5yCtWqgG0x8rHU582Sn9a
+         zdPcxRDMfYXoo5o1r2bnBuriX94tUG9+q5yUd3IActamODCeU2ILhT/687AgifCTLLQd
+         ZA/A==
+X-Gm-Message-State: AOAM530pcRJPPiQwa/nr3HLeatTcfV812dR+JGtMHR9cRmqRBS5uK5HZ
+        5rx2sFRtJjx2X0NNS6H+KwceQvcpcvw8IFaRPrzKdQ==
+X-Google-Smtp-Source: ABdhPJxGQ1/XO8SoqXVyvmyDnP28vr9eEwL7k3SCLhbXZsEofN9Hot475ONHXu3cj4L4OmUvpTx6WZlSOo012aKCc04=
+X-Received: by 2002:a37:a041:: with SMTP id j62mr831796qke.155.1623885949130;
+ Wed, 16 Jun 2021 16:25:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604052312.1040707-2-hsinyi@chromium.org>
+References: <20210616190759.2832033-1-mw@semihalf.com> <20210616190759.2832033-5-mw@semihalf.com>
+ <YMpVhxxPxB/HKOn2@lunn.ch>
+In-Reply-To: <YMpVhxxPxB/HKOn2@lunn.ch>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Thu, 17 Jun 2021 01:25:38 +0200
+Message-ID: <CAPv3WKdo_JeMRL-GtkYv7G3MUnXmyG_oJtA+=WY72-J_0jokRA@mail.gmail.com>
+Subject: Re: [net-next: PATCH v2 4/7] net: mvmdio: simplify clock handling
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
+        lenb@kernel.org, Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Jun 2021 13:23:12 +0800, Hsin-Yi Wang wrote:
-> Cerise is known as ASUS Chromebook CZ1.
-> Stern is known as ASUS Chromebook Flip CZ1.
-> 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  Documentation/devicetree/bindings/arm/mediatek.yaml | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
+=C5=9Br., 16 cze 2021 o 21:48 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
+>
+> > +     dev->clks[0].id =3D "core";
+> > +     dev->clks[1].id =3D "mg";
+> > +     dev->clks[2].id =3D "mg_core";
+> > +     dev->clks[3].id =3D "axi";
+> > +     ret =3D devm_clk_bulk_get_optional(&pdev->dev, MVMDIO_CLOCK_COUNT=
+,
+> > +                                      dev->clks);
+>
+> Kirkwood:
+>
+>                 mdio: mdio-bus@72004 {
+>                         compatible =3D "marvell,orion-mdio";
+>                         #address-cells =3D <1>;
+>                         #size-cells =3D <0>;
+>                         reg =3D <0x72004 0x84>;
+>                         interrupts =3D <46>;
+>                         clocks =3D <&gate_clk 0>;
+>                         status =3D "disabled";
+>
+> Does this work? There is no clock-names in DT.
+>
 
-Acked-by: Rob Herring <robh@kernel.org>
+Neither are the clocks in Armada 7k8k / CN913x:
+
+                CP11X_LABEL(mdio): mdio@12a200 {
+                        #address-cells =3D <1>;
+                        #size-cells =3D <0>;
+                        compatible =3D "marvell,orion-mdio";
+                        reg =3D <0x12a200 0x10>;
+                        clocks =3D <&CP11X_LABEL(clk) 1 9>,
+<&CP11X_LABEL(clk) 1 5>,
+                                 <&CP11X_LABEL(clk) 1 6>,
+<&CP11X_LABEL(clk) 1 18>;
+                        status =3D "disabled";
+                };
+
+Apparently I misread the code and got convinced that contrary to
+devm_clk_get_optional(), the devm_clk_get_bulk_optional() obtains the
+clocks directly by index, not name (on the tested boards, the same
+clocks are enabled by the other interfaces, so the problems
+
+I will drop this patch. Thank you for spotting the issue.
+
+Best regards,
+Marcin
