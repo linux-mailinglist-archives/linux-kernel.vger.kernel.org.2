@@ -2,150 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFCE3AA221
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D623AA223
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhFPRLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:11:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:42388 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230083AbhFPRLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:11:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC7F91042;
-        Wed, 16 Jun 2021 10:09:33 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 161D53F70D;
-        Wed, 16 Jun 2021 10:09:31 -0700 (PDT)
-Subject: Re: [PATCH] sched/uclamp: Fix uclamp_tg_restrict()
-To:     Qais Yousef <qais.yousef@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Tejun Heo <tj@kernel.org>, Quentin Perret <qperret@google.com>,
-        Wei Wang <wvw@google.com>, Yun Hsiang <hsiang023167@gmail.com>,
-        Xuewen Yan <xuewen.yan94@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <20210611122246.3475897-1-qais.yousef@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <0b47fb7f-c96b-c2d6-e5e4-9a63683d6d56@arm.com>
-Date:   Wed, 16 Jun 2021 19:09:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231184AbhFPRMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231133AbhFPRMO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 13:12:14 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D8FC061574;
+        Wed, 16 Jun 2021 10:10:07 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id q20so5527537lfo.2;
+        Wed, 16 Jun 2021 10:10:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kzLgEH6t1F9FwDhew1fvgEplwZC1Y2awnnPiUyPzJKA=;
+        b=UKm5apkYwCa1USsIuMM6UuLl7ssUYngCQR9tEhU6x397zCTOG+DndbQqbd7fRyCAEi
+         ij5qmkTA7YREM0/tS8kITOyUa0yKrlNuvwU5bBxZ/WYKVaQWsHlzbFo3fhPo75+48eoc
+         mKMeWtaczx8NHSEQ1QUbPz1e/kmcCmpMrndkpzS+Vj3jx0nQwNWQ1iFBzgjybA25JcBo
+         6AS3t8gS9UL/PQ/t95ijWehqVQCyrJqGMi7qfcLwn+Ur/bjgl0Cip3wjlaJosrBW/a6/
+         fpPQBq1JSIaCyMmN6V089hGobSPSM00XA0/ZRuTSkCQTawoapYqT5KMFReiqxdrHJvBM
+         DWTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kzLgEH6t1F9FwDhew1fvgEplwZC1Y2awnnPiUyPzJKA=;
+        b=pPcEyJ94STfl1xiL316BUVYp91ZpFsNo1pHllQVANxu0ro0ikg1nsdl+SDahPzS0iD
+         X/u7q03CVVAZ9viAZxjRWv3COG/OIbXXQRsrRgT8/fsveN/5V+j/32PbYDZul2x07alb
+         IpOVXfdtEjlBeLF3ufwXoL3785SdBvAnoxsnSK1xdojiCIdB73342Ad75sATIMV7gAZ3
+         tD2zC0uKyRj3Uk8EeMZYJd3jKBXCjXtVymbHt2z4aiRxPxUg6qvyr58zz1YLOoCOBm0H
+         48lG0KrYjeu1crUqk/O/kZG077YWCyKyaCwCQp1aZoDoX4cplBe9EDFMV8ycQXshyumb
+         2rgg==
+X-Gm-Message-State: AOAM5337EFYzry0xaTa349fQqcT0Il0WlPfk1PFQYs/ahrurr76H2NXm
+        08h5eeZOKWMkdTAcJKPbpto5nzOsq9hruOZ5iAU=
+X-Google-Smtp-Source: ABdhPJx+XZwj7cQUGXh0rqQenQDojUuhgBl8Ak2BBiOpr2NTkR9X7/zuDWKlv6eOCcAFMOxvnroRnVSwHAd22qwDNe0=
+X-Received: by 2002:a05:6512:344f:: with SMTP id j15mr506482lfr.175.1623863405248;
+ Wed, 16 Jun 2021 10:10:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210611122246.3475897-1-qais.yousef@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210615164256.173715-1-trbecker@gmail.com> <CAN05THQqBdT-uvVS+jq1Hv8MwDVCTJFHhzan8M0+4ztNbpCZ0g@mail.gmail.com>
+In-Reply-To: <CAN05THQqBdT-uvVS+jq1Hv8MwDVCTJFHhzan8M0+4ztNbpCZ0g@mail.gmail.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Wed, 16 Jun 2021 12:09:54 -0500
+Message-ID: <CAH2r5mtBb6jZ5rAy2KY9H=aaB6J+=Ti1GyLoNoiWeLGSGNxNVg@mail.gmail.com>
+Subject: Re: [PATCH] cifs: retry lookup and readdir when EAGAIN is returned.
+To:     ronnie sahlberg <ronniesahlberg@gmail.com>
+Cc:     Thiago Rafael Becker <trbecker@gmail.com>,
+        linux-cifs <linux-cifs@vger.kernel.org>,
+        Steve French <sfrench@samba.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/06/2021 14:22, Qais Yousef wrote:
-> Now cpu.uclamp.min acts as a protection, we need to make sure that the
-> uclamp request of the task is within the allowed range of the cgroup,
-> that is it is clamp()'ed correctly by tg->uclamp[UCLAMP_MIN] and
-> tg->uclamp[UCLAMP_MAX].
-> 
-> As reported by Xuewen [1] we can have some corner cases where there's
-> inverstion between uclamp requested by task (p) and the uclamp values of
+tentatively merged into cifs-2.6.git for-next pending testing and any
+more review feedback
 
-s/inverstion/inversion
+On Wed, Jun 16, 2021 at 1:09 AM ronnie sahlberg
+<ronniesahlberg@gmail.com> wrote:
+>
+> Looks good to me.
+>
+> Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
+>
+> On Wed, Jun 16, 2021 at 2:44 AM Thiago Rafael Becker <trbecker@gmail.com> wrote:
+> >
+> > According to the investigation performed by Jacob Shivers at Red Hat,
+> > cifs_lookup and cifs_readdir leak EAGAIN when the user session is
+> > deleted on the server. Fix this issue by implementing a retry with
+> > limits, as is implemented in cifs_revalidate_dentry_attr.
+> >
+> > Reproducer based on the work by Jacob Shivers:
+> >
+> >   ~~~
+> >   $ cat readdir-cifs-test.sh
+> >   #!/bin/bash
+> >
+> >   # Install and configure powershell and sshd on the windows
+> >   #  server as descibed in
+> >   # https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_overview
+> >   # This script uses expect(1)
+> >
+> >   USER=dude
+> >   SERVER=192.168.0.2
+> >   RPATH=root
+> >   PASS='password'
+> >
+> >   function debug_funcs {
+> >         for line in $@ ; do
+> >                 echo "func $line +p" > /sys/kernel/debug/dynamic_debug/control
+> >         done
+> >   }
+> >
+> >   function setup {
+> >         echo 1 > /proc/fs/cifs/cifsFYI
+> >         debug_funcs wait_for_compound_request \
+> >                 smb2_query_dir_first cifs_readdir \
+> >                 compound_send_recv cifs_reconnect_tcon \
+> >                 generic_ip_connect cifs_reconnect \
+> >                 smb2_reconnect_server smb2_reconnect \
+> >                 cifs_readv_from_socket cifs_readv_receive
+> >         tcpdump -i eth0 -w cifs.pcap host 192.168.2.182 & sleep 5
+> >         dmesg -C
+> >   }
+> >
+> >   function test_call {
+> >         if [[ $1 == 1 ]] ; then
+> >                 tracer="strace -tt -f -s 4096 -o trace-$(date -Iseconds).txt"
+> >         fi
+> >         # Change the command here to anything apropriate
+> >         $tracer ls $2 > /dev/null
+> >         res=$?
+> >         if [[ $1 == 1 ]] ; then
+> >                 if [[ $res == 0 ]] ; then
+> >                         1>&2 echo success
+> >                 else
+> >                         1>&2 echo "failure ($res)"
+> >                 fi
+> >         fi
+> >   }
+> >
+> >   mountpoint /mnt > /dev/null || mount -t cifs -o username=$USER,pass=$PASS //$SERVER/$RPATH /mnt
+> >
+> >   test_call 0 /mnt/
+> >
+> >   /usr/bin/expect << EOF
+> >         set timeout 60
+> >
+> >         spawn ssh $USER@$SERVER
+> >
+> >         expect "yes/no" {
+> >                 send "yes\r"
+> >                 expect "*?assword" { send "$PASS\r" }
+> >         } "*?assword" { send "$PASS\r" }
+> >
+> >         expect ">" { send "powershell close-smbsession -force\r" }
+> >         expect ">" { send "exit\r" }
+> >         expect eof
+> >   EOF
+> >
+> >   sysctl -w vm.drop_caches=2 > /dev/null
+> >   sysctl -w vm.drop_caches=2 > /dev/null
+> >
+> >   setup
+> >
+> >   test_call 1 /mnt/
+> >   ~~~
+> >
+> > Signed-off-by: Thiago Rafael Becker <trbecker@gmail.com>
+> > ---
+> >  fs/cifs/dir.c     | 4 ++++
+> >  fs/cifs/smb2ops.c | 5 +++++
+> >  2 files changed, 9 insertions(+)
+> >
+> > diff --git a/fs/cifs/dir.c b/fs/cifs/dir.c
+> > index 6bcd3e8f7cda..7c641f9a3dac 100644
+> > --- a/fs/cifs/dir.c
+> > +++ b/fs/cifs/dir.c
+> > @@ -630,6 +630,7 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
+> >         struct inode *newInode = NULL;
+> >         const char *full_path;
+> >         void *page;
+> > +       int retry_count = 0;
+> >
+> >         xid = get_xid();
+> >
+> > @@ -673,6 +674,7 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
+> >         cifs_dbg(FYI, "Full path: %s inode = 0x%p\n",
+> >                  full_path, d_inode(direntry));
+> >
+> > +again:
+> >         if (pTcon->posix_extensions)
+> >                 rc = smb311_posix_get_inode_info(&newInode, full_path, parent_dir_inode->i_sb, xid);
+> >         else if (pTcon->unix_ext) {
+> > @@ -687,6 +689,8 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
+> >                 /* since paths are not looked up by component - the parent
+> >                    directories are presumed to be good here */
+> >                 renew_parental_timestamps(direntry);
+> > +       } else if (rc == -EAGAIN && retry_count++ < 10) {
+> > +               goto again;
+> >         } else if (rc == -ENOENT) {
+> >                 cifs_set_time(direntry, jiffies);
+> >                 newInode = NULL;
+> > diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+> > index 21ef51d338e0..d241e6af8fe4 100644
+> > --- a/fs/cifs/smb2ops.c
+> > +++ b/fs/cifs/smb2ops.c
+> > @@ -2325,6 +2325,7 @@ smb2_query_dir_first(const unsigned int xid, struct cifs_tcon *tcon,
+> >         struct smb2_query_directory_rsp *qd_rsp = NULL;
+> >         struct smb2_create_rsp *op_rsp = NULL;
+> >         struct TCP_Server_Info *server = cifs_pick_channel(tcon->ses);
+> > +       int retry_count = 0;
+> >
+> >         utf16_path = cifs_convert_path_to_utf16(path, cifs_sb);
+> >         if (!utf16_path)
+> > @@ -2372,10 +2373,14 @@ smb2_query_dir_first(const unsigned int xid, struct cifs_tcon *tcon,
+> >
+> >         smb2_set_related(&rqst[1]);
+> >
+> > +again:
+> >         rc = compound_send_recv(xid, tcon->ses, server,
+> >                                 flags, 2, rqst,
+> >                                 resp_buftype, rsp_iov);
+> >
+> > +       if (rc == -EAGAIN && retry_count++ < 10)
+> > +               goto again;
+> > +
+> >         /* If the open failed there is nothing to do */
+> >         op_rsp = (struct smb2_create_rsp *)rsp_iov[0].iov_base;
+> >         if (op_rsp == NULL || op_rsp->sync_hdr.Status != STATUS_SUCCESS) {
+> > --
+> > 2.31.1
+> >
 
-[...]
 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 9e9a5be35cde..0318b00baa97 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1403,38 +1403,28 @@ static void uclamp_sync_util_min_rt_default(void)
->  static inline struct uclamp_se
->  uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
->  {
-> -	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
-> +	/* Copy by value as we could modify it */
-> +	struct uclamp_se uc_eff = p->uclamp_req[clamp_id];
->  #ifdef CONFIG_UCLAMP_TASK_GROUP
-> +	unsigned int tg_min, tg_max, value;
->  
->  	/*
->  	 * Tasks in autogroups or root task group will be
->  	 * restricted by system defaults.
->  	 */
->  	if (task_group_is_autogroup(task_group(p)))
-> -		return uc_req;
-> +		return uc_eff;
->  	if (task_group(p) == &root_task_group)
-> -		return uc_req;
-> +		return uc_eff;
->  
-> -	switch (clamp_id) {
-> -	case UCLAMP_MIN: {
-> -		struct uclamp_se uc_min = task_group(p)->uclamp[clamp_id];
-> -		if (uc_req.value < uc_min.value)
-> -			return uc_min;
-> -		break;
-> -	}
-> -	case UCLAMP_MAX: {
-> -		struct uclamp_se uc_max = task_group(p)->uclamp[clamp_id];
-> -		if (uc_req.value > uc_max.value)
-> -			return uc_max;
-> -		break;
-> -	}
-> -	default:
-> -		WARN_ON_ONCE(1);
-> -		break;
-> -	}
-> +	tg_min = task_group(p)->uclamp[UCLAMP_MIN].value;
-> +	tg_max = task_group(p)->uclamp[UCLAMP_MAX].value;
-> +	value = uc_eff.value;
-> +	value = clamp(value, tg_min, tg_max);
-> +	uclamp_se_set(&uc_eff, value, false);
->  #endif
->  
-> -	return uc_req;
-> +	return uc_eff;
->  }
 
-I got confused by the renaming uc_req -> uc_eff.
+-- 
+Thanks,
 
-We have:
-
-uclamp_eff_value()                                     (1)
-
-  uclamp_se  uc_eff = uclamp_eff_get(p, clamp_id);     (2)
-
-    uclamp_se uc_req = uclamp_tg_restrict(p, clamp_id) (3)
-
-      struct uclamp_se uc_eff = p->uclamp_req[clamp_id];
-      ....
-
-(3) is now calling it uc_eff where (2) still uses uc_req for the return
-of (3). IMHO uc_*eff* was used after the system level (
-uclamp_default) have been applied.
-
-[...]
-
-> @@ -1670,10 +1659,8 @@ uclamp_update_active_tasks(struct cgroup_subsys_state *css,
->  
->  	css_task_iter_start(css, 0, &it);
->  	while ((p = css_task_iter_next(&it))) {
-> -		for_each_clamp_id(clamp_id) {
-> -			if ((0x1 << clamp_id) & clamps)
-> -				uclamp_update_active(p, clamp_id);
-> -		}
-> +		for_each_clamp_id(clamp_id)
-> +			uclamp_update_active(p, clamp_id);
->  	}
->  	css_task_iter_end(&it);
->  }
-> @@ -9626,7 +9613,7 @@ static void cpu_util_update_eff(struct cgroup_subsys_state *css)
->  		}
->  
->  		/* Immediately update descendants RUNNABLE tasks */
-> -		uclamp_update_active_tasks(css, clamps);
-> +		uclamp_update_active_tasks(css);
-
-Since we now always have to update both clamp_id's, can you not update
-both under the same task_rq_lock() (in uclamp_update_active())?
+Steve
