@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC66F3A9C1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F6D3A9C47
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233322AbhFPNlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:41:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41196 "EHLO mail.kernel.org"
+        id S233159AbhFPNnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:43:33 -0400
+Received: from mga12.intel.com ([192.55.52.136]:60516 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233306AbhFPNlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:41:18 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 908B661241;
-        Wed, 16 Jun 2021 13:39:07 +0000 (UTC)
-Date:   Wed, 16 Jun 2021 14:41:08 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ye Xiang <xiang.ye@intel.com>, linux-input@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Alessandro Zummo <a.zummo@towertech.it>
-Subject: Re: [PATCH v2 1/1] iio: hid-sensors: lighten exported symbols by
- moving to IIO_HID namespace
-Message-ID: <20210616144108.3771d4b2@jic23-huawei>
-In-Reply-To: <YMnzlGDQn2s1vuKz@smile.fi.intel.com>
-References: <20210614162447.5392-1-andriy.shevchenko@linux.intel.com>
-        <YMfDBhM52iyM0eFU@piout.net>
-        <20210616134153.1007b5cf@jic23-huawei>
-        <YMnzlGDQn2s1vuKz@smile.fi.intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232692AbhFPNn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 09:43:29 -0400
+IronPort-SDR: 5nHsB4ZNwOi4OtK/Mv6ZZb42bNhIIw9NyYRwUxrmQLPFIO4p4sx6qYeOS9iNgtJDJb98pdH+Kj
+ Gdfg3aIGAMMg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="185867791"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="185867791"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 06:41:23 -0700
+IronPort-SDR: 4ifLwTPG2xbTZHbYoF5hGsNUnevWj1VkQxVOk+X1SePuSzEovjT2+CXsbMddFTEXYggTKtDwwP
+ DUhZOdShrpDA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="554810049"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 16 Jun 2021 06:41:21 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 16 Jun 2021 16:41:20 +0300
+Date:   Wed, 16 Jun 2021 16:41:20 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: tcpm: Ignore Vsafe0v in
+ PR_SWAP_SNK_SRC_SOURCE_ON state
+Message-ID: <YMn/gIwB3noYWuHA@kuha.fi.intel.com>
+References: <20210615173206.1646477-1-kyletso@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615173206.1646477-1-kyletso@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 15:50:28 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-
-> On Wed, Jun 16, 2021 at 01:41:53PM +0100, Jonathan Cameron wrote:
-> > On Mon, 14 Jun 2021 22:58:46 +0200
-> > Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
-> >   
-> > > On 14/06/2021 19:24:47+0300, Andy Shevchenko wrote:  
-> > > > A namespace for exported symbols makes clear who is a provider
-> > > > and who is a consumer of the certain resources. Besides that,
-> > > > it doesn't pollute the common namespace.
-> > > > 
-> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>    
-> > > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>  
-> > 
-> > Thanks,  applied to the togreg branch of iio.git and pushed out as
-> > testing for 0-day to poke at it  
+On Wed, Jun 16, 2021 at 01:32:06AM +0800, Kyle Tso wrote:
+> In PR_SWAP_SNK_SRC_SOURCE_ON state, Vsafe0v is expected as well so do
+> nothing here to avoid state machine going into SNK_UNATTACHED.
 > 
-> Thanks!
-> 
-> > and see if we missed anything.  
-> 
-> Hopefully nothing in the code.
-> 
-> What I have missed is the Ack from Srinivas. Can you add it later on?
-> 
+> Fixes: 28b43d3d746b ("usb: typec: tcpm: Introduce vsafe0v for vbus")
+> Signed-off-by: Kyle Tso <kyletso@google.com>
 
-Done which was easy because I hadn't pushed it out anywhere yet!
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Jonathan
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 197556038ba4..e11e9227107d 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -5212,6 +5212,7 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
+>  		}
+>  		break;
+>  	case PR_SWAP_SNK_SRC_SINK_OFF:
+> +	case PR_SWAP_SNK_SRC_SOURCE_ON:
+>  		/* Do nothing, vsafe0v is expected during transition */
+>  		break;
+>  	default:
+> -- 
+> 2.32.0.272.g935e593368-goog
 
-
+-- 
+heikki
