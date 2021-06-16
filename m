@@ -2,228 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D623AA223
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F3B3AA224
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhFPRMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231133AbhFPRMO (ORCPT
+        id S231209AbhFPRMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:12:22 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51558 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230083AbhFPRMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Jun 2021 13:12:14 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D8FC061574;
-        Wed, 16 Jun 2021 10:10:07 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id q20so5527537lfo.2;
-        Wed, 16 Jun 2021 10:10:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kzLgEH6t1F9FwDhew1fvgEplwZC1Y2awnnPiUyPzJKA=;
-        b=UKm5apkYwCa1USsIuMM6UuLl7ssUYngCQR9tEhU6x397zCTOG+DndbQqbd7fRyCAEi
-         ij5qmkTA7YREM0/tS8kITOyUa0yKrlNuvwU5bBxZ/WYKVaQWsHlzbFo3fhPo75+48eoc
-         mKMeWtaczx8NHSEQ1QUbPz1e/kmcCmpMrndkpzS+Vj3jx0nQwNWQ1iFBzgjybA25JcBo
-         6AS3t8gS9UL/PQ/t95ijWehqVQCyrJqGMi7qfcLwn+Ur/bjgl0Cip3wjlaJosrBW/a6/
-         fpPQBq1JSIaCyMmN6V089hGobSPSM00XA0/ZRuTSkCQTawoapYqT5KMFReiqxdrHJvBM
-         DWTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kzLgEH6t1F9FwDhew1fvgEplwZC1Y2awnnPiUyPzJKA=;
-        b=pPcEyJ94STfl1xiL316BUVYp91ZpFsNo1pHllQVANxu0ro0ikg1nsdl+SDahPzS0iD
-         X/u7q03CVVAZ9viAZxjRWv3COG/OIbXXQRsrRgT8/fsveN/5V+j/32PbYDZul2x07alb
-         IpOVXfdtEjlBeLF3ufwXoL3785SdBvAnoxsnSK1xdojiCIdB73342Ad75sATIMV7gAZ3
-         tD2zC0uKyRj3Uk8EeMZYJd3jKBXCjXtVymbHt2z4aiRxPxUg6qvyr58zz1YLOoCOBm0H
-         48lG0KrYjeu1crUqk/O/kZG077YWCyKyaCwCQp1aZoDoX4cplBe9EDFMV8ycQXshyumb
-         2rgg==
-X-Gm-Message-State: AOAM5337EFYzry0xaTa349fQqcT0Il0WlPfk1PFQYs/ahrurr76H2NXm
-        08h5eeZOKWMkdTAcJKPbpto5nzOsq9hruOZ5iAU=
-X-Google-Smtp-Source: ABdhPJx+XZwj7cQUGXh0rqQenQDojUuhgBl8Ak2BBiOpr2NTkR9X7/zuDWKlv6eOCcAFMOxvnroRnVSwHAd22qwDNe0=
-X-Received: by 2002:a05:6512:344f:: with SMTP id j15mr506482lfr.175.1623863405248;
- Wed, 16 Jun 2021 10:10:05 -0700 (PDT)
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 606C521A64;
+        Wed, 16 Jun 2021 17:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623863407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QPGfbGElVJ2SXppTW6aIgd8Twb2wKaHsMDX214lrojE=;
+        b=mriEgvvv4Ne7kbJgIGJTo/dH0YdJ3uhhjjv1hHpbp0mmOWuw8r9YU2tvWj0r5mI+bsI1G8
+        3upWXKO4cmFF3kx5YeMZk5aenv6HvI66ukxzlRXM9GFbYmvqNBll9XCKJZnNyuEMsmCO1x
+        q0HIzLALFlL6rdPARBnR7QU0YdXg3n0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623863407;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QPGfbGElVJ2SXppTW6aIgd8Twb2wKaHsMDX214lrojE=;
+        b=s76ZnqiB+uCytlEJOQ60UH/A3nnhZNuVPZcGOuB47RpaLjcpvPk81FnpcK3Lae3YQPv6yG
+        kVEzlxW8cv9wgQAQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 3C73F118DD;
+        Wed, 16 Jun 2021 17:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623863407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QPGfbGElVJ2SXppTW6aIgd8Twb2wKaHsMDX214lrojE=;
+        b=mriEgvvv4Ne7kbJgIGJTo/dH0YdJ3uhhjjv1hHpbp0mmOWuw8r9YU2tvWj0r5mI+bsI1G8
+        3upWXKO4cmFF3kx5YeMZk5aenv6HvI66ukxzlRXM9GFbYmvqNBll9XCKJZnNyuEMsmCO1x
+        q0HIzLALFlL6rdPARBnR7QU0YdXg3n0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623863407;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QPGfbGElVJ2SXppTW6aIgd8Twb2wKaHsMDX214lrojE=;
+        b=s76ZnqiB+uCytlEJOQ60UH/A3nnhZNuVPZcGOuB47RpaLjcpvPk81FnpcK3Lae3YQPv6yG
+        kVEzlxW8cv9wgQAQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id 1Hw8Dm8wymDdMgAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Wed, 16 Jun 2021 17:10:07 +0000
+To:     Janghyuck Kim <janghyuck.kim@samsung.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <CGME20210616081628epcas2p3f919d10029cbe01efa1212a5b861af38@epcas2p3.samsung.com>
+ <20210616083745.14288-1-janghyuck.kim@samsung.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 1/2] mm: support fastpath if NUMA is enabled with numa off
+Message-ID: <55a95320-f356-86d2-26e4-11407f60de84@suse.cz>
+Date:   Wed, 16 Jun 2021 19:10:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210615164256.173715-1-trbecker@gmail.com> <CAN05THQqBdT-uvVS+jq1Hv8MwDVCTJFHhzan8M0+4ztNbpCZ0g@mail.gmail.com>
-In-Reply-To: <CAN05THQqBdT-uvVS+jq1Hv8MwDVCTJFHhzan8M0+4ztNbpCZ0g@mail.gmail.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Wed, 16 Jun 2021 12:09:54 -0500
-Message-ID: <CAH2r5mtBb6jZ5rAy2KY9H=aaB6J+=Ti1GyLoNoiWeLGSGNxNVg@mail.gmail.com>
-Subject: Re: [PATCH] cifs: retry lookup and readdir when EAGAIN is returned.
-To:     ronnie sahlberg <ronniesahlberg@gmail.com>
-Cc:     Thiago Rafael Becker <trbecker@gmail.com>,
-        linux-cifs <linux-cifs@vger.kernel.org>,
-        Steve French <sfrench@samba.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210616083745.14288-1-janghyuck.kim@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tentatively merged into cifs-2.6.git for-next pending testing and any
-more review feedback
+On 6/16/21 10:37 AM, Janghyuck Kim wrote:
+> Architecture might support fake node when CONFIG_NUMA is enabled but any
 
-On Wed, Jun 16, 2021 at 1:09 AM ronnie sahlberg
-<ronniesahlberg@gmail.com> wrote:
->
-> Looks good to me.
->
-> Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
->
-> On Wed, Jun 16, 2021 at 2:44 AM Thiago Rafael Becker <trbecker@gmail.com> wrote:
-> >
-> > According to the investigation performed by Jacob Shivers at Red Hat,
-> > cifs_lookup and cifs_readdir leak EAGAIN when the user session is
-> > deleted on the server. Fix this issue by implementing a retry with
-> > limits, as is implemented in cifs_revalidate_dentry_attr.
-> >
-> > Reproducer based on the work by Jacob Shivers:
-> >
-> >   ~~~
-> >   $ cat readdir-cifs-test.sh
-> >   #!/bin/bash
-> >
-> >   # Install and configure powershell and sshd on the windows
-> >   #  server as descibed in
-> >   # https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_overview
-> >   # This script uses expect(1)
-> >
-> >   USER=dude
-> >   SERVER=192.168.0.2
-> >   RPATH=root
-> >   PASS='password'
-> >
-> >   function debug_funcs {
-> >         for line in $@ ; do
-> >                 echo "func $line +p" > /sys/kernel/debug/dynamic_debug/control
-> >         done
-> >   }
-> >
-> >   function setup {
-> >         echo 1 > /proc/fs/cifs/cifsFYI
-> >         debug_funcs wait_for_compound_request \
-> >                 smb2_query_dir_first cifs_readdir \
-> >                 compound_send_recv cifs_reconnect_tcon \
-> >                 generic_ip_connect cifs_reconnect \
-> >                 smb2_reconnect_server smb2_reconnect \
-> >                 cifs_readv_from_socket cifs_readv_receive
-> >         tcpdump -i eth0 -w cifs.pcap host 192.168.2.182 & sleep 5
-> >         dmesg -C
-> >   }
-> >
-> >   function test_call {
-> >         if [[ $1 == 1 ]] ; then
-> >                 tracer="strace -tt -f -s 4096 -o trace-$(date -Iseconds).txt"
-> >         fi
-> >         # Change the command here to anything apropriate
-> >         $tracer ls $2 > /dev/null
-> >         res=$?
-> >         if [[ $1 == 1 ]] ; then
-> >                 if [[ $res == 0 ]] ; then
-> >                         1>&2 echo success
-> >                 else
-> >                         1>&2 echo "failure ($res)"
-> >                 fi
-> >         fi
-> >   }
-> >
-> >   mountpoint /mnt > /dev/null || mount -t cifs -o username=$USER,pass=$PASS //$SERVER/$RPATH /mnt
-> >
-> >   test_call 0 /mnt/
-> >
-> >   /usr/bin/expect << EOF
-> >         set timeout 60
-> >
-> >         spawn ssh $USER@$SERVER
-> >
-> >         expect "yes/no" {
-> >                 send "yes\r"
-> >                 expect "*?assword" { send "$PASS\r" }
-> >         } "*?assword" { send "$PASS\r" }
-> >
-> >         expect ">" { send "powershell close-smbsession -force\r" }
-> >         expect ">" { send "exit\r" }
-> >         expect eof
-> >   EOF
-> >
-> >   sysctl -w vm.drop_caches=2 > /dev/null
-> >   sysctl -w vm.drop_caches=2 > /dev/null
-> >
-> >   setup
-> >
-> >   test_call 1 /mnt/
-> >   ~~~
-> >
-> > Signed-off-by: Thiago Rafael Becker <trbecker@gmail.com>
-> > ---
-> >  fs/cifs/dir.c     | 4 ++++
-> >  fs/cifs/smb2ops.c | 5 +++++
-> >  2 files changed, 9 insertions(+)
-> >
-> > diff --git a/fs/cifs/dir.c b/fs/cifs/dir.c
-> > index 6bcd3e8f7cda..7c641f9a3dac 100644
-> > --- a/fs/cifs/dir.c
-> > +++ b/fs/cifs/dir.c
-> > @@ -630,6 +630,7 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
-> >         struct inode *newInode = NULL;
-> >         const char *full_path;
-> >         void *page;
-> > +       int retry_count = 0;
-> >
-> >         xid = get_xid();
-> >
-> > @@ -673,6 +674,7 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
-> >         cifs_dbg(FYI, "Full path: %s inode = 0x%p\n",
-> >                  full_path, d_inode(direntry));
-> >
-> > +again:
-> >         if (pTcon->posix_extensions)
-> >                 rc = smb311_posix_get_inode_info(&newInode, full_path, parent_dir_inode->i_sb, xid);
-> >         else if (pTcon->unix_ext) {
-> > @@ -687,6 +689,8 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
-> >                 /* since paths are not looked up by component - the parent
-> >                    directories are presumed to be good here */
-> >                 renew_parental_timestamps(direntry);
-> > +       } else if (rc == -EAGAIN && retry_count++ < 10) {
-> > +               goto again;
-> >         } else if (rc == -ENOENT) {
-> >                 cifs_set_time(direntry, jiffies);
-> >                 newInode = NULL;
-> > diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-> > index 21ef51d338e0..d241e6af8fe4 100644
-> > --- a/fs/cifs/smb2ops.c
-> > +++ b/fs/cifs/smb2ops.c
-> > @@ -2325,6 +2325,7 @@ smb2_query_dir_first(const unsigned int xid, struct cifs_tcon *tcon,
-> >         struct smb2_query_directory_rsp *qd_rsp = NULL;
-> >         struct smb2_create_rsp *op_rsp = NULL;
-> >         struct TCP_Server_Info *server = cifs_pick_channel(tcon->ses);
-> > +       int retry_count = 0;
-> >
-> >         utf16_path = cifs_convert_path_to_utf16(path, cifs_sb);
-> >         if (!utf16_path)
-> > @@ -2372,10 +2373,14 @@ smb2_query_dir_first(const unsigned int xid, struct cifs_tcon *tcon,
-> >
-> >         smb2_set_related(&rqst[1]);
-> >
-> > +again:
-> >         rc = compound_send_recv(xid, tcon->ses, server,
-> >                                 flags, 2, rqst,
-> >                                 resp_buftype, rsp_iov);
-> >
-> > +       if (rc == -EAGAIN && retry_count++ < 10)
-> > +               goto again;
-> > +
-> >         /* If the open failed there is nothing to do */
-> >         op_rsp = (struct smb2_create_rsp *)rsp_iov[0].iov_base;
-> >         if (op_rsp == NULL || op_rsp->sync_hdr.Status != STATUS_SUCCESS) {
-> > --
-> > 2.31.1
-> >
+I suppose you mean the dummy node, i.e. dummy_numa_init()?
 
+Because fakenuma is something different and I think if someone defines fakenuma
+nodes they actually would want for the mempolicies to be honored as if there was
+a real NUMA setup.
 
+> node settings were supported by ACPI or device tree. In this case,
+> getting memory policy during memory allocation path is meaningless.
+> 
+> Moreover, performance degradation was observed in the minor page fault
+> test, which is provided by (https://lkml.org/lkml/2006/8/29/294).
+> Average faults/sec of enabling NUMA with fake node was 5~6 % worse than
+> disabling NUMA. To reduce this performance regression, fastpath is
 
--- 
-Thanks,
+So you have measured this overhead is all due to mempolicy evaluation?
+Interesting, sounds like a lot.
 
-Steve
+> introduced. fastpath can skip the memory policy checking if NUMA is
+> enabled but it uses fake node. If architecture doesn't support fake
+> node, fastpath affects nothing for memory allocation path.
+> 
+> Signed-off-by: Janghyuck Kim <janghyuck.kim@samsung.com>
+
+Sounds like an interesting direction to improve CONFIG_NUMA built kernels on
+single-node systems, but why restrict it only to arm64 and not make it generic
+for all systems with a single node?
+We could also probably use a static key instead of this #define.
+That would even make it possible to switch in case memory hotplug onlines
+another node, etc.
+
+> ---
+>  mm/internal.h  | 4 ++++
+>  mm/mempolicy.c | 3 +++
+>  2 files changed, 7 insertions(+)
+> 
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 31ff935b2547..3b6c21814fbc 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -36,6 +36,10 @@ void page_writeback_init(void);
+>  
+>  vm_fault_t do_swap_page(struct vm_fault *vmf);
+>  
+> +#ifndef numa_off_fastpath
+> +#define numa_off_fastpath()	false
+> +#endif
+> +
+>  void free_pgtables(struct mmu_gather *tlb, struct vm_area_struct *start_vma,
+>  		unsigned long floor, unsigned long ceiling);
+>  
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index e32360e90274..21156671d941 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -2152,6 +2152,9 @@ struct page *alloc_pages_vma(gfp_t gfp, int order, struct vm_area_struct *vma,
+>  	int preferred_nid;
+>  	nodemask_t *nmask;
+>  
+> +	if (numa_off_fastpath())
+> +		return __alloc_pages_nodemask(gfp, order, 0, NULL);
+> +
+>  	pol = get_vma_policy(vma, addr);
+>  
+>  	if (pol->mode == MPOL_INTERLEAVE) {
+> 
+
