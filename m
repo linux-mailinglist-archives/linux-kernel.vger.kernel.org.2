@@ -2,184 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453763A9C69
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14A13A9C6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbhFPNqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:46:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232611AbhFPNqu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:46:50 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579B6C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:44:44 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id 93so1850373qtc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:44:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x1Pb06oxWY4wtwM/2YuSTEP+nGygtGR5CdhdM82bGYc=;
-        b=BR7nONm7u5dXpHKjv0ThLWPXWfFULj3rrkA+c9wvAewfCq7TAV/087jCSXcR8CE6fn
-         9iwxcGJrXf/nlzc2oMbGv6cXqJkgCypWJmF4tafxOy+bhRtJ3s/ZnOu5X2DJfExMLkWW
-         2moSDyeHT3DoaktvMAfi8m5P9ZrNphuoeSKdQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x1Pb06oxWY4wtwM/2YuSTEP+nGygtGR5CdhdM82bGYc=;
-        b=e39+VfTq/8AZe9asG/LsIM5cm5kEswA4pjVBQkeL8CemC2r7jjH7fwpGneayQ0zjUJ
-         fS1TVVxE4W/j5oLYVIf5zOGD6YDbPVhVhZ0lA6ciTFabMeHf9vCa39lT6nRGIbTM/rqj
-         jvFv7UhMwkljRvjK6r5mWqU77kdPjVtFSh8Cnld83PFwiBQ392Zpwc221bo8btD0rQyC
-         RhWCGqAnZJOL9Rnqxc4Lf7xvssumRh29S2eBFzn+g9nVc3eUS7Tao0tUe/tPF/fLMo7j
-         If42JVMfMetMFOFY51/xyciU2iJoZ4BF1cwCsvVN9PupSzXkypWIRJSQRmNUC5042rex
-         SN/A==
-X-Gm-Message-State: AOAM531eGw5FHGD94yfEYBfjDAOrhLni85+DfRyLVB4kL7sJ7uBPdfzs
-        U7J6zP+QCysrXkW70lc6p+4D7ffYYRWOn6wcFth+uw==
-X-Google-Smtp-Source: ABdhPJyBKBW9a+kdoMpAVe1j5aTcnnBj6hBpikQZ/DEDkr8AVwiZRnluylF6lshe3sMtj4tLPfrRbk15OJDVfRx8IjU=
-X-Received: by 2002:ac8:6e8e:: with SMTP id c14mr5177107qtv.216.1623851083400;
- Wed, 16 Jun 2021 06:44:43 -0700 (PDT)
+        id S233293AbhFPNsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:48:33 -0400
+Received: from mga12.intel.com ([192.55.52.136]:60945 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232912AbhFPNsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 09:48:31 -0400
+IronPort-SDR: p7ymB26uRPd7UuofSOzURNyfWrgQ9q/gej9XnaC1dLqtgiiNaaNTI59Mow63uIGFrUhEV37+8Q
+ BstnS6y0ZEpQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="185868573"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="185868573"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 06:46:25 -0700
+IronPort-SDR: p7Ad9T7bHbZemPSWcyHV/DS0mfKq3fBNacIiSkKAXJptvHlYZX0wQa8GTpv7kQgLENHrhjU7ix
+ IPkS3IwGB8OA==
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="404573874"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 06:46:22 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1ltVs3-002pYz-22; Wed, 16 Jun 2021 16:46:19 +0300
+Date:   Wed, 16 Jun 2021 16:46:19 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ye Xiang <xiang.ye@intel.com>, linux-input@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alessandro Zummo <a.zummo@towertech.it>
+Subject: Re: [PATCH v2 1/1] iio: hid-sensors: lighten exported symbols by
+ moving to IIO_HID namespace
+Message-ID: <YMoAq8knlE3FXb2f@smile.fi.intel.com>
+References: <20210614162447.5392-1-andriy.shevchenko@linux.intel.com>
+ <YMfDBhM52iyM0eFU@piout.net>
+ <20210616134153.1007b5cf@jic23-huawei>
+ <YMnzlGDQn2s1vuKz@smile.fi.intel.com>
+ <20210616144108.3771d4b2@jic23-huawei>
 MIME-Version: 1.0
-References: <20210603151653.711020-1-yangyingliang@huawei.com>
-In-Reply-To: <20210603151653.711020-1-yangyingliang@huawei.com>
-From:   Kashyap Desai <kashyap.desai@broadcom.com>
-Date:   Wed, 16 Jun 2021 19:14:32 +0530
-Message-ID: <CAHsXFKEU2kd-yS2NEC+y3+D6ff6639z2NnZSxFzShV9SJJbX7A@mail.gmail.com>
-Subject: Re: [PATCH -next resend] scsi: mpi3mr: Fix error return code in mpi3mr_init_ioc()
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000003941305c4e24b2d"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616144108.3771d4b2@jic23-huawei>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000003941305c4e24b2d
-Content-Type: text/plain; charset="UTF-8"
+On Wed, Jun 16, 2021 at 02:41:08PM +0100, Jonathan Cameron wrote:
+> On Wed, 16 Jun 2021 15:50:28 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > On Wed, Jun 16, 2021 at 01:41:53PM +0100, Jonathan Cameron wrote:
+> > > On Mon, 14 Jun 2021 22:58:46 +0200
+> > > Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
+> > > > On 14/06/2021 19:24:47+0300, Andy Shevchenko wrote:
 
-On Thu, Jun 3, 2021 at 8:42 PM Yang Yingliang <yangyingliang@huawei.com> wrote:
->
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
->
-> Fixes: fb9b04574f14 ("scsi: mpi3mr: Add support for recovering controller")
-> Fixes: 824a156633df ("scsi: mpi3mr: Base driver code")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/scsi/mpi3mr/mpi3mr_fw.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/scsi/mpi3mr/mpi3mr_fw.c b/drivers/scsi/mpi3mr/mpi3mr_fw.c
-> index acb2be62080a..dbf116414855 100644
-> --- a/drivers/scsi/mpi3mr/mpi3mr_fw.c
-> +++ b/drivers/scsi/mpi3mr/mpi3mr_fw.c
-> @@ -3295,6 +3295,7 @@ int mpi3mr_init_ioc(struct mpi3mr_ioc *mrioc, u8 re_init)
->         }
->         ioc_state = mpi3mr_get_iocstate(mrioc);
->         if (ioc_state != MRIOC_STATE_RESET) {
-> +               retval = -1;
->                 ioc_err(mrioc, "Cannot bring IOC to reset state\n");
->                 goto out_failed;
->         }
-> @@ -3391,6 +3392,7 @@ int mpi3mr_init_ioc(struct mpi3mr_ioc *mrioc, u8 re_init)
->
->         if (re_init &&
->             (mrioc->shost->nr_hw_queues > mrioc->num_op_reply_q)) {
-> +               retval = -1;
->                 ioc_err(mrioc,
->                     "Cannot create minimum number of OpQueues expected:%d created:%d\n",
->                     mrioc->shost->nr_hw_queues, mrioc->num_op_reply_q);
-> --
+...
 
-Acked-by: Kashyap Desai <kashyap.desai@broadcom.com>
+> > > > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > > 
+> > > Thanks,  applied to the togreg branch of iio.git and pushed out as
+> > > testing for 0-day to poke at it
+> > 
+> > Thanks!
+> > 
+> > > and see if we missed anything.
+> > 
+> > Hopefully nothing in the code.
+> > 
+> > What I have missed is the Ack from Srinivas. Can you add it later on?
 
-> 2.25.1
->
+> Done which was easy because I hadn't pushed it out anywhere yet!
 
---00000000000003941305c4e24b2d
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Thanks!
 
-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
-P3lSxcw4Cg90iKHqfpwLnGNc9AGXHMxUCukpnAHRlivljilKHMx1ymb180BLmtF+ZLm6KrFLQWzB
-4KeiUOMtKM13wJrQubqTeZgB1XA+89jeLYlxagVsMyksdwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRprYXNoeWFwLmRlc2FpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUkTOZp9jXE3yPj4ieKeDT
-OiNyCtswDQYJKoZIhvcNAQELBQADggEBABG1KCh7cLjStywh4S37nKE1eE8KPyAxDzQCkhxYLBVj
-gnnhaLmEOayEucPAsM1hCRAm/vR3RQ27lMXBGveCHaq9RZkzTjGSbzr8adOGK3CluPrasNf5StX3
-GSk4HwCapA39BDUrhnc/qG5vHwLrgA1jwAvSy8e/vn4F4h+KPrPoFNd1OnCafedbuiEXTqTkn5Rk
-vZ2AOTcSbxvmyKBMb/iu1vn7AAoui0d8GYCPoz8shf2iWMSUXVYJAMrtRHVJr47J5jlopF5F2ghC
-MzNfx6QsmJhYiRByd8L9sUOjp/DMgkC6H93PyYpYMiBGapgNf6UMsLg/1kx5DATNwhPAJbkxggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxwO04DXOeYbZtr
-4mAwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIPX2GSf5ylh4yqQSSjC/a7LS3W5
-T2ttBsQTLXtHgTvJMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDYxNjEzNDQ0M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCzCf4LTtXQFoF819Y5JC5AwZ8e/k5ptXM+p0wYUCzRllY6
-OUcbwG5QxEOcNKyKwVJdR0/9zk3vrU3YBa2HR0cXsO+A+ULOZsBE1W/MCzUE/0toLIVmp95dDjf7
-gX68WVk2L+pYuFXyk2zty+vY6imK3DRpN3hnL3GCJXIRrJoc/ajSicYZuitr4Z7dZpT6yTlGl6Qz
-y4z9UzjZGsyjGH6400oPipMl7qS+aM35+d+UxxGduSoZZHzWxAqpGn9MjU7ywkSatBmcJIyOsiUa
-o0OZ/smHwL8mwwEmZaEBv95APmLwuOVz3SfVwXGAmUwhGvy9szoyCKe2tc6RYPZNnwsB
---00000000000003941305c4e24b2d--
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
