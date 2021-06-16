@@ -2,69 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4931E3AA5A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7C93AA5A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233746AbhFPUxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 16:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233711AbhFPUxL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 16:53:11 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E010C061574;
-        Wed, 16 Jun 2021 13:51:04 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltcUg-00955k-JQ; Wed, 16 Jun 2021 20:50:38 +0000
-Date:   Wed, 16 Jun 2021 20:50:38 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] alpha: Add extra switch_stack frames in exit, exec, and
- kernel threads
-Message-ID: <YMpkHpZo4zx01Hw4@zeniv-ca.linux.org.uk>
-References: <87pmwsytb3.fsf@disp2133>
- <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
- <87sg1lwhvm.fsf@disp2133>
- <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
- <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
- <87eed4v2dc.fsf@disp2133>
- <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
- <87fsxjorgs.fsf@disp2133>
- <87zgvqor7d.fsf_-_@disp2133>
+        id S233731AbhFPUwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 16:52:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233711AbhFPUwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 16:52:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79C5461076;
+        Wed, 16 Jun 2021 20:50:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623876637;
+        bh=KkBcxHtMW6CBQsdymw0nRgRZKWfSKaSXE49m9JbgpYE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qXnPj6G3RKf7L2+/RLuinTQjlA3QWCDZ554IK6ZPFRQppgKgKFSUClx1VVOmgjlsr
+         WaghoO6kQ91hnYp5qeFWWb5b/i5K5a4Q5SySnJTccORLZqWyM4IINHEGLm+Y2zWs5K
+         5cK5pKrVrsg5TS7DBFpnT/bggwlweazVrWsnUdflGJnuJlc7RZ+T8COCNbRAPOUyQj
+         nNI1idYlTTck2lq0ivA9mS/41skVbtGrD7dXdViemS7MTC0r4rH39A3tf+TQdRGy0f
+         tV89BKnLTOXUpo4CWo3nYPhzECd26PG5He23JiYZtwW6vKJ0dMqJi5ZaPaDJ+OMI9D
+         WxvQpE731ufJQ==
+Date:   Wed, 16 Jun 2021 15:52:06 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] drm/amd/display: Fix fall-through warning for Clang
+Message-ID: <20210616205206.GA17547@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87zgvqor7d.fsf_-_@disp2133>
-Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 02:36:38PM -0500, Eric W. Biederman wrote:
-> 
-> While thinking about the information leaks fixed in 77f6ab8b7768
-> ("don't dump the threads that had been already exiting when zapped.")
-> I realized the problem is much more general than just coredumps and
-> exit_mm.  We have io_uring threads, PTRACE_EVENT_EXEC and
-> PTRACE_EVENT_EXIT where ptrace is allowed to access userspace
-> registers, but on some architectures has not saved them.
+In preparation to enable -Wimplicit-fallthrough for Clang, fix
+the following warning by replacing a /* fall through */ comment
+with the new pseudo-keyword macro fallthrough:
 
-Wait a sec.  To have anything happen on PTRACE_EVENT_EXEC, you need the
-fucker traced.  *IF* you want to go that way, at least make it conditional
-upon the same thing.
+rivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_aux.c:672:4: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+                        case AUX_TRANSACTION_REPLY_I2C_OVER_AUX_DEFER:
+                        ^
+
+Notice that Clang doesn't recognize /* fall through */ comments as
+implicit fall-through markings, so in order to globally enable
+-Wimplicit-fallthrough for Clang, these comments need to be
+replaced with fallthrough; in the whole codebase.
+
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+JFYI: We had thousands of these sorts of warnings and now we are down
+      to just 15 in linux-next. This is one of those last remaining
+      warnings.
+
+ drivers/gpu/drm/amd/display/dc/dce/dce_aux.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_aux.c b/drivers/gpu/drm/amd/display/dc/dce/dce_aux.c
+index 28631714f697..2fb88e54a4bf 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce/dce_aux.c
++++ b/drivers/gpu/drm/amd/display/dc/dce/dce_aux.c
+@@ -668,7 +668,7 @@ bool dce_aux_transfer_with_retries(struct ddc_service *ddc,
+ 				/* polling_timeout_period is in us */
+ 				defer_time_in_ms += aux110->polling_timeout_period / 1000;
+ 				++aux_defer_retries;
+-				/* fall through */
++				fallthrough;
+ 			case AUX_TRANSACTION_REPLY_I2C_OVER_AUX_DEFER:
+ 				retry_on_defer = true;
+ 				fallthrough;
+-- 
+2.27.0
+
