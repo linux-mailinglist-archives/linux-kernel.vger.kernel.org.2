@@ -2,139 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29183A9196
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EE13A91AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbhFPGFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhFPGFV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:05:21 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1740C061574;
-        Tue, 15 Jun 2021 23:03:14 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id g6so1333619pfq.1;
-        Tue, 15 Jun 2021 23:03:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=/o2SwDIVJgGnKgQ3WXZqgj/1RbxNUK13ChH6AkxAuUI=;
-        b=MTd1zaIhz3xvuaeEBCMMGN48Er9lGN3XzYwwpjHMxQ7OxPlEbaK6VONIkK5r3CiVU+
-         mSAYrIOnqxFzN7dj6MyXIJrcruWjX9hxWOFjyxIn7H2jRMRdxyByQtJDbB4dCPu3ARJe
-         us+1vqXmv00waDEs/tfqjMm0qqpTdR5JvuVOMya9YQT4q9G5lUehnBDrAJdiP9DcW9Q+
-         71gajVZ2DI0k9cIt5icqZQydDD5BjnknBVsOPmw5eRmJqxLMHsEfmjDx8H8mv5EOriVx
-         BhI9r9Jhh+ZB3GoC3Aw7Ug7Z0p4QkcBdtBM3+mMapr18vlYg+X60G2sLisRyk3Xhpuvj
-         5RRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=/o2SwDIVJgGnKgQ3WXZqgj/1RbxNUK13ChH6AkxAuUI=;
-        b=NFkFXLtDTrrPenqRyMa2/PlSThvdWlX41Zv54+lX6/jcMRQa/s3t9sfxk3ra3PnS2V
-         SJmRmte7YAmsDDrtGMonEGYH3t/UIUshi3BJtvw2A6wlyBiaJOZ676bDodLUQzDMqTk0
-         jBLFtfXLy+fnZ6yGZLYuAxPpujdfJ9tU6aSC8gcZBtqpq+8+vA8Gm15u0KFiqJTfpkwG
-         kJO57guwx4qlSOOP5P/U9u55tSyGbXtReAoJzdF3R03Qf7NBEdtXjtrYbHgAwNEYsQzQ
-         IeNCQFsSXhWzRUnNCsgiF29b/mvRepCwbUu/wFNUW/huAyttWx9UUuR781pVRDkooekN
-         msnw==
-X-Gm-Message-State: AOAM531tv2QgoiLEh0hhlUe671y7iMwK1rVFwWCNJZ86337FI7IYTg+w
-        xAX8nYSg7dZRwJ53/gAx6fk=
-X-Google-Smtp-Source: ABdhPJzMbpYhpE2ej8kXe4T3Iv5+EnFOo8hEQypBdHiU1jDX0v29oNvIcUJt2b6lRnRE25tdoUj1Dg==
-X-Received: by 2002:a63:e64a:: with SMTP id p10mr3358177pgj.424.1623823394365;
-        Tue, 15 Jun 2021 23:03:14 -0700 (PDT)
-Received: from nuc ([202.133.196.154])
-        by smtp.gmail.com with ESMTPSA id b21sm1024984pgj.74.2021.06.15.23.03.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 23:03:13 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 14:03:09 +0800
-From:   Du Cheng <ducheng2@gmail.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        id S231272AbhFPGIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:08:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229543AbhFPGIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 02:08:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BD9161350;
+        Wed, 16 Jun 2021 06:05:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623823558;
+        bh=wj+fnX135Oi/RuBZlfcRXEj82T4M+/zm2RKoeLfcdHI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gHZLhaFOGuJEdFzGD8ad6/WT9r+ZqPlWGvOwJoE3JRn+pqz1O74eBVMbWjjeG87Dj
+         TPvrvUCNWbz/7lixm1DsLz03lLNe9Um44ZNofR+Fgv+slwMtNQEfvKCMrcTThWdf6e
+         F+7I/PxIo72YidQoQbZHHngOc0S41uEQR6nyNaRA=
+Date:   Wed, 16 Jun 2021 08:05:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, dmaengine@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
+        alsa-devel@alsa-project.org, iommu@lists.linux-foundation.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Stephen Boyd <sboyd@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Vinod Koul <vkoul@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: Suppress WARN on inability to sanitize EPC if
- ksgxd is stopped
-Message-ID: <YMmUHRGwXSIYJTDf@nuc>
-References: <20210616004458.2192889-1-seanjc@google.com>
+        Marc Zyngier <maz@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] dt-bindings: Drop redundant minItems/maxItems
+Message-ID: <YMmUwCsdy4OaQCiU@kroah.com>
+References: <20210615191543.1043414-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210616004458.2192889-1-seanjc@google.com>
+In-Reply-To: <20210615191543.1043414-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Tue, Jun 15, 2021 at 05:44:58PM -0700, Sean Christopherson a Ã©crit :
-> Don't WARN on having unsanitized EPC pages if ksgxd is stopped early,
-> e.g. if sgx_init() realizes there will be no downstream consumers of EPC.
-> If ksgxd is stopped early, EPC pages may be left on the dirty list, but
-> that's ok because ksgxd is only stopped if SGX initialization failed or
-> if the kernel is going down.  In either case, the EPC won't be used.
+On Tue, Jun 15, 2021 at 01:15:43PM -0600, Rob Herring wrote:
+> If a property has an 'items' list, then a 'minItems' or 'maxItems' with the
+> same size as the list is redundant and can be dropped. Note that is DT
+> schema specific behavior and not standard json-schema behavior. The tooling
+> will fixup the final schema adding any unspecified minItems/maxItems.
 > 
-> This bug was exposed by the addition of KVM support, but has existed and
-> was hittable since the original sanitization code was added.  Prior to
-> adding KVM support, if Launch Control was not fully enabled, e.g. when
-> running on older hardware, sgx_init() bailed immediately before spawning
-> ksgxd because X86_FEATURE_SGX was cleared if X86_FEATURE_SGX_LC was
-> unsupported.
+> This condition is partially checked with the meta-schema already, but
+> only if both 'minItems' and 'maxItems' are equal to the 'items' length.
+> An improved meta-schema is pending.
 > 
-> With KVM support, sgx_drv_init() handles the X86_FEATURE_SGX_LC check
-> manually, so now there's any easy-to-hit case where sgx_init() will spawn
-> ksgxd and _then_ fail to initialize, which results in sgx_init() stopping
-> ksgxd before it finishes sanitizing the EPC.
-> 
-> Prior to KVM support, the bug was much harder to hit because it basically
-> required char device registration to fail.
-> 
-> Reported-by: Du Cheng <ducheng2@gmail.com>
-> Fixes: e7e0545299d8 ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Jassi Brar <jassisinghbrar@gmail.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: Vivien Didelot <vivien.didelot@gmail.com>
+> Cc: Vladimir Oltean <olteanv@gmail.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Ohad Ben-Cohen <ohad@wizery.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: Alessandro Zummo <a.zummo@towertech.it>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
-> 
-> Lightly tested due to lack of hardware.  I hacked the flow to verify that
-> stopping early will leave work pending, and that rechecking should_stop()
-> suppress the resulting WARN.
-> 
->  arch/x86/kernel/cpu/sgx/main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> index ad904747419e..fbad2b9625a5 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -425,7 +425,7 @@ static int ksgxd(void *p)
->  	__sgx_sanitize_pages(&sgx_dirty_page_list);
->  
->  	/* sanity check: */
-> -	WARN_ON(!list_empty(&sgx_dirty_page_list));
-> +	WARN_ON(!list_empty(&sgx_dirty_page_list) && !kthread_should_stop());
->  
->  	while (!kthread_should_stop()) {
->  		if (try_to_freeze())
-> -- 
-> 2.32.0.272.g935e593368-goog
-> 
 
-I applied this patch on 5.13-rc6, and it no longer causes to trigger WARN_ON()
-on my NUC:
-
-```
-
-[    0.669411] PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
-[    0.669412] software IO TLB: mapped [mem 0x0000000017cb9000-0x000000001bcb9000] (64MB)
-[    0.672788] platform rtc_cmos: registered platform RTC device (no PNP device found)
-[    0.672805] sgx: EPC section 0x30200000-0x35f7ffff
-[    0.674239] Initialise system trusted keyrings
-[    0.674254] Key type blacklist registered
-
-```
-
-Regards,
-Du Cheng
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
