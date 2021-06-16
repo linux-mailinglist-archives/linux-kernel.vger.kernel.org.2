@@ -2,115 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D3C3AA2AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4D63AA2B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhFPR5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:57:14 -0400
-Received: from mail-pf1-f177.google.com ([209.85.210.177]:36697 "EHLO
-        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhFPR5N (ORCPT
+        id S231483AbhFPR7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhFPR7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:57:13 -0400
-Received: by mail-pf1-f177.google.com with SMTP id d62so839144pfd.3;
-        Wed, 16 Jun 2021 10:55:06 -0700 (PDT)
+        Wed, 16 Jun 2021 13:59:46 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB595C061574;
+        Wed, 16 Jun 2021 10:57:38 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so3383003otl.3;
+        Wed, 16 Jun 2021 10:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JqX+3DOA7ox/K5I0DpI1KknuOiKmOjzSyVKeXkp2TrA=;
+        b=dW02d5zGn/AmpCC7+x7DtbTbgBQUU5rhRi5ucgHUmHzYDGQ7MV2MssEJUNg2Fs1f0O
+         CI/8/QGQGgPsOsamCwp17LNyN5AEePLUNB3WD1tcFCLD5XZO+oMVysfmQ5a52L6O6soU
+         4A/zLfkl03ILTmQTIOHrNhbkMB27WqRXj14lsLDhxGkbq7NXoVRMRlCWVo3wpCd2kwKp
+         U3bmCEZTuNX6KyjoIGn5dqKgizTYu790Mc/IM/jG6kc9LhfzDSg0TM6Y0i8Mg4B42S7D
+         Ip/NdkleRjTB0jVcgaLKetpz3gqeqRu/VP32kg+HybxOPEAogsQRycFbKK3MuwN/tt+p
+         kKQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jnKj0HBwxlH/ulf+iZejWPSvpBbaHdsnZF9n9H/9ifA=;
-        b=CyBYdsYWL8J/isWXcd9fE+aPlg73GodoC1NPkumtPcQef0CZGjUCn3ZRuEniK8mVWw
-         l0brqNytiM0PQcR9sK1hho1OoRmv3i7tl0FpBTg5kmhpD1Bi9sGyIxzzP9ADf/f1S8NG
-         LnEoArGk8YMC2/xfUfifZlI4Bh4YKENsYTpNNoFRn/g6x6loOFACOeDZWxliIxpomefT
-         uGbIbASXQ13UlR/xQvtWD5cVDYR0TprSb8jTbOsoDm5+d7/WTHJP7yc+ZUJ14GbX+GH2
-         i8liiZslP04giigHEWhqe+oGSeumoQAFd6LK5tTM8dP9BNklycvliJiBWRRAvPwBKZVq
-         Qp0w==
-X-Gm-Message-State: AOAM532N8iGxhbkLc4850rdEvSTSQ+IQwX5Sm5ONu3KvZ4m6If5OtUNy
-        6smEiThCaIgHyArVNOjNrit9CDfXI0c=
-X-Google-Smtp-Source: ABdhPJznn/vGaY7gAHJU0FR2g3wY0tI/TjhNgwHGP5q9o+wMhjlrDPfhsmswD1zUPqIRoCtGvtcS9A==
-X-Received: by 2002:a63:1a5b:: with SMTP id a27mr746650pgm.427.1623866105692;
-        Wed, 16 Jun 2021 10:55:05 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id 1sm6210506pjm.8.2021.06.16.10.55.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 10:55:05 -0700 (PDT)
-Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-9-git-send-email-cang@codeaurora.org>
- <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
- <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
- <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
- <75527f0ba5d315d6edbf800a2ddcf8c7@codeaurora.org>
- <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
- <3fce15502c2742a4388817538eb4db97@codeaurora.org>
- <fabc70f8-6bb8-4b62-3311-f6e0ce9eb2c3@acm.org>
- <8aae95071b9ab3c0a3cab91d1ae138e1@codeaurora.org>
- <0081ad7c-8a15-62bb-0e6a-82552aab5309@acm.org>
- <8eadb2f2e30804faf23c9c71e5724d08@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <2fa53602-8968-09e4-60f4-28462d85ae08@acm.org>
-Date:   Wed, 16 Jun 2021 10:55:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=JqX+3DOA7ox/K5I0DpI1KknuOiKmOjzSyVKeXkp2TrA=;
+        b=jcQv+EN03Q66DVRps6SPpdBgJO9zIM0BpRHDwEzBxu6ZBmd4iVuFcAV8gLmDdqF0ey
+         6PEcZtJJwr5mSyM1dZ3hmcndtCvNatqx7T95V+XLvpE+Q07+eZD6n3v2ByOTE9WTj4cC
+         0OzujPtnkg61jyXohBYGcgnlFGaM/MTPXDe9PwyKsajNErUryrW4RX22eTg+/lt6dC9J
+         dqVcPt7BUbxbMydr9Vjt8u4b74KlIzzbWa6Dcea0O/bZvBNP6nnQ0kyz9endYEl6d764
+         khRU7J4HkjULs0xI169QFPODz2HrPJmlCqe+CcDj9E3o0gZeKMM2FVmsBZj+fMY9CcRP
+         m74Q==
+X-Gm-Message-State: AOAM532+a/YLJg7tehvljQC4K6WhNJsn2cx1SBCjLcsqO+XfhbAL72jV
+        iL2HC+rnAMXifRuGu0/Gw88=
+X-Google-Smtp-Source: ABdhPJzmOzu7KIoqx7Mb7WZFe1iH6MviLNFAso/5uTUXBN5hGjq0QAfY/jsOndkMXIxuTcutLFhSgA==
+X-Received: by 2002:a9d:226c:: with SMTP id o99mr929729ota.134.1623866258213;
+        Wed, 16 Jun 2021 10:57:38 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z6sm575517oiz.39.2021.06.16.10.57.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 10:57:37 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 16 Jun 2021 10:57:35 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Cc:     wim@linux-watchdog.org, shawnguo@kernel.org,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] watchdog: introduce watchdog_dev_suspend/resume
+Message-ID: <20210616175735.GA1111788@roeck-us.net>
+References: <20210615123904.2568052-1-grzegorz.jaszczyk@linaro.org>
+ <20210615123904.2568052-2-grzegorz.jaszczyk@linaro.org>
+ <20210615141803.GA957871@roeck-us.net>
+ <CAMxfBF7EZRaCcrCYmY1RkWytWWHiH7xATfzKO68Hqtf3M--L_Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <8eadb2f2e30804faf23c9c71e5724d08@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMxfBF7EZRaCcrCYmY1RkWytWWHiH7xATfzKO68Hqtf3M--L_Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 1:47 AM, Can Guo wrote:
-> On 2021-06-16 12:40, Bart Van Assche wrote:
->> On 6/15/21 9:00 PM, Can Guo wrote:
->>> 2. And say we want SCSI layer to resubmit PM requests to prevent 
->>> suspend/resume fail, we should keep retrying the PM requests (so 
->>> long as error handler can recover everything successfully),
->>> meaning we should give them unlimited retries (which I think is a
->>> bad idea), otherwise (if they have zero retries or limited
->>> retries), in extreme conditions, what may happen is that error
->>> handler can recover everything successfully every time, but all
->>> these retries (say 3) still time out, which block the power
->>> management for too long (retries * 60 seconds) and, most
->>> important, when the last retry times out, scsi layer will
->>> anyways complete the PM request (even we return DID_IMM_RETRY),
->>> then we end up same - suspend/resume shall run concurrently with
->>> error handler and we couldn't recover saved PM errors.
->> 
->> Hmm ... it is not clear to me why this behavior is considered a
->> problem?
+On Wed, Jun 16, 2021 at 03:59:23PM +0200, Grzegorz Jaszczyk wrote:
+> On Tue, 15 Jun 2021 at 16:18, Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > On Tue, Jun 15, 2021 at 02:39:03PM +0200, Grzegorz Jaszczyk wrote:
+> > > The watchdog drivers often disable wdog clock during suspend and then
+> > > enable it again during resume. Nevertheless the ping worker is still
+> > > running and can issue low-level ping while the wdog clock is disabled
+> > > causing the system hang. To prevent such condition introduce
+> > > watchdog_dev_suspend/resume which can be used by any wdog driver and
+> > > actually cancel ping worker during suspend and restore it back, if
+> > > needed, during resume.
+> > >
+> >
+> > I'll have to look into this further, but I don't think this is the correct
+> > solution. Most likely the watchdog core needs to have its own independent
+> > suspend/resule functions and suspend the high resolution timer on
+> > suspend and restore it on resume. This may require an additional flag
+> > to be set by drivers to indicate that the timer should be stopped on
+> > suspend.
 > 
-> To me, task abort to PM requests does not worth being treated so 
-> differently, after all suspend/resume may fail due to any kinds of
-> UFS errors (as I've explained so many times). My idea is to let PM
-> requests fast fail (60 seconds has passed, a broken device maybe, we
-> have reason to fail it since it is just a passthrough req) and
-> schedule UFS error handler, UFS error handler shall proceed after
-> suspend/resume fails out then start to recover everything in a safe
-> environment. Is this way not working?
-Hi Can,
+> That makes sense - thank you for your suggestion. I think I could
+> register a pm notifier in the watchdog core when the new e.g.
+> WDOG_STOP_PING_ON_SUSPEND status flag will be set by the driver and
+> actually call watchdog_dev_suspend/resume from the notifier callback.
+> Please let me know if you see any other issue with this solution, if
+> not I will post v2.
+> 
+Go for it.
 
-Thank you for the clarification. As you probably know the power
-management subsystem serializes runtime power management (RPM) and
-system suspend callbacks. I was concerned about the consequences of a
-failed RPM transition on system suspend and resume. Having taken a
-closer look at the UFS driver, I see that failed RPM transitions do not
-require special handling in the system suspend or resume callbacks. In
-other words, I'm fine with the approach of failing PM requests fast.
-
-Bart.
+Thanks,
+Guenter
