@@ -2,178 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53E73A9CD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329C53A9CD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233665AbhFPOBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbhFPOBo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:01:44 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD27C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:59:35 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id im10so1590104qvb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:59:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QvTscpdtSME1zV++0MyBEAQ2RjASk3pBKLKm6ayPws4=;
-        b=qukkYzbGBwvPyl927hREHi0xY6LXwNYfufoai+v0kddN+dKsee5WLPtX3pP42FJiA3
-         KfCwb6PeCt/KchPWeRw3b9lTs3KT62HFaQ4TjGqHD+7hyRXXyMwwDAHiusXlp98fcrsQ
-         RgtWA1oaQe41CuZZQSl0wil2t3WPcC5e05Xo/ck74I8SuxfwM2kZgbJE1VtSagn3HPDw
-         Wlo3SpxKgIJIoJ8mDvooYsL1zkPV/IJwaUD+uuMaf1DEendUkjv8kKA59chDA1xWxAr7
-         jNqmC2Zfwf9OX0M49722N54VJZlpj7ZaHYjD/N4F6WCdiU+0cOs6V4km7BVPLx7dZaio
-         6N6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QvTscpdtSME1zV++0MyBEAQ2RjASk3pBKLKm6ayPws4=;
-        b=lgbLjMEU0MM8+pLr7CzhPsK1kiez1nDYgkBQCa8IUqOLqcUqrPMRrvxX0R5xCrtn43
-         p5JcY1n/wIt8ghrqbQ6+KsNEzBJxlDfRDWY+UNvUVN4Q1TNm6nnUxlzqz2erchGlgju3
-         wvvNp0itmG+BioyrGp9doBu7wdL67obML2pIYRXZOU9rHVPrLYp3qNr3qfMEX5jzammr
-         RjZYwMaiH0AFo12lym4B30pkHbd4NzzUuiKdPlMYKmdT5urkazphZS94b+9/MZuq35VA
-         /EB8G0jdANp2MHKflc8ZYAp20Qwl+tQ3F5t1mPm26L6A/LG4ivuDmLYe98ysGhqJy9/z
-         DQLg==
-X-Gm-Message-State: AOAM531wPaH8UZNIVfsGbTHDLY5EhRp/GI7VWZHMp6riKdS/AiRd49XG
-        204bAt5zvsXLyW+yAZzGe9Jd/Xq2UAcDeOUyGMRkAQ==
-X-Google-Smtp-Source: ABdhPJwoQynC4K5L9lstAHzUHxhDOkpNlpy3ScLRAXogEJRDeiwMs/ngDax65rzow6AoBBLs0xl0UZDndFVNMH1CqpE=
-X-Received: by 2002:a05:6214:20c4:: with SMTP id 4mr147960qve.1.1623851974357;
- Wed, 16 Jun 2021 06:59:34 -0700 (PDT)
+        id S233622AbhFPOBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:01:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229722AbhFPOBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 10:01:40 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6673B6115B;
+        Wed, 16 Jun 2021 13:59:32 +0000 (UTC)
+Date:   Wed, 16 Jun 2021 15:01:33 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Frank Zago <frank@zago.net>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Meerwald <pmeerw@pmeerw.net>
+Subject: Re: [PATCH 2/2] iio: light: tcs3472: do not free unallocated IRQ
+Message-ID: <20210616150133.39fcd3f7@jic23-huawei>
+In-Reply-To: <20210427182300.331bda00@jic23-huawei>
+References: <20210427022017.19314-1-frank@zago.net>
+        <20210427022017.19314-2-frank@zago.net>
+        <20210427182300.331bda00@jic23-huawei>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210615123904.2568052-1-grzegorz.jaszczyk@linaro.org>
- <20210615123904.2568052-2-grzegorz.jaszczyk@linaro.org> <20210615141803.GA957871@roeck-us.net>
-In-Reply-To: <20210615141803.GA957871@roeck-us.net>
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Date:   Wed, 16 Jun 2021 15:59:23 +0200
-Message-ID: <CAMxfBF7EZRaCcrCYmY1RkWytWWHiH7xATfzKO68Hqtf3M--L_Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] watchdog: introduce watchdog_dev_suspend/resume
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     wim@linux-watchdog.org, shawnguo@kernel.org,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 at 16:18, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Tue, Jun 15, 2021 at 02:39:03PM +0200, Grzegorz Jaszczyk wrote:
-> > The watchdog drivers often disable wdog clock during suspend and then
-> > enable it again during resume. Nevertheless the ping worker is still
-> > running and can issue low-level ping while the wdog clock is disabled
-> > causing the system hang. To prevent such condition introduce
-> > watchdog_dev_suspend/resume which can be used by any wdog driver and
-> > actually cancel ping worker during suspend and restore it back, if
-> > needed, during resume.
-> >
->
-> I'll have to look into this further, but I don't think this is the correct
-> solution. Most likely the watchdog core needs to have its own independent
-> suspend/resule functions and suspend the high resolution timer on
-> suspend and restore it on resume. This may require an additional flag
-> to be set by drivers to indicate that the timer should be stopped on
-> suspend.
+On Tue, 27 Apr 2021 18:23:00 +0100
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-That makes sense - thank you for your suggestion. I think I could
-register a pm notifier in the watchdog core when the new e.g.
-WDOG_STOP_PING_ON_SUSPEND status flag will be set by the driver and
-actually call watchdog_dev_suspend/resume from the notifier callback.
-Please let me know if you see any other issue with this solution, if
-not I will post v2.
+> On Mon, 26 Apr 2021 21:20:17 -0500
+> Frank Zago <frank@zago.net> wrote:
+> 
+> > From: frank zago <frank@zago.net>
+> > 
+> > Allocating an IRQ is conditional to the IRQ existence, but freeing it
+> > was not. If no IRQ was allocate, the driver would still try to free
+> > IRQ 0. Add the missing checks.
+> > 
+> > This fixes the following trace when the driver is removed:
+> > 
+> > [  100.667788] Trying to free already-free IRQ 0
+> > [  100.667793] WARNING: CPU: 0 PID: 2315 at kernel/irq/manage.c:1826 free_irq+0x1fd/0x370
+> > [  100.667804] Modules linked in: tcs3472(-) industrialio_triggered_buffer kfifo_buf industrialio ch341_buses binfmt_misc snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep snd_hda_core wmi_bmof snd_pcm snd_seq rapl input_leds snd_timer snd_seq_device snd k10temp ccp soundcore wmi mac_hid sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables autofs4 dm_crypt hid_generic usbhid hid radeon i2c_algo_bit drm_ttm_helper ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec rc_core drm crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel crypto_simd r8169 cryptd ahci i2c_piix4 xhci_pci realtek libahci xhci_pci_renesas gpio_amdpt gpio_generic
+> > [  100.667874] CPU: 0 PID: 2315 Comm: rmmod Not tainted 5.12.0+ #29
+> > [  100.667878] ...
+> > [  100.667881] RIP: 0010:free_irq+0x1fd/0x370
+> > [  100.667887] Code: e8 c8 d8 1b 00 48 83 c4 10 4c 89 f8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 8b 75 d0 48 c7 c7 40 8b 36 93 4c 89 4d c8 e8 d1 2c a2 00 <0f> 0b 4c 8b 4d c8 4c 89 f7 4c 89 ce e8 72 c7 a8 00 49 8b 47 40 48
+> > [  100.667891] RSP: 0018:ffff9f44813b7d88 EFLAGS: 00010082
+> > [  100.667895] RAX: 0000000000000000 RBX: ffff8e50caf47800 RCX: ffff8e53cea185c8
+> > [  100.667897] RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffff8e53cea185c0
+> > [  100.667900] RBP: ffff9f44813b7dc0 R08: 0000000000000000 R09: ffff9f44813b7b50
+> > [  100.667902] R10: ffff9f44813b7b48 R11: ffffffff93b53848 R12: ffff8e50c0125080
+> > [  100.667903] R13: ffff8e50c0136f60 R14: ffff8e50c0136ea4 R15: ffff8e50c0136e00
+> > [  100.667906] FS:  00007fa28b899540(0000) GS:ffff8e53cea00000(0000) knlGS:0000000000000000
+> > [  100.667909] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [  100.667911] CR2: 0000561851777818 CR3: 000000010633a000 CR4: 00000000003506f0
+> > [  100.667914] Call Trace:
+> > [  100.667920]  tcs3472_remove+0x3a/0x90 [tcs3472]
+> > [  100.667927]  i2c_device_remove+0x2b/0xa0
+> > [  100.667934]  __device_release_driver+0x181/0x240
+> > [  100.667940]  driver_detach+0xd5/0x120
+> > [  100.667944]  bus_remove_driver+0x5c/0xe0
+> > [  100.667947]  driver_unregister+0x31/0x50
+> > [  100.667951]  i2c_del_driver+0x46/0x70
+> > [  100.667955]  tcs3472_driver_exit+0x10/0x5dd [tcs3472]
+> > [  100.667960]  __do_sys_delete_module.constprop.0+0x183/0x290
+> > [  100.667965]  ? exit_to_user_mode_prepare+0x37/0x1c0
+> > [  100.667971]  __x64_sys_delete_module+0x12/0x20
+> > [  100.667974]  do_syscall_64+0x40/0xb0
+> > [  100.667981]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  100.667985] RIP: 0033:0x7fa28b9dbceb
+> > [  100.667989] Code: 73 01 c3 48 8b 0d 7d 91 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 4d 91 0c 00 f7 d8 64 89 01 48
+> > [  100.667992] RSP: 002b:00007ffe02ea7068 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
+> > [  100.667995] RAX: ffffffffffffffda RBX: 000056185176d750 RCX: 00007fa28b9dbceb
+> > [  100.667997] RDX: 000000000000000a RSI: 0000000000000800 RDI: 000056185176d7b8
+> > [  100.667999] RBP: 00007ffe02ea70c8 R08: 0000000000000000 R09: 0000000000000000
+> > [  100.668001] R10: 00007fa28ba56ac0 R11: 0000000000000206 R12: 00007ffe02ea72a0
+> > [  100.668003] R13: 00007ffe02ea8807 R14: 000056185176d2a0 R15: 000056185176d750
+> > [  100.668007] ---[ end trace b21b0811931d933c ]---
+> > 
+> > Signed-off-by: frank zago <frank@zago.net>  
+> 
+> Looks correct to me. +CC Peter in case he wants to take a look.
+> 
+> This is going to wait for a week or so anyway because next lot of fixes
+> will only go out towards the end of the merge window or just after rc1.
+> 
+> Thanks
+> 
+Frank,
 
-Thank you in advance,
-Grzegorz
+Thank for the reminder. I had indeed lost track of this one.
 
+Anyhow, now  applied to the togreg branch of iio.git as yet again we
+are on the edge of a merge window, but this time we can just add this
+to the last set of IIO patches to be lined up for that merge window.
 
+Applied to the togreg branch of iio.git.
 
+Thanks,
 
->
-> > Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Jonathan
+
+> Jonathan
 > > ---
-> >  drivers/watchdog/watchdog_dev.c | 49 +++++++++++++++++++++++++++++++++
-> >  include/linux/watchdog.h        |  2 ++
-> >  2 files changed, 51 insertions(+)
-> >
-> > diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
-> > index 2946f3a63110..3feca1567281 100644
-> > --- a/drivers/watchdog/watchdog_dev.c
-> > +++ b/drivers/watchdog/watchdog_dev.c
-> > @@ -1219,6 +1219,55 @@ void __exit watchdog_dev_exit(void)
-> >       kthread_destroy_worker(watchdog_kworker);
-> >  }
-> >
-> > +int watchdog_dev_suspend(struct watchdog_device *wdd)
-> > +{
-> > +     struct watchdog_core_data *wd_data = wdd->wd_data;
-> > +     int ret;
-> > +
-> > +     if (!wdd->wd_data)
-> > +             return -ENODEV;
-> > +
-> > +     /* ping for the last time before suspend */
-> > +     mutex_lock(&wd_data->lock);
-> > +     if (watchdog_worker_should_ping(wd_data))
-> > +             ret = __watchdog_ping(wd_data->wdd);
-> > +     mutex_unlock(&wd_data->lock);
-> > +
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /*
-> > +      * make sure that watchdog worker will not kick in when the wdog is
-> > +      * suspended
-> > +      */
-> > +     hrtimer_cancel(&wd_data->timer);
-> > +     kthread_cancel_work_sync(&wd_data->work);
-> > +
-> > +     return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(watchdog_dev_suspend);
-> > +
-> > +int watchdog_dev_resume(struct watchdog_device *wdd)
-> > +{
-> > +     struct watchdog_core_data *wd_data = wdd->wd_data;
-> > +     int ret;
-> > +
-> > +     if (!wdd->wd_data)
-> > +             return -ENODEV;
-> > +
-> > +     /*
-> > +      * __watchdog_ping will also retrigger hrtimer and therefore restore the
-> > +      * ping worker if needed.
-> > +      */
-> > +     mutex_lock(&wd_data->lock);
-> > +     if (watchdog_worker_should_ping(wd_data))
-> > +             ret = __watchdog_ping(wd_data->wdd);
-> > +     mutex_unlock(&wd_data->lock);
-> > +
-> > +     return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(watchdog_dev_resume);
-> > +
-> >  module_param(handle_boot_enabled, bool, 0444);
-> >  MODULE_PARM_DESC(handle_boot_enabled,
-> >       "Watchdog core auto-updates boot enabled watchdogs before userspace takes over (default="
-> > diff --git a/include/linux/watchdog.h b/include/linux/watchdog.h
-> > index 9b19e6bb68b5..febfde3b1ff6 100644
-> > --- a/include/linux/watchdog.h
-> > +++ b/include/linux/watchdog.h
-> > @@ -209,6 +209,8 @@ extern int watchdog_init_timeout(struct watchdog_device *wdd,
-> >                                 unsigned int timeout_parm, struct device *dev);
-> >  extern int watchdog_register_device(struct watchdog_device *);
-> >  extern void watchdog_unregister_device(struct watchdog_device *);
-> > +int watchdog_dev_suspend(struct watchdog_device *wdd);
-> > +int watchdog_dev_resume(struct watchdog_device *wdd);
-> >
-> >  int watchdog_set_last_hw_keepalive(struct watchdog_device *, unsigned int);
-> >
-> > --
-> > 2.29.0
-> >
+> >  drivers/iio/light/tcs3472.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iio/light/tcs3472.c b/drivers/iio/light/tcs3472.c
+> > index a0dc447aeb68..b41068492338 100644
+> > --- a/drivers/iio/light/tcs3472.c
+> > +++ b/drivers/iio/light/tcs3472.c
+> > @@ -531,7 +531,8 @@ static int tcs3472_probe(struct i2c_client *client,
+> >  	return 0;
+> >  
+> >  free_irq:
+> > -	free_irq(client->irq, indio_dev);
+> > +	if (client->irq)
+> > +		free_irq(client->irq, indio_dev);
+> >  buffer_cleanup:
+> >  	iio_triggered_buffer_cleanup(indio_dev);
+> >  	return ret;
+> > @@ -559,7 +560,8 @@ static int tcs3472_remove(struct i2c_client *client)
+> >  	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+> >  
+> >  	iio_device_unregister(indio_dev);
+> > -	free_irq(client->irq, indio_dev);
+> > +	if (client->irq)
+> > +		free_irq(client->irq, indio_dev);
+> >  	iio_triggered_buffer_cleanup(indio_dev);
+> >  	tcs3472_powerdown(iio_priv(indio_dev));
+> >    
+> 
+
