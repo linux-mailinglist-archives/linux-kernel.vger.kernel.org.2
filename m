@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06313A9F3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058DC3A9FE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234736AbhFPPgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:36:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49520 "EHLO mail.kernel.org"
+        id S235342AbhFPPmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:42:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234701AbhFPPg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:36:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D00361185;
-        Wed, 16 Jun 2021 15:34:21 +0000 (UTC)
+        id S234912AbhFPPji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:39:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59EF061356;
+        Wed, 16 Jun 2021 15:36:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857662;
-        bh=MfSr33OQR/3F0MHvDf2x2DbxuNCQgTef2ELFZ8C5Lg0=;
+        s=korg; t=1623857815;
+        bh=GhkXtGXIL0fNxS3zp4DWV6PenphHRFaLCBus3LYh8hc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=POfCDfLHbMUxMmdul1pl3PISLygI/SIGhAXhYmLrb1bvdCbgqgc8/zM/ZqtwPsNHq
-         j3QAxXLbXKgw9jest1WVjF5kaQ8l95mKl4D/HYigz4qty7pOE2dPXMYe8xFxRxtHDL
-         HhV0okDJY7qC4hByl9D8sAErrZnn6+FH/JGZ+5yI=
+        b=kBbZaI4r8DVeTZqti6HqD4G/qDtJnAUAqaLrtMzrreU7Xw96EXgUs1bNPDlSJBi9Z
+         4wyzM9vrjAg5daxibihN228T7pBNxItzrK6jV9evqltIQQhJLLnX12RZOZNXw9r4H2
+         o5BdGKeJXexqlqtSU0w1ur05DUlcwDnYaNDHgUK0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Maurizio Lombardi <mlombard@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Chu Lin <linchuyuan@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 15/28] scsi: target: core: Fix warning on realtime kernels
-Date:   Wed, 16 Jun 2021 17:33:26 +0200
-Message-Id: <20210616152834.644476801@linuxfoundation.org>
+Subject: [PATCH 5.12 17/48] hwmon/pmbus: (q54sj108a2) The PMBUS_MFR_ID is actually 6 chars instead of 5
+Date:   Wed, 16 Jun 2021 17:33:27 +0200
+Message-Id: <20210616152837.197474947@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
-References: <20210616152834.149064097@linuxfoundation.org>
+In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
+References: <20210616152836.655643420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maurizio Lombardi <mlombard@redhat.com>
+From: Chu Lin <linchuyuan@google.com>
 
-[ Upstream commit 515da6f4295c2c42b8c54572cce3d2dd1167c41e ]
+[ Upstream commit f0fb26c456a30d6009faa2c9d44aa22f5bf88c90 ]
 
-On realtime kernels, spin_lock_irq*(spinlock_t) do not disable the
-interrupts, a call to irqs_disabled() will return false thus firing a
-warning in __transport_wait_for_tasks().
+The PMBUS_MFR_ID block is actually 6 chars for q54sj108a2.
+/sys/bus/i2c/drivers/q54sj108a2_test# iotools smbus_read8 $BUS $ADDR 0x99
+0x06
 
-Remove the warning and also replace assert_spin_locked() with
-lockdep_assert_held()
+Tested: Devices are able to bind to the q54sj108a2 driver successfully.
 
-Link: https://lore.kernel.org/r/20210531121326.3649-1-mlombard@redhat.com
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Chu Lin <linchuyuan@google.com>
+Link: https://lore.kernel.org/r/20210517222606.3457594-1-linchuyuan@google.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_transport.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/hwmon/pmbus/q54sj108a2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index a16835c0bb1d..5cf9e7677926 100644
---- a/drivers/target/target_core_transport.c
-+++ b/drivers/target/target_core_transport.c
-@@ -2993,9 +2993,7 @@ __transport_wait_for_tasks(struct se_cmd *cmd, bool fabric_stop,
- 	__releases(&cmd->t_state_lock)
- 	__acquires(&cmd->t_state_lock)
- {
--
--	assert_spin_locked(&cmd->t_state_lock);
--	WARN_ON_ONCE(!irqs_disabled());
-+	lockdep_assert_held(&cmd->t_state_lock);
- 
- 	if (fabric_stop)
- 		cmd->transport_state |= CMD_T_FABRIC_STOP;
+diff --git a/drivers/hwmon/pmbus/q54sj108a2.c b/drivers/hwmon/pmbus/q54sj108a2.c
+index aec512766c31..0976268b2670 100644
+--- a/drivers/hwmon/pmbus/q54sj108a2.c
++++ b/drivers/hwmon/pmbus/q54sj108a2.c
+@@ -299,7 +299,7 @@ static int q54sj108a2_probe(struct i2c_client *client)
+ 		dev_err(&client->dev, "Failed to read Manufacturer ID\n");
+ 		return ret;
+ 	}
+-	if (ret != 5 || strncmp(buf, "DELTA", 5)) {
++	if (ret != 6 || strncmp(buf, "DELTA", 5)) {
+ 		buf[ret] = '\0';
+ 		dev_err(dev, "Unsupported Manufacturer ID '%s'\n", buf);
+ 		return -ENODEV;
 -- 
 2.30.2
 
