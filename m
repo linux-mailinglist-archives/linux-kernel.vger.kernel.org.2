@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB783AA67C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 00:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B001E3AA680
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 00:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234060AbhFPWK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 18:10:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230355AbhFPWKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 18:10:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D26961076;
-        Wed, 16 Jun 2021 22:08:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623881298;
-        bh=BD273yABex25SB8fv/8nERQkMbaDvLqsi8tVPEQWNxA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lyTzVCkN214gX28y3GVPDC8fHZU1LEr6mMirfhUpCiJSl6FfOvIynWXHzc5ZHmWzd
-         RJy5UPqwZcLHchkQuGHjZnNKA3fDizy7sWxMShxQG7DKGxF142tEM/oURyxNNbjnrC
-         vOm6eHH+rHzcsPPQM71p1IiQUEmMw98T/Eol+uFB+NB2I8UE2YB3B3z75tNe16ujy/
-         5u+Hr7PNIatSakz6jhG3WRgbAVEtGo2su06ahWklKO4nPAwMDWqoui6ibVaGytJIKn
-         YsNIeTB8GVr/1NxmZcnZYVMqVGqDg7+Tsor/57eJRPpTNKMcqaQSAPsClYr8kFu/FM
-         XnoEsCEQes9QA==
-Received: by mail-ed1-f46.google.com with SMTP id i13so1113499edb.9;
-        Wed, 16 Jun 2021 15:08:18 -0700 (PDT)
-X-Gm-Message-State: AOAM533Dp4tu4yKx3kOGPgB/Y4QCExozZD0isHHkxUuFdOlnnCRjgIMm
-        2VqYAf6iaeQekFYboXgWsPe+NDtiVPoiZnxwMA==
-X-Google-Smtp-Source: ABdhPJxCkllYiupo8FEv1dotZCuGq3DKtEY9a1vzJuNFz3aDURB/vEMfp9Hrd4spCvHyDfPmvTzJgapyTYbFxKLDtYI=
-X-Received: by 2002:a05:6402:1d0f:: with SMTP id dg15mr2292962edb.137.1623881297110;
- Wed, 16 Jun 2021 15:08:17 -0700 (PDT)
+        id S233806AbhFPWNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 18:13:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36398 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233011AbhFPWNT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 18:13:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623881472;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mCmaf7kl/6J7xNoXGC5mXBNbsEPDwL0kiQ5HpKTcfoc=;
+        b=FCKaEHGInajfBtyh1HHZpputWyN6i+aikcejCLgrzR72uMYCDL/AdpMR6Ij8dGqiOQ0bNP
+        /pl8XZCSRkaBozADGPZp66CSoeSQoebrE9iEdgQhwbArvJZ2U3EROMfWUcS/lqgsIvgXDH
+        G4zFYngkCPTX9eyzYq0hOsMavvU/VAw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-115-ZBJ8Z5sxOzeu110_WyzcJA-1; Wed, 16 Jun 2021 18:11:08 -0400
+X-MC-Unique: ZBJ8Z5sxOzeu110_WyzcJA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CF57100C610;
+        Wed, 16 Jun 2021 22:11:06 +0000 (UTC)
+Received: from optiplex-fbsd (unknown [10.3.128.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D8ABC5D6BA;
+        Wed, 16 Jun 2021 22:11:03 +0000 (UTC)
+Date:   Wed, 16 Jun 2021 18:11:01 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Georgi Djakov <quic_c_gdjako@quicinc.com>
+Cc:     vbabka@suse.cz, akpm@linux-foundation.org, iamjoonsoo.kim@lge.com,
+        rientjes@google.com, penberg@kernel.org, cl@linux.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, djakov@kernel.org
+Subject: Re: [PATCH] mm/slub: Add taint after the errors are printed
+Message-ID: <YMp29eCm55pqz1lq@optiplex-fbsd>
+References: <1623860738-146761-1-git-send-email-quic_c_gdjako@quicinc.com>
 MIME-Version: 1.0
-References: <cover.1623824363.git.mchehab+huawei@kernel.org> <0048c23d47b582dd1a1959628fd2b895209ac826.1623824363.git.mchehab+huawei@kernel.org>
-In-Reply-To: <0048c23d47b582dd1a1959628fd2b895209ac826.1623824363.git.mchehab+huawei@kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 16 Jun 2021 16:08:05 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLtZhox5-d81FnWywqM6waBv5fJ26z2n9rMw8wrn4aDqg@mail.gmail.com>
-Message-ID: <CAL_JsqLtZhox5-d81FnWywqM6waBv5fJ26z2n9rMw8wrn4aDqg@mail.gmail.com>
-Subject: Re: [PATCH v2 11/29] docs: devicetree: bindings: submitting-patches.rst:
- avoid using ReST :doc:`foo` markup
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@protonmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1623860738-146761-1-git-send-email-quic_c_gdjako@quicinc.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 12:27 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> The :doc:`foo` tag is auto-generated via automarkup.py.
-> So, use the filename at the sources, instead of :doc:`foo`.
->
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On Wed, Jun 16, 2021 at 09:25:38AM -0700, Georgi Djakov wrote:
+> When running the kernel with panic_on_taint, the usual slub debug error
+> messages are not being printed when object corruption happens. That's
+> because we panic in add_taint(), which is called before printing the
+> additional information. This is a bit unfortunate as the error messages
+> are actually very useful, especially before a panic. Let's fix this by
+> moving add_taint() after the errors are printed on the console.
+> 
+> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
 > ---
->  .../devicetree/bindings/submitting-patches.rst        | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/submitting-patches.rst b/Documentation/devicetree/bindings/submitting-patches.rst
-> index 104fa8fb2c17..8087780f1685 100644
-> --- a/Documentation/devicetree/bindings/submitting-patches.rst
-> +++ b/Documentation/devicetree/bindings/submitting-patches.rst
-> @@ -7,8 +7,8 @@ Submitting Devicetree (DT) binding patches
->  I. For patch submitters
->  =======================
->
-> -  0) Normal patch submission rules from Documentation/process/submitting-patches.rst
-> -     applies.
-> +  0) Normal patch submission rules from
-> +     Documentation/process/submitting-patches.rst applies.
->
->    1) The Documentation/ and include/dt-bindings/ portion of the patch should
->       be a separate patch. The preferred subject prefix for binding patches is::
-> @@ -25,8 +25,8 @@ I. For patch submitters
->
->         make dt_binding_check
->
-> -     See Documentation/devicetree/bindings/writing-schema.rst for more details about
-> -     schema and tools setup.
-> +     See Documentation/devicetree/bindings/writing-schema.rst for more details
-> +     about schema and tools setup.
+>  mm/slub.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index a8b0daa1a307..ce7b8e4551b5 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -719,8 +719,6 @@ static void slab_bug(struct kmem_cache *s, char *fmt, ...)
+>  	pr_err("=============================================================================\n");
+>  	pr_err("BUG %s (%s): %pV\n", s->name, print_tainted(), &vaf);
+>  	pr_err("-----------------------------------------------------------------------------\n\n");
+> -
+> -	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
+>  	va_end(args);
+>  }
+>  
+> @@ -801,6 +799,7 @@ void object_err(struct kmem_cache *s, struct page *page,
+>  
+>  	slab_bug(s, "%s", reason);
+>  	print_trailer(s, page, object);
+> +	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
+>  }
+>  
+>  static __printf(3, 4) void slab_err(struct kmem_cache *s, struct page *page,
+> @@ -818,6 +817,7 @@ static __printf(3, 4) void slab_err(struct kmem_cache *s, struct page *page,
+>  	slab_bug(s, "%s", buf);
+>  	print_page_info(page);
+>  	dump_stack();
+> +	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
+>  }
+>  
+>  static void init_object(struct kmem_cache *s, void *object, u8 val)
+> @@ -869,6 +869,7 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
+>  					fault, end - 1, fault - addr,
+>  					fault[0], value);
+>  	print_trailer(s, page, object);
+> +	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
+>  
+>  skip_bug_print:
+>  	restore_bytes(s, what, value, fault, end);
+> 
+Acked-by: Rafael Aquini <aquini@redhat.com>
 
-These don't match $subject.
-
->
->    3) DT binding files should be dual licensed. The preferred license tag is
->       (GPL-2.0-only OR BSD-2-Clause).
-> @@ -84,7 +84,8 @@ II. For kernel maintainers
->  III. Notes
->  ==========
->
-> -  0) Please see :doc:`ABI` for details regarding devicetree ABI.
-> +  0) Please see Documentation/devicetree/bindings/ABI.rst for details
-> +     regarding devicetree ABI.
-
-Is this new? You did review my oneliner adding ':doc:' not too long ago.
-
->
->    1) This document is intended as a general familiarization with the process as
->       decided at the 2013 Kernel Summit.  When in doubt, the current word of the
-> --
-> 2.31.1
->
