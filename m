@@ -2,156 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D503A9CC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3CA3A9CC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbhFPN44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233689AbhFPN4T (ORCPT
+        id S233563AbhFPN6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:58:38 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:18532 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232791AbhFPN6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:56:19 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA99C0613A4;
-        Wed, 16 Jun 2021 06:54:11 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id q5so2823864wrm.1;
-        Wed, 16 Jun 2021 06:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=CjaXbP53aJpeDXopOkh5k4d6j3XgRz6Sqz8UUucJyuo=;
-        b=ZeClm2sTZg0Yvf6HBpdVSk2Ls6ELscaYz4zfGD8RSlA1mal7XZ3048jopi7NZA1sNV
-         rTXs0N79074re78HIIOdCdghTH4KkikxdvZNIox2OM2kW/Z9zQQtHqMOtW9oc5hq7qYy
-         8AT36ranb+ZChiZcLMcJ0XaXE03qoMQa65secGa6Un5CZIilAhQcSuIWffx9Nf2YeoBu
-         cs2lVv3McmvKdO6ktalbpe/NoP9CFL2lbX6bgQvwecFdc3eAbreo/LvQR+zA4SS60fS5
-         D3fo7wDpLDbNkp+izeXLGJcBjMxaK7jdmmFLTyY9mWvEO3fMJAU6wrGulxOrnP755xqW
-         Qm5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CjaXbP53aJpeDXopOkh5k4d6j3XgRz6Sqz8UUucJyuo=;
-        b=ZkocqJcelSTx3HJX8Se2PUWu0B5znHNLHvg8kvlpsGAGvRlS3cwLNtKtXAKk6HI213
-         iKAImgIKyKSCvJ8xyV+VBvDE4frq8HIYobAgDKxckHMx4ouZy9fo7FoKlTiPCg/peLSk
-         Xw5dj7zqoERe6DdPJDtil3OfNh7c9e4MNcyt2uszjhoc+X50QlpPwszWDXGpMPaAJCpx
-         fggxWpFoMViBJM3STviSYQ4+hBPmaBwKi+RBaUE6EzXv0na9GPN8bAHmlBsNtuPqzbus
-         +uLLlfDwl9xHoWsVhUwC48jfdg7p4QZS2Z8v+sUmeGMQXWAIm+o9sqEOqY0xUQmLk3JQ
-         u3RQ==
-X-Gm-Message-State: AOAM532QWGvOVoh1tkktvjcpdvl10sNOi9ZpfxYwM2sgvtD7hjnQrORU
-        HYfhFKu7Pov1C+wFwfh5Sqqj1SgBT5gI0Q==
-X-Google-Smtp-Source: ABdhPJzByKP90c8XXkxAzoXfGYzPwDUFFoa/IawCi4xilny7WvH10oyRu7ddZ1AoxgDJO7FhxOFveA==
-X-Received: by 2002:a05:6000:184c:: with SMTP id c12mr5733547wri.196.1623851649660;
-        Wed, 16 Jun 2021 06:54:09 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.128.74])
-        by smtp.gmail.com with ESMTPSA id x7sm2396089wre.8.2021.06.16.06.54.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 06:54:09 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] io_uring: minor clean up in trace events
- definition
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <60be7e31.1c69fb81.a8bfb.2e54SMTPIN_ADDED_MISSING@mx.google.com>
- <2752dcc1-9e56-ba31-54ea-d2363ecb6c93@gmail.com>
- <def5421f-a3ae-12fd-87a2-6e584f753127@kernel.dk>
- <f3cf3dc047dcee400423f526c1fe31510c5bcf61.camel@trillion01.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <92ed952f-9de9-108c-a48e-93321b59cfab@gmail.com>
-Date:   Wed, 16 Jun 2021 14:53:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 16 Jun 2021 09:58:25 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15GDtur2003960;
+        Wed, 16 Jun 2021 08:56:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=z4ir6OwFS6D0/KhBWykA4un0BnM5Kr4vp3bJU94cqYA=;
+ b=dMOuz5qV5HfNYC/fKjVn+CppN+YTU0XS4WxjeVCCHiCyk2zMcPEM3Ihe/bXb+NE5XG7z
+ IqGKLjzkmwwUrsMtyGtTy0CMEOvih/t7DeAMLbPR+LUjvMaIFBmdnYJrmVgX/2Lpy3Ul
+ ojV78GZJUZqe4DoQ6rS2WJbW2ZWQ70woeFMed03KEgrXM5xsBvAaBUp7O91EvG61BbDF
+ 0xBKIhKJYUR9Lz+qldZSvSJlcXQ/ndBZNDtCGM23zMfaaEK7IMsNIqHhP0D+stIWju1i
+ GjybU6MJ6sgjQz2w2T4XD2bhtd4Joq4FeXRqqzL0oo6Be/e/9zprrah5m+q54998U4q/ 8Q== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 397ab2gn60-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 16 Jun 2021 08:56:08 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 16 Jun
+ 2021 14:56:07 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Wed, 16 Jun 2021 14:56:07 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.68])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5DF2E2B2;
+        Wed, 16 Jun 2021 13:56:06 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH] ASoC: cs42l42: Correct definition of CS42L42_ADC_PDN_MASK
+Date:   Wed, 16 Jun 2021 14:56:04 +0100
+Message-ID: <20210616135604.19363-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <f3cf3dc047dcee400423f526c1fe31510c5bcf61.camel@trillion01.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: Vr5Xh5MzxCjSkwp-T4ItcZmvOhW9gSEr
+X-Proofpoint-GUID: Vr5Xh5MzxCjSkwp-T4ItcZmvOhW9gSEr
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
+ spamscore=0 mlxlogscore=707 clxscore=1015 impostorscore=0 adultscore=0
+ suspectscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106160081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 2:33 PM, Olivier Langlois wrote:
-> On Tue, 2021-06-15 at 15:50 -0600, Jens Axboe wrote:
->> On 6/15/21 3:48 AM, Pavel Begunkov wrote:
->>> On 5/31/21 7:54 AM, Olivier Langlois wrote:
->>>> Fix tabulation to make nice columns
->>>
->>> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
->>
->> I don't have any of the original 1-3 patches, and don't see them on the
->> list either. I'd love to apply for 5.14, but...
->>
->> Olivier, are you getting any errors sending these out?Usually I'd
->> expect
->> them in my inbox as well outside of the list, but they don't seem to
->> have
->> arrived there either.
->>
->> In any case, please resend. As Pavel mentioned, a cover letter is
->> always
->> a good idea for a series of more than one patch.
->>
-> I do not get any errors but I have noticed too that my emails weren't
-> accepted by the lists.
-> 
-> They will accept replies in already existing threads but they won't let
-> me create new ones. ie: accepting my patches.
-> 
-> I'll learn how create a cover email and I will resend the series of
-> patches later today.
+The definition of CS42L42_ADC_PDN_MASK was incorrectly defined
+as the HP_PDN bit.
 
-"--cover-letter" to "git format-patch" will create a cover template
-to fill in. Depends on patches, but can be a small description of the
-series.
+Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs42l42.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regarding resending, Jens already took/applied them today, see
-a reply to 1/3. You can find them queued at
-
-https://git.kernel.dk/cgit/linux-block/log/?h=for-5.14/io_uring
-
-> one thing that I can tell, it is that Pavel and you are always
-> recipients along with the lists for my patches... So you should have a
-> private copy somewhere in your mailbox...
-> 
-> The other day, I even got this:
-> -------- Forwarded Message --------
-> From: Mail Delivery System <Mailer-Daemon@cloud48395.mywhc.ca>
-> To: olivier@trillion01.com
-> Subject: Mail delivery failed: returning message to sender
-> Date: Thu, 10 Jun 2021 11:38:51 -0400
-> 
-> This message was created automatically by mail delivery software.
-> 
-> A message that you sent could not be delivered to one or more of its
-> recipients. This is a permanent error. The following address(es)
-> failed:
-> 
->   linux-kernel@vger.kernel.org
->     host vger.kernel.org [23.128.96.18]
->     SMTP error from remote mail server after end of data:
->     550 5.7.1 Content-Policy accept-into-freezer-1 msg:
->     Bayes Statistical Bogofilter considers this message SPAM.  BF:<S
-> 0.9924>  In case you disagree, send the ENTIRE message plus this error
-> message to <postmaster@vger.kernel.org> ; S230153AbhFJPkq
->   io-uring@vger.kernel.org
->     host vger.kernel.org [23.128.96.18]
->     SMTP error from remote mail server after end of data:
->     550 5.7.1 Content-Policy accept-into-freezer-1 msg:
->     Bayes Statistical Bogofilter considers this message SPAM.  BF:<S
-> 0.9924>  In case you disagree, send the ENTIRE message plus this error
-> message to <postmaster@vger.kernel.org> ; S230153AbhFJPkq
-> 
-> There is definitely something that the list software doesn't like in my
-> emails but I don't know what...
-> 
-> I did send an email to postmaster@vger.kernel.org to tell them about
-> the problem but I didn't hear back anything from the postmaster... (My
-> email probably went to the SPAM folder as well!)
-> 
-
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index 7bf05ff05f74..206b3c81d3e0 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -79,7 +79,7 @@
+ #define CS42L42_HP_PDN_SHIFT		3
+ #define CS42L42_HP_PDN_MASK		(1 << CS42L42_HP_PDN_SHIFT)
+ #define CS42L42_ADC_PDN_SHIFT		2
+-#define CS42L42_ADC_PDN_MASK		(1 << CS42L42_HP_PDN_SHIFT)
++#define CS42L42_ADC_PDN_MASK		(1 << CS42L42_ADC_PDN_SHIFT)
+ #define CS42L42_PDN_ALL_SHIFT		0
+ #define CS42L42_PDN_ALL_MASK		(1 << CS42L42_PDN_ALL_SHIFT)
+ 
 -- 
-Pavel Begunkov
+2.20.1
+
