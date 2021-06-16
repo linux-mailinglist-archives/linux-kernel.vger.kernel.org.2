@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26F13A9F6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17173A9F77
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235000AbhFPPiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:38:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50548 "EHLO mail.kernel.org"
+        id S235064AbhFPPiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:38:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234795AbhFPPhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:37:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DBD0613C7;
-        Wed, 16 Jun 2021 15:35:08 +0000 (UTC)
+        id S234819AbhFPPhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:37:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F85561166;
+        Wed, 16 Jun 2021 15:35:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857708;
-        bh=2TA4mXyXBZTlwjWBvvI9jvsDye+jGINjkSVK96VzFJU=;
+        s=korg; t=1623857719;
+        bh=SP954mOtF6wkMfdgsDZjIet5/ajxzQPhDm8AHQkgWKA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LlIuhk1R42t9Lher8lBcBHLure8rgJYA5tVkwk66GbO4PsdURnDHx+qyoumgR+X/D
-         gdT3qrZeGkfARi0MdJL4kFigVyCT8ZmzQNTgRpMz+EfgwHHaGSjhyrlKCooLyEqIYX
-         xYpH1ASDeZSBVRfBcYQjPx8uEGv6TtwykggvFzdA=
+        b=janWd2MKSW098iWvE07k29Hw3DQHTsCwbH0e58pWbKitzQpBsdE1uXoKjfu0cE587
+         bl5wjueJ3HcUsFDSdBAlY5xXqewNVpj1rv8FMuSrP1b27jejaG3Pecr7M2luCfJVo7
+         f2zm9Cl8ZEKmsyB6upPA1CvCp7XJM8FVsy69k670=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
+        stable@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>,
         Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 09/28] drm/tegra: sor: Do not leak runtime PM reference
-Date:   Wed, 16 Jun 2021 17:33:20 +0200
-Message-Id: <20210616152834.446161526@linuxfoundation.org>
+Subject: [PATCH 5.10 12/38] drm/tegra: sor: Fully initialize SOR before registration
+Date:   Wed, 16 Jun 2021 17:33:21 +0200
+Message-Id: <20210616152835.787542808@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
-References: <20210616152834.149064097@linuxfoundation.org>
+In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
+References: <20210616152835.407925718@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,78 +40,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Machek (CIP) <pavel@denx.de>
+From: Thierry Reding <treding@nvidia.com>
 
-[ Upstream commit 73a395c46704304b96bc5e2ee19be31124025c0c ]
+[ Upstream commit 5dea42759bcef74b0802ea64b904409bc37f9045 ]
 
-It's theoretically possible for the runtime PM reference to leak if the
-code fails anywhere between the pm_runtime_resume_and_get() and
-pm_runtime_put() calls, so make sure to release the runtime PM reference
-in that case.
+Before registering the SOR host1x client, make sure that it is fully
+initialized. This avoids a potential race condition between the SOR's
+probe and the host1x device initialization in cases where the SOR is
+the final sub-device to register to a host1x instance.
 
-Practically this will never happen because none of the functions will
-fail on Tegra, but it's better for the code to be pedantic in case these
-assumptions will ever become wrong.
-
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-[treding@nvidia.com: add commit message]
+Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
 Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/sor.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/tegra/sor.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
-index 6c3d22165239..0419b6105c8a 100644
+index 67a80dae1c00..32c83f2e386c 100644
 --- a/drivers/gpu/drm/tegra/sor.c
 +++ b/drivers/gpu/drm/tegra/sor.c
-@@ -2875,21 +2875,21 @@ static int tegra_sor_init(struct host1x_client *client)
+@@ -3922,17 +3922,10 @@ static int tegra_sor_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, sor);
+ 	pm_runtime_enable(&pdev->dev);
+ 
+-	INIT_LIST_HEAD(&sor->client.list);
++	host1x_client_init(&sor->client);
+ 	sor->client.ops = &sor_client_ops;
+ 	sor->client.dev = &pdev->dev;
+ 
+-	err = host1x_client_register(&sor->client);
+-	if (err < 0) {
+-		dev_err(&pdev->dev, "failed to register host1x client: %d\n",
+-			err);
+-		goto rpm_disable;
+-	}
+-
+ 	/*
+ 	 * On Tegra210 and earlier, provide our own implementation for the
+ 	 * pad output clock.
+@@ -3944,13 +3937,13 @@ static int tegra_sor_probe(struct platform_device *pdev)
+ 				      sor->index);
+ 		if (!name) {
+ 			err = -ENOMEM;
+-			goto unregister;
++			goto uninit;
+ 		}
+ 
+ 		err = host1x_client_resume(&sor->client);
  		if (err < 0) {
- 			dev_err(sor->dev, "failed to acquire SOR reset: %d\n",
- 				err);
--			return err;
-+			goto rpm_put;
+ 			dev_err(sor->dev, "failed to resume: %d\n", err);
+-			goto unregister;
++			goto uninit;
  		}
  
- 		err = reset_control_assert(sor->rst);
- 		if (err < 0) {
- 			dev_err(sor->dev, "failed to assert SOR reset: %d\n",
- 				err);
--			return err;
-+			goto rpm_put;
- 		}
+ 		sor->clk_pad = tegra_clk_sor_pad_register(sor, name);
+@@ -3961,14 +3954,20 @@ static int tegra_sor_probe(struct platform_device *pdev)
+ 		err = PTR_ERR(sor->clk_pad);
+ 		dev_err(sor->dev, "failed to register SOR pad clock: %d\n",
+ 			err);
+-		goto unregister;
++		goto uninit;
++	}
++
++	err = __host1x_client_register(&sor->client);
++	if (err < 0) {
++		dev_err(&pdev->dev, "failed to register host1x client: %d\n",
++			err);
++		goto uninit;
  	}
- 
- 	err = clk_prepare_enable(sor->clk);
- 	if (err < 0) {
- 		dev_err(sor->dev, "failed to enable clock: %d\n", err);
--		return err;
-+		goto rpm_put;
- 	}
- 
- 	usleep_range(1000, 3000);
-@@ -2900,7 +2900,7 @@ static int tegra_sor_init(struct host1x_client *client)
- 			dev_err(sor->dev, "failed to deassert SOR reset: %d\n",
- 				err);
- 			clk_disable_unprepare(sor->clk);
--			return err;
-+			goto rpm_put;
- 		}
- 
- 		reset_control_release(sor->rst);
-@@ -2929,6 +2929,12 @@ static int tegra_sor_init(struct host1x_client *client)
- 	tegra_sor_writel(sor, value, SOR_INT_MASK);
  
  	return 0;
-+
-+rpm_put:
-+	if (sor->rst)
-+		pm_runtime_put(sor->dev);
-+
-+	return err;
- }
  
- static int tegra_sor_exit(struct host1x_client *client)
+-unregister:
+-	host1x_client_unregister(&sor->client);
+-rpm_disable:
++uninit:
++	host1x_client_exit(&sor->client);
+ 	pm_runtime_disable(&pdev->dev);
+ remove:
+ 	tegra_output_remove(&sor->output);
 -- 
 2.30.2
 
