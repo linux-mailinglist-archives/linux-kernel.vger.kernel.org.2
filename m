@@ -2,72 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CEF53A9B79
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 460AD3A9B7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhFPNIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:08:00 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48199 "EHLO ozlabs.org"
+        id S233203AbhFPNIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:08:34 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40388 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232389AbhFPNH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:07:59 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G4lmb4k9Cz9sWF;
-        Wed, 16 Jun 2021 23:05:51 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1623848752;
-        bh=32+NpGgu8WipadP+MIdPGsq6RjRcWDCP1ZmI2iSTa6M=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Qj438s/EvGlaqyPz3IXIGaa507+ewXJtgfQcTlMmg3N+YqNZeozZO2po00HKxn7yk
-         S1p4Rf0eyU1x66K93nmCl1JnZn5dguWdv/F/Cn0AQ8N2n9SkAxnvj9xP5SttFQlPTh
-         pqyrBOSyOM/yIZTXDEFjkv2bYc4cSq5hzIdgkwdfvxmVeMCMhOl8M77wLenr3BBX7u
-         Zr+kZinASd7NGDPAwbdwsuymihoQ8j0xYMAhbeWy3VfR1RarFmIq93zMdCSWIRCDBP
-         Nda8YKiB97VzDE2f0YYfNz4Venl4FwIl2n0ANUVtJEBPSo47+HzTWiBOKHPrwPATH+
-         cIXj19dUdAeQg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        naveen.n.rao@linux.vnet.ibm.com, jniethe5@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 00/12] powerpc: Cleanup use of 'struct ppc_inst'
-In-Reply-To: <0c2b2eb4-f58d-9ec3-4b98-af22cef188e2@csgroup.eu>
-References: <cover.1621516826.git.christophe.leroy@csgroup.eu>
- <87r1h3tx3a.fsf@mpe.ellerman.id.au>
- <0c2b2eb4-f58d-9ec3-4b98-af22cef188e2@csgroup.eu>
-Date:   Wed, 16 Jun 2021 23:05:46 +1000
-Message-ID: <87eed2rmc5.fsf@mpe.ellerman.id.au>
+        id S232389AbhFPNIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 09:08:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=7qPpfPmf10mQ7tyhqTFM0L4iBOExsVEFUzZo18liJj4=; b=z80RntKX7Rw/ZbPeLSo67NewTx
+        NWFQwUH8cOn4WgsaqyR274ZZNinnpqbZZML1VDys2L9aqu6WU+E5/Frvntpio7ew74iLUPaGiGjtV
+        JapC/0NNkpsg2xKHFmIzpAyWxwXgekNoI8e5CiY6yY8kXtVKIEAWX1uV4RmXnuI3drmM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ltVFJ-009jB2-Jt; Wed, 16 Jun 2021 15:06:17 +0200
+Date:   Wed, 16 Jun 2021 15:06:17 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     David Miller <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2 net-next 0/2] net: fec: fix TX bandwidth fluctuations
+Message-ID: <YMn3Sd65rzvKasEb@lunn.ch>
+References: <20210611095005.3909-1-qiangqing.zhang@nxp.com>
+ <20210611.132514.1451796354248475314.davem@davemloft.net>
+ <DB8PR04MB679518CF771FEBE118E395A3E6309@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <YMicuzWwAKz5ffWB@lunn.ch>
+ <DB8PR04MB6795A2A1D51D95E996B7B75FE60F9@DB8PR04MB6795.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DB8PR04MB6795A2A1D51D95E996B7B75FE60F9@DB8PR04MB6795.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 15/06/2021 =C3=A0 09:18, Michael Ellerman a =C3=A9crit=C2=A0:
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>> This series is a cleanup of the use of 'struct ppc_inst'.
->>>
->>> A confusion is made between internal representation of powerpc
->>> instructions with 'struct ppc_inst' and in-memory code which is
->>> and will always be an array of 'unsigned int'.
->>=20
->> Why don't we use u32 *, to make it even more explicit what the expected
->> size is?
->>=20
->
-> I guess that's historical, we could use u32 *
+> I try below build options, also can't reproduce this issue, so really don't know how to fix it.
+> 
+> make ARCH=arm64 distclean
+> make ARCH=arm64 allmodconfig
+> make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- W=1 / make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- W=2 / make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- W=3
+> 
+> I saw many unrelated warnings...
 
-Yeah I think it is historical, we just never thought about it much.
+Then it could be sparse. Install sparse and use C=1.
 
-> We can convert it incrementaly maybe ?
-
-I've still got this series in next-test, so I'll go through it and
-change any uses of unsigned int * to u32 *, and then we can do another
-pass later to change the remaining cases.
-
-cheers
+     Andrew
