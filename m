@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B412A3A9431
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4963A943B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231817AbhFPHkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 03:40:40 -0400
-Received: from mail-vk1-f172.google.com ([209.85.221.172]:40567 "EHLO
-        mail-vk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231187AbhFPHkj (ORCPT
+        id S232040AbhFPHlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231750AbhFPHlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:40:39 -0400
-Received: by mail-vk1-f172.google.com with SMTP id i17so407993vkd.7;
-        Wed, 16 Jun 2021 00:38:33 -0700 (PDT)
+        Wed, 16 Jun 2021 03:41:45 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF9AC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:39:38 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id y207so519782vsy.12
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0D0RyfEI/YYH+umZt/l1fT0zvlmNHGepMtTDRyFPZvY=;
+        b=HRl8G71CBordXP8uYrjJENk7BT/KpAU9LUG4TAuefWIbyZrWvZBP5pvs35+2R13zIO
+         19qddd/qBBH+Gcgmf4V1fRy3QrXhiK0xViMo4IJ7dPKYpX4j4mA0IPYCnxCeUHSSIray
+         t6T2XMQraqQXGeD/70nqNrpk/eKX2Cm3Tx2NHWc55eBc+0FCwtCShjuYENs3ymI76xJF
+         mwBikMPTDP8nlybMlTIWxJYVvJ+CeaS0IG5zEiI0vsPa8SodNHbwJqUCcsBVVf9bMyHA
+         Mj51Kphp9gaCsJkHxQGtleznzb9hk690POpK9KPc6X5V4YrA/QKTp2NJgmb9dKcU9afN
+         TBcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oYkI/zG40URv+m/LERapdYdXE8mdGOgDXjJQ7nWdKJQ=;
-        b=hSydv50Be21Z9io2d5aYTlJC0pqLDajaC4OV/GbBaoVCS69QWl7tBtBg6133ta3HB2
-         GxMBGue8XramZqlfoFghbKwrW/8RCaqJdOYlz7aVhFEapHoygUkjYHcv5kMGmymiWNCe
-         nMbauQ8ePyF3j7M2nQKgYM0zShlaD0H4XB+yVsZkBUe4kG4EhhgqMECb+X7cPiISqdCm
-         7tmQkr36MS5Sf73LReF9GJrRprICg0iN9i8nC1oN0ef4buBZBwrvAxS03hHCxM8494RM
-         WzJO8WR2apjyFa7EWztmOmyHGRE8VFrQEHJ7luZYYge1to8dMX+yrWRNjO4REBwqyCOl
-         DGXA==
-X-Gm-Message-State: AOAM531x5+nuni9NlNByuwomCGd09EM5Ru0B8OttCdFd3nmHKtNJKn6P
-        +ki5u50Dkz2TmT+/SdNA2wJ/PRAcSSTlVrj1m5c=
-X-Google-Smtp-Source: ABdhPJzufbJykYOmxZN0p1SAxGmJWo5X7VotLxBsWJYFnoUcAIbLyiwJ2blqdHa1Jr10POv3l3B1Oi8N3GGoHXROasQ=
-X-Received: by 2002:a1f:9505:: with SMTP id x5mr8101727vkd.6.1623829113459;
- Wed, 16 Jun 2021 00:38:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0D0RyfEI/YYH+umZt/l1fT0zvlmNHGepMtTDRyFPZvY=;
+        b=k2WRi/J53kkFLgNf+p1pnAyxM94XYhswX7BEF9eN2SCGgntwQgCL/FUZ76ualn0xAL
+         tBx/wkf0YIBaLU8kSnewHixQ3zgtgmAhqK/LfATapvneY1vjnaMaWZlhoACzcb6hB9xG
+         eIjvn6zSjC56f+xFXAY6hkIN99zuq25cslf/ui62wsEkS8PkF3rIdXdS8F6OxdtjIFb3
+         9y+LqEyMmoqHlbx9WKzhNyIZmtPcjYx4P0Wwmaiw64Xg904ensjvCU+rUQ8blj3Uc4cd
+         9ouPhKMSZF25q5pyhH151XimBji9eR/sEVvsrXRmX19kOQZOQ0TZi695cQFazqedWM12
+         2/lg==
+X-Gm-Message-State: AOAM530Wao7gTNdJkr9NBMb1d3xmt4o799uM30xIQAgAK11qE4oy0/IE
+        +Owekvc0DpFmb4fSGnuh7AA5mFqKLAP4h2Vm
+X-Google-Smtp-Source: ABdhPJzJ5Cd6sbTpu5QSQkfElWOwoct0rWUHQI44xvs3wEnrdGLBks9SN/VekHxlU+cZ3TjQZ5l0YQ==
+X-Received: by 2002:aa7:8c02:0:b029:2e9:c513:1e10 with SMTP id c2-20020aa78c020000b02902e9c5131e10mr8376728pfd.2.1623829166727;
+        Wed, 16 Jun 2021 00:39:26 -0700 (PDT)
+Received: from localhost.localdomain ([115.99.8.69])
+        by smtp.gmail.com with ESMTPSA id z18sm1323065pfn.37.2021.06.16.00.39.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 00:39:26 -0700 (PDT)
+From:   Shreyas Krishnakumar <shreyaskumar1035@gmail.com>
+To:     gregkh@linuxfoundation.org, hdegoede@redhat.com,
+        Larry.Finger@lwfinger.net
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8723bs: rtw_efuse: Fix coding style
+Date:   Wed, 16 Jun 2021 13:09:21 +0530
+Message-Id: <20210616073921.156814-1-shreyaskumar1035@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <87sg1p30a1.fsf@disp2133> <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
- <87pmwsytb3.fsf@disp2133> <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
- <87sg1lwhvm.fsf@disp2133> <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com> <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
- <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> <87fsxjorgs.fsf@disp2133>
-In-Reply-To: <87fsxjorgs.fsf@disp2133>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 16 Jun 2021 09:38:22 +0200
-Message-ID: <CAMuHMdUkhbq+tOyrpyd5hKGGcpYduBnbnXKFBwEfCGjw5XGYVA@mail.gmail.com>
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+Remove unnecessary braces around single statement blocks as warned by
+checkpatch.pl
 
-On Tue, Jun 15, 2021 at 9:32 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> Do you happen to know if there is userspace that will run
-> in qemu-system-m68k that can be used for testing?
+Signed-off-by: Shreyas Krishnakumar <shreyaskumar1035@gmail.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_efuse.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-There's a link to an image in Laurent's patch series "[PATCH 0/2]
-m68k: Add Virtual M68k Machine"
-https://lore.kernel.org/linux-m68k/20210323221430.3735147-1-laurent@vivier.eu/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/staging/rtl8723bs/core/rtw_efuse.c b/drivers/staging/rtl8723bs/core/rtw_efuse.c
+index 81457467461c..430e2d81924c 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_efuse.c
++++ b/drivers/staging/rtl8723bs/core/rtw_efuse.c
+@@ -249,9 +249,8 @@ bool		bPseudoTest)
+ 	u8 bResult;
+ 	u8 readbyte;
+ 
+-	if (bPseudoTest) {
++	if (bPseudoTest)
+ 		return Efuse_Read1ByteFromFakeContent(padapter, addr, data);
+-	}
+ 
+ 	/*  <20130121, Kordan> For SMIC EFUSE specificatoin. */
+ 	/* 0x34[11]: SW force PGMEN input of efuse to high. (for the bank selected by 0x34[9:8]) */
+@@ -291,9 +290,8 @@ u8 efuse_OneByteWrite(struct adapter *padapter, u16 addr, u8 data, bool bPseudoT
+ 	u8 bResult = false;
+ 	u32 efuseValue = 0;
+ 
+-	if (bPseudoTest) {
++	if (bPseudoTest)
+ 		return Efuse_Write1ByteToFakeContent(padapter, addr, data);
+-	}
+ 
+ 
+ 	/*  -----------------e-fuse reg ctrl --------------------------------- */
+@@ -319,11 +317,10 @@ u8 efuse_OneByteWrite(struct adapter *padapter, u16 addr, u8 data, bool bPseudoT
+ 		tmpidx++;
+ 	}
+ 
+-	if (tmpidx < 100) {
++	if (tmpidx < 100)
+ 		bResult = true;
+-	} else {
++	else
+ 		bResult = false;
+-	}
+ 
+ 	/*  disable Efuse program enable */
+ 	PHY_SetMacReg(padapter, EFUSE_TEST, BIT(11), 0);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.31.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
