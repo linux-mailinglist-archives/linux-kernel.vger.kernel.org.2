@@ -2,70 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365D13A9633
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D5D3A9639
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbhFPJd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:33:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41344 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231772AbhFPJd4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:33:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623835910;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JXCjlY2RliOquOvoDO8BDnu0gEbkyWt4VmaWrl8nPLE=;
-        b=BQgL1jZQQRFeSvbva17BOyTNS+yRbSbKEai6VtmDewaYgEJ+jSSNWTIS9VKjDaJP2V700v
-        jdM4jULs/O+RoFLGS5mx6ROlfgMk+GmgaSE7QvdOkRRx6VH/VyjeEwjkeHdrTRC0LyARfk
-        cgbnVkMij9C8bp0gOYvH4a1/Cteg+Q8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-297-AsjWusxGPbiDGdRv14ygrQ-1; Wed, 16 Jun 2021 05:31:47 -0400
-X-MC-Unique: AsjWusxGPbiDGdRv14ygrQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A55C11858F13;
-        Wed, 16 Jun 2021 09:31:45 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 034495D6D1;
-        Wed, 16 Jun 2021 09:31:43 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210614201435.1379188-3-willy@infradead.org>
-References: <20210614201435.1379188-3-willy@infradead.org> <20210614201435.1379188-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v11 02/33] mm: Introduce struct folio
+        id S232318AbhFPJew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:34:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231316AbhFPJev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 05:34:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D77CA61241;
+        Wed, 16 Jun 2021 09:32:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623835964;
+        bh=8AvXjBBFzxg5JlXwhHSwDMVbECZC5ojPWbVn4wgeFPE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=crjMNTpcpe6PqlbrwfRlT1BVL1hwmnl0jvXB4FW27BT+e9f8HHnS4zjBRSjujMVle
+         Ny1Q0riWvwsn7V2om36BWUU9T9shxmjcXYw2mMlFSNiy8mc2JNZkZpj62DmS45UnE+
+         srlDWCltiq/w8Ngfa+Ak/zEhqUBhFRCUvH9lg1WQ=
+Date:   Wed, 16 Jun 2021 11:32:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Amit Klein <aksecurity@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>, Willy Tarreau <w@1wt.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.4 175/244] inet: use bigger hash table for IP ID
+ generation
+Message-ID: <YMnFOZKcr6JBnPSq@kroah.com>
+References: <20210512144743.039977287@linuxfoundation.org>
+ <20210512144748.600206118@linuxfoundation.org>
+ <CANEQ_++O0XVVdvynGtf37YCHSBT8CYHnUkK+VsFkOTqeqwOUtA@mail.gmail.com>
+ <YMmlPHMn/+EPdbvm@kroah.com>
+ <CANEQ_++gbwU2Rvcqg5KtngZC1UX1XcjOKfPKRr3Pvxi+VyQX+Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <811607.1623835903.1@warthog.procyon.org.uk>
-Date:   Wed, 16 Jun 2021 10:31:43 +0100
-Message-ID: <811608.1623835903@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANEQ_++gbwU2Rvcqg5KtngZC1UX1XcjOKfPKRr3Pvxi+VyQX+Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+On Wed, Jun 16, 2021 at 12:16:52PM +0300, Amit Klein wrote:
+> Here is the patch (minus headers, description, etc. - I believe these
+> can be copied as is from the 5.x patch, but not sure about the
+> rules...). It can be applied to 4.14.236. If this is OK, I can move on
+> to 4.9 and 4.4.
 
-> + * Return: The base-2 logarithm of the size of this folio.
+I do not know "the patch" is here.
 
-You could probably just say "Return: log2 of the size of this folio".
+Please resend it in a format that I can apply it in.  Look at the stable
+list archives for lots of examples of backported patches, they need to
+have the original changelog description as well as the git commit id of
+the patch you are backporting, which I do not see here at all.
 
-Could we also get a synonym for page_offset()?  Perhaps called folio_fpos()
-rather than folio_offset()?  "Offset" is a bit generic.
+thanks,
 
-Reviewed-by: David Howells <dhowells@redhat.com>
-
+greg k-h
