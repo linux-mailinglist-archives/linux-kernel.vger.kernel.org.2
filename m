@@ -2,223 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216573A9457
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F393A9458
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhFPHsl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Jun 2021 03:48:41 -0400
-Received: from out29-53.mail.aliyun.com ([115.124.29.53]:59386 "EHLO
-        out29-53.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbhFPHrj (ORCPT
+        id S231985AbhFPHsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231630AbhFPHsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:47:39 -0400
-X-Alimail-AntiSpam: AC=SUSPECT;BC=0.6743332|-1;BR=01201311R101b1;CH=blue;DM=|SUSPECT|false|;DS=CONTINUE|ham_regular_dialog|0.64693-0.00539747-0.347672;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047193;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=21;RT=21;SR=0;TI=SMTPD_---.KT5RiOm_1623829528;
-Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KT5RiOm_1623829528)
-          by smtp.aliyun-inc.com(10.147.44.129);
-          Wed, 16 Jun 2021 15:45:29 +0800
-Date:   Wed, 16 Jun 2021 15:45:26 +0800
-From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe CAVALLARO <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-Subject: Re: [PATCH v3 1/2] dt-bindings: dwmac: Add bindings for new Ingenic
- SoCs.
-Message-ID: <20210616154526.54481912@zhouyanjie-virtual-machine>
-In-Reply-To: <CAL_Jsq+7v6GRMfxWhA6g2r0GaZSO_AztgSz7rheJsE9jKYd8uQ@mail.gmail.com>
-References: <1623690937-52389-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1623690937-52389-2-git-send-email-zhouyanjie@wanyeetech.com>
-        <CAL_Jsq+7v6GRMfxWhA6g2r0GaZSO_AztgSz7rheJsE9jKYd8uQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Wed, 16 Jun 2021 03:48:35 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35122C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:46:29 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id nd37so2313233ejc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:46:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M4TyHLQ4LR5S/LBt8eudzX9kDvJUMoDca5KcxWhDSDw=;
+        b=rXiAp2jrc8fLpZsvaJgKpeHWxK/bdE8E3vIakHtTH15E8oMWr3+muv3c0kR8rpPcm0
+         f3yHBzI2qJxygQT5UqkDMJZ9vXYjDWRZcg60v1Wu2rZCRCzwcFxF96YIGfF8r6OUdnuY
+         6QnAf/pGbJgKO21PvnY7n3rP5QUZsHX61pEc0Z0dO56JRTQD4QJr011Qxa4+bqCLMzuZ
+         pfDmLyk20vl5dv3G6R3N6eS3OpX2trEoGWMRwgv2xsJfYgba/aBP6/qCcrqKR03h34sM
+         yzBTcAycRY6AiCrKvir05a28F6k9ggr6IyOypPupW97WWFI7ekfbk9syalk3D9DS74On
+         rbTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M4TyHLQ4LR5S/LBt8eudzX9kDvJUMoDca5KcxWhDSDw=;
+        b=ARj6fS+4SpNo1wdLFmqOVO35UOr8KXRXVGyqnGcdyXcj5qDAG5xpA+HXRmnBvKxotU
+         hPOd9EEDqTF3LosBbvouxZ4t/bf408StzHlXWmLjPRz4bTzbUHH2USdaMjKQ0clqU1kL
+         hakhX4KQi20FFkQtUchlXqEH32I9rsFUyTAmVxyfChrIyGwFmdFFQpuH8u3Jau5c4W8n
+         bp2lK3jSYexbFRv85rPKDNKDR59qP7+NjYdYtCw2vDmZc+RjHHR4UPM2t6a54NpE+O6J
+         4vBXx0d5tRm+XD+KYp4uu7LarmnbEDBR9eVLzTXvay7OvgjQpa/xL7q5RIVzPhhFMWxP
+         NILw==
+X-Gm-Message-State: AOAM5335zoJxHVuE84S0in5u6QNEoOSL3dTP9E/12q56fY0PF5IZzIMl
+        ZmlpXjd1x14tBYxWOeczj6sNYleqy/0=
+X-Google-Smtp-Source: ABdhPJyDQIZawhe/akfwnLVWsVWGjrvpS8PWc8rMTPN141zsfQEsVebK5UtEPzZZuPN9Oe+k4lECYw==
+X-Received: by 2002:a17:906:48c8:: with SMTP id d8mr3974133ejt.176.1623829587813;
+        Wed, 16 Jun 2021 00:46:27 -0700 (PDT)
+Received: from pek-vx-bsp2.wrs.com (ec2-44-242-66-180.us-west-2.compute.amazonaws.com. [44.242.66.180])
+        by smtp.gmail.com with ESMTPSA id yd25sm657840ejb.114.2021.06.16.00.46.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 00:46:27 -0700 (PDT)
+From:   Bin Meng <bmeng.cn@gmail.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     Bin Meng <bin.meng@windriver.com>
+Subject: [PATCH 1/2] riscv: dts: unleashed: Add gpio card detect to mmc-spi-slot
+Date:   Wed, 16 Jun 2021 15:46:44 +0800
+Message-Id: <20210616074645.429578-1-bmeng.cn@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+From: Bin Meng <bin.meng@windriver.com>
 
-于 Tue, 15 Jun 2021 17:05:45 -0600
-Rob Herring <robh+dt@kernel.org> 写道:
+Per HiFive Unleashed schematics, the card detect signal of the
+micro SD card is connected to gpio pin #11, which should be
+reflected in the DT via the <gpios> property, as described in
+Documentation/devicetree/bindings/mmc/mmc-spi-slot.txt.
 
-> On Mon, Jun 14, 2021 at 11:18 AM 周琰杰 (Zhou Yanjie)
-> <zhouyanjie@wanyeetech.com> wrote:
-> >
-> > Add the dwmac bindings for the JZ4775 SoC, the X1000 SoC,
-> > the X1600 SoC, the X1830 SoC and the X2000 SoC from Ingenic.
-> >
-> > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> > ---
-> >
-> > Notes:
-> >     v1->v2:
-> >     No change.
-> >
-> >     v2->v3:
-> >     Add "ingenic,mac.yaml" for Ingenic SoCs.
-> >
-> >  .../devicetree/bindings/net/ingenic,mac.yaml       | 76
-> > ++++++++++++++++++++++ .../devicetree/bindings/net/snps,dwmac.yaml
-> > | 15 +++++ 2 files changed, 91 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/net/ingenic,mac.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/net/ingenic,mac.yaml
-> > b/Documentation/devicetree/bindings/net/ingenic,mac.yaml new file
-> > mode 100644 index 00000000..5fe2e81
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/net/ingenic,mac.yaml
-> > @@ -0,0 +1,76 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/net/ingenic,mac.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Bindings for MAC in Ingenic SoCs
-> > +
-> > +maintainers:
-> > +  - 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> > +
-> > +description:
-> > +  The Ethernet Media Access Controller in Ingenic SoCs.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - ingenic,jz4775-mac
-> > +      - ingenic,x1000-mac
-> > +      - ingenic,x1600-mac
-> > +      - ingenic,x1830-mac
-> > +      - ingenic,x2000-mac
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  interrupt-names:
-> > +    const: macirq
-> > +
-> > +  clocks:
-> > +    maxItems: 1
-> > +
-> > +  clock-names:
-> > +    const: stmmaceth
-> > +
-> > +  mode-reg:
-> > +    description: An extra syscon register that control ethernet
-> > interface and timing delay  
-> 
-> Needs a vendor prefix and type.
-> 
-> > +
-> > +  rx-clk-delay-ps:
-> > +    description: RGMII receive clock delay defined in pico seconds
-> > +
-> > +  tx-clk-delay-ps:
-> > +    description: RGMII transmit clock delay defined in pico seconds
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - interrupt-names
-> > +  - clocks
-> > +  - clock-names
-> > +  - mode-reg
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/clock/x1000-cgu.h>
-> > +
-> > +    mac: ethernet@134b0000 {
-> > +        compatible = "ingenic,x1000-mac", "snps,dwmac";  
-> 
-> Doesn't match the schema.
+[1] https://sifive.cdn.prismic.io/sifive/c52a8e32-05ce-4aaf-95c8-7bf8453f8698_hifive-unleashed-a00-schematics-1.pdf
 
-Sorry for that, somehow when I run "make dt_bindings_check", there is no
-warrning or error message about this file. I am sure that yamllint is
-installed and dtschema has been upgraded to 2021.6.
+Signed-off-by: Bin Meng <bin.meng@windriver.com>
+---
 
-I will send a fix.
+ arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks and best regards!
-
-> 
-> > +        reg = <0x134b0000 0x2000>;
-> > +
-> > +        interrupt-parent = <&intc>;
-> > +        interrupts = <55>;
-> > +        interrupt-names = "macirq";
-> > +
-> > +        clocks = <&cgu X1000_CLK_MAC>;
-> > +        clock-names = "stmmaceth";
-> > +
-> > +        mode-reg = <&mac_phy_ctrl>;
-> > +    };
-> > +...
-> > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > b/Documentation/devicetree/bindings/net/snps,dwmac.yaml index
-> > 2edd8be..9c0ce92 100644 ---
-> > a/Documentation/devicetree/bindings/net/snps,dwmac.yaml +++
-> > b/Documentation/devicetree/bindings/net/snps,dwmac.yaml @@ -56,6
-> > +56,11 @@ properties:
-> >          - amlogic,meson8m2-dwmac
-> >          - amlogic,meson-gxbb-dwmac
-> >          - amlogic,meson-axg-dwmac
-> > +        - ingenic,jz4775-mac
-> > +        - ingenic,x1000-mac
-> > +        - ingenic,x1600-mac
-> > +        - ingenic,x1830-mac
-> > +        - ingenic,x2000-mac
-> >          - rockchip,px30-gmac
-> >          - rockchip,rk3128-gmac
-> >          - rockchip,rk3228-gmac
-> > @@ -310,6 +315,11 @@ allOf:
-> >                - allwinner,sun8i-r40-emac
-> >                - allwinner,sun8i-v3s-emac
-> >                - allwinner,sun50i-a64-emac
-> > +              - ingenic,jz4775-mac
-> > +              - ingenic,x1000-mac
-> > +              - ingenic,x1600-mac
-> > +              - ingenic,x1830-mac
-> > +              - ingenic,x2000-mac
-> >                - snps,dwxgmac
-> >                - snps,dwxgmac-2.10
-> >                - st,spear600-gmac
-> > @@ -353,6 +363,11 @@ allOf:
-> >                - allwinner,sun8i-r40-emac
-> >                - allwinner,sun8i-v3s-emac
-> >                - allwinner,sun50i-a64-emac
-> > +              - ingenic,jz4775-mac
-> > +              - ingenic,x1000-mac
-> > +              - ingenic,x1600-mac
-> > +              - ingenic,x1830-mac
-> > +              - ingenic,x2000-mac
-> >                - snps,dwmac-4.00
-> >                - snps,dwmac-4.10a
-> >                - snps,dwmac-4.20a
-> > --
-> > 2.7.4
->   
+diff --git a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+index 60846e88ae4b..22f971e97161 100644
+--- a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
++++ b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+@@ -80,6 +80,7 @@ mmc@0 {
+ 		spi-max-frequency = <20000000>;
+ 		voltage-ranges = <3300 3300>;
+ 		disable-wp;
++		gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
+ 	};
+ };
+ 
+-- 
+2.25.1
 
