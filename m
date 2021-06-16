@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4120C3A9F85
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48343A9FE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235120AbhFPPiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:38:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51066 "EHLO mail.kernel.org"
+        id S235546AbhFPPmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:42:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234749AbhFPPhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:37:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07564613CB;
-        Wed, 16 Jun 2021 15:35:27 +0000 (UTC)
+        id S235062AbhFPPjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:39:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EBEC613D5;
+        Wed, 16 Jun 2021 15:36:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857728;
-        bh=kvSrNLIh+uOkr9jxyOKYG8oS7k48Q+7gWUhGNQ4QAyk=;
+        s=korg; t=1623857813;
+        bh=SP954mOtF6wkMfdgsDZjIet5/ajxzQPhDm8AHQkgWKA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k0LfEa4eYvGJO1H3tEY/m1cKw5Ius2W4WHnxNin6h07xCYbl4uPZJGOWd0IvA+E3n
-         nUlp+eQUG0Ve+VaxW2IA2c6zeXtL/w42Jk9UulWpgjztKdYU+xl7+iHzGgDYk58C8M
-         34Pcprl2mvJZ557lKHnAgJESMZeOriPzOgtN/tAM=
+        b=rrlqZdtNtgQ0OHIzY/TelA6HMtJZZ/NmKRBAbgiYYK9gk5iIj919L+Lbhxi0a+haA
+         17S5xbU6TaHRs65UYokJUEq4PphuHZ5y7DZpGBmvHBdqOXYAA6yRRk2qx5aenNcFd2
+         odfHIrldUd6HdkMRi90VzAEqeu7rU0+7qmHRWjTw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
+        stable@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 16/38] gfs2: fix a deadlock on withdraw-during-mount
-Date:   Wed, 16 Jun 2021 17:33:25 +0200
-Message-Id: <20210616152835.912416286@linuxfoundation.org>
+Subject: [PATCH 5.12 16/48] drm/tegra: sor: Fully initialize SOR before registration
+Date:   Wed, 16 Jun 2021 17:33:26 +0200
+Message-Id: <20210616152837.168264350@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
-References: <20210616152835.407925718@linuxfoundation.org>
+In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
+References: <20210616152836.655643420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,98 +40,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Thierry Reding <treding@nvidia.com>
 
-[ Upstream commit 865cc3e9cc0b1d4b81c10d53174bced76decf888 ]
+[ Upstream commit 5dea42759bcef74b0802ea64b904409bc37f9045 ]
 
-Before this patch, gfs2 would deadlock because of the following
-sequence during mount:
+Before registering the SOR host1x client, make sure that it is fully
+initialized. This avoids a potential race condition between the SOR's
+probe and the host1x device initialization in cases where the SOR is
+the final sub-device to register to a host1x instance.
 
-mount
-   gfs2_fill_super
-      gfs2_make_fs_rw <--- Detects IO error with glock
-         kthread_stop(sdp->sd_quotad_process);
-            <--- Blocked waiting for quotad to finish
-
-logd
-   Detects IO error and the need to withdraw
-   calls gfs2_withdraw
-      gfs2_make_fs_ro
-         kthread_stop(sdp->sd_quotad_process);
-            <--- Blocked waiting for quotad to finish
-
-gfs2_quotad
-   gfs2_statfs_sync
-      gfs2_glock_wait <---- Blocked waiting for statfs glock to be granted
-
-glock_work_func
-   do_xmote <---Detects IO error, can't release glock: blocked on withdraw
-      glops->go_inval
-      glock_blocked_by_withdraw
-         requeue glock work & exit <--- work requeued, blocked by withdraw
-
-This patch makes a special exception for the statfs system inode glock,
-which allows the statfs glock UNLOCK to proceed normally. That allows the
-quotad daemon to exit during the withdraw, which allows the logd daemon
-to exit during the withdraw, which allows the mount to exit.
-
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/glock.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/tegra/sor.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index ea2f2de44806..59130cbbd995 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -569,6 +569,16 @@ out_locked:
- 	spin_unlock(&gl->gl_lockref.lock);
- }
+diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
+index 67a80dae1c00..32c83f2e386c 100644
+--- a/drivers/gpu/drm/tegra/sor.c
++++ b/drivers/gpu/drm/tegra/sor.c
+@@ -3922,17 +3922,10 @@ static int tegra_sor_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, sor);
+ 	pm_runtime_enable(&pdev->dev);
  
-+static bool is_system_glock(struct gfs2_glock *gl)
-+{
-+	struct gfs2_sbd *sdp = gl->gl_name.ln_sbd;
-+	struct gfs2_inode *m_ip = GFS2_I(sdp->sd_statfs_inode);
-+
-+	if (gl == m_ip->i_gl)
-+		return true;
-+	return false;
-+}
-+
- /**
-  * do_xmote - Calls the DLM to change the state of a lock
-  * @gl: The lock state
-@@ -658,17 +668,25 @@ skip_inval:
- 	 * to see sd_log_error and withdraw, and in the meantime, requeue the
- 	 * work for later.
- 	 *
-+	 * We make a special exception for some system glocks, such as the
-+	 * system statfs inode glock, which needs to be granted before the
-+	 * gfs2_quotad daemon can exit, and that exit needs to finish before
-+	 * we can unmount the withdrawn file system.
-+	 *
- 	 * However, if we're just unlocking the lock (say, for unmount, when
- 	 * gfs2_gl_hash_clear calls clear_glock) and recovery is complete
- 	 * then it's okay to tell dlm to unlock it.
- 	 */
- 	if (unlikely(sdp->sd_log_error && !gfs2_withdrawn(sdp)))
- 		gfs2_withdraw_delayed(sdp);
--	if (glock_blocked_by_withdraw(gl)) {
--		if (target != LM_ST_UNLOCKED ||
--		    test_bit(SDF_WITHDRAW_RECOVERY, &sdp->sd_flags)) {
-+	if (glock_blocked_by_withdraw(gl) &&
-+	    (target != LM_ST_UNLOCKED ||
-+	     test_bit(SDF_WITHDRAW_RECOVERY, &sdp->sd_flags))) {
-+		if (!is_system_glock(gl)) {
- 			gfs2_glock_queue_work(gl, GL_GLOCK_DFT_HOLD);
- 			goto out;
-+		} else {
-+			clear_bit(GLF_INVALIDATE_IN_PROGRESS, &gl->gl_flags);
+-	INIT_LIST_HEAD(&sor->client.list);
++	host1x_client_init(&sor->client);
+ 	sor->client.ops = &sor_client_ops;
+ 	sor->client.dev = &pdev->dev;
+ 
+-	err = host1x_client_register(&sor->client);
+-	if (err < 0) {
+-		dev_err(&pdev->dev, "failed to register host1x client: %d\n",
+-			err);
+-		goto rpm_disable;
+-	}
+-
+ 	/*
+ 	 * On Tegra210 and earlier, provide our own implementation for the
+ 	 * pad output clock.
+@@ -3944,13 +3937,13 @@ static int tegra_sor_probe(struct platform_device *pdev)
+ 				      sor->index);
+ 		if (!name) {
+ 			err = -ENOMEM;
+-			goto unregister;
++			goto uninit;
  		}
+ 
+ 		err = host1x_client_resume(&sor->client);
+ 		if (err < 0) {
+ 			dev_err(sor->dev, "failed to resume: %d\n", err);
+-			goto unregister;
++			goto uninit;
+ 		}
+ 
+ 		sor->clk_pad = tegra_clk_sor_pad_register(sor, name);
+@@ -3961,14 +3954,20 @@ static int tegra_sor_probe(struct platform_device *pdev)
+ 		err = PTR_ERR(sor->clk_pad);
+ 		dev_err(sor->dev, "failed to register SOR pad clock: %d\n",
+ 			err);
+-		goto unregister;
++		goto uninit;
++	}
++
++	err = __host1x_client_register(&sor->client);
++	if (err < 0) {
++		dev_err(&pdev->dev, "failed to register host1x client: %d\n",
++			err);
++		goto uninit;
  	}
  
+ 	return 0;
+ 
+-unregister:
+-	host1x_client_unregister(&sor->client);
+-rpm_disable:
++uninit:
++	host1x_client_exit(&sor->client);
+ 	pm_runtime_disable(&pdev->dev);
+ remove:
+ 	tegra_output_remove(&sor->output);
 -- 
 2.30.2
 
