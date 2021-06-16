@@ -2,164 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354A33A9DF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F733A9DFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234152AbhFPOp4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Jun 2021 10:45:56 -0400
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:37540 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233919AbhFPOpy (ORCPT
+        id S234142AbhFPOqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234052AbhFPOqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:45:54 -0400
-Received: by mail-lf1-f50.google.com with SMTP id p7so4747159lfg.4;
-        Wed, 16 Jun 2021 07:43:47 -0700 (PDT)
+        Wed, 16 Jun 2021 10:46:44 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139B8C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:44:38 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id q18so2542119ile.10
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:44:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=NUpkIPkuLBZbpmv8ycOI8xP/GPpdpeIzjn4UH9JJkzY=;
+        b=GuSrZ6cq+7PUQEsH1YYuQFvFe7mMD0xMifr3K9ngiIQUQaZhFQMd2HWzaHO/0uq9jb
+         aJ9uyL/9hDC3ETzRsw+s1Y8fxcwPQvO2TUM84QfU6SxcFdhUTZDBWc/wgRt1hWr3ZF87
+         s4JQraWvTjIZDazpQT/SnalOh5Fg3Ok4zPsQYnLl0XY74KeVofee3a2lJP87C0Fdvfba
+         ojxuKvgD74NDUoAXyomlMt4TFrhaiylhzPjk/Mybxvjp8+b6t+tF1WCpa7kNpOq85ZVR
+         nC8pJ2vFMWpxBa23WlMASpHitOUR4cr7eayjwFPG2NW60+GT3VlpT2xt53t2OB2FeH5i
+         FIRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Cvp2mHEQf6K2NmEgmLY5mMra5q/cnwT0U6hmuP4aWWg=;
-        b=CXb4XRHnyltsc1VKVLpop0pVYZN97Mbg0Hb9WGFwTyx4ChPw/W4y6pKVAOXdVqVZN7
-         A/4LKqbztYYLNsIbr+1O8mmlYFclTjQ6b7ufB5FjvBY3YoY7sPaw8koOCXMgqisAndFy
-         JLiNuQs9twnuG7lEeAsolfGlIVxrkmcgU3JgJHindoFjzmSPfq4hsFSg7JF+OJ59O+3t
-         xpIaQ+kSn8soNBCsfuy0sU0XM6b5fhMmxZJcLsW9JktmBro0wJXiJHAwORdXBUQjK70s
-         ifTimogJqJRpE/tgvvuObB1NORwMSd/NHClZPFCQ7agk1QPqI5A8lAT3qm3cTjsf3DSa
-         uBow==
-X-Gm-Message-State: AOAM533ey8/KW6U34/br3ab8aIXexzhefx0cNebONWGTN1Ellpoff0oH
-        1bRU7u0vZO1H1JsWIqXa+MC7mQHv8meRxI/ZBDw=
-X-Google-Smtp-Source: ABdhPJzzKcR2X/FPDGKYSaNfQ+peUf5omp1pYmTrIyN4PYBKzZ/g1ScynelThVaku/b2O9TZzw3VQNy2ZR13qhomz7w=
-X-Received: by 2002:a05:6512:3d08:: with SMTP id d8mr5554lfv.393.1623854627094;
- Wed, 16 Jun 2021 07:43:47 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NUpkIPkuLBZbpmv8ycOI8xP/GPpdpeIzjn4UH9JJkzY=;
+        b=IR/9T/iMeHEUjRUHfB5fY5T0ICw6XpYI+FFIwaXajFRygAhwA3Ua2vODhUGmjhXYzq
+         G5cIM2CBqoGZG7jRLxspmU2AiJD36JDjD13UNJ0vgz+xZc/TzOmCoC2SAIZOoDTZwEfT
+         1FvrAIyncQMZDePicrhGV//QRP01c2QXT51y1ANJkZB4TmXntH+VqTL9APmxpYvbM8yx
+         Nw/TdoSI6c8dUG0PRgqWVIOIxIxXHIuAlDXBusscqXpKWvmfM9CRiuic1birlXmCvH+w
+         ZdTY9V3Dohm2UYBuOaZm2Ui5aRqTHnCyq9S0KzFY/k/IrBXeB1MyytMWYNbSuon1SQaI
+         0DOA==
+X-Gm-Message-State: AOAM530Zsm0yHxfhqFtmDTpnr+ZAq/EkzAi5V33l5Ggo9UMr1SuY6Lal
+        ennuTQ8D7RoTezeuQ+OqBrOCCyxnJpVddYd3
+X-Google-Smtp-Source: ABdhPJy+zPPoM5W1KVQNd5No4EC0Y4f+S3Zo+hy+azbBHBKHJcrq/i9ZpdLhw2BVO7c+/sUYTa6Hqw==
+X-Received: by 2002:a92:2a0a:: with SMTP id r10mr24831ile.274.1623854677273;
+        Wed, 16 Jun 2021 07:44:37 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id z14sm1259028ilb.48.2021.06.16.07.44.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 07:44:36 -0700 (PDT)
+Subject: Re: [PATCH] io_uring: store back buffer in case of failure
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Olivier Langlois <olivier@trillion01.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <60c83c12.1c69fb81.e3bea.0806SMTPIN_ADDED_MISSING@mx.google.com>
+ <93256513-08d8-5b15-aa98-c1e83af60b54@gmail.com>
+ <b5b37477-985e-54da-fc34-4de389112365@kernel.dk>
+ <4f32f06306eac4dd7780ed28c06815e3d15b43ad.camel@trillion01.com>
+ <af2f7aa0-271f-ba70-8c6b-f6c6118e6f1f@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6bf916b4-ba6f-c401-9e8b-341f9a7b88f7@kernel.dk>
+Date:   Wed, 16 Jun 2021 08:44:36 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210603151550.140727-1-mailhol.vincent@wanadoo.fr>
- <20210603151550.140727-3-mailhol.vincent@wanadoo.fr> <20210616094633.fwg6rsyxyvm2zc6d@pengutronix.de>
- <CAMZ6RqLj59+3PrQwTCfK_bVebRBHE=HqCfRb31MU9pRDBPxG8w@mail.gmail.com> <20210616142940.wxllr3c55rk66rij@pengutronix.de>
-In-Reply-To: <20210616142940.wxllr3c55rk66rij@pengutronix.de>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 16 Jun 2021 23:43:35 +0900
-Message-ID: <CAMZ6RqJWeexWTGVkEJWMvBs1f=HQOc4zjd-PqPsxKnCr_XDFZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] can: netlink: add interface for CAN-FD Transmitter
- Delay Compensation (TDC)
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <af2f7aa0-271f-ba70-8c6b-f6c6118e6f1f@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed. 16 Jun 2021 à 23:29, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 16.06.2021 22:53:02, Vincent MAILHOL wrote:
-> > On Wed. 16 Jun 2021 at 18:46, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> > > On 04.06.2021 00:15:50, Vincent Mailhol wrote:
-> > > [...]
-> > >
-> > > > +static size_t can_tdc_get_size(const struct net_device *dev)
-> > > > +{
-> > > > +     struct can_priv *priv = netdev_priv(dev);
-> > > > +     size_t size;
-> > > > +
-> > > > +     if (!priv->tdc_const)
-> > > > +             return 0;
-> > > > +
-> > > > +     size = nla_total_size(0);                       /* nest IFLA_CAN_TDC */
-> > > > +     size += nla_total_size(sizeof(u32));            /* IFLA_CAN_TDCV_MAX */
-> > > > +     size += nla_total_size(sizeof(u32));            /* IFLA_CAN_TDCO_MAX */
-> > > > +     size += nla_total_size(sizeof(u32));            /* IFLA_CAN_TDCF_MAX */
-> > > > +
-> > > > +     if (priv->tdc.tdco) {
-> > >
-> > > Naively I'd say, iff the device has tdc_const give the user space the
-> > > tdc parameters, regardless if some value is 0 or not.
-> > >
-> > > What do you think?
-> >
-> > I thought about that.
-> > The first important remark is that if tdc.tdco is zero, then TDC
-> > is off (c.f. documentation of struct can_tdc::tdco).
-> >
-> > Let me illustrate my vision through examples.
->
-> [...]
->
-> examples makes sense \o/
+On 6/16/21 8:01 AM, Pavel Begunkov wrote:
+> On 6/16/21 2:42 PM, Olivier Langlois wrote:
+>> On Tue, 2021-06-15 at 15:51 -0600, Jens Axboe wrote:
+>>> Ditto for this one, don't see it in my email nor on the list.
+>>>
+>> I can resend you a private copy of this one but as Pavel pointed out,
+>> it contains fatal flaws.
+>>
+>> So unless someone can tell me that the idea is interesting and has
+>> potential and can give me some a hint or 2 about how to address the
+>> challenges to fix the current flaws, it is pretty much a show stopper
+>> to me and I think that I am going to let it go...
+> 
+> It'd need to go through some other context, e.g. task context.
+> task_work_add() + custom handler would work, either buf-select
+> synchronisation can be reworked, but both would rather be
+> bulky and not great.
 
-Great!
+Indeed - that'd solve both the passing around of locking state which
+I really don't like, and make it much simpler. Just use task work for
+the re-insert, and you can grab the ring lock unconditionally from
+there.
 
-> [...]
->
-> > Finally, I have one side comment. It seems to me that you did not
-> > understand that the intent of
-> > |     if (priv->tdc.tdco)
-> > was to actually check whether TDC was on or off. In other words, my
-> > code was unclear.
-> >
-> > I am now thinking to introduce an helper macro:
-> > static bool can_tdc_is_enabled(const struct can_priv *priv)
-> > |{
-> > |    return !!priv->tdc.tdco;
-> > |}
-> >
-> > The code would look more clear like that.
-> > -     if (priv->tdc.tdco) {
-> > +     if (can_tdc_is_enabled(priv) {
->
-> Sounds good, I'm squashing this patch:
->
-> | diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-> | index 6134bbf69c10..d48be574eae7 100644
-> | --- a/drivers/net/can/dev/netlink.c
-> | +++ b/drivers/net/can/dev/netlink.c
-> | @@ -311,7 +311,7 @@ static size_t can_tdc_get_size(const struct net_device *dev)
-> |         size += nla_total_size(sizeof(u32));            /* IFLA_CAN_TDCO_MAX */
-> |         size += nla_total_size(sizeof(u32));            /* IFLA_CAN_TDCF_MAX */
-> |
-> | -       if (priv->tdc.tdco) {
-> | +       if (can_tdc_is_enabled(priv)) {
-> |                 size += nla_total_size(sizeof(u32));    /* IFLA_CAN_TDCV */
-> |                 size += nla_total_size(sizeof(u32));    /* IFLA_CAN_TDCO */
-> |                 size += nla_total_size(sizeof(u32));    /* IFLA_CAN_TDCF */
-> | @@ -352,6 +352,7 @@ static size_t can_get_size(const struct net_device *dev)
-> |                                        priv->data_bitrate_const_cnt);
-> |         size += sizeof(priv->bitrate_max);                      /* IFLA_CAN_BITRATE_MAX */
-> |         size += can_tdc_get_size(dev);                          /* IFLA_CAN_TDC */
-> | +
-> |         return size;
-> |  }
-> |
-> | @@ -374,7 +375,7 @@ static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev)
-> |             nla_put_u32(skb, IFLA_CAN_TDC_TDCF_MAX, tdc_const->tdcf_max))
-> |                 goto err_cancel;
-> |
-> | -       if (priv->tdc.tdco)
-> | +       if (can_tdc_is_enabled(priv)) {
-> |                 if (nla_put_u32(skb, IFLA_CAN_TDC_TDCV, tdc->tdcv) ||
-> |                     nla_put_u32(skb, IFLA_CAN_TDC_TDCO, tdc->tdco) ||
-> |                     nla_put_u32(skb, IFLA_CAN_TDC_TDCF, tdc->tdcf))
-> | diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-> | index 9de6e9053e34..b6d1db1e7258 100644
-> | --- a/include/linux/can/bittiming.h
-> | +++ b/include/linux/can/bittiming.h
-> | @@ -83,6 +83,11 @@ struct can_tdc_const {
-> |         u32 tdcf_max;
-> |  };
-> |
-> | +static inline bool can_tdc_is_enabled(const struct can_priv *priv)
+-- 
+Jens Axboe
 
-Did you try to compile? I am not sure if bittiming.h is able to
-see struct can_priv which is defined in dev.h.
-
-
-Yours sincerely,
-Vincent
-
-> | +{
-> | +       return !!priv->tdc.tdco;
-> | +}
-> | +
-> |  #ifdef CONFIG_CAN_CALC_BITTIMING
-> |  int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
-> |                        const struct can_bittiming_const *btc);
