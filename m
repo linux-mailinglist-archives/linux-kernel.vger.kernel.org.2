@@ -2,130 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2583A8F27
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD0F3A8F2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbhFPDKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 23:10:54 -0400
-Received: from mail.synology.com ([211.23.38.101]:58246 "EHLO synology.com"
+        id S230187AbhFPDNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 23:13:16 -0400
+Received: from mail-bn8nam12on2122.outbound.protection.outlook.com ([40.107.237.122]:54971
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229943AbhFPDKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 23:10:52 -0400
-Received: from localhost.localdomain (unknown [10.17.210.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by synology.com (Postfix) with ESMTPSA id 147CBFF5336;
-        Wed, 16 Jun 2021 11:08:46 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1623812926; bh=wgRvEIZoATrAqq56uJ/cS1Urwp0XEH587ZCk+hB73Fo=;
-        h=From:To:Cc:Subject:Date;
-        b=YYlsKQtKEnKDiBamwUhhIrr0ofduAbx+IF5Lhr2W2zNCdZohfQBsn+BPeA3JWLRnR
-         558hIHnb1cqAAYtO0E90KZLzL8KrSyl8rGIR/wwn1R9K+JnrNfhImSF4OapFjw6nvL
-         ZPAhtAOtRYeo3mu7cHGh718OqOVXTnrOluHPT8jk=
-From:   edwardh <edwardh@synology.com>
-To:     axboe@kernel.dk, neilb@suse.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        s3t@synology.com, bingjingc@synology.com, cccheng@synology.com,
-        Edward Hsieh <edwardh@synology.com>,
-        Wade Liang <wadel@synology.com>
-Subject: [PATCH v3] block: fix trace completion for chained bio
-Date:   Wed, 16 Jun 2021 11:08:10 +0800
-Message-Id: <20210616030810.4901-1-edwardh@synology.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
+        id S230076AbhFPDNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 23:13:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HdfvqzRDO65NR8BxDpeuEWhFBQEC9MzM28Qpup9sTtLo9uF6zWTrRikbSmCRcK5A6fktP8St/HceF5I2y/BiPOJncHchfanIzBB3GJj/dLeZah1EGCtd+5Exer6yxqn/b7wvr/XTzynxhP9rELEnkCA4WadH7ocweCQDh3Ah9MqIwnew5ib/8e9SkrH2NpBdt4B9DgnBu/a3apa2yxr4vq4iLJOD1qxF7WbLoKucmlzHW8X2kSw4Pq2pMPK9FKqcM8paW6PnSkIcsyj4/WncL3QIv4l5f2gMpDW1uZwnm3FbZghn9XEQ9KyqxdV29ZsfrKQJ5VHb/uM+8YplxprLhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rB4IwdppHnDtjSly2R1vOI/yiyYMAekO7oDaZRSqtxI=;
+ b=bc81QRwE5TeCSJcSTkmsZ3djxCYqc2RDwAeLNHtPuOIi2WCy2tNo5/2k9JtVgoJuuLapD528iCLWfXkW0l4lIgtxqsPGrFUfGKIJ/7Xfedk0IUfALNbr2Y4t/leIZER43NMLEo2kycqutXCOwNEwsJCA+pQhD7DHfqN3Az16UMSUbejh6pk+iTAs/JpifErP5y8Zcy62BnYzlEuwbHA95OfliOURBzRTqi3O63Rp9Q4izRxiaDq+Nx9UQvwmHyrQLx2BKoGdPBswku3OLeHW5Pa8MpSgcXBN0XKEHb4JsyHY1rgI+F3BpZILazKzPe68ro2x8TLsg90nZiKQIAdBeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rB4IwdppHnDtjSly2R1vOI/yiyYMAekO7oDaZRSqtxI=;
+ b=OHVc6pOxVB7zLniy1IGif3dT3jg8T8lhEsqbbmv4STe+xO9yS5wUchJmGOYjFZau1IG9kTHzEruyAGkrUMYk+1S8aMk/clixzMqrTN1QTYc1aPRdDUVAglG1ol2te4e4vWTbDUaXgiU1ZMmwQu1bctuisKjYEnCbd/0Z+txs4lo=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32) by
+ CO2PR01MB2200.prod.exchangelabs.com (2603:10b6:102:7::26) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4219.24; Wed, 16 Jun 2021 03:11:03 +0000
+Received: from MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::452a:24fb:12cb:9d7e]) by MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::452a:24fb:12cb:9d7e%5]) with mapi id 15.20.4219.026; Wed, 16 Jun 2021
+ 03:11:03 +0000
+From:   Quan Nguyen <quan@os.amperecomputing.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Subject: [PATCH v2 0/2] i2c: aspeed: Late ack Tx done irqs and fix unhandled Tx done with NAK
+Date:   Wed, 16 Jun 2021 10:10:44 +0700
+Message-Id: <20210616031046.2317-1-quan@os.amperecomputing.com>
+X-Mailer: git-send-email 2.28.0
 Content-Transfer-Encoding: 8bit
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+Content-Type: text/plain
+X-Originating-IP: [118.69.219.201]
+X-ClientProxiedBy: HKAPR03CA0001.apcprd03.prod.outlook.com
+ (2603:1096:203:c8::6) To MW2PR0102MB3482.prod.exchangelabs.com
+ (2603:10b6:302:c::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from hcm-sw-17.amperecomputing.com (118.69.219.201) by HKAPR03CA0001.apcprd03.prod.outlook.com (2603:1096:203:c8::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.9 via Frontend Transport; Wed, 16 Jun 2021 03:11:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fed0ce44-2bcb-48b3-32ac-08d930745fcf
+X-MS-TrafficTypeDiagnostic: CO2PR01MB2200:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO2PR01MB2200743C46B3E57B4F48B8AFF20F9@CO2PR01MB2200.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:597;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vf0UeId2CY1xx5pyR3tbR1jGrKNpr9S8ZExEED9RsCSH0DrUzpTw6L49QZJhH/eAmGo7BrWfD3XJXR1ergFOcnoYFPkvy2kgXNCUxRuWZVhTmuvj5CiV+w+jGfwwzbX3n5N3VTDphwuOYKD4ap40nK/uXtqmOP4kGHlA46hp7jZobS7rLOfWuDPTBtFI16mF6ozopqwqMUzQEzkCVKIIE4Yh3YYhSvH0enkCbuJsgKH/31w/Z9jE8pHfHUKdHEV9V9soarDqNV8kcv8Epx/unegdRT4l/T0I+1NVbDdKp6VTi8nPgVlhFwxxT7JZ+dkN0dZzjcH/k1tc5RSm1T5gCCBrtuXToU34BEZsFkLgQzY0hKpVy8/E2nyRX3K+GgdEPneJsNJEAtmwQXwQUjKJRdGx9uxKUd5HwocAFz3WqiWhuqmPnrUcVU+FCiyjIEjkQ/5p7A0bK/l4y/lZRBFEyaCUDR4lWlEjiB40lZkhA2oZA/CYmcRM0fgDXWKA50vPHa9EEwHJpebi6iI9gwvD/2hEBmLnp8oyiIyK0C5ocV9DeN8E9M/rHh+V3ZWJivT+8FkXpIlatNQOmcvOkOdYmAvamAlJVSLMrtwlNmT/mfoYTfm4xPzpnXq4QqbFIOvrEK5+OIqKaN4e6YpUugDpDStSHSzx6opwnNJCO7ftL6xk0gsWx4WWkZ8z8doqpBjpanTrOPunXJPLizBs2GTusc/N4j/TBHmbpr2hmD27pWxnEV35TFWwhJyztaiVOhHGDW0yAj/66tTpcGzxm2XHZ75YVKVGLuz+ZoYR8OL8ris=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR0102MB3482.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(396003)(366004)(346002)(376002)(136003)(66946007)(956004)(1076003)(186003)(16526019)(921005)(4744005)(2616005)(38100700002)(38350700002)(6512007)(5660300002)(7416002)(83380400001)(8676002)(2906002)(6506007)(107886003)(4326008)(110136005)(54906003)(26005)(6666004)(6486002)(478600001)(52116002)(966005)(8936002)(86362001)(316002)(66476007)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tlY27AphRGIJ3nfurgBuxtCLZycnUbAqlOAQ2iUb0ol3aN/EHDdzmzl8cquO?=
+ =?us-ascii?Q?SIQtKfWSPAaizM8rBxXNiKy+Lean9FAq6da6B6JeU1i6Hy5fbenzADB4ZW4q?=
+ =?us-ascii?Q?/AaI/SU3aFsAvREGkwU9ED1eHeeeVreh56I17qLuH2ZZYbPssYLpSnRn9cHu?=
+ =?us-ascii?Q?zwLmELla1qpEbBFh5QURr181IqA5RZSkWojpbxvyIEOtR+Q00zgIRlYIcqW7?=
+ =?us-ascii?Q?2IfaM2/O44SQzx/Ttcy++Bm3bg5Dhe67JZ+XQAh69ej/4YCMvWpT3ByW9qeX?=
+ =?us-ascii?Q?c5AghhUCDATd9cDHWFCaFenx4UInuXqNGpmK+xbzCw3vul7fdpRIOJTnJGMC?=
+ =?us-ascii?Q?hW+en5wDlEHqi521LxuLptx4TyElClVfQrjAvCnrGhh0o8mxj+pVTKAT4lyp?=
+ =?us-ascii?Q?r5vsDgyfy5faRID3vDkfSlUUBnjsfGhfuV1iTts0FyxLQ+yDFoIczTv9y02z?=
+ =?us-ascii?Q?he/CqVkKVuJY9s6ecB+3iCaJfVexv9+cafgGzcxXj/QagD+osi51OPBmc7b5?=
+ =?us-ascii?Q?99vfImgcOrJuYA+P+2BEBfYwbcEt+xuf3qMVB6pspiqgfviBx1kgbTZkmrVg?=
+ =?us-ascii?Q?jBY8xuVb+qMPaUBSns5cFl28CJ7ksye+rgCk0KPAp0alWpjdrHPlJtv+UV3Q?=
+ =?us-ascii?Q?UI2UcF/7Y6VWQvNxIGNo6jqKVrOaYhFGQkuvAPRleSvoI2sejXzX8lUnz0el?=
+ =?us-ascii?Q?8vBxqz07GTn/cvyASesJjv3crFjqSO5oPj5Z+gzYd3yJuUSzLL/sYPvu4vGq?=
+ =?us-ascii?Q?awauNV7AZzQOoATtdO8M3+SSA0DMmUATlxbVc5+V8s4U7K27r5V2xYnPXL/e?=
+ =?us-ascii?Q?tXosWecqK4ytha6ClNKW8O9ucllWeB4Vjsq84oVBOYGdMCI5jYQd/2LvKays?=
+ =?us-ascii?Q?V+HMgvcKV1NeeBty/zBP9blvF6JVOW3aYtWaYcpEC6PRcIf3402tkaM73fX4?=
+ =?us-ascii?Q?p3tAokyDAmq7KQc/963sBIFIztBA7MpOaRv+t7sJM+FJt19WacK/+AhIrWSN?=
+ =?us-ascii?Q?/65qtWQy41c1DeNBo1ZnMEhuO8Ska+k9OslCqZ9y8OZQTEi16Z3DryICPkOR?=
+ =?us-ascii?Q?Tq2n6IkuTd3iRHl1g6ARDeeUGPQfjOBlKyGc1A++NVKh72pp4557JaN7D0gC?=
+ =?us-ascii?Q?6DqxI6yW5HSoUq+fcYiNlJUZAMqwkgwB1EUDmxEbl+Tqf6bVGIr0ycsP7hNn?=
+ =?us-ascii?Q?pMZ6s1wlYdvwArNIBi1Ztvs0SIBgKqr4M5hg23EKRfHByCKaQ4RKm8yO2Ui+?=
+ =?us-ascii?Q?obLCdK3yxA8btQ4qfc3FwvF9W8jOiaCievoXSgvV1uDRl7eeAIHO12sOvdR3?=
+ =?us-ascii?Q?vu+0Eqklwoyx+JQmzDol0Mnu?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fed0ce44-2bcb-48b3-32ac-08d930745fcf
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR0102MB3482.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 03:11:03.6486
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4/T2clpQ3aS0jAx85eJcGqpdA+N7zPz6nvqtcQ6SEcc9AlEGdsZsf5cPEJMIMuAu1aT5szNIRAV0SM+UA+9m5UJ3yMmRgtptL+ZHFf82lv8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO2PR01MB2200
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Edward Hsieh <edwardh@synology.com>
+This series consists of two patches to fix the below issues observed
+when testing with slave mode:
+  + Unhandled Tx done with NAK
+  + Early ack'ed of Tx done (ACK and NAK) causing "Unexpected Ack on
+  read request".
 
-For chained bio, trace_block_bio_complete in bio_endio is currently called
-only by the parent bio once upon all chained bio completed.
-However, the sector and size for the parent bio are modified in bio_split.
-Therefore, the size and sector of the complete events might not match the
-queue events in blktrace.
+v2:
+  + Split these patches to separate series [Joel]
+  + Added the Fixes lines [Joel]
+  + Fixed multiline comment [Joel]
+  + Refactor irq clearing code [Joel, Guenter]
+  + Revised commit message [Joel, Quan]
 
-The original fix of bio completion trace <fbbaf700e7b1> ("block: trace
-completion of all bios.") wants multiple complete events to correspond
-to one queue event but missed this.
+v1:
+  + These patches are first introduced in
+  https://lkml.org/lkml/2021/5/19/205
 
-The issue can be reproduced by md/raid5 read with bio cross chunks.
+Quan Nguyen (2):
+  i2c: aspeed: Fix unhandled Tx done with NAK
+  i2c: aspeed: Acknowledge Tx done with and without ACK irq late
 
-To fix, move trace completion into the loop for every chained bio to call.
+ drivers/i2c/busses/i2c-aspeed.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-To make sense of the tail call optimization, the bio_chained_endio
-handing should be at the end of bio_endio(), move blk_throtl_bio_endio()
-and bio_uninit() to the else closure of bio_chain_endio condition.
-blk_throtl_bio_endio updates latency for the throttle group, and
-considering the throttle group tracks the latency of the current device,
-we should record the latency after all chained bio finish. And since the
-resources of the chained bio are released by bio_put() in
-__bio_chain_endio(), calling bio_uninit() for chained bio is not necessary.
-
-Fixes: fbbaf700e7b1 ("block: trace completion of all bios.")
-Reviewed-by: Wade Liang <wadel@synology.com>
-Reviewed-by: BingJing Chang <bingjingc@synology.com>
-Signed-off-by: Edward Hsieh <edwardh@synology.com>
----
- block/bio.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
-
-diff --git a/block/bio.c b/block/bio.c
-index 44205dfb6b60..dcb23e75f083 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -1375,8 +1375,7 @@ static inline bool bio_remaining_done(struct bio *bio)
-  *
-  *   bio_endio() can be called several times on a bio that has been chained
-  *   using bio_chain().  The ->bi_end_io() function will only be called the
-- *   last time.  At this point the BLK_TA_COMPLETE tracing event will be
-- *   generated if BIO_TRACE_COMPLETION is set.
-+ *   last time.
-  **/
- void bio_endio(struct bio *bio)
- {
-@@ -1389,6 +1388,11 @@ void bio_endio(struct bio *bio)
- 	if (bio->bi_bdev)
- 		rq_qos_done_bio(bio->bi_bdev->bd_disk->queue, bio);
- 
-+	if (bio->bi_bdev && bio_flagged(bio, BIO_TRACE_COMPLETION)) {
-+		trace_block_bio_complete(bio->bi_bdev->bd_disk->queue, bio);
-+		bio_clear_flag(bio, BIO_TRACE_COMPLETION);
-+	}
-+
- 	/*
- 	 * Need to have a real endio function for chained bios, otherwise
- 	 * various corner cases will break (like stacking block devices that
-@@ -1400,18 +1404,13 @@ void bio_endio(struct bio *bio)
- 	if (bio->bi_end_io == bio_chain_endio) {
- 		bio = __bio_chain_endio(bio);
- 		goto again;
-+	} else {
-+		blk_throtl_bio_endio(bio);
-+		/* release cgroup info */
-+		bio_uninit(bio);
-+		if (bio->bi_end_io)
-+			bio->bi_end_io(bio);
- 	}
--
--	if (bio->bi_bdev && bio_flagged(bio, BIO_TRACE_COMPLETION)) {
--		trace_block_bio_complete(bio->bi_bdev->bd_disk->queue, bio);
--		bio_clear_flag(bio, BIO_TRACE_COMPLETION);
--	}
--
--	blk_throtl_bio_endio(bio);
--	/* release cgroup info */
--	bio_uninit(bio);
--	if (bio->bi_end_io)
--		bio->bi_end_io(bio);
- }
- EXPORT_SYMBOL(bio_endio);
- 
 -- 
-2.31.1
+2.28.0
 
