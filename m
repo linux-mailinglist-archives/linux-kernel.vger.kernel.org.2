@@ -2,170 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFD43A9C87
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49B33A9C73
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233310AbhFPNun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:50:43 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10568 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233365AbhFPNui (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:50:38 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15GDXgok060344;
-        Wed, 16 Jun 2021 09:47:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=d4dLu30gffdRAHt5KvZ4yq7qZBSJDOTJYTV89XMmAPY=;
- b=UgPvjIrrpfZcLeQsv7HFS9vf7yEW/SLkoEMOGfYE0DXug5IJnXcRAUbvuYSMIHuqnbmK
- 2vdG6QTmMf1SkSSYFmyjU77SHgWMIQkNIKzaBWzeqPifslCjlRcT266iRHqM2DNiP0k9
- hvt5oNuu/cSOp0Uv2cBS1pmwOHwrCaPzZnuuXv0Jbo5bBmvRYW3h3ciLJeowpvnaksu8
- Rzz8UbfLExSwtTtgcv7/d80qydR7uIIVJXHmNWOvYPsYExetDXmpR/BX4U8UISNS8FKi
- 08a25bHuueNvqLyOYI1+wVS9sQTbHiti/IuE/aEsdkBdZVWabut5wCJ/DKBmVl+lq355 Ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 397ftcdhsf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 09:47:12 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15GDXfNU060100;
-        Wed, 16 Jun 2021 09:47:11 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 397ftcdhr8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 09:47:11 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15GDh4mL012286;
-        Wed, 16 Jun 2021 13:47:09 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma02fra.de.ibm.com with ESMTP id 3966jpgnhp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 13:47:08 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15GDk2ag34734490
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Jun 2021 13:46:02 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 682374203F;
-        Wed, 16 Jun 2021 13:47:06 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0FC7842041;
-        Wed, 16 Jun 2021 13:47:05 +0000 (GMT)
-Received: from [9.77.206.69] (unknown [9.77.206.69])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 16 Jun 2021 13:47:04 +0000 (GMT)
-Subject: Re: [PATCH v2 1/1] powerpc/papr_scm: Properly handle UUID types and
- API
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>
-References: <20210616134303.58185-1-andriy.shevchenko@linux.intel.com>
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Message-ID: <6f895afd-3469-c330-a4da-72db89dba6b3@linux.ibm.com>
-Date:   Wed, 16 Jun 2021 19:17:03 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210616134303.58185-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S233489AbhFPNt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:49:28 -0400
+Received: from mail-bn8nam12on2107.outbound.protection.outlook.com ([40.107.237.107]:1792
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233621AbhFPNtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 09:49:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P8+rJGGp9naL4IFzo+Wb5PLdgP4gBMtABTDF3o+UUkOck3+b8HesGFYTcMo8HdVwsCNBMpjOHPYJPD+xzeMDH8h3YcxEArM4WvmHAxqihB4ieEjy/kdKK3eDua9ZfHjjXRqIUVDt2mJ7rZYyWsKXmPme0xpEDALBaTbBOdaYaCsIM6cWomABMrhJqb30yJqhM6kseNZUpk7dBfH3D/rfgGp0hUTSg5OggD1rVTIXE6fvB2AIFjqwlqRQDb9/wxoah5pcUvtNisuAKNa7c6ljKrZ2H9H+na0ZXApdrmJ0Bb/tX4xJF0m32Sm8GR/HxqpAwDUsvyGbmkk9kenz/E4UFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hXdxP/rNZmTLtwyfM6r4Utjmn00PQ+lhdbxYXQJAwxU=;
+ b=EnMee2W1Zw1SsyGijn/G/BgzMac++i11YDjVd4zGH8wEv0+h8p0VOWHOh8DVxSW8PDfge4dbI85my4dVxb7rNSXlzPfyRRvIVP7HUtWpMwXJSbaKF3H1QjXsqZLXjLj6Imv1dx0sMwW4Apjc5XgkdRUFFz3wwLCIp6W84qRCR+Gu23+MmUAbXaWjsNbEjQvuEmP/iOsEt46ob3fecu7JwGUa2kjcqzO0WEK2LbnAU9qhxpCA8XzouGYT8/m/BjPVwGowexX/udZ3q5B43V53OQrS09sywRIvTXoGwUItvOPSs2IN13wHOG1NhUICLJOemfRMvsUOoDYf8ddnsVShBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hXdxP/rNZmTLtwyfM6r4Utjmn00PQ+lhdbxYXQJAwxU=;
+ b=Zvb2aF19ZyxJToAaGSRhg1Cz+B+AnbjN3VdOA45O3xyTjHMW67q1qesCi+RRlYaMlX+b4xp+ki+kLNFUkZHTME455dF+1OtMz8T2LGvRR7Flu/NzzZOMvdsYo1B6+twSZG5+RhhfG4KeGCY0NWaModlcPkykRoNWwhGrUOhAEMM=
+Received: from DS7PR13MB4733.namprd13.prod.outlook.com (2603:10b6:5:3b1::24)
+ by DM6PR13MB3866.namprd13.prod.outlook.com (2603:10b6:5:241::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.12; Wed, 16 Jun
+ 2021 13:47:13 +0000
+Received: from DS7PR13MB4733.namprd13.prod.outlook.com
+ ([fe80::4c65:55ca:a5a2:f18]) by DS7PR13MB4733.namprd13.prod.outlook.com
+ ([fe80::4c65:55ca:a5a2:f18%7]) with mapi id 15.20.4242.018; Wed, 16 Jun 2021
+ 13:47:13 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "hsiangkao@linux.alibaba.com" <hsiangkao@linux.alibaba.com>
+CC:     "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
+Subject: Re: [PATCH] nfs: set block size according to pnfs_blksize first
+Thread-Topic: [PATCH] nfs: set block size according to pnfs_blksize first
+Thread-Index: AQHXYq1gTBPriIHjLEyaSjnxbRPdFqsWptwA
+Date:   Wed, 16 Jun 2021 13:47:13 +0000
+Message-ID: <4898aa11dc26396c13bbc3d8bf18c13efe4d513a.camel@hammerspace.com>
+References: <1623847469-150122-1-git-send-email-hsiangkao@linux.alibaba.com>
+In-Reply-To: <1623847469-150122-1-git-send-email-hsiangkao@linux.alibaba.com>
+Accept-Language: en-US, en-GB
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: TgsF3gSvpuY0MPnyu4zsk3aG3B2hAnRi
-X-Proofpoint-GUID: h9pX2R1A2vKYfmidWgVDrFLbGXlAaKDr
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-16_07:2021-06-15,2021-06-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
- bulkscore=0 impostorscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- malwarescore=0 phishscore=0 suspectscore=0 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106160078
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=hammerspace.com;
+x-originating-ip: [68.36.133.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0a7b39d1-b5f1-4ac2-65af-08d930cd3f37
+x-ms-traffictypediagnostic: DM6PR13MB3866:
+x-microsoft-antispam-prvs: <DM6PR13MB3866AA3E0193A5E30148AB38B80F9@DM6PR13MB3866.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1122;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oOd7m5hnPfH0hvln07p9wss54ElC+bWsi0Q/SdMTImUsiG+QpzENbbFxJurmLuoKei/Lr86OsEsg1HmSIuyehOmNZWVz/xdJiwXF7iUMLRXVHzt/xS3qftxK0zTSaAuizOSwEf4f2t6XTc9gdKLCFD9AmAlpBFY4htt4SVoM6qdLe9zyKvvsSVkAoUuR9Bmc4bfGZPv7aEcjn95q8B1TJUnxXAOQXJC9huDki/H5P33tBEtQhZ5HkEQGrjtP3gidbSMoNTFSt+l/U7wUAkKkYmIx5l+tqZ21NpFVMtggAxNDh6IKPyQolZXnltAbrcJw//FeFHO+5YmmMmiy8KFglzSaBPMsGl5yxm4AbOGNc5W0OqNRt6Mbp4vFhKF5GikOXoStrTtnR0hIREpuJLxZt0doypQZ+5IT/Nv7zX/nBi9s8BHsBH0yUro2tF+nCjRgiSkjO6/4y/SBRvwohb1b/EnqiTzYpJx4q8XW+bGiwT5VlBGkvYs82T5QX2xQfdcpPO3ZREqSuf44TNAnfBEhM37ItwN2/g1VWAQd/+DPM+LQ17KIHlXAfGRIhwmCZwyYKITrROyKL2pQaTK9TIfU9mZUINS0z7ngrKW6yP99NH6bqrn+qtoudM/DLBCNethIHaRZg8IFlxF9RD613XOxZw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR13MB4733.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39830400003)(136003)(346002)(376002)(396003)(6512007)(6486002)(122000001)(38100700002)(478600001)(26005)(8936002)(6506007)(2906002)(8676002)(36756003)(83380400001)(316002)(66556008)(66446008)(66476007)(110136005)(86362001)(4326008)(71200400001)(66946007)(76116006)(91956017)(64756008)(2616005)(5660300002)(186003)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RGkrbEdwanhOdHZqd0grYUhHb3RWbzgzVmdMcytMc01lbFVWN2l2OUpjQUpM?=
+ =?utf-8?B?SzRxQkNKNWx6bWpkR0tjZkJGaG1kTE5oNDNhTkJ5MnN2dW9lK3R0SDNJWndG?=
+ =?utf-8?B?SXF6KzlTZDNTWEtHcGZjcm9ETmtCVXBPMTBQRyt5aGYrZVNvZWxTU1AxQ295?=
+ =?utf-8?B?NHZuajM2ZWtVVk5mTTBrMitKZFlEQ1A4eE11ZkJna1RQckZpQkRaYlovbTZ5?=
+ =?utf-8?B?NjAyRUlpdk1YZFRzTHdiZmV6MDJhQnhwaXpydm51ZzFuZTVhZnhwQmxQYWVB?=
+ =?utf-8?B?aWNmaG1zNWZEcG5lblQyaXNXaTJvbU11eVlVN0h0dWtHRXJuakdCQlFPTnhC?=
+ =?utf-8?B?TjhCcFUzVU1XcXE1Sk16UGZ2N2tFOTk3MzVOR3FnVmN4WUZEZjY2ZzRTcG1m?=
+ =?utf-8?B?ZTIyNUtIdWVMaUpaYlJaN0JyZHhjdWowWjYycStvSW4zQk9CUFNNSkhQWjdK?=
+ =?utf-8?B?RTVPMVVlcTNLeTkzNGZoWk9DYjFXeVRNeWRtOHQvYVphcVFZUDRZek83SFlV?=
+ =?utf-8?B?RmRhSlVNeHhTdi9JS2xqNDNoYk8rejliMWlsU21pQ2dEZ2VoTVRHc0FvSmdG?=
+ =?utf-8?B?Njg2TmR5QnhrRTEzRmkwcW92eDd3NjNZZEhPVi81TVhwNE5CeXJvbkVhVXdL?=
+ =?utf-8?B?N1JOUDBMWXRUakhQZHNJaS91aFA0UFRvZEpzcXhnRFdFRnIxYVVQV2dXQlVK?=
+ =?utf-8?B?SmlHdWlra1IvRG9EcnRZaHBIZGovSjhDK3pBbDg0YlRuM3RjV08xUW5Jb09R?=
+ =?utf-8?B?ZXdVUTVCRGl4ZlFseTRoRVdkcENZRk42aCtpTWxlQzhXSFBPcDlyOGdsVTNV?=
+ =?utf-8?B?dDFySStWRmdsMG14Y3BkNzllY2VhdXByM0MrQkpDZ0psdFVVY3VBU2lQWjhK?=
+ =?utf-8?B?VmJ0R1RqSVlYVi9xSzQvcjlhaG1heXNCUnFyUS9mSTJkN2QzM1JJWFdsN0ZB?=
+ =?utf-8?B?UmRNYlQzWnZkaG93Y29scklsb0k1a21FQ0d4Q0dZcnEvdmFBaGE3RkRkcnZ2?=
+ =?utf-8?B?dnBQbHBUK1dyM284ZEhGNzhtSnY1ZGdnYitxek41dnBnWUQzTUQySG9Ca0cy?=
+ =?utf-8?B?QzgrTkdxV2N4SXdSWjZ5QjY5VkJiVGlBdjA3TjZSMzBiUUR6a0dHWUlPc2NV?=
+ =?utf-8?B?QnIvODdtRU1yTGljTk1PbkI4MGpVMU9ha1lKZ20vY1VSaGduYk8ra0pubEg5?=
+ =?utf-8?B?UkI4eFFLaGN6Q2IvTjdGR09vYmNMUk9NaUc1WlJUZTNKVWRVVmtVZ0dadXZ3?=
+ =?utf-8?B?TkswZ2tXeUdSMEhhQU1Edjd3S1ZwZmtKaWlmL3dnWTIzNFZkWmNkcjFTN2pJ?=
+ =?utf-8?B?bklZSnUrOTIrQmRuWTl0VllCclV1cXVtem1mTlFJUVpyRlc2NDZzVWFRR3cr?=
+ =?utf-8?B?aWRjVXc1M1A5U1VsWEJkaWlHT1d0QjQ3RzkyRHFwcVhsUllycGc2Tkp2OGp0?=
+ =?utf-8?B?RkVuNjZDWDQyNENvRUZQK1FIVDBscFJkV0l4NFlQR0FQNDVhT3U4bWEyZ3F2?=
+ =?utf-8?B?YVJ0NUlTYU52VkJEczdHYWdHZDYxN0NTVm4zTnBoYmRuSHJES0g3a2E3Misz?=
+ =?utf-8?B?cVFScDRQdWlyWitsSnZmMWhRODZwcG13dkN6ZU0yNk5YT3FMZ1ZJWEdubGo0?=
+ =?utf-8?B?WXkxNC85bEo1WG01cmU4Rlg1K3RwbFJydm45M2V3RFc3c2JNWTJOQzZMVEZR?=
+ =?utf-8?B?dy9ueCtVRG1OblFOSXlCd2hRalkzQlA2eWZla0lHT1VhYjRYejB2eE9CS2tJ?=
+ =?utf-8?Q?c5ghD5TyUhogfalNJVLjsZAvpEhgSXS73gd7yLX?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0660B29719EFBC448FCAE78CC9D4A856@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR13MB4733.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a7b39d1-b5f1-4ac2-65af-08d930cd3f37
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jun 2021 13:47:13.5206
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 35ceTxzaPdUy1o7xPs+5j8vIkG7hR3wp6lIbjvUkxhfmbp6v+L2tZAiwawx3nj2LA9qyy6eIme7l0XHADfPXzA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB3866
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 7:13 PM, Andy Shevchenko wrote:
-> Parse to and export from UUID own type, before dereferencing.
-> This also fixes wrong comment (Little Endian UUID is something else)
-> and should eliminate the direct strict types assignments.
-> 
-> Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
-> Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
-
-
-Do we need the Fixes: there? It didn't change any functionality right? 
-The format with which we stored cookie1 remains the same with older and 
-newer code. The newer one is better?
-
-Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-
-> Cc: Oliver O'Halloran <oohall@gmail.com>
-> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> v2: added missed header (Vaibhav), updated comment (Aneesh),
->      rewrite part of the commit message to avoid mentioning the Sparse
->   arch/powerpc/platforms/pseries/papr_scm.c | 27 +++++++++++++++--------
->   1 file changed, 18 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-> index e2b69cc3beaf..b43be41e8ff7 100644
-> --- a/arch/powerpc/platforms/pseries/papr_scm.c
-> +++ b/arch/powerpc/platforms/pseries/papr_scm.c
-> @@ -18,6 +18,7 @@
->   #include <asm/plpar_wrappers.h>
->   #include <asm/papr_pdsm.h>
->   #include <asm/mce.h>
-> +#include <asm/unaligned.h>
->   
->   #define BIND_ANY_ADDR (~0ul)
->   
-> @@ -1101,8 +1102,9 @@ static int papr_scm_probe(struct platform_device *pdev)
->   	u32 drc_index, metadata_size;
->   	u64 blocks, block_size;
->   	struct papr_scm_priv *p;
-> +	u8 uuid_raw[UUID_SIZE];
->   	const char *uuid_str;
-> -	u64 uuid[2];
-> +	uuid_t uuid;
->   	int rc;
->   
->   	/* check we have all the required DT properties */
-> @@ -1145,16 +1147,23 @@ static int papr_scm_probe(struct platform_device *pdev)
->   	p->hcall_flush_required = of_property_read_bool(dn, "ibm,hcall-flush-required");
->   
->   	/* We just need to ensure that set cookies are unique across */
-> -	uuid_parse(uuid_str, (uuid_t *) uuid);
-> +	uuid_parse(uuid_str, &uuid);
-> +
->   	/*
-> -	 * cookie1 and cookie2 are not really little endian
-> -	 * we store a little endian representation of the
-> -	 * uuid str so that we can compare this with the label
-> -	 * area cookie irrespective of the endian config with which
-> -	 * the kernel is built.
-> +	 * The cookie1 and cookie2 are not really little endian.
-> +	 * We store a raw buffer representation of the
-> +	 * uuid string so that we can compare this with the label
-> +	 * area cookie irrespective of the endian configuration
-> +	 * with which the kernel is built.
-> +	 *
-> +	 * Historically we stored the cookie in the below format.
-> +	 * for a uuid string 72511b67-0b3b-42fd-8d1d-5be3cae8bcaa
-> +	 *	cookie1 was 0xfd423b0b671b5172
-> +	 *	cookie2 was 0xaabce8cae35b1d8d
->   	 */
-> -	p->nd_set.cookie1 = cpu_to_le64(uuid[0]);
-> -	p->nd_set.cookie2 = cpu_to_le64(uuid[1]);
-> +	export_uuid(uuid_raw, &uuid);
-> +	p->nd_set.cookie1 = get_unaligned_le64(&uuid_raw[0]);
-> +	p->nd_set.cookie2 = get_unaligned_le64(&uuid_raw[8]);
->   
->   	/* might be zero */
->   	p->metadata_size = metadata_size;
-> 
-
+T24gV2VkLCAyMDIxLTA2LTE2IGF0IDIwOjQ0ICswODAwLCBHYW8gWGlhbmcgd3JvdGU6DQo+IFdo
+ZW4gdGVzdGluZyBmc3Rlc3RzIHdpdGggZXh0NCBvdmVyIG5mcyA0LjIsIEkgZm91bmQgZ2VuZXJp
+Yy80ODYNCj4gZmFpbGVkLiBUaGUgcm9vdCBjYXVzZSBpcyB0aGF0IHRoZSBsZW5ndGggb2YgaXRz
+IHhhdHRyIHZhbHVlIGlzDQo+IMKgIG1pbihzdF9ibGtzaXplICogMyAvIDQsIFhBVFRSX1NJWkVf
+TUFYKQ0KPiANCj4gd2hpY2ggaXMgNDA5NiAqIDMgLyA0ID0gMzA3MiBmb3IgdW5kZXJsYXlmcyBl
+eHQ0IHJhdGhlciB0aGFuDQo+IFhBVFRSX1NJWkVfTUFYID0gNjU1MzYgZm9yIG5mcyBzaW5jZSB0
+aGUgYmxvY2sgc2l6ZSB3b3VsZCBiZSB3c2l6ZQ0KPiAoPTEzMTA3MikgaWYgYnNpemUgaXMgbm90
+IHNwZWNpZmllZC4NCj4gDQo+IExldCdzIHVzZSBwbmZzX2Jsa3NpemUgZmlyc3QgaW5zdGVhZCBv
+ZiB1c2luZyB3c2l6ZSBkaXJlY3RseSBpZg0KPiBic2l6ZSBpc24ndCBzcGVjaWZpZWQuIEFuZCB0
+aGUgdGVzdGNhc2UgaXRzZWxmIGNhbiBwYXNzIG5vdy4NCj4gDQo+IENjOiBUcm9uZCBNeWtsZWJ1
+c3QgPHRyb25kLm15a2xlYnVzdEBoYW1tZXJzcGFjZS5jb20+DQo+IENjOiBBbm5hIFNjaHVtYWtl
+ciA8YW5uYS5zY2h1bWFrZXJAbmV0YXBwLmNvbT4NCj4gQ2M6IEpvc2VwaCBRaSA8am9zZXBoLnFp
+QGxpbnV4LmFsaWJhYmEuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBHYW8gWGlhbmcgPGhzaWFuZ2th
+b0BsaW51eC5hbGliYWJhLmNvbT4NCj4gLS0tDQo+IENvbnNpZGVyaW5nIGJzaXplIGlzIG5vdCBz
+cGVjaWZpZWQsIHdlIG1pZ2h0IHVzZSBwbmZzX2Jsa3NpemUNCj4gZGlyZWN0bHkgZmlyc3QgcmF0
+aGVyIHRoYW4gd3NpemUuDQo+IA0KPiDCoGZzL25mcy9zdXBlci5jIHwgOCArKysrKystLQ0KPiDC
+oDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBk
+aWZmIC0tZ2l0IGEvZnMvbmZzL3N1cGVyLmMgYi9mcy9uZnMvc3VwZXIuYw0KPiBpbmRleCBmZTU4
+NTI1Y2ZlZDQuLjUwMTVlZGYwY2Q5YSAxMDA2NDQNCj4gLS0tIGEvZnMvbmZzL3N1cGVyLmMNCj4g
+KysrIGIvZnMvbmZzL3N1cGVyLmMNCj4gQEAgLTEwNjgsOSArMTA2OCwxMyBAQCBzdGF0aWMgdm9p
+ZCBuZnNfZmlsbF9zdXBlcihzdHJ1Y3Qgc3VwZXJfYmxvY2sNCj4gKnNiLCBzdHJ1Y3QgbmZzX2Zz
+X2NvbnRleHQgKmN0eCkNCj4gwqDCoMKgwqDCoMKgwqDCoHNucHJpbnRmKHNiLT5zX2lkLCBzaXpl
+b2Yoc2ItPnNfaWQpLA0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAiJXU6JXUi
+LCBNQUpPUihzYi0+c19kZXYpLCBNSU5PUihzYi0+c19kZXYpKTsNCj4gwqANCj4gLcKgwqDCoMKg
+wqDCoMKgaWYgKHNiLT5zX2Jsb2Nrc2l6ZSA9PSAwKQ0KPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgc2ItPnNfYmxvY2tzaXplID0gbmZzX2Jsb2NrX2JpdHMoc2VydmVyLT53c2l6ZSwN
+Cj4gK8KgwqDCoMKgwqDCoMKgaWYgKHNiLT5zX2Jsb2Nrc2l6ZSA9PSAwKSB7DQo+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB1bnNpZ25lZCBpbnQgYmxrc2l6ZSA9IHNlcnZlci0+cG5m
+c19ibGtzaXplID8NCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqBzZXJ2ZXItPnBuZnNfYmxrc2l6ZSA6IHNlcnZlci0+d3NpemU7DQoNCk5BQ0suIFRoZSBw
+bmZzIGJsb2NrIHNpemUgaXMgYSBsYXlvdXQgZHJpdmVyLXNwZWNpZmljIHF1YW50aXR5LCBhbmQN
+CnNob3VsZCBub3QgYmUgdXNlZCB0byBzdWJzdGl0dXRlIGZvciB0aGUgc2VydmVyLWFkdmVydGlz
+ZWQgYmxvY2sgc2l6ZS4NCkl0IG9ubHkgYXBwbGllcyB0byBJL08gX2lmXyB0aGUgY2xpZW50IGlz
+IGhvbGRpbmcgYSBsYXlvdXQgZm9yIGENCnNwZWNpZmljIGZpbGUgYW5kIGlzIHVzaW5nIHBORlMg
+dG8gZG8gSS9PIHRvIHRoYXQgZmlsZS4NCg0KSXQgaGFzIG5vdGhpbmcgdG8gZG8gd2l0aCB4YXR0
+cnMgYXQgYWxsLg0KDQo+ICsNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHNiLT5z
+X2Jsb2Nrc2l6ZSA9IG5mc19ibG9ja19iaXRzKGJsa3NpemUsDQo+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAmc2ItDQo+ID5zX2Jsb2Nrc2l6ZV9iaXRzKTsNCj4gK8Kg
+wqDCoMKgwqDCoMKgfQ0KPiDCoA0KPiDCoMKgwqDCoMKgwqDCoMKgbmZzX3N1cGVyX3NldF9tYXhi
+eXRlcyhzYiwgc2VydmVyLT5tYXhmaWxlc2l6ZSk7DQo+IMKgwqDCoMKgwqDCoMKgwqBzZXJ2ZXIt
+Pmhhc19zZWNfbW50X29wdHMgPSBjdHgtPmhhc19zZWNfbW50X29wdHM7DQoNCi0tIA0KVHJvbmQg
+TXlrbGVidXN0DQpMaW51eCBORlMgY2xpZW50IG1haW50YWluZXIsIEhhbW1lcnNwYWNlDQp0cm9u
+ZC5teWtsZWJ1c3RAaGFtbWVyc3BhY2UuY29tDQoNCg0K
