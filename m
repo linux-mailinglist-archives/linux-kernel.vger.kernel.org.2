@@ -2,227 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A233AA3DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565293AA3E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232390AbhFPTHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:07:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232299AbhFPTHm (ORCPT
+        id S232329AbhFPTJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:09:21 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:40004 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232263AbhFPTJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:07:42 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84B7C061574;
-        Wed, 16 Jun 2021 12:05:34 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id r5so6048193lfr.5;
-        Wed, 16 Jun 2021 12:05:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=D90UFhsacTVshn6p9/Z2whQb2PME8KBmF7aqJRvgxxk=;
-        b=HeSBQ3KSULU7O3+Zub7WEp92A4a5BKP+lpQjN6vCOKWALQzgkKYUSAcOpii68+nIXn
-         4t2pkNVNAX7Cig9hd4XrtMkBzwqFu/CzzQbnb1/cyw6uAQeGPZ8st7G43h//2b85jR9a
-         mp7sJcTuM08eFPnuWmVGrqY4nVTqXLDwKOJNY208NrNzPGTuKC8/QhDmYEr5wjKSLGru
-         W883vIZAxQAN7adohrhW4J7HTBbHDNKN7Fmkr7+SfhQkqIzcIPkBUCejz3yTDC5gEsIK
-         D713PPR6NWlfuKKqcV1mI1v3Asvl4NZYfgWWZ81WToxY/vXPMOzNkaQ+AyC7uL9BUDlN
-         EtOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=D90UFhsacTVshn6p9/Z2whQb2PME8KBmF7aqJRvgxxk=;
-        b=H3fC2JXVQRfJOCc70oYH4dtOgSQ9wpB0HH8Kntli2Fzu+Ik5iORZalHLIXno+Sw4Yb
-         ToK2Iww7D1Xxkx0N5o1xQ8SOaOHlRaCGQeBjhUhhPXOJKPTwdsEeEe/msoQ1BDRVt5fg
-         FtR2gwcRrk9aCBJ49bRHK/28m5Nbh1GJ9BZM+WLoOt51eQFIbVjy0jUAyzoEpMcP+8QI
-         tBGBAD8QGkVzQxTkW3DLBf/XO2l90LhM4tJa8tQX0c8H9eWWJyaa2lkFORd9lLc4Hmpz
-         WFFos1+DLJTYD03cafHIbA4U9GywQXaMea2Ky62BFZ/SBV8XHMrkerP6KjFdN3OMCXjb
-         //Hg==
-X-Gm-Message-State: AOAM533JqnUQNOtvhHOCuhxwT31DlL0L8vVlMkiqyfpZHSbD/u+ikJJ0
-        1mOTOWGJmM8iUu90hwW/xPs=
-X-Google-Smtp-Source: ABdhPJw/wpYLL9eX5hYjEcQr4sKSGPA5j7h8Mt/KKQsxKdT1nwDh5vA6cwnUutXp5qIHVyxuDlqrkA==
-X-Received: by 2002:a05:6512:3588:: with SMTP id m8mr909981lfr.309.1623870333294;
-        Wed, 16 Jun 2021 12:05:33 -0700 (PDT)
-Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.gmail.com with ESMTPSA id e20sm365951ljk.67.2021.06.16.12.05.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 12:05:33 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Ihor Didenko <tailormoon@rambler.ru>,
-        Ion Agorria <ion@agorria.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v4 6/6] ARM: tegra: Add SoC thermal sensor to Tegra30 device-trees
-Date:   Wed, 16 Jun 2021 22:04:17 +0300
-Message-Id: <20210616190417.32214-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210616190417.32214-1-digetx@gmail.com>
-References: <20210616190417.32214-1-digetx@gmail.com>
+        Wed, 16 Jun 2021 15:09:20 -0400
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D4FD820B6C50;
+        Wed, 16 Jun 2021 12:07:13 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D4FD820B6C50
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1623870433;
+        bh=pMMmTT3PXQgTrevuxlj2F3JLlcd4EM9l6Fepj29X/Bg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=et5fmwABi16nTifeqv5owKDbpO8Upojx4jogULjH35iG+VU2qzgIOkQSB+40B0esG
+         Wam6aYGNXbuJ3uQm6BvTW69sFa4xi4qmwEIBwkn8G5wv6OmR+8OomBdF99AwSZvJc1
+         Uf510fCV9WWV72wjblSHguWSQzdzsPUtxfXw9eOo=
+Received: by mail-pf1-f182.google.com with SMTP id p13so3021834pfw.0;
+        Wed, 16 Jun 2021 12:07:13 -0700 (PDT)
+X-Gm-Message-State: AOAM531oszfqMbna3A53N1neh5zAbBL8+6I7kkBR9p1OJ6K17L7M1EhD
+        GirYLhPt57YmA1CjaYGTSvs0IwTzaAuAHMlQ1kI=
+X-Google-Smtp-Source: ABdhPJx9sD4Hv60I5h6KAYTe91Zo1s5HoDH8VwMli9/OBjeUKnpAHtllS55ebWXOgWb1A5g5i1Y5vWiMz6iFCmYlJ6k=
+X-Received: by 2002:a05:6a00:24d0:b029:2ed:c309:8b0f with SMTP id
+ d16-20020a056a0024d0b02902edc3098b0fmr1281204pfv.41.1623870433450; Wed, 16
+ Jun 2021 12:07:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
+ <20210615023812.50885-2-mcroce@linux.microsoft.com> <6cff2a895db94e6fadd4ddffb8906a73@AcuMS.aculab.com>
+ <CAEUhbmV+Vi0Ssyzq1B2RTkbjMpE21xjdj2MSKdLydgW6WuCKtA@mail.gmail.com>
+ <1632006872b04c64be828fa0c4e4eae0@AcuMS.aculab.com> <CAEUhbmU0cPkawmFfDd_sPQnc9V-cfYd32BCQo4Cis3uBKZDpXw@mail.gmail.com>
+ <CANBLGcxi2mEA5MnV-RL2zFpB2T+OytiHyOLKjOrMXgmAh=fHAw@mail.gmail.com>
+ <CAEUhbmX_wsfU9FfRJoOPE0gjUX=Bp7OZWOZDyMNfO6=M-fX_0A@mail.gmail.com>
+ <20210616040132.7fbdf6fe@linux.microsoft.com> <db7a011867a742528beb6ec17b692842@AcuMS.aculab.com>
+In-Reply-To: <db7a011867a742528beb6ec17b692842@AcuMS.aculab.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Wed, 16 Jun 2021 21:06:37 +0200
+X-Gmail-Original-Message-ID: <CAFnufp2OiF6-ta5og9u-foKDT2fqE171NvfowFkUr2jc4KJEDQ@mail.gmail.com>
+Message-ID: <CAFnufp2OiF6-ta5og9u-foKDT2fqE171NvfowFkUr2jc4KJEDQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] riscv: optimized memcpy
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Bin Meng <bmeng.cn@gmail.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Gary Guo <gary@garyguo.net>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the on-chip SoC thermal sensor to Tegra30 device-trees. Now CPU
-temperature reporting and thermal throttling is available on all Tegra30
-devices universally.
+On Wed, Jun 16, 2021 at 10:24 AM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Matteo Croce
+> > Sent: 16 June 2021 03:02
+> ...
+> > > > That's a good idea, but if you read the replies to Gary's original
+> > > > patch
+> > > > https://lore.kernel.org/linux-riscv/20210216225555.4976-1-gary@garyguo.net/
+> > > > .. both Gary, Palmer and David would rather like a C-based version.
+> > > > This is one attempt at providing that.
+> > >
+> > > Yep, I prefer C as well :)
+> > >
+> > > But if you check commit 04091d6, the assembly version was introduced
+> > > for KASAN. So if we are to change it back to C, please make sure KASAN
+> > > is not broken.
+> > >
+> ...
+> > Leaving out the first memcpy/set of every test which is always slower, (maybe
+> > because of a cache miss?), the current implementation copies 260 Mb/s when
+> > the low order bits match, and 114 otherwise.
+> > Memset is stable at 278 Mb/s.
+> >
+> > Gary's implementation is much faster, copies still 260 Mb/s when euqlly placed,
+> > and 230 Mb/s otherwise. Memset is the same as the current one.
+>
+> Any idea what the attainable performance is for the cpu you are using?
+> Since both memset and memcpy are running at much the same speed
+> I suspect it is all limited by the writes.
+>
+> 272MB/s is only 34M writes/sec.
+> This seems horribly slow for a modern cpu.
+> So is this actually really limited by the cache writes to physical memory?
+>
+> You might want to do some tests (userspace is fine) where you
+> check much smaller lengths that definitely sit within the data cache.
+>
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra30.dtsi | 87 ++++++++++++++++++++++++++++++++--
- 1 file changed, 83 insertions(+), 4 deletions(-)
+I get similar results in userspace, this tool write to RAM with
+variable data width:
 
-diff --git a/arch/arm/boot/dts/tegra30.dtsi b/arch/arm/boot/dts/tegra30.dtsi
-index c577c191be4b..404b6ecc9c20 100644
---- a/arch/arm/boot/dts/tegra30.dtsi
-+++ b/arch/arm/boot/dts/tegra30.dtsi
-@@ -5,6 +5,7 @@
- #include <dt-bindings/pinctrl/pinctrl-tegra.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/soc/tegra-pmc.h>
-+#include <dt-bindings/thermal/thermal.h>
- 
- #include "tegra30-peripherals-opp.dtsi"
- 
-@@ -800,6 +801,20 @@ fuse@7000f800 {
- 		reset-names = "fuse";
- 	};
- 
-+	tsensor: tsensor@70014000 {
-+		compatible = "nvidia,tegra30-tsensor";
-+		reg = <0x70014000 0x500>;
-+		interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&tegra_car TEGRA30_CLK_TSENSOR>;
-+		resets = <&tegra_car TEGRA30_CLK_TSENSOR>;
-+
-+		assigned-clocks = <&tegra_car TEGRA30_CLK_TSENSOR>;
-+		assigned-clock-parents = <&tegra_car TEGRA30_CLK_CLK_M>;
-+		assigned-clock-rates = <500000>;
-+
-+		#thermal-sensor-cells = <1>;
-+	};
-+
- 	hda@70030000 {
- 		compatible = "nvidia,tegra30-hda";
- 		reg = <0x70030000 0x10000>;
-@@ -1062,32 +1077,36 @@ cpus {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		cpu@0 {
-+		cpu0: cpu@0 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a9";
- 			reg = <0>;
- 			clocks = <&tegra_car TEGRA30_CLK_CCLK_G>;
-+			#cooling-cells = <2>;
- 		};
- 
--		cpu@1 {
-+		cpu1: cpu@1 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a9";
- 			reg = <1>;
- 			clocks = <&tegra_car TEGRA30_CLK_CCLK_G>;
-+			#cooling-cells = <2>;
- 		};
- 
--		cpu@2 {
-+		cpu2: cpu@2 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a9";
- 			reg = <2>;
- 			clocks = <&tegra_car TEGRA30_CLK_CCLK_G>;
-+			#cooling-cells = <2>;
- 		};
- 
--		cpu@3 {
-+		cpu3: cpu@3 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a9";
- 			reg = <3>;
- 			clocks = <&tegra_car TEGRA30_CLK_CCLK_G>;
-+			#cooling-cells = <2>;
- 		};
- 	};
- 
-@@ -1102,4 +1121,64 @@ pmu {
- 				     <&{/cpus/cpu@2}>,
- 				     <&{/cpus/cpu@3}>;
- 	};
-+
-+	thermal-zones {
-+		tsensor-channel0 {
-+			polling-delay-passive = <1000>; /* milliseconds */
-+			polling-delay = <5000>; /* milliseconds */
-+
-+			thermal-sensors = <&tsensor 0>;
-+
-+			trips {
-+				level1_trip: dvfs-alert {
-+					/* throttle at 80C until temperature drops to 79.8C */
-+					temperature = <80000>;
-+					hysteresis = <200>;
-+					type = "passive";
-+				};
-+
-+				level2_trip: cpu-div2-throttle {
-+					/* hardware CPU x2 freq throttle at 85C */
-+					temperature = <85000>;
-+					hysteresis = <200>;
-+					type = "hot";
-+				};
-+
-+				level3_trip: soc-critical {
-+					/* hardware shut down at 90C */
-+					temperature = <90000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&level1_trip>;
-+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&actmon THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
-+		};
-+
-+		tsensor-channel1 {
-+			status = "disabled";
-+
-+			polling-delay-passive = <1000>; /* milliseconds */
-+			polling-delay = <0>; /* milliseconds */
-+
-+			thermal-sensors = <&tsensor 1>;
-+
-+			trips {
-+				dvfs-alert {
-+					temperature = <80000>;
-+					hysteresis = <200>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+	};
- };
+root@beaglev:~/src# ./unalign_check 1 0 1
+size:           1 Mb
+write size:      8 bit
+unalignment:    0 byte
+elapsed time:   0.01 sec
+throughput:     124.36 Mb/s
+
+# ./unalign_check 1 0 8
+size:           1 Mb
+write size:      64 bit
+unalignment:    0 byte
+elapsed time:   0.00 sec
+throughput:     252.12 Mb/s
+
+> It is also worth checking how much overhead there is for
+> short copies - they are almost certainly more common than
+> you might expect.
+> This is one problem with excessive loop unrolling - the 'special
+> cases' for the ends of the buffer start having a big effect
+> on small copies.
+>
+
+I too believe that they are much more common than long ones.
+Indeed, I wish to reduce the MIN_THRESHOLD value from 64 to 32 or even 16.
+Or having it dependend on the word size, e.g. sizeof(long) * 2.
+
+Suggestions?
+
+> For cpu that support misaligned memory accesses, one 'trick'
+> for transfers longer than a 'word' is to do a (probably) misaligned
+> transfer of the last word of the buffer first followed by the
+> transfer of the rest of the buffer (overlapping a few bytes at the end).
+> This saves on conditionals and temporary values.
+>
+>         David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+>
+
+Regards,
 -- 
-2.30.2
-
+per aspera ad upstream
