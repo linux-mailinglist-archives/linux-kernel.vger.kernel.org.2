@@ -2,95 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8883AA56F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD0E3AA574
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233605AbhFPUlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 16:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
+        id S233632AbhFPUmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 16:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233560AbhFPUln (ORCPT
+        with ESMTP id S233560AbhFPUmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 16:41:43 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B87AC061574;
-        Wed, 16 Jun 2021 13:39:35 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id r20so2980549qtp.3;
-        Wed, 16 Jun 2021 13:39:35 -0700 (PDT)
+        Wed, 16 Jun 2021 16:42:01 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5433EC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:39:55 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso2506992pjp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:39:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w2FBfLaBcwWiXuuQkiw+TKxNhLLyk0+UoFjg+2c9KWs=;
-        b=BqBhOjMwogf4k3blz8IAL4WznI6LikA5MM6wtvdt54OjlMTQ/hGLAM476ovh8+O353
-         rcDqAUKKfNsblRHU2SVTlhQwfloN8u0hu+w0LiTH+Tia01Gkw4fSBkLWyNLyJfM+n4oL
-         fXL0blwAjsHNAx6D/kmfSebvzy5pTvr1zwUiheCDJmbSiGGiavFdxKJDZQb2GMcmyVEc
-         h8SWGqakfPRb8QUBkKTK0rTCq6vaXPkrjWvudCqX3OWKPJI6qJuX/Rxo093xzbXye5yS
-         RKxsZlzvsABLEIvIVTqJl2q95sY12+mQpCfVtM2pTFJww7wQiU6JQYLFu8KjPFsnsSjE
-         L2bA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SmhdhmsA0X75weRybbZNoVh+EvQd+Iz0Fl+AidPXRmE=;
+        b=Vh7QJ+xnoo0RqR0VyML2hyVWCrhNzuAsvU1JJgd7G8QEQltjCNvn+cChGunibWPm6J
+         6owMLGuymcCRj8MsFtQn+PgGer4z3Er9UtFUsuNBe7FqlMxDIMoSJiMwACAOEg1ufilL
+         8IcOd3EzsrnBef974H6rlM6Iq1UcxiBBF0x8I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=w2FBfLaBcwWiXuuQkiw+TKxNhLLyk0+UoFjg+2c9KWs=;
-        b=eTjR2sN/Xbmf4MQEYkoqFoAWY+kZBD8SYs5J/Bd7IZmHt41wpCjx+wIIfQPvnFqPpn
-         4npSVYCvkRxPqRakWjXfDT1nU1OXCpAyfVrOf6N3yv5v8YPVDoOGBv3nBpx3TRv2dzI+
-         6OQ2y8pNzT/so4qaJM7GqCp9QJk24jTomSqGJx2q2GlKO+SLI7Lsr5FaBHUOsytipH2D
-         ZY/XwQ/Awgt1enOyi4IqQ2+9OK8AuoNM6X1UgAZztIKCAIs1Isj7kQaGdnS5WuEdVXRP
-         W8EPX6fjre8vMA8YJBAuYFj1Lcn1c91NRFCzmIoWXfMg2AOmdboyxSlRs6GfYMuR64Hh
-         t6fw==
-X-Gm-Message-State: AOAM5300R12YjE54WaL2nN+Q5oNGpN8+Ss/Oy3kp8Cu/GnSIzEiJvoSL
-        ABf3N/3QwjO83EitQrnymcI=
-X-Google-Smtp-Source: ABdhPJyfuhLloMr2jD5atgcSjc7s9SBwOGa3zson1CdRWwIRQt+pLlNuk+DW2fOkVzkB46PeGLmTMw==
-X-Received: by 2002:ac8:1285:: with SMTP id y5mr1712954qti.322.1623875974081;
-        Wed, 16 Jun 2021 13:39:34 -0700 (PDT)
-Received: from localhost ([199.192.137.73])
-        by smtp.gmail.com with ESMTPSA id k9sm1693776qtq.30.2021.06.16.13.39.33
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SmhdhmsA0X75weRybbZNoVh+EvQd+Iz0Fl+AidPXRmE=;
+        b=nu0K9vHq1YJIWRuXVI3r8rrTECnSK3mlpx/WZLJWlT9m9wOHEO1YvAx2/e12HnHiaL
+         IMN6NYDqM+3/xd6hBpIkbdKekVj3kNOsXaPPW6otg9dHZCHiA6VysWjEFWRQatG4pNEG
+         HuM9JzkM6Qo7CeMbvP21J5Pv/kMBbE9YYxEClvDgAWqa1VU34Z7omWmygEtu4GmAiVjd
+         imvbxpo46QWPEbp48F7CbLmlLzEQx+qUGptzOhvyE+t6NEZpe7FhGM9eKLrkWOP+cbi5
+         waThp2Cd8FZ0dKLhpXBVX9uG9DhJTrHG0ncfNRRt3oxxAMk8QE9MGpHakoyxXjWw4erC
+         URGg==
+X-Gm-Message-State: AOAM533aU6lJmFp6YJjxHeD37f+SvTT1MGC7BpkFQBARDnD4fwgERkTZ
+        Gw3ZQJP9b66iLUyM2B8cpvtEDA==
+X-Google-Smtp-Source: ABdhPJzrVDeH8lypdMacFxkxdycYjzThxIc72HqgLirIbDGhLTUlwbwroCrVf81eN8/yxl8nHgx/eg==
+X-Received: by 2002:a17:90a:b284:: with SMTP id c4mr1722095pjr.213.1623875994939;
+        Wed, 16 Jun 2021 13:39:54 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j7sm7866009pjf.0.2021.06.16.13.39.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 13:39:33 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 16 Jun 2021 16:39:32 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH 1/5] cgroup/cpuset: Don't call validate_change() for some
- flag changes
-Message-ID: <YMphhLAzmRRyD+cm@slm.duckdns.org>
-References: <20210603212416.25934-1-longman@redhat.com>
- <20210603212416.25934-2-longman@redhat.com>
+        Wed, 16 Jun 2021 13:39:54 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] orinoco: Avoid field-overflowing memcpy()
+Date:   Wed, 16 Jun 2021 13:39:51 -0700
+Message-Id: <20210616203952.1248910-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603212416.25934-2-longman@redhat.com>
+X-Patch-Hashes: v=1; h=sha256; g=89de090dea0239b1bd78c9c46e85fd796dd40c70; i=pw9pIO5cSvehAPXOYHpT36oPIsjxZgLBBPkjzgwo04A=; m=ULgPUYgopMLRjuXTD0/UgUsfNvLp6QV22Z7i5a71D2c=; p=8N134GX410DnBkaZCpurE9BNvmX2qXrE1f/VxCDCm1I=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDKYZcACgkQiXL039xtwCYpqBAAhNs iU92ddJ1SHdKbx0as+XPYDkLjrDbdPDcjvyPC2KeBTMXSHBRa0hLjgR3gmd4oJrA9ekBvvmsM5yVE NfQmh9veoO7YKYRDSQ7xMZa380xYT52+y0DrJIy45ibUIpPU8Z4+17QxyTDZ4oqtTNLs63FuRJch+ DsFzi9E1qVcRrGKk/R3UbNn+K4ejXMOdMQrfoAFPKXG6NkESileQv7IV/eo4UUmYjpPhDH9kEqJW8 8bNmZ6lTUao3iWvnFvqE6UwDdojEIOnFiYtVRwnvqB0gb/m5wDjAndT/BvBROmmXMm75SdcvTeWDy tzsUtRMKsX72qOebrUwNOY+eiFUwXnjxrKjTNeOnLyV8GmoSevoHdcSIFgKTjRuv0qdZq2iZL683z /VhWjP9OZKSGq/P8hAsKd8hetXzYdHMGmCOv6stE6eGdSlHUHQNYmfgdwH+fDKmzFjtquuXvfjCix F6kGTxgdjd5lLKRuKFbiHU5Uf0lj5HMbTaiyX1E4oOj0amSlbenbYfyb72TqMj5dJa17INcVNLTGR /XKWMdZJ/hRZ9rtJjA5ShkBN9YUSP3XQx5MC4JZxIKZ+/2eIUashdw10+xek7Y4dlCACP7Xq7vo9l ENwkwBPSuoYm48jBkGTeII20I/hZ5ogLPIu/chTReK7tDmipf7NGjfh/7XWNA7c8=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally writing across neighboring array fields.
 
-On Thu, Jun 03, 2021 at 05:24:12PM -0400, Waiman Long wrote:
-> The update_flag() is called with one flag bit change and without change
-> in the various cpumasks in the cpuset. Moreover, not all changes in the
-> flag bits are validated in validate_change().  In particular, the load
-> balance flag and the two spread flags are not checked there. So there
-> is no point in calling validate_change() if those flag bits change.
+Validate the expected key size and introduce a wrapping structure
+to use as the multi-field memcpy() destination so that overflows
+can be correctly detected.
 
-The fact that it's escaping validation conditionally from caller side is
-bothersome given that the idea is to have self-contained verifier to ensure
-correctness. I'd prefer to make the validation more complete and optimized
-(ie. detect or keep track of what changed) if really necessary rather than
-escaping partially because certain conditions aren't checked.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/wireless/intersil/orinoco/hw.c   | 18 +++++++++++-------
+ drivers/net/wireless/intersil/orinoco/hw.h   |  5 +++--
+ drivers/net/wireless/intersil/orinoco/wext.c |  2 +-
+ 3 files changed, 15 insertions(+), 10 deletions(-)
 
-Thanks.
-
+diff --git a/drivers/net/wireless/intersil/orinoco/hw.c b/drivers/net/wireless/intersil/orinoco/hw.c
+index 2c7adb4be100..0aea35c9c11c 100644
+--- a/drivers/net/wireless/intersil/orinoco/hw.c
++++ b/drivers/net/wireless/intersil/orinoco/hw.c
+@@ -988,15 +988,18 @@ int __orinoco_hw_setup_enc(struct orinoco_private *priv)
+  * tsc must be NULL or up to 8 bytes
+  */
+ int __orinoco_hw_set_tkip_key(struct orinoco_private *priv, int key_idx,
+-			      int set_tx, const u8 *key, const u8 *rsc,
+-			      size_t rsc_len, const u8 *tsc, size_t tsc_len)
++			      int set_tx, const u8 *key, size_t key_len,
++			      const u8 *rsc, size_t rsc_len,
++			      const u8 *tsc, size_t tsc_len)
+ {
+ 	struct {
+ 		__le16 idx;
+ 		u8 rsc[ORINOCO_SEQ_LEN];
+-		u8 key[TKIP_KEYLEN];
+-		u8 tx_mic[MIC_KEYLEN];
+-		u8 rx_mic[MIC_KEYLEN];
++		struct {
++			u8 key[TKIP_KEYLEN];
++			u8 tx_mic[MIC_KEYLEN];
++			u8 rx_mic[MIC_KEYLEN];
++		} tkip;
+ 		u8 tsc[ORINOCO_SEQ_LEN];
+ 	} __packed buf;
+ 	struct hermes *hw = &priv->hw;
+@@ -1011,8 +1014,9 @@ int __orinoco_hw_set_tkip_key(struct orinoco_private *priv, int key_idx,
+ 		key_idx |= 0x8000;
+ 
+ 	buf.idx = cpu_to_le16(key_idx);
+-	memcpy(buf.key, key,
+-	       sizeof(buf.key) + sizeof(buf.tx_mic) + sizeof(buf.rx_mic));
++	if (key_len != sizeof(buf.tkip))
++		return -EINVAL;
++	memcpy(&buf.tkip, key, sizeof(buf.tkip));
+ 
+ 	if (rsc_len > sizeof(buf.rsc))
+ 		rsc_len = sizeof(buf.rsc);
+diff --git a/drivers/net/wireless/intersil/orinoco/hw.h b/drivers/net/wireless/intersil/orinoco/hw.h
+index 466d1ede76f1..da5804dbdf34 100644
+--- a/drivers/net/wireless/intersil/orinoco/hw.h
++++ b/drivers/net/wireless/intersil/orinoco/hw.h
+@@ -38,8 +38,9 @@ int __orinoco_hw_set_wap(struct orinoco_private *priv);
+ int __orinoco_hw_setup_wepkeys(struct orinoco_private *priv);
+ int __orinoco_hw_setup_enc(struct orinoco_private *priv);
+ int __orinoco_hw_set_tkip_key(struct orinoco_private *priv, int key_idx,
+-			      int set_tx, const u8 *key, const u8 *rsc,
+-			      size_t rsc_len, const u8 *tsc, size_t tsc_len);
++			      int set_tx, const u8 *key, size_t key_len,
++			      const u8 *rsc, size_t rsc_len,
++			      const u8 *tsc, size_t tsc_len);
+ int orinoco_clear_tkip_key(struct orinoco_private *priv, int key_idx);
+ int __orinoco_hw_set_multicast_list(struct orinoco_private *priv,
+ 				    struct net_device *dev,
+diff --git a/drivers/net/wireless/intersil/orinoco/wext.c b/drivers/net/wireless/intersil/orinoco/wext.c
+index 7b6c4ae8ddb3..4a01260027bc 100644
+--- a/drivers/net/wireless/intersil/orinoco/wext.c
++++ b/drivers/net/wireless/intersil/orinoco/wext.c
+@@ -791,7 +791,7 @@ static int orinoco_ioctl_set_encodeext(struct net_device *dev,
+ 
+ 			err = __orinoco_hw_set_tkip_key(priv, idx,
+ 				 ext->ext_flags & IW_ENCODE_EXT_SET_TX_KEY,
+-				 priv->keys[idx].key,
++				 priv->keys[idx].key, priv->keys[idx].key_len,
+ 				 tkip_iv, ORINOCO_SEQ_LEN, NULL, 0);
+ 			if (err)
+ 				printk(KERN_ERR "%s: Error %d setting TKIP key"
 -- 
-tejun
+2.25.1
+
