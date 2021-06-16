@@ -2,113 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFD73A9BD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1DE3A9BDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbhFPNYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbhFPNYq (ORCPT
+        id S233199AbhFPNYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:24:53 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3250 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232611AbhFPNYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:24:46 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48175C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:22:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Bo8OxX0cuSdLyOcimixXWTH44D/b0shnleFSGpAmQ5s=; b=s/7SSj+d5ghJgqlNfxwmgRiYb
-        2wXLhO1AXHSNm5D2fdqQi35i1pyBKvnrS367EQG+0uTJIsyGY7MfFAjMvqPX5w6IGEXRhHCBBwjEl
-        6n9QW9z3oV0+8DHn03CEYUIRtYtBI/5U1M6QR8R91s3XJSzESItvY1m4bdSsIYmTkHQH+hYCbLUV9
-        Wro1w94qcT2HBzqAM9NVIn9nM5Rwx8gllsFD4F2rBTUGFURyN0zEC9/dOH+K2QBIboQ5iJAZ+v07j
-        YDGHj2hJiJwWn1hyHQzOmyT4rd7Z/zvQS0/NWJn7WVjxXbjzuch8RDPSW2yksVg8V4nUYBheicQEd
-        OPT4MQlyA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45066)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1ltVV0-0007Fu-BB; Wed, 16 Jun 2021 14:22:30 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1ltVUx-00063k-2M; Wed, 16 Jun 2021 14:22:27 +0100
-Date:   Wed, 16 Jun 2021 14:22:27 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
-Message-ID: <20210616132226.GD22278@shell.armlinux.org.uk>
-References: <cover.1623813516.git.luto@kernel.org>
- <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
- <YMnPezLs6vb418Wz@hirez.programming.kicks-ass.net>
- <YMnQVoKvM5G34Yan@hirez.programming.kicks-ass.net>
- <20210616103446.GC22278@shell.armlinux.org.uk>
- <YMncQv1uT5QyQ84w@hirez.programming.kicks-ass.net>
+        Wed, 16 Jun 2021 09:24:50 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G4lwq6C9Kz6K6NG;
+        Wed, 16 Jun 2021 21:12:59 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.62.217) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 15:22:40 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <viro@zeniv.linux.org.uk>, <zohar@linux.ibm.com>,
+        <paul@paul-moore.com>, <stephen.smalley.work@gmail.com>,
+        <casey@schaufler-ca.com>, <stefanb@linux.ibm.com>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH] fs: Return raw xattr for security.* if there is size disagreement with LSMs
+Date:   Wed, 16 Jun 2021 15:22:27 +0200
+Message-ID: <20210616132227.999256-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <ee75bde9a17f418984186caa70abd33b@huawei.com>
+References: <ee75bde9a17f418984186caa70abd33b@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMncQv1uT5QyQ84w@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.62.217]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 01:10:58PM +0200, Peter Zijlstra wrote:
-> On Wed, Jun 16, 2021 at 11:34:46AM +0100, Russell King (Oracle) wrote:
-> > On Wed, Jun 16, 2021 at 12:20:06PM +0200, Peter Zijlstra wrote:
-> > > On Wed, Jun 16, 2021 at 12:16:27PM +0200, Peter Zijlstra wrote:
-> > > > On Tue, Jun 15, 2021 at 08:21:12PM -0700, Andy Lutomirski wrote:
-> > > > > On arm32, the only way to safely flush icache from usermode is to call
-> > > > > cacheflush(2).  This also handles any required pipeline flushes, so
-> > > > > membarrier's SYNC_CORE feature is useless on arm.  Remove it.
-> > > > 
-> > > > So SYNC_CORE is there to help an architecture that needs to do something
-> > > > per CPU. If I$ invalidation is broadcast and I$ invalidation also
-> > > > triggers the flush of any uarch caches derived from it (if there are
-> > > > any).
-> > > 
-> > > Incomplete sentence there: + then we don't need SYNC_CORE.
-> > > 
-> > > > Now arm_syscall() NR(cacheflush) seems to do flush_icache_user_range(),
-> > > > which, if I read things right, end up in arch/arm/mm/*.S, but that
-> > > > doesn't consider cache_ops_need_broadcast().
-> > > > 
-> > > > Will suggests that perhaps ARM 11MPCore might need this due to their I$
-> > > > flush maybe not being broadcast
-> > 
-> > If it leaves other cores with incoherent I cache, then that's already
-> > a problem for SMP cores, since there could be no guarantee that the
-> > modifications made by one core will be visible to some other core that
-> > ends up running that code - and there is little option for userspace to
-> > work around that except by pinning the thread making the modifications
-> > and subsequently executing the code to a core.
-> 
-> That's where SYNC_CORE can help. Or you make sys_cacheflush() do a
-> system wide IPI.
+vfs_getxattr() differs from vfs_setxattr() in the way it obtains the xattr
+value. The former gives precedence to the LSMs, and if the LSMs don't
+provide a value, obtains it from the filesystem handler. The latter does
+the opposite, first invokes the filesystem handler, and if the filesystem
+does not support xattrs, passes the xattr value to the LSMs.
 
-If it's a problem, then it needs fixing. sys_cacheflush() is used to
-implement GCC's __builtin___clear_cache(). I'm not sure who added this
-to gcc.
+The problem is that not necessarily the user gets the same xattr value that
+he set. For example, if he sets security.selinux with a value not
+terminated with '\0', he gets a value terminated with '\0' because SELinux
+adds it during the translation from xattr to internal representation
+(vfs_setxattr()) and from internal representation to xattr
+(vfs_getxattr()).
 
-> > The same is also true of flush_icache_range() - which is used when
-> > loading a kernel module. In the case Will is referring to, these alias
-> > to the same code.
-> 
-> Yes, cache_ops_need_broadcast() seems to be missing in more places.
+Normally, this does not have an impact unless the integrity of xattrs is
+verified with EVM. The kernel and the user see different values due to the
+different functions used to obtain them:
 
-Likely only in places where we care about I/D coherency - as the data
-cache is required to be PIPT on these SMP platforms.
+kernel (EVM): uses vfs_getxattr_alloc() which obtains the xattr value from
+              the filesystem handler (raw value);
 
+user (ima-evm-utils): uses vfs_getxattr() which obtains the xattr value
+                      from the LSMs (normalized value).
+
+Given that the difference between the raw value and the normalized value
+should be just the additional '\0' not the rest of the content, this patch
+modifies vfs_getxattr() to compare the size of the xattr value obtained
+from the LSMs to the size of the raw xattr value. If there is a mismatch
+and the filesystem handler does not return an error, vfs_getxattr() returns
+the raw value.
+
+This patch should have a minimal impact on existing systems, because if the
+SELinux label is written with the appropriate tools such as setfiles or
+restorecon, there will not be a mismatch (because the raw value also has
+'\0').
+
+In the case where the SELinux label is written directly with setfattr and
+without '\0', this patch helps to align EVM and ima-evm-utils in terms of
+result provided (due to the fact that they both verify the integrity of
+xattrs from raw values).
+
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Tested-by: Mimi Zohar <zohar@linux.ibm.com>
+---
+ fs/xattr.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/fs/xattr.c b/fs/xattr.c
+index 5c8c5175b385..412ec875aa07 100644
+--- a/fs/xattr.c
++++ b/fs/xattr.c
+@@ -420,12 +420,27 @@ vfs_getxattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+ 		const char *suffix = name + XATTR_SECURITY_PREFIX_LEN;
+ 		int ret = xattr_getsecurity(mnt_userns, inode, suffix, value,
+ 					    size);
++		int ret_raw;
++
+ 		/*
+ 		 * Only overwrite the return value if a security module
+ 		 * is actually active.
+ 		 */
+ 		if (ret == -EOPNOTSUPP)
+ 			goto nolsm;
++
++		if (ret < 0)
++			return ret;
++
++		/*
++		 * Read raw xattr if the size from the filesystem handler
++		 * differs from that returned by xattr_getsecurity() and is
++		 * equal or greater than zero.
++		 */
++		ret_raw = __vfs_getxattr(dentry, inode, name, NULL, 0);
++		if (ret_raw >= 0 && ret_raw != ret)
++			goto nolsm;
++
+ 		return ret;
+ 	}
+ nolsm:
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.25.1
+
