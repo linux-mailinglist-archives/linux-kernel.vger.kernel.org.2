@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE9C3A9C3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E5E3A9C37
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhFPNmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:42:21 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:33975 "EHLO
+        id S233434AbhFPNmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:42:08 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:33998 "EHLO
         alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233374AbhFPNlg (ORCPT
+        by vger.kernel.org with ESMTP id S233354AbhFPNle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:41:36 -0400
+        Wed, 16 Jun 2021 09:41:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1623850770; x=1655386770;
+  t=1623850768; x=1655386768;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=H0Mpm8A6eWprEp4EbUOw1hCbxLfkWczylWeJo/FTZ74=;
-  b=U4Hy6sB22kBhJVW74I3si56e7jvsTYqj5FSjna7MwFXtF+FzSoNkuN6F
-   nnBBTb0XPmR3qcAmn6mEh8kXdQffdKfroItN4OaYMIk0MgzVmV0HcyWLb
-   K5bhT49RqqIy1wDDVrq/kS7WmYCRa62/oAtgmHrW4lw2M2X0qQNNim4N0
-   4=;
+  bh=e9j78rdWwk4Kd0aCMBvspRHOURninHxcAIXEA5TcovU=;
+  b=gSzd959IQ37IAkHPPJ6s9AQRl98Bsbm9fUbmaySBhfBZ2z4DtwMB5nLN
+   DN6q9mcJNEHcMmQjvBssCpjbrtCkd94Ar03ikyNp2m/i5zEhUvsXR5+YY
+   JoI6Tc9k43IcK2f8rSQlWJljSEtGTnj823EYZHOzE+8uUkU32mPNByp+6
+   8=;
 Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
   by alexa-out-sd-01.qualcomm.com with ESMTP; 16 Jun 2021 06:39:16 -0700
 X-QCInternal: smtphost
@@ -37,9 +37,9 @@ CC:     <joro@8bytes.org>, <isaacm@codeaurora.org>,
         <iommu@lists.linux-foundation.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <djakov@kernel.org>
-Subject: [PATCH v7 01/15] iommu/io-pgtable: Introduce unmap_pages() as a page table op
-Date:   Wed, 16 Jun 2021 06:38:42 -0700
-Message-ID: <1623850736-389584-2-git-send-email-quic_c_gdjako@quicinc.com>
+Subject: [PATCH v7 02/15] iommu: Add an unmap_pages() op for IOMMU drivers
+Date:   Wed, 16 Jun 2021 06:38:43 -0700
+Message-ID: <1623850736-389584-3-git-send-email-quic_c_gdjako@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1623850736-389584-1-git-send-email-quic_c_gdjako@quicinc.com>
 References: <1623850736-389584-1-git-send-email-quic_c_gdjako@quicinc.com>
@@ -54,50 +54,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Isaac J. Manjarres" <isaacm@codeaurora.org>
 
-The io-pgtable code expects to operate on a single block or
-granule of memory that is supported by the IOMMU hardware when
-unmapping memory.
+Add a callback for IOMMU drivers to provide a path for the
+IOMMU framework to call into an IOMMU driver, which can call
+into the io-pgtable code, to unmap a virtually contiguous
+range of pages of the same size.
 
-This means that when a large buffer that consists of multiple
-such blocks is unmapped, the io-pgtable code will walk the page
-tables to the correct level to unmap each block, even for blocks
-that are virtually contiguous and at the same level, which can
-incur an overhead in performance.
-
-Introduce the unmap_pages() page table op to express to the
-io-pgtable code that it should unmap a number of blocks of
-the same size, instead of a single block. Doing so allows
-multiple blocks to be unmapped in one call to the io-pgtable
-code, reducing the number of page table walks, and indirect
-calls.
+For IOMMU drivers that do not specify an unmap_pages() callback,
+the existing logic of unmapping memory one page block at a time
+will be used.
 
 Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
 Suggested-by: Will Deacon <will@kernel.org>
 Signed-off-by: Will Deacon <will@kernel.org>
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
 Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
 ---
- include/linux/io-pgtable.h | 4 ++++
+ include/linux/iommu.h | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
-index 4d40dfa75b55..9391c5fa71e6 100644
---- a/include/linux/io-pgtable.h
-+++ b/include/linux/io-pgtable.h
-@@ -144,6 +144,7 @@ struct io_pgtable_cfg {
-  *
-  * @map:          Map a physically contiguous memory region.
-  * @unmap:        Unmap a physically contiguous memory region.
-+ * @unmap_pages:  Unmap a range of virtually contiguous pages of the same size.
-  * @iova_to_phys: Translate iova to physical address.
-  *
-  * These functions map directly onto the iommu_ops member functions with
-@@ -154,6 +155,9 @@ struct io_pgtable_ops {
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index 32d448050bf7..25a844121be5 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -181,6 +181,7 @@ struct iommu_iotlb_gather {
+  * @detach_dev: detach device from an iommu domain
+  * @map: map a physically contiguous memory region to an iommu domain
+  * @unmap: unmap a physically contiguous memory region from an iommu domain
++ * @unmap_pages: unmap a number of pages of the same size from an iommu domain
+  * @flush_iotlb_all: Synchronously flush all hardware TLBs for this domain
+  * @iotlb_sync_map: Sync mappings created recently using @map to the hardware
+  * @iotlb_sync: Flush all queued ranges from the hardware TLBs and empty flush
+@@ -231,6 +232,9 @@ struct iommu_ops {
  		   phys_addr_t paddr, size_t size, int prot, gfp_t gfp);
- 	size_t (*unmap)(struct io_pgtable_ops *ops, unsigned long iova,
- 			size_t size, struct iommu_iotlb_gather *gather);
-+	size_t (*unmap_pages)(struct io_pgtable_ops *ops, unsigned long iova,
+ 	size_t (*unmap)(struct iommu_domain *domain, unsigned long iova,
+ 		     size_t size, struct iommu_iotlb_gather *iotlb_gather);
++	size_t (*unmap_pages)(struct iommu_domain *domain, unsigned long iova,
 +			      size_t pgsize, size_t pgcount,
-+			      struct iommu_iotlb_gather *gather);
- 	phys_addr_t (*iova_to_phys)(struct io_pgtable_ops *ops,
- 				    unsigned long iova);
- };
++			      struct iommu_iotlb_gather *iotlb_gather);
+ 	void (*flush_iotlb_all)(struct iommu_domain *domain);
+ 	void (*iotlb_sync_map)(struct iommu_domain *domain, unsigned long iova,
+ 			       size_t size);
