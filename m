@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8113AA036
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE753AA05C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235855AbhFPPqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:46:33 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:51716 "EHLO
+        id S235783AbhFPPuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:50:51 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:54534 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235696AbhFPPnj (ORCPT
+        with ESMTP id S235600AbhFPPuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:43:39 -0400
+        Wed, 16 Jun 2021 11:50:21 -0400
 X-UUID: 040684fa75ff4f7b84c23e77a91e5f21-20210616
 X-UUID: 040684fa75ff4f7b84c23e77a91e5f21-20210616
 Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
