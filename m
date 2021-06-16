@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0513A957A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B463A957B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbhFPJFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:05:23 -0400
-Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:53473 "EHLO
-        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231335AbhFPJFW (ORCPT
+        id S232118AbhFPJFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232009AbhFPJF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:05:22 -0400
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id DDD17F836B
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 10:03:15 +0100 (IST)
-Received: (qmail 17435 invoked from network); 16 Jun 2021 09:03:15 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 16 Jun 2021 09:03:15 -0000
-Date:   Wed, 16 Jun 2021 10:03:14 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] sched/fair: Age the average idle time
-Message-ID: <20210616090314.GJ30378@techsingularity.net>
-References: <20210615111611.GH30378@techsingularity.net>
- <20210615204228.GB4272@worktop.programming.kicks-ass.net>
+        Wed, 16 Jun 2021 05:05:27 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F502C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:03:21 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id z8so1740184wrp.12
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:03:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=R5IwZ5T10RFAZOqt5qcuDzQhKca6nmgiqgnrBFf4d0s=;
+        b=XI4/RArI04XyRGOyO6qnd8JSW5hLOLesz9Q3yWt5JyjxgJGy0qmfYMd5UEdopSIn4d
+         ZEoHiANcieeu3zTtC+tcHAAtDdxSpQB6cEhoXKthR3GsLa6QEGgaAgl4z7MI+svYjUaY
+         gm7Tb8bML+EKtre/PcTndDIsXpNjortodY3HnVDxIBAKL3w6dS1Ki5prQzZ7+3OL8FBs
+         bL7zHMyiHhoIMtfK/00jq3sEpf1oRP0A6wPdcBKedgrEM/3nxgIClrFfbfnFygocTAJN
+         4MrgyjFK4GyNwPIczDGTVuFBb3TtE1pm702aarKQZAg8oCb2AWl9abk5CgvGO2wH0v0z
+         qhxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=R5IwZ5T10RFAZOqt5qcuDzQhKca6nmgiqgnrBFf4d0s=;
+        b=gNV36PEJv1cPpfL5kdx/qibu2Hr8TjH83g6Q4Cr7iH+4/tI7wS9j5945/h4g/V+KrB
+         rEmCTc+cayAUyVbeOjfnBfcX/z4PjtjCkUKW6gXzGlCYEkub3Y2c48+9iTiBGkKg9943
+         7j+uIWBQj6t6Z2nvXmBWkruXVfPvC5Th1LPZLwjro8PbS9zwYRJXaHU6QrWTWN9MrwnP
+         Nunxhv9ut597IDeB2ujJwyvHUCaSMVAWAxjM3GmbvQEPO9a83/BZqfMNzefrmL4VJnRY
+         Eucpnp0o+f2m9AXpQ6O1rkxr71TJKlg2C4PYEn5iQcwx8T/6vXnqchrwIR4CLe2N6HlP
+         xYww==
+X-Gm-Message-State: AOAM532pNOIsxFfp3cYg3EyXaFDLnEgLCPC3KLSOtxKowqZWQodtc0zI
+        wuRct3xWMOu+z0J27qrSTgkmvbeoTV/qgQ==
+X-Google-Smtp-Source: ABdhPJxOz1OWe9kuSrTnigTxWFPqfVk5W6nKvaKAcwO6qLkegofStZEAvSgjvWvYmo20BydttymtYw==
+X-Received: by 2002:adf:a193:: with SMTP id u19mr4117281wru.9.1623834199539;
+        Wed, 16 Jun 2021 02:03:19 -0700 (PDT)
+Received: from dell (94-30-15-53.xdsl.murphx.net. [94.30.15.53])
+        by smtp.gmail.com with ESMTPSA id e17sm1545929wre.79.2021.06.16.02.03.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 02:03:19 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 10:03:17 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Yunus Bas <y.bas@phytec.de>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: mfd-core: Change "Failed to locate of_node" warning
+ to debug
+Message-ID: <YMm+VXRrRKIHGgmr@dell>
+References: <20210616081949.26618-1-y.bas@phytec.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210615204228.GB4272@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210616081949.26618-1-y.bas@phytec.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 10:42:28PM +0200, Peter Zijlstra wrote:
-> On Tue, Jun 15, 2021 at 12:16:11PM +0100, Mel Gorman wrote:
-> > From: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > 
-> > This is a partial forward-port of Peter Ziljstra's work first posted
-> > at https://lore.kernel.org/lkml/20180530142236.667774973@infradead.org/.
+On Wed, 16 Jun 2021, Yunus Bas wrote:
+
+> The MFD-core iterates through all subdevices of the corresponding
+> MFD-device and checks, if the devicetree subnode has a fitting compatible.
+> When nothing is found, a warning is thrown. This can be the case, when it
+> is the intention to not use the MFD-device to it's full content.
+> Therefore, change the warning to a debug print instead, to also avoid
+> irritations.
 > 
-> It's patches 2 and 3 together, right?
+> Signed-off-by: Yunus Bas <y.bas@phytec.de>
+> ---
+>  drivers/mfd/mfd-core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
+> index 6f02b8022c6d..e34c97088943 100644
+> --- a/drivers/mfd/mfd-core.c
+> +++ b/drivers/mfd/mfd-core.c
+> @@ -213,7 +213,7 @@ static int mfd_add_device(struct device *parent, int id,
+>  		}
+>  
+>  		if (!pdev->dev.of_node)
+> -			pr_warn("%s: Failed to locate of_node [id: %d]\n",
+> +			pr_debug("%s: Failed to locate of_node [id: %d]\n",
+>  				cell->name, platform_id);
+>  	}
 
-Patches 2, 3, 9 and 10. I saw limited value to preserving the feature
-flag. Some of the series has since been obsoleted. The main patch of
-interest that was dropped was patch 1 because the results were somewhat
-inconclusive but leaning towards being an overall loss.
+Can you provide an example of a device tree where this is a problem?
 
-> > His Signed-off has been removed because it is modified but will be restored
-> > if he says it's still ok.
-> 
-> I suppose the SoB will auto-magically re-appear if I apply it :-)
-> 
-
-Yep, it would and it would indicate that you didn't object to the copying
-at least :P
-
-> > The patch potentially matters when a socket was multiple LLCs as the
-> > maximum search depth is lower. However, some of the test results were
-> > suspiciously good (e.g. specjbb2005 gaining 50% on a Zen1 machine) and
-> > other results were not dramatically different to other mcahines.
-> > 
-> > Given the nature of the patch, Peter's full series is not being forward
-> > ported as each part should stand on its own. Preferably they would be
-> > merged at different times to reduce the risk of false bisections.
-> 
-> I'm tempted to give it a go.. anyone object?
-
-Thanks, so far no serious objection :)
-
-The latest results as I see them have been copied to
-https://beta.suse.com/private/mgorman/melt/v5.13-rc5/3-perf-test/sched/sched-avgidle-v1r6/html/dashboard.html
-They will move from here if the patch is accepted to 5-assembly replacing
-3-perf-test. This naming is part of my workflow for evaluating topic
-branches separetly and then putting them together for another round
-of testing.
-
-NAS shows small differences but NAS would see limited impact from the
-patch. Specjbb shows small losses and some minor gains which is unfortunate
-but the workload tends to see small gains and losses all the time.
-redis is a mixed bag but has some wins. hackbench is the main benefit
-because it's wakeup intensive and tends to overload machines where deep
-searches hurt.
-
-There are other results in there if you feel like digging around
-such as sched-core tested with no processes getting tagged with prctl
-https://beta.suse.com/private/mgorman/melt/v5.13-rc5/5-assembly/sched/sched-schedcore-v1r2/html/dashboard.html
-
+Probably worth popping that in the commit message too.
 
 -- 
-Mel Gorman
-SUSE Labs
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
