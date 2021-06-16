@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286B83A969A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4393A96A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbhFPJzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:55:07 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35144 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232331AbhFPJyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:54:54 -0400
-Received: from zn.tnic (p200300ec2f0c2b0089cf8396f15d74fc.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:2b00:89cf:8396:f15d:74fc])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B457E1EC0402;
-        Wed, 16 Jun 2021 11:52:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623837167;
+        id S231971AbhFPJ4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:56:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57382 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231389AbhFPJ4g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 05:56:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623837270;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=55YUTD0xMLR3eNdyrRtKxQw5aZ564OZYbwRRlI5/7Qc=;
-        b=pR+teYe/PbB/g8UygDO3kkYxp3sVClD0rupzgrLDiGMYKVp5plXF1UjSabb9C+7EkHmjoZ
-        v4PaJQyLErOQE34MhpnE6ngd7TgnwvOl87ZrXSVJMc1umxip9oB9bw/L+h+zGd0flWeHPL
-        l4/IPMqD7Di+6PV6UtKjrZF9xkiTygI=
-Date:   Wed, 16 Jun 2021 11:52:37 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 03/12] x86/cpufeatures: Add TDX Guest CPU feature
-Message-ID: <YMnJ5V4NU1JF2KAZ@zn.tnic>
-References: <YMI2MtZ/poULESej@zn.tnic>
- <20210612210219.2164766-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=gnZwxqXLViut3Da0TSy5LNDztyw9a++silni0yN/gPQ=;
+        b=CRMM/1v+H+yewmsyGbH5o1sP/PrT6MTe3eMJWlk1d0Li3FuSGN2GOytuWbYrMnKyhTDumN
+        XxRZbM1mqFN0EOyC+hKZjS0zTfPxtVOzi20skmq1HK4btTPRoDfdPaA+K/7b1Xx+5zUAdx
+        BFfUUzJWcyXF5RsvwJEoida9jNse8wU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-527-8le9upODMk64bvbat5ro4A-1; Wed, 16 Jun 2021 05:54:26 -0400
+X-MC-Unique: 8le9upODMk64bvbat5ro4A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B4011084F40;
+        Wed, 16 Jun 2021 09:54:25 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C4D7760BF1;
+        Wed, 16 Jun 2021 09:54:22 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210614201435.1379188-6-willy@infradead.org>
+References: <20210614201435.1379188-6-willy@infradead.org> <20210614201435.1379188-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, akpm@linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCH v11 05/33] mm/debug: Add VM_BUG_ON_FOLIO() and VM_WARN_ON_ONCE_FOLIO()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210612210219.2164766-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <813497.1623837261.1@warthog.procyon.org.uk>
+Date:   Wed, 16 Jun 2021 10:54:21 +0100
+Message-ID: <813498.1623837261@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 02:02:19PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> +void __init tdx_early_init(void)
-> +{
-> +	if (!cpuid_has_tdx_guest())
-> +		return;
-> +
-> +	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
-> +
-> +	pr_info("Guest is initialized\n");
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-As I had typed, without the "is":
+> These are the folio equivalents of VM_BUG_ON_PAGE and
+> VM_WARN_ON_ONCE_PAGE.  No change to generated code.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Zi Yan <ziy@nvidia.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Jeff Layton <jlayton@kernel.org>
+> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
 
-	pr_info("Guest initialized\n");
+Reviewed-by: David Howells <dhowells@redhat.com>
 
-We're trying to keep dmesg style from becoming prose. :)
-
-Rest looks ok.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
