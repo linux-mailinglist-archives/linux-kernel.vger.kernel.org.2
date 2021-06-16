@@ -2,462 +2,538 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083993A930C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CBB3A930F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbhFPGug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231710AbhFPGua (ORCPT
+        id S231614AbhFPGvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:51:05 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:20576 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231290AbhFPGvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:50:30 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D574C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 23:48:25 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id q25so1384410pfh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 23:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wHWamenmOHlNmoXLuZe9DO++QMOAk9UZVcjrT6HRY+4=;
-        b=EdvUml/9a05FhcQpLX9ydI3EUXlz01ykjhPBZ2zCA+1baNB1swTocErpbKAZJe7MjR
-         Y5LRLcoCWr7tOyZh8mgiFJlTlW1ymyZm2DVNqLTHOIgOIcmlxvjV3up2w4sHzowOaChJ
-         65TUeeaXW6QyKvM/Xmeq9hzgyW638pAmKf1JKZ32hY7XTT7yWel65Vww6oq6rIYFVr/r
-         GXWKooueFwYupxYgkkzvFuJ01oYzlo/ctnXVckbnfSc7zD47amf9tp9830YJSWBuddK9
-         ZCgWHf1FMZB2f2cBvqcOGmTZNcAKfpjxtHyMUgQ/wwX8YHsblUub3d0NrC7wm4XdQZOH
-         FDNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wHWamenmOHlNmoXLuZe9DO++QMOAk9UZVcjrT6HRY+4=;
-        b=HBeyOpa5TWpcY2XTuKabkfeSFuDV4OU/WLMAKYSjvCjd9wv/L8mzulsrm4OqrRT6za
-         wRQjb1ZcAbdUgA1Pd5WBbl/1FE9J8nc3hzYrnVTN+UgkggUdOU5LzS58gVOyjFw+3jnx
-         dgCg6MrWV/E3dZn869Cw1a7jPlwPCxW6NaE2RdZe0JU+opdfVk8SxEr8DzA0j1V0BeI2
-         DoTBRskes5G6vW/gLJHIIsQFGJwv82K1Lo1qOU2+XQLRe832gmEl0i0XVecc8pP32dnb
-         WjObEOL3QxQe1+8Ri9JvYCH5bsjjo+NPIupwRFE0xRrz+rKyXvrvBxfD90FQPxheGsTz
-         d7LQ==
-X-Gm-Message-State: AOAM5301S+kKewjRGq5OaZ+WSR3PlAie54NgOlAx8gvV1/8mIW7Suc1I
-        Jk6CvoWsie4FPXFLKLOdf+EDyw==
-X-Google-Smtp-Source: ABdhPJxLDGSfqj9vCMeL5YWhlJPxptsn+YM5ydskdhxt3tKHMtWqat1WJRzV3wzECvggtBtizwpr7A==
-X-Received: by 2002:a62:1d0e:0:b029:2d8:30a3:687f with SMTP id d14-20020a621d0e0000b02902d830a3687fmr7996691pfd.17.1623826104569;
-        Tue, 15 Jun 2021 23:48:24 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id ig1sm1176056pjb.27.2021.06.15.23.48.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 23:48:24 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 3/3] cpufreq: CPPC: Add support for frequency invariance
-Date:   Wed, 16 Jun 2021 12:18:09 +0530
-Message-Id: <e7e653ede3ef54acc906d2bde47a3b9a41533404.1623825725.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
-In-Reply-To: <cover.1623825725.git.viresh.kumar@linaro.org>
-References: <cover.1623825725.git.viresh.kumar@linaro.org>
+        Wed, 16 Jun 2021 02:51:03 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210616064855epoutp0337a7fe8ace410e2ab6e364d32fcfc86f~I-URScYpy2442324423epoutp03Q
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:48:55 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210616064855epoutp0337a7fe8ace410e2ab6e364d32fcfc86f~I-URScYpy2442324423epoutp03Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1623826135;
+        bh=5VUzp4QPfNBa7NOcRe1Lk7tImGAGi3caiwYRjxR04I4=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=kx4twsJhAduqnI1lZysNcXRBTW0PoTFp4IBiNb6xGacOILoNf5+lrGLrWk1X3jsEw
+         AxGL8H3u5Lk1J0mhIAtx0nWMLDXGyfWcvgtLr3H+Q1hNWZu/gZ7Z7HeDKi0cVJElwf
+         zVg9UqsbHFgP+z6DHz8EI0m3zvpATlWidfpaiWxQ=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210616064854epcas1p2447de00835818a5dd59067e761368d03~I-UQweofm2236422364epcas1p2X;
+        Wed, 16 Jun 2021 06:48:54 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.162]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4G4bPd6xmPz4x9Q8; Wed, 16 Jun
+        2021 06:48:53 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        53.9C.09824.5DE99C06; Wed, 16 Jun 2021 15:48:53 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210616064853epcas1p298e462347aee43fee38fb40003b2aba8~I-UPF0flW1876518765epcas1p2c;
+        Wed, 16 Jun 2021 06:48:53 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210616064853epsmtrp25b7a042009ebd0cebac6e486518a1232~I-UPD4Yo13132731327epsmtrp2z;
+        Wed, 16 Jun 2021 06:48:53 +0000 (GMT)
+X-AuditID: b6c32a37-621e9a8000002660-3e-60c99ed5cd04
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1C.D8.08163.4DE99C06; Wed, 16 Jun 2021 15:48:52 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.89.31.77]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210616064852epsmtip19fbaeabf3b588d4c0cac437644734a82~I-UOj6CeV0932709327epsmtip12;
+        Wed, 16 Jun 2021 06:48:52 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Christoph Hellwig'" <hch@infradead.org>
+Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-cifs@vger.kernel.org>, <smfrench@gmail.com>,
+        <stfrench@microsoft.com>, <willy@infradead.org>,
+        <aurelien.aptel@gmail.com>,
+        <linux-cifsd-devel@lists.sourceforge.net>,
+        <senozhatsky@chromium.org>, <sandeen@sandeen.net>,
+        <aaptel@suse.com>, <viro@zeniv.linux.org.uk>,
+        <ronniesahlberg@gmail.com>, <hch@lst.de>,
+        <dan.carpenter@oracle.com>,
+        "'Sergey Senozhatsky'" <sergey.senozhatsky@gmail.com>,
+        "'Hyunchul Lee'" <hyc.lee@gmail.com>
+In-Reply-To: <YMhpG/sAjO3WKKc3@infradead.org>
+Subject: RE: [PATCH v4 08/10] cifsd: add file operations
+Date:   Wed, 16 Jun 2021 15:48:52 +0900
+Message-ID: <009c01d7627b$ab8d69b0$02a83d10$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJhIpvEjjDPMdIB0j/UYsSOvpftcQHigYlUAdgsEtICVUebFKnRxsew
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOJsWRmVeSWpSXmKPExsWy7bCmge7VeScTDA48NbVofHuaxeL467/s
+        Fq//TWexOD1hEZPFytVHmSyu3X/PbvHi/y5mi5//vzNa7Nl7ksXi8q45bBa9fZ9YLVqvaFns
+        3riIzWLt58fsFm9eHGazuDVxPpvF+b/HWS1+/5jD5iDkMbvhIovHzll32T02r9Dy2L3gM5PH
+        7psNbB6tO/6ye3x8eovFY8vih0we67dcZfH4vEnOY9OTt0wB3FE5NhmpiSmpRQqpecn5KZl5
+        6bZK3sHxzvGmZgaGuoaWFuZKCnmJuam2Si4+AbpumTlAnykplCXmlAKFAhKLi5X07WyK8ktL
+        UhUy8otLbJVSC1JyCgwNCvSKE3OLS/PS9ZLzc60MDQyMTIEqE3Iy2hdNZC74HF/x8q5+A2OP
+        VxcjJ4eEgInE0gfzmboYuTiEBHYwSvzfdIIRwvnEKLFyfiMrhPOZUWLj7h6WLkYOsJZ9B4Uh
+        4rsYJU48/gfV8YJRontxNyPIXDYBXYl/f/azgdgiQPbZhS/AipgFGlkkNrw9yQSS4ARKXJ+9
+        hwlkqrCAhcT+Cc4gYRYBVYm9hyazgti8ApYSRzfsZIawBSVOznzCAmIzC8hLbH87hxniBwWJ
+        n0+XsYKMERFwk5i9JBSiRERidmcbM8haCYHJnBILFx9ih3jARWLbVU2IVmGJV8e3sEPYUhKf
+        3+1lg7DLJU6c/MUEYddIbJi3D6rVWKLnRQmIySygKbF+lz5EhaLEzt9zGSG28km8+9rDClHN
+        K9HRJgRRoirRd+kw1EBpia72D+wTGJVmIXlrFpK3ZiG5fxbCsgWMLKsYxVILinPTU4sNC4yR
+        I3oTIzjFa5nvYJz29oPeIUYmDsZDjBIczEoivLrFJxKEeFMSK6tSi/Lji0pzUosPMZoCA3oi
+        s5Rocj4wy+SVxBuaGhkbG1uYmJmbmRorifPuZDuUICSQnliSmp2aWpBaBNPHxMEp1cCUfeVE
+        1iOnuZvvca5LDH7nIuy/UyV/6uWny96kvQoqPVLvMO3T9BOhT/apl4jWun9R+Dzp2nuW6+YP
+        mfXC9BvOWRgXvvdalvrmuOTs+1oHVaQD7/+z/xTkxvBv6+5yq69XlWelMbNfa9KteZnupuHp
+        UVhd5TXNkPdOf5i1U8/TP1YFLFvW1TPuXyztf9tQ+kHVheSqx7ddgop9F5pmKO9p4qw3rpy/
+        hn0+x885T83FgzXrdVapflBtnnCPJz1vU+OiyZZ1ZwwymNgt/vpMDEv6eUzY5Lukd9dlY+Wl
+        Wt8vPv/EFqCYtD1fLeEBn/y6O5f0PnNpnP9y4No7P7/46TsnCXXOOuYVd/+OvYHd9hAlluKM
+        REMt5qLiRABoxK+AegQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRmVeSWpSXmKPExsWy7bCSnO7VeScTDE6lWDS+Pc1icfz1X3aL
+        1/+ms1icnrCIyWLl6qNMFtfuv2e3ePF/F7PFz//fGS327D3JYnF51xw2i96+T6wWrVe0LHZv
+        XMRmsfbzY3aLNy8Os1ncmjifzeL83+OsFr9/zGFzEPKY3XCRxWPnrLvsHptXaHnsXvCZyWP3
+        zQY2j9Ydf9k9Pj69xeKxZfFDJo/1W66yeHzeJOex6clbpgDuKC6blNSczLLUIn27BK6M9kUT
+        mQs+x1e8vKvfwNjj1cXIwSEhYCKx76BwFyMXh5DADkaJxs8nmLoYOYHi0hLHTpxhhqgRljh8
+        uBii5hmjxLJF29hBatgEdCX+/dnPBmKLANlnF75gBCliFpjMIrHrN0gRSMc9RonuiT/AOjiB
+        qq7P3sMEMlVYwEJi/wRnkDCLgKrE3kOTWUFsXgFLiaMbdjJD2IISJ2c+YQEpZxbQk2jbyAgS
+        ZhaQl9j+dg4zxJ0KEj+fLmMFKRERcJOYvSQUokREYnZnG/MERuFZSAbNQhg0C8mgWUg6FjCy
+        rGKUTC0ozk3PLTYsMMpLLdcrTswtLs1L10vOz93ECI50La0djHtWfdA7xMjEwXiIUYKDWUmE
+        V7f4RIIQb0piZVVqUX58UWlOavEhRmkOFiVx3gtdJ+OFBNITS1KzU1MLUotgskwcnFINTH55
+        y5g2bpU0nmZy5s/7GokX501CuENjjW2rHPh0Ag7bSO7jeZDDuT9bqehi9L+eG//b45KXhad7
+        8+11t5n2jTFD56tllJHc1sMSl570BOjMzoxpVi1NOZW6e7F3hEd6ft98ZqnlN2Y9iWThN/a+
+        Ffz4546Oa66LxWZ/d1L/s7Ltc8wfVmP1jFOpTza8PqX7++MG0xWqtxIVG3SsqzLv7rJ4eKWU
+        /eTDex1Nn+Qdjjle09xw4o5XqJ1gzL0V7h59331XT8mMauzYftGht+CNnejrYg/RiV8YfjD2
+        rDry1tpYxCdwTV9UsfayD6lXD8sbr/riIMXf/ObA7YTDHdb7/13R2ZL5uibMpjbgDk+fEktx
+        RqKhFnNRcSIAR5102GMDAAA=
+X-CMS-MailID: 20210616064853epcas1p298e462347aee43fee38fb40003b2aba8
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210602035820epcas1p3c444b34a6b6a4252c9091e0bf6c0c167
+References: <20210602034847.5371-1-namjae.jeon@samsung.com>
+        <CGME20210602035820epcas1p3c444b34a6b6a4252c9091e0bf6c0c167@epcas1p3.samsung.com>
+        <20210602034847.5371-9-namjae.jeon@samsung.com>
+        <YMhpG/sAjO3WKKc3@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Frequency Invariance Engine (FIE) is providing a frequency scaling
-correction factor that helps achieve more accurate load-tracking.
+> On Wed, Jun 02, 2021 at 12:48:45PM +0900, Namjae Jeon wrote:
+> > +#include <linux/rwlock.h>
+> > +
+> > +#include "glob.h"
+> > +#include "buffer_pool.h"
+> > +#include "connection.h"
+> > +#include "mgmt/ksmbd_ida.h"
+> > +
+> > +static struct kmem_cache *filp_cache;
+> > +
+> > +struct wm {
+> > +	struct list_head	list;
+> > +	unsigned int		sz;
+> > +	char			buffer[0];
+> 
+> This should use buffer[];
+Okay.
 
-Normally, this scaling factor can be obtained directly with the help of
-the cpufreq drivers as they know the exact frequency the hardware is
-running at. But that isn't the case for CPPC cpufreq driver.
+> 
+> > +};
+> > +
+> > +struct wm_list {
+> > +	struct list_head	list;
+> > +	unsigned int		sz;
+> > +
+> > +	spinlock_t		wm_lock;
+> > +	int			avail_wm;
+> > +	struct list_head	idle_wm;
+> > +	wait_queue_head_t	wm_wait;
+> > +};
+> 
+> What does wm stand for?
+> 
+> This looks like arbitrary caching of vmalloc buffers.  I thought we decided to just make vmalloc suck
+> less rather than papering over that?
+Today I have checked that vmalloc performance improvement patch for big allocation is merged.
+I will remove it on next version.
 
-Another way of obtaining that is using the arch specific counter
-support, which is already present in kernel, but that hardware is
-optional for platforms.
+> 
+> > +static LIST_HEAD(wm_lists);
+> > +static DEFINE_RWLOCK(wm_lists_lock);
+> 
+> Especially as this isn't going to scale at all using global loists and locks.
+Okay.
 
-This patch updates the CPPC driver to register itself with the topology
-core to provide its own implementation (cppc_scale_freq_tick()) of
-topology_scale_freq_tick() which gets called by the scheduler on every
-tick. Note that the arch specific counters have higher priority than
-CPPC counters, if available, though the CPPC driver doesn't need to have
-any special handling for that.
+> 
+> > +void ksmbd_free_file_struct(void *filp) {
+> > +	kmem_cache_free(filp_cache, filp);
+> > +}
+> > +
+> > +void *ksmbd_alloc_file_struct(void)
+> > +{
+> > +	return kmem_cache_zalloc(filp_cache, GFP_KERNEL); }
+> 
+> These are only ued in vfs_cache.c . So I'd suggest to just move filp_cache there and drop these
+> wrappers.
+Okay.
 
-On an invocation of cppc_scale_freq_tick(), we schedule an irq work
-(since we reach here from hard-irq context), which then schedules a
-normal work item and cppc_scale_freq_workfn() updates the per_cpu
-arch_freq_scale variable based on the counter updates since the last
-tick.
+> 
+> > +}
+> > +
+> > +static void ksmbd_vfs_inherit_owner(struct ksmbd_work *work,
+> > +				    struct inode *parent_inode,
+> > +				    struct inode *inode)
+> > +{
+> > +	if (!test_share_config_flag(work->tcon->share_conf,
+> > +				    KSMBD_SHARE_FLAG_INHERIT_OWNER))
+> > +		return;
+> > +
+> > +	i_uid_write(inode, i_uid_read(parent_inode)); }
+> 
+> Can you explain this a little more?  When do the normal create/mdir fail to inherit the owner?
+The ownership of new files and directories is normally created with effective uid of the connected user.
+There is "inherit owner" parameter(samba also have same one) to inherit the ownership of the parent directory.
 
-To allow platforms to disable this CPPC counter-based frequency
-invariance support, this is all done under CONFIG_ACPI_CPPC_CPUFREQ_FIE,
-which is enabled by default.
+> 
+> int ksmbd_vfs_inode_permission(struct dentry *dentry, int acc_mode, bool delete)
+> > +{
+> > +	int mask, ret = 0;
+> > +
+> > +	mask = 0;
+> > +	acc_mode &= O_ACCMODE;
+> > +
+> > +	if (acc_mode == O_RDONLY)
+> > +		mask = MAY_READ;
+> > +	else if (acc_mode == O_WRONLY)
+> > +		mask = MAY_WRITE;
+> > +	else if (acc_mode == O_RDWR)
+> > +		mask = MAY_READ | MAY_WRITE;
+> 
+> How about already setting up the MAY_ flags in smb2_create_open_flags and returning them in extra
+> argument?  That keeps the sm to Linux translation in a single place.
+Right. Will update it.
 
-This also exports sched_setattr_nocheck() as the CPPC driver can be
-built as a module.
+> 
+> > +
+> > +	if (inode_permission(&init_user_ns, d_inode(dentry), mask | MAY_OPEN))
+> > +		return -EACCES;
+> 
+> And this call can be open coded in the only caller.
+Okay.
 
-Cc: linux-acpi@vger.kernel.org
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/cpufreq/Kconfig.arm    |  10 ++
- drivers/cpufreq/cppc_cpufreq.c | 232 ++++++++++++++++++++++++++++++---
- include/linux/arch_topology.h  |   1 +
- kernel/sched/core.c            |   1 +
- 4 files changed, 227 insertions(+), 17 deletions(-)
+> 
+> > +	if (delete) {
+> 
+> And this block could be split into a nice self-contained helper.
+Okay.
 
-diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-index e65e0a43be64..a5c5f70acfc9 100644
---- a/drivers/cpufreq/Kconfig.arm
-+++ b/drivers/cpufreq/Kconfig.arm
-@@ -19,6 +19,16 @@ config ACPI_CPPC_CPUFREQ
- 
- 	  If in doubt, say N.
- 
-+config ACPI_CPPC_CPUFREQ_FIE
-+	bool "Frequency Invariance support for CPPC cpufreq driver"
-+	depends on ACPI_CPPC_CPUFREQ && GENERIC_ARCH_TOPOLOGY
-+	default y
-+	help
-+	  This extends frequency invariance support in the CPPC cpufreq driver,
-+	  by using CPPC delivered and reference performance counters.
-+
-+	  If in doubt, say N.
-+
- config ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM
- 	tristate "Allwinner nvmem based SUN50I CPUFreq driver"
- 	depends on ARCH_SUNXI
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index be4f62e2c5f1..63e4cff46f95 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -10,14 +10,18 @@
- 
- #define pr_fmt(fmt)	"CPPC Cpufreq:"	fmt
- 
-+#include <linux/arch_topology.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/cpu.h>
- #include <linux/cpufreq.h>
- #include <linux/dmi.h>
-+#include <linux/irq_work.h>
-+#include <linux/kthread.h>
- #include <linux/time.h>
- #include <linux/vmalloc.h>
-+#include <uapi/linux/sched/types.h>
- 
- #include <asm/unaligned.h>
- 
-@@ -57,6 +61,183 @@ static struct cppc_workaround_oem_info wa_info[] = {
- 	}
- };
- 
-+#ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
-+
-+/* Frequency invariance support */
-+struct cppc_freq_invariance {
-+	int cpu;
-+	struct irq_work irq_work;
-+	struct kthread_work work;
-+	struct cppc_perf_fb_ctrs prev_perf_fb_ctrs;
-+	struct cppc_cpudata *cpu_data;
-+};
-+
-+static DEFINE_PER_CPU(struct cppc_freq_invariance, cppc_freq_inv);
-+static struct kthread_worker *kworker_fie;
-+
-+static struct cpufreq_driver cppc_cpufreq_driver;
-+static unsigned int hisi_cppc_cpufreq_get_rate(unsigned int cpu);
-+static int cppc_perf_from_fbctrs(struct cppc_cpudata *cpu_data,
-+				 struct cppc_perf_fb_ctrs *fb_ctrs_t0,
-+				 struct cppc_perf_fb_ctrs *fb_ctrs_t1);
-+
-+/**
-+ * cppc_scale_freq_workfn - CPPC arch_freq_scale updater for frequency invariance
-+ * @work: The work item.
-+ *
-+ * The CPPC driver register itself with the topology core to provide its own
-+ * implementation (cppc_scale_freq_tick()) of topology_scale_freq_tick() which
-+ * gets called by the scheduler on every tick.
-+ *
-+ * Note that the arch specific counters have higher priority than CPPC counters,
-+ * if available, though the CPPC driver doesn't need to have any special
-+ * handling for that.
-+ *
-+ * On an invocation of cppc_scale_freq_tick(), we schedule an irq work (since we
-+ * reach here from hard-irq context), which then schedules a normal work item
-+ * and cppc_scale_freq_workfn() updates the per_cpu arch_freq_scale variable
-+ * based on the counter updates since the last tick.
-+ */
-+static void cppc_scale_freq_workfn(struct kthread_work *work)
-+{
-+	struct cppc_freq_invariance *cppc_fi;
-+	struct cppc_perf_fb_ctrs fb_ctrs = {0};
-+	struct cppc_cpudata *cpu_data;
-+	unsigned long local_freq_scale;
-+	u64 perf;
-+
-+	cppc_fi = container_of(work, struct cppc_freq_invariance, work);
-+	cpu_data = cppc_fi->cpu_data;
-+
-+	if (cppc_get_perf_ctrs(cppc_fi->cpu, &fb_ctrs)) {
-+		pr_warn("%s: failed to read perf counters\n", __func__);
-+		return;
-+	}
-+
-+	perf = cppc_perf_from_fbctrs(cpu_data, &cppc_fi->prev_perf_fb_ctrs,
-+				     &fb_ctrs);
-+	cppc_fi->prev_perf_fb_ctrs = fb_ctrs;
-+
-+	perf <<= SCHED_CAPACITY_SHIFT;
-+	local_freq_scale = div64_u64(perf, cpu_data->perf_caps.highest_perf);
-+	if (WARN_ON(local_freq_scale > 1024))
-+		local_freq_scale = 1024;
-+
-+	per_cpu(arch_freq_scale, cppc_fi->cpu) = local_freq_scale;
-+}
-+
-+static void cppc_irq_work(struct irq_work *irq_work)
-+{
-+	struct cppc_freq_invariance *cppc_fi;
-+
-+	cppc_fi = container_of(irq_work, struct cppc_freq_invariance, irq_work);
-+	kthread_queue_work(kworker_fie, &cppc_fi->work);
-+}
-+
-+static void cppc_scale_freq_tick(void)
-+{
-+	struct cppc_freq_invariance *cppc_fi = &per_cpu(cppc_freq_inv, smp_processor_id());
-+
-+	/*
-+	 * cppc_get_perf_ctrs() can potentially sleep, call that from the right
-+	 * context.
-+	 */
-+	irq_work_queue(&cppc_fi->irq_work);
-+}
-+
-+static struct scale_freq_data cppc_sftd = {
-+	.source = SCALE_FREQ_SOURCE_CPPC,
-+	.set_freq_scale = cppc_scale_freq_tick,
-+};
-+
-+static void cppc_cpufreq_start_cpu(struct cpufreq_policy *policy,
-+				   unsigned int cpu)
-+{
-+	struct cppc_freq_invariance *cppc_fi = &per_cpu(cppc_freq_inv, cpu);
-+	int ret;
-+
-+	cppc_fi->cpu = cpu;
-+	cppc_fi->cpu_data = policy->driver_data;
-+	kthread_init_work(&cppc_fi->work, cppc_scale_freq_workfn);
-+	init_irq_work(&cppc_fi->irq_work, cppc_irq_work);
-+
-+	ret = cppc_get_perf_ctrs(cpu, &cppc_fi->prev_perf_fb_ctrs);
-+	if (ret) {
-+		pr_warn("%s: failed to read perf counters: %d\n", __func__,
-+			ret);
-+		return;
-+	}
-+
-+	/* Register for freq-invariance */
-+	topology_set_scale_freq_source(&cppc_sftd, cpumask_of(cpu));
-+}
-+
-+static void cppc_cpufreq_stop_cpu(struct cpufreq_policy *policy,
-+				  unsigned int cpu)
-+{
-+	struct cppc_freq_invariance *cppc_fi = &per_cpu(cppc_freq_inv, cpu);
-+
-+	topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, cpumask_of(cpu));
-+
-+	irq_work_sync(&cppc_fi->irq_work);
-+	kthread_cancel_work_sync(&cppc_fi->work);
-+}
-+
-+static void __init cppc_freq_invariance_init(void)
-+{
-+	struct sched_attr attr = {
-+		.size		= sizeof(struct sched_attr),
-+		.sched_policy	= SCHED_DEADLINE,
-+		.sched_nice	= 0,
-+		.sched_priority	= 0,
-+		/*
-+		 * Fake (unused) bandwidth; workaround to "fix"
-+		 * priority inheritance.
-+		 */
-+		.sched_runtime	= 1000000,
-+		.sched_deadline = 10000000,
-+		.sched_period	= 10000000,
-+	};
-+	int ret;
-+
-+	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-+		return;
-+
-+	kworker_fie = kthread_create_worker(0, "cppc_fie");
-+	if (IS_ERR(kworker_fie))
-+		return;
-+
-+	ret = sched_setattr_nocheck(kworker_fie->task, &attr);
-+	if (ret) {
-+		pr_warn("%s: failed to set SCHED_DEADLINE: %d\n", __func__,
-+			ret);
-+		kthread_destroy_worker(kworker_fie);
-+		return;
-+	}
-+
-+	cppc_cpufreq_driver.start_cpu = cppc_cpufreq_start_cpu;
-+	cppc_cpufreq_driver.stop_cpu = cppc_cpufreq_stop_cpu;
-+}
-+
-+static void cppc_freq_invariance_exit(void)
-+{
-+	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-+		return;
-+
-+	kthread_destroy_worker(kworker_fie);
-+	kworker_fie = NULL;
-+}
-+
-+#else
-+static inline void cppc_freq_invariance_init(void)
-+{
-+}
-+
-+static inline void cppc_freq_invariance_exit(void)
-+{
-+}
-+#endif /* CONFIG_ACPI_CPPC_CPUFREQ_FIE */
-+
- /* Callback function used to retrieve the max frequency from DMI */
- static void cppc_find_dmi_mhz(const struct dmi_header *dm, void *private)
- {
-@@ -362,26 +543,35 @@ static inline u64 get_delta(u64 t1, u64 t0)
- 	return (u32)t1 - (u32)t0;
- }
- 
--static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
--				     struct cppc_perf_fb_ctrs fb_ctrs_t0,
--				     struct cppc_perf_fb_ctrs fb_ctrs_t1)
-+static int cppc_perf_from_fbctrs(struct cppc_cpudata *cpu_data,
-+				 struct cppc_perf_fb_ctrs *fb_ctrs_t0,
-+				 struct cppc_perf_fb_ctrs *fb_ctrs_t1)
- {
- 	u64 delta_reference, delta_delivered;
--	u64 reference_perf, delivered_perf;
-+	u64 reference_perf;
- 
--	reference_perf = fb_ctrs_t0.reference_perf;
-+	reference_perf = fb_ctrs_t0->reference_perf;
- 
--	delta_reference = get_delta(fb_ctrs_t1.reference,
--				    fb_ctrs_t0.reference);
--	delta_delivered = get_delta(fb_ctrs_t1.delivered,
--				    fb_ctrs_t0.delivered);
-+	delta_reference = get_delta(fb_ctrs_t1->reference,
-+				    fb_ctrs_t0->reference);
-+	delta_delivered = get_delta(fb_ctrs_t1->delivered,
-+				    fb_ctrs_t0->delivered);
- 
--	/* Check to avoid divide-by zero */
--	if (delta_reference || delta_delivered)
--		delivered_perf = (reference_perf * delta_delivered) /
--					delta_reference;
--	else
--		delivered_perf = cpu_data->perf_ctrls.desired_perf;
-+	/* Check to avoid divide-by zero and invalid delivered_perf */
-+	if (!delta_reference || !delta_delivered)
-+		return cpu_data->perf_ctrls.desired_perf;
-+
-+	return (reference_perf * delta_delivered) / delta_reference;
-+}
-+
-+static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
-+				     struct cppc_perf_fb_ctrs *fb_ctrs_t0,
-+				     struct cppc_perf_fb_ctrs *fb_ctrs_t1)
-+{
-+	u64 delivered_perf;
-+
-+	delivered_perf = cppc_perf_from_fbctrs(cpu_data, fb_ctrs_t0,
-+					       fb_ctrs_t1);
- 
- 	return cppc_cpufreq_perf_to_khz(cpu_data, delivered_perf);
- }
-@@ -405,7 +595,7 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
- 	if (ret)
- 		return ret;
- 
--	return cppc_get_rate_from_fbctrs(cpu_data, fb_ctrs_t0, fb_ctrs_t1);
-+	return cppc_get_rate_from_fbctrs(cpu_data, &fb_ctrs_t0, &fb_ctrs_t1);
- }
- 
- static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
-@@ -506,14 +696,21 @@ static void cppc_check_hisi_workaround(void)
- 
- static int __init cppc_cpufreq_init(void)
- {
-+	int ret;
-+
- 	if ((acpi_disabled) || !acpi_cpc_valid())
- 		return -ENODEV;
- 
- 	INIT_LIST_HEAD(&cpu_data_list);
- 
- 	cppc_check_hisi_workaround();
-+	cppc_freq_invariance_init();
- 
--	return cpufreq_register_driver(&cppc_cpufreq_driver);
-+	ret = cpufreq_register_driver(&cppc_cpufreq_driver);
-+	if (ret)
-+		cppc_freq_invariance_exit();
-+
-+	return ret;
- }
- 
- static inline void free_cpu_data(void)
-@@ -531,6 +728,7 @@ static inline void free_cpu_data(void)
- static void __exit cppc_cpufreq_exit(void)
- {
- 	cpufreq_unregister_driver(&cppc_cpufreq_driver);
-+	cppc_freq_invariance_exit();
- 
- 	free_cpu_data();
- }
-diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-index 11e555cfaecb..f180240dc95f 100644
---- a/include/linux/arch_topology.h
-+++ b/include/linux/arch_topology.h
-@@ -37,6 +37,7 @@ bool topology_scale_freq_invariant(void);
- enum scale_freq_source {
- 	SCALE_FREQ_SOURCE_CPUFREQ = 0,
- 	SCALE_FREQ_SOURCE_ARCH,
-+	SCALE_FREQ_SOURCE_CPPC,
- };
- 
- struct scale_freq_data {
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 4ca80df205ce..5226cc26a095 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6389,6 +6389,7 @@ int sched_setattr_nocheck(struct task_struct *p, const struct sched_attr *attr)
- {
- 	return __sched_setscheduler(p, attr, false, true);
- }
-+EXPORT_SYMBOL_GPL(sched_setattr_nocheck);
- 
- /**
-  * sched_setscheduler_nocheck - change the scheduling policy and/or RT priority of a thread from kernelspace.
--- 
-2.31.1.272.g89b43f80a514
+> 
+> > +		struct dentry *child, *parent;
+> > +
+> > +		parent = dget_parent(dentry);
+> > +		inode_lock_nested(d_inode(parent), I_MUTEX_PARENT);
+> > +		child = lookup_one_len(dentry->d_name.name, parent,
+> > +				       dentry->d_name.len);
+> > +		if (IS_ERR(child)) {
+> > +			ret = PTR_ERR(child);
+> > +			goto out_lock;
+> > +		}
+> > +
+> > +		if (child != dentry) {
+> > +			ret = -ESTALE;
+> > +			dput(child);
+> > +			goto out_lock;
+> > +		}
+> > +		dput(child);
+> 
+> That being said I do not understand the need for this re-lookup at all.
+Al commented parent could be not stable, So checked staleness by re-lookup name under parent lock.
+
+> 
+> > +	if (!inode_permission(&init_user_ns, d_inode(dentry), MAY_OPEN |
+> > +MAY_WRITE))
+> 
+> All these inode_permission lines have overly long lines.  It might be worth to pass the user_namespace
+> to this function, not only to shorten the code, but also to prepare for user namespace support.
+Okay, Let me check it.
+
+> 
+> > +	parent = dget_parent(dentry);
+> > +	inode_lock_nested(d_inode(parent), I_MUTEX_PARENT);
+> > +	child = lookup_one_len(dentry->d_name.name, parent,
+> > +			       dentry->d_name.len);
+> > +	if (IS_ERR(child)) {
+> > +		ret = PTR_ERR(child);
+> > +		goto out_lock;
+> > +	}
+> > +
+> > +	if (child != dentry) {
+> > +		ret = -ESTALE;
+> > +		dput(child);
+> > +		goto out_lock;
+> > +	}
+> > +	dput(child);
+> 
+> This is the same weird re-lookup dance as above.  IFF there is a good rationale for it it needs to go
+> into a self-contained and well documented helper.
+Okay.
+
+> 
+> > +int ksmbd_vfs_create(struct ksmbd_work *work, const char *name,
+> > +umode_t mode) {
+> > +	struct path path;
+> > +	struct dentry *dentry;
+> > +	int err;
+> > +
+> > +	dentry = kern_path_create(AT_FDCWD, name, &path, 0);
+> 
+> Curious:  why is this using absolute or CWD based path instead of doing lookups based off the parent
+> as done by e.g. nfsd?  Same also for mkdir and co.
+Because SMB create request is given an absolute path unlike NFS.
+
+> 
+> > +{
+> > +	struct file *filp;
+> > +	ssize_t nbytes = 0;
+> > +	char *rbuf;
+> > +	struct inode *inode;
+> > +
+> > +	rbuf = work->aux_payload_buf;
+> > +	filp = fp->filp;
+> > +	inode = file_inode(filp);
+> 
+> These can be initialized on the declaration lines to make the code a little easier to read.
+Okay.
+
+> 
+> > +	if (!work->tcon->posix_extensions) {
+> > +		spin_lock(&src_dent->d_lock);
+> > +		list_for_each_entry(dst_dent, &src_dent->d_subdirs, d_child) {
+> > +			struct ksmbd_file *child_fp;
+> > +
+> > +			if (d_really_is_negative(dst_dent))
+> > +				continue;
+> > +
+> > +			child_fp = ksmbd_lookup_fd_inode(d_inode(dst_dent));
+> > +			if (child_fp) {
+> > +				spin_unlock(&src_dent->d_lock);
+> > +				ksmbd_debug(VFS, "Forbid rename, sub file/dir is in use\n");
+> > +				return -EACCES;
+> > +			}
+> > +		}
+> > +		spin_unlock(&src_dent->d_lock);
+> > +	}
+> 
+> This begs for being split into a self-contained helper.
+Okay.
+
+> 
+> > +int ksmbd_vfs_lock(struct file *filp, int cmd, struct file_lock
+> > +*flock) {
+> > +	ksmbd_debug(VFS, "calling vfs_lock_file\n");
+> > +	return vfs_lock_file(filp, cmd, flock, NULL); }
+> > +
+> > +int ksmbd_vfs_readdir(struct file *file, struct ksmbd_readdir_data
+> > +*rdata) {
+> > +	return iterate_dir(file, &rdata->ctx); }
+> > +
+> > +int ksmbd_vfs_alloc_size(struct ksmbd_work *work, struct ksmbd_file *fp,
+> > +			 loff_t len)
+> > +{
+> > +	smb_break_all_levII_oplock(work, fp, 1);
+> > +	return vfs_fallocate(fp->filp, FALLOC_FL_KEEP_SIZE, 0, len); }
+> 
+> Please avoid such trivial wrappers that just make the code hard to follow.
+Okay.
+
+> 
+> > +int ksmbd_vfs_fqar_lseek(struct ksmbd_file *fp, loff_t start, loff_t length,
+> > +			 struct file_allocated_range_buffer *ranges,
+> > +			 int in_count, int *out_count)
+> 
+> What is fqar?
+It is an abbreviation for FSCTL QUERY ALLOCATED RANGES.
+
+> 
+> > +
+> > +/*
+> > + * ksmbd_vfs_get_logical_sector_size() - get logical sector size from
+> > +inode
+> > + * @inode: inode
+> > + *
+> > + * Return: logical sector size
+> > + */
+> > +unsigned short ksmbd_vfs_logical_sector_size(struct inode *inode) {
+> > +	struct request_queue *q;
+> > +	unsigned short ret_val = 512;
+> > +
+> > +	if (!inode->i_sb->s_bdev)
+> > +		return ret_val;
+> > +
+> > +	q = inode->i_sb->s_bdev->bd_disk->queue;
+> > +
+> > +	if (q && q->limits.logical_block_size)
+> > +		ret_val = q->limits.logical_block_size;
+> > +
+> > +	return ret_val;
+> 
+> I don't think a CIFS server has any business poking into the block layer.  What is this trying to do?
+Ah, Yes, We don't need do that. I will change it with statfs->f_bsize.
+
+> 
+> > +struct posix_acl *ksmbd_vfs_posix_acl_alloc(int count, gfp_t flags) {
+> > +#if IS_ENABLED(CONFIG_FS_POSIX_ACL)
+> > +	return posix_acl_alloc(count, flags); #else
+> > +	return NULL;
+> > +#endif
+> > +}
+> > +
+> > +struct posix_acl *ksmbd_vfs_get_acl(struct inode *inode, int type) {
+> > +#if IS_ENABLED(CONFIG_FS_POSIX_ACL)
+> > +	return get_acl(inode, type);
+> > +#else
+> > +	return NULL;
+> > +#endif
+> > +}
+> > +
+> > +int ksmbd_vfs_set_posix_acl(struct inode *inode, int type,
+> > +			    struct posix_acl *acl)
+> > +{
+> > +#if IS_ENABLED(CONFIG_FS_POSIX_ACL)
+> > +	return set_posix_acl(&init_user_ns, inode, type, acl); #else
+> > +	return -EOPNOTSUPP;
+> > +#endif
+> > +}
+> 
+> Please avoid these pointless wrappers and just use large code block ifdefs or IS_ENABLED checks.
+Okay.
+
+> 
+> > +int ksmbd_vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+> > +			      struct file *file_out, loff_t pos_out, size_t len) {
+> > +	struct inode *inode_in = file_inode(file_in);
+> > +	struct inode *inode_out = file_inode(file_out);
+> > +	int ret;
+> > +
+> > +	ret = vfs_copy_file_range(file_in, pos_in, file_out, pos_out, len, 0);
+> > +	/* do splice for the copy between different file systems */
+> > +	if (ret != -EXDEV)
+> > +		return ret;
+> > +
+> > +	if (S_ISDIR(inode_in->i_mode) || S_ISDIR(inode_out->i_mode))
+> > +		return -EISDIR;
+> > +	if (!S_ISREG(inode_in->i_mode) || !S_ISREG(inode_out->i_mode))
+> > +		return -EINVAL;
+> > +
+> > +	if (!(file_in->f_mode & FMODE_READ) ||
+> > +	    !(file_out->f_mode & FMODE_WRITE))
+> > +		return -EBADF;
+> > +
+> > +	if (len == 0)
+> > +		return 0;
+> > +
+> > +	file_start_write(file_out);
+> > +
+> > +	/*
+> > +	 * skip the verification of the range of data. it will be done
+> > +	 * in do_splice_direct
+> > +	 */
+> > +	ret = do_splice_direct(file_in, &pos_in, file_out, &pos_out,
+> > +			       len > MAX_RW_COUNT ? MAX_RW_COUNT : len, 0);
+> 
+> vfs_copy_file_range already does this type of fallback, so this is dead code.
+Okay.
+
+> 
+> > +#define XATTR_NAME_STREAM_LEN		(sizeof(XATTR_NAME_STREAM) - 1)
+> > +
+> > +enum {
+> > +	XATTR_DOSINFO_ATTRIB		= 0x00000001,
+> > +	XATTR_DOSINFO_EA_SIZE		= 0x00000002,
+> > +	XATTR_DOSINFO_SIZE		= 0x00000004,
+> > +	XATTR_DOSINFO_ALLOC_SIZE	= 0x00000008,
+> > +	XATTR_DOSINFO_CREATE_TIME	= 0x00000010,
+> > +	XATTR_DOSINFO_CHANGE_TIME	= 0x00000020,
+> > +	XATTR_DOSINFO_ITIME		= 0x00000040
+> > +};
+> > +
+> > +struct xattr_dos_attrib {
+> > +	__u16	version;
+> > +	__u32	flags;
+> > +	__u32	attr;
+> > +	__u32	ea_size;
+> > +	__u64	size;
+> > +	__u64	alloc_size;
+> > +	__u64	create_time;
+> > +	__u64	change_time;
+> > +	__u64	itime;
+> > +};
+> 
+> These looks like on-disk structures.  Any chance you could re-order the headers so that things like
+> on-disk, on the wire and netlink uapi structures all have a dedicated and well documented header for
+> themselves?
+Okay.
+
+> 
+> > +	read_lock(&ci->m_lock);
+> > +	list_for_each(cur, &ci->m_fp_list) {
+> > +		lfp = list_entry(cur, struct ksmbd_file, node);
+> 
+> Please use list_for_each_entry.  There are very few places left where using list_for_each makes sense.
+Okay.
+
+> 
+> > +		if (inode == FP_INODE(lfp)) {
+> > +			atomic_dec(&ci->m_count);
+> > +			read_unlock(&ci->m_lock);
+> > +			return lfp;
+> > +		}
+> > +	}
+> > +	atomic_dec(&ci->m_count);
+> > +	read_unlock(&ci->m_lock);
+> 
+> So a successful find increments m_count, but a miss decreases it?
+> Isn't this going to create an underflow?
+m_count is increased from ksmbd_inode_lookup_by_vfsinode().
+So m_count should be decreased regardless of finding it.
+
+> 
+> > +	if (!fp->f_ci) {
+> > +		ksmbd_free_file_struct(fp);
+> > +		return ERR_PTR(-ENOMEM);
+> > +	}
+> > +
+> > +	ret = __open_id(&work->sess->file_table, fp, OPEN_ID_TYPE_VOLATILE_ID);
+> > +	if (ret) {
+> > +		ksmbd_inode_put(fp->f_ci);
+> > +		ksmbd_free_file_struct(fp);
+> > +		return ERR_PTR(ret);
+> > +	}
+> > +
+> > +	atomic_inc(&work->conn->stats.open_files_count);
+> > +	return fp;
+> 
+> Please use goto based unwinding instead of duplicating the resoure cleanup.
+Okay.
+> 
+> > +static bool tree_conn_fd_check(struct ksmbd_tree_connect *tcon,
+> > +struct ksmbd_file *fp)
+> 
+> Overly long line.
+Recently, checkpatch.pl has been changed to allow up to 100 character.
+You mean cut it to 80 character if possible?
+> 
+> > +{
+> > +	return fp->tcon != tcon;
+> > +}
+> > +
+> > +static bool session_fd_check(struct ksmbd_tree_connect *tcon, struct
+> > +ksmbd_file *fp)
+> 
+> Same.
+Okay.
 
