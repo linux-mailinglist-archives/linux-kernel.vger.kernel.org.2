@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E163A8DC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5CF3A8DC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbhFPAnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:43:20 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:30706 "EHLO
-        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231772AbhFPAnO (ORCPT
+        id S231709AbhFPAoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:44:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230265AbhFPAoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:43:14 -0400
-Received: from [0.0.0.0] (unknown [116.24.56.76])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 944CEE0193;
-        Wed, 16 Jun 2021 08:41:04 +0800 (CST)
-Subject: Re: [PATCH v1 2/6] mm/hwpoison: remove race consideration
-To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>
-Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Tue, 15 Jun 2021 20:44:14 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E38BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:42:09 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id g12so689948qvx.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:42:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MIZ4yfC4SJgSNnStHS2hV3bUSJEXPyXqzvDWBqSA7IE=;
+        b=cWN9BUfrVnGFbKtIZ3DUiBrsX0OUV8SZhasHlYTeBCPpr+9HP+e1oLZNvWMtAC6mf1
+         4kaEpIOLkAi6/aS52oOQPP4kOSQoqo0hJCMz+o7bSU8h2xRKXHhdtK4Zk2AxgMhq5c8K
+         eWEdVeBmPJ8BM4s2GRBLWOufFUci7yk25ulljFjU1IZGfSsFyPBhC7Bsyhih+GSkT8f9
+         7IpF1EisdHdnKvhp96F5VwcH4jVLVZU8gqwU7I9wGhymUikzXA0ZXRhwrZKcsFxEwc48
+         AHDTzbf217WABi3UZZY6k8XHo2PdNQofBpiUSv0wy2sia396vWRsy15ft0KLorI4wB4x
+         V5MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MIZ4yfC4SJgSNnStHS2hV3bUSJEXPyXqzvDWBqSA7IE=;
+        b=VyHUb7MVdZtiMnbe9ixTkIcIjdpNGBiR49w4FfGNJESo1nLVV/apj/seuHShhG34nE
+         XU4d/XXilRyA5yzyj7yhMKVbTvQzzKhl9IERNGCDSPxlP9vxtfN/Eg2SJgiVslwPA4jG
+         7T8BYx+zfJ4WrajbEMoDn115XbWIq7faL9YNuPRHUbQnNAGrXhiGsJQKIDwWeCkTtxdZ
+         YErpeG6jW9Hd0AiSxb29Nec1QUlfqwlzBpXGTrbPwIg3ikIG/XGTKO277niVAt7IkP2v
+         p1xG4mH8fhjQCdROVjMWL7Thr58m1omcxYo2oQMtqAa7Ezh+M1obHMiN/bGM2b6HzmxY
+         sdig==
+X-Gm-Message-State: AOAM532b7GfhJC/sef57viikt7GumL3Gb/cvY33+FFMscj5gibCbjbgF
+        +rcFcH/PAtfaxxMpdHoeJ3Cwsg==
+X-Google-Smtp-Source: ABdhPJzCCGXNtFKeBaAZBtslYwxAwLPkiq4om2TrlrIrdMkTrd8Mjvp7+4aeQphN8xrVeKEzLcOXGg==
+X-Received: by 2002:a05:6214:7f1:: with SMTP id bp17mr8079423qvb.29.1623804128267;
+        Tue, 15 Jun 2021 17:42:08 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id s23sm95645qtq.2.2021.06.15.17.42.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 17:42:07 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1ltJd9-007I9Y-2M; Tue, 15 Jun 2021 21:42:07 -0300
+Date:   Tue, 15 Jun 2021 21:42:07 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Will Deacon <will@kernel.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
         Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210614021212.223326-1-nao.horiguchi@gmail.com>
- <20210614021212.223326-3-nao.horiguchi@gmail.com>
- <25c69dc8-0ce2-8330-dfb0-506481dc9a53@sangfor.com.cn>
- <20210616001141.GA1924716@hori.linux.bs1.fc.nec.co.jp>
-From:   Ding Hui <dinghui@sangfor.com.cn>
-Message-ID: <7b8f576b-b61b-ad68-c84b-476c96f89156@sangfor.com.cn>
-Date:   Wed, 16 Jun 2021 08:40:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/11] mm: page_vma_mapped_walk(): use pmd_read_atomic()
+Message-ID: <20210616004207.GU1096940@ziepe.ca>
+References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
+ <594c1f0-d396-5346-1f36-606872cddb18@google.com>
+ <20210610090617.e6qutzzj3jxcseyi@box.shutemov.name>
+ <20210610121542.GQ1096940@ziepe.ca>
+ <aebb6b96-153e-7d7-59da-f6bad4337aa7@google.com>
+ <20210611153613.GR1096940@ziepe.ca>
+ <939a0fa-7d6c-f535-7c34-4c522903e6f@google.com>
+ <20210611194249.GS1096940@ziepe.ca>
+ <20210615094639.GC19878@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <20210616001141.GA1924716@hori.linux.bs1.fc.nec.co.jp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQh1JGFYeTU4dTx5PQ0hPGktVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OFE6Qgw4HT8LTk8QKkw2EwI3
-        KxgwFENVSlVKTUlIQ0tPS01MSENCVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-        QVlKSk1VSU9VTk1VTE1ZV1kIAVlBSEJCQjcG
-X-HM-Tid: 0a7a1243bd0f2c17kusn944cee0193
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615094639.GC19878@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/16 8:11, HORIGUCHI NAOYA(堀口 直也) wrote:
-> On Tue, Jun 15, 2021 at 08:57:06PM +0800, Ding Hui wrote:
->> On 2021/6/14 10:12, Naoya Horiguchi wrote:
->>> @@ -1956,17 +1938,6 @@ int unpoison_memory(unsigned long pfn)
->>>    		goto unlock_mutex;
->>>    	}
->>> -	/*
->>> -	 * unpoison_memory() can encounter thp only when the thp is being
->>> -	 * worked by memory_failure() and the page lock is not held yet.
->>> -	 * In such case, we yield to memory_failure() and make unpoison fail.
->>> -	 */
->>> -	if (!PageHuge(page) && PageTransHuge(page)) {
->>> -		unpoison_pr_info("Unpoison: Memory failure is now running on %#lx\n",
->>> -				 pfn, &unpoison_rs);
->>> -		goto unlock_mutex;
->>> -	}
->>> -
->>
->> if a huge page is in process of alloc or free, HUGETLB_PAGE_DTOR can be set
->> after __SetPageHead() or be cleared before __ClearPageHead(), so this
->> condition may be true in racy.
-> 
-> Hi Ding,
-> 
-> We confirm PageHWPoison() before reaching this if-block and hwpoisoned pages
-> are prohibited from allocation, so it seems to me that this check never
-> races with hugetlb allocation.
-> 
-> And according to the original patch introduced this if-block (0cea3fdc416d:
-> "mm/hwpoison: fix race against poison thp"), this if-block intended to close
-> the race between memory_failure() and unpoison_memory(), so that's no longer
-> necessary due to mf_mutex.
-> 
+On Tue, Jun 15, 2021 at 10:46:39AM +0100, Will Deacon wrote:
 
-I got it and thanks for your explanation.
+> Then the compiler can allocate the same register for x and z, but will
+> issue an additional load for y. If a concurrent update takes place to the
+> pmd which transitions from Invalid -> Valid, then it will look as though
+> things went back in time, because z will be stale. We actually hit this
+> on arm64 in practice [1].
 
->> Do we need the racy test for this situation?
-> 
-> I'm not sure, but I think that we need more stress/fuzz testing focusing on
-> this subsystem, and "unpoison vs allocation" race can be covered in the topic.
-> 
-> Thank you,
-> Naoya Horiguchi
-> 
+The fact you actually hit this in the real world just seem to confirm
+my thinking that the mm's lax use of the memory model is something
+that deserves addressing.
 
+Honestly I'm not sure the fix to stick a READ_ONCE in the macros is
+very robust. I prefer the gup_fast pattern of:
 
--- 
-Thanks,
-- Ding Hui
+  pmd_t pmd = READ_ONCE(*pmdp);
+  pte_offset_phys(&pmd, addr);
+
+To correctly force the READ_ONCE under unlocked access and the
+consistently use the single read of the unstable data.
+
+It seems more maintainable 'hey look at me, I have no locks!' and has
+fewer possibilities for obscure order related bugs to creep in.
+
+Jason
