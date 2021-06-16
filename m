@@ -2,147 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06183AA349
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA98C3AA34A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbhFPSnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 14:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231910AbhFPSnK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 14:43:10 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE10BC061574;
-        Wed, 16 Jun 2021 11:41:03 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id my49so5407175ejc.7;
-        Wed, 16 Jun 2021 11:41:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CFdiQI3qmnEyPxLcKXhVtU8Qc6gVzEZmvcKXtiv7pwA=;
-        b=rCYk6IopIKVvTbBrdVu9tEpKZMkk+xOngtR5Y4tsgpcoBzFjKVkYrbSTxv+cuYY+69
-         Z8ig6vEBX1rn57Gu0b86t36n4+pwXzXJMw3gUbUnp1xOqLhxCZm/HlyuuMrDm+K+xqrU
-         Pb/7kzSFz4NnBlPMR7tI1S20OueZofIzOP+O/7+lcO+3Sz5mbVP2WwDHemXHAxP2yaeC
-         X8afD2/hPmcpyrExmVwEoYkBo+BUN7rEjVLt8/4OnXrV/K3LinQYmWJsw3n4P9J8yPsH
-         sg/UFIS+B+PWadlA/kO9t56jGyx0H/MLrRvvTf5fvVHfat2vtzNAG1LeDcJM8D1XdajX
-         dSag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CFdiQI3qmnEyPxLcKXhVtU8Qc6gVzEZmvcKXtiv7pwA=;
-        b=ZJPc6zPZdbh57k5z2YtEi5Z22Luj5C6gH4FehEZBiSZgIVLj2LA4R7C9Mgnsq6V6ie
-         LTUg3ug5PtNciPvQkY1Fz+QlHMsNDoggWOYPZjhVFYa+Rz1nj67MgsL+VRhAR6WXRKJI
-         2KAjCe68UAY9aSEWvViHwLKpVmU+dA/A03uQhl9bgb5TepB09MhdgbVVZcfULtpZVn+a
-         905w6b/QchToYUrt6LNHcVDEI7eQex7gm6TY34IN4vZYA7bmTga+ll40jmwSQ7u2GAzG
-         GHimtvoKBHY2uBDeYouC0GLvX8lD9wcKlWWvUe0UUUVBg6M7T1Eg+eawIfj/ZiPZJMha
-         9xrw==
-X-Gm-Message-State: AOAM5305GAyWVkTGsWiyGaRBl33dXfmgojJadR87eZkQrZdGv7yZPhlD
-        ACB4vn/+50O6EIzxogCcpsn6Ui8M43nIZWRuYBc=
-X-Google-Smtp-Source: ABdhPJzFcPdMo3Mt/oDcGJ2YhfBZ0Ag1Tb0F03O9be6WHHbSgHRNw4Nt7zYChxzQu0SnpFguR/o7Yf8eSiqDuSGMyvE=
-X-Received: by 2002:a17:906:1691:: with SMTP id s17mr900783ejd.161.1623868862266;
- Wed, 16 Jun 2021 11:41:02 -0700 (PDT)
+        id S231942AbhFPSna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 14:43:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231910AbhFPSn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 14:43:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF0CB613EE;
+        Wed, 16 Jun 2021 18:41:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623868880;
+        bh=KhuEyFARAncSbBn3We8wXGWjyOelaJec1tgfBHwmMTQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=jybkIbAoOZGcwi20yIw7ePBdWNwLx0jT1TwrMxStZ+N8KloS+UtzmDQxz525eIQqV
+         sEKTE9kjhg16cTF4iHcIT4xxpMl4yyv49j183cCdzmOSGO6hUrUdau4r2oBmTQGF6Z
+         eUS0nej8hfpjHWRDm3OkZn/0o75gIY+BJZ01o7ip8tXp9eeTUQ31BBGiFOy9UqEM2S
+         yx1NVghmuX/IVq/KDIne0Mn0xZDj2EStMlcb6D0L494h1EWYB+y2kUQPUGca7xrPks
+         2Ey7rPorO5Rp2CdL8LY06bVX4uSMAkYdI4175WbEd+W/Vul9ZH4rT9v3NSLooTPvon
+         SWK8Xf4FCsOKw==
+Subject: Re: [PATCH 4/8] membarrier: Make the post-switch-mm barrier explicit
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+References: <cover.1623813516.git.luto@kernel.org>
+ <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
+ <1623816595.myt8wbkcar.astroid@bobo.none>
+ <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
+Date:   Wed, 16 Jun 2021 11:41:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210615012014.1100672-1-jannh@google.com> <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
- <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
- <CAHbLzkomex+fgC8RyogXu-s5o2UrORMO6D2yTsSXW5Wo5z9WRA@mail.gmail.com> <6d21f8cb-4b72-bdec-386c-684ddbcdada1@suse.cz>
-In-Reply-To: <6d21f8cb-4b72-bdec-386c-684ddbcdada1@suse.cz>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 16 Jun 2021 11:40:50 -0700
-Message-ID: <CAHbLzkpa5MQBtYcRPWu4vNDn=Q8SKStQ-9wKYWogqRrMR3Aonw@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with split_huge_page()
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Jann Horn <jannh@google.com>, John Hubbard <jhubbard@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jan Kara <jack@suse.cz>, stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 10:27 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 6/16/21 1:10 AM, Yang Shi wrote:
-> > On Tue, Jun 15, 2021 at 5:10 AM Jann Horn <jannh@google.com> wrote:
-> >>
-> >> On Tue, Jun 15, 2021 at 8:37 AM John Hubbard <jhubbard@nvidia.com> wrote:
-> >> > On 6/14/21 6:20 PM, Jann Horn wrote:
-> >> > > try_grab_compound_head() is used to grab a reference to a page from
-> >> > > get_user_pages_fast(), which is only protected against concurrent
-> >> > > freeing of page tables (via local_irq_save()), but not against
-> >> > > concurrent TLB flushes, freeing of data pages, or splitting of compound
-> >> > > pages.
-> >> [...]
-> >> > Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-> >>
-> >> Thanks!
-> >>
-> >> [...]
-> >> > > @@ -55,8 +72,23 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
-> >> > >       if (WARN_ON_ONCE(page_ref_count(head) < 0))
-> >> > >               return NULL;
-> >> > >       if (unlikely(!page_cache_add_speculative(head, refs)))
-> >> > >               return NULL;
-> >> > > +
-> >> > > +     /*
-> >> > > +      * At this point we have a stable reference to the head page; but it
-> >> > > +      * could be that between the compound_head() lookup and the refcount
-> >> > > +      * increment, the compound page was split, in which case we'd end up
-> >> > > +      * holding a reference on a page that has nothing to do with the page
-> >> > > +      * we were given anymore.
-> >> > > +      * So now that the head page is stable, recheck that the pages still
-> >> > > +      * belong together.
-> >> > > +      */
-> >> > > +     if (unlikely(compound_head(page) != head)) {
-> >> >
-> >> > I was just wondering about what all could happen here. Such as: page gets split,
-> >> > reallocated into a different-sized compound page, one that still has page pointing
-> >> > to head. I think that's OK, because we don't look at or change other huge page
-> >> > fields.
-> >> >
-> >> > But I thought I'd mention the idea in case anyone else has any clever ideas about
-> >> > how this simple check might be insufficient here. It seems fine to me, but I
-> >> > routinely lack enough imagination about concurrent operations. :)
-> >>
-> >> Hmmm... I think the scariest aspect here is probably the interaction
-> >> with concurrent allocation of a compound page on architectures with
-> >> store-store reordering (like ARM). *If* the page allocator handled
-> >> compound pages with lockless, non-atomic percpu freelists, I think it
-> >> might be possible that the zeroing of tail_page->compound_head in
-> >> put_page() could be reordered after the page has been freed,
-> >> reallocated and set to refcount 1 again?
-> >>
-> >> That shouldn't be possible at the moment, but it is still a bit scary.
-> >
-> > It might be possible after Mel's "mm/page_alloc: Allow high-order
-> > pages to be stored on the per-cpu lists" patch
-> > (https://patchwork.kernel.org/project/linux-mm/patch/20210611135753.GC30378@techsingularity.net/).
->
-> Those would be percpu indeed, but not "lockless, non-atomic", no? They are
-> protected by a local_lock.
+On 6/16/21 12:35 AM, Peter Zijlstra wrote:
+> On Wed, Jun 16, 2021 at 02:19:49PM +1000, Nicholas Piggin wrote:
+>> Excerpts from Andy Lutomirski's message of June 16, 2021 1:21 pm:
+>>> membarrier() needs a barrier after any CPU changes mm.  There is currently
+>>> a comment explaining why this barrier probably exists in all cases.  This
+>>> is very fragile -- any change to the relevant parts of the scheduler
+>>> might get rid of these barriers, and it's not really clear to me that
+>>> the barrier actually exists in all necessary cases.
+>>
+>> The comments and barriers in the mmdrop() hunks? I don't see what is 
+>> fragile or maybe-buggy about this. The barrier definitely exists.
+>>
+>> And any change can change anything, that doesn't make it fragile. My
+>> lazy tlb refcounting change avoids the mmdrop in some cases, but it
+>> replaces it with smp_mb for example.
+> 
+> I'm with Nick again, on this. You're adding extra barriers for no
+> discernible reason, that's not generally encouraged, seeing how extra
+> barriers is extra slow.
+> 
+> Both mmdrop() itself, as well as the callsite have comments saying how
+> membarrier relies on the implied barrier, what's fragile about that?
+> 
 
-The local_lock is *not* a lock on non-PREEMPT_RT kernel IIUC. It
-disables preempt and IRQ. But preempt disable is no-op on non-preempt
-kernel. IRQ disable can guarantee it is atomic context, but I'm not
-sure if it is equivalent to "atomic freelists" in Jann's context.
+My real motivation is that mmgrab() and mmdrop() don't actually need to
+be full barriers.  The current implementation has them being full
+barriers, and the current implementation is quite slow.  So let's try
+that commit message again:
 
->
-> >>
-> >>
-> >> I think the lockless page cache code also has to deal with somewhat
-> >> similar ordering concerns when it uses page_cache_get_speculative(),
-> >> e.g. in mapping_get_entry() - first it looks up a page pointer with
-> >> xas_load(), and any access to the page later on would be a _dependent
-> >> load_, but if the page then gets freed, reallocated, and inserted into
-> >> the page cache again before the refcount increment and the re-check
-> >> using xas_reload(), then there would be no data dependency from
-> >> xas_reload() to the following use of the page...
-> >>
-> >
->
+membarrier() needs a barrier after any CPU changes mm.  There is currently
+a comment explaining why this barrier probably exists in all cases. The
+logic is based on ensuring that the barrier exists on every control flow
+path through the scheduler.  It also relies on mmgrab() and mmdrop() being
+full barriers.
+
+mmgrab() and mmdrop() would be better if they were not full barriers.  As a
+trivial optimization, mmgrab() could use a relaxed atomic and mmdrop()
+could use a release on architectures that have these operations.  Larger
+optimizations are also in the works.  Doing any of these optimizations
+while preserving an unnecessary barrier will complicate the code and
+penalize non-membarrier-using tasks.
+
+Simplify the logic by adding an explicit barrier, and allow architectures
+to override it as an optimization if they want to.
+
+One of the deleted comments in this patch said "It is therefore
+possible to schedule between user->kernel->user threads without
+passing through switch_mm()".  It is possible to do this without, say,
+writing to CR3 on x86, but the core scheduler indeed calls
+switch_mm_irqs_off() to tell the arch code to go back from lazy mode
+to no-lazy mode.
