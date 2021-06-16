@@ -2,182 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 124A73AA32E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC923AA334
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbhFPScd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 14:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbhFPScb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 14:32:31 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CA9C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:30:24 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso2281897pjp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:30:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oMmBa/UenZSiz8FWRlUYJ1ApLColqphv5fT0ZtHZkco=;
-        b=WKm6uhmxacLHEonEcSMaA5j3VxH+IMGkGzvLS3a/XOVz+YuDdJpchp0+D4dErQF2N4
-         wonuPp+nUW/aooKV8wk4KPh0EYl+GrrdNV1YOFCiej81yxuvF4yh143YqjOuBaKn6Y+t
-         sON6O3h5g4Hi9HtZBtcb1pOPR4F1/Ti3mSp2D+GhLV9l1nJ+e7W25FX356fw1PYVT+/l
-         4UonLYns+/6oImensYAibJDoZiyOmYTRTiFO2QQQWJjHQNLfHmZeBBIZ+qNzgczk/3xz
-         CLxdlkFimaa70/7+COb05076EcfTGenXgd5zn+C27dIvFgZNIQhiyaNzch7jmwhAlQ7k
-         sGpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oMmBa/UenZSiz8FWRlUYJ1ApLColqphv5fT0ZtHZkco=;
-        b=DLTMsQw6Lwu1+fx+hXt0p4hFW9R+UoVYiFg4V3qwHI+um5IJhxoVi9oH1nQ5fTPEOt
-         cYeno0ggIFDtzc6p+2WyCfHQTkVs0o7aqrBOf/lXH8Z3+mI+cdvgT5HYtBhZeukwMQlq
-         FqRMfuhafx44xekRPdQW1wtCW6ubh39CNJWqvixfZdrZ/yFR+gnhlt4Ev3d0p53nV31c
-         5k1aCT8frRvnIO4rU2Krxowuqh0RABLFpC5BvIQFmxyJk/lzwQO02gGgCy3YJnGt6krS
-         4Tx10C/DgJFMkGQWtlvT5crLuQM6NAwyUJoxh4m8YNxoRRKzAeD0sPqyz04RZfjRmJ1S
-         N/Iw==
-X-Gm-Message-State: AOAM5337Qk3TxtwDtgCUP47QrIW5X6aYCEK/JNz2Ynjo+nQLkCyUhpbP
-        u8+VXVmMX1Bd70o5wqY2z+Gl
-X-Google-Smtp-Source: ABdhPJyqynxiYazXV5IbplMzPc2VHuctu11Dn+8ZNjUwy+usenSZ+jMti/oBrereusj21n+iGcgFEQ==
-X-Received: by 2002:a17:90a:bd18:: with SMTP id y24mr12297762pjr.83.1623868223982;
-        Wed, 16 Jun 2021 11:30:23 -0700 (PDT)
-Received: from thinkpad ([2409:4072:17:2c05:a14f:78ce:1082:5556])
-        by smtp.gmail.com with ESMTPSA id h4sm2881664pjv.55.2021.06.16.11.30.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 11:30:23 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 00:00:17 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Om Prakash Singh <omp@nvidia.com>
-Cc:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        smohanad@codeaurora.org
-Subject: Re: [PATCH 1/5] PCI: endpoint: Add linkdown notifier support
-Message-ID: <20210616183017.GB152639@thinkpad>
-References: <20210616115913.138778-1-manivannan.sadhasivam@linaro.org>
- <20210616115913.138778-2-manivannan.sadhasivam@linaro.org>
- <443ec752-08e2-83dd-2b6f-b5e74c7bd8e5@nvidia.com>
+        id S231857AbhFPSdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 14:33:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230267AbhFPSdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 14:33:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FB78613C1;
+        Wed, 16 Jun 2021 18:31:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623868267;
+        bh=4iyLPBnjANgB4IOoNU9x++tyyeWJHhfFaJq3Jwp5nMs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=bTSuvnJQdPPULOJPC9vyw+MUPo4/gNpINZ0iIgTD8nfsOD0jkettsFLUbUNRx1hBW
+         7op24yQm635zQFnkz1JE24RiZZMzqQPqnxSPthHYYWxkU+SmIgNFfW35f9sPyWR0IF
+         m1gP1OZmFYkGz4wzmBdOBVvbwXr3NyF6+4BIwZkE/HFoWj3aM9tlCVNJ37exBfiLcO
+         QzjHJYaw2QgyLoMXJDlypOWoraU0U25ImdCKTqGt5bxBKZxifXe5JqdME+einFaXJk
+         BocR62NPGwrUmn3ztzkvsVFMXl4jKm7t7kgAQNS/r0lRSZqmQVkhhFrMW1ypKV4HlU
+         UgcYfMHGQUqSQ==
+Subject: Re: [PATCH 2/8] x86/mm: Handle unlazying membarrier core sync in the
+ arch code
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     x86 <x86@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <cover.1623813516.git.luto@kernel.org>
+ <571b7e6b6a907e8a1ffc541c3f0005d347406fd0.1623813516.git.luto@kernel.org>
+ <1612817467.9041.1623865752655.JavaMail.zimbra@efficios.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <0b50604c-2953-29ab-ee67-94e91ba8d854@kernel.org>
+Date:   Wed, 16 Jun 2021 11:31:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <443ec752-08e2-83dd-2b6f-b5e74c7bd8e5@nvidia.com>
+In-Reply-To: <1612817467.9041.1623865752655.JavaMail.zimbra@efficios.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 11:52:28PM +0530, Om Prakash Singh wrote:
+On 6/16/21 10:49 AM, Mathieu Desnoyers wrote:
+> ----- On Jun 15, 2021, at 11:21 PM, Andy Lutomirski luto@kernel.org wrote:
+> [...]
+>> @@ -473,16 +474,24 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct
+>> mm_struct *next,
+> 
+> [...]
+> 
+>> @@ -510,16 +520,35 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct
+>> mm_struct *next,
+>> 		 * If the TLB is up to date, just use it.
+>> 		 * The barrier synchronizes with the tlb_gen increment in
+>> 		 * the TLB shootdown code.
+>> +		 *
+>> +		 * As a future optimization opportunity, it's plausible
+>> +		 * that the x86 memory model is strong enough that this
+>> +		 * smp_mb() isn't needed.
+>> 		 */
+>> 		smp_mb();
+>> 		next_tlb_gen = atomic64_read(&next->context.tlb_gen);
+>> 		if (this_cpu_read(cpu_tlbstate.ctxs[prev_asid].tlb_gen) ==
+>> -				next_tlb_gen)
+>> +		    next_tlb_gen) {
+>> +#ifdef CONFIG_MEMBARRIER
+>> +			/*
+>> +			 * We switched logical mm but we're not going to
+>> +			 * write to CR3.  We already did smp_mb() above,
+>> +			 * but membarrier() might require a sync_core()
+>> +			 * as well.
+>> +			 */
+>> +			if (unlikely(atomic_read(&next->membarrier_state) &
+>> +				     MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE))
+>> +				sync_core_before_usermode();
+>> +#endif
+>> +
+>> 			return;
+>> +		}
+> 
+> [...]
+> 
+> I find that mixing up preprocessor #ifdef and code logic hurts readability.
+> Can you lift this into a static function within the same compile unit, and
+> provides an empty implementation for the #else case ?
+
+Done.
+
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> 	prev->sched_class->task_dead(prev);
 > 
 > 
-> On 6/16/2021 5:29 PM, Manivannan Sadhasivam wrote:
-> > External email: Use caution opening links or attachments
-> > 
-> > 
-> > Add support to notify the EPF device about the linkdown event from the
-> > EPC device.
-> > 
-> > Usage:
-> > ======
-> > 
-> > EPC
-> > ---
-> > 
-> > ```
-> > static irqreturn_t pcie_ep_irq(int irq, void *data)
-> > {
-> > ...
-> >          case PCIE_EP_INT_LINK_DOWN:
-> >                  pci_epc_linkdown(epc);
-> >                  break;
-> Can you provide use case/scenario when epc will get LINK_DOWN interrupt?
 > 
 
-During host shutdown/reboot epc will get LINK_DOWN interrupt. And in our MHI
-function we need to catch that for handling the SYSERR state as per the spec.
-
-Thanks,
-Mani
-
-> > ...
-> > }
-> > ```
-> > 
-> > EPF
-> > ---
-> > 
-> > ```
-> > static int pci_epf_notifier(struct notifier_block *nb, unsigned long val,
-> >                              void *data)
-> > {
-> > ...
-> >          case LINK_DOWN:
-> >                  /* Handle link down event */
-> >                  break;
-> > ...
-> > }
-> > ```
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >   drivers/pci/endpoint/pci-epc-core.c | 17 +++++++++++++++++
-> >   include/linux/pci-epc.h             |  1 +
-> >   include/linux/pci-epf.h             |  1 +
-> >   3 files changed, 19 insertions(+)
-> > 
-> > diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
-> > index adec9bee72cf..f29d78c18438 100644
-> > --- a/drivers/pci/endpoint/pci-epc-core.c
-> > +++ b/drivers/pci/endpoint/pci-epc-core.c
-> > @@ -641,6 +641,23 @@ void pci_epc_linkup(struct pci_epc *epc)
-> >   }
-> >   EXPORT_SYMBOL_GPL(pci_epc_linkup);
-> > 
-> > +/**
-> > + * pci_epc_linkdown() - Notify the EPF device that EPC device has dropped the
-> > + *                     connection with the Root Complex.
-> > + * @epc: the EPC device which has dropped the link with the host
-> > + *
-> > + * Invoke to Notify the EPF device that the EPC device has dropped the
-> > + * connection with the Root Complex.
-> > + */
-> > +void pci_epc_linkdown(struct pci_epc *epc)
-> > +{
-> > +       if (!epc || IS_ERR(epc))
-> > +               return;
-> > +
-> > +       atomic_notifier_call_chain(&epc->notifier, LINK_DOWN, NULL);
-> > +}
-> > +EXPORT_SYMBOL_GPL(pci_epc_linkdown);
-> > +
-> >   /**
-> >    * pci_epc_init_notify() - Notify the EPF device that EPC device's core
-> >    *                        initialization is completed.
-> > diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
-> > index b82c9b100e97..23590efc13e7 100644
-> > --- a/include/linux/pci-epc.h
-> > +++ b/include/linux/pci-epc.h
-> > @@ -202,6 +202,7 @@ void pci_epc_destroy(struct pci_epc *epc);
-> >   int pci_epc_add_epf(struct pci_epc *epc, struct pci_epf *epf,
-> >                      enum pci_epc_interface_type type);
-> >   void pci_epc_linkup(struct pci_epc *epc);
-> > +void pci_epc_linkdown(struct pci_epc *epc);
-> >   void pci_epc_init_notify(struct pci_epc *epc);
-> >   void pci_epc_remove_epf(struct pci_epc *epc, struct pci_epf *epf,
-> >                          enum pci_epc_interface_type type);
-> > diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
-> > index 6833e2160ef1..e9ad634b1575 100644
-> > --- a/include/linux/pci-epf.h
-> > +++ b/include/linux/pci-epf.h
-> > @@ -20,6 +20,7 @@ enum pci_epc_interface_type;
-> >   enum pci_notify_event {
-> >          CORE_INIT,
-> >          LINK_UP,
-> > +       LINK_DOWN,
-> >   };
-> > 
-> >   enum pci_barno {
-> > --
-> > 2.25.1
-> > 
