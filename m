@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02BF3A9057
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4D73A905F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhFPELq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 00:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhFPELo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 00:11:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C85C061574;
-        Tue, 15 Jun 2021 21:09:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+hJYay8JR5Szrm3esdkGPPnSrjDyFQjXCxZ0d9ypRKM=; b=n0s17+QbCeywB7tT55kKef7453
-        IRB44+PDdtgICy2G0YMcftFVm199pSyAdpJGLKekmgdDBZ6XuffMxQMX36hOLOXe28uAJsKKfDKko
-        FgkgOoBPpT+eEqyG+epXsLvvuUqfdJL6RVTgTnRfMA2AIuN7I3jFsrqBQ2x/0gbyZD/CPxj1eKJxL
-        ElbswIIRhKlBbbiBiG7O14d0EA2iO3poptdiTrI+Td/PVfTWXo8LEs20orcm9ZuI+/Fcdk16HSbDc
-        KC3M91MxPVUHrVsFUE3HxZt9AdJ5Oad68ELIZPI7ZVTOuGQ1zl3x3qOXLlmEGjVVvc2qeqW5fFSBn
-        II4beYog==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltMrV-007ZmS-MR; Wed, 16 Jun 2021 04:09:11 +0000
-Date:   Wed, 16 Jun 2021 05:09:09 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Shreeya Patel <shreeya.patel@collabora.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        jaegeuk@kernel.org, chao@kernel.org, ebiggers@google.com,
-        drosen@google.com, ebiggers@kernel.org, yuchao0@huawei.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCH v8 4/4] fs: unicode: Add utf8 module and a unicode layer
-Message-ID: <YMl5Zf1+Q7fop4Qj@infradead.org>
-References: <20210427062907.GA1564326@infradead.org>
- <61d85255-d23e-7016-7fb5-7ab0a6b4b39f@collabora.com>
- <YIgkvjdrJPjeoJH7@mit.edu>
- <87bl9z937q.fsf@collabora.com>
- <YIlta1Saw7dEBpfs@mit.edu>
- <87mtti6xtf.fsf@collabora.com>
- <7caab939-2800-0cc2-7b65-345af3fce73d@collabora.com>
- <YJoJp1FnHxyQc9/2@infradead.org>
- <687283ac-77b9-9e9e-dac2-faaf928eb383@collabora.com>
- <87zgw7izf8.fsf@collabora.com>
+        id S229570AbhFPERV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 00:17:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229483AbhFPERT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 00:17:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3323B61246;
+        Wed, 16 Jun 2021 04:15:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623816914;
+        bh=FVUaYjKHc+AKLajKsB3EM4ycBOxBIGMjhYSj8aEsVbo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k9ImWtIF40K0ojCF0m4NObfYejwVh6r5dwuWdoJG5IQjq1V950RGEFDbO2ENwCF3I
+         oMJdAkPdgQHGo1zQr8MQXJAplt/nEXbW1dN3TD3daYWGB0jnIoBQmBT6On+FFqG3QQ
+         pvkzjmUPE+j9fqMI4DwPt0e4/R3hysKL6DAtAscDt8dSTHlDIZZjj4E77osHks3k20
+         n7gppevuHN5O4G0hj5TiWsAYRHAR0DXtuJnt5Ge4vHlSKxfNIBvE/qwpUfPFLnJ/wh
+         FFZPN6ULiyGp8uCons5sPB8+4xoRswRDw4lAVbzyu3PyMjFAPtVxgxiDo5MEBrEc5v
+         5YW64Bo+hzEJQ==
+Date:   Wed, 16 Jun 2021 09:45:10 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sanjay R Mehta <sanmehta@amd.com>
+Cc:     Sanjay R Mehta <Sanju.Mehta@amd.com>, gregkh@linuxfoundation.org,
+        dan.j.williams@intel.com, Thomas.Lendacky@amd.com,
+        Shyam-sundar.S-k@amd.com, Nehal-bakulchandra.Shah@amd.com,
+        robh@kernel.org, mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v9 1/3] dmaengine: ptdma: Initial driver for the AMD PTDMA
+Message-ID: <YMl6zpjVHls8bk/A@vkoul-mobl>
+References: <1622654551-9204-1-git-send-email-Sanju.Mehta@amd.com>
+ <1622654551-9204-2-git-send-email-Sanju.Mehta@amd.com>
+ <YL+rUBGUJoFLS902@vkoul-mobl>
+ <94bba5dd-b755-81d0-de30-ce3cdaa3f241@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87zgw7izf8.fsf@collabora.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <94bba5dd-b755-81d0-de30-ce3cdaa3f241@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 08:07:07PM -0400, Gabriel Krisman Bertazi wrote:
-> I wasn't going to really oppose it from being a firmware but this
-> detail, if required, makes the whole firmware idea more awkward.  If the
-> whole reason to make it a firmware is to avoid the module boilerplate,
-> this is just different boilerplate.  Once again, I don't know about
-> precedent of kernel data as a module, and there is the problem with
-> Makefile rules to install this stuff, that I mentioned.
-> 
-> We know we can get rid of the static call stuff already, since we likely
-> won't support more encodings anyway, so that would simplify a lot the
-> module specific code.
+On 15-06-21, 16:50, Sanjay R Mehta wrote:
 
-Well, another thing we can do is a data-only module.  That is a module
-that just contains the tables, with the core code doing a symbol_get
-on them.
+> >> +static struct pt_device *pt_alloc_struct(struct device *dev)
+> >> +{
+> >> +     struct pt_device *pt;
+> >> +
+> >> +     pt = devm_kzalloc(dev, sizeof(*pt), GFP_KERNEL);
+> >> +
+> >> +     if (!pt)
+> >> +             return NULL;
+> >> +     pt->dev = dev;
+> >> +     pt->ord = atomic_inc_return(&pt_ordinal);
+> > 
+> > What is the use of this number?
+> > 
+> 
+> There are eight similar instances of this DMA engine on AMD SOC.
+> It is to differentiate each of these instances.
+
+Are they individual device objects?
+
+-- 
+~Vinod
