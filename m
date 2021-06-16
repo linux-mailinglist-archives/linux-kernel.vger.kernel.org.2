@@ -2,71 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5903A90E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97ECC3A90F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 07:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFPFBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 01:01:33 -0400
-Received: from verein.lst.de ([213.95.11.211]:52440 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229699AbhFPFB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 01:01:29 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9F8EA68AFE; Wed, 16 Jun 2021 06:59:18 +0200 (CEST)
-Date:   Wed, 16 Jun 2021 06:59:18 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v11 09/12] swiotlb: Add restricted DMA alloc/free
- support
-Message-ID: <20210616045918.GA27537@lst.de>
-References: <20210616035240.840463-1-tientzu@chromium.org> <20210616035240.840463-10-tientzu@chromium.org> <CALiNf28=3vqAs+8HsjyBGOiPNR2F3yT6OGnLpZH_AkWqgTqgOA@mail.gmail.com>
+        id S231133AbhFPFCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 01:02:51 -0400
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:48336 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229559AbhFPFCt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 01:02:49 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d01 with ME
+        id Hh0e2500E21Fzsu03h0f1C; Wed, 16 Jun 2021 07:00:42 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 16 Jun 2021 07:00:42 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org, alexander.h.duyck@intel.com,
+        jeffrey.t.kirsher@intel.com
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] fm10k: : Fix an error handling path in 'fm10k_probe()'
+Date:   Wed, 16 Jun 2021 07:00:36 +0200
+Message-Id: <a3eae0d8c3b4601b010a809da1c062b2f40d1bdc.1623819522.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALiNf28=3vqAs+8HsjyBGOiPNR2F3yT6OGnLpZH_AkWqgTqgOA@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 12:04:16PM +0800, Claire Chang wrote:
-> Just noticed that after propagating swiotlb_force setting into
-> io_tlb_default_mem->force, the memory allocation behavior for
-> swiotlb_force will change (i.e. always skipping arch_dma_alloc and
-> dma_direct_alloc_from_pool).
+If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+call, as already done in the remove function.
 
-Yes, I think we need to split a "use_for_alloc" flag from the force flag.
+Fixes: 19ae1b3fb99c ("fm10k: Add support for PCI power management and error handling")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/net/ethernet/intel/fm10k/fm10k_pci.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/intel/fm10k/fm10k_pci.c b/drivers/net/ethernet/intel/fm10k/fm10k_pci.c
+index dbcae92bb18d..adfa2768f024 100644
+--- a/drivers/net/ethernet/intel/fm10k/fm10k_pci.c
++++ b/drivers/net/ethernet/intel/fm10k/fm10k_pci.c
+@@ -2227,6 +2227,7 @@ static int fm10k_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ err_ioremap:
+ 	free_netdev(netdev);
+ err_alloc_netdev:
++	pci_disable_pcie_error_reporting(pdev);
+ 	pci_release_mem_regions(pdev);
+ err_pci_reg:
+ err_dma:
+-- 
+2.30.2
+
