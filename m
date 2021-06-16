@@ -2,78 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8BF3A979A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CA93A979F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbhFPKiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:38:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49236 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231922AbhFPKh7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:37:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623839753;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yn9f1USq/1FIJfVnKY57jyaUwZTSFJhG7w4XpEIJfRY=;
-        b=ZavC8/EXP9Ixl90b7v7dl6NW9891IW5zEGjv+7zfZSXk1OZYq8qhTwnA+P/gLfhKP20Uhs
-        NMEBdqFwCM/iJd90CKqLP9upqcw7xrWq1b1gpDrndQ1ySa7Im3N3LA7OMNXK5wx8bMKqc4
-        ZX+qhx4lm9olXSsnl2SzuMp8tJkBkog=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-8ZNpF86OMOG927r_PARiiQ-1; Wed, 16 Jun 2021 06:35:51 -0400
-X-MC-Unique: 8ZNpF86OMOG927r_PARiiQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C485801ADE;
-        Wed, 16 Jun 2021 10:35:50 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4395C5D6AD;
-        Wed, 16 Jun 2021 10:35:48 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210614201435.1379188-31-willy@infradead.org>
-References: <20210614201435.1379188-31-willy@infradead.org> <20210614201435.1379188-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v11 30/33] mm/filemap: Convert page wait queues to be folios
+        id S232370AbhFPKip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:38:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231922AbhFPKin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 06:38:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED88960FF4;
+        Wed, 16 Jun 2021 10:36:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623839797;
+        bh=3oTb/1+XDcFsTnzsrZvYuutb3J6p97qLHaHtThQAkqc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IFSOjzgUTgRVG+msUdDw2KENqBmzvBhpu7O5BIhA3opNeq215BrJnOxmlXZMRZ0av
+         7kEGyZsLzKzKy5HCXAzl6+TROnko29I3j2HZ9rA7scbnrIRMlStxTumWl/UnrIKgVY
+         L3oRPnh4SRv/5s258GLwl8hm7DDcBdOHhOfwjEz+dzW6rjuRWfV9BxY2+hsFGvZysu
+         aQsKIDvJEhS4YBlb5puVpz7EgEN4LE2M7dkaQqt84XDN+xzNuFyuEwIT3SelMipH+U
+         /dKshZ/hc6tOYokOCDJiPjri2GgP3WqgLD1vhFP5ku1kqek3nRP53wa2MKsabB10Sc
+         AIz5jQ3fCWlfg==
+Date:   Wed, 16 Jun 2021 16:06:34 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: dmaengine: qcom: gpi: add compatible
+ for sm8250
+Message-ID: <YMnUMuUahJM/9KTA@vkoul-mobl>
+References: <20210614235358.444834-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <816230.1623839747.1@warthog.procyon.org.uk>
-Date:   Wed, 16 Jun 2021 11:35:47 +0100
-Message-ID: <816231.1623839747@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614235358.444834-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+On 15-06-21, 01:53, Konrad Dybcio wrote:
+> No functional changes, just adding a new compatible for a different
+> SoC.
 
-> Reinforce that page flags are actually in the head page by changing the
-> type from page to folio.  Increases the size of cachefiles by two bytes,
-> but the kernel core is unchanged in size.
+Applied 1 & 2, thanks
 
-Hopefully we can get rid of that bit of code in cachefiles soon.
-
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Jeff Layton <jlayton@kernel.org>
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
-
-Reviewed-by: David Howells <dhowells@redhat.com>
-
+-- 
+~Vinod
