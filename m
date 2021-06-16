@@ -2,205 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7EF3AA1B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F553AA1D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhFPQqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 12:46:08 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3257 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhFPQqH (ORCPT
+        id S230445AbhFPQyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 12:54:39 -0400
+Received: from mail-pj1-f52.google.com ([209.85.216.52]:56291 "EHLO
+        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230083AbhFPQya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 12:46:07 -0400
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G4rP54mvYz6K6NX;
-        Thu, 17 Jun 2021 00:34:17 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 18:43:59 +0200
-Received: from localhost (10.52.123.249) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 16 Jun
- 2021 17:43:58 +0100
-Date:   Wed, 16 Jun 2021 17:43:51 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Alison Schofield <alison.schofield@intel.com>
-CC:     Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] cxl/acpi: Use the ACPI CFMWS to create static
- decoder objects
-Message-ID: <20210616174351.000023e6@Huawei.com>
-In-Reply-To: <48f1b59105e46f04b38347fc1555bb5c8d654cff.1623800340.git.alison.schofield@intel.com>
-References: <cover.1623800340.git.alison.schofield@intel.com>
-        <48f1b59105e46f04b38347fc1555bb5c8d654cff.1623800340.git.alison.schofield@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Wed, 16 Jun 2021 12:54:30 -0400
+Received: by mail-pj1-f52.google.com with SMTP id k7so2065225pjf.5;
+        Wed, 16 Jun 2021 09:52:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8MKUHbuhcvvAbyVmhGO6tF9OydsRY8Yh0Heff4psMcU=;
+        b=Qx1uZvn6htngZ1WWlJ23cxY8+02jmvVndZRS5HfNm6PhPMNmp8kyOwKrvxvWwGoine
+         9pr3U2gpJQNLvBKbAIGO/1gYwBvjA5gjpCOilIOY+IA+sClaHqRlDfQj1XR4QwQ3FbW8
+         3G5UvXz0vHQELf3NJ9fAZCjWKl9nkW5mwFOzFZhF3QZ7NMh95VMqeDbqDAFGrzGEO0BO
+         s95K0r3Z7FEi+vssdwtjB5ZrXfbpPcEINoLNfGiEGmJKq33XXmHvYKR4sri872wUhPLj
+         +4JmWQ1iApPivj/qrUmcVhxsign5XTu2hKmgxEu6zD5cr2llCvn+krPnGweV5rByC3PN
+         yWPw==
+X-Gm-Message-State: AOAM531oMH2N4zNWcyVBLilmcdDWzJnL8cabQWQ4b006bwS2MvsMoL1w
+        /G0Qder6MW3ULapRNiqyittjfGjB7A0=
+X-Google-Smtp-Source: ABdhPJyzx+UQa7eUy6fLX7IIzx1UxFuf2kpE8zutUL05jvc6Tbl3mGv+6//eteoO9Q90ulyVAqOUPQ==
+X-Received: by 2002:a17:902:6a84:b029:f3:f285:7d8 with SMTP id n4-20020a1709026a84b02900f3f28507d8mr457172plk.57.1623862342073;
+        Wed, 16 Jun 2021 09:52:22 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id w7sm2574738pjy.11.2021.06.16.09.52.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 09:52:21 -0700 (PDT)
+Subject: Re: [dm-devel] [PATCH 06/18] bvec: add a bvec_kmap_local helper
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-arch@vger.kernel.org, linux-block@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Geoff Levand <geoff@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        linux-kernel@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        dm-devel@redhat.com, Ilya Dryomov <idryomov@gmail.com>,
+        Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org
+References: <20210615132456.753241-1-hch@lst.de>
+ <20210615132456.753241-7-hch@lst.de>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <244b92f2-7921-7f33-b83f-66f3fff57696@acm.org>
+Date:   Wed, 16 Jun 2021 09:52:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <20210615132456.753241-7-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.123.249]
-X-ClientProxiedBy: lhreml750-chm.china.huawei.com (10.201.108.200) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 17:20:39 -0700
-Alison Schofield <alison.schofield@intel.com> wrote:
-
-> The ACPI CXL Early Discovery Table (CEDT) includes a list of CXL memory
-> resources in CXL Fixed Memory Window Structures (CFMWS). Retrieve each
-> CFMWS in the CEDT and add a cxl_decoder object to the root port (root0)
-> for each memory resource.
-> 
-> Signed-off-by: Alison Schofield <alison.schofield@intel.com>
-
-LGTM
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  drivers/cxl/acpi.c | 114 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 114 insertions(+)
-> 
-> diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
-> index b6d9cd45428c..e3aa356d4dcd 100644
-> --- a/drivers/cxl/acpi.c
-> +++ b/drivers/cxl/acpi.c
-> @@ -8,8 +8,120 @@
->  #include <linux/pci.h>
->  #include "cxl.h"
->  
-> +/* Encode defined in CXL 2.0 8.2.5.12.7 HDM Decoder Control Register */
-> +#define CFMWS_INTERLEAVE_WAYS(x)	(1 << (x)->interleave_ways)
-> +#define CFMWS_INTERLEAVE_GRANULARITY(x)	((x)->granularity + 8)
-> +
->  static struct acpi_table_header *cedt_table;
->  
-> +static unsigned long cfmws_to_decoder_flags(int restrictions)
+On 6/15/21 6:24 AM, Christoph Hellwig wrote:
+> +/**
+> + * bvec_kmap_local - map a bvec into the kernel virtual address space
+> + * @bvec: bvec to map
+> + *
+> + * Must be called on single-page bvecs only.  Call kunmap_local on the returned
+> + * address to unmap.
+> + */
+> +static inline void *bvec_kmap_local(struct bio_vec *bvec)
 > +{
-> +	unsigned long flags = 0;
-> +
-> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE2)
-> +		flags |= CXL_DECODER_F_TYPE2;
-> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE3)
-> +		flags |= CXL_DECODER_F_TYPE3;
-> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE)
-> +		flags |= CXL_DECODER_F_RAM;
-> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_PMEM)
-> +		flags |= CXL_DECODER_F_PMEM;
-> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_FIXED)
-> +		flags |= CXL_DECODER_F_LOCK;
-> +
-> +	return flags;
+> +	return kmap_local_page(bvec->bv_page) + bvec->bv_offset;
 > +}
-> +
-> +static int cxl_acpi_cfmws_verify(struct device *dev,
-> +				 struct acpi_cedt_cfmws *cfmws)
-> +{
-> +	int expected_len;
-> +
-> +	if (cfmws->interleave_arithmetic != ACPI_CEDT_CFMWS_ARITHMETIC_MODULO) {
-> +		dev_err(dev, "CFMWS Unsupported Interleave Arithmetic\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!IS_ALIGNED(cfmws->base_hpa, SZ_256M)) {
-> +		dev_err(dev, "CFMWS Base HPA not 256MB aligned\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!IS_ALIGNED(cfmws->window_size, SZ_256M)) {
-> +		dev_err(dev, "CFMWS Window Size not 256MB aligned\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	expected_len = struct_size((cfmws), interleave_targets,
-> +				   CFMWS_INTERLEAVE_WAYS(cfmws));
-> +
-> +	if (expected_len != cfmws->header.length) {
-> +		dev_err(dev, "CFMWS interleave ways and targets mismatch\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void cxl_add_cfmws_decoders(struct device *dev,
-> +				   struct cxl_port *root_port)
-> +{
-> +	struct acpi_cedt_cfmws *cfmws;
-> +	struct cxl_decoder *cxld;
-> +	acpi_size len, cur = 0;
-> +	void *cedt_base;
-> +	int rc;
-> +
-> +	len = cedt_table->length - sizeof(*cedt_table);
-> +	cedt_base = cedt_table + 1;
-> +
-> +	while (cur < len) {
-> +		struct acpi_cedt_header *c = cedt_base + cur;
-> +
-> +		if (c->type != ACPI_CEDT_TYPE_CFMWS) {
-> +			cur += c->length;
-> +			continue;
-> +		}
-> +
-> +		cfmws = cedt_base + cur;
-> +
-> +		if (cfmws->header.length < sizeof(*cfmws)) {
-> +			dev_err(dev, "Invalid CFMWS header length %u\n",
-> +				cfmws->header.length);
-> +			dev_err(dev, "Failed to add decoders\n");
-> +			return;
-> +		}
-> +
-> +		rc = cxl_acpi_cfmws_verify(dev, cfmws);
-> +		if (rc) {
-> +			dev_err(dev, "CFMWS range %#llx-%#llx not registered\n",
-> +				cfmws->base_hpa, cfmws->base_hpa +
-> +				cfmws->window_size - 1);
-> +			cur += c->length;
-> +			continue;
-> +		}
-> +
-> +		cxld = devm_cxl_add_decoder(dev, root_port,
-> +				CFMWS_INTERLEAVE_WAYS(cfmws),
-> +				cfmws->base_hpa, cfmws->window_size,
-> +				CFMWS_INTERLEAVE_WAYS(cfmws),
-> +				CFMWS_INTERLEAVE_GRANULARITY(cfmws),
-> +				CXL_DECODER_EXPANDER,
-> +				cfmws_to_decoder_flags(cfmws->restrictions));
-> +
-> +		if (IS_ERR(cxld)) {
-> +			dev_err(dev, "Failed to add decoder for %#llx-%#llx\n",
-> +				cfmws->base_hpa, cfmws->base_hpa +
-> +				cfmws->window_size - 1);
-> +		} else {
-> +			dev_dbg(dev, "add: %s range %#llx-%#llx\n",
-> +				dev_name(&cxld->dev), cfmws->base_hpa,
-> +				 cfmws->base_hpa + cfmws->window_size - 1);
-> +		}
-> +		cur += c->length;
-> +	}
-> +}
-> +
->  static struct acpi_cedt_chbs *cxl_acpi_match_chbs(struct device *dev, u32 uid)
->  {
->  	struct acpi_cedt_chbs *chbs, *chbs_match = NULL;
-> @@ -251,6 +363,8 @@ static int cxl_acpi_probe(struct platform_device *pdev)
->  	if (rc)
->  		goto out;
->  
-> +	cxl_add_cfmws_decoders(host, root_port);
-> +
->  	/*
->  	 * Root level scanned with host-bridge as dports, now scan host-bridges
->  	 * for their role as CXL uports to their CXL-capable PCIe Root Ports.
 
+Hi Christoph,
+
+Would it be appropriate to add WARN_ON_ONCE(bvec->bv_offset >=
+PAGE_SIZE) in this function?
+
+Thanks,
+
+Bart.
