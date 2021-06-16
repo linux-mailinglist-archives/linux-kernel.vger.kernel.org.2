@@ -2,72 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA3E3AA029
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7FA3A9F7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235553AbhFPPpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:45:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50548 "EHLO mail.kernel.org"
+        id S235091AbhFPPia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:38:30 -0400
+Received: from verein.lst.de ([213.95.11.211]:54931 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234799AbhFPPmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:42:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 299E660FE3;
-        Wed, 16 Jun 2021 15:38:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857883;
-        bh=nHcMRLpN5ldCubkcU2AC1AimNWKK5ugryO39+kTcoAA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o8riaySrUI3cDU5C9yHlJXut0pZsXaK4Go/zJCLEyqqV383BoyIanXsOQqTcF0RFa
-         kyQXj42E4FDtBEfQJP7/JN3YAwj9Hkqx41KLqtF1y7IjaVbYqbt5xxkZSs4oaPs00B
-         0Fx3d0VNIBo0egUzTyEFLRVuhe9gJq8/qvrIHYIc=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheng Yongjun <zhengyongjun3@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 48/48] fib: Return the correct errno code
-Date:   Wed, 16 Jun 2021 17:33:58 +0200
-Message-Id: <20210616152838.151047356@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-References: <20210616152836.655643420@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S234928AbhFPPha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:37:30 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1777768B05; Wed, 16 Jun 2021 17:35:20 +0200 (CEST)
+Date:   Wed, 16 Jun 2021 17:35:19 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Roman Skakun <rm.skakun@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Volodymyr Babchuk <volodymyr_babchuk@epam.com>,
+        Roman Skakun <roman_skakun@epam.com>,
+        Andrii Anisov <andrii_anisov@epam.com>
+Subject: Re: [PATCH 2/2] swiotlb-xen: override common mmap and get_sgtable
+ dma ops
+Message-ID: <20210616153519.GA6476@lst.de>
+References: <855a58e2-1e03-4763-cb56-81367b73762c@oracle.com> <20210616114205.38902-1-roman_skakun@epam.com> <20210616114205.38902-2-roman_skakun@epam.com> <2834cdc0-534c-4f07-1901-e468a7713c1f@oracle.com> <20210616142148.GA764@lst.de> <83353b34-2abb-9dfc-bed6-21d500abf49f@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <83353b34-2abb-9dfc-bed6-21d500abf49f@oracle.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Yongjun <zhengyongjun3@huawei.com>
+On Wed, Jun 16, 2021 at 11:33:50AM -0400, Boris Ostrovsky wrote:
+> Isn't the expectation of virt_to_page() that it only works on non-vmalloc'd addresses? (This is not a rhetorical question, I actually don't know).
 
-[ Upstream commit 59607863c54e9eb3f69afc5257dfe71c38bb751e ]
-
-When kalloc or kmemdup failed, should return ENOMEM rather than ENOBUF.
-
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/core/fib_rules.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/core/fib_rules.c b/net/core/fib_rules.c
-index cd80ffed6d26..a9f937975080 100644
---- a/net/core/fib_rules.c
-+++ b/net/core/fib_rules.c
-@@ -1168,7 +1168,7 @@ static void notify_rule_change(int event, struct fib_rule *rule,
- {
- 	struct net *net;
- 	struct sk_buff *skb;
--	int err = -ENOBUFS;
-+	int err = -ENOMEM;
- 
- 	net = ops->fro_net;
- 	skb = nlmsg_new(fib_rule_nlmsg_size(ops, rule), GFP_KERNEL);
--- 
-2.30.2
-
-
-
+Yes.  Thus is why I'd suggest to just do the vmalloc_to_page or
+virt_to_page dance in ops_helpers.c and just continue using that.
