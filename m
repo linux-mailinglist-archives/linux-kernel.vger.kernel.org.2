@@ -2,186 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1623A9533
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEEF3A9535
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231727AbhFPInl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:43:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231318AbhFPInk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:43:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EA2760C41;
-        Wed, 16 Jun 2021 08:41:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623832895;
-        bh=wYwG7LnKrp9lLE5sLvcBvxTZo+OvvtxXnkvbV79A43s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=teKwMP25f+QE6deY5wNZu6b0sKz7NUebvywyvDGOtjzKQGMMzhKlG4LL5HSTKiVxM
-         TmF2/FOWtxhrVmoM0SxPiTB2zwsZJ3QMcllBc2jqcB7r3Hyf8B7VvmHTH4l97UY3Nz
-         nMfCGScy95olGwd4SfZWC5Q1yd9C2QIQt2zLwlTLWUH274lgBNXTARcwWmV+GVJj0l
-         VBfjlQeRC8GsZR6iYfH7+0nvzivZaUU5gU+0YqP5SY3DoGd5/ZKV1EExtgdHj73YGm
-         r6qXHshazikbPeZjxEl5jcsYl46E/5nG+3NyMtDJMOSPsDVuP636gkJMQKgQhUYPOV
-         CcoogsOTCJKgQ==
-Date:   Wed, 16 Jun 2021 11:41:29 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Anand Khoje <anand.a.khoje@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dledford@redhat.com, jgg@ziepe.ca, haakon.bugge@oracle.com
-Subject: Re: [PATCH v4 for-next 3/3] IB/core: Obtain subnet_prefix from cache
- in IB devices
-Message-ID: <YMm5OWnN0242e970@unreal>
-References: <20210616065213.987-1-anand.a.khoje@oracle.com>
- <20210616065213.987-4-anand.a.khoje@oracle.com>
- <YMmnyE+rpLIf6e0B@unreal>
- <ac8da9cf-9dec-a207-c80e-e9ee650b40fc@oracle.com>
+        id S232002AbhFPIoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:44:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20165 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231318AbhFPIoY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 04:44:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623832938;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PZAmIwmfUaI1BU7rTuCMHPv+MC/dlGrEzcBkBr7oKHg=;
+        b=GyUjFmSs39xTfhuObdaIUyVf0SU7rlwJFO+pmOeHvxwhleBIISRQdx/ipk+t1kwk5yuBY7
+        lii/iXTuvWDPR08h6Mkj6+wbIfw195KeIW0OGpCjnizkf2ie2T4cktuAJXEr8+5m+ewYXq
+        jSGYzYnaAm36YVFr1jz743y5nUPFAxc=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-421-LczaRr5zP0yPzSJW6tvNhA-1; Wed, 16 Jun 2021 04:42:17 -0400
+X-MC-Unique: LczaRr5zP0yPzSJW6tvNhA-1
+Received: by mail-wr1-f72.google.com with SMTP id y12-20020adffa4c0000b0290119c11bd29eso793592wrr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:42:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PZAmIwmfUaI1BU7rTuCMHPv+MC/dlGrEzcBkBr7oKHg=;
+        b=uTECUZfcbVgRVo5LpafdkFHZpVFPP/+ZxM4T2B86tZDQz5LV1LnrHM/bG0M6EuBPw8
+         wiIe/yGWye7eT0HGuxfY5SJKCcv89Nak6ZTbTe6g9jP1xFs24w0SQgeaQRxn3SnghhyL
+         Embs4dFmwDb6qqhyQxrRtv+/zADD4vwJooK+6RuonU+Q7Y+CRJChZGd6Ww2+ANe5Szmg
+         z9E40MkOv5lIiqnbe1H8sAUzpu9luo+R9nPT0C+sTEEXMqyQPLNvzYcQFNFegLZn+BLY
+         39Q4InQqqxmStsbli1uA6n5o7ZgygqpsFkdfu2gxFkMnDyauTcRY8r1033JJUA7ZBYgr
+         zleQ==
+X-Gm-Message-State: AOAM531dbfoloIk6c0duUd631bliP94wWwtqkmh+tGJm/rou9v66JMuz
+        4flD8fDVEBvWIx8i7BG4frwIEBNTqOVxhf2azRkjQdsX1E6L+womwrd3dQ3NOaSknH4S2EAPUuM
+        fR8Ufk4vO/FuCf9wMDNGTwTXJXsQ0tSEVy67MpSD4
+X-Received: by 2002:a05:6000:1888:: with SMTP id a8mr3840957wri.11.1623832935258;
+        Wed, 16 Jun 2021 01:42:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxjyE+Rt6oRamo1z14X7tbJ+lr8jr0/Q5re+8PHA8oE+lD9GvcC4nm088tnFh2FoemARvAAS9Yna4wIun4QZy4=
+X-Received: by 2002:a05:6000:1888:: with SMTP id a8mr3840919wri.11.1623832934883;
+ Wed, 16 Jun 2021 01:42:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ac8da9cf-9dec-a207-c80e-e9ee650b40fc@oracle.com>
+References: <20210429102828.31248-1-prasanna.kalever@redhat.com>
+In-Reply-To: <20210429102828.31248-1-prasanna.kalever@redhat.com>
+From:   Prasanna Kalever <pkalever@redhat.com>
+Date:   Wed, 16 Jun 2021 14:12:03 +0530
+Message-ID: <CANwsLLFqUg+H8Pzi=Rw_O8bZ=7a-Y3PXriznExpDQT-eyS6Mzg@mail.gmail.com>
+Subject: Re: [PATCH] nbd: provide a way for userspace processes to identify
+ device backends
+To:     Josef Bacik <josef@toxicpanda.com>, linux-block@vger.kernel.org,
+        nbd@other.debian.org, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, Ilya Dryomov <idryomov@redhat.com>,
+        Xiubo Li <xiubli@redhat.com>,
+        Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 01:12:51PM +0530, Anand Khoje wrote:
-> On 6/16/2021 12:57 PM, Leon Romanovsky wrote:
-> > On Wed, Jun 16, 2021 at 12:22:13PM +0530, Anand Khoje wrote:
-> > > ib_query_port() calls device->ops.query_port() to get the port
-> > > attributes. The method of querying is device driver specific.
-> > > The same function calls device->ops.query_gid() to get the GID and
-> > > extract the subnet_prefix (gid_prefix).
-> > > 
-> > > The GID and subnet_prefix are stored in a cache. But they do not get
-> > > read from the cache if the device is an Infiniband device. The
-> > > following change takes advantage of the cached subnet_prefix.
-> > > Testing with RDBMS has shown a significant improvement in performance
-> > > with this change.
-> > > 
-> > > The function ib_cache_is_initialised() is introduced because
-> > > ib_query_port() gets called early in the stage when the cache is not
-> > > built while reading port immutable property.
-> > > 
-> > > In that case, the default GID still gets read from HCA for IB link-
-> > > layer devices.
-> > > 
-> > > In the situation of an event causing cache update, the subnet_prefix
-> > > will get retrieved from newly updated GID cache in ib_cache_update(),
-> > > so that we do not end up reading a stale value from cache via
-> > > ib_query_port().
-> > > 
-> > > Fixes: fad61ad ("IB/core: Add subnet prefix to port info")
-> > > Suggested-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Suggested-by: Aru Kolappan <aru.kolappan@oracle.com>
-> > > Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
-> > > Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
-> > > ---
-> > > 
-> > > v1 -> v2:
-> > >      -   Split the v1 patch in 3 patches as per Leon's suggestion.
-> > > 
-> > > v2 -> v3:
-> > >      -   Added changes as per Mark Zhang's suggestion of clearing
-> > >          flags in git_table_cleanup_one().
-> > > v3 -> v4:
-> > >      -   Removed the enum ib_port_data_flags and 8 byte flags from
-> > >          struct ib_port_data, and the set_bit()/clear_bit() API
-> > >          used to update this flag as that was not necessary.
-> > >          Done to keep the code simple.
-> > >      -   Added code to read subnet_prefix from updated GID cache in the
-> > >          event of cache update. Prior to this change, ib_cache_update
-> > >          was reading the value for subnet_prefix via ib_query_port(),
-> > >          due to this patch, we ended up reading a stale cached value of
-> > >          subnet_prefix.
-> > > 
-> > > ---
-> > >   drivers/infiniband/core/cache.c  | 18 +++++++++++++++---
-> > >   drivers/infiniband/core/device.c |  9 +++++++++
-> > >   include/rdma/ib_cache.h          |  5 +++++
-> > >   include/rdma/ib_verbs.h          |  1 +
-> > >   4 files changed, 30 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-> > > index 2325171..cd99c46 100644
-> > > --- a/drivers/infiniband/core/cache.c
-> > > +++ b/drivers/infiniband/core/cache.c
-> > > @@ -917,9 +917,11 @@ static void gid_table_cleanup_one(struct ib_device *ib_dev)
-> > >   {
-> > >   	u32 p;
-> > > -	rdma_for_each_port (ib_dev, p)
-> > > +	rdma_for_each_port (ib_dev, p) {
-> > > +		ib_dev->port_data[p].cache_is_initialized = 0;
-> > 
-> > I think that this line is not needed, we are removing device anyway and
-> > and query_port is not allowed at this stage.
-> > 
-> We have kept this for code completeness purposes. Just as we did with
-> set_bit() and clear_bit() APIs.
+[Top posting]
 
-You are not using *_bit() API now, so let's not clear here.
-It is not completeness, but misleading. It gives false assumption
-that cache_is_initialized is used later in the code.
+Hello Josef, Jens and others nbd experts,
 
-> 
-> > >   		cleanup_gid_table_port(ib_dev, p,
-> > >   				       ib_dev->port_data[p].cache.gid);
-> > > +	}
-> > >   }
-> > >   static int gid_table_setup_one(struct ib_device *ib_dev)
-> > > @@ -1466,6 +1468,7 @@ static int config_non_roce_gid_cache(struct ib_device *device,
-> > >   	struct ib_port_attr       *tprops = NULL;
-> > >   	struct ib_pkey_cache      *pkey_cache = NULL;
-> > >   	struct ib_pkey_cache      *old_pkey_cache = NULL;
-> > > +	union ib_gid               gid;
-> > >   	int                        i;
-> > >   	int                        ret;
-> > > @@ -1523,13 +1526,21 @@ static int config_non_roce_gid_cache(struct ib_device *device,
-> > >   	device->port_data[port].cache.lmc = tprops->lmc;
-> > >   	device->port_data[port].cache.port_state = tprops->state;
-> > > -	device->port_data[port].cache.subnet_prefix = tprops->subnet_prefix;
-> > > +	ret = rdma_query_gid(device, port, 0, &gid);
-> > > +	if (ret) {
-> > > +		write_unlock_irq(&device->cache.lock);
-> > > +		goto err;
-> > > +	}
-> > > +
-> > > +	device->port_data[port].cache.subnet_prefix =
-> > > +			be64_to_cpu(gid.global.subnet_prefix);
-> > > +
-> > >   	write_unlock_irq(&device->cache_lock);
-> > >   	if (enforce_security)
-> > >   		ib_security_cache_change(device,
-> > >   					 port,
-> > > -					 tprops->subnet_prefix);
-> > > +					 be64_to_cpu(gid.global.subnet_prefix));
-> > >   	kfree(old_pkey_cache);
-> > >   	kfree(tprops);
-> > > @@ -1629,6 +1640,7 @@ int ib_cache_setup_one(struct ib_device *device)
-> > >   		err = ib_cache_update(device, p, true, true, true);
-> > >   		if (err)
-> > >   			return err;
-> > > +		device->port_data[p].cache_is_initialized = 1;
-> > >   	}
-> > >   	return 0;
-> > > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> > > index 7a617e4..57b9039 100644
-> > > --- a/drivers/infiniband/core/device.c
-> > > +++ b/drivers/infiniband/core/device.c
-> > > @@ -2057,6 +2057,15 @@ static int __ib_query_port(struct ib_device *device,
-> > >   	    IB_LINK_LAYER_INFINIBAND)
-> > >   		return 0;
-> > > +	if (!ib_cache_is_initialised(device, port_num))
-> > > +		goto query_gid_from_device;
-> > 
-> > IMHO, we don't need this new function and can access ib_port_data
-> > directly. In device.c, we have plenty of places that does it.
-> > 
-> > Not critical.
-> > 
-> Added this function to have a way to check validity of cache, such that it
-> could be used in future for the same check in areas to which ib_port_data is
-> opaque.
+Looks like this patch lost track again. Here is an attempt to remind
+you about this patch and request the maintainers for Acks.
 
+Many Thanks!
+--
+Prasanna
 
-It is ok, just call directly if (!device->port_data[port_num].cache_is_initialized).
+On Thu, Apr 29, 2021 at 3:58 PM Prasanna Kumar Kalever
+<prasanna.kalever@redhat.com> wrote:
+>
+> Problem:
+> On reconfigure of device, there is no way to defend if the backend
+> storage is matching with the initial backend storage.
+>
+> Say, if an initial connect request for backend "pool1/image1" got
+> mapped to /dev/nbd0 and the userspace process is terminated. A next
+> reconfigure request within NBD_ATTR_DEAD_CONN_TIMEOUT is allowed to
+> use /dev/nbd0 for a different backend "pool1/image2"
+>
+> For example, an operation like below could be dangerous:
+>
+> $ sudo rbd-nbd map --try-netlink rbd-pool/ext4-image
+> /dev/nbd0
+> $ sudo blkid /dev/nbd0
+> /dev/nbd0: UUID="bfc444b4-64b1-418f-8b36-6e0d170cfc04" TYPE="ext4"
+> $ sudo pkill -9 rbd-nbd
+> $ sudo rbd-nbd attach --try-netlink --device /dev/nbd0 rbd-pool/xfs-image
+> /dev/nbd0
+> $ sudo blkid /dev/nbd0
+> /dev/nbd0: UUID="d29bf343-6570-4069-a9ea-2fa156ced908" TYPE="xfs"
+>
+> Solution:
+> Provide a way for userspace processes to keep some metadata to identify
+> between the device and the backend, so that when a reconfigure request is
+> made, we can compare and avoid such dangerous operations.
+>
+> With this solution, as part of the initial connect request, backend
+> path can be stored in the sysfs per device config, so that on a reconfigure
+> request it's easy to check if the backend path matches with the initial
+> connect backend path.
+>
+> Please note, ioctl interface to nbd will not have these changes, as there
+> won't be any reconfigure.
+>
+> Signed-off-by: Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
+> ---
+>  drivers/block/nbd.c              | 60 +++++++++++++++++++++++++++++++-
+>  include/uapi/linux/nbd-netlink.h |  1 +
+>  2 files changed, 60 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index 4ff71b579cfc..b5022187ad9c 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -79,6 +79,7 @@ struct link_dead_args {
+>  #define NBD_RT_HAS_CONFIG_REF          4
+>  #define NBD_RT_BOUND                   5
+>  #define NBD_RT_DISCONNECT_ON_CLOSE     6
+> +#define NBD_RT_HAS_BACKEND_FILE                7
+>
+>  #define NBD_DESTROY_ON_DISCONNECT      0
+>  #define NBD_DISCONNECT_REQUESTED       1
+> @@ -119,6 +120,8 @@ struct nbd_device {
+>
+>         struct completion *destroy_complete;
+>         unsigned long flags;
+> +
+> +       char *backend;
+>  };
+>
+>  #define NBD_CMD_REQUEUED       1
+> @@ -216,6 +219,20 @@ static const struct device_attribute pid_attr = {
+>         .show = pid_show,
+>  };
+>
+> +static ssize_t backend_show(struct device *dev,
+> +               struct device_attribute *attr, char *buf)
+> +{
+> +       struct gendisk *disk = dev_to_disk(dev);
+> +       struct nbd_device *nbd = (struct nbd_device *)disk->private_data;
+> +
+> +       return sprintf(buf, "%s\n", nbd->backend ?: "");
+> +}
+> +
+> +static const struct device_attribute backend_attr = {
+> +       .attr = { .name = "backend", .mode = 0444},
+> +       .show = backend_show,
+> +};
+> +
+>  static void nbd_dev_remove(struct nbd_device *nbd)
+>  {
+>         struct gendisk *disk = nbd->disk;
+> @@ -1215,6 +1232,12 @@ static void nbd_config_put(struct nbd_device *nbd)
+>                                        &config->runtime_flags))
+>                         device_remove_file(disk_to_dev(nbd->disk), &pid_attr);
+>                 nbd->task_recv = NULL;
+> +               if (test_and_clear_bit(NBD_RT_HAS_BACKEND_FILE,
+> +                                      &config->runtime_flags)) {
+> +                       device_remove_file(disk_to_dev(nbd->disk), &backend_attr);
+> +                       kfree(nbd->backend);
+> +                       nbd->backend = NULL;
+> +               }
+>                 nbd_clear_sock(nbd);
+>                 if (config->num_connections) {
+>                         int i;
+> @@ -1274,7 +1297,7 @@ static int nbd_start_device(struct nbd_device *nbd)
+>
+>         error = device_create_file(disk_to_dev(nbd->disk), &pid_attr);
+>         if (error) {
+> -               dev_err(disk_to_dev(nbd->disk), "device_create_file failed!\n");
+> +               dev_err(disk_to_dev(nbd->disk), "device_create_file failed for pid!\n");
+>                 return error;
+>         }
+>         set_bit(NBD_RT_HAS_PID_FILE, &config->runtime_flags);
+> @@ -1681,6 +1704,7 @@ static int nbd_dev_add(int index)
+>                 BLK_MQ_F_BLOCKING;
+>         nbd->tag_set.driver_data = nbd;
+>         nbd->destroy_complete = NULL;
+> +       nbd->backend = NULL;
+>
+>         err = blk_mq_alloc_tag_set(&nbd->tag_set);
+>         if (err)
+> @@ -1754,6 +1778,7 @@ static const struct nla_policy nbd_attr_policy[NBD_ATTR_MAX + 1] = {
+>         [NBD_ATTR_SOCKETS]              =       { .type = NLA_NESTED},
+>         [NBD_ATTR_DEAD_CONN_TIMEOUT]    =       { .type = NLA_U64 },
+>         [NBD_ATTR_DEVICE_LIST]          =       { .type = NLA_NESTED},
+> +       [NBD_ATTR_BACKEND_IDENTIFIER]   =       { .type = NLA_STRING},
+>  };
+>
+>  static const struct nla_policy nbd_sock_policy[NBD_SOCK_MAX + 1] = {
+> @@ -1956,6 +1981,23 @@ static int nbd_genl_connect(struct sk_buff *skb, struct genl_info *info)
+>                 }
+>         }
+>         ret = nbd_start_device(nbd);
+> +       if (ret)
+> +               goto out;
+> +       if (info->attrs[NBD_ATTR_BACKEND_IDENTIFIER]) {
+> +               nbd->backend = nla_strdup(info->attrs[NBD_ATTR_BACKEND_IDENTIFIER],
+> +                                         GFP_KERNEL);
+> +               if (!nbd->backend) {
+> +                       ret = -ENOMEM;
+> +                       goto out;
+> +               }
+> +       }
+> +       ret = device_create_file(disk_to_dev(nbd->disk), &backend_attr);
+> +       if (ret) {
+> +               dev_err(disk_to_dev(nbd->disk),
+> +                       "device_create_file failed for backend!\n");
+> +               goto out;
+> +       }
+> +       set_bit(NBD_RT_HAS_BACKEND_FILE, &config->runtime_flags);
+>  out:
+>         mutex_unlock(&nbd->config_lock);
+>         if (!ret) {
+> @@ -2048,6 +2090,22 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
+>                        index);
+>                 return -EINVAL;
+>         }
+> +       if (nbd->backend) {
+> +               if (info->attrs[NBD_ATTR_BACKEND_IDENTIFIER]) {
+> +                       if (nla_strcmp(info->attrs[NBD_ATTR_BACKEND_IDENTIFIER],
+> +                                      nbd->backend)) {
+> +                               mutex_unlock(&nbd_index_mutex);
+> +                               dev_err(nbd_to_dev(nbd),
+> +                                       "backend image doesn't match with %s\n",
+> +                                       nbd->backend);
+> +                               return -EINVAL;
+> +                       }
+> +               } else {
+> +                       mutex_unlock(&nbd_index_mutex);
+> +                       dev_err(nbd_to_dev(nbd), "must specify backend\n");
+> +                       return -EINVAL;
+> +               }
+> +       }
+>         if (!refcount_inc_not_zero(&nbd->refs)) {
+>                 mutex_unlock(&nbd_index_mutex);
+>                 printk(KERN_ERR "nbd: device at index %d is going down\n",
+> diff --git a/include/uapi/linux/nbd-netlink.h b/include/uapi/linux/nbd-netlink.h
+> index c5d0ef7aa7d5..2d0b90964227 100644
+> --- a/include/uapi/linux/nbd-netlink.h
+> +++ b/include/uapi/linux/nbd-netlink.h
+> @@ -35,6 +35,7 @@ enum {
+>         NBD_ATTR_SOCKETS,
+>         NBD_ATTR_DEAD_CONN_TIMEOUT,
+>         NBD_ATTR_DEVICE_LIST,
+> +       NBD_ATTR_BACKEND_IDENTIFIER,
+>         __NBD_ATTR_MAX,
+>  };
+>  #define NBD_ATTR_MAX (__NBD_ATTR_MAX - 1)
+> --
+> 2.30.2
+>
 
-Thanks
