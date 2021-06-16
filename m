@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1C93AA02B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC90D3AA02E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235592AbhFPPpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:45:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56158 "EHLO mail.kernel.org"
+        id S235309AbhFPPpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:45:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235285AbhFPPme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:42:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ADC5613E9;
-        Wed, 16 Jun 2021 15:38:16 +0000 (UTC)
+        id S235319AbhFPPnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:43:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85EA9613FE;
+        Wed, 16 Jun 2021 15:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857896;
-        bh=P5ycT09ZcXhZUQODqUPfMBH6y1mKQAUoeOI2dT/yBF8=;
+        s=korg; t=1623857899;
+        bh=na31MgO79blGNGq2tw8e/gm26XvdqvGPIV3mHVLaqiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RcYQqCT8KkcutG0a4s6PhJXP3ZnVkJJmquKicbqJyzbes+GHuzuPPbcFucfpqqc4n
-         nX00FF1zpaV3hUtO2fO8Lr1nVFXQ+NVYDoFAylKOZTZPrl1XXZCsNVufReY+HXnhRZ
-         +KfbLrrNd+F3xBrXcWv5AmVbU5LRYzo90w8WflrU=
+        b=UaVlRPhDIITR+wWTy7BNE2Ub/kZBjpaF8RF3BxIEMSXPaHCoAWOcEEvrxkQW/OPhk
+         PEOoXK42unFQ1v0fuKKA0hUHyT7XPNacb+0NlGPR4dtlqerG7ZmW3x/80Q2hlRncn2
+         7UJYsi9Pd7xJE8grg2Qin+GTIIoKaQcgo/iGQV1U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
         Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 37/48] nvme-loop: check for NVME_LOOP_Q_LIVE in nvme_loop_destroy_admin_queue()
-Date:   Wed, 16 Jun 2021 17:33:47 +0200
-Message-Id: <20210616152837.821140040@linuxfoundation.org>
+Subject: [PATCH 5.12 38/48] nvme-loop: do not warn for deleted controllers during reset
+Date:   Wed, 16 Jun 2021 17:33:48 +0200
+Message-Id: <20210616152837.852028752@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
 References: <20210616152836.655643420@linuxfoundation.org>
@@ -42,34 +41,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit 4237de2f73a669e4f89ac0aa2b44fb1a1d9ec583 ]
+[ Upstream commit 6622f9acd29cd4f6272720e827e6406f5a970cb0 ]
 
-We need to check the NVME_LOOP_Q_LIVE flag in
-nvme_loop_destroy_admin_queue() to protect against duplicate
-invocations eg during concurrent reset and remove calls.
+During concurrent reset and delete calls the reset workqueue is
+flushed, causing nvme_loop_reset_ctrl_work() to be executed when
+the controller is in state DELETING or DELETING_NOIO.
+But this is expected, so we shouldn't issue a WARN_ON here.
 
 Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/loop.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/nvme/target/loop.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/nvme/target/loop.c b/drivers/nvme/target/loop.c
-index c34f785e699d..fe14609d2254 100644
+index fe14609d2254..0f22f333ff24 100644
 --- a/drivers/nvme/target/loop.c
 +++ b/drivers/nvme/target/loop.c
-@@ -261,7 +261,8 @@ static const struct blk_mq_ops nvme_loop_admin_mq_ops = {
+@@ -463,8 +463,10 @@ static void nvme_loop_reset_ctrl_work(struct work_struct *work)
+ 	nvme_loop_shutdown_ctrl(ctrl);
  
- static void nvme_loop_destroy_admin_queue(struct nvme_loop_ctrl *ctrl)
- {
--	clear_bit(NVME_LOOP_Q_LIVE, &ctrl->queues[0].flags);
-+	if (!test_and_clear_bit(NVME_LOOP_Q_LIVE, &ctrl->queues[0].flags))
-+		return;
- 	nvmet_sq_destroy(&ctrl->queues[0].nvme_sq);
- 	blk_cleanup_queue(ctrl->ctrl.admin_q);
- 	blk_cleanup_queue(ctrl->ctrl.fabrics_q);
+ 	if (!nvme_change_ctrl_state(&ctrl->ctrl, NVME_CTRL_CONNECTING)) {
+-		/* state change failure should never happen */
+-		WARN_ON_ONCE(1);
++		if (ctrl->ctrl.state != NVME_CTRL_DELETING &&
++		    ctrl->ctrl.state != NVME_CTRL_DELETING_NOIO)
++			/* state change failure for non-deleted ctrl? */
++			WARN_ON_ONCE(1);
+ 		return;
+ 	}
+ 
 -- 
 2.30.2
 
