@@ -2,170 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7443F3A8EB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951BD3A8EBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhFPCM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 22:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
+        id S231910AbhFPCNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 22:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhFPCM1 (ORCPT
+        with ESMTP id S230364AbhFPCNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 22:12:27 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E10C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 19:10:22 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id c9so1138447qkm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 19:10:22 -0700 (PDT)
+        Tue, 15 Jun 2021 22:13:42 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE92C061574;
+        Tue, 15 Jun 2021 19:11:35 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id nb6so986134ejc.10;
+        Tue, 15 Jun 2021 19:11:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=y/w/qb9Mmcto0feWg3hHcwChOztbEZEtyAyt33Ggpnw=;
-        b=AhtG9GZyWbc/q1PGc9HjGVcAmV+41TtxHzj5t+3Ph52sRD/pGlCYW+sjvjtIBRcyaR
-         wCew2MSr8r5xNYIaXdlWx9oxLahHZfapzWQiKYjBQ6fSBMSGM9h0/tvS8BHEsxZJUuIj
-         UAT6KoFnPo7F6PD2Dj+qoxZHx44h01bdZB2msVwL65+hpE0vYPGKqBfV3OL6O/YuILgy
-         RNTIGiIAEuTxVgwaM4vx6JfMuiXce0ZZficds5jppGNvxEhodMDwct9zId2GkUc2pKeB
-         GqfqxE6g+d/e6kf1t+mtbbL70NgGCj+f8WdjOjloY4lnXkt1Xj8TwN4hvoE3LSSU0d8+
-         mXZA==
+        bh=x9fhT/YkW6rQCPQGnGw7DPEHUEt4MLs6RS0h8P2hM2M=;
+        b=ZpdeQ2WXWkNudf1zCpE4L/Auk1c09CHHFa7SQzgJMGjCVu909Nw55uTONRG0k4yBrl
+         vOjOvABkgbeTV1bILfmqYBycgOXBi3R2v1ZQTx/wM2JXBRFvoQ4BSyqVQga1h3eEFQNr
+         XJTFY6WQSELcRtBnykCASw73vMJ7VJOG5m+VRIaXU6Gtf2XReenXzcOfHMusqkVC6Q/P
+         xUhOMIe5lnar/DKy4i25GMvPiFWcY3Py23H+qhXO2YmOBwRu5112UXfTuwCPYc5DscDx
+         xz6lO2Qpi/TGjT2Cl77J/VX2EaHJYJn8NW2TgOhlpWOmsNmcBzYkdDBnpdu0AidvTmUk
+         QSFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=y/w/qb9Mmcto0feWg3hHcwChOztbEZEtyAyt33Ggpnw=;
-        b=c+vmYKfSzI10bwYqGx8hoVvkyNaftOVWFrFxOxQdVqc1PeLwZMNinn37hsK+t5IoyU
-         G/yTr/TsuTRLr1y0c7YdoCdV+UPEgSTaqi4CtBEPYT8T/QiYWc+BIPanrOIPRyfcMskH
-         nctjVfiDK9j4o/Ij5agPpQNzrzpQ9wQYwK8OhQVSdy6kbYd9N87Xhrxj5dGno4VnPKd5
-         Ib/mswwWczs0OMPy10ahvT4zOS1eozlmRd/z89qbpom9DVZ0Rn+y8noyahP7o+hNFhCf
-         gWoe7MmYtjAu/MhrQBMFQ9n7KWzf64fzZPwCf8DPSttlg34ZpQWTLZlRL5hdT4CL0YM0
-         B/5w==
-X-Gm-Message-State: AOAM5304n/+kAp1eHuIBbz6wMkwmxKSgFGcSGfhjb3P6zD6Z0VksDFDa
-        Knc48CxWIjhILXVIrX+UsocvQ2AAQQ3KgfyhPWHkE643Qro=
-X-Google-Smtp-Source: ABdhPJxn624+hqSsEqOdkotivlmpGN8MMuJI77+OdkHcgF9NV7hbyT64+pYo5Z8wx6Z91PrcR7GBZSL8tF6Jzru2TJw=
-X-Received: by 2002:a37:8d82:: with SMTP id p124mr2779115qkd.212.1623809421219;
- Tue, 15 Jun 2021 19:10:21 -0700 (PDT)
+        bh=x9fhT/YkW6rQCPQGnGw7DPEHUEt4MLs6RS0h8P2hM2M=;
+        b=J4m+Awtpxs1eutpS/Dhfs4Mb+JTwAo0TRQCXVIa4xisEPwK1idRIzIY04XpXc5P58y
+         LKLpC5oa2r+i66OwRyHDPQCRxy+i721nMumUUa+pOvnouFdHs0e9QoD5OXwcL0jiMTe/
+         +4pp9Dg745f8AmOTOispIihJ7En538e2YJsYz6OmfdLhS0j9QXybpNP1QDZ6esgx+0zG
+         h1+UunAgdGgI3gjDxJaKC+bIIlKl93BNHM2/FvOcFoa+mvET2+JDUJtLHlfSq3beY2si
+         xp8EXCkMgMXB1CUvDhRjrWTY+AwWvtIIMNplVU+6iwMcJCYtOCWzZCqWW0M/1ZwoMr2L
+         WPjQ==
+X-Gm-Message-State: AOAM5337muC/q3xPaeIr25UHFqyW62cOrNG6sSxOOg4+C8uaBT18cqKt
+        L7YKYsU/fhVyc+tZJQGIjskSdqdlqJ7Kp4JqEps=
+X-Google-Smtp-Source: ABdhPJwggG3nFq4+0stP6AqeRuprsFYRdutuakA/StgzFseby6MHXwDWW25sly6daYfYPReHQgdq5Vo8lODnDq7/tWs=
+X-Received: by 2002:a17:906:3c44:: with SMTP id i4mr2576340ejg.135.1623809494314;
+ Tue, 15 Jun 2021 19:11:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210615080817.1417169-1-kyletso@google.com> <CAPTae5JfhDdCjNh8jxE6XMsvV0cC3McH6Hx4MGoOgrcRrT94Vg@mail.gmail.com>
- <CAGZ6i=0RgyYJBvw7g+tGyFwBvBE-nV_WjpyZQ3HGToRgC-JhAQ@mail.gmail.com>
-In-Reply-To: <CAGZ6i=0RgyYJBvw7g+tGyFwBvBE-nV_WjpyZQ3HGToRgC-JhAQ@mail.gmail.com>
-From:   Kyle Tso <kyletso@google.com>
-Date:   Wed, 16 Jun 2021 10:10:04 +0800
-Message-ID: <CAGZ6i=19ShZr36rgUVv6m=CogpqbQB_mB37ae4j8_B47ORcvag@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: typec: tcpm: Relax disconnect threshold during
- power negotiation
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <CAD-N9QUUCSpZjg5RwdKBNF7xx127E6fUowTZkUhm66C891Fpkg@mail.gmail.com>
+ <20210614163401.52807197@gmail.com> <CAD-N9QV5_91A6n5QcrafmQRbqH_qzFRatno-6z0i7q-V9VnLzg@mail.gmail.com>
+ <20210614172512.799db10d@gmail.com> <CAD-N9QUhQT8pG8Une8Fac1pJaiVd_mi9AU2c_nkPjTi36xbutQ@mail.gmail.com>
+ <20210614174727.6a38b584@gmail.com> <CAD-N9QXUrv7zjSyUjsJsWO6KZDhGYtkTCK9U_ZuPA7awJ8P3Yw@mail.gmail.com>
+ <20210614233011.79ebe38a@gmail.com> <CAD-N9QWj7LpdJvDy7r2+WCeFKw2P7DFos=88186-h3GFZPKAvw@mail.gmail.com>
+ <20210615163458.0cc5c524@gmail.com> <CAD-N9QV7o_gQtH4tCCDGheFjtx_7xBh7hgtyfbZo71FebUuUrA@mail.gmail.com>
+In-Reply-To: <CAD-N9QV7o_gQtH4tCCDGheFjtx_7xBh7hgtyfbZo71FebUuUrA@mail.gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Wed, 16 Jun 2021 10:11:08 +0800
+Message-ID: <CAD-N9QWH5ewqQrmo-h5Em9W=+kDB4JO0x==vE=hOH9f4MhQbJg@mail.gmail.com>
+Subject: Re: Suggestions on how to debug kernel crashes where printk and gdb
+ both does not work
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     alex.aring@gmail.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        stefan@datenfreihafen.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg KH <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 9:16 AM Kyle Tso <kyletso@google.com> wrote:
+On Wed, Jun 16, 2021 at 10:02 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
 >
-> On Wed, Jun 16, 2021 at 2:06 AM Badhri Jagan Sridharan
-> <badhri@google.com> wrote:
+> On Tue, Jun 15, 2021 at 9:35 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
 > >
-> > On Tue, Jun 15, 2021 at 1:08 AM Kyle Tso <kyletso@google.com> wrote:
-> > >
-> > > If the voltage is being decreased in power negotiation, the Source will
-> > > set the power supply to operate at the new voltage level before sending
-> > > PS_RDY. For non-PPS negotiation, relax the disconnect threshold on Sink
-> > > after receiving Accept Message to ensure the relaxed setting is enabled
-> > > before the voltage collapse. For PPS, relax the threshold before
-> > > sending Request Message so that it will not race with Source which
-> > > begins to adjust the voltage right after it sends Accept Message.
-> > >
-> > > The real threshold will be set after Sink receives PS_RDY Message.
-> > >
-> > > Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto Discharge disconnect support")
-> > > Cc: Badhri Jagan Sridharan <badhri@google.com>
-> > > Signed-off-by: Kyle Tso <kyletso@google.com>
-> > > ---
-> > > Changes since v1:
-> > > - move the timing of setting threshold up to "before sending Request"
-> > >   for PPS power negotiation so that it won't race with the Source.
-> > > - PPS: if it fails to send the Request, fallback to previous threshold
-> > > - PPS: if the Source doesn't respond Accept, fallback to previous
-> > >   threshold
-> > > - update the commit message for above changes
-> > >
-> > >  drivers/usb/typec/tcpm/tcpm.c | 14 ++++++++++++++
-> > >  1 file changed, 14 insertions(+)
-> > >
-> > > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> > > index 0db685d5d9c0..00f3fd7c05d6 100644
-> > > --- a/drivers/usb/typec/tcpm/tcpm.c
-> > > +++ b/drivers/usb/typec/tcpm/tcpm.c
-> > > @@ -2599,6 +2599,11 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
-> > >                             port->send_discover)
-> > >                                 port->vdm_sm_running = true;
-> > >
-> > > +                       /* Threshold was relaxed before sending Request. Restore it back. */
-> > > +                       tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
-> > > +                                                              port->pps_data.active,
-> > > +                                                              port->supply_voltage);
-> > > +
-> > >                         tcpm_set_state(port, SNK_READY, 0);
-> > >                         break;
-> > >                 case DR_SWAP_SEND:
-> > > @@ -2646,6 +2651,8 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
-> > >                 switch (port->state) {
-> > >                 case SNK_NEGOTIATE_CAPABILITIES:
-> > >                         port->pps_data.active = false;
-> > > +                       /* Voltage is going to be at new level. Relax the threshold here. */
-> > > +                       tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, 0);
-> > >                         tcpm_set_state(port, SNK_TRANSITION_SINK, 0);
-> > >                         break;
-> > >                 case SNK_NEGOTIATE_PPS_CAPABILITIES:
-> > > @@ -3423,6 +3430,9 @@ static int tcpm_pd_send_pps_request(struct tcpm_port *port)
-> > >         if (ret < 0)
-> > >                 return ret;
-> > >
-> > > +       /* Relax the threshold as voltage will be adjusted right after Accept Message. */
-> > This makes sense. Shouldn't we have the same approach for
-> > tcpm_pd_send_request as it's equally applicable for fixed RDO as well
-> > ?
+> > On Tue, 15 Jun 2021 18:37:14 +0800
+> > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
 > >
->
-> I don't think we need to do that because for the power negotiation
-> using Fixed RDO, the voltage adjustment from Source side takes place
-> after the time sending Accept Message plus tSrcTransition (25~35ms).
-> So setting the threshold after the Sink gets Accept Message should be
-> enough.
->
-> thanks,
-> Kyle
->
-
-Ah, I know your concern here. So you were saying that the
-tSrcTransition may not be enough in some situations so it is better to
-do the similar thing for Fixed RDO?
-
-Yeah it makes sense. I will do it in v3.
-
-thanks,
-Kyle
-
-> > > +       tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, 0);
-> > > +
-> > >         memset(&msg, 0, sizeof(msg));
-> > >         msg.header = PD_HEADER_LE(PD_DATA_REQUEST,
-> > >                                   port->pwr_role,
-> > > @@ -4196,6 +4206,10 @@ static void run_state_machine(struct tcpm_port *port)
-> > >         case SNK_NEGOTIATE_PPS_CAPABILITIES:
-> > >                 ret = tcpm_pd_send_pps_request(port);
-> > >                 if (ret < 0) {
-> > > +                       /* Restore back to the original state */
-> > > +                       tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
-> > > +                                                              port->pps_data.active,
-> > > +                                                              port->supply_voltage);
-> > >                         port->pps_status = ret;
-> > >                         /*
-> > >                          * If this was called due to updates to sink
-> > > --
-> > > 2.32.0.272.g935e593368-goog
+> > > On Tue, Jun 15, 2021 at 4:30 AM Pavel Skripkin <paskripkin@gmail.com>
+> > > wrote:
+> > > >
+> > > > On Mon, 14 Jun 2021 23:04:03 +0800
+> > > > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > > >
+> > > > > On Mon, Jun 14, 2021 at 10:47 PM Pavel Skripkin
+> > > > > <paskripkin@gmail.com> wrote:
+> > > > > >
+> > > > > > On Mon, 14 Jun 2021 22:40:55 +0800
+> > > > > > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > > > > >
+> > > > > > > On Mon, Jun 14, 2021 at 10:25 PM Pavel Skripkin
+> > > > > > > <paskripkin@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > > On Mon, 14 Jun 2021 22:19:10 +0800
+> > > > > > > > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > > > On Mon, Jun 14, 2021 at 9:34 PM Pavel Skripkin
+> > > > > > > > > <paskripkin@gmail.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > On Mon, 14 Jun 2021 21:22:43 +0800
+> > > > > > > > > > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > > Dear kernel developers,
+> > > > > > > > > > >
+> > > > > > > > > > > I was trying to debug the crash - memory leak in
+> > > > > > > > > > > hwsim_add_one [1] recently. However, I encountered a
+> > > > > > > > > > > disgusting issue: my breakpoint and printk/pr_alert
+> > > > > > > > > > > in the functions that will be surely executed do not
+> > > > > > > > > > > work. The stack trace is in the following. I wrote
+> > > > > > > > > > > this email to ask for some suggestions on how to
+> > > > > > > > > > > debug such cases?
+> > > > > > > > > > >
+> > > > > > > > > > > Thanks very much. Looking forward to your reply.
+> > > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > Hi, Dongliang!
+> > > > > > > > > >
+> > > > > > > > > > This bug is not similar to others on the dashboard. I
+> > > > > > > > > > spent some time debugging it a week ago. The main
+> > > > > > > > > > problem here, that memory allocation happens in the
+> > > > > > > > > > boot time:
+> > > > > > > > > >
+> > > > > > > > > > > [<ffffffff84359255>] kernel_init+0xc/0x1a7
+> > > > > > > > > > > init/main.c:1447
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > Oh, nice catch. No wonder why my debugging does not work.
+> > > > > > > > > :(
+> > > > > > > > >
+> > > > > > > > > > and reproducer simply tries to
+> > > > > > > > > > free this data. You can use ftrace to look at it. Smth
+> > > > > > > > > > like this:
+> > > > > > > > > >
+> > > > > > > > > > $ echo 'hwsim_*' > $TRACE_DIR/set_ftrace_filter
+> > > > > > > > >
+> > > > > > > > > Thanks for your suggestion.
+> > > > > > > > >
+> > > > > > > > > Do you have any conclusions about this case? If you have
+> > > > > > > > > found out the root cause and start writing patches, I
+> > > > > > > > > will turn my focus to other cases.
+> > > > > > > >
+> > > > > > > > No, I had some busy days and I have nothing about this bug
+> > > > > > > > for now. I've just traced the reproducer execution and
+> > > > > > > > that's all :)
+> > > > > > > >
+> > > > > > > > I guess, some error handling paths are broken, but Im not
+> > > > > > > > sure
+> > > > > > >
+> > > > > > > In the beginning, I agreed with you. However, after I manually
+> > > > > > > checked functions: hwsim_probe (initialization) and
+> > > > > > > hwsim_remove (cleanup), then things may be different. The
+> > > > > > > cleanup looks correct to me. I would like to debug but stuck
+> > > > > > > with the debugging process.
+> > > > > > >
+> > > > > > > And there is another issue: the cleanup function also does not
+> > > > > > > output anything or hit the breakpoint. I don't quite
+> > > > > > > understand it since the cleanup is not at the boot time.
+> > > > > > >
+> > > > > > > Any idea?
+> > > > > > >
+> > > > > >
+> > > > > > Output from ftrace (syzkaller repro):
+> > > > > >
+> > > > > > root@syzkaller:~# cat /sys/kernel/tracing/trace
+> > > > > > # tracer: function_graph
+> > > > > > #
+> > > > > > # CPU  DURATION                  FUNCTION CALLS
+> > > > > > # |     |   |                     |   |   |   |
+> > > > > >  1)               |  hwsim_del_radio_nl() {
+> > > > > >  1)               |    hwsim_del() {
+> > > > > >  1)               |      hwsim_edge_unsubscribe_me() {
+> > > > > >  1) ! 310.041 us  |        hwsim_free_edge();
+> > > > > >  1) ! 665.221 us  |      }
+> > > > > >  1) * 52999.05 us |    }
+> > > > > >  1) * 53035.38 us |  }
+> > > > > >
+> > > > > > Cleanup function is not the case, I think :)
+> > > > >
+> > > > > It seems like I spot the incorrect cleanup function (hwsim_remove
+> > > > > is the right one is in my mind). Let me learn how to use ftrace
+> > > > > to log the executed functions and then discuss this case with you
+> > > > > guys.
+> > > > >
+> > > >
+> > > > Hmmm, I think, there is a mess with lists.
+> > > >
+> > > > I just want to share my debug results, I have no idea about the fix
+> > > > for now.
+> > > >
+> > > > In hwsim_probe() edge for phy->idx = 1 is allocated, then reproduces
+> > > > sends a request to delete phy with idx == 0, so this check in
+> > > > hwsim_edge_unsubscribe_me():
+> > > >
+> > > >         if (e->endpoint->idx == phy->idx) {
+> > > >                 ... clean up code ...
+> > > >         }
+> > > >
+> > > > won't be passed and edge won't be freed (because it was allocated
+> > > > for phy with idx == 1). Allocated edge for phy 1 becomes leaked
+> > > > after hwsim_del(). I can't really see the code where phy with idx
+> > > > == 1 can be deleted from list...
 > > >
+> > > Thanks for sharing your debugging result.
+> > >
+> > >               hwsim_phys
+> > >                        |
+> > >    ---------------------------------
+> > >    |                                      |
+> > > sub0 (edges)                 sub1 (edges)
+> > >    ----> e (idx = 1)               ----> e (idx = 0)
+> > >
+> > > hwsim_del_radio_nl will call hwsim_del to delete phy (idx:1).
+> > > However, in this function, it only deletes the e in the edge list of
+> > > sub1. Then it deletes phy (i.e., sub0) from the hwsim_phys list. So it
+> > > leaves the e in the edge list of sub0 non-free.
+> > >
+> > > I proposed a patch and test it successfully in the syzbot dashboard.
+> > >
+> >
+> > Cool! I thougth about similar fix before going to bed, but I had really
+> > busy morning today :)
+> >
+> > > diff --git a/drivers/net/ieee802154/mac802154_hwsim.c
+> > > b/drivers/net/ieee802154/mac802154_hwsim.c
+> > > index da9135231c07..b05159cff33a 100644
+> > > --- a/drivers/net/ieee802154/mac802154_hwsim.c
+> > > +++ b/drivers/net/ieee802154/mac802154_hwsim.c
+> > > @@ -824,9 +824,16 @@ static int hwsim_add_one(struct genl_info *info,
+> > > struct device *dev,
+> > >  static void hwsim_del(struct hwsim_phy *phy)
+> > >  {
+> > >   struct hwsim_pib *pib;
+> > > + struct hwsim_edge *e;
+> > >
+> > >   hwsim_edge_unsubscribe_me(phy);
+> > >
+> > > + // remove the edges in the list
+> > > + list_for_each_entry_rcu(e, &phy->edges, list) {
+> > > + list_del_rcu(&e->list);
+> > > + hwsim_free_edge(e);
+> > > + }
+> > > +
+> >
+> > I think, rcu_read_lock() and rcu_read_unlock() are needed here (like in
+> > hwsim_edge_unsubscribe_me()). Or you can delete this edges after deleting
+> > phy node from global list, then, i guess, rcu locking won't be needed
+> > here.
+>
+> Yes, you're right. rcu_read_lock is needed here. However, from the
+> code below list_del(&phy->list), I think we'd better still add
+> rcu_read_lock for those statements.
+>
+> How do you think about the following patch? BTW, I've sent a patch
+> with the prefix PATCH. Maybe we can discuss this patch there.
+>
+> diff --git a/drivers/net/ieee802154/mac802154_hwsim.c
+> b/drivers/net/ieee802154/mac802154_hwsim.c
+> index da9135231c07..cf659361a3fb 100644
+> --- a/drivers/net/ieee802154/mac802154_hwsim.c
+> +++ b/drivers/net/ieee802154/mac802154_hwsim.c
+> @@ -824,12 +824,17 @@ static int hwsim_add_one(struct genl_info *info,
+> struct device *dev,
+>  static void hwsim_del(struct hwsim_phy *phy)
+>  {
+>         struct hwsim_pib *pib;
+> +       struct hwsim_edge *e;
+>
+>         hwsim_edge_unsubscribe_me(phy);
+>
+>         list_del(&phy->list);
+>
+>         rcu_read_lock();
+> +       list_for_each_entry_rcu(e, &phy->edges, list) {
+> +               list_del_rcu(&e->list);
+> +               hwsim_free_edge(e);
+> +       }
+>         pib = rcu_dereference(phy->pib);
+>         rcu_read_unlock();
+>
+
+I have sent a v2 patch to the mailing list, please discuss the patch
+in the corresponding thread [1].
+
+[1] https://lkml.org/lkml/2021/6/15/1585.
+
+> >
+> > >   list_del(&phy->list);
+> > >
+> > >   rcu_read_lock();
+> > >
+> > >  I will send a patch later.
+> > >
+> > >
+> > > >
+> > > > Maybe, it's kmemleak bug. Similar strange case was with this one
+> > > > https://syzkaller.appspot.com/bug?id=3a325b8389fc41c1bc94de0f4ac437ed13cce584.
+> > > > I find it strange, that I could reach leaked pointers after
+> > > > kmemleak reported a leak. Im not familiar with kmemleak internals
+> > > > and I might be wrong
+> > > >
+> > > >
+> > > > With regards,
+> > > > Pavel Skripkin
+> >
+> >
+> >
+> >
+> > With regards,
+> > Pavel Skripkin
