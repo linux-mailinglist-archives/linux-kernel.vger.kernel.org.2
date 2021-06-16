@@ -2,177 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7633A8D48
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600383A8D45
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbhFPAQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:16:17 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:19399 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbhFPAQM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:16:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623802447; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=8PntudIYp0vlQsQeDmisRAFUg8D33rXwezS9JBiNG38=; b=aRIikmXHh9NtTVKNVgzviYwUc3KPMFi/4p13F+Sn6c6/4YqsNBW7WYyTTKWBxgR1E6iVE471
- g0IT2KHOC/3UvgKbyQop3DZQ2R2h8m+9otFa+Yx2JqS6C9UaBLX1+4CbPjdWnedBIGT1vyyk
- zpmgfz2/xSI33DMjP8XgecOlyK4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60c9423ae27c0cc77f8e11dd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Jun 2021 00:13:46
- GMT
-Sender: jackp=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BC503C4338A; Wed, 16 Jun 2021 00:13:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: jackp)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 722BCC433F1;
-        Wed, 16 Jun 2021 00:13:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 722BCC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
-Date:   Tue, 15 Jun 2021 17:13:41 -0700
-From:   Jack Pham <jackp@codeaurora.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        p.zabel@pengutronix.de, linux-usb@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [BUG] usb: dwc3: Kernel NULL pointer dereference in dwc3_remove()
-Message-ID: <20210616001341.GC25299@jackp-linux.qualcomm.com>
-References: <70be179c-d36b-de6f-6efc-2888055b1312@arm.com>
- <YLi/u9J5f+nQO4Cm@kroah.com>
- <8272121c-ac8a-1565-a047-e3a16dcf13b0@arm.com>
- <877djbc8xq.fsf@kernel.org>
- <20210603173632.GA25299@jackp-linux.qualcomm.com>
- <87mts6avnn.fsf@kernel.org>
- <20210607180023.GA23045@jackp-linux.qualcomm.com>
- <87sg1q1129.fsf@kernel.org>
- <20210610153346.GA26872@jackp-linux.qualcomm.com>
- <d9ab95a1-f901-6bfe-899b-e4577d14cb52@codeaurora.org>
+        id S231604AbhFPAQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:16:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229811AbhFPAQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 20:16:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE77611CE;
+        Wed, 16 Jun 2021 00:14:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623802443;
+        bh=um8wh8sgKUn6UwRW7jW75/IAT6r5mXbKNUqGtm3+9TQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=tad+jIad0fSkSU3TYeZdfozEY0+IP4BcGd99jtAGninX/uSmGjkNaW+VGcbqRo6QY
+         fxKXPmkaM1ETjnA2b5tFTq5bGGDl69+3/poGBHtrHnStcHjDCq3QezIEC7nvYsrLJE
+         mL6Vc7GTVEa12EUEPlw3w9+v+GC7GZQgmvqsCvBv1EOujHOUD+iTvfP/tSWp1tzsFY
+         +iUR91oVybd/rjs7xXT7ki9a7wLgLlqFgjH9F05LtRSf+UGo+9lDhEFZiDo+5hHOJU
+         2+6H0Vac0ZrXGlU5mNMyOPA79LSpxFked9NaOXgT8RON06bwZH5AnWH+P20t/542Il
+         2KMIR25oTy5mA==
+Subject: Re: [PATCH v4 2/4] lazy tlb: allow lazy tlb mm refcounting to be
+ configurable
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Anton Blanchard <anton@ozlabs.org>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210605014216.446867-1-npiggin@gmail.com>
+ <20210605014216.446867-3-npiggin@gmail.com>
+ <8ac1d420-b861-f586-bacf-8c3949e9b5c4@kernel.org>
+ <1623629185.fxzl5xdab6.astroid@bobo.none>
+ <02e16a2f-2f58-b4f2-d335-065e007bcea2@kernel.org>
+ <1623643443.b9twp3txmw.astroid@bobo.none>
+ <1623645385.u2cqbcn3co.astroid@bobo.none>
+ <1623647326.0np4yc0lo0.astroid@bobo.none>
+ <aecf5bc8-9018-c021-287d-6a975b7a6235@kernel.org>
+ <1623715482.4lskm3cx10.astroid@bobo.none>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <3b9eb877-5d1e-d565-5577-575229d18b6e@kernel.org>
+Date:   Tue, 15 Jun 2021 17:14:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d9ab95a1-f901-6bfe-899b-e4577d14cb52@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1623715482.4lskm3cx10.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sandeep,
+On 6/14/21 5:55 PM, Nicholas Piggin wrote:
+> Excerpts from Andy Lutomirski's message of June 15, 2021 2:20 am:
+>> Replying to several emails at once...
+>>
 
-On Mon, Jun 14, 2021 at 01:07:11PM +0530, Sandeep Maheswaram wrote:
 > 
-> On 6/10/2021 9:03 PM, Jack Pham wrote:
-> > On Thu, Jun 10, 2021 at 01:11:42PM +0300, Felipe Balbi wrote:
-> > > Jack Pham <jackp@codeaurora.org> writes:
-> > > > On Fri, Jun 04, 2021 at 11:20:12AM +0300, Felipe Balbi wrote:
-> > > > > Jack Pham <jackp@codeaurora.org> writes:
-> > > > > > > > > > > Alexandru Elisei <alexandru.elisei@arm.com> writes:
-> > > > > > > > > > > > I've been able to bisect the panic and the offending commit is 568262bf5492 ("usb:
-> > > > > > > > > > > > dwc3: core: Add shutdown callback for dwc3"). I can provide more diagnostic
-> > > > > > > > > > > > information if needed and I can help test the fix.
-> > > > > > > > > > > if you simply revert that commit in HEAD, does the problem really go
-> > > > > > > > > > > away?
-> > > > > > > > > > Kernel built from commit 324c92e5e0ee, which is the kernel tip today, the panic is
-> > > > > > > > > > there. Reverting the offending commit, 568262bf5492, makes the panic disappear.
-> > > > > > > > > Want to send a revert so I can take it now?
-> > > > > > > > I can send a revert, but Felipe was asking Sandeep (the commit author) for a fix,
-> > > > > > > > so I'll leave it up to Felipe to decide how to proceed.
-> > > > > > > I'm okay with a revert. Feel free to add my Acked-by: Felipe Balbi
-> > > > > > > <balbi@kernel.org> or it.
-> > > > > > > 
-> > > > > > > Sandeep, please send a new version that doesn't encounter the same
-> > > > > > > issue. Make sure to test by reloading the driver in a tight loop for
-> > > > > > > several iterations.
-> > > > > > This would probably be tricky to test on other "glue" drivers as the
-> > > > > > problem appears to be specific only to dwc3_of_simple.  It looks like
-> > > > > > both dwc3_of_simple and the dwc3 core now (due to 568262bf5492) each
-> > > > > > implement respective .shutdown callbacks. The latter is simply a wrapper
-> > > > > > around dwc3_remove(). And from the panic call stack above we see that
-> > > > > > dwc3_of_simple_shutdown() calls of_platform_depopulate() which will
-> > > > > > again call dwc3_remove() resulting in the double remove.
-> > > > > > 
-> > > > > > So would an alternative approach be to protect against dwc3_remove()
-> > > > > > getting called multiple times? IMO it'd be a bit messy to have to add
-> > > > > no, I  don't think so. That sounds like a workaround. We should be able
-> > > > > to guarantee that ->remove() doesn't get called twice using the driver
-> > > > > model properly.
-> > > > Completely fair.  So then having a .shutdown callback that directly calls
-> > > > dwc3_remove() is probably not the right thing to do as it completely
-> > > > bypasses the driver model so if and when the driver core does later
-> > > > release the device from the driver that's how we end up with the double
-> > > > remove.
-> > > yeah, I would agree with that.
-> > > 
-> > > > > > additional checks there to know if it had already been called. So maybe
-> > > > > > avoid it altogether--should dwc3_of_simple_shutdown() just skip calling
-> > > > > > of_platform_depopulate()?
-> > > > > I don't know what the idiomatic is nowadays, but at least early on, we
-> > > > > had to call depopulate.
-> > > > So any suggestions on how to fix the original issue Sandeep was trying
-> > > > to fix with 568262bf5492? Maybe implement .shutdown in dwc3_qcom and have
-> > > > it follow what dwc3_of_simple does with of_platform_depopulate()? But
-> > > > then wouldn't other "glues" want/need to follow suit?
-> > > I think we can implement shutdown in core, but we need to careful with
-> > > it. Instead of just blindly calling remove, let's extract the common
-> > > parts to another internal function that both remove and shutdown
-> > > call. debugfs removal should not be part of that generic method :-)
-> > Hi Sandeep,
-> > 
-> > Upon re-reading your description in 568262bf5492 it sounds like the
-> > original intention of your patch is basically to quiesce the HW so that
-> > it doesn't continue to run after SMMU/IOMMU is disabled right?
-> > 
-> > If that is the case, couldn't we simply call only dwc3_core_exit_mode()
-> > assuming there is no other requirement to do any other cleanup/teardown
-> > (PHYs, clocks, resets, runtime PM, et al)? This function should do the
-> > bare minimum of stopping the controller in whatever mode (host or
-> > peripheral) it is currently operating in.
+> So the only documentation relating to the current active_mm value or 
+> refcounting is that it may not match what the x86 specific code is 
+> doing?
 > 
-> Yes that was the intention. I will call only dwc3_core_exit_mode()
-> and check. Is there any way we can do from dwc3 qcom glue driver to
-> avoid problems for other glue drivers?
+> All this complexity you accuse me of adding is entirely in x86 code.
+> On other architectures, it's very simple and understandable, and 
+> documented. I don't know how else to explain this.
 
-As I mentioned above maybe you could just implement a dwc3_qcom specific
-.shutdown callback which mimics what dwc3_of_simple() does by calling
-of_platform_depopulate(). This will allow the kernel driver core to
-invoke dwc3_remove() rather than calling it directly yourself.
+And the docs you referred me to will be *wrong* with your patches
+applied.  They are your patches, and they break the semantics.
 
-The downside is that if other glue drivers want to follow this they'd
-have to duplicate the same logic. But maybe this is a more cautious
-approach until we start seeing other drivers needing this generically
-within core.c.
-
-> > > Anything in that generic method should, probably, be idempotent.
-> > Yes we'll need to ensure that dwc3_core_exit_mode() can be called
-> > multiple times without additional side effects. At first glance this
-> > probably means setting dwc->xhci and dwc->gadget to NULL from
-> > dwc3_host_exit() and dwc3_gadget_exit(), respectively.
 > 
-> Ok. Is there any way to test this ?
+>>>>>
+>>>>>> With your patch applied:
+>>>>>>
+>>>>>>  To support all that, the "struct mm_struct" now has two counters: a
+>>>>>>  "mm_users" counter that is how many "real address space users" there are,
+>>>>>>  and a "mm_count" counter that is the number of "lazy" users (ie anonymous
+>>>>>>  users) plus one if there are any real users.
+>>>>>>
+>>>>>> isn't even true any more.
+>>>>>
+>>>>> Well yeah but the active_mm concept hasn't changed. The refcounting 
+>>>>> change is hopefully reasonably documented?
+>>
+>> active_mm is *only* refcounting in the core code.  See below.
+> 
+> It's just not. It's passed in to switch_mm. Most architectures except 
+> for x86 require this.
+> 
 
-You could implement both the dwc3_qcom_shutdown() as above as well as
-adding back dwc3_shutdown() which only does dwc3_core_exit_mode(). Make
-sure that even though dwc3_core_exit_mode() gets called twice nothing
-bad happens.
+Sorry, I was obviously blatantly wrong.  Let me say it differently.
+active_mm does two things:
 
-Jack
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+1. It keeps an mm alive via a refcounting scheme.
+
+2. It passes a parameter to switch_mm() to remind the arch code what the
+most recently switch-to mm was.
+
+#2 is basically useless.  An architecture can handle *that* with a
+percpu variable and two lines of code.
+
+If you are getting rid of functionality #1 in the core code via a new
+arch opt-out, please get rid of #2 as well.  *Especially* because, when
+the arch asks the core code to stop refcounting active_mm, there is
+absolutely nothing guaranteeing that the parameter that the core code
+will pass to switch_mm() points to memory that hasn't been freed and
+reused for another purpose.
+
+>>>>> I might not have been clear. Core code doesn't need active_mm if 
+>>>>> active_mm somehow goes away. I'm saying active_mm can't go away because
+>>>>> it's needed to support (most) archs that do lazy tlb mm switching.
+>>>>>
+>>>>> The part I don't understand is when you say it can just go away. How? 
+>>
+>> #ifdef CONFIG_MMU_TLB_REFCOUNT
+>> 	struct mm_struct *active_mm;
+>> #endif
+> 
+> Thanks for returning the snark.
+
+That wasn't intended to be snark.  It was a literal suggestion, and, in
+fact, it's *exactly* what I'm asking you to do to fix your patches.
+
+>> I don't understand what contract you're talking about.  The core code
+>> maintains an active_mm counter and keeps that mm_struct from
+>> disappearing.  That's *it*.  The core code does not care that active_mm
+>> is active, and x86 provides evidence of that -- on x86,
+>> current->active_mm may well be completely unused.
+> 
+> I already acknowledged archs can do their own thing under the covers if 
+> they want.
+
+No.
+
+I am *not* going to write x86 patches that use your feature in a way
+that will cause the core code to pass around a complete garbage pointer
+to an mm_struct that is completely unreferenced and may well be deleted.
+ Doing something private in arch code is one thing.  Doing something
+that causes basic common sense to be violated in core code is another
+thing entirely.
+
+>>
+>> static inline void do_switch_mm(struct task_struct *prev_task, ...)
+>> {
+>> #ifdef CONFIG_MMU_TLB_REFCOUNT
+>> 	switch_mm(...);
+>> #else
+>> 	switch_mm(fewer parameters);
+>> 	/* or pass NULL or whatever. */
+>> #endif
+>> }
+> 
+> And prev_task comes from active_mm, ergo core code requires the concept 
+> of active_mm.
+
+I don't see why this concept is hard.  We are literally quibbling about
+this single line of core code in kernel/sched/core.c:
+
+switch_mm_irqs_off(prev->active_mm, next->mm, next);
+
+This is not rocket science.  There are any number of ways to fix it.
+For example:
+
+#ifdef CONFIG_MMU_TLB_REFCOUNT
+	switch_mm_irqs_off(prev->active_mm, next->mm, next);
+#else
+	switch_mm_irqs_off(NULL, next->mm, next);
+#endif
+
+If you don't like the NULL, then make the signature depend on the config
+option.
+
+What you may not do is what your patch actually does:
+
+switch_mm_irqs_off(random invalid pointer, next->mm, next);
+
+Now maybe it works because powerpc's lifecycle rules happen to keep
+active_mm alive, but I haven't verified it.  x86's lifecycle rules *do not*.
+
+>>>
+>>> That's understandable, but please redirect your objections to the proper 
+>>> place. git blame suggests 3d28ebceaffab.
+>>
+>> Thanks for the snark.
+> 
+> Is it not true? I don't mean that one patch causing all the x86 
+> complexity or even making the situation worse itself. But you seem to be 
+> asking my series to do things that really apply to the x86 changes over
+> the past few years that got us here.
+
+With just my patch from 4.15 applied, task->active_mm points to an
+actual mm_struct, and that mm_struct will not be freed early.  If I opt
+x86 into your patch's new behavior, then task->active_mm may be freed.
+
+akpm, please drop this series until it's fixed.  It's a core change to
+better support arch usecases, but it's unnecessarily fragile, and there
+is already an arch maintainer pointing out that it's inadequate to
+robustly support arch usecases.  There is no reason to merge it in its
+present state.
