@@ -2,105 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A9D3A8DE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6083A8DED
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbhFPA6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:58:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230265AbhFPA6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:58:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C966C60FE6;
-        Wed, 16 Jun 2021 00:56:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623805001;
-        bh=tykSCrhMj9oIg5fZltaBtQORVAoQ00lf7s/Go9WGD9g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o8kQ/VfO6WbIfltUOrrHcjd/+jH+LBTTTLJU79jwnPsz40YyKPj1CrWWo7K/EaXzP
-         9JDqOsv7UgIKe46vU2Xhr2RHt0UO/EtO5HT57FhRBHWUdL8/bJxzLdUoJmttDAHJ4H
-         ebSKEEOkepCYCVLJj/oeAQTHcjEi3FO2zwV59abQ66egiSMrNq650nm4W8xnaasRjR
-         pxfg1prT/3FgjHQDlo3fbR4tx+i0HJLpjG/SV8Z6QVRulxeH9rUhuo4o3/IEQ2mW6P
-         iVmb0x32LWkKPA2PYmF6u1Oc+z5Rs/TzwBt8QEJbllx53OWAZuYw43BPs/vHgigFqB
-         2/i28B20n+fLg==
-Date:   Wed, 16 Jun 2021 08:56:36 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
+        id S231819AbhFPBA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 21:00:56 -0400
+Received: from m-r2.th.seeweb.it ([5.144.164.171]:59477 "EHLO
+        m-r2.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230265AbhFPBAz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 21:00:55 -0400
+Received: from localhost.localdomain (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id A92C13ED3F;
+        Wed, 16 Jun 2021 02:58:47 +0200 (CEST)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] usb: phy: tegra: Wait for VBUS wakeup status
- deassertion on suspend
-Message-ID: <20210616005636.GA19025@nchen>
-References: <20210613145936.9902-1-digetx@gmail.com>
+Subject: [PATCH 1/6] arm64: dts: qcom: sm8250-edo: Add hardware keys
+Date:   Wed, 16 Jun 2021 02:58:38 +0200
+Message-Id: <20210616005843.79579-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210613145936.9902-1-digetx@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-06-13 17:59:35, Dmitry Osipenko wrote:
-> Some devices need an extra delay after losing VBUS, otherwise VBUS may
-> be detected as active at suspend time, preventing the PHY's suspension
-> by the VBUS detection sensor. This problem was found on Asus Transformer
-> TF700T (Tegra30) tablet device, where the USB PHY wakes up immediately
-> from suspend because VBUS sensor continues to detect VBUS as active after
-> disconnection. We need to poll the PHY's VBUS wakeup status until it's
-> deasserted before suspending PHY in order to fix this minor trouble.
-> 
-> Fixes: 35192007d28d ("usb: phy: tegra: Support waking up from a low power mode")
-> Reported-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
-> Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/usb/phy/phy-tegra-usb.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
-> index fc5c6cab58ba..ff482c694200 100644
-> --- a/drivers/usb/phy/phy-tegra-usb.c
-> +++ b/drivers/usb/phy/phy-tegra-usb.c
-> @@ -64,6 +64,7 @@
->  #define   A_VBUS_VLD_WAKEUP_EN			BIT(30)
->  
->  #define USB_PHY_VBUS_WAKEUP_ID			0x408
-> +#define   VBUS_WAKEUP_STS			BIT(10)
->  #define   VBUS_WAKEUP_WAKEUP_EN			BIT(30)
->  
->  #define USB1_LEGACY_CTRL			0x410
-> @@ -645,6 +646,15 @@ static int utmi_phy_power_off(struct tegra_usb_phy *phy)
->  	void __iomem *base = phy->regs;
->  	u32 val;
->  
-> +	/*
-> +	 * Give hardware time to settle down after VBUS disconnection,
-> +	 * otherwise PHY will immediately wake up from suspend.
-> +	 */
-> +	if (phy->wakeup_enabled && phy->mode != USB_DR_MODE_HOST)
-> +		readl_relaxed_poll_timeout(base + USB_PHY_VBUS_WAKEUP_ID,
-> +					   val, !(val & VBUS_WAKEUP_STS),
-> +					   5000, 100000);
-> +
+Volume Down, GAssist (pdx206 only) and camera keys live on PMIC pins,
+with the latter kind being broken for now.. Add these and PON-connected
+Volume Up & PWR.
 
-Reviewed-by: Peter Chen <peter.chen@kernel.org>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+Depends on https://patchwork.kernel.org/project/linux-arm-msm/patch/20210613124822.124039-1-konrad.dybcio@somainline.org/
+ .../qcom/sm8250-sony-xperia-edo-pdx206.dts    | 11 +++++++
+ .../boot/dts/qcom/sm8250-sony-xperia-edo.dtsi | 30 +++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
-
->  	utmi_phy_clk_disable(phy);
->  
->  	/* PHY won't resume if reset is asserted */
-> -- 
-> 2.30.2
-> 
-
+diff --git a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dts b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dts
+index 999b662f4679..16c96e838534 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dts
++++ b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dts
+@@ -18,6 +18,17 @@ &framebuffer {
+ 	stride = <(1080 * 4)>;
+ };
+ 
++&gpio_keys {
++	g-assist-key {
++		label = "Google Assistant Key";
++		linux,code = <KEY_LEFTMETA>;
++		gpios = <&pm8150_gpios 6 GPIO_ACTIVE_LOW>;
++		debounce-interval = <15>;
++		linux,can-disable;
++		gpio-key,wakeup;
++	};
++};
++
+ &vreg_l2f_1p3 {
+ 	regulator-min-microvolt = <1200000>;
+ 	regulator-max-microvolt = <1200000>;
+diff --git a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
+index 0db63eb08c60..52ed4b082bd7 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
+@@ -47,6 +47,26 @@ framebuffer: framebuffer@9c000000 {
+ 		};
+ 	};
+ 
++	gpio_keys: gpio-keys {
++		compatible = "gpio-keys";
++
++		/*
++		 * Camera focus (light press) and camera snapshot (full press)
++		 * seem not to work properly.. Adding the former one stalls the CPU
++		 * and the latter kills the volume down key for whatever reason. In any
++		 * case, they are both on &pm8150b_gpios: camera focus(2), camera snapshot(1).
++		 */
++
++		vol-down {
++			label = "Volume Down";
++			linux,code = <KEY_VOLUMEDOWN>;
++			gpios = <&pm8150_gpios 1 GPIO_ACTIVE_LOW>;
++			debounce-interval = <15>;
++			linux,can-disable;
++			gpio-key,wakeup;
++		};
++	};
++
+ 	vph_pwr: vph-pwr-regulator {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vph_pwr";
+@@ -436,6 +456,16 @@ &i2c15 {
+ 	/* Richwave RTC6226 FM Radio Receiver @ 64 */
+ };
+ 
++&pon_pwrkey {
++	status = "okay";
++};
++
++&pon_resin {
++	status = "okay";
++
++	linux,code = <KEY_VOLUMEUP>;
++};
++
+ &qupv3_id_0 {
+ 	status = "okay";
+ };
 -- 
-
-Thanks,
-Peter Chen
+2.32.0
 
