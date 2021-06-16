@@ -2,181 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D1D3AA321
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2023AA325
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231817AbhFPSZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 14:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49694 "EHLO
+        id S231734AbhFPS1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 14:27:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231613AbhFPSZ0 (ORCPT
+        with ESMTP id S231379AbhFPS1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 14:25:26 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E729C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:23:20 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so4515839pjs.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:23:20 -0700 (PDT)
+        Wed, 16 Jun 2021 14:27:34 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836EBC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:25:27 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id x16so2853984pfa.13
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:25:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Qu5SD0l3J+MDZZbvAdUGnh9/5F/6cc6Lr04cR7Nq4MY=;
-        b=qqkpl6U0YvA+hUg7B593WU8MAe3Mdmoo4lgakJQH9B+Elgp1QTp5DQMnmQ0Jiangyy
-         iJ4m0CF7RecpNQXLkp24mXhEnH8FdkEbopyiHpoRJSGgOUuLKRw3IdNR6YW9A8Eh+c9e
-         O2N7tvzRD9CjQEp3Bn8m4FyW6HBlbAo5kA8R6kXmR0Ehtc+k8ejD27jTYigLkx6VR9Ia
-         LUpqt4N340nG8IiGSQDXAY1RkuNg/V1vD4+gFPdV/cReQxol/8v5FZns5uNjMiEEOCJS
-         LH7b0QG+XTzXg6ENVGReIzC7b9jkEN435ZILI0nzZ5Y7vyWjDsPORw9dnzRS/5XNXdKy
-         IOYQ==
+        bh=BTmsE+92xrRcRnUpJMWS6o0+6/wbwvfCRpmMzrKD9ZE=;
+        b=JL7xEMpRwJHDVBWIgNFYzRy3m1aVbJO09xI/NtfBc4gJlyc7L7mQJf1tCUq2jKWNN8
+         PZZmo9803amxI6dbXTa6J1eTb5VIztY/Vrq35A2WFaG4+tWM/KedcvT49YxGTO29BAjW
+         iXGR+yB5SztAEXqt4k9NB8E1jMpdFNzvOYkXI/EgQl8z/7hQuPge7Mvr/CzqNVPNaoQE
+         NMC9fkBUJRKq+DJGiWoiLjb1/B5LJSYTzzhlg0aPHGRefx9A28ZlnAiI6T3V6tw/CZZY
+         Kz42Rnp0SyQLL2zp6Kj71v8GFNFF8hFJpvG6fnCFTPyiyYatlRE9vtEo3nKYhbA6xqCU
+         rb+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Qu5SD0l3J+MDZZbvAdUGnh9/5F/6cc6Lr04cR7Nq4MY=;
-        b=sDbgMw73QD1nywLHKgl7lO3pVqKULQqJaaQOsyoynz5dqwRzb10TJzctozjSjaYy5U
-         8CF3jniEnPgTeflNb/OgVU5FjQKhKPygHGtOcGZdB4MYCFA983c+40ffTZU2aMLKP/SC
-         8HtgDSh0nX4ejaEP4sytBqAvFFmP8HMnWpWJcqyTIx5W3aGUTkNcvUhwT+KYuU+SmVbk
-         SAKcZrrL38UdjzEEKvq8wBNNBMbZWkL5lkmdfnEatRwTmxK61/zPcCB6YppYyX9x5WUg
-         3j7STFXyIwFI3PaiCw0A+H1SJzFeioI3rva50vQLuzmm9gaRgpY70jqhd69rzkQaO0ZX
-         D+bQ==
-X-Gm-Message-State: AOAM531T+27vrRpwbU+zfFPXlXHKaxbe/33Fq7rmfQ9kzoHWlsOAJhYH
-        VhYhaJLPdUDU7xPDwSbXl0gB
-X-Google-Smtp-Source: ABdhPJzetd5O+MxiPg0+9m/TPgj/TWEUgQZPR/EkqFlN+HQBg2H7glLKdwH5AO+iAWSDdiICyY3IEA==
-X-Received: by 2002:a17:902:a60f:b029:11e:62b3:e454 with SMTP id u15-20020a170902a60fb029011e62b3e454mr770493plq.51.1623867799751;
-        Wed, 16 Jun 2021 11:23:19 -0700 (PDT)
-Received: from thinkpad ([2409:4072:17:2c05:a14f:78ce:1082:5556])
-        by smtp.gmail.com with ESMTPSA id t1sm2761822pjs.20.2021.06.16.11.23.15
+        bh=BTmsE+92xrRcRnUpJMWS6o0+6/wbwvfCRpmMzrKD9ZE=;
+        b=UyXcUvCoAb5i5UYsJSv65gGQorbdIy8Zoe8aoeyUQHrdpITDM4ba9NE6ZRguIbuiw4
+         j6D9q7TCbIzDmTVfxKEuuhbGB73iWVv43THY9/imfEB7lR5dXBb89M2J4toTSjk95ZKL
+         L7/p/cqEE/o/+ZfDzo7wNye6tSt8nM70vixZz9wQc59pvlFirdXLSscowGjTv80Ao9ot
+         rg8f4JJueTPlsA1FNITMZd/Er5bACARSlfiRBVE1tVWWHfCu0TxVPxI4M2gO6gyWMYKj
+         +V38TDKlCXdsJB3KQRMD+UKW2N9ZFcfpsBljJpLbtDWp96HFy3Fr3RtDY09IttxyMsnE
+         0ecQ==
+X-Gm-Message-State: AOAM530oWC7zKCtbdDhQjdo2IrU0P9L/R0f5/f8qBvVtmzpYtB87XnCt
+        VE4PmzJFX5YptugiGAzyWSE=
+X-Google-Smtp-Source: ABdhPJwkKS7dVl3+J070nSltDopnuD5OxEwP8XdWQod6/DkGvGggvhElYFFasXhn15t6jxLmMO+aOw==
+X-Received: by 2002:a63:1d2:: with SMTP id 201mr931080pgb.3.1623867926988;
+        Wed, 16 Jun 2021 11:25:26 -0700 (PDT)
+Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
+        by smtp.gmail.com with ESMTPSA id a11sm2707864pjq.45.2021.06.16.11.25.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 11:23:19 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 23:53:13 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Siddartha Mohanadoss <smohanad@codeaurora.org>
-Subject: Re: [PATCH v2 2/3] PCI: dwc: Add Qualcomm PCIe Endpoint controller
- driver
-Message-ID: <20210616182313.GA152639@thinkpad>
-References: <20210603103814.95177-1-manivannan.sadhasivam@linaro.org>
- <20210603103814.95177-3-manivannan.sadhasivam@linaro.org>
- <YLw744UeM6fj/xoS@builder.lan>
- <20210609085152.GB15118@thinkpad>
+        Wed, 16 Jun 2021 11:25:26 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 11:25:22 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: kmemleak memory scanning
+Message-ID: <YMpCEu9yM5Ppj5jj@nuc10>
+References: <YMe8ktUsdtwFKHuF@nuc10>
+ <CACT4Y+ZjSbioNS8oPwUcyOrLhB6-Sf-WZmadAoAm0H-JYRLo1g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210609085152.GB15118@thinkpad>
+In-Reply-To: <CACT4Y+ZjSbioNS8oPwUcyOrLhB6-Sf-WZmadAoAm0H-JYRLo1g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 02:22:00PM +0530, Manivannan Sadhasivam wrote:
-> On Sat, Jun 05, 2021 at 10:07:15PM -0500, Bjorn Andersson wrote:
-> > On Thu 03 Jun 05:38 CDT 2021, Manivannan Sadhasivam wrote:
-> > 
-> > > Add driver support for Qualcomm PCIe Endpoint controller driver based on
-> > > the Designware core with added Qualcomm specific wrapper around the
-> > > core. The driver support is very basic such that it supports only
-> > > enumeration, PCIe read/write, and MSI. There is no ASPM and PM support
-> > > for now but these will be added later.
-> > > 
-> > > The driver is capable of using the PERST# and WAKE# side-band GPIOs for
-> > > operation and written on top of the DWC PCI framework.
-> > > 
-> > > Co-developed-by: Siddartha Mohanadoss <smohanad@codeaurora.org>
-> > > Signed-off-by: Siddartha Mohanadoss <smohanad@codeaurora.org>
-> > > [mani: restructured the driver and fixed several bugs for upstream]
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > 
-> > Really nice to see this working!
-> > 
-> > > ---
-> > >  drivers/pci/controller/dwc/Kconfig        |  10 +
-> > >  drivers/pci/controller/dwc/Makefile       |   1 +
-> > >  drivers/pci/controller/dwc/pcie-qcom-ep.c | 780 ++++++++++++++++++++++
-> > >  3 files changed, 791 insertions(+)
-> > >  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-> > > index 423d35872ce4..32e735b1fd85 100644
-> > > --- a/drivers/pci/controller/dwc/Kconfig
-> > > +++ b/drivers/pci/controller/dwc/Kconfig
-> > > @@ -180,6 +180,16 @@ config PCIE_QCOM
-> > >  	  PCIe controller uses the DesignWare core plus Qualcomm-specific
-> > >  	  hardware wrappers.
-> > >  
-> > > +config PCIE_QCOM_EP
-> > > +	bool "Qualcomm PCIe controller - Endpoint mode"
-> > > +	depends on OF && (ARCH_QCOM || COMPILE_TEST)
-> > > +	depends on PCI_ENDPOINT
-> > > +	select PCIE_DW_EP
-> > > +	help
-> > > +	  Say Y here to enable support for the PCIe controllers on Qualcomm SoCs
-> > > +	  to work in endpoint mode. The PCIe controller uses the DesignWare core
-> > > +	  plus Qualcomm-specific hardware wrappers.
-> > > +
-> > >  config PCIE_ARMADA_8K
-> > >  	bool "Marvell Armada-8K PCIe controller"
-> > >  	depends on ARCH_MVEBU || COMPILE_TEST
-> > > diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
-> > > index eca805c1a023..abb27642d46b 100644
-> > > --- a/drivers/pci/controller/dwc/Makefile
-> > > +++ b/drivers/pci/controller/dwc/Makefile
-> > > @@ -12,6 +12,7 @@ obj-$(CONFIG_PCI_KEYSTONE) += pci-keystone.o
-> > >  obj-$(CONFIG_PCI_LAYERSCAPE) += pci-layerscape.o
-> > >  obj-$(CONFIG_PCI_LAYERSCAPE_EP) += pci-layerscape-ep.o
-> > >  obj-$(CONFIG_PCIE_QCOM) += pcie-qcom.o
-> > > +obj-$(CONFIG_PCIE_QCOM_EP) += pcie-qcom-ep.o
-> > >  obj-$(CONFIG_PCIE_ARMADA_8K) += pcie-armada8k.o
-> > >  obj-$(CONFIG_PCIE_ARTPEC6) += pcie-artpec6.o
-> > >  obj-$(CONFIG_PCIE_INTEL_GW) += pcie-intel-gw.o
-> > > diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > > new file mode 100644
-> > > index 000000000000..b68511bacc2a
-> > > --- /dev/null
-> > > +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > > @@ -0,0 +1,780 @@
-
-[...]
-
-> > > +static int qcom_pcie_ep_enable_irq_resources(struct platform_device *pdev,
-> > > +					     struct qcom_pcie_ep *pcie_ep)
-> > > +{
-> > > +	int irq, ret;
-> > > +
-> > > +	irq = platform_get_irq_byname(pdev, "global");
-> > > +	if (irq < 0) {
-> > > +		dev_err(&pdev->dev, "Failed to get Global IRQ\n");
-> > > +		return irq;
-> > > +	}
-> > > +
-> > > +	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
-> > > +					qcom_pcie_ep_global_threaded_irq,
-> > > +					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-> > 
-> > Leave out the trigger and rely on DT.
-> > 
+On Tue, Jun 15, 2021 at 07:15:24AM +0200, Dmitry Vyukov wrote:
+> On Mon, Jun 14, 2021 at 10:31 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+> >
+> > hello Catalin, Andrew!
+> >
+> > while troubleshooting a false positive syzbot kmemleak report i have
+> > noticed an interesting behavior in kmemleak and i wonder whether it is
+> > behavior by design and should be documented, or maybe something to
+> > improve.
+> > apologies if some of the questions do not make sense, i am still going
+> > through kmemleak code..
+> >
+> > a) kmemleak scans struct page (kmemleak.c:1462), but it does not scan
+> > the actual contents (page_address(page)) of the page.
+> > if we allocate an object with kmalloc(), then allocate page with
+> > alloc_page(), and if we put kmalloc pointer somewhere inside that page,
+> > kmemleak will report kmalloc pointer as a false positive.
+> > should we improve kmemleak and make it scan page contents?
+> > or will this bring too many false negatives?
 > 
-> Okay
+> Hi Rustam,
 > 
-> > > +					"global_irq", pcie_ep);
-> > > +	if (ret) {
-> > > +		dev_err(&pdev->dev, "Failed to request Global IRQ\n");
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	pcie_ep->perst_irq = gpiod_to_irq(pcie_ep->reset);
-> > > +	irq_set_status_flags(pcie_ep->perst_irq, IRQ_NOAUTOEN);
-> > 
-> > Is the global interrupt needed for dw_pcie_ep_init()? Or could this
-> > simply be done when things are ready to handle the interrupts?
-> > 
-> 
-> No it is not needed. I can move this after dw_pcie_ep_init().
-> 
+> Nice debugging!
+> I assume lots of pages are allocated for slab and we don't want to
+> scan the whole page if only a few slab objects are alive on the page.
+> However alloc_pages() can be called by end kernel code as well.
+> I grepped for any kmemleak annotations around existing calls to
+> alloc_pages, but did not find any...
+> Does it require an explicit kmemleak_alloc() after allocating the page
+> and kmemleak_free () before freeing the page?
 
-I don't know why but I'm seeing issues when this gets called after
-dw_pcie_ep_init(). So I'm keeping this function as it is for now.
+hi Dmitry, thank you!
+yes, as Catalin has pointed out, there are a few places where we call
+kmemleak_alloc()/kmemleak_free() explicitly in order for the pages to be
+scanned, like in blk_mq_alloc_rqs()
 
-Thanks,
-Mani
+> If there are more than one use case for this, I guess we could add
+> some GFP flag for this maybe.
+
+and this way kernel users won't have to use kmemleak fuctions mentioned
+above including some or most kmemleak_not_leak() calls and basically
+kmemleak will be kind of "transparent" to them? and they will only need
+to use the GFP flag to instruct kmemleak to scan the page contents?
+it sounds like a good idea to me..
+
