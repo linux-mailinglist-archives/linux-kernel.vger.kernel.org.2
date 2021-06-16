@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D863A9293
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B64B3A9290
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhFPGbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:31:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60184 "EHLO mail.kernel.org"
+        id S231466AbhFPGbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:31:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231652AbhFPG3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231668AbhFPG3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Jun 2021 02:29:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EF0661410;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BF9661407;
         Wed, 16 Jun 2021 06:27:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623824868;
-        bh=s5phVl8oZV+l0jXJRR0YubysAsYGTgD50ZDKsIxUKuI=;
+        bh=7MNCqS85WVptZyVwk3d3+gKYM21WbnTb9lCPgJ99vFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tRScV6M/50Olg4gS0FMkV/wbOSXS8Z7VqKNQ89m3V07EqUCwTm5LCQ/daKwmfktGQ
-         m/Wh8w52HlfRnzmUJm7+P7ZaGtztc1ovhiZtKuQrB81wmEcwTF4pPzZdzHCQtc9/MU
-         cLLR97HhdqfWLoWT+ZTWZzgkzMjoDH5+xWxG92jbMhtkJBjhi4NEECHupt/vuZqBNc
-         YD0/Pxc8TDO7HBGn8wzu1++sfLoX6Qkb+8rLryLDCLtZYgvu64zaVLfvAIH65ybmkm
-         j1vlRDb1oCRZAvve3v0LKbnK6HY0f1LrBdHPnOYhbhcQp9MfepGRpezcIcQ9schkhY
-         sNQbjdXKO4KGA==
+        b=SNY0CxWBJ00fEby9PA8XQQNfmQ0G7QwKkAxXC1bY9wqFjeJl+KZDw4MAYZV+xVAMa
+         bAy/LeRiw5KveHxgdeZIbL7Ah1MzwuPuyJ5R+cuQKH2ySjPT9ix7fa1I9VCRNJzKff
+         LzeRDSk/vwqBmXlYpODdKBkjPRtGlp6qY/9aYCX49LTikHZI/2k4GdgJFTf5YKu47F
+         tYkcwq5IWEB2wEoBVAXeXdV/+UyuidZu8Ue6wEd7qjGJ80c2jn/ALKJOqZltMTsDin
+         sFnvrT+5iv3k+Zmf6DfQANamYWeQwDZWYzk6f7HYAgodJJrC9gLZx7w6HfEvjsV1jf
+         joXHby27TDmJw==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1ltP1e-004kJS-Q9; Wed, 16 Jun 2021 08:27:46 +0200
+        id 1ltP1e-004kJW-RV; Wed, 16 Jun 2021 08:27:46 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        Joe Pater <02joepater06@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 18/29] docs: i2c: avoid using ReST :doc:`foo` markup
-Date:   Wed, 16 Jun 2021 08:27:33 +0200
-Message-Id: <569722e3f7d73d746c145ea78d2b4fbe5defee90.1623824363.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v2 19/29] docs: kernel-hacking: hacking.rst: avoid using ReST :doc:`foo` markup
+Date:   Wed, 16 Jun 2021 08:27:34 +0200
+Message-Id: <9537b74d897fab13552535d79337060a3b241b8c.1623824363.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1623824363.git.mchehab+huawei@kernel.org>
 References: <cover.1623824363.git.mchehab+huawei@kernel.org>
@@ -48,56 +48,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 The :doc:`foo` tag is auto-generated via automarkup.py.
 So, use the filename at the sources, instead of :doc:`foo`.
 
-Acked-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/i2c/instantiating-devices.rst | 2 +-
- Documentation/i2c/old-module-parameters.rst | 3 ++-
- Documentation/i2c/smbus-protocol.rst        | 4 ++--
- 3 files changed, 5 insertions(+), 4 deletions(-)
+ Documentation/kernel-hacking/hacking.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/i2c/instantiating-devices.rst b/Documentation/i2c/instantiating-devices.rst
-index e558e0a77e0c..890c9360ce19 100644
---- a/Documentation/i2c/instantiating-devices.rst
-+++ b/Documentation/i2c/instantiating-devices.rst
-@@ -59,7 +59,7 @@ Declare the I2C devices via ACPI
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+diff --git a/Documentation/kernel-hacking/hacking.rst b/Documentation/kernel-hacking/hacking.rst
+index 451523424942..df65c19aa7df 100644
+--- a/Documentation/kernel-hacking/hacking.rst
++++ b/Documentation/kernel-hacking/hacking.rst
+@@ -601,7 +601,7 @@ Defined in ``include/linux/export.h``
  
- ACPI can also describe I2C devices. There is special documentation for this
--which is currently located at :doc:`../firmware-guide/acpi/enumeration`.
-+which is currently located at Documentation/firmware-guide/acpi/enumeration.rst.
+ This is the variant of `EXPORT_SYMBOL()` that allows specifying a symbol
+ namespace. Symbol Namespaces are documented in
+-:doc:`../core-api/symbol-namespaces`
++Documentation/core-api/symbol-namespaces.rst
  
+ :c:func:`EXPORT_SYMBOL_NS_GPL()`
+ --------------------------------
+@@ -610,7 +610,7 @@ Defined in ``include/linux/export.h``
  
- Declare the I2C devices in board files
-diff --git a/Documentation/i2c/old-module-parameters.rst b/Documentation/i2c/old-module-parameters.rst
-index 38e55829dee8..b08b6daabce9 100644
---- a/Documentation/i2c/old-module-parameters.rst
-+++ b/Documentation/i2c/old-module-parameters.rst
-@@ -17,7 +17,8 @@ address), ``force`` (to forcibly attach the driver to a given device) and
- With the conversion of the I2C subsystem to the standard device driver
- binding model, it became clear that these per-module parameters were no
- longer needed, and that a centralized implementation was possible. The new,
--sysfs-based interface is described in :doc:`instantiating-devices`, section
-+sysfs-based interface is described in
-+Documentation/i2c/instantiating-devices.rst, section
- "Method 4: Instantiate from user-space".
+ This is the variant of `EXPORT_SYMBOL_GPL()` that allows specifying a symbol
+ namespace. Symbol Namespaces are documented in
+-:doc:`../core-api/symbol-namespaces`
++Documentation/core-api/symbol-namespaces.rst
  
- Below is a mapping from the old module parameters to the new interface.
-diff --git a/Documentation/i2c/smbus-protocol.rst b/Documentation/i2c/smbus-protocol.rst
-index 64689d19dd51..9e07e6bbe6a3 100644
---- a/Documentation/i2c/smbus-protocol.rst
-+++ b/Documentation/i2c/smbus-protocol.rst
-@@ -27,8 +27,8 @@ a different protocol operation entirely.
- Each transaction type corresponds to a functionality flag. Before calling a
- transaction function, a device driver should always check (just once) for
- the corresponding functionality flag to ensure that the underlying I2C
--adapter supports the transaction in question. See :doc:`functionality` for
--the details.
-+adapter supports the transaction in question. See
-+Documentation/i2c/functionality.rst for the details.
- 
- 
- Key to symbols
+ Routines and Conventions
+ ========================
 -- 
 2.31.1
 
