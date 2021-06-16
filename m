@@ -2,70 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3D93AA2C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFB13AA2CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhFPSCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 14:02:00 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50108 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhFPSBw (ORCPT
+        id S231501AbhFPSCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 14:02:44 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:59646 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhFPSCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 14:01:52 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        Wed, 16 Jun 2021 14:02:41 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
+ id f6a21bd901818967; Wed, 16 Jun 2021 20:00:33 +0200
+Received: from kreacher.localnet (89-64-81-4.dynamic.chello.pl [89.64.81.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3BAE31FD3F;
-        Wed, 16 Jun 2021 17:59:45 +0000 (UTC)
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id B9EFD118DD;
-        Wed, 16 Jun 2021 17:59:41 +0000 (UTC)
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id wIL/Ig08ymBbSQAALh3uQQ
-        (envelope-from <dave@stgolabs.net>); Wed, 16 Jun 2021 17:59:41 +0000
-Date:   Wed, 16 Jun 2021 10:59:35 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     paulmck@kernel.org, liam.howlett@oracle.com, willy@infradead.org,
-        michel@lespinasse.org, andrealmeid@collabora.com,
-        peterz@infradead.org, alex.kogan@oracle.com, longman@redhat.com,
-        tglx@linutronix.de, tim.c.chen@intel.com, anthony.yznaga@oracle.com
-Subject: LPC 2021: Plumbers Performance and Scalability track
-Message-ID: <20210616175935.pnnkjrtzywasmdso@offworld>
-Mail-Followup-To: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        paulmck@kernel.org, liam.howlett@oracle.com, willy@infradead.org,
-        michel@lespinasse.org, andrealmeid@collabora.com,
-        peterz@infradead.org, alex.kogan@oracle.com, longman@redhat.com,
-        tglx@linutronix.de, tim.c.chen@intel.com, anthony.yznaga@oracle.com
+        by v370.home.net.pl (Postfix) with ESMTPSA id D3971669966;
+        Wed, 16 Jun 2021 20:00:32 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH v2 5/5] ACPI: scan: Fix race related to dropping dependencies
+Date:   Wed, 16 Jun 2021 20:00:32 +0200
+Message-ID: <11783109.O9o76ZdvQC@kreacher>
+In-Reply-To: <3070024.5fSG56mABF@kreacher>
+References: <3140195.44csPzL39Z@kreacher> <3070024.5fSG56mABF@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-User-Agent: NeoMutt/20201120
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.81.4
+X-CLIENT-HOSTNAME: 89-64-81-4.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledguddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdekuddrgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekuddrgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehhuggvghhovgguvgesrhgvughhrghtrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-This year the Performance and Scalability track for Plumbers is back and with this email,
-we are hoping to 1) confirm some of the key participants, 2) suggestions for other key
-participants and 3) more topics so that we can have a big enough pool to screen correctly
-for what's really worth discussing.
+If acpi_add_single_object() runs concurrently with respect to
+acpi_scan_clear_dep() which deletes a dependencies list entry where
+the device being added is the consumer, the device's dep_unmet
+counter may not be updated to reflect that change.
 
-Here is a first very loose list of ideas, which are obviously specific to things that
-interest us.
+Namely, if the dependencies list entry is deleted right after
+calling acpi_scan_dep_init() and before calling acpi_device_add(),
+acpi_scan_clear_dep() will not find the device object corresponding
+to the consumer device ACPI handle and it will not update its
+dep_unmet counter to reflect the deletion of the list entry.
+Consequently, the dep_unmet counter of the device will never
+become zero going forward which may prevent it from being
+completely enumerated.
 
-https://www.linuxplumbersconf.org/event/11/page/104-accepted-microconferences#cont-perform
+To address this problem, modify acpi_add_single_object() to run
+acpi_tie_acpi_dev(), to attach the ACPI device object created by it
+to the corresponding ACPI namespace node, under acpi_dep_list_lock
+along with acpi_scan_dep_init() whenever the latter is called.
 
-As such, if you would like to attend and/or have specific topics that would like discussed,
-please do submit it at (ensuring selecting the Performance and Scalability MC):
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+---
 
-https://www.linuxplumbersconf.org/event/11/abstracts/#submit-abstract
+-> v2:
+   * Fix memory leak spotted by Hans.
+   * Add the R-by tag from Hans.
 
-With performance and scalability being a bit generic terms, this track should only cover
-related topics that are not specific to other tracks.
+---
+ drivers/acpi/scan.c |   50 ++++++++++++++++++++++++++++++++------------------
+ 1 file changed, 32 insertions(+), 18 deletions(-)
 
-Thank you.
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -657,16 +652,12 @@ static int acpi_tie_acpi_dev(struct acpi
+ 	return 0;
+ }
+ 
+-int acpi_device_add(struct acpi_device *device,
+-		    void (*release)(struct device *))
++int __acpi_device_add(struct acpi_device *device,
++		      void (*release)(struct device *))
+ {
+ 	struct acpi_device_bus_id *acpi_device_bus_id;
+ 	int result;
+ 
+-	result = acpi_tie_acpi_dev(device);
+-	if (result)
+-		return result;
+-
+ 	/*
+ 	 * Linkage
+ 	 * -------
+@@ -755,6 +746,17 @@ err_unlock:
+ 	return result;
+ }
+ 
++int acpi_device_add(struct acpi_device *adev, void (*release)(struct device *))
++{
++	int ret;
++
++	ret = acpi_tie_acpi_dev(adev);
++	if (ret)
++		return ret;
++
++	return __acpi_device_add(adev, release);
++}
++
+ /* --------------------------------------------------------------------------
+                                  Device Enumeration
+    -------------------------------------------------------------------------- */
+@@ -1681,14 +1683,10 @@ static void acpi_scan_dep_init(struct ac
+ {
+ 	struct acpi_dep_data *dep;
+ 
+-	mutex_lock(&acpi_dep_list_lock);
+-
+ 	list_for_each_entry(dep, &acpi_dep_list, node) {
+ 		if (dep->consumer == adev->handle)
+ 			adev->dep_unmet++;
+ 	}
+-
+-	mutex_unlock(&acpi_dep_list_lock);
+ }
+ 
+ void acpi_device_add_finalize(struct acpi_device *device)
+@@ -1707,6 +1705,7 @@ static int acpi_add_single_object(struct
+ 				  acpi_handle handle, int type, bool dep_init)
+ {
+ 	struct acpi_device *device;
++	bool release_dep_lock = false;
+ 	int result;
+ 
+ 	device = kzalloc(sizeof(struct acpi_device), GFP_KERNEL);
+@@ -1720,16 +1719,31 @@ static int acpi_add_single_object(struct
+ 	 * this must be done before the get power-/wakeup_dev-flags calls.
+ 	 */
+ 	if (type == ACPI_BUS_TYPE_DEVICE || type == ACPI_BUS_TYPE_PROCESSOR) {
+-		if (dep_init)
++		if (dep_init) {
++			mutex_lock(&acpi_dep_list_lock);
++			/*
++			 * Hold the lock until the acpi_tie_acpi_dev() call
++			 * below to prevent concurrent acpi_scan_clear_dep()
++			 * from deleting a dependency list entry without
++			 * updating dep_unmet for the device.
++			 */
++			release_dep_lock = true;
+ 			acpi_scan_dep_init(device);
+-
++		}
+ 		acpi_scan_init_status(device);
+ 	}
+ 
+ 	acpi_bus_get_power_flags(device);
+ 	acpi_bus_get_wakeup_device_flags(device);
+ 
+-	result = acpi_device_add(device, acpi_device_release);
++	result = acpi_tie_acpi_dev(device);
++
++	if (release_dep_lock)
++		mutex_unlock(&acpi_dep_list_lock);
++
++	if (!result)
++		result = __acpi_device_add(device, acpi_device_release);
++
+ 	if (result) {
+ 		acpi_device_release(&device->dev);
+ 		return result;
 
-On behalf of Daniel, Pavel and myself.
+
+
