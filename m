@@ -2,154 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9DB3A9CEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050F23A9CF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233768AbhFPOIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:08:01 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:64714 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbhFPOIA (ORCPT
+        id S233787AbhFPOIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:08:54 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:60551 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233720AbhFPOIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:08:00 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
- id 54e0344117152d93; Wed, 16 Jun 2021 16:05:52 +0200
-Received: from kreacher.localnet (89-64-81-4.dynamic.chello.pl [89.64.81.4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 15B6D66993E;
-        Wed, 16 Jun 2021 16:05:52 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ACPI: scan: Simplify acpi_table_events_fn()
-Date:   Wed, 16 Jun 2021 16:05:50 +0200
-Message-ID: <4649754.GXAFRqVoOG@kreacher>
+        Wed, 16 Jun 2021 10:08:50 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Ucd3X5L_1623852401;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Ucd3X5L_1623852401)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 16 Jun 2021 22:06:42 +0800
+Date:   Wed, 16 Jun 2021 22:06:41 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
+Subject: Re: [PATCH] nfs: set block size according to pnfs_blksize first
+Message-ID: <YMoFcdhVwMXJQPJ+@B-P7TQMD6M-0146.local>
+References: <1623847469-150122-1-git-send-email-hsiangkao@linux.alibaba.com>
+ <4898aa11dc26396c13bbc3d8bf18c13efe4d513a.camel@hammerspace.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.81.4
-X-CLIENT-HOSTNAME: 89-64-81-4.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgjeegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepkeelrdeigedrkedurdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedurdegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=2 Fuz1=2 Fuz2=2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4898aa11dc26396c13bbc3d8bf18c13efe4d513a.camel@hammerspace.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed, Jun 16, 2021 at 01:47:13PM +0000, Trond Myklebust wrote:
+> On Wed, 2021-06-16 at 20:44 +0800, Gao Xiang wrote:
+> > When testing fstests with ext4 over nfs 4.2, I found generic/486
+> > failed. The root cause is that the length of its xattr value is
+> >   min(st_blksize * 3 / 4, XATTR_SIZE_MAX)
+> > 
+> > which is 4096 * 3 / 4 = 3072 for underlayfs ext4 rather than
+> > XATTR_SIZE_MAX = 65536 for nfs since the block size would be wsize
+> > (=131072) if bsize is not specified.
+> > 
+> > Let's use pnfs_blksize first instead of using wsize directly if
+> > bsize isn't specified. And the testcase itself can pass now.
+> > 
+> > Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+> > Cc: Anna Schumaker <anna.schumaker@netapp.com>
+> > Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
+> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > ---
+> > Considering bsize is not specified, we might use pnfs_blksize
+> > directly first rather than wsize.
+> > 
+> >  fs/nfs/super.c | 8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/nfs/super.c b/fs/nfs/super.c
+> > index fe58525cfed4..5015edf0cd9a 100644
+> > --- a/fs/nfs/super.c
+> > +++ b/fs/nfs/super.c
+> > @@ -1068,9 +1068,13 @@ static void nfs_fill_super(struct super_block
+> > *sb, struct nfs_fs_context *ctx)
+> >         snprintf(sb->s_id, sizeof(sb->s_id),
+> >                  "%u:%u", MAJOR(sb->s_dev), MINOR(sb->s_dev));
+> >  
+> > -       if (sb->s_blocksize == 0)
+> > -               sb->s_blocksize = nfs_block_bits(server->wsize,
+> > +       if (sb->s_blocksize == 0) {
+> > +               unsigned int blksize = server->pnfs_blksize ?
+> > +                       server->pnfs_blksize : server->wsize;
+> 
+> NACK. The pnfs block size is a layout driver-specific quantity, and
+> should not be used to substitute for the server-advertised block size.
+> It only applies to I/O _if_ the client is holding a layout for a
+> specific file and is using pNFS to do I/O to that file.
 
-Notice that the table field of struct acpi_table_events_work is never
-read and its event field is always equal to ACPI_TABLE_EVENT_LOAD, so
-both of them are redundant.
+Honestly, I'm not sure if it's ok as well.
 
-Accordingly, drop struct acpi_table_events_work and use struct
-work_struct directly instead of it, simplify acpi_scan_table_handler()
-and rename it to acpi_scan_table_notify().
+> 
+> It has nothing to do with xattrs at all.
 
-Moreover, make acpi_bus_table_handler() check the event code against
-ACPI_TABLE_EVENT_LOAD before calling acpi_scan_table_notify(), so it
-is not necessary to do that check in the latter.
+Yet my question is how to deal with generic/486, should we just skip
+the case directly? I cannot find some proper way to get underlayfs
+block size or real xattr value limit.
 
-No intentional functional impact.
+For now, generic/486 will return ENOSPC at
+fsetxattr(fd, "user.world", value, 65536, XATTR_REPLACE);
+when testing new nfs4.2 xattr support.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/bus.c      |    3 ++-
- drivers/acpi/internal.h |    2 +-
- drivers/acpi/scan.c     |   38 ++++++++++----------------------------
- 3 files changed, 13 insertions(+), 30 deletions(-)
+Thanks,
+Gao Xiang
 
-Index: linux-pm/drivers/acpi/scan.c
-===================================================================
---- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -2471,46 +2471,28 @@ int __init __acpi_probe_device_table(str
- 	return count;
- }
- 
--struct acpi_table_events_work {
--	struct work_struct work;
--	void *table;
--	u32 event;
--};
--
- static void acpi_table_events_fn(struct work_struct *work)
- {
--	struct acpi_table_events_work *tew;
--
--	tew = container_of(work, struct acpi_table_events_work, work);
--
--	if (tew->event == ACPI_TABLE_EVENT_LOAD) {
--		acpi_scan_lock_acquire();
--		acpi_bus_scan(ACPI_ROOT_OBJECT);
--		acpi_scan_lock_release();
--	}
-+	acpi_scan_lock_acquire();
-+	acpi_bus_scan(ACPI_ROOT_OBJECT);
-+	acpi_scan_lock_release();
- 
--	kfree(tew);
-+	kfree(work);
- }
- 
--void acpi_scan_table_handler(u32 event, void *table, void *context)
-+void acpi_scan_table_notify(void)
- {
--	struct acpi_table_events_work *tew;
-+	struct work_struct *work;
- 
- 	if (!acpi_scan_initialized)
- 		return;
- 
--	if (event != ACPI_TABLE_EVENT_LOAD)
-+	work = kmalloc(sizeof(*work), GFP_KERNEL);
-+	if (!work)
- 		return;
- 
--	tew = kmalloc(sizeof(*tew), GFP_KERNEL);
--	if (!tew)
--		return;
--
--	INIT_WORK(&tew->work, acpi_table_events_fn);
--	tew->table = table;
--	tew->event = event;
--
--	schedule_work(&tew->work);
-+	INIT_WORK(work, acpi_table_events_fn);
-+	schedule_work(work);
- }
- 
- int acpi_reconfig_notifier_register(struct notifier_block *nb)
-Index: linux-pm/drivers/acpi/bus.c
-===================================================================
---- linux-pm.orig/drivers/acpi/bus.c
-+++ linux-pm/drivers/acpi/bus.c
-@@ -1195,7 +1195,8 @@ void __init acpi_subsystem_init(void)
- 
- static acpi_status acpi_bus_table_handler(u32 event, void *table, void *context)
- {
--	acpi_scan_table_handler(event, table, context);
-+	if (event == ACPI_TABLE_EVENT_LOAD)
-+		acpi_scan_table_notify();
- 
- 	return acpi_sysfs_table_handler(event, table, context);
- }
-Index: linux-pm/drivers/acpi/internal.h
-===================================================================
---- linux-pm.orig/drivers/acpi/internal.h
-+++ linux-pm/drivers/acpi/internal.h
-@@ -86,7 +86,7 @@ void acpi_device_hotplug(struct acpi_dev
- bool acpi_scan_is_offline(struct acpi_device *adev, bool uevent);
- 
- acpi_status acpi_sysfs_table_handler(u32 event, void *table, void *context);
--void acpi_scan_table_handler(u32 event, void *table, void *context);
-+void acpi_scan_table_notify(void);
- 
- /* --------------------------------------------------------------------------
-                      Device Node Initialization / Removal
-
-
-
+> 
+> > +
+> > +               sb->s_blocksize = nfs_block_bits(blksize,
+> >                                                  &sb-
+> > >s_blocksize_bits);
+> > +       }
+> >  
+> >         nfs_super_set_maxbytes(sb, server->maxfilesize);
+> >         server->has_sec_mnt_opts = ctx->has_sec_mnt_opts;
+> 
+> -- 
+> Trond Myklebust
+> Linux NFS client maintainer, Hammerspace
+> trond.myklebust@hammerspace.com
+> 
+> 
