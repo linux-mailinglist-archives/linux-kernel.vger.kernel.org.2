@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9DC3AA24A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB613AA24E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbhFPRSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:18:44 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52596 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbhFPRSk (ORCPT
+        id S231435AbhFPRTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:19:20 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:15844 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231147AbhFPRTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:18:40 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15GHGVvq021201;
-        Wed, 16 Jun 2021 12:16:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623863791;
-        bh=BSaKXYwEkkOHrbRBsZItFzUPHBO8nZkVvZZN0CdQwZc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Hl5YvhMPqofVVqTSkjSL6vBFI3KWk4xT1LhSNWedz0SoRE5d792cdVriWfHnqYBvz
-         ppGRplI5xLU+vic+/SB+pZVgDMDy7kUk0aLLw4x6/hVA++EZw/Vk0chXqtlOdaLfD/
-         R0W2jbzufoQ4nzyUlDl+q6EjGD8DrcDjymehYXMc=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15GHGVvE046942
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Jun 2021 12:16:31 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 16
- Jun 2021 12:16:30 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 16 Jun 2021 12:16:30 -0500
-Received: from [10.250.36.147] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15GHGUQF105902;
-        Wed, 16 Jun 2021 12:16:30 -0500
-Subject: Re: [PATCH v5 1/3] arm64: dts: ti: k3-am64-main: Update TF-A's
- maximum size and node name
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210616171224.24635-1-a-govindraju@ti.com>
- <20210616171224.24635-2-a-govindraju@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <3c1776c5-6eea-5fa1-a5fd-f22846bfef08@ti.com>
-Date:   Wed, 16 Jun 2021 12:16:30 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 16 Jun 2021 13:19:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1623863833; x=1655399833;
+  h=date:from:to:cc:message-id:references:mime-version:
+   in-reply-to:subject;
+  bh=Q5Mb33N4s7iNRGes5OdOYv09jmgB3B1sa4DEf0ih+tA=;
+  b=TvOjupV/814yzagPb7xGEzK5DpfZVCh7lDTu/jw55yUBWbG6O+vCHPeT
+   oPG6jl9780zjwMJzvGjF3BbOW6EEjvJxRWVDX51XzZokaqHy1UYhkkrq3
+   OZt7nmOU1zO39znEQN+NPgwk0mjvKRO7vdXcp5RLnP3QW3Ox/JtYnnQtO
+   4=;
+X-IronPort-AV: E=Sophos;i="5.83,278,1616457600"; 
+   d="scan'208";a="140498779"
+Subject: Re: [PATCH] nfs: set block size according to pnfs_blksize first
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 16 Jun 2021 17:17:12 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id 7B7BEA17D6;
+        Wed, 16 Jun 2021 17:17:10 +0000 (UTC)
+Received: from EX13D07UWA003.ant.amazon.com (10.43.160.35) by
+ EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Wed, 16 Jun 2021 17:17:09 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
+ EX13D07UWA003.ant.amazon.com (10.43.160.35) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Wed, 16 Jun 2021 17:17:09 +0000
+Received: from dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com
+ (172.19.206.175) by mail-relay.amazon.com (10.43.160.118) with Microsoft SMTP
+ Server id 15.0.1497.18 via Frontend Transport; Wed, 16 Jun 2021 17:17:09
+ +0000
+Received: by dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com (Postfix, from userid 6262777)
+        id 7AEC99A; Wed, 16 Jun 2021 17:17:08 +0000 (UTC)
+Date:   Wed, 16 Jun 2021 17:17:08 +0000
+From:   Frank van der Linden <fllinden@amazon.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+CC:     "hsiangkao@linux.alibaba.com" <hsiangkao@linux.alibaba.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
+Message-ID: <20210616171708.GA24636@dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com>
+References: <1623847469-150122-1-git-send-email-hsiangkao@linux.alibaba.com>
+ <4898aa11dc26396c13bbc3d8bf18c13efe4d513a.camel@hammerspace.com>
+ <YMoFcdhVwMXJQPJ+@B-P7TQMD6M-0146.local>
+ <2c14b63eacf1742bb0bcd2ae02f2d7005f7682d8.camel@hammerspace.com>
+ <YMoNnr1RYDOLXtKJ@B-P7TQMD6M-0146.local>
+ <80199ffaf89fc5ef2ad77245f9a5e75beed2dc37.camel@hammerspace.com>
 MIME-Version: 1.0
-In-Reply-To: <20210616171224.24635-2-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <80199ffaf89fc5ef2ad77245f9a5e75beed2dc37.camel@hammerspace.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 12:12 PM, Aswath Govindraju wrote:
-> The maximum size of TF-A 2.5 has been increased to 0x1c000 [1]. In order to
-> account for future expansions too, increase the allocated size for TF-A to
-> 0x20000, in the device tree node.
+On Wed, Jun 16, 2021 at 03:14:17PM +0000, Trond Myklebust wrote:
+> The setxattr() manpage appears to suggest ERANGE is the correct return
+> value here.
 > 
-> Also, update the node name to "tfa-sram".
+>        ERANGE The size of name or value exceeds a filesystem-specific
+> limit.
 > 
-> [1] - https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=2fb5312f61a7de8b7a70e1639199c4f14a10b6f9
 > 
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-
-Reviewed-by: Suman Anna <s-anna@ti.com>
-
-> ---
->  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> index dec54243f454..e918afc2298e 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> @@ -24,8 +24,8 @@
->  		#size-cells = <1>;
->  		ranges = <0x0 0x00 0x70000000 0x200000>;
->  
-> -		atf-sram@0 {
-> -			reg = <0x0 0x1a000>;
-> +		tfa-sram@0 {
-> +			reg = <0x0 0x20000>;
->  		};
->  	};
->  
+> However I can't tell if ext4 and xfs ever do that. Furthermore, it
+> looks as if the VFS is always returning E2BIG if size > XATTR_SIZE_MAX.
 > 
 
+The basic issue here is that there are two limits: the generic one
+(XATTR_SIZE_MAX), and the fs-specific one.
+
+When crossing the generic one, the xattr code returns E2BIG. When
+crossing the fs-specific one, it looks like there are a few filesystems
+that return E2BIG, but others (like ext4) return ENOSPC.
+
+For the server, NFS4ERR_XATTR2BIG is the right value to return for all
+these cases.  For the generic limit, it's an easy check. For the
+fs-specific limit, the server code doesn't necessarily know what's
+going on, since filesystems don't have a way to advertise their
+limits. So ENOSPC will *probably* mean that the attribute was too
+large for the filesystem, but it might not.
+
+You could change the server code to translate ENOSPC to NFS4ERR_XATTR2BIG.
+But that might not be totally correct either, you're going to end up returning
+an error to the client that is not correct in all cases either way.
+
+The problem here for xfstests is how to define the 'correct' behavior
+across all filesystems so that there's a clean pass/fail, as long
+as these inconsistencies exist.
+
+- Frank
