@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4973A9F3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7FE3A9FEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234722AbhFPPgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:36:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49616 "EHLO mail.kernel.org"
+        id S235561AbhFPPm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:42:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234698AbhFPPga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:36:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DDD861076;
-        Wed, 16 Jun 2021 15:34:24 +0000 (UTC)
+        id S235249AbhFPPjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:39:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CD45613B9;
+        Wed, 16 Jun 2021 15:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857664;
-        bh=cDF7gcmdFrF5Z7qlgNq46q+m9vMNfZiYGaRBsRnru9E=;
+        s=korg; t=1623857817;
+        bh=PIMvvOdcHM/UaNyjKsmWLK9cCLAZzAi4AH7zS+RZbIc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aFn7Siyi9i6RIoPjpnEyYzpoltwVgYMjiDkFxeKrw6M3KvEFxoShj50BR153TDA+j
-         cmvJgSF2/K1tFIBt85Fd0WbzFjUbVFicELiK97C48BLOpRivPNZafKdSIFBZsqJUXp
-         gS2MaoDwU+a06cU4qLnsIZPK+8tquCyScHPQOFOU=
+        b=KKyE5mC+AZrqpZ2iVNJDeKUJa6azz7rvrXRyExocWoZT9GR7C3wHpk0K3HyHHikLo
+         uriQeZmZj0ugtXKtViaKdWbxfRTBGkXlJ0WNrYVgiKL5P4X12CPzE5euEJ7nZ0a7SH
+         W3nQteoZIh2I0Pp9JQADPN+0aLRKGHkhWtCgnUNY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Maciej Falkowski <maciej.falkowski9@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 16/28] ethernet: myri10ge: Fix missing error code in myri10ge_probe()
-Date:   Wed, 16 Jun 2021 17:33:27 +0200
-Message-Id: <20210616152834.674769027@linuxfoundation.org>
+Subject: [PATCH 5.12 18/48] ARM: OMAP1: Fix use of possibly uninitialized irq variable
+Date:   Wed, 16 Jun 2021 17:33:28 +0200
+Message-Id: <20210616152837.231375273@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
-References: <20210616152834.149064097@linuxfoundation.org>
+In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
+References: <20210616152836.655643420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Maciej Falkowski <maciej.falkowski9@gmail.com>
 
-[ Upstream commit f336d0b93ae978f12c5e27199f828da89b91e56a ]
+[ Upstream commit 3c4e0147c269738a19c7d70cd32395600bcc0714 ]
 
-The error code is missing in this code scenario, add the error code
-'-EINVAL' to the return value 'status'.
+The current control flow of IRQ number assignment to `irq` variable
+allows a request of IRQ of unspecified value,
+generating a warning under Clang compilation with omap1_defconfig on
+linux-next:
 
-Eliminate the follow smatch warning:
+arch/arm/mach-omap1/pm.c:656:11: warning: variable 'irq' is used
+uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+        else if (cpu_is_omap16xx())
+                 ^~~~~~~~~~~~~~~~~
+./arch/arm/mach-omap1/include/mach/soc.h:123:30: note: expanded from macro
+'cpu_is_omap16xx'
+                                        ^~~~~~~~~~~~~
+arch/arm/mach-omap1/pm.c:658:18: note: uninitialized use occurs here
+        if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
+                        ^~~
+arch/arm/mach-omap1/pm.c:656:7: note: remove the 'if' if its condition is
+always true
+        else if (cpu_is_omap16xx())
+             ^~~~~~~~~~~~~~~~~~~~~~
+arch/arm/mach-omap1/pm.c:611:9: note: initialize the variable 'irq' to
+silence this warning
+        int irq;
+               ^
+                = 0
+1 warning generated.
 
-drivers/net/ethernet/myricom/myri10ge/myri10ge.c:3818 myri10ge_probe()
-warn: missing error code 'status'.
+The patch provides a default value to the `irq` variable
+along with a validity check.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1324
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/myricom/myri10ge/myri10ge.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/mach-omap1/pm.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-index c979f38a2e0c..c4c716094982 100644
---- a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-+++ b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-@@ -3849,6 +3849,7 @@ static int myri10ge_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		dev_err(&pdev->dev,
- 			"invalid sram_size %dB or board span %ldB\n",
- 			mgp->sram_size, mgp->board_span);
-+		status = -EINVAL;
- 		goto abort_with_ioremap;
- 	}
- 	memcpy_fromio(mgp->eeprom_strings,
+diff --git a/arch/arm/mach-omap1/pm.c b/arch/arm/mach-omap1/pm.c
+index 2c1e2b32b9b3..a745d64d4699 100644
+--- a/arch/arm/mach-omap1/pm.c
++++ b/arch/arm/mach-omap1/pm.c
+@@ -655,9 +655,13 @@ static int __init omap_pm_init(void)
+ 		irq = INT_7XX_WAKE_UP_REQ;
+ 	else if (cpu_is_omap16xx())
+ 		irq = INT_1610_WAKE_UP_REQ;
+-	if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
+-			NULL))
+-		pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
++	else
++		irq = -1;
++
++	if (irq >= 0) {
++		if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup", NULL))
++			pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
++	}
+ 
+ 	/* Program new power ramp-up time
+ 	 * (0 for most boards since we don't lower voltage when in deep sleep)
 -- 
 2.30.2
 
