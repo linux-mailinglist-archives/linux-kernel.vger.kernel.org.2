@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92933A9D10
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1973A9D16
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbhFPONb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
+        id S232825AbhFPONf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbhFPON3 (ORCPT
+        with ESMTP id S233840AbhFPONb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:13:29 -0400
+        Wed, 16 Jun 2021 10:13:31 -0400
 Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF044C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:11:22 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id c9so2870334wrt.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:11:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7471C061768
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:11:23 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id q5so2891641wrm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:11:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aE0w1uO3QVDTTrk8Nc8bPJabv5EcddLgbrDTqRajB2A=;
-        b=eMDInb1B5qVL0q8lgoCc7i8Cnh36v23UeL2sMjwtaKmgVyxASSfueEMjruLjEiT691
-         a4mZ6tYL0QcwSOSkQCTKcgFqW0gbRNdecH4C5ONBr+9SopRkjm8ZjZw8vIiUJi8ardVb
-         Ln1Ibgn4S8BIOQN/gXnqt9Jj9tN+5GYWIGF/CKFJd+VkVw7njLDSA+/dwIZx1fc7+eKe
-         BEsHef+QFC1YX5VxYxmXbFAAUQN8pe/PWUVrAoO/+5TLE8Eri8zlpoDggqpFl2Yw2t2s
-         QYkpmxJO7ptB80iA+ghtyVDbnAXEYF/AwEjNGuNy8YY3tAjwkL1PH32Bj41wbIDLWlqD
-         GknQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HWrm484FRw+CXBsUVTC9kLTPetzFLV6N+ldivPXQSA0=;
+        b=ivOr+KReobJtkhuIa7uOD3UErbtxb02cL0h/pdDUfPd2qxzaK7FzKkCpHpjnh4ukwG
+         o1r/pj8GTabRMnFi6VXJW2E7ILfmHvZJQuD2MYwYbaJzrpl5iwksBJNc2NPnZU9xaPe5
+         zw7wK4KKkEl/563ebuvmF+4iNE3ThvFxMsGfAlK14v59xaNf4afPc0kiud3mZn9yreLZ
+         nJmvDR9Rx5OGjkKA9OtgHD01jt5VmEvEUNsP6iwJNTbyZXG959qJ3EloczxuOECB8UPc
+         MfBoAWyV14dclN1F8gwKDXgrbnOJZm9hn15En+SUGdGSFeDyLT0NFjrrss6xG1qAlizq
+         f/lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aE0w1uO3QVDTTrk8Nc8bPJabv5EcddLgbrDTqRajB2A=;
-        b=T0vYhNbfmkdJcUo6K6P24L/G6c/AiIj3tckSwQ5Lq6JyAzyBT93WH2c2rnKRU2MuC0
-         QJT45t5WMxgUY+fnz2HeHe1Zz7TqiNtwUggcGIlV6/8IwudIxzrGYT/12fhskba0KBE/
-         p0vvEO6WSoEGXd2i+sd1CmqBN/qbJXBnhHc0UK9XKSN7PYQxip/QIn8Yp/cTQAxGwBAe
-         F/FCgTGp23WqYP4J/rwkRJkdmDvzcliZtwpU2Paxq9Jh1OjG5I2k7MCYi3MLDOloImF9
-         GjN4CAxGWJ453KblmoUYYlQ6JCevJ1ebniBvEY/de3CWDdOTgsntw6+aDUYYeYN+hygQ
-         M74w==
-X-Gm-Message-State: AOAM5314uj5TbrMiHSUQqAIPBE617QQ2FQP0LXSVPR8+FAgVrJ4kRhCy
-        eGynuAbWwTdSK6kkQ0pLvt8BHQ==
-X-Google-Smtp-Source: ABdhPJwFueHcCoJnHzqBztCyWLRoMNfG6eE+JFDi+ZoSffloB3C63Rm+FxtcSAo7JOZFBIK2ZZ/ZWA==
-X-Received: by 2002:adf:b64a:: with SMTP id i10mr5677516wre.169.1623852681204;
-        Wed, 16 Jun 2021 07:11:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HWrm484FRw+CXBsUVTC9kLTPetzFLV6N+ldivPXQSA0=;
+        b=EzmPQ3NQP/bFN+M6xMs0Be04oFojV9UUDOsV8O1D1ZiF/BFTsqUivxwjnmKQ+b8Hp0
+         0Iit7ksiqxmd0m4OqQO5mNYLxkE5hD72Nd0FQeYFHUzNKxv4W+ZGV2uQqmbqfI7oQNM9
+         MII1NB+hgnmp/cT1IpOmvOK3QSUqb879KAKej7gmGTQ16QEez8mThgfNRvX2WNWPTTUR
+         ISoLKAmIXknlLIT/ZUcK8te037ExpwjTFu8KAecZhi46qKGMYZlsh3UK3jsDH0ykB6zL
+         rBVZPT0N7cTreJYkcRIFUf6wIjow2l08+pWxw6hVroEQI5vYFFHG87R+euos3me1JVIJ
+         taMg==
+X-Gm-Message-State: AOAM533k/tX5+jw6lMK9Lt12hzHjPVv6VpnZU72mwr5yhMUD+4mmyVNk
+        yBm7USQYIfmdg3dVBEc4hYvjEQ==
+X-Google-Smtp-Source: ABdhPJw3mm7O7zgao92i3rJ6WysW+SjgDk4ImvXB6e197fqQvYGczKWByxEDaN4yrrG+evFXBetgJA==
+X-Received: by 2002:a5d:6b0e:: with SMTP id v14mr5661024wrw.297.1623852682379;
+        Wed, 16 Jun 2021 07:11:22 -0700 (PDT)
 Received: from xps7590.fritz.box ([2a02:2454:3e5:b700:9df7:76e5:7e94:bf1e])
-        by smtp.gmail.com with ESMTPSA id g83sm1968375wma.10.2021.06.16.07.11.20
+        by smtp.gmail.com with ESMTPSA id g83sm1968375wma.10.2021.06.16.07.11.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 07:11:20 -0700 (PDT)
+        Wed, 16 Jun 2021 07:11:22 -0700 (PDT)
 From:   Robert Foss <robert.foss@linaro.org>
 To:     agross@kernel.org, bjorn.andersson@linaro.org,
         mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
@@ -56,61 +56,165 @@ To:     agross@kernel.org, bjorn.andersson@linaro.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Vinod Koul <vinod.koul@linaro.org>
 Cc:     Robert Foss <robert.foss@linaro.org>
-Subject: [RFC v1 00/11] Qcom SM8350 DispCC & VideoCC
-Date:   Wed, 16 Jun 2021 16:10:56 +0200
-Message-Id: <20210616141107.291430-1-robert.foss@linaro.org>
+Subject: [RFC v1 01/11] clk: qcom: common: Add runtime init/suspend/resume
+Date:   Wed, 16 Jun 2021 16:10:57 +0200
+Message-Id: <20210616141107.291430-2-robert.foss@linaro.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210616141107.291430-1-robert.foss@linaro.org>
+References: <20210616141107.291430-1-robert.foss@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not merge, this series has yet to be properly tested. Work is in
-progress for sm8350 display driver support, which will test this series
-properly.
+Ported over from the downstream driver. Is used by SM8350 DISPCC & VIDEOCC.
 
-This series implements display clock controller (dispcc) & video
-clock controller (videocc) support for the Qcom SM8350 SOC.
+This patch includes support for initializing interconnect bandwidth voting.
 
-In order to support these new clock controllers, some changes to the
-alpha plls are required. These changes add support to the Lucid 5LPE PLLs.
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+---
+ drivers/clk/qcom/common.c | 92 +++++++++++++++++++++++++++++++++++++++
+ drivers/clk/qcom/common.h |  6 +++
+ 2 files changed, 98 insertions(+)
 
-Robert Foss (11):
-  clk: qcom: common: Add runtime init/suspend/resume
-  clk: qcom: rcg2: Add support for flags
-  clk: qcom: clk-alpha-pll: Fix typo in comment
-  clk: qcom: clk-alpha-pll: Add configuration support for LUCID 5LPE
-  dt-bindings: clock: Add QCOM SM8350 display clock bindings
-  clk: qcom: Add display clock controller driver for SM8350
-  dt-bindings: clock: Add SM8350 QCOM video clock bindings
-  clk: qcom: Add video clock controller driver for SM8350
-  arm64: dts: qcom: sm8350: Power up dispcc & videocc on sm8350 by MMCX
-    regulator
-  arm64: dts: qcom: sm8350: Add videocc DT node
-  arm64: dts: qcom: sm8350: Add dispcc DT node
-
- .../bindings/clock/qcom,dispcc-sm8x50.yaml    |    6 +-
- .../bindings/clock/qcom,videocc.yaml          |    2 +
- arch/arm64/boot/dts/qcom/sm8350.dtsi          |   46 +
- drivers/clk/qcom/Kconfig                      |   18 +
- drivers/clk/qcom/Makefile                     |    2 +
- drivers/clk/qcom/clk-alpha-pll.c              |    5 +-
- drivers/clk/qcom/clk-alpha-pll.h              |    5 +
- drivers/clk/qcom/clk-rcg.h                    |    4 +
- drivers/clk/qcom/clk-rcg2.c                   |    3 +
- drivers/clk/qcom/common.c                     |   92 ++
- drivers/clk/qcom/common.h                     |    6 +
- drivers/clk/qcom/dispcc-sm8350.c              | 1402 +++++++++++++++++
- drivers/clk/qcom/videocc-sm8350.c             |  593 +++++++
- .../dt-bindings/clock/qcom,dispcc-sm8350.h    |   77 +
- .../dt-bindings/clock/qcom,videocc-sm8350.h   |   44 +
- 15 files changed, 2302 insertions(+), 3 deletions(-)
- create mode 100644 drivers/clk/qcom/dispcc-sm8350.c
- create mode 100644 drivers/clk/qcom/videocc-sm8350.c
- create mode 100644 include/dt-bindings/clock/qcom,dispcc-sm8350.h
- create mode 100644 include/dt-bindings/clock/qcom,videocc-sm8350.h
-
+diff --git a/drivers/clk/qcom/common.c b/drivers/clk/qcom/common.c
+index 60d2a78d1395..1375c5de1bd1 100644
+--- a/drivers/clk/qcom/common.c
++++ b/drivers/clk/qcom/common.c
+@@ -3,13 +3,17 @@
+  * Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
+  */
+ 
++#include <linux/clk.h>
+ #include <linux/export.h>
++#include <linux/interconnect.h>
+ #include <linux/module.h>
+ #include <linux/regmap.h>
+ #include <linux/platform_device.h>
+ #include <linux/clk-provider.h>
+ #include <linux/reset-controller.h>
+ #include <linux/of.h>
++#include <linux/pm_clock.h>
++#include <linux/pm_runtime.h>
+ 
+ #include "common.h"
+ #include "clk-rcg.h"
+@@ -329,4 +333,92 @@ int qcom_cc_probe_by_index(struct platform_device *pdev, int index,
+ }
+ EXPORT_SYMBOL_GPL(qcom_cc_probe_by_index);
+ 
++int qcom_cc_runtime_init(struct platform_device *pdev,
++			 struct qcom_cc_desc *desc)
++{
++	struct device *dev = &pdev->dev;
++	struct clk *clk;
++	int ret;
++
++	clk = clk_get_optional(dev, "iface");
++	if (IS_ERR(clk)) {
++		if (PTR_ERR(clk) != -EPROBE_DEFER)
++			dev_err(dev, "unable to get iface clock\n");
++		return PTR_ERR(clk);
++	}
++	clk_put(clk);
++
++	desc->path = of_icc_get(dev, NULL);
++	if (IS_ERR(desc->path)) {
++		if (PTR_ERR(desc->path) != -EPROBE_DEFER)
++			dev_err(dev, "error getting path\n");
++		return PTR_ERR(desc->path);
++	}
++
++	platform_set_drvdata(pdev, desc);
++	pm_runtime_enable(dev);
++
++	ret = pm_clk_create(dev);
++	if (ret)
++		goto disable_pm_runtime;
++
++	ret = pm_clk_add(dev, "iface");
++	if (ret < 0) {
++		dev_err(dev, "failed to acquire iface clock\n");
++		goto destroy_pm_clk;
++	}
++
++	return 0;
++
++destroy_pm_clk:
++	pm_clk_destroy(dev);
++
++disable_pm_runtime:
++	pm_runtime_disable(dev);
++	icc_put(desc->path);
++
++	return ret;
++}
++EXPORT_SYMBOL(qcom_cc_runtime_init);
++
++int qcom_cc_runtime_resume(struct device *dev)
++{
++	struct qcom_cc_desc *desc = dev_get_drvdata(dev);
++	int ret;
++
++	if (desc->path) {
++		ret = icc_set_bw(desc->path, 0, 1);
++		if (ret) {
++			dev_warn(dev, "%s: failed to vote bw\n", __func__);
++			return ret;
++		}
++	}
++
++	ret = pm_clk_resume(dev);
++	if (ret)
++		dev_warn(dev, "%s: failed to enable clocks\n", __func__);
++
++	return ret;
++}
++EXPORT_SYMBOL(qcom_cc_runtime_resume);
++
++int qcom_cc_runtime_suspend(struct device *dev)
++{
++	struct qcom_cc_desc *desc = dev_get_drvdata(dev);
++	int ret;
++
++	ret = pm_clk_suspend(dev);
++	if (ret)
++		dev_warn(dev, "%s: failed to disable clocks\n", __func__);
++
++	if (desc->path) {
++		ret = icc_set_bw(desc->path, 0, 0);
++		if (ret)
++			dev_warn(dev, "%s: failed to unvote bw\n", __func__);
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(qcom_cc_runtime_suspend);
++
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/clk/qcom/common.h b/drivers/clk/qcom/common.h
+index bb39a7e106d8..e2a9dbd1529d 100644
+--- a/drivers/clk/qcom/common.h
++++ b/drivers/clk/qcom/common.h
+@@ -29,6 +29,7 @@ struct qcom_cc_desc {
+ 	size_t num_gdscs;
+ 	struct clk_hw **clk_hws;
+ 	size_t num_clk_hws;
++	struct icc_path *path;
+ };
+ 
+ /**
+@@ -64,4 +65,9 @@ extern int qcom_cc_probe(struct platform_device *pdev,
+ extern int qcom_cc_probe_by_index(struct platform_device *pdev, int index,
+ 				  const struct qcom_cc_desc *desc);
+ 
++int qcom_cc_runtime_init(struct platform_device *pdev,
++			 struct qcom_cc_desc *desc);
++int qcom_cc_runtime_suspend(struct device *dev);
++int qcom_cc_runtime_resume(struct device *dev);
++
+ #endif
 -- 
 2.30.2
 
