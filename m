@@ -2,91 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC3F3A9DFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23343A9DFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234165AbhFPOqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:46:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234052AbhFPOqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:46:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB14161042;
-        Wed, 16 Jun 2021 14:44:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623854680;
-        bh=1BSDaNQfE0DNGtfdmLGFdoYfoKAolCav5h+KOT8hnZM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KMBdMHaPk4tcoim9Cf8E6+4hbVInOAJrTUS++kPLhNfAlRUuN0twPoB66ean9WtQy
-         U53L1quxFEoyj8bIeeOJy9Ekg0MSV+94zjLRFUgtvmK03D0eMjbb3XhNFYJhq3cxve
-         FWuK/qKy/dxL757KqLi4WU3r6x+SjKfOZs00QhkM=
-Date:   Wed, 16 Jun 2021 16:44:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Rodolfo Giometti <giometti@enneenne.com>
-Subject: Re: [PATCH v1 1/1] pps: generators: pps_gen_parport: Switch to use
- module_parport_driver()
-Message-ID: <YMoOVrJ1ETVhRr4F@kroah.com>
-References: <20210616143121.46059-1-andriy.shevchenko@linux.intel.com>
+        id S234169AbhFPOro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:47:44 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:40799 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233854AbhFPOrl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 10:47:41 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id B835F5C00F3;
+        Wed, 16 Jun 2021 10:45:34 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 16 Jun 2021 10:45:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=sYpgCz
+        WHYl66W6Ocpn+vjd08IOtt1QAuugKpx0HgzHo=; b=ZdCoJ0UlQEf924MZj8zpgd
+        WHfwsddsmDnzDhIXcXy7Q53xWc9QuLjKJZr2F2YJ82iJLQlA243dWSuLt6NVBqJc
+        XzWK/Agku1ij0hbtud6+DsdfD8BooUbzNlvQo3RGf7ftk+X0aPlw/ahw4GVHiaUq
+        mLFJNRW6dfhVrZkbvQVxf/uXo688pGqB15RA8yWYFAZAO2mC7UbJbk01usU6PY5f
+        nj4jYdqimxB5I/qRJbvS0xppEV8iQjNlD63JwfiJFCS/csjYJLXNv6/nlhVK/2Wi
+        KAWC3uxg0HqS7zUscKPeG/7g7UnfDV97b3ZHhQ07zj/xrz5Du6lKXv/hB32YAbxQ
+        ==
+X-ME-Sender: <xms:jg7KYDls9JrEo2QQ9T-l8BGwWdXnZ6z8nZNTkQbomW40aJF7EydebQ>
+    <xme:jg7KYG1mzw0yDRUy98m41K6bXGNeHw-LIHERXMHYeJSd5jX1kp1aQ_Wk2BQ54xTId
+    UGsCquPfxub9qk>
+X-ME-Received: <xmr:jg7KYJriMCFTKrxoc9BZyUAoLMfNHH5X4KWWf8QbsXHS7zY_NcABRVYWJHl95iZ-7Jex4NQB3kCp5uA0n9IuVXxsyID8GA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpefkughoucfu
+    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
+    gvrhhnpefgjeevhfdvgeeiudekteduveegueejfefffeefteekkeeuueehjeduledtjeeu
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiug
+    hoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:jg7KYLlDQsTpoFkfwYj13SmmgK2yeJWYoJWTYB2WZ7HXKLLP9W330A>
+    <xmx:jg7KYB3Q3jGRoD6Dcf5wisdbQWDjLJmVO9S8yv0tBNsqitjDb-wrng>
+    <xmx:jg7KYKtGe-xkbNhRPPrQdNV6TZwXi4Xgx4nSXxqaW3JvGewrTbDL6A>
+    <xmx:jg7KYJ-3xKlKYsxsof6UQN_VMAcy-NhKZ43jZLaXnNEgtE0gs2W1Dg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 16 Jun 2021 10:45:33 -0400 (EDT)
+Date:   Wed, 16 Jun 2021 17:45:29 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mlxsw: spectrum_router: remove redundant continue
+ statement
+Message-ID: <YMoOiXEJJvvknbIJ@shredder>
+References: <20210616130258.9779-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210616143121.46059-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210616130258.9779-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 05:31:21PM +0300, Andy Shevchenko wrote:
-> Switch to use module_parport_driver() to reduce boilerplate code.
+On Wed, Jun 16, 2021 at 02:02:58PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/pps/generators/pps_gen_parport.c | 44 +++++-------------------
->  1 file changed, 9 insertions(+), 35 deletions(-)
+> The continue statement at the end of a for-loop has no effect,
+> remove it.
 > 
-> diff --git a/drivers/pps/generators/pps_gen_parport.c b/drivers/pps/generators/pps_gen_parport.c
-> index 6a1af7664f3b..565f99782402 100644
-> --- a/drivers/pps/generators/pps_gen_parport.c
-> +++ b/drivers/pps/generators/pps_gen_parport.c
-> @@ -20,8 +20,6 @@
->  #include <linux/hrtimer.h>
->  #include <linux/parport.h>
->  
-> -#define DRVDESC "parallel port PPS signal generator"
-> -
->  #define SIGNAL		0
->  #define NO_SIGNAL	PARPORT_CONTROL_STROBE
->  
-> @@ -180,6 +178,11 @@ static void parport_attach(struct parport *port)
->  {
->  	struct pardev_cb pps_cb;
->  
-> +	if (send_delay > SEND_DELAY_MAX) {
-> +		pr_err("delay value should be not greater then %d\n", SEND_DELAY_MAX);
-> +		return -EINVAL;
+> Addresses-Coverity: ("Continue has no effect")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Note this is at a later point in time than before, are you sure this is
-ok?
+For net-next:
 
-> +	}
-> +
->  	if (attached) {
->  		/* we already have a port */
->  		return;
-> @@ -223,6 +226,8 @@ static void parport_detach(struct parport *port)
->  	hrtimer_cancel(&device.timer);
->  	parport_release(device.pardev);
->  	parport_unregister_device(device.pardev);
-> +
-> +	pr_info("hrtimer avg error is %ldns\n", hrtimer_error);
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
 
-Why is this line needed?  When drivers work properly, they are quiet.
-
-I know the existing code has it, no reason it needs to stay here, that's
-why we created these macros, to remove the ability for drivers to be
-printing junk like this that they do not need to be printing.
-
-thanks,
-
-greg k-h
+Thanks
