@@ -2,143 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 405A33A96B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B93F3A96B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbhFPJ6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:58:34 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:55269 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232307AbhFPJ61 (ORCPT
+        id S232178AbhFPJ7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:59:06 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:40071 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231686AbhFPJ7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:58:27 -0400
-Received: by mail-io1-f72.google.com with SMTP id s14-20020a5eaa0e0000b02904abce57cb24so1473672ioe.21
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:56:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=gE9dw5WMmJMATlrvCfZBYGK+85dpprCimqGF9O/Ic1Y=;
-        b=FkPZjAEdtD2PGtW764J5Fg8GytDGUmDP5Gysd5jd/9Py3s+gPSyeX194kRjZmOwYvs
-         tuHIBZX31kdQtjqb7xazAsip+zWCBeHEt1eaGJHshLrPSPL4EoEDX/bDVQvSUTO7QLsS
-         eyHFvghmHA9XMkCS85sbrtqkimsc6IA8sWUYLhUGunfhSfvkDQ1NcHTq5iVD27kC5jBd
-         sCni+dFVmBIuo1J+6GaN6nt+zCfH7oNrVC5zF0SdJG+5kGqtGtmQk/VjP/HN7x6LEoql
-         yEPy7kKjo2Vi8Cu8UfRp9d8uUsvPnaHf6Z2oCARr4C1MrnorRHucd/ZlBWluCAqF6p5/
-         onSw==
-X-Gm-Message-State: AOAM530Gm0DJ3Z90vN0uEvGrixII+5IStXQEZe0WGbNb6s7ysTfQy5n+
-        CaDfiE4STjW6FdjpMdJAi7bDWsxy5KhYqtmftKKHq/ItCJKx
-X-Google-Smtp-Source: ABdhPJxv4zDj+OMA9833jIn7GCRnBTP8Gdukw/zexEndylnIIF6g27A59ABDPT9RHyduAUfzuy5+ULO2LGNDCQrxZw3gGqThMfvz
+        Wed, 16 Jun 2021 05:59:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1623837418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oLoIRvGF7swCo/JQNs7ZP8KKxmb6K6petkrTD2/9pNg=;
+        b=nuvcbil+cxmOd/QWv3pt9RtLzm9eroU/4We4Lzdal6dwOAJTPYwafHeWixBQMguaZ+3bNt
+        mCD2bVmCbUSnZq+hao2vdrLkuG0mgu9FTCe+d1UdiU6IIdIpFjavXDgXjLplmQtfFnX3+3
+        z+Va9LPzWI5pAY4SYPjeF3R09f+F1Os=
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur04lp2056.outbound.protection.outlook.com [104.47.13.56]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-37-R86nVK6COOeW0KLlx9Wj7g-2; Wed, 16 Jun 2021 11:56:57 +0200
+X-MC-Unique: R86nVK6COOeW0KLlx9Wj7g-2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QtODOFJ+M3pQoZc04NKQBlU06FyPkQC/Pn/iPqpdUniLmooJp0r9NHrTOoqUA/hyJ713309Mmb4P4+qkI2Yi/8r5G0SKmd2DBgux4DjbUazMKdLDic+P89LkXva6ZY8lqQylq6BQ+9CoeMwurL342xEcbkx5wc/58d6FREPCeeQWkOxs6g/Ueb6tTovWyC30Fwv9uOh13uGvsduUG8gn26JehgxYkRO5f7pCMa+RUMM8sMR4+ieYaseygWt4yQAG0Z2dDhFF0+T5Csa5MoioVOG/bwXPaReWkq6OuXMg38TyS4LrtjugCwZcr9G9Sv9VmTUFS6JnFphdwluHOXKgfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oLoIRvGF7swCo/JQNs7ZP8KKxmb6K6petkrTD2/9pNg=;
+ b=OsDrRZNdd5qdfssP5HFO2eY6Dkf8drzI7did/WZIyBoYzusU6AVTH/ufaapp0+T2SLSd8YjKIRP9EEFBhF1aVYcZQ69n57Hr9FhhaqJMmEAFyRr7xb5xb665JGNI5g2DbvFr9atwkQEuRi1z6fM8Bqd/niSN4wE8+6VHJ23twwmk4CLd69x4O97SU+p96K2GnNCGgK71ND5PfR2wYSIPKJ+viM6fdALu1XHOgDzGqfmE27bR6EpulJJ0i8Jo3oK4WremmuENOFgnEALBZIgj8uVfK78lj7apOEIgqcii7ugksr82CHgkiLRkT9ypF3akBGFlEJeeQFK3e/TjaP/Zlg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR0402MB3389.eurprd04.prod.outlook.com (2603:10a6:803:b::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.24; Wed, 16 Jun
+ 2021 09:56:54 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::f06c:6f5d:34d2:1c36]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::f06c:6f5d:34d2:1c36%5]) with mapi id 15.20.4242.019; Wed, 16 Jun 2021
+ 09:56:54 +0000
+Subject: Re: [PATCH 2/2] xen: rename wrong named pfn related variables
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+References: <20210616073007.5215-1-jgross@suse.com>
+ <20210616073007.5215-3-jgross@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <8dbeb9ea-56c9-de30-4d5f-fc9c0ced6ac4@suse.com>
+Date:   Wed, 16 Jun 2021 11:56:52 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210616073007.5215-3-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [37.24.206.209]
+X-ClientProxiedBy: AM4PR07CA0034.eurprd07.prod.outlook.com
+ (2603:10a6:205:1::47) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8190:: with SMTP id u16mr3096128ion.158.1623837381524;
- Wed, 16 Jun 2021 02:56:21 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 02:56:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004c80e405c4df1a2d@google.com>
-Subject: [syzbot] INFO: task hung in ext4_fill_super
-From:   syzbot <syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by AM4PR07CA0034.eurprd07.prod.outlook.com (2603:10a6:205:1::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Wed, 16 Jun 2021 09:56:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 60d543f9-2f39-4987-5098-08d930ad122c
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3389:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB3389EEA2D55BDBFEF9BA2156B30F9@VI1PR0402MB3389.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SIcZkIaKn70yEbJaswttJ6Dr+2BiUjVpZGztvA2mkPGIyo/x72TbrBmOtOygZvA1dPKijOadCgalui5Mcy1JugrtqGG3RdkKT7wYVq41n0EUqtV8bUzRTE34PbH0ilxCsn/7wUW7Uw69JMfNRGFH7eKeZPTrW/0H3LCQFBfWk0d0dm2XpcBylEcNbvKEy4peqZ7BAwH3ewkWpg9K5sTI7+5GxcmqgTXLVgIrQQBYQDzfzgc5rAN2TVwbrUp8BvoOuXYnzE3CmgWzkyJ9BHMznVe0q7SzV1c8xnw8prltZ0UcqAEt2J6eNLujJ3Orhs+bTBIm92vscAjfcEWnJyWeOMrRbHSeMca7Bdbu22HQC6XBB3Y5lgrGRhV0mmeS2HHP1X0+Toh7YNvL5JhKXXmwEfa/33LgVBmFj63u4ka++OoaCSPymogvkr7OPKg25jdJDB2iAFGWhQCEP29l5kzxBMEXkmMH6Ga0FmHktE5DRvHBCQCccHR48E6kB67gfvRRwJoWlhGkytJ0mconsRkqwKEoSc7PJxzDR9j+lyZcwnrKUKbWK/753E+FMmQ8kMMsTBfqA2b9OLJU+dIc4mCuwQySe4e/4AVwPfDVJtAY/gH9VegvRamwTtmtUrQxXzL/KOGyllsePH/L+Bz1fM4v5LA6OVvZvoMEzYEwE/Dq1icxENQuzmczwlGA9Gjv1Oob
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(346002)(366004)(396003)(136003)(38100700002)(31686004)(83380400001)(8936002)(6636002)(31696002)(36756003)(2906002)(2616005)(37006003)(26005)(66556008)(5660300002)(16526019)(53546011)(478600001)(186003)(66476007)(956004)(54906003)(16576012)(316002)(4326008)(66946007)(6862004)(8676002)(6486002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MXdOc3JHcnA0S2JJNTNieHQ2WjBkZXJIbHo0RytZYkp5TEJNYXlrVGQzNWpX?=
+ =?utf-8?B?bXNIdEU3ZVdBNjJSZVhHcTZsR245YnBRV2J0MDNBaDZsRnZzK1hiTzFIVXp3?=
+ =?utf-8?B?OXBkaU9rUDkwMWRCd3BKK1N4OUlzU1V0eG0yMVJkNmZPa2hQVFg3OXB1Sm9k?=
+ =?utf-8?B?YTJBU0hhM0tGYXNlYm1hbnJRQ3Y0QWNuNEl5R3hOVTlvNlNNQ1RseGNpUHZC?=
+ =?utf-8?B?VVZnamtYQm9LSk1qNUxFeXRqQTlXN01URDhwRGlMRGhHMU1nNXpSUm9iOE1K?=
+ =?utf-8?B?OTU1R3pnY2ROQWM2b2h0YTZjVWVicjZMaGZQTnJmNW1NOUlGTlNJNzdKZGNG?=
+ =?utf-8?B?aWlHL0NNdFQ4WTB3dHV5aDJaTXVqRHkzZ1BlVUlFR0xRQ0ZTZUpuK05ISHdJ?=
+ =?utf-8?B?N05hQUR6NlBLbk9SbmFqSkNLdTd1bzZZcVdXVisremVuWExIYXhyOUpTbHpR?=
+ =?utf-8?B?WE13bGIzVktYbGhuQ3R4ekUwcEFJUTU3aU03amN0djBFa3Znb0hnVmdZUisy?=
+ =?utf-8?B?c3J6Q2NMeVdWQTY1WnY4MGtPMTBpTi9MQTExbzVLeXE2S2Ywb0YycGJJb3NO?=
+ =?utf-8?B?MEZKQ2F5bW91TDFZMmQ3Q2VVamwzRkR3QlpadXc0eTVkdFkyTkY1UXQ0V2Yx?=
+ =?utf-8?B?cjJEeFVRREY1RURnSldMUFA2UGF3MWlxaisrcEY1Vmt2b1cxQ2FyOFV0a0Yr?=
+ =?utf-8?B?UTRJZDNGMjlNOWRGMWJUZHdkZHJEMTVOUlF0L0N1R1ZPenhIbXludnFTLzFJ?=
+ =?utf-8?B?TkNLeVlCcEhaVEVhOExYTm11cFBHZ0p5V3VmNkFpM2ZJYTlCaXBRWTFFTkJL?=
+ =?utf-8?B?eFVqaVJBcUhGSXlJL3ZERno5VkpLU1R6NXhISlhTQkxDd2gwLzVYek5KaC9R?=
+ =?utf-8?B?ZzZaWVp6WmJsRmRHV3BDNXFoRkhhenBlbTgybWVPY05nTGI3WlFjNjl6ODk1?=
+ =?utf-8?B?LzNYS0ltc0FoZGxFOW40TjR6UlM2dWpJVjV4c09WVGhzSlRhanBuWldmSkla?=
+ =?utf-8?B?L2E5NkxVcmpmalJnVDdoaUVDTmNJWnJGWEpLUFZnMzdrVmZMeEhBZllOcnR5?=
+ =?utf-8?B?NlJrZlRZR2QyQkZmRXJPVzV4MUZmc2FJdTZvT01OVjZhbFF3K1ZWek1WZzhH?=
+ =?utf-8?B?c3hJU1A2am1wSWhVK1VBRkVUbHFkY245aWU2T3JWVG1Lb2xVb0ppZS9rSTJM?=
+ =?utf-8?B?Rk4rcUVBZ2lPQjlKVVN4bkQ1aXVWRCsra1ZEOUc5Nk1aR0hxZlR6UllQS0xr?=
+ =?utf-8?B?STZSUVF1THMwbVhxSVI5ZEUvb2hldTlrS2NoTjNwSWlydFZVNERodlFUYzRq?=
+ =?utf-8?B?U3hrRFY5S1pNM2s4RUJrNzM1ZmxnQ2F3RTllbHYxc1puWGJxYU1adTF5SXd1?=
+ =?utf-8?B?VUdtUlk5eG8ra0ZoZzZJN1VkVkxlbnFXbVdNTGo5NnVPTVF2Ujh2M0VibUFr?=
+ =?utf-8?B?em9JNlV4ZFRKMGIvbDlZUDFrR05CMy9qcUd4VzQxR1l4WGJ5VzEzOFJBTXZL?=
+ =?utf-8?B?VnlvR3I0Zm8xOXFwaXZWWjRFK2tQWFUzdUVnWWdZME9PQWdUZXMyOFV5VzdS?=
+ =?utf-8?B?aWJ6WHNiUk01TVdFbGdWam1VV0J3UE5zdjlWSGZXcUEzbW1sN29wdk80MjJk?=
+ =?utf-8?B?U00yRlVsSzdWWmtOencxWnR0UGpOa05qVGFveE9CYytHL3JKdnkySUg5YWtt?=
+ =?utf-8?B?UURqNlpXdjJ6OHpGZFljdm8rQlE1TUd6dkdzZFlFaWdad3VwU1VYcTYycTFK?=
+ =?utf-8?Q?Vv8rcUuxCnA96VqwdXNs34InqnxAWo1+TcYQ1e8?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60d543f9-2f39-4987-5098-08d930ad122c
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 09:56:54.4224
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yuY6J3B6QZ0xYZoj/Ax6pRBer1tejsL/Gat4gZbJbqj9Kp36GkBsLhvcM5rOtKuoYwamaItGCF8OmsOxJn1IZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3389
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 16.06.2021 09:30, Juergen Gross wrote:
+> --- a/arch/x86/xen/p2m.c
+> +++ b/arch/x86/xen/p2m.c
+> @@ -95,8 +95,8 @@ unsigned long *xen_p2m_addr __read_mostly;
+>  EXPORT_SYMBOL_GPL(xen_p2m_addr);
+>  unsigned long xen_p2m_size __read_mostly;
+>  EXPORT_SYMBOL_GPL(xen_p2m_size);
+> -unsigned long xen_max_p2m_pfn __read_mostly;
+> -EXPORT_SYMBOL_GPL(xen_max_p2m_pfn);
+> +unsigned long xen_p2m_max_size __read_mostly;
+> +EXPORT_SYMBOL_GPL(xen_p2m_max_size);
 
-syzbot found the following issue on:
+Instead of renaming the exported variable (which will break consumers
+anyway), how about dropping the apparently unneeded export at this
+occasion? Further it looks to me as if xen_p2m_size and this variable
+were actually always kept in sync, so I'd like to put up the question
+of dropping one of the two.
 
-HEAD commit:    f21b807c Merge tag 'drm-fixes-2021-06-11' of git://anongit..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=165fca57d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=30f476588412c065
-dashboard link: https://syzkaller.appspot.com/bug?extid=c9ff4822a62eee994ea3
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d19ce0300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=108d7988300000
+> @@ -121,7 +121,7 @@ static pte_t *p2m_identity_pte;
+>   * can avoid scanning the whole P2M (which may be sized to account for
+>   * hotplugged memory).
+>   */
+> -static unsigned long xen_p2m_last_pfn;
+> +static unsigned long xen_p2m_pfn_limit;
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+As to the comment remark in patch 1: You don't alter the comment
+here either, and "limit" still doesn't make clear whether that's an
+inclusive or exclusive limit.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1646b8d0300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1546b8d0300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1146b8d0300000
+Jan
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
-
-INFO: task syz-executor768:8567 blocked for more than 143 seconds.
-      Not tainted 5.13.0-rc5-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor768 state:D stack:27544 pid: 8567 ppid:  8423 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4339 [inline]
- __schedule+0x916/0x23e0 kernel/sched/core.c:5147
- schedule+0xcf/0x270 kernel/sched/core.c:5226
- schedule_timeout+0x1db/0x250 kernel/time/timer.c:1868
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x168/0x270 kernel/sched/completion.c:138
- kthread_stop+0x17a/0x720 kernel/kthread.c:642
- ext4_fill_super+0x87ac/0xdfa0 fs/ext4/super.c:5190
- mount_bdev+0x34d/0x410 fs/super.c:1368
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1498
- do_new_mount fs/namespace.c:2905 [inline]
- path_mount+0x132a/0x1fa0 fs/namespace.c:3235
- do_mount fs/namespace.c:3248 [inline]
- __do_sys_mount fs/namespace.c:3456 [inline]
- __se_sys_mount fs/namespace.c:3433 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3433
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x445b2a
-RSP: 002b:00007ffc5efbf598 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffc5efbf5f0 RCX: 0000000000445b2a
-RDX: 0000000020000000 RSI: 00000000200000c0 RDI: 00007ffc5efbf5b0
-RBP: 00007ffc5efbf5b0 R08: 00007ffc5efbf5f0 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000202 R12: 00000000200003f8
-R13: 0000000000000003 R14: 0000000000000004 R15: 0000000000000005
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/1636:
- #0: ffffffff8bf79620 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6333
-2 locks held by in:imklog/8117:
- #0: ffff888015be9770 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:974
- #1: ffff888021bc3958 (&mm->mmap_lock#2){++++}-{3:3}, at: file_ctx security/apparmor/include/file.h:33 [inline]
- #1: ffff888021bc3958 (&mm->mmap_lock#2){++++}-{3:3}, at: aa_file_perm+0x119/0x1170 security/apparmor/file.c:609
-1 lock held by syz-executor768/8567:
- #0: ffff88802ac340e0 (&type->s_umount_key#27/1){+.+.}-{3:3}, at: alloc_super+0x1dd/0xab0 fs/super.c:229
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1636 Comm: khungtaskd Not tainted 5.13.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd48/0xfb0 kernel/hung_task.c:294
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:51 [inline]
-NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:89 [inline]
-NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt drivers/acpi/processor_idle.c:108 [inline]
-NMI backtrace for cpu 1 skipped: idling at acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:513
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
