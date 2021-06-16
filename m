@@ -2,152 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8823AA28F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAF33AA291
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhFPRkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:40:18 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:56822 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230350AbhFPRkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:40:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623865090; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=TABrvwCzw7wuTAokLpE+jbKeoDKxrwFh4qxRG/wt1+U=;
- b=HX9rHcKSuyj7Oe506E3JJV57y5JVWbgdxA+SWyKzZMTPKo++yMZtaMu3EqwM4gzExZ51zQP9
- uzOOHtPRMp/q19HEOQ+1dQUeJ0CecLqbUmr6zr1J3ch/4NoyCAXK9pxhFMryDk7Jqs/he/z9
- BADzhDfTb+tNAYfOYzy6/rlr5I8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60ca36fbe27c0cc77f2596dd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Jun 2021 17:38:03
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 51D22C43217; Wed, 16 Jun 2021 17:38:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 55446C433F1;
-        Wed, 16 Jun 2021 17:38:01 +0000 (UTC)
+        id S231444AbhFPRkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:40:47 -0400
+Received: from mail-io1-f46.google.com ([209.85.166.46]:39695 "EHLO
+        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230350AbhFPRkp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 13:40:45 -0400
+Received: by mail-io1-f46.google.com with SMTP id f10so63768iok.6;
+        Wed, 16 Jun 2021 10:38:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=caREsov+kQL6hsFHbO3qE0x8vyqeon2R6xoJZTCN1nE=;
+        b=ctZbU2XCyBm8I54J2BKzRXIjgDJBPSrE6x6JYhldKsc3FFxI+xqj6oOzqdJtinntS4
+         Zvw71UFj+cZ4k+yDsEYZRiyeelwWj8zrevaKHvywyYDUL6CQ0vlqvbLtCMKexP+NgyV/
+         zCfaCOlBF2IwQFnnYetrZcAgUGY8FoIvH7Sv8eF+i19G/hQrPxnejavJdKVWzDS0qozG
+         a7+4osgAYCH9RCV/Jz1b9hT+06VJMVPZKJ/L4zabVWEgscm3V9PaDpPCljzojBMryflJ
+         5e0D6kqrOXveM6rT76V+HlnoO6G3ZG6OTCK+0hvTr4hjZExoK5iSNxKiEw4Zx+2oHWy1
+         bhwA==
+X-Gm-Message-State: AOAM530xhjlOc3VeL3n7FtH9CXWE9e1e65yVtVoWf/MutGW5+iLx9j+I
+        jtApo0o73vlnUcBWowV12A==
+X-Google-Smtp-Source: ABdhPJynatIw6jCXNfKjoGqcXEFsUQJLV+Gn1TbMCCbvi4TDEe/Ax2zuZwJOXxkzisoOzndoBlEIJw==
+X-Received: by 2002:a02:956a:: with SMTP id y97mr526313jah.58.1623865118791;
+        Wed, 16 Jun 2021 10:38:38 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id h7sm1400430ila.5.2021.06.16.10.38.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 10:38:37 -0700 (PDT)
+Received: (nullmailer pid 3592754 invoked by uid 1000);
+        Wed, 16 Jun 2021 17:38:35 -0000
+Date:   Wed, 16 Jun 2021 11:38:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-sunxi@lists.linux.dev, linux-sunxi@googlegroups.com,
+        Samuel Holland <samuel@sholland.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Ondrej Jirman <megous@megous.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        devicetree@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>
+Subject: Re: [PATCH v7 17/19] dt-bindings: arm: sunxi: Add two H616 board
+ compatible strings
+Message-ID: <20210616173835.GA3592707@robh.at.kernel.org>
+References: <20210615110636.23403-1-andre.przywara@arm.com>
+ <20210615110636.23403-18-andre.przywara@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 16 Jun 2021 10:38:01 -0700
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
-        ath11k@lists.infradead.org, bbhatt=codeaurora.org@codeaurora.org,
-        lilic@codeaurora.org, kangxu@codeaurora.org
-Subject: Re: [PATCH v4 4/6] ath11k: set register access length for MHI driver
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <37184e28dcc952ba9ad5ed0dc2c1a6da@codeaurora.org>
-References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
- <1620330705-40192-5-git-send-email-bbhatt@codeaurora.org>
- <20210521135152.GL70095@thinkpad> <87h7i0juxt.fsf@codeaurora.org>
- <37184e28dcc952ba9ad5ed0dc2c1a6da@codeaurora.org>
-Message-ID: <6ed9fe90f40e5f8151d3a028abf0acd1@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615110636.23403-18-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kalle/Mani,
-
-On 2021-06-14 10:49 AM, Bhaumik Bhatt wrote:
-> Hi Kalle,
-> 
-> On 2021-06-14 09:02 AM, Kalle Valo wrote:
->> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
->> 
->>> On Thu, May 06, 2021 at 12:51:43PM -0700, Bhaumik Bhatt wrote:
->>>> MHI driver requires register space length to add range checks and
->>>> prevent memory region accesses outside of that for MMIO space.
->>>> Set it before registering the MHI controller.
->>>> 
->>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->>>> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
->>> 
->>> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->>> 
->>> Kalle, should we do immutable branch for this patch or I can pick it 
->>> up via MHI
->>> tree (if there are no other patches expected from ath11k for this 
->>> controller)?
->> 
->> I'm not expecting any conflicts with this, and if there are, they 
->> should
->> be easy for Stephen or Linus to fix. So it's easiest to route this via
->> your tree. But I'm not giving my ack yet, see below.
->> 
->> I'm worried that this patchset breaks bisect. Every patch in the
->> patchset should not break existing functionality, what if only patches
->> 1-3 are included in the tree but not patch 4? Wouldn't ath11k be 
->> broken
->> then? I didn't review the whole patchset, but I suspect the fix is to
->> include the ath11k change in the actual mhi patch which changes the
->> functionality. So that way we would not have a separate ath11k patch 
->> at
->> all.
->> 
->> Also I'm not able to test this patchset at the moment. Can someone 
->> else
->> help and do a quick test with QCA6390 to verify these doesn't break
->> ath11k?
-> 
-> I have requested someone to try and test this patch series with 
-> QCA6390.
-> 
-> I or the testers will get back to you with the test results when they 
-> are
-> available.
-> 
-> As far as your concerns go, you can choose to pick patches 1-3 and that 
-> would
-> be just fine.
-> 
-> Things will break if patchset 4 is _not_ in place with patchset 6 being 
-> part of
-> the tree.
-> 
-> It would, however, be nice to pick the whole series instead and ensure 
-> that
-> the functionality MHI introduces for boot-up sanity is in place for any
-> controllers such as ath11k.
-> 
-> Thanks,
-> Bhaumik
+On Tue, 15 Jun 2021 12:06:34 +0100, Andre Przywara wrote:
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 > ---
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-> Forum,
-> a Linux Foundation Collaborative Project
+>  Documentation/devicetree/bindings/arm/sunxi.yaml | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
 
-Just got confirmation that the whole patch series was tested for 
-functional sanity on
-Dell E7590 + QCA6390 with Ubuntu18.04 and patch 4/6 is also good to go.
-
-Can you please ACK and pick up this series?
-
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Acked-by: Rob Herring <robh@kernel.org>
