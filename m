@@ -2,70 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38EF3AA471
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515483AA47A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbhFPTmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:42:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231262AbhFPTmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:42:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 02AE761351;
-        Wed, 16 Jun 2021 19:40:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623872404;
-        bh=YELWwO2vUJcOTx9spYjfhggty36Lse67QBILhvwvA/Y=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DkbiiFEqkQ6P5/GQO3n0568Ms07sl/OZdnYmGYN25FKN5Z79gVANjBNAWsfxWm6n7
-         B9OvJLRzD/SDw5C96biCqpbz7yjXyrPzUFB/BXjkzBYMmPs1Ug+l/9kqwPTuZqyUzw
-         87TgEC1C/iHb6NLtV1umGj3aaHYJrdjwytWgrVZZo+WgVGpSLmDUBGoR1ns3l7dawC
-         MQ4f9kun/zFjUAe9KNqYxI3b274NAcxGvg0D/H9hVaChaEN7CMF4wn3kJS0dHihwnS
-         7N/W1pGPvjONapBbFO/boyXQP26vOWJ3xAQOrZQWcAAzGaqm/KeqXT/fxbNoUJENjw
-         hPGjv8IHuC5gQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EA3E660A54;
-        Wed, 16 Jun 2021 19:40:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232920AbhFPTnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231262AbhFPTnN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 15:43:13 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96131C061574;
+        Wed, 16 Jun 2021 12:41:07 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id x19so1658468pln.2;
+        Wed, 16 Jun 2021 12:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=qb5d+U0Id8lIqAWfxQheAcWONeEcboJpT5+z508o/Ww=;
+        b=HQF8dUO0vj/JLY5AGo7v2s8QQaIzYV63qYOxawNXAC3aRARyE+nU5hzCMBYgwpOUA+
+         q8nRzMkhc/tm6xxqwnopRUIz9WhF/HjXQjuanWT1+4mEkJ0UbKeZivFfZx94lhKOnQOP
+         Ts7ZOjGA+YuFjIs9CLzBW3fINp+e9Um330Lz/Ig9wIZRxuRqLJJQam+5oQ2mzJV7WY1H
+         yGwhgdKL8GJ1aWOeIyR1DNwwTwqNOo7pvB7p1J30SaPr82rNVxB7EhI/vk2o1PYt2hoc
+         pp4iCipOjQ4/v83k/wL7M+dB89WD9kEBv4C8g2FUeiatzg/lKnEzH/64bvnzamhh106y
+         ef/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=qb5d+U0Id8lIqAWfxQheAcWONeEcboJpT5+z508o/Ww=;
+        b=iYENDc5yElHPjw4YOGF82Qg2SfN9ravFncjx0gC0p/ww89ZHuTJVcq2Lc51syH/G1o
+         rws5ujpPSHK4QLJj4NyCsTd42pdfCJR9zmwvs+f94SSj7TSk21IVqjb6OHV2bOfA8CQr
+         YMHyyaBzHfusBYIC630haeUMfkKIReyNCi3SqZxMn3BS/l352VpR7pcj389sna7LOK+c
+         wp07OXWOdTsEqeYgQ0r0CRzaVPdzirska+/pCBnvSCmKPo9gV91KEUfJOh2X1vU4n1Y+
+         HekSh3bZG8tuLF+4EJvjR4QfH5aMIrIZi4zTBRJFj0fNZlaZ7t4nmK+QYqsQOFqhpBeg
+         bpPw==
+X-Gm-Message-State: AOAM531djmFcUav1tZQxXOEN4EKJ/ofDpnkdmU3ahvOX9pBRt7Wm+wl6
+        LUiub79CTJBjU7K35m75zX7uZRpocHJeTw==
+X-Google-Smtp-Source: ABdhPJzC0pt4q7UA0ciR0y49Yot7y5oDh8kUDh16LPHavXhtDkCpQ2gTyxwhSMJ+vZZwvexZYwYg7w==
+X-Received: by 2002:a17:90a:9f8f:: with SMTP id o15mr1473325pjp.55.1623872467040;
+        Wed, 16 Jun 2021 12:41:07 -0700 (PDT)
+Received: from ?IPv6:2001:df0:0:200c:9d12:c2c8:273e:6ffd? ([2001:df0:0:200c:9d12:c2c8:273e:6ffd])
+        by smtp.gmail.com with ESMTPSA id c14sm3086391pgv.86.2021.06.16.12.40.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 12:41:06 -0700 (PDT)
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <87sg1p30a1.fsf@disp2133>
+ <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+ <87pmwsytb3.fsf@disp2133>
+ <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+ <87sg1lwhvm.fsf@disp2133>
+ <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+ <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com> <87eed4v2dc.fsf@disp2133>
+ <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> <87fsxjorgs.fsf@disp2133>
+ <CAMuHMdUkhbq+tOyrpyd5hKGGcpYduBnbnXKFBwEfCGjw5XGYVA@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <594ca040-3ad3-5cfe-2b9e-8e7804c199b5@gmail.com>
+Date:   Thu, 17 Jun 2021 07:40:57 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <CAMuHMdUkhbq+tOyrpyd5hKGGcpYduBnbnXKFBwEfCGjw5XGYVA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] net: usb: fix possible use-after-free in smsc75xx_bind
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162387240395.6512.4732760148089343108.git-patchwork-notify@kernel.org>
-Date:   Wed, 16 Jun 2021 19:40:03 +0000
-References: <20210616024833.2761919-1-mudongliangabcd@gmail.com>
-In-Reply-To: <20210616024833.2761919-1-mudongliangabcd@gmail.com>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     steve.glendinning@shawell.net, davem@davemloft.net,
-        kuba@kernel.org, paskripkin@gmail.com, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Geert,
 
-This patch was applied to netdev/net.git (refs/heads/master):
+On 16/06/21 7:38 pm, Geert Uytterhoeven wrote:
+> Hi Eric,
+>
+> On Tue, Jun 15, 2021 at 9:32 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>> Do you happen to know if there is userspace that will run
+>> in qemu-system-m68k that can be used for testing?
+> There's a link to an image in Laurent's patch series "[PATCH 0/2]
+> m68k: Add Virtual M68k Machine"
+> https://lore.kernel.org/linux-m68k/20210323221430.3735147-1-laurent@vivier.eu/
 
-On Wed, 16 Jun 2021 10:48:33 +0800 you wrote:
-> The commit 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
-> fails to clean up the work scheduled in smsc75xx_reset->
-> smsc75xx_set_multicast, which leads to use-after-free if the work is
-> scheduled to start after the deallocation. In addition, this patch
-> also removes a dangling pointer - dev->data[0].
-> 
-> This patch calls cancel_work_sync to cancel the scheduled work and set
-> the dangling pointer to NULL.
-> 
-> [...]
+Thanks, I'll try that one.
 
-Here is the summary with links:
-  - [v2] net: usb: fix possible use-after-free in smsc75xx_bind
-    https://git.kernel.org/netdev/net/c/56b786d86694
+I'll try and implement a few of the solutions Eric came up with for 
+alpha, unless someone beats me to it (Andreas?).
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Cheers,
+
+     Michael
 
 
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
