@@ -2,181 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14423A9856
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DD63A9882
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbhFPLAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:00:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46214 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229563AbhFPLAq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:00:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623841119;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3to17QVrTqCUHQKHYC721zh9N8G91Zje9XR33PdSe6g=;
-        b=QDuNl616DuVnTVTsexNmXn+iWQ1bBPmjLHvaJklwdJbvNFAPEQJDaYda7ravY7+fok/FWq
-        +VXM4tPRn+D8olhXVPtwqNk6rj5YbWsFZdTXD438NqXG+xHS+Yj8SMH0quBJ+2+sAVYIye
-        IntZPOUH7B4DuyADtb4HuyWVgdt2jkU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-68-Ou8m_Eu3M-OBTpGlU8yPIw-1; Wed, 16 Jun 2021 06:58:38 -0400
-X-MC-Unique: Ou8m_Eu3M-OBTpGlU8yPIw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F1E7107ACF6;
-        Wed, 16 Jun 2021 10:58:37 +0000 (UTC)
-Received: from [10.64.54.84] (vpn2-54-84.bne.redhat.com [10.64.54.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8C2CA10023B5;
-        Wed, 16 Jun 2021 10:58:30 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [RFC PATCH] mm/page_reporting: Adjust threshold according to
- MAX_ORDER
-To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        shan.gavin@gmail.com,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-References: <20210601033319.100737-1-gshan@redhat.com>
- <76516781-6a70-f2b0-f3e3-da999c84350f@redhat.com>
- <0c0eb8c8-463d-d6f1-3cec-bbc0af0a229c@redhat.com>
- <b45b26ea-a6ac-934c-2467-c6e829b5d3ad@redhat.com>
- <74b0d35f-707d-aa11-19e7-fedb74d77159@redhat.com>
- <6ebc99f9-649d-fbd2-aadf-87291e41b36d@redhat.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <bd49c9d2-fb0b-5387-45f4-dbaa7a9eac2c@redhat.com>
-Date:   Wed, 16 Jun 2021 22:59:33 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        id S232465AbhFPLDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:03:14 -0400
+Received: from mail-bn1nam07on2066.outbound.protection.outlook.com ([40.107.212.66]:22146
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232386AbhFPLDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 07:03:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O+0o6xUpPR+qopVMNIdwKzn/zcC56Qto4cK4b1PiLeB08W+wF+Y6R2q6tI6AMZqaWff2ks8TqIufnlKQDuoiHWA1PoCU9OybXElvl7H33Xq4j6MG6y8WDNyHlGyX9dYxsDU4yEI/dJrLN/6VWx4lgxo5GfMTOPKeEip85xgLvGw/WXcmZOLBdYJWVKahl4ITZPcOd4dCYD5+mbWKPQr3eU48CoRuvyYh5mtOVtTUx5jHTCHHuRUUdqludpLbXiVERUi5Km1JEwAvnHw+cG4jQzjQ7yuN9NX6CZXA9v2PzrP4sxopSfp2+CqFMkasfbgnsRX0N5V+Q9W5nVkY07PVDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5qppNt2LRBbbO1TB7Q/BvNEslA/TF7EXh9dmRRhcCoo=;
+ b=MK2VLcAu/Bx6JYVmw1VhJjwOragCFfDCx8blNiZwZX1Ya4leAAjvD+KJJWLVYwg0AUdYcnv0h9kooMPwi/nqxQNlvT4TX/nM4K6cWsx0Yl7xQBssgUPvSlvRKQjEWYvfTTx0GfdviiQT5z/WhZG2tm4L65mY9CEXQn4ucU6pLrl7Yibkm3u4Xu9cAAwTURtLVswY8wmG3u8C5qambBUcU+Enw++8TCmUY3uzgtuSuxr1dyKXxw/nbQOT+PqY/yv40W2+IsR4znxUZT22f1Oyv6HJq499LMBOaSSF3YsJKbEK03jDGBmHaGfmfEo/ptS64vNfdZ1oZxMADWoDV4MCBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5qppNt2LRBbbO1TB7Q/BvNEslA/TF7EXh9dmRRhcCoo=;
+ b=WQT8760fyJUpLEg8MLxjH2XdoYMf7nHOPQwzsaGUpQxTE45RbqxhlBnkW5Pus+FaZdBYSe7A4T93z1i8KIvbbN5P2fk+uAPW4J/nF7nTPFxf39t83mT1u44IbLraaZP4pqfhpYkFTomMllD2QbG+Zdj7M9bDONgnxOUQH7UKJjXvCoVXe5gB/I1DtVs8UC4cUMv+1KSarHnJKskhaOfiyO7RcontdrdF0e4yAlzFTfoULlwQt+PBaupfCOd9KiaZJ/rbbeW73X28LZecM/bxn9kSMmMnsQdUnuhG5gAd1YSO8Th78VHGfbtE2f1Rmr+i+V62v4yL5+KQDf+72UxK/Q==
+Received: from BN6PR13CA0024.namprd13.prod.outlook.com (2603:10b6:404:10a::34)
+ by MN2PR12MB3967.namprd12.prod.outlook.com (2603:10b6:208:16c::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.24; Wed, 16 Jun
+ 2021 11:00:56 +0000
+Received: from BN8NAM11FT031.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:10a:cafe::28) by BN6PR13CA0024.outlook.office365.com
+ (2603:10b6:404:10a::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.9 via Frontend
+ Transport; Wed, 16 Jun 2021 11:00:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT031.mail.protection.outlook.com (10.13.177.25) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4242.16 via Frontend Transport; Wed, 16 Jun 2021 11:00:56 +0000
+Received: from localhost (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 16 Jun
+ 2021 11:00:54 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
+        <willy@infradead.org>, <linux-doc@vger.kernel.org>,
+        <nouveau@lists.freedesktop.org>, <hughd@google.com>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <hch@infradead.org>, <peterx@redhat.com>, <shakeelb@google.com>,
+        <bskeggs@redhat.com>, <jgg@nvidia.com>, <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>
+Subject: [PATCH v11 05/10] mm: Rename migrate_pgmap_owner
+Date:   Wed, 16 Jun 2021 20:59:32 +1000
+Message-ID: <20210616105937.23201-6-apopple@nvidia.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210616105937.23201-1-apopple@nvidia.com>
+References: <20210616105937.23201-1-apopple@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <6ebc99f9-649d-fbd2-aadf-87291e41b36d@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 09ab3835-8a8f-4109-9d4e-08d930b60456
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3967:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB396768245370FB4216ED5448DF0F9@MN2PR12MB3967.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rVjSWc0zJSpUUDDRlZ3ttg9H1JndDGj1FTWs/0tiKhweb98CIeDKbNyDzWCNR9Uf3hMGew5hIMge4Iu8akCnG1A3L4g05HnWlP6fReOtChtX/0/6TZhLqkcsk5Z2cJWH3VAGMCw+y8f6RFJLYdIAwSnwjwT3LkzFnztREKgT7hJVx8NZw3dCcB4y1wC4sIK0TCWl1Uc7NNk7cJGgHgpu8I4gebRnQBLU9/Cs5hZr24s60VPSxvP3YKKogltYq4oNSYawFV2nux3ISbcABTOODCdEvc/OKi4cQPKghQFZ3g+JThIJ4uWcBmjxKWOfjymBsnduq45pcSYCe/X5fq/aWqSCl+nsUg1wf9ncRHF0VLmcNfPI/GDTij2iHmv0BUMGDFxSZN+WGDlXE9yaGmQmuhV1T5ErEIJEgaakwmS4Rhmm6dbsJpvnf2qds3bI2uDCss7xWfTragWIUZPRUx+t5ecJ0LUbMZO957tlGMVTclQkGcEn7clTNQLIa9y+Fsy/KpnqOVDYqbGDk55c9dXsY7TeimbQXzVuuNm5CguNdvDiaF3MZz+VUaA3RqtoEqmgFlKgpLU9h+rSeWxTIFUAJZoV8pVfWPDQJujeO/6IWbqv3eKL6KXAZw1QzmmlolyJDzu1TAPGQJBAcKU7tP9D/2+wH53YSeynU4JaxTlaHoM=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(136003)(346002)(46966006)(36840700001)(83380400001)(16526019)(336012)(5660300002)(186003)(1076003)(82310400003)(4326008)(2616005)(2906002)(36860700001)(426003)(70206006)(47076005)(7636003)(356005)(107886003)(316002)(7416002)(36906005)(8676002)(26005)(8936002)(6666004)(70586007)(478600001)(36756003)(54906003)(86362001)(6916009)(82740400003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 11:00:56.2863
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09ab3835-8a8f-4109-9d4e-08d930b60456
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT031.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3967
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 5:59 PM, David Hildenbrand wrote:
-> On 16.06.21 03:53, Gavin Shan wrote:
->> On 6/14/21 9:03 PM, David Hildenbrand wrote:
->>> On 11.06.21 09:44, Gavin Shan wrote:
->>>> On 6/1/21 6:01 PM, David Hildenbrand wrote:
->>>>> On 01.06.21 05:33, Gavin Shan wrote:
->>>>>> The PAGE_REPORTING_MIN_ORDER is equal to @pageblock_order, taken as
->>>>>> minimal order (threshold) to trigger page reporting. The page reporting
->>>>>> is never triggered with the following configurations and settings on
->>>>>> aarch64. In the particular scenario, the page reporting won't be triggered
->>>>>> until the largest (2 ^ (MAX_ORDER-1)) free area is achieved from the
->>>>>> page freeing. The condition is very hard, or even impossible to be met.
->>>>>>
->>>>>>      CONFIG_ARM64_PAGE_SHIFT:              16
->>>>>>      CONFIG_HUGETLB_PAGE:                  Y
->>>>>>      CONFIG_HUGETLB_PAGE_SIZE_VARIABLE:    N
->>>>>>      pageblock_order:                      13
->>>>>>      CONFIG_FORCE_MAX_ZONEORDER:           14
->>>>>>      MAX_ORDER:                            14
->>>>>>
->>>>>> The issue can be reproduced in VM, running kernel with above configurations
->>>>>> and settings. The 'memhog' is used inside the VM to access 512MB anonymous
->>>>>> area. The QEMU's RSS doesn't drop accordingly after 'memhog' exits.
->>>>>>
->>>>>>      /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64          \
->>>>>>      -accel kvm -machine virt,gic-version=host                        \
->>>>>>      -cpu host -smp 8,sockets=2,cores=4,threads=1 -m 4096M,maxmem=64G \
->>>>>>      -object memory-backend-ram,id=mem0,size=2048M                    \
->>>>>>      -object memory-backend-ram,id=mem1,size=2048M                    \
->>>>>>      -numa node,nodeid=0,cpus=0-3,memdev=mem0                         \
->>>>>>      -numa node,nodeid=1,cpus=4-7,memdev=mem1                         \
->>>>>>        :                                                              \
->>>>>>      -device virtio-balloon-pci,id=balloon0,free-page-reporting=yes
->>>>>>
->>>>>> This tries to fix the issue by adjusting the threshold to the smaller value
->>>>>> of @pageblock_order and (MAX_ORDER/2). With this applied, the QEMU's RSS
->>>>>> drops after 'memhog' exits.
->>>>>
->>>>> IIRC, we use pageblock_order to
->>>>>
->>>>> a) Reduce the free page reporting overhead. Reporting on small chunks can make us report constantly with little system activity.
->>>>>
->>>>> b) Avoid splitting THP in the hypervisor, avoiding downgraded VM performance.
->>>>>
->>>>> c) Avoid affecting creation of pageblock_order pages while hinting is active. I think there are cases where "temporary pulling sub-pageblock pages" can negatively affect creation of pageblock_order pages. Concurrent compaction would be one of these cases.
->>>>>
->>>>> The monstrosity called aarch64 64k is really special in that sense, because a) does not apply because pageblocks are just very big, b) does sometimes not apply because either our VM isn't backed by (rare) 512MB THP or uses 4k with 2MB THP and c) similarly doesn't apply in smallish VMs because we don't really happen to create 512MB THP either way.
->>>>>
->>>>>
->>>>> For example, going on x86-64 from reporting 2MB to something like 32KB is absolutely undesired.
->>>>>
->>>>> I think if we want to go down that path (and I am not 100% sure yet if we want to), we really want to treat only the special case in a special way. Note that even when doing it only for aarch64 with 64k, you will still end up splitting THP in a hypervisor if it uses 64k base pages (b)) and can affect creation of THP, for example, when compacting (c), so there is a negative side to that.
->>>>>
->>>>
->>>> [Remove Alexander from the cc list as his mail isn't reachable]
->>>>
->>>
->>> [adding his gmail address which should be the right one]
->>>
->>>> David, thanks for your time to review and sorry for the delay and late response.
->>>> I spent some time to get myself familiar with the code, but there are still some
->>>> questions to me, explained as below.
->>>>
->>>> Yes, @pageblock_order is currently taken as page reporting threshold. It will
->>>> incur more overhead if the threshold is decreased as you said in (a).
->>>
->>> Right. Alex did quite some performance/overhead evaluation when introducing this feature. Changing the reporting granularity on most setups (esp., x86-64) is not desired IMHO.
->>>
->>
->> Thanks for adding Alex's correct mail address, David.
->>
->>>>
->>>> This patch tries to decrease the free page reporting threshold. The @pageblock_order
->>>> isn't touched. I don't understand how the code changes affecting THP splitting
->>>> and the creation of page blocks mentioned in (b) and (c). David, could you please
->>>> provide more details?
->>>
->>> Think of it like this: while reporting to the hypervisor, we temporarily turn free/"movable" pieces part of a pageblock "unmovable" -- see __isolate_free_page()->del_page_from_free_list(). While reporting them to the hypervisor, these pages are not available and not even marked as PageBuddy() anymore.
->>>
->>> There are at least two scenarios where this could affect creation of free pageblocks I can see:
->>>
->>> a. Compaction. While compacting, we might identify completely movable/free pageblocks, however, actual compaction on that pageblock can fail because some part is temporarily unmovable.
->>>
->>> b. Free/alloc sequences. Assume a pageblocks is mostly free, except two pages (x and y). Assume the following sequence:
->>>
->>> 1. free(x)
->>> 2. free(y)
->>> 3. alloc
->>>
->>> Before your change, after 1. and 2. we'll have a free pageblock. 3 won't allocate from that pageblock.
->>>
->>> With your change, free page reporting might run after 1. After 2, we'll not have a free pageblock (until free page reporting finished), and 3. might just reallocate what we freed in 2 and prevent having a free pageblock.
->>>
->>>
->>> No idea how relevant both points are in practice, however, the fundamental difference to current handling is that we would turn parts of pageblocks temporarily unmovable, instead of complete pageblocks.
->>>
->>
->> Thank you for the details. Without my changes and the page reporting threshold
->> is @pageblock_order, the whole page block can become 'movable' from 'unmovable'.
->> I don't think it's what we want, but I need Alex's confirm.
-> 
-> __isolate_free_page() will set the pageblock MIGRATE_MOVABLE in that case. It's only temporarily unmovable, while we're hinting.
-> 
-> Note that MOVABLE vs. UNMOVABLE is just grouping for free pages, and even setting it to the wrong migratetype isn't "wrong" as in "correctness". It doesn't make a difference if there are no free pages because the whole block is isolated.
-> 
+MMU notifier ranges have a migrate_pgmap_owner field which is used by
+drivers to store a pointer. This is subsequently used by the driver
+callback to filter MMU_NOTIFY_MIGRATE events. Other notifier event types
+can also benefit from this filtering, so rename the
+'migrate_pgmap_owner' field to 'owner' and create a new notifier
+initialisation function to initialise this field.
 
-Yes, It doesn't matter since these pages have been isolated. The migration type is changed to MIGRATE_MOVABLE
-in __isolated_free_page(). My questions are actually:
+Signed-off-by: Alistair Popple <apopple@nvidia.com>
+Suggested-by: Peter Xu <peterx@redhat.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
-(1) Is it possible the migration type is changed from MIGRATE_UNMOVABLE to MIGRATE_MOVABLE
-     in __isolated_free_page()?
-(2) After the free page reporting is completed, the migrate type is restored to MIGRATE_UNMOVABLE?
+---
 
-Thanks,
-Gavin
+v9:
+
+Previously part of the next patch in the series ('mm: Device exclusive
+memory access') but now split out as a separate change as suggested by
+Peter Xu.
+---
+ Documentation/vm/hmm.rst              |  2 +-
+ drivers/gpu/drm/nouveau/nouveau_svm.c |  2 +-
+ include/linux/mmu_notifier.h          | 20 ++++++++++----------
+ lib/test_hmm.c                        |  2 +-
+ mm/migrate.c                          | 10 +++++-----
+ 5 files changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/Documentation/vm/hmm.rst b/Documentation/vm/hmm.rst
+index 09e28507f5b2..3df79307a797 100644
+--- a/Documentation/vm/hmm.rst
++++ b/Documentation/vm/hmm.rst
+@@ -332,7 +332,7 @@ between device driver specific code and shared common code:
+    walks to fill in the ``args->src`` array with PFNs to be migrated.
+    The ``invalidate_range_start()`` callback is passed a
+    ``struct mmu_notifier_range`` with the ``event`` field set to
+-   ``MMU_NOTIFY_MIGRATE`` and the ``migrate_pgmap_owner`` field set to
++   ``MMU_NOTIFY_MIGRATE`` and the ``owner`` field set to
+    the ``args->pgmap_owner`` field passed to migrate_vma_setup(). This is
+    allows the device driver to skip the invalidation callback and only
+    invalidate device private MMU mappings that are actually migrating.
+diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
+index f18bd53da052..94f841026c3b 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_svm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
+@@ -265,7 +265,7 @@ nouveau_svmm_invalidate_range_start(struct mmu_notifier *mn,
+ 	 * the invalidation is handled as part of the migration process.
+ 	 */
+ 	if (update->event == MMU_NOTIFY_MIGRATE &&
+-	    update->migrate_pgmap_owner == svmm->vmm->cli->drm->dev)
++	    update->owner == svmm->vmm->cli->drm->dev)
+ 		goto out;
+ 
+ 	if (limit > svmm->unmanaged.start && start < svmm->unmanaged.limit) {
+diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+index d514e5d06ebf..8eb965ef0028 100644
+--- a/include/linux/mmu_notifier.h
++++ b/include/linux/mmu_notifier.h
+@@ -41,7 +41,7 @@ struct mmu_interval_notifier;
+  *
+  * @MMU_NOTIFY_MIGRATE: used during migrate_vma_collect() invalidate to signal
+  * a device driver to possibly ignore the invalidation if the
+- * migrate_pgmap_owner field matches the driver's device private pgmap owner.
++ * owner field matches the driver's device private pgmap owner.
+  */
+ enum mmu_notifier_event {
+ 	MMU_NOTIFY_UNMAP = 0,
+@@ -269,7 +269,7 @@ struct mmu_notifier_range {
+ 	unsigned long end;
+ 	unsigned flags;
+ 	enum mmu_notifier_event event;
+-	void *migrate_pgmap_owner;
++	void *owner;
+ };
+ 
+ static inline int mm_has_notifiers(struct mm_struct *mm)
+@@ -521,14 +521,14 @@ static inline void mmu_notifier_range_init(struct mmu_notifier_range *range,
+ 	range->flags = flags;
+ }
+ 
+-static inline void mmu_notifier_range_init_migrate(
+-			struct mmu_notifier_range *range, unsigned int flags,
++static inline void mmu_notifier_range_init_owner(
++			struct mmu_notifier_range *range,
++			enum mmu_notifier_event event, unsigned int flags,
+ 			struct vm_area_struct *vma, struct mm_struct *mm,
+-			unsigned long start, unsigned long end, void *pgmap)
++			unsigned long start, unsigned long end, void *owner)
+ {
+-	mmu_notifier_range_init(range, MMU_NOTIFY_MIGRATE, flags, vma, mm,
+-				start, end);
+-	range->migrate_pgmap_owner = pgmap;
++	mmu_notifier_range_init(range, event, flags, vma, mm, start, end);
++	range->owner = owner;
+ }
+ 
+ #define ptep_clear_flush_young_notify(__vma, __address, __ptep)		\
+@@ -655,8 +655,8 @@ static inline void _mmu_notifier_range_init(struct mmu_notifier_range *range,
+ 
+ #define mmu_notifier_range_init(range,event,flags,vma,mm,start,end)  \
+ 	_mmu_notifier_range_init(range, start, end)
+-#define mmu_notifier_range_init_migrate(range, flags, vma, mm, start, end, \
+-					pgmap) \
++#define mmu_notifier_range_init_owner(range, event, flags, vma, mm, start, \
++					end, owner) \
+ 	_mmu_notifier_range_init(range, start, end)
+ 
+ static inline bool
+diff --git a/lib/test_hmm.c b/lib/test_hmm.c
+index 15f2e2db77bc..fc7a20bc9b42 100644
+--- a/lib/test_hmm.c
++++ b/lib/test_hmm.c
+@@ -218,7 +218,7 @@ static bool dmirror_interval_invalidate(struct mmu_interval_notifier *mni,
+ 	 * the invalidation is handled as part of the migration process.
+ 	 */
+ 	if (range->event == MMU_NOTIFY_MIGRATE &&
+-	    range->migrate_pgmap_owner == dmirror->mdevice)
++	    range->owner == dmirror->mdevice)
+ 		return true;
+ 
+ 	if (mmu_notifier_range_blockable(range))
+diff --git a/mm/migrate.c b/mm/migrate.c
+index a69f54bd92b9..23cbd9de030b 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -2416,8 +2416,8 @@ static void migrate_vma_collect(struct migrate_vma *migrate)
+ 	 * that the registered device driver can skip invalidating device
+ 	 * private page mappings that won't be migrated.
+ 	 */
+-	mmu_notifier_range_init_migrate(&range, 0, migrate->vma,
+-		migrate->vma->vm_mm, migrate->start, migrate->end,
++	mmu_notifier_range_init_owner(&range, MMU_NOTIFY_MIGRATE, 0,
++		migrate->vma, migrate->vma->vm_mm, migrate->start, migrate->end,
+ 		migrate->pgmap_owner);
+ 	mmu_notifier_invalidate_range_start(&range);
+ 
+@@ -2927,9 +2927,9 @@ void migrate_vma_pages(struct migrate_vma *migrate)
+ 			if (!notified) {
+ 				notified = true;
+ 
+-				mmu_notifier_range_init_migrate(&range, 0,
+-					migrate->vma, migrate->vma->vm_mm,
+-					addr, migrate->end,
++				mmu_notifier_range_init_owner(&range,
++					MMU_NOTIFY_MIGRATE, 0, migrate->vma,
++					migrate->vma->vm_mm, addr, migrate->end,
+ 					migrate->pgmap_owner);
+ 				mmu_notifier_invalidate_range_start(&range);
+ 			}
+-- 
+2.20.1
 
