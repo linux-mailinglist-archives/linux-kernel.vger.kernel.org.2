@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8893A923D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2443A9242
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhFPG2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231435AbhFPG2q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:28:46 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F785C061768
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 23:26:34 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id a26so1375942oie.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 23:26:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9zUgDhkJImxfUh9Hmx75RiDhjdI3YARcNQ9gBrGyxCw=;
-        b=XIokmDd7gMh7WJsguRzQznvarxUBTpKC/M0FORL22R5Qkpc7zDDpeDFQZB1QEymigy
-         K6jYHoCO7hXbkG+6SY/Je4CYKQgEuLR1Ih3UDnjiHtivGyT+I/dbp2iILm9vWKhpH8ZH
-         SZvJvU8Qcb/cbAeoks7gJ2aKGN/iKTkI4p93yurQBQnKm9qXJWVVAGGqyfeYD1dWj+uZ
-         ZxlxFm5qsr5r28cNUPdnVR5InzIv3p9uQbJF7r3BkdVXm2LCP+qsfbfoyx80D06q5+I1
-         C156+VdIDmctM27juRqX+DijmwtW1TQVItomtVxpjvMfobG/OEWdYneW5K2OpAE/hgVn
-         He1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9zUgDhkJImxfUh9Hmx75RiDhjdI3YARcNQ9gBrGyxCw=;
-        b=a6bzQA7QL/HOsHWNU61QlxGRXWdkN1Zq9f6XXmt9re+p+vjuCRHBg3onMAjvn8SUA/
-         yt7FnKqh0maE6HFNYND0tsjr4s/lsDRnLLd0b6jY5TKKVfTuli+2OEb0tQc3KA50SXYq
-         evbf6XJLK4mBTpeQJbhN88d2M245Firimg23n3Nd0dVYkVpEhhM33djuMwAxzkLHftPS
-         l96BiNoPsDNRP6iTkD/rtuoQALYlAWWUMXRch1smlKm+D0YfJxRlqL6J2IuQkG52V/fy
-         O3vvauyYzdq2+fzMw5FTV93D/faOte6YiZG31IO2iuSBR0GwGHPAd63tNkgvhAcE49mC
-         n/5g==
-X-Gm-Message-State: AOAM533HKWj3ybimq+9Q2oYBOgGYeLw9Uwgmz+qNo5j+DJePxnI+aQeN
-        2GF06KNfqVJLd44JOxTzbI/BVZgDD1dZ3ffNMD2VkA==
-X-Google-Smtp-Source: ABdhPJxMsqZuCXp/LxfKwhV20rJVZBMQCnCg7j7tmAYQRSo241pj8V+0ieCfOfm6j4VGarto5/XKjCkdGRtP4NgaN9Y=
-X-Received: by 2002:aca:fc91:: with SMTP id a139mr5788266oii.12.1623824793682;
- Tue, 15 Jun 2021 23:26:33 -0700 (PDT)
+        id S231465AbhFPG3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:29:32 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:15993 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231466AbhFPG3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 02:29:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623824844; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=tfQcGeVIJlbVK4n5GuCdAaFYDeWtfPMofUGELoT/fCA=;
+ b=GIZMPifIRbDrq9WaJxRgrRlxVGWKATjFxrasyrSaud00mLidwKzU7H1+Aw6R6JTGApFezbsB
+ QyRuw1fL4Yl6FzGP5aX3ZP8ixmQSpZN84tTHS6iXciZ9FPG2T2uz0FDhA7UDD+HI3qHhyNGx
+ g5i6g/FYq/LunnIZsycxYL20hb4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60c999b9ed59bf69ccbeff7c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Jun 2021 06:27:05
+ GMT
+Sender: subashab=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2B986C43460; Wed, 16 Jun 2021 06:27:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: subashab)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 635DFC433D3;
+        Wed, 16 Jun 2021 06:27:04 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
- <20210615074543.26700-3-bhupesh.sharma@linaro.org> <YMkU/on5e92vgIll@yoga>
-In-Reply-To: <YMkU/on5e92vgIll@yoga>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Wed, 16 Jun 2021 11:56:22 +0530
-Message-ID: <CAH=2Ntx=j3w-yjRm12pqwYGrkfJ5h1cXeY-RNwzEs9tkT25b0Q@mail.gmail.com>
-Subject: Re: [PATCH v2 02/10] dt-bindings: pinctrl: qcom,pmic-gpio: Add
- compatible for SA8155p-adp
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 16 Jun 2021 00:27:04 -0600
+From:   subashab@codeaurora.org
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Sean Tranchetti <stranche@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alex Elder <elder@linaro.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2] net: qualcomm: rmnet: Allow partial updates
+ of IFLA_FLAGS
+In-Reply-To: <20210615232707.835258-1-bjorn.andersson@linaro.org>
+References: <20210615232707.835258-1-bjorn.andersson@linaro.org>
+Message-ID: <ad250914bbb332d408f0b42935d11149@codeaurora.org>
+X-Sender: subashab@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 at 02:30, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Tue 15 Jun 02:45 CDT 2021, Bhupesh Sharma wrote:
->
-> > Add pmic-gpio compatible string for pmm8155au pmic
-> > found on the SA8155p-adp board.
-> >
-> > ---
+On 2021-06-15 17:27, Bjorn Andersson wrote:
+> The idiomatic way to handle the changelink flags/mask pair seems to be
+> allow partial updates of the driver's link flags. In contrast the rmnet
+> driver masks the incoming flags and then use that as the new flags.
+> 
+> Change the rmnet driver to follow the common scheme, before the
+> introduction of IFLA_RMNET_FLAGS handling in iproute2 et al.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> 
+> Changes since v1:
+> - Also do the masking dance on newlink, per Subash request
+> - Add "net-next" to subject prefix
+> 
+>  drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
+> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
+> index 8d51b0cb545c..27b1663c476e 100644
+> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
+> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
+> @@ -163,7 +163,8 @@ static int rmnet_newlink(struct net *src_net,
+> struct net_device *dev,
+>  		struct ifla_rmnet_flags *flags;
+> 
+>  		flags = nla_data(data[IFLA_RMNET_FLAGS]);
+> -		data_format = flags->flags & flags->mask;
+> +		data_format &= ~flags->mask;
+> +		data_format |= flags->flags & flags->mask;
+>  	}
+> 
+>  	netdev_dbg(dev, "data format [0x%08X]\n", data_format);
+> @@ -336,7 +337,8 @@ static int rmnet_changelink(struct net_device
+> *dev, struct nlattr *tb[],
+> 
+>  		old_data_format = port->data_format;
+>  		flags = nla_data(data[IFLA_RMNET_FLAGS]);
+> -		port->data_format = flags->flags & flags->mask;
+> +		port->data_format &= ~flags->mask;
+> +		port->data_format |= flags->flags & flags->mask;
+> 
+>  		if (rmnet_vnd_update_dev_mtu(port, real_dev)) {
+>  			port->data_format = old_data_format;
 
-<..snip..>
-
-> >  Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-> > index f6a9760558a6..80b8a66e29d8 100644
-> > --- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-> > +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-> > @@ -27,6 +27,7 @@ PMIC's from Qualcomm.
-> >                   "qcom,pm660l-gpio"
-> >                   "qcom,pm8150-gpio"
-> >                   "qcom,pm8150b-gpio"
-> > +                 "qcom,pmm8155au-gpio"
->
-> Please keep these sorted alphabetically.
-
-Ok, I will fix this in v3.
-
-Thanks,
-Bhupesh
+Reviewed-by: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
