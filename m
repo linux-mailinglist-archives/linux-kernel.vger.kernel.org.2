@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56BF3AA7AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A333AA7AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234773AbhFPXsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 19:48:04 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34108 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231389AbhFPXsD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 19:48:03 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15GNjYBQ004246
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 19:45:35 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 9069E15C3CB8; Wed, 16 Jun 2021 19:45:34 -0400 (EDT)
-Date:   Wed, 16 Jun 2021 19:45:34 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Anirudh Rayabharam <mail@anirudhrb.com>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        Dave Kleikamp <shaggy@austin.ibm.com>,
-        Alex Tomas <alex@clusterfs.com>, Andrew Morton <akpm@osdl.org>,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+2dcfeaf8cb49b05e8f1a@syzkaller.appspotmail.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: fix kernel infoleak via ext4_extent_header
-Message-ID: <YMqNHnTofj9fR8IJ@mit.edu>
-References: <20210506185655.7118-1-mail@anirudhrb.com>
+        id S234775AbhFPXtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 19:49:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232372AbhFPXtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 19:49:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F41A5613AE;
+        Wed, 16 Jun 2021 23:47:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623887229;
+        bh=sJDlOkWvGKshDYWdi80hJckwC5hbqeaz/mhWyUvh0Pw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RhvfDg1LQRfVXv0JQifBQ5odpWMF+RNb2wdhzr+NzmMrUtSIzuvmmGia3KfMT4pu9
+         pAPEZvMsrtKqL6ciIE10wo5Xn4a+UASWu1UsfKwEpamtLJlY4dkGKkT0uTaLcsCXi9
+         DVqpCIm4cPI0eszVB8hdNu5zpj/eHMav7psHCuS9/r8PqTXBCOxwWkMBb/pjGbtA1G
+         cEBeZLnpOm8dWv80U5N8+GDaNptv8IkVl3CL4D0xv7LiyxPMF75sucv/F8oER30RqN
+         n72q6HcOZsttLGAO/zAA8F11rM/PbVotxmaqJ4t1YCEfQEr6C4RWmUKl4OZ+AhV7Ik
+         B37U+84MMFV3g==
+Date:   Wed, 16 Jun 2021 16:47:07 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v3 01/10] block: introduce blk_ksm_is_empty()
+Message-ID: <YMqNe4GdMBUghH3L@sol.localdomain>
+References: <20210604195900.2096121-1-satyat@google.com>
+ <20210604195900.2096121-2-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210506185655.7118-1-mail@anirudhrb.com>
+In-Reply-To: <20210604195900.2096121-2-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 12:26:54AM +0530, Anirudh Rayabharam wrote:
-> Initialize eh_generation of struct ext4_extent_header to prevent leaking
-> info to userspace. Fixes KMSAN kernel-infoleak bug reported by syzbot at:
-> http://syzkaller.appspot.com/bug?id=78e9ad0e6952a3ca16e8234724b2fa92d041b9b8
+On Fri, Jun 04, 2021 at 07:58:51PM +0000, Satya Tangirala wrote:
+> This function checks if a given keyslot manager supports any encryption
+> mode/data unit size combination (and returns true if there is no such
+> supported combination). Helps clean up code a little.
 > 
-> Reported-by: syzbot+2dcfeaf8cb49b05e8f1a@syzkaller.appspotmail.com
-> Fixes: a86c61812637 ("[PATCH] ext3: add extent map support")
-> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> ---
+>  block/keyslot-manager.c         | 21 +++++++++++++++++++++
+>  drivers/md/dm-table.c           | 11 +----------
+>  include/linux/keyslot-manager.h |  2 ++
+>  3 files changed, 24 insertions(+), 10 deletions(-)
 
-Applied, thanks.
-
-					- Ted
+Reviewed-by: Eric Biggers <ebiggers@google.com>
