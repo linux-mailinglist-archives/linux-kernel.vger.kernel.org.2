@@ -2,93 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBD73A8E78
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF4D3A8E7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbhFPBku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 21:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
+        id S231892AbhFPBls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 21:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhFPBkt (ORCPT
+        with ESMTP id S230371AbhFPBlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 21:40:49 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34461C061574;
-        Tue, 15 Jun 2021 18:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=L5KFn8XBOltgmecJHtTIarpN0RynVj+N0x57keu5L1M=; b=zje2nSXHYdaUHbbrqiRWIiYNqH
-        xP7CDuUauR7UMJe77t2/v+a8WckSSZMEkKwPZVZ8sY2yGGnDuJcJJifrMEE/u8nx30Ca1LdEUa8IM
-        wWQLX/EWGY86FUcY61dd7P/mJcCfY8Rrx56xyCeb7/ohvnRSs3qMIlyFB2WFtoDWRsE03UAC/5HdL
-        cqmNmN7dgGeCk9190jeId5iyeG8pNdltOqaeyirrlsFeWoAZYphUq0GJc+DnSKInfqI8tiOBgF/x5
-        iQm7NVCRjz3TxLmvZyljGbGDx/mlvEzwtQ5aVYtCm+WG4MBTvLa6WVP0Tz3gyfpdDy8ioeM4R5G+l
-        kXODQh0A==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltKVu-004NmR-OH; Wed, 16 Jun 2021 01:38:42 +0000
-Subject: Re: [PATCH] afs: fix no return statement in function returning
- non-void
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        Tom Rix <trix@redhat.com>, linux-afs@lists.infradead.org,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
- <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com>
- <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org>
- <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org>
-Date:   Tue, 15 Jun 2021 18:38:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 15 Jun 2021 21:41:47 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A6EC061574;
+        Tue, 15 Jun 2021 18:39:41 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id m137so732351oig.6;
+        Tue, 15 Jun 2021 18:39:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=sLyjmM1Y7G245fiPe0zuYHMTwP0WkXpV/SXNgEyacXo=;
+        b=Szjd1hqC0u93RuXCFpF1vCL9jM+ZyWZmKMZVbGykRBoipNboOFctRuIVDmKtNdnu92
+         lsLguYkmuupKH9BEyaOCzAS7NKx2REXaXRWvcIREqi986jgNl2Rv4wSWVQL3iozkc7ce
+         s6Say1gIw51YuAD7ci0KTeE2xTxM/muwVutwPqz+nWUAWiPQg10WgiMIVR6cZZCxA6TB
+         tw4xRDOXNzsubBaVQHKUI+U4ZXXCqbsYTy+Cs9ytqz5rsvZ6ewCnLkeMhxo4ivU4saXO
+         RHS3iJOqeHRTRp8nVl1YUTTBZTjXRI9GsR2vgBLbwnc9Za59Bqsu+TTGJ8BELQ5K1LCD
+         BgTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=sLyjmM1Y7G245fiPe0zuYHMTwP0WkXpV/SXNgEyacXo=;
+        b=M/VCqAHPKH2qSeVVo2f3act5cwEvedczMeRx4dLJj6eI91vMutK5cL3Wo/0a1l5oEo
+         xYvQ/fflFMnDQdTCZeFcI7Cus1u55rHrHrq4T+etpvWoPF1AqNqaOV7vBtA+kYYEADGK
+         fC6rJoCmLcq4EmZbpSbN53+2HqZ20ETuLezc5pgUbdhkn1PBgqJCgJwdpk8/HBzfpW6r
+         TA27DnahiHcJKQCl6O69FL1+V2b1lLUalULDJ4hliNZh8l2Pp1V2YvVDsJuac91o07kS
+         lxW8y5sD4jgrDCHH9GmuRwU1pmNZGVm+o1H3bYvfhBwUS5W0AK3PH5Mxu1QawKjzlO5G
+         2Jjg==
+X-Gm-Message-State: AOAM5309D5Viqbkh4YOZQr/n5mnFiKxBolmm9QWOb1Mu+m/kHTZ01OyY
+        aCkVIQgez8m1FyH/DfMSDNsoKu5gKSO+/YQ=
+X-Google-Smtp-Source: ABdhPJzeOKX5bBK/zj9zBr6EK+2CtNt9oJqvaF5R0KRK2+RhCoKdpVJhbzGvJQLs486TWv9FY+BEiA==
+X-Received: by 2002:aca:aad4:: with SMTP id t203mr1315813oie.149.1623807579843;
+        Tue, 15 Jun 2021 18:39:39 -0700 (PDT)
+Received: from threadripper.novatech-llc.local ([216.21.169.52])
+        by smtp.gmail.com with ESMTPSA id z23sm158063ooz.15.2021.06.15.18.39.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Jun 2021 18:39:39 -0700 (PDT)
+From:   George McCollister <george.mccollister@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        George McCollister <george.mccollister@gmail.com>
+Subject: [PATCH net-next v2] net: dsa: xrs700x: forward HSR supervision frames
+Date:   Tue, 15 Jun 2021 20:39:03 -0500
+Message-Id: <20210616013903.41564-1-george.mccollister@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 5:32 PM, Linus Torvalds wrote:
-> On Tue, Jun 15, 2021 at 4:58 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> Some implementations of BUG() are macros, not functions,
-> 
-> Not "some", I think. Most.
-> 
->> so "unreachable" is not applicable AFAIK.
-> 
-> Sure it is. One common pattern is the x86 one:
-> 
->   #define BUG()                                                   \
->   do {                                                            \
->           instrumentation_begin();                                \
->           _BUG_FLAGS(ASM_UD2, 0);                                 \
->           unreachable();                                          \
->   } while (0)
+Forward supervision frames between redunant HSR ports. This was broken
+in the last commit.
 
-duh.
+Fixes: 1a42624aecba ("net: dsa: xrs700x: allow HSR/PRP supervision dupes for node_table")
+Signed-off-by: George McCollister <george.mccollister@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+---
+Changes since v1:
+- Fixed wrapping of Fixes tag.
 
-> and that "unreachable()" is exactly what I'm talking about.
-> 
-> So I repeat: what completely broken compiler / config / architecture
-> is it that needs that "return 0" after a BUG() statement?
+ drivers/net/dsa/xrs700x/xrs700x.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
 
-I have seen it on ia64 -- most likely GCC 9.3.0, but I'll have to
-double check that.
+diff --git a/drivers/net/dsa/xrs700x/xrs700x.c b/drivers/net/dsa/xrs700x/xrs700x.c
+index a79066174a77..130abb0f1438 100644
+--- a/drivers/net/dsa/xrs700x/xrs700x.c
++++ b/drivers/net/dsa/xrs700x/xrs700x.c
+@@ -337,7 +337,8 @@ static int xrs700x_port_add_bpdu_ipf(struct dsa_switch *ds, int port)
+  * This is required to correctly populate the HSR/PRP node_table.
+  * Leave the policy disabled, it will be enabled as needed.
+  */
+-static int xrs700x_port_add_hsrsup_ipf(struct dsa_switch *ds, int port)
++static int xrs700x_port_add_hsrsup_ipf(struct dsa_switch *ds, int port,
++				       int fwdport)
+ {
+ 	struct xrs700x *priv = ds->priv;
+ 	unsigned int val = 0;
+@@ -368,6 +369,9 @@ static int xrs700x_port_add_hsrsup_ipf(struct dsa_switch *ds, int port)
+ 	if (ret)
+ 		return ret;
+ 
++	if (fwdport >= 0)
++		val |= BIT(fwdport);
++
+ 	/* Allow must be set prevent duplicate discard */
+ 	ret = regmap_write(priv->regmap, XRS_ETH_ADDR_FWD_ALLOW(port, 1), val);
+ 	if (ret)
+@@ -405,10 +409,6 @@ static int xrs700x_port_setup(struct dsa_switch *ds, int port)
+ 		ret = xrs700x_port_add_bpdu_ipf(ds, port);
+ 		if (ret)
+ 			return ret;
+-
+-		ret = xrs700x_port_add_hsrsup_ipf(ds, port);
+-		if (ret)
+-			return ret;
+ 	}
+ 
+ 	return 0;
+@@ -562,6 +562,7 @@ static int xrs700x_hsr_join(struct dsa_switch *ds, int port,
+ 	struct net_device *slave;
+ 	int ret, i, hsr_pair[2];
+ 	enum hsr_version ver;
++	bool fwd = false;
+ 
+ 	ret = hsr_get_version(hsr, &ver);
+ 	if (ret)
+@@ -607,6 +608,7 @@ static int xrs700x_hsr_join(struct dsa_switch *ds, int port,
+ 	if (ver == HSR_V1) {
+ 		val &= ~BIT(partner->index);
+ 		val &= ~BIT(port);
++		fwd = true;
+ 	}
+ 	val &= ~BIT(dsa_upstream_port(ds, port));
+ 	regmap_write(priv->regmap, XRS_PORT_FWD_MASK(partner->index), val);
+@@ -616,10 +618,19 @@ static int xrs700x_hsr_join(struct dsa_switch *ds, int port,
+ 			    XRS_PORT_FORWARDING);
+ 	regmap_fields_write(priv->ps_forward, port, XRS_PORT_FORWARDING);
+ 
+-	/* Enable inbound policy added by xrs700x_port_add_hsrsup_ipf()
+-	 * which allows HSR/PRP supervision forwarding to the CPU port without
+-	 * discarding duplicates.
++	/* Enable inbound policy which allows HSR/PRP supervision forwarding
++	 * to the CPU port without discarding duplicates. Continue to
++	 * forward to redundant ports when in HSR mode while discarding
++	 * duplicates.
+ 	 */
++	ret = xrs700x_port_add_hsrsup_ipf(ds, partner->index, fwd ? port : -1);
++	if (ret)
++		return ret;
++
++	ret = xrs700x_port_add_hsrsup_ipf(ds, port, fwd ? partner->index : -1);
++	if (ret)
++		return ret;
++
+ 	regmap_update_bits(priv->regmap,
+ 			   XRS_ETH_ADDR_CFG(partner->index, 1), 1, 1);
+ 	regmap_update_bits(priv->regmap, XRS_ETH_ADDR_CFG(port, 1), 1, 1);
+-- 
+2.11.0
 
-> Because that environment is broken, and the warning is bogus and wrong.
-> 
-> It might not be the compiler. It might be some architecture that does
-> this wrong. It might be some very particular configuration that does
-> something bad and makes the "unreachable()" not work (or not exist).
-> 
-> But *that* is the bug that should be fixed. Not adding a pointless and
-> incorrect line that makes no sense, just to hide the real bug.
