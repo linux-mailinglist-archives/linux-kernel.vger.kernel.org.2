@@ -2,169 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D693AA74E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC28B3AA74C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234296AbhFPXST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 19:18:19 -0400
-Received: from mga01.intel.com ([192.55.52.88]:36141 "EHLO mga01.intel.com"
+        id S234460AbhFPXOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 19:14:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234364AbhFPXSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 19:18:17 -0400
-IronPort-SDR: mCrqcvpDm0KodAI/3lrFE/+rt9N+ailDaHwtjPenv9e//bce8Ztb9NSwIyC+/GoOeTRQyHDet5
- Q3sRPZW3WP0w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="227778821"
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="227778821"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 16:16:10 -0700
-IronPort-SDR: QEB0nCtcQDbfd2iL9XbdtZmiPBj3V+5e+bpkDfzovMfKb1y4dKe/IUcJ65uFG5hfDAqPPG68Y+
- WibriOKCa5yg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="472210731"
-Received: from alison-desk.jf.intel.com ([10.54.74.53])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Jun 2021 16:16:10 -0700
-Date:   Wed, 16 Jun 2021 16:11:54 -0700
-From:   Alison Schofield <alison.schofield@intel.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] cxl/acpi: Add the Host Bridge base address to CXL
- port objects
-Message-ID: <20210616231154.GA25185@alison-desk.jf.intel.com>
-References: <cover.1623800340.git.alison.schofield@intel.com>
- <e841b0283edcc281ff31e98e4d3512be3a131c6a.1623800340.git.alison.schofield@intel.com>
- <20210616160816.ollsqeyhpnjm5oq2@intel.com>
+        id S234449AbhFPXOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 19:14:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE6660FD9;
+        Wed, 16 Jun 2021 23:12:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623885156;
+        bh=OVbXkTYPJYSvlb2ydGcDGL2dM5WRqImNo6pxfwfoU38=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Ekx6S2OTdtZxtF+IMx3PykQtRIAqidsmXP7oh5Kq/1cZPdYal3EkpifBZNyIbcN9I
+         qH+4on2osOt7fJ82CkAXwT0kBa3tZLKUMvFq+9+jBtPnO5WtS1rfkpPf2SYiLKeEpz
+         QvppmUUxxDCVEe6uTkXzSe8TyiH1ZMWa3Dgu8R72QycCN2/ol+6u/+Vck+sqyeMqwc
+         HVg5LthcLFYPEdNQh8bmhLQiUbWvyIyIHgN7g6aI7VE16I0mCokZ/zXthy8t4g2w1r
+         bcBokip2xSumuHGL6gOMGB8wSq8F4SBsGibz+FhIoWny27cWl4P4UZ8RtVlJ+GrVWe
+         QsbEs1vWVbx3w==
+Date:   Wed, 16 Jun 2021 18:12:34 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     robh+dt@kernel.org, maz@kernel.org, leobras.c@gmail.com,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, alexandru.elisei@arm.com, wqu@suse.com,
+        robin.murphy@arm.com, pgwipeout@gmail.com, ardb@kernel.org,
+        briannorris@chromium.org, shawn.lin@rock-chips.com,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v4] PCI: of: Clear 64-bit flag for non-prefetchable
+ memory below 4GB
+Message-ID: <20210616231234.GA3018015@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210616160816.ollsqeyhpnjm5oq2@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210614230457.752811-1-punitagrawal@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 15, 2021 at 08:04:57AM +0900, Punit Agrawal wrote:
+> Alexandru and Qu reported this resource allocation failure on
+> ROCKPro64 v2 and ROCK Pi 4B, both based on the RK3399:
+> 
+>   pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
+>   pci 0000:00:00.0: PCI bridge to [bus 01]
+>   pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
+>   pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
+> 
+> "BAR 14" is the PCI bridge's 32-bit non-prefetchable window, and our
+> PCI allocation code isn't smart enough to allocate it in a host
+> bridge window marked as 64-bit, even though this should work fine.
+> 
+> A DT host bridge description includes the windows from the CPU
+> address space to the PCI bus space.  On a few architectures
+> (microblaze, powerpc, sparc), the DT may also describe PCI devices
+> themselves, including their BARs.
+> 
+> Before 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource
+> flags for 64-bit memory addresses"), of_bus_pci_get_flags() ignored
+> the fact that some DT addresses described 64-bit windows and BARs.
+> That was a problem because the virtio virtual NIC has a 32-bit BAR
+> and a 64-bit BAR, and the driver couldn't distinguish them.
+> 
+> 9d57e61bf723 set IORESOURCE_MEM_64 for those 64-bit DT ranges, which
+> fixed the virtio driver.  But it also set IORESOURCE_MEM_64 for host
+> bridge windows, which exposed the fact that the PCI allocator isn't
+> smart enough to put 32-bit resources in those 64-bit windows.
+> 
+> Clear IORESOURCE_MEM_64 from host bridge windows since we don't need
+> that information.
+> 
+> Fixes: 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses")
+> Reported-at: https://lore.kernel.org/lkml/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com/
+> Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> Reported-by: Qu Wenruo <wqu@suse.com>
+> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Rob Herring <robh+dt@kernel.org>
 
-Thanks for the review Ben -
+Applied with:
 
-On Wed, Jun 16, 2021 at 09:08:16AM -0700, Ben Widawsky wrote:
-> On 21-06-15 17:20:38, Alison Schofield wrote:
-> > The base address for the Host Bridge port component registers is located
-> > in the CXL Host Bridge Structure (CHBS) of the ACPI CXL Early Discovery
-> > Table (CEDT). Retrieve the CHBS for each Host Bridge (ACPI0016 device)
-> > and include that base address in the port object.
-> > 
-> > Co-developed-by: Vishal Verma <vishal.l.verma@intel.com>
-> > Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
-> > Signed-off-by: Alison Schofield <alison.schofield@intel.com>
-> > ---
-> >  drivers/cxl/acpi.c | 105 ++++++++++++++++++++++++++++++++++++++++++---
-> >  1 file changed, 99 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
-> > index be357eea552c..b6d9cd45428c 100644
-> > --- a/drivers/cxl/acpi.c
-> > +++ b/drivers/cxl/acpi.c
-> > @@ -8,6 +8,61 @@
-> >  #include <linux/pci.h>
-> >  #include "cxl.h"
-> >  
-> > +static struct acpi_table_header *cedt_table;
-> 
-> cedt_header would really be a better name. "Table" is redundant as the 't' in
-> CEDT is table.
-> 
+    Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
+    Reviewed-by: Rob Herring <robh@kernel.org>
+    Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-Agree. Renamed to acpi_cedt in v3. See if you like.
+to for-linus for v5.13, thanks a lot!
 
-> > +
-> > +static struct acpi_cedt_chbs *cxl_acpi_match_chbs(struct device *dev, u32 uid)
-> > +{
-> > +	struct acpi_cedt_chbs *chbs, *chbs_match = NULL;
-> > +	acpi_size len, cur = 0;
-> > +	void *cedt_base;
+> ---
+> Hi,
 > 
-> maybe "cedt_body", or "cedt_subtables"
-
-got it in v3.
-
+> The patch is an updated version to fix the PCI allocation issues on
+> RK3399 based platforms. Previous postings can be found at [0][1][2].
 > 
-> > +	int rc = 0;
-> > +
-> > +	len = cedt_table->length - sizeof(*cedt_table);
-> > +	cedt_base = cedt_table + 1;
+> The updated patch instead of clearing the 64-bit flag for
+> non-prefetchable memory below 4GB does it unconditionally on the basis
+> that PCI allocation logic cannot deal with the 64-bit flag (although
+> it should be able to). The result is a simpler patch that restores the
+> input to the allocation logic to be identical to before 9d57e61bf723.
 > 
-> As per naming recommendation above, this looks really funny...
+> Tested locally on a RockPro64 on top of v5.13-rc6. Please consider
+> merging.
 > 
-:)
-> > +
-> > +	while (cur < len) {
-> > +		struct acpi_cedt_header *c = cedt_base + cur;
+> Thanks,
+> Punit
 > 
-> Okay, now I see why you may have not called the previous thing a header.
+> Changes:
+> v4:
 > 
-> > +
-> > +		if (c->type != ACPI_CEDT_TYPE_CHBS) {
-> > +			cur += c->length;
-> > +			continue;
-> > +		}
-> > +
-> > +		chbs = cedt_base + cur;
-> > +
-> > +		if (chbs->header.length < sizeof(*chbs)) {
-> > +			dev_err(dev, "Invalid CHBS header length: %u\n",
-> > +				chbs->header.length);
-> > +			rc = -EINVAL;
-> > +			break;
-> > +		}
+> * Updated Patch 1 based on Bjorn's suggestion. Also dropped the
+>   Tested-by tags due to the change of logic
+> * Dropped patch 2 and 3 from the series as it's not critical to the
+>   series
+> * Dropped the device tree changes (Patch 4) as they are already queued
+>   in the soc tree
 > 
-> I'd just continue here. Maybe there will be another chbs with the correct size.
->
-
-Got it.
-
-> > +
-> > +		if (chbs->uid == uid && !chbs_match) {
-> > +			chbs_match = chbs;
-> > +			cur += c->length;
-> > +			continue;
-> > +		}
-> > +
-> > +		if (chbs->uid == uid && chbs_match) {
-> > +			dev_err(dev, "Duplicate CHBS UIDs %u\n", uid);
-> > +			rc = -EINVAL;
-> > +			break;
-> > +		}
+> v3:
+> * Improved commit log for clarity (Patch 1)
+> * Added Tested-by tags
 > 
-> I'd also just continue here. I think if we have a match, we can just use it and
-> ignore BIOS bugs. I'd probably write it like this:
+> v2:
+> * Check ranges PCI / bus addresses rather than CPU addresses
+> * (new) Restrict 32-bit size warnings on ranges that don't have the 64-bit attribute set
+> * Refactor the 32-bit size warning to the range parsing loop. This
+>   change also prints the warnings right after the window mappings are
+>   logged.
 > 
-> if (chbs->uid == uid) {
-> 	dev_WARN_ONCE(dev, chbs_match, "Duplicate CHBS UIDs %u\n", uid);
-> 	chbs_match = chbs; /* last one wins */
-> 	cur += c->length;
-> 	continue;
-> }
+> [0] https://lore.kernel.org/linux-arm-kernel/20210527150541.3130505-1-punitagrawal@gmail.com/
+> [1] https://lore.kernel.org/linux-pci/20210531221057.3406958-1-punitagrawal@gmail.com/
+> [2] https://lore.kernel.org/linux-pci/20210607112856.3499682-1-punitagrawal@gmail.com/
 > 
-> Up to you how you actually write it, but do consider not failing here.
->
-
-Thanks for the snippet. I added the dev_WARN_ONCE to both the length
-mismatch and duplicate cases. 
-
-
-> > +		cur += c->length;
-> > +	}
-> > +	if (!chbs_match)
-> > +		rc = -EINVAL;
+>  drivers/pci/of.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Maybe ENODEV or something like it is more appropriate?
-
-Got it.
-
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index 85dcb7097da4..a143b02b2dcd 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -353,6 +353,8 @@ static int devm_of_pci_get_host_bridge_resources(struct device *dev,
+>  				dev_warn(dev, "More than one I/O resource converted for %pOF. CPU base address for old range lost!\n",
+>  					 dev_node);
+>  			*io_base = range.cpu_addr;
+> +		} else if (resource_type(res) == IORESOURCE_MEM) {
+> +			res->flags &= ~IORESOURCE_MEM_64;
+>  		}
+>  
+>  		pci_add_resource_offset(resources, res,	res->start - range.pci_addr);
+> -- 
+> 2.30.2
 > 
-snip
