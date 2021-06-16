@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B363A3A9F9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA603A9FF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234923AbhFPPj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:39:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50548 "EHLO mail.kernel.org"
+        id S234974AbhFPPnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:43:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234753AbhFPPh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:37:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E60E561356;
-        Wed, 16 Jun 2021 15:35:51 +0000 (UTC)
+        id S235324AbhFPPkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:40:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2674613F2;
+        Wed, 16 Jun 2021 15:37:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857752;
-        bh=eiAg7Qqdly+8Se81U+BBNFOQ5+F8mKga4+SfAWWhJmk=;
+        s=korg; t=1623857837;
+        bh=qdx3A4dL/aV5aO0z1JewHyWSwi8Q7i9bcnqPBVn6azs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zKqHVUETYcPPvmlTj6g8l9wabi7LuEhlzsXbAvasylTTEab1ageF/tRYvBpIGvaEO
-         Wz9MEEQTapkAWtMDt2TYoxKleNcJRBc5ai/94WglHRO9xUB1Hl+R9cpcY2R2+1tZhz
-         vsKjOO5TDEsY6424S+tPdA2lmkMkqt7lsLbAIHQc=
+        b=hSyyIf25jYQa6ryxSpC8P1xaiUHsu/a17HhholcXkhpwaze9hUTu7+GXmQJOL/4x0
+         5lPiq7pqWiRrLFOJz+oYu+GuFDXyHGj+C06pgXkSbyFUgHdzBbsqlvqL7XCCPmMFzm
+         SWIH/FGOGPgGPf77Ggx7comapTn7wLBxw9FTRTmY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 26/38] nvme-loop: clear NVME_LOOP_Q_LIVE when nvme_loop_configure_admin_queue() fails
-Date:   Wed, 16 Jun 2021 17:33:35 +0200
-Message-Id: <20210616152836.224545929@linuxfoundation.org>
+        stable@vger.kernel.org, Khem Raj <raj.khem@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 26/48] riscv: Use -mno-relax when using lld linker
+Date:   Wed, 16 Jun 2021 17:33:36 +0200
+Message-Id: <20210616152837.474295346@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
-References: <20210616152835.407925718@linuxfoundation.org>
+In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
+References: <20210616152836.655643420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Khem Raj <raj.khem@gmail.com>
 
-[ Upstream commit 1c5f8e882a05de5c011e8c3fbeceb0d1c590eb53 ]
+[ Upstream commit ec3a5cb61146c91f0f7dcec8b7e7157a4879a9ee ]
 
-When the call to nvme_enable_ctrl() in nvme_loop_configure_admin_queue()
-fails the NVME_LOOP_Q_LIVE flag is not cleared.
+lld does not implement the RISCV relaxation optimizations like GNU ld
+therefore disable it when building with lld, Also pass it to
+assembler when using external GNU assembler ( LLVM_IAS != 1 ), this
+ensures that relevant assembler option is also enabled along. if these
+options are not used then we see following relocations in objects
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+0000000000000000 R_RISCV_ALIGN     *ABS*+0x0000000000000002
+
+These are then rejected by lld
+ld.lld: error: capability.c:(.fixup+0x0): relocation R_RISCV_ALIGN requires unimplemented linker relaxation; recompile with -mno-relax but the .o is already compiled with -mno-relax
+
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/loop.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/riscv/Makefile | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/nvme/target/loop.c b/drivers/nvme/target/loop.c
-index 1d3185c82596..c07b4a14d477 100644
---- a/drivers/nvme/target/loop.c
-+++ b/drivers/nvme/target/loop.c
-@@ -394,6 +394,7 @@ static int nvme_loop_configure_admin_queue(struct nvme_loop_ctrl *ctrl)
- 	return 0;
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index 1368d943f1f3..5243bf2327c0 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -38,6 +38,15 @@ else
+ 	KBUILD_LDFLAGS += -melf32lriscv
+ endif
  
- out_cleanup_queue:
-+	clear_bit(NVME_LOOP_Q_LIVE, &ctrl->queues[0].flags);
- 	blk_cleanup_queue(ctrl->ctrl.admin_q);
- out_cleanup_fabrics_q:
- 	blk_cleanup_queue(ctrl->ctrl.fabrics_q);
++ifeq ($(CONFIG_LD_IS_LLD),y)
++	KBUILD_CFLAGS += -mno-relax
++	KBUILD_AFLAGS += -mno-relax
++ifneq ($(LLVM_IAS),1)
++	KBUILD_CFLAGS += -Wa,-mno-relax
++	KBUILD_AFLAGS += -Wa,-mno-relax
++endif
++endif
++
+ # ISA string setting
+ riscv-march-$(CONFIG_ARCH_RV32I)	:= rv32ima
+ riscv-march-$(CONFIG_ARCH_RV64I)	:= rv64ima
 -- 
 2.30.2
 
