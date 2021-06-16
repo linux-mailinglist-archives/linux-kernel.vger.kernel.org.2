@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0EB3A9521
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19BB3A951E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhFPIh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbhFPIhZ (ORCPT
+        id S231710AbhFPIfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:35:02 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4944 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231334AbhFPIfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:37:25 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD58C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:35:18 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id nd37so2551089ejc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:35:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gp4U6YSCPwVtPXy/TVoR1GhhUWzSE9Eyi0KJRY31j3A=;
-        b=LMKCPgyRy7f+knB/klKU3hvRqWPJ9Y4i8wY8aRC34ehMg7JPePoxmFFDo4GjUxtJXG
-         XUe+fbVJi2OhfNzXbmI+FKOsFmAmZ9ABXQIA6OBNt45tl5htz3gOW+J05wmyy2NFpL0v
-         ROUEyzt41iE4721eZBRsaw3htpcZYxACpyax6D6IQ0oor+wFIzwQdIn5zFpw5tIowLav
-         CcsPrhdsEb3qWUYdh/XgPzEWk4GhzMIWlsloD/0tfsX1eniyUkH4eunVSIPpfKuSBEjK
-         usNjdWaiDQNE/dhrDC4/DyxR1aUDO3ljnQRCQr3U3GcELfWetABOKV3b81CcfL8mQh6Z
-         MIjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gp4U6YSCPwVtPXy/TVoR1GhhUWzSE9Eyi0KJRY31j3A=;
-        b=lh5DfM84T+G23g6Y9i1DrTn1JdQwWtZ3nqGnairWiR2DP4x4rWPP3th672Ok5iLBzl
-         66ABTGcvHvrThjjONgBeOSjq/yaReGEfXin+cNI04OO2yu0i+1On5YIa9nPnErNDGQjz
-         W+A2V7JeHRJmEwcOlnP5PVkI1hyWLNbzbkZIJ6GXDyEKD4DkgBATZN3uMDlRQJK+thIm
-         FpmF3m0pieNgl73V6FNPOuc2L9eMOnc63aeAWtEp3F4QszLWiNHpKiKPdNCeLRz2gbw+
-         WgRXInNfjrigwzEW2GrM9WSYYq7B3fA5Ha5WJhwAkkmosR+gR7ND82qErI4CQgThmkj0
-         Iueg==
-X-Gm-Message-State: AOAM533RlkVmsBvA1jc4XivRjgu2PjLN9fv1ttV6zuY/iYWOaGGtIWb4
-        rky6PTaJNeyv6Y7cwunGi4p4LpqdjkVojiMluW/9
-X-Google-Smtp-Source: ABdhPJxfB9bTRfOoTYC2AOEheM8QNpLoI4xIS22CZKj+x+O7PQjTS/OOugJwSPwSvND/NzxJI/HxWaY3FpAzXIKugMQ=
-X-Received: by 2002:a17:906:b84f:: with SMTP id ga15mr4071921ejb.372.1623832517360;
- Wed, 16 Jun 2021 01:35:17 -0700 (PDT)
+        Wed, 16 Jun 2021 04:35:01 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G4ddy67LPz6yBK;
+        Wed, 16 Jun 2021 16:29:42 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 16:32:52 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 16 Jun
+ 2021 16:32:52 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
+CC:     <mchehab@kernel.org>, <verkuil-cisco@xs4all.nl>
+Subject: [PATCH -next] [media] saa7134: convert list_for_each to entry variant
+Date:   Wed, 16 Jun 2021 16:36:45 +0800
+Message-ID: <20210616083645.2523658-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210615104810.151-1-xieyongji@bytedance.com> <20210615112612-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20210615112612-mutt-send-email-mst@kernel.org>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Wed, 16 Jun 2021 16:35:06 +0800
-Message-ID: <CACycT3u-ZUQUDVvJZEck+j0F4VZ8H62_Zo-QPDs_97aWrvgL=A@mail.gmail.com>
-Subject: Re: Re: [PATCH v2] virtio-blk: Add validation for block size in
- config space
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-block@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 11:27 PM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Tue, Jun 15, 2021 at 06:48:10PM +0800, Xie Yongji wrote:
-> > This ensures that we will not use an invalid block size
-> > in config space (might come from an untrusted device).
-> >
-> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
->
-> I'd say if device presents an unreasonable value,
-> and we want to ignore that, then we should not
-> negotiate VIRTIO_BLK_F_BLK_SIZE so that host knows.
->
-> So maybe move the logic to validate_features.
->
+Convert list_for_each() to list_for_each_entry() where
+applicable.
 
-Looks good to me. Will do it in v3.
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/media/pci/saa7134/saa7134-alsa.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Thanks,
-Yongji
+diff --git a/drivers/media/pci/saa7134/saa7134-alsa.c b/drivers/media/pci/saa7134/saa7134-alsa.c
+index 7a1fb067b0e0..fb24d2ed3621 100644
+--- a/drivers/media/pci/saa7134/saa7134-alsa.c
++++ b/drivers/media/pci/saa7134/saa7134-alsa.c
+@@ -1215,15 +1215,13 @@ static int alsa_device_exit(struct saa7134_dev *dev)
+ static int saa7134_alsa_init(void)
+ {
+ 	struct saa7134_dev *dev = NULL;
+-	struct list_head *list;
+ 
+ 	saa7134_dmasound_init = alsa_device_init;
+ 	saa7134_dmasound_exit = alsa_device_exit;
+ 
+ 	pr_info("saa7134 ALSA driver for DMA sound loaded\n");
+ 
+-	list_for_each(list,&saa7134_devlist) {
+-		dev = list_entry(list, struct saa7134_dev, devlist);
++	list_for_each_entry(dev, &saa7134_devlist, devlist) {
+ 		if (dev->pci->device == PCI_DEVICE_ID_PHILIPS_SAA7130)
+ 			pr_info("%s/alsa: %s doesn't support digital audio\n",
+ 				dev->name, saa7134_boards[dev->board].name);
+-- 
+2.25.1
+
