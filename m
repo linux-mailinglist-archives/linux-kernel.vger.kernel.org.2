@@ -2,148 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98DE3A8D77
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324D03A8D7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhFPAbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:31:41 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:50283 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230244AbhFPAbj (ORCPT
+        id S231710AbhFPAcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231635AbhFPAb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:31:39 -0400
-X-UUID: 984ab5af4c354bbd8baaac5e24331982-20210616
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=T+5dG9Zv3Son1yPsM21G3NCtpvIaSc9W4NcOU1b0ap8=;
-        b=A/M8CcBsaspkfLvwl4LLMyVLrnChT7TZz9WJFzQXnew+58mmrl/Q5SBAuQ3sG5tmagQwU1OF3WUGZydurtgdh9EGVN8rWA2MxjPmAZyuDZOZtUdrpd43n3vVDQeg3vrnFNF3edcc3JipoU1B4SAEqrtSXD+lIZyZhuRTIbAILuo=;
-X-UUID: 984ab5af4c354bbd8baaac5e24331982-20210616
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 354707355; Wed, 16 Jun 2021 08:29:31 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 16 Jun 2021 08:29:29 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 16 Jun 2021 08:29:29 +0800
-Message-ID: <1623803369.8887.9.camel@mtkswgap22>
-Subject: Re: [next] [arm64] kernel BUG at arch/arm64/mm/physaddr.c
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-CC:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Linux-Next Mailing List" <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, <lkft-triage@lists.linaro.org>,
-        <regressions@lists.linux.dev>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Christophe Leroy" <christophe.leroy@csgroup.eu>
-Date:   Wed, 16 Jun 2021 08:29:29 +0800
-In-Reply-To: <20210615131902.GB47121@C02TD0UTHF1T.local>
-References: <CA+G9fYvvm2tW5QAe9hzPgs7sV8udsoufxs0Qu6N0ZjV0Z686vw@mail.gmail.com>
-         <20210615124745.GA47121@C02TD0UTHF1T.local>
-         <20210615131902.GB47121@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 15 Jun 2021 20:31:58 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5411AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:29:52 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id u11so605837oiv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:29:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EA4PTF58a5WW5Zwb9g/rsTBq/ZeU4jikbc1MhO+pikk=;
+        b=D7S9HfghGhsbR0shzfNj0tKkCrOII9s4Ej4+eujaW44E2L7yB4e5+Mb/WxQWflYIel
+         ov3QJDZobt8rnUCtCp1IbFhUHZB8FMzzSCx6LI879XgOF2WnST9/Bbxy9bO85Hw+mtbg
+         KXCBq3dB/+H/U7IjAXE8kanDpzntqUS2baLp6JFb9BM9SeISfcgNfRsUbyjSbkU0EOZC
+         tMH2bXiMHJuxdz6zNN/5yutYDkp81vga2mFDB9He8kmbZ+v2gE0QuM/gtGJPnX9unK3V
+         JDPaQ0H2YRgt6pZX5GQpDQNK4X4VyaPwiHbR5zZRw2auaIXCLmCuRi2gfRegn8YhxVC8
+         DsqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EA4PTF58a5WW5Zwb9g/rsTBq/ZeU4jikbc1MhO+pikk=;
+        b=YqAY5aEITqybpUxV6nK3CgPyn7eS+3Xc7XJpMAL1kBvEDOoBEp82cnnuB5GtJZWmDu
+         LRMyNm3J0QU8bvVAJsW8L+93y9B+s1stDVDKLzB0gWz5a11KrXqYFG9NQH+JUlqtkPJx
+         NJzL8C/fn9htdo0RVgYqUZQ/SUQmo08ZyJk8dFCF3uCS1rztCkcyP7m7XnxIU57UM/i1
+         ixyAv768fwEl9t/IzbNxprBobg2T+vCJgMlX7yqzZwZYELa1pYaj0nUysyRgVj/H0Hg0
+         a9Hem96aqPGy5lTcq6f+ZomaSPPnffzOLUBsT1pdzSZudjsCHjnuoXBGgbPDNg02At9v
+         qBwA==
+X-Gm-Message-State: AOAM532VDB7qFYPluBGe9W9scQvHG3r8ESTDUv3DuUMhizLm0dfqlkFO
+        C2tgCPcL1tgV95WgjjWBq/VLuA==
+X-Google-Smtp-Source: ABdhPJwNlXvrgI+F5cUFbufFHElN+s9m/lJj4u8oOeqDQXGgDjWxspHqX9jcfMnOKHxJgnngjov/SA==
+X-Received: by 2002:aca:c441:: with SMTP id u62mr4988696oif.31.1623803391689;
+        Tue, 15 Jun 2021 17:29:51 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 26sm124078ooy.46.2021.06.15.17.29.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 17:29:51 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 19:29:49 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] arch: arm64: dts: qcom: Add support for SM6125
+Message-ID: <YMlF/aPn+253UIHn@builder.lan>
+References: <20210613080522.25230-1-martin.botka@somainline.org>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210613080522.25230-1-martin.botka@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA2LTE1IGF0IDE0OjE5ICswMTAwLCBNYXJrIFJ1dGxhbmQgd3JvdGU6DQo+
-IE9uIFR1ZSwgSnVuIDE1LCAyMDIxIGF0IDAxOjQ3OjQ1UE0gKzAxMDAsIE1hcmsgUnV0bGFuZCB3
-cm90ZToNCj4gPiBPbiBUdWUsIEp1biAxNSwgMjAyMSBhdCAwNDo0MToyNVBNICswNTMwLCBOYXJl
-c2ggS2FtYm9qdSB3cm90ZToNCj4gPiA+IEZvbGxvd2luZyBrZXJuZWwgY3Jhc2ggcmVwb3J0ZWQg
-d2hpbGUgYm9vdCBsaW51eCBuZXh0IDIwMjEwNjE1IHRhZyBvbiBxZW11X2FybTY0DQo+ID4gPiB3
-aXRoIGFsbG1vZGNvbmZpZyBidWlsZC4NCj4gPiA+IA0KPiA+ID4gWyAgICAwLjAwMDAwMF0gQm9v
-dGluZyBMaW51eCBvbiBwaHlzaWNhbCBDUFUgMHgwMDAwMDAwMDAwIFsweDQxMGZkMDM0XQ0KPiA+
-ID4gWyAgICAwLjAwMDAwMF0gTGludXggdmVyc2lvbiA1LjEzLjAtcmM2LW5leHQtMjAyMTA2MTUN
-Cj4gPiA+ICh0dXhtYWtlQGFjNzk3OGNkZGVkZSkgKGFhcmNoNjQtbGludXgtZ251LWdjYyAoRGVi
-aWFuIDExLjEuMC0xKQ0KPiA+ID4gMTEuMS4wLCBHTlUgbGQgKEdOVSBCaW51dGlscyBmb3IgRGVi
-aWFuKSAyLjM2LjUwLjIwMjEwNjAxKSAjMSBTTVANCj4gPiA+IFBSRUVNUFQgVHVlIEp1biAxNSAx
-MDoyMDo1MSBVVEMgMjAyMQ0KPiA+ID4gWyAgICAwLjAwMDAwMF0gTWFjaGluZSBtb2RlbDogbGlu
-dXgsZHVtbXktdmlydA0KPiA+ID4gWyAgICAwLjAwMDAwMF0gZWFybHljb246IHBsMTEgYXQgTU1J
-TyAweDAwMDAwMDAwMDkwMDAwMDAgKG9wdGlvbnMgJycpDQo+ID4gPiBbICAgIDAuMDAwMDAwXSBw
-cmludGs6IGJvb3Rjb25zb2xlIFtwbDExXSBlbmFibGVkDQo+ID4gPiBbICAgIDAuMDAwMDAwXSBl
-Zmk6IFVFRkkgbm90IGZvdW5kLg0KPiA+ID4gWyAgICAwLjAwMDAwMF0gTlVNQTogTm8gTlVNQSBj
-b25maWd1cmF0aW9uIGZvdW5kDQo+ID4gPiBbICAgIDAuMDAwMDAwXSBOVU1BOiBGYWtpbmcgYSBu
-b2RlIGF0IFttZW0NCj4gPiA+IDB4MDAwMDAwMDA0MDAwMDAwMC0weDAwMDAwMDAwYmZmZmZmZmZd
-DQo+ID4gPiBbICAgIDAuMDAwMDAwXSBOVU1BOiBOT0RFX0RBVEEgW21lbSAweGJmYzAwZDQwLTB4
-YmZjMDNmZmZdDQo+ID4gPiBbICAgIDAuMDAwMDAwXSAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0t
-LS0tLS0tLS0tLS0NCj4gPiA+IFsgICAgMC4wMDAwMDBdIGtlcm5lbCBCVUcgYXQgYXJjaC9hcm02
-NC9tbS9waHlzYWRkci5jOjI3IQ0KPiA+ID4gWyAgICAwLjAwMDAwMF0gSW50ZXJuYWwgZXJyb3I6
-IE9vcHMgLSBCVUc6IDAgWyMxXSBQUkVFTVBUIFNNUA0KPiA+ID4gWyAgICAwLjAwMDAwMF0gTW9k
-dWxlcyBsaW5rZWQgaW46DQo+ID4gPiBbICAgIDAuMDAwMDAwXSBDUFU6IDAgUElEOiAwIENvbW06
-IHN3YXBwZXIgVGFpbnRlZDogRyAgICAgICAgICAgICAgICBUDQo+ID4gPiA1LjEzLjAtcmM2LW5l
-eHQtMjAyMTA2MTUgIzEgYzE1MGE4MTYxZDhmZjM5NWM1YWU3ZWUwYzNjOGYyMmMzNjg5ZmFlNA0K
-PiA+ID4gWyAgICAwLjAwMDAwMF0gSGFyZHdhcmUgbmFtZTogbGludXgsZHVtbXktdmlydCAoRFQp
-DQo+ID4gPiBbICAgIDAuMDAwMDAwXSBwc3RhdGU6IDQwNDAwMGM1IChuWmN2IGRhSUYgK1BBTiAt
-VUFPIC1UQ08gQlRZUEU9LS0pDQo+ID4gPiBbICAgIDAuMDAwMDAwXSBwYyA6IF9fcGh5c19hZGRy
-X3N5bWJvbCsweDQ0LzB4YzANCj4gPiA+IFsgICAgMC4wMDAwMDBdIGxyIDogX19waHlzX2FkZHJf
-c3ltYm9sKzB4NDQvMHhjMA0KPiA+ID4gWyAgICAwLjAwMDAwMF0gc3AgOiBmZmZmODAwMDE0Mjg3
-YjAwDQo+ID4gPiBbICAgIDAuMDAwMDAwXSB4Mjk6IGZmZmY4MDAwMTQyODdiMDAgeDI4OiBmYzQ5
-YTliODlkYjM2ZjBhIHgyNzogZmZmZmZmZmZmZmZmZmZmZg0KPiA+ID4gWyAgICAwLjAwMDAwMF0g
-eDI2OiAwMDAwMDAwMDAwMDAwMjgwIHgyNTogMDAwMDAwMDAwMDAwMDAxMCB4MjQ6IGZmZmY4MDAw
-MTQ1YTgwMDANCj4gPiA+IFsgICAgMC4wMDAwMDBdIHgyMzogMDAwMDAwMDAwODAwMDAwMCB4MjI6
-IDAwMDAwMDAwMDAwMDAwMTAgeDIxOiAwMDAwMDAwMDAwMDAwMDAwDQo+ID4gPiBbICAgIDAuMDAw
-MDAwXSB4MjA6IGZmZmY4MDAwMTAwMDAwMDAgeDE5OiBmZmZmMDAwMDdmYzAwZDQwIHgxODogMDAw
-MDAwMDAwMDAwMDAwMA0KPiA+ID4gWyAgICAwLjAwMDAwMF0geDE3OiAwMDAwMDAwMDAwM2VlMDAw
-IHgxNjogMDAwMDAwMDBiZmMxMjAwMCB4MTU6IDAwMDAwMDEwMDAwMDAwMDANCj4gPiA+IFsgICAg
-MC4wMDAwMDBdIHgxNDogMDAwMDAwMDAwMDAwZGU4YyB4MTM6IDAwMDAwMDEwMDAwMDAwMDAgeDEy
-OiAwMDAwMDAwMGYxZjFmMWYxDQo+ID4gPiBbICAgIDAuMDAwMDAwXSB4MTE6IGRmZmY4MDAwMDAw
-MDAwMDAgeDEwOiBmZmZmNzAwMDAyODUwZWVhIHg5IDogMDAwMDAwMDAwMDAwMDAwMA0KPiA+ID4g
-WyAgICAwLjAwMDAwMF0geDggOiBmZmZmMDAwMDdmYmUwZDQwIHg3IDogMDAwMDAwMDAwMDAwMDAw
-MCB4NiA6IDAwMDAwMDAwMDAwMDAwM2YNCj4gPiA+IFsgICAgMC4wMDAwMDBdIHg1IDogMDAwMDAw
-MDAwMDAwMDA0MCB4NCA6IDAwMDAwMDAwMDAwMDAwMDUgeDMgOiBmZmZmODAwMDE0MmJiMGMwDQo+
-ID4gPiBbICAgIDAuMDAwMDAwXSB4MiA6IDAwMDAwMDAwMDAwMDAwMDAgeDEgOiAwMDAwMDAwMDAw
-MDAwMDAwIHgwIDogMDAwMDAwMDAwMDAwMDAwMA0KPiA+ID4gWyAgICAwLjAwMDAwMF0gQ2FsbCB0
-cmFjZToNCj4gPiA+IFsgICAgMC4wMDAwMDBdICBfX3BoeXNfYWRkcl9zeW1ib2wrMHg0NC8weGMw
-DQo+ID4gPiBbICAgIDAuMDAwMDAwXSAgc3BhcnNlX2luaXRfbmlkKzB4OTgvMHg2ZDANCj4gPiAN
-Cj4gPiBGcm9tIHRoZSBsb29rcyBvZiBpdCwgdGhpcyBpcyBwZ2RhdF90b19waHlzLCBhcyBpbnRy
-b2R1Y2VkIGluIG5leHQNCj4gPiBjb21taXQ6DQo+ID4gDQo+ID4gICBlMWRiNmVmNzMzNmQ4MTdj
-ICgibW0vc3BhcnNlOiBmaXggY2hlY2tfdXNlbWFwX3NlY3Rpb25fbnIgd2FybmluZ3MiKQ0KPiA+
-IA0KPiA+IEl0IGFwcGVhcnMgdGh0YSBhbGxtb2Rjb25maWcgZG9lc24ndCBoYXZlIENPTkZJR19O
-RUVEX01VTFRJUExFX05PREVTPXksDQo+ID4gYnV0IGRvZXMgaGF2ZSBDT05GSUdfTlVNQT15LCBh
-bmQgc28gKmRvZXMqIHVzZSB0aGUgZHluYW1pY2FsbHktYWxsb2NhdGVkDQo+ID4gbm9kZV9kYXRh
-IGFycmF5IChzaW5jZSBjb250aWdfcGFnZV9kYXRhIGlzIG9ubHkgZGVmaW5lZCBmb3IgIU5VTUEp
-Lg0KPiA+IA0KPiA+IEkgZG9uJ3QgdGhpbmsgdGhhdCBjb21taXQgaXMgY29ycmVjdC4NCj4gDQo+
-IExvb2tpbmcgc29tZSBtb3JlLCBpdCBsb29rcyBsaWtlIHRoYXQncyBjb3JyZWN0IGluIGlzb2xh
-dGlvbiwgYnV0IGl0DQo+IGNsYXNoZXMgd2l0aCBjb21taXQ6DQo+IA0KPiAgIDU4MzFlZWRhZDJh
-YzZmMzggKCJtbTogcmVwbGFjZSBDT05GSUdfTkVFRF9NVUxUSVBMRV9OT0RFUyB3aXRoIENPTkZJ
-R19OVU1BIikNCj4gDQo+IC4uLiBhbmQgSSByZWNrb24gaXQnZCBiZSBjbGVhcmVyIGFuZCBtb3Jl
-IHJvYnVzdCB0byBkZWZpbmUNCj4gcGdkYXRfdG9fcGh5cygpIGluIHRoZSBzYW1lIGlmZGVmcyBh
-cyBjb250aWdfcGFnZV9kYXRhIHNvIHRoYXQNCj4gdGhlc2UsIHN0YXkgaW4tc3luYy4gZS5nLiBo
-YXZlOg0KPiANCj4gfCAjaWZkZWYgQ09ORklHX05VTUENCj4gfCAjZGVmaW5lIHBnZGF0X3RvX3Bo
-eXMoeCkJdmlydF90b19waHlzKHgpDQo+IHwgI2Vsc2UgLyogQ09ORklHX05VTUEgKi8NCj4gfCAN
-Cj4gfCBleHRlcm4gc3RydWN0IHBnbGlzdF9kYXRhIGNvbnRpZ19wYWdlX2RhdGE7DQo+IHwgLi4u
-DQo+IHwgI2RlZmluZSBwZ2RhdF90b19waHlzKHgpCV9fcGFfc3ltYm9sKCZjb250aWdfcGFnZV9k
-YXRhKQ0KPiB8DQo+IHwgI2VuZGlmIC8qIENPTklGSUdfTlVNQSAqLw0KPiANCj4gLi4uIHdoaWNo
-J2QgYWxzbyBtYWtlIGNsZWFyIHRoYXQgY29udGlnX3BhZ2VfZGF0YSBpcyB0aGUgKm9ubHkqIGV4
-cGVjdGVkDQo+IHBnbGlzdF9kYXRhLg0KDQpUaGFua3MgZm9yIHlvdXIgc3VnZ2VzdGlvbi4gDQpJ
-dCBsb29rcyBtb3JlIGNsZWFyLCBJIHdpbGwgc3VibWl0IGFub3RoZXIgcGF0Y2ggZm9yIHRoaXMu
-IChhZnRlciB0aGUNCm1lcmdlKQ0KDQpNaWxlcw0KDQo+IFRoYW5rcywNCj4gTWFyay4NCj4gDQo+
-ID4gVGhhbmtzLA0KPiA+IE1hcmsuDQo+ID4gDQo+ID4gPiBbICAgIDAuMDAwMDAwXSAgc3BhcnNl
-X2luaXQrMHg0NjAvMHg0ZDQNCj4gPiA+IFsgICAgMC4wMDAwMDBdICBib290bWVtX2luaXQrMHgx
-MTAvMHgzNDANCj4gPiA+IFsgICAgMC4wMDAwMDBdICBzZXR1cF9hcmNoKzB4MWI4LzB4MmUwDQo+
-ID4gPiBbICAgIDAuMDAwMDAwXSAgc3RhcnRfa2VybmVsKzB4MTEwLzB4ODcwDQo+ID4gPiBbICAg
-IDAuMDAwMDAwXSAgX19wcmltYXJ5X3N3aXRjaGVkKzB4YTgvMHhiMA0KPiA+ID4gWyAgICAwLjAw
-MDAwMF0gQ29kZTogOTQwY2NmMjMgZWIxMzAyOWYgNTQwMDAwNjkgOTQwY2NlNjAgKGQ0MjEwMDAw
-KQ0KPiA+ID4gWyAgICAwLjAwMDAwMF0gcmFuZG9tOiBnZXRfcmFuZG9tX2J5dGVzIGNhbGxlZCBm
-cm9tDQo+ID4gPiBvb3BzX2V4aXQrMHg1NC8weGMwIHdpdGggY3JuZ19pbml0PTANCj4gPiA+IFsg
-ICAgMC4wMDAwMDBdIC0tLVsgZW5kIHRyYWNlIDAwMDAwMDAwMDAwMDAwMDAgXS0tLQ0KPiA+ID4g
-WyAgICAwLjAwMDAwMF0gS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IE9vcHMgLSBCVUc6IEZh
-dGFsIGV4Y2VwdGlvbg0KPiA+ID4gWyAgICAwLjAwMDAwMF0gLS0tWyBlbmQgS2VybmVsIHBhbmlj
-IC0gbm90IHN5bmNpbmc6IE9vcHMgLSBCVUc6IEZhdGFsDQo+ID4gPiBleGNlcHRpb24gXS0tLQ0K
-PiA+ID4gDQo+ID4gPiBSZXBvcnRlZC1ieTogTmFyZXNoIEthbWJvanUgPG5hcmVzaC5rYW1ib2p1
-QGxpbmFyby5vcmc+DQo+ID4gPiANCj4gPiA+IC0tDQo+ID4gPiBMaW5hcm8gTEtGVA0KPiA+ID4g
-aHR0cHM6Ly9sa2Z0LmxpbmFyby5vcmcNCg0K
+On Sun 13 Jun 03:05 CDT 2021, Martin Botka wrote:
 
+> This commits adds the Device tree file for SM6125 SoC.
+> 
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+
+Thanks for your work on this Martin, just spotted a few minor finishing
+touches below.
+
+> ---
+> Changes in V2:
+> Update compatibles for mailbox & pinctrl
+> Changes in V3:
+> Fix reg for sdhci1
+> Replace hc_mem with hc and core_mem with core
+>  arch/arm64/boot/dts/qcom/sm6125.dtsi | 603 +++++++++++++++++++++++++++
+>  1 file changed, 603 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sm6125.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm6125.dtsi b/arch/arm64/boot/dts/qcom/sm6125.dtsi
+[..]
+> +	soc {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges = <0x00 0x00 0x00 0xffffffff>;
+> +		compatible = "simple-bus";
+> +
+> +		tcsr_mutex_regs: syscon@340000 {
+
+It's no longer valid to have a stray syscon like this, so please update
+this in accordance with the tcsr mutex binding.
+
+If this platform needs to poke at the registers at the end of the memory
+region, you can do compatible = "qcom,tcsr-mutex", "syscon"; to make it
+represent both things.
+
+> +			compatible = "syscon";
+> +			reg = <0x00340000 0x20000>;
+> +		};
+> +
+> +		tlmm: pinctrl@500000 {
+> +			compatible = "qcom,sm6125-tlmm";
+> +			reg = <0x00500000 0x400000>,
+> +				<0x00900000 0x400000>,
+> +				<0x00d00000 0x400000>;
+> +			reg-names = "west", "south", "east";
+> +			interrupts = <GIC_SPI 227 IRQ_TYPE_LEVEL_HIGH>;
+> +			gpio-controller;
+> +			gpio-ranges = <&tlmm 0 0 134>;
+> +			#gpio-cells = <2>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +
+> +			sdc2_state_on: sdc2-on {
+
+As I just forced Konrad to move the on-state definition to the board
+file, can you please do the same?
+
+> +				clk {
+> +					pins = "sdc2_clk";
+> +					bias-disable;
+> +					drive-strength = <16>;
+> +				};
+> +
+> +				cmd {
+> +					pins = "sdc2_cmd";
+> +					bias-pull-up;
+> +					drive-strength = <10>;
+> +				};
+> +
+> +				data {
+> +					pins = "sdc2_data";
+> +					bias-pull-up;
+> +					drive-strength = <10>;
+> +				};
+> +
+> +				sd-cd {
+> +					pins = "gpio98";
+> +					bias-pull-up;
+> +					drive-strength = <2>;
+> +				};
+> +			};
+> +
+> +			sdc2_state_off: sdc2-off {
+
+This should be common between all boards (except possibly the cd line),
+so this is okay to share here.
+
+> +				clk {
+> +					pins = "sdc2_clk";
+> +					bias-disable;
+> +					drive-strength = <2>;
+> +				};
+> +
+> +				cmd {
+> +					pins = "sdc2_cmd";
+> +					bias-pull-up;
+> +					drive-strength = <2>;
+> +				};
+> +
+> +				data {
+> +					pins = "sdc2_data";
+> +					bias-pull-up;
+> +					drive-strength = <2>;
+> +				};
+> +
+> +				sd-cd {
+> +					pins = "gpio98";
+> +					bias-disable;
+> +					drive-strength = <2>;
+> +				};
+> +			};
+> +		};
+> +
+[..]
+> +
+> +		usb3: usb@4ef8800 {
+> +			compatible = "qcom,msm8996-dwc3", "qcom,dwc3";
+> +			reg = <0x04ef8800 0x400>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges;
+> +
+> +			clocks = <&gcc GCC_USB30_PRIM_MASTER_CLK>,
+> +				<&gcc GCC_SYS_NOC_USB3_PRIM_AXI_CLK>,
+> +				<&gcc GCC_CFG_NOC_USB3_PRIM_AXI_CLK>,
+> +				<&gcc GCC_USB3_PRIM_CLKREF_CLK>,
+> +				<&gcc GCC_USB30_PRIM_SLEEP_CLK>,
+> +				<&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>;
+> +
+> +			assigned-clocks = <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+> +					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+> +			assigned-clock-rates = <19200000>, <66666667>;
+> +
+> +			power-domains = <&gcc USB30_PRIM_GDSC>;
+> +			qcom,select-utmi-as-pipe-clk; 
+
+Stray space at the end of this line.
+
+> +			status = "disabled";
+> +
+> +			usb3_dwc3: dwc3@4e00000 {
+
+These should be usb@ now.
+
+> +				compatible = "snps,dwc3";
+> +				reg = <0x04e00000 0xcd00>;
+> +				interrupts = <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>;
+> +				phys = <&hsusb_phy1>;
+> +				phy-names = "usb2-phy";
+> +				snps,dis_u2_susphy_quirk;
+> +				snps,dis_enblslpm_quirk;
+> +				maximum-speed = "high-speed";
+> +				dr_mode = "peripheral";
+> +			};
+> +		};
+
+Thanks,
+Bjorn
