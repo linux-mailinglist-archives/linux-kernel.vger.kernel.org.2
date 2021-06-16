@@ -2,71 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA993A95F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58D23A95F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhFPJWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:22:22 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:18896 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbhFPJWV (ORCPT
+        id S232281AbhFPJWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231336AbhFPJWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:22:21 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 16 Jun 2021 02:20:15 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Jun 2021 02:20:13 -0700
-X-QCInternal: smtphost
-Received: from c-sbhanu-linux.qualcomm.com ([10.242.50.201])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 16 Jun 2021 14:50:11 +0530
-Received: by c-sbhanu-linux.qualcomm.com (Postfix, from userid 2344807)
-        id 399074CFC; Wed, 16 Jun 2021 14:50:10 +0530 (IST)
-From:   Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org, robh+dt@kernel.org
-Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
-        vbadigan@codeaurora.org, rampraka@codeaurora.org,
-        sayalil@codeaurora.org, sartgarg@codeaurora.org,
-        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        sibis@codeaurora.org, okukatla@codeaurora.org, djakov@kernel.org,
-        cang@codeaurora.org, pragalla@codeaurora.org,
-        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org,
-        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Subject: [PATCH V2] dt-bindings: mmc: sdhci-msm: Add compatible string for sc7280
-Date:   Wed, 16 Jun 2021 14:50:07 +0530
-Message-Id: <1623835207-29462-1-git-send-email-sbhanu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 16 Jun 2021 05:22:49 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76880C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:20:43 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id w14so1779764ilv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:20:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZIrdHCxP+eNu9RDYSBtvb989XhIMr5N4tWo/LdXTbrI=;
+        b=RAW318u+hQF1wf7yhBNK6SanQy9VNJrs3eEff5oUIT9qZgcyh4hrl4j8RMyGVbvC0V
+         QizCKWORSGGbsV6EzbKFRu4PfCU0zgJ12f5hU7I9nDaeBO4i27REIN93JM0o9MBJZuOW
+         /66abXD+7u7nyHjsHo1cbQxzG9qD9YNbXc24Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZIrdHCxP+eNu9RDYSBtvb989XhIMr5N4tWo/LdXTbrI=;
+        b=IEhra8bHrjGLVdrYny+/sU+QsTP4EvH/tGZKn2IQi5iam16eubHVfC0pvzRNrlaJ1k
+         7XpjWz+jHc/opgTfUZ+QjaqtDAMMCneDEw/sdYNt9sEpy63AEJ/RG7FqK+9Kq3ti2sjl
+         X1A5hLeyoKQLfa3W7HAHhuTF7c0yvnkYHuCBRE2i+bXUFGGSWrf2tjwffOIIDlKOah2S
+         hLT4WhlwoOxnJqQKPomc9hOWZ+g24N0VxLOjenmDT+AYbWg2Tk30ZvsDDZHPOskRc40y
+         uA8MUbGbPlJsHJHxLPUgVE23hUL5zxZai9eH7Mp4Hlb9nDyWcdUcuzWtyB3FS9Fj8RuW
+         U9bg==
+X-Gm-Message-State: AOAM531mfPxPcROhtSnyhszQOsasO1//gI0o1pxOFoJProyiwFM5wDt8
+        2Vs0HKaPiNqTveuzXe8dSb+i0P5WjHMm9UGciwBYiwNoJ7KGrA==
+X-Google-Smtp-Source: ABdhPJxlqLkzHebAGro9aRD6l8ybazeFhkkKwg/voI/xiYOhMYf5Qwb2bd+Ofv4/b3TJrNAXjH0I3JOqFYKMZh+mO5A=
+X-Received: by 2002:a92:360e:: with SMTP id d14mr2965475ila.106.1623835242824;
+ Wed, 16 Jun 2021 02:20:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210616053335.4181780-1-hsinyi@chromium.org> <CGME20210616075555epcas1p136129544501878b4bedaf8e46f9a43dc@epcas1p1.samsung.com>
+ <20210616075548.ghp3lmjf4y6pyxoy@vireshk-i7> <b9310754-2105-2a93-ecbf-513d9a80a91a@samsung.com>
+ <20210616090945.sn337tftdcp7y7y6@vireshk-i7>
+In-Reply-To: <20210616090945.sn337tftdcp7y7y6@vireshk-i7>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Wed, 16 Jun 2021 17:20:16 +0800
+Message-ID: <CAJMQK-gXDcXhvR04hax7GnqW72FtUj4Hm5aheLtqzrhVm8av9w@mail.gmail.com>
+Subject: Re: [PATCH] opp: of: Allow lazy-linking of required-opps to non genpd
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        "Viresh Kumar )" <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "andrew-sh . cheng" <andrew-sh.cheng@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add sc7280 SoC specific compatible strings for qcom-sdhci controller.
+On Wed, Jun 16, 2021 at 5:09 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 16-06-21, 17:47, Chanwoo Choi wrote:
+> > On 6/16/21 4:55 PM, Viresh Kumar wrote:
+> > > On 16-06-21, 13:33, Hsin-Yi Wang wrote:
+> > >> Don't limit required_opp_table to genpd only. One possible use case is
+> > >> cpufreq based devfreq governor, which can use required-opps property to
+> > >> derive devfreq from cpufreq.
+> > >>
+> > >> Suggested-by: Chanwoo Choi <cw00.choi@samsung.com>
+> > >> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> > >> ---
+> > >> This is tested with the non genpd case mt8183-cci with passive
+> > >> governor[1].
+> > >> [1] https://patchwork.kernel.org/project/linux-mediatek/patch/1616499241-4906-2-git-send-email-andrew-sh.cheng@mediatek.com/
+> > >> ---
+> > >>  drivers/opp/of.c | 20 +-------------------
+> > >>  1 file changed, 1 insertion(+), 19 deletions(-)
+> > >>
+> > >> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+> > >> index aa75a1caf08a3..9573facce53a5 100644
+> > >> --- a/drivers/opp/of.c
+> > >> +++ b/drivers/opp/of.c
+> > >> @@ -201,17 +201,6 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
+> > >>                    lazy = true;
+> > >>                    continue;
+> > >>            }
+> > >> -
+> > >> -          /*
+> > >> -           * We only support genpd's OPPs in the "required-opps" for now,
+> > >> -           * as we don't know how much about other cases. Error out if the
+> > >> -           * required OPP doesn't belong to a genpd.
+> > >> -           */
+> > >> -          if (!required_opp_tables[i]->is_genpd) {
+> > >> -                  dev_err(dev, "required-opp doesn't belong to genpd: %pOF\n",
+> > >> -                          required_np);
+> > >> -                  goto free_required_tables;
+> > >> -          }
+> > >>    }
+> > >>
+> > >>    /* Let's do the linking later on */
+> > >> @@ -379,13 +368,6 @@ static void lazy_link_required_opp_table(struct opp_table *new_table)
+> > >>    struct dev_pm_opp *opp;
+> > >>    int i, ret;
+> > >>
+> > >> -  /*
+> > >> -   * We only support genpd's OPPs in the "required-opps" for now,
+> > >> -   * as we don't know much about other cases.
+> > >> -   */
+> > >> -  if (!new_table->is_genpd)
+> > >> -          return;
+> > >> -
+> > >>    mutex_lock(&opp_table_lock);
+> > >>
+> > >>    list_for_each_entry_safe(opp_table, temp, &lazy_opp_tables, lazy) {
+> > >> @@ -873,7 +855,7 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
+> > >>            return ERR_PTR(-ENOMEM);
+> > >>
+> > >>    ret = _read_opp_key(new_opp, opp_table, np, &rate_not_available);
+> > >> -  if (ret < 0 && !opp_table->is_genpd) {
+> > >> +  if (ret < 0) {
+> > >>            dev_err(dev, "%s: opp key field not found\n", __func__);
+> > >>            goto free_opp;
+> > >>    }
+> > >
+> > > Plus this and few changes to commit log.
+> > >
+> > > diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> > > index e366218d6736..b335c077f215 100644
+> > > --- a/drivers/opp/core.c
+> > > +++ b/drivers/opp/core.c
+> > > @@ -893,6 +893,16 @@ static int _set_required_opps(struct device *dev,
+> > >         if (!required_opp_tables)
+> > >                 return 0;
+> > >
+> > > +       /*
+> > > +        * We only support genpd's OPPs in the "required-opps" for now, as we
+> > > +        * don't know much about other use cases. Error out if the required OPP
+> > > +        * doesn't belong to a genpd.
+> > > +        */
+> > > +       if (unlikely(!required_opp_tables[0]->is_genpd)) {
+> > > +               dev_err(dev, "required-opps don't belong to a genpd\n");
+> > > +               return -ENOENT;
+> > > +       }
+> > > +
+> >
+> > If you add this checking statement, I think that
+> > when using dev_pm_opp_set_rate with required-opp property, it will be failed.
+>
+> Yes, that is exactly what I am trying to do here. Hsin already
+> confirmed that you guys won't use this API, isn't ?
 
-Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
----
-
-Changes since V1:
-        - Modified commit subject line.
----
- Documentation/devicetree/bindings/mmc/sdhci-msm.txt | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/mmc/sdhci-msm.txt b/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
-index 4c7fa6a..365c3fc 100644
---- a/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
-+++ b/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
-@@ -19,6 +19,7 @@ Required properties:
- 		"qcom,msm8996-sdhci", "qcom,sdhci-msm-v4"
- 		"qcom,qcs404-sdhci", "qcom,sdhci-msm-v5"
- 		"qcom,sc7180-sdhci", "qcom,sdhci-msm-v5";
-+		"qcom,sc7280-sdhci", "qcom,sdhci-msm-v5";
- 		"qcom,sdm845-sdhci", "qcom,sdhci-msm-v5"
- 		"qcom,sdx55-sdhci", "qcom,sdhci-msm-v5";
- 		"qcom,sm8250-sdhci", "qcom,sdhci-msm-v5"
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+we used clk_set_rate() and regulator_set_voltage().
+>
+> The point here is that the _set_required_opps() function only updates
+> the performance state of genpds today. So it won't work for you guys
+> anyway.
+>
+> --
+> viresh
