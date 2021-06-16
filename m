@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C033A8E60
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0BF3A8E61
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhFPBcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 21:32:17 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:57741 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230371AbhFPBcQ (ORCPT
+        id S231774AbhFPBcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 21:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230376AbhFPBco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 21:32:16 -0400
-X-UUID: f15dd2272bc74643881fb656e8335aeb-20210616
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=bN1zFdu+kgnFsjJiRGRT8DKoz4fiLgKY4mbL1c8VCqU=;
-        b=qqQg9rdv09NK1kVK9mzM0bPxsZP1WSKYAWETMCKF2x77NhyCQfmWVm/eMgWFXAY3ueSHIGEGWbuaFHn0iir2VBIKJI80J1CYhxI5vRQWojUJJ74cGARuAOygb+Bps8JVZ3sMuksx2//k3gGFUohUhNLg3tk2UruyHb3xe3f6d8k=;
-X-UUID: f15dd2272bc74643881fb656e8335aeb-20210616
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <wenbin.mei@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1764266801; Wed, 16 Jun 2021 09:30:05 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs02n2.mediatek.inc
- (172.21.101.101) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 16 Jun
- 2021 09:30:03 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 16 Jun 2021 09:30:02 +0800
-Message-ID: <1623807002.15910.8.camel@mhfsdcap03>
-Subject: Re: [PATCH 12/27] arm64: dts: mt8195: fix mmc driver
-From:   Wenbin Mei <wenbin.mei@mediatek.com>
-To:     Tinghan Shen <tinghan.shen@mediatek.com>
-CC:     <robh+dt@kernel.org>, <matthias.bgg@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <seiya.wang@mediatek.com>, <wenst@google.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Date:   Wed, 16 Jun 2021 09:30:02 +0800
-In-Reply-To: <20210615173233.26682-12-tinghan.shen@mediatek.com>
-References: <20210615173233.26682-1-tinghan.shen@mediatek.com>
-         <20210615173233.26682-12-tinghan.shen@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 15 Jun 2021 21:32:44 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE69BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 18:30:38 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id k6so833842pfk.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 18:30:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=98QtFZL4VdtHTypPhf4rfoA0vIbhXerE7IjIdxfFqRU=;
+        b=WDc6UGP9Xk8pCcAw0qAvz+SN/Q4oXI1+yPexmHl8R77PYRUiHxlGBKuZSUVER0JP8D
+         3aHqOmJsT24Kb4MD/mIwi1eqHGpd9oDMvpAPzto/0kVUBncMUaYtnVqCVwOhi9uHn4OB
+         JpC7mcSp/+enuQ3/IbV7kCxfXacavVbLrMHhU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=98QtFZL4VdtHTypPhf4rfoA0vIbhXerE7IjIdxfFqRU=;
+        b=a5iuY/3NpOrqcJtdrATq5caq7NvbOi2lt7W0dKdvgt8UmC/j2jNpU2IOmX7yS9oMf7
+         2Yp1Hbq5Ql3/0/d80l/mOMxt+Je4s5A0Ber6eB4OF42fBcH4TqMSeRzITQni9iVV8wCf
+         z+f469T3jmXTa8FuzD+kWRaY40cvCSSeJfvYJH4ip4XtsChkEz3WziUBoGNpI5wuEQui
+         rRuTK7rKnjy9D0arkQb1oN3jITyoVu7i+nm02QWq6m4/eCyF6J16RtUd6nBoJfykh706
+         yd2NSE0y2w/xkGMiH0wkWmF2cO6omY8t6mbtRChSxB5axjQiSgFhFwmRUp3Tw1bEO2A9
+         r5rg==
+X-Gm-Message-State: AOAM533ZlU4q0X2efe+iLs3cQtiDrCNUc1fhnFPMlwIsGwmjvs9WyBEG
+        q/fqC4jnFj4jmx+RLF+PzTqtLw==
+X-Google-Smtp-Source: ABdhPJxrHJVKhgq5ZsFbpCyhrDXZmY+WlAfnxHbE9Y24jvxFC87nN2HDAIOpr2LxxUXKNUJMLuYXYA==
+X-Received: by 2002:aa7:860a:0:b029:2e9:f8cb:489c with SMTP id p10-20020aa7860a0000b02902e9f8cb489cmr6960401pfn.50.1623807038413;
+        Tue, 15 Jun 2021 18:30:38 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:da79:71b5:dd21:f72])
+        by smtp.gmail.com with ESMTPSA id ms5sm3619169pjb.19.2021.06.15.18.30.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 18:30:37 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 10:30:33 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     pmladek@suse.com, senozhatsky@chromium.org, rostedt@goodmis.org,
+        john.ogness@linutronix.de, linux@rasmusvillemoes.dk,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] printk: Move EXPORT_SYMBOL() closer to vprintk definition
+Message-ID: <YMlUOdpMEnTd2RSs@google.com>
+References: <20210614235635.887365-1-punitagrawal@gmail.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614235635.887365-1-punitagrawal@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA2LTE2IGF0IDAxOjMyICswODAwLCBUaW5naGFuIFNoZW4gd3JvdGU6DQo+
-IEZyb206IFdlbmJpbiBNZWkgPHdlbmJpbi5tZWlAbWVkaWF0ZWsuY29tPg0KPiANCj4gZml4IG1t
-YyBkcml2ZXIgd2l0aCBwcm9wZXIgY2xvY2sgZm9yIG10ODE5NSBTb0MuDQo+IA0KPiBTaWduZWQt
-b2ZmLWJ5OiBXZW5iaW4gTWVpIDx3ZW5iaW4ubWVpQG1lZGlhdGVrLmNvbT4NCj4gLS0tDQo+ICBh
-cmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5NS5kdHNpIHwgMTggKysrKysrKysrKysr
-KystLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMTQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMo
-LSkNCj4gDQo+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5
-NS5kdHNpIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTUuZHRzaQ0KPiBpbmRl
-eCA1MzlmNDA1YTRmM2QuLjMyN2ZmMWI4NTZkMiAxMDA2NDQNCj4gLS0tIGEvYXJjaC9hcm02NC9i
-b290L2R0cy9tZWRpYXRlay9tdDgxOTUuZHRzaQ0KPiArKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRz
-L21lZGlhdGVrL210ODE5NS5kdHNpDQo+IEBAIC05MjYsMjIgKzkyNiwzMiBAQA0KPiAgCQl9Ow0K
-PiAgDQo+ICAJCW1tYzA6IG1tY0AxMTIzMDAwMCB7DQo+IC0JCQljb21wYXRpYmxlID0gIm1lZGlh
-dGVrLG10ODE5NS1tbWMiLCAibWVkaWF0ZWssbXQ4MTkyLW1tYyI7DQo+ICsJCQljb21wYXRpYmxl
-ID0gIm1lZGlhdGVrLG10ODE5NS1tbWMiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVrLG10ODE5Mi1t
-bWMiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVrLG10ODE4My1tbWMiOw0KSSBoYXZlIHN1Ym1pdHRl
-ZCBhIHBhdGNoIHRvIGZpeCB0aGUNCmR0LWJpbmRpbmdzKGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL3BpcGVybWFpbC9saW51eC1tZWRpYXRlay8yMDIxLUp1bmUvMDI1NDU2Lmh0bWwpLCBOb3cg
-d2hpY2ggc2hvdWxkIGJlOg0KCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTk1LW1tYyIsICJt
-ZWRpYXRlayxtdDgxODMtbW1jIjsNCj4gIAkJCXJlZyA9IDwwIDB4MTEyMzAwMDAgMCAweDEwMDAw
-PiwNCj4gIAkJCSAgICAgIDwwIDB4MTFmNTAwMDAgMCAweDEwMDA+Ow0KPiAgCQkJaW50ZXJydXB0
-cyA9IDxHSUNfU1BJIDEzMSBJUlFfVFlQRV9MRVZFTF9ISUdIIDA+Ow0KPiAtCQkJY2xvY2tzID0g
-PCZjbGsyNm0+LCA8JmNsazI2bT4sIDwmY2xrMjZtPjsNCj4gKwkJCWNsb2NrcyA9IDwmdG9wY2tn
-ZW4gQ0xLX1RPUF9NU0RDNTBfMF9TRUw+LA0KPiArCQkJCSA8JmluZnJhY2ZnX2FvIENMS19JTkZS
-QV9BT19NU0RDMD4sDQo+ICsJCQkJIDwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX0FPX01TREMwX1NS
-Qz47DQo+ICAJCQljbG9jay1uYW1lcyA9ICJzb3VyY2UiLCAiaGNsayIsICJzb3VyY2VfY2ciOw0K
-PiAgCQkJc3RhdHVzID0gImRpc2FibGVkIjsNCj4gIAkJfTsNCj4gIA0KPiAgCQltbWMxOiBtbWNA
-MTEyNDAwMDAgew0KPiAtCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTUtbW1jIiwgIm1l
-ZGlhdGVrLG10ODE5Mi1tbWMiOw0KPiArCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTUt
-bW1jIiwNCj4gKwkJCQkgICAgICJtZWRpYXRlayxtdDgxOTItbW1jIiwNCj4gKwkJCQkgICAgICJt
-ZWRpYXRlayxtdDgxODMtbW1jIjsNCkRpdHRvLCB0aGlzIHNob3VsZCBiZToNCgljb21wYXRpYmxl
-ID0gIm1lZGlhdGVrLG10ODE5NS1tbWMiLCAibWVkaWF0ZWssbXQ4MTgzLW1tYyI7DQo+ICAJCQly
-ZWcgPSA8MCAweDExMjQwMDAwIDAgMHgxMDAwPiwNCj4gIAkJCSAgICAgIDwwIDB4MTFjNzAwMDAg
-MCAweDEwMDA+Ow0KPiAgCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDEzNSBJUlFfVFlQRV9MRVZF
-TF9ISUdIIDA+Ow0KPiAtCQkJY2xvY2tzID0gPCZjbGsyNm0+LCA8JmNsazI2bT4sIDwmY2xrMjZt
-PjsNCj4gKwkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NU0RDMzBfMV9TRUw+LA0KPiAr
-CQkJCSA8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9BT19NU0RDMT4sDQo+ICsJCQkJIDwmaW5mcmFj
-ZmdfYW8gQ0xLX0lORlJBX0FPX01TREMxX1NSQz47DQo+ICAJCQljbG9jay1uYW1lcyA9ICJzb3Vy
-Y2UiLCAiaGNsayIsICJzb3VyY2VfY2ciOw0KPiArCQkJYXNzaWduZWQtY2xvY2tzID0gPCZ0b3Bj
-a2dlbiBDTEtfVE9QX01TREMzMF8xX1NFTD47DQo+ICsJCQlhc3NpZ25lZC1jbG9jay1wYXJlbnRz
-ID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01TRENQTExfRDI+Ow0KPiAgCQkJc3RhdHVzID0gImRpc2Fi
-bGVkIjsNCj4gIAkJfTsNCj4gIA0KDQo=
+On (21/06/15 08:56), Punit Agrawal wrote:
+> Commit 28e1745b9fa2 ("printk: rename vprintk_func to vprintk") while
+> improving readability by removing vprintk indirection, inadvertently
+> placed the EXPORT_SYMBOL() for the newly renamed function at the end
+> of the file.
+> 
+> For reader sanity, and as is convention move the EXPORT_SYMBOL()
+> declaration just after the end of the function.
+> 
+> Fixes: 28e1745b9fa2 ("printk: rename vprintk_func to vprintk")
+> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
 
+Acked-by: Sergey Senozhatsky <senozhatsky@chromium.org>
