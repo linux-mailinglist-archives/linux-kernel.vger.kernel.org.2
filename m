@@ -2,160 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA013AA28A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8823AA28F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbhFPRi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:38:57 -0400
-Received: from mail-bn8nam11on2042.outbound.protection.outlook.com ([40.107.236.42]:32469
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230291AbhFPRiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:38:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HxvHJSrDqTWclE1uAd/wEsApAk2jUQvRAKGu6PM8vwN7AGLlOHs3HJBrEK74S2KDv9ueLDjv2fr8bwEor2RfyOr6NlOxVtH2H4x5DEkKiu+nq534XTjlYd8ZyGJlM6E4MlcF4bai6JL4g7LxeAwzmsAECkYkTONiA/CSTwHyrC0LgZlcVZpyViloExSYSpTxenWTkcIuCT/q3zefdUdOFXdxLqW0S2YR7/4XYuLO0h7UZJK4PKtHjhKhvyjVC7i1JoKxBkbf7xMJ/xZdJ4wpMoltMR5d1MFVDynQhaE+OnjfTqT7ELo/vZhU4gTY8hGVlUWZ0KrNxBFbK8XdEEKWkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vf8eJCeQyjzaexanhCnKCBB16CvV7LThO4GQHZuM8mE=;
- b=G/jcCrZt0SYQc/gHD8GUDVx9IGaRzIre/qdA4MVuisqDbewPpRWAIyuxzryF2Tkfe+tj7EEjiT/ziTmYK800tabe93FooAij9khy8j/Bn4DbZh/H3LB36w1gWM3P3f0PNJvzAjdg9gNtvVs102S2WzqeH2GgWdoSqZsYGmx4CpC2KJXKPW0PxNl1DJCl/NEGmCuHiuzIf52l5J2fvCNgzRHHU5vIWXTm1pMcUE6viuTXfR57zkTVaG/PfKc7hsrjka8qf7unpiF28epIV7xxs3lhSlXwf7LAD9u8ktgXl8NjaGwS4i9J4NcMPSqLmIpwBn0NEhfCb60+mVYMSJadJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vf8eJCeQyjzaexanhCnKCBB16CvV7LThO4GQHZuM8mE=;
- b=Ka/JvKztD6ZxU1q9Tpvxa8l8TRkw9ltvSyORQKdWdDQheOSK9ajEs0f3UWeI8S/CxcpUtWWEvOTww1hwwDX+rjn8MS8DwdeflgGeFguZhz+kfe402+QX/3yfu0oHsUaE1zAZBznVNErX0cBQOPOyA+VZKBhOR7MAcvLVGWXI8Oa01pGJ/3/MgQGTSgExdbmLxyLgNmcoLCsx3NX0v7CgQ2UbC7btwmUWsqQD3nFDe6NcVfj30nQ/pNGLtOlkjTgP/3MgjjAiG0X53H46zna4mgdnyYFBT+LxtljD/RXeztl/5MivTHNRrwiKXsYWmpN84av/3S9ffMAqGvMLte3ARQ==
-Authentication-Results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB5520.namprd12.prod.outlook.com (2603:10b6:5:208::9) by
- DM8PR12MB5446.namprd12.prod.outlook.com (2603:10b6:8:3c::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4242.15; Wed, 16 Jun 2021 17:36:48 +0000
-Received: from DM6PR12MB5520.namprd12.prod.outlook.com
- ([fe80::18b7:5b87:86c1:afdb]) by DM6PR12MB5520.namprd12.prod.outlook.com
- ([fe80::18b7:5b87:86c1:afdb%8]) with mapi id 15.20.4242.019; Wed, 16 Jun 2021
- 17:36:48 +0000
-Date:   Wed, 16 Jun 2021 14:36:46 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Vikram Sethi <vsethi@nvidia.com>,
-        vidyas@nvidia.com, treding@nvidia.com,
-        Jon Masters <jcm@jonmasters.org>,
-        Jeremy Linton <jeremy.linton@arm.com>, mark.rutland@arm.com,
-        linux-pci@vger.kernel.org, sudeep.holla@arm.com,
-        linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        bhelgaas@google.com, linux-arm-kernel@lists.infradead.org,
-        ebrower@nvidia.com, jcm@redhat.com, Grant.Likely@arm.com
-Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
-Message-ID: <20210616173646.GA1840163@nvidia.com>
-References: <20210105045735.1709825-1-jeremy.linton@arm.com>
- <20210107181416.GA3536@willie-the-truck>
- <56375cd8-8e11-aba6-9e11-1e0ec546e423@jonmasters.org>
- <20210108103216.GA17931@e121166-lin.cambridge.arm.com>
- <20210122194829.GE25471@willie-the-truck>
- <b37bbff9-d4f8-ece6-3a89-fa21093e15e1@nvidia.com>
- <20210126225351.GA30941@willie-the-truck>
- <20210325131231.GA18590@e121166-lin.cambridge.arm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325131231.GA18590@e121166-lin.cambridge.arm.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL0PR02CA0032.namprd02.prod.outlook.com
- (2603:10b6:207:3c::45) To DM6PR12MB5520.namprd12.prod.outlook.com
- (2603:10b6:5:208::9)
+        id S231386AbhFPRkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:40:18 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:56822 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230350AbhFPRkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 13:40:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623865090; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=TABrvwCzw7wuTAokLpE+jbKeoDKxrwFh4qxRG/wt1+U=;
+ b=HX9rHcKSuyj7Oe506E3JJV57y5JVWbgdxA+SWyKzZMTPKo++yMZtaMu3EqwM4gzExZ51zQP9
+ uzOOHtPRMp/q19HEOQ+1dQUeJ0CecLqbUmr6zr1J3ch/4NoyCAXK9pxhFMryDk7Jqs/he/z9
+ BADzhDfTb+tNAYfOYzy6/rlr5I8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60ca36fbe27c0cc77f2596dd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Jun 2021 17:38:03
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 51D22C43217; Wed, 16 Jun 2021 17:38:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 55446C433F1;
+        Wed, 16 Jun 2021 17:38:01 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR02CA0032.namprd02.prod.outlook.com (2603:10b6:207:3c::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend Transport; Wed, 16 Jun 2021 17:36:47 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ltZT4-007j68-Lh; Wed, 16 Jun 2021 14:36:46 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 44efcb88-9f6c-47e5-0ae5-08d930ed5135
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5446:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM8PR12MB5446D1D4BA09AC0E7C03F7A5C20F9@DM8PR12MB5446.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: A/R5zPfIY8FoyD/UffJBxnnDHPM3QW+/RDrKgSJAVqqYYusUy4OvRLjOs1C+7Fh/H6oyqk9R29qZYmWCNlinbvPC950F3ULsC6u0vgLXZzdY+KBTbSRfndRqF1yK52NN/d3zc8+JtVH9ghnXup5YeR/y7JJN2jEwNgVKKcU9zok/iZ9VARfJakdp1cNbjNxuqCckX0w8pad+rbqdCmCYjsbAL1pW87oXShF4z/uo+7XmFtNhkriYYN6MWX0tLdvmvQW0xr+xWXEP3w0GNmmbSoYIxNTj0Uzt3okRcb/dzW3slSNA1+hKAnbsP7M9h2+/QuWxc/yPsoj2NHZJQnsS5gvt66voyVafdR8gBzi99ti5Y0ewU/gkmhJJ2PSxcEvV8rblulPErAn5z8dm1454O3W+fj9MowAnng+pZ0JvMVFHbiPcIuYRL9tlidW6PnXEy7ucI9ID/eHXxEqGuSJXVASko7hTXdzTl739tTB5MrtgU6AvsCG70u1lcKxi5Tr2vaLxqqUTVhTE+Q+4OYIwq1q/p4wVqjPFFItPjQ5OixqrOBEjVbTcuHfHYtq5oHVG1J0LYfcAhX+xQhFJuHKpz91M9rukPLbIGyCdwo8qZRg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5520.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(346002)(396003)(136003)(1076003)(86362001)(4326008)(2616005)(316002)(33656002)(6916009)(54906003)(5660300002)(426003)(478600001)(186003)(2906002)(36756003)(38100700002)(9746002)(66556008)(7416002)(66476007)(26005)(66946007)(9786002)(8936002)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mlfCfSHnykJwo4Jt/akn/EIGF25dCCJf1DU/Yv3sYEQeWPA6nz0CxauEo7F6?=
- =?us-ascii?Q?c1gxti5qy1FMRVYPpw6/l9tQaqOJCzd8C2RPCRu5m4Jxnmy2HIx0tCckXey2?=
- =?us-ascii?Q?OkK8J4QLCulMAz0ShxlmouOkbOnEc9MuA0z0aquVvfX1LJZsrrrv/7keR/+T?=
- =?us-ascii?Q?AuE6mbUUbQMetf6OlIcWD0nb/VDtFlbolwBtax45zuappxXMibVJC8Vd8YxR?=
- =?us-ascii?Q?YnBB4TMWuircasTnkM4wlixrEDolYAWLHvdRk6fh70ZS5ERHH3ZMdpYvvfg5?=
- =?us-ascii?Q?1xeRfWWDxorgnX85xcImPwcfd756r8X78NdarqPKrfrhHZ6wsA3mRXlfUj8/?=
- =?us-ascii?Q?rPaZXTmaApy6VSs+fmrFz2MdiZidBp0iyCFmJwu0kosgpg8vKfJFVVjMSefu?=
- =?us-ascii?Q?jwjAxaJ77z1+56+rxo0IK8be/xnrC7Ht6NOBwyen+N2YzAtROcyx5dv6k5v6?=
- =?us-ascii?Q?p2P+AE/85Lvq3sL8wJ3hM2vdSoatLKyKRaDQI3XcbRHTKq7ynVz3pryJueGJ?=
- =?us-ascii?Q?fBy2qWb5jIB8AlhbKqMnzTh5tfwOQz9qnTHPSUpN/FKeGXNYdXrRLbD0CMrb?=
- =?us-ascii?Q?GrtEJ7b1cCt1B5Gfi3RqawoZTUEvftlFH80Et2nECik9TTXiyfeqUsbOGigx?=
- =?us-ascii?Q?4iAp2Vz9v9NglcTCBk2zW5/LmWS/2L+Fpds7RKj1IutNiitBTzD5E9JZXZnF?=
- =?us-ascii?Q?OIoxP+x2zMGskF/rIDb5IKYGm7B188PaCsi9TYk+vtDfb+neYGSY00U6g+vR?=
- =?us-ascii?Q?ZcJOzZ6xQWLc4puq49KtEI/FwEtV0KeKW8qofTT9lauPyx5SMhxoJbDMVi9I?=
- =?us-ascii?Q?gn0LQnWs0cGx8yUSDiGixRy8LUeokUg91dpaW6OCWJY3Aut6rmW93HNRgHMy?=
- =?us-ascii?Q?rX2nivtsid9WL7mTp4+/D33JKMp8/kKAEde7BTJpNpaLFlnidNz15KgHuuJO?=
- =?us-ascii?Q?T+9VQJrm6deUuOWXl5AC0FPr5qjb493D2Fo1wELFAG+LaU+RJFKDxul73E1n?=
- =?us-ascii?Q?CelHcG5j10/h7N+26Su0aVI48YAAPBCFU6COhXiiyhSjynF46ry1Q8ZY0LPW?=
- =?us-ascii?Q?6qXQwbyjtiBq5u/fsLD/vih5sR/d5cn2lkuVeR0GAUOUcoAIu5BKdZgbATod?=
- =?us-ascii?Q?qQqlhW4iGc4iyoszhpm9h3x08Qj9qLdCCYwXGNESd7SWLkZ6Ub0Jz7AFO+xK?=
- =?us-ascii?Q?UESoRez8S6beiQ8zwwJl+7Z+LFol500G7SEnsQM3xLpy/wtmqAUIMsk3gbR4?=
- =?us-ascii?Q?LSHOiVWPkCdcXliUVq5fG8zr6W/e0Fvo7asO1gumw0nlaK5m2/WM+JjOYVMQ?=
- =?us-ascii?Q?MZV9U8/OaU0oHIoHsTAgJvYq?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44efcb88-9f6c-47e5-0ae5-08d930ed5135
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5520.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 17:36:47.9689
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Of1jpIenxD2LxMU4kLHARFc/XMiNmGYc4CxaPKw2OsY0NuwKG0M74jN9mi4PuqTW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5446
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 16 Jun 2021 10:38:01 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        ath11k@lists.infradead.org, bbhatt=codeaurora.org@codeaurora.org,
+        lilic@codeaurora.org, kangxu@codeaurora.org
+Subject: Re: [PATCH v4 4/6] ath11k: set register access length for MHI driver
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <37184e28dcc952ba9ad5ed0dc2c1a6da@codeaurora.org>
+References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
+ <1620330705-40192-5-git-send-email-bbhatt@codeaurora.org>
+ <20210521135152.GL70095@thinkpad> <87h7i0juxt.fsf@codeaurora.org>
+ <37184e28dcc952ba9ad5ed0dc2c1a6da@codeaurora.org>
+Message-ID: <6ed9fe90f40e5f8151d3a028abf0acd1@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 01:12:31PM +0000, Lorenzo Pieralisi wrote:
+Hi Kalle/Mani,
 
-> A discussion was held between me, Will Deacon, Bjorn Helgaas and Jon
-> Masters to agree on a proposed solution for this matter, a summary of the
-> outcome below:
+On 2021-06-14 10:49 AM, Bhaumik Bhatt wrote:
+> Hi Kalle,
 > 
-> - The PCI SMC conduit and related specifications are seen as firmware
->   kludge to a long-standing HW compliance issue. The SMC interface does
->   not encourage Arm partners to fix their IPs and its only purpose
->   consists in papering over HW issues that should have been fixed by
->   now; were the PCI SMC conduit introduced at arm64 ACPI inception as
->   part of the standardization effort the matter would have been different
->   but introducing it now brings about more shortcomings than benefits on
->   balance, especially if MCFG quirks can be controlled and monitored (and
->   they will).
+> On 2021-06-14 09:02 AM, Kalle Valo wrote:
+>> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
+>> 
+>>> On Thu, May 06, 2021 at 12:51:43PM -0700, Bhaumik Bhatt wrote:
+>>>> MHI driver requires register space length to add range checks and
+>>>> prevent memory region accesses outside of that for MMIO space.
+>>>> Set it before registering the MHI controller.
+>>>> 
+>>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>>>> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+>>> 
+>>> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>>> 
+>>> Kalle, should we do immutable branch for this patch or I can pick it 
+>>> up via MHI
+>>> tree (if there are no other patches expected from ath11k for this 
+>>> controller)?
+>> 
+>> I'm not expecting any conflicts with this, and if there are, they 
+>> should
+>> be easy for Stephen or Linus to fix. So it's easiest to route this via
+>> your tree. But I'm not giving my ack yet, see below.
+>> 
+>> I'm worried that this patchset breaks bisect. Every patch in the
+>> patchset should not break existing functionality, what if only patches
+>> 1-3 are included in the tree but not patch 4? Wouldn't ath11k be 
+>> broken
+>> then? I didn't review the whole patchset, but I suspect the fix is to
+>> include the ath11k change in the actual mhi patch which changes the
+>> functionality. So that way we would not have a separate ath11k patch 
+>> at
+>> all.
+>> 
+>> Also I'm not able to test this patchset at the moment. Can someone 
+>> else
+>> help and do a quick test with QCA6390 to verify these doesn't break
+>> ath11k?
+> 
+> I have requested someone to try and test this patch series with 
+> QCA6390.
+> 
+> I or the testers will get back to you with the test results when they 
+> are
+> available.
+> 
+> As far as your concerns go, you can choose to pick patches 1-3 and that 
+> would
+> be just fine.
+> 
+> Things will break if patchset 4 is _not_ in place with patchset 6 being 
+> part of
+> the tree.
+> 
+> It would, however, be nice to pick the whole series instead and ensure 
+> that
+> the functionality MHI introduces for boot-up sanity is in place for any
+> controllers such as ath11k.
+> 
+> Thanks,
+> Bhaumik
+> ---
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+> Forum,
+> a Linux Foundation Collaborative Project
 
-I wanted to inject a slightly different viewpoint on this (old thread,
-since it was revisited in some other forum) - I'm not so interested in
-this firmware interface to fix ECAM compliance/quirks/etc.
+Just got confirmation that the whole patch series was tested for 
+functional sanity on
+Dell E7590 + QCA6390 with Ubuntu18.04 and patch 4/6 is also good to go.
 
-However, in modern server type systems the PCI config space is often a
-software fiction being created by firmware throughout the PCI
-space. This has become necessary as the config space has exploded in
-size and complexity and PCI devices themselves have become very, very
-complicated. Not just the config space of single devices, but even
-bridges and topology are SW created in some cases.
+Can you please ACK and pick up this series?
 
-HW that is doing this is already trapping the config cycles somehow,
-presumably with some very ugly way like x86's SMM. Allowing a designed
-in way to inject software into the config space cycles does sound a
-lot cleaner and better to me.
-
-For instance it may solve other pain points if ARM systems had a cheap
-way to emulate up a "PCI device" to wrapper around some IP blob on
-chip. The x86 world has really driven this approach where everything
-on SOC is PCI discoverable, and it does seem to work well.
-
-IMHO SW emulation of config space is an important ingredient to do
-this.
-
-Jason
+Thanks,
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
