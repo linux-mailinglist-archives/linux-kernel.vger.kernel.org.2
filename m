@@ -2,189 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2403A94D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5ADA3A94DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbhFPIVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbhFPIVI (ORCPT
+        id S232025AbhFPIV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:21:57 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:54416 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231710AbhFPIV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:21:08 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A17C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:19:02 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id v13so726880ple.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:19:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+AzUjtrJOh8ZWRh784rmLMzJQd1pE1/adqWdw+99bT4=;
-        b=nqcq9amYZYQtquTdDm40QUnU2urna5vkIVt25YGHbWE1PJv/OtejXkSFqDAl+BAKrN
-         Bw79ZuawEIYG3SrfHHvNmR+gaTQJ8GOc65mIUwgifXEsXIuK/+YMGmb3x2uhLAI0CTcZ
-         AizQez9fbr2QjQdNwy27mcKhYTNmSz0uzED29jpObh6SnHIJ2t/Q63zBJwvB8IBqOb1r
-         Ye6o1cwDZkdPYhz25Nu6j0+8WP67wAklr+Ort09x8Lu9lpI4q+ck8SkCzAWU10MjJGQj
-         1wKW3EaxVWS7QUtLG9B+jAdJMJTtwNb4dFn7JOJBDIJF+1qTy+8UYANfmM0hphkpLygx
-         LoNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+AzUjtrJOh8ZWRh784rmLMzJQd1pE1/adqWdw+99bT4=;
-        b=TQdG5CoFiUj5nWqsoQcnHSIYo0vY/GjT9pamIuA37/DvhLPp0J4yXo8TeBZTE42eRb
-         jzfTV+nq01Xv5whCdx3v8exL+ehwY/rKTrKKOmtrEMqLEfH6QNYypEtgXgstN4S1g3iw
-         GVpq3E8ZnJqQ1YoGa4RR9yMpjpqkQK1m09kTZHx0zgKyaDlXshUFafGeYRXBUZg0WeVf
-         74aJqIrwgQ+ITQB5HUO5PsfDMuM2BmyPIB/zKTBKv//fzsRKcCTFmzlBjH/Drn7mhFYI
-         oe+ZojHj2OoJryR4I7NixghapBpDMDhzrUpQ+tjT8D6hT4M62bcuZByz32gs465hQUYU
-         M5Ew==
-X-Gm-Message-State: AOAM530TK1FD8iSxZqDvbJD4FfEKR/eRX0MILVCUuNfGK0SevI2eJWbk
-        cO5n+QZ03AlPiPvMVD8jX9sHDQ==
-X-Google-Smtp-Source: ABdhPJypIF7kXx23yj+Dg80lYHYrg2s+N9oFEbv4GhxfmY6e8X3IPwp4XbpJU3xleGLEESYRmb6ttA==
-X-Received: by 2002:a17:902:7244:b029:f5:2ffd:37f9 with SMTP id c4-20020a1709027244b02900f52ffd37f9mr8146848pll.26.1623831542179;
-        Wed, 16 Jun 2021 01:19:02 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id f18sm4647252pjq.48.2021.06.16.01.19.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 01:19:01 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 13:48:59 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 2/3] arch_topology: Avoid use-after-free for
- scale_freq_data
-Message-ID: <20210616081859.idzpwzdyeu666xpz@vireshk-i7>
-References: <cover.1623825725.git.viresh.kumar@linaro.org>
- <9dba462b4d09a1a8a9fbb75740b74bf91a09a3e1.1623825725.git.viresh.kumar@linaro.org>
- <YMmu3bS3Q6avUfEW@kroah.com>
+        Wed, 16 Jun 2021 04:21:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1623831589; x=1626423589;
+        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=twN47ShxHvne0ZTgJPFRcqwPGlPklxkV8eYYhOW9sgM=;
+        b=cu8t+X0qIBTaObPhasZGa6OeDRaoEX0Yk/N9DgpHxbhd+jS1i3zp5RKVUmgZHxjV
+        whjNpAe5d39qJYRtG553daMjZTzcfvL05S0hltO5Wk+RVA2hb19Vy5vVKQBPfDvN
+        tPXekKlSKJgPo6O5DHwDwFMtFNTVRCqvaCPjOpCYu84=;
+X-AuditID: c39127d2-a9fbd70000001c5e-5d-60c9b42527a7
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id E0.AE.07262.524B9C06; Wed, 16 Jun 2021 10:19:49 +0200 (CEST)
+Received: from lws-ybas.phytec.de ([172.16.21.122])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2021061610194945-972463 ;
+          Wed, 16 Jun 2021 10:19:49 +0200 
+From:   Yunus Bas <y.bas@phytec.de>
+To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mfd: mfd-core: Change "Failed to locate of_node" warning to debug
+Date:   Wed, 16 Jun 2021 10:19:49 +0200
+Message-Id: <20210616081949.26618-1-y.bas@phytec.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMmu3bS3Q6avUfEW@kroah.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 16.06.2021 10:19:49,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 16.06.2021 10:19:49
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMJMWRmVeSWpSXmKPExsWyRoCBS1d1y8kEg50/tS3ufz3KaHF51xw2
+        ByaPO9f2sHl83iQXwBTFZZOSmpNZllqkb5fAlbFl4Se2grPsFc/fb2FrYJzL1sXIySEhYCJx
+        cP129i5GLg4hgW2MEqs23mSFcM4zShy9v4MRpIpNQFHi/O23QAkODhEBM4kf9yNBwsICQRK7
+        9xxiAbFZBFQlXi74zgRi8wIN3d/8EGqBvMTJtYeh4oISJ2c+YQGZLyFwhVFiyaprLBBFQhKn
+        F59lBrGZBbQlli18zTyBkXcWkp5ZSFILGJlWMQrlZiZnpxZlZusVZFSWpCbrpaRuYgQGzOGJ
+        6pd2MPbN8TjEyMTBeIhRgoNZSYRXt/hEghBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHeDbwlYUIC
+        6YklqdmpqQWpRTBZJg5OqQbGskUVv5eeXXjIQVRylVHXzC//ji5LktG4uKBdQ/fHzuSpVwsv
+        e1gsDo4ud2qUmPu58qDIJ4ULJ5Qu9S3d/tDj/7+3Co/ivgr3pMUe6dmdmFBwWun6GwHjf+K3
+        ytpL5l3m7/E69mel4fHPBWEeC24G2R0R4pm1Ozosyj7qlknjyfA81c+MLwWPK7EUZyQaajEX
+        FScCAIhu4zIGAgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-06-21, 09:57, Greg Kroah-Hartman wrote:
-> On Wed, Jun 16, 2021 at 12:18:08PM +0530, Viresh Kumar wrote:
-> > Currently topology_scale_freq_tick() may end up using a pointer to
-> > struct scale_freq_data, which was previously cleared by
-> > topology_clear_scale_freq_source(), as there is no protection in place
-> > here. The users of topology_clear_scale_freq_source() though needs a
-> > guarantee that the previous scale_freq_data isn't used anymore.
-> > 
-> > Since topology_scale_freq_tick() is called from scheduler tick, we don't
-> > want to add locking in there. Use the RCU update mechanism instead
-> > (which is already used by the scheduler's utilization update path) to
-> > guarantee race free updates here.
-> > 
-> > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> 
-> So this is a bugfix for problems in the current codebase?  What commit
-> does this fix?  Should it go to the stable kernels?
+The MFD-core iterates through all subdevices of the corresponding
+MFD-device and checks, if the devicetree subnode has a fitting compatible.
+When nothing is found, a warning is thrown. This can be the case, when it
+is the intention to not use the MFD-device to it's full content.
+Therefore, change the warning to a debug print instead, to also avoid
+irritations.
 
-There is only one user of topology_clear_scale_freq_source()
-(cppc-cpufreq driver, which is already reverted in pm/linux-next). So
-in the upcoming 5.13 kernel release, there will be no one using this
-API and so no one will break.
+Signed-off-by: Yunus Bas <y.bas@phytec.de>
+---
+ drivers/mfd/mfd-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-And so I skipped the fixes tag, I can add it though.
+diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
+index 6f02b8022c6d..e34c97088943 100644
+--- a/drivers/mfd/mfd-core.c
++++ b/drivers/mfd/mfd-core.c
+@@ -213,7 +213,7 @@ static int mfd=5Fadd=5Fdevice(struct device *parent, in=
+t id,
+ 		}
+=20
+ 		if (!pdev->dev.of=5Fnode)
+-			pr=5Fwarn("%s: Failed to locate of=5Fnode [id: %d]\n",
++			pr=5Fdebug("%s: Failed to locate of=5Fnode [id: %d]\n",
+ 				cell->name, platform=5Fid);
+ 	}
+=20
+--=20
+2.30.0
 
-> > ---
-> >  drivers/base/arch_topology.c | 27 +++++++++++++++++++++------
-> >  1 file changed, 21 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> > index c1179edc0f3b..921312a8d957 100644
-> > --- a/drivers/base/arch_topology.c
-> > +++ b/drivers/base/arch_topology.c
-> > @@ -18,10 +18,11 @@
-> >  #include <linux/cpumask.h>
-> >  #include <linux/init.h>
-> >  #include <linux/percpu.h>
-> > +#include <linux/rcupdate.h>
-> >  #include <linux/sched.h>
-> >  #include <linux/smp.h>
-> >  
-> > -static DEFINE_PER_CPU(struct scale_freq_data *, sft_data);
-> > +static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
-> >  static struct cpumask scale_freq_counters_mask;
-> >  static bool scale_freq_invariant;
-> >  
-> > @@ -66,16 +67,20 @@ void topology_set_scale_freq_source(struct scale_freq_data *data,
-> >  	if (cpumask_empty(&scale_freq_counters_mask))
-> >  		scale_freq_invariant = topology_scale_freq_invariant();
-> >  
-> > +	rcu_read_lock();
-> > +
-> >  	for_each_cpu(cpu, cpus) {
-> > -		sfd = per_cpu(sft_data, cpu);
-> > +		sfd = rcu_dereference(*per_cpu_ptr(&sft_data, cpu));
-> >  
-> >  		/* Use ARCH provided counters whenever possible */
-> >  		if (!sfd || sfd->source != SCALE_FREQ_SOURCE_ARCH) {
-> > -			per_cpu(sft_data, cpu) = data;
-> > +			rcu_assign_pointer(per_cpu(sft_data, cpu), data);
-> >  			cpumask_set_cpu(cpu, &scale_freq_counters_mask);
-> >  		}
-> >  	}
-> >  
-> > +	rcu_read_unlock();
-> > +
-> >  	update_scale_freq_invariant(true);
-> >  }
-> >  EXPORT_SYMBOL_GPL(topology_set_scale_freq_source);
-> > @@ -86,22 +91,32 @@ void topology_clear_scale_freq_source(enum scale_freq_source source,
-> >  	struct scale_freq_data *sfd;
-> >  	int cpu;
-> >  
-> > +	rcu_read_lock();
-> > +
-> >  	for_each_cpu(cpu, cpus) {
-> > -		sfd = per_cpu(sft_data, cpu);
-> > +		sfd = rcu_dereference(*per_cpu_ptr(&sft_data, cpu));
-> >  
-> >  		if (sfd && sfd->source == source) {
-> > -			per_cpu(sft_data, cpu) = NULL;
-> > +			rcu_assign_pointer(per_cpu(sft_data, cpu), NULL);
-> >  			cpumask_clear_cpu(cpu, &scale_freq_counters_mask);
-> >  		}
-> >  	}
-> >  
-> > +	rcu_read_unlock();
-> > +
-> > +	/*
-> > +	 * Make sure all references to previous sft_data are dropped to avoid
-> > +	 * use-after-free races.
-> > +	 */
-> > +	synchronize_rcu();
-> 
-> What race is happening?  How could the current code race?  Only when a
-> cpu is removed?
-
-topology_scale_freq_tick() is called by the scheduler for each CPU
-from scheduler_tick().
-
-It is possible that topology_scale_freq_tick() ends up using an older
-copy of sft_data pointer, while it is being removed by
-topology_clear_scale_freq_source() because a CPU went away or a
-cpufreq driver went away, or during normal suspend/resume (where CPUs
-are hot-unplugged).
-
-synchronize_rcu() makes sure that all RCU critical sections that
-started before it is called, will finish before it returns. And so the
-callers of topology_clear_scale_freq_source() don't need to worry
-about their callback getting called anymore.
-
--- 
-viresh
