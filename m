@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26B43A8DCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B3C3A8DD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhFPAsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:48:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230507AbhFPAs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:48:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5B0861153;
-        Wed, 16 Jun 2021 00:46:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623804384;
-        bh=Tfs8NCON6aZ23cjJVAqJGuB3PbUUxl2ih7k0KDLeOko=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WboQ0sdgVD321nkRTISHJ5oGwH+F5hC4xA6lXUu3dRqpY8BBVo2Gzasgz0rh7fbOH
-         GEVXMOC9faSYg8Wk0ONKCjSc1+vim20DakayaqoTgdky9mTDtgGf7FTtmGaVEwPcpr
-         cjPtQLNlVJLpDPRuynphPeELrWVZGIGgT86rZ1QoK4NmtDzckCREPL2Va0cZWGaszq
-         AUPwt25aP5r5FQmgd6MoXSIwb0QRF0IVF5Is21A6dE5faMq5JeWhJ0YICBct0w6VVi
-         vTK4G08TnREdjKKhWBXHwV5s/hjd9zqBeKhHfjWj8lOPOyNQ0NPfWDQiaWh5wjB+i8
-         T4WLUYhf4Z/AA==
-Date:   Wed, 16 Jun 2021 09:46:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     Anton Blanchard <anton@ozlabs.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 2/2] trace/kprobe: Remove limit on kretprobe maxactive
-Message-Id: <20210616094622.c8bd37840898c67dddde1053@kernel.org>
-In-Reply-To: <1623777582.jsiokbdey1.naveen@linux.ibm.com>
-References: <cover.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-        <a751a0617a2c06e7e233f2c98ccabe8b94a8076d.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-        <20210615183527.9068ef2f70fdd2a45fea78f0@kernel.org>
-        <1623777582.jsiokbdey1.naveen@linux.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231749AbhFPAvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230507AbhFPAvF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 20:51:05 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89989C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:49:00 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id u18so261785plc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:49:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N705IiD7n6FnNdMOVPwQtLkiV4KgkJ6X1/De6zQZWwI=;
+        b=Vdg0YlGJ8YdIQxJsskt857Kp1UiDME+54VPtdHVPVXgoShl4VVVAaR6LXE0dbZKVV2
+         +W+U4JeT3w/znleh/vZYdYXLbeE/pb0HV5ZEWUPDcvLxO26mt2qXZgivFzn3uSvahElD
+         IwGdaPoF4IcRH7qJIdQjXQmZCbal2lLL+QkYNIl2RRjAfHR9PYesk+uc+Sgyx5CZHFfl
+         e2DUPodC5WlhmtLJUFdwdvpJ9eljMdTNGqS+3FoZy7nhDaFOgT1hWfV8NXRx6YQNwhKl
+         h2XdYcERWOQAJ9xAgYdgl/J4fe3qT8u41yhXFC39k2ZstvQJHVRG9+iqruFGveOSagxS
+         R4dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N705IiD7n6FnNdMOVPwQtLkiV4KgkJ6X1/De6zQZWwI=;
+        b=dYheVtJKCTNv29MgKrzXBmViBJjf/rgREGQKgMBnEl4dcOpBqAn5NuGVFbFGPHFduh
+         pmdON7+71nAuCoc3jjP+4UPQXbeduB1XYcOSzcllxZkzVBmwXeoBjgnkYaKcurHG3aEu
+         zkcr/+vlmBEFNTMxUXK098gSse+KjPvvdtgBPTqwKFrpDD7WorRwdQPcpcUN24brjYmA
+         Jq8wSL2wai50zfaGz0DQmxI3jGEDJrDcGEOJQPWSgqUDPqLPCSwQYtcr3RtuL5U/gMB9
+         96T99d4PVhTJXwHTVvpYZ2dTMoGa56WlDADShEvtOUlKvhz+PTbEOxZ8lBFt532pVXUj
+         fqeg==
+X-Gm-Message-State: AOAM530d6DiYDkRp9UUQEa2UeEX03TGHXTxcIlmbiqGd9nlrhlm9fEKa
+        fPanIlKHy3n0cGZhHCuWsfoLsVMUK0mCtoma/+I0Nw==
+X-Google-Smtp-Source: ABdhPJyPFTJSM7pJ7JUKFEZ8HQ+iir1f0oux2sr4aUWcOno+cjQdFNUvLXFLljz8kRS7NiWvMxxI/6TF54PHQ215JUQ=
+X-Received: by 2002:a17:90a:8589:: with SMTP id m9mr7683966pjn.168.1623804539893;
+ Tue, 15 Jun 2021 17:48:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210604011844.1756145-1-ruansy.fnst@fujitsu.com> <20210604011844.1756145-4-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20210604011844.1756145-4-ruansy.fnst@fujitsu.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 15 Jun 2021 17:48:49 -0700
+Message-ID: <CAPcyv4h=bUCgFudKTrW09dzi8MWxg7cBC9m68zX1=HY24ftR-A@mail.gmail.com>
+Subject: Re: [PATCH v4 03/10] fs: Introduce ->corrupted_range() for superblock
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        device-mapper development <dm-devel@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        david <david@fromorbit.com>, Christoph Hellwig <hch@lst.de>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 23:11:27 +0530
-"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+[ drop old linux-nvdimm@lists.01.org, add nvdimm@lists.linux.dev ]
 
-> Masami Hiramatsu wrote:
-> > On Mon, 14 Jun 2021 23:33:29 +0530
-> > "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
-> > 
-> >> We currently limit maxactive for a kretprobe to 4096 when registering
-> >> the same through tracefs. The comment indicates that this is done so as
-> >> to keep list traversal reasonable. However, we don't ever iterate over
-> >> all kretprobe_instance structures. The core kprobes infrastructure also
-> >> imposes no such limitation.
-> >> 
-> >> Remove the limit from the tracefs interface. This limit is easy to hit
-> >> on large cpu machines when tracing functions that can sleep.
-> >> 
-> >> Reported-by: Anton Blanchard <anton@ozlabs.org>
-> >> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> > 
-> > OK, but I don't like to just remove the limit (since it can cause
-> > memory shortage easily.)
-> > Can't we make it configurable? I don't mean Kconfig, but 
-> > tracefs/options/kretprobe_maxactive, or kprobes's debugfs knob.
-> > 
-> > Hmm, maybe debugfs/kprobes/kretprobe_maxactive will be better since
-> > it can limit both trace_kprobe and kprobes itself.
-> 
-> I don't think it is good to put a new tunable in debugfs -- we don't 
-> have any kprobes tunable there, so this adds a dependency on debugfs 
-> which shouldn't be necessary.
-> 
-> /proc/sys/debug/ may be a better fit since we have the 
-> kprobes-optimization flag to disable optprobes there, though I'm not 
-> sure if a new sysfs file is agreeable.
+On Thu, Jun 3, 2021 at 6:19 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+>
+> Memory failure occurs in fsdax mode will finally be handled in
+> filesystem.  We introduce this interface to find out files or metadata
+> affected by the corrupted range, and try to recover the corrupted data
+> if possiable.
+>
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> ---
+>  include/linux/fs.h | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index c3c88fdb9b2a..92af36c4225f 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2176,6 +2176,8 @@ struct super_operations {
+>                                   struct shrink_control *);
+>         long (*free_cached_objects)(struct super_block *,
+>                                     struct shrink_control *);
+> +       int (*corrupted_range)(struct super_block *sb, struct block_device *bdev,
+> +                              loff_t offset, size_t len, void *data);
 
-Indeed.
-
-> But, I'm not too sure this really is a problem. Maxactive is a user 
-> _opt-in_ feature which needs to be explicitly added to an event 
-> definition. In that sense, isn't this already a tunable?
-
-Let me explain the background of the limiation.
-
-Maxactive is currently no limit for the kprobe kernel module API,
-because the kernel module developer must take care of the max memory
-usage (and they can).
-
-But the tracefs user may NOT have enough information about what
-happens if they pass something like 10M for maxactive (it will consume
-around 500MB kernel memory for one kretprobe).
-
-To avoid such trouble, I had set the 4096 limitation for the maxactive
-parameter. Of course 4096 may not enough for some use-cases. I'm welcome
-to expand it (e.g. 32k, isn't it enough?), but removing the limitation
-may cause OOM trouble easily.
-
-Thank you,
-
-> 
-> 
-> - Naveen
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Why does the superblock need a new operation? Wouldn't whatever
+function is specified here just be specified to the dax_dev as the
+->notify_failure() holder callback?
