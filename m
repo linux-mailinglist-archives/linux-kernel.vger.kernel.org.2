@@ -2,174 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B143A9B35
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257983A9B37
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232805AbhFPM4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232550AbhFPM4u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:56:50 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9013DC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:54:43 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id t40so2405692oiw.8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:54:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OJ8ZEOXvDiQX39w3wdX+rDVGX16363qp8H7/01HnmCo=;
-        b=LYTZnZHydVXfI6Hl9s3ZEzLUGD1IU24HfjHqf8EzR7acNmjAFNRwmdhj0jbn2wRF2A
-         EHgkbMQJHMrEAiv2AOCCs3259OWp6pZAVQtAnd8DeRaCf6cfH1echSnKm9zr6mWHW7xV
-         SKpeNHficZeWRdSV7SE5mKczZeCalSxlOmukgbg3hN5abgc6XEi7rIl4gqvb0k7YtPsS
-         ly2J5+R3jNMg5hCCExvRRgX7fXbVBIXCQxdfcCXXwKtf8nnga8xCuGkle+D8183o2LXE
-         9i62e2h7YZv0f9nWza1VBn+1TBKNoRwQ/ayTajxhtm7bRXJdzpuTCKAWkWfxVweodez6
-         9irg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OJ8ZEOXvDiQX39w3wdX+rDVGX16363qp8H7/01HnmCo=;
-        b=LbgWgZ75mJoOk0yEFR5EmueBm9noV2QCgH5fCfaHyyvpV53tZ7AGaN5XfydusRhG6c
-         br7SE7F4EsBTExrDEJOaDbued6fwsXp8aJilEtq7OgWVPjKtuKpAWJMfcC5rVjBYAAX2
-         aZe6GpNxe/06HuQhc/e/FQMt5fj58vtWUCuKtDlK557L7cXVc0wYQz2gLWWDrKfE3SBv
-         T9g5Q0+sdh1IVh/gCtJbGslnGys27gk2q0JK52IpS9aQT3kOeuUsuj7QPhBUWo5cmj+R
-         M1Uo2i8hKyIc+tYbUp9UufCeWvoguO5pmX3FeeC+bA5VpWMARQ7WDB9W66eUIPLs+h7d
-         cnAg==
-X-Gm-Message-State: AOAM531DygpkYXqInMyZT6tDO6hx5pvBTw05edQTKbNR9T7zvXtcsNPM
-        ElrAddCzHXqun4dbBIrIkKIvV8qYjli5XA==
-X-Google-Smtp-Source: ABdhPJzXUFT2gSbSw8am0Qk28AfjyJO+e/D+7g2xIGy2eyS8Bg2X32hfuchf8dx8bIBBInOMu5QyoQ==
-X-Received: by 2002:aca:d615:: with SMTP id n21mr7265791oig.32.1623848082779;
-        Wed, 16 Jun 2021 05:54:42 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id c34sm491591otu.42.2021.06.16.05.54.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 05:54:42 -0700 (PDT)
-Subject: Re: kernel panic when scanning MTD partitions
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc:     linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <YMntfiE7J8r0dtV1@Red>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <1424d9da-5e11-3ba8-82ae-85f95f60ca9d@kernel.dk>
-Date:   Wed, 16 Jun 2021 06:54:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233096AbhFPM5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:57:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232550AbhFPM5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 08:57:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69E3C61351;
+        Wed, 16 Jun 2021 12:54:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623848094;
+        bh=TiLQ/sViaRtSBZKqaPo8q5dK1gg9K5BIjrrfGAYjam4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lHjFBSC2peCkC8qioEZI79+L0JphOrTq4U9Qn68n2D0Lyiv1wlOkXg3QMw9IBGaZQ
+         AtoLt+avE+VYm0TYplIuD9GBIBH0gBNDRDGnUomy3CS+QiWOoWqyn9DcOKMPYJjiYd
+         OoVKOqJAeIEgogy9fujydMMe+5DnkJPlprAkS05YcHD6X24uljA3WYjHjWZ6NiGZ8n
+         gt61d8NfRZdaya5BqmoX/o74sLtr3lVzjFXu1k7KrTHcFSCB/EJC8qLYIj50DcBvtN
+         z5vR4entjjrntUkqQvzgrfXaauP/Z8TfajlVp05Gxlfp9kYwz1KjFUsXFYcUJtvfzR
+         8Opl/Bd8XKDmA==
+Date:   Wed, 16 Jun 2021 14:54:52 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "hasegawa-hitomi@fujitsu.com" <hasegawa-hitomi@fujitsu.com>,
+        "'mingo@kernel.org'" <mingo@kernel.org>,
+        "'fweisbec@gmail.com'" <fweisbec@gmail.com>,
+        "'tglx@linutronix.de'" <tglx@linutronix.de>,
+        "'juri.lelli@redhat.com'" <juri.lelli@redhat.com>,
+        "'vincent.guittot@linaro.org'" <vincent.guittot@linaro.org>,
+        "'dietmar.eggemann@arm.com'" <dietmar.eggemann@arm.com>,
+        "'rostedt@goodmis.org'" <rostedt@goodmis.org>,
+        "'bsegall@google.com'" <bsegall@google.com>,
+        "'mgorman@suse.de'" <mgorman@suse.de>,
+        "'bristot@redhat.com'" <bristot@redhat.com>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
+Subject: Re: Utime and stime are less when getrusage (RUSAGE_THREAD) is
+ executed on a tickless CPU.
+Message-ID: <20210616125452.GE801071@lothringen>
+References: <OSBPR01MB21837C8931D90AE55AF4A955EB529@OSBPR01MB2183.jpnprd01.prod.outlook.com>
+ <OSBPR01MB2183384B29F6291EB7C0BB81EB2C9@OSBPR01MB2183.jpnprd01.prod.outlook.com>
+ <YKN5cQpFSdsgBlBU@hirez.programming.kicks-ass.net>
+ <OSBPR01MB21835E55331FCAE6F75E8332EB2B9@OSBPR01MB2183.jpnprd01.prod.outlook.com>
+ <YKTZag/E8AaOtVT0@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <YMntfiE7J8r0dtV1@Red>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKTZag/E8AaOtVT0@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 6:24 AM, Corentin Labbe wrote:
-> Hello
+On Wed, May 19, 2021 at 11:24:58AM +0200, Peter Zijlstra wrote:
+> On Wed, May 19, 2021 at 06:30:36AM +0000, hasegawa-hitomi@fujitsu.com wrote:
+> > Hi Ingo, Peter, Juri, and Vincent.
+> > 
+> > 
+> > > Your email is malformed.
+> > 
+> > I'm sorry. I was sent in the wrong format. I correct it and resend.
+> > Thank you, Peter, for pointing this out.
+> > 
+> > 
+> > I found that when I run getrusage(RUSAGE_THREAD) on a tickless CPU,
+> > the utime and stime I get are less than the actual time, unlike when I run
+> > getrusage(RUSAGE_SELF) on a single thread.
+> > This problem seems to be caused by the fact that se.sum_exec_runtime is not
+> > updated just before getting the information from 'current'.
+> > In the current implementation, task_cputime_adjusted() calls task_cputime() to
+> > get the 'current' utime and stime, then calls cputime_adjust() to adjust the
+> > sum of utime and stime to be equal to cputime.sum_exec_runtime. On a tickless
+> > CPU, sum_exec_runtime is not updated periodically, so there seems to be a
+> > discrepancy with the actual time.
+> > Therefore, I think I should include a process to update se.sum_exec_runtime
+> > just before getting the information from 'current' (as in other processes
+> > except RUSAGE_THREAD). I'm thinking of the following improvement.
+> > 
+> > @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+> >         if (who == RUSAGE_THREAD) {
+> > +               task_sched_runtime(current);
+> >                 task_cputime_adjusted(current, &utime, &stime);
+> > 
+> > Is there any possible problem with this?
 > 
-> When scanning MTD partitions my kernel panic:
-> Searching for RedBoot partition table in 30000000.flash at offset 0xfe0000
-> 7 RedBoot partitions found on MTD device 30000000.flash
-> Creating 7 MTD partitions on "30000000.flash":
-> 0x000000000000-0x000000020000 : "BOOT"
-> 8<--- cut here ---
-> Unable to handle kernel NULL pointer dereference at virtual address 00000034
-> pgd = (ptrval)
-> [00000034] *pgd=00000000
-> Internal error: Oops: 17 [#1] PREEMPT ARM
-> Modules linked in:
-> CPU: 0 PID: 1 Comm: swapper Not tainted 5.13.0-rc6-next-20210615+ #101
-> Hardware name: Gemini (Device Tree)
-> PC is at _set_bit+0x20/0x4c
-> LR is at blk_queue_write_cache+0x20/0x5c
-> pc : [<c02f2194>]    lr : [<c029d6c0>]    psr: 60000093
-> sp : c1439ca0  ip : 60000013  fp : c4058c00
-> r10: 00000000  r9 : c4058ab8  r8 : c1c553b8
-> r7 : c3f71080  r6 : 00000000  r5 : 00000000  r4 : 00000000
-> r3 : 00020000  r2 : 00000011  r1 : 00000034  r0 : 00000000
-> Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment none
-> Control: 0000397f  Table: 02338000  DAC: 00000053
-> Register r0 information: NULL pointer
-> Register r1 information: non-paged memory
-> Register r2 information: non-paged memory
-> Register r3 information: non-paged memory
-> Register r4 information: NULL pointer
-> Register r5 information: NULL pointer
-> Register r6 information: NULL pointer
-> Register r7 information: slab kmalloc-128 start c3f71080 pointer offset 0 size 128
-> Register r8 information: slab dentry start c1c553b8 pointer offset 0 size 40
-> Register r9 information: slab kmalloc-1k start c4058800 pointer offset 696 size 1024
-> Register r10 information: NULL pointer
-> Register r11 information: slab kmalloc-1k start c4058c00 pointer offset 0 size 1024
-> Register r12 information: non-paged memory
-> Process swapper (pid: 1, stack limit = 0x(ptrval))
-> Stack: (0xc1439ca0 to 0xc143a000)
-> 9ca0: c231a480 c07ab67c 00000000 c03cd1b8 00000000 c00f4b18 c07ab67c c231a480
-> 9cc0: c4058c00 c07ab67c 05a00000 c03ce474 c07ab67c c4058c00 c07ab658 c03ccf88
-> 9ce0: c4058c00 c07ab660 c07ab434 c03c7328 c068ab50 00000000 c4058cf8 c40912c0
-> 9d00: ffffffff 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 9d20: 00000101 00000000 00000001 c03c6ba8 00000000 00020000 00000001 00000001
-> 9d40: c4058c00 00000000 00000000 4af56ea3 00000000 c4058800 c4058800 c406f000
-> 9d60: 00000007 c03ca0fc 00000000 00000000 00000007 c07ab638 c05c6c84 00000000
-> 9d80: 00000007 c4058800 c1438000 00000000 00000000 c03c9f90 00000001 c05c6c88
-> 9da0: 00000000 00000000 c406f000 00000007 c07ab638 4af56ea3 00002201 c4058800
-> 9dc0: c05c6c84 00000000 00000000 c221c2a0 c2215810 00000000 00000000 c03c7694
-> 9de0: 00000001 c4009c20 c4008500 c2215800 c221c2a0 c03dc4a0 00000000 c0196864
-> 9e00: 00000000 c4008500 c4052b58 00000000 00000002 4af56ea3 00000000 00000000
-> 9e20: c2215810 c07ab928 00000000 c07ab928 00000000 c07bb000 c06f73e0 c037b898
-> 9e40: c2215810 c0815554 00000000 00000000 c07ab928 c03796fc c2215810 c07ab928
-> 9e60: c2215854 c07ab928 c071c830 c06d408c c07bb000 c0379b4c c2215810 00000000
-> 9e80: c2215854 c037a0ec 00000000 c07ab928 c2215810 c07a9fb0 c071c830 c037a17c
-> 9ea0: 00000000 c07ab928 c037a0f4 c0377584 c143e11c c143e10c c140c530 4af56ea3
-> 9ec0: c07ab928 c4008480 00000000 c0378a68 c068d2f4 c068d2f4 c06f73e0 c07ab928
-> 9ee0: 00000000 00000000 c07bb000 c037a818 c07117f8 ffffe000 00000000 c00097ac
-> 9f00: c1403b00 c1403b08 c1403aff c0035200 00000000 c0694bc0 0000009f 00000000
-> 9f20: 00000000 c06f73e0 00000006 00000006 00000000 c1403b16 c1403b1d 4af56ea3
-> 9f40: 00000000 00000006 0000009f 4af56ea3 c071c84c c0724380 00000007 c1403b00
-> 9f60: c071c850 c06f8108 00000006 00000006 00000000 c06f73e0 00000000 0000009f
-> 9f80: c0558560 00000000 c0558560 00000000 00000000 00000000 00000000 00000000
-> 9fa0: 00000000 c0558570 00000000 c0008348 00000000 00000000 00000000 00000000
-> 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
-> [<c02f2194>] (_set_bit) from [<c029d6c0>] (blk_queue_write_cache+0x20/0x5c)
-> [<c029d6c0>] (blk_queue_write_cache) from [<c03cd1b8>] (add_mtd_blktrans_dev+0x218/0x3cc)
-> [<c03cd1b8>] (add_mtd_blktrans_dev) from [<c03ce474>] (mtdblock_add_mtd+0x60/0x78)
-> [<c03ce474>] (mtdblock_add_mtd) from [<c03ccf88>] (blktrans_notify_add+0x3c/0x54)
-> [<c03ccf88>] (blktrans_notify_add) from [<c03c7328>] (add_mtd_device+0x3bc/0x5e8)
-> [<c03c7328>] (add_mtd_device) from [<c03ca0fc>] (add_mtd_partitions+0xc4/0x16c)
-> [<c03ca0fc>] (add_mtd_partitions) from [<c03c9f90>] (parse_mtd_partitions+0x370/0x418)
-> [<c03c9f90>] (parse_mtd_partitions) from [<c03c7694>] (mtd_device_parse_register+0x74/0x2c4)
-> [<c03c7694>] (mtd_device_parse_register) from [<c03dc4a0>] (physmap_flash_probe+0x5e8/0x808)
-> [<c03dc4a0>] (physmap_flash_probe) from [<c037b898>] (platform_probe+0x5c/0xbc)
-> [<c037b898>] (platform_probe) from [<c03796fc>] (really_probe+0xf8/0x4e8)
-> [<c03796fc>] (really_probe) from [<c0379b4c>] (driver_probe_device+0x60/0xb8)
-> [<c0379b4c>] (driver_probe_device) from [<c037a0ec>] (device_driver_attach+0xa8/0xb0)
-> [<c037a0ec>] (device_driver_attach) from [<c037a17c>] (__driver_attach+0x88/0x11c)
-> [<c037a17c>] (__driver_attach) from [<c0377584>] (bus_for_each_dev+0x78/0xc4)
-> [<c0377584>] (bus_for_each_dev) from [<c0378a68>] (bus_add_driver+0xe8/0x1d0)
-> [<c0378a68>] (bus_add_driver) from [<c037a818>] (driver_register+0x88/0x118)
-> [<c037a818>] (driver_register) from [<c00097ac>] (do_one_initcall+0x50/0x1e0)
-> [<c00097ac>] (do_one_initcall) from [<c06f8108>] (kernel_init_freeable+0x178/0x200)
-> [<c06f8108>] (kernel_init_freeable) from [<c0558570>] (kernel_init+0x10/0x100)
-> [<c0558570>] (kernel_init) from [<c0008348>] (ret_from_fork+0x14/0x2c)
-> Exception stack(0xc1439fb0 to 0xc1439ff8)
-> 9fa0:                                     00000000 00000000 00000000 00000000
-> 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> Code: e3a03001 e1a03213 e10fc000 e321f093 (e7912100) 
-> ---[ end trace f3b2f52ba3b0d435 ]---
-> Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+> Would be superfluous for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
+> architectures at the very least.
 > 
-> This happen on 5.13.0-rc6-next-20210615+ on my ARM Gemini ssi1328.
+> It also doesn't help any of the other callers, like for example procfs.
+> 
+> Something like the below ought to work and fix all variants I think. But
+> it does make the call significantly more expensive.
+> 
+> Looking at thread_group_cputime() that already does something like this,
+> but that's also susceptible to a variant of this very same issue; since
+> it doesn't call it unconditionally, nor on all tasks, so if current
+> isn't part of the threadgroup and/or another task is on a nohz_full cpu,
+> things will go wobbly again.
+> 
+> There's a note about syscall performance there, so clearly someone seems
+> to care about that aspect of things, but it does suck for nohz_full.
+> 
+> Frederic, didn't we have remote ticks that should help with this stuff?
+> 
+> And mostly I think the trade-off here is that if you run on nohz_full,
+> you're not expected to go do syscalls anyway (because they're sodding
+> expensive) and hence the accuracy of these sort of things is mostly
+> irrelevant.
+> 
+> So it might be the use-case is just fundamentally bonkers and we
+> shouldn't really bother fixing this.
+> 
+> Anyway?
+> 
+> ---
+> diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+> index 872e481d5098..620871c8e4f8 100644
+> --- a/kernel/sched/cputime.c
+> +++ b/kernel/sched/cputime.c
+> @@ -612,7 +612,7 @@ void cputime_adjust(struct task_cputime *curr, struct prev_cputime *prev,
+>  void task_cputime_adjusted(struct task_struct *p, u64 *ut, u64 *st)
+>  {
+>  	struct task_cputime cputime = {
+> -		.sum_exec_runtime = p->se.sum_exec_runtime,
+> +		.sum_exec_runtime = task_sched_runtime(p),
+>  	};
+>  
+>  	task_cputime(p, &cputime.utime, &cputime.stime);
 
-Should be fixed once for-next updates the block branch.
+If necessary I guess we can do something like the below, which
+would only add the overhead where it's required:
 
--- 
-Jens Axboe
-
+diff --git a/include/linux/sched/cputime.h b/include/linux/sched/cputime.h
+index 6c9f19a33865..ce3c58286062 100644
+--- a/include/linux/sched/cputime.h
++++ b/include/linux/sched/cputime.h
+@@ -18,15 +18,16 @@
+ #endif /* CONFIG_VIRT_CPU_ACCOUNTING_NATIVE */
+ 
+ #ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
+-extern void task_cputime(struct task_struct *t,
++extern bool task_cputime(struct task_struct *t,
+ 			 u64 *utime, u64 *stime);
+ extern u64 task_gtime(struct task_struct *t);
+ #else
+-static inline void task_cputime(struct task_struct *t,
++static inline bool task_cputime(struct task_struct *t,
+ 				u64 *utime, u64 *stime)
+ {
+ 	*utime = t->utime;
+ 	*stime = t->stime;
++	return false;
+ }
+ 
+ static inline u64 task_gtime(struct task_struct *t)
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index 872e481d5098..9392aea1804e 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -615,7 +615,8 @@ void task_cputime_adjusted(struct task_struct *p, u64 *ut, u64 *st)
+ 		.sum_exec_runtime = p->se.sum_exec_runtime,
+ 	};
+ 
+-	task_cputime(p, &cputime.utime, &cputime.stime);
++	if (task_cputime(p, &cputime.utime, &cputime.stime))
++		cputime.sum_exec_runtime = task_sched_runtime(p);
+ 	cputime_adjust(&cputime, &p->prev_cputime, ut, st);
+ }
+ EXPORT_SYMBOL_GPL(task_cputime_adjusted);
+@@ -828,19 +829,21 @@ u64 task_gtime(struct task_struct *t)
+  * add up the pending nohz execution time since the last
+  * cputime snapshot.
+  */
+-void task_cputime(struct task_struct *t, u64 *utime, u64 *stime)
++bool task_cputime(struct task_struct *t, u64 *utime, u64 *stime)
+ {
+ 	struct vtime *vtime = &t->vtime;
+ 	unsigned int seq;
+ 	u64 delta;
++	int ret;
+ 
+ 	if (!vtime_accounting_enabled()) {
+ 		*utime = t->utime;
+ 		*stime = t->stime;
+-		return;
++		return false;
+ 	}
+ 
+ 	do {
++		ret = false;
+ 		seq = read_seqcount_begin(&vtime->seqcount);
+ 
+ 		*utime = t->utime;
+@@ -850,6 +853,7 @@ void task_cputime(struct task_struct *t, u64 *utime, u64 *stime)
+ 		if (vtime->state < VTIME_SYS)
+ 			continue;
+ 
++		ret = true;
+ 		delta = vtime_delta(vtime);
+ 
+ 		/*
+@@ -861,6 +865,8 @@ void task_cputime(struct task_struct *t, u64 *utime, u64 *stime)
+ 		else
+ 			*utime += vtime->utime + delta;
+ 	} while (read_seqcount_retry(&vtime->seqcount, seq));
++
++	return ret;
+ }
+ 
+ static int vtime_state_fetch(struct vtime *vtime, int cpu)
