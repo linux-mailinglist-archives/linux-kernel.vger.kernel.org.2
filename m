@@ -2,184 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C01D3A9B5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BBB3A9B60
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233121AbhFPNC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
+        id S233141AbhFPNCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233127AbhFPNCT (ORCPT
+        with ESMTP id S233135AbhFPNCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:02:19 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A248C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:00:13 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id 67-20020a4a01460000b0290245b81f6261so649370oor.6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:00:13 -0700 (PDT)
+        Wed, 16 Jun 2021 09:02:33 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3FFC061767;
+        Wed, 16 Jun 2021 06:00:24 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id t13so1875495pgu.11;
+        Wed, 16 Jun 2021 06:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wr3evAdCjQtOBqG7bWvgB68DiYXGxJ1XTZfxGH51J5I=;
-        b=w97B3s49URV+ATkttjsdN0zOG8oOjVQPHIECkcvPIkev3cXQMKkqKDGceaUXg6TRlB
-         ZNfFARexpheCQDAZDqTy3Uo+NfrnuOVVadFiL3AEaKutz5Vtofyfnx4sk/qK4R75gM/c
-         Qjy4Aup6kIuOscF1OWhA+RxwSiWRHNJNTye6zPEG542g8FPGt5dVCtD0NCyXD+fy8Mav
-         h9UdpknUijW50fkRtrnMqvB/ahko46bGyk6LvrkblyA2bQIMRjK+ll8HFYnjhqQ6dXBz
-         SE+dl0O29hV9bXID+KBr6U23JKzLELSpqZxmq/FsSxclkVusX35GefQNpFSFXi7bAuu2
-         GihQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=nbiAswAKlZ0y8YPJxSeoqwYopSHf2ViQ7XrbNtGNP7U=;
+        b=uXdMqCkrPWNTiKAf7OMydRO333IWQVnoKc7TSmyHW5AYBvNUsSNHX8CKo0EWS6/YaH
+         cilJMMRHTtZoK77Rk3pA9OB5r2+C2dSFKrYVFSrvJ/4xLQF9uu9LTvM+mRzB5Rw0iu+h
+         8/qeGU2sQ2XZ4eE0uJgV07fAIW+Gbb+W71HdY4dT1bVxwRar8jpbEwI9nM/KyBxgpfqg
+         RQ1+qoMD+Mx5MiBEem6KLuIp5E2Qzff47pZG9iOMLOsdBtLwT1UsPFY31vge55jumMBf
+         7gcYCwkqDUa5eNWwPQisr6w5Q5i9/0iAh3nsxC81jJOG0NB5kpxJR3S6fgnR3u7X8QU3
+         chzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wr3evAdCjQtOBqG7bWvgB68DiYXGxJ1XTZfxGH51J5I=;
-        b=FINqe5o4a3LV8Xz5DoE06jWTAII57DZVnSctrl1BkBz8XCbUjJ+67Zqcp0DVkKW4QI
-         orUc8EezM1VSkz9a9kbb5KXI506v6wQdDzDDmCEgzQbgvbZeojs+5+8/wxLUVqqGHZmq
-         UltvsYd9jhoE22+bRlEAWcCQVDdhF1x3hZhq7CRNH6Eiw1tgiUJq0C1szuUvUjIYUOQl
-         QtGzAq7iXFVg10UePGdVPCtxFgMq6DW0eMpk5+HNBm9FgmWzTURZdkAK10EYUeCHi0FF
-         Ycdif1vTL4XsiC/0LnQAoNfKzGBRDazK/xt9SamFA1yUwL8rQnfrNiDsrmPDxb536ryK
-         bqrQ==
-X-Gm-Message-State: AOAM530CjZtTlHfVfNY6Clb5M2zAXhs6f8Fq0xw1o1Hugp/3o9dgtBqf
-        hSwTTJRBb44XGP76xlA5obQdIJ0bfhNmnA==
-X-Google-Smtp-Source: ABdhPJxmaLQ98fPlcumfuprdDdLFkFT/5m2A/oQjFNB9PbXSSRVXmQHQY0OngqHatwxcNNdyoZ288A==
-X-Received: by 2002:a4a:5182:: with SMTP id s124mr3984545ooa.34.1623848412425;
-        Wed, 16 Jun 2021 06:00:12 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id p65sm459376oop.0.2021.06.16.06.00.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 06:00:12 -0700 (PDT)
-Subject: Re: kernel panic when scanning MTD partitions
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <YMntfiE7J8r0dtV1@Red>
- <1424d9da-5e11-3ba8-82ae-85f95f60ca9d@kernel.dk> <YMn1lhq4Sl9ipY9a@Red>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <00d45681-5dfc-3c93-5699-4652c71128dd@kernel.dk>
-Date:   Wed, 16 Jun 2021 07:00:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version:content-transfer-encoding;
+        bh=nbiAswAKlZ0y8YPJxSeoqwYopSHf2ViQ7XrbNtGNP7U=;
+        b=tvWpdk+02wzGR+nQnHs1frHSGRfuIESP0w1V7Fg6D5PrPgmdn0UJ90iubrA9tRsrIa
+         W2Bw5oaYJn6zBg4B+bt0OgqGU85ne9LMfq7XfWWNDZM9D+CsE5lSSnjbH0pidCgT0GMt
+         BvapRj+I5EO0NLNU/9wRbKtj3mftXZfhjyO1dtIm1i8TiVX4r4TPPaPrt8ZRICWx3yAQ
+         V7H0Dr7RkKggWKk+x7CEyZzeEypqa9y9dHNDgiI686UY+15gVNp/iT/p97Pi0D//Hoy9
+         juIrQPpN0FL82vhF8Mrs2iHrSIdYsT2Av9U3OqBxMnPK6++4IRxVeLesmBo4WVfogBX2
+         p8Hw==
+X-Gm-Message-State: AOAM533CMYr/FHmuvoXWpu4vij9tpaPKn0j/+6hAGj3EKxZeOiRzVFB6
+        4PRN9fuwC+dY2FAycDIvGyo=
+X-Google-Smtp-Source: ABdhPJzICrZwP7kf4FTaRUp8e7LF5XaMDQHdJRB1XT5FoGculVj+18BbPpYXhqA4KlHFVFaYJsOlkA==
+X-Received: by 2002:a62:ae03:0:b029:2f8:b04f:c012 with SMTP id q3-20020a62ae030000b02902f8b04fc012mr9593948pff.62.1623848424167;
+        Wed, 16 Jun 2021 06:00:24 -0700 (PDT)
+Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
+        by smtp.gmail.com with ESMTPSA id h18sm2394018pgl.87.2021.06.16.06.00.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 06:00:23 -0700 (PDT)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>, wqu@suse.com,
+        Robin Murphy <robin.murphy@arm.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Shawn Lin <shawn.lin@rock-chips.com>
+Subject: Re: [PATCH v3 4/4] arm64: dts: rockchip: Update PCI host bridge
+ window to 32-bit address memory
+References: <20210607112856.3499682-1-punitagrawal@gmail.com>
+        <3105233.izSxrag8PF@diego>
+        <CAL_JsqL8iDo5sLmgNVuXs5wt3TpVJbKHfk7gE740DidmvLOwiQ@mail.gmail.com>
+        <3238453.R1toDxpfAE@diego>
+Date:   Wed, 16 Jun 2021 22:00:21 +0900
+In-Reply-To: <3238453.R1toDxpfAE@diego> ("Heiko =?utf-8?Q?St=C3=BCbner=22'?=
+ =?utf-8?Q?s?= message of "Tue, 15
+        Jun 2021 23:49:07 +0200")
+Message-ID: <871r92t15m.fsf@stealth>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <YMn1lhq4Sl9ipY9a@Red>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 6:59 AM, Corentin Labbe wrote:
-> Le Wed, Jun 16, 2021 at 06:54:41AM -0600, Jens Axboe a écrit :
->> On 6/16/21 6:24 AM, Corentin Labbe wrote:
->>> Hello
->>>
->>> When scanning MTD partitions my kernel panic:
->>> Searching for RedBoot partition table in 30000000.flash at offset 0xfe0000
->>> 7 RedBoot partitions found on MTD device 30000000.flash
->>> Creating 7 MTD partitions on "30000000.flash":
->>> 0x000000000000-0x000000020000 : "BOOT"
->>> 8<--- cut here ---
->>> Unable to handle kernel NULL pointer dereference at virtual address 00000034
->>> pgd = (ptrval)
->>> [00000034] *pgd=00000000
->>> Internal error: Oops: 17 [#1] PREEMPT ARM
->>> Modules linked in:
->>> CPU: 0 PID: 1 Comm: swapper Not tainted 5.13.0-rc6-next-20210615+ #101
->>> Hardware name: Gemini (Device Tree)
->>> PC is at _set_bit+0x20/0x4c
->>> LR is at blk_queue_write_cache+0x20/0x5c
->>> pc : [<c02f2194>]    lr : [<c029d6c0>]    psr: 60000093
->>> sp : c1439ca0  ip : 60000013  fp : c4058c00
->>> r10: 00000000  r9 : c4058ab8  r8 : c1c553b8
->>> r7 : c3f71080  r6 : 00000000  r5 : 00000000  r4 : 00000000
->>> r3 : 00020000  r2 : 00000011  r1 : 00000034  r0 : 00000000
->>> Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment none
->>> Control: 0000397f  Table: 02338000  DAC: 00000053
->>> Register r0 information: NULL pointer
->>> Register r1 information: non-paged memory
->>> Register r2 information: non-paged memory
->>> Register r3 information: non-paged memory
->>> Register r4 information: NULL pointer
->>> Register r5 information: NULL pointer
->>> Register r6 information: NULL pointer
->>> Register r7 information: slab kmalloc-128 start c3f71080 pointer offset 0 size 128
->>> Register r8 information: slab dentry start c1c553b8 pointer offset 0 size 40
->>> Register r9 information: slab kmalloc-1k start c4058800 pointer offset 696 size 1024
->>> Register r10 information: NULL pointer
->>> Register r11 information: slab kmalloc-1k start c4058c00 pointer offset 0 size 1024
->>> Register r12 information: non-paged memory
->>> Process swapper (pid: 1, stack limit = 0x(ptrval))
->>> Stack: (0xc1439ca0 to 0xc143a000)
->>> 9ca0: c231a480 c07ab67c 00000000 c03cd1b8 00000000 c00f4b18 c07ab67c c231a480
->>> 9cc0: c4058c00 c07ab67c 05a00000 c03ce474 c07ab67c c4058c00 c07ab658 c03ccf88
->>> 9ce0: c4058c00 c07ab660 c07ab434 c03c7328 c068ab50 00000000 c4058cf8 c40912c0
->>> 9d00: ffffffff 00000000 00000000 00000000 00000000 00000000 00000000 00000000
->>> 9d20: 00000101 00000000 00000001 c03c6ba8 00000000 00020000 00000001 00000001
->>> 9d40: c4058c00 00000000 00000000 4af56ea3 00000000 c4058800 c4058800 c406f000
->>> 9d60: 00000007 c03ca0fc 00000000 00000000 00000007 c07ab638 c05c6c84 00000000
->>> 9d80: 00000007 c4058800 c1438000 00000000 00000000 c03c9f90 00000001 c05c6c88
->>> 9da0: 00000000 00000000 c406f000 00000007 c07ab638 4af56ea3 00002201 c4058800
->>> 9dc0: c05c6c84 00000000 00000000 c221c2a0 c2215810 00000000 00000000 c03c7694
->>> 9de0: 00000001 c4009c20 c4008500 c2215800 c221c2a0 c03dc4a0 00000000 c0196864
->>> 9e00: 00000000 c4008500 c4052b58 00000000 00000002 4af56ea3 00000000 00000000
->>> 9e20: c2215810 c07ab928 00000000 c07ab928 00000000 c07bb000 c06f73e0 c037b898
->>> 9e40: c2215810 c0815554 00000000 00000000 c07ab928 c03796fc c2215810 c07ab928
->>> 9e60: c2215854 c07ab928 c071c830 c06d408c c07bb000 c0379b4c c2215810 00000000
->>> 9e80: c2215854 c037a0ec 00000000 c07ab928 c2215810 c07a9fb0 c071c830 c037a17c
->>> 9ea0: 00000000 c07ab928 c037a0f4 c0377584 c143e11c c143e10c c140c530 4af56ea3
->>> 9ec0: c07ab928 c4008480 00000000 c0378a68 c068d2f4 c068d2f4 c06f73e0 c07ab928
->>> 9ee0: 00000000 00000000 c07bb000 c037a818 c07117f8 ffffe000 00000000 c00097ac
->>> 9f00: c1403b00 c1403b08 c1403aff c0035200 00000000 c0694bc0 0000009f 00000000
->>> 9f20: 00000000 c06f73e0 00000006 00000006 00000000 c1403b16 c1403b1d 4af56ea3
->>> 9f40: 00000000 00000006 0000009f 4af56ea3 c071c84c c0724380 00000007 c1403b00
->>> 9f60: c071c850 c06f8108 00000006 00000006 00000000 c06f73e0 00000000 0000009f
->>> 9f80: c0558560 00000000 c0558560 00000000 00000000 00000000 00000000 00000000
->>> 9fa0: 00000000 c0558570 00000000 c0008348 00000000 00000000 00000000 00000000
->>> 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
->>> 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
->>> [<c02f2194>] (_set_bit) from [<c029d6c0>] (blk_queue_write_cache+0x20/0x5c)
->>> [<c029d6c0>] (blk_queue_write_cache) from [<c03cd1b8>] (add_mtd_blktrans_dev+0x218/0x3cc)
->>> [<c03cd1b8>] (add_mtd_blktrans_dev) from [<c03ce474>] (mtdblock_add_mtd+0x60/0x78)
->>> [<c03ce474>] (mtdblock_add_mtd) from [<c03ccf88>] (blktrans_notify_add+0x3c/0x54)
->>> [<c03ccf88>] (blktrans_notify_add) from [<c03c7328>] (add_mtd_device+0x3bc/0x5e8)
->>> [<c03c7328>] (add_mtd_device) from [<c03ca0fc>] (add_mtd_partitions+0xc4/0x16c)
->>> [<c03ca0fc>] (add_mtd_partitions) from [<c03c9f90>] (parse_mtd_partitions+0x370/0x418)
->>> [<c03c9f90>] (parse_mtd_partitions) from [<c03c7694>] (mtd_device_parse_register+0x74/0x2c4)
->>> [<c03c7694>] (mtd_device_parse_register) from [<c03dc4a0>] (physmap_flash_probe+0x5e8/0x808)
->>> [<c03dc4a0>] (physmap_flash_probe) from [<c037b898>] (platform_probe+0x5c/0xbc)
->>> [<c037b898>] (platform_probe) from [<c03796fc>] (really_probe+0xf8/0x4e8)
->>> [<c03796fc>] (really_probe) from [<c0379b4c>] (driver_probe_device+0x60/0xb8)
->>> [<c0379b4c>] (driver_probe_device) from [<c037a0ec>] (device_driver_attach+0xa8/0xb0)
->>> [<c037a0ec>] (device_driver_attach) from [<c037a17c>] (__driver_attach+0x88/0x11c)
->>> [<c037a17c>] (__driver_attach) from [<c0377584>] (bus_for_each_dev+0x78/0xc4)
->>> [<c0377584>] (bus_for_each_dev) from [<c0378a68>] (bus_add_driver+0xe8/0x1d0)
->>> [<c0378a68>] (bus_add_driver) from [<c037a818>] (driver_register+0x88/0x118)
->>> [<c037a818>] (driver_register) from [<c00097ac>] (do_one_initcall+0x50/0x1e0)
->>> [<c00097ac>] (do_one_initcall) from [<c06f8108>] (kernel_init_freeable+0x178/0x200)
->>> [<c06f8108>] (kernel_init_freeable) from [<c0558570>] (kernel_init+0x10/0x100)
->>> [<c0558570>] (kernel_init) from [<c0008348>] (ret_from_fork+0x14/0x2c)
->>> Exception stack(0xc1439fb0 to 0xc1439ff8)
->>> 9fa0:                                     00000000 00000000 00000000 00000000
->>> 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
->>> 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
->>> Code: e3a03001 e1a03213 e10fc000 e321f093 (e7912100) 
->>> ---[ end trace f3b2f52ba3b0d435 ]---
->>> Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
->>> ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
->>>
->>> This happen on 5.13.0-rc6-next-20210615+ on my ARM Gemini ssi1328.
->>
->> Should be fixed once for-next updates the block branch.
->>
-> 
-> Thanks, do you have a link to the fix ? or patch name.
+Heiko St=C3=BCbner <heiko@sntech.de> writes:
 
-Yep, this one:
+> Am Dienstag, 15. Juni 2021, 23:29:12 CEST schrieb Rob Herring:
+>> On Thu, Jun 10, 2021 at 3:50 PM Heiko St=C3=BCbner <heiko@sntech.de> wro=
+te:
+>> >
+>> > Hi,
+>> >
+>> > Am Montag, 7. Juni 2021, 13:28:56 CEST schrieb Punit Agrawal:
+>> > > The PCIe host bridge on RK3399 advertises a single 64-bit memory
+>> > > address range even though it lies entirely below 4GB.
+>> > >
+>> > > Previously the OF PCI range parser treated 64-bit ranges more
+>> > > leniently (i.e., as 32-bit), but since commit 9d57e61bf723 ("of/pci:
+>> > > Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses")
+>> > > the code takes a stricter view and treats the ranges as advertised in
+>> > > the device tree (i.e, as 64-bit).
+>> > >
+>> > > The change in behaviour causes failure when allocating bus addresses
+>> > > to devices connected behind a PCI-to-PCI bridge that require
+>> > > non-prefetchable memory ranges. The allocation failure was observed
+>> > > for certain Samsung NVMe drives connected to RockPro64 boards.
+>> > >
+>> > > Update the host bridge window attributes to treat it as 32-bit addre=
+ss
+>> > > memory. This fixes the allocation failure observed since commit
+>> > > 9d57e61bf723.
+>> > >
+>> > > Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
+>> > > Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911=
+@arm.com
+>> > > Suggested-by: Robin Murphy <robin.murphy@arm.com>
+>> > > Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+>> > > Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
+>> > > Cc: Heiko Stuebner <heiko@sntech.de>
+>> > > Cc: Rob Herring <robh+dt@kernel.org>
+>> >
+>> > just for clarity, should I just pick this patch separately for 5.13-rc=
+ to
+>> > make it easy for people using current kernel devicetrees, or should
+>> > this wait for the update mentioned in the cover-letter response
+>> > and should go all together through the PCI tree?
+>>=20
+>> This was dropped from v4, but should still be applied IMO.
+>
+> It was probably dropped because I applied it ;-)
+>
+> It's part of armsoc already [0] and should make its way into
+> 5.13 shortly.
 
-https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.14/block&id=07a719f8fdbe4ae0f825fa1a6d2755a63deb265e
+Thanks for sending the patch along. I left a note to the effect in v4
+but it's easy to miss.
 
--- 
-Jens Axboe
+Hopefully all sorted now.
 
+[...]
