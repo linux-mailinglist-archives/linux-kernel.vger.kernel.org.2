@@ -2,185 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C713A9ED3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A613A9ED9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234548AbhFPPVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:21:40 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:44754 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234002AbhFPPVe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:21:34 -0400
-Received: by mail-ot1-f54.google.com with SMTP id q5-20020a9d66450000b02903f18d65089fso2812811otm.11;
-        Wed, 16 Jun 2021 08:19:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9PStG9qnxE4mCRKeuZ4Hjo4vuxLzzhgd7NzpNwUxLZY=;
-        b=OD9uRvfCBwej2llJRB5GO/pl6zD2bp8+Amnn+5DFSy7R6JyxazpP9mbaxVhLdu7hRV
-         E5LE0rYKxfx8ZNPrAuesb5+xZoZyut0KxHb4lxU0UjnLvbFwu3g9BqDUfLC43ub8cyKq
-         RK15WnZ+SEoCQeqaU0eoC2iyDtuqMbnNDH9ZWadXRiahQwvmm47YnkAe/Dk19waZ5vQL
-         akF+zIlkcAxTQdHm3YXmxjWdzHS4mzfj0wO80/M8f1+r69KtW7D3bIPJKE+SV95h1FMZ
-         n+wNmxs6f5CYLHRbzMFUpDk1e5MGVk0f12rlkURwZ118kyrp/hPxo76J7vwz5n5wygO5
-         MT3w==
-X-Gm-Message-State: AOAM530Izv+T0zSIyDhtzb6c3hHK3E4I64ppgp2UFLp6brufOgOus330
-        2ZyNqdiATSx+TrCqT98CNFBoUz/wG4y8VAVXxAcNsZwB
-X-Google-Smtp-Source: ABdhPJycyNud+D4pGA1h7FJTM0h1ssAgqMzXG+REazS6DfYXBA0DC8MnOvc0vXFJmIIVcGJ4fbVeO2PH1pTE0nVP5p8=
-X-Received: by 2002:a9d:3e53:: with SMTP id h19mr373877otg.260.1623856768366;
- Wed, 16 Jun 2021 08:19:28 -0700 (PDT)
+        id S234552AbhFPPXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:23:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234002AbhFPPXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:23:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C64161375;
+        Wed, 16 Jun 2021 15:20:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623856859;
+        bh=27eUZzjv41JFT/kKzRpcOFEIMGKaONkaM9MTgUB4lvc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=buypIobsBvwFCoYyKG42xHmi6qlL+WknZA0yV9zcssR1qukECIItvMs5lYF24rq39
+         7G2rK+9x62EOIbBxA0GYsKblM2k/E/zY2ttt9SmAeF7mvexO/3Tz9FULTJZ4xZ8hQp
+         qo21npzZcH3m2VJR+PEzbRav27lgret3OHmHLrMa+yzTf6uyIS2u06r0IfJ8J87NEX
+         OqsnNy+LYpdR4X0lEw0DFSgZR3N9ejKQ6K068cLLxzaz7UHmmGuIxDDU53pfou+Y7I
+         7PxjBInaO0mwtN8Ezuk56bJ2wt0T5Z4h3v7InClBkLr24pCiSYHUhSE/RiPZV2v6m+
+         JY0BVpsRsnbVg==
+Received: by mail-ej1-f46.google.com with SMTP id gt18so4491497ejc.11;
+        Wed, 16 Jun 2021 08:20:59 -0700 (PDT)
+X-Gm-Message-State: AOAM5319eO8cG75H/8uYamndOULFyyErZais8PlVoSTjOLana1TnjBwa
+        rjaRFRhYxc2qqxkxtffs1dJdMJmbZy5+VesZ+Q==
+X-Google-Smtp-Source: ABdhPJwVu+BsUV7DzrQnvv679MoG3zGD601vblw0HBeBpWUI8BezJDE8UWYZlHYd9yj6WnDUi1/TfNk1GXKkgoaWTXw=
+X-Received: by 2002:a17:907:2059:: with SMTP id pg25mr76098ejb.130.1623856857816;
+ Wed, 16 Jun 2021 08:20:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <3140195.44csPzL39Z@kreacher> <3070024.5fSG56mABF@kreacher> <a691eab8-51bb-0965-9d17-63d438c43490@redhat.com>
-In-Reply-To: <a691eab8-51bb-0965-9d17-63d438c43490@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 16 Jun 2021 17:19:16 +0200
-Message-ID: <CAJZ5v0hC2Q4M455X4FQ-Z6tzdFkcUgMH_qPHDVV=4O0OcTpBkg@mail.gmail.com>
-Subject: Re: [PATCH 5/5] ACPI: scan: Fix race related to dropping dependencies
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210608102547.4880-1-steven_lee@aspeedtech.com>
+ <20210608102547.4880-3-steven_lee@aspeedtech.com> <20210610162320.GA1910317@robh.at.kernel.org>
+ <f639f1bb-fe53-4c15-a6dd-91b45ea7eef1@www.fastmail.com>
+In-Reply-To: <f639f1bb-fe53-4c15-a6dd-91b45ea7eef1@www.fastmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 16 Jun 2021 09:20:44 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJ_nwwyCBDg9p+AnriKw=9dC0WmLCw7dcz6qA87hRAu5g@mail.gmail.com>
+Message-ID: <CAL_JsqJ_nwwyCBDg9p+AnriKw=9dC0WmLCw7dcz6qA87hRAu5g@mail.gmail.com>
+Subject: Re: [PATCH v5 02/10] dt-bindings: aspeed-sgpio: Add ast2600 sgpio compatibles.
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     Steven Lee <steven_lee@aspeedtech.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Joel Stanley <joel@jms.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 4:55 PM Hans de Goede <hdegoede@redhat.com> wrote:
+On Thu, Jun 10, 2021 at 5:27 PM Andrew Jeffery <andrew@aj.id.au> wrote:
 >
-> Hi,
 >
-> On 6/16/21 4:25 PM, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > If acpi_add_single_object() runs concurrently with respect to
-> > acpi_scan_clear_dep() which deletes a dependencies list entry where
-> > the device being added is the consumer, the device's dep_unmet
-> > counter may not be updated to reflect that change.
-> >
-> > Namely, if the dependencies list entry is deleted right after
-> > calling acpi_scan_dep_init() and before calling acpi_device_add(),
-> > acpi_scan_clear_dep() will not find the device object corresponding
-> > to the consumer device ACPI handle and it will not update its
-> > dep_unmet counter to reflect the deletion of the list entry.
-> > Consequently, the dep_unmet counter of the device will never
-> > become zero going forward which may prevent it from being
-> > completely enumerated.
-> >
-> > To address this problem, modify acpi_add_single_object() to run
-> > acpi_tie_acpi_dev(), to attach the ACPI device object created by it
-> > to the corresponding ACPI namespace node, under acpi_dep_list_lock
-> > along with acpi_scan_dep_init() whenever the latter is called.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >  drivers/acpi/scan.c |   46 +++++++++++++++++++++++++++++++++-------------
-> >  1 file changed, 33 insertions(+), 13 deletions(-)
-> >
-> > Index: linux-pm/drivers/acpi/scan.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/acpi/scan.c
-> > +++ linux-pm/drivers/acpi/scan.c
-> > @@ -657,16 +657,12 @@ static int acpi_tie_acpi_dev(struct acpi
-> >       return 0;
-> >  }
-> >
-> > -int acpi_device_add(struct acpi_device *device,
-> > -                 void (*release)(struct device *))
-> > +int __acpi_device_add(struct acpi_device *device,
-> > +                   void (*release)(struct device *))
-> >  {
-> >       struct acpi_device_bus_id *acpi_device_bus_id;
-> >       int result;
-> >
-> > -     result = acpi_tie_acpi_dev(device);
-> > -     if (result)
-> > -             return result;
-> > -
-> >       /*
-> >        * Linkage
-> >        * -------
-> > @@ -755,6 +751,17 @@ err_unlock:
-> >       return result;
-> >  }
-> >
-> > +int acpi_device_add(struct acpi_device *adev, void (*release)(struct device *))
-> > +{
-> > +     int ret;
-> > +
-> > +     ret = acpi_tie_acpi_dev(adev);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     return __acpi_device_add(adev, release);
-> > +}
-> > +
-> >  /* --------------------------------------------------------------------------
-> >                                   Device Enumeration
-> >     -------------------------------------------------------------------------- */
-> > @@ -1681,14 +1688,10 @@ static void acpi_scan_dep_init(struct ac
-> >  {
-> >       struct acpi_dep_data *dep;
-> >
-> > -     mutex_lock(&acpi_dep_list_lock);
-> > -
-> >       list_for_each_entry(dep, &acpi_dep_list, node) {
-> >               if (dep->consumer == adev->handle)
-> >                       adev->dep_unmet++;
-> >       }
-> > -
-> > -     mutex_unlock(&acpi_dep_list_lock);
-> >  }
-> >
-> >  void acpi_device_add_finalize(struct acpi_device *device)
-> > @@ -1707,6 +1710,7 @@ static int acpi_add_single_object(struct
-> >                                 acpi_handle handle, int type, bool dep_init)
-> >  {
-> >       struct acpi_device *device;
-> > +     bool release_dep_lock = false;
-> >       int result;
-> >
-> >       device = kzalloc(sizeof(struct acpi_device), GFP_KERNEL);
-> > @@ -1720,16 +1724,32 @@ static int acpi_add_single_object(struct
-> >        * this must be done before the get power-/wakeup_dev-flags calls.
-> >        */
-> >       if (type == ACPI_BUS_TYPE_DEVICE || type == ACPI_BUS_TYPE_PROCESSOR) {
-> > -             if (dep_init)
-> > +             if (dep_init) {
-> > +                     mutex_lock(&acpi_dep_list_lock);
-> > +                     /*
-> > +                      * Hold the lock until the acpi_tie_acpi_dev() call
-> > +                      * below to prevent concurrent acpi_scan_clear_dep()
-> > +                      * from deleting a dependency list entry without
-> > +                      * updating dep_unmet for the device.
-> > +                      */
-> > +                     release_dep_lock = true;
-> >                       acpi_scan_dep_init(device);
-> > -
-> > +             }
-> >               acpi_scan_init_status(device);
-> >       }
-> >
-> >       acpi_bus_get_power_flags(device);
-> >       acpi_bus_get_wakeup_device_flags(device);
-> >
-> > -     result = acpi_device_add(device, acpi_device_release);
-> > +     result = acpi_tie_acpi_dev(device);
-> > +
-> > +     if (release_dep_lock)
-> > +             mutex_unlock(&acpi_dep_list_lock);
-> > +
-> > +     if (result)
 >
-> AFAICT you are missing a "acpi_device_release(&device->dev);"
-> call in the error-exit path here, causing a mem-leak.
-
-Indeed.
-
-I'll send a v2 of this patch alone to fix this issue.
-
-> Otherwise this looks good, with the above fixed this is:
+> On Fri, 11 Jun 2021, at 01:53, Rob Herring wrote:
+> > On Tue, Jun 08, 2021 at 06:25:37PM +0800, Steven Lee wrote:
+> > > AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another o=
+ne
+> > > with 80 pins. Add ast2600-sgpiom0-80 and ast2600-sgpiom-128 compatibl=
+es
+> > > and update descriptions to introduce the max number of available gpio
+> > > pins that AST2600 supported.
+> > >
+> > > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> > > Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+> > > ---
+> > >  Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml | 9 ++++++-=
+--
+> > >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml=
+ b/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+> > > index b2ae211411ff..0e42eded3c1e 100644
+> > > --- a/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+> > > +++ b/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+> > > @@ -10,9 +10,10 @@ maintainers:
+> > >    - Andrew Jeffery <andrew@aj.id.au>
+> > >
+> > >  description:
+> > > -  This SGPIO controller is for ASPEED AST2500 SoC, it supports up to=
+ 80 full
+> > > -  featured Serial GPIOs. Each of the Serial GPIO pins can be program=
+med to
+> > > -  support the following options
+> > > +  This SGPIO controller is for ASPEED AST2400, AST2500 and AST2600 S=
+oC,
+> > > +  AST2600 have two sgpio master one with 128 pins another one with 8=
+0 pins,
+> > > +  AST2500/AST2400 have one sgpio master with 80 pins. Each of the Se=
+rial
+> > > +  GPIO pins can be programmed to support the following options
+> > >    - Support interrupt option for each input port and various interru=
+pt
+> > >      sensitivity option (level-high, level-low, edge-high, edge-low)
+> > >    - Support reset tolerance option for each output port
+> > > @@ -25,6 +26,8 @@ properties:
+> > >      enum:
+> > >        - aspeed,ast2400-sgpio
+> > >        - aspeed,ast2500-sgpio
+> > > +      - aspeed,ast2600-sgpiom-80
+> > > +      - aspeed,ast2600-sgpiom-128
+> >
+> > If the number of GPIOs is the only difference, then I don't think you
+> > should get rid of ngpios. It's one thing if it varies from one SoC to
+> > the next, but if something is per instance we should have a property.
+> >
 >
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> There are two issues:
+>
+> 1. The maximum number of GPIOs supported by the controller
+> 2. The maximum number of GPIOs supported by the platform
+>
+> These are different because of what the controller does - here's some pre=
+vious discussion on the topic:
+>
+> https://lore.kernel.org/linux-gpio/f2875111-9ba9-43b7-b2a4-d00c8725f5a0@w=
+ww.fastmail.com/
+>
+> We've used ngpios to describe 2; this decision was made prior to the 2600=
+ design - the SGPIO controller for both the 2400 and 2500 supported a maxim=
+um of 80 GPIOs. With the 2600 we have to differentiate between the two SGPI=
+O controllers because they support a different maximum number of GPIOs. The=
+ proposed approach of different compatibles keeps the behaviour of ngpios t=
+he same across all controller implementations.
 
-Thanks!
+Okay, that makes sense.
+
+Reviewed-by: Rob Herring <robh@kernel.org>
