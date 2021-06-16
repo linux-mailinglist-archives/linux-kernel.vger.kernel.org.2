@@ -2,90 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7C33AA622
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 23:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5098F3AA625
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 23:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234062AbhFPV2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 17:28:51 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:46727 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234042AbhFPV2u (ORCPT
+        id S234070AbhFPVcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 17:32:22 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:45820 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233126AbhFPVcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 17:28:50 -0400
-Date:   Wed, 16 Jun 2021 21:26:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1623878769;
-        bh=/1nRiRUX9axadqDnig3IJyEGOizd/7oBJbG9RUFxBfE=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=asPDH5pF0zcGtWP3tfIQDKCKQ/T96uBt/xYxkbdpYlBaiuzZgUtj4qZynsaFAf1D6
-         5rljawhcKHEQR6m5LHke7cAazHgfnRiz0BdkmGl4ArKjAWDvYQ+7b9k5bk7uTXaJOf
-         9uIoM6v68jsTKYxzkguZQrDEyusgfDnNhqRiznWY=
-To:     gregkh@linuxfoundation.org
-From:   "Caleb D.S. Brzezinski" <calebdsb@protonmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Caleb D.S. Brzezinski" <calebdsb@protonmail.com>
-Reply-To: "Caleb D.S. Brzezinski" <calebdsb@protonmail.com>
-Subject: [PATCH] staging: ks7010: Wrap macro definitions in parenthesis
-Message-ID: <20210616212552.117604-1-calebdsb@protonmail.com>
+        Wed, 16 Jun 2021 17:32:18 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:32894 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1ltd6w-0005gK-7H; Wed, 16 Jun 2021 17:30:10 -0400
+Message-ID: <1cf91b2f760686678acfbefcc66309cd061986d5.camel@trillion01.com>
+Subject: Re: [PATCH v2 2/3] io_uring: minor clean up in trace events
+ definition
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>, Steven Rostedt <rostedt@goodmis.org>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 16 Jun 2021 17:30:09 -0400
+In-Reply-To: <237f71d5-ee6e-247c-c185-e4e6afbd317c@kernel.dk>
+References: <60be7e31.1c69fb81.a8bfb.2e54SMTPIN_ADDED_MISSING@mx.google.com>
+         <2752dcc1-9e56-ba31-54ea-d2363ecb6c93@gmail.com>
+         <def5421f-a3ae-12fd-87a2-6e584f753127@kernel.dk>
+         <20210615193532.6d7916d4@gandalf.local.home>
+         <2ba15b09-2228-9a2a-3ac3-c471dd3fc912@kernel.dk>
+         <3f5447bf02453a034f4eb71f092dd1d1455ec7ad.camel@trillion01.com>
+         <237f71d5-ee6e-247c-c185-e4e6afbd317c@kernel.dk>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wrap the definition of TX_RATE_* constants in parenthesis to prevent
-incorrect casting during expansion, as recommended by checkpatch.pl.
+On Wed, 2021-06-16 at 13:02 -0600, Jens Axboe wrote:
+> On 6/16/21 1:00 PM, Olivier Langlois wrote:
+> > On Wed, 2021-06-16 at 06:49 -0600, Jens Axboe wrote:
+> > > 
+> > > Indeed, that is what is causing the situation, and I do have them
+> > > here.
+> > > Olivier, you definitely want to fix your mail setup. It confuses
+> > > both
+> > > MUAs, but it also actively prevents using the regular tooling to
+> > > pull
+> > > these patches off lore for example.
+> > > 
+> > Ok, I will... It seems that only my patch emails are having this
+> > issue.
+> > I am pretty sure that I can find instances of non patch emails
+> > going
+> > making it to the lists...
+> 
+> The problem is that even if they do make it to the list, you can't
+> use eg b4 to pull them off the list.
+> 
+Jens,
 
-Signed-off-by: Caleb D.S. Brzezinski <calebdsb@protonmail.com>
----
- drivers/staging/ks7010/ks_hostif.h | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+I am unfamiliar with the regular tooling and eg b4 (which I assume are
+part of the regular tooling) so I am not fully understanding everything
+you say.
 
-diff --git a/drivers/staging/ks7010/ks_hostif.h b/drivers/staging/ks7010/ks=
-_hostif.h
-index 39138191a..c62a494ed 100644
---- a/drivers/staging/ks7010/ks_hostif.h
-+++ b/drivers/staging/ks7010/ks_hostif.h
-@@ -498,20 +498,20 @@ struct hostif_mic_failure_request {
- #define TX_RATE_FIXED=09=095
-=20
- /* 11b rate */
--#define TX_RATE_1M=09(u8)(10 / 5)=09/* 11b 11g basic rate */
--#define TX_RATE_2M=09(u8)(20 / 5)=09/* 11b 11g basic rate */
--#define TX_RATE_5M=09(u8)(55 / 5)=09/* 11g basic rate */
--#define TX_RATE_11M=09(u8)(110 / 5)=09/* 11g basic rate */
-+#define TX_RATE_1M=09((u8)(10 / 5))=09/* 11b 11g basic rate */
-+#define TX_RATE_2M=09((u8)(20 / 5))=09/* 11b 11g basic rate */
-+#define TX_RATE_5M=09((u8)(55 / 5))=09/* 11g basic rate */
-+#define TX_RATE_11M=09((u8)(110 / 5))=09/* 11g basic rate */
-=20
- /* 11g rate */
--#define TX_RATE_6M=09(u8)(60 / 5)=09/* 11g basic rate */
--#define TX_RATE_12M=09(u8)(120 / 5)=09/* 11g basic rate */
--#define TX_RATE_24M=09(u8)(240 / 5)=09/* 11g basic rate */
--#define TX_RATE_9M=09(u8)(90 / 5)
--#define TX_RATE_18M=09(u8)(180 / 5)
--#define TX_RATE_36M=09(u8)(360 / 5)
--#define TX_RATE_48M=09(u8)(480 / 5)
--#define TX_RATE_54M=09(u8)(540 / 5)
-+#define TX_RATE_6M=09((u8)(60 / 5))=09/* 11g basic rate */
-+#define TX_RATE_12M=09((u8)(120 / 5))=09/* 11g basic rate */
-+#define TX_RATE_24M=09((u8)(240 / 5))=09/* 11g basic rate */
-+#define TX_RATE_9M=09((u8)(90 / 5))
-+#define TX_RATE_18M=09((u8)(180 / 5))
-+#define TX_RATE_36M=09((u8)(360 / 5))
-+#define TX_RATE_48M=09((u8)(480 / 5))
-+#define TX_RATE_54M=09((u8)(540 / 5))
-=20
- static inline bool is_11b_rate(u8 rate)
- {
---=20
-2.31.0
+My take away from all this is that it is very important that my patches
+do reach the lists and I commit to put the necessary efforts to make
+that happen.
+
+My last email was simply myself starting diagnose where my problem
+could be outloud.
+
+Steven did mention that he wasn't seeing the Message-Id field in my
+patch emails. I'm very grateful for this clue!
+
+My main email client is Gnome Evolution (when Message-Id is present in
+my mails) and I do the following to send out patches:
+
+1. git format-patch -o ~/patches HEAD^
+2. Edit patch file by adding recipients listed by
+scripts/get_maintainer.pl
+3. cat patch_file | msmtp -t -a default
+
+The weird thing is that when I have noticed that my patches weren't
+making it to the lists, I started to Cc myself to receive a copy of the
+patch. When I inspect the copy header, it contains the Message-Id field
+but it might be the receiving email client that on reception does add
+the missing field so I don't know exactly what is happening.
+
+you have my word. Next patch I send, it will be make it to the lists.
+
+thx a lot for your comprehension and your assistance!
+Olivier
 
 
