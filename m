@@ -2,72 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235F13AA45C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF123AA460
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232836AbhFPTcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:32:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52184 "EHLO mail.kernel.org"
+        id S232851AbhFPTfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:35:24 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:41128 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230332AbhFPTcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:32:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 877EA61246;
-        Wed, 16 Jun 2021 19:30:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623871803;
-        bh=f9H14eCfhOjvGvGE7xKVI0N3PyCwuQDCxqlmu4asqo0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BqdBAE2TFTBgmA+TcCJvVRAPxQ352ku5ISlA1NipNhTIvt2TlDFARtlh1ViuFWgAP
-         4rQljHMoazXSpr7dt9/G4KRaw4BvPVYZDF8K836Ewun/jERwF6ZaRr0jepn9CFYjKR
-         OcG6jEgkixEO33hK7qJZ96S0v43vsI/wt+8To/9j9qxFRmEOVfytsOaMZ77s5/q3/n
-         qopJILBhq+8Yt2BnWoBknrFbhlA5soPPtTzLfSQVUDtSFUwQntMFmKKBlA5bcygfp8
-         2BrVwOgG1iY2SCQuMQ8SCAX6sajdXDORxZJXwifIIROrSmGE7/xkWSsnvLC/cq4wbv
-         YoOoAdMkqHZKA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7B86060A54;
-        Wed, 16 Jun 2021 19:30:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231202AbhFPTfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 15:35:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=B6ZGTUD6NsGZsGjjROclmcpOgiH6NhjYtXWhNJYTkbE=; b=QPZQQr2XubOmMa8kdNrJ2g03Fk
+        c1tpYiyI3kJqik4ho4L0iWog+kjlzAZCsGQfVRFocACDbUNdsu59uFLXGOBoGlDO5D75974f1bTcK
+        E9ETSVvQyRDG1uux/RhrkMXhxC6m13wpBcUsyjdzGWfEg4h+74oAULJ/z+ges+l6V9dA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ltbHm-009ljo-67; Wed, 16 Jun 2021 21:33:14 +0200
+Date:   Wed, 16 Jun 2021 21:33:14 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
+        jaz@semihalf.com, gjb@semihalf.com, upstream@semihalf.com,
+        Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com, tn@semihalf.com,
+        rjw@rjwysocki.net, lenb@kernel.org
+Subject: Re: [net-next: PATCH v2 2/7] net: mdiobus: Introduce
+ fwnode_mdbiobus_register()
+Message-ID: <YMpR+lJqcgQU2DMO@lunn.ch>
+References: <20210616190759.2832033-1-mw@semihalf.com>
+ <20210616190759.2832033-3-mw@semihalf.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: stmmac: disable clocks in stmmac_remove_config_dt()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162387180350.2076.2488923511178824990.git-patchwork-notify@kernel.org>
-Date:   Wed, 16 Jun 2021 19:30:03 +0000
-References: <20210616091024.13412-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20210616091024.13412-1-qiangqing.zhang@nxp.com>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, peppe.cavallaro@st.com,
-        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616190759.2832033-3-mw@semihalf.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Wed, 16 Jun 2021 17:10:24 +0800 you wrote:
-> Platform drivers may call stmmac_probe_config_dt() to parse dt, could
-> call stmmac_remove_config_dt() in error handing after dt parsed, so need
-> disable clocks in stmmac_remove_config_dt().
+On Wed, Jun 16, 2021 at 09:07:54PM +0200, Marcin Wojtas wrote:
+> This patch introduces a new helper function that
+> wraps acpi_/of_ mdiobus_register() and allows its
+> usage via common fwnode_ interface.
 > 
-> Go through all platforms drivers which use stmmac_probe_config_dt(),
-> none of them disable clocks manually, so it's safe to disable them in
-> stmmac_remove_config_dt().
+> Fall back to raw mdiobus_register() in case CONFIG_FWNODE_MDIO
+> is not enabled, in order to satisfy compatibility
+> in all future user drivers.
+
+> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+> ---
+>  include/linux/fwnode_mdio.h    | 12 +++++++++++
+>  drivers/net/mdio/fwnode_mdio.c | 22 ++++++++++++++++++++
+>  2 files changed, 34 insertions(+)
 > 
-> [...]
+> diff --git a/include/linux/fwnode_mdio.h b/include/linux/fwnode_mdio.h
+> index faf603c48c86..13d4ae8fee0a 100644
+> --- a/include/linux/fwnode_mdio.h
+> +++ b/include/linux/fwnode_mdio.h
+> @@ -16,6 +16,7 @@ int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
+>  int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+>  				struct fwnode_handle *child, u32 addr);
+>  
+> +int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handle *fwnode);
+>  #else /* CONFIG_FWNODE_MDIO */
+>  int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
+>  				       struct phy_device *phy,
+> @@ -30,6 +31,17 @@ static inline int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+>  {
+>  	return -EINVAL;
+>  }
+> +
+> +static inline int fwnode_mdiobus_register(struct mii_bus *bus,
+> +					  struct fwnode_handle *fwnode)
+> +{
+> +	/*
+> +	 * Fall back to mdiobus_register() function to register a bus.
+> +	 * This way, we don't have to keep compat bits around in drivers.
+> +	 */
+> +
+> +	return mdiobus_register(mdio);
+> +}
 
-Here is the summary with links:
-  - [net] net: stmmac: disable clocks in stmmac_remove_config_dt()
-    https://git.kernel.org/netdev/net/c/8f269102baf7
+I'm not sure this fallback is correct.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Any driver which decides to use fwmode is going to select it. If it is
+not selected, you want a link time error, or a compiler time error to
+tell you, you are missing FWNODE_MDIO. Calling mdiobus_register() is
+unlikely to work, or the driver would of done that directly.
 
-
+	 Andrew
