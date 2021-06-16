@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B375D3AA2A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53193AA2A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbhFPRvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:51:23 -0400
-Received: from mail.efficios.com ([167.114.26.124]:51030 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbhFPRvV (ORCPT
+        id S231455AbhFPRwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:52:20 -0400
+Received: from mail-pf1-f169.google.com ([209.85.210.169]:46890 "EHLO
+        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhFPRwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:51:21 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C691E34A274;
-        Wed, 16 Jun 2021 13:49:14 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id pDcWAsNZDluG; Wed, 16 Jun 2021 13:49:12 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id D337C34A72C;
-        Wed, 16 Jun 2021 13:49:12 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com D337C34A72C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1623865752;
-        bh=1gEGS37d5YS5t+vNhypHegreBYEX0Oj0QX3lscVo1iA=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=Q7qPgrVtmXKmYByg3gcfYI/JsDIWSrdvm5kK8zgFU2VG4RUfuic6riERTgfMdRTo3
-         6H1EMwrqL3XciuKhrpzEPQiyKfkxuE7ecUSyYyr8sdll75Sy+YpllJBuWfmsWZmKuW
-         gQKHENONavQcrpVL1KWXXSN/m+SqAqMDZdKwnt+pxyhH6HytSXKdlw16V8Ve5G5VHM
-         9NUYEnwffySIgcQvainDSBKtQ+chYoa9VPdEzqlZGLfuhok/csktIalp6KivopOvwf
-         x9NWtzMisfKryXNdwRPB3SU7GwiC0kL0n8xAoWRZZzc5x/U3MH/u3etFP1tz9IDq53
-         2NVoo0ps8jd+g==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id TV_bkHwtGB11; Wed, 16 Jun 2021 13:49:12 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id C392034A2F7;
-        Wed, 16 Jun 2021 13:49:12 -0400 (EDT)
-Date:   Wed, 16 Jun 2021 13:49:12 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86 <x86@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Message-ID: <1612817467.9041.1623865752655.JavaMail.zimbra@efficios.com>
-In-Reply-To: <571b7e6b6a907e8a1ffc541c3f0005d347406fd0.1623813516.git.luto@kernel.org>
-References: <cover.1623813516.git.luto@kernel.org> <571b7e6b6a907e8a1ffc541c3f0005d347406fd0.1623813516.git.luto@kernel.org>
-Subject: Re: [PATCH 2/8] x86/mm: Handle unlazying membarrier core sync in
- the arch code
+        Wed, 16 Jun 2021 13:52:19 -0400
+Received: by mail-pf1-f169.google.com with SMTP id x16so2779305pfa.13;
+        Wed, 16 Jun 2021 10:50:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DBu8MXj8Z++5Tj08sCxjj3DBtiPGk64NAkrDpA4YCsY=;
+        b=auSoCwuxcjAacY5VxkNCZPm9cMc0cny0DdkalmogWbB+JiVU9B7Hfys+roO4vdF9xc
+         urDh+zL6BS8Vn73evIUnrKG/nzusSGKZMZs/28t0g5RzARZKyM0BQDErH33cI2KGREWA
+         dRgJwsRYEgp3VhAoLOaFFBYEkMjkpEYZgxVx8wXieDSUBCdD0WLo0bzdU15JR225kCWE
+         zScbnjy3xPVmceZ30rvv7xRX4/W4QKiRHgyvxuZAnfciIijVjDfeh9HWNUJJ/vgICXCi
+         Rjcj4JJNMRYaZL8HNpnluZdS4P9YBlzTMs4T5Xl0Zz2H/BpGUQkC0XM+47E5DVepCR+M
+         u53g==
+X-Gm-Message-State: AOAM531Dkv/1CaxowCv9nN7qi0nO0avr7qoNgxSaz/X/0yE+GKNPhcJp
+        znHsw81+lAwkR+IzcALFdxfGS4A3i9I=
+X-Google-Smtp-Source: ABdhPJzxxZf40hpoe5Njow08uqeWKKX6+TG/Lp2v13nLFEun8M9iDYGAmiHoa2cfsMnNnE04F7PfGA==
+X-Received: by 2002:a63:3d82:: with SMTP id k124mr721310pga.401.1623865812362;
+        Wed, 16 Jun 2021 10:50:12 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id b1sm2808404pjh.4.2021.06.16.10.50.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 10:50:11 -0700 (PDT)
+Subject: Re: [PATCH v3 1/9] scsi: ufs: Differentiate status between hba pm ops
+ and wl pm ops
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-2-git-send-email-cang@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <a5804465-2ad4-f122-0458-dcdd75f39310@acm.org>
+Date:   Wed, 16 Jun 2021 10:50:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <1623300218-9454-2-git-send-email-cang@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF89 (Linux)/8.8.15_GA_4026)
-Thread-Topic: x86/mm: Handle unlazying membarrier core sync in the arch code
-Thread-Index: xNxHDRQh7RLqFnf5iMUzvQDlhdKF9A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jun 15, 2021, at 11:21 PM, Andy Lutomirski luto@kernel.org wrote:
-[...]
-> @@ -473,16 +474,24 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct
-> mm_struct *next,
+On 6/9/21 9:43 PM, Can Guo wrote:
+> @@ -8784,7 +8786,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	enum ufs_dev_pwr_mode req_dev_pwr_mode;
+>  	enum uic_link_state req_link_state;
+>  
+> -	hba->pm_op_in_progress = true;
+> +	hba->wl_pm_op_in_progress = true;
+>  	if (pm_op != UFS_SHUTDOWN_PM) {
+>  		pm_lvl = pm_op == UFS_RUNTIME_PM ?
+>  			 hba->rpm_lvl : hba->spm_lvl;
+> @@ -8919,7 +8921,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  		hba->clk_gating.is_suspended = false;
+>  		ufshcd_release(hba);
+>  	}
+> -	hba->pm_op_in_progress = false;
+> +	hba->wl_pm_op_in_progress = false;
+>  	return ret;
+>  }
 
-[...]
-
-> @@ -510,16 +520,35 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct
-> mm_struct *next,
-> 		 * If the TLB is up to date, just use it.
-> 		 * The barrier synchronizes with the tlb_gen increment in
-> 		 * the TLB shootdown code.
-> +		 *
-> +		 * As a future optimization opportunity, it's plausible
-> +		 * that the x86 memory model is strong enough that this
-> +		 * smp_mb() isn't needed.
-> 		 */
-> 		smp_mb();
-> 		next_tlb_gen = atomic64_read(&next->context.tlb_gen);
-> 		if (this_cpu_read(cpu_tlbstate.ctxs[prev_asid].tlb_gen) ==
-> -				next_tlb_gen)
-> +		    next_tlb_gen) {
-> +#ifdef CONFIG_MEMBARRIER
-> +			/*
-> +			 * We switched logical mm but we're not going to
-> +			 * write to CR3.  We already did smp_mb() above,
-> +			 * but membarrier() might require a sync_core()
-> +			 * as well.
-> +			 */
-> +			if (unlikely(atomic_read(&next->membarrier_state) &
-> +				     MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE))
-> +				sync_core_before_usermode();
-> +#endif
-> +
-> 			return;
-> +		}
-
-[...]
-
-I find that mixing up preprocessor #ifdef and code logic hurts readability.
-Can you lift this into a static function within the same compile unit, and
-provides an empty implementation for the #else case ?
+Are the __ufshcd_wl_suspend() calls serialized in any way? If not, will
+the value of wl_pm_op_in_progress be incorrect if multiple kernel
+threads run __ufshcd_wl_suspend() concurrently and one of the
+__ufshcd_wl_suspend() instances returns earlier than the other?
 
 Thanks,
 
-Mathieu
-
-	prev->sched_class->task_dead(prev);
-
-
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Bart.
