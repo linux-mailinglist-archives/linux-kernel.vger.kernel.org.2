@@ -2,77 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84B93AA761
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB8E3AA76F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbhFPXXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 19:23:14 -0400
-Received: from mail-il1-f174.google.com ([209.85.166.174]:44600 "EHLO
-        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234487AbhFPXXK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 19:23:10 -0400
-Received: by mail-il1-f174.google.com with SMTP id i17so3761347ilj.11;
-        Wed, 16 Jun 2021 16:21:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dO/0IK3ZChPtbT+cDEit4w38mGS2paOCnZ+uimQh1SQ=;
-        b=smMMOfXXCvvcrZOA/BJrcmBePvZ73keN8P3TIzaVmTy61LTB4aIab1S6MDmVlRtivC
-         SFWbZgLu/pAd6NmeNPsCSufbZW6yh0swe0Yy5+tonEF0xWRgog3iVTmZaRuqn/WopS6W
-         RlvkeAruEdJNXUvTfBTGkzhVvNTcj7NcCIOGQ6kd3HwBcnzorTsg+lSCrnCisevlPsZ0
-         sYuzywm58DPTTkpFRZiACp9O4antUDeNcxjQV1XoO3kFCn5VfZvzVKaEhvxxRqUHY8PM
-         nHRpXb2trS1kFSkbS6vkATxgaP6iQYIN54cxqJk65lQwRnt3bZSx/Wvz3b0yGuGLcwrl
-         TT1g==
-X-Gm-Message-State: AOAM531mv33oUyaSe7HoOiNQH1N3VmOfXaM+Rfo0HMwgtnRxI3zxPlSQ
-        8pK/nvnYCEuixAaG3rIXA83HPJuE8w==
-X-Google-Smtp-Source: ABdhPJwbEKMKP1IXu446J/OQg89LxbdPTvXIDDBvFnLkwH8A3fS/ZsKWSzd/W2KIkLEioD0jIIKk8A==
-X-Received: by 2002:a92:d245:: with SMTP id v5mr1353902ilg.245.1623885662599;
-        Wed, 16 Jun 2021 16:21:02 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id n17sm886429ilm.34.2021.06.16.16.21.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 16:21:01 -0700 (PDT)
-Received: (nullmailer pid 274985 invoked by uid 1000);
-        Wed, 16 Jun 2021 23:20:59 -0000
-Date:   Wed, 16 Jun 2021 17:20:59 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Tero Kristo <kristo@kernel.org>, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: PCI: ti,am65: Convert PCIe host/endpoint
- mode dt-bindings to YAML
-Message-ID: <20210616232059.GA274875@robh.at.kernel.org>
-References: <20210603133450.24710-1-kishon@ti.com>
+        id S234571AbhFPX2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 19:28:05 -0400
+Received: from mga01.intel.com ([192.55.52.88]:36881 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234567AbhFPX2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 19:28:02 -0400
+IronPort-SDR: RtXxcDWhcxXSZ66fUoHQ+NlY139/rn0KVsW3WIIwfl3L3CsIz8+3t9dbJMrYSFodtiFl0PYb9o
+ K4xyCL9lTKGg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="227779859"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="227779859"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 16:25:56 -0700
+IronPort-SDR: 3cRE5Tui5GBfKWOAu7cW2A0ttwMJ2m71Cos/ouf6iZUfuDK13f3Z1hsV/rcINsJAaMO4AVcCvh
+ bbuAVeEMbKpg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="479269041"
+Received: from alison-desk.jf.intel.com ([10.54.74.53])
+  by FMSMGA003.fm.intel.com with ESMTP; 16 Jun 2021 16:25:56 -0700
+Date:   Wed, 16 Jun 2021 16:21:40 -0700
+From:   Alison Schofield <alison.schofield@intel.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] cxl/acpi: Use the ACPI CFMWS to create static
+ decoder objects
+Message-ID: <20210616232140.GC25185@alison-desk.jf.intel.com>
+References: <cover.1623800340.git.alison.schofield@intel.com>
+ <48f1b59105e46f04b38347fc1555bb5c8d654cff.1623800340.git.alison.schofield@intel.com>
+ <20210616161740.k4nxeh3bmem56gwa@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210603133450.24710-1-kishon@ti.com>
+In-Reply-To: <20210616161740.k4nxeh3bmem56gwa@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Jun 2021 19:04:50 +0530, Kishon Vijay Abraham I wrote:
-> Convert PCIe host/endpoint mode dt-bindings for TI's AM65/Keystone SoC
-> to YAML binding.
+
+Thanks for the review Ben -
+
+On Wed, Jun 16, 2021 at 09:17:40AM -0700, Ben Widawsky wrote:
+> On 21-06-15 17:20:39, Alison Schofield wrote:
+
+snip
+
+> > +static unsigned long cfmws_to_decoder_flags(int restrictions)
+> > +{
+> > +	unsigned long flags = 0;
+> > +
+> > +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE2)
+> > +		flags |= CXL_DECODER_F_TYPE2;
+> > +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE3)
+> > +		flags |= CXL_DECODER_F_TYPE3;
+> > +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE)
+> > +		flags |= CXL_DECODER_F_RAM;
+> > +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_PMEM)
+> > +		flags |= CXL_DECODER_F_PMEM;
+> > +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_FIXED)
+> > +		flags |= CXL_DECODER_F_LOCK;
+> > +
+> > +	return flags;
+> > +}
 > 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
-> Changes from v1:
-> 1) Removed '"' for the included schemas
-> 2) Used default #address-cells and #size-cells for the example
-> 
->  .../devicetree/bindings/pci/pci-keystone.txt  | 115 ------------------
->  .../bindings/pci/ti,am65-pci-ep.yaml          |  74 +++++++++++
->  .../bindings/pci/ti,am65-pci-host.yaml        |  96 +++++++++++++++
->  3 files changed, 170 insertions(+), 115 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pci/pci-keystone.txt
->  create mode 100644 Documentation/devicetree/bindings/pci/ti,am65-pci-ep.yaml
->  create mode 100644 Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
+> I know these flags aren't introduced by this patch, but I'm wondering if it
+> makes sense to not just use the spec definitions rather than defining our own.
+> It doesn't do much harm, but it's extra typing everytime the spec adds new flags
+> and I don't really see the upside.
 > 
 
-Applied, thanks!
+I think Dan's email in this thread covered this.
+
+snip
+> > +
+> > +static int cxl_acpi_cfmws_verify(struct device *dev,
+> > +				 struct acpi_cedt_cfmws *cfmws)
+> > +{
+
+snip
+
+> > +
+> > +
+> > +	expected_len = struct_size((cfmws), interleave_targets,
+> > +				   CFMWS_INTERLEAVE_WAYS(cfmws));
+> > +
+> > +	if (expected_len != cfmws->header.length) {
+> 
+> I'd switch this to:
+> if (expected_len < cfmws->header.length)
+> 
+> If it's too big, just print a dev_dbg.
+> 
+
+Got it. 
+
+snip
+
+> > +	void *cedt_base;
+> > +	int rc;
+> > +
+> > +	len = cedt_table->length - sizeof(*cedt_table);
+> > +	cedt_base = cedt_table + 1;
+> 
+> naming suggestions per previous patch... up to you though.
+>
+
+Ditto w previous patch.
+
+snip
+> > +
+> > +		}
+> > +
+> > +		cxld = devm_cxl_add_decoder(dev, root_port,
+> > +				CFMWS_INTERLEAVE_WAYS(cfmws),
+> > +				cfmws->base_hpa, cfmws->window_size,
+> > +				CFMWS_INTERLEAVE_WAYS(cfmws),
+> 
+> Interesting... this made me question, how can we have a different number of
+> targets and ways?
+> 
+
+Dan explained this previously:
+
+"nr_targets is the number of possible targets that this decoder can
+target. For CFMWS it just equals interleave_ways because the target
+list can't be changed. A switch on the other hand could support up to
+16 possible targets, but be dynamically configured to only do a 1-way
+interleave. So this is an artifact of 'struct cxl_decoder'
+representing both fixed CFMWS entries and dynamically programmable
+switch entries. nr_targets tells devm_cxl_add_decoder() how much
+memory to allocate for its target list, interleave_ways tells
+devm_cxl_add_decoder() what the decoder is currently programmed to
+decode."
+
+
+> 
+snip
+> 
