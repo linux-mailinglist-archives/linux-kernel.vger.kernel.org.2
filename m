@@ -2,102 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDC23A8EC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7AE3A8ECA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbhFPCVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 22:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhFPCVM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 22:21:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA7DC061574;
-        Tue, 15 Jun 2021 19:19:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=cAFNJ1/DwVcSuyRvAwvNKZrXlrL9rYgK3W8Ic4ttV/8=; b=h4O7+9VsNWjBMVqH4uGscTf+2E
-        Y+2KszH0xsTNWqZGX0xC9MYUJvqLb2pAiLbdOjKiZVhkzE7tqHF0vX8jqfw/ZijXQeDkKetDqhIt9
-        X+A8Zygmim6WYlRQYj1VwpQQ3d1q8wAb9m9eG50Ili2M+TPLOOfRVqr67mTOkXcT9yZxK8kgXU0kX
-        96Pds4lzKmFayRiubPf8iBDI/Su+E0mBRUD/H5pGxMllnbrWGRrXbvdofgqYfpwuyhAA8dcHunwpr
-        032dR/SFn2X90Y7pRZCexz4bxx1iYdSTIl5eV8nc4YNs1EVkHAD1+EtBZoYc1WD69pGQv8nodJsLC
-        CpOYkazg==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltL8y-004Rdw-GO; Wed, 16 Jun 2021 02:19:04 +0000
-Subject: Re: [PATCH] afs: fix no return statement in function returning
- non-void
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        Tom Rix <trix@redhat.com>, linux-afs@lists.infradead.org,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
- <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com>
- <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org>
- <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
- <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org>
-Message-ID: <07d62654-15c1-29a4-c671-1669ea92510b@infradead.org>
-Date:   Tue, 15 Jun 2021 19:19:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S231921AbhFPC0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 22:26:02 -0400
+Received: from ozlabs.org ([203.11.71.1]:56549 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230454AbhFPC0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 22:26:01 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G4TWn4TqHz9sWX;
+        Wed, 16 Jun 2021 12:23:49 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1623810234;
+        bh=P3MCetIfzZtPqhiTVaYvru4yq+FzxZnPf34lNt0JVNs=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=bFttHDSYDF8hs1GhcNrBuxC8r7YR1FbbNwSxkDAL7lQtIx4XxJMkGgJ7lrWjuZU9K
+         hHlMI3fju9iswEdIjo7GjpwxP1Gj1Fm/KYx+39MCmWGuFbgefyJ9+AnXWm5Gf/e/WE
+         A3rk+pmgQ4nYUF6AN4aESjVY9NcZzs/XD9grffQ9ZgTrSzGhxqLEc7HLOf2IyR5wUs
+         BEgh91+kA9k66Ony2Qct/YJq45j32aDa0BAlicNYsFLF+qSWSLxNmpFtktw78LYU6u
+         aLSqG0ucZiktlwstD97l1OxIipFzxib0Y/fOq3lYLMw7V3BV6g9i2RPMf7XTojDwDI
+         6cNIWLPIEvGYQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Rob Herring <robh@kernel.org>, nramas <nramas@linux.microsoft.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>, dmitry.kasatkin@gmail.com,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allison Randal <allison@lohutok.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Prakhar Srivastava <prsriva@linux.microsoft.com>,
+        balajib@linux.microsoft.com,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH v19 05/13] of: Add a common kexec FDT setup function
+In-Reply-To: <CAL_JsqJEucP043eViq0Y1kAeqWNTqP5fLjfjz7+ksYx7QP_V5w@mail.gmail.com>
+References: <20210221174930.27324-1-nramas@linux.microsoft.com>
+ <20210221174930.27324-6-nramas@linux.microsoft.com>
+ <CAMuHMdVSuNS4edh-zM0_sbC0i1AAjQ9Y0n_8Mjz=3CALkW4pgg@mail.gmail.com>
+ <CAL_JsqJ2x7zbyP3fAacdfHOWjCVjg6XhraV2YkoBJdZ2jXAMEA@mail.gmail.com>
+ <54efb4fce5aac7efbd0b1b3885e9098b1d4ea745.camel@linux.microsoft.com>
+ <CAL_JsqJEucP043eViq0Y1kAeqWNTqP5fLjfjz7+ksYx7QP_V5w@mail.gmail.com>
+Date:   Wed, 16 Jun 2021 12:23:44 +1000
+Message-ID: <87y2basg27.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 6:38 PM, Randy Dunlap wrote:
-> On 6/15/21 5:32 PM, Linus Torvalds wrote:
->> On Tue, Jun 15, 2021 at 4:58 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>>
->>> Some implementations of BUG() are macros, not functions,
+Rob Herring <robh@kernel.org> writes:
+> On Tue, Jun 15, 2021 at 10:13 AM nramas <nramas@linux.microsoft.com> wrote:
 >>
->> Not "some", I think. Most.
->>
->>> so "unreachable" is not applicable AFAIK.
->>
->> Sure it is. One common pattern is the x86 one:
->>
->>   #define BUG()                                                   \
->>   do {                                                            \
->>           instrumentation_begin();                                \
->>           _BUG_FLAGS(ASM_UD2, 0);                                 \
->>           unreachable();                                          \
->>   } while (0)
-> 
-> duh.
-> 
->> and that "unreachable()" is exactly what I'm talking about.
->>
->> So I repeat: what completely broken compiler / config / architecture
->> is it that needs that "return 0" after a BUG() statement?
-> 
-> I have seen it on ia64 -- most likely GCC 9.3.0, but I'll have to
-> double check that.
+>> On Tue, 2021-06-15 at 08:01 -0600, Rob Herring wrote:
+>> > On Tue, Jun 15, 2021 at 6:18 AM Geert Uytterhoeven <
+>> > geert@linux-m68k.org> wrote:
+>> > >
+>> > > > +void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
+>> > > > +                                  unsigned long
+>> > > > initrd_load_addr,
+>> > > > +                                  unsigned long initrd_len,
+>> > > > +                                  const char *cmdline, size_t
+>> > > > extra_fdt_size)
+>> > > > +{
+>> > > > +       /* Did we boot using an initrd? */
+>> > > > +       prop = fdt_getprop(fdt, chosen_node, "linux,initrd-
+>> > > > start", NULL);
+>> > > > +       if (prop) {
+>> > > > +               u64 tmp_start, tmp_end, tmp_size;
+>> > > > +
+>> > > > +               tmp_start = fdt64_to_cpu(*((const fdt64_t *)
+>> > > > prop));
+>> > > > +
+>> > > > +               prop = fdt_getprop(fdt, chosen_node,
+>> > > > "linux,initrd-end", NULL);
+>> > > > +               if (!prop) {
+>> > > > +                       ret = -EINVAL;
+>> > > > +                       goto out;
+>> > > > +               }
+>> > > > +
+>> > > > +               tmp_end = fdt64_to_cpu(*((const fdt64_t *)
+>> > > > prop));
+>> > >
+>> > > Some kernel code assumes "linux,initrd-{start,end}" are 64-bit,
+>> > > other code assumes 32-bit.
+>> >
+>> > It can be either. The above code was a merge of arm64 and powerpc >> > both
+>> > of which use 64-bit and still only runs on those arches. It looks >> > like
+>> > some powerpc platforms may use 32-bit, but this would have been >> > broken
+>> > before.
 
-Nope, I cannot repro that now. I'll check a few more arches...
+>> of_kexec_alloc_and_setup_fdt() is called from elf_64.c (in
+>> arch/powerpc/kexec) which is for 64-bit powerpc platform only.
+>
+> 64-bit PPC could be writing 32-bit property values. The architecture
+> size doesn't necessarily matter. And if the values came from the
+> bootloader, who knows what size it used.
+>
+> This code is 32-bit powerpc only?:
+>
+> arch/powerpc/boot/main.c-       /* Tell the kernel initrd address via device tree */
+> arch/powerpc/boot/main.c:       setprop_val(chosen, "linux,initrd-start", (u32)(initrd_addr));
+> arch/powerpc/boot/main.c-       setprop_val(chosen, "linux,initrd-end", (u32)(initrd_addr+initrd_size));
 
->> Because that environment is broken, and the warning is bogus and wrong.
->>
->> It might not be the compiler. It might be some architecture that does
->> this wrong. It might be some very particular configuration that does
->> something bad and makes the "unreachable()" not work (or not exist).
->>
->> But *that* is the bug that should be fixed. Not adding a pointless and
->> incorrect line that makes no sense, just to hide the real bug.
+Historically that code was always built 32-bit, even when used with a
+64-bit kernel.
 
+These days it is also built 64-bit (for ppc64le).
 
--- 
-~Randy
+It looks like the drivers/of/fdt.c code can handle either 64 or 32-bit,
+so I guess that's why it seems to be working.
 
+Although I'm not sure how much testing the 64-bit case gets, because the
+distros tend to just use the vmlinux.
+
+cheers
