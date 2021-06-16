@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FB53A99DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54933A99DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbhFPMFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:05:36 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:56520 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232164AbhFPMFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:05:24 -0400
-Received: from zn.tnic (p200300ec2f0c2b00ec25a986a17212ee.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:2b00:ec25:a986:a172:12ee])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3BAEE1EC03E4;
-        Wed, 16 Jun 2021 14:03:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623844996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=qK3Y1DHOt57Qig7xfqZFQT3ydoFk9JaEiyImUpf/4h4=;
-        b=mPkX1WjdJx43H98yJ0xojjxpLkY44F46gfmAvHgRhvQxPBJMGtuYOk9hA3L8aJwckyEYjZ
-        5rQCCG8gEnwy45fVBV3wv3aILo7Xjvo6F5qham5jpiWltLR6fF3pok4WGqWjxdq/L0DgZ2
-        ArwOn584uWA7wywbnefvHhDirxUBCUM=
-Date:   Wed, 16 Jun 2021 14:03:05 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-Subject: Re: [PATCH Part1 RFC v3 11/22] x86/sev: Add helper for validating
- pages in early enc attribute changes
-Message-ID: <YMnoeRcuMfAqX5Vf@zn.tnic>
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-12-brijesh.singh@amd.com>
- <YMI02+k2zk9eazjQ@zn.tnic>
- <d0759889-94df-73b0-4285-fa064eb187cd@amd.com>
- <YMen5wVqR31D/Q4z@zn.tnic>
- <70db789d-b1aa-c355-2d16-51ace4666b3f@amd.com>
- <YMnNYNBvEEAr5kqd@zn.tnic>
- <f7e70782-701c-13dd-43d2-67c92f8cf36f@amd.com>
+        id S232818AbhFPMFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232823AbhFPMFu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 08:05:50 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88110C061767
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:03:44 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id h12so2049867pfe.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8I4Y9wOWt0L9Wjhz/UCy2dwBA6LBFaECPMUl0PK0S+Y=;
+        b=iOp03LxUSsUIVfOPyK6+qrON59uFFnI+lLpZQNmg4K7I4gv9z25zZiFLkHse5fxWi3
+         gOQHyvMLemnvxyNSaqv/1j6jgvBTx8Bcn1+UcislZdN2rXbDI53R1R4r/8SbawsCWatn
+         vtVAr0XYGAq2oMqIrPwY8TW+piDJvRIrDtXc8yC9MM1Q8lNqKBdol2Gxbs9N0OaqioLR
+         5aeecQv4c9yxOi9lABNXJcmUavzPvw5mwmUxXQzARxk8KuU0yey9GzG11/6YCV2tNg2R
+         DtQPtH0uCEsnWDDlVOMJ62BOnMhtNhZMMYyzfY0YJ1Y7GjSsUcSAplDsb9qlUrvo+7Dq
+         vEMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8I4Y9wOWt0L9Wjhz/UCy2dwBA6LBFaECPMUl0PK0S+Y=;
+        b=F3e8zYlCLfc88vISUsPlQVcDVyZJpcYM1XgvoDm0qyyXonL8h5E17bXzAgH9jLoPCH
+         fS4cIB3a1Ap8JvfEyWX2cgKmVfbWHn8RqyAlldqcvHeXVlT+LMxSQLVuF6XeQoF6C/MG
+         Mu82HRf68vovdVCJFoy8IQQjY9BJQmlGTngi9N7zXQ0rfvQQ7RhbSR/L1tc6NsM/SLwj
+         g/UshB/e4P9yCtUPMdAHiIJ4Jcvz7QX5Wk6UH0aUOKvK2lHJM+qsqMN0kvOHttRp5KGl
+         YcDfLX2RbCEf1JCJ2wIFMXM6zblxu2ebwrNOMBjM7MsaF9bvauKMBkI9FZ/6VOzJFqCz
+         4UTg==
+X-Gm-Message-State: AOAM5309tOZ1f0tagvgjcAJ+2Aklll6E2EkeYks3fxdilO7rpscUa5qw
+        kuxxlfsxTVj6Y9rXfSLG8EqTQ/GcYbiVGknwwFqd7g==
+X-Google-Smtp-Source: ABdhPJzACOhUT8Swsb7rdD3D3OgQRthCK6TgJyy6RebksECPcC41qgjbK3tbJX6LYcSA6xiPPw77mA14Ipfdys8YUQ8=
+X-Received: by 2002:a62:1b91:0:b029:2fd:2904:938a with SMTP id
+ b139-20020a621b910000b02902fd2904938amr3131409pfb.18.1623845024015; Wed, 16
+ Jun 2021 05:03:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f7e70782-701c-13dd-43d2-67c92f8cf36f@amd.com>
+References: <20210616034448.34919-1-yujiahua1@huawei.com>
+In-Reply-To: <20210616034448.34919-1-yujiahua1@huawei.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Wed, 16 Jun 2021 14:03:32 +0200
+Message-ID: <CAG3jFyuJBFM-2KbJM_3FOisD1B8fz=AkAykW5KZfnbROyn3FQQ@mail.gmail.com>
+Subject: Re: [PATCH -next] drivers: gpu: add missing MODULE_DEVICE_TABLE in anx7625.c
+To:     Yu Jiahua <yujiahua1@huawei.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.co>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Xin Ji <xji@analogixsemi.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 06:00:09AM -0500, Brijesh Singh wrote:
-> I am trying to be consistent with previous VMGEXIT implementations. If
-> the command itself failed then use the command specific error code to
-> tell hypervisor why we terminated but if the hypervisor violated the
-> GHCB specification then use the "general request termination".
+Hey Yu,
 
-I feel like we're running in circles here: I ask about debuggability
-and telling the user what exactly failed and you're giving me some
-explanation about what the error codes mean. I can see what they mean.
+Thank you for submitting this, it looks good to me and I pulled into
+drm-misc-next.
 
-So let me try again:
+https://cgit.freedesktop.org/drm/drm-misc/commit/?id=ad5fd900a69b1ae24e6b22506dea637b6bbbdb55
 
-Imagine you're a guest owner and you haven't written the SNP code and
-you don't know how it works.
-
-You start a guest in the public cloud and it fails because the
-hypervisor violates the GHCB protocol and all that guest prints before
-it dies is
-
-"general request termination"
-
-How are you - the guest owner - going to find out what exactly happened?
-
-Call support?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+On Wed, 16 Jun 2021 at 05:44, Yu Jiahua <yujiahua1@huawei.com> wrote:
+>
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
+>
+> Signed-off-by: Yu Jiahua <yujiahua1@huawei.com>
+> ---
+>  drivers/gpu/drm/bridge/analogix/anx7625.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> index 65cc05982f82..beb01364af4d 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> @@ -1830,6 +1830,7 @@ static const struct of_device_id anx_match_table[] = {
+>         {.compatible = "analogix,anx7625",},
+>         {},
+>  };
+> +MODULE_DEVICE_TABLE(of, anx_match_table);
+>
+>  static struct i2c_driver anx7625_driver = {
+>         .driver = {
+> --
+> 2.17.1
+>
