@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F7F3A9FCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349523A9F32
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235124AbhFPPlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:41:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50728 "EHLO mail.kernel.org"
+        id S234669AbhFPPgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:36:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235188AbhFPPjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:39:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48BED61404;
-        Wed, 16 Jun 2021 15:36:42 +0000 (UTC)
+        id S234650AbhFPPgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:36:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3651861185;
+        Wed, 16 Jun 2021 15:34:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857802;
-        bh=wLqUqQ5/Iqfc9Oy83QP6UppFMYb64xzebx6U2xVQono=;
+        s=korg; t=1623857653;
+        bh=aJBITtdeqrdbfjeiTs1BPtY1Q2AAO01Q1a74OYTnp6Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QQyDC+BadlTuNWNxYn9SH8oNidPM0dRASl++7AcvOj35bSgRgcNW8nwxAB8ZulbF+
-         9VFVNTOmCsmqZIr3L4k+tkvuoQRdwX7mUAxEeaIsWDnL79ySs2lqAqCQdIfSKLdUKz
-         Yi68p3B1eHkFF7sDU7lSZQaqeAnVa3/ZTHAIeg3E=
+        b=OHcsn/jWeaVefJEsMGu0ZsfncD6Rw7JXdA9DqjNWeYr21g7RovRMA6pfAr9qJFHLn
+         9a5NghjjcsJ/HjVoJngjPRgXYD+h30j5sYStVCGvt+T0h4hwyigeCpmdTwF2dR6Re5
+         0TXPOoDdkqJSVEcpb9YuoE5E2dUiYU0qDYprTN7E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Bolhuis <mark@bolhuis.dev>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 11/48] HID: Add BUS_VIRTUAL to hid_connect logging
-Date:   Wed, 16 Jun 2021 17:33:21 +0200
-Message-Id: <20210616152837.012421992@linuxfoundation.org>
+        stable@vger.kernel.org, Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 11/28] gfs2: Prevent direct-I/O write fallback errors from getting lost
+Date:   Wed, 16 Jun 2021 17:33:22 +0200
+Message-Id: <20210616152834.506766970@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-References: <20210616152836.655643420@linuxfoundation.org>
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+References: <20210616152834.149064097@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Bolhuis <mark@bolhuis.dev>
+From: Andreas Gruenbacher <agruenba@redhat.com>
 
-[ Upstream commit 48e33befe61a7d407753c53d1a06fc8d6b5dab80 ]
+[ Upstream commit 43a511c44e58e357a687d61a20cf5ef1dc9e5a7c ]
 
-Add BUS_VIRTUAL to hid_connect logging since it's a valid hid bus type and it
-should not print <UNKNOWN>
+When a direct I/O write falls entirely and falls back to buffered I/O and the
+buffered I/O fails, the write failed with return value 0 instead of the error
+number reported by the buffered I/O. Fix that.
 
-Signed-off-by: Mark Bolhuis <mark@bolhuis.dev>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/gfs2/file.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 097cb1ee3126..0f69f35f2957 100644
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -2005,6 +2005,9 @@ int hid_connect(struct hid_device *hdev, unsigned int connect_mask)
- 	case BUS_I2C:
- 		bus = "I2C";
- 		break;
-+	case BUS_VIRTUAL:
-+		bus = "VIRTUAL";
-+		break;
- 	default:
- 		bus = "<UNKNOWN>";
- 	}
+diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
+index 4a10b4e7092a..69c52edf5713 100644
+--- a/fs/gfs2/file.c
++++ b/fs/gfs2/file.c
+@@ -875,8 +875,11 @@ static ssize_t gfs2_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		current->backing_dev_info = inode_to_bdi(inode);
+ 		buffered = iomap_file_buffered_write(iocb, from, &gfs2_iomap_ops);
+ 		current->backing_dev_info = NULL;
+-		if (unlikely(buffered <= 0))
++		if (unlikely(buffered <= 0)) {
++			if (!ret)
++				ret = buffered;
+ 			goto out_unlock;
++		}
+ 
+ 		/*
+ 		 * We need to ensure that the page cache pages are written to
 -- 
 2.30.2
 
