@@ -2,127 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6161C3AA51F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174383AA535
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233338AbhFPUVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 16:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233317AbhFPUVv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 16:21:51 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A043FC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:19:44 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id fy24-20020a17090b0218b029016c5a59021fso4739618pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:19:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+KfHfR5+t0EnVDipxN8Cyuc0KkUY5m0xDUxbL/YVUKI=;
-        b=M2M05GwAjHTM0WwuFWCLIJBXc7Mhmzduj5N8rkDWyWW7Bq+aM40Y5v6k5+kPQ4tecA
-         YePfJMATp4pNXHeVunU8k8CCS3tNkZLexRP4nVx82umJkEDmIeIbwfBAqljx4nnxwFrE
-         /9uTkaEqkwVn++hUMZzVnQ30+9Uy7Qe5wo0A0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+KfHfR5+t0EnVDipxN8Cyuc0KkUY5m0xDUxbL/YVUKI=;
-        b=i/H/DfCC3AUbD01WFYCHhfZojRSbbYYtdP0SLuZoFulZ8MD56dDXj//lrrPGJAdNRe
-         8CUQ4gaOO19Sqm15t/xAeHCgSSDxuElqL+8CrPkLgHiLiN+jZmV/SnKuxDx1uVhSqQ4p
-         uy2l/ELsTHk0opCR+FhL4dh2J0Dk6ack78S2w74SsCdtkiwnyLr67oCcCbcmfmg/nJhx
-         CSHqgoA7ZDHt7+0cOPfQIGabNAM5sYAS1vFiRaRMnDR3XVOl83QKKNScoQ1qQ7ch7Un+
-         SZsm1JChpPl1q6Hn3/dHcj8PazkyfgbTYul47A8qfVoEE7pMBn/MAjXk69iUQXbmozH/
-         yxWA==
-X-Gm-Message-State: AOAM5326IT/TBvpfhaCCGoLACa1uLlsGXASb/R/K5aQyHvtqEacH6Sw2
-        Gtk1cxISfqq7Jk51p2GfAAUWsQ==
-X-Google-Smtp-Source: ABdhPJxpXazaGEOtfXB0QagaHQxcdZPLoAGZ+6NYzn4yC2kbuf+G6USVmDjKV6ANQyL87954djWnVg==
-X-Received: by 2002:a17:90a:aa8e:: with SMTP id l14mr1206561pjq.27.1623874784217;
-        Wed, 16 Jun 2021 13:19:44 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c5sm3111954pfn.144.2021.06.16.13.19.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 13:19:43 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] s390: iucv: Avoid field over-reading memcpy()
-Date:   Wed, 16 Jun 2021 13:19:42 -0700
-Message-Id: <20210616201942.1246211-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        id S233379AbhFPUYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 16:24:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233355AbhFPUYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 16:24:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF5FD60FF4;
+        Wed, 16 Jun 2021 20:22:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623874922;
+        bh=QTWcOvraqZaabAlaEhyvzzla1yuYg5YKUaWR97ZT/hg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AGAbp3C+e5xX2UZoz+OqLZj9hRzEeydmomx2MFWpcD3VSHZdXeqpiWhUASFr/2Ac4
+         /U87a6HJuPPq8Ry/zWJMXdos4hEWQnA2g0ywkosMq0haA5x14G46Z8ijbANhXzOv+G
+         FxDOf/Hiwio6ddijD9MSJR0daL79+QECSfaYxcoBFSAqqGCe0mEZTefuoeAgVIB0nB
+         RUeoDuoKt27WjiYpw/37+TEWPwPPp6blmBvf5fQ6M4Ts+bPGU0lo59eTzvGqwUTiLI
+         JyvNcPQbwvvQydjCJIyu+RTGqLwfeb//fOyot2hpa40S1/BgqCA/iKViNcwQan/fk+
+         V6CEHQET4NM2Q==
+Date:   Wed, 16 Jun 2021 22:21:56 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     mark gross <mgross@linux.intel.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 04/29] docs: admin-guide: hw-vuln: avoid using ReST
+ :doc:`foo` markup
+Message-ID: <20210616222156.3727599d@coco.lan>
+In-Reply-To: <20210616182128.GJ70758@linux.intel.com>
+References: <cover.1623824363.git.mchehab+huawei@kernel.org>
+        <4e378517761f3df07165d5ecdac5a0a81577e68f.1623824363.git.mchehab+huawei@kernel.org>
+        <20210616182128.GJ70758@linux.intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=0981c4eb75dd427d7d91cd99c36bf53addbcfc5d; i=YZOtmOq/sZVNbtRsnkBMD2Kw6M6DcNHBXTl6zJRUyvI=; m=CVqI9jG6YZ9jf8f1ED3Ps1ANOEjrAU1kS6Hl4wF6mU4=; p=5tZ5+WKosX4UV7nN9rSQBm46PiXYBFh/e0B4ynthelY=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDKXN0ACgkQiXL039xtwCaSnA/+Pcj H3UWanMJVaOTGAEIdXDCjPackgZXSABrZgBCld484XkzWVdo8GRuckbZCt4017+wGCvmoBES96pze OOJzXiG14jyAgv/c7zi6Q6Pdt8zVC+J9syB8vpovW/BYd3WRWbJWet+vyiVwXCFwLteMypdVQjSbD vPqlwtEIhLRIgQJWi7apUcKznj8cupOGcY6fDHrMXjqvk7Ef9nvM5D5I2mfZSjhxvQ6kSciJFTE90 3JNIuLnTh2L4FHQzf2aCR+6uzC6sveKa7LECGTT89TPiGvD0BqBRXfEvhz/gj5gS9iOKVPyUweUhk jV/Ix7tV7MrNl80eNRBtE1wGiGMRkMxckSrp4rWCyPYMLGvV3KszaQY7kwfRh6hOryEGqQifabHUR coGMga1jVG13xKwmqEpcgGJu6+RJ/MWXsw9uMWaV1NZefjZGmqd6x9zOv1SItCyqRceMSoPEQZeC0 VOlihXZ65qlXyXPdJDDWoe0sYlTTxZqhBSgJpnARCCwopTkG5ULwvaR5rXl/W+MUSlVOU/V4/SDn0 Yoo1ryNQjEIdhP7FsUcFA4ywbxOHPfqSW4AiFx3AlhJVDXnaMJtCopNV5jyCFsKSF0xJ45I61WG8L 3cVbIqTzvgqJ4IJcEwrYPdoVeKxae24fWQxBzwGeyIDrzrpSdHxqHSUGFesVyUP4=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally reading across neighboring array fields.
+Em Wed, 16 Jun 2021 11:21:28 -0700
+mark gross <mgross@linux.intel.com> escreveu:
 
-Add a wrapping struct to serve as the memcpy() source so the compiler
-can perform appropriate bounds checking, avoiding this future warning:
+> On Wed, Jun 16, 2021 at 08:27:19AM +0200, Mauro Carvalho Chehab wrote:
+> > The :doc:`foo` tag is auto-generated via automarkup.py.  
+> and that is not good why?
 
-In function '__fortify_memcpy',
-    inlined from 'iucv_message_pending' at net/iucv/iucv.c:1663:4:
-./include/linux/fortify-string.h:246:4: error: call to '__read_overflow2_field' declared with attribute error: detected read beyond size of field (2nd parameter)
+Patch 00 contains a little more info:
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- net/iucv/iucv.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+	https://lore.kernel.org/linux-doc/cover.1623824363.git.mchehab+huawei@kernel.org/T/#t
 
-diff --git a/net/iucv/iucv.c b/net/iucv/iucv.c
-index 349c6ac3313f..e6795d5a546a 100644
---- a/net/iucv/iucv.c
-+++ b/net/iucv/iucv.c
-@@ -1635,14 +1635,16 @@ struct iucv_message_pending {
- 	u8  iptype;
- 	u32 ipmsgid;
- 	u32 iptrgcls;
--	union {
--		u32 iprmmsg1_u32;
--		u8  iprmmsg1[4];
--	} ln1msg1;
--	union {
--		u32 ipbfln1f;
--		u8  iprmmsg2[4];
--	} ln1msg2;
-+	struct {
-+		union {
-+			u32 iprmmsg1_u32;
-+			u8  iprmmsg1[4];
-+		} ln1msg1;
-+		union {
-+			u32 ipbfln1f;
-+			u8  iprmmsg2[4];
-+		} ln1msg2;
-+	} rmmsg;
- 	u32 res1[3];
- 	u32 ipbfln2f;
- 	u8  ippollfg;
-@@ -1660,10 +1662,10 @@ static void iucv_message_pending(struct iucv_irq_data *data)
- 		msg.id = imp->ipmsgid;
- 		msg.class = imp->iptrgcls;
- 		if (imp->ipflags1 & IUCV_IPRMDATA) {
--			memcpy(msg.rmmsg, imp->ln1msg1.iprmmsg1, 8);
-+			memcpy(msg.rmmsg, &imp->rmmsg, 8);
- 			msg.length = 8;
- 		} else
--			msg.length = imp->ln1msg2.ipbfln1f;
-+			msg.length = imp->rmmsg.ln1msg2.ipbfln1f;
- 		msg.reply_size = imp->ipbfln2f;
- 		path->handler->message_pending(path, &msg);
- 	}
--- 
-2.25.1
+Basically, some Kernel developers rely on editor features to jump directly
+into other files. Using Documentation/foo.rst enable such features.
 
+> 
+> > So, use the filename at the sources, instead of :doc:`foo`.
+> > 
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  .../hw-vuln/special-register-buffer-data-sampling.rst          | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst b/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst
+> > index 3b1ce68d2456..966c9b3296ea 100644
+> > --- a/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst
+> > +++ b/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst
+> > @@ -3,7 +3,8 @@
+> >  SRBDS - Special Register Buffer Data Sampling
+> >  =============================================
+> >  
+> > -SRBDS is a hardware vulnerability that allows MDS :doc:`mds` techniques to  
+> I thought the point of :doc:`mds` was to insert a tag or link to the mds
+> document.
+> 
+> > +SRBDS is a hardware vulnerability that allows MDS
+> > +Documentation/admin-guide/hw-vuln/mds.rst techniques to  
+> will this make a hyper-link in generated HTML docs?
+
+It will still generate the same hyper-links in HTML, LaTeX and PDF outputs,
+as the automarkup.py extension will convert Documentation/foo.rst into
+doc:`foo`.
+
+
+> 
+> FWIW I'm ok with this change either way.  I just wanted to understand a little
+> better.
+> 
+> --mark
+> 
+> >  infer values returned from special register accesses.  Special register
+> >  accesses are accesses to off core registers.  According to Intel's evaluation,
+> >  the special register reads that have a security expectation of privacy are
+> > -- 
+> > 2.31.1
+> >   
+
+
+
+Thanks,
+Mauro
