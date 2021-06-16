@@ -2,101 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D988A3A9C40
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E253A9C3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbhFPNmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:42:50 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:33995 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233463AbhFPNmY (ORCPT
+        id S233528AbhFPNml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:42:41 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41862 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233406AbhFPNmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:42:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1623850818; x=1655386818;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=BYgsDpGVXiNQKbjx1zEY4QnnueERRkwQ3EUBgFLcp1s=;
-  b=Y7XBeVy6E6hJ/roF0P8uaQziS5UeHgTWpzP1gvxLbplYW1G70cSyWZ7t
-   czaKFdWSTXq5Tiuj7hL8AzX9Lh3iRkoel6NPWb3ureXRJCX+8axe2jXOo
-   GdAICZm9yZInBiEkrpEuSoVdUqb09mBKHNU0Jo+md+8svLUJvU4zYvVuF
-   s=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 16 Jun 2021 06:39:16 -0700
-X-QCInternal: smtphost
-Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Jun 2021 06:39:12 -0700
-Received: from th-lint-040.qualcomm.com (10.80.80.8) by
- nasanexm03e.na.qualcomm.com (10.85.0.48) with Microsoft SMTP Server (TLS) id
- 15.0.1497.18; Wed, 16 Jun 2021 06:39:11 -0700
-From:   Georgi Djakov <quic_c_gdjako@quicinc.com>
-To:     <will@kernel.org>, <robin.murphy@arm.com>
-CC:     <joro@8bytes.org>, <isaacm@codeaurora.org>,
-        <baolu.lu@linux.intel.com>, <pratikp@codeaurora.org>,
-        <iommu@lists.linux-foundation.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <djakov@kernel.org>
-Subject: [PATCH v7 15/15] iommu/arm-smmu: Implement the map_pages() IOMMU driver callback
-Date:   Wed, 16 Jun 2021 06:38:56 -0700
-Message-ID: <1623850736-389584-16-git-send-email-quic_c_gdjako@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1623850736-389584-1-git-send-email-quic_c_gdjako@quicinc.com>
-References: <1623850736-389584-1-git-send-email-quic_c_gdjako@quicinc.com>
+        Wed, 16 Jun 2021 09:42:10 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623850803;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8l42JwcJEAAq1B3qSVKToK5LAryzVIpVDxEMtbe7pe8=;
+        b=GQ9//uTEfzztb0BjI2qXqjGOLHRtg+nwxYGJ4Bz9nJ7tod+6u1cV3xp6FZQEKinJAtYghC
+        5PVsJO5qp4em+aaXyNTPSMdzuCSnbisJcfkA7l25z9glqHvXuwWS47FSttviCL06tTOfFb
+        vNmdNHYq4Ej6hY3GSwtHJ78NtmQUre7vECmw18/W+e8AsimuemvYXYm7JcH4xVoyLkf/jw
+        Q1XNPWCvMiPvZ8g0Uu8xNqZQVTDclghV7FM15Qn11ywcdoA9seUuqJIINqhZD1+pQLqBRX
+        V5YeOd9avD5j1ufyW3nV43M5NW2DxSzCyNf+lpYdGqSMLRFOvC1jQQClsUvlJg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623850803;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8l42JwcJEAAq1B3qSVKToK5LAryzVIpVDxEMtbe7pe8=;
+        b=yr3UePZnsGzdNitiq+u1pnRcja1r/Yfgnd/xHjjZVo+cr0CLXsfFmkk7cmdkJWaFkeKbDG
+        U+RomtsrbPOd3lAQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH next v3 1/2] dump_stack: move cpu lock to printk.c
+In-Reply-To: <YMnenOBTUclLld9i@alley>
+References: <20210615174947.32057-1-john.ogness@linutronix.de> <20210615174947.32057-2-john.ogness@linutronix.de> <8735tiq0d8.fsf@jogness.linutronix.de> <YMmi5xoTOb82TKtJ@google.com> <87mtrqnu74.fsf@jogness.linutronix.de> <YMnenOBTUclLld9i@alley>
+Date:   Wed, 16 Jun 2021 15:46:02 +0206
+Message-ID: <877diund1p.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03h.na.qualcomm.com (10.85.0.50) To
- nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Isaac J. Manjarres" <isaacm@codeaurora.org>
+On 2021-06-16, Petr Mladek <pmladek@suse.com> wrote:
+>> With this series version I moved the tracking into a global variable
+>> @printk_cpulock_nested, which is fine, except that a boolean is not
+>> capable of tracking more than 1 nesting. Which means that
+>> __printk_cpu_unlock() would release cpu lock ownership too soon.
+>> 
+>> Doing this correctly is a simple change:
+>> 
+>> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+>> index e67dc510fa1b..5376216e4f3d 100644
+>> --- a/kernel/printk/printk.c
+>> +++ b/kernel/printk/printk.c
+>> @@ -3535,7 +3535,7 @@ EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
+>>  
+>>  #ifdef CONFIG_SMP
+>>  static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
+>> -static bool printk_cpulock_nested;
+>> +static atomic_t printk_cpulock_nested = ATOMIC_INIT(0);
+>>  
+>>  /**
+>>   * __printk_wait_on_cpu_lock() - Busy wait until the printk cpu-reentrant
+>> @@ -3596,7 +3598,7 @@ int __printk_cpu_trylock(void)
+>>  
+>>  	} else if (old == cpu) {
+>>  		/* This CPU is already the owner. */
+>> -		printk_cpulock_nested = true;
+>> +		atomic_inc(&printk_cpulock_nested);
+>>  		return 1;
+>>  	}
+>>  
+>> @@ -3613,8 +3615,8 @@ EXPORT_SYMBOL(__printk_cpu_trylock);
+>>   */
+>>  void __printk_cpu_unlock(void)
+>>  {
+>> -	if (printk_cpulock_nested) {
+>> -		printk_cpulock_nested = false;
+>> +	if (atomic_read(&printk_cpulock_nested)) {
+>> +		atomic_dec(&printk_cpulock_nested);
+>
+> I think about handling printk_cpulock_nested with only one
+> atomic operation. Something like:
+>
+> 	if (atomic_dec_return(&printk_cpulock_level) == 0)
+> 		atomic_set_release(&printk_cpulock_owner, -1);
+>
+> It would require always incremanting the number in lock, e.g.
+>
+> 	old = atomic_cmpxchg(&printk_cpulock_owner, -1, cpu);
+> 	if (old == -1 || old == cpu) {
+> 		atomic_inc(&printk_cpulock_level);
+> 		return 1;
+> 	}
 
-Implement the map_pages() callback for the ARM SMMU driver
-to allow calls from iommu_map to map multiple pages of
-the same size in one call. Also, remove the map() callback
-for the ARM SMMU driver, as it will no longer be used.
+I actually implemented similar code during an internal draft. I later
+decided against it, mainly because I prefer to keep the old==-1 and
+old==cpu cases separate.
 
-Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
-Suggested-by: Will Deacon <will@kernel.org>
-Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
----
- drivers/iommu/arm/arm-smmu/arm-smmu.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Also note that atomic_dec_return() introduces an unnecessary memory
+barrier. If we take your proposed implementation we would use
+atomic_dec_return_relaxed() instead.
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index 593a15cfa8d5..c1ca3b49a620 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -1193,8 +1193,9 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 	return ret;
- }
- 
--static int arm_smmu_map(struct iommu_domain *domain, unsigned long iova,
--			phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
-+static int arm_smmu_map_pages(struct iommu_domain *domain, unsigned long iova,
-+			      phys_addr_t paddr, size_t pgsize, size_t pgcount,
-+			      int prot, gfp_t gfp, size_t *mapped)
- {
- 	struct io_pgtable_ops *ops = to_smmu_domain(domain)->pgtbl_ops;
- 	struct arm_smmu_device *smmu = to_smmu_domain(domain)->smmu;
-@@ -1204,7 +1205,7 @@ static int arm_smmu_map(struct iommu_domain *domain, unsigned long iova,
- 		return -ENODEV;
- 
- 	arm_smmu_rpm_get(smmu);
--	ret = ops->map(ops, iova, paddr, size, prot, gfp);
-+	ret = ops->map_pages(ops, iova, paddr, pgsize, pgcount, prot, gfp, mapped);
- 	arm_smmu_rpm_put(smmu);
- 
- 	return ret;
-@@ -1574,7 +1575,7 @@ static struct iommu_ops arm_smmu_ops = {
- 	.domain_alloc		= arm_smmu_domain_alloc,
- 	.domain_free		= arm_smmu_domain_free,
- 	.attach_dev		= arm_smmu_attach_dev,
--	.map			= arm_smmu_map,
-+	.map_pages		= arm_smmu_map_pages,
- 	.unmap_pages		= arm_smmu_unmap_pages,
- 	.flush_iotlb_all	= arm_smmu_flush_iotlb_all,
- 	.iotlb_sync		= arm_smmu_iotlb_sync,
+> But I am not sure if it is really better. Feel free to keep
+> your variant.
+
+*sigh* Frankly, I don't care much. My variant saves a few CPU
+instructions for the normal case (non-nested), but that probably is not
+much of an argument.
+
+For v4 I will keep my variant because it explicitly handles the
+non-nested/nested cases separately, which helps when adding the memory
+barrier comments in the follow-up patch. In particular, the label
+LMM(__printk_cpu_trylock:B), which represents the first moment a new CPU
+begins to load/store data, only applies to the old==-1 condition.
+
+John Ogness
