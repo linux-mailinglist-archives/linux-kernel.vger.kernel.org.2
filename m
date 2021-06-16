@@ -2,121 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA1B3A992A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2625E3A9930
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbhFPL2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhFPL2n (ORCPT
+        id S232222AbhFPLaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:30:24 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:4711 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229502AbhFPLaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:28:43 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3825BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 04:26:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bYtfClwMmhpkY2mnoZSeVVW3hwWO6HCXgLD2xMPwtY4=; b=oGk6Z+FS98Mo1I2M2EfODEv8nJ
-        +VMkAtQv18uqmq7nvnLOoFJLyy7/3uEqVXfkgZRAyQJFJNXoGnTsgLHpNDjRe+Wcu5wpa0iANV+LP
-        Z8NpKm4zIsYOL0LQZVHWASIiFiHExOJBysm8B43kugoqG3UJZNHwJQxsfVhtHNCgePqSjlW8hypLI
-        jE5gF5Xwcy/2HpVZyxgYpGvxgaQ1px7430z209y9bH0mQw1MYM7G++znZSqko3a117gJ5qJep+Lgx
-        CWh2MzzBYTolMkjavw/nH+NEgL765/CCFavIk1RLrCcbfNo3WUyihRcZAPYujarcbIFF9+R3/VUrD
-        q7NPJxng==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltTgf-008J57-Ds; Wed, 16 Jun 2021 11:26:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CCD3A300252;
-        Wed, 16 Jun 2021 13:26:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B28FC20C169EA; Wed, 16 Jun 2021 13:26:30 +0200 (CEST)
-Date:   Wed, 16 Jun 2021 13:26:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 2/6] posix-cpu-timers: Don't start process wide cputime
- counter if timer is disabled
-Message-ID: <YMnf5vW3MUyuKUa5@hirez.programming.kicks-ass.net>
-References: <20210604113159.26177-1-frederic@kernel.org>
- <20210604113159.26177-3-frederic@kernel.org>
- <YMm7iafJ1mberGIg@hirez.programming.kicks-ass.net>
- <20210616105116.GA801071@lothringen>
+        Wed, 16 Jun 2021 07:30:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1623842898; x=1655378898;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tbTtiw8zzy4wrmL5TAZBZR8da7fd1xjZE8i5/2ffHgQ=;
+  b=PBx74tyrVQlSWPZvYvX7gxDEOXtJPGWSU4IkGSDxS/gKaFc/WOto9Y6b
+   bs/11B8Ody/f6EIwtSTFmRGu09hUfvKj5wIJMZMK1tDDjuCdnYhdTmNwh
+   nI738uH/Lzu+BWbJzI+KhwduBwdmqW3M7y74lyQwNjiQGz5UJH/ryiRpv
+   mHOodripdnKFNs3n4gUDm5QezxuQGkaudQpUkbQmY+lGni5hntNRsYuwv
+   OxQp16aTtq1ObFLlren/gRBJzVPt/66gjxYoEQY64QYgftqtM+Q4BvDCl
+   kGopby9NFzQwe8Dg3MfiykBLGzdqsDlQRzjHdjgKUScOsTdRqhw5VCGVS
+   g==;
+IronPort-SDR: f2pBTdUOow6lI8+pX9+TjJ5lbOYoRYVbXvg5LFJcoSrHGmOnhw5G7kqauZnnlAXpXXIgtjrawe
+ NeYEqIJKPuPbpsA+9m+00nEGljkUqdGpMcUEdOGRAWQ1DtXVxRaQqpwg4sU7CsjqudUwWAOkLu
+ jv5d2lWsfVOzI+gYkIT4WNj8F+w8QXnNgtM+08bRvwpWvgz4fZxde6491WbToRERasdzswW1ql
+ 2SRzqUIMmosCgpBLNlxPIj+KPbzN2cc59YlBaoAmYsceHL6cwCs4iRAXNK/nxBcjC4AIxPKWAF
+ bPQ=
+X-IronPort-AV: E=Sophos;i="5.83,277,1616428800"; 
+   d="scan'208";a="172653636"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Jun 2021 19:28:18 +0800
+IronPort-SDR: EnQuJjchdSqKp0GnLZGALW2diLN8ajGTxzK6kcq+bzP6s8q7rQVXSGWuaxIzcTB3SV9ttA4wIf
+ R376rg5GNMPOmUua4Lan3N3W+O3x8XtHdQPgKF9BKen0M8fbYmsCUQkzJpDzC1HvnQ4t/U1NDD
+ OUtgDVLBCwae5HNFpnVcUES/M6DtuIU0RfPrxdzCacLlvPv6ot3YlEBqkqloSzIlBtzjGmYXp2
+ P7FOkPjAUveICC+Hw8r7p9xaWj6nES6lubtS4+vfeE9rnjNNwm/Ee6DrptLyrQ5gC/5gNpwmAb
+ x1N+1DMywAwDoJBPRl98tVlq
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 04:07:07 -0700
+IronPort-SDR: DZnpWzi9AryrB7acobPWPLEOtpDCjSy+yqAD8RFitxGVyz09jdBkhrVQOrqT9TcW4c3cRKSOhv
+ NERtGLd/5okAbQTh02nwQbJUSIsrttBsJr4wh4vkulkDRGdl9rvn11Or4yQTAcW+v1cRvadAtD
+ ziKAQiAaEd9JFxXfSVu83nXG3SzRdV2ap2AlSJWA2My6w1MJYHTAhxLnwL+134IZOCC3TdsVCx
+ 7Cq/8GKThczRM68u3rsynN80MqkW8dxHeXQn2/sS2Wxp/oxEofkPWJRs5PbKCay8CzxXE34Vd0
+ QcQ=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
+  by uls-op-cesaip01.wdc.com with ESMTP; 16 Jun 2021 04:28:13 -0700
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
+        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v11 00/12] Add Host control mode to HPB
+Date:   Wed, 16 Jun 2021 14:27:48 +0300
+Message-Id: <20210616112800.52963-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616105116.GA801071@lothringen>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 12:51:16PM +0200, Frederic Weisbecker wrote:
-> On Wed, Jun 16, 2021 at 10:51:21AM +0200, Peter Zijlstra wrote:
+v10 -> v11:
+ - rebase on Daejun's v38
 
-> > The cpu_timer_enqueue() is in arm_timer() and the condition for calling
-> > that is:
-> > 
-> >   'new_expires != 0 && val < new_expires'
-> > 
-> > Which is not the same as the one you add.
-> 
-> There are two different things here:
-> 
-> 1) the threadgroup cputime counter, activated by cpu_clock_sample_group(clkid,
-> p, true)
-> 
-> 2) the expiration set (+ the callback enqueued) in arm_timer()
-> 
-> The issue here is that we go through 1) but not through 2)
+v9 -> v10:
+ - rebase on Daejun's v36
 
-Correct, but then I would think the cleanup would need the same
-conditions as 2, and not something slightly different, which is what
-confused me.
+v8 -> v9:
+ - Add one more patch: do not send unmap_all in host mode
+ - rebase on Daejun's v35
+ - tested on one more platform - Galaxy S21
 
-> > I'm thinking the fundamental problem here is the disconnect between
-> > cpu_timer_enqueue() and pct->timers_active ?
-> 
-> You're right it's the core issue. But what prevents the whole to be
-> fundamentally connected is a circular dependency: we need to know the
-> threadgroup cputime before arming the timer, but we would need to know
-> if we arm the timer before starting the threadgroup cputime counter
-> 
-> To sum up, the current sequence is:
-> 
-> * fetch the threadgroup cputime AND start the whole threadgroup counter
-> 
-> * arm the timer if it isn't zero and it hasn't yet expired
-> 
-> While the ideal sequence should be:
-> 
-> * fetch the threadgroup cputime (without starting the whole threadgroup counter
->   yet)
-> 
-> * arm the timer if it isn't zero and it hasn't yet expired
-> 
-> * iff we armed the timer, start the whole theadgroup counter
-> 
-> But that means re-iterating the whole threadgroup and update atomically
-> the group counter with each task's time.
+v7 -> v8:
+ - restore Daejun atomic argument to ufshpb_get_req (v31)
+ - Add Daejun's Reviewed-by tag
 
-Right, so by the time patch #5 comes around, you seem to be at the point
-where you can do:
+v6 -> v7:
+ - attend CanG's comments
+ - add one more patch to transform set_dirty to iterate_rgn
+ - rebase on Daejun's v32
 
- * fetch cputime and start threadgroup counter
+v5 -> v6:
+ - attend CanG's comments
+ - rebase on Daejun's v29
 
- * possibly arm timer
+v4 -> v5:
+ - attend Daejun's comments
+ - Control the number of inflight map requests
 
- * if expired:
-   - fire now
-   - if armed, disarm (which leads to stop)
+v3 -> v4:
+ - rebase on Daejun's v25
 
-Which is the other 'obvious' solution to not starting it.
+v2 -> v3:
+ - Attend Greg's and Can's comments
+ - rebase on Daejun's v21
+
+v1 -> v2:
+ - attend Greg's and Daejun's comments
+ - add patch 9 making host mode parameters configurable
+ - rebase on Daejun's v19
+
+
+The HPB spec defines 2 control modes - device control mode and host
+control mode. In oppose to device control mode, in which the host obey
+to whatever recommendation received from the device - In host control
+mode, the host uses its own algorithms to decide which regions should
+be activated or inactivated.
+
+We kept the host managed heuristic simple and concise.
+
+Aside from adding a by-spec functionality, host control mode entails
+some further potential benefits: makes the hpb logic transparent and
+readable, while allow tuning / scaling its various parameters, and
+utilize system-wide info to optimize HPB potential.
+
+This series is based on Samsung's device-control HPB2.0 driver
+
+This version was tested on Galaxy S21, Galaxy S20, and Xiaomi Mi10 pro.
+Your meticulous review and testing is mostly welcome and appreciated.
+
+Thanks,
+Avri
+
+
+Avri Altman (12):
+  scsi: ufshpb: Cache HPB Control mode on init
+  scsi: ufshpb: Add host control mode support to rsp_upiu
+  scsi: ufshpb: Transform set_dirty to iterate_rgn
+  scsi: ufshpb: Add reads counter
+  scsi: ufshpb: Make eviction depends on region's reads
+  scsi: ufshpb: Region inactivation in host mode
+  scsi: ufshpb: Add hpb dev reset response
+  scsi: ufshpb: Add "Cold" regions timer
+  scsi: ufshpb: Limit the number of inflight map requests
+  scsi: ufshpb: Do not send umap_all in host control mode
+  scsi: ufshpb: Add support for host control mode
+  scsi: ufshpb: Make host mode parameters configurable
+
+ Documentation/ABI/testing/sysfs-driver-ufs |  76 ++-
+ drivers/scsi/ufs/ufshcd.h                  |   2 +
+ drivers/scsi/ufs/ufshpb.c                  | 583 ++++++++++++++++++++-
+ drivers/scsi/ufs/ufshpb.h                  |  44 ++
+ 4 files changed, 676 insertions(+), 29 deletions(-)
+
+-- 
+2.25.1
 
