@@ -2,147 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A07F3A9AF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056F03A9AF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232772AbhFPMuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:50:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:36376 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232403AbhFPMuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:50:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 895321042;
-        Wed, 16 Jun 2021 05:48:08 -0700 (PDT)
-Received: from localhost (e108754-lin.cambridge.arm.com [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 296883F719;
-        Wed, 16 Jun 2021 05:48:08 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 13:48:06 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 3/3] cpufreq: CPPC: Add support for frequency
- invariance
-Message-ID: <20210616124806.GA6495@arm.com>
-References: <cover.1623825725.git.viresh.kumar@linaro.org>
- <e7e653ede3ef54acc906d2bde47a3b9a41533404.1623825725.git.viresh.kumar@linaro.org>
+        id S232897AbhFPMvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:51:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232732AbhFPMvA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 08:51:00 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526B5C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:48:54 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so2334432otk.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:48:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=6HpoBlmpJ233t0Q6yG7oBMakkTPLqj6mc2Rb8mKRkQY=;
+        b=IdkaaxAZAcwnbtDiscGZuZ1UEpjaIF4Vp5j2wQvhfhbCMOBIfkAKzT276rxgbwK3Az
+         iXxK/r3JsPCsOy/rAR83WEIMzIfJcBKF6f66ez3MtL6djsOl+UQf8EXeoYBgO3b9dVuJ
+         Sdody38CRrLU5TDxE2WlM3RF8tha3MSQAvk/8Ki7WTSqjp3jICePqn+0bCbYoVmWGhx0
+         t+vSPLwNnao8U0XiopWhONbo0xoJbbhzIQ5ljwb2cHmeAGOK/x9oOuLzvGqjx+7adScL
+         HVQwP2PZq1UnAEwME3in4ViXbCJw30vIuZq+MKe8vSBNmbxHHyYXrqwj4n2udvnb8y0j
+         azSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6HpoBlmpJ233t0Q6yG7oBMakkTPLqj6mc2Rb8mKRkQY=;
+        b=Om/lzdFCi5EXMWFj6eXt+jMUZuedGtGlXgXMm5/FUrZNrxy29i+ZboltwZVPOtMJZO
+         DY7hJ8hDT3Vr0yZ0ORRYEnwiTqahEaRqqsPGvIa9D6qKtHVgxW0f7nQmrbkWMpq+SQ7P
+         iOUEJp0CBeuFRSRWZbiyZf7ElRLje9t4eCsCa88p4PsNWnETtgoFXrzcwPtVpsl3gyPT
+         L8sMs4c5SJiHxmuq1TEvlQZdVD8PAzT6XuOn9oxPFeDzv4pK5zSTSrep04/+t26zHJ2R
+         3oILtRV+enshDqPWUWYg9CJ0Wrukt0LWeA1intq8a247gA7AUw7ZSkW181iF/ZSTdtTX
+         gFjA==
+X-Gm-Message-State: AOAM533v1XCM1kgqcIliliR6yok4taS5UsPukrpGvdBBQw3PBoTohRNQ
+        GhC8bwBhkL6Ij7UYrE6pMUvkEcegSuGcVA==
+X-Google-Smtp-Source: ABdhPJxYpo/0EKi1vrLFU/GC3g7eh7t7hAFYcywIIDTCmJEeQ63H+5o3IDuR7o3+4BT/Xs2DxCHG+g==
+X-Received: by 2002:a9d:6d8c:: with SMTP id x12mr3920896otp.121.1623847733413;
+        Wed, 16 Jun 2021 05:48:53 -0700 (PDT)
+Received: from [192.168.1.134] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id u10sm498207otj.75.2021.06.16.05.48.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 05:48:53 -0700 (PDT)
+Subject: Re: [PATCH] io_uring: reduce latency by reissueing the operation
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <60c13bec.1c69fb81.f2c1e.6444SMTPIN_ADDED_MISSING@mx.google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <ff0aab90-9aef-4ec6-f00f-89d4ffa21ef6@kernel.dk>
+Date:   Wed, 16 Jun 2021 06:48:52 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7e653ede3ef54acc906d2bde47a3b9a41533404.1623825725.git.viresh.kumar@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <60c13bec.1c69fb81.f2c1e.6444SMTPIN_ADDED_MISSING@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-I was looking forward to the complete removal of stop_cpu() :).
-
-On Wednesday 16 Jun 2021 at 12:18:09 (+0530), Viresh Kumar wrote:
-> The Frequency Invariance Engine (FIE) is providing a frequency scaling
-> correction factor that helps achieve more accurate load-tracking.
+On 6/9/21 4:08 PM, Olivier Langlois wrote:
+> It is quite frequent that when an operation fails and returns EAGAIN,
+> the data becomes available between that failure and the call to
+> vfs_poll() done by io_arm_poll_handler().
 > 
-> Normally, this scaling factor can be obtained directly with the help of
-> the cpufreq drivers as they know the exact frequency the hardware is
-> running at. But that isn't the case for CPPC cpufreq driver.
-> 
-> Another way of obtaining that is using the arch specific counter
-> support, which is already present in kernel, but that hardware is
-> optional for platforms.
-> 
-> This patch updates the CPPC driver to register itself with the topology
-> core to provide its own implementation (cppc_scale_freq_tick()) of
-> topology_scale_freq_tick() which gets called by the scheduler on every
-> tick. Note that the arch specific counters have higher priority than
-> CPPC counters, if available, though the CPPC driver doesn't need to have
-> any special handling for that.
-> 
-> On an invocation of cppc_scale_freq_tick(), we schedule an irq work
-> (since we reach here from hard-irq context), which then schedules a
-> normal work item and cppc_scale_freq_workfn() updates the per_cpu
-> arch_freq_scale variable based on the counter updates since the last
-> tick.
-> 
-> To allow platforms to disable this CPPC counter-based frequency
-> invariance support, this is all done under CONFIG_ACPI_CPPC_CPUFREQ_FIE,
-> which is enabled by default.
-> 
-> This also exports sched_setattr_nocheck() as the CPPC driver can be
-> built as a module.
-> 
-> Cc: linux-acpi@vger.kernel.org
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  drivers/cpufreq/Kconfig.arm    |  10 ++
->  drivers/cpufreq/cppc_cpufreq.c | 232 ++++++++++++++++++++++++++++++---
->  include/linux/arch_topology.h  |   1 +
->  kernel/sched/core.c            |   1 +
->  4 files changed, 227 insertions(+), 17 deletions(-)
-> 
-[..]
-> +static void cppc_cpufreq_start_cpu(struct cpufreq_policy *policy,
-> +				   unsigned int cpu)
-> +{
-> +	struct cppc_freq_invariance *cppc_fi = &per_cpu(cppc_freq_inv, cpu);
-> +	int ret;
-> +
-> +	cppc_fi->cpu = cpu;
-> +	cppc_fi->cpu_data = policy->driver_data;
-> +	kthread_init_work(&cppc_fi->work, cppc_scale_freq_workfn);
-> +	init_irq_work(&cppc_fi->irq_work, cppc_irq_work);
-> +
-> +	ret = cppc_get_perf_ctrs(cpu, &cppc_fi->prev_perf_fb_ctrs);
-> +	if (ret) {
-> +		pr_warn("%s: failed to read perf counters: %d\n", __func__,
-> +			ret);
-> +		return;
-> +	}
-> +
-> +	/* Register for freq-invariance */
-> +	topology_set_scale_freq_source(&cppc_sftd, cpumask_of(cpu));
-> +}
-> +
-> +static void cppc_cpufreq_stop_cpu(struct cpufreq_policy *policy,
-> +				  unsigned int cpu)
-> +{
-> +	struct cppc_freq_invariance *cppc_fi = &per_cpu(cppc_freq_inv, cpu);
-> +
-> +	topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, cpumask_of(cpu));
-> +
-> +	irq_work_sync(&cppc_fi->irq_work);
-> +	kthread_cancel_work_sync(&cppc_fi->work);
-> +}
+> Detecting the situation and reissuing the operation is much faster
+> than going ahead and push the operation to the io-wq.
 
-I'll only comment on this for now as I should know the rest.
+I think this is obviously the right thing to do, but I'm not too crazy
+about the 'ret' pointer passed in. We could either add a proper return
+type instead of the bool and use that, or put the poll-or-queue-async
+into a helper that then only needs a bool return, and use that return
+value for whether to re-issue or not.
 
-Let's assume we don't have these, what happens now is the following:
+Care to send an updated variant?
 
-1. We hotplug out the last CPU in a policy, we call the
-   .stop_cpu()/exit() function which will free the cppc_cpudata structure.
+-- 
+Jens Axboe
 
-   The only vulnerability is if we have a last tick on that last CPU,
-   after the above callback was called.
-
-2. When the CPU at 1. gets hotplugged back in, the cppc_fi->cpu_data is
-   stale.
-
-We do not have a problem when removing the CPPC cpufreq module as we're
-doing cppc_freq_invariance_exit() before unregistering the driver and
-freeing the data.
-
-Are 1. and 2 the only problems we have, or have I missed any?
-
-Thanks,
-Ionela.
