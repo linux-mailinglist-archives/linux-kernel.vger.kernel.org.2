@@ -2,72 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A003AA2EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC8D3AA2F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhFPSOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 14:14:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59242 "EHLO mail.kernel.org"
+        id S231682AbhFPSOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 14:14:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230248AbhFPSOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 14:14:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59C7A613B9;
-        Wed, 16 Jun 2021 18:12:28 +0000 (UTC)
+        id S231648AbhFPSOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 14:14:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95A07613B9;
+        Wed, 16 Jun 2021 18:12:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623867148;
-        bh=98Lc1HPaOiBbFB9udzTrRD0fEYkR9HM93QQUAPWcTj8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=g15kAm2783eIVI0ZqI0BT9nOG9gm7YtQP99xuOZ+kxVz1yYCQjYy5RrMFEDY2ok4O
-         3rK6gdxGPhHkjB3MFM4Dyj8vF3wyXT8A6MzsMbd2ekkA8CQ9Gicge32hgLbRrg06g8
-         1QH8d+S14s7tnBbTfZHcansk5oDKIS6oVaAhzahKseCG+nISx1KdpW3oMteiJo7239
-         6IVgXAzCbxu6AclIuhtC2q6T6huQkJqdRoQK5kha8pwmsSrvbb/EAACia2gFpNp8/Y
-         pqtp5E8NIlILyHAlbQw0dJQ0+2a6N8AQCqE0eP4flVU2LhXqjPKbSs2nIYGezDHazg
-         w14tLxu6FpyAw==
-Subject: Re: [PATCH v5 14/28] x86/fpu/xstate: Prevent unauthorised use of
- dynamic user state
-To:     Dave Hansen <dave.hansen@intel.com>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        tglx@linutronix.de, mingo@kernel.org, x86@kernel.org
-Cc:     len.brown@intel.com, jing2.liu@intel.com, ravi.v.shankar@intel.com,
-        linux-kernel@vger.kernel.org
-References: <20210523193259.26200-1-chang.seok.bae@intel.com>
- <20210523193259.26200-15-chang.seok.bae@intel.com>
- <af093744-6f68-ff51-f40b-4db234b363d8@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <872cb0a2-3659-2e6c-52a8-33f1a2f0a2cd@kernel.org>
-Date:   Wed, 16 Jun 2021 11:12:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        s=k20201202; t=1623867164;
+        bh=FVS8dvAqTX3/2tuOG6nrPzs64bbf6xagc9ZoBuR7k3c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tmVFNsJnRGywkjX1WEvwb9a5mDlyUXc1LJr6WzVn3GZSKh+Dhp3QcvszqfIktM5lc
+         aUjQirir0bRB5qprx30jE5Qr0Snp9GyBz6sJ6mpOWi+mZUSUnpITbZgiC+s02the4M
+         WhwUnhdbd4+7rZZQlc8RcDtXbfy9LxDvn/cAGi4lF2GugY/AtikFhqEtSLh6eaFcQV
+         pU5TvQVmP3N4kaMVshWorptFFX7M5gjvgZgEseZy4tBH66LESpkx7BgAOhCauoQBd7
+         RVu1HilViuiATmoPWWa4bswrQjqe4E693npltfef50SC3bhlmpGYK1nKLDstWmT3lK
+         2GV/kVwM1sVhg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 281C940B1A; Wed, 16 Jun 2021 15:12:42 -0300 (-03)
+Date:   Wed, 16 Jun 2021 15:12:42 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] perf ksymbol: fix memory leak: decrease refcount of
+ map and dso
+Message-ID: <YMo/GgO78R8YL5WE@kernel.org>
+References: <YLpxDf6+YOxYI5z3@kernel.org>
+ <20210612173751.188582-1-rickyman7@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <af093744-6f68-ff51-f40b-4db234b363d8@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210612173751.188582-1-rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 9:27 AM, Dave Hansen wrote:
-> On 5/23/21 12:32 PM, Chang S. Bae wrote:
->> @@ -571,6 +612,8 @@ static inline void switch_fpu_finish(struct fpu *new_fpu)
->>  
->>  	set_thread_flag(TIF_NEED_FPU_LOAD);
->>  
->> +	xfd_switch(old_fpu, new_fpu);
+Em Sat, Jun 12, 2021 at 07:37:48PM +0200, Riccardo Mancini escreveu:
+> ASan reported a memory leak of BPF-related ksymbols
+> map and dso. The leak is caused by refount never
+> reaching 0, due to missing __put calls in the function
+> machine__process_ksymbol_register.
+> Once the dso is inserted in the map, dso__put should be
+> called (map__new2 increases the refcount to 2).
+> The same thing applies for the map when it's inserted
+> into maps (maps__insert increases the refcount to 2).
+
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> $ sudo ./perf record -- sleep 5
+> [ perf record: Woken up 1 times to write data ]
+> [ perf record: Captured and wrote 0.025 MB perf.data (8 samples) ]
 > 
-> This seems fragile.
+> =================================================================
+> ==297735==ERROR: LeakSanitizer: detected memory leaks
 > 
-> XSAVE* will decline to write out state for feature i when XFD[i]=1 and
-> will instead write out the init state.  That means that, at this point,
-> we switch XFD and yet leave state for feature i in place.
+> Direct leak of 6992 byte(s) in 19 object(s) allocated from:
+>     #0 0x4f43c7 in calloc (/home/user/linux/tools/perf/perf+0x4f43c7)
+>     #1 0x8e4e53 in map__new2 /home/user/linux/tools/perf/util/map.c:216:20
+>     #2 0x8cf68c in machine__process_ksymbol_register /home/user/linux/tools/perf/util/machine.c:778:10
+>     [...]
 > 
-> That means this *MUST* come before any copy_fpregs_to_fpstate() occurs.
+> Indirect leak of 8702 byte(s) in 19 object(s) allocated from:
+>     #0 0x4f43c7 in calloc (/home/user/linux/tools/perf/perf+0x4f43c7)
+>     #1 0x8728d7 in dso__new_id /home/user/linux/tools/perf/util/dso.c:1256:20
+>     #2 0x872015 in dso__new /home/user/linux/tools/perf/util/dso.c:1295:9
+>     #3 0x8cf623 in machine__process_ksymbol_register /home/user/linux/tools/perf/util/machine.c:774:21
+>     [...]
 > 
-> Could we please add some FPU_WARN_ON() checks to ensure that no XSAVE*
-> is ever performed with XINUSE=1 *and* XFD armed?
+> Indirect leak of 1520 byte(s) in 19 object(s) allocated from:
+>     #0 0x4f43c7 in calloc (/home/user/linux/tools/perf/perf+0x4f43c7)
+>     #1 0x87b3da in symbol__new /home/user/linux/tools/perf/util/symbol.c:269:23
+>     #2 0x888954 in map__process_kallsym_symbol /home/user/linux/tools/perf/util/symbol.c:710:8
+>     [...]
+> 
+> Indirect leak of 1406 byte(s) in 19 object(s) allocated from:
+>     #0 0x4f43c7 in calloc (/home/user/linux/tools/perf/perf+0x4f43c7)
+>     #1 0x87b3da in symbol__new /home/user/linux/tools/perf/util/symbol.c:269:23
+>     #2 0x8cfbd8 in machine__process_ksymbol_register /home/user/linux/tools/perf/util/machine.c:803:8
+>     [...]
+> 
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/perf/util/machine.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index 3ff4936a15a4..da19be7da284 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -776,10 +776,10 @@ static int machine__process_ksymbol_register(struct machine *machine,
+>  		if (dso) {
+>  			dso->kernel = DSO_SPACE__KERNEL;
+>  			map = map__new2(0, dso);
+> +			dso__put(dso);
+>  		}
+>  
+>  		if (!dso || !map) {
+> -			dso__put(dso);
+>  			return -ENOMEM;
+>  		}
+>  
+> @@ -792,6 +792,7 @@ static int machine__process_ksymbol_register(struct machine *machine,
+>  		map->start = event->ksymbol.addr;
+>  		map->end = map->start + event->ksymbol.len;
+>  		maps__insert(&machine->kmaps, map);
+> +		map__put(map);
+>  		dso__set_loaded(dso);
+>  
+>  		if (is_bpf_image(event->ksymbol.name)) {
+> -- 
+> 2.23.0
 > 
 
-Wait, really?  I somehow thought that XSAVE* would write out the actual
-state even if XFD=1.
+-- 
 
-This seems like it's asking for some kind of bug.
+- Arnaldo
