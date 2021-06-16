@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1A63A9A03
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AAA43A9A07
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232511AbhFPMQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:16:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhFPMQ3 (ORCPT
+        id S232559AbhFPMS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:18:29 -0400
+Received: from m-r2.th.seeweb.it ([5.144.164.171]:33703 "EHLO
+        m-r2.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhFPMS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:16:29 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A26C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:14:22 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id q5-20020a9d66450000b02903f18d65089fso2214909otm.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:14:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=x+Ns7nvErXP3oyXJ5vwGNcDGgmAtxDVxQ1cBAya/hBM=;
-        b=oUCwCPaJvMJG89OyQXeFt/uxHizW39fH1TLe7e0qijqiq6va4fio380kTsVnZklFp5
-         VhFIVN/TDdSUUGi9irZ0zp31CulWCgUe5EbA1vcZymNqGBsihdUDTVdMCAsSq+ggKHBR
-         kSnYyQ4oMJ/s+X2qeBawr9pfFOr76O19BCfOl+ygQsKpF5WWHOSNu/X90QXrot9qBU81
-         TvueCwOFt15LCAs9rzpIQochlcW7oRGUf4A5Q+4MXONkbp1O2J36lyukNLelnaFZnBY2
-         ILbehX5+XlEpeK9TpKniIJTBMXugs36U1J7xKDKSowGDjPxDiudtIlDcYe+RCkhVAnJC
-         ndfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=x+Ns7nvErXP3oyXJ5vwGNcDGgmAtxDVxQ1cBAya/hBM=;
-        b=qJCAVc1k7TvDZZqh0MfbqHjht2rYfLpJKghlZi6xD0TgDSptAxeeTqfaN81IpPy50z
-         2USsi1cBlzdoiKae8cAgO1UyIxVHBfk6AlxUelHahJyVHAyq51HZ367mZh3cwS4AaXh/
-         +1VxcJ3Wpdi0BIeH0D3Jidm2+8SyNu7rOMinuK/d/Kdz/zrlUdSBh199qLTJijThH21Y
-         yffHTMSHtN9Vb6SKHdP6JGNbt/tLobFWnJVS5IQUiPo9+pMl0B9SCRA1OEzyM8iSfYtj
-         3ojXKZEcknZ3IvJMV6Ss8c3+SNvJ/xJcblq+YOHxNNNq8qW/2fMsyukB1mg3yGwKOjcJ
-         mcYg==
-X-Gm-Message-State: AOAM530Y9tU5cRHDjkKzh4VwrQP09pPqK8sGUcdy7PYp3WogjnePc0/Y
-        sJ4FsqwOjZMVSdFgEpsIFbd5zzpsgymqAGNzW44=
-X-Google-Smtp-Source: ABdhPJzme8WR90RIeS7joDNnEsCfMNQ62RTW7rX4BiT8w+8XCqP5yilWNygjgr8b/JHg3S+e/Obpi5w+NaqpPbH4iTY=
-X-Received: by 2002:a9d:7a5:: with SMTP id 34mr3786441oto.371.1623845661318;
- Wed, 16 Jun 2021 05:14:21 -0700 (PDT)
+        Wed, 16 Jun 2021 08:18:28 -0400
+Received: from [192.168.1.101] (83.6.168.10.neoplus.adsl.tpnet.pl [83.6.168.10])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 030713F409;
+        Wed, 16 Jun 2021 14:16:18 +0200 (CEST)
+Subject: Re: [PATCH V1] mmc: sdhci: Update the software timeout value for sdhc
+To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
+        adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
+        vbadigan@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, sartgarg@codeaurora.org,
+        rnayak@codeaurora.org, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+References: <1623835535-30871-1-git-send-email-sbhanu@codeaurora.org>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <1a14317a-075d-a9ac-f620-19d64c52e292@somainline.org>
+Date:   Wed, 16 Jun 2021 14:16:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Reply-To: mohammedssaaaad@gmail.com
-Sender: wl8068724@gmail.com
-Received: by 2002:a05:6839:214d:0:0:0:0 with HTTP; Wed, 16 Jun 2021 05:14:20
- -0700 (PDT)
-From:   Mohammed Saad <mohammedsaadht@gmail.com>
-Date:   Wed, 16 Jun 2021 05:14:20 -0700
-X-Google-Sender-Auth: 1dMl2V_dHcDI9bM6wTRD5fRftGM
-Message-ID: <CAMZz5pBk0V9utPX-kvTauzPF9e_8+9z1WXUz86BwWho6MJ7GdA@mail.gmail.com>
-Subject: Business Proposal .........................................
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1623835535-30871-1-git-send-email-sbhanu@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend.
+Hi,
 
-  I am Mr. .Mohammed Saad .I am sending this brief letter to solicit
-your partnership to transfer the sum  =E2=82=AC 15 MILLION Euros into your
-account. I shall send you more information and procedures when I
-receive positive response from you. While the money will be shared
-between us in the ratio of 60/30 while 10% will set aside for any
-expenses that may be incurred on the process of transferring this
-fund. If you are interested, send to me the followings immediately
 
-Full Names
-Age
-Nationality
-Occupation
-Direct Telephone Lines
+I am not sure which SoC is this change supposed to address, but it does not fix the longstanding issue of a similar kind on msm8996:
 
-Mr Mohammed Saad
+
+[   25.448575] mmc0: Timeout waiting for hardware interrupt.
+[   25.464270] mmc0: sdhci: ============ SDHCI REGISTER DUMP ===========
+[   25.479768] mmc0: sdhci: Sys addr:  0x00000008 | Version:  0x00004902
+[   25.495361] mmc0: sdhci: Blk size:  0x00004200 | Blk cnt:  0x00000006
+[   25.510963] mmc0: sdhci: Argument:  0x01cd9f80 | Trn mode: 0x0000003b
+[   25.526517] mmc0: sdhci: Present:   0x03f80206 | Host ctl: 0x0000001f
+[   25.542178] mmc0: sdhci: Power:     0x0000000d | Blk gap:  0x00000000
+[   25.557767] mmc0: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
+[   25.573427] mmc0: sdhci: Timeout:   0x0000000a | Int stat: 0x00000000
+[   25.588983] mmc0: sdhci: Int enab:  0x03ff900b | Sig enab: 0x03ff100b
+[   25.604645] mmc0: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
+[   25.620273] mmc0: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x00008007
+[   25.635752] mmc0: sdhci: Cmd:       0x0000123a | Max curr: 0x00000000
+[   25.651351] mmc0: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x5b590000
+[   25.666879] mmc0: sdhci: Resp[2]:   0x73677f80 | Resp[3]:  0x00000900
+[   25.682496] mmc0: sdhci: Host ctl2: 0x0000000c
+[   25.697991] mmc0: sdhci: ADMA Err:  0x00000000 | ADMA Ptr: 0x0000000101cd2200
+[   25.713751] mmc0: sdhci_msm: ----------- VENDOR REGISTER DUMP -----------
+[   25.729510] mmc0: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:  0x6008642c | DLL cfg2: 0x0020a000
+[   25.745564] mmc0: sdhci_msm: DLL cfg3: 0x00000008 | DLL usr ctl:  0x00000008 | DDR cfg: 0x80040873
+[   25.761759] mmc0: sdhci_msm: Vndr func: 0x00018a9c | Vndr func2 : 0xfa8018a8 Vndr func3: 0x00024040
+[   25.778080] mmc0: sdhci: ============================================
+[   25.894360] mmc0: Reset 0x4 never completed.
+[   25.910719] mmc0: sdhci: ============ SDHCI REGISTER DUMP ===========
+[   25.927143] mmc0: sdhci: Sys addr:  0x00000008 | Version:  0x00004902
+[   25.943717] mmc0: sdhci: Blk size:  0x00004200 | Blk cnt:  0x00000006
+[   25.960225] mmc0: sdhci: Argument:  0x01cd9f80 | Trn mode: 0x0000003b
+[   25.976845] mmc0: sdhci: Present:   0x03f80206 | Host ctl: 0x0000001f
+[   25.993490] mmc0: sdhci: Power:     0x0000000d | Blk gap:  0x00000000
+[   26.010019] mmc0: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
+[   26.026693] mmc0: sdhci: Timeout:   0x0000000a | Int stat: 0x00000000
+[   26.043262] mmc0: sdhci: Int enab:  0x03ff900b | Sig enab: 0x03ff100b
+[   26.059955] mmc0: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
+[   26.076546] mmc0: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x00008007
+[   26.093229] mmc0: sdhci: Cmd:       0x0000123a | Max curr: 0x00000000
+[   26.109783] mmc0: sdhci: Resp[0]:   0x00000000 | Resp[1]:  0x00000000
+[   26.126074] mmc0: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
+[   26.142271] mmc0: sdhci: Host ctl2: 0x0000000c
+[   26.158161] mmc0: sdhci: ADMA Err:  0x00000000 | ADMA Ptr: 0x0000000101cd2200
+[   26.174287] mmc0: sdhci_msm: ----------- VENDOR REGISTER DUMP -----------
+[   26.190295] mmc0: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:  0x6008642c | DLL cfg2: 0x0020a000
+[   26.206518] mmc0: sdhci_msm: DLL cfg3: 0x00000008 | DLL usr ctl:  0x00000008 | DDR cfg: 0x80040873
+[   26.222916] mmc0: sdhci_msm: Vndr func: 0x00018a9c | Vndr func2 : 0xfa8018a8 Vndr func3: 0x00024040
+[   26.239484] mmc0: sdhci: ============================================
+
+
+Konrad
+
