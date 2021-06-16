@@ -2,157 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D423A8F3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC093A8F41
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFPDRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 23:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFPDRJ (ORCPT
+        id S230137AbhFPDRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 23:17:34 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7444 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhFPDRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 23:17:09 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7586CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 20:15:03 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so1106415oti.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 20:15:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XX8UtdPe5UHi4QT2fZ9fVYOjixFm5+p0JuSE18O5Og4=;
-        b=iPDEXNVH5GeTa8tOCBCzkuIjNLBj0+HdOS3hepZ8X0Rf7QT/hmMXiCADRekwUdNfW1
-         plZ+yv58BNuTK956KHbfUsMzlyzNSq29dpdoPMPO/7U0RS0lvOR+VIW8acsM55SFOxQg
-         FQksOdfraDRnwDaYFbe94LYVx1Fle12443mSg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XX8UtdPe5UHi4QT2fZ9fVYOjixFm5+p0JuSE18O5Og4=;
-        b=NF4mp600txew+v+AObHJmjIy8PnwF2qERiTP+r0PCqxymvFB/ZJeXrAztOStFDaldM
-         pKKtClBK1tWea+LeOe7aVngDyWh+QvxnZlk5MjmesJ3U6SS77hkam6FdanphIILYtbip
-         u5vhyJ6ZtZ/MVbuzacwm1kKt2kYpM4BZbxfpjeIvPH5oKfjR+PqUOeRhpyTJz4WRNxfT
-         oVOogr3IPasYFxwYtElcWq6LtvuzIk4ZqF1DTcaGW9oa0PJP3m/AzL6SJtPMnFhgDxVx
-         faSa2POdD9h15ZjgLFvfkmhr+tdBVBFoWzeaI3NDzzoCwRdVZ2sTye5kOAaq4HjrzZLz
-         jzyg==
-X-Gm-Message-State: AOAM5329Pr7vRoBUb9dy1hL8OU+0sxwkYjltr+0oWzTdt0br9JlKFAW0
-        65cYJq1mTHsSWOTFdbio3YhjvQ==
-X-Google-Smtp-Source: ABdhPJwMTm3G+sFKstZYZM1dWqWL7LBvK2+Fx/PfxBEHT05p8XLhS4hfRLr8UG6YV1l8tWQS+mnF5Q==
-X-Received: by 2002:a9d:6c6:: with SMTP id 64mr2090919otx.199.1623813302785;
-        Tue, 15 Jun 2021 20:15:02 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i26sm198103oig.13.2021.06.15.20.15.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 20:15:02 -0700 (PDT)
-Subject: Re: [PATCH] media: Fix Media Controller API config checks
-To:     Hans Verkuil <hverkuil@xs4all.nl>, sakari.ailus@linux.intel.com,
-        laurent.pinchart@ideasonboard.com, dan.carpenter@oracle.com,
-        mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20210611015849.42589-1-skhan@linuxfoundation.org>
- <3745852a-a14d-3e66-dd9f-409ec7e43f48@xs4all.nl>
- <ee53183f-6c44-4ddb-a8b1-40d650772c73@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <6b1bbc25-83fb-2c40-1dff-c2eb755a99cc@linuxfoundation.org>
-Date:   Tue, 15 Jun 2021 21:15:01 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 15 Jun 2021 23:17:33 -0400
+Received: from dggeme751-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G4Vby745szZhkv;
+        Wed, 16 Jun 2021 11:12:30 +0800 (CST)
+Received: from [10.174.177.253] (10.174.177.253) by
+ dggeme751-chm.china.huawei.com (10.3.19.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 11:15:25 +0800
+Subject: Re: [PATCH] afs: fix no return statement in function returning
+ non-void
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     David Howells <dhowells@redhat.com>,
+        Hulk Robot <hulkci@huawei.com>, Tom Rix <trix@redhat.com>,
+        <linux-afs@lists.infradead.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
+ <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com>
+ <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org>
+ <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
+ <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org>
+From:   Zheng Zengkai <zhengzengkai@huawei.com>
+Message-ID: <051421e0-afe8-c6ca-95cd-4dc8cd20a43e@huawei.com>
+Date:   Wed, 16 Jun 2021 11:15:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <ee53183f-6c44-4ddb-a8b1-40d650772c73@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.253]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme751-chm.china.huawei.com (10.3.19.97)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 10:55 AM, Shuah Khan wrote:
-> On 6/15/21 7:36 AM, Hans Verkuil wrote:
->> Hi Shuah,
->>
->> On 11/06/2021 03:58, Shuah Khan wrote:
->>> Smatch static checker warns that "mdev" can be null:
->>>
->>> sound/usb/media.c:287 snd_media_device_create()
->>>      warn: 'mdev' can also be NULL
->>>
->>> If CONFIG_MEDIA_CONTROLLER is disabled, this file should not be included
->>> in the build.
->>>
->>> The below conditions in the sound/usb/Makefile are in place to ensure 
->>> that
->>> media.c isn't included in the build.
->>>
->>> sound/usb/Makefile:
->>> snd-usb-audio-$(CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER) += media.o
->>>
->>> select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER &&
->>>         (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND_USB_AUDIO)
->>>
->>> The following config check in include/media/media-dev-allocator.h is
->>> in place to enable the API only when CONFIG_MEDIA_CONTROLLER and
->>> CONFIG_USB are enabled.
->>>
->>>   #if defined(CONFIG_MEDIA_CONTROLLER) && defined(CONFIG_USB)
->>>
->>> This check doesn't work as intended when CONFIG_USB=m. When 
->>> CONFIG_USB=m,
->>> CONFIG_USB_MODULE is defined and CONFIG_USB is not. The above config 
->>> check
->>> doesn't catch that CONFIG_USB is defined as a module and disables the 
->>> API.
->>> This results in sound/usb enabling Media Controller specific ALSA driver
->>> code, while Media disables the Media Controller API.
->>>
->>> Fix the problem requires two changes:
->>>
->>> 1. Change the check to use IS_ENABLED to detect when CONFIG_USB is 
->>> enabled
->>>     as a module or static. Since CONFIG_MEDIA_CONTROLLER is a bool, 
->>> leave
->>>     the check unchanged to be consistent with drivers/media/Makefile.
->>>
->>> 2. Change the drivers/media/mc/Makefile to include mc-dev-allocator.o
->>>     in mc-objs when CONFIG_USB is y or m.
->>
->> If I test this patch, then I get:
->>
->> drivers/media/mc/mc-dev-allocator.c:97:22: error: redefinition of 
->> 'media_device_usb_allocate'
->>     97 | struct media_device *media_device_usb_allocate(struct 
->> usb_device *udev,
->>        |                      ^~~~~~~~~~~~~~~~~~~~~~~~~
->> In file included from drivers/media/mc/mc-dev-allocator.c:24:
->> include/media/media-dev-allocator.h:55:36: note: previous definition 
->> of 'media_device_usb_allocate' was here
->>     55 | static inline struct media_device *media_device_usb_allocate(
->>        |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/media/mc/mc-dev-allocator.c:119:6: error: redefinition of 
->> 'media_device_delete'
->>    119 | void media_device_delete(struct media_device *mdev, const 
->> char *module_name,
->>        |      ^~~~~~~~~~~~~~~~~~~
->> In file included from drivers/media/mc/mc-dev-allocator.c:24:
->> include/media/media-dev-allocator.h:59:20: note: previous definition 
->> of 'media_device_delete' was here
->>     59 | static inline void media_device_delete(
->>        |                    ^~~~~~~~~~~~~~~~~~~
->>
->> The .config has:
->>
->> # CONFIG_USB_SUPPORT is not set
->> CONFIG_MEDIA_CONTROLLER=y
->>
-> 
+Oops, Sorry for the late reply and missing the compilation details.
 
-Hi Hans,
+> On 6/15/21 5:32 PM, Linus Torvalds wrote:
+>> On Tue, Jun 15, 2021 at 4:58 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>> Some implementations of BUG() are macros, not functions,
+>> Not "some", I think. Most.
+>>
+>>> so "unreachable" is not applicable AFAIK.
+>> Sure it is. One common pattern is the x86 one:
+>>
+>>    #define BUG()                                                   \
+>>    do {                                                            \
+>>            instrumentation_begin();                                \
+>>            _BUG_FLAGS(ASM_UD2, 0);                                 \
+>>            unreachable();                                          \
+>>    } while (0)
+> duh.
+>
+>> and that "unreachable()" is exactly what I'm talking about.
+>>
+>> So I repeat: what completely broken compiler / config / architecture
+>> is it that needs that "return 0" after a BUG() statement?
+> I have seen it on ia64 -- most likely GCC 9.3.0, but I'll have to
+> double check that.
 
-I don't know why I made the logic fancy and complex. Fixed now and
-sending v2 shortly. I made sure all the combinations are tested now.
+Actually we build the kernel with the following compiler, config and 
+architecture :
 
-thanks,
--- Shuah
+powerpc64-linux-gnu-gcc --version
+powerpc64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
+Copyright (C) 2019 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions. There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+CONFIG_AFS_FS=y
+# CONFIG_AFS_DEBUG is not set
+CONFIG_AFS_DEBUG_CURSOR=y
+
+make ARCH=powerpc CROSS_COMPILE=powerpc64-linux-gnu- -j64
+
+...
+
+fs/afs/dir.c: In function ‘afs_dir_set_page_dirty’:
+fs/afs/dir.c:51:1: error: no return statement in function returning 
+non-void [-Werror=return-type]
+    51 | }
+       | ^
+cc1: some warnings being treated as errors
+
+>> Because that environment is broken, and the warning is bogus and wrong.
+>>
+>> It might not be the compiler. It might be some architecture that does
+>> this wrong. It might be some very particular configuration that does
+>> something bad and makes the "unreachable()" not work (or not exist).
+>>
+>> But *that* is the bug that should be fixed. Not adding a pointless and
+>> incorrect line that makes no sense, just to hide the real bug.
+> .
+>
