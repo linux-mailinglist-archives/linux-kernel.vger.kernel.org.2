@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F6D3A9C47
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A2A3A9C48
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233159AbhFPNnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:43:33 -0400
-Received: from mga12.intel.com ([192.55.52.136]:60516 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232692AbhFPNn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:43:29 -0400
-IronPort-SDR: 5nHsB4ZNwOi4OtK/Mv6ZZb42bNhIIw9NyYRwUxrmQLPFIO4p4sx6qYeOS9iNgtJDJb98pdH+Kj
- Gdfg3aIGAMMg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="185867791"
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="185867791"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 06:41:23 -0700
-IronPort-SDR: 4ifLwTPG2xbTZHbYoF5hGsNUnevWj1VkQxVOk+X1SePuSzEovjT2+CXsbMddFTEXYggTKtDwwP
- DUhZOdShrpDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="554810049"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 16 Jun 2021 06:41:21 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 16 Jun 2021 16:41:20 +0300
-Date:   Wed, 16 Jun 2021 16:41:20 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: tcpm: Ignore Vsafe0v in
- PR_SWAP_SNK_SRC_SOURCE_ON state
-Message-ID: <YMn/gIwB3noYWuHA@kuha.fi.intel.com>
-References: <20210615173206.1646477-1-kyletso@google.com>
+        id S233240AbhFPNnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:43:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60033 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232199AbhFPNnr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 09:43:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623850900;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p8GK50I3KBKc8B6YusjGKlCOchxcM/TeXaVsgxynpE4=;
+        b=KaxONaEDpeYNdHhqoI2a26Gqi+BYEJFtj6yRID2YLDx3gGGHOK1T5nqthwAaqT2i/0w48v
+        QiIu/CrJyOhz1j9zA8oUGGm3LnW1oIpQB/yjqHoJ0tLNdUw1suAE0JNfcmM9BfcwayjCSO
+        WWvgKOt79xK78g+sNU9viGn34aMRWKE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-84-PT56Y0xWN_GyKRNQvyK7Zg-1; Wed, 16 Jun 2021 09:41:39 -0400
+X-MC-Unique: PT56Y0xWN_GyKRNQvyK7Zg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D78319251AD;
+        Wed, 16 Jun 2021 13:41:38 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1FCBF10016F4;
+        Wed, 16 Jun 2021 13:41:35 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <200ea6f7-0182-9da1-734c-c49102663ccc@redhat.com>
+References: <200ea6f7-0182-9da1-734c-c49102663ccc@redhat.com> <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk> <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com> <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org> <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com> <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org> <051421e0-afe8-c6ca-95cd-4dc8cd20a43e@huawei.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     dhowells@redhat.com, Zheng Zengkai <zhengzengkai@huawei.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Hulk Robot <hulkci@huawei.com>, linux-afs@lists.infradead.org,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] afs: fix no return statement in function returning non-void
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615173206.1646477-1-kyletso@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <929459.1623850895.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 16 Jun 2021 14:41:35 +0100
+Message-ID: <929460.1623850895@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 01:32:06AM +0800, Kyle Tso wrote:
-> In PR_SWAP_SNK_SRC_SOURCE_ON state, Vsafe0v is expected as well so do
-> nothing here to avoid state machine going into SNK_UNATTACHED.
-> 
-> Fixes: 28b43d3d746b ("usb: typec: tcpm: Introduce vsafe0v for vbus")
-> Signed-off-by: Kyle Tso <kyletso@google.com>
+Tom Rix <trix@redhat.com> wrote:
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> A fix is to use the __noreturn attribute on this function and not add a =
+return
+> like this
+> =
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 197556038ba4..e11e9227107d 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -5212,6 +5212,7 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
->  		}
->  		break;
->  	case PR_SWAP_SNK_SRC_SINK_OFF:
-> +	case PR_SWAP_SNK_SRC_SOURCE_ON:
->  		/* Do nothing, vsafe0v is expected during transition */
->  		break;
->  	default:
-> -- 
-> 2.32.0.272.g935e593368-goog
+> -static int afs_dir_set_page_dirty(struct page *page)
+> +static int __noreturn afs_dir_set_page_dirty(struct page *page)
+> =
 
--- 
-heikki
+> and to the set of ~300 similar functions in these files.
+
+BUG() really ought to handle it.  Do you have CONFIG_BUG=3Dy?
+
+David
+
