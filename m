@@ -2,166 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CEE3AA4E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73ABF3AA4EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbhFPUG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 16:06:29 -0400
-Received: from mga11.intel.com ([192.55.52.93]:43107 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230381AbhFPUG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 16:06:27 -0400
-IronPort-SDR: d/9d5+5zwJ+NHV/H9EXl0n3splWLrxYR0xYL8D7bUpO5wTdzGuNhS5e0WOqRotBeZ/iEU3yVcY
- SZQEUx+i/f7g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="203227311"
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="203227311"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 13:04:17 -0700
-IronPort-SDR: pCyWVQdC9o6zW0J8FkMtBNU1n/5215iiqiFT+911KSuWDZHnA8ROgKsClbzbmbB+6Pd/VPjcwC
- LMr8PVb0Bypw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="415865790"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Jun 2021 13:04:15 -0700
-Received: from [10.209.60.10] (kliang2-MOBL.ccr.corp.intel.com [10.209.60.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id B00A05808A3;
-        Wed, 16 Jun 2021 13:04:14 -0700 (PDT)
-Subject: Re: [patch V2 32/52] x86/fpu/xstate: Sanitize handling of independent
- features
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210614154408.673478623@linutronix.de>
- <20210614155356.961460910@linutronix.de>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <7309d6fa-dd25-ac31-7b05-d88f59d18213@linux.intel.com>
-Date:   Wed, 16 Jun 2021 16:04:13 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232953AbhFPUJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 16:09:11 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:62654 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230381AbhFPUJF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 16:09:05 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15GK6WoJ008089;
+        Wed, 16 Jun 2021 20:06:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=5kWWFdipMq660W3AYhvPyNTKSc9D7h2yOz+zyf1ub/U=;
+ b=PyGlBtzWJuENf8BP49O891UjZZLgU0tmD42qBa8V+8SGsWiDBLse3qq4K5DfjOH2+ppe
+ Oe3SQ+loS8k+9lTjmP78hnkmzDQV1O6MG6jU2i/eeGIWW0K/53M9c8JGJWgoZuLKlD7Z
+ lfnBy3aGbiPjU8hM7ZQXEdyxEbCfj5wGSJ+lQhtyxU2Y7NbLU7K31zABAnds3TTTs0P5
+ 9KIgqxXzn+YOfpqT0Q4pWJf3ZX8YpwRpT0FN7vZcN6BgNzrGszbkQtvzPz1k4zZZR3gE
+ 2Xafob+r3bOeUJ3EydZZHDlh1+LQxJFs+GMKDBZxgJ/3QDfRX3coaOniOF1ywZi6hhuQ UA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 396tr0u39f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Jun 2021 20:06:54 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15GK6rjC186336;
+        Wed, 16 Jun 2021 20:06:53 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2176.outbound.protection.outlook.com [104.47.57.176])
+        by userp3030.oracle.com with ESMTP id 396wap8exc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Jun 2021 20:06:53 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mcX7gy9qFfaoF9Q/1HIMhxVanYf2XaPXEFdRn8/rki8goGvtvRO0rDLR26UPYVwRsEcjYiTRjPDhYmNRYBts6LlGVLXt1WIKSlNpAAqTMjTx2NCnvXTdZDy9S7noMVEc0X0Z6V87VMabY47M8wb+mn33mwbH1CaFn2FIN9ByIptGYR4n80H5PZNoppzmwdll2vRTqCn4xIw+WGwp1oKDen2Ldynk5ckDAh2gg9cULPIs9IGFjHr+XEp5RsMEpngRknPERbi8Yzys9BjA7o37o1E0EPu9ZD0qiouPbh63OipsMlwiCCN6uxd6ulP6cAykKYOlSJS2eW+JvOs75ZBa5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5kWWFdipMq660W3AYhvPyNTKSc9D7h2yOz+zyf1ub/U=;
+ b=USqcx7/4hJmzgB+4S4gGRbkixc41KsXiYU+5073VpZKtl+sOyAMCVp9XyjbI6eUxVv/pUgY9kH5k3DH5fmr5i7tT9Q1hpGMS6LzRpUTwQcopLZF9g/1zm7zW16Gb+Av5AyTwbnaaifrX/yHfS69l/iBCEZBoUfopj911bXWZGiEkNJjqkkYHJwh9TMOpVDuAB2273qvR1RyMLgzj+ZpDdhKi+MmXqA9sHVtURe5mMZ108OjTWdeBGE55y8R9sLCIbuDPyx/62nF9at2LlmG6/qI5nIRj0+6gFUvNISqY25MNjVBBJrpQcvJaEFwaE0iHim0hyNC7CsUkjU+lPx2M7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5kWWFdipMq660W3AYhvPyNTKSc9D7h2yOz+zyf1ub/U=;
+ b=sOMf1fp8RQlLvTqzCQg7FaIUdKcqYvujpOrZkgg2PknW2e0H9QUDg7l2unkr0V6kTChWiRx3tHw/np8XiEwQFaVJSG/PfRZ/6DXZHGwclCFBkSdDF8cwgeQus91KUu2nRRG0f9e3UAGEEte0tG1wMy3lKDuwT2W0JTX+WaOL1YQ=
+Authentication-Results: microsoft.com; dkim=none (message not signed)
+ header.d=none;microsoft.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4631.namprd10.prod.outlook.com (2603:10b6:510:41::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15; Wed, 16 Jun
+ 2021 20:06:41 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4242.016; Wed, 16 Jun 2021
+ 20:06:41 +0000
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+Subject: Re: [PATCH 1/3] scsi: storvsc: Miscellaneous code cleanups
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1lf794m98.fsf@ca-mkp.ca.oracle.com>
+References: <1622827263-12516-1-git-send-email-mikelley@microsoft.com>
+        <yq135ti7em1.fsf@ca-mkp.ca.oracle.com>
+        <MWHPR21MB1593ABC5154A199022896D3ED70F9@MWHPR21MB1593.namprd21.prod.outlook.com>
+Date:   Wed, 16 Jun 2021 16:06:37 -0400
+In-Reply-To: <MWHPR21MB1593ABC5154A199022896D3ED70F9@MWHPR21MB1593.namprd21.prod.outlook.com>
+        (Michael Kelley's message of "Wed, 16 Jun 2021 19:54:29 +0000")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SN4PR0501CA0102.namprd05.prod.outlook.com
+ (2603:10b6:803:42::19) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-In-Reply-To: <20210614155356.961460910@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SN4PR0501CA0102.namprd05.prod.outlook.com (2603:10b6:803:42::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.9 via Frontend Transport; Wed, 16 Jun 2021 20:06:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 65b2f89d-8335-4681-2c06-08d93102420e
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4631:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB46310C79175AB8557298BE228E0F9@PH0PR10MB4631.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ce5PBEuQ7sijcEmHohtldynMTATNT9Kb/yGR0KLOkx7Kue/VV3kfbf0j/+Q4ZeHxSc5PWGRjuV5nlTIx66JcQTKQui7vJBOh8GaW5+hPFsgfHL92OhsPWmb4spaVtUMfvkwqykayu9iK5fWF1LqYbhbXSB4zN/3pTa0HqS0+2R9M1s0h8bFQXNdbwGAqa9b1Ev73lJskeolABalysfUQ3+1QToX+B2VxZCeTiNjLH68tus9W6OrOoyDtHvpqpSK3JqWfvypO4R4GaOuecCzBcPJ6+Rq5nxWVE84QSMFx3c6vdCbnNLAhe766Fx8Zg4a/nlzfWH1GRi3ZqOtes+StYm5tUWnrvhRPLXFWFoimB9vfcRBv2G8bSsvKbWv0ScHKkk8Pk38fRTdyoA6PmZes1X+OO+hVUKhF1mBAnRzp1PFdE2ISCJK7DRRCurNx8vhUIu7as6FnAg4ODXlZTrXuf5n0GN9Xm+TECcBFvperp1XxaZAQCxWe3GzqWq/jT37RcrQFktzXRcnQ7l+LzzzmNteExgE6OKKPLxe714oc2/ifv0mNozKyT9Fbn6NFlEC4Rem/auVdH5cbfqAfcTW0fb4FqhYBcuFGn1zAUExRtiXCTeajj3Vmo/ezARQxWZeta3PHKfxLRiiZ983Ban3ZXw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(346002)(396003)(39860400002)(316002)(6666004)(55016002)(478600001)(38100700002)(86362001)(83380400001)(4744005)(2906002)(6916009)(8936002)(16526019)(956004)(4326008)(52116002)(5660300002)(38350700002)(26005)(54906003)(186003)(8676002)(66946007)(66476007)(66556008)(36916002)(7696005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Awa59Qxo9qCEz9mHCVOJneUtblk1Y6cS0UC+KwZImR3ltp65JxXJnrfFE18A?=
+ =?us-ascii?Q?eu2L/PDlOd+qjALxTzigkDsEa457sINNANwVPd/JBdEspnC4mCudZ/0viWQL?=
+ =?us-ascii?Q?4BRePYCewRlR9XCXQ2zGozlPF+lM67WwZ0/o2fA5xjfJ2xx9dzjthP6I5CYz?=
+ =?us-ascii?Q?O0kL/XnXoZBXibRgMH3VSsPSCV88Igz9+RMFJDqfEA9wtiv+0hazNQ65UM9M?=
+ =?us-ascii?Q?UGDKcnCUc9rtbvwY6txuOFCWBHb5KNxXoKSWIIzJa3eii3k8ZckuZY4MA3NA?=
+ =?us-ascii?Q?OBSJivl05Fsyl+/8SJ6CZ/3AsTkJkAi+Nrx92ygHE+gT1/3KjdQUPbgUh/R1?=
+ =?us-ascii?Q?UadHOVmUdQJhP4zpilptmJ6KgjC6J1rRjTS7zXIM8PYNltWurUWXCL/7Bzsx?=
+ =?us-ascii?Q?I5W+YqctmJ2WPr503hwHIWdJiryeEPSKEmMrMzxBj6gmE41T6/cTorjmvLAy?=
+ =?us-ascii?Q?r+vC3sq+1X4jjEop7ueS1bvppWYrN88KxJlOSKqw/TDVLadqNv3a8OSaWZ7b?=
+ =?us-ascii?Q?5j0K9/H9i4mwjlXFDNntcFBoClb+nxNI2LxnyZ4cse89DVUB4DW5QkvPcIlD?=
+ =?us-ascii?Q?RWeiBCISTg6adS+Yb6vowGAATTYmrbQhDV/gvMRz2P/VJ/U+j2QDB0VxL3YV?=
+ =?us-ascii?Q?Ec1lJO+WNJWfoo4mqcuuWxEvrCLRENwvcjkMBXPRjBOP654gZz1lBV17VsiI?=
+ =?us-ascii?Q?01CK7Adukay7yB69WZMe6/D6KUrZvUofPDdn5t1V3w9+l6wtC6kI0mm6MgF7?=
+ =?us-ascii?Q?qHc5u2kRTh4kEq/Q1R86OLK0xtXr/tQ0pbieat9AxH4GcY2R8XGwEeh8g0Wq?=
+ =?us-ascii?Q?J0KEaukjlhN0uWWusYfWLGye1MPRjsGGJuUVubBZhXQ+48DBPAzVO7+ejl/H?=
+ =?us-ascii?Q?s/dGNw/conjV5VgK7meMDtKVfGlwkYn2WPqrMlbHogUcvsxlbs9xDNca1hLH?=
+ =?us-ascii?Q?QYA9VMaVDeRpHeJZguul0tcoXOjDdH8mnVEaC6ib3XP8IIFFcL0+A+41XsfS?=
+ =?us-ascii?Q?KX29NjRmzvVEMGPvt3+0BAXd73P+gqwmDap/jzeHTsDAZwA/vf5gBjsbrKoQ?=
+ =?us-ascii?Q?1Ila7PeOuax3tnZA5Vvv9rsu26AqmnzyP85MiSMTkyregutysw/Gl/515NQR?=
+ =?us-ascii?Q?IMu1zgwd3K9bOoindGn9tjzyzxFJZ0/xrZ34k8swGsSA8Z3k14/Z26kcWxJ0?=
+ =?us-ascii?Q?y8l6ja3wGF6BboOEllj8aXVrRA7BPWOyb2R94FWbp/mmoaS99ILU04xRnZF/?=
+ =?us-ascii?Q?B1scKaoKJn+g/WlpN17mW7/XtfvDDfvurZRpSnQQJAcQEbClav+biNhFrYa1?=
+ =?us-ascii?Q?nJeuPMaVFMYVkZMHlsDSTTon?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65b2f89d-8335-4681-2c06-08d93102420e
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 20:06:41.8761
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4Hwo+bPT9BDAl7AqtcexfLTJUxyXH8pWWt0AKmZ9DuiZHkHllgkkdtZq8LDw1lLI5EtYyC1qpIrgNlTfFn6pzXKg64npDzt9vp/+xKdeDCg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4631
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10016 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 spamscore=0 adultscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106160113
+X-Proofpoint-GUID: sK-XwE6QP4mM4t4riz53pu_IaCCpn0gt
+X-Proofpoint-ORIG-GUID: sK-XwE6QP4mM4t4riz53pu_IaCCpn0gt
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Hello Michael,
 
-On 6/14/2021 11:44 AM, Thomas Gleixner wrote:
-> The copy functions for the independent features are horribly named and the
-> supervisor and independent part is just overengineered.
-> 
-> The point is that the supplied mask has either to be a subset of the
-> independent feature or a subset of the task->fpu.xstate managed features.
-> 
-> Rewrite it so it checks check for invalid overlaps of these areas in the
-> caller supplied feature mask. Rename it so it follows the new naming
-> convention for these operations. Mop up the function documentation.
-> 
-> This allows to use that function for other purposes as well.
-> 
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Kan Liang <kan.liang@linux.intel.com>
-> ---
->   arch/x86/events/intel/lbr.c       |    6 +-
->   arch/x86/include/asm/fpu/xstate.h |    5 +-
->   arch/x86/kernel/fpu/xstate.c      |   93 +++++++++++++++++++-------------------
->   3 files changed, 53 insertions(+), 51 deletions(-)
-> 
-> --- a/arch/x86/events/intel/lbr.c
-> +++ b/arch/x86/events/intel/lbr.c
-> @@ -491,7 +491,7 @@ static void intel_pmu_arch_lbr_xrstors(v
->   {
->   	struct x86_perf_task_context_arch_lbr_xsave *task_ctx = ctx;
->   
-> -	copy_kernel_to_independent_supervisor(&task_ctx->xsave, XFEATURE_MASK_LBR);
-> +	xrstors_from_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
->   }
->   
->   static __always_inline bool lbr_is_reset_in_cstate(void *ctx)
-> @@ -576,7 +576,7 @@ static void intel_pmu_arch_lbr_xsaves(vo
->   {
->   	struct x86_perf_task_context_arch_lbr_xsave *task_ctx = ctx;
->   
-> -	copy_independent_supervisor_to_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
-> +	xsaves_to_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
->   }
->   
->   static void __intel_pmu_lbr_save(void *ctx)
-> @@ -992,7 +992,7 @@ static void intel_pmu_arch_lbr_read_xsav
->   		intel_pmu_store_lbr(cpuc, NULL);
->   		return;
->   	}
-> -	copy_independent_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
-> +	xsaves_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
->   
->   	intel_pmu_store_lbr(cpuc, xsave->lbr.entries);
->   }
+> Unfortunately, it's not quite right.  The line of code in question
+> needs to be
+>
+> if ((vstor_packet->vm_srb.scsi_status & 0xFF) == SAM_STAT_CHECK_CONDITION &&
 
-I tested the LBR Xsave feature on a Alder Lake machine. It looks good.
+> The status_byte() helper was doing the masking as well as the right
+> shift, so the masking will need to be open coded.
 
-However, when I did other CPU hotplug test, it gave me an Oops.
+CHECK_CONDITION is obsolete so no shifting is required for the SAM
+status. And as far as I can tell vm_srb.scsi_status is a u8:
 
-$ sudo bash -c 'echo 0 > /sys/devices/system/cpu/cpu1/online'
-$ sudo bash -c 'echo 1 > /sys/devices/system/cpu/cpu1/online'
+struct vmscsi_request {
+        u16 length;
+        u8 srb_status;
+        u8 scsi_status;
+[...]
 
-[  108.912963] IRQ 132: no longer affine to CPU1
-[  108.913010] IRQ148: set affinity failed(-22).
-[  108.913038] IRQ149: set affinity failed(-22).
-[  108.913050] IRQ150: set affinity failed(-22).
-[  108.917436] smpboot: CPU 1 is now offline
-[  111.191655] x86: Booting SMP configuration:
-[  111.191661] smpboot: Booting Node 0 Processor 1 APIC 0x1
-[  111.200452] BUG: unable to handle page fault for address: 
-ffffffff996a96a0
-[  111.207312] #PF: supervisor write access in kernel mode
-[  111.207325] #PF: error_code(0x0003) - permissions violation
-[  111.207335] PGD 40a02b067 P4D 40a02b067 PUD 40a02c063 PMD 106bdb063 
-PTE 8000000409ea9161
-[  111.218116] Oops: 0003 [#1] PREEMPT SMP NOPTI
-[  111.218137] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 
-5.13.0-rc5-perf+ #123
-[  111.218156] RIP: 0010:fpu__init_cpu_xstate+0x3e/0x130
-[  111.218184] Code: 00 00 00 48 8b 05 02 08 66 01 48 85 c0 0f 84 a7 00 
-00 00 55 48 89 c6 4889 e5 53 81 e6 00 01 00 00 0f 85 b5 00 00 00 80 e4 
-fe <48> 89 05 db 07 66 01 9c 58 0f 1f 4400 00 48 89 c3 fa 66 0f 1f 44
-[  111.218195] RSP: 0000:ffffa466401abec0 EFLAGS: 00010002
-[  111.273756] RAX: 0000000000000207 RBX: 0000000000000008 RCX: 
-0000000000000000
-[  111.273764] RDX: 0000000000310800 RSI: 0000000000000000 RDI: 
-0000000080050033
-[  111.273772] RBP: ffffa466401abec8 R08: 00000000fffffe00 R09: 
-ffff98729f686078
-[  111.273778] R10: ffffffff99826000 R11: ffffa466401abdde R12: 
-0000000000000001
-[  111.273783] R13: 0000000000000000 R14: ffff986f00c20000 R15: 
-000000000000b000
-[  111.273789] FS:  0000000000000000(0000) GS:ffff98729f680000(0000) 
-knlGS:0000000000000000
-[  111.273798] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  111.273805] CR2: ffffffff996a96a0 CR3: 000000040a026001 CR4: 
-0000000000330ea0
-[  111.273813] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
-0000000000000000
-[  111.273817] DR3: 0000000000000000 DR6: 00000000ffff07f0 DR7: 
-0000000000000400
-[  111.273834] invalid opcode: 0000 [#2] PREEMPT SMP NOPTI
-[  111.273843] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 
-5.13.0-rc5-perf+ #123
-
-Thanks,
-Kan
+-- 
+Martin K. Petersen	Oracle Linux Engineering
