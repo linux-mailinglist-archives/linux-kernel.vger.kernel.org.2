@@ -2,136 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA30F3A9EB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7C93A9EB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234510AbhFPPPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:15:00 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:36656 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234547AbhFPPOn (ORCPT
+        id S234511AbhFPPQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234458AbhFPPQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:14:43 -0400
-Received: by mail-ot1-f42.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so2829084otl.3;
-        Wed, 16 Jun 2021 08:12:37 -0700 (PDT)
+        Wed, 16 Jun 2021 11:16:25 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AF3C061574;
+        Wed, 16 Jun 2021 08:14:17 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id a1so4801199lfr.12;
+        Wed, 16 Jun 2021 08:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WCUe9yfJi8lButFYN+6DXnGgFGVFnjhGmS6IdUFM/PE=;
+        b=P9gYjuYuzTOvvhKnAnjxUs0opTMMss9J94gjjllmYV1996b99XjsTVEPKMyuyQ2Csw
+         ZZl8Nun3vnmJqQSmBwIjjfm/mswaE8JDT8eNnZ5zxV0MI0hoyrYQiqJycTji6C3DdWr2
+         4H05z1nOd217vS0ByxBD0jtVLzXyDWwemSFbAKy6XrS1MNXbD8RYNHHgdV05OVU9lm08
+         xNXJwIH1H7hYnt8eJTRKZumddevouP7wQzaHIDQa0gKR3/cNv4wdGIyrXBtHJXaXiQRc
+         +0h37BsuW36iMqOk3Cy78yDO/SNdFoEOydZh9z/Kd58BlMAuuxtz1+WHZSfkI0UzqywC
+         jtwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lC2NeqII1gOHZUp/j/9qgc6w3CU2D970PqUKrQ/mFLU=;
-        b=lJQzPdoyJEj8bztOgqHx5oMpIe4pnQs8/YM6N7dWTLsFgfnR6sr5XKwLzNzIxQBKm5
-         eo+5yUZVx5k2OFnUiRuBjD/392IUVNcs7ZR/oplr+mijYLg3EHPA11JaBeZQsXV9dBJR
-         gS+OYOKFEzS3G1Xi7tPQGgXH9jWSCRdp3vnQvXDaPY55ATBlCHlKIYBRMn5sIgJL5fto
-         rRrWjwRIEutJag6MothDj9sZaZZN2iMqhKyK/USUrk7lXRCMKvWfV0nJqlxw9o5Np7oJ
-         WIbyTnm2vDFy8sS62cTywkdXIhpnUsJ1VUeRD+VJPlxh7w4SWg/Nkg3y8y2MuIyxf2sG
-         wmXA==
-X-Gm-Message-State: AOAM532yHs3A3l+nITs8+kmDUWjTnkX+gGgAL/YsLeSFBFBN8S42WZ2E
-        XSvIHfVk8hEX2Gx6VzgG3hTGKmR/Cfa8g75saKM=
-X-Google-Smtp-Source: ABdhPJwTcWoUKlmdSeCFjAAb7mGsMmkwf1IFcCiW7T+oKlXk5BNafaGfJbJHX6C0H2swC46Xsap40vgmYbL0rLiTk1k=
-X-Received: by 2002:a9d:3e53:: with SMTP id h19mr345488otg.260.1623856356561;
- Wed, 16 Jun 2021 08:12:36 -0700 (PDT)
+        bh=WCUe9yfJi8lButFYN+6DXnGgFGVFnjhGmS6IdUFM/PE=;
+        b=sk6Oe/UtYioIJdjszZnu2PngK/WrPerPTWEo8+7Nbz/qt3LyVOuRdo0Plh6ccQ/h1x
+         R8JIsOWQutTUyEAXknk1kZFfup7whEo87dFexXI1smJMZkH/YH6BCb5qRYOgxLGRXT1Q
+         E+Xm/3ypifzQ4qY/rTY7xiym0bE2aXX3hv81vLvJte7EAlnwK7WerkmLvsonXW7sNNxu
+         bhGhRo0yFZcaSu8HV1buBD7eCQzpOX5fNcytBqLN3FNtPB+ho/6NoFVG95wz0kcSfK1J
+         og5gOFQg4EhVSNxn7xc/z3x8sOBwtyFfV6/43XF4jgyTId5O5NO6Qn7zjwnJejZ4a2+G
+         kAmw==
+X-Gm-Message-State: AOAM532VlnzvSnT/pZnOqlYuRBEZ4oPsb651c9FIANGSJD36coj7JfBY
+        WMynhGDaq0KSe7hYcO4eEgKIjxn44hUCSPg9rYA=
+X-Google-Smtp-Source: ABdhPJwIpMycqjcQSuT4OYUHdF/dfwOWq9xQzFw5rA040gQQSFuud2r0vCT1k8gg8ncNYf6VPFmHVufU57mjRtx+qcI=
+X-Received: by 2002:a19:4086:: with SMTP id n128mr140101lfa.464.1623856455921;
+ Wed, 16 Jun 2021 08:14:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <3140195.44csPzL39Z@kreacher> <7272740.EvYhyI6sBW@kreacher> <0cd3a0b5-f656-2b4f-b5bc-67680bc80603@redhat.com>
-In-Reply-To: <0cd3a0b5-f656-2b4f-b5bc-67680bc80603@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 16 Jun 2021 17:12:25 +0200
-Message-ID: <CAJZ5v0hVLGqCV85m3cYxsuWS_4jBww54VJ9YTogPy_Tha8VUDA@mail.gmail.com>
-Subject: Re: [PATCH 3/5] ACPI: scan: Fix device object rescan in acpi_scan_clear_dep()
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <1592308864-30205-1-git-send-email-yash.shah@sifive.com>
+ <1592308864-30205-3-git-send-email-yash.shah@sifive.com> <CAEUhbmXKdukBwd0OL2ApOD67aQ9ytSPns3z=COtXTSP_mm3wvQ@mail.gmail.com>
+In-Reply-To: <CAEUhbmXKdukBwd0OL2ApOD67aQ9ytSPns3z=COtXTSP_mm3wvQ@mail.gmail.com>
+From:   David Abdurachmanov <david.abdurachmanov@gmail.com>
+Date:   Wed, 16 Jun 2021 18:13:40 +0300
+Message-ID: <CAEn-LToZODMPLpsbKJcJXpksJSxTk0WSNpaR9N7uMekNriC+bg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] riscv: dts: fu540-c000: define hart clocks
+To:     Bin Meng <bmeng.cn@gmail.com>
+Cc:     Yash Shah <yash.shah@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Sachin Ghadi <sachin.ghadi@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Green Wan <green.wan@sifive.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        lollivier@baylibre.com, deepa.kernel@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 4:48 PM Hans de Goede <hdegoede@redhat.com> wrote:
+On Wed, Jun 16, 2021 at 6:17 AM Bin Meng <bmeng.cn@gmail.com> wrote:
 >
-> Hi,
->
-> On 6/16/21 4:23 PM, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> On Tue, Jun 16, 2020 at 8:01 PM Yash Shah <yash.shah@sifive.com> wrote:
 > >
-> > In general, acpi_bus_attach() can only be run safely under
-> > acpi_scan_lock, but that lock cannot be acquired under
-> > acpi_dep_list_lock, so make acpi_scan_clear_dep() schedule deferred
-> > execution of acpi_bus_attach() under acpi_scan_lock instead of
-> > calling it directly.
+> > Declare that each hart defined in the FU540 DT data is clocked by the
+> > COREPLL. This is in preparation for enabling CPUFreq for the
+> > FU540-C000 SoC on the HiFive Unleashed board.
 > >
-> > This also fixes a possible race between acpi_scan_clear_dep() and
-> > device removal that might cause a device object that went away to
-> > be accessed, because acpi_scan_clear_dep() is changed to acquire
-> > a reference on the consumer device object.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Signed-off-by: Yash Shah <yash.shah@sifive.com>
 > > ---
-> >  drivers/acpi/scan.c |   50 +++++++++++++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 45 insertions(+), 5 deletions(-)
+> >  arch/riscv/boot/dts/sifive/fu540-c000.dtsi | 5 +++++
+> >  1 file changed, 5 insertions(+)
 > >
-> > Index: linux-pm/drivers/acpi/scan.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/acpi/scan.c
-> > +++ linux-pm/drivers/acpi/scan.c
-> > @@ -2115,16 +2115,56 @@ static int acpi_dev_get_first_consumer_d
-> >       return 0;
-> >  }
-> >
-> > -static int acpi_scan_clear_dep(struct acpi_dep_data *dep, void *data)
-> > -{
-> > +struct acpi_scan_clear_dep_work {
-> > +     struct work_struct work;
-> >       struct acpi_device *adev;
-> > +};
-> > +
-> > +static void acpi_scan_clear_dep_fn(struct work_struct *work)
-> > +{
-> > +     struct acpi_scan_clear_dep_work *cdw;
-> > +
-> > +     cdw = container_of(work, struct acpi_scan_clear_dep_work, work);
-> >
-> > -     acpi_bus_get_device(dep->consumer, &adev);
-> > +     acpi_scan_lock_acquire();
-> > +     acpi_bus_attach(cdw->adev, true);
-> > +     acpi_scan_lock_release();
-> > +
-> > +     acpi_dev_put(cdw->adev);
-> > +     kfree(cdw);
-> > +}
-> > +
-> > +static bool acpi_scan_clear_dep_queue(struct acpi_device *adev)
-> > +{
-> > +     struct acpi_scan_clear_dep_work *cdw;
-> > +
-> > +     if (adev->dep_unmet)
-> > +             return false;
-> > +
-> > +     cdw = kmalloc(sizeof(*cdw), GFP_KERNEL);
-> > +     if (!cdw)
-> > +             return false;
-> > +
-> > +     cdw->adev = adev;
-> > +     INIT_WORK(&cdw->work, acpi_scan_clear_dep_fn);
-> > +     /*
-> > +      * Since the work function may block on the lock until the entire
-> > +      * initial enumeration of devices is complete, put it into the unbound
-> > +      * workqueue.
-> > +      */
-> > +     queue_work(system_unbound_wq, &cdw->work);
 >
-> Hmm, I'm a bit worried about this. Even with the system_unbound_wq
-> some code may expect at least some progress being made with processing
-> works during the initial enumeration. OTOH this does run pretty early on.
->
-> Still I wonder if it would not be better to create + use our own workqueue
-> for this ?
->
-> I guess we can always do this if we run into issues later...
+> Any idea of why this patch was not applied?
 
-Exactly my thought.
+There was a decision not to upstream CPUFreq stuff for Unleashed thus
+the whole series probably was abandoned. Not all Unleashed can operate
+in a stable way at 1.4GHz. IIRC other issues could exist. See Palmer
+reply for the whole series.
 
-> With that said / otherwise the patch looks good to me:
+david
+
 >
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Thanks!
+> Regards,
+> Bin
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
