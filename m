@@ -2,185 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26F33A8EC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDC23A8EC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhFPCTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 22:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57844 "EHLO
+        id S231707AbhFPCVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 22:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhFPCTQ (ORCPT
+        with ESMTP id S229582AbhFPCVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 22:19:16 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE647C061574;
-        Tue, 15 Jun 2021 19:17:09 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id g8so1089187ejx.1;
-        Tue, 15 Jun 2021 19:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MCDor/w6lKVwI2iurzUF4jk7w2SeMQAsUxGeBVaSZPs=;
-        b=dhHDjaQB0VcAtcFpKYUpQwrCCvyMHaJbQ2NadBKT9slA7jTAgkhmBG1SeiI/uTywu+
-         47/dAM4Zfwbn+dSpnhURz6NB2NKJDmI+PNF1wwtDRqlrT17SGcvPEeiHtGAbGUU7reOS
-         BNqGSIGuJ8olSKQTU4DInBtUocZC+MM0krek/Ys2R0G4jTLUZfy+/O7/ykgXkiQoaGsU
-         R8xOPr7waZ8136DVHcfgetVQ4V1xIP82fe7474YFuBVWG+hjggoMKxRtYvwJ6SJl7aRd
-         zliRXIQFk5t7w8q5j5PQqMAJaxYFPC336gJHXzpuYnA9LnbDdk4qyEg2BpvBcsp9t7n9
-         aVjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MCDor/w6lKVwI2iurzUF4jk7w2SeMQAsUxGeBVaSZPs=;
-        b=GUfUzdo+q22CFzIfbLl/wQBGn33GUFODgMdJfqiOfhkbqB5wEHakyImMfKu2ZcqCuM
-         9jRNZIWRnyjhbjR26o0onEvOUhhOP0UfSXb9j7RuS0Nauk2wURv+y8U9zCY3so+Bge5F
-         7Fu67/B/KfTebCzF929iHFw9ZI0ockIAwFNvI4lKWMhFYdomA+bFPhL13mJOVsYBQ8tz
-         EODGB0ISTxiDrskmzvOOlKU5Cl6Ye9oSxjJ5DjACTu9aYV6T9klyqvZda70OWhtj5kC4
-         YjjlWOcgA5UwsPWdC1gzi1uBcxMWufObnAUffEy0YUSXfNxsMJiA121+w8a2e9nme5jx
-         NVhA==
-X-Gm-Message-State: AOAM531RE/g1X467yke3VkGlNzudyL9MuSqmzB82+m+qAwCHr92vMJPT
-        RYqrfH1NGNv9Uc0kCCO8s5vb6PQWlOJqLyWe0tg=
-X-Google-Smtp-Source: ABdhPJziL9hg6SBudauv+KFlVosSoq2YVCxWUIEj63Q1HfX+0Y8c88/ypFzaOz95yJQ/fY7X5T96f99mGuwnOzyFRIw=
-X-Received: by 2002:a17:906:3c44:: with SMTP id i4mr2595685ejg.135.1623809828364;
- Tue, 15 Jun 2021 19:17:08 -0700 (PDT)
+        Tue, 15 Jun 2021 22:21:12 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA7DC061574;
+        Tue, 15 Jun 2021 19:19:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=cAFNJ1/DwVcSuyRvAwvNKZrXlrL9rYgK3W8Ic4ttV/8=; b=h4O7+9VsNWjBMVqH4uGscTf+2E
+        Y+2KszH0xsTNWqZGX0xC9MYUJvqLb2pAiLbdOjKiZVhkzE7tqHF0vX8jqfw/ZijXQeDkKetDqhIt9
+        X+A8Zygmim6WYlRQYj1VwpQQ3d1q8wAb9m9eG50Ili2M+TPLOOfRVqr67mTOkXcT9yZxK8kgXU0kX
+        96Pds4lzKmFayRiubPf8iBDI/Su+E0mBRUD/H5pGxMllnbrWGRrXbvdofgqYfpwuyhAA8dcHunwpr
+        032dR/SFn2X90Y7pRZCexz4bxx1iYdSTIl5eV8nc4YNs1EVkHAD1+EtBZoYc1WD69pGQv8nodJsLC
+        CpOYkazg==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltL8y-004Rdw-GO; Wed, 16 Jun 2021 02:19:04 +0000
+Subject: Re: [PATCH] afs: fix no return statement in function returning
+ non-void
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Zheng Zengkai <zhengzengkai@huawei.com>,
+        Tom Rix <trix@redhat.com>, linux-afs@lists.infradead.org,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
+ <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com>
+ <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org>
+ <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
+ <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org>
+Message-ID: <07d62654-15c1-29a4-c671-1669ea92510b@infradead.org>
+Date:   Tue, 15 Jun 2021 19:19:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210614153712.2172662-1-mudongliangabcd@gmail.com>
- <20210614190045.5b4c92e6@gmail.com> <CAD-N9QVG40CqgkHb1w68FL-d1LkTzjcAhF9O8whmzWo67=4KJg@mail.gmail.com>
- <20210615163108.4e17e119@gmail.com>
-In-Reply-To: <20210615163108.4e17e119@gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Wed, 16 Jun 2021 10:16:42 +0800
-Message-ID: <CAD-N9QXTu1P=2EKPVRWKOD1dfdfq-YY=MP5Yhv3Sd75Cff0bKg@mail.gmail.com>
-Subject: Re: [PATCH] net: usb: fix possible use-after-free in smsc75xx_bind
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Steve Glendinning <steve.glendinning@shawell.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 9:31 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> On Tue, 15 Jun 2021 07:01:13 +0800
-> Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->
-> > On Tue, Jun 15, 2021 at 12:00 AM Pavel Skripkin
-> > <paskripkin@gmail.com> wrote:
-> > >
-> > > On Mon, 14 Jun 2021 23:37:12 +0800
-> > > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> > >
-> > > > The commit 46a8b29c6306 ("net: usb: fix memory leak in
-> > > > smsc75xx_bind") fails to clean up the work scheduled in
-> > > > smsc75xx_reset-> smsc75xx_set_multicast, which leads to
-> > > > use-after-free if the work is scheduled to start after the
-> > > > deallocation. In addition, this patch also removes one dangling
-> > > > pointer - dev->data[0].
-> > > >
-> > > > This patch calls cancel_work_sync to cancel the schedule work and
-> > > > set the dangling pointer to NULL.
-> > > >
-> > > > Fixes: 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
-> > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > > ---
-> > > >  drivers/net/usb/smsc75xx.c | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > >
-> > > > diff --git a/drivers/net/usb/smsc75xx.c
-> > > > b/drivers/net/usb/smsc75xx.c index b286993da67c..f81740fcc8d5
-> > > > 100644 --- a/drivers/net/usb/smsc75xx.c
-> > > > +++ b/drivers/net/usb/smsc75xx.c
-> > > > @@ -1504,7 +1504,10 @@ static int smsc75xx_bind(struct usbnet
-> > > > *dev, struct usb_interface *intf) return 0;
-> > > >
-> > > >  err:
-> > > > +     cancel_work_sync(&pdata->set_multicast);
-> > > >       kfree(pdata);
-> > > > +     pdata = NULL;
-> > > > +     dev->data[0] = 0;
-> > > >       return ret;
-> > > >  }
-> > > >
-> > >
-> > > Hi, Dongliang!
-> > >
-> > > Just my thougth about this patch:
-> > >
-> > > INIT_WORK(&pdata->set_multicast, smsc75xx_deferred_multicast_write);
-> > > does not queue anything, it just initalizes list structure and
-> > > assigns callback function. The actual work sheduling happens in
-> > > smsc75xx_set_multicast() which is smsc75xx_netdev_ops member.
-> > >
-> >
-> > Yes, you are right. However, as written in the commit message,
-> > smsc75xx_set_multicast will be called by smsc75xx_reset [1].
-> >
-> > If smsc75xx_set_multicast is called before any check failure occurs,
-> > this work(set_multicast) will be queued into the global list with
-> >
-> > schedule_work(&pdata->set_multicast); [2]
->
-> Ah, I missed it, sorry :)
->
-> Maybe, small optimization for error handling path like:
->
-> cancel_work:
->         cancel_work_sync(&pdata->set_multicast);
->         dev->data[0] = 0;
-> free_pdata:
->         kfree(pdata);
->         return ret;
->
->
-> is suitbale here.
+On 6/15/21 6:38 PM, Randy Dunlap wrote:
+> On 6/15/21 5:32 PM, Linus Torvalds wrote:
+>> On Tue, Jun 15, 2021 at 4:58 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>>
+>>> Some implementations of BUG() are macros, not functions,
+>>
+>> Not "some", I think. Most.
+>>
+>>> so "unreachable" is not applicable AFAIK.
+>>
+>> Sure it is. One common pattern is the x86 one:
+>>
+>>   #define BUG()                                                   \
+>>   do {                                                            \
+>>           instrumentation_begin();                                \
+>>           _BUG_FLAGS(ASM_UD2, 0);                                 \
+>>           unreachable();                                          \
+>>   } while (0)
+> 
+> duh.
+> 
+>> and that "unreachable()" is exactly what I'm talking about.
+>>
+>> So I repeat: what completely broken compiler / config / architecture
+>> is it that needs that "return 0" after a BUG() statement?
+> 
+> I have seen it on ia64 -- most likely GCC 9.3.0, but I'll have to
+> double check that.
 
-I agree with this style of error handling. However, I need to adjust
-the location of dev->data[0] = 0 after kfree(pdata) because if there
-still leaves a dangling pointer it directly goes to free_pdata.
+Nope, I cannot repro that now. I'll check a few more arches...
 
->
-> >
-> > At last, if the pdata or dev->data[0] is freed before the
-> > set_multicast really executes, it may lead to a UAF. Is this correct?
-> >
-> > BTW, even if the above is true, I don't know if I call the API
-> > ``cancel_work_sync(&pdata->set_multicast)'' properly if the
-> > schedule_work is not called.
-> >
->
-> Yeah, it will be ok.
+>> Because that environment is broken, and the warning is bogus and wrong.
+>>
+>> It might not be the compiler. It might be some architecture that does
+>> this wrong. It might be some very particular configuration that does
+>> something bad and makes the "unreachable()" not work (or not exist).
+>>
+>> But *that* is the bug that should be fixed. Not adding a pointless and
+>> incorrect line that makes no sense, just to hide the real bug.
 
-Thanks for the confirmation. I've tested it under the previous kernel
-crash. It works fine.
 
-I will send a v2 patch quickly.
+-- 
+~Randy
 
->
-> > [1]
-> > https://elixir.bootlin.com/linux/latest/source/drivers/net/usb/smsc75xx.c#L1322
-> >
-> > [2]
-> > https://elixir.bootlin.com/linux/latest/source/drivers/net/usb/smsc75xx.c#L583
-> >
-> > > In case of any error in smsc75xx_bind() the device registration
-> > > fails and smsc75xx_netdev_ops won't be registered, so, i guess,
-> > > there is no chance of UAF.
-> > >
-> > >
-> > > Am I missing something? :)
-> > >
-> > >
-> > >
-> > > With regards,
-> > > Pavel Skripkin
->
->
->
->
-> With regards,
-> Pavel Skripkin
