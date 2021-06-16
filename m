@@ -2,234 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D0F3A9233
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B856F3A9238
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhFPG2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:28:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
+        id S231326AbhFPG21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhFPG16 (ORCPT
+        with ESMTP id S231381AbhFPG2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:27:58 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF221C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 23:25:47 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id f10so1860320iok.6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 23:25:47 -0700 (PDT)
+        Wed, 16 Jun 2021 02:28:24 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B29AC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 23:26:17 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id x12so1390513ill.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 23:26:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ahYpHO9B/+cUbYyFJd5R0IQOMPNRU7XLvRaVxvXYrwA=;
-        b=jKYxRf5BLwVd+aOILdWyEQ9NEe6v5aYFQD8W2wYKnYxbx/kY+mKyD67t59FT+p6nN5
-         Mpk6mfOcBOKrQiveQedh4qw5JCQtFiqVzV2RVlhONm9wznK7lpmoPFuDVcf3/tc5Ov2+
-         CFj22Re2YUg+UI7p9tNWP8f+4QqCG/oIc1mEo=
+        bh=5xLP1A2Y8bJVbnozl56zTBiPTdrZwPIJB0fz7axLbRs=;
+        b=XBzVx1c1DLb6ZOHvOj4si5MZ9wDSKBbbO3iW9lLx3RU72t6g0mNJFWOjhv/j8/ARKv
+         NPeMHHhMA082I3PS03WSAbNp8MfSElP3XEmycpm2qaSJPz9zcKS9G4eJ3KrdRThMDu4R
+         lYIiRQw6BRGRn4FPkmUAcdlpAYkn1J9gn5kxQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ahYpHO9B/+cUbYyFJd5R0IQOMPNRU7XLvRaVxvXYrwA=;
-        b=i2RyQ9/rYHJo9X0ovSVAh2Hq2op67864N857+EDxpW/U9vMlfWUIEFheZkVE6w0BL8
-         pKA3aHssATv5cXknsmCn2ql2dryZ1cDS6I011bcGUuX7W9sSCuDhov/wJsHooFNs9l0W
-         478XSfKurSl6TZenTxykK6jlXV9epNAvHRFDkzCjXzcSZQ8VBf5YmKgjgC1D9bv9Ot+Z
-         Hvn/EEnOggIbpjahEnODfkT/BBuRQeGlaPPf33xgr3R2WBK2YNAtecTQXoIgnrMzyXw+
-         NPtoWIf/Ovx6q7Q2y8OjMRrPUau1Lw6m+YGAPV4BSM30yhn27h0yDh4sXx2n687aOE36
-         WTEg==
-X-Gm-Message-State: AOAM532ByFo5YDFbHL399rCslYzFf9c+C3EJ9lqm457kiLUPplL20wI5
-        jAd0ySZ7QsHJ24TmG6VkZpUHpmVIr04+bw==
-X-Google-Smtp-Source: ABdhPJxeymrG9go1jgMhcNiIUTx0thK1dTLcxmR0P15vmdqh5AHGBr/QnncIyKvMHg3e1yKCSXeRGw==
-X-Received: by 2002:a05:6602:12:: with SMTP id b18mr2301859ioa.115.1623824746933;
-        Tue, 15 Jun 2021 23:25:46 -0700 (PDT)
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com. [209.85.166.50])
-        by smtp.gmail.com with ESMTPSA id y11sm725765ilm.6.2021.06.15.23.25.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 23:25:45 -0700 (PDT)
-Received: by mail-io1-f50.google.com with SMTP id k5so1815252iow.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 23:25:45 -0700 (PDT)
-X-Received: by 2002:a05:6e02:e8d:: with SMTP id t13mr2425681ilj.189.1623824734590;
- Tue, 15 Jun 2021 23:25:34 -0700 (PDT)
+        bh=5xLP1A2Y8bJVbnozl56zTBiPTdrZwPIJB0fz7axLbRs=;
+        b=NijN17WyhjjRdP8PUQBC5erwFuAl77IVaRyVyliEfK6zCdZAdQ0lKJhTPM9qFc2CqB
+         MEMC76hw2PCIeDctZrhEs0BNs95j11Jh0ZB+Em8EYPSjB9XSUZgsXpzytiCoVo4UvETW
+         fxBG28P5B7TOzlBvHJgjSb4cHCKCZrHE5ukZSN939jbxKyxvqP2V9Aaj1AdKSLLpQfGW
+         CqjwqPUaLEW709C5kPHLM7SO+iAUuTBrHhMulsAnDLpT8SW8aZDJpU6u+NCv9xPAUO6W
+         ml5EevN5/au0bmloFMGDXR9t6v3UQ1KGpzet+1w8hE9r7RLIx6UtQ3+9cuxULTqAkhp4
+         eoIg==
+X-Gm-Message-State: AOAM530mf7sGjuvU2aM5yw5F6QnUnJsLpyHU8qht/vyxJg6Nx4AJOzkK
+        2eba4fzo78YO19lLoyHl3UluTcRzUpXw/oGhy3Nm8qPZT1E=
+X-Google-Smtp-Source: ABdhPJxsx/vchpXbeOAmUGWL8dNLaRCEg6HhvuuT5yRGw7Ge6UBtGB2ucC62AXaNaXjHKLy3wLbTxs2UUi788nCxeKI=
+X-Received: by 2002:a92:7b07:: with SMTP id w7mr2444984ilc.308.1623824776960;
+ Tue, 15 Jun 2021 23:26:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210616035240.840463-1-tientzu@chromium.org>
-In-Reply-To: <20210616035240.840463-1-tientzu@chromium.org>
-From:   Claire Chang <tientzu@chromium.org>
-Date:   Wed, 16 Jun 2021 14:25:23 +0800
-X-Gmail-Original-Message-ID: <CALiNf29qdqmk4Uzysz3VfGd=QcQse8Hu0MajcMeOauykxMyqXg@mail.gmail.com>
-Message-ID: <CALiNf29qdqmk4Uzysz3VfGd=QcQse8Hu0MajcMeOauykxMyqXg@mail.gmail.com>
-Subject: Re: [PATCH v11 00/12] Restricted DMA
-To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
+References: <20210616053335.4181780-1-hsinyi@chromium.org> <20210616055841.4m7y6nxnxbgw5rzi@vireshk-i7>
+In-Reply-To: <20210616055841.4m7y6nxnxbgw5rzi@vireshk-i7>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Wed, 16 Jun 2021 14:25:51 +0800
+Message-ID: <CAJMQK-h2R5s6rWWjr1YHO1jqZdtBkT3LYjcVg4QNMUuXJSiMTg@mail.gmail.com>
+Subject: Re: [PATCH] opp: of: Allow lazy-linking of required-opps to non genpd
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Viresh Kumar )" <vireshk@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
         lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
+        "andrew-sh . cheng" <andrew-sh.cheng@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v12: https://lore.kernel.org/patchwork/cover/1447254/
+On Wed, Jun 16, 2021 at 1:58 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 16-06-21, 13:33, Hsin-Yi Wang wrote:
+> > Don't limit required_opp_table to genpd only. One possible use case is
+> > cpufreq based devfreq governor, which can use required-opps property to
+> > derive devfreq from cpufreq.
+> >
+> > Suggested-by: Chanwoo Choi <cw00.choi@samsung.com>
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> > ---
+> > This is tested with the non genpd case mt8183-cci with passive
+> > governor[1].
+> > [1] https://patchwork.kernel.org/project/linux-mediatek/patch/1616499241-4906-2-git-send-email-andrew-sh.cheng@mediatek.com/
+> > ---
+> >  drivers/opp/of.c | 20 +-------------------
+> >  1 file changed, 1 insertion(+), 19 deletions(-)
+> >
+> > diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+> > index aa75a1caf08a3..9573facce53a5 100644
+> > --- a/drivers/opp/of.c
+> > +++ b/drivers/opp/of.c
+> > @@ -201,17 +201,6 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
+> >                       lazy = true;
+> >                       continue;
+> >               }
+> > -
+> > -             /*
+> > -              * We only support genpd's OPPs in the "required-opps" for now,
+> > -              * as we don't know how much about other cases. Error out if the
+> > -              * required OPP doesn't belong to a genpd.
+> > -              */
+> > -             if (!required_opp_tables[i]->is_genpd) {
+> > -                     dev_err(dev, "required-opp doesn't belong to genpd: %pOF\n",
+> > -                             required_np);
+> > -                     goto free_required_tables;
+> > -             }
+> >       }
+> >
+> >       /* Let's do the linking later on */
+> > @@ -379,13 +368,6 @@ static void lazy_link_required_opp_table(struct opp_table *new_table)
+> >       struct dev_pm_opp *opp;
+> >       int i, ret;
+> >
+> > -     /*
+> > -      * We only support genpd's OPPs in the "required-opps" for now,
+> > -      * as we don't know much about other cases.
+> > -      */
+> > -     if (!new_table->is_genpd)
+> > -             return;
+> > -
+> >       mutex_lock(&opp_table_lock);
+> >
+> >       list_for_each_entry_safe(opp_table, temp, &lazy_opp_tables, lazy) {
+> > @@ -873,7 +855,7 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
+> >               return ERR_PTR(-ENOMEM);
+> >
+> >       ret = _read_opp_key(new_opp, opp_table, np, &rate_not_available);
+> > -     if (ret < 0 && !opp_table->is_genpd) {
+> > +     if (ret < 0) {
+> >               dev_err(dev, "%s: opp key field not found\n", __func__);
+> >               goto free_opp;
+> >       }
+>
+> How are you setting the required OPPs ? I mean when someone tries to
+> change frequency of a device which has some required-opps, who is
+> configuring those required OPPs ?
+>
+When cpufreq changes, the (cpufreq based) passive governor will
+calculate a target devfreq based on that, and the device governor
+(mt8183-cci-devfreq) will change the actual opp of the device.
 
-On Wed, Jun 16, 2021 at 11:52 AM Claire Chang <tientzu@chromium.org> wrote:
->
-> This series implements mitigations for lack of DMA access control on
-> systems without an IOMMU, which could result in the DMA accessing the
-> system memory at unexpected times and/or unexpected addresses, possibly
-> leading to data leakage or corruption.
->
-> For example, we plan to use the PCI-e bus for Wi-Fi and that PCI-e bus is
-> not behind an IOMMU. As PCI-e, by design, gives the device full access to
-> system memory, a vulnerability in the Wi-Fi firmware could easily escalate
-> to a full system exploit (remote wifi exploits: [1a], [1b] that shows a
-> full chain of exploits; [2], [3]).
->
-> To mitigate the security concerns, we introduce restricted DMA. Restricted
-> DMA utilizes the existing swiotlb to bounce streaming DMA in and out of a
-> specially allocated region and does memory allocation from the same region.
-> The feature on its own provides a basic level of protection against the DMA
-> overwriting buffer contents at unexpected times. However, to protect
-> against general data leakage and system memory corruption, the system needs
-> to provide a way to restrict the DMA to a predefined memory region (this is
-> usually done at firmware level, e.g. MPU in ATF on some ARM platforms [4]).
->
-> [1a] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_4.html
-> [1b] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_11.html
-> [2] https://blade.tencent.com/en/advisories/qualpwn/
-> [3] https://www.bleepingcomputer.com/news/security/vulnerabilities-found-in-highly-popular-firmware-for-wifi-chips/
-> [4] https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
->
-> v11:
-> - Rebase against swiotlb devel/for-linus-5.14
-> - s/mempry/memory/g
-> - exchange the order of patch 09/12 and 10/12
-> https://lore.kernel.org/patchwork/cover/1446882/
->
-> v10:
-> Address the comments in v9 to
->   - fix the dev->dma_io_tlb_mem assignment
->   - propagate swiotlb_force setting into io_tlb_default_mem->force
->   - move set_memory_decrypted out of swiotlb_init_io_tlb_mem
->   - move debugfs_dir declaration into the main CONFIG_DEBUG_FS block
->   - add swiotlb_ prefix to find_slots and release_slots
->   - merge the 3 alloc/free related patches
->   - move the CONFIG_DMA_RESTRICTED_POOL later
->
-> v9:
-> Address the comments in v7 to
->   - set swiotlb active pool to dev->dma_io_tlb_mem
->   - get rid of get_io_tlb_mem
->   - dig out the device struct for is_swiotlb_active
->   - move debugfs_create_dir out of swiotlb_create_debugfs
->   - do set_memory_decrypted conditionally in swiotlb_init_io_tlb_mem
->   - use IS_ENABLED in kernel/dma/direct.c
->   - fix redefinition of 'of_dma_set_restricted_buffer'
-> https://lore.kernel.org/patchwork/cover/1445081/
->
-> v8:
-> - Fix reserved-memory.txt and add the reg property in example.
-> - Fix sizeof for of_property_count_elems_of_size in
->   drivers/of/address.c#of_dma_set_restricted_buffer.
-> - Apply Will's suggestion to try the OF node having DMA configuration in
->   drivers/of/address.c#of_dma_set_restricted_buffer.
-> - Fix typo in the comment of drivers/of/address.c#of_dma_set_restricted_buffer.
-> - Add error message for PageHighMem in
->   kernel/dma/swiotlb.c#rmem_swiotlb_device_init and move it to
->   rmem_swiotlb_setup.
-> - Fix the message string in rmem_swiotlb_setup.
-> https://lore.kernel.org/patchwork/cover/1437112/
->
-> v7:
-> Fix debugfs, PageHighMem and comment style in rmem_swiotlb_device_init
-> https://lore.kernel.org/patchwork/cover/1431031/
->
-> v6:
-> Address the comments in v5
-> https://lore.kernel.org/patchwork/cover/1423201/
->
-> v5:
-> Rebase on latest linux-next
-> https://lore.kernel.org/patchwork/cover/1416899/
->
-> v4:
-> - Fix spinlock bad magic
-> - Use rmem->name for debugfs entry
-> - Address the comments in v3
-> https://lore.kernel.org/patchwork/cover/1378113/
->
-> v3:
-> Using only one reserved memory region for both streaming DMA and memory
-> allocation.
-> https://lore.kernel.org/patchwork/cover/1360992/
->
-> v2:
-> Building on top of swiotlb.
-> https://lore.kernel.org/patchwork/cover/1280705/
->
-> v1:
-> Using dma_map_ops.
-> https://lore.kernel.org/patchwork/cover/1271660/
->
-> Claire Chang (12):
->   swiotlb: Refactor swiotlb init functions
->   swiotlb: Refactor swiotlb_create_debugfs
->   swiotlb: Set dev->dma_io_tlb_mem to the swiotlb pool used
->   swiotlb: Update is_swiotlb_buffer to add a struct device argument
->   swiotlb: Update is_swiotlb_active to add a struct device argument
->   swiotlb: Use is_dev_swiotlb_force for swiotlb data bouncing
->   swiotlb: Move alloc_size to swiotlb_find_slots
->   swiotlb: Refactor swiotlb_tbl_unmap_single
->   swiotlb: Add restricted DMA alloc/free support
->   swiotlb: Add restricted DMA pool initialization
->   dt-bindings: of: Add restricted DMA pool
->   of: Add plumbing for restricted DMA pool
->
->  .../reserved-memory/reserved-memory.txt       |  36 ++-
->  drivers/base/core.c                           |   4 +
->  drivers/gpu/drm/i915/gem/i915_gem_internal.c  |   2 +-
->  drivers/gpu/drm/nouveau/nouveau_ttm.c         |   2 +-
->  drivers/iommu/dma-iommu.c                     |  12 +-
->  drivers/of/address.c                          |  33 +++
->  drivers/of/device.c                           |   3 +
->  drivers/of/of_private.h                       |   6 +
->  drivers/pci/xen-pcifront.c                    |   2 +-
->  drivers/xen/swiotlb-xen.c                     |   2 +-
->  include/linux/device.h                        |   4 +
->  include/linux/swiotlb.h                       |  40 ++-
->  kernel/dma/Kconfig                            |  14 +
->  kernel/dma/direct.c                           |  60 +++--
->  kernel/dma/direct.h                           |   8 +-
->  kernel/dma/swiotlb.c                          | 255 +++++++++++++-----
->  16 files changed, 380 insertions(+), 103 deletions(-)
->
+The required-opp is set in the cpufreq table:
+
+cpufreq_opp_table: opp_table0 {
+    compatible = "operating-points-v2";
+    opp-shared;
+    ...
+    opp0_01 {
+        opp-hz = /bits/ 64 <910000000>;
+        opp-microvolt = <687500>;
+        required-opps = <&opp2_01>;
+    };
+    ...
+};
+
+devfreq_opp_table: opp_table2 {
+    compatible = "operating-points-v2";
+    opp-shared;
+    ...
+    opp2_01: opp-338000000 {
+        opp-hz = /bits/ 64 <338000000>;
+        opp-microvolt = <687500>;
+    };
+    ...
+};
+
+
+
 > --
-> 2.32.0.272.g935e593368-goog
->
+> viresh
