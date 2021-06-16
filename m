@@ -2,144 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09723A9ED0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C713A9ED3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234535AbhFPPVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234002AbhFPPVQ (ORCPT
+        id S234548AbhFPPVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:21:40 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:44754 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234002AbhFPPVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:21:16 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513F8C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:19:09 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id t40so2885483oiw.8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:19:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kZe+2o7dtcE+Iuoj5Vekn/DR/Fb6eQVfuYTEronJ4CM=;
-        b=DZytHaNOvmD4SCp49cy0JrrhcJgOcco4Ke2cSFWNEAYDv2Fv3il63d7lvZnEAWWIHg
-         OovX2xzohd36HghpohB/c0uX5g/Gau5XdvHE8W/8SlA2kaujIgUi28T42ibJIRZ5f1ch
-         BKwE0bc9KhYUPwrn9tjN4CznCQq2IxmPCqlW8=
+        Wed, 16 Jun 2021 11:21:34 -0400
+Received: by mail-ot1-f54.google.com with SMTP id q5-20020a9d66450000b02903f18d65089fso2812811otm.11;
+        Wed, 16 Jun 2021 08:19:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kZe+2o7dtcE+Iuoj5Vekn/DR/Fb6eQVfuYTEronJ4CM=;
-        b=bvT2utXqRGeVJ5bKTCb+XMek6m3aaAAXoFgsfZE4WMJpHTEPlBLolfPgE/ezYgF6/E
-         I0TTlSBnnd3txcoC/45H41O0irgM4PYghrLUbDc+rGShBgVNcfmz2pkvoikw6G+T7FBB
-         areFNDIjPqVeBCZ1v3sjNR7XrkZvZUrvteiqnaMTNzs6AKt1jeLzZEDtdEzfkasEqCWI
-         nu7nHdda9yGFFohctQj9pX4vPoe7GmpKaigXf9EmVFXZaZLPc4nB2sqOoazpBHFstW37
-         obRjvYSTE8e9x66eVcfWhGJx0gLZO90so4rBoH8TIPafEkII5uNhV60xGBE1dxVoHWcq
-         sw6g==
-X-Gm-Message-State: AOAM531A0R+6In45/9h51cBFdK0joBXRWTEX4Pj+Jf9CNNicFfPVAxdT
-        YCoWDaSncr1pKjCd6HmXk/CpzQ==
-X-Google-Smtp-Source: ABdhPJxBHlESlq9QN8I4BsotqKjL3Vd+g7+eat/8fHGeQF66ssWfCNi+iuUzy1auZ7ZcZ87VK/ju2g==
-X-Received: by 2002:aca:3e06:: with SMTP id l6mr71186oia.147.1623856748592;
-        Wed, 16 Jun 2021 08:19:08 -0700 (PDT)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l7sm588521otp.71.2021.06.16.08.19.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 08:19:08 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com,
-        hverkuil@xs4all.nl
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH v2] media: Fix Media Controller API config checks
-Date:   Wed, 16 Jun 2021 09:19:06 -0600
-Message-Id: <20210616151906.8912-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9PStG9qnxE4mCRKeuZ4Hjo4vuxLzzhgd7NzpNwUxLZY=;
+        b=OD9uRvfCBwej2llJRB5GO/pl6zD2bp8+Amnn+5DFSy7R6JyxazpP9mbaxVhLdu7hRV
+         E5LE0rYKxfx8ZNPrAuesb5+xZoZyut0KxHb4lxU0UjnLvbFwu3g9BqDUfLC43ub8cyKq
+         RK15WnZ+SEoCQeqaU0eoC2iyDtuqMbnNDH9ZWadXRiahQwvmm47YnkAe/Dk19waZ5vQL
+         akF+zIlkcAxTQdHm3YXmxjWdzHS4mzfj0wO80/M8f1+r69KtW7D3bIPJKE+SV95h1FMZ
+         n+wNmxs6f5CYLHRbzMFUpDk1e5MGVk0f12rlkURwZ118kyrp/hPxo76J7vwz5n5wygO5
+         MT3w==
+X-Gm-Message-State: AOAM530Izv+T0zSIyDhtzb6c3hHK3E4I64ppgp2UFLp6brufOgOus330
+        2ZyNqdiATSx+TrCqT98CNFBoUz/wG4y8VAVXxAcNsZwB
+X-Google-Smtp-Source: ABdhPJycyNud+D4pGA1h7FJTM0h1ssAgqMzXG+REazS6DfYXBA0DC8MnOvc0vXFJmIIVcGJ4fbVeO2PH1pTE0nVP5p8=
+X-Received: by 2002:a9d:3e53:: with SMTP id h19mr373877otg.260.1623856768366;
+ Wed, 16 Jun 2021 08:19:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <3140195.44csPzL39Z@kreacher> <3070024.5fSG56mABF@kreacher> <a691eab8-51bb-0965-9d17-63d438c43490@redhat.com>
+In-Reply-To: <a691eab8-51bb-0965-9d17-63d438c43490@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 16 Jun 2021 17:19:16 +0200
+Message-ID: <CAJZ5v0hC2Q4M455X4FQ-Z6tzdFkcUgMH_qPHDVV=4O0OcTpBkg@mail.gmail.com>
+Subject: Re: [PATCH 5/5] ACPI: scan: Fix race related to dropping dependencies
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Smatch static checker warns that "mdev" can be null:
+On Wed, Jun 16, 2021 at 4:55 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi,
+>
+> On 6/16/21 4:25 PM, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > If acpi_add_single_object() runs concurrently with respect to
+> > acpi_scan_clear_dep() which deletes a dependencies list entry where
+> > the device being added is the consumer, the device's dep_unmet
+> > counter may not be updated to reflect that change.
+> >
+> > Namely, if the dependencies list entry is deleted right after
+> > calling acpi_scan_dep_init() and before calling acpi_device_add(),
+> > acpi_scan_clear_dep() will not find the device object corresponding
+> > to the consumer device ACPI handle and it will not update its
+> > dep_unmet counter to reflect the deletion of the list entry.
+> > Consequently, the dep_unmet counter of the device will never
+> > become zero going forward which may prevent it from being
+> > completely enumerated.
+> >
+> > To address this problem, modify acpi_add_single_object() to run
+> > acpi_tie_acpi_dev(), to attach the ACPI device object created by it
+> > to the corresponding ACPI namespace node, under acpi_dep_list_lock
+> > along with acpi_scan_dep_init() whenever the latter is called.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >  drivers/acpi/scan.c |   46 +++++++++++++++++++++++++++++++++-------------
+> >  1 file changed, 33 insertions(+), 13 deletions(-)
+> >
+> > Index: linux-pm/drivers/acpi/scan.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/acpi/scan.c
+> > +++ linux-pm/drivers/acpi/scan.c
+> > @@ -657,16 +657,12 @@ static int acpi_tie_acpi_dev(struct acpi
+> >       return 0;
+> >  }
+> >
+> > -int acpi_device_add(struct acpi_device *device,
+> > -                 void (*release)(struct device *))
+> > +int __acpi_device_add(struct acpi_device *device,
+> > +                   void (*release)(struct device *))
+> >  {
+> >       struct acpi_device_bus_id *acpi_device_bus_id;
+> >       int result;
+> >
+> > -     result = acpi_tie_acpi_dev(device);
+> > -     if (result)
+> > -             return result;
+> > -
+> >       /*
+> >        * Linkage
+> >        * -------
+> > @@ -755,6 +751,17 @@ err_unlock:
+> >       return result;
+> >  }
+> >
+> > +int acpi_device_add(struct acpi_device *adev, void (*release)(struct device *))
+> > +{
+> > +     int ret;
+> > +
+> > +     ret = acpi_tie_acpi_dev(adev);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     return __acpi_device_add(adev, release);
+> > +}
+> > +
+> >  /* --------------------------------------------------------------------------
+> >                                   Device Enumeration
+> >     -------------------------------------------------------------------------- */
+> > @@ -1681,14 +1688,10 @@ static void acpi_scan_dep_init(struct ac
+> >  {
+> >       struct acpi_dep_data *dep;
+> >
+> > -     mutex_lock(&acpi_dep_list_lock);
+> > -
+> >       list_for_each_entry(dep, &acpi_dep_list, node) {
+> >               if (dep->consumer == adev->handle)
+> >                       adev->dep_unmet++;
+> >       }
+> > -
+> > -     mutex_unlock(&acpi_dep_list_lock);
+> >  }
+> >
+> >  void acpi_device_add_finalize(struct acpi_device *device)
+> > @@ -1707,6 +1710,7 @@ static int acpi_add_single_object(struct
+> >                                 acpi_handle handle, int type, bool dep_init)
+> >  {
+> >       struct acpi_device *device;
+> > +     bool release_dep_lock = false;
+> >       int result;
+> >
+> >       device = kzalloc(sizeof(struct acpi_device), GFP_KERNEL);
+> > @@ -1720,16 +1724,32 @@ static int acpi_add_single_object(struct
+> >        * this must be done before the get power-/wakeup_dev-flags calls.
+> >        */
+> >       if (type == ACPI_BUS_TYPE_DEVICE || type == ACPI_BUS_TYPE_PROCESSOR) {
+> > -             if (dep_init)
+> > +             if (dep_init) {
+> > +                     mutex_lock(&acpi_dep_list_lock);
+> > +                     /*
+> > +                      * Hold the lock until the acpi_tie_acpi_dev() call
+> > +                      * below to prevent concurrent acpi_scan_clear_dep()
+> > +                      * from deleting a dependency list entry without
+> > +                      * updating dep_unmet for the device.
+> > +                      */
+> > +                     release_dep_lock = true;
+> >                       acpi_scan_dep_init(device);
+> > -
+> > +             }
+> >               acpi_scan_init_status(device);
+> >       }
+> >
+> >       acpi_bus_get_power_flags(device);
+> >       acpi_bus_get_wakeup_device_flags(device);
+> >
+> > -     result = acpi_device_add(device, acpi_device_release);
+> > +     result = acpi_tie_acpi_dev(device);
+> > +
+> > +     if (release_dep_lock)
+> > +             mutex_unlock(&acpi_dep_list_lock);
+> > +
+> > +     if (result)
+>
+> AFAICT you are missing a "acpi_device_release(&device->dev);"
+> call in the error-exit path here, causing a mem-leak.
 
-sound/usb/media.c:287 snd_media_device_create()
-    warn: 'mdev' can also be NULL
+Indeed.
 
-If CONFIG_MEDIA_CONTROLLER is disabled, this file should not be included
-in the build.
+I'll send a v2 of this patch alone to fix this issue.
 
-The below conditions in the sound/usb/Makefile are in place to ensure that
-media.c isn't included in the build.
+> Otherwise this looks good, with the above fixed this is:
+>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-sound/usb/Makefile:
-snd-usb-audio-$(CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER) += media.o
-
-select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER &&
-       (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND_USB_AUDIO)
-
-The following config check in include/media/media-dev-allocator.h is
-in place to enable the API only when CONFIG_MEDIA_CONTROLLER and
-CONFIG_USB are enabled.
-
- #if defined(CONFIG_MEDIA_CONTROLLER) && defined(CONFIG_USB)
-
-This check doesn't work as intended when CONFIG_USB=m. When CONFIG_USB=m,
-CONFIG_USB_MODULE is defined and CONFIG_USB is not. The above config check
-doesn't catch that CONFIG_USB is defined as a module and disables the API.
-This results in sound/usb enabling Media Controller specific ALSA driver
-code, while Media disables the Media Controller API.
-
-Fix the problem requires two changes:
-
-1. Change the check to use IS_ENABLED to detect when CONFIG_USB is enabled
-   as a module or static. Since CONFIG_MEDIA_CONTROLLER is a bool, leave
-   the check unchanged to be consistent with drivers/media/Makefile.
-
-2. Change the drivers/media/mc/Makefile to include mc-dev-allocator.o
-   in mc-objs when CONFIG_USB is enabled.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/alsa-devel/YLeAvT+R22FQ%2FEyw@mwanda/
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
-
-Changes since v1:
-- Fixed the drivers/media/mc/Makefile incorrect logic to check
-  CONFIG_USB value. Test with CONFIG_USB_SUPPORT enabled/disabled
-  CONFIG_USB y/m and disabled.
-
- drivers/media/mc/Makefile           | 2 +-
- include/media/media-dev-allocator.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/mc/Makefile b/drivers/media/mc/Makefile
-index 119037f0e686..2b7af42ba59c 100644
---- a/drivers/media/mc/Makefile
-+++ b/drivers/media/mc/Makefile
-@@ -3,7 +3,7 @@
- mc-objs	:= mc-device.o mc-devnode.o mc-entity.o \
- 	   mc-request.o
- 
--ifeq ($(CONFIG_USB),y)
-+ifneq ($(CONFIG_USB),)
- 	mc-objs += mc-dev-allocator.o
- endif
- 
-diff --git a/include/media/media-dev-allocator.h b/include/media/media-dev-allocator.h
-index b35ea6062596..2ab54d426c64 100644
---- a/include/media/media-dev-allocator.h
-+++ b/include/media/media-dev-allocator.h
-@@ -19,7 +19,7 @@
- 
- struct usb_device;
- 
--#if defined(CONFIG_MEDIA_CONTROLLER) && defined(CONFIG_USB)
-+#if defined(CONFIG_MEDIA_CONTROLLER) && IS_ENABLED(CONFIG_USB)
- /**
-  * media_device_usb_allocate() - Allocate and return struct &media device
-  *
--- 
-2.30.2
-
+Thanks!
