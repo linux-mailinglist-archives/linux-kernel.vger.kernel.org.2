@@ -2,96 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53193AA2A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6165A3AA2AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhFPRwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:52:20 -0400
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:46890 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhFPRwT (ORCPT
+        id S231460AbhFPRxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:53:16 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:36036 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230291AbhFPRxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:52:19 -0400
-Received: by mail-pf1-f169.google.com with SMTP id x16so2779305pfa.13;
-        Wed, 16 Jun 2021 10:50:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DBu8MXj8Z++5Tj08sCxjj3DBtiPGk64NAkrDpA4YCsY=;
-        b=auSoCwuxcjAacY5VxkNCZPm9cMc0cny0DdkalmogWbB+JiVU9B7Hfys+roO4vdF9xc
-         urDh+zL6BS8Vn73evIUnrKG/nzusSGKZMZs/28t0g5RzARZKyM0BQDErH33cI2KGREWA
-         dRgJwsRYEgp3VhAoLOaFFBYEkMjkpEYZgxVx8wXieDSUBCdD0WLo0bzdU15JR225kCWE
-         zScbnjy3xPVmceZ30rvv7xRX4/W4QKiRHgyvxuZAnfciIijVjDfeh9HWNUJJ/vgICXCi
-         Rjcj4JJNMRYaZL8HNpnluZdS4P9YBlzTMs4T5Xl0Zz2H/BpGUQkC0XM+47E5DVepCR+M
-         u53g==
-X-Gm-Message-State: AOAM531Dkv/1CaxowCv9nN7qi0nO0avr7qoNgxSaz/X/0yE+GKNPhcJp
-        znHsw81+lAwkR+IzcALFdxfGS4A3i9I=
-X-Google-Smtp-Source: ABdhPJzxxZf40hpoe5Njow08uqeWKKX6+TG/Lp2v13nLFEun8M9iDYGAmiHoa2cfsMnNnE04F7PfGA==
-X-Received: by 2002:a63:3d82:: with SMTP id k124mr721310pga.401.1623865812362;
-        Wed, 16 Jun 2021 10:50:12 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id b1sm2808404pjh.4.2021.06.16.10.50.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 10:50:11 -0700 (PDT)
-Subject: Re: [PATCH v3 1/9] scsi: ufs: Differentiate status between hba pm ops
- and wl pm ops
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-2-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <a5804465-2ad4-f122-0458-dcdd75f39310@acm.org>
-Date:   Wed, 16 Jun 2021 10:50:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 16 Jun 2021 13:53:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UcdmIg3_1623865865;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UcdmIg3_1623865865)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 17 Jun 2021 01:51:06 +0800
+Date:   Thu, 17 Jun 2021 01:51:04 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
+Subject: Re: [PATCH] nfs: set block size according to pnfs_blksize first
+Message-ID: <YMo6CKAaNcZlqzNC@B-P7TQMD6M-0146.local>
+References: <1623847469-150122-1-git-send-email-hsiangkao@linux.alibaba.com>
+ <4898aa11dc26396c13bbc3d8bf18c13efe4d513a.camel@hammerspace.com>
+ <YMoFcdhVwMXJQPJ+@B-P7TQMD6M-0146.local>
+ <2c14b63eacf1742bb0bcd2ae02f2d7005f7682d8.camel@hammerspace.com>
+ <YMoNnr1RYDOLXtKJ@B-P7TQMD6M-0146.local>
+ <YMojdN145g9JqAC8@mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <1623300218-9454-2-git-send-email-cang@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <YMojdN145g9JqAC8@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/9/21 9:43 PM, Can Guo wrote:
-> @@ -8784,7 +8786,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  	enum ufs_dev_pwr_mode req_dev_pwr_mode;
->  	enum uic_link_state req_link_state;
->  
-> -	hba->pm_op_in_progress = true;
-> +	hba->wl_pm_op_in_progress = true;
->  	if (pm_op != UFS_SHUTDOWN_PM) {
->  		pm_lvl = pm_op == UFS_RUNTIME_PM ?
->  			 hba->rpm_lvl : hba->spm_lvl;
-> @@ -8919,7 +8921,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  		hba->clk_gating.is_suspended = false;
->  		ufshcd_release(hba);
->  	}
-> -	hba->pm_op_in_progress = false;
-> +	hba->wl_pm_op_in_progress = false;
->  	return ret;
->  }
+Hi Ted,
 
-Are the __ufshcd_wl_suspend() calls serialized in any way? If not, will
-the value of wl_pm_op_in_progress be incorrect if multiple kernel
-threads run __ufshcd_wl_suspend() concurrently and one of the
-__ufshcd_wl_suspend() instances returns earlier than the other?
+On Wed, Jun 16, 2021 at 12:14:44PM -0400, Theodore Ts'o wrote:
+> On Wed, Jun 16, 2021 at 10:41:34PM +0800, Gao Xiang wrote:
+> > > > Yet my question is how to deal with generic/486, should we just skip
+> > > > the case directly? I cannot find some proper way to get underlayfs
+> > > > block size or real xattr value limit.
+> 
+> Note that the block size does not necessarily have thing to do with
+> the xattr value limit.  For example, in ext4, if you create the file
+> system with the ea_inode feature enabled, you can create extended
+> attributes up to the maximum value of 64k defined by the xattr
+> interface --- unless, of course, there isn't enough space in the file
+> system.
+> 
+> (The ea_inode feature will also use shared space for large xattrs, so
+> if you are storing hundreds of thousands of files that all have an
+> identical 20 kilbyte Windows security id or ACL, ea_inode is going to
+> be much more efficient way of supporting that particular use case.)
+
+Thanks for your detailed explanation too.
+
+Yeah, yet it's not enabled in the issue setup I was assigned :(
+
+> 
+> > > As noted above, the NFS server should really be returning
+> > > NFS4ERR_XATTR2BIG in this case, which the client, again, should be
+> > > transforming into -E2BIG. Where does ENOSPC come from?
+> > 
+> > Thanks for the detailed explanation...
+> > 
+> > I think that is due to ext4 returning ENOSPC since I tested
+> 
+> It's not just ext4.  From inspection, under some circumstances f2fs
+> and btrfs can return ENOSPC.
+
+I did some test on ext4 only earlier since it's our test environment.
+I didn't mean the ENOSPC behavior was ext4 only ( :-) very sorry about
+that if some misunderstanding here )
+
+> 
+> The distinction is that E2BIG is (from the attr_set man page):
+> 
+>        [E2BIG]          The value of the given attribute is too large,
+>        			it exceeds the maximum allowable size of an
+> 			attribute value.
+> 
+> The maximum allowable size (enforced by the VFS) is XATTR_MAX_SIZE,
+> which is 65536 bytes.  Some file systems may impose a smaller max
+> allowable size.
+> 
+> In contrast ENOSPC means something different:
+> 
+>        ENOSPC		No space left on device.
+> 
+> This isn't necessarily just block space, BTW; it might some other file
+> system space --- thre might not be a free inode in the case of ext4's
+> ea_inode feature.  Or it be the f2fs file system not being able to
+> allocate a node id via f2fs_alloc_nid().
+> 
+> Note that generic/486 is testing a very specific case, which is
+> replacing a small xattr (16 bytes) with an xattr with a large value.
+> This is would be a really interesting test for ext4 ea_inode, when we
+> are replacing an xattr stored inline in the inode, or in a single 4k
+> block, with an xattr stored in a separate inode.  But not the way
+> src/attr_replace_test.c (which does all of the heavy lifting for the
+> generic/486 test) is currently written.
+> 
+
+Yeah, as for the original case, it tried to test when it turned into
+the XFS extents format, but I'm not sure if it's just the regression
+test for such report only (similiar to ext4 inline xattr to non-inline
+xattr case.) rather than test the XFS_DINODE_FMT_BTREE case or ea_inode
+case...
+
+> So what I would suggest is to have attr_replace_test.c try to
+> determine the maximum attr value size using binary search.  Start with
+> min=16, and max=65536, and try creating an xattr of a particular size,
+> and then delete the xattr, and then retry creating the xattr with the
+> next binary search size.  This will allow you to create a function
+> which determines the maximum size attr for a particular file system,
+> especially in those cases where it is dependent on how the file system
+> is configured.
+
+Considering the original XFS regression report [1], I think
+underlayfs blksize may still be needed. And binary search to get the
+maximum attr value may be another new case for this as well. Or
+alternatively just add by block size to do a trip test.
+
+Although I have no idea if we can just skip the case when testing with
+NFS. If getting underlayfs blksize is unfeasible, I think we might
+skip such case for now since nfs blksize is not useful for generic/486.
+
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=199119
 
 Thanks,
+Gao Xiang
 
-Bart.
+> 
+> > should we transform it to E2BIG instead (at least in NFS
+> > protocol)? but I'm still not sure that E2BIG is a valid return code for
+> > setxattr()...
+> 
+> E2BIG is defined in the attr_set(3) man page.  ENOSPC isn't mentioned
+> in the attr_set man page, but given that multiple file systems return
+> ENOSPC, and ENOSPC has a well-defined meaning in POSIX.1 which very
+> much makes sense when creating extended attributes, we should fix that
+> by adding ENOSPC to the attr_set(3) man page (which is shipped as part
+> of the libattr library sources).
+> 
+> Cheers,
+> 
+> 						- Ted
