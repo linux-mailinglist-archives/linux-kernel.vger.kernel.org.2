@@ -2,66 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF5A3A909F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E1C3A90AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbhFPEbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 00:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
+        id S229642AbhFPEit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 00:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhFPEbF (ORCPT
+        with ESMTP id S229476AbhFPEis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 00:31:05 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8F0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 21:29:00 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id e22so901856pgv.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 21:29:00 -0700 (PDT)
+        Wed, 16 Jun 2021 00:38:48 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B33C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 21:36:43 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so3205142pjn.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 21:36:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:subject:to:cc:references:in-reply-to:mime-version
          :message-id:content-transfer-encoding;
-        bh=0VlXn6eNtJ2rv/9waXMUs/dR5ttTe7hDArinhwqlMyU=;
-        b=LuXEXas8OkAoy841Vh6ey6b5g6z04AeA5ZUrboM9WGUDTnd7YMIha/6qLEIy7E+74s
-         R11Nw5McnLP+us9UM03ZepRHFyXr4ceCUlm7dlrJ0bDqotPatc9ZZiBMENGbOpvtTe04
-         pJ9REHZIPfxzyuppCk+QeZp2O47XwQX/Ak4HOxyA3RgR0UkxoAdndaJ/78XtsMeIIP7Q
-         XdHWeHUmuUS/HtsKKiyamI8pUSZ+MbYdRIQ2KMSzPSJgdFz/VVLp17Wj5YCq6MdXRmr3
-         7nOaHCPA5/1Geef85GRzpudSins/nRBu/jLgt/CwSVCQI+B051SLVKk5qhnoacUjzF20
-         4vWA==
+        bh=4m2dd+0KAlT5LpJaa+DedRGeManljjf9yOejn/TMdrY=;
+        b=fcUjWSTdc1OF7h+LKvI+SW6XJPSEsYQUhjK6rqUeBjvHrKv9YNmGsUopO5TZH80snW
+         jFtbGvGb2ErVoYoRfoG2Dxd7lHMyIkge9uLP8l2Hx97lhT1AJRgy3KowUeCk2dytmrZx
+         yP9m/eV6hIOs/GKDtgEjah421cGpPhRdA2pq8dyjuLT3Eb3Og49eMMbje2aiW1Ow+oo9
+         WYTQfrsrzqyOzARIPJESXlPm/CdVLXWFenjA6pQg5AwJoCzxmH6hiBIf15FW+roxx75c
+         Avb6eJMVU1gKPZewBK3TP3ZMTuL6s+Kp/G7VHb6mLuQavmRcVPKkdftjr92xnbCuSxOe
+         tHfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
          :mime-version:message-id:content-transfer-encoding;
-        bh=0VlXn6eNtJ2rv/9waXMUs/dR5ttTe7hDArinhwqlMyU=;
-        b=A93gK+n1NI07LNkKOUxDOYhEeS8zy9z/f505DfsHWVV0GC5fBDhv5EDaz1ALqGj2kF
-         2WxI/D/xF3ne8hLDRRClsMBHQvTdxe2Doh2VJzS53a1ut2Hi28wZX5cu895+eN1sJtK2
-         xtUWTFPqarWEkhKORk8EgOmhF4Dp72Mvr2cNgI4acO/9x1A92kDh9ObM7DgqOipe9791
-         9u/hON6+fYkRJO9atAKUCbBdDFjrdYNsefo0li4rXDMIkTkwRuVAgqRQiAkxtohgSTwY
-         YrJMEAp7btvgsL66nG9AOy950efULOVNscu6aDjyXOMIdKE2ayToYmsAZ+BuJ3j3K2Ac
-         TDcQ==
-X-Gm-Message-State: AOAM5328IpU90QO2grkfb/EGjLbEOtXwUmb/Q4kvmEUGPqgRZs9V4tSh
-        lbzWK6jYJgR5uzEmsQOFxlk=
-X-Google-Smtp-Source: ABdhPJwCYt2fZOdlxQrGb+wXR8l7zOMMVJHylHpB+Q77ybLHnhrz3I2zaktWMawRX3CLYErDiPRuww==
-X-Received: by 2002:a63:ff1f:: with SMTP id k31mr2988191pgi.315.1623817739711;
-        Tue, 15 Jun 2021 21:28:59 -0700 (PDT)
+        bh=4m2dd+0KAlT5LpJaa+DedRGeManljjf9yOejn/TMdrY=;
+        b=gIW/2zF0Hry3syLfm7x8nkmoP7f5tnsDy3PIX5Kxc0E4ZVbeIK5qaBT7J8WuvMZ8xF
+         icwHjgtJLZYXFN+/PJSyGx8Hg0BEkf0BRpC4AFQ+5VSBOgTTGPLTAQtbmtwUEcFBTFHX
+         8H0PJOiyuR0RR6n2zNwggJ4tM/w0BC4xzMiWFTlFnSCW8/O0tTWNa/PkY/GnhXJqldLt
+         CVuA33CdH4vBSPsSNR9XJTfukewZ6Vdj0enEjGvYrNbjUxbyaHVCVgwbGly2Vd1hpl7h
+         1LrsCslELET2VQw0uYX6C5u8bF4PzC7tydSxmX47A4ZWoI15n4AS5J+YCIpAkJMBvoqX
+         uUeQ==
+X-Gm-Message-State: AOAM532BOe+UoOOkxmFqqOCQ+VJQl0jzGgTUg2G/mSmKUk2i1bTWnebT
+        uF1ElP8nT3Fh/kS+JF2//Lc=
+X-Google-Smtp-Source: ABdhPJzqLenEbcG/d7dt/tltfloS9RqI+xRkYpJkS9mZPlBqv4i9E5MBf7wHTBBXcmjQjNLhVJztXA==
+X-Received: by 2002:a17:902:6b09:b029:112:1e7a:a227 with SMTP id o9-20020a1709026b09b02901121e7aa227mr7516516plk.31.1623818203022;
+        Tue, 15 Jun 2021 21:36:43 -0700 (PDT)
 Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
-        by smtp.gmail.com with ESMTPSA id f28sm694974pgb.12.2021.06.15.21.28.58
+        by smtp.gmail.com with ESMTPSA id i2sm3908261pjj.25.2021.06.15.21.36.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 21:28:59 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 14:28:54 +1000
+        Tue, 15 Jun 2021 21:36:42 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 14:36:37 +1000
 From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 5/8] membarrier, kthread: Use _ONCE accessors for task->mm
+Subject: Re: [PATCH 6/8] powerpc/membarrier: Remove special barrier on mm
+ switch
 To:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Dave Hansen <dave.hansen@intel.com>,
         LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
         Peter Zijlstra <peterz@infradead.org>
 References: <cover.1623813516.git.luto@kernel.org>
-        <74ace142f48db7d0e71b05b5ace72bfe8e0a2652.1623813516.git.luto@kernel.org>
-In-Reply-To: <74ace142f48db7d0e71b05b5ace72bfe8e0a2652.1623813516.git.luto@kernel.org>
+        <d9034f951329830b766feb08099c15b714e08e8f.1623813516.git.luto@kernel.org>
+In-Reply-To: <d9034f951329830b766feb08099c15b714e08e8f.1623813516.git.luto@kernel.org>
 MIME-Version: 1.0
-Message-Id: <1623817648.jh19a97b5a.astroid@bobo.none>
+Message-Id: <1623817894.lsnlb539ub.astroid@bobo.none>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -69,95 +74,103 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Excerpts from Andy Lutomirski's message of June 16, 2021 1:21 pm:
-> membarrier reads cpu_rq(remote cpu)->curr->mm without locking.  Use
-> READ_ONCE() and WRITE_ONCE() to remove the data races.
+> powerpc did the following on some, but not all, paths through
+> switch_mm_irqs_off():
 >=20
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>        /*
+>         * Only need the full barrier when switching between processes.
+>         * Barrier when switching from kernel to userspace is not
+>         * required here, given that it is implied by mmdrop(). Barrier
+>         * when switching from userspace to kernel is not needed after
+>         * store to rq->curr.
+>         */
+>        if (likely(!(atomic_read(&next->membarrier_state) &
+>                     (MEMBARRIER_STATE_PRIVATE_EXPEDITED |
+>                      MEMBARRIER_STATE_GLOBAL_EXPEDITED)) || !prev))
+>                return;
+>=20
+> This is puzzling: if !prev, then one might expect that we are switching
+> from kernel to user, not user to kernel, which is inconsistent with the
+> comment.  But this is all nonsense, because the one and only caller would
+> never have prev =3D=3D NULL and would, in fact, OOPS if prev =3D=3D NULL.
+
+Yeah that's strange, code definitely doesn't match comment. Good catch.
+
+>=20
+> In any event, this code is unnecessary, since the new generic
+> membarrier_finish_switch_mm() provides the same barrier without arch help=
+.
+
+If that's merged then I think this could be too. I'll do a bit more=20
+digging into this too.
+
+Thanks,
+Nick
+
+>=20
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: linuxppc-dev@lists.ozlabs.org
 > Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 > Cc: Peter Zijlstra <peterz@infradead.org>
 > Signed-off-by: Andy Lutomirski <luto@kernel.org>
 > ---
->  fs/exec.c                 | 2 +-
->  kernel/kthread.c          | 4 ++--
->  kernel/sched/membarrier.c | 6 +++---
->  3 files changed, 6 insertions(+), 6 deletions(-)
+>  arch/powerpc/include/asm/membarrier.h | 27 ---------------------------
+>  arch/powerpc/mm/mmu_context.c         |  2 --
+>  2 files changed, 29 deletions(-)
+>  delete mode 100644 arch/powerpc/include/asm/membarrier.h
 >=20
-> diff --git a/fs/exec.c b/fs/exec.c
-> index 18594f11c31f..2e63dea83411 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -1007,7 +1007,7 @@ static int exec_mmap(struct mm_struct *mm)
->  	local_irq_disable();
->  	active_mm =3D tsk->active_mm;
->  	tsk->active_mm =3D mm;
-> -	tsk->mm =3D mm;
-> +	WRITE_ONCE(tsk->mm, mm);  /* membarrier reads this without locks */
+> diff --git a/arch/powerpc/include/asm/membarrier.h b/arch/powerpc/include=
+/asm/membarrier.h
+> deleted file mode 100644
+> index 6e20bb5c74ea..000000000000
+> --- a/arch/powerpc/include/asm/membarrier.h
+> +++ /dev/null
+> @@ -1,27 +0,0 @@
+> -#ifndef _ASM_POWERPC_MEMBARRIER_H
+> -#define _ASM_POWERPC_MEMBARRIER_H
+> -
+> -static inline void membarrier_arch_switch_mm(struct mm_struct *prev,
+> -					     struct mm_struct *next,
+> -					     struct task_struct *tsk)
+> -{
+> -	/*
+> -	 * Only need the full barrier when switching between processes.
+> -	 * Barrier when switching from kernel to userspace is not
+> -	 * required here, given that it is implied by mmdrop(). Barrier
+> -	 * when switching from userspace to kernel is not needed after
+> -	 * store to rq->curr.
+> -	 */
+> -	if (likely(!(atomic_read(&next->membarrier_state) &
+> -		     (MEMBARRIER_STATE_PRIVATE_EXPEDITED |
+> -		      MEMBARRIER_STATE_GLOBAL_EXPEDITED)) || !prev))
+> -		return;
+> -
+> -	/*
+> -	 * The membarrier system call requires a full memory barrier
+> -	 * after storing to rq->curr, before going back to user-space.
+> -	 */
+> -	smp_mb();
+> -}
+> -
+> -#endif /* _ASM_POWERPC_MEMBARRIER_H */
+> diff --git a/arch/powerpc/mm/mmu_context.c b/arch/powerpc/mm/mmu_context.=
+c
+> index a857af401738..8daa95b3162b 100644
+> --- a/arch/powerpc/mm/mmu_context.c
+> +++ b/arch/powerpc/mm/mmu_context.c
+> @@ -85,8 +85,6 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct =
+mm_struct *next,
+> =20
+>  	if (new_on_cpu)
+>  		radix_kvm_prefetch_workaround(next);
+> -	else
+> -		membarrier_arch_switch_mm(prev, next, tsk);
+> =20
 >  	/*
->  	 * This prevents preemption while active_mm is being loaded and
->  	 * it and mm are being updated, which could cause problems for
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index 8275b415acec..4962794e02d5 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -1322,7 +1322,7 @@ void kthread_use_mm(struct mm_struct *mm)
->  		mmgrab(mm);
->  		tsk->active_mm =3D mm;
->  	}
-> -	tsk->mm =3D mm;
-> +	WRITE_ONCE(tsk->mm, mm);  /* membarrier reads this without locks */
->  	membarrier_update_current_mm(mm);
->  	switch_mm_irqs_off(active_mm, mm, tsk);
->  	membarrier_finish_switch_mm(atomic_read(&mm->membarrier_state));
-> @@ -1363,7 +1363,7 @@ void kthread_unuse_mm(struct mm_struct *mm)
->  	smp_mb__after_spinlock();
->  	sync_mm_rss(mm);
->  	local_irq_disable();
-> -	tsk->mm =3D NULL;
-> +	WRITE_ONCE(tsk->mm, NULL);  /* membarrier reads this without locks */
->  	membarrier_update_current_mm(NULL);
->  	/* active_mm is still 'mm' */
->  	enter_lazy_tlb(mm, tsk);
-> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
-> index 3173b063d358..c32c32a2441e 100644
-> --- a/kernel/sched/membarrier.c
-> +++ b/kernel/sched/membarrier.c
-> @@ -410,7 +410,7 @@ static int membarrier_private_expedited(int flags, in=
-t cpu_id)
->  			goto out;
->  		rcu_read_lock();
->  		p =3D rcu_dereference(cpu_rq(cpu_id)->curr);
-> -		if (!p || p->mm !=3D mm) {
-> +		if (!p || READ_ONCE(p->mm) !=3D mm) {
->  			rcu_read_unlock();
->  			goto out;
->  		}
-> @@ -423,7 +423,7 @@ static int membarrier_private_expedited(int flags, in=
-t cpu_id)
->  			struct task_struct *p;
-> =20
->  			p =3D rcu_dereference(cpu_rq(cpu)->curr);
-> -			if (p && p->mm =3D=3D mm)
-> +			if (p && READ_ONCE(p->mm) =3D=3D mm)
-
-/* exec, kthread_use_mm write this without locks */ ?
-
-Seems good to me.
-
-Acked-by: Nicholas Piggin <npiggin@gmail.com>
-
->  				__cpumask_set_cpu(cpu, tmpmask);
->  		}
->  		rcu_read_unlock();
-> @@ -521,7 +521,7 @@ static int sync_runqueues_membarrier_state(struct mm_=
-struct *mm)
->  		struct task_struct *p;
-> =20
->  		p =3D rcu_dereference(rq->curr);
-> -		if (p && p->mm =3D=3D mm)
-> +		if (p && READ_ONCE(p->mm) =3D=3D mm)
->  			__cpumask_set_cpu(cpu, tmpmask);
->  	}
->  	rcu_read_unlock();
+>  	 * The actual HW switching method differs between the various
 > --=20
 > 2.31.1
 >=20
