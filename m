@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464733A93FB
+	by mail.lfdr.de (Postfix) with ESMTP id 915603A93FC
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbhFPHdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 03:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
+        id S232013AbhFPHdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbhFPHdl (ORCPT
+        with ESMTP id S231354AbhFPHdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:33:41 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5817C061767;
-        Wed, 16 Jun 2021 00:31:35 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id c18so1605063qkc.11;
-        Wed, 16 Jun 2021 00:31:35 -0700 (PDT)
+        Wed, 16 Jun 2021 03:33:44 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FEDC061768;
+        Wed, 16 Jun 2021 00:31:38 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id r19so1082530qvw.5;
+        Wed, 16 Jun 2021 00:31:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=+lHzUkI6D8fn07PeAeiwRPaEGdKVbwPR/jp6/8aJdy8=;
-        b=mpg/kUzlYTlFlEhg0MCa2aWsMkbRfdFwr80EozDk8SzMEty7E5GxQ1WKQ6HKGUmoEN
-         Oi6C7C7tf85s5bbKtfe90DHgKMXO4MP713qBj+rIV2e+GWl3/UDvMgUzIqrcAL6vXUIJ
-         XWkCfKFUJvFoEpPRLeNaDjC94PDUlVo1SxiccdcxLJY8UMzQ5OPR+rSlcnP0VYkUzjO9
-         uNW2ikbOxABQkqVHu0oZQOzfXCSGHc71zboAUm8clD4MqjKJiGpC4HVIeZS+0kwMrivk
-         qkGLAYph9GEVW4YWg2GHoJJVBJHoOwyaNxfpFVATuexnCknIFEO+wRgk+QqeI6bs2Pzh
-         cAew==
+        bh=f7IjOE3J8srLgPrmj1jrhc6wcDVglhOTnhhKp4a8Vrs=;
+        b=WxeftbfZZsSsUfAdzGd0tj4LN6nmbA80NNcSG4d0Rp/PkGHTk+rrGM90c6Wp1dWnWD
+         MSqkhL9O7QPgi8SNqefW2zJqIeTj+FoIx40M7WwaNAgcBPGJjSmTejuaKFb/rw0cdxJx
+         yaxidIFikSnlpU9FjrC6UMuPcUqtmtcY4V74V2eGwuEhLc95aFsMfwSC1O403aBthqyz
+         Xz3kHkccnCgq3pJ/eBFkvKi1eTXsw/puSPwil+9KXMVL9TnGX/sKF2C+JTV8QSOd74bz
+         YIKm5kQymW3poFIPCJF4NNxiZpI5Y78H5BicfTON8XK4K2d1/m4HtrPLYhrvqjHJRpOp
+         NnLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=+lHzUkI6D8fn07PeAeiwRPaEGdKVbwPR/jp6/8aJdy8=;
-        b=gYsGc61lNc2tOXx8Y1JBBD73ywVB5nYdGvEdnU8U6ORrgT1Y9chG83gGxflkyr4lyl
-         CP6Ft6UU6DO7/tsA61iRdf4hIRXlaYXbNYX/phW4sFI68BiJtZ0pt5RL0J9R9HPkRfZn
-         Cy21iXMToXf4oyJ2FgdbkEmzUu30JPpV4PemaexWniDDkOAOCxyhtNDK7+p4HVhzvAVe
-         SA19jUU/u5hsmTh+R9jX5XtmujLNEVyBvD5UFkuzC9IG57gM5aNoekxpLafioWDYgFIF
-         jwiH66T3nRVAiBfDFftVxlIoqPcAu65ct4StCmMGnxr2FnH5SdPKPPRD9JPb+uCuWIMM
-         Dv7A==
-X-Gm-Message-State: AOAM532AQFzrSoLqQUsIUdl9O0tOdEap4y3rD+SLNbCACvB03oOpp+yC
-        pcEKGlS2n2nf9KkgsXtrWrc=
-X-Google-Smtp-Source: ABdhPJxQMrzKtzPXW4XjPy2SCXa/BtxEuul9oPhhCrm/t24pvnS1twnQ7wycrj0VsmE0EGyU1ct3rw==
-X-Received: by 2002:a37:b947:: with SMTP id j68mr3818840qkf.486.1623828694973;
-        Wed, 16 Jun 2021 00:31:34 -0700 (PDT)
+        bh=f7IjOE3J8srLgPrmj1jrhc6wcDVglhOTnhhKp4a8Vrs=;
+        b=EeJJU0bz1m2Hguhowo+Sl/KP4FM6R//8IVaRz07PqZyGOyXNhcJ0nPTb5aOe+qx1c3
+         tY7uEDgp0jSn5b/CG1nVBgjdnhXugDZH6rbFkDUq2q/VYQ0e8PuRCGlbMboHXZSgypOd
+         fEU8sjJxouI7dE+TEpKrQu7Wm4Rc4Bn8qx8jSvxyEqTwRP1DvRnu4NhmDvOOr8ljhq+9
+         nQfydD2y9536E5FLbLB0uQOaZf3jy35A/G3Bn/hJgiH0i9DyKCClVxEx3F7pag1nltDC
+         eHN4ElOEYXPll89orKDG9SxhwrlbNDMrJPbsnzvHKnnu9mKS5coNYRvyKxR6oxf9+37C
+         4E8w==
+X-Gm-Message-State: AOAM533xUe8QzsBg3zO+0xNwE0CJFTLHci7cWePXhOrSxRnzQZFsUvBH
+        /EhjM3Ba4uWO70iInG/gFQQ=
+X-Google-Smtp-Source: ABdhPJyYbjPPWyiRdXvRD8LujbWe24+l+tHcNEhdmIYgziSOOmtgQTc0zDESt3QVs9lfkTKfCj1ANw==
+X-Received: by 2002:a0c:fa91:: with SMTP id o17mr9554880qvn.36.1623828697373;
+        Wed, 16 Jun 2021 00:31:37 -0700 (PDT)
 Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id h5sm1080697qkg.122.2021.06.16.00.31.33
+        by smtp.gmail.com with ESMTPSA id h5sm1080697qkg.122.2021.06.16.00.31.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 00:31:34 -0700 (PDT)
+        Wed, 16 Jun 2021 00:31:36 -0700 (PDT)
 From:   SeongJae Park <sj38.park@gmail.com>
 To:     akpm@linux-foundation.org
 Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
@@ -64,9 +64,9 @@ Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
         vdavydov.dev@gmail.com, zgf574564920@gmail.com,
         linux-damon@amazon.com, linux-mm@kvack.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v30 02/13] mm/damon/core: Implement region-based sampling
-Date:   Wed, 16 Jun 2021 07:31:08 +0000
-Message-Id: <20210616073119.16758-3-sj38.park@gmail.com>
+Subject: [PATCH v30 03/13] mm/damon: Adaptively adjust regions
+Date:   Wed, 16 Jun 2021 07:31:09 +0000
+Message-Id: <20210616073119.16758-4-sj38.park@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210616073119.16758-1-sj38.park@gmail.com>
 References: <20210616073119.16758-1-sj38.park@gmail.com>
@@ -76,356 +76,424 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-To avoid the unbounded increase of the overhead, DAMON groups adjacent
-pages that are assumed to have the same access frequencies into a
-region.  As long as the assumption (pages in a region have the same
-access frequencies) is kept, only one page in the region is required to
-be checked.  Thus, for each ``sampling interval``,
+Even somehow the initial monitoring target regions are well constructed
+to fulfill the assumption (pages in same region have similar access
+frequencies), the data access pattern can be dynamically changed.  This
+will result in low monitoring quality.  To keep the assumption as much
+as possible, DAMON adaptively merges and splits each region based on
+their access frequency.
 
- 1. the 'prepare_access_checks' primitive picks one page in each region,
- 2. waits for one ``sampling interval``,
- 3. checks whether the page is accessed meanwhile, and
- 4. increases the access count of the region if so.
+For each ``aggregation interval``, it compares the access frequencies of
+adjacent regions and merges those if the frequency difference is small.
+Then, after it reports and clears the aggregated access frequency of
+each region, it splits each region into two or three regions if the
+total number of regions will not exceed the user-specified maximum
+number of regions after the split.
 
-Therefore, the monitoring overhead is controllable by adjusting the
-number of regions.  DAMON allows both the underlying primitives and user
-callbacks to adjust regions for the trade-off.  In other words, this
-commit makes DAMON to use not only time-based sampling but also
-space-based sampling.
-
-This scheme, however, cannot preserve the quality of the output if the
-assumption is not guaranteed.  Next commit will address this problem.
+In this way, DAMON provides its best-effort quality and minimal overhead
+while keeping the upper-bound overhead that users set.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 Reviewed-by: Leonard Foerster <foersleo@amazon.de>
 Reviewed-by: Fernand Sieber <sieberf@amazon.com>
 ---
- include/linux/damon.h |  77 ++++++++++++++++++++++-
- mm/damon/core.c       | 143 ++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 213 insertions(+), 7 deletions(-)
+ include/linux/damon.h |  23 +++--
+ mm/damon/core.c       | 214 +++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 227 insertions(+), 10 deletions(-)
 
 diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 2f652602b1ea..67db309ad61b 100644
+index 67db309ad61b..0bd5d6913a6c 100644
 --- a/include/linux/damon.h
 +++ b/include/linux/damon.h
-@@ -12,6 +12,48 @@
+@@ -12,6 +12,9 @@
  #include <linux/time64.h>
  #include <linux/types.h>
  
-+/**
-+ * struct damon_addr_range - Represents an address region of [@start, @end).
-+ * @start:	Start address of the region (inclusive).
-+ * @end:	End address of the region (exclusive).
-+ */
-+struct damon_addr_range {
-+	unsigned long start;
-+	unsigned long end;
-+};
++/* Minimal region size.  Every damon_region is aligned by this. */
++#define DAMON_MIN_REGION	PAGE_SIZE
 +
-+/**
-+ * struct damon_region - Represents a monitoring target region.
-+ * @ar:			The address range of the region.
-+ * @sampling_addr:	Address of the sample for the next access check.
-+ * @nr_accesses:	Access frequency of this region.
-+ * @list:		List head for siblings.
-+ */
-+struct damon_region {
-+	struct damon_addr_range ar;
-+	unsigned long sampling_addr;
-+	unsigned int nr_accesses;
-+	struct list_head list;
-+};
-+
-+/**
-+ * struct damon_target - Represents a monitoring target.
-+ * @id:			Unique identifier for this target.
-+ * @regions_list:	Head of the monitoring target regions of this target.
-+ * @list:		List head for siblings.
-+ *
-+ * Each monitoring context could have multiple targets.  For example, a context
-+ * for virtual memory address spaces could have multiple target processes.  The
-+ * @id of each target should be unique among the targets of the context.  For
-+ * example, in the virtual address monitoring context, it could be a pidfd or
-+ * an address of an mm_struct.
-+ */
-+struct damon_target {
-+	unsigned long id;
-+	struct list_head regions_list;
-+	struct list_head list;
-+};
-+
- struct damon_ctx;
- 
  /**
-@@ -36,7 +78,7 @@ struct damon_ctx;
-  *
-  * @init should initialize primitive-internal data structures.  For example,
-  * this could be used to construct proper monitoring target regions and link
-- * those to @damon_ctx.target.
-+ * those to @damon_ctx.adaptive_targets.
-  * @update should update the primitive-internal data structures.  For example,
-  * this could be used to update monitoring target regions for current status.
-  * @prepare_access_checks should manipulate the monitoring regions to be
-@@ -130,7 +172,7 @@ struct damon_callback {
+  * struct damon_addr_range - Represents an address region of [@start, @end).
+  * @start:	Start address of the region (inclusive).
+@@ -85,6 +88,8 @@ struct damon_ctx;
+  * prepared for the next access check.
+  * @check_accesses should check the accesses to each region that made after the
+  * last preparation and update the number of observed accesses of each region.
++ * It should also return max number of observed accesses that made as a result
++ * of its update.  The value will be used for regions adjustment threshold.
+  * @reset_aggregated should reset the access monitoring results that aggregated
+  * by @check_accesses.
+  * @target_valid should check whether the target is still valid for the
+@@ -95,7 +100,7 @@ struct damon_primitive {
+ 	void (*init)(struct damon_ctx *context);
+ 	void (*update)(struct damon_ctx *context);
+ 	void (*prepare_access_checks)(struct damon_ctx *context);
+-	void (*check_accesses)(struct damon_ctx *context);
++	unsigned int (*check_accesses)(struct damon_ctx *context);
+ 	void (*reset_aggregated)(struct damon_ctx *context);
+ 	bool (*target_valid)(void *target);
+ 	void (*cleanup)(struct damon_ctx *context);
+@@ -172,7 +177,9 @@ struct damon_callback {
   * @primitive:	Set of monitoring primitives for given use cases.
   * @callback:	Set of callbacks for monitoring events notifications.
   *
-- * @target:	Pointer to the user-defined monitoring target.
-+ * @region_targets:	Head of monitoring targets (&damon_target) list.
+- * @region_targets:	Head of monitoring targets (&damon_target) list.
++ * @min_nr_regions:	The minimum number of adaptive monitoring regions.
++ * @max_nr_regions:	The maximum number of adaptive monitoring regions.
++ * @adaptive_targets:	Head of monitoring targets (&damon_target) list.
   */
  struct damon_ctx {
  	unsigned long sample_interval;
-@@ -149,11 +191,40 @@ struct damon_ctx {
+@@ -191,7 +198,9 @@ struct damon_ctx {
  	struct damon_primitive primitive;
  	struct damon_callback callback;
  
--	void *target;
-+	struct list_head region_targets;
+-	struct list_head region_targets;
++	unsigned long min_nr_regions;
++	unsigned long max_nr_regions;
++	struct list_head adaptive_targets;
  };
  
-+#define damon_next_region(r) \
-+	(container_of(r->list.next, struct damon_region, list))
-+
-+#define damon_prev_region(r) \
-+	(container_of(r->list.prev, struct damon_region, list))
-+
-+#define damon_for_each_region(r, t) \
-+	list_for_each_entry(r, &t->regions_list, list)
-+
-+#define damon_for_each_region_safe(r, next, t) \
-+	list_for_each_entry_safe(r, next, &t->regions_list, list)
-+
-+#define damon_for_each_target(t, ctx) \
-+	list_for_each_entry(t, &(ctx)->region_targets, list)
-+
-+#define damon_for_each_target_safe(t, next, ctx)	\
-+	list_for_each_entry_safe(t, next, &(ctx)->region_targets, list)
-+
+ #define damon_next_region(r) \
+@@ -207,10 +216,10 @@ struct damon_ctx {
+ 	list_for_each_entry_safe(r, next, &t->regions_list, list)
+ 
+ #define damon_for_each_target(t, ctx) \
+-	list_for_each_entry(t, &(ctx)->region_targets, list)
++	list_for_each_entry(t, &(ctx)->adaptive_targets, list)
+ 
+ #define damon_for_each_target_safe(t, next, ctx)	\
+-	list_for_each_entry_safe(t, next, &(ctx)->region_targets, list)
++	list_for_each_entry_safe(t, next, &(ctx)->adaptive_targets, list)
+ 
  #ifdef CONFIG_DAMON
  
-+struct damon_region *damon_new_region(unsigned long start, unsigned long end);
-+inline void damon_insert_region(struct damon_region *r,
-+		struct damon_region *prev, struct damon_region *next);
-+void damon_add_region(struct damon_region *r, struct damon_target *t);
-+void damon_destroy_region(struct damon_region *r);
-+
-+struct damon_target *damon_new_target(unsigned long id);
-+void damon_add_target(struct damon_ctx *ctx, struct damon_target *t);
-+void damon_free_target(struct damon_target *t);
-+void damon_destroy_target(struct damon_target *t);
-+
+@@ -224,11 +233,13 @@ struct damon_target *damon_new_target(unsigned long id);
+ void damon_add_target(struct damon_ctx *ctx, struct damon_target *t);
+ void damon_free_target(struct damon_target *t);
+ void damon_destroy_target(struct damon_target *t);
++unsigned int damon_nr_regions(struct damon_target *t);
+ 
  struct damon_ctx *damon_new_ctx(void);
  void damon_destroy_ctx(struct damon_ctx *ctx);
  int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
+-		unsigned long aggr_int, unsigned long primitive_upd_int);
++		unsigned long aggr_int, unsigned long primitive_upd_int,
++		unsigned long min_nr_reg, unsigned long max_nr_reg);
+ 
+ int damon_start(struct damon_ctx **ctxs, int nr_ctxs);
+ int damon_stop(struct damon_ctx **ctxs, int nr_ctxs);
 diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 693e51ebc05a..94db494dcf70 100644
+index 94db494dcf70..b36b6bdd94e2 100644
 --- a/mm/damon/core.c
 +++ b/mm/damon/core.c
-@@ -15,6 +15,101 @@
+@@ -10,8 +10,12 @@
+ #include <linux/damon.h>
+ #include <linux/delay.h>
+ #include <linux/kthread.h>
++#include <linux/random.h>
+ #include <linux/slab.h>
+ 
++/* Get a random number in [l, r) */
++#define damon_rand(l, r) (l + prandom_u32_max(r - l))
++
  static DEFINE_MUTEX(damon_lock);
  static int nr_running_ctxs;
  
-+/*
-+ * Construct a damon_region struct
-+ *
-+ * Returns the pointer to the new struct if success, or NULL otherwise
-+ */
-+struct damon_region *damon_new_region(unsigned long start, unsigned long end)
+@@ -87,7 +91,7 @@ struct damon_target *damon_new_target(unsigned long id)
+ 
+ void damon_add_target(struct damon_ctx *ctx, struct damon_target *t)
+ {
+-	list_add_tail(&t->list, &ctx->region_targets);
++	list_add_tail(&t->list, &ctx->adaptive_targets);
+ }
+ 
+ static void damon_del_target(struct damon_target *t)
+@@ -110,6 +114,17 @@ void damon_destroy_target(struct damon_target *t)
+ 	damon_free_target(t);
+ }
+ 
++unsigned int damon_nr_regions(struct damon_target *t)
 +{
-+	struct damon_region *region;
++	struct damon_region *r;
++	unsigned int nr_regions = 0;
 +
-+	region = kmalloc(sizeof(*region), GFP_KERNEL);
-+	if (!region)
-+		return NULL;
++	damon_for_each_region(r, t)
++		nr_regions++;
 +
-+	region->ar.start = start;
-+	region->ar.end = end;
-+	region->nr_accesses = 0;
-+	INIT_LIST_HEAD(&region->list);
-+
-+	return region;
-+}
-+
-+/*
-+ * Add a region between two other regions
-+ */
-+inline void damon_insert_region(struct damon_region *r,
-+		struct damon_region *prev, struct damon_region *next)
-+{
-+	__list_add(&r->list, &prev->list, &next->list);
-+}
-+
-+void damon_add_region(struct damon_region *r, struct damon_target *t)
-+{
-+	list_add_tail(&r->list, &t->regions_list);
-+}
-+
-+static void damon_del_region(struct damon_region *r)
-+{
-+	list_del(&r->list);
-+}
-+
-+static void damon_free_region(struct damon_region *r)
-+{
-+	kfree(r);
-+}
-+
-+void damon_destroy_region(struct damon_region *r)
-+{
-+	damon_del_region(r);
-+	damon_free_region(r);
-+}
-+
-+/*
-+ * Construct a damon_target struct
-+ *
-+ * Returns the pointer to the new struct if success, or NULL otherwise
-+ */
-+struct damon_target *damon_new_target(unsigned long id)
-+{
-+	struct damon_target *t;
-+
-+	t = kmalloc(sizeof(*t), GFP_KERNEL);
-+	if (!t)
-+		return NULL;
-+
-+	t->id = id;
-+	INIT_LIST_HEAD(&t->regions_list);
-+
-+	return t;
-+}
-+
-+void damon_add_target(struct damon_ctx *ctx, struct damon_target *t)
-+{
-+	list_add_tail(&t->list, &ctx->region_targets);
-+}
-+
-+static void damon_del_target(struct damon_target *t)
-+{
-+	list_del(&t->list);
-+}
-+
-+void damon_free_target(struct damon_target *t)
-+{
-+	struct damon_region *r, *next;
-+
-+	damon_for_each_region_safe(r, next, t)
-+		damon_free_region(r);
-+	kfree(t);
-+}
-+
-+void damon_destroy_target(struct damon_target *t)
-+{
-+	damon_del_target(t);
-+	damon_free_target(t);
++	return nr_regions;
 +}
 +
  struct damon_ctx *damon_new_ctx(void)
  {
  	struct damon_ctx *ctx;
-@@ -32,15 +127,27 @@ struct damon_ctx *damon_new_ctx(void)
+@@ -127,7 +142,10 @@ struct damon_ctx *damon_new_ctx(void)
  
  	mutex_init(&ctx->kdamond_lock);
  
--	ctx->target = NULL;
-+	INIT_LIST_HEAD(&ctx->region_targets);
+-	INIT_LIST_HEAD(&ctx->region_targets);
++	ctx->min_nr_regions = 10;
++	ctx->max_nr_regions = 1000;
++
++	INIT_LIST_HEAD(&ctx->adaptive_targets);
  
  	return ctx;
  }
- 
--void damon_destroy_ctx(struct damon_ctx *ctx)
-+static void damon_destroy_targets(struct damon_ctx *ctx)
+@@ -157,6 +175,8 @@ void damon_destroy_ctx(struct damon_ctx *ctx)
+  * @sample_int:		time interval between samplings
+  * @aggr_int:		time interval between aggregations
+  * @primitive_upd_int:	time interval between monitoring primitive updates
++ * @min_nr_reg:		minimal number of regions
++ * @max_nr_reg:		maximum number of regions
+  *
+  * This function should not be called while the kdamond is running.
+  * Every time interval is in micro-seconds.
+@@ -164,15 +184,49 @@ void damon_destroy_ctx(struct damon_ctx *ctx)
+  * Return: 0 on success, negative error code otherwise.
+  */
+ int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
+-		    unsigned long aggr_int, unsigned long primitive_upd_int)
++		    unsigned long aggr_int, unsigned long primitive_upd_int,
++		    unsigned long min_nr_reg, unsigned long max_nr_reg)
  {
--	if (ctx->primitive.cleanup)
-+	struct damon_target *t, *next_t;
-+
-+	if (ctx->primitive.cleanup) {
- 		ctx->primitive.cleanup(ctx);
-+		return;
++	if (min_nr_reg < 3) {
++		pr_err("min_nr_regions (%lu) must be at least 3\n",
++				min_nr_reg);
++		return -EINVAL;
++	}
++	if (min_nr_reg > max_nr_reg) {
++		pr_err("invalid nr_regions.  min (%lu) > max (%lu)\n",
++				min_nr_reg, max_nr_reg);
++		return -EINVAL;
 +	}
 +
-+	damon_for_each_target_safe(t, next_t, ctx)
-+		damon_destroy_target(t);
+ 	ctx->sample_interval = sample_int;
+ 	ctx->aggr_interval = aggr_int;
+ 	ctx->primitive_update_interval = primitive_upd_int;
++	ctx->min_nr_regions = min_nr_reg;
++	ctx->max_nr_regions = max_nr_reg;
+ 
+ 	return 0;
+ }
+ 
++/* Returns the size upper limit for each monitoring region */
++static unsigned long damon_region_sz_limit(struct damon_ctx *ctx)
++{
++	struct damon_target *t;
++	struct damon_region *r;
++	unsigned long sz = 0;
++
++	damon_for_each_target(t, ctx) {
++		damon_for_each_region(r, t)
++			sz += r->ar.end - r->ar.start;
++	}
++
++	if (ctx->min_nr_regions)
++		sz /= ctx->min_nr_regions;
++	if (sz < DAMON_MIN_REGION)
++		sz = DAMON_MIN_REGION;
++
++	return sz;
 +}
 +
-+void damon_destroy_ctx(struct damon_ctx *ctx)
-+{
-+	damon_destroy_targets(ctx);
- 	kfree(ctx);
+ static bool damon_kdamond_running(struct damon_ctx *ctx)
+ {
+ 	bool running;
+@@ -339,6 +393,149 @@ static void kdamond_reset_aggregated(struct damon_ctx *c)
+ 	}
  }
  
-@@ -217,6 +324,21 @@ static bool kdamond_aggregate_interval_passed(struct damon_ctx *ctx)
- 			ctx->aggr_interval);
- }
- 
++#define sz_damon_region(r) (r->ar.end - r->ar.start)
++
 +/*
-+ * Reset the aggregated monitoring results ('nr_accesses' of each region).
++ * Merge two adjacent regions into one region
 + */
-+static void kdamond_reset_aggregated(struct damon_ctx *c)
++static void damon_merge_two_regions(struct damon_region *l,
++				struct damon_region *r)
++{
++	unsigned long sz_l = sz_damon_region(l), sz_r = sz_damon_region(r);
++
++	l->nr_accesses = (l->nr_accesses * sz_l + r->nr_accesses * sz_r) /
++			(sz_l + sz_r);
++	l->ar.end = r->ar.end;
++	damon_destroy_region(r);
++}
++
++#define diff_of(a, b) (a > b ? a - b : b - a)
++
++/*
++ * Merge adjacent regions having similar access frequencies
++ *
++ * t		target affected by this merge operation
++ * thres	'->nr_accesses' diff threshold for the merge
++ * sz_limit	size upper limit of each region
++ */
++static void damon_merge_regions_of(struct damon_target *t, unsigned int thres,
++				   unsigned long sz_limit)
++{
++	struct damon_region *r, *prev = NULL, *next;
++
++	damon_for_each_region_safe(r, next, t) {
++		if (prev && prev->ar.end == r->ar.start &&
++		    diff_of(prev->nr_accesses, r->nr_accesses) <= thres &&
++		    sz_damon_region(prev) + sz_damon_region(r) <= sz_limit)
++			damon_merge_two_regions(prev, r);
++		else
++			prev = r;
++	}
++}
++
++/*
++ * Merge adjacent regions having similar access frequencies
++ *
++ * threshold	'->nr_accesses' diff threshold for the merge
++ * sz_limit	size upper limit of each region
++ *
++ * This function merges monitoring target regions which are adjacent and their
++ * access frequencies are similar.  This is for minimizing the monitoring
++ * overhead under the dynamically changeable access pattern.  If a merge was
++ * unnecessarily made, later 'kdamond_split_regions()' will revert it.
++ */
++static void kdamond_merge_regions(struct damon_ctx *c, unsigned int threshold,
++				  unsigned long sz_limit)
 +{
 +	struct damon_target *t;
 +
-+	damon_for_each_target(t, c) {
-+		struct damon_region *r;
++	damon_for_each_target(t, c)
++		damon_merge_regions_of(t, threshold, sz_limit);
++}
 +
-+		damon_for_each_region(r, t)
-+			r->nr_accesses = 0;
++/*
++ * Split a region in two
++ *
++ * r		the region to be split
++ * sz_r		size of the first sub-region that will be made
++ */
++static void damon_split_region_at(struct damon_ctx *ctx,
++				  struct damon_region *r, unsigned long sz_r)
++{
++	struct damon_region *new;
++
++	new = damon_new_region(r->ar.start + sz_r, r->ar.end);
++	if (!new)
++		return;
++
++	r->ar.end = new->ar.start;
++
++	damon_insert_region(new, r, damon_next_region(r));
++}
++
++/* Split every region in the given target into 'nr_subs' regions */
++static void damon_split_regions_of(struct damon_ctx *ctx,
++				     struct damon_target *t, int nr_subs)
++{
++	struct damon_region *r, *next;
++	unsigned long sz_region, sz_sub = 0;
++	int i;
++
++	damon_for_each_region_safe(r, next, t) {
++		sz_region = r->ar.end - r->ar.start;
++
++		for (i = 0; i < nr_subs - 1 &&
++				sz_region > 2 * DAMON_MIN_REGION; i++) {
++			/*
++			 * Randomly select size of left sub-region to be at
++			 * least 10 percent and at most 90% of original region
++			 */
++			sz_sub = ALIGN_DOWN(damon_rand(1, 10) *
++					sz_region / 10, DAMON_MIN_REGION);
++			/* Do not allow blank region */
++			if (sz_sub == 0 || sz_sub >= sz_region)
++				continue;
++
++			damon_split_region_at(ctx, r, sz_sub);
++			sz_region = sz_sub;
++		}
 +	}
++}
++
++/*
++ * Split every target region into randomly-sized small regions
++ *
++ * This function splits every target region into random-sized small regions if
++ * current total number of the regions is equal or smaller than half of the
++ * user-specified maximum number of regions.  This is for maximizing the
++ * monitoring accuracy under the dynamically changeable access patterns.  If a
++ * split was unnecessarily made, later 'kdamond_merge_regions()' will revert
++ * it.
++ */
++static void kdamond_split_regions(struct damon_ctx *ctx)
++{
++	struct damon_target *t;
++	unsigned int nr_regions = 0;
++	static unsigned int last_nr_regions;
++	int nr_subregions = 2;
++
++	damon_for_each_target(t, ctx)
++		nr_regions += damon_nr_regions(t);
++
++	if (nr_regions > ctx->max_nr_regions / 2)
++		return;
++
++	/* Maybe the middle of the region has different access frequency */
++	if (last_nr_regions == nr_regions &&
++			nr_regions < ctx->max_nr_regions / 3)
++		nr_subregions = 3;
++
++	damon_for_each_target(t, ctx)
++		damon_split_regions_of(ctx, t, nr_subregions);
++
++	last_nr_regions = nr_regions;
 +}
 +
  /*
   * Check whether it is time to check and apply the target monitoring regions
   *
-@@ -238,6 +360,7 @@ static bool kdamond_need_update_primitive(struct damon_ctx *ctx)
-  */
- static bool kdamond_need_stop(struct damon_ctx *ctx)
- {
-+	struct damon_target *t;
- 	bool stop;
- 
- 	mutex_lock(&ctx->kdamond_lock);
-@@ -249,7 +372,12 @@ static bool kdamond_need_stop(struct damon_ctx *ctx)
- 	if (!ctx->primitive.target_valid)
- 		return false;
- 
--	return !ctx->primitive.target_valid(ctx->target);
-+	damon_for_each_target(t, ctx) {
-+		if (ctx->primitive.target_valid(t))
-+			return false;
-+	}
-+
-+	return true;
- }
- 
- static void set_kdamond_stop(struct damon_ctx *ctx)
-@@ -265,6 +393,8 @@ static void set_kdamond_stop(struct damon_ctx *ctx)
- static int kdamond_fn(void *data)
- {
+@@ -395,6 +592,8 @@ static int kdamond_fn(void *data)
  	struct damon_ctx *ctx = (struct damon_ctx *)data;
-+	struct damon_target *t;
-+	struct damon_region *r, *next;
+ 	struct damon_target *t;
+ 	struct damon_region *r, *next;
++	unsigned int max_nr_accesses = 0;
++	unsigned long sz_limit = 0;
  
  	pr_info("kdamond (%d) starts\n", ctx->kdamond->pid);
  
-@@ -289,6 +419,7 @@ static int kdamond_fn(void *data)
+@@ -403,6 +602,8 @@ static int kdamond_fn(void *data)
+ 	if (ctx->callback.before_start && ctx->callback.before_start(ctx))
+ 		set_kdamond_stop(ctx);
+ 
++	sz_limit = damon_region_sz_limit(ctx);
++
+ 	while (!kdamond_need_stop(ctx)) {
+ 		if (ctx->primitive.prepare_access_checks)
+ 			ctx->primitive.prepare_access_checks(ctx);
+@@ -413,13 +614,17 @@ static int kdamond_fn(void *data)
+ 		usleep_range(ctx->sample_interval, ctx->sample_interval + 1);
+ 
+ 		if (ctx->primitive.check_accesses)
+-			ctx->primitive.check_accesses(ctx);
++			max_nr_accesses = ctx->primitive.check_accesses(ctx);
+ 
+ 		if (kdamond_aggregate_interval_passed(ctx)) {
++			kdamond_merge_regions(ctx,
++					max_nr_accesses / 10,
++					sz_limit);
  			if (ctx->callback.after_aggregation &&
  					ctx->callback.after_aggregation(ctx))
  				set_kdamond_stop(ctx);
-+			kdamond_reset_aggregated(ctx);
+ 			kdamond_reset_aggregated(ctx);
++			kdamond_split_regions(ctx);
  			if (ctx->primitive.reset_aggregated)
  				ctx->primitive.reset_aggregated(ctx);
  		}
-@@ -298,6 +429,10 @@ static int kdamond_fn(void *data)
+@@ -427,6 +632,7 @@ static int kdamond_fn(void *data)
+ 		if (kdamond_need_update_primitive(ctx)) {
+ 			if (ctx->primitive.update)
  				ctx->primitive.update(ctx);
++			sz_limit = damon_region_sz_limit(ctx);
  		}
  	}
-+	damon_for_each_target(t, ctx) {
-+		damon_for_each_region_safe(r, next, t)
-+			damon_destroy_region(r);
-+	}
- 
- 	if (ctx->callback.before_terminate &&
- 			ctx->callback.before_terminate(ctx))
+ 	damon_for_each_target(t, ctx) {
 -- 
 2.17.1
 
