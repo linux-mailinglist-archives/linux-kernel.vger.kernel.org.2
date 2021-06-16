@@ -2,196 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4591A3A9DAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5D13A9DB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234041AbhFPOib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234051AbhFPOi2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:38:28 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89036C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:36:20 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id j62so2784411qke.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:36:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=C6N7ZLY1WhDSZqhuZcLY/QHujQYu6PkAlcx3M6QgT6k=;
-        b=lOsfCoqWux3C4DdeAMZTDNufs06iP6UqU1XS14MePe0Fxa/GAhcx+oN0u6vW5Ilm/X
-         lN4FSzc0CG9F8545wOn5VtuDBEFQ8kAASsbxlqYt5DcwEZVQrlG84VemH3pEcOzxbh/l
-         1pT4rMyWUfJs9Qsmta5CcXcQbaGUkzOQ8T4MoOs4SSnIUTOqD6KMLnTmSaj9kH/v3zKT
-         +pQZL2VHUxAl3cyJjef6Oxy27O9TRzG1Vvj9zeD2CF+gfrgcdVYm2GJIfs6POyw5LCeZ
-         c84PFBSGWQxHOfErl78EpnnNhWJS6WOkxZZzcNZmXRS3gcPOqJEZveBloOPo1Xt7TMw2
-         aYHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C6N7ZLY1WhDSZqhuZcLY/QHujQYu6PkAlcx3M6QgT6k=;
-        b=GBwYn3WepQctzBUAv9s3r4pltgpD/THEIM6TWgxA6Yb38MbaVM76yt1/8a84JEhlfx
-         shM4zsqbJ3Q2UO+IwcWlylsz6mfoEwhfyAJ4hjz2fhXgped6fCNFHHpl3BwZeFDAoWvL
-         ZAZPf/FP/SNx5BOIF9jGDfMvXyR3IIT0onG9tLYqPP5h1BER2X+GjpY86CqC8EXxbQOa
-         EdD5Aj7WrqS6vpJ6CAeNwPAOk7ivNS/CApotUutTn3IyXr5hcTf5WQrWE9IyGtZOYv7z
-         Lsznxg3Ds0B9Kr24Hg3l1/O2HzisJGY84Ebsu47jRdTV/FPLyy4oEVYyVo7pqugFTojG
-         uYNQ==
-X-Gm-Message-State: AOAM532vEiV1RzrrkgGqpUm33G3lWMz7g1Gz/RrmKQ3NUwDw8JlO5hC/
-        IgXwi/Bz26LaCW42VHwgDV/EVg==
-X-Google-Smtp-Source: ABdhPJyQfSgTLuanvM52DFRrLyjJpWyc1bNVtB3kIaDVomzEZTehCLdam7DcZd2qn8FbX1cl+wfGsw==
-X-Received: by 2002:a05:620a:4da:: with SMTP id 26mr348132qks.336.1623854179605;
-        Wed, 16 Jun 2021 07:36:19 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id a3sm1675158qkc.109.2021.06.16.07.36.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 07:36:19 -0700 (PDT)
-Subject: Re: [PATCH v3 4/7] thermal/drivers/tegra: Add driver for Tegra30
- thermal sensor
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Ihor Didenko <tailormoon@rambler.ru>,
-        Ion Agorria <ion@agorria.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210529170955.32574-1-digetx@gmail.com>
- <20210529170955.32574-5-digetx@gmail.com>
- <6f2b6290-095a-bd39-c160-1616a0ff89b1@linaro.org>
- <20210615102626.dja3agclwzxv2sj4@vireshk-i7>
- <595f5e53-b872-bcc6-e886-ed225e26e9fe@gmail.com>
- <fbdc3b56-4465-6d3e-74db-1d5082813b9c@linaro.org>
- <4c7b23c4-cf6a-0942-5250-63515be4a219@gmail.com>
- <545974aa-bb0f-169b-6f31-6e8c2461343f@linaro.org>
- <f06370e0-bfde-87d0-03b4-93c667f81817@gmail.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <14b6344b-3994-7977-6933-a2d2357d23d5@linaro.org>
-Date:   Wed, 16 Jun 2021 10:36:17 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <f06370e0-bfde-87d0-03b4-93c667f81817@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S234065AbhFPOiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:38:46 -0400
+Received: from mail-bn8nam11on2049.outbound.protection.outlook.com ([40.107.236.49]:1856
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234062AbhFPOif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 10:38:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SNZZTdE8QeT7rdcVEcti6IEeV1WABD7Qw2HL88m/esnAPkjspvRZN9qZqKTzoF/hrvbpb7Y3K06jCP9rzcffjXOMv8CyxanaLvGaomfHMF5ouU+yOL0eiKLnQaWodopjSj8SYT+bamWFUfksolqP4x9j9ajtPEhRmPhJiDy3PaPi8vLbZ9ZZ1GTOHbyKAvP3F6XMbC1OWxe9hRfxnqCcjJheijJJ2NgMhk17E7jZ3rBnBeoaxNDvUogZ0LR9mX8gxJONJS9hjwvWMShQMwZrI7MN9SKTyC2hJitcLOcxkeFOuzObcCX9vusOiX5WeGUJqGWHWfIczcPE5W/Qs3G8pw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ISD85P0fZ+Xcqkqd+wNnv0ZEBY+LALe0q4HAaFd9PjM=;
+ b=Ee8fXYJPyRL4rb9IkxLZv76xATSAtnrqx9RRorcAMCkgFY9AZbp/SLVdo1wHysB49AXC8taxe7gC9WYfvGjpjoiIQxQ5LmsubVqALEuMqD7DT8lGn44smKhNXaFfPxB+MaHqFOKDKuNoQ9A11xQU3ZcATMObMgQCI3/t/lLsA8kha8aiSwnI1uxlujwLDaI0cislEuXQt+pl7RZxee06JzbT46VJIu9vACD5xnBT0CboAlNVGXt92JzL8yD7IFOpBUO7EjCKEfWcVG4wtBmgQxoA/Xk00lGH2yAsViMCL+YVABKfPgexjB7FBALe8jEi2KSBoIwvCCVH+PQk3lviOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ISD85P0fZ+Xcqkqd+wNnv0ZEBY+LALe0q4HAaFd9PjM=;
+ b=FazOZ8SBtqC0bjXYswaIx/jEks7+YzVDH7yCSrbJWJP7f5alITY4QqRL4vafq8qMcFTSmsO406AMbfq3iAq4C1xRBILBYO7aT9BIgkdw4UmGHalWxDS4VrMIkgxbAEEy1plYLQBgDvdSCSqhC0tcGX1wfR5dBTHsxKNzCJOx9Bk=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB2714.namprd12.prod.outlook.com (2603:10b6:5:42::18) by
+ DM6PR12MB4370.namprd12.prod.outlook.com (2603:10b6:5:2aa::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4242.19; Wed, 16 Jun 2021 14:36:25 +0000
+Received: from DM6PR12MB2714.namprd12.prod.outlook.com
+ ([fe80::7df8:b0cd:fe1b:ae7b]) by DM6PR12MB2714.namprd12.prod.outlook.com
+ ([fe80::7df8:b0cd:fe1b:ae7b%5]) with mapi id 15.20.4219.022; Wed, 16 Jun 2021
+ 14:36:25 +0000
+Cc:     brijesh.singh@amd.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 11/22] x86/sev: Add helper for validating
+ pages in early enc attribute changes
+To:     Borislav Petkov <bp@alien8.de>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-12-brijesh.singh@amd.com> <YMI02+k2zk9eazjQ@zn.tnic>
+ <d0759889-94df-73b0-4285-fa064eb187cd@amd.com> <YMen5wVqR31D/Q4z@zn.tnic>
+ <70db789d-b1aa-c355-2d16-51ace4666b3f@amd.com> <YMnNYNBvEEAr5kqd@zn.tnic>
+ <f7e70782-701c-13dd-43d2-67c92f8cf36f@amd.com> <YMnoeRcuMfAqX5Vf@zn.tnic>
+ <9f012bcb-4756-600d-6fe8-b1db9b972f17@amd.com> <YMn2aiMSEVUuWW8B@zn.tnic>
+ <91db9dfc-068a-3709-925b-9e249fbe8f6f@amd.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <c3a4419e-4b05-cf4d-2fe7-0d046cb36484@amd.com>
+Date:   Wed, 16 Jun 2021 09:36:19 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <91db9dfc-068a-3709-925b-9e249fbe8f6f@amd.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.11]
+X-ClientProxiedBy: SN6PR08CA0033.namprd08.prod.outlook.com
+ (2603:10b6:805:66::46) To DM6PR12MB2714.namprd12.prod.outlook.com
+ (2603:10b6:5:42::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.31.11.236] (165.204.77.11) by SN6PR08CA0033.namprd08.prod.outlook.com (2603:10b6:805:66::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18 via Frontend Transport; Wed, 16 Jun 2021 14:36:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 71d3403f-e088-4a51-9e59-08d930d41e45
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4370:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB43702A32C07BC4C3EF92C643E50F9@DM6PR12MB4370.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AN33fWJ2IQNGNWWRVtNRIRH5+lfZPcJmUIO0F4uA0zu+sOPNEeoAYEODbDmb9Dn60mHdILbg86cIHEQCweyBdrNYYrxRbkWNfgBL5cf7X6FfrWvsPBse1b6PAVeL2kwysH94NeMEQ0gfPI32isJjRlzIi2P65GP6gJNasgcl6Jl8fO9mnFxsp/S8gWN68eM6H/n9vBwg+rBkyvH7YQZ5xGF4JmHigThyJnnmKExj80SX8nFS2ryz7cYOBedZNw2sK1q4IgxUmCfzQLcIlTbUudO7KRbqlIPQt+aBQebFQYZN32NDdSIppZYDQD1HLfea61aZvq/qw7Gdbz/yTiWlV7NshEdX/CMy/InJHwJEzBY7RQanLA1C6BT53WmugFzABt9AK6qNjFuf2jZQcWERahF1SlrFh47quJBX8DTJtVWV3bwzn8l/W6G4lXtOlvDYqPIAxGvjEqPJc5snyySQHPA0aaamIjGMWjGCVLHpbYaZgwqkoRSZyrKdMPiIV64XovUH+LqVdG8WCJx4QSWLiAlDXEk6/f/gCU4uEW7EPC/pH0ZMzx9tt87s5TD/uCIRMdwjr0YV+Z6dysQX47F2l36X2uKnlIJ4UbBndi7L7EpwRcGu+nbriDZZtmJN9VYdYwlmuBIJZVlEtoG7R7mb2dhYXv4XdEkn1ega99tEcRl4lR+uamlIRiU3VzPzpCzBIBO3Sec7cML//ZIDZOqDIoB9kZmTE/ThJyS5ywMSSp0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2714.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(376002)(366004)(136003)(38100700002)(38350700002)(7416002)(83380400001)(36756003)(31686004)(6916009)(6486002)(52116002)(2616005)(956004)(44832011)(53546011)(478600001)(186003)(5660300002)(2906002)(31696002)(8936002)(86362001)(16576012)(54906003)(66556008)(66476007)(66946007)(8676002)(316002)(26005)(4326008)(16526019)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dUpxdTM3NTAzSVd2TjdaZDM0ZlFxYTdWRjdOMzdsS3pBM0tTNEJwOEFhZGVs?=
+ =?utf-8?B?UjJ6aTVEbUYxZ01JZC80QTUzY0taNWo3c0dqT09xR1l6b21xYjhUM1RKSk5D?=
+ =?utf-8?B?WlJYbkxtcHJleFNtSmk4ZDNqLzlWaDZIM3lBUUtqbWxMald0SUdvRHBMVVhO?=
+ =?utf-8?B?bkVJeFZCc3lBQk9OL0h1VzhPZlNqZFNBb29CWjFUeXFZM0haWkF3M0E5eUp3?=
+ =?utf-8?B?cVdYVExHTEtkNndoenhWMnBpRzg4QVorNWtkVW5yVUFIQWg1WHZ2eENZWU0y?=
+ =?utf-8?B?VFZqdTJMNE41ek83MkhRWGhIb1ltQmJXZCswc3NjNE5hVXFVcHlDZ010Q004?=
+ =?utf-8?B?bzZCRWRBV2l2TnpVdHlQRGN1N1Rxb3dnQ2RLNGFueEpjRDNVc3VGckFOYlR2?=
+ =?utf-8?B?eExZTXVoNE0xalFBaWJzWU5NT0pOeFJWSThjd1p2b3M5T1FITDVqdzR6d0pR?=
+ =?utf-8?B?dWZCZmNzZFppOU5nTE9CUGVScXZTQlpvekpFcW9YMlhhSDFzb2ZGYlRiU0M3?=
+ =?utf-8?B?dkVndjY1c0ppVElqTjFObTBkQmZJUG5UcW9WYTA4UzhhNUFSYm0wQ1Q3K1k1?=
+ =?utf-8?B?cy9ORC9zQ0lSNlUxODhWQ0dvN2NMbURXY2ovMU91Z2FYRTRkNkNRckZhTUR0?=
+ =?utf-8?B?WEpMWmZGMElVSUtsN1pxWlE0d1lDbzIrV2p2SE0yS3VmM1dzSzFMemVMZHdV?=
+ =?utf-8?B?MnZpc2hBdUFWbUF4R1N6MlpkRmtLZy9QMGhZMlV3YmFyRWhBQnRtbzFIbmQ2?=
+ =?utf-8?B?S0JreHIrNHVLbkNMRTRoNithMUFaTEZTODQ1ZTRJMHJGV0YvQlRMYStBRDFN?=
+ =?utf-8?B?M0FFZFowcTdwVTVUSFdNZW5uUmttbmMraDUva25OM0QzQzFXWHpRYXVNVGpq?=
+ =?utf-8?B?enNIV1MrQUEvWnFKK1QxUUxHbGRMRStXSlpjTkd0NWdyUzRlSnhUdDQvNDdm?=
+ =?utf-8?B?N3ZVVmlEM1prT2VOUjMrZVM2c2pRR3oyaFVMVHl6blB5OFlSa3J5RmhXWkNK?=
+ =?utf-8?B?Vk0xelB5WkZGQWo5aGc3Q2U1YWF6SEZocmU3YlV3VWR6bFpEd3NZU3RkTXZo?=
+ =?utf-8?B?ZTN3czdmMk5Gck1CTEFoMUdvUkZRd1YxZkN4WDRIRmZaMkVLSTVWVkFKL0NS?=
+ =?utf-8?B?VnI4aytmelpDc2tRR1NTY0o0VDVSaHhSZ1E5VkM2U3YvcUhBYnlKS1BGZXRU?=
+ =?utf-8?B?dFpYUXdpRmFpNHBwZXp0MWVMQTZWSXdweVk5U1ZRbTdpYitPQUhGSUorQVRp?=
+ =?utf-8?B?bU5ocGFDSDZBVDlpM3ZKTUUySW9iYVY0OTFGWitFaEc3MDFHTU85eVZ4RXNM?=
+ =?utf-8?B?d2owSkdSNzJwV0xrZ1JSSzJwMzJqVkEyeEtSN0NMVmJmb0VJVGtxcC9uNXZN?=
+ =?utf-8?B?ZHlXU282b09QaEFEY1NseUlVSXE3WFVyblFsWEZIQklBQnd2d2MyeW5WOUVz?=
+ =?utf-8?B?UnJ2YlVnalQ0d0k5bXppUWZVU1BWVVR4d3lWTXdPTGtpa2EySng3NmJyOGZp?=
+ =?utf-8?B?MzhJNmVGVldEN05xYm1tQmYxVDR6K05MNi8zUy9VMWZUSFluZUcwM3E3aENH?=
+ =?utf-8?B?YzZROCsvM2orSzRibHJ5ZXNidzlsQWFjUTRrNU8yVUJiWjN1Q0dkL1VlSmhF?=
+ =?utf-8?B?SHAwVFVFeVJaVmRGZ1EwZnRSMGtDUCtQcnlJMm9LYW91WDIzNnd0ekZCVXFu?=
+ =?utf-8?B?MHFVY25UdlhpQXdWMXBKelJyb2ZHa01LOUtMdUs5S3VQVVIvU1ZQVjBjZkE4?=
+ =?utf-8?Q?ivp8p9eDk6EUeU1TXaAn9LPib6+RT/SX5XbIiXb?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 71d3403f-e088-4a51-9e59-08d930d41e45
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2714.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 14:36:25.1453
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2HIKrTBJ5wJ0ilUtNJBB9pnGQ/wIhqv0L+PHNMvklBER3j9wco4NSw7TgwTi/ycQc8MJvya64AJeAxFP8CzQRQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4370
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 6/16/21 6:47 AM, Dmitry Osipenko wrote:
-> 16.06.2021 05:50, Thara Gopinath пишет:
-> ...
+On 6/16/2021 8:10 AM, Brijesh Singh wrote:
+> 
+> On 6/16/21 8:02 AM, Borislav Petkov wrote:
+>> On Wed, Jun 16, 2021 at 07:49:25AM -0500, Brijesh Singh wrote:
+>>> If you still think ...
+>> I think you should answer my question first:
 >>
->> Hi,
->>
->> Thermal pressure is letting scheduler know that the max capacity
->> available for a cpu to schedule tasks is reduced due to a thermal event.
->> So you cannot have a h/w thermal pressure and s/w thermal pressure.
->> There is eventually only one capping applied at h/w level and the
->> frequency corresponding to this capping should be used for thermal
->> pressure.
->>
->> Ideally you should not be having both s/w and h/w trying to throttle at
->> the same time. Why is this a scenario and what prevents you from
->> disabling s/w throttling when h/w throttling is enabled. Now if there
->> has to a aggregation for whatever reason this should be done at the
->> thermal driver level and passed to scheduler.
-> 
-> Hello,
-> 
-> The h/w mitigation is much more reactive than software, in the same time
-> it's much less flexible than software. It should provide additional
-> protection in a cases where software isn't doing a good job. Ideally h/w
-> mitigation should stay inactive all the time, nevertheless it should be
-> modeled properly by the driver.
-
-Ok. This is kind of opposite to what I am doing on the Qcom platform I 
-am working on. The h/w throttling is the default since like you 
-mentioned it is more reactive. And s/w does only critical trip management.
-
-> 
->>>>
->>>> That is a good question. IMO, first step would be to call
->>>> cpufreq_update_limits().
+>>> Imagine you're a guest owner and you haven't written the SNP code and
+>>> you don't know how it works.
 >>>
->>> Right
+>>> You start a guest in the public cloud and it fails because the
+>>> hypervisor violates the GHCB protocol and all that guest prints before
+>>> it dies is
 >>>
->>>> [ Cc Thara who implemented the thermal pressure ]
->>>>
->>>> May be Thara has an idea about how to aggregate both? There is another
->>>> series floating around with hardware limiter [1] and the same
->>>> problematic.
->>>>
->>>>    [1] https://lkml.org/lkml/2021/6/8/1791
+>>> "general request termination"
 >>>
->>> Thanks, it indeed looks similar.
+>>> How are you - the guest owner - going to find out what exactly happened?
 >>>
->>> I guess the common thermal pressure update code could be moved out into
->>> a new special cpufreq thermal QoS handler (policy->thermal_constraints),
->>> where handler will select the frequency constraint and set up the
->>> pressure accordingly. So there won't be any races in the code.
->>>
->> It was a conscious decision to keep thermal pressure update out of qos
->> max freq update because there are platforms that don't use the qos
->> framework. For eg acpi uses cpufreq_update_policy.
->> But you are right. We have two platforms now applying h/w throttling and
->> cpufreq_cooling applying s/w throttling. So it does make sense to have
->> one api doing all the computation to update thermal pressure. I am not
->> sure how exactly/where exactly this will reside.
-> 
-> The generic cpufreq_cooling already uses QoS for limiting the CPU
-> frequency. It could be okay to use QoS for the OF drivers, this needs a
-> closer look.
-> 
-> We have the case where CPU frequency is changed by the thermal event and
-> the thermal pressure equation is the same for both s/w cpufreq_cooling
-> and h/w thermal driver. The pressure is calculated based on the QoS
-> cpufreq constraint that is already aggregated.
-> 
-> Hence what we may need to do on the thermal event is:
-> 
-> 1. Update the QoS request
-> 2. Update the thermal pressure
-> 3. Ensure that updates are not racing
-
-Yes. So the first two steps you mentioned is exactly what 
-cpufreq_cooling.c also does except for the fact that it is a s/w 
-mitigation. Now if you have two sources that is updating the max 
-frequency via qos, I think you can do either of the following before
-calculating thermal pressure
-1. Read the throttled frequency from h/w if  your h/w supports this feature.
-	or
-2. Use freq_qos_read_value to get the max frequency value.
-
-Either way only the correct throttled capacity should be passed to 
-scheduler.
-
--- 
-Warm Regards
-Thara (She/Her/Hers)
-> 
->> So for starters, I think you should replicate the update of thermal
->> pressure in your h/w driver when you know that h/w is
->> throttling/throttled the frequency. You can refer to cpufreq_cooling.c
->> to see how it is done.
->>
->> Moving to a common api can be done as a separate patch series.
->>
-> 
-> Thank you for the clarification and suggestion.
+>>> Call support?
+>> And let me paraphrase it again: if the error condition with which the
+>> guest terminates is not uniquely identifiable but simply a "general
+>> request", how are such conditions going to be debugged?
+> > I thought I said it somewhere in our previous conversation, I would look
+> at the KVM trace log, each vmgexit entry and exit are logged. The log
+> contains full GHCB MSR value, and in it you can see both the request and
+> response code and decode the failure reason.
 > 
 
+I now realized that in this case we may not have the trace's. It's
+a production environment and my development machine :(. I will go ahead and
+add the error message when guest sees an invalid response code before
+terminating it. Will do the similar error message in the decompression
+path.
+
+-Brijesh
