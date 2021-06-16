@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BD03A8D8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 962433A8D8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbhFPAj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:39:57 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:48909 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230265AbhFPAj4 (ORCPT
+        id S231759AbhFPAkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:40:04 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:54175 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230265AbhFPAkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:39:56 -0400
-X-UUID: a646cc1d7fcb4883877e66c97ae05315-20210616
-X-UUID: a646cc1d7fcb4883877e66c97ae05315-20210616
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        Tue, 15 Jun 2021 20:40:03 -0400
+X-UUID: e4ef8aa7067f4b4b9faecd36d4111843-20210616
+X-UUID: e4ef8aa7067f4b4b9faecd36d4111843-20210616
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
         (envelope-from <chun-jie.chen@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1459602376; Wed, 16 Jun 2021 08:37:47 +0800
+        with ESMTP id 908780428; Wed, 16 Jun 2021 08:37:55 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 16 Jun 2021 08:37:46 +0800
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Jun 2021 08:37:53 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 16 Jun 2021 08:37:46 +0800
+ Transport; Wed, 16 Jun 2021 08:37:53 +0800
 From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
 To:     Matthias Brugger <matthias.bgg@gmail.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -34,10 +34,11 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
         Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Subject: [PATCH v10 01/19] dt-bindings: ARM: Mediatek: Add new document bindings of MT8192 clock
-Date:   Wed, 16 Jun 2021 08:36:25 +0800
-Message-ID: <20210616003643.28648-2-chun-jie.chen@mediatek.com>
+Subject: [PATCH v10 02/19] clk: mediatek: Add dt-bindings of MT8192 clocks
+Date:   Wed, 16 Jun 2021 08:36:26 +0800
+Message-ID: <20210616003643.28648-3-chun-jie.chen@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210616003643.28648-1-chun-jie.chen@mediatek.com>
 References: <20210616003643.28648-1-chun-jie.chen@mediatek.com>
@@ -48,311 +49,607 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the new binding documentation for system clock
-and functional clock on Mediatek MT8192.
+Add MT8192 clock dt-bindings, include topckgen, apmixedsys,
+infracfg, pericfg and subsystem clocks.
 
+Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
 Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
 ---
- .../arm/mediatek/mediatek,mt8192-clock.yaml   | 216 ++++++++++++++++++
- .../mediatek/mediatek,mt8192-sys-clock.yaml   |  66 ++++++
- 2 files changed, 282 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.yaml
- create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.yaml
+ include/dt-bindings/clock/mt8192-clk.h | 585 +++++++++++++++++++++++++
+ 1 file changed, 585 insertions(+)
+ create mode 100644 include/dt-bindings/clock/mt8192-clk.h
 
-diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.yaml
+diff --git a/include/dt-bindings/clock/mt8192-clk.h b/include/dt-bindings/clock/mt8192-clk.h
 new file mode 100644
-index 000000000000..ce02c22c5d08
+index 000000000000..5ab68f15a256
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.yaml
-@@ -0,0 +1,216 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/arm/mediatek/mediatek,mt8192-clock.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++++ b/include/dt-bindings/clock/mt8192-clk.h
+@@ -0,0 +1,585 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (c) 2021 MediaTek Inc.
++ * Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
++ */
 +
-+title: MediaTek Functional Clock Controller for MT8192
++#ifndef _DT_BINDINGS_CLK_MT8192_H
++#define _DT_BINDINGS_CLK_MT8192_H
 +
-+maintainers:
-+  - Chun-Jie Chen <chun-jie.chen@mediatek.com>
++/* TOPCKGEN */
 +
-+description:
-+  The Mediatek functional clock controller provides various clocks on MT8192.
++#define CLK_TOP_AXI_SEL			0
++#define CLK_TOP_SPM_SEL			1
++#define CLK_TOP_SCP_SEL			2
++#define CLK_TOP_BUS_AXIMEM_SEL		3
++#define CLK_TOP_DISP_SEL		4
++#define CLK_TOP_MDP_SEL			5
++#define CLK_TOP_IMG1_SEL		6
++#define CLK_TOP_IMG2_SEL		7
++#define CLK_TOP_IPE_SEL			8
++#define CLK_TOP_DPE_SEL			9
++#define CLK_TOP_CAM_SEL			10
++#define CLK_TOP_CCU_SEL			11
++#define CLK_TOP_DSP7_SEL		12
++#define CLK_TOP_MFG_REF_SEL		13
++#define CLK_TOP_MFG_PLL_SEL		14
++#define CLK_TOP_CAMTG_SEL		15
++#define CLK_TOP_CAMTG2_SEL		16
++#define CLK_TOP_CAMTG3_SEL		17
++#define CLK_TOP_CAMTG4_SEL		18
++#define CLK_TOP_CAMTG5_SEL		19
++#define CLK_TOP_CAMTG6_SEL		20
++#define CLK_TOP_UART_SEL		21
++#define CLK_TOP_SPI_SEL			22
++#define CLK_TOP_MSDC50_0_H_SEL		23
++#define CLK_TOP_MSDC50_0_SEL		24
++#define CLK_TOP_MSDC30_1_SEL		25
++#define CLK_TOP_MSDC30_2_SEL		26
++#define CLK_TOP_AUDIO_SEL		27
++#define CLK_TOP_AUD_INTBUS_SEL		28
++#define CLK_TOP_PWRAP_ULPOSC_SEL	29
++#define CLK_TOP_ATB_SEL			30
++#define CLK_TOP_DPI_SEL			31
++#define CLK_TOP_SCAM_SEL		32
++#define CLK_TOP_DISP_PWM_SEL		33
++#define CLK_TOP_USB_TOP_SEL		34
++#define CLK_TOP_SSUSB_XHCI_SEL		35
++#define CLK_TOP_I2C_SEL			36
++#define CLK_TOP_SENINF_SEL		37
++#define CLK_TOP_SENINF1_SEL		38
++#define CLK_TOP_SENINF2_SEL		39
++#define CLK_TOP_SENINF3_SEL		40
++#define CLK_TOP_TL_SEL			41
++#define CLK_TOP_DXCC_SEL		42
++#define CLK_TOP_AUD_ENGEN1_SEL		43
++#define CLK_TOP_AUD_ENGEN2_SEL		44
++#define CLK_TOP_AES_UFSFDE_SEL		45
++#define CLK_TOP_UFS_SEL			46
++#define CLK_TOP_AUD_1_SEL		47
++#define CLK_TOP_AUD_2_SEL		48
++#define CLK_TOP_ADSP_SEL		49
++#define CLK_TOP_DPMAIF_MAIN_SEL		50
++#define CLK_TOP_VENC_SEL		51
++#define CLK_TOP_VDEC_SEL		52
++#define CLK_TOP_CAMTM_SEL		53
++#define CLK_TOP_PWM_SEL			54
++#define CLK_TOP_AUDIO_H_SEL		55
++#define CLK_TOP_SPMI_MST_SEL		56
++#define CLK_TOP_AES_MSDCFDE_SEL		57
++#define CLK_TOP_SFLASH_SEL		58
++#define CLK_TOP_APLL_I2S0_M_SEL		59
++#define CLK_TOP_APLL_I2S1_M_SEL		60
++#define CLK_TOP_APLL_I2S2_M_SEL		61
++#define CLK_TOP_APLL_I2S3_M_SEL		62
++#define CLK_TOP_APLL_I2S4_M_SEL		63
++#define CLK_TOP_APLL_I2S5_M_SEL		64
++#define CLK_TOP_APLL_I2S6_M_SEL		65
++#define CLK_TOP_APLL_I2S7_M_SEL		66
++#define CLK_TOP_APLL_I2S8_M_SEL		67
++#define CLK_TOP_APLL_I2S9_M_SEL		68
++#define CLK_TOP_MAINPLL_D3		69
++#define CLK_TOP_MAINPLL_D4		70
++#define CLK_TOP_MAINPLL_D4_D2		71
++#define CLK_TOP_MAINPLL_D4_D4		72
++#define CLK_TOP_MAINPLL_D4_D8		73
++#define CLK_TOP_MAINPLL_D4_D16		74
++#define CLK_TOP_MAINPLL_D5		75
++#define CLK_TOP_MAINPLL_D5_D2		76
++#define CLK_TOP_MAINPLL_D5_D4		77
++#define CLK_TOP_MAINPLL_D5_D8		78
++#define CLK_TOP_MAINPLL_D6		79
++#define CLK_TOP_MAINPLL_D6_D2		80
++#define CLK_TOP_MAINPLL_D6_D4		81
++#define CLK_TOP_MAINPLL_D7		82
++#define CLK_TOP_MAINPLL_D7_D2		83
++#define CLK_TOP_MAINPLL_D7_D4		84
++#define CLK_TOP_MAINPLL_D7_D8		85
++#define CLK_TOP_UNIVPLL_D3		86
++#define CLK_TOP_UNIVPLL_D4		87
++#define CLK_TOP_UNIVPLL_D4_D2		88
++#define CLK_TOP_UNIVPLL_D4_D4		89
++#define CLK_TOP_UNIVPLL_D4_D8		90
++#define CLK_TOP_UNIVPLL_D5		91
++#define CLK_TOP_UNIVPLL_D5_D2		92
++#define CLK_TOP_UNIVPLL_D5_D4		93
++#define CLK_TOP_UNIVPLL_D5_D8		94
++#define CLK_TOP_UNIVPLL_D6		95
++#define CLK_TOP_UNIVPLL_D6_D2		96
++#define CLK_TOP_UNIVPLL_D6_D4		97
++#define CLK_TOP_UNIVPLL_D6_D8		98
++#define CLK_TOP_UNIVPLL_D6_D16		99
++#define CLK_TOP_UNIVPLL_D7		100
++#define CLK_TOP_APLL1			101
++#define CLK_TOP_APLL1_D2		102
++#define CLK_TOP_APLL1_D4		103
++#define CLK_TOP_APLL1_D8		104
++#define CLK_TOP_APLL2			105
++#define CLK_TOP_APLL2_D2		106
++#define CLK_TOP_APLL2_D4		107
++#define CLK_TOP_APLL2_D8		108
++#define CLK_TOP_MMPLL_D4		109
++#define CLK_TOP_MMPLL_D4_D2		110
++#define CLK_TOP_MMPLL_D5		111
++#define CLK_TOP_MMPLL_D5_D2		112
++#define CLK_TOP_MMPLL_D6		113
++#define CLK_TOP_MMPLL_D6_D2		114
++#define CLK_TOP_MMPLL_D7		115
++#define CLK_TOP_MMPLL_D9		116
++#define CLK_TOP_APUPLL			117
++#define CLK_TOP_NPUPLL			118
++#define CLK_TOP_TVDPLL			119
++#define CLK_TOP_TVDPLL_D2		120
++#define CLK_TOP_TVDPLL_D4		121
++#define CLK_TOP_TVDPLL_D8		122
++#define CLK_TOP_TVDPLL_D16		123
++#define CLK_TOP_MSDCPLL			124
++#define CLK_TOP_MSDCPLL_D2		125
++#define CLK_TOP_MSDCPLL_D4		126
++#define CLK_TOP_ULPOSC			127
++#define CLK_TOP_OSC_D2			128
++#define CLK_TOP_OSC_D4			129
++#define CLK_TOP_OSC_D8			130
++#define CLK_TOP_OSC_D10			131
++#define CLK_TOP_OSC_D16			132
++#define CLK_TOP_OSC_D20			133
++#define CLK_TOP_CSW_F26M_D2		134
++#define CLK_TOP_ADSPPLL			135
++#define CLK_TOP_UNIVPLL_192M		136
++#define CLK_TOP_UNIVPLL_192M_D2		137
++#define CLK_TOP_UNIVPLL_192M_D4		138
++#define CLK_TOP_UNIVPLL_192M_D8		139
++#define CLK_TOP_UNIVPLL_192M_D16	140
++#define CLK_TOP_UNIVPLL_192M_D32	141
++#define CLK_TOP_APLL12_DIV0		142
++#define CLK_TOP_APLL12_DIV1		143
++#define CLK_TOP_APLL12_DIV2		144
++#define CLK_TOP_APLL12_DIV3		145
++#define CLK_TOP_APLL12_DIV4		146
++#define CLK_TOP_APLL12_DIVB		147
++#define CLK_TOP_APLL12_DIV5		148
++#define CLK_TOP_APLL12_DIV6		149
++#define CLK_TOP_APLL12_DIV7		150
++#define CLK_TOP_APLL12_DIV8		151
++#define CLK_TOP_APLL12_DIV9		152
++#define CLK_TOP_SSUSB_TOP_REF		153
++#define CLK_TOP_SSUSB_PHY_REF		154
++#define CLK_TOP_NR_CLK			155
 +
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - mediatek,mt8192-scp_adsp
-+              - mediatek,mt8192-imp_iic_wrap_c
-+              - mediatek,mt8192-audsys
-+              - mediatek,mt8192-imp_iic_wrap_e
-+              - mediatek,mt8192-imp_iic_wrap_s
-+              - mediatek,mt8192-imp_iic_wrap_ws
-+              - mediatek,mt8192-imp_iic_wrap_w
-+              - mediatek,mt8192-imp_iic_wrap_n
-+              - mediatek,mt8192-msdc_top
-+              - mediatek,mt8192-msdc
-+              - mediatek,mt8192-mfgcfg
-+              - mediatek,mt8192-mmsys
-+              - mediatek,mt8192-imgsys
-+              - mediatek,mt8192-imgsys2
-+              - mediatek,mt8192-vdecsys_soc
-+              - mediatek,mt8192-vdecsys
-+              - mediatek,mt8192-vencsys
-+              - mediatek,mt8192-camsys
-+              - mediatek,mt8192-camsys_rawa
-+              - mediatek,mt8192-camsys_rawb
-+              - mediatek,mt8192-camsys_rawc
-+              - mediatek,mt8192-ipesys
-+              - mediatek,mt8192-mdpsys
++/* INFRACFG */
 +
-+  reg:
-+    maxItems: 1
++#define CLK_INFRA_PMIC_TMR		0
++#define CLK_INFRA_PMIC_AP		1
++#define CLK_INFRA_PMIC_MD		2
++#define CLK_INFRA_PMIC_CONN		3
++#define CLK_INFRA_SCPSYS		4
++#define CLK_INFRA_SEJ			5
++#define CLK_INFRA_APXGPT		6
++#define CLK_INFRA_GCE			7
++#define CLK_INFRA_GCE2			8
++#define CLK_INFRA_THERM			9
++#define CLK_INFRA_I2C0			10
++#define CLK_INFRA_AP_DMA_PSEUDO		11
++#define CLK_INFRA_I2C2			12
++#define CLK_INFRA_I2C3			13
++#define CLK_INFRA_PWM_H			14
++#define CLK_INFRA_PWM1			15
++#define CLK_INFRA_PWM2			16
++#define CLK_INFRA_PWM3			17
++#define CLK_INFRA_PWM4			18
++#define CLK_INFRA_PWM			19
++#define CLK_INFRA_UART0			20
++#define CLK_INFRA_UART1			21
++#define CLK_INFRA_UART2			22
++#define CLK_INFRA_UART3			23
++#define CLK_INFRA_GCE_26M		24
++#define CLK_INFRA_CQ_DMA_FPC		25
++#define CLK_INFRA_BTIF			26
++#define CLK_INFRA_SPI0			27
++#define CLK_INFRA_MSDC0			28
++#define CLK_INFRA_MSDC1			29
++#define CLK_INFRA_MSDC2			30
++#define CLK_INFRA_MSDC0_SRC		31
++#define CLK_INFRA_GCPU			32
++#define CLK_INFRA_TRNG			33
++#define CLK_INFRA_AUXADC		34
++#define CLK_INFRA_CPUM			35
++#define CLK_INFRA_CCIF1_AP		36
++#define CLK_INFRA_CCIF1_MD		37
++#define CLK_INFRA_AUXADC_MD		38
++#define CLK_INFRA_PCIE_TL_26M		39
++#define CLK_INFRA_MSDC1_SRC		40
++#define CLK_INFRA_MSDC2_SRC		41
++#define CLK_INFRA_PCIE_TL_96M		42
++#define CLK_INFRA_PCIE_PL_P_250M	43
++#define CLK_INFRA_DEVICE_APC		44
++#define CLK_INFRA_CCIF_AP		45
++#define CLK_INFRA_DEBUGSYS		46
++#define CLK_INFRA_AUDIO			47
++#define CLK_INFRA_CCIF_MD		48
++#define CLK_INFRA_DXCC_SEC_CORE		49
++#define CLK_INFRA_DXCC_AO		50
++#define CLK_INFRA_DBG_TRACE		51
++#define CLK_INFRA_DEVMPU_B		52
++#define CLK_INFRA_DRAMC_F26M		53
++#define CLK_INFRA_IRTX			54
++#define CLK_INFRA_SSUSB			55
++#define CLK_INFRA_DISP_PWM		56
++#define CLK_INFRA_CLDMA_B		57
++#define CLK_INFRA_AUDIO_26M_B		58
++#define CLK_INFRA_MODEM_TEMP_SHARE	59
++#define CLK_INFRA_SPI1			60
++#define CLK_INFRA_I2C4			61
++#define CLK_INFRA_SPI2			62
++#define CLK_INFRA_SPI3			63
++#define CLK_INFRA_UNIPRO_SYS		64
++#define CLK_INFRA_UNIPRO_TICK		65
++#define CLK_INFRA_UFS_MP_SAP_B		66
++#define CLK_INFRA_MD32_B		67
++#define CLK_INFRA_UNIPRO_MBIST		68
++#define CLK_INFRA_I2C5			69
++#define CLK_INFRA_I2C5_ARBITER		70
++#define CLK_INFRA_I2C5_IMM		71
++#define CLK_INFRA_I2C1_ARBITER		72
++#define CLK_INFRA_I2C1_IMM		73
++#define CLK_INFRA_I2C2_ARBITER		74
++#define CLK_INFRA_I2C2_IMM		75
++#define CLK_INFRA_SPI4			76
++#define CLK_INFRA_SPI5			77
++#define CLK_INFRA_CQ_DMA		78
++#define CLK_INFRA_UFS			79
++#define CLK_INFRA_AES_UFSFDE		80
++#define CLK_INFRA_UFS_TICK		81
++#define CLK_INFRA_SSUSB_XHCI		82
++#define CLK_INFRA_MSDC0_SELF		83
++#define CLK_INFRA_MSDC1_SELF		84
++#define CLK_INFRA_MSDC2_SELF		85
++#define CLK_INFRA_UFS_AXI		86
++#define CLK_INFRA_I2C6			87
++#define CLK_INFRA_AP_MSDC0		88
++#define CLK_INFRA_MD_MSDC0		89
++#define CLK_INFRA_CCIF5_AP		90
++#define CLK_INFRA_CCIF5_MD		91
++#define CLK_INFRA_PCIE_TOP_H_133M	92
++#define CLK_INFRA_FLASHIF_TOP_H_133M	93
++#define CLK_INFRA_PCIE_PERI_26M		94
++#define CLK_INFRA_CCIF2_AP		95
++#define CLK_INFRA_CCIF2_MD		96
++#define CLK_INFRA_CCIF3_AP		97
++#define CLK_INFRA_CCIF3_MD		98
++#define CLK_INFRA_SEJ_F13M		99
++#define CLK_INFRA_AES			100
++#define CLK_INFRA_I2C7			101
++#define CLK_INFRA_I2C8			102
++#define CLK_INFRA_FBIST2FPC		103
++#define CLK_INFRA_DEVICE_APC_SYNC	104
++#define CLK_INFRA_DPMAIF_MAIN		105
++#define CLK_INFRA_PCIE_TL_32K		106
++#define CLK_INFRA_CCIF4_AP		107
++#define CLK_INFRA_CCIF4_MD		108
++#define CLK_INFRA_SPI6			109
++#define CLK_INFRA_SPI7			110
++#define CLK_INFRA_133M			111
++#define CLK_INFRA_66M			112
++#define CLK_INFRA_66M_PERI_BUS		113
++#define CLK_INFRA_FREE_DCM_133M		114
++#define CLK_INFRA_FREE_DCM_66M		115
++#define CLK_INFRA_PERI_BUS_DCM_133M	116
++#define CLK_INFRA_PERI_BUS_DCM_66M	117
++#define CLK_INFRA_FLASHIF_PERI_26M	118
++#define CLK_INFRA_FLASHIF_SFLASH	119
++#define CLK_INFRA_AP_DMA		120
++#define CLK_INFRA_NR_CLK		121
 +
-+  '#clock-cells':
-+    const: 1
++/* PERICFG */
 +
-+required:
-+  - compatible
-+  - reg
++#define CLK_PERI_PERIAXI		0
++#define CLK_PERI_NR_CLK			1
 +
-+additionalProperties: false
++/* APMIXEDSYS */
 +
-+examples:
-+  - |
-+    scp_adsp: clock-controller@10720000 {
-+        compatible = "mediatek,mt8192-scp_adsp";
-+        reg = <0x10720000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_APMIXED_MAINPLL		0
++#define CLK_APMIXED_UNIVPLL		1
++#define CLK_APMIXED_USBPLL		2
++#define CLK_APMIXED_MSDCPLL		3
++#define CLK_APMIXED_MMPLL		4
++#define CLK_APMIXED_ADSPPLL		5
++#define CLK_APMIXED_MFGPLL		6
++#define CLK_APMIXED_TVDPLL		7
++#define CLK_APMIXED_APLL1		8
++#define CLK_APMIXED_APLL2		9
++#define CLK_APMIXED_MIPID26M		10
++#define CLK_APMIXED_NR_CLK		11
 +
-+  - |
-+    imp_iic_wrap_c: clock-controller@11007000 {
-+        compatible = "mediatek,mt8192-imp_iic_wrap_c";
-+        reg = <0x11007000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* SCP_ADSP */
 +
-+  - |
-+    audsys: clock-controller@11210000 {
-+        compatible = "mediatek,mt8192-audsys";
-+        reg = <0x11210000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_SCP_ADSP_AUDIODSP		0
++#define CLK_SCP_ADSP_NR_CLK		1
 +
-+  - |
-+    imp_iic_wrap_e: clock-controller@11cb1000 {
-+        compatible = "mediatek,mt8192-imp_iic_wrap_e";
-+        reg = <0x11cb1000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* IMP_IIC_WRAP_C */
 +
-+  - |
-+    imp_iic_wrap_s: clock-controller@11d03000 {
-+        compatible = "mediatek,mt8192-imp_iic_wrap_s";
-+        reg = <0x11d03000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_IMP_IIC_WRAP_C_I2C10	0
++#define CLK_IMP_IIC_WRAP_C_I2C11	1
++#define CLK_IMP_IIC_WRAP_C_I2C12	2
++#define CLK_IMP_IIC_WRAP_C_I2C13	3
++#define CLK_IMP_IIC_WRAP_C_NR_CLK	4
 +
-+  - |
-+    imp_iic_wrap_ws: clock-controller@11d23000 {
-+        compatible = "mediatek,mt8192-imp_iic_wrap_ws";
-+        reg = <0x11d23000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* AUDSYS */
 +
-+  - |
-+    imp_iic_wrap_w: clock-controller@11e01000 {
-+        compatible = "mediatek,mt8192-imp_iic_wrap_w";
-+        reg = <0x11e01000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_AUD_AFE			0
++#define CLK_AUD_22M			1
++#define CLK_AUD_24M			2
++#define CLK_AUD_APLL2_TUNER		3
++#define CLK_AUD_APLL_TUNER		4
++#define CLK_AUD_TDM			5
++#define CLK_AUD_ADC			6
++#define CLK_AUD_DAC			7
++#define CLK_AUD_DAC_PREDIS		8
++#define CLK_AUD_TML			9
++#define CLK_AUD_NLE			10
++#define CLK_AUD_I2S1_B			11
++#define CLK_AUD_I2S2_B			12
++#define CLK_AUD_I2S3_B			13
++#define CLK_AUD_I2S4_B			14
++#define CLK_AUD_CONNSYS_I2S_ASRC	15
++#define CLK_AUD_GENERAL1_ASRC		16
++#define CLK_AUD_GENERAL2_ASRC		17
++#define CLK_AUD_DAC_HIRES		18
++#define CLK_AUD_ADC_HIRES		19
++#define CLK_AUD_ADC_HIRES_TML		20
++#define CLK_AUD_ADDA6_ADC		21
++#define CLK_AUD_ADDA6_ADC_HIRES		22
++#define CLK_AUD_3RD_DAC			23
++#define CLK_AUD_3RD_DAC_PREDIS		24
++#define CLK_AUD_3RD_DAC_TML		25
++#define CLK_AUD_3RD_DAC_HIRES		26
++#define CLK_AUD_I2S5_B			27
++#define CLK_AUD_I2S6_B			28
++#define CLK_AUD_I2S7_B			29
++#define CLK_AUD_I2S8_B			30
++#define CLK_AUD_I2S9_B			31
++#define CLK_AUD_NR_CLK			32
 +
-+  - |
-+    imp_iic_wrap_n: clock-controller@11f02000 {
-+        compatible = "mediatek,mt8192-imp_iic_wrap_n";
-+        reg = <0x11f02000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* IMP_IIC_WRAP_E */
 +
-+  - |
-+    msdc_top: clock-controller@11f10000 {
-+        compatible = "mediatek,mt8192-msdc_top";
-+        reg = <0x11f10000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_IMP_IIC_WRAP_E_I2C3		0
++#define CLK_IMP_IIC_WRAP_E_NR_CLK	1
 +
-+  - |
-+    msdc: clock-controller@11f60000 {
-+        compatible = "mediatek,mt8192-msdc";
-+        reg = <0x11f60000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* IMP_IIC_WRAP_S */
 +
-+  - |
-+    mfgcfg: clock-controller@13fbf000 {
-+        compatible = "mediatek,mt8192-mfgcfg";
-+        reg = <0x13fbf000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_IMP_IIC_WRAP_S_I2C7		0
++#define CLK_IMP_IIC_WRAP_S_I2C8		1
++#define CLK_IMP_IIC_WRAP_S_I2C9		2
++#define CLK_IMP_IIC_WRAP_S_NR_CLK	3
 +
-+  - |
-+    mmsys: clock-controller@14000000 {
-+        compatible = "mediatek,mt8192-mmsys";
-+        reg = <0x14000000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* IMP_IIC_WRAP_WS */
 +
-+  - |
-+    imgsys: clock-controller@15020000 {
-+        compatible = "mediatek,mt8192-imgsys";
-+        reg = <0x15020000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_IMP_IIC_WRAP_WS_I2C1	0
++#define CLK_IMP_IIC_WRAP_WS_I2C2	1
++#define CLK_IMP_IIC_WRAP_WS_I2C4	2
++#define CLK_IMP_IIC_WRAP_WS_NR_CLK	3
 +
-+  - |
-+    imgsys2: clock-controller@15820000 {
-+        compatible = "mediatek,mt8192-imgsys2";
-+        reg = <0x15820000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* IMP_IIC_WRAP_W */
 +
-+  - |
-+    vdecsys_soc: clock-controller@1600f000 {
-+        compatible = "mediatek,mt8192-vdecsys_soc";
-+        reg = <0x1600f000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_IMP_IIC_WRAP_W_I2C5		0
++#define CLK_IMP_IIC_WRAP_W_NR_CLK	1
 +
-+  - |
-+    vdecsys: clock-controller@1602f000 {
-+        compatible = "mediatek,mt8192-vdecsys";
-+        reg = <0x1602f000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* IMP_IIC_WRAP_N */
 +
-+  - |
-+    vencsys: clock-controller@17000000 {
-+        compatible = "mediatek,mt8192-vencsys";
-+        reg = <0x17000000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_IMP_IIC_WRAP_N_I2C0		0
++#define CLK_IMP_IIC_WRAP_N_I2C6		1
++#define CLK_IMP_IIC_WRAP_N_NR_CLK	2
 +
-+  - |
-+    camsys: clock-controller@1a000000 {
-+        compatible = "mediatek,mt8192-camsys";
-+        reg = <0x1a000000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* MSDC_TOP */
 +
-+  - |
-+    camsys_rawa: clock-controller@1a04f000 {
-+        compatible = "mediatek,mt8192-camsys_rawa";
-+        reg = <0x1a04f000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_MSDC_TOP_AES_0P		0
++#define CLK_MSDC_TOP_SRC_0P		1
++#define CLK_MSDC_TOP_SRC_1P		2
++#define CLK_MSDC_TOP_SRC_2P		3
++#define CLK_MSDC_TOP_P_MSDC0		4
++#define CLK_MSDC_TOP_P_MSDC1		5
++#define CLK_MSDC_TOP_P_MSDC2		6
++#define CLK_MSDC_TOP_P_CFG		7
++#define CLK_MSDC_TOP_AXI		8
++#define CLK_MSDC_TOP_H_MST_0P		9
++#define CLK_MSDC_TOP_H_MST_1P		10
++#define CLK_MSDC_TOP_H_MST_2P		11
++#define CLK_MSDC_TOP_MEM_OFF_DLY_26M	12
++#define CLK_MSDC_TOP_32K		13
++#define CLK_MSDC_TOP_AHB2AXI_BRG_AXI	14
++#define CLK_MSDC_TOP_NR_CLK		15
 +
-+  - |
-+    camsys_rawb: clock-controller@1a06f000 {
-+        compatible = "mediatek,mt8192-camsys_rawb";
-+        reg = <0x1a06f000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* MSDC */
 +
-+  - |
-+    camsys_rawc: clock-controller@1a08f000 {
-+        compatible = "mediatek,mt8192-camsys_rawc";
-+        reg = <0x1a08f000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_MSDC_AXI_WRAP		0
++#define CLK_MSDC_NR_CLK			1
 +
-+  - |
-+    ipesys: clock-controller@1b000000 {
-+        compatible = "mediatek,mt8192-ipesys";
-+        reg = <0x1b000000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* MFGCFG */
 +
-+  - |
-+    mdpsys: clock-controller@1f000000 {
-+        compatible = "mediatek,mt8192-mdpsys";
-+        reg = <0x1f000000 0x1000>;
-+        #clock-cells = <1>;
-+    };
-diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.yaml
-new file mode 100644
-index 000000000000..ececce3a1507
---- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.yaml
-@@ -0,0 +1,66 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/arm/mediatek/mediatek,mt8192-sys-clock.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++#define CLK_MFG_BG3D			0
++#define CLK_MFG_NR_CLK			1
 +
-+title: MediaTek System Clock Controller for MT8192
++/* MMSYS */
 +
-+maintainers:
-+  - Chun-Jie Chen <chun-jie.chen@mediatek.com>
++#define CLK_MM_DISP_MUTEX0		0
++#define CLK_MM_DISP_CONFIG		1
++#define CLK_MM_DISP_OVL0		2
++#define CLK_MM_DISP_RDMA0		3
++#define CLK_MM_DISP_OVL0_2L		4
++#define CLK_MM_DISP_WDMA0		5
++#define CLK_MM_DISP_UFBC_WDMA0		6
++#define CLK_MM_DISP_RSZ0		7
++#define CLK_MM_DISP_AAL0		8
++#define CLK_MM_DISP_CCORR0		9
++#define CLK_MM_DISP_DITHER0		10
++#define CLK_MM_SMI_INFRA		11
++#define CLK_MM_DISP_GAMMA0		12
++#define CLK_MM_DISP_POSTMASK0		13
++#define CLK_MM_DISP_DSC_WRAP0		14
++#define CLK_MM_DSI0			15
++#define CLK_MM_DISP_COLOR0		16
++#define CLK_MM_SMI_COMMON		17
++#define CLK_MM_DISP_FAKE_ENG0		18
++#define CLK_MM_DISP_FAKE_ENG1		19
++#define CLK_MM_MDP_TDSHP4		20
++#define CLK_MM_MDP_RSZ4			21
++#define CLK_MM_MDP_AAL4			22
++#define CLK_MM_MDP_HDR4			23
++#define CLK_MM_MDP_RDMA4		24
++#define CLK_MM_MDP_COLOR4		25
++#define CLK_MM_DISP_Y2R0		26
++#define CLK_MM_SMI_GALS			27
++#define CLK_MM_DISP_OVL2_2L		28
++#define CLK_MM_DISP_RDMA4		29
++#define CLK_MM_DISP_DPI0		30
++#define CLK_MM_SMI_IOMMU		31
++#define CLK_MM_DSI_DSI0			32
++#define CLK_MM_DPI_DPI0			33
++#define CLK_MM_26MHZ			34
++#define CLK_MM_32KHZ			35
++#define CLK_MM_NR_CLK			36
 +
-+description:
-+  The Mediatek system clock controller provides various clocks and system configuration
-+  like reset and bus protection on MT8192.
++/* IMGSYS */
 +
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - mediatek,mt8192-topckgen
-+              - mediatek,mt8192-infracfg
-+              - mediatek,mt8192-pericfg
-+              - mediatek,mt8192-apmixedsys
-+          - const: syscon
++#define CLK_IMG_LARB9			0
++#define CLK_IMG_LARB10			1
++#define CLK_IMG_DIP			2
++#define CLK_IMG_GALS			3
++#define CLK_IMG_NR_CLK			4
 +
-+  reg:
-+    maxItems: 1
++/* IMGSYS2 */
 +
-+  '#clock-cells':
-+    const: 1
++#define CLK_IMG2_LARB11			0
++#define CLK_IMG2_LARB12			1
++#define CLK_IMG2_MFB			2
++#define CLK_IMG2_WPE			3
++#define CLK_IMG2_MSS			4
++#define CLK_IMG2_GALS			5
++#define CLK_IMG2_NR_CLK			6
 +
-+required:
-+  - compatible
-+  - reg
++/* VDECSYS_SOC */
 +
-+additionalProperties: false
++#define CLK_VDEC_SOC_LARB1		0
++#define CLK_VDEC_SOC_LAT		1
++#define CLK_VDEC_SOC_LAT_ACTIVE		2
++#define CLK_VDEC_SOC_VDEC		3
++#define CLK_VDEC_SOC_VDEC_ACTIVE	4
++#define CLK_VDEC_SOC_NR_CLK		5
 +
-+examples:
-+  - |
-+    topckgen: syscon@10000000 {
-+        compatible = "mediatek,mt8192-topckgen", "syscon";
-+        reg = <0x10000000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* VDECSYS */
 +
-+  - |
-+    infracfg: syscon@10001000 {
-+        compatible = "mediatek,mt8192-infracfg", "syscon";
-+        reg = <0x10001000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_VDEC_LARB1			0
++#define CLK_VDEC_LAT			1
++#define CLK_VDEC_LAT_ACTIVE		2
++#define CLK_VDEC_VDEC			3
++#define CLK_VDEC_ACTIVE			4
++#define CLK_VDEC_NR_CLK			5
 +
-+  - |
-+    pericfg: syscon@10003000 {
-+        compatible = "mediatek,mt8192-pericfg", "syscon";
-+        reg = <0x10003000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++/* VENCSYS */
 +
-+  - |
-+    apmixedsys: syscon@1000c000 {
-+        compatible = "mediatek,mt8192-apmixedsys", "syscon";
-+        reg = <0x1000c000 0x1000>;
-+        #clock-cells = <1>;
-+    };
++#define CLK_VENC_SET0_LARB		0
++#define CLK_VENC_SET1_VENC		1
++#define CLK_VENC_SET2_JPGENC		2
++#define CLK_VENC_SET5_GALS		3
++#define CLK_VENC_NR_CLK			4
++
++/* CAMSYS */
++
++#define CLK_CAM_LARB13			0
++#define CLK_CAM_DFP_VAD			1
++#define CLK_CAM_LARB14			2
++#define CLK_CAM_CAM			3
++#define CLK_CAM_CAMTG			4
++#define CLK_CAM_SENINF			5
++#define CLK_CAM_CAMSV0			6
++#define CLK_CAM_CAMSV1			7
++#define CLK_CAM_CAMSV2			8
++#define CLK_CAM_CAMSV3			9
++#define CLK_CAM_CCU0			10
++#define CLK_CAM_CCU1			11
++#define CLK_CAM_MRAW0			12
++#define CLK_CAM_FAKE_ENG		13
++#define CLK_CAM_CCU_GALS		14
++#define CLK_CAM_CAM2MM_GALS		15
++#define CLK_CAM_NR_CLK			16
++
++/* CAMSYS_RAWA */
++
++#define CLK_CAM_RAWA_LARBX		0
++#define CLK_CAM_RAWA_CAM		1
++#define CLK_CAM_RAWA_CAMTG		2
++#define CLK_CAM_RAWA_NR_CLK		3
++
++/* CAMSYS_RAWB */
++
++#define CLK_CAM_RAWB_LARBX		0
++#define CLK_CAM_RAWB_CAM		1
++#define CLK_CAM_RAWB_CAMTG		2
++#define CLK_CAM_RAWB_NR_CLK		3
++
++/* CAMSYS_RAWC */
++
++#define CLK_CAM_RAWC_LARBX		0
++#define CLK_CAM_RAWC_CAM		1
++#define CLK_CAM_RAWC_CAMTG		2
++#define CLK_CAM_RAWC_NR_CLK		3
++
++/* IPESYS */
++
++#define CLK_IPE_LARB19			0
++#define CLK_IPE_LARB20			1
++#define CLK_IPE_SMI_SUBCOM		2
++#define CLK_IPE_FD			3
++#define CLK_IPE_FE			4
++#define CLK_IPE_RSC			5
++#define CLK_IPE_DPE			6
++#define CLK_IPE_GALS			7
++#define CLK_IPE_NR_CLK			8
++
++/* MDPSYS */
++
++#define CLK_MDP_RDMA0			0
++#define CLK_MDP_TDSHP0			1
++#define CLK_MDP_IMG_DL_ASYNC0		2
++#define CLK_MDP_IMG_DL_ASYNC1		3
++#define CLK_MDP_RDMA1			4
++#define CLK_MDP_TDSHP1			5
++#define CLK_MDP_SMI0			6
++#define CLK_MDP_APB_BUS			7
++#define CLK_MDP_WROT0			8
++#define CLK_MDP_RSZ0			9
++#define CLK_MDP_HDR0			10
++#define CLK_MDP_MUTEX0			11
++#define CLK_MDP_WROT1			12
++#define CLK_MDP_RSZ1			13
++#define CLK_MDP_HDR1			14
++#define CLK_MDP_FAKE_ENG0		15
++#define CLK_MDP_AAL0			16
++#define CLK_MDP_AAL1			17
++#define CLK_MDP_COLOR0			18
++#define CLK_MDP_COLOR1			19
++#define CLK_MDP_IMG_DL_RELAY0_ASYNC0	20
++#define CLK_MDP_IMG_DL_RELAY1_ASYNC1	21
++#define CLK_MDP_NR_CLK			22
++
++#endif /* _DT_BINDINGS_CLK_MT8192_H */
 -- 
 2.18.0
 
