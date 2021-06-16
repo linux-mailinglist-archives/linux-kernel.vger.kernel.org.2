@@ -2,180 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE5E3AA70C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 00:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F3D3AA709
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 00:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234405AbhFPWxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 18:53:18 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33980 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234407AbhFPWxG (ORCPT
+        id S234475AbhFPWxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 18:53:13 -0400
+Received: from mx-lax3-1.ucr.edu ([169.235.156.35]:47333 "EHLO
+        mx-lax3-1.ucr.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234422AbhFPWxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 18:53:06 -0400
-X-UUID: db5004e2cc154c4b9b8db8fa1c6c1a80-20210617
-X-UUID: db5004e2cc154c4b9b8db8fa1c6c1a80-20210617
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 55597283; Thu, 17 Jun 2021 06:50:57 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 17 Jun 2021 06:50:55 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Jun 2021 06:50:55 +0800
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Subject: [PATCH 22/22] clk: mediatek: Add MT8195 apusys clock support
-Date:   Thu, 17 Jun 2021 06:47:43 +0800
-Message-ID: <20210616224743.5109-23-chun-jie.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210616224743.5109-1-chun-jie.chen@mediatek.com>
-References: <20210616224743.5109-1-chun-jie.chen@mediatek.com>
+        Wed, 16 Jun 2021 18:53:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
+  t=1623883855; x=1655419855;
+  h=mime-version:from:date:message-id:subject:to;
+  bh=rlua6TfeeN2sXJkC8s+D5ALLnhCcNCnD/0D2Hh1jRcE=;
+  b=C4EOUUNFLE6Y3DXq4G23lzX65DFrVoQRXWGBDuj8SzKKj04HQxg/dDgM
+   mKLMUo7QxZeZe1/dQjLlKobaCh3cSX+eylVFQlfZVngwoWe+D7FHbEwg0
+   kZSBIlUNpqpDEFM3AtEhksIMZHnDO2vgfd/FdLzoA99dZ+2YElLcyj6Qk
+   WFbqgEF+Tjqg2nWntwmvvPRaruJGCWgmbmeep9/1U7ZUgbqWIVxCoCuy0
+   qOz+XQYb+jwlR7zxRR77v4FrZ6H3tyRSNLAfH5lcH/gd9uxhDt0G2qhau
+   goLtzQoSKsKbthNPY51vF4vgaNc2sEyS+pI1NJRks9JJgi4maPYXwWOhW
+   Q==;
+IronPort-SDR: 7qOQYGXuUfCMPO0O53Z+EDZmbe/oNJ7BfPdFlmliji0Nz924JL2SCb9jlXOIXjMVYa85pe4d5g
+ T1EDST+LW1vKROhxHVLd/12hMDXdnyNtV1l0rzQLkYkWaTmrXXVy6lBEvmZ4MZq4Db0fqvoTYJ
+ kd1voyp24K6a4Z8tiyyVAFWIut3j9LKkGq1oU6SM8CIu3jKDgWNjXEYqGVI2MrMfOxLIKIl/38
+ vLQmqlyZIv5vZLimbVTz0gF4H4oWrx+EpSzU/SSax4aY3Esyy5hs3bo+f/3pQQ2yZDZDZPACDv
+ ZXM=
+X-IPAS-Result: =?us-ascii?q?A2EPAgA+f8pgh8bSVdFaHgEBCxIMQIFMC4N4bIRIlSkBm?=
+ =?us-ascii?q?CWBfAIJAQEBD0EEAQGHPQIlNAkOAgQBAQEBAwIDAQEBAQUBAQYBAQEBAQEFB?=
+ =?us-ascii?q?AEBAhABAQEBbIUvRoI4KQGEBREEeA8CJgIkEgEFASIBEiKCT4MImFiBBD2LM?=
+ =?us-ascii?q?n8zgQGIFQEJDYFiEn4qhwmCZ4QhgimBS4I3dIdbgmQEgxwBehODdgEBAZAsj?=
+ =?us-ascii?q?g6cZAEGAoMEHJ15K5RukH0BLZUppFMQI4ExghUzGiV/BmeBS1AZDo44jlUkL?=
+ =?us-ascii?q?zgCBgoBAQMJiVEBAQ?=
+IronPort-PHdr: A9a23:bDgygxA9xCiL9jF+BpplUyQU8kMY04WdBeb1wqQuh78GSKm/5ZOqZ
+ BWZuaw8ygSTDM6Ku7ptsKn/i+jYQ2sO4JKM4jgpUadncFs7s/gQhBEqG8WfCEf2f7bAZi0+G
+ 9leBhc+pynoeUdaF9zjaFLMv3a88SAdGgnlNQpyO+/5BpPeg9642uyv/5DfeQtFiCS5bL99K
+ Bi7rhjau9ULj4dlNqs/0AbCrGFSe+RRy2NoJFaTkAj568yt4pNt8Dletuw4+cJYXqr0Y6o3T
+ bpDDDQ7KG81/9HktQPCTQSU+HQRVHgdnwdSDAjE6BH6WYrxsjf/u+Fg1iSWIdH6QLYpUjm58
+ axlVAHnhzsGNz4h8WHYlMpwjL5AoBm8oxBz2pPYbJ2JOPZ7eK7WYNEUSndbXstJWCNPAo2yY
+ YgSAeQfIelVtJX9q0cUoBeiGQWgGOHixzlVjXH2x6061OEhHBnE0wwhHtMOsGnUrNLoP6gRU
+ eC61qjIxijEYvJW2Db96JLHchE9rf2QU799atfRxlU1Fw/fkFqftJHlMiqT2+8QvGeV8/BuW
+ vizi247tQ5xuD6vy98th4TNm48Y1F7K+ytkzYsoJdO0VlN3bcCgHZdNtiyUOIl7T8w8T2xpp
+ io3zqEKtJCncCUIxpor2hDSZuCDfoWG5B/oSeWfIS9giX57ZL6ygwy+/Eugx+HmSMW4zUpGo
+ jBYntTItX0A0QHY5NKdRftn5Eih3C6C1wXU6u5ZP085jbHbK5s9wr4okZoTrFjDEjf2mEroi
+ K+WcV0p+u2y5OTmZrXqv4ecN4Fphg3nPKQih8iyDOciPggBWGib/uu81Ln98kHjXLpKifg2n
+ rHYsJDcO8sbura0DxFJ3osn8RqyDDer3M4GkXUaMF5JYg+LgozqNl3WJfD3F/a/g1CikDdxw
+ PDGO6XsA5XML3jDirjhfKpx51JSxQco0NBQ+4hUBqsfL/3uR0/9rMbYAQMhMwyo3+bnD81w1
+ ocfWWKJH6+YP7resVyW6eI1JemDeosVtS3jK/gq+fHul2U1mVwDcqmz25sYdnS4Eu5hI0WDb
+ nq/yusGRG0RvQcxQ/fCklCOUTdPIX21WuZ0yjglCY7uJIbZQoGgyOiI3T2/H5BaTmRHDE2cV
+ 3blIcHMd/4KaS+WavFsjiAJT/D1R4Yn1ByqnAH01L5jaOHUrGlQuYjikdR4+eDXvRUz7iBvS
+ cqH3myBQnp3gmQQATgs0+Q3p0tg1FqKzIB8gudEDppd/f5EXgohNoLb16p9Ed+2EgbAeMqZD
+ VWrWNOrBRkvQd8rhdwDeUBwH5OllB+Q8TCtBuoklq6LGZt8wKLV3jClNtR9wneejPIJklI8B
+ MZDKDv11eZE6wHPCtuRwA2inKGwePFZhXaVnFo=
+IronPort-HdrOrdr: A9a23:l11I1ajTBf1hPPpx4+JOw9WtNXBQXtMji2hC6mlwRA09TyX4rb
+ HIoB11726WtN98YhEdcLO7WZVoI0msl6KdiLN5VdyftWLdyQ6Vxe9ZnO/fKv7bdhEWNNQ26U
+ 6tScdD4RTLYTZHsfo=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="48886286"
+Received: from mail-pf1-f198.google.com ([209.85.210.198])
+  by smtp-lax3-1.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Jun 2021 15:50:52 -0700
+Received: by mail-pf1-f198.google.com with SMTP id b8-20020a056a000a88b02902e97a71383dso2484109pfl.13
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 15:50:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=W8sgVYgsWMdUE1wHeIEoHud9eQP11SIxXPuwjP87UZw=;
+        b=kSZ24cUXF/xbiiLuqZ4nIoxI9q2qjnsE7G168/ibkTpT2K31zzVZN2+uV50FuUcyYV
+         reBP0a+bCR0wc9CjHEKqFudiF1hldZhjbeIrjC9m+HM/xjIJvOZfMzEn/gUvBt4hYl+P
+         K1p2owmu/n9PSrfeGk/UzaZwsXYHmrNZM6KyDSbn/HOFcSKBR/vpiLqLpSavX0Y3I+gu
+         YM3P8HxrzSBxsXUABp+OLZWsFP7Q1RFwDILyz08LqZ9FNBwBC3UU+kNdVhBFat/+dIEG
+         iMOiikphMqmfG/3vbov5zqi+KvlF3FcAK09FiKRa/YFUpYQy4Kn/Rn5o+9Kf6NYrjvnV
+         ukWg==
+X-Gm-Message-State: AOAM5309r0uObp/8v84IlJtnWnObEVvW6Gzvo3emLhsCrgQB++c9WPxi
+        es8zfF1zZ6u4LamiZrVJXAbfx59raJ0XtIISmVzlX3bbNxuZJq/jtmrv1eC6XrripPr6da6kbal
+        Llsh+PtcIsUgYFu/ysQhzY2p+1Z6oIhHF2Pd89iaKPg==
+X-Received: by 2002:a17:90a:d516:: with SMTP id t22mr2289209pju.144.1623883852351;
+        Wed, 16 Jun 2021 15:50:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxpBspB9QJdH+f58DOOAFndNmFeCe7X2gL2GM2hO1VVOXQa23XnJmXHTZeZxwy2XrHghuDEEc/1KtDqeJG9FZY=
+X-Received: by 2002:a17:90a:d516:: with SMTP id t22mr2289201pju.144.1623883852186;
+ Wed, 16 Jun 2021 15:50:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+From:   Yizhuo Zhai <yzhai003@ucr.edu>
+Date:   Wed, 16 Jun 2021 15:50:41 -0700
+Message-ID: <CABvMjLTVZaU8vMW__2BDo6FnjFa_bsh2S-kEmg=KV4KTsFiUzA@mail.gmail.com>
+Subject: [PATCH] drm/nouveau/core: fix the uninitialized use in nvkm_ioctl_map()
+To:     bskeggs@redhat.com, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MT8195 apusys clock provider
+In function nvkm_ioctl_map(), the variable "type" could be
+uninitialized if "nvkm_object_map()" returns error code,
+however, it does not check the return value and directly
+use the "type" in the if statement, which is potentially
+unsafe.
 
-Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Signed-off-by: Yizhuo <yzhai003@ucr.edu>
 ---
- drivers/clk/mediatek/Kconfig                 |  6 ++
- drivers/clk/mediatek/Makefile                |  1 +
- drivers/clk/mediatek/clk-mt8195-apusys_pll.c | 84 ++++++++++++++++++++
- 3 files changed, 91 insertions(+)
- create mode 100644 drivers/clk/mediatek/clk-mt8195-apusys_pll.c
+ drivers/gpu/drm/nouveau/nvkm/core/ioctl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-index ade85a52b7ed..9bd1ebff61f2 100644
---- a/drivers/clk/mediatek/Kconfig
-+++ b/drivers/clk/mediatek/Kconfig
-@@ -690,6 +690,12 @@ config COMMON_CLK_MT8195_IMP_IIC_WRAP
- 	help
- 	  This driver supports MediaTek MT8195 imp_iic_wrap clocks.
- 
-+config COMMON_CLK_MT8195_APUSYS_PLL
-+	bool "Clock driver for MediaTek MT8195 apusys_pll"
-+	depends on COMMON_CLK_MT8195
-+	help
-+	  This driver supports MediaTek MT8195 apusys_pll clocks.
-+
- config COMMON_CLK_MT8516
- 	bool "Clock driver for MediaTek MT8516"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
-diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
-index b10c6267ba98..676ed7d665b7 100644
---- a/drivers/clk/mediatek/Makefile
-+++ b/drivers/clk/mediatek/Makefile
-@@ -98,5 +98,6 @@ obj-$(CONFIG_COMMON_CLK_MT8195_VPPSYS0) += clk-mt8195-vpp0.o
- obj-$(CONFIG_COMMON_CLK_MT8195_VPPSYS1) += clk-mt8195-vpp1.o
- obj-$(CONFIG_COMMON_CLK_MT8195_WPESYS) += clk-mt8195-wpe.o
- obj-$(CONFIG_COMMON_CLK_MT8195_IMP_IIC_WRAP) += clk-mt8195-imp_iic_wrap.o
-+obj-$(CONFIG_COMMON_CLK_MT8195_APUSYS_PLL) += clk-mt8195-apusys_pll.o
- obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
- obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
-diff --git a/drivers/clk/mediatek/clk-mt8195-apusys_pll.c b/drivers/clk/mediatek/clk-mt8195-apusys_pll.c
-new file mode 100644
-index 000000000000..d9b49cf71281
---- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt8195-apusys_pll.c
-@@ -0,0 +1,84 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Copyright (c) 2021 MediaTek Inc.
-+// Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-+
-+#include <linux/clk-provider.h>
-+#include <linux/platform_device.h>
-+
-+#include "clk-mtk.h"
-+#include "clk-gate.h"
-+
-+#include <dt-bindings/clock/mt8195-clk.h>
-+
-+#define MT8195_PLL_FMAX		(3800UL * MHZ)
-+#define MT8195_PLL_FMIN		(1500UL * MHZ)
-+#define MT8195_INTEGER_BITS	8
-+
-+#define PLL(_id, _name, _reg, _pwr_reg, _en_mask, _flags,	\
-+			_rst_bar_mask, _pcwbits, _pd_reg, _pd_shift,	\
-+			_tuner_reg, _tuner_en_reg, _tuner_en_bit,	\
-+			_pcw_reg, _pcw_shift, _pcw_chg_reg,				\
-+			_en_reg, _pll_en_bit) {					\
-+		.id = _id,						\
-+		.name = _name,						\
-+		.reg = _reg,						\
-+		.pwr_reg = _pwr_reg,					\
-+		.en_mask = _en_mask,					\
-+		.flags = _flags,					\
-+		.rst_bar_mask = _rst_bar_mask,				\
-+		.fmax = MT8195_PLL_FMAX,				\
-+		.fmin = MT8195_PLL_FMIN,				\
-+		.pcwbits = _pcwbits,					\
-+		.pcwibits = MT8195_INTEGER_BITS,			\
-+		.pd_reg = _pd_reg,					\
-+		.pd_shift = _pd_shift,					\
-+		.tuner_reg = _tuner_reg,				\
-+		.tuner_en_reg = _tuner_en_reg,				\
-+		.tuner_en_bit = _tuner_en_bit,				\
-+		.pcw_reg = _pcw_reg,					\
-+		.pcw_shift = _pcw_shift,				\
-+		.pcw_chg_reg = _pcw_chg_reg,				\
-+		.en_reg = _en_reg,					\
-+		.pll_en_bit = _pll_en_bit,				\
-+	}
-+
-+static const struct mtk_pll_data apusys_plls[] = {
-+	PLL(CLK_APUSYS_PLL_APUPLL, "apusys_pll_apupll", 0x008, 0x014, 0,
-+		0, 0, 22, 0x00c, 24, 0, 0, 0, 0x00c, 0, 0, 0, 0),
-+	PLL(CLK_APUSYS_PLL_NPUPLL, "apusys_pll_npupll", 0x018, 0x024, 0,
-+		0, 0, 22, 0x01c, 24, 0, 0, 0, 0x01c, 0, 0, 0, 0),
-+	PLL(CLK_APUSYS_PLL_APUPLL1, "apusys_pll_apupll1", 0x028, 0x034, 0,
-+		0, 0, 22, 0x02c, 24, 0, 0, 0, 0x02c, 0, 0, 0, 0),
-+	PLL(CLK_APUSYS_PLL_APUPLL2, "apusys_pll_apupll2", 0x038, 0x044, 0,
-+		0, 0, 22, 0x03c, 24, 0, 0, 0, 0x03c, 0, 0, 0, 0),
-+};
-+
-+static int clk_mt8195_apusys_pll_probe(struct platform_device *pdev)
-+{
-+	struct clk_onecell_data *clk_data;
-+	struct device_node *node = pdev->dev.of_node;
-+
-+	clk_data = mtk_alloc_clk_data(CLK_APUSYS_PLL_NR_CLK);
-+	if (!clk_data)
-+		return -ENOMEM;
-+
-+	mtk_clk_register_plls(node, apusys_plls, ARRAY_SIZE(apusys_plls), clk_data);
-+
-+	return of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-+}
-+
-+static const struct of_device_id of_match_clk_mt8195_apusys_pll[] = {
-+	{ .compatible = "mediatek,mt8195-apusys_pll", },
-+	{}
-+};
-+
-+static struct platform_driver clk_mt8195_apusys_pll_drv = {
-+	.probe = clk_mt8195_apusys_pll_probe,
-+	.driver = {
-+		.name = "clk-mt8195-apusys_pll",
-+		.of_match_table = of_match_clk_mt8195_apusys_pll,
-+	},
-+};
-+
-+builtin_platform_driver(clk_mt8195_apusys_pll_drv);
+diff --git a/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
+b/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
+index d777df5a64e6..7f2e8482f167 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
++++ b/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
+@@ -266,6 +266,8 @@ nvkm_ioctl_map(struct nvkm_client *client,
+                ret = nvkm_object_map(object, data, size, &type,
+                                      &args->v0.handle,
+                                      &args->v0.length);
++               if (ret)
++                       return ret;
+                if (type == NVKM_OBJECT_MAP_IO)
+                        args->v0.type = NVIF_IOCTL_MAP_V0_IO;
+                else
 -- 
-2.18.0
-
+2.17.1
