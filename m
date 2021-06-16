@@ -2,163 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00F13A92A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0633A92A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231513AbhFPGdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:33:23 -0400
-Received: from mga09.intel.com ([134.134.136.24]:61585 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231422AbhFPGdO (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:33:14 -0400
-IronPort-SDR: 4231z6lXhQnNK0WDmSloWIi7iRslYNNpWfrl1Q3KuITB2lnrj+IH+CXLOeQZ5O/vSu+05plmPn
- sIuXV0QZ3CzQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206081980"
-X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
-   d="scan'208";a="206081980"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 23:31:08 -0700
-IronPort-SDR: S7oKWZsrLomh6CXYSo/b5nvAOewFNBsUi2PnpKEYjDIAwVepBbKTOnx33wY/nIm0oXHUdVzkXh
- 1Fjcdy+nebjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
-   d="scan'208";a="471912867"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Jun 2021 23:31:05 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH] perf stat: Merge uncore events by default for hybrid platform
-Date:   Wed, 16 Jun 2021 14:30:04 +0800
-Message-Id: <20210616063004.2824-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S231491AbhFPGdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231422AbhFPGdI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 02:33:08 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF1DC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 23:31:02 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id n12so1114559pgs.13
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 23:31:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wnVJHvXzTfMwZnd+sO8L8PW13B3KOws+XHBcdC/4riM=;
+        b=Yv9ZQDLD3WsQqlq7yq5aUVVWSQwiUdOZ+qsoDuKBQI0Nt78TlXWAKguiTBzi+qqseo
+         iwsgslAKqajlPYp+T/4wz34FbgnCi4e5ymRKLvdfnU/g12RY76V2hgg8wVE8U4Bj9EIB
+         7UU4wxSC3AU3xrehmS1hDX94RtLkU2sf6KT5uhVFHMCYIGkg0uIlS87Moi+EYx9HUVeO
+         wU8Z41eZfaffLRivuWoFCNg0z/3zRbAf4t3Z3xG5AXyj7PhAHt71XlYt7Nj8FOLCeNIo
+         odc7gI6tMdUmPeT8KxIO+I+9kp6nGKAv576nYrk/Arn7Du74NChCTZvHu04ikY2o6XwZ
+         nFHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wnVJHvXzTfMwZnd+sO8L8PW13B3KOws+XHBcdC/4riM=;
+        b=lvoYqwMeZ6YQNIRARi5EMA5E3pRKQ2Gln8/sEkRXJPI/hZ4d/zz2Id0KhvqDyxGrKd
+         ZLjCtlagqW2ToihPkZ5pGMUe8q3RAs9XY8bV35zDKNiKiZeQOpq09/NZpdhfo2cJ7cIG
+         lT4cdHWP/2yslZxmzIrbsMqSyhR2DFkRZxRmTfUM4GMxg5tGB1YquwTlfNnIMhJwbyq6
+         ssyAR9RNqKHroQuG4uiFzEXfOTsOn7GbsPptIB1eN4JG6qYVq2Tp996GkbqWdjwyW673
+         I7styjotBSug/dUymF//ZCKQIHKOKTiw1acs1bvuSfKUfx6cVc2hThA0JCC5mRZRXgTO
+         P3WA==
+X-Gm-Message-State: AOAM530u1SS0hUJGpEQy9wcqfav2MgCW3Fy2DDUOpIqCHMHDA7BKyWuB
+        tES3+CICCw8ghP739rGOoVxMmqFeLHxrfltcotoLWQ==
+X-Google-Smtp-Source: ABdhPJxEr9gf18Cdhk1f8EhTHILp6osP6kHcu589GdH0NbQQbUNIN5WvGkClnb9HbcroXzcqyZCUY4XCXkw4wpHlRvc=
+X-Received: by 2002:a63:5c4a:: with SMTP id n10mr3477810pgm.279.1623825061741;
+ Tue, 15 Jun 2021 23:31:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210604011844.1756145-1-ruansy.fnst@fujitsu.com> <20210604011844.1756145-5-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20210604011844.1756145-5-ruansy.fnst@fujitsu.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 15 Jun 2021 23:30:51 -0700
+Message-ID: <CAPcyv4iEuPWs-f+rV=xncbXYKSHkbhuLJ-1hnP9N9ABNzr1VSA@mail.gmail.com>
+Subject: Re: [PATCH v4 04/10] mm, fsdax: Refactor memory-failure handler for
+ dax mapping
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        device-mapper development <dm-devel@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        david <david@fromorbit.com>, Christoph Hellwig <hch@lst.de>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On hybrid platform, by default stat aggregates and reports the event counts
-per pmu. For example,
+[ drop old nvdimm list, add the new one ]
 
-  # perf stat -e cycles -a true
+On Thu, Jun 3, 2021 at 6:19 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+>
+> The current memory_failure_dev_pagemap() can only handle single-mapped
+> dax page for fsdax mode.  The dax page could be mapped by multiple files
+> and offsets if we let reflink feature & fsdax mode work together.  So,
+> we refactor current implementation to support handle memory failure on
+> each file and offset.
 
-   Performance counter stats for 'system wide':
+I don't understand this organization, perhaps because this patch
+introduces mf_dax_kill_procs() without a user. However, my expectation
+is that memory_failure() is mostly untouched save for an early check
+via pgmap->notify_memory_failure(). If pgmap->notify_memory_failure()
+indicates that the memory failure was handled by the pgmap->owner /
+dax_dev holder stack, then the typical memory failure path is
+short-circuited. Otherwise, for non-reflink filesystems where
+page->mapping() is valid the legacy / existing memory_failure()
+operates as it does currently. If reflink capable filesystems want to
+share a common implementation to map pfns to files they can, but I
+don't think that common code belongs in mm/memory-failure.c.
 
-           1,400,445      cpu_core/cycles/
-             680,881      cpu_atom/cycles/
+>
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> ---
+>  fs/dax.c            |  21 ++++++++
+>  include/linux/dax.h |   1 +
+>  include/linux/mm.h  |   9 ++++
+>  mm/memory-failure.c | 114 ++++++++++++++++++++++++++++----------------
+>  4 files changed, 105 insertions(+), 40 deletions(-)
+>
+> diff --git a/fs/dax.c b/fs/dax.c
+> index 62352cbcf0f4..58faca85455a 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -389,6 +389,27 @@ static struct page *dax_busy_page(void *entry)
+>         return NULL;
+>  }
+>
+> +/*
+> + * dax_load_pfn - Load pfn of the DAX entry corresponding to a page
+> + * @mapping: The file whose entry we want to load
+> + * @index:   The offset where the DAX entry located in
+> + *
+> + * Return:   pfn of the DAX entry
+> + */
+> +unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index)
+> +{
+> +       XA_STATE(xas, &mapping->i_pages, index);
+> +       void *entry;
+> +       unsigned long pfn;
+> +
+> +       xas_lock_irq(&xas);
+> +       entry = xas_load(&xas);
+> +       pfn = dax_to_pfn(entry);
+> +       xas_unlock_irq(&xas);
 
-         0.001770773 seconds time elapsed
+This looks racy, what happened to the locking afforded by dax_lock_page()?
 
-While for uncore events, that's not a suitable method. Uncore has nothing
-to do with hybrid. So for uncore events, we aggregate event counts from all
-PMUs and report the counts without PMUs.
+> +
+> +       return pfn;
+> +}
+> +
+>  /*
+>   * dax_lock_mapping_entry - Lock the DAX entry corresponding to a page
+>   * @page: The page whose entry we want to lock
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index 1ce343a960ab..6e758daa5004 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -158,6 +158,7 @@ int dax_writeback_mapping_range(struct address_space *mapping,
+>
+>  struct page *dax_layout_busy_page(struct address_space *mapping);
+>  struct page *dax_layout_busy_page_range(struct address_space *mapping, loff_t start, loff_t end);
+> +unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index);
+>  dax_entry_t dax_lock_page(struct page *page);
+>  void dax_unlock_page(struct page *page, dax_entry_t cookie);
+>  #else
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index c274f75efcf9..2b7527e93c77 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1187,6 +1187,14 @@ static inline bool is_device_private_page(const struct page *page)
+>                 page->pgmap->type == MEMORY_DEVICE_PRIVATE;
+>  }
+>
+> +static inline bool is_device_fsdax_page(const struct page *page)
+> +{
+> +       return IS_ENABLED(CONFIG_DEV_PAGEMAP_OPS) &&
+> +               IS_ENABLED(CONFIG_FS_DAX) &&
+> +               is_zone_device_page(page) &&
+> +               page->pgmap->type == MEMORY_DEVICE_FS_DAX;
 
-Before:
+Why is this necessary? The dax_dev holder is the one that knows the
+nature of the pfn. The common memory_failure() code should not care
+about fsdax vs devdax.
 
-  # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
+> +}
+> +
+>  static inline bool is_pci_p2pdma_page(const struct page *page)
+>  {
+>         return IS_ENABLED(CONFIG_DEV_PAGEMAP_OPS) &&
+> @@ -3078,6 +3086,7 @@ enum mf_flags {
+>         MF_MUST_KILL = 1 << 2,
+>         MF_SOFT_OFFLINE = 1 << 3,
+>  };
+> +int mf_dax_kill_procs(struct address_space *mapping, pgoff_t index, int flags);
+>  extern int memory_failure(unsigned long pfn, int flags);
+>  extern void memory_failure_queue(unsigned long pfn, int flags);
+>  extern void memory_failure_queue_kick(int cpu);
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index 85ad98c00fd9..4377e727d478 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -56,6 +56,7 @@
+>  #include <linux/kfifo.h>
+>  #include <linux/ratelimit.h>
+>  #include <linux/page-isolation.h>
+> +#include <linux/dax.h>
+>  #include "internal.h"
+>  #include "ras/ras_event.h"
+>
+> @@ -120,6 +121,13 @@ static int hwpoison_filter_dev(struct page *p)
+>         if (PageSlab(p))
+>                 return -EINVAL;
+>
+> +       if (pfn_valid(page_to_pfn(p))) {
+> +               if (is_device_fsdax_page(p))
 
-   Performance counter stats for 'system wide':
+This is racy unless the page is pinned. Also, not clear why this is needed?
 
-               2,058      uncore_arb_0/event=0x81,umask=0x1/
-               2,028      uncore_arb_1/event=0x81,umask=0x1/
-                   0      uncore_arb_0/event=0x84,umask=0x1/
-                   0      uncore_arb_1/event=0x84,umask=0x1/
+> +                       return 0;
+> +               else
+> +                       return -EINVAL;
+> +       }
+> +
+>         mapping = page_mapping(p);
+>         if (mapping == NULL || mapping->host == NULL)
+>                 return -EINVAL;
+> @@ -290,10 +298,9 @@ void shake_page(struct page *p, int access)
+>  }
+>  EXPORT_SYMBOL_GPL(shake_page);
+>
+> -static unsigned long dev_pagemap_mapping_shift(struct page *page,
+> -               struct vm_area_struct *vma)
+> +static unsigned long dev_pagemap_mapping_shift(struct vm_area_struct *vma,
+> +                                              unsigned long address)
+>  {
+> -       unsigned long address = vma_address(page, vma);
+>         pgd_t *pgd;
+>         p4d_t *p4d;
+>         pud_t *pud;
+> @@ -333,9 +340,8 @@ static unsigned long dev_pagemap_mapping_shift(struct page *page,
+>   * Schedule a process for later kill.
+>   * Uses GFP_ATOMIC allocations to avoid potential recursions in the VM.
+>   */
+> -static void add_to_kill(struct task_struct *tsk, struct page *p,
+> -                      struct vm_area_struct *vma,
+> -                      struct list_head *to_kill)
+> +static void add_to_kill(struct task_struct *tsk, struct page *p, pgoff_t pgoff,
+> +                       struct vm_area_struct *vma, struct list_head *to_kill)
+>  {
+>         struct to_kill *tk;
+>
+> @@ -346,9 +352,12 @@ static void add_to_kill(struct task_struct *tsk, struct page *p,
+>         }
+>
+>         tk->addr = page_address_in_vma(p, vma);
+> -       if (is_zone_device_page(p))
+> -               tk->size_shift = dev_pagemap_mapping_shift(p, vma);
+> -       else
+> +       if (is_zone_device_page(p)) {
+> +               if (is_device_fsdax_page(p))
+> +                       tk->addr = vma->vm_start +
+> +                                       ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+> +               tk->size_shift = dev_pagemap_mapping_shift(vma, tk->addr);
 
-         0.000614498 seconds time elapsed
+What was wrong with the original code?
 
-After:
+> +       } else
+>                 tk->size_shift = page_shift(compound_head(p));
+>
+>         /*
+> @@ -496,7 +505,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
+>                         if (!page_mapped_in_vma(page, vma))
+>                                 continue;
+>                         if (vma->vm_mm == t->mm)
+> -                               add_to_kill(t, page, vma, to_kill);
+> +                               add_to_kill(t, page, 0, vma, to_kill);
+>                 }
+>         }
+>         read_unlock(&tasklist_lock);
+> @@ -506,24 +515,19 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
+>  /*
+>   * Collect processes when the error hit a file mapped page.
+>   */
+> -static void collect_procs_file(struct page *page, struct list_head *to_kill,
+> -                               int force_early)
+> +static void collect_procs_file(struct page *page, struct address_space *mapping,
+> +               pgoff_t pgoff, struct list_head *to_kill, int force_early)
+>  {
 
-  # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
+collect_procs() and kill_procs() are the only core memory_failure()
+helpers I expect would be exported for a fileystem dax_dev holder to
+call when it is trying to cleanup a memory_failure() on a reflink'd
+mapping.
 
-   Performance counter stats for 'system wide':
+>         struct vm_area_struct *vma;
+>         struct task_struct *tsk;
+> -       struct address_space *mapping = page->mapping;
+> -       pgoff_t pgoff;
+>
+>         i_mmap_lock_read(mapping);
+>         read_lock(&tasklist_lock);
+> -       pgoff = page_to_pgoff(page);
+>         for_each_process(tsk) {
+>                 struct task_struct *t = task_early_kill(tsk, force_early);
+> -
+>                 if (!t)
+>                         continue;
+> -               vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff,
+> -                                     pgoff) {
+> +               vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, pgoff) {
+>                         /*
+>                          * Send early kill signal to tasks where a vma covers
+>                          * the page but the corrupted page is not necessarily
+> @@ -532,7 +536,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
+>                          * to be informed of all such data corruptions.
+>                          */
+>                         if (vma->vm_mm == t->mm)
+> -                               add_to_kill(t, page, vma, to_kill);
+> +                               add_to_kill(t, page, pgoff, vma, to_kill);
+>                 }
+>         }
+>         read_unlock(&tasklist_lock);
+> @@ -551,7 +555,8 @@ static void collect_procs(struct page *page, struct list_head *tokill,
+>         if (PageAnon(page))
+>                 collect_procs_anon(page, tokill, force_early);
+>         else
+> -               collect_procs_file(page, tokill, force_early);
+> +               collect_procs_file(page, page_mapping(page), page_to_pgoff(page),
+> +                                  tokill, force_early);
+>  }
+>
+>  static const char *action_name[] = {
+> @@ -1218,6 +1223,51 @@ static int try_to_split_thp_page(struct page *page, const char *msg)
+>         return 0;
+>  }
+>
+> +static void unmap_and_kill(struct list_head *to_kill, unsigned long pfn,
+> +               struct address_space *mapping, pgoff_t index, int flags)
+> +{
+> +       struct to_kill *tk;
+> +       unsigned long size = 0;
+> +       loff_t start;
+> +
+> +       list_for_each_entry(tk, to_kill, nd)
+> +               if (tk->size_shift)
+> +                       size = max(size, 1UL << tk->size_shift);
+> +       if (size) {
+> +               /*
+> +                * Unmap the largest mapping to avoid breaking up
+> +                * device-dax mappings which are constant size. The
+> +                * actual size of the mapping being torn down is
+> +                * communicated in siginfo, see kill_proc()
+> +                */
+> +               start = (index << PAGE_SHIFT) & ~(size - 1);
+> +               unmap_mapping_range(mapping, start, size, 0);
+> +       }
+> +
+> +       kill_procs(to_kill, flags & MF_MUST_KILL, false, pfn, flags);
+> +}
+> +
+> +int mf_dax_kill_procs(struct address_space *mapping, pgoff_t index, int flags)
+> +{
+> +       LIST_HEAD(to_kill);
+> +       /* load the pfn of the dax mapping file */
+> +       unsigned long pfn = dax_load_pfn(mapping, index);
+> +
+> +       /*
+> +        * Unlike System-RAM there is no possibility to swap in a
+> +        * different physical page at a given virtual address, so all
+> +        * userspace consumption of ZONE_DEVICE memory necessitates
+> +        * SIGBUS (i.e. MF_MUST_KILL)
+> +        */
+> +       flags |= MF_ACTION_REQUIRED | MF_MUST_KILL;
+> +       collect_procs_file(pfn_to_page(pfn), mapping, index, &to_kill,
+> +                          flags & MF_ACTION_REQUIRED);
+> +
+> +       unmap_and_kill(&to_kill, pfn, mapping, index, flags);
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(mf_dax_kill_procs);
+> +
+>  static int memory_failure_hugetlb(unsigned long pfn, int flags)
+>  {
+>         struct page *p = pfn_to_page(pfn);
+> @@ -1298,12 +1348,8 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+>                 struct dev_pagemap *pgmap)
+>  {
+>         struct page *page = pfn_to_page(pfn);
+> -       const bool unmap_success = true;
+> -       unsigned long size = 0;
+> -       struct to_kill *tk;
+> -       LIST_HEAD(tokill);
+> +       LIST_HEAD(to_kill);
+>         int rc = -EBUSY;
+> -       loff_t start;
+>         dax_entry_t cookie;
+>
+>         if (flags & MF_COUNT_INCREASED)
+> @@ -1355,22 +1401,10 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+>          * SIGBUS (i.e. MF_MUST_KILL)
+>          */
+>         flags |= MF_ACTION_REQUIRED | MF_MUST_KILL;
+> -       collect_procs(page, &tokill, flags & MF_ACTION_REQUIRED);
+> +       collect_procs_file(page, page->mapping, page->index, &to_kill,
+> +                          flags & MF_ACTION_REQUIRED);
+>
+> -       list_for_each_entry(tk, &tokill, nd)
+> -               if (tk->size_shift)
+> -                       size = max(size, 1UL << tk->size_shift);
+> -       if (size) {
+> -               /*
+> -                * Unmap the largest mapping to avoid breaking up
+> -                * device-dax mappings which are constant size. The
+> -                * actual size of the mapping being torn down is
+> -                * communicated in siginfo, see kill_proc()
+> -                */
+> -               start = (page->index << PAGE_SHIFT) & ~(size - 1);
+> -               unmap_mapping_range(page->mapping, start, size, 0);
+> -       }
+> -       kill_procs(&tokill, flags & MF_MUST_KILL, !unmap_success, pfn, flags);
+> +       unmap_and_kill(&to_kill, pfn, page->mapping, page->index, flags);
 
-               3,996      arb/event=0x81,umask=0x1/
-                   0      arb/event=0x84,umask=0x1/
-
-         0.000630046 seconds time elapsed
-
-Of course, we also keep the '--no-merge' still works for uncore events.
-
-  # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ --no-merge true
-
-   Performance counter stats for 'system wide':
-
-               1,952      uncore_arb_0/event=0x81,umask=0x1/
-               1,921      uncore_arb_1/event=0x81,umask=0x1/
-                   0      uncore_arb_0/event=0x84,umask=0x1/
-                   0      uncore_arb_1/event=0x84,umask=0x1/
-
-         0.000575536 seconds time elapsed
-
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/builtin-stat.c      |  3 ---
- tools/perf/util/stat-display.c | 29 +++++++++++++++++++++++++----
- 2 files changed, 25 insertions(+), 7 deletions(-)
-
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index f9f74a514315..b67a44982b61 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -2442,9 +2442,6 @@ int cmd_stat(int argc, const char **argv)
- 
- 	evlist__check_cpu_maps(evsel_list);
- 
--	if (perf_pmu__has_hybrid())
--		stat_config.no_merge = true;
--
- 	/*
- 	 * Initialize thread_map with comm names,
- 	 * so we could print it out on output.
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index b759dfd633b4..c6070f4684ca 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -595,6 +595,19 @@ static void collect_all_aliases(struct perf_stat_config *config, struct evsel *c
- 	}
- }
- 
-+static bool is_uncore(struct evsel *evsel)
-+{
-+	struct perf_pmu *pmu;
-+
-+	if (evsel->pmu_name) {
-+		pmu = perf_pmu__find(evsel->pmu_name);
-+		if (pmu)
-+			return pmu->is_uncore;
-+	}
-+
-+	return false;
-+}
-+
- static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
- 			    void (*cb)(struct perf_stat_config *config, struct evsel *counter, void *data,
- 				       bool first),
-@@ -603,10 +616,18 @@ static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
- 	if (counter->merged_stat)
- 		return false;
- 	cb(config, counter, data, true);
--	if (config->no_merge)
--		uniquify_event_name(counter);
--	else if (counter->auto_merge_stats)
--		collect_all_aliases(config, counter, cb, data);
-+	if (perf_pmu__has_hybrid()) {
-+		if (config->no_merge || !is_uncore(counter))
-+			uniquify_event_name(counter);
-+		else if (counter->auto_merge_stats)
-+			collect_all_aliases(config, counter, cb, data);
-+	} else {
-+		if (config->no_merge)
-+			uniquify_event_name(counter);
-+		else if (counter->auto_merge_stats)
-+			collect_all_aliases(config, counter, cb, data);
-+	}
-+
- 	return true;
- }
- 
--- 
-2.17.1
-
+There's just too much change in this patch and not enough
+justification of what is being refactored and why.
