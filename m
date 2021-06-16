@@ -2,111 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838313A8E94
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABAD3A8E98
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbhFPBx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 21:53:26 -0400
-Received: from mga14.intel.com ([192.55.52.115]:45257 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230488AbhFPBxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 21:53:25 -0400
-IronPort-SDR: GdgDF8a2aED4qQM0jr8u2dnaPWEfO3uTzE8qlYywc0dYEcPEtn/nVsERQlAHYqRdSz3v13YHwd
- UQzjGlitm2tg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="205917409"
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="205917409"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 18:51:20 -0700
-IronPort-SDR: U5fC1bgIU8nt2ppwlZbxbXYV1JHh+KiKdHS5yY6JJPRGtkAQsZ0RqHBJDo76W7L2SmjvhpGbIt
- QYwplAfkgRHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="421319755"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by orsmga002.jf.intel.com with ESMTP; 15 Jun 2021 18:51:18 -0700
-Date:   Wed, 16 Jun 2021 09:51:17 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org, lkp@lists.01.org
-Subject: Re: [PATCH] mm: relocate 'write_protect_seq' in struct mm_struct
-Message-ID: <20210616015117.GA55795@shbuild999.sh.intel.com>
-References: <1623376482-92265-1-git-send-email-feng.tang@intel.com>
- <20210611170917.GW1002214@nvidia.com>
- <20210614032738.GA72794@shbuild999.sh.intel.com>
- <20210615011102.GA38780@shbuild999.sh.intel.com>
- <YMj3AeGMzEme/tcp@t490s>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMj3AeGMzEme/tcp@t490s>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S231865AbhFPByK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 21:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230488AbhFPByI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 21:54:08 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD159C061574;
+        Tue, 15 Jun 2021 18:52:03 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id w31so646230pga.6;
+        Tue, 15 Jun 2021 18:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:date:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=SYAZiKhu2cUPFls/xCgRwEt5H3IOQudDC2d2SMNfX8s=;
+        b=tlwwglVZtYsipluaBFVpfWks6ENBb6VU0iFSnteE3nzK+y1kuem4YIfWfhTgUbgAmh
+         xHErugfjlb/QUH7t2RDNjYYgSyiSQ9x2hfyb/8aA+LbPJFmhK854tvPnkoIp7zuXLCLV
+         AEZSDDYo7azBdclJ5BOSonknsp5XAHaAmUi+n3iNDVcvxwRhbmMMoVMTaSM/Fmia0NS5
+         wRX1GH/Q6g+awuiW1oBoDNL0GXPWUF7XkL5RXWg7nheuEGdyaCWv03EIApuV0pUJhwmL
+         ZZjlyJU+hLJX+FcDu5QNj45DiyEiHMqyKYqKRGP1U1Xno7P9KIj/7e/IzKhnVafHPxwA
+         IL8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SYAZiKhu2cUPFls/xCgRwEt5H3IOQudDC2d2SMNfX8s=;
+        b=Ab5qzXp9cb+FIANXc0mWXb9UeP4lOPjqzOCj5wfflLgO329XlP2Q6PJk9243tqZxA/
+         CZdkQVPQaQ5F6T52ARZlXom5DvS8aJiP0pJAQ0jCb0ozwncTQx53cpUGMv/ezmvUJucY
+         shWh92CHZFKSgeSnN4NONXI56A7ntrl82QZqvf3QKnypNebqNGYzcKqe57toa49yU1qC
+         lZJoHc9pVjYPsk3xwZb64i3VWoUKwf79CDwTLghto9ZckQU+tDuzEoSzv7W63kGetKBy
+         Sj4E7picNmpW6KyyBjKpIyMEKGAJ7HEFtf6dUgIymd+hTAhTTKr0g8USCHaOaX7cpZno
+         RF1A==
+X-Gm-Message-State: AOAM5332T0EXzcvaoQ6Iw8hUcKTAb0G3TJAeaLbrwAuN1KiFiYVrH6iu
+        HW6U7EEuSHqoerg+rQuU/OM=
+X-Google-Smtp-Source: ABdhPJxTguLZTyee9M/iAjORC96v1PnwIMeyIKIZKeZzSHQ6/GXDMDaCa6prXtWLjoLl3QrHo9tkig==
+X-Received: by 2002:a63:78d:: with SMTP id 135mr2539279pgh.178.1623808323335;
+        Tue, 15 Jun 2021 18:52:03 -0700 (PDT)
+Received: from u3c3f5cfe23135f.ant.amazon.com (97-113-131-35.tukw.qwest.net. [97.113.131.35])
+        by smtp.googlemail.com with ESMTPSA id q21sm3459664pjg.43.2021.06.15.18.52.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 15 Jun 2021 18:52:02 -0700 (PDT)
+Message-ID: <712b44d2af8f8cd3199aad87eb3bc94ea22d6f4a.camel@gmail.com>
+Subject: Re: [RFC PATCH v5 2/2] arm64: Create a list of SYM_CODE functions,
+ check return PC against list
+From:   Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+To:     madvenka@linux.microsoft.com, broonie@kernel.org,
+        mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 15 Jun 2021 18:52:01 -0700
+In-Reply-To: <20210526214917.20099-3-madvenka@linux.microsoft.com>
+References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
+         <20210526214917.20099-1-madvenka@linux.microsoft.com>
+         <20210526214917.20099-3-madvenka@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-On Tue, Jun 15, 2021 at 02:52:49PM -0400, Peter Xu wrote:
-> On Tue, Jun 15, 2021 at 09:11:03AM +0800, Feng Tang wrote:
-> > On Mon, Jun 14, 2021 at 11:27:39AM +0800, Feng Tang wrote:
-> > > > 
-> > > > It seems Ok to me, but didn't we earlier add the has_pinned which
-> > > > would have changed the layout too? Are we chasing performance delta's
-> > > > nobody cares about?
-> > > 
-> > > Good point! I checked my email folder for 0day's reports, and haven't
-> > > found a report related with Peter's commit 008cfe4418b3 ("mm: Introduce
-> > > mm_struct.has_pinned) which adds 'has_pinned' field. 
-> > > 
-> > > Will run the same test for it and report back.
-> > 
-> > I run the same will-it-scale/mmap1 case for Peter's commit 008cfe4418b3
-> > and its parent commit, and there is no obvious performance diff:
-> > 
-> > a1bffa48745afbb5 008cfe4418b3dbda2ff820cdd7b 
-> > ---------------- --------------------------- 
-> > 
-> >     344353            -0.4%     342929        will-it-scale.48.threads
-> >       7173            -0.4%       7144        will-it-scale.per_thread_ops
-> > 
-> > And from the pahole info for the 2 kernels, Peter's commit adds the
-> > 'has_pinned' is put into an existing 4 bytes hole, so all other following 
-> > fields keep their alignment unchanged. Peter may do it purposely 
-> > considering the alignment. So no performance change is expected.
+On Wed, 2021-05-26 at 16:49 -0500, madvenka@linux.microsoft.com wrote:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 > 
-> Thanks for verifying this.  I didn't do it on purpose at least for the initial
-> version, but I do remember some comment to fill up that hole, so it may have
-> got moved around.
+> The unwinder should check if the return PC falls in any function that
+> is considered unreliable from an unwinding perspective. If it does,
+> mark the stack trace unreliable.
 > 
-> Also note that if nothing goes wrong, has_pinned will be gone in the next
-> release with commit 3c0c4cda6d48 ("mm: gup: pack has_pinned in MMF_HAS_PINNED",
-> 2021-05-26); it's in -mm-next but not reaching the main branch yet.  So then I
-> think the 4 bytes hole should come back to us again, with no perf loss either.
- 
-Thanks for the heads up.
 
-> What I'm thinking is whether we should move some important (and especially
-> CONFIG_* irrelevant) fields at the top of the whole struct define, make sure
-> they're most optimal for the common workload and make them static.  Then
-> there'll be less or no possibility some new field regress some common workload
-> by accident.  Not sure whether it makes sense to do so.
+[snip]
 
-Yep, it makes sense to me, as it makes the alignment more predictable and
-controllable.  But usually we dare not to move the fields around, as it could
-cause improvments to some cases and regressions to other cases, given different
-benchmarks can see different hotspots.  And most of our patches changing 
-data structure's layout are mostly regression driven :)
+Correct me if I'm wrong, but do you not need to move the final frame
+check to before the unwinder_is_unreliable() call?
 
-Thanks,
-Feng
+Userland threads which have ret_from_fork as the last entry on the
+stack will always be marked unreliable as they will always have a
+SYM_CODE entry on their stack (the ret_from_fork).
 
-> Thanks,
-> 
-> -- 
-> Peter Xu
+Also given that this means the last frame has been reached and as such
+there's no more unwinding to do, I don't think we care if the last pc
+is a code address.
+
+- Suraj
+
+>   *
+> @@ -133,7 +236,20 @@ int notrace unwind_frame(struct task_struct
+> *tsk, struct stackframe *frame)
+>  	 *	- Foreign code (e.g. EFI runtime services)
+>  	 *	- Procedure Linkage Table (PLT) entries and veneer
+> functions
+>  	 */
+> -	if (!__kernel_text_address(frame->pc))
+> +	if (!__kernel_text_address(frame->pc)) {
+> +		frame->reliable = false;
+> +		return 0;
+> +	}
+> +
+> +	/*
+> +	 * If the final frame has been reached, there is no more
+> unwinding
+> +	 * to do. There is no need to check if the return PC is
+> considered
+> +	 * unreliable by the unwinder.
+> +	 */
+> +	if (!frame->fp)
+> +		return 0;
+
+if (frame->fp == (unsigned long)task_pt_regs(tsk)->stackframe)
+	return -ENOENT;
+
+> +
+> +	if (unwinder_is_unreliable(frame->pc))
+>  		frame->reliable = false;
+>  
+>  	return 0;
+> diff --git a/arch/arm64/kernel/vmlinux.lds.S
+> b/arch/arm64/kernel/vmlinux.lds.S
+> index 7eea7888bb02..32e8d57397a1 100644
+> --- a/arch/arm64/kernel/vmlinux.lds.S
+> +++ b/arch/arm64/kernel/vmlinux.lds.S
+> @@ -103,6 +103,12 @@ jiffies = jiffies_64;
+>  #define TRAMP_TEXT
+>  #endif
+>  
+> +#define SYM_CODE_FUNCTIONS                                     \
+> +       . = ALIGN(16);                                           \
+> +       __sym_code_functions_start = .;                         \
+> +       KEEP(*(sym_code_functions))                             \
+> +       __sym_code_functions_end = .;
+> +
+>  /*
+>   * The size of the PE/COFF section that covers the kernel image,
+> which
+>   * runs from _stext to _edata, must be a round multiple of the
+> PE/COFF
+> @@ -218,6 +224,7 @@ SECTIONS
+>  		CON_INITCALL
+>  		INIT_RAM_FS
+>  		*(.init.altinstructions .init.bss)	/* from the
+> EFI stub */
+> +               SYM_CODE_FUNCTIONS
+>  	}
+>  	.exit.data : {
+>  		EXIT_DATA
+
