@@ -2,195 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9133A9DE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EB03A9DE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234136AbhFPOoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234129AbhFPOoA (ORCPT
+        id S234138AbhFPOon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:44:43 -0400
+Received: from pv50p00im-zteg10011401.me.com ([17.58.6.41]:60303 "EHLO
+        pv50p00im-zteg10011401.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233919AbhFPOom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:44:00 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C722BC061768
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:41:54 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so4135993pjn.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:41:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Xnm+WYpnOqXtkZdMWzoHLGjqCi4LOFWzGjFsrgoSRP0=;
-        b=lrTVnbws/VPuEimwOb3YT0iDmqjnOYczffUh/Kv58vesKqMDTvMYbZJlToeNNPZAhV
-         4Xy6XPsxIik88Qh+qEI8tlkRAALocVx3aaCxZj5FXWVdQADSSsTVrzwdmrKGCmfbwngX
-         VJ19V7sYPzY2FIe5MofHco2b/0JWT0cVUBZV8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xnm+WYpnOqXtkZdMWzoHLGjqCi4LOFWzGjFsrgoSRP0=;
-        b=Yl+CehVxooHC6lzgoUeDNTKXIn9AEH3ngid/VgK8OwkWSBZajlXA2CiSjv1caH3TEf
-         TCp1CV/opjfUSc2/Qtf2GuBFD/yl8sVywnJ/FwI1nRifY3AXu16W07cIoPAMQA27+LfO
-         hvCjVSpw04wXhVZzUfIrikJK92CBxmgc15MsuIj29TuDrSo5tz+EoG/kpZC+C9+gI5zE
-         F4OZ1xf/zZCPqKjlp5y3A1d1o4K9SzgvWMdHbs0zXZhp9DqixGNpHQVvDdzl4i26248t
-         3AFBTXqyh+/564l06E412SRSXQvwcyRm5YT2fMwVIb2D18uSJ6pheZfDIni9xKJA6qdS
-         HIHQ==
-X-Gm-Message-State: AOAM530r5v3fD+ceVk/b2MQQrIBi+L1VGkNusjUS/Orqji0Pg8lHXsD2
-        pqEMkNa/KfAWo+JTsy2y9ybKdA==
-X-Google-Smtp-Source: ABdhPJwwUS8UE4ZeWh9OoJ7tApiFkdOVNzxHHc1QvWSodOw2AyXOFizKKx/GS/9aqBotRNv22WlaBQ==
-X-Received: by 2002:a17:902:22d:b029:11f:2db4:4c01 with SMTP id 42-20020a170902022db029011f2db44c01mr19568plc.29.1623854514214;
-        Wed, 16 Jun 2021 07:41:54 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y6sm2434305pjr.48.2021.06.16.07.41.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 07:41:53 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 07:41:52 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        gmpy.liaowx@gmail.com, Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-doc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] pstore/blk: Include zone in pstore_device_info
-Message-ID: <202106160737.B0B8882B@keescook>
-References: <20210615212121.1200820-1-keescook@chromium.org>
- <20210615212121.1200820-4-keescook@chromium.org>
- <20210616040247.GD25873@lst.de>
+        Wed, 16 Jun 2021 10:44:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1623854556; bh=u1X+vt8zI6f6plB9FC1PC3QZFqTsSMdz/tE/Bb75RRk=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=WrnIglfVudnLX73s4JDh7q6WjGXSJIDxhbuti2wnu5rdHFG8SIR3UQphbepgf3Nl1
+         xQRc2rp4D75MKaYQxWfSytlv7dbke7lrgM6naIbnYkx56BzvOR48uCEjYFEtc5Nrmp
+         d7xVaX0CDt/ufBRfA+fv7m2c/yULpuTRLaIz0tmLl5SNKkT65kvd2IhbIdN+jgiAWC
+         nW4DRTcygqDunahkL/MQ9ZEWT9YOmrHoDBUGCxaUo50Xp/sCI0eMXVbtRmFbY3eznx
+         8JJssPY4Xt31Pb2EHfLzgN69lN6jTEka7iwH84awE5cZY0d4nEDNEZ9OEyBUF+jRUH
+         cg48FuTebDRCw==
+Received: from xiongwei.. (unknown [120.245.2.120])
+        by pv50p00im-zteg10011401.me.com (Postfix) with ESMTPSA id 58A839005F1;
+        Wed, 16 Jun 2021 14:42:27 +0000 (UTC)
+From:   Xiongwei Song <sxwjean@me.com>
+To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, boqun.feng@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
+Subject: [PATCH] locking/lockdep: unlikely bfs error check
+Date:   Wed, 16 Jun 2021 22:42:09 +0800
+Message-Id: <20210616144210.278662-1-sxwjean@me.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616040247.GD25873@lst.de>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-16_07:2021-06-15,2021-06-16 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2106160085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 06:02:47AM +0200, Christoph Hellwig wrote:
-> > +#define verify_size(name, alignsize, enabled) {				\
-> > +		long _##name_;						\
-> > +		if (enabled)						\
-> > +			_##name_ = check_size(name, alignsize);		\
-> > +		else							\
-> > +			_##name_ = 0;					\
-> > +		/* synchronize visible module parameters to result. */	\
-> > +		name = _##name_ / 1024;					\
-> > +		dev->zone.name = _##name_;				\
-> > +	}
-> 
-> The formatting here looks weird between the two-tab indent and the
-> opening brace on the macro definition line.
+From: Xiongwei Song <sxwjean@gmail.com>
 
-I can adjust that, sure.
+The error from graph walk is small probability event, so unlikely
+bfs_error can improve performance a little bit.
 
-> 
-> > -	if (!dev || !dev->total_size || !dev->read || !dev->write) {
-> > +	if (!dev || !dev->zone.total_size || !dev->zone.read || !dev->zone.write) {
-> >  		if (!dev)
-> > -			pr_err("NULL device info\n");
-> > +			pr_err("NULL pstore_device_info\n");
-> >  		else {
-> > -			if (!dev->total_size)
-> > +			if (!dev->zone.total_size)
-> >  				pr_err("zero sized device\n");
-> > -			if (!dev->read)
-> > +			if (!dev->zone.read)
-> >  				pr_err("no read handler for device\n");
-> > -			if (!dev->write)
-> > +			if (!dev->zone.write)
-> >  				pr_err("no write handler for device\n");
-> >  		}
-> 
-> This still looks odd to me.  Why not the somewhat more verbose but
-> much more obvious:
-> 
-> 	if (!dev) {
-> 		pr_err("NULL pstore_device_info\n");
-> 		return -EINVAL;
-> 	}
-> 	if (!dev->zone.total_size) {
-> 		pr_err("zero sized device\n");
-> 		return -EINVAL;
-> 	}
-> 	...
+Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+---
+ kernel/locking/lockdep.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Will do.
-
-> > -	dev.total_size = i_size_read(I_BDEV(psblk_file->f_mapping->host)->bd_inode);
-> > +	dev->zone.total_size = i_size_read(I_BDEV(psblk_file->f_mapping->host)->bd_inode);
-> 
-> This is starting to be unreadable long.  A local variable for the inode
-> might be nice, as that can also be used in the ISBLK check above.
-
-Fair enough; will change.
-
-> > +	if (!pstore_device_info && best_effort && blkdev[0]) {
-> > +		struct pstore_device_info *best_effort_dev;
-> > +
-> > +		best_effort_dev = kzalloc(sizeof(*best_effort_dev), GFP_KERNEL);
-> > +		if (!best_effort) {
-> > +			ret = -ENOMEM;
-> > +			goto unlock;
-> > +		}
-> > +		best_effort_dev->zone.read = psblk_generic_blk_read;
-> > +		best_effort_dev->zone.write = psblk_generic_blk_write;
-> > +
-> > +		ret = __register_pstore_blk(best_effort_dev,
-> > +					    early_boot_devpath(blkdev));
-> > +		if (ret)
-> > +			kfree(best_effort_dev);
-> > +		else
-> > +			pr_info("attached %s (%zu) (no dedicated panic_write!)\n",
-> > +				blkdev, best_effort_dev->zone.total_size);
-> 
-> Maybe split this into a little helper?
-> 
-> > +	/* Unregister and free the best_effort device. */
-> > +	if (psblk_file) {
-> > +		struct pstore_device_info *dev = pstore_device_info;
-> > +
-> > +		__unregister_pstore_device(dev);
-> > +		kfree(dev);
-> > +		fput(psblk_file);
-> > +		psblk_file = NULL;
-> >  	}
-> 
-> Same.
-
-I guess? I don't feel strongly one way or another.
-
-> 
-> > +	/* If we've been asked to unload, unregister any registered device. */
-> > +	if (pstore_device_info)
-> > +		__unregister_pstore_device(pstore_device_info);
-> 
-> Won't this double unregister pstore_device_info?
-
-No, __unregister_pstore_device() will NULL pstore_device_info.
-
-> 
-> >  struct pstore_device_info {
-> > -	unsigned long total_size;
-> >  	unsigned int flags;
-> > -	pstore_zone_read_op read;
-> > -	pstore_zone_write_op write;
-> > -	pstore_zone_erase_op erase;
-> > -	pstore_zone_write_op panic_write;
-> > +	struct pstore_zone_info zone;
-> >  };
-> 
-> Given that flags is only used inside of __register_pstore_device
-> why not kill this struct and just pass it explicitly?
-
-Because of the mess pstore's internal APIs used to be. :) It's likely
-other things will get added here in the future, and I don't want to
-have to repeat the kind of argument passing games that used to exist in
-this code.
-
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 074fd6418c20..af8c9203cd3e 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -2646,7 +2646,7 @@ static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
+ 	bfs_init_rootb(&this, prev);
+ 
+ 	ret = __bfs_backwards(&this, &usage_mask, usage_accumulate, usage_skip, NULL);
+-	if (bfs_error(ret)) {
++	if (unlikely(bfs_error(ret))) {
+ 		print_bfs_bug(ret);
+ 		return 0;
+ 	}
+@@ -2664,7 +2664,7 @@ static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
+ 	bfs_init_root(&that, next);
+ 
+ 	ret = find_usage_forwards(&that, forward_mask, &target_entry1);
+-	if (bfs_error(ret)) {
++	if (unlikely(bfs_error(ret))) {
+ 		print_bfs_bug(ret);
+ 		return 0;
+ 	}
+@@ -2679,7 +2679,7 @@ static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
+ 	backward_mask = original_mask(target_entry1->class->usage_mask);
+ 
+ 	ret = find_usage_backwards(&this, backward_mask, &target_entry);
+-	if (bfs_error(ret)) {
++	if (unlikely(bfs_error(ret))) {
+ 		print_bfs_bug(ret);
+ 		return 0;
+ 	}
+@@ -2998,7 +2998,7 @@ check_prev_add(struct task_struct *curr, struct held_lock *prev,
+ 	 * Is the <prev> -> <next> link redundant?
+ 	 */
+ 	ret = check_redundant(prev, next);
+-	if (bfs_error(ret))
++	if (unlikely(bfs_error(ret)))
+ 		return 0;
+ 	else if (ret == BFS_RMATCH)
+ 		return 2;
+@@ -3911,7 +3911,7 @@ check_usage_forwards(struct task_struct *curr, struct held_lock *this,
+ 
+ 	bfs_init_root(&root, this);
+ 	ret = find_usage_forwards(&root, usage_mask, &target_entry);
+-	if (bfs_error(ret)) {
++	if (unlikely(bfs_error(ret))) {
+ 		print_bfs_bug(ret);
+ 		return 0;
+ 	}
+@@ -3946,7 +3946,7 @@ check_usage_backwards(struct task_struct *curr, struct held_lock *this,
+ 
+ 	bfs_init_rootb(&root, this);
+ 	ret = find_usage_backwards(&root, usage_mask, &target_entry);
+-	if (bfs_error(ret)) {
++	if (unlikely(bfs_error(ret))) {
+ 		print_bfs_bug(ret);
+ 		return 0;
+ 	}
 -- 
-Kees Cook
+2.30.2
+
