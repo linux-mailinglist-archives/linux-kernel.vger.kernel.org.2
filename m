@@ -2,122 +2,534 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D243A95CE
+	by mail.lfdr.de (Postfix) with ESMTP id BF0E73A95CF
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbhFPJSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
+        id S232361AbhFPJS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbhFPJSP (ORCPT
+        with ESMTP id S232214AbhFPJSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:18:15 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09FCC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:16:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7LgyNhMeySjLgdtjGJWLbYeWqHj0anBeJjBkkv2F6pE=; b=mnp/CLLIE/CrGvHg8pqIaYBavF
-        WVqiuhpup/iu0fMnxfsmxxzEJYj2wsUZYc3AuynDcVd+E4E9MmuhJaDyYbpQGJI713Fvmqn4wym8j
-        NCZAomLoji9kUrrZIsYjtsarzH8bIA4PdM8uSdKabxzqd1LvTVAufFYcfzW8np6qoyKg26X2NXuZG
-        WszqOILfCKSdfoRfkmKlpwW22hMX/faUZDEsy/f9UnKuQo8qO/i+3ZciwthWBRWVT6CMzpggvkjm0
-        kPNcAttQnd9AbkrvEdAfQcpAYLsvF8VI47bnvCkgpbxQISwkplH6JgjZeIPw01jJL9/HMd9frC8Hi
-        RgLx6pyA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltReP-008HLY-MV; Wed, 16 Jun 2021 09:16:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 13932300269;
-        Wed, 16 Jun 2021 11:16:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 01C3020277F84; Wed, 16 Jun 2021 11:16:03 +0200 (CEST)
-Date:   Wed, 16 Jun 2021 11:16:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 3/6] posix-cpu-timers: Force next_expiration recalc after
- timer deletion
-Message-ID: <YMnBUybUcUP3Ll/P@hirez.programming.kicks-ass.net>
-References: <20210604113159.26177-1-frederic@kernel.org>
- <20210604113159.26177-4-frederic@kernel.org>
+        Wed, 16 Jun 2021 05:18:25 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA80C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:16:18 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id i94so1816396wri.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:16:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VuU2P/MyGYM6RxpI7fo/PQuftfbqNmxoVc02nqwlfD4=;
+        b=XG/OJYTVoxDusjZv7vFlMRPnGVFpUZ8mF0A9/HEez1Pp8Mb6/LMN/zS1UhB5hON43t
+         W4c5Hpw+wnnN1zJGlWEoM6yy6gYd8+oaZll1DbeF0hDft+wyqYOcIJRbDgemqOCkQCb1
+         HOpk4kyRu0Oe6KgOJCcLPKUDgOSwncO+Rbz03ZoUD2J9J7UUeCNm/SdRvFzuohxfX89q
+         96nftncOP3gILyHxxY1FYiXCAK6Sjc1sYeJcX54Phvrt2KppEYe1ewHmIPr48jJmEwr3
+         ORqoFz+qdCF3swTvCSWfp2uWF8RbRBynYEJjYKLlHc9mwMaFjvkkFplNCNmScXPQ7RmE
+         fJdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=VuU2P/MyGYM6RxpI7fo/PQuftfbqNmxoVc02nqwlfD4=;
+        b=SYS39t1kDNOCNY0pcjJhf7gAHvJp1kJtIsTR4uBHOUI4MkPampe5QV2e3nBsVdX+Ue
+         TA4LfdDGf+rPR8Ibz68vBOvQ3nMoC1JCN28Uek4AYOcIA6NuB7BUrPoqbQlqcgFODUWB
+         uMA3tqDxx5+YVdA258R9b6TxfGs7SSm0NUA5HGVSOfUXkstJtgFRHhCcEVvRRHBACc7c
+         3OMCIRTJMPQO4UGXCj5CUZPK6N0c2MY7n4dMGyRjAlpPoeUwUzGR7OrknOHweG7PpuYS
+         Ln4pH3OBTZTAIkpDm18CIUfDssKVXJGlNBnwLczWcLinqrKKkQzoMXeFt0lGzc9S/DSb
+         cEKA==
+X-Gm-Message-State: AOAM532zEQV90D7jid9WqML9qJUZf1p8VAQyYGMjxzFutqle7IkpTYrR
+        GTZRy7LrLjhmAccUbbZTx1uA7w==
+X-Google-Smtp-Source: ABdhPJzuaA9lMuWR5AGBHFP6E2vRmzOMsIahc9F7SJMRqikyv1guP5EuBfS9UExQhI0Npr7O8PWMuA==
+X-Received: by 2002:a5d:6584:: with SMTP id q4mr4108585wru.230.1623834977248;
+        Wed, 16 Jun 2021 02:16:17 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:1dbd:a958:ade:3ee6? ([2a01:e0a:90c:e290:1dbd:a958:ade:3ee6])
+        by smtp.gmail.com with ESMTPSA id h46sm1653801wrh.44.2021.06.16.02.16.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 02:16:16 -0700 (PDT)
+Subject: Re: [PATCH v8 3/4] drm/bridge: anx7625: add MIPI DPI input feature
+To:     Xin Ji <xji@analogixsemi.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sheng Pan <span@analogixsemi.com>,
+        Bernie Liang <bliang@analogixsemi.com>,
+        Zhen Li <zhenli@analogixsemi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org
+References: <cover.1623725300.git.xji@analogixsemi.com>
+ <d23737053c54d4c6f9a05da12e807264298a3063.1623725300.git.xji@analogixsemi.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <622199f2-0faf-1c92-d718-b983a9e77c4c@baylibre.com>
+Date:   Wed, 16 Jun 2021 11:16:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604113159.26177-4-frederic@kernel.org>
+In-Reply-To: <d23737053c54d4c6f9a05da12e807264298a3063.1623725300.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 01:31:56PM +0200, Frederic Weisbecker wrote:
-> A timer deletion only dequeues the timer but it doesn't shutdown
-> the related costly process wide cputimer counter and the tick dependency.
+On 16/06/2021 09:50, Xin Ji wrote:
+> The basic anx7625 driver only support MIPI DSI rx signal input.
+> This patch add MIPI DPI rx input configuration support, after apply
+> this patch, the driver can support DSI rx or DPI rx by adding
+> 'bus-type' in DT.
 > 
-> The following code snippet keeps this overhead around for one week after
-> the timer deletion:
+> Reviewed-by: Robert Foss <robert.foss@linaro.org>
+> Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> ---
+>  drivers/gpu/drm/bridge/analogix/anx7625.c | 245 ++++++++++++++++------
+>  drivers/gpu/drm/bridge/analogix/anx7625.h |  18 +-
+>  2 files changed, 203 insertions(+), 60 deletions(-)
 > 
-> 	void trigger_process_counter(void)
-> 	{
-> 		timer_t id;
-> 		struct itimerspec val = { };
-> 
-> 		val.it_value.tv_sec = 604800;
-> 		timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id);
-> 		timer_settime(id, 0, &val, NULL);
-> 		timer_delete(id);
-> 	}
-> 
-> Make sure the next target's tick recalculates the nearest expiration and
-> clears the process wide counter and tick dependency if necessary.
-
-> diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
-> index 132fd56fb1cd..bb1f862c785e 100644
-> --- a/kernel/time/posix-cpu-timers.c
-> +++ b/kernel/time/posix-cpu-timers.c
-> @@ -405,6 +405,33 @@ static int posix_cpu_timer_create(struct k_itimer *new_timer)
->  	return 0;
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> index 048080e75016..fb2301a92704 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> @@ -152,18 +152,18 @@ static int anx7625_write_and(struct anx7625_data *ctx,
+>  	return anx7625_reg_write(ctx, client, offset, (val & (mask)));
 >  }
 >  
-> +/*
-> + * Dequeue the timer and reset the base if it was its earliest expiration.
-> + * It makes sure the next tick recalculates the base next expiration so we
-> + * don't keep the costly process wide cputime counter around for a random
-> + * amount of time, along with the tick dependency.
-> + */
-> +static void disarm_timer(struct k_itimer *timer, struct task_struct *p)
+> -static int anx7625_write_and_or(struct anx7625_data *ctx,
+> -				struct i2c_client *client,
+> -				u8 offset, u8 and_mask, u8 or_mask)
+> +static int anx7625_config_bit_matrix(struct anx7625_data *ctx)
+>  {
+> -	int val;
+> +	int i, ret;
+>  
+> -	val = anx7625_reg_read(ctx, client, offset);
+> -	if (val < 0)
+> -		return val;
+> +	ret = anx7625_write_or(ctx, ctx->i2c.tx_p2_client,
+> +			       AUDIO_CONTROL_REGISTER, 0x80);
+> +	for (i = 0; i < 13; i++)
+> +		ret |= anx7625_reg_write(ctx, ctx->i2c.tx_p2_client,
+> +					 VIDEO_BIT_MATRIX_12 + i,
+> +					 0x18 + i);
+>  
+> -	return anx7625_reg_write(ctx, client,
+> -				 offset, (val & and_mask) | (or_mask));
+> +	return ret;
+>  }
+>  
+>  static int anx7625_read_ctrl_status_p0(struct anx7625_data *ctx)
+> @@ -221,38 +221,6 @@ static int anx7625_video_mute_control(struct anx7625_data *ctx,
+>  	return ret;
+>  }
+>  
+> -static int anx7625_config_audio_input(struct anx7625_data *ctx)
+> -{
+> -	struct device *dev = &ctx->client->dev;
+> -	int ret;
+> -
+> -	/* Channel num */
+> -	ret = anx7625_reg_write(ctx, ctx->i2c.tx_p2_client,
+> -				AUDIO_CHANNEL_STATUS_6, I2S_CH_2 << 5);
+> -
+> -	/* FS */
+> -	ret |= anx7625_write_and_or(ctx, ctx->i2c.tx_p2_client,
+> -				    AUDIO_CHANNEL_STATUS_4,
+> -				    0xf0, AUDIO_FS_48K);
+> -	/* Word length */
+> -	ret |= anx7625_write_and_or(ctx, ctx->i2c.tx_p2_client,
+> -				    AUDIO_CHANNEL_STATUS_5,
+> -				    0xf0, AUDIO_W_LEN_24_24MAX);
+> -	/* I2S */
+> -	ret |= anx7625_write_or(ctx, ctx->i2c.tx_p2_client,
+> -				AUDIO_CHANNEL_STATUS_6, I2S_SLAVE_MODE);
+> -	ret |= anx7625_write_and(ctx, ctx->i2c.tx_p2_client,
+> -				 AUDIO_CONTROL_REGISTER, ~TDM_TIMING_MODE);
+> -	/* Audio change flag */
+> -	ret |= anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
+> -				AP_AV_STATUS, AP_AUDIO_CHG);
+> -
+> -	if (ret < 0)
+> -		DRM_DEV_ERROR(dev, "fail to config audio.\n");
+> -
+> -	return ret;
+> -}
+> -
+>  /* Reduction of fraction a/b */
+>  static void anx7625_reduction_of_a_fraction(unsigned long *a, unsigned long *b)
+>  {
+> @@ -412,7 +380,7 @@ static int anx7625_dsi_video_timing_config(struct anx7625_data *ctx)
+>  	ret |= anx7625_write_and(ctx, ctx->i2c.rx_p1_client,
+>  			MIPI_LANE_CTRL_0, 0xfc);
+>  	ret |= anx7625_write_or(ctx, ctx->i2c.rx_p1_client,
+> -				MIPI_LANE_CTRL_0, 3);
+> +				MIPI_LANE_CTRL_0, ctx->pdata.mipi_lanes - 1);
+>  
+>  	/* Htotal */
+>  	htotal = ctx->dt.hactive.min + ctx->dt.hfront_porch.min +
+> @@ -597,6 +565,76 @@ static int anx7625_dsi_config(struct anx7625_data *ctx)
+>  	return ret;
+>  }
+>  
+> +static int anx7625_api_dpi_config(struct anx7625_data *ctx)
 > +{
-> +	struct cpu_timer *ctmr = &timer->it.cpu;
-> +	struct posix_cputimer_base *base;
-> +	int clkidx;
+> +	struct device *dev = &ctx->client->dev;
+> +	u16 freq = ctx->dt.pixelclock.min / 1000;
+> +	int ret;
 > +
-> +	if (!cpu_timer_dequeue(ctmr))
+> +	/* configure pixel clock */
+> +	ret = anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
+> +				PIXEL_CLOCK_L, freq & 0xFF);
+> +	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
+> +				 PIXEL_CLOCK_H, (freq >> 8));
+> +
+> +	/* set DPI mode */
+> +	/* set to DPI PLL module sel */
+> +	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
+> +				 MIPI_DIGITAL_PLL_9, 0x20);
+> +	/* power down MIPI */
+> +	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
+> +				 MIPI_LANE_CTRL_10, 0x08);
+> +	/* enable DPI mode */
+> +	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
+> +				 MIPI_DIGITAL_PLL_18, 0x1C);
+> +	/* set first edge */
+> +	ret |= anx7625_reg_write(ctx, ctx->i2c.tx_p2_client,
+> +				 VIDEO_CONTROL_0, 0x06);
+> +	if (ret < 0)
+> +		DRM_DEV_ERROR(dev, "IO error : dpi phy set failed.\n");
+> +
+> +	return ret;
+> +}
+> +
+> +static int anx7625_dpi_config(struct anx7625_data *ctx)
+> +{
+> +	struct device *dev = &ctx->client->dev;
+> +	int ret;
+> +
+> +	DRM_DEV_DEBUG_DRIVER(dev, "config dpi\n");
+> +
+> +	/* DSC disable */
+> +	ret = anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
+> +				R_DSC_CTRL_0, ~DSC_EN);
+> +	if (ret < 0) {
+> +		DRM_DEV_ERROR(dev, "IO error : disable dsc failed.\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = anx7625_config_bit_matrix(ctx);
+> +	if (ret < 0) {
+> +		DRM_DEV_ERROR(dev, "config bit matrix failed.\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = anx7625_api_dpi_config(ctx);
+> +	if (ret < 0) {
+> +		DRM_DEV_ERROR(dev, "mipi phy(dpi) setup failed.\n");
+> +		return ret;
+> +	}
+> +
+> +	/* set MIPI RX EN */
+> +	ret = anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
+> +			       AP_AV_STATUS, AP_MIPI_RX_EN);
+> +	/* clear mute flag */
+> +	ret |= anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
+> +				 AP_AV_STATUS, (u8)~AP_MIPI_MUTE);
+> +	if (ret < 0)
+> +		DRM_DEV_ERROR(dev, "IO error : enable mipi rx failed.\n");
+> +
+> +	return ret;
+> +}
+> +
+>  static void anx7625_dp_start(struct anx7625_data *ctx)
+>  {
+>  	int ret;
+> @@ -607,9 +645,10 @@ static void anx7625_dp_start(struct anx7625_data *ctx)
+>  		return;
+>  	}
+>  
+> -	anx7625_config_audio_input(ctx);
+> -
+> -	ret = anx7625_dsi_config(ctx);
+> +	if (ctx->pdata.is_dpi)
+> +		ret = anx7625_dpi_config(ctx);
+> +	else
+> +		ret = anx7625_dsi_config(ctx);
+>  
+>  	if (ret < 0)
+>  		DRM_DEV_ERROR(dev, "MIPI phy setup error.\n");
+> @@ -1047,6 +1086,7 @@ static void anx7625_start_dp_work(struct anx7625_data *ctx)
+>  		return;
+>  	}
+>  
+> +	ctx->hpd_status = 1;
+>  	ctx->hpd_high_cnt++;
+>  
+>  	/* Not support HDCP */
+> @@ -1056,8 +1096,10 @@ static void anx7625_start_dp_work(struct anx7625_data *ctx)
+>  	ret |= anx7625_write_or(ctx, ctx->i2c.rx_p1_client, 0xec, 0x10);
+>  	/* Interrupt for DRM */
+>  	ret |= anx7625_write_or(ctx, ctx->i2c.rx_p1_client, 0xff, 0x01);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		DRM_DEV_ERROR(dev, "fail to setting HDCP/auth\n");
+>  		return;
+> +	}
+>  
+>  	ret = anx7625_reg_read(ctx, ctx->i2c.rx_p1_client, 0x86);
+>  	if (ret < 0)
+> @@ -1076,6 +1118,10 @@ static void anx7625_hpd_polling(struct anx7625_data *ctx)
+>  	int ret, val;
+>  	struct device *dev = &ctx->client->dev;
+>  
+> +	/* Interrupt mode, no need poll HPD status, just return */
+> +	if (ctx->pdata.intp_irq)
 > +		return;
 > +
-> +	clkidx = CPUCLOCK_WHICH(timer->it_clock);
+>  	ret = readx_poll_timeout(anx7625_read_hpd_status_p0,
+>  				 ctx, val,
+>  				 ((val & HPD_STATUS) || (val < 0)),
+> @@ -1103,6 +1149,21 @@ static void anx7625_remove_edid(struct anx7625_data *ctx)
+>  	ctx->slimport_edid_p.edid_block_num = -1;
+>  }
+>  
+> +static void anx7625_dp_adjust_swing(struct anx7625_data *ctx)
+> +{
+> +	int i;
 > +
-> +	if (CPUCLOCK_PERTHREAD(timer->it_clock))
-> +		base = p->posix_cputimers.bases + clkidx;
-> +	else
-> +		base = p->signal->posix_cputimers.bases + clkidx;
+> +	for (i = 0; i < ctx->pdata.dp_lane0_swing_reg_cnt; i++)
+> +		anx7625_reg_write(ctx, ctx->i2c.tx_p1_client,
+> +				  DP_TX_LANE0_SWING_REG0 + i,
+> +				  ctx->pdata.lane0_reg_data[i] & 0xFF);
 > +
-> +	if (cpu_timer_getexpires(ctmr) == base->nextevt)
-> +		base->nextevt = 0;
+> +	for (i = 0; i < ctx->pdata.dp_lane1_swing_reg_cnt; i++)
+> +		anx7625_reg_write(ctx, ctx->i2c.tx_p1_client,
+> +				  DP_TX_LANE1_SWING_REG0 + i,
+> +				  ctx->pdata.lane1_reg_data[i] & 0xFF);
 > +}
+> +
+>  static void dp_hpd_change_handler(struct anx7625_data *ctx, bool on)
+>  {
+>  	struct device *dev = &ctx->client->dev;
+> @@ -1118,9 +1179,8 @@ static void dp_hpd_change_handler(struct anx7625_data *ctx, bool on)
+>  	} else {
+>  		DRM_DEV_DEBUG_DRIVER(dev, " HPD high\n");
+>  		anx7625_start_dp_work(ctx);
+> +		anx7625_dp_adjust_swing(ctx);
+>  	}
+> -
+> -	ctx->hpd_status = 1;
+>  }
+>  
+>  static int anx7625_hpd_change_detect(struct anx7625_data *ctx)
+> @@ -1197,20 +1257,72 @@ static irqreturn_t anx7625_intr_hpd_isr(int irq, void *data)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> +static int anx7625_get_swing_setting(struct device *dev,
+> +				     struct anx7625_platform_data *pdata)
+> +{
+> +	int num_regs;
+> +
+> +	if (of_get_property(dev->of_node,
+> +			    "analogix,lane0-swing", &num_regs)) {
+> +		if (num_regs > DP_TX_SWING_REG_CNT)
+> +			num_regs = DP_TX_SWING_REG_CNT;
+> +
+> +		pdata->dp_lane0_swing_reg_cnt = num_regs;
+> +		of_property_read_u32_array(dev->of_node, "analogix,lane0-swing",
+> +					   pdata->lane0_reg_data, num_regs);
+> +	}
+> +
+> +	if (of_get_property(dev->of_node,
+> +			    "analogix,lane1-swing", &num_regs)) {
+> +		if (num_regs > DP_TX_SWING_REG_CNT)
+> +			num_regs = DP_TX_SWING_REG_CNT;
+> +
+> +		pdata->dp_lane1_swing_reg_cnt = num_regs;
+> +		of_property_read_u32_array(dev->of_node, "analogix,lane1-swing",
+> +					   pdata->lane1_reg_data, num_regs);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int anx7625_parse_dt(struct device *dev,
+>  			    struct anx7625_platform_data *pdata)
+>  {
+> -	struct device_node *np = dev->of_node;
+> +	struct device_node *np = dev->of_node, *ep0;
+>  	struct drm_panel *panel;
+>  	int ret;
+> +	int bus_type, mipi_lanes;
+>  
+> +	anx7625_get_swing_setting(dev, pdata);
+> +
+> +	pdata->is_dpi = 1; /* default dpi mode */
+>  	pdata->mipi_host_node = of_graph_get_remote_node(np, 0, 0);
+>  	if (!pdata->mipi_host_node) {
+>  		DRM_DEV_ERROR(dev, "fail to get internal panel.\n");
+>  		return -ENODEV;
+>  	}
+>  
+> -	DRM_DEV_DEBUG_DRIVER(dev, "found dsi host node.\n");
+> +	bus_type = 5;
+> +	mipi_lanes = MAX_LANES_SUPPORT;
+> +	ep0 = of_graph_get_endpoint_by_regs(np, 0, 0);
+> +	if (ep0) {
+> +		if (of_property_read_u32(ep0, "bus-type", &bus_type))
+> +			bus_type = 0;
+> +
+> +		mipi_lanes = of_property_count_u32_elems(ep0, "data-lanes");
+> +	}
+> +
+> +	if (bus_type == 5) /* bus type is Parallel(DSI) */
+> +		pdata->is_dpi = 0;
 
-OK, so check_process_timers() unconditionally recomputes ->nextevt in
-collect_posix_cputimers() provided ->timers_active. It also clears
-->timers_active if it finds none are left. This recompute is before all
-actual consumers of ->nextevt, with one exception.
+Maybe you can use the include/media/v4l2-fwnode.h V4L2_FWNODE_BUS_TYPE_ defines here instead.
 
-This will loose the update of ->nextevt in arm_timer(), if one were to
-happen between this and check_process_timers(), but afaict that has no
-ill effect. Still that might warrant a comment somewhere.
+Neil
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> +
+> +	pdata->mipi_lanes = mipi_lanes;
+> +	if (pdata->mipi_lanes > MAX_LANES_SUPPORT || pdata->mipi_lanes <= 0)
+> +		pdata->mipi_lanes = MAX_LANES_SUPPORT;
+> +
+> +	if (pdata->is_dpi)
+> +		DRM_DEV_DEBUG_DRIVER(dev, "found MIPI DPI host node.\n");
+> +	else
+> +		DRM_DEV_DEBUG_DRIVER(dev, "found MIPI DSI host node.\n");
+>  
+>  	ret = drm_of_find_panel_or_bridge(np, 1, 0, &panel, NULL);
+>  	if (ret < 0) {
+> @@ -1273,9 +1385,13 @@ static enum drm_connector_status anx7625_sink_detect(struct anx7625_data *ctx)
+>  {
+>  	struct device *dev = &ctx->client->dev;
+>  
+> -	DRM_DEV_DEBUG_DRIVER(dev, "sink detect, return connected\n");
+> +	DRM_DEV_DEBUG_DRIVER(dev, "sink detect\n");
+> +
+> +	if (ctx->pdata.panel_bridge)
+> +		return connector_status_connected;
+>  
+> -	return connector_status_connected;
+> +	return ctx->hpd_status ? connector_status_connected :
+> +				     connector_status_disconnected;
+>  }
+>  
+>  static int anx7625_attach_dsi(struct anx7625_data *ctx)
+> @@ -1303,7 +1419,7 @@ static int anx7625_attach_dsi(struct anx7625_data *ctx)
+>  		return -EINVAL;
+>  	}
+>  
+> -	dsi->lanes = 4;
+> +	dsi->lanes = ctx->pdata.mipi_lanes;
+>  	dsi->format = MIPI_DSI_FMT_RGB888;
+>  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO	|
+>  		MIPI_DSI_MODE_VIDEO_SYNC_PULSE	|
+> @@ -1349,10 +1465,12 @@ static int anx7625_bridge_attach(struct drm_bridge *bridge,
+>  		return -ENODEV;
+>  	}
+>  
+> -	err = anx7625_attach_dsi(ctx);
+> -	if (err) {
+> -		DRM_DEV_ERROR(dev, "Fail to attach to dsi : %d\n", err);
+> -		return err;
+> +	if (!ctx->pdata.is_dpi) {
+> +		err = anx7625_attach_dsi(ctx);
+> +		if (err) {
+> +			DRM_DEV_ERROR(dev, "Fail to attach to dsi : %d\n", err);
+> +			return err;
+> +		}
+>  	}
+>  
+>  	if (ctx->pdata.panel_bridge) {
+> @@ -1451,6 +1569,10 @@ static bool anx7625_bridge_mode_fixup(struct drm_bridge *bridge,
+>  
+>  	DRM_DEV_DEBUG_DRIVER(dev, "drm mode fixup set\n");
+>  
+> +	/* No need fixup for external monitor */
+> +	if (!ctx->pdata.panel_bridge)
+> +		return true;
+> +
+>  	hsync = mode->hsync_end - mode->hsync_start;
+>  	hfp = mode->hsync_start - mode->hdisplay;
+>  	hbp = mode->htotal - mode->hsync_end;
+> @@ -1827,8 +1949,13 @@ static int anx7625_i2c_probe(struct i2c_client *client,
+>  
+>  	platform->bridge.funcs = &anx7625_bridge_funcs;
+>  	platform->bridge.of_node = client->dev.of_node;
+> -	platform->bridge.ops = DRM_BRIDGE_OP_EDID | DRM_BRIDGE_OP_HPD;
+> -	platform->bridge.type = DRM_MODE_CONNECTOR_eDP;
+> +	platform->bridge.ops = DRM_BRIDGE_OP_EDID;
+> +	if (!platform->pdata.panel_bridge)
+> +		platform->bridge.ops |= DRM_BRIDGE_OP_HPD |
+> +					DRM_BRIDGE_OP_DETECT;
+> +	platform->bridge.type = platform->pdata.panel_bridge ?
+> +				    DRM_MODE_CONNECTOR_eDP :
+> +				    DRM_MODE_CONNECTOR_DisplayPort;
+>  	drm_bridge_add(&platform->bridge);
+>  
+>  	DRM_DEV_DEBUG_DRIVER(dev, "probe done\n");
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
+> index 034c3840028f..65db38e5da9a 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.h
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
+> @@ -141,12 +141,20 @@
+>  #define  HORIZONTAL_BACK_PORCH_H      0x22  /* Bit[7:4] are reserved */
+>  
+>  /******** END of I2C Address 0x72 *********/
+> +
+> +/***************************************************************/
+> +/* Register definition of device address 0x7a */
+> +#define DP_TX_SWING_REG_CNT		0x14
+> +#define DP_TX_LANE0_SWING_REG0		0x00
+> +#define DP_TX_LANE1_SWING_REG0		0x14
+> +/******** END of I2C Address 0x7a *********/
+> +
+>  /***************************************************************/
+>  /* Register definition of device address 0x7e */
+>  
+>  #define  I2C_ADDR_7E_FLASH_CONTROLLER  0x7E
+>  
+> -#define FLASH_LOAD_STA 0x05
+> +#define FLASH_LOAD_STA          0x05
+>  #define FLASH_LOAD_STA_CHK	BIT(7)
+>  
+>  #define  XTAL_FRQ_SEL    0x3F
+> @@ -347,12 +355,20 @@ struct s_edid_data {
+>  
+>  /***************** Display End *****************/
+>  
+> +#define MAX_LANES_SUPPORT	4
+> +
+>  struct anx7625_platform_data {
+>  	struct gpio_desc *gpio_p_on;
+>  	struct gpio_desc *gpio_reset;
+>  	struct regulator_bulk_data supplies[3];
+>  	struct drm_bridge *panel_bridge;
+>  	int intp_irq;
+> +	int is_dpi;
+> +	int mipi_lanes;
+> +	int dp_lane0_swing_reg_cnt;
+> +	int lane0_reg_data[DP_TX_SWING_REG_CNT];
+> +	int dp_lane1_swing_reg_cnt;
+> +	int lane1_reg_data[DP_TX_SWING_REG_CNT];
+>  	u32 low_power_mode;
+>  	struct device_node *mipi_host_node;
+>  };
+> 
+
