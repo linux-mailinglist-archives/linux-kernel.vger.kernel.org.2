@@ -2,72 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552B53A9666
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C857B3A967F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhFPJjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:39:49 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:4947 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232341AbhFPJjR (ORCPT
+        id S232013AbhFPJvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:51:24 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:17030 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231491AbhFPJvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:39:17 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G4g490fKlz70Sm;
-        Wed, 16 Jun 2021 17:34:01 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 17:37:10 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 16 Jun 2021 17:37:10 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
-        <ms@dev.tdt.de>, <willemb@google.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 8/8] net: hdlc_ppp: add required space
-Date:   Wed, 16 Jun 2021 17:33:57 +0800
-Message-ID: <1623836037-26812-9-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1623836037-26812-1-git-send-email-huangguangbin2@huawei.com>
-References: <1623836037-26812-1-git-send-email-huangguangbin2@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
+        Wed, 16 Jun 2021 05:51:23 -0400
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210616094915epoutp0157672b4c3b884541b0e62d00fb395150~JBxt-yWOi0760507605epoutp01h
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 09:49:15 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210616094915epoutp0157672b4c3b884541b0e62d00fb395150~JBxt-yWOi0760507605epoutp01h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1623836955;
+        bh=InoYbTqSTzJL0k7/VDUViR0EokAGZGmL8Den3Cd50hU=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=gwcAi80eppQ9a3BzC31PvCfIaL07xl7R1eNtRXLgnHYrXnJmXLE2C8aiZ4b3z3HKW
+         cYIEz7neOwp4EMrXN9AswMt7I4A9P412QiCaudiqg4BrulTTPW8nvBgu2mlYcCIf48
+         yFlx9W8E951RHVX4b7UScg0AgUtxUBrBIEdOHVjY=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210616094914epcas2p17aac116fa16cc76b4d01c94e4ccee7e8~JBxtbvKuq2085820858epcas2p1z;
+        Wed, 16 Jun 2021 09:49:14 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.187]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4G4gPh61BBz4x9Q0; Wed, 16 Jun
+        2021 09:49:12 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        CF.0C.09604.819C9C06; Wed, 16 Jun 2021 18:49:12 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210616094912epcas2p38028df32b89b7cc79ba16c0215f8f664~JBxrPyOOa1694316943epcas2p3m;
+        Wed, 16 Jun 2021 09:49:12 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210616094912epsmtrp13d6d60a40b2aec747e4f611bf7a9f82b~JBxrPH8_e1175011750epsmtrp1V;
+        Wed, 16 Jun 2021 09:49:12 +0000 (GMT)
+X-AuditID: b6c32a45-db3ff70000002584-12-60c9c91860d6
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        EE.F6.08637.819C9C06; Wed, 16 Jun 2021 18:49:12 +0900 (KST)
+Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210616094912epsmtip16089c6878fe9a1082cbf507d29f2dade~JBxrC6JHF3056130561epsmtip1Z;
+        Wed, 16 Jun 2021 09:49:12 +0000 (GMT)
+From:   Daehwan Jung <dh10.jung@samsung.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     Daehwan Jung <dh10.jung@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>,
+        Lukasz Halman <lukasz.halman@gmail.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: ALSA: usb-audio: fix rate on Ozone Z90 USB headset
+Date:   Wed, 16 Jun 2021 18:34:55 +0900
+Message-Id: <1623836097-61918-1-git-send-email-dh10.jung@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMKsWRmVeSWpSXmKPExsWy7bCmma7EyZMJBuse61tcuXiIyeLOgmlM
+        Fs2L17NZNN3oYbW4vGsOm8Wu/3eZLDp39bNabPi+ltGBw2PD5yY2j52z7rJ7bFrVyeaxf+4a
+        do99b5exefRtWcXosX7LVRaPz5vkAjiicmwyUhNTUosUUvOS81My89JtlbyD453jTc0MDHUN
+        LS3MlRTyEnNTbZVcfAJ03TJzgE5TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak5BQY
+        GhboFSfmFpfmpesl5+daGRoYGJkCVSbkZOw5dZux4Al7xfJHR5gaGDvYuhg5OSQETCSuHNzH
+        3MXIxSEksINR4vfPKVDOJ0aJcze2MEI43xgllkydB9TCAdYyfz0TRHwvo8SenbPZIZwfjBL3
+        Pv1hByliE9CS+L6QEWSFiICzxMS978AamAWeMEqcv9QMtltYwFrix5YJYDaLgKrE7fmbmUBs
+        XgFXiZlXb7JD3CcncfNcJ9hJEgLn2CXmHbrDBJFwkdjV8wTKFpZ4dXwLVIOUxMv+NnaIS8sl
+        Fs23g+jtYJRY8+ksI0SNscSsZ+2MIDXMApoS63fpQ5QrSxy5xQJSwSzAJ9Fx+C/UFF6JjjYh
+        iEZliemXJ7BC2JISB1+fY4awPST+nFoHZgsJxEpcnNPDMoFRdhbC/AWMjKsYxVILinPTU4uN
+        CgyR42gTIzi1abnuYJz89oPeIUYmDsZDjBIczEoivLrFJxKEeFMSK6tSi/Lji0pzUosPMZoC
+        g2sis5Rocj4wueaVxBuaGpmZGViaWpiaGVkoifNysB9KEBJITyxJzU5NLUgtgulj4uCUamDy
+        z9b/zisafLom0DP4i3X8zLiQJ7+THZpO2JpVS3OlO3H1+3Zlz/13Luzf7SaRQJX8zVqfld2T
+        Nbfbbrrcc/lxdCTLy+cd34WOPc+f/vPaTPW1R24r72g+In9lwdx1+bdVMhY+ufxn2kqzwpn2
+        4jVL02+eVDxjM3dh3/ufx60sn17pmuLncWQeC+vVD4aci07x7H946Wf/5qJDvR3Wl6e9vnnD
+        xvK0ekJJVabDszmaL2QPWyu+e/brTfOpNsN1kxtkPgb6njzmnOx3MmzGguIUW+f7e63lNx59
+        PC/+6vxzE2cqxEl3/DF0WJeWPq9/Z//T7MJ90i9ese9LKPflbtF9Fs8u/lDUU1Bt78v+xyGP
+        lFiKMxINtZiLihMBWehk5vYDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprILMWRmVeSWpSXmKPExsWy7bCSnK7EyZMJBg/XC1lcuXiIyeLOgmlM
+        Fs2L17NZNN3oYbW4vGsOm8Wu/3eZLDp39bNabPi+ltGBw2PD5yY2j52z7rJ7bFrVyeaxf+4a
+        do99b5exefRtWcXosX7LVRaPz5vkAjiiuGxSUnMyy1KL9O0SuDL2nLrNWPCEvWL5oyNMDYwd
+        bF2MHBwSAiYS89czdTFycggJ7GaUOHxaBsSWEJCUWDr3BjuELSxxv+UIaxcjF1DNN0aJn+tX
+        MoH0sgloSXxfyAhSIyLgKnH13m1GkBpmgReMEn+vHmIBSQgLWEv82DKBDcRmEVCVuD1/M9gy
+        XqCGmVdvQi2Qk7h5rpN5AiPPAkaGVYySqQXFuem5xYYFhnmp5XrFibnFpXnpesn5uZsYwaGm
+        pbmDcfuqD3qHGJk4GA8xSnAwK4nw6hafSBDiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQ
+        QHpiSWp2ampBahFMlomDU6qBqb3h+J4fSoLZHHlq1rMs/i/Rfihl6TglXmaZyWXpve/ENqwM
+        C8vrnnh37ZXS7DrPCQLTtnpo3IgwnLr6s+y2jeX24XL1klv2tvywcVpUbNdv/6ioJrqu+E2z
+        hUulwaa735yfaxfkveTY7dbv41ecvKJ618ETkUIxtYJrt3jlqCYbzu7Z1nDk+3WJx4Kdzxme
+        Rm/ReGI0veVQ8c36DIaTX/2Y+FfPLrrm8+RTgySPcffCfq7Ntw6ULAj6c23f3ZwDb6oTypeZ
+        Z0apsHj8yJ+nLXNZ6nJ9SK7y2tdHq8psTs+5fXvXni1u4Vf77ii3mPza4B29Tjxn16WJE6Q2
+        nfXgUWq50DGrVEJhw7LAq2sklFiKMxINtZiLihMBvJHyXqQCAAA=
+X-CMS-MailID: 20210616094912epcas2p38028df32b89b7cc79ba16c0215f8f664
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
 X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210616094912epcas2p38028df32b89b7cc79ba16c0215f8f664
+References: <CGME20210616094912epcas2p38028df32b89b7cc79ba16c0215f8f664@epcas2p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Li <lipeng321@huawei.com>
+It mislabels its 96 kHz altsetting and that's why it causes some noise
 
-Add space required after that ','.
-
-Signed-off-by: Peng Li <lipeng321@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Daehwan Jung <dh10.jung@samsung.com>
 ---
- drivers/net/wan/hdlc_ppp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/usb/format.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wan/hdlc_ppp.c b/drivers/net/wan/hdlc_ppp.c
-index 53c668e..bef7373 100644
---- a/drivers/net/wan/hdlc_ppp.c
-+++ b/drivers/net/wan/hdlc_ppp.c
-@@ -676,7 +676,8 @@ static int ppp_ioctl(struct net_device *dev, struct ifreq *ifr)
- 
- 		/* no settable parameters */
- 
--		result = hdlc->attach(dev, ENCODING_NRZ,PARITY_CRC16_PR1_CCITT);
-+		result = hdlc->attach(dev, ENCODING_NRZ,
-+				      PARITY_CRC16_PR1_CCITT);
- 		if (result)
- 			return result;
- 
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index 2287f8c..eb216fe 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -223,9 +223,11 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
+ 				continue;
+ 			/* C-Media CM6501 mislabels its 96 kHz altsetting */
+ 			/* Terratec Aureon 7.1 USB C-Media 6206, too */
++			/* Ozone Z90 USB C-Media, too */
+ 			if (rate == 48000 && nr_rates == 1 &&
+ 			    (chip->usb_id == USB_ID(0x0d8c, 0x0201) ||
+ 			     chip->usb_id == USB_ID(0x0d8c, 0x0102) ||
++			     chip->usb_id == USB_ID(0x0d8c, 0x0078) ||
+ 			     chip->usb_id == USB_ID(0x0ccd, 0x00b1)) &&
+ 			    fp->altsetting == 5 && fp->maxpacksize == 392)
+ 				rate = 96000;
 -- 
-2.8.1
+2.7.4
 
