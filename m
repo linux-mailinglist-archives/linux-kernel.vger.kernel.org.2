@@ -2,78 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255B03A9441
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64273A9446
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbhFPHly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 03:41:54 -0400
-Received: from verein.lst.de ([213.95.11.211]:53033 "EHLO verein.lst.de"
+        id S232068AbhFPHmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:42:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232038AbhFPHlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:41:50 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 329CC68B05; Wed, 16 Jun 2021 09:39:42 +0200 (CEST)
-Date:   Wed, 16 Jun 2021 09:39:42 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v12 09/12] swiotlb: Add restricted DMA alloc/free
- support
-Message-ID: <20210616073942.GB2326@lst.de>
-References: <20210616062157.953777-1-tientzu@chromium.org> <20210616062157.953777-10-tientzu@chromium.org>
+        id S231293AbhFPHmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 03:42:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6E117610A1;
+        Wed, 16 Jun 2021 07:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623829205;
+        bh=FlqKBSOWouoOJA/idTKYCzj4gG0KKmyX1IDm3k05lGE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=lon2TYn+zfVRPoaKQUtydVv8ZvQ0sRblgUJhlsZ45RzGckLQz9ekipQrPqs5HBncf
+         3Qk70suFQ+5WX4+6MQZ40+ZUKvGCNcfDvrLi7ihmZ/cP0QB+IO0THy8kPmnor8GwZG
+         a0qT81k9tN5lcT2wUcwzcUH/QEbWxTMxYs6k2veu98El3z+aIumhDPUkkrf6xWYwW8
+         r2l6KuzHsMbpXIFhqErru9+vzF+E1aMZEqi/t4dOTzCRfXLCAo/8viqKtn+NA9IkgH
+         vMXtd+J58i5b1mPOkLp2m6e1WD9jAwU+U3vDq/ZP9Rt8uIw2uShVOSVj9vqcH1Z5t7
+         ECpHLhFo/06/Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5EBE860A71;
+        Wed, 16 Jun 2021 07:40:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616062157.953777-10-tientzu@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: mhi_net: make mhi_wwan_ops static
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162382920538.32075.16793809863524684196.git-patchwork-notify@kernel.org>
+Date:   Wed, 16 Jun 2021 07:40:05 +0000
+References: <1623822790-1404-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1623822790-1404-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 02:21:54PM +0800, Claire Chang wrote:
-> Add the functions, swiotlb_{alloc,free} and is_swiotlb_for_alloc to
-> support the memory allocation from restricted DMA pool.
-> 
-> The restricted DMA pool is preferred if available.
-> 
-> Note that since coherent allocation needs remapping, one must set up
-> another device coherent pool by shared-dma-pool and use
-> dma_alloc_from_dev_coherent instead for atomic coherent allocation.
-> 
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
+Hello:
 
-Looks good,
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+On Wed, 16 Jun 2021 13:53:09 +0800 you wrote:
+> This symbol is not used outside of net.c, so marks it static.
+> 
+> Fix the following sparse warning:
+> 
+> drivers/net/mhi/net.c:385:23: warning: symbol 'mhi_wwan_ops' was not
+> declared. Should it be static?
+> 
+> [...]
+
+Here is the summary with links:
+  - net: mhi_net: make mhi_wwan_ops static
+    https://git.kernel.org/netdev/net-next/c/1d0bbbf22b74
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
