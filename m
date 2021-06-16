@@ -2,65 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE25C3A941C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D660A3A9423
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbhFPHgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 03:36:47 -0400
-Received: from mga11.intel.com ([192.55.52.93]:39009 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231179AbhFPHgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:36:45 -0400
-IronPort-SDR: jvL9yZBZw1f4h0qeMohrcD//W/mLv4TsKP/yUBKbziNrv39fRaW5HcVh0fI6cc+mShegL2yPHG
- 4LPHC3j+FwPA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="203109435"
-X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
-   d="scan'208";a="203109435"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 00:34:40 -0700
-IronPort-SDR: tju26XTtT5CtSiJa+42+6hw9m/hu3AjlCFfT8dthm9xR7YXfatXk2vYbm04LaUuF5xQNWhDGwk
- ZjnaFeczxSqA==
-X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
-   d="scan'208";a="484782709"
-Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.11])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 00:34:35 -0700
-Date:   Wed, 16 Jun 2021 15:34:32 +0800
-From:   kernel test robot <rong.a.chen@intel.com>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     kbuild-all@lists.01.org, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org
-Subject: [powerpc:next-test 113/124] arch/powerpc/kernel/interrupt_64.S:
- asm/head-64.h is included more than once.
-Message-ID: <20210616073432.GX237458@shao2-debian>
+        id S231784AbhFPHhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:37:43 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57745 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231690AbhFPHhl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 03:37:41 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <dimitri.ledkov@canonical.com>)
+        id 1ltQ5H-0006NJ-Cs
+        for linux-kernel@vger.kernel.org; Wed, 16 Jun 2021 07:35:35 +0000
+Received: by mail-io1-f72.google.com with SMTP id e23-20020a6bf1170000b02904d7ff72e203so1334297iog.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:35:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zCv5taiiINLmRcYNh2cZYkv+GwtyeEEw74jPnQvzmFU=;
+        b=Ju7BNmEKOhHFLrko8s6lsEOgHyZC7F0yNNvdaBDzXfKxh+ka//JhMrKK91unuVKHj+
+         3N7mqYMynjXuUNPILz0SLSYYWp53/xeXrlnuMgxqaeniaD8myFnxAEjwabaXHj6i4d6v
+         7n6T4CPNrwsc/4r3aQ1w/JUB9HG2s2FvTg4y7R08IOWEHsybYTPqTbcNXMOYPTG7YMXU
+         mhyOwmCgtNgyOikQWvLJOkjKwDLQubRZFQoF8MqiQgY4rwL13BnLHaFpNfoHWwJ4gzkZ
+         efJZlD9Rr9IHU8jFWumbOk9x5IAxr1LDipKfqTF0P0QnvU07dAu/C+oQW9aAMAeoCTb/
+         /H8Q==
+X-Gm-Message-State: AOAM532L3T737L49IjhCygtP+Dgn8c6/UFj3MzKpY8rHZPlDoG3U+jci
+        OFCb2KnDTxYrhWQgAHyBvTr1pbGHTEc5/p26w2i7FKUDoL5sXhFMzwR9j3OVP9gnZU6dPRc74ul
+        LM2//u9lvqIVkPdgcUK5koWhRJ6YJQpStIncXywBeRZ+vAmDl8eaa7/FWxQ==
+X-Received: by 2002:a92:c56d:: with SMTP id b13mr2674027ilj.267.1623828934478;
+        Wed, 16 Jun 2021 00:35:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzB1U7wvq70SAIs/4TJahvYTzi6Pv8ottxiN303trgIWIeqOrOrGUa+AYp4lGxZ63sSiaLyusOLQ9YEYVWoDJ4=
+X-Received: by 2002:a92:c56d:: with SMTP id b13mr2674013ilj.267.1623828934257;
+ Wed, 16 Jun 2021 00:35:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210615114150.325080-1-dimitri.ledkov@canonical.com> <your-ad-here.call-01623799196-ext-1245@work.hours>
+In-Reply-To: <your-ad-here.call-01623799196-ext-1245@work.hours>
+From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Date:   Wed, 16 Jun 2021 08:34:58 +0100
+Message-ID: <CADWks+bB2YsATLMaPvhtu6MoFsveKYd5cY6GxepeX7OZvto-Ew@mail.gmail.com>
+Subject: Re: [PATCH] s390/boot: add zstd support
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next-test
-head:   103bf32b0d2dd8b8a4d3d9ebdded5ba4e8263e6a
-commit: 5592c877d21b6ca201aafca349663c5a41f134f0 [113/124] powerpc/64: move interrupt return asm to interrupt_64.S
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+On Wed, Jun 16, 2021 at 12:20 AM Vasily Gorbik <gor@linux.ibm.com> wrote:
+>
+> On Tue, Jun 15, 2021 at 12:41:50PM +0100, Dimitri John Ledkov wrote:
+> > Enable ztsd support in s390/boot, to enable booting with zstd
+> > compressed kernel when configured with CONFIG_KERNEL_ZSTD=y.
+> >
+> > BugLink: https://bugs.launchpad.net/bugs/1931725
+> > Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+> > cc: Heiko Carstens <hca@linux.ibm.com>
+> > cc: Vasily Gorbik <gor@linux.ibm.com>
+> > cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> > cc: linux-s390@vger.kernel.org
+> > ---
+> >  arch/s390/Kconfig                        | 1 +
+> >  arch/s390/boot/compressed/Makefile       | 4 ++++
+> >  arch/s390/boot/compressed/decompressor.c | 4 ++++
+> >  3 files changed, 9 insertions(+)
+>
+> Reviewing your patch I noticed that we use wrong condition to
+> define BOOT_HEAP_SIZE. So I made a tiny fix:
+>
+> diff --git a/arch/s390/boot/compressed/decompressor.c b/arch/s390/boot/compressed/decompressor.c
+> index 3061b11c4d27..cf2571050c68 100644
+> --- a/arch/s390/boot/compressed/decompressor.c
+> +++ b/arch/s390/boot/compressed/decompressor.c
+> @@ -29,5 +29,5 @@ extern unsigned char _compressed_start[];
+>  extern unsigned char _compressed_end[];
+>
+> -#ifdef CONFIG_HAVE_KERNEL_BZIP2
+> +#ifdef CONFIG_KERNEL_BZIP2
+>  #define BOOT_HEAP_SIZE 0x400000
+>  #else
+>
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Nice. I guess it means all kernels were always built with large
+HEAP_SIZE, and that's why my boot tests worked too.
+
+Note this bug is also present in arch/sh/boot/compressed/misc.c.
 
 
-includecheck warnings: (new ones prefixed by >>)
->> arch/powerpc/kernel/interrupt_64.S: asm/head-64.h is included more than once.
+> And applied your patch with the following changes:
+> Added to the commit message:
+> """
+> BOOT_HEAP_SIZE is defined to 0x30000 in this case. Actual decompressor
+> memory usage with allyesconfig is currently 0x26150.
+> """
+>
 
-Please review and possibly fold the followup patch.
+That's appropriate.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> diff --git a/arch/s390/boot/compressed/decompressor.c b/arch/s390/boot/compressed/decompressor.c
+> index cf2571050c68..37a4a8d33c6c 100644
+> --- a/arch/s390/boot/compressed/decompressor.c
+> +++ b/arch/s390/boot/compressed/decompressor.c
+> @@ -31,4 +31,6 @@ extern unsigned char _compressed_end[];
+>  #ifdef CONFIG_KERNEL_BZIP2
+>  #define BOOT_HEAP_SIZE 0x400000
+> +#elif CONFIG_KERNEL_ZSTD
+> +#define BOOT_HEAP_SIZE 0x30000
+>  #else
+>  #define BOOT_HEAP_SIZE 0x10000
+>
+> I hope you are ok with that, thanks!
+
+Thank you!
+
+-- 
+Regards,
+
+Dimitri.
