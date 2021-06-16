@@ -2,199 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88B83A9E8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76083A9E9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbhFPPIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:08:20 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:35332 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234432AbhFPPIR (ORCPT
+        id S234463AbhFPPJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:09:52 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:49108 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234443AbhFPPJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:08:17 -0400
-X-UUID: 366ce3d2231f4516a17a0529016fd6c6-20210616
-X-UUID: 366ce3d2231f4516a17a0529016fd6c6-20210616
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <yt.chang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2027821186; Wed, 16 Jun 2021 23:06:09 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 16 Jun 2021 23:06:02 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 16 Jun 2021 23:06:02 +0800
-From:   YT Chang <yt.chang@mediatek.com>
-To:     YT Chang <yt.chang@mediatek.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Paul Turner <pjt@google.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
-Subject: [PATCH 1/1] sched: Add tunable capacity margin for fis_capacity
-Date:   Wed, 16 Jun 2021 23:05:54 +0800
-Message-ID: <1623855954-6970-1-git-send-email-yt.chang@mediatek.com>
-X-Mailer: git-send-email 1.9.1
+        Wed, 16 Jun 2021 11:09:51 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1ltX8i-0011K6-L6; Wed, 16 Jun 2021 09:07:37 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1ltX8g-00FrFA-Ab; Wed, 16 Jun 2021 09:07:35 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <87sg1p30a1.fsf@disp2133>
+        <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+        <87pmwsytb3.fsf@disp2133>
+        <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+        <87sg1lwhvm.fsf@disp2133>
+        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+        <87eed4v2dc.fsf@disp2133>
+        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+        <87fsxjorgs.fsf@disp2133>
+        <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+Date:   Wed, 16 Jun 2021 10:06:56 -0500
+In-Reply-To: <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+        (Linus Torvalds's message of "Tue, 15 Jun 2021 14:58:12 -0700")
+Message-ID: <87mtrplugf.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
-X-MTK:  N
+X-XM-SPF: eid=1ltX8g-00FrFA-Ab;;;mid=<87mtrplugf.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18nS3lgdCF5xGbxXWl1AqbEgD3hNQUW+UQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XM_B_SpammyWords
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1133 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 11 (0.9%), b_tie_ro: 9 (0.8%), parse: 0.96 (0.1%),
+         extract_message_metadata: 14 (1.3%), get_uri_detail_list: 1.87 (0.2%),
+         tests_pri_-1000: 25 (2.2%), tests_pri_-950: 1.22 (0.1%),
+        tests_pri_-900: 1.01 (0.1%), tests_pri_-90: 724 (63.9%), check_bayes:
+        722 (63.7%), b_tokenize: 9 (0.8%), b_tok_get_all: 600 (52.9%),
+        b_comp_prob: 6 (0.5%), b_tok_touch_all: 103 (9.1%), b_finish: 1.02
+        (0.1%), tests_pri_0: 343 (30.3%), check_dkim_signature: 0.58 (0.1%),
+        check_dkim_adsp: 2.7 (0.2%), poll_dns_idle: 0.83 (0.1%), tests_pri_10:
+        2.0 (0.2%), tests_pri_500: 8 (0.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the margin of cpu frequency raising and cpu overutilized are
-hard-coded as 25% (1280/1024). Make the margin tunable
-to control the aggressive for placement and frequency control. Such as
-for power tuning framework could adjust smaller margin to slow down
-frequency raising speed and let task stay in smaller cpu.
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-For light loading scenarios, like beach buggy blitz and messaging apps,
-the app threads are moved big core with 25% margin and causing
-unnecessary power.
-With 0% capacity margin (1024/1024), the app threads could be kept in
-little core and deliver better power results without any fps drop.
+> On Tue, Jun 15, 2021 at 12:32 PM Eric W. Biederman
+> <ebiederm@xmission.com> wrote:
+>>
+>> I had to update ret_from_kernel_thread to pop that state to get Linus's
+>> change to boot.  Apparently kernel_threads exiting needs to be handled.
+>
+> You are very right.
+>
+> That, btw, seems to be a horrible design mistake, but I think it's how
+> "kernel_execve()" works - both for the initial "init", but also for
+> user-mode helper processes.
+>
+> Both of those cases do "kernel_thread()" to create a new thread, and
+> then that new kernel thread does kernel_execve() to create the user
+> space image for that thread. And that act of "execve()" clears
+> PF_KTHREAD from the thread, and then the final return from the kernel
+> thread function returns to that new user space.
+>
+> Or something like that. It's been ages since I looked at that code,
+> and your patch initially confused the heck out of me because I went
+> "that can't _possibly_ be needed".
+>
+> But yes, I think your patch is right.
+>
+> And I think our horrible "kernel threads return to user space when
+> done" is absolutely horrifically nasty. Maybe of the clever sort, but
+> mostly of the historical horror sort.
+>
+> Or am I mis-rememberting how this ends up working? Did you look at
+> exactly what it was that returned from kernel threads?
+>
+> This might be worth commenting on somewhere. But your patch for alpha
+> looks correct to me. Did you have some test-case to verify ptrace() on
+> io worker threads?
 
-capacity margin        0%          10%          20%          30%
-                     current        current       current      current
-                  Fps  (mA)    Fps    (mA)   Fps   (mA)    Fps  (mA)
-Beach buggy blitz  60 198.164  60   203.211  60   209.984  60  213.374
-Yahoo browser      60 232.301 59.97 237.52  59.95 248.213  60  262.809
+At this point I just booted an alpha image and on qemu-system-alpha.
 
-Change-Id: Iba48c556ed1b73c9a2699e9e809bc7d9333dc004
-Signed-off-by: YT Chang <yt.chang@mediatek.com>
----
- include/linux/sched/cpufreq.h | 19 +++++++++++++++++++
- include/linux/sched/sysctl.h  |  1 +
- include/linux/sysctl.h        |  1 +
- kernel/sched/fair.c           |  4 +++-
- kernel/sysctl.c               | 15 +++++++++++++++
- 5 files changed, 39 insertions(+), 1 deletion(-)
+I do have gdb in my kernel image so I can test that.  I haven't yet but
+I can and should.
 
-diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
-index 6205578..8a6c23a1 100644
---- a/include/linux/sched/cpufreq.h
-+++ b/include/linux/sched/cpufreq.h
-@@ -23,6 +23,23 @@ void cpufreq_add_update_util_hook(int cpu, struct update_util_data *data,
- void cpufreq_remove_update_util_hook(int cpu);
- bool cpufreq_this_cpu_can_update(struct cpufreq_policy *policy);
- 
-+#ifdef CONFIG_SMP
-+extern unsigned int sysctl_sched_capacity_margin;
-+
-+static inline unsigned long map_util_freq(unsigned long util,
-+					  unsigned long freq, unsigned long cap)
-+{
-+	freq = freq * util / cap;
-+	freq = freq * sysctl_sched_capacity_margin / SCHED_CAPACITY_SCALE;
-+
-+	return freq;
-+}
-+
-+static inline unsigned long map_util_perf(unsigned long util)
-+{
-+	return util * sysctl_sched_capacity_margin / SCHED_CAPACITY_SCALE;
-+}
-+#else
- static inline unsigned long map_util_freq(unsigned long util,
- 					unsigned long freq, unsigned long cap)
- {
-@@ -33,6 +50,8 @@ static inline unsigned long map_util_perf(unsigned long util)
- {
- 	return util + (util >> 2);
- }
-+#endif
-+
- #endif /* CONFIG_CPU_FREQ */
- 
- #endif /* _LINUX_SCHED_CPUFREQ_H */
-diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
-index db2c0f3..5dee024 100644
---- a/include/linux/sched/sysctl.h
-+++ b/include/linux/sched/sysctl.h
-@@ -10,6 +10,7 @@
- 
- #ifdef CONFIG_SMP
- extern unsigned int sysctl_hung_task_all_cpu_backtrace;
-+extern unsigned int sysctl_sched_capacity_margin;
- #else
- #define sysctl_hung_task_all_cpu_backtrace 0
- #endif /* CONFIG_SMP */
-diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-index d99ca99..af6d70f 100644
---- a/include/linux/sysctl.h
-+++ b/include/linux/sysctl.h
-@@ -41,6 +41,7 @@
- #define SYSCTL_ZERO	((void *)&sysctl_vals[0])
- #define SYSCTL_ONE	((void *)&sysctl_vals[1])
- #define SYSCTL_INT_MAX	((void *)&sysctl_vals[2])
-+#define SCHED_CAPACITY_MARGIN_MIN   1024
- 
- extern const int sysctl_vals[];
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 20aa234..609b431 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -111,7 +111,9 @@ int __weak arch_asym_cpu_priority(int cpu)
-  *
-  * (default: ~20%)
-  */
--#define fits_capacity(cap, max)	((cap) * 1280 < (max) * 1024)
-+unsigned int sysctl_sched_capacity_margin = 1280;
-+EXPORT_SYMBOL_GPL(sysctl_sched_capacity_margin);
-+#define fits_capacity(cap, max)	((cap) * sysctl_sched_capacity_margin < (max) * 1024)
- 
- /*
-  * The margin used when comparing CPU capacities.
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 14edf84..d6d2b84 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -127,6 +127,11 @@
- static int six_hundred_forty_kb = 640 * 1024;
- #endif
- 
-+/* this is needed for the proc of sysctl_sched_capacity_margin */
-+#ifdef CONFIG_SMP
-+static int min_sched_capacity_margin = 1024;
-+#endif /* CONFIG_SMP */
-+
- /* this is needed for the proc_doulongvec_minmax of vm_dirty_bytes */
- static unsigned long dirty_bytes_min = 2 * PAGE_SIZE;
- 
-@@ -1716,6 +1721,16 @@ int proc_do_static_key(struct ctl_table *table, int write,
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
- 	},
-+#ifdef CONFIG_SMP
-+	{
-+		.procname	= "sched_capcity_margin",
-+		.data		= &sysctl_sched_capacity_margin,
-+		.maxlen		= sizeof(unsigned int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= &min_sched_capacity_margin,
-+	},
-+#endif
- #ifdef CONFIG_SCHEDSTATS
- 	{
- 		.procname	= "sched_schedstats",
--- 
-1.9.1
+Sleeping on it I came up with a plan to add TF_SWITCH_STACK_SAVED to
+indicate if the registers have been saved.  The DO_SWITCH_STACK and
+UNDO_SWITCH_STACK helpers (except in alpha_switch_to) can test that.
+The ptrace helpers can test that and turn an access of random kernel
+stack contents into something well behaved that does WARN_ON_ONCE
+because we should not get there.
 
+I suspect adding TF_SWITCH_STACK_SAVED should come first so it
+is easy to verify the problem behavior, before I fix it.
+
+My real goal is to find a pattern that architectures whose register
+saves are structured like alphas can emulate, to minimize problems in
+the future.
+
+Plus I would really like to get the last handful of architectures
+updated so we can remove CONFIG_HAVE_ARCH_TRACEHOOK.  I think we can
+do that on alpha because we save all of the system call arguments
+in pt_regs and that is all the other non-ptrace code paths care about.
+
+AKA I am trying to move the old architectures forward so we can get rid
+of unnecessary complications in the core code.
+
+Eric
