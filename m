@@ -2,90 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A161D3A8EB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469D43A8EB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhFPCIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 22:08:38 -0400
-Received: from mg.richtek.com ([220.130.44.152]:52640 "EHLO mg.richtek.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230195AbhFPCIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 22:08:36 -0400
-X-MailGates: (flag:4,DYNAMIC,BADHELO,RELAY,NOHOST:PASS)(compute_score:DE
-        LIVER,40,3)
-Received: from 192.168.10.47
-        by mg.richtek.com with MailGates ESMTP Server V5.0(7286:0:AUTH_RELAY)
-        (envelope-from <cy_huang@richtek.com>); Wed, 16 Jun 2021 10:06:22 +0800 (CST)
-Received: from ex3.rt.l (192.168.10.46) by ex4.rt.l (192.168.10.47) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Wed, 16 Jun 2021
- 10:06:22 +0800
-Received: from ex3.rt.l ([fe80::ede0:40a5:8f78:963e]) by ex3.rt.l
- ([fe80::ede0:40a5:8f78:963e%2]) with mapi id 15.02.0858.010; Wed, 16 Jun 2021
- 10:06:22 +0800
-From:   =?utf-8?B?Y3lfaHVhbmco6buD5ZWf5Y6fKQ==?= <cy_huang@richtek.com>
-To:     "axel.lin@ingics.com" <axel.lin@ingics.com>,
-        "broonie@kernel.org" <broonie@kernel.org>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "u0084500@gmail.com" <u0084500@gmail.com>
-Subject: Re: [PATCH] regulator: rt6160: Fix setting suspend voltage
-Thread-Topic: [PATCH] regulator: rt6160: Fix setting suspend voltage
-Thread-Index: AQHXYk2Hz5pULeIqLUG4S8LZg2FxQKsVXbAA
-Date:   Wed, 16 Jun 2021 02:06:22 +0000
-Message-ID: <1623809182.3584.5.camel@richtek.com>
-References: <20210616011816.3479406-1-axel.lin@ingics.com>
-In-Reply-To: <20210616011816.3479406-1-axel.lin@ingics.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.18.5.2-0ubuntu3.2 
-x-originating-ip: [192.168.8.48]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <486A1A49EB487645B932D048450C5812@rt.l>
-Content-Transfer-Encoding: base64
+        id S231702AbhFPCLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 22:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230364AbhFPCLV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 22:11:21 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B99EC061574;
+        Tue, 15 Jun 2021 19:09:16 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id 69so322790plc.5;
+        Tue, 15 Jun 2021 19:09:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pQbf5OSdud0PkB03WD3uL1vE42Is0a71hcG2aWYgcFo=;
+        b=FTNpYXlhVnmGVbZSUM/HqXnlV+DJo4fPITWgQP42vcMSNz5qFx6XWZzNEEBe8Gu5dF
+         VRs6CPSEPb1M0YXmVSuuwCj43XwrMh2eLkXs9sCOYhDPigW6IhFTNqUkZU+kOH4R4vxU
+         VbJEVzbZZjpiiyaRVd6hBJuYHOIVc4ITjmXHfr58MtzYEgqYBAeRKA5OF8l5B9YbBcKp
+         WiFNOKLAP6afEEqKX7N1sZm0Y5i4SECIzTOk53G7lCu9OflZyh4ePsS26408djJOKck8
+         0vu/T058uRAjfFnzjCuNhJ1FbN3KRD+6+DC8SwfUsh4Z0PeB0gW6dnE1pu7lBJ2TG41c
+         VKUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pQbf5OSdud0PkB03WD3uL1vE42Is0a71hcG2aWYgcFo=;
+        b=MacKZQDXNpicZGgUXQLQs6x+BUJ0/peICOsQDnpgLzzlQVXFtZuS6JtKOPQFMviRn0
+         zrbFr4TT+CnYCDORT5lWoBGGHR1cnAvvCPKEW9KhlyLAz4ut3cxSm9oGKJq0wA6uODnY
+         XJFTocQtmHDXrMHdV8wGsGvjtPSYXzCVh/KQbosTbd0AFYcO0jYpsnSg2YRnpoMcduCv
+         2DPMhozrPfj0fvJ88l1Z4D8X0AfmXjE91OfaPzMHTXEIVxWNegS8q3Ttlbl7eXJbZC/h
+         RD2CXSEE5Ns2ca77E4nXSW8IBAA8Pe99R5PJeo+ZkR8nTcj7Hbg7XLC4e9LxiyytYbH/
+         RNnQ==
+X-Gm-Message-State: AOAM532XcF9IcN12ExSOj0x08u9ZuDX5JBjOtf54FAjlXBSWmSsfQIVR
+        Wmvh6nzaWnsP5FlsmGMyFXA=
+X-Google-Smtp-Source: ABdhPJxv/N+I/DgzPdN3ZAHJ315+Z798lsoRnxRO0EUSt1qFUR+N0gWt0IprBYvFby2cY6JTDIjRhA==
+X-Received: by 2002:a17:90a:ee84:: with SMTP id i4mr2459756pjz.34.1623809355561;
+        Tue, 15 Jun 2021 19:09:15 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.27])
+        by smtp.gmail.com with ESMTPSA id j3sm374452pfe.98.2021.06.15.19.09.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 19:09:14 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     alex.aring@gmail.com, stefan@datenfreihafen.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wpan@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
+        syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com
+Subject: [PATCH v2] ieee802154: hwsim: Fix memory leak in hwsim_add_one
+Date:   Wed, 16 Jun 2021 10:09:01 +0800
+Message-Id: <20210616020901.2759466-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBUaGUgdnNlbCBhY3RpdmUgbGV2ZWwgaXMgZm9yIHRoZSBub3JtYWwgdm9sdGFnZSwgdGhlIG9w
-cG9zaXRlIGxldmVsIGlzDQo+IHRoZSBzdXNwZW5kIHZvbHRhZ2UuDQo+DQo+IFNpZ25lZC1vZmYt
-Ynk6IEF4ZWwgTGluIDxheGVsLmxpbkBpbmdpY3MuY29tPg0KPiAtLS0NCj4gSGkgQ2hpWXVhbiwN
-Cj4gSSB0aGluayBmaXggaXQgdGhpcyB3YXkgbWFrZSB0aGUgaW50ZW50aW9uIG1vcmUgY2xlYXIu
-DQo+DQo+ICBkcml2ZXJzL3JlZ3VsYXRvci9ydDYxNjAtcmVndWxhdG9yLmMgfCA4ICsrKysrKyst
-DQo+ICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+DQpU
-aHguIEl0J3MgbW9yZSBpbnR1aXRpdmUuDQoNClJldmlld2VkLWJ5OiBDaGlZdWFuIEh1YW5nIDxj
-eV9odWFuZ0ByaWNodGVrLmNvbT4NCg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9yZWd1bGF0b3Iv
-cnQ2MTYwLXJlZ3VsYXRvci5jIGIvZHJpdmVycy9yZWd1bGF0b3IvcnQ2MTYwLQ0KPiByZWd1bGF0
-b3IuYw0KPiBpbmRleCBjY2QwMjNkYTQzMTguLjVkN2IwZTdhZDY5YSAxMDA2NDQNCj4gLS0tIGEv
-ZHJpdmVycy9yZWd1bGF0b3IvcnQ2MTYwLXJlZ3VsYXRvci5jDQo+ICsrKyBiL2RyaXZlcnMvcmVn
-dWxhdG9yL3J0NjE2MC1yZWd1bGF0b3IuYw0KPiBAQCAtMTI4LDEzICsxMjgsMTkgQEAgc3RhdGlj
-IHVuc2lnbmVkIGludCBydDYxNjBfZ2V0X21vZGUoc3RydWN0IHJlZ3VsYXRvcl9kZXYNCj4gKnJk
-ZXYpDQo+ICBzdGF0aWMgaW50IHJ0NjE2MF9zZXRfc3VzcGVuZF92b2x0YWdlKHN0cnVjdCByZWd1
-bGF0b3JfZGV2ICpyZGV2LCBpbnQgdVYpDQo+ICB7DQo+ICBzdHJ1Y3QgcmVnbWFwICpyZWdtYXAg
-PSByZGV2X2dldF9yZWdtYXAocmRldik7DQo+ICt1bnNpZ25lZCBpbnQgc3VzcGVuZF92c2VsX3Jl
-ZzsNCj4gIGludCB2c2VsOw0KPg0KPiAgdnNlbCA9IHJlZ3VsYXRvcl9tYXBfdm9sdGFnZV9saW5l
-YXIocmRldiwgdVYsIHVWKTsNCj4gIGlmICh2c2VsIDwgMCkNCj4gIHJldHVybiB2c2VsOw0KPg0K
-PiAtcmV0dXJuIHJlZ21hcF91cGRhdGVfYml0cyhyZWdtYXAsIHJkZXYtPmRlc2MtPnZzZWxfcmVn
-LA0KPiAraWYgKHJkZXYtPmRlc2MtPnZzZWxfcmVnID09IFJUNjE2MF9SRUdfVlNFTEwpDQo+ICtz
-dXNwZW5kX3ZzZWxfcmVnID0gUlQ2MTYwX1JFR19WU0VMSDsNCj4gK2Vsc2UNCj4gK3N1c3BlbmRf
-dnNlbF9yZWcgPSBSVDYxNjBfUkVHX1ZTRUxMOw0KPiArDQo+ICtyZXR1cm4gcmVnbWFwX3VwZGF0
-ZV9iaXRzKHJlZ21hcCwgc3VzcGVuZF92c2VsX3JlZywNCj4gICAgUlQ2MTYwX1ZTRUxfTUFTSywg
-dnNlbCk7DQo+ICB9DQo+DQoqKioqKioqKioqKioqIEVtYWlsIENvbmZpZGVudGlhbGl0eSBOb3Rp
-Y2UgKioqKioqKioqKioqKioqKioqKioNCg0KVGhlIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbiB0
-aGlzIGUtbWFpbCBtZXNzYWdlIChpbmNsdWRpbmcgYW55IGF0dGFjaG1lbnRzKSBtYXkgYmUgY29u
-ZmlkZW50aWFsLCBwcm9wcmlldGFyeSwgcHJpdmlsZWdlZCwgb3Igb3RoZXJ3aXNlIGV4ZW1wdCBm
-cm9tIGRpc2Nsb3N1cmUgdW5kZXIgYXBwbGljYWJsZSBsYXdzLiBJdCBpcyBpbnRlbmRlZCB0byBi
-ZSBjb252ZXllZCBvbmx5IHRvIHRoZSBkZXNpZ25hdGVkIHJlY2lwaWVudChzKS4gQW55IHVzZSwg
-ZGlzc2VtaW5hdGlvbiwgZGlzdHJpYnV0aW9uLCBwcmludGluZywgcmV0YWluaW5nIG9yIGNvcHlp
-bmcgb2YgdGhpcyBlLW1haWwgKGluY2x1ZGluZyBpdHMgYXR0YWNobWVudHMpIGJ5IHVuaW50ZW5k
-ZWQgcmVjaXBpZW50KHMpIGlzIHN0cmljdGx5IHByb2hpYml0ZWQgYW5kIG1heSBiZSB1bmxhd2Z1
-bC4gSWYgeW91IGFyZSBub3QgYW4gaW50ZW5kZWQgcmVjaXBpZW50IG9mIHRoaXMgZS1tYWlsLCBv
-ciBiZWxpZXZlIHRoYXQgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlLW1haWwgaW4gZXJyb3IsIHBs
-ZWFzZSBub3RpZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseSAoYnkgcmVwbHlpbmcgdG8gdGhpcyBl
-LW1haWwpLCBkZWxldGUgYW55IGFuZCBhbGwgY29waWVzIG9mIHRoaXMgZS1tYWlsIChpbmNsdWRp
-bmcgYW55IGF0dGFjaG1lbnRzKSBmcm9tIHlvdXIgc3lzdGVtLCBhbmQgZG8gbm90IGRpc2Nsb3Nl
-IHRoZSBjb250ZW50IG9mIHRoaXMgZS1tYWlsIHRvIGFueSBvdGhlciBwZXJzb24uIFRoYW5rIHlv
-dSENCg==
+No matter from hwsim_remove or hwsim_del_radio_nl, hwsim_del fails to
+remove the entry in the edges list. Take the example below, phy0, phy1
+and e0 will be deleted, resulting in e1 not freed and accessed in the
+future.
+
+              hwsim_phys
+                  |
+    ------------------------------
+    |                            |
+phy0 (edges)                 phy1 (edges)
+   ----> e1 (idx = 1)             ----> e0 (idx = 0)
+
+Fix this by deleting and freeing all the entries in the edges list
+between hwsim_edge_unsubscribe_me and list_del(&phy->list).
+
+Reported-by: syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com
+Fixes: 1c9f4a3fce77 ("ieee802154: hwsim: fix rcu handling")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+v1->v2: add rcu_read_lock for the deletion operation according to Pavel Skripkin
+
+ drivers/net/ieee802154/mac802154_hwsim.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/net/ieee802154/mac802154_hwsim.c b/drivers/net/ieee802154/mac802154_hwsim.c
+index da9135231c07..cf659361a3fb 100644
+--- a/drivers/net/ieee802154/mac802154_hwsim.c
++++ b/drivers/net/ieee802154/mac802154_hwsim.c
+@@ -824,12 +824,17 @@ static int hwsim_add_one(struct genl_info *info, struct device *dev,
+ static void hwsim_del(struct hwsim_phy *phy)
+ {
+ 	struct hwsim_pib *pib;
++	struct hwsim_edge *e;
+ 
+ 	hwsim_edge_unsubscribe_me(phy);
+ 
+ 	list_del(&phy->list);
+ 
+ 	rcu_read_lock();
++	list_for_each_entry_rcu(e, &phy->edges, list) {
++		list_del_rcu(&e->list);
++		hwsim_free_edge(e);
++	}
+ 	pib = rcu_dereference(phy->pib);
+ 	rcu_read_unlock();
+ 
+-- 
+2.25.1
+
