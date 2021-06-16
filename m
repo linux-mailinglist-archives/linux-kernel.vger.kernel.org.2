@@ -2,98 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264683A9536
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395A23A9539
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbhFPIod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:44:33 -0400
-Received: from mga05.intel.com ([192.55.52.43]:13682 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232012AbhFPIoa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:44:30 -0400
-IronPort-SDR: ub69TCHkezbFX2XHupt/7iETjThXS7heEMI9+6G/vGcDA8dmAd4lQBxdppHWmcECO4/zi0U5sx
- A7+/L5P0Gh9w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="291770840"
-X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
-   d="scan'208";a="291770840"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 01:42:23 -0700
-IronPort-SDR: XkMrx79+dB/mNC/PtGc2214acDd1tQm3kKMHkMe7U42BlYgoA1S0+ARJaX4DmyEBki/aLU+Wte
- 49DGkPS1dyLg==
-X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
-   d="scan'208";a="484805084"
-Received: from hchan3-mobl1.gar.corp.intel.com (HELO [10.254.212.123]) ([10.254.212.123])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 01:42:20 -0700
-Cc:     baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linuxarm@huawei.com,
-        thunder.leizhen@huawei.com, chenxiang66@hisilicon.com
-Subject: Re: [PATCH v12 3/5] iommu/vt-d: Add support for IOMMU default DMA
- mode build options
-To:     Robin Murphy <robin.murphy@arm.com>,
-        John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org, dwmw2@infradead.org
-References: <1623414043-40745-1-git-send-email-john.garry@huawei.com>
- <1623414043-40745-4-git-send-email-john.garry@huawei.com>
- <f3940a3f-d1c1-148d-e4b5-51cecf924ff5@linux.intel.com>
- <03675e2f-c3a6-ce33-ef96-f9ae544b2d13@huawei.com>
- <824db374-dc82-a9ea-b162-2f51e70ef999@linux.intel.com>
- <c3e1bb30-e1a9-08d7-0787-06a0bb119461@arm.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <a4b794be-6648-c088-877d-cdf8762151f6@linux.intel.com>
-Date:   Wed, 16 Jun 2021 16:42:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232098AbhFPIoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232059AbhFPIoi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 04:44:38 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1933C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:42:32 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id e7so761110plj.7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:42:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=aA4TkrJs6ajMyY8FqDMerCmGUu0LZcHfxFM5uF3oKpQ=;
+        b=wCR38/vMYc2wU32kBUYEjbdZJMrPoovqwhEHrfRa1+I9ACdqfzRDejU5tQd4ww5QcZ
+         k0b04MZfvPXR0kEeqvB7Vc8KoFtUsXsbj+dPFd2f5qBIYhV0Hf8RKtoH9p0qMvR2v/jh
+         8XGrCFdn9gHsctaNNUunzjruwNIXu3DvOtbG7kpKVLt4NDESUsK+2GhQK2cxvmMyTBAX
+         e8RLff4fM+9Idv6KQjwEO8chMz2+jwEmm9w4oKE0uC+ZTL+iYh2BGAB24CIej9uIZLCz
+         bo9qL8j7tpfWZkscNlH7mR/311TXxrneINKAHp85p1zvOdXPXzFuKHtgDfcUTeH7QWva
+         dSLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=aA4TkrJs6ajMyY8FqDMerCmGUu0LZcHfxFM5uF3oKpQ=;
+        b=AdRQMW2a4xF3XLsn8LLAC3M+YA7RIv1KkBH5ARRvfpfmeh9qgEM1izVFk260MzwYdP
+         4f7K+0usCx18E/if+TH3Sf6v8dT6G09IOMemEZkRK2XnfSapSE1HKjUx6PdkBIfgRqpu
+         mzDvJtI0N06TOOOzrgSWaMbZmMQQdRNuAKJWfomykUBe//EO5RIjq9l6oKGlfS6hdRJF
+         uptXw+Gff9rtPrnobPvrAziKTvh9XZFqHJDkK3Fy2P2u4w3C8wSb6vHovBB37HOXmx34
+         ToQil5VcyrW6xNqXwPCh1zDcEOg2Os8GxYBBhSCM4FycW8+8EiaPzZSEqXsaiLmym+3q
+         l+nw==
+X-Gm-Message-State: AOAM530Ihb51dniyw56zGr0fiHN4Gs+6gzQNxdDgnOnvMS3TQVwIbhle
+        r60Kwl5T2ycoUlLE5KIOyugG+y5DiCHWZPOz
+X-Google-Smtp-Source: ABdhPJww73zHlet1KdkQFMlG4TuT3HggFDxOPgLGCkIG5dpGaj8DGGOF/gCVGGKjgfcYlVK5QaWsyg==
+X-Received: by 2002:a17:903:1043:b029:11e:7489:9bad with SMTP id f3-20020a1709031043b029011e74899badmr3088065plc.34.1623832952255;
+        Wed, 16 Jun 2021 01:42:32 -0700 (PDT)
+Received: from [10.43.1.6] ([45.135.186.89])
+        by smtp.gmail.com with ESMTPSA id p1sm1461370pfn.212.2021.06.16.01.42.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 01:42:31 -0700 (PDT)
+Subject: Re: [PATCH v4 0/3] PCI: Add a quirk to enable SVA for HiSilicon chip
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        jean-philippe <jean-philippe@linaro.org>,
+        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
+        helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1623209801-1709-1-git-send-email-zhangfei.gao@linaro.org>
+From:   Zhangfei Gao <zhangfei.gao@linaro.org>
+Message-ID: <18e171fe-549b-6fa3-c9a0-c0d869b53445@linaro.org>
+Date:   Wed, 16 Jun 2021 16:42:23 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <c3e1bb30-e1a9-08d7-0787-06a0bb119461@arm.com>
+In-Reply-To: <1623209801-1709-1-git-send-email-zhangfei.gao@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/15 16:25, Robin Murphy wrote:
-> On 2021-06-15 08:26, Lu Baolu wrote:
->> Hi John,
->>
->> On 6/14/21 4:03 PM, John Garry wrote:
->>> On 12/06/2021 03:14, Lu Baolu wrote:
->>>> On 2021/6/11 20:20, John Garry wrote:
->>>>> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
->>>>> index 2a71347611d4..4467353f981b 100644
->>>>> --- a/drivers/iommu/Kconfig
->>>>> +++ b/drivers/iommu/Kconfig
->>>>> @@ -94,6 +94,7 @@ choice
->>>>>       prompt "IOMMU default DMA mode"
->>>>>       depends on IOMMU_DMA
->>>>> +    default IOMMU_DEFAULT_LAZY if INTEL_IOMMU
->>>>>       default IOMMU_DEFAULT_STRICT
->>>>
->>>> If two default values are different. Which one will be overridden?
->>>
->>> If I understand your question correctly, I think you are asking if 
->>> both are set:
->>> CONFIG_IOMMU_DEFAULT_LAZY=y
->>> CONFIG_IOMMU_DEFAULT_STRICT=y
->>>
->>> If this happens, then make defconfig complains about both being set, 
->>> and selects the 2nd, whatever that is.
->>
->> On x86, Intel or AMD, this will be
->>
->>      prompt "IOMMU default DMA mode"
->>        depends on IOMMU_DMA
->>        default IOMMU_DEFAULT_LAZY
->>        default IOMMU_DEFAULT_STRICT
->>
->> which will be default, LAZY or STRICT? Will it cause complains?
-> 
-> See Documentation/kbuild/kconfig-language.rst:
-> 
->    A config option can have any number of default values. If multiple
->    default values are visible, only the first defined one is active.
+Hi, Bjorn
 
-Get it. Thank you, Robin.
+On 2021/6/9 上午11:36, Zhangfei Gao wrote:
+> HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
+> actually on the AMBA bus. These fake PCI devices have PASID capability
+> though not supporting TLP.
+>
+> Add a quirk to set pasid_no_tlp and dma-can-stall for these devices.
+>
+> Jean's dma-can-stall patchset has been accepted
+> https://lore.kernel.org/linux-iommu/162314710744.3707892.6632600736379822229.b4-ty@kernel.org/
 
-Best regards,
-baolu
+Would you mind take a look.
+There is no dependence now, since he dependent patch set has been taken.
+
+Thanks
+
+>
+> v4:
+> Applied to Linux 5.13-rc2, and build successfully with only these three patches.
+>
+> v3:
+> https://lore.kernel.org/linux-pci/1615258837-12189-1-git-send-email-zhangfei.gao@linaro.org/
+> Rebase to Linux 5.12-rc1
+> Change commit msg adding:
+> Property dma-can-stall depends on patchset
+> https://lore.kernel.org/linux-iommu/20210302092644.2553014-1-jean-philippe@linaro.org/
+>
+> By the way the patchset can directly applied on 5.12-rc1 and build successfully though
+> without the dependent patchset.
+>
+> v2:
+> Add a new pci_dev bit: pasid_no_tlp, suggested by Bjorn
+> "Apparently these devices have a PASID capability.  I think you should
+> add a new pci_dev bit that is specific to this idea of "PASID works
+> without TLP prefixes" and then change pci_enable_pasid() to look at
+> that bit as well as eetlp_prefix_path."
+> https://lore.kernel.org/linux-pci/20210112170230.GA1838341@bjorn-Precision-5520/
+>
+> Zhangfei Gao (3):
+>    PCI: PASID can be enabled without TLP prefix
+>    PCI: Add a quirk to set pasid_no_tlp for HiSilicon chips
+>    PCI: Set dma-can-stall for HiSilicon chips
+>
+>   drivers/pci/ats.c    |  2 +-
+>   drivers/pci/quirks.c | 27 +++++++++++++++++++++++++++
+>   include/linux/pci.h  |  1 +
+>   3 files changed, 29 insertions(+), 1 deletion(-)
+>
+
