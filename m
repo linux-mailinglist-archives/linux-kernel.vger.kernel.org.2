@@ -2,72 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15C93AA790
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7AA3AA795
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbhFPXin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 19:38:43 -0400
-Received: from mail-io1-f42.google.com ([209.85.166.42]:41647 "EHLO
-        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234530AbhFPXil (ORCPT
+        id S234597AbhFPXmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 19:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234590AbhFPXl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 19:38:41 -0400
-Received: by mail-io1-f42.google.com with SMTP id p66so1049737iod.8;
-        Wed, 16 Jun 2021 16:36:34 -0700 (PDT)
+        Wed, 16 Jun 2021 19:41:59 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F10DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 16:39:52 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id j62so1288100qke.10
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 16:39:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GZ8Uwa036gpNLbWnfaBzspVA5CRluDlqQqEct0C37As=;
+        b=kshY+ojjwAXK3pIhmxDE0VeTVJfmns8FASuchPW9vaayL5PkSHnddwPEF9UdgL0AhX
+         cyZgGsKHE9Sd3FSdb6G2Q+vFBJ6O8CrHW1at/8a5AvNErf0kvKHZCwDv7siXwqRsYKOI
+         9rePAjFvXqt6aZK8kQO4kbVCRmAWFY/zXtkDazo2V81MI/wJ/fqeNAogpoaO8ProQNG2
+         7UU+l9uOW5KweJetqGyNu6XKmv3pRgdzpmcJdqQCjbCC2pFcwNQmbOmNu3FHtLl5OEu7
+         GBisdHRuJZsCH1LcAWDE3i8KaDOtQ+Nh4V3oy1Mi/eDlJAP8NiJwq1LWAYEAgR0wXoAJ
+         KVkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dBgSKzg+OG1fjJdv7NgXh988HzECY/j5M/Ly5wHlw50=;
-        b=NOgNjVudBpotjAYKuHYYjYLBLQ0dVENBBB06DA+xRQMFA5PapWrXftInosN+H1mtnK
-         3wCDEqOduTLMXHD5B7swk/2CCUAMMNUEijREq8ufeJ45Al/88ytzI+9coHCxrU2kjIWi
-         WLaH6dWtx8aMJ5GvzYRPCQZ3U54ZkYb942Hl69URGHL2y2CWSeQiQBGCF/8/wmq8fabR
-         7kiE/Jhe3F3R9O+bhTXAfy2LbsFkeruXYJtGIgeSmY3t/VIei3AmgLfP8Y5cR158+XJ8
-         yG3kEDASMbLjOpv2O2uB9+MWcO1YPsz4siSj0xEEYJspLd7kdmmj1WB+mZNuANdc5LLS
-         +FTw==
-X-Gm-Message-State: AOAM532BH1qlJ7j4MD2+rDL5Gwwafnrrzu8MoX9gGgpW94nOVPUjIFk5
-        un26/LaZ5uVXkfaQvt//HA==
-X-Google-Smtp-Source: ABdhPJzZEgtAl9jMW+KvMkV4aY/u5jKwWcr7UKyE6F4oyV4aZrmD4depkfFOTPMmLam4hNJ/m8LxNg==
-X-Received: by 2002:a02:c014:: with SMTP id y20mr1629995jai.107.1623886593845;
-        Wed, 16 Jun 2021 16:36:33 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id c22sm1939298ioz.24.2021.06.16.16.36.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 16:36:33 -0700 (PDT)
-Received: (nullmailer pid 295461 invoked by uid 1000);
-        Wed, 16 Jun 2021 23:36:31 -0000
-Date:   Wed, 16 Jun 2021 17:36:31 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Cc:     michal.simek@xilinx.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
-        harinik@xilinx.com, robh+dt@kernel.org
-Subject: Re: [PATCH v2] dt-bindings: spi: convert Cadence SPI bindings to YAML
-Message-ID: <20210616233631.GA295427@robh.at.kernel.org>
-References: <20210605003811.858676-1-iwamatsu@nigauri.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GZ8Uwa036gpNLbWnfaBzspVA5CRluDlqQqEct0C37As=;
+        b=d3kEXdw3Y9mRCxGaQooOalLplTaSsRSKLkNGVVauk3zZceNoV6fXZ5/DNyzKGtADN7
+         cJot6H35RBI/ilJc6y6oqh7P3GVEt7iI2waiGmyYNFGfZm7U0gUUCgFjHbPaIeofeMyM
+         S6UcaXGMmj2ctYsaIRUvX/0w/wKP0lIbrQrq3zJ5/5A6KuNkt18HiPWonPDf4PlHayDm
+         aBEdhgL0nyq22ztg3LfeCH+gLzLigseYmInRESnHTysHzA2+w8/FnVS6alQwl9GiEVOr
+         CorJ4E6KWadjUmkjK1yEciOZiy2OYnEmtPymjE6gN9pL80IZ8xzBiI49am6sq7Pn1GUW
+         ooCA==
+X-Gm-Message-State: AOAM5328ob0Pt7DlphcZQAy9ZR0pEZJmdplxpVllmehNkIEjr1VYS2jd
+        KHXQODkVdGtSJZNGKLWChVkQALBYB1yUlwkTIWgx3A==
+X-Google-Smtp-Source: ABdhPJyaBR6uwbvnXk7V1aA9uldwi5ixDr/g7IQB3vX383R9Ezb0ebsCYcz5SzXZCRq+ysp+Tauc/N8qa1cEvW9QoUc=
+X-Received: by 2002:a37:a1d5:: with SMTP id k204mr932037qke.300.1623886791313;
+ Wed, 16 Jun 2021 16:39:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210605003811.858676-1-iwamatsu@nigauri.org>
+References: <20210616190759.2832033-1-mw@semihalf.com> <20210616190759.2832033-4-mw@semihalf.com>
+ <YMpShczKt1TNAqsV@lunn.ch>
+In-Reply-To: <YMpShczKt1TNAqsV@lunn.ch>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Thu, 17 Jun 2021 01:39:40 +0200
+Message-ID: <CAPv3WKde+LCmxxr6UuA7X=XShF6d4io49baxsjw1kMqR=T7XrA@mail.gmail.com>
+Subject: Re: [net-next: PATCH v2 3/7] net/fsl: switch to fwnode_mdiobus_register
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
+        lenb@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 05 Jun 2021 09:38:11 +0900, Nobuhiro Iwamatsu wrote:
-> Convert spi for Cadence SPI bindings documentation to YAML.
-> 
-> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-> ---
-> 
->  v2: Add ref and enum is-decoded-cs.
->      Add ref to num-cs.
-> 
->  .../devicetree/bindings/spi/spi-cadence.txt   | 30 ---------
->  .../devicetree/bindings/spi/spi-cadence.yaml  | 66 +++++++++++++++++++
->  2 files changed, 66 insertions(+), 30 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/spi/spi-cadence.txt
->  create mode 100644 Documentation/devicetree/bindings/spi/spi-cadence.yaml
-> 
+=C5=9Br., 16 cze 2021 o 21:35 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
+>
+> On Wed, Jun 16, 2021 at 09:07:55PM +0200, Marcin Wojtas wrote:
+> > Utilize the newly added helper routine
+> > for registering the MDIO bus via fwnode_
+> > interface.
+>
+> You need to add depends on FWNODE_MDIO
+>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Do you mean something like this?
+
+--- a/drivers/net/ethernet/freescale/Kconfig
++++ b/drivers/net/ethernet/freescale/Kconfig
+@@ -68,8 +68,8 @@ config FSL_PQ_MDIO
+ config FSL_XGMAC_MDIO
+        tristate "Freescale XGMAC MDIO"
+        select PHYLIB
+-       depends on OF
+-       select OF_MDIO
++       depends on ACPI || OF
++       select FWNODE_MDIO
+        help
+
+Best regards,
+Marcin
