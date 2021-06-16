@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C533AA55A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D74863AA562
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233525AbhFPUg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 16:36:56 -0400
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:37609 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233513AbhFPUgz (ORCPT
+        id S233571AbhFPUhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 16:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233562AbhFPUhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 16:36:55 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d21 with ME
-        id Hwag2500A21Fzsu03wag3C; Wed, 16 Jun 2021 22:34:42 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 16 Jun 2021 22:34:42 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     wangzhou1@hisilicon.com, vkoul@kernel.org
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] dmaengine: hisi_dma: Remove some useless code
-Date:   Wed, 16 Jun 2021 22:34:38 +0200
-Message-Id: <4f8932e2d0d8d092bf60272511100030e013bc72.1623875508.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Wed, 16 Jun 2021 16:37:10 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A3DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:35:03 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so4744557pjn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:35:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rp5uDSNPLfj1QcmZiBYhLMtmYzv+FVQAAZdEK27uKbc=;
+        b=Og0gg2OCChBPre19U3sdh41BCFNJgrrWEPuD6aCglX/o9TttYW/cqzDdcfcR4hBPVV
+         h3WI9fIZbjJO8ZQa0J2SsmHqMOwtZr2g5ChZODwbfC7XMs7iH73cKLI70SeyZy++OKe7
+         rNad6QGzUKyuSdhlvmjIrk9rX1E+f2AoO2kys=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rp5uDSNPLfj1QcmZiBYhLMtmYzv+FVQAAZdEK27uKbc=;
+        b=CsPVkM2SfF0hxQUuPE81hAih5BiPOIRqW2+kT5jQ1TnckEJoptmfYSp6cO75Ps9MLJ
+         1PM1AxaAzfj8cGbxrZUVn8UV21G2UZhz5ULdzM0lzDfqU6eDWYIevGVQK7KD3bHqCtja
+         jwGy/NjY+0/l8bYi3FAM0fEbzepx1wKLq4v+x76xY/OR8tq/FdP9QOAnp3z21AcF9Xu3
+         ZUYQnwEQWgaiOZiRrPzoG2fmIHCbPVT3bEju9tPaIbCYjDPq+1n6WqwnS2K8kkBIhaol
+         KIeNbPYf+wXQzmCSD5czcovnqMBQfHj70cEG+d3cKTo45UI4PuiuU7LZql4AmFOKZgBt
+         Pz3w==
+X-Gm-Message-State: AOAM533Can90J20OaPajUacGu0ZvTXA97hbol4hmfj5/tELVuzATWbnF
+        3z4yrzISONkTuXzwxlzs+V5qiw==
+X-Google-Smtp-Source: ABdhPJyzc5ao3WqKlsjBFdlm4dtPe8Cw6Kdi48ERNoYRKIjp25bnW25Xlcm9KG2ELq0JbhEhv6iZwA==
+X-Received: by 2002:a17:902:b717:b029:11a:fae3:ba7c with SMTP id d23-20020a170902b717b029011afae3ba7cmr1254557pls.28.1623875703099;
+        Wed, 16 Jun 2021 13:35:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 11sm3331759pge.57.2021.06.16.13.35.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 13:35:02 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
+        =?UTF-8?q?Breno=20Leit=C3=A3o?= <leitao@debian.org>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] crypto: nx: Fix memcpy() over-reading in nonce
+Date:   Wed, 16 Jun 2021 13:34:59 -0700
+Message-Id: <20210616203459.1248036-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Patch-Hashes: v=1; h=sha256; g=06534d0443fa9fcfa969f0fcd687992b383a757d; i=jYfiGi2izQUFzVtPzV/fVSVDahy6PowWZI9Gw067JJs=; m=QnHbJKc/xtXaH5oFuCZHDTYyfjS26Q6kX/nkbJWmqYE=; p=Rww15zRs5GKN3uLwSu/+HXsr7GkdI7iuJ1PvQJoYJJY=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDKYHIACgkQiXL039xtwCbRdBAAqyA FpIIWg3FtYwVUl5xnDktz6gtkdYaXMLl49uYOnAvXQSiVLggX9nLThuEqgupG8pm3Hj8fSC2uW4d8 bUJ3cOiEUoCt8a4Izu4aw2a1ii0axXKma3IaCJWImuScMgsb8Y63HZ9n+5FZ1yrBpv7QBigem7vJd mdcVGiwu7luChzOl6B7WcdrQmKPvJTN7h5/JZ5oVK7Cp1qjSU2v0KiwIsk4zK65PS56Q7dfohFMVP uStgrGTsZYviJvfl5E4LWHWtc77wJqkKRiCtrOE8tst4eIsOt9a+zcP9bB7Iz4VRSlL68AW8qmZ5a mSYqNGraivkXELX3QFey28oZdHc5IYciYgmehULbBbSdD0Z6mwZ7v7hqRDM95Qgm2ZU54LeucplXc fKeeL93dbElzv42ondvChnwZro3o0accfT6/GlTFRuZ7WU2GoCDUdTXv1I4A35sARsrfzigjesQ9m FqLygW2kqJXKo39M2PjDBUy38PctTb+qGvKT6VYqZzxe2ITVIjHzFzijJa/RHbAIqkFbzymz5Rqm/ ux6W8AvzR5v4hoLHqcd5n1T3BGKH9dN92K/Md7UnEthYUM/Scblddr2RCvEKS8HJRKhRnrm8NdWv5 X9nkoLmL61qCjwmL6TFPqlbmCgbv/+50URmm1BT/Hdocymk7dNbQE0xDi8jmZGQM=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using 'pcim_enable_device()', 'pci_alloc_irq_vectors()' is
-auto-magically a managed function.
+Fix typo in memcpy() where size should be CTR_RFC3686_NONCE_SIZE.
 
-It is useless (but harmless) to record an action to explicitly call
-'pci_free_irq_vectors()'.
-
-So keep things simple, comment why and how these resources are freed, axe
-some useless code and save some memory.
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Fixes: 030f4e968741 ("crypto: nx - Fix reentrancy bugs")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/dma/hisi_dma.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ drivers/crypto/nx/nx-aes-ctr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/hisi_dma.c b/drivers/dma/hisi_dma.c
-index a259ee010e9b..c855a0e4f9ff 100644
---- a/drivers/dma/hisi_dma.c
-+++ b/drivers/dma/hisi_dma.c
-@@ -133,11 +133,6 @@ static inline void hisi_dma_update_bit(void __iomem *addr, u32 pos, bool val)
- 	writel_relaxed(tmp, addr);
- }
+diff --git a/drivers/crypto/nx/nx-aes-ctr.c b/drivers/crypto/nx/nx-aes-ctr.c
+index 13f518802343..6120e350ff71 100644
+--- a/drivers/crypto/nx/nx-aes-ctr.c
++++ b/drivers/crypto/nx/nx-aes-ctr.c
+@@ -118,7 +118,7 @@ static int ctr3686_aes_nx_crypt(struct skcipher_request *req)
+ 	struct nx_crypto_ctx *nx_ctx = crypto_skcipher_ctx(tfm);
+ 	u8 iv[16];
  
--static void hisi_dma_free_irq_vectors(void *data)
--{
--	pci_free_irq_vectors(data);
--}
--
- static void hisi_dma_pause_dma(struct hisi_dma_dev *hdma_dev, u32 index,
- 			       bool pause)
- {
-@@ -544,6 +539,7 @@ static int hisi_dma_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	pci_set_drvdata(pdev, hdma_dev);
- 	pci_set_master(pdev);
- 
-+	/* This will be freed by 'pcim_release()'. See 'pcim_enable_device()' */
- 	ret = pci_alloc_irq_vectors(pdev, HISI_DMA_MSI_NUM, HISI_DMA_MSI_NUM,
- 				    PCI_IRQ_MSI);
- 	if (ret < 0) {
-@@ -551,10 +547,6 @@ static int hisi_dma_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		return ret;
- 	}
- 
--	ret = devm_add_action_or_reset(dev, hisi_dma_free_irq_vectors, pdev);
--	if (ret)
--		return ret;
--
- 	dma_dev = &hdma_dev->dma_dev;
- 	dma_cap_set(DMA_MEMCPY, dma_dev->cap_mask);
- 	dma_dev->device_free_chan_resources = hisi_dma_free_chan_resources;
+-	memcpy(iv, nx_ctx->priv.ctr.nonce, CTR_RFC3686_IV_SIZE);
++	memcpy(iv, nx_ctx->priv.ctr.nonce, CTR_RFC3686_NONCE_SIZE);
+ 	memcpy(iv + CTR_RFC3686_NONCE_SIZE, req->iv, CTR_RFC3686_IV_SIZE);
+ 	iv[12] = iv[13] = iv[14] = 0;
+ 	iv[15] = 1;
 -- 
-2.30.2
+2.25.1
 
