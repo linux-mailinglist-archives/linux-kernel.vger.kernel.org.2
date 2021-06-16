@@ -2,125 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F3D3AA709
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 00:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A693AA70E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 00:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234475AbhFPWxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 18:53:13 -0400
-Received: from mx-lax3-1.ucr.edu ([169.235.156.35]:47333 "EHLO
-        mx-lax3-1.ucr.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234422AbhFPWxC (ORCPT
+        id S231239AbhFPWyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 18:54:00 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56881 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229616AbhFPWx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 18:53:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
-  t=1623883855; x=1655419855;
-  h=mime-version:from:date:message-id:subject:to;
-  bh=rlua6TfeeN2sXJkC8s+D5ALLnhCcNCnD/0D2Hh1jRcE=;
-  b=C4EOUUNFLE6Y3DXq4G23lzX65DFrVoQRXWGBDuj8SzKKj04HQxg/dDgM
-   mKLMUo7QxZeZe1/dQjLlKobaCh3cSX+eylVFQlfZVngwoWe+D7FHbEwg0
-   kZSBIlUNpqpDEFM3AtEhksIMZHnDO2vgfd/FdLzoA99dZ+2YElLcyj6Qk
-   WFbqgEF+Tjqg2nWntwmvvPRaruJGCWgmbmeep9/1U7ZUgbqWIVxCoCuy0
-   qOz+XQYb+jwlR7zxRR77v4FrZ6H3tyRSNLAfH5lcH/gd9uxhDt0G2qhau
-   goLtzQoSKsKbthNPY51vF4vgaNc2sEyS+pI1NJRks9JJgi4maPYXwWOhW
-   Q==;
-IronPort-SDR: 7qOQYGXuUfCMPO0O53Z+EDZmbe/oNJ7BfPdFlmliji0Nz924JL2SCb9jlXOIXjMVYa85pe4d5g
- T1EDST+LW1vKROhxHVLd/12hMDXdnyNtV1l0rzQLkYkWaTmrXXVy6lBEvmZ4MZq4Db0fqvoTYJ
- kd1voyp24K6a4Z8tiyyVAFWIut3j9LKkGq1oU6SM8CIu3jKDgWNjXEYqGVI2MrMfOxLIKIl/38
- vLQmqlyZIv5vZLimbVTz0gF4H4oWrx+EpSzU/SSax4aY3Esyy5hs3bo+f/3pQQ2yZDZDZPACDv
- ZXM=
-X-IPAS-Result: =?us-ascii?q?A2EPAgA+f8pgh8bSVdFaHgEBCxIMQIFMC4N4bIRIlSkBm?=
- =?us-ascii?q?CWBfAIJAQEBD0EEAQGHPQIlNAkOAgQBAQEBAwIDAQEBAQUBAQYBAQEBAQEFB?=
- =?us-ascii?q?AEBAhABAQEBbIUvRoI4KQGEBREEeA8CJgIkEgEFASIBEiKCT4MImFiBBD2LM?=
- =?us-ascii?q?n8zgQGIFQEJDYFiEn4qhwmCZ4QhgimBS4I3dIdbgmQEgxwBehODdgEBAZAsj?=
- =?us-ascii?q?g6cZAEGAoMEHJ15K5RukH0BLZUppFMQI4ExghUzGiV/BmeBS1AZDo44jlUkL?=
- =?us-ascii?q?zgCBgoBAQMJiVEBAQ?=
-IronPort-PHdr: A9a23:bDgygxA9xCiL9jF+BpplUyQU8kMY04WdBeb1wqQuh78GSKm/5ZOqZ
- BWZuaw8ygSTDM6Ku7ptsKn/i+jYQ2sO4JKM4jgpUadncFs7s/gQhBEqG8WfCEf2f7bAZi0+G
- 9leBhc+pynoeUdaF9zjaFLMv3a88SAdGgnlNQpyO+/5BpPeg9642uyv/5DfeQtFiCS5bL99K
- Bi7rhjau9ULj4dlNqs/0AbCrGFSe+RRy2NoJFaTkAj568yt4pNt8Dletuw4+cJYXqr0Y6o3T
- bpDDDQ7KG81/9HktQPCTQSU+HQRVHgdnwdSDAjE6BH6WYrxsjf/u+Fg1iSWIdH6QLYpUjm58
- axlVAHnhzsGNz4h8WHYlMpwjL5AoBm8oxBz2pPYbJ2JOPZ7eK7WYNEUSndbXstJWCNPAo2yY
- YgSAeQfIelVtJX9q0cUoBeiGQWgGOHixzlVjXH2x6061OEhHBnE0wwhHtMOsGnUrNLoP6gRU
- eC61qjIxijEYvJW2Db96JLHchE9rf2QU799atfRxlU1Fw/fkFqftJHlMiqT2+8QvGeV8/BuW
- vizi247tQ5xuD6vy98th4TNm48Y1F7K+ytkzYsoJdO0VlN3bcCgHZdNtiyUOIl7T8w8T2xpp
- io3zqEKtJCncCUIxpor2hDSZuCDfoWG5B/oSeWfIS9giX57ZL6ygwy+/Eugx+HmSMW4zUpGo
- jBYntTItX0A0QHY5NKdRftn5Eih3C6C1wXU6u5ZP085jbHbK5s9wr4okZoTrFjDEjf2mEroi
- K+WcV0p+u2y5OTmZrXqv4ecN4Fphg3nPKQih8iyDOciPggBWGib/uu81Ln98kHjXLpKifg2n
- rHYsJDcO8sbura0DxFJ3osn8RqyDDer3M4GkXUaMF5JYg+LgozqNl3WJfD3F/a/g1CikDdxw
- PDGO6XsA5XML3jDirjhfKpx51JSxQco0NBQ+4hUBqsfL/3uR0/9rMbYAQMhMwyo3+bnD81w1
- ocfWWKJH6+YP7resVyW6eI1JemDeosVtS3jK/gq+fHul2U1mVwDcqmz25sYdnS4Eu5hI0WDb
- nq/yusGRG0RvQcxQ/fCklCOUTdPIX21WuZ0yjglCY7uJIbZQoGgyOiI3T2/H5BaTmRHDE2cV
- 3blIcHMd/4KaS+WavFsjiAJT/D1R4Yn1ByqnAH01L5jaOHUrGlQuYjikdR4+eDXvRUz7iBvS
- cqH3myBQnp3gmQQATgs0+Q3p0tg1FqKzIB8gudEDppd/f5EXgohNoLb16p9Ed+2EgbAeMqZD
- VWrWNOrBRkvQd8rhdwDeUBwH5OllB+Q8TCtBuoklq6LGZt8wKLV3jClNtR9wneejPIJklI8B
- MZDKDv11eZE6wHPCtuRwA2inKGwePFZhXaVnFo=
-IronPort-HdrOrdr: A9a23:l11I1ajTBf1hPPpx4+JOw9WtNXBQXtMji2hC6mlwRA09TyX4rb
- HIoB11726WtN98YhEdcLO7WZVoI0msl6KdiLN5VdyftWLdyQ6Vxe9ZnO/fKv7bdhEWNNQ26U
- 6tScdD4RTLYTZHsfo=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="48886286"
-Received: from mail-pf1-f198.google.com ([209.85.210.198])
-  by smtp-lax3-1.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Jun 2021 15:50:52 -0700
-Received: by mail-pf1-f198.google.com with SMTP id b8-20020a056a000a88b02902e97a71383dso2484109pfl.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 15:50:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=W8sgVYgsWMdUE1wHeIEoHud9eQP11SIxXPuwjP87UZw=;
-        b=kSZ24cUXF/xbiiLuqZ4nIoxI9q2qjnsE7G168/ibkTpT2K31zzVZN2+uV50FuUcyYV
-         reBP0a+bCR0wc9CjHEKqFudiF1hldZhjbeIrjC9m+HM/xjIJvOZfMzEn/gUvBt4hYl+P
-         K1p2owmu/n9PSrfeGk/UzaZwsXYHmrNZM6KyDSbn/HOFcSKBR/vpiLqLpSavX0Y3I+gu
-         YM3P8HxrzSBxsXUABp+OLZWsFP7Q1RFwDILyz08LqZ9FNBwBC3UU+kNdVhBFat/+dIEG
-         iMOiikphMqmfG/3vbov5zqi+KvlF3FcAK09FiKRa/YFUpYQy4Kn/Rn5o+9Kf6NYrjvnV
-         ukWg==
-X-Gm-Message-State: AOAM5309r0uObp/8v84IlJtnWnObEVvW6Gzvo3emLhsCrgQB++c9WPxi
-        es8zfF1zZ6u4LamiZrVJXAbfx59raJ0XtIISmVzlX3bbNxuZJq/jtmrv1eC6XrripPr6da6kbal
-        Llsh+PtcIsUgYFu/ysQhzY2p+1Z6oIhHF2Pd89iaKPg==
-X-Received: by 2002:a17:90a:d516:: with SMTP id t22mr2289209pju.144.1623883852351;
-        Wed, 16 Jun 2021 15:50:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxpBspB9QJdH+f58DOOAFndNmFeCe7X2gL2GM2hO1VVOXQa23XnJmXHTZeZxwy2XrHghuDEEc/1KtDqeJG9FZY=
-X-Received: by 2002:a17:90a:d516:: with SMTP id t22mr2289201pju.144.1623883852186;
- Wed, 16 Jun 2021 15:50:52 -0700 (PDT)
+        Wed, 16 Jun 2021 18:53:58 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15GMpZDA020903
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Jun 2021 18:51:36 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 4851215C3CB8; Wed, 16 Jun 2021 18:51:35 -0400 (EDT)
+Date:   Wed, 16 Jun 2021 18:51:35 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Frank van der Linden <fllinden@amazon.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        "hsiangkao@linux.alibaba.com" <hsiangkao@linux.alibaba.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
+Subject: Re: [PATCH] nfs: set block size according to pnfs_blksize first
+Message-ID: <YMqAd8u+DwKbatnj@mit.edu>
+References: <1623847469-150122-1-git-send-email-hsiangkao@linux.alibaba.com>
+ <4898aa11dc26396c13bbc3d8bf18c13efe4d513a.camel@hammerspace.com>
+ <YMoFcdhVwMXJQPJ+@B-P7TQMD6M-0146.local>
+ <2c14b63eacf1742bb0bcd2ae02f2d7005f7682d8.camel@hammerspace.com>
+ <YMoNnr1RYDOLXtKJ@B-P7TQMD6M-0146.local>
+ <80199ffaf89fc5ef2ad77245f9a5e75beed2dc37.camel@hammerspace.com>
+ <20210616171708.GA24636@dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com>
 MIME-Version: 1.0
-From:   Yizhuo Zhai <yzhai003@ucr.edu>
-Date:   Wed, 16 Jun 2021 15:50:41 -0700
-Message-ID: <CABvMjLTVZaU8vMW__2BDo6FnjFa_bsh2S-kEmg=KV4KTsFiUzA@mail.gmail.com>
-Subject: [PATCH] drm/nouveau/core: fix the uninitialized use in nvkm_ioctl_map()
-To:     bskeggs@redhat.com, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616171708.GA24636@dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In function nvkm_ioctl_map(), the variable "type" could be
-uninitialized if "nvkm_object_map()" returns error code,
-however, it does not check the return value and directly
-use the "type" in the if statement, which is potentially
-unsafe.
+On Wed, Jun 16, 2021 at 05:17:08PM +0000, Frank van der Linden wrote:
+> 
+> The problem here for xfstests is how to define the 'correct' behavior
+> across all filesystems so that there's a clean pass/fail, as long
+> as these inconsistencies exist.
 
-Signed-off-by: Yizhuo <yzhai003@ucr.edu>
----
- drivers/gpu/drm/nouveau/nvkm/core/ioctl.c | 2 ++
- 1 file changed, 2 insertions(+)
+Note that the original xfstest in question is to check what happens
+when you have a pre-existing xattr with a small (16 byte) value, and
+replacing (overwriting) the xattr with a large (but valid) value.
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
-b/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
-index d777df5a64e6..7f2e8482f167 100644
---- a/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
-@@ -266,6 +266,8 @@ nvkm_ioctl_map(struct nvkm_client *client,
-                ret = nvkm_object_map(object, data, size, &type,
-                                      &args->v0.handle,
-                                      &args->v0.length);
-+               if (ret)
-+                       return ret;
-                if (type == NVKM_OBJECT_MAP_IO)
-                        args->v0.type = NVIF_IOCTL_MAP_V0_IO;
-                else
--- 
-2.17.1
+The problem was that generic/486 was using the preferred size for
+efficient I/O size as the "block" size, and then using a percentage of
+this "block" size as the arbitrary "large xattr size".
+
+It was not about the error codes being returned, which is a bit
+confusing, and for which different man pages (attr_set and setxattr)
+are differently incomplete.  That's really a different issue, and the
+fact that different file systems can use different error codes is not
+necessarily something that we need to rationalize, in particular for
+file systems like NFS where the error codes returned are not entirely
+under the control of the NFS client or server code.
+
+Cheers,
+
+					- Ted
