@@ -2,81 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26583A950C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12073A950F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232178AbhFPIca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
+        id S232199AbhFPIdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232185AbhFPIc1 (ORCPT
+        with ESMTP id S231335AbhFPIdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:32:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38780C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:30:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=v8wzYunwBieuIQynzoH9RoOaxPah69I7Fsd9nOFE6KE=; b=WgtXclb6hQxKiYod4urCr83+rc
-        rCx25hC+FLWdoRx0xB3prlUGCE3b3H5cmR1pWMLJzeaT4twDamYzbrh5wt4U5VzqaW5nKp/kB86WP
-        1dIGnPPMk3SZKwN3kf7GlHSXy0chKdPkb0oAas+fB9y9iXR5yDsATdW6DE3+okRehQyvRMXSYW5MM
-        sT4W/F11ZkbvT4oQZDCUa52eilXl3m2Q/mdiNUEJ/35YIhI/am7mW2bHkMXQBo8MBPm4LksfvMJQA
-        VJyIF+MhPjkQqjAotW3TwxQDAJxreMBR22df3H+vW/IwMrVePl4R/m9aIt97iRNbxmQXxtIUVe184
-        53cnZNOw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltQvW-007nz1-HQ; Wed, 16 Jun 2021 08:29:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B48BA300252;
-        Wed, 16 Jun 2021 10:29:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7098420277F84; Wed, 16 Jun 2021 10:29:33 +0200 (CEST)
-Date:   Wed, 16 Jun 2021 10:29:33 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] sched, fair: try to prevent migration thread from
- preempting non-cfs task
-Message-ID: <YMm2bWq9XfaPeSka@hirez.programming.kicks-ass.net>
-References: <20210615121551.31138-1-laoar.shao@gmail.com>
- <20210615203534.GA4272@worktop.programming.kicks-ass.net>
- <CALOAHbBuZJaK+fEg7toRUHJNP8rJKDoADeAUxorUuNU17kdTOA@mail.gmail.com>
- <YMmlAP/QhE6SWhCF@hirez.programming.kicks-ass.net>
- <CAKfTPtAh3eOtzZUPqmhkw6FAOjOietZrB_qMOfOprp0oWO+CvA@mail.gmail.com>
+        Wed, 16 Jun 2021 04:33:01 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63356C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:30:55 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 131so2675293ljj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:30:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xtx0D/JQrf9peJgocm4/e4qMNluWA8H4pEhH1El3BzQ=;
+        b=Qvm89n4LVQwKeGewmMIEPJ1PlvtmWGAwftSotHUv7x7O9RfZMXC9T29Rlla2HxSb55
+         egZqJNE0Jhw0VcP/XKW/0E7Iu/hAoSqyMEoc7IcZUGOax4T6mgqVZCYKE20kUKU9jXo4
+         lxQoOhXPkPRlF60OYw78Hvs94dlrN/2/LsiS8Tr5EK5ibCCfPzss7xKCcwGzypj+IWlu
+         tXc+Sxfsm+Hweg0l8ASZ2Sl6Qw/2ibBD+XRH7dHwnT8qZFxCu3UlPQ+IhzlvlYztHCAg
+         G5khlJQoN2QiSm5MP3nethiPx1BV9+CIcRAVb5OmIax7UcI7opkTU8ebeUKI+lt2TMw3
+         O0vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xtx0D/JQrf9peJgocm4/e4qMNluWA8H4pEhH1El3BzQ=;
+        b=Ci01ALndXQ3LlpAKYXfbOiYfaLKvzm9wXoHwXSdbeGP+tsuTGw8eucWebCFJjJUPEz
+         h2u/u5VJDzzpNLJDH+W9NYOMScg+3q3JaDzRVEsiLEtbwIMGy9aE3cI+BvcSWiL8A/z5
+         0wp1/69VtVnJi07reLctAav3CCMmatJ8y23RQDDD8rdVESDRVy2qBwceXsqH1zykKcgk
+         rozUyAjFsqpJMTHGLpfSBHghZyn4d/IiLMJvSmWPUhqGOc5PHf38iYXgFB5TWmy1auE6
+         pobqGaTH3zNOjfy+pWMQugRNjKsykh6BKEdP8GqJ7YL1bzw9i0GPA+U52ngQXTyAr9ZG
+         n7Kw==
+X-Gm-Message-State: AOAM530oSdPsrg1pCkkTgRui97gU9KgBoasmfKsrLcBp9uzePGvgV3J/
+        /Z01WkoPuMR9bn5BQoSx6WnRY+3wzozQYPtz+C+pGw==
+X-Google-Smtp-Source: ABdhPJyvTNRjOx83HPsiqhcRq2/Bk3bODAfL45ZU+TbpCvmtO9pDNtfz8UpZbD5cL08fxjHc/6TUVqte0AC1nPwPO1k=
+X-Received: by 2002:a2e:8046:: with SMTP id p6mr3393629ljg.401.1623832253740;
+ Wed, 16 Jun 2021 01:30:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtAh3eOtzZUPqmhkw6FAOjOietZrB_qMOfOprp0oWO+CvA@mail.gmail.com>
+References: <20210529170955.32574-1-digetx@gmail.com> <20210529170955.32574-5-digetx@gmail.com>
+ <6f2b6290-095a-bd39-c160-1616a0ff89b1@linaro.org> <20210615102626.dja3agclwzxv2sj4@vireshk-i7>
+ <595f5e53-b872-bcc6-e886-ed225e26e9fe@gmail.com> <fbdc3b56-4465-6d3e-74db-1d5082813b9c@linaro.org>
+ <4c7b23c4-cf6a-0942-5250-63515be4a219@gmail.com> <20210616080310.vhvauvo5y6m2sekz@vireshk-i7>
+In-Reply-To: <20210616080310.vhvauvo5y6m2sekz@vireshk-i7>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 16 Jun 2021 10:30:42 +0200
+Message-ID: <CAKfTPtAxvj4_TBpFesjQxcVzvEi3QVUThccfSAJXwwrLtOH-xg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/7] thermal/drivers/tegra: Add driver for Tegra30
+ thermal sensor
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Ihor Didenko <tailormoon@rambler.ru>,
+        Ion Agorria <ion@agorria.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 09:29:55AM +0200, Vincent Guittot wrote:
-> On Wed, 16 Jun 2021 at 09:15, Peter Zijlstra <peterz@infradead.org> wrote:
+On Wed, 16 Jun 2021 at 10:03, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> +Vincent.
+>
+> On 15-06-21, 22:32, Dmitry Osipenko wrote:
+> > IIUC, the cpufreq already should be prepared for the case where firmware
+> > may override frequency. Viresh, could you please clarify what are the
+> > possible implications of the frequency overriding?
+>
+> The only implication is software would think hardware is running at
+> some other frequency, while it is not. Not sure if something may break
+> as a result of this.
+>
+> The scheduler's view of CPUs will not be same though, i.e. scheduler
+> will see capacity as X, while in reality it has changed to Y.
 
-> > The suggestion was adding a cfs_migration thread, specifically for
-> > active balance (and maybe numa). Just not sure the cost of carrying yet
-> > another per-cpu kernel thread is worth the benefit.
-> 
-> Also, this will not completely remove the problem but only further
-> reduce the race window because the rq is locked and the irq disable in
-> active_load_balance_cpu_stop().
+thermal_pressure is used by scheduler to balance the load between CPUs
+according to the actual max frequency. If the thermal pressure doesn't
+reflect reality, scheduler will end up enqueuing too many  tasks on a
+throttle CPU.
 
-It removes the problem of active migration interfering with this
-worklaod, because the FIFO1 task will never run until that is done
-(assuming he manages to not have his workload at FIFO1).
-
+>
+> --
+> viresh
