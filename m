@@ -2,214 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBFE3A9042
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0D43A904B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbhFPEDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 00:03:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:20026 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhFPEDq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 00:03:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623816100; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=eHLURM/NKBWqQRnXZp3rlAUkp5uwKCsiJfPwOofHs34=;
- b=hz0VMJNaEIVwiu0m/ci97ddOffTwjeCH2QnhHRNCtdf9Tlpa1tLDae4xQKQMGC6RINpzBZDJ
- r1OLWPVDawDk+Zy4jzydX3UK3BI2W9J+qJbBLTgWscp+vnfC7dCsNAbsaCD3YyJJZRM/At3F
- TBEcHi+v9wyAMGN9Iuv8iP6LZ9M=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60c9777bb6ccaab7538c23eb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Jun 2021 04:00:59
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4DCA2C4360C; Wed, 16 Jun 2021 04:00:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B400DC4338A;
-        Wed, 16 Jun 2021 04:00:57 +0000 (UTC)
+        id S229699AbhFPEE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 00:04:58 -0400
+Received: from verein.lst.de ([213.95.11.211]:52296 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229476AbhFPEE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 00:04:56 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A23E468AFE; Wed, 16 Jun 2021 06:02:47 +0200 (CEST)
+Date:   Wed, 16 Jun 2021 06:02:47 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>, gmpy.liaowx@gmail.com,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-doc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] pstore/blk: Include zone in pstore_device_info
+Message-ID: <20210616040247.GD25873@lst.de>
+References: <20210615212121.1200820-1-keescook@chromium.org> <20210615212121.1200820-4-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 16 Jun 2021 12:00:57 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-In-Reply-To: <fabc70f8-6bb8-4b62-3311-f6e0ce9eb2c3@acm.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-9-git-send-email-cang@codeaurora.org>
- <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
- <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
- <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
- <75527f0ba5d315d6edbf800a2ddcf8c7@codeaurora.org>
- <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
- <3fce15502c2742a4388817538eb4db97@codeaurora.org>
- <fabc70f8-6bb8-4b62-3311-f6e0ce9eb2c3@acm.org>
-Message-ID: <8aae95071b9ab3c0a3cab91d1ae138e1@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615212121.1200820-4-keescook@chromium.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-16 02:25, Bart Van Assche wrote:
-> On 6/14/21 7:36 PM, Can Guo wrote:
->> I've considered the similar way (leverage hba->host->eh_noresume) last
->> year,
->> but I didn't take this way due to below reasons:
->> 
->> 1. UFS error handler basically does one thing - reset and restore, 
->> which
->> stops hba [1], resets device [2] and re-probes the device [3]. 
->> Stopping
->> hba [1]
->> shall complete any pending requests in the doorbell (with error or no
->> error).
->> After [1], suspend/resume contexts, blocked by SSU cmd, shall be 
->> unblocked
->> right away to do whatever it needs to handle the SSU cmd failure 
->> (completed
->> in [1], so scsi_execute() returns an error), e.g., put link back to 
->> the old
->> state. call ufshcd_vops_suspend(), turn off irq/clocks/powers and 
->> etc...
->> However, reset and restore ([2] and [3]) is still running, and it can
->> (most likely)
->> be disturbed by suspend/resume. So passing a parameter or using
->> hba->host->eh_noresume
->> to skip lock_system_sleep() and unlock_system_sleep() can break the 
->> cycle,
->> but error handling may run concurrently with suspend/resume. Of course
->> we can
->> modify suspend/resume to avoid it, but I was pursuing a minimal change
->> to get this fixed.
->> 
->> 2. Whatever way we take to break the cycle, suspend/resume shall fail 
->> and
->> RPM framework shall save the error to dev.power.runtime_error, leaving
->> the device in runtime suspended or active mode permanently. If it is 
->> left
->> runtime suspended, UFS driver won't accept cmd anymore, while if it is 
->> left
->> runtime active, powers of UFS device and host will be left ON, leading
->> to power
->> penalty. So my main idea is to let suspend/resume contexts, blocked by
->> PM cmds,
->> fail fast first and then error handler recover everything back to 
->> work.
-> 
-> Hi Can,
-> 
-> Has it been considered to make the UFS error handler fail pending
-> commands with an error code that causes the SCSI core to resubmit the
-> SCSI command, e.g. DID_IMM_RETRY or DID_TRANSPORT_DISRUPTED? I want to
-> prevent that power management or suspend/resume callbacks fail if the
-> error handler succeeds with recovering the UFS transport.
-> 
+> +#define verify_size(name, alignsize, enabled) {				\
+> +		long _##name_;						\
+> +		if (enabled)						\
+> +			_##name_ = check_size(name, alignsize);		\
+> +		else							\
+> +			_##name_ = 0;					\
+> +		/* synchronize visible module parameters to result. */	\
+> +		name = _##name_ / 1024;					\
+> +		dev->zone.name = _##name_;				\
+> +	}
 
-Hi Bart,
+The formatting here looks weird between the two-tab indent and the
+opening brace on the macro definition line.
 
-Thanks for the suggestion, I thought about it but I didn't go that
-far in this path because I believe letting a context fast fail is
-better than retrying/blocking it (to me suspend/resume can fail
-due to many reasons and task abort is just one of them). I appreciate
-the idea, but I would like to stick to my way as of now because
+> -	if (!dev || !dev->total_size || !dev->read || !dev->write) {
+> +	if (!dev || !dev->zone.total_size || !dev->zone.read || !dev->zone.write) {
+>  		if (!dev)
+> -			pr_err("NULL device info\n");
+> +			pr_err("NULL pstore_device_info\n");
+>  		else {
+> -			if (!dev->total_size)
+> +			if (!dev->zone.total_size)
+>  				pr_err("zero sized device\n");
+> -			if (!dev->read)
+> +			if (!dev->zone.read)
+>  				pr_err("no read handler for device\n");
+> -			if (!dev->write)
+> +			if (!dev->zone.write)
+>  				pr_err("no write handler for device\n");
+>  		}
 
-1. Merely preventing task abort cannot prevent suspend/resume fail.
-Task abort (to PM requests), in real cases, is just one of many kinds
-of failure which can fail the suspend/resume callbacks. During
-suspend/resume, if AH8 error and/or UIC errors happen, IRQ handler
-may complete SSU cmd with errors and schedule the error handler (I've
-seen such scenarios in real customer cases). My idea is to treat task
-abort (to PM requests) as a failure (let scsi_execute() return with
-whatever error) and let error handler recover everything just like
-any other UFS errors which invoke error handler. In case this, again,
-goes back to the topic that is why don't just do error recovery in
-suspend/resume, let me paste my previous reply here -
+This still looks odd to me.  Why not the somewhat more verbose but
+much more obvious:
 
-"
-Error handler has the same nature of user access - it is unpredictable, 
-meaning it
-can be invoked at any time (from IRQ handler), even when there is no 
-ongoing
-cmd/data transactions (like auto hibern8 failure and UIC errors, such as 
-DME
-error and some errors in data link layer) [1], unless you disable UFS 
-IRQ.
+	if (!dev) {
+		pr_err("NULL pstore_device_info\n");
+		return -EINVAL;
+	}
+	if (!dev->zone.total_size) {
+		pr_err("zero sized device\n");
+		return -EINVAL;
+	}
+	...
+		
 
-The reasons why I choose not to do it that way are (althrough error 
-handler
-prepare has became much more simple after apply this change)
+> -	dev.total_size = i_size_read(I_BDEV(psblk_file->f_mapping->host)->bd_inode);
+> +	dev->zone.total_size = i_size_read(I_BDEV(psblk_file->f_mapping->host)->bd_inode);
 
-- I want to keep all the complexity within error handler, and re-direct 
-all error
-recovery needs to error handler. It can avoid calling 
-ufshcd_reset_and_restore()
-and/or flush_work(&hba->eh_work) here and there. The entire UFS 
-suspend/resume is
-already complex enough, I don't want to mess up with it.
+This is starting to be unreadable long.  A local variable for the inode
+might be nice, as that can also be used in the ISBLK check above.
 
-- We do explicit recovery only when we see certain errors, e.g., H8 
-enter func
-returns an error during suspend, but as mentioned above [1], error 
-handling can
-be invoked already from IRQ handler (due to all kinds of UIC errors 
-before H8 enter
-func returns). So, we still need host_sem (in case of system 
-suspend/resume) to
-avoid concurrency.
+> +	if (!pstore_device_info && best_effort && blkdev[0]) {
+> +		struct pstore_device_info *best_effort_dev;
+> +
+> +		best_effort_dev = kzalloc(sizeof(*best_effort_dev), GFP_KERNEL);
+> +		if (!best_effort) {
+> +			ret = -ENOMEM;
+> +			goto unlock;
+> +		}
+> +		best_effort_dev->zone.read = psblk_generic_blk_read;
+> +		best_effort_dev->zone.write = psblk_generic_blk_write;
+> +
+> +		ret = __register_pstore_blk(best_effort_dev,
+> +					    early_boot_devpath(blkdev));
+> +		if (ret)
+> +			kfree(best_effort_dev);
+> +		else
+> +			pr_info("attached %s (%zu) (no dedicated panic_write!)\n",
+> +				blkdev, best_effort_dev->zone.total_size);
 
-- During system suspend/resume, error handling can be invoked (due to 
-non-fatal
-errors) but still UFS cmds return no error at all. Similar like above, 
-we need
-host_sem to avoid concurrency.
-"
+Maybe split this into a little helper?
 
-2. And say we want SCSI layer to resubmit PM requests to prevent
-suspend/resume fail, we should keep retrying the PM requests (so
-long as error handler can recover everything successfully), meaning
-we should give them unlimited retries (which I think is a bad idea),
-otherwise (if they have zero retries or limited retries), in extreme
-conditions, what may happen is that error handler can recover everything
-successfully every time, but all these retries (say 3) still time out,
-which block the power management for too long (retries * 60 seconds) 
-and,
-most important, when the last retry times out, scsi layer will anyways
-complete the PM request (even we return DID_IMM_RETRY), then we end up
-same - suspend/resume shall run concurrently with error handler and we
-couldn't recover saved PM errors.
+> +	/* Unregister and free the best_effort device. */
+> +	if (psblk_file) {
+> +		struct pstore_device_info *dev = pstore_device_info;
+> +
+> +		__unregister_pstore_device(dev);
+> +		kfree(dev);
+> +		fput(psblk_file);
+> +		psblk_file = NULL;
+>  	}
 
-Thanks,
+Same.
 
-Can Guo.
+> +	/* If we've been asked to unload, unregister any registered device. */
+> +	if (pstore_device_info)
+> +		__unregister_pstore_device(pstore_device_info);
 
-> Thanks,
-> 
-> Bart.
+Won't this double unregister pstore_device_info?
+
+>  struct pstore_device_info {
+> -	unsigned long total_size;
+>  	unsigned int flags;
+> -	pstore_zone_read_op read;
+> -	pstore_zone_write_op write;
+> -	pstore_zone_erase_op erase;
+> -	pstore_zone_write_op panic_write;
+> +	struct pstore_zone_info zone;
+>  };
+
+Given that flags is only used inside of __register_pstore_device
+why not kill this struct and just pass it explicitly?
