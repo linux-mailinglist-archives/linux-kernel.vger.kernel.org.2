@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 779723AA398
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6455A3AA39B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbhFPSzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 14:55:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232006AbhFPSzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 14:55:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E38DA613B4;
-        Wed, 16 Jun 2021 18:52:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623869579;
-        bh=Yqry3gXTN7L5llHGJ5LYioszkeOqgnImNugNlvlJamM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ZdUJ7KXNhkuKNAUX1x7Dbc4PeUFd1RBBDmKso0XmPrKjdsmddGAwUrigYr/JM82Wg
-         QZYY1HboE2uqd3aDHbef4mKiID3gsuvm5EVze2dABZvbyZheNWkpSQusDL9vvTKeTZ
-         llgpyzsvBgZGHBlVCUTvm9DEzi6Hvbi5dJZInB6zEXy5rjMxcXqZdGesyqHMQpTlGH
-         9vnvX5X6f8YAkbV0xff+6rjr3kuqkpugsrxF/ZBh7JF/BjFyZohG2TevhZq78dCe75
-         ZbfCX4ngCfJiMjfS5mqXkORZczgWyrHbvJC4IDDJol6JXrj9FBaLWKtCUNktRtFrtB
-         Ewqj3p90Zv/OQ==
-Subject: Re: [PATCH 8/8] membarrier: Rewrite sync_core_before_usermode() and
- improve documentation
-To:     Nicholas Piggin <npiggin@gmail.com>, x86@kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>, stable@vger.kernel.org,
-        Will Deacon <will@kernel.org>
-References: <cover.1623813516.git.luto@kernel.org>
- <07a8b963002cb955b7516e61bad19514a3acaa82.1623813516.git.luto@kernel.org>
- <1623818343.eko1v01gvr.astroid@bobo.none>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <1e248763-9372-6e4e-5dea-cda999000aeb@kernel.org>
-Date:   Wed, 16 Jun 2021 11:52:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232159AbhFPSzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 14:55:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232155AbhFPSzK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 14:55:10 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1458C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:53:03 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id x6so264402qvx.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:53:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Bi8dbucrJcy0W1D0dg2PU0hOFJEuVy1iH+Z01lR7RNU=;
+        b=Po/xUUsHLApF2WJxJQfD/YuH91EnTAYSVD1+At+SSHlxCPOKFaw9xtnwZTdsdk+DFK
+         BayPMchZJUB930+dPPSSh6lWVh5oNdEfz0ZlYGrkMYI+kXaq2wTWBOJrrBOC9k4PWSr1
+         8hIkaUTo/FBInVYQX6XbTssCK+3z++KEDgkUq5wSDCT9uzsyBZTJsCc3z2wfo0Rp4Gy2
+         4cbslr3Il3c2If01RtYElCx2dZ910hiCKH1YNGwB9F2N7sVsv3uHa+qdu+OMxzoNAf87
+         opIFJMYgELd/xKzFT3icow5eXFKEouovuysAXmGye9Pr/YeSiYq+hnD5pV2l7lnxmNoA
+         Yhog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Bi8dbucrJcy0W1D0dg2PU0hOFJEuVy1iH+Z01lR7RNU=;
+        b=JQG596uWhrPwNLih55b+CB6vwWuz5kX1qD+CaIVAz4XiYSH9/17piaF/CXAWpsSuM+
+         lKfv0vTBRMj592JDU2WGy8rAigDr6BsXwIse062CaAIsElQbo2nqfHa8VqdBLRoS9kFT
+         xXSi5hmQlDDKzsEMsTcicZuLiKV9X9dJpfTDnY5Elg+LG6tjbYNZQqneZzpMKOICWFpm
+         Exivv3aPby9iJBOrDwhqAYclCQxoZQ7UPKNk223osOdukPUm0awdzPMGfw3PMM3vYb84
+         d8l2ApdjW/rslEy2DI3V6XFyZhrnTcjnlVftnimPZiv3vANsE5iecq5BJDflVlCxW5lk
+         fPMQ==
+X-Gm-Message-State: AOAM5308NIusMdoETbkEa13WTj7BVSw/Ue4gqwTv8LPCDgyeBtmF8wIo
+        gkCtIrLnkap/N12NsrBJtA9qpA==
+X-Google-Smtp-Source: ABdhPJzkiKO6DN9zp2TAQ51SVCuXD9hc0JgggsuuhG7gouo0zcIq4LwmfpdPN8lJmIm+C4xh7+Ci1g==
+X-Received: by 2002:a0c:8563:: with SMTP id n90mr1504110qva.41.1623869583161;
+        Wed, 16 Jun 2021 11:53:03 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id i11sm61968qkl.95.2021.06.16.11.53.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 11:53:02 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1ltaes-007kLT-09; Wed, 16 Jun 2021 15:53:02 -0300
+Date:   Wed, 16 Jun 2021 15:53:01 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>, kernel@axis.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] tpm: Fix tpmrm reference counting
+Message-ID: <20210616185301.GV1096940@ziepe.ca>
+References: <20210615091410.17007-1-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
-In-Reply-To: <1623818343.eko1v01gvr.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615091410.17007-1-vincent.whitchurch@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 9:45 PM, Nicholas Piggin wrote:
-> Excerpts from Andy Lutomirski's message of June 16, 2021 1:21 pm:
->> The old sync_core_before_usermode() comments suggested that a non-icache-syncing
->> return-to-usermode instruction is x86-specific and that all other
->> architectures automatically notice cross-modified code on return to
->> userspace.
+On Tue, Jun 15, 2021 at 11:14:08AM +0200, Vincent Whitchurch wrote:
+> The code added by commit 8979b02aaf1d6de8 ("tpm: Fix reference count to
+> main device") tries to take an extra reference to the main device only
+> for TPM2 by looking at the flags, but the flags are actually not set
+> at the time when tpm_chip_alloc() is called, so no extra reference is
+> ever taken, leading to a use-after-free if the TPM modules are removed
+> when the tpmrm device is in use.
 
->> +/*
->> + * XXX: can a powerpc person put an appropriate comment here?
->> + */
->> +static inline void membarrier_sync_core_before_usermode(void)
->> +{
->> +}
->> +
->> +#endif /* _ASM_POWERPC_SYNC_CORE_H */
-> 
-> powerpc's can just go in asm/membarrier.h
+Please read this
 
-$ ls arch/powerpc/include/asm/membarrier.h
-ls: cannot access 'arch/powerpc/include/asm/membarrier.h': No such file
-or directory
+https://lore.kernel.org/linux-integrity/20210205172528.GP4718@ziepe.ca/
 
-
-> 
-> /*
->  * The RFI family of instructions are context synchronising, and
->  * that is how we return to userspace, so nothing is required here.
->  */
-
-Thanks!
+Jason
