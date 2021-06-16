@@ -2,150 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA303A9479
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991763A947C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhFPH46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 03:56:58 -0400
-Received: from mail-dm6nam08on2069.outbound.protection.outlook.com ([40.107.102.69]:10720
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231195AbhFPH45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:56:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K/xE6y7vdx9wn6Sw7bKrxIYxQT9hPXOJoN1LINm0JBRRMENkSqYH1uOAAwa4tQhDD922Z3hvB212yRR8Vub7d2XTEkxeEFKGok+wJ3jKP//OcRLBxrMU7G/ldRaONYVHQ9SfYkwU8mSZ7JCakS2sNPhiYiv5Aea1oLRY9rDN7dSpg23oxoSysuLI+yAI/64rUf41+QkUMj/qKxX3QjvOKFfQ6ihYLEgsGb4T96GgSGpYcbboQFS3Ldygjgoz50ItM45OiREKdGtKLVvpVXZE+oSZqq7JX5bw1Pn2dp53VLELuzus7lRXb4vSbRwZZIK7U3QQpgGgr8fTtm/N7PucLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m9GppNZCWNLija63MfpbTkOSDLQdzB/6ngy5C+XJjV0=;
- b=JOBQGVOJonGzEIqxPrEnbae/F/fL2aDzKn2T91kCUIFGLABPFCdTtGfQ7uCpiLknv/X2PTTYrgZrdkVYQ2z3XnTHyfSA688LAaQ1ozr8C5dBEU/ivzSKDGUljQRThn6XDjK/nS7mCvsyEvaHqFTtXTzj16/hGnUrUZke/JrAtSgVKywh2D6VnUaK7HlqgURUFz1k2BgR24OQTeaoMdA9XKcO87EjLGNQPWN7pyhBXECCkNjeDQJ4U/G9fwi9iOQnFjkHf1DUULe8Y2JYK7vSVyEIcfxiXqPHterI/3+hbOSoRAfopWPCMCOoM6NflSIJfoyHDLiy6LNVh/HegmFABQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m9GppNZCWNLija63MfpbTkOSDLQdzB/6ngy5C+XJjV0=;
- b=tFmRvvsOcNKRKEcq/iEi4AB+rXOAhFtQ4NMXd8MCNzKlzgaipMlOBe7OGfpyo2Yvw27AS5DSto1laeiWfYOuPJjbc0FckxAQ5IcAA9AM5BSPFqgtb5sbXzigMdo1lFT9sCK/aRn+pmOVZPzAIEnA5TD+90qDASxK4NFxxODVBJSXrfFHTLz4GsLbPNSO7jc5yoNpLRzhY3J8Qo61BNnZrapPccXVJpfhRU33r+D74nq2nCq/7OugZ3Z79GG810S2w/taYucgjYgSBtkI5IyKM1cFonnab2YgNc0J5/P1YsFSkGTMBq3QF4FqKEB/b4aRkbpngqFKDzGzX7RFHWAspw==
-Received: from MW4PR04CA0309.namprd04.prod.outlook.com (2603:10b6:303:82::14)
- by CY4PR12MB1446.namprd12.prod.outlook.com (2603:10b6:910:10::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Wed, 16 Jun
- 2021 07:54:49 +0000
-Received: from CO1NAM11FT035.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:82:cafe::bf) by MW4PR04CA0309.outlook.office365.com
- (2603:10b6:303:82::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend
- Transport; Wed, 16 Jun 2021 07:54:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT035.mail.protection.outlook.com (10.13.175.36) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4242.16 via Frontend Transport; Wed, 16 Jun 2021 07:54:49 +0000
-Received: from [10.26.49.10] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 16 Jun
- 2021 07:54:46 +0000
-Subject: Re: Query regarding the use of pcie-designware-plat.c file
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Vidya Sagar <vidyas@nvidia.com>, <lorenzo.pieralisi@arm.com>,
-        <bhelgaas@google.com>, <robh+dt@kernel.org>,
-        <amurray@thegoodpenguin.co.uk>, <gustavo.pimentel@synopsys.com>,
-        <jingoohan1@gmail.com>, <Joao.Pinto@synopsys.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Krishna Thota <kthota@nvidia.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210615194209.GA2908457@bjorn-Precision-5520>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <10a92c35-6e4d-0428-079c-7e98ff6e9414@nvidia.com>
-Date:   Wed, 16 Jun 2021 08:54:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231391AbhFPH6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:58:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231195AbhFPH57 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 03:57:59 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F4BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:55:53 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id z26so1530888pfj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:55:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=z6KkOeNGlBnwNRX+KBmO0OGQfzcjW9cbkiaLTpzY5I4=;
+        b=JEg6MHufBlrFldp6IGOX+iYUTopGk6HId0vQtr/zdHgFINopudHfhrhL0I5StbKsQK
+         f5PjrkkSpl5MC2wlK0xf8j5l2sIP0UfSy1Xerlo0Gv+5nMbdGvVJWP5uiIVjK6k3gOam
+         xwRzeiM3QRCIwauNlJr8swEl+BBMHmv9u3W5ICSiDyIpmBVYtcaSgigb2GLITIL5+/SV
+         THUHyjIo6Gc7g7WWpjWYvSKnRmS/iYUJVvBWfDikmJDWtCV9RBYRT/RR2VJGzgs63Zi7
+         zdp8VMfcDLrxSAIZTedSWg7JfOIxHuCY/7IQ23xXZHOYnZkOVXPhcow2EdbNjDz6Cuiz
+         L2Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=z6KkOeNGlBnwNRX+KBmO0OGQfzcjW9cbkiaLTpzY5I4=;
+        b=I6AEndsj0AP6GcIsHHJYQW1OnYMoACif8PVNX0bPeGZPa7Iv1/A0JKpE6rB1x2dZa2
+         +SJfrZG3IngJ5ltLptrQxeqsJGxm1730PsSz1GdHGcIGoYkW49MGtV6niS9D/n5ZmE2s
+         7dCt/LhcypL3gI74d2j7g8nfLptqBAJ1ZW3SdRxX1KNaR/Xwd3W/fxjzEciUPly7vuNH
+         r9dnBDeaxN9Thi4kEz/UtwN33PHzPozl/FY3FmKQxi2nUxtsh6yAwEc4wPMJXeoiLy2B
+         yB2Dyn9AO6UjWur/7I++pEeoBBAnOnv0/y11fgkBo126hPjieVh1J4/lg6ohuYXTiw6i
+         h7QA==
+X-Gm-Message-State: AOAM530G4KMED4x91cNTbGEUcP9cS07AOOWTuuC8IzeWxyLbkrSdcEUI
+        obTfMRenCzohIGZqXxJllOx5wg==
+X-Google-Smtp-Source: ABdhPJxsRTQvzjZpns/ytNoGBkXK7Sp1Eke838wNQfEUlb+/eqLtTJIu+KvXGzGjBp31IJe8vGvohQ==
+X-Received: by 2002:aa7:979a:0:b029:2f5:2484:ecff with SMTP id o26-20020aa7979a0000b02902f52484ecffmr8151664pfp.13.1623830152488;
+        Wed, 16 Jun 2021 00:55:52 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id y7sm1318123pfy.153.2021.06.16.00.55.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 00:55:50 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 13:25:48 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     "Viresh Kumar )" <vireshk@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "andrew-sh . cheng" <andrew-sh.cheng@mediatek.com>
+Subject: Re: [PATCH] opp: of: Allow lazy-linking of required-opps to non genpd
+Message-ID: <20210616075548.ghp3lmjf4y6pyxoy@vireshk-i7>
+References: <20210616053335.4181780-1-hsinyi@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20210615194209.GA2908457@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 20fb257a-973c-48a8-f480-08d9309c0442
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1446:
-X-Microsoft-Antispam-PRVS: <CY4PR12MB144613349ECB30413758C078D90F9@CY4PR12MB1446.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OEE7vN03nvUYBUNq48Cn4gqSyN/GCn3IJd9ztARuf8XqFB7wcD1Fk60m9tH4rSLbwSSVKC+2wFTmr+saYgvUqaC5XGXdLpKSTmEuIXFmSL/+nIOySLqip/32HA5gV61DUAZ9MIICxIjORynWQwgpmnwhdl21rmsVgFimNhNmUc7yn4duHbTix25SKkH9bVJkiON59+hIHqPttQxgkG2Z+5tdmZy9s8E/wAsGyDsXHl/xObXfbcGyYNjUmfPz8Nkg1iip7cONZBopplBYCOo09gjMbROSizUpnQU6Z4dqnw9L4OJmDnwoNyj0Bk6uEQm80Xu62vX2M1/bpBUnYUJwwYeA4pRzSFNdYX+SEokQxmOAbe9/+dE2prgvOLSHe8h41+SyoSEyBGY6ZhQBdZrq5dsgV0h9c9tRzOFPC0haFifoQMOc1QEWi6cBJzDP5J9yXqQnDU6W3C0EIxwMGBfrx1JCWTljs4+vjF8m2dUyjwrN1CBcB+HgPjv5KxTliAk6blYP9DGf4HByakMS6+dI66AiI+iLyIpGQ7TMeRiO18NVEtMwcBAR0G2l9cj/roIWUaAIFbEEV53pD+o3Ob+p2Z6Ql+WiJiB7K67L1xQRlkCJ44TZoRYY7i2dQeJzQzSnCVWz2MvAUXb1e1pADmd+O3+bBfXlryoOf4k4wQQocDKbvmCjdsKukPrcnJxeVdKq
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(39860400002)(396003)(46966006)(36840700001)(54906003)(86362001)(31696002)(5660300002)(8676002)(53546011)(478600001)(186003)(426003)(316002)(2616005)(31686004)(2906002)(16576012)(36906005)(4326008)(26005)(47076005)(8936002)(36756003)(356005)(336012)(36860700001)(7416002)(6916009)(7636003)(16526019)(82740400003)(70586007)(70206006)(82310400003)(83380400001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 07:54:49.2644
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20fb257a-973c-48a8-f480-08d9309c0442
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT035.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1446
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616053335.4181780-1-hsinyi@chromium.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 15/06/2021 20:42, Bjorn Helgaas wrote:
-> On Wed, Jun 09, 2021 at 05:54:38PM +0100, Jon Hunter wrote:
->>
->> On 09/06/2021 17:30, Bjorn Helgaas wrote:
->>> On Wed, Jun 09, 2021 at 12:52:37AM +0530, Vidya Sagar wrote:
->>>> Hi,
->>>> I would like to know what is the use of pcie-designware-plat.c file. This
->>>> looks like a skeleton file and can't really work with any specific hardware
->>>> as such.
->>>> Some context for this mail thread is, if the config CONFIG_PCIE_DW_PLAT is
->>>> enabled in a system where a Synopsys DesignWare IP based PCIe controller is
->>>> present and its configuration is enabled (Ex:- Tegra194 system with
->>>> CONFIG_PCIE_TEGRA194_HOST enabled), then, it can so happen that the probe of
->>>> pcie-designware-plat.c called first (because all DWC based PCIe controller
->>>> nodes have "snps,dw-pcie" compatibility string) and can crash the system.
->>>
->>> What's the crash?  If a device claims to be compatible with
->>> "snps,dw-pcie" and pcie-designware-plat.c claims to know how to
->>> operate "snps,dw-pcie" devices, it seems like something is wrong.
->>>
->>> "snps,dw-pcie" is a generic device type, so pcie-designware-plat.c
->>> might not know how to operate device-specific details of some of those
->>> devices, but basic functionality should work and it certainly
->>> shouldn't crash.
->>
->> It is not really a crash but a hang when trying to access the hardware
->> before it has been properly initialised.
+On 16-06-21, 13:33, Hsin-Yi Wang wrote:
+> Don't limit required_opp_table to genpd only. One possible use case is
+> cpufreq based devfreq governor, which can use required-opps property to
+> derive devfreq from cpufreq.
 > 
-> This doesn't really answer my question.
+> Suggested-by: Chanwoo Choi <cw00.choi@samsung.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+> This is tested with the non genpd case mt8183-cci with passive
+> governor[1].
+> [1] https://patchwork.kernel.org/project/linux-mediatek/patch/1616499241-4906-2-git-send-email-andrew-sh.cheng@mediatek.com/
+> ---
+>  drivers/opp/of.c | 20 +-------------------
+>  1 file changed, 1 insertion(+), 19 deletions(-)
 > 
-> If the hardware claims to be compatible with "snps,dw-pcie" and a
-> driver knows how to operate "snps,dw-pcie" devices, it should work.
-> 
-> If the hardware requires initialization that is not part of the
-> "snps,dw-pcie" programming model, it should not claim to be compatible
-> with "snps,dw-pcie".  Or, if pcie-designware-plat.c is missing some
-> init that *is* part of the programming model, maybe it needs to be
-> enhanced?
+> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+> index aa75a1caf08a3..9573facce53a5 100644
+> --- a/drivers/opp/of.c
+> +++ b/drivers/opp/of.c
+> @@ -201,17 +201,6 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
+>  			lazy = true;
+>  			continue;
+>  		}
+> -
+> -		/*
+> -		 * We only support genpd's OPPs in the "required-opps" for now,
+> -		 * as we don't know how much about other cases. Error out if the
+> -		 * required OPP doesn't belong to a genpd.
+> -		 */
+> -		if (!required_opp_tables[i]->is_genpd) {
+> -			dev_err(dev, "required-opp doesn't belong to genpd: %pOF\n",
+> -				required_np);
+> -			goto free_required_tables;
+> -		}
+>  	}
+>  
+>  	/* Let's do the linking later on */
+> @@ -379,13 +368,6 @@ static void lazy_link_required_opp_table(struct opp_table *new_table)
+>  	struct dev_pm_opp *opp;
+>  	int i, ret;
+>  
+> -	/*
+> -	 * We only support genpd's OPPs in the "required-opps" for now,
+> -	 * as we don't know much about other cases.
+> -	 */
+> -	if (!new_table->is_genpd)
+> -		return;
+> -
+>  	mutex_lock(&opp_table_lock);
+>  
+>  	list_for_each_entry_safe(opp_table, temp, &lazy_opp_tables, lazy) {
+> @@ -873,7 +855,7 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
+>  		return ERR_PTR(-ENOMEM);
+>  
+>  	ret = _read_opp_key(new_opp, opp_table, np, &rate_not_available);
+> -	if (ret < 0 && !opp_table->is_genpd) {
+> +	if (ret < 0) {
+>  		dev_err(dev, "%s: opp key field not found\n", __func__);
+>  		goto free_opp;
+>  	}
 
-Right and this is exactly why I removed the compatible string
-"snps,dw-pcie" for Tegra194 because it is clear that this does not work
-and hence not compatible.
+Plus this and few changes to commit log.
 
-Sagar is purely trying to understand if this is case of other devices as
-well or just Tegra194.
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index e366218d6736..b335c077f215 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -893,6 +893,16 @@ static int _set_required_opps(struct device *dev,
+        if (!required_opp_tables)
+                return 0;
+ 
++       /*
++        * We only support genpd's OPPs in the "required-opps" for now, as we
++        * don't know much about other use cases. Error out if the required OPP
++        * doesn't belong to a genpd.
++        */
++       if (unlikely(!required_opp_tables[0]->is_genpd)) {
++               dev_err(dev, "required-opps don't belong to a genpd\n");
++               return -ENOENT;
++       }
++
+        /* required-opps not fully initialized yet */
+        if (lazy_linking_pending(opp_table))
+                return -EBUSY;
 
-Jon
+Applied. Thanks.
 
 -- 
-nvpublic
+viresh
