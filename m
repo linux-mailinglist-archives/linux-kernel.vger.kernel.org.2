@@ -2,156 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38003A98C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFEB3A98C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhFPLHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:07:54 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41080 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhFPLHw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:07:52 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 93E20219D6;
-        Wed, 16 Jun 2021 11:05:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623841545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hcnqgYV1OHaJr0sq4rpPF6e//e/o64rPvF0s7j9YdWo=;
-        b=lHUFofQkBTtr5npeN6gBLNXp4eETFhqp4qQHwOICibnfQTXZH6php5fyMCiYGgIQieQXFX
-        EpwGmSEmbym19oxSrxL0LgUR+0c7dqOMss1oQozuCDivp2GDzN1u2iRJNYncxwSDHH6/j4
-        5dbCDJgs7WirXvLfeOQDhmxPq7J+Oag=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623841545;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hcnqgYV1OHaJr0sq4rpPF6e//e/o64rPvF0s7j9YdWo=;
-        b=OPJCzz5nh9hmVzow8cUb64+csDdolPJFKZYD24Z8N/xvAkA8HEvSonlpWmcUOYggqUVed1
-        d07OTbm8iBqpfbBA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 68ADB118DD;
-        Wed, 16 Jun 2021 11:05:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623841545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hcnqgYV1OHaJr0sq4rpPF6e//e/o64rPvF0s7j9YdWo=;
-        b=lHUFofQkBTtr5npeN6gBLNXp4eETFhqp4qQHwOICibnfQTXZH6php5fyMCiYGgIQieQXFX
-        EpwGmSEmbym19oxSrxL0LgUR+0c7dqOMss1oQozuCDivp2GDzN1u2iRJNYncxwSDHH6/j4
-        5dbCDJgs7WirXvLfeOQDhmxPq7J+Oag=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623841545;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hcnqgYV1OHaJr0sq4rpPF6e//e/o64rPvF0s7j9YdWo=;
-        b=OPJCzz5nh9hmVzow8cUb64+csDdolPJFKZYD24Z8N/xvAkA8HEvSonlpWmcUOYggqUVed1
-        d07OTbm8iBqpfbBA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id QtwCGQnbyWDBYgAALh3uQQ
-        (envelope-from <vbabka@suse.cz>); Wed, 16 Jun 2021 11:05:45 +0000
-To:     Qian Cai <quic_qiancai@quicinc.com>,
-        Faiyaz Mohammed <faiyazm@codeaurora.org>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, greg@kroah.com, glittao@gmail.com,
-        andy.shevchenko@gmail.com
-Cc:     vinmenon@codeaurora.org, Catalin Marinas <catalin.marinas@arm.com>
-References: <1623438200-19361-1-git-send-email-faiyazm@codeaurora.org>
- <8c821abf-8fa6-b78b-cea4-b7d3b3b74a69@quicinc.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v12] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-Message-ID: <ce1b3c14-ec88-c957-0694-834051d4d39e@suse.cz>
-Date:   Wed, 16 Jun 2021 13:05:45 +0200
+        id S229503AbhFPLJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:09:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:34142 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232054AbhFPLJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 07:09:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B01821042;
+        Wed, 16 Jun 2021 04:07:08 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B7783F70D;
+        Wed, 16 Jun 2021 04:07:07 -0700 (PDT)
+Subject: Re: [PATCH] modified: gpu/drm/panfrost/panfrost_gpu.c
+To:     Chunyou Tang <tangchunyou@163.com>
+Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        alyssa.rosenzweig@collabora.com,
+        tangchunyou <tangchunyou@163.icubecorp.cn>,
+        tangchunyou@icubecorp.cn
+References: <20210609063850.2060-1-tangchunyou@163.com>
+ <78a2488a-71d5-548a-e221-7786f788509c@arm.com>
+ <20210610210659.00003155@163.com>
+ <d1304645-f2bf-8cea-2b60-24e0a3936ed7@arm.com>
+ <20210615150452.00007abc@163.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <31644881-134a-2d6e-dddf-e658a3a8176b@arm.com>
+Date:   Wed, 16 Jun 2021 12:07:06 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <8c821abf-8fa6-b78b-cea4-b7d3b3b74a69@quicinc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210615150452.00007abc@163.com>
+Content-Type: text/plain; charset=gb18030
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 5:58 PM, Qian Cai wrote:
+On 15/06/2021 08:04, Chunyou Tang wrote:
+> Hi steve,
+> 	After I send the V2,I found I setting a wrong email 
+> configuration,I hope it doesn't affect the patch submission :)
+> 	Did you received my another patch about panfrost_job.c?
+
+There's still something odd going on with your emails - I haven't
+received them directly (only via the list) and you appear to have sent 3
+copies of "[PATCH 2/2] drm/panfrost:report the full raw fault
+information instead"[1][2][3] - but I can't see any "[PATCH 1/2]" which
+is presumably meant to be the original patch? Can you double check?
+Obviously 2/2 depends on 1/2.
+
+[1] https://lore.kernel.org/lkml/20210615054931.707-1-tangchunyou@163.com/
+[2] https://lore.kernel.org/lkml/20210615064659.775-1-tangchunyou@163.com/
+[3] https://lore.kernel.org/lkml/20210615065936.897-1-tangchunyou@163.com/
+
+You also appear to have sneaked a new patch in here - please do post
+patches separately otherwise they tend to get lost.
+
+> 
+> 	Author: tangchunyou <tangchunyou@163.icubecorp.cn>
+> Date:   Wed Jun 9 14:44:52 2021 +0800
+> 
+>     modified: gpu/drm/panfrost/panfrost_job.c
+
+As mentioned before - please provide a meaningful description of the
+patch in the subject along with the common prefix for the
+subsystem/driver (git log is useful to find out what is common for the
+code you are changing). For Panfrost this is "drm/panfrost: ".
+
+>     The 'break' can cause 'Memory manager not clean during takedown'
+>     It cannot use break to finish the circulation,it should use
+>     continue to traverse the circulation.
+
+Have you actually observed this? In what situation?
+
+>     Signed-off-by: tangchunyou <tangchunyou@163.icubecorp.cn>
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+> index 6003cfeb1322..52bccc1d2d42 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+> @@ -281,7 +281,7 @@ static void panfrost_job_cleanup(struct kref *ref)
+>         if (job->mappings) {
+>                 for (i = 0; i < job->bo_count; i++) {
+>                         if (!job->mappings[i])
+> -                               break;
+> +                               continue;
+
+So while this change is reasonable as it makes this loop a little more
+robust, I don't see how this could actually happen.
+
+Unless I'm mistaken the situation where some mappings may be NULL is
+caused by the loop in panfrost_lookup_bos() not completing successfully
+(panfrost_gem_mapping_get() returning NULL). In this case if mappings[i]
+is NULL then all following mappings must also be NULL. So 'break' allows
+us to skip the later ones. Admittedly the performance here isn't
+important so I'm not sure it's worth the optimisation, but AIUI this
+code isn't actually wrong.
+
+But if you've got an example of this actually breaking then clearly this
+is something we need to fix.
+
+Thanks,
+
+Steve
+
+>                         atomic_dec(&job->mappings[i]->obj->gpu_usecount);
+>                         panfrost_gem_mapping_put(job->mappings[i]);
 > 
 > 
-> On 6/11/2021 3:03 PM, Faiyaz Mohammed wrote:
->> alloc_calls and free_calls implementation in sysfs have two issues,
->> one is PAGE_SIZE limitation of sysfs and other is it does not adhere
->> to "one value per file" rule.
->> 
->> To overcome this issues, move the alloc_calls and free_calls
->> implementation to debugfs.
->> 
->> Debugfs cache will be created if SLAB_STORE_USER flag is set.
->> 
->> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
->> to be inline with what it does.
->> 
->> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
->> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+> Thank you!
 > 
-> Reverting this commit on today's linux-next fixed all leaks (hundreds) reported by kmemleak like below,
 > 
-> unreferenced object 0xffff00091ae1b540 (size 64):
->   comm "lsbug", pid 1607, jiffies 4294958291 (age 1476.340s)
->   hex dump (first 32 bytes):
->     02 00 00 00 00 00 00 00 6b 6b 6b 6b 6b 6b 6b 6b  ........kkkkkkkk
->     6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
->   backtrace:
->     [<ffff8000106b06b8>] slab_post_alloc_hook+0xa0/0x418
->     [<ffff8000106b5c7c>] kmem_cache_alloc_trace+0x1e4/0x378
->     [<ffff8000106b5e40>] slab_debugfs_start+0x30/0x50
->     slab_debugfs_start at /usr/src/linux-next/mm/slub.c:5831
->     [<ffff8000107b3dbc>] seq_read_iter+0x214/0xd50
->     [<ffff8000107b4b84>] seq_read+0x28c/0x418
->     [<ffff8000109560b4>] full_proxy_read+0xdc/0x148
->     [<ffff800010738f24>] vfs_read+0x104/0x340
->     [<ffff800010739ee0>] ksys_read+0xf8/0x1e0
->     [<ffff80001073a03c>] __arm64_sys_read+0x74/0xa8
->     [<ffff8000100358d4>] invoke_syscall.constprop.0+0xdc/0x1d8
->     [<ffff800010035ab4>] do_el0_svc+0xe4/0x298
->     [<ffff800011138528>] el0_svc+0x20/0x30
->     [<ffff800011138b08>] el0t_64_sync_handler+0xb0/0xb8
->     [<ffff80001001259c>] el0t_64_sync+0x178/0x17c
+> 
+> 于 Fri, 11 Jun 2021 11:10:16 +0100
+> Steven Price <steven.price@arm.com> 写道:
+> 
+>> On 10/06/2021 14:06, Chunyou Tang wrote:
+>>> Hi Steven,
+>>
+>> Hi Chunyou,
+>>
+>> For some reason I'm not directly receiving your emails (only via the
+>> list) - can you double check your email configuration?
+>>
+>>>>> The GPU exception fault status register(0x3C),the low 8 bit is the
+>>>>> EXCEPTION_TYPE.We can see the description at P3-78 in spec.
+>>>
+>>> 	You can see the spec
+>>> 	<arm_heimdall_technical_reference_manual_100612_0001_00_en.pdf>.
+>>
+>> Thanks - please include that in the commit message - there are many
+>> TRMs (one for each GPU) so without the information about exactly which
+>> specification the page number is pretty useless. Sadly this
+>> documentation isn't public which would be even better but I don't
+>> think there are any public specs for this information.
+>>
+>>>> However this change is correct - panfrost_exception_name() should
+>>>> be taking only the lower 8 bits. Even better though would be to to
+>>>> report the full raw fault information as well as the high bits can
+>>>> contain useful information:
+>>>>
+>>>> 	dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
+>>>> 0x%016llx\n", fault_status,
+>>>> 		 panfrost_exception_name(pfdev, fault_status &
+>>>> 0xFF), address);
+>>>
+>>> So I change it according to what you said?
+>>
+>> Yes, please send a v2.
+>>
+>> Thanks,
+>>
+>> Steve
+>>
+>>> 于 Thu, 10 Jun 2021 11:41:52 +0100
+>>> Steven Price <steven.price@arm.com> 写道:
+>>>
+>>>> The subject should have the prefix "drm/panfrost" and should
+>>>> mention what the patch is changing (not just the filename).
+>>>>
+>>>> On 09/06/2021 07:38, ChunyouTang wrote:
+> 
+>>>>> From: tangchunyou <tangchunyou@163.icubecorp.cn>
+>>>>>
+>>>>> The GPU exception fault status register(0x3C),the low 8 bit is the
+>>>>> EXCEPTION_TYPE.We can see the description at P3-78 in spec.
+>>>>
+>>>> Nit: When referring to a spec it's always good to mention the name
+>>>> - I'm not sure which specification you found this in.
+>>>>
+>>>>>
+>>>>> Signed-off-by: tangchunyou <tangchunyou@163.icubecorp.cn>
+>>>>> ---
+>>>>>  drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
+>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c index
+>>>>> 2aae636f1cf5..1fffb6a0b24f 100644 ---
+>>>>> a/drivers/gpu/drm/panfrost/panfrost_gpu.c +++
+>>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c @@ -33,7 +33,7 @@ static
+>>>>> irqreturn_t panfrost_gpu_irq_handler(int irq, void *data) address
+>>>>> |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO); 
+>>>>>  		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
+>>>>> 0x%016llx\n",
+>>>>> -			 fault_status & 0xFF,
+>>>>> panfrost_exception_name(pfdev, fault_status),
+>>>>> +			 fault_status & 0xFF,
+>>>>> panfrost_exception_name(pfdev, fault_status & 0xFF),
+>>>>
+>>>> However this change is correct - panfrost_exception_name() should
+>>>> be taking only the lower 8 bits. Even better though would be to to
+>>>> report the full raw fault information as well as the high bits can
+>>>> contain useful information:
+>>>>
+>>>> 	dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
+>>>> 0x%016llx\n", fault_status,
+>>>> 		 panfrost_exception_name(pfdev, fault_status &
+>>>> 0xFF), address);
+>>>>
+>>>> Thanks,
+>>>>
+>>>> Steve
+>>>>
+>>>>>  			 address);
+>>>>>  
+>>>>>  		if (state & GPU_IRQ_MULTIPLE_FAULT)
+>>>>>
+>>>
+>>>
+> 
 > 
 
-I think the problem is here:
-
->> +static void slab_debugfs_stop(struct seq_file *seq, void *v)
->> +{
->> +	kfree(v);
->> +}
->> +
->> +static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
->> +{
->> +	loff_t *spos = v;
->> +	struct loc_track *t = seq->private;
->> +
->> +	if (*ppos < t->count) {
->> +		*ppos = ++*spos;
->> +		return spos;
->> +	}
->> +	*ppos = ++*spos;
->> +	return NULL;
->> +}
-
-If we return NULL, then NULL is passed to slab_debugfs_stop and thus we don't
-kfree ppos. kfree(NULL) is silently ignored.
-
-I think as we have private struct loc_track, we can add a pos field there and
-avoid the kmaloc/kfree altogether.
