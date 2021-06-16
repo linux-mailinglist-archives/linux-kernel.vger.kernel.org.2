@@ -2,139 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199E73AA619
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 23:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 231DB3AA61C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 23:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234005AbhFPVYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 17:24:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39660 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233979AbhFPVYl (ORCPT
+        id S234022AbhFPV0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 17:26:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233979AbhFPV0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 17:24:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623878554;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=GUzVV1RzuS/uejV8gOCi1Hq++h3D2eM6DMUllFfeIsg=;
-        b=SOoOSO5ufERUD/u9hmBV5sBQo0cdhEE8og1SCMaAWnSfVlouCUn5wAEyzGS+be02F1gN/3
-        lnFrEy2u2H5o0yH798NA6TOxSskuuoABO6geU9kqMdYdAgEXubjLOE4hW5xsp7JBtY/h65
-        +NM2UFLe5N1mxeeQrKtLaHlY+R4R1ps=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-274-sqaPo7RxOm-kKy-LjM7vgw-1; Wed, 16 Jun 2021 17:22:32 -0400
-X-MC-Unique: sqaPo7RxOm-kKy-LjM7vgw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A48D18D6A2C;
-        Wed, 16 Jun 2021 21:22:31 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DB5C55C1D0;
-        Wed, 16 Jun 2021 21:22:29 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] afs: Re-enable freezing once a page fault is interrupted
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-afs@lists.infradead.org, dhowells@redhat.com,
-        marc.dionne@auristor.com, linux-afs@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 16 Jun 2021 22:22:28 +0100
-Message-ID: <162387854886.1035841.15139736369962171742.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Wed, 16 Jun 2021 17:26:19 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034EDC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 14:24:13 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id v12so1791010plo.10
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 14:24:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lrV+ueQw2mChzjJgiTXDK/L3+//gtPI2oodrs6gshXc=;
+        b=dYv7ft+5JxzGTipiy2Fm/x8bo8exXoj89+zxuAGTHokLLgukt246QXBLrvZCa0NsAt
+         y04/hjuEhGMfwYTEAQhOEQ6IGYiV2VvDWfx0IL4RQJ5tThdsNMm6ChxS9whndgjrL+wV
+         KBdPPzsu1XdLo+kzRIjztUwhr6dtf8sMdEzFA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lrV+ueQw2mChzjJgiTXDK/L3+//gtPI2oodrs6gshXc=;
+        b=UHXU+lrgMNdttBqi8d1mu8+HR0U0uByqEmnwd+qj8rYzRagTCBKVM61GIWz4cn0Myf
+         Ew+kchb7vawwSsuuT8fBs8NIrflSMUaATZZkW0cTWljfe0fzdXSWsIwvFz/f9Xo5phpf
+         UGsdA3ySZFgTmgtR5kbEAdgZHrFA8+iapKooJxnaAr4pfJzINfDBDJSynSEeqeXX3PPZ
+         cj4C/T1Lk4TOjw9G/IAP0JwqSCx8q68UWg3Cr6iVXCU0NIMbqZ34HI5Y9vByWoy+BZRQ
+         7H8iYmJxN5k+0Xv9piuuPhjabINAXr3FnbiBjc+BPA6m/5vbVffQ3jlW8CgU+x07wyMy
+         vrfw==
+X-Gm-Message-State: AOAM530XCCVo1pGgF+36TBk9uNz3YbyyzboQE66LBntk5gr4odxKCKpJ
+        oYd1U5cuY6CeqLPcqrDFo6xDfg==
+X-Google-Smtp-Source: ABdhPJzUqw1yUanvUQq2LEW3+7GBz+E9b0d1RqyFyFmoHMnn9gZ/JV1+NpGUQcQYlfOJBejriV+luA==
+X-Received: by 2002:a17:90b:b03:: with SMTP id bf3mr13046031pjb.47.1623878652429;
+        Wed, 16 Jun 2021 14:24:12 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g141sm2893309pfb.210.2021.06.16.14.24.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 14:24:11 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] scsi: ips: Avoid over-read of sense buffer
+Date:   Wed, 16 Jun 2021 14:24:08 -0700
+Message-Id: <20210616212408.1726812-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Patch-Hashes: v=1; h=sha256; g=a45165ee6e303292dbff30e56107273987022b9a; i=65WG4EHUcWGu4u7EnXW2AIYkM9ZhByz86aliewtu4Nc=; m=aVYDbR6DQ67Yybp2qkXQ10FqPUrlSymxU4u3fowec6M=; p=iePJMnRav+rZPhc97kUOyBj5ZvfWWx0gYo+VxgvUscc=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDKa/cACgkQiXL039xtwCaFKRAAjut abpUlwT9OaXmZd07ExGATL6WIMjLyBMPPBVJgwiEYMeCmRPzmCqKmMenUBVTCeu4DldGQj8Ybo4Mp sJJdAxS1ZGXga3/uIh1HwLKWS9hUVr8C2kLoqdz6gI4hNz/3HndZo/cp9rKP5ycKiJTBM0Utjmnb4 58usWd3s9wAIFWVTNg97gypK/kgxb1151BzaWOe/egt5+OlfMRKAu4De8oPN/QC+oQ5xEylXJuAjx psG5H5m3kAEQbQB9GRRYIfv9UpHJOeZCgY3guVir3YbAB8RyAOKxyJTljIwIvxSJ9494DJMoOaO+a LWCGmjbmaMexhU4UP9ak33N8vcPydY/sf6IKmEjPrJYvKdKaTULXTy3D+elzvU46nZUamda2l5SR6 ICBuhbGrhIq1czsZWR4mUxezkwKycBJFYMneG32J9QKBrq341YqwIJVH9AGAWN0SphpIc1ARF1t4N w0FJPfum6uLXv7xzgq4UOqxoS3bOYn4xnZX8ZrOnCLtqHcXtdyczuJzwOeCySE9Qek6I1WZO/n6wr x56Ye3+4ZnHHIRpMuyIqqMC5fPiVwRx6fARWBEhoDViwKsj7iGMPWcPfFespBUHdrVie3714eygHK 9xjyH6/ylVjTEAGvieJwNnI0ZkXFxx3pcpsmjd2wTc/YQBsrCXlOlH7EY1K4qWcI=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy() avoid intentionally reading across
+neighboring array fields.
 
-If a task is killed during a page fault, it does not currently call
-sb_end_pagefault(), which means that the filesystem cannot be frozen
-at any time thereafter.  This may be reported by lockdep like this:
+scb->scsi_cmd->sense_buffer is 96 bytes:
+	#define SCSI_SENSE_BUFFERSIZE        96
 
-====================================
-WARNING: fsstress/10757 still has locks held!
-5.13.0-rc4-build4+ #91 Not tainted
-------------------------------------
-1 lock held by fsstress/10757:
- #0: ffff888104eac530
- (
-sb_pagefaults
+tapeDCDB->sense_info is 56 bytes:
+	typedef struct {
+	   ...
+	   uint8_t   sense_info[56];
+	} IPS_DCDB_TABLE_TAPE, ...
 
-as filesystem freezing is modelled as a lock.
+scb->dcdb.sense_info is 64 bytes:
+	typedef struct {
+	   ...
+	   uint8_t   sense_info[64];
+	   ...
+	} IPS_DCDB_TABLE, ...
 
-Fix this by removing all the direct returns from within the function,
-and using 'ret' to indicate whether we were interrupted or successful.
+Copying 96 bytes from either was copying beyond the end of the respective
+buffers, leading to potential memory content exposures. Correctly copy
+the actual buffer contents and zero pad the remaining bytes.
 
-Fixes: 1cf7a1518aef ("afs: Implement shared-writeable mmap")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-afs@lists.infradead.org
-Link: https://lore.kernel.org/r/20210616154900.1958373-1-willy@infradead.org/
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
+ drivers/scsi/ips.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
- fs/afs/write.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index f722cb80a594..ff36800a7389 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -848,6 +848,7 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- 	struct inode *inode = file_inode(file);
- 	struct afs_vnode *vnode = AFS_FS_I(inode);
- 	unsigned long priv;
-+	vm_fault_t ret = VM_FAULT_RETRY;
- 
- 	_enter("{{%llx:%llu}},{%lx}", vnode->fid.vid, vnode->fid.vnode, page->index);
- 
-@@ -859,14 +860,14 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- #ifdef CONFIG_AFS_FSCACHE
- 	if (PageFsCache(page) &&
- 	    wait_on_page_fscache_killable(page) < 0)
--		return VM_FAULT_RETRY;
-+		goto out;
- #endif
- 
- 	if (wait_on_page_writeback_killable(page))
--		return VM_FAULT_RETRY;
-+		goto out;
- 
- 	if (lock_page_killable(page) < 0)
--		return VM_FAULT_RETRY;
-+		goto out;
- 
- 	/* We mustn't change page->private until writeback is complete as that
- 	 * details the portion of the page we need to write back and we might
-@@ -874,7 +875,7 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- 	 */
- 	if (wait_on_page_writeback_killable(page) < 0) {
- 		unlock_page(page);
--		return VM_FAULT_RETRY;
-+		goto out;
- 	}
- 
- 	priv = afs_page_dirty(page, 0, thp_size(page));
-@@ -888,8 +889,10 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- 	}
- 	file_update_time(file);
- 
-+	ret = VM_FAULT_LOCKED;
-+out:
- 	sb_end_pagefault(inode->i_sb);
--	return VM_FAULT_LOCKED;
-+	return ret;
- }
- 
- /*
-
+diff --git a/drivers/scsi/ips.c b/drivers/scsi/ips.c
+index bc33d54a4011..8b33c9871484 100644
+--- a/drivers/scsi/ips.c
++++ b/drivers/scsi/ips.c
+@@ -3344,13 +3344,15 @@ ips_map_status(ips_ha_t * ha, ips_scb_t * scb, ips_stat_t * sp)
+ 					IPS_CMD_EXTENDED_DCDB_SG)) {
+ 					tapeDCDB =
+ 					    (IPS_DCDB_TABLE_TAPE *) & scb->dcdb;
+-					memcpy(scb->scsi_cmd->sense_buffer,
++					memcpy_and_pad(scb->scsi_cmd->sense_buffer,
++					       SCSI_SENSE_BUFFERSIZE,
+ 					       tapeDCDB->sense_info,
+-					       SCSI_SENSE_BUFFERSIZE);
++					       sizeof(tapeDCDB->sense_info), 0);
+ 				} else {
+-					memcpy(scb->scsi_cmd->sense_buffer,
++					memcpy_and_pad(scb->scsi_cmd->sense_buffer,
++					       SCSI_SENSE_BUFFERSIZE,
+ 					       scb->dcdb.sense_info,
+-					       SCSI_SENSE_BUFFERSIZE);
++					       sizeof(scb->dcdb.sense_info), 0);
+ 				}
+ 				device_error = 2;	/* check condition */
+ 			}
+-- 
+2.25.1
 
