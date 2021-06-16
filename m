@@ -2,62 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C12E3A9360
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5219F3A9365
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbhFPG56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:57:58 -0400
-Received: from mga09.intel.com ([134.134.136.24]:63504 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232123AbhFPG5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:57:38 -0400
-IronPort-SDR: CnSQUQD18y2E8YhrtmaYn/6isv4JsDLzLV7EJDPYl5zkNOFRtFd93sS3sZAW/xjyGj19iLtUSL
- WbcaQLQ3JVTQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206084504"
-X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
-   d="scan'208";a="206084504"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 23:55:32 -0700
-IronPort-SDR: KV3BD7ZhGV1XRJRvJj0dt4O2b00BFbeYM7BM4gavKuHwzUYRDB2M5dfv/QB7op6wcfiivzTi8+
- rVN9ROxeuixw==
-X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
-   d="scan'208";a="637372913"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 23:55:28 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 2E927202D5;
-        Wed, 16 Jun 2021 09:55:26 +0300 (EEST)
-Date:   Wed, 16 Jun 2021 09:55:26 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 17/29] docs: firmware-guide: acpi: avoid using ReST
- :doc:`foo` markup
-Message-ID: <20210616065526.GB3@paasikivi.fi.intel.com>
-References: <cover.1623824363.git.mchehab+huawei@kernel.org>
- <7162043c18f1ea96c446b332400e44e8087ba142.1623824363.git.mchehab+huawei@kernel.org>
+        id S232064AbhFPG6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:58:33 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59186 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232220AbhFPG6I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 02:58:08 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id BFCF521A32;
+        Wed, 16 Jun 2021 06:56:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1623826561; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=szaI6A0V86YU1pBq+/1uYb7ilG5wtJ06IV9rCzyE3Ww=;
+        b=d45r73gc3zLjgf80Due47kUa5+gEAGEOQfFknYFmwa4nKWpPs+U0/GVisGM6BMU6tXP33Y
+        N/jDhDdkZ72fxMv+8mSEk84Fq03TUyUYdOVIZy4ZVGc9JrClswOqQ9ukDRTA+S7kexPxzp
+        dDNOGZ3UPE93a36tpIT/BXeDZaf4wKc=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 76F9CA3B93;
+        Wed, 16 Jun 2021 06:56:01 +0000 (UTC)
+Date:   Wed, 16 Jun 2021 08:56:01 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Punit Agrawal <punitagrawal@gmail.com>, senozhatsky@chromium.org,
+        rostedt@goodmis.org, john.ogness@linutronix.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] printk: Move EXPORT_SYMBOL() closer to vprintk definition
+Message-ID: <YMmggRL/htxFK2VY@alley>
+References: <20210614235635.887365-1-punitagrawal@gmail.com>
+ <8c16059d-6e58-a3e4-25ef-7e2bcabecd86@rasmusvillemoes.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7162043c18f1ea96c446b332400e44e8087ba142.1623824363.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <8c16059d-6e58-a3e4-25ef-7e2bcabecd86@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 08:27:32AM +0200, Mauro Carvalho Chehab wrote:
-> The :doc:`foo` tag is auto-generated via automarkup.py.
-> So, use the filename at the sources, instead of :doc:`foo`.
+On Tue 2021-06-15 08:50:45, Rasmus Villemoes wrote:
+> On 15/06/2021 01.56, Punit Agrawal wrote:
+> > Commit 28e1745b9fa2 ("printk: rename vprintk_func to vprintk") while
+> > improving readability by removing vprintk indirection, inadvertently
+> > placed the EXPORT_SYMBOL() for the newly renamed function at the end
+> > of the file.
+> > 
+> > For reader sanity, and as is convention move the EXPORT_SYMBOL()
+> > declaration just after the end of the function.
+> > 
+> > Fixes: 28e1745b9fa2 ("printk: rename vprintk_func to vprintk")
+> > Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> > --
+> > Hi,
+> > 
+> > The out-of-place EXPORT_SYMBOL() caused an unexpected conflict while
+> > attempting to rebase the RT patches onto newer kernels.
+> > 
+> > Generally I avoid sending trivial changes on their own but this one is
+> > a little hard to overlook. Also it felt like an obvious oversight in
+> > the original patch.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Yes, indeed, sorry about that, and thanks for fixing it.
 
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Yes, great catch.
 
--- 
-Sakari Ailus
+> > Please consider merging.
+> 
+> Petr, as this is causing trouble for the -rt patchset, please consider
+> if this could make it to Linus before v5.13 release.
+
+Sure, I could do so. But could you please provide some more details
+what exact problems it causes?
+
+It looks like a cosmetic issue to me. It would be the only change
+in the pull request. I would like to provide some reasonable
+justification for it at this stage (for rc7).
+
+Best Regards,
+Petr
