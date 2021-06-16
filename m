@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6143E3A9E55
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949BC3A9E52
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234301AbhFPO7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:59:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:39482 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234294AbhFPO7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:59:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D6E431B;
-        Wed, 16 Jun 2021 07:57:34 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CE8E3F719;
-        Wed, 16 Jun 2021 07:57:32 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 15:57:15 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>,
-        linux-kernel@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Ondrej Jirman <megous@megous.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH v7 01/19] dt-bindings: mfd: axp20x: Add AXP305
- compatible (plus optional IRQ)
-Message-ID: <20210616155715.7d8347c5@slackpad.fritz.box>
-In-Reply-To: <20210615233345.GA1627887@robh.at.kernel.org>
-References: <20210615110636.23403-1-andre.przywara@arm.com>
-        <20210615110636.23403-2-andre.przywara@arm.com>
-        <20210615233345.GA1627887@robh.at.kernel.org>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S234289AbhFPO7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:59:37 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44523 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233747AbhFPO7g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 10:59:36 -0400
+Received: from mail-ej1-f70.google.com ([209.85.218.70])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <andrea.righi@canonical.com>)
+        id 1ltWyv-0004dM-UL
+        for linux-kernel@vger.kernel.org; Wed, 16 Jun 2021 14:57:29 +0000
+Received: by mail-ej1-f70.google.com with SMTP id n19-20020a1709067253b029043b446e4a03so1054133ejk.23
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:57:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=8a4xq8lMfa/LYfpYCOAoKmUJPps9DKcxfcjZnPhoHfw=;
+        b=l1O9Z30F5b7i98xXBeeHfnup9yodNFVTgwhr1MwxDV38LoL8fMNLTcr1RZVd2M8X9f
+         xUPlNOWQpoQK51blcChS9z8skJYz5lBcR7IVxkS8tEi4Ga4RY88nlw7l6JvZaxoLRV74
+         nStt3rCmO973DdyGOdpTdztss0JU12FDnOKUSM8f7eMGh3HSzuf/6vv3hO4PFepYaELt
+         q3rDnYp0nkyXLxPuHuqAB955EPwJYg2Kzqhzo33tUPKjkgOhRB1PhYANafnbVOJY/+UI
+         0SPvqwGYnGSJ6gQMUMybfjx/whRuWxFDkFxRONEWqLk/niHecKAg9P125KouAd9deHzd
+         hOPA==
+X-Gm-Message-State: AOAM532mR7poRy/H11uI6fu91MVGV1tisWoFhCLQkNG/keymwJns0NGL
+        HbWamtYInq+cUv0HYX2TqXLNKZSY7cbjf+0VGa9MsPPkpHzIKi9QKYoB8e4/UtuYAUWtT8Qgc3X
+        HIkSVIbzqrJtKaBCv413DxeU/PjmK11ieSn/ON3KNcw==
+X-Received: by 2002:a05:6402:40cc:: with SMTP id z12mr9321edb.202.1623855449143;
+        Wed, 16 Jun 2021 07:57:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx0x+c1CqYwSTRfdh/qpSq2BG+BtPzscae96/sH0AdsUtHuvEFm+xaOmkVdZvXxu0t3A449FA==
+X-Received: by 2002:a05:6402:40cc:: with SMTP id z12mr9305edb.202.1623855448906;
+        Wed, 16 Jun 2021 07:57:28 -0700 (PDT)
+Received: from localhost (host-79-46-128-215.retail.telecomitalia.it. [79.46.128.215])
+        by smtp.gmail.com with ESMTPSA id p13sm1777726ejr.87.2021.06.16.07.57.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 07:57:28 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 16:57:27 +0200
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests: net: use bash to run udpgro_fwd test case
+Message-ID: <YMoRV6IOOVhS3nEi@xps-13-7390>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 17:33:45 -0600
-Rob Herring <robh@kernel.org> wrote:
+udpgro_fwd.sh contains many bash specific operators ("[[", "local -r"),
+but it's using /bin/sh; in some distro /bin/sh is mapped to /bin/dash,
+that doesn't support such operators.
 
-> On Tue, 15 Jun 2021 12:06:18 +0100, Andre Przywara wrote:
-> > The AXP305 PMIC used on many boards with the H616 SoC seems to be fully
-> > compatible to the AXP805 PMIC, so add the proper chain of compatible
-> > strings.
-> > 
-> > Also at least on one board (Orangepi Zero2) there is no interrupt line
-> > connected to the CPU, so make the "interrupts" property optional.
-> > 
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > ---
-> >  Documentation/devicetree/bindings/mfd/axp20x.txt | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >   
-> 
-> 
-> Please add Acked-by/Reviewed-by tags when posting new versions. However,
-> there's no need to repost patches *only* to add the tags. The upstream
-> maintainer will do that for acks received on the version they apply.
-> 
-> If a tag was not added on purpose, please state why and what changed.
+Force the test to use /bin/bash explicitly and prevent false positive
+test failures.
 
-Argh, sorry, I was still wondering whether I should try the YAML
-conversion, so didn't apply your tag right away - and then missed it
-when I decided to postpone this. Plus I actually fixed some blunder
-(copy&paste typo in the compatible), and I mostly drop tags upon
-changes.
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+---
+ tools/testing/selftests/net/udpgro_fwd.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheers,
-Andre
+diff --git a/tools/testing/selftests/net/udpgro_fwd.sh b/tools/testing/selftests/net/udpgro_fwd.sh
+index a8fa64136282..7f26591f236b 100755
+--- a/tools/testing/selftests/net/udpgro_fwd.sh
++++ b/tools/testing/selftests/net/udpgro_fwd.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ readonly BASE="ns-$(mktemp -u XXXXXX)"
+-- 
+2.31.1
+
