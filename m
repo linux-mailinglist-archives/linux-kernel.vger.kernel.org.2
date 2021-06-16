@@ -2,54 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562903A97CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B763A97D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhFPKmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:42:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232053AbhFPKmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:42:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 090E761001;
-        Wed, 16 Jun 2021 10:40:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623840015;
-        bh=mYtSLTd76sDF11uwzoJJMeTTBprwirhYe2TG+3b/lFY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l7MI3HxAPI0WPwvZHkRjqVm1EIjv4rUDlQ31VIaWRnzq7h60O6s506abnuAWiReC+
-         sGn6q+GUMHuueQB9GhYDfHOihtlnl6cJVqazO8vTEHAyW+0+PFJE2XxLFsmEI/rYeA
-         NvRTCExGlY1Wup5aC1ZvQ/dn7mfuap/q8L8ClAp5rJu0E9TlFv5w5YjaXergApnn+J
-         zWEWhKzxm/e7RkBs/Wc8SZT0o/iPq2c4GOgJYSj957ZU0Nr/dkrDpnX+68fD1KyAyR
-         JPF61PIaZg8zLFbluQN52YsNsvfpDHeeWhiIB4CV/hOopbG4SKaKWyAJUmJXhiYxuV
-         Ux+Xvu1bsdKVA==
-Date:   Wed, 16 Jun 2021 16:10:12 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Austin Kim <austindh.kim@gmail.com>
-Cc:     green.wan@sifive.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, austin.kim@lge.com
-Subject: Re: [PATCH] dmaengine: sf-pdma: apply proper spinlock flags in
- sf_pdma_prep_dma_memcpy()
-Message-ID: <YMnVDJM8foWIZTGk@vkoul-mobl>
-References: <20210611065336.GA1121@raspberrypi>
+        id S232370AbhFPKn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:43:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32186 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232303AbhFPKnW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 06:43:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623840076;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HWEt9p9DXdZhqDZchOI4jAwnNkq0AvDlrJB64/vFrV4=;
+        b=FX3qfvN4y84CuaXbUHyWz0pPPob21aLecevitYj77HsgqP/3Ssr8yd73St/ra3toH5tEml
+        YQnAWyh3wp6xu+ix1r1/yT5bo9KlP45iqQXUXYt+Zp7NCavfqAvsV+O+g8eu9876wvczrc
+        TGVQUYAqUeO8R0MUrcF6H5csVf/kMfc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-DcH2aPvvORaGN_IKJguTjQ-1; Wed, 16 Jun 2021 06:41:12 -0400
+X-MC-Unique: DcH2aPvvORaGN_IKJguTjQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F66B9126F;
+        Wed, 16 Jun 2021 10:41:11 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 941425D9DE;
+        Wed, 16 Jun 2021 10:41:09 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <811608.1623835903@warthog.procyon.org.uk>
+References: <811608.1623835903@warthog.procyon.org.uk> <20210614201435.1379188-3-willy@infradead.org> <20210614201435.1379188-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, akpm@linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCH v11 02/33] mm: Introduce struct folio
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611065336.GA1121@raspberrypi>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <816706.1623840068.1@warthog.procyon.org.uk>
+Date:   Wed, 16 Jun 2021 11:41:08 +0100
+Message-ID: <816707.1623840068@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-06-21, 07:53, Austin Kim wrote:
-> From: Austin Kim <austin.kim@lge.com>
-> 
-> The second parameter of spinlock_irq[save/restore] function is flags,
-> which is the last input parameter of sf_pdma_prep_dma_memcpy().
-> 
-> So declare local variable 'iflags' to be used as the second parameter of
-> spinlock_irq[save/restore] function.
+David Howells <dhowells@redhat.com> wrote:
 
-Applied, thanks
+> Could we also get a synonym for page_offset()?  Perhaps called folio_fpos()
+> rather than folio_offset()?  "Offset" is a bit generic.
 
--- 
-~Vinod
+Nevermind, that's handled in a later patch.
+
+David
+
