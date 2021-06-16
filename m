@@ -2,123 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423AB3A8D51
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879153A8D50
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhFPAUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59676 "EHLO
+        id S231666AbhFPAUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231354AbhFPAUe (ORCPT
+        with ESMTP id S229811AbhFPAUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:20:34 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1BDC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:18:29 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id h12so209660plf.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:18:29 -0700 (PDT)
+        Tue, 15 Jun 2021 20:20:33 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F5CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:18:27 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id c13so507440oib.13
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:18:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U9ut0QO/e/N5V/O+/xxowpWen8UQyCbn6qtxkVe0D8Y=;
-        b=JcupgDdHq+fmTtYahFp9g+jILqxB19u88v4xnoU55fWLv4k3YOt/xNPurkbzegMsAG
-         NNMrQSJN/bCEgjMYNZUC20WGOBAV1diTK74G7f/VHGvqLwYEedYJtJ3nI0833KtrM7kU
-         t9kGTrMECpFStf9TPmnQQJw6nw5sTkNZ2hgie5DWKEimBuk2Ql3jpZVgHKeZscFIfEWT
-         FSm5OEwpwmmecOzudMjp4Rt+2O5WBV1LrdshwyVWQvhqJ4gbyL3GU3vgiXpk/OOtUG+R
-         9SDYxzyZHGzVP/HJP4qSzGSitzNNqYPJe6gGlgIMCb0EV5UH0BYz1vfNwhv1uIyZDqE+
-         Oifw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=63XBS3tQ7Co8IrZoouPuxpj9SbqIb0rD307q2lD5BGg=;
+        b=gVPQH6wQp1cuwJ/lRGAtVaQ+BAeUMRmFyYReDDWEfgxSC0srG325MbdXV04ySQBk38
+         gRdoDGeGv10GUUz3aMmmzbXqiqAvu57R8tE0nTMfuGYIhxf4PE55M9Nl2rEG+KqWa6Nv
+         hpQmKxQ4JRhGIZGCXAkxN1JQ40RqYK8O+Y0DLyd+sG/DBH6UqMUxQxvyGaDHLdh+AnvS
+         uBmM4MFxTXqUnAXOq8CNLlvXvjXHj6QMU1/SuYAhc+1CFPrc/C1kyfQLX6XRykiD2C7k
+         qSz8v1/BBCVWDixkT423SABosi0cYlF+m16SQdXWAVTZBFUq5pk5ga2Zazde5SwSnYmQ
+         jN8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U9ut0QO/e/N5V/O+/xxowpWen8UQyCbn6qtxkVe0D8Y=;
-        b=b9OXhO69hkzSWUxCiNxhsWoDQDbueNDC4tnDXD8ocsy1XpWaWzrC7Ynl9Tz2Eqo7Ww
-         pe1Kg0CFpolJ/+jMK7kmCP5NJsylqGyx2eq57Ib1/NK7JFrsn7VivPigfcgYMM7ibChz
-         MBoJENgbV1pNF8k2vLG2UY94Vm6joul1uAkDK3tm+eZ/UjB5LNfzxSDMHuioksaYHgMT
-         Bxyg1YmmvIXZy1yjL4KP6k36U8KzIqqHZKgkv6F7+5cCcABWSTGA5/QaehivZD+ZayfE
-         mcTTOhlUNfj6YsMCncHlkZPVGx64N8mfGjHxoPrOJN+KmzlnFLS8Wyvn5CGwRT81uUTC
-         a+GA==
-X-Gm-Message-State: AOAM531nq0ZnXOQJ10njC9M/0zN+0jrv9GVj/JXq9yjf4+y3CT8uo5xu
-        Y//OkK3GLBAHgPbO+3zS1SR07pQUgkKzIl04l1OQoQ==
-X-Google-Smtp-Source: ABdhPJyDslf/YwZkzYx2Z/IqSadb826GT3g94w753bjCVGDQs7kdVkKXA5TwIzZBSN9veDsTezagh2Bmxl7wkmkaDYQ=
-X-Received: by 2002:a17:90a:ea8c:: with SMTP id h12mr7432919pjz.149.1623802708921;
- Tue, 15 Jun 2021 17:18:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=63XBS3tQ7Co8IrZoouPuxpj9SbqIb0rD307q2lD5BGg=;
+        b=RhNtrkxDdANv4Hma6/h5ufHPRI9vGMpnCj4PodCXS8gY5qktQkVG+fdxuKPJPAmYOs
+         Iu40cjaXCVnE03GAmA/tPc/+RuO+j6H3i86V467bX9KZ8L6zh/FTJBICmuCi2zOZTbgx
+         pJJcJaBoLzpfXlNdDWTeDpb81dHppLFnUNXFtE6JkX44MiHehpMy2A2W8hIdZowYf4V2
+         uUyEuAuak1xXkPOdSOr7wBH+JbP+9lRvSGGBEmGbJXYcqHJVrwkpyYURk7lP/27sBGHV
+         RUgvElwdASnKGVSx9aH47r6kP5fp/iTbcadt8dnhMo+86sPUgs+nDgWi2QJeF3X3dAGB
+         DDhA==
+X-Gm-Message-State: AOAM530E9R2w2S64Gfm93icl4DiAU1lxh9KIBd+FxY3nzBgf5KA51PLR
+        c8wu69jlss91TD9Q/nZ+ksRNeQ==
+X-Google-Smtp-Source: ABdhPJxWsCBp9R9M15ML/sKHyAcMtDeD0qkcLzckEWxSibHmiMatarC6OjHS0ENeOJV7IRUxL1x5Fg==
+X-Received: by 2002:a05:6808:999:: with SMTP id a25mr1141281oic.123.1623802706929;
+        Tue, 15 Jun 2021 17:18:26 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t14sm112195ooh.39.2021.06.15.17.18.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 17:18:26 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 19:18:24 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: dts: qcom: sm8350-mtp: Use mdt files for
+ firmware
+Message-ID: <YMlDUNVdSHK50UMO@builder.lan>
+References: <20210615081124.3209637-1-vkoul@kernel.org>
 MIME-Version: 1.0
-References: <20210604011844.1756145-1-ruansy.fnst@fujitsu.com> <20210604011844.1756145-2-ruansy.fnst@fujitsu.com>
-In-Reply-To: <20210604011844.1756145-2-ruansy.fnst@fujitsu.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 15 Jun 2021 17:18:18 -0700
-Message-ID: <CAPcyv4ibuHeQ7o=sTZpQoryv=_3WuBFJhodBnAEVRPmvo=nAeQ@mail.gmail.com>
-Subject: Re: [PATCH v4 01/10] pagemap: Introduce ->memory_failure()
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        david <david@fromorbit.com>, Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615081124.3209637-1-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 6:19 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+On Tue 15 Jun 03:11 CDT 2021, Vinod Koul wrote:
 
-Hi Ruan, apologies for the delays circling back to this.
+> As discussed in [1], we should keep one of the file formats for firmware
+> and not change.
+> 
+> So to simplify we chose to use mdt for firmware file. This would enable
+> folks to work with upstream linux-firmware as well as downstream
+> firmwares.
+> 
+> So switch it for SM8350 which is a new platform, so switch can be done
+> safely.
+> 
+> [1]: http://lore.kernel.org/r/CALAqxLXn6wFBAxRkThxWg5RvTuFEX80kHPt8BVja1CpAB-qzGA@mail.gmail.com
+> 
 
->
-> When memory-failure occurs, we call this function which is implemented
-> by each kind of devices.  For the fsdax case, pmem device driver
-> implements it.  Pmem device driver will find out the filesystem in which
-> the corrupted page located in.  And finally call filesystem handler to
-> deal with this error.
->
-> The filesystem will try to recover the corrupted data if possiable.
->
+As mentioned elsewhere, we used to run exclusively with mdt + bNN files
+- as that's what we typically get with Android - and I kept receiving
+reports about people missing individual bNN files, or managing to
+upgrade some but not all of the files etc. Some of these errors tells
+you which file you're missing, others just tells you that the hashes
+didn't match whatever was loaded.
 
-Let's move this change to the patch that needs it, this patch does not
-do anything on its own.
+As such, the move to .mbn files has saved us quite a bit of head ache.
 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+
+That said, the code doesn't care about the suffix per say, it starts
+loading the firmware and detects if it's a combined file or not. So you
+can simply copy or symlink the .mdt to match the given .mbn path.
+
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 > ---
->  include/linux/memremap.h | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-> index 45a79da89c5f..473fe18c516a 100644
-> --- a/include/linux/memremap.h
-> +++ b/include/linux/memremap.h
-> @@ -87,6 +87,14 @@ struct dev_pagemap_ops {
->          * the page back to a CPU accessible page.
->          */
->         vm_fault_t (*migrate_to_ram)(struct vm_fault *vmf);
-> +
-> +       /*
-> +        * Handle the memory failure happens on one page.  Notify the processes
-> +        * who are using this page, and try to recover the data on this page
-> +        * if necessary.
-> +        */
+> 
+> Changes in v2:
+>  - Add more details about the switch in changelog
+> 
+>  arch/arm64/boot/dts/qcom/sm8350-mtp.dts | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8350-mtp.dts b/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
+> index 93740444dd1e..d859305f1f75 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
+> @@ -40,7 +40,7 @@ vph_pwr: vph-pwr-regulator {
+>  
+>  &adsp {
+>  	status = "okay";
+> -	firmware-name = "qcom/sm8350/adsp.mbn";
+> +	irmware-name = "qcom/sm8350/adsp.mdt";
 
-I thought we discussed that this needed to be range based here:
+And you're already doing something "non-standard" if your MTP has
+adsp.mdt in this path :)
 
-https://lore.kernel.org/r/CAPcyv4jhUU3NVD8HLZnJzir+SugB6LnnrgJZ-jP45BZrbJ1dJQ@mail.gmail.com
+Regards,
+Bjorn
 
-...but also incorporate Christoph's feedback to not use notifiers.
-
-> +       int (*memory_failure)(struct dev_pagemap *pgmap, unsigned long pfn,
-> +                             int flags);
-
-Change this callback to
-
-int (*notify_memory_failure)(struct dev_pagemap *pgmap, unsigned long
-pfn, unsigned long nr_pfns)
-
-...to pass a range and to clarify that this callback is for
-memory_failure() to notify the pgmap, the pgmap notifies the owner via
-the holder callbacks.
+>  };
+>  
+>  &apps_rsc {
+> @@ -278,12 +278,12 @@ vreg_l13c_3p0: ldo13 {
+>  
+>  &cdsp {
+>  	status = "okay";
+> -	firmware-name = "qcom/sm8350/cdsp.mbn";
+> +	firmware-name = "qcom/sm8350/cdsp.mdt";
+>  };
+>  
+>  &mpss {
+>  	status = "okay";
+> -	firmware-name = "qcom/sm8350/modem.mbn";
+> +	firmware-name = "qcom/sm8350/modem.mdt";
+>  };
+>  
+>  &qupv3_id_1 {
+> @@ -292,7 +292,7 @@ &qupv3_id_1 {
+>  
+>  &slpi {
+>  	status = "okay";
+> -	firmware-name = "qcom/sm8350/slpi.mbn";
+> +	firmware-name = "qcom/sm8350/slpi.mdt";
+>  };
+>  
+>  &tlmm {
+> -- 
+> 2.31.1
+> 
