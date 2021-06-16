@@ -2,149 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565293AA3E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEAE3AA3F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhFPTJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:09:21 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:40004 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232263AbhFPTJU (ORCPT
+        id S232415AbhFPTLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232456AbhFPTLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:09:20 -0400
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D4FD820B6C50;
-        Wed, 16 Jun 2021 12:07:13 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D4FD820B6C50
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623870433;
-        bh=pMMmTT3PXQgTrevuxlj2F3JLlcd4EM9l6Fepj29X/Bg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=et5fmwABi16nTifeqv5owKDbpO8Upojx4jogULjH35iG+VU2qzgIOkQSB+40B0esG
-         Wam6aYGNXbuJ3uQm6BvTW69sFa4xi4qmwEIBwkn8G5wv6OmR+8OomBdF99AwSZvJc1
-         Uf510fCV9WWV72wjblSHguWSQzdzsPUtxfXw9eOo=
-Received: by mail-pf1-f182.google.com with SMTP id p13so3021834pfw.0;
-        Wed, 16 Jun 2021 12:07:13 -0700 (PDT)
-X-Gm-Message-State: AOAM531oszfqMbna3A53N1neh5zAbBL8+6I7kkBR9p1OJ6K17L7M1EhD
-        GirYLhPt57YmA1CjaYGTSvs0IwTzaAuAHMlQ1kI=
-X-Google-Smtp-Source: ABdhPJx9sD4Hv60I5h6KAYTe91Zo1s5HoDH8VwMli9/OBjeUKnpAHtllS55ebWXOgWb1A5g5i1Y5vWiMz6iFCmYlJ6k=
-X-Received: by 2002:a05:6a00:24d0:b029:2ed:c309:8b0f with SMTP id
- d16-20020a056a0024d0b02902edc3098b0fmr1281204pfv.41.1623870433450; Wed, 16
- Jun 2021 12:07:13 -0700 (PDT)
+        Wed, 16 Jun 2021 15:11:35 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B98EC061574;
+        Wed, 16 Jun 2021 12:09:29 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id n17so5360951ljg.2;
+        Wed, 16 Jun 2021 12:09:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qP0j6DhiUJIr/VXjNb28HuyGZ1YtPyQsbTbi/lJTwQs=;
+        b=l/qBch27c62h4HHWiBlWC7/jJQU1idyXByXYYcrkPzcb8PyGzB5g6C7Zu6O3epPIVz
+         SqvEe61LscB3tREgPgn9JttwDeY7Q30CDvFkugD/79ZU+w07FloRl/WC9gWC7F5P13ES
+         SIouCMKh3UW9q8KBxoU1PL+e/pGVn0DwpXbXHw1a/soUawYae0eirijF7VKGT6xHKUkZ
+         g5f34ehZIGHbcAheYWWBtxEKY9yl+sP0cOlg8RVLjtwrScgnI4ddBAVN9G2dRpRgPh6i
+         C+KAnO4oTpLo5YziVTvirhVEplNQhWAV/4eF59iQflHtydE0Jg8nyE2zISU0IWFA0eW3
+         QPUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qP0j6DhiUJIr/VXjNb28HuyGZ1YtPyQsbTbi/lJTwQs=;
+        b=FYf5thrCoemN/xDiVM9a6xI4JRTD3JMaRnTuu3VI9tPiG//tWQE1jBILl8M2nwBFWg
+         a07exKLSRSssMd4RjlAW404cO0iP3dmB/qxWryi0E6tlMspgAvOeiMkAYIdff6pmANNX
+         whWsSoiVAJe24jRSpcU5EkcBIabdSqmwhBiY7htgxM/lTJLn/rVRwR+aUKxhw9YW0ZdI
+         /kuNfI7/HhTQ5dDVOjnHFaap37m/298hGy6y4PuHZdUZzyuttiHa7PDzFtw4XjpHEweU
+         67LGAGAEz6MM6nLv2SYPJO3BzosgZCEBilMLpN2hOcHWRZv2jHRJuIetB7zj+EywEBS9
+         nCcQ==
+X-Gm-Message-State: AOAM5338wyE1yLbjunDUpvpAw6WxPsr57oLxkyd3+8rc/E60scll2aiQ
+        VT3Gd492CmzbF6yMnusJqrk=
+X-Google-Smtp-Source: ABdhPJwEM8TpfK6uV5py9JzlJH8sHbzPoVRWVf6/qmmbJ5mKZ88TEgg2UYn9UHtzFZN53SwQU/RQUQ==
+X-Received: by 2002:a2e:a7c4:: with SMTP id x4mr1196810ljp.420.1623870567633;
+        Wed, 16 Jun 2021 12:09:27 -0700 (PDT)
+Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.gmail.com with ESMTPSA id 9sm333126lfy.41.2021.06.16.12.09.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 12:09:27 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
+Subject: [PATCH v1] hwmon: (lm90) Use edge-triggered interrupt
+Date:   Wed, 16 Jun 2021 22:07:08 +0300
+Message-Id: <20210616190708.1220-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
- <20210615023812.50885-2-mcroce@linux.microsoft.com> <6cff2a895db94e6fadd4ddffb8906a73@AcuMS.aculab.com>
- <CAEUhbmV+Vi0Ssyzq1B2RTkbjMpE21xjdj2MSKdLydgW6WuCKtA@mail.gmail.com>
- <1632006872b04c64be828fa0c4e4eae0@AcuMS.aculab.com> <CAEUhbmU0cPkawmFfDd_sPQnc9V-cfYd32BCQo4Cis3uBKZDpXw@mail.gmail.com>
- <CANBLGcxi2mEA5MnV-RL2zFpB2T+OytiHyOLKjOrMXgmAh=fHAw@mail.gmail.com>
- <CAEUhbmX_wsfU9FfRJoOPE0gjUX=Bp7OZWOZDyMNfO6=M-fX_0A@mail.gmail.com>
- <20210616040132.7fbdf6fe@linux.microsoft.com> <db7a011867a742528beb6ec17b692842@AcuMS.aculab.com>
-In-Reply-To: <db7a011867a742528beb6ec17b692842@AcuMS.aculab.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Wed, 16 Jun 2021 21:06:37 +0200
-X-Gmail-Original-Message-ID: <CAFnufp2OiF6-ta5og9u-foKDT2fqE171NvfowFkUr2jc4KJEDQ@mail.gmail.com>
-Message-ID: <CAFnufp2OiF6-ta5og9u-foKDT2fqE171NvfowFkUr2jc4KJEDQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] riscv: optimized memcpy
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Bin Meng <bmeng.cn@gmail.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Gary Guo <gary@garyguo.net>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 10:24 AM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Matteo Croce
-> > Sent: 16 June 2021 03:02
-> ...
-> > > > That's a good idea, but if you read the replies to Gary's original
-> > > > patch
-> > > > https://lore.kernel.org/linux-riscv/20210216225555.4976-1-gary@garyguo.net/
-> > > > .. both Gary, Palmer and David would rather like a C-based version.
-> > > > This is one attempt at providing that.
-> > >
-> > > Yep, I prefer C as well :)
-> > >
-> > > But if you check commit 04091d6, the assembly version was introduced
-> > > for KASAN. So if we are to change it back to C, please make sure KASAN
-> > > is not broken.
-> > >
-> ...
-> > Leaving out the first memcpy/set of every test which is always slower, (maybe
-> > because of a cache miss?), the current implementation copies 260 Mb/s when
-> > the low order bits match, and 114 otherwise.
-> > Memset is stable at 278 Mb/s.
-> >
-> > Gary's implementation is much faster, copies still 260 Mb/s when euqlly placed,
-> > and 230 Mb/s otherwise. Memset is the same as the current one.
->
-> Any idea what the attainable performance is for the cpu you are using?
-> Since both memset and memcpy are running at much the same speed
-> I suspect it is all limited by the writes.
->
-> 272MB/s is only 34M writes/sec.
-> This seems horribly slow for a modern cpu.
-> So is this actually really limited by the cache writes to physical memory?
->
-> You might want to do some tests (userspace is fine) where you
-> check much smaller lengths that definitely sit within the data cache.
->
+The LM90 driver uses level-based interrupt triggering. The interrupt
+handler prints a warning message about the breached temperature and
+quits. There is no way to stop interrupt from re-triggering since it's
+level-based, thus thousands of warning messages are printed per second
+once interrupt is triggered. Use edge-triggered interrupt in order to
+fix this trouble.
 
-I get similar results in userspace, this tool write to RAM with
-variable data width:
+Fixes: 109b1283fb532 ("hwmon: (lm90) Add support to handle IRQ")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/hwmon/lm90.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-root@beaglev:~/src# ./unalign_check 1 0 1
-size:           1 Mb
-write size:      8 bit
-unalignment:    0 byte
-elapsed time:   0.01 sec
-throughput:     124.36 Mb/s
-
-# ./unalign_check 1 0 8
-size:           1 Mb
-write size:      64 bit
-unalignment:    0 byte
-elapsed time:   0.00 sec
-throughput:     252.12 Mb/s
-
-> It is also worth checking how much overhead there is for
-> short copies - they are almost certainly more common than
-> you might expect.
-> This is one problem with excessive loop unrolling - the 'special
-> cases' for the ends of the buffer start having a big effect
-> on small copies.
->
-
-I too believe that they are much more common than long ones.
-Indeed, I wish to reduce the MIN_THRESHOLD value from 64 to 32 or even 16.
-Or having it dependend on the word size, e.g. sizeof(long) * 2.
-
-Suggestions?
-
-> For cpu that support misaligned memory accesses, one 'trick'
-> for transfers longer than a 'word' is to do a (probably) misaligned
-> transfer of the last word of the buffer first followed by the
-> transfer of the rest of the buffer (overlapping a few bytes at the end).
-> This saves on conditionals and temporary values.
->
->         David
->
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
->
-
-Regards,
+diff --git a/drivers/hwmon/lm90.c b/drivers/hwmon/lm90.c
+index ebbfd5f352c0..ce8ebe60fcdc 100644
+--- a/drivers/hwmon/lm90.c
++++ b/drivers/hwmon/lm90.c
+@@ -1908,7 +1908,7 @@ static int lm90_probe(struct i2c_client *client)
+ 		dev_dbg(dev, "IRQ: %d\n", client->irq);
+ 		err = devm_request_threaded_irq(dev, client->irq,
+ 						NULL, lm90_irq_thread,
+-						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
++						IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+ 						"lm90", client);
+ 		if (err < 0) {
+ 			dev_err(dev, "cannot request IRQ %d\n", client->irq);
 -- 
-per aspera ad upstream
+2.30.2
+
