@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ACD83AA0A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63583AA13D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhFPQDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 12:03:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33854 "EHLO mail.kernel.org"
+        id S233999AbhFPQ3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 12:29:13 -0400
+Received: from m12-12.163.com ([220.181.12.12]:40136 "EHLO m12-12.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230515AbhFPQDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 12:03:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4233661159;
-        Wed, 16 Jun 2021 16:00:54 +0000 (UTC)
-Date:   Wed, 16 Jun 2021 17:00:51 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
-Message-ID: <20210616160050.GE22433@arm.com>
-References: <cover.1623813516.git.luto@kernel.org>
- <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
- <YMnPezLs6vb418Wz@hirez.programming.kicks-ass.net>
- <YMnQVoKvM5G34Yan@hirez.programming.kicks-ass.net>
- <20210616103446.GC22278@shell.armlinux.org.uk>
- <YMncQv1uT5QyQ84w@hirez.programming.kicks-ass.net>
- <20210616132226.GD22278@shell.armlinux.org.uk>
- <20210616150456.GC22433@arm.com>
- <20210616152326.GG22278@shell.armlinux.org.uk>
- <20210616154529.GD22433@arm.com>
+        id S233563AbhFPQ3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 12:29:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Tr1BB
+        GQIeuuHKxbyn8Yph9G7uKAkr8UoYHsUcGkvYAA=; b=YfjwpY6WHHk0h5cX3EkGk
+        2wT74mHF2SsrpFqKq41nQBDaPF23HGrZ1cfun6ud8Is67UyXrqvXrUP92T5YBOY1
+        tt1v4rfAm/5xDoJsSGnsP3CQQceCCduwkL6+R8jzVPjuLyOHSshqs0dEWW98+IGz
+        IWzTvWlYlEb57ALaQzACAc=
+Received: from ubuntu.localdomain (unknown [112.37.241.255])
+        by smtp8 (Coremail) with SMTP id DMCowAD3grh3tclgNnb_KA--.3520S2;
+        Wed, 16 Jun 2021 16:25:28 +0800 (CST)
+From:   13145886936@163.com
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] Bluetooth: fix a grammar mistake
+Date:   Wed, 16 Jun 2021 16:25:24 +0800
+Message-Id: <20210616082524.10754-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616154529.GD22433@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DMCowAD3grh3tclgNnb_KA--.3520S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKFyxZw1fWFWUuw4UXryDAwb_yoW3WFb_X3
+        s3ua97urWUGa45XayjyrsIvw1xJw4rur1IqFnxWFWUC3s8Cw4DKwsagw4DWr13W3y3Arya
+        kFn5GFWDZr1IqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnZjjDUUUUU==
+X-Originating-IP: [112.37.241.255]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/xtbBdhizg1UMRSAMvQAAsT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 04:45:29PM +0100, Catalin Marinas wrote:
-> On Wed, Jun 16, 2021 at 04:23:26PM +0100, Russell King wrote:
-> > On Wed, Jun 16, 2021 at 04:04:56PM +0100, Catalin Marinas wrote:
-> > > The simpler fix for flush_icache_range() is to disable preemption, read
-> > > a word in a cacheline to force any dirty lines on another CPU to be
-> > > evicted and then issue the D-cache maintenance (for those cache lines
-> > > which are still dirty on the current CPU).
-> > 
-> > Is just reading sufficient? If so, why do we do a read-then-write in
-> > the MPCore DMA cache ops? Don't we need the write to force exclusive
-> > ownership? If we don't have exclusive ownership of the dirty line,
-> > how can we be sure to write it out of the caches?
-> 
-> For cleaning (which is the case for I/D coherency), we only need reading
-> since we are fine with clean lines being left in the D-cache on other
-> CPUs. For invalidation, we indeed need to force the exclusive ownership,
-> hence the write.
+From: gushengxian <gushengxian@yulong.com>
 
-Ah, I'm not sure the I-cache is broadcast in hardware on ARM11MPCore
-either. So fixing the D side won't be sufficient.
+Fix a grammar mistake.
 
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ net/bluetooth/hci_event.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 98ec486743ba..a33838a72f19 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5780,7 +5780,7 @@ static void hci_le_remote_feat_complete_evt(struct hci_dev *hdev,
+ 			 * for unsupported remote feature gets returned.
+ 			 *
+ 			 * In this specific case, allow the connection to
+-			 * transition into connected state and mark it as
++			 * transit into connected state and mark it as
+ 			 * successful.
+ 			 */
+ 			if (!conn->out && ev->status == 0x1a &&
 -- 
-Catalin
+2.25.1
+
+
