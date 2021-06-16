@@ -2,109 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C803AA3AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB113AA3B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbhFPTCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:02:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52438 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230269AbhFPTCP (ORCPT
+        id S232211AbhFPTDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:03:06 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:36468 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230269AbhFPTDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:02:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623870008;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+UP7OXvbFZ/sTV1fkRUmNAJIdvluY4AVuWJDrajb3uU=;
-        b=DHyd9ccSyl1rnKzunoFQjraBg958cVgV31ECVle7Jcu9FS4lNCwvChxHX+dAk4uwScJlo6
-        mDFyqHN8S3QjDBQmbkZIbyu8+axkORSanBEKXeuUEolLW8FUgChwNGPVd2wyYYyghLuikU
-        tgzHoppufX/gxYoAxRKNPxVXELP+Dv0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-515-GHAxmnqiNgifXzBvmXSZBg-1; Wed, 16 Jun 2021 15:00:01 -0400
-X-MC-Unique: GHAxmnqiNgifXzBvmXSZBg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2BE07100CA8B;
-        Wed, 16 Jun 2021 18:59:59 +0000 (UTC)
-Received: from starship (unknown [10.40.194.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4477560CC9;
-        Wed, 16 Jun 2021 18:59:51 +0000 (UTC)
-Message-ID: <1a6d4cc2152eebb5a0656e3718fc96645ee2e785.camel@redhat.com>
-Subject: Re: [PATCH] KVM: x86: fix 32 bit build
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Date:   Wed, 16 Jun 2021 21:59:50 +0300
-In-Reply-To: <YMof22ameZYUHNdi@google.com>
-References: <20210616155032.1117176-1-mlevitsk@redhat.com>
-         <YMof22ameZYUHNdi@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 16 Jun 2021 15:03:05 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:32878 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1ltamW-0000Bl-PV; Wed, 16 Jun 2021 15:00:56 -0400
+Message-ID: <3f5447bf02453a034f4eb71f092dd1d1455ec7ad.camel@trillion01.com>
+Subject: Re: [PATCH v2 2/3] io_uring: minor clean up in trace events
+ definition
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>, Steven Rostedt <rostedt@goodmis.org>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 16 Jun 2021 15:00:55 -0400
+In-Reply-To: <2ba15b09-2228-9a2a-3ac3-c471dd3fc912@kernel.dk>
+References: <60be7e31.1c69fb81.a8bfb.2e54SMTPIN_ADDED_MISSING@mx.google.com>
+         <2752dcc1-9e56-ba31-54ea-d2363ecb6c93@gmail.com>
+         <def5421f-a3ae-12fd-87a2-6e584f753127@kernel.dk>
+         <20210615193532.6d7916d4@gandalf.local.home>
+         <2ba15b09-2228-9a2a-3ac3-c471dd3fc912@kernel.dk>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-16 at 15:59 +0000, Sean Christopherson wrote:
-> On Wed, Jun 16, 2021, Maxim Levitsky wrote:
-> > Now that kvm->stat.nx_lpage_splits is 64 bit, use DIV_ROUND_UP_ULL
-> > when doing division.
+On Wed, 2021-06-16 at 06:49 -0600, Jens Axboe wrote:
 > 
-> I went the "cast to an unsigned long" route.  I prefer the cast approach because
-> to_zap is also an unsigned long, i.e. using DIV_ROUND_UP_ULL() could look like a
-> truncation bug.  In practice, nx_lpage_splits can't be more than an unsigned long
-> so it's largely a moot point, I just like the more explicit "this is doing
-> something odd".
+> Indeed, that is what is causing the situation, and I do have them
+> here.
+> Olivier, you definitely want to fix your mail setup. It confuses both
+> MUAs, but it also actively prevents using the regular tooling to pull
+> these patches off lore for example.
 > 
-> https://lkml.kernel.org/r/20210615162905.2132937-1-seanjc@google.com
-> 
-> > Fixes: 7ee093d4f3f5 ("KVM: switch per-VM stats to u64")
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 720ceb0a1f5c..97372225f183 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -6054,7 +6054,7 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
-> >  	write_lock(&kvm->mmu_lock);
-> >  
-> >  	ratio = READ_ONCE(nx_huge_pages_recovery_ratio);
-> > -	to_zap = ratio ? DIV_ROUND_UP(kvm->stat.nx_lpage_splits, ratio) : 0;
-> > +	to_zap = ratio ? DIV_ROUND_UP_ULL(kvm->stat.nx_lpage_splits, ratio) : 0;
-> >  	for ( ; to_zap; --to_zap) {
-> >  		if (list_empty(&kvm->arch.lpage_disallowed_mmu_pages))
-> >  			break;
-> > -- 
-> > 2.26.3
-> > 
-Cool, makes sense.
+Ok, I will... It seems that only my patch emails are having this issue.
+I am pretty sure that I can find instances of non patch emails going
+making it to the lists...
 
-I didn't notice your patch (I did look at the list but
-since the subject didn't mention the build breakage I didn't notice).
-
-I just wanted to send this patch to avoid someone else
-spending time figuring it out.
-
-Thanks,
-Best regards,
-	Maxim Levitsky
 
