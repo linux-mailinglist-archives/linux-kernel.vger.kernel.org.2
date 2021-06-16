@@ -2,82 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6FF3A94BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAD63A94CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhFPIKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:10:40 -0400
-Received: from mga03.intel.com ([134.134.136.65]:47710 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231381AbhFPIKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:10:34 -0400
-IronPort-SDR: IpRYbzz6g9SanLWvp+yfqGivir7Hilu58BmW2mD0voM2N2IWF9evIApMaqxqvoYvZZd1S3uE0j
- Zh7VWGkbpsfg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206172017"
-X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
-   d="scan'208";a="206172017"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 01:08:25 -0700
-IronPort-SDR: zJ/1OX5EmUkqVqzyhny2w0M+m76INvVXrFHm0Zu38LlODpJuiyF2h2TIr5+KNpew2bgr1ReUfX
- 4n/j6ru8u8Vw==
-X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
-   d="scan'208";a="621613886"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 01:08:22 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1ltQaw-002lFR-FG; Wed, 16 Jun 2021 11:08:18 +0300
-Date:   Wed, 16 Jun 2021 11:08:18 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Chris Down <chris@chrisdown.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>, Jessica Yu <jeyu@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kees Cook <keescook@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
-Subject: Re: [PATCH v7 1/5] string_helpers: Escape double quotes in
- escape_special
-Message-ID: <YMmxcjeEHHzCLKtX@smile.fi.intel.com>
-References: <cover.1623775748.git.chris@chrisdown.name>
- <af144c5b75e41ce417386253ba2694456bc04118.1623775748.git.chris@chrisdown.name>
- <CAHp75Vc-edpD5kz0EPsO7Q=zOPHWFckZzc17imO85dQy-PpOgg@mail.gmail.com>
- <YMk/IKA4okfYSh57@chrisdown.name>
- <796701ff-18f9-a637-fca4-808ae36b336f@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <796701ff-18f9-a637-fca4-808ae36b336f@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S231761AbhFPIOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:14:14 -0400
+Received: from regular1.263xmail.com ([211.150.70.201]:37114 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231481AbhFPION (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 04:14:13 -0400
+Received: from localhost (unknown [192.168.167.32])
+        by regular1.263xmail.com (Postfix) with ESMTP id 2C0E2F6A;
+        Wed, 16 Jun 2021 16:11:53 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from manjaro.uniontech.com (unknown [58.246.122.242])
+        by smtp.263.net (postfix) whith ESMTP id P24497T139649611695872S1623831111955692_;
+        Wed, 16 Jun 2021 16:11:52 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <6dac89850f76a041949d0214cc278a3c>
+X-RL-SENDER: chenli@uniontech.com
+X-SENDER: chenli@uniontech.com
+X-LOGIN-NAME: chenli@uniontech.com
+X-FST-TO: hch@infradead.org
+X-RCPT-COUNT: 6
+X-SENDER-IP: 58.246.122.242
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Date:   Wed, 16 Jun 2021 16:11:52 +0800
+Message-ID: <8735tigref.wl-chenli@uniontech.com>
+From:   Chen Li <chenli@uniontech.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] ramfs: skip mknod if inode already =?GB2312?B?ZXhp?=
+ =?GB2312?B?c3RzLqG+x+vXotLio6zTyrz+08liYXR2K2FlODk4OWUxNjY4Zjg0YTc0ZDM3?=
+ =?GB2312?B?KzY1MDYraW5mcmFkZWFkLm9yZytoY2hAY2FzcGVyLnNycy5pbmZyYWRlYWQu?=
+ =?GB2312?B?b3JntPq3oqG/?=
+In-Reply-To: <YMmHwTZaahtmjK2z@infradead.org>
+References: <874kdyh65j.wl-chenli@uniontech.com>
+        <YMmHwTZaahtmjK2z@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?ISO-8859-4?Q?Goj=F2?=) APEL-LB/10.8 EasyPG/1.0.0
+ Emacs/27.2 (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 07:05:25PM -0700, Randy Dunlap wrote:
-> On 6/15/21 5:00 PM, Chris Down wrote:
-> > Andy Shevchenko writes:
-> >>> I've checked uses of ESCAPE_SPECIAL and %pE across the codebase, and I'm
-> >>
-> >> checked the uses
-> > 
-> > Hmm, what's wrong with using the zero article for "checked uses"? I mean, I don't have any strong resistance, but I don't see anything wrong with it either, and it matches how I'd naturally speak.
-> > 
-> > Agreed on the others, though, hopefully they can be massaged in :-)
+On Wed, 16 Jun 2021 13:10:25 +0800,
+Christoph Hellwig wrote:
 > 
-> Ack, I don't see anything wrong with it either.
+> On Wed, Jun 16, 2021 at 10:53:12AM +0800, Chen Li wrote:
+> > 
+> > It's possible we try to mknod a dentry, which have
+> > already bound to an inode, just skip it.
+> 
+> How do you think this could happen?
+> 
+> 
 
-I guess you know better than me :-)
-
-I'm just a mere non-native speaker here to whom it's stylistically harder to
-parse without the article.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Sorry, that's my bad. I noticed unionfs used to do this check in 9c5b4452998c6e670cfde0928b277e9c50d9a676, but not sure is it a must.
 
 
