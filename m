@@ -2,47 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA053AA78B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15C93AA790
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234668AbhFPXhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 19:37:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234620AbhFPXhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 19:37:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AC4D6128C;
-        Wed, 16 Jun 2021 23:35:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1623886530;
-        bh=wPVQVbIbUSPCHwlQveBPypj0b7ZEUBG7b+pcNYSFUIk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OMSb5BYNr5xaUbuoMHYk0NSbtNUpgEhtIwdXglhLvCqDrW5i5qa2Uyw/yckWpzgvr
-         PAagI6UIzBwhdIGp+BcTlme/GBh0kO1sv8tBF0p4l6Hpe21d5Kiv3nkLUw9rd+xyjF
-         ipJ2ogqHrqVqo0ogdHpSuhxubfuwK4SU8iDDFm8c=
-Date:   Wed, 16 Jun 2021 16:35:29 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
-        <willy@infradead.org>, <linux-doc@vger.kernel.org>,
-        <nouveau@lists.freedesktop.org>, <hughd@google.com>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <hch@infradead.org>, <peterx@redhat.com>, <shakeelb@google.com>,
-        <bskeggs@redhat.com>, <jgg@nvidia.com>, <jhubbard@nvidia.com>
-Subject: Re: [PATCH v11 00/10] Add support for SVM atomics in Nouveau
-Message-Id: <20210616163529.7de2f6e24d395c4ef7a367b6@linux-foundation.org>
-In-Reply-To: <20210616105937.23201-1-apopple@nvidia.com>
-References: <20210616105937.23201-1-apopple@nvidia.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234678AbhFPXin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 19:38:43 -0400
+Received: from mail-io1-f42.google.com ([209.85.166.42]:41647 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234530AbhFPXil (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 19:38:41 -0400
+Received: by mail-io1-f42.google.com with SMTP id p66so1049737iod.8;
+        Wed, 16 Jun 2021 16:36:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dBgSKzg+OG1fjJdv7NgXh988HzECY/j5M/Ly5wHlw50=;
+        b=NOgNjVudBpotjAYKuHYYjYLBLQ0dVENBBB06DA+xRQMFA5PapWrXftInosN+H1mtnK
+         3wCDEqOduTLMXHD5B7swk/2CCUAMMNUEijREq8ufeJ45Al/88ytzI+9coHCxrU2kjIWi
+         WLaH6dWtx8aMJ5GvzYRPCQZ3U54ZkYb942Hl69URGHL2y2CWSeQiQBGCF/8/wmq8fabR
+         7kiE/Jhe3F3R9O+bhTXAfy2LbsFkeruXYJtGIgeSmY3t/VIei3AmgLfP8Y5cR158+XJ8
+         yG3kEDASMbLjOpv2O2uB9+MWcO1YPsz4siSj0xEEYJspLd7kdmmj1WB+mZNuANdc5LLS
+         +FTw==
+X-Gm-Message-State: AOAM532BH1qlJ7j4MD2+rDL5Gwwafnrrzu8MoX9gGgpW94nOVPUjIFk5
+        un26/LaZ5uVXkfaQvt//HA==
+X-Google-Smtp-Source: ABdhPJzZEgtAl9jMW+KvMkV4aY/u5jKwWcr7UKyE6F4oyV4aZrmD4depkfFOTPMmLam4hNJ/m8LxNg==
+X-Received: by 2002:a02:c014:: with SMTP id y20mr1629995jai.107.1623886593845;
+        Wed, 16 Jun 2021 16:36:33 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id c22sm1939298ioz.24.2021.06.16.16.36.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 16:36:33 -0700 (PDT)
+Received: (nullmailer pid 295461 invoked by uid 1000);
+        Wed, 16 Jun 2021 23:36:31 -0000
+Date:   Wed, 16 Jun 2021 17:36:31 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Cc:     michal.simek@xilinx.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
+        harinik@xilinx.com, robh+dt@kernel.org
+Subject: Re: [PATCH v2] dt-bindings: spi: convert Cadence SPI bindings to YAML
+Message-ID: <20210616233631.GA295427@robh.at.kernel.org>
+References: <20210605003811.858676-1-iwamatsu@nigauri.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210605003811.858676-1-iwamatsu@nigauri.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 20:59:27 +1000 Alistair Popple <apopple@nvidia.com> wrote:
+On Sat, 05 Jun 2021 09:38:11 +0900, Nobuhiro Iwamatsu wrote:
+> Convert spi for Cadence SPI bindings documentation to YAML.
+> 
+> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+> ---
+> 
+>  v2: Add ref and enum is-decoded-cs.
+>      Add ref to num-cs.
+> 
+>  .../devicetree/bindings/spi/spi-cadence.txt   | 30 ---------
+>  .../devicetree/bindings/spi/spi-cadence.yaml  | 66 +++++++++++++++++++
+>  2 files changed, 66 insertions(+), 30 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/spi/spi-cadence.txt
+>  create mode 100644 Documentation/devicetree/bindings/spi/spi-cadence.yaml
+> 
 
-> This is my series to add support for SVM atomics in Nouveau
-
-Can we please have a nice [0/n] overview for this patchset?
+Reviewed-by: Rob Herring <robh@kernel.org>
