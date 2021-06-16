@@ -2,94 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25AFC3A9E4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6143E3A9E55
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234280AbhFPO7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:59:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41300 "EHLO mail.kernel.org"
+        id S234301AbhFPO7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:59:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:39482 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233747AbhFPO7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:59:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D0EF610CA;
-        Wed, 16 Jun 2021 14:56:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623855415;
-        bh=PqTEV+Y3Omq+th8DSxU8DPmQr8Af0ZwBW0+urUPYV08=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=x4r6f6t9j/vQ6snaJmuTLN6jy4SMMZ+1etChFKUYh5kjup5+uk9/sBKXcHLGuZgQq
-         nyn1QjWZuwt1N/ky+iu2Ptj7G5u8W0JypTLR4XD9Y1VMKn1YdPwp0WT7R96XCVsHTE
-         Z86QIIObBy4H/iPJLU8t/9Z2CQ3488nrzOSsBSg0=
-Date:   Wed, 16 Jun 2021 16:56:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Amit Klein <aksecurity@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>, Willy Tarreau <w@1wt.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.4 175/244] inet: use bigger hash table for IP ID
- generation
-Message-ID: <YMoRNZYXoykO7mk0@kroah.com>
-References: <20210512144743.039977287@linuxfoundation.org>
- <20210512144748.600206118@linuxfoundation.org>
- <CANEQ_++O0XVVdvynGtf37YCHSBT8CYHnUkK+VsFkOTqeqwOUtA@mail.gmail.com>
- <YMmlPHMn/+EPdbvm@kroah.com>
- <CANEQ_++gbwU2Rvcqg5KtngZC1UX1XcjOKfPKRr3Pvxi+VyQX+Q@mail.gmail.com>
+        id S234294AbhFPO7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 10:59:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D6E431B;
+        Wed, 16 Jun 2021 07:57:34 -0700 (PDT)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CE8E3F719;
+        Wed, 16 Jun 2021 07:57:32 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 15:57:15 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>,
+        linux-kernel@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Ondrej Jirman <megous@megous.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH v7 01/19] dt-bindings: mfd: axp20x: Add AXP305
+ compatible (plus optional IRQ)
+Message-ID: <20210616155715.7d8347c5@slackpad.fritz.box>
+In-Reply-To: <20210615233345.GA1627887@robh.at.kernel.org>
+References: <20210615110636.23403-1-andre.przywara@arm.com>
+        <20210615110636.23403-2-andre.przywara@arm.com>
+        <20210615233345.GA1627887@robh.at.kernel.org>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANEQ_++gbwU2Rvcqg5KtngZC1UX1XcjOKfPKRr3Pvxi+VyQX+Q@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 12:16:52PM +0300, Amit Klein wrote:
-> Here is the patch (minus headers, description, etc. - I believe these
-> can be copied as is from the 5.x patch, but not sure about the
-> rules...). It can be applied to 4.14.236. If this is OK, I can move on
-> to 4.9 and 4.4.
-> 
-> 
->  net/ipv4/route.c | 41 ++++++++++++++++++++++++++++-------------
->  1 file changed, 28 insertions(+), 13 deletions(-)
-> 
-> diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-> index 78d6bc61a1d8..022a2b748da3 100644
-> --- a/net/ipv4/route.c
-> +++ b/net/ipv4/route.c
-> @@ -70,6 +70,7 @@
->  #include <linux/types.h>
->  #include <linux/kernel.h>
->  #include <linux/mm.h>
-> +#include <linux/memblock.h>
->  #include <linux/string.h>
->  #include <linux/socket.h>
->  #include <linux/sockios.h>
-> @@ -485,8 +486,10 @@ static void ipv4_confirm_neigh(const struct
-> dst_entry *dst, const void *daddr)
->      __ipv4_confirm_neigh(dev, *(__force u32 *)pkey);
->  }
-> 
-> -#define IP_IDENTS_SZ 2048u
-> -
-> +/* Hash tables of size 2048..262144 depending on RAM size.
-> + * Each bucket uses 8 bytes.
-> + */
-> +static u32 ip_idents_mask __read_mostly;
->  static atomic_t *ip_idents __read_mostly;
->  static u32 *ip_tstamps __read_mostly;
-> 
-> @@ -496,12 +499,16 @@ static u32 *ip_tstamps __read_mostly;
->   */
->  u32 ip_idents_reserve(u32 hash, int segs)
->  {
-> -    u32 *p_tstamp = ip_tstamps + hash % IP_IDENTS_SZ;
-> -    atomic_t *p_id = ip_idents + hash % IP_IDENTS_SZ;
-> -    u32 old = ACCESS_ONCE(*p_tstamp);
-> -    u32 now = (u32)jiffies;
-> +    u32 bucket, old, now = (u32)jiffies;
-> +    atomic_t *p_id;
-> +    u32 *p_tstamp;
+On Tue, 15 Jun 2021 17:33:45 -0600
+Rob Herring <robh@kernel.org> wrote:
 
-Your patch is corrupted and couldn't be applied if I wanted to :(
+> On Tue, 15 Jun 2021 12:06:18 +0100, Andre Przywara wrote:
+> > The AXP305 PMIC used on many boards with the H616 SoC seems to be fully
+> > compatible to the AXP805 PMIC, so add the proper chain of compatible
+> > strings.
+> > 
+> > Also at least on one board (Orangepi Zero2) there is no interrupt line
+> > connected to the CPU, so make the "interrupts" property optional.
+> > 
+> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> > ---
+> >  Documentation/devicetree/bindings/mfd/axp20x.txt | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >   
+> 
+> 
+> Please add Acked-by/Reviewed-by tags when posting new versions. However,
+> there's no need to repost patches *only* to add the tags. The upstream
+> maintainer will do that for acks received on the version they apply.
+> 
+> If a tag was not added on purpose, please state why and what changed.
 
+Argh, sorry, I was still wondering whether I should try the YAML
+conversion, so didn't apply your tag right away - and then missed it
+when I decided to postpone this. Plus I actually fixed some blunder
+(copy&paste typo in the compatible), and I mostly drop tags upon
+changes.
+
+Cheers,
+Andre
