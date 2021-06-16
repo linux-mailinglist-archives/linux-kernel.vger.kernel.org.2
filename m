@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5F13A9FC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F053A9F69
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235210AbhFPPlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:41:24 -0400
+        id S234863AbhFPPh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:37:57 -0400
 Received: from mail.kernel.org ([198.145.29.99]:49906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235123AbhFPPis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:38:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03F266100B;
-        Wed, 16 Jun 2021 15:36:26 +0000 (UTC)
+        id S234851AbhFPPhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:37:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D6EA613B9;
+        Wed, 16 Jun 2021 15:35:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857787;
-        bh=wLqUqQ5/Iqfc9Oy83QP6UppFMYb64xzebx6U2xVQono=;
+        s=korg; t=1623857704;
+        bh=Q3E8xfbjM05RzuhyWwvnswFZjcREW9jah/3PPBFnvEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MlxafjsMHo5aFzGHjY+YOTRZGNMbk5hGdL5abf19/OQ+Vha4RX2ZX7R393SgEscLW
-         NDWS1GIcytnI8dKqUhtjrRzZ1TeD15I/xl3qJdkbm9TZIGHlxYbLYzF9RvUIcGGORJ
-         m1crc5KhQHTSBtCxeaC7U7nMPBkYQi1MueDuyJ4s=
+        b=t6JT6GLFZ4nUkjkzooLEW7jFUSbSNz6zmjDlYG3nrzkZjS0iFAias5nY+XNuVjok6
+         PXBpjL+D+DH7ingqFxjeY/u6eSlnwfv/bATx7J18Z4Y0FdN+7IbGfDT6+KuRpaG/pC
+         52ZbYsl+3UsXDCTveMYfSVfetMPsXdhrQDGfCS2M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Mark Bolhuis <mark@bolhuis.dev>,
         Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 08/38] HID: Add BUS_VIRTUAL to hid_connect logging
-Date:   Wed, 16 Jun 2021 17:33:17 +0200
-Message-Id: <20210616152835.667742709@linuxfoundation.org>
+Subject: [PATCH 5.4 07/28] HID: Add BUS_VIRTUAL to hid_connect logging
+Date:   Wed, 16 Jun 2021 17:33:18 +0200
+Message-Id: <20210616152834.385130125@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
-References: <20210616152835.407925718@linuxfoundation.org>
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+References: <20210616152834.149064097@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,10 +54,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 097cb1ee3126..0f69f35f2957 100644
+index 8d202011b2db..550fff6e41ec 100644
 --- a/drivers/hid/hid-core.c
 +++ b/drivers/hid/hid-core.c
-@@ -2005,6 +2005,9 @@ int hid_connect(struct hid_device *hdev, unsigned int connect_mask)
+@@ -1998,6 +1998,9 @@ int hid_connect(struct hid_device *hdev, unsigned int connect_mask)
  	case BUS_I2C:
  		bus = "I2C";
  		break;
