@@ -2,172 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9403A9D82
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CBA3A9D80
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233970AbhFPO20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:28:26 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:42852 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232408AbhFPO2Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:28:24 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
- id 54a95c72461561b5; Wed, 16 Jun 2021 16:26:16 +0200
-Received: from kreacher.localnet (89-64-81-4.dynamic.chello.pl [89.64.81.4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 399FA669926;
-        Wed, 16 Jun 2021 16:26:16 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 5/5] ACPI: scan: Fix race related to dropping dependencies
-Date:   Wed, 16 Jun 2021 16:25:32 +0200
-Message-ID: <3070024.5fSG56mABF@kreacher>
-In-Reply-To: <3140195.44csPzL39Z@kreacher>
-References: <3140195.44csPzL39Z@kreacher>
+        id S233983AbhFPO1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:27:30 -0400
+Received: from mga17.intel.com ([192.55.52.151]:20354 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232408AbhFPO13 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 10:27:29 -0400
+IronPort-SDR: TAL3ZURgS49wlv3u/d+ZJzlojFOHHav0lHDJjUtgjpi7hBVRyMqDhjZ3mdCE8QbJUrrrf2GoQb
+ 762URkE6hHzg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="186561949"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="186561949"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 07:25:23 -0700
+IronPort-SDR: Dw50B+RBcvh+68/pdpsXmiabpAveRyMNJrdPYqB5OV6Dh5yd8hcjYd2CgjnY9T+OIfbVW4/ZV0
+ SEp3OQjQYV+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="472043543"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 16 Jun 2021 07:25:19 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 2C69C2AA; Wed, 16 Jun 2021 17:25:42 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] scsi: ppa: Switch to use module_parport_driver()
+Date:   Wed, 16 Jun 2021 17:25:40 +0300
+Message-Id: <20210616142540.45676-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.81.4
-X-CLIENT-HOSTNAME: 89-64-81-4.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgjeekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedurdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedurdegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhguvghgohgvuggvsehrvgguhhgrthdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Switch to use module_parport_driver() to reduce boilerplate code.
 
-If acpi_add_single_object() runs concurrently with respect to
-acpi_scan_clear_dep() which deletes a dependencies list entry where
-the device being added is the consumer, the device's dep_unmet
-counter may not be updated to reflect that change.
-
-Namely, if the dependencies list entry is deleted right after
-calling acpi_scan_dep_init() and before calling acpi_device_add(),
-acpi_scan_clear_dep() will not find the device object corresponding
-to the consumer device ACPI handle and it will not update its
-dep_unmet counter to reflect the deletion of the list entry.
-Consequently, the dep_unmet counter of the device will never
-become zero going forward which may prevent it from being
-completely enumerated.
-
-To address this problem, modify acpi_add_single_object() to run
-acpi_tie_acpi_dev(), to attach the ACPI device object created by it
-to the corresponding ACPI namespace node, under acpi_dep_list_lock
-along with acpi_scan_dep_init() whenever the latter is called.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/acpi/scan.c |   46 +++++++++++++++++++++++++++++++++-------------
- 1 file changed, 33 insertions(+), 13 deletions(-)
+ drivers/scsi/ppa.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-Index: linux-pm/drivers/acpi/scan.c
-===================================================================
---- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -657,16 +657,12 @@ static int acpi_tie_acpi_dev(struct acpi
- 	return 0;
- }
+diff --git a/drivers/scsi/ppa.c b/drivers/scsi/ppa.c
+index aa41f7ac91cb..977315fdc254 100644
+--- a/drivers/scsi/ppa.c
++++ b/drivers/scsi/ppa.c
+@@ -1148,18 +1148,6 @@ static struct parport_driver ppa_driver = {
+ 	.detach		= ppa_detach,
+ 	.devmodel	= true,
+ };
++module_parport_driver(ppa_driver);
  
--int acpi_device_add(struct acpi_device *device,
--		    void (*release)(struct device *))
-+int __acpi_device_add(struct acpi_device *device,
-+		      void (*release)(struct device *))
- {
- 	struct acpi_device_bus_id *acpi_device_bus_id;
- 	int result;
- 
--	result = acpi_tie_acpi_dev(device);
--	if (result)
--		return result;
+-static int __init ppa_driver_init(void)
+-{
+-	printk(KERN_INFO "ppa: Version %s\n", PPA_VERSION);
+-	return parport_register_driver(&ppa_driver);
+-}
 -
- 	/*
- 	 * Linkage
- 	 * -------
-@@ -755,6 +751,17 @@ err_unlock:
- 	return result;
- }
- 
-+int acpi_device_add(struct acpi_device *adev, void (*release)(struct device *))
-+{
-+	int ret;
-+
-+	ret = acpi_tie_acpi_dev(adev);
-+	if (ret)
-+		return ret;
-+
-+	return __acpi_device_add(adev, release);
-+}
-+
- /* --------------------------------------------------------------------------
-                                  Device Enumeration
-    -------------------------------------------------------------------------- */
-@@ -1681,14 +1688,10 @@ static void acpi_scan_dep_init(struct ac
- {
- 	struct acpi_dep_data *dep;
- 
--	mutex_lock(&acpi_dep_list_lock);
+-static void __exit ppa_driver_exit(void)
+-{
+-	parport_unregister_driver(&ppa_driver);
+-}
 -
- 	list_for_each_entry(dep, &acpi_dep_list, node) {
- 		if (dep->consumer == adev->handle)
- 			adev->dep_unmet++;
- 	}
--
--	mutex_unlock(&acpi_dep_list_lock);
- }
- 
- void acpi_device_add_finalize(struct acpi_device *device)
-@@ -1707,6 +1710,7 @@ static int acpi_add_single_object(struct
- 				  acpi_handle handle, int type, bool dep_init)
- {
- 	struct acpi_device *device;
-+	bool release_dep_lock = false;
- 	int result;
- 
- 	device = kzalloc(sizeof(struct acpi_device), GFP_KERNEL);
-@@ -1720,16 +1724,32 @@ static int acpi_add_single_object(struct
- 	 * this must be done before the get power-/wakeup_dev-flags calls.
- 	 */
- 	if (type == ACPI_BUS_TYPE_DEVICE || type == ACPI_BUS_TYPE_PROCESSOR) {
--		if (dep_init)
-+		if (dep_init) {
-+			mutex_lock(&acpi_dep_list_lock);
-+			/*
-+			 * Hold the lock until the acpi_tie_acpi_dev() call
-+			 * below to prevent concurrent acpi_scan_clear_dep()
-+			 * from deleting a dependency list entry without
-+			 * updating dep_unmet for the device.
-+			 */
-+			release_dep_lock = true;
- 			acpi_scan_dep_init(device);
--
-+		}
- 		acpi_scan_init_status(device);
- 	}
- 
- 	acpi_bus_get_power_flags(device);
- 	acpi_bus_get_wakeup_device_flags(device);
- 
--	result = acpi_device_add(device, acpi_device_release);
-+	result = acpi_tie_acpi_dev(device);
-+
-+	if (release_dep_lock)
-+		mutex_unlock(&acpi_dep_list_lock);
-+
-+	if (result)
-+		return result;
-+
-+	result = __acpi_device_add(device, acpi_device_release);
- 	if (result) {
- 		acpi_device_release(&device->dev);
- 		return result;
-
-
+-module_init(ppa_driver_init);
+-module_exit(ppa_driver_exit);
+ MODULE_LICENSE("GPL");
+-- 
+2.30.2
 
