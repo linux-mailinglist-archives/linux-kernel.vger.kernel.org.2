@@ -2,103 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFEF3A94AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2523A94AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbhFPIFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:05:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232098AbhFPIFT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:05:19 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F35C061768
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:03:14 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k22-20020a17090aef16b0290163512accedso3240130pjz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:03:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xuN/YJTMYw5vaqPc7yE/QiPRSqEUYMaVwGgpZl3CTtQ=;
-        b=AUDmRnDUuYxGz2OMkEcohAlCZTcCUxJVnE8fhYJqlQp5vBSh1t0R3GgjrJsgJoqnax
-         M4R9X3S0Oc/CXY8x8bDg66ab+OEHMpeKg/4T7PcEFi2C10lkAhH4NoTbr90ae6tDJAPD
-         qp5EQJFGvvEjWvPyocWzlqPEDMN+gJy3J50IwgFeVcZLDXv561Dq6hNqc5raHRVszust
-         VwswgIHXmfPADlk9Mxy5y000dLziiZ4ykvbxSbf0ysukYe/fXeKcTvJ8HwjU4ese/qxE
-         tAWoa4MbrWDu9FieraFFA27za5TPVKCzFkkdHhjTdixaJX9XdoaZrvMESRhsB2m7o6K9
-         D2KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xuN/YJTMYw5vaqPc7yE/QiPRSqEUYMaVwGgpZl3CTtQ=;
-        b=bWYES2m1mygdlF9qgiDRIo7MqS0z2RzeSO8qSfua8nEl8m0p8jz1DL6zM6YGf78i2Q
-         +FCoMs6OsBlDZkE0w7Am82mSBzibuMQuzHc5CWHuMQIl4yOAnggKKedMwWP6/NBnNKii
-         +K0hO7zPK60+dB5G+DyPHXTpfa4qWnqLVDcPVRugsttybXp99oXXp6S3nnuibA+4L9vu
-         AjHMIx6b59PWCA/LF0x5f7t5Ekhjn+D35vXmo9yOLIVEsnZU/mJu062qovAAnDxeYcdX
-         6Ioofs0yJEFrghp9axXJV0CV0r2P5CG60YZayKym6IjcmWX2knpID/3nX2Z/bgfWJUun
-         cehA==
-X-Gm-Message-State: AOAM531LKsD+ai27m3bQAGyToPWCsp8ANsNoI5rycLTXFoIVCpu2QLJd
-        v64CfNPH+ByUBMQZ7h0ZHaUSfw==
-X-Google-Smtp-Source: ABdhPJx0zeACYKM4/NZ4UymjXASnbHW6zJkS/rS1t/RuEJh3jSW0q4HPJyO7m+AEFVWXKPnYyEdlTw==
-X-Received: by 2002:a17:902:e9cb:b029:101:cebc:b8d with SMTP id 11-20020a170902e9cbb0290101cebc0b8dmr7708060plk.5.1623830593685;
-        Wed, 16 Jun 2021 01:03:13 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id b3sm1514124pjz.49.2021.06.16.01.03.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 01:03:12 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 13:33:10 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        vincent.guittot@linaro.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Ihor Didenko <tailormoon@rambler.ru>,
-        Ion Agorria <ion@agorria.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 4/7] thermal/drivers/tegra: Add driver for Tegra30
- thermal sensor
-Message-ID: <20210616080310.vhvauvo5y6m2sekz@vireshk-i7>
-References: <20210529170955.32574-1-digetx@gmail.com>
- <20210529170955.32574-5-digetx@gmail.com>
- <6f2b6290-095a-bd39-c160-1616a0ff89b1@linaro.org>
- <20210615102626.dja3agclwzxv2sj4@vireshk-i7>
- <595f5e53-b872-bcc6-e886-ed225e26e9fe@gmail.com>
- <fbdc3b56-4465-6d3e-74db-1d5082813b9c@linaro.org>
- <4c7b23c4-cf6a-0942-5250-63515be4a219@gmail.com>
+        id S232170AbhFPIFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:05:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232180AbhFPIF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 04:05:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A0DD6054E;
+        Wed, 16 Jun 2021 08:03:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623830600;
+        bh=ncVQbKvI+5ZDzKcl17LQck+CzDMFm6fJjp6HiCL65d0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UAxJ+V3Ka3GiqQPvQFw14fFvacfVGwvqaByAJ2vZQHxMP/ZijqBsrbmKf5HsmaNuM
+         SD6y985sWOEGiflOMmb9aB1Dl2nfW68UGr3Ve62aY92b04+zFr9sR7kgCbKRzHTP0y
+         lITqks6LYLpk8EX7u0rHFczgjeo8YRow2j4UlMxtckHjXECTt6DCFfq20rYvIKuKe/
+         7fF2DKseD4FRKL5IqHFZgrZ3DCcYF4XCioPoKxZMGuScy3H5llKd0QtclfKPP82KXM
+         0JGMSyvdOXUVXKTaNigx5j7h0aXA4swFfzYpDiBn0+JXZL3LZ+8PA2K7o0hoH6WtR5
+         PE71/cVh2yylA==
+Date:   Wed, 16 Jun 2021 10:03:14 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     <Eugen.Hristev@microchip.com>
+Cc:     <Jonathan.Cameron@Huawei.com>, <linuxarm@huawei.com>,
+        <mauro.chehab@huawei.com>, <alexandre.belloni@bootlin.com>,
+        <Ludovic.Desroches@microchip.com>, <mchehab@kernel.org>,
+        <Nicolas.Ferre@microchip.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <Claudiu.Beznea@microchip.com>
+Subject: Re: [PATCH 08/25] media: atmel: properly get pm_runtime
+Message-ID: <20210616100314.143a5bb5@coco.lan>
+In-Reply-To: <e25d024e-4fa6-dd67-b97a-1d2640f2b560@microchip.com>
+References: <cover.1620207353.git.mchehab+huawei@kernel.org>
+        <975645970144b6c8401ab9bd1243619978a868a9.1620207353.git.mchehab+huawei@kernel.org>
+        <20210505130835.000006b7@Huawei.com>
+        <cd524923-93f0-e15c-816f-595a80184206@microchip.com>
+        <20210610113827.57db9e77@coco.lan>
+        <e25d024e-4fa6-dd67-b97a-1d2640f2b560@microchip.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c7b23c4-cf6a-0942-5250-63515be4a219@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Vincent.
+Em Thu, 10 Jun 2021 12:00:42 +0000
+<Eugen.Hristev@microchip.com> escreveu:
 
-On 15-06-21, 22:32, Dmitry Osipenko wrote:
-> IIUC, the cpufreq already should be prepared for the case where firmware
-> may override frequency. Viresh, could you please clarify what are the
-> possible implications of the frequency overriding?
+> On 6/10/21 12:38 PM, Mauro Carvalho Chehab wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Em Thu, 10 Jun 2021 09:04:07 +0000
+> > <Eugen.Hristev@microchip.com> escreveu:
+> >   
+> >>>> diff --git a/drivers/media/platform/atmel/atmel-isc-base.c b/drivers/media/platform/atmel/atmel-isc-base.c
+> >>>> index fe3ec8d0eaee..ce8e1351fa53 100644
+> >>>> --- a/drivers/media/platform/atmel/atmel-isc-base.c
+> >>>> +++ b/drivers/media/platform/atmel/atmel-isc-base.c
+> >>>> @@ -294,9 +294,13 @@ static int isc_wait_clk_stable(struct clk_hw *hw)
+> >>>>    static int isc_clk_prepare(struct clk_hw *hw)
+> >>>>    {
+> >>>>         struct isc_clk *isc_clk = to_isc_clk(hw);
+> >>>> +     int ret;
+> >>>>
+> >>>> -     if (isc_clk->id == ISC_ISPCK)
+> >>>> -             pm_runtime_get_sync(isc_clk->dev);
+> >>>> +     if (isc_clk->id == ISC_ISPCK) {
+> >>>> +             ret = pm_runtime_resume_and_get(isc_clk->dev);
+> >>>> +             if (ret < 0)
+> >>>> +                     return ret;
+> >>>> +     }  
+> >>
+> >> Hi Mauro,
+> >>
+> >> With this patch, the ISC is broken on latest media tree. It looks like
+> >> pm_runtime_resume_and_get for the ISC_ISPCK clock returns -ENOACCESS and
+> >> thus, the probe of the driver fails:
+> >>
+> >> atmel-sama5d2-isc f0008000.isc: failed to enable ispck: -13
+> >> atmel-sama5d2-isc: probe of f0008000.isc failed with error -13
+> >>
+> >>
+> >> Could you point out how I could fix this ? Maybe the isc_clk->dev is not
+> >> properly handled/initialized in some other part of the code ?  
+> > 
+> > Looking at RPM implementation:
+> > 
+> >          static int rpm_resume(struct device *dev, int rpmflags)
+> >          {
+> > ...
+> >          if (dev->power.runtime_error)
+> >                  retval = -EINVAL;
+> >          else if (dev->power.disable_depth == 1 && dev->power.is_suspended
+> >              && dev->power.runtime_status == RPM_ACTIVE)
+> >                  retval = 1;
+> >          else if (dev->power.disable_depth > 0)
+> >                  retval = -EACCES;
+> > ...
+> > 
+> > It sounds that RPM is disabled for this clock. Did you call
+> > pm_runtime_enable() before calling isc_clk_prepare()?
+> > 
+> > Thanks,
+> > Mauro
+> >   
+> 
+> I tried to call pm_runtime_enable for the clk at clk_init time, but 
+> doing that makes the runtime for the ISC fail like this:
+> 
+> atmel-sama5d2-isc f0008000.isc: Unbalanced pm_runtime_enable!
 
-The only implication is software would think hardware is running at
-some other frequency, while it is not. Not sure if something may break
-as a result of this.
+Making RPM balanced is complex ;-)
 
-The scheduler's view of CPUs will not be same though, i.e. scheduler
-will see capacity as X, while in reality it has changed to Y.
+Yet, clearly there's something weird at the PM code. I mean,
+ignoring a -ENOACCESS error like the original code sounds wrong,
+as it basically means that pm_runtime_get_sync() were doing
+nothing (except by incrementing a refcount).
 
--- 
-viresh
+Some drivers call clk_prepare()/clk_unprepare() at their
+.prepare/.unprepare ops. Those functions internally call
+RPM get logic recursively, to ensure that the RPM
+state of the parents are also at the right state.
+
+Thanks,
+Mauro
