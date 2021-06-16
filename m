@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7C53A928F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030F93A928A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232085AbhFPGa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:30:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60488 "EHLO mail.kernel.org"
+        id S232148AbhFPGam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:30:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231694AbhFPG34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231698AbhFPG34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Jun 2021 02:29:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E57D261412;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0ED461430;
         Wed, 16 Jun 2021 06:27:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623824869;
-        bh=BSGXxyqvPvWufTNDi9kWzIf7K9GAT+ID0ZQoJHx3Or0=;
+        bh=HY4ADwiftCI1A8ob2cFjNLvghYbjM2GrKGmwzrBsOJc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r6e8xlstdyJpBZFRTUthfn8Hk59Lbc2oPV2xSkY6kCv3//DYdAUBIJIJxt4eeMNbk
-         nASmYDsWYc6/rfkhU8upcIu5ybZ8vUpv4sfH4iSN/a16Q7H1O+bZIPdsIKVR6LOqlb
-         5SZo1aN9fApAxTY5rWQgUryLSvVO6Q4LbumI6/ijcPcQIQzWdbGooJ57T39hln0SDq
-         PdK48a8jojmfK/o3jetjWKkMU+8mjOC10NS0Fqip+sz3UmKyT/riBsYHCf8yUqjoBJ
-         KUTgW1AWwXqJJenkZLKZqRkKxhwzXJPksH9sq8f7iDYUCmQRxwgSXzK991JnVxa+5i
-         FarkTBsdCIypg==
+        b=CA09wlxSMTi9bHzUyfI+4jsfl4upMu37L17/fur19+Wg4po9Lm/r5QiTelyS+FRh0
+         t/92dFIKswgf4AgMqTH2uHyqDkqAYitBD/W4FBEExJqq6yRFr0QvRUVv1p1FBKgUpy
+         DB5O7MRu/TLqWuTe3vUhUdR4xmsPKUwTRO6xn24BCbGo7UCKbS/+GXJu6qIjmtdA3G
+         VAegt22w04b9MW+YyuOBjkrR3APHBXIMKgbg6JRJvT2E8p5wcZatKihR9zVWHqm0lx
+         vEK/1mfw6MHPM5nzHgb3aGJx6NY8NLc8zJn+lhOk2te2ufOwWm11A0/oGr0FkgUITQ
+         rHPvSzvspRXww==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1ltP1f-004kK2-6n; Wed, 16 Jun 2021 08:27:47 +0200
+        id 1ltP1f-004kK6-8Y; Wed, 16 Jun 2021 08:27:47 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: [PATCH v2 27/29] docs: userspace-api: landlock.rst: avoid using ReST :doc:`foo` markup
-Date:   Wed, 16 Jun 2021 08:27:42 +0200
-Message-Id: <24888a9c5da3c505b2bc274fcd83be348dbaf972.1623824363.git.mchehab+huawei@kernel.org>
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 28/29] docs: virt: kvm: s390-pv-boot.rst: avoid using ReST :doc:`foo` markup
+Date:   Wed, 16 Jun 2021 08:27:43 +0200
+Message-Id: <8c0fc6578ff6384580fd0d622f363bbbd4fe91da.1623824363.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1623824363.git.mchehab+huawei@kernel.org>
 References: <cover.1623824363.git.mchehab+huawei@kernel.org>
@@ -50,52 +55,22 @@ So, use the filename at the sources, instead of :doc:`foo`.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/userspace-api/landlock.rst | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ Documentation/virt/kvm/s390-pv-boot.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/userspace-api/landlock.rst b/Documentation/userspace-api/landlock.rst
-index 62c9361a3c7f..f35552ff19ba 100644
---- a/Documentation/userspace-api/landlock.rst
-+++ b/Documentation/userspace-api/landlock.rst
-@@ -145,7 +145,8 @@ Bind mounts and OverlayFS
+diff --git a/Documentation/virt/kvm/s390-pv-boot.rst b/Documentation/virt/kvm/s390-pv-boot.rst
+index ad1f7866c001..73a6083cb5e7 100644
+--- a/Documentation/virt/kvm/s390-pv-boot.rst
++++ b/Documentation/virt/kvm/s390-pv-boot.rst
+@@ -10,7 +10,7 @@ The memory of Protected Virtual Machines (PVMs) is not accessible to
+ I/O or the hypervisor. In those cases where the hypervisor needs to
+ access the memory of a PVM, that memory must be made accessible.
+ Memory made accessible to the hypervisor will be encrypted. See
+-:doc:`s390-pv` for details."
++Documentation/virt/kvm/s390-pv.rst for details."
  
- Landlock enables to restrict access to file hierarchies, which means that these
- access rights can be propagated with bind mounts (cf.
--:doc:`/filesystems/sharedsubtree`) but not with :doc:`/filesystems/overlayfs`.
-+Documentation/filesystems/sharedsubtree.rst) but not with
-+Documentation/filesystems/overlayfs.rst.
- 
- A bind mount mirrors a source file hierarchy to a destination.  The destination
- hierarchy is then composed of the exact same files, on which Landlock rules can
-@@ -170,8 +171,8 @@ Inheritance
- 
- Every new thread resulting from a :manpage:`clone(2)` inherits Landlock domain
- restrictions from its parent.  This is similar to the seccomp inheritance (cf.
--:doc:`/userspace-api/seccomp_filter`) or any other LSM dealing with task's
--:manpage:`credentials(7)`.  For instance, one process's thread may apply
-+Documentation/userspace-api/seccomp_filter.rst) or any other LSM dealing with
-+task's :manpage:`credentials(7)`.  For instance, one process's thread may apply
- Landlock rules to itself, but they will not be automatically applied to other
- sibling threads (unlike POSIX thread credential changes, cf.
- :manpage:`nptl(7)`).
-@@ -278,7 +279,7 @@ Memory usage
- ------------
- 
- Kernel memory allocated to create rulesets is accounted and can be restricted
--by the :doc:`/admin-guide/cgroup-v1/memory`.
-+by the Documentation/admin-guide/cgroup-v1/memory.rst.
- 
- Questions and answers
- =====================
-@@ -303,7 +304,7 @@ issues, especially when untrusted processes can manipulate them (cf.
- Additional documentation
- ========================
- 
--* :doc:`/security/landlock`
-+* Documentation/security/landlock.rst
- * https://landlock.io
- 
- .. Links
+ On IPL (boot) a small plaintext bootloader is started, which provides
+ information about the encrypted components and necessary metadata to
 -- 
 2.31.1
 
