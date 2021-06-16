@@ -2,98 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561C83AA3A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6333AA3A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbhFPS4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 14:56:45 -0400
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:54011 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232006AbhFPS4o (ORCPT
+        id S232124AbhFPTBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230269AbhFPTBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 14:56:44 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d88 with ME
-        id Huub2500G21Fzsu03uucKk; Wed, 16 Jun 2021 20:54:36 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 16 Jun 2021 20:54:36 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Julia.Lawall@inria.fr, Gilles.Muller@inria.fr,
-        nicolas.palix@imag.fr, michal.lkml@markovi.net
-Cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] Coccinelle: remove pci_[z]alloc_consistent from api/alloc/alloc_cast.cocci
-Date:   Wed, 16 Jun 2021 20:54:34 +0200
-Message-Id: <9ea05b27750d20f61217c88c3ec63f3e2420678a.1623869587.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Wed, 16 Jun 2021 15:01:49 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C693C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:59:42 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id fy24-20020a17090b0218b029016c5a59021fso4598555pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0Os+MCmeoTC6JTgDL5U7Se6Y1Owhx1D5nB8TA3sfO0A=;
+        b=PMHKY+racXbZwjt8VBIGr7U8kMdBVXLY6G4EFPdDJKwIidRT9b6yETnFVjeDb7E5O/
+         TtUhPZ1an4c2E0bGKAGNBtgapJu6+++WrtL6J1KzCAD4Br/4UaKort4/w5MNMp8QQ0YG
+         GFUAQ2i768btCuvIyKny70Q0KHIKoxeeuOdcE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0Os+MCmeoTC6JTgDL5U7Se6Y1Owhx1D5nB8TA3sfO0A=;
+        b=Pz0SV3BvwaHyr2oQ+bj1pH3EkKYp+7tRpCDyC9pSRuhrgc6TiB2uCYj9UE4FvLMVCN
+         0EHnKvRuO9o+yJDNF3zfgm/bheztKWcWaNT3jnZTL9sU5CARm9r7pfPZFP0IPqLkXbX+
+         84x8hgoiOwa+Rnc/cU5V0rKwVtToZJxUBcHcht31CPtK+pT3B8oLynGv9gqzgTZZSe1a
+         Mayil6jjydZX7Wcw3Zb0l5106JZr4iMwG4opD7QEU+D1w1sp4Yasng/h0ez6KkzPFkTT
+         nNF23f5HIYnd/tLezk8XWHgG55YAAfKKcdvKKlbqJORc1yptbU3sFv4ocvU/iKZGZKq/
+         ukRw==
+X-Gm-Message-State: AOAM531Sv6P6gzB54VUjbokXM2+VWB3oJcvjxMHcLQak5bYdDZQU5xvf
+        3+eAFazVQUeRwtinDt3owmX2EQ==
+X-Google-Smtp-Source: ABdhPJwmECO30Z/38e9jlyzsxxZVC0/UVuE8SucOrFpRiR5yQtebrZNUfxc0IJy+483gdlwwb8F7lQ==
+X-Received: by 2002:a17:90a:df13:: with SMTP id gp19mr1288730pjb.11.1623869981776;
+        Wed, 16 Jun 2021 11:59:41 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b18sm2831829pfb.131.2021.06.16.11.59.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 11:59:41 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH] media: omap3isp: Extract struct group for memcpy() region
+Date:   Wed, 16 Jun 2021 11:59:38 -0700
+Message-Id: <20210616185938.1225218-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+X-Patch-Hashes: v=1; h=sha256; g=910ed8959b76f13dd879af35818c96acb0e3b882; i=ZZImBpmvoNoFnzG2oXXjjeAWeziu9KmJxVF7qJ1oTSM=; m=d9AzytSqyDqMH7aQlTbCNKT7yao+v2IBcpVUdy3sz2A=; p=RkrWXBiNXbxKMFNfgHmuMepip9a6kkWMRqHj0Y8cJkY=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDKShkACgkQiXL039xtwCbw2A//VK3 l4G1F97xEfJuIb581uFJle571JO82dkVJPpzb+cKPJakYr8mHCdim3lXI9ehrb7LzRz7bnDvo1GfX 2xcNltTikKk7MeqDk9CQOSCNhCJ32qUorsyasdHXm03wewlltm6k8KQEi/crZepC1MDzsCOXRyUvh szWiCXigNOwf4c9cBACLMk9efLWZTYnmx8+rIfDWlsunCVxfBM8/VJ0bi8gCKB6TW8miR/aoEjv+H SFAeSwjKMpeaoKrkpI9sLgJgcqrn5F3uYcLpRCFOK4JG4mote5x104Mu7cOp99lfKDzsPnCkbxvXJ XJb5+doaIxlZ00qPsPYPFgVZwpilobdSyVait/8n6BV3x1umYkEq6BwVv9LoouCDu2QVbZfcO8udq md/XGPEIbfXbGGYCAVEBEAD6YQPaUeSDjr+ToaKoFoiYRMnP845WGx99vk3a9IEHFVI2YJRDpigaQ h29lRUIedpT/A1VdktoMLWYHGWfxYvGeC8+pXCYmhNtMm5FK0Y9FZMWOWlbq1YLub2kB3h7xOOJMS niYLcm5QA1iSjKnbzRkrps3aNP1X+ilOFjTHI7kRUjmvcnsVuQZpO5tBfKpCXeQwEWvEThLEGKbUv e9luzWFxN6fF1A7XEBOJNQiqf6xyk9CaQr3Ad9g3vu4PfnTMvr3bRz02IMOovOEQ=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'pci_alloc_consistent()' and 'pci_zalloc_consistent()' are about to be
-removed from the kernel.
-So, there is no point any more for searching for these identifiers.
+Avoid writing past the end of a structure member by wrapping the target
+region in a common named structure. This additionally fixes a
+misalignment of the copy (since the size of "buf" changes between 64-bit
+and 32-bit).
 
-Simplify the script.
+I actually think this code is completely unused in the real world:
+I don't think it could have ever worked, as it would either always
+fail (with an uninitialized data->buf_size) or would cause corruption
+in userspace due to the copy_to_user() in the call path against an
+uninitialized data->buf value:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+omap3isp_stat_request_statistics_time32(...)
+    struct omap3isp_stat_data data64;
+    ...
+    omap3isp_stat_request_statistics(stat, &data64);
+
+int omap3isp_stat_request_statistics(struct ispstat *stat,
+                                     struct omap3isp_stat_data *data)
+    ...
+    buf = isp_stat_buf_get(stat, data);
+
+static struct ispstat_buffer *isp_stat_buf_get(struct ispstat *stat,
+                                               struct omap3isp_stat_data *data)
+...
+    if (buf->buf_size > data->buf_size) {
+            ...
+            return ERR_PTR(-EINVAL);
+    }
+    ...
+    rval = copy_to_user(data->buf,
+                        buf->virt_addr,
+                        buf->buf_size);
+
+Regardless, additionally initialize data64 to be zero-filled to avoid
+undefined behavior.
+
+Fixes: 378e3f81cb56 ("media: omap3isp: support 64-bit version of omap3isp_stat_data")
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- scripts/coccinelle/api/alloc/alloc_cast.cocci | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/media/platform/omap3isp/ispstat.c |  5 +--
+ include/uapi/linux/omap3isp.h             | 44 +++++++++++++++++------
+ 2 files changed, 36 insertions(+), 13 deletions(-)
 
-diff --git a/scripts/coccinelle/api/alloc/alloc_cast.cocci b/scripts/coccinelle/api/alloc/alloc_cast.cocci
-index f6f0ccdb6409..ef8a97bb5f38 100644
---- a/scripts/coccinelle/api/alloc/alloc_cast.cocci
-+++ b/scripts/coccinelle/api/alloc/alloc_cast.cocci
-@@ -34,8 +34,8 @@ type T;
-   \(kmalloc\|kzalloc\|kcalloc\|kmem_cache_alloc\|kmem_cache_zalloc\|
-    kmem_cache_alloc_node\|kmalloc_node\|kzalloc_node\|vmalloc\|vzalloc\|
-    dma_alloc_coherent\|devm_kmalloc\|devm_kzalloc\|
--   kvmalloc\|kvzalloc\|kvmalloc_node\|kvzalloc_node\|pci_alloc_consistent\|
--   pci_zalloc_consistent\|kmem_alloc\|kmem_zalloc\|kmem_zone_alloc\|
-+   kvmalloc\|kvzalloc\|kvmalloc_node\|kvzalloc_node\|
-+   kmem_alloc\|kmem_zalloc\|kmem_zone_alloc\|
-    kmem_zone_zalloc\|vmalloc_node\|vzalloc_node\)(...)
+diff --git a/drivers/media/platform/omap3isp/ispstat.c b/drivers/media/platform/omap3isp/ispstat.c
+index 5b9b57f4d9bf..ea8222fed38e 100644
+--- a/drivers/media/platform/omap3isp/ispstat.c
++++ b/drivers/media/platform/omap3isp/ispstat.c
+@@ -512,7 +512,7 @@ int omap3isp_stat_request_statistics(struct ispstat *stat,
+ int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
+ 					struct omap3isp_stat_data_time32 *data)
+ {
+-	struct omap3isp_stat_data data64;
++	struct omap3isp_stat_data data64 = { };
+ 	int ret;
  
- //----------------------------------------------------------
-@@ -57,8 +57,8 @@ type r1.T;
-   \(kmalloc\|kzalloc\|kcalloc\|kmem_cache_alloc\|kmem_cache_zalloc\|
-    kmem_cache_alloc_node\|kmalloc_node\|kzalloc_node\|vmalloc\|vzalloc\|
-    dma_alloc_coherent\|devm_kmalloc\|devm_kzalloc\|
--   kvmalloc\|kvzalloc\|kvmalloc_node\|kvzalloc_node\|pci_alloc_consistent\|
--   pci_zalloc_consistent\|kmem_alloc\|kmem_zalloc\|kmem_zone_alloc\|
-+   kvmalloc\|kvzalloc\|kvmalloc_node\|kvzalloc_node\|
-+   kmem_alloc\|kmem_zalloc\|kmem_zone_alloc\|
-    kmem_zone_zalloc\|vmalloc_node\|vzalloc_node\)(...)
+ 	ret = omap3isp_stat_request_statistics(stat, &data64);
+@@ -521,7 +521,8 @@ int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
  
- //----------------------------------------------------------
-@@ -80,8 +80,8 @@ type r1.T;
-   \(kmalloc\|kzalloc\|kcalloc\|kmem_cache_alloc\|kmem_cache_zalloc\|
-    kmem_cache_alloc_node\|kmalloc_node\|kzalloc_node\|vmalloc\|vzalloc\|
-    dma_alloc_coherent\|devm_kmalloc\|devm_kzalloc\|
--   kvmalloc\|kvzalloc\|kvmalloc_node\|kvzalloc_node\|pci_alloc_consistent\|
--   pci_zalloc_consistent\|kmem_alloc\|kmem_zalloc\|kmem_zone_alloc\|
-+   kvmalloc\|kvzalloc\|kvmalloc_node\|kvzalloc_node\|
-+   kmem_alloc\|kmem_zalloc\|kmem_zone_alloc\|
-    kmem_zone_zalloc\|vmalloc_node\|vzalloc_node\)(...)
+ 	data->ts.tv_sec = data64.ts.tv_sec;
+ 	data->ts.tv_usec = data64.ts.tv_usec;
+-	memcpy(&data->buf, &data64.buf, sizeof(*data) - sizeof(data->ts));
++	data->buf = (uintptr_t)data64.buf;
++	memcpy(&data->frame, &data64.buf, sizeof(data->frame));
  
- //----------------------------------------------------------
-@@ -97,8 +97,8 @@ position p;
-   \(kmalloc\|kzalloc\|kcalloc\|kmem_cache_alloc\|kmem_cache_zalloc\|
-    kmem_cache_alloc_node\|kmalloc_node\|kzalloc_node\|vmalloc\|vzalloc\|
-    dma_alloc_coherent\|devm_kmalloc\|devm_kzalloc\|
--   kvmalloc\|kvzalloc\|kvmalloc_node\|kvzalloc_node\|pci_alloc_consistent\|
--   pci_zalloc_consistent\|kmem_alloc\|kmem_zalloc\|kmem_zone_alloc\|
-+   kvmalloc\|kvzalloc\|kvmalloc_node\|kvzalloc_node\|
-+   kmem_alloc\|kmem_zalloc\|kmem_zone_alloc\|
-    kmem_zone_zalloc\|vmalloc_node\|vzalloc_node\)(...)
+ 	return 0;
+ }
+diff --git a/include/uapi/linux/omap3isp.h b/include/uapi/linux/omap3isp.h
+index 87b55755f4ff..0a16af91621f 100644
+--- a/include/uapi/linux/omap3isp.h
++++ b/include/uapi/linux/omap3isp.h
+@@ -159,13 +159,25 @@ struct omap3isp_h3a_aewb_config {
+ };
  
- @script:python depends on org@
+ /**
+- * struct omap3isp_stat_data - Statistic data sent to or received from user
+- * @ts: Timestamp of returned framestats.
+- * @buf: Pointer to pass to user.
++ * struct omap3isp_stat_frame - Statistic data without timestamp nor pointer.
++ * @buf_size: Size of buffer.
+  * @frame_number: Frame number of requested stats.
+  * @cur_frame: Current frame number being processed.
+  * @config_counter: Number of the configuration associated with the data.
+  */
++struct omap3isp_stat_frame {
++	__u32 buf_size;
++	__u16 frame_number;
++	__u16 cur_frame;
++	__u16 config_counter;
++};
++
++/**
++ * struct omap3isp_stat_data - Statistic data sent to or received from user
++ * @ts: Timestamp of returned framestats.
++ * @buf: Pointer to pass to user.
++ * @frame: Statistic data for frame.
++ */
+ struct omap3isp_stat_data {
+ #ifdef __KERNEL__
+ 	struct {
+@@ -176,10 +188,15 @@ struct omap3isp_stat_data {
+ 	struct timeval ts;
+ #endif
+ 	void __user *buf;
+-	__u32 buf_size;
+-	__u16 frame_number;
+-	__u16 cur_frame;
+-	__u16 config_counter;
++	union {
++		struct {
++			__u32 buf_size;
++			__u16 frame_number;
++			__u16 cur_frame;
++			__u16 config_counter;
++		};
++		struct omap3isp_stat_frame frame;
++	};
+ };
+ 
+ #ifdef __KERNEL__
+@@ -189,10 +206,15 @@ struct omap3isp_stat_data_time32 {
+ 		__s32	tv_usec;
+ 	} ts;
+ 	__u32 buf;
+-	__u32 buf_size;
+-	__u16 frame_number;
+-	__u16 cur_frame;
+-	__u16 config_counter;
++	union {
++		struct {
++			__u32 buf_size;
++			__u16 frame_number;
++			__u16 cur_frame;
++			__u16 config_counter;
++		};
++		struct omap3isp_stat_frame frame;
++	};
+ };
+ #endif
+ 
 -- 
-2.30.2
+2.25.1
 
