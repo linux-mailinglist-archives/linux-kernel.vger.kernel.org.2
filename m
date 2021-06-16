@@ -2,95 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0173A9F1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216B43A9F75
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234558AbhFPPfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234332AbhFPPfP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:35:15 -0400
-Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE888C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:33:08 -0700 (PDT)
-Received: from [192.168.1.101] (83.6.168.10.neoplus.adsl.tpnet.pl [83.6.168.10])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 92DB13F5F8;
-        Wed, 16 Jun 2021 17:33:06 +0200 (CEST)
-Subject: Re: [RFC v1 02/11] clk: qcom: rcg2: Add support for flags
-To:     Robert Foss <robert.foss@linaro.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org, jonathan@marek.ca,
-        tdas@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@linaro.org>
-References: <20210616141107.291430-1-robert.foss@linaro.org>
- <20210616141107.291430-3-robert.foss@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <780fd0b4-fffc-5afb-e546-86ba75bad9f9@somainline.org>
-Date:   Wed, 16 Jun 2021 17:33:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234750AbhFPPiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:38:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234886AbhFPPhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:37:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4F7E613C1;
+        Wed, 16 Jun 2021 15:35:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623857715;
+        bh=m47HLdSAX5GdIAkgYLWPwURJ+VfG6O1irtvdf42U4SE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tbcpzyhtMQT18wZMTWfE92WB6TpNz2btcfbaI47A9FrbWDRJEqlmIBk4nwiFe2vMg
+         KRb7Mc/W69jTS9ld2Ee4LR9BOdvRMArwCUT+js/q4iiBRubYEpmJmmLI2pVc4a4WVB
+         1k6s0ngcQbez+hlTo7uo/BD4rtn28cug8U2gwMC0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.10 00/38] 5.10.45-rc1 review
+Date:   Wed, 16 Jun 2021 17:33:09 +0200
+Message-Id: <20210616152835.407925718@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210616141107.291430-3-robert.foss@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.45-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.10.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.10.45-rc1
+X-KernelTest-Deadline: 2021-06-18T15:28+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is the start of the stable review cycle for the 5.10.45 release.
+There are 38 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-On 16.06.2021 16:10, Robert Foss wrote:
-> These changes are ported from the downstream driver, and are used on SM8350
-> for CAMCC, DISPCC, GCC, GPUCC & VIDEOCC.
->
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
->  drivers/clk/qcom/clk-rcg.h  | 4 ++++
->  drivers/clk/qcom/clk-rcg2.c | 3 +++
->  2 files changed, 7 insertions(+)
->
-> diff --git a/drivers/clk/qcom/clk-rcg.h b/drivers/clk/qcom/clk-rcg.h
-> index 99efcc7f8d88..a1f05281d950 100644
-> --- a/drivers/clk/qcom/clk-rcg.h
-> +++ b/drivers/clk/qcom/clk-rcg.h
-> @@ -149,6 +149,10 @@ struct clk_rcg2 {
->  	const struct freq_tbl	*freq_tbl;
->  	struct clk_regmap	clkr;
->  	u8			cfg_off;
-> +	u8			flags;
-> +#define FORCE_ENABLE_RCG	BIT(0)
-> +#define HW_CLK_CTRL_MODE	BIT(1)
-> +#define DFS_SUPPORT		BIT(2)
->  };
->  
->  #define to_clk_rcg2(_hw) container_of(to_clk_regmap(_hw), struct clk_rcg2, clkr)
-> diff --git a/drivers/clk/qcom/clk-rcg2.c b/drivers/clk/qcom/clk-rcg2.c
-> index 42f13a2d1cc1..ed2c9b6659cc 100644
-> --- a/drivers/clk/qcom/clk-rcg2.c
-> +++ b/drivers/clk/qcom/clk-rcg2.c
-> @@ -295,6 +295,9 @@ static int __clk_rcg2_configure(struct clk_rcg2 *rcg, const struct freq_tbl *f)
->  	cfg |= rcg->parent_map[index].cfg << CFG_SRC_SEL_SHIFT;
->  	if (rcg->mnd_width && f->n && (f->m != f->n))
->  		cfg |= CFG_MODE_DUAL_EDGE;
-> +	if (rcg->flags & HW_CLK_CTRL_MODE)
-> +		cfg |= CFG_HW_CLK_CTRL_MASK;
-> +
->  	return regmap_update_bits(rcg->clkr.regmap, RCG_CFG_OFFSET(rcg),
->  					mask, cfg);
->  }
+Responses should be made by Fri, 18 Jun 2021 15:28:19 +0000.
+Anything received after that time might be too late.
 
-What about code for handling other flags? If it's not a part of the series,
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.45-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+and the diffstat can be found below.
 
-I don't think it makes sense to define them. Or perhaps you sent the
+thanks,
 
-wrong revision?
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.10.45-rc1
+
+Zheng Yongjun <zhengyongjun3@huawei.com>
+    fib: Return the correct errno code
+
+Zheng Yongjun <zhengyongjun3@huawei.com>
+    net: Return the correct errno code
+
+Zheng Yongjun <zhengyongjun3@huawei.com>
+    net/x25: Return the correct errno code
+
+Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+    rtnetlink: Fix missing error code in rtnl_bridge_notify()
+
+Victor Zhao <Victor.Zhao@amd.com>
+    drm/amd/amdgpu:save psp ring wptr to avoid attack
+
+Roman Li <roman.li@amd.com>
+    drm/amd/display: Fix potential memory leak in DMUB hw_init
+
+Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+    drm/amd/display: Fix overlay validation by considering cursors
+
+Jiansong Chen <Jiansong.Chen@amd.com>
+    drm/amdgpu: refine amdgpu_fru_get_product_info
+
+Bindu Ramamurthy <bindu.r@amd.com>
+    drm/amd/display: Allow bandwidth validation for 0 streams.
+
+Josh Triplett <josh@joshtriplett.org>
+    net: ipconfig: Don't override command-line hostnames or domains
+
+Hannes Reinecke <hare@suse.de>
+    nvme-loop: do not warn for deleted controllers during reset
+
+Hannes Reinecke <hare@suse.de>
+    nvme-loop: check for NVME_LOOP_Q_LIVE in nvme_loop_destroy_admin_queue()
+
+Hannes Reinecke <hare@suse.de>
+    nvme-loop: clear NVME_LOOP_Q_LIVE when nvme_loop_configure_admin_queue() fails
+
+Hannes Reinecke <hare@suse.de>
+    nvme-loop: reset queue count to 1 in nvme_loop_destroy_io_queues()
+
+Ewan D. Milne <emilne@redhat.com>
+    scsi: scsi_devinfo: Add blacklist entry for HPE OPEN-V
+
+Larry Finger <Larry.Finger@lwfinger.net>
+    Bluetooth: Add a new USB ID for RTL8822CE
+
+Daniel Wagner <dwagner@suse.de>
+    scsi: qedf: Do not put host in qedf_vport_create() unconditionally
+
+Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+    ethernet: myri10ge: Fix missing error code in myri10ge_probe()
+
+Maurizio Lombardi <mlombard@redhat.com>
+    scsi: target: core: Fix warning on realtime kernels
+
+Hillf Danton <hdanton@sina.com>
+    gfs2: Fix use-after-free in gfs2_glock_shrink_scan
+
+Khem Raj <raj.khem@gmail.com>
+    riscv: Use -mno-relax when using lld linker
+
+Bixuan Cui <cuibixuan@huawei.com>
+    HID: gt683r: add missing MODULE_DEVICE_TABLE
+
+Bob Peterson <rpeterso@redhat.com>
+    gfs2: fix a deadlock on withdraw-during-mount
+
+Andreas Gruenbacher <agruenba@redhat.com>
+    gfs2: Prevent direct-I/O write fallback errors from getting lost
+
+Yongqiang Liu <liuyongqiang13@huawei.com>
+    ARM: OMAP2+: Fix build warning when mmc_omap is not built
+
+Maciej Falkowski <maciej.falkowski9@gmail.com>
+    ARM: OMAP1: Fix use of possibly uninitialized irq variable
+
+Thierry Reding <treding@nvidia.com>
+    drm/tegra: sor: Fully initialize SOR before registration
+
+Thierry Reding <treding@nvidia.com>
+    gpu: host1x: Split up client initalization and registration
+
+Pavel Machek (CIP) <pavel@denx.de>
+    drm/tegra: sor: Do not leak runtime PM reference
+
+Anirudh Rayabharam <mail@anirudhrb.com>
+    HID: usbhid: fix info leak in hid_submit_ctrl
+
+Mark Bolhuis <mark@bolhuis.dev>
+    HID: Add BUS_VIRTUAL to hid_connect logging
+
+Ahelenia Ziemiańska <nabijaczleweli@nabijaczleweli.xyz>
+    HID: multitouch: set Stylus suffix for Stylus-application devices, too
+
+Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+    HID: quirks: Add quirk for Lenovo optical mouse
+
+Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+    HID: hid-sensor-hub: Return error for hid_set_field() failure
+
+Dmitry Torokhov <dmitry.torokhov@gmail.com>
+    HID: hid-input: add mapping for emoji picker key
+
+Mateusz Jończyk <mat.jonczyk@o2.pl>
+    HID: a4tech: use A4_2WHEEL_MOUSE_HACK_B8 for A4TECH NB-95
+
+Nirenjan Krishnan <nirenjan@gmail.com>
+    HID: quirks: Set INCREMENT_USAGE_ON_DUPLICATE for Saitek X65
+
+Dan Robertson <dan@dlrobertson.com>
+    net: ieee802154: fix null deref in parse dev addr
 
 
-Konrad
+-------------
+
+Diffstat:
+
+ Makefile                                           |  4 +--
+ arch/arm/mach-omap1/pm.c                           | 10 ++++--
+ arch/arm/mach-omap2/board-n8x0.c                   |  2 +-
+ arch/riscv/Makefile                                |  9 +++++
+ drivers/bluetooth/btusb.c                          |  2 ++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_fru_eeprom.c     | 42 ++++++++++++----------
+ drivers/gpu/drm/amd/amdgpu/amdgpu_psp.h            |  1 +
+ drivers/gpu/drm/amd/amdgpu/psp_v11_0.c             |  3 +-
+ drivers/gpu/drm/amd/amdgpu/psp_v3_1.c              |  3 +-
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  | 14 ++++++--
+ .../gpu/drm/amd/display/dc/dcn20/dcn20_resource.c  |  2 +-
+ drivers/gpu/drm/tegra/sor.c                        | 41 +++++++++++----------
+ drivers/gpu/host1x/bus.c                           | 30 ++++++++++++----
+ drivers/hid/Kconfig                                |  4 +--
+ drivers/hid/hid-a4tech.c                           |  2 ++
+ drivers/hid/hid-core.c                             |  3 ++
+ drivers/hid/hid-debug.c                            |  1 +
+ drivers/hid/hid-gt683r.c                           |  1 +
+ drivers/hid/hid-ids.h                              |  3 ++
+ drivers/hid/hid-input.c                            |  3 ++
+ drivers/hid/hid-multitouch.c                       |  8 ++---
+ drivers/hid/hid-quirks.c                           |  3 ++
+ drivers/hid/hid-sensor-hub.c                       | 13 ++++---
+ drivers/hid/usbhid/hid-core.c                      |  2 +-
+ drivers/net/ethernet/myricom/myri10ge/myri10ge.c   |  1 +
+ drivers/nvme/target/loop.c                         | 11 ++++--
+ drivers/scsi/qedf/qedf_main.c                      | 20 +++++------
+ drivers/scsi/scsi_devinfo.c                        |  1 +
+ drivers/target/target_core_transport.c             |  4 +--
+ fs/gfs2/file.c                                     |  5 ++-
+ fs/gfs2/glock.c                                    | 26 +++++++++++---
+ include/linux/hid.h                                |  3 +-
+ include/linux/host1x.h                             | 30 ++++++++++++----
+ include/uapi/linux/input-event-codes.h             |  1 +
+ net/compat.c                                       |  2 +-
+ net/core/fib_rules.c                               |  2 +-
+ net/core/rtnetlink.c                               |  4 ++-
+ net/ieee802154/nl802154.c                          |  9 ++---
+ net/ipv4/ipconfig.c                                | 13 ++++---
+ net/x25/af_x25.c                                   |  2 +-
+ 40 files changed, 231 insertions(+), 109 deletions(-)
+
 
