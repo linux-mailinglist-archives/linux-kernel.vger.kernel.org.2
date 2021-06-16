@@ -2,54 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D173AA0D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92D53AA0DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbhFPQI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 12:08:59 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:59058 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbhFPQI6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 12:08:58 -0400
-Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
-        by mail.holtmann.org (Postfix) with ESMTPSA id B0BC4CED0B;
-        Wed, 16 Jun 2021 18:14:50 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH] Bluetooth: btmrvl: remove redundant continue statement
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210616130757.10084-1-colin.king@canonical.com>
-Date:   Wed, 16 Jun 2021 18:06:48 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <0D69851D-A632-4AED-8DB2-86EC0EC4D621@holtmann.org>
-References: <20210616130757.10084-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        id S234099AbhFPQJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 12:09:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234603AbhFPQJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 12:09:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E2646610A0;
+        Wed, 16 Jun 2021 16:06:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623859619;
+        bh=MfLY5pA8NkxXhmHUzct5mKaHg2b+WWu8jg9BXogUvVc=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=g1anxOxyIGTp8kvhE5ti9opBJP/bsTz9F+zjIdH7AOYjfJdke6TIMQ7EzUAeILwpT
+         6Zu6kMuSaYX6CeO39IlzU+cys+SnwtZNBhsXYi2h4v5RuaqdkjMUeTe9fVMVxFg9A1
+         +OHrWJ8FeMZ3NF4V3egrAZ4noAdCcrGig9wQaCgPtxUgz8O8U/rqM8U4uFWIRlhh1N
+         sKzhhyf2R3P7vOpExK4ceOPQhH+yYkre6j+EBSUsUFeGd0iFZq1RuL2v7TS9EJJXBe
+         iHluQMLGk5EqDuw7crEowCrJ3iA2XL17HOKbRUd9KxJSgaCA/1Ot34kSJzemKNNAyj
+         aYI4Chko6Wxdg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CE0AF60953;
+        Wed, 16 Jun 2021 16:06:59 +0000 (UTC)
+Subject: Re: [GIT PULL]: dmaengine fixes for v5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YMn1xTAqhOUI5sle@vkoul-mobl>
+References: <YMn1xTAqhOUI5sle@vkoul-mobl>
+X-PR-Tracked-List-Id: <dmaengine.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YMn1xTAqhOUI5sle@vkoul-mobl>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-fix-5.13
+X-PR-Tracked-Commit-Id: 9041575348b21ade1fb74d790f1aac85d68198c7
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6b00bc639f1f2beeff3595e1bab9faaa51d23b01
+Message-Id: <162385961978.26862.12670467491333586773.pr-tracker-bot@kernel.org>
+Date:   Wed, 16 Jun 2021 16:06:59 +0000
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
+The pull request you sent on Wed, 16 Jun 2021 18:29:49 +0530:
 
-> The continue statement in the for-loop has no effect,
-> remove it.
-> 
-> Addresses-Coverity: ("Continue has no effect")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
-> drivers/bluetooth/btmrvl_sdio.c | 4 +---
-> 1 file changed, 1 insertion(+), 3 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-fix-5.13
 
-patch has been applied to bluetooth-next tree.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6b00bc639f1f2beeff3595e1bab9faaa51d23b01
 
-Regards
+Thank you!
 
-Marcel
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
