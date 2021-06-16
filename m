@@ -2,125 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FCD3A94D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2403A94D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhFPIQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:16:06 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:59963 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231481AbhFPIQD (ORCPT
+        id S231741AbhFPIVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231309AbhFPIVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:16:03 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15G8DGWO008011;
-        Wed, 16 Jun 2021 10:13:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=RFO7QxPkonL2tSMmfFPzaKeXJvDNFYEeku7V/+jRRdM=;
- b=UyMvL2MSJGwUsT8QQgQy2e51msnhcbkROPDLrB7bY7YlDZgi+l/dihYWUjlRcGpXMT0u
- kMIOQFO2bWsy+74jeCD8j1HfC/k93VfZi+DNskhCd66Htp2XrspleAVTXYbRE77FYYFx
- NFqhMJeWnUFJBl1IVikRrBlsZM/nEEg8SQeYR+rGVRTiz+hqeMkpIu31DgwDVjAcfh/E
- Peb9vvL6zKdYVHF3CBaWFYb9ZNC94cqXBwJ6+rh5bHaX4rgDwnp9qtQrPvR5KuWVOQ8N
- V4sp7RL6ZSbSFYSAb8pGSzLPRmtBO4gJT+mVzJz60gtgqv1T2QWAXgNn9awKZq4xaFIV UQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 397bxagrvv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 10:13:54 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0AE6610002A;
-        Wed, 16 Jun 2021 10:13:54 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F1EBC2199A3;
-        Wed, 16 Jun 2021 10:13:53 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 16 Jun
- 2021 10:13:53 +0200
-Subject: Re: [PATCH 2/4] rpmsg: ctrl: Introduce RPMSG_RELEASE_DEV_IOCTL
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210604091406.15901-1-arnaud.pouliquen@foss.st.com>
- <20210604091406.15901-3-arnaud.pouliquen@foss.st.com>
- <20210615173844.GA604521@p14s>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <0465abac-1526-bf6b-605d-9f29145f3f58@foss.st.com>
-Date:   Wed, 16 Jun 2021 10:13:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 16 Jun 2021 04:21:08 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A17C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:19:02 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id v13so726880ple.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:19:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+AzUjtrJOh8ZWRh784rmLMzJQd1pE1/adqWdw+99bT4=;
+        b=nqcq9amYZYQtquTdDm40QUnU2urna5vkIVt25YGHbWE1PJv/OtejXkSFqDAl+BAKrN
+         Bw79ZuawEIYG3SrfHHvNmR+gaTQJ8GOc65mIUwgifXEsXIuK/+YMGmb3x2uhLAI0CTcZ
+         AizQez9fbr2QjQdNwy27mcKhYTNmSz0uzED29jpObh6SnHIJ2t/Q63zBJwvB8IBqOb1r
+         Ye6o1cwDZkdPYhz25Nu6j0+8WP67wAklr+Ort09x8Lu9lpI4q+ck8SkCzAWU10MjJGQj
+         1wKW3EaxVWS7QUtLG9B+jAdJMJTtwNb4dFn7JOJBDIJF+1qTy+8UYANfmM0hphkpLygx
+         LoNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+AzUjtrJOh8ZWRh784rmLMzJQd1pE1/adqWdw+99bT4=;
+        b=TQdG5CoFiUj5nWqsoQcnHSIYo0vY/GjT9pamIuA37/DvhLPp0J4yXo8TeBZTE42eRb
+         jzfTV+nq01Xv5whCdx3v8exL+ehwY/rKTrKKOmtrEMqLEfH6QNYypEtgXgstN4S1g3iw
+         GVpq3E8ZnJqQ1YoGa4RR9yMpjpqkQK1m09kTZHx0zgKyaDlXshUFafGeYRXBUZg0WeVf
+         74aJqIrwgQ+ITQB5HUO5PsfDMuM2BmyPIB/zKTBKv//fzsRKcCTFmzlBjH/Drn7mhFYI
+         oe+ZojHj2OoJryR4I7NixghapBpDMDhzrUpQ+tjT8D6hT4M62bcuZByz32gs465hQUYU
+         M5Ew==
+X-Gm-Message-State: AOAM530TK1FD8iSxZqDvbJD4FfEKR/eRX0MILVCUuNfGK0SevI2eJWbk
+        cO5n+QZ03AlPiPvMVD8jX9sHDQ==
+X-Google-Smtp-Source: ABdhPJypIF7kXx23yj+Dg80lYHYrg2s+N9oFEbv4GhxfmY6e8X3IPwp4XbpJU3xleGLEESYRmb6ttA==
+X-Received: by 2002:a17:902:7244:b029:f5:2ffd:37f9 with SMTP id c4-20020a1709027244b02900f52ffd37f9mr8146848pll.26.1623831542179;
+        Wed, 16 Jun 2021 01:19:02 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id f18sm4647252pjq.48.2021.06.16.01.19.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 01:19:01 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 13:48:59 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 2/3] arch_topology: Avoid use-after-free for
+ scale_freq_data
+Message-ID: <20210616081859.idzpwzdyeu666xpz@vireshk-i7>
+References: <cover.1623825725.git.viresh.kumar@linaro.org>
+ <9dba462b4d09a1a8a9fbb75740b74bf91a09a3e1.1623825725.git.viresh.kumar@linaro.org>
+ <YMmu3bS3Q6avUfEW@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210615173844.GA604521@p14s>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-16_05:2021-06-15,2021-06-16 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMmu3bS3Q6avUfEW@kroah.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/15/21 7:38 PM, Mathieu Poirier wrote:
-> Good day,
+On 16-06-21, 09:57, Greg Kroah-Hartman wrote:
+> On Wed, Jun 16, 2021 at 12:18:08PM +0530, Viresh Kumar wrote:
+> > Currently topology_scale_freq_tick() may end up using a pointer to
+> > struct scale_freq_data, which was previously cleared by
+> > topology_clear_scale_freq_source(), as there is no protection in place
+> > here. The users of topology_clear_scale_freq_source() though needs a
+> > guarantee that the previous scale_freq_data isn't used anymore.
+> > 
+> > Since topology_scale_freq_tick() is called from scheduler tick, we don't
+> > want to add locking in there. Use the RCU update mechanism instead
+> > (which is already used by the scheduler's utilization update path) to
+> > guarantee race free updates here.
+> > 
+> > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > 
-> On Fri, Jun 04, 2021 at 11:14:04AM +0200, Arnaud Pouliquen wrote:
->> Implement the RPMSG_RELEASE_DEV_IOCTL to allow the user application to
->> release a rpmsg device created either by the remote processor or with
->> the RPMSG_CREATE_DEV_IOCTL call.
->> Depending on the back-end implementation, the associated rpmsg driver is
->> removed and a NS destroy rpmsg can be sent to the remote processor.
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> ---
->>  drivers/rpmsg/rpmsg_ctrl.c | 7 +++++++
->>  include/uapi/linux/rpmsg.h | 5 +++++
->>  2 files changed, 12 insertions(+)
->>
->> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
->> index 4aa962df3661..cb19e32d05e1 100644
->> --- a/drivers/rpmsg/rpmsg_ctrl.c
->> +++ b/drivers/rpmsg/rpmsg_ctrl.c
->> @@ -98,6 +98,13 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->>  		}
->>  		break;
->>  
->> +	case RPMSG_RELEASE_DEV_IOCTL:
->> +		ret = rpmsg_release_channel(ctrldev->rpdev, &chinfo);
->> +		if (ret)
->> +			dev_err(&ctrldev->dev, "failed to release %s channel (%d)\n",
->> +				chinfo.name, ret);
->> +		break;
->> +
-> 
-> Please move the content of this patch in 1/4.  
+> So this is a bugfix for problems in the current codebase?  What commit
+> does this fix?  Should it go to the stable kernels?
 
-ok
+There is only one user of topology_clear_scale_freq_source()
+(cppc-cpufreq driver, which is already reverted in pm/linux-next). So
+in the upcoming 5.13 kernel release, there will be no one using this
+API and so no one will break.
 
+And so I skipped the fixes tag, I can add it though.
+
+> > ---
+> >  drivers/base/arch_topology.c | 27 +++++++++++++++++++++------
+> >  1 file changed, 21 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> > index c1179edc0f3b..921312a8d957 100644
+> > --- a/drivers/base/arch_topology.c
+> > +++ b/drivers/base/arch_topology.c
+> > @@ -18,10 +18,11 @@
+> >  #include <linux/cpumask.h>
+> >  #include <linux/init.h>
+> >  #include <linux/percpu.h>
+> > +#include <linux/rcupdate.h>
+> >  #include <linux/sched.h>
+> >  #include <linux/smp.h>
+> >  
+> > -static DEFINE_PER_CPU(struct scale_freq_data *, sft_data);
+> > +static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
+> >  static struct cpumask scale_freq_counters_mask;
+> >  static bool scale_freq_invariant;
+> >  
+> > @@ -66,16 +67,20 @@ void topology_set_scale_freq_source(struct scale_freq_data *data,
+> >  	if (cpumask_empty(&scale_freq_counters_mask))
+> >  		scale_freq_invariant = topology_scale_freq_invariant();
+> >  
+> > +	rcu_read_lock();
+> > +
+> >  	for_each_cpu(cpu, cpus) {
+> > -		sfd = per_cpu(sft_data, cpu);
+> > +		sfd = rcu_dereference(*per_cpu_ptr(&sft_data, cpu));
+> >  
+> >  		/* Use ARCH provided counters whenever possible */
+> >  		if (!sfd || sfd->source != SCALE_FREQ_SOURCE_ARCH) {
+> > -			per_cpu(sft_data, cpu) = data;
+> > +			rcu_assign_pointer(per_cpu(sft_data, cpu), data);
+> >  			cpumask_set_cpu(cpu, &scale_freq_counters_mask);
+> >  		}
+> >  	}
+> >  
+> > +	rcu_read_unlock();
+> > +
+> >  	update_scale_freq_invariant(true);
+> >  }
+> >  EXPORT_SYMBOL_GPL(topology_set_scale_freq_source);
+> > @@ -86,22 +91,32 @@ void topology_clear_scale_freq_source(enum scale_freq_source source,
+> >  	struct scale_freq_data *sfd;
+> >  	int cpu;
+> >  
+> > +	rcu_read_lock();
+> > +
+> >  	for_each_cpu(cpu, cpus) {
+> > -		sfd = per_cpu(sft_data, cpu);
+> > +		sfd = rcu_dereference(*per_cpu_ptr(&sft_data, cpu));
+> >  
+> >  		if (sfd && sfd->source == source) {
+> > -			per_cpu(sft_data, cpu) = NULL;
+> > +			rcu_assign_pointer(per_cpu(sft_data, cpu), NULL);
+> >  			cpumask_clear_cpu(cpu, &scale_freq_counters_mask);
+> >  		}
+> >  	}
+> >  
+> > +	rcu_read_unlock();
+> > +
+> > +	/*
+> > +	 * Make sure all references to previous sft_data are dropped to avoid
+> > +	 * use-after-free races.
+> > +	 */
+> > +	synchronize_rcu();
 > 
->>  	default:
->>  		ret = -EINVAL;
->>  	}
->> diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
->> index f9d5a74e7801..38639ba37438 100644
->> --- a/include/uapi/linux/rpmsg.h
->> +++ b/include/uapi/linux/rpmsg.h
->> @@ -38,4 +38,9 @@ struct rpmsg_endpoint_info {
->>   */
->>  #define RPMSG_CREATE_DEV_IOCTL	_IOW(0xb5, 0x3, struct rpmsg_endpoint_info)
->>  
->> +/**
->> + * Release a local rpmsg device.
->> + */
->> +#define RPMSG_RELEASE_DEV_IOCTL	_IOW(0xb5, 0x4, struct rpmsg_endpoint_info)
->> +
->>  #endif
->> -- 
->> 2.17.1
->>
+> What race is happening?  How could the current code race?  Only when a
+> cpu is removed?
+
+topology_scale_freq_tick() is called by the scheduler for each CPU
+from scheduler_tick().
+
+It is possible that topology_scale_freq_tick() ends up using an older
+copy of sft_data pointer, while it is being removed by
+topology_clear_scale_freq_source() because a CPU went away or a
+cpufreq driver went away, or during normal suspend/resume (where CPUs
+are hot-unplugged).
+
+synchronize_rcu() makes sure that all RCU critical sections that
+started before it is called, will finish before it returns. And so the
+callers of topology_clear_scale_freq_source() don't need to worry
+about their callback getting called anymore.
+
+-- 
+viresh
