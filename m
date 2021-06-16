@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A45E3A94E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2B23A94E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbhFPIYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:24:17 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:37367 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231344AbhFPIYQ (ORCPT
+        id S232093AbhFPIYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:24:03 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:36523 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231727AbhFPIYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:24:16 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 36F465C00D9;
-        Wed, 16 Jun 2021 04:22:10 -0400 (EDT)
-Received: from imap8 ([10.202.2.58])
-  by compute3.internal (MEProxy); Wed, 16 Jun 2021 04:22:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm1; bh=CBYVAp3+AVjvLUzw4bv5C+wMLBO0
-        hjWPcQswY8gmBho=; b=XLiII+RDuzgCAdXUhIo+a9CphimSuz0vMEbqYiJfd8yc
-        MCfNOu8VfEvNtwXQLjELRvF33n9w8iL+JxrD+PnvpBu2zJj//jal8CWlVn6EKL5E
-        po4bmlWE7iil9Lej6Kyo0LNHHX5rFol2ZJhp41XSKtUjyUwFUyivjUFhjhPGk1dY
-        AJmvWthTeAo22djnVg1iqKizIaF7kmkVhAIu22kY2Fz8xo1TEhJeXSp8CyhSFCVx
-        0RslpcW+6EfOn7/1jZcQbVQFCKaMRphLhJr3qydffPL5nz5T/AvA59TI8RKreoH5
-        BkUSwP48dhGaZz27U1PWwHfOxXVKMvWlfA7kMJW5qg==
+        Wed, 16 Jun 2021 04:24:01 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5E96158044E;
+        Wed, 16 Jun 2021 04:21:55 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 16 Jun 2021 04:21:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=o
+        z1afSZtH4HEgY3zg42iH1DY//zDW8wKRe4vHaTi0y0=; b=lN5SUX1uagJ28V30k
+        RC1tmY6DI9XAlPzOqVSgDgaMxG/WoeiuBWcBHIdcB1CXm3e4bqlqrWI/tgyNvqQY
+        yDt1jRi5zrXeechHiBDfSvLWt5RFInLKRWIVKMadud5QfJdauxI4/nL7swM22SIf
+        twheS0P6OfgJsj5/inWXrlarPgGVHEDeZG8kyeel1AXPSPpYaDW8zqRMDXFY8ziX
+        WHcF1E6/pISk7f1Z3cPoMl5dqVwmltX/ND8byzqGhrBMJMzjva9KD2tCSBvA8nfq
+        HJBX+raIEVE+do2fz8IMPl9i4JdqzdtlNe79s7m90CLs19qunnb5tI9S1n2jo/O+
+        Qf2JA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=CBYVAp
-        3+AVjvLUzw4bv5C+wMLBO0hjWPcQswY8gmBho=; b=Ftdkhc2ilaiU0D8IM8wKpQ
-        wXl7SgmPEIkOaswpvkDILAF21TQE4CuhKC3bRCZXEi2hh6rvU2RjjS0SzCrl6G3r
-        55fXvVUcnEFkUh9nAcCxyxIAnJT43T57CypT00JeO8t2oXp9OKu4w+JUg/0atpoF
-        Dnn/5xThPgUB7lBsW2ff3/+rHHE9M3T2WtP54w/C9rp1TBe1vPP7XKevuptYWDFJ
-        +kCDMZ4R3MJMruQxr9kp3qqSFjMSpvLfSpfgKqEzoV/w4KCa7MCp00KF+dElbHT3
-        W7hZSR+frBrBwycLPEdLv9Rw4p3mMq7p+RcRu3aOV5sj4b4bjPfAqhcSqiSfSI1g
-        ==
-X-ME-Sender: <xms:srTJYIfmvHc8AzMdasf7GlcCaPr0Hc86Mo7GlWwe__-XBikyLSv0Ew>
-    <xme:srTJYKON9ZASm-C11NWnoBkok-5k6gDJvtNJvoRgv_lGovOVua2XCkGldYJoo-MSa
-    EqIgMEcZTUzpJAKSNI>
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=oz1afSZtH4HEgY3zg42iH1DY//zDW8wKRe4vHaTi0
+        y0=; b=bmm63I7VxeIVqq+/FRSF68A0XI3F7eCYsCEWYOYvN1IcHMho3Bdb6+tvM
+        e7SKSNiRkCRWKx6dobT/WP/YAa/xq65u/NtfnnVMYZ+mnRTbV2Gx14tWEhF7j8yF
+        EEygGeX03XWAv7RVxGALJS1arH8DAcyzqkdTpwDhhlHOaD7kLh6d+i9BPyav4Mzf
+        jWBujeIa9fdV2xmFhMXQb/ZK+wYvHHVQTRugeJkLmt00uNtcsF3JWKZBmWIDSaYY
+        ha+Lj/10tSQ6bJeHQ+NlGmDHfqzXw5nSIYljfpr0K6AnLAF5dnbdBjQlL0Qwcsbv
+        5TDTJJyIPJmabmRS9GZYJJWQ1fl2w==
+X-ME-Sender: <xms:obTJYJOBnmrghJOugX0l7MBAFgaXxK24GMDyHJDS5x7AqgI2oYQsrQ>
+    <xme:obTJYL9ZYQPVBcCEYKzC09vp6b72sKxTvr1EJpQG27SYuu22iiqXyr32n20BZGSV1
+    0cyGdsTzK1Vye7DNEQ>
+X-ME-Received: <xmr:obTJYIQoiTyb_IzglrDMyDVN10hTgNvkwd0EdPYKBhREetI-NuAbsVZEE8LInqvQLOwGRZhl4-D7T5Piw4oqTIbi60qx6ZmCOzGm>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgtdefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomheptehlihhs
-    thgrihhruceorghlihhsthgrihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrg
-    htthgvrhhnpeeuffekveehjeeltdeuveeikeelkeejhfejheduhfdtgfdtgfejjeekvdev
-    jeevueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:srTJYJgYcjkhoWPrwFqTyqY1QAXjMvXmkldSzhvdgLXvjs4jfjXcUg>
-    <xmx:srTJYN90sLgUA2L0mfMDXM7KN5y1jzKBuzQ5n_UQwmFSVICEzkmeJw>
-    <xmx:srTJYEvh-YcR2BqeSfOMIJ9SY3nc0D11YeqIEjCjmUu0zx6J908wDw>
-    <xmx:srTJYBWd5-e6SbO3z3MkKFTA2T5pPawQ7dZt1RtFAesvpOWsUcH-oA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 147253A040C; Wed, 16 Jun 2021 04:22:10 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-526-gf020ecf851-fm-20210616.001-gf020ecf8
-Mime-Version: 1.0
-Message-Id: <995cb2a4-f99c-4601-91fe-966c088eaa58@www.fastmail.com>
-In-Reply-To: <20210616034458.3499522-2-axel.lin@ingics.com>
-References: <20210616034458.3499522-1-axel.lin@ingics.com>
- <20210616034458.3499522-2-axel.lin@ingics.com>
-Date:   Wed, 16 Jun 2021 18:21:49 +1000
-From:   Alistair <alistair@alistair23.me>
-To:     "Axel Lin" <axel.lin@ingics.com>, "Mark Brown" <broonie@kernel.org>
-Cc:     "Lars Ivar Miljeteig" <lars.ivar.miljeteig@remarkable.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] regulator: sy7636a: Make regulator_desc static const
-Content-Type: text/plain
+    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpefgjeettdejgffgffdvteeutdehtdehgeehueetkeefgefhtdetjeekledu
+    gedvudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:obTJYFtEYBd5JB3YPDZATxYUAH4HBhQzopmQFc2JT6yom3hYs_AKhg>
+    <xmx:obTJYBehjpvFtceQCmkSwIDKUK91vq3Ur-_q277EsSdqEljlrGN9fw>
+    <xmx:obTJYB3dj1QPCy50MWLCnS4Dt_uVahxFGaGwFY93tEPsoEMJFzD3FA>
+    <xmx:o7TJYP26NQO9-XFDXfXaF0wuXvyOuehZel8F6E58MuvraDMDZVh_PQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 16 Jun 2021 04:21:53 -0400 (EDT)
+Date:   Wed, 16 Jun 2021 10:21:51 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next] ASoC: hdmi-codec: Make symbol
+ 'hdmi_codec_controls' static
+Message-ID: <20210616082151.mrcbswfpponkleve@gilmour>
+References: <20210615172156.2840576-1-weiyongjun1@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210615172156.2840576-1-weiyongjun1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021, at 1:44 PM, Axel Lin wrote:
-> It's only used in this file and never changed, make it static const.
-> 
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+On Tue, Jun 15, 2021 at 05:21:56PM +0000, Wei Yongjun wrote:
+> The sparse tool complains as follows:
+>=20
+> sound/soc/codecs/hdmi-codec.c:750:25: warning:
+>  symbol 'hdmi_codec_controls' was not declared. Should it be static?
+>=20
+> This symbol is not used outside of hdmi-codec.c, so marks it static.
+>=20
+> Fixes: 366b45b97448 ("ASoC: hdmi-codec: Rework to support more controls")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 
-Reviewed-by: Alistair Francis <alistair@alistair23.me>
+Acked-by: Maxime Ripard <maxime@cerno.tech>
 
-> ---
-> drivers/regulator/sy7636a-regulator.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/regulator/sy7636a-regulator.c b/drivers/regulator/sy7636a-regulator.c
-> index 54ab1be1001e..c71c0a007d95 100644
-> --- a/drivers/regulator/sy7636a-regulator.c
-> +++ b/drivers/regulator/sy7636a-regulator.c
-> @@ -53,7 +53,7 @@ static const struct regulator_ops sy7636a_vcom_volt_ops = {
-> .get_status = sy7636a_get_status,
-> };
->  
-> -struct regulator_desc desc = {
-> +static const struct regulator_desc desc = {
-> .name = "vcom",
-> .id = 0,
-> .ops = &sy7636a_vcom_volt_ops,
-> @@ -61,7 +61,7 @@ struct regulator_desc desc = {
-> .owner = THIS_MODULE,
-> .enable_reg = SY7636A_REG_OPERATION_MODE_CRL,
-> .enable_mask = SY7636A_OPERATION_MODE_CRL_ONOFF,
-> - .poll_enabled_time = SY7636A_POLL_ENABLED_TIME,
-> + .poll_enabled_time = SY7636A_POLL_ENABLED_TIME,
-> .regulators_node = of_match_ptr("regulators"),
-> .of_match = of_match_ptr("vcom"),
-> };
-> -- 
-> 2.25.1
-> 
-> 
+Thanks!
+Maxime
