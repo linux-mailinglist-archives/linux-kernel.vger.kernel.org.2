@@ -2,97 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0A13A91BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1663A91BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhFPGPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:15:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36656 "EHLO mail.kernel.org"
+        id S231187AbhFPGSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:18:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhFPGPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:15:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B68061369;
-        Wed, 16 Jun 2021 06:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623824011;
-        bh=VaE0S1kf77O5EbvMHJFmsXcTIFViX82c9LKFOtIeQLc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=U5DXn7x7P8VwcFuJj/NuGjAlN6uazR2O2iUk41SK0I4HCcgGWxMDFpDgVHxDSMk02
-         VEbozYODhbClLFSplS9whycdKRm6ICigFH1YsskeexaKJU4emxiFVSf4EPtej5HjiK
-         jdHDRX3CkZTiVgtomUdKUHBZ19MgwvFyakkvhD2XpEf8EoNyMj3jHlFDHahKEJzB/7
-         3jrDTKthRxz5wLVe94TXVVGNNs/joHbvoWafZN1ABWUN9gc9qVXb/qwds0hXM74x6a
-         Eyr7xagmo1c8Cpc4bQES3Cp9jqz7fQwgk1RO03SdVpq4hW62jZqsFua3JKvSpA1otH
-         SMp4ZrP1nVy4Q==
-Date:   Wed, 16 Jun 2021 08:13:26 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     David Gow <davidgow@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH 14/34] docs: dev-tools: kunit: avoid using ReST
- :doc:`foo` markup
-Message-ID: <20210616081326.39a73ad0@coco.lan>
-In-Reply-To: <20210616080034.335f3e75@coco.lan>
-References: <cover.1622898327.git.mchehab+huawei@kernel.org>
-        <a3ad84108a5b254e545f88e58d411f5fe2e25c7e.1622898327.git.mchehab+huawei@kernel.org>
-        <CABVgOSnz_94ZO2Sa8Vf70eV_tf0gksDBUhZXYXX1VS=qFR=zPw@mail.gmail.com>
-        <20210616080034.335f3e75@coco.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229543AbhFPGSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 02:18:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 402DD613C2;
+        Wed, 16 Jun 2021 06:16:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623824192;
+        bh=n0MaySor92vcaSlNHggYCZWNY0gOnL+3Y3j8NPusdX8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cwcoYXSkOGqTJqizPHMafPo0S6zRL8Bn9H6cp3rJRUf9UZfsmH+fVWt4Fw3WYzs5w
+         xNX3Fy4k8dgu27JdIWcpPx18SaODiHVC0mDwZkQ4H+vzNgvGcqW0qVsDpiBA5ft0Iz
+         J53J3ykibbibiNO446wiPDMEbMS5WKSpeU3ZYnAg=
+Date:   Wed, 16 Jun 2021 08:16:28 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sanjay R Mehta <sanmehta@amd.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Sanjay R Mehta <Sanju.Mehta@amd.com>,
+        dan.j.williams@intel.com, Thomas.Lendacky@amd.com,
+        Shyam-sundar.S-k@amd.com, Nehal-bakulchandra.Shah@amd.com,
+        robh@kernel.org, mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v9 1/3] dmaengine: ptdma: Initial driver for the AMD PTDMA
+Message-ID: <YMmXPMy7Lz9Jo89j@kroah.com>
+References: <1622654551-9204-1-git-send-email-Sanju.Mehta@amd.com>
+ <1622654551-9204-2-git-send-email-Sanju.Mehta@amd.com>
+ <YL+rUBGUJoFLS902@vkoul-mobl>
+ <94bba5dd-b755-81d0-de30-ce3cdaa3f241@amd.com>
+ <YMl6zpjVHls8bk/A@vkoul-mobl>
+ <0bc4e249-b8ce-1d92-ddde-b763667a0bcb@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0bc4e249-b8ce-1d92-ddde-b763667a0bcb@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 16 Jun 2021 08:00:34 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
-
-> Em Sat, 5 Jun 2021 23:44:41 +0800
-> David Gow <davidgow@google.com> escreveu:
+On Wed, Jun 16, 2021 at 10:24:52AM +0530, Sanjay R Mehta wrote:
 > 
-> > On Sat, Jun 5, 2021 at 9:18 PM Mauro Carvalho Chehab
-> > <mchehab+huawei@kernel.org> wrote:
-> > >
-> > > The :doc:`foo` tag is auto-generated via automarkup.py.
-> > > So, use the filename at the sources, instead of :doc:`foo`.
-> > >
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > ---  
+> 
+> On 6/16/2021 9:45 AM, Vinod Koul wrote:
+> > [CAUTION: External Email]
 > > 
-> > This is much better, thanks! Do note that there's a merge conflict
-> > (and another :doc:`` tag which needs updating) in the kunit-fixes
-> > branch:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit-fixes&id=11dbc62a73a7da9f3697e8ce83d07503c11dcabb
+> > On 15-06-21, 16:50, Sanjay R Mehta wrote:
+> > 
+> >>>> +static struct pt_device *pt_alloc_struct(struct device *dev)
+> >>>> +{
+> >>>> +     struct pt_device *pt;
+> >>>> +
+> >>>> +     pt = devm_kzalloc(dev, sizeof(*pt), GFP_KERNEL);
+> >>>> +
+> >>>> +     if (!pt)
+> >>>> +             return NULL;
+> >>>> +     pt->dev = dev;
+> >>>> +     pt->ord = atomic_inc_return(&pt_ordinal);
+> >>>
+> >>> What is the use of this number?
+> >>>
+> >>
+> >> There are eight similar instances of this DMA engine on AMD SOC.
+> >> It is to differentiate each of these instances.
+> > 
+> > Are they individual device objects?
+> > 
 > 
-> Ok, thanks for the warning. I'm folding the enclosed patch:
+> Yes, they are individual device objects.
 
-Err... ended adding a wrong diff there...
+Then what is "ord" for?  Why are you using an atomic variable for this?
+What does this field do?  Why doesn't the normal way of naming a device
+come into play here instead?
 
-I guess I'm missing my morning dosage of caffeine ;-)
+thanks,
 
-The diff I appended is this one:
-
-diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
-index ee21e482a0de..63ef7b625c13 100644
---- a/Documentation/dev-tools/kunit/start.rst
-+++ b/Documentation/dev-tools/kunit/start.rst
-@@ -236,5 +236,5 @@ Next Steps
- ==========
- *   Check out the Documentation/dev-tools/kunit/tips.rst page for tips on
-     writing idiomatic KUnit tests.
--*   Optional: see the Documentation/dev-tools/kunit/usage.rst page for a more
-+*   Optional: see the :doc:`usage` page for a more
-     in-depth explanation of KUnit.
-
-It basically reverts a change in order to avoid merge conflicts at
-linux-next when this patch gets merged via docs-next.
-
-I'll submit later a followup patch against 5.14-rc1.
-
-Thanks,
-Mauro
+greg k-h
