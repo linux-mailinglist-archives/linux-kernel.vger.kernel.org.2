@@ -2,173 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9853A9543
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 479153A9548
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbhFPItw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:49:52 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:30299 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231354AbhFPItt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:49:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623833263; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=UDMXvBeHQdcQ+tqXCHrPDtv2AvZ2wHEj+q2+GdZpS+U=;
- b=Uh0IqgDEUf1ZEIXWI+GgI9/9FRvLjWTaw9y0RU4C1pIAwPlhhi01osJOaBY5GU24zQYystSF
- ns9foOglX5231WWCgYq5TBvV6Om4KJJS/MFDvcjqmFT6QQB5TAOXBJ5wKrIkLvSgV8EzxSKb
- dEPEhqZ5htBWzKvamDn8F4sl6nA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60c9baa5b6ccaab753049d0e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Jun 2021 08:47:33
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B029FC43146; Wed, 16 Jun 2021 08:47:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5252FC433F1;
-        Wed, 16 Jun 2021 08:47:31 +0000 (UTC)
+        id S231827AbhFPIvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:51:40 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:54223 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231335AbhFPIve (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 04:51:34 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 277DC580609;
+        Wed, 16 Jun 2021 04:49:24 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 16 Jun 2021 04:49:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=h
+        wLAiqJqpm5oEawixERPmrijjk4aP6MKJESch0uKUAU=; b=O9toReIomtjLeV+ER
+        mN4yMF5EtW62dXfPS5Ft4j58PuOpy65v3gYXHKbuUUOD8rV6BuqaagIk4n33dHs+
+        /hYgRJoAA/2dinBop1sifaj0YMAgFjXUQXIaEQAD79BgRikYpMHSTTU9Id2H188u
+        jP743/EB8hGA5sU3KhyWqOzJh6BigW99rjmmeRGxsGqbngguI1RJvtD8y9L4Manf
+        M097IBXtWByB6Pnqy+bb8CEkhmRwD7VOJvsKj0rACgoGWwHRQW+F18fAoRAh/4xK
+        lKNQTupLnex63KyEwNlaoWJNzoJPn8ZDGWMBhiTg+20mygaJ11/PQDJoumNUu0jc
+        I3R2A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=hwLAiqJqpm5oEawixERPmrijjk4aP6MKJESch0uKU
+        AU=; b=gf7mv0fCUeXJCXfwAWkcxMTeb99PWPBl+Wt7CKktgnwMZi8s5gIfNqRKm
+        rsfBBipKnur/G7pXbjwkVnt+ySkZPetRCmUw7+dClz5Ina6WP+sf9VQnMDNGVSkF
+        rmYftPavpZIQ2KBpJ/rpZWmgKEru/clt5s68Gp5Ndwv0oo0/BckjISm7ZH0ycQp6
+        TGnRxVcRkvww9j+3CVaIo4dQXOfHnrcFaHF+xT3q5UOiEPFYILK4SiaebzdYpVRu
+        ARMZvMkG9+pBmMoJqXXQUM46CvkKo9ydpIMB0RZmUv5c+oTZ+HmQEb2VJTR4Xs2C
+        P5GKBBc78deZ+4Ymb+sKD+wNbfHtQ==
+X-ME-Sender: <xms:ErvJYBPlVedHQSjYyP-tlCfAI7cJyVj15eiSyALEqes9n8kk5UQABg>
+    <xme:ErvJYD-325p1fYxMGjzrOM02mxcKFyjre2-hN-ILTWMjtb-X4f56SiOgANCKOFb4t
+    VQONLOcZYFTJewiMN0>
+X-ME-Received: <xmr:ErvJYAT4o92_eB0uVteBhtlgpVOdvCbbW95OCNahsjBm4_1m0feAwKHmU8ewivf_Wr7e6sRjuDiwrEwaAKzBKZh0R4PIOha9YeQJ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgtdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggugfgjsehtqh
+    ertddttddvnecuhfhrohhmpeforgigihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegt
+    vghrnhhordhtvggthheqnecuggftrfgrthhtvghrnhepgfegvdelgfeuveevueekvedtje
+    fguddvveffhedukeejjeejgfejfedtvdeitdegnecuffhomhgrihhnpeguvghvihgtvght
+    rhgvvgdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:ErvJYNudNxBs7ng4vP9-yua7-0u1XI-Uca0DD_qJVik2bkOt-6rimw>
+    <xmx:ErvJYJe8qIvUs0yR78yeNt6ovXcgKuKuHx6CaCatU3HblQxBR7o9Yw>
+    <xmx:ErvJYJ2SYl56_x-ktRufe2BuDRnq0OoC97njcVrtsJLt7pCBfLuwjg>
+    <xmx:FLvJYF7rq1EjBsZ9TvCmpT4e8KMPY2aVFgUVSpQoY_NDQASghrV4IQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 16 Jun 2021 04:49:22 -0400 (EDT)
+Date:   Wed, 16 Jun 2021 10:49:20 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Ban Tao <fengzheng923@gmail.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        wens@csie.org, jernej.skrabec@gmail.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ASoC: sun50i-dmic: dt-bindings: add DT bindings for
+ DMIC controller
+Message-ID: <20210616084920.y6yjic4sau6ungv5@gilmour>
+References: <20210615130737.2098-1-fengzheng923@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 16 Jun 2021 16:47:31 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-In-Reply-To: <0081ad7c-8a15-62bb-0e6a-82552aab5309@acm.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-9-git-send-email-cang@codeaurora.org>
- <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
- <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
- <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
- <75527f0ba5d315d6edbf800a2ddcf8c7@codeaurora.org>
- <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
- <3fce15502c2742a4388817538eb4db97@codeaurora.org>
- <fabc70f8-6bb8-4b62-3311-f6e0ce9eb2c3@acm.org>
- <8aae95071b9ab3c0a3cab91d1ae138e1@codeaurora.org>
- <0081ad7c-8a15-62bb-0e6a-82552aab5309@acm.org>
-Message-ID: <8eadb2f2e30804faf23c9c71e5724d08@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210615130737.2098-1-fengzheng923@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
+Hi,
 
-On 2021-06-16 12:40, Bart Van Assche wrote:
-> On 6/15/21 9:00 PM, Can Guo wrote:
->> I would like to stick to my way as of now because
->> 
->> 1. Merely preventing task abort cannot prevent suspend/resume fail.
->> Task abort (to PM requests), in real cases, is just one of many kinds
->> of failure which can fail the suspend/resume callbacks. During
->> suspend/resume, if AH8 error and/or UIC errors happen, IRQ handler
->> may complete SSU cmd with errors and schedule the error handler (I've
->> seen such scenarios in real customer cases). My idea is to treat task
->> abort (to PM requests) as a failure (let scsi_execute() return with
->> whatever error) and let error handler recover everything just like
->> any other UFS errors which invoke error handler. In case this, again,
->> goes back to the topic that is why don't just do error recovery in
->> suspend/resume, let me paste my previous reply here -
-> 
-> Does this mean that the IRQ handler can complete an SSU command with an
-> error and that the error handler can later recover from that error?
+On Tue, Jun 15, 2021 at 09:07:37PM +0800, Ban Tao wrote:
+> The Allwinner SoCs feature an I2S controller across multiple SoC
+> generations.
 
-Not exactly, sorry that I didn't put it clearly. There are cases where 
-cmds
-are completed with an error (either OCS is not SUCCESS or device returns
-check condition in resp) and accompanied by fatal or non-fatal UIC 
-errors
-(UIC errors invoke UFS error handler). For example, SSU is completed 
-with
-OCS_MISMATCH_RESPONSE_UPIU_SIZE (whatever the reason is in HW), then 
-auto
-hibern8 enter (AH8 timer timeout hba->ahit is set to a very low value) 
-kicks
-start right after but fails with fatal UIC errors. From dmesg log, these 
-all
-happen at once. I've seen even more complicated cases where all kinds of 
-errors
-mess up together.
+Which SoC generations?
 
-> That sounds completely wrong to me. The IRQ handler should never 
-> complete any
-> command with an error if that error could be recoverable. Instead, the
-> IRQ handler should add that command to a list and leave it to the error
-> handler to fail that command or to retry it.
-> 
->> 2. And say we want SCSI layer to resubmit PM requests to prevent
->> suspend/resume fail, we should keep retrying the PM requests (so
->> long as error handler can recover everything successfully), meaning
->> we should give them unlimited retries (which I think is a bad idea),
->> otherwise (if they have zero retries or limited retries), in extreme
->> conditions, what may happen is that error handler can recover 
->> everything
->> successfully every time, but all these retries (say 3) still time out,
->> which block the power management for too long (retries * 60 seconds) 
->> and,
->> most important, when the last retry times out, scsi layer will anyways
->> complete the PM request (even we return DID_IMM_RETRY), then we end up
->> same - suspend/resume shall run concurrently with error handler and we
->> couldn't recover saved PM errors.
-> 
-> Hmm ... it is not clear to me why this behavior is considered a 
-> problem?
-> 
+> Signed-off-by: Ban Tao <fengzheng923@gmail.com>
+> ---
+>  .../sound/allwinner,sun50i-h6-dmic.yaml       | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun=
+50i-h6-dmic.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-=
+dmic.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmi=
+c.yaml
+> new file mode 100644
+> index 000000000000..81d40c374e44
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.ya=
+ml
+> @@ -0,0 +1,66 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/allwinner,sun50i-h6-dmic.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Allwinner H6 DMIC Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Ban Tao <fengzheng923@gmail.com>
+> +
+> +properties:
+> +  "#sound-dai-cells":
+> +    const: 0
+> +
+> +  compatible:
+> +    const: allwinner,sun50i-h6-dmic
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Bus Clock
+> +      - description: Module Clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: apb
+> +      - const: dmic
 
-To me, task abort to PM requests does not worth being treated so 
-differently,
-after all suspend/resume may fail due to any kinds of UFS errors (as 
-I've
-explained so many times). My idea is to let PM requests fast fail (60 
-seconds
-has passed, a broken device maybe, we have reason to fail it since it is 
-just
-a passthrough req) and schedule UFS error handler, UFS error handler 
-shall
-proceed after suspend/resume fails out then start to recover everything 
-in a
-safe environment. Is this way not working?
+The convention we use is bus and mod
 
-Thanks,
+> +
+> +  dmas:
+> +    maxItems: 1
+> +
+> +  dma-names:
+> +    const: rx
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +required:
+> +  - "#sound-dai-cells"
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - dmas
+> +  - dma-names
+> +  - resets
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    spdif: spdif@5095000 {
 
-Can Guo.
+The label and node name seems wrong?
 
-> What is wrong with blocking RPM while a START STOP UNIT command is 
-> being
-> processed? If there are UFS devices for which it takes long to process
-> that command I think it is up to the vendors of these devices to fix
-> these UFS devices.
-> 
-> Additionally, if a UFS device needs more than (retries * 60 seconds) to
-> process a START STOP UNIT command, shouldn't it be marked as broken?
-> 
-> Thanks,
-> 
-> Bart.
+> +        #sound-dai-cells =3D <0>;
+> +        compatible =3D "allwinner,sun50i-h6-dmic";
+> +        reg =3D <0x05095000 0x400>;
+> +        clocks =3D <&ccu CLK_BUS_DMIC>, <&ccu CLK_DMIC>;
+
+You'll need includes for it to compile
+
+Maxime
