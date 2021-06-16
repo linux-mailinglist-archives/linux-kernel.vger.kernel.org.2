@@ -2,158 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C7E3A950B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B26583A950C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232159AbhFPIcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:32:18 -0400
-Received: from mail-vi1eur05on2110.outbound.protection.outlook.com ([40.107.21.110]:12242
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231318AbhFPIcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:32:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PHb8nnyjYE247vFv+2nrXdMrYlg9PSqkKqDldQtivoLh5BORVLdP5FITSs5i9k+Ww/flTNgLRlfRnxuZ/w6BHh9jcPsCV+OxlDA2/R4yJ7mMOeFPeotp5k8EzjIFYW5qCKmaphaiaQHJ2R8mhQQpsBgyhnZh+E7IUjjm+NuGJV8qqZsNINc0ITfJFs+c5d7Kws/8Cyy5UUarRkf9q7LnvSC9Suy64+DIf3yVuYDeTiQpnqfFioLQ77P53RhYsu1b2Bid+wRKLV8J13D+u1xglCj5MjOyZp08IdCTM65969mG7G7MToH+5faM8h+NGRlTtI7vrBj9uz5+qNmszK0bGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GFB63cQ2DEdoH8jNCbltBgauQOMiFMBpubDv3dnHlDc=;
- b=c7LO/w6BScoLOcYKV4PitT13wiV8iHTPJjaPijYR1yuPXCpYbdoS0AzuACC0m0XIz6yts4xVwci28CNqH+2udsMz0GpHeYLmd07AwUicahZEmK2hVkE0GxHYxOCBpeiY9KFAoQPa6h7BCfHzZoWDqCi/IvtTX6i1BhplLAaMl41C6DllLmppWOQEEDsjOIjA9Z4ehipmihlUF1uwGdizg5X8oc7vdsC+59E6fY2rLqMsj1ZoDWoWN6bCpOjJZF2BNQxxMhESO8isYETnqIh+6B+t4UCWjLPGjrBg2BBIuU6+uX0rd1HghZx/VPj/5klecu+5UPbE1dw9m4fFW1u8vw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GFB63cQ2DEdoH8jNCbltBgauQOMiFMBpubDv3dnHlDc=;
- b=Hy735016yrlNHzoPm2FudH3ZLlHb/Ihz4L8OnrqeiaLRcPhoKcOvQAG/6KO6ln8hcj4a/EZ96sELJwfXumQhDMw22u8lqBqKyho4/Dg1grRd+MLXfI044zutXYcuEEPMjWpKZO4g96WbI2XFSWrnSHEOz1+tdwQ+QTRobKP4d+U=
-Authentication-Results: plvision.eu; dkim=none (message not signed)
- header.d=none;plvision.eu; dmarc=none action=none header.from=plvision.eu;
-Received: from AM0P190MB0738.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:19b::9)
- by AM9P190MB1298.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:26e::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Wed, 16 Jun
- 2021 08:30:09 +0000
-Received: from AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
- ([fe80::d018:6384:155:a2fe]) by AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
- ([fe80::d018:6384:155:a2fe%9]) with mapi id 15.20.4219.025; Wed, 16 Jun 2021
- 08:30:08 +0000
-From:   Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-To:     oleksandr.mazur@plvision.eu, jiri@nvidia.com, davem@davemloft.net,
-        kuba@kernel.org, Jonathan Corbet <corbet@lwn.net>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vadym Kochan <vadym.kochan@plvision.eu>, andrew@lunn.ch,
-        nikolay@nvidia.com, idosch@idosch.org, sfr@canb.auug.org.au,
-        linux-doc@vger.kernel.org
-Subject: [PATCH net-next v2] documentation: networking: devlink: fix prestera.rst formatting that causes build warnings
-Date:   Wed, 16 Jun 2021 11:29:19 +0300
-Message-Id: <20210616082919.927-1-oleksandr.mazur@plvision.eu>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [217.20.186.93]
-X-ClientProxiedBy: AM6P192CA0106.EURP192.PROD.OUTLOOK.COM
- (2603:10a6:209:8d::47) To AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:208:19b::9)
+        id S232178AbhFPIca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232185AbhFPIc1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 04:32:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38780C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=v8wzYunwBieuIQynzoH9RoOaxPah69I7Fsd9nOFE6KE=; b=WgtXclb6hQxKiYod4urCr83+rc
+        rCx25hC+FLWdoRx0xB3prlUGCE3b3H5cmR1pWMLJzeaT4twDamYzbrh5wt4U5VzqaW5nKp/kB86WP
+        1dIGnPPMk3SZKwN3kf7GlHSXy0chKdPkb0oAas+fB9y9iXR5yDsATdW6DE3+okRehQyvRMXSYW5MM
+        sT4W/F11ZkbvT4oQZDCUa52eilXl3m2Q/mdiNUEJ/35YIhI/am7mW2bHkMXQBo8MBPm4LksfvMJQA
+        VJyIF+MhPjkQqjAotW3TwxQDAJxreMBR22df3H+vW/IwMrVePl4R/m9aIt97iRNbxmQXxtIUVe184
+        53cnZNOw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltQvW-007nz1-HQ; Wed, 16 Jun 2021 08:29:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B48BA300252;
+        Wed, 16 Jun 2021 10:29:33 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7098420277F84; Wed, 16 Jun 2021 10:29:33 +0200 (CEST)
+Date:   Wed, 16 Jun 2021 10:29:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] sched, fair: try to prevent migration thread from
+ preempting non-cfs task
+Message-ID: <YMm2bWq9XfaPeSka@hirez.programming.kicks-ass.net>
+References: <20210615121551.31138-1-laoar.shao@gmail.com>
+ <20210615203534.GA4272@worktop.programming.kicks-ass.net>
+ <CALOAHbBuZJaK+fEg7toRUHJNP8rJKDoADeAUxorUuNU17kdTOA@mail.gmail.com>
+ <YMmlAP/QhE6SWhCF@hirez.programming.kicks-ass.net>
+ <CAKfTPtAh3eOtzZUPqmhkw6FAOjOietZrB_qMOfOprp0oWO+CvA@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from omazur.x.ow.s (217.20.186.93) by AM6P192CA0106.EURP192.PROD.OUTLOOK.COM (2603:10a6:209:8d::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18 via Frontend Transport; Wed, 16 Jun 2021 08:30:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 19d8dc18-1ade-4950-be61-08d930a0f375
-X-MS-TrafficTypeDiagnostic: AM9P190MB1298:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM9P190MB1298CABCB585738EF7F1AF3AE40F9@AM9P190MB1298.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ht515NGO3VtWR8LHfz/jExqbMJ0QyJhfflRRDxFFHuBsdQ/DEymeHaITrnnG4bzke8ErBMARMyKL5qYXbwT6PZOnKQieL3z5UoRnDGVMwqzEtkU31/RGZF+LUQ0eNw4GqJX6UY9YC9jnmTzW+vOkixd+SK70iDWB5P1ZZegHo4TzYZ+JjggKO8j29R1OjOXEEN/HGdsQAgwLez8cvrFwsBeLEakqLZPeZ/nYLMxz0LPWjFquLPFnN8cH1pQoC4Blxm0+RdhG4dI0EIfoUGf4rwLAcyk8KsQE8R2FtJ4vHCt4uCivDBROSGP8EhZTD/HYSYTg+Kl55YrGqdtz7yIV3id8rJJu3j+WHJjt4jd9FuCifMBHFFJB1Hfx/YSNsFgr1MkNRRd3rB/UeLQp62jz3HytxF/c2wgKmOsh8j4F9b4xaJl3U5fdm9E8XFk6nc3C/P2rPYupFtSISE8Bi3j4wo+PmUQ38mM5omStCxNyHTbIw+Qc86UkwK3N1pfui0cGDwtbQWdBcKj9O58LplVVEEykEU0WsOAmLLNurdKGCItbyosu7uZzDTF1OS5QsvGe8BnyXTYSocCt/YPpkLd4u2gCyk4YXNpymbkRWU7jcvX7nAgXIhj/EpC4LvvNm+aT6q+pfaUfumA3vwjDmvf5ComyTO1IQPXhR7ozZZ7ldFg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0P190MB0738.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(39830400003)(396003)(376002)(366004)(136003)(36756003)(2906002)(8676002)(66946007)(66476007)(6506007)(6486002)(66556008)(52116002)(6666004)(26005)(186003)(16526019)(1076003)(6916009)(83380400001)(7416002)(2616005)(956004)(86362001)(4326008)(6512007)(8936002)(38350700002)(38100700002)(316002)(44832011)(5660300002)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5icmaF/GLM/4xFOTo6jZSX7Z5sYVP3CCZz0MyPzaTMzsVbLVSAE2Y63zr6RX?=
- =?us-ascii?Q?rW5SWK5YoPcImxLctnOJKyz3iPjEav0of0bqB8bqNrBfxoqIo3Wfwn4GDqtO?=
- =?us-ascii?Q?9kJ4OMLrk0vuWoRpcqasWEzFD84lMpvKZBSCRJCZYGIGkn2umuHL9JshuASR?=
- =?us-ascii?Q?ObONQGF+QLv+C5jDRsuxqiMsgF719qvxVuHbXpSZKffO7BsEOgmfQdjxGY9i?=
- =?us-ascii?Q?lSkgNGdRK98U+LzciBSKGUdmGzq9LuJd9my2T3VNWZDufrCLtIYr/+C9wOWv?=
- =?us-ascii?Q?/N0m7oRfzqMZCYmg1iiqV+3CgH3px396My6qHchUCVfZD1zoqMEJH6eU20XZ?=
- =?us-ascii?Q?1QUr9CF7f+nOsj0u8N3FAx/HdjxZy0KFHPtwVDHjOyS5nzVbQA1YnD6F4Qr2?=
- =?us-ascii?Q?ByFAAGDgEsV4+IkegI7SUufDMeR7MtjH1liSLfvwjJ3gj7/Nc7BVk3u7l5jr?=
- =?us-ascii?Q?DCi1ePBzCBzhDHafnQ66miTtORVQ9vGTmDgsb8FVamo5/SoKRVY5WMD4vkUW?=
- =?us-ascii?Q?PD/eO+Bph9KKlfUGpl0dTJ/F/BzhiVsMfflTt5yOxzO3gyxwwCQEXyrzqv3c?=
- =?us-ascii?Q?PfsxUAHRknYksO5dRUDxflsfhZUmUXzbysqqpGIyJzKH9YCXfh0KKiRKPx2w?=
- =?us-ascii?Q?qAnHE7qOo6pdmK+hfK8YgekpmYeLw77u2fQRdbdqr8MvV1EBIzRTfWKIcLwr?=
- =?us-ascii?Q?lg1s3V5ua2oePKPS+UjIeVnRkEiU/uDfClByOdnC6JpXaqzGjhiBRxgvL5BT?=
- =?us-ascii?Q?B5IQCMCYks190zWJT90Z369ogDCLqv+UICwQQ5ytYooxNW78sW2/cMMZhGVF?=
- =?us-ascii?Q?tPnFdtOqINI5gaWJKrMG8PTaAhwiVQFu1Vy+NSK7+kcgmHTfbdke0R+u+C+L?=
- =?us-ascii?Q?ImWfl2HS86BBCqtBOVdISDgBwc9Dfl/2rJmLMdwe0/2yoEoqh2uOsBliDbVv?=
- =?us-ascii?Q?ts4g9qO3CHN7WWs9KyLGkay9dXG3evWVlVErGFADeNiR1kM1mKVS7WoH+fpR?=
- =?us-ascii?Q?D4UMC+z5k7GvuhBKJLT1kww3mWUX28sh7/WJNNfmeDvljHoOJLcZRLItTXQk?=
- =?us-ascii?Q?7eupwFEMlXeywXX7PV3VTOWHM7KaWWYwft2x9/XMc5Z0QjiQqLClBIwrWDhZ?=
- =?us-ascii?Q?L9RD2BJfPkOQsn7hsWILd3psoxmZjU0h0zMqxwyuCKhaCf/j8pQJ+loS6lNT?=
- =?us-ascii?Q?qLIFvrpTp4EHJiMEDNVX7lM98EPD+LICIOca0ghJ4SspyoNYnYzqY6Mk+7qL?=
- =?us-ascii?Q?tcE+AHh1K/hqL9XzkI19bEkZwFiakPd44z/B4MApCvLH8SR0Itkm4ORc9Hqo?=
- =?us-ascii?Q?l7mU1YJfmSVlKK9d6onwmSOj?=
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19d8dc18-1ade-4950-be61-08d930a0f375
-X-MS-Exchange-CrossTenant-AuthSource: AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 08:30:08.8858
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MgQcKsMhqC8Am+MwM+fejYzH7NqYT6aoC8rr1wN12b3x1tXVtCkwofnnDZgVrOyufsCh0Z3tX+w2Jv/nZG1v9lT3nP6+7g5Ty4iYAbmHT/4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9P190MB1298
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtAh3eOtzZUPqmhkw6FAOjOietZrB_qMOfOprp0oWO+CvA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes: a5aee17deb88 ("documentation: networking: devlink: add prestera switched driver Documentation")
+On Wed, Jun 16, 2021 at 09:29:55AM +0200, Vincent Guittot wrote:
+> On Wed, 16 Jun 2021 at 09:15, Peter Zijlstra <peterz@infradead.org> wrote:
 
-Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
----
-V2:
- 1) add missing 'net-next' tag in the patch subject.
----
- Documentation/networking/devlink/devlink-trap.rst | 1 +
- Documentation/networking/devlink/index.rst        | 1 +
- Documentation/networking/devlink/prestera.rst     | 4 ++--
- 3 files changed, 4 insertions(+), 2 deletions(-)
+> > The suggestion was adding a cfs_migration thread, specifically for
+> > active balance (and maybe numa). Just not sure the cost of carrying yet
+> > another per-cpu kernel thread is worth the benefit.
+> 
+> Also, this will not completely remove the problem but only further
+> reduce the race window because the rq is locked and the irq disable in
+> active_load_balance_cpu_stop().
 
-diff --git a/Documentation/networking/devlink/devlink-trap.rst b/Documentation/networking/devlink/devlink-trap.rst
-index 935b6397e8cf..ef8928c355df 100644
---- a/Documentation/networking/devlink/devlink-trap.rst
-+++ b/Documentation/networking/devlink/devlink-trap.rst
-@@ -497,6 +497,7 @@ drivers:
- 
-   * :doc:`netdevsim`
-   * :doc:`mlxsw`
-+  * :doc:`prestera`
- 
- .. _Generic-Packet-Trap-Groups:
- 
-diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
-index 8428a1220723..b3b9e0692088 100644
---- a/Documentation/networking/devlink/index.rst
-+++ b/Documentation/networking/devlink/index.rst
-@@ -46,3 +46,4 @@ parameters, info versions, and other features it supports.
-    qed
-    ti-cpsw-switch
-    am65-nuss-cpsw-switch
-+   prestera
-diff --git a/Documentation/networking/devlink/prestera.rst b/Documentation/networking/devlink/prestera.rst
-index e8b52ffd4707..49409d1d3081 100644
---- a/Documentation/networking/devlink/prestera.rst
-+++ b/Documentation/networking/devlink/prestera.rst
-@@ -1,8 +1,8 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
--=====================
-+========================
- prestera devlink support
--=====================
-+========================
- 
- This document describes the devlink features implemented by the ``prestera``
- device driver.
--- 
-2.17.1
+It removes the problem of active migration interfering with this
+worklaod, because the FIFO1 task will never run until that is done
+(assuming he manages to not have his workload at FIFO1).
 
