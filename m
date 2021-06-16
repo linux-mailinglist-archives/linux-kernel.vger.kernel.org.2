@@ -2,117 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8D43A9A22
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4B93A9A32
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbhFPM2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:28:11 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:10107 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232599AbhFPM2K (ORCPT
+        id S232866AbhFPM3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbhFPM3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:28:10 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G4kqD6rPJzZcJD;
-        Wed, 16 Jun 2021 20:23:04 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 20:26:00 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 20:26:00 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-Subject: [PATCH net] net: sched: add barrier to ensure correct ordering for lockless qdisc
-Date:   Wed, 16 Jun 2021 20:25:38 +0800
-Message-ID: <1623846338-3671-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 16 Jun 2021 08:29:21 -0400
+Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DAAC061574;
+        Wed, 16 Jun 2021 05:27:14 -0700 (PDT)
+Received: from localhost.localdomain (83.6.168.10.neoplus.adsl.tpnet.pl [83.6.168.10])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 3787E1FC59;
+        Wed, 16 Jun 2021 14:27:12 +0200 (CEST)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/6] arm64: dts: qcom: sm8250-edo: Add hardware keys
+Date:   Wed, 16 Jun 2021 14:27:03 +0200
+Message-Id: <20210616122708.144770-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The spin_trylock() is assumed to contain the implicit
-barrier needed to ensure the correct ordering between
-STATE_MISSED setting/clearing and STATE_MISSED checking
-in commit a90c57f2cedd ("net: sched: fix packet stuck
-problem for lockless qdisc").
+Volume Down, GAssist (pdx206 only) and camera keys live on PMIC pins,
+with the latter kind being broken for now.. Add these and PON-connected
+Volume Up & PWR.
 
-But it turns out that spin_trylock() only has load-acquire
-semantic, for strongly-ordered system(like x86), the compiler
-barrier implicitly contained in spin_trylock() seems enough
-to ensure the correct ordering. But for weakly-orderly system
-(like arm64), the store-release semantic is needed to ensure
-the correct ordering as clear_bit() and test_bit() is store
-operation, see queued_spin_lock().
-
-So add the explicit barrier to ensure the correct ordering
-for the above case.
-
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
-The above ordering issue can easily cause out of order packet
-problem when testing lockless qdisc bypass patchset [1] with
-two iperf threads and one netdev queue in arm64 system.
+ .../qcom/sm8250-sony-xperia-edo-pdx206.dts    | 11 +++++++
+ .../boot/dts/qcom/sm8250-sony-xperia-edo.dtsi | 30 +++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
-1. https://lkml.org/lkml/2021/6/2/1417
----
- include/net/sch_generic.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index 1e62551..5771030 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -163,6 +163,12 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 		if (spin_trylock(&qdisc->seqlock))
- 			goto nolock_empty;
+diff --git a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dts b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dts
+index 999b662f4679..16c96e838534 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dts
++++ b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dts
+@@ -18,6 +18,17 @@ &framebuffer {
+ 	stride = <(1080 * 4)>;
+ };
  
-+		/* Paired with smp_mb__after_atomic() to make sure
-+		 * STATE_MISSED checking is synchronized with clearing
-+		 * in pfifo_fast_dequeue().
-+		 */
-+		smp_mb__before_atomic();
++&gpio_keys {
++	g-assist-key {
++		label = "Google Assistant Key";
++		linux,code = <KEY_LEFTMETA>;
++		gpios = <&pm8150_gpios 6 GPIO_ACTIVE_LOW>;
++		debounce-interval = <15>;
++		linux,can-disable;
++		gpio-key,wakeup;
++	};
++};
 +
- 		/* If the MISSED flag is set, it means other thread has
- 		 * set the MISSED flag before second spin_trylock(), so
- 		 * we can return false here to avoid multi cpus doing
-@@ -180,6 +186,12 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 		 */
- 		set_bit(__QDISC_STATE_MISSED, &qdisc->state);
+ &vreg_l2f_1p3 {
+ 	regulator-min-microvolt = <1200000>;
+ 	regulator-max-microvolt = <1200000>;
+diff --git a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
+index 0db63eb08c60..52ed4b082bd7 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
+@@ -47,6 +47,26 @@ framebuffer: framebuffer@9c000000 {
+ 		};
+ 	};
  
-+		/* spin_trylock() only has load-acquire semantic, so use
-+		 * smp_mb__after_atomic() to ensure STATE_MISSED is set
-+		 * before doing the second spin_trylock().
-+		 */
-+		smp_mb__after_atomic();
++	gpio_keys: gpio-keys {
++		compatible = "gpio-keys";
 +
- 		/* Retry again in case other CPU may not see the new flag
- 		 * after it releases the lock at the end of qdisc_run_end().
- 		 */
++		/*
++		 * Camera focus (light press) and camera snapshot (full press)
++		 * seem not to work properly.. Adding the former one stalls the CPU
++		 * and the latter kills the volume down key for whatever reason. In any
++		 * case, they are both on &pm8150b_gpios: camera focus(2), camera snapshot(1).
++		 */
++
++		vol-down {
++			label = "Volume Down";
++			linux,code = <KEY_VOLUMEDOWN>;
++			gpios = <&pm8150_gpios 1 GPIO_ACTIVE_LOW>;
++			debounce-interval = <15>;
++			linux,can-disable;
++			gpio-key,wakeup;
++		};
++	};
++
+ 	vph_pwr: vph-pwr-regulator {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vph_pwr";
+@@ -436,6 +456,16 @@ &i2c15 {
+ 	/* Richwave RTC6226 FM Radio Receiver @ 64 */
+ };
+ 
++&pon_pwrkey {
++	status = "okay";
++};
++
++&pon_resin {
++	status = "okay";
++
++	linux,code = <KEY_VOLUMEUP>;
++};
++
+ &qupv3_id_0 {
+ 	status = "okay";
+ };
 -- 
-2.7.4
+2.32.0
 
