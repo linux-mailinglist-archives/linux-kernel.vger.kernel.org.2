@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17173A9F77
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32203A9F2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235064AbhFPPiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:38:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49924 "EHLO mail.kernel.org"
+        id S234644AbhFPPgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:36:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234819AbhFPPhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:37:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F85561166;
-        Wed, 16 Jun 2021 15:35:19 +0000 (UTC)
+        id S234624AbhFPPgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:36:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0912D6101B;
+        Wed, 16 Jun 2021 15:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857719;
-        bh=SP954mOtF6wkMfdgsDZjIet5/ajxzQPhDm8AHQkgWKA=;
+        s=korg; t=1623857651;
+        bh=uU3E+HpHiuf4G518xekdhVkqedtIxnVtoN6FngjHGNs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=janWd2MKSW098iWvE07k29Hw3DQHTsCwbH0e58pWbKitzQpBsdE1uXoKjfu0cE587
-         bl5wjueJ3HcUsFDSdBAlY5xXqewNVpj1rv8FMuSrP1b27jejaG3Pecr7M2luCfJVo7
-         f2zm9Cl8ZEKmsyB6upPA1CvCp7XJM8FVsy69k670=
+        b=MmdZ6eAtPR8MKHJ3gBy0r9lD63Cwat7CoRw2D7bc/YT4s1sFGOhILyyYGjrQkUhBy
+         pfsSRRJEr1bBKXz5dOLY1DdnDGQcFt9Izk8Pl7cJ+jNrC48yF3wERr6kALtDCBOiVl
+         AVOxUSXHFRydP57URQXMt7brVnGc+yYXcy3LhR7I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org, Yongqiang Liu <liuyongqiang13@huawei.com>,
+        Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 12/38] drm/tegra: sor: Fully initialize SOR before registration
+Subject: [PATCH 5.4 10/28] ARM: OMAP2+: Fix build warning when mmc_omap is not built
 Date:   Wed, 16 Jun 2021 17:33:21 +0200
-Message-Id: <20210616152835.787542808@linuxfoundation.org>
+Message-Id: <20210616152834.475594391@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
-References: <20210616152835.407925718@linuxfoundation.org>
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+References: <20210616152834.149064097@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,88 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+From: Yongqiang Liu <liuyongqiang13@huawei.com>
 
-[ Upstream commit 5dea42759bcef74b0802ea64b904409bc37f9045 ]
+[ Upstream commit 040ab72ee10ea88e1883ad143b3e2b77596abc31 ]
 
-Before registering the SOR host1x client, make sure that it is fully
-initialized. This avoids a potential race condition between the SOR's
-probe and the host1x device initialization in cases where the SOR is
-the final sub-device to register to a host1x instance.
+GCC reports the following warning with W=1:
 
-Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+arch/arm/mach-omap2/board-n8x0.c:325:19: warning:
+variable 'index' set but not used [-Wunused-but-set-variable]
+325 |  int bit, *openp, index;
+    |                   ^~~~~
+
+Fix this by moving CONFIG_MMC_OMAP to cover the rest codes
+in the n8x0_mmc_callback().
+
+Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/sor.c | 27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+ arch/arm/mach-omap2/board-n8x0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
-index 67a80dae1c00..32c83f2e386c 100644
---- a/drivers/gpu/drm/tegra/sor.c
-+++ b/drivers/gpu/drm/tegra/sor.c
-@@ -3922,17 +3922,10 @@ static int tegra_sor_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, sor);
- 	pm_runtime_enable(&pdev->dev);
+diff --git a/arch/arm/mach-omap2/board-n8x0.c b/arch/arm/mach-omap2/board-n8x0.c
+index 418a61ecb827..5e86145db0e2 100644
+--- a/arch/arm/mach-omap2/board-n8x0.c
++++ b/arch/arm/mach-omap2/board-n8x0.c
+@@ -322,6 +322,7 @@ static int n8x0_mmc_get_cover_state(struct device *dev, int slot)
  
--	INIT_LIST_HEAD(&sor->client.list);
-+	host1x_client_init(&sor->client);
- 	sor->client.ops = &sor_client_ops;
- 	sor->client.dev = &pdev->dev;
+ static void n8x0_mmc_callback(void *data, u8 card_mask)
+ {
++#ifdef CONFIG_MMC_OMAP
+ 	int bit, *openp, index;
  
--	err = host1x_client_register(&sor->client);
--	if (err < 0) {
--		dev_err(&pdev->dev, "failed to register host1x client: %d\n",
--			err);
--		goto rpm_disable;
--	}
--
- 	/*
- 	 * On Tegra210 and earlier, provide our own implementation for the
- 	 * pad output clock.
-@@ -3944,13 +3937,13 @@ static int tegra_sor_probe(struct platform_device *pdev)
- 				      sor->index);
- 		if (!name) {
- 			err = -ENOMEM;
--			goto unregister;
-+			goto uninit;
- 		}
+ 	if (board_is_n800()) {
+@@ -339,7 +340,6 @@ static void n8x0_mmc_callback(void *data, u8 card_mask)
+ 	else
+ 		*openp = 0;
  
- 		err = host1x_client_resume(&sor->client);
- 		if (err < 0) {
- 			dev_err(sor->dev, "failed to resume: %d\n", err);
--			goto unregister;
-+			goto uninit;
- 		}
- 
- 		sor->clk_pad = tegra_clk_sor_pad_register(sor, name);
-@@ -3961,14 +3954,20 @@ static int tegra_sor_probe(struct platform_device *pdev)
- 		err = PTR_ERR(sor->clk_pad);
- 		dev_err(sor->dev, "failed to register SOR pad clock: %d\n",
- 			err);
--		goto unregister;
-+		goto uninit;
-+	}
-+
-+	err = __host1x_client_register(&sor->client);
-+	if (err < 0) {
-+		dev_err(&pdev->dev, "failed to register host1x client: %d\n",
-+			err);
-+		goto uninit;
- 	}
- 
- 	return 0;
- 
--unregister:
--	host1x_client_unregister(&sor->client);
--rpm_disable:
-+uninit:
-+	host1x_client_exit(&sor->client);
- 	pm_runtime_disable(&pdev->dev);
- remove:
- 	tegra_output_remove(&sor->output);
+-#ifdef CONFIG_MMC_OMAP
+ 	omap_mmc_notify_cover_event(mmc_device, index, *openp);
+ #else
+ 	pr_warn("MMC: notify cover event not available\n");
 -- 
 2.30.2
 
