@@ -2,94 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 070273A9E42
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BCD3A9E46
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234271AbhFPO4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234225AbhFPOz7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:55:59 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D5CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:53:53 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 4A4201D78;
-        Wed, 16 Jun 2021 14:53:52 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4A4201D78
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1623855232; bh=41okDU2C5ZvjNSnuwv35T/ZXCbIVwVaMm0c2rVcS94U=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=nrKkPYHmG7/s/oaouDPDpNCML6Bfixit7TBDVYWz7CvbB+f8LHITzPCizHSJ0M660
-         2iYHlj0+YAT0Q0pdIa0CsTVr+wEGabQ+Lz3wJQ1HCN5nVIzUzh0Fz8Bpd9A/btUz6i
-         hmE/+4MqGcu0CSv6B95mOZS/rfmIOMyuzbOLybzB2x4WJqZHzQgfqs4vqvEWZ/Vu1G
-         vjK06NDQzV9ZkTB465tqVmlpIYh/a0nXNoslX2bCwrViYxuwHotGP9cQKY4auu04gd
-         hJFRzEI3Ai9mXDzdjCGT3xL7DP7WHSXWVqunIKQKL73nbxw+2G/ED8GmAd5UUStYbH
-         QH0q4+FanyBgg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Joe Perches <joe@perches.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Stefani Seibold <stefani@seibold.net>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Thomas Graf <tgraf@suug.ch>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jens Axboe <axboe@kernel.dk>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: Re: [PATCH v2 1/3] scripts: add spelling_sanitizer.sh script
-In-Reply-To: <20210616122507.896-2-thunder.leizhen@huawei.com>
-References: <20210616122507.896-1-thunder.leizhen@huawei.com>
- <20210616122507.896-2-thunder.leizhen@huawei.com>
-Date:   Wed, 16 Jun 2021 08:53:51 -0600
-Message-ID: <87bl85yi68.fsf@meer.lwn.net>
+        id S234270AbhFPO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:57:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234087AbhFPO5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 10:57:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1E176105A;
+        Wed, 16 Jun 2021 14:55:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623855316;
+        bh=AxlyDycZpX8N+vmFuWI19Sd23V+DuNrgeU3nJ9fSOlQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QbxJDVCXZCiJeF3/Q66YYkQXX8XrqQWunoHlN3fz7MvO3OBOJzfBaIE1+y9uV3EAJ
+         7ZOnQOUax/KFmkvtfDUou8wXJ0FfPxJ4kcKXYjibBCJdFoN5AgHrlcU9CuAk4qCvlw
+         zLTuWne2oMrfffRAnHML8LSecawZJ9nk0RmoqKCSYZh8Z9k8REa/NtJtsTmhlIcV+3
+         ZIDmMzY3L8+UFaPWf88q3/7ddG2zmUdCL/6pwINt3fHenvC3PuKC/nnYWq23IPE5Nm
+         lrqlsLz6YFDCi9nBadTiG2yRnNxG98sePhSk02i2zImkAJwuFwFs6frHPbEhyjfmgV
+         h1jU+qvK6TdTg==
+Received: by mail-ej1-f41.google.com with SMTP id ce15so4411016ejb.4;
+        Wed, 16 Jun 2021 07:55:16 -0700 (PDT)
+X-Gm-Message-State: AOAM531x7aUGMl6u3nY7EwpG0GTrXvjqxoPRQDu48/ZpAHSqHq3k+fLK
+        VCKUy2nhapZxTNAWvfcxbyydHuygUoP+2zjyuw==
+X-Google-Smtp-Source: ABdhPJwrM8JUB7d5DGbvDUmM8cwcGPrXjP07+dvcNQN2Yqm0+3CnQUECrHvdmK6ajaK5xuXmYOM66M46eB/vWGyFWYM=
+X-Received: by 2002:a17:906:9419:: with SMTP id q25mr163961ejx.341.1623855315390;
+ Wed, 16 Jun 2021 07:55:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210419005539.22729-1-mick@ics.forth.gr> <20210419005539.22729-6-mick@ics.forth.gr>
+ <CAMuHMdW=23SPXwqcjD+30M_d0azdze2=ChZM-PF1brf9bCNtrA@mail.gmail.com>
+ <fe02eb618eee141e8bc021e8e30906fc@mailhost.ics.forth.gr> <CAMuHMdXtT1L3yfzkTkbhqz3zgUQj89Bcm7mqz+m126NprAsK8Q@mail.gmail.com>
+ <CAL_JsqLHOmZ6az0bYGC3dg__YX3aq=+Un4_x4+R2nNksc0hM2g@mail.gmail.com> <a488d802940f7fc2ae34a4fe583ec187@mailhost.ics.forth.gr>
+In-Reply-To: <a488d802940f7fc2ae34a4fe583ec187@mailhost.ics.forth.gr>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 16 Jun 2021 08:55:02 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+9eBSHUwzWBipgoSHNDvxqfrTuY4Un0PrRhoaAHugJNw@mail.gmail.com>
+Message-ID: <CAL_Jsq+9eBSHUwzWBipgoSHNDvxqfrTuY4Un0PrRhoaAHugJNw@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] RISC-V: Add crash kernel support
+To:     Nick Kossifidis <mick@ics.forth.gr>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zhen Lei <thunder.leizhen@huawei.com> writes:
++Ard
 
-> The file scripts/spelling.txt recorded a large number of spelling
-> "mistake||correction" pairs. These entries are currently maintained in
-> order, but the results are not strict. In addition, when someone wants to
-> add some new pairs, he either sort them manually or write a script, which
-> is clearly a waste of labor. So add this script. For all spelling
-> "mistake||correction" pairs, sort based on "correction", then on "mistake",
-> and remove duplicates. Sorting based on "mistake" first is not chosen
-> because it is uncontrollable.
+On Tue, Jun 15, 2021 at 5:29 PM Nick Kossifidis <mick@ics.forth.gr> wrote:
 >
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  scripts/spelling_sanitizer.sh | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
->  create mode 100755 scripts/spelling_sanitizer.sh
+> =CE=A3=CF=84=CE=B9=CF=82 2021-06-15 22:21, Rob Herring =CE=AD=CE=B3=CF=81=
+=CE=B1=CF=88=CE=B5:
+> > On Tue, Jun 15, 2021 at 12:48 PM Geert Uytterhoeven
+> > <geert@linux-m68k.org> wrote:
+> >>
+> >> Hi Nick,
+> >>
+> >> On Tue, Jun 15, 2021 at 8:29 PM Nick Kossifidis <mick@ics.forth.gr>
+> >> wrote:
+> >> > =CE=A3=CF=84=CE=B9=CF=82 2021-06-15 16:19, Geert Uytterhoeven =CE=AD=
+=CE=B3=CF=81=CE=B1=CF=88=CE=B5:
+> >> > > This does not match
+> >> > > https://github.com/devicetree-org/dt-schema/blob/master/schemas/ch=
+osen.yaml#L77:
+> >> > >
+> >> > >     $ref: types.yaml#/definitions/uint64-array
+> >> > >     maxItems: 2
+> >> > >     description:
+> >> > >       This property (currently used only on arm64) holds the memor=
+y
+> >> > > range,
+> >> > >       the address and the size, of the elf core header which mainl=
+y
+> >> > > describes
+> >> > >       the panicked kernel\'s memory layout as PT_LOAD segments of =
+elf
+> >> > > format.
+> >> > >
+> >> > > Hence "linux,elfcorehdr" should be a property of the /chosen node,
+> >> > > instead of a memory node with a compatible value of "linux,elfcore=
+hdr".
+> >> > >
+> >> >
+> >> > That's a binding for a property on the /chosen node, that as the tex=
+t
+> >> > says it's defined for arm64 only and the code that handled it was al=
+so
+> >>
+> >> That doesn't mean it must not be used on other architectures ;-)
+> >> Arm64 was just the first one to use it...
+> >
+> > It is used on arm64 because memory is often passed by UEFI tables and
+> > not with /memory node. As riscv is also supporting EFI, I'd think they
+> > would do the same.
+> >
 >
-> diff --git a/scripts/spelling_sanitizer.sh b/scripts/spelling_sanitizer.sh
-> new file mode 100755
-> index 000000000000..603bb7e0e66b
-> --- /dev/null
-> +++ b/scripts/spelling_sanitizer.sh
-> @@ -0,0 +1,27 @@
-> +#!/bin/sh -efu
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +# To get the traditional sort order that uses native byte values
+> We've had this discussion before, riscv uses /memory for now and even if
+> we switched to getting memory from ACPI/UEFI tables, the elf core header
+> is passed from the crashed kernel to the kdump kernel, it has nothing to
+> do with UEFI since the bootloader is the kernel itself. Am I missing
+> something ?
 
-So I am of the naive opinion that everything we drop into scripts/
-should start with a comment saying why it exists and how to use it.
-Otherwise how are people going to benefit from it?
+I believe if we originally booted using UEFI tables, then those are
+passed the kdump kernel as well. The original DT may have had a
+/memory node, but it's possible it didn't match what was in the UEFI
+tables. So using the DT /memory nodes for kdump could give surprising
+results. I think reserved regions also come from UEFI. Ard can
+probably comment better.
 
-Thanks,
-
-jon
+Rob
