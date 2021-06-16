@@ -2,132 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C857B3A967F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A772E3A964A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhFPJvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:51:24 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:17030 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbhFPJvX (ORCPT
+        id S232140AbhFPJia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:38:30 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:25518 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231491AbhFPJi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:51:23 -0400
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210616094915epoutp0157672b4c3b884541b0e62d00fb395150~JBxt-yWOi0760507605epoutp01h
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 09:49:15 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210616094915epoutp0157672b4c3b884541b0e62d00fb395150~JBxt-yWOi0760507605epoutp01h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1623836955;
-        bh=InoYbTqSTzJL0k7/VDUViR0EokAGZGmL8Den3Cd50hU=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=gwcAi80eppQ9a3BzC31PvCfIaL07xl7R1eNtRXLgnHYrXnJmXLE2C8aiZ4b3z3HKW
-         cYIEz7neOwp4EMrXN9AswMt7I4A9P412QiCaudiqg4BrulTTPW8nvBgu2mlYcCIf48
-         yFlx9W8E951RHVX4b7UScg0AgUtxUBrBIEdOHVjY=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210616094914epcas2p17aac116fa16cc76b4d01c94e4ccee7e8~JBxtbvKuq2085820858epcas2p1z;
-        Wed, 16 Jun 2021 09:49:14 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.187]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4G4gPh61BBz4x9Q0; Wed, 16 Jun
-        2021 09:49:12 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CF.0C.09604.819C9C06; Wed, 16 Jun 2021 18:49:12 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210616094912epcas2p38028df32b89b7cc79ba16c0215f8f664~JBxrPyOOa1694316943epcas2p3m;
-        Wed, 16 Jun 2021 09:49:12 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210616094912epsmtrp13d6d60a40b2aec747e4f611bf7a9f82b~JBxrPH8_e1175011750epsmtrp1V;
-        Wed, 16 Jun 2021 09:49:12 +0000 (GMT)
-X-AuditID: b6c32a45-db3ff70000002584-12-60c9c91860d6
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        EE.F6.08637.819C9C06; Wed, 16 Jun 2021 18:49:12 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210616094912epsmtip16089c6878fe9a1082cbf507d29f2dade~JBxrC6JHF3056130561epsmtip1Z;
-        Wed, 16 Jun 2021 09:49:12 +0000 (GMT)
-From:   Daehwan Jung <dh10.jung@samsung.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     Daehwan Jung <dh10.jung@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>,
-        Lukasz Halman <lukasz.halman@gmail.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: ALSA: usb-audio: fix rate on Ozone Z90 USB headset
-Date:   Wed, 16 Jun 2021 18:34:55 +0900
-Message-Id: <1623836097-61918-1-git-send-email-dh10.jung@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMKsWRmVeSWpSXmKPExsWy7bCmma7EyZMJBuse61tcuXiIyeLOgmlM
-        Fs2L17NZNN3oYbW4vGsOm8Wu/3eZLDp39bNabPi+ltGBw2PD5yY2j52z7rJ7bFrVyeaxf+4a
-        do99b5exefRtWcXosX7LVRaPz5vkAjiicmwyUhNTUosUUvOS81My89JtlbyD453jTc0MDHUN
-        LS3MlRTyEnNTbZVcfAJ03TJzgE5TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak5BQY
-        GhboFSfmFpfmpesl5+daGRoYGJkCVSbkZOw5dZux4Al7xfJHR5gaGDvYuhg5OSQETCSuHNzH
-        3MXIxSEksINR4vfPKVDOJ0aJcze2MEI43xgllkydB9TCAdYyfz0TRHwvo8SenbPZIZwfjBL3
-        Pv1hByliE9CS+L6QEWSFiICzxMS978AamAWeMEqcv9QMtltYwFrix5YJYDaLgKrE7fmbmUBs
-        XgFXiZlXb7JD3CcncfNcJ9hJEgLn2CXmHbrDBJFwkdjV8wTKFpZ4dXwLVIOUxMv+NnaIS8sl
-        Fs23g+jtYJRY8+ksI0SNscSsZ+2MIDXMApoS63fpQ5QrSxy5xQJSwSzAJ9Fx+C/UFF6JjjYh
-        iEZliemXJ7BC2JISB1+fY4awPST+nFoHZgsJxEpcnNPDMoFRdhbC/AWMjKsYxVILinPTU4uN
-        CgyR42gTIzi1abnuYJz89oPeIUYmDsZDjBIczEoivLrFJxKEeFMSK6tSi/Lji0pzUosPMZoC
-        g2sis5Rocj4wueaVxBuaGpmZGViaWpiaGVkoifNysB9KEBJITyxJzU5NLUgtgulj4uCUamDy
-        z9b/zisafLom0DP4i3X8zLiQJ7+THZpO2JpVS3OlO3H1+3Zlz/13Luzf7SaRQJX8zVqfld2T
-        Nbfbbrrcc/lxdCTLy+cd34WOPc+f/vPaTPW1R24r72g+In9lwdx1+bdVMhY+ufxn2kqzwpn2
-        4jVL02+eVDxjM3dh3/ufx60sn17pmuLncWQeC+vVD4aci07x7H946Wf/5qJDvR3Wl6e9vnnD
-        xvK0ekJJVabDszmaL2QPWyu+e/brTfOpNsN1kxtkPgb6njzmnOx3MmzGguIUW+f7e63lNx59
-        PC/+6vxzE2cqxEl3/DF0WJeWPq9/Z//T7MJ90i9ese9LKPflbtF9Fs8u/lDUU1Bt78v+xyGP
-        lFiKMxINtZiLihMBWehk5vYDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprILMWRmVeSWpSXmKPExsWy7bCSnK7EyZMJBg/XC1lcuXiIyeLOgmlM
-        Fs2L17NZNN3oYbW4vGsOm8Wu/3eZLDp39bNabPi+ltGBw2PD5yY2j52z7rJ7bFrVyeaxf+4a
-        do99b5exefRtWcXosX7LVRaPz5vkAjiiuGxSUnMyy1KL9O0SuDL2nLrNWPCEvWL5oyNMDYwd
-        bF2MHBwSAiYS89czdTFycggJ7GaUOHxaBsSWEJCUWDr3BjuELSxxv+UIaxcjF1DNN0aJn+tX
-        MoH0sgloSXxfyAhSIyLgKnH13m1GkBpmgReMEn+vHmIBSQgLWEv82DKBDcRmEVCVuD1/M9gy
-        XqCGmVdvQi2Qk7h5rpN5AiPPAkaGVYySqQXFuem5xYYFhnmp5XrFibnFpXnpesn5uZsYwaGm
-        pbmDcfuqD3qHGJk4GA8xSnAwK4nw6hafSBDiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQ
-        QHpiSWp2ampBahFMlomDU6qBqb3h+J4fSoLZHHlq1rMs/i/Rfihl6TglXmaZyWXpve/ENqwM
-        C8vrnnh37ZXS7DrPCQLTtnpo3IgwnLr6s+y2jeX24XL1klv2tvywcVpUbNdv/6ioJrqu+E2z
-        hUulwaa735yfaxfkveTY7dbv41ecvKJ618ETkUIxtYJrt3jlqCYbzu7Z1nDk+3WJx4Kdzxme
-        Rm/ReGI0veVQ8c36DIaTX/2Y+FfPLrrm8+RTgySPcffCfq7Ntw6ULAj6c23f3ZwDb6oTypeZ
-        Z0apsHj8yJ+nLXNZ6nJ9SK7y2tdHq8psTs+5fXvXni1u4Vf77ii3mPza4B29Tjxn16WJE6Q2
-        nfXgUWq50DGrVEJhw7LAq2sklFiKMxINtZiLihMBvJHyXqQCAAA=
-X-CMS-MailID: 20210616094912epcas2p38028df32b89b7cc79ba16c0215f8f664
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210616094912epcas2p38028df32b89b7cc79ba16c0215f8f664
-References: <CGME20210616094912epcas2p38028df32b89b7cc79ba16c0215f8f664@epcas2p3.samsung.com>
+        Wed, 16 Jun 2021 05:38:27 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15G9VQ1B023330;
+        Wed, 16 Jun 2021 09:36:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=qrIt9OkcksJG8Hzoo+m8TG/TF4FvSpIhsfa1qr7ALvU=;
+ b=BdcZRemOAcpmfrdGB+10KSkYZWYTIsy+RexHPGUX4eMS4hVlrQvbWiWZzkaJty67Kbry
+ 2Kuri9L51hvUjM1BplLndmAB8Ova6CKYPeac8FyO/xLE8y3doC+88ZMHxHIp7i3mXKfP
+ vHukx2B2XH6jY4wyjNcDHFyQTJiDQjhCSWS8APxLj5PaszoHOb9LotHhTOfzJ4iGjMYy
+ 2v9TtwcahUhi1x7IOZBpJ6ZFmY2AWPWVXAO/S8SnpAKj96Tb/9zH0vu7/0A4EvCHQ3Xw
+ 5sl7Kvi9MlNM+2/+DYLebPxiUazBCkMoMvylrEE4ycbtmZwEr30Zh6IyywRAfDl5+XvF qA== 
+Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 396tjdsv25-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Jun 2021 09:36:16 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15G9aGw8030461;
+        Wed, 16 Jun 2021 09:36:16 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 396wau78ff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Jun 2021 09:36:16 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15G9aFRF030440;
+        Wed, 16 Jun 2021 09:36:15 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 396wau78f1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Jun 2021 09:36:15 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15G9aCm1001681;
+        Wed, 16 Jun 2021 09:36:12 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Jun 2021 09:36:12 +0000
+Date:   Wed, 16 Jun 2021 12:36:04 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>
+Cc:     Thomas Hellstr <C3@mwanda>, B6@mwanda,
+        m <thomas.hellstrom@linux.intel.com>,
+        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/ttm: fix error handling in ttm_bo_handle_move_mem()
+Message-ID: <20210616093604.GD1901@kadam>
+References: <YMmadPwv8C+Ut1+o@mwanda>
+ <03d0b798-d1ab-5b6f-2c27-8140d923d445@gmail.com>
+ <20210616083758.GC1901@kadam>
+ <520a9d1f-8841-8d5e-595d-23783de8333d@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <520a9d1f-8841-8d5e-595d-23783de8333d@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: 2qZ2mbBvaaX2gIX11Cai09kvJ2R54kVW
+X-Proofpoint-GUID: 2qZ2mbBvaaX2gIX11Cai09kvJ2R54kVW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It mislabels its 96 kHz altsetting and that's why it causes some noise
+On Wed, Jun 16, 2021 at 10:47:14AM +0200, Christian König wrote:
+> 
+> 
+> Am 16.06.21 um 10:37 schrieb Dan Carpenter:
+> > On Wed, Jun 16, 2021 at 08:46:33AM +0200, Christian König wrote:
+> > > Sending the first message didn't worked, so let's try again.
+> > > 
+> > > Am 16.06.21 um 08:30 schrieb Dan Carpenter:
+> > > > There are three bugs here:
+> > > > 1) We need to call unpopulate() if ttm_tt_populate() succeeds.
+> > > > 2) The "new_man = ttm_manager_type(bdev, bo->mem.mem_type);" assignment
+> > > >      was wrong and it was really assigning "new_mem = old_mem;".  There
+> > > >      is no need for this assignment anyway as we already have the value
+> > > >      for "new_mem".
+> > > > 3) The (!new_man->use_tt) condition is reversed.
+> > > > 
+> > > > Fixes: ba4e7d973dd0 ("drm: Add the TTM GPU memory manager subsystem.")
+> > > > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > > > ---
+> > > > This is from reading the code and I can't swear that I have understood
+> > > > it correctly.  My nouveau driver is currently unusable and this patch
+> > > > has not helped.  But hopefully if I fix enough bugs eventually it will
+> > > > start to work.
+> > > Well NAK, the code previously looked quite well and you are breaking it now.
+> > > 
+> > > What's the problem with nouveau?
+> > > 
+> > The new Firefox seems to excersize nouveau more than the old one so
+> > when I start 10 firefox windows it just hangs the graphics.
+> > 
+> > I've added debug code and it seems like the problem is that
+> > nv50_mem_new() is failing.
+> 
+> Sounds like it is running out of memory to me.
+> 
+> Do you have a dmesg?
+> 
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Daehwan Jung <dh10.jung@samsung.com>
----
- sound/usb/format.c | 2 ++
- 1 file changed, 2 insertions(+)
+At first there was a very straight forward use after free bug which I
+fixed.
+https://lore.kernel.org/nouveau/YMinJwpIei9n1Pn1@mwanda/T/#u
 
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index 2287f8c..eb216fe 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -223,9 +223,11 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
- 				continue;
- 			/* C-Media CM6501 mislabels its 96 kHz altsetting */
- 			/* Terratec Aureon 7.1 USB C-Media 6206, too */
-+			/* Ozone Z90 USB C-Media, too */
- 			if (rate == 48000 && nr_rates == 1 &&
- 			    (chip->usb_id == USB_ID(0x0d8c, 0x0201) ||
- 			     chip->usb_id == USB_ID(0x0d8c, 0x0102) ||
-+			     chip->usb_id == USB_ID(0x0d8c, 0x0078) ||
- 			     chip->usb_id == USB_ID(0x0ccd, 0x00b1)) &&
- 			    fp->altsetting == 5 && fp->maxpacksize == 392)
- 				rate = 96000;
--- 
-2.7.4
+But now the use after free is gone the only thing in dmesg is:
+"[TTM] Buffer eviction failed".  And I have some firmware missing.
+
+[  205.489763] rfkill: input handler disabled
+[  205.678292] nouveau 0000:01:00.0: Direct firmware load for nouveau/nva8_fuc084 failed with error -2
+[  205.678300] nouveau 0000:01:00.0: Direct firmware load for nouveau/nva8_fuc084d failed with error -2
+[  205.678302] nouveau 0000:01:00.0: msvld: unable to load firmware data
+[  205.678304] nouveau 0000:01:00.0: msvld: init failed, -19
+[  296.150632] [TTM] Buffer eviction failed
+[  417.084265] [TTM] Buffer eviction failed
+[  447.295961] [TTM] Buffer eviction failed
+[  510.800231] [TTM] Buffer eviction failed
+[  556.101384] [TTM] Buffer eviction failed
+[  616.495790] [TTM] Buffer eviction failed
+[  692.014007] [TTM] Buffer eviction failed
+
+The eviction failed message only shows up a minute after the hang so it
+seems more like a symptom than a root cause.
+
+regards,
+dan carpenter
 
