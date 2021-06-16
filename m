@@ -2,50 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5787B3A9D74
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F26E3A9D8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbhFPOX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:23:58 -0400
-Received: from verein.lst.de ([213.95.11.211]:54649 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232694AbhFPOX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:23:57 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E68C468BEB; Wed, 16 Jun 2021 16:21:48 +0200 (CEST)
-Date:   Wed, 16 Jun 2021 16:21:48 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Roman Skakun <rm.skakun@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Volodymyr Babchuk <volodymyr_babchuk@epam.com>,
-        Roman Skakun <roman_skakun@epam.com>,
-        Andrii Anisov <andrii_anisov@epam.com>
-Subject: Re: [PATCH 2/2] swiotlb-xen: override common mmap and get_sgtable
- dma ops
-Message-ID: <20210616142148.GA764@lst.de>
-References: <855a58e2-1e03-4763-cb56-81367b73762c@oracle.com> <20210616114205.38902-1-roman_skakun@epam.com> <20210616114205.38902-2-roman_skakun@epam.com> <2834cdc0-534c-4f07-1901-e468a7713c1f@oracle.com>
+        id S234045AbhFPO2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:28:42 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:62358 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234013AbhFPO2a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 10:28:30 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
+ id de9fe55ee3a221b7; Wed, 16 Jun 2021 16:26:23 +0200
+Received: from kreacher.localnet (89-64-81-4.dynamic.chello.pl [89.64.81.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 53E5D669926;
+        Wed, 16 Jun 2021 16:26:22 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 1/5] ACPI: scan: Rearrange acpi_dev_get_first_consumer_dev_cb()
+Date:   Wed, 16 Jun 2021 16:21:51 +0200
+Message-ID: <9924939.nUPlyArG6x@kreacher>
+In-Reply-To: <3140195.44csPzL39Z@kreacher>
+References: <3140195.44csPzL39Z@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2834cdc0-534c-4f07-1901-e468a7713c1f@oracle.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.81.4
+X-CLIENT-HOSTNAME: 89-64-81-4.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgjeejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedurdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedurdegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhguvghgohgvuggvsehrvgguhhgrthdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 10:12:55AM -0400, Boris Ostrovsky wrote:
-> I wonder now whether we could avoid code duplication between here and dma_common_mmap()/dma_common_get_sgtable() and use your helper there.
-> 
-> 
-> Christoph, would that work?  I.e. something like
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-You should not duplicate the code at all, and just make the common
-helpers work with vmalloc addresses.
+Make acpi_dev_get_first_consumer_dev_cb() a bit more straightforward
+and rewrite the comment in it.
+
+No functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/scan.c |   13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -2107,13 +2107,12 @@ static int acpi_dev_get_first_consumer_d
+ 	struct acpi_device *adev;
+ 
+ 	adev = acpi_bus_get_acpi_device(dep->consumer);
+-	if (!adev)
+-		/* If we don't find an adev then we want to continue parsing */
+-		return 0;
+-
+-	*(struct acpi_device **)data = adev;
+-
+-	return 1;
++	if (adev) {
++		*(struct acpi_device **)data = adev;
++		return 1;
++	}
++	/* Continue parsing if the device object is not present. */
++	return 0;
+ }
+ 
+ static int acpi_scan_clear_dep(struct acpi_dep_data *dep, void *data)
+
+
+
