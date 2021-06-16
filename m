@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C942D3A9EE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75873A9EEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234582AbhFPPZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234554AbhFPPZn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:25:43 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95508C061574;
-        Wed, 16 Jun 2021 08:23:36 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id l3so1785581qvl.0;
-        Wed, 16 Jun 2021 08:23:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4RkdmNkrf3BBo78m/TAwjqmLT/OENZZH2eOGrb77vX4=;
-        b=bzw1YVXlqLHxxl0qzwq/c6+VuhQjm1Q7apIuxtL9KODROgrBOp8xFfHPc7sdYh58zK
-         Qlx3fMYO2vZG2Sqt7uot9as7F2HRHaQhoL5sLOWTiYZb/ghMCKTEg1rqfXiZg44IeC/F
-         vzDKzrZnhMmo6h2PyiMMna8wFpVapRgjYKymXkGnijnQ74KqiFUZLrNFRvmzAQK40Wvc
-         StrYm4C8OG7gM6fi2qit+uz6odcqhOPiJN8rKAL92+PumUvpkXcIS3w13gT4L6y2oCsW
-         eX5cbx/HLm4kTGoXWUvQ46S+xa/OBpHAxIo57bMx6Kmrpuga5JrIoSd36nPP+VouLgIg
-         muXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=4RkdmNkrf3BBo78m/TAwjqmLT/OENZZH2eOGrb77vX4=;
-        b=f2OK+IOY+Mnm6soVUTRkuSBxOtYtE4zgIztS3eWzepDOMf3TRQPRe9R2tYc/zeCcnO
-         31dJGKLQVgwkLHaLs6qya03rLwljJBq5fpZZ+8EhfYhn6m5hAsDssnV6Cw5zfMHwtWy1
-         uo/+Z8J/eZONYpwiVdKZ4+PtwNjZA3+5kmywfclfa35HDUkhU7mpauJ1G6JJmLDOuYQo
-         PHsq+ZwR3gb+tTwos6SpkFOYQzIWHpfbpf7A634F/ovK4znmkYMW7zaTfQBtY+KqXECV
-         PMplp8KE3cEeHhiXSZ4WzoeCKfQDygbNWQJdq0qgTuakLHJ9TE7w/kGm5uKaiSRlc26Z
-         1rDw==
-X-Gm-Message-State: AOAM532Kyt2voduorEz3gF+XtY47FfEYoCBq5Etim2cLe8ymMQtLxoC3
-        6eJmGn5lUKrpiLvaJJoQ4Oc=
-X-Google-Smtp-Source: ABdhPJySeztxTGzuyyO33w/6itru5QmUPDH/0zMlmja2lGi0SRz243v2CgiFD4L9g1ywMFMYOknnkA==
-X-Received: by 2002:a05:6214:1c0d:: with SMTP id u13mr445980qvc.49.1623857015666;
-        Wed, 16 Jun 2021 08:23:35 -0700 (PDT)
-Received: from localhost ([199.192.137.73])
-        by smtp.gmail.com with ESMTPSA id l3sm1392700qth.87.2021.06.16.08.23.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 08:23:35 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 16 Jun 2021 11:23:34 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, stable@vger.kernel.org,
-        Richard Purdie <richard.purdie@linuxfoundation.org>
-Subject: Re: [PATCH] cgroup1: fix leaked context root causing sporadic NULL
- deref in LTP
-Message-ID: <YMoXdljfOFjoVO93@slm.duckdns.org>
-References: <20210616125157.438837-1-paul.gortmaker@windriver.com>
+        id S234598AbhFPPZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:25:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234589AbhFPPZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:25:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E7196135C;
+        Wed, 16 Jun 2021 15:23:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623857025;
+        bh=P9kMQ2jD1IPtWm/U0GmUTuT+zZSu3WntBzFULA8XsKs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Klm5REesq4KWd2XEmOVEITrGliAxe44pUkUfIKAC4nsSCFZ0ktmXvJtcDd2K5biyr
+         cci0H4xIP403/1NFLY7WOnf2Civf62LtOb0zt1osOj22vWzZDKrFRRPgu/GjYD6s0s
+         R0uAJR/2dWKVv6ENcztuZDPByuviPG+gS2Er9WlhOeL3zqPWnGX8dxm7shgXx0ZUEh
+         uHyHNyevBsM681rYqUHX2rzFtYqTQ3K6WnkNvmvxjUH0yMHMdBFZQN1M3YGFrONv4K
+         6fqLXBFAJy+82iZfxJknssnMXDJ0GA+9u4zAdd6Si+yljlNzb7yq9Jjw1DkWF1Tm8a
+         UUOIYjeeJoeWA==
+Date:   Wed, 16 Jun 2021 10:23:43 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "liuqi (BA)" <liuqi115@huawei.com>
+Cc:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Linuxarm <linuxarm@huawei.com>, will@kernel.org,
+        mark.rutland@arm.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, zhangshaokun@hisilicon.com
+Subject: Re: [PATCH v6 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
+ PMU
+Message-ID: <20210616152343.GA2977964@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210616125157.438837-1-paul.gortmaker@windriver.com>
+In-Reply-To: <d2524d34-648a-8667-dde9-3686bd4fd096@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jun 16, 2021 at 09:09:40AM +0800, liuqi (BA) wrote:
+> On 2021/6/12 7:33, Krzysztof WilczyÅ„ski wrote:
 
-On Wed, Jun 16, 2021 at 08:51:57AM -0400, Paul Gortmaker wrote:
-> A fix would be to not leave the stale reference in fc->root as follows:
-> 
->    --------------
->                   dput(fc->root);
->   +               fc->root = NULL;
->                   deactivate_locked_super(sb);
->    --------------
-> 
-> ...but then we are just open-coding a duplicate of fc_drop_locked() so we
-> simply use that instead.
+> > > +static ssize_t hisi_pcie_event_sysfs_show(struct device *dev,
+> > > +				   struct device_attribute *attr, char *buf)
+> > > +{
+> > > +	struct dev_ext_attribute *eattr;
+> > > +
+> > > +	eattr = container_of(attr, struct dev_ext_attribute, attr);
+> > > +
+> > > +	return sysfs_emit(buf, "config=0x%lx\n", (unsigned long)eattr->var);
+> > > +}
+> > 
+> > I am not that familiar with the perf drivers, thus I might be completely
+> > wrong here, but usually for sysfs objects a single value is preferred,
+> > so that this "config=" technically would not be needed, unless this is
+> > somewhat essential to the consumers of this attribute to know what the
+> > value is? Â What do you think?
+>
+> "config=" is a supported for userspace tool, it is a kind of alias, so
+> cannot be remover here, thanks.
 
-As this is unlikely to be a real-world problem both in probability and
-circumstances, I'm applying this to cgroup/for-5.14 instead of
-cgroup/for-5.13-fixes.
+I don't understand this part.  This is brand-new functionality for the
+kernel, so there's no requirement to maintain compatibility for
+existing userspace tools.
 
-Thanks.
+If there's a similar sysfs show function for other perf drivers, and
+you need to be compatible with *that*, fine.  But if this is merely
+about being compatible with userspace that uses out-of-tree kernel
+functionality, that's not a real factor.
 
--- 
-tejun
+Bjorn
