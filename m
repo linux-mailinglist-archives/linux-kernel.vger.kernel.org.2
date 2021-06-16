@@ -2,104 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E978D3A9C43
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC66F3A9C1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232772AbhFPNnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:43:12 -0400
-Received: from mga11.intel.com ([192.55.52.93]:6739 "EHLO mga11.intel.com"
+        id S233322AbhFPNlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:41:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233162AbhFPNnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:43:08 -0400
-IronPort-SDR: cdU14Jz4ghW37p3YToV4VZ6GisTpFme2FHdyaZnZtrUiXn4Wy2093K/aXaJcDV8SkwqQmRREzE
- EQmp2IvMVgNg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="203154409"
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="203154409"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 06:40:42 -0700
-IronPort-SDR: Lt07RJrdxe5oOrfZmM+ZpHT4AIw0XB/Z9/g/TyrMb9KXvSXMSRmUpNkEjbqEWfdRgR1Xmgw7lu
- mCQBv1C0BtBw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="554809828"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 16 Jun 2021 06:40:39 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 16 Jun 2021 16:40:39 +0300
-Date:   Wed, 16 Jun 2021 16:40:38 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v1] usb: typec: tcpci: Fix up sink disconnect thresholds
- for PD
-Message-ID: <YMn/Vu13ApE1t024@kuha.fi.intel.com>
-References: <20210615174323.1160132-1-badhri@google.com>
+        id S233306AbhFPNlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 09:41:18 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 908B661241;
+        Wed, 16 Jun 2021 13:39:07 +0000 (UTC)
+Date:   Wed, 16 Jun 2021 14:41:08 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ye Xiang <xiang.ye@intel.com>, linux-input@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alessandro Zummo <a.zummo@towertech.it>
+Subject: Re: [PATCH v2 1/1] iio: hid-sensors: lighten exported symbols by
+ moving to IIO_HID namespace
+Message-ID: <20210616144108.3771d4b2@jic23-huawei>
+In-Reply-To: <YMnzlGDQn2s1vuKz@smile.fi.intel.com>
+References: <20210614162447.5392-1-andriy.shevchenko@linux.intel.com>
+        <YMfDBhM52iyM0eFU@piout.net>
+        <20210616134153.1007b5cf@jic23-huawei>
+        <YMnzlGDQn2s1vuKz@smile.fi.intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615174323.1160132-1-badhri@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 10:43:23AM -0700, Badhri Jagan Sridharan wrote:
-> "Table 4-3 VBUS Sink Characteristics" of "Type-C Cable and Connector
-> Specification" defines the disconnect voltage thresholds of various
-> configurations. This change fixes the disconnect threshold voltage
-> calculation based on vSinkPD_min and vSinkDisconnectPD as defined
-> by the table.
+On Wed, 16 Jun 2021 15:50:28 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+
+> On Wed, Jun 16, 2021 at 01:41:53PM +0100, Jonathan Cameron wrote:
+> > On Mon, 14 Jun 2021 22:58:46 +0200
+> > Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
+> >   
+> > > On 14/06/2021 19:24:47+0300, Andy Shevchenko wrote:  
+> > > > A namespace for exported symbols makes clear who is a provider
+> > > > and who is a consumer of the certain resources. Besides that,
+> > > > it doesn't pollute the common namespace.
+> > > > 
+> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>    
+> > > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>  
+> > 
+> > Thanks,  applied to the togreg branch of iio.git and pushed out as
+> > testing for 0-day to poke at it  
 > 
-> Fixes: e1a97bf80a022 ("usb: typec: tcpci: Implement Auto discharge disconnect callbacks")
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
->  drivers/usb/typec/tcpm/tcpci.c | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
+> Thanks!
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-> index 22862345d1ab..9858716698df 100644
-> --- a/drivers/usb/typec/tcpm/tcpci.c
-> +++ b/drivers/usb/typec/tcpm/tcpci.c
-> @@ -21,8 +21,12 @@
->  #define	PD_RETRY_COUNT_DEFAULT			3
->  #define	PD_RETRY_COUNT_3_0_OR_HIGHER		2
->  #define	AUTO_DISCHARGE_DEFAULT_THRESHOLD_MV	3500
-> -#define	AUTO_DISCHARGE_PD_HEADROOM_MV		850
-> -#define	AUTO_DISCHARGE_PPS_HEADROOM_MV		1250
-> +#define	VSINKPD_MIN_IR_DROP_MV			750
-> +#define	VSRC_NEW_MIN_PERCENT			95
-> +#define	VSRC_VALID_MIN_MV			500
-> +#define	VPPS_NEW_MIN_PERCENT			95
-> +#define	VPPS_VALID_MIN_MV			100
-> +#define	VSINKDISCONNECT_PD_MIN_PERCENT		90
->  
->  #define tcpc_presenting_rd(reg, cc) \
->  	(!(TCPC_ROLE_CTRL_DRP & (reg)) && \
-> @@ -351,11 +355,13 @@ static int tcpci_set_auto_vbus_discharge_threshold(struct tcpc_dev *dev, enum ty
->  		threshold = AUTO_DISCHARGE_DEFAULT_THRESHOLD_MV;
->  	} else if (mode == TYPEC_PWR_MODE_PD) {
->  		if (pps_active)
-> -			threshold = (95 * requested_vbus_voltage_mv / 100) -
-> -				AUTO_DISCHARGE_PD_HEADROOM_MV;
-> +			threshold = ((VPPS_NEW_MIN_PERCENT * requested_vbus_voltage_mv / 100) -
-> +				     VSINKPD_MIN_IR_DROP_MV - VPPS_VALID_MIN_MV) *
-> +				     VSINKDISCONNECT_PD_MIN_PERCENT / 100;
->  		else
-> -			threshold = (95 * requested_vbus_voltage_mv / 100) -
-> -				AUTO_DISCHARGE_PPS_HEADROOM_MV;
-> +			threshold = ((VSRC_NEW_MIN_PERCENT * requested_vbus_voltage_mv / 100) -
-> +				     VSINKPD_MIN_IR_DROP_MV - VSRC_VALID_MIN_MV) *
-> +				     VSINKDISCONNECT_PD_MIN_PERCENT / 100;
->  	} else {
->  		/* 3.5V for non-pd sink */
->  		threshold = AUTO_DISCHARGE_DEFAULT_THRESHOLD_MV;
-> -- 
-> 2.32.0.272.g935e593368-goog
+> > and see if we missed anything.  
+> 
+> Hopefully nothing in the code.
+> 
+> What I have missed is the Ack from Srinivas. Can you add it later on?
+> 
 
--- 
-heikki
+Done which was easy because I hadn't pushed it out anywhere yet!
+
+Jonathan
+
+
