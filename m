@@ -2,123 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DFE13A935B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C12E3A9360
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbhFPG5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34686 "EHLO mail.kernel.org"
+        id S232195AbhFPG56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:57:58 -0400
+Received: from mga09.intel.com ([134.134.136.24]:63504 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231620AbhFPG5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:57:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42F47613E9;
-        Wed, 16 Jun 2021 06:55:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623826518;
-        bh=97U96sWHfpw5buBpfC2VHMECZ3YW56BbYE8wINfNMTc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fJnphnkWoFyzhlV7/4xjXR9kAyXdXWghQKAqnwIV/NEAKYrW8w387L/nbOOj3Rbjx
-         ohWXd1avPhrhkkfEUL075Y7+wRuMqp4+QZ/05vqbgV68wEnAwr4HcBio7jJTc779xz
-         fE5koBtP+QuGs2l5XZKzeTba0bFJyCdYTD8REC2zDMJEqGl9/+5MhTiTpi6zpDlPFm
-         WFu43nPfmBedqU2MZahpi6HNnOaurP66wqL2HMd5a+VrdLTLCZZa5/9R6gM+VS1njt
-         fUh5AK0ybc8HtTVJk/L+qmfB4/Wszh/awfxaPAKbXd/Aaa2b7oTJORm9mUl0D/QBps
-         i/9NxLCSm7syw==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1ltPSG-004lCj-JY; Wed, 16 Jun 2021 08:55:16 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: [PATCH 8/8] docs: PCI: Replace non-breaking spaces to avoid PDF issues
-Date:   Wed, 16 Jun 2021 08:55:14 +0200
-Message-Id: <8036126a59adb720dbc9233341ad5a08531cf73f.1623826294.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1623826294.git.mchehab+huawei@kernel.org>
-References: <cover.1623826294.git.mchehab+huawei@kernel.org>
+        id S232123AbhFPG5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 02:57:38 -0400
+IronPort-SDR: CnSQUQD18y2E8YhrtmaYn/6isv4JsDLzLV7EJDPYl5zkNOFRtFd93sS3sZAW/xjyGj19iLtUSL
+ WbcaQLQ3JVTQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206084504"
+X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
+   d="scan'208";a="206084504"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 23:55:32 -0700
+IronPort-SDR: KV3BD7ZhGV1XRJRvJj0dt4O2b00BFbeYM7BM4gavKuHwzUYRDB2M5dfv/QB7op6wcfiivzTi8+
+ rVN9ROxeuixw==
+X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
+   d="scan'208";a="637372913"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 23:55:28 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 2E927202D5;
+        Wed, 16 Jun 2021 09:55:26 +0300 (EEST)
+Date:   Wed, 16 Jun 2021 09:55:26 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 17/29] docs: firmware-guide: acpi: avoid using ReST
+ :doc:`foo` markup
+Message-ID: <20210616065526.GB3@paasikivi.fi.intel.com>
+References: <cover.1623824363.git.mchehab+huawei@kernel.org>
+ <7162043c18f1ea96c446b332400e44e8087ba142.1623824363.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7162043c18f1ea96c446b332400e44e8087ba142.1623824363.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The conversion tools used during DocBook/LaTeX/html/Markdown->ReST
-conversion and some cut-and-pasted text contain some characters that
-aren't easily reachable on standard keyboards and/or could cause
-troubles when parsed by the documentation build system.
+On Wed, Jun 16, 2021 at 08:27:32AM +0200, Mauro Carvalho Chehab wrote:
+> The :doc:`foo` tag is auto-generated via automarkup.py.
+> So, use the filename at the sources, instead of :doc:`foo`.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Replace the occurences of the following characters:
+Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-	- U+00a0 (' '): NO-BREAK SPACE
-	  as it can cause lines being truncated on PDF output
-
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/PCI/acpi-info.rst | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/Documentation/PCI/acpi-info.rst b/Documentation/PCI/acpi-info.rst
-index 060217081c79..34c64a5a66ec 100644
---- a/Documentation/PCI/acpi-info.rst
-+++ b/Documentation/PCI/acpi-info.rst
-@@ -22,9 +22,9 @@ or if the device has INTx interrupts connected by platform interrupt
- controllers and a _PRT is needed to describe those connections.
- 
- ACPI resource description is done via _CRS objects of devices in the ACPI
--namespace [2].   The _CRS is like a generalized PCI BAR: the OS can read
-+namespace [2].   The _CRS is like a generalized PCI BAR: the OS can read
- _CRS and figure out what resource is being consumed even if it doesn't have
--a driver for the device [3].  That's important because it means an old OS
-+a driver for the device [3].  That's important because it means an old OS
- can work correctly even on a system with new devices unknown to the OS.
- The new devices might not do anything, but the OS can at least make sure no
- resources conflict with them.
-@@ -41,15 +41,15 @@ ACPI, that device will have a specific _HID/_CID that tells the OS what
- driver to bind to it, and the _CRS tells the OS and the driver where the
- device's registers are.
- 
--PCI host bridges are PNP0A03 or PNP0A08 devices.  Their _CRS should
--describe all the address space they consume.  This includes all the windows
-+PCI host bridges are PNP0A03 or PNP0A08 devices.  Their _CRS should
-+describe all the address space they consume.  This includes all the windows
- they forward down to the PCI bus, as well as registers of the host bridge
--itself that are not forwarded to PCI.  The host bridge registers include
-+itself that are not forwarded to PCI.  The host bridge registers include
- things like secondary/subordinate bus registers that determine the bus
- range below the bridge, window registers that describe the apertures, etc.
- These are all device-specific, non-architected things, so the only way a
- PNP0A03/PNP0A08 driver can manage them is via _PRS/_CRS/_SRS, which contain
--the device-specific details.  The host bridge registers also include ECAM
-+the device-specific details.  The host bridge registers also include ECAM
- space, since it is consumed by the host bridge.
- 
- ACPI defines a Consumer/Producer bit to distinguish the bridge registers
-@@ -66,7 +66,7 @@ the PNP0A03/PNP0A08 device itself.  The workaround was to describe the
- bridge registers (including ECAM space) in PNP0C02 catch-all devices [6].
- With the exception of ECAM, the bridge register space is device-specific
- anyway, so the generic PNP0A03/PNP0A08 driver (pci_root.c) has no need to
--know about it.  
-+know about it.  
- 
- New architectures should be able to use "Consumer" Extended Address Space
- descriptors in the PNP0A03 device for bridge registers, including ECAM,
-@@ -75,9 +75,9 @@ ia64 kernels assume all address space descriptors, including "Consumer"
- Extended Address Space ones, are windows, so it would not be safe to
- describe bridge registers this way on those architectures.
- 
--PNP0C02 "motherboard" devices are basically a catch-all.  There's no
-+PNP0C02 "motherboard" devices are basically a catch-all.  There's no
- programming model for them other than "don't use these resources for
--anything else."  So a PNP0C02 _CRS should claim any address space that is
-+anything else."  So a PNP0C02 _CRS should claim any address space that is
- (1) not claimed by _CRS under any other device object in the ACPI namespace
- and (2) should not be assigned by the OS to something else.
- 
 -- 
-2.31.1
-
+Sakari Ailus
