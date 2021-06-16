@@ -2,391 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219363A988F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEBA3A9893
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbhFPLD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:03:59 -0400
-Received: from mail-bn7nam10on2069.outbound.protection.outlook.com ([40.107.92.69]:32609
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232476AbhFPLDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:03:18 -0400
+        id S232115AbhFPLEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:04:34 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:52104 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232555AbhFPLDx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 07:03:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1623841305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P4Qd2KX4Ezz3bmQaG3UyE0GNrbB+QN0FC8EFB3mW1zc=;
+        b=icfYihTsPMpm/K5zqlkwio+aXEVWOlPdMJmQjguu5r9rM5l6HM8hn61ed3M9FDdqSAHIi1
+        rMLxOx7uLHBlJyadUoUNFjYNWoHwljsVRsYgY4SHJPFpg0m94Bh4h3KZzimyrbMIp1zKWb
+        OrWetJFPN1OLClNWsA4c3CrLrPZfrnI=
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-db3eur04lp2057.outbound.protection.outlook.com [104.47.12.57]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-23-Lgo-8QzIONmqVrB3j2VoFA-1; Wed, 16 Jun 2021 13:01:44 +0200
+X-MC-Unique: Lgo-8QzIONmqVrB3j2VoFA-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PlgEE7TqDqkCmBEM18wmh/KDYRDgShjSeR5d8wrKhpan0cbdyoEZa270bs4EeKebo8l1f2z2bblaksywuEPPox+YmajmJx4YLwvu9CjwcWN8EzE87fL2i1Lb1pjUEHnRqqDaqpdyDvM6HHdEPmnhJforFlrrQGkpMgIzND/AkW0dlkHw1qnUBT0MqDmbIZIRRvR3ugz7dSEaz78Ify6LXoUgAA9p8L75yG687uVEx2+0RLocgbgY0EQt78YwsFfhhSp17fOY/IPwQrgoWf0vjMWygjaSo5vXwF3lL93ZO6tChQhHlofzuKVDEXtskMvNIu+MdOMbhby1pBeQmRCXkQ==
+ b=goLh89kPEN+DH5mu+Q1OEIsgNuLMusl000kPUUeFJujS7KxDWDju8GI/IUyVqgbZQupZKoL//ZFkZofc7HbruzVUntx6rKgCvtqL1nDaBfOzqNWWiysIGSqWl8Mohs181q0SVERiUxFZlxRCCfyKrMDI3esg0R07wKBPfJhryf7bZTWXcQ7HGASNDl7Lt3B/4mL4b+hsGqo6SC8pD/CihoOOjfTJjXDNbmDNGwOBAeIIyDfIxYHrl85FAGEKatcPSQLTlFYFLY1UmPwzTGHPdoRSlbEziCwZeyDc16UzRONC0wzCiuzrovTomNxeYC+CrUl/5PgNWjJlvug2JnQiVw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vq6pmlt0r6VarlndLu5yDGAmcM2GmJMglRhjK5ah0Jc=;
- b=A8ucvkQT/twpDSASJXZSDVAIhgF7+4JzS+XGlkxgW/QBGbgwIGnSpz8DAK5NR2P1EVu07NFtKZUFdkKnkcr9OFLZmPTFnTyMp9vZKJdCt8rC2tvpN6x7YXvnwMlFKbt+SLhO9aVjhfbwzk0CJ6JRsfxfqJUb2M3dGh4DnfIFeU3zlu19Jd8rUBaR4UGhEBiw/yWZlzg9ocFvlTiQWtQLUnryvuqPA9vH6MVwr8VNRS4v+rCGOksXWoElvl5JR+/fPiPqV7x8tyETzrmwMaTZpPfWDX5mUysjwr3PSZxM11i9ZLVP4+C4r9xxqRz84cWPS3NKQ7epNhHttn3W18rfHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vq6pmlt0r6VarlndLu5yDGAmcM2GmJMglRhjK5ah0Jc=;
- b=Ks6KS0XKZ72uUlLqGMaAMQ1Er0U+JmS6PP7q7/UZQprcvj3uVgyyZAtbqbylZhJ6m6/qokn7A373pAdTa+v+sxkYYFyYh2pAoLYbEzNCMex4u4Q+bPFjABwjuDKcvgmL2o5Pj+Io180gfzR2jk4P+W36GOS0cC+wWyrjfPENvszBiiOocCV+Hd4bL6pNIsdmzk+32i7w3PxgLPAq5wPX2eJR497ZTEadVPEm189xXWH3NQB90iMubGSQzLIcL5bD/vtKHX+PMETy+uW7TSXNA3WWJN05jXe4z2vcX6RKkTxu+d6uNWZ/AyumiRU9yoSbBkc656tsrHCH+/d0pjGu6w==
-Received: from BN6PR19CA0082.namprd19.prod.outlook.com (2603:10b6:404:133::20)
- by BYAPR12MB3430.namprd12.prod.outlook.com (2603:10b6:a03:ad::11) with
+ bh=P4Qd2KX4Ezz3bmQaG3UyE0GNrbB+QN0FC8EFB3mW1zc=;
+ b=iUGlSOSLGP2akuSzhGQX05Cwp9me7MXFqcPIzI7umeYppExWf8icgT3DNY0cUujCRjvRk7WAuIEsA18j3EA+2746Cl9FxrWlSYF2OHXfYP/afE5Ip4zS/MYhn93qQqGMlwZGEqI4tfG4/a465g5vOuf26FyHuAeIQVJvP2PMtqnuf0KtiwDq45K3Rzs3kBEeolJ+B1SLRTjYgp+q7JCcUOCcWHi3fFbbHVlHhAxYSSjit3pgCubUahdaYs59g5Xcd9z2/XEqwvYrldBgonC6jsu/bIZcNrHJMAcsfsmzKI/mLR2wvDQJyQtJcNWDRvLTcjkmlfH4B7P+OAXlWTsq5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB7037.eurprd04.prod.outlook.com (2603:10a6:800:125::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16; Wed, 16 Jun
- 2021 11:01:10 +0000
-Received: from BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:133:cafe::3d) by BN6PR19CA0082.outlook.office365.com
- (2603:10b6:404:133::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15 via Frontend
- Transport; Wed, 16 Jun 2021 11:01:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT048.mail.protection.outlook.com (10.13.177.117) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4242.16 via Frontend Transport; Wed, 16 Jun 2021 11:01:10 +0000
-Received: from localhost (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 16 Jun
- 2021 11:01:09 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
-        <willy@infradead.org>, <linux-doc@vger.kernel.org>,
-        <nouveau@lists.freedesktop.org>, <hughd@google.com>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <hch@infradead.org>, <peterx@redhat.com>, <shakeelb@google.com>,
-        <bskeggs@redhat.com>, <jgg@nvidia.com>, <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>
-Subject: [PATCH v11 10/10] nouveau/svm: Implement atomic SVM access
-Date:   Wed, 16 Jun 2021 20:59:37 +1000
-Message-ID: <20210616105937.23201-11-apopple@nvidia.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210616105937.23201-1-apopple@nvidia.com>
-References: <20210616105937.23201-1-apopple@nvidia.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Wed, 16 Jun
+ 2021 11:01:43 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::f06c:6f5d:34d2:1c36]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::f06c:6f5d:34d2:1c36%5]) with mapi id 15.20.4242.019; Wed, 16 Jun 2021
+ 11:01:43 +0000
+Subject: Re: [PATCH 2/2] xen: rename wrong named pfn related variables
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+References: <20210616073007.5215-1-jgross@suse.com>
+ <20210616073007.5215-3-jgross@suse.com>
+ <8dbeb9ea-56c9-de30-4d5f-fc9c0ced6ac4@suse.com>
+ <79434ec4-4543-97ad-b010-3f2c1b6a55ad@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <f2328359-06ac-dbde-4afb-9be2a7b26e42@suse.com>
+Date:   Wed, 16 Jun 2021 13:01:41 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <79434ec4-4543-97ad-b010-3f2c1b6a55ad@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [37.24.206.209]
+X-ClientProxiedBy: FRYP281CA0001.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::11)
+ To VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by FRYP281CA0001.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Wed, 16 Jun 2021 11:01:42 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b9efe428-0fc7-40ce-a343-08d930b60c88
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3430:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB3430E1C81B5075FC7063F9DCDF0F9@BYAPR12MB3430.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:541;
+X-MS-Office365-Filtering-Correlation-Id: 707bdb7d-0294-4f02-2eb0-08d930b6200a
+X-MS-TrafficTypeDiagnostic: VI1PR04MB7037:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB7037009A945EABDA4B6DFC61B30F9@VI1PR04MB7037.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m3ArvXhXnnHpY4ELSk3n4eRr+4cANVqa2h10lsH88MyKWf90teL1wfuegwlVI+eQ9vInO37RX+dzgb1qK4xEHgaE8WitXQU62KNDGMAwVQJfNXW5Bg1NbezNduuFwwqU0LGQpcQ3qYAeBm/0yRxASRDQ6dEmiOQa2hVLf6ID9HEDfAnnf7a6vYVBoc/CaxGt+v4OapgyWlDAIb3xG+CJO1icI2Ep8jGENuTMO4i+j1Y2K1z2g0XGkL3/wRC4xCWo6yiXMTPU3KL3FuGwi00AgETfwKb6EzvH46wOO4aJqcWsxUYuQX0B+SNn6qK9+whdLbbl3j9bXVOyv2S5UCCNhbh5FlHEvF/cmr4PnbdR9KihvhlfWEHkh44dkrnFnuaJZVWj3F7JX6ohnrHjwwZu4Ld+FY8Bw6gwYJY649D71LjAQnMbR3iZl3o1N9W5iodcGWIrr3fZvOGf0WY4bvcXy79jXN7E2XLNZJM6XL8MMzIv8NTLgF2Kq7wBPJIxXDuS9bHzqNmYPzk3B0RXV9bxrsfLga45AP76KvNxfBsMcTOPn8xdkG1v82OjKbpOlT6oMGzDLsuPktw1ftEKxdP4vQm3AcEXhwUz7HLCNpQnydVq+stbjnJWmyjuwYJgeFgh7xQ9iWeQU5SwKuukv2Uf3estuRL0hP/cLqvg+E4zQfwqpyr8yqZMlmlp3qvCaGNO
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(39860400002)(136003)(36840700001)(46966006)(83380400001)(356005)(70586007)(7636003)(6666004)(478600001)(107886003)(82310400003)(5660300002)(26005)(1076003)(36860700001)(70206006)(4326008)(47076005)(2906002)(7416002)(86362001)(36906005)(54906003)(336012)(82740400003)(16526019)(8936002)(2616005)(8676002)(186003)(426003)(6916009)(36756003)(316002)(21314003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 11:01:10.0259
+X-Microsoft-Antispam-Message-Info: 8o1qIriXw+Uz5PiwAEl1/f/r06R7V2GBc97VXm2vVBRg4NzSX19X5HtzKBIUKoREc+G0chfepS4y67jonRB8483V779tIK5VuZES4YiWEIbPhBwz9S2oaIx5CjI3q3FVpfRY3k25Ssnca353OTYYxY2GdV54pffF8i7qLsHM21ORavrwoBHYPcSpZZjTYZ7wjIQm+0grecb9uEQRtw7tqxK89p9ilOXnekeZdLl2zAMgiP9piZDLqVveemx07BmClZ5qJ1I9lDzcUTQiSkvJg/gPEP6TrnL9856IxBX0Ph9zSQnJZc/jsEF/MM1OEkGhaB05F3ZzQnPLFWb///Vt2jVb3a3Z369RKHy2g4Fhf/jxhB30e9I6qTvdzeRbcsRfD1p/xRslw6IIS4Rmo/rmtfT9LJMwYjFNJlS2yzLIp5G5ZNa8cTM6qYOLxCYNLdusLO5HXRbYO2z7QQFzCraMwdm0ANAtDvh/HKoqDeC3JYsF40M6pEYWP7gJdrs2q9EsZDuJ9EVgDY4AZpX7c4e4P3YhZ3sLM2j0vNhPb0Y5akDG2ERQ0gLT/9L17VhaMmwTCuqAk7gYZMDSHWftt8x/YqSVRb3yMTdf9+M/1Lj3HysaHAYNpzZTmD59zbVTwTSHBEk+jVS0USy41vyg3v9G9ReH4NkPX8C51nYQS0r0hn4mm29H1rAtKs40ZGCoL5iD
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(366004)(376002)(346002)(396003)(136003)(6636002)(53546011)(31686004)(66476007)(66556008)(6486002)(6862004)(4326008)(5660300002)(956004)(2616005)(66946007)(478600001)(2906002)(54906003)(16576012)(37006003)(8936002)(8676002)(31696002)(316002)(38100700002)(26005)(16526019)(186003)(36756003)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?enJnZ2doM25heU5zeVliQ1NaRHVMOEZHaVFRM000Y3duRUpPUEZGd0pWNTlF?=
+ =?utf-8?B?V2VXTDdMbFV5SVI3QXZHVjFPOGt4Y3ArZmhqeGVVejczZzFVYm5XOWZXWHAv?=
+ =?utf-8?B?ZmpFcVhyakY3WjZrRGtwMGkrNVliQ1lUdkpMVkFnUFhaNG5oYldmU29pZ1Ez?=
+ =?utf-8?B?Q2pXekJkS05jUTYvZGU3clo4NzRtVTJIN0g0YkxhMlR1R2FkaXM2ckxrUm1a?=
+ =?utf-8?B?Y2NCenlUbXpBdk1ud05rKzF3VHNVYmlZQ0dOZ0VKVDJzRGFDdUtXKzVKNnNQ?=
+ =?utf-8?B?dEp3c08wTUh2V05LeGNTRU11ZHZNSHBkMlJNNVFLelN6WnJ1YjFrMXlvaDJK?=
+ =?utf-8?B?L0xycEgvQU92bUNCbm9lUnlLNHJVaHhZbXJKVkRPZHRTam5ydFVndnVpbTBp?=
+ =?utf-8?B?bmxaN2VEUmhzblRKWWh6UEczNzh1c2IyejYwZkkxM3Y1M1FTc2Yrbm1HQyty?=
+ =?utf-8?B?T3cyNllYK2dKL1NNUXVXNS9hb0tOOE0wZDZDOXp6d3VxYTNHZ2pDSmpicjli?=
+ =?utf-8?B?LzlQV1BWS0l3bGZhWWxFQUFrRDc3cURHcXM0U205UmQ1VHdWNFRqV0ExQzJH?=
+ =?utf-8?B?QmJMak4vdnh2SVZILy93UGxMc1BmbzZvWUVmVlVPSFV2MENUaWtZUHNDZUdO?=
+ =?utf-8?B?b0JIOUxZODVKUnh0d3RheDBuK25Cc0tFajFSallQT1d5ekVBOVBYQWordzZC?=
+ =?utf-8?B?N1loZjhEOVFoenZpTnB3VkFlc3Znalg1dGo1MjFpOWtHK0ZwZm5DdVQvSzJH?=
+ =?utf-8?B?L0dvb2ZvVWVvdnByTEFzUmpCcU1HejRWcXB0Sm1NVFJDODZhU2Fha0VUdDY4?=
+ =?utf-8?B?cERJUkVSRXptVlhxbkdZZ3BHS24zaVBSaEJsVEJUNDJQWE5yUkNvSmZFdytl?=
+ =?utf-8?B?bjVsVnowSXc1eUNmZ29vZG1xY2lJSyt6RHdDVVhmeTViWnNPcE9JWi9WdXQr?=
+ =?utf-8?B?OW1yMExQcjJuVUU5ajdTWnVnZlR2OENnZ2Zjc2NrSHpodWZzQ3pZWndQeDBR?=
+ =?utf-8?B?NjJZcDFmeTBtZ3c5MGpneExnZ202Qys2UlRSeUdQZlZIL1RTK2QwWTU2QUJ4?=
+ =?utf-8?B?dXdGNTNhYVJDUVlWTUJrV1dSRFIxQXNKZG11ZjFxRUVPWGQ2TEZCSlVtZ2dn?=
+ =?utf-8?B?R0c4WWhLSmI3eTNuOGJRZGorY1ZFemYwNHJDbko2dUNQNUUyUGNPdTlmdG1v?=
+ =?utf-8?B?RkVYcUVKN05XZXpUdkpBdUhBc1hrUGtET2dQYzZZUnh3bS9sKytYNUxVT21G?=
+ =?utf-8?B?OHhVM2FBZ2dVc0VpbFczd2VHbmI5RHY2YUdRMGFWRVE0QjQzdGlaNVRiYWNZ?=
+ =?utf-8?B?REF5cmxqZ1BqS2xnTzdUa2E0Rk1PMHZ3VS9UeVZndk5pZ1VSV0tEb3dQME5X?=
+ =?utf-8?B?K1VXcEkzV3laWHgrY3ZHQlZLZmJWblhGUlg0V3ZGN0I1L2tZTTVlK093YWdU?=
+ =?utf-8?B?OFRVU3VEWGhiR2dNWmdzSWQvYW5DQUg4RHdKeXg2NTR0c1JBRzllU0lUVmd1?=
+ =?utf-8?B?NFRBZkhZMU84UGt3Y2ZNN1pHcHkyOUErSjlpVGFla1Vqa0EzT0xHWFk5Tkt4?=
+ =?utf-8?B?eTk0ZzV2elZsTjdoKzEvVFZGRk5NSXlUMFlaa0ZzejFMcDlWalRUWnFSZnBK?=
+ =?utf-8?B?d0ZLSWhsT0YzblZXVTFDTUJKNkMrRG9uQVhGelNWNkZpcVhRMk9tcDV2ZjRl?=
+ =?utf-8?B?aVl6VmhnU0ZrQ2FUVytrT3l4TWtaOSt4Mkl2WkdPWW9nankxR2dUNXNpUDh6?=
+ =?utf-8?Q?9YedW+zZdeuFqQI1XJDDkovymnkynzEAuODGe0l?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 707bdb7d-0294-4f02-2eb0-08d930b6200a
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 11:01:43.0084
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b9efe428-0fc7-40ce-a343-08d930b60c88
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3430
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GdcOza78rHSP8UbioDdGhUGS2Mm/UniLe4/AuDyrXtae80uQh/Wus/3Zjc138lQktOAqqnDXy0aKXShAz2GLuA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7037
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some NVIDIA GPUs do not support direct atomic access to system memory
-via PCIe. Instead this must be emulated by granting the GPU exclusive
-access to the memory. This is achieved by replacing CPU page table
-entries with special swap entries that fault on userspace access.
+On 16.06.2021 12:43, Juergen Gross wrote:
+> On 16.06.21 11:56, Jan Beulich wrote:
+>> On 16.06.2021 09:30, Juergen Gross wrote:
+>>> --- a/arch/x86/xen/p2m.c
+>>> +++ b/arch/x86/xen/p2m.c
+>>> @@ -95,8 +95,8 @@ unsigned long *xen_p2m_addr __read_mostly;
+>>>   EXPORT_SYMBOL_GPL(xen_p2m_addr);
+>>>   unsigned long xen_p2m_size __read_mostly;
+>>>   EXPORT_SYMBOL_GPL(xen_p2m_size);
+>>> -unsigned long xen_max_p2m_pfn __read_mostly;
+>>> -EXPORT_SYMBOL_GPL(xen_max_p2m_pfn);
+>>> +unsigned long xen_p2m_max_size __read_mostly;
+>>> +EXPORT_SYMBOL_GPL(xen_p2m_max_size);
+>>
+>> Instead of renaming the exported variable (which will break consumers
+>> anyway), how about dropping the apparently unneeded export at this
+>> occasion?
+> 
+> Why do you think it isn't needed? It is being referenced via the inline
+> function __pfn_to_mfn() in arch/x86/include/asm/xen/page.h. And
+> __pfn_to_mfn() is used via lots of other inline functions and macros.
 
-The driver then grants the GPU permission to update the page undergoing
-atomic access via the GPU page tables. When CPU access to the page is
-required a CPU fault is raised which calls into the device driver via
-MMU notifiers to revoke the atomic access. The original page table
-entries are then restored allowing CPU access to proceed.
+Oh, sorry. Not working that much with the Linux sources anymore,
+I didn't pay attention to include/ changes living ahead of *.c
+ones, and inferred from the last file touched being *.c that no
+headers were getting changed by the patch.
 
-Signed-off-by: Alistair Popple <apopple@nvidia.com>
-Reviewed-by: Ben Skeggs <bskeggs@redhat.com>
-
----
-
-v10:
-* Added a fix from Colin King to check the return code of
-  make_device_exclusive.
-
-v9:
-* Added Ben's Reviewed-By
-
-v7:
-* Removed magic values for fault access levels
-* Improved readability of fault comparison code
-
-v4:
-* Check that page table entries haven't changed before mapping on the
-  device
----
- drivers/gpu/drm/nouveau/include/nvif/if000c.h |   1 +
- drivers/gpu/drm/nouveau/nouveau_svm.c         | 126 ++++++++++++++++--
- drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h |   1 +
- .../drm/nouveau/nvkm/subdev/mmu/vmmgp100.c    |   6 +
- 4 files changed, 123 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/gpu/drm/nouveau/include/nvif/if000c.h b/drivers/gpu/drm/nouveau/include/nvif/if000c.h
-index d6dd40f21eed..9c7ff56831c5 100644
---- a/drivers/gpu/drm/nouveau/include/nvif/if000c.h
-+++ b/drivers/gpu/drm/nouveau/include/nvif/if000c.h
-@@ -77,6 +77,7 @@ struct nvif_vmm_pfnmap_v0 {
- #define NVIF_VMM_PFNMAP_V0_APER                           0x00000000000000f0ULL
- #define NVIF_VMM_PFNMAP_V0_HOST                           0x0000000000000000ULL
- #define NVIF_VMM_PFNMAP_V0_VRAM                           0x0000000000000010ULL
-+#define NVIF_VMM_PFNMAP_V0_A				  0x0000000000000004ULL
- #define NVIF_VMM_PFNMAP_V0_W                              0x0000000000000002ULL
- #define NVIF_VMM_PFNMAP_V0_V                              0x0000000000000001ULL
- #define NVIF_VMM_PFNMAP_V0_NONE                           0x0000000000000000ULL
-diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
-index a195e48c9aee..63a4976b906b 100644
---- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-@@ -35,6 +35,7 @@
- #include <linux/sched/mm.h>
- #include <linux/sort.h>
- #include <linux/hmm.h>
-+#include <linux/rmap.h>
- 
- struct nouveau_svm {
- 	struct nouveau_drm *drm;
-@@ -67,6 +68,11 @@ struct nouveau_svm {
- 	} buffer[1];
- };
- 
-+#define FAULT_ACCESS_READ 0
-+#define FAULT_ACCESS_WRITE 1
-+#define FAULT_ACCESS_ATOMIC 2
-+#define FAULT_ACCESS_PREFETCH 3
-+
- #define SVM_DBG(s,f,a...) NV_DEBUG((s)->drm, "svm: "f"\n", ##a)
- #define SVM_ERR(s,f,a...) NV_WARN((s)->drm, "svm: "f"\n", ##a)
- 
-@@ -411,6 +417,24 @@ nouveau_svm_fault_cancel_fault(struct nouveau_svm *svm,
- 				      fault->client);
- }
- 
-+static int
-+nouveau_svm_fault_priority(u8 fault)
-+{
-+	switch (fault) {
-+	case FAULT_ACCESS_PREFETCH:
-+		return 0;
-+	case FAULT_ACCESS_READ:
-+		return 1;
-+	case FAULT_ACCESS_WRITE:
-+		return 2;
-+	case FAULT_ACCESS_ATOMIC:
-+		return 3;
-+	default:
-+		WARN_ON_ONCE(1);
-+		return -1;
-+	}
-+}
-+
- static int
- nouveau_svm_fault_cmp(const void *a, const void *b)
- {
-@@ -421,9 +445,8 @@ nouveau_svm_fault_cmp(const void *a, const void *b)
- 		return ret;
- 	if ((ret = (s64)fa->addr - fb->addr))
- 		return ret;
--	/*XXX: atomic? */
--	return (fa->access == 0 || fa->access == 3) -
--	       (fb->access == 0 || fb->access == 3);
-+	return nouveau_svm_fault_priority(fa->access) -
-+		nouveau_svm_fault_priority(fb->access);
- }
- 
- static void
-@@ -487,6 +510,10 @@ static bool nouveau_svm_range_invalidate(struct mmu_interval_notifier *mni,
- 	struct svm_notifier *sn =
- 		container_of(mni, struct svm_notifier, notifier);
- 
-+	if (range->event == MMU_NOTIFY_EXCLUSIVE &&
-+	    range->owner == sn->svmm->vmm->cli->drm->dev)
-+		return true;
-+
- 	/*
- 	 * serializes the update to mni->invalidate_seq done by caller and
- 	 * prevents invalidation of the PTE from progressing while HW is being
-@@ -555,6 +582,71 @@ static void nouveau_hmm_convert_pfn(struct nouveau_drm *drm,
- 		args->p.phys[0] |= NVIF_VMM_PFNMAP_V0_W;
- }
- 
-+static int nouveau_atomic_range_fault(struct nouveau_svmm *svmm,
-+			       struct nouveau_drm *drm,
-+			       struct nouveau_pfnmap_args *args, u32 size,
-+			       struct svm_notifier *notifier)
-+{
-+	unsigned long timeout =
-+		jiffies + msecs_to_jiffies(HMM_RANGE_DEFAULT_TIMEOUT);
-+	struct mm_struct *mm = svmm->notifier.mm;
-+	struct page *page;
-+	unsigned long start = args->p.addr;
-+	unsigned long notifier_seq;
-+	int ret = 0;
-+
-+	ret = mmu_interval_notifier_insert(&notifier->notifier, mm,
-+					args->p.addr, args->p.size,
-+					&nouveau_svm_mni_ops);
-+	if (ret)
-+		return ret;
-+
-+	while (true) {
-+		if (time_after(jiffies, timeout)) {
-+			ret = -EBUSY;
-+			goto out;
-+		}
-+
-+		notifier_seq = mmu_interval_read_begin(&notifier->notifier);
-+		mmap_read_lock(mm);
-+		ret = make_device_exclusive_range(mm, start, start + PAGE_SIZE,
-+					    &page, drm->dev);
-+		mmap_read_unlock(mm);
-+		if (ret <= 0 || !page) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
-+		mutex_lock(&svmm->mutex);
-+		if (!mmu_interval_read_retry(&notifier->notifier,
-+					     notifier_seq))
-+			break;
-+		mutex_unlock(&svmm->mutex);
-+	}
-+
-+	/* Map the page on the GPU. */
-+	args->p.page = 12;
-+	args->p.size = PAGE_SIZE;
-+	args->p.addr = start;
-+	args->p.phys[0] = page_to_phys(page) |
-+		NVIF_VMM_PFNMAP_V0_V |
-+		NVIF_VMM_PFNMAP_V0_W |
-+		NVIF_VMM_PFNMAP_V0_A |
-+		NVIF_VMM_PFNMAP_V0_HOST;
-+
-+	svmm->vmm->vmm.object.client->super = true;
-+	ret = nvif_object_ioctl(&svmm->vmm->vmm.object, args, size, NULL);
-+	svmm->vmm->vmm.object.client->super = false;
-+	mutex_unlock(&svmm->mutex);
-+
-+	unlock_page(page);
-+	put_page(page);
-+
-+out:
-+	mmu_interval_notifier_remove(&notifier->notifier);
-+	return ret;
-+}
-+
- static int nouveau_range_fault(struct nouveau_svmm *svmm,
- 			       struct nouveau_drm *drm,
- 			       struct nouveau_pfnmap_args *args, u32 size,
-@@ -637,7 +729,7 @@ nouveau_svm_fault(struct nvif_notify *notify)
- 	unsigned long hmm_flags;
- 	u64 inst, start, limit;
- 	int fi, fn;
--	int replay = 0, ret;
-+	int replay = 0, atomic = 0, ret;
- 
- 	/* Parse available fault buffer entries into a cache, and update
- 	 * the GET pointer so HW can reuse the entries.
-@@ -718,12 +810,14 @@ nouveau_svm_fault(struct nvif_notify *notify)
- 		/*
- 		 * Determine required permissions based on GPU fault
- 		 * access flags.
--		 * XXX: atomic?
- 		 */
- 		switch (buffer->fault[fi]->access) {
- 		case 0: /* READ. */
- 			hmm_flags = HMM_PFN_REQ_FAULT;
- 			break;
-+		case 2: /* ATOMIC. */
-+			atomic = true;
-+			break;
- 		case 3: /* PREFETCH. */
- 			hmm_flags = 0;
- 			break;
-@@ -739,8 +833,14 @@ nouveau_svm_fault(struct nvif_notify *notify)
- 		}
- 
- 		notifier.svmm = svmm;
--		ret = nouveau_range_fault(svmm, svm->drm, &args.i,
--					sizeof(args), hmm_flags, &notifier);
-+		if (atomic)
-+			ret = nouveau_atomic_range_fault(svmm, svm->drm,
-+							 &args.i, sizeof(args),
-+							 &notifier);
-+		else
-+			ret = nouveau_range_fault(svmm, svm->drm, &args.i,
-+						  sizeof(args), hmm_flags,
-+						  &notifier);
- 		mmput(mm);
- 
- 		limit = args.i.p.addr + args.i.p.size;
-@@ -756,11 +856,15 @@ nouveau_svm_fault(struct nvif_notify *notify)
- 			 */
- 			if (buffer->fault[fn]->svmm != svmm ||
- 			    buffer->fault[fn]->addr >= limit ||
--			    (buffer->fault[fi]->access == 0 /* READ. */ &&
-+			    (buffer->fault[fi]->access == FAULT_ACCESS_READ &&
- 			     !(args.phys[0] & NVIF_VMM_PFNMAP_V0_V)) ||
--			    (buffer->fault[fi]->access != 0 /* READ. */ &&
--			     buffer->fault[fi]->access != 3 /* PREFETCH. */ &&
--			     !(args.phys[0] & NVIF_VMM_PFNMAP_V0_W)))
-+			    (buffer->fault[fi]->access != FAULT_ACCESS_READ &&
-+			     buffer->fault[fi]->access != FAULT_ACCESS_PREFETCH &&
-+			     !(args.phys[0] & NVIF_VMM_PFNMAP_V0_W)) ||
-+			    (buffer->fault[fi]->access != FAULT_ACCESS_READ &&
-+			     buffer->fault[fi]->access != FAULT_ACCESS_WRITE &&
-+			     buffer->fault[fi]->access != FAULT_ACCESS_PREFETCH &&
-+			     !(args.phys[0] & NVIF_VMM_PFNMAP_V0_A)))
- 				break;
- 		}
- 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h
-index a2b179568970..f6188aa9171c 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h
-@@ -178,6 +178,7 @@ void nvkm_vmm_unmap_region(struct nvkm_vmm *, struct nvkm_vma *);
- #define NVKM_VMM_PFN_APER                                 0x00000000000000f0ULL
- #define NVKM_VMM_PFN_HOST                                 0x0000000000000000ULL
- #define NVKM_VMM_PFN_VRAM                                 0x0000000000000010ULL
-+#define NVKM_VMM_PFN_A					  0x0000000000000004ULL
- #define NVKM_VMM_PFN_W                                    0x0000000000000002ULL
- #define NVKM_VMM_PFN_V                                    0x0000000000000001ULL
- #define NVKM_VMM_PFN_NONE                                 0x0000000000000000ULL
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c
-index 236db5570771..f02abd9cb4dd 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c
-@@ -88,6 +88,9 @@ gp100_vmm_pgt_pfn(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
- 		if (!(*map->pfn & NVKM_VMM_PFN_W))
- 			data |= BIT_ULL(6); /* RO. */
- 
-+		if (!(*map->pfn & NVKM_VMM_PFN_A))
-+			data |= BIT_ULL(7); /* Atomic disable. */
-+
- 		if (!(*map->pfn & NVKM_VMM_PFN_VRAM)) {
- 			addr = *map->pfn >> NVKM_VMM_PFN_ADDR_SHIFT;
- 			addr = dma_map_page(dev, pfn_to_page(addr), 0,
-@@ -322,6 +325,9 @@ gp100_vmm_pd0_pfn(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
- 		if (!(*map->pfn & NVKM_VMM_PFN_W))
- 			data |= BIT_ULL(6); /* RO. */
- 
-+		if (!(*map->pfn & NVKM_VMM_PFN_A))
-+			data |= BIT_ULL(7); /* Atomic disable. */
-+
- 		if (!(*map->pfn & NVKM_VMM_PFN_VRAM)) {
- 			addr = *map->pfn >> NVKM_VMM_PFN_ADDR_SHIFT;
- 			addr = dma_map_page(dev, pfn_to_page(addr), 0,
--- 
-2.20.1
+Jan
 
