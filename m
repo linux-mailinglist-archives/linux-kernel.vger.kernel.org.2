@@ -2,104 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BF33A8D39
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7633A8D48
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbhFPAKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbhFPAKq (ORCPT
+        id S231684AbhFPAQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:16:17 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:19399 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230507AbhFPAQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:10:46 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30EE4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:08:41 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id u11so553379oiv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:08:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qCmyEQVqii6LsyuSPV+QSKBL2P0pCYgAFr/Ibzjgluw=;
-        b=IMEhVAfO1aDyFd07H+YfV/YIDMH7VDz8G6IhfkgxvLbPEPtIGMoBmPDGZFzt2E2PRD
-         T+V8PIwDsUUlu6m8w1v02VT/9yCRR1Ll5POzI9ow0w/lj67tU+MeqHkGogIaZ63OH9/P
-         PD9VkyGBzZ4tdDSLqQLhXUAr61MMfkAHVmQWV3i6ym0TuGX2u+bamT5QtCTNwXe3pUI4
-         cYGL+0HgRhDmvWsw/+JaAOet7sxZeRH/0G5smCEhnM10id/AUz/hIjLR7XZv/+tDaHVs
-         Gl8g2UJg8CO4HJc+iydXoI84eYtLaln49Sr/EcwiONaYpDP8qddAE1HBG8QTDjR2qQ78
-         pRzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qCmyEQVqii6LsyuSPV+QSKBL2P0pCYgAFr/Ibzjgluw=;
-        b=qatRDo8iTjKlDCe5eN5+SUeH3sPTGVgKx5QzOc78V/ResMlgs3aG5qN3jfYculDEbC
-         8BSFOX6RRzA/7MH31RU0rS2Cl7NOgBMhqBpJFeUpiyMwWhKXKNx0NOpfv+5eFHhZXkJ4
-         kp4EIHoM1o7LHR2E0zhp4rok39HT8vUum5L9qckbudAJo5Nm8UfBES67JBX0ACJTpz23
-         qevrdYQPWC/ugaPyYP6BJIANkhHtvRIzXgYwMqPXUt10JA6J4faDeYxtWey0M2uRtF9T
-         MZ4wKuWHjmeD9DIrxNg4DMQKnrcbXjk82YLoRXL/tGak963NdsRjU21P5nRgIlgTJqTb
-         k2xg==
-X-Gm-Message-State: AOAM533j2yEFnp5AQFN7hVg0hd3jypAEqVuXQHbONiYyDddLidMEK/mV
-        Gv43c/0pZd1ijO9l4LsEddxNZg==
-X-Google-Smtp-Source: ABdhPJy0fdhDuyBoO6v1WeQRUNwSbxlbhglg+X31disSsmVH0VXlYLbR2W0TGiw/QG0R+gKqyxay5g==
-X-Received: by 2002:aca:530f:: with SMTP id h15mr1175785oib.128.1623802120548;
-        Tue, 15 Jun 2021 17:08:40 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b22sm108948oov.31.2021.06.15.17.08.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 17:08:40 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 19:08:37 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     sbhanu@codeaurora.org
-Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, asutoshd@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        rampraka@codeaurora.org, sayalil@codeaurora.org,
-        sartgarg@codeaurora.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, sibis@codeaurora.org,
-        okukatla@codeaurora.org, djakov@kernel.org, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        agross@kernel.org
-Subject: Re: [PATCH V3] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
- card
-Message-ID: <YMlBBeT1VK5snsM7@builder.lan>
-References: <1623252028-20467-1-git-send-email-sbhanu@codeaurora.org>
- <YMLbsZUojmYjM/j0@builder.lan>
- <64166450ddc927d10ad4b37dadf218b6@codeaurora.org>
- <0ce40daf1f8146f47b1877fb2c83cd95@codeaurora.org>
+        Tue, 15 Jun 2021 20:16:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623802447; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=8PntudIYp0vlQsQeDmisRAFUg8D33rXwezS9JBiNG38=; b=aRIikmXHh9NtTVKNVgzviYwUc3KPMFi/4p13F+Sn6c6/4YqsNBW7WYyTTKWBxgR1E6iVE471
+ g0IT2KHOC/3UvgKbyQop3DZQ2R2h8m+9otFa+Yx2JqS6C9UaBLX1+4CbPjdWnedBIGT1vyyk
+ zpmgfz2/xSI33DMjP8XgecOlyK4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60c9423ae27c0cc77f8e11dd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Jun 2021 00:13:46
+ GMT
+Sender: jackp=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BC503C4338A; Wed, 16 Jun 2021 00:13:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jackp)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 722BCC433F1;
+        Wed, 16 Jun 2021 00:13:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 722BCC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
+Date:   Tue, 15 Jun 2021 17:13:41 -0700
+From:   Jack Pham <jackp@codeaurora.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        p.zabel@pengutronix.de, linux-usb@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [BUG] usb: dwc3: Kernel NULL pointer dereference in dwc3_remove()
+Message-ID: <20210616001341.GC25299@jackp-linux.qualcomm.com>
+References: <70be179c-d36b-de6f-6efc-2888055b1312@arm.com>
+ <YLi/u9J5f+nQO4Cm@kroah.com>
+ <8272121c-ac8a-1565-a047-e3a16dcf13b0@arm.com>
+ <877djbc8xq.fsf@kernel.org>
+ <20210603173632.GA25299@jackp-linux.qualcomm.com>
+ <87mts6avnn.fsf@kernel.org>
+ <20210607180023.GA23045@jackp-linux.qualcomm.com>
+ <87sg1q1129.fsf@kernel.org>
+ <20210610153346.GA26872@jackp-linux.qualcomm.com>
+ <d9ab95a1-f901-6bfe-899b-e4577d14cb52@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0ce40daf1f8146f47b1877fb2c83cd95@codeaurora.org>
+In-Reply-To: <d9ab95a1-f901-6bfe-899b-e4577d14cb52@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15 Jun 03:56 CDT 2021, sbhanu@codeaurora.org wrote:
+Hi Sandeep,
 
-> On 2021-06-14 17:00, sbhanu@codeaurora.org wrote:
-> > On 2021-06-11 09:12, Bjorn Andersson wrote:
-> > > On Wed 09 Jun 10:20 CDT 2021, Shaik Sajida Bhanu wrote:
-[..]
-> > > > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-[..]
-> > > > +		sdhc_1: sdhci@7c4000 {
-[..]
-> > > > +			sdhc1_opp_table: sdhc1-opp-table {
+On Mon, Jun 14, 2021 at 01:07:11PM +0530, Sandeep Maheswaram wrote:
+> 
+> On 6/10/2021 9:03 PM, Jack Pham wrote:
+> > On Thu, Jun 10, 2021 at 01:11:42PM +0300, Felipe Balbi wrote:
+> > > Jack Pham <jackp@codeaurora.org> writes:
+> > > > On Fri, Jun 04, 2021 at 11:20:12AM +0300, Felipe Balbi wrote:
+> > > > > Jack Pham <jackp@codeaurora.org> writes:
+> > > > > > > > > > > Alexandru Elisei <alexandru.elisei@arm.com> writes:
+> > > > > > > > > > > > I've been able to bisect the panic and the offending commit is 568262bf5492 ("usb:
+> > > > > > > > > > > > dwc3: core: Add shutdown callback for dwc3"). I can provide more diagnostic
+> > > > > > > > > > > > information if needed and I can help test the fix.
+> > > > > > > > > > > if you simply revert that commit in HEAD, does the problem really go
+> > > > > > > > > > > away?
+> > > > > > > > > > Kernel built from commit 324c92e5e0ee, which is the kernel tip today, the panic is
+> > > > > > > > > > there. Reverting the offending commit, 568262bf5492, makes the panic disappear.
+> > > > > > > > > Want to send a revert so I can take it now?
+> > > > > > > > I can send a revert, but Felipe was asking Sandeep (the commit author) for a fix,
+> > > > > > > > so I'll leave it up to Felipe to decide how to proceed.
+> > > > > > > I'm okay with a revert. Feel free to add my Acked-by: Felipe Balbi
+> > > > > > > <balbi@kernel.org> or it.
+> > > > > > > 
+> > > > > > > Sandeep, please send a new version that doesn't encounter the same
+> > > > > > > issue. Make sure to test by reloading the driver in a tight loop for
+> > > > > > > several iterations.
+> > > > > > This would probably be tricky to test on other "glue" drivers as the
+> > > > > > problem appears to be specific only to dwc3_of_simple.  It looks like
+> > > > > > both dwc3_of_simple and the dwc3 core now (due to 568262bf5492) each
+> > > > > > implement respective .shutdown callbacks. The latter is simply a wrapper
+> > > > > > around dwc3_remove(). And from the panic call stack above we see that
+> > > > > > dwc3_of_simple_shutdown() calls of_platform_depopulate() which will
+> > > > > > again call dwc3_remove() resulting in the double remove.
+> > > > > > 
+> > > > > > So would an alternative approach be to protect against dwc3_remove()
+> > > > > > getting called multiple times? IMO it'd be a bit messy to have to add
+> > > > > no, I  don't think so. That sounds like a workaround. We should be able
+> > > > > to guarantee that ->remove() doesn't get called twice using the driver
+> > > > > model properly.
+> > > > Completely fair.  So then having a .shutdown callback that directly calls
+> > > > dwc3_remove() is probably not the right thing to do as it completely
+> > > > bypasses the driver model so if and when the driver core does later
+> > > > release the device from the driver that's how we end up with the double
+> > > > remove.
+> > > yeah, I would agree with that.
 > > > 
-> > > No need for "sdhc1-" in the node name.
-> > ok
-> Hi,
+> > > > > > additional checks there to know if it had already been called. So maybe
+> > > > > > avoid it altogether--should dwc3_of_simple_shutdown() just skip calling
+> > > > > > of_platform_depopulate()?
+> > > > > I don't know what the idiomatic is nowadays, but at least early on, we
+> > > > > had to call depopulate.
+> > > > So any suggestions on how to fix the original issue Sandeep was trying
+> > > > to fix with 568262bf5492? Maybe implement .shutdown in dwc3_qcom and have
+> > > > it follow what dwc3_of_simple does with of_platform_depopulate()? But
+> > > > then wouldn't other "glues" want/need to follow suit?
+> > > I think we can implement shutdown in core, but we need to careful with
+> > > it. Instead of just blindly calling remove, let's extract the common
+> > > parts to another internal function that both remove and shutdown
+> > > call. debugfs removal should not be part of that generic method :-)
+> > Hi Sandeep,
+> > 
+> > Upon re-reading your description in 568262bf5492 it sounds like the
+> > original intention of your patch is basically to quiesce the HW so that
+> > it doesn't continue to run after SMMU/IOMMU is disabled right?
+> > 
+> > If that is the case, couldn't we simply call only dwc3_core_exit_mode()
+> > assuming there is no other requirement to do any other cleanup/teardown
+> > (PHYs, clocks, resets, runtime PM, et al)? This function should do the
+> > bare minimum of stopping the controller in whatever mode (host or
+> > peripheral) it is currently operating in.
 > 
-> For Sd card also we have opp-table info so if we remove "sdhc1-" here and
-> "sdhc2-" in Sd crad opp table we may have dublicate nodes so,
-> it is better to keep sdhc1 and sdhc2 in node numbers right.
+> Yes that was the intention. I will call only dwc3_core_exit_mode()
+> and check. Is there any way we can do from dwc3 qcom glue driver to
+> avoid problems for other glue drivers?
+
+As I mentioned above maybe you could just implement a dwc3_qcom specific
+.shutdown callback which mimics what dwc3_of_simple() does by calling
+of_platform_depopulate(). This will allow the kernel driver core to
+invoke dwc3_remove() rather than calling it directly yourself.
+
+The downside is that if other glue drivers want to follow this they'd
+have to duplicate the same logic. But maybe this is a more cautious
+approach until we start seeing other drivers needing this generically
+within core.c.
+
+> > > Anything in that generic method should, probably, be idempotent.
+> > Yes we'll need to ensure that dwc3_core_exit_mode() can be called
+> > multiple times without additional side effects. At first glance this
+> > probably means setting dwc->xhci and dwc->gadget to NULL from
+> > dwc3_host_exit() and dwc3_gadget_exit(), respectively.
 > 
+> Ok. Is there any way to test this ?
 
-Are you saying that /soc/sdhci@7c4000/opp-table needs to have a unique
-name to not collide with /soc/sdhci@8804000/opp-table?
+You could implement both the dwc3_qcom_shutdown() as above as well as
+adding back dwc3_shutdown() which only does dwc3_core_exit_mode(). Make
+sure that even though dwc3_core_exit_mode() gets called twice nothing
+bad happens.
 
-Regards,
-Bjorn
+Jack
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
