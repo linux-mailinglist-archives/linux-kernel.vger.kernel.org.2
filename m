@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30793AA682
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 00:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FDF3AA687
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 00:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbhFPWNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 18:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234199AbhFPWNW (ORCPT
+        id S234194AbhFPWPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 18:15:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31626 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232258AbhFPWPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 18:13:22 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54C0C06175F;
-        Wed, 16 Jun 2021 15:11:15 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 16 Jun 2021 18:15:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623881616;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ynFypKw6yaFTAwjszi5wGpSPgyHOdH7h2sszX4y3jj8=;
+        b=IfXqqk5qaqrzRdlu5QqLvnvN/WViw6bq5BA+bUw0RjzLsxXPdoDKmN3jac/G/WbcEw7KHd
+        fXuR7NVoEDsoHjmfEbPtLUr5p0u688UzX1aVFwuvlmf8bIcUGPOPqI/Swt+0lCdPfBWVva
+        9izL68n31TlNiBTocmkhXcyPeu5huNA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-sP0V_TQWNIyTTK4aNmmkdg-1; Wed, 16 Jun 2021 18:13:33 -0400
+X-MC-Unique: sP0V_TQWNIyTTK4aNmmkdg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G4zss5HwVz9sT6;
-        Thu, 17 Jun 2021 08:11:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623881473;
-        bh=Z0z00xng7PUfgZnfjxRZ6a4A/l31jHMMQHivtEwj4r4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jaPqNmX+cWUp8P4+P+jnH+4gnbpmSeV2/eMV3qUM32UmGEORj3Du4KduF65WoVtOp
-         Cs2sqUPm4vpCuQblIzt7CG3c0OHUtM9iE/6TDTTj/LXWKlWbYuYHNVc8NTWbk/SvNe
-         7ONmp13PRWNpCaOLEKHf54rH2EJCfxfAE+A78GB9qAqrptjK8pVlQQJ9C0V1SiI6m5
-         QBSs3lW4iLZagIpwCW5Gd0FbfCxdL3fViEB5XFqOhG4V85S9fr0I10+g0gG55uzECc
-         x5tU2JCOr3exF/GKYA7P9kbROTqlxw9Tkg8XVMAFMqAlpHYJemR0m+cHeWW13W9zY4
-         iZYNNx5vNXv0w==
-Date:   Thu, 17 Jun 2021 08:11:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the kspp-gustavo tree
-Message-ID: <20210617081112.25e57b9b@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 867BA1084F41;
+        Wed, 16 Jun 2021 22:13:31 +0000 (UTC)
+Received: from optiplex-fbsd (unknown [10.3.128.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1BB4710016F4;
+        Wed, 16 Jun 2021 22:13:28 +0000 (UTC)
+Date:   Wed, 16 Jun 2021 18:13:26 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Georgi Djakov <quic_c_gdjako@quicinc.com>,
+        akpm@linux-foundation.org, iamjoonsoo.kim@lge.com,
+        rientjes@google.com, penberg@kernel.org, cl@linux.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, djakov@kernel.org
+Subject: Re: [PATCH] mm/slub: Add taint after the errors are printed
+Message-ID: <YMp3htJJkyVZJglK@optiplex-fbsd>
+References: <1623860738-146761-1-git-send-email-quic_c_gdjako@quicinc.com>
+ <4b22baf7-582b-f1ae-a525-046a493ec85f@suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/UxuuU3pv_URlVNqMM/DB2FW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4b22baf7-582b-f1ae-a525-046a493ec85f@suse.cz>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/UxuuU3pv_URlVNqMM/DB2FW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jun 16, 2021 at 06:34:41PM +0200, Vlastimil Babka wrote:
+> On 6/16/21 6:25 PM, Georgi Djakov wrote:
+> > When running the kernel with panic_on_taint, the usual slub debug error
+> > messages are not being printed when object corruption happens. That's
+> > because we panic in add_taint(), which is called before printing the
+> > additional information. This is a bit unfortunate as the error messages
+> > are actually very useful, especially before a panic. Let's fix this by
+> > moving add_taint() after the errors are printed on the console.
+> > 
+> > Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
+> 
+> Makes sense.
+> 
+> While at it, I wonder if we should use LOCKDEP_STILL_OK instead of
+> LOCKDEP_NOW_UNRELIABLE. Isn't it too pessimistic to assume that some slab's
+> memory corruption hit some lock state?
+>
 
-Hi all,
+Given there is noted corruption I don't think it's safe to assume otherwise.
 
-In commit
-
-  d5f3d2f175ce ("media: venus: hfi_cmds: Fix packet size calculation")
-
-Fixes tag
-
-  Fixes: 701e10b3fd9f ("media: venus: hfi_cmds.h: Replace one-element array=
- with flexible-array member")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 380f3bbd9562 ("media: venus: hfi_cmds.h: Replace zero-length array w=
-ith flexible-array member")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/UxuuU3pv_URlVNqMM/DB2FW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDKdwAACgkQAVBC80lX
-0GznXggAn6l/rZTPRT4M9ZLOc3L3N2uIZiAJtFJjb0/CBwkWBO+YuEdHdnuwZtyx
-QUKIm6Ac+MOOMQROLQSxvUTqgYXLwpuuLF61Ewd/S0hs3gC9tqNM1/Tr9p968QfT
-aeitgI8ke7zXZDuWOX75Jia21EDnt8mmC19XNrSivWINVh9MZ4UwRfcYp+CJk9Fy
-LJ2MRAybun3cCkT6t7Lt86vOdG9FuVuz/SbmrQP5Cgz/xcMAaGA4zo5rNA0mfBEG
-mKDD71jTPiThlb4n14OmXb68gwGJMuTvbUKUSkqC9PMuNE2PTDRZ4hcB6CaB4/u1
-PbHBgdzxn/fzhKYdW/9VFLGYr8ONWA==
-=6O9K
------END PGP SIGNATURE-----
-
---Sig_/UxuuU3pv_URlVNqMM/DB2FW--
