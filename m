@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5CF3A8DC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF3C3A8DCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbhFPAoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
+        id S231727AbhFPArO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhFPAoO (ORCPT
+        with ESMTP id S230265AbhFPArM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:44:14 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E38BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:42:09 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id g12so689948qvx.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:42:09 -0700 (PDT)
+        Tue, 15 Jun 2021 20:47:12 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97BAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:45:07 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id ca13-20020ad4560d0000b029023ebd662003so801932qvb.17
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:45:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MIZ4yfC4SJgSNnStHS2hV3bUSJEXPyXqzvDWBqSA7IE=;
-        b=cWN9BUfrVnGFbKtIZ3DUiBrsX0OUV8SZhasHlYTeBCPpr+9HP+e1oLZNvWMtAC6mf1
-         4kaEpIOLkAi6/aS52oOQPP4kOSQoqo0hJCMz+o7bSU8h2xRKXHhdtK4Zk2AxgMhq5c8K
-         eWEdVeBmPJ8BM4s2GRBLWOufFUci7yk25ulljFjU1IZGfSsFyPBhC7Bsyhih+GSkT8f9
-         7IpF1EisdHdnKvhp96F5VwcH4jVLVZU8gqwU7I9wGhymUikzXA0ZXRhwrZKcsFxEwc48
-         AHDTzbf217WABi3UZZY6k8XHo2PdNQofBpiUSv0wy2sia396vWRsy15ft0KLorI4wB4x
-         V5MQ==
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=LAtBe1i9QhHKeYZZABwyxEaBkt2ZmCBgZJOCDygERjA=;
+        b=AnLpMAyg4/bsQ5ot7VlrLMCC3Gs/dLXo8gb9XR2t+kZPGucjlqTUQ2MhpMtPKhRz2J
+         GM0zJcrIAIxIHwzmcZu8vBU3V4esevTpms5odDTEvk6a/FO3UqIvpZSj3xqYF7l0mQ4n
+         9+17IZPmW1eYOT2ooLRrVr7n0aseNkeHHgybMwsQEIYdi0TgpPpOmCaQm1y1qNLXs+x+
+         IL/EeLsMoBr+WRbtHqlkHyisbtmTA1Ww20hmdNC08vFLlWOFU1fu7T3ShfFqFLuHksB2
+         BVOJunRyHNmDqMdGz5UXxMITAro7zABjRlWyPUVa0E1lJoNLWI8GEaxs54jCkCOzT3Nl
+         xxvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MIZ4yfC4SJgSNnStHS2hV3bUSJEXPyXqzvDWBqSA7IE=;
-        b=VyHUb7MVdZtiMnbe9ixTkIcIjdpNGBiR49w4FfGNJESo1nLVV/apj/seuHShhG34nE
-         XU4d/XXilRyA5yzyj7yhMKVbTvQzzKhl9IERNGCDSPxlP9vxtfN/Eg2SJgiVslwPA4jG
-         7T8BYx+zfJ4WrajbEMoDn115XbWIq7faL9YNuPRHUbQnNAGrXhiGsJQKIDwWeCkTtxdZ
-         YErpeG6jW9Hd0AiSxb29Nec1QUlfqwlzBpXGTrbPwIg3ikIG/XGTKO277niVAt7IkP2v
-         p1xG4mH8fhjQCdROVjMWL7Thr58m1omcxYo2oQMtqAa7Ezh+M1obHMiN/bGM2b6HzmxY
-         sdig==
-X-Gm-Message-State: AOAM532b7GfhJC/sef57viikt7GumL3Gb/cvY33+FFMscj5gibCbjbgF
-        +rcFcH/PAtfaxxMpdHoeJ3Cwsg==
-X-Google-Smtp-Source: ABdhPJzCCGXNtFKeBaAZBtslYwxAwLPkiq4om2TrlrIrdMkTrd8Mjvp7+4aeQphN8xrVeKEzLcOXGg==
-X-Received: by 2002:a05:6214:7f1:: with SMTP id bp17mr8079423qvb.29.1623804128267;
-        Tue, 15 Jun 2021 17:42:08 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id s23sm95645qtq.2.2021.06.15.17.42.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 17:42:07 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ltJd9-007I9Y-2M; Tue, 15 Jun 2021 21:42:07 -0300
-Date:   Tue, 15 Jun 2021 21:42:07 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Will Deacon <will@kernel.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/11] mm: page_vma_mapped_walk(): use pmd_read_atomic()
-Message-ID: <20210616004207.GU1096940@ziepe.ca>
-References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
- <594c1f0-d396-5346-1f36-606872cddb18@google.com>
- <20210610090617.e6qutzzj3jxcseyi@box.shutemov.name>
- <20210610121542.GQ1096940@ziepe.ca>
- <aebb6b96-153e-7d7-59da-f6bad4337aa7@google.com>
- <20210611153613.GR1096940@ziepe.ca>
- <939a0fa-7d6c-f535-7c34-4c522903e6f@google.com>
- <20210611194249.GS1096940@ziepe.ca>
- <20210615094639.GC19878@willie-the-truck>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615094639.GC19878@willie-the-truck>
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=LAtBe1i9QhHKeYZZABwyxEaBkt2ZmCBgZJOCDygERjA=;
+        b=I2hf3JdHYmLfeBbtld09fAIrMK7WUSh29l2/nRptkQ49E4fjzARPB8UxYKK+b1jEiU
+         eAu939VXrJhcztVSgZWmgTLmtuUk0KfwVRiJVTOUaoVl43vwnlPb+nuCGMFX7yWuU/hQ
+         ZLsEMtGKET1W9yoBDbFALNF87hqkmmPta/ASaWxGNHhRTEP5BtvtVAeJoHW+oHrnAk27
+         cNMsY5FgTkriP7mG6o3X2sNUivdnMSQhZN0kn6MGps6vOQML/Lzf02pmsZ99vX9lYFsN
+         Lfa/tJnbuiy9rJDPy3HjJsSjhtABdv7EzZyGGQEY9Aw2RlqwMs2YUJx/UW6GXMx0WVSN
+         y6iw==
+X-Gm-Message-State: AOAM533Z7pSo6r4JLJ59MlOs4aL9E1+tc1jEZj0eOpxRhoa8bjZITpNE
+        zmse2FSHBy1DamrXKcpFtNONdNMluVI=
+X-Google-Smtp-Source: ABdhPJx7Ddxsv0ETLvnxMiVX9cRfwyC7fngv8f9xjb5fNX0FXjQCO3pF2wMX8mqou0Fys9G62nr2Ln2+lBk=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:af9:198d:bf4e:6def])
+ (user=seanjc job=sendgmr) by 2002:a0c:f684:: with SMTP id p4mr8247882qvn.16.1623804306792;
+ Tue, 15 Jun 2021 17:45:06 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 15 Jun 2021 17:44:58 -0700
+Message-Id: <20210616004458.2192889-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
+Subject: [PATCH] x86/sgx: Suppress WARN on inability to sanitize EPC if ksgxd
+ is stopped
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Du Cheng <ducheng2@gmail.com>,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 10:46:39AM +0100, Will Deacon wrote:
+Don't WARN on having unsanitized EPC pages if ksgxd is stopped early,
+e.g. if sgx_init() realizes there will be no downstream consumers of EPC.
+If ksgxd is stopped early, EPC pages may be left on the dirty list, but
+that's ok because ksgxd is only stopped if SGX initialization failed or
+if the kernel is going down.  In either case, the EPC won't be used.
 
-> Then the compiler can allocate the same register for x and z, but will
-> issue an additional load for y. If a concurrent update takes place to the
-> pmd which transitions from Invalid -> Valid, then it will look as though
-> things went back in time, because z will be stale. We actually hit this
-> on arm64 in practice [1].
+This bug was exposed by the addition of KVM support, but has existed and
+was hittable since the original sanitization code was added.  Prior to
+adding KVM support, if Launch Control was not fully enabled, e.g. when
+running on older hardware, sgx_init() bailed immediately before spawning
+ksgxd because X86_FEATURE_SGX was cleared if X86_FEATURE_SGX_LC was
+unsupported.
 
-The fact you actually hit this in the real world just seem to confirm
-my thinking that the mm's lax use of the memory model is something
-that deserves addressing.
+With KVM support, sgx_drv_init() handles the X86_FEATURE_SGX_LC check
+manually, so now there's any easy-to-hit case where sgx_init() will spawn
+ksgxd and _then_ fail to initialize, which results in sgx_init() stopping
+ksgxd before it finishes sanitizing the EPC.
 
-Honestly I'm not sure the fix to stick a READ_ONCE in the macros is
-very robust. I prefer the gup_fast pattern of:
+Prior to KVM support, the bug was much harder to hit because it basically
+required char device registration to fail.
 
-  pmd_t pmd = READ_ONCE(*pmdp);
-  pte_offset_phys(&pmd, addr);
+Reported-by: Du Cheng <ducheng2@gmail.com>
+Fixes: e7e0545299d8 ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
 
-To correctly force the READ_ONCE under unlocked access and the
-consistently use the single read of the unstable data.
+Lightly tested due to lack of hardware.  I hacked the flow to verify that
+stopping early will leave work pending, and that rechecking should_stop()
+suppress the resulting WARN.
 
-It seems more maintainable 'hey look at me, I have no locks!' and has
-fewer possibilities for obscure order related bugs to creep in.
+ arch/x86/kernel/cpu/sgx/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Jason
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index ad904747419e..fbad2b9625a5 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -425,7 +425,7 @@ static int ksgxd(void *p)
+ 	__sgx_sanitize_pages(&sgx_dirty_page_list);
+ 
+ 	/* sanity check: */
+-	WARN_ON(!list_empty(&sgx_dirty_page_list));
++	WARN_ON(!list_empty(&sgx_dirty_page_list) && !kthread_should_stop());
+ 
+ 	while (!kthread_should_stop()) {
+ 		if (try_to_freeze())
+-- 
+2.32.0.272.g935e593368-goog
+
