@@ -2,74 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C353A95C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE013A95CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbhFPJRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:17:53 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55134 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbhFPJRw (ORCPT
+        id S232319AbhFPJSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:18:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56820 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232218AbhFPJSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:17:52 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id CF15921A57;
-        Wed, 16 Jun 2021 09:15:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623834945; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Wed, 16 Jun 2021 05:18:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623834968;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dX6DjyqaOUD6/uVScM4KLnVbsOc9bUIcwflnPfRnYOM=;
-        b=dMo9BI8VveElucxiW458kBj0/nkpuTT8unboI6i6NMRSke9ukFaJ0xBLXAwcMxjlGSjyZm
-        LmVtAcW957TbxUwRkYJqHDTwe/bYMquEJfd81QayG/1zIqb+WV26saG9ylz3qKMZ68xv0O
-        5w/JmuXd9wxlN0vMtHGcJ5MItPchq44=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        bh=T4+c2pc8J0kO0sEZOcAlXdb+PXp9r+TugMlu0OrZfbQ=;
+        b=bqFIAGlw79Bp058FqfRFpGGtalrUC7X9dIggT/tpo4pnSOkA50GtB+kx7MQJex0V4/W2Eh
+        iWURGwWmXUrqi8amcnZlZrN9MqMoJcy3w5VFvsQlxwBtOVtP/7qnKl6L53/hw+gNB+PHDA
+        54asi/eWCGhsixJutRqtTXsPbXeT5eo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-153-_HXbBplgNFKDDARh4oc90g-1; Wed, 16 Jun 2021 05:16:04 -0400
+X-MC-Unique: _HXbBplgNFKDDARh4oc90g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8A909A3BAA;
-        Wed, 16 Jun 2021 09:15:45 +0000 (UTC)
-Date:   Wed, 16 Jun 2021 11:15:45 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Punit Agrawal <punitagrawal@gmail.com>,
-        senozhatsky@chromium.org, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: Move EXPORT_SYMBOL() closer to vprintk definition
-Message-ID: <YMnBQW2pInXyW3vv@alley>
-References: <20210614235635.887365-1-punitagrawal@gmail.com>
- <8c16059d-6e58-a3e4-25ef-7e2bcabecd86@rasmusvillemoes.dk>
- <YMmggRL/htxFK2VY@alley>
- <YMmmhDQSX7gLmnN9@alley>
- <87im2ent74.fsf@jogness.linutronix.de>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF662800D55;
+        Wed, 16 Jun 2021 09:16:02 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 43B485D6AD;
+        Wed, 16 Jun 2021 09:16:01 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210614201435.1379188-33-willy@infradead.org>
+References: <20210614201435.1379188-33-willy@infradead.org> <20210614201435.1379188-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, akpm@linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v11 32/33] fs/netfs: Add folio fscache functions
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87im2ent74.fsf@jogness.linutronix.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <810721.1623834960.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 16 Jun 2021 10:16:00 +0100
+Message-ID: <810722.1623834960@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-06-16 09:57:11, John Ogness wrote:
-> On 2021-06-16, Petr Mladek <pmladek@suse.com> wrote:
-> >>> Petr, as this is causing trouble for the -rt patchset, please
-> >>> consider if this could make it to Linus before v5.13 release.
-> >
-> > Punit, John, would you mind when I queue this change for-5.14?  It
-> > seems that, you, RT-guys already handled this, so it will not help
-> > much if I sent it now. It does not look appropriate to send just a
-> > single cosmetic fix few days before rc7.
-> 
-> Since this cosmetic problem was introduced during the 5.13 merge window,
-> it would help if it is fixed before the 5.13 release. Obviously this is
-> not a reason to have an rc7. But if there is going to be an rc7, I think
-> this fix should be included.
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-OK, I have committed the patch into printk/linux.git, branch
-for-5.13-fixup.
+>  /**
+> - * set_page_fscache - Set PG_fscache on a page and take a ref
+> - * @page: The page.
+> + * folio_start_fscache - Start an fscache operation on a folio.
+> + * @folio: The folio.
+>   *
+> - * Set the PG_fscache (PG_private_2) flag on a page and take the refere=
+nce
+> - * needed for the VM to handle its lifetime correctly.  This sets the f=
+lag and
+> - * takes the reference unconditionally, so care must be taken not to se=
+t the
+> - * flag again if it's already set.
+> + * Call this function before an fscache operation starts on a folio.
+> + * Starting a second fscache operation before the first one finishes is
+> + * not allowed.
 
-I am going to send the pull request later this week, most likely
-tomorrow.
+That's not correct.  It's only used for operations that write from the pag=
+e to
+disk.  Operations that read into the page are covered by the page lock.
 
-Best Regards,
-Petr
+> + * folio_end_fscache - End an fscache operation on a folio.
+> ...
+> + * Call this function after an fscache operation has finished.  This wi=
+ll
+> + * wake any sleepers waiting on this folio.
+
+Ditto.
+
+> + * folio_wait_fscache - Wait for an fscache operation on this folio to =
+end.
+> + * @folio: The folio.
+>   *
+> + * If an fscache operation is in progress on this folio, wait for it to
+> + * finish.  Another fscache operation may start after this one finishes=
+,
+> + * unless the caller holds the folio lock.
+
+Ditto.
+
+Apart from that, it looks okay.
+
+David
+
