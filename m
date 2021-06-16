@@ -2,97 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521943A9798
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE993A9794
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232308AbhFPKhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232377AbhFPKhF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:37:05 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A58AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 03:34:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=s7U02JqFBNdgNwP8tr1DkJVVHjauc7uG5haj7To5L+Q=; b=k+fh13hwtRFLi6gpWI9F5+Zhv
-        0+4VTHwF272UY9r0txiLErUGV7k+FaZN8hYwGehrDsmHtohiF3flW3cnjk5EZ48PL5MuHpT4QaXo1
-        vSpLRowv6lTVE3kcaQ/B1pXzQ+KqzubpujnTQjikqDQDqN7t1biOn7Sd/fAlRp50kUzn+XUWevFDF
-        fL3enxTLg3zsJDDWYLpEF8qhjX3ZJvhgT9qPXPKS1QuYFGG8H61abWMfq+JSf16pEk/zFSdWacPgY
-        zw/DUbtGUNCa0JqbVnqyeaOPLM9mP3o1mhT6U+eAmwPgdZM7n3f8z/iV9V9E3y6xUkL7iAiY7zWBh
-        0iVDmyHww==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45060)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1ltSsj-00073k-8J; Wed, 16 Jun 2021 11:34:49 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1ltSsg-0005we-6W; Wed, 16 Jun 2021 11:34:46 +0100
-Date:   Wed, 16 Jun 2021 11:34:46 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
-Message-ID: <20210616103446.GC22278@shell.armlinux.org.uk>
-References: <cover.1623813516.git.luto@kernel.org>
- <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
- <YMnPezLs6vb418Wz@hirez.programming.kicks-ass.net>
- <YMnQVoKvM5G34Yan@hirez.programming.kicks-ass.net>
+        id S232546AbhFPKhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:37:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50158 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232370AbhFPKhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 06:37:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 998E661107;
+        Wed, 16 Jun 2021 10:34:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623839691;
+        bh=uJEv3OvJMqswalWvG2rx1DCmioR+VtUOrO7CZGR2Ajw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A6wsFevRhS9CeafwlT529v2rV3Gm9GGwn4GGkmYDghQBgvSltNdLhA2d1VwUgm9YV
+         V+BZ/Z7dkVuRC9jA+aF8uUIN4oppwPSoc0YE3UC/NPxsGiCugwhXT7XZEbbeh2pmB/
+         M4rdDOJ4s0X9LmiRn4axjJlxF+T4B+Wd1HYLAz0MgEG64RvZ+ZZaXxAxnqcCDwPJej
+         pW3zx7fe6lsVprl/vQScwg/OlH7/cEN61iAlussljsV2mRmi/pOkb0n3FbRiUdCHAK
+         H6X3SZGPBKP1nePHfXCLHq/6yaW3vQZyt5NRvZBipljaN3xhgyRVkvGP83STRQZ1Xh
+         jhhQBOeaewbeQ==
+Date:   Wed, 16 Jun 2021 16:04:47 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, dmaengine@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
+        alsa-devel@alsa-project.org, iommu@lists.linux-foundation.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Stephen Boyd <sboyd@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] dt-bindings: Drop redundant minItems/maxItems
+Message-ID: <YMnTx4GqTWu75o2n@vkoul-mobl>
+References: <20210615191543.1043414-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMnQVoKvM5G34Yan@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20210615191543.1043414-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 12:20:06PM +0200, Peter Zijlstra wrote:
-> On Wed, Jun 16, 2021 at 12:16:27PM +0200, Peter Zijlstra wrote:
-> > On Tue, Jun 15, 2021 at 08:21:12PM -0700, Andy Lutomirski wrote:
-> > > On arm32, the only way to safely flush icache from usermode is to call
-> > > cacheflush(2).  This also handles any required pipeline flushes, so
-> > > membarrier's SYNC_CORE feature is useless on arm.  Remove it.
-> > 
-> > So SYNC_CORE is there to help an architecture that needs to do something
-> > per CPU. If I$ invalidation is broadcast and I$ invalidation also
-> > triggers the flush of any uarch caches derived from it (if there are
-> > any).
+On 15-06-21, 13:15, Rob Herring wrote:
+> If a property has an 'items' list, then a 'minItems' or 'maxItems' with the
+> same size as the list is redundant and can be dropped. Note that is DT
+> schema specific behavior and not standard json-schema behavior. The tooling
+> will fixup the final schema adding any unspecified minItems/maxItems.
 > 
-> Incomplete sentence there: + then we don't need SYNC_CORE.
-> 
-> > Now arm_syscall() NR(cacheflush) seems to do flush_icache_user_range(),
-> > which, if I read things right, end up in arch/arm/mm/*.S, but that
-> > doesn't consider cache_ops_need_broadcast().
-> > 
-> > Will suggests that perhaps ARM 11MPCore might need this due to their I$
-> > flush maybe not being broadcast
+> This condition is partially checked with the meta-schema already, but
+> only if both 'minItems' and 'maxItems' are equal to the 'items' length.
+> An improved meta-schema is pending.
 
-If it leaves other cores with incoherent I cache, then that's already
-a problem for SMP cores, since there could be no guarantee that the
-modifications made by one core will be visible to some other core that
-ends up running that code - and there is little option for userspace to
-work around that except by pinning the thread making the modifications
-and subsequently executing the code to a core.
+>  .../devicetree/bindings/dma/renesas,rcar-dmac.yaml          | 1 -
 
-The same is also true of flush_icache_range() - which is used when
-loading a kernel module. In the case Will is referring to, these alias
-to the same code.
+>  Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml    | 1 -
+>  Documentation/devicetree/bindings/phy/mediatek,tphy.yaml    | 2 --
+>  .../devicetree/bindings/phy/phy-cadence-sierra.yaml         | 2 --
+>  .../devicetree/bindings/phy/phy-cadence-torrent.yaml        | 4 ----
+>  .../devicetree/bindings/phy/qcom,ipq806x-usb-phy-hs.yaml    | 1 -
+>  .../devicetree/bindings/phy/qcom,ipq806x-usb-phy-ss.yaml    | 1 -
+>  Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml     | 1 -
+>  Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml   | 2 --
+>  Documentation/devicetree/bindings/phy/renesas,usb2-phy.yaml | 2 --
+>  Documentation/devicetree/bindings/phy/renesas,usb3-phy.yaml | 1 -
+
+Acked-By: Vinod Koul <vkoul@kernel.org>
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+~Vinod
