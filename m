@@ -2,61 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B463A90F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 07:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1635D3A90FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 07:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhFPFIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 01:08:05 -0400
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:60813 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhFPFIC (ORCPT
+        id S230360AbhFPFM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 01:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229476AbhFPFM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 01:08:02 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d01 with ME
-        id Hh5v2500321Fzsu03h5vLM; Wed, 16 Jun 2021 07:05:56 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 16 Jun 2021 07:05:56 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, jeffrey.t.kirsher@intel.com
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] e1000e: Fix an error handling path in 'e1000_probe()'
-Date:   Wed, 16 Jun 2021 07:05:53 +0200
-Message-Id: <2651bb1778490c45d963122619fe3403fdf6b9de.1623819901.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Wed, 16 Jun 2021 01:12:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD61C061574;
+        Tue, 15 Jun 2021 22:10:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Rl/2xWe1t3fGA2tDzacpIzmBMWDTxaoSCgBv24N1Mms=; b=PLlDVvJ7YOqYoyxO8Nd8QMJyAa
+        Ne0IYM4CugV05Vtu3A5E+3pJ7x+XtCoxDfBJNl+UM/QY98xkJl7rnPc8HPasHWdnYU0yHbWyGsu/S
+        bjLRnen+2Uie3qiAgEHH7qmF8y+qzi/TgcNeBPLFOEsUWOjwSbFORhOA63QcjyNnmYqcUkYMfBG0U
+        FzBVUO0UnvETeTSDlg2wU+QETNeUzvNSl3ejiAb80ajALIv/8VhnCrtyLHt+i4Y4J5xpGjbOiMasf
+        SR0sb5q1eaP4nUvwWKwgK/xaB07RVPogTcUi67NxD6GwfGO2Y5xaa9uN/MJg1WpgMYJxPaxgcmIFp
+        m8cwjCWQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltNna-007cSD-3F; Wed, 16 Jun 2021 05:09:13 +0000
+Date:   Wed, 16 Jun 2021 06:09:10 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jia He <justin.he@arm.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH RFCv4 0/4] make '%pD' print full path for file
+Message-ID: <YMmHdlJBnTBKUjeZ@infradead.org>
+References: <20210615154952.2744-1-justin.he@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615154952.2744-1-justin.he@arm.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
-must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
-call, as already done in the remove function.
-
-Fixes: 111b9dc5c981 ("e1000e: add aer support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/net/ethernet/intel/e1000e/netdev.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
-index 5435606149b0..c8aa69fd0405 100644
---- a/drivers/net/ethernet/intel/e1000e/netdev.c
-+++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-@@ -7662,6 +7662,7 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- err_ioremap:
- 	free_netdev(netdev);
- err_alloc_etherdev:
-+	pci_disable_pcie_error_reporting(pdev);
- 	pci_release_mem_regions(pdev);
- err_pci_reg:
- err_dma:
--- 
-2.30.2
-
+Btw, please throw in a patch to convert iomap_swapfile_fail over to
+the new %pD as that started the whole flamewar^H^H^H^H^H^H^Hdiscussion.
