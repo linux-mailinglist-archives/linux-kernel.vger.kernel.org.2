@@ -2,123 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B469E3A9D3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7546F3A9D42
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233920AbhFPOOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234046AbhFPOOZ (ORCPT
+        id S234006AbhFPOOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:14:37 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4270 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233904AbhFPOOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:14:25 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A44C0619FE
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:11:36 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id o39-20020a05600c5127b02901d23584fd9bso1420195wms.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:11:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HGT2HeGVD/Jr+ubaKRB0o5Xpp+A7fNhogq7R332vnmI=;
-        b=t2mViS9Vtqosgs7daQ2fKKMi/FXdC0XifEJyp0sfJTffXWO2D17cIv+7CfO2bVkq/q
-         mJZcyb6ZaAm7sMilxYKBNW6mex0t+Nluwz+aaECrWK8A3Vn53e0o98pI12FQwjUJpnJE
-         GhMSiVrcEEIF+JHy23Gqouz31tlByRGmAfFnxi55U9HtUNhEvF+JuNN7VpCOf5k0TQ8s
-         lnC0F1yqUCuLyHo5hRdERlwCYapLtL6FTS9GN3BnjAWi+jyXDbTPsc4uZrQYztKd5iZH
-         3wuCFr5COO+7s4hyUxPZtQ1K35mpOVBb6JsMZvrNYvvquqqCJDrBBrEe3f5H56SxO7RH
-         gSPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HGT2HeGVD/Jr+ubaKRB0o5Xpp+A7fNhogq7R332vnmI=;
-        b=DQaX6SPm5Pk+SHtX0q2ab66UvV/ltbxzPMB1ZoDtZ9JyZg7rs0zMqAHQoHAIcoc8yI
-         6JQxPL6lYISGvoqcF0DgYLHTZAEeQ+icYBDuE4bTdnjaNoM/ZZd2bVPxmsGZXwPl5FnK
-         y6O2qjbZg+/rN328ne7uZA7i52tCYU5zUucCWzJzkHUv/Va2IeeX8Xa/h0TUyaa1eXc/
-         zb6vgz3egJQc5iF/x1iRXPDKDmz4zEotgRoE5PBRsRfQjx6gzmkPDg+mMNHWMZGsJy6M
-         KL8mXrDxrFVu5K8k12Iz9Ixe+9XkgIjGxouYkLB14MZSk+OGOrTDcuqRHTYHIz5p/ZzL
-         S6aw==
-X-Gm-Message-State: AOAM530KSRAFIOpZw1OzC+nxn9frWil35NBr5xihA0nhxqK8V1L52XXY
-        VddR5wwGwpgCWORFyQzlSZc6jw==
-X-Google-Smtp-Source: ABdhPJyFWNyVm+TasYV8cmw/GbIneIqGSrxmWrnoQknXe8WibRp59S0EvU4S/167J/tCvrk05oKmzg==
-X-Received: by 2002:a05:600c:3397:: with SMTP id o23mr163075wmp.10.1623852695334;
-        Wed, 16 Jun 2021 07:11:35 -0700 (PDT)
-Received: from xps7590.fritz.box ([2a02:2454:3e5:b700:9df7:76e5:7e94:bf1e])
-        by smtp.gmail.com with ESMTPSA id g83sm1968375wma.10.2021.06.16.07.11.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 07:11:34 -0700 (PDT)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        jonathan@marek.ca, tdas@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vinod Koul <vinod.koul@linaro.org>
-Cc:     Robert Foss <robert.foss@linaro.org>
-Subject: [RFC v1 11/11] arm64: dts: qcom: sm8350: Add dispcc DT node
-Date:   Wed, 16 Jun 2021 16:11:07 +0200
-Message-Id: <20210616141107.291430-12-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210616141107.291430-1-robert.foss@linaro.org>
-References: <20210616141107.291430-1-robert.foss@linaro.org>
+        Wed, 16 Jun 2021 10:14:31 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15GE3if7123200;
+        Wed, 16 Jun 2021 10:11:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : content-type :
+ mime-version; s=pp1; bh=UupLhvjLfZlZazopahCfbi8y4ZD+5NPeCGAMnXLT4ms=;
+ b=GrLMvthA5rC1tfSKNoifYju5lbcM6AVRhpciJIhco5ODPwvIuG/i+iL3+pVf7j4UJ1WF
+ PGYaVz7ew3/53QaOnVSASRqkobVcEnKFWTjhq0p/q8mKSyR0ofHH1LwNNXrQeeerOqIb
+ +HOSDDggMYaoURLdXQ5xqUBEnij8WeBYnqX/Oe8izH8QLGGpWJ0kDWBf03VSrsGQnbF/
+ u9CQFRxLZerTDx0fi67aJi2oY99ZpMkFgvW5jSSi0e92rE1AUSv4LWE2n94Ai9AFlQn4
+ AncDpb2tzMhXF2ljfNp0nN1hhTwW6Kl8A10XfjK0otq9SSx9wrvQtt/B80xNkfyJhnoE pw== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 397h7dkfyt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Jun 2021 10:11:41 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15GE4Ld3002192;
+        Wed, 16 Jun 2021 14:11:40 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma03dal.us.ibm.com with ESMTP id 394mja10ke-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Jun 2021 14:11:40 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15GEBdCb31064526
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Jun 2021 14:11:39 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 09094112081;
+        Wed, 16 Jun 2021 14:11:39 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7CE94112084;
+        Wed, 16 Jun 2021 14:11:35 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.77.206.69])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 16 Jun 2021 14:11:35 +0000 (GMT)
+X-Mailer: emacs 28.0.50 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     kernel test robot <lkp@intel.com>, akpm@linux-foundation.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Cc:     kbuild-all@lists.01.org
+Subject: Re: +
+ mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t.patch
+ added to -mm tree
+In-Reply-To: <202106162159.MurvDMy6-lkp@intel.com>
+References: <20210615233808.hzjGO1gF2%akpm@linux-foundation.org>
+ <202106162159.MurvDMy6-lkp@intel.com>
+Date:   Wed, 16 Jun 2021 19:41:32 +0530
+Message-ID: <87zgvpnbl7.fsf@linux.ibm.com>
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 8rMD4mzHJNBx7M8D0iDqW7mllc1ilLVc
+X-Proofpoint-ORIG-GUID: 8rMD4mzHJNBx7M8D0iDqW7mllc1ilLVc
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-16_07:2021-06-15,2021-06-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 malwarescore=0 mlxlogscore=999 impostorscore=0 adultscore=0
+ lowpriorityscore=0 bulkscore=0 mlxscore=0 clxscore=1011 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106160082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds the dispcc DTS node for sm8350.
+kernel test robot <lkp@intel.com> writes:
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8350.dtsi | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+> Hi,
+>
+> I love your patch! Perhaps something to improve:
+>
+> [auto build test WARNING on powerpc/next]
+> [also build test WARNING on tip/x86/mm asm-generic/master linus/master sparc/master v5.13-rc6 next-20210615]
+> [cannot apply to sparc-next/master]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/akpm-linux-foundation-org/mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t-patch-added-to-mm-tree/20210616-161816
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
+> config: m68k-allmodconfig (attached as .config)
+> compiler: m68k-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/2ccec57c1def84dab91722c14fd5907ed7423426
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review akpm-linux-foundation-org/mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t-patch-added-to-mm-tree/20210616-161816
+>         git checkout 2ccec57c1def84dab91722c14fd5907ed7423426
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=m68k 
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+>    arch/m68k/mm/motorola.c: In function 'kernel_ptr_table':
+>>> arch/m68k/mm/motorola.c:265:8: warning: assignment to 'long unsigned int' from 'pmd_t *' {aka 'struct <anonymous> *'} makes integer from pointer without a cast [-Wint-conversion]
+>      265 |    pmd = pgd_page_vaddr(kernel_pg_dir[i]);
+>          |        ^
+>    arch/m68k/mm/motorola.c: At top level:
+>    arch/m68k/mm/motorola.c:390:13: warning: no previous prototype for 'paging_init' [-Wmissing-prototypes]
+>      390 | void __init paging_init(void)
+>          |             ^~~~~~~~~~~
+>
+>
+> vim +265 arch/m68k/mm/motorola.c
+>
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  248  
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  249  static pmd_t * __init kernel_ptr_table(void)
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  250  {
+> ef9285f69f0efb Peter Zijlstra     2020-01-31  251  	if (!last_pmd_table) {
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  252  		unsigned long pmd, last;
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  253  		int i;
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  254  
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  255  		/* Find the last ptr table that was used in head.S and
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  256  		 * reuse the remaining space in that page for further
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  257  		 * ptr tables.
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  258  		 */
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  259  		last = (unsigned long)kernel_pg_dir;
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  260  		for (i = 0; i < PTRS_PER_PGD; i++) {
+> 60e50f34b13e9e Mike Rapoport      2019-12-04  261  			pud_t *pud = (pud_t *)(&kernel_pg_dir[i]);
+> 60e50f34b13e9e Mike Rapoport      2019-12-04  262  
+> 60e50f34b13e9e Mike Rapoport      2019-12-04  263  			if (!pud_present(*pud))
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  264  				continue;
+> 60e50f34b13e9e Mike Rapoport      2019-12-04 @265  			pmd = pgd_page_vaddr(kernel_pg_dir[i]);
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  266  			if (pmd > last)
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  267  				last = pmd;
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  268  		}
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  269  
+> ef9285f69f0efb Peter Zijlstra     2020-01-31  270  		last_pmd_table = (pmd_t *)last;
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  271  #ifdef DEBUG
+> ef9285f69f0efb Peter Zijlstra     2020-01-31  272  		printk("kernel_ptr_init: %p\n", last_pmd_table);
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  273  #endif
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  274  	}
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  275  
+> ef9285f69f0efb Peter Zijlstra     2020-01-31  276  	last_pmd_table += PTRS_PER_PMD;
+> 41f1bf37a63ecd Geert Uytterhoeven 2020-08-26  277  	if (PAGE_ALIGNED(last_pmd_table)) {
+> 7e158826564fbb Geert Uytterhoeven 2020-08-26  278  		last_pmd_table = memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+> ef9285f69f0efb Peter Zijlstra     2020-01-31  279  		if (!last_pmd_table)
+> 8a7f97b902f4fb Mike Rapoport      2019-03-11  280  			panic("%s: Failed to allocate %lu bytes align=%lx\n",
+> 8a7f97b902f4fb Mike Rapoport      2019-03-11  281  			      __func__, PAGE_SIZE, PAGE_SIZE);
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  282  
+> ef9285f69f0efb Peter Zijlstra     2020-01-31  283  		clear_page(last_pmd_table);
+> ef9285f69f0efb Peter Zijlstra     2020-01-31  284  		mmu_page_ctor(last_pmd_table);
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  285  	}
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  286  
+> ef9285f69f0efb Peter Zijlstra     2020-01-31  287  	return last_pmd_table;
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  288  }
+> ^1da177e4c3f41 Linus Torvalds     2005-04-16  289  
+>
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-index b270fb94da8c..76660d84f838 100644
---- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-@@ -3,7 +3,9 @@
-  * Copyright (c) 2020, Linaro Limited
-  */
+We may want to fixup pgd_page_vaddr correctly later. pgd_page_vaddr() gets
+cast to different pointer types based on architecture. But for now this
+should work? This ensure we keep the pgd_page_vaddr() same as before. 
+
+diff --git a/include/asm-generic/pgtable-nop4d.h b/include/asm-generic/pgtable-nop4d.h
+index 982de5102fc1..2f1d0aad645c 100644
+--- a/include/asm-generic/pgtable-nop4d.h
++++ b/include/asm-generic/pgtable-nop4d.h
+@@ -42,7 +42,7 @@ static inline p4d_t *p4d_offset(pgd_t *pgd, unsigned long address)
+ #define __p4d(x)				((p4d_t) { __pgd(x) })
  
-+#include <dt-bindings/interconnect/qcom,sm8350.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/clock/qcom,dispcc-sm8350.h>
- #include <dt-bindings/clock/qcom,gcc-sm8350.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
- #include <dt-bindings/mailbox/qcom-ipcc.h>
-@@ -1298,6 +1300,29 @@ videocc: qcom,videocc@abf0000 {
- 			#power-domain-cells = <1>;
- 		};
+ #define pgd_page(pgd)				(p4d_page((p4d_t){ pgd }))
+-#define pgd_page_vaddr(pgd)			(p4d_pgtable((p4d_t){ pgd }))
++#define pgd_page_vaddr(pgd)			((unsigned long)(p4d_pgtable((p4d_t){ pgd })))
  
-+		dispcc: clock-controller@af00000 {
-+			compatible = "qcom,sm8350-dispcc";
-+			reg = <0 0x0af00000 0 0x10000>;
-+			mmcx-supply = <&mmcx_reg>;
-+			clocks = <&rpmhcc RPMH_CXO_CLK>,
-+				 <0>,
-+				 <0>,
-+				 <0>,
-+				 <0>,
-+				 <0>,
-+				 <0>;
-+			clock-names = "bi_tcxo",
-+				      "dsi0_phy_pll_out_byteclk",
-+				      "dsi0_phy_pll_out_dsiclk",
-+				      "dsi1_phy_pll_out_byteclk",
-+				      "dsi1_phy_pll_out_dsiclk",
-+				      "dp_phy_pll_link_clk",
-+				      "dp_phy_pll_vco_div_clk";
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+			#power-domain-cells = <1>;
-+		};
-+
- 		adsp: remoteproc@17300000 {
- 			compatible = "qcom,sm8350-adsp-pas";
- 			reg = <0 0x17300000 0 0x100>;
--- 
-2.30.2
-
+ /*
+  * allocating and freeing a p4d is trivial: the 1-entry p4d is
