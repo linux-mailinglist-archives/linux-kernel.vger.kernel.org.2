@@ -2,52 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A2A3A934F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC003A9358
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbhFPG52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:57:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34578 "EHLO mail.kernel.org"
+        id S232130AbhFPG5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:57:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231168AbhFPG5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230515AbhFPG5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Jun 2021 02:57:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E86AE613B9;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5C5761246;
         Wed, 16 Jun 2021 06:55:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623826518;
-        bh=JNLoEzRSUmckl8eLY94oHxsjeBDCiLlJ5aZAc+3RHhw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bIRjmcsZh0nDrGHZVv9Hdcp/Q7V4uZte3M33hb9qtbnnI2Do02YGKEM+D6wRBXJX8
-         fXP7U8eEtlIoGGBRfcltvRJKfVLv6QfEzHWXg0RqgPTC/cqVmoVPlD3eInloJymMLC
-         YFImERmycprD4hLIQfwK4FMud3KE6g98aGIK3QdPZWSv6z/ri/7N3dR5lTH3MJ8aUe
-         Bp3u9e2L/j8FbtxvpC2tQVJI5GuWTuVepuuIxKMIBQ2anYz1TSwnwP/6dC4Hclk/V0
-         JEx814LnbdMa7n/p9vSS8FAmzoK9B1aSqdGnO1eWFyBdMyWaXbzC4IY2JvfPF0KgqH
-         Uy3+bF3abccxA==
+        s=k20201202; t=1623826517;
+        bh=qVFGdhd3RiCLKZC/IOh05kkJiYS3/3QY2KmfYni5bpY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lkuafyYCr0ttnuzFV5+KTqo+QHac83k2fdVUduAheZ3CiW+Ze8wD5WAaITAKzGkm0
+         g/ZsJQd/XOwB/FYafS3glV+SNTvUgCNMw3G7IPbcl8TaUqWye1f49qHoA4oZHpJdPe
+         02afUiEvT1vk3yLfkfaB1QwY/CZrnlVRZCoHe5mCJfU/0B3+5XvGrtR49PafvnclH+
+         kI1V7HDY+bs2AgxMt1FhCiSV6bk9o28MvhhucC7+qtbOMFMQ2p78hFRDErf+2eOIW1
+         U8IIEmtIKZ59mKIeVJL855OwuQt6dERe7BD7vvJo4p+rBo5hRvxzVwNy5KDfb4s10/
+         Z7tuwCKdPKxTg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1ltPSG-004lCD-7Q; Wed, 16 Jun 2021 08:55:16 +0200
+        id 1ltPSG-004lCG-8Q; Wed, 16 Jun 2021 08:55:16 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jakub Kicinski <kuba@kernel.org>, Leo Yan <leo.yan@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
         Thorsten Leemhuis <linux@leemhuis.info>,
-        coresight@lists.linaro.org, intel-wired-lan@lists.osuosl.org,
-        linux-arm-kernel@lists.infradead.org, linux-ext4@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH 0/8] Replace some bad characters on documents
-Date:   Wed, 16 Jun 2021 08:55:06 +0200
-Message-Id: <cover.1623826294.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/8] docs: admin-guide: reporting-issues.rst: replace some characters
+Date:   Wed, 16 Jun 2021 08:55:07 +0200
+Message-Id: <551a2af0e654226067e5c376d3e2d959cc738f39.1623826294.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1623826294.git.mchehab+huawei@kernel.org>
+References: <cover.1623826294.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -56,40 +46,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jon,
+The conversion tools used during DocBook/LaTeX/html/Markdown->ReST
+conversion and some cut-and-pasted text contain some characters that
+aren't easily reachable on standard keyboards and/or could cause
+troubles when parsed by the documentation build system.
 
-This series contain the remaining 8 patches I submitted at v3 that
-weren't merged yet at -next.
+Replace the occurences of the following characters:
 
-This series is rebased on the top of your docs-next branch.
+	- U+00a0 (' '): NO-BREAK SPACE
+	  as it can cause lines being truncated on PDF output
 
-No changes here, except by some Reviewed/ack lines, and at the
-name of the final patch (per PCI maintainer's request).
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ Documentation/admin-guide/reporting-issues.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Mauro Carvalho Chehab (8):
-  docs: admin-guide: reporting-issues.rst: replace some characters
-  docs: trace: coresight: coresight-etm4x-reference.rst: replace some
-    characters
-  docs: driver-api: ioctl.rst: replace some characters
-  docs: usb: replace some characters
-  docs: vm: zswap.rst: replace some characters
-  docs: filesystems: ext4: blockgroup.rst: replace some characters
-  docs: networking: device_drivers: replace some characters
-  docs: PCI: Replace non-breaking spaces to avoid PDF issues
-
- Documentation/PCI/acpi-info.rst                | 18 +++++++++---------
- Documentation/admin-guide/reporting-issues.rst |  2 +-
- Documentation/driver-api/ioctl.rst             |  8 ++++----
- Documentation/filesystems/ext4/blockgroup.rst  |  2 +-
- .../device_drivers/ethernet/intel/i40e.rst     |  6 +++---
- .../device_drivers/ethernet/intel/iavf.rst     |  2 +-
- .../coresight/coresight-etm4x-reference.rst    |  2 +-
- Documentation/usb/ehci.rst                     |  2 +-
- Documentation/usb/gadget_printer.rst           |  2 +-
- Documentation/vm/zswap.rst                     |  4 ++--
- 10 files changed, 24 insertions(+), 24 deletions(-)
-
+diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documentation/admin-guide/reporting-issues.rst
+index 18d8e25ba9df..d7ac13f789cc 100644
+--- a/Documentation/admin-guide/reporting-issues.rst
++++ b/Documentation/admin-guide/reporting-issues.rst
+@@ -1248,7 +1248,7 @@ paragraph makes the severeness obvious.
+ 
+ In case you performed a successful bisection, use the title of the change that
+ introduced the regression as the second part of your subject. Make the report
+-also mention the commit id of the culprit. In case of an unsuccessful bisection,
++also mention the commit id of the culprit. In case of an unsuccessful bisection,
+ make your report mention the latest tested version that's working fine (say 5.7)
+ and the oldest where the issue occurs (say 5.8-rc1).
+ 
 -- 
 2.31.1
-
 
