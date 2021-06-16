@@ -2,160 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2831F3A983D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB7F3A9838
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhFPK66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:58:58 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31930 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230262AbhFPK64 (ORCPT
+        id S229570AbhFPK6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhFPK6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:58:56 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15GAlEC3034749;
-        Wed, 16 Jun 2021 06:55:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type : subject :
- from : in-reply-to : date : cc : message-id : references : to :
- content-transfer-encoding : mime-version; s=pp1;
- bh=80KjtjTCJSGCl+N545fzlhHnYfVsW8UWSAcxhsaSRJ0=;
- b=E8R7gVXJz6Glv55HFAbiE4K+zDLuCrutJjqHexG7JbLyYymbCdL6IGFm17J5FHxR9Cna
- HyjLNwIvVPon1YfQL2VjSC31PXXY8RoVL2UVN3JMvRslXF65LGrWNTzp/k4Eh6+RC/Nm
- I9UfWua1SXWhRGr97SRfdk7orOzwhdnpaP2BdxPRIKYtQbwKS1Fg2NjnSvOtUS1LpiU7
- NnKt8BkWpXe4QmHlrekAyrKlnHVJ6BcdPEHoXknfw2nILlp8c2mIuFRPd508kAV8P3HC
- MbTTcyTaeWzAeVoThUPWwGt8G8JVEnUVud4N9aG6Tc8GN9j8aEsVVYAy104cR9SELWAH AA== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 397fuv05ma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 06:55:10 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15GAl5qt017422;
-        Wed, 16 Jun 2021 10:55:08 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 394mj8t1a3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 10:55:08 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15GAt4Et35324226
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Jun 2021 10:55:04 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C3195A405B;
-        Wed, 16 Jun 2021 10:55:04 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 887DFA4065;
-        Wed, 16 Jun 2021 10:55:02 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.77.207.60])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 16 Jun 2021 10:55:02 +0000 (GMT)
-Content-Type: text/plain;
-        charset=us-ascii
-Subject: Re: [PATCH v2 0/4] Add perf interface to expose nvdimm
-From:   Nageswara Sastry <rnsastry@linux.ibm.com>
-In-Reply-To: <20210614052326.285710-1-kjain@linux.ibm.com>
-Date:   Wed, 16 Jun 2021 16:25:00 +0530
-Cc:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, maddy@linux.vnet.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com, ira.weiny@intel.com,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>, tglx@linutronix.de
-Message-Id: <B216F74B-8542-4363-8A82-1E392D9C5929@linux.ibm.com>
-References: <20210614052326.285710-1-kjain@linux.ibm.com>
-To:     Kajol Jain <kjain@linux.ibm.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: N3X1kf_xO5sUaZH9i8ADFlbD9voIdr47
-X-Proofpoint-GUID: N3X1kf_xO5sUaZH9i8ADFlbD9voIdr47
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 16 Jun 2021 06:58:43 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627D3C061574;
+        Wed, 16 Jun 2021 03:56:37 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso1515461pjb.4;
+        Wed, 16 Jun 2021 03:56:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HuLGw9v7JLauPhtnxWS8KYadx9N1A/H3l9fDM2qNdFs=;
+        b=Zhj8UEuYrb4byhhy4fvAXLyIcmOOFNXknm7PP8rsag6hkDRyQUHz2glSE9P47Ax/o8
+         2x6T4LwzcY9FMCJt9+/ZIMwszYNdgg53J30WeeWvWMf3yA7rrzPaoSXcZ0pEDUNMPQIH
+         uPYFMbPHjYNjzKlHTDGbC6HGv96cokWjzplROekLytbWjppWC9KJnRFEZI8Y2a49AQoX
+         vJWVAQj9bplLUyd8X1E9rAzy9zil8Ke0Lb7Y5Y8UtCkQ1uJD0VvN6hlbWroddcoM3PVn
+         UBYR1nXZQAagH8XFLPrxMHoctTJ8Y76+0UIT68BeR0Nk36MVaOzawLd+4yL73vyIez4Q
+         1rKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HuLGw9v7JLauPhtnxWS8KYadx9N1A/H3l9fDM2qNdFs=;
+        b=b22f1/PsF9PeYAhZJouO2MQJ6JVnzc2KJf18d8CVegd3Hx7CXI1jj0u9elhDCTT8Lq
+         Uiy/JGIKAEZxrgdvbzEXGrw/9aKh9EoXBJsRK17BxnxXhe03NxUbKnc7GXLDAtT7VzZb
+         bmOXPHCaxkxyVCALLANRAfR8oXssXd9e7MEj8dovloydTol3aWKdBYbfdEr51B3rTjGM
+         S3LDCRV6YVNgxxyhirmVqwsSU1hZ/hafUvyULFxR4Lj10XV4WzsE7jAPLU8Ug+uyhYzt
+         Fv14XQdFcXNHmS4vZFdPMC0FSN7BgD2EXNDJIoKPkCt8edkuIjPKdgO7gDn7cx8wIk4v
+         AXYg==
+X-Gm-Message-State: AOAM5331ZvcrGFLTaQylPz0dlXLChVgPQ9VQYAajs2MB6KLAW9QZgxBv
+        2ex/9OVa1cQUNSFP4TAir0fuwRaWb1agCgg3lQ==
+X-Google-Smtp-Source: ABdhPJxTheKUcJqyRfJvtawPTMCjeDGxyzMx7Xo/qrwPj+nkXyk+JqpYYCZmLzAA+Kf7pa2yv3lgVepdJoP3repgnkw=
+X-Received: by 2002:a17:90a:aa98:: with SMTP id l24mr4447446pjq.156.1623840996957;
+ Wed, 16 Jun 2021 03:56:36 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-16_07:2021-06-15,2021-06-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 adultscore=0 spamscore=0 clxscore=1011 mlxscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 impostorscore=0
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2106160060
+References: <20210615130737.2098-1-fengzheng923@gmail.com> <20210616084920.y6yjic4sau6ungv5@gilmour>
+In-Reply-To: <20210616084920.y6yjic4sau6ungv5@gilmour>
+From:   =?UTF-8?B?54+t5rab?= <fengzheng923@gmail.com>
+Date:   Wed, 16 Jun 2021 18:56:25 +0800
+Message-ID: <CAE=m619_52DDC_up=QqRXkF88uJR6CcAJqentnBzb=pxL7LhxA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: sun50i-dmic: dt-bindings: add DT bindings for
+ DMIC controller
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        wens@csie.org, jernej.skrabec@gmail.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B46=E6=9C=8816=E6=97=
+=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=884:49=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Hi,
+>
+> On Tue, Jun 15, 2021 at 09:07:37PM +0800, Ban Tao wrote:
+> > The Allwinner SoCs feature an I2S controller across multiple SoC
+> > generations.
+>
+> Which SoC generations?
+>
+> > Signed-off-by: Ban Tao <fengzheng923@gmail.com>
+> > ---
+> >  .../sound/allwinner,sun50i-h6-dmic.yaml       | 66 +++++++++++++++++++
+> >  1 file changed, 66 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/allwinner,s=
+un50i-h6-dmic.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun50i-h=
+6-dmic.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-d=
+mic.yaml
+> > new file mode 100644
+> > index 000000000000..81d40c374e44
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.=
+yaml
+> > @@ -0,0 +1,66 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/sound/allwinner,sun50i-h6-dmic.yaml=
+#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Allwinner H6 DMIC Controller Device Tree Bindings
+> > +
+> > +maintainers:
+> > +  - Ban Tao <fengzheng923@gmail.com>
+> > +
+> > +properties:
+> > +  "#sound-dai-cells":
+> > +    const: 0
+> > +
+> > +  compatible:
+> > +    const: allwinner,sun50i-h6-dmic
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: Bus Clock
+> > +      - description: Module Clock
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: apb
+> > +      - const: dmic
+>
+> The convention we use is bus and mod
+>
+> > +
+> > +  dmas:
+> > +    maxItems: 1
+> > +
+> > +  dma-names:
+> > +    const: rx
+> > +
+> > +  resets:
+> > +    maxItems: 1
+> > +
+> > +required:
+> > +  - "#sound-dai-cells"
+> > +  - compatible
+> > +  - reg
+> > +  - clocks
+> > +  - clock-names
+> > +  - dmas
+> > +  - dma-names
+> > +  - resets
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    spdif: spdif@5095000 {
+>
+> The label and node name seems wrong?
+>
+Yes, in fact, I don=E2=80=99t know much about yaml format files.
+The allwinner,sun50i-h6-dmic.yaml file is based on
+allwinner,sun4i-a10-spdif.yaml.
+So, How do i convert txt file to yaml file, for example:
+---------------------------------------------
+Required properties:
+
+  - compatible         : should be one of the following:
+    - "allwinner,sun50i-h6-dmic": for the Allwinner H6 SoC
+
+  - reg                        : physical base address of the
+controller and length of memory mapped region.
+
+  - dmas               : Generic dma devicetree binding as described in
+                         Documentation/devicetree/bindings/dma/dma.txt.
+
+  - dma-names          : DMA have to be defined, "rx".
+
+  - clocks             : Contains an entry for each entry in clock-names.
+
+  - clock-names                : Includes the following entries:
+       "apb"             clock for the dmic bus.
+       "dmic"           clock for dmic controller.
+
+  - resets             : reset specifier for the ahb reset
+
+Example:
+
+dmic: dmic@5095000 {
+        #sound-dai-cells =3D <0>;
+        compatible =3D "allwinner,sun50i-h6-dmic";
+        reg =3D <0x05095000 0x400>;
+        clocks =3D <&ccu CLK_BUS_DMIC>, <&ccu CLK_DMIC>;
+        clock-names =3D "apb", "dmic";
+        dmas =3D <&dma 7>;
+        dma-names =3D "rx";
+        resets =3D <&ccu RST_BUS_DMIC>;
+};
+---------------------------------------------
+
+Thanks.
 
 
-> On 14-Jun-2021, at 10:53 AM, Kajol Jain <kjain@linux.ibm.com> wrote:
->=20
-> Patchset adds performance stats reporting support for nvdimm.
-> Added interface includes support for pmu register/unregister
-> functions. A structure is added called nvdimm_pmu to be used for
-> adding arch/platform specific data such as supported events, cpumask
-> pmu event functions like event_init/add/read/del.
-> User could use the standard perf tool to access perf
-> events exposed via pmu.
->=20
-> Added implementation to expose IBM pseries platform nmem*
-> device performance stats using this interface.
-> ...
->=20
-> Patch1:
->        Introduces the nvdimm_pmu structure
-> Patch2:
-> 	Adds common interface to add arch/platform specific data
-> 	includes supported events, pmu event functions. It also
-> 	adds code for cpu hotplug support.
-> Patch3:
->        Add code in arch/powerpc/platform/pseries/papr_scm.c to expose
->        nmem* pmu. It fills in the nvdimm_pmu structure with event attrs
->        cpumask andevent functions and then registers the pmu by adding
->        callbacks to register_nvdimm_pmu.
-> Patch4:
->        Sysfs documentation patch
-
-Tested with the following scenarios:
-1. Check dmesg for nmem PMU registered messages.
-2. Listed nmem events using 'perf list and perf list nmem'
-3. Ran 'perf stat' with single event, grouping events, events from same pmu,
-   different pmu and invalid events
-4. Read from sysfs files, Writing in to sysfs files
-5. While running nmem events with perf stat, offline cpu from the nmem?/cpu=
-mask
-
-While running the above functionality worked as expected, no error messages=
- seen
-in dmesg.
-
-Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
-
->=20
-> Changelog
-> ---
-> PATCH v1 -> PATCH v2
-> - Fix hotplug code by adding pmu migration call
->  incase current designated cpu got offline. As
->  pointed by Peter Zijlstra.
->=20
-> - Removed the retun -1 part from cpu hotplug offline
->  function.
->=20
-> - Link to the previous patchset : https://lkml.org/lkml/2021/6/8/500
-> ---
-> Kajol Jain (4):
->  drivers/nvdimm: Add nvdimm pmu structure
->  drivers/nvdimm: Add perf interface to expose nvdimm performance stats
->  powerpc/papr_scm: Add perf interface support
->  powerpc/papr_scm: Document papr_scm sysfs event format entries
->=20
-> Documentation/ABI/testing/sysfs-bus-papr-pmem |  31 ++
-> arch/powerpc/include/asm/device.h             |   5 +
-> arch/powerpc/platforms/pseries/papr_scm.c     | 365 ++++++++++++++++++
-> drivers/nvdimm/Makefile                       |   1 +
-> drivers/nvdimm/nd_perf.c                      | 230 +++++++++++
-> include/linux/nd.h                            |  46 +++
-> 6 files changed, 678 insertions(+)
-> create mode 100644 drivers/nvdimm/nd_perf.c
->=20
-Thanks and Regards,
-R.Nageswara Sastry
-
->=20
-
+> > +        #sound-dai-cells =3D <0>;
+> > +        compatible =3D "allwinner,sun50i-h6-dmic";
+> > +        reg =3D <0x05095000 0x400>;
+> > +        clocks =3D <&ccu CLK_BUS_DMIC>, <&ccu CLK_DMIC>;
+>
+> You'll need includes for it to compile
+>
+> Maxime
