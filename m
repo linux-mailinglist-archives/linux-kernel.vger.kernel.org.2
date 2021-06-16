@@ -2,64 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFA33A8FA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BB13A8FC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhFPDv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 23:51:26 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:10083 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbhFPDvV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 23:51:21 -0400
-Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G4WLz21QRzZfSk;
-        Wed, 16 Jun 2021 11:46:19 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.62) by
- dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 16 Jun 2021 11:49:14 +0800
-From:   Yu Jiahua <yujiahua1@huawei.com>
-To:     <alcooperx@gmail.com>, <gregkh@linuxfoundation.org>,
-        <f.fainelli@gmail.com>, <bcm-kernel-feedback-list@broadcom.com>
-CC:     <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Yu Jiahua <yujiahua1@huawei.com>
-Subject: [PATCH -next] drivers: usb: add missing MODULE_DEVICE_TABLE definition in brcmstb-usb-pinmap.c
-Date:   Tue, 15 Jun 2021 19:50:03 -0800
-Message-ID: <20210616035003.38149-1-yujiahua1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S230330AbhFPDxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 23:53:21 -0400
+Received: from verein.lst.de ([213.95.11.211]:52219 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229992AbhFPDxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 23:53:18 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 2CDD268AFE; Wed, 16 Jun 2021 05:51:10 +0200 (CEST)
+Date:   Wed, 16 Jun 2021 05:51:10 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>, gmpy.liaowx@gmail.com,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-doc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] pstore/blk: Improve failure reporting
+Message-ID: <20210616035109.GA25873@lst.de>
+References: <20210615212121.1200820-1-keescook@chromium.org> <20210615212121.1200820-2-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.62]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme756-chm.china.huawei.com (10.3.19.102)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615212121.1200820-2-keescook@chromium.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+On Tue, Jun 15, 2021 at 02:21:18PM -0700, Kees Cook wrote:
+> -	if (!dev || !dev->total_size || !dev->read || !dev->write)
+> +	if (!dev || !dev->total_size || !dev->read || !dev->write) {
+> +		if (!dev)
+> +			pr_err("NULL device info\n");
+> +		else {
+> +			if (!dev->total_size)
+> +				pr_err("zero sized device\n");
+> +			if (!dev->read)
+> +				pr_err("no read handler for device\n");
+> +			if (!dev->write)
+> +				pr_err("no write handler for device\n");
+> +		}
+>  		return -EINVAL;
+> +	}
 
-Signed-off-by: Yu Jiahua <yujiahua1@huawei.com>
----
- drivers/usb/misc/brcmstb-usb-pinmap.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/usb/misc/brcmstb-usb-pinmap.c b/drivers/usb/misc/brcmstb-usb-pinmap.c
-index b3cfe8666ea7..cbc958355359 100644
---- a/drivers/usb/misc/brcmstb-usb-pinmap.c
-+++ b/drivers/usb/misc/brcmstb-usb-pinmap.c
-@@ -331,6 +331,7 @@ static const struct of_device_id brcmstb_usb_pinmap_of_match[] = {
- 	{ .compatible = "brcm,usb-pinmap" },
- 	{ },
- };
-+MODULE_DEVICE_TABLE(of, brcmstb_usb_pinmap_of_match);
- 
- static struct platform_driver brcmstb_usb_pinmap_driver = {
- 	.driver = {
--- 
-2.17.1
-
+I still find this style of checks pretty strange..
