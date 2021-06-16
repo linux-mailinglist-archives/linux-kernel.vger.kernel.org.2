@@ -2,212 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257983A9B37
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FDB3A9B3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhFPM5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:57:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232550AbhFPM5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:57:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69E3C61351;
-        Wed, 16 Jun 2021 12:54:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623848094;
-        bh=TiLQ/sViaRtSBZKqaPo8q5dK1gg9K5BIjrrfGAYjam4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lHjFBSC2peCkC8qioEZI79+L0JphOrTq4U9Qn68n2D0Lyiv1wlOkXg3QMw9IBGaZQ
-         AtoLt+avE+VYm0TYplIuD9GBIBH0gBNDRDGnUomy3CS+QiWOoWqyn9DcOKMPYJjiYd
-         OoVKOqJAeIEgogy9fujydMMe+5DnkJPlprAkS05YcHD6X24uljA3WYjHjWZ6NiGZ8n
-         gt61d8NfRZdaya5BqmoX/o74sLtr3lVzjFXu1k7KrTHcFSCB/EJC8qLYIj50DcBvtN
-         z5vR4entjjrntUkqQvzgrfXaauP/Z8TfajlVp05Gxlfp9kYwz1KjFUsXFYcUJtvfzR
-         8Opl/Bd8XKDmA==
-Date:   Wed, 16 Jun 2021 14:54:52 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "hasegawa-hitomi@fujitsu.com" <hasegawa-hitomi@fujitsu.com>,
-        "'mingo@kernel.org'" <mingo@kernel.org>,
-        "'fweisbec@gmail.com'" <fweisbec@gmail.com>,
-        "'tglx@linutronix.de'" <tglx@linutronix.de>,
-        "'juri.lelli@redhat.com'" <juri.lelli@redhat.com>,
-        "'vincent.guittot@linaro.org'" <vincent.guittot@linaro.org>,
-        "'dietmar.eggemann@arm.com'" <dietmar.eggemann@arm.com>,
-        "'rostedt@goodmis.org'" <rostedt@goodmis.org>,
-        "'bsegall@google.com'" <bsegall@google.com>,
-        "'mgorman@suse.de'" <mgorman@suse.de>,
-        "'bristot@redhat.com'" <bristot@redhat.com>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
-Subject: Re: Utime and stime are less when getrusage (RUSAGE_THREAD) is
- executed on a tickless CPU.
-Message-ID: <20210616125452.GE801071@lothringen>
-References: <OSBPR01MB21837C8931D90AE55AF4A955EB529@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <OSBPR01MB2183384B29F6291EB7C0BB81EB2C9@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <YKN5cQpFSdsgBlBU@hirez.programming.kicks-ass.net>
- <OSBPR01MB21835E55331FCAE6F75E8332EB2B9@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <YKTZag/E8AaOtVT0@hirez.programming.kicks-ass.net>
+        id S233106AbhFPM5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232550AbhFPM5c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 08:57:32 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE58C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:55:25 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso2321096oto.12
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PgLISmcrZ4XM/HOFb1fJH8XxUGoU+n7XQHgYaHGSqys=;
+        b=ZKSiaKe16ivMGnUkPtYNXHZsEj2iL5FH7PfcadHkyV0ZaDhcB45PIHklFleKHjjoxa
+         AXKQbIMY2oXU3A4j61l5TSYYyxZ0U0KARAcYvXNqrOtOYm8WZ2nykTU5JdyL90UZH9V4
+         Z8d2nPLY/qVCdg62pc9IEr6l0JA8C8rlviN1v0p5kuIiOK8GHqAN7+B+KWOlx2PjSJTd
+         EEimTm1Op1//H1N03froTpFkDSxo8rlcENWAF1T0P3pspMFpxuwFMMzunvoXhS3Ubm1H
+         jn8Qho2gs6B+Qw9zn7KqYjwqAdYpn4Md3Od4d/P34p9D59VBCT8SuqWoN69NZ1uBrTRY
+         Yn4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PgLISmcrZ4XM/HOFb1fJH8XxUGoU+n7XQHgYaHGSqys=;
+        b=YV17EJRGMbt1tyCVE6FhdQptDTlq3UrIzGzjejalZs/+aM7hEMgwcNjozErYHTJEv9
+         JShpA73XD1JuURyCCqsDJl5Zdyv8nN4Mv/7jD+ltwJn+Zo3TOqiyvoFNm0IRo8r0ejKG
+         4uPms5CN2DRvnN+OWh4YdxQJJD/RJIRk6EebuLzPdX3nVBHEhgAeGfHwQ7G9/vjENlEr
+         wveT3NGdzmZN13383Ah5LiaXjJdKOF36pVrbmWFzHE3Ujw9b2SCcyZXJbumzIT+OXFDy
+         9tgdYayzySh6xPX4R5c+4bZHKC51z6Smrsv+ygfOCdvpMie17mxnlIiGITw+KThoV6PI
+         eN8A==
+X-Gm-Message-State: AOAM532uX+WjdIwAxn+jmVSOppUI7BirSowzYWe8jtr8X/bj9qgYUEhK
+        Ngq73GDGMWyXzb6D0d0kMiqB6C7s1KQkIw==
+X-Google-Smtp-Source: ABdhPJwlJqfUC8TYFQy3FQWg8dl+UQEjY6y+2Pk638TwMuM0H39Ad/v0RUhCZd9JSSrCr3CdInG3yg==
+X-Received: by 2002:a05:6830:18c2:: with SMTP id v2mr3859219ote.153.1623848125288;
+        Wed, 16 Jun 2021 05:55:25 -0700 (PDT)
+Received: from [192.168.1.134] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id c205sm412111oib.20.2021.06.16.05.55.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 05:55:24 -0700 (PDT)
+Subject: Re: [next] [arm64] Unable to handle kernel NULL pointer dereference
+ at virtual address 0000000000000068
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, lkft-triage@lists.linaro.org,
+        regressions@lists.linux.dev,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+References: <CA+G9fYurEcTfV7Z=co2Ki-TubF4d-Ext7ivZPaQT9SR5XazUtQ@mail.gmail.com>
+ <20210615162641.be9d7a676df5885394713d25@linux-foundation.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <957d58f1-a99c-42ed-b508-086e8141285d@kernel.dk>
+Date:   Wed, 16 Jun 2021 06:55:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKTZag/E8AaOtVT0@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210615162641.be9d7a676df5885394713d25@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:24:58AM +0200, Peter Zijlstra wrote:
-> On Wed, May 19, 2021 at 06:30:36AM +0000, hasegawa-hitomi@fujitsu.com wrote:
-> > Hi Ingo, Peter, Juri, and Vincent.
-> > 
-> > 
-> > > Your email is malformed.
-> > 
-> > I'm sorry. I was sent in the wrong format. I correct it and resend.
-> > Thank you, Peter, for pointing this out.
-> > 
-> > 
-> > I found that when I run getrusage(RUSAGE_THREAD) on a tickless CPU,
-> > the utime and stime I get are less than the actual time, unlike when I run
-> > getrusage(RUSAGE_SELF) on a single thread.
-> > This problem seems to be caused by the fact that se.sum_exec_runtime is not
-> > updated just before getting the information from 'current'.
-> > In the current implementation, task_cputime_adjusted() calls task_cputime() to
-> > get the 'current' utime and stime, then calls cputime_adjust() to adjust the
-> > sum of utime and stime to be equal to cputime.sum_exec_runtime. On a tickless
-> > CPU, sum_exec_runtime is not updated periodically, so there seems to be a
-> > discrepancy with the actual time.
-> > Therefore, I think I should include a process to update se.sum_exec_runtime
-> > just before getting the information from 'current' (as in other processes
-> > except RUSAGE_THREAD). I'm thinking of the following improvement.
-> > 
-> > @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
-> >         if (who == RUSAGE_THREAD) {
-> > +               task_sched_runtime(current);
-> >                 task_cputime_adjusted(current, &utime, &stime);
-> > 
-> > Is there any possible problem with this?
+On 6/15/21 5:26 PM, Andrew Morton wrote:
+> (cc Jens)
 > 
-> Would be superfluous for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
-> architectures at the very least.
+> On Tue, 15 Jun 2021 16:49:50 +0530 Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
 > 
-> It also doesn't help any of the other callers, like for example procfs.
-> 
-> Something like the below ought to work and fix all variants I think. But
-> it does make the call significantly more expensive.
-> 
-> Looking at thread_group_cputime() that already does something like this,
-> but that's also susceptible to a variant of this very same issue; since
-> it doesn't call it unconditionally, nor on all tasks, so if current
-> isn't part of the threadgroup and/or another task is on a nohz_full cpu,
-> things will go wobbly again.
-> 
-> There's a note about syscall performance there, so clearly someone seems
-> to care about that aspect of things, but it does suck for nohz_full.
-> 
-> Frederic, didn't we have remote ticks that should help with this stuff?
-> 
-> And mostly I think the trade-off here is that if you run on nohz_full,
-> you're not expected to go do syscalls anyway (because they're sodding
-> expensive) and hence the accuracy of these sort of things is mostly
-> irrelevant.
-> 
-> So it might be the use-case is just fundamentally bonkers and we
-> shouldn't really bother fixing this.
-> 
-> Anyway?
-> 
-> ---
-> diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-> index 872e481d5098..620871c8e4f8 100644
-> --- a/kernel/sched/cputime.c
-> +++ b/kernel/sched/cputime.c
-> @@ -612,7 +612,7 @@ void cputime_adjust(struct task_cputime *curr, struct prev_cputime *prev,
->  void task_cputime_adjusted(struct task_struct *p, u64 *ut, u64 *st)
->  {
->  	struct task_cputime cputime = {
-> -		.sum_exec_runtime = p->se.sum_exec_runtime,
-> +		.sum_exec_runtime = task_sched_runtime(p),
->  	};
->  
->  	task_cputime(p, &cputime.utime, &cputime.stime);
+>> Following kernel crash reported while booting linux next 20210615 tag
+>> on qemu_arm64.
+>>
+>> Crash log:
+>> -------------
+>> [    0.767379] Unable to handle kernel NULL pointer dereference at
+>> virtual address 0000000000000068
+>> [    0.769815] Mem abort info:
+>> [    0.770735]   ESR = 0x96000004
+>> [    0.771598]   EC = 0x25: DABT (current EL), IL = 32 bits
+>> [    0.773008]   SET = 0, FnV = 0
+>> [    0.773865]   EA = 0, S1PTW = 0
+>> [    0.774844]   FSC = 0x04: level 0 translation fault
+>> [    0.776195] Data abort info:
+>> [    0.776968]   ISV = 0, ISS = 0x00000004
+>> [    0.778010]   CM = 0, WnR = 0
+>> [    0.778961] [0000000000000068] user address but active_mm is swapper
+>> [    0.780643] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+>> [    0.782189] Modules linked in:
+>> [    0.783098] CPU: 2 PID: 1 Comm: swapper/0 Not tainted
+>> 5.13.0-rc6-next-20210615 #1
+>> [    0.785239] Hardware name: linux,dummy-virt (DT)
+>> [    0.786626] pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
+>> [    0.788352] pc : blk_finish_plug+0x88/0x270
+>> [    0.789598] lr : blk_queue_write_cache+0x34/0x80
+>> [    0.790997] sp : ffff800012aeb9d0
+>> [    0.791981] x29: ffff800012aeb9d0 x28: ffff0000c088eeb0 x27: ffff800011a27110
+>> [    0.794067] x26: ffff0000c18511a0 x25: ffff8000114ecaa8 x24: 0000000005a00000
+>> [    0.796127] x23: ffff8000114ed3c8 x22: 0000000000000000 x21: ffff0000c088fa00
+>> [    0.798208] x20: 0000000000000000 x19: 0000000000000000 x18: 0000000000000001
+>> [    0.800239] x17: 7265727574636166 x16: 756e614d202e6b6e x15: ffff0000c0290488
+>> [    0.802308] x14: ffffffffffffffff x13: ffff0000c088fa2c x12: ffff0000c088fa14
+>> [    0.804341] x11: 0000000000000026 x10: 0000000000000401 x9 : ffff80001058247c
+>> [    0.806408] x8 : ffff0000c088fa2c x7 : 0000000000000008 x6 : 0000000000000001
+>> [    0.808429] x5 : ffff80001258a000 x4 : ffff80001258a260 x3 : 0000000000000068
+>> [    0.810492] x2 : 0000000000000001 x1 : 0000000000000068 x0 : 0000000000020000
+>> [    0.813153] Call trace:
+>> [    0.813878]  blk_finish_plug+0x88/0x270
+>> [    0.815064]  add_mtd_blktrans_dev+0x258/0x3f0
+>> [    0.816316]  mtdblock_add_mtd+0x6c/0xb8
+>> [    0.817428]  blktrans_notify_add+0x50/0x78
+>> [    0.818666]  add_mtd_device+0x304/0x4d8
+>> [    0.819790]  mtd_device_parse_register+0x1d8/0x2f0
+>> [    0.821150]  physmap_flash_probe+0x4c8/0x7a8
+>> [    0.822431]  platform_probe+0x70/0xe0
+>> [    0.823494]  really_probe+0xf0/0x4d0
+>> [    0.824539]  driver_probe_device+0x108/0x178
+>> [    0.825760]  device_driver_attach+0x7c/0x88
+>> [    0.827039]  __driver_attach+0xb8/0x190
+>> [    0.828142]  bus_for_each_dev+0x78/0xd0
+>> [    0.829254]  driver_attach+0x2c/0x38
+>> [    0.830381]  bus_add_driver+0x14c/0x230
+>> [    0.831502]  driver_register+0x6c/0x128
+>> [    0.832604]  __platform_driver_register+0x30/0x40
+>> [    0.833952]  physmap_init+0x24/0x30
+>> [    0.835011]  do_one_initcall+0x50/0x2c8
+>> [    0.836116]  kernel_init_freeable+0x25c/0x2e4
+>> [    0.837366]  kernel_init+0x2c/0x138
+>> [    0.838403]  ret_from_fork+0x10/0x18
+>> [    0.839453] Code: c8037c22 35ffffa3 17fff238 f9800031 (c85f7c22)
+>> [    0.841176] ---[ end trace 66ee8a40712bfd28 ]---
+>> [    0.842563] Kernel panic - not syncing: Attempted to kill init!
+>> exitcode=0x0000000b
+>> [    0.844577] SMP: stopping secondary CPUs
+>> [    0.845707] Kernel Offset: disabled
+>> [    0.846731] CPU features: 0x10000071,00000846
+>> [    0.847969] Memory Limit: none
+>> [    0.848853] ---[ end Kernel panic - not syncing: Attempted to kill
+>> init! exitcode=0x0000000b ]---
 
-If necessary I guess we can do something like the below, which
-would only add the overhead where it's required:
+Should be fixed once linux-next resyncs with the block tree.
 
-diff --git a/include/linux/sched/cputime.h b/include/linux/sched/cputime.h
-index 6c9f19a33865..ce3c58286062 100644
---- a/include/linux/sched/cputime.h
-+++ b/include/linux/sched/cputime.h
-@@ -18,15 +18,16 @@
- #endif /* CONFIG_VIRT_CPU_ACCOUNTING_NATIVE */
- 
- #ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
--extern void task_cputime(struct task_struct *t,
-+extern bool task_cputime(struct task_struct *t,
- 			 u64 *utime, u64 *stime);
- extern u64 task_gtime(struct task_struct *t);
- #else
--static inline void task_cputime(struct task_struct *t,
-+static inline bool task_cputime(struct task_struct *t,
- 				u64 *utime, u64 *stime)
- {
- 	*utime = t->utime;
- 	*stime = t->stime;
-+	return false;
- }
- 
- static inline u64 task_gtime(struct task_struct *t)
-diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index 872e481d5098..9392aea1804e 100644
---- a/kernel/sched/cputime.c
-+++ b/kernel/sched/cputime.c
-@@ -615,7 +615,8 @@ void task_cputime_adjusted(struct task_struct *p, u64 *ut, u64 *st)
- 		.sum_exec_runtime = p->se.sum_exec_runtime,
- 	};
- 
--	task_cputime(p, &cputime.utime, &cputime.stime);
-+	if (task_cputime(p, &cputime.utime, &cputime.stime))
-+		cputime.sum_exec_runtime = task_sched_runtime(p);
- 	cputime_adjust(&cputime, &p->prev_cputime, ut, st);
- }
- EXPORT_SYMBOL_GPL(task_cputime_adjusted);
-@@ -828,19 +829,21 @@ u64 task_gtime(struct task_struct *t)
-  * add up the pending nohz execution time since the last
-  * cputime snapshot.
-  */
--void task_cputime(struct task_struct *t, u64 *utime, u64 *stime)
-+bool task_cputime(struct task_struct *t, u64 *utime, u64 *stime)
- {
- 	struct vtime *vtime = &t->vtime;
- 	unsigned int seq;
- 	u64 delta;
-+	int ret;
- 
- 	if (!vtime_accounting_enabled()) {
- 		*utime = t->utime;
- 		*stime = t->stime;
--		return;
-+		return false;
- 	}
- 
- 	do {
-+		ret = false;
- 		seq = read_seqcount_begin(&vtime->seqcount);
- 
- 		*utime = t->utime;
-@@ -850,6 +853,7 @@ void task_cputime(struct task_struct *t, u64 *utime, u64 *stime)
- 		if (vtime->state < VTIME_SYS)
- 			continue;
- 
-+		ret = true;
- 		delta = vtime_delta(vtime);
- 
- 		/*
-@@ -861,6 +865,8 @@ void task_cputime(struct task_struct *t, u64 *utime, u64 *stime)
- 		else
- 			*utime += vtime->utime + delta;
- 	} while (read_seqcount_retry(&vtime->seqcount, seq));
-+
-+	return ret;
- }
- 
- static int vtime_state_fetch(struct vtime *vtime, int cpu)
+-- 
+Jens Axboe
+
