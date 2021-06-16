@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC783AA146
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D5C3AA14B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233563AbhFPQaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 12:30:11 -0400
-Received: from mga09.intel.com ([134.134.136.24]:47046 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232234AbhFPQaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 12:30:09 -0400
-IronPort-SDR: 7E5uAQJZF2wdf7eJvAHwMHlT1XUdNh1uo2flD/olyH1YzSUw+mJjA+VuERwZZuK6fFPJW2tFCR
- WlkiemwG87Jw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206169518"
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="206169518"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 09:27:55 -0700
-IronPort-SDR: ENCDYs8uLKko0lim7nAPd4YAKydybPzZOSFRtzjNVJLDTUVqCtJvaJ1ILvIqeYaUMyTp3shT2F
- 1Aaz8kHr28Ew==
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="415801324"
-Received: from jamarin-mobl1.amr.corp.intel.com (HELO [10.209.105.29]) ([10.209.105.29])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 09:27:54 -0700
-Subject: Re: [PATCH v5 14/28] x86/fpu/xstate: Prevent unauthorised use of
- dynamic user state
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        x86@kernel.org
-Cc:     len.brown@intel.com, jing2.liu@intel.com, ravi.v.shankar@intel.com,
+        id S235346AbhFPQbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 12:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233625AbhFPQbG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 12:31:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8680C061574;
+        Wed, 16 Jun 2021 09:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=P3JM1PR0r8cXkfSpx6oDkANGnRG4SyX1FnBVo8rM8bQ=; b=WkFNMopVIoCUpd6Eqyc/x/e9Cu
+        fGtqjaLTAEaCv2+fGvmJ32Ts/jZ6r7PNwy7GQ4bcxXftK/u5wA58Bp8O3GGvlP486CgGGqCVzvKil
+        f6NddKUR6v9gBJQV08yhXncKu5HVKMVD7nPbvBWLIqf8HA6eIYqkxj4lPUj/BS8a+2RrutyU8n3nR
+        nhFvHOAThn91QcZ52r/220tjI/wqBZtVdMWe+MFXuwTjqbrKT3lIYngmIUaesvNMKTnNClD0c8Rp6
+        Mq6i8EkL8Cz/L8lkH6Lqh9fX75kiW0FVCnwvy0uj4JgE5foyBq5U6In9bRlhoqkVqCjlq1/qrqsIk
+        8E3gKO5g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltYOk-008Fhq-En; Wed, 16 Jun 2021 16:28:19 +0000
+Date:   Wed, 16 Jun 2021 17:28:14 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210523193259.26200-1-chang.seok.bae@intel.com>
- <20210523193259.26200-15-chang.seok.bae@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <af093744-6f68-ff51-f40b-4db234b363d8@intel.com>
-Date:   Wed, 16 Jun 2021 09:27:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH 3/6] iomap: Use __set_page_dirty_nobuffers
+Message-ID: <YMomnpDT9EQ/5XB9@casper.infradead.org>
+References: <20210615162342.1669332-1-willy@infradead.org>
+ <20210615162342.1669332-4-willy@infradead.org>
+ <YMjhP+Bk5PY5yqm7@kroah.com>
+ <YMjkNd0zapLcooNB@casper.infradead.org>
+ <20210615173453.GA2849@lst.de>
+ <YMjtvLkHQ8sZ/CPS@casper.infradead.org>
+ <YMmfQNjExNs3cuyq@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210523193259.26200-15-chang.seok.bae@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMmfQNjExNs3cuyq@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/23/21 12:32 PM, Chang S. Bae wrote:
-> @@ -571,6 +612,8 @@ static inline void switch_fpu_finish(struct fpu *new_fpu)
->  
->  	set_thread_flag(TIF_NEED_FPU_LOAD);
->  
-> +	xfd_switch(old_fpu, new_fpu);
+On Wed, Jun 16, 2021 at 08:50:40AM +0200, Greg Kroah-Hartman wrote:
+> On Tue, Jun 15, 2021 at 07:13:16PM +0100, Matthew Wilcox wrote:
+> > On Tue, Jun 15, 2021 at 07:34:53PM +0200, Christoph Hellwig wrote:
+> > > Eventually everything around set_page_dirty should be changed to operate
+> > > on folios, and that will be a good time to come up with a sane
+> > > naming scheme without introducing extra churn.
+> > 
+> > The way it currently looks in my tree ...
+> > 
+> > set_page_dirty(page) is a thin wrapper that calls folio_mark_dirty(folio).
+> > folio_mark_dirty() calls a_ops->dirty_folio(mapping, folio) (which
+> > 	returns bool).
+> > __set_page_dirty_nobuffers() becomes filemap_dirty_folio()
+> > __set_page_dirty_buffers() becomes block_dirty_folio()
+> > __set_page_dirty_no_writeback() becomes dirty_folio_no_writeback()
+> > 
+> > Now I look at it, maybe that last should be nowb_dirty_folio().
+> 
+> Not to be a pain, but you are mixing "folio" at the front and back of
+> the api name?  We messed up in the driver core with this for some things
+> (get_device() being one), I would recommend just sticking with one
+> naming scheme now as you are getting to pick what you want to use.
 
-This seems fragile.
+That is mostly what I'm doing.  eg,
 
-XSAVE* will decline to write out state for feature i when XFD[i]=1 and
-will instead write out the init state.  That means that, at this point,
-we switch XFD and yet leave state for feature i in place.
+get_page -> folio_get
+lock_page -> folio_lock
+PageUptodate -> folio_uptodate
+set_page_dirty -> folio_mark_dirty
 
-That means this *MUST* come before any copy_fpregs_to_fpstate() occurs.
+What I haven't dealt with yet is the naming of the
+address_space_operations.  My thinking with those is that they should
+be verb_folio, since they _aren't_ the functions that get called.
+ie it looks like this:
 
-Could we please add some FPU_WARN_ON() checks to ensure that no XSAVE*
-is ever performed with XINUSE=1 *and* XFD armed?
+folio_mark_dirty()
+  aops->dirty_folio()
+    ext4_dirty_folio()
+      buffer_dirty_folio()
+
+I actually see the inconsistency here as a good thing -- these are
+implementations of the aop, so foo_verb_folio() means you're doing
+something weird and internal instead of going through the vfs/mm.
+
+That implies doing things like renaming ->readpage to ->read_folio, but
+if we're changing the API from passing a struct page to a struct folio,
+that can all be done at the same time with no additional disruption.
