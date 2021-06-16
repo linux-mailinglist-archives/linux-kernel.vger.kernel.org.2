@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1153E3A8DE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A9D3A8DE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbhFPA5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhFPA5C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:57:02 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BA8C061574;
-        Tue, 15 Jun 2021 17:54:56 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id ce15so791979ejb.4;
-        Tue, 15 Jun 2021 17:54:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m2o15jWngAsIvUXQVaETyU9KLklExuy5wY7c+QHF2tQ=;
-        b=cAnRx4N0zZ+i7fd4TmXxael1qFUfP5BPnd1jGu2zp3Z46L6TnNof8GdIc9XlfIGfdx
-         LCFJ9h3yYG0RhV0p8fK+TjtGKKYLhpqBmAv01Z8i3F5BDr28LpqvPd9sqL75aINYold2
-         Y3+81yqsEnIyjiauU0T84kOBKyvchXXbeCz+x2bSEJEHk9HvROzFfOv27sR9wJF2YHd2
-         PUIjJ0QW8cS/8jorjLEIQ8qKZAXyccFWXl9qTd7iEqYD1/XlR7zEfyT3+mSk946SwH4E
-         awfZYVHvqqsPrpPZ1qbEhTT1QktwQsznK/ji/v13aWR3XZUSpMTf1TVfR5BtO9UpHAkn
-         C9kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m2o15jWngAsIvUXQVaETyU9KLklExuy5wY7c+QHF2tQ=;
-        b=q0XrKVt1ceF2syG90NvG56muJh17+y8lwYGQe8uaGfalXXA7FUSkvvgIazxGbgGOvG
-         5TeSlFc98N4aYMEr4scQZXgXbOcJnnN76KPQBMFa5scR5ZJllH7aevDwaPYx/9UjtD4D
-         W9CD8hgWjLeik84QOUJfeYDy+tuVoKsrcdqqJnyNr6WdofHQFcqTj2B3cngZF9mIL2x8
-         CUe2n3KDY9/3D23xXVhF9FqGrmHc8u7hDN0HJqt6Ytv2d8iurwwgAigOHrKUbSxS9Ndn
-         hzeuMPgHBagO8yp3G5Qji2pKpTzo10ytNRklndcXMeZ/g5orxThfOPh+3QcfOThiEiGU
-         45Gw==
-X-Gm-Message-State: AOAM533ydHPMwuNF2tCLBBpnbj6dplZWpgYudXSjNKG4tDf2+tzdjoZg
-        IK8030raxA6ElC35IC5lEzDDPcDG9Zs=
-X-Google-Smtp-Source: ABdhPJy4glY9KldRr8Paz+ZfVgo67RhdhttLXX7TThHVDs1Y8CudzxUovySeXfIZayzoN7Jw64NSHw==
-X-Received: by 2002:a17:906:a95:: with SMTP id y21mr2368783ejf.522.1623804895362;
-        Tue, 15 Jun 2021 17:54:55 -0700 (PDT)
-Received: from skbuf ([188.26.224.68])
-        by smtp.gmail.com with ESMTPSA id x13sm387236ejj.21.2021.06.15.17.54.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 17:54:55 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 03:54:53 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        linux-kernel@vger.kernel.org,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Volodymyr Mytnyk <vmytnyk@marvell.com>,
-        Vadym Kochan <vkochan@marvell.com>
-Subject: Re: [PATCH net-next 1/2] net: marvell: Implement TC flower offload
-Message-ID: <20210616005453.cuu3ocedgfcafa7o@skbuf>
-References: <20210615125444.31538-1-vadym.kochan@plvision.eu>
- <20210615125444.31538-2-vadym.kochan@plvision.eu>
+        id S231811AbhFPA6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:58:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230265AbhFPA6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 20:58:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C966C60FE6;
+        Wed, 16 Jun 2021 00:56:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623805001;
+        bh=tykSCrhMj9oIg5fZltaBtQORVAoQ00lf7s/Go9WGD9g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o8kQ/VfO6WbIfltUOrrHcjd/+jH+LBTTTLJU79jwnPsz40YyKPj1CrWWo7K/EaXzP
+         9JDqOsv7UgIKe46vU2Xhr2RHt0UO/EtO5HT57FhRBHWUdL8/bJxzLdUoJmttDAHJ4H
+         ebSKEEOkepCYCVLJj/oeAQTHcjEi3FO2zwV59abQ66egiSMrNq650nm4W8xnaasRjR
+         pxfg1prT/3FgjHQDlo3fbR4tx+i0HJLpjG/SV8Z6QVRulxeH9rUhuo4o3/IEQ2mW6P
+         iVmb0x32LWkKPA2PYmF6u1Oc+z5Rs/TzwBt8QEJbllx53OWAZuYw43BPs/vHgigFqB
+         2/i28B20n+fLg==
+Date:   Wed, 16 Jun 2021 08:56:36 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] usb: phy: tegra: Wait for VBUS wakeup status
+ deassertion on suspend
+Message-ID: <20210616005636.GA19025@nchen>
+References: <20210613145936.9902-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210615125444.31538-2-vadym.kochan@plvision.eu>
+In-Reply-To: <20210613145936.9902-1-digetx@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 03:54:43PM +0300, Vadym Kochan wrote:
-> +static int prestera_port_set_features(struct net_device *dev,
-> +				      netdev_features_t features)
-> +{
-> +	netdev_features_t oper_features = dev->features;
-> +	int err;
+On 21-06-13 17:59:35, Dmitry Osipenko wrote:
+> Some devices need an extra delay after losing VBUS, otherwise VBUS may
+> be detected as active at suspend time, preventing the PHY's suspension
+> by the VBUS detection sensor. This problem was found on Asus Transformer
+> TF700T (Tegra30) tablet device, where the USB PHY wakes up immediately
+> from suspend because VBUS sensor continues to detect VBUS as active after
+> disconnection. We need to poll the PHY's VBUS wakeup status until it's
+> deasserted before suspending PHY in order to fix this minor trouble.
+> 
+> Fixes: 35192007d28d ("usb: phy: tegra: Support waking up from a low power mode")
+> Reported-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
+> Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/usb/phy/phy-tegra-usb.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
+> index fc5c6cab58ba..ff482c694200 100644
+> --- a/drivers/usb/phy/phy-tegra-usb.c
+> +++ b/drivers/usb/phy/phy-tegra-usb.c
+> @@ -64,6 +64,7 @@
+>  #define   A_VBUS_VLD_WAKEUP_EN			BIT(30)
+>  
+>  #define USB_PHY_VBUS_WAKEUP_ID			0x408
+> +#define   VBUS_WAKEUP_STS			BIT(10)
+>  #define   VBUS_WAKEUP_WAKEUP_EN			BIT(30)
+>  
+>  #define USB1_LEGACY_CTRL			0x410
+> @@ -645,6 +646,15 @@ static int utmi_phy_power_off(struct tegra_usb_phy *phy)
+>  	void __iomem *base = phy->regs;
+>  	u32 val;
+>  
+> +	/*
+> +	 * Give hardware time to settle down after VBUS disconnection,
+> +	 * otherwise PHY will immediately wake up from suspend.
+> +	 */
+> +	if (phy->wakeup_enabled && phy->mode != USB_DR_MODE_HOST)
+> +		readl_relaxed_poll_timeout(base + USB_PHY_VBUS_WAKEUP_ID,
+> +					   val, !(val & VBUS_WAKEUP_STS),
+> +					   5000, 100000);
 > +
-> +	err = prestera_port_handle_feature(dev, features, NETIF_F_HW_TC,
-> +					   prestera_port_feature_hw_tc);
 
-Why do you even make NETIF_F_HW_TC able to be toggled and not just fixed
-to "on" in dev->features? If I understand correctly, you could then delete
-a bunch of refcounting code whose only purpose is to allow that feature
-to be disabled per port.
+Reviewed-by: Peter Chen <peter.chen@kernel.org>
 
-> +
-> +	if (err) {
-> +		dev->features = oper_features;
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
+
+>  	utmi_phy_clk_disable(phy);
+>  
+>  	/* PHY won't resume if reset is asserted */
+> -- 
+> 2.30.2
+> 
+
+-- 
+
+Thanks,
+Peter Chen
+
