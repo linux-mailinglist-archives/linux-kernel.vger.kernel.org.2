@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C753AA553
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C533AA55A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233510AbhFPUbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 16:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233470AbhFPUbH (ORCPT
+        id S233525AbhFPUg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 16:36:56 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:37609 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233513AbhFPUgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 16:31:07 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E745DC061574;
-        Wed, 16 Jun 2021 13:29:00 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltc9e-0094nd-Bd; Wed, 16 Jun 2021 20:28:54 +0000
-Date:   Wed, 16 Jun 2021 20:28:54 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH 2/2] alpha/ptrace: Add missing switch_stack frames
-Message-ID: <YMpfBsIvqbK0L4Gh@zeniv-ca.linux.org.uk>
-References: <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
- <87eed4v2dc.fsf@disp2133>
- <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
- <87fsxjorgs.fsf@disp2133>
- <87zgvqor7d.fsf_-_@disp2133>
- <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
- <87mtrpg47k.fsf@disp2133>
- <87pmwlek8d.fsf_-_@disp2133>
- <87eed1ek31.fsf_-_@disp2133>
- <YMpeP0CrRUVKIysE@zeniv-ca.linux.org.uk>
+        Wed, 16 Jun 2021 16:36:55 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d21 with ME
+        id Hwag2500A21Fzsu03wag3C; Wed, 16 Jun 2021 22:34:42 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 16 Jun 2021 22:34:42 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     wangzhou1@hisilicon.com, vkoul@kernel.org
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] dmaengine: hisi_dma: Remove some useless code
+Date:   Wed, 16 Jun 2021 22:34:38 +0200
+Message-Id: <4f8932e2d0d8d092bf60272511100030e013bc72.1623875508.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMpeP0CrRUVKIysE@zeniv-ca.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 08:25:35PM +0000, Al Viro wrote:
-> On Wed, Jun 16, 2021 at 01:32:50PM -0500, Eric W. Biederman wrote:
-> 
-> > -.macro	fork_like name
-> > +.macro	allregs name
-> >  	.align	4
-> >  	.globl	alpha_\name
-> >  	.ent	alpha_\name
-> > +	.cfi_startproc
-> >  alpha_\name:
-> >  	.prologue 0
-> > -	bsr	$1, do_switch_stack
-> > +	SAVE_SWITCH_STACK
-> >  	jsr	$26, sys_\name
-> > -	ldq	$26, 56($sp)
-> > -	lda	$sp, SWITCH_STACK_SIZE($sp)
-> > +	RESTORE_SWITCH_STACK
-> 
-> 	No.  You've just added one hell of an overhead to fork(2),
-> for no reason whatsoever.  sys_fork() et.al. does *NOT* modify the
-> callee-saved registers; it's plain C.  So this change is complete
-> BS.
-> 
-> > +allregs exit
-> > +allregs exit_group
-> 
-> 	Details, please - what exactly makes exit(2) different from
-> e.g. open(2)?
+When using 'pcim_enable_device()', 'pci_alloc_irq_vectors()' is
+auto-magically a managed function.
 
-Ah... PTRACE_EVENT_EXIT garbage, fortunately having no counterparts in case of
-open(2)...  Still, WTF would you want to restore callee-saved registers for
-in case of exit(2)?
+It is useless (but harmless) to record an action to explicitly call
+'pci_free_irq_vectors()'.
+
+So keep things simple, comment why and how these resources are freed, axe
+some useless code and save some memory.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/dma/hisi_dma.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
+
+diff --git a/drivers/dma/hisi_dma.c b/drivers/dma/hisi_dma.c
+index a259ee010e9b..c855a0e4f9ff 100644
+--- a/drivers/dma/hisi_dma.c
++++ b/drivers/dma/hisi_dma.c
+@@ -133,11 +133,6 @@ static inline void hisi_dma_update_bit(void __iomem *addr, u32 pos, bool val)
+ 	writel_relaxed(tmp, addr);
+ }
+ 
+-static void hisi_dma_free_irq_vectors(void *data)
+-{
+-	pci_free_irq_vectors(data);
+-}
+-
+ static void hisi_dma_pause_dma(struct hisi_dma_dev *hdma_dev, u32 index,
+ 			       bool pause)
+ {
+@@ -544,6 +539,7 @@ static int hisi_dma_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	pci_set_drvdata(pdev, hdma_dev);
+ 	pci_set_master(pdev);
+ 
++	/* This will be freed by 'pcim_release()'. See 'pcim_enable_device()' */
+ 	ret = pci_alloc_irq_vectors(pdev, HISI_DMA_MSI_NUM, HISI_DMA_MSI_NUM,
+ 				    PCI_IRQ_MSI);
+ 	if (ret < 0) {
+@@ -551,10 +547,6 @@ static int hisi_dma_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		return ret;
+ 	}
+ 
+-	ret = devm_add_action_or_reset(dev, hisi_dma_free_irq_vectors, pdev);
+-	if (ret)
+-		return ret;
+-
+ 	dma_dev = &hdma_dev->dma_dev;
+ 	dma_cap_set(DMA_MEMCPY, dma_dev->cap_mask);
+ 	dma_dev->device_free_chan_resources = hisi_dma_free_chan_resources;
+-- 
+2.30.2
+
