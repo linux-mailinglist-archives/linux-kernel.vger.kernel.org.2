@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCD03A9F4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E103C3A9F51
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234826AbhFPPhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:37:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49924 "EHLO mail.kernel.org"
+        id S234844AbhFPPhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:37:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234730AbhFPPgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:36:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C86E613CD;
-        Wed, 16 Jun 2021 15:34:39 +0000 (UTC)
+        id S234697AbhFPPgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:36:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8CC26100B;
+        Wed, 16 Jun 2021 15:34:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857680;
-        bh=jREp5d7vB2iQIHguUnniwJYIOUorirUiGVAHcE+9Nko=;
+        s=korg; t=1623857682;
+        bh=f80SMjVXuFIG2vJ6MBNISobFfAFhDGaZoem9OetOAbY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W7Imzy++bM0UAjQak71lP3mMCjHJFTeA0zavz07aQz1DwFhXnj9rdB5Ue34Uyg03y
-         NLP73+WAH//KtxoAOMrgW7NyEWxnIvSxgIvRGRnBPZgJb7rzSU2GGRbDOaUMWFnJuN
-         EksUn7KdT5W9l0lozx8iCFTA/9oduFvXuDdqsjZU=
+        b=QXJLF4TikciCmyGStcFvvEK/eYgus/8nKaXEnU83KIwrC8EL1G6GO/19mrEZJoi/e
+         gJ9FKvPqtnK38CH/7zf9I/9292Fsk7Tp+ZxcbZlv9u6fIEE2OXj73j+fCu/QMVrIZP
+         tfBiKeJvxGWnLFLSrG7O3qbkwRt5pt1m/meU/IKk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Bindu Ramamurthy <bindu.r@amd.com>,
+        Roman Li <Roman.Li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 22/28] net: ipconfig: Dont override command-line hostnames or domains
-Date:   Wed, 16 Jun 2021 17:33:33 +0200
-Message-Id: <20210616152834.859164429@linuxfoundation.org>
+Subject: [PATCH 5.4 23/28] drm/amd/display: Allow bandwidth validation for 0 streams.
+Date:   Wed, 16 Jun 2021 17:33:34 +0200
+Message-Id: <20210616152834.889132188@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
 References: <20210616152834.149064097@linuxfoundation.org>
@@ -40,60 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Triplett <josh@joshtriplett.org>
+From: Bindu Ramamurthy <bindu.r@amd.com>
 
-[ Upstream commit b508d5fb69c2211a1b860fc058aafbefc3b3c3cd ]
+[ Upstream commit ba8e59773ae59818695d1e20b8939282da80ec8c ]
 
-If the user specifies a hostname or domain name as part of the ip=
-command-line option, preserve it and don't overwrite it with one
-supplied by DHCP/BOOTP.
+[Why]
+Bandwidth calculations are triggered for non zero streams, and
+in case of 0 streams, these calculations were skipped with
+pstate status not being updated.
 
-For instance, ip=::::myhostname::dhcp will use "myhostname" rather than
-ignoring and overwriting it.
+[How]
+As the pstate status is applicable for non zero streams, check
+added for allowing 0 streams inline with dcn internal bandwidth
+validations.
 
-Fix the comment on ic_bootp_string that suggests it only copies a string
-"if not already set"; it doesn't have any such logic.
-
-Signed-off-by: Josh Triplett <josh@joshtriplett.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Bindu Ramamurthy <bindu.r@amd.com>
+Reviewed-by: Roman Li <Roman.Li@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/ipconfig.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
-index 9bcca08efec9..c05ad600a4ff 100644
---- a/net/ipv4/ipconfig.c
-+++ b/net/ipv4/ipconfig.c
-@@ -870,7 +870,7 @@ static void __init ic_bootp_send_if(struct ic_device *d, unsigned long jiffies_d
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+index 08062de3fbeb..2b1175bb2dae 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+@@ -2917,7 +2917,7 @@ bool dcn20_validate_bandwidth(struct dc *dc, struct dc_state *context,
+ 	voltage_supported = dcn20_validate_bandwidth_internal(dc, context, false);
+ 	dummy_pstate_supported = context->bw_ctx.bw.dcn.clk.p_state_change_support;
  
- 
- /*
-- *  Copy BOOTP-supplied string if not already set.
-+ *  Copy BOOTP-supplied string
-  */
- static int __init ic_bootp_string(char *dest, char *src, int len, int max)
- {
-@@ -919,12 +919,15 @@ static void __init ic_do_bootp_ext(u8 *ext)
- 		}
- 		break;
- 	case 12:	/* Host name */
--		ic_bootp_string(utsname()->nodename, ext+1, *ext,
--				__NEW_UTS_LEN);
--		ic_host_name_set = 1;
-+		if (!ic_host_name_set) {
-+			ic_bootp_string(utsname()->nodename, ext+1, *ext,
-+					__NEW_UTS_LEN);
-+			ic_host_name_set = 1;
-+		}
- 		break;
- 	case 15:	/* Domain name (DNS) */
--		ic_bootp_string(ic_domain, ext+1, *ext, sizeof(ic_domain));
-+		if (!ic_domain[0])
-+			ic_bootp_string(ic_domain, ext+1, *ext, sizeof(ic_domain));
- 		break;
- 	case 17:	/* Root path */
- 		if (!root_server_path[0])
+-	if (voltage_supported && dummy_pstate_supported) {
++	if (voltage_supported && (dummy_pstate_supported || !(context->stream_count))) {
+ 		context->bw_ctx.bw.dcn.clk.p_state_change_support = false;
+ 		goto restore_dml_state;
+ 	}
 -- 
 2.30.2
 
