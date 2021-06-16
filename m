@@ -2,149 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB873AA159
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FA63AA162
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbhFPQeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 12:34:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229989AbhFPQeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 12:34:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E64461375;
-        Wed, 16 Jun 2021 16:32:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623861138;
-        bh=HnQ8O75YA6igOLb0Of/jo3UVORF2qdfDgqTXkgouYkM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WO/FaVs2gYQb9kwpCc++rVs0vsOyI0YQAsbAnsaVLlBTv2mDPwaSi5Msurlo2hZra
-         rSwRuj/cXTqxBiKcMP6gsRYOrGmbk8TfRauEKsB9OnG+sEbpK6PtgfAtSyk14VDWje
-         qshqKehekV94Lxmzxu8r9YxJAsP/3Z44hQvvTQWqf3CDD4XrNwzTr3m0YphnkuuIGm
-         cAfg4wpG5iC8eeLA6Qpe+79beTOkQgUVfKqa17VRbNQAQQCFcOlO6I3LZL0UjUC85q
-         +65YZB8U2udbdIXsU6kd8XW+hBZsaEQh9ehHtxUZ9OYqB1xumR+A3L84tXYgg2rIJk
-         gxwkEciYWh9EQ==
-Received: by mail-ed1-f47.google.com with SMTP id r7so3506600edv.12;
-        Wed, 16 Jun 2021 09:32:18 -0700 (PDT)
-X-Gm-Message-State: AOAM530BdrDXzEbG2BPkaPAdXx0chJHx86PyqYettzSTbMv2mA+ow0It
-        YExWpGsPaqed8XwbBXI5Xj99JKucryGTeGsnjg==
-X-Google-Smtp-Source: ABdhPJyJAoNTK4444ak3NJ1fSE0yzSt78BpFwOIM1hlvk4VKtgNeZttdovslS69pvyAlyRMaqsFXdZqp83fBezdg9f8=
-X-Received: by 2002:aa7:cb19:: with SMTP id s25mr667990edt.194.1623861136799;
- Wed, 16 Jun 2021 09:32:16 -0700 (PDT)
+        id S230186AbhFPQft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 12:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhFPQe5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 12:34:57 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3E7C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 09:32:45 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id t13so2409506pgu.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 09:32:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LgEvtax5sgfmjjrhgKwKQwSVaBY+DvlQnT1NfAz1r9g=;
+        b=1hcP+YAeAqS7ogKiZuC3JOg0nrRosmlQ+/IxyYf9p4F0pHW4TcuQefQCO86PNAAWy1
+         +IOvR/7EL4bbgif/BwOuHFbnEIgOYc5lkobTM9TRoOsIzZfHtSUiWe0vLkFq9FgEjzyZ
+         ByxXRhl9VgLrG2EVdC85CsSFHZbCkxnjcTuJJlxdDQ8+N2hUZ1sJXEBXP5MEfRykqAlK
+         E8meQUJGqUb8qr3bFM6hITb+bowuxf6WG5TxBXG09NyZakyYHPxIerAYpODSo9xquRW7
+         XdFB1CKn7Ekzy+udsg2u/M33tbZ1MJYZHRxlESye7+e3nBCfFzNYpXG4iqhgDXx/cfex
+         LY+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LgEvtax5sgfmjjrhgKwKQwSVaBY+DvlQnT1NfAz1r9g=;
+        b=ofGqIvYHn7RJIMEtKwvN11qVzK42eb3ftSduAn2jSN6rDOtABWw94deg7XtuWrEavn
+         XOCA9309v7V2Yb3lYBSFKLzPusBX2ZaWLkWwQED89uQpLYqIqUS16ZJW4OskgQWWyH6g
+         +OPMEwekDKzcBIT/v4wXx6EBY4XibtanvqK8rBwfMRDNYbic9hK2D0OuHRNwnFv8j4gx
+         Z2dhvy47XFjffnoWl5c8ehoG0Y31fwt90MgmBhM5ftpxdKKRh2hYgOwEz6HfFZfYkvvd
+         5M10uXq9GWYkQnFgD9z0kzhtrSGbX8t0yFeLJeBV4KWfwKBvjLXWAaenAz0VcDZo3l/k
+         oWJA==
+X-Gm-Message-State: AOAM531YrpfDcl3XdKXoVTMneLHSWWxvQFo9cp5EmhYj31WMjOsNE/E2
+        3D5Eia5Cw95C4MdnaAsLzzeFIc70VzRBKfClyJvQ+Q==
+X-Google-Smtp-Source: ABdhPJyZvZL0A0K44zy/aMo4UY4FYkRWBOijbl8gbJYaH2WDdTs7d+pPN30OUFs00aZSFvvgfpO+hxC4Wgxuat0VkIY=
+X-Received: by 2002:a62:8647:0:b029:2c4:b8d6:843 with SMTP id
+ x68-20020a6286470000b02902c4b8d60843mr590229pfd.71.1623861164908; Wed, 16 Jun
+ 2021 09:32:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210524063004.132043-3-nobuhiro1.iwamatsu@toshiba.co.jp> <20210524185839.GA1102116@bjorn-Precision-5520>
-In-Reply-To: <20210524185839.GA1102116@bjorn-Precision-5520>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 16 Jun 2021 10:32:05 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLMdxA_yVdz6_s7XP8SsCDhwctUxG+3+jAnJs5fwyk=MA@mail.gmail.com>
-Message-ID: <CAL_JsqLMdxA_yVdz6_s7XP8SsCDhwctUxG+3+jAnJs5fwyk=MA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] PCI: Visconti: Add Toshiba Visconti PCIe host
- controller driver
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
+References: <cover.1623800340.git.alison.schofield@intel.com>
+ <48f1b59105e46f04b38347fc1555bb5c8d654cff.1623800340.git.alison.schofield@intel.com>
+ <20210616161740.k4nxeh3bmem56gwa@intel.com>
+In-Reply-To: <20210616161740.k4nxeh3bmem56gwa@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 16 Jun 2021 09:32:34 -0700
+Message-ID: <CAPcyv4hNxAw99iNF_puwuYmegCGBR2mOUhQ_t56q_XZ0p7hjcw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] cxl/acpi: Use the ACPI CFMWS to create static
+ decoder objects
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     Alison Schofield <alison.schofield@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 12:58 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+On Wed, Jun 16, 2021 at 9:17 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
 >
-> [+cc Kishon for cpu_addr_fixup() question]
->
-> Please make the subject "PCI: visconti: Add ..." since the driver
-> names are usually lower-case.  When referring to the hardware itself,
-> use "Visconti", of course.
->
-> On Mon, May 24, 2021 at 03:30:03PM +0900, Nobuhiro Iwamatsu wrote:
-> > Add support to PCIe RC controller on Toshiba Visconti ARM SoCs. PCIe
-> > controller is based of Synopsys DesignWare PCIe core.
+> On 21-06-15 17:20:39, Alison Schofield wrote:
+> > The ACPI CXL Early Discovery Table (CEDT) includes a list of CXL memory
+> > resources in CXL Fixed Memory Window Structures (CFMWS). Retrieve each
+> > CFMWS in the CEDT and add a cxl_decoder object to the root port (root0)
+> > for each memory resource.
 > >
-> > This patch does not yet use the clock framework to control the clock.
-> > This will be replaced in the future.
-> >
-> > v2 -> v3:
-> >   - Update subject.
-> >   - Wrap description in 75 columns.
-> >   - Change config name to PCIE_VISCONTI_HOST.
-> >   - Update Kconfig text.
-> >   - Drop blank lines.
-> >   - Adjusted to 80 columns.
-> >   - Drop inline from functions for register access.
-> >   - Changed function name from visconti_pcie_check_link_status to
-> >     visconti_pcie_link_up.
-> >   - Update to using dw_pcie_host_init().
-> >   - Reorder these in the order of use in visconti_pcie_establish_link.
-> >   - Rewrite visconti_pcie_host_init() without dw_pcie_setup_rc().
-> >   - Change function name from  visconti_device_turnon() to
-> >     visconti_pcie_power_on().
-> >   - Unify formats such as dev_err().
-> >   - Drop error label in visconti_add_pcie_port().
-> >
-> > v1 -> v2:
-> >   - Fix typo in commit message.
-> >   - Drop "depends on OF && HAS_IOMEM" from Kconfig.
-> >   - Stop using the pointer of struct dw_pcie.
-> >   - Use _relaxed variant.
-> >   - Drop dw_pcie_wait_for_link.
-> >   - Drop dbi resource processing.
-> >   - Drop MSI IRQ initialization processing.
->
-> Thanks for the changelog.  Please move it after the "---" line for
-> future versions.  That way it won't appear in the commit log when this
-> is merged.  The notes about v1->v2, v2->v3, etc are useful during
-> review, but not after this is merged.
->
-> > Signed-off-by: Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>
-> > Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> > Signed-off-by: Alison Schofield <alison.schofield@intel.com>
 > > ---
-> >  drivers/pci/controller/dwc/Kconfig         |   9 +
-> >  drivers/pci/controller/dwc/Makefile        |   1 +
-> >  drivers/pci/controller/dwc/pcie-visconti.c | 369 +++++++++++++++++++++
-> >  3 files changed, 379 insertions(+)
-> >  create mode 100644 drivers/pci/controller/dwc/pcie-visconti.c
-
-
-> > +static u64 visconti_pcie_cpu_addr_fixup(struct dw_pcie *pci, u64 pci_addr)
+> >  drivers/cxl/acpi.c | 114 +++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 114 insertions(+)
+> >
+> > diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
+> > index b6d9cd45428c..e3aa356d4dcd 100644
+> > --- a/drivers/cxl/acpi.c
+> > +++ b/drivers/cxl/acpi.c
+> > @@ -8,8 +8,120 @@
+> >  #include <linux/pci.h>
+> >  #include "cxl.h"
+> >
+> > +/* Encode defined in CXL 2.0 8.2.5.12.7 HDM Decoder Control Register */
+> > +#define CFMWS_INTERLEAVE_WAYS(x)     (1 << (x)->interleave_ways)
+> > +#define CFMWS_INTERLEAVE_GRANULARITY(x)      ((x)->granularity + 8)
+> > +
+> >  static struct acpi_table_header *cedt_table;
+> >
+> > +static unsigned long cfmws_to_decoder_flags(int restrictions)
 > > +{
-> > +     return pci_addr - PCIE_BUS_OFFSET;
+> > +     unsigned long flags = 0;
+> > +
+> > +     if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE2)
+> > +             flags |= CXL_DECODER_F_TYPE2;
+> > +     if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE3)
+> > +             flags |= CXL_DECODER_F_TYPE3;
+> > +     if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE)
+> > +             flags |= CXL_DECODER_F_RAM;
+> > +     if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_PMEM)
+> > +             flags |= CXL_DECODER_F_PMEM;
+> > +     if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_FIXED)
+> > +             flags |= CXL_DECODER_F_LOCK;
+> > +
+> > +     return flags;
+> > +}
 >
-> This is called from __dw_pcie_prog_outbound_atu() as:
+> I know these flags aren't introduced by this patch, but I'm wondering if it
+> makes sense to not just use the spec definitions rather than defining our own.
+> It doesn't do much harm, but it's extra typing everytime the spec adds new flags
+> and I don't really see the upside.
+
+The flags are bounded by what's in HDM decoders, I don't see them
+moving so fast that the kernel can not keep up. The rationale for the
+split is the same as the split between ACPI NFIT and the LIBNVDIMM
+core. The ACPI specifics are just one way to convey a common platform
+attribute to the core.
+
+In fact this was one of the main feedbacks of the initial "ND"
+subsystem which eventually became LIBNVDIMM [1]. ND stood for "NFIT
+Defined" and the arch split between ACPI specific and Linux
+translation has paid off over the years.
+
+[1]: https://lore.kernel.org/lkml/20150420070624.GB13876@gmail.com/
+
+
 >
->   cpu_addr = pci->ops->cpu_addr_fixup(pci, cpu_addr);
+> > +
+> > +static int cxl_acpi_cfmws_verify(struct device *dev,
+> > +                              struct acpi_cedt_cfmws *cfmws)
+> > +{
+> > +     int expected_len;
+> > +
+> > +     if (cfmws->interleave_arithmetic != ACPI_CEDT_CFMWS_ARITHMETIC_MODULO) {
+> > +             dev_err(dev, "CFMWS Unsupported Interleave Arithmetic\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     if (!IS_ALIGNED(cfmws->base_hpa, SZ_256M)) {
+> > +             dev_err(dev, "CFMWS Base HPA not 256MB aligned\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     if (!IS_ALIGNED(cfmws->window_size, SZ_256M)) {
+> > +             dev_err(dev, "CFMWS Window Size not 256MB aligned\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     expected_len = struct_size((cfmws), interleave_targets,
+> > +                                CFMWS_INTERLEAVE_WAYS(cfmws));
+> > +
+> > +     if (expected_len != cfmws->header.length) {
 >
-> so I think the parameter here should be *cpu_addr*, not pci_addr.
+> I'd switch this to:
+> if (expected_len < cfmws->header.length)
 >
-> dra7xx and artpec6 also call it "pci_addr", which is at best
-> confusing.
+> If it's too big, just print a dev_dbg.
+
+Maybe call it min_len then?
+
+[..]
+> > +
+> > +             cxld = devm_cxl_add_decoder(dev, root_port,
+> > +                             CFMWS_INTERLEAVE_WAYS(cfmws),
+> > +                             cfmws->base_hpa, cfmws->window_size,
+> > +                             CFMWS_INTERLEAVE_WAYS(cfmws),
 >
-> I'm also confused about exactly what .cpu_addr_fixup() does.  Is it
-> applying an offset that cannot be deduced from the DT description?  If
-> so, *should* this offset be described in DT?
+> Interesting... this made me question, how can we have a different number of
+> targets and ways?
 
-It could be perhaps, but it would be a custom property, not something
-we can handle in 'ranges'. I'd rather it be implicit from the
-compatible than a custom property.
-
-AIUI, the issue is the cpu address gets masked (high bits discarded).
-This can happen when the internal bus address decoding throws away
-upper address bits.
-
-For example:
-
-0xa0000000 -> 0x20000000    -> 0x00000000
-cpu addr   -> DW local addr -> PCI bus addr
-
-DT has the first and last addresses, but iATU needs the middle and last address.
-
-This could be just a data value rather than an ops function. While a
-subtract works here, that's fragile (the DT needs to match the
-#define) and I think a mask would be more appropriate.
-
-Rob
+These settings can be changed later on a switch-level decoder, for a
+root-level decoder these initial values are fixed.
