@@ -2,80 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A2A3A9DE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 360C23A9DDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbhFPOoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:44:05 -0400
-Received: from mail-m121144.qiye.163.com ([115.236.121.144]:39530 "EHLO
-        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233914AbhFPOoA (ORCPT
+        id S234111AbhFPOnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:43:46 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:54741 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234083AbhFPOno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:44:00 -0400
-DKIM-Signature: a=rsa-sha256;
-        b=ZeLfAbsON47mDckqA0db4BwOC11IAO/fhpl3DqYiVptZ8ix/fPS5pNhIiRWknn/sL9uSFVaJUVWG1IsJRn9y6QgHs9jMnAFANwDT5z6dO53VAVM1pXjjxKUblnm7zb2czlK6gwPGIy7QNjnzGJ7yMPwXFdEt1535avkjh6lFmCA=;
-        s=default; c=relaxed/relaxed; d=vivo.com; v=1;
-        bh=7jayIAvLdxe4BYaM+zA/siNMUWJMUwXobFneLmZhBhs=;
-        h=date:mime-version:subject:message-id:from;
-Received: from wanjb-KLV-WX9.. (unknown [121.229.73.16])
-        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id AFF13AC0173;
-        Wed, 16 Jun 2021 22:41:52 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Geoff Levand <geoff@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] PS3: Remove unneeded semicolons
-Date:   Wed, 16 Jun 2021 22:41:31 +0800
-Message-Id: <20210616144131.27441-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 16 Jun 2021 10:43:44 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Ucd2UNb_1623854494;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Ucd2UNb_1623854494)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 16 Jun 2021 22:41:36 +0800
+Date:   Wed, 16 Jun 2021 22:41:34 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
+Subject: Re: [PATCH] nfs: set block size according to pnfs_blksize first
+Message-ID: <YMoNnr1RYDOLXtKJ@B-P7TQMD6M-0146.local>
+References: <1623847469-150122-1-git-send-email-hsiangkao@linux.alibaba.com>
+ <4898aa11dc26396c13bbc3d8bf18c13efe4d513a.camel@hammerspace.com>
+ <YMoFcdhVwMXJQPJ+@B-P7TQMD6M-0146.local>
+ <2c14b63eacf1742bb0bcd2ae02f2d7005f7682d8.camel@hammerspace.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQ0IaTFYZHUJKSxhOSx5CGEhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Oj46Ngw6HT8SEU4dMR8aOSwq
-        MEMwCzJVSlVKTUlIQ05PTkpISk1MVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlK
-        SUpVSUlCVUxIVUpNWVdZCAFZQUlLT083Bg++
-X-HM-Tid: 0a7a15457ab5b039kuuuaff13ac0173
+In-Reply-To: <2c14b63eacf1742bb0bcd2ae02f2d7005f7682d8.camel@hammerspace.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix coccicheck warning:
+Hi Trond,
 
-./arch/powerpc/platforms/ps3/system-bus.c:607:2-3: Unneeded semicolon
-./arch/powerpc/platforms/ps3/system-bus.c:766:2-3: Unneeded semicolon
+On Wed, Jun 16, 2021 at 02:20:49PM +0000, Trond Myklebust wrote:
+> On Wed, 2021-06-16 at 22:06 +0800, Gao Xiang wrote:
+> > On Wed, Jun 16, 2021 at 01:47:13PM +0000, Trond Myklebust wrote:
+> > > On Wed, 2021-06-16 at 20:44 +0800, Gao Xiang wrote:
+> > > > When testing fstests with ext4 over nfs 4.2, I found generic/486
+> > > > failed. The root cause is that the length of its xattr value is
+> > > >   min(st_blksize * 3 / 4, XATTR_SIZE_MAX)
+> > > > 
+> > > > which is 4096 * 3 / 4 = 3072 for underlayfs ext4 rather than
+> > > > XATTR_SIZE_MAX = 65536 for nfs since the block size would be
+> > > > wsize
+> > > > (=131072) if bsize is not specified.
+> > > > 
+> > > > Let's use pnfs_blksize first instead of using wsize directly if
+> > > > bsize isn't specified. And the testcase itself can pass now.
+> > > > 
+> > > > Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+> > > > Cc: Anna Schumaker <anna.schumaker@netapp.com>
+> > > > Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
+> > > > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > > > ---
+> > > > Considering bsize is not specified, we might use pnfs_blksize
+> > > > directly first rather than wsize.
+> > > > 
+> > > >  fs/nfs/super.c | 8 ++++++--
+> > > >  1 file changed, 6 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/fs/nfs/super.c b/fs/nfs/super.c
+> > > > index fe58525cfed4..5015edf0cd9a 100644
+> > > > --- a/fs/nfs/super.c
+> > > > +++ b/fs/nfs/super.c
+> > > > @@ -1068,9 +1068,13 @@ static void nfs_fill_super(struct
+> > > > super_block
+> > > > *sb, struct nfs_fs_context *ctx)
+> > > >         snprintf(sb->s_id, sizeof(sb->s_id),
+> > > >                  "%u:%u", MAJOR(sb->s_dev), MINOR(sb->s_dev));
+> > > >  
+> > > > -       if (sb->s_blocksize == 0)
+> > > > -               sb->s_blocksize = nfs_block_bits(server->wsize,
+> > > > +       if (sb->s_blocksize == 0) {
+> > > > +               unsigned int blksize = server->pnfs_blksize ?
+> > > > +                       server->pnfs_blksize : server->wsize;
+> > > 
+> > > NACK. The pnfs block size is a layout driver-specific quantity, and
+> > > should not be used to substitute for the server-advertised block
+> > > size.
+> > > It only applies to I/O _if_ the client is holding a layout for a
+> > > specific file and is using pNFS to do I/O to that file.
+> > 
+> > Honestly, I'm not sure if it's ok as well.
+> > 
+> > > 
+> > > It has nothing to do with xattrs at all.
+> > 
+> > Yet my question is how to deal with generic/486, should we just skip
+> > the case directly? I cannot find some proper way to get underlayfs
+> > block size or real xattr value limit.
+> > 
+> 
+> RFC8276 provides no method for determining the xattr size limits. It
+> just notes that such limits may exist, and provides the error code
+> NFS4ERR_XATTR2BIG, that the server may use as a return value when those
+> limits are exceeded.
+> 
+> > For now, generic/486 will return ENOSPC at
+> > fsetxattr(fd, "user.world", value, 65536, XATTR_REPLACE);
+> > when testing new nfs4.2 xattr support.
+> > 
+> 
+> As noted above, the NFS server should really be returning
+> NFS4ERR_XATTR2BIG in this case, which the client, again, should be
+> transforming into -E2BIG. Where does ENOSPC come from?
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- arch/powerpc/platforms/ps3/system-bus.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks for the detailed explanation...
 
-diff --git a/arch/powerpc/platforms/ps3/system-bus.c b/arch/powerpc/platforms/ps3/system-bus.c
-index 1a5665875165..f57f37fe038c 100644
---- a/arch/powerpc/platforms/ps3/system-bus.c
-+++ b/arch/powerpc/platforms/ps3/system-bus.c
-@@ -604,7 +604,7 @@ static dma_addr_t ps3_ioc0_map_page(struct device *_dev, struct page *page,
- 	default:
- 		/* not happned */
- 		BUG();
--	};
-+	}
- 	result = ps3_dma_map(dev->d_region, (unsigned long)ptr, size,
- 			     &bus_addr, iopte_flag);
- 
-@@ -763,7 +763,7 @@ int ps3_system_bus_device_register(struct ps3_system_bus_device *dev)
- 		break;
- 	default:
- 		BUG();
--	};
-+	}
- 
- 	dev->core.of_node = NULL;
- 	set_dev_node(&dev->core, 0);
--- 
-2.30.2
+I think that is due to ext4 returning ENOSPC since I tested
 
+fsetxattr(fd, "user.world", value, 65536, XATTR_REPLACE);
+with ext4 as well and it returned ENOSPC, and I think it's reasonable
+since setxattr() will return ENOSPC for such cases.
+https://man7.org/linux/man-pages/man2/setxattr.2.html
+
+should we transform it to E2BIG instead (at least in NFS
+protocol)? but I'm still not sure that E2BIG is a valid return code for
+setxattr()...
+
+If necessary, I will look into it more tomorrow....
+
+Thanks,
+Gao Xiang
+
+> 
+> > Thanks,
+> > Gao Xiang
+> > 
+> > > 
+> > > > +
+> > > > +               sb->s_blocksize = nfs_block_bits(blksize,
+> > > >                                                  &sb-
+> > > > > s_blocksize_bits);
+> > > > +       }
+> > > >  
+> > > >         nfs_super_set_maxbytes(sb, server->maxfilesize);
+> > > >         server->has_sec_mnt_opts = ctx->has_sec_mnt_opts;
+> 
+> -- 
+> Trond Myklebust
+> Linux NFS client maintainer, Hammerspace
+> trond.myklebust@hammerspace.com
+> 
+> 
