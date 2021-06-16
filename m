@@ -2,111 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B263A9B55
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3FF3A9B57
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232942AbhFPNBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232223AbhFPNBm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:01:42 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA43C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:59:36 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so2340645oth.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:59:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2jLSVmuLw4Nb055fI6F5c4n6Y22HkMR7OQfqkvuCNLI=;
-        b=fUjGVI1wI44GueP/8qBEGqyVV7NLUmOaIAeyp6CWQXjf7vZ7tnDvIJgVm6qIzUZk3t
-         8JWqWR2V4MG5tM4WpAU1MejqCWif82xUXXy/0FMAcKRMCHYnTZNLbIaLrqv5kOQIOkjp
-         sApMoUC+CA2QoEQfSDKsfQF1oai8iMC663Uo9AYqcUx5pGrRG3YsfWa+ERQrJLvTG1tq
-         xLV2Lohb2GjBvNa5VIzi2beGU3UuVLkRnSSTN5wdWeWTkgS7dmp0z+DuKbDoTX7UGksI
-         aW7tvP8LiEZIgEwq7PEGyHJRy82VqVLeQL2h/X4HrhjIha4cZxaMLq+NOfIJFaqey22V
-         SwqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2jLSVmuLw4Nb055fI6F5c4n6Y22HkMR7OQfqkvuCNLI=;
-        b=kM65YMRorif1381onttxVyizRYywGI5XlGznZQ6JSyKlsGGntxYGq8dh8pHm2hvjRw
-         DZxGWelebnpXxzr4DSg98NzgBUzWc3NIVFHk2t9NfSAEsQ6KyxIZyC0zpfMQTLCsLBxG
-         I9LLk7DYssqObqyhlHKxiKBbJyoE11bcRY6FLtcLYiE4MIbJU2pPfIuGl4IOqr6VKaQA
-         r5iUvpPcK4SXZp29CxFrTxXPA3muZUwO2xz8CVr4L8t5aGowfayig9K9YMFreeRP2xJY
-         vZwkatvmHhK9FUM5MB1NKeAgKJHJfQebbOfSPnlqYjUJ6MH//ffYoKN0J1XUqlYcD46g
-         RoqQ==
-X-Gm-Message-State: AOAM533o3n+9XCk++qjDMs+7u7Nzq+wHwQDQvY+z2MDKGdtiFthdoklN
-        V07eTe/ncmXBOpbgn3L/BFJjbQ==
-X-Google-Smtp-Source: ABdhPJzozClctq3P3F+vS6zEvZVzcUDa+vFBQHDKbeDCU+xqxPVCz54/ZsosyzWg+6MY9eTPiiqwrA==
-X-Received: by 2002:a9d:4d8d:: with SMTP id u13mr3755526otk.367.1623848375674;
-        Wed, 16 Jun 2021 05:59:35 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id 26sm460938ooy.46.2021.06.16.05.59.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 05:59:35 -0700 (PDT)
-Subject: Re: [PATCH] nbd: provide a way for userspace processes to identify
- device backends
-To:     Prasanna Kumar Kalever <prasanna.kalever@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
-        josef@toxicpanda.com, idryomov@redhat.com, xiubli@redhat.com
-References: <20210429102828.31248-1-prasanna.kalever@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f3035a3f-4494-929f-5c21-ba921a77ea6c@kernel.dk>
-Date:   Wed, 16 Jun 2021 06:59:33 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233038AbhFPNCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:02:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232223AbhFPNB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 09:01:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C3386135C;
+        Wed, 16 Jun 2021 12:59:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623848393;
+        bh=MeDLpTIC/OyeDClsFEbjeW6RyqDjdiLOmvB+LiUp3qA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=oFObymhq1pLCGNkleEPKLlj3RnngFik249k3OMUA08Z7m+IJeiOyE0cjg1Ybb13Hu
+         LCZVaW+VDNQcg/NYas7E/hcIM/trFLBCsxsIHiBUzUAdzi3SaVqBCTWi7AVXxLeKbc
+         Bhv+ql45h4tdgUMIOyeTx02jhfi64KoFR8uzf9mb4EfKrfOCo+rd3c8+aD0YSGhVVT
+         SBCu1+2DjRxrpO/doFQF3E67qrNxQkttwVXMCggMyP0XbqD2AzjU6D/aUy1hqLKqvo
+         vkgOra4IRiExBfmN3TU99f6o0JH4ZazLwH6sN8lOkQcklN6OIpE8qpa5AaEvPLGvUW
+         5GNGN9XqC/NGQ==
+Date:   Wed, 16 Jun 2021 18:29:49 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL]: dmaengine fixes for v5.13
+Message-ID: <YMn1xTAqhOUI5sle@vkoul-mobl>
 MIME-Version: 1.0
-In-Reply-To: <20210429102828.31248-1-prasanna.kalever@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="KSE0lpjpp8E196Wp"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/29/21 4:28 AM, Prasanna Kumar Kalever wrote:
-> Problem:
-> On reconfigure of device, there is no way to defend if the backend
-> storage is matching with the initial backend storage.
-> 
-> Say, if an initial connect request for backend "pool1/image1" got
-> mapped to /dev/nbd0 and the userspace process is terminated. A next
-> reconfigure request within NBD_ATTR_DEAD_CONN_TIMEOUT is allowed to
-> use /dev/nbd0 for a different backend "pool1/image2"
-> 
-> For example, an operation like below could be dangerous:
-> 
-> $ sudo rbd-nbd map --try-netlink rbd-pool/ext4-image
-> /dev/nbd0
-> $ sudo blkid /dev/nbd0
-> /dev/nbd0: UUID="bfc444b4-64b1-418f-8b36-6e0d170cfc04" TYPE="ext4"
-> $ sudo pkill -9 rbd-nbd
-> $ sudo rbd-nbd attach --try-netlink --device /dev/nbd0 rbd-pool/xfs-image
-> /dev/nbd0
-> $ sudo blkid /dev/nbd0
-> /dev/nbd0: UUID="d29bf343-6570-4069-a9ea-2fa156ced908" TYPE="xfs"
-> 
-> Solution:
-> Provide a way for userspace processes to keep some metadata to identify
-> between the device and the backend, so that when a reconfigure request is
-> made, we can compare and avoid such dangerous operations.
-> 
-> With this solution, as part of the initial connect request, backend
-> path can be stored in the sysfs per device config, so that on a reconfigure
-> request it's easy to check if the backend path matches with the initial
-> connect backend path.
-> 
-> Please note, ioctl interface to nbd will not have these changes, as there
-> won't be any reconfigure.
 
-Applied, thanks.
+--KSE0lpjpp8E196Wp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Jens Axboe
+Hello Linus,
 
+Please pull to receive the fixes for dmaengine subsystem for v5.13
+
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dm=
+aengine-fix-5.13
+
+for you to fetch changes up to 9041575348b21ade1fb74d790f1aac85d68198c7:
+
+  dmaengine: mediatek: use GFP_NOWAIT instead of GFP_ATOMIC in prep_dma (20=
+21-06-07 12:23:47 +0530)
+
+----------------------------------------------------------------
+dmaengine fixes for v5.13
+
+Bunch of driver fixes, notably:
+- More idxd fixes for driver unregister, error handling and bus
+  assignment
+- HAS_IOMEM depends fix for few drivers
+- lock fix in pl330 driver
+- xilinx drivers fixes for initialize registers, missing dependencies
+  and limiting descriptor IDs
+- mediatek descriptor management fixes
+
+----------------------------------------------------------------
+Bumyong Lee (1):
+      dmaengine: pl330: fix wrong usage of spinlock flags in dma_cyclc
+
+Dave Jiang (3):
+      dmaengine: idxd: add engine 'struct device' missing bus type assignme=
+nt
+      dmaengine: idxd: add missing dsa driver unregister
+      dmaengine: idxd: Add missing cleanup for early error out in probe call
+
+Guillaume Ranquet (3):
+      dmaengine: mediatek: free the proper desc in desc_free handler
+      dmaengine: mediatek: do not issue a new desc if one is still current
+      dmaengine: mediatek: use GFP_NOWAIT instead of GFP_ATOMIC in prep_dma
+
+Jiapeng Chong (1):
+      dmaengine: idxd: Fix missing error code in idxd_cdev_open()
+
+Laurent Pinchart (2):
+      dmaengine: xilinx: dpdma: Add missing dependencies to Kconfig
+      dmaengine: xilinx: dpdma: Limit descriptor IDs to 16 bits
+
+Quanyang Wang (1):
+      dmaengine: xilinx: dpdma: initialize registers before request_irq
+
+Randy Dunlap (3):
+      dmaengine: ALTERA_MSGDMA depends on HAS_IOMEM
+      dmaengine: QCOM_HIDMA_MGMT depends on HAS_IOMEM
+      dmaengine: SF_PDMA depends on HAS_IOMEM
+
+Yang Yingliang (2):
+      dmaengine: stedma40: add missing iounmap() on error in d40_probe()
+      dmaengine: ipu: fix doc warning in ipu_irq.c
+
+Yu Kuai (2):
+      dmaengine: zynqmp_dma: Fix PM reference leak in zynqmp_dma_alloc_chan=
+_resourc()
+      dmaengine: stm32-mdma: fix PM reference leak in stm32_mdma_alloc_chan=
+_resourc()
+
+Zhen Lei (1):
+      dmaengine: fsl-dpaa2-qdma: Fix error return code in two functions
+
+Zou Wei (1):
+      dmaengine: rcar-dmac: Fix PM reference leak in rcar_dmac_probe()
+
+ drivers/dma/Kconfig                     |  2 ++
+ drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c |  3 ++
+ drivers/dma/idxd/cdev.c                 |  1 +
+ drivers/dma/idxd/init.c                 | 63 +++++++++++++++++++++++++++++=
+++--
+ drivers/dma/ipu/ipu_irq.c               |  2 +-
+ drivers/dma/mediatek/mtk-uart-apdma.c   | 27 +++++++-------
+ drivers/dma/pl330.c                     |  6 ++--
+ drivers/dma/qcom/Kconfig                |  1 +
+ drivers/dma/sf-pdma/Kconfig             |  1 +
+ drivers/dma/sh/rcar-dmac.c              |  2 +-
+ drivers/dma/ste_dma40.c                 |  3 ++
+ drivers/dma/stm32-mdma.c                |  4 +--
+ drivers/dma/xilinx/xilinx_dpdma.c       | 31 ++++++++++++++--
+ drivers/dma/xilinx/zynqmp_dma.c         |  2 +-
+ 14 files changed, 122 insertions(+), 26 deletions(-)
+
+--=20
+~Vinod
+
+--KSE0lpjpp8E196Wp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmDJ9cUACgkQfBQHDyUj
+g0fGag/8Cay29G/Wm3ea9gv6wD9RFp/4O8BTyZWeGwfZNlZXlhcEyUzm9JbAGaTg
+PyKJ03LhQVSadCUw5sPnhyxXAW0CHAmb2QioED14uwwyYZ2+/cDEeAy7wJJ+1QJ+
+4mpVNDNZMfPWoH2mQ5Ppd1PXKrmw8Y5FfKz2Iv9YpuKdWPhh3b/zAkBIHiJRFmPy
+bINGgx1MR547UzmkSqbtvwQ4Qr/SdAdBySKJ5JOVERr3kZrTF10t+0ezvgSW8izy
+KFHxOqKRQM/UYbt0bVSLeiiAV2jvzCjof1BjBJXyPrUZ8CtYrnXYlD3KvVKODdOf
+iYrPa/BEqUyBCPwWishaKwkhQMtEPp7CCAic/ecKvEyulyXp/MTDYxayT/wH5qxe
+JNieEneuZFp51r5YC2yFgJVlFgDDhkNnTzlrRWKjfava9CvmZjDlj9Zc7eSwxGBr
+9LpcHO+dNHz0qsEva1LYFpZNh9o9UE9N43Y9+qZjf93CQ6DVmLR3pK5jwGV0+ZhG
+K9dg4yTO+cHbllPoePGdL9oRNHQSygETLcP2wbpey0G5QTBwWXB1CfmF7u7/Ipu9
+V6+AcuIp3pi2dGCi5uoV/ihVrbvRqwkeD2t2FJhn7YsgIvR4pIZgO2F7s4na7lJb
+vecJQyhwJe4qFIB427aL3QgulJZSItYlK/hzFEj+JFzwTkpSoE8=
+=CGQo
+-----END PGP SIGNATURE-----
+
+--KSE0lpjpp8E196Wp--
