@@ -2,165 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5243AA7BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A523B3AA7BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234817AbhFPXxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 19:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37774 "EHLO
+        id S234822AbhFPXxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 19:53:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234812AbhFPXxI (ORCPT
+        with ESMTP id S234815AbhFPXxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 19:53:08 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C36C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 16:51:01 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id q15so3381050pgg.12
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 16:51:01 -0700 (PDT)
+        Wed, 16 Jun 2021 19:53:15 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DC8C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 16:51:07 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id u14so706736qvq.6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 16:51:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xUKGZQ5t19Qy+tZDlwlkuIB63RRAOakgC6Mx9D2w6yU=;
-        b=q37usVIc65VDGwEYlRnvalUQ1PX/52xHdou3EfQNrLSNVY5LxGD2YD2rNo2aqsl7ty
-         TmD6AKPabKUwDuzOGBf9uyTXl+8bS92hZPy5+JjqJF+2Is+IoCxFrzAUY4WPXlTKcmrd
-         7tX3yxsVY3aHgNaOTr70DJnRnftZbDKNuPs4ikEh6xBwgQ/i3PD/OWh/8JmDDO+LjO93
-         z5qbn9HO2XmyA6auqlUvnOgKCkgGjSrD2zD7TYimFUjVQJB7m0Or183iGpn1Ij1tfGRg
-         lXnl9kEHl0SED2Rxp92YuXXXVNn+/yuw6t5U2qjp5a05m0Ac79ECm+mJqhUc7EEhFK7R
-         VsZw==
+         :cc:content-transfer-encoding;
+        bh=+xxjClQX2Ln4rMUIu3nYcCllQ0vQo3Bff596QN80lzw=;
+        b=x9ojLAXLOsklJd/OZ4pyLbRHZk0A2n0VWcNUAwluM8llF+TVqy6aRzXywflgbpQV4A
+         Ue+/rFqexSb/i02pUJ1VYBqGbcPkpzRe7v/c5SBPk3MfJMcG+6W/QkzSHiOpw1TpCY4O
+         eptqV1HMP5IHiHCavjKmTQY+N5NZls1goODOAgXm2HPvnKJpCYGij5oDsfnbhsqkY02e
+         800yTJp0NIrpYAxNbwoGh8fe7U72e3SVMtN1qW+BOeUZ4KNwi3z4ixQyuD2YCDalwSbc
+         H3DWE9BxXSBrLIUJFQ/wXsmky4xB6VTZrp3NFtRWl6MkJ/VbXIfkIDmjQTMLCNRfXICs
+         m6qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xUKGZQ5t19Qy+tZDlwlkuIB63RRAOakgC6Mx9D2w6yU=;
-        b=AsSZGuWbUts0ZurOlWG6hEzycJT2nKwI8ljzAp1QP105m8K8OkjGhV8e4AKiyDOcOJ
-         d5TNRPkN0zLJ0R99INKy9XTygdmvYY+fvdT8ba92MgLsdzsrN2EICUf2EHToAtRKRMRU
-         hpxCK3gve9iOGl/r7ZRb+wZeit4/y7ZD7F33s5Ekc6/bOkb+G/tQ6gafZ/EDXHPYyqUR
-         Y6SeY7+A/M4h9q5BQHSbaQtu083b2/RUNIEcftJuZFi4sXRtavJpnE8wKbey/fxaX1Xp
-         yeXUAxz+QDa7ztnFX7/uyyVPTVIbWHWadoWWlXWfe2MgCUeQP4qMLbTKsnxi7g4FylXN
-         d2JQ==
-X-Gm-Message-State: AOAM531rmWLtyDrmreNsjF8gR9xYQXGZhQRRNyYFgfxatC3GLNoe+3iu
-        vlYTuNndKWBIr/MteHqZECwHcFoM2Frc7j2skl40tw==
-X-Google-Smtp-Source: ABdhPJx9w0rqkda+k8Hwa8eJjB+5o6ZaWSJXMtoVaQ8BM9HhG6qHPfnjWA9Svr0vC1inWXtvPWoEOvWeSZN6ysdLEkE=
-X-Received: by 2002:a63:4653:: with SMTP id v19mr2163346pgk.240.1623887461396;
- Wed, 16 Jun 2021 16:51:01 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+xxjClQX2Ln4rMUIu3nYcCllQ0vQo3Bff596QN80lzw=;
+        b=RS7J4dAChRCyXv3dTDS/8W4TpNbojhfES6JoXhPe71ZuOifpEeembYED/I+eHMpo2F
+         6tgg9aGuHEfmo4Z37QOlEnoZ7yXDllKrfclTju3bxZtRydd1CS3m2kTYDeeWTfNIoDNy
+         BYRuoinNVvd1WPj7+thZjfHAEcb322wOLwbbrnM+I/mjpZZ3+FnAe3rqgEpEk5xx/Ig8
+         AF3DHiuwoVWM4Pmefm0A42sCSooI8s9gl4XdX8g19ImhcT83nh5QsfHPzziZtXNJeiiD
+         tqZDJlCbAlu5m8q1uw2sU49IyRgNr+0/mQlkGFA72ed+kflSB7hYldr/Wk8wXsB2Y6W1
+         5vfQ==
+X-Gm-Message-State: AOAM530MfEDrY5SAnbcXy6KtFshT/6EzxnKzGCbx9urgS7QmcaowwMts
+        IUPh+tNO7UVnMu2EBUEph+NqxjoFarC/XB9SC9EP3w==
+X-Google-Smtp-Source: ABdhPJwp+Bz+m79mmaF/d4WYXZvilQIXkSEONK+MxAQMA/PIjyEws+gn3jzWrXVgV7V0/fhk4xsxhRcINJoUOhru3+Q=
+X-Received: by 2002:a0c:e88b:: with SMTP id b11mr2743208qvo.59.1623887467103;
+ Wed, 16 Jun 2021 16:51:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1623800340.git.alison.schofield@intel.com>
- <e841b0283edcc281ff31e98e4d3512be3a131c6a.1623800340.git.alison.schofield@intel.com>
- <20210616171340.00005295@Huawei.com> <20210616231610.GB25185@alison-desk.jf.intel.com>
-In-Reply-To: <20210616231610.GB25185@alison-desk.jf.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 16 Jun 2021 16:50:50 -0700
-Message-ID: <CAPcyv4hzQiNP29d1NKki+WMFck_TtUfW_Mn-wxtJ5AzZLMBx=g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] cxl/acpi: Add the Host Bridge base address to CXL
- port objects
-To:     Alison Schofield <alison.schofield@intel.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
+References: <20210616190759.2832033-1-mw@semihalf.com> <20210616190759.2832033-3-mw@semihalf.com>
+ <YMpR+lJqcgQU2DMO@lunn.ch>
+In-Reply-To: <YMpR+lJqcgQU2DMO@lunn.ch>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Thu, 17 Jun 2021 01:50:55 +0200
+Message-ID: <CAPv3WKdOkxV695DbhhYr+wf1rnphtj-pyERZ-74RrdZyQJGt=g@mail.gmail.com>
+Subject: Re: [net-next: PATCH v2 2/7] net: mdiobus: Introduce fwnode_mdbiobus_register()
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
+        lenb@kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 4:20 PM Alison Schofield
-<alison.schofield@intel.com> wrote:
+=C5=9Br., 16 cze 2021 o 21:33 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
 >
+> On Wed, Jun 16, 2021 at 09:07:54PM +0200, Marcin Wojtas wrote:
+> > This patch introduces a new helper function that
+> > wraps acpi_/of_ mdiobus_register() and allows its
+> > usage via common fwnode_ interface.
+> >
+> > Fall back to raw mdiobus_register() in case CONFIG_FWNODE_MDIO
+> > is not enabled, in order to satisfy compatibility
+> > in all future user drivers.
 >
-> Thanks for the review Jonathan -
+> > Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+> > ---
+> >  include/linux/fwnode_mdio.h    | 12 +++++++++++
+> >  drivers/net/mdio/fwnode_mdio.c | 22 ++++++++++++++++++++
+> >  2 files changed, 34 insertions(+)
+> >
+> > diff --git a/include/linux/fwnode_mdio.h b/include/linux/fwnode_mdio.h
+> > index faf603c48c86..13d4ae8fee0a 100644
+> > --- a/include/linux/fwnode_mdio.h
+> > +++ b/include/linux/fwnode_mdio.h
+> > @@ -16,6 +16,7 @@ int fwnode_mdiobus_phy_device_register(struct mii_bus=
+ *mdio,
+> >  int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+> >                               struct fwnode_handle *child, u32 addr);
+> >
+> > +int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handle =
+*fwnode);
+> >  #else /* CONFIG_FWNODE_MDIO */
+> >  int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
+> >                                      struct phy_device *phy,
+> > @@ -30,6 +31,17 @@ static inline int fwnode_mdiobus_register_phy(struct=
+ mii_bus *bus,
+> >  {
+> >       return -EINVAL;
+> >  }
+> > +
+> > +static inline int fwnode_mdiobus_register(struct mii_bus *bus,
+> > +                                       struct fwnode_handle *fwnode)
+> > +{
+> > +     /*
+> > +      * Fall back to mdiobus_register() function to register a bus.
+> > +      * This way, we don't have to keep compat bits around in drivers.
+> > +      */
+> > +
+> > +     return mdiobus_register(mdio);
+> > +}
 >
-> On Wed, Jun 16, 2021 at 05:13:40PM +0100, Jonathan Cameron wrote:
-> > On Tue, 15 Jun 2021 17:20:38 -0700
-> > Alison Schofield <alison.schofield@intel.com> wrote:
-> >
-> > > The base address for the Host Bridge port component registers is located
-> > > in the CXL Host Bridge Structure (CHBS) of the ACPI CXL Early Discovery
-> > > Table (CEDT). Retrieve the CHBS for each Host Bridge (ACPI0016 device)
-> > > and include that base address in the port object.
-> > >
-> > > Co-developed-by: Vishal Verma <vishal.l.verma@intel.com>
-> > > Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
-> > > Signed-off-by: Alison Schofield <alison.schofield@intel.com>
-> >
-> > Hi Alison,
-> >
-> > A few small suggestions from me.
-> >
-> > > ---
-> > >  drivers/cxl/acpi.c | 105 ++++++++++++++++++++++++++++++++++++++++++---
-> > >  1 file changed, 99 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
-> > > index be357eea552c..b6d9cd45428c 100644
-> > > --- a/drivers/cxl/acpi.c
-> > > +++ b/drivers/cxl/acpi.c
-> > > @@ -8,6 +8,61 @@
-> > >  #include <linux/pci.h>
-> > >  #include "cxl.h"
-> > >
-> > > +static struct acpi_table_header *cedt_table;
-> > > +
-> > > +static struct acpi_cedt_chbs *cxl_acpi_match_chbs(struct device *dev, u32 uid)
-> > > +{
-> > > +   struct acpi_cedt_chbs *chbs, *chbs_match = NULL;
-> > > +   acpi_size len, cur = 0;
-> > > +   void *cedt_base;
-> > > +   int rc = 0;
-> > > +
-> > > +   len = cedt_table->length - sizeof(*cedt_table);
-> > > +   cedt_base = cedt_table + 1;
-> > > +
-> > > +   while (cur < len) {
-> > > +           struct acpi_cedt_header *c = cedt_base + cur;
-> > > +
-> > > +           if (c->type != ACPI_CEDT_TYPE_CHBS) {
-> > > +                   cur += c->length;
-> > > +                   continue;
-> > > +           }
-> > > +
-> > > +           chbs = cedt_base + cur;
-> > > +
-> > > +           if (chbs->header.length < sizeof(*chbs)) {
-> > > +                   dev_err(dev, "Invalid CHBS header length: %u\n",
-> > > +                           chbs->header.length);
-> > > +                   rc = -EINVAL;
-> >
-> > As below, direct return would be more obvious to my eyes.
-> >
+> I'm not sure this fallback is correct.
 >
-> Well....I decided to warn & continue on this case. See the updated flow
-> in v3.
+> Any driver which decides to use fwmode is going to select it. If it is
+> not selected, you want a link time error, or a compiler time error to
+> tell you, you are missing FWNODE_MDIO. Calling mdiobus_register() is
+> unlikely to work, or the driver would of done that directly.
 >
-> > > +                   break;
-> > > +           }
-> > > +
-> > > +           if (chbs->uid == uid && !chbs_match) {
-> > > +                   chbs_match = chbs;
-> > > +                   cur += c->length;
-> > > +                   continue;
-> > > +           }
-> > > +
-> > > +           if (chbs->uid == uid && chbs_match) {
-> > > +                   dev_err(dev, "Duplicate CHBS UIDs %u\n", uid);
-> >
-> > Do we actually care, or should we just drop out on first match?
-> > I don't think think there is any obligation to catch broken tables.
-> >
->
-> Agree on the obligation part, but if things go wrong, this would be
-> nice to know. I left it in as a dev warn once. If you think that's
-> too strong - let me know.
 
-I do think the driver should care about duplicate UID, but only if
-"version, base, or length" mismatch. If the BIOS gives us ambiguous
-answers about where the registers are located, the user should be
-warned that the driver might be picking the "wrong" one by accident.
-If they are identical, the BIOS is being repetitive, but no real harm
-that the driver would care about. A dev_warn_once() sounds good as the
-first duplicate should be sufficient to say something fishy is afoot,
-but it's not an error. The warn_once will also re-trigger when / if
-the module is reloaded.
+This kind of fallback is done in of_mdiobus_register and acpi_mdiobus_regis=
+ter.
+
+Actually mvmdio driver is using this fallback for non-dt platforms
+(e.g. Orion). Therefore I would prefer to keep the current behavior.
+
+Best regards,
+Marcin
