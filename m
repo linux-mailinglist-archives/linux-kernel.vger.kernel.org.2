@@ -2,148 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5551C3A9E6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166FF3A9E71
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234379AbhFPPEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60952 "EHLO
+        id S234380AbhFPPEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234388AbhFPPEL (ORCPT
+        with ESMTP id S234390AbhFPPEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:04:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4687FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:02:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=I5DjI7oj7+RHnDV6cxwDeOoQ3n60YwGRMyOOSPM02Qk=; b=FdKzXZ9x5ATmodn0JioFshI/ht
-        bdpS5+BCXFSEs+EM4u+wfgZ0T6OKJCP/WkbnVQi3YNxOcuedepjMeyiMX9264TX3MQJaKszqGFgbo
-        4uvKVdhXRRK8u5GgHORw45pFBRkzSAzZBfyjVsW/4AOY93ztSstnsy5dU8B00kSIry2/1CcUNlp7n
-        FhUhDHRYOhfr4cA/CaaLW3XuaaC1lPhNNsasz/NDn8eMulp0Njdvf2m4DR5k8Q9zVeBHqJXk9R9Na
-        NR+8ZKhGQZsDOMEDmNefJ6KCJVtznwT7/l8liFHleWZrSoSFeJBPFbAC2uf/qO/hXLkZ5t0bbJLyr
-        yKnVWqnw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltX2W-008AIS-NX; Wed, 16 Jun 2021 15:01:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DC5F8300269;
-        Wed, 16 Jun 2021 17:01:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C11E42C516D3B; Wed, 16 Jun 2021 17:01:10 +0200 (CEST)
-Date:   Wed, 16 Jun 2021 17:01:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Cc:     rostedt@goodmis.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        matthias.bgg@gmail.com, mhelsley@vmware.com,
-        samitolvanen@google.com, yj.chiang@mediatek.com
-Subject: Re: [PATCH v3] recordmcount: Correct st_shndx handling
-Message-ID: <YMoSNnNXmKnDpJEv@hirez.programming.kicks-ass.net>
-References: <20210615162313.26081-1-mark-pk.tsai@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615162313.26081-1-mark-pk.tsai@mediatek.com>
+        Wed, 16 Jun 2021 11:04:12 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61826C061768
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:02:06 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 5so1710647qvf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:02:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:from:to:cc:subject;
+        bh=VCvQSABjEdEuwxE7dUwxvVJle5680VQCMhFOlxSQ0RU=;
+        b=1JHFKXXWxomTbkugVQMZnpalACfTC8IlhOqgFvXblCYSIV7KNdgtakEsiLHcEej6RT
+         JMoGmH/y0ghKIyrRakbnD9xBFw8SxlZryrGCRT8fl0oiHQetebcqzmfoUogSF9v0kAIW
+         eDJreJOM1uKAxARBQLgDGsmB8eZZl1YTybntm+qGmc+RuZMpi4gM4BhV1qDurg6d0kDD
+         2T97LEdmKUz4vZZ3ssL+4B2CMbb4CCvfPD40tcjIGGkpP0vlqoEis5WjiBG1xhdz25EG
+         n0B94JW6T5shp64W3FCHZibHWYySzxnd9yvc4aK2zyBH0mnbxKxxYVV79CGpyznCfnJq
+         RY3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:to:cc:subject;
+        bh=VCvQSABjEdEuwxE7dUwxvVJle5680VQCMhFOlxSQ0RU=;
+        b=GBkiaAuHEI55uW7voxMB/mHupnlURen7yxRz1nDBOIisI4MCo0fu/6a19wrn5hljL9
+         jfQZSo59qdDIqN5I+219bW1j/WgSyUhXCoOn/q5dYW2BpxxnWFaUztnHPG6x5A2zuWiO
+         E7wZPYEIUT7AXQqyzx/JCoYGFv99/f0h1v8thlJ9W2mFopDeRXKzzt5aog3Hb6yGmKsb
+         bvaF3ieQHfX5KS3M1iWelHarIrgjo3IBXOhGkNqNQDsxaOdaiWpYIspwMjzMuK2DLWDi
+         9mQb4qheo38EqXLDJ0WoipjIxJJv+aXWkOk/y3NcPOslIuAmyN/eYNOIqUnwgtjPgagf
+         WhwA==
+X-Gm-Message-State: AOAM533mtuZEy32flmexI7tQXYunSqqxjQjFutfXmZrWaE5UQDjxsQ4x
+        zjGSe4LwBJvSLuDCz7XlpMNRZg==
+X-Google-Smtp-Source: ABdhPJytC9l/wfvfg7sP8rjAGewkfuTAUH85RNI3r+SM2Ul/Q9EdT8cKP9pkjx6l7tAtOlLX0/G9Rw==
+X-Received: by 2002:a0c:ed46:: with SMTP id v6mr465673qvq.46.1623855724103;
+        Wed, 16 Jun 2021 08:02:04 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id y20sm1390690qtv.64.2021.06.16.08.02.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 08:02:03 -0700 (PDT)
+Message-ID: <60ca126b.1c69fb81.90af4.93a7@mx.google.com>
+Date:   Wed, 16 Jun 2021 11:02:02 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     lsf-pc@lists.linuxfoundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [REMINDER] LSF/MM/BPF: 2021: Call for Proposals
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 12:23:13AM +0800, Mark-PK Tsai wrote:
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> One should only use st_shndx when >SHN_UNDEF and <SHN_LORESERVE. When
-> SHN_XINDEX, then use .symtab_shndx. Otherwise use 0.
-> 
-> This handles the case: st_shndx >= SHN_LORESERVE && st_shndx != SHN_XINDEX.
-> 
-> Reported-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-> [handle endianness of sym->st_shndx]
-> Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-> ---
->  scripts/recordmcount.h | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-> index f9b19524da11..ef9c3425f86b 100644
-> --- a/scripts/recordmcount.h
-> +++ b/scripts/recordmcount.h
-> @@ -194,13 +194,18 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
->  	unsigned long offset;
->  	int index;
->  
-> +	if (w2(sym->st_shndx) > SHN_UNDEF &&
-> +	    w2(sym->st_shndx) < SHN_LORESERVE)
->  		return w2(sym->st_shndx);
->  
-> +	if (w2(sym->st_shndx) == SHN_XINDEX) {
-> +		offset = (unsigned long)sym - (unsigned long)symtab;
-> +		index = offset / sizeof(*sym);
->  
-> +		return w(symtab_shndx[index]);
-> +	}
-> +
-> +	return 0;
->  }
+Thisi is just a reminder that we're still going ahead with an in person
+LSF/MM/BPF this year.  The Linux Foundation is working out the safety
+guidelines and will update the landing page when that is nailed down.
+In the meantime there is plenty of time to register your interest in
+attending.  Thanks,
 
-Thanks. However that leads to atrocious codegen because w2 is an
-indirect function, something like the below seems much better.
+Josef
 
-1d00:       41 0f b7 7f 0e          movzwl 0xe(%r15),%edi
-1d05:       c0 eb 04                shr    $0x4,%bl
-1d08:       ff 15 7a 54 00 00       callq  *0x547a(%rip)        # 7188 <w2>
-1d0e:       85 c0                   test   %eax,%eax
-1d10:       74 16                   je     1d28 <main+0xba8>
-1d12:       41 0f b7 7f 0e          movzwl 0xe(%r15),%edi
-1d17:       ff 15 6b 54 00 00       callq  *0x546b(%rip)        # 7188 <w2>
-1d1d:       3d ff fe 00 00          cmp    $0xfeff,%eax
-1d22:       0f 86 00 03 00 00       jbe    2028 <main+0xea8>
-1d28:       41 0f b7 7f 0e          movzwl 0xe(%r15),%edi
-1d2d:       ff 15 55 54 00 00       callq  *0x5455(%rip)        # 7188 <w2>
+---- Original CFP ----
 
-vs
+The annual Linux Storage, Filesystem, Memory Management, and BPF
+(LSF/MM/BPF) Summit for 2021 will be held from December 6 to December 8
+at The Margaritaville Resort Palm Springs in Palm Springs, California.
+LSF/MM/BPF is an invitation-only technical workshop to map out
+improvements to the Linux storage, filesystem, BPF, and memory
+management subsystems that will make their way into the mainline kernel
+within the coming years.
 
-1d0c:       41 0f b7 7f 0e          movzwl 0xe(%r15),%edi
-1d11:       ff 15 71 54 00 00       callq  *0x5471(%rip)        # 7188 <w2>
+COVID is at the front of our minds as we attempt to put together the
+best and safest conference we can arrange.  The logistics of how to hold
+an in person event will change and evolve as we get closer to the actual
+date, but rest assured we will do everything recommended by public
+health officials.
 
----
-diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-index f9b19524da11..b3e9d0563c03 100644
---- a/scripts/recordmcount.h
-+++ b/scripts/recordmcount.h
-@@ -192,15 +192,23 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
- 				 Elf32_Word const *symtab_shndx)
- {
- 	unsigned long offset;
-+	unsigned short shndx;
- 	int index;
- 
--	if (sym->st_shndx != SHN_XINDEX)
--		return w2(sym->st_shndx);
-+	shndx = w2(sym->st_shndx);
- 
--	offset = (unsigned long)sym - (unsigned long)symtab;
--	index = offset / sizeof(*sym);
-+	if (shndx > SHN_UNDEF &&
-+	    shndx < SHN_LORESERVE)
-+		return shndx;
- 
--	return w(symtab_shndx[index]);
-+	if (shndx == SHN_XINDEX) {
-+		offset = (unsigned long)sym - (unsigned long)symtab;
-+		index = offset / sizeof(*sym);
-+
-+		return w(symtab_shndx[index]);
-+	}
-+
-+	return 0;
- }
- 
- static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
+LSF/MM/BPF 2021 will be a three day, stand-alone conference with four
+subsystem-specific tracks, cross-track discussions, as well as BoF and
+hacking sessions.
+
+On behalf of the committee I am issuing a call for agenda proposals
+that are suitable for cross-track discussion as well as technical
+subjects for the breakout sessions.
+
+If advance notice is required for visa applications then please point
+that out in your proposal or request to attend, and submit the topic as
+soon as possible.
+
+This years instructions are similar to our 2020 attempt.  We're asking
+that you please let us know you want to be invited by June 15th, 2021.
+We realize that travel is an ever changing target, but it helps us get
+an idea of possible attendance numbers.  Clearly things can and will, so
+consider the request to attend deadline more about planning and less
+about concrete plans.
+
+1) Fill out the following Google form to request attendance and
+suggest any topics
+
+	https://forms.gle/Dms7xYPXLrriFkcXA
+
+In previous years we have accidentally missed people's attendance
+requests because they either didn't cc lsf-pc@ or we simply missed them
+in the flurry of emails we get.  Our community is large and our
+volunteers are busy, filling this out will help us make sure we don't
+miss anybody.
+
+2) Proposals for agenda topics should still be sent to the following
+lists to allow for discussion among your peers.  This will help us
+figure out which topics are important for the agenda.
+
+        lsf-pc@lists.linux-foundation.org
+
+and CC the mailing lists that are relevant for the topic in question:
+
+        FS:     linux-fsdevel@vger.kernel.org
+        MM:     linux-mm@kvack.org
+        Block:  linux-block@vger.kernel.org
+        ATA:    linux-ide@vger.kernel.org
+        SCSI:   linux-scsi@vger.kernel.org
+        NVMe:   linux-nvme@lists.infradead.org
+        BPF:    bpf@vger.kernel.org
+
+Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier to
+track. In addition, please make sure to start a new thread for each
+topic rather than following up to an existing one. Agenda topics and
+attendees will be selected by the program committee, but the final
+agenda will be formed by consensus of the attendees on the day.
+
+We will try to cap attendance at around 25-30 per track to facilitate
+discussions although the final numbers will depend on the room sizes
+at the venue.
+
+For discussion leaders, slides and visualizations are encouraged to
+outline the subject matter and focus the discussions. Please refrain
+from lengthy presentations and talks; the sessions are supposed to be
+interactive, inclusive discussions.
+
+There will be no recording or audio bridge. However, we expect that
+written minutes will be published as we did in previous years:
+
+2019: https://lwn.net/Articles/lsfmm2019/
+
+2018: https://lwn.net/Articles/lsfmm2018/
+
+2017: https://lwn.net/Articles/lsfmm2017/
+
+2016: https://lwn.net/Articles/lsfmm2016/
+
+2015: https://lwn.net/Articles/lsfmm2015/
+
+2014: http://lwn.net/Articles/LSFMM2014/
+
+3) If you have feedback on last year's meeting that we can use to
+improve this year's, please also send that to:
+
+        lsf-pc@lists.linux-foundation.org
+
+Thank you on behalf of the program committee:
+
+        Josef Bacik (Filesystems)
+        Amir Goldstein (Filesystems)
+        Martin K. Petersen (Storage)
+        Omar Sandoval (Storage)
+        Michal Hocko (MM)
+        Dan Williams (MM)
+        Alexei Starovoitov (BPF)
+        Daniel Borkmann (BPF)
