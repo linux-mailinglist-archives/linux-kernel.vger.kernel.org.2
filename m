@@ -2,143 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9063AA515
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 620FC3AA51A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233268AbhFPUUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 16:20:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22316 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233255AbhFPUUo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 16:20:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623874717;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eBKuC/zd2SJTCQRB667Q79ZDQQx5aKnfehXLv1VuI/s=;
-        b=GRy+kPdxSftzoHsuL/xf4KBisOYjsf0wnhdRWz0TQk+CUibdDcgqd7W/4lGpGLYgIMKH69
-        D9RmYK8XPGhGpXeDWHEPyeEjS9xtZHSGMt7QSv4JrBzXGgdpl0RCHgZPxM6LqOvf/YkeZW
-        THR1bg1qznrfr9MD2y0nCZHOzor1m+0=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-9k_l1zucNyafWQl_MG1-zw-1; Wed, 16 Jun 2021 16:18:33 -0400
-X-MC-Unique: 9k_l1zucNyafWQl_MG1-zw-1
-Received: by mail-wr1-f70.google.com with SMTP id u16-20020a5d51500000b029011a6a17cf62so1535035wrt.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:18:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eBKuC/zd2SJTCQRB667Q79ZDQQx5aKnfehXLv1VuI/s=;
-        b=OjJG5F7h41S++qbcVU3xcmqTb/6mJKkIQmDho5zlkRjdcrhxsA/XGIgkXxaiwgdU7l
-         nFAy3HUabNpqhMV33z0YbovgLn/IkuODLjY+mDiedUOrlJZOp+IlwptK0F/16P2TwjZ+
-         iiSsR5xsGerUQbwenKvYnDjF2eIqJMmMgfETEgHOpf39NO5o+JjEegK4FbyUCpoAPnBt
-         MQfhfH7xqcMcbZFUp/b64nKblbmHRgIglXNUkCnCj+f55v/BLrjHdY/0vxmRif0acfD8
-         ZoaOY6ztUSz+O7nCTEtJZ+MWknHeuHhw3ywwFSVnJe6xg/bprtJHB8ceOm11hQA8aOd2
-         xXRw==
-X-Gm-Message-State: AOAM533vGnICP3XOANBS2X5LIl23kY0PTn6Wo2JM17ozbxS5CZiPUsNa
-        tl/XnFPYNZmwxuVgpOIZpcAsL2AOpJOe/uDW+jWSNUbO8maF1oITYldwbV8zYoJFAyz+tTyRPeN
-        m7+n05ub144rVrebv9bPYUxY=
-X-Received: by 2002:a5d:494c:: with SMTP id r12mr995526wrs.421.1623874712276;
-        Wed, 16 Jun 2021 13:18:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwW4mzta5FTJf37nehtWeygVdfqM8nj1F2j7zPoyJcBupxP3eI2OajOb0S3aHM109Cx9zLXBw==
-X-Received: by 2002:a5d:494c:: with SMTP id r12mr995509wrs.421.1623874712100;
-        Wed, 16 Jun 2021 13:18:32 -0700 (PDT)
-Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
-        by smtp.gmail.com with ESMTPSA id z17sm3160152wrt.60.2021.06.16.13.18.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 13:18:31 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 21:18:31 +0100
-From:   Aaron Tomlin <atomlin@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
-        penguin-kernel@i-love.sakura.ne.jp, llong@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/oom_kill: show oom eligibility when displaying the
- current memory state of all tasks
-Message-ID: <20210616201831.m6el3lob3eizwd3t@ava.usersys.com>
-X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
-X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
-References: <20210612204634.1102472-1-atomlin@redhat.com>
- <YMb6w/bGdhJvOy6j@dhcp22.suse.cz>
- <20210615115147.gp3w5bcjoaarvyse@ava.usersys.com>
- <YMigO5N55QhnrB87@dhcp22.suse.cz>
+        id S233311AbhFPUVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 16:21:17 -0400
+Received: from mga03.intel.com ([134.134.136.65]:45322 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233255AbhFPUVQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 16:21:16 -0400
+IronPort-SDR: +DQE7ceVgbiYScOisfXMSOhqoyIQ66MzwLK+5derv5V3EcDvVTrXzpBoV4wZVPAYNVwhK+/Ix2
+ 5hyiC7WiqcVQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206288080"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="206288080"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 13:19:09 -0700
+IronPort-SDR: B4ZA80f5MK8TTtS40ik3gLS+n4IzMTsxsp9Z1TasFwfr19z/imOpRv2jiJWfC5eYz1ILJhdA9J
+ LvOC8JOsj/ag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="452486102"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by fmsmga008.fm.intel.com with ESMTP; 16 Jun 2021 13:19:08 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     degoede@redhat.com, mgross@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH 1/2] platform/x86: ISST: Optimize CPU to PCI device mapping
+Date:   Wed, 16 Jun 2021 13:18:55 -0700
+Message-Id: <20210616201856.1690143-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cp2wvemzhtrrjjju"
-Content-Disposition: inline
-In-Reply-To: <YMigO5N55QhnrB87@dhcp22.suse.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It was observed that some of the high performance benchmarks are spending
+more time in kernel depending on which CPU package they are executing.
+The difference is significant and benchmark scores varies more than 10%.
+These benchmarks adjust class of service to improve thread performance
+which run in parallel. This class of service change causes access to
+MMIO region of Intel Speed Select PCI devices depending on the CPU
+package they are executing.
 
---cp2wvemzhtrrjjju
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This mapping from CPU to PCI device instance uses a standard Linux PCI
+interface "pci_get_domain_bus_and_slot()". This function does a linear
+search to get to a PCI device. Since these platforms have 100+ PCI
+devices, this search can be expensive in fast path for benchmarks.
 
-On Tue 2021-06-15 14:42 +0200, Michal Hocko wrote:
-> This is all true but it is not really clear why that is really a
-> problem. Kernel log already contains information about reaped processes
-> as they are reported to the log. I fully acknowledge that this is rather
-> spartan but on the other hand from years of experience reading oom
-> reports I have to say the dump_tasks is the least interesting part of
-> the report (while being the most verbose one).
+Since the device and function of PCI device is fixed for Intel
+Speed Select PCI devices, the CPU to PCI device information can be cached
+at the same time when bus number for the CPU is read. In this way during
+runtime the cached information can be used. This improves performance
+of these benchmarks significantly.
 
-I understand. I suppose, in a situation whereby dump_tasks() output is only
-available, for whatever reason, it can provide at least some
-insight into what tasks were actually considered not OOM eligible and why.
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ .../intel_speed_select_if/isst_if_common.c    | 29 +++++++++++++++----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
 
-> All that being said, I am not really opposing extending the information
-> although I am a bit worried about leaking too much internal state to the
-> log.
-
-Fair enough. That said, I still feel highlighting such "ineligible" tasks
-could be useful to the viewer for troubleshooting purposes; we already
-display OOM_SCORE_ADJ_MIN. Consider a situation when only a few tasks in
-a memcg are displayed as possibly OOM eligible but one had MMF_OOM_SKIP
-applied.
-
-In my opinion, perhaps it is better to just exclude such details
-altogether. That being said, as you know, we only provide this facility
-when one is interested in it anyway i.e., if oom_dump_tasks is enabled.
-
-> What I am asking for here is a justification why this addition is a
-> general improvement and how it helps uderstanding oom reports further.
-> So please focus on that part.
-
-Sure; albeit, thinking about this more, it does not provide much
-understanding in simple isolation.
-
-
-
-Kind regards,
-
---=20
-Aaron Tomlin
-
---cp2wvemzhtrrjjju
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEeQaE6/qKljiNHm6b4t6WWBnMd9YFAmDKXI0ACgkQ4t6WWBnM
-d9YqOg//ZJvwyHkB4rdF2yXUBIz2+Ud8O2L9hlvNQ4CpBQ83o/EKchB7cznvf3X7
-s3w7As7WaLZJYt3JMWdHj4L+QLGS2Zf9QIBFYtcLrW/jo0fR2hia5bpms8FsPQxQ
-BvA2RavUDTSPlyz/xkUF0vV5tf+c7YI6qAFu2HPw5IWwnYHQXjGwcgNeWsKnVAZs
-nPh1VMUm0Xjw0NyQlgHqvQr1o85eVAyQGaO+ro+EgDZJCPrdeBsYHZErOXUnL2gd
-HdaOItt5W1UKfDFbJ3i8wUr/SpvQxkWUmDzv2cchDV5nQ3RpkT1uwrw0egu7CbDZ
-WBV/P8Ckodf03yIvmD5MQsKHGmcvf8/craWyOprb1Xl+hOC6QMT3pJz2LdmMiUvp
-l8P0KuiFu1MwCytHbcPGhN1ZO0pg4hMg+gRl2xReu7X6DPFfi/BSkIDt/RcStzYS
-829o4UY6rk0uobB1lHo8IQHKr6AarwLK0PcjxmpvrULgXDE9beFTN6ISJJMFZeWV
-rmsKDluSHkZIRETs7XFvzJGetIMY1xjTQxFG0PzGWJJSsABgYf7+NZA7FqizNVUO
-c35i6YTqs2yLbYv7kvkMvw72uTm441jlyw4M+LktxMOc/AfBdvWZUAI9NBBbzYpc
-CXPhLrtTqGgcUV2WjHsYJIC2qWRZWldttmzEEuWCqbIzNXbAYzk=
-=/GLJ
------END PGP SIGNATURE-----
-
---cp2wvemzhtrrjjju--
+diff --git a/drivers/platform/x86/intel_speed_select_if/isst_if_common.c b/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
+index 0c2aa22c7a12..aedb8310214c 100644
+--- a/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
++++ b/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
+@@ -281,11 +281,27 @@ static int isst_if_get_platform_info(void __user *argp)
+ struct isst_if_cpu_info {
+ 	/* For BUS 0 and BUS 1 only, which we need for PUNIT interface */
+ 	int bus_info[2];
++	struct pci_dev *pci_dev[2];
+ 	int punit_cpu_id;
+ };
+ 
+ static struct isst_if_cpu_info *isst_cpu_info;
+ 
++static struct pci_dev *_isst_if_get_pci_dev(int cpu, int bus_no, int dev, int fn)
++{
++	int bus_number;
++
++	if (bus_no < 0 || bus_no > 1 || cpu < 0 || cpu >= nr_cpu_ids ||
++	    cpu >= num_possible_cpus())
++		return NULL;
++
++	bus_number = isst_cpu_info[cpu].bus_info[bus_no];
++	if (bus_number < 0)
++		return NULL;
++
++	return pci_get_domain_bus_and_slot(0, bus_number, PCI_DEVFN(dev, fn));
++}
++
+ /**
+  * isst_if_get_pci_dev() - Get the PCI device instance for a CPU
+  * @cpu: Logical CPU number.
+@@ -300,17 +316,18 @@ static struct isst_if_cpu_info *isst_cpu_info;
+  */
+ struct pci_dev *isst_if_get_pci_dev(int cpu, int bus_no, int dev, int fn)
+ {
+-	int bus_number;
++	struct pci_dev *pci_dev;
+ 
+ 	if (bus_no < 0 || bus_no > 1 || cpu < 0 || cpu >= nr_cpu_ids ||
+ 	    cpu >= num_possible_cpus())
+ 		return NULL;
+ 
+-	bus_number = isst_cpu_info[cpu].bus_info[bus_no];
+-	if (bus_number < 0)
+-		return NULL;
++	pci_dev = isst_cpu_info[cpu].pci_dev[bus_no];
+ 
+-	return pci_get_domain_bus_and_slot(0, bus_number, PCI_DEVFN(dev, fn));
++	if (pci_dev->devfn == PCI_DEVFN(dev, fn))
++		return pci_dev;
++
++	return _isst_if_get_pci_dev(cpu, bus_no, dev, fn);
+ }
+ EXPORT_SYMBOL_GPL(isst_if_get_pci_dev);
+ 
+@@ -327,6 +344,8 @@ static int isst_if_cpu_online(unsigned int cpu)
+ 	} else {
+ 		isst_cpu_info[cpu].bus_info[0] = data & 0xff;
+ 		isst_cpu_info[cpu].bus_info[1] = (data >> 8) & 0xff;
++		isst_cpu_info[cpu].pci_dev[0] = _isst_if_get_pci_dev(cpu, 0, 0, 1);
++		isst_cpu_info[cpu].pci_dev[1] = _isst_if_get_pci_dev(cpu, 1, 30, 1);
+ 	}
+ 
+ 	ret = rdmsrl_safe(MSR_THREAD_ID_INFO, &data);
+-- 
+2.30.2
 
