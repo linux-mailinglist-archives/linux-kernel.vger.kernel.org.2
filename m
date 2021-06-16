@@ -2,131 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38BB3AA3E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACC53AA3E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhFPTK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59762 "EHLO
+        id S232409AbhFPTKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232124AbhFPTK2 (ORCPT
+        with ESMTP id S232343AbhFPTK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:10:28 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306CFC06175F
+        Wed, 16 Jun 2021 15:10:29 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08F6C061574
         for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:08:22 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id p7so6018993lfg.4
+Received: by mail-lf1-x12c.google.com with SMTP id a1so5909292lfr.12
         for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:08:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CavZCGRLoXvrDbj2owetgbHtF92bmqVvemLNa5eyb70=;
-        b=B2UF53JPjL6gYUiFPakB2njYwlv8sdi901/X4Nj9Luo8S/kjkbfXEaruWGQM8CMtNO
-         gSijOmTrBc4z1qX/cIhERH69HvYX10JSJ/rGyY27h7VRT5kt1X+yN/psuVZnmid1EAd9
-         fesv+QiEtEvWxzFW7PzKYragp6//a9dBo9Ldj4W0W84AqPHi01Y00NKo6y84M5eH+tYo
-         mAvm70UKBqwFunhPnwKndaXjTZAJ3BDHVwfR3UXMlPpqk+lRdXPFaUv8hc+4ZXaLZvUH
-         3cuErd7FAph/xyecADxUCOQIrzIaTn6/lJvtKj/0FTXs9ZSzcwM41MoXnwftX3CBW3sZ
-         dk8w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TveMsDiAYx4LUYO2CwQNe1XuHAWA/htRnEHF57RNIUk=;
+        b=GRsi4mjEdWOx+gMqyTrmBY/2Gv/cbZtMo8YR7hmlhMP3rs6fRBZW9ugznhpZ4OMTJW
+         k7dDYwiKDz96MZXNrcZfJ+N2UwllLAZLSD9wHfog3GDFsCGRtB/a6DH/q2flC3SSelfx
+         AKwV8qH/zbot4YVVtuuxZQW3OpTAY1y811nftEGil1NNVEB2gZPFY7ujBW4Wv62CqR1l
+         2ok8+Y/Z0rKhWRGqiPncLWGyG98wd07AxEcS3sBZ2AICzfJuE/+6d7jtvQBzfcU+3m7r
+         47pgvTd68nrb/bAD9wi02PDqfurlGV9NdKd8mBpR3HmFXpMiRFgXspWOEYqCq6FJgRvT
+         VtHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CavZCGRLoXvrDbj2owetgbHtF92bmqVvemLNa5eyb70=;
-        b=ufw8fvo28LU/DtyZN/dcex4K6dz27Ppayrk9yZ7YL2CvJ1PyPy53oA8PDm+VKZExhk
-         ZyOxpS9x7S0iU6YOn+PC5swCTjLmgE41sdPcuQzQt6XZUNsG3KiFM+w9PEtVYMAZgQ2Z
-         GfRELyWiAH8G/KcPaOmV2nMX4Nqg7fSv6SDTdsjGfATDOZ+F30z+CCAo2WqpReb5cxDt
-         w4jXydS5uk2G/NGQxnBkNC4fqMUwkwwcqkJpuAV7sP40Ln5fAwMKQLJ7exG040TN+Rjf
-         dEb8juvZqeiZLpAKVyv5vPS6bBbunNJX/asHqW8+aE6sS74/4jyl7u8VyGE37bb6EltK
-         BmZg==
-X-Gm-Message-State: AOAM532f7nd5+VcHdZ766yQ1qibamrcO1rR24dzJ4GWDmK4mthwjSfeZ
-        Qjy8ABqgeF8RKux1cZOWTkuywn6Y5NmXZA==
-X-Google-Smtp-Source: ABdhPJxrVjb8+sjTgPNhwvOt8Stre8JI3F6qI6qNlZGwxB3c0vu4rfBLd2SguNV568qUDPWWeJ3Dhw==
-X-Received: by 2002:ac2:4e69:: with SMTP id y9mr860737lfs.593.1623870500095;
-        Wed, 16 Jun 2021 12:08:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TveMsDiAYx4LUYO2CwQNe1XuHAWA/htRnEHF57RNIUk=;
+        b=ddniQFLtuQ1nxS1fpFlBaS+xa9/eXA7f8adOs0zD4G6hmCIrBqrMwU3oQTN+HgEb7w
+         YvzzIA6m1df2kEi0z2LZ05YwWm+YsWZgOiHyBTK25GNzp4N65NRwA+EY989YrOFWodCx
+         /nDv0Izev6nNRK3j1+9kqJC2WP+BJlLp1s7o5L74i6iIAYnJY3G611M+Z1sOSfSMPYpP
+         pRjlP68icoTSJ/+3Ba+1iNGbNujvU3nQxIkgB/o6iJhJhEFP77VwtU9pbdS9p8DjNBlu
+         ub/PtFcc03rLwZl9Y+o0jqJF92lvMXVSW23ToTCdRurh3w2rWcLKPKCwDReJP5n57NMo
+         Q//A==
+X-Gm-Message-State: AOAM531TAoaw8h+GA259q7m5oYnZ+f5q08CO+0nCeT1Cf9AFaTCVvIwc
+        fXI/hUW/+7wpC2Sjxa9Cmo7CZv5XS00NFw==
+X-Google-Smtp-Source: ABdhPJxbTIBuB3iEoPlYr9f6hNq0NoROhaoCgimHWQJyrfe0VIVNfHnaNP74V5TZrbypNgG5vgnfzA==
+X-Received: by 2002:a05:6512:3a85:: with SMTP id q5mr887099lfu.404.1623870501251;
+        Wed, 16 Jun 2021 12:08:21 -0700 (PDT)
 Received: from gilgamesh.lab.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id h22sm406939ljl.126.2021.06.16.12.08.18
+        by smtp.gmail.com with ESMTPSA id h22sm406939ljl.126.2021.06.16.12.08.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 12:08:19 -0700 (PDT)
+        Wed, 16 Jun 2021 12:08:20 -0700 (PDT)
 From:   Marcin Wojtas <mw@semihalf.com>
 To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
         jaz@semihalf.com, gjb@semihalf.com, upstream@semihalf.com,
         Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com, tn@semihalf.com,
         rjw@rjwysocki.net, lenb@kernel.org, Marcin Wojtas <mw@semihalf.com>
-Subject: [net-next: PATCH v2 0/7] ACPI MDIO support for Marvell controllers
-Date:   Wed, 16 Jun 2021 21:07:52 +0200
-Message-Id: <20210616190759.2832033-1-mw@semihalf.com>
+Subject: [net-next: PATCH v2 1/7] Documentation: ACPI: DSD: describe additional MAC configuration
+Date:   Wed, 16 Jun 2021 21:07:53 +0200
+Message-Id: <20210616190759.2832033-2-mw@semihalf.com>
 X-Mailer: git-send-email 2.29.0
+In-Reply-To: <20210616190759.2832033-1-mw@semihalf.com>
+References: <20210616190759.2832033-1-mw@semihalf.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Document additional MAC configuration modes which can be processed
+by the existing fwnode_ phylink helpers:
 
-The second version of the patchset addresses all comments received
-during v1 review and introduces a couple of new patches that
-were requested.
+* "managed" standard ACPI _DSD property [1]
+* "fixed-link" data-only subnode linked in the _DSD package via
+  generic mechanism of the hierarchical data extension [2]
 
-fwnode_mdiobus_register() helper routine was added and it is used
-now by 2 drivers (xgmac_mdio and mvmdio). In the latter a clock
-handling was significantly simplified by a switch to
-a devm_clk_bulk_get_optional().
+[1] https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
+[2] https://github.com/UEFI/DSD-Guide/blob/main/dsd-guide.pdf
 
-Last but not least two additional MAC configuration modes ACPI
-desctiption were documented ("managed" and "fixed-link") - they
-can be processed by the existing fwnode_ phylink helpers and
-comply with the standard _DSD properties and hierarchical
-data extension. ACPI Maintainers are therefore added to reviewers' list.
+Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+---
+ Documentation/firmware-guide/acpi/dsd/phy.rst | 55 ++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
-More details can be found in the patches and their commit messages.
-
-As before, the feature was verified with ACPI on MacchiatoBin, CN913x-DB
-and Armada 8040 DB (fixed-link handling).
-Moreover regression tests were performed (old firmware with updated kernel,
-new firmware with old kernel and the operation with DT).
-
-The firmware ACPI description is exposed in the public github branch:
-https://github.com/semihalf-wojtas-marcin/edk2-platforms/commits/acpi-mdio-r20210613
-There is also MacchiatoBin firmware binary available for testing:
-https://drive.google.com/file/d/1eigP_aeM4wYQpEaLAlQzs3IN_w1-kQr0
-
-I'm looking forward to the comments or remarks.
-
-Best regards,
-Marcin
-
-Changelog:
-v1->v2
-* 1/7 - new patch
-* 2/7 - new patch
-* 3/7 - new patch
-* 4/7 - new patch
-* 5/7 - remove unnecessary `if (has_acpi_companion())` and rebase onto
-        the new clock handling
-* 6/7 - remove deprecated comment
-* 7/7 - no changes
-
-Marcin Wojtas (7):
-  Documentation: ACPI: DSD: describe additional MAC configuration
-  net: mdiobus: Introduce fwnode_mdbiobus_register()
-  net/fsl: switch to fwnode_mdiobus_register
-  net: mvmdio: simplify clock handling
-  net: mvmdio: add ACPI support
-  net: mvpp2: enable using phylink with ACPI
-  net: mvpp2: remove unused 'has_phy' field
-
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  3 -
- include/linux/fwnode_mdio.h                     | 12 ++++
- drivers/net/ethernet/freescale/xgmac_mdio.c     | 11 +--
- drivers/net/ethernet/marvell/mvmdio.c           | 75 ++++++++------------
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 23 ++++--
- drivers/net/mdio/fwnode_mdio.c                  | 22 ++++++
- Documentation/firmware-guide/acpi/dsd/phy.rst   | 55 ++++++++++++++
- 7 files changed, 138 insertions(+), 63 deletions(-)
-
+diff --git a/Documentation/firmware-guide/acpi/dsd/phy.rst b/Documentation/firmware-guide/acpi/dsd/phy.rst
+index 7d01ae8b3cc6..839710b94a7f 100644
+--- a/Documentation/firmware-guide/acpi/dsd/phy.rst
++++ b/Documentation/firmware-guide/acpi/dsd/phy.rst
+@@ -49,6 +49,21 @@ phy-mode
+ The "phy-mode" _DSD property is used to describe the connection to
+ the PHY. The valid values for "phy-mode" are defined in [4].
+ 
++managed
++-------
++Optional property, which specifies the PHY management type.
++The valid values for "managed" are defined in [4].
++
++fixed-link
++----------
++The "fixed-link" is described by a the data-only subnode of the
++MAC port, which is linked in the _DSD package via
++hierarchical data extension (UUID dbb8e3e6-5886-4ba6-8795-1319f52a966b
++in accordance with [5] "_DSD Implementation Guide" document).
++The subnode should comprise a required property ("speed") and
++possibly the optional ones - complete list of parameters and
++their values are specified in [4].
++
+ The following ASL example illustrates the usage of these properties.
+ 
+ DSDT entry for MDIO node
+@@ -121,6 +136,44 @@ phy-mode and phy-handle are used as explained earlier.
+ 	  })
+ 	}
+ 
++MAC node example where "managed" property is specified.
++-------------------------------------------------------
++::
++	Scope(\_SB.PP21.ETH0)
++	{
++	  Name (_DSD, Package () {
++	     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
++		 Package () {
++		     Package () {"phy-mode", "sgmii"},
++		     Package () {"managed", "in-band-status"}
++		 }
++	   })
++	}
++
++MAC node example with a "fixed-link" subnode.
++---------------------------------------------
++::
++	Scope(\_SB.PP21.ETH1)
++	{
++	  Name (_DSD, Package () {
++	    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
++		 Package () {
++		     Package () {"phy-mode", "sgmii"},
++		 },
++	    ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
++		 Package () {
++		     Package () {"fixed-link", "LNK0"}
++		 }
++	  })
++	  Name (LNK0, Package(){ // Data-only subnode of port
++	    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
++		 Package () {
++		     Package () {"speed", 1000},
++		     Package () {"full-duplex", 1}
++		 }
++	  })
++	}
++
+ References
+ ==========
+ 
+@@ -131,3 +184,5 @@ References
+ [3] Documentation/firmware-guide/acpi/DSD-properties-rules.rst
+ 
+ [4] Documentation/devicetree/bindings/net/ethernet-controller.yaml
++
++[5] https://github.com/UEFI/DSD-Guide/blob/main/dsd-guide.pdf
 -- 
 2.29.0
 
