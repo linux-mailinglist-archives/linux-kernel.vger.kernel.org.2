@@ -2,120 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D2B3A9C0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2B43A9C15
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233298AbhFPNfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:35:30 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:42712 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230187AbhFPNf2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:35:28 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:32852 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1ltVfT-0005SL-R5; Wed, 16 Jun 2021 09:33:19 -0400
-Message-ID: <f3cf3dc047dcee400423f526c1fe31510c5bcf61.camel@trillion01.com>
-Subject: Re: [PATCH v2 2/3] io_uring: minor clean up in trace events
- definition
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 16 Jun 2021 09:33:18 -0400
-In-Reply-To: <def5421f-a3ae-12fd-87a2-6e584f753127@kernel.dk>
-References: <60be7e31.1c69fb81.a8bfb.2e54SMTPIN_ADDED_MISSING@mx.google.com>
-         <2752dcc1-9e56-ba31-54ea-d2363ecb6c93@gmail.com>
-         <def5421f-a3ae-12fd-87a2-6e584f753127@kernel.dk>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.2 
+        id S233310AbhFPNkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:40:22 -0400
+Received: from mga05.intel.com ([192.55.52.43]:43845 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230187AbhFPNkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 09:40:21 -0400
+IronPort-SDR: kv3+Idm+FfQcjrU+N8TYyMNFDTHKW4dfh+6anFBJIZisS62qYlEG2MGqlJBZwwcqkXEeT0BRej
+ 8p53QVnxLJCA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="291808022"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="291808022"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 06:38:14 -0700
+IronPort-SDR: BkBI40BZYJIqmAd92J8juCou6h4VCZDnNSF1hrjCtf1OVenWDFpsnilaEUQ5bjV6kDkMrIhtAg
+ U0oAN4uWUo3g==
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="637455199"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 06:38:12 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1ltVk8-002pSk-Un; Wed, 16 Jun 2021 16:38:08 +0300
+Date:   Wed, 16 Jun 2021 16:38:08 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     Vaibhav Jain <vaibhav@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Oliver O'Halloran <oohall@gmail.com>
+Subject: Re: [PATCH v1 1/1] powerpc/papr_scm: Properly handle UUID types and
+ API
+Message-ID: <YMn+wDYHux16HBhd@smile.fi.intel.com>
+References: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
+ <af677216-82b4-f1fa-1d90-3d32dabf8583@linux.ibm.com>
+ <YHlUNSwm8Ofy9sNr@smile.fi.intel.com>
+ <8e724a87-da78-9fc9-073e-cbbfea0ff97e@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8e724a87-da78-9fc9-073e-cbbfea0ff97e@linux.ibm.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-06-15 at 15:50 -0600, Jens Axboe wrote:
-> On 6/15/21 3:48 AM, Pavel Begunkov wrote:
-> > On 5/31/21 7:54 AM, Olivier Langlois wrote:
-> > > Fix tabulation to make nice columns
+On Fri, Apr 16, 2021 at 03:05:31PM +0530, Aneesh Kumar K.V wrote:
+> On 4/16/21 2:39 PM, Andy Shevchenko wrote:
+> > On Fri, Apr 16, 2021 at 01:28:21PM +0530, Aneesh Kumar K.V wrote:
+> > > On 4/15/21 7:16 PM, Andy Shevchenko wrote:
+> > > > Parse to and export from UUID own type, before dereferencing.
+> > > > This also fixes wrong comment (Little Endian UUID is something else)
+> > > > and should fix Sparse warnings about assigning strict types to POD.
+> > > > 
+> > > > Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
+> > > > Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
+> > > > Cc: Oliver O'Halloran <oohall@gmail.com>
+> > > > Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > > ---
+> > > > Not tested
+> > > >    arch/powerpc/platforms/pseries/papr_scm.c | 13 ++++++++-----
+> > > >    1 file changed, 8 insertions(+), 5 deletions(-)
+> > > > 
+> > > > diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
+> > > > index ae6f5d80d5ce..4366e1902890 100644
+> > > > --- a/arch/powerpc/platforms/pseries/papr_scm.c
+> > > > +++ b/arch/powerpc/platforms/pseries/papr_scm.c
+> > > > @@ -1085,8 +1085,9 @@ static int papr_scm_probe(struct platform_device *pdev)
+> > > >    	u32 drc_index, metadata_size;
+> > > >    	u64 blocks, block_size;
+> > > >    	struct papr_scm_priv *p;
+> > > > +	u8 uuid_raw[UUID_SIZE];
+> > > >    	const char *uuid_str;
+> > > > -	u64 uuid[2];
+> > > > +	uuid_t uuid;
+> > > >    	int rc;
+> > > >    	/* check we have all the required DT properties */
+> > > > @@ -1129,16 +1130,18 @@ static int papr_scm_probe(struct platform_device *pdev)
+> > > >    	p->hcall_flush_required = of_property_read_bool(dn, "ibm,hcall-flush-required");
+> > > >    	/* We just need to ensure that set cookies are unique across */
+> > > > -	uuid_parse(uuid_str, (uuid_t *) uuid);
+> > > > +	uuid_parse(uuid_str, &uuid);
+> > > > +
+> > > >    	/*
+> > > >    	 * cookie1 and cookie2 are not really little endian
+> > > > -	 * we store a little endian representation of the
+> > > > +	 * we store a raw buffer representation of the
+> > > >    	 * uuid str so that we can compare this with the label
+> > > >    	 * area cookie irrespective of the endian config with which
+> > > >    	 * the kernel is built.
+> > > >    	 */
+> > > > -	p->nd_set.cookie1 = cpu_to_le64(uuid[0]);
+> > > > -	p->nd_set.cookie2 = cpu_to_le64(uuid[1]);
+> > > > +	export_uuid(uuid_raw, &uuid);
+> > > > +	p->nd_set.cookie1 = get_unaligned_le64(&uuid_raw[0]);
+> > > > +	p->nd_set.cookie2 = get_unaligned_le64(&uuid_raw[8]);
+> > > 
+> > > ok that does the equivalent of cpu_to_le64 there. So we are good. But the
+> > > comment update is missing the details why we did that get_unaligned_le64.
+> > > Maybe raw buffer representation is the correct term?
+> > > Should we add an example in the comment. ie,
 > > 
-> > Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+> > > /*
+> > >   * Historically we stored the cookie in the below format.
+> > > for a uuid str 72511b67-0b3b-42fd-8d1d-5be3cae8bcaa
+> > > cookie1 was  0xfd423b0b671b5172 cookie2 was 0xaabce8cae35b1d8d
+> > > */
+> > 
+> > I'm fine with the comment. At least it will shed a light on the byte ordering
+> > we are expecting.
+> > 
 > 
-> I don't have any of the original 1-3 patches, and don't see them on the
-> list either. I'd love to apply for 5.14, but...
-> 
-> Olivier, are you getting any errors sending these out?Usually I'd
-> expect
-> them in my inbox as well outside of the list, but they don't seem to
-> have
-> arrived there either.
-> 
-> In any case, please resend. As Pavel mentioned, a cover letter is
-> always
-> a good idea for a series of more than one patch.
-> 
-I do not get any errors but I have noticed too that my emails weren't
-accepted by the lists.
+> Will you be sending an update? Also it will be good to list the sparse
+> warning in the commit message?
 
-They will accept replies in already existing threads but they won't let
-me create new ones. ie: accepting my patches.
+I'll send an update but I rephrase to remove mention of Sparse. I have no
+Sparse build for this architecture.
 
-I'll learn how create a cover email and I will resend the series of
-patches later today.
+If you have one, try to build with `make W=1 C=1 CF=-D__CHECK_ENDIAN__ ...`
+which will enable warnings about restricted types assignment.
 
-one thing that I can tell, it is that Pavel and you are always
-recipients along with the lists for my patches... So you should have a
-private copy somewhere in your mailbox...
-
-The other day, I even got this:
--------- Forwarded Message --------
-From: Mail Delivery System <Mailer-Daemon@cloud48395.mywhc.ca>
-To: olivier@trillion01.com
-Subject: Mail delivery failed: returning message to sender
-Date: Thu, 10 Jun 2021 11:38:51 -0400
-
-This message was created automatically by mail delivery software.
-
-A message that you sent could not be delivered to one or more of its
-recipients. This is a permanent error. The following address(es)
-failed:
-
-  linux-kernel@vger.kernel.org
-    host vger.kernel.org [23.128.96.18]
-    SMTP error from remote mail server after end of data:
-    550 5.7.1 Content-Policy accept-into-freezer-1 msg:
-    Bayes Statistical Bogofilter considers this message SPAM.  BF:<S
-0.9924>  In case you disagree, send the ENTIRE message plus this error
-message to <postmaster@vger.kernel.org> ; S230153AbhFJPkq
-  io-uring@vger.kernel.org
-    host vger.kernel.org [23.128.96.18]
-    SMTP error from remote mail server after end of data:
-    550 5.7.1 Content-Policy accept-into-freezer-1 msg:
-    Bayes Statistical Bogofilter considers this message SPAM.  BF:<S
-0.9924>  In case you disagree, send the ENTIRE message plus this error
-message to <postmaster@vger.kernel.org> ; S230153AbhFJPkq
-
-There is definitely something that the list software doesn't like in my
-emails but I don't know what...
-
-I did send an email to postmaster@vger.kernel.org to tell them about
-the problem but I didn't hear back anything from the postmaster... (My
-email probably went to the SPAM folder as well!)
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
