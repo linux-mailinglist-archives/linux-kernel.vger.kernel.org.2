@@ -2,175 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166FF3A9E71
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6091A3A9E74
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234380AbhFPPEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
+        id S234394AbhFPPEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:04:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234390AbhFPPEM (ORCPT
+        with ESMTP id S234384AbhFPPEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:04:12 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61826C061768
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:02:06 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 5so1710647qvf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:02:06 -0700 (PDT)
+        Wed, 16 Jun 2021 11:04:30 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B744C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:02:24 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id j184so2915296qkd.6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:02:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=message-id:date:from:to:cc:subject;
-        bh=VCvQSABjEdEuwxE7dUwxvVJle5680VQCMhFOlxSQ0RU=;
-        b=1JHFKXXWxomTbkugVQMZnpalACfTC8IlhOqgFvXblCYSIV7KNdgtakEsiLHcEej6RT
-         JMoGmH/y0ghKIyrRakbnD9xBFw8SxlZryrGCRT8fl0oiHQetebcqzmfoUogSF9v0kAIW
-         eDJreJOM1uKAxARBQLgDGsmB8eZZl1YTybntm+qGmc+RuZMpi4gM4BhV1qDurg6d0kDD
-         2T97LEdmKUz4vZZ3ssL+4B2CMbb4CCvfPD40tcjIGGkpP0vlqoEis5WjiBG1xhdz25EG
-         n0B94JW6T5shp64W3FCHZibHWYySzxnd9yvc4aK2zyBH0mnbxKxxYVV79CGpyznCfnJq
-         RY3g==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j51VtbWEsPmNthXDSqqlA/0JAvr0xhkR2POpSAUOx9c=;
+        b=ZUIi2qzqYGHwJx+79Fc4944r16x9UMQqqYLtcBz8HCOT0nsZkxfGcmRp23lvyNfAP+
+         2knAodSGIE5+PM0wcoqn9rQAvNIbG2+5Sas5+iUH6G+5iioPe8sGy4aqBr4h9MHBFQLA
+         j4DhsbCGODeTQCqVCt1gM8KYJ3xJ2R6oiax+o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:to:cc:subject;
-        bh=VCvQSABjEdEuwxE7dUwxvVJle5680VQCMhFOlxSQ0RU=;
-        b=GBkiaAuHEI55uW7voxMB/mHupnlURen7yxRz1nDBOIisI4MCo0fu/6a19wrn5hljL9
-         jfQZSo59qdDIqN5I+219bW1j/WgSyUhXCoOn/q5dYW2BpxxnWFaUztnHPG6x5A2zuWiO
-         E7wZPYEIUT7AXQqyzx/JCoYGFv99/f0h1v8thlJ9W2mFopDeRXKzzt5aog3Hb6yGmKsb
-         bvaF3ieQHfX5KS3M1iWelHarIrgjo3IBXOhGkNqNQDsxaOdaiWpYIspwMjzMuK2DLWDi
-         9mQb4qheo38EqXLDJ0WoipjIxJJv+aXWkOk/y3NcPOslIuAmyN/eYNOIqUnwgtjPgagf
-         WhwA==
-X-Gm-Message-State: AOAM533mtuZEy32flmexI7tQXYunSqqxjQjFutfXmZrWaE5UQDjxsQ4x
-        zjGSe4LwBJvSLuDCz7XlpMNRZg==
-X-Google-Smtp-Source: ABdhPJytC9l/wfvfg7sP8rjAGewkfuTAUH85RNI3r+SM2Ul/Q9EdT8cKP9pkjx6l7tAtOlLX0/G9Rw==
-X-Received: by 2002:a0c:ed46:: with SMTP id v6mr465673qvq.46.1623855724103;
-        Wed, 16 Jun 2021 08:02:04 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id y20sm1390690qtv.64.2021.06.16.08.02.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 08:02:03 -0700 (PDT)
-Message-ID: <60ca126b.1c69fb81.90af4.93a7@mx.google.com>
-Date:   Wed, 16 Jun 2021 11:02:02 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     lsf-pc@lists.linuxfoundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [REMINDER] LSF/MM/BPF: 2021: Call for Proposals
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j51VtbWEsPmNthXDSqqlA/0JAvr0xhkR2POpSAUOx9c=;
+        b=IpptPvULxZnNSWKfg0IgZypgCKXxAWn5ifJKB5D6ewoUnp4aBOBREGJZox5aOZ3lb4
+         FpNkzLU8yoDfnUVkF8BqwKPk5YVlq3jvvcNEU8/iWT+tvDqUEvR0qtbw7T56IrtISzfO
+         LkoA+SyG3ggROywOQfL6my94QqVH7bCJl/G3cBR1xbMEpF2+p1LKsoBemScBf28/aSJ0
+         rg9ZuM/FnllyNFggh85tMpvH9kme13WvKxSA1u19EYe8FGmk0/BBvlgMplLHsicwKl/E
+         pf9m5FEjwHVqW30UjJZTUqjcKQvX24wH7RfsAFwcXrOM4RsOj/g736cWCXJ270HWfFf0
+         uWNQ==
+X-Gm-Message-State: AOAM5325dyykHAwPyNg8MoHp9Uc1mjfW/kUDWsCDdlfoM11zCWXhfs7p
+        aSQpta04yfoZhWH7EOkYKe2KdAA+UZ8Z+g==
+X-Google-Smtp-Source: ABdhPJzJW5t/BCmmGzkSqvkuYXOC/Ufq/1C1wZMwzB/BAMqKnsimQLQiTiJykruRX1sxRZnAjW45Sw==
+X-Received: by 2002:a05:620a:1444:: with SMTP id i4mr502564qkl.48.1623855743174;
+        Wed, 16 Jun 2021 08:02:23 -0700 (PDT)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id q16sm1715763qkq.121.2021.06.16.08.02.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 08:02:21 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id b13so3463408ybk.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:02:20 -0700 (PDT)
+X-Received: by 2002:a5b:54a:: with SMTP id r10mr207252ybp.476.1623855739461;
+ Wed, 16 Jun 2021 08:02:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <1623499682-2140-1-git-send-email-rajeevny@codeaurora.org> <1623499682-2140-6-git-send-email-rajeevny@codeaurora.org>
+In-Reply-To: <1623499682-2140-6-git-send-email-rajeevny@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 16 Jun 2021 08:02:07 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=V2_LJkXX-9v2ArSspKHy6PABn1E-hkCOeT=Dk5R0CQ+Q@mail.gmail.com>
+Message-ID: <CAD=FV=V2_LJkXX-9v2ArSspKHy6PABn1E-hkCOeT=Dk5R0CQ+Q@mail.gmail.com>
+Subject: Re: [v6 5/5] drm/panel-simple: Add Samsung ATNA33XC20
+To:     Rajeev Nandan <rajeevny@codeaurora.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Clark <robdclark@gmail.com>, Lyude Paul <lyude@redhat.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Rob Herring <robh@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thisi is just a reminder that we're still going ahead with an in person
-LSF/MM/BPF this year.  The Linux Foundation is working out the safety
-guidelines and will update the landing page when that is nailed down.
-In the meantime there is plenty of time to register your interest in
-attending.  Thanks,
+Hi,
 
-Josef
+On Sat, Jun 12, 2021 at 5:09 AM Rajeev Nandan <rajeevny@codeaurora.org> wrote:
+>
+> +static const struct panel_desc samsung_atna33xc20 = {
+> +       .modes = &samsung_atna33xc20_mode,
+> +       .num_modes = 1,
+> +       .bpc = 10,
+> +       .size = {
+> +               .width = 294,
+> +               .height = 165,
+> +       },
+> +       .delay = {
+> +               .disable_to_power_off = 150,
+> +               .power_to_enable = 150,
 
----- Original CFP ----
+As per <https://crrev.com/c/2966167> it's apparently been discovered
+that these should be:
 
-The annual Linux Storage, Filesystem, Memory Management, and BPF
-(LSF/MM/BPF) Summit for 2021 will be held from December 6 to December 8
-at The Margaritaville Resort Palm Springs in Palm Springs, California.
-LSF/MM/BPF is an invitation-only technical workshop to map out
-improvements to the Linux storage, filesystem, BPF, and memory
-management subsystems that will make their way into the mainline kernel
-within the coming years.
-
-COVID is at the front of our minds as we attempt to put together the
-best and safest conference we can arrange.  The logistics of how to hold
-an in person event will change and evolve as we get closer to the actual
-date, but rest assured we will do everything recommended by public
-health officials.
-
-LSF/MM/BPF 2021 will be a three day, stand-alone conference with four
-subsystem-specific tracks, cross-track discussions, as well as BoF and
-hacking sessions.
-
-On behalf of the committee I am issuing a call for agenda proposals
-that are suitable for cross-track discussion as well as technical
-subjects for the breakout sessions.
-
-If advance notice is required for visa applications then please point
-that out in your proposal or request to attend, and submit the topic as
-soon as possible.
-
-This years instructions are similar to our 2020 attempt.  We're asking
-that you please let us know you want to be invited by June 15th, 2021.
-We realize that travel is an ever changing target, but it helps us get
-an idea of possible attendance numbers.  Clearly things can and will, so
-consider the request to attend deadline more about planning and less
-about concrete plans.
-
-1) Fill out the following Google form to request attendance and
-suggest any topics
-
-	https://forms.gle/Dms7xYPXLrriFkcXA
-
-In previous years we have accidentally missed people's attendance
-requests because they either didn't cc lsf-pc@ or we simply missed them
-in the flurry of emails we get.  Our community is large and our
-volunteers are busy, filling this out will help us make sure we don't
-miss anybody.
-
-2) Proposals for agenda topics should still be sent to the following
-lists to allow for discussion among your peers.  This will help us
-figure out which topics are important for the agenda.
-
-        lsf-pc@lists.linux-foundation.org
-
-and CC the mailing lists that are relevant for the topic in question:
-
-        FS:     linux-fsdevel@vger.kernel.org
-        MM:     linux-mm@kvack.org
-        Block:  linux-block@vger.kernel.org
-        ATA:    linux-ide@vger.kernel.org
-        SCSI:   linux-scsi@vger.kernel.org
-        NVMe:   linux-nvme@lists.infradead.org
-        BPF:    bpf@vger.kernel.org
-
-Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier to
-track. In addition, please make sure to start a new thread for each
-topic rather than following up to an existing one. Agenda topics and
-attendees will be selected by the program committee, but the final
-agenda will be formed by consensus of the attendees on the day.
-
-We will try to cap attendance at around 25-30 per track to facilitate
-discussions although the final numbers will depend on the room sizes
-at the venue.
-
-For discussion leaders, slides and visualizations are encouraged to
-outline the subject matter and focus the discussions. Please refrain
-from lengthy presentations and talks; the sessions are supposed to be
-interactive, inclusive discussions.
-
-There will be no recording or audio bridge. However, we expect that
-written minutes will be published as we did in previous years:
-
-2019: https://lwn.net/Articles/lsfmm2019/
-
-2018: https://lwn.net/Articles/lsfmm2018/
-
-2017: https://lwn.net/Articles/lsfmm2017/
-
-2016: https://lwn.net/Articles/lsfmm2016/
-
-2015: https://lwn.net/Articles/lsfmm2015/
-
-2014: http://lwn.net/Articles/LSFMM2014/
-
-3) If you have feedback on last year's meeting that we can use to
-improve this year's, please also send that to:
-
-        lsf-pc@lists.linux-foundation.org
-
-Thank you on behalf of the program committee:
-
-        Josef Bacik (Filesystems)
-        Amir Goldstein (Filesystems)
-        Martin K. Petersen (Storage)
-        Omar Sandoval (Storage)
-        Michal Hocko (MM)
-        Dan Williams (MM)
-        Alexei Starovoitov (BPF)
-        Daniel Borkmann (BPF)
+.disable_to_power_off = 200,
+.power_to_enable = 400,
