@@ -2,97 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208463AA412
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8613A3AA41B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhFPTOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60840 "EHLO
+        id S232519AbhFPTTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232377AbhFPTOy (ORCPT
+        with ESMTP id S232191AbhFPTTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:14:54 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCC0C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:12:47 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id c18so539267qkc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:12:47 -0700 (PDT)
+        Wed, 16 Jun 2021 15:19:03 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2326C061574;
+        Wed, 16 Jun 2021 12:16:56 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id y207so1627508vsy.12;
+        Wed, 16 Jun 2021 12:16:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6CdpKCnesjjutZBqbm6qWm0t1Iy3+W2y39QK3kQSJL0=;
-        b=z6tcWmxBC36xoU5YFthaSMT5P7RDTF7d7E5ioP2/ArfSJpDmM7q9ABhZKjoyIYNlw6
-         US8DP3IlqYH2ABvMxwvAPFKdP0ofPvCZRDu8rqUVask2mLtfnscqlWUC0uDRvbIjUJCd
-         l+KeGmoI9irPFiIN+SoIY5SqM7Wz/w2JGcTM+XgODP74ZUl973yaJHgZBZwB18usJw8u
-         twUOL99wKI0HgK4DTjGBzpb3l3dcFwujGKsDmibBELzzQ7/pH205If7lrB/wFv1PlC+p
-         AEq+HRvo7eZz67EkvhK9jiihy15sDJTfPa3kot5HLaDdr8l0AnCZ+ceCWs58PsfvZvti
-         PqoQ==
+         :cc;
+        bh=cNxugS1gOpbkd57DjDo4gtxr8lmWpbvql6CFdMUNkIs=;
+        b=c3lEjjMQH+lwfQp6GfLhII7DPTHWW8sHTk6VHLQQVtIe6RY0k/MEeLcu3dhb6IrL5t
+         bq4aEjgEAQgnWJ/VajM+/h+yeDxXcdss5lU5mEzmgEwG8m3Ru4vFcPeUdbGr1dmGPUgm
+         rnpgTWxuj/eNQ/zgwGRk+MLkJe6K3d243OLte6b0AEQrOC+258aBBwzJBdGfV6bBC1Xx
+         2TEtBRMzpB6tfrTdOuLSSfxawJu3lD6dCyf/6OZVeTRpaPhY/+Yx0IXyl8zbD6tWk9ib
+         M5FWxaYm7EAG6Bc6H/hI1SCRUgu8vRAnsZFkB7+wtnXUKfwFn+U+PhEbvQn1Q9Z3I1Oj
+         ewug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6CdpKCnesjjutZBqbm6qWm0t1Iy3+W2y39QK3kQSJL0=;
-        b=cQHIs8ns11kfACypsxoG7scfCjQhGW+91YW62jNbB6B9q2gYigIaTDZz24j7KHHFeZ
-         PMb14SfbmClMTUE6qD4ibDzpA0wlsVej7k4uqLUcYqxmfc4FBdLoYsijGQP/ldTAT6rY
-         UXgb2WXjvmWOifFj6G1e9VVqBP84AzpJ/nKUpnIG0HGd1/GPCoXfcd+chqbDuhLA7FV3
-         bJ/UQD713sFOYrTHtshXOaMqqSA3QibzqLHKGxBmkOvECYclOJFfQCs2WFEYEhlERcVO
-         4z7dEQxbZ9xdZevv65YL+01wUsgOjH1yIDbaIn+DTYOLYpKIWRxJxhSkf5be01HEG31i
-         t8wQ==
-X-Gm-Message-State: AOAM5317S8vEhr65urO26TT97nRJUpPxzafQMY+uXjUcegjl/0SUIMoz
-        l8oLhHTQWgJodS4JJgR8EgRoeS8yTHLUNsUvWtfNow==
-X-Google-Smtp-Source: ABdhPJz3fJhUQeCV412s6GcsVHkPfqmEn61opIk+EPhPY0YVU/cxLjkqlyjqhnSYR3AmVXLGQBgHPtBa7/rf0FNlR2c=
-X-Received: by 2002:a05:620a:a83:: with SMTP id v3mr1645464qkg.360.1623870766629;
- Wed, 16 Jun 2021 12:12:46 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=cNxugS1gOpbkd57DjDo4gtxr8lmWpbvql6CFdMUNkIs=;
+        b=lE9XpJ48BTxxfW8EvlroOGd8JmAWUsJsVei+ICHezCsjocbKZ7G2BhbJqS1gpBgfAc
+         UxxcIAaTH799TizvAxw4cg91jYSbB4LSnq220CXP4UoAnYhsQOD5qbH8cmDeDUPV1wNa
+         0zbXJDvQw09qIIu25CowPIfPi/vY+iwNZ2j8gQvYh6+JOwP/vsBgcdzq0tJgQIiubvEl
+         Bz/kiY2/E/wZs/PRO4/l+noqCQqW+uOThaFx8h0bivFyr9SGmCb5GSafPZayssRWhRKQ
+         OzwhZ8M4kngC2M88i/5mpPIk3Us/JHPTMPxZeFFXJaPeKYfpx8fd5OdiI6ApF4i4ZGZC
+         nWHA==
+X-Gm-Message-State: AOAM531dSA46M+ObhiDR4u2cW0Jpj5zccbnMevFUvN0GbrgXu5zm4k6o
+        aAkHoNHBawmv7PlwdUlj2N81/7oYo69cNLp8hFNBYmJfqCw=
+X-Google-Smtp-Source: ABdhPJy5hdQvUAWsg6sDdwrc/mbiSu4NFkCaXjivdnsmSgQmdKv7SjwlZC/4lkJBfyFGznDgnGmon3fnOjjB9duwn3Y=
+X-Received: by 2002:a67:f48c:: with SMTP id o12mr877406vsn.13.1623871015850;
+ Wed, 16 Jun 2021 12:16:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210322003915.3199775-1-mw@semihalf.com> <YFiKHu3hlAk+joOn@lunn.ch>
- <CAPv3WKdf5aX2W77N_-FBM5hugYW-ME1DvkjNuCUrcU8FG2XENg@mail.gmail.com>
-In-Reply-To: <CAPv3WKdf5aX2W77N_-FBM5hugYW-ME1DvkjNuCUrcU8FG2XENg@mail.gmail.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Wed, 16 Jun 2021 21:12:37 +0200
-Message-ID: <CAPv3WKfJkeN7ez1O0UZ4w3U1tHa71hjsQ=uAsPX1bw4Otmpftg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: ensure backward compatibility of the AP807 Xenon
-To:     =?UTF-8?Q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>
-Cc:     linux-arm-kernel@lists.infradead.org, Andrew Lunn <andrew@lunn.ch>,
-        devicetree@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
+References: <20210527084531.18989-1-christian.gmeiner@gmail.com>
+In-Reply-To: <20210527084531.18989-1-christian.gmeiner@gmail.com>
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+Date:   Wed, 16 Jun 2021 21:16:44 +0200
+Message-ID: <CAH9NwWfh9-2+kLoTXJgkVSStb1cHHvC-He5jnfFxMpUngMeAtA@mail.gmail.com>
+Subject: Re: [PATCH] spidev: add platform driver support
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+ping
 
-=C5=9Br., 12 maj 2021 o 17:50 Marcin Wojtas <mw@semihalf.com> napisa=C5=82(=
-a):
+Am Do., 27. Mai 2021 um 10:45 Uhr schrieb Christian Gmeiner
+<christian.gmeiner@gmail.com>:
 >
-> Hi Gregory,
+> This makes it possible to use spidev in combination with the
+> MFD subsystem. The MFD subsystem add platform_driver devices.
 >
-> pon., 22 mar 2021 o 13:14 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
-> >
-> > On Mon, Mar 22, 2021 at 01:39:15AM +0100, Marcin Wojtas wrote:
-> > > A recent switch to a dedicated AP807 compatible string for the Xenon
-> > > SD/MMC controller result in the driver not being probed when
-> > > using updated device tree with the older kernel revisions.
-> > > It may also be problematic for other OSs/firmware that use
-> > > Linux device tree sources as a reference. Resolve the problem
-> > > with backward compatibility by restoring a previous compatible
-> > > string as secondary one.
-> > >
-> > > Signed-off-by: Marcin Wojtas <mw@semihalf.com>
-> >
-> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> >
+> Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+> ---
+>  drivers/spi/spidev.c | 45 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
 >
-> Do you have any feedback about this patch? I just noticed it's not
-> merged in v5.13-rc1, it would be great to have it in the next release
-> though.
+> diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
+> index f56e0e975a46..fb7b483ff70d 100644
+> --- a/drivers/spi/spidev.c
+> +++ b/drivers/spi/spidev.c
+> @@ -25,6 +25,8 @@
+>  #include <linux/spi/spi.h>
+>  #include <linux/spi/spidev.h>
+>
+> +#include <linux/platform_device.h>
+> +
+>  #include <linux/uaccess.h>
+>
+>
+> @@ -827,6 +829,40 @@ static struct spi_driver spidev_spi_driver = {
+>          */
+>  };
+>
+> +static int spidev_platform_probe(struct platform_device *pdev)
+> +{
+> +       struct device *parent = pdev->dev.parent;
+> +       struct spi_device *spi;
+> +
+> +       if (strcmp(parent->bus->name, "spi"))
+> +               return -ENODEV;
+> +
+> +       spi = to_spi_device(parent);
+> +
+> +       /* This only works if no drvdata is stored */
+> +       if (spi_get_drvdata(spi)) {
+> +               dev_err(&pdev->dev, "drvdata is not NULL\n");
+> +               return -EOPNOTSUPP;
+> +       }
+> +
+> +       return spidev_probe(spi);
+> +}
+> +
+> +static int spidev_platform_remove(struct platform_device *pdev)
+> +{
+> +       struct spi_device *spi = to_spi_device(pdev->dev.parent);
+> +
+> +       return spidev_remove(spi);
+> +}
+> +
+> +static struct platform_driver spidev_platfoem_driver = {
+> +       .probe = spidev_platform_probe,
+> +       .remove = spidev_platform_remove,
+> +       .driver = {
+> +               .name = "spidev",
+> +       },
+> +};
+> +
+>  /*-------------------------------------------------------------------------*/
+>
+>  static int __init spidev_init(void)
+> @@ -853,12 +889,21 @@ static int __init spidev_init(void)
+>                 class_destroy(spidev_class);
+>                 unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
+>         }
+> +
+> +       status = platform_driver_register(&spidev_platfoem_driver);
+> +       if (status < 0) {
+> +               spi_unregister_driver(&spidev_spi_driver);
+> +               class_destroy(spidev_class);
+> +               unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
+> +       }
+> +
+>         return status;
+>  }
+>  module_init(spidev_init);
+>
+>  static void __exit spidev_exit(void)
+>  {
+> +       platform_driver_unregister(&spidev_platfoem_driver);
+>         spi_unregister_driver(&spidev_spi_driver);
+>         class_destroy(spidev_class);
+>         unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
+> --
+> 2.31.1
 >
 
-Kind reminder. We are approaching v5.13 and it would be really great
-to have this fix in time.
 
-Thanks,
-Marcin
+-- 
+greets
+--
+Christian Gmeiner, MSc
+
+https://christian-gmeiner.info/privacypolicy
