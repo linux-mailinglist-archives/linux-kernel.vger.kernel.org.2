@@ -2,157 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7A23A93E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8571E3A93E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhFPHbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 03:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231382AbhFPHbS (ORCPT
+        id S231931AbhFPHbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:31:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39210 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231272AbhFPHbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:31:18 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDA1C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:29:12 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id v17-20020a4aa5110000b0290249d63900faso458465ook.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:29:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JbP1OzFgSfwxUirQ6jqrb0LQmGX7gpjz8D4fdoExXvA=;
-        b=KyswCItanXFaUHAeTPBBuuhn4TH9R0bEzalW7u/84cu40ezyD4L0gvtbCD7vu9DOdl
-         rqrt0mjVmj9YhwykAqxHwQ/ctkZiW0XzTBxbTQcWvt7Ba4oTyomTbhjDQ0cGKgszBepP
-         7kVTNK3Lze0g5FdbtekAB+KYZNZqn+C4IVfgygy3oaBDjuNsakwd5VzxxhrunTKc4WeF
-         t7OeSiw7Tp/4xRrgmzv36f2x46NFVdxtfXk1VI6YDmuziQjCp+nrc4uuLI7WncuHLX4d
-         uHcxqOajAidxY48hjPHSre7+y2XOMnwdgbhixb6LB6cyEQf1kHBnCafXnNARZ00zwTWG
-         51+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JbP1OzFgSfwxUirQ6jqrb0LQmGX7gpjz8D4fdoExXvA=;
-        b=a8a+KOMs2daoO1e7GCiIZz6VWPUEvf6hcUmS7gzPxl1fT8M75Pd4uj2KwGXGW80zKI
-         06HxFOF0383obPHJQIuGFHF53pOl1UY6wOYVMbRCrMbjSEZiU0y/YaYvuTCXiVhTghkB
-         tjHXgplbKxIfX78aVM9YX0bMzysvsNA+4FiEwUBy40DuWh66JGAENUvnPPsXIcaQcrAn
-         24wNfV6KolietGb5R7fble1L9YjM5AtiyjuwNbM9OyKb+uvH7hLuTl4re0rjd9mYWYep
-         C0Iygjoj7fczEQKsDhYXlzI+smSAKCmFwh6wBMi9O42LH+z9kaYYc2fSEDS12U9K5slz
-         Mq+w==
-X-Gm-Message-State: AOAM532YqBTvXAXu1sUztxotWmI1jKyEfr0+RxQYF1UZtJT284y/jkQV
-        FlzrUyYPcaHXe08T4uk3B2H0019TW3M+cEZzRWVJQcU7
-X-Google-Smtp-Source: ABdhPJxonYERwtFL0nI5uSBopGxwJXZV8D5RCyn9CGRpoKzupMnfJ+1obTzw3ngsf8zASvv3qwfn7/1nlCxJL4DLF8k=
-X-Received: by 2002:a4a:c287:: with SMTP id b7mr2743311ooq.8.1623828551699;
- Wed, 16 Jun 2021 00:29:11 -0700 (PDT)
+        Wed, 16 Jun 2021 03:31:43 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623828576;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=POzM0Y8byvr+jQJVKWB+DDxB1MIjaCquyA71sc4SR/w=;
+        b=SOzhCyFA8p1ORJQPK3hFwI6Lg7BF+97Z2ROwOzyv+IgXDWNDzYYYPM3XGGmf/glmq2BNZD
+        oHzW869iWQjYM298MjbS4tYS6UrHrSRvPxMFC8eW3lDbKNev8jKIylHQl3KYI1LNlcNIKH
+        rUJJ/6OHAgQlebxKcVf9BSIBIsOr3McB7biPwJ3q4LEbRyGheEQ5VeO8u7L+UOYpvDbj8w
+        dm9xLW+M7SXSpMvbttIDw1hmNDsphCzrNSfogvLr3Y84unKmjkpE/ocz9m1wvty4qH43UX
+        iX+e9+m09jx3QcK4lyvEhR0MPCkvNx6lE1URstIdLIYlcReNS7koPdpT8+G8HA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623828576;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=POzM0Y8byvr+jQJVKWB+DDxB1MIjaCquyA71sc4SR/w=;
+        b=BLD3PcoFfUKBM2ydNzit2ACYZYkMhCsXp3/XbW2OHiCnhe4ZqnL59CVunWo4RUEIoffKHS
+        /M9By1b17Hlx77Cg==
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH next v3 1/2] dump_stack: move cpu lock to printk.c
+In-Reply-To: <YMmi5xoTOb82TKtJ@google.com>
+References: <20210615174947.32057-1-john.ogness@linutronix.de> <20210615174947.32057-2-john.ogness@linutronix.de> <8735tiq0d8.fsf@jogness.linutronix.de> <YMmi5xoTOb82TKtJ@google.com>
+Date:   Wed, 16 Jun 2021 09:35:35 +0206
+Message-ID: <87mtrqnu74.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Received: by 2002:ac9:33b2:0:0:0:0:0 with HTTP; Wed, 16 Jun 2021 00:29:11
- -0700 (PDT)
-In-Reply-To: <YMmYD3rkS8o+1dXr@kroah.com>
-References: <1623812199-31866-1-git-send-email-zhenguo6858@gmail.com> <YMmYD3rkS8o+1dXr@kroah.com>
-From:   =?UTF-8?B?6LW15oyv5Zu9?= <zhenguo6858@gmail.com>
-Date:   Wed, 16 Jun 2021 15:29:11 +0800
-Message-ID: <CAGGV+3JjiuAoXefUwpekbcqB_Xye32xQSMK0jKQ_zNM6dvOPAw@mail.gmail.com>
-Subject: Re: [PATCH] tty: n_gsm: Fix CR bit value when initiator=0
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear gregkh
+On 2021-06-16, Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
+> On (21/06/15 23:39), John Ogness wrote:
+>> On 2021-06-15, John Ogness <john.ogness@linutronix.de> wrote:
+>> > diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+>> > index 114e9963f903..5369d8f33299 100644
+>> > --- a/kernel/printk/printk.c
+>> > +++ b/kernel/printk/printk.c
+>> > @@ -3532,3 +3532,70 @@ void kmsg_dump_rewind(struct kmsg_dump_iter *iter)
+>> >  EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
+>> >  
+>> >  #endif
+>> > +
+>> > +#ifdef CONFIG_SMP
+>> > +static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
+>> > +static bool printk_cpulock_nested;
+>> 
+>> I just realized that @printk_cpulock_nested will need to be an atomic_t
+>> counter to allow multiple nested levels since nesting can also occur
+>
+> Strictly speaking, this is not nested printk, right? printk recursion is
+> handled in printk separately. This one is more like "nested dump_stack()-s",
+> or nested "error reporinting".
+>
+> Because the original code has never limited nested error reporting
+> contexts.
 
-1:  Documentation/driver-api/serial/n_gsm.rst
+It isn't about limiting. It is about tracking. The current dump_stack()
+handles it correctly because the tracking is done in the stack frame of
+the caller (in @was_locked of dump_stack_lvl()). My previous versions
+also handled it correctly by using the same technique.
 
-The text introduces the config of master ( c.initiator =3D 1), but the
-config of as responder is different.
-when set gsm->initiator=3D0 by GSMIOC_SETCONF ,ngsm driver should be
-responder(slaver)
+With this series version I moved the tracking into a global variable
+@printk_cpulock_nested, which is fine, except that a boolean is not
+capable of tracking more than 1 nesting. Which means that
+__printk_cpu_unlock() would release cpu lock ownership too soon.
 
-config=EF=BC=9A
-	c.initiator =3D 0;    // set initiator=3D0=EF=BC=8Cngsm as responder
-	ioctl(fd, GSMIOC_SETCONF, &c);
+Doing this correctly is a simple change:
 
-2:  if master side send SABM/DISC frame data by uart dev
-    DLC0 control data frame:f9 03 3f 01 1c f9
-    kernel log=EF=BC=9A gsmld_receive: 00000000: f9 03 3f 01 1c f9
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index e67dc510fa1b..5376216e4f3d 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3535,7 +3535,7 @@ EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
+ 
+ #ifdef CONFIG_SMP
+ static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
+-static bool printk_cpulock_nested;
++static atomic_t printk_cpulock_nested = ATOMIC_INIT(0);
+ 
+ /**
+  * __printk_wait_on_cpu_lock() - Busy wait until the printk cpu-reentrant
+@@ -3596,7 +3598,7 @@ int __printk_cpu_trylock(void)
+ 
+ 	} else if (old == cpu) {
+ 		/* This CPU is already the owner. */
+-		printk_cpulock_nested = true;
++		atomic_inc(&printk_cpulock_nested);
+ 		return 1;
+ 	}
+ 
+@@ -3613,8 +3615,8 @@ EXPORT_SYMBOL(__printk_cpu_trylock);
+  */
+ void __printk_cpu_unlock(void)
+ {
+-	if (printk_cpulock_nested) {
+-		printk_cpulock_nested = false;
++	if (atomic_read(&printk_cpulock_nested)) {
++		atomic_dec(&printk_cpulock_nested);
+ 		return;
+ 	}
 
-{
-	cr =3D gsm->address & 1;		/* C/R bit */
-//CR value=3D1
+> Shall this be a separate patch?
 
-	gsm_print_packet("<--", address, cr, gsm->control, gsm->buf, gsm->len);
+I would prefer a v4 because I also noticed that this patch accidentally
+implements atomic_set_release() instead of moving over the atomit_set()
+from dump_stack(). That also needs to be corrected, otherwise the next
+patch in the series makes no sense.
 
-	cr ^=3D 1 - gsm->initiator;	/* Flip so 1 always means command */
-//when gsm->initiator is 0, CR value=3D0 by "^=3D" calculation
-	dlci =3D gsm->dlci[address];
-
-	switch (gsm->control) {
-	case SABM|PF:
-		if (cr =3D=3D 0)
-			goto invalid;                       //if CR value=3D0,ngsm will goto
-invalid,but the dlc0 control frame data is right,if we can't modify
-,ngsm can't send UA response data
-}
-
-
-2021-06-16 14:19 GMT+08:00, Greg KH <gregkh@linuxfoundation.org>:
-> On Wed, Jun 16, 2021 at 10:56:39AM +0800, Zhenguo Zhao wrote:
->> From: Zhenguo Zhao <zhenguo.zhao1@unisoc.com>
->>
->> 	When set initiator=3D0,switch to Responder,gsmld received dlci SABM/DIS=
-C
->> 	frame,CR bit should be 0 by calculation.
->>
->> 	receive DLC0 SABM CMD:
->> 	[69.740263] c1 gsmld_receive: 00000000: f9 03 3f 01 1c f9
->> 	[69.893247] c1 gsm_queue cr:1
->> 	[69.897629] c1 <-- 0) C: SABM(P)
->> 	[69.907516] c1 gsm_queue cr:0
->
-> Why is this changelog text indented by tabs?
->
-> And I do not understand the changelog text here, what is this showing?
-> What is wrong here and what is being fixed?
->
->> Signed-off-by: Zhenguo Zhao <zhenguo.zhao1@unisoc.com>
->
-> Does this fix a long-standing issue?  Should a "Fixes:" tag go here?  If
-> so, please provide it.
->
-> Should it also be sent to stable kernels?
->
->> ---
->>  drivers/tty/n_gsm.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
->> index 5fea02c..becca2c 100644
->> --- a/drivers/tty/n_gsm.c
->> +++ b/drivers/tty/n_gsm.c
->> @@ -1779,7 +1779,7 @@ static void gsm_queue(struct gsm_mux *gsm)
->>
->>  	switch (gsm->control) {
->>  	case SABM|PF:
->> -		if (cr =3D=3D 0)
->> +		if (cr =3D=3D 1)
->
-> How did the original code ever work properly?
->
->>  			goto invalid;
->>  		if (dlci =3D=3D NULL)
->>  			dlci =3D gsm_dlci_alloc(gsm, address);
->> @@ -1793,7 +1793,7 @@ static void gsm_queue(struct gsm_mux *gsm)
->>  		}
->>  		break;
->>  	case DISC|PF:
->> -		if (cr =3D=3D 0)
->> +		if (cr =3D=3D 1)
->
-> Same here, how did this ever work?  Are you sure this change is correct?
->
-> thanks,
->
-> greg k-h
->
+John Ogness
