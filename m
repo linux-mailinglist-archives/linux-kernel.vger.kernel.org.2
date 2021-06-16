@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050F23A9CF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2913A9CFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233787AbhFPOIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:08:54 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:60551 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233720AbhFPOIu (ORCPT
+        id S233799AbhFPOJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:09:03 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:54868 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233720AbhFPOJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:08:50 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Ucd3X5L_1623852401;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Ucd3X5L_1623852401)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 16 Jun 2021 22:06:42 +0800
-Date:   Wed, 16 Jun 2021 22:06:41 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
-Subject: Re: [PATCH] nfs: set block size according to pnfs_blksize first
-Message-ID: <YMoFcdhVwMXJQPJ+@B-P7TQMD6M-0146.local>
-References: <1623847469-150122-1-git-send-email-hsiangkao@linux.alibaba.com>
- <4898aa11dc26396c13bbc3d8bf18c13efe4d513a.camel@hammerspace.com>
+        Wed, 16 Jun 2021 10:09:01 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
+ id a9b1bf71cf3ae2d8; Wed, 16 Jun 2021 16:06:53 +0200
+Received: from kreacher.localnet (89-64-81-4.dynamic.chello.pl [89.64.81.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 0060B66993E;
+        Wed, 16 Jun 2021 16:06:52 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH] ACPI: scan: Define acpi_bus_put_acpi_device() as static inline
+Date:   Wed, 16 Jun 2021 16:06:52 +0200
+Message-ID: <2086739.irdbgypaU6@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4898aa11dc26396c13bbc3d8bf18c13efe4d513a.camel@hammerspace.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.81.4
+X-CLIENT-HOSTNAME: 89-64-81-4.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgjeegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepkeelrdeigedrkedurdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedurdegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghnughrihihrdhshhgvvhgthhgvnhhkoheslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 01:47:13PM +0000, Trond Myklebust wrote:
-> On Wed, 2021-06-16 at 20:44 +0800, Gao Xiang wrote:
-> > When testing fstests with ext4 over nfs 4.2, I found generic/486
-> > failed. The root cause is that the length of its xattr value is
-> >   min(st_blksize * 3 / 4, XATTR_SIZE_MAX)
-> > 
-> > which is 4096 * 3 / 4 = 3072 for underlayfs ext4 rather than
-> > XATTR_SIZE_MAX = 65536 for nfs since the block size would be wsize
-> > (=131072) if bsize is not specified.
-> > 
-> > Let's use pnfs_blksize first instead of using wsize directly if
-> > bsize isn't specified. And the testcase itself can pass now.
-> > 
-> > Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-> > Cc: Anna Schumaker <anna.schumaker@netapp.com>
-> > Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
-> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> > ---
-> > Considering bsize is not specified, we might use pnfs_blksize
-> > directly first rather than wsize.
-> > 
-> >  fs/nfs/super.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-> > index fe58525cfed4..5015edf0cd9a 100644
-> > --- a/fs/nfs/super.c
-> > +++ b/fs/nfs/super.c
-> > @@ -1068,9 +1068,13 @@ static void nfs_fill_super(struct super_block
-> > *sb, struct nfs_fs_context *ctx)
-> >         snprintf(sb->s_id, sizeof(sb->s_id),
-> >                  "%u:%u", MAJOR(sb->s_dev), MINOR(sb->s_dev));
-> >  
-> > -       if (sb->s_blocksize == 0)
-> > -               sb->s_blocksize = nfs_block_bits(server->wsize,
-> > +       if (sb->s_blocksize == 0) {
-> > +               unsigned int blksize = server->pnfs_blksize ?
-> > +                       server->pnfs_blksize : server->wsize;
-> 
-> NACK. The pnfs block size is a layout driver-specific quantity, and
-> should not be used to substitute for the server-advertised block size.
-> It only applies to I/O _if_ the client is holding a layout for a
-> specific file and is using pNFS to do I/O to that file.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Honestly, I'm not sure if it's ok as well.
+Since acpi_bus_put_acpi_device() is a synonym for acpi_dev_put(),
+define it as static inline in analogy with the latter.
 
-> 
-> It has nothing to do with xattrs at all.
+No functional impact.
 
-Yet my question is how to deal with generic/486, should we just skip
-the case directly? I cannot find some proper way to get underlayfs
-block size or real xattr value limit.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/scan.c     |    5 -----
+ include/acpi/acpi_bus.h |    9 +++++++--
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-For now, generic/486 will return ENOSPC at
-fsetxattr(fd, "user.world", value, 65536, XATTR_REPLACE);
-when testing new nfs4.2 xattr support.
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -608,11 +608,6 @@ struct acpi_device *acpi_bus_get_acpi_de
+ 	return handle_to_device(handle, get_acpi_device);
+ }
+ 
+-void acpi_bus_put_acpi_device(struct acpi_device *adev)
+-{
+-	acpi_dev_put(adev);
+-}
+-
+ static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
+ {
+ 	struct acpi_device_bus_id *acpi_device_bus_id;
+Index: linux-pm/include/acpi/acpi_bus.h
+===================================================================
+--- linux-pm.orig/include/acpi/acpi_bus.h
++++ linux-pm/include/acpi/acpi_bus.h
+@@ -504,8 +504,6 @@ extern int unregister_acpi_notifier(stru
+  */
+ 
+ int acpi_bus_get_device(acpi_handle handle, struct acpi_device **device);
+-struct acpi_device *acpi_bus_get_acpi_device(acpi_handle handle);
+-void acpi_bus_put_acpi_device(struct acpi_device *adev);
+ acpi_status acpi_bus_get_status_handle(acpi_handle handle,
+ 				       unsigned long long *sta);
+ int acpi_bus_get_status(struct acpi_device *device);
+@@ -726,6 +724,13 @@ static inline void acpi_dev_put(struct a
+ {
+ 	put_device(&adev->dev);
+ }
++
++struct acpi_device *acpi_bus_get_acpi_device(acpi_handle handle);
++
++static inline void acpi_bus_put_acpi_device(struct acpi_device *adev)
++{
++	acpi_dev_put(adev);
++}
+ #else	/* CONFIG_ACPI */
+ 
+ static inline int register_acpi_bus_type(void *bus) { return 0; }
 
-Thanks,
-Gao Xiang
 
-> 
-> > +
-> > +               sb->s_blocksize = nfs_block_bits(blksize,
-> >                                                  &sb-
-> > >s_blocksize_bits);
-> > +       }
-> >  
-> >         nfs_super_set_maxbytes(sb, server->maxfilesize);
-> >         server->has_sec_mnt_opts = ctx->has_sec_mnt_opts;
-> 
-> -- 
-> Trond Myklebust
-> Linux NFS client maintainer, Hammerspace
-> trond.myklebust@hammerspace.com
-> 
-> 
+
