@@ -2,218 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9443A9A93
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE933A9A95
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232421AbhFPMks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:40:48 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:13224 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229456AbhFPMkm (ORCPT
+        id S232524AbhFPMlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:41:06 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:54217 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229456AbhFPMlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:40:42 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15GCcRUW007162;
-        Wed, 16 Jun 2021 14:38:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=QzRWOR2kSXy9UXeKbv50amd1IimDpSe++L963P+6FOY=;
- b=KNVjFfC39a+P/aoF97I2lFe4Gu5CnlvlVDW0vxViwT5/syW9IPv3zJlvs6n+95dbJ3C0
- DhJVQmYlYfh1ADTrNvlasiMXnhDDA27j4P34rKcsKQoCogAZ+D0h3l3zy1V8c44aNfqt
- hyCM9Kxv3HzXdlDNeXBZAkeSs7yv1kCy6AI+2tNxmLNKIKS72atsyErd9D8c3AqD6emm
- qvxRGm14OwDnsARJei5m6KhdYrgOOQztbOMO4RoGT20bqIpjfwGx2rWPfKYbVLLl1+yl
- R0QunWbUkQ5agB4BmAOfJIL/401ZCUivoCfUDJ675v7Ea21anLDmvaYWJR7HfQ5MoyS7 Ag== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 397etes260-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 14:38:28 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D73B510002A;
-        Wed, 16 Jun 2021 14:38:27 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BE41D226FC4;
-        Wed, 16 Jun 2021 14:38:27 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 16 Jun
- 2021 14:38:27 +0200
-Subject: Re: [PATCH 3/4] rpmsg: char: Introduce the "rpmsg-raw" channel
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>, <julien.massot@iot.bzh>
-References: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
- <20210607173032.30133-4-arnaud.pouliquen@foss.st.com>
- <20210615200102.GE604521@p14s>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <b55cd4e5-fb9d-a0ab-03a9-3a771898db04@foss.st.com>
-Date:   Wed, 16 Jun 2021 14:38:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 16 Jun 2021 08:41:04 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A791A5805A6;
+        Wed, 16 Jun 2021 08:38:58 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 16 Jun 2021 08:38:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=4iau2WjkU1IOCCwO+rrQYEUN9wa
+        FEVc6uwqNfTtIcMw=; b=OjMviC7JjCmwYjaNv82zVecjIS5ou592RSvCz9gQAuy
+        aEm4eM9snzxNA2bxaTQ5xltJhvsTUBmqY8N50SNNNsPMWTVWF+rsr30KUBEdlsOJ
+        CLuWt7xudfw1gKNCG8xCPrWgpjlYoh5AOPGcv9QrMreUWXAAzwTFuK3nG3HeozEf
+        lVFwiHxaogIr1jWBP/VJsApb+bob3pN6hF0pz1RsmzyGY7PONEr498njiUS+sAAf
+        Jkf82n75GOHRgVc3DALPq6atgceWdY8DHXS8xSY6Ybcvj6lj0UMWCiBobAOjYy4B
+        EsSW9ElJiJvDIjCty8m6ELw0JGd4md7jmIKco7buBkg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4iau2W
+        jkU1IOCCwO+rrQYEUN9waFEVc6uwqNfTtIcMw=; b=NsJGbmOWw7S6XMeGTgI3Z4
+        qWq4CCDQPYyOR7LbqKwNXre6NUQvDQ0FpEB9yBzrOQ7uzj/LpvWWdulIFgEjgFsY
+        lBA3ZO1W2bO+L9Dgqjfg8A3DsFM0AxkbXoyqvtwLr+Mn7wKEeXWj0lNOt5UytL2Y
+        AqbGWIgpcfdPBfbAup2OF7umZG1EVaQWpfAIzgh7zKSjejkNF0JgOltlKSHaBbOe
+        ETXhsKYATgi5ALFXWmBOxsOdynk6IBVtBk7wqFcJh6hAXpe/StVZmKNJJmkgtAx6
+        dL2QYdNzxv2uz99VE4tMbdk3C+s9yy/eENpboVJolZv5Z9nP4IUNbBiCWS/9R+bg
+        ==
+X-ME-Sender: <xms:4fDJYJj_2ydGzMxgKaXnynTSSKDMU4tvbtLhjmwipbLPK0cdmWWaww>
+    <xme:4fDJYOB_ZFiaA7zZI76JtTgKceSTp6IZjWmmfRxxGqZHtx8hN99eR_ooL6c2WYB36
+    UDN7lYhbj5dAEDIkLk>
+X-ME-Received: <xmr:4fDJYJEKjgcnSt5uFdqf_1p7xxLgzH8IUKFbhKL9Mj4Giv71FCQj6Fq35_kC-tD5AS7zMgupFCyicKoehoOtJ7-CQo5SDr0-bNQG>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgheeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
+    ertddtjeenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
+    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeeigfdtteffhefhfffhkeetvdeige
+    dvfeeijedttdevveeiudejgeduvdehvddujeenucffohhmrghinhepuggvvhhitggvthhr
+    vggvrdhorhhgpdihrghmlhdrshhonecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:4fDJYOQxiJVaK64Nu2RFZISR_OEYmOfuqK8g-x8zGUKJ5W7zfnvPHA>
+    <xmx:4fDJYGzaQ_pqDSZc16pQyJJf2PO5nD-xpJfWuXGleabIY6xRee23ZQ>
+    <xmx:4fDJYE6klwl8K2xRqmvM7jU-P0sdseUlO-G9UDd8ltRf7_tlcwOtAA>
+    <xmx:4vDJYKeTXUDHOhd4phbfxvOBwXaqn8fU0EPT9moXDd1GTeNOXePPSQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 16 Jun 2021 08:38:57 -0400 (EDT)
+Date:   Wed, 16 Jun 2021 14:38:54 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     =?utf-8?B?54+t5rab?= <fengzheng923@gmail.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        wens@csie.org, jernej.skrabec@gmail.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ASoC: sun50i-dmic: dt-bindings: add DT bindings for
+ DMIC controller
+Message-ID: <20210616123854.hcdlpqc6owyqn3fu@gilmour>
+References: <20210615130737.2098-1-fengzheng923@gmail.com>
+ <20210616084920.y6yjic4sau6ungv5@gilmour>
+ <CAE=m619_52DDC_up=QqRXkF88uJR6CcAJqentnBzb=pxL7LhxA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210615200102.GE604521@p14s>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-16_07:2021-06-15,2021-06-16 signatures=0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="hi7zosja6vhzuga5"
+Content-Disposition: inline
+In-Reply-To: <CAE=m619_52DDC_up=QqRXkF88uJR6CcAJqentnBzb=pxL7LhxA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
 
-On 6/15/21 10:01 PM, Mathieu Poirier wrote:
-> On Mon, Jun 07, 2021 at 07:30:31PM +0200, Arnaud Pouliquen wrote:
->> Allows to probe the endpoint device on a remote name service announcement,
->> by registering a rpmsg_driverfor the "rpmsg-raw" channel.
->>
->> With this patch the /dev/rpmsgX interface can be instantiated by the remote
->> firmware.
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> ---
->>  drivers/rpmsg/rpmsg_char.c | 54 ++++++++++++++++++++++++++++++++++++--
->>  1 file changed, 52 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
->> index 4199ac1bee10..3b850b218eb0 100644
->> --- a/drivers/rpmsg/rpmsg_char.c
->> +++ b/drivers/rpmsg/rpmsg_char.c
->> @@ -25,6 +25,8 @@
->>  
->>  #include "rpmsg_char.h"
->>  
->> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
->> +
->>  static dev_t rpmsg_major;
->>  static struct class *rpmsg_class;
->>  
->> @@ -416,6 +418,40 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
->>  }
->>  EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
->>  
->> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
->> +{
->> +	struct rpmsg_channel_info chinfo;
->> +
->> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
->> +	chinfo.src = rpdev->src;
->> +	chinfo.dst = rpdev->dst;
->> +
->> +	return __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo, true);
-> 
-> I am a little puzzled here as to why we need different modes... Why can't we
-> simply call rpmsg_chrdev_eptdev_create() and let the endpoint be created on
-> open() and destroyed on release() as per the current implementation?
+--hi7zosja6vhzuga5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The main reason is the support of the NS announcement
-a NS announcement is received from the remote processor:
-channel name: "rpmsg-raw"
-remote address (dst address): 0x400
-local address (scr address) : RPMSG_ADDR_ANY
-=> no default endpoint, and not local address.
+On Wed, Jun 16, 2021 at 06:56:25PM +0800, =E7=8F=AD=E6=B6=9B wrote:
+> Hi,
+>=20
+> Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B46=E6=9C=8816=E6=
+=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=884:49=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > Hi,
+> >
+> > On Tue, Jun 15, 2021 at 09:07:37PM +0800, Ban Tao wrote:
+> > > The Allwinner SoCs feature an I2S controller across multiple SoC
+> > > generations.
+> >
+> > Which SoC generations?
+> >
+> > > Signed-off-by: Ban Tao <fengzheng923@gmail.com>
+> > > ---
+> > >  .../sound/allwinner,sun50i-h6-dmic.yaml       | 66 +++++++++++++++++=
+++
+> > >  1 file changed, 66 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/sound/allwinner=
+,sun50i-h6-dmic.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun50i=
+-h6-dmic.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6=
+-dmic.yaml
+> > > new file mode 100644
+> > > index 000000000000..81d40c374e44
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmi=
+c.yaml
+> > > @@ -0,0 +1,66 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/sound/allwinner,sun50i-h6-dmic.ya=
+ml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Allwinner H6 DMIC Controller Device Tree Bindings
+> > > +
+> > > +maintainers:
+> > > +  - Ban Tao <fengzheng923@gmail.com>
+> > > +
+> > > +properties:
+> > > +  "#sound-dai-cells":
+> > > +    const: 0
+> > > +
+> > > +  compatible:
+> > > +    const: allwinner,sun50i-h6-dmic
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  clocks:
+> > > +    items:
+> > > +      - description: Bus Clock
+> > > +      - description: Module Clock
+> > > +
+> > > +  clock-names:
+> > > +    items:
+> > > +      - const: apb
+> > > +      - const: dmic
+> >
+> > The convention we use is bus and mod
+> >
+> > > +
+> > > +  dmas:
+> > > +    maxItems: 1
+> > > +
+> > > +  dma-names:
+> > > +    const: rx
+> > > +
+> > > +  resets:
+> > > +    maxItems: 1
+> > > +
+> > > +required:
+> > > +  - "#sound-dai-cells"
+> > > +  - compatible
+> > > +  - reg
+> > > +  - clocks
+> > > +  - clock-names
+> > > +  - dmas
+> > > +  - dma-names
+> > > +  - resets
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    spdif: spdif@5095000 {
+> >
+> > The label and node name seems wrong?
+> >
+> Yes, in fact, I don=E2=80=99t know much about yaml format files.
+> The allwinner,sun50i-h6-dmic.yaml file is based on
+> allwinner,sun4i-a10-spdif.yaml.
+>
+> So, How do i convert txt file to yaml file, for example:
+> ---------------------------------------------
+> Required properties:
+>=20
+>   - compatible         : should be one of the following:
+>     - "allwinner,sun50i-h6-dmic": for the Allwinner H6 SoC
+>=20
+>   - reg                        : physical base address of the
+> controller and length of memory mapped region.
+>=20
+>   - dmas               : Generic dma devicetree binding as described in
+>                          Documentation/devicetree/bindings/dma/dma.txt.
+>=20
+>   - dma-names          : DMA have to be defined, "rx".
+>=20
+>   - clocks             : Contains an entry for each entry in clock-names.
+>=20
+>   - clock-names                : Includes the following entries:
+>        "apb"             clock for the dmic bus.
+>        "dmic"           clock for dmic controller.
+>=20
+>   - resets             : reset specifier for the ahb reset
+>=20
+> Example:
+>=20
+> dmic: dmic@5095000 {
+>         #sound-dai-cells =3D <0>;
+>         compatible =3D "allwinner,sun50i-h6-dmic";
+>         reg =3D <0x05095000 0x400>;
+>         clocks =3D <&ccu CLK_BUS_DMIC>, <&ccu CLK_DMIC>;
+>         clock-names =3D "apb", "dmic";
+>         dmas =3D <&dma 7>;
+>         dma-names =3D "rx";
+>         resets =3D <&ccu RST_BUS_DMIC>;
+> };
+> ---------------------------------------------
 
-case 1) if we use legacy implementation ( no default endpoint)
-=> create/destroy endpoint on open/stop
-- on first open: created endpoint is bound to scr address 0x406
-- a first message is sent to the remote side, the address 0x406 is stored as
-default channel dst address on remote side.
-- on close: endpoint is closed and associated address 0x406 is free.
-- another driver create an enpoint the address 0x406 is reserved for this new
-endpoint.
-- on new open:  scr address is set to next value 0x407
-=> how to inform remote processor that the address has changed?
-=> no reservation mechanism that ensure that you can reuse the same address
+Just like you already did :)
 
-case 2) relying on use_default_ept
-=> Ensure that both side have always the same addresses to communicate.
+Aside from the few comments, what you did is spot on. Just remember to
+run make dt_binding_check after you wrote your schema
 
-> 
-> I'd rather keep things simple for the refactoring and introduce new features
-> later if need be.
+Maxime
 
-Yes I agree with you, but here it could become a nightmare for the remote
-processor if the Linux endpoint address is not stable.
+--hi7zosja6vhzuga5
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Anyway we can consider this as a workaround waiting the extension of the NS
-announcement to have a better management of the address exchange on channel
-initialization.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks
-Arnaud
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYMnw3gAKCRDj7w1vZxhR
+xa8zAP9aN57ypYMSpS8opiH1Ou8RZBFJXFHjtm70c9SstASQUwD/TH9k2r8KZW88
+mj/U7b8kdsCLrj8AkyMev6jhXIG3PgI=
+=tDFN
+-----END PGP SIGNATURE-----
 
-> 
-> As I said, it may be that I don't understand the usecase.
-> 
-> Thanks,
-> Mathieu
-> 
->> +}
->> +
->> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
->> +{
->> +	int ret;
->> +
->> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
->> +	if (ret)
->> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
->> +}
->> +
->> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
->> +	{ .name	= RPMSG_CHAR_DEVNAME },
->> +	{ },
->> +};
->> +
->> +static struct rpmsg_driver rpmsg_chrdev_driver = {
->> +	.probe = rpmsg_chrdev_probe,
->> +	.remove = rpmsg_chrdev_remove,
->> +	.id_table = rpmsg_chrdev_id_table,
->> +	.drv = {
->> +		.name = "rpmsg_chrdev",
->> +	},
->> +};
->> +
->>  static int rpmsg_chrdev_init(void)
->>  {
->>  	int ret;
->> @@ -429,16 +465,30 @@ static int rpmsg_chrdev_init(void)
->>  	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
->>  	if (IS_ERR(rpmsg_class)) {
->>  		pr_err("failed to create rpmsg class\n");
->> -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->> -		return PTR_ERR(rpmsg_class);
->> +		ret = PTR_ERR(rpmsg_class);
->> +		goto free_region;
->> +	}
->> +
->> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
->> +	if (ret < 0) {
->> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
->> +		goto free_class;
->>  	}
->>  
->>  	return 0;
->> +
->> +free_class:
->> +	class_destroy(rpmsg_class);
->> +free_region:
->> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->> +
->> +	return ret;
->>  }
->>  postcore_initcall(rpmsg_chrdev_init);
->>  
->>  static void rpmsg_chrdev_exit(void)
->>  {
->> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
->>  	class_destroy(rpmsg_class);
->>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->>  }
->> -- 
->> 2.17.1
->>
+--hi7zosja6vhzuga5--
