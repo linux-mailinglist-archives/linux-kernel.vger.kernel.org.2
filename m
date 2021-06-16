@@ -2,71 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268043A97C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546283A97C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbhFPKkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:40:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43710 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232553AbhFPKkB (ORCPT
+        id S232277AbhFPKlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232053AbhFPKls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:40:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623839875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=18UYC34LO482T5e/LOQVLpAiVeD6lKSvaD2c4N3RCHU=;
-        b=gDtULYZMMm7xNPn7DG8LATn1WPYdbNQdIT7BOFxF+7E0Rz578LEL0EacLv+kaj5PSbv1X6
-        deK7rfujzewk28tCn86yTXsGmTg3SNX9j50UF6pqFj/25tQ2fEZ5vnWqijMYwvlh3GQ9RU
-        Xb8QRIMvOx71DMww+qUta4iQp8QoFC0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-ERrAuzyUOG6kh7AfBGBWHQ-1; Wed, 16 Jun 2021 06:37:52 -0400
-X-MC-Unique: ERrAuzyUOG6kh7AfBGBWHQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 080949126F;
-        Wed, 16 Jun 2021 10:37:51 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A23F263B8C;
-        Wed, 16 Jun 2021 10:37:49 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210614201435.1379188-34-willy@infradead.org>
-References: <20210614201435.1379188-34-willy@infradead.org> <20210614201435.1379188-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v11 33/33] mm: Add folio_mapped()
+        Wed, 16 Jun 2021 06:41:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B779EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 03:39:42 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1ltSxP-0003BW-Cu; Wed, 16 Jun 2021 12:39:39 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:27:4a54:dbae:b593])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 85D0663D222;
+        Wed, 16 Jun 2021 10:39:38 +0000 (UTC)
+Date:   Wed, 16 Jun 2021 12:39:37 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-can@vger.kernel.org
+Subject: Re: [PATCH -next] can: m_can: use
+ devm_platform_ioremap_resource_byname
+Message-ID: <20210616103937.asp3i7t3coci6nuq@pengutronix.de>
+References: <20210603073441.2983497-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <816367.1623839868.1@warthog.procyon.org.uk>
-Date:   Wed, 16 Jun 2021 11:37:48 +0100
-Message-ID: <816368.1623839868@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="l7v6zfm4t6tus7bd"
+Content-Disposition: inline
+In-Reply-To: <20210603073441.2983497-1-yangyingliang@huawei.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-> This function is the equivalent of page_mapped().  It is slightly
-> shorter as we do not need to handle the PageTail() case.  Reimplement
-> page_mapped() as a wrapper around folio_mapped().  folio_mapped()
-> is 13 bytes smaller than page_mapped(), but the page_mapped() wrapper
-> is 30 bytes, for a net increase of 17 bytes of text.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+--l7v6zfm4t6tus7bd
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: David Howells <dhowells@redhat.com>
+On 03.06.2021 15:34:41, Yang Yingliang wrote:
+> Use the devm_platform_ioremap_resource_byname() helper instead of
+> calling platform_get_resource_byname() and devm_ioremap_resource()
+> separately.
+>=20
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
+Applied to linux-can-next/testing.
+
+Tnx,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--l7v6zfm4t6tus7bd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDJ1OcACgkQqclaivrt
+76nz6QgAhAWqi3kOw4mMppX3AK5PU1ptApiRfF960KYMTP5fn7pDacgWLsDJFlw+
+DYlzGwbny9/c1iCwx/SxWj/+MsvsfqtEjgkZPLGfqIH0+3kynhsM4d59Y3LHybXJ
+K1cJ0mwXaGuCpb0JexsjWYml2n8dkN4l2QYYyHkoSRQ3eZtt6WBcxMwQNgXHhD6D
+9y1/4tuaaJP1pWDb8mpmPuVTQuhIf/d4NX7kh+I1RdPhmDwyAV3kjUA+AdAqjeXY
+S3xioRNV2xmwo1KNPgG690A4TDrwBZ7UuCh2SaA7euR8YpGCRit0UCax1NlxKLbi
+l/aSV7uuas/fgKi13yr/zvDd5JtjUA==
+=geAl
+-----END PGP SIGNATURE-----
+
+--l7v6zfm4t6tus7bd--
