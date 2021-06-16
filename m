@@ -2,81 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215C23A9BE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809133A9BE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhFPN0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbhFPN0H (ORCPT
+        id S233235AbhFPN02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:26:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51633 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231256AbhFPN0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:26:07 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A92BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:24:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Elup1K/pdOal6CMU6IFSCXYZK6fFIS7MIHnYzrq8KME=; b=TBnMCfED2L4xmLB5Y+GvP/WBM7
-        3P9n8XnZvQAk0JiRbhMIrNLnPyeMzu9XLH9fWIM3tiBI1yHnJB9ZGu7Z0li/5svzB00+NYpdsjeLK
-        pE0ojJEq0UNLDOid/i8gj99+HsORNSqpeVZowyna09BBzTPpddF4WMdIRCNuMfnlH+38A2Gp4PGSP
-        4BWqwdaVVsKRAMvartmA/FBYoKhBhXbuaq9iUKBad4XIinZuANaQRDFjUpNLLS4mCffMTd8zjLZx/
-        bQBp/AOxKtWIN4wacfgwtzc60scCshcy84YB3iPh76mqcfe0xurWGsQ3euLkHjzpfY+ij9999tpbT
-        rC2KdbSg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltVWD-008KWn-P5; Wed, 16 Jun 2021 13:23:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 13FD1300269;
-        Wed, 16 Jun 2021 15:23:51 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F151420C169EE; Wed, 16 Jun 2021 15:23:50 +0200 (CEST)
-Date:   Wed, 16 Jun 2021 15:23:50 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 5/6] posix-cpu-timers: Force next expiration recalc after
- early timer firing
-Message-ID: <YMn7Zl2uc6NyUfXJ@hirez.programming.kicks-ass.net>
-References: <20210604113159.26177-1-frederic@kernel.org>
- <20210604113159.26177-6-frederic@kernel.org>
- <YMnHnUcufPhtnDZP@hirez.programming.kicks-ass.net>
- <20210616115923.GC801071@lothringen>
+        Wed, 16 Jun 2021 09:26:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623849856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6tLWFqQWEsz56Ko5PZv18XXeVsybxvSI9R/PpDg/CYY=;
+        b=BMTDSX7gYmQVp59K8GN7MSFBR5j23p128JFMME9dsLqU7J5vXj+foTzERArWZuHhVqIssg
+        YFYap/n0RxoX3u550w1W/Rr+NY8wlTHiSkNGB1XeVo5ZSmKRMxssehvdg734XoEPPUzeJx
+        0W79OhBYjxs9OEkl0ENZRDra1in/Jw8=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-Gq1SvJnyNYykSwYq3kOHrg-1; Wed, 16 Jun 2021 09:24:14 -0400
+X-MC-Unique: Gq1SvJnyNYykSwYq3kOHrg-1
+Received: by mail-ej1-f69.google.com with SMTP id mh17-20020a170906eb91b0290477da799023so262091ejb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:24:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6tLWFqQWEsz56Ko5PZv18XXeVsybxvSI9R/PpDg/CYY=;
+        b=jp9nPU6U2lJHcVudLL6eK9BOlGc20McV/5fpugWS2BbPlMNNXa8YWmh3KKKeBGJSnM
+         LfTlwVxLMjL/xqVJ74Otu3Tqe4DjAqkCf+UpkDHwWJa8EIM/kkx8b2SH3BB7QiohPfDp
+         28Ywe6sE8883qZQ9202auLhdt/rBihT0vz8TyFCm02ZMx8lyPhF6LaJ2WbhOGPLRPbEk
+         egH56UpF0cQo3s2Ad/GnhRwFQr8mJJNihAT8RvrfT25paz5bavbhiv4chOtnG3G+Q6Tc
+         1TZheQ/u5vp9lxTxMFC+4DCxpqcmrzvLrxcAXteorPK6awscMCRB9oGPL8UmKu4XmDwj
+         aOfw==
+X-Gm-Message-State: AOAM530tXNveyhsDU43pHWG1LP+h5HgJJAx6BPicWKyBAw2d/ThNC1rr
+        KKvF9MHcGQybkCcF8aupkZ3bTo7VOKdva6SDAKbvbCfSySo7BXTHGpLcETTMIBcEawr+OlXSmgG
+        vYlCmlDn6iUkMGBfGnFc9f4Fd
+X-Received: by 2002:aa7:cf0f:: with SMTP id a15mr4138446edy.313.1623849853476;
+        Wed, 16 Jun 2021 06:24:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwNlF2rQXtcidlADi5H32n7IyqgG9rDrZlrCXZqQXkNq/nK4wUcA6Bg8JuT7PnyUUx+ExFJKA==
+X-Received: by 2002:aa7:cf0f:: with SMTP id a15mr4138397edy.313.1623849853297;
+        Wed, 16 Jun 2021 06:24:13 -0700 (PDT)
+Received: from x1.bristot.me (host-79-23-205-114.retail.telecomitalia.it. [79.23.205.114])
+        by smtp.gmail.com with ESMTPSA id b25sm1846160edv.9.2021.06.16.06.24.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 06:24:12 -0700 (PDT)
+Subject: Re: [PATCH v2 7/7] sched: Change task_struct::state
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+References: <20210611082810.970791107@infradead.org>
+ <20210611082838.550736351@infradead.org>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <baf4b8d9-5801-45a8-d92a-be45a918e855@redhat.com>
+Date:   Wed, 16 Jun 2021 15:24:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616115923.GC801071@lothringen>
+In-Reply-To: <20210611082838.550736351@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 01:59:23PM +0200, Frederic Weisbecker wrote:
-> On Wed, Jun 16, 2021 at 11:42:53AM +0200, Peter Zijlstra wrote:
-> > I'm thinking this is a better fix than patch #2. AFAICT you can now go
-> > back to unconditionally doing start, and then if we fire it early, we'll
-> > disarm the thing.
-> > 
-> > That would avoid the disconnect between the start condition and the fire
-> > condition.
-> 
-> Right but the drawback is that we unconditionally start the threadgroup
-> counter while initializing the timer to 0 (deactivated).
-> 
-> Then in the next tick at least one thread will need to lock the sighand
-> and re-evaluate the whole list.
+On 6/11/21 10:28 AM, Peter Zijlstra wrote:
+> --- a/kernel/sched/deadline.c
+> +++ b/kernel/sched/deadline.c
+> @@ -348,10 +348,10 @@ static void task_non_contending(struct t
+>  	if ((zerolag_time < 0) || hrtimer_active(&dl_se->inactive_timer)) {
+>  		if (dl_task(p))
+>  			sub_running_bw(dl_se, dl_rq);
+> -		if (!dl_task(p) || p->state == TASK_DEAD) {
+> +		if (!dl_task(p) || READ_ONCE(p->__state) == TASK_DEAD) {
+>  			struct dl_bw *dl_b = dl_bw_of(task_cpu(p));
+>  
+> -			if (p->state == TASK_DEAD)
+> +			if (READ_ONCE(p->__state) == TASK_DEAD)
+>  				sub_rq_bw(&p->dl, &rq->dl);
+>  			raw_spin_lock(&dl_b->lock);
+>  			__dl_sub(dl_b, p->dl.dl_bw, dl_bw_cpus(task_cpu(p)));
+> @@ -1355,10 +1355,10 @@ static enum hrtimer_restart inactive_tas
+>  	sched_clock_tick();
+>  	update_rq_clock(rq);
+>  
+> -	if (!dl_task(p) || p->state == TASK_DEAD) {
+> +	if (!dl_task(p) || READ_ONCE(p->__state) == TASK_DEAD) {
+>  		struct dl_bw *dl_b = dl_bw_of(task_cpu(p));
+>  
+> -		if (p->state == TASK_DEAD && dl_se->dl_non_contending) {
+> +		if (READ_ONCE(p->__state) == TASK_DEAD && dl_se->dl_non_contending) {
+>  			sub_running_bw(&p->dl, dl_rq_of_se(&p->dl));
+>  			sub_rq_bw(&p->dl, dl_rq_of_se(&p->dl));
+>  			dl_se->dl_non_contending = 0;
+> @@ -1722,7 +1722,7 @@ static void migrate_task_rq_dl(struct ta
+>  {
+>  	struct rq *rq;
+>  
+> -	if (p->state != TASK_WAKING)
+> +	if (READ_ONCE(p->__state) != TASK_WAKING)
+>  		return;
+>  
+>  	rq = task_rq(p);
 
-Yes.. but how common is it to enqueue expired timers? Surely that's an
-unlikely corner case. All normal timers will have to suffer one extra
-tick and iteration on exit, so I find it hard to justify complexity to
-optimize an unlikely case.
+Reviewed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
 
-I would rather have more obvious code.
+Feel free to add it to the other patches as well.
+
+Thanks!
+-- Daniel
 
