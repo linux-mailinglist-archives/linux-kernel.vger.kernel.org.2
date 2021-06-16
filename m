@@ -2,164 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8173A9B45
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695E93A9B48
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbhFPM6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:58:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47633 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232452AbhFPM6u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:58:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623848204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aRdZ54HD2Y71Mzeckrvw4hXodqyFRR35GmYM5eMm8B0=;
-        b=L9rJClLKegKis89Uu55RwiyoXtdx5Oz6tmRDGbV+VZFm+bMRpCXnPem030SJH+0GtvELP1
-        cJAZYYgE1WWKzUC7V5A+eOnS3qWeWotbjHb76lcq/DeYR3VBxSb1wIWKee98uq8nhynRYV
-        DqpriUdVnTfrmM4LdNS6R1u5mo7QseY=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-393-zy_S-8H_MxSHgxwFXVVd3g-1; Wed, 16 Jun 2021 08:56:43 -0400
-X-MC-Unique: zy_S-8H_MxSHgxwFXVVd3g-1
-Received: by mail-oi1-f200.google.com with SMTP id b185-20020acab2c20000b02901f6dd5f89fbso974664oif.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:56:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=aRdZ54HD2Y71Mzeckrvw4hXodqyFRR35GmYM5eMm8B0=;
-        b=ORFK94ya/b42ihjLKHLvcIropK72bDs2VDqPxVNTwMcq/ZFWp5pNXZu4YE297oD9FC
-         Hff/OPPz227hfwAdoZ0srHg0dqaoRM8gaROfh1xw/YlNL4KbCjpEny0O+oBmC/ZjxYD5
-         Pvdxcl2QQUJP6Msh9bcJj3JH52SrUcp9BZA8S6GI/TYK4EbeBZtEnnLdZ3zMq3Xss+DL
-         ategk8GXoGNtRq1FaWvsQvU6KkUnU6TibPtvyfIbSDu0IBHJZttzCH2Ys5sAx49D1Rw/
-         lrsTEO/X80bukbKuMD2NnNMPN9Tm9O3oT3DQoCowo5Yx0w5gQo0mDykEyyvJ2UJB11O4
-         w4VA==
-X-Gm-Message-State: AOAM531kFjAoTN71tfm4FgSbd2wC6gL9Jt1siLgWTLaqE/3dZDAVxYoo
-        o9ccghIKwjpTp3liyIcNOFOwfSJ3qAqYNh5MdKJMRlDBemRj110XH+WKchMnneTxbKrKx//qMZz
-        ybMNb6HZuFizWyEYE3Nwf0VnC3yPfov2na2GI9K+CiZ8U7B1folR0kKe2rIhrQ9w1Ngp2y88=
-X-Received: by 2002:a4a:4c8f:: with SMTP id a137mr3994323oob.65.1623848202374;
-        Wed, 16 Jun 2021 05:56:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw6JWTdaVQacHIa8wCDgx4/hnjT3TG9g6RLUBCUnn8ZqT8XseLbYFYF/WMm26MLJJerXPTPRQ==
-X-Received: by 2002:a4a:4c8f:: with SMTP id a137mr3994292oob.65.1623848202112;
-        Wed, 16 Jun 2021 05:56:42 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id p10sm522032otf.45.2021.06.16.05.56.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 05:56:41 -0700 (PDT)
-Subject: Re: [PATCH] afs: fix no return statement in function returning
- non-void
-To:     Zheng Zengkai <zhengzengkai@huawei.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Hulk Robot <hulkci@huawei.com>, linux-afs@lists.infradead.org,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
- <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com>
- <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org>
- <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
- <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org>
- <051421e0-afe8-c6ca-95cd-4dc8cd20a43e@huawei.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <200ea6f7-0182-9da1-734c-c49102663ccc@redhat.com>
-Date:   Wed, 16 Jun 2021 05:56:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233125AbhFPM7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:59:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232790AbhFPM7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 08:59:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E927B61019;
+        Wed, 16 Jun 2021 12:57:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623848231;
+        bh=DWFBu/mfBxZGTgWooOIBmvdwLAeW2eIRNfnsK75iQco=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SHu3CoBCSbsA0xo+wX912jkLND6O7VUmdGKgAk+RwzIcwJPTaE2JtYzzavr6ALXpJ
+         QbmvGllMsmDwRzA1ctF2FdcAv/4R4VLgjb2jJ+MzQQe9bC/0lmC68+JRQcUBwyP39c
+         pyPzWXqmNsqymObTpC/W2z/0SSN/Qu2OWP1nlks4=
+Date:   Wed, 16 Jun 2021 14:57:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sanjay R Mehta <sanmehta@amd.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Sanjay R Mehta <Sanju.Mehta@amd.com>,
+        dan.j.williams@intel.com, Thomas.Lendacky@amd.com,
+        Shyam-sundar.S-k@amd.com, Nehal-bakulchandra.Shah@amd.com,
+        robh@kernel.org, mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v9 1/3] dmaengine: ptdma: Initial driver for the AMD PTDMA
+Message-ID: <YMn1JRfj/n3O8Jfp@kroah.com>
+References: <YL+rUBGUJoFLS902@vkoul-mobl>
+ <94bba5dd-b755-81d0-de30-ce3cdaa3f241@amd.com>
+ <YMl6zpjVHls8bk/A@vkoul-mobl>
+ <0bc4e249-b8ce-1d92-ddde-b763667a0bcb@amd.com>
+ <YMmXPMy7Lz9Jo89j@kroah.com>
+ <12ff7989-c89d-d220-da23-c13ddc53384e@amd.com>
+ <YMmt1qhC1dIiYx7O@vkoul-mobl>
+ <627518e2-8b20-d6a9-1e0c-9822c4fa95ed@amd.com>
+ <YMntRILEO3ceyeZU@kroah.com>
+ <0221d964-1cbc-c925-133f-40c3eaa11421@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <051421e0-afe8-c6ca-95cd-4dc8cd20a43e@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0221d964-1cbc-c925-133f-40c3eaa11421@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 16, 2021 at 06:23:10PM +0530, Sanjay R Mehta wrote:
+> 
+> 
+> On 6/16/2021 5:53 PM, Greg KH wrote:
+> > [CAUTION: External Email]
+> > 
+> > On Wed, Jun 16, 2021 at 05:30:49PM +0530, Sanjay R Mehta wrote:
+> >> The pt_device is allocated and initialized in the PCI probe function and
+> >> then we just get the "dev" from the "pci_dev" object and save it in
+> >> "pt->dev" as shown in below snippet.
+> >>
+> >>
+> >>    static int pt_pci_probe(struct pci_dev *pdev, const struct
+> >> pci_device_id *id)
+> >>    {
+> >>       struct pt_device *pt;
+> >>       struct pt_msix *pt_msix;
+> >>       struct device *dev = &pdev->dev;
+> > 
+> > So "dev" is a parent here, or something else?
+> > 
+> > If it is the parent, please call it such otherwise it is confusing.
+> > 
+> > If you are creating child devices, what bus do they belong to?
+> > 
+> > Can you fix up this series and resend it so that we can review it again?
+> > 
+> 
+> Hi Greg,
+> 
+> Yes, "dev" is the parent here and there are no child devices created.
 
-On 6/15/21 8:15 PM, Zheng Zengkai wrote:
-> Oops, Sorry for the late reply and missing the compilation details.
->
->> On 6/15/21 5:32 PM, Linus Torvalds wrote:
->>> On Tue, Jun 15, 2021 at 4:58 PM Randy Dunlap <rdunlap@infradead.org> 
->>> wrote:
->>>> Some implementations of BUG() are macros, not functions,
->>> Not "some", I think. Most.
->>>
->>>> so "unreachable" is not applicable AFAIK.
->>> Sure it is. One common pattern is the x86 one:
->>>
->>>    #define BUG()                                                   \
->>>    do {                                                            \
->>> instrumentation_begin();                                \
->>>            _BUG_FLAGS(ASM_UD2, 0);                                 \
->>> unreachable();                                          \
->>>    } while (0)
->> duh.
->>
->>> and that "unreachable()" is exactly what I'm talking about.
->>>
->>> So I repeat: what completely broken compiler / config / architecture
->>> is it that needs that "return 0" after a BUG() statement?
->> I have seen it on ia64 -- most likely GCC 9.3.0, but I'll have to
->> double check that.
->
-> Actually we build the kernel with the following compiler, config and 
-> architecture :
->
-> powerpc64-linux-gnu-gcc --version
-> powerpc64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
-> Copyright (C) 2019 Free Software Foundation, Inc.
-> This is free software; see the source for copying conditions. There is NO
-> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-> PURPOSE.
->
-> CONFIG_AFS_FS=y
-> # CONFIG_AFS_DEBUG is not set
-> CONFIG_AFS_DEBUG_CURSOR=y
->
-> make ARCH=powerpc CROSS_COMPILE=powerpc64-linux-gnu- -j64
->
-> ...
->
-> fs/afs/dir.c: In function ‘afs_dir_set_page_dirty’:
-> fs/afs/dir.c:51:1: error: no return statement in function returning 
-> non-void [-Werror=return-type]
->    51 | }
->       | ^
-> cc1: some warnings being treated as errors
->
-powerpc64 gcc 10.3.1 is what I used to find this problem.
+But you should be creating a child device, as that will be the name you
+need.  Or again, I am probably confused, I'll wait for the next round of
+patches...
 
-A fix is to use the __noreturn attribute on this function and not add a 
-return like this
+thanks,
 
--static int afs_dir_set_page_dirty(struct page *page)
-+static int __noreturn afs_dir_set_page_dirty(struct page *page)
-
-and to the set of ~300 similar functions in these files.
-
-$ grep -r -P "^\tBUG\(\)" .
-
-If folks are ok with this, I'll get that set started.
-
-Tom
-
->>> Because that environment is broken, and the warning is bogus and wrong.
->>>
->>> It might not be the compiler. It might be some architecture that does
->>> this wrong. It might be some very particular configuration that does
->>> something bad and makes the "unreachable()" not work (or not exist).
->>>
->>> But *that* is the bug that should be fixed. Not adding a pointless and
->>> incorrect line that makes no sense, just to hide the real bug.
->> .
->>
->
-
+greg k-h
