@@ -2,302 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3A63A90CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D55A3A90D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhFPE4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 00:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhFPE4Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 00:56:24 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62435C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 21:54:18 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id p21so926634qtw.6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 21:54:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g1CVGDhFH6X19kFVFfZho2czxMR+p0zaz3fGNrtl5z0=;
-        b=cfg3QnT4SSoypMlLZNK2UipeJL32NDmDebrruFKB+q4EeVoCJD19SW386Ig6CLmBZe
-         7U5fEFw0/1rb1Y83WQKaQyD28XGjDI2tolf5aEiP0MqALtUOdCDMfnCZ20BWaRrnnIi0
-         XFqbbvAW3tyT3nLTDk0e0qRgmqcWX9H+hh6BI4UNuggHjoglfZyqv4p5V6CI0S05ZAII
-         ENJLrO2SzXHrwJwZt29/l8EsLabRwdmTOv9ZZtnRR4RkB3/4Y+et3WdYbtIpdM7SNcha
-         W9i5g2QrTMnbJfWmP3oBdSybiak6TVKnVZ9JuihwncdpVvicU0wEELGQdSwvIaSjf6Kq
-         ZmBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g1CVGDhFH6X19kFVFfZho2czxMR+p0zaz3fGNrtl5z0=;
-        b=KKnCYtKX5VvwcGJDr0bNFRNKt/MwpBcZ0KsbIRFGrQCaGswMg12zLDLZxPbvDgSlIC
-         3AgQNJ51SyDSxSCCtWBpJY815GOfJgOv02mSGJE8D+G8Db/JR/T4c40DbR6s3V+4zBN5
-         455Rgr9GVX6QZ8cYv84/+qpPj7jFD3chugbAedTNd2iGQ8AdBdLa4/sbZChVtKEOwNya
-         bxygJMAaREmIKSA+LYUb/UpVpNG58LypxxkTP8ViaWhb2EAQSi6nVW2dotebg9IO/S7h
-         QJYGMZmpFSxi3/0zGqCBnOfzLYgxQB24oan+faeVCorWQsNze7OM/r3GJOXzQdVzzzl/
-         hiJw==
-X-Gm-Message-State: AOAM5318Rw9J11JRyfPOtkOpCWszY+X5wFO7YaDvRcLQEDNZjw/32QAM
-        v0aIkRq1dwlxzemPwPF5SSQryA==
-X-Google-Smtp-Source: ABdhPJwN5tXXXU5NpLnlxmnv7JoFwgd4ki2m7/1s0zmlWkPpFZZe1Ybfv/Mbt2qd5AWo3j/xdEJSgw==
-X-Received: by 2002:ac8:6711:: with SMTP id e17mr3235887qtp.168.1623819257455;
-        Tue, 15 Jun 2021 21:54:17 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:4c0b])
-        by smtp.gmail.com with ESMTPSA id z136sm901203qkb.34.2021.06.15.21.54.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 21:54:16 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 00:54:15 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 4/4] vfs: keep inodes with page cache off the inode
- shrinker LRU
-Message-ID: <YMmD9xhBm9wGqYhf@cmpxchg.org>
-References: <20210614211904.14420-1-hannes@cmpxchg.org>
- <20210614211904.14420-4-hannes@cmpxchg.org>
- <20210615062640.GD2419729@dread.disaster.area>
- <YMj2YbqJvVh1busC@cmpxchg.org>
- <20210616012008.GE2419729@dread.disaster.area>
+        id S230370AbhFPE5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 00:57:15 -0400
+Received: from mail-bn8nam11on2047.outbound.protection.outlook.com ([40.107.236.47]:58752
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229514AbhFPE5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 00:57:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W/AzpsSHV6PEvxmUCqIVoaGKjSSnB6dgADNwi9REr6Z84EdoYz1qNBnAau7atZLiRJpUh/3xLM34ss2pQal/S4/HyWIWsfxTR845XqW0e5n0uaPIbff9lo79GIE9mgwA0/CotrWQ1YIW7/mqLTKrRdzGZ0RceyfzyjD6CIBeShtM1RPKnitd0fB8cDiT2IKZC9oGzRx5ekgPK7bHiwnUarTNl/yEIc8H8jYvJ2WpLhW1wQN2VnuLylgeT94QZUYBL0TWzEtfjzKKEbAr6vCyWVFlQnrGWXhAAc7784a7SakGjidjw7ZfI7EBMYMaBfjzBwqaGo8pK+jA/0JhdZOfig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tlDCE+VAmVPr0X9zXk0jKbFUEXXKUSLW447hmlIQf8U=;
+ b=A4NpAEV1ZFrwjuE7Wy69SqT7d4tiety8jUlCISwdVTq4P4f7TpJbmylvUWNnzFu/lYL6WBHGqgzggn6GmF6zqboHhGm8ETByCbkQ5bcuTON2mfzqGbYrAjZr8oXWXtCQ0Vb+2mZJWvnYw+rR3WzLhZua8fK5nY8Fbbs2KFG7A+A4cOKimbxp2tDQexPWlohLPJx2QrpMU02De1HzVmGf7I+LWdbKRa6K1qAWVcEqU7z5142mvVpHrK2KRrW8WQxBq+F6BKjblwFr7H58ozVu3azwwL4JW4UPPbRGZO0iCRrLrINEVPazLsQR5bKGZe4VqOz+b32zqu/joiApZfGG4w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tlDCE+VAmVPr0X9zXk0jKbFUEXXKUSLW447hmlIQf8U=;
+ b=U8PzqkI3u8lF0VZSlZqcpPgW+EwVXnkdJzKcwAgZI7dYCRZi+d4MtjklPqfZPpuEyZ6SOovsvXUHyCc881a51xBOQaddO6L9QhNs28SMQAyDW6Afn4SjnWx8hILmipK3+gjh/sIbH1hvJk1g/0K6rhhHPnVR8kw/3T+jXOEGhmo=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5103.namprd12.prod.outlook.com (2603:10b6:5:392::13)
+ by DM6PR12MB5567.namprd12.prod.outlook.com (2603:10b6:5:1ba::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16; Wed, 16 Jun
+ 2021 04:55:05 +0000
+Received: from DM4PR12MB5103.namprd12.prod.outlook.com
+ ([fe80::e065:c90b:5f7:7e95]) by DM4PR12MB5103.namprd12.prod.outlook.com
+ ([fe80::e065:c90b:5f7:7e95%6]) with mapi id 15.20.4242.016; Wed, 16 Jun 2021
+ 04:55:05 +0000
+Subject: Re: [PATCH v9 1/3] dmaengine: ptdma: Initial driver for the AMD PTDMA
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Sanjay R Mehta <Sanju.Mehta@amd.com>, gregkh@linuxfoundation.org,
+        dan.j.williams@intel.com, Thomas.Lendacky@amd.com,
+        Shyam-sundar.S-k@amd.com, Nehal-bakulchandra.Shah@amd.com,
+        robh@kernel.org, mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+References: <1622654551-9204-1-git-send-email-Sanju.Mehta@amd.com>
+ <1622654551-9204-2-git-send-email-Sanju.Mehta@amd.com>
+ <YL+rUBGUJoFLS902@vkoul-mobl> <94bba5dd-b755-81d0-de30-ce3cdaa3f241@amd.com>
+ <YMl6zpjVHls8bk/A@vkoul-mobl>
+From:   Sanjay R Mehta <sanmehta@amd.com>
+Message-ID: <0bc4e249-b8ce-1d92-ddde-b763667a0bcb@amd.com>
+Date:   Wed, 16 Jun 2021 10:24:52 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <YMl6zpjVHls8bk/A@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [223.226.125.202]
+X-ClientProxiedBy: MA1PR0101CA0064.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:20::26) To DM4PR12MB5103.namprd12.prod.outlook.com
+ (2603:10b6:5:392::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616012008.GE2419729@dread.disaster.area>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.6] (223.226.125.202) by MA1PR0101CA0064.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:20::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15 via Frontend Transport; Wed, 16 Jun 2021 04:55:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c0126745-9ecb-488a-2cce-08d93082e832
+X-MS-TrafficTypeDiagnostic: DM6PR12MB5567:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB556779FEBE717338685082BEE50F9@DM6PR12MB5567.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:983;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LIJDZit3p1K6Kua8DA5TLOISyUius0bVaEjQgg42MUNbSgSJmouHG/Tr3R3CFqNLxEuBDvS8DHr3Oz8faKrqUgLCF/JDoVC9st/ZMTxye2MI7t1AUgZ0aiVEtiWznF/aZyg/cqkluoogImmTdDl5PpDaxmESfQ40TjcvqSqjR+991X6gnQ4x6yz649fH64HRIHR7uW3lVS15h0vZiWaLuJgfndf0g61UKbSQfmLCTr+RG/bo5ZC65ejyQDaDpl6AR3Hri3hZA3nqHQhL/GQih3vM0btfOrzoddZ/wfFRI14C4fUVFM4l31q+ugNzeUP1N89xprxk1pebTwkp6sJ5Nu+L1W3KSoKhVaqReYxNk5CGGuT1r1rA2ICWzaEsSQvODBOkSp9otUkms4RqrbOFD3ySIRizGiWK0mgZQht22aoN6Osr+Omj+c4tSsLei5r2VaslmaxNk+3I85GomJOEmkRW9SgitriGNeaOQTkvYd6KCQHW+BNFjLiA350mrfYdgKOvjmyjwAvfdHyJQKp7+Fu76NWQ4peUSBGXOZ24j/O8qB/tQY5V+hxFBvjzdaPTKr1JfXs01jgDdRN9nehn6H1dmnCEOWvZuXYteRN9t1j0dKWv3Px6NecygYbcJItfFlMu9vIG20c219du95lf4KBgj63666xnGYuf3O5ocHqQTawizQgezONL0S84v2EU
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5103.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(366004)(396003)(136003)(2906002)(4744005)(16526019)(31696002)(4326008)(36756003)(31686004)(186003)(8676002)(956004)(2616005)(8936002)(6916009)(316002)(66946007)(66476007)(5660300002)(16576012)(6486002)(66556008)(478600001)(6666004)(53546011)(55236004)(38100700002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WGtwZEM4eFVERzVjelFJQlZNc0JMK241QlRiaGdTeUFVVE1sdWp6bmYwUWR1?=
+ =?utf-8?B?blJnTE1hSXp6WXRjZXI4ekpIb2g5RXJxWE43a0VGS05KSmxYeDFOcDNyTUh3?=
+ =?utf-8?B?MW9OR1NVV2Q2TWl0S1pjMHB0U1FSdXptV2JlWFMwS0ttQ2VxTTRPNmJtNU5S?=
+ =?utf-8?B?QjNNSUtGRG1MdVhVd205SWpZTnFmOGd1ZUNWU3F1WlFEVTk3bU1TV0xTZXZ3?=
+ =?utf-8?B?eG9qUXpQRzN3ZWVGS1F4Ty9VdGZxRlg2djN1WnpvNmRUdk9IZlRMRDh5dUti?=
+ =?utf-8?B?dE55WlNzSmJEL2pQSG9LUDBHRVFLUFEwbzY5eVBtZ1JkOWp5OFZJTk9YOER4?=
+ =?utf-8?B?ODRleWFONHRWR1E2VnJsVkxBS0xaTWRVZ0lCVUt3MktFcWdDT2xDaUh5bVl5?=
+ =?utf-8?B?STluWEtrOU9PTEVtbkNQdWs2QW05b29FckttSFF0cWEwdGlGcHJlRTVkQUVm?=
+ =?utf-8?B?Sm1ETWVsem80MktMRVV6RDRlTEwvbTBKMmdHLzhVVTJSc0VjSmM4dHZuOEha?=
+ =?utf-8?B?bk9EMkpLM2N6M3VQK0hQVTQrZklkV3dYQjZiUVRpRW5PbE01ZnN6WW9yNjFT?=
+ =?utf-8?B?MldYMTlOa0J1MHVBS2lLUWNISVd1YmpSQmR1L05sNWF2YlprZE9jcGdWc1R4?=
+ =?utf-8?B?cTVHS043ZjdTMU1yaDhrb1FBanZnd3pBaXFhNWxteHJGRG1DMVBUTGRDaTJy?=
+ =?utf-8?B?d1RvYkZtOWtzR2ZybVp2VjNxSWlCTTB3NkU0WmpZSFczMGVuU0ZQeURtc3k3?=
+ =?utf-8?B?TmExYjQzcllaUmJwSnJDa3YzVStUMTFVQTNMYVdwV0diT1JseUo4cVdrcFFj?=
+ =?utf-8?B?UnBtbzBwTXVCNmxabWdlc2NIeTczaVJEQitKZmdxcm9hMmY2eEFIUlllR1Fr?=
+ =?utf-8?B?MTZNUGVlbmhHd01Gc0tMNGM5VVlkaGN5cXd1TEs1MUtaQ1NKSHNlamRNM01t?=
+ =?utf-8?B?M1pYK2t4eHNTcDFOQTk1SWFiT2ZtakFJZkhtVlU0MzNXZ3JiRTFzVFJ1dEhM?=
+ =?utf-8?B?UCszUW5LSzYwSUhtRzRmVXhUZEU3KzdmZEpLbkF5ZzhqamZEV0ZVVmg4aUI2?=
+ =?utf-8?B?UjFzV3RzM0hsY1J0bGJwZno0SlQvYkFxSmFidWowTDBDWHJSVElLQVpzMURW?=
+ =?utf-8?B?UVdIWTJoOTZkTmZpQXJ2Z0FSeEZaSFVsWGZnSG5kVHR3L3pFcW5wSjYwVHhT?=
+ =?utf-8?B?NHdpMDhCRXpPNk1tWEFLZXB0dVpvWUh6dHlVVWl4czNiUnRhM00yR0hXbWty?=
+ =?utf-8?B?a1Z2eDBtSkV5WEFXdnlrU3gzZzZuZlliK3JEUXVNbkJjbWtKcG1YNW1hcXhP?=
+ =?utf-8?B?RXk0YXVqQURoRzI2ckRlM0hRRno4bkNhaVBvRE9Ja3ZPWGtYS0JiY0F5TmE0?=
+ =?utf-8?B?SG5WZURCNXpCVDhoOFNwZXU1VzV4N0NYOUk3d0Y3Nk4wdU1NWnJWVThiUDRV?=
+ =?utf-8?B?TTZZS25ZbjZBTENrTEZTV2FueDZKOUlYYnArN3J5bnl3VUoxWWxtV1k4ejhF?=
+ =?utf-8?B?b1Vmdjl3TmhXb3lJU0w5L2dkckYrRE5JbkU2elYwbUpvTWwzWDNrNVVheUVM?=
+ =?utf-8?B?dmhja2EwQW1EM0tFSUpyekJ5UjNQSjBCMDRFNXFyU3NXbllzdmIzdFNnUzkr?=
+ =?utf-8?B?YjJmYmNuck0wVENYMW9oWHh0M2xBeFV5LzVHU3h2d3grR3R6SzJqNkZtM1Bo?=
+ =?utf-8?B?ZGNTSGxKZW5Za3p6TFkvdmFnUnU2bUxEV0FaQ0N5TmhKcHBQUlhtcGY5a0xq?=
+ =?utf-8?Q?h5N0QOImERoEl+uX+YizHExg4fScJ+h5LLxjUQ2?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0126745-9ecb-488a-2cce-08d93082e832
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5103.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 04:55:05.2106
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iLYhwJqw8E4NvJNcvlK1gX5+QLYo++JuaQzUtUCV6+BrlFsXjM6tju/Ht1P4MQMncGy3E8pychzKVT0cCaZfsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5567
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 11:20:08AM +1000, Dave Chinner wrote:
-> On Tue, Jun 15, 2021 at 02:50:09PM -0400, Johannes Weiner wrote:
-> > On Tue, Jun 15, 2021 at 04:26:40PM +1000, Dave Chinner wrote:
-> > > On Mon, Jun 14, 2021 at 05:19:04PM -0400, Johannes Weiner wrote:
-> > > > @@ -1123,6 +1125,9 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
-> > > >  			shadow = workingset_eviction(page, target_memcg);
-> > > >  		__delete_from_page_cache(page, shadow);
-> > > >  		xa_unlock_irq(&mapping->i_pages);
-> > > > +		if (mapping_shrinkable(mapping))
-> > > > +			inode_add_lru(mapping->host);
-> > > > +		spin_unlock(&mapping->host->i_lock);
-> > > >  
-> > > 
-> > > No. Inode locks have absolutely no place serialising core vmscan
-> > > algorithms.
-> > 
-> > What if, and hear me out on this one, core vmscan algorithms change
-> > the state of the inode?
+
+
+On 6/16/2021 9:45 AM, Vinod Koul wrote:
+> [CAUTION: External Email]
 > 
-> Then the core vmscan algorithm has a layering violation.
-
-You're just playing a word game here.
-
-If we want the inode reclaimability to be dependent on the state of
-the page cache, then reclaim and truncation change the state of the
-inode. It's really that simple.
-
-We can recognize that fact in the code, or we can be obtuse about it.
-
-> > The alternative to propagating this change from where it occurs is
-> > simply that the outer layer now has to do stupid things to infer it -
-> > essentially needing to busy poll. See below.
-> > 
-> > > Really, all this complexity because:
-> > > 
-> > > | The issue is mostly that shrinker pools attract pressure based on
-> > > | their size, and when objects get skipped the shrinkers remember this
-> > > | as deferred reclaim work.
-> > > 
-> > > And so you want inodes with reclaimable mappings to avoid being
-> > > considered deferred work for the inode shrinker. That's what is
-> > > occuring because we are currently returning LRU_RETRY to them, or
-> > > would also happen if we returned LRU_SKIP or LRU_ROTATE just to
-> > > ignore them.
-> > > 
-> > > However, it's trivial to change inode_lru_isolate() to do something
-> > > like:
-> > > 
-> > > 	if (inode_has_buffers(inode) || inode->i_data.nrpages) {
-> > > 		if (!IS_ENABLED(CONFIG_HIGHMEM)) {
-> > > 			spin_unlock(&inode->i_lock);
-> > > 			return LRU_ROTATE_NODEFER;
-> > > 		}
-> > > 		.....
-> > > 	}
-> > 
-> > Yeah, that's busy polling. It's simple and inefficient.
+> On 15-06-21, 16:50, Sanjay R Mehta wrote:
 > 
-> That's how the dentry and inode cache shrinkers work - the LRUs are
-> lazily maintained to keep LRU list lock contention out of the fast
-> paths. The trade off for that is some level of inefficiency in
-> managing inodes and dentries that shouldn't be or aren't ideally
-> placed on the LRU. IOWs, we push the decision on whether inodes
-> should be on the LRU or whether they should be reclaimed into the
-> shrinker scan logic, not the fast path lookup logic where inodes are
-> referenced or dirtied or cleaned.
-
-That's just not true.
-
-The way the inode shrinker works is that all indefinite pins that make
-an inode unreclaimable for reasons other than its age are kept off the
-LRU. Yes, we're lazy about removing them if pins are established after
-the object is already queued. But we don't queue objects with that
-state, and sites that clear this pin update the LRU.
-
-That's true when the inode is pinned by a refcount or by the dirty
-state. I'm proposing to handle the page cache state in exactly the
-same fashion.
-
-It's you who is arguing we should deal with those particular pins
-differently than how we deal with all others, and I find it difficult
-to follow your reasoning for that.
-
-> IOWs, the biggest problem with increasing the rate at which we move
-> inodes on and off the LRU list is lock contention. It's already a
-> major problem and hence the return values from the LRU code to say
-> whether the inode was added/removed or not to the LRU.
+>>>> +static struct pt_device *pt_alloc_struct(struct device *dev)
+>>>> +{
+>>>> +     struct pt_device *pt;
+>>>> +
+>>>> +     pt = devm_kzalloc(dev, sizeof(*pt), GFP_KERNEL);
+>>>> +
+>>>> +     if (!pt)
+>>>> +             return NULL;
+>>>> +     pt->dev = dev;
+>>>> +     pt->ord = atomic_inc_return(&pt_ordinal);
+>>>
+>>> What is the use of this number?
+>>>
+>>
+>> There are eight similar instances of this DMA engine on AMD SOC.
+>> It is to differentiate each of these instances.
 > 
-> By increasing the number inode LRU addition sites by an order of
-> magnitude throughout the mm/ subsystem, we greatly increase the
-> difficulty of managing the inode LRU. We no longer have a nice,
-> predictable set of locations where the inodes are added to and
-> removed from the LRUs, and so now we've got a huge increase in the
-> number of different, unpredictable vectors that can lead to lock
-> contention on the LRUs...
-
-Rotating the same unreclaimable inodes over and over is BETTER for
-lock/LRU contention than adding them once at the end of their life?
-
-> > We can rotate the busy inodes to the end of the list when we see them,
-> > but all *new* inodes get placed ahead of them and push them out the
-> > back.  If you have a large set of populated inodes paired with an
-> > ongoing stream of metadata operations creating one-off inodes, you end
-> > up continuously shoveling through hundreds of thousand of the same
-> > pinned inodes to get to the few reclaimable ones mixed in.
+> Are they individual device objects?
 > 
-> IDGI.
+
+Yes, they are individual device objects.
+
+> --
+> ~Vinod
 > 
-> What has a huge stream of metadata dirty inodes going through the
-> cache have to do with deciding when to reclaim a data inode with a
-> non-zero page cache residency?
-
-It's simply about the work it needs to perform in order to find
-reclaimable nodes in the presence of a large number of permanently
-unreclaimable ones.
-
-> I mean, this whole patchset is intended to prevent the inode from
-> being reclaimed until the page cache on the inode has been reclaimed
-> by memory pressure, so what does it matter how often those data inodes
-> are rotated through the LRU? They can't be reclaimed until the page
-> cache frees the pages, so the presence or absence of other inodes on
-> the list is entirely irrelevant.
-> 
-> For any workload that invloves streaming inodes through the inode
-> cache, the inode shrinker is going to be scanning through the
-> hundreds of thousands of inodes anyway. Once put in that context,
-> the cost rotating on data inodes with page cache attached is going
-> to be noise, regardless of whether it is inefficient or not.
-
-How do you figure that?
-
-If you have 1,000 inodes pinned by page cache, and then start
-streaming, you have to rotate 1,000 inodes before you get to the first
-reclaimable one. It depends on memory pressure how many streaming
-inodes you were able to add before the inode pool is capped and
-reclaim runs again. At least in theory, the worst case is having to
-rotate every unreclaimable inode for every one you can reclaim.
-
-Whether this is likely to happen in practice or not, I don't
-understand why we should special case page cache pins from existing
-pins and build a pathological cornercase into the shrinker behavior.
-
-> And, really, if the inode cache has so many unreferenced inode with
-> attached page cache attached to them that the size of the inode
-> cache becomes an issue, then the page reclaim algorithms are totally
-> failing to reclaim page cache quickly enough to maintian the desired
-> system cache balance. i.e. We are supposed to be keeping a balance
-> between the inode cache size and the page cache size, and if we
-> can't keep that balance because inode reclaim can't make progress
-> because page cache pinning inodes, then we have a page reclaim
-> problem, not an inode reclaim problem.
-
-We may never reclaim that page cache if we have no reason to do so.
-
-Say you have a git tree fully cached, and now somebody runs grep on a
-large subdirectory with lots of files. We don't kick out the git tree
-cache for stuff that is only touched once - reclaim goes directly for
-the cache coming off the grep. But the shrinker needs to first rotate
-through the entire git tree to get to the grep inodes. Hopefully by
-the time it gets to them, their page cache will have gone. If not,
-we'll rotate them and go through the entire git tree inodes again.
-
-What's the point in doing this when we know the exact point in time
-where it makes sense to start scanning the git tree inodes?
-
-Numbers talk, I get it, and I'll try to get some benchmarking done
-next week. But do you really need numbers to understand how poorly
-this algorithm performs?
-
-The strongest argument you can make then is that the algorithm simply
-never really matters. And that seems like a stretch.
-
-> THere's also the problem of lack of visibility. RIght now, we know
-> that all the unreferenced VFS inodes in the system are on the LRU
-> and that they are generally all accounted for either by active
-> references or walking the LRU. This change now creates a situation
-> when inodes with page cache attached are not actively references but
-> now also can't be found by walking the LRU list. i.e. we have inodes
-> that are unaccounted for by various statistics. How do we know how
-> many inodes are pinned by the page cache? We can't see them via
-> inode shrinker count tracing, we can't see them via looking up all
-> the active references to the inode (because there are none), and so
-> on.
-
-Can you elaborate on which statistics you are referring to?
-
-I can see nr_inodes and nr_unused, but I don't see the delta being
-broken down further into open and dirty - and if dirty whether it's
-the inode that's dirty, or the page cache. So it appears we already
-don't know how many inodes can be pinned today by the page cache.
-
-From what I can see there seems to be a general lack of insight into
-the state of the icache that may need a more general solution that is
-outside the scope of my patch here.
-
-> Essentially we have nothing tracking these inodes at all at this
-> point, so if we ever miss a call in the mm/ to add the inode to the
-> LRU that you've sprinked throughout the mm/ code, we essentially
-> leak the inode. It's hard enough tracking down bugs that result in
-> "VFS: busy inodes after unmount" errors without actively adding
-> infrastructure that intentionally makes inodes disappear from
-> tracking.
-
-Well yes, but that's no different than missing an iput(). And there is
-a lot more of those than there are page cache deletion sides.
-
-> > Meanwhile, the MM is standing by, going "You know, I could tell you
-> > exactly when those actually become reclaimable..."
-> > 
-> > If you think this is the more elegant implementation, simply because
-> > it follows a made-up information hierarchy that doesn't actually map
-> > to the real world, then I don't know what to tell you.
-> > 
-> > We take i_count and dirty inodes off the list because it's silly to
-> > rotate them over and over, when we could just re-add them the moment
-> > the pin goes away. It's not a stretch to do the same for populated
-> > inodes, which usually make up a much bigger share of the pool.
-> 
-> We don't take dirty inodes off the LRU. We only take referenced
-> inodes off the LRU in the shrinker isolation function because we can
-> guarantee that when the inode reference is dropped via iput() the
-> inode will be added back to the LRU if it needs to be placed there.
-> 
-> This is all all internal to the inode cache functionality
-> (fs/inode.c) and that's the way it should remain because anything
-> else will rapidly become unmaintainable.
-
-You don't seem to understand how this code actually works - this is
-patently false. I think this conversation could be more productive if
-you spent some time catching up on that first.
