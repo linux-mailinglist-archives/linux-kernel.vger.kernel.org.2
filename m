@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB203AA773
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793063AA776
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234590AbhFPXaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 19:30:04 -0400
-Received: from mga06.intel.com ([134.134.136.31]:30915 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234508AbhFPXaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 19:30:03 -0400
-IronPort-SDR: 9Fl8ijXuZvj1oEDZcUZ+JKxEr5QmhhgIVu9MjzrjBWBbzjTQDlIvmAr0lSZmZrgUCXgNgD0Jh5
- XB9iCLay9VcA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="267420483"
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="267420483"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 16:27:53 -0700
-IronPort-SDR: c/uhERQyM+sCgOUqZHbGxAylMWWwjSLqhn+8dqVDprMkHlPe6u7GA6VFA4cVP64YtyRNR/QyBq
- +DtCdxpl9d1A==
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="479269628"
-Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.209.42.204]) ([10.209.42.204])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 16:27:52 -0700
-Subject: Re: [PATCH][next] ice: remove redundant continue statement in a
- for-loop
-To:     Colin King <colin.king@canonical.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210615142847.60161-1-colin.king@canonical.com>
-From:   Jacob Keller <jacob.e.keller@intel.com>
-Organization: Intel Corporation
-Message-ID: <2a347503-9879-0a13-555b-a007acfdec3c@intel.com>
-Date:   Wed, 16 Jun 2021 16:27:50 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234597AbhFPXab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 19:30:31 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:44604 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234508AbhFPXa3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 19:30:29 -0400
+Received: by mail-io1-f54.google.com with SMTP id q3so1020365iop.11;
+        Wed, 16 Jun 2021 16:28:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xV2j/EdwVr9gYo7BsYPb7ja8r4fncuGCJrMkRrs/+ek=;
+        b=XebRvEMUZyg/a4OFiwIlyNkZV+OZyTKcP9saF/Idd2BqZ1vAB61w27nbf5hJo83NJz
+         5MVwXMjGit8Rf+VDu/liOmRbvd7kMBteVAkg/nuxF2zUR67J85sYxLxcDoZhH/85WPL6
+         QXS15pFgJdbQqVVbOaizcsNnMWToOVm3rxsI98XEJLkWbbxPiyiIyWs8Okgk7WjFVu/u
+         217gKRYwIVlTkw0/5S2+5BrVxMHDNvF7lWscXkYC0IXqNRT1/lWLZH6kEZ4FkL02ghzb
+         /uHXR7PDcmp9s2hPFL2leCk5RrQlalRW410x+K6uNiG6Xokf0GkAqjux6DW/tKa0tLpx
+         bdyQ==
+X-Gm-Message-State: AOAM5319gcAy5Vf0w5LO6yEvdIIiXsSHSIaA21zEpfbXJqpygGw+Uqz1
+        Q8z5F2FcX/lHGJLDN23uag==
+X-Google-Smtp-Source: ABdhPJy3RhIjKN/CDWVX8vYjXN0Rn6x/UxRBlzkJvxqDZVxPyVz+nQXCDwrjbqXkYYHI4y39Ek+SAA==
+X-Received: by 2002:a05:6602:38d:: with SMTP id f13mr1377780iov.109.1623886101700;
+        Wed, 16 Jun 2021 16:28:21 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id i7sm1341033ilq.50.2021.06.16.16.28.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 16:28:20 -0700 (PDT)
+Received: (nullmailer pid 284524 invoked by uid 1000);
+        Wed, 16 Jun 2021 23:28:17 -0000
+Date:   Wed, 16 Jun 2021 17:28:17 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Eddie Hung <eddie.hung@mediatek.com>
+Subject: Re: [PATCH 1/3] dt-bindings: phy: mediatek: tphy: add support
+ hardware version 3
+Message-ID: <20210616232817.GA277610@robh.at.kernel.org>
+References: <1622791880-20262-1-git-send-email-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20210615142847.60161-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622791880-20262-1-git-send-email-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/15/2021 7:28 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Fri, Jun 04, 2021 at 03:31:18PM +0800, Chunfeng Yun wrote:
+> The PHYA architecture is updated, and doesn't support slew rate
+> calibration anymore on 7nm or advanced process, add a new version
+> number to support it.
+> Note: the FreqMeter bank is not used but reserved.
 > 
-> The continue statement in the for-loop is redundant. Re-work the hw_lock
-> check to remove it.
-> 
-> Addresses-Coverity: ("Continue has no effect")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 > ---
-
-Yep, that logic makes more sense.
-
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-
->  drivers/net/ethernet/intel/ice/ice_ptp_hw.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
+>  .../devicetree/bindings/phy/mediatek,tphy.yaml     | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_ptp_hw.c b/drivers/net/ethernet/intel/ice/ice_ptp_hw.c
-> index 267312fad59a..3eca0e4eab0b 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_ptp_hw.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_ptp_hw.c
-> @@ -410,13 +410,11 @@ bool ice_ptp_lock(struct ice_hw *hw)
->  	for (i = 0; i < MAX_TRIES; i++) {
->  		hw_lock = rd32(hw, PFTSYN_SEM + (PFTSYN_SEM_BYTES * hw->pf_id));
->  		hw_lock = hw_lock & PFTSYN_SEM_BUSY_M;
-> -		if (hw_lock) {
-> -			/* Somebody is holding the lock */
-> -			usleep_range(10000, 20000);
-> -			continue;
-> -		} else {
-> +		if (!hw_lock)
->  			break;
-> -		}
-> +
-> +		/* Somebody is holding the lock */
-> +		usleep_range(10000, 20000);
->  	}
+> diff --git a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+> index b8a7651a3d9a..939c09296b5f 100644
+> --- a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+> @@ -15,7 +15,7 @@ description: |
+>    controllers on MediaTek SoCs, includes USB2.0, USB3.0, PCIe and SATA.
 >  
->  	return !hw_lock;
-> 
+>    Layout differences of banks between T-PHY V1 (mt8173/mt2701) and
+> -  T-PHY V2 (mt2712) when works on USB mode:
+> +  T-PHY V2 (mt2712) / V3 (mt8195) when works on USB mode:
+>    -----------------------------------
+>    Version 1:
+>    port        offset    bank
+> @@ -34,7 +34,7 @@ description: |
+>    u2 port2    0x1800    U2PHY_COM
+>                ...
+>  
+> -  Version 2:
+> +  Version 2/3:
+>    port        offset    bank
+>    u2 port0    0x0000    MISC
+>                0x0100    FMREG
+> @@ -59,7 +59,8 @@ description: |
+>  
+>    SPLLC shared by u3 ports and FMREG shared by u2 ports on V1 are put back
+>    into each port; a new bank MISC for u2 ports and CHIP for u3 ports are
+> -  added on V2.
+> +  added on V2; the FMREG bank for slew rate calibration is not used anymore
+> +  and reserved on V3;
+>  
+>  properties:
+>    $nodename:
+> @@ -79,8 +80,11 @@ properties:
+>                - mediatek,mt2712-tphy
+>                - mediatek,mt7629-tphy
+>                - mediatek,mt8183-tphy
+> -              - mediatek,mt8195-tphy
+>            - const: mediatek,generic-tphy-v2
+
+This doesn't look like a good change.
+
+What happens if a DT has the above. It didn't work or didn't support new 
+features? Please clarify in the commit the implications of changing 
+this. Changing a DT to 'mediatek,generic-tphy-v3' will break existing OS 
+if it was looking for v2.
+
+> +      - items:
+> +          - enum:
+> +              - mediatek,mt8195-tphy
+> +          - const: mediatek,generic-tphy-v3
+>        - const: mediatek,mt2701-u3phy
+>          deprecated: true
+>        - const: mediatek,mt2712-u3phy
+> @@ -91,7 +95,7 @@ properties:
+>      description:
+>        Register shared by multiple ports, exclude port's private register.
+>        It is needed for T-PHY V1, such as mt2701 and mt8173, but not for
+> -      T-PHY V2, such as mt2712.
+> +      T-PHY V2/V3, such as mt2712.
+>      maxItems: 1
+>  
+>    "#address-cells":
+> -- 
+> 2.18.0
