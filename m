@@ -2,91 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8213A95E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14AE3A95EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbhFPJUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:20:48 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:17117 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231524AbhFPJUq (ORCPT
+        id S232194AbhFPJVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:21:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43290 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231489AbhFPJVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:20:46 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 16 Jun 2021 02:18:41 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Jun 2021 02:18:38 -0700
-X-QCInternal: smtphost
-Received: from c-sbhanu-linux.qualcomm.com ([10.242.50.201])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 16 Jun 2021 14:47:42 +0530
-Received: by c-sbhanu-linux.qualcomm.com (Postfix, from userid 2344807)
-        id 0DB0A4CFC; Wed, 16 Jun 2021 14:47:41 +0530 (IST)
-From:   Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org, robh+dt@kernel.org
-Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
-        vbadigan@codeaurora.org, rampraka@codeaurora.org,
-        sayalil@codeaurora.org, sartgarg@codeaurora.org,
-        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        sibis@codeaurora.org, okukatla@codeaurora.org, djakov@kernel.org,
-        cang@codeaurora.org, pragalla@codeaurora.org,
-        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org,
-        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Subject: [PATCH V2] arm64: dts: qcom: sc7180: Add xo clock for eMMC and Sd card
-Date:   Wed, 16 Jun 2021 14:47:39 +0530
-Message-Id: <1623835059-29302-1-git-send-email-sbhanu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 16 Jun 2021 05:21:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623835172;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qumv7jbVw+hxWVCUJgAAifjH3q12vZ4JPKnNlTv8Q/k=;
+        b=cXsoblW4PNPsg3R95D/8KXpO5LbopfP5qJsvp+uq199YW53ofpBunLMv9TID6CA1T87XNH
+        ZlJgvtdSp8J4H2SHwyGckk3oLT0zFVettW3v5unSUbesA0OWUHXmVPet3qghJPRUjWlyay
+        8e8K+SOvLnFEj6chv4RDU/SW+fqBnZk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-60-J2Uk_XPePa2fVOX2u6zVNw-1; Wed, 16 Jun 2021 05:19:31 -0400
+X-MC-Unique: J2Uk_XPePa2fVOX2u6zVNw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 625741012581;
+        Wed, 16 Jun 2021 09:19:30 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E61C61094;
+        Wed, 16 Jun 2021 09:19:29 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210614201435.1379188-2-willy@infradead.org>
+References: <20210614201435.1379188-2-willy@infradead.org> <20210614201435.1379188-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, akpm@linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 01/33] mm: Convert get_page_unless_zero() to return bool
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <810911.1623835168.1@warthog.procyon.org.uk>
+Date:   Wed, 16 Jun 2021 10:19:28 +0100
+Message-ID: <810912.1623835168@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add XO clock for eMMC and SDCard as it would help in calculating dll
-register values.
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
+> atomic_add_unless() returns bool, so remove the widening casts to int
+> in page_ref_add_unless() and get_page_unless_zero().  This causes gcc
+> to produce slightly larger code in isolate_migratepages_block(), but
+> it's not clear that it's worse code.  Net +19 bytes of text.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Changes since V1:
-	- Updated commit message as suggested by Bjorn Andersson.
-	- Added space after before xo clock name as suggested by
-	  Konrad Dybcio.
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 52115e0..fb1d9ad 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -701,8 +701,9 @@
- 			interrupt-names = "hc_irq", "pwr_irq";
- 
- 			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
--					<&gcc GCC_SDCC1_AHB_CLK>;
--			clock-names = "core", "iface";
-+				 <&gcc GCC_SDCC1_AHB_CLK>,
-+				 <&rpmhcc RPMH_CXO_CLK>;
-+			clock-names = "core", "iface", "xo";
- 			interconnects = <&aggre1_noc MASTER_EMMC 0 &mc_virt SLAVE_EBI1 0>,
- 					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_EMMC_CFG 0>;
- 			interconnect-names = "sdhc-ddr","cpu-sdhc";
-@@ -2564,8 +2565,9 @@
- 			interrupt-names = "hc_irq", "pwr_irq";
- 
- 			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
--					<&gcc GCC_SDCC2_AHB_CLK>;
--			clock-names = "core", "iface";
-+				 <&gcc GCC_SDCC2_AHB_CLK>,
-+				 <&rpmhcc RPMH_CXO_CLK>;
-+			clock-names = "core", "iface", "xo";
- 
- 			interconnects = <&aggre1_noc MASTER_SDCC_2 0 &mc_virt SLAVE_EBI1 0>,
- 					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_SDCC_2 0>;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+Reviewed-by: David Howells <dhowells@redhat.com>
 
