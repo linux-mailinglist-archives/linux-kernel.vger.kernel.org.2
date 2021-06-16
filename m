@@ -2,100 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45D53A9B6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02B43A9B6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhFPNE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
+        id S233128AbhFPNFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232223AbhFPNEx (ORCPT
+        with ESMTP id S232223AbhFPNFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:04:53 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7A5C061574;
-        Wed, 16 Jun 2021 06:02:47 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c2b00ec25a986a17212ee.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:2b00:ec25:a986:a172:12ee])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 16 Jun 2021 09:05:05 -0400
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF87C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:02:59 -0700 (PDT)
+Received: from [192.168.1.79] (bband-dyn73.178-41-129.t-com.sk [178.41.129.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A2E521EC034B;
-        Wed, 16 Jun 2021 15:02:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623848565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=CiKchIUr0qsd0VQgipb+5HCYYlUFz5ZEMGD8fc10MaI=;
-        b=H8433tCD6LYSj0pTIRx+iUbvFnWqePuxwaoSpTp3gVQvPvI0bQkzKuKAvHI0t12asKtE1W
-        gBqNy3JRdC9z5Yo8T4BiQONrivaHE3WD01yGNn+GKXEWNVZeWy20IH2WpptsMQ46fneeyZ
-        6Q78J9rDsx8TwLjWBU/yu/aZ6Rz2r6A=
-Date:   Wed, 16 Jun 2021 15:02:34 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-Subject: Re: [PATCH Part1 RFC v3 11/22] x86/sev: Add helper for validating
- pages in early enc attribute changes
-Message-ID: <YMn2aiMSEVUuWW8B@zn.tnic>
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-12-brijesh.singh@amd.com>
- <YMI02+k2zk9eazjQ@zn.tnic>
- <d0759889-94df-73b0-4285-fa064eb187cd@amd.com>
- <YMen5wVqR31D/Q4z@zn.tnic>
- <70db789d-b1aa-c355-2d16-51ace4666b3f@amd.com>
- <YMnNYNBvEEAr5kqd@zn.tnic>
- <f7e70782-701c-13dd-43d2-67c92f8cf36f@amd.com>
- <YMnoeRcuMfAqX5Vf@zn.tnic>
- <9f012bcb-4756-600d-6fe8-b1db9b972f17@amd.com>
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id A5A8B3F31F;
+        Wed, 16 Jun 2021 15:02:56 +0200 (CEST)
+Date:   Wed, 16 Jun 2021 15:02:50 +0200
+From:   Martin Botka <martin.botka@somainline.org>
+Subject: Re: [PATCH V3 2/2] arch: arm64: dts: qcom: Add support for Sony
+ Xperia 10II
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+Message-Id: <QKPSUQ.XAU6NR7VVNJG3@somainline.org>
+In-Reply-To: <YMlGb4W1c3VyKeCj@builder.lan>
+References: <20210613080522.25230-1-martin.botka@somainline.org>
+        <20210613080522.25230-2-martin.botka@somainline.org>
+        <YMlGb4W1c3VyKeCj@builder.lan>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9f012bcb-4756-600d-6fe8-b1db9b972f17@amd.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 07:49:25AM -0500, Brijesh Singh wrote:
-> If you still think ...
 
-I think you should answer my question first:
 
-> Imagine you're a guest owner and you haven't written the SNP code and
-> you don't know how it works.
->
-> You start a guest in the public cloud and it fails because the
-> hypervisor violates the GHCB protocol and all that guest prints before
-> it dies is
->
-> "general request termination"
->
-> How are you - the guest owner - going to find out what exactly happened?
->
-> Call support?
+On Tue, Jun 15 2021 at 07:31:43 PM -0500, Bjorn Andersson 
+<bjorn.andersson@linaro.org> wrote:
+> On Sun 13 Jun 03:05 CDT 2021, Martin Botka wrote:
+> 
+>>  This commits add support for Sony Xperia 10II based on the SM6125 
+>> SoC.
+>> 
+>>  Currently working features:
+>>  - dmesg output to bootloader preconfigured display
+>>  - USB
+>>  - eMMC
+>>  - Volume down button
+>> 
+>>  Signed-off-by: Martin Botka <martin.botka@somainline.org>
+>>  ---
+>>  Changes in v2, v3:
+>>  None
+>>   arch/arm64/boot/dts/qcom/Makefile             |   1 +
+>>   .../qcom/sm6125-sony-xperia-seine-pdx201.dts  | 105 
+>> ++++++++++++++++++
+>>   2 files changed, 106 insertions(+)
+>>   create mode 100644 
+>> arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
+>> 
+>>  diff --git a/arch/arm64/boot/dts/qcom/Makefile 
+>> b/arch/arm64/boot/dts/qcom/Makefile
+>>  index 456502aeee49..5a70dd9593c2 100644
+>>  --- a/arch/arm64/boot/dts/qcom/Makefile
+>>  +++ b/arch/arm64/boot/dts/qcom/Makefile
+>>  @@ -69,6 +69,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= 
+>> sdm845-oneplus-enchilada.dtb
+>>   dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-oneplus-fajita.dtb
+>>   dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-xiaomi-beryllium.dtb
+>>   dtb-$(CONFIG_ARCH_QCOM)	+= sdm850-lenovo-yoga-c630.dtb
+>>  +dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-sony-xperia-seine-pdx201.dtb
+>>   dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
+>>   dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
+>>   dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-hdk.dtb
+>>  diff --git 
+>> a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts 
+>> b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
+>>  new file mode 100644
+>>  index 000000000000..b1d6de430273
+>>  --- /dev/null
+>>  +++ b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
+>>  @@ -0,0 +1,105 @@
+>>  +// SPDX-License-Identifier: BSD-3-Clause
+>>  +/*
+>>  + * Copyright (c) 2021, Martin Botka <martin.botka@somainline.org>
+>>  + */
+>>  +
+>>  +/dts-v1/;
+>>  +
+>>  +#include "sm6125.dtsi"
+>>  +#include <dt-bindings/gpio/gpio.h>
+>>  +#include <dt-bindings/input/input.h>
+>>  +#include <dt-bindings/input/gpio-keys.h>
+>>  +
+>>  +/ {
+>>  +	/* required for bootloader to select correct board */
+>>  +	qcom,msm-id = <394 0x10000>; /* sm6125 v1 */
+>>  +	qcom,board-id = <34 0>;
+>>  +
+>>  +	model = "Sony Xperia 10 II";
+>>  +	compatible = "sony,pdx201", "qcom,sm6125";
+>>  +
+>>  +	chosen {
+>>  +		#address-cells = <2>;
+>>  +		#size-cells = <2>;
+>>  +		ranges;
+>>  +
+>>  +		framebuffer0: framebuffer@5c000000 {
+>>  +			compatible = "simple-framebuffer";
+>>  +			reg = <0 0x5c000000 0 (2520 * 1080 * 4)>;
+>>  +			width = <1080>;
+>>  +			height = <2520>;
+>>  +			stride = <(1080 * 4)>;
+>>  +			format = "a8r8g8b8";
+>>  +		};
+>>  +	};
+>>  +
+>>  +	extcon_usb: extcon-usb {
+>>  +		compatible = "linux,extcon-usb-gpio";
+>>  +		id-gpio = <&tlmm 102 GPIO_ACTIVE_HIGH>;
+>>  +	};
+>>  +
+>>  +	gpio_keys {
+> 
+> No '_' in node names, please go '-'.
 
-And let me paraphrase it again: if the error condition with which the
-guest terminates is not uniquely identifiable but simply a "general
-request", how are such conditions going to be debugged?
+ack
 
--- 
-Regards/Gruss,
-    Boris.
+> 
+>>  +		status = "okay";
+>>  +		compatible = "gpio-keys";
+>>  +		input-name = "gpio-keys";
+>>  +		#address-cells = <1>;
+>>  +		#size-cells = <0>;
+>>  +		autorepeat;
+>>  +
+>>  +		vol_dn {
+> 
+> Ditto.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+ack
+
+> 
+>>  +			label = "Volume Down";
+>>  +			gpios = <&tlmm 47 GPIO_ACTIVE_LOW>;
+>>  +			linux,input-type = <1>;
+>>  +			linux,code = <KEY_VOLUMEDOWN>;
+>>  +			gpio-key,wakeup;
+>>  +			debounce-interval = <15>;
+>>  +		};
+>>  +	};
+>>  +
+> 
+> Stray indentation on this line.
+
+My bad. Will remove.
+
+> 
+> Thanks,
+> Bjorn
+> 
+>>  +	reserved_memory {
+>>  +		#address-cells = <2>;
+>>  +		#size-cells = <2>;
+>>  +		debug_mem: memory@ffb00000 {
+>>  +			reg = <0x0 0xffb00000 0x0 0xc0000>;
+>>  +			no-map;
+>>  +		};
+>>  +
+>>  +		last_log_mem: memory@ffbc0000 {
+>>  +			reg = <0x0 0xffbc0000 0x0 0x80000>;
+>>  +			no-map;
+>>  +		};
+>>  +
+>>  +		pstore_mem: ramoops@ffc00000 {
+>>  +			compatible = "ramoops";
+>>  +			reg = <0x0 0xffc40000 0x0 0xc0000>;
+>>  +			record-size = <0x1000>;
+>>  +			console-size = <0x40000>;
+>>  +			msg-size = <0x20000 0x20000>;
+>>  +		};
+>>  +
+>>  +		cmdline_mem: memory@ffd00000 {
+>>  +			reg = <0x0 0xffd40000 0x0 0x1000>;
+>>  +			no-map;
+>>  +		};
+>>  +	};
+>>  +};
+>>  +
+>>  +&hsusb_phy1 {
+>>  +	status = "okay";
+>>  +};
+>>  +
+>>  +&sdhc_1 {
+>>  +	status = "okay";
+>>  +};
+>>  +
+>>  +&tlmm {
+>>  +	gpio-reserved-ranges = <22 2>, <28 6>;
+>>  +};
+>>  +
+>>  +&usb3 {
+>>  +	status = "okay";
+>>  +};
+>>  +
+>>  +&usb3_dwc3 {
+>>  +	extcon = <&extcon_usb>;
+>>  +};
+>>  --
+>>  2.31.1
+>> 
+
+
