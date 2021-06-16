@@ -2,141 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A613A9ED9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E7A3A9EE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234552AbhFPPXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:23:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234002AbhFPPXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:23:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C64161375;
-        Wed, 16 Jun 2021 15:20:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623856859;
-        bh=27eUZzjv41JFT/kKzRpcOFEIMGKaONkaM9MTgUB4lvc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=buypIobsBvwFCoYyKG42xHmi6qlL+WknZA0yV9zcssR1qukECIItvMs5lYF24rq39
-         7G2rK+9x62EOIbBxA0GYsKblM2k/E/zY2ttt9SmAeF7mvexO/3Tz9FULTJZ4xZ8hQp
-         qo21npzZcH3m2VJR+PEzbRav27lgret3OHmHLrMa+yzTf6uyIS2u06r0IfJ8J87NEX
-         OqsnNy+LYpdR4X0lEw0DFSgZR3N9ejKQ6K068cLLxzaz7UHmmGuIxDDU53pfou+Y7I
-         7PxjBInaO0mwtN8Ezuk56bJ2wt0T5Z4h3v7InClBkLr24pCiSYHUhSE/RiPZV2v6m+
-         JY0BVpsRsnbVg==
-Received: by mail-ej1-f46.google.com with SMTP id gt18so4491497ejc.11;
-        Wed, 16 Jun 2021 08:20:59 -0700 (PDT)
-X-Gm-Message-State: AOAM5319eO8cG75H/8uYamndOULFyyErZais8PlVoSTjOLana1TnjBwa
-        rjaRFRhYxc2qqxkxtffs1dJdMJmbZy5+VesZ+Q==
-X-Google-Smtp-Source: ABdhPJwVu+BsUV7DzrQnvv679MoG3zGD601vblw0HBeBpWUI8BezJDE8UWYZlHYd9yj6WnDUi1/TfNk1GXKkgoaWTXw=
-X-Received: by 2002:a17:907:2059:: with SMTP id pg25mr76098ejb.130.1623856857816;
- Wed, 16 Jun 2021 08:20:57 -0700 (PDT)
+        id S234566AbhFPPYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234002AbhFPPYh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:24:37 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742AAC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:22:31 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id r16so4370395ljk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1ukyOAmpzQWdmpmUsMzfBm79YkK27laiGKotM430XzI=;
+        b=EkMIOR/PiXLp54WcwHksaJA9STCAGH6XFItpd/u6uetS/tFJbAkSo5TUW9dDdAPUwm
+         qdw4wP6RH//rcPEqpzsG5At1Yc6a3AltYSGYhmB0Z9Vl2omGzB1LAIrBhr4nf6c1xJnZ
+         UEusPQ7BHmCzGvMnCnEINXLmBfjz+GQ2ARt0A1lCXjEdeHbhsOsEr1mhRxWioafCDueu
+         FL383FSjLuSaeIkB6XLtV1ZzbVV04pzn7s7RzzYm4+C513U0UdqtT6GjHULiLkjL8pYd
+         9nhz0KFPqD6MMMnIyrcCDAVMudnWicQT16jHrcXc0NKX00dJ+AR03w+/i8Q1L/pF8bj6
+         x8XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1ukyOAmpzQWdmpmUsMzfBm79YkK27laiGKotM430XzI=;
+        b=WzWtKYB6F59MB9Cj2pqsnKWmNz53AIdtElja+6MS8Sp+Bq7pUJm68t2/MrlVNP39A5
+         AqcGMwxZIpAXaiY4EQYeHub3GeYzaZwd1BaILP43L6PPvTSBb/AuLzN/4vbUOk3hrH+Z
+         Nhw+xvIgvlfyMZk/LyWhNIOZuLmnx4kq4JFCgGWOiTPg6mn432sMaIXa9J7pIvoNMlTR
+         9gU8Z06U9HzEPwg/LULeWc1auILFFl6opAAZ01x3rIh61ExO0Z23bW64f8ET/tSA7PtD
+         weuB8EBzngWqY7UGHc/np5rMNmDmthl28LygVz6oCtwjx1vAOM9sQri0F0HhjNGpP2rh
+         BIUg==
+X-Gm-Message-State: AOAM530x9jDftmfvcLShkVUHuiCr9rqm6JYUf6eQJ54pi1dpW6Tsa+uV
+        oj7UNFLUqvrZ4gI2Nxe3l7t0ntEvIrVJLbtRMw0PRQ==
+X-Google-Smtp-Source: ABdhPJw84LuQUqmTdWOdf0vTCuN4kM/khUBiuNSfgQsV9GgaawL246DIVJT4/L60uE2YPOylDsN6BhSj2t9R0rZ/V7I=
+X-Received: by 2002:a2e:9b07:: with SMTP id u7mr307435lji.209.1623856949636;
+ Wed, 16 Jun 2021 08:22:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210608102547.4880-1-steven_lee@aspeedtech.com>
- <20210608102547.4880-3-steven_lee@aspeedtech.com> <20210610162320.GA1910317@robh.at.kernel.org>
- <f639f1bb-fe53-4c15-a6dd-91b45ea7eef1@www.fastmail.com>
-In-Reply-To: <f639f1bb-fe53-4c15-a6dd-91b45ea7eef1@www.fastmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 16 Jun 2021 09:20:44 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJ_nwwyCBDg9p+AnriKw=9dC0WmLCw7dcz6qA87hRAu5g@mail.gmail.com>
-Message-ID: <CAL_JsqJ_nwwyCBDg9p+AnriKw=9dC0WmLCw7dcz6qA87hRAu5g@mail.gmail.com>
-Subject: Re: [PATCH v5 02/10] dt-bindings: aspeed-sgpio: Add ast2600 sgpio compatibles.
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     Steven Lee <steven_lee@aspeedtech.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Joel Stanley <joel@jms.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
+References: <1623855954-6970-1-git-send-email-yt.chang@mediatek.com>
+In-Reply-To: <1623855954-6970-1-git-send-email-yt.chang@mediatek.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 16 Jun 2021 17:22:18 +0200
+Message-ID: <CAKfTPtBZi60fmCGkOYoRmJ4YVE4523VQfeTgnbUGzaTEk9aq=g@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched: Add tunable capacity margin for fis_capacity
+To:     YT Chang <yt.chang@mediatek.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Paul Turner <pjt@google.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fs <linux-fsdevel@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 5:27 PM Andrew Jeffery <andrew@aj.id.au> wrote:
+On Wed, 16 Jun 2021 at 17:06, YT Chang <yt.chang@mediatek.com> wrote:
 >
->
->
-> On Fri, 11 Jun 2021, at 01:53, Rob Herring wrote:
-> > On Tue, Jun 08, 2021 at 06:25:37PM +0800, Steven Lee wrote:
-> > > AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another o=
-ne
-> > > with 80 pins. Add ast2600-sgpiom0-80 and ast2600-sgpiom-128 compatibl=
-es
-> > > and update descriptions to introduce the max number of available gpio
-> > > pins that AST2600 supported.
-> > >
-> > > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> > > Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-> > > ---
-> > >  Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml | 9 ++++++-=
---
-> > >  1 file changed, 6 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml=
- b/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
-> > > index b2ae211411ff..0e42eded3c1e 100644
-> > > --- a/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
-> > > +++ b/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
-> > > @@ -10,9 +10,10 @@ maintainers:
-> > >    - Andrew Jeffery <andrew@aj.id.au>
-> > >
-> > >  description:
-> > > -  This SGPIO controller is for ASPEED AST2500 SoC, it supports up to=
- 80 full
-> > > -  featured Serial GPIOs. Each of the Serial GPIO pins can be program=
-med to
-> > > -  support the following options
-> > > +  This SGPIO controller is for ASPEED AST2400, AST2500 and AST2600 S=
-oC,
-> > > +  AST2600 have two sgpio master one with 128 pins another one with 8=
-0 pins,
-> > > +  AST2500/AST2400 have one sgpio master with 80 pins. Each of the Se=
-rial
-> > > +  GPIO pins can be programmed to support the following options
-> > >    - Support interrupt option for each input port and various interru=
-pt
-> > >      sensitivity option (level-high, level-low, edge-high, edge-low)
-> > >    - Support reset tolerance option for each output port
-> > > @@ -25,6 +26,8 @@ properties:
-> > >      enum:
-> > >        - aspeed,ast2400-sgpio
-> > >        - aspeed,ast2500-sgpio
-> > > +      - aspeed,ast2600-sgpiom-80
-> > > +      - aspeed,ast2600-sgpiom-128
-> >
-> > If the number of GPIOs is the only difference, then I don't think you
-> > should get rid of ngpios. It's one thing if it varies from one SoC to
-> > the next, but if something is per instance we should have a property.
-> >
->
-> There are two issues:
->
-> 1. The maximum number of GPIOs supported by the controller
-> 2. The maximum number of GPIOs supported by the platform
->
-> These are different because of what the controller does - here's some pre=
-vious discussion on the topic:
->
-> https://lore.kernel.org/linux-gpio/f2875111-9ba9-43b7-b2a4-d00c8725f5a0@w=
-ww.fastmail.com/
->
-> We've used ngpios to describe 2; this decision was made prior to the 2600=
- design - the SGPIO controller for both the 2400 and 2500 supported a maxim=
-um of 80 GPIOs. With the 2600 we have to differentiate between the two SGPI=
-O controllers because they support a different maximum number of GPIOs. The=
- proposed approach of different compatibles keeps the behaviour of ngpios t=
-he same across all controller implementations.
+> Currently, the margin of cpu frequency raising and cpu overutilized are
+> hard-coded as 25% (1280/1024). Make the margin tunable
 
-Okay, that makes sense.
+cpu_overutilized is 20% not 25%. Even if they light looks similar
+these 2 margins are differents
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> to control the aggressive for placement and frequency control. Such as
+> for power tuning framework could adjust smaller margin to slow down
+> frequency raising speed and let task stay in smaller cpu.
+>
+> For light loading scenarios, like beach buggy blitz and messaging apps,
+> the app threads are moved big core with 25% margin and causing
+> unnecessary power.
+> With 0% capacity margin (1024/1024), the app threads could be kept in
+> little core and deliver better power results without any fps drop.
+>
+> capacity margin        0%          10%          20%          30%
+>                      current        current       current      current
+>                   Fps  (mA)    Fps    (mA)   Fps   (mA)    Fps  (mA)
+> Beach buggy blitz  60 198.164  60   203.211  60   209.984  60  213.374
+> Yahoo browser      60 232.301 59.97 237.52  59.95 248.213  60  262.809
+
+Would be good to know the impact of each part:
+ Changing the +25% in cpufreq governor
+ Changing the 20% margin to detect overloaded CPU
+
+Also, IIUC your description, the current values are ok with some UCs
+but not with others like the 2 aboves. Have you evaluated whether it
+was not your power model that was not accurate ?
+
+>
+> Change-Id: Iba48c556ed1b73c9a2699e9e809bc7d9333dc004
+> Signed-off-by: YT Chang <yt.chang@mediatek.com>
+> ---
+>  include/linux/sched/cpufreq.h | 19 +++++++++++++++++++
+>  include/linux/sched/sysctl.h  |  1 +
+>  include/linux/sysctl.h        |  1 +
+>  kernel/sched/fair.c           |  4 +++-
+>  kernel/sysctl.c               | 15 +++++++++++++++
+>  5 files changed, 39 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
+> index 6205578..8a6c23a1 100644
+> --- a/include/linux/sched/cpufreq.h
+> +++ b/include/linux/sched/cpufreq.h
+> @@ -23,6 +23,23 @@ void cpufreq_add_update_util_hook(int cpu, struct update_util_data *data,
+>  void cpufreq_remove_update_util_hook(int cpu);
+>  bool cpufreq_this_cpu_can_update(struct cpufreq_policy *policy);
+>
+> +#ifdef CONFIG_SMP
+> +extern unsigned int sysctl_sched_capacity_margin;
+> +
+> +static inline unsigned long map_util_freq(unsigned long util,
+> +                                         unsigned long freq, unsigned long cap)
+> +{
+> +       freq = freq * util / cap;
+> +       freq = freq * sysctl_sched_capacity_margin / SCHED_CAPACITY_SCALE;
+> +
+> +       return freq;
+> +}
+> +
+> +static inline unsigned long map_util_perf(unsigned long util)
+> +{
+> +       return util * sysctl_sched_capacity_margin / SCHED_CAPACITY_SCALE;
+> +}
+> +#else
+>  static inline unsigned long map_util_freq(unsigned long util,
+>                                         unsigned long freq, unsigned long cap)
+>  {
+> @@ -33,6 +50,8 @@ static inline unsigned long map_util_perf(unsigned long util)
+>  {
+>         return util + (util >> 2);
+>  }
+> +#endif
+> +
+>  #endif /* CONFIG_CPU_FREQ */
+>
+>  #endif /* _LINUX_SCHED_CPUFREQ_H */
+> diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+> index db2c0f3..5dee024 100644
+> --- a/include/linux/sched/sysctl.h
+> +++ b/include/linux/sched/sysctl.h
+> @@ -10,6 +10,7 @@
+>
+>  #ifdef CONFIG_SMP
+>  extern unsigned int sysctl_hung_task_all_cpu_backtrace;
+> +extern unsigned int sysctl_sched_capacity_margin;
+>  #else
+>  #define sysctl_hung_task_all_cpu_backtrace 0
+>  #endif /* CONFIG_SMP */
+> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+> index d99ca99..af6d70f 100644
+> --- a/include/linux/sysctl.h
+> +++ b/include/linux/sysctl.h
+> @@ -41,6 +41,7 @@
+>  #define SYSCTL_ZERO    ((void *)&sysctl_vals[0])
+>  #define SYSCTL_ONE     ((void *)&sysctl_vals[1])
+>  #define SYSCTL_INT_MAX ((void *)&sysctl_vals[2])
+> +#define SCHED_CAPACITY_MARGIN_MIN   1024
+>
+>  extern const int sysctl_vals[];
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 20aa234..609b431 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -111,7 +111,9 @@ int __weak arch_asym_cpu_priority(int cpu)
+>   *
+>   * (default: ~20%)
+>   */
+> -#define fits_capacity(cap, max)        ((cap) * 1280 < (max) * 1024)
+> +unsigned int sysctl_sched_capacity_margin = 1280;
+> +EXPORT_SYMBOL_GPL(sysctl_sched_capacity_margin);
+> +#define fits_capacity(cap, max)        ((cap) * sysctl_sched_capacity_margin < (max) * 1024)
+>
+>  /*
+>   * The margin used when comparing CPU capacities.
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 14edf84..d6d2b84 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -127,6 +127,11 @@
+>  static int six_hundred_forty_kb = 640 * 1024;
+>  #endif
+>
+> +/* this is needed for the proc of sysctl_sched_capacity_margin */
+> +#ifdef CONFIG_SMP
+> +static int min_sched_capacity_margin = 1024;
+> +#endif /* CONFIG_SMP */
+> +
+>  /* this is needed for the proc_doulongvec_minmax of vm_dirty_bytes */
+>  static unsigned long dirty_bytes_min = 2 * PAGE_SIZE;
+>
+> @@ -1716,6 +1721,16 @@ int proc_do_static_key(struct ctl_table *table, int write,
+>                 .mode           = 0644,
+>                 .proc_handler   = proc_dointvec,
+>         },
+> +#ifdef CONFIG_SMP
+> +       {
+> +               .procname       = "sched_capcity_margin",
+> +               .data           = &sysctl_sched_capacity_margin,
+> +               .maxlen         = sizeof(unsigned int),
+> +               .mode           = 0644,
+> +               .proc_handler   = proc_dointvec_minmax,
+> +               .extra1         = &min_sched_capacity_margin,
+> +       },
+> +#endif
+>  #ifdef CONFIG_SCHEDSTATS
+>         {
+>                 .procname       = "sched_schedstats",
+> --
+> 1.9.1
+>
