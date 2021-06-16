@@ -2,619 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C453A994E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B5C3A9941
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbhFPLcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:32:05 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:30278 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232602AbhFPLcB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:32:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1623842994; x=1655378994;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=bA4z4tBNnxVUE8VEs6eI9PaGePrvlQ1yeXwqVRHvPoQ=;
-  b=gApRdcD9hxwE7DDzj5P84obIhpGva4+6VmMstW/zocQ30MB6uBlPABAZ
-   2J3rEqTDPE5uKtMybpMkKLl9kw8KCmSf39u4wNiDh0gHRMTZCKCX5bxu/
-   VePPc6PubhC9NjdwTrbiAglVcZq/3oPBiy7YViB0ZD1BevDc/w5JFJG+c
-   INdFvxjftDNa7TyzrBbu9l8g8wxskgi3Kd2N8Ev4Y9+zEN+r1EgcxqStf
-   fpSHyj/rcD4hViYKeeQ98wBx8wxw33x6z11jqkoAWtu/yppoPdlBwluMm
-   oZ7XDNVnj752YYsyyGwPA5cO3UOxTJPEz6ahMaNJGDO31X2U18L0i5okT
-   g==;
-IronPort-SDR: olcv8VD8swCRTmFvqDvI6pV3QUALceEAr7KKSYpJphw5wE4bvl3qxaWmHmEAgjb4usW7fm8YPo
- zNmmMQFWHpNYU7MJba6gZ5YXteuie9kOkd4Q5KtvWGYFrtyP+/L5YkIUEPim4IiHAoxz5QJ0VN
- ngQL6iqIxnKo8nbiFa9yrr/4Kz8wLFRmGWezfphbYlU94VLFAxgOYfUfYJmAiDl1lhHp/p686S
- aX453E5yOsjmtOKzXi3dTLTXtjOOQAtnsmt/kbHhNGqAWv/nX9f+RcBBtYAXY1+FTEtQxjrk1T
- KX8=
-X-IronPort-AV: E=Sophos;i="5.83,277,1616428800"; 
-   d="scan'208";a="172091909"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 16 Jun 2021 19:29:54 +0800
-IronPort-SDR: obkJulFVU1FTa7Rui9xwgsoUX9PvxNTCzUpdZN8Dysw7TMl/XmCSBC1a2TwFYdsqoF53gddKVZ
- TC9a6eSTJP4VIbicISn8dU2vxzLCgVWSf80DyTdxwMXrSV3DUYOPpPx6XXtXNF+D0eXRYrmy38
- rNzNJS4h++QQXvtdgkw5dj5JQHrIIHTggBIVwolgIwVV0kuRJfj+aJl/HsDRIeZykw3Sa54/Ls
- pzwy8xdfH/NionBbal8d/vFRY5NLbFphcdqxY+H/9WWnzaX8TEwMLrUeLU0cM//ga55Ru+JKJQ
- 6x+uGPeGZRF6Eu3OsNFAtelJ
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 04:08:45 -0700
-IronPort-SDR: /rEKIf2b4/AW17IvCinhCPYwjWoga1XNFxvEnye2Tyww9wmkeEh4yGCc/0O/baqqcyrLt7WwRZ
- EPoySZRHnlNSMnG1yeR9yqXXNEW2xbZa7S8jafGT69r66rueS6uGWFsbGwDWE1+vxKUtnIQFlY
- vq6gE5wzplyDlSQPgqJoDin90otier0NaP8z3zCWCOkIBiY0SG7LdsbnLfrimmAHmzebw8DtC4
- 3UqzYJPAX4eB9/92UW5D2UoLxbpEzlVQPYEwZd69kIA6eEAG6xzPK32ISlBn8WfP/5u29uFwpT
- /0A=
-WDCIronportException: Internal
-Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
-  by uls-op-cesaip01.wdc.com with ESMTP; 16 Jun 2021 04:29:52 -0700
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
-        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH v11 12/12] scsi: ufshpb: Make host mode parameters configurable
-Date:   Wed, 16 Jun 2021 14:28:00 +0300
-Message-Id: <20210616112800.52963-13-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210616112800.52963-1-avri.altman@wdc.com>
-References: <20210616112800.52963-1-avri.altman@wdc.com>
+        id S231966AbhFPLb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:31:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:34634 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232512AbhFPLbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 07:31:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0DFAF1042;
+        Wed, 16 Jun 2021 04:29:08 -0700 (PDT)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C861C3F70D;
+        Wed, 16 Jun 2021 04:29:05 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 12:28:48 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Samuel Holland <samuel@sholland.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+        Ondrej Jirman <megous@megous.com>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v6 03/17] dt-bindings: rtc: sun6i: Add H616 compatible
+ string
+Message-ID: <20210616122848.7e26cc68@slackpad.fritz.box>
+In-Reply-To: <20210616090700.hvwiaifo5luiwhnf@gilmour>
+References: <20210519104152.21119-1-andre.przywara@arm.com>
+        <20210519104152.21119-4-andre.przywara@arm.com>
+        <99a2069b-99e9-9b47-12a6-aae01c7f59dc@sholland.org>
+        <20210607135910.63560ffc@slackpad.fritz.box>
+        <56ad752b-b1c2-cb05-be8b-71c29f271ec9@sholland.org>
+        <20210615132440.55793ec5@slackpad.fritz.box>
+        <20210616090700.hvwiaifo5luiwhnf@gilmour>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can make use of this commit, to elaborate some more of the host
-control mode logic, explaining what role play each and every variable.
+On Wed, 16 Jun 2021 11:07:00 +0200
+Maxime Ripard <maxime@cerno.tech> wrote:
 
-While at it, allow those parameters to be configurable.
+Hi,
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
-Reviewed-by: Daejun Park <daejun7.park@samsung.com>
----
- Documentation/ABI/testing/sysfs-driver-ufs |  76 +++++-
- drivers/scsi/ufs/ufshpb.c                  | 288 +++++++++++++++++++--
- drivers/scsi/ufs/ufshpb.h                  |  20 ++
- 3 files changed, 367 insertions(+), 17 deletions(-)
+> On Tue, Jun 15, 2021 at 01:24:40PM +0100, Andre Przywara wrote:
+> > > On 6/7/21 7:59 AM, Andre Przywara wrote:  
+> > > > On Thu, 20 May 2021 21:37:34 -0500
+> > > > Samuel Holland <samuel@sholland.org> wrote:
+> > > > 
+> > > > Hi,
+> > > >     
+> > > >> On 5/19/21 5:41 AM, Andre Przywara wrote:    
+> > > >>> Add the obvious compatible name to the existing RTC binding.
+> > > >>> The actual RTC part of the device uses a different day/month/year
+> > > >>> storage scheme, so it's not compatible with the previous devices.
+> > > >>>
+> > > >>> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> > > >>> ---
+> > > >>>  .../devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml     | 5 ++++-
+> > > >>>  1 file changed, 4 insertions(+), 1 deletion(-)
+> > > >>>
+> > > >>> diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> > > >>> index b1b0ee769b71..178c955f88bf 100644
+> > > >>> --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> > > >>> +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> > > >>> @@ -26,6 +26,7 @@ properties:
+> > > >>>            - const: allwinner,sun50i-a64-rtc
+> > > >>>            - const: allwinner,sun8i-h3-rtc
+> > > >>>        - const: allwinner,sun50i-h6-rtc
+> > > >>> +      - const: allwinner,sun50i-h616-rtc
+> > > >>>  
+> > > >>>    reg:
+> > > >>>      maxItems: 1
+> > > >>> @@ -97,7 +98,9 @@ allOf:
+> > > >>>        properties:
+> > > >>>          compatible:
+> > > >>>            contains:
+> > > >>> -            const: allwinner,sun50i-h6-rtc
+> > > >>> +            enum:
+> > > >>> +              - allwinner,sun50i-h6-rtc
+> > > >>> +              - allwinner,sun50i-h616-rtc
+> > > >>>  
+> > > >>>      then:
+> > > >>>        properties:
+> > > >>>       
+> > > >>
+> > > >> This binding is missing a clock reference for the pll-periph0-2x input
+> > > >> to the 32kHz clock fanout.    
+> > > > 
+> > > > Right. So do I get this correctly that we don't model the OSC24M input
+> > > > explicitly so far in the DT? I only see one possible input clock, which
+> > > > is for an optional 32K crystal oscillator.
+> > > > And this means we need to change some code also? Because at the moment
+> > > > a clock specified is assumed to be the 32K OSC, and having this clock
+> > > > means we switch to the external 32K OSC.    
+> > > 
+> > > Right. The code would need updates to follow the binding.  
+> > 
+> > I changed the binding for now to not allow any clock, and the code to
+> > ignore any clocks when the H616 compatible is used. This way we can
+> > extend this later without breaking anything.  
+> 
+> I'm not really a fan of this: it just creates one more special case that
+> we'll have to take into account later on, complicating further the logic
+> that is already way too complicated.
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index d001f008312b..b10cecb286df 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -1449,7 +1449,7 @@ Description:	This entry shows the maximum HPB data size for using single HPB
- 
- 		The file is read only.
- 
--What:		/sys/bus/platform/drivers/ufshcd/*/flags/wb_enable
-+What:		/sys/bus/platform/drivers/ufshcd/*/flags/hpb_enable
- Date:		June 2021
- Contact:	Daejun Park <daejun7.park@samsung.com>
- Description:	This entry shows the status of HPB.
-@@ -1460,3 +1460,77 @@ Description:	This entry shows the status of HPB.
- 		== ============================
- 
- 		The file is read only.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/activation_thld
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	In host control mode, reads are the major source of activation
-+		trials.  once this threshold hs met, the region is added to the
-+		"to-be-activated" list.  Since we reset the read counter upon
-+		write, this include sending a rb command updating the region
-+		ppn as well.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/normalization_factor
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	In host control mode, We think of the regions as "buckets".
-+		Those buckets are being filled with reads, and emptied on write.
-+		We use entries_per_srgn - the amount of blocks in a subregion as
-+		our bucket size.  This applies because HPB1.0 only concern a
-+		single-block reads.  Once the bucket size is crossed, we trigger
-+		a normalization work - not only to avoid overflow, but mainly
-+		because we want to keep those counters normalized, as we are
-+		using those reads as a comparative score, to make various decisions.
-+		The normalization is dividing (shift right) the read counter by
-+		the normalization_factor. If during consecutive normalizations
-+		an active region has exhaust its reads - inactivate it.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/eviction_thld_enter
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	Region deactivation is often due to the fact that eviction took
-+		place: a region become active on the expense of another. This is
-+		happening when the max-active-regions limit has crossed.
-+		In host mode, eviction is considered an extreme measure. We
-+		want to verify that the entering region has enough reads, and
-+		the exiting region has much less reads.  eviction_thld_enter is
-+		the min reads that a region must have in order to be considered
-+		as a candidate to evict other region.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/eviction_thld_exit
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	same as above for the exiting region. A region is consider to
-+		be a candidate to be evicted, only if it has less reads than
-+		eviction_thld_exit.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/read_timeout_ms
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	In order not to hang on to “cold” regions, we shall inactivate
-+		a region that has no READ access for a predefined amount of
-+		time - read_timeout_ms. If read_timeout_ms has expired, and the
-+		region is dirty - it is less likely that we can make any use of
-+		HPB-READing it.  So we inactivate it.  Still, deactivation has
-+		its overhead, and we may still benefit from HPB-READing this
-+		region if it is clean - see read_timeout_expiries.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/read_timeout_expiries
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	if the region read timeout has expired, but the region is clean,
-+		just re-wind its timer for another spin.  Do that as long as it
-+		is clean and did not exhaust its read_timeout_expiries threshold.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/timeout_polling_interval_ms
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	the frequency in which the delayed worker that checks the
-+		read_timeouts is awaken.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/inflight_map_req
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	in host control mode the host is the originator of map requests.
-+		To not flood the device with map requests, use a simple throttling
-+		mechanism that limits the number of inflight map requests.
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index ab66919f4065..6f2ded8c63b0 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -17,7 +17,6 @@
- #include "../sd.h"
- 
- #define ACTIVATION_THRESHOLD 8 /* 8 IOs */
--#define EVICTION_THRESHOLD (ACTIVATION_THRESHOLD << 5) /* 256 IOs */
- #define READ_TO_MS 1000
- #define READ_TO_EXPIRIES 100
- #define POLLING_INTERVAL_MS 200
-@@ -195,7 +194,7 @@ static void ufshpb_iterate_rgn(struct ufshpb_lu *hpb, int rgn_idx, int srgn_idx,
- 		} else {
- 			srgn->reads++;
- 			rgn->reads++;
--			if (srgn->reads == ACTIVATION_THRESHOLD)
-+			if (srgn->reads == hpb->params.activation_thld)
- 				activate = true;
- 		}
- 		spin_unlock(&rgn->rgn_lock);
-@@ -744,10 +743,11 @@ static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
- 	struct bio *bio;
- 
- 	if (hpb->is_hcm &&
--	    hpb->num_inflight_map_req >= THROTTLE_MAP_REQ_DEFAULT) {
-+	    hpb->num_inflight_map_req >= hpb->params.inflight_map_req) {
- 		dev_info(&hpb->sdev_ufs_lu->sdev_dev,
- 			 "map_req throttle. inflight %d throttle %d",
--			 hpb->num_inflight_map_req, THROTTLE_MAP_REQ_DEFAULT);
-+			 hpb->num_inflight_map_req,
-+			 hpb->params.inflight_map_req);
- 		return NULL;
- 	}
- 
-@@ -1053,6 +1053,7 @@ static void ufshpb_read_to_handler(struct work_struct *work)
- 	struct victim_select_info *lru_info = &hpb->lru_info;
- 	struct ufshpb_region *rgn, *next_rgn;
- 	unsigned long flags;
-+	unsigned int poll;
- 	LIST_HEAD(expired_list);
- 
- 	if (test_and_set_bit(TIMEOUT_WORK_RUNNING, &hpb->work_data_bits))
-@@ -1071,7 +1072,7 @@ static void ufshpb_read_to_handler(struct work_struct *work)
- 				list_add(&rgn->list_expired_rgn, &expired_list);
- 			else
- 				rgn->read_timeout = ktime_add_ms(ktime_get(),
--							 READ_TO_MS);
-+						hpb->params.read_timeout_ms);
- 		}
- 	}
- 
-@@ -1089,8 +1090,9 @@ static void ufshpb_read_to_handler(struct work_struct *work)
- 
- 	clear_bit(TIMEOUT_WORK_RUNNING, &hpb->work_data_bits);
- 
-+	poll = hpb->params.timeout_polling_interval_ms;
- 	schedule_delayed_work(&hpb->ufshpb_read_to_work,
--			      msecs_to_jiffies(POLLING_INTERVAL_MS));
-+			      msecs_to_jiffies(poll));
- }
- 
- static void ufshpb_add_lru_info(struct victim_select_info *lru_info,
-@@ -1100,8 +1102,11 @@ static void ufshpb_add_lru_info(struct victim_select_info *lru_info,
- 	list_add_tail(&rgn->list_lru_rgn, &lru_info->lh_lru_rgn);
- 	atomic_inc(&lru_info->active_cnt);
- 	if (rgn->hpb->is_hcm) {
--		rgn->read_timeout = ktime_add_ms(ktime_get(), READ_TO_MS);
--		rgn->read_timeout_expiries = READ_TO_EXPIRIES;
-+		rgn->read_timeout =
-+			ktime_add_ms(ktime_get(),
-+				     rgn->hpb->params.read_timeout_ms);
-+		rgn->read_timeout_expiries =
-+			rgn->hpb->params.read_timeout_expiries;
- 	}
- }
- 
-@@ -1130,7 +1135,8 @@ static struct ufshpb_region *ufshpb_victim_lru_info(struct ufshpb_lu *hpb)
- 		 * in host control mode, verify that the exiting region
- 		 * has less reads
- 		 */
--		if (hpb->is_hcm && rgn->reads > (EVICTION_THRESHOLD >> 1))
-+		if (hpb->is_hcm &&
-+		    rgn->reads > hpb->params.eviction_thld_exit)
- 			continue;
- 
- 		victim_rgn = rgn;
-@@ -1346,7 +1352,8 @@ static int ufshpb_add_region(struct ufshpb_lu *hpb, struct ufshpb_region *rgn)
- 			 * in host control mode, verify that the entering
- 			 * region has enough reads
- 			 */
--			if (hpb->is_hcm && rgn->reads < EVICTION_THRESHOLD) {
-+			if (hpb->is_hcm &&
-+			    rgn->reads < hpb->params.eviction_thld_enter) {
- 				ret = -EACCES;
- 				goto out;
- 			}
-@@ -1697,6 +1704,7 @@ static void ufshpb_normalization_work_handler(struct work_struct *work)
- 	struct ufshpb_lu *hpb = container_of(work, struct ufshpb_lu,
- 					     ufshpb_normalization_work);
- 	int rgn_idx;
-+	u8 factor = hpb->params.normalization_factor;
- 
- 	for (rgn_idx = 0; rgn_idx < hpb->rgns_per_lu; rgn_idx++) {
- 		struct ufshpb_region *rgn = hpb->rgn_tbl + rgn_idx;
-@@ -1707,7 +1715,7 @@ static void ufshpb_normalization_work_handler(struct work_struct *work)
- 		for (srgn_idx = 0; srgn_idx < hpb->srgns_per_rgn; srgn_idx++) {
- 			struct ufshpb_subregion *srgn = rgn->srgn_tbl + srgn_idx;
- 
--			srgn->reads >>= 1;
-+			srgn->reads >>= factor;
- 			rgn->reads += srgn->reads;
- 		}
- 		spin_unlock(&rgn->rgn_lock);
-@@ -2030,8 +2038,247 @@ requeue_timeout_ms_store(struct device *dev, struct device_attribute *attr,
- }
- static DEVICE_ATTR_RW(requeue_timeout_ms);
- 
-+ufshpb_sysfs_param_show_func(activation_thld);
-+static ssize_t
-+activation_thld_store(struct device *dev, struct device_attribute *attr,
-+		      const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0)
-+		return -EINVAL;
-+
-+	hpb->params.activation_thld = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(activation_thld);
-+
-+ufshpb_sysfs_param_show_func(normalization_factor);
-+static ssize_t
-+normalization_factor_store(struct device *dev, struct device_attribute *attr,
-+			   const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0 || val > ilog2(hpb->entries_per_srgn))
-+		return -EINVAL;
-+
-+	hpb->params.normalization_factor = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(normalization_factor);
-+
-+ufshpb_sysfs_param_show_func(eviction_thld_enter);
-+static ssize_t
-+eviction_thld_enter_store(struct device *dev, struct device_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= hpb->params.eviction_thld_exit)
-+		return -EINVAL;
-+
-+	hpb->params.eviction_thld_enter = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(eviction_thld_enter);
-+
-+ufshpb_sysfs_param_show_func(eviction_thld_exit);
-+static ssize_t
-+eviction_thld_exit_store(struct device *dev, struct device_attribute *attr,
-+			 const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= hpb->params.activation_thld)
-+		return -EINVAL;
-+
-+	hpb->params.eviction_thld_exit = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(eviction_thld_exit);
-+
-+ufshpb_sysfs_param_show_func(read_timeout_ms);
-+static ssize_t
-+read_timeout_ms_store(struct device *dev, struct device_attribute *attr,
-+		      const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	/* read_timeout >> timeout_polling_interval */
-+	if (val < hpb->params.timeout_polling_interval_ms * 2)
-+		return -EINVAL;
-+
-+	hpb->params.read_timeout_ms = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(read_timeout_ms);
-+
-+ufshpb_sysfs_param_show_func(read_timeout_expiries);
-+static ssize_t
-+read_timeout_expiries_store(struct device *dev, struct device_attribute *attr,
-+			    const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0)
-+		return -EINVAL;
-+
-+	hpb->params.read_timeout_expiries = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(read_timeout_expiries);
-+
-+ufshpb_sysfs_param_show_func(timeout_polling_interval_ms);
-+static ssize_t
-+timeout_polling_interval_ms_store(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	/* timeout_polling_interval << read_timeout */
-+	if (val <= 0 || val > hpb->params.read_timeout_ms / 2)
-+		return -EINVAL;
-+
-+	hpb->params.timeout_polling_interval_ms = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(timeout_polling_interval_ms);
-+
-+ufshpb_sysfs_param_show_func(inflight_map_req);
-+static ssize_t inflight_map_req_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0 || val > hpb->sdev_ufs_lu->queue_depth - 1)
-+		return -EINVAL;
-+
-+	hpb->params.inflight_map_req = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(inflight_map_req);
-+
-+static void ufshpb_hcm_param_init(struct ufshpb_lu *hpb)
-+{
-+	hpb->params.activation_thld = ACTIVATION_THRESHOLD;
-+	hpb->params.normalization_factor = 1;
-+	hpb->params.eviction_thld_enter = (ACTIVATION_THRESHOLD << 5);
-+	hpb->params.eviction_thld_exit = (ACTIVATION_THRESHOLD << 4);
-+	hpb->params.read_timeout_ms = READ_TO_MS;
-+	hpb->params.read_timeout_expiries = READ_TO_EXPIRIES;
-+	hpb->params.timeout_polling_interval_ms = POLLING_INTERVAL_MS;
-+	hpb->params.inflight_map_req = THROTTLE_MAP_REQ_DEFAULT;
-+}
-+
- static struct attribute *hpb_dev_param_attrs[] = {
- 	&dev_attr_requeue_timeout_ms.attr,
-+	&dev_attr_activation_thld.attr,
-+	&dev_attr_normalization_factor.attr,
-+	&dev_attr_eviction_thld_enter.attr,
-+	&dev_attr_eviction_thld_exit.attr,
-+	&dev_attr_read_timeout_ms.attr,
-+	&dev_attr_read_timeout_expiries.attr,
-+	&dev_attr_timeout_polling_interval_ms.attr,
-+	&dev_attr_inflight_map_req.attr,
- 	NULL,
- };
- 
-@@ -2115,6 +2362,8 @@ static void ufshpb_stat_init(struct ufshpb_lu *hpb)
- static void ufshpb_param_init(struct ufshpb_lu *hpb)
- {
- 	hpb->params.requeue_timeout_ms = HPB_REQUEUE_TIME_MS;
-+	if (hpb->is_hcm)
-+		ufshpb_hcm_param_init(hpb);
- }
- 
- static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
-@@ -2169,9 +2418,13 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
- 	ufshpb_stat_init(hpb);
- 	ufshpb_param_init(hpb);
- 
--	if (hpb->is_hcm)
-+	if (hpb->is_hcm) {
-+		unsigned int poll;
-+
-+		poll = hpb->params.timeout_polling_interval_ms;
- 		schedule_delayed_work(&hpb->ufshpb_read_to_work,
--				      msecs_to_jiffies(POLLING_INTERVAL_MS));
-+				      msecs_to_jiffies(poll));
-+	}
- 
- 	return 0;
- 
-@@ -2350,10 +2603,13 @@ void ufshpb_resume(struct ufs_hba *hba)
- 			continue;
- 		ufshpb_set_state(hpb, HPB_PRESENT);
- 		ufshpb_kick_map_work(hpb);
--		if (hpb->is_hcm)
--			schedule_delayed_work(&hpb->ufshpb_read_to_work,
--				msecs_to_jiffies(POLLING_INTERVAL_MS));
-+		if (hpb->is_hcm) {
-+			unsigned int poll =
-+				hpb->params.timeout_polling_interval_ms;
- 
-+			schedule_delayed_work(&hpb->ufshpb_read_to_work,
-+				msecs_to_jiffies(poll));
-+		}
- 	}
- }
- 
-diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-index edf565e9036f..c74a6c35a446 100644
---- a/drivers/scsi/ufs/ufshpb.h
-+++ b/drivers/scsi/ufs/ufshpb.h
-@@ -185,8 +185,28 @@ struct victim_select_info {
- 	atomic_t active_cnt;
- };
- 
-+/**
-+ * ufshpb_params - ufs hpb parameters
-+ * @requeue_timeout_ms - requeue threshold of wb command (0x2)
-+ * @activation_thld - min reads [IOs] to activate/update a region
-+ * @normalization_factor - shift right the region's reads
-+ * @eviction_thld_enter - min reads [IOs] for the entering region in eviction
-+ * @eviction_thld_exit - max reads [IOs] for the exiting region in eviction
-+ * @read_timeout_ms - timeout [ms] from the last read IO to the region
-+ * @read_timeout_expiries - amount of allowable timeout expireis
-+ * @timeout_polling_interval_ms - frequency in which timeouts are checked
-+ * @inflight_map_req - number of inflight map requests
-+ */
- struct ufshpb_params {
- 	unsigned int requeue_timeout_ms;
-+	unsigned int activation_thld;
-+	unsigned int normalization_factor;
-+	unsigned int eviction_thld_enter;
-+	unsigned int eviction_thld_exit;
-+	unsigned int read_timeout_ms;
-+	unsigned int read_timeout_expiries;
-+	unsigned int timeout_polling_interval_ms;
-+	unsigned int inflight_map_req;
- };
- 
- struct ufshpb_stats {
--- 
-2.25.1
+I see your point, but that's why I made it a no-clock choice: we can
+add clocks any time later, older kernels finding them in newer DTs will
+ignore them, older DTs on newer kernels wouldn't instantiate them in
+the first place.
 
+> 
+> > > > And who would decide which clock source to use? What would be the
+> > > > reason to use PLL_PERIPH(2x) over the RC16M based clock or the
+> > > > divided down 24MHz?    
+> > > 
+> > > Because it would be more accurate. 24MHz/750 == 32000 Hz, while the RTC
+> > > expects 32768 Hz.  
+> > 
+> > I thought about this as well, but this means there is no reason to not
+> > use the PLL? At least not for Linux (normal operation with PLLs
+> > running anyway)? This situation is different for the other SoCs, because
+> > boards *might* have a separate and more precise 32K crystal.
+> > So we could code this similar to the other SoCs: If we have a clock
+> > property defined, we assume it's pointing to the PLL and switch to use
+> > it?  
+> 
+> We have another option though: list all the clocks that could be
+> available for a 32khz source, call clk_get_accuracy on them, and then
+> use the clock with the best accuracy. We already have the accuracy
+> requirements in the datasheet for each crystal, so it shouldn't be too
+> hard to support.
+
+That would possibly be an option, yes. What makes this further
+complicated though is that there are several LOSC outputs: one going
+to the RTC, one going to other peripherals, one going to the pad. And
+they can have different sources, at least on the H616: the RTC and
+system clock can't be driven by the PLL or divided down HOSC, just by
+the RC oscillator. But all three of them can supply the clock to the
+pad. I guess another reason to separate clock and actual RTC.
+
+> > But, looking at the diagram in the manual (and assuming it's
+> > correct), the PLL based clock can only be routed to the pad, but cannot
+> > be used for the RTC. That seems to be also the case for the T5, which
+> > has an external LOSC pin.
+> >    
+> > > > So shall we ignore the PLL based input clock for now, put "0 input
+> > > > clocks" in the current binding, then later on extend this to allow
+> > > > choosing the PLL? And have it that way that having the PLL reference
+> > > > means we use it?    
+> > > 
+> > > No, the device tree represents the hardware, not whatever happens to be
+> > > used by Linux drivers at the time. It should be in the binding
+> > > regardless of what the driver does with it.  
+> > 
+> > I understand that very well, but was just looking for a solution where
+> > we can go ahead with an easier solution *now*. I am afraid implementing
+> > this annoying RTC special snowflake properly will just delay the whole
+> > series.
+> > In the long run your "D1 & friends" extra RTC clock driver looks the
+> > right way out, but it will probably take some more time to get this
+> > merged.  
+> 
+> To be honest, I'm not entirely sure why we need the rtc in the first
+> place. If your plan is to figure it out later anyway, why not just model
+> the 32kHz clock as a fixed clock, and change it later once it's been
+> entirely figured out?
+
+This would be a way out, at the cost of making newer DTs not work on
+this kernel (the H616 RTC compatible wouldn't be recognised). I have to
+check how fatal this is, IIRC pinctrl and CCU still work somehow (it's
+only needed for debounce, which is optional?)
+But if this is the price to pay to get it into 5.14 ... 
+ 
+> > > Though the circular dependency between the clock providers does cause
+> > > problems. We cannot get a clk_hw for the PLL-based clock, so we would
+> > > have to hardcode a global name for it, which means we aren't really
+> > > using the device tree.  
+> > 
+> > I start to wonder how much business Linux really has in controlling all
+> > those RTC details. The current code happens to work, because everything
+> > is setup correctly already, on reset.  
+> 
+> That's not true for all the SoCs.
+
+Yes, this was not meant to be an universal statement, but as you
+mention above, we get pretty far with ignoring the RTC completely, even.
+ 
+> > > We already see this "not really using the binding" with the other CCUs:
+> > > the H616 CCU hardcodes the name "osc24M", while the A100 CCU hardcodes
+> > > "dcxo24M" for the same clock. So moving that clock into the RTC clock
+> > > provider would require using both names in one clk_hw simultaneously (or
+> > > rather fixing the CCU drivers to get a clk_hw from the DT instead of
+> > > referencing by name).
+> > > 
+> > > And trying to deal with optional clocks by index is only going to get
+> > > more painful over time. For example, with the R329 and D1, the RTC has
+> > > the following inputs:
+> > >  * DCXO24M (unless you model it inside the RTC)
+> > >  * External OSC32k (optional!)
+> > >  * The RTC bus gate/reset from the PRCM
+> > >  * R-AHB from the PRCM for the RTC SPI clock domain
+> > > 
+> > > So it seems time to start using clock-names in the RTC binding.  
+> > 
+> > Yes, that sounds reasonable. It's just a shame that we keep changing
+> > the RTC bindings, and so creating a lot of incompatibility on the way.  
+> 
+> I mean, we keep changing it because the hardware keeps changing. The RTC
+> on the A20 had no clock at all. The A31 later on got only a single clock
+> input, and a single output. If your point is that we should have known
+> better 9 years ago what the current SoCs would look like, that's a bit
+> absurd, don't you think?
+
+I don't mean changing the binding between SoCs, this is of course not
+very reasonable, especially if dealing with Allwinner, who apparently
+have little regard to something like "compatibility" and like to spread
+new bits around various peripherals that happens to have free space.
+
+I was referring to changing existing bindings for one particular SoC,
+like we did in the past when adding the <&rtc 2> clock output.
+And I am just afraid this will happen again if we start to support the
+RTC "properly" now, for instance for the H6.
+
+Cheers,
+Andre
