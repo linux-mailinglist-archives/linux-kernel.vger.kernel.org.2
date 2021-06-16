@@ -2,91 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CEA3A90B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35283A90BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbhFPEnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 00:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhFPEnt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 00:43:49 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C297BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 21:41:43 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id k7so951910pjf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 21:41:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=yNLs0De7jThuF+2jQNPxEWOcx6TgeD4ov6vuIyTpd+A=;
-        b=lKJIvf6pt1/GdaW2KeqS7wKBIja3w5kpORjD4jLrNWSEFfEOkW3onHIDqBu0GFngkS
-         lxkWv44pwySHTfYWybvEhaBirmSWSJMqraifs7VnqCLsdljizzbcTlkUb4DkuOyQKb70
-         r/j3tlzKy+Tk59kdBEbDxcnNRfRigkfAmLaJI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=yNLs0De7jThuF+2jQNPxEWOcx6TgeD4ov6vuIyTpd+A=;
-        b=ks0XU++9h1HV6LDMHyb++ixuKP2q6fbkRrTbsUhO0P6B5nMH2+D5fTtj7yNPEH9BpC
-         jjYQctsZzgARFqfqVN/pLT5m8W7XOCspy2WEgewtUNrXDsBVRyP78+2ozVtNRpigl9tK
-         xxXeLoSwJWSvc0onpt6GuH1OiNOPfX0JvWpP9ay+h3Gc5QxfJQrapQsk2C8mxqfmrBNF
-         gCHc2Hkr9P+oLjcJPzgRFlnCsjWxC8JOMNTZxsFuT3pfLUZVjeifrqrfIQrUIhL1RuMS
-         PM5RkAdtX9I62CT+jD2kr3XZnjuRYMQqGQiILRECvpGx0pWoq9QB2lB07Vc5/wG73nPn
-         wjNA==
-X-Gm-Message-State: AOAM5301l07xiCG9I5p/mqKW4V3piGTQG3JxtPcYMRAUvK3rCfTstYMg
-        qGbFZYyOqNmXqz/0z/giXksUxA==
-X-Google-Smtp-Source: ABdhPJxh2trs7JHKAmnz6ypTMfnczKQwyngda5/fDSTUi8HksJLDs/vs/uzec4cWsIlm+tLEn9utjQ==
-X-Received: by 2002:a17:903:228e:b029:101:af04:4e24 with SMTP id b14-20020a170903228eb0290101af044e24mr7415002plh.3.1623818503317;
-        Tue, 15 Jun 2021 21:41:43 -0700 (PDT)
-Received: from localhost ([203.206.29.204])
-        by smtp.gmail.com with ESMTPSA id v10sm726962pgb.46.2021.06.15.21.41.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 21:41:42 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Marco Elver <elver@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        aneesh.kumar@linux.ibm.com, Balbir Singh <bsingharora@gmail.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>
-Subject: Re: [PATCH v12 2/6] kasan: allow architectures to provide an
- outline readiness check
-In-Reply-To: <CANpmjNN2=gdDBPzYQYsmOtLQVVjSz2qFcwcTMEqB=s_ZWndJLg@mail.gmail.com>
-References: <20210615014705.2234866-1-dja@axtens.net>
- <20210615014705.2234866-3-dja@axtens.net>
- <CANpmjNN2=gdDBPzYQYsmOtLQVVjSz2qFcwcTMEqB=s_ZWndJLg@mail.gmail.com>
-Date:   Wed, 16 Jun 2021 14:41:39 +1000
-Message-ID: <87fsxiv2t8.fsf@dja-thinkpad.axtens.net>
+        id S229731AbhFPEqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 00:46:15 -0400
+Received: from mga04.intel.com ([192.55.52.120]:28123 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229514AbhFPEqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 00:46:14 -0400
+IronPort-SDR: vVZ/Ldlz324WaNfHyPr/JmarSd6IThJR0VfMDUc9XLa1/dSjShcodfvqDQkJ1r3X0oM0T1YCGJ
+ r33gWF4uIkcw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="204283778"
+X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
+   d="scan'208";a="204283778"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 21:44:08 -0700
+IronPort-SDR: I721+5FHoocoeMNpn+a8b+mT/WYb0KZYvB8bH4O4pplav1eakN2cuq44IV85HTtU9z/jiBkvqE
+ Z1DKpjdrbNCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
+   d="scan'208";a="421357663"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 15 Jun 2021 21:44:07 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1ltNPK-0000rS-RH; Wed, 16 Jun 2021 04:44:06 +0000
+Date:   Wed, 16 Jun 2021 12:44:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS WITH WARNING
+ 4692bc775d2180a937335ccba0edce557103d44a
+Message-ID: <60c98192.XkZUQE6jO+Aoycls%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marco,
->> +       /* Don't touch the shadow memory if arch isn't ready */
->> +       if (!kasan_arch_is_ready())
->> +               return;
->> +
->
-> What about kasan_poison_last_granule()? kasan_unpoison() currently
-> seems to potentially trip on that.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: 4692bc775d2180a937335ccba0edce557103d44a  x86/sgx: Add missing xa_destroy() when virtual EPC is destroyed
 
-Ah the perils of rebasing an old series! I'll re-audit the generic code
-for functions that touch memory and make sure I have covered them all.
+Warning ids grouped by kconfigs:
 
-Thanks for the review.
+gcc_recent_errors
+`-- x86_64-allnoconfig
+    |-- Warning:Kernel-ABI-header-at-tools-arch-x86-include-asm-disabled-features.h-differs-from-latest-version-at-arch-x86-include-asm-disabled-features.h:Force-disable-because-it-s-broken-beyond-repair
+    |-- Warning:Kernel-ABI-header-at-tools-arch-x86-include-asm-disabled-features.h-differs-from-latest-version-at-arch-x86-include-asm-disabled-features.h:define-DISABLE_ENQCMD
+    |-- Warning:Kernel-ABI-header-at-tools-arch-x86-include-asm-disabled-features.h-differs-from-latest-version-at-arch-x86-include-asm-disabled-features.h:define-DISABLE_ENQCMD-(-(X86_FEATURE_ENQCMD-))
+    `-- Warning:Kernel-ABI-header-at-tools-arch-x86-include-asm-disabled-features.h-differs-from-latest-version-at-arch-x86-include-asm-disabled-features.h:ifdef-CONFIG_IOMMU_SUPPORT
 
-Kind regards,
-Daniel
+elapsed time: 725m
 
->
-> -- 
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/CANpmjNN2%3DgdDBPzYQYsmOtLQVVjSz2qFcwcTMEqB%3Ds_ZWndJLg%40mail.gmail.com.
+configs tested: 132
+configs skipped: 65
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      chrp32_defconfig
+xtensa                    smp_lx200_defconfig
+mips                          ath79_defconfig
+powerpc                  iss476-smp_defconfig
+h8300                            allyesconfig
+mips                  cavium_octeon_defconfig
+um                           x86_64_defconfig
+arm                          pcm027_defconfig
+powerpc                      ppc64e_defconfig
+xtensa                  audio_kc705_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                 mpc8540_ads_defconfig
+arm                        oxnas_v6_defconfig
+s390                                defconfig
+arm                        multi_v7_defconfig
+powerpc                   lite5200b_defconfig
+arm                        neponset_defconfig
+m68k                         apollo_defconfig
+mips                          rm200_defconfig
+sh                          sdk7786_defconfig
+powerpc                      arches_defconfig
+alpha                               defconfig
+arm                         s3c2410_defconfig
+openrisc                            defconfig
+sh                        sh7763rdp_defconfig
+mips                      bmips_stb_defconfig
+um                            kunit_defconfig
+arm                            zeus_defconfig
+m68k                          atari_defconfig
+arm                        mvebu_v5_defconfig
+ia64                            zx1_defconfig
+powerpc                     ksi8560_defconfig
+ia64                             alldefconfig
+h8300                       h8s-sim_defconfig
+x86_64                           allyesconfig
+arm                           u8500_defconfig
+powerpc                       holly_defconfig
+sh                        sh7785lcr_defconfig
+mips                     cu1000-neo_defconfig
+m68k                       m5275evb_defconfig
+arm                        keystone_defconfig
+arm                         palmz72_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                        fsp2_defconfig
+powerpc                     sbc8548_defconfig
+s390                             alldefconfig
+riscv             nommu_k210_sdcard_defconfig
+m68k                          sun3x_defconfig
+i386                                defconfig
+arm                          exynos_defconfig
+sh                           se7343_defconfig
+arm                              alldefconfig
+arm                         hackkit_defconfig
+arm                       imx_v6_v7_defconfig
+m68k                             allmodconfig
+powerpc                      katmai_defconfig
+arm                           viper_defconfig
+s390                          debug_defconfig
+powerpc                 mpc832x_mds_defconfig
+sparc                       sparc64_defconfig
+riscv                          rv32_defconfig
+powerpc                 mpc85xx_cds_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a001-20210615
+x86_64               randconfig-a004-20210615
+x86_64               randconfig-a002-20210615
+x86_64               randconfig-a003-20210615
+x86_64               randconfig-a006-20210615
+x86_64               randconfig-a005-20210615
+i386                 randconfig-a002-20210615
+i386                 randconfig-a006-20210615
+i386                 randconfig-a004-20210615
+i386                 randconfig-a001-20210615
+i386                 randconfig-a005-20210615
+i386                 randconfig-a003-20210615
+i386                 randconfig-a015-20210615
+i386                 randconfig-a013-20210615
+i386                 randconfig-a016-20210615
+i386                 randconfig-a012-20210615
+i386                 randconfig-a014-20210615
+i386                 randconfig-a011-20210615
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210615
+x86_64               randconfig-a015-20210615
+x86_64               randconfig-a011-20210615
+x86_64               randconfig-a012-20210615
+x86_64               randconfig-a014-20210615
+x86_64               randconfig-a016-20210615
+x86_64               randconfig-a013-20210615
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
