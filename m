@@ -2,81 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B1D3A974B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C113D3A974F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbhFPKbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:31:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47692 "EHLO mail.kernel.org"
+        id S232237AbhFPKcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:32:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232048AbhFPKbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:31:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96F4A60FE6;
-        Wed, 16 Jun 2021 10:29:08 +0000 (UTC)
+        id S232030AbhFPKci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 06:32:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D3F460FE6;
+        Wed, 16 Jun 2021 10:30:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623839349;
-        bh=Z0UNEV6qSxs/ADJyTpVCdlAObn8GbfeoX2RCiE/Gv2g=;
+        s=korg; t=1623839432;
+        bh=mqqLnnrtOe1x+IQER3v/M1RZ1eEvzy87JkFegkes+cc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oU+OxzvxmmwL10TJBoqn1VVSEX0vaisVNjzKh5YrHI/qu7atXiSVG2AiIEv+OBUUf
-         LRln0CqIsVc9mG+0PRKLeFPWJNYCJHYLIpgCJ7yjXfMXA1YJS7sJE+KL1/xOxnKZz4
-         7q9sCPTngsDTlrnaNSWWIPQsoYs6m5vksC11lVIg=
-Date:   Wed, 16 Jun 2021 12:29:06 +0200
+        b=OnWsBphAHVb2rg/ju/6Hmsj9CKJESH5L8S3YyKZMowlYIITokBtAacamo6ne6B4RJ
+         xkyDkVC44/qaGqBTWAXtH/TaV1e/lcQ7RNlplQvYzisJOz4p/Dw9LrtsbDA8TOBvmH
+         UBpffBaFYiJKlt50hNCdpZBmpU/RzF4RFEi/LMWg=
+Date:   Wed, 16 Jun 2021 12:30:29 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Amit Klein' <aksecurity@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>, Willy Tarreau <w@1wt.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.4 175/244] inet: use bigger hash table for IP ID
- generation
-Message-ID: <YMnScmBeZRzi3APe@kroah.com>
-References: <20210512144743.039977287@linuxfoundation.org>
- <20210512144748.600206118@linuxfoundation.org>
- <CANEQ_++O0XVVdvynGtf37YCHSBT8CYHnUkK+VsFkOTqeqwOUtA@mail.gmail.com>
- <YMmlPHMn/+EPdbvm@kroah.com>
- <CANEQ_++gbwU2Rvcqg5KtngZC1UX1XcjOKfPKRr3Pvxi+VyQX+Q@mail.gmail.com>
- <a388a8018b09429d93a4a6b6852c70b2@AcuMS.aculab.com>
+To:     Daehwan Jung <dh10.jung@samsung.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Johan Hovold <johan@kernel.org>,
+        Lukasz Halman <lukasz.halman@gmail.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: ALSA: usb-audio: fix rate on Ozone Z90 USB headset
+Message-ID: <YMnSxQx15C8xAq98@kroah.com>
+References: <CGME20210616094912epcas2p38028df32b89b7cc79ba16c0215f8f664@epcas2p3.samsung.com>
+ <1623836097-61918-1-git-send-email-dh10.jung@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a388a8018b09429d93a4a6b6852c70b2@AcuMS.aculab.com>
+In-Reply-To: <1623836097-61918-1-git-send-email-dh10.jung@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 10:19:15AM +0000, David Laight wrote:
-> From: Amit Klein
-> > Sent: 16 June 2021 10:17
-> ...
-> > -#define IP_IDENTS_SZ 2048u
-> > -
-> > +/* Hash tables of size 2048..262144 depending on RAM size.
-> > + * Each bucket uses 8 bytes.
-> > + */
-> > +static u32 ip_idents_mask __read_mostly;
-> ...
-> > +    /* For modern hosts, this will use 2 MB of memory */
-> > +    idents_hash = alloc_large_system_hash("IP idents",
-> > +                          sizeof(*ip_idents) + sizeof(*ip_tstamps),
-> > +                          0,
-> > +                          16, /* one bucket per 64 KB */
-> > +                          HASH_ZERO,
-> > +                          NULL,
-> > +                          &ip_idents_mask,
-> > +                          2048,
-> > +                          256*1024);
-> > +
+On Wed, Jun 16, 2021 at 06:34:55PM +0900, Daehwan Jung wrote:
+> It mislabels its 96 kHz altsetting and that's why it causes some noise
 > 
-> Can someone explain why this is a good idea for a 'normal' system?
-> 
-> Why should my desktop system 'waste' 2MB of memory on a massive
-> hash table that I don't need.
-> It might be needed by systems than handle massive numbers
-> of concurrent connections - but that isn't 'most systems'.
-> 
-> Surely it would be better to detect when the number of entries
-> is comparable to the table size and then resize the table.
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Patches always gladly accepted.
+I don't care about this.  But the stable tree probably does, please
+read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
+
+thanks,
+
+greg k-h
