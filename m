@@ -2,144 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C800B3A9954
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0583A9958
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhFPLfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:35:02 -0400
-Received: from phobos.denx.de ([85.214.62.61]:54344 "EHLO phobos.denx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhFPLe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:34:57 -0400
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id E87AE8035B;
-        Wed, 16 Jun 2021 13:32:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1623843170;
-        bh=T+Cs1AeQE7LkpU7A7afZ1a78WZrIIf6qmW2TwzpJZpo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=MBct9gtyk7PwHbCNWV+gq0y6jsEiTjz63p9FrCk1tHcGtm+2K0F2veZl1fau6uZkt
-         V9C24JhUjVF1bbjIcjXQmmZzQ0GlBlh+JogVkFnWVsxbfZosjFA1XEm2feUcyyUz5b
-         BCfqcHihZsyek4WOcpmIWtMJ3WDwFHIx54s3ceki3sTdjStkoQVlZ5lrvjlg+k2dK3
-         PJsVlkpK6bPEz7Pey79UCqPIt0t9NY4jK6DNl8anRHHZsvGMMb4gX3AyaP0KRsRFaG
-         XoIeJq9o+7R02l9PdYRR1colKndQN+KOYM8nerYsFWT6omtRzoPNig5nLuBgThQz/N
-         kHRrptdRZZMjg==
-Subject: Re: [PATCH V2] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM
- DRC02 boards
-To:     Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        kernel <kernel@dh-electronics.com>,
-        "festevam@gmail.com" <festevam@gmail.com>
-References: <20210525143001.9298-1-cniedermaier@dh-electronics.com>
- <20210602195009.GA3870858@robh.at.kernel.org>
- <b765351a7c3542d2a66ab1168f1ff222@dh-electronics.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <bfbd70ca-b5a6-f7a7-4c7d-72ac86874227@denx.de>
-Date:   Wed, 16 Jun 2021 13:32:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232412AbhFPLgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhFPLgM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 07:36:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC1CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 04:34:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6nQMGL+1XCqXkxLtKh5enV71s7Z+HdE0jcbVftcBRPk=; b=UWkGlgfc4CIKH/xEhpmwBNak3x
+        mCulX6N4bNrSYdp6Vec7Bf0db8Sk15TP8F+zGWTMbGdoiUEUaANy2m2zEilPZWjhPhXZDuMREkm6/
+        8aMqJouenvH2kITG6ec7c0AKMuDYs6pihIUb/WfoYi0awRoA5PhFl9E//2eBzdIJFTgu/wJ/u+V4H
+        P26GGQ5aCMdRUhz9rIlCwASoBj6AKjyvEM5IX/YxLTTrJxTEOSTow/dhhtoQaqYku0sQLEPb/P8el
+        vpkq3g1m9fjbxJAlhqEpagzyCEgmpCqCFPO1VW9mJpnrWsL400goQ6LoxASn58WXXfquDhuUbDX7x
+        S9TGq1bQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltTnj-007ywL-9M; Wed, 16 Jun 2021 11:33:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E16A9300204;
+        Wed, 16 Jun 2021 13:33:42 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C616B20C169EA; Wed, 16 Jun 2021 13:33:42 +0200 (CEST)
+Date:   Wed, 16 Jun 2021 13:33:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 4/6] posix-cpu-timers: Force next_expiration recalc after
+ timer reset
+Message-ID: <YMnhllR8fatx1MRD@hirez.programming.kicks-ass.net>
+References: <20210604113159.26177-1-frederic@kernel.org>
+ <20210604113159.26177-5-frederic@kernel.org>
+ <YMnDFQ9bvVPHu/kJ@hirez.programming.kicks-ass.net>
+ <20210616112111.GB801071@lothringen>
 MIME-Version: 1.0
-In-Reply-To: <b765351a7c3542d2a66ab1168f1ff222@dh-electronics.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616112111.GB801071@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 1:19 PM, Christoph Niedermaier wrote:
-> Send reply also to Rob Herrings +dt email address:
+On Wed, Jun 16, 2021 at 01:21:11PM +0200, Frederic Weisbecker wrote:
+> On Wed, Jun 16, 2021 at 11:23:33AM +0200, Peter Zijlstra wrote:
+> > On Fri, Jun 04, 2021 at 01:31:57PM +0200, Frederic Weisbecker wrote:
+> > 
+> > > @@ -647,8 +651,6 @@ static int posix_cpu_timer_set(struct k_itimer *timer, int timer_flags,
+> > >  	if (unlikely(timer->it.cpu.firing)) {
+> > >  		timer->it.cpu.firing = -1;
+> > >  		ret = TIMER_RETRY;
+> > > -	} else {
+> > > -		cpu_timer_dequeue(ctmr);
+> > >  	}
+> > >  
+> > >  	/*
+> > > @@ -713,9 +715,13 @@ static int posix_cpu_timer_set(struct k_itimer *timer, int timer_flags,
+> > >  	 * For a timer with no notification action, we don't actually
+> > >  	 * arm the timer (we'll just fake it for timer_gettime).
+> > >  	 */
+> > > -	cpu_timer_setexpires(ctmr, new_expires);
+> > > -	if (new_expires != 0 && val < new_expires) {
+> > > -		arm_timer(timer, p);
+> > > +	if (new_expires != 0) {
+> > > +		cpu_timer_dequeue(ctmr);
+> > > +		cpu_timer_setexpires(ctmr, new_expires);
+> > > +		if (val < new_expires)
+> > > +			arm_timer(timer, p);
+> > > +	} else {
+> > > +		disarm_timer(timer, p);
+> > >  	}
+> > >  
+> > >  	unlock_task_sighand(p, &flags);
+> > 
+> > AFAICT there's an error path in between where you've removed
+> > cpu_timer_dequeue() and added it back. This error path will now leave
+> > the timer enqueued.
 > 
-> From: Rob Herring <robh@kernel.org>
-> Sent: Wednesday, June 2, 2021 9:50 PM
-> 
->> On Tue, May 25, 2021 at 04:30:01PM +0200, Christoph Niedermaier wrote:
->>> Add DH electronics DHCOM PicoITX and DHCOM DRC02 boards.
->>>
->>> Signed-off-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Cc: robh+dt@kernel.org
->>> Cc: Shawn Guo <shawnguo@kernel.org>
->>> Cc: kernel@dh-electronics.com
->>> To: devicetree@vger.kernel.org
->>> ---
->>> V2: Remove line with fsl,imx6s on the DRC02 Board
->>> ---
->>>   Documentation/devicetree/bindings/arm/fsl.yaml | 12 ++++++++++++
->>>   1 file changed, 12 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
->>> index fce2a8670b49..3c4ff79a3be7 100644
->>> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
->>> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
->>> @@ -407,6 +407,12 @@ properties:
->>>             - const: dfi,fs700e-m60
->>>             - const: fsl,imx6dl
->>>
->>> +      - description: i.MX6DL DHCOM PicoITX Board
->>> +        items:
->>> +          - const: dh,imx6dl-dhcom-picoitx
->>> +          - const: dh,imx6dl-dhcom-som
->>> +          - const: fsl,imx6dl
->>> +
->>>         - description: i.MX6DL Gateworks Ventana Boards
->>>           items:
->>>             - enum:
->>> @@ -458,6 +464,12 @@ properties:
->>>             - const: toradex,colibri_imx6dl          # Colibri iMX6 Module
->>>             - const: fsl,imx6dl
->>>
->>> +      - description: i.MX6S DHCOM DRC02 Board
->>> +        items:
->>> +          - const: dh,imx6s-dhcom-drc02
->>> +          - const: dh,imx6s-dhcom-som
->>> +          - const: fsl,imx6dl
->>
->> fsl,imx6s?
-> 
-> In the first version I had here an additional line with "fsl,imx6s",
-> but currently the kernel isn't supporting that compatible. The i.MX6
-> Solo is currently supported by "fsl,imx6dl". So my idea was to add
-> both "fsl,imx6dl" and "fsl,imx6s" to match it maybe on a later kernel
-> version. If there is no match with the Solo now, it will fall back to
-> the i.MX6 DualLite. That is why I had both fsl,imx6s and fsl,imx6dl
-> in that order. On Fabio's advice, I removed the line with "fsl,imx6s"
-> in version 2.
-> Is this what you meant by your comment?
+> Ah that's the case where the timer is firing. In this case it can't be queued
+> anyway. Also it's a retry path so we'll eventually dequeue it in any case
+> (should it be concurrently requeued after firing).
 
-I didn't notice that at first myself, but I think what Rob means is
-
-- const: dh,imx6s-dhcom-drc02
-- const: dh,imx6s-dhcom-som
-- const: fsl,imx6dl <------ this should be consistent with the two above
-
-that is
-
-  - const: dh,imx6s-dhcom-drc02
-  - const: dh,imx6s-dhcom-som
--- const: fsl,imx6dl
-+- const: fsl,imx6s
-               ^^^^^
-
-But that is a bit odd here:
-- The MX6S is MX6DL with one CPU core disabled.
-- The DRC02 device can only house a SOM with MX6S and NOT with MX6DL
-(due to some thermal design consideration or something).
-- The kernel discerns the MX6S/MX6DL automatically based on the number 
-of cores it reads from some register, therefore it only has the 
-fsl,mx6dl compatible to cover both MX6S and MX6DL.
-So, the closest fallback compatible for this device really is the MX6DL, 
-i.e. fsl,imx6dl.
-
-So I think this patch is correct as-is, no ?
+Urgh, I see.. this code is a maze :-(
