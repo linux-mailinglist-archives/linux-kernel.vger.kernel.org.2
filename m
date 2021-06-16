@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B953A9961
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821DF3A9965
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbhFPLii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:38:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232509AbhFPLif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:38:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C944461356;
-        Wed, 16 Jun 2021 11:36:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623843389;
-        bh=YCOeFow/marJnGVtCdA1iH+F1XVHfkTaFQmJaaygqbA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TfYpQ9McQuss01l1gYtOO+xD1xQtckWwAoQhg0uQgN6eRx3Ntc7H2yM2LLNuCZviN
-         OHUYb+RhgPOtNIYOC75Lq+i6aBcXhDrXUTuC91G5rhdB2pSUuuU51N0mUoIP+3vKoJ
-         NLurR+uDMSQj6Uscck75lh2ltCtqzTzXg0gKvaJLQon6H0zkIR3H6jJDgOuIbDc93V
-         N5CaYrqcd9GgBqWOtSzmpTNnJvLh4PUZWv20zMESy3evb3H8tkI8I1lVOVErZ2TIn/
-         iaw6uuZt6wPNgln35Qgew5V3iz4udtJidL7iB0mW5qFgVZjjkZ3F45iBkLK05uSLEf
-         f9is8amBWiLkw==
-From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 2/2] mailmap: add my other e-mail address and identity without diacritics
-Date:   Wed, 16 Jun 2021 13:36:24 +0200
-Message-Id: <20210616113624.19351-2-kabel@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210616113624.19351-1-kabel@kernel.org>
-References: <20210616113624.19351-1-kabel@kernel.org>
+        id S232539AbhFPLlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:41:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232453AbhFPLlT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 07:41:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E720C061574;
+        Wed, 16 Jun 2021 04:39:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=D1qCShTegkiKXfeRGE/Ybh2LSj5qfntvYDg+dzBddB4=; b=VBLAe4bSut2RBuKcy555gk7J/W
+        2/rSWRJ1fSZvP9oZvQ1tVqbhUcB+iUNYjy1WgonvwwO1LGpdPyioOXCesc/xehHiDdujcOqq9RBA8
+        BNj1KpDFgXGjZFoUm0oobdxqDwJ4gJXhAwlo2D9zjjtMwGkeVbbA/6WYFEchhSnUGFk9jGOj9a6y/
+        19msLB8mQNEaP3Ugi5iVxd0Gai321ltt7yOz6/SE5VrWC79S5i8LF2RdySlaV3h8wo3rmjV2FjJEe
+        di0oc/1qg6Bp/R3xHP5ckQqCZXlN8Fr5Vn/MIJM4s3O2AbO5NwEP7PPuwqwynE19Ckhz9uJMgcZSG
+        70MLbxRg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltTsc-007z6Y-0K; Wed, 16 Jun 2021 11:38:52 +0000
+Date:   Wed, 16 Jun 2021 12:38:45 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCH v11 13/33] mm/filemap: Add folio_index(),
+ folio_file_page() and folio_contains()
+Message-ID: <YMnixTMzdstg81Fh@casper.infradead.org>
+References: <20210614201435.1379188-14-willy@infradead.org>
+ <20210614201435.1379188-1-willy@infradead.org>
+ <814131.1623837803@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <814131.1623837803@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of my commits were sent with identities
-  Marek Behun <marek.behun@nic.cz>
-  Marek Behún <marek.behun@nic.cz>
-while the correct one is
-  Marek Behún <kabel@kernel.org>
+On Wed, Jun 16, 2021 at 11:03:23AM +0100, David Howells wrote:
+> Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+> 
+> > folio_index() is the equivalent of page_index() for folios.
+> > folio_file_page() is the equivalent of find_subpage().
+> > folio_contains() is the equivalent of thp_contains().
+> > 
+> > No changes to generated code.
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Acked-by: Jeff Layton <jlayton@kernel.org>
+> > Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> > Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+> 
+> folio_subpage() might be a better name than folio_file_page().
 
-Put this into mailmap so that git shortlog prints all my commits under
-one identity.
-
-Signed-off-by: Marek Behún <kabel@kernel.org>
----
- .mailmap | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/.mailmap b/.mailmap
-index c79a78766c07..db58eedb44f1 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -212,6 +212,8 @@ Manivannan Sadhasivam <mani@kernel.org> <manivannanece23@gmail.com>
- Manivannan Sadhasivam <mani@kernel.org> <manivannan.sadhasivam@linaro.org>
- Marcin Nowakowski <marcin.nowakowski@mips.com> <marcin.nowakowski@imgtec.com>
- Marc Zyngier <maz@kernel.org> <marc.zyngier@arm.com>
-+Marek Behún <kabel@kernel.org> <marek.behun@nic.cz>
-+Marek Behún <kabel@kernel.org> Marek Behun <marek.behun@nic.cz>
- Mark Brown <broonie@sirena.org.uk>
- Mark Starovoytov <mstarovo@pm.me> <mstarovoitov@marvell.com>
- Mark Yao <markyao0591@gmail.com> <mark.yao@rock-chips.com>
--- 
-2.31.1
-
+I want it to be clear that you can't call this for folios which
+aren't part of a file.  For example, anonymous memory.
