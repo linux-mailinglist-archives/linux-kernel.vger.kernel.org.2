@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98F83A9A3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4382E3A9A63
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232942AbhFPM3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232893AbhFPM32 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:29:28 -0400
-Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D6CC0617AE;
-        Wed, 16 Jun 2021 05:27:20 -0700 (PDT)
-Received: from localhost.localdomain (83.6.168.10.neoplus.adsl.tpnet.pl [83.6.168.10])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id C8B4D1FC51;
-        Wed, 16 Jun 2021 14:27:17 +0200 (CEST)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] arm64: dts: qcom: sm8250-edo: Add Samsung touchscreen
-Date:   Wed, 16 Jun 2021 14:27:08 +0200
-Message-Id: <20210616122708.144770-6-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616122708.144770-1-konrad.dybcio@somainline.org>
-References: <20210616122708.144770-1-konrad.dybcio@somainline.org>
+        id S232747AbhFPMax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:30:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231303AbhFPMaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 08:30:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 808846135C;
+        Wed, 16 Jun 2021 12:28:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623846520;
+        bh=qMLD5L33JuSzop8XE5CQqNRAcxqJX553vmnX+Xl74Dc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=L/R2NwoGZMLbmQtky2swZPfqmxZlTIbB4ppAfSV2KG39FufEVQkDEWsG+tSOnkrRo
+         Zjx63oN3Kk4Cz/4+sAf/tADqRztyaneLNBu3PCY7MA7UEtFLwEjsYo0I5zpoTz3kIt
+         VOb05SczaB9QOKupeFsqMD7GSMF3Y8aU3tJn4FRlyw1lUh8TdUf5BcPQLvlrG6oz60
+         61SvPNCFbUn23aUKvv0tAQqnCdfHNjsbTN4QMxy8Gc5yNxk1Mt0ZbqE4paFO1BUp4k
+         tggLIXxkvTvzWXb0ZVizM7mgte/VwMYrIOuBriXtcDGKYXs+gJ7DBcb6rSf2qUFkoY
+         UsNqeYaRtmUbQ==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1ltUes-004oiL-5M; Wed, 16 Jun 2021 14:28:38 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-sunxi@lists.linux.dev
+Subject: [PATCH 00/11] Address some smatch warnings
+Date:   Wed, 16 Jun 2021 14:28:26 +0200
+Message-Id: <cover.1623846327.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Samsung touchscreen node and relevant pin configuration to make the phones
-actually interactable with.
+There are currently a couple of smatch warnings at the media subsystem.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- .../boot/dts/qcom/sm8250-sony-xperia-edo.dtsi | 21 ++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+This series fix several of them. The end goal is to reduce smatch warnings
+to be close to zero, but there are still some work to be done. I'll likely
+submit another round along this week.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
-index 3f08802100ca..8f2417db4a99 100644
---- a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
-@@ -462,7 +462,18 @@ &i2c13 {
- 	status = "okay";
- 	clock-frequency = <400000>;
- 
--	/* Samsung touchscreen @ 48 */
-+	touchscreen@48 {
-+		compatible = "samsung,s6sy761";
-+		reg = <0x48>;
-+		interrupt-parent = <&tlmm>;
-+		interrupts = <39 0x2008>;
-+		/* It's "vddio" downstream but it works anyway! */
-+		vdd-supply = <&vreg_l1c_1p8>;
-+		avdd-supply = <&vreg_l10c_3p3>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&ts_int_default>;
-+	};
- };
- 
- &i2c15 {
-@@ -570,6 +581,14 @@ mdm2ap_default: mdm2ap-default {
- 		bias-disable;
- 	};
- 
-+	ts_int_default: ts-int-default {
-+		pins = "gpio39";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disabled;
-+		input-enable;
-+	};
-+
- 	ap2mdm_default: ap2mdm-default {
- 		pins = "gpio56", "gpio57";
- 		function = "gpio";
+Mauro Carvalho Chehab (11):
+  media: dvb_ca_en50221: avoid speculation from CA slot
+  media: dvb_net: avoid speculation from net slot
+  media: dvbdev: fix error logic at dvb_register_device()
+  media: sun6i-csi: add a missing return code
+  media: saa7134: use more meaninful goto labels
+  media: saa7134: fix saa7134_initdev error handling logic
+  media: siano: fix device register error path
+  media: adv7842: better document EDID block size
+  media: ttusb-dec: cleanup an error handling logic
+  media: dvb-core: frontend: make GET/SET safer
+  media: xilinx: simplify get fourcc logic
+
+ drivers/media/common/siano/smsdvb-main.c      |   4 +
+ drivers/media/dvb-core/dvb_ca_en50221.c       |   1 +
+ drivers/media/dvb-core/dvb_frontend.c         | 213 ++++++++++--------
+ drivers/media/dvb-core/dvb_net.c              |  25 +-
+ drivers/media/dvb-core/dvbdev.c               |   3 +
+ drivers/media/i2c/adv7842.c                   |  33 ++-
+ drivers/media/pci/saa7134/saa7134-core.c      |  39 ++--
+ .../platform/sunxi/sun6i-csi/sun6i_video.c    |   4 +-
+ drivers/media/platform/xilinx/xilinx-dma.c    |   5 +-
+ drivers/media/platform/xilinx/xilinx-vip.c    |   6 +-
+ drivers/media/usb/ttusb-dec/ttusb_dec.c       |  25 +-
+ 11 files changed, 201 insertions(+), 157 deletions(-)
+
 -- 
-2.32.0
+2.31.1
+
 
