@@ -2,97 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7AA3AA795
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7BE3AA798
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 01:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234597AbhFPXmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 19:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234590AbhFPXl7 (ORCPT
+        id S234720AbhFPXm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 19:42:29 -0400
+Received: from mail-il1-f181.google.com ([209.85.166.181]:33539 "EHLO
+        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234590AbhFPXmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 19:41:59 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F10DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 16:39:52 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id j62so1288100qke.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 16:39:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GZ8Uwa036gpNLbWnfaBzspVA5CRluDlqQqEct0C37As=;
-        b=kshY+ojjwAXK3pIhmxDE0VeTVJfmns8FASuchPW9vaayL5PkSHnddwPEF9UdgL0AhX
-         cyZgGsKHE9Sd3FSdb6G2Q+vFBJ6O8CrHW1at/8a5AvNErf0kvKHZCwDv7siXwqRsYKOI
-         9rePAjFvXqt6aZK8kQO4kbVCRmAWFY/zXtkDazo2V81MI/wJ/fqeNAogpoaO8ProQNG2
-         7UU+l9uOW5KweJetqGyNu6XKmv3pRgdzpmcJdqQCjbCC2pFcwNQmbOmNu3FHtLl5OEu7
-         GBisdHRuJZsCH1LcAWDE3i8KaDOtQ+Nh4V3oy1Mi/eDlJAP8NiJwq1LWAYEAgR0wXoAJ
-         KVkw==
+        Wed, 16 Jun 2021 19:42:22 -0400
+Received: by mail-il1-f181.google.com with SMTP id z1so3873389ils.0;
+        Wed, 16 Jun 2021 16:40:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GZ8Uwa036gpNLbWnfaBzspVA5CRluDlqQqEct0C37As=;
-        b=d3kEXdw3Y9mRCxGaQooOalLplTaSsRSKLkNGVVauk3zZceNoV6fXZ5/DNyzKGtADN7
-         cJot6H35RBI/ilJc6y6oqh7P3GVEt7iI2waiGmyYNFGfZm7U0gUUCgFjHbPaIeofeMyM
-         S6UcaXGMmj2ctYsaIRUvX/0w/wKP0lIbrQrq3zJ5/5A6KuNkt18HiPWonPDf4PlHayDm
-         aBEdhgL0nyq22ztg3LfeCH+gLzLigseYmInRESnHTysHzA2+w8/FnVS6alQwl9GiEVOr
-         CorJ4E6KWadjUmkjK1yEciOZiy2OYnEmtPymjE6gN9pL80IZ8xzBiI49am6sq7Pn1GUW
-         ooCA==
-X-Gm-Message-State: AOAM5328ob0Pt7DlphcZQAy9ZR0pEZJmdplxpVllmehNkIEjr1VYS2jd
-        KHXQODkVdGtSJZNGKLWChVkQALBYB1yUlwkTIWgx3A==
-X-Google-Smtp-Source: ABdhPJyaBR6uwbvnXk7V1aA9uldwi5ixDr/g7IQB3vX383R9Ezb0ebsCYcz5SzXZCRq+ysp+Tauc/N8qa1cEvW9QoUc=
-X-Received: by 2002:a37:a1d5:: with SMTP id k204mr932037qke.300.1623886791313;
- Wed, 16 Jun 2021 16:39:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kDYnmGlkYP2XTjPyujeKcLs7zkGku54gbQ2xEMwMzGQ=;
+        b=qmgjgw0zjwg1V8cyRGVmQj4yMw9dEausOXPT9map8w8YvYSDLVBbXMWl+4bFzCdxur
+         qFowg6KVIfal0UNUmXWCiZJPru9tRAQPv+I4icqMIwRq/chjLDkpMTM83GwJpP6EGS8m
+         S4yfWKsLV1VfqFNfuHmKrCzfLv2jzRREOwUrwjVD7tbAKZk7j5c3rpv2+hf252iOZ/Qm
+         n27X6lBDTinivNc1GYyI3NmM7VfoIxHNFDL9SwSu1znLrh3XY3/FmmfgHd2qAuwfB8G+
+         VR9raEbgrrCtMsj6HJRWAJDBDJrjsc75UG0cerihu+x80CGxUd92lvVOWAoP86Ok1qlo
+         JCcg==
+X-Gm-Message-State: AOAM533gcCUNDoRmy7IOCfCjnik85jONIjaSB0qdtsiotKbGTGvyr4Lb
+        41Gho4XVBqfn+LqQlwC+VQ==
+X-Google-Smtp-Source: ABdhPJxOVFOvxO+PfGwlEWm+SVTL4u/1b9+xCOaQxsYMANRsvdRArIUQpQn2YsRYLvV0yG3lnEellA==
+X-Received: by 2002:a92:bf10:: with SMTP id z16mr1547434ilh.304.1623886814437;
+        Wed, 16 Jun 2021 16:40:14 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id h7sm1866831ilr.44.2021.06.16.16.40.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 16:40:13 -0700 (PDT)
+Received: (nullmailer pid 300348 invoked by uid 1000);
+        Wed, 16 Jun 2021 23:40:11 -0000
+Date:   Wed, 16 Jun 2021 17:40:11 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: Add SONY Synaptics JDI panel
+Message-ID: <20210616234011.GA295646@robh.at.kernel.org>
+References: <20210605104942.39487-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-References: <20210616190759.2832033-1-mw@semihalf.com> <20210616190759.2832033-4-mw@semihalf.com>
- <YMpShczKt1TNAqsV@lunn.ch>
-In-Reply-To: <YMpShczKt1TNAqsV@lunn.ch>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Thu, 17 Jun 2021 01:39:40 +0200
-Message-ID: <CAPv3WKde+LCmxxr6UuA7X=XShF6d4io49baxsjw1kMqR=T7XrA@mail.gmail.com>
-Subject: Re: [net-next: PATCH v2 3/7] net/fsl: switch to fwnode_mdiobus_register
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
-        lenb@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210605104942.39487-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=C5=9Br., 16 cze 2021 o 21:35 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
->
-> On Wed, Jun 16, 2021 at 09:07:55PM +0200, Marcin Wojtas wrote:
-> > Utilize the newly added helper routine
-> > for registering the MDIO bus via fwnode_
-> > interface.
->
-> You need to add depends on FWNODE_MDIO
->
+On Sat, Jun 05, 2021 at 12:49:40PM +0200, Konrad Dybcio wrote:
+> Add bindings for the SONY Synaptics JDI panel used in
+> Xperia X, X Performance, X Compact, XZ and XZs smartphones.
+> 
+> Due to the nature of phone manufacturing and lack of any docs
+> whatsoever, replacement names have been used to indicate the
+> devices that this panel is used on.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> ---
+> Changes since v1:
+> - gpio -> gpios
+> - description: |+ -> description: |
+> - remove redundant reset-gpio
+> - fix up indentation in the example
+> 
+>  .../display/panel/sony,synaptics-jdi.yaml     | 100 ++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/sony,synaptics-jdi.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/panel/sony,synaptics-jdi.yaml b/Documentation/devicetree/bindings/display/panel/sony,synaptics-jdi.yaml
+> new file mode 100644
+> index 000000000000..81d841c049e8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/panel/sony,synaptics-jdi.yaml
+> @@ -0,0 +1,100 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/panel/sony,synaptics-jdi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SONY Synaptics JDI panel
+> +
+> +maintainers:
+> +  - Konrad Dybcio <konrad.dybcio@somainline.org>
+> +
+> +description: |+
+> +  This panel seems to only be found in SONY Xperia
+> +  X, X Performance, X Compact, XZ and XZs
+> +  smartphones and we have no straightforward way of
+> +  actually getting the correct model number,
+> +  as no schematics are released publicly.
+> +
+> +allOf:
+> +  - $ref: panel-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - sony,synaptics-jdi-dora
+> +          - sony,synaptics-jdi-kagura
+> +          - sony,synaptics-jdi-keyaki
+> +          - sony,synaptics-jdi-kugo
+> +          - sony,synaptics-jdi-suzu
+> +
+> +  reg: true
+> +
+> +  reset-gpios: true
+> +
+> +  avdd-supply:
+> +    description: avdd supply
+> +
+> +  vddio-supply:
+> +    description: vddio supply
+> +
+> +  vsn-supply:
+> +    description: voltage negative supply
+> +
+> +  vsp-supply:
+> +    description: voltage positive supply
+> +
+> +  tvdd-supply:
+> +    description: tvdd supply
+> +
+> +  preset-gpio:
 
-Do you mean something like this?
+'-gpios' is the preferred form.
 
---- a/drivers/net/ethernet/freescale/Kconfig
-+++ b/drivers/net/ethernet/freescale/Kconfig
-@@ -68,8 +68,8 @@ config FSL_PQ_MDIO
- config FSL_XGMAC_MDIO
-        tristate "Freescale XGMAC MDIO"
-        select PHYLIB
--       depends on OF
--       select OF_MDIO
-+       depends on ACPI || OF
-+       select FWNODE_MDIO
-        help
+And needs 'maxItems: 1'
 
-Best regards,
-Marcin
+> +    description: panel reset pin
+> +
+> +  pvddio-gpio:
+> +    description: panel vddio pin
+> +
+> +  treset-gpio:
+> +    description: touch reset pin
+
+Same for these.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - preset-gpio
+> +  - pvddio-gpio
+> +  - treset-gpio
+> +  - avdd-supply
+> +  - vddio-supply
+> +  - vsn-supply
+> +  - vsp-supply
+> +  - tvdd-supply
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    dsi {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            panel: panel@0 {
+> +                    reg = <0>;
+> +
+
+Missing a compatible which means the above schema is never applied...
+
+> +                    pvddio-gpio = <&tlmm 51 GPIO_ACTIVE_HIGH>;
+> +                    preset-gpio = <&tlmm 8 GPIO_ACTIVE_HIGH>;
+> +                    treset-gpio = <&tlmm 89 GPIO_ACTIVE_HIGH>;
+> +
+> +                    vddio-supply = <&pm8994_s4>;
+> +                    avdd-supply = <&pm8994_l2>;
+> +                    tvdd-supply = <&panel_tvdd>;
+> +
+> +                    backlight = <&pmi8994_wled>;
+> +
+> +                    port {
+
+and that would point out this is not documented. 
+
+> +                      panel_in: endpoint {
+> +                        remote-endpoint = <&dsi0_out>;
+> +                      };
+> +                    };
+> +            };
+> +    };
+> -- 
+> 2.31.1
