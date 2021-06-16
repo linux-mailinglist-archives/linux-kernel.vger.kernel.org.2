@@ -2,77 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4783A8E1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02683A8E2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbhFPBN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 21:13:28 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:7281 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhFPBN2 (ORCPT
+        id S231779AbhFPBT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 21:19:56 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:50638 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231270AbhFPBTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 21:13:28 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G4RpN1w4Kz1BN1y;
-        Wed, 16 Jun 2021 09:06:20 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 09:11:05 +0800
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 09:11:05 +0800
-Subject: Re: [PATCH -next] tracing: Remove set but not used variable 'ret'
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>
-References: <20210527091032.3878436-1-libaokun1@huawei.com>
- <4ab45eeb-ad26-03e8-f2c5-2dc4582a2946@huawei.com>
- <20210615113925.27ad04ea@oasis.local.home>
-From:   "libaokun (A)" <libaokun1@huawei.com>
-Message-ID: <ff4437bb-5285-5bf5-8c87-757dd07e51ef@huawei.com>
-Date:   Wed, 16 Jun 2021 09:11:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Tue, 15 Jun 2021 21:19:54 -0400
+X-UUID: 80bc4c96ed994998a86bd30facedeae1-20210616
+X-UUID: 80bc4c96ed994998a86bd30facedeae1-20210616
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1655554615; Wed, 16 Jun 2021 09:17:46 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Jun 2021 09:17:44 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 16 Jun 2021 09:17:44 +0800
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Subject: [PATCH v4 1/2] arm64: dts: mediatek: Add mt8192 clock controllers
+Date:   Wed, 16 Jun 2021 09:15:50 +0800
+Message-ID: <20210616011551.29654-2-chun-jie.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210616011551.29654-1-chun-jie.chen@mediatek.com>
+References: <20210616011551.29654-1-chun-jie.chen@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20210615113925.27ad04ea@oasis.local.home>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your reminder.
+Add clock controller nodes for SoC mt8192
 
-Best Regards.
+Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi | 163 +++++++++++++++++++++++
+ 1 file changed, 163 insertions(+)
 
+diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+index 9757138a8bbd..83f71d13ef9d 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+@@ -5,6 +5,7 @@
+  */
+ 
+ /dts-v1/;
++#include <dt-bindings/clock/mt8192-clk.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/pinctrl/mt8192-pinfunc.h>
+@@ -257,6 +258,24 @@
+ 			};
+ 		};
+ 
++		topckgen: syscon@10000000 {
++			compatible = "mediatek,mt8192-topckgen", "syscon";
++			reg = <0 0x10000000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		infracfg: syscon@10001000 {
++			compatible = "mediatek,mt8192-infracfg", "syscon";
++			reg = <0 0x10001000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		pericfg: syscon@10003000 {
++			compatible = "mediatek,mt8192-pericfg", "syscon";
++			reg = <0 0x10003000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
+ 		pio: pinctrl@10005000 {
+ 			compatible = "mediatek,mt8192-pinctrl";
+ 			reg = <0 0x10005000 0 0x1000>,
+@@ -282,6 +301,12 @@
+ 			#interrupt-cells = <2>;
+ 		};
+ 
++		apmixedsys: syscon@1000c000 {
++			compatible = "mediatek,mt8192-apmixedsys", "syscon";
++			reg = <0 0x1000c000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
+ 		systimer: timer@10017000 {
+ 			compatible = "mediatek,mt8192-timer",
+ 				     "mediatek,mt6765-timer";
+@@ -291,6 +316,12 @@
+ 			clock-names = "clk13m";
+ 		};
+ 
++		scp_adsp: clock-controller@10720000 {
++			compatible = "mediatek,mt8192-scp_adsp";
++			reg = <0 0x10720000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
+ 		uart0: serial@11002000 {
+ 			compatible = "mediatek,mt8192-uart",
+ 				     "mediatek,mt6577-uart";
+@@ -311,6 +342,12 @@
+ 			status = "disabled";
+ 		};
+ 
++		imp_iic_wrap_c: clock-controller@11007000 {
++			compatible = "mediatek,mt8192-imp_iic_wrap_c";
++			reg = <0 0x11007000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
+ 		spi0: spi@1100a000 {
+ 			compatible = "mediatek,mt8192-spi",
+ 				     "mediatek,mt6765-spi";
+@@ -436,6 +473,12 @@
+ 			status = "disable";
+ 		};
+ 
++		audsys: clock-controller@11210000 {
++			compatible = "mediatek,mt8192-audsys";
++			reg = <0 0x11210000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
+ 		i2c3: i2c3@11cb0000 {
+ 			compatible = "mediatek,mt8192-i2c";
+ 			reg = <0 0x11cb0000 0 0x1000>,
+@@ -449,6 +492,12 @@
+ 			status = "disabled";
+ 		};
+ 
++		imp_iic_wrap_e: clock-controller@11cb1000 {
++			compatible = "mediatek,mt8192-imp_iic_wrap_e";
++			reg = <0 0x11cb1000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
+ 		i2c7: i2c7@11d00000 {
+ 			compatible = "mediatek,mt8192-i2c";
+ 			reg = <0 0x11d00000 0 0x1000>,
+@@ -488,6 +537,12 @@
+ 			status = "disabled";
+ 		};
+ 
++		imp_iic_wrap_s: clock-controller@11d03000 {
++			compatible = "mediatek,mt8192-imp_iic_wrap_s";
++			reg = <0 0x11d03000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
+ 		i2c1: i2c1@11d20000 {
+ 			compatible = "mediatek,mt8192-i2c";
+ 			reg = <0 0x11d20000 0 0x1000>,
+@@ -527,6 +582,12 @@
+ 			status = "disabled";
+ 		};
+ 
++		imp_iic_wrap_ws: clock-controller@11d23000 {
++			compatible = "mediatek,mt8192-imp_iic_wrap_ws";
++			reg = <0 0x11d23000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
+ 		i2c5: i2c5@11e00000 {
+ 			compatible = "mediatek,mt8192-i2c";
+ 			reg = <0 0x11e00000 0 0x1000>,
+@@ -540,6 +601,12 @@
+ 			status = "disabled";
+ 		};
+ 
++		imp_iic_wrap_w: clock-controller@11e01000 {
++			compatible = "mediatek,mt8192-imp_iic_wrap_w";
++			reg = <0 0x11e01000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
+ 		i2c0: i2c0@11f00000 {
+ 			compatible = "mediatek,mt8192-i2c";
+ 			reg = <0 0x11f00000 0 0x1000>,
+@@ -565,5 +632,101 @@
+ 			#size-cells = <0>;
+ 			status = "disabled";
+ 		};
++
++		imp_iic_wrap_n: clock-controller@11f02000 {
++			compatible = "mediatek,mt8192-imp_iic_wrap_n";
++			reg = <0 0x11f02000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		msdc_top: clock-controller@11f10000 {
++			compatible = "mediatek,mt8192-msdc_top";
++			reg = <0 0x11f10000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		msdc: clock-controller@11f60000 {
++			compatible = "mediatek,mt8192-msdc";
++			reg = <0 0x11f60000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		mfgcfg: clock-controller@13fbf000 {
++			compatible = "mediatek,mt8192-mfgcfg";
++			reg = <0 0x13fbf000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		mmsys: clock-controller@14000000 {
++			compatible = "mediatek,mt8192-mmsys";
++			reg = <0 0x14000000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		imgsys: clock-controller@15020000 {
++			compatible = "mediatek,mt8192-imgsys";
++			reg = <0 0x15020000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		imgsys2: clock-controller@15820000 {
++			compatible = "mediatek,mt8192-imgsys2";
++			reg = <0 0x15820000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		vdecsys_soc: clock-controller@1600f000 {
++			compatible = "mediatek,mt8192-vdecsys_soc";
++			reg = <0 0x1600f000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		vdecsys: clock-controller@1602f000 {
++			compatible = "mediatek,mt8192-vdecsys";
++			reg = <0 0x1602f000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		vencsys: clock-controller@17000000 {
++			compatible = "mediatek,mt8192-vencsys";
++			reg = <0 0x17000000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		camsys: clock-controller@1a000000 {
++			compatible = "mediatek,mt8192-camsys";
++			reg = <0 0x1a000000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		camsys_rawa: clock-controller@1a04f000 {
++			compatible = "mediatek,mt8192-camsys_rawa";
++			reg = <0 0x1a04f000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		camsys_rawb: clock-controller@1a06f000 {
++			compatible = "mediatek,mt8192-camsys_rawb";
++			reg = <0 0x1a06f000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		camsys_rawc: clock-controller@1a08f000 {
++			compatible = "mediatek,mt8192-camsys_rawc";
++			reg = <0 0x1a08f000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		ipesys: clock-controller@1b000000 {
++			compatible = "mediatek,mt8192-ipesys";
++			reg = <0 0x1b000000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		mdpsys: clock-controller@1f000000 {
++			compatible = "mediatek,mt8192-mdpsys";
++			reg = <0 0x1f000000 0 0x1000>;
++			#clock-cells = <1>;
++		};
+ 	};
+ };
+-- 
+2.18.0
 
-在 2021/6/15 23:39, Steven Rostedt 写道:
-> On Tue, 15 Jun 2021 09:59:10 +0800
-> "libaokun (A)" <libaokun1@huawei.com> wrote:
->
->> ping
->>
->> 在 2021/5/27 17:10, Baokun Li 写道:
->>> Fixes gcc '-Wunused-but-set-variable' warning:
->>>
->>> kernel/trace/trace_events_hist.c: In function 'unregister_field_var_hists':
->>> kernel/trace/trace_events_hist.c:5228:6: warning:
->>>    variable ‘ret’ set but not used [-Wunused-but-set-variable]
->>>
->>> It never used since introduction.
-> Which was a bug.
->
->>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> This was fixed differently:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=6c610dba6e2beb1a16ac309672181d0090fb8d30
->
-> -- Steve
-> .
