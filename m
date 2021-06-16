@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54813AA1A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7263AA1A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhFPQn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 12:43:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41806 "EHLO mail.kernel.org"
+        id S231265AbhFPQoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 12:44:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231178AbhFPQnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 12:43:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3201961351;
-        Wed, 16 Jun 2021 16:41:45 +0000 (UTC)
+        id S231169AbhFPQny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 12:43:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9E4F60E0C;
+        Wed, 16 Jun 2021 16:41:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623861705;
-        bh=lkKn+lkEJJ+ozPy0zm9VRrQFGnFLXGgS7OXbAJotx0M=;
+        s=k20201202; t=1623861708;
+        bh=ioeAO168Yh6yhhdj/iontbxxZY/BFU+tAk8S1ZGsojo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SNRIUDLMQlKFOGCwVuHdqbqEYl6HMv6/k+UtPXI2aRR4XVPJGkV66r2XvAkjVfiDs
-         JSyg1KAi+xyZ61Q+uaj3yHWuod+SBrODBULgEXZ2oTFj3AYmUqIPu35WflfCOQ1Acr
-         eoVvtao9hHxQQCNoIw9COB4i4TZaVJFm8iqWSPHB8/CFidyB73KxmG7vghMuM3QyhV
-         ckODk6NHfL4QuOE4e3J384prvdc+NU57BCaUbDvzNaDlTdtS6bbRX1M8YYxqCcWKxf
-         KJtoTfXMfGa38jbfsSDATP44/Kv6OZsHfl1RkjVhxaBHOTFnUFmTvncLE4u8IiSA98
-         +hRt3vDAtIt1Q==
+        b=pAbPyUBT3w9VRggAuQ/oknuxZC3/YWErAeRWyU1RX7UKKVz6nxZOVjZG91roWdL5O
+         uRqt//NuLdPmE9b05fBdATZqNGcvFDcYZ9niacqhafmavWzoWSwsmtQlhXJM9dWFSZ
+         gIEiBCr+w4sR3zzvDsqhQtrzsbCabvcp/XYL2EZxKfD1wORsLMO4bwzFqAXYZKWsJg
+         7gwAP7Yva8pz3WCTWSGidPQl4K61KzqVy/1IChDJ3hbzqRBP0feaM2C3zMF05WR8SL
+         g2D8Hv/yfzA3F1NnsNjZ8ugTOPp6SHCPsu1htqSeQU1pcb3g23WlCqTH5H/I5BPVEV
+         iCpjGjK6EV59A==
 From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     lgirdwood@gmail.com,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH] ASoC: cs42l42: Correct definition of CS42L42_ADC_PDN_MASK
-Date:   Wed, 16 Jun 2021 17:41:13 +0100
-Message-Id: <162386001970.25644.8882454434561067128.b4-ty@kernel.org>
+        linux-kernel@vger.kernel.org, perex@perex.cz, tiwai@suse.com
+Subject: Re: [PATCH] ASoC: hdmi-codec: make hdmi_codec_controls static
+Date:   Wed, 16 Jun 2021 17:41:14 +0100
+Message-Id: <162386001971.25644.6831890415877174309.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210616135604.19363-1-rf@opensource.cirrus.com>
-References: <20210616135604.19363-1-rf@opensource.cirrus.com>
+In-Reply-To: <1623822941-3077-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1623822941-3077-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,9 +41,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 14:56:04 +0100, Richard Fitzgerald wrote:
-> The definition of CS42L42_ADC_PDN_MASK was incorrectly defined
-> as the HP_PDN bit.
+On Wed, 16 Jun 2021 13:55:41 +0800, Jiapeng Chong wrote:
+> This symbol is not used outside of hdmi-codec.c, so marks it static.
+> 
+> Fix the following sparse warning:
+> 
+> sound/soc/codecs/hdmi-codec.c:750:25: warning: symbol
+> 'hdmi_codec_controls' was not declared. Should it be static?
 
 Applied to
 
@@ -50,8 +55,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: cs42l42: Correct definition of CS42L42_ADC_PDN_MASK
-      commit: fac165f22ac947b55407cd3a60a2a9824f905235
+[1/1] ASoC: hdmi-codec: make hdmi_codec_controls static
+      commit: e99d7c69fd4c18e7319f8aab8e252b12130796bf
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
