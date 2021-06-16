@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6903A9FFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FED3A9F2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235638AbhFPPn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:43:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51140 "EHLO mail.kernel.org"
+        id S234639AbhFPPgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:36:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235275AbhFPPj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:39:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D834661351;
-        Wed, 16 Jun 2021 15:37:01 +0000 (UTC)
+        id S234332AbhFPPgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:36:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9E886100B;
+        Wed, 16 Jun 2021 15:34:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857822;
-        bh=ewBxHwmu+PcHoCfNmRdf7wetx4+AcOOFNVgj1mOHnnM=;
+        s=korg; t=1623857649;
+        bh=vqjqIDbMlYZPAfIgI/fP7LY+EVjhIGlykwYrcE7qBug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ob8Fo5TPXQQD4vgWqhhCU8xVunl7BvyzSFBejbnyXuJAffsut/Z4xaPnxrLrCeubg
-         7PRBKu9Ul8NMTl/gXS+IcJ7QlE8nHNljuEpMDLYExcs4TnV5FStb7qGNTl3by5JZVt
-         f31dKghVKvOZFWAFRrtaSX0j4ah11JoPu8LVdevE=
+        b=Rz7uY9CzgxaKNIiH25iI/1fhV5MbEgznm1kkW0jb2vOYOfi5qAYru0YL/jyRjX2lB
+         1pZ5AS8UV9tZ9OeMf3l3Ketdxu3j15lmAa/E6AkC4PqooIam5fm6F+1QqJy3IqM103
+         8OQo4y/CJK5kOFWn1sm54oVvr+HgYO2LTiHNAMWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luke D Jones <luke@ljones.dev>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 02/48] HID: asus: Filter keyboard EC for old ROG keyboard
+        stable@vger.kernel.org, Dan Robertson <dan@dlrobertson.com>,
+        Alexander Aring <aahringo@redhat.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 01/28] net: ieee802154: fix null deref in parse dev addr
 Date:   Wed, 16 Jun 2021 17:33:12 +0200
-Message-Id: <20210616152836.731441538@linuxfoundation.org>
+Message-Id: <20210616152834.197328744@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-References: <20210616152836.655643420@linuxfoundation.org>
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+References: <20210616152834.149064097@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -39,36 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luke D Jones <luke@ljones.dev>
+From: Dan Robertson <dan@dlrobertson.com>
 
-[ Upstream commit 4bfb2c72b2bfca8684c2f5c25a3119bad016a9d3 ]
+[ Upstream commit 9fdd04918a452980631ecc499317881c1d120b70 ]
 
-Older ROG keyboards emit a similar stream of bytes to the new
-N-Key keyboards and require filtering to prevent a lot of
-unmapped key warnings showing. As all the ROG keyboards use
-QUIRK_USE_KBD_BACKLIGHT this is now used to branch to filtering
-in asus_raw_event.
+Fix a logic error that could result in a null deref if the user sets
+the mode incorrectly for the given addr type.
 
-Signed-off-by: Luke D Jones <luke@ljones.dev>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Dan Robertson <dan@dlrobertson.com>
+Acked-by: Alexander Aring <aahringo@redhat.com>
+Link: https://lore.kernel.org/r/20210423040214.15438-2-dan@dlrobertson.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-asus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ieee802154/nl802154.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/hid/hid-asus.c b/drivers/hid/hid-asus.c
-index 2ab22b925941..1ed1c05c3d54 100644
---- a/drivers/hid/hid-asus.c
-+++ b/drivers/hid/hid-asus.c
-@@ -335,7 +335,7 @@ static int asus_raw_event(struct hid_device *hdev,
- 	if (drvdata->quirks & QUIRK_MEDION_E1239T)
- 		return asus_e1239t_event(drvdata, data, size);
+diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
+index 328bb9f5342e..b2ba1d2556f1 100644
+--- a/net/ieee802154/nl802154.c
++++ b/net/ieee802154/nl802154.c
+@@ -1314,19 +1314,20 @@ ieee802154_llsec_parse_dev_addr(struct nlattr *nla,
+ 	if (!nla || nla_parse_nested_deprecated(attrs, NL802154_DEV_ADDR_ATTR_MAX, nla, nl802154_dev_addr_policy, NULL))
+ 		return -EINVAL;
  
--	if (drvdata->quirks & QUIRK_ROG_NKEY_KEYBOARD) {
-+	if (drvdata->quirks & QUIRK_USE_KBD_BACKLIGHT) {
- 		/*
- 		 * Skip these report ID, the device emits a continuous stream associated
- 		 * with the AURA mode it is in which looks like an 'echo'.
+-	if (!attrs[NL802154_DEV_ADDR_ATTR_PAN_ID] ||
+-	    !attrs[NL802154_DEV_ADDR_ATTR_MODE] ||
+-	    !(attrs[NL802154_DEV_ADDR_ATTR_SHORT] ||
+-	      attrs[NL802154_DEV_ADDR_ATTR_EXTENDED]))
++	if (!attrs[NL802154_DEV_ADDR_ATTR_PAN_ID] || !attrs[NL802154_DEV_ADDR_ATTR_MODE])
+ 		return -EINVAL;
+ 
+ 	addr->pan_id = nla_get_le16(attrs[NL802154_DEV_ADDR_ATTR_PAN_ID]);
+ 	addr->mode = nla_get_u32(attrs[NL802154_DEV_ADDR_ATTR_MODE]);
+ 	switch (addr->mode) {
+ 	case NL802154_DEV_ADDR_SHORT:
++		if (!attrs[NL802154_DEV_ADDR_ATTR_SHORT])
++			return -EINVAL;
+ 		addr->short_addr = nla_get_le16(attrs[NL802154_DEV_ADDR_ATTR_SHORT]);
+ 		break;
+ 	case NL802154_DEV_ADDR_EXTENDED:
++		if (!attrs[NL802154_DEV_ADDR_ATTR_EXTENDED])
++			return -EINVAL;
+ 		addr->extended_addr = nla_get_le64(attrs[NL802154_DEV_ADDR_ATTR_EXTENDED]);
+ 		break;
+ 	default:
 -- 
 2.30.2
 
