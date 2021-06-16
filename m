@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72443A967A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070113A9680
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232160AbhFPJso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
+        id S232115AbhFPJvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbhFPJsn (ORCPT
+        with ESMTP id S231491AbhFPJvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:48:43 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1431AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:46:38 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1ltS83-0007Ch-S3; Wed, 16 Jun 2021 11:46:35 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:27:4a54:dbae:b593])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 4ADB263D01E;
-        Wed, 16 Jun 2021 09:46:34 +0000 (UTC)
-Date:   Wed, 16 Jun 2021 11:46:33 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v2 2/2] can: netlink: add interface for CAN-FD
- Transmitter Delay Compensation (TDC)
-Message-ID: <20210616094633.fwg6rsyxyvm2zc6d@pengutronix.de>
-References: <20210603151550.140727-1-mailhol.vincent@wanadoo.fr>
- <20210603151550.140727-3-mailhol.vincent@wanadoo.fr>
+        Wed, 16 Jun 2021 05:51:52 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A29A4C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:49:46 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id l64so2348719ioa.7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:49:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LxB+IQLZR5N9B2nYLXOs5+gY2uv3PsGPWHonZYoGyjw=;
+        b=cMKC6YOTPQ94fzluTZjiJqxq7SN4G1zuF/UVrC4wvkLIs0NVMCuBHa5lotpxbx2KIa
+         VakGWAap42UJ0lY4UUZjhJGjH62hhio7YJa6AVE/kiyvRJHHZJJN+Rqd9p21qfk+f8la
+         KWnelqD3xRxgapocrqY6vvSS3Nh1DAl9cDXRe2L2VSQqIxaqTMm2ZomIp+H9NJzBIX/J
+         tL6R++pS7JDSqFmlqqr1YtEvE0ItrimmiIDUIqFZKumhzlgKrhNxQoMgYB7A640nSzlv
+         IlUhRZ9KHajMBEgHen1FMad1GFE3AeFzI/0qlrRm3pWlOZuQEDtf+ZCwTObpvG4yQW+o
+         KTDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LxB+IQLZR5N9B2nYLXOs5+gY2uv3PsGPWHonZYoGyjw=;
+        b=G1VJAY/XWZUlYGqu+oFec5HaRzw5vvabO9DuzE2nqNKt2SMUBlWW8eA5DvZxwFV0y3
+         nAHXPWJxAXIVgwBlmksacaqJys9a1Z3uqcqgN9f1Kkjhl2VYEruJiahkCncVrbhcsovl
+         NXwCcLLwoxWpCcjqM8uckexLHh/FRQZhe0BYYAQguscPF2W8MJRDGWh2I4Vx4eKc3Tua
+         lgUEQvWrKrWNtDUHN6lTweNrprIvMyjmKklc6+W7Oe8kEhodg1GQ2I3KfRbH7YMlmZ1E
+         rRUXxO8saoQSvz3DfMXim5laRgDYI1n6QZlG0+rpi0XRn2ao4zFpw4KfieqgeghPTtha
+         PDLg==
+X-Gm-Message-State: AOAM531ar22KMzXz7uzSfrKC94WOpywjjAW/d+BuQqnDtucr6wTjQa1H
+        pYr8BR8nXcqF0BpUKhFCYQnUpiiMM3GtMOsTlIM=
+X-Google-Smtp-Source: ABdhPJwXL6SYKzNM7RxGYo7SY/DtbHynxedN3lQBC0xMKKPI6GceOuGnViy9QUvFx+Krvgjy1p6ZBR5UVQ8/wJBVUhY=
+X-Received: by 2002:a02:6f5e:: with SMTP id b30mr3421548jae.94.1623836986120;
+ Wed, 16 Jun 2021 02:49:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="z3ft7oxhu7toexlx"
-Content-Disposition: inline
-In-Reply-To: <20210603151550.140727-3-mailhol.vincent@wanadoo.fr>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210615121551.31138-1-laoar.shao@gmail.com> <20210615203534.GA4272@worktop.programming.kicks-ass.net>
+ <CALOAHbBuZJaK+fEg7toRUHJNP8rJKDoADeAUxorUuNU17kdTOA@mail.gmail.com>
+ <YMmlAP/QhE6SWhCF@hirez.programming.kicks-ass.net> <CAKfTPtAh3eOtzZUPqmhkw6FAOjOietZrB_qMOfOprp0oWO+CvA@mail.gmail.com>
+ <YMm2bWq9XfaPeSka@hirez.programming.kicks-ass.net>
+In-Reply-To: <YMm2bWq9XfaPeSka@hirez.programming.kicks-ass.net>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 16 Jun 2021 17:49:10 +0800
+Message-ID: <CALOAHbAJNu_2ZbSsuNB0DkjWQkfxxbMj5TuFo+cK8QKoHLEUZQ@mail.gmail.com>
+Subject: Re: [PATCH] sched, fair: try to prevent migration thread from
+ preempting non-cfs task
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 16, 2021 at 4:29 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Jun 16, 2021 at 09:29:55AM +0200, Vincent Guittot wrote:
+> > On Wed, 16 Jun 2021 at 09:15, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> > > The suggestion was adding a cfs_migration thread, specifically for
+> > > active balance (and maybe numa). Just not sure the cost of carrying yet
+> > > another per-cpu kernel thread is worth the benefit.
+> >
+> > Also, this will not completely remove the problem but only further
+> > reduce the race window because the rq is locked and the irq disable in
+> > active_load_balance_cpu_stop().
+>
+> It removes the problem of active migration interfering with this
+> worklaod, because the FIFO1 task will never run until that is done
+> (assuming he manages to not have his workload at FIFO1).
+>
 
---z3ft7oxhu7toexlx
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right, the workload should have a higher priority than FIFO1 then.
 
-On 04.06.2021 00:15:50, Vincent Mailhol wrote:
-[...]
+I'm wondering why not just setting some flags to the running CFS and
+then when the CFS task scheds out the CPU we migrate it to the new
+idle CPU in active LB. Then we don't need to preempt any task.
 
-> +static size_t can_tdc_get_size(const struct net_device *dev)
-> +{
-> +	struct can_priv *priv =3D netdev_priv(dev);
-> +	size_t size;
-> +
-> +	if (!priv->tdc_const)
-> +		return 0;
-> +
-> +	size =3D nla_total_size(0);			/* nest IFLA_CAN_TDC */
-> +	size +=3D nla_total_size(sizeof(u32));		/* IFLA_CAN_TDCV_MAX */
-> +	size +=3D nla_total_size(sizeof(u32));		/* IFLA_CAN_TDCO_MAX */
-> +	size +=3D nla_total_size(sizeof(u32));		/* IFLA_CAN_TDCF_MAX */
-> +
-> +	if (priv->tdc.tdco) {
-
-Naively I'd say, iff the device has tdc_const give the user space the
-tdc parameters, regardless if some value is 0 or not.
-
-What do you think?
-
-Marc
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---z3ft7oxhu7toexlx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDJyHYACgkQqclaivrt
-76lNngf/S0HVNuyUJm2+Aooh1rzOnUEieq36RoeSYqtT3jrt+LTP1S6Wii8w2IPU
-GSXUv8Kzu7SN0D26DLptrwJYj6VN6kV67iSIeQ4mvTPUUheqY2izjvWgfy2kmScc
-f19PdkHYwE2QJbqAsR04He2L7K4gQoBMd24mxHeRHygrh07In/Jj/D0eB19wyCFD
-Vd9obvdcboCBKcPhDjiekZq3dcsWbvFdZ0HpfHJaLoku9NeGgZ9JWwGrF1UgSqB5
-ykZdVR7fGNaYBt/K96jAloiiRXHb8JVgZWrIpCPZv7HMsp9/IOWT60BZ4vf7Wj2X
-ZkqVUwnkxb9NjMoO4lPlwcMV5UwpiA==
-=6ogY
------END PGP SIGNATURE-----
-
---z3ft7oxhu7toexlx--
+-- 
+Thanks
+Yafang
