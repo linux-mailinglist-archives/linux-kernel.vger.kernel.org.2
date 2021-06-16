@@ -2,124 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255943A912E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 07:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2553A9163
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 07:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhFPFgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 01:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhFPFfr (ORCPT
+        id S230330AbhFPFwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 01:52:55 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:40120 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229543AbhFPFwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 01:35:47 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2ADEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 22:33:41 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so3276039pjn.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 22:33:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ltLj09RyfOdWMIEM0MG0ccEuiq6U59etKafB5sPzk0s=;
-        b=jHE61uyUv0XMNagTHrkkUEaFsVLD9NrLsaj4xu+pGVb+uh/e2nz3UlD2zJArDaCADd
-         zhtRKsfghNSVYOIlQ4kFJRmagRDAAANsqEYHE6t1IgUyYW30wtB73KKizNTIwI9vdMx5
-         0WFHzvKLZ5yYmFjAMYMAKjYO5l+iX0aD9ZQrk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ltLj09RyfOdWMIEM0MG0ccEuiq6U59etKafB5sPzk0s=;
-        b=pY0A545YaZ9Ydt95Si2tZDdtZfzEOhAqYJQaMKrQAdh4DyfDSJv8Lo/ZICFWrf3HdA
-         3SlFTAt3N/Hovg6KZ82YF9Y5qw32nLhlANNkYlLFB7R5dfw2cue53tGzgZhHqRV/WR5E
-         gPziX+A6xbZJSX5tXw2OZDNOWGiygii83rk8F6l9cwgftAF6mtUY06gttq1mToTOD6Bd
-         bHlLiQqP3m5Fhhfxnwn49c2naFe8ufapk3U6Vn0aklxRQet98PtaB6Q322KVErKaIqc4
-         Mybmi9yHj4s05leauaTVoXURauNIpp/VMGw9nvFv6PfpLPTgBbNPKmuXpNKkS8y4f3Uq
-         Xm6w==
-X-Gm-Message-State: AOAM532OOstdF2X3npUTioViuOpdBsWW/2Ilp39RsxSr4QzcUF0xjcgl
-        uj48V2LEhZ8j7P9g/SbEXhO/W+tnASE2gA==
-X-Google-Smtp-Source: ABdhPJzXqJSIVEfVTm49SsH66GLHTyQUTiHWKL0+3DqMB/qsMzfrj/hkbqfKj7nbImIaloR5Wk316A==
-X-Received: by 2002:a17:90a:a585:: with SMTP id b5mr8922657pjq.10.1623821621350;
-        Tue, 15 Jun 2021 22:33:41 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:2915:9186:62d1:9af3])
-        by smtp.gmail.com with ESMTPSA id c21sm808034pfi.44.2021.06.15.22.33.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 22:33:40 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     "Viresh Kumar )" <vireshk@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "andrew-sh . cheng" <andrew-sh.cheng@mediatek.com>
-Subject: [PATCH] opp: of: Allow lazy-linking of required-opps to non genpd
-Date:   Wed, 16 Jun 2021 13:33:35 +0800
-Message-Id: <20210616053335.4181780-1-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
+        Wed, 16 Jun 2021 01:52:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623822647; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Q1TyVXTeFx6rF/4IhR/HbBq/HUJgc1Eg0wjHkC/BGjI=;
+ b=q68EXaxnJX8ZizCuiqnHNgiTtyCUCRTw9S5juXyihuhkuv2IxYTleYiqwCsNWM4kT1/7liZ+
+ JBrbPIsrFRFrtyMWMdRa7iz5qyM4P+15wT9w0wXBjKWuzKPm3YhMhGR0MJti/PYHON+FjWyD
+ Cpmc5IiV3xoSCxrqjhAA0NFKL+4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60c99131e570c0561970a32b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Jun 2021 05:50:41
+ GMT
+Sender: rajeevny=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 37F7BC4338A; Wed, 16 Jun 2021 05:50:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajeevny)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C0920C433D3;
+        Wed, 16 Jun 2021 05:50:39 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 16 Jun 2021 11:20:39 +0530
+From:   rajeevny@codeaurora.org
+To:     Rob Herring <robh@kernel.org>, robh+dt@kernel.org
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sean@poorly.run, robdclark@gmail.com,
+        abhinavk@codeaurora.org, kalyan_t@codeaurora.org,
+        mkrishn@codeaurora.org, jonathan@marek.ca
+Subject: Re: [v1 1/3] dt-bindings: msm/dsi: Add yaml schema for 7nm DSI PHY
+In-Reply-To: <ec1bcb4e734b784ab17c4fc558a5fab9@codeaurora.org>
+References: <1622468035-8453-1-git-send-email-rajeevny@codeaurora.org>
+ <1622468035-8453-2-git-send-email-rajeevny@codeaurora.org>
+ <20210601205848.GA1025498@robh.at.kernel.org>
+ <ec1bcb4e734b784ab17c4fc558a5fab9@codeaurora.org>
+Message-ID: <27dec6f881a3b8bd5e13ba32990f975b@codeaurora.org>
+X-Sender: rajeevny@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't limit required_opp_table to genpd only. One possible use case is
-cpufreq based devfreq governor, which can use required-opps property to
-derive devfreq from cpufreq.
+On 03-06-2021 01:32, rajeevny@codeaurora.org wrote:
+> On 02-06-2021 02:28, Rob Herring wrote:
+>> On Mon, May 31, 2021 at 07:03:53PM +0530, Rajeev Nandan wrote:
+> 
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    oneOf:
+>>> +      - const: qcom,dsi-phy-7nm
+>> 
+>> When would one use this?
+> This is for SM8250.
+> 
+>> 
+>>> +      - const: qcom,dsi-phy-7nm-7280
+>>> +      - const: qcom,dsi-phy-7nm-8150
+>> 
+>> These don't look like full SoC names (sm8150?) and it's
+>> <vendor>,<soc>-<block>.
+> 
+> Thanks, Rob, for the review.
+> 
+> I just took the `compatible` property currently used in the DSI PHY 
+> driver
+> (drivers/gpu/drm/msm/dsi/phy/dsi_phy.c), and added a new entry for 
+> sc7280.
+> A similar pattern of `compatible` names are used in other variants of 
+> the
+> DSI PHY driver e.g. qcom,qcom,dsi-phy-10nm-8998, qcom,dsi-phy-14nm-660 
+> etc.
+> 
+> The existing compatible names "qcom,dsi-phy-7nm-8150" (SoC at the end) 
+> make
+> some sense, if we look at the organization of the dsi phy driver code.
+> I am new to this and don't know the reason behind the current code
+> organization and this naming.
+> 
+> Yes, I agree with you, we should use full SoC names. Adding
+> the SoC name at the end does not feel very convincing, so I will change 
+> this
+> to the suggested format e.g. "qcom,sm8250-dsi-phy-7nm", and will rename 
+> the
+> occurrences in the driver and device tree accordingly.
+> Do I need to make changes for 10nm, 14nm, 20nm, and 28nm DSI PHY too?
+> Bindings doc for these PHYs recently got merged to msm-next [1]
+> 
+> 
+> [1]
+> https://gitlab.freedesktop.org/drm/msm/-/commit/8fc939e72ff80116c090aaf03952253a124d2a8e
+> 
 
-Suggested-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
-This is tested with the non genpd case mt8183-cci with passive
-governor[1].
-[1] https://patchwork.kernel.org/project/linux-mediatek/patch/1616499241-4906-2-git-send-email-andrew-sh.cheng@mediatek.com/
----
- drivers/opp/of.c | 20 +-------------------
- 1 file changed, 1 insertion(+), 19 deletions(-)
+Hi Rob,
 
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index aa75a1caf08a3..9573facce53a5 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -201,17 +201,6 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
- 			lazy = true;
- 			continue;
- 		}
--
--		/*
--		 * We only support genpd's OPPs in the "required-opps" for now,
--		 * as we don't know how much about other cases. Error out if the
--		 * required OPP doesn't belong to a genpd.
--		 */
--		if (!required_opp_tables[i]->is_genpd) {
--			dev_err(dev, "required-opp doesn't belong to genpd: %pOF\n",
--				required_np);
--			goto free_required_tables;
--		}
- 	}
- 
- 	/* Let's do the linking later on */
-@@ -379,13 +368,6 @@ static void lazy_link_required_opp_table(struct opp_table *new_table)
- 	struct dev_pm_opp *opp;
- 	int i, ret;
- 
--	/*
--	 * We only support genpd's OPPs in the "required-opps" for now,
--	 * as we don't know much about other cases.
--	 */
--	if (!new_table->is_genpd)
--		return;
--
- 	mutex_lock(&opp_table_lock);
- 
- 	list_for_each_entry_safe(opp_table, temp, &lazy_opp_tables, lazy) {
-@@ -873,7 +855,7 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
- 		return ERR_PTR(-ENOMEM);
- 
- 	ret = _read_opp_key(new_opp, opp_table, np, &rate_not_available);
--	if (ret < 0 && !opp_table->is_genpd) {
-+	if (ret < 0) {
- 		dev_err(dev, "%s: opp key field not found\n", __func__);
- 		goto free_opp;
- 	}
--- 
-2.32.0.272.g935e593368-goog
+I missed adding "robh+dt@kernel.org" earlier in this thread.
+
+Please check my response to your review comments. Regarding your 
+suggestion to use <vendor>,<soc>-<block> format for compatible property, 
+should I also upload a new patch to make changes in 10nm, 14nm, 20nm, 
+and 28nm DSI PHY DT bindings?
+
+Thanks,
+Rajeev
+
+
 
