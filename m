@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3C23A8F46
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5963A8F4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhFPDSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 23:18:44 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:10080 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFPDSn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 23:18:43 -0400
-Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G4VdJ6M92zZfQY;
-        Wed, 16 Jun 2021 11:13:40 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.62) by
- dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 16 Jun 2021 11:16:35 +0800
-From:   Yu Jiahua <yujiahua1@huawei.com>
-To:     <dri-devel@lists.freedesktop.org>
-CC:     <linux-omap@vger.kernel.org>, <linux-fbdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yujiahua1@huawei.com>
-Subject: [PATCH -next] apply: use DEFINE_SPINLOCK() instead of spin_lock_init().
-Date:   Tue, 15 Jun 2021 19:17:13 -0800
-Message-ID: <20210616031713.24959-1-yujiahua1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S230052AbhFPDXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 23:23:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229931AbhFPDXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 23:23:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 790A661246;
+        Wed, 16 Jun 2021 03:21:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623813675;
+        bh=rOudsK9P7bMhTK2OtdWpKbEvj8MV63gh3o1URze326c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nwBg7NXU86tjS9hw+PrWm7ZikqKiel5aE9OxQyWP6my3RTBNdx0JBxZP1ybHFZVha
+         DGADS6+CJMndKBo/uPWHrPN2oBys9zp8keSaitE8gY18gVL1oxe+cztsz7tFffA5U0
+         i6c2B4WUjd+l086Kjx81pEmqGc997WkmFXA3e3W94t/1Ut5EOfRGFFcnLSEA6W/L/P
+         R0v65CwSLI8vzQ8yWlr1LsXD+vdzEZEyZaUXdnMfv7MjKxY6XVrO97uw8oJwkaHX20
+         N9AWz2jiCGJJ3DhOCZ3Tc6P/XU2HDaPjahNfW1gH72fheKST+IyGPuTDcTyUxaEM9l
+         WBYYkH1LtDrMQ==
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH 0/8] membarrier cleanups
+Date:   Tue, 15 Jun 2021 20:21:05 -0700
+Message-Id: <cover.1623813516.git.luto@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.62]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme756-chm.china.huawei.com (10.3.19.102)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiahua Yu <yujiahua1@huawei.com>
+membarrier() is unnecessarily tangled with the core scheduler.  Clean it
+up.  While we're at it, remove the documentation and drop the pretence that
+SYNC_CORE can ever be a well-defined cross-arch operation.
 
-spinlock can be initialized automatically with DEFINE_SPINLOCK()
-rather than explicitly calling spin_lock_init().
+Andy Lutomirski (8):
+  membarrier: Document why membarrier() works
+  x86/mm: Handle unlazying membarrier core sync in the arch code
+  membarrier: Remove membarrier_arch_switch_mm() prototype in core code
+  membarrier: Make the post-switch-mm barrier explicit
+  membarrier, kthread: Use _ONCE accessors for task->mm
+  powerpc/membarrier: Remove special barrier on mm switch
+  membarrier: Remove arm (32) support for SYNC_CORE
+  membarrier: Rewrite sync_core_before_usermode() and improve
+    documentation
 
-Signed-off-by: Jiahua Yu <yujiahua1@huawei.com>
----
- drivers/video/fbdev/omap2/omapfb/dss/apply.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ .../membarrier-sync-core/arch-support.txt     | 68 +++++------------
+ arch/arm/Kconfig                              |  1 -
+ arch/arm64/include/asm/sync_core.h            | 19 +++++
+ arch/powerpc/include/asm/membarrier.h         | 27 -------
+ arch/powerpc/include/asm/sync_core.h          | 14 ++++
+ arch/powerpc/mm/mmu_context.c                 |  2 -
+ arch/x86/Kconfig                              |  1 -
+ arch/x86/include/asm/sync_core.h              |  7 +-
+ arch/x86/kernel/alternative.c                 |  2 +-
+ arch/x86/kernel/cpu/mce/core.c                |  2 +-
+ arch/x86/mm/tlb.c                             | 54 ++++++++++---
+ drivers/misc/sgi-gru/grufault.c               |  2 +-
+ drivers/misc/sgi-gru/gruhandles.c             |  2 +-
+ drivers/misc/sgi-gru/grukservices.c           |  2 +-
+ fs/exec.c                                     |  2 +-
+ include/linux/sched/mm.h                      | 42 +++++-----
+ include/linux/sync_core.h                     | 21 -----
+ init/Kconfig                                  |  3 -
+ kernel/kthread.c                              | 16 +---
+ kernel/sched/core.c                           | 44 +++--------
+ kernel/sched/membarrier.c                     | 76 +++++++++++++++++--
+ 21 files changed, 210 insertions(+), 197 deletions(-)
+ create mode 100644 arch/arm64/include/asm/sync_core.h
+ delete mode 100644 arch/powerpc/include/asm/membarrier.h
+ create mode 100644 arch/powerpc/include/asm/sync_core.h
+ delete mode 100644 include/linux/sync_core.h
 
-diff --git a/drivers/video/fbdev/omap2/omapfb/dss/apply.c b/drivers/video/fbdev/omap2/omapfb/dss/apply.c
-index c71021091828..acca991c7540 100644
---- a/drivers/video/fbdev/omap2/omapfb/dss/apply.c
-+++ b/drivers/video/fbdev/omap2/omapfb/dss/apply.c
-@@ -108,7 +108,7 @@ static struct {
- } dss_data;
- 
- /* protects dss_data */
--static spinlock_t data_lock;
-+static DEFINE_SPINLOCK(data_lock);
- /* lock for blocking functions */
- static DEFINE_MUTEX(apply_lock);
- static DECLARE_COMPLETION(extra_updated_completion);
-@@ -131,8 +131,6 @@ static void apply_init_priv(void)
- 	struct mgr_priv_data *mp;
- 	int i;
- 
--	spin_lock_init(&data_lock);
--
- 	for (i = 0; i < num_ovls; ++i) {
- 		struct ovl_priv_data *op;
- 
 -- 
-2.17.1
+2.31.1
 
