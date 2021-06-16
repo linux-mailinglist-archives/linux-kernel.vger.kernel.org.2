@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69ABF3A9518
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068223A951F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232225AbhFPIdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232206AbhFPIdV (ORCPT
+        id S231846AbhFPIgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:36:07 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:59575 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231334AbhFPIgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:33:21 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0D5C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:31:14 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id l4so2743857ljg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:31:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GQWVokfQZgVGHdyHPg/yFmcebJpq41KrWGaOdOQKipI=;
-        b=m0/Lt4BIjXjdpqGSJBLEKjOIX3eirzK2CqDEpDte2Sj3Gc7g8xgdCxCBn5e95uOn1v
-         ydDh6KT8HjktRKBXr1sdmueW7V4AkYTsqPeNXbUVcW/kihKPAvf6QZEZ26aLyCwGCXrg
-         B0NFEy2eKiuPOZbOScS8JT/qvFA26HvVb5TVNHXylkJDGQ+WF7lLmhyxfj0lH189yFUe
-         WbameZzm/vatSMhg+KQhcKgMzrom/GUB5AQ4qAJPeNo2uMheV3oy2PfOEwlMbfyR503e
-         S6lCpLduJS7PzOZ448xLpkvuUTIhu8BKQefZo9YXer3ULTU44FfVpVAeNhv+OXRp2LkD
-         kCrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GQWVokfQZgVGHdyHPg/yFmcebJpq41KrWGaOdOQKipI=;
-        b=CNAWIDs+HyOEBDbMsCtvLqctNlZEmzmqs6/uIWdKDEP3JGsSISuZMMKPZHS2WFMjv3
-         mnUwsz0mACW3F7HzXbY2yuWOA5WLy2Ql/1wB8QsGar6rbwkqY6kf5pHRj4mQmWZ+7pfz
-         QtdqV2EE+T+ZqH4XNfnLkEaZ8VU6sUlclcZYhJ9u5cgOw2GlPgDk+MUoWH+UBMVuK5Hb
-         jJiY9YxEaP+MgOaP3kRDyDYoVuoDzPv4FmFfj59n1ws/hSFfz8iQ639ibTddlI+xcRg2
-         fAIqK994ptYOcEeYxE7xyxdRTByLMEHX2utG82E/Hd7+YOhL7pbzbnjJs30T12k01C+x
-         B43Q==
-X-Gm-Message-State: AOAM530DyJZNcThnRX20465SqUkpKiPotLmGydXsq5OhUGoCnQCJ8toI
-        iLvSe1eiv0CASUEX4j4t2UEP5FNsy0wOkZcGVWl9OA==
-X-Google-Smtp-Source: ABdhPJzxWPvgV7p6eSpQF1eWW888O48hzZKsx5O5oRnUA6LyT2IOxPBYEipMULn1541CTP+g3/b9As5YqpuN8cY58j0=
-X-Received: by 2002:a05:651c:1501:: with SMTP id e1mr3610433ljf.74.1623832272136;
- Wed, 16 Jun 2021 01:31:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210615174911.973-1-info@metux.net>
-In-Reply-To: <20210615174911.973-1-info@metux.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 16 Jun 2021 10:31:00 +0200
-Message-ID: <CACRpkdbwLOOT6nuhpkT5x-AZVipsD2qG8Qu4xoiRotHQNknwzw@mail.gmail.com>
-Subject: Re: [PATCH] drivers: gpio: add virtio-gpio guest driver
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 16 Jun 2021 04:36:06 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id AD5AF5C0200;
+        Wed, 16 Jun 2021 04:34:00 -0400 (EDT)
+Received: from imap8 ([10.202.2.58])
+  by compute3.internal (MEProxy); Wed, 16 Jun 2021 04:34:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm1; bh=TwoBR5Sy608Hmsly6D5Zi0Mw8N82
+        sl4iSihnt+suvF4=; b=XUClGEbJTkOrWEipaWDltU0vtlwtLsimkN2rmKd9yGbr
+        p2eZGTxnrO7sVgRREqOhVnwbzaqHUGnGN178re4P1fKAxQSzWo98EzRsYQ75Sn50
+        Qu8+YmH+Il4B8kmehCr9W7YP3YUeQodE7NiKYliQOL1VznaKu1VrMaFOdP1kgny1
+        3DVojfLptGMqlpolP255EZxgT8iQJseYVoge0FFnBquE49HT1vaaypcTowUm5KzK
+        HyW01VhC/K6PGp/bsFVlcQ6qQwNvDKtV6CJYlPDQ3orbna0QvKhDo9kqL30rq0+C
+        K6LhheJbb1rKVBeb4ZkjS7b5uzQ4RBZnhQiLwbTg0A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=TwoBR5
+        Sy608Hmsly6D5Zi0Mw8N82sl4iSihnt+suvF4=; b=CRePq5TB+lF1rcYy/XEwgD
+        AnQnIwt3674X8zSza6Ck8Ok0eZwablxQlIWxIW5lXRiGrYnZzE/fOqEaIofve+f9
+        maQjfYZC3oqo1rBjW+Lz6tavJldFvWp8ubad0vpLvx2jZchdNr8lXaFjO1rbJQS/
+        OrQrXqYP7FJZAuZsCtovXFRqKYQpU9VDEo1xQn6Mipj5GR24dP+hxGTz2obXoD+2
+        rsuLFMhuBqKhr745aSqoE+PWs2TBYy59AsNCrZga8zeAC+eD0UwC9qFYBQYfbeK4
+        ECfUYral3qazcY3MSTvQLLZ/NhbuSwQKej+iIhBX0JZ8DsY4nFgkx9seMoq9z8RA
+        ==
+X-ME-Sender: <xms:eLfJYF7gdDk7NXmFShuTgpotVPQZqXsx7sZY6Jo4jNlKzQL7CmAVhQ>
+    <xme:eLfJYC4Y9hrYjfsrpQSeAh2yVs6_83Ch5WM4h46Dh7vT-M6XPmn5uf5QJ0mE1yeu-
+    PM2VWtnNkAtzKsdrTk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgtdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomheptehlihhs
+    thgrihhruceorghlihhsthgrihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrg
+    htthgvrhhnpeffheffffeludeiiedtheduleetveeuveeguddutdejkedvvddvuefgledu
+    kefhheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
+X-ME-Proxy: <xmx:eLfJYMf3SbouFJ9o9WPX5m4u0OCqrRsn8cfRrWk8eaJeF-PsQebQgQ>
+    <xmx:eLfJYOK1cgi0ZgNnEbgfZ_RVhmmQGseGPu2P_EgvYRLBV1laOsTYoQ>
+    <xmx:eLfJYJJB3IwOeSGb6wjugSvq3Ws0ruscif9HNTtUiadEN5dcRwlB9Q>
+    <xmx:eLfJYHjbwRio-ceKScxEiiKtSFM4nzVes3uhvE9WdvsDg6kLP63-OA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 6A7FB3A040C; Wed, 16 Jun 2021 04:34:00 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-526-gf020ecf851-fm-20210616.001-gf020ecf8
+Mime-Version: 1.0
+Message-Id: <ec3af3d1-204b-4dbb-8c36-a33764c798e8@www.fastmail.com>
+In-Reply-To: <20210616034458.3499522-3-axel.lin@ingics.com>
+References: <20210616034458.3499522-1-axel.lin@ingics.com>
+ <20210616034458.3499522-3-axel.lin@ingics.com>
+Date:   Wed, 16 Jun 2021 18:33:39 +1000
+From:   Alistair <alistair@alistair23.me>
+To:     "Axel Lin" <axel.lin@ingics.com>, "Mark Brown" <broonie@kernel.org>
+Cc:     "Lars Ivar Miljeteig" <lars.ivar.miljeteig@remarkable.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?Q?Re:_[PATCH_3/3]_regulator:_sy7636a:_Use_rdev=5Fget=5Fdrvdata_a?=
+ =?UTF-8?Q?t_proper_place?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Enrico,
+On Wed, Jun 16, 2021, at 1:44 PM, Axel Lin wrote:
+> At the context with *rdev, use rdev_get_drvdata() is more intuitive.
+> 
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
 
-On Tue, Jun 15, 2021 at 7:49 PM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
+Reviewed-by: Alistair Francis <alistair@alistair23.me>
 
-> Introduce new GPIO driver for virtual GPIO devices via virtio.
->
-> The driver implements the virtio-gpio protocol (ID 41), which can be
-> used by either VM guests (e.g. bridging virtual gpios from the guest
-> to real gpios in the host or attaching simulators for automatic
-> application testing), as well as virtio-gpio hardware devices.
->
-> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
-
-So now there are two contesting patches for this and that creates a
-social problem for us as maintainers. I am not too happy about that.
-
-This situation activates the kernel management style document so
-I advise involved parties to familiarize themselves with it:
-https://www.kernel.org/doc/html/latest/process/management-style.html
-
-Can we get the discussion down to actual technical points?
-We really need a virtio GPIO driver, no doubt, so if everyone could
-just work toward that goal and compromise with their specific pet
-peeves that would be great.
-
-Yours,
-Linus Walleij
+> ---
+> drivers/regulator/sy7636a-regulator.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/regulator/sy7636a-regulator.c b/drivers/regulator/sy7636a-regulator.c
+> index c71c0a007d95..e021ae08cbaa 100644
+> --- a/drivers/regulator/sy7636a-regulator.c
+> +++ b/drivers/regulator/sy7636a-regulator.c
+> @@ -35,7 +35,7 @@ static int sy7636a_get_vcom_voltage_op(struct regulator_dev *rdev)
+>  
+> static int sy7636a_get_status(struct regulator_dev *rdev)
+> {
+> - struct sy7636a *sy7636a = dev_get_drvdata(rdev->dev.parent);
+> + struct sy7636a *sy7636a = rdev_get_drvdata(rdev);
+> int ret = 0;
+>  
+> ret = gpiod_get_value_cansleep(sy7636a->pgood_gpio);
+> -- 
+> 2.25.1
+> 
+> 
