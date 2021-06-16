@@ -2,186 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A31E23A94CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B163A94CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232100AbhFPIOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:14:17 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55818 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231710AbhFPIOP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:14:15 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15G7v3DJ001291;
-        Wed, 16 Jun 2021 10:12:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=bFvu2HfEeOPL3uefX4Yygb8OKjju9ZpEW+yTEh8JSzM=;
- b=f7rZ006gW6fr91ClKVMkWLMrcr2Sc7E0ZygWnNqE8lrFywRntgpMEZ5A/pi2nxmPaNcC
- WGCk0ai/W7bz61772DlvVHn1nFSlIDylPTBhBhF03EHuLFWWGaXfO/TEK8g6HhXY18nh
- hQAkhi4NK4ge02NfR69EPFzh1xHNJRd9iDsYTeSR2ZwaZsbRMn0749T7euLsvSfhkDCk
- b/HRRA8gDui4bzjdn+d8H9DYecDR2pZa44yjXrI0z08PFEIsTXGL3Qdc8y2ScDgOJmsf
- wVQPUK6pDPjQml2LlFW/gOkLszzKY8PkaoP01SorFdusRHR+caFxGKi+SfsRo478C9P6 hQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 396y17v8x5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 10:12:07 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A2CBF100034;
-        Wed, 16 Jun 2021 10:12:05 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8BE6421999A;
-        Wed, 16 Jun 2021 10:12:05 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.49) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 16 Jun
- 2021 10:12:05 +0200
-Subject: Re: [PATCH 1/4] rpmsg: ctrl: Introduce RPMSG_CREATE_DEV_IOCTL
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210604091406.15901-1-arnaud.pouliquen@foss.st.com>
- <20210604091406.15901-2-arnaud.pouliquen@foss.st.com>
- <20210615175334.GD604521@p14s>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <1645a516-1d83-27bd-e9ed-c78a18bf4c52@foss.st.com>
-Date:   Wed, 16 Jun 2021 10:12:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232047AbhFPIOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:14:47 -0400
+Received: from mga14.intel.com ([192.55.52.115]:32050 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231481AbhFPIOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 04:14:46 -0400
+IronPort-SDR: d7Wo5wPfZm8s8GWa2+ybJXBddNgu8pMIpyNmjpi45ebc3hVn9JGLr598aw5bbLXBr3NdC+meYH
+ YEEP86VgHaPQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="205953999"
+X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
+   d="scan'208";a="205953999"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 01:12:40 -0700
+IronPort-SDR: vlVW7clY1i+PiZUtXCit4U9PEMAuDU+jtogZwTvBdz6tKokcyhIW0Kcu4XWEAuLlBhIo5NIrNK
+ mJyGmj0wA5Ow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
+   d="scan'208";a="421410209"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 16 Jun 2021 01:12:38 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1ltQf7-000128-DP; Wed, 16 Jun 2021 08:12:37 +0000
+Date:   Wed, 16 Jun 2021 16:12:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.06.11a] BUILD SUCCESS
+ 7895adfcd6ecd084515d0d9e69c439d90187acb0
+Message-ID: <60c9b26b.TvowrQvySaE95i4w%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210615175334.GD604521@p14s>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-16_05:2021-06-15,2021-06-16 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mathieu,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.06.11a
+branch HEAD: 7895adfcd6ecd084515d0d9e69c439d90187acb0  kcsan: Make strict mode imply interruptible watchers
 
-On 6/15/21 7:53 PM, Mathieu Poirier wrote:
-> On Fri, Jun 04, 2021 at 11:14:03AM +0200, Arnaud Pouliquen wrote:
->> Implement the RPMSG_CREATE_DEV_IOCTL to allow the user application to
->> initiate a communication through a new rpmsg channel.
->> This Ioctl can be used to instantiate a local rpmsg device.
->> Depending on the back-end implementation, the associated rpmsg driver is
->> probed and a NS announcement can be sent to the remote processor.
->>
->> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> ---
->>  drivers/rpmsg/rpmsg_ctrl.c | 30 ++++++++++++++++++++++++++----
->>  include/uapi/linux/rpmsg.h |  5 +++++
->>  2 files changed, 31 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
->> index eeb1708548c1..4aa962df3661 100644
->> --- a/drivers/rpmsg/rpmsg_ctrl.c
->> +++ b/drivers/rpmsg/rpmsg_ctrl.c
->> @@ -23,6 +23,7 @@
->>  #include <uapi/linux/rpmsg.h>
->>  
->>  #include "rpmsg_char.h"
->> +#include "rpmsg_internal.h"
->>  
->>  static dev_t rpmsg_major;
->>  
->> @@ -37,11 +38,13 @@ static DEFINE_IDA(rpmsg_minor_ida);
->>   * @rpdev:	underlaying rpmsg device
->>   * @cdev:	cdev for the ctrl device
->>   * @dev:	device for the ctrl device
->> + * @ctrl_lock:	serialize the ioctrls.
->>   */
->>  struct rpmsg_ctrldev {
->>  	struct rpmsg_device *rpdev;
->>  	struct cdev cdev;
->>  	struct device dev;
->> +	struct mutex ctrl_lock;
->>  };
->>  
->>  static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
->> @@ -70,9 +73,8 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->>  	void __user *argp = (void __user *)arg;
->>  	struct rpmsg_endpoint_info eptinfo;
->>  	struct rpmsg_channel_info chinfo;
->> -
->> -	if (cmd != RPMSG_CREATE_EPT_IOCTL)
->> -		return -EINVAL;
->> +	struct rpmsg_device *rpdev;
->> +	int ret = 0;
->>  
->>  	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
->>  		return -EFAULT;
->> @@ -82,7 +84,26 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->>  	chinfo.src = eptinfo.src;
->>  	chinfo.dst = eptinfo.dst;
->>  
->> -	return rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
->> +	mutex_lock(&ctrldev->ctrl_lock);
-> 
-> Do we need a lock here?  I thought the character device layer would guarantee
-> accesses on a file handler would be atomic...  Am I wrong?
-> 
+elapsed time: 721m
 
-It is a good point! from my understanding, using "unlocked_ioctl" ops, the
-driver has to handle is own atomic protection.
-I will try to hack the code to verify this.
+configs tested: 142
+configs skipped: 2
 
-Thanks,
-Arnaud
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->> +	switch (cmd) {
->> +	case RPMSG_CREATE_EPT_IOCTL:
->> +		ret = rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
->> +		break;
->> +
->> +	case RPMSG_CREATE_DEV_IOCTL:
->> +		rpdev = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
->> +		if (!rpdev) {
->> +			dev_err(&ctrldev->dev, "failed to create %s channel\n", chinfo.name);
->> +			ret = -ENXIO;
->> +		}
->> +		break;
->> +
->> +	default:
->> +		ret = -EINVAL;
->> +	}
->> +	mutex_unlock(&ctrldev->ctrl_lock);
->> +
->> +	return ret;
->>  };
->>  
->>  static const struct file_operations rpmsg_ctrldev_fops = {
->> @@ -119,6 +140,7 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
->>  	device_initialize(dev);
->>  	dev->parent = &rpdev->dev;
->>  
->> +	mutex_init(&ctrldev->ctrl_lock);
->>  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
->>  	ctrldev->cdev.owner = THIS_MODULE;
->>  
->> diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
->> index f5ca8740f3fb..f9d5a74e7801 100644
->> --- a/include/uapi/linux/rpmsg.h
->> +++ b/include/uapi/linux/rpmsg.h
->> @@ -33,4 +33,9 @@ struct rpmsg_endpoint_info {
->>   */
->>  #define RPMSG_DESTROY_EPT_IOCTL	_IO(0xb5, 0x2)
->>  
->> +/**
->> + * Instantiate a rpmsg service device.
->> + */
->> +#define RPMSG_CREATE_DEV_IOCTL	_IOW(0xb5, 0x3, struct rpmsg_endpoint_info)
->> +
->>  #endif
->> -- 
->> 2.17.1
->>
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                  mpc866_ads_defconfig
+mips                     cu1000-neo_defconfig
+ia64                        generic_defconfig
+arm                       versatile_defconfig
+arm                         lpc32xx_defconfig
+powerpc                      chrp32_defconfig
+xtensa                    smp_lx200_defconfig
+mips                          ath79_defconfig
+powerpc                  iss476-smp_defconfig
+sh                 kfr2r09-romimage_defconfig
+mips                        omega2p_defconfig
+powerpc                   currituck_defconfig
+um                               alldefconfig
+xtensa                generic_kc705_defconfig
+powerpc                 mpc8540_ads_defconfig
+arm                        oxnas_v6_defconfig
+s390                                defconfig
+arm                        multi_v7_defconfig
+nds32                               defconfig
+powerpc                          g5_defconfig
+arm                            hisi_defconfig
+xtensa                          iss_defconfig
+powerpc                     kmeter1_defconfig
+powerpc                   lite5200b_defconfig
+arm                        neponset_defconfig
+m68k                         apollo_defconfig
+mips                          rm200_defconfig
+sh                          sdk7786_defconfig
+powerpc                      arches_defconfig
+alpha                               defconfig
+arm                         s3c2410_defconfig
+openrisc                            defconfig
+sh                        sh7763rdp_defconfig
+mips                      bmips_stb_defconfig
+um                            kunit_defconfig
+arm                            zeus_defconfig
+m68k                          atari_defconfig
+arm                        mvebu_v5_defconfig
+ia64                            zx1_defconfig
+powerpc                     ksi8560_defconfig
+ia64                             alldefconfig
+h8300                       h8s-sim_defconfig
+arm                           u8500_defconfig
+powerpc                       holly_defconfig
+sh                        sh7785lcr_defconfig
+m68k                       m5275evb_defconfig
+arm                        keystone_defconfig
+arm                         palmz72_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                        fsp2_defconfig
+powerpc                     sbc8548_defconfig
+s390                             alldefconfig
+riscv             nommu_k210_sdcard_defconfig
+powerpc                        warp_defconfig
+powerpc                     tqm8560_defconfig
+powerpc                      ppc44x_defconfig
+m68k                          sun3x_defconfig
+i386                                defconfig
+arm                          exynos_defconfig
+sh                           se7343_defconfig
+arm                              alldefconfig
+s390                          debug_defconfig
+powerpc                 mpc832x_mds_defconfig
+sparc                       sparc64_defconfig
+riscv                          rv32_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                           se7751_defconfig
+x86_64                           alldefconfig
+mips                       bmips_be_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210615
+i386                 randconfig-a006-20210615
+i386                 randconfig-a004-20210615
+i386                 randconfig-a001-20210615
+i386                 randconfig-a005-20210615
+i386                 randconfig-a003-20210615
+x86_64               randconfig-a001-20210615
+x86_64               randconfig-a004-20210615
+x86_64               randconfig-a002-20210615
+x86_64               randconfig-a003-20210615
+x86_64               randconfig-a006-20210615
+x86_64               randconfig-a005-20210615
+i386                 randconfig-a015-20210615
+i386                 randconfig-a013-20210615
+i386                 randconfig-a016-20210615
+i386                 randconfig-a012-20210615
+i386                 randconfig-a014-20210615
+i386                 randconfig-a011-20210615
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210615
+x86_64               randconfig-a015-20210615
+x86_64               randconfig-a011-20210615
+x86_64               randconfig-a012-20210615
+x86_64               randconfig-a014-20210615
+x86_64               randconfig-a016-20210615
+x86_64               randconfig-a013-20210615
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
