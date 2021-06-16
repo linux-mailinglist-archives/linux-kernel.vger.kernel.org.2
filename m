@@ -2,151 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0FE3A8DC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203603A8DC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231754AbhFPAmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:42:10 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:55269 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231165AbhFPAmG (ORCPT
+        id S231783AbhFPAmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:42:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56312 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231635AbhFPAmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:42:06 -0400
-X-UUID: cf3d96e6e90145f8bff83e03c0d54937-20210616
-X-UUID: cf3d96e6e90145f8bff83e03c0d54937-20210616
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1628349775; Wed, 16 Jun 2021 08:39:57 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 16 Jun 2021 08:39:56 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 16 Jun 2021 08:39:56 +0800
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Subject: [PATCH v10 19/19] clk: mediatek: Add MT8192 vencsys clock support
-Date:   Wed, 16 Jun 2021 08:36:43 +0800
-Message-ID: <20210616003643.28648-20-chun-jie.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210616003643.28648-1-chun-jie.chen@mediatek.com>
-References: <20210616003643.28648-1-chun-jie.chen@mediatek.com>
+        Tue, 15 Jun 2021 20:42:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623804031;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=327NKSVoyLXkfvSgIC6wSAcEEzB6rOENlygol386mU8=;
+        b=RGAjQGO+YZI3c5nuzn4JHw6oxMi/P1lXmrPLSL0cbXvdaogs56an3Nw0biDWy1xyTweXwq
+        3E3KsT91y/JDDar8Pm10Hfs/SocMaaM4Dfm0iFkdsBGALeuuiF4FedUiY0M6Vbm/KMj11L
+        kj+Ct/0x/udJI5QEi76PQPfcBxiF00U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-70-8DNMEgDgOeeiz8UMqMeYGQ-1; Tue, 15 Jun 2021 20:40:30 -0400
+X-MC-Unique: 8DNMEgDgOeeiz8UMqMeYGQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF3F71084F41;
+        Wed, 16 Jun 2021 00:40:28 +0000 (UTC)
+Received: from T590 (ovpn-12-78.pek2.redhat.com [10.72.12.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AAA76620DE;
+        Wed, 16 Jun 2021 00:40:18 +0000 (UTC)
+Date:   Wed, 16 Jun 2021 08:40:14 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+        Keith Busch <keith.busch@intel.com>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Shivasharan Srikanteshwara 
+        <shivasharan.srikanteshwara@broadcom.com>
+Subject: Re: [patch v6 3/7] genirq/affinity: Add new callback for
+ (re)calculating interrupt sets
+Message-ID: <YMlIbt3EPyRJHNWf@T590>
+References: <20190216172228.512444498@linutronix.de>
+ <20210615195707.GA2909907@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615195707.GA2909907@bjorn-Precision-5520>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MT8192 vencsys clock provider
+On Tue, Jun 15, 2021 at 02:57:07PM -0500, Bjorn Helgaas wrote:
+> On Sat, Feb 16, 2019 at 06:13:09PM +0100, Thomas Gleixner wrote:
+> > From: Ming Lei <ming.lei@redhat.com>
+> > 
+> > The interrupt affinity spreading mechanism supports to spread out
+> > affinities for one or more interrupt sets. A interrupt set contains one or
+> > more interrupts. Each set is mapped to a specific functionality of a
+> > device, e.g. general I/O queues and read I/O queus of multiqueue block
+> > devices.
+> > 
+> > The number of interrupts per set is defined by the driver. It depends on
+> > the total number of available interrupts for the device, which is
+> > determined by the PCI capabilites and the availability of underlying CPU
+> > resources, and the number of queues which the device provides and the
+> > driver wants to instantiate.
+> > 
+> > The driver passes initial configuration for the interrupt allocation via a
+> > pointer to struct irq_affinity.
+> > 
+> > Right now the allocation mechanism is complex as it requires to have a loop
+> > in the driver to determine the maximum number of interrupts which are
+> > provided by the PCI capabilities and the underlying CPU resources.  This
+> > loop would have to be replicated in every driver which wants to utilize
+> > this mechanism. That's unwanted code duplication and error prone.
+> > 
+> > In order to move this into generic facilities it is required to have a
+> > mechanism, which allows the recalculation of the interrupt sets and their
+> > size, in the core code. As the core code does not have any knowledge about the
+> > underlying device, a driver specific callback is required in struct
+> > irq_affinity, which can be invoked by the core code. The callback gets the
+> > number of available interupts as an argument, so the driver can calculate the
+> > corresponding number and size of interrupt sets.
+> > 
+> > At the moment the struct irq_affinity pointer which is handed in from the
+> > driver and passed through to several core functions is marked 'const', but for
+> > the callback to be able to modify the data in the struct it's required to
+> > remove the 'const' qualifier.
+> > 
+> > Add the optional callback to struct irq_affinity, which allows drivers to
+> > recalculate the number and size of interrupt sets and remove the 'const'
+> > qualifier.
+> > 
+> > For simple invocations, which do not supply a callback, a default callback
+> > is installed, which just sets nr_sets to 1 and transfers the number of
+> > spreadable vectors to the set_size array at index 0.
+> > 
+> > This is for now guarded by a check for nr_sets != 0 to keep the NVME driver
+> > working until it is converted to the callback mechanism.
+> > 
+> > To make sure that the driver configuration is correct under all circumstances
+> > the callback is invoked even when there are no interrupts for queues left,
+> > i.e. the pre/post requirements already exhaust the numner of available
+> > interrupts.
+> > 
+> > At the PCI layer irq_create_affinity_masks() has to be invoked even for the
+> > case where the legacy interrupt is used. That ensures that the callback is
+> > invoked and the device driver can adjust to that situation.
+> > 
+> > [ tglx: Fixed the simple case (no sets required). Moved the sanity check
+> >   	for nr_sets after the invocation of the callback so it catches
+> >   	broken drivers. Fixed the kernel doc comments for struct
+> >   	irq_affinity and de-'This patch'-ed the changelog ]
+> > 
+> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> 
+> > @@ -1196,6 +1196,13 @@ int pci_alloc_irq_vectors_affinity(struc
+> >  	/* use legacy irq if allowed */
+> >  	if (flags & PCI_IRQ_LEGACY) {
+> >  		if (min_vecs == 1 && dev->irq) {
+> > +			/*
+> > +			 * Invoke the affinity spreading logic to ensure that
+> > +			 * the device driver can adjust queue configuration
+> > +			 * for the single interrupt case.
+> > +			 */
+> > +			if (affd)
+> > +				irq_create_affinity_masks(1, affd);
+> 
+> This looks like a leak because irq_create_affinity_masks() returns a
+> pointer to kcalloc()ed space, but we throw away the pointer.
+> 
+> Or is there something very subtle going on here, like this special
+> case doesn't allocate anything?  I do see the "Nothing to assign?"
+> case that returns NULL with no alloc, but it's not completely trivial
+> to verify that we take that case here.
 
-Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
----
- drivers/clk/mediatek/Kconfig           |  6 +++
- drivers/clk/mediatek/Makefile          |  1 +
- drivers/clk/mediatek/clk-mt8192-venc.c | 53 ++++++++++++++++++++++++++
- 3 files changed, 60 insertions(+)
- create mode 100644 drivers/clk/mediatek/clk-mt8192-venc.c
+The purpose is to provide chance to call ->calc_sets() for single
+interrupt, maybe it can be improved by the following change:
 
-diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-index 31779f2c5c83..576babd86f98 100644
---- a/drivers/clk/mediatek/Kconfig
-+++ b/drivers/clk/mediatek/Kconfig
-@@ -574,6 +574,12 @@ config COMMON_CLK_MT8192_VDECSYS
- 	help
- 	  This driver supports MediaTek MT8192 vdecsys and vdecsys_soc clocks.
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 217dc9f0231f..025c647279f5 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -1223,8 +1223,7 @@ int pci_alloc_irq_vectors_affinity(struct pci_dev *dev, unsigned int min_vecs,
+ 			 * the device driver can adjust queue configuration
+ 			 * for the single interrupt case.
+ 			 */
+-			if (affd)
+-				irq_create_affinity_masks(1, affd);
++			irq_affinity_calc_sets_legacy(affd);
+ 			pci_intx(dev, 1);
+ 			return 1;
+ 		}
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index 4777850a6dc7..f21f93ce460b 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -368,6 +368,7 @@ irq_create_affinity_masks(unsigned int nvec, struct irq_affinity *affd);
  
-+config COMMON_CLK_MT8192_VENCSYS
-+	bool "Clock driver for MediaTek MT8192 vencsys"
-+	depends on COMMON_CLK_MT8192
-+	help
-+	  This driver supports MediaTek MT8192 vencsys clocks.
+ unsigned int irq_calc_affinity_vectors(unsigned int minvec, unsigned int maxvec,
+ 				       const struct irq_affinity *affd);
++void irq_affinity_calc_sets_legacy(struct irq_affinity *affd);
+ 
+ #else /* CONFIG_SMP */
+ 
+@@ -419,6 +420,10 @@ irq_calc_affinity_vectors(unsigned int minvec, unsigned int maxvec,
+ 	return maxvec;
+ }
+ 
++static inline void irq_affinity_calc_sets_legacy(struct irq_affinity *affd)
++{
++}
 +
- config COMMON_CLK_MT8516
- 	bool "Clock driver for MediaTek MT8516"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
-diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
-index 887dd6bcf7f2..15bc045f0b71 100644
---- a/drivers/clk/mediatek/Makefile
-+++ b/drivers/clk/mediatek/Makefile
-@@ -79,5 +79,6 @@ obj-$(CONFIG_COMMON_CLK_MT8192_MMSYS) += clk-mt8192-mm.o
- obj-$(CONFIG_COMMON_CLK_MT8192_MSDC) += clk-mt8192-msdc.o
- obj-$(CONFIG_COMMON_CLK_MT8192_SCP_ADSP) += clk-mt8192-scp_adsp.o
- obj-$(CONFIG_COMMON_CLK_MT8192_VDECSYS) += clk-mt8192-vdec.o
-+obj-$(CONFIG_COMMON_CLK_MT8192_VENCSYS) += clk-mt8192-venc.o
- obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
- obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
-diff --git a/drivers/clk/mediatek/clk-mt8192-venc.c b/drivers/clk/mediatek/clk-mt8192-venc.c
-new file mode 100644
-index 000000000000..c0d867bff09e
---- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt8192-venc.c
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Copyright (c) 2021 MediaTek Inc.
-+// Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+ #endif /* CONFIG_SMP */
+ 
+ /*
+diff --git a/kernel/irq/affinity.c b/kernel/irq/affinity.c
+index 4d89ad4fae3b..d01f7dfa5712 100644
+--- a/kernel/irq/affinity.c
++++ b/kernel/irq/affinity.c
+@@ -405,6 +405,30 @@ static void default_calc_sets(struct irq_affinity *affd, unsigned int affvecs)
+ 	affd->set_size[0] = affvecs;
+ }
+ 
++static void irq_affinity_calc_sets(unsigned int affvecs,
++		struct irq_affinity *affd)
++{
++	/*
++	 * Simple invocations do not provide a calc_sets() callback. Install
++	 * the generic one.
++	 */
++	if (!affd->calc_sets)
++		affd->calc_sets = default_calc_sets;
 +
-+#include <linux/clk-provider.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
++	/* Recalculate the sets */
++	affd->calc_sets(affd, affvecs);
 +
-+#include "clk-mtk.h"
-+#include "clk-gate.h"
++	WARN_ON_ONCE(affd->nr_sets > IRQ_AFFINITY_MAX_SETS);
++}
 +
-+#include <dt-bindings/clock/mt8192-clk.h>
++/* Provide a chance to call ->calc_sets for legacy */
++void irq_affinity_calc_sets_legacy(struct irq_affinity *affd)
++{
++	if (!affd)
++		return;
++	irq_affinity_calc_sets(0, affd);
++}
 +
-+static const struct mtk_gate_regs venc_cg_regs = {
-+	.set_ofs = 0x4,
-+	.clr_ofs = 0x8,
-+	.sta_ofs = 0x0,
-+};
-+
-+#define GATE_VENC(_id, _name, _parent, _shift)	\
-+	GATE_MTK(_id, _name, _parent, &venc_cg_regs, _shift, &mtk_clk_gate_ops_setclr_inv)
-+
-+static const struct mtk_gate venc_clks[] = {
-+	GATE_VENC(CLK_VENC_SET0_LARB, "venc_set0_larb", "venc_sel", 0),
-+	GATE_VENC(CLK_VENC_SET1_VENC, "venc_set1_venc", "venc_sel", 4),
-+	GATE_VENC(CLK_VENC_SET2_JPGENC, "venc_set2_jpgenc", "venc_sel", 8),
-+	GATE_VENC(CLK_VENC_SET5_GALS, "venc_set5_gals", "venc_sel", 28),
-+};
-+
-+static const struct mtk_clk_desc venc_desc = {
-+	.clks = venc_clks,
-+	.num_clks = ARRAY_SIZE(venc_clks),
-+};
-+
-+static const struct of_device_id of_match_clk_mt8192_venc[] = {
-+	{
-+		.compatible = "mediatek,mt8192-vencsys",
-+		.data = &venc_desc,
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+
-+static struct platform_driver clk_mt8192_venc_drv = {
-+	.probe = mtk_clk_simple_probe,
-+	.driver = {
-+		.name = "clk-mt8192-venc",
-+		.of_match_table = of_match_clk_mt8192_venc,
-+	},
-+};
-+
-+builtin_platform_driver(clk_mt8192_venc_drv);
--- 
-2.18.0
+ /**
+  * irq_create_affinity_masks - Create affinity masks for multiqueue spreading
+  * @nvecs:	The total number of vectors
+@@ -429,17 +453,8 @@ irq_create_affinity_masks(unsigned int nvecs, struct irq_affinity *affd)
+ 	else
+ 		affvecs = 0;
+ 
+-	/*
+-	 * Simple invocations do not provide a calc_sets() callback. Install
+-	 * the generic one.
+-	 */
+-	if (!affd->calc_sets)
+-		affd->calc_sets = default_calc_sets;
+-
+-	/* Recalculate the sets */
+-	affd->calc_sets(affd, affvecs);
+-
+-	if (WARN_ON_ONCE(affd->nr_sets > IRQ_AFFINITY_MAX_SETS))
++	irq_affinity_calc_sets(affvecs, affd);
++	if (affd->nr_sets > IRQ_AFFINITY_MAX_SETS)
+ 		return NULL;
+ 
+ 	/* Nothing to assign? */
+
+
+Thanks, 
+Ming
 
