@@ -2,126 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1DE3A9BDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215C23A9BE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233199AbhFPNYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:24:53 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3250 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232611AbhFPNYu (ORCPT
+        id S233096AbhFPN0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231256AbhFPN0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:24:50 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G4lwq6C9Kz6K6NG;
-        Wed, 16 Jun 2021 21:12:59 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.62.217) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 15:22:40 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <viro@zeniv.linux.org.uk>, <zohar@linux.ibm.com>,
-        <paul@paul-moore.com>, <stephen.smalley.work@gmail.com>,
-        <casey@schaufler-ca.com>, <stefanb@linux.ibm.com>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH] fs: Return raw xattr for security.* if there is size disagreement with LSMs
-Date:   Wed, 16 Jun 2021 15:22:27 +0200
-Message-ID: <20210616132227.999256-1-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <ee75bde9a17f418984186caa70abd33b@huawei.com>
-References: <ee75bde9a17f418984186caa70abd33b@huawei.com>
+        Wed, 16 Jun 2021 09:26:07 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A92BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:24:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Elup1K/pdOal6CMU6IFSCXYZK6fFIS7MIHnYzrq8KME=; b=TBnMCfED2L4xmLB5Y+GvP/WBM7
+        3P9n8XnZvQAk0JiRbhMIrNLnPyeMzu9XLH9fWIM3tiBI1yHnJB9ZGu7Z0li/5svzB00+NYpdsjeLK
+        pE0ojJEq0UNLDOid/i8gj99+HsORNSqpeVZowyna09BBzTPpddF4WMdIRCNuMfnlH+38A2Gp4PGSP
+        4BWqwdaVVsKRAMvartmA/FBYoKhBhXbuaq9iUKBad4XIinZuANaQRDFjUpNLLS4mCffMTd8zjLZx/
+        bQBp/AOxKtWIN4wacfgwtzc60scCshcy84YB3iPh76mqcfe0xurWGsQ3euLkHjzpfY+ij9999tpbT
+        rC2KdbSg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltVWD-008KWn-P5; Wed, 16 Jun 2021 13:23:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 13FD1300269;
+        Wed, 16 Jun 2021 15:23:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F151420C169EE; Wed, 16 Jun 2021 15:23:50 +0200 (CEST)
+Date:   Wed, 16 Jun 2021 15:23:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 5/6] posix-cpu-timers: Force next expiration recalc after
+ early timer firing
+Message-ID: <YMn7Zl2uc6NyUfXJ@hirez.programming.kicks-ass.net>
+References: <20210604113159.26177-1-frederic@kernel.org>
+ <20210604113159.26177-6-frederic@kernel.org>
+ <YMnHnUcufPhtnDZP@hirez.programming.kicks-ass.net>
+ <20210616115923.GC801071@lothringen>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.62.217]
-X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616115923.GC801071@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vfs_getxattr() differs from vfs_setxattr() in the way it obtains the xattr
-value. The former gives precedence to the LSMs, and if the LSMs don't
-provide a value, obtains it from the filesystem handler. The latter does
-the opposite, first invokes the filesystem handler, and if the filesystem
-does not support xattrs, passes the xattr value to the LSMs.
+On Wed, Jun 16, 2021 at 01:59:23PM +0200, Frederic Weisbecker wrote:
+> On Wed, Jun 16, 2021 at 11:42:53AM +0200, Peter Zijlstra wrote:
+> > I'm thinking this is a better fix than patch #2. AFAICT you can now go
+> > back to unconditionally doing start, and then if we fire it early, we'll
+> > disarm the thing.
+> > 
+> > That would avoid the disconnect between the start condition and the fire
+> > condition.
+> 
+> Right but the drawback is that we unconditionally start the threadgroup
+> counter while initializing the timer to 0 (deactivated).
+> 
+> Then in the next tick at least one thread will need to lock the sighand
+> and re-evaluate the whole list.
 
-The problem is that not necessarily the user gets the same xattr value that
-he set. For example, if he sets security.selinux with a value not
-terminated with '\0', he gets a value terminated with '\0' because SELinux
-adds it during the translation from xattr to internal representation
-(vfs_setxattr()) and from internal representation to xattr
-(vfs_getxattr()).
+Yes.. but how common is it to enqueue expired timers? Surely that's an
+unlikely corner case. All normal timers will have to suffer one extra
+tick and iteration on exit, so I find it hard to justify complexity to
+optimize an unlikely case.
 
-Normally, this does not have an impact unless the integrity of xattrs is
-verified with EVM. The kernel and the user see different values due to the
-different functions used to obtain them:
-
-kernel (EVM): uses vfs_getxattr_alloc() which obtains the xattr value from
-              the filesystem handler (raw value);
-
-user (ima-evm-utils): uses vfs_getxattr() which obtains the xattr value
-                      from the LSMs (normalized value).
-
-Given that the difference between the raw value and the normalized value
-should be just the additional '\0' not the rest of the content, this patch
-modifies vfs_getxattr() to compare the size of the xattr value obtained
-from the LSMs to the size of the raw xattr value. If there is a mismatch
-and the filesystem handler does not return an error, vfs_getxattr() returns
-the raw value.
-
-This patch should have a minimal impact on existing systems, because if the
-SELinux label is written with the appropriate tools such as setfiles or
-restorecon, there will not be a mismatch (because the raw value also has
-'\0').
-
-In the case where the SELinux label is written directly with setfattr and
-without '\0', this patch helps to align EVM and ima-evm-utils in terms of
-result provided (due to the fact that they both verify the integrity of
-xattrs from raw values).
-
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Tested-by: Mimi Zohar <zohar@linux.ibm.com>
----
- fs/xattr.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/fs/xattr.c b/fs/xattr.c
-index 5c8c5175b385..412ec875aa07 100644
---- a/fs/xattr.c
-+++ b/fs/xattr.c
-@@ -420,12 +420,27 @@ vfs_getxattr(struct user_namespace *mnt_userns, struct dentry *dentry,
- 		const char *suffix = name + XATTR_SECURITY_PREFIX_LEN;
- 		int ret = xattr_getsecurity(mnt_userns, inode, suffix, value,
- 					    size);
-+		int ret_raw;
-+
- 		/*
- 		 * Only overwrite the return value if a security module
- 		 * is actually active.
- 		 */
- 		if (ret == -EOPNOTSUPP)
- 			goto nolsm;
-+
-+		if (ret < 0)
-+			return ret;
-+
-+		/*
-+		 * Read raw xattr if the size from the filesystem handler
-+		 * differs from that returned by xattr_getsecurity() and is
-+		 * equal or greater than zero.
-+		 */
-+		ret_raw = __vfs_getxattr(dentry, inode, name, NULL, 0);
-+		if (ret_raw >= 0 && ret_raw != ret)
-+			goto nolsm;
-+
- 		return ret;
- 	}
- nolsm:
--- 
-2.25.1
+I would rather have more obvious code.
 
