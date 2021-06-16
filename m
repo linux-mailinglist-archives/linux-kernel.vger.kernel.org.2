@@ -2,72 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C34F3A9622
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA3C3A95F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbhFPJbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
+        id S232260AbhFPJVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231686AbhFPJbF (ORCPT
+        with ESMTP id S231922AbhFPJVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:31:05 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0171DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:28:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Zijywzcu+CRpy/ste35r5eGAhkZFfZgYscvI8y8dbwg=; b=DgHkYvIY5f4HrojOxk+6Los3F
-        6s/7F4MufGeVJsyeuJXSDhRMhHEPVB/RvnxGVR8JY1QZNg3LnxYQfSyKS2z7LBpE/p8bucZ248GKG
-        d/ZVFelm142vbbhS62giUFbmD+3yZn7B9yPU4XsxilNobujAMVQBGyXF9wOJJrLXoQy0iG8tZqC/h
-        MmNhfyAQok6XRUO/QrZg7bE4O3F/dY9E0HaYmVcw5XxsuIWPRl7R5Adw8jYdDbcATtOhchsv1R+A6
-        M4DR6+szwRaqzS1Z8Ik7A9dTHcB06wC3j2+6j6jQhfJC/DlprdfxGwCYnoeTJ1j5u2vpWVB/Zqt7Q
-        wpFWYHLlw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45054)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1ltRqr-0006yX-NZ; Wed, 16 Jun 2021 10:28:49 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1ltRql-0005tq-Ng; Wed, 16 Jun 2021 10:28:43 +0100
-Date:   Wed, 16 Jun 2021 10:28:43 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86@kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
-Message-ID: <20210616092843.GZ22278@shell.armlinux.org.uk>
-References: <cover.1623813516.git.luto@kernel.org>
- <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
+        Wed, 16 Jun 2021 05:21:52 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E5AC061768
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:19:46 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id ei4so1346642pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:19:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kPlAhH5NwHtkd7QRuZaAQDneGzyCnvuOWwqDYkreipQ=;
+        b=d1cdxgTVmHQ8vSHU6CQuC6D7FOcaN4RAGY/AKSUKANPKxFjiMvq+2d7vXm4MFvyMqY
+         iHSCrCkw53XV7cfDQeI4CSgVdnG/slT9uecRaDIaNcZcE0jEEIkyr+liwGbTclMf32Lz
+         3kc5gdxGpXHy9ibF2+/ruLay5caxWAcFMMGfGwzvZa99SDvF71KoPs20v16MbVVvNThn
+         e7EwX+SbjnEb1M90XqprBxwyjA14XWDsirVirt4oGZBalJ9HENtjL87hbzjicLT2er9q
+         bWUZ3tJ7F/QCXBpg03nc1u24/IA0SjImkjGOWEgtYQnRMOWOhZFD5RHuner0TXE9zzUh
+         vM9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kPlAhH5NwHtkd7QRuZaAQDneGzyCnvuOWwqDYkreipQ=;
+        b=Y9pvsb7DG/EL8qHQIwdHmxZ6/GMrieUPKN9E5BnJIjxlFC+DXkKvbNFCZjDHnnQfH/
+         Sxp6+LIcRR2KHvNRS99xdlh3A3Oe7buCRwvZkIPWe77dQWP0CFu9IdOVvo71lxgIB4oS
+         FUmn4UQkC1FhRc0KMtB5SZzN+Omx7gxlNMgJLOM3zGK4wPEAbSP5ZCWT0bJiwYxu0Thp
+         D/AJp/7Iozjo0ShBAdS+tv7RkAwXuHTFSJQji/ZU1aSyy8QnPQYC7Cf4L+lK4n2JZIWr
+         46Rqen/RGXxVsx/9t/YNU/q6k4iBt9bT3iA7zfGDUeYuljkWvcjP4tiwMsnSh1/o5yTg
+         7sfg==
+X-Gm-Message-State: AOAM530l7bDCgbX+FgnMO6Q+didDDHq/6Zdv8mnO7jxhwizF3ryOm25d
+        yW56Lo4gRyGehLvtD0VqbADL9zLYv+sEEcbgXmxcEA==
+X-Google-Smtp-Source: ABdhPJwjB6l7t81zu3o2PHt0sQ07v6Dqz5kXjbEEJ1pXJG0cIRo8caGDMT7G0iqSMi8MlbtkFjcI3kFdFCuG+wVZP5Y=
+X-Received: by 2002:a17:90a:d590:: with SMTP id v16mr3926450pju.205.1623835186136;
+ Wed, 16 Jun 2021 02:19:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20210615133229.213064-1-stephan@gerhold.net> <20210615133229.213064-4-stephan@gerhold.net>
+ <CAMZdPi8JuyqoF3GwJHcdXhdn0e7ks_f2WiUFpmn3E8HH7T_Gng@mail.gmail.com> <YMkkUM3fHcWhYhmV@gerhold.net>
+In-Reply-To: <YMkkUM3fHcWhYhmV@gerhold.net>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Wed, 16 Jun 2021 11:28:46 +0200
+Message-ID: <CAMZdPi877Qu5F+mYqD0tAm5-gewpHHwpa2Xp7DAn8OM8rxVLMA@mail.gmail.com>
+Subject: Re: [PATCH net-next 3/3] net: wwan: Allow WWAN drivers to provide
+ blocking tx and poll function
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        M Chetan Kumar <m.chetan.kumar@intel.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        phone-devel@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 08:21:12PM -0700, Andy Lutomirski wrote:
-> On arm32, the only way to safely flush icache from usermode is to call
-> cacheflush(2).  This also handles any required pipeline flushes, so
-> membarrier's SYNC_CORE feature is useless on arm.  Remove it.
+On Wed, 16 Jun 2021 at 00:06, Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> On Tue, Jun 15, 2021 at 11:24:41PM +0200, Loic Poulain wrote:
+> > On Tue, 15 Jun 2021 at 15:34, Stephan Gerhold <stephan@gerhold.net> wrote:
+> > >
+> > > At the moment, the WWAN core provides wwan_port_txon/off() to implement
+> > > blocking writes. The tx() port operation should not block, instead
+> > > wwan_port_txon/off() should be called when the TX queue is full or has
+> > > free space again.
+> > >
+> > > However, in some cases it is not straightforward to make use of that
+> > > functionality. For example, the RPMSG API used by rpmsg_wwan_ctrl.c
+> > > does not provide any way to be notified when the TX queue has space
+> > > again. Instead, it only provides the following operations:
+> > >
+> > >   - rpmsg_send(): blocking write (wait until there is space)
+> > >   - rpmsg_trysend(): non-blocking write (return error if no space)
+> > >   - rpmsg_poll(): set poll flags depending on TX queue state
+> > >
+> > > Generally that's totally sufficient for implementing a char device,
+> > > but it does not fit well to the currently provided WWAN port ops.
+> > >
+> > > Most of the time, using the non-blocking rpmsg_trysend() in the
+> > > WWAN tx() port operation works just fine. However, with high-frequent
+> > > writes to the char device it is possible to trigger a situation
+> > > where this causes issues. For example, consider the following
+> > > (somewhat unrealistic) example:
+> > >
+> > >  # dd if=/dev/zero bs=1000 of=/dev/wwan0p2QMI
+> > >  dd: error writing '/dev/wwan0p2QMI': Resource temporarily unavailable
+> > >  1+0 records out
+> > >
+> > > This fails immediately after writing the first record. It's likely
+> > > only a matter of time until this triggers issues for some real application
+> > > (e.g. ModemManager sending a lot of large QMI packets).
+> > >
+> > > The rpmsg_char device does not have this problem, because it uses
+> > > rpmsg_trysend() and rpmsg_poll() to support non-blocking operations.
+> > > Make it possible to use the same in the RPMSG WWAN driver by extending
+> > > the tx() operation with a "nonblock" parameter and adding an optional
+> > > poll() callback. This integrates nicely with the RPMSG API and does
+> > > not break other WWAN drivers.
+> > >
+> > > With these changes, the dd example above blocks instead of exiting
+> > > with an error.
+> > >
+> > > Cc: Loic Poulain <loic.poulain@linaro.org>
+> > > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> > > ---
+> > > Note that rpmsg_poll() is an optional callback currently only implemented
+> > > by the qcom_smd RPMSG provider. However, it should be easy to implement
+> > > this for other RPMSG providers when needed.
+> > >
+> > > Another potential solution suggested by Loic Poulain in [1] is to always
+> > > use the blocking rpmsg_send() from a workqueue/kthread and disable TX
+> > > until it is done. I think this could also work (perhaps a bit more
+> > > difficult to implement) but the main disadvantage is that I don't see
+> > > a way to return any kind of error to the client with this approach.
+> > > I assume we return immediately from the write() to the char device
+> > > after scheduling the rpmsg_send(), so we already reported success
+> > > when rpmsg_send() returns.
+> > >
+> > > At the end all that matters to me is that it works properly, so I'm
+> > > open for any other suggestions. :)
+> > >
+> > > [1]: https://lore.kernel.org/linux-arm-msm/CAMZdPi_-Qa=JnThHs_h-144dAfSAjF5s+QdBawdXZ3kk8Mx8ng@mail.gmail.com/
+> > > ---
+> > >  drivers/net/wwan/iosm/iosm_ipc_port.c |  3 ++-
+> > >  drivers/net/wwan/mhi_wwan_ctrl.c      |  3 ++-
+> > >  drivers/net/wwan/rpmsg_wwan_ctrl.c    | 17 +++++++++++++++--
+> > >  drivers/net/wwan/wwan_core.c          |  9 ++++++---
+> > >  drivers/net/wwan/wwan_hwsim.c         |  3 ++-
+> > >  include/linux/wwan.h                  | 13 +++++++++----
+> > >  6 files changed, 36 insertions(+), 12 deletions(-)
+> > >
+> > > diff --git a/drivers/net/wwan/iosm/iosm_ipc_port.c b/drivers/net/wwan/iosm/iosm_ipc_port.c
+> > > index beb944847398..2f874e41ceff 100644
+> > > --- a/drivers/net/wwan/iosm/iosm_ipc_port.c
+> > > +++ b/drivers/net/wwan/iosm/iosm_ipc_port.c
+> > > @@ -31,7 +31,8 @@ static void ipc_port_ctrl_stop(struct wwan_port *port)
+> > >  }
+> > >
+> > >  /* transfer control data to modem */
+> > > -static int ipc_port_ctrl_tx(struct wwan_port *port, struct sk_buff *skb)
+> > > +static int ipc_port_ctrl_tx(struct wwan_port *port, struct sk_buff *skb,
+> > > +                           bool nonblock)
+> > >  {
+> > >         struct iosm_cdev *ipc_port = wwan_port_get_drvdata(port);
+> > >
+> > > diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
+> > > index 1bc6b69aa530..9754f014d348 100644
+> > > --- a/drivers/net/wwan/mhi_wwan_ctrl.c
+> > > +++ b/drivers/net/wwan/mhi_wwan_ctrl.c
+> > > @@ -139,7 +139,8 @@ static void mhi_wwan_ctrl_stop(struct wwan_port *port)
+> > >         mhi_unprepare_from_transfer(mhiwwan->mhi_dev);
+> > >  }
+> > >
+> > > -static int mhi_wwan_ctrl_tx(struct wwan_port *port, struct sk_buff *skb)
+> > > +static int mhi_wwan_ctrl_tx(struct wwan_port *port, struct sk_buff *skb,
+> > > +                           bool nonblock)
+> > >  {
+> > >         struct mhi_wwan_dev *mhiwwan = wwan_port_get_drvdata(port);
+> > >         int ret;
+> > > diff --git a/drivers/net/wwan/rpmsg_wwan_ctrl.c b/drivers/net/wwan/rpmsg_wwan_ctrl.c
+> > > index de226cdb69fd..63f431eada39 100644
+> > > --- a/drivers/net/wwan/rpmsg_wwan_ctrl.c
+> > > +++ b/drivers/net/wwan/rpmsg_wwan_ctrl.c
+> > > @@ -54,12 +54,16 @@ static void rpmsg_wwan_ctrl_stop(struct wwan_port *port)
+> > >         rpwwan->ept = NULL;
+> > >  }
+> > >
+> > > -static int rpmsg_wwan_ctrl_tx(struct wwan_port *port, struct sk_buff *skb)
+> > > +static int rpmsg_wwan_ctrl_tx(struct wwan_port *port, struct sk_buff *skb,
+> > > +                             bool nonblock)
+> > >  {
+> > >         struct rpmsg_wwan_dev *rpwwan = wwan_port_get_drvdata(port);
+> > >         int ret;
+> > >
+> > > -       ret = rpmsg_trysend(rpwwan->ept, skb->data, skb->len);
+> > > +       if (nonblock)
+> > > +               ret = rpmsg_trysend(rpwwan->ept, skb->data, skb->len);
+> > > +       else
+> > > +               ret = rpmsg_send(rpwwan->ept, skb->data, skb->len);
+> > >         if (ret)
+> > >                 return ret;
+> > >
+> > > @@ -67,10 +71,19 @@ static int rpmsg_wwan_ctrl_tx(struct wwan_port *port, struct sk_buff *skb)
+> > >         return 0;
+> > >  }
+> > >
+> > > +static __poll_t rpmsg_wwan_ctrl_poll(struct wwan_port *port, struct file *filp,
+> > > +                                    poll_table *wait)
+> > > +{
+> > > +       struct rpmsg_wwan_dev *rpwwan = wwan_port_get_drvdata(port);
+> > > +
+> > > +       return rpmsg_poll(rpwwan->ept, filp, wait);
+> > > +}
+> > > +
+> > >  static const struct wwan_port_ops rpmsg_wwan_pops = {
+> > >         .start = rpmsg_wwan_ctrl_start,
+> > >         .stop = rpmsg_wwan_ctrl_stop,
+> > >         .tx = rpmsg_wwan_ctrl_tx,
+> > > +       .poll = rpmsg_wwan_ctrl_poll,
+> > >  };
+> > >
+> > >  static struct device *rpmsg_wwan_find_parent(struct device *dev)
+> > > diff --git a/drivers/net/wwan/wwan_core.c b/drivers/net/wwan/wwan_core.c
+> > > index 7e728042fc41..c7fd0b897f87 100644
+> > > --- a/drivers/net/wwan/wwan_core.c
+> > > +++ b/drivers/net/wwan/wwan_core.c
+> > > @@ -500,7 +500,8 @@ static void wwan_port_op_stop(struct wwan_port *port)
+> > >         mutex_unlock(&port->ops_lock);
+> > >  }
+> > >
+> > > -static int wwan_port_op_tx(struct wwan_port *port, struct sk_buff *skb)
+> > > +static int wwan_port_op_tx(struct wwan_port *port, struct sk_buff *skb,
+> > > +                          bool nonblock)
+> > >  {
+> > >         int ret;
+> > >
+> > > @@ -510,7 +511,7 @@ static int wwan_port_op_tx(struct wwan_port *port, struct sk_buff *skb)
+> > >                 goto out_unlock;
+> > >         }
+> > >
+> > > -       ret = port->ops->tx(port, skb);
+> > > +       ret = port->ops->tx(port, skb, nonblock);
+> > >
+> > >  out_unlock:
+> > >         mutex_unlock(&port->ops_lock);
+> > > @@ -637,7 +638,7 @@ static ssize_t wwan_port_fops_write(struct file *filp, const char __user *buf,
+> > >                 return -EFAULT;
+> > >         }
+> > >
+> > > -       ret = wwan_port_op_tx(port, skb);
+> > > +       ret = wwan_port_op_tx(port, skb, !!(filp->f_flags & O_NONBLOCK));
+> > >         if (ret) {
+> > >                 kfree_skb(skb);
+> > >                 return ret;
+> > > @@ -659,6 +660,8 @@ static __poll_t wwan_port_fops_poll(struct file *filp, poll_table *wait)
+> > >                 mask |= EPOLLIN | EPOLLRDNORM;
+> > >         if (!port->ops)
+> > >                 mask |= EPOLLHUP | EPOLLERR;
+> > > +       else if (port->ops->poll)
+> > > +               mask |= port->ops->poll(port, filp, wait);
+> >
+> > I'm not sure it useful here because EPOLLOUT flag is already set above, right?
+> >
+>
+> Oops, you're right - sorry! I thought the flags are inverted (only set
+> if (is_write_blocked())), then it would have worked fine. :)
+>
+> I think this should be easy to fix though, I can just make the
+>
+>         if (!is_write_blocked(port))
+>                 mask |= EPOLLOUT | EPOLLWRNORM;
+>
+> if statement conditional to (port->ops->poll == NULL). It only makes
+> sense to supply the poll() op if the built-in write-blocking cannot be
+> used easily (like in my case).
 
-Yay! About time too.
+Yes, so maybe in that case poll ops should be renamed to something like tx_poll?
 
-Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Regards,
+Loic
