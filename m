@@ -2,82 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C843A3A9840
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3640B3A9852
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbhFPK7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbhFPK7G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:59:06 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE501C061574;
-        Wed, 16 Jun 2021 03:57:00 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id s14so1882173pfd.9;
-        Wed, 16 Jun 2021 03:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=w//y6HzGeeu412j7fzF2nhyN+nMt8aXOPDkXjgQ3ZQ4=;
-        b=ggC5cbKP9AXBEs+Pe/HLwWnonWnqW2xwpIQ8gk0G3pZhNbt7revm3ityNfh5mYTpVa
-         5PzB5Jia2GKpBE50y6Y9TLzxqjlUZ5K18XK/yZcsvZACiuxGAsxysMP1VJDvZDt9+lcI
-         kfoAdrgutRyPbtwYqjTm3FR2rx+G7iN/pBs6d+Bgpq8UIbLNd2Aw45IwKCfAYLLhjzoF
-         gRIIjoTX04dG38MQtSW/rmOoRijB5VOIFpqkGKZ1byhxYgv9L9DZU1NA3riaE3pYtTe1
-         fvG4F2I95ZNXWDDv2gTf1ZVEpmZ47xe/YkxvJ57AuLrLqJ7wmR8fZWqX2C++E2gAtaF/
-         HY7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=w//y6HzGeeu412j7fzF2nhyN+nMt8aXOPDkXjgQ3ZQ4=;
-        b=O2gsRkVcIfTRIE/UX8RQxVvbga3bGZUBg/yHKCEZKX85Q2ypChLoKbU2Mqghm7L1eT
-         3sm2QCJnTnfuQ+gZFt/76j/SmVCPXyAw/H7dMd6owsMmF1EseqxmW5AVt9muPHZ6rTYr
-         CcThiGjinwr7yDIX1XpSmeuNLSADMlJXa1WhgOPg2JSED7R7V6wf3yiB9V7v1V5dtdko
-         QLDOESpLAE1QOAW0KqQQvKL6DFD2Wn/Ifsy7/Yw3YbjeYa2shcFf6wWA/TXDaUVtYVk8
-         vNialNwo4d39MamGMfFBAmv4O0X8wXRrjdsY84m+7jNgAYbUKFzNbyWMch5cMhhRHL2s
-         VWSA==
-X-Gm-Message-State: AOAM532A50VaiBZ15yUVjUfa2L0iH04DqaH1vN1HUDf1f897TdMPs/5f
-        CViKwKTZNtls978N+GM31PdXs+70XNgxFTXU8dfguyk19no=
-X-Google-Smtp-Source: ABdhPJw9ZB0RRBljpr8xPQLiyZo07M8XF6ka9SVkEaB9dd2kKY4DiCFI0y068zjUDmdnnDeMBX2V7d+ReaaRG4gcfII=
-X-Received: by 2002:a63:4b16:: with SMTP id y22mr4338230pga.410.1623841020315;
- Wed, 16 Jun 2021 03:57:00 -0700 (PDT)
+        id S231666AbhFPLAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:00:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhFPLAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 07:00:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C42D661042;
+        Wed, 16 Jun 2021 10:58:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623841098;
+        bh=ZmODpF83uSvqjPBI5p8Cu8qZyLNvoTchOyLLBiGoWk0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=nXoYddWxQ9Qw9vxeaHPG9Oppn9Ltc3/MiGcKG0AhbE7uGQsDxtWogIpxpTPbiFfrL
+         bnK7IR7Fvdr45fMha6oVVn//JwCB6+Kc+Y7I6aGWvWYksYcIGiyzAWyIbLiRkMnY60
+         wzCvIbPMlr1wthDXp6+9lKeZKScJKFfaLPv50RCTAdFNkR8xLB/ynM0vXvRDBpNWZ/
+         H09xe4kcxyrbZBrQrvuVXTpysIpimjggbhNEvtuVoXITqq+yenBBOrhY+1RAlI3QFC
+         9fFGe+vrRmayr+a7jz0+IwYvXCKV+jqVe39k1eiCyMLL+8bbz9VAunitPnWe87nNL6
+         9d7UHjUuMkl3Q==
+Date:   Wed, 16 Jun 2021 11:58:13 +0100
+From:   Will Deacon <will@kernel.org>
+To:     joro@8bytes.org
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        robin.murphy@arm.com, kernel-team@android.com, treding@nvidia.com
+Subject: [GIT PULL] iommu/arm-smmu: Updates for 5.14
+Message-ID: <20210616105813.GA22735@willie-the-truck>
 MIME-Version: 1.0
-References: <20210611065336.GA1121@raspberrypi> <YMnVDJM8foWIZTGk@vkoul-mobl>
-In-Reply-To: <YMnVDJM8foWIZTGk@vkoul-mobl>
-From:   Austin Kim <austindh.kim@gmail.com>
-Date:   Wed, 16 Jun 2021 19:56:53 +0900
-Message-ID: <CADLLry7tv4xG2d0Pivq86F-Lr1-nBbmgYxEoJGyFx4SNTsUNYA@mail.gmail.com>
-Subject: Re: [PATCH] dmaengine: sf-pdma: apply proper spinlock flags in sf_pdma_prep_dma_memcpy()
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     green.wan@sifive.com, dmaengine@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?6rmA64+Z7ZiE?= <austin.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 6=EC=9B=94 16=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 7:40, V=
-inod Koul <vkoul@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On 11-06-21, 07:53, Austin Kim wrote:
-> > From: Austin Kim <austin.kim@lge.com>
-> >
-> > The second parameter of spinlock_irq[save/restore] function is flags,
-> > which is the last input parameter of sf_pdma_prep_dma_memcpy().
-> >
-> > So declare local variable 'iflags' to be used as the second parameter o=
-f
-> > spinlock_irq[save/restore] function.
->
-> Applied, thanks
+Hi Joerg,
 
-Great, thanks!
+Please pull these Arm SMMU updates for 5.14.
 
->
-> --
-> ~Vinod
+Of particular note is the support for stalling faults with platform devices
+using SMMUv3 -- this concludes the bulk of the SVA work from Jean-Philippe.
+
+Other than that, one thing to note is that the patch from Thierry adding
+the '->prove_finalize' implementation hook is also shared with the
+memory-controller tree, since they build on top of it to get the SMMU
+working with an nvidia SOC. Unfortunately, that patch also caused a NULL
+dereference on other parts, so there's a subsequent patch on top here
+addressing that.
+
+Due to the above, the sooner this lands in -next, the better.
+
+Cheers,
+
+Will
+
+--->8
+
+The following changes since commit c4681547bcce777daf576925a966ffa824edd09d:
+
+  Linux 5.13-rc3 (2021-05-23 11:42:48 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git tags/arm-smmu-updates
+
+for you to fetch changes up to ddd25670d39b2181c7bec33301f2d24cdcf25dde:
+
+  Merge branch 'for-thierry/arm-smmu' into for-joerg/arm-smmu/updates (2021-06-16 11:30:55 +0100)
+
+----------------------------------------------------------------
+Arm SMMU updates for 5.14
+
+- SMMUv3:
+
+  * Support stalling faults for platform devices
+
+  * Decrease defaults sizes for the event and PRI queues
+
+- SMMUv2:
+
+  * Support for a new '->probe_finalize' hook, needed by Nvidia
+
+  * Even more Qualcomm compatible strings
+
+  * Avoid Adreno TTBR1 quirk for DB820C platform
+
+- Misc:
+
+  * Trivial cleanups/refactoring
+
+----------------------------------------------------------------
+Amey Narkhede (1):
+      iommu/arm: Cleanup resources in case of probe error path
+
+Bixuan Cui (1):
+      iommu/arm-smmu-v3: Change *array into *const array
+
+Eric Anholt (2):
+      iommu/arm-smmu-qcom: Skip the TTBR1 quirk for db820c.
+      arm64: dts: msm8996: Mark the GPU's SMMU as an adreno one.
+
+Jean-Philippe Brucker (4):
+      dt-bindings: Document stall property for IOMMU masters
+      ACPI/IORT: Enable stall support for platform devices
+      iommu/arm-smmu-v3: Add stall support for platform devices
+      iommu/arm-smmu-v3: Ratelimit event dump
+
+Martin Botka (1):
+      iommu/arm-smmu-qcom: Add sm6125 compatible
+
+Sai Prakash Ranjan (2):
+      iommu/arm-smmu-qcom: Add SC7280 SMMU compatible
+      iommu/arm-smmu-qcom: Move the adreno smmu specific impl
+
+Shawn Guo (2):
+      iommu/arm-smmu-qcom: hook up qcom_smmu_impl for ACPI boot
+      iommu/arm-smmu-qcom: Protect acpi_match_platform_list() call with CONFIG_ACPI
+
+Thierry Reding (1):
+      iommu/arm-smmu: Implement ->probe_finalize()
+
+Will Deacon (2):
+      iommu/arm-smmu: Check smmu->impl pointer before dereferencing
+      Merge branch 'for-thierry/arm-smmu' into for-joerg/arm-smmu/updates
+
+Xiyu Yang (2):
+      iommu/arm-smmu: Fix arm_smmu_device refcount leak when arm_smmu_rpm_get fails
+      iommu/arm-smmu: Fix arm_smmu_device refcount leak in address translation
+
+Zhen Lei (2):
+      iommu/arm-smmu-v3: Decrease the queue size of evtq and priq
+      iommu/arm-smmu-v3: Remove unnecessary oom message
+
+ Documentation/devicetree/bindings/iommu/iommu.txt |  18 ++
+ arch/arm64/boot/dts/qcom/msm8996.dtsi             |   2 +-
+ drivers/acpi/arm64/iort.c                         |   4 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  59 +++++-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c       | 222 ++++++++++++++++++++--
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h       |  48 ++++-
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c        |  43 ++++-
+ drivers/iommu/arm/arm-smmu/arm-smmu.c             |  38 +++-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h             |   1 +
+ drivers/iommu/arm/arm-smmu/qcom_iommu.c           |  13 +-
+ 10 files changed, 409 insertions(+), 39 deletions(-)
