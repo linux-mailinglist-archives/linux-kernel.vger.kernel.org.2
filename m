@@ -2,143 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7AE3A8ECA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9423A8ECE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbhFPC0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 22:26:02 -0400
-Received: from ozlabs.org ([203.11.71.1]:56549 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230454AbhFPC0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 22:26:01 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G4TWn4TqHz9sWX;
-        Wed, 16 Jun 2021 12:23:49 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1623810234;
-        bh=P3MCetIfzZtPqhiTVaYvru4yq+FzxZnPf34lNt0JVNs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=bFttHDSYDF8hs1GhcNrBuxC8r7YR1FbbNwSxkDAL7lQtIx4XxJMkGgJ7lrWjuZU9K
-         hHlMI3fju9iswEdIjo7GjpwxP1Gj1Fm/KYx+39MCmWGuFbgefyJ9+AnXWm5Gf/e/WE
-         A3rk+pmgQ4nYUF6AN4aESjVY9NcZzs/XD9grffQ9ZgTrSzGhxqLEc7HLOf2IyR5wUs
-         BEgh91+kA9k66Ony2Qct/YJq45j32aDa0BAlicNYsFLF+qSWSLxNmpFtktw78LYU6u
-         aLSqG0ucZiktlwstD97l1OxIipFzxib0Y/fOq3lYLMw7V3BV6g9i2RPMf7XTojDwDI
-         6cNIWLPIEvGYQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Rob Herring <robh@kernel.org>, nramas <nramas@linux.microsoft.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        James Morse <james.morse@arm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, dmitry.kasatkin@gmail.com,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Prakhar Srivastava <prsriva@linux.microsoft.com>,
-        balajib@linux.microsoft.com,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH v19 05/13] of: Add a common kexec FDT setup function
-In-Reply-To: <CAL_JsqJEucP043eViq0Y1kAeqWNTqP5fLjfjz7+ksYx7QP_V5w@mail.gmail.com>
-References: <20210221174930.27324-1-nramas@linux.microsoft.com>
- <20210221174930.27324-6-nramas@linux.microsoft.com>
- <CAMuHMdVSuNS4edh-zM0_sbC0i1AAjQ9Y0n_8Mjz=3CALkW4pgg@mail.gmail.com>
- <CAL_JsqJ2x7zbyP3fAacdfHOWjCVjg6XhraV2YkoBJdZ2jXAMEA@mail.gmail.com>
- <54efb4fce5aac7efbd0b1b3885e9098b1d4ea745.camel@linux.microsoft.com>
- <CAL_JsqJEucP043eViq0Y1kAeqWNTqP5fLjfjz7+ksYx7QP_V5w@mail.gmail.com>
-Date:   Wed, 16 Jun 2021 12:23:44 +1000
-Message-ID: <87y2basg27.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
+        id S231602AbhFPC1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 22:27:24 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:10660 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230454AbhFPC1X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 22:27:23 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15G2GIFQ016728;
+        Wed, 16 Jun 2021 02:25:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=7e1jygg6GyFkhH9ysBkQJT8EKSHPtxLzdlCJP1Y9cNM=;
+ b=CITC/5wxoY1NANHrX9EidGXmnvO4WsAJeZIoeqX2DklVBw7ebfv50rNzZlrbMZmSsnEL
+ NSzzv+jOZfz2H6EiQIgdYvHiko5YIm2pA+H+935EglUig50gG0fwG+jK1z6lKROk9dhC
+ 4iEZeyqgeZM4LQlzk/+QWn9mM57QbSLtwmUa97fU6QugStnCgFLXpVAKOSwCF59HWmwX
+ MHF0wxqnPftF49Ieel9zK+Uamy9MQMmzIyNDHDZOdr2UEK2w0nBPRmRFkeir4ZOROTCM
+ T1UpvcoYgY7aSr1KFzILDvGMMOSpqkAKPksiykFf9Hh4OKnpegv4jS3k7F3vOpgc0W3i vw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 395x06hqn8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Jun 2021 02:25:15 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15G2FFg2117718;
+        Wed, 16 Jun 2021 02:25:14 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2041.outbound.protection.outlook.com [104.47.56.41])
+        by aserp3030.oracle.com with ESMTP id 396watw6n2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Jun 2021 02:25:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ijYxWY8DG4F5deTRrs5JVhUHXH2ecyBQRzQnYl+hbTJnOh1xjG+nDvjx/Qx/YC0/SuusVyIDt8ZnSV6Xgpjlmacwq9IHLl7Ww2yJDA8JOon81YBCDVIQth7xVn73hqYt+9yNNx9lOcJVpJR9x8donsW9IaMvQ0wT7fR1SmFB2tmsbYhb/HSo++oUSqiTh20wxQXf7XX3ZaXPlnk1pbGLutMExtCjyNxQB741Bv3LXnR8o1SFwCdM1rk179zKPRklo/cdbxfRW5Yjqz6BFnxFHrJHFqOus1o1N+9XKf2fhsHTgYO2/OvihHg1DmhaiPfya7+Au+0TlJQIxVr2Q7ewEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7e1jygg6GyFkhH9ysBkQJT8EKSHPtxLzdlCJP1Y9cNM=;
+ b=a9gnkWS/1FpvFVwtGQaRL5RK5FZOHkxIIhpytkQRPMoZx7PsDP/4E04x2UHa19ezZ17yvfgLH5sf6msA/2JBKMcapekxuZV1awASJxXWmtZLD+Wz4N5GrDyj5QRdlFrkC4N3Z4Mgvr43fykYK9G8ers6VLctgeFKXZg+60+p6/IUsfP2a1lDWmffg6u+xm9wG7KVhKZ4lvAIJj+c4n7BMfGAAnQxU08X/ZzGDWKbw2tegLE/rlGmQGalFKr9CCB0ucd99sB4BMEfKOfTjl+0b4f+myojPPGUInIsFVku4CYvFO5umBV3D4vyN0wzeMpmRsfHe72Q7eqWtEjzuBKEFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7e1jygg6GyFkhH9ysBkQJT8EKSHPtxLzdlCJP1Y9cNM=;
+ b=K6AJVHUmuSsnimjGvjP85QgWVC8JoPU80HY2xoQgK8DJj8/IdZYwELCI2u2vuYTnZt16Hxsj2MP3bbAYevD+621wxCvXwfpc3F/srjcfIs1c6aqz3pX/NgJIdFgjyrtpf4zvYF4zlCswURFVAtVU9qxYhgsnXcMkwO0aI/8Uzo8=
+Authentication-Results: microsoft.com; dkim=none (message not signed)
+ header.d=none;microsoft.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4583.namprd10.prod.outlook.com (2603:10b6:510:43::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Wed, 16 Jun
+ 2021 02:25:12 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4242.016; Wed, 16 Jun 2021
+ 02:25:12 +0000
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     kys@microsoft.com, martin.petersen@oracle.com,
+        longli@microsoft.com, wei.liu@kernel.org, jejb@linux.ibm.com,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH 1/3] scsi: storvsc: Miscellaneous code cleanups
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq135ti7em1.fsf@ca-mkp.ca.oracle.com>
+References: <1622827263-12516-1-git-send-email-mikelley@microsoft.com>
+Date:   Tue, 15 Jun 2021 22:25:09 -0400
+In-Reply-To: <1622827263-12516-1-git-send-email-mikelley@microsoft.com>
+        (Michael Kelley's message of "Fri, 4 Jun 2021 10:21:01 -0700")
 Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SA9P221CA0023.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:806:25::28) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA9P221CA0023.NAMP221.PROD.OUTLOOK.COM (2603:10b6:806:25::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15 via Frontend Transport; Wed, 16 Jun 2021 02:25:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: db357378-c21b-440e-d967-08d9306df816
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4583:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4583C373939B7C9F365210F28E0F9@PH0PR10MB4583.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5Fn4gpq1K0Pfv4E6HGyDui/vPzfm3dGmcH47IzpseToQVv3RYCGRuJ90FfvY/tzIyrmEHKLycAu0qzKgOOb9jUTlrQVf/FIjdA2f1QXZE6Tge7i7xxtKOINtrByWDmj1z2QKo264j4LNZ6Vanwu9EZ4NW/slnhap8Zg4yZJY78tUl4MGdHI9g+OJBhpJl4jQHimdAPEFUvu2hf7GaRPrbNYREX4+sCiOtQigD1s5gbDgvpmVG8E/mduVUNrLcLj0EXvtcC3dYUMDo9pikH3QMnVqoqBoIEU8BIHykmGd0Zo3L43FluP3hpRa3zGvs1Utze9sOaaYNQJ/HDd110TKG8yjS529Wzk6Gc2unogY1NcHEHPNIT+jhdlNWa1jZqoUl6BAQShfRCVqQuSGNuvYHZF+7aH+qREprxh8gG5aYFccwFM0viWG+4JVKxINmKO2B73hsw1GmhvuJOy2fS3Q5naEjZkTJayWjau00fHIdim9+uVXW44r+dqP/u55C3EvysSwuZxR2YJmH+tjCWk5M22YKvkSLmYdy8Q6ZOrmY2vLiE/Wg9cIPt38sPXrhO6elA/O3bxrMTVF3ovHJwYivXCOR5DASoFmtJQHm9hLewTlYxKhgqAbDYqyMNOJ71VT23HgoopBkGgeRVj+s901o4if1vhSgXgYFo3Rq8vpbHY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39850400004)(136003)(396003)(366004)(376002)(4326008)(316002)(6916009)(66946007)(66556008)(186003)(83380400001)(956004)(8936002)(66476007)(5660300002)(36916002)(38350700002)(38100700002)(2906002)(16526019)(52116002)(26005)(55016002)(558084003)(478600001)(7696005)(8676002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zHAMfMQhjbHl1fQWb9RNY0lTTH9wxpJIom06LwfWnrAOCzWU4XuPC1gnaXGI?=
+ =?us-ascii?Q?1/neEWvwhzVzZqAlsyv4aPrTCLzUHOW/V4kpONF31E4grBpU9ocCFUb5H2Zz?=
+ =?us-ascii?Q?aDcE7UZ4uhZVxzP3vTQIcfq0Nn/rhTn7+/VX7ZjhDdV80RPpIIKGG2v3MSVq?=
+ =?us-ascii?Q?iRv+jhbgD5Wk2T/x3SFCBXwdQjQnMF+KQE62txbI3ivkKa9T4pfO5d0DH7pU?=
+ =?us-ascii?Q?3CBLYs7CUsq0RP1JkCcQHf0TQjuC/z9LQxdGhFESbNBja3tIhdZVcU2uuKaR?=
+ =?us-ascii?Q?jLul42ovaNeXpdyn0fdxy+W7uxzWejMizGJpaTEfPNVhu46itiuAbC8XOqAF?=
+ =?us-ascii?Q?LZIFuz8HatbNvrbjn/v0WZ+TlMO0FLTNKxCtrA8L0hNmXAM8odYhYg5fETNp?=
+ =?us-ascii?Q?i+CB9Wo4tOAVSPXd2brob3LFfLiNR1ebc2hQILfF5xOZyBBsDb2Gutkp27Nm?=
+ =?us-ascii?Q?wQtYUsxnwqRKMkXQ9rRyMayjFF+J0iIHzB4LTDi3CpJ8ghvXZzkBkDP+vMgF?=
+ =?us-ascii?Q?ELf/Jq0ccOp2zhFbnmcOIAVE1LihQVzwieGQr+1LTpXxbbL42Zl+nGeTQ4+y?=
+ =?us-ascii?Q?UTVXY6naqwa4k38KsXvuftnIgMhFYxy4nRlz4nNCpyWFfh5XV5kJx+qk2nZY?=
+ =?us-ascii?Q?efTb31b5zIX5NOos10SJCyTjMlaYfKHPhMGeQZAmSvi4XOb7niJ4HxMwbVoU?=
+ =?us-ascii?Q?7bX7KXmGckpsiqv0ufs2oKCG/WyrwjDrqxBCq9ptcW6KWtQHaiMIQaingHRB?=
+ =?us-ascii?Q?fEq77R61+i9Ni92FwBiz/alsA8OtNHh41O0YZssavVJKLnwd1u0hsSHQBeDH?=
+ =?us-ascii?Q?Vp2PfYNxYVf4kFWnpUDEUxGKGgATwelPdZO7vQYTG2M+ejUynx4u8/DvQbf8?=
+ =?us-ascii?Q?jkZ7EBXMbxADHwFqZg4o31rQySjttPj3P8b1h3gtPMQxU43Ik5JQjrWOZ+Zw?=
+ =?us-ascii?Q?eWKnqYhYRPR9mFVmvQ6h8rmKkLJwT7piaxQ/VP/91RvQ3YkiK+XuZD6CgKh+?=
+ =?us-ascii?Q?PUxfM265um8AXGYJcGeTLNJj35AkVBWIhC0iCO3BSDRG+q6VKoYi0fxGT2ou?=
+ =?us-ascii?Q?xPQxP+WqHQsQ+JVJ96eFkjadUtm8YtjnIlrnUiR45YRfY8tmqWD185kTF/BR?=
+ =?us-ascii?Q?jLfEVKyb+HH7C09Xb8DfTYzK7GZXXgrRPMmHWSiBFKW7500fvCyqg3L+aP3f?=
+ =?us-ascii?Q?dFKpGk1qfmzipebnNUj3ymc+wgccKOtoGZI3lj1Gc9tmEIhStQ+SFipr57Gw?=
+ =?us-ascii?Q?nknKtFa8GNgXTMSSc8I06QGo8eeaJpf5JkqxkdV5SZ//9jn0oe9ogwcnv3LB?=
+ =?us-ascii?Q?IGhmISFqZlipkse7Hsvpi/WR?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: db357378-c21b-440e-d967-08d9306df816
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 02:25:12.2287
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YnYVYff59/WPSHNPgZj9+lkjVsHIebMjVOdxIq2n/u0xVwlFmSUoY3uZ/n65ZwmaqlwZ96OiKo83THb0CbDp/IXPCDo+otuNlnby6sufzSY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4583
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10016 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 bulkscore=0 mlxscore=0 spamscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106160013
+X-Proofpoint-ORIG-GUID: vrWsm3YlJhxLBIyg-HpYjk_ewrjgkGvq
+X-Proofpoint-GUID: vrWsm3YlJhxLBIyg-HpYjk_ewrjgkGvq
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob Herring <robh@kernel.org> writes:
-> On Tue, Jun 15, 2021 at 10:13 AM nramas <nramas@linux.microsoft.com> wrote:
->>
->> On Tue, 2021-06-15 at 08:01 -0600, Rob Herring wrote:
->> > On Tue, Jun 15, 2021 at 6:18 AM Geert Uytterhoeven <
->> > geert@linux-m68k.org> wrote:
->> > >
->> > > > +void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
->> > > > +                                  unsigned long
->> > > > initrd_load_addr,
->> > > > +                                  unsigned long initrd_len,
->> > > > +                                  const char *cmdline, size_t
->> > > > extra_fdt_size)
->> > > > +{
->> > > > +       /* Did we boot using an initrd? */
->> > > > +       prop = fdt_getprop(fdt, chosen_node, "linux,initrd-
->> > > > start", NULL);
->> > > > +       if (prop) {
->> > > > +               u64 tmp_start, tmp_end, tmp_size;
->> > > > +
->> > > > +               tmp_start = fdt64_to_cpu(*((const fdt64_t *)
->> > > > prop));
->> > > > +
->> > > > +               prop = fdt_getprop(fdt, chosen_node,
->> > > > "linux,initrd-end", NULL);
->> > > > +               if (!prop) {
->> > > > +                       ret = -EINVAL;
->> > > > +                       goto out;
->> > > > +               }
->> > > > +
->> > > > +               tmp_end = fdt64_to_cpu(*((const fdt64_t *)
->> > > > prop));
->> > >
->> > > Some kernel code assumes "linux,initrd-{start,end}" are 64-bit,
->> > > other code assumes 32-bit.
->> >
->> > It can be either. The above code was a merge of arm64 and powerpc >> > both
->> > of which use 64-bit and still only runs on those arches. It looks >> > like
->> > some powerpc platforms may use 32-bit, but this would have been >> > broken
->> > before.
 
->> of_kexec_alloc_and_setup_fdt() is called from elf_64.c (in
->> arch/powerpc/kexec) which is for 64-bit powerpc platform only.
->
-> 64-bit PPC could be writing 32-bit property values. The architecture
-> size doesn't necessarily matter. And if the values came from the
-> bootloader, who knows what size it used.
->
-> This code is 32-bit powerpc only?:
->
-> arch/powerpc/boot/main.c-       /* Tell the kernel initrd address via device tree */
-> arch/powerpc/boot/main.c:       setprop_val(chosen, "linux,initrd-start", (u32)(initrd_addr));
-> arch/powerpc/boot/main.c-       setprop_val(chosen, "linux,initrd-end", (u32)(initrd_addr+initrd_size));
+Michael,
 
-Historically that code was always built 32-bit, even when used with a
-64-bit kernel.
+> As general cleanup and in preparation for subsequent patches:
 
-These days it is also built 64-bit (for ppc64le).
+Applied 1-3 to 5.14/scsi-staging.
 
-It looks like the drivers/of/fdt.c code can handle either 64 or 32-bit,
-so I guess that's why it seems to be working.
+Since Hannes' series has deprecated status_byte() and CHECK_CONDITION I
+had to tweak that portion. Please verify my conflict resolution.
 
-Although I'm not sure how much testing the 64-bit case gets, because the
-distros tend to just use the vmlinux.
+Thanks!
 
-cheers
+-- 
+Martin K. Petersen	Oracle Linux Engineering
