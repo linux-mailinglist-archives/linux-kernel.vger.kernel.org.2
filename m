@@ -2,117 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6373A95B9
+	by mail.lfdr.de (Postfix) with ESMTP id 759053A95BA
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232119AbhFPJRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:17:06 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:57505 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231491AbhFPJQl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:16:41 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id E05DE580064;
-        Wed, 16 Jun 2021 05:14:35 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 16 Jun 2021 05:14:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=O
-        Q3mH14ssHehAX5EBuHe0ZN2vZKDVl/XkALKv3ydHts=; b=kRkGMEktwO4/GNbKL
-        B/M6Cs/SVuLdcXQbvM/ZQuzuGVu+MEHIYcPbqTtxEfqQfs5n0MZd2v3L5dHENFyI
-        qm5qTiH7zpI68Uo6yxBtUXTgGTWKQ8qvVXvfuYxXNPPcEMsxtp9tCHhwz4EItqzK
-        jjizIw9c/R2yTp8og2V9fMqGH20A3dp9TARyTxit1xSwBqrQr5CJvecXeN78+E4s
-        iaI6ZfqRnE4N/ppWya61GA2i3iWuv/r+qPEjrNm2NSjHdqsdUwLPamOmV0m6Sksw
-        jOwP/UTAXcdhCYn3wO+epfkGBfqOQUn2njycYxL1NvRLWBw0hoynt+iGgDfciNBe
-        9r4pg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=OQ3mH14ssHehAX5EBuHe0ZN2vZKDVl/XkALKv3ydH
-        ts=; b=A9fvZqOB5fAh2U3yGwclU35hepaDf0GnTr59uPJSIjkrAC49P+/gWEm+x
-        10zJttYuB/rnUKEfw9kL/lyjTaO550YCIrX/Euf9OS8SahTIx/EK8pSYOXMzibcz
-        u+p1Js1ZgEtO3u24fsZai4iOzxNdtsOzJBzx9GdnFWAu536z120kMFDbiwxagct+
-        gZB8+F7Qmb1sIazCkWY5Y5Qy8BZMXVfMjDdLyR+MKeR46ecDYQckIL9SgJN2eMz0
-        42zcfMtzHgpPWFThXljU4EOe35Zl9jvVNUZZV1DuFmzmSqmjoaQGauHPCW1N/Q/U
-        142cHenOo+DQEUOkww1/NWuDlPo8A==
-X-ME-Sender: <xms:-cDJYA-WErIOd1T0x_06AvckZj1Btse8h3kHP6TIYhPpL2EMcEXWJw>
-    <xme:-cDJYIt6hSSYBcTCAcJcq2aqrUhw1eJ2ypSHEtUftJh-XSBJ1PWaLP50waZ8KLtfT
-    aPAGnlMsw90ORLih7E>
-X-ME-Received: <xmr:-cDJYGBncvK2uOvZJR6QlfKNtxL14wWCVgtU7HYwkcFlocFpvK69z89zQBzPJj9vO7bYKfNFltPsq1j2P7YyNHasgRJq028TCrxE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpefgjeettdejgffgffdvteeutdehtdehgeehueetkeefgefhtdetjeekledu
-    gedvudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:-cDJYAew-dQgab0UeOnHsBtahlWSMRVC4xdVYNMb0iDf1B3FFZ45iA>
-    <xmx:-cDJYFMBLpfywjstQkD2scZyMylcWQ5fSIfGrydJxjZWYc5_pectLg>
-    <xmx:-cDJYKm-MWdTDGDDZdfSBcquY5HvVltEXrxBuQKaSvpkh3n5A14CVA>
-    <xmx:-8DJYJnqWyh3TT-86rcGaq8Bg_NKNYaKqQbBU_5vgkV-xJ7RuNDpAw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 16 Jun 2021 05:14:33 -0400 (EDT)
-Date:   Wed, 16 Jun 2021 11:14:31 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v7 06/19] rtc: sun6i: Add support for RTCs without
- external LOSCs
-Message-ID: <20210616091431.6tm3zdf77p2x3upc@gilmour>
-References: <20210615110636.23403-1-andre.przywara@arm.com>
- <20210615110636.23403-7-andre.przywara@arm.com>
+        id S232210AbhFPJRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:17:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:59748 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231672AbhFPJQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 05:16:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE5B331B;
+        Wed, 16 Jun 2021 02:14:46 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C97593F70D;
+        Wed, 16 Jun 2021 02:14:43 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 10:14:36 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, sudeep.holla@arm.com,
+        james.quinlan@broadcom.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
+        peter.hilber@opensynergy.com, alex.bennee@linaro.org,
+        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
+        Andriy.Tryshnivskyy@opensynergy.com
+Subject: Re: [PATCH v4 12/16] firmware: arm_scmi: Add message passing
+ abstractions for transports
+Message-ID: <20210616091436.GF35368@e120937-lin>
+References: <20210611165937.701-1-cristian.marussi@arm.com>
+ <20210611165937.701-13-cristian.marussi@arm.com>
+ <20210614151036.00000409@Huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210615110636.23403-7-andre.przywara@arm.com>
+In-Reply-To: <20210614151036.00000409@Huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Jun 14, 2021 at 03:10:36PM +0100, Jonathan Cameron wrote:
+> On Fri, 11 Jun 2021 17:59:33 +0100
+> Cristian Marussi <cristian.marussi@arm.com> wrote:
+> 
+> > From: Peter Hilber <peter.hilber@opensynergy.com>
+> > 
+> > Add abstractions for future transports using message passing, such as
+> > virtio. Derive the abstractions from the shared memory abstractions.
+> > 
+> > Abstract the transport SDU through the opaque struct scmi_msg_payld.
+> > Also enable the transport to determine all other required information
+> > about the transport SDU.
+> > 
+> > Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
+> > ---
+> ...
+> > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> > index b783ae058c8a..fa4075336580 100644
+> > --- a/drivers/firmware/arm_scmi/common.h
+> > +++ b/drivers/firmware/arm_scmi/common.h
+> > @@ -410,6 +410,21 @@ void shmem_clear_channel(struct scmi_shared_mem __iomem *shmem);
+> >  bool shmem_poll_done(struct scmi_shared_mem __iomem *shmem,
+> >  		     struct scmi_xfer *xfer);
+> >  
+> > +/* declarations for message passing transports */
+> > +struct scmi_msg_payld;
+> > +
+> > +/** Maximum overhead of message w.r.t. struct scmi_desc.max_msg_size */
+> 
+> Doesn't look to be kernel-doc..
+> 
+Right, I'll fix.
 
-On Tue, Jun 15, 2021 at 12:06:23PM +0100, Andre Przywara wrote:
-> Some newer Allwinner RTCs (for instance the one in the H616 SoC) lack
-> a pin for an external 32768 Hz oscillator. As a consequence, this LOSC
-> can't be selected as the RTC clock source, and we must rely on the
-> internal RC oscillator.
-> To allow additions of clocks to the RTC node, add a feature bit to ignore
-> any provided clocks for now (the current code would think this is the
-> external LOSC). Later DTs and code can then for instance add the PLL
-> based clock input, and older kernel won't get confused.
->=20
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Cristian
 
-Honestly, I don't really know if it's worth it at this point.
-
-If we sums this up:
-
- - The RTC has 2 features that we use, mostly centered around 2
-   registers set plus a global one
-
- - Those 2 features are programmed in a completely different way
-
- - Even the common part is different, given the discussion around the
-   clocks that we have.
-
-What is there to share in that driver aside from the probe, and maybe
-the interrupt handling? Instead of complicating this further with more
-special case that you were (rightfully) complaining about, shouldn't we
-just acknowledge the fact that it's a completely separate design and
-should be treated as such, with a completely separate driver?
-
-Maxime
+> > +#define SCMI_MSG_MAX_PROT_OVERHEAD (2 * sizeof(__le32))
