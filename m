@@ -2,156 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABAD3A8E98
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA403A8E9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbhFPByK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 21:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230488AbhFPByI (ORCPT
+        id S231873AbhFPB4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 21:56:42 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:6386 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230454AbhFPB4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 21:54:08 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD159C061574;
-        Tue, 15 Jun 2021 18:52:03 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id w31so646230pga.6;
-        Tue, 15 Jun 2021 18:52:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:date:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=SYAZiKhu2cUPFls/xCgRwEt5H3IOQudDC2d2SMNfX8s=;
-        b=tlwwglVZtYsipluaBFVpfWks6ENBb6VU0iFSnteE3nzK+y1kuem4YIfWfhTgUbgAmh
-         xHErugfjlb/QUH7t2RDNjYYgSyiSQ9x2hfyb/8aA+LbPJFmhK854tvPnkoIp7zuXLCLV
-         AEZSDDYo7azBdclJ5BOSonknsp5XAHaAmUi+n3iNDVcvxwRhbmMMoVMTaSM/Fmia0NS5
-         wRX1GH/Q6g+awuiW1oBoDNL0GXPWUF7XkL5RXWg7nheuEGdyaCWv03EIApuV0pUJhwmL
-         ZZjlyJU+hLJX+FcDu5QNj45DiyEiHMqyKYqKRGP1U1Xno7P9KIj/7e/IzKhnVafHPxwA
-         IL8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SYAZiKhu2cUPFls/xCgRwEt5H3IOQudDC2d2SMNfX8s=;
-        b=Ab5qzXp9cb+FIANXc0mWXb9UeP4lOPjqzOCj5wfflLgO329XlP2Q6PJk9243tqZxA/
-         CZdkQVPQaQ5F6T52ARZlXom5DvS8aJiP0pJAQ0jCb0ozwncTQx53cpUGMv/ezmvUJucY
-         shWh92CHZFKSgeSnN4NONXI56A7ntrl82QZqvf3QKnypNebqNGYzcKqe57toa49yU1qC
-         lZJoHc9pVjYPsk3xwZb64i3VWoUKwf79CDwTLghto9ZckQU+tDuzEoSzv7W63kGetKBy
-         Sj4E7picNmpW6KyyBjKpIyMEKGAJ7HEFtf6dUgIymd+hTAhTTKr0g8USCHaOaX7cpZno
-         RF1A==
-X-Gm-Message-State: AOAM5332T0EXzcvaoQ6Iw8hUcKTAb0G3TJAeaLbrwAuN1KiFiYVrH6iu
-        HW6U7EEuSHqoerg+rQuU/OM=
-X-Google-Smtp-Source: ABdhPJxTguLZTyee9M/iAjORC96v1PnwIMeyIKIZKeZzSHQ6/GXDMDaCa6prXtWLjoLl3QrHo9tkig==
-X-Received: by 2002:a63:78d:: with SMTP id 135mr2539279pgh.178.1623808323335;
-        Tue, 15 Jun 2021 18:52:03 -0700 (PDT)
-Received: from u3c3f5cfe23135f.ant.amazon.com (97-113-131-35.tukw.qwest.net. [97.113.131.35])
-        by smtp.googlemail.com with ESMTPSA id q21sm3459664pjg.43.2021.06.15.18.52.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 15 Jun 2021 18:52:02 -0700 (PDT)
-Message-ID: <712b44d2af8f8cd3199aad87eb3bc94ea22d6f4a.camel@gmail.com>
-Subject: Re: [RFC PATCH v5 2/2] arm64: Create a list of SYM_CODE functions,
- check return PC against list
-From:   Suraj Jitindar Singh <sjitindarsingh@gmail.com>
-To:     madvenka@linux.microsoft.com, broonie@kernel.org,
-        mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 15 Jun 2021 18:52:01 -0700
-In-Reply-To: <20210526214917.20099-3-madvenka@linux.microsoft.com>
-References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
-         <20210526214917.20099-1-madvenka@linux.microsoft.com>
-         <20210526214917.20099-3-madvenka@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 15 Jun 2021 21:56:41 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G4SnR5K1Vz6y5r;
+        Wed, 16 Jun 2021 09:50:35 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 09:54:30 +0800
+Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
+ (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 16
+ Jun 2021 09:54:23 +0800
+Subject: Re: [PATCH v6 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
+ PMU
+To:     Will Deacon <will@kernel.org>, Linuxarm <linuxarm@huawei.com>
+CC:     <mark.rutland@arm.com>, <bhelgaas@google.com>,
+        <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <zhangshaokun@hisilicon.com>
+References: <1622467951-32114-1-git-send-email-liuqi115@huawei.com>
+ <1622467951-32114-3-git-send-email-liuqi115@huawei.com>
+ <20210611162347.GA16284@willie-the-truck>
+ <a299d053-b45f-e941-7a2e-c853079b8cdd@huawei.com>
+ <20210615093519.GB19878@willie-the-truck>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <8e15e8d6-cfe8-0926-0ca1-b162302e52a5@huawei.com>
+Date:   Wed, 16 Jun 2021 09:54:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210615093519.GB19878@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.38.203]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-05-26 at 16:49 -0500, madvenka@linux.microsoft.com wrote:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+
+Hi Will,
+On 2021/6/15 17:35, Will Deacon wrote:
+> On Tue, Jun 15, 2021 at 04:57:09PM +0800, liuqi (BA) wrote:
+>> On 2021/6/12 0:23, Will Deacon wrote:
+>>> On Mon, May 31, 2021 at 09:32:31PM +0800, Qi Liu wrote:
+>>>> PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported
+>>>> to sample bandwidth, latency, buffer occupation etc.
+>>>>
+>>>> Each PMU RCiEP device monitors multiple Root Ports, and each RCiEP is
+>>>> registered as a PMU in /sys/bus/event_source/devices, so users can
+>>>> select target PMU, and use filter to do further sets.
+>>>>
+>>>> Filtering options contains:
+>>>> event        - select the event.
+>>>> subevent     - select the subevent.
+>>>> port         - select target Root Ports. Information of Root Ports
+>>>>                  are shown under sysfs.
+>>>> bdf          - select requester_id of target EP device.
+>>>> trig_len     - set trigger condition for starting event statistics.
+>>>> trigger_mode - set trigger mode. 0 means starting to statistic when
+>>>>                  bigger than trigger condition, and 1 means smaller.
+>>>> thr_len      - set threshold for statistics.
+>>>> thr_mode     - set threshold mode. 0 means count when bigger than
+>>>>                  threshold, and 1 means smaller.
+>>>>
+>>>> Reviewed-by: John Garry <john.garry@huawei.com>
+>>>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+>>>> ---
+>>>>    MAINTAINERS                                |    6 +
+>>>>    drivers/perf/Kconfig                       |    2 +
+>>>>    drivers/perf/Makefile                      |    1 +
+>>>>    drivers/perf/pci/Kconfig                   |   16 +
+>>>>    drivers/perf/pci/Makefile                  |    2 +
+>>>>    drivers/perf/pci/hisilicon/Makefile        |    3 +
+>>>>    drivers/perf/pci/hisilicon/hisi_pcie_pmu.c | 1019 ++++++++++++++++++++++++++++
+>>>
+>>> Can we keep this under drivers/perf/hisilicon/ please? I don't see the
+>>> need to create a 'pci' directory here.
+>>>
+>> So how about drivers/perf/hisilicon/pci? as hisi_pcie_pmu.c do not use
+>> hisi_uncore_pmu framework.
 > 
-> The unwinder should check if the return PC falls in any function that
-> is considered unreliable from an unwinding perspective. If it does,
-> mark the stack trace unreliable.
+> That's up to you. As long as it's _somewhere_ under drivers/perf/hisilicon/,
+> then I'm not too fussed.
 > 
+ok, got it, will move the driver to perf/hisilicon in next version.
+>>>> +static void hisi_pcie_parse_reg_value(struct hisi_pcie_pmu *pcie_pmu,
+>>>> +				      u32 reg_off, u16 *arg0, u16 *arg1)
+>>>> +{
+>>>> +	u32 val = readl(pcie_pmu->base + reg_off);
+>>>> +
+>>>> +	*arg0 = val & 0xffff;
+>>>> +	*arg1 = (val & 0xffff0000) >> 16;
+>>>> +}
+>>>
+>>> Define a new type for the pair of values and return that directly?
+>>>
+>> Sorry, I'm not sure about how to fix this, do you mean add a union like
+>> this?
+>> union reg_val {
+>> 	struct {
+>> 		u16 arg0;
+>> 		u16 arg1;
+>> 	}
+>> 	u32 val;
+>> }
+> 
+> I was just thinking along the lines of:
+> 
+> struct hisi_pcie_reg_pair {
+> 	u16 lo;
+> 	u16 hi;
+> };
+> 
+> static struct hisi_pcie_reg_pair
+> hisi_pcie_parse_reg_value(struct hisi_pcie_pmu *pcie_pmum u32 reg_off)
+> {
+> 	u32 val = readl_relaxed(pcie_pmu->base + reg_off);
+> 	struct hisi_pcie_reg_pair regs = {
+> 		.lo = val,
+> 		.hi = val >> 16,
+> 	};
+> 
+> 	return regs;
+> }
+> 
+> Does that work?
+> 
+yes, will fix this, thanks.
+>>>> +/*
+>>>> + * The bandwidth, latency, bus utilization and buffer occupancy features are
+>>>> + * calculated from data in HISI_PCIE_CNT and extended data in HISI_PCIE_EXT_CNT.
+>>>> + * Other features are obtained only by HISI_PCIE_CNT.
+>>>> + * So data and data_ext are processed in this function to get performanace
+>>>> + * value like, bandwidth, latency, etc.
+>>>> + */
+>>>> +static u64 hisi_pcie_pmu_get_performance(struct perf_event *event, u64 data,
+>>>> +					 u64 data_ext)
+>>>> +{
+>>>> +#define CONVERT_DW_TO_BYTE(x)	(sizeof(u32) * (x))
+>>>
+>>> I don't know what a "DW" is, but this macro adds nothing...
+>>
+>> DW means double words, and 1DW = 4Bytes, value in hardware counter means DW
+>> so I wanna change it into Byte.
+>> So how about using 4*data here and adding code comment to explain it.
+> 
+> Just remove the macro and replace it's single user with sizeof(u32) * x
+> 
+ok, thanks.
+>>>> +	/* Process data to set unit of latency as "us". */
+>>>> +	if (is_latency_event(idx))
+>>>> +		return div64_u64(data * us_per_cycle, data_ext);
+>>>> +
+>>>> +	if (is_bus_util_event(idx))
+>>>> +		return div64_u64(data * us_per_cycle, data_ext);
+>>>> +
+>>>> +	if (is_buf_util_event(idx))
+>>>> +		return div64_u64(data, data_ext * us_per_cycle);
+>>>
+>>> Why do we need to do all this division in the kernel? Can't we just expose
+>>> the underlying values and let userspace figure out what it wants to do with
+>>> the numbers?
+>>>
+>> Our PMU hardware support 8 sets of counters to count bandwidth, latency and
+>> utilization events.
+>>
+>> For example, when users set latency event, common counter will count delay
+>> cycles, and extern counter count number of PCIe packets automaticly. And we
+>> do not have a event number for counting number of PCIe packets.
+>>
+>> So this division cannot move to userspace tool.
+> 
+> Why can't you expose the packet counter as an extra event to userspace?
+> 
+Maybe I didn’t express it clearly.
 
-[snip]
+As there is no hardware event number for PCIe packets counting, extern 
+counter count packets *automaticly* when latency events is selected by 
+users.
 
-Correct me if I'm wrong, but do you not need to move the final frame
-check to before the unwinder_is_unreliable() call?
-
-Userland threads which have ret_from_fork as the last entry on the
-stack will always be marked unreliable as they will always have a
-SYM_CODE entry on their stack (the ret_from_fork).
-
-Also given that this means the last frame has been reached and as such
-there's no more unwinding to do, I don't think we care if the last pc
-is a code address.
-
-- Suraj
-
->   *
-> @@ -133,7 +236,20 @@ int notrace unwind_frame(struct task_struct
-> *tsk, struct stackframe *frame)
->  	 *	- Foreign code (e.g. EFI runtime services)
->  	 *	- Procedure Linkage Table (PLT) entries and veneer
-> functions
->  	 */
-> -	if (!__kernel_text_address(frame->pc))
-> +	if (!__kernel_text_address(frame->pc)) {
-> +		frame->reliable = false;
-> +		return 0;
-> +	}
-> +
-> +	/*
-> +	 * If the final frame has been reached, there is no more
-> unwinding
-> +	 * to do. There is no need to check if the return PC is
-> considered
-> +	 * unreliable by the unwinder.
-> +	 */
-> +	if (!frame->fp)
-> +		return 0;
-
-if (frame->fp == (unsigned long)task_pt_regs(tsk)->stackframe)
-	return -ENOENT;
-
-> +
-> +	if (unwinder_is_unreliable(frame->pc))
->  		frame->reliable = false;
->  
->  	return 0;
-> diff --git a/arch/arm64/kernel/vmlinux.lds.S
-> b/arch/arm64/kernel/vmlinux.lds.S
-> index 7eea7888bb02..32e8d57397a1 100644
-> --- a/arch/arm64/kernel/vmlinux.lds.S
-> +++ b/arch/arm64/kernel/vmlinux.lds.S
-> @@ -103,6 +103,12 @@ jiffies = jiffies_64;
->  #define TRAMP_TEXT
->  #endif
->  
-> +#define SYM_CODE_FUNCTIONS                                     \
-> +       . = ALIGN(16);                                           \
-> +       __sym_code_functions_start = .;                         \
-> +       KEEP(*(sym_code_functions))                             \
-> +       __sym_code_functions_end = .;
-> +
->  /*
->   * The size of the PE/COFF section that covers the kernel image,
-> which
->   * runs from _stext to _edata, must be a round multiple of the
-> PE/COFF
-> @@ -218,6 +224,7 @@ SECTIONS
->  		CON_INITCALL
->  		INIT_RAM_FS
->  		*(.init.altinstructions .init.bss)	/* from the
-> EFI stub */
-> +               SYM_CODE_FUNCTIONS
->  	}
->  	.exit.data : {
->  		EXIT_DATA
+This means users cannot set "config=0xXX" to start packets counting 
+event. So we can only get the value of counter and extern counter in 
+driver and do the division, then pass the result to userspace.
+> Will
+> .
+> 
 
