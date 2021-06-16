@@ -2,232 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9477F3A8F08
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65E83A8F0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhFPCwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 22:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbhFPCww (ORCPT
+        id S231983AbhFPCzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 22:55:36 -0400
+Received: from regular1.263xmail.com ([211.150.70.202]:39102 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231934AbhFPCzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 22:52:52 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71A5C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 19:50:46 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id if15so855139qvb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 19:50:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4WFQbb2V5zS4ZcwvanZqqRP8ujMtDAGcUorwM6R/paU=;
-        b=aU7UShi7TZ4Wge/ZEmrVVSVUpctNK7g7onlswiQ9Aaj1TwwPi0tz/Kv4Bg6o/if6I7
-         VNr1rRD/syrBM2rNBEEaRrivvt3MLYXt0KpJfuUChLp8qsUpR55/dGDTJ7C0eLl6ywBd
-         6BDzuzNRV67kPH2tZ+7Q4RpIj9SqR9hXvtq+SnaWO8hrTXHcUUW+RooMRLC6cXO86arA
-         CqGG1ggddJMrMUhYCRCPxc+owtOTLckbozQVR8ABQYd7Zv9Q/eXpmYnjV7d7thNHkXpo
-         b+4mx2HOz63z3kORwTJcTL0U7fVk+Vl/vFTRWIQxGAZHzlW4mLE7/Ju2VbTFmuqgB/CE
-         0sfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4WFQbb2V5zS4ZcwvanZqqRP8ujMtDAGcUorwM6R/paU=;
-        b=SUyuvxqiGd3E04DZmZcGUU6u7p8i4ypg9Vc54Ii28cKI5P0G0sjbvTOKAFN2lUZdfC
-         YBeoxYDmYSTlse8xvoP2flRV1tnnG6KpwWYOprEy5AkkZ7yQu5SyY5hwy0V2iga3uN6o
-         DrAS4/AvLBQEknPaGbyXyu3QH/bdL/sRX4xGuuo8uoh/5Gu7v58Rcy/K/8J3mTOnHUim
-         TIxC709RPcHoZ6aesOF1Vq/GjVk9mp0VjHKBJrcUZN30DVxT8V44pYYQgb33aYxjuPuh
-         irF+d6G7tfmUEJVj6jlPAZaGM77Hj7qIbQX9EhAI33bDiH4jjbVe3JpHUtisWdDS92V3
-         CsLQ==
-X-Gm-Message-State: AOAM533W+CP+DU5W6+o/39z/mbm/CbvZAWY5EhXpNk3axFw+H7zcbt68
-        3W0K5yUD1AWwamzY+7lhcrQYtA==
-X-Google-Smtp-Source: ABdhPJyiOd7uoGzh4fh4IdSnwRsPHSc4NAugWSCIf4tijB028PyutbM7mt4Fdgv05raplBUDkMGemQ==
-X-Received: by 2002:a05:6214:8f1:: with SMTP id dr17mr8597926qvb.42.1623811845774;
-        Tue, 15 Jun 2021 19:50:45 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id w2sm710034qkf.88.2021.06.15.19.50.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 19:50:45 -0700 (PDT)
-Subject: Re: [PATCH v3 4/7] thermal/drivers/tegra: Add driver for Tegra30
- thermal sensor
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Ihor Didenko <tailormoon@rambler.ru>,
-        Ion Agorria <ion@agorria.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210529170955.32574-1-digetx@gmail.com>
- <20210529170955.32574-5-digetx@gmail.com>
- <6f2b6290-095a-bd39-c160-1616a0ff89b1@linaro.org>
- <20210615102626.dja3agclwzxv2sj4@vireshk-i7>
- <595f5e53-b872-bcc6-e886-ed225e26e9fe@gmail.com>
- <fbdc3b56-4465-6d3e-74db-1d5082813b9c@linaro.org>
- <4c7b23c4-cf6a-0942-5250-63515be4a219@gmail.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <545974aa-bb0f-169b-6f31-6e8c2461343f@linaro.org>
-Date:   Tue, 15 Jun 2021 22:50:43 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <4c7b23c4-cf6a-0942-5250-63515be4a219@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Tue, 15 Jun 2021 22:55:35 -0400
+Received: from localhost (unknown [192.168.167.130])
+        by regular1.263xmail.com (Postfix) with ESMTP id 72953779;
+        Wed, 16 Jun 2021 10:53:13 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from manjaro.uniontech.com (unknown [58.246.122.242])
+        by smtp.263.net (postfix) whith ESMTP id P21505T140610921035520S1623811992968477_;
+        Wed, 16 Jun 2021 10:53:13 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <0ec8197cca473a694a43d24aa1acaa54>
+X-RL-SENDER: chenli@uniontech.com
+X-SENDER: chenli@uniontech.com
+X-LOGIN-NAME: chenli@uniontech.com
+X-FST-TO: viro@zeniv.linux.org.uk
+X-RCPT-COUNT: 5
+X-SENDER-IP: 58.246.122.242
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Date:   Wed, 16 Jun 2021 10:53:12 +0800
+Message-ID: <874kdyh65j.wl-chenli@uniontech.com>
+From:   Chen Li <chenli@uniontech.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ramfs: skip mknod if inode already exists.
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?ISO-8859-4?Q?Goj=F2?=) APEL-LB/10.8 EasyPG/1.0.0
+ Emacs/27.2 (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+It's possible we try to mknod a dentry, which have
+already bound to an inode, just skip it.
 
-On 6/15/21 3:32 PM, Dmitry Osipenko wrote:
-> 15.06.2021 19:18, Daniel Lezcano пишет:
->> On 15/06/2021 15:01, Dmitry Osipenko wrote:
->>> 15.06.2021 13:26, Viresh Kumar пишет:
->>>> On 15-06-21, 12:03, Daniel Lezcano wrote:
->>>>>
->>>>> [Cc Viresh]
->>>>>
->>>>> On 29/05/2021 19:09, Dmitry Osipenko wrote:
->>>>>> All NVIDIA Tegra30 SoCs have a two-channel on-chip sensor unit which
->>>>>> monitors temperature and voltage of the SoC. Sensors control CPU frequency
->>>>>> throttling, which is activated by hardware once preprogrammed temperature
->>>>>> level is breached, they also send signal to Power Management controller to
->>>>>> perform emergency shutdown on a critical overheat of the SoC die. Add
->>>>>> driver for the Tegra30 TSENSOR module, exposing it as a thermal sensor
->>>>>> and a cooling device.
->>>>>
->>>>> IMO it does not make sense to expose the hardware throttling mechanism
->>>>> as a cooling device because it is not usable anywhere from the thermal
->>>>> framework.
->>>>>
->>>>> Moreover, that will collide with the thermal / cpufreq framework
->>>>> mitigation (hardware sets the frequency but the software thinks the freq
->>>>> is different), right ?
->>>
->>> H/w mitigation is additional and should be transparent to the software
->>> mitigation. The software mitigation is much more flexible, but it has
->>> latency. Software also could crash and hang.
->>>
->>> Hardware mitigation doesn't have latency and it will continue to work
->>> regardless of the software state.
->>
->> Yes, I agree. Both solutions have their pros and cons. However, I don't
->> think they can co-exist sanely.
->>
->>> The CCF driver is aware about the h/w cooling status [1], hence software
->>> sees the actual frequency.
->>>
->>> [1]
->>> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit?id=344d5df34f5abd468267daa98f041abf90b2f660
->>
->> Ah interesting, thanks for the pointer.
->>
->> What I'm worried about is the consistency with cpufreq.
->>
->> Probably cpufreq_update_limits() should be called from the interrupt
->> handler.
-> 
-> IIUC, the cpufreq already should be prepared for the case where firmware
-> may override frequency. Viresh, could you please clarify what are the
-> possible implications of the frequency overriding?
-> 
->>>> I am not even sure what the cooling device is doing here:
->>>>
->>>> tegra_tsensor_set_cur_state() is not implemented and it says hardware
->>>> changed it by itself. What is the benefit you are getting out of the
->>>> cooling device here ?
->>>
->>> It allows userspace to check whether hardware cooling is active via the
->>> cooling_device sysfs. Otherwise we don't have ability to check whether
->>> h/w cooling is active, I think it's a useful information. It's also
->>> interesting to see the cooling_device stats, showing how many times h/w
->>> mitigation was active.
->>
->> Actually the stats are for software mitigation. For the driver, create a
->> debugfs entry like what do the other drivers or a module parameter with
->> the stats.
-> 
-> Okay
-> 
->>>>> The hardware limiter should let know the cpufreq framework about the
->>>>> frequency change.
->>>>>
->>>>> 	https://lkml.org/lkml/2021/6/8/1792
->>>>>
->>>>> May be post the sensor without the hw limiter for now and address that
->>>>> in a separate series ?
->>>>
->>>
->>> I wasn't aware about existence of the thermal pressure, thank you for
->>> pointing at it. At a quick glance it should be possible to benefit from
->>> the information about the additional pressure.
->>>
->>> Seems the current thermal pressure API assumes that there is only one
->>> user of the API. So it's impossible to aggregate the pressure from
->>> different sources, like software cpufreq pressure + h/w freq pressure.
->>> Correct? If yes, then please let me know yours thoughts about the best
->>> approach of supporting the aggregation.
+Signed-off-by: Chen Li <chenli@uniontech.com>
+---
+ fs/ramfs/inode.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Hi,
-
-Thermal pressure is letting scheduler know that the max capacity 
-available for a cpu to schedule tasks is reduced due to a thermal event.
-So you cannot have a h/w thermal pressure and s/w thermal pressure. 
-There is eventually only one capping applied at h/w level and the 
-frequency corresponding to this capping should be used for thermal pressure.
-
-Ideally you should not be having both s/w and h/w trying to throttle at 
-the same time. Why is this a scenario and what prevents you from 
-disabling s/w throttling when h/w throttling is enabled. Now if there 
-has to a aggregation for whatever reason this should be done at the 
-thermal driver level and passed to scheduler.
-
->>
->> That is a good question. IMO, first step would be to call
->> cpufreq_update_limits().
-> 
-> Right
-> 
->> [ Cc Thara who implemented the thermal pressure ]
->>
->> May be Thara has an idea about how to aggregate both? There is another
->> series floating around with hardware limiter [1] and the same problematic.
->>
->>   [1] https://lkml.org/lkml/2021/6/8/1791
-> 
-> Thanks, it indeed looks similar.
-> 
-> I guess the common thermal pressure update code could be moved out into
-> a new special cpufreq thermal QoS handler (policy->thermal_constraints),
-> where handler will select the frequency constraint and set up the
-> pressure accordingly. So there won't be any races in the code.
-> 
-It was a conscious decision to keep thermal pressure update out of qos 
-max freq update because there are platforms that don't use the qos 
-framework. For eg acpi uses cpufreq_update_policy.
-But you are right. We have two platforms now applying h/w throttling and 
-cpufreq_cooling applying s/w throttling. So it does make sense to have 
-one api doing all the computation to update thermal pressure. I am not 
-sure how exactly/where exactly this will reside.
-
-So for starters, I think you should replicate the update of thermal 
-pressure in your h/w driver when you know that h/w is 
-throttling/throttled the frequency. You can refer to cpufreq_cooling.c 
-to see how it is done.
-
-Moving to a common api can be done as a separate patch series.
-
+diff --git a/fs/ramfs/inode.c b/fs/ramfs/inode.c
+index 9ebd17d7befb..6cb1de521142 100644
+--- a/fs/ramfs/inode.c
++++ b/fs/ramfs/inode.c
+@@ -106,6 +106,8 @@ ramfs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
+ {
+ 	struct inode * inode = ramfs_get_inode(dir->i_sb, dir, mode, dev);
+ 	int error = -ENOSPC;
++	if (dentry->d_inode)
++		return -EEXIST;
+ 
+ 	if (inode) {
+ 		d_instantiate(dentry, inode);
 -- 
-Warm Regards
-Thara (She/Her/Hers)
+2.32.0
+
+
+
