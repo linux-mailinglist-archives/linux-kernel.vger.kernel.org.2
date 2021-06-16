@@ -2,90 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844653A8F90
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E5C3A8F92
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhFPDrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 23:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbhFPDrT (ORCPT
+        id S230459AbhFPDrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 23:47:42 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:10082 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230083AbhFPDrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 23:47:19 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41FEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 20:45:12 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id n12so818892pgs.13
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 20:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qZAMt39F+7byqkAIexvy69WT9Fvb342b3olR3zb2aF8=;
-        b=16YWK9v/Ls1KOn+ohJLHjWuqcSlboDWnz57yF1ddlc179tKZjh4xG6Yrypm3XJxqNO
-         Zh5zR3VMSbzBqlZwzDmfpFEUEJeh3oyd7Rmex855LpzdWhs8hVEC2B1HTyZucXwbz2ty
-         bQ/DwyfkGaoxXVwfinqQDk+AgO0X4FxUd5hbCYdJfCQF/qa+1I166X86hdasuOg7Cx+E
-         UDvNDmZolR5IbN2KezpH/QH4sfYIm+719jJ/wHsug01TzOTqXIR+pO13IrB+bAC56PW/
-         ZijD1ZLW64yWk4ynuewyZ2OKQTmG5CVNZFniJaLM964JgcwjkG331HehZxabFj9N/7Sd
-         zJRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qZAMt39F+7byqkAIexvy69WT9Fvb342b3olR3zb2aF8=;
-        b=Eytwb+H1iHZvVA0NtGDfPOB6ww8sc1NsQ3xHZax6RrUPzmdkAzun+Z4BHa7uDFMct5
-         K3eNawUxWJwMKPCyvqOFyO6ymapJEGdsOsV/Qzee4SKTYm20RCg4R4pgNxkswJ7k/53k
-         9Ay/L39losWcITa353fjD15SUX4t+Et9SJaNC+GkDhQtbnexZg1dGe+GOwLx88bUokqL
-         ho5MpjbGUskb22xdJbI+ufe1FnwEIxm50WF4peHDGi29fcpr2jTW3P2mQdYpPdL9J1aK
-         jha57Cqg5a26hqEvPFzFyP+P0H32dAq5Ay/i3w415KmpTBjn+Jb1YW7mx1+XnmwXJord
-         JMew==
-X-Gm-Message-State: AOAM53326uQNQ2s/m65RHGlc/gt0+ALOmBs+e9LkWGxetdOoT8cMmUkj
-        EQ6Ezz/lYPHum7+mgLdvpbVCbw==
-X-Google-Smtp-Source: ABdhPJzQzAE2IF9ag625rfgdmhWpWU+9A6Dgrq8w0PB7peyKVDu7BauY86pCbDGWVDNTlQw7UitfsA==
-X-Received: by 2002:aa7:8bd6:0:b029:2ec:7dc9:77e3 with SMTP id s22-20020aa78bd60000b02902ec7dc977e3mr7578756pfd.62.1623815112412;
-        Tue, 15 Jun 2021 20:45:12 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id s4sm528925pjn.31.2021.06.15.20.45.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 20:45:12 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 3/3] regulator: sy7636a: Use rdev_get_drvdata at proper place
-Date:   Wed, 16 Jun 2021 11:44:58 +0800
-Message-Id: <20210616034458.3499522-3-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210616034458.3499522-1-axel.lin@ingics.com>
-References: <20210616034458.3499522-1-axel.lin@ingics.com>
+        Tue, 15 Jun 2021 23:47:41 -0400
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G4WGl5CgnzZcBp;
+        Wed, 16 Jun 2021 11:42:39 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.62) by
+ dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 11:45:34 +0800
+From:   Yu Jiahua <yujiahua1@huawei.com>
+To:     <ssantosh@kernel.org>, <sre@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        Yu Jiahua <yujiahua1@huawei.com>
+Subject: [PATCH -next] drivers: power: add missing MODULE_DEVICE_TABLE in keystone-reset.c
+Date:   Tue, 15 Jun 2021 19:46:22 -0800
+Message-ID: <20210616034622.35766-1-yujiahua1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.62]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the context with *rdev, use rdev_get_drvdata() is more intuitive.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Yu Jiahua <yujiahua1@huawei.com>
 ---
- drivers/regulator/sy7636a-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/power/reset/keystone-reset.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/regulator/sy7636a-regulator.c b/drivers/regulator/sy7636a-regulator.c
-index c71c0a007d95..e021ae08cbaa 100644
---- a/drivers/regulator/sy7636a-regulator.c
-+++ b/drivers/regulator/sy7636a-regulator.c
-@@ -35,7 +35,7 @@ static int sy7636a_get_vcom_voltage_op(struct regulator_dev *rdev)
+diff --git a/drivers/power/reset/keystone-reset.c b/drivers/power/reset/keystone-reset.c
+index 211eeef0c81a..c720112db704 100644
+--- a/drivers/power/reset/keystone-reset.c
++++ b/drivers/power/reset/keystone-reset.c
+@@ -71,6 +71,7 @@ static const struct of_device_id rsctrl_of_match[] = {
+ 	{.compatible = "ti,keystone-reset", },
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, rsctrl_of_match);
  
- static int sy7636a_get_status(struct regulator_dev *rdev)
+ static int rsctrl_probe(struct platform_device *pdev)
  {
--	struct sy7636a *sy7636a = dev_get_drvdata(rdev->dev.parent);
-+	struct sy7636a *sy7636a = rdev_get_drvdata(rdev);
- 	int ret = 0;
- 
- 	ret = gpiod_get_value_cansleep(sy7636a->pgood_gpio);
 -- 
-2.25.1
+2.17.1
 
