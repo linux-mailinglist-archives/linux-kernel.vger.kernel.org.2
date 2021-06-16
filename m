@@ -2,79 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A2A3A9C48
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C353A9C4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbhFPNnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:43:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60033 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232199AbhFPNnr (ORCPT
+        id S233196AbhFPNoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:44:30 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:25634 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230330AbhFPNo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:43:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623850900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p8GK50I3KBKc8B6YusjGKlCOchxcM/TeXaVsgxynpE4=;
-        b=KaxONaEDpeYNdHhqoI2a26Gqi+BYEJFtj6yRID2YLDx3gGGHOK1T5nqthwAaqT2i/0w48v
-        QiIu/CrJyOhz1j9zA8oUGGm3LnW1oIpQB/yjqHoJ0tLNdUw1suAE0JNfcmM9BfcwayjCSO
-        WWvgKOt79xK78g+sNU9viGn34aMRWKE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-PT56Y0xWN_GyKRNQvyK7Zg-1; Wed, 16 Jun 2021 09:41:39 -0400
-X-MC-Unique: PT56Y0xWN_GyKRNQvyK7Zg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D78319251AD;
-        Wed, 16 Jun 2021 13:41:38 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1FCBF10016F4;
-        Wed, 16 Jun 2021 13:41:35 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <200ea6f7-0182-9da1-734c-c49102663ccc@redhat.com>
-References: <200ea6f7-0182-9da1-734c-c49102663ccc@redhat.com> <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk> <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com> <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org> <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com> <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org> <051421e0-afe8-c6ca-95cd-4dc8cd20a43e@huawei.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     dhowells@redhat.com, Zheng Zengkai <zhengzengkai@huawei.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Hulk Robot <hulkci@huawei.com>, linux-afs@lists.infradead.org,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] afs: fix no return statement in function returning non-void
+        Wed, 16 Jun 2021 09:44:27 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-210-PkI2T8O5PUadzIa1crN2Vg-1; Wed, 16 Jun 2021 14:42:18 +0100
+X-MC-Unique: PkI2T8O5PUadzIa1crN2Vg-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 16 Jun
+ 2021 14:42:17 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Wed, 16 Jun 2021 14:42:17 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Amit Klein' <aksecurity@gmail.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>, Willy Tarreau <w@1wt.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: RE: [PATCH 5.4 175/244] inet: use bigger hash table for IP ID
+ generation
+Thread-Topic: [PATCH 5.4 175/244] inet: use bigger hash table for IP ID
+ generation
+Thread-Index: AQHXYpBi9A2YPoOhfUuPKKRWnHSSTKsWa0BQgAAjcgCAABKx0A==
+Date:   Wed, 16 Jun 2021 13:42:17 +0000
+Message-ID: <a9956d07dfe64e5db829dbe1a8910bdd@AcuMS.aculab.com>
+References: <20210512144743.039977287@linuxfoundation.org>
+ <20210512144748.600206118@linuxfoundation.org>
+ <CANEQ_++O0XVVdvynGtf37YCHSBT8CYHnUkK+VsFkOTqeqwOUtA@mail.gmail.com>
+ <YMmlPHMn/+EPdbvm@kroah.com>
+ <CANEQ_++gbwU2Rvcqg5KtngZC1UX1XcjOKfPKRr3Pvxi+VyQX+Q@mail.gmail.com>
+ <a388a8018b09429d93a4a6b6852c70b2@AcuMS.aculab.com>
+ <CANEQ_++RSG=cOa-hWcHefqVa5_=FRo+PdwuJbE2A-NHA_RNXXQ@mail.gmail.com>
+In-Reply-To: <CANEQ_++RSG=cOa-hWcHefqVa5_=FRo+PdwuJbE2A-NHA_RNXXQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <929459.1623850895.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 16 Jun 2021 14:41:35 +0100
-Message-ID: <929460.1623850895@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tom Rix <trix@redhat.com> wrote:
-
-> A fix is to use the __noreturn attribute on this function and not add a =
-return
-> like this
-> =
-
-> -static int afs_dir_set_page_dirty(struct page *page)
-> +static int __noreturn afs_dir_set_page_dirty(struct page *page)
-> =
-
-> and to the set of ~300 similar functions in these files.
-
-BUG() really ought to handle it.  Do you have CONFIG_BUG=3Dy?
-
-David
+RnJvbTogQW1pdCBLbGVpbg0KPiBTZW50OiAxNiBKdW5lIDIwMjEgMTQ6MjANCj4gDQo+IE9uIFdl
+ZCwgSnVuIDE2LCAyMDIxIGF0IDE6MTkgUE0gRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWlnaHRAYWN1
+bGFiLmNvbT4gd3JvdGU6DQo+IA0KPiA+IENhbiBzb21lb25lIGV4cGxhaW4gd2h5IHRoaXMgaXMg
+YSBnb29kIGlkZWEgZm9yIGEgJ25vcm1hbCcgc3lzdGVtPw0KPiANCj4gVGhpcyBwYXRjaCBtaXRp
+Z2F0ZXMgc29tZSB0ZWNobmlxdWVzIHRoYXQgbGVhayBpbnRlcm5hbCBzdGF0ZSBkdWUgdG8NCj4g
+dGFibGUgaGFzaCBjb2xsaXNpb25zLg0KDQpBcyB5b3Ugc2F5IGJlbG93IGl0IGlzbid0IHJlYWxs
+eSBlZmZlY3RpdmUuLi4NCg0KPiA+IFdoeSBzaG91bGQgbXkgZGVza3RvcCBzeXN0ZW0gJ3dhc3Rl
+JyAyTUIgb2YgbWVtb3J5IG9uIGEgbWFzc2l2ZQ0KPiA+IGhhc2ggdGFibGUgdGhhdCBJIGRvbid0
+IG5lZWQuDQo+IA0KPiBJbiB0aGUgcGF0Y2gncyBkZWZlbnNlLCBpdCBvbmx5IGNvbnN1bWVzIDJN
+QiB3aGVuIHRoZSBwaHlzaWNhbCBSQU0gaXMgPj0gMTZHQi4NCg0KUmlnaHQsIGJ1dCBJJ3ZlIDE2
+R0Igb2YgbWVtb3J5IGJlY2F1c2UgSSBydW4gc29tZSB2ZXJ5IGxhcmdlDQphcHBsaWNhdGlvbnMg
+dGhhdCBuZWVkIGFsbCB0aGUgbWVtb3J5IHRoZXkgY2FuIGdldCAoYW5kIG1vcmUpLg0KDQpJbiBh
+bnkgY2FzZSwgZm9yIG1hbnkgYXJjaGl0ZWN0dXJlcyA4R0IgaXMgJ2VudHJ5IGxldmVsJy4NClRo
+YXQgaW5jbHVkZXMgc29tZSBvciB0aGUgJ3NtYWxsJyBBUk0gY3B1cy4NClRoZXkgYXJlIHVubGlr
+ZWx5IHRvIGhhdmUgdGVucyBvZiBjb25uZWN0aW9ucywgbmV2ZXIgbWluZA0KdGhvdXNhbmRzLg0K
+DQo+ID4gSXQgbWlnaHQgYmUgbmVlZGVkIGJ5IHN5c3RlbXMgdGhhbiBoYW5kbGUgbWFzc2l2ZSBu
+dW1iZXJzDQo+ID4gb2YgY29uY3VycmVudCBjb25uZWN0aW9ucyAtIGJ1dCB0aGF0IGlzbid0ICdt
+b3N0IHN5c3RlbXMnLg0KPiA+DQo+ID4gU3VyZWx5IGl0IHdvdWxkIGJlIGJldHRlciB0byBkZXRl
+Y3Qgd2hlbiB0aGUgbnVtYmVyIG9mIGVudHJpZXMNCj4gPiBpcyBjb21wYXJhYmxlIHRvIHRoZSB0
+YWJsZSBzaXplIGFuZCB0aGVuIHJlc2l6ZSB0aGUgdGFibGUuDQo+IA0KPiBTZWN1cml0eS13aXNl
+LCB0aGlzIGFwcHJvYWNoIGlzIG5vdCBlZmZlY3RpdmUuIFRoZSB0YWJsZSBzaXplIHdhcw0KPiBp
+bmNyZWFzZWQgdG8gcmVkdWNlIHRoZSBsaWtlbGlob29kIG9mIGhhc2ggY29sbGlzaW9ucy4gVGhl
+c2Ugc3RhcnQNCj4gaGFwcGVuaW5nIHdoZW4geW91IGhhdmUgfk5eKDEvMikgZWxlbWVudHMgKGZv
+ciB0YWJsZSBzaXplIE4pLCBzbw0KPiB5b3UnbGwgbmVlZCB0byByZXNpemUgcHJldHR5IHF1aWNr
+bHkgYW55d2F5Lg0KDQpZb3UgcmVhbGx5IGhhdmUgdG8gbGl2ZSB3aXRoIHNvbWUgaGFzaCBjb2xs
+aXNpb25zLg0KUmVzaXppbmcgYXQgTl4oMS8yKSBqdXN0IGRvZXNuJ3Qgc2NhbGUuDQpOb3Qgb25s
+eSB0aGF0IHRoZSBoYXNoIGZ1bmN0aW9uIHdpbGwgc3RvcCBnZW5lcmF0aW5nIG5vbi1jb2xsaWRp
+bmcNCnZhbHVlcyBvbmNlIHRoZSB0YWJsZSBzdGFydHMgZ2V0dGluZyBiaWcuDQooQSB2ZXJ5IGV4
+cGVuc2l2ZSBoYXNoIGZ1bmN0aW9uIG1pZ2h0IGhlbHAgLSBidXQgaSB3b3VsZG4ndCBjb3VudCBv
+biBpdC4pDQoNCkluIGFueSBjYXNlLCB0aGUgY2hhbmNlIG9mIGhpdHRpbmcgYSBoYXNoIGNvbGxp
+c2lvbiBpcyBzbGlnaHRseQ0KbGVzcyB0aGFuICh0YWJsZV9zaXplIC8gYWN0aXZlX2VudHJpZXMp
+Lg0KDQpXaGF0IHlvdSB3YW50IHRvIGF2b2lkIGlzIHRoZSBFTEYgc3ltYm9sIGhhc2ggd2hlbiB0
+aGUgYXZlcmFnZQ0KY2hhaW4gbGVuZ3RoIGlzIGFib3V0IDEuNSBhbmQgeW91IGhhdmUgdG8gc2Vw
+YXJhdGVseSBjaGVjayB0aGUgaGFzaA0KdGFibGUgb2YgZXZlcnkgc2hhcmVkIGxpYnJhcnkuDQpU
+aGF0IHF1aWNrbHkgYmFsbG9vbnMgdG8gYSBsb3Qgb2Ygc3RyaW5nIGNvbXBhcmVzLg0KKEkgbG9v
+a2VkIGF0IHRoYXQgZm9yIG1vemlsbGEgbWF5IHllYXJzIGFnbyAtIHdhcyBob3JyaWQuKQ0KDQoJ
+RGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1v
+dW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEz
+OTczODYgKFdhbGVzKQ0K
 
