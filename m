@@ -2,233 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626A03A9D5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663043A9D64
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233949AbhFPOSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:18:35 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32044 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232694AbhFPOSa (ORCPT
+        id S233984AbhFPOTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:19:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233898AbhFPOTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:18:30 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15GE3hAA115193;
-        Wed, 16 Jun 2021 10:16:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=RW2GbZF3syhiO8+9u7tJawwRETYPJ/hp0GJjpm5DuI0=;
- b=qtlQYfDCznJ46f9IeFnPtQV5TeIVH+lBXJErrgsZUgLAzK/oXT+kmjFJLoSBanVy3zuT
- 0yhJ0NkHHGWWIqhY0Ty0w+B0em6bTJ9MfO+s63peJQ+a+aOvM2C3ecmFrTlks7KfNIdP
- fyQA1tKijkQXwZyc1+6VZcRY1xIW5fRXCEP6nZPZZp7u6nQCfuFyOLsnPG6xVu0zbsLS
- 1zP28SNUR4VEzCg9aU6U3cv/TJAbATkRDX/LmTrvpwB1eaWs4s7Yb0XH0VQMHE5bj0yE
- WqtxEFr8M+zuXoMQNVk9N+a3m0NtRuUl3seZ/cyTgchsdt4R0PyQ/HsMGRcm5L6d3xWU Jg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 397hdy3h3v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 10:16:22 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15GE4vAK128442;
-        Wed, 16 Jun 2021 10:16:22 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 397hdy3h36-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 10:16:22 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15GECABx016445;
-        Wed, 16 Jun 2021 14:16:21 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma02dal.us.ibm.com with ESMTP id 394mja10xg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 14:16:21 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15GEGKoL25493934
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Jun 2021 14:16:21 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C33FC28060;
-        Wed, 16 Jun 2021 14:16:20 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5046428058;
-        Wed, 16 Jun 2021 14:16:20 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.128.252])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 16 Jun 2021 14:16:20 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-Subject: [PATCH v5 2/2] s390/vfio-ap: r/w lock for PQAP interception handler function pointer
-Date:   Wed, 16 Jun 2021 10:16:18 -0400
-Message-Id: <20210616141618.938494-3-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210616141618.938494-1-akrowiak@linux.ibm.com>
-References: <20210616141618.938494-1-akrowiak@linux.ibm.com>
+        Wed, 16 Jun 2021 10:19:16 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE797C061574;
+        Wed, 16 Jun 2021 07:17:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=3eHDFeOd5JUwGJsCO8IHOvIdyejL0srMm9wcqB5wSRA=; b=G+lsBszZX7wMG+OHqecK1b3Ef
+        /t9Ca2aRzaiTNqrk+K48cYfgJJ1Z8h5HwCFLdsMAeueQZMW0jSh9u2kl+MKgpNmxk+qgsgQdw61re
+        jGud3zPlkE7tJ3VFLt6L7gHHhmCyhVEUv1/+gvySbaLuzqLXwh32sSZqgAirzH3nwOMXSS6EjdppB
+        /J1OOWUZi6aQ3E9DQGCSbN/8lSAZvN3FCBqKE3gWq1Bps6PZ1oLEd91oYz4qVvYVw5KVVjpZgbUBN
+        Gy3Ep68yVKWk4PkZomtI14bAY5QpV1Ash6xKgGxh+tROEhHreGLp8zliJRg0TWElf67zLk/8AVFEu
+        oqChk3zSQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45070)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1ltWLl-0007OY-0K; Wed, 16 Jun 2021 15:17:01 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1ltWLg-00066O-L0; Wed, 16 Jun 2021 15:16:56 +0100
+Date:   Wed, 16 Jun 2021 15:16:56 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 1/6] pata_cypress: add a module option to disable BM-DMA
+Message-ID: <20210616141656.GF22278@shell.armlinux.org.uk>
+References: <20210616134658.1471835-1-hch@lst.de>
+ <20210616134658.1471835-2-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 8QupOTHGevn8aNTZY50XrAg2UC5m-bFt
-X-Proofpoint-ORIG-GUID: hpbwI44RdZWjMdwkLTkjQH3dNi4gV6Y7
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-16_07:2021-06-15,2021-06-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 adultscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0
- spamscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106160082
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616134658.1471835-2-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function pointer to the interception handler for the PQAP instruction
-can get changed during the interception process. Let's add a
-semaphore to struct kvm_s390_crypto to control read/write access to the
-function pointer contained therein.
+On Wed, Jun 16, 2021 at 03:46:53PM +0200, Christoph Hellwig wrote:
+> Multiple users report that they need to disable DMA on this driver,
+> so provide an option to do so without affecting all of libata.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-The semaphore must be locked for write access by the vfio_ap device driver
-when notified that the KVM pointer has been set or cleared. It must be
-locked for read access by the interception framework when the PQAP
-instruction is intercepted.
+Thanks!
 
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
----
- arch/s390/include/asm/kvm_host.h      |  6 +++---
- arch/s390/kvm/kvm-s390.c              |  1 +
- arch/s390/kvm/priv.c                  |  6 +++---
- drivers/s390/crypto/vfio_ap_ops.c     | 21 ++++++++++++++++-----
- drivers/s390/crypto/vfio_ap_private.h |  2 +-
- 5 files changed, 24 insertions(+), 12 deletions(-)
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-index 8925f3969478..58edaa3f9602 100644
---- a/arch/s390/include/asm/kvm_host.h
-+++ b/arch/s390/include/asm/kvm_host.h
-@@ -803,14 +803,14 @@ struct kvm_s390_cpu_model {
- 	unsigned short ibc;
- };
- 
--struct kvm_s390_module_hook {
-+struct kvm_s390_crypto_hook {
- 	int (*hook)(struct kvm_vcpu *vcpu);
--	struct module *owner;
- };
- 
- struct kvm_s390_crypto {
- 	struct kvm_s390_crypto_cb *crycb;
--	struct kvm_s390_module_hook *pqap_hook;
-+	struct rw_semaphore pqap_hook_rwsem;
-+	struct kvm_s390_crypto_hook *pqap_hook;
- 	__u32 crycbd;
- 	__u8 aes_kw;
- 	__u8 dea_kw;
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 1296fc10f80c..418d910df569 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -2606,6 +2606,7 @@ static void kvm_s390_crypto_init(struct kvm *kvm)
- {
- 	kvm->arch.crypto.crycb = &kvm->arch.sie_page2->crycb;
- 	kvm_s390_set_crycb_format(kvm);
-+	init_rwsem(&kvm->arch.crypto.pqap_hook_rwsem);
- 
- 	if (!test_kvm_facility(kvm, 76))
- 		return;
-diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
-index 9928f785c677..bbbd84ffe239 100644
---- a/arch/s390/kvm/priv.c
-+++ b/arch/s390/kvm/priv.c
-@@ -657,15 +657,15 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
- 	 * Verify that the hook callback is registered, lock the owner
- 	 * and call the hook.
- 	 */
-+	down_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
- 	if (vcpu->kvm->arch.crypto.pqap_hook) {
--		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
--			return -EOPNOTSUPP;
- 		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
--		module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
- 		if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
- 			kvm_s390_set_psw_cc(vcpu, 3);
-+		up_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
- 		return ret;
- 	}
-+	up_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
- 	/*
- 	 * A vfio_driver must register a hook.
- 	 * No hook means no driver to enable the SIE CRYCB and no queues.
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index 122c85c22469..d8abe5a11e49 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -353,7 +353,6 @@ static int vfio_ap_mdev_create(struct mdev_device *mdev)
- 	init_waitqueue_head(&matrix_mdev->wait_for_kvm);
- 	mdev_set_drvdata(mdev, matrix_mdev);
- 	matrix_mdev->pqap_hook.hook = handle_pqap;
--	matrix_mdev->pqap_hook.owner = THIS_MODULE;
- 	mutex_lock(&matrix_dev->lock);
- 	list_add(&matrix_mdev->node, &matrix_dev->mdev_list);
- 	mutex_unlock(&matrix_dev->lock);
-@@ -1115,15 +1114,20 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
- 		}
- 
- 		kvm_get_kvm(kvm);
-+		matrix_mdev->kvm = kvm;
- 		matrix_mdev->kvm_busy = true;
- 		mutex_unlock(&matrix_dev->lock);
-+
-+		down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-+		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
-+		up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-+
- 		kvm_arch_crypto_set_masks(kvm,
- 					  matrix_mdev->matrix.apm,
- 					  matrix_mdev->matrix.aqm,
- 					  matrix_mdev->matrix.adm);
-+
- 		mutex_lock(&matrix_dev->lock);
--		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
--		matrix_mdev->kvm = kvm;
- 		matrix_mdev->kvm_busy = false;
- 		wake_up_all(&matrix_mdev->wait_for_kvm);
- 	}
-@@ -1189,10 +1193,17 @@ static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
- 	if (matrix_mdev->kvm) {
- 		matrix_mdev->kvm_busy = true;
- 		mutex_unlock(&matrix_dev->lock);
--		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-+
-+		if (matrix_mdev->kvm->arch.crypto.crycbd) {
-+			down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-+			matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-+			up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-+
-+			kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-+		}
-+
- 		mutex_lock(&matrix_dev->lock);
- 		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
--		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
- 		kvm_put_kvm(matrix_mdev->kvm);
- 		matrix_mdev->kvm = NULL;
- 		matrix_mdev->kvm_busy = false;
-diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-index f82a6396acae..5d4fe6efbc73 100644
---- a/drivers/s390/crypto/vfio_ap_private.h
-+++ b/drivers/s390/crypto/vfio_ap_private.h
-@@ -86,7 +86,7 @@ struct ap_matrix_mdev {
- 	bool kvm_busy;
- 	wait_queue_head_t wait_for_kvm;
- 	struct kvm *kvm;
--	struct kvm_s390_module_hook pqap_hook;
-+	struct kvm_s390_crypto_hook pqap_hook;
- 	struct mdev_device *mdev;
- };
- 
 -- 
-2.30.2
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
