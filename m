@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D259D3A9F79
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C481C3A9F35
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235077AbhFPPiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:38:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50870 "EHLO mail.kernel.org"
+        id S234677AbhFPPgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:36:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234912AbhFPPh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:37:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73F65613C2;
-        Wed, 16 Jun 2021 15:35:21 +0000 (UTC)
+        id S234640AbhFPPgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:36:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68C7361166;
+        Wed, 16 Jun 2021 15:34:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857721;
-        bh=PIMvvOdcHM/UaNyjKsmWLK9cCLAZzAi4AH7zS+RZbIc=;
+        s=korg; t=1623857655;
+        bh=rUw7BP8oocyKNmIl1hMRQzzuNIHS6uWhK3wZKD7ChF8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W3dMnzkr6OY5BuHGwOaXA68GLvDyIR9Q/AirkG3aEaxDYMSkN1J9lUlaBj4f69797
-         fNBU1QmlCuy2awvhnpSCh89I4dlWQhhRJNDckoO9V20zZz6TQpWFiQdpqXLgaR322+
-         NNtJvM7Q1VR6q6vw87yBjRPqzs1gnKewc52A2r18=
+        b=D8QsmwyVwPBTXLZLXKimS6jP/4MIZwn2jGNloPd1Zwk6wkg9p4dIgsgYl/Xu5gpq2
+         4Xo6q9sfSf25q/M2zXacJNsm0wI/gnEM8ieLSdm9CA2BJN2WTjqrh7UBuS1dhQAiXZ
+         JWWL/j9wsmJohhVU4Fh7xNHVGy3Y/vKUjZr+H/Js=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Maciej Falkowski <maciej.falkowski9@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 13/38] ARM: OMAP1: Fix use of possibly uninitialized irq variable
-Date:   Wed, 16 Jun 2021 17:33:22 +0200
-Message-Id: <20210616152835.820371184@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 12/28] HID: gt683r: add missing MODULE_DEVICE_TABLE
+Date:   Wed, 16 Jun 2021 17:33:23 +0200
+Message-Id: <20210616152834.537291986@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
-References: <20210616152835.407925718@linuxfoundation.org>
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+References: <20210616152834.149064097@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Falkowski <maciej.falkowski9@gmail.com>
+From: Bixuan Cui <cuibixuan@huawei.com>
 
-[ Upstream commit 3c4e0147c269738a19c7d70cd32395600bcc0714 ]
+[ Upstream commit a4b494099ad657f1cb85436d333cf38870ee95bc ]
 
-The current control flow of IRQ number assignment to `irq` variable
-allows a request of IRQ of unspecified value,
-generating a warning under Clang compilation with omap1_defconfig on
-linux-next:
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-arch/arm/mach-omap1/pm.c:656:11: warning: variable 'irq' is used
-uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-        else if (cpu_is_omap16xx())
-                 ^~~~~~~~~~~~~~~~~
-./arch/arm/mach-omap1/include/mach/soc.h:123:30: note: expanded from macro
-'cpu_is_omap16xx'
-                                        ^~~~~~~~~~~~~
-arch/arm/mach-omap1/pm.c:658:18: note: uninitialized use occurs here
-        if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
-                        ^~~
-arch/arm/mach-omap1/pm.c:656:7: note: remove the 'if' if its condition is
-always true
-        else if (cpu_is_omap16xx())
-             ^~~~~~~~~~~~~~~~~~~~~~
-arch/arm/mach-omap1/pm.c:611:9: note: initialize the variable 'irq' to
-silence this warning
-        int irq;
-               ^
-                = 0
-1 warning generated.
-
-The patch provides a default value to the `irq` variable
-along with a validity check.
-
-Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1324
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-omap1/pm.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/hid/hid-gt683r.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/mach-omap1/pm.c b/arch/arm/mach-omap1/pm.c
-index 2c1e2b32b9b3..a745d64d4699 100644
---- a/arch/arm/mach-omap1/pm.c
-+++ b/arch/arm/mach-omap1/pm.c
-@@ -655,9 +655,13 @@ static int __init omap_pm_init(void)
- 		irq = INT_7XX_WAKE_UP_REQ;
- 	else if (cpu_is_omap16xx())
- 		irq = INT_1610_WAKE_UP_REQ;
--	if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
--			NULL))
--		pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
-+	else
-+		irq = -1;
-+
-+	if (irq >= 0) {
-+		if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup", NULL))
-+			pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
-+	}
+diff --git a/drivers/hid/hid-gt683r.c b/drivers/hid/hid-gt683r.c
+index 898871c8c768..29ccb0accfba 100644
+--- a/drivers/hid/hid-gt683r.c
++++ b/drivers/hid/hid-gt683r.c
+@@ -54,6 +54,7 @@ static const struct hid_device_id gt683r_led_id[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_MSI, USB_DEVICE_ID_MSI_GT683R_LED_PANEL) },
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(hid, gt683r_led_id);
  
- 	/* Program new power ramp-up time
- 	 * (0 for most boards since we don't lower voltage when in deep sleep)
+ static void gt683r_brightness_set(struct led_classdev *led_cdev,
+ 				enum led_brightness brightness)
 -- 
 2.30.2
 
