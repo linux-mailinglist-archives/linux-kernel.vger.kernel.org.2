@@ -2,115 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF3C3A8DCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E0A3A8DD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231727AbhFPArO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37524 "EHLO
+        id S231826AbhFPAsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhFPArM (ORCPT
+        with ESMTP id S231703AbhFPAsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:47:12 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97BAC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:45:07 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id ca13-20020ad4560d0000b029023ebd662003so801932qvb.17
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:45:07 -0700 (PDT)
+        Tue, 15 Jun 2021 20:48:37 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9F6C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:46:31 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id mj8-20020a17090b3688b029016ee34fc1b3so758862pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:46:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=LAtBe1i9QhHKeYZZABwyxEaBkt2ZmCBgZJOCDygERjA=;
-        b=AnLpMAyg4/bsQ5ot7VlrLMCC3Gs/dLXo8gb9XR2t+kZPGucjlqTUQ2MhpMtPKhRz2J
-         GM0zJcrIAIxIHwzmcZu8vBU3V4esevTpms5odDTEvk6a/FO3UqIvpZSj3xqYF7l0mQ4n
-         9+17IZPmW1eYOT2ooLRrVr7n0aseNkeHHgybMwsQEIYdi0TgpPpOmCaQm1y1qNLXs+x+
-         IL/EeLsMoBr+WRbtHqlkHyisbtmTA1Ww20hmdNC08vFLlWOFU1fu7T3ShfFqFLuHksB2
-         BVOJunRyHNmDqMdGz5UXxMITAro7zABjRlWyPUVa0E1lJoNLWI8GEaxs54jCkCOzT3Nl
-         xxvg==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1UGOQAS/gnlRXyh5KGqeT8Vh25LI5tpduRj0+a7sMPk=;
+        b=vo8kqB3upoOfLkcjr7BktRu/G8ZVEhvIzJRE4kky8AJ4PfRn8k2gzYYoapgpQuUbxb
+         eW8RGrn7MgbOV4zezM2DvxEUGloaOcI+ZwM7w+hGK1ODQGZY61Whd9RnPKTR0JjPdOAy
+         gZlhjQRZo7WgJTr5eaAqs0zFWg4doaen5CBF+OQ/OSQS1JEdId+qBnmjbsRXh8Bcc94F
+         UwUUw+zf7f3sRdQ6CmITUZn9WRx5c/WThXOvJbtfrGxqQQj9KFvUmE3zt4KqLqj3Vi9e
+         8vOqYXgaBsZ+ftPDLJY3C8RjB2YsfygyA0wu/S313rMtXG+DAjfSWIE7PNAJaUVVbjMq
+         fihg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=LAtBe1i9QhHKeYZZABwyxEaBkt2ZmCBgZJOCDygERjA=;
-        b=I2hf3JdHYmLfeBbtld09fAIrMK7WUSh29l2/nRptkQ49E4fjzARPB8UxYKK+b1jEiU
-         eAu939VXrJhcztVSgZWmgTLmtuUk0KfwVRiJVTOUaoVl43vwnlPb+nuCGMFX7yWuU/hQ
-         ZLsEMtGKET1W9yoBDbFALNF87hqkmmPta/ASaWxGNHhRTEP5BtvtVAeJoHW+oHrnAk27
-         cNMsY5FgTkriP7mG6o3X2sNUivdnMSQhZN0kn6MGps6vOQML/Lzf02pmsZ99vX9lYFsN
-         Lfa/tJnbuiy9rJDPy3HjJsSjhtABdv7EzZyGGQEY9Aw2RlqwMs2YUJx/UW6GXMx0WVSN
-         y6iw==
-X-Gm-Message-State: AOAM533Z7pSo6r4JLJ59MlOs4aL9E1+tc1jEZj0eOpxRhoa8bjZITpNE
-        zmse2FSHBy1DamrXKcpFtNONdNMluVI=
-X-Google-Smtp-Source: ABdhPJx7Ddxsv0ETLvnxMiVX9cRfwyC7fngv8f9xjb5fNX0FXjQCO3pF2wMX8mqou0Fys9G62nr2Ln2+lBk=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:af9:198d:bf4e:6def])
- (user=seanjc job=sendgmr) by 2002:a0c:f684:: with SMTP id p4mr8247882qvn.16.1623804306792;
- Tue, 15 Jun 2021 17:45:06 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 15 Jun 2021 17:44:58 -0700
-Message-Id: <20210616004458.2192889-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
-Subject: [PATCH] x86/sgx: Suppress WARN on inability to sanitize EPC if ksgxd
- is stopped
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Du Cheng <ducheng2@gmail.com>,
-        Sean Christopherson <seanjc@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1UGOQAS/gnlRXyh5KGqeT8Vh25LI5tpduRj0+a7sMPk=;
+        b=aXF/5m30Uxbx45Qb0crzoSQ+mPb8vYqJkjdjzx6ldjaKNBLEosPB/dp9Fy/3SBJEBG
+         Yn7VHU329MbQxou2fuSTat2o13J9BSW/bgtK8w35waytSwDjpDxyqs51QHTBjiB9F9VO
+         Eat1veNcYgaFqi+okTrQmNvH2ZUJm7CvENygtKWcUtCYjJP4YwSUaAwGxwRbDvMMx2nM
+         imRJXQD+d+tjmVjt+nq/QA7Q0jN82qIiFIZ7w1eUfVjbJHtbLSIKdeVvkpgzDgOYvy6Q
+         xMGO2qHKDQd3xHPYQ6cnk8nB8mz8aoIrfxLqHFeL4hzWp6Oj1G/13JtrvvnMedOxL5OO
+         AIOQ==
+X-Gm-Message-State: AOAM531chZgpMxCqTUUIpoTCrjYCxJAj5K3RjZRJDKyBgAMrwK8sGuxw
+        PkpZcpJn3mOYZ8U47Dbe6iNCVqQdF7vnRe8OM0XkVw==
+X-Google-Smtp-Source: ABdhPJxnjJTq18+nazpJrwCbf8hmuZEuQ5kMFby00dnTlWpwUJ3rx4rFxrMADpX4C943d5rXD+aKPVKy1eqHRare17k=
+X-Received: by 2002:a17:90a:ea8c:: with SMTP id h12mr7535174pjz.149.1623804390579;
+ Tue, 15 Jun 2021 17:46:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210604011844.1756145-1-ruansy.fnst@fujitsu.com> <20210604011844.1756145-3-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20210604011844.1756145-3-ruansy.fnst@fujitsu.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 15 Jun 2021 17:46:19 -0700
+Message-ID: <CAPcyv4jA8FW6PMxaETETQxjnpn9aE2Nevq-R96BJr8QzixYRsQ@mail.gmail.com>
+Subject: Re: [PATCH v4 02/10] dax: Introduce holder for dax_device
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        device-mapper development <dm-devel@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        david <david@fromorbit.com>, Christoph Hellwig <hch@lst.de>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't WARN on having unsanitized EPC pages if ksgxd is stopped early,
-e.g. if sgx_init() realizes there will be no downstream consumers of EPC.
-If ksgxd is stopped early, EPC pages may be left on the dirty list, but
-that's ok because ksgxd is only stopped if SGX initialization failed or
-if the kernel is going down.  In either case, the EPC won't be used.
+On Thu, Jun 3, 2021 at 6:19 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+>
+> To easily track filesystem from a pmem device, we introduce a holder for
+> dax_device structure, and also its operation.  This holder is used to
+> remember who is using this dax_device:
+>  - When it is the backend of a filesystem, the holder will be the
+>    superblock of this filesystem.
+>  - When this pmem device is one of the targets in a mapped device, the
+>    holder will be this mapped device.  In this case, the mapped device
+>    has its own dax_device and it will follow the first rule.  So that we
+>    can finally track to the filesystem we needed.
+>
+> The holder and holder_ops will be set when filesystem is being mounted,
+> or an target device is being activated.
+>
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> ---
+>  drivers/dax/super.c | 38 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/dax.h | 10 ++++++++++
+>  2 files changed, 48 insertions(+)
+>
+> diff --git a/drivers/dax/super.c b/drivers/dax/super.c
+> index 5fa6ae9dbc8b..d118e2a7dc70 100644
+> --- a/drivers/dax/super.c
+> +++ b/drivers/dax/super.c
+> @@ -222,8 +222,10 @@ struct dax_device {
+>         struct cdev cdev;
+>         const char *host;
+>         void *private;
 
-This bug was exposed by the addition of KVM support, but has existed and
-was hittable since the original sanitization code was added.  Prior to
-adding KVM support, if Launch Control was not fully enabled, e.g. when
-running on older hardware, sgx_init() bailed immediately before spawning
-ksgxd because X86_FEATURE_SGX was cleared if X86_FEATURE_SGX_LC was
-unsupported.
+@private is likely too generic of a name now, it would be better to
+call this @parent.
 
-With KVM support, sgx_drv_init() handles the X86_FEATURE_SGX_LC check
-manually, so now there's any easy-to-hit case where sgx_init() will spawn
-ksgxd and _then_ fail to initialize, which results in sgx_init() stopping
-ksgxd before it finishes sanitizing the EPC.
+> +       void *holder;
 
-Prior to KVM support, the bug was much harder to hit because it basically
-required char device registration to fail.
+This should probably be called holder_data, and this structure could
+use some kernel-doc to clarify what the fields mean.
 
-Reported-by: Du Cheng <ducheng2@gmail.com>
-Fixes: e7e0545299d8 ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
+>         unsigned long flags;
+>         const struct dax_operations *ops;
+> +       const struct dax_holder_operations *holder_ops;
+>  };
+>
+>  static ssize_t write_cache_show(struct device *dev,
+> @@ -373,6 +375,24 @@ int dax_zero_page_range(struct dax_device *dax_dev, pgoff_t pgoff,
+>  }
+>  EXPORT_SYMBOL_GPL(dax_zero_page_range);
+>
+> +int dax_corrupted_range(struct dax_device *dax_dev, struct block_device *bdev,
+> +               loff_t offset, size_t size, void *data)
 
-Lightly tested due to lack of hardware.  I hacked the flow to verify that
-stopping early will leave work pending, and that rechecking should_stop()
-suppress the resulting WARN.
+Why is @bdev an argument to this routine?  The primary motivation for
+a 'struct dax_device' is to break the association with 'struct
+block_device'. The filesystem may know that the logical addresses
+associated with a given dax_dev alias with the logical addresses of a
+given bdev, but that knowledge need not leak into the API.
 
- arch/x86/kernel/cpu/sgx/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +{
+> +       int rc = -ENXIO;
+> +       if (!dax_dev)
+> +               return rc;
+> +
+> +       if (dax_dev->holder) {
+> +               rc = dax_dev->holder_ops->corrupted_range(dax_dev, bdev, offset,
+> +                                                         size, data);
 
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index ad904747419e..fbad2b9625a5 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -425,7 +425,7 @@ static int ksgxd(void *p)
- 	__sgx_sanitize_pages(&sgx_dirty_page_list);
- 
- 	/* sanity check: */
--	WARN_ON(!list_empty(&sgx_dirty_page_list));
-+	WARN_ON(!list_empty(&sgx_dirty_page_list) && !kthread_should_stop());
- 
- 	while (!kthread_should_stop()) {
- 		if (try_to_freeze())
--- 
-2.32.0.272.g935e593368-goog
+A bikeshed comment, but I do not like the name corrupted_range(),
+because "corrupted" implies a permanent state. The source of this
+notification is memory_failure() and that does not convey "permanent"
+vs "transient" it just reports "failure". So, to keep the naming
+consistent with the pgmap notification callback lets call this one
+"notify_failure".
 
+> +               if (rc == -ENODEV)
+> +                       rc = -ENXIO;
+> +       } else
+> +               rc = -EOPNOTSUPP;
+> +       return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(dax_corrupted_range);
+
+dax_holder_notify_failure() makes it clearer that this is
+communicating a failure up the holder stack.
+
+> +
+>  #ifdef CONFIG_ARCH_HAS_PMEM_API
+>  void arch_wb_cache_pmem(void *addr, size_t size);
+>  void dax_flush(struct dax_device *dax_dev, void *addr, size_t size)
+> @@ -624,6 +644,24 @@ void put_dax(struct dax_device *dax_dev)
+>  }
+>  EXPORT_SYMBOL_GPL(put_dax);
+>
+> +void dax_set_holder(struct dax_device *dax_dev, void *holder,
+> +               const struct dax_holder_operations *ops)
+> +{
+> +       if (!dax_dev)
+> +               return;
+> +       dax_dev->holder = holder;
+> +       dax_dev->holder_ops = ops;
+
+I think there needs to be some synchronization here, perhaps a global
+dax_dev_rwsem that is taken for read in the notification path and
+write when adding a holder to the chain.
+
+I also wonder if this should be an event that triggers a dax_dev stack
+to re-report any failure notifications. For example the pmem driver
+may have recorded a list of bad blocks at the beginning of time.
+Likely the filesystem or other holder would like to get that
+pre-existing list of failures at first registration. Have you given
+thought about how the filesystem is told about pre-existing badblocks?
+
+> +}
+> +EXPORT_SYMBOL_GPL(dax_set_holder);
+> +
+> +void *dax_get_holder(struct dax_device *dax_dev)
+> +{
+> +       if (!dax_dev)
+> +               return NULL;
+> +       return dax_dev->holder;
+> +}
+> +EXPORT_SYMBOL_GPL(dax_get_holder);
+
+Where is this used?
