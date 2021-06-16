@@ -2,233 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DC73A8D7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2C73A8D82
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbhFPAdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
+        id S231681AbhFPAfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:35:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbhFPAdw (ORCPT
+        with ESMTP id S230244AbhFPAfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:33:52 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0BDC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:31:47 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id w22-20020a0568304116b02904060c6415c7so785717ott.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:31:47 -0700 (PDT)
+        Tue, 15 Jun 2021 20:35:11 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A04C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:33:05 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 131so1228075ljj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:33:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QMHdARVwl+IDYkd7VNNhU2Et6yVJrDozO1ga8CSIno0=;
-        b=pAiOg3t3XnlFAlKo9Aadp0BZ3zGRyxRQidsjlA9eWffnB2wjytihEVgwSRuMO+Nrcu
-         wL4wCCEhjucGYpremAnRAyXYHytDYPJnKupmClJNqMMx9/QzwRLg5k4zMRMuQXRMn4kI
-         DfKYUD7DJpChp5FT574jVYwVFNpxcTAz2W0/QHY2CCGxzjhsZTBq1Fa+VBmi9GKzgO1i
-         0hxexfx5F0R3+C4dhRpntJ7ksZegDmhG0gU/yfLSv4/3WstS6BUgmmpT5LYsKOZ4mriY
-         yS3svuvYRZ8RghoEn6DchW2IixI4VEfeMLZQnyRSU1RxWy+0Oifu549cYhUCGpp8y1+B
-         4Zxg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CBfvBtPeeZ+txOyCfuRZiBcTJq4klTe+mp15Vdy8/1A=;
+        b=SmeDvHt0uOBK4zkN8iVTIqG+FjaChfdwC2QGIxtkRL4PGE0lM8qGLzbl4cRN7HzV5w
+         jO2VtBLzpPVhsTyfy7YZsAbgvV+j8Nc61Qw+wNUiccqLf5kSFaP0Zub0/uHF5dtn68Nw
+         1mjlMKuoILO0G/BzShMseFzUbIY2yTZDFBTKI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QMHdARVwl+IDYkd7VNNhU2Et6yVJrDozO1ga8CSIno0=;
-        b=e7EVipt7gkappy14IWizg7IpvtxwBBnc2pl0Wl5R+9jCXaLRAsqG73a/NmK1dOjur8
-         MKL90jBmUNIMJNkvMd6XeDql4+eeN833QEl0x1V7BT8VV6GRcbjPLWPyyHwc4uzEAety
-         7osRUN800hcc+233eCQ73kk+wkX9XuSvnwvNshz7hNrdKpReotb6lK8//pjfNiSdFtDU
-         XOiN3TnPSfpmIWorDZenK5E3fbxvzIi32cFBl6hkb1BboKDXguKUAss8KUl9jrjSEU0A
-         1RsgCd4RElI/Q72oUbYc16mvMjmLR5Gknq9BlNYfDNdNuRXF/GAwjhjlHwWWMtBSH7WR
-         j/sA==
-X-Gm-Message-State: AOAM53202XdWSzfxLGwhOlF7fRA0gQYvn7droav2XWudDGlbPQ9cWg+L
-        o3N5lCWjnsPDyzwz6dGxUt0i/w==
-X-Google-Smtp-Source: ABdhPJxlCQHDVTx0W9WaTyg2sjAibZypse/HApK6/qMcAFAwx6bGTYr2uXc/g4mS01nhrMHiAQTv7g==
-X-Received: by 2002:a05:6830:cd:: with SMTP id x13mr1563342oto.166.1623803505478;
-        Tue, 15 Jun 2021 17:31:45 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id i5sm123925oov.21.2021.06.15.17.31.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 17:31:45 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 19:31:43 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Martin Botka <martin.botka@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        konrad.dybcio@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH V3 2/2] arch: arm64: dts: qcom: Add support for Sony
- Xperia 10II
-Message-ID: <YMlGb4W1c3VyKeCj@builder.lan>
-References: <20210613080522.25230-1-martin.botka@somainline.org>
- <20210613080522.25230-2-martin.botka@somainline.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CBfvBtPeeZ+txOyCfuRZiBcTJq4klTe+mp15Vdy8/1A=;
+        b=ZBKY/HP3Jc1HUJ8+XzVj0/o3K9ZopOgjX9eTmQPEGEk+BZdchbpOEjgsJ2p2tHTsza
+         KByBRjzAr2LCQ0vmWjF/OrvDqeWJx5gvBsYFGMxxZoM2FWsat+mBSPlY1gdhjsDPPGkk
+         AZnjhESoyHU1T4XH+PdY9PYMvNSqOW6wPVV7FAqN46RC+HR83K19A8wu/gNH6R00mBS0
+         IB+/O8ZEAV0dtJfJ1LdqcZEsT3xXpoogkLxNiDHhqBVPnfu3pWnHfDnZUxMebHD9MwU/
+         FrZt3OuCrZjVLR+DhXHd8ZWqeLtnj/UDHgaXRECkU4i7mbuMCntRbH1f34ytgLvAdYlx
+         72ug==
+X-Gm-Message-State: AOAM533URLoLpqGmiAMUM1oidQsd4JZYYxaZkw08wFtpPotY27Cg1w/o
+        K9ayRtnZrW0ieN/FSpdbcclX+aZ5T3UIkk8NL10=
+X-Google-Smtp-Source: ABdhPJwH+py3NWmdBUuBpDyESy1PyFq0f2mmpW4aJ9NqXogNwakCZoDbiBG2Z4XFGP3rQYE6OVQrcQ==
+X-Received: by 2002:a2e:8758:: with SMTP id q24mr1957101ljj.212.1623803582937;
+        Tue, 15 Jun 2021 17:33:02 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id c9sm46483ljr.104.2021.06.15.17.33.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 17:33:02 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id x14so1196458ljp.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:33:02 -0700 (PDT)
+X-Received: by 2002:a2e:9644:: with SMTP id z4mr1939304ljh.507.1623803581822;
+ Tue, 15 Jun 2021 17:33:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210613080522.25230-2-martin.botka@somainline.org>
+References: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
+ <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com> <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org>
+In-Reply-To: <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 15 Jun 2021 17:32:45 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
+Message-ID: <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
+Subject: Re: [PATCH] afs: fix no return statement in function returning non-void
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Zheng Zengkai <zhengzengkai@huawei.com>,
+        Tom Rix <trix@redhat.com>, linux-afs@lists.infradead.org,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 13 Jun 03:05 CDT 2021, Martin Botka wrote:
+On Tue, Jun 15, 2021 at 4:58 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> Some implementations of BUG() are macros, not functions,
 
-> This commits add support for Sony Xperia 10II based on the SM6125 SoC.
-> 
-> Currently working features:
-> - dmesg output to bootloader preconfigured display
-> - USB
-> - eMMC
-> - Volume down button
-> 
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> ---
-> Changes in v2, v3:
-> None
->  arch/arm64/boot/dts/qcom/Makefile             |   1 +
->  .../qcom/sm6125-sony-xperia-seine-pdx201.dts  | 105 ++++++++++++++++++
->  2 files changed, 106 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> index 456502aeee49..5a70dd9593c2 100644
-> --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -69,6 +69,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-oneplus-enchilada.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-oneplus-fajita.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-xiaomi-beryllium.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sdm850-lenovo-yoga-c630.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-sony-xperia-seine-pdx201.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-hdk.dtb
-> diff --git a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-> new file mode 100644
-> index 000000000000..b1d6de430273
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-> @@ -0,0 +1,105 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2021, Martin Botka <martin.botka@somainline.org>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sm6125.dtsi"
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/input/gpio-keys.h>
-> +
-> +/ {
-> +	/* required for bootloader to select correct board */
-> +	qcom,msm-id = <394 0x10000>; /* sm6125 v1 */
-> +	qcom,board-id = <34 0>;
-> +
-> +	model = "Sony Xperia 10 II";
-> +	compatible = "sony,pdx201", "qcom,sm6125";
-> +
-> +	chosen {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		framebuffer0: framebuffer@5c000000 {
-> +			compatible = "simple-framebuffer";
-> +			reg = <0 0x5c000000 0 (2520 * 1080 * 4)>;
-> +			width = <1080>;
-> +			height = <2520>;
-> +			stride = <(1080 * 4)>;
-> +			format = "a8r8g8b8";
-> +		};
-> +	};
-> +
-> +	extcon_usb: extcon-usb {
-> +		compatible = "linux,extcon-usb-gpio";
-> +		id-gpio = <&tlmm 102 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
-> +	gpio_keys {
+Not "some", I think. Most.
 
-No '_' in node names, please go '-'.
+> so "unreachable" is not applicable AFAIK.
 
-> +		status = "okay";
-> +		compatible = "gpio-keys";
-> +		input-name = "gpio-keys";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		autorepeat;
-> +
-> +		vol_dn {
+Sure it is. One common pattern is the x86 one:
 
-Ditto.
+  #define BUG()                                                   \
+  do {                                                            \
+          instrumentation_begin();                                \
+          _BUG_FLAGS(ASM_UD2, 0);                                 \
+          unreachable();                                          \
+  } while (0)
 
-> +			label = "Volume Down";
-> +			gpios = <&tlmm 47 GPIO_ACTIVE_LOW>;
-> +			linux,input-type = <1>;
-> +			linux,code = <KEY_VOLUMEDOWN>;
-> +			gpio-key,wakeup;
-> +			debounce-interval = <15>;
-> +		};
-> +	};
-> +	
+and that "unreachable()" is exactly what I'm talking about.
 
-Stray indentation on this line.
+So I repeat: what completely broken compiler / config / architecture
+is it that needs that "return 0" after a BUG() statement?
 
-Thanks,
-Bjorn
+Because that environment is broken, and the warning is bogus and wrong.
 
-> +	reserved_memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		debug_mem: memory@ffb00000 {
-> +			reg = <0x0 0xffb00000 0x0 0xc0000>;
-> +			no-map;
-> +		};
-> +
-> +		last_log_mem: memory@ffbc0000 {
-> +			reg = <0x0 0xffbc0000 0x0 0x80000>;
-> +			no-map;
-> +		};
-> +
-> +		pstore_mem: ramoops@ffc00000 {
-> +			compatible = "ramoops";
-> +			reg = <0x0 0xffc40000 0x0 0xc0000>;
-> +			record-size = <0x1000>;
-> +			console-size = <0x40000>;
-> +			msg-size = <0x20000 0x20000>;
-> +		};
-> +
-> +		cmdline_mem: memory@ffd00000 {
-> +			reg = <0x0 0xffd40000 0x0 0x1000>;
-> +			no-map;
-> +		};
-> +	};
-> +};
-> +
-> +&hsusb_phy1 {
-> +	status = "okay";
-> +};
-> +
-> +&sdhc_1 {
-> +	status = "okay";
-> +};
-> +
-> +&tlmm {
-> +	gpio-reserved-ranges = <22 2>, <28 6>;
-> +};
-> +
-> +&usb3 {
-> +	status = "okay";
-> +};
-> +
-> +&usb3_dwc3 {
-> +	extcon = <&extcon_usb>;
-> +};
-> -- 
-> 2.31.1
-> 
+It might not be the compiler. It might be some architecture that does
+this wrong. It might be some very particular configuration that does
+something bad and makes the "unreachable()" not work (or not exist).
+
+But *that* is the bug that should be fixed. Not adding a pointless and
+incorrect line that makes no sense, just to hide the real bug.
+
+               Linus
+
+                 Linus
