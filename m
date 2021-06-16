@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058DC3A9FE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929713A9F89
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235342AbhFPPmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:42:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51066 "EHLO mail.kernel.org"
+        id S235138AbhFPPiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:38:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234912AbhFPPji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:39:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59EF061356;
-        Wed, 16 Jun 2021 15:36:55 +0000 (UTC)
+        id S234959AbhFPPhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:37:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6348361375;
+        Wed, 16 Jun 2021 15:35:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857815;
-        bh=GhkXtGXIL0fNxS3zp4DWV6PenphHRFaLCBus3LYh8hc=;
+        s=korg; t=1623857732;
+        bh=b5BGenhf/Ak7a40yAaF7XyNoqm56O3ussUahGFJTdJI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kBbZaI4r8DVeTZqti6HqD4G/qDtJnAUAqaLrtMzrreU7Xw96EXgUs1bNPDlSJBi9Z
-         4wyzM9vrjAg5daxibihN228T7pBNxItzrK6jV9evqltIQQhJLLnX12RZOZNXw9r4H2
-         o5BdGKeJXexqlqtSU0w1ur05DUlcwDnYaNDHgUK0=
+        b=vrmKt/e/dCMvJqasAbZwAnMzewvhpSPbNhHIkd/OFMoJTGfDOyNHmlujnnzbil+Vc
+         wgU/lVyRJTMeOivnHlYrZQwkbV4YLCO/WGU6/BaI6Rg1+f0yL+OnHRiXSQjtmjP2ui
+         GTDrrZ8rJumINTh6GoO/YCk96OQ5qlBKv8g+jJe4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chu Lin <linchuyuan@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Khem Raj <raj.khem@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 17/48] hwmon/pmbus: (q54sj108a2) The PMBUS_MFR_ID is actually 6 chars instead of 5
+Subject: [PATCH 5.10 18/38] riscv: Use -mno-relax when using lld linker
 Date:   Wed, 16 Jun 2021 17:33:27 +0200
-Message-Id: <20210616152837.197474947@linuxfoundation.org>
+Message-Id: <20210616152835.972230726@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-References: <20210616152836.655643420@linuxfoundation.org>
+In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
+References: <20210616152835.407925718@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chu Lin <linchuyuan@google.com>
+From: Khem Raj <raj.khem@gmail.com>
 
-[ Upstream commit f0fb26c456a30d6009faa2c9d44aa22f5bf88c90 ]
+[ Upstream commit ec3a5cb61146c91f0f7dcec8b7e7157a4879a9ee ]
 
-The PMBUS_MFR_ID block is actually 6 chars for q54sj108a2.
-/sys/bus/i2c/drivers/q54sj108a2_test# iotools smbus_read8 $BUS $ADDR 0x99
-0x06
+lld does not implement the RISCV relaxation optimizations like GNU ld
+therefore disable it when building with lld, Also pass it to
+assembler when using external GNU assembler ( LLVM_IAS != 1 ), this
+ensures that relevant assembler option is also enabled along. if these
+options are not used then we see following relocations in objects
 
-Tested: Devices are able to bind to the q54sj108a2 driver successfully.
+0000000000000000 R_RISCV_ALIGN     *ABS*+0x0000000000000002
 
-Signed-off-by: Chu Lin <linchuyuan@google.com>
-Link: https://lore.kernel.org/r/20210517222606.3457594-1-linchuyuan@google.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+These are then rejected by lld
+ld.lld: error: capability.c:(.fixup+0x0): relocation R_RISCV_ALIGN requires unimplemented linker relaxation; recompile with -mno-relax but the .o is already compiled with -mno-relax
+
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/pmbus/q54sj108a2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/Makefile | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/hwmon/pmbus/q54sj108a2.c b/drivers/hwmon/pmbus/q54sj108a2.c
-index aec512766c31..0976268b2670 100644
---- a/drivers/hwmon/pmbus/q54sj108a2.c
-+++ b/drivers/hwmon/pmbus/q54sj108a2.c
-@@ -299,7 +299,7 @@ static int q54sj108a2_probe(struct i2c_client *client)
- 		dev_err(&client->dev, "Failed to read Manufacturer ID\n");
- 		return ret;
- 	}
--	if (ret != 5 || strncmp(buf, "DELTA", 5)) {
-+	if (ret != 6 || strncmp(buf, "DELTA", 5)) {
- 		buf[ret] = '\0';
- 		dev_err(dev, "Unsupported Manufacturer ID '%s'\n", buf);
- 		return -ENODEV;
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index 0289a97325d1..e241e0e85ac8 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -36,6 +36,15 @@ else
+ 	KBUILD_LDFLAGS += -melf32lriscv
+ endif
+ 
++ifeq ($(CONFIG_LD_IS_LLD),y)
++	KBUILD_CFLAGS += -mno-relax
++	KBUILD_AFLAGS += -mno-relax
++ifneq ($(LLVM_IAS),1)
++	KBUILD_CFLAGS += -Wa,-mno-relax
++	KBUILD_AFLAGS += -Wa,-mno-relax
++endif
++endif
++
+ # ISA string setting
+ riscv-march-$(CONFIG_ARCH_RV32I)	:= rv32ima
+ riscv-march-$(CONFIG_ARCH_RV64I)	:= rv64ima
 -- 
 2.30.2
 
