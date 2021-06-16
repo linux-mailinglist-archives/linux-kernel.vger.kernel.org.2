@@ -2,115 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1A93A9DDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3FE3A9DD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbhFPOn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:43:58 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:39925 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233914AbhFPOn5 (ORCPT
+        id S234095AbhFPOnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:43:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60373 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234069AbhFPOni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:43:57 -0400
-Received: from [192.168.1.155] ([95.115.35.150]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MSLEm-1licf82p6u-00SerU; Wed, 16 Jun 2021 16:41:26 +0200
-Subject: Re: [PATCH] drivers: gpio: add virtio-gpio guest driver
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv <linux-riscv@lists.infradead.org>
-References: <20210615174911.973-1-info@metux.net>
- <CACRpkdbwLOOT6nuhpkT5x-AZVipsD2qG8Qu4xoiRotHQNknwzw@mail.gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <098f669f-b451-18e1-9aed-a71f400bd581@metux.net>
-Date:   Wed, 16 Jun 2021 16:41:22 +0200
+        Wed, 16 Jun 2021 10:43:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623854491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bfIrh+PtaBgYpVTZkV0P8aItcFgfK/vLpnJFRGQ1gH8=;
+        b=Usozt17A2h0cQGlRMmOE80v1SDHa3aS7JAhjgGTQyKtKUJ8JJQtdBlZS5+MzWIhUgx2G9E
+        w6zPoktYcNWzft6DQiBPxlJdh9RCqxqGqyhPQJ2Zw0lMSDw1GuhFdb4tCPmFhXGLrYvopH
+        gFIiJ5FBHSeu7atWgggfhv35o49duik=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-237-WqqjcgeeNp2mEwtyu6UAfQ-1; Wed, 16 Jun 2021 10:41:30 -0400
+X-MC-Unique: WqqjcgeeNp2mEwtyu6UAfQ-1
+Received: by mail-ed1-f72.google.com with SMTP id df3-20020a05640230a3b029039179c0f290so1162072edb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:41:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bfIrh+PtaBgYpVTZkV0P8aItcFgfK/vLpnJFRGQ1gH8=;
+        b=dz6e6Oihom+5X/NimDEDqqpkyM0mWLv7fXf2NTLQ51BJ+3HJZD+4u/cqigY7q2a5kZ
+         BQ3jC/lTLV4NHGk5Js1CRYxHCW+jjF9pL0MpWHsHyk6ARZjL/MzR5OxT4bO4tQbf2naU
+         Wkh2rUwPJYUYnAgVj2Dqrf2q7NuO/sZLFNECLAu14BCApMDkX/pZLVRIHzVELKdU9GVW
+         VKHozX5zbCwYx75vCopHd3bCd18JuZ/DVI1mFMK1h1eOLzMszw+0/WE1nbL9pnC+eNu6
+         EwbBkCEu1iypfsuD+Ugzmih059trYrPo9QWmwF/zojYpVyEtEltZ4nm0EFrJ93bQh6ht
+         7etw==
+X-Gm-Message-State: AOAM530xnxm6ZICfhXQQB23T1qUZtZl7Xd1Wy2FRqqifQaS8Tbgz8eR4
+        IZ+nL1rBxR5/8dfU2q0naPA66pHSAeTa0SiRehpW9Du23E7HrSdxy9OVsZyZGKX8FF/dvX1p9+n
+        QDqsojpAkgDT6bwwxMp2rnkhBY2yE23866zMOQpKw4iodafOb8HCPC+QTiRY2FMhxzHCeCMExbo
+        nP
+X-Received: by 2002:a05:6402:40c3:: with SMTP id z3mr4640210edb.187.1623854489026;
+        Wed, 16 Jun 2021 07:41:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw8Kh3kRiNq6WrTKPSmty8tDUn0KpO37cQYGaBM8Rz57QbWzUN1RpAiuEKdLx5kEV/hkxh9lQ==
+X-Received: by 2002:a05:6402:40c3:: with SMTP id z3mr4640191edb.187.1623854488849;
+        Wed, 16 Jun 2021 07:41:28 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id c23sm1774183eds.57.2021.06.16.07.41.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 07:41:28 -0700 (PDT)
+Subject: Re: [PATCH 2/5] ACPI: scan: Make acpi_walk_dep_device_list()
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <3140195.44csPzL39Z@kreacher> <1881350.PYKUYFuaPT@kreacher>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <f46533e2-1ebe-0130-9323-b045da6ea62d@redhat.com>
+Date:   Wed, 16 Jun 2021 16:41:28 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdbwLOOT6nuhpkT5x-AZVipsD2qG8Qu4xoiRotHQNknwzw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:CR6mpicfGsY9r/evUqTXH8C70befzHJD17gK1boMJb2mNiw2I3w
- u9bascsokR1YLBsRaAjFl9nCA0nXMUduSAIVdTJsuBt//Y1hu5AbrPkpQ5Bewzb1Peh7x0m
- OJsttVts/KwE3xipe3/w+Di4ulseb46HgCXAWsbZwtIW1CWD52UQu24Sh7tjYr+AujL6fle
- DtR3xtegpA75e0CGxI5aw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fMVu1T4nu7g=:4lDZNogMmvE1wFbQcnZQ0B
- hBMiXVmcPPsYTquq0lJBIq7dqufr+FVBlwhCMtjMCtupVmGeVKmzhQLeZtIn0EqCtwP17PQC1
- bI4PhWcGXUahcXYS6EV82U3W2kaSYt7WSXN334mB665gcj2/yg90+n9mZ+hGyJiwnS+1XcWQ/
- U6OflJL9RiKDC/q+61jIjkRcm+8bbuwuCA4idwY9O67k50FabdiGYUKE1RmY05OjaAxgnk0AO
- jZBLFx00sKx0u7GOr3YKFhpHV84KJIdnhRy9FXO4LOE5OIgUnJDHC+FG2it+fuzaV5ud9zpzM
- Iztr85Sus6eg7hgkhxUxp+6GOYiOKJSNC1csHjDXN+RIw93lfgeqglRhXvzIDq7qAlKFORGbc
- SgnoSFASpckcaCipHWdnINRFf+zjpPLo55xzD0+rMIVAbabemAUPj8ZuOEqiYgaqgM/WGa2Hy
- /xsV6746LXXSuzAPiwPRjHVo4p2NJAqyjnjVbgO/gaw7BsyePIXVOSmAkD1jA7tBvxgXAny0C
- 6dcDS5dKyeTDANgMo4EGqI=
+In-Reply-To: <1881350.PYKUYFuaPT@kreacher>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.06.21 10:31, Linus Walleij wrote:
- > Hi Enrico,
+Hi,
 
- > So now there are two contesting patches for this and that creates a
- > social problem for us as maintainers. I am not too happy about that.
+On 6/16/21 4:22 PM, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Because acpi_walk_dep_device_list() is only called by the code in the
+> file in which it is defined, make it static, drop the export of it
+> and drop its header from acpi.h.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-note that this is a polished up of a repost of my original driver
-from last year.
+Actually, acpi_walk_dep_device_list() was split out as a
+helper function used to implement acpi_dev_clear_dependencies()
+because it will be used outside of drivers/acpi.
+Specifically it will be used in the new intel_skl_int3472 driver:
+https://patchwork.kernel.org/project/platform-driver-x86/patch/20210603224007.120560-6-djrscally@gmail.com/
 
- > Can we get the discussion down to actual technical points?
+Which I plan to merge into pdx86/for-next today, I've just merged
+your linux-pm/acpi-scan PULL-req which exports acpi_walk_dep_device_list()
+as preparation for this.
 
-Sure. Perhaps you recall or discussions from late 2020. The missing
-point there was (besides a few wording issues) the missing formal
-specification process w/ virtio TC. (spec was already included in this
-driver as well as the corresponding qemu patches).
+Regards,
 
-My spec was not just meant for VM applications but also actual silicon
-(as already mentioned, some folks of my client also implemented it in
-FPGAs - don't ask me about details, they just mentioned it was quite
-easy for them).
-
-This is why it is so trimmed on things like fixed packet size,
-unidirectional queues, mirroring packets w/ thus a few bits changed,
-etc. In constrast, a more network-like approach might have been looking
-nicer to traditional computer programmers, but much more complex to do
-in pure logic and eat up *lots of* more gates (think of actual memory
-management instead of hardwired latches, more complex decoding, etc).
-
-Meanwhile it played out working nicely in several HIL installations
-
-If I wanted to have a simple and CPU-only approach (just for VMs), I
-would have just mounted some sysfs pieces via 9P :p
-
-Several weeks ago, Viresh just wanted to continue the missing pieces
-(which was: tex'ifying the spec and submitting to virtio TC), but then
-unfortunately he invented something entirely different also put my name
-on it.
-
-Easy to imagine that I'm not amused at all.
+Hans
 
 
---mtx
+> ---
+>  drivers/acpi/scan.c  |    7 +++----
+>  include/linux/acpi.h |    3 ---
+>  2 files changed, 3 insertions(+), 7 deletions(-)
+> 
+> Index: linux-pm/drivers/acpi/scan.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/scan.c
+> +++ linux-pm/drivers/acpi/scan.c
+> @@ -2145,9 +2145,9 @@ static int acpi_scan_clear_dep(struct ac
+>   * negative value is returned by the callback then the loop is broken and that
+>   * value is returned as the final error.
+>   */
+> -int acpi_walk_dep_device_list(acpi_handle handle,
+> -			      int (*callback)(struct acpi_dep_data *, void *),
+> -			      void *data)
+> +static int acpi_walk_dep_device_list(acpi_handle handle,
+> +				int (*callback)(struct acpi_dep_data *, void *),
+> +				void *data)
+>  {
+>  	struct acpi_dep_data *dep, *tmp;
+>  	int ret = 0;
+> @@ -2164,7 +2164,6 @@ int acpi_walk_dep_device_list(acpi_handl
+>  
+>  	return ret > 0 ? 0 : ret;
+>  }
+> -EXPORT_SYMBOL_GPL(acpi_walk_dep_device_list);
+>  
+>  /**
+>   * acpi_dev_clear_dependencies - Inform consumers that the device is now active
+> Index: linux-pm/include/linux/acpi.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/acpi.h
+> +++ linux-pm/include/linux/acpi.h
+> @@ -668,9 +668,6 @@ extern bool acpi_driver_match_device(str
+>  				     const struct device_driver *drv);
+>  int acpi_device_uevent_modalias(struct device *, struct kobj_uevent_env *);
+>  int acpi_device_modalias(struct device *, char *, int);
+> -int acpi_walk_dep_device_list(acpi_handle handle,
+> -			      int (*callback)(struct acpi_dep_data *, void *),
+> -			      void *data);
+>  
+>  struct platform_device *acpi_create_platform_device(struct acpi_device *,
+>  						    struct property_entry *);
+> 
+> 
+> 
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
