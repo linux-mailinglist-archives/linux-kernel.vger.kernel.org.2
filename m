@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5B13A995C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A78293A995E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232308AbhFPLhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:37:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhFPLhb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:37:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 558336128B;
-        Wed, 16 Jun 2021 11:35:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623843325;
-        bh=PzV2MEWSbQ8RK/gPkQQ7OF/Cwl0iVSmSTAcJaSf9HHM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hcVyna82yqf0QpgsHmlXZCfcqXyqANV2sngCLxXyovF5ec4EpbSaRSBeAZMu3edfq
-         fbp7+WZUexMcF0Dduh4K5dTyGyQln3zx7IF92hUn/hntdLwpHGTN6AvPmSUPeVQUl9
-         Yyhni9Oob8e+ObQ4tGjUd04d+SzJOijbTv/tqL4pJoqk62pQl1RblM7MQqaO/kE78t
-         hSFvjUnso4csJ7qamyHLPszyUu5EykkHjrBHFVQljnc7H1ocRemOaNUmkH78yUZJG8
-         g5mf5Lr/I8ordIfwBAN+CJGkBO/PTXA5NM8Y2E/y1vVCqF/4Ws/syEypQgv0hixOBq
-         5WP7Gv+nDM7Mw==
-Date:   Wed, 16 Jun 2021 12:35:05 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
+        id S232468AbhFPLiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhFPLiO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 07:38:14 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9D1C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 04:36:07 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id t9so1725863pgn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 04:36:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=AFNw9Rg5VPuxN2wHcOG+M82kB/OTV/RwGWRWsiLI7hk=;
+        b=uJxJhSA45GbGjc4mU6EQzm+JA1rv1Nf/rYnXrafAWklsYnUpciRXuUXb3LNLk/GSsG
+         uhcgjKTOEq2Y/o467Kwmp+8lwt3HQpn4hR1rMPUeeFKhjBkKFNcp4aK6Cj9XWf9UY82B
+         ii4wKCe3L00EZ5VW94NzrJpfp/ux0/q3LedvvpojQDxHWZDElEgaW0FasGQR0AB1QEV/
+         irBcUKKYS6YDTB6zw+hqnexDyErM7FDRTFd45cVWS7vySYhD5HVodguvEGsJIsbM3T7F
+         SjIm3+k+ElXfcKNtVutd6/2gBV9dB+5EfytNbPUl5PC23kpZM2UakgTHKzdc8JIlQllz
+         jL6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AFNw9Rg5VPuxN2wHcOG+M82kB/OTV/RwGWRWsiLI7hk=;
+        b=LcELw86FNYfdM7Qt0Nel0N6PJHhH4UT3EO6Jm+ZWk6DtsMJnozW13rdjYnkyky+Ilk
+         mhltjghc99FNFPliHUNwYDbPTiF0NbtiVHsEG1flil92Y7+ic85YZrAZv2VT1myUVuFF
+         IDFGcmlufGO025qMsnUoBJ5zRdxOF+x3YRLVaXlm+YNMuOFSpywFMN6z0zVcV3ylDRpf
+         TNDrUIlLcSXy4T+7vdz1J+8mMo75/RKmfBSwUAhtY3jWXsFt7FWf19N2CX5jWZBatPhC
+         d7pHlkJlINo6sE2J4JCm8Y0wVC7HaVjOTi2aNsDGKSB8wdKE0d3jIOAQJ2sbJrP2sVTn
+         /OtQ==
+X-Gm-Message-State: AOAM530y4ZmglSvZx55aLsftm8vkw98JMZMHBmTU8uWXMvl/5TrjP2Au
+        JO20z9ZXFX7aG/PkIFEutCB7aw==
+X-Google-Smtp-Source: ABdhPJyDgJWFryQu8qjgEB1asImm2xBrDDYrNFz42uSKH0nhqf5exetwlPR/FE3tfHi5sWyvtBnLAA==
+X-Received: by 2002:a63:e453:: with SMTP id i19mr4668054pgk.134.1623843366888;
+        Wed, 16 Jun 2021 04:36:06 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id i125sm2026393pfc.7.2021.06.16.04.36.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 04:36:06 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 17:06:04 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/7] spi: spi-geni-qcom: Add support for GPI dma
-Message-ID: <20210616113505.GB6418@sirena.org.uk>
-References: <20210111151651.1616813-1-vkoul@kernel.org>
- <20210111151651.1616813-5-vkoul@kernel.org>
- <20210111163504.GD4728@sirena.org.uk>
- <YMm7ZWXnJyb8QT1u@vkoul-mobl>
+Subject: Re: [PATCH V2 2/3] arch_topology: Avoid use-after-free for
+ scale_freq_data
+Message-ID: <20210616113604.e4kc3jxb7ayqskev@vireshk-i7>
+References: <cover.1623825725.git.viresh.kumar@linaro.org>
+ <9dba462b4d09a1a8a9fbb75740b74bf91a09a3e1.1623825725.git.viresh.kumar@linaro.org>
+ <20210616112544.GA23657@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uZ3hkaAS1mZxFaxD"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMm7ZWXnJyb8QT1u@vkoul-mobl>
-X-Cookie: Revenge is a form of nostalgia.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210616112544.GA23657@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ionela,
 
---uZ3hkaAS1mZxFaxD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 16-06-21, 12:25, Ionela Voinescu wrote:
+> Please correct me if I'm wrong, but my understanding is that this is
+> only a problem for the cppc cpufreq invariance functionality. Let's
+> consider a scenario where CPUs are either hotplugged out or the cpufreq
+> CPPC driver module is removed; topology_clear_scale_freq_source() would
+> get called and the sfd_data will be set to NULL. But if at the same
+> time topology_scale_freq_tick() got an old reference of sfd_data,
+> set_freq_scale() will be called. This is only a problem for CPPC cpufreq
+> as cppc_scale_freq_tick() will end up using driver internal data that
+> might have been freed during the hotplug callbacks or the exit path.
 
-On Wed, Jun 16, 2021 at 02:20:45PM +0530, Vinod Koul wrote:
+For now, yes, CPPC is the only one affected.
 
-> Looking at the code, that is ideal case. Only issue I can see is that
-> core DMA mapping device being used is incorrect. The core would use
-> ctlr->dev.parent which is the spi0 device here.
+> If this is the case, wouldn't the synchronisation issue be better
+> resolved in the CPPC cpufreq driver, rather than here?
 
-Why would the parent of the controller be a SPI device?
+Hmm, the way I see it is that topology_clear_scale_freq_source() is an API
+provided by topology core and the topology core needs to guarantee that it
+doesn't use the data any longer after topology_clear_scale_freq_source() is
+called.
 
-> But in this case, that wont work. We have a parent qup device which is
-> the parent for both spi and dma device and needs to be used for
-> dma-mapping!=20
+The same is true for other APIs, like:
 
-> If we allow drivers to set dma mapping device and use that, then I can
-> reuse the core. Let me know if that is agreeable to you and I can hack
-> this up. Maybe add a new member in spi_controller which is filled by
-> drivers in can_dma() callback?
+irq_work_sync();
+kthread_cancel_work_sync();
 
-Possibly, I'd need to see the code.
+It isn't the user which needs to take this into account, but the API provider.
 
---uZ3hkaAS1mZxFaxD
-Content-Type: application/pgp-signature; name="signature.asc"
+There may be more users of this in the future, lets say another cpufreq driver,
+and so keeping this synchronization at the API provider is the right thing to do
+IMHO.
 
------BEGIN PGP SIGNATURE-----
+And from the user's perspective, like cppc, it doesn't have any control over who
+is using its callback and how and when. It is very very difficult to provide
+something like this at the users, redundant anyway. For example cppc won't ever
+know when topology_scale_freq_tick() has stopped calling its callback.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDJ4ekACgkQJNaLcl1U
-h9Af1wf/XUOdANnfcSkgc6h7gVWBBmYYK7XBQctlluQOJxB4547Z5GJBEqISj560
-Fn5NhyLDpooG5dGnHVv9434n1mPZiU7SwUbi1fwwauNe9prWjvZnC4NpUbobm1XX
-KFczLzgQZ2QiiVDcry2XQz5+GsmHWDPlcBvN9B2EcM37BUXooUTLoAJmwYbB4kHu
-LmY6Su4yZFynekXxcCuZN+8wlCGQEcX89lppEyRH62cyimARLoh4psPJuLBRNwbD
-xw+FCLQxBkNVWYZD5v3t2KWCIqewSGUS1YTAAJUCiPftepbsH91CragR2sC6AewR
-EXh4LGNP8gNAt38ftvgzwKFGIBC7TA==
-=VcFe
------END PGP SIGNATURE-----
+For example this is what cppc driver needs to do now:
 
---uZ3hkaAS1mZxFaxD--
++static void cppc_cpufreq_stop_cpu(struct cpufreq_policy *policy,
++                                 unsigned int cpu)
++{
++       struct cppc_freq_invariance *cppc_fi = &per_cpu(cppc_freq_inv, cpu);
++
++       topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, cpumask_of(cpu));
++       irq_work_sync(&cppc_fi->irq_work);
++       kthread_cancel_work_sync(&cppc_fi->work);
++}
+
+The driver uses APIs provided by 3 layers, topology, irq-work, kthread and all
+must provide these guarantees.
+
+A very similar thing is implemented in kernel/sched/cpufreq.c for example.
+
+-- 
+viresh
