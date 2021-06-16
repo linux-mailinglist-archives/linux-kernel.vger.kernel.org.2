@@ -2,368 +2,451 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C07E3A96E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068933A96E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbhFPKI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:08:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:60928 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231517AbhFPKI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:08:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C89291042;
-        Wed, 16 Jun 2021 03:06:49 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 120A53F70D;
-        Wed, 16 Jun 2021 03:06:47 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 11:06:30 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 16/19] arm64: dts: allwinner: Add Allwinner H616
- .dtsi file
-Message-ID: <20210616110630.54061205@slackpad.fritz.box>
-In-Reply-To: <20210616092355.ndhjelwcch6umdxg@gilmour>
-References: <20210615110636.23403-1-andre.przywara@arm.com>
-        <20210615110636.23403-17-andre.przywara@arm.com>
-        <20210616092355.ndhjelwcch6umdxg@gilmour>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S232246AbhFPKJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231517AbhFPKJU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 06:09:20 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C08C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 03:07:14 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1ltSRu-00015P-2M; Wed, 16 Jun 2021 12:07:06 +0200
+Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1ltSRs-0002H5-DS; Wed, 16 Jun 2021 12:07:04 +0200
+Date:   Wed, 16 Jun 2021 12:07:04 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
+Subject: Re: [PATCH v2 31/33] arm64: zynqmp: Enable xlnx, zynqmp-dwc3 driver
+ for xilinx boards
+Message-ID: <20210616100704.GH22530@pengutronix.de>
+References: <cover.1623684253.git.michal.simek@xilinx.com>
+ <3a68b328a69a0db51948798216cf914c9073baf2.1623684253.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3a68b328a69a0db51948798216cf914c9073baf2.1623684253.git.michal.simek@xilinx.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 11:31:28 up 118 days, 12:55, 123 users,  load average: 0.16, 0.14,
+ 0.17
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 11:23:55 +0200
-Maxime Ripard <maxime@cerno.tech> wrote:
-
-Hi Maxime,
-
-> On Tue, Jun 15, 2021 at 12:06:33PM +0100, Andre Przywara wrote:
-> > This (relatively) new SoC is similar to the H6, but drops the (broken)
-> > PCIe support and the USB 3.0 controller. It also gets the management
-> > controller removed, which in turn removes *some*, but not all of the
-> > devices formerly dedicated to the ARISC (CPUS).
-> > And while there is still the extra sunxi interrupt controller, the
-> > package lacks the corresponding NMI pin, so no interrupts for the PMIC.
-> > 
-> > The reserved memory node is actually handled by Trusted Firmware now,
-> > but U-Boot fails to propagate this to a separately loaded DTB, so we
-> > keep it in here for now, until U-Boot learns to do this properly.
-> > 
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > ---
-> >  .../arm64/boot/dts/allwinner/sun50i-h616.dtsi | 735 ++++++++++++++++++
-> >  1 file changed, 735 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-> > 
-> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-> > new file mode 100644
-> > index 000000000000..021b8597cfb8
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-> > @@ -0,0 +1,735 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > +// Copyright (C) 2020 Arm Ltd.
-> > +// based on the H6 dtsi, which is:
-> > +//   Copyright (C) 2017 Icenowy Zheng <icenowy@aosc.io>
-> > +
-> > +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +#include <dt-bindings/clock/sun50i-h616-ccu.h>
-> > +#include <dt-bindings/clock/sun50i-h6-r-ccu.h>
-> > +#include <dt-bindings/reset/sun50i-h616-ccu.h>
-> > +#include <dt-bindings/reset/sun50i-h6-r-ccu.h>
-> > +
-> > +/ {
-> > +	interrupt-parent = <&gic>;
-> > +	#address-cells = <2>;
-> > +	#size-cells = <2>;
-> > +
-> > +	cpus {
-> > +		#address-cells = <1>;
-> > +		#size-cells = <0>;
-> > +
-> > +		cpu0: cpu@0 {
-> > +			compatible = "arm,cortex-a53";
-> > +			device_type = "cpu";
-> > +			reg = <0>;
-> > +			enable-method = "psci";
-> > +			clocks = <&ccu CLK_CPUX>;
-> > +		};
-> > +
-> > +		cpu1: cpu@1 {
-> > +			compatible = "arm,cortex-a53";
-> > +			device_type = "cpu";
-> > +			reg = <1>;
-> > +			enable-method = "psci";
-> > +			clocks = <&ccu CLK_CPUX>;
-> > +		};
-> > +
-> > +		cpu2: cpu@2 {
-> > +			compatible = "arm,cortex-a53";
-> > +			device_type = "cpu";
-> > +			reg = <2>;
-> > +			enable-method = "psci";
-> > +			clocks = <&ccu CLK_CPUX>;
-> > +		};
-> > +
-> > +		cpu3: cpu@3 {
-> > +			compatible = "arm,cortex-a53";
-> > +			device_type = "cpu";
-> > +			reg = <3>;
-> > +			enable-method = "psci";
-> > +			clocks = <&ccu CLK_CPUX>;
-> > +		};
-> > +	};
-> > +
-> > +	reserved-memory {
-> > +		#address-cells = <2>;
-> > +		#size-cells = <2>;
-> > +		ranges;
-> > +
-> > +		/* 512KiB reserved for ARM Trusted Firmware (BL31) */
-> > +		secmon_reserved: secmon@40000000 {
-> > +			reg = <0x0 0x40000000 0x0 0x80000>;
-> > +			no-map;
-> > +		};
-> > +	};  
+On Mon, 14 Jun 2021 17:25:39 +0200, Michal Simek wrote:
+> The commit 84770f028fab ("usb: dwc3: Add driver for Xilinx platforms")
+> finally add proper support for Xilinx dwc3 driver. This patch is adding DT
+> description for it.
 > 
-> Can't this be added by ATF directly?
-
-It actually is, and if you use U-Boot's DT ($fdtcontroladdr), that
-actually works. But as it stands right now, U-Boot fails to propagate
-this to any DTB that gets *loaded*. Fixing this requires generic code
-fixes, so I can't just hack this in for sunxi quickly.
-So I wanted to keep this around for a while, as missing this is a
-showstopper for booting Linux.
-
-> > +	osc24M: osc24M_clk {  
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> ---
 > 
-> underscores are not valid in the node names and trigger a DTC warning.
-
-Oops, sorry for that.
-
+> Changes in v2:
+> - New patch in the series
 > 
-> > +		#clock-cells = <0>;
-> > +		compatible = "fixed-clock";
-> > +		clock-frequency = <24000000>;
-> > +		clock-output-names = "osc24M";
-> > +	};
-> > +
-> > +	pmu {
-> > +		compatible = "arm,cortex-a53-pmu";
-> > +		interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>,
-> > +			     <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
-> > +			     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>,
-> > +			     <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
-> > +		interrupt-affinity = <&cpu0>, <&cpu1>, <&cpu2>, <&cpu3>;
-> > +	};
-> > +
-> > +	psci {
-> > +		compatible = "arm,psci-0.2";
-> > +		method = "smc";
-> > +	};
-> > +
-> > +	timer {
-> > +		compatible = "arm,armv8-timer";
-> > +		arm,no-tick-in-suspend;
-> > +		interrupts = <GIC_PPI 13
-> > +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
-> > +			     <GIC_PPI 14
-> > +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
-> > +			     <GIC_PPI 11
-> > +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
-> > +			     <GIC_PPI 10
-> > +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
-> > +	};
-> > +
-> > +	soc {
-> > +		compatible = "simple-bus";
-> > +		#address-cells = <1>;
-> > +		#size-cells = <1>;
-> > +		ranges = <0x0 0x0 0x0 0x40000000>;
-> > +
-> > +		syscon: syscon@3000000 {
-> > +			compatible = "allwinner,sun50i-h616-system-control";
-> > +			reg = <0x03000000 0x1000>;
-> > +			#address-cells = <1>;
-> > +			#size-cells = <1>;
-> > +			ranges;
-> > +
-> > +			sram_c: sram@28000 {
-> > +				compatible = "mmio-sram";
-> > +				reg = <0x00028000 0x30000>;
-> > +				#address-cells = <1>;
-> > +				#size-cells = <1>;
-> > +				ranges = <0 0x00028000 0x30000>;
-> > +			};
-> > +		};
-> > +
-> > +		ccu: clock@3001000 {
-> > +			compatible = "allwinner,sun50i-h616-ccu";
-> > +			reg = <0x03001000 0x1000>;
-> > +			clocks = <&osc24M>, <&rtc 0>, <&rtc 2>;
-> > +			clock-names = "hosc", "losc", "iosc";
-> > +			#clock-cells = <1>;
-> > +			#reset-cells = <1>;
-> > +		};
-> > +
-> > +		watchdog: watchdog@30090a0 {
-> > +			compatible = "allwinner,sun50i-h616-wdt",
-> > +				     "allwinner,sun6i-a31-wdt";
-> > +			reg = <0x030090a0 0x20>;
-> > +			interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&osc24M>;
-> > +			status = "okay";
-> > +		};
-> > +
-> > +		pio: pinctrl@300b000 {
-> > +			compatible = "allwinner,sun50i-h616-pinctrl";
-> > +			reg = <0x0300b000 0x400>;
-> > +			interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&ccu CLK_APB1>, <&osc24M>, <&rtc 0>;
-> > +			clock-names = "apb", "hosc", "losc";
-> > +			gpio-controller;
-> > +			#gpio-cells = <3>;
-> > +			interrupt-controller;
-> > +			#interrupt-cells = <3>;
-> > +
-> > +			ext_rgmii_pins: rgmii-pins {
-> > +				pins = "PI0", "PI1", "PI2", "PI3", "PI4",
-> > +				       "PI5", "PI7", "PI8", "PI9", "PI10",
-> > +				       "PI11", "PI12", "PI13", "PI14", "PI15",
-> > +				       "PI16";
-> > +				function = "emac0";
-> > +				drive-strength = <40>;
-> > +			};
-> > +
-> > +			i2c0_pins: i2c0-pins {
-> > +				pins = "PI6", "PI7";
-> > +				function = "i2c0";
-> > +			};
-> > +
-> > +			i2c3_ph_pins: i2c3-ph-pins {
-> > +				pins = "PH4", "PH5";
-> > +				function = "i2c3";
-> > +			};
-> > +
-> > +			ir_rx_pin: ir-rx-pin {
-> > +				pins = "PH10";
-> > +				function = "ir_rx";
-> > +			};
-> > +
-> > +			mmc0_pins: mmc0-pins {
-> > +				pins = "PF0", "PF1", "PF2", "PF3",
-> > +				       "PF4", "PF5";
-> > +				function = "mmc0";
-> > +				drive-strength = <30>;
-> > +				bias-pull-up;
-> > +			};
-> > +
-> > +			mmc1_pins: mmc1-pins {
-> > +				pins = "PG0", "PG1", "PG2", "PG3",
-> > +				       "PG4", "PG5";
-> > +				function = "mmc1";
-> > +				drive-strength = <30>;
-> > +				bias-pull-up;
-> > +			};
-> > +
-> > +			mmc2_pins: mmc2-pins {
-> > +				pins = "PC0", "PC1", "PC5", "PC6",
-> > +				       "PC8", "PC9", "PC10", "PC11",
-> > +				       "PC13", "PC14", "PC15", "PC16";
-> > +				function = "mmc2";
-> > +				drive-strength = <30>;
-> > +				bias-pull-up;
-> > +			};
-> > +
-> > +			spi0_pins: spi0-pins {
-> > +				pins = "PC0", "PC2", "PC3", "PC4";
-> > +				function = "spi0";
-> > +			};
-> > +
-> > +			spi1_pins: spi1-pins {
-> > +				pins = "PH6", "PH7", "PH8";
-> > +				function = "spi1";
-> > +			};
-> > +
-> > +			spi1_cs_pin: spi1-cs-pin {
-> > +				pins = "PH5";
-> > +				function = "spi1";
-> > +			};
-> > +
-> > +			uart0_ph_pins: uart0-ph-pins {
-> > +				pins = "PH0", "PH1";
-> > +				function = "uart0";
-> > +			};
-> > +
-> > +			uart1_pins: uart1-pins {
-> > +				pins = "PG6", "PG7";
-> > +				function = "uart1";
-> > +			};
-> > +
-> > +			uart1_rts_cts_pins: uart1-rts-cts-pins {
-> > +				pins = "PG8", "PG9";
-> > +				function = "uart1";
-> > +			};
-> > +		};
-> > +
-> > +		gic: interrupt-controller@3021000 {
-> > +			compatible = "arm,gic-400";
-> > +			reg = <0x03021000 0x1000>,
-> > +			      <0x03022000 0x2000>,
-> > +			      <0x03024000 0x2000>,
-> > +			      <0x03026000 0x2000>;
-> > +			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
-> > +			interrupt-controller;
-> > +			#interrupt-cells = <3>;
-> > +		};
-> > +
-> > +		mmc0: mmc@4020000 {
-> > +			compatible = "allwinner,sun50i-h616-mmc",
-> > +				     "allwinner,sun50i-a100-mmc";
-> > +			reg = <0x04020000 0x1000>;
-> > +			clocks = <&ccu CLK_BUS_MMC0>, <&ccu CLK_MMC0>;
-> > +			clock-names = "ahb", "mmc";
-> > +			resets = <&ccu RST_BUS_MMC0>;
-> > +			reset-names = "ahb";
-> > +			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
-> > +			pinctrl-names = "default";
-> > +			pinctrl-0 = <&mmc0_pins>;
-> > +			status = "disabled";
-> > +			max-frequency = <150000000>;
-> > +			cap-sd-highspeed;
-> > +			cap-mmc-highspeed;
-> > +			mmc-ddr-3_3v;
-> > +			mmc-ddr-1_8v;  
+>  .../dts/xilinx/zynqmp-zc1751-xm015-dc1.dts    |  6 ++
+>  .../dts/xilinx/zynqmp-zc1751-xm016-dc2.dts    |  7 ++
+>  .../dts/xilinx/zynqmp-zc1751-xm017-dc3.dts    | 14 ++++
+>  .../boot/dts/xilinx/zynqmp-zcu100-revC.dts    | 10 +++
+>  .../boot/dts/xilinx/zynqmp-zcu102-revA.dts    |  6 ++
+>  .../boot/dts/xilinx/zynqmp-zcu104-revA.dts    |  6 ++
+>  .../boot/dts/xilinx/zynqmp-zcu104-revC.dts    |  6 ++
+>  .../boot/dts/xilinx/zynqmp-zcu106-revA.dts    |  6 ++
+>  .../boot/dts/xilinx/zynqmp-zcu111-revA.dts    |  6 ++
+>  arch/arm64/boot/dts/xilinx/zynqmp.dtsi        | 70 +++++++++++++++----
+>  10 files changed, 124 insertions(+), 13 deletions(-)
 > 
-> This is not something you know in the DTSI? It entirely depends on how
-> the board has been designed.
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
+> index d78439e891b9..c1cedc92e017 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
+> @@ -27,6 +27,7 @@ aliases {
+>  		rtc0 = &rtc;
+>  		serial0 = &uart0;
+>  		spi0 = &qspi;
+> +		usb0 = &usb0;
+>  	};
+>  
+>  	chosen {
+> @@ -404,7 +405,12 @@ &usb0 {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_usb0_default>;
+> +};
+> +
+> +&dwc3_0 {
+> +	status = "okay";
+>  	dr_mode = "host";
+> +	snps,usb3_lpm_capable;
+>  	phy-names = "usb3-phy";
+>  	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
+>  	maximum-speed = "super-speed";
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts
+> index cd61550c52e5..938b76bd0527 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts
+> @@ -26,6 +26,7 @@ aliases {
+>  		serial1 = &uart1;
+>  		spi0 = &spi0;
+>  		spi1 = &spi1;
+> +		usb0 = &usb1;
+>  	};
+>  
+>  	chosen {
+> @@ -479,7 +480,13 @@ &usb1 {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_usb1_default>;
+> +};
+> +
+> +&dwc3_1 {
+> +	status = "okay";
+>  	dr_mode = "host";
+> +	snps,usb3_lpm_capable;
+> +	maximum-speed = "super-speed";
+>  };
+>  
+>  &uart0 {
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts
+> index ba7f1f21c579..4394ec3b6a23 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts
+> @@ -24,6 +24,8 @@ aliases {
+>  		rtc0 = &rtc;
+>  		serial0 = &uart0;
+>  		serial1 = &uart1;
+> +		usb0 = &usb0;
+> +		usb1 = &usb1;
+>  	};
+>  
+>  	chosen {
+> @@ -147,11 +149,23 @@ &uart1 {
+>  
+>  &usb0 {
+>  	status = "okay";
+> +};
+> +
+> +&dwc3_0 {
+> +	status = "okay";
+>  	dr_mode = "host";
+> +	snps,usb3_lpm_capable;
+> +	maximum-speed = "super-speed";
+>  };
+>  
+>  /* ULPI SMSC USB3320 */
+>  &usb1 {
+>  	status = "okay";
+> +};
+> +
+> +&dwc3_1 {
+> +	status = "okay";
+>  	dr_mode = "host";
+> +	snps,usb3_lpm_capable;
+> +	maximum-speed = "super-speed";
+>  };
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
+> index 80415e202814..6d32bfac48b5 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
+> @@ -30,6 +30,8 @@ aliases {
+>  		serial2 = &dcc;
+>  		spi0 = &spi0;
+>  		spi1 = &spi1;
+> +		usb0 = &usb0;
+> +		usb1 = &usb1;
+>  		mmc0 = &sdhci0;
+>  		mmc1 = &sdhci1;
+>  	};
+> @@ -537,6 +539,10 @@ &usb0 {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_usb0_default>;
+> +};
+> +
+> +&dwc3_0 {
+> +	status = "okay";
+>  	dr_mode = "peripheral";
+>  	phy-names = "usb3-phy";
+>  	phys = <&psgtr 2 PHY_TYPE_USB3 0 0>;
+> @@ -548,6 +554,10 @@ &usb1 {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_usb1_default>;
+> +};
+> +
+> +&dwc3_1 {
+> +	status = "okay";
+>  	dr_mode = "host";
+>  	phy-names = "usb3-phy";
+>  	phys = <&psgtr 3 PHY_TYPE_USB3 1 0>;
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+> index becfc23a5610..b17677378ab5 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+> @@ -31,6 +31,7 @@ aliases {
+>  		serial1 = &uart1;
+>  		serial2 = &dcc;
+>  		spi0 = &qspi;
+> +		usb0 = &usb0;
+>  	};
+>  
+>  	chosen {
+> @@ -998,7 +999,12 @@ &usb0 {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_usb0_default>;
+> +};
+> +
+> +&dwc3_0 {
+> +	status = "okay";
+>  	dr_mode = "host";
+> +	snps,usb3_lpm_capable;
+>  	phy-names = "usb3-phy";
+>  	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
+>  	maximum-speed = "super-speed";
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
+> index 86fff3632c7d..fb7a9f7907d9 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
+> @@ -29,6 +29,7 @@ aliases {
+>  		serial1 = &uart1;
+>  		serial2 = &dcc;
+>  		spi0 = &qspi;
+> +		usb0 = &usb0;
+>  	};
+>  
+>  	chosen {
+> @@ -481,7 +482,12 @@ &usb0 {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_usb0_default>;
+> +};
+> +
+> +&dwc3_0 {
+> +	status = "okay";
+>  	dr_mode = "host";
+> +	snps,usb3_lpm_capable;
+>  	phy-names = "usb3-phy";
+>  	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
+>  	maximum-speed = "super-speed";
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
+> index 2a872d439804..afc9b200a59b 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
+> @@ -29,6 +29,7 @@ aliases {
+>  		serial1 = &uart1;
+>  		serial2 = &dcc;
+>  		spi0 = &qspi;
+> +		usb0 = &usb0;
+>  	};
+>  
+>  	chosen {
+> @@ -493,7 +494,12 @@ &usb0 {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_usb0_default>;
+> +};
+> +
+> +&dwc3_0 {
+> +	status = "okay";
+>  	dr_mode = "host";
+> +	snps,usb3_lpm_capable;
+>  	phy-names = "usb3-phy";
+>  	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
+>  	maximum-speed = "super-speed";
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
+> index d2219373580a..793740cbd791 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
+> @@ -31,6 +31,7 @@ aliases {
+>  		serial1 = &uart1;
+>  		serial2 = &dcc;
+>  		spi0 = &qspi;
+> +		usb0 = &usb0;
+>  	};
+>  
+>  	chosen {
+> @@ -991,7 +992,12 @@ &usb0 {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_usb0_default>;
+> +};
+> +
+> +&dwc3_0 {
+> +	status = "okay";
+>  	dr_mode = "host";
+> +	snps,usb3_lpm_capable;
+>  	phy-names = "usb3-phy";
+>  	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
+>  	maximum-speed = "super-speed";
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
+> index dac5ba67a160..a245250970c8 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
+> @@ -30,6 +30,7 @@ aliases {
+>  		serial0 = &uart0;
+>  		serial1 = &dcc;
+>  		spi0 = &qspi;
+> +		usb0 = &usb0;
+>  	};
+>  
+>  	chosen {
+> @@ -828,7 +829,12 @@ &usb0 {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_usb0_default>;
+> +};
+> +
+> +&dwc3_0 {
+> +	status = "okay";
+>  	dr_mode = "host";
+> +	snps,usb3_lpm_capable;
+>  	phy-names = "usb3-phy";
+>  	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
+>  	maximum-speed = "super-speed";
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+> index 6f0fcec28ae2..731b2d170344 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+> @@ -2,7 +2,7 @@
+>  /*
+>   * dts file for Xilinx ZynqMP
+>   *
+> - * (C) Copyright 2014 - 2019, Xilinx, Inc.
+> + * (C) Copyright 2014 - 2021, Xilinx, Inc.
+>   *
+>   * Michal Simek <michal.simek@xilinx.com>
+>   *
+> @@ -805,24 +805,68 @@ uart1: serial@ff010000 {
+>  			power-domains = <&zynqmp_firmware PD_UART_1>;
+>  		};
+>  
+> -		usb0: usb@fe200000 {
+> -			compatible = "snps,dwc3";
+> +		usb0: usb0@ff9d0000 {
 
-Are you referring just to the last property?
-This is copying what the driver unconditionally sets for the other
-SoCs at the moment (minus the H5 screwup):
-	mmc->caps      |= MMC_CAP_1_8V_DDR | MMC_CAP_3_3V_DDR;
-IIUC 1.8V operation requires a 1.8V regulator for vqmmc to actually
-work, so this property alone won't enable anything.
-But if it's just about the 1.8V property, I can of course move this to
-the board dts files.
+usb@ff9d0000
 
-Cheers,
-Andre
+> +			#address-cells = <2>;
+> +			#size-cells = <2>;
+>  			status = "disabled";
+> -			interrupt-parent = <&gic>;
+> -			interrupts = <0 65 4>;
+> -			reg = <0x0 0xfe200000 0x0 0x40000>;
+> -			clock-names = "clk_xin", "clk_ahb";
+> +			compatible = "xlnx,zynqmp-dwc3";
+> +			reg = <0x0 0xff9d0000 0x0 0x100>;
+> +			clock-names = "bus_clk", "ref_clk";
+>  			power-domains = <&zynqmp_firmware PD_USB_0>;
+> +			resets = <&zynqmp_reset ZYNQMP_RESET_USB0_CORERESET>,
+> +				 <&zynqmp_reset ZYNQMP_RESET_USB0_HIBERRESET>,
+> +				 <&zynqmp_reset ZYNQMP_RESET_USB0_APB>;
+> +			reset-names = "usb_crst", "usb_hibrst", "usb_apbrst";
+> +			ranges;
+> +
+> +			dwc3_0: usb@fe200000 {
+> +				compatible = "snps,dwc3";
+> +				status = "disabled";
+
+I think it would be better to drop the status from dwc3_0, since it is a child
+node of the already disabled usb0 node. With the current change, the board dts
+has to enable usb0 and dwc3_0 to enable usb support, which is kind of
+unexpected.
+
+> +				reg = <0x0 0xfe200000 0x0 0x40000>;
+> +				interrupt-parent = <&gic>;
+> +				interrupt-names = "dwc_usb3", "otg";
+> +				interrupts = <0 65 4>, <0 69 4>;
+> +				#stream-id-cells = <1>;
+> +				iommus = <&smmu 0x860>;
+> +				snps,quirk-frame-length-adjustment = <0x20>;
+> +				snps,refclk_fladj;
+> +				snps,enable_guctl1_resume_quirk;
+> +				snps,enable_guctl1_ipd_quirk;
+> +				snps,xhci-stream-quirk;
+
+The last four properties for snps are not documented (and not used by the
+driver).
+
+> +				/* dma-coherent; */
+> +			};
+>  		};
+>  
+> -		usb1: usb@fe300000 {
+> -			compatible = "snps,dwc3";
+> +		usb1: usb1@ff9e0000 {
+
+usb@fe9e00000
+
+> +			#address-cells = <2>;
+> +			#size-cells = <2>;
+>  			status = "disabled";
+> -			interrupt-parent = <&gic>;
+> -			interrupts = <0 70 4>;
+> -			reg = <0x0 0xfe300000 0x0 0x40000>;
+> -			clock-names = "clk_xin", "clk_ahb";
+> +			compatible = "xlnx,zynqmp-dwc3";
+> +			reg = <0x0 0xff9e0000 0x0 0x100>;
+> +			clock-names = "bus_clk", "ref_clk";
+>  			power-domains = <&zynqmp_firmware PD_USB_1>;
+> +			resets = <&zynqmp_reset ZYNQMP_RESET_USB1_CORERESET>,
+> +				 <&zynqmp_reset ZYNQMP_RESET_USB1_HIBERRESET>,
+> +				 <&zynqmp_reset ZYNQMP_RESET_USB1_APB>;
+> +			reset-names = "usb_crst", "usb_hibrst", "usb_apbrst";
+> +			ranges;
+> +
+> +			dwc3_1: usb@fe300000 {
+> +				compatible = "snps,dwc3";
+> +				status = "disabled";
+
+Same as above.
+
+> +				reg = <0x0 0xfe300000 0x0 0x40000>;
+> +				interrupt-parent = <&gic>;
+> +				interrupt-names = "dwc_usb3", "otg";
+> +				interrupts = <0 70 4>, <0 74 4>;
+> +				#stream-id-cells = <1>;
+> +				iommus = <&smmu 0x861>;
+> +				snps,quirk-frame-length-adjustment = <0x20>;
+> +				snps,refclk_fladj;
+> +				snps,enable_guctl1_resume_quirk;
+> +				snps,enable_guctl1_ipd_quirk;
+> +				snps,xhci-stream-quirk;
+
+Same as above.
+
+Thanks,
+
+Michael
+
+> +				/* dma-coherent; */
+> +			};
+>  		};
+>  
+>  		watchdog0: watchdog@fd4d0000 {
