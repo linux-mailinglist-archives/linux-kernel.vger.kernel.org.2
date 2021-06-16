@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DC63AA033
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BC83A9FDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234899AbhFPPqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:46:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51258 "EHLO mail.kernel.org"
+        id S235183AbhFPPmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:42:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235507AbhFPPmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:42:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D6B5613E7;
-        Wed, 16 Jun 2021 15:38:13 +0000 (UTC)
+        id S234961AbhFPPio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:38:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73867613BD;
+        Wed, 16 Jun 2021 15:36:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857894;
-        bh=Y/0C/KWoYfnfKXksCqBdB/u2eBJN2xkcGNFZjEwfKPg=;
+        s=korg; t=1623857780;
+        bh=2qojoFF+e/S0/jbvXCRJPwzkvF/zKfFsmP9YoUXPXp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nSoIOWQLhfw5eI1A/uPPsPjXx756M8NXGsvF1FjHah+/fgXsNaaRxA2mskSVXYdPs
-         nFJOfomN+tVyBL/h8iqcqI/JZrScxMEjJAFFzPkjzLKiyU88V2vPt8HSC3v8PLvHWy
-         IC8yB6hA0z2bMI5mi6hn1gJVUgsdM4lJtDZnFA9Q=
+        b=YE0YFafEw8qJuK54kKhMwA0YVPK2/0vpBT5dd9j0zJc1GemCi7eNJQxcmoDrf7At5
+         EzBtV4hJgDBSmqDZIHdHt7r2W+Oce+JlSgG+mPxmt36GD4uLztWSYmO7t10vQwur84
+         yXdKCLLMJSbTvI8a1hogbKLMMIxDibRLUFngWLME=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 36/48] nvme-loop: clear NVME_LOOP_Q_LIVE when nvme_loop_configure_admin_queue() fails
-Date:   Wed, 16 Jun 2021 17:33:46 +0200
-Message-Id: <20210616152837.788980539@linuxfoundation.org>
+        stable@vger.kernel.org, Zheng Yongjun <zhengyongjun3@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 38/38] fib: Return the correct errno code
+Date:   Wed, 16 Jun 2021 17:33:47 +0200
+Message-Id: <20210616152836.596849191@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-References: <20210616152836.655643420@linuxfoundation.org>
+In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
+References: <20210616152835.407925718@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-[ Upstream commit 1c5f8e882a05de5c011e8c3fbeceb0d1c590eb53 ]
+[ Upstream commit 59607863c54e9eb3f69afc5257dfe71c38bb751e ]
 
-When the call to nvme_enable_ctrl() in nvme_loop_configure_admin_queue()
-fails the NVME_LOOP_Q_LIVE flag is not cleared.
+When kalloc or kmemdup failed, should return ENOMEM rather than ENOBUF.
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/loop.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/core/fib_rules.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/target/loop.c b/drivers/nvme/target/loop.c
-index 4b2a6330feb5..c34f785e699d 100644
---- a/drivers/nvme/target/loop.c
-+++ b/drivers/nvme/target/loop.c
-@@ -404,6 +404,7 @@ static int nvme_loop_configure_admin_queue(struct nvme_loop_ctrl *ctrl)
- 	return 0;
+diff --git a/net/core/fib_rules.c b/net/core/fib_rules.c
+index 7bcfb16854cb..9258ffc4ebff 100644
+--- a/net/core/fib_rules.c
++++ b/net/core/fib_rules.c
+@@ -1168,7 +1168,7 @@ static void notify_rule_change(int event, struct fib_rule *rule,
+ {
+ 	struct net *net;
+ 	struct sk_buff *skb;
+-	int err = -ENOBUFS;
++	int err = -ENOMEM;
  
- out_cleanup_queue:
-+	clear_bit(NVME_LOOP_Q_LIVE, &ctrl->queues[0].flags);
- 	blk_cleanup_queue(ctrl->ctrl.admin_q);
- out_cleanup_fabrics_q:
- 	blk_cleanup_queue(ctrl->ctrl.fabrics_q);
+ 	net = ops->fro_net;
+ 	skb = nlmsg_new(fib_rule_nlmsg_size(ops, rule), GFP_KERNEL);
 -- 
 2.30.2
 
