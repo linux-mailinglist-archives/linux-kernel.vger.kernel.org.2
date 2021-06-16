@@ -2,184 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2893A983A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B29A3A983C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhFPK6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:58:50 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:36095 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229642AbhFPK6t (ORCPT
+        id S230368AbhFPK64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230225AbhFPK6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:58:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1623841003;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l4T+Y4Bmfu4hOBK10YfuO2pb8j7kiTpMxBLpw8+PnyI=;
-        b=QehCBG57AA8mvgIowLX3sp60oKnW2GJZkXZkK+OO61yZe8UcfohmnidYlEMltn/glVxK+n
-        pB32kISH/I975iOc8V+r0YzZG/k5kOMhOSuifuY5FPS/zzHc2sxBj4OQXDtCUKGi6APnd0
-        wk/C+qLXSyVdN4bOR7ET+mHE4F2kqo8=
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur04lp2059.outbound.protection.outlook.com [104.47.13.59]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-18-DRxD3Vd6NDeS2PRc23dUgQ-1; Wed, 16 Jun 2021 12:56:42 +0200
-X-MC-Unique: DRxD3Vd6NDeS2PRc23dUgQ-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JqampmMQAY3EyMlwGWYh2woIyNC9CcybqTx4slcegCJIisw56wU2zFpjUjFWLE0+KDY72yRe1JetJoG10U6XnOFTiteigTGCNzkVnZKZKiFIfHZdInkLATdkwrbkFgrajIoxQDh5T0nZ6OwV7b9T55i64B4T8cbsqJi9IshIVR93K6pTgg3Ru3UvCCmkrH7zRaTZ8mlk/c5+uK6N699lWqJJTDvjErCrDglBRumBR0wYDjCvp/v2uxsWVL51kUx/SfL/jPrA4fenPIXl+BwS73ZfhCk6d1q+/EP5qkVOGlhY4K8tnlTGUH2wXVI90bH5rlfObBgKLwfrL762B1xKCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l4T+Y4Bmfu4hOBK10YfuO2pb8j7kiTpMxBLpw8+PnyI=;
- b=C518WbVDfLd3/Rd0BhutK76ssuHKlm60SaBbuIniW9JhNcgP/00xhCxnsuSkLv2E2X/v1oWoq4bz+vSkwHI2BFnH/8UCb7r6ba5LbSOZJ9aTU4lUbMPFBvswJy784+bnzKrXU1AiJKVqwf9WoY7MnDGHEy0V6elKCQLTBBrRciTTPQ+2F79gz8ssQ6vmlNfVTZZ4Q/N7mjdx8OpZsXxTHfwIuZ/Xy02d+EKyfdr3lRlgYtyKjX0HxjXrMgp3ordYFVq54YtdDk7frQ7u2x0WaMffCFc2CVyCAj1mtsAuQwKPPVf29rmJtPb6gefp5QgHoU5bDM7dWb7CESyRCSriwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR04MB7040.eurprd04.prod.outlook.com (2603:10a6:800:121::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Wed, 16 Jun
- 2021 10:56:39 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::f06c:6f5d:34d2:1c36]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::f06c:6f5d:34d2:1c36%5]) with mapi id 15.20.4242.019; Wed, 16 Jun 2021
- 10:56:39 +0000
-Subject: Re: [PATCH 1/2] xen: fix setting of max_pfn in shared_info
-To:     Juergen Gross <jgross@suse.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-References: <20210616073007.5215-1-jgross@suse.com>
- <20210616073007.5215-2-jgross@suse.com>
- <a3674ab9-40d8-c365-d48c-0e1c88814942@suse.com>
- <97de842a-f095-3a12-ab16-beca0f97ba67@suse.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <a5747064-cf3b-4ccb-5b46-3b6e069e7202@suse.com>
-Date:   Wed, 16 Jun 2021 12:56:37 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <97de842a-f095-3a12-ab16-beca0f97ba67@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [37.24.206.209]
-X-ClientProxiedBy: PR0P264CA0094.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:18::34) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        Wed, 16 Jun 2021 06:58:55 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55D1C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 03:56:49 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id d184so1034864wmd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 03:56:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=mqtav1p2eGIlCeDNxDamFiLQ9JvCJAp/NHn6HJDl7ws=;
+        b=LlzzH0yU5cwrNRuXMp+gnZvXur5zIuR+/F0xNpCMqo2FISJ1SnJ3F0HglNiOJ68eZl
+         /yf1Jh8wH8i0v3Y7qyqnzOK2tDjT1tJR0HlhPd3JhKFOGH7jP86Ok8onerY78VraNjwi
+         6UPBV/Z+OoXEYff7V10depNkRJ52MFRthAjuPwl4BL/8evwEUM/zm2hD/VSc/UxNczl3
+         Kpq6R3RM3wF/QlbX6JrVfSWUKczb8BL/kNA681yFvvqwc7TTWcdh7gK8Pl1Qd/5Nr7aD
+         W8WBP1USj/eQ4cCthJBFSsMkwFT/DkqUff2HqDHee8yz4XRadhgvZsmRvjs85Iil2ZZg
+         jK1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mqtav1p2eGIlCeDNxDamFiLQ9JvCJAp/NHn6HJDl7ws=;
+        b=tu37sqjbI8X5tlpU37YuolPAIJhqRJD9pPuG47Tr7ZcqFAH3fswPT0veAIZj6nW954
+         1CxswA7FMSuLD5/ohZSaU3aRhxKmJv4g3uc89py8RvsChF/1OxKNKXqH/BRIQA8dr6j8
+         62gZ5Il7HjIv9SvLwGh1IdDMeEMkGERCsXU3oVOZYZBgN5cuO9hqdWvgkvsfsqfx8m98
+         PJIBkg8aR4jdEH2JqckFOEWa035+wey9BpOgQrHX5V9ICNLuq+EfO9flxhnRCDaRwcpc
+         V6n2vYW8IVAn9n9wrNY4nGYQ+C5oVDgm8afNVAjz94xxYPooEneOM83EcRJV9OkvfJeb
+         cJ+Q==
+X-Gm-Message-State: AOAM531wTI0yPQnBKNm3uTW5cShjqNGkorq7pgmCaAWy905tE40cRjCt
+        GVLx0xy4bZVRpTHO/4ByOZKhjA==
+X-Google-Smtp-Source: ABdhPJz43wcN+FLt1QNVCY7/pOzZPKj17A5L08c7F8uqd/ykLmh3ES0OIGZZDa42Ir3V2A0UuiDZTQ==
+X-Received: by 2002:a05:600c:4106:: with SMTP id j6mr4521594wmi.76.1623841008320;
+        Wed, 16 Jun 2021 03:56:48 -0700 (PDT)
+Received: from dell (109-170-177-105.xdsl.murphx.net. [109.170.177.105])
+        by smtp.gmail.com with ESMTPSA id o18sm4587094wmh.38.2021.06.16.03.56.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 03:56:47 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 11:56:45 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v6 2/5] mfd: sy7636a: Initial commit
+Message-ID: <YMnY7RLW6ml4Tq0g@dell>
+References: <20210615103400.946-1-alistair@alistair23.me>
+ <20210615103400.946-2-alistair@alistair23.me>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.156.60.236] (37.24.206.209) by PR0P264CA0094.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:18::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18 via Frontend Transport; Wed, 16 Jun 2021 10:56:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b1f2dc08-82b8-4575-e304-08d930b56b36
-X-MS-TrafficTypeDiagnostic: VI1PR04MB7040:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB7040A929C61582A619CFC443B30F9@VI1PR04MB7040.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r27tALQEcW+UccV1NrjecLgyuTmf9w9Xf+1PIBCjl5K0rhkLyi3vdzBauzgUG68zNPaSumI5dZrebjkvv7SfhxlqnecIS+wcuoHODiliNPzH5kpw9TrlNjySKiuWZORvk28GoYDnp6Y+6vh6u3a9THqOERbyGJUNavk6cZn5jaQp6tXco77izfbPVV1hqNpPK96u+4ic/kPRiM6NBya/FK+ixq/B/62g5AEuImtVm+7GwRuembOzRo62AkEMn/mrfsu7M2gKIrvCM7DatQUwXXCFAsoxuoxSQ2X8AozPw8U/wepnNJIAB69DCrLYXprdLJNlvRhNyVGGNgXAGt9G2LaBCOoxVHmiabk0rOHM9Iow8SqnJXzNKXLnHAlaMkzdPG+ukjQkhGm+HW4mtWjAWlbNdGG4TIZWr0xkuMajyusaztGhCynxlkSkFhVq3U+vUjTb4hJSJuhUMdCDRH8a5if3xFYQY5JUrnjkJJV3SRcdnT+vHaU5Wew/4LbC146p6wnZlO8QDZKdnbWLQyxqqmuQdNM9137wmrWQWknWkqzFR9ws2UUEFrMs0B0VG/aKmP6zNy3+6JYttx09s9d+JiuExZV/zqgbOcpjpKdJSUpBtvTFWryV73f1emT0e0uuulxvwkoRBtD7QfsGeNiyF7XGK3OvV3fKLwd7GCPvHs+3Yf9Qp7APaeNbRxdaTbt1
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(39850400004)(136003)(346002)(366004)(66476007)(66946007)(7416002)(956004)(66556008)(37006003)(38100700002)(8676002)(2616005)(53546011)(5660300002)(54906003)(478600001)(83380400001)(86362001)(4326008)(186003)(8936002)(26005)(316002)(36756003)(6486002)(6862004)(16526019)(6636002)(31696002)(16576012)(2906002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Wk5WZ3VzWmh5NXY4dVVuSW5hOENhQXROTDYrb2IreTdCWnk1VmJTRUlvL1cr?=
- =?utf-8?B?aldTVHZ1UmVoc3hIN3I3UTlvZHlxOFZjbi9FWTZwNU9RSnBvQVJ6UmhnWm93?=
- =?utf-8?B?OTQrS1ZGb3U5eUkwVTc4OU16S0tYZ2VXOWd4Y1Q0UUMvYWt2ZTJ1UDd0WjIx?=
- =?utf-8?B?a1RXL0ZXVGJkVXp3U3gzMjJsaFFNM0ZzYXdUbGoyVWJ4Z0gyUkMwMFBCbDhZ?=
- =?utf-8?B?Rm9oMU5ER2Vpc29Ic2FsaE1iRHRJd2dBL1UyeWVSaUhIYWZ1TFJwVFVGTHlr?=
- =?utf-8?B?M284c0YyR1NuUTNaSTJ6SGNkT09uTGVvNms3MVVNVHJuME5KT2ZkTEZwNFhE?=
- =?utf-8?B?TFVkL1RWY2pxRjFFaXRaTFFYYmhtQTdCQ0lUaGM3Z2tSbGJFTEplWXdMcGx0?=
- =?utf-8?B?aDZzWEkyQnB1VktBNW5OV3dYSTZaK2xqSWI1OUVuU1hwc1hIT0JVd2hPZ2lL?=
- =?utf-8?B?TEFCcGY2U1E2UnlRZVF1OWFzejBRL1RyWEtwRzZUMlNBNGllZ0FaUDNRWTh3?=
- =?utf-8?B?UFpvamp4Y2h1dVhxZUtkVVFhamVCMGE5YnZKSG1CcFBNZk1CcEZzTzhLVjVC?=
- =?utf-8?B?UjZZMzdHSy9xblpLOUpIWFd2MHlqN25kNW1NUWxrWUM1Q3o0bWI1TWJDbno1?=
- =?utf-8?B?L0Y3N1JqaXE2RUxGQmtGem5HeXlkcERjV2luMWJWeTJ2eWpadWZKbTJ3R0hY?=
- =?utf-8?B?LzJCcDRUWng3Uld2U3ljNnpLSG5oczgxWm9SdjlUT0tIYy9vK0ZIQXRHTHEz?=
- =?utf-8?B?ZXpPcTZmYjJYb01EWTYvd0lPdXI3YjJHc20vMGRNVmpBdWRXeE4yTVp2SzRV?=
- =?utf-8?B?d2g1bWRLbW5adFowNTdwNURleURMak1oSzRsRkJHcjhVTW1BQlBzakpDdEZM?=
- =?utf-8?B?dm9KVGVHbURzOVdVQjhlOWdhZG00OUgvT0VmR3RCNzdiS2xDTFJHc2kxMEsy?=
- =?utf-8?B?QkFLTFVCUzdlcW5rQklQYWVUT25vVlA4ZjZ4OEJyVG93NS90ZVM4aFlrQnJV?=
- =?utf-8?B?UEY1ZEM0S2JDYkdxMXpwVmRrdFNQUlVETUJicHE5YmFmTHpOSVVPR3g4aDRG?=
- =?utf-8?B?S2RWcGFVSHBoSU1lM3BrQnZtcWtWaFV5a1B6RVNQZUQ1RWVHQTJIMERGcFpD?=
- =?utf-8?B?ZThBNFhmZXJjV3BYbWYvSzlCZmM1b21lM0pvUVd6S1JDUjhGSFg2N21kZkRH?=
- =?utf-8?B?eElQRzNjKzdNS1BRdWVDRExWY2hiTkRsYkpVbWEreGFSZm1KNXVCRkxHK1Za?=
- =?utf-8?B?cUQySGR3aStncG1mWWhFRlhPYWEweDh0Zmhja1dXM01EbTZPM0JtL2F4K0lh?=
- =?utf-8?B?dk1oL2tLWUw4VVpjREJmeEc0TWprZ2wxaXlCNEluNng2L1JFZmFEVExwcG5D?=
- =?utf-8?B?WVp2L1NpZDlPc3JCYXVzSXk2dmJDNGtKUkFNTkhMdkl3dmd1VVZNc2VpWGdk?=
- =?utf-8?B?akxZQTQ3Qk5nei8rTDB2Y2duWnFoMG1lK0E4QlVSR3NxUkNON2JkckhjRC9i?=
- =?utf-8?B?VndpcjVIWWhsbFM3K05qQzVaMFdBSW1ZVktVaGlsd2VUOCtzU0szMlJrbTZa?=
- =?utf-8?B?UlFmZWQxQnV6QnNzd0J0SStqQ3hBOTZTZWIrT1I0VEx5czFMTzkxTlFQcXNI?=
- =?utf-8?B?QTlTTnFZZzdIM0ppMEtRREFPQytCLzJqY1g0akYyK1p1MVN2TnY1d2QzNzQ2?=
- =?utf-8?B?ZjY1bkJYYTMzbzQ4L21VNkNuUVkzcURvbWVDbTRmYkQ2eXJSbExzdHFSTGdv?=
- =?utf-8?Q?VN1qYCk0UCqiqDMNNliXToGtlXwM/rrzT2UfuXn?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b1f2dc08-82b8-4575-e304-08d930b56b36
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 10:56:39.8177
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BsBXyF1UkiLS8mAKsjsrayNDh95tDeO3K3mu/H3RlUWtbJZM632/lyWKNsJbwPdv1sIeRBrO9x/PYPlvD54UKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7040
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210615103400.946-2-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.06.2021 12:37, Juergen Gross wrote:
-> On 16.06.21 11:52, Jan Beulich wrote:
->> On 16.06.2021 09:30, Juergen Gross wrote:
->>> Xen PV guests are specifying the highest used PFN via the max_pfn
->>> field in shared_info. This value is used by the Xen tools when saving
->>> or migrating the guest.
->>>
->>> Unfortunately this field is misnamed, as in reality it is specifying
->>> the number of pages (including any memory holes) of the guest, so it
->>> is the highest used PFN + 1. Renaming isn't possible, as this is a
->>> public Xen hypervisor interface which needs to be kept stable.
->>>
->>> The kernel will set the value correctly initially at boot time, but
->>> when adding more pages (e.g. due to memory hotplug or ballooning) a
->>> real PFN number is stored in max_pfn. This is done when expanding the
->>> p2m array, and the PFN stored there is even possibly wrong, as it
->>> should be the last possible PFN of the just added P2M frame, and not
->>> one which led to the P2M expansion.
->>>
->>> Fix that by setting shared_info->max_pfn to the last possible PFN + 1.
->>>
->>> Fixes: 98dd166ea3a3c3 ("x86/xen/p2m: hint at the last populated P2M entry")
->>> Cc: stable@vger.kernel.org
->>> Signed-off-by: Juergen Gross <jgross@suse.com>
->>
->> The code change is fine, so
->> Reviewed-by: Jan Beulich <jbeulich@suse.com>
->>
->> But I think even before the rename you would want to clarify the comment
->> next to the variable's definition, to make clear what it really holds.
+On Tue, 15 Jun 2021, Alistair Francis wrote:
+
+> Initial support for the Silergy SY7636A Power Management chip.
 > 
-> It already says: "Number of valid entries in the p2m table(s) ..."
-> What do you think is unclear about that? Or do you mean another
-> variable?
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  drivers/mfd/Kconfig         |  9 ++++
+>  drivers/mfd/Makefile        |  1 +
+>  drivers/mfd/sy7636a.c       | 82 +++++++++++++++++++++++++++++++++++++
+>  include/linux/mfd/sy7636a.h | 47 +++++++++++++++++++++
+>  4 files changed, 139 insertions(+)
+>  create mode 100644 drivers/mfd/sy7636a.c
+>  create mode 100644 include/linux/mfd/sy7636a.h
+> 
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index 5c7f2b100191..7d6cf32b1549 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -1339,6 +1339,15 @@ config MFD_SYSCON
+>  	  Select this option to enable accessing system control registers
+>  	  via regmap.
+>  
+> +config MFD_SY7636A
+> +	tristate "Silergy SY7636A Power Management chip"
+> +	select MFD_CORE
+> +	select REGMAP_I2C
+> +	depends on I2C
+> +	help
+> +	  Select this option to enable support for the Silergy SY7636A
+> +	  Power Management chip.
+> +
+>  config MFD_DAVINCI_VOICECODEC
+>  	tristate
+>  	select MFD_CORE
+> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> index 4f6d2b8a5f76..f95e1e725a95 100644
+> --- a/drivers/mfd/Makefile
+> +++ b/drivers/mfd/Makefile
+> @@ -265,6 +265,7 @@ obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
+>  obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
+>  obj-$(CONFIG_MFD_ACER_A500_EC)	+= acer-ec-a500.o
+>  
+> +obj-$(CONFIG_MFD_SY7636A)	+= sy7636a.o
+>  obj-$(CONFIG_SGI_MFD_IOC3)	+= ioc3.o
+>  obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)	+= simple-mfd-i2c.o
+>  obj-$(CONFIG_MFD_INTEL_M10_BMC)   += intel-m10-bmc.o
+> diff --git a/drivers/mfd/sy7636a.c b/drivers/mfd/sy7636a.c
+> new file mode 100644
+> index 000000000000..e08f29ea63f8
+> --- /dev/null
+> +++ b/drivers/mfd/sy7636a.c
+> @@ -0,0 +1,82 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +//
 
-I mean the variable the value of which the patch corrects, i.e.
-xen_p2m_last_pfn. What I see in current source is
+Only the SPDX with C++ style comments please.
 
-/*
- * Hint at last populated PFN.
- *
- * Used to set HYPERVISOR_shared_info->arch.max_pfn so the toolstack
- * can avoid scanning the whole P2M (which may be sized to account for
- * hotplugged memory).
- */
-static unsigned long xen_p2m_last_pfn;
+> +// MFD parent driver for SY7636A chip
 
-Jan
+Drop the MFD part.  It's a Linuxisum that doesn't really exist.
 
+> +// Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
+> +//
+> +// Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
+> +//          Alistair Francis <alistair@alistair23.me>
+> +//
+> +// Based on the lp87565 driver by Keerthy <j-keerthy@ti.com>
+> +
+> +#include <linux/interrupt.h>
+> +#include <linux/mfd/core.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +
+> +#include <linux/mfd/sy7636a.h>
+> +
+> +static const struct regmap_config sy7636a_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +};
+> +
+> +static const struct mfd_cell sy7636a_cells[] = {
+> +	{ .name = "sy7636a-regulator", },
+> +	{ .name = "sy7636a-temperature", },
+> +	{ .name = "sy7636a-thermal", },
+> +};
+> +
+> +static const struct of_device_id of_sy7636a_match_table[] = {
+> +	{ .compatible = "silergy,sy7636a", },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, of_sy7636a_match_table);
+
+Hold on.  This driver doesn't really do anything.  If you create OF
+nodes for all the sub-devices, you can use simple-mfd-i2c.
+
+Any reason you can't do that?
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
