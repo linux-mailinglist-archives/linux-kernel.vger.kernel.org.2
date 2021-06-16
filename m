@@ -2,77 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2723A96AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81693A96B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232303AbhFPJ6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:58:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43417 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232238AbhFPJ6N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:58:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623837367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TOugrdEB/9wtWUX/nBePoLfapr7yBUK2I96UhIGUqU0=;
-        b=iJdBltd03C//guoqDglP72f+ybARiRwMC9URbzjtUuNBHQutU3c1CF7FaxYGWkzFZg+Kzo
-        tk5BxXR1jpiMioTGDbb/KrCVuNOplXpAPilCmvPfWXNIMc8vOHpxzR4SMIJKqlBIMGeEF+
-        8T/k0lcRAF+8I8KS0N1Kr4WihSjfukY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-533-ndEPoxP_OR2mSb0eK8JF1Q-1; Wed, 16 Jun 2021 05:56:06 -0400
-X-MC-Unique: ndEPoxP_OR2mSb0eK8JF1Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4FD468049D8;
-        Wed, 16 Jun 2021 09:56:04 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 496125D6BA;
-        Wed, 16 Jun 2021 09:56:02 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210614201435.1379188-9-willy@infradead.org>
-References: <20210614201435.1379188-9-willy@infradead.org> <20210614201435.1379188-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v11 08/33] mm: Add folio_get()
+        id S232267AbhFPJ6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:58:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232317AbhFPJ6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 05:58:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C913610CA;
+        Wed, 16 Jun 2021 09:56:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623837377;
+        bh=SPlTM9p8dlci4eAQgg4/r7UL4/AJmls7gyGG2+3BPS8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gXFad09k5SjRyQ0dfoJw/o/YOnZOPed1ERncmkOVLs8EkUCg+n5FrIT5QM/En0hwV
+         QHGqYEKRLURfHZQK4b+oxqL5/JR23q9oUUNdxPw1zD5G04opQ4UdTTLxXoMLZQVmbp
+         Xsj3gx1WyKo7pCatT4DjI8SBzAZ6JOGN9f8lLz0mh8JVD6tSBdovWFLfWXdjL0sanP
+         RHqrRwxmYR/Y7WX9EVlMMQroMegn/v02FQrCARB2/tH7vKViEktIltAesNCMnV2sL4
+         /y81rQpL1LQIYdPNbipkm5FHIPfzIcwRuxa3faPGaZvWZDwpWA/xNs0EKI6KSBeZPs
+         E1BunGAE76kDg==
+Date:   Wed, 16 Jun 2021 15:26:14 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sanjay R Mehta <sanmehta@amd.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Sanjay R Mehta <Sanju.Mehta@amd.com>,
+        dan.j.williams@intel.com, Thomas.Lendacky@amd.com,
+        Shyam-sundar.S-k@amd.com, Nehal-bakulchandra.Shah@amd.com,
+        robh@kernel.org, mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v9 1/3] dmaengine: ptdma: Initial driver for the AMD PTDMA
+Message-ID: <YMnKvkFin05SwxBw@vkoul-mobl>
+References: <1622654551-9204-2-git-send-email-Sanju.Mehta@amd.com>
+ <YL+rUBGUJoFLS902@vkoul-mobl>
+ <94bba5dd-b755-81d0-de30-ce3cdaa3f241@amd.com>
+ <YMl6zpjVHls8bk/A@vkoul-mobl>
+ <0bc4e249-b8ce-1d92-ddde-b763667a0bcb@amd.com>
+ <YMmXPMy7Lz9Jo89j@kroah.com>
+ <12ff7989-c89d-d220-da23-c13ddc53384e@amd.com>
+ <YMmt1qhC1dIiYx7O@vkoul-mobl>
+ <YMmvZBP9QNc5jf5L@kroah.com>
+ <de2443c1-4739-6172-9ac7-76b002ad1244@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <813631.1623837361.1@warthog.procyon.org.uk>
-Date:   Wed, 16 Jun 2021 10:56:01 +0100
-Message-ID: <813632.1623837361@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <de2443c1-4739-6172-9ac7-76b002ad1244@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
-
-> If we know we have a folio, we can call folio_get() instead
-> of get_page() and save the overhead of calling compound_head().
-> No change to generated code.
+On 16-06-21, 15:16, Sanjay R Mehta wrote:
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Zi Yan <ziy@nvidia.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Jeff Layton <jlayton@kernel.org>
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+> 
+> On 6/16/2021 1:29 PM, Greg KH wrote:
+> > [CAUTION: External Email]
+> > 
+> > On Wed, Jun 16, 2021 at 01:22:54PM +0530, Vinod Koul wrote:
+> >> On 16-06-21, 12:27, Sanjay R Mehta wrote:
+> >>>
+> >>>
+> >>> On 6/16/2021 11:46 AM, Greg KH wrote:
+> >>>> [CAUTION: External Email]
+> >>>>
+> >>>> On Wed, Jun 16, 2021 at 10:24:52AM +0530, Sanjay R Mehta wrote:
+> >>>>>
+> >>>>>
+> >>>>> On 6/16/2021 9:45 AM, Vinod Koul wrote:
+> >>>>>> [CAUTION: External Email]
+> >>>>>>
+> >>>>>> On 15-06-21, 16:50, Sanjay R Mehta wrote:
+> >>>>>>
+> >>>>>>>>> +static struct pt_device *pt_alloc_struct(struct device *dev)
+> > 
+> > In looking at this, why are you dealing with a "raw" struct device?
+> > Shouldn't this be a parent pointer?  Why not pass in the real type that
+> > this can be made a child of?
+> > 
+> > 
+> >>>>>>>>> +{
+> >>>>>>>>> +     struct pt_device *pt;
+> >>>>>>>>> +
+> >>>>>>>>> +     pt = devm_kzalloc(dev, sizeof(*pt), GFP_KERNEL);
+> >>>>>>>>> +
+> >>>>>>>>> +     if (!pt)
+> >>>>>>>>> +             return NULL;
+> >>>>>>>>> +     pt->dev = dev;
+> >>>>>>>>> +     pt->ord = atomic_inc_return(&pt_ordinal);
+> >>>>>>>>
+> >>>>>>>> What is the use of this number?
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>> There are eight similar instances of this DMA engine on AMD SOC.
+> >>>>>>> It is to differentiate each of these instances.
+> >>>>>>
+> >>>>>> Are they individual device objects?
+> >>>>>>
+> >>>>>
+> >>>>> Yes, they are individual device objects.
+> >>>>
+> >>>> Then what is "ord" for?  Why are you using an atomic variable for this?
+> >>>> What does this field do?  Why doesn't the normal way of naming a device
+> >>>> come into play here instead?
+> >>>>
+> >>>
+> >>> Hi Greg,
+> >>>
+> >>> The value of "ord" is incremented for each device instance and then it
+> >>> is used to store different name for each device as shown in below snippet.
+> >>>
+> >>>     pt->ord = atomic_inc_return(&pt_ordinal);
+> >>>     snprintf(pt->name, MAX_PT_NAME_LEN, "pt-%u", pt->ord);
+> >>
+> >> Okay why not use device->name ?
+> > 
+> > Ah, I missed this.  Yes, do not have 2 names for the same structure,
+> > that is wasteful and confusing.
+> > 
+> 
+> Thanks, Greg & Vinod. I just verified with "dev_name(dev)" and this is
+> serving the purpose :).
+> 
+> I will send this change in the next version.
 
-Reviewed-by: David Howells <dhowells@redhat.com>
+Great, but there are few more questions I had, like who creates the
+device etc, can you please respond to those questions as well, so that
+we understand properly how this device works
 
+Thanks
+-- 
+~Vinod
