@@ -2,169 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE493A9AF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E11E3A9AF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232942AbhFPMvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232917AbhFPMvH (ORCPT
+        id S232830AbhFPMuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:50:25 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:37777 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232732AbhFPMuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:51:07 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B78CC061574;
-        Wed, 16 Jun 2021 05:49:00 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id k22-20020a17090aef16b0290163512accedso3608177pjz.0;
-        Wed, 16 Jun 2021 05:49:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=bPog0RE85xcT70HcJ3zdDfpWRbRDYp7EE1bqB/NOW4w=;
-        b=IoLYdCWDuxVy2duzo7zynPackCGDlyDgRI4iDjO6Cemgz1TdwaE2aY+ZivXzTsseNa
-         W+XgTj/KD1clC7NM5oxdvDUsquYCWJZfJ2Q3UIHeGj+3dmmjRKyJwm4lhROeriDAhyxs
-         +e1beUQpsLF2hQTMfNjAhQtPewD7jHQ7GZlOPjxXTqU1C2rjyzGtey2UpYdP4liGO4/8
-         0RyLU5XQ/aP8X6U0up23valVFErA9JUwSfSIv+6zCgaC7CXfuUFN7O0JIpuihbeia5Bw
-         XVzFJ4/3dcH+/Hw1f0GbcRGdXqkxv1J8A11JZOJv6OOiD84hUZCBvVxylaqNR3Mthohi
-         Qe4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version:content-transfer-encoding;
-        bh=bPog0RE85xcT70HcJ3zdDfpWRbRDYp7EE1bqB/NOW4w=;
-        b=FDNygjOCb7Ecdl3os3n/7FxVzHAq1iAXN06tZbI+PL45S7jx0gvErJXw2CVClE2TG3
-         1aGN5LJvoWpGXuuxklB+M0uFxDKI/h1xue7V2C1ZZFK8YL4qoctoXyKamnbnmNBdiNsK
-         O0T0+j0kja+R9wAtzvCRnOUmyMq3PI6RiKrlYBu1BMgiYyINlG/owS29wR7h1nU/pNLd
-         GBCWsOwJTWXGqtdAErThWzwKBPQYrP2vs26Dd8/8O61YX2t3/sunvQy8WchCLWWVc8oV
-         9H4f+qM+TTXDtoMSNc3N78C3ZWr4ciOPj1uNAiGINh5aI71O2pESVWfQj9SfJbPw73Gp
-         vitA==
-X-Gm-Message-State: AOAM533vxpUuS2zcsJfD9wwj3+zOCLsaFReBnZ9IKl65jD6Q0LgBDgNV
-        G3aZuks1w85+HnTHoyynPnQ=
-X-Google-Smtp-Source: ABdhPJzdXESQ4680mekLsqXH9ZnN3Akl6foU+/ByObUepapyrbdiGCVQt1LepR/Xt7ta2JfYgK3Usw==
-X-Received: by 2002:a17:90a:ce18:: with SMTP id f24mr10642746pju.225.1623847739897;
-        Wed, 16 Jun 2021 05:48:59 -0700 (PDT)
-Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id t1sm2143043pfe.61.2021.06.16.05.48.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 05:48:58 -0700 (PDT)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     helgaas@kernel.org, robh+dt@kernel.org, maz@kernel.org,
-        leobras.c@gmail.com, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, wqu@suse.com, robin.murphy@arm.com,
-        pgwipeout@gmail.com, ardb@kernel.org, briannorris@chromium.org,
-        shawn.lin@rock-chips.com, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v4] PCI: of: Clear 64-bit flag for non-prefetchable
- memory below 4GB
-References: <20210614230457.752811-1-punitagrawal@gmail.com>
-        <888ca9e9-a1c0-3992-7c01-bbb7400e8dc0@arm.com>
-Date:   Wed, 16 Jun 2021 21:48:56 +0900
-In-Reply-To: <888ca9e9-a1c0-3992-7c01-bbb7400e8dc0@arm.com> (Alexandru
-        Elisei's message of "Tue, 15 Jun 2021 09:46:12 +0100")
-Message-ID: <87eed2t1on.fsf@stealth>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Wed, 16 Jun 2021 08:50:23 -0400
+Received: (Authenticated sender: jacopo@jmondi.org)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id EB12440003;
+        Wed, 16 Jun 2021 12:48:14 +0000 (UTC)
+Date:   Wed, 16 Jun 2021 14:49:05 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/7] media: i2c: max9286: Use "maxim,gpio-poc" property
+Message-ID: <20210616124905.ktrwbwmvufocqwij@uno.localdomain>
+References: <20210419142345.53152-1-jacopo+renesas@jmondi.org>
+ <20210419142345.53152-4-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <20210419142345.53152-4-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+Hello,
+    gentle ping.
 
-Alexandru Elisei <alexandru.elisei@arm.com> writes:
+This change is required to move forward with integration of GMSL
+on Eagle.
 
-> Hi Punit,
->
-> Thank you for working on this!
->
-> On 6/15/21 12:04 AM, Punit Agrawal wrote:
->> Alexandru and Qu reported this resource allocation failure on
->> ROCKPro64 v2 and ROCK Pi 4B, both based on the RK3399:
->>
->>   pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
->>   pci 0000:00:00.0: PCI bridge to [bus 01]
->>   pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
->>   pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
->>
->> "BAR 14" is the PCI bridge's 32-bit non-prefetchable window, and our
->> PCI allocation code isn't smart enough to allocate it in a host
->> bridge window marked as 64-bit, even though this should work fine.
->>
->> A DT host bridge description includes the windows from the CPU
->> address space to the PCI bus space.  On a few architectures
->> (microblaze, powerpc, sparc), the DT may also describe PCI devices
->> themselves, including their BARs.
->>
->> Before 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource
->> flags for 64-bit memory addresses"), of_bus_pci_get_flags() ignored
->> the fact that some DT addresses described 64-bit windows and BARs.
->> That was a problem because the virtio virtual NIC has a 32-bit BAR
->> and a 64-bit BAR, and the driver couldn't distinguish them.
->>
->> 9d57e61bf723 set IORESOURCE_MEM_64 for those 64-bit DT ranges, which
->> fixed the virtio driver.  But it also set IORESOURCE_MEM_64 for host
->> bridge windows, which exposed the fact that the PCI allocator isn't
->> smart enough to put 32-bit resources in those 64-bit windows.
->>
->> Clear IORESOURCE_MEM_64 from host bridge windows since we don't need
->> that information.
->
-> I've tested the patch on my rockpro64. Kernel built from tag v5.13-rc6:
->
-> [=C2=A0=C2=A0=C2=A0 0.345676] pci 0000:01:00.0: 8.000 Gb/s available PCIe=
- bandwidth, limited by
-> 2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT=
-/s PCIe
-> x4 link)
-> [=C2=A0=C2=A0=C2=A0 0.359300] pci_bus 0000:01: busn_res: [bus 01-1f] end =
-is updated to 01
-> [=C2=A0=C2=A0=C2=A0 0.359343] pci 0000:00:00.0: BAR 14: no space for [mem=
- size 0x00100000]
-> [=C2=A0=C2=A0=C2=A0 0.359365] pci 0000:00:00.0: BAR 14: failed to assign =
-[mem size 0x00100000]
-> [=C2=A0=C2=A0=C2=A0 0.359387] pci 0000:01:00.0: BAR 0: no space for [mem =
-size 0x00004000 64bit]
-> [=C2=A0=C2=A0=C2=A0 0.359407] pci 0000:01:00.0: BAR 0: failed to assign [=
-mem size 0x00004000 64bit]
-> [=C2=A0=C2=A0=C2=A0 0.359428] pci 0000:00:00.0: PCI bridge to [bus 01]
-> [=C2=A0=C2=A0=C2=A0 0.359862] pcieport 0000:00:00.0: PME: Signaling with =
-IRQ 76
-> [=C2=A0=C2=A0=C2=A0 0.360190] pcieport 0000:00:00.0: AER: enabled with IR=
-Q 76
->
-> Kernel built from tag v5.13-rc6 with this patch applied:
->
-> [=C2=A0=C2=A0=C2=A0 0.345434] pci 0000:01:00.0: 8.000 Gb/s available PCIe=
- bandwidth, limited by
-> 2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT=
-/s PCIe
-> x4 link)
-> [=C2=A0=C2=A0=C2=A0 0.359081] pci_bus 0000:01: busn_res: [bus 01-1f] end =
-is updated to 01
-> [=C2=A0=C2=A0=C2=A0 0.359128] pci 0000:00:00.0: BAR 14: assigned [mem 0xf=
-a000000-0xfa0fffff]
-> [=C2=A0=C2=A0=C2=A0 0.359155] pci 0000:01:00.0: BAR 0: assigned [mem 0xfa=
-000000-0xfa003fff 64bit]
-> [=C2=A0=C2=A0=C2=A0 0.359217] pci 0000:00:00.0: PCI bridge to [bus 01]
-> [=C2=A0=C2=A0=C2=A0 0.359239] pci 0000:00:00.0:=C2=A0=C2=A0 bridge window=
- [mem 0xfa000000-0xfa0fffff]
-> [=C2=A0=C2=A0=C2=A0 0.359422] pcieport 0000:00:00.0: enabling device (000=
-0 -> 0002)
-> [=C2=A0=C2=A0=C2=A0 0.359687] pcieport 0000:00:00.0: PME: Signaling with =
-IRQ 76
-> [=C2=A0=C2=A0=C2=A0 0.360001] pcieport 0000:00:00.0: AER: enabled with IR=
-Q 76
->
-> And the NVME on the PCIE expansion card works as expected:
->
-> Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
+Thanks
+   j
 
-Thanks a lot for the retest and the detailed logs.
-
-Punit
-
-[...]
-
+On Mon, Apr 19, 2021 at 04:23:41PM +0200, Jacopo Mondi wrote:
+> The 'maxim,gpio-poc' property is used when the remote camera
+> power-over-coax is controlled by one of the MAX9286 gpio lines,
+> to instruct the driver about which line to use and what the line
+> polarity is.
+>
+> Add to the max9286 driver support for parsing the newly introduced
+> property and use it if available in place of the usual supply, as it is
+> not possible to establish one as consumer of the max9286 gpio
+> controller.
+>
+> If the new property is present, no gpio controller is registered and
+> 'poc-supply' is ignored.
+>
+> In order to maximize code re-use, break out the max9286 gpio handling
+> function so that they can be used by the gpio controller through the
+> gpio-consumer API, or directly by the driver code.
+>
+> Wrap the power up and power down routines to their own function to
+> be able to use either the gpio line directly or the supply. This will
+> make it easier to control the remote camera power at run time.
+>
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  drivers/media/i2c/max9286.c | 125 +++++++++++++++++++++++++++---------
+>  1 file changed, 94 insertions(+), 31 deletions(-)
+>
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index 6fd4d59fcc72..99160aa68a5f 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/fwnode.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/gpio/driver.h>
+> +#include <linux/gpio/machine.h>
+>  #include <linux/i2c.h>
+>  #include <linux/i2c-mux.h>
+>  #include <linux/module.h>
+> @@ -165,6 +166,9 @@ struct max9286_priv {
+>
+>  	u32 reverse_channel_mv;
+>
+> +	u32 gpio_poc;
+> +	u32 gpio_poc_flags;
+> +
+>  	struct v4l2_ctrl_handler ctrls;
+>  	struct v4l2_ctrl *pixelrate;
+>
+> @@ -1022,20 +1026,27 @@ static int max9286_setup(struct max9286_priv *priv)
+>  	return 0;
+>  }
+>
+> -static void max9286_gpio_set(struct gpio_chip *chip,
+> -			     unsigned int offset, int value)
+> +static int max9286_gpio_set(struct max9286_priv *priv, unsigned int offset,
+> +			    int value)
+>  {
+> -	struct max9286_priv *priv = gpiochip_get_data(chip);
+> -
+>  	if (value)
+>  		priv->gpio_state |= BIT(offset);
+>  	else
+>  		priv->gpio_state &= ~BIT(offset);
+>
+> -	max9286_write(priv, 0x0f, MAX9286_0X0F_RESERVED | priv->gpio_state);
+> +	return max9286_write(priv, 0x0f,
+> +			     MAX9286_0X0F_RESERVED | priv->gpio_state);
+> +}
+> +
+> +static void max9286_gpiochip_set(struct gpio_chip *chip,
+> +				 unsigned int offset, int value)
+> +{
+> +	struct max9286_priv *priv = gpiochip_get_data(chip);
+> +
+> +	max9286_gpio_set(priv, offset, value);
+>  }
+>
+> -static int max9286_gpio_get(struct gpio_chip *chip, unsigned int offset)
+> +static int max9286_gpiochip_get(struct gpio_chip *chip, unsigned int offset)
+>  {
+>  	struct max9286_priv *priv = gpiochip_get_data(chip);
+>
+> @@ -1055,16 +1066,81 @@ static int max9286_register_gpio(struct max9286_priv *priv)
+>  	gpio->of_node = dev->of_node;
+>  	gpio->ngpio = 2;
+>  	gpio->base = -1;
+> -	gpio->set = max9286_gpio_set;
+> -	gpio->get = max9286_gpio_get;
+> +	gpio->set = max9286_gpiochip_set;
+> +	gpio->get = max9286_gpiochip_get;
+>  	gpio->can_sleep = true;
+>
+> +	ret = devm_gpiochip_add_data(dev, gpio, priv);
+> +	if (ret)
+> +		dev_err(dev, "Unable to create gpio_chip\n");
+> +
+> +	return ret;
+> +}
+> +
+> +static int max9286_parse_gpios(struct max9286_priv *priv)
+> +{
+> +	struct device *dev = &priv->client->dev;
+> +	u32 gpio_poc[2];
+> +	int ret;
+> +
+>  	/* GPIO values default to high */
+>  	priv->gpio_state = BIT(0) | BIT(1);
+>
+> -	ret = devm_gpiochip_add_data(dev, gpio, priv);
+> +	/*
+> +	 * Parse the "gpio-poc" vendor property. If the camera power is
+> +	 * controlled by one of the MAX9286 gpio lines, do not register
+> +	 * the gpio controller and ignore 'poc-supply'.
+> +	 */
+> +	ret = of_property_read_u32_array(dev->of_node,
+> +					 "maxim,gpio-poc", gpio_poc, 2);
+> +	if (!ret) {
+> +		priv->gpio_poc = gpio_poc[0];
+> +		priv->gpio_poc_flags = gpio_poc[1];
+> +		if (priv->gpio_poc > 1 ||
+> +		    (priv->gpio_poc_flags != GPIO_ACTIVE_HIGH &&
+> +		     priv->gpio_poc_flags != GPIO_ACTIVE_LOW)) {
+> +			dev_err(dev, "Invalid 'gpio-poc': (%u %u)\n",
+> +				priv->gpio_poc, priv->gpio_poc_flags);
+> +			return -EINVAL;
+> +		}
+> +
+> +		return 0;
+> +	}
+> +
+> +	ret = max9286_register_gpio(priv);
+>  	if (ret)
+> -		dev_err(dev, "Unable to create gpio_chip\n");
+> +		return ret;
+> +
+> +	priv->regulator = devm_regulator_get(dev, "poc");
+> +	if (IS_ERR(priv->regulator)) {
+> +		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
+> +			dev_err(dev, "Unable to get PoC regulator (%ld)\n",
+> +				PTR_ERR(priv->regulator));
+> +		return PTR_ERR(priv->regulator);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int max9286_poc_enable(struct max9286_priv *priv, bool enable)
+> +{
+> +	int ret;
+> +
+> +	/* If "poc-gpio" is used, toggle the line and do not use regulator. */
+> +	if (enable)
+> +		ret = priv->regulator
+> +		    ? regulator_enable(priv->regulator)
+> +		    : max9286_gpio_set(priv, priv->gpio_poc,
+> +				       enable ^ priv->gpio_poc_flags);
+> +	else
+> +		ret = priv->regulator
+> +		    ? regulator_disable(priv->regulator)
+> +		    : max9286_gpio_set(priv, priv->gpio_poc,
+> +				       enable ^ priv->gpio_poc_flags);
+> +
+> +	if (ret < 0)
+> +		dev_err(&priv->client->dev, "Unable to turn PoC %s\n",
+> +			enable ? "on" : "off");
+>
+>  	return ret;
+>  }
+> @@ -1078,17 +1154,14 @@ static int max9286_init(struct device *dev)
+>  	client = to_i2c_client(dev);
+>  	priv = i2c_get_clientdata(client);
+>
+> -	/* Enable the bus power. */
+> -	ret = regulator_enable(priv->regulator);
+> -	if (ret < 0) {
+> -		dev_err(&client->dev, "Unable to turn PoC on\n");
+> +	ret = max9286_poc_enable(priv, true);
+> +	if (ret)
+>  		return ret;
+> -	}
+>
+>  	ret = max9286_setup(priv);
+>  	if (ret) {
+>  		dev_err(dev, "Unable to setup max9286\n");
+> -		goto err_regulator;
+> +		goto err_poc_disable;
+>  	}
+>
+>  	/*
+> @@ -1098,7 +1171,7 @@ static int max9286_init(struct device *dev)
+>  	ret = max9286_v4l2_register(priv);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to register with V4L2\n");
+> -		goto err_regulator;
+> +		goto err_poc_disable;
+>  	}
+>
+>  	ret = max9286_i2c_mux_init(priv);
+> @@ -1114,8 +1187,8 @@ static int max9286_init(struct device *dev)
+>
+>  err_v4l2_register:
+>  	max9286_v4l2_unregister(priv);
+> -err_regulator:
+> -	regulator_disable(priv->regulator);
+> +err_poc_disable:
+> +	max9286_poc_enable(priv, false);
+>
+>  	return ret;
+>  }
+> @@ -1286,20 +1359,10 @@ static int max9286_probe(struct i2c_client *client)
+>  	 */
+>  	max9286_configure_i2c(priv, false);
+>
+> -	ret = max9286_register_gpio(priv);
+> +	ret = max9286_parse_gpios(priv);
+>  	if (ret)
+>  		goto err_powerdown;
+>
+> -	priv->regulator = devm_regulator_get(&client->dev, "poc");
+> -	if (IS_ERR(priv->regulator)) {
+> -		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
+> -			dev_err(&client->dev,
+> -				"Unable to get PoC regulator (%ld)\n",
+> -				PTR_ERR(priv->regulator));
+> -		ret = PTR_ERR(priv->regulator);
+> -		goto err_powerdown;
+> -	}
+> -
+>  	ret = max9286_parse_dt(priv);
+>  	if (ret)
+>  		goto err_powerdown;
+> @@ -1326,7 +1389,7 @@ static int max9286_remove(struct i2c_client *client)
+>
+>  	max9286_v4l2_unregister(priv);
+>
+> -	regulator_disable(priv->regulator);
+> +	max9286_poc_enable(priv, false);
+>
+>  	gpiod_set_value_cansleep(priv->gpiod_pwdn, 0);
+>
+> --
+> 2.31.1
+>
