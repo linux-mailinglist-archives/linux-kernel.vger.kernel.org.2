@@ -2,103 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54933A99DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E043A99D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbhFPMFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232823AbhFPMFu (ORCPT
+        id S232507AbhFPME6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:04:58 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:7309 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231808AbhFPME5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:05:50 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88110C061767
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:03:44 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id h12so2049867pfe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:03:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8I4Y9wOWt0L9Wjhz/UCy2dwBA6LBFaECPMUl0PK0S+Y=;
-        b=iOp03LxUSsUIVfOPyK6+qrON59uFFnI+lLpZQNmg4K7I4gv9z25zZiFLkHse5fxWi3
-         gOQHyvMLemnvxyNSaqv/1j6jgvBTx8Bcn1+UcislZdN2rXbDI53R1R4r/8SbawsCWatn
-         vtVAr0XYGAq2oMqIrPwY8TW+piDJvRIrDtXc8yC9MM1Q8lNqKBdol2Gxbs9N0OaqioLR
-         5aeecQv4c9yxOi9lABNXJcmUavzPvw5mwmUxXQzARxk8KuU0yey9GzG11/6YCV2tNg2R
-         DtQPtH0uCEsnWDDlVOMJ62BOnMhtNhZMMYyzfY0YJ1Y7GjSsUcSAplDsb9qlUrvo+7Dq
-         vEMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8I4Y9wOWt0L9Wjhz/UCy2dwBA6LBFaECPMUl0PK0S+Y=;
-        b=F3e8zYlCLfc88vISUsPlQVcDVyZJpcYM1XgvoDm0qyyXonL8h5E17bXzAgH9jLoPCH
-         fS4cIB3a1Ap8JvfEyWX2cgKmVfbWHn8RqyAlldqcvHeXVlT+LMxSQLVuF6XeQoF6C/MG
-         Mu82HRf68vovdVCJFoy8IQQjY9BJQmlGTngi9N7zXQ0rfvQQ7RhbSR/L1tc6NsM/SLwj
-         g/UshB/e4P9yCtUPMdAHiIJ4Jcvz7QX5Wk6UH0aUOKvK2lHJM+qsqMN0kvOHttRp5KGl
-         YcDfLX2RbCEf1JCJ2wIFMXM6zblxu2ebwrNOMBjM7MsaF9bvauKMBkI9FZ/6VOzJFqCz
-         4UTg==
-X-Gm-Message-State: AOAM5309tOZ1f0tagvgjcAJ+2Aklll6E2EkeYks3fxdilO7rpscUa5qw
-        kuxxlfsxTVj6Y9rXfSLG8EqTQ/GcYbiVGknwwFqd7g==
-X-Google-Smtp-Source: ABdhPJzACOhUT8Swsb7rdD3D3OgQRthCK6TgJyy6RebksECPcC41qgjbK3tbJX6LYcSA6xiPPw77mA14Ipfdys8YUQ8=
-X-Received: by 2002:a62:1b91:0:b029:2fd:2904:938a with SMTP id
- b139-20020a621b910000b02902fd2904938amr3131409pfb.18.1623845024015; Wed, 16
- Jun 2021 05:03:44 -0700 (PDT)
+        Wed, 16 Jun 2021 08:04:57 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G4kG36z7Fz1BN5V;
+        Wed, 16 Jun 2021 19:57:47 +0800 (CST)
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 20:02:49 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.174) by
+ dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 20:02:48 +0800
+From:   Li Huafei <lihuafei1@huawei.com>
+To:     <jolsa@redhat.com>, <acme@kernel.org>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
+        <kan.liang@linux.intel.com>, <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <zhangjinhao2@huawei.com>,
+        <lihuafei1@huawei.com>
+Subject: [PATCH -next] perf tools: Remove duplicate #undef
+Date:   Wed, 16 Jun 2021 20:03:39 +0800
+Message-ID: <20210616120339.219807-1-lihuafei1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210616034448.34919-1-yujiahua1@huawei.com>
-In-Reply-To: <20210616034448.34919-1-yujiahua1@huawei.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Wed, 16 Jun 2021 14:03:32 +0200
-Message-ID: <CAG3jFyuJBFM-2KbJM_3FOisD1B8fz=AkAykW5KZfnbROyn3FQQ@mail.gmail.com>
-Subject: Re: [PATCH -next] drivers: gpu: add missing MODULE_DEVICE_TABLE in anx7625.c
-To:     Yu Jiahua <yujiahua1@huawei.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.co>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Xin Ji <xji@analogixsemi.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.174]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema753-chm.china.huawei.com (10.1.198.195)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Yu,
+Remove duplicate '#undef E'.
 
-Thank you for submitting this, it looks good to me and I pulled into
-drm-misc-next.
+Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+---
+ tools/perf/util/mem-events.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-https://cgit.freedesktop.org/drm/drm-misc/commit/?id=ad5fd900a69b1ae24e6b22506dea637b6bbbdb55
+diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+index f93a852ad838..91e6d61fed46 100644
+--- a/tools/perf/util/mem-events.c
++++ b/tools/perf/util/mem-events.c
+@@ -24,8 +24,6 @@ static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
+ };
+ #undef E
+ 
+-#undef E
+-
+ static char mem_loads_name[100];
+ static bool mem_loads_name__init;
+ 
+-- 
+2.17.1
 
-On Wed, 16 Jun 2021 at 05:44, Yu Jiahua <yujiahua1@huawei.com> wrote:
->
-> This patch adds missing MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
->
-> Signed-off-by: Yu Jiahua <yujiahua1@huawei.com>
-> ---
->  drivers/gpu/drm/bridge/analogix/anx7625.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> index 65cc05982f82..beb01364af4d 100644
-> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> @@ -1830,6 +1830,7 @@ static const struct of_device_id anx_match_table[] = {
->         {.compatible = "analogix,anx7625",},
->         {},
->  };
-> +MODULE_DEVICE_TABLE(of, anx_match_table);
->
->  static struct i2c_driver anx7625_driver = {
->         .driver = {
-> --
-> 2.17.1
->
