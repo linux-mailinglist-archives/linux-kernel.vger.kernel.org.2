@@ -2,165 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708433AA11A
+	by mail.lfdr.de (Postfix) with ESMTP id 2786B3AA119
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235199AbhFPQUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 12:20:01 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:39070 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbhFPQTx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 12:19:53 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1ltYEc-009lYc-Aw; Wed, 16 Jun 2021 10:17:46 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1ltYEb-000Wks-3W; Wed, 16 Jun 2021 10:17:45 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Chris Down <chris@chrisdown.name>,
-        Cgroups <cgroups@vger.kernel.org>
-References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
-        <20210615113222.edzkaqfvrris4nth@wittgenstein>
-        <20210615124715.nzd5we5tl7xc2n2p@example.org>
-        <CALvZod7po_fK9JpcUNVrN6PyyP9k=hdcyRfZmHjSVE5r_8Laqw@mail.gmail.com>
-Date:   Wed, 16 Jun 2021 11:17:38 -0500
-In-Reply-To: <CALvZod7po_fK9JpcUNVrN6PyyP9k=hdcyRfZmHjSVE5r_8Laqw@mail.gmail.com>
-        (Shakeel Butt's message of "Tue, 15 Jun 2021 18:09:49 -0700")
-Message-ID: <87zgvpg4wt.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S235169AbhFPQT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 12:19:58 -0400
+Received: from mga14.intel.com ([192.55.52.115]:8180 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235127AbhFPQTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 12:19:50 -0400
+IronPort-SDR: wpDwKcwVriW6P39Wpwhc8C3pSFuafRlqpc4dcWuDaimwNXIrs0sQu9iCGWb0PFGTjvfG9fkZSE
+ L3tatAsirNow==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206027388"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="206027388"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 09:17:44 -0700
+IronPort-SDR: uG5tjZcfTFMIZVUgt8CLKn5qyl4tNBlkguSFKM7SAGwuNMOFetyVuwAqGMz1QOp1zMBhCU81ln
+ D45kTQfaAUZQ==
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="637506566"
+Received: from mlnelson-mobl3.amr.corp.intel.com (HELO intel.com) ([10.252.143.181])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 09:17:43 -0700
+Date:   Wed, 16 Jun 2021 09:17:40 -0700
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Alison Schofield <alison.schofield@intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] cxl/acpi: Use the ACPI CFMWS to create static
+ decoder objects
+Message-ID: <20210616161740.k4nxeh3bmem56gwa@intel.com>
+References: <cover.1623800340.git.alison.schofield@intel.com>
+ <48f1b59105e46f04b38347fc1555bb5c8d654cff.1623800340.git.alison.schofield@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1ltYEb-000Wks-3W;;;mid=<87zgvpg4wt.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/oAPIcVGnPayS1n8LJJbfvRL5ngyGBE/A=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_08
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3277]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Shakeel Butt <shakeelb@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 652 ms - load_scoreonly_sql: 0.07 (0.0%),
-        signal_user_changed: 10 (1.6%), b_tie_ro: 9 (1.3%), parse: 1.62 (0.2%),
-         extract_message_metadata: 20 (3.0%), get_uri_detail_list: 5.0 (0.8%),
-        tests_pri_-1000: 6 (0.9%), tests_pri_-950: 1.27 (0.2%),
-        tests_pri_-900: 1.09 (0.2%), tests_pri_-90: 109 (16.7%), check_bayes:
-        100 (15.3%), b_tokenize: 14 (2.1%), b_tok_get_all: 11 (1.7%),
-        b_comp_prob: 3.5 (0.5%), b_tok_touch_all: 67 (10.3%), b_finish: 1.03
-        (0.2%), tests_pri_0: 483 (74.1%), check_dkim_signature: 0.55 (0.1%),
-        check_dkim_adsp: 3.5 (0.5%), poll_dns_idle: 0.17 (0.0%), tests_pri_10:
-        2.3 (0.4%), tests_pri_500: 13 (2.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <48f1b59105e46f04b38347fc1555bb5c8d654cff.1623800340.git.alison.schofield@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shakeel Butt <shakeelb@google.com> writes:
+On 21-06-15 17:20:39, Alison Schofield wrote:
+> The ACPI CXL Early Discovery Table (CEDT) includes a list of CXL memory
+> resources in CXL Fixed Memory Window Structures (CFMWS). Retrieve each
+> CFMWS in the CEDT and add a cxl_decoder object to the root port (root0)
+> for each memory resource.
+> 
+> Signed-off-by: Alison Schofield <alison.schofield@intel.com>
+> ---
+>  drivers/cxl/acpi.c | 114 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 114 insertions(+)
+> 
+> diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
+> index b6d9cd45428c..e3aa356d4dcd 100644
+> --- a/drivers/cxl/acpi.c
+> +++ b/drivers/cxl/acpi.c
+> @@ -8,8 +8,120 @@
+>  #include <linux/pci.h>
+>  #include "cxl.h"
+>  
+> +/* Encode defined in CXL 2.0 8.2.5.12.7 HDM Decoder Control Register */
+> +#define CFMWS_INTERLEAVE_WAYS(x)	(1 << (x)->interleave_ways)
+> +#define CFMWS_INTERLEAVE_GRANULARITY(x)	((x)->granularity + 8)
+> +
+>  static struct acpi_table_header *cedt_table;
+>  
+> +static unsigned long cfmws_to_decoder_flags(int restrictions)
+> +{
+> +	unsigned long flags = 0;
+> +
+> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE2)
+> +		flags |= CXL_DECODER_F_TYPE2;
+> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE3)
+> +		flags |= CXL_DECODER_F_TYPE3;
+> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE)
+> +		flags |= CXL_DECODER_F_RAM;
+> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_PMEM)
+> +		flags |= CXL_DECODER_F_PMEM;
+> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_FIXED)
+> +		flags |= CXL_DECODER_F_LOCK;
+> +
+> +	return flags;
+> +}
 
-> On Tue, Jun 15, 2021 at 5:47 AM Alexey Gladkov <legion@kernel.org> wrote:
->>
-> [...]
->>
->> I made the second version of the patch [1], but then I had a conversation
->> with Eric W. Biederman offlist. He convinced me that it is a bad idea to
->> change all the values in meminfo to accommodate cgroups. But we agreed
->> that MemAvailable in /proc/meminfo should respect cgroups limits. This
->> field was created to hide implementation details when calculating
->> available memory. You can see that it is quite widely used [2].
->> So I want to try to move in that direction.
->>
->> [1] https://git.kernel.org/pub/scm/linux/kernel/git/legion/linux.git/log/?h=patchset/meminfo/v2.0
->> [2] https://codesearch.debian.net/search?q=MemAvailable%3A
->>
->
-> Please see following two links on the previous discussion on having
-> per-memcg MemAvailable stat.
->
-> [1] https://lore.kernel.org/linux-mm/alpine.DEB.2.22.394.2006281445210.855265@chino.kir.corp.google.com/
-> [2] https://lore.kernel.org/linux-mm/alpine.DEB.2.23.453.2007142018150.2667860@chino.kir.corp.google.com/
->
-> MemAvailable itself is an imprecise metric and involving memcg makes
-> this metric even more weird. The difference of semantics of swap
-> accounting of v1 and v2 is one source of this weirdness (I have not
-> checked your patch if it is handling this weirdness). The lazyfree and
-> deferred split pages are another source.
->
-> So, I am not sure if complicating an already imprecise metric will
-> make it more useful.
+I know these flags aren't introduced by this patch, but I'm wondering if it
+makes sense to not just use the spec definitions rather than defining our own.
+It doesn't do much harm, but it's extra typing everytime the spec adds new flags
+and I don't really see the upside.
 
-Making a good guess at how much memory can be allocated without
-triggering swapping or otherwise stressing the system is something that
-requires understanding our mm internals.
+> +
+> +static int cxl_acpi_cfmws_verify(struct device *dev,
+> +				 struct acpi_cedt_cfmws *cfmws)
+> +{
+> +	int expected_len;
+> +
+> +	if (cfmws->interleave_arithmetic != ACPI_CEDT_CFMWS_ARITHMETIC_MODULO) {
+> +		dev_err(dev, "CFMWS Unsupported Interleave Arithmetic\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!IS_ALIGNED(cfmws->base_hpa, SZ_256M)) {
+> +		dev_err(dev, "CFMWS Base HPA not 256MB aligned\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!IS_ALIGNED(cfmws->window_size, SZ_256M)) {
+> +		dev_err(dev, "CFMWS Window Size not 256MB aligned\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	expected_len = struct_size((cfmws), interleave_targets,
+> +				   CFMWS_INTERLEAVE_WAYS(cfmws));
+> +
+> +	if (expected_len != cfmws->header.length) {
 
-To be able to continue changing the mm or even mm policy without
-introducing regressions in userspace we need to export values that
-userspace can use.
+I'd switch this to:
+if (expected_len < cfmws->header.length)
 
-At a first approximation that seems to look like MemAvailable.
+If it's too big, just print a dev_dbg.
 
-MemAvailable seems to have a good definition.  Roughly the amount of
-memory that can be allocated without triggering swapping.  Updated
-to include not trigger memory cgroup based swapping and I sounds good.
+> +		dev_err(dev, "CFMWS interleave ways and targets mismatch\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void cxl_add_cfmws_decoders(struct device *dev,
+> +				   struct cxl_port *root_port)
+> +{
+> +	struct acpi_cedt_cfmws *cfmws;
+> +	struct cxl_decoder *cxld;
+> +	acpi_size len, cur = 0;
+> +	void *cedt_base;
+> +	int rc;
+> +
+> +	len = cedt_table->length - sizeof(*cedt_table);
+> +	cedt_base = cedt_table + 1;
 
-I don't know if it will work in practice but I think it is worth
-exploring.
+naming suggestions per previous patch... up to you though.
 
-I do know that hiding the implementation details and providing userspace
-with information it can directly use seems like the programming model
-that needs to be explored.  Most programs should not care if they are in
-a memory cgroup, etc.  Programs, load management systems, and even
-balloon drivers have a legitimately interest in how much additional load
-can be placed on a systems memory.
+> +
+> +	while (cur < len) {
+> +		struct acpi_cedt_header *c = cedt_base + cur;
+> +
+> +		if (c->type != ACPI_CEDT_TYPE_CFMWS) {
+> +			cur += c->length;
+> +			continue;
+> +		}
+> +
+> +		cfmws = cedt_base + cur;
+> +
+> +		if (cfmws->header.length < sizeof(*cfmws)) {
+> +			dev_err(dev, "Invalid CFMWS header length %u\n",
+> +				cfmws->header.length);
+> +			dev_err(dev, "Failed to add decoders\n");
+> +			return;
+> +		}
+> +
+> +		rc = cxl_acpi_cfmws_verify(dev, cfmws);
+> +		if (rc) {
+> +			dev_err(dev, "CFMWS range %#llx-%#llx not registered\n",
+> +				cfmws->base_hpa, cfmws->base_hpa +
+> +				cfmws->window_size - 1);
+> +			cur += c->length;
+> +			continue;
+> +		}
+> +
+> +		cxld = devm_cxl_add_decoder(dev, root_port,
+> +				CFMWS_INTERLEAVE_WAYS(cfmws),
+> +				cfmws->base_hpa, cfmws->window_size,
+> +				CFMWS_INTERLEAVE_WAYS(cfmws),
 
+Interesting... this made me question, how can we have a different number of
+targets and ways?
 
-A version of this that I remember working fairly well is free space
-on compressed filesystems.  As I recall compressed filesystems report
-the amount of uncompressed space that is available (an underestimate).
-This results in the amount of space consumed going up faster than the
-free space goes down.
-
-We can't do exactly the same thing with our memory usability estimate,
-but having our estimate be a reliable underestimate might be enough
-to avoid problems with reporting too much memory as available to
-userspace.
-
-I know that MemAvailable already does that /2 so maybe it is already
-aiming at being an underestimate.  Perhaps we need some additional
-accounting to help create a useful metric for userspace as well.
-
-
-I don't know the final answer.  I do know that not designing an
-interface that userspace can use to deal with it's legitimate concerns
-is sticking our collective heads in the sand and wishing the problem
-will go away.
-
-Eric
-
+> +				CFMWS_INTERLEAVE_GRANULARITY(cfmws),
+> +				CXL_DECODER_EXPANDER,
+> +				cfmws_to_decoder_flags(cfmws->restrictions));
+> +
+> +		if (IS_ERR(cxld)) {
+> +			dev_err(dev, "Failed to add decoder for %#llx-%#llx\n",
+> +				cfmws->base_hpa, cfmws->base_hpa +
+> +				cfmws->window_size - 1);
+> +		} else {
+> +			dev_dbg(dev, "add: %s range %#llx-%#llx\n",
+> +				dev_name(&cxld->dev), cfmws->base_hpa,
+> +				 cfmws->base_hpa + cfmws->window_size - 1);
+> +		}
+> +		cur += c->length;
+> +	}
+> +}
+> +
+>  static struct acpi_cedt_chbs *cxl_acpi_match_chbs(struct device *dev, u32 uid)
+>  {
+>  	struct acpi_cedt_chbs *chbs, *chbs_match = NULL;
+> @@ -251,6 +363,8 @@ static int cxl_acpi_probe(struct platform_device *pdev)
+>  	if (rc)
+>  		goto out;
+>  
+> +	cxl_add_cfmws_decoders(host, root_port);
+> +
+>  	/*
+>  	 * Root level scanned with host-bridge as dports, now scan host-bridges
+>  	 * for their role as CXL uports to their CXL-capable PCIe Root Ports.
+> -- 
+> 2.26.2
+> 
