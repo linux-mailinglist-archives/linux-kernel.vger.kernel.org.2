@@ -2,97 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9973F3A937B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5C23A937D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbhFPHI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 03:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbhFPHI1 (ORCPT
+        id S231326AbhFPHJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:09:15 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:44923 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231290AbhFPHJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:08:27 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAEF3C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:06:21 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id k22-20020a17090aef16b0290163512accedso3164808pjz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sXXuhoLRJX2+rrJArKajwCGFhT8GhurCdeZkGKLcGwM=;
-        b=glXINbBFF0plMxXAiIq62MgFyjvUIpUrhfyKc3iI0uypsMBL5jn/cEZnhBa0pcSSpA
-         hBaa1Ch5vsN/o3E7jMmj0Ilj8qdHJbI/JumRVMiuZgVy6AS3GM0NEws379eEQokOUY+Y
-         qJ0/J+xx/Tbrgpwo4IFTmTKdsmYnOyJ7MV1GA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sXXuhoLRJX2+rrJArKajwCGFhT8GhurCdeZkGKLcGwM=;
-        b=fu4dpAIFlo0/ajg12EgQU1pVAMZ59PghJWCQFSliVSZqPHGIooCGsUBiXcIV3YXLX1
-         jAWCK2cDDMHsx1eGWN/EJCLsOBOd8IeXfXYtUjfbNIC1N1RQ30C6gbxiBzgxoKVL44+s
-         fwv9hOD9/bQO9dCYj/E9SVLQb5qHVESHnltLkoHCYFkQDKJhAcUhc6XMbKsXvyuuO0G5
-         YsrP0wieRIaHRKFhSPVzzEjwowJiQh/e0PcMvk8FGnmSSMRimDA9KJYmmiwfZoKtlrvS
-         YMhpMmbu5XICxFYNU1yaxeoVJjLY+SN5wnXId7vki/njsJmd+cDrV4dpYG1PQnYMkp/y
-         i57A==
-X-Gm-Message-State: AOAM531My75E4HGOtnDsp1us07FUVehbSWj6HLUmUYFiPOtLfvbYiW1Z
-        XbDEebTPseK6oLyB1RffDj0eJA==
-X-Google-Smtp-Source: ABdhPJx3wBvpKen63quXCl/lZAagMvoyYHXFGOqjj9nbOG2A6kInN9Y5bDxOCa5XJIQDtFdtaBXWjw==
-X-Received: by 2002:a17:902:b181:b029:fc:c069:865c with SMTP id s1-20020a170902b181b02900fcc069865cmr7939920plr.28.1623827181105;
-        Wed, 16 Jun 2021 00:06:21 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:da79:71b5:dd21:f72])
-        by smtp.gmail.com with ESMTPSA id s11sm4561527pjz.42.2021.06.16.00.06.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 00:06:20 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 16:06:15 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH next v3 1/2] dump_stack: move cpu lock to printk.c
-Message-ID: <YMmi5xoTOb82TKtJ@google.com>
-References: <20210615174947.32057-1-john.ogness@linutronix.de>
- <20210615174947.32057-2-john.ogness@linutronix.de>
- <8735tiq0d8.fsf@jogness.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8735tiq0d8.fsf@jogness.linutronix.de>
+        Wed, 16 Jun 2021 03:09:13 -0400
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210616070706epoutp02c0e54217db402b4dceacefeeb1032697~I-kI5AO9D2639626396epoutp02s
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:07:06 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210616070706epoutp02c0e54217db402b4dceacefeeb1032697~I-kI5AO9D2639626396epoutp02s
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1623827226;
+        bh=HQ5yW1AE6geZmnkE7UmJjbLNvPQVWXz+PcuLW50YdaQ=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=O74fG+Kf2UYI3egT7rWNA1mQqu9Zvun5EpiRWfk9I76W5IE4iJjiOeXeY2aHzYIZl
+         89Q2qPSr+4Su22rtb9rmbvDRX93EgUoUEUoiGhHKJdrY5Q7tm4tHnu0snNUeGIPOI0
+         8r36NTTHKPnahHVppncwk36zcQhMfYvEJF3dGYBo=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210616070704epcas2p15cdf9444d8f90328a4a3df57af32ca97~I-kHV_JnJ1866018660epcas2p1S;
+        Wed, 16 Jun 2021 07:07:04 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.187]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4G4bpY2fYZz4x9Pq; Wed, 16 Jun
+        2021 07:07:01 +0000 (GMT)
+X-AuditID: b6c32a45-db3ff70000002584-c2-60c9a3158de3
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DD.66.09604.513A9C06; Wed, 16 Jun 2021 16:07:01 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH v38 0/4] scsi: ufs: Add Host Performance Booster Support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210616070700epcms2p734db9b60e13229696fb3cda5f69e210f@epcms2p7>
+Date:   Wed, 16 Jun 2021 16:07:00 +0900
+X-CMS-MailID: 20210616070700epcms2p734db9b60e13229696fb3cda5f69e210f
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA12Te0xbVQDGPb13tx2uy6XAOAIquTIzcJQWV3ZAGDrY7ACVZAtLpkm5wrXA
+        +rK3TLclSmRY3gyWjUewki1ABLIytF15GKDMDVRCkHeHCkw2YcBwLGZlQqS0uMX/vvM73z3f
+        +c65h4cJ7hE+vHSVjtGqaAVFuOHmnkAU7HWlL1lUrHdHUwYzgb7/speL5uwjBLq0bMfQQ2Pd
+        NjRnDURt3d0Eapg6jrKvGAlU3Z/FQUUlJgJ9292MoTuTK1x0edzMQSXrehyZV9zRrb4lgIba
+        qglUMGYhUP2tdQ6qNU0AlFfehL+5Szo0HC8dKi7iSFurfuVKz1/uAtLOr5q40nN9nbj0r1kb
+        Li3+rgFIV1pekuq7CjiJbicUkWkMncpo/RlVijo1XSWPouKPymJkkjCROFgcjvZT/ipayURR
+        sQmJwYfTFRs1Kf9TtCJzAyXSLEuFHIjUqjN1jH+amtVFUYwmVaERizVCllaymSq5MEWtjBCL
+        RKGSDWeyIq251gQ0kxGftg7b8SzQLMwH23mQ3Ad71u+BfODGE5AWAOvL7+L5gMfjk+5wzeLh
+        8HiQUmi3XiQcWkBS0DhYxXVyIbRNNwGHJsi9sLz3d65jHU8yB4fmvwc3Bxg5gMGOcT1wpvFh
+        hX4Wd2pfeL3e5OJ74OO6IsypveBE4yJ3Sz+4+bXL4wlzfut3edzhlL3dxV+AN9uXOU79OTRN
+        rm62gWQhgD2ttm3OiRA4mnttM5hPvgMHSzs3A3ByN/ylbIbjaAzJWFg/5OnAGPkyvL5YjTkw
+        RgZCY1uI0/EKvGHDt5pkXXvC/b/GyJ0wt2ftP24x/OHa2avwqt3oCvKDNgM4D6iqpwdd9Uxs
+        1dPYGoA1gF2MhlXKGTZUI372blvA5h8fdMgCLiwuC62AwwNWAHkY5ckPZnuTBfxU+vQZRquW
+        aTMVDGsFko2+pZiPV4p648modDKxJDQsTBQuQZKwUER583lca7KAlNM65iTDaBjt1ncc3naf
+        LI731YKxLuUPz83X9D8+wtmzUL06O3rS79zz2frCcJNgnqkJajS8EdtYuhZd/JF1NbPFHpC7
+        Myhy4nBJfPSxkRyF7pOBg0ZRnHr97dff/SLp2ILM+/aLhWZ68Ah9pvT4nciJS+1KA71Upvcp
+        m/vgUb/8QFuS7AHzTyD/4RS9L5JY6K8cn57/cEfna761nlnvJcQQTEnldHzCW6Zuv5KRzBPa
+        mQo65i6WMbAu9D21apibvr8k3hn36Kx8Zu79swcrOjxGUww/7v3T1hFd0Rzwc9zuiJGAytxv
+        jmb/FEKaCnRdGWPGvBt2ywVb3uh0cuCTjw+Vjt6e2nG6NeOz4d776WxZXdL+CApn02hxEKZl
+        6X8B8TBiTXoEAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210616070700epcms2p734db9b60e13229696fb3cda5f69e210f
+References: <CGME20210616070700epcms2p734db9b60e13229696fb3cda5f69e210f@epcms2p7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/06/15 23:39), John Ogness wrote:
-> On 2021-06-15, John Ogness <john.ogness@linutronix.de> wrote:
-> > diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> > index 114e9963f903..5369d8f33299 100644
-> > --- a/kernel/printk/printk.c
-> > +++ b/kernel/printk/printk.c
-> > @@ -3532,3 +3532,70 @@ void kmsg_dump_rewind(struct kmsg_dump_iter *iter)
-> >  EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
-> >  
-> >  #endif
-> > +
-> > +#ifdef CONFIG_SMP
-> > +static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
-> > +static bool printk_cpulock_nested;
-> 
-> I just realized that @printk_cpulock_nested will need to be an atomic_t
-> counter to allow multiple nested levels since nesting can also occur
+Changelog:
 
-Strictly speaking, this is not nested printk, right? printk recursion is
-handled in printk separately. This one is more like "nested dump_stack()-s",
-or nested "error reporinting".
+v37 -> v38
+1. Fix argument of find_next_bit API.
+2. rebase 5.14 scsi-staging
 
-Shall this be a separate patch? Because the original code has never
-limited nested error reporting contexts.
+v36 -> v37
+1. Fix wrong usage of find_next_bit API.
+2. Address Barts' comments. (sysfs, documentation, return type)
+3. Change HPB_MULTI_CHUNK_HIGH for 1MB-sized request.
+
+v35 -> v36
+1. Changed ppn variable type from u64 to __be64.
+2. Added WARN_ON_ONCE() to check for HPB read IO size exceeded.
+
+v34 -> v35
+1. Addressed Bart's comments (type casting)
+2. Rebase 5.14 scsi-queue
+
+v33 -> v34
+Fix warning about NULL check before some freeing functions is not needed.
+
+v32 -> v33
+1. Fix wrong usage of scsi_command_normalize_sense.
+2. Addressed Bart's comments (func. name, type casting, parentheses)
+
+v31 -> v32
+Delete unused parameter of unmap API.
+
+v30 -> v31
+Delete unnecessary debug message.
+
+v29 -> v30
+1. Add support to reuse bio of pre-request.
+2. Delete unreached code in the ufshpb_issue_map_req.
+
+v28 -> v29
+1. Remove unused variable that reported by kernel test robot.
+
+v27 -> v28
+1. Fix wrong return value of ufshpb_prep.
+
+v26 -> v27
+1. Fix wrong refernce of sense buffer in pre_req complete function.
+2. Fix read_id error.
+3. Fix chunk size checking for HPB 1.0.
+4. Mute unnecessary messages before HPB initialization.
+
+v25 -> v26
+1. Fix wrong chunk size checking for HPB 1.0.
+2. Fix wrong max data size for HPB single command.
+3. Fix typo error.
+
+v24 -> v25
+1. Change write buffer API for unmap region.
+2. Add checking hpb_enable for avoiding unnecessary memory allocation.
+3. Change pr_info to dev_info.
+4. Change default requeue timeout value for HPB read.
+5. Fix wrong offset manipulation on ufshpb_prep_entry.
+
+v23 -> v24
+1. Fix build error reported by kernel test robot.
+
+v22 -> v23
+1. Add support compatibility of HPB 1.0.
+2. Fix read id for single HPB read command.
+3. Fix number of pre-allocated requests for write buffer.
+4. Add fast path for response UPIU that has same LUN in sense data.
+5. Remove WARN_ON for preventing kernel crash.
+7. Fix wrong argument for read buffer command.
+
+v21 -> v22
+1. Add support processing response UPIU in suspend state.
+2. Add support HPB hint from other LU.
+3. Add sending write buffer with 0x03 after HPB init.
+
+v20 -> v21
+1. Add bMAX_DATA_SIZE_FOR_HPB_SINGLE_CMD attr. and fHPBen flag support.
+
+v19 -> v20
+1. Add documentation for sysfs entries of hpb->stat.
+2. Fix read buffer command for under-sized sub-region.
+3. Fix wrong condition checking for kick map work.
+4. Delete redundant response UPIU checking.
+5. Add LUN checking in response UPIU.
+6. Fix possible deadlock problem due to runtime PM.
+7. Add instant changing of sub-region state from response UPIU.
+8. Fix endian problem in prefetched PPN.
+9. Add JESD220-3A (HPB v2.0) support.
+
+v18 -> 19
+1. Fix null pointer error when printing sysfs from non-HPB LU.
+2. Apply HPB read opcode in lrbp->cmd->cmnd (from Can Guo's review).
+3. Rebase the patch on 5.12/scsi-queue.
+
+v17 -> v18
+Fix build error which reported by kernel test robot.
+
+v16 -> v17
+1. Rename hpb_state_lock to rgn_state_lock and move it to corresponding
+patch.
+2. Remove redundant information messages.
+
+v15 -> v16
+1. Add missed sysfs ABI documentation.
+
+v14 -> v15
+1. Remove duplicated sysfs ABI entries in documentation.
+2. Add experiment result of HPB performance testing with iozone.
+
+v13 -> v14
+1. Cleanup codes by commentted in Greg's review.
+2. Add documentation for sysfs entries (from Greg's review).
+3. Add experiment result of HPB performance testing.
+
+v12 -> v13
+1. Cleanup codes by comments from Can Guo.
+2. Add HPB related descriptor/flag/attributes in sysfs.
+3. Change base commit from 5.10/scsi-queue to 5.11/scsi-queue.
+
+v11 -> v12
+1. Fixed to return error value when HPB fails to initialize pinned active 
+region.
+2. Fixed to disable HPB feature if HPB fails to allocate essential memory
+and workqueue.
+3. Fixed to change proper sub-region state when region is already evicted.
+
+v10 -> v11
+Add a newline at end the last line on Kconfig file.
+
+v9 -> v10
+1. Fixed 64-bit division error
+2. Fixed problems commentted in Bart's review.
+
+v8 -> v9
+1. Change sysfs initialization.
+2. Change reading descriptor during HPB initialization
+3. Fixed problems commentted in Bart's review.
+4. Change base commit from 5.9/scsi-queue to 5.10/scsi-queue.
+
+v7 -> v8
+Remove wrongly added tags.
+
+v6 -> v7
+1. Remove UFS feature layer.
+2. Cleanup for sparse error.
+
+v5 -> v6
+Change base commit to b53293fa662e28ae0cdd40828dc641c09f133405
+
+v4 -> v5
+Delete unused macro define.
+
+v3 -> v4
+1. Cleanup.
+
+v2 -> v3
+1. Add checking input module parameter value.
+2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
+3. Cleanup for unused variables and label.
+
+v1 -> v2
+1. Change the full boilerplate text to SPDX style.
+2. Adopt dynamic allocation for sub-region data structure.
+3. Cleanup.
+
+NAND flash memory-based storage devices use Flash Translation Layer (FTL)
+to translate logical addresses of I/O requests to corresponding flash
+memory addresses. Mobile storage devices typically have RAM with
+constrained size, thus lack in memory to keep the whole mapping table.
+Therefore, mapping tables are partially retrieved from NAND flash on
+demand, causing random-read performance degradation.
+
+To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
+(Host Performance Booster) which uses host system memory as a cache for the
+FTL mapping table. By using HPB, FTL data can be read from host memory
+faster than from NAND flash memory. 
+
+The current version only supports the DCM (device control mode).
+This patch consists of 3 parts to support HPB feature.
+
+1) HPB probe and initialization process
+2) READ -> HPB READ using cached map information
+3) L2P (logical to physical) map management
+
+In the HPB probe and init process, the device information of the UFS is
+queried. After checking supported features, the data structure for the HPB
+is initialized according to the device information.
+
+A read I/O in the active sub-region where the map is cached is changed to
+HPB READ by the HPB.
+
+The HPB manages the L2P map using information received from the
+device. For active sub-region, the HPB caches through ufshpb_map
+request. For the in-active region, the HPB discards the L2P map.
+When a write I/O occurs in an active sub-region area, associated dirty
+bitmap checked as dirty for preventing stale read.
+
+HPB is shown to have a performance improvement of 58 - 67% for random read
+workload. [1]
+
+[1]:
+https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
+
+Daejun Park (4):
+  scsi: ufs: Introduce HPB feature
+  scsi: ufs: L2P map management for HPB read
+  scsi: ufs: Prepare HPB read for cached sub-region
+  scsi: ufs: Add HPB 2.0 support
+
+ Documentation/ABI/testing/sysfs-driver-ufs |  162 ++
+ drivers/scsi/ufs/Kconfig                   |    9 +
+ drivers/scsi/ufs/Makefile                  |    1 +
+ drivers/scsi/ufs/ufs-sysfs.c               |   22 +
+ drivers/scsi/ufs/ufs.h                     |   54 +-
+ drivers/scsi/ufs/ufshcd.c                  |   73 +-
+ drivers/scsi/ufs/ufshcd.h                  |   30 +
+ drivers/scsi/ufs/ufshpb.c                  | 2380 ++++++++++++++++++++
+ drivers/scsi/ufs/ufshpb.h                  |  277 +++
+ 9 files changed, 3006 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/scsi/ufs/ufshpb.c
+ create mode 100644 drivers/scsi/ufs/ufshpb.h
+
+-- 
+2.25.1
+
