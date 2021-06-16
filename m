@@ -2,87 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE6F3A93EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB8C3A93EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhFPHch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 03:32:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232010AbhFPHcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:32:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 671AD6044F;
-        Wed, 16 Jun 2021 07:30:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623828620;
-        bh=AtPZETMQfDlVwaPKTN13KJ1TnXAOl86TlunvJ+giqQE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SmbwDkTaAtzCdGIoo3TjArnHzGu4mMtE5z69zB4RF6vPqusQ/pDqCQ1zDLZPLj4Ju
-         0LjblC76piWB8sZ3PZXQi6QbKSY+HPvCi61FNrq49Lrk/VlAPGTdeNafVPkj174Ie5
-         vRyAmtL9XVFUxnmejAUBsiOA9NK90S2xbXlbpkuhogGpD2LOvz3KEhP25uS7GpbA2K
-         sNdKzrk8vo3broeYW22Dr4a++wkQRu4A/+pARShU4NqEuYcudYaSGBirvCvnZvz9Kc
-         q5DDVkslM6XZ2fi0AbPNardkV8RhhPWaMTiYJ1HrnmfXAYxmRbD4Vtu932X7l30K4t
-         1beWfKGXgIDhg==
-Date:   Wed, 16 Jun 2021 10:30:16 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Anand Khoje <anand.a.khoje@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dledford@redhat.com, jgg@ziepe.ca, haakon.bugge@oracle.com
-Subject: Re: [PATCH v4 for-next 3/3] IB/core: Obtain subnet_prefix from cache
- in IB devices
-Message-ID: <YMmoiD5mXm4/OWj3@unreal>
-References: <20210616065213.987-1-anand.a.khoje@oracle.com>
- <20210616065213.987-4-anand.a.khoje@oracle.com>
+        id S232025AbhFPHco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:32:44 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:7300 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231344AbhFPHcn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 03:32:43 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G4cD00KZjz1BN0N;
+        Wed, 16 Jun 2021 15:25:36 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 15:30:37 +0800
+Received: from thunder-town.china.huawei.com (10.174.179.0) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 15:30:36 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Johannes Thumshirn <morbidrsa@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v3 0/1] mcb: Use DEFINE_RES_MEM() helper macro and fix the end address
+Date:   Wed, 16 Jun 2021 15:30:29 +0800
+Message-ID: <20210616073030.834-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616065213.987-4-anand.a.khoje@oracle.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 12:22:13PM +0530, Anand Khoje wrote:
-> ib_query_port() calls device->ops.query_port() to get the port
-> attributes. The method of querying is device driver specific.
-> The same function calls device->ops.query_gid() to get the GID and
-> extract the subnet_prefix (gid_prefix).
-> 
-> The GID and subnet_prefix are stored in a cache. But they do not get
-> read from the cache if the device is an Infiniband device. The
-> following change takes advantage of the cached subnet_prefix.
-> Testing with RDBMS has shown a significant improvement in performance
-> with this change.
-> 
-> The function ib_cache_is_initialised() is introduced because
-> ib_query_port() gets called early in the stage when the cache is not
-> built while reading port immutable property.
-> 
-> In that case, the default GID still gets read from HCA for IB link-
-> layer devices.
-> 
-> In the situation of an event causing cache update, the subnet_prefix
-> will get retrieved from newly updated GID cache in ib_cache_update(),
-> so that we do not end up reading a stale value from cache via
-> ib_query_port().
-> 
-> Fixes: fad61ad ("IB/core: Add subnet prefix to port info")
-> Suggested-by: Leon Romanovsky <leonro@nvidia.com>
-> Suggested-by: Aru Kolappan <aru.kolappan@oracle.com>
-> Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
-> Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
-> ---
+v2 --> v3:
+Add "Fixes:" and update the subject.
 
-<...>
+v1 --> v2:
+Update commit message.
 
-> @@ -1523,13 +1526,21 @@ static int config_non_roce_gid_cache(struct ib_device *device,
->  	device->port_data[port].cache.lmc = tprops->lmc;
->  	device->port_data[port].cache.port_state = tprops->state;
->  
-> -	device->port_data[port].cache.subnet_prefix = tprops->subnet_prefix;
-> +	ret = rdma_query_gid(device, port, 0, &gid);
-> +	if (ret) {
-> +		write_unlock_irq(&device->cache.lock);
+Zhen Lei (1):
+  mcb: Use DEFINE_RES_MEM() helper macro and fix the end address
 
-And this patch can't compile. It should be cache_lock and not cache.lock.
+ drivers/mcb/mcb-lpc.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-Thanks
+-- 
+2.25.1
+
+
