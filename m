@@ -2,46 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36EC3A927B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE923A9296
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhFPGaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:30:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59684 "EHLO mail.kernel.org"
+        id S232224AbhFPGb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:31:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231391AbhFPG3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:29:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE9C5613BF;
-        Wed, 16 Jun 2021 06:27:47 +0000 (UTC)
+        id S231628AbhFPG3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 02:29:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80B1E613C7;
+        Wed, 16 Jun 2021 06:27:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623824867;
-        bh=HFXY5XjspzH1kzu2GrbFUWzI5z4ecY6jF7OZRuh585A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=i8M85VxHQbZ50V8fMJseWf0vWBO55h7qx/5DDF1AEmTSMWhUjzMvzzmjKrtF8AKcR
-         jwPUkMGj6skaSwKc3Nb/ClX/mf9rqCBl4EoOzg6hiQVc5LWnY4qtyfrSEJ7VphRRWH
-         KduL0CAw/YrDU6ESOYozK0J7Mwh6gXRMtkihQq/zF3LS+B2iz9xXROxs8p6G/3birc
-         rMWLHc4+eJCtsbE9xfUQ8QL3jC1cqZQSUtH6lpM1ZAmA6n8MNE4ItYkhgEns7gOcfF
-         tDqXX7qE2sdpEWYSQWyUHfCyD8Rd8Zrw4MW3EN7CUxyupE2Yrivwa8Z0A4F/HN3xgi
-         IJ4MvA1+etqjg==
+        s=k20201202; t=1623824868;
+        bh=asTkRaIynv0EXyPf2YOE4npgGc5H+lLigxxTS3UFkZ8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QSWSMAq5d4BVN94bdr8wyo8zjVTawMJ/78U+8jNzlfOCGOtF8zPIhd9npYIFCBLsD
+         PhzSHqu/Jt7Xe55I5SmPUjgYHTn+XVNS6mQxUvsYHVv/KsfsvUryL7xrW/4a44Yodq
+         rOx3e/r/VUCcgyDc3WpK74KdAyzLAfULeyKq1bRdfUSsmuDnGHKIymbSqGxsMQrKDx
+         HHhgMJ2Nhg1lJGZw1aFVM42A17rwVDuD0VqwjxO73zdk6SZHxXaVLZgBhRW26+LUC9
+         qZ20smW1FD6do5ZQ5bwJz8GVH/KR8wLrKYG5xTQzg9qaL6hPWrfdVTA7gl8ETj7PoU
+         bbZDT7XLoB91g==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1ltP1d-004kIJ-Rv; Wed, 16 Jun 2021 08:27:45 +0200
+        id 1ltP1d-004kIM-Sz; Wed, 16 Jun 2021 08:27:45 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        coresight@lists.linaro.org, devicetree@vger.kernel.org,
-        kunit-dev@googlegroups.com, kvm@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-security-module@vger.kernel.org,
-        netdev@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v2 00/29] docs: avoid using ReST :doc:`foo` tag
-Date:   Wed, 16 Jun 2021 08:27:15 +0200
-Message-Id: <cover.1623824363.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 01/29] docs: devices.rst: better reference documentation docs
+Date:   Wed, 16 Jun 2021 08:27:16 +0200
+Message-Id: <5d9c9949a104d10b537a2d780bccad69a2dc58f9.1623824363.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1623824363.git.mchehab+huawei@kernel.org>
+References: <cover.1623824363.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
@@ -49,133 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Maintainers bcc, to avoid too many recipient troubles)
+There's no need to use either :file: or :doc: tags for documentation,
+as automarkup.py automatically converts Documentation/*.rst into
+a cross-reference.
 
-As discussed at:
-	https://lore.kernel.org/linux-doc/871r9k6rmy.fsf@meer.lwn.net/
-
-It is better to avoid using :doc:`foo` to refer to Documentation/foo.rst, as the
-automarkup.py extension should handle it automatically, on most cases.
-
-There are a couple of exceptions to this rule:
-
-1. when :doc:  tag is used to point to a kernel-doc DOC: markup;
-2. when it is used with a named tag, e. g. :doc:`some name <foo>`;
-
-On this series:
-
-Patch 1 manually adjust the references inside driver-api/pm/devices.rst,
-as there it uses :file:`foo` to refer to some Documentation/ files;
-
-Patch 2 converts a table at Documentation/dev-tools/kunit/api/index.rst
-into a list, carefully avoiding the 
-
-The remaining patches convert the other occurrences via a replace script.
-They were manually edited, in order to honour 80-columns where possible.
-
-This series based on docs-next branch. In order to avoid merge conflicts,
-I rebased it internally against yesterday's linux-next, dropping a patch
-and a hunk that would have caused conflicts there.
-
-I'll re-send the remaining patch (plus another patch) with conflicting
-changes, together with any other doc:`filename` reference that might
-still be upstream by 5.14-rc1.
-
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
+ Documentation/driver-api/pm/devices.rst | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-v2:
-   - dropped media patches (as I merged via my own tree);
-   - removed one patch that would conflict at linux-next (adm1177.rst);
-   - removed one hunk fron kunit patch that would also conflict at
-     linux-next.
-
-Mauro Carvalho Chehab (29):
-  docs: devices.rst: better reference documentation docs
-  docs: dev-tools: kunit: don't use a table for docs name
-  docs: admin-guide: pm: avoid using ReST :doc:`foo` markup
-  docs: admin-guide: hw-vuln: avoid using ReST :doc:`foo` markup
-  docs: admin-guide: sysctl: avoid using ReST :doc:`foo` markup
-  docs: block: biodoc.rst: avoid using ReST :doc:`foo` markup
-  docs: bpf: bpf_lsm.rst: avoid using ReST :doc:`foo` markup
-  docs: core-api: avoid using ReST :doc:`foo` markup
-  docs: dev-tools: testing-overview.rst: avoid using ReST :doc:`foo`
-    markup
-  docs: dev-tools: kunit: avoid using ReST :doc:`foo` markup
-  docs: devicetree: bindings: submitting-patches.rst: avoid using ReST
-    :doc:`foo` markup
-  docs: doc-guide: avoid using ReST :doc:`foo` markup
-  docs: driver-api: avoid using ReST :doc:`foo` markup
-  docs: driver-api: gpio: using-gpio.rst: avoid using ReST :doc:`foo`
-    markup
-  docs: driver-api: surface_aggregator: avoid using ReST :doc:`foo`
-    markup
-  docs: driver-api: usb: avoid using ReST :doc:`foo` markup
-  docs: firmware-guide: acpi: avoid using ReST :doc:`foo` markup
-  docs: i2c: avoid using ReST :doc:`foo` markup
-  docs: kernel-hacking: hacking.rst: avoid using ReST :doc:`foo` markup
-  docs: networking: devlink: avoid using ReST :doc:`foo` markup
-  docs: PCI: endpoint: pci-endpoint-cfs.rst: avoid using ReST :doc:`foo`
-    markup
-  docs: PCI: pci.rst: avoid using ReST :doc:`foo` markup
-  docs: process: submitting-patches.rst: avoid using ReST :doc:`foo`
-    markup
-  docs: security: landlock.rst: avoid using ReST :doc:`foo` markup
-  docs: trace: coresight: coresight.rst: avoid using ReST :doc:`foo`
-    markup
-  docs: trace: ftrace.rst: avoid using ReST :doc:`foo` markup
-  docs: userspace-api: landlock.rst: avoid using ReST :doc:`foo` markup
-  docs: virt: kvm: s390-pv-boot.rst: avoid using ReST :doc:`foo` markup
-  docs: x86: avoid using ReST :doc:`foo` markup
-
- .../PCI/endpoint/pci-endpoint-cfs.rst         |  2 +-
- Documentation/PCI/pci.rst                     |  6 +--
- .../special-register-buffer-data-sampling.rst |  3 +-
- Documentation/admin-guide/pm/intel_idle.rst   | 16 +++++---
- Documentation/admin-guide/pm/intel_pstate.rst |  9 +++--
- Documentation/admin-guide/sysctl/abi.rst      |  2 +-
- Documentation/admin-guide/sysctl/kernel.rst   | 37 ++++++++++---------
- Documentation/block/biodoc.rst                |  2 +-
- Documentation/bpf/bpf_lsm.rst                 | 13 ++++---
- .../core-api/bus-virt-phys-mapping.rst        |  2 +-
- Documentation/core-api/dma-api.rst            |  5 ++-
- Documentation/core-api/dma-isa-lpc.rst        |  2 +-
- Documentation/core-api/index.rst              |  4 +-
- Documentation/dev-tools/kunit/api/index.rst   |  8 ++--
- Documentation/dev-tools/kunit/faq.rst         |  2 +-
- Documentation/dev-tools/kunit/index.rst       | 14 +++----
- Documentation/dev-tools/kunit/start.rst       |  4 +-
- Documentation/dev-tools/kunit/tips.rst        |  5 ++-
- Documentation/dev-tools/kunit/usage.rst       |  8 ++--
- Documentation/dev-tools/testing-overview.rst  | 16 ++++----
- .../bindings/submitting-patches.rst           | 11 +++---
- Documentation/doc-guide/contributing.rst      |  8 ++--
- Documentation/driver-api/gpio/using-gpio.rst  |  4 +-
- Documentation/driver-api/ioctl.rst            |  2 +-
- Documentation/driver-api/pm/devices.rst       |  8 ++--
- .../surface_aggregator/clients/index.rst      |  3 +-
- .../surface_aggregator/internal.rst           | 15 ++++----
- .../surface_aggregator/overview.rst           |  6 ++-
- Documentation/driver-api/usb/dma.rst          |  6 +--
- .../acpi/dsd/data-node-references.rst         |  3 +-
- .../firmware-guide/acpi/dsd/graph.rst         |  2 +-
- .../firmware-guide/acpi/enumeration.rst       |  7 ++--
- Documentation/i2c/instantiating-devices.rst   |  2 +-
- Documentation/i2c/old-module-parameters.rst   |  3 +-
- Documentation/i2c/smbus-protocol.rst          |  4 +-
- Documentation/kernel-hacking/hacking.rst      |  4 +-
- .../networking/devlink/devlink-region.rst     |  2 +-
- .../networking/devlink/devlink-trap.rst       |  4 +-
- Documentation/process/submitting-patches.rst  | 32 ++++++++--------
- Documentation/security/landlock.rst           |  3 +-
- Documentation/trace/coresight/coresight.rst   |  8 ++--
- Documentation/trace/ftrace.rst                |  2 +-
- Documentation/userspace-api/landlock.rst      | 11 +++---
- Documentation/virt/kvm/s390-pv-boot.rst       |  2 +-
- Documentation/x86/boot.rst                    |  4 +-
- Documentation/x86/mtrr.rst                    |  2 +-
- 46 files changed, 171 insertions(+), 147 deletions(-)
-
+diff --git a/Documentation/driver-api/pm/devices.rst b/Documentation/driver-api/pm/devices.rst
+index 6b3bfd29fd84..d448cb57df86 100644
+--- a/Documentation/driver-api/pm/devices.rst
++++ b/Documentation/driver-api/pm/devices.rst
+@@ -217,7 +217,7 @@ system-wide transition to a sleep state even though its :c:member:`runtime_auto`
+ flag is clear.
+ 
+ For more information about the runtime power management framework, refer to
+-:file:`Documentation/power/runtime_pm.rst`.
++Documentation/power/runtime_pm.rst.
+ 
+ 
+ Calling Drivers to Enter and Leave System Sleep States
+@@ -655,7 +655,7 @@ been thawed.  Generally speaking, the PM notifiers are suitable for performing
+ actions that either require user space to be available, or at least won't
+ interfere with user space.
+ 
+-For details refer to :doc:`notifiers`.
++For details refer to Documentation/driver-api/pm/notifiers.rst.
+ 
+ 
+ Device Low-Power (suspend) States
+@@ -726,7 +726,7 @@ it into account in any way.
+ 
+ Devices may be defined as IRQ-safe which indicates to the PM core that their
+ runtime PM callbacks may be invoked with disabled interrupts (see
+-:file:`Documentation/power/runtime_pm.rst` for more information).  If an
++Documentation/power/runtime_pm.rst for more information).  If an
+ IRQ-safe device belongs to a PM domain, the runtime PM of the domain will be
+ disallowed, unless the domain itself is defined as IRQ-safe. However, it
+ makes sense to define a PM domain as IRQ-safe only if all the devices in it
+@@ -805,7 +805,7 @@ The ``DPM_FLAG_MAY_SKIP_RESUME`` Driver Flag
+ --------------------------------------------
+ 
+ During system-wide resume from a sleep state it's easiest to put devices into
+-the full-power state, as explained in :file:`Documentation/power/runtime_pm.rst`.
++the full-power state, as explained in Documentation/power/runtime_pm.rst.
+ [Refer to that document for more information regarding this particular issue as
+ well as for information on the device runtime power management framework in
+ general.]  However, it often is desirable to leave devices in suspend after
 -- 
 2.31.1
-
 
