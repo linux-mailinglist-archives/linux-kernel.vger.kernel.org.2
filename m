@@ -2,140 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA7D3AA40C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208463AA412
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhFPTO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:14:29 -0400
-Received: from mail-mw2nam10on2063.outbound.protection.outlook.com ([40.107.94.63]:43002
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232377AbhFPTO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:14:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JQTAnSNmICBG+i62ExIq+Qm2icprTGMRnp+UHEagmzEGZy9ND57i6K/tIxeR4nm1AxId5hrjh1y/C6qv3or2NaEuXzjzI2+CI2LuzDT7zgCr25zFHpnmagXvcp4lN4z1fT3NvWnjsaFvIe6/69KYo2qfFyKw+QrR/KvZoUCT37eFYld2Z1eTHUpw+Gt15KZhWE3dZhB+vXxVATTI4mR2mm06LdCW3jXNldLgFVzMFSMc6pkBHT1jfwFLTj4XtnrYZrql7tbG4yL93fzFB8gM3q45lxAesN4PYL9Y7BZvzKP2AR9Y0SWhgBzAHJYczy2gaBivk/Mw5utJsR5KwLg6ZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mTtUdOME4ppYDYmHb2xu666NhFukfFKhDR/IvRGjF0A=;
- b=bEmeExRmaLzVu5vYLvibDAhqTr19AT60QIr+gOiVKxb00munhqY8XW+kKYI70h44N2KOjxwax5qcWLK+mG6CJRHttj550DU4s3cRPUzvX4FtzJH/QSyoZLSyAHs3PE1ejfLUBdGPZVg8ZKsv8r4ebwbFpkrN62T1OBiuQBKebEeQcew71pHWF481xXvAV/YM0Gwgfhpwb4dvnwiZEuqB4M9Lt1X4jjgkP24nwJfeB5ZMhBTJbJqliw5OfdDETSxScWH3whYt3+kzon1wERKAyzRq+WjnE1nh5QK3X7jaM/SiUSJ3PjGNnOiQYDScV4jMayhJ12wen3yRcg1dJMIEbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mTtUdOME4ppYDYmHb2xu666NhFukfFKhDR/IvRGjF0A=;
- b=l8nXlPHARHpLK9njfKGBF9g5MZuckXmXZdfEzrEjXyoKpPe2OmhqtfPf58JicGboXe4rf4BhXRWpWdsYGQ++91pDOL1EOlIWC/jzASAXPtLZ3TceUWixEYLcExvjVq/eaMqibgSHvswufO1Ufrq3WfbIVUQaiq22HeuvOVZVRnj1kXDDYR1wEU1EG87aSJQ7jEeoQm8JizyF/C9WCEJ4cdww3V77EhpGo/ISKG+n5EMhmF5LNhJD7tZAQ61BHpstF4SOKrVJ4yBf+zQw0oElG28fLiatVwPo4RV14jkIf2FvkmZGGhZtJkthqNzM0RYVZl96XJB6S2ZYA4hPwDxDKw==
-Received: from MWHPR22CA0049.namprd22.prod.outlook.com (2603:10b6:300:12a::11)
- by SA0PR12MB4559.namprd12.prod.outlook.com (2603:10b6:806:9e::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16; Wed, 16 Jun
- 2021 19:12:19 +0000
-Received: from CO1NAM11FT018.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:12a:cafe::37) by MWHPR22CA0049.outlook.office365.com
- (2603:10b6:300:12a::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15 via Frontend
- Transport; Wed, 16 Jun 2021 19:12:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT018.mail.protection.outlook.com (10.13.175.16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4242.16 via Frontend Transport; Wed, 16 Jun 2021 19:12:18 +0000
-Received: from [10.40.203.90] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 16 Jun
- 2021 19:12:12 +0000
-Subject: Re: [PATCH 0/5] PCI: endpoint: Add support for additional notifiers
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        <kishon@ti.com>, <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <hemantk@codeaurora.org>,
-        <smohanad@codeaurora.org>
-References: <20210616115913.138778-1-manivannan.sadhasivam@linaro.org>
-From:   Om Prakash Singh <omp@nvidia.com>
-Message-ID: <9fd37c43-e2ab-f5b2-13dc-a23bd83d3c7b@nvidia.com>
-Date:   Thu, 17 Jun 2021 00:42:07 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232569AbhFPTOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232377AbhFPTOy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 15:14:54 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCC0C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:12:47 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id c18so539267qkc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:12:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6CdpKCnesjjutZBqbm6qWm0t1Iy3+W2y39QK3kQSJL0=;
+        b=z6tcWmxBC36xoU5YFthaSMT5P7RDTF7d7E5ioP2/ArfSJpDmM7q9ABhZKjoyIYNlw6
+         US8DP3IlqYH2ABvMxwvAPFKdP0ofPvCZRDu8rqUVask2mLtfnscqlWUC0uDRvbIjUJCd
+         l+KeGmoI9irPFiIN+SoIY5SqM7Wz/w2JGcTM+XgODP74ZUl973yaJHgZBZwB18usJw8u
+         twUOL99wKI0HgK4DTjGBzpb3l3dcFwujGKsDmibBELzzQ7/pH205If7lrB/wFv1PlC+p
+         AEq+HRvo7eZz67EkvhK9jiihy15sDJTfPa3kot5HLaDdr8l0AnCZ+ceCWs58PsfvZvti
+         PqoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6CdpKCnesjjutZBqbm6qWm0t1Iy3+W2y39QK3kQSJL0=;
+        b=cQHIs8ns11kfACypsxoG7scfCjQhGW+91YW62jNbB6B9q2gYigIaTDZz24j7KHHFeZ
+         PMb14SfbmClMTUE6qD4ibDzpA0wlsVej7k4uqLUcYqxmfc4FBdLoYsijGQP/ldTAT6rY
+         UXgb2WXjvmWOifFj6G1e9VVqBP84AzpJ/nKUpnIG0HGd1/GPCoXfcd+chqbDuhLA7FV3
+         bJ/UQD713sFOYrTHtshXOaMqqSA3QibzqLHKGxBmkOvECYclOJFfQCs2WFEYEhlERcVO
+         4z7dEQxbZ9xdZevv65YL+01wUsgOjH1yIDbaIn+DTYOLYpKIWRxJxhSkf5be01HEG31i
+         t8wQ==
+X-Gm-Message-State: AOAM5317S8vEhr65urO26TT97nRJUpPxzafQMY+uXjUcegjl/0SUIMoz
+        l8oLhHTQWgJodS4JJgR8EgRoeS8yTHLUNsUvWtfNow==
+X-Google-Smtp-Source: ABdhPJz3fJhUQeCV412s6GcsVHkPfqmEn61opIk+EPhPY0YVU/cxLjkqlyjqhnSYR3AmVXLGQBgHPtBa7/rf0FNlR2c=
+X-Received: by 2002:a05:620a:a83:: with SMTP id v3mr1645464qkg.360.1623870766629;
+ Wed, 16 Jun 2021 12:12:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210616115913.138778-1-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c6238f9a-b1db-4a17-cb03-08d930faa94f
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4559:
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4559A003666EC1A6959749A0DA0F9@SA0PR12MB4559.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z0+aZCHMhWUkJRKpSHncpybq7viVxHeuU+TR4KwgY53YEyrEOyhXkw9Qs7Fy+/Tf8x9xPag5EbGeJozNM+eLJTV4ZZj2SwlbXvIaib6xMpbhO2I86RC/s7fA029DGBOMgljNbzhtwR1gMuMOaeXq8iWdB8leMRIAYkLAEtx46wLyX5oPBwijuZXp3WTxIDjHoG4eKiUFJ0YsYzJK1rUPyFnAK2sh5+ZecHZzwzV3TIUac37Tof2INgOcHFSsmwWZ4ANrM3ZI809Ks/KnF3JfZnoPEdwQp8ATa2Gc0VERTQSLxh+wKNUibMhKQbh9d5vZYdHfKah9hePLrrN4Rv4zHJMma+ku7fDMP9+R4NLlNPplKj2DBNAHTRtPqkhiPGP9BhsCocicsBYDgokvepa2eVOZvovqb/y6fVnzDLAoWzvZTKlt/vEwSYJvxURDPEFi1LpDoBQPdLaN8jAc+eFvTgDNbcuvIvLa7RHit/Ygiz+g/XIffE2jsEhj5pS8prU+fy4qYqusloaxkljdFvj004+rY61EwQM6qOlT1MaFKRoUPIDAFRRHBaeQT5eNc5fGNQd9MVvhQDhaO7yFiMOMsT9WquBZIS/4RX1R2weSFckSVwwwnZJk2pCDbUWhOpgIocN3W+uPVG/lSPH9sZpF0E4lIk6z9R9toWwmMXK8JuTDF0pKRQXSxxnYYiFIv3Nu
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(346002)(136003)(36840700001)(46966006)(36756003)(478600001)(8936002)(426003)(47076005)(54906003)(5660300002)(36860700001)(4326008)(8676002)(336012)(82310400003)(16526019)(6666004)(70206006)(70586007)(31686004)(316002)(82740400003)(110136005)(36906005)(53546011)(356005)(16576012)(26005)(86362001)(2906002)(186003)(2616005)(7636003)(31696002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 19:12:18.9022
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6238f9a-b1db-4a17-cb03-08d930faa94f
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT018.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4559
+References: <20210322003915.3199775-1-mw@semihalf.com> <YFiKHu3hlAk+joOn@lunn.ch>
+ <CAPv3WKdf5aX2W77N_-FBM5hugYW-ME1DvkjNuCUrcU8FG2XENg@mail.gmail.com>
+In-Reply-To: <CAPv3WKdf5aX2W77N_-FBM5hugYW-ME1DvkjNuCUrcU8FG2XENg@mail.gmail.com>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Wed, 16 Jun 2021 21:12:37 +0200
+Message-ID: <CAPv3WKfJkeN7ez1O0UZ4w3U1tHa71hjsQ=uAsPX1bw4Otmpftg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: ensure backward compatibility of the AP807 Xenon
+To:     =?UTF-8?Q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>
+Cc:     linux-arm-kernel@lists.infradead.org, Andrew Lunn <andrew@lunn.ch>,
+        devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
-Adding more notifier types will surely help but I believe the list is 
-not exhaustive. What you are trying here is to pass various 
-vendor-specific epc interrupts to EPF driver. That can be taken care by 
-a single notifier interface as well, "pci_epc_custom_notify" from your 
-implementation. This also requires to have pre-defined values of "data" 
-argument to standardize the interface.
+Hi!
 
-your thoughts?
+=C5=9Br., 12 maj 2021 o 17:50 Marcin Wojtas <mw@semihalf.com> napisa=C5=82(=
+a):
+>
+> Hi Gregory,
+>
+> pon., 22 mar 2021 o 13:14 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
+> >
+> > On Mon, Mar 22, 2021 at 01:39:15AM +0100, Marcin Wojtas wrote:
+> > > A recent switch to a dedicated AP807 compatible string for the Xenon
+> > > SD/MMC controller result in the driver not being probed when
+> > > using updated device tree with the older kernel revisions.
+> > > It may also be problematic for other OSs/firmware that use
+> > > Linux device tree sources as a reference. Resolve the problem
+> > > with backward compatibility by restoring a previous compatible
+> > > string as secondary one.
+> > >
+> > > Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+> >
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> >
+>
+> Do you have any feedback about this patch? I just noticed it's not
+> merged in v5.13-rc1, it would be great to have it in the next release
+> though.
+>
+
+Kind reminder. We are approaching v5.13 and it would be really great
+to have this fix in time.
 
 Thanks,
-Om
-
-On 6/16/2021 5:29 PM, Manivannan Sadhasivam wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> Hello,
-> 
-> This series adds support for additional notifiers in the PCI endpoint
-> framework. The notifiers LINK_DOWN, BME, PME, and D_STATE are generic
-> for all PCI endpoints but there is also a custom notifier (CUSTOM) added
-> to pass the device/vendor specific events to EPF from EPC.
-> 
-> The example usage of all notifiers is provided in the commit description.
-> 
-> Thanks,
-> Mani
-> 
-> Manivannan Sadhasivam (5):
->    PCI: endpoint: Add linkdown notifier support
->    PCI: endpoint: Add BME notifier support
->    PCI: endpoint: Add PME notifier support
->    PCI: endpoint: Add D_STATE notifier support
->    PCI: endpoint: Add custom notifier support
-> 
->   drivers/pci/endpoint/pci-epc-core.c | 89 +++++++++++++++++++++++++++++
->   include/linux/pci-epc.h             |  5 ++
->   include/linux/pci-epf.h             |  5 ++
->   3 files changed, 99 insertions(+)
-> 
-> --
-> 2.25.1
-> 
+Marcin
