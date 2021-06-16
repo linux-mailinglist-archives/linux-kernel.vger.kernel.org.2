@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAF13A9F59
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4E53A9FF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234351AbhFPPhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:37:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50166 "EHLO mail.kernel.org"
+        id S235580AbhFPPnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:43:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234799AbhFPPgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:36:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62C7761351;
-        Wed, 16 Jun 2021 15:34:48 +0000 (UTC)
+        id S235327AbhFPPkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:40:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BE24613EA;
+        Wed, 16 Jun 2021 15:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857688;
-        bh=tMG4lMg4GzPU9jOWI6iZ4MqnHaiekNjdVNQFOZWfJ1A=;
+        s=korg; t=1623857839;
+        bh=5TPLlNjg+rAFTrvhsrCBzcvPB6QcO6Yb61jNIL906sA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Ot9jPuJIyGtYa0nAprxNS6sEq/zeUne1mzqtZRdZTys5xcUZI/vGUDwASKVVfU5r
-         6XjkWGhYQHUwXRy842BMzV+WcbRLo76SffI3PUYMTjkfM+PZZEoJKRJN2xQtNYVl2S
-         WGMkRmOFCGju9USP9prUSDXpdSnr1ytStSsV1hm8=
+        b=mqiZqJf2hTWZbe47YyMOPS2f7kAh+0PRboKZlPR737H1w4gNCFKiTK8Gt/aSl6yh0
+         kPu3SpyWjjXBv4S2xz6TMV4YNl3rHy3NcOOzYYGwPatmORq2BdKAVd8Ax3lQ9x3Iuq
+         TdqmWtIJfDeBFJ1fwlgWCgeOl8VVfMiUNEoe7VVo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheng Yongjun <zhengyongjun3@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 26/28] net/x25: Return the correct errno code
+        stable@vger.kernel.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 27/48] ALSA: hda: Add AlderLake-M PCI ID
 Date:   Wed, 16 Jun 2021 17:33:37 +0200
-Message-Id: <20210616152834.978856529@linuxfoundation.org>
+Message-Id: <20210616152837.503647771@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
-References: <20210616152834.149064097@linuxfoundation.org>
+In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
+References: <20210616152836.655643420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Yongjun <zhengyongjun3@huawei.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-[ Upstream commit d7736958668c4facc15f421e622ffd718f5be80a ]
+[ Upstream commit 4ad7935df6a566225c3d51900bde8f2f0f8b6de3 ]
 
-When kalloc or kmemdup failed, should return ENOMEM rather than ENOBUF.
+Add HD Audio PCI ID for Intel AlderLake-M. Add rules to
+snd_intel_dsp_find_config() to choose SOF driver for ADL-M systems with
+PCH-DMIC or Soundwire codecs, and legacy driver for the rest.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210528185123.48332-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/x25/af_x25.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/hda/intel-dsp-config.c | 4 ++++
+ sound/pci/hda/hda_intel.c    | 3 +++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
-index cb1f5016c433..d8d603aa4887 100644
---- a/net/x25/af_x25.c
-+++ b/net/x25/af_x25.c
-@@ -546,7 +546,7 @@ static int x25_create(struct net *net, struct socket *sock, int protocol,
- 	if (protocol)
- 		goto out;
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index ab5ff7867eb9..d8be146793ee 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -331,6 +331,10 @@ static const struct config_entry config_table[] = {
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x51c8,
+ 	},
++	{
++		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
++		.device = 0x51cc,
++	},
+ #endif
  
--	rc = -ENOBUFS;
-+	rc = -ENOMEM;
- 	if ((sk = x25_alloc_socket(net, kern)) == NULL)
- 		goto out;
- 
+ };
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 79ade335c8a0..470753b36c8a 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2485,6 +2485,9 @@ static const struct pci_device_id azx_ids[] = {
+ 	/* Alderlake-P */
+ 	{ PCI_DEVICE(0x8086, 0x51c8),
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
++	/* Alderlake-M */
++	{ PCI_DEVICE(0x8086, 0x51cc),
++	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
+ 	/* Elkhart Lake */
+ 	{ PCI_DEVICE(0x8086, 0x4b55),
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
 -- 
 2.30.2
 
