@@ -2,154 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6165A3AA2AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CF13AA2AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhFPRxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:53:16 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:36036 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230291AbhFPRxP (ORCPT
+        id S231431AbhFPRy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:54:27 -0400
+Received: from mail.efficios.com ([167.114.26.124]:52058 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhFPRyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:53:15 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UcdmIg3_1623865865;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UcdmIg3_1623865865)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 17 Jun 2021 01:51:06 +0800
-Date:   Thu, 17 Jun 2021 01:51:04 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
-Subject: Re: [PATCH] nfs: set block size according to pnfs_blksize first
-Message-ID: <YMo6CKAaNcZlqzNC@B-P7TQMD6M-0146.local>
-References: <1623847469-150122-1-git-send-email-hsiangkao@linux.alibaba.com>
- <4898aa11dc26396c13bbc3d8bf18c13efe4d513a.camel@hammerspace.com>
- <YMoFcdhVwMXJQPJ+@B-P7TQMD6M-0146.local>
- <2c14b63eacf1742bb0bcd2ae02f2d7005f7682d8.camel@hammerspace.com>
- <YMoNnr1RYDOLXtKJ@B-P7TQMD6M-0146.local>
- <YMojdN145g9JqAC8@mit.edu>
+        Wed, 16 Jun 2021 13:54:25 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id E22C434A83B;
+        Wed, 16 Jun 2021 13:52:18 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 9ZYE4D70ELzT; Wed, 16 Jun 2021 13:52:18 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 67C0B34A83A;
+        Wed, 16 Jun 2021 13:52:18 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 67C0B34A83A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1623865938;
+        bh=4Pql156OANcBAMgk+nu7NzfwOJ207oQZemvg3h8Ppcw=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=XliKh7qEgz1tjdc+X0m8DH60/LgoWT3zYRHvbWVq/EezHiYRVFhFcJnxW2OL2/Yxy
+         CjWtHq2tBuEv7Y5vLTda2YQnYw2qRfYAtXwwI0kHjwSnfgEFARo7mCMIViaJaizIoG
+         3Bs2vIQR5JXlVnVeXqR3ZQHfMTOe//45C02h8Tj+9IpIspbOqGdthl2y3ZtU/9/5xF
+         Y/004qg8YKTc/3qIxWdLwz41GxgV1NpCzCjBGjAp3EWUOOH8i0PqbkPpVvkO5iGpkf
+         GJSQLGd8cQ0p2jt/nb0vvuGSHSq6Kpiu5CtmrGGIwYdplMay37q9T34VpQZZVkY+yP
+         YEuyHEKOwGC1g==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id l8S-TV0E36aw; Wed, 16 Jun 2021 13:52:18 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 57CBB34AA02;
+        Wed, 16 Jun 2021 13:52:18 -0400 (EDT)
+Date:   Wed, 16 Jun 2021 13:52:18 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86 <x86@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Message-ID: <1990263287.9043.1623865938326.JavaMail.zimbra@efficios.com>
+In-Reply-To: <2d45c55c4fbbe38317ff625e2a2158b6fbe0dc2d.1623813516.git.luto@kernel.org>
+References: <cover.1623813516.git.luto@kernel.org> <2d45c55c4fbbe38317ff625e2a2158b6fbe0dc2d.1623813516.git.luto@kernel.org>
+Subject: Re: [PATCH 3/8] membarrier: Remove membarrier_arch_switch_mm()
+ prototype in core code
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YMojdN145g9JqAC8@mit.edu>
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF89 (Linux)/8.8.15_GA_4026)
+Thread-Topic: membarrier: Remove membarrier_arch_switch_mm() prototype in core code
+Thread-Index: po3kb64XWToyumkqJkr6VhDu+QTKbw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ted,
+----- On Jun 15, 2021, at 11:21 PM, Andy Lutomirski luto@kernel.org wrote:
 
-On Wed, Jun 16, 2021 at 12:14:44PM -0400, Theodore Ts'o wrote:
-> On Wed, Jun 16, 2021 at 10:41:34PM +0800, Gao Xiang wrote:
-> > > > Yet my question is how to deal with generic/486, should we just skip
-> > > > the case directly? I cannot find some proper way to get underlayfs
-> > > > block size or real xattr value limit.
+> membarrier_arch_switch_mm()'s sole implementation and caller are in
+> arch/powerpc.  Having a fallback implementation in include/linux is
+> confusing -- remove it.
 > 
-> Note that the block size does not necessarily have thing to do with
-> the xattr value limit.  For example, in ext4, if you create the file
-> system with the ea_inode feature enabled, you can create extended
-> attributes up to the maximum value of 64k defined by the xattr
-> interface --- unless, of course, there isn't enough space in the file
-> system.
-> 
-> (The ea_inode feature will also use shared space for large xattrs, so
-> if you are storing hundreds of thousands of files that all have an
-> identical 20 kilbyte Windows security id or ACL, ea_inode is going to
-> be much more efficient way of supporting that particular use case.)
-
-Thanks for your detailed explanation too.
-
-Yeah, yet it's not enabled in the issue setup I was assigned :(
-
-> 
-> > > As noted above, the NFS server should really be returning
-> > > NFS4ERR_XATTR2BIG in this case, which the client, again, should be
-> > > transforming into -E2BIG. Where does ENOSPC come from?
-> > 
-> > Thanks for the detailed explanation...
-> > 
-> > I think that is due to ext4 returning ENOSPC since I tested
-> 
-> It's not just ext4.  From inspection, under some circumstances f2fs
-> and btrfs can return ENOSPC.
-
-I did some test on ext4 only earlier since it's our test environment.
-I didn't mean the ENOSPC behavior was ext4 only ( :-) very sorry about
-that if some misunderstanding here )
-
-> 
-> The distinction is that E2BIG is (from the attr_set man page):
-> 
->        [E2BIG]          The value of the given attribute is too large,
->        			it exceeds the maximum allowable size of an
-> 			attribute value.
-> 
-> The maximum allowable size (enforced by the VFS) is XATTR_MAX_SIZE,
-> which is 65536 bytes.  Some file systems may impose a smaller max
-> allowable size.
-> 
-> In contrast ENOSPC means something different:
-> 
->        ENOSPC		No space left on device.
-> 
-> This isn't necessarily just block space, BTW; it might some other file
-> system space --- thre might not be a free inode in the case of ext4's
-> ea_inode feature.  Or it be the f2fs file system not being able to
-> allocate a node id via f2fs_alloc_nid().
-> 
-> Note that generic/486 is testing a very specific case, which is
-> replacing a small xattr (16 bytes) with an xattr with a large value.
-> This is would be a really interesting test for ext4 ea_inode, when we
-> are replacing an xattr stored inline in the inode, or in a single 4k
-> block, with an xattr stored in a separate inode.  But not the way
-> src/attr_replace_test.c (which does all of the heavy lifting for the
-> generic/486 test) is currently written.
+> It's still mentioned in a comment, but a subsequent patch will remove
+> it.
 > 
 
-Yeah, as for the original case, it tried to test when it turned into
-the XFS extents format, but I'm not sure if it's just the regression
-test for such report only (similiar to ext4 inline xattr to non-inline
-xattr case.) rather than test the XFS_DINODE_FMT_BTREE case or ea_inode
-case...
+Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-> So what I would suggest is to have attr_replace_test.c try to
-> determine the maximum attr value size using binary search.  Start with
-> min=16, and max=65536, and try creating an xattr of a particular size,
-> and then delete the xattr, and then retry creating the xattr with the
-> next binary search size.  This will allow you to create a function
-> which determines the maximum size attr for a particular file system,
-> especially in those cases where it is dependent on how the file system
-> is configured.
-
-Considering the original XFS regression report [1], I think
-underlayfs blksize may still be needed. And binary search to get the
-maximum attr value may be another new case for this as well. Or
-alternatively just add by block size to do a trip test.
-
-Although I have no idea if we can just skip the case when testing with
-NFS. If getting underlayfs blksize is unfeasible, I think we might
-skip such case for now since nfs blksize is not useful for generic/486.
-
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=199119
-
-Thanks,
-Gao Xiang
-
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> ---
+> include/linux/sched/mm.h | 7 -------
+> 1 file changed, 7 deletions(-)
 > 
-> > should we transform it to E2BIG instead (at least in NFS
-> > protocol)? but I'm still not sure that E2BIG is a valid return code for
-> > setxattr()...
+> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+> index 24d97d1b6252..10aace21d25e 100644
+> --- a/include/linux/sched/mm.h
+> +++ b/include/linux/sched/mm.h
+> @@ -350,13 +350,6 @@ extern void membarrier_exec_mmap(struct mm_struct *mm);
+> extern void membarrier_update_current_mm(struct mm_struct *next_mm);
 > 
-> E2BIG is defined in the attr_set(3) man page.  ENOSPC isn't mentioned
-> in the attr_set man page, but given that multiple file systems return
-> ENOSPC, and ENOSPC has a well-defined meaning in POSIX.1 which very
-> much makes sense when creating extended attributes, we should fix that
-> by adding ENOSPC to the attr_set(3) man page (which is shipped as part
-> of the libattr library sources).
-> 
-> Cheers,
-> 
-> 						- Ted
+> #else
+> -#ifdef CONFIG_ARCH_HAS_MEMBARRIER_CALLBACKS
+> -static inline void membarrier_arch_switch_mm(struct mm_struct *prev,
+> -					     struct mm_struct *next,
+> -					     struct task_struct *tsk)
+> -{
+> -}
+> -#endif
+> static inline void membarrier_exec_mmap(struct mm_struct *mm)
+> {
+> }
+> --
+> 2.31.1
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
