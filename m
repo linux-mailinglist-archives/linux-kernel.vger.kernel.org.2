@@ -2,180 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE2C3A9C91
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEEA73A9C99
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233616AbhFPNvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233588AbhFPNvj (ORCPT
+        id S233638AbhFPNwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:52:08 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57916 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233627AbhFPNwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:51:39 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153B5C061574;
-        Wed, 16 Jun 2021 06:49:33 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 13:49:28 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623851369;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Wed, 16 Jun 2021 09:52:00 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6289A1FD49;
+        Wed, 16 Jun 2021 13:49:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623851393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=n8t2JpNLtq5R99LO3K+YqiXcS0A0ViYYvl+wnmbtVHU=;
-        b=TjXTI83HJH9Ag56v/Ui/fz/Ai/JUAX5znQ26FvCF68g2F2xQGHr3YpXwMAHAs8UVIOumG+
-        qDXJKx+3uhsvlIYSdQH5NxECm+2CBEpG+XJaDlRedRKAjK3iinPjSM9TgUVvLjynayrzcO
-        KKEGdxKMFfbDrDtdGwCEJLZLtdblOX8apqYfrSqqE94vdR9Ob81IgfhI2xnaV/UX6JRDfM
-        mW9EaGluc/ulQQkN8ctlQyyVgmb1BiCpuzRqaFFSpF4BmdiAsTZHYPSNSE8WoufPZpZP6g
-        OGGzXoXXSUpwn5AVJXGuAFodG1kMjMrlw9Y3zGlk3GY9jydyiAekWc7IJL3pJg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623851369;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        bh=zyV7Qx7wh9zu7NvPyslSVw3kJsSh12fcA7ebS8+fIW0=;
+        b=EebTScugzf/2TP08Yce0VYq/3+Tpl7e8a/rDNvL7nyo4yDAzkdflcc8bJKS2nYH3FgvPHm
+        Oq8GfJsFCBJcREjagBBM6NZVHZwx30nvxqCWOEn8Y9MWRQYxruxPN1BnhchZLaIy9tMZ5O
+        SYD6OA/2f7EdkoxgJYKKlqEia4miQHc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623851393;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=n8t2JpNLtq5R99LO3K+YqiXcS0A0ViYYvl+wnmbtVHU=;
-        b=4i/WoOFgX5ITLpEhjFU3nznQ1qBmXtJyPshKY51m+SDwWsaD4QrB+2SYFtNUpHqvpyuKDR
-        FpENqRc27WFF1UDQ==
-From:   "tip-bot2 for Odin Ugedal" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/fair: Correctly insert cfs_rq's to list on
- unthrottle
-Cc:     Odin Ugedal <odin@uged.al>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210612112815.61678-1-odin@uged.al>
-References: <20210612112815.61678-1-odin@uged.al>
+        bh=zyV7Qx7wh9zu7NvPyslSVw3kJsSh12fcA7ebS8+fIW0=;
+        b=LXGgKptvmrDMQqEcdEbT2tj71DdgP+MY8MFL/yw5UEj1/rYiO4OjeqLz7QrSUbfFfACOne
+        aIqpVVC8mt4JSyAA==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 37094118DD;
+        Wed, 16 Jun 2021 13:49:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623851393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zyV7Qx7wh9zu7NvPyslSVw3kJsSh12fcA7ebS8+fIW0=;
+        b=EebTScugzf/2TP08Yce0VYq/3+Tpl7e8a/rDNvL7nyo4yDAzkdflcc8bJKS2nYH3FgvPHm
+        Oq8GfJsFCBJcREjagBBM6NZVHZwx30nvxqCWOEn8Y9MWRQYxruxPN1BnhchZLaIy9tMZ5O
+        SYD6OA/2f7EdkoxgJYKKlqEia4miQHc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623851393;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zyV7Qx7wh9zu7NvPyslSVw3kJsSh12fcA7ebS8+fIW0=;
+        b=LXGgKptvmrDMQqEcdEbT2tj71DdgP+MY8MFL/yw5UEj1/rYiO4OjeqLz7QrSUbfFfACOne
+        aIqpVVC8mt4JSyAA==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id QlTtDIEBymAWRgAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Wed, 16 Jun 2021 13:49:53 +0000
+To:     "Chu,Kaiping" <chukaiping@baidu.com>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "yzaikin@google.com" <yzaikin@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "nigupta@nvidia.com" <nigupta@nvidia.com>,
+        "bhe@redhat.com" <bhe@redhat.com>,
+        "khalid.aziz@oracle.com" <khalid.aziz@oracle.com>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "mateusznosek0@gmail.com" <mateusznosek0@gmail.com>,
+        "sh_def@163.com" <sh_def@163.com>,
+        Charan Teja Kalla <charante@codeaurora.org>,
+        David Rientjes <rientjes@google.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+References: <1619576901-9531-1-git-send-email-chukaiping@baidu.com>
+ <aa99cdab-cc0d-6cc2-464d-be42da5efa97@suse.cz>
+ <a49d590f143e40c8bda4db22111f49b7@baidu.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: =?UTF-8?B?UmU6IOetlOWkjTogW1BBVENIIHY0XSBtbS9jb21wYWN0aW9uOiBsZXQg?=
+ =?UTF-8?Q?proactive_compaction_order_configurable?=
+Message-ID: <5007cc13-334b-bd73-857f-8e57c6e2397e@suse.cz>
+Date:   Wed, 16 Jun 2021 15:49:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Message-ID: <162385136856.19906.12464199120393641026.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <a49d590f143e40c8bda4db22111f49b7@baidu.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+On 6/1/21 3:15 AM, Chu,Kaiping wrote:
+> 
+> 
+>> -----邮件原件-----
+>> 发件人: Vlastimil Babka <vbabka@suse.cz>
+>> 发送时间: 2021年5月29日 1:42
+>> 收件人: Chu,Kaiping <chukaiping@baidu.com>; mcgrof@kernel.org;
+>> keescook@chromium.org; yzaikin@google.com; akpm@linux-foundation.org;
+>> nigupta@nvidia.com; bhe@redhat.com; khalid.aziz@oracle.com;
+>> iamjoonsoo.kim@lge.com; mateusznosek0@gmail.com; sh_def@163.com
+>> 抄送: linux-kernel@vger.kernel.org; linux-fsdevel@vger.kernel.org;
+>> linux-mm@kvack.org
+>> 主题: Re: [PATCH v4] mm/compaction: let proactive compaction order
+>> configurable
+>> 
+>> On 4/28/21 4:28 AM, chukaiping wrote:
+>> > Currently the proactive compaction order is fixed to
+>> > COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
+>> > normal 4KB memory, but it's too high for the machines with small
+>> > normal memory, for example the machines with most memory configured as
+>> > 1GB hugetlbfs huge pages. In these machines the max order of free
+>> > pages is often below 9, and it's always below 9 even with hard
+>> > compaction. This will lead to proactive compaction be triggered very
+>> > frequently.
+>> 
+>> Could you be more concrete about "very frequently"? There's a
+>> proactive_defer mechanism that should help here. Normally the proactive
+>> compaction attempt happens each 500ms, but if it fails to improve the
+>> fragmentation score, it defers for 32 seconds. So is 32 seconds still too
+>> frequent? Or the score does improve thus defer doesn't happen, but the cost
+>> of that improvement is too high compared to the amount of the
+>> improvement?
+> I didn't measure the frequency accurately, I only judge it from code. The defer of 32 seconds is still very short to us, we want the proactive compaction running period to be hours.
 
-Commit-ID:     a7b359fc6a37faaf472125867c8dc5a068c90982
-Gitweb:        https://git.kernel.org/tip/a7b359fc6a37faaf472125867c8dc5a068c90982
-Author:        Odin Ugedal <odin@uged.al>
-AuthorDate:    Sat, 12 Jun 2021 13:28:15 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 14 Jun 2021 22:58:47 +02:00
+Hours sounds like a lot, and maybe something that would indeed be easier to
+accomplies with userspace proactive compaction triggering [1] than any carefully
+tuned thresholds.
 
-sched/fair: Correctly insert cfs_rq's to list on unthrottle
+But with that low frequency, doesn't the kswapd+kcompactd non-proactive
+compaction actually happen more frequently? That one should react to the order
+that the allocation waking up kswapd requested, AFAIK.
 
-Fix an issue where fairness is decreased since cfs_rq's can end up not
-being decayed properly. For two sibling control groups with the same
-priority, this can often lead to a load ratio of 99/1 (!!).
+[1] https://lore.kernel.org/linux-doc/cover.1622454385.git.charante@codeaurora.org/
 
-This happens because when a cfs_rq is throttled, all the descendant
-cfs_rq's will be removed from the leaf list. When they initial cfs_rq
-is unthrottled, it will currently only re add descendant cfs_rq's if
-they have one or more entities enqueued. This is not a perfect
-heuristic.
+> 
+>> 
+>> > In these machines we only care about order of 3 or 4.
+>> > This patch export the oder to proc and let it configurable by user,
+>> > and the default value is still COMPACTION_HPAGE_ORDER.
+>> >
+>> > Signed-off-by: chukaiping <chukaiping@baidu.com>
+>> > Reported-by: kernel test robot <lkp@intel.com>
+>> > ---
+>> >
+>> > Changes in v4:
+>> >     - change the sysctl file name to proactive_compation_order
+>> >
+>> > Changes in v3:
+>> >     - change the min value of compaction_order to 1 because the
+>> fragmentation
+>> >       index of order 0 is always 0
+>> >     - move the definition of max_buddy_zone into #ifdef
+>> > CONFIG_COMPACTION
+>> >
+>> > Changes in v2:
+>> >     - fix the compile error in ia64 and powerpc, move the initialization
+>> >       of sysctl_compaction_order to kcompactd_init because
+>> >       COMPACTION_HPAGE_ORDER is a variable in these architectures
+>> >     - change the hard coded max order number from 10 to MAX_ORDER - 1
+>> >
+>> >  include/linux/compaction.h |    1 +
+>> >  kernel/sysctl.c            |   10 ++++++++++
+>> >  mm/compaction.c            |   12 ++++++++----
+>> >  3 files changed, 19 insertions(+), 4 deletions(-)
+>> >
+>> > diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+>> > index ed4070e..a0226b1 100644
+>> > --- a/include/linux/compaction.h
+>> > +++ b/include/linux/compaction.h
+>> > @@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int
+>> > order)  #ifdef CONFIG_COMPACTION  extern int sysctl_compact_memory;
+>> > extern unsigned int sysctl_compaction_proactiveness;
+>> > +extern unsigned int sysctl_proactive_compaction_order;
+>> >  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
+>> >  			void *buffer, size_t *length, loff_t *ppos);  extern int
+>> > sysctl_extfrag_threshold; diff --git a/kernel/sysctl.c
+>> > b/kernel/sysctl.c index 62fbd09..ed9012e 100644
+>> > --- a/kernel/sysctl.c
+>> > +++ b/kernel/sysctl.c
+>> > @@ -196,6 +196,7 @@ enum sysctl_writes_mode {  #endif /*
+>> > CONFIG_SCHED_DEBUG */
+>> >
+>> >  #ifdef CONFIG_COMPACTION
+>> > +static int max_buddy_zone = MAX_ORDER - 1;
+>> >  static int min_extfrag_threshold;
+>> >  static int max_extfrag_threshold = 1000;  #endif @@ -2871,6 +2872,15
+>> > @@ int proc_do_static_key(struct ctl_table *table, int write,
+>> >  		.extra2		= &one_hundred,
+>> >  	},
+>> >  	{
+>> > +		.procname       = "proactive_compation_order",
+>> > +		.data           = &sysctl_proactive_compaction_order,
+>> > +		.maxlen         = sizeof(sysctl_proactive_compaction_order),
+>> > +		.mode           = 0644,
+>> > +		.proc_handler   = proc_dointvec_minmax,
+>> > +		.extra1         = SYSCTL_ONE,
+>> > +		.extra2         = &max_buddy_zone,
+>> > +	},
+>> > +	{
+>> >  		.procname	= "extfrag_threshold",
+>> >  		.data		= &sysctl_extfrag_threshold,
+>> >  		.maxlen		= sizeof(int),
+>> > diff --git a/mm/compaction.c b/mm/compaction.c index e04f447..171436e
+>> > 100644
+>> > --- a/mm/compaction.c
+>> > +++ b/mm/compaction.c
+>> > @@ -1925,17 +1925,18 @@ static bool kswapd_is_running(pg_data_t
+>> > *pgdat)
+>> >
+>> >  /*
+>> >   * A zone's fragmentation score is the external fragmentation wrt to
+>> > the
+>> > - * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
+>> > + * sysctl_proactive_compaction_order. It returns a value in the range
+>> > + * [0, 100].
+>> >   */
+>> >  static unsigned int fragmentation_score_zone(struct zone *zone)  {
+>> > -	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
+>> > +	return extfrag_for_order(zone, sysctl_proactive_compaction_order);
+>> >  }
+>> >
+>> >  /*
+>> >   * A weighted zone's fragmentation score is the external
+>> > fragmentation
+>> > - * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
+>> > - * returns a value in the range [0, 100].
+>> > + * wrt to the sysctl_proactive_compaction_order scaled by the zone's size.
+>> > + * It returns a value in the range [0, 100].
+>> >   *
+>> >   * The scaling factor ensures that proactive compaction focuses on larger
+>> >   * zones like ZONE_NORMAL, rather than smaller, specialized zones
+>> > like @@ -2666,6 +2667,7 @@ static void compact_nodes(void)
+>> >   * background. It takes values in the range [0, 100].
+>> >   */
+>> >  unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
+>> > +unsigned int __read_mostly sysctl_proactive_compaction_order;
+>> >
+>> >  /*
+>> >   * This is the entry point for compacting all nodes via @@ -2958,6
+>> > +2960,8 @@ static int __init kcompactd_init(void)
+>> >  	int nid;
+>> >  	int ret;
+>> >
+>> > +	sysctl_proactive_compaction_order = COMPACTION_HPAGE_ORDER;
+>> > +
+>> >  	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+>> >  					"mm/compaction:online",
+>> >  					kcompactd_cpu_online, NULL);
+>> >
+> 
 
-Instead, we insert all cfs_rq's that contain one or more enqueued
-entities, or it its load is not completely decayed.
-
-Can often lead to situations like this for equally weighted control
-groups:
-
-  $ ps u -C stress
-  USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-  root       10009 88.8  0.0   3676   100 pts/1    R+   11:04   0:13 stress --cpu 1
-  root       10023  3.0  0.0   3676   104 pts/1    R+   11:04   0:00 stress --cpu 1
-
-Fixes: 31bc6aeaab1d ("sched/fair: Optimize update_blocked_averages()")
-[vingo: !SMP build fix]
-Signed-off-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lore.kernel.org/r/20210612112815.61678-1-odin@uged.al
----
- kernel/sched/fair.c | 44 +++++++++++++++++++++++++-------------------
- 1 file changed, 25 insertions(+), 19 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 2c8a935..bfaa6e1 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3298,6 +3298,24 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
- 
- #ifdef CONFIG_SMP
- #ifdef CONFIG_FAIR_GROUP_SCHED
-+
-+static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
-+{
-+	if (cfs_rq->load.weight)
-+		return false;
-+
-+	if (cfs_rq->avg.load_sum)
-+		return false;
-+
-+	if (cfs_rq->avg.util_sum)
-+		return false;
-+
-+	if (cfs_rq->avg.runnable_sum)
-+		return false;
-+
-+	return true;
-+}
-+
- /**
-  * update_tg_load_avg - update the tg's load avg
-  * @cfs_rq: the cfs_rq whose avg changed
-@@ -4091,6 +4109,11 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
- 
- #else /* CONFIG_SMP */
- 
-+static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
-+{
-+	return true;
-+}
-+
- #define UPDATE_TG	0x0
- #define SKIP_AGE_LOAD	0x0
- #define DO_ATTACH	0x0
-@@ -4749,8 +4772,8 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
- 		cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
- 					     cfs_rq->throttled_clock_task;
- 
--		/* Add cfs_rq with already running entity in the list */
--		if (cfs_rq->nr_running >= 1)
-+		/* Add cfs_rq with load or one or more already running entities to the list */
-+		if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
- 			list_add_leaf_cfs_rq(cfs_rq);
- 	}
- 
-@@ -7996,23 +8019,6 @@ static bool __update_blocked_others(struct rq *rq, bool *done)
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 
--static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
--{
--	if (cfs_rq->load.weight)
--		return false;
--
--	if (cfs_rq->avg.load_sum)
--		return false;
--
--	if (cfs_rq->avg.util_sum)
--		return false;
--
--	if (cfs_rq->avg.runnable_sum)
--		return false;
--
--	return true;
--}
--
- static bool __update_blocked_fair(struct rq *rq, bool *done)
- {
- 	struct cfs_rq *cfs_rq, *pos;
