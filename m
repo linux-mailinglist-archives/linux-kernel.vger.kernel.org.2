@@ -2,193 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D883A981B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E57F3A9819
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232444AbhFPKvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
+        id S232399AbhFPKvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbhFPKvh (ORCPT
+        with ESMTP id S231769AbhFPKv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:51:37 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8588DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 03:49:30 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id l9so1002179wms.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 03:49:30 -0700 (PDT)
+        Wed, 16 Jun 2021 06:51:29 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF92C061574;
+        Wed, 16 Jun 2021 03:49:22 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id q20so3603547lfo.2;
+        Wed, 16 Jun 2021 03:49:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bA8bsqrupYSnAqh0tIsts0fYr4yat05kU2FFTIr3l8Y=;
-        b=l+CoA4GzVmHjEe18yALMSGdlxroaIRXA+mGWsTJEXzxmi4h/XJfwahB6BIE31NMC/W
-         cLDRgn6zqexCXfxotxOmbuoWFBMJwF3IZDF/wUuUgHtZqv9hcE1PISLl6Ogz6YZdB5ck
-         D9hxxAXPkIeSyjCP2Cbc4kYaPq0i3BdRAqec3ljhrShwX0cYp15bTe+W/P+HcsiaDU1l
-         H6daBYehRM3CDZVrqUqLKPDnDkXAWR5AOAdiHNW2XrCX8kOkdJ7yV1cJEaGnmGt3md4W
-         Hy8YoPlduo+kIhkOeNtlaaJBtlPuUAe2RKoLEJYQL4ZEFZPbodHSwRkEYfEpm0XcBZh9
-         BOtw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mGdoH7aBBtCdhYfLcQjLr73AllgTibDxP6UFUA4o5J4=;
+        b=OBtmDL1IeCF0SFh/JX41cE2Yey03CHwqXvmZ3v/8T9Q3wiR1bBno4ts5RK6zLJtpOP
+         aimf4sJOraWmiSnP6+z6G72/ucNITK4HkeHFwDDgW7FufCZGtDuv0OvDgRgHAr20StO0
+         S2Ot8A4Z7a3bkC6gmb00zlNZ1V0ixGdOywU3D97JciVoP5tXlIV/BJigPNewM/vpOA6b
+         TKoCw3ZVxyk3QTsejWF5u5Rx+EBSTMd+B2NOCheahQsShOoH/m4lgSjbxpgm2vFyQZxO
+         F0WS2qZFv8bAZmXkxr3Z5mjP5hIiIEdO80EKE3pk9utuxMvXrxUMpLK2I7cLgfZBTVJ3
+         8ckg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bA8bsqrupYSnAqh0tIsts0fYr4yat05kU2FFTIr3l8Y=;
-        b=QJ3le8enciiNzpauTWLDWxRFY3aS6EhDOhhHtx4SkvIJf/I6XEh3ev5S6djB15LGgm
-         buS9fRHCJ0j0I3DsDcG6OYdGzpNuGjGTZSa0iV6B2VleiVd0g/bXWO/FSxDOU/tXoIy+
-         krvQWBRL1HbpsfeAaW7x2GzFXVJgY/+JMO7jf6GBl0KMaHz9X2hRiGHfWxnSPs5UDU71
-         18r1Ix5wwmH/b8i7/1XAgh6GbCm18ShUHd9hRjKSiXNtUpooX2GHAx7vKu0dat05pBbS
-         OpDVhuPlYNe1NbKSYahNv/avFPPQN28cfDoGbqlarhDINmbPSmRIdltp82cFP1Tam+jG
-         UGxw==
-X-Gm-Message-State: AOAM531hZ0KQ2haYEM0gZ9DdTwEmIdSXVSjulxp8P/H+PKyF2zgmFUGL
-        4PAfGXzMhGeQKs0fFbMdetZCpq0b4iKr61uPp6Qdlw==
-X-Google-Smtp-Source: ABdhPJwhDIwIaJw1Oyz3AVz+ittcROb6mcknz6385wLKjGs9jysEoL6/JYl5zGz4bhFOIaoDkQVbuoeipVvKZKJjTKc=
-X-Received: by 2002:a1c:f70d:: with SMTP id v13mr4328043wmh.183.1623840569148;
- Wed, 16 Jun 2021 03:49:29 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mGdoH7aBBtCdhYfLcQjLr73AllgTibDxP6UFUA4o5J4=;
+        b=WK4H61PLcOegyGEMVayq3MOTSTDPAFemWRNSlmgUDaK2mfuRHc2hNzSp8Kq2eyu2An
+         USotcdoRtnPtwLbcAVjf+3PA5X6bmSbopru9GhlBVecp1SsCfC79gzBBcl70VS7c3/nf
+         /M9tBje/U7OFfdZogwFbUcYvfIn/ZTJp3P/jhbpWBaTyGn3XMxdYz3mpvs9aZI2xcxiI
+         X/gj8mDP5Ysycy8ooeFctuaKjl9lbJ9g/6vP4l3muPZUj+LpsjwYXyW1CxFH1PNT0Fuc
+         6cbo2yPbmK4O7U5ASdyc2EErKvL0v2vNHxMPp6j9+l9rB9OOlj6jW0t9goja0JZVBTZp
+         3nCQ==
+X-Gm-Message-State: AOAM5311sKHbaKLv0iijx1y9Y6lOiFD2G0eJ8hKIDyVcbMdPLVMFXcG+
+        1979eHPHM9Qj1i9P5muIyWxwsVQvYPw=
+X-Google-Smtp-Source: ABdhPJxSP2EOyTVCfRqda9Fa5M63/2XdmMMZWZ0SCjugTxLMRWtY9MqjWhDR91zPwcwrDME0au56eA==
+X-Received: by 2002:ac2:544f:: with SMTP id d15mr3260452lfn.465.1623840559827;
+        Wed, 16 Jun 2021 03:49:19 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.googlemail.com with ESMTPSA id x17sm229615ljx.75.2021.06.16.03.49.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 03:49:19 -0700 (PDT)
+Subject: Re: [PATCH v3 4/7] thermal/drivers/tegra: Add driver for Tegra30
+ thermal sensor
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Ihor Didenko <tailormoon@rambler.ru>,
+        Ion Agorria <ion@agorria.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
+References: <20210529170955.32574-1-digetx@gmail.com>
+ <20210529170955.32574-5-digetx@gmail.com>
+ <6f2b6290-095a-bd39-c160-1616a0ff89b1@linaro.org>
+ <20210615102626.dja3agclwzxv2sj4@vireshk-i7>
+ <595f5e53-b872-bcc6-e886-ed225e26e9fe@gmail.com>
+ <fbdc3b56-4465-6d3e-74db-1d5082813b9c@linaro.org>
+ <4c7b23c4-cf6a-0942-5250-63515be4a219@gmail.com>
+ <20210616080310.vhvauvo5y6m2sekz@vireshk-i7>
+ <CAKfTPtAxvj4_TBpFesjQxcVzvEi3QVUThccfSAJXwwrLtOH-xg@mail.gmail.com>
+ <96bf59af-20b6-b706-5ff0-fe70f9eba827@gmail.com>
+ <CAKfTPtBDzFaFKuYgY5XC+-vFxFSJvxKunGFwY50E98bYn0VE5Q@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <57e044af-072f-cf7e-8f25-dc8b814c78c5@gmail.com>
+Date:   Wed, 16 Jun 2021 13:49:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210525091059.234116-1-maxime@cerno.tech> <20210525091059.234116-3-maxime@cerno.tech>
-In-Reply-To: <20210525091059.234116-3-maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Wed, 16 Jun 2021 11:49:13 +0100
-Message-ID: <CAPY8ntBzDNwdQsyYzdHkCuZOARwWBmM9B7SEdzrYUQBYymKVOg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] drm/vc4: hdmi: Move the HSM clock enable to runtime_pm
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Anholt <eric@anholt.net>, Emma Anholt <emma@anholt.net>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Maxime Ripard <mripard@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAKfTPtBDzFaFKuYgY5XC+-vFxFSJvxKunGFwY50E98bYn0VE5Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime
+16.06.2021 11:51, Vincent Guittot пишет:
+> On Wed, 16 Jun 2021 at 10:39, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> 16.06.2021 11:30, Vincent Guittot пишет:
+>>> On Wed, 16 Jun 2021 at 10:03, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>>>>
+>>>> +Vincent.
+>>>>
+>>>> On 15-06-21, 22:32, Dmitry Osipenko wrote:
+>>>>> IIUC, the cpufreq already should be prepared for the case where firmware
+>>>>> may override frequency. Viresh, could you please clarify what are the
+>>>>> possible implications of the frequency overriding?
+>>>>
+>>>> The only implication is software would think hardware is running at
+>>>> some other frequency, while it is not. Not sure if something may break
+>>>> as a result of this.
+>>>>
+>>>> The scheduler's view of CPUs will not be same though, i.e. scheduler
+>>>> will see capacity as X, while in reality it has changed to Y.
+>>>
+>>> thermal_pressure is used by scheduler to balance the load between CPUs
+>>> according to the actual max frequency. If the thermal pressure doesn't
+>>> reflect reality, scheduler will end up enqueuing too many  tasks on a
+>>> throttle CPU.
+>>
+>> What if all CPUs are throttled equally and running on the same
+>> frequency, will throttling have any effect on the scheduler decisions?
+> 
+> Yes, the capacity is also used to detect when CPUs have spare capacity
+> or are already overloaded. We usually try to fill the spare capacity
+> of a CPU (CPU's max capacity - current utilization) but he max
+> capacity is reduced when the CPU is throttled, and the spare capacity
+> doesn't exist but scheduler could try to it
+> 
 
-On Tue, 25 May 2021 at 10:11, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> In order to access the HDMI controller, we need to make sure the HSM
-> clock is enabled. If we were to access it with the clock disabled, the
-> CPU would completely hang, resulting in an hard crash.
->
-> Since we have different code path that would require it, let's move that
-> clock enable / disable to runtime_pm that will take care of the
-> reference counting for us.
-
-This does change the order of clk_set_rate vs clk_prepare_enable, so
-the clock is already running during
-vc4_hdmi_encoder_pre_crtc_configure when the pixel rate is known.
-However the crtc and HDMI blocks won't be actively passing pixels at
-that point, so I don't see an issue with changing the rate. The clock
-manager block will sort out the rate change happily.
-
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-
-> Fixes: 4f6e3d66ac52 ("drm/vc4: Add runtime PM support to the HDMI encoder driver")
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
->  drivers/gpu/drm/vc4/vc4_hdmi.c | 41 +++++++++++++++++++++++++---------
->  1 file changed, 31 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> index f9de8632a28b..867009a471e1 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> @@ -632,7 +632,6 @@ static void vc4_hdmi_encoder_post_crtc_powerdown(struct drm_encoder *encoder,
->                    HDMI_READ(HDMI_VID_CTL) & ~VC4_HD_VID_CTL_ENABLE);
->
->         clk_disable_unprepare(vc4_hdmi->pixel_bvb_clock);
-> -       clk_disable_unprepare(vc4_hdmi->hsm_clock);
->         clk_disable_unprepare(vc4_hdmi->pixel_clock);
->
->         ret = pm_runtime_put(&vc4_hdmi->pdev->dev);
-> @@ -943,13 +942,6 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
->                 return;
->         }
->
-> -       ret = clk_prepare_enable(vc4_hdmi->hsm_clock);
-> -       if (ret) {
-> -               DRM_ERROR("Failed to turn on HSM clock: %d\n", ret);
-> -               clk_disable_unprepare(vc4_hdmi->pixel_clock);
-> -               return;
-> -       }
-> -
->         vc4_hdmi_cec_update_clk_div(vc4_hdmi);
->
->         if (pixel_rate > 297000000)
-> @@ -962,7 +954,6 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
->         ret = clk_set_min_rate(vc4_hdmi->pixel_bvb_clock, bvb_rate);
->         if (ret) {
->                 DRM_ERROR("Failed to set pixel bvb clock rate: %d\n", ret);
-> -               clk_disable_unprepare(vc4_hdmi->hsm_clock);
->                 clk_disable_unprepare(vc4_hdmi->pixel_clock);
->                 return;
->         }
-> @@ -970,7 +961,6 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
->         ret = clk_prepare_enable(vc4_hdmi->pixel_bvb_clock);
->         if (ret) {
->                 DRM_ERROR("Failed to turn on pixel bvb clock: %d\n", ret);
-> -               clk_disable_unprepare(vc4_hdmi->hsm_clock);
->                 clk_disable_unprepare(vc4_hdmi->pixel_clock);
->                 return;
->         }
-> @@ -2097,6 +2087,29 @@ static int vc5_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
->         return 0;
->  }
->
-> +#ifdef CONFIG_PM
-> +static int vc4_hdmi_runtime_suspend(struct device *dev)
-> +{
-> +       struct vc4_hdmi *vc4_hdmi = dev_get_drvdata(dev);
-> +
-> +       clk_disable_unprepare(vc4_hdmi->hsm_clock);
-> +
-> +       return 0;
-> +}
-> +
-> +static int vc4_hdmi_runtime_resume(struct device *dev)
-> +{
-> +       struct vc4_hdmi *vc4_hdmi = dev_get_drvdata(dev);
-> +       int ret;
-> +
-> +       ret = clk_prepare_enable(vc4_hdmi->hsm_clock);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return 0;
-> +}
-> +#endif
-> +
->  static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
->  {
->         const struct vc4_hdmi_variant *variant = of_device_get_match_data(dev);
-> @@ -2353,11 +2366,19 @@ static const struct of_device_id vc4_hdmi_dt_match[] = {
->         {}
->  };
->
-> +
-> +static const struct dev_pm_ops vc4_hdmi_pm_ops = {
-> +       SET_RUNTIME_PM_OPS(vc4_hdmi_runtime_suspend,
-> +                          vc4_hdmi_runtime_resume,
-> +                          NULL)
-> +};
-> +
->  struct platform_driver vc4_hdmi_driver = {
->         .probe = vc4_hdmi_dev_probe,
->         .remove = vc4_hdmi_dev_remove,
->         .driver = {
->                 .name = "vc4_hdmi",
->                 .of_match_table = vc4_hdmi_dt_match,
-> +               .pm = &vc4_hdmi_pm_ops,
->         },
->  };
-> --
-> 2.31.1
->
+Thank you.
