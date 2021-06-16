@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287F13A9707
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45843A970F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhFPKRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:17:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:32874 "EHLO foss.arm.com"
+        id S232246AbhFPKSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:18:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231452AbhFPKRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:17:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 334CD1042;
-        Wed, 16 Jun 2021 03:15:10 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5423F3F70D;
-        Wed, 16 Jun 2021 03:15:08 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 11:14:52 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v7 06/19] rtc: sun6i: Add support for RTCs without
- external LOSCs
-Message-ID: <20210616111452.1d7f2423@slackpad.fritz.box>
-In-Reply-To: <20210616091431.6tm3zdf77p2x3upc@gilmour>
-References: <20210615110636.23403-1-andre.przywara@arm.com>
-        <20210615110636.23403-7-andre.przywara@arm.com>
-        <20210616091431.6tm3zdf77p2x3upc@gilmour>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S232013AbhFPKSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 06:18:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04FB76128B;
+        Wed, 16 Jun 2021 10:16:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623838589;
+        bh=Yl3Fo5sP4nLowKYxQeJ+73AVzv13OFqSVG1zQ6Fifj0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PCrvbYraugyfHXvka5f/phJsh3QDa6OznDlXu8faA7q37prFWtVHGl6LuEN00T0SS
+         vP0YR5YY0ohYfBI8cxPR0tMn4D90wmj+ELllI0RX5tfsn6vScrffmOccAburP9nQJR
+         3Wkdjg0tNJffmta+IbH+DNpGkQhWTPpjDA1fL4m2l3/tIeM+6uYqAwt8Bz2YHfq0wG
+         V017dBo6le+T6fViF9eDqgFhhX8H/1SntHmNcfD3zMIyXwfYvCqbtNUAy1d1Vsx8wJ
+         srdQAblkQP9BiT2EXtL/X1BAxtalPZjk6mJ6RUV6qA+IDGC4RzK9z5qQdqHjE1bfrg
+         CHm5+/UufwQiQ==
+Date:   Wed, 16 Jun 2021 15:46:24 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Robin Gong <yibin.gong@nxp.com>
+Cc:     Fabio Estevam <festevam@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Martin Fuzzey <martin.fuzzey@flowbird.group>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH v14 00/12] add ecspi ERR009165 for i.mx6/7 soc family
+Message-ID: <YMnPeLHM8SXTEVQP@vkoul-mobl>
+References: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
+ <CAOMZO5CNjpek0vkDrMyTmfbnr2cLcquck6QQBqXLBiyTDKPXvA@mail.gmail.com>
+ <VE1PR04MB6688017E125D42C5DCB3C17D89309@VE1PR04MB6688.eurprd04.prod.outlook.com>
+ <YMhDvlPrFvSZP//I@vkoul-mobl>
+ <VE1PR04MB6688E8EECC03C5290DE10BC089309@VE1PR04MB6688.eurprd04.prod.outlook.com>
+ <YMiYEZDgutW+KRsO@vkoul-mobl>
+ <VE1PR04MB6688F98FE0B76AF20392DD6E89309@VE1PR04MB6688.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <VE1PR04MB6688F98FE0B76AF20392DD6E89309@VE1PR04MB6688.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 11:14:31 +0200
-Maxime Ripard <maxime@cerno.tech> wrote:
-
-Hi,
-
-> On Tue, Jun 15, 2021 at 12:06:23PM +0100, Andre Przywara wrote:
-> > Some newer Allwinner RTCs (for instance the one in the H616 SoC) lack
-> > a pin for an external 32768 Hz oscillator. As a consequence, this LOSC
-> > can't be selected as the RTC clock source, and we must rely on the
-> > internal RC oscillator.
-> > To allow additions of clocks to the RTC node, add a feature bit to ignore
-> > any provided clocks for now (the current code would think this is the
-> > external LOSC). Later DTs and code can then for instance add the PLL
-> > based clock input, and older kernel won't get confused.
+On 15-06-21, 14:10, Robin Gong wrote:
+> On 15/06/21 20:08 Vinod Koul <vkoul@kernel.org> wrote:
+> > On 15-06-21, 06:36, Robin Gong wrote:
+> > > On 15/06/21 14:08 Vinod Koul <vkoul@kernel.org> wrote:
+> > > > On 15-06-21, 01:55, Robin Gong wrote:
+> > > > > On 06/11/21 21:51 Fabio Estevam <festevam@gmail.com> wrote:
+> > > >
+> > > > > > Without this series, SPI DMA does not work on i.MX8MM:
+> > > > > >
+> > > > > >  [   41.315984] spi_master spi1: I/O Error in DMA RX
+> > > > > >
+> > > > > > I applied your series and SPI DMA works now:
+> > > > > >
+> > > > > > Reviewed-by: Fabio Estevam <festevam@gmail.com>
+> > > > > Thanks Fabio.
+> > > > > Hello Vinod, Mark,
+> > > > > Is my patch set good enough to merge? I remember someone else are
+> > > > > requesting it from last year like Fabio.
+> > > >
+> > > > I have acked the last dmaengine patch, is there any else required from me?
+> > > > Which tree will be this merged thru?
+> > > Thanks Vinod, mainline is enough I think.
 > > 
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>  
-> 
-> Honestly, I don't really know if it's worth it at this point.
-> 
-> If we sums this up:
-> 
->  - The RTC has 2 features that we use, mostly centered around 2
->    registers set plus a global one
-> 
->  - Those 2 features are programmed in a completely different way
-> 
->  - Even the common part is different, given the discussion around the
->    clocks that we have.
-> 
-> What is there to share in that driver aside from the probe, and maybe
-> the interrupt handling? Instead of complicating this further with more
-> special case that you were (rightfully) complaining about, shouldn't we
-> just acknowledge the fact that it's a completely separate design and
-> should be treated as such, with a completely separate driver?
+> > I meant which subsystem tree will this go thru :)
+> I thought the patches with 'spi' tag could be merged into spi tree while
+> 'dmaengine' merged into dmaengine tree, the rest of dts patch merged
+> into i.mx branch. But from HW errata view, maybe merging all into i.mx
+> branch is a better way?
 
-If you mean to have a separate clock driver, and one RTC driver: I
-agree, and IIUC Samuel has a prototype, covering the H6 and D1 as well:
-https://github.com/smaeul/linux/commit/6f8f761db1d8dd4b6abf006fb7e2427da79321c2
+Are there any dependecies between patches? If not all can merge thru
+respective subsystem. You already have the ack, so I dont mind if you
+pick thru imx tree
 
-The only problem I see that they are sharing MMIO registers. Maybe it
-works because the RTC part never touches anything below 0x10, and the
-clock part just needs the first four registers?
-But this means we can't easily change this for the H6, as the
-existing H6 RTC code adds 0x10 to the MMIO base, and also old DTs will
-have the RTC base address in their RTC reg property.
-
-If we can somehow solve this (let the clock driver point to the RTC
-node to get a regmap?) I am all in, for the reasons you mentioned.
-
-Cheers,
-Andre
+-- 
+~Vinod
