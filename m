@@ -2,141 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834C73A9A78
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EF13A9A84
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFPMdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:33:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50246 "EHLO mail.kernel.org"
+        id S232799AbhFPMdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:33:37 -0400
+Received: from muru.com ([72.249.23.125]:46588 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231666AbhFPMdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:33:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7646161359;
-        Wed, 16 Jun 2021 12:31:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623846674;
-        bh=GaASMiuVf3PpMpuP0p95+Gtkk5/Lp7YuwNvCA4UDWL8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=elUDiQS9AZODCuaRaRE7GbvNCj6iNf1GHG7mXx1OI1y8HI5ZB6YRIUwJcMg4O/JPw
-         fWJ/jsA7r8YIttWwNF+JMaHp9VKJmQEeBxCEbxGBQjZtRCK+27GfDumewcEkBw0jm+
-         OQvVyshLGtyEU83dUF7ZNJdLIR0Z62CRjgnWVysf6fcOa6JXoTzFUtXBBh8jcWzNwq
-         Pev8CArgJzA++9lZrEFknZ53hwE6vzG6CALe3ctUNDpTIKixd3o1UKmNfegGbMi7h0
-         58ECmU5I85pLDe1F02WWCXPDldhO3cbFhD0oMPUGVxLl5Gdjp3/9nkuBYXxSNuEJNO
-         kH7Yre050IN8A==
-Date:   Wed, 16 Jun 2021 14:31:11 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "hasegawa-hitomi@fujitsu.com" <hasegawa-hitomi@fujitsu.com>,
-        "'mingo@kernel.org'" <mingo@kernel.org>,
-        "'fweisbec@gmail.com'" <fweisbec@gmail.com>,
-        "'tglx@linutronix.de'" <tglx@linutronix.de>,
-        "'juri.lelli@redhat.com'" <juri.lelli@redhat.com>,
-        "'vincent.guittot@linaro.org'" <vincent.guittot@linaro.org>,
-        "'dietmar.eggemann@arm.com'" <dietmar.eggemann@arm.com>,
-        "'rostedt@goodmis.org'" <rostedt@goodmis.org>,
-        "'bsegall@google.com'" <bsegall@google.com>,
-        "'mgorman@suse.de'" <mgorman@suse.de>,
-        "'bristot@redhat.com'" <bristot@redhat.com>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
-Subject: Re: Utime and stime are less when getrusage (RUSAGE_THREAD) is
- executed on a tickless CPU.
-Message-ID: <20210616123111.GD801071@lothringen>
-References: <OSBPR01MB21837C8931D90AE55AF4A955EB529@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <OSBPR01MB2183384B29F6291EB7C0BB81EB2C9@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <YKN5cQpFSdsgBlBU@hirez.programming.kicks-ass.net>
- <OSBPR01MB21835E55331FCAE6F75E8332EB2B9@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <YKTZag/E8AaOtVT0@hirez.programming.kicks-ass.net>
+        id S232641AbhFPMde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 08:33:34 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id C838C8125;
+        Wed, 16 Jun 2021 12:31:36 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Keerthy <j-keerthy@ti.com>, Tero Kristo <kristo@kernel.org>
+Subject: [Backport for 5.4.y PATCHv2 4/4] clocksource/drivers/timer-ti-dm: Handle dra7 timer wrap errata i940
+Date:   Wed, 16 Jun 2021 15:31:12 +0300
+Message-Id: <20210616123112.65068-4-tony@atomide.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210616123112.65068-1-tony@atomide.com>
+References: <20210616123112.65068-1-tony@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKTZag/E8AaOtVT0@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:24:58AM +0200, Peter Zijlstra wrote:
-> On Wed, May 19, 2021 at 06:30:36AM +0000, hasegawa-hitomi@fujitsu.com wrote:
-> > Hi Ingo, Peter, Juri, and Vincent.
-> > 
-> > 
-> > > Your email is malformed.
-> > 
-> > I'm sorry. I was sent in the wrong format. I correct it and resend.
-> > Thank you, Peter, for pointing this out.
-> > 
-> > 
-> > I found that when I run getrusage(RUSAGE_THREAD) on a tickless CPU,
-> > the utime and stime I get are less than the actual time, unlike when I run
-> > getrusage(RUSAGE_SELF) on a single thread.
-> > This problem seems to be caused by the fact that se.sum_exec_runtime is not
-> > updated just before getting the information from 'current'.
-> > In the current implementation, task_cputime_adjusted() calls task_cputime() to
-> > get the 'current' utime and stime, then calls cputime_adjust() to adjust the
-> > sum of utime and stime to be equal to cputime.sum_exec_runtime. On a tickless
-> > CPU, sum_exec_runtime is not updated periodically, so there seems to be a
-> > discrepancy with the actual time.
-> > Therefore, I think I should include a process to update se.sum_exec_runtime
-> > just before getting the information from 'current' (as in other processes
-> > except RUSAGE_THREAD). I'm thinking of the following improvement.
-> > 
-> > @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
-> >         if (who == RUSAGE_THREAD) {
-> > +               task_sched_runtime(current);
-> >                 task_cputime_adjusted(current, &utime, &stime);
-> > 
-> > Is there any possible problem with this?
-> 
-> Would be superfluous for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
-> architectures at the very least.
-> 
-> It also doesn't help any of the other callers, like for example procfs.
-> 
-> Something like the below ought to work and fix all variants I think. But
-> it does make the call significantly more expensive.
-> 
-> Looking at thread_group_cputime() that already does something like this,
-> but that's also susceptible to a variant of this very same issue; since
-> it doesn't call it unconditionally, nor on all tasks, so if current
-> isn't part of the threadgroup and/or another task is on a nohz_full cpu,
-> things will go wobbly again.
-> 
-> There's a note about syscall performance there, so clearly someone seems
-> to care about that aspect of things, but it does suck for nohz_full.
-> 
-> Frederic, didn't we have remote ticks that should help with this stuff?
+commit 25de4ce5ed02994aea8bc111d133308f6fd62566 upstream.
 
-Only once per second :-s
+There is a timer wrap issue on dra7 for the ARM architected timer.
+In a typical clock configuration the timer fails to wrap after 388 days.
 
-> 
-> And mostly I think the trade-off here is that if you run on nohz_full,
-> you're not expected to go do syscalls anyway (because they're sodding
-> expensive) and hence the accuracy of these sort of things is mostly
-> irrelevant.
+To work around the issue, we need to use timer-ti-dm percpu timers instead.
 
-I guess you can, before you enter some critical workload.
+Let's configure dmtimer3 and 4 as percpu timers by default, and warn about
+the issue if the dtb is not configured properly.
 
-> 
-> So it might be the use-case is just fundamentally bonkers and we
-> shouldn't really bother fixing this.
-> 
-> Anyway?
-> 
-> ---
-> diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-> index 872e481d5098..620871c8e4f8 100644
-> --- a/kernel/sched/cputime.c
-> +++ b/kernel/sched/cputime.c
-> @@ -612,7 +612,7 @@ void cputime_adjust(struct task_cputime *curr, struct prev_cputime *prev,
->  void task_cputime_adjusted(struct task_struct *p, u64 *ut, u64 *st)
->  {
->  	struct task_cputime cputime = {
-> -		.sum_exec_runtime = p->se.sum_exec_runtime,
-> +		.sum_exec_runtime = task_sched_runtime(p),
->  	};
->  
->  	task_cputime(p, &cputime.utime, &cputime.stime);
+For more information, please see the errata for "AM572x Sitara Processors
+Silicon Revisions 1.1, 2.0":
 
-Or perhaps just return task_cputime() if the task runs in a
-nohz_full CPU? The check for that would be racy though and there
-might be jumps between values if the thread goes/leave a nohz_full
-CPU.
+https://www.ti.com/lit/er/sprz429m/sprz429m.pdf
+
+The concept is based on earlier reference patches done by Tero Kristo and
+Keerthy.
+
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Keerthy <j-keerthy@ti.com>
+Cc: Tero Kristo <kristo@kernel.org>
+[tony@atomide.com: backported to 5.4.y]
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ arch/arm/boot/dts/dra7-l4.dtsi      |  4 +--
+ arch/arm/boot/dts/dra7.dtsi         | 20 +++++++++++
+ arch/arm/mach-omap2/board-generic.c |  4 +--
+ arch/arm/mach-omap2/timer.c         | 53 ++++++++++++++++++++++++++++-
+ drivers/clk/ti/clk-7xx.c            |  1 +
+ include/linux/cpuhotplug.h          |  1 +
+ 6 files changed, 78 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
+--- a/arch/arm/boot/dts/dra7-l4.dtsi
++++ b/arch/arm/boot/dts/dra7-l4.dtsi
+@@ -1176,7 +1176,7 @@
+ 			};
+ 		};
+ 
+-		target-module@34000 {			/* 0x48034000, ap 7 46.0 */
++		timer3_target: target-module@34000 {	/* 0x48034000, ap 7 46.0 */
+ 			compatible = "ti,sysc-omap4-timer", "ti,sysc";
+ 			ti,hwmods = "timer3";
+ 			reg = <0x34000 0x4>,
+@@ -1204,7 +1204,7 @@
+ 			};
+ 		};
+ 
+-		target-module@36000 {			/* 0x48036000, ap 9 4e.0 */
++		timer4_target: target-module@36000 {	/* 0x48036000, ap 9 4e.0 */
+ 			compatible = "ti,sysc-omap4-timer", "ti,sysc";
+ 			ti,hwmods = "timer4";
+ 			reg = <0x36000 0x4>,
+diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
+--- a/arch/arm/boot/dts/dra7.dtsi
++++ b/arch/arm/boot/dts/dra7.dtsi
+@@ -46,6 +46,7 @@
+ 
+ 	timer {
+ 		compatible = "arm,armv7-timer";
++		status = "disabled";	/* See ARM architected timer wrap erratum i940 */
+ 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
+ 			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
+ 			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
+@@ -766,3 +767,22 @@
+ 
+ #include "dra7-l4.dtsi"
+ #include "dra7xx-clocks.dtsi"
++
++/* Local timers, see ARM architected timer wrap erratum i940 */
++&timer3_target {
++	ti,no-reset-on-init;
++	ti,no-idle;
++	timer@0 {
++		assigned-clocks = <&l4per_clkctrl DRA7_L4PER_TIMER3_CLKCTRL 24>;
++		assigned-clock-parents = <&timer_sys_clk_div>;
++	};
++};
++
++&timer4_target {
++	ti,no-reset-on-init;
++	ti,no-idle;
++	timer@0 {
++		assigned-clocks = <&l4per_clkctrl DRA7_L4PER_TIMER4_CLKCTRL 24>;
++		assigned-clock-parents = <&timer_sys_clk_div>;
++	};
++};
+diff --git a/arch/arm/mach-omap2/board-generic.c b/arch/arm/mach-omap2/board-generic.c
+--- a/arch/arm/mach-omap2/board-generic.c
++++ b/arch/arm/mach-omap2/board-generic.c
+@@ -327,7 +327,7 @@ DT_MACHINE_START(DRA74X_DT, "Generic DRA74X (Flattened Device Tree)")
+ 	.init_late	= dra7xx_init_late,
+ 	.init_irq	= omap_gic_of_init,
+ 	.init_machine	= omap_generic_init,
+-	.init_time	= omap5_realtime_timer_init,
++	.init_time	= omap3_gptimer_timer_init,
+ 	.dt_compat	= dra74x_boards_compat,
+ 	.restart	= omap44xx_restart,
+ MACHINE_END
+@@ -350,7 +350,7 @@ DT_MACHINE_START(DRA72X_DT, "Generic DRA72X (Flattened Device Tree)")
+ 	.init_late	= dra7xx_init_late,
+ 	.init_irq	= omap_gic_of_init,
+ 	.init_machine	= omap_generic_init,
+-	.init_time	= omap5_realtime_timer_init,
++	.init_time	= omap3_gptimer_timer_init,
+ 	.dt_compat	= dra72x_boards_compat,
+ 	.restart	= omap44xx_restart,
+ MACHINE_END
+diff --git a/arch/arm/mach-omap2/timer.c b/arch/arm/mach-omap2/timer.c
+--- a/arch/arm/mach-omap2/timer.c
++++ b/arch/arm/mach-omap2/timer.c
+@@ -42,6 +42,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/platform_data/dmtimer-omap.h>
+ #include <linux/sched_clock.h>
++#include <linux/cpu.h>
+ 
+ #include <asm/mach/time.h>
+ 
+@@ -420,6 +421,53 @@ static void __init dmtimer_clkevt_init_common(struct dmtimer_clockevent *clkevt,
+ 		timer->rate);
+ }
+ 
++static DEFINE_PER_CPU(struct dmtimer_clockevent, dmtimer_percpu_timer);
++
++static int omap_gptimer_starting_cpu(unsigned int cpu)
++{
++	struct dmtimer_clockevent *clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
++	struct clock_event_device *dev = &clkevt->dev;
++	struct omap_dm_timer *timer = &clkevt->timer;
++
++	clockevents_config_and_register(dev, timer->rate, 3, ULONG_MAX);
++	irq_force_affinity(dev->irq, cpumask_of(cpu));
++
++	return 0;
++}
++
++static int __init dmtimer_percpu_quirk_init(void)
++{
++	struct dmtimer_clockevent *clkevt;
++	struct clock_event_device *dev;
++	struct device_node *arm_timer;
++	struct omap_dm_timer *timer;
++	int cpu = 0;
++
++	arm_timer = of_find_compatible_node(NULL, NULL, "arm,armv7-timer");
++	if (of_device_is_available(arm_timer)) {
++		pr_warn_once("ARM architected timer wrap issue i940 detected\n");
++		return 0;
++	}
++
++	for_each_possible_cpu(cpu) {
++		clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
++		dev = &clkevt->dev;
++		timer = &clkevt->timer;
++
++		dmtimer_clkevt_init_common(clkevt, 0, "timer_sys_ck",
++					   CLOCK_EVT_FEAT_ONESHOT,
++					   cpumask_of(cpu),
++					   "assigned-clock-parents",
++					   500, "percpu timer");
++	}
++
++	cpuhp_setup_state(CPUHP_AP_OMAP_DM_TIMER_STARTING,
++			  "clockevents/omap/gptimer:starting",
++			  omap_gptimer_starting_cpu, NULL);
++
++	return 0;
++}
++
+ /* Clocksource code */
+ static struct omap_dm_timer clksrc;
+ static bool use_gptimer_clksrc __initdata;
+@@ -564,6 +612,9 @@ static void __init __omap_sync32k_timer_init(int clkev_nr, const char *clkev_src
+ 					3, /* Timer internal resynch latency */
+ 					0xffffffff);
+ 
++	if (soc_is_dra7xx())
++		dmtimer_percpu_quirk_init();
++
+ 	/* Enable the use of clocksource="gp_timer" kernel parameter */
+ 	if (use_gptimer_clksrc || gptimer)
+ 		omap2_gptimer_clocksource_init(clksrc_nr, clksrc_src,
+@@ -591,7 +642,7 @@ void __init omap3_secure_sync32k_timer_init(void)
+ #endif /* CONFIG_ARCH_OMAP3 */
+ 
+ #if defined(CONFIG_ARCH_OMAP3) || defined(CONFIG_SOC_AM33XX) || \
+-	defined(CONFIG_SOC_AM43XX)
++	defined(CONFIG_SOC_AM43XX) || defined(CONFIG_SOC_DRA7XX)
+ void __init omap3_gptimer_timer_init(void)
+ {
+ 	__omap_sync32k_timer_init(2, "timer_sys_ck", NULL,
+diff --git a/drivers/clk/ti/clk-7xx.c b/drivers/clk/ti/clk-7xx.c
+--- a/drivers/clk/ti/clk-7xx.c
++++ b/drivers/clk/ti/clk-7xx.c
+@@ -793,6 +793,7 @@ static struct ti_dt_clk dra7xx_clks[] = {
+ 	DT_CLK(NULL, "timer_32k_ck", "sys_32k_ck"),
+ 	DT_CLK(NULL, "sys_clkin_ck", "timer_sys_clk_div"),
+ 	DT_CLK(NULL, "sys_clkin", "sys_clkin1"),
++	DT_CLK(NULL, "timer_sys_ck", "timer_sys_clk_div"),
+ 	DT_CLK(NULL, "atl_dpll_clk_mux", "atl-clkctrl:0000:24"),
+ 	DT_CLK(NULL, "atl_gfclk_mux", "atl-clkctrl:0000:26"),
+ 	DT_CLK(NULL, "dcan1_sys_clk_mux", "wkupaon-clkctrl:0068:24"),
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -119,6 +119,7 @@ enum cpuhp_state {
+ 	CPUHP_AP_ARM_L2X0_STARTING,
+ 	CPUHP_AP_EXYNOS4_MCT_TIMER_STARTING,
+ 	CPUHP_AP_ARM_ARCH_TIMER_STARTING,
++	CPUHP_AP_OMAP_DM_TIMER_STARTING,
+ 	CPUHP_AP_ARM_GLOBAL_TIMER_STARTING,
+ 	CPUHP_AP_JCORE_TIMER_STARTING,
+ 	CPUHP_AP_ARM_TWD_STARTING,
+-- 
+2.31.1
