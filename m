@@ -2,186 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE743AA44B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7BC3AA454
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbhFPT2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbhFPT2G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:28:06 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AF7C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:25:58 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id d2so5349346ljj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:25:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QpD0jrWW3F2Djy8vNVOSNel8eIzeclXpCinXK192tNA=;
-        b=Z/95wOnJkBvZrnN7uwM0/AhddfjvG0YA/5HXcH4rt4FnpoQNIOa4i3gH+rZ9pxdFTR
-         yvMI2+WazcDJDDhaXJEri2jt0wj7fVzDRxQ/wplA8DAPs05zfmUYevJGxFzIGId9gmAc
-         GqoBzzx/uYS3KCbiK2AIcC6H5aAPoO5cA4d1jVsHDYtasfe6iCxJCZ0ocmK6PvRvj6BV
-         0iISjoH2AVIpg6al+SvIvDNVp7E8eZVBJswig/X2grdfMWsNhe9DJ6BHCymo652SCV6s
-         d5nh6tePkPAp4amIa5BPu7tBbsvUKmTmb08Cj3Na8mMjtV08xwpAviJSHOKTcmgrDTrU
-         0DrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QpD0jrWW3F2Djy8vNVOSNel8eIzeclXpCinXK192tNA=;
-        b=IhJcUCPJ0v+H9yUaffpkXffkuwH2W0ezXMqP/HmBrAqywKaQ1mk4y4OTaAKHzdgIrS
-         J7Sau3eNgK1fu3bE7js0+8jL0dbErVBpVo9Ed+YeUs+kkjC6pHbXJImpAeqGcilmWqwf
-         /XdXze5UavwQXBaK+cdFkmwleu1oiNHRg6jJHYDjq3q5qgZTmMxXSD4meK3ar6etaIQo
-         tY7FeVXyG4LtoavmCJlUrWJwSjMrA9CpVwsqwajhlt6MmvSYalyVBzTOp41jFAf3upEv
-         wsi+SOgI5lOcmcI48nN8jbH6PTiUtZHPIQ4pDWlDUbL3uFkvaTU8t+9fHaNpVMlUQAPH
-         QkiQ==
-X-Gm-Message-State: AOAM5336t74NSqR++zUndDQkQNKgJuWRy6xMt5HDy/eXOJcuVo2F7TU4
-        c4IKUB+KCUldA9IwcLibmydeH98bONXX808FI3zyDQ==
-X-Google-Smtp-Source: ABdhPJzll2bcsnDx+MEkquTClRqluVgTTHbjQvOkdR3cnKFjseC1yuSuUpE2pS4MRXOB39WIE5+2RY7EQgOzYvz0vgQ=
-X-Received: by 2002:a2e:b80f:: with SMTP id u15mr1287036ljo.284.1623871557012;
- Wed, 16 Jun 2021 12:25:57 -0700 (PDT)
+        id S232808AbhFPTbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:31:06 -0400
+Received: from mga02.intel.com ([134.134.136.20]:29906 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232318AbhFPTbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 15:31:05 -0400
+IronPort-SDR: 2M3tDz8vAyLMXCWKBjiBKiOH1AF+Diie6k0gAZGRiMe4I+/59vT8OOi3/hzw3b776pI9kttiHG
+ L6kxaYdnzhUw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="193365750"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="193365750"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 12:28:58 -0700
+IronPort-SDR: 5Xt4XCDJ0GWt97gWGqvWMn/Rl/r9Rh2n4IMw3Nj6nJdfSow5jUhE2+ZpFv6YTsckozzMxbpxVQ
+ Y4hjidQBkGeQ==
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="415856538"
+Received: from jamarin-mobl1.amr.corp.intel.com (HELO [10.209.105.29]) ([10.209.105.29])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 12:28:57 -0700
+Subject: Re: [PATCH v5 14/28] x86/fpu/xstate: Prevent unauthorised use of
+ dynamic user state
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210523193259.26200-1-chang.seok.bae@intel.com>
+ <20210523193259.26200-15-chang.seok.bae@intel.com>
+ <af093744-6f68-ff51-f40b-4db234b363d8@intel.com>
+ <872cb0a2-3659-2e6c-52a8-33f1a2f0a2cd@kernel.org>
+ <36D0486A-D955-4C32-941A-A2A4985A450C@intel.com>
+ <48e86785-838d-f5d4-c93c-3232b8ffd915@intel.com>
+ <16681A30-59EA-4E35-8A51-CCD403026C92@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <6cdba263-889f-ce98-b7da-4a1380cedc65@intel.com>
+Date:   Wed, 16 Jun 2021 12:28:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210614185815.15136-1-lukasz.luba@arm.com> <20210614191128.22735-1-lukasz.luba@arm.com>
- <237ef538-c8ca-a103-b2cc-240fc70298fe@arm.com> <d214db57-879c-cf3f-caa8-76c2cd369e0d@arm.com>
- <9821712d-be27-a2e7-991c-b0010e23fa70@arm.com>
-In-Reply-To: <9821712d-be27-a2e7-991c-b0010e23fa70@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 16 Jun 2021 21:25:45 +0200
-Message-ID: <CAKfTPtCpWrubqp2W8NQA0JTh2dJx3oxGuCBJbZ04reFzCbDxEg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] sched/fair: Take thermal pressure into account
- while estimating energy
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Quentin Perret <qperret@google.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Beata Michalska <Beata.Michalska@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Amit Kachhap <amit.kachhap@gmail.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <16681A30-59EA-4E35-8A51-CCD403026C92@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 at 19:24, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> On 15/06/2021 18:09, Lukasz Luba wrote:
-> >
-> > On 6/15/21 4:31 PM, Dietmar Eggemann wrote:
-> >> On 14/06/2021 21:11, Lukasz Luba wrote:
->
-> [...]
->
-> >> It's important to highlight that this will only fix this issue between
-> >> schedutil and EAS when it's due to `thermal pressure` (today only via
-> >> CPU cooling). There are other places which could restrict policy->max
-> >> via freq_qos_update_request() and EAS will be unaware of it.
-> >
-> > True, but for this I have some other plans.
->
-> As long as people are aware of the fact that this was developed to be
-> beneficial for `EAS - IPA` integration, I'm fine with this.
+On 6/16/21 12:23 PM, Bae, Chang Seok wrote:
+> On Jun 16, 2021, at 12:01, Hansen, Dave <dave.hansen@intel.com> wrote:
+>> On 6/16/21 11:47 AM, Bae, Chang Seok wrote:
+>>> Reading XINUSE via XGETBV is cheap but not free. I don't know spending a
+>>> hundred cycles for this WARN is big deal but this is one of the most
+>>> performance-critical paths.
+>> Is XGETBV(1) really a hundred cycles?  That seems absurdly high for a
+>> non-serializing register read.
+> This was checked to convince the benefit intended by PATCH25 --
+> https://lore.kernel.org/lkml/20210523193259.26200-26-chang.seok.bae@intel.com/
 
-I don't think it's only for EAS - IPA. Thermal_pressure can be used by
-HW throttling like here:
-https://lkml.org/lkml/2021/6/8/1791
+That's odd.  How is it possible that the performance of XGETBV(1)
+informed the design of that patch without there being any mention of
+XGETBV in the comments or changelog?
 
-EAS is involved but not IPA
-
->
-> [...]
->
-> >> IMHO, this means that this is catered for the IPA governor then. I'm not
-> >> sure if this would be beneficial when another thermal governor is used?
-> >
-> > Yes, it will be, the cpufreq_set_cur_state() is called by
-> > thermal exported function:
-> > thermal_cdev_update()
-> >   __thermal_cdev_update()
-> >     thermal_cdev_set_cur_state()
-> >       cdev->ops->set_cur_state(cdev, target)
-> >
-> > So it can be called not only by IPA. All governors call it, because
-> > that's the default mechanism.
->
-> True, but I'm still not convinced that it is useful outside `EAS - IPA`.
->
-> >> The mechanical side of the code would allow for such benefits, I just
-> >> don't know if their CPU cooling device + thermal zone setups would cater
-> >> for this?
-> >
-> > Yes, it's possible. Even for custom vendor governors (modified clones
-> > of IPA)
->
-> Let's stick to mainline here ;-) It's complicated enough ...
->
-> [...]
->
-> >> Maybe shorter?
-> >>
-> >>          struct cpumask *pd_mask = perf_domain_span(pd);
-> >> -       unsigned long cpu_cap =
-> >> arch_scale_cpu_capacity(cpumask_first(pd_mask));
-> >> +       int cpu = cpumask_first(pd_mask);
-> >> +       unsigned long cpu_cap = arch_scale_cpu_capacity(cpu);
-> >> +       unsigned long _cpu_cap = cpu_cap -
-> >> arch_scale_thermal_pressure(cpu);
-> >>          unsigned long max_util = 0, sum_util = 0;
-> >> -       unsigned long _cpu_cap = cpu_cap;
-> >> -       int cpu;
-> >> -
-> >> -       _cpu_cap -= arch_scale_thermal_pressure(cpumask_first(pd_mask));
-> >
-> > Could be, but still, the definitions should be sorted from longest on
-> > top, to shortest at the bottom. I wanted to avoid modifying too many
-> > lines with this simple patch.
->
-> Only if there are no dependencies, but here we have already `cpu_cap ->
-> pd_mask`. OK, not a big deal.
->
-> [...]
->
-> >> There is IPA specific code in cpufreq_set_cur_state() ->
-> >> get_state_freq() which accesses the EM:
-> >>
-> >>      ...
-> >>      return cpufreq_cdev->em->table[idx].frequency;
-> >>      ...
-> >>
-> >> Has it been discussed that the `per-PD max (allowed) CPU capacity` (1)
-> >> could be stored in the EM from there so that code like the EAS wakeup
-> >> code (compute_energy()) could retrieve this information from the EM?
-> >
-> > No, we haven't think about this approach in these patch sets.
-> > The EM structure given to the cpufreq_cooling device and stored in:
-> > cpufreq_cdev->em should not be modified. There are a few places which
-> > receive the EM, but they all should not touch it. For those clients
-> > it's a read-only data structure.
-> >
-> >> And there wouldn't be any need to pass (1) into the EM (like now via
-> >> em_cpu_energy()).
-> >> This would be signalling within the EM compared to external signalling
-> >> via `CPU cooling -> thermal pressure <- EAS wakeup -> EM`.
-> >
-> > I see what you mean, but this might cause some issues in the design
-> > (per-cpu scmi cpu perf control). Let's use this EM pointer gently ;)
->
-> OK, with the requirement that clients see the EM as ro:
->
-> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
