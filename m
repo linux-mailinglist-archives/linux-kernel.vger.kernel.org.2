@@ -2,194 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F383A9F70
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B07C3A9F76
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235013AbhFPPiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:38:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50192 "EHLO mail.kernel.org"
+        id S235052AbhFPPiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:38:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234754AbhFPPhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:37:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76B6461351;
-        Wed, 16 Jun 2021 15:35:10 +0000 (UTC)
+        id S234898AbhFPPhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:37:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1139061076;
+        Wed, 16 Jun 2021 15:35:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857711;
-        bh=ovxwCICi4UL+3pPd1SPLONZjli1TT4lSqh2RTkuj3ds=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bW4A6tp+uXub/lmeq+WdfbicmD1vDT4wqAH0g8+4kBm1gFjaPZx5lKGKrJWOB+wj1
-         00FxraWurBOQRp6298g6ZhrGXXVNRdIaumunSIAXc9yAZazqZvnmqHQfbsUGk7ul3l
-         AP5LRrEn8/IspHFLENKZuKbvOTqaP7kq5rqCRNNQ=
+        s=korg; t=1623857717;
+        bh=nju6YQpYseMnUGSdtKJTqaUpq2DQe+MUe1ZihKW0XQ0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZnRJg5XUkE2rlPom6qmMde7AT3xYswuvBMq8Mdttl6bXsVsGXQifnxXzW8l5Iv8Yh
+         dePkpgXSMpg+pvGlI2dxygnlcqoCapm7jZ13WVp/LGtBMZ4ATJqF9v2ovd7jXvQykq
+         m+SmYS7a2Go10Xb7TCdwPHkX2El8JcTDl2yYzcj8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 5.4 00/28] 5.4.127-rc1 review
-Date:   Wed, 16 Jun 2021 17:33:11 +0200
-Message-Id: <20210616152834.149064097@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Mateusz=20Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 03/38] HID: a4tech: use A4_2WHEEL_MOUSE_HACK_B8 for A4TECH NB-95
+Date:   Wed, 16 Jun 2021 17:33:12 +0200
+Message-Id: <20210616152835.516284813@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
+In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
+References: <20210616152835.407925718@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.127-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.4.127-rc1
-X-KernelTest-Deadline: 2021-06-18T15:28+00:00
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.4.127 release.
-There are 28 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Mateusz Jończyk <mat.jonczyk@o2.pl>
 
-Responses should be made by Fri, 18 Jun 2021 15:28:19 +0000.
-Anything received after that time might be too late.
+[ Upstream commit 9858c74c29e12be5886280725e781cb735b2aca6 ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.127-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-and the diffstat can be found below.
+This mouse has a horizontal wheel that requires special handling.
+Without this patch, the horizontal wheel acts like a vertical wheel.
 
-thanks,
+In the output of `hidrd-convert` for this mouse, there is a
+`Usage (B8h)` field. It corresponds to a byte in packets sent by the
+device that specifies which wheel generated an input event.
 
-greg k-h
+The name "A4TECH" is spelled in all capitals on the company website.
 
--------------
-Pseudo-Shortlog of commits:
+Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/hid/Kconfig      | 4 ++--
+ drivers/hid/hid-a4tech.c | 2 ++
+ drivers/hid/hid-ids.h    | 1 +
+ drivers/hid/hid-quirks.c | 1 +
+ 4 files changed, 6 insertions(+), 2 deletions(-)
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.4.127-rc1
+diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+index 9b56226ce0d1..54bc563a8dff 100644
+--- a/drivers/hid/Kconfig
++++ b/drivers/hid/Kconfig
+@@ -93,11 +93,11 @@ menu "Special HID drivers"
+ 	depends on HID
+ 
+ config HID_A4TECH
+-	tristate "A4 tech mice"
++	tristate "A4TECH mice"
+ 	depends on HID
+ 	default !EXPERT
+ 	help
+-	Support for A4 tech X5 and WOP-35 / Trust 450L mice.
++	Support for some A4TECH mice with two scroll wheels.
+ 
+ config HID_ACCUTOUCH
+ 	tristate "Accutouch touch device"
+diff --git a/drivers/hid/hid-a4tech.c b/drivers/hid/hid-a4tech.c
+index 3a8c4a5971f7..2cbc32dda7f7 100644
+--- a/drivers/hid/hid-a4tech.c
++++ b/drivers/hid/hid-a4tech.c
+@@ -147,6 +147,8 @@ static const struct hid_device_id a4_devices[] = {
+ 		.driver_data = A4_2WHEEL_MOUSE_HACK_B8 },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_A4TECH, USB_DEVICE_ID_A4TECH_RP_649),
+ 		.driver_data = A4_2WHEEL_MOUSE_HACK_B8 },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_A4TECH, USB_DEVICE_ID_A4TECH_NB_95),
++		.driver_data = A4_2WHEEL_MOUSE_HACK_B8 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(hid, a4_devices);
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index c2e0c65b111b..951d0637cfb9 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -26,6 +26,7 @@
+ #define USB_DEVICE_ID_A4TECH_WCP32PU	0x0006
+ #define USB_DEVICE_ID_A4TECH_X5_005D	0x000a
+ #define USB_DEVICE_ID_A4TECH_RP_649	0x001a
++#define USB_DEVICE_ID_A4TECH_NB_95	0x022b
+ 
+ #define USB_VENDOR_ID_AASHIMA		0x06d6
+ #define USB_DEVICE_ID_AASHIMA_GAMEPAD	0x0025
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index 2bda94199aaf..9acfa075d4f3 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -213,6 +213,7 @@ static const struct hid_device_id hid_have_special_driver[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_A4TECH, USB_DEVICE_ID_A4TECH_WCP32PU) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_A4TECH, USB_DEVICE_ID_A4TECH_X5_005D) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_A4TECH, USB_DEVICE_ID_A4TECH_RP_649) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_A4TECH, USB_DEVICE_ID_A4TECH_NB_95) },
+ #endif
+ #if IS_ENABLED(CONFIG_HID_ACCUTOUCH)
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_ELO, USB_DEVICE_ID_ELO_ACCUTOUCH_2216) },
+-- 
+2.30.2
 
-Zheng Yongjun <zhengyongjun3@huawei.com>
-    fib: Return the correct errno code
-
-Zheng Yongjun <zhengyongjun3@huawei.com>
-    net: Return the correct errno code
-
-Zheng Yongjun <zhengyongjun3@huawei.com>
-    net/x25: Return the correct errno code
-
-Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-    rtnetlink: Fix missing error code in rtnl_bridge_notify()
-
-Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-    drm/amd/display: Fix overlay validation by considering cursors
-
-Bindu Ramamurthy <bindu.r@amd.com>
-    drm/amd/display: Allow bandwidth validation for 0 streams.
-
-Josh Triplett <josh@joshtriplett.org>
-    net: ipconfig: Don't override command-line hostnames or domains
-
-Hannes Reinecke <hare@suse.de>
-    nvme-loop: check for NVME_LOOP_Q_LIVE in nvme_loop_destroy_admin_queue()
-
-Hannes Reinecke <hare@suse.de>
-    nvme-loop: clear NVME_LOOP_Q_LIVE when nvme_loop_configure_admin_queue() fails
-
-Hannes Reinecke <hare@suse.de>
-    nvme-loop: reset queue count to 1 in nvme_loop_destroy_io_queues()
-
-Ewan D. Milne <emilne@redhat.com>
-    scsi: scsi_devinfo: Add blacklist entry for HPE OPEN-V
-
-Daniel Wagner <dwagner@suse.de>
-    scsi: qedf: Do not put host in qedf_vport_create() unconditionally
-
-Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-    ethernet: myri10ge: Fix missing error code in myri10ge_probe()
-
-Maurizio Lombardi <mlombard@redhat.com>
-    scsi: target: core: Fix warning on realtime kernels
-
-Hillf Danton <hdanton@sina.com>
-    gfs2: Fix use-after-free in gfs2_glock_shrink_scan
-
-Khem Raj <raj.khem@gmail.com>
-    riscv: Use -mno-relax when using lld linker
-
-Bixuan Cui <cuibixuan@huawei.com>
-    HID: gt683r: add missing MODULE_DEVICE_TABLE
-
-Andreas Gruenbacher <agruenba@redhat.com>
-    gfs2: Prevent direct-I/O write fallback errors from getting lost
-
-Yongqiang Liu <liuyongqiang13@huawei.com>
-    ARM: OMAP2+: Fix build warning when mmc_omap is not built
-
-Pavel Machek (CIP) <pavel@denx.de>
-    drm/tegra: sor: Do not leak runtime PM reference
-
-Anirudh Rayabharam <mail@anirudhrb.com>
-    HID: usbhid: fix info leak in hid_submit_ctrl
-
-Mark Bolhuis <mark@bolhuis.dev>
-    HID: Add BUS_VIRTUAL to hid_connect logging
-
-Ahelenia Ziemiańska <nabijaczleweli@nabijaczleweli.xyz>
-    HID: multitouch: set Stylus suffix for Stylus-application devices, too
-
-Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-    HID: quirks: Add quirk for Lenovo optical mouse
-
-Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-    HID: hid-sensor-hub: Return error for hid_set_field() failure
-
-Dmitry Torokhov <dmitry.torokhov@gmail.com>
-    HID: hid-input: add mapping for emoji picker key
-
-Nirenjan Krishnan <nirenjan@gmail.com>
-    HID: quirks: Set INCREMENT_USAGE_ON_DUPLICATE for Saitek X65
-
-Dan Robertson <dan@dlrobertson.com>
-    net: ieee802154: fix null deref in parse dev addr
-
-
--------------
-
-Diffstat:
-
- Makefile                                             |  4 ++--
- arch/arm/mach-omap2/board-n8x0.c                     |  2 +-
- arch/riscv/Makefile                                  |  9 +++++++++
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c    | 10 +++++++++-
- .../gpu/drm/amd/display/dc/dcn20/dcn20_resource.c    |  2 +-
- drivers/gpu/drm/tegra/sor.c                          | 14 ++++++++++----
- drivers/hid/hid-core.c                               |  3 +++
- drivers/hid/hid-debug.c                              |  1 +
- drivers/hid/hid-gt683r.c                             |  1 +
- drivers/hid/hid-ids.h                                |  2 ++
- drivers/hid/hid-input.c                              |  3 +++
- drivers/hid/hid-multitouch.c                         |  8 ++++----
- drivers/hid/hid-quirks.c                             |  2 ++
- drivers/hid/hid-sensor-hub.c                         | 13 +++++++++----
- drivers/hid/usbhid/hid-core.c                        |  2 +-
- drivers/net/ethernet/myricom/myri10ge/myri10ge.c     |  1 +
- drivers/nvme/target/loop.c                           |  5 ++++-
- drivers/scsi/qedf/qedf_main.c                        | 20 +++++++++-----------
- drivers/scsi/scsi_devinfo.c                          |  1 +
- drivers/target/target_core_transport.c               |  4 +---
- fs/gfs2/file.c                                       |  5 ++++-
- fs/gfs2/glock.c                                      |  2 +-
- include/linux/hid.h                                  |  3 +--
- include/uapi/linux/input-event-codes.h               |  1 +
- net/compat.c                                         |  2 +-
- net/core/fib_rules.c                                 |  2 +-
- net/core/rtnetlink.c                                 |  4 +++-
- net/ieee802154/nl802154.c                            |  9 +++++----
- net/ipv4/ipconfig.c                                  | 13 ++++++++-----
- net/x25/af_x25.c                                     |  2 +-
- 30 files changed, 100 insertions(+), 50 deletions(-)
 
 
