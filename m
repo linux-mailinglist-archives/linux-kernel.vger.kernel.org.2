@@ -2,99 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577F03A8E88
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7CF3A8E8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbhFPBs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 21:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51104 "EHLO
+        id S231927AbhFPBta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 21:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbhFPBsZ (ORCPT
+        with ESMTP id S230454AbhFPBt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 21:48:25 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A0CC061574;
-        Tue, 15 Jun 2021 18:46:20 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id t140so809033oih.0;
-        Tue, 15 Jun 2021 18:46:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=z4DodPexuFXJM3ooqAYXD9b+NvarcFc46B5kVfXrpkY=;
-        b=D8WasroVcI2LvuRBJYcfwM7jL1YPp9UKZJfEMiI4HtiiRdqYdfTEDqkBZ2d0P943aR
-         //v4Y18ojXIKC8uQqk0mZ42SydQHhiJND/WhiZZmvXSH30+QVN4pK/ZobagFJXBD26VC
-         co4l/Tpuh+3HZhpyZw6drzYqUZdSKeCsbv3vgGOnCNJhVdBifPsGrf6c/lCB5M4tB81H
-         Z46hRZ5xQ5plLa5DXCiolaGBp4DYJk7FhnA8cuKNwCSZHELgnG2nvI7ssOIbxmAUd8tI
-         XzHNB0jSKe4HvFygqSgNn5zg3Kg6zYocACZaRshT421DjHTyf5wMBqJ9Wgt2eYhUfNfF
-         /a9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=z4DodPexuFXJM3ooqAYXD9b+NvarcFc46B5kVfXrpkY=;
-        b=kSzWnIHJwMK032HZExLgVDAflEy/Nhmga0fDzmHfx+dKmdCJ69OqSuLlc5HPALgKSQ
-         FBdT3ehTBYwJHA9zw0RMuQGW0tOQG5Ri8MruMeakObzXUHTuZ2RGYeJdBKHxPi6q3rDw
-         pXySRDr3GJLKtLQLPwAcE5Lwlg8tH5IvJqFRMB9ofirufvIdQrF54fRmFoZ+2sCGZfaQ
-         makz5fmhwU/wmKZDdUNzx2/JOzyRpoWBukyDTswWN2O+PDJK1mruKkAH10FawecZftCZ
-         zlVkW9LE3gpa8XFp8cq1f3T/ZpiacHCR+Cbh9BIjV7f8YvkZphPQPmaTMnCdK+ocGAlF
-         377A==
-X-Gm-Message-State: AOAM533k89LEeCAmZvrj4Ol7bbTT4+Rgo5Zxf859JFPzwJ7vbX5oXO0o
-        ED6UTelbXFRPlbnZPvKCkDGAnYMD1w4=
-X-Google-Smtp-Source: ABdhPJz4Q1EA2WPCX2VETEFcFRAzcNaq+9QqtWlJgD7OHRHNS6gm6xInukD5N5NPAWaPbhZB8YkpMQ==
-X-Received: by 2002:a05:6808:4c2:: with SMTP id a2mr1346134oie.63.1623807979821;
-        Tue, 15 Jun 2021 18:46:19 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p4sm174027oth.30.2021.06.15.18.46.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 18:46:19 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 15 Jun 2021 18:46:17 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: pmbus: dealing with unsigned mantissa in linear reading
-Message-ID: <20210616014617.GB969448@roeck-us.net>
-References: <67dd830c-c40f-b555-2b4e-3b7d383ef2c9@alliedtelesis.co.nz>
+        Tue, 15 Jun 2021 21:49:28 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD60FC061574;
+        Tue, 15 Jun 2021 18:47:22 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G4Sjg4Wmbz9sXG;
+        Wed, 16 Jun 2021 11:47:19 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623808039;
+        bh=HqB8/rIQjzzdFHS5jt6c0a5Xbi1MdIsHYatrLuz5Cdc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LW+1VwgrzRP8aytHjLEhUlUVstdmUc2OKhwzc5/Nyy1jX4URs0zrR8MngViFiJ47o
+         NjsSkPOdbX5pVT1o2Oah76tP6gRhCeV8YCNUCqmpww08Wxw4VIJ6NOnASy57VloJYl
+         6sAqZmR0NUWr/l5CKTFew/1KkAM7Rdw4kEyxBgS2U00GNW7hKc+hLWPhGcHVws6BiQ
+         JL9v8KZ5WNCse27Kfpgyom8P/3GwJWfHQXFFUtT//DGYEh5r33WKXSl0TbLhOmsGx7
+         YeGxrZDSPbqyYcs7TXwqAs7K9Pwzehln4h/ePdmj+3vjEc/yI5BTBXABL2bgkq8o2L
+         aDXKHFAxkNWXQ==
+Date:   Wed, 16 Jun 2021 11:47:18 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20210616114718.0e4c2142@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67dd830c-c40f-b555-2b4e-3b7d383ef2c9@alliedtelesis.co.nz>
+Content-Type: multipart/signed; boundary="Sig_/kU7q5ibiMbRW+64.mILUzuZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 11:34:53PM +0000, Chris Packham wrote:
-> Hi Guenter,
-> 
-> I've had a report from someone testing the BPA-RS600.
-> 
-> When they have the input voltage set to >= 256V (apparently the PSU can 
-> handle input up to 264V). The Vin reading goes negative.
-> 
-> CMD 0x88, VAL=0xf3f8, Vin=254
-> CMD 0x88, VAL=0xf3fc, Vin=255
-> CMD 0x88, VAL=0xf400, Vin=-256
-> 
-> Looking at pmbus_reg2data_linear() the mantissa is cast to s16 which is 
-> correct according to section 7.1 of the PMBUS spec which says that the 
-> mantissa is an 11-bit two's complement value.
-> 
-> It seems that the BPA-RS600 is using a non-standard format for the 
-> mantissa (probably because the range of the standard linear encoding 
-> can't support values >255V). Does the pmbus infrastructure provide a way 
-> for me to define a custom format/conversion for a given sensor?
+--Sig_/kU7q5ibiMbRW+64.mILUzuZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Essentially you'll have to implement a custom read word function and
-convert the value reported by the power supply to a valid linear11
-value. In this case, you may have to shift the reported value by 1 bit
-and increase the exponent by one.
+Hi all,
 
-Not sure what you mean with "standard linear encoding can't support values
->255V". Why not ? That is what the exponent is for, after all. It rather
-seems to me that the PS vendor decided to violate the standard to get
-another bit of accuracy. 
+Today's linux-next merge of the net-next tree got conflicts in:
 
-Guenter
+  drivers/ptp/ptp_clock.c
+  include/linux/ptp_clock_kernel.h
+
+between commit:
+
+  475b92f93216 ("ptp: improve max_adj check against unreasonable values")
+
+from the net tree and commit:
+
+  9d9d415f0048 ("ptp: ptp_clock: make scaled_ppm_to_ppb static inline")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/ptp/ptp_clock.c
+index 21c4c34c52d8,a780435331c8..000000000000
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+diff --cc include/linux/ptp_clock_kernel.h
+index 51d7f1b8b32a,a311bddd9e85..000000000000
+--- a/include/linux/ptp_clock_kernel.h
++++ b/include/linux/ptp_clock_kernel.h
+@@@ -186,6 -186,32 +186,32 @@@ struct ptp_clock_event=20
+  	};
+  };
+ =20
++ /**
++  * scaled_ppm_to_ppb() - convert scaled ppm to ppb
++  *
++  * @ppm:    Parts per million, but with a 16 bit binary fractional field
++  */
+ -static inline s32 scaled_ppm_to_ppb(long ppm)
+++static inline long scaled_ppm_to_ppb(long ppm)
++ {
++ 	/*
++ 	 * The 'freq' field in the 'struct timex' is in parts per
++ 	 * million, but with a 16 bit binary fractional field.
++ 	 *
++ 	 * We want to calculate
++ 	 *
++ 	 *    ppb =3D scaled_ppm * 1000 / 2^16
++ 	 *
++ 	 * which simplifies to
++ 	 *
++ 	 *    ppb =3D scaled_ppm * 125 / 2^13
++ 	 */
++ 	s64 ppb =3D 1 + ppm;
++=20
++ 	ppb *=3D 125;
++ 	ppb >>=3D 13;
+ -	return (s32)ppb;
+++	return (long)ppb;
++ }
++=20
+  #if IS_REACHABLE(CONFIG_PTP_1588_CLOCK)
+ =20
+  /**
+
+--Sig_/kU7q5ibiMbRW+64.mILUzuZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDJWCYACgkQAVBC80lX
+0GwY9ggAlL++Z7Qp9Ucae6uNHUn1vWtDB25abwu1HEiByc5lnASHpwQ3/wNcihmj
+GcPL3OCDN3467FGH75OHcYH86NREXK8/ddjKtzPYCmvXfye9CmnlszP6fbf85YBT
+gyukvJ5F6+poro9hO8Cy+epLXR6WU6P9EMzLsSJ+mEo19+x7yM7mU9cUHO6dW9Rd
+HReLWSAxZuQaJNrYsagL8TDjHkklx7Sz0N8FSolK/LWQ+EhJ+IECVaVAm1yzIwQo
+8eDCR02DvAgP74nBjlEYC38tGzpONYosKBk4rwGccIGLgLknDZhluOW33w1CO+zd
+RMzG5qPRT3mP80P9KJY4Fi6uWnqXUw==
+=mTd7
+-----END PGP SIGNATURE-----
+
+--Sig_/kU7q5ibiMbRW+64.mILUzuZ--
