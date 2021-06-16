@@ -2,138 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BBB3A9B60
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020B03A9B63
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbhFPNCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33268 "EHLO
+        id S233142AbhFPNEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbhFPNCd (ORCPT
+        with ESMTP id S232842AbhFPNED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:02:33 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3FFC061767;
-        Wed, 16 Jun 2021 06:00:24 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id t13so1875495pgu.11;
-        Wed, 16 Jun 2021 06:00:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=nbiAswAKlZ0y8YPJxSeoqwYopSHf2ViQ7XrbNtGNP7U=;
-        b=uXdMqCkrPWNTiKAf7OMydRO333IWQVnoKc7TSmyHW5AYBvNUsSNHX8CKo0EWS6/YaH
-         cilJMMRHTtZoK77Rk3pA9OB5r2+C2dSFKrYVFSrvJ/4xLQF9uu9LTvM+mRzB5Rw0iu+h
-         8/qeGU2sQ2XZ4eE0uJgV07fAIW+Gbb+W71HdY4dT1bVxwRar8jpbEwI9nM/KyBxgpfqg
-         RQ1+qoMD+Mx5MiBEem6KLuIp5E2Qzff47pZG9iOMLOsdBtLwT1UsPFY31vge55jumMBf
-         7gcYCwkqDUa5eNWwPQisr6w5Q5i9/0iAh3nsxC81jJOG0NB5kpxJR3S6fgnR3u7X8QU3
-         chzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version:content-transfer-encoding;
-        bh=nbiAswAKlZ0y8YPJxSeoqwYopSHf2ViQ7XrbNtGNP7U=;
-        b=tvWpdk+02wzGR+nQnHs1frHSGRfuIESP0w1V7Fg6D5PrPgmdn0UJ90iubrA9tRsrIa
-         W2Bw5oaYJn6zBg4B+bt0OgqGU85ne9LMfq7XfWWNDZM9D+CsE5lSSnjbH0pidCgT0GMt
-         BvapRj+I5EO0NLNU/9wRbKtj3mftXZfhjyO1dtIm1i8TiVX4r4TPPaPrt8ZRICWx3yAQ
-         V7H0Dr7RkKggWKk+x7CEyZzeEypqa9y9dHNDgiI686UY+15gVNp/iT/p97Pi0D//Hoy9
-         juIrQPpN0FL82vhF8Mrs2iHrSIdYsT2Av9U3OqBxMnPK6++4IRxVeLesmBo4WVfogBX2
-         p8Hw==
-X-Gm-Message-State: AOAM533CMYr/FHmuvoXWpu4vij9tpaPKn0j/+6hAGj3EKxZeOiRzVFB6
-        4PRN9fuwC+dY2FAycDIvGyo=
-X-Google-Smtp-Source: ABdhPJzICrZwP7kf4FTaRUp8e7LF5XaMDQHdJRB1XT5FoGculVj+18BbPpYXhqA4KlHFVFaYJsOlkA==
-X-Received: by 2002:a62:ae03:0:b029:2f8:b04f:c012 with SMTP id q3-20020a62ae030000b02902f8b04fc012mr9593948pff.62.1623848424167;
-        Wed, 16 Jun 2021 06:00:24 -0700 (PDT)
-Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id h18sm2394018pgl.87.2021.06.16.06.00.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 06:00:23 -0700 (PDT)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>, wqu@suse.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Shawn Lin <shawn.lin@rock-chips.com>
-Subject: Re: [PATCH v3 4/4] arm64: dts: rockchip: Update PCI host bridge
- window to 32-bit address memory
-References: <20210607112856.3499682-1-punitagrawal@gmail.com>
-        <3105233.izSxrag8PF@diego>
-        <CAL_JsqL8iDo5sLmgNVuXs5wt3TpVJbKHfk7gE740DidmvLOwiQ@mail.gmail.com>
-        <3238453.R1toDxpfAE@diego>
-Date:   Wed, 16 Jun 2021 22:00:21 +0900
-In-Reply-To: <3238453.R1toDxpfAE@diego> ("Heiko =?utf-8?Q?St=C3=BCbner=22'?=
- =?utf-8?Q?s?= message of "Tue, 15
-        Jun 2021 23:49:07 +0200")
-Message-ID: <871r92t15m.fsf@stealth>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Wed, 16 Jun 2021 09:04:03 -0400
+Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3B7C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:01:56 -0700 (PDT)
+Received: from [192.168.1.79] (bband-dyn73.178-41-129.t-com.sk [178.41.129.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id B28843ED71;
+        Wed, 16 Jun 2021 15:01:53 +0200 (CEST)
+Date:   Wed, 16 Jun 2021 15:01:47 +0200
+From:   Martin Botka <martin.botka@somainline.org>
+Subject: Re: [PATCH v3 1/2] arch: arm64: dts: qcom: Add support for SM6125
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <ZIPSUQ.3JME0AID86CV1@somainline.org>
+In-Reply-To: <YMlF/aPn+253UIHn@builder.lan>
+References: <20210613080522.25230-1-martin.botka@somainline.org>
+        <YMlF/aPn+253UIHn@builder.lan>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Heiko St=C3=BCbner <heiko@sntech.de> writes:
 
-> Am Dienstag, 15. Juni 2021, 23:29:12 CEST schrieb Rob Herring:
->> On Thu, Jun 10, 2021 at 3:50 PM Heiko St=C3=BCbner <heiko@sntech.de> wro=
-te:
->> >
->> > Hi,
->> >
->> > Am Montag, 7. Juni 2021, 13:28:56 CEST schrieb Punit Agrawal:
->> > > The PCIe host bridge on RK3399 advertises a single 64-bit memory
->> > > address range even though it lies entirely below 4GB.
->> > >
->> > > Previously the OF PCI range parser treated 64-bit ranges more
->> > > leniently (i.e., as 32-bit), but since commit 9d57e61bf723 ("of/pci:
->> > > Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses")
->> > > the code takes a stricter view and treats the ranges as advertised in
->> > > the device tree (i.e, as 64-bit).
->> > >
->> > > The change in behaviour causes failure when allocating bus addresses
->> > > to devices connected behind a PCI-to-PCI bridge that require
->> > > non-prefetchable memory ranges. The allocation failure was observed
->> > > for certain Samsung NVMe drives connected to RockPro64 boards.
->> > >
->> > > Update the host bridge window attributes to treat it as 32-bit addre=
-ss
->> > > memory. This fixes the allocation failure observed since commit
->> > > 9d57e61bf723.
->> > >
->> > > Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
->> > > Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911=
-@arm.com
->> > > Suggested-by: Robin Murphy <robin.murphy@arm.com>
->> > > Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
->> > > Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
->> > > Cc: Heiko Stuebner <heiko@sntech.de>
->> > > Cc: Rob Herring <robh+dt@kernel.org>
->> >
->> > just for clarity, should I just pick this patch separately for 5.13-rc=
- to
->> > make it easy for people using current kernel devicetrees, or should
->> > this wait for the update mentioned in the cover-letter response
->> > and should go all together through the PCI tree?
->>=20
->> This was dropped from v4, but should still be applied IMO.
->
-> It was probably dropped because I applied it ;-)
->
-> It's part of armsoc already [0] and should make its way into
-> 5.13 shortly.
 
-Thanks for sending the patch along. I left a note to the effect in v4
-but it's easy to miss.
+On Tue, Jun 15 2021 at 07:29:49 PM -0500, Bjorn Andersson 
+<bjorn.andersson@linaro.org> wrote:
+> On Sun 13 Jun 03:05 CDT 2021, Martin Botka wrote:
+> 
+>>  This commits adds the Device tree file for SM6125 SoC.
+>> 
+>>  Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> 
+> Thanks for your work on this Martin, just spotted a few minor 
+> finishing
+> touches below.
 
-Hopefully all sorted now.
+:)
 
-[...]
+> 
+>>  ---
+>>  Changes in V2:
+>>  Update compatibles for mailbox & pinctrl
+>>  Changes in V3:
+>>  Fix reg for sdhci1
+>>  Replace hc_mem with hc and core_mem with core
+>>   arch/arm64/boot/dts/qcom/sm6125.dtsi | 603 
+>> +++++++++++++++++++++++++++
+>>   1 file changed, 603 insertions(+)
+>>   create mode 100644 arch/arm64/boot/dts/qcom/sm6125.dtsi
+>> 
+>>  diff --git a/arch/arm64/boot/dts/qcom/sm6125.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sm6125.dtsi
+> [..]
+>>  +	soc {
+>>  +		#address-cells = <1>;
+>>  +		#size-cells = <1>;
+>>  +		ranges = <0x00 0x00 0x00 0xffffffff>;
+>>  +		compatible = "simple-bus";
+>>  +
+>>  +		tcsr_mutex_regs: syscon@340000 {
+> 
+> It's no longer valid to have a stray syscon like this, so please 
+> update
+> this in accordance with the tcsr mutex binding.
+> 
+> If this platform needs to poke at the registers at the end of the 
+> memory
+> region, you can do compatible = "qcom,tcsr-mutex", "syscon"; to make 
+> it
+> represent both things.
+
+ack
+
+> 
+>>  +			compatible = "syscon";
+>>  +			reg = <0x00340000 0x20000>;
+>>  +		};
+>>  +
+>>  +		tlmm: pinctrl@500000 {
+>>  +			compatible = "qcom,sm6125-tlmm";
+>>  +			reg = <0x00500000 0x400000>,
+>>  +				<0x00900000 0x400000>,
+>>  +				<0x00d00000 0x400000>;
+>>  +			reg-names = "west", "south", "east";
+>>  +			interrupts = <GIC_SPI 227 IRQ_TYPE_LEVEL_HIGH>;
+>>  +			gpio-controller;
+>>  +			gpio-ranges = <&tlmm 0 0 134>;
+>>  +			#gpio-cells = <2>;
+>>  +			interrupt-controller;
+>>  +			#interrupt-cells = <2>;
+>>  +
+>>  +			sdc2_state_on: sdc2-on {
+> 
+> As I just forced Konrad to move the on-state definition to the board
+> file, can you please do the same?
+
+ofc
+
+> 
+>>  +				clk {
+>>  +					pins = "sdc2_clk";
+>>  +					bias-disable;
+>>  +					drive-strength = <16>;
+>>  +				};
+>>  +
+>>  +				cmd {
+>>  +					pins = "sdc2_cmd";
+>>  +					bias-pull-up;
+>>  +					drive-strength = <10>;
+>>  +				};
+>>  +
+>>  +				data {
+>>  +					pins = "sdc2_data";
+>>  +					bias-pull-up;
+>>  +					drive-strength = <10>;
+>>  +				};
+>>  +
+>>  +				sd-cd {
+>>  +					pins = "gpio98";
+>>  +					bias-pull-up;
+>>  +					drive-strength = <2>;
+>>  +				};
+>>  +			};
+>>  +
+>>  +			sdc2_state_off: sdc2-off {
+> 
+> This should be common between all boards (except possibly the cd 
+> line),
+> so this is okay to share here.
+
+Do you want me to move the cd as well or
+do you want it to stay in here?
+
+> 
+>>  +				clk {
+>>  +					pins = "sdc2_clk";
+>>  +					bias-disable;
+>>  +					drive-strength = <2>;
+>>  +				};
+>>  +
+>>  +				cmd {
+>>  +					pins = "sdc2_cmd";
+>>  +					bias-pull-up;
+>>  +					drive-strength = <2>;
+>>  +				};
+>>  +
+>>  +				data {
+>>  +					pins = "sdc2_data";
+>>  +					bias-pull-up;
+>>  +					drive-strength = <2>;
+>>  +				};
+>>  +
+>>  +				sd-cd {
+>>  +					pins = "gpio98";
+>>  +					bias-disable;
+>>  +					drive-strength = <2>;
+>>  +				};
+>>  +			};
+>>  +		};
+>>  +
+> [..]
+>>  +
+>>  +		usb3: usb@4ef8800 {
+>>  +			compatible = "qcom,msm8996-dwc3", "qcom,dwc3";
+>>  +			reg = <0x04ef8800 0x400>;
+>>  +			#address-cells = <1>;
+>>  +			#size-cells = <1>;
+>>  +			ranges;
+>>  +
+>>  +			clocks = <&gcc GCC_USB30_PRIM_MASTER_CLK>,
+>>  +				<&gcc GCC_SYS_NOC_USB3_PRIM_AXI_CLK>,
+>>  +				<&gcc GCC_CFG_NOC_USB3_PRIM_AXI_CLK>,
+>>  +				<&gcc GCC_USB3_PRIM_CLKREF_CLK>,
+>>  +				<&gcc GCC_USB30_PRIM_SLEEP_CLK>,
+>>  +				<&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>;
+>>  +
+>>  +			assigned-clocks = <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+>>  +					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+>>  +			assigned-clock-rates = <19200000>, <66666667>;
+>>  +
+>>  +			power-domains = <&gcc USB30_PRIM_GDSC>;
+>>  +			qcom,select-utmi-as-pipe-clk;
+> 
+> Stray space at the end of this line.
+
+Oopsie.
+
+> 
+>>  +			status = "disabled";
+>>  +
+>>  +			usb3_dwc3: dwc3@4e00000 {
+> 
+> These should be usb@ now.
+
+ack
+
+> 
+>>  +				compatible = "snps,dwc3";
+>>  +				reg = <0x04e00000 0xcd00>;
+>>  +				interrupts = <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>;
+>>  +				phys = <&hsusb_phy1>;
+>>  +				phy-names = "usb2-phy";
+>>  +				snps,dis_u2_susphy_quirk;
+>>  +				snps,dis_enblslpm_quirk;
+>>  +				maximum-speed = "high-speed";
+>>  +				dr_mode = "peripheral";
+>>  +			};
+>>  +		};
+> 
+> Thanks,
+> Bjorn
+
+
