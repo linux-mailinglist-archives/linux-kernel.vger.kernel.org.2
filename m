@@ -2,74 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F27A3A9751
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E16A3A9756
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhFPKdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:33:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29054 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232030AbhFPKdA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:33:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623839454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c4y6kj+428wwTUGNhZ1FsmPykm/3ZLz6Zk7Y/QMtNQw=;
-        b=X/Atll6pOP6xNdsnkJ0T2hRxLOSVGqKDDBEDIgGBJH1lmeT176TGVIyZ+4GuTuifX3c2CS
-        /2xQNHMw0fTP/zj+spMSqurKdvH4edzvjY9K0OBkKDt4hYblY8nUFauIADHSSPx70em/Dt
-        0CN5wMGxIFZXxKRYxXVQxyzCy7IrA3Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-2yPl4CptPQymnvnTjP118Q-1; Wed, 16 Jun 2021 06:30:51 -0400
-X-MC-Unique: 2yPl4CptPQymnvnTjP118Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75BB58015F5;
-        Wed, 16 Jun 2021 10:30:49 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0E5CE5D6AD;
-        Wed, 16 Jun 2021 10:30:46 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210614201435.1379188-27-willy@infradead.org>
-References: <20210614201435.1379188-27-willy@infradead.org> <20210614201435.1379188-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v11 26/33] mm/writeback: Add folio_wait_writeback()
+        id S232358AbhFPKd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:33:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232307AbhFPKdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 06:33:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2615A6101B;
+        Wed, 16 Jun 2021 10:31:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623839508;
+        bh=cU+z0z6+Ly/g4gxpIbjVWnM443O7NC5y1ZG5lQReTOY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gPQNFwSaJ8S3zVdhOdYK6Z/C3YAVNXQzH8Uqc4BJvKEM9BgmUI5Pl9+obxZIv8LLn
+         Gf5IoeLEZ31kcbllOqFPrxcUxghmlOcSZdgCfEXk6KWsgmFnrGVLL/kRNnTVzSukUo
+         gpmncy0xYVzRc/o85eEqbM3O1419mA7NQQwgqyR0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.273
+Date:   Wed, 16 Jun 2021 12:31:44 +0200
+Message-Id: <1623839504188131@kroah.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <815892.1623839446.1@warthog.procyon.org.uk>
-Date:   Wed, 16 Jun 2021 11:30:46 +0100
-Message-ID: <815893.1623839446@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+I'm announcing the release of the 4.4.273 kernel.
 
-> +	struct page *page = &folio->page;
+All users of the 4.4 kernel series must upgrade.
 
-Isn't that a layering violation?  Should it be something like:
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-	struct page *page = folio_head();
+thanks,
 
-or:
+greg k-h
 
-	struct page *page = folio_subpage(0);
+------------
 
-maybe?
+ Makefile                                          |    2 
+ arch/mips/lib/mips-atomic.c                       |   12 +-
+ arch/powerpc/boot/dts/fsl/p1010si-post.dtsi       |    8 +
+ arch/powerpc/boot/dts/fsl/p2041si-post.dtsi       |   16 +++
+ drivers/i2c/busses/i2c-mpc.c                      |   95 +++++++++++++++++++++-
+ drivers/isdn/hardware/mISDN/netjet.c              |    1 
+ drivers/net/appletalk/cops.c                      |    4 
+ drivers/net/bonding/bond_main.c                   |    2 
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c |    4 
+ drivers/net/ethernet/cadence/macb.c               |    3 
+ drivers/net/ethernet/qlogic/qla3xxx.c             |    2 
+ drivers/net/phy/mdio_bus.c                        |    3 
+ drivers/scsi/hosts.c                              |    2 
+ drivers/scsi/qla2xxx/qla_target.c                 |    2 
+ drivers/scsi/vmw_pvscsi.c                         |    8 +
+ drivers/usb/dwc3/ep0.c                            |    3 
+ drivers/usb/gadget/function/f_eem.c               |    4 
+ drivers/usb/gadget/function/f_ncm.c               |    2 
+ drivers/usb/serial/ftdi_sio.c                     |    1 
+ drivers/usb/serial/ftdi_sio_ids.h                 |    1 
+ drivers/usb/serial/omninet.c                      |    2 
+ drivers/usb/serial/quatech2.c                     |    6 -
+ fs/btrfs/file.c                                   |    4 
+ fs/nfs/client.c                                   |    2 
+ fs/nfs/nfs4proc.c                                 |    8 +
+ fs/proc/base.c                                    |   11 ++
+ include/linux/kvm_host.h                          |   11 ++
+ kernel/cgroup.c                                   |    4 
+ kernel/events/core.c                              |    2 
+ kernel/trace/ftrace.c                             |    8 +
+ net/netlink/af_netlink.c                          |    6 -
+ net/nfc/rawsock.c                                 |    2 
+ sound/soc/codecs/sti-sas.c                        |    1 
+ tools/perf/util/session.c                         |    1 
+ 34 files changed, 210 insertions(+), 33 deletions(-)
+
+Alexander Kuznetsov (1):
+      cgroup1: don't allow '\n' in renaming
+
+Alexandre GRIVEAUX (1):
+      USB: serial: omninet: add device id for Zyxel Omni 56K Plus
+
+Chris Packham (4):
+      powerpc/fsl: set fsl,i2c-erratum-a004447 flag for P2041 i2c controllers
+      powerpc/fsl: set fsl,i2c-erratum-a004447 flag for P1010 i2c controllers
+      i2c: mpc: Make use of i2c_recover_bus()
+      i2c: mpc: implement erratum A-004447 workaround
+
+Dai Ngo (1):
+      NFSv4: nfs4_proc_set_acl needs to restore NFS_CAP_UIDGID_NOMAP on error.
+
+Dan Carpenter (2):
+      net: mdiobus: get rid of a BUG_ON()
+      NFS: Fix a potential NULL dereference in nfs_get_client()
+
+Dmitry Bogdanov (1):
+      scsi: target: qla2xxx: Wait for stop_phase1 at WWN removal
+
+George McCollister (1):
+      USB: serial: ftdi_sio: add NovaTech OrionMX product ID
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.273
+
+Jeimon (1):
+      net/nfc/rawsock.c: fix a permission check bug
+
+Jiapeng Chong (1):
+      bnx2x: Fix missing error code in bnx2x_iov_init_one()
+
+Johan Hovold (1):
+      USB: serial: quatech2: fix control-request directions
+
+Johannes Berg (2):
+      bonding: init notify_work earlier to avoid uninitialized use
+      netlink: disable IRQs for netlink_lock_table()
+
+Kees Cook (1):
+      proc: Track /proc/$pid/attr/ opener mm_struct
+
+Leo Yan (1):
+      perf session: Correct buffer copying when peeking events
+
+Linus Torvalds (1):
+      proc: only require mm_struct for writing
+
+Linyu Yuan (1):
+      usb: gadget: eem: fix wrong eem header operation
+
+Maciej Żenczykowski (1):
+      USB: f_ncm: ncm_bitrate (speed) is unsigned
+
+Marco Elver (1):
+      perf: Fix data race between pin_count increment/decrement
+
+Marian-Cristian Rotariu (1):
+      usb: dwc3: ep0: fix NULL pointer exception
+
+Matt Wang (1):
+      scsi: vmw_pvscsi: Set correct residual data length
+
+Ming Lei (1):
+      scsi: core: Only put parent device if host state differs from SHOST_CREATED
+
+Paolo Bonzini (2):
+      kvm: avoid speculation-based attacks from out-of-range memslot accesses
+      kvm: fix previous commit for 32-bit builds
+
+Ritesh Harjani (1):
+      btrfs: return value from btrfs_mark_extent_written() in case of error
+
+Saubhik Mukherjee (1):
+      net: appletalk: cops: Fix data race in cops_probe1
+
+Steven Rostedt (VMware) (1):
+      ftrace: Do not blindly read the ip address in ftrace_bug()
+
+Tiezhu Yang (1):
+      MIPS: Fix kernel hang under FUNCTION_GRAPH_TRACER and PREEMPT_TRACER
+
+Zheyu Ma (2):
+      isdn: mISDN: netjet: Fix crash in nj_probe:
+      net/qla3xxx: fix schedule while atomic in ql_sem_spinlock
+
+Zong Li (1):
+      net: macb: ensure the device is available before accessing GEMGXL control registers
+
+Zou Wei (1):
+      ASoC: sti-sas: add missing MODULE_DEVICE_TABLE
 
