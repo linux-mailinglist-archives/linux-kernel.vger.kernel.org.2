@@ -2,172 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253DB3A936B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B33C3A936E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbhFPG7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:59:54 -0400
-Received: from mail-bn7nam10on2078.outbound.protection.outlook.com ([40.107.92.78]:36320
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230508AbhFPG7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:59:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nzcSVNmNy91a7kglpQKuqQ61miNiV/odhkopgzeJq69vSG+/FtU4XFSFYxdt7/l2RGsuSxIDJHhjHZIQ/on0e72tOgg8GeRJV2iIrQ2B+39Qgx253seUuQaDqgtV93pHRw4a628ks9XS7vRDcrixycZdpdzmat5lD+9yec3bGJszoraDjMptK6mGjvF9fJxjLYeOadsneY+cPXKO1GoKBVHPjXyeqtO8mPqcYeLw/Y/DJNALu17W5enAi0IN/qlq/NRNBNmcrfSxqW5hKpz9QWj+ljPfDsqdJcwR+fQmBm/XXqwupuUo5Q10VQmD+PqsDQ01nDUFSc7SJeO3Q3nRCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1PQt8/wYeB2He8aNBuUecSzvzBOvoaWYIb0X2F//iI0=;
- b=EmDt5Ifvn4IXiQy+3+rtlRNwb9gKCI84F8Hfo3qH8d3dF1wTVAWaaI7u7xpClQFncajs3be9n181OISvc0DQxOl5CNdVbkQPaSvV4/IA+GF3lS7p/hdfYeRL/FKLF3tfTfYK32hGgC6oYl3ReEBDSl/AOoM5RiCDNmJF7yv1WFl0g+CFXUjTKBqh4zAhsHORFGAYVxxK2cFCGcv3HJ7bnxSkpoqUoP+TydL5zkgjn209zFINsYvAms4pD6SticKKizKZcgCQIpzCG4RM52YXeCkWfF+EC4foqjJj/+X4RZmrjMwXgYbSuEP8FgI5uDlVPAiLLv4sdZLidpGaDOmKXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1PQt8/wYeB2He8aNBuUecSzvzBOvoaWYIb0X2F//iI0=;
- b=qWe+epj5Nmz+YMPTJQ5qz113zJegepTxlYTaPgtNGCR2BmIZ+A8qrezFCrnse8x8EnmIIHtO1JzBlGJACAsVMgPIqypQs8RbmZ14mJx4uwfTap1Vrfb1wMPYRsW4ymIcv6PRMLkXKX4HM4m7HneM+iJoANN7TtJJgYnSPFmMtgs=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5103.namprd12.prod.outlook.com (2603:10b6:5:392::13)
- by DM8PR12MB5400.namprd12.prod.outlook.com (2603:10b6:8:3b::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Wed, 16 Jun
- 2021 06:57:45 +0000
-Received: from DM4PR12MB5103.namprd12.prod.outlook.com
- ([fe80::e065:c90b:5f7:7e95]) by DM4PR12MB5103.namprd12.prod.outlook.com
- ([fe80::e065:c90b:5f7:7e95%6]) with mapi id 15.20.4242.016; Wed, 16 Jun 2021
- 06:57:45 +0000
-Subject: Re: [PATCH v9 1/3] dmaengine: ptdma: Initial driver for the AMD PTDMA
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Sanjay R Mehta <Sanju.Mehta@amd.com>,
-        dan.j.williams@intel.com, Thomas.Lendacky@amd.com,
-        Shyam-sundar.S-k@amd.com, Nehal-bakulchandra.Shah@amd.com,
-        robh@kernel.org, mchehab+samsung@kernel.org, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-References: <1622654551-9204-1-git-send-email-Sanju.Mehta@amd.com>
- <1622654551-9204-2-git-send-email-Sanju.Mehta@amd.com>
- <YL+rUBGUJoFLS902@vkoul-mobl> <94bba5dd-b755-81d0-de30-ce3cdaa3f241@amd.com>
- <YMl6zpjVHls8bk/A@vkoul-mobl> <0bc4e249-b8ce-1d92-ddde-b763667a0bcb@amd.com>
- <YMmXPMy7Lz9Jo89j@kroah.com>
-From:   Sanjay R Mehta <sanmehta@amd.com>
-Message-ID: <12ff7989-c89d-d220-da23-c13ddc53384e@amd.com>
-Date:   Wed, 16 Jun 2021 12:27:32 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YMmXPMy7Lz9Jo89j@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.158.249]
-X-ClientProxiedBy: SG3P274CA0009.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::21)
- To DM4PR12MB5103.namprd12.prod.outlook.com (2603:10b6:5:392::13)
+        id S231225AbhFPHAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:00:13 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:30191 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230360AbhFPHAL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 03:00:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623826685; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=I0eydOR0xnXCnwZc0aveamd5PTl1UHcBko2iiIqk/Yg=;
+ b=LRQsghADI94Y4ikIuPxzDU6K1YzDkpe3YtnjcsrmbLpFQH3gY+PE1jcge+wY1KUYkJnm9jDq
+ 0rzhOULMFGMv8AT0YeSETTCMxXQxOaWpMzhm1VODYpn1kPvKIqYPW5guCba05ywx++pnfAio
+ wTADuk+5b1kuBY9xRx7AIRnsLGA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60c9a0fce570c05619939a0d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Jun 2021 06:58:04
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 790E3C4323A; Wed, 16 Jun 2021 06:58:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B795BC4338A;
+        Wed, 16 Jun 2021 06:58:03 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.253.16] (165.204.158.249) by SG3P274CA0009.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Wed, 16 Jun 2021 06:57:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8474a285-9424-4a76-f330-08d930940b71
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5400:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM8PR12MB5400F2AE7E6DFED3636F95BCE50F9@DM8PR12MB5400.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AypCn9wP6R71MRfoG/LfycxdVCiCSLPQ3/Vp1Sb5ivN4DDL/d+WdsjlRCzQeh0cpju0US4Nrz86UtdWbhpq3oLDytuA3WueByeW6o+d7snCp7MXfQ5hLmDIRajcrjEMU2QD4hVv1v3qAgU7otDdQBdSJTihjPfl7FcUKoUCxcZ1lthrtOA3ktOL73W+n1jKcTsrvvUyriqC3QgzG+WeAs3mfxQZvkizDP7ddyu+vU+OTQHvia85RRahJO1NhvriKO1wB9ze8wb9vI1C2aYU/nQfE8KlPIiZDodo9ALYd17HzWl/WSSHGO1szQ7AUdtvXbd/qjtFYVxkE246tk1ST6pcEN+/3bFH6TGI9bEoyhdtceJsKlHGLBOB+Fq+Ve6Ytg6edmUQelatOa9wATUtpOSlo0XtvrLdAUwotWJ9Qsav5+pins2kFJ3FlhAqXKRToWZHCrtqRI/Dccmf6ITnoGNuH0a/odJrB9kLH8lyCTiDxbw6SN2n35x7X91tGq9/T9REQgcdETR8c2828b2CdoxEqnhJykafYfMM5YVCqa58KYW4T8AcUUeSPZAtGk4mOgpjeRoZEgVLv/cm1cOuuU0nLQuYr8lsss+GYyOj75+rPlSwLKJ6jXSP6iIRYSNGp4pb5Xdzsyme9KmJGT+AelMFzazRyE0hL/9+tgPAP9hmxmQqA211oO3XHn599Ryxy
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5103.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(376002)(346002)(39860400002)(316002)(16576012)(31686004)(54906003)(66946007)(66476007)(478600001)(66556008)(4326008)(36756003)(2906002)(6916009)(6486002)(38100700002)(16526019)(956004)(186003)(2616005)(8676002)(6666004)(31696002)(8936002)(53546011)(5660300002)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TGxHbTlBMjM2Q3lFUWhQcTA0R3hFOVVFZkhCd2tBeTQ2UnNkN1VxSnpqYVlQ?=
- =?utf-8?B?Tk9kVU1UdnF5UEU1aEp0QUJxNEthL0xmOUhuUUp5eFExTlh5UVIvSis5Qnkx?=
- =?utf-8?B?UTBTVWcxUDgrdm1RL01uT0RHTm5NK0FZZ0tMRVpvZWJhQUpYbzJNamF4Ujdm?=
- =?utf-8?B?cTMvNWFqUHl4cVRyaTk4QmkzU0NTYks4cW42YTJTdE5FMk1pRUkyWkpRZHBo?=
- =?utf-8?B?cXFTTE5tTE1ORFkzWVJQNDZVcW5NTjJkQ2pQQzNPb2E4SVNPRWh1ODlsMmtH?=
- =?utf-8?B?TThKTVg4MTRKKyttbitjU0JhSEpRKzJob1JlNGdNdHg2NnM5VEwzTFg0aTNu?=
- =?utf-8?B?R0RSOW1vVEl1dlNjaWIwK2VVTDJ3SlEwZ3VXbEZKdys2eEh6RHlRcjBEdWYz?=
- =?utf-8?B?OVMyS1lTMzVUNVFjalJGK1JwcFh3ZjI0clVHcnE5U3B1Qlo4Qk1DdnNuQ0kv?=
- =?utf-8?B?K000U0Y1aEM0MGNONVVEVmtFQmpKU1hYcFVnZW0zR1NQQkNpMGtpZ1paQ2x0?=
- =?utf-8?B?Sk85Vm12TVJnNTkvQm8wOGhOTU9wM3IxK3dOeDVGcVpRdGcrUmtJNlN3bG43?=
- =?utf-8?B?NFhrMFhidTRSbU9oQllWMFVVTnpjQXB0dW9nZlNjQW50dWVvNWZPSWlWQnFy?=
- =?utf-8?B?YStVbEd4TnkxT1VXMzRFWDVHYmZ0Y0dmcHNGM2FxU01sMTgwYy9aVnRhTkpN?=
- =?utf-8?B?VnNFY1hwNUYvOEV0aUJKRnFRRkIyRmhFaUNWbE9CSzYxejQvWUdBMlJXWW54?=
- =?utf-8?B?Z0twV0JsbVRabCs2QVRDeG1RSmlyWloxZHcvWWViUm5paVVGT3VGQ0R4cTU5?=
- =?utf-8?B?NUJ4ZWRidHJPeTE3ZWwrZjlobWZiNHExSlRVMS9zZERtRTV1S0thdm1EK2lT?=
- =?utf-8?B?Vm9naWlJb1hyM0YyYlBmcjAwL1ZFSlZTaHFZWXl5T2ZXZHI4RTcrOGFZaHVi?=
- =?utf-8?B?akVUOTE1OUl5NXVhd0ZiSG55cnRHOG5tL2ZNdUNRQmFrQllJMUNBOVFEZVdi?=
- =?utf-8?B?UGd3MllSYjdxUmlwazZRemhIZGV1ejRJekR3dnZWNXQrdHdXM1luRzZabGJX?=
- =?utf-8?B?SmZjM2ZNUlkzUFdpVmVUQmdON2d0WFoxdjZRbVdBYnZvWHo4SjdBYVZOVDhw?=
- =?utf-8?B?ZGhaSUNIYkFvWnlqbHVUck01Vkg5N0Yydjl4Z01LZW1mUk1KSjQvaTVGaFkr?=
- =?utf-8?B?V0lPajJSOFZ4eXdaaTVlTG82K0JhMmdNSzRJdVNCV3VXMEJRY0VjU05SRU1E?=
- =?utf-8?B?QW1SblRtczNNY2t5M2pTbTBFTGtNUzhsTCsyeVhlZVFCdDBVWGhNcVRHQVFM?=
- =?utf-8?B?Uk5ocDlOUWtFbjQzcVR3cTZBRzY3ZC9MaW0yZnY5aVZDbFozczBtSjRJbGdO?=
- =?utf-8?B?VTdRck5jSTVnKzBXdjBPZWRjdy8rM3REZHJpTGxlK2YxMnNYQnkybkc3NXhE?=
- =?utf-8?B?L05SSndJNmFsOVJocGRObVp1b1RqZTNwYk1GVVU1QVVVZXRwQk52WGsrYmw2?=
- =?utf-8?B?UTdKVnhCWGVybThmdWF0dktoUkV3SkU3cDBiSVkrakhjR3BzbllPUDhtNmVO?=
- =?utf-8?B?WWpueEJKd3plRHAzRHBsdGIxcjFISXVBN1YydjJWS3hOM1dDNnBNYVdLVEYr?=
- =?utf-8?B?YTk0NzEzN05UTnFWUkwwQmc3aXRaQkwydEYwMGRqdEYrdy9zeStiK0ZUTU1l?=
- =?utf-8?B?NFpiY1dHcy9lUkE3c2Z0U04vRFRjcnhGSzZEcjdQT3dsRUVXdHp5VlU2LzN2?=
- =?utf-8?Q?rFGuztwl4rLrS3x7sYIERGhrdwT9qxQxcBQBvIl?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8474a285-9424-4a76-f330-08d930940b71
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5103.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 06:57:45.5971
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 47zMpr9bi9BpvCmsi1+LN2pXIipqJmqZJ+k0/3xh49nUoitPH6pL5L+6nSdiXb9Hft7RBPPfsfrPCnlNAiw1Vw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5400
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 16 Jun 2021 12:28:03 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Krishna Reddy <vdumpa@nvidia.com>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Thierry Reding <treding@nvidia.com>
+Subject: Re: [PATCH] iommu/io-pgtable-arm: Optimize partial walk flush for
+ large scatter-gather list
+In-Reply-To: <da62ff1c-9b49-34d3-69a1-1a674e4a30f7@arm.com>
+References: <20210609145315.25750-1-saiprakash.ranjan@codeaurora.org>
+ <dbcd394a-4d85-316c-5dd0-033546a66132@arm.com>
+ <c600e9b2534d54082a5272b508a7985f@codeaurora.org>
+ <35bfd245-45e2-8083-b620-330d6dbd7bd7@arm.com>
+ <12067ffb8243b220cf03e83aaac3e823@codeaurora.org>
+ <266f190e-99ae-9175-cf13-7a77730af389@arm.com>
+ <dfdabcdec99a4c6e3bf2b3c5eebe067f@codeaurora.org>
+ <61c69d23-324a-85d7-2458-dfff8df9280b@arm.com>
+ <BY5PR12MB37646698F37C00381EFF7C77B3349@BY5PR12MB3764.namprd12.prod.outlook.com>
+ <07001b4ed6c0a491eacce6e4dc13ab5e@codeaurora.org>
+ <BY5PR12MB376480219C42E5FCE0FE0FFBB3349@BY5PR12MB3764.namprd12.prod.outlook.com>
+ <f749ba0957b516ab5f0ea57033d308c7@codeaurora.org>
+ <BY5PR12MB376433B3FD0A59EF57C4522DB3319@BY5PR12MB3764.namprd12.prod.outlook.com>
+ <5eb5146ab51a8fe0b558680d479a26cd@codeaurora.org>
+ <da62ff1c-9b49-34d3-69a1-1a674e4a30f7@arm.com>
+Message-ID: <8535b6c757a5584b495f135f4377053c@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Robin,
 
+On 2021-06-15 19:23, Robin Murphy wrote:
+> On 2021-06-15 12:51, Sai Prakash Ranjan wrote:
 
-On 6/16/2021 11:46 AM, Greg KH wrote:
-> [CAUTION: External Email]
+<snip>...
+
+>> Hi @Robin, from these discussions it seems they are not ok with the 
+>> change
+>> for all SoC vendor implementations and do not have any data on such 
+>> impact.
+>> As I mentioned above, on QCOM platforms we do have several 
+>> optimizations in HW
+>> for TLBIs and would like to make use of it and reduce the unmap 
+>> latency.
+>> What do you think, should this be made implementation specific?
 > 
-> On Wed, Jun 16, 2021 at 10:24:52AM +0530, Sanjay R Mehta wrote:
->>
->>
->> On 6/16/2021 9:45 AM, Vinod Koul wrote:
->>> [CAUTION: External Email]
->>>
->>> On 15-06-21, 16:50, Sanjay R Mehta wrote:
->>>
->>>>>> +static struct pt_device *pt_alloc_struct(struct device *dev)
->>>>>> +{
->>>>>> +     struct pt_device *pt;
->>>>>> +
->>>>>> +     pt = devm_kzalloc(dev, sizeof(*pt), GFP_KERNEL);
->>>>>> +
->>>>>> +     if (!pt)
->>>>>> +             return NULL;
->>>>>> +     pt->dev = dev;
->>>>>> +     pt->ord = atomic_inc_return(&pt_ordinal);
->>>>>
->>>>> What is the use of this number?
->>>>>
->>>>
->>>> There are eight similar instances of this DMA engine on AMD SOC.
->>>> It is to differentiate each of these instances.
->>>
->>> Are they individual device objects?
->>>
->>
->> Yes, they are individual device objects.
+> Yes, it sounds like there's enough uncertainty for now that this needs
+> to be an opt-in feature. However, I still think that non-strict mode
+> could use it generically, since that's all about over-invalidating to
+> save time on individual unmaps - and relatively non-deterministic -
+> already.
 > 
-> Then what is "ord" for?  Why are you using an atomic variable for this?
-> What does this field do?  Why doesn't the normal way of naming a device
-> come into play here instead?
+> So maybe we have a second set of iommu_flush_ops, or just a flag
+> somewhere to control the tlb_flush_walk functions internally, and the
+> choice can be made in the iommu_get_dma_strict() test, but also forced
+> on all the time by your init_context hook. What do you reckon?
 > 
 
-Hi Greg,
+Sounds good to me. Since you mentioned non-strict mode using it 
+generically,
+can't we just set tlb_flush_all() in io_pgtable_tlb_flush_walk() like 
+below
+based on quirk so that we don't need to add any check in 
+iommu_get_dma_strict()
+and just force the new flush_ops in init_context hook?
 
-The value of "ord" is incremented for each device instance and then it
-is used to store different name for each device as shown in below snippet.
+if (iop->cfg.quirks & IO_PGTABLE_QUIRK_NON_STRICT) {
+         iop->cfg.tlb->tlb_flush_all(iop->cookie);
+         return;
+}
 
-	pt->ord = atomic_inc_return(&pt_ordinal);
-	snprintf(pt->name, MAX_PT_NAME_LEN, "pt-%u", pt->ord);
+Thanks,
+Sai
 
-
-- Sanjay
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
