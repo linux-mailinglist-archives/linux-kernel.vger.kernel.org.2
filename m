@@ -2,103 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C6F3AA077
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E30B63AA080
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235046AbhFPP5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44284 "EHLO
+        id S235150AbhFPP6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:58:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235077AbhFPPzm (ORCPT
+        with ESMTP id S234775AbhFPP5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:55:42 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B394C0617AF
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:52:39 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id b37so4472169ljr.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:52:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MfGEP5GLXl+ug4Pfo9Y4pYgY96rQW+n2h5icNq/BLuc=;
-        b=Fw9GweUOQAfCf+hbHFUW0U0XW2UsK7E2ZrRzXhC9jevWow7LvM3gUL1zefOVYFxQ64
-         2+jIg2gJb7hZ3tD0yJKyIXK9qHcUm+4kxUz8bLAAZpA98leVF2lKjbZ5L4rB9CCMMLjM
-         DESwEhognjkdJRWqL/hlTB8iwRYp/rGdZwGvKwq/dhX8wfrFtkIz3QVhMVAJWVu/vTKZ
-         BfGukdGbv4Ks48c7FYcMz/FVDnMltppcDA0Rs+X1UdG9HOLPZvG8NknZ+2PnK2W6yMLh
-         ZWXL0knRUnlihwJ76MFcAYt2ShXm2orBGlwuzF7gKzClwRQY82w/fk40kTC8tH9Cigww
-         Ha/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MfGEP5GLXl+ug4Pfo9Y4pYgY96rQW+n2h5icNq/BLuc=;
-        b=B3bZlTEKPjm5CPKujsVHZd8IDPdwqKEs6CLpgBwsjDiiAKJ3RNLltTGca8FBLDGofz
-         OOyseM+M4yPlsbVNBY1dVHWiVkhKYMjVWFZ7fJiG3i3cjp+BSITR9+Jzipi9r0x9xtY4
-         RkmIX8KK3lpro+hxxMKSJ7Q+qPvpE/CbLm2Pq5xvBtqehLilcQLUGq8l/XOUcVvPHbC5
-         X6d2gu+eASgZmO/EN/r0mrXJE8Ty/NNIeO5JC4mQBI1Fy2piwjFZJCz82FRqeKeQofg5
-         6BRexUftAsb6SrDy1qlOzAoebfRwN006vWNU0Yqis6XgQyZFlYfWoF+yppgkpiVXbvkt
-         huag==
-X-Gm-Message-State: AOAM531w9S0DSoAL1cCZ1aBD2G4KciZL5g3dGdWe2G6WMXHBG78SJh/S
-        Xj+NjkghRFdqwWqTC94Gp/UGRS9K7qr6YBj7CYRHvA==
-X-Google-Smtp-Source: ABdhPJzV3ifI+viNBsarON2TAu36v+epq1qeZQjDUv0bLsb0yiJBYdb4MRhKvwCYTpZin0c0Ty3/szkVhEI1IE/PTVI=
-X-Received: by 2002:a2e:b80f:: with SMTP id u15mr480890ljo.284.1623858756684;
- Wed, 16 Jun 2021 08:52:36 -0700 (PDT)
+        Wed, 16 Jun 2021 11:57:31 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9840FC061574;
+        Wed, 16 Jun 2021 08:55:18 -0700 (PDT)
+Received: from mwalle01.fritz.box (ip4d17858c.dynamic.kabel-deutschland.de [77.23.133.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id D5D9C22284;
+        Wed, 16 Jun 2021 17:55:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1623858915;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Yxtyq1V1YWMiD4gkO6icAY55wXSW7H9YNOaGVoLVCrM=;
+        b=VyLSba0FUw5S7ox0RkcYmb81ze0itMIEwlc6tjmbxj/t5ULDmYmQsKuStnDH3+SHYW4fIE
+        1WqwNjkt0eH75pneVULoX7O+2FE3pJ71MkqdMb++w3/5MRxb1o7CzFRU5I7npFhiXW18bZ
+        qPjtYvOx4ElQYXIHI4ryNuCqF97RII0=
+From:   Michael Walle <michael@walle.cc>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>, Michael Walle <michael@walle.cc>
+Subject: [PATCH 0/3] ARM: add NAND support to Ebang EBAZ4205 board
+Date:   Wed, 16 Jun 2021 17:54:34 +0200
+Message-Id: <20210616155437.27378-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210615111611.GH30378@techsingularity.net> <20210615204228.GB4272@worktop.programming.kicks-ass.net>
-In-Reply-To: <20210615204228.GB4272@worktop.programming.kicks-ass.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 16 Jun 2021 17:52:25 +0200
-Message-ID: <CAKfTPtAZ_Aq_S-O2qh5LPyxExkBq3G0kxh51fT7sSC_z8He4+w@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: Age the average idle time
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 at 22:43, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Jun 15, 2021 at 12:16:11PM +0100, Mel Gorman wrote:
-> > From: Peter Zijlstra (Intel) <peterz@infradead.org>
-> >
-> > This is a partial forward-port of Peter Ziljstra's work first posted
-> > at https://lore.kernel.org/lkml/20180530142236.667774973@infradead.org/.
->
-> It's patches 2 and 3 together, right?
->
-> > His Signed-off has been removed because it is modified but will be restored
-> > if he says it's still ok.
->
-> I suppose the SoB will auto-magically re-appear if I apply it :-)
->
-> > The patch potentially matters when a socket was multiple LLCs as the
-> > maximum search depth is lower. However, some of the test results were
-> > suspiciously good (e.g. specjbb2005 gaining 50% on a Zen1 machine) and
-> > other results were not dramatically different to other mcahines.
-> >
-> > Given the nature of the patch, Peter's full series is not being forward
-> > ported as each part should stand on its own. Preferably they would be
-> > merged at different times to reduce the risk of false bisections.
->
-> I'm tempted to give it a go.. anyone object?
+Thanks to Miguel, there is finally a NAND driver for this SoC and we can
+now support the NAND device on the EBAZ4205.
 
-Just finished running some tests on my large arm64 system.
-Tbench tests are a mixed between small gain and loss
+Btw. I'm not sure how often the PL35x NAND controller is used in SoC and
+if it qualifies to add it to the multi_v7 defconfig.
 
-hackbench shows significant changes in both direction
-hackbench -g $group
+Michael Walle (3):
+  ARM: configs: multi_v7: enable PL35x NAND controller
+  ARM: dts: zynq: add NAND flash controller node
+  ARM: dts: ebaz4205: enable NAND support
 
-group  tip/sched/core      + this patch
-1      13.358(+/- 1.82%)   12.850(+/- 2.21%) +4%
-4      4.286(+/- 2.77%)    4.114(+/- 2.25%)  +4%
-16     3.175(+/- 0.55%)    3.559(+/- 0.43%)  -12%
-32     2.912(+/- 0.79%)    3.165(+/- 0.95%)  -8%
-64     2.859(+/- 1.12%)    2.937(+/- 0.91%)  -3%
-128    3.092(+/- 4.75%)    3.003(+/-5.18%)   +3%
-256    3.233(+/- 3.03%)    2.973(+/- 0.80%)  +8%
+ arch/arm/boot/dts/zynq-7000.dtsi    | 21 +++++++++++++++++++++
+ arch/arm/boot/dts/zynq-ebaz4205.dts | 12 ++++++++++++
+ arch/arm/configs/multi_v7_defconfig |  1 +
+ 3 files changed, 34 insertions(+)
+
+-- 
+2.20.1
+
