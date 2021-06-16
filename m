@@ -2,156 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC343A9675
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F353A9676
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbhFPJpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44596 "EHLO
+        id S231922AbhFPJsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbhFPJpU (ORCPT
+        with ESMTP id S231468AbhFPJsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:45:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3311C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mKRc1y/P+X61Ogjm9y7IPEFP1KueDHKwUkfB9qoQQik=; b=NOhC3iyyqCEFexx3wjGkWXt/dk
-        uYeJqL4qcPird6JzLMxkQFlXgfziz+Y/7f0crEcJ3pHzF86JUR6OS6R5g7B172+5hk63XDkGi1+ka
-        fZenUV9qgs+OAaUFS0qeSWbObzk9p/eko3w3UnPu2HrHxe9Lc+TgOT+OddjtZlJfnox87WVneJaR7
-        bola7YJeN4HKEjwkKSijFS7ukmweNFC7y8G0ki2L80j/zc3KjKgWucpFFL0cB3ABS3YLq4JHGEROk
-        xd8ruCqmf0aEyGXL1KyreYE6whSWfqfMlRZZHHxRJ3A+hsh325otAm3reOJg1Pgo+V8UemDN7VaOk
-        BK2H+UKA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltS4U-007s0r-Ui; Wed, 16 Jun 2021 09:43:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C57AC300269;
-        Wed, 16 Jun 2021 11:42:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A853220C169EB; Wed, 16 Jun 2021 11:42:53 +0200 (CEST)
-Date:   Wed, 16 Jun 2021 11:42:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 5/6] posix-cpu-timers: Force next expiration recalc after
- early timer firing
-Message-ID: <YMnHnUcufPhtnDZP@hirez.programming.kicks-ass.net>
-References: <20210604113159.26177-1-frederic@kernel.org>
- <20210604113159.26177-6-frederic@kernel.org>
+        Wed, 16 Jun 2021 05:48:19 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AC1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:46:13 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id d9so2363634ioo.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U+Gs03wvW6c/WwKnd+unjaXrg4+9H4GYXNYD6S00VbY=;
+        b=pa+RC4PTnAa0KziAfR6VIxWd3jmeElFWd86Sg1P+z4cEzk4NZziyNSk7cbS4HfbYQm
+         2pYNzMW60DZV9c2Ka/o1mNTXLh6qtLfYVGgZdxatPpHaHlDwaO/oT9xP+qFahubOg8fZ
+         yDWg4S8+Op6LcFtCUfb0SWH7lPnTOqbx2SARQGoO70YkmELiLjTjdx7J+GgejlVqADXe
+         cGtTtBMe1N351hI/OyPGXxEREqkd3pLCreC8/d1quaFrV6lqpf26D2PXMkimGKwd1ePi
+         euWdlkpQHxDz+ZEic2c+uV3MwwM6pAz5X2vnLFKPz1f9ocANHDwDB3xTtFC9IbdmPQvt
+         r87g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U+Gs03wvW6c/WwKnd+unjaXrg4+9H4GYXNYD6S00VbY=;
+        b=jJe6n9idyA+hVE3PkK5LsR8dJHATGbssgr558A6uKndr/IGC/ddHxIokdpZDrCnIwB
+         bzRfYIdS6nZdUOwU9IUNVwRUh6230ZekXbEHNQ6bEwluzG72913XanFCPVFzQD2X18vA
+         nKVzTu1Cr9jp2R0E5JLe1iPPVeZONTotZW3Kv1dlfyoBftxX58ubAlvvVxjiVC6+rRI3
+         xv3+Ed2NxCBg1tzLc1HIQE4GKQHNt6LtJVMGzhaNQBJX1tl2RuSmqjM94JH8MbHRtuLO
+         cXLt2B+Du42TrFBe+QeyrNfqXsi8bz6BsLzHTUHMOKnMs4Iy4d57QCE/Np+dG3Y7LoIN
+         tOMg==
+X-Gm-Message-State: AOAM532lmR2sWxQnjhjPLQWG2DHP77AOucBQwEm+YS7QMKZnuEzsMVGk
+        CdfAjTq+v+MBwMcCSNZi73/xIHhtxFwCKO2JYVHlezXltLoWIPvk
+X-Google-Smtp-Source: ABdhPJzaZebP2vUIupR7kX7xhs+7BS6LJIEz1wi07kGZ9pzcqtYMhZcIbYQM+Vq9BcDJZqZ1mcWt6EplamLjTQRG6/o=
+X-Received: by 2002:a02:6f5e:: with SMTP id b30mr3409126jae.94.1623836772998;
+ Wed, 16 Jun 2021 02:46:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604113159.26177-6-frederic@kernel.org>
+References: <20210615121551.31138-1-laoar.shao@gmail.com> <20210615203534.GA4272@worktop.programming.kicks-ass.net>
+ <CALOAHbBuZJaK+fEg7toRUHJNP8rJKDoADeAUxorUuNU17kdTOA@mail.gmail.com> <YMmlAP/QhE6SWhCF@hirez.programming.kicks-ass.net>
+In-Reply-To: <YMmlAP/QhE6SWhCF@hirez.programming.kicks-ass.net>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 16 Jun 2021 17:45:36 +0800
+Message-ID: <CALOAHbDPXjcgw37_yrR_A6kgJOuopjr409YnHKcMrgwN=uazpg@mail.gmail.com>
+Subject: Re: [PATCH] sched, fair: try to prevent migration thread from
+ preempting non-cfs task
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 01:31:58PM +0200, Frederic Weisbecker wrote:
-> diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
-> index 0b5715c8db04..d8325a906314 100644
-> --- a/kernel/time/posix-cpu-timers.c
-> +++ b/kernel/time/posix-cpu-timers.c
-> @@ -405,6 +405,21 @@ static int posix_cpu_timer_create(struct k_itimer *new_timer)
->  	return 0;
->  }
->  
-> +static void __disarm_timer(struct k_itimer *timer, struct task_struct *p,
-> +			   u64 old_expires)
-> +{
-> +	int clkidx = CPUCLOCK_WHICH(timer->it_clock);
-> +	struct posix_cputimer_base *base;
-> +
-> +	if (CPUCLOCK_PERTHREAD(timer->it_clock))
-> +		base = p->posix_cputimers.bases + clkidx;
-> +	else
-> +		base = p->signal->posix_cputimers.bases + clkidx;
-> +
-> +	if (old_expires == base->nextevt)
-> +		base->nextevt = 0;
-> +}
-> +
->  /*
->   * Dequeue the timer and reset the base if it was its earliest expiration.
->   * It makes sure the next tick recalculates the base next expiration so we
-> @@ -415,24 +430,14 @@ static void disarm_timer(struct k_itimer *timer, struct task_struct *p)
->  {
->  	struct cpu_timer *ctmr = &timer->it.cpu;
->  	u64 old_expires = cpu_timer_getexpires(ctmr);
-> -	struct posix_cputimer_base *base;
->  	bool queued;
-> -	int clkidx;
->  
->  	queued = cpu_timer_dequeue(ctmr);
->  	cpu_timer_setexpires(ctmr, 0);
->  	if (!queued)
->  		return;
->  
-> -	clkidx = CPUCLOCK_WHICH(timer->it_clock);
-> -
-> -	if (CPUCLOCK_PERTHREAD(timer->it_clock))
-> -		base = p->posix_cputimers.bases + clkidx;
-> -	else
-> -		base = p->signal->posix_cputimers.bases + clkidx;
-> -
-> -	if (old_expires == base->nextevt)
-> -		base->nextevt = 0;
-> +	__disarm_timer(timer, p, old_expires);
->  }
->  
->  
-> @@ -686,8 +691,7 @@ static int posix_cpu_timer_set(struct k_itimer *timer, int timer_flags,
->  			u64 exp = bump_cpu_timer(timer, val);
->  
->  			if (val < exp) {
-> -				old_expires = exp - val;
-> -				old->it_value = ns_to_timespec64(old_expires);
-> +				old->it_value = ns_to_timespec64(exp - val);
->  			} else {
->  				old->it_value.tv_nsec = 1;
->  				old->it_value.tv_sec = 0;
-> @@ -748,9 +752,28 @@ static int posix_cpu_timer_set(struct k_itimer *timer, int timer_flags,
->  		 * accumulate more time on this clock.
->  		 */
->  		cpu_timer_fire(timer);
-> +
-> +		sighand = lock_task_sighand(p, &flags);
-> +		if (sighand == NULL)
-> +			goto out;
-> +		if (!cpu_timer_queued(&timer->it.cpu)) {
-> +			/*
-> +			 * Disarm the previous timer to deactivate the tick
-> +			 * dependency and process wide cputime counter if
-> +			 * necessary.
-> +			 */
-> +			__disarm_timer(timer, p, old_expires);
-> +			/*
-> +			 * If the previous timer was deactivated, we might have
-> +			 * just started the process wide cputime counter. Make
-> +			 * sure we poke the tick to deactivate it then.
-> +			 */
-> +			if (!old_expires && !CPUCLOCK_PERTHREAD(timer->it_clock))
-> +				p->signal->posix_cputimers.bases[clkid].nextevt = 0;
-> +		}
-> +		unlock_task_sighand(p, &flags);
->  	}
+On Wed, Jun 16, 2021 at 3:15 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Jun 16, 2021 at 09:44:46AM +0800, Yafang Shao wrote:
+> > On Wed, Jun 16, 2021 at 4:35 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Tue, Jun 15, 2021 at 08:15:51PM +0800, Yafang Shao wrote:
+> > > > ---
+> > > >  kernel/sched/fair.c | 14 ++++++++++++++
+> > > >  1 file changed, 14 insertions(+)
+> > > >
+> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > > index 3248e24a90b0..597c7a940746 100644
+> > > > --- a/kernel/sched/fair.c
+> > > > +++ b/kernel/sched/fair.c
+> > > > @@ -9797,6 +9797,20 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+> > > >                       /* Record that we found at least one task that could run on this_cpu */
+> > > >                       env.flags &= ~LBF_ALL_PINNED;
+> > > >
+> > > > +                     /*
+> > > > +                      * There may be a race between load balance starting migration
+> > > > +                      * thread to pull the cfs running thread and the RT thread
+> > > > +                      * waking up and preempting cfs task before migration threads
+> > > > +                      * which then preempt the RT thread.
+> > > > +                      * We'd better do the last minute check before starting
+> > > > +                      * migration thread to avoid preempting latency-sensitive thread.
+> > > > +                      */
+> > > > +                     if (busiest->curr->sched_class != &fair_sched_class) {
+> > > > +                             raw_spin_unlock_irqrestore(&busiest->lock,
+> > > > +                                                        flags);
+> > >
+> > > This won't apply.
+> > >
+> > > Also, there's still a race window, you've just shrunk it, not fixed it.
+> > > Busiest can reschedule between the mandatory rq unlock and doing the
+> > > stopper wakeup.
+> > >
+> > > An actual fix might be to have the active migration done by a FIFO-1
+> > > task, instead of stopper. The obvious down-side is that that would mean
+> > > spawning yet another per-cpu kthread.
+> > >
+> >
+> > The stopper and the migration thread are different threads in the earlier days.
+> > commit 969c79215a35 ("sched: replace migration_thread with cpu_stop")
+> > merged them into one thread.
+>
+> Yes, I know, I was there. But that's not what I'm saying, we need the
+> migration thread to be super high perio for other cases. That change
+> still makes sense.
+>
+> > Regarding the priority of stopper (with highest priority) and
+> > migration (higher than CFS, but lower than RT) , keeping them in one
+> > single thread seems not a good way.
+>
+> I never suggested as such.
+>
+> Only the active migration of CFS can be done by a FIFO-1 task (the
+> lowest prio that is higher than CFS) and possible the numa balancing
+> thing.
+>
+> Other migrations will still need to use stopper, and as such you'll keep
+> having interference from stopper.
+>
+> The suggestion was adding a cfs_migration thread, specifically for
+> active balance (and maybe numa). Just not sure the cost of carrying yet
+> another per-cpu kernel thread is worth the benefit.
 
-I'm thinking this is a better fix than patch #2. AFAICT you can now go
-back to unconditionally doing start, and then if we fire it early, we'll
-disarm the thing.
+Thanks for the clarification.
 
-That would avoid the disconnect between the start condition and the fire
-condition.
-
-Hmm?
-
-
+-- 
+Thanks
+Yafang
