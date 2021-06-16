@@ -2,53 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C113D3A974F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F27A3A9751
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbhFPKcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:32:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232030AbhFPKci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:32:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D3F460FE6;
-        Wed, 16 Jun 2021 10:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623839432;
-        bh=mqqLnnrtOe1x+IQER3v/M1RZ1eEvzy87JkFegkes+cc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OnWsBphAHVb2rg/ju/6Hmsj9CKJESH5L8S3YyKZMowlYIITokBtAacamo6ne6B4RJ
-         xkyDkVC44/qaGqBTWAXtH/TaV1e/lcQ7RNlplQvYzisJOz4p/Dw9LrtsbDA8TOBvmH
-         UBpffBaFYiJKlt50hNCdpZBmpU/RzF4RFEi/LMWg=
-Date:   Wed, 16 Jun 2021 12:30:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daehwan Jung <dh10.jung@samsung.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Johan Hovold <johan@kernel.org>,
-        Lukasz Halman <lukasz.halman@gmail.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: ALSA: usb-audio: fix rate on Ozone Z90 USB headset
-Message-ID: <YMnSxQx15C8xAq98@kroah.com>
-References: <CGME20210616094912epcas2p38028df32b89b7cc79ba16c0215f8f664@epcas2p3.samsung.com>
- <1623836097-61918-1-git-send-email-dh10.jung@samsung.com>
+        id S232323AbhFPKdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:33:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29054 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232030AbhFPKdA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 06:33:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623839454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c4y6kj+428wwTUGNhZ1FsmPykm/3ZLz6Zk7Y/QMtNQw=;
+        b=X/Atll6pOP6xNdsnkJ0T2hRxLOSVGqKDDBEDIgGBJH1lmeT176TGVIyZ+4GuTuifX3c2CS
+        /2xQNHMw0fTP/zj+spMSqurKdvH4edzvjY9K0OBkKDt4hYblY8nUFauIADHSSPx70em/Dt
+        0CN5wMGxIFZXxKRYxXVQxyzCy7IrA3Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-2yPl4CptPQymnvnTjP118Q-1; Wed, 16 Jun 2021 06:30:51 -0400
+X-MC-Unique: 2yPl4CptPQymnvnTjP118Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75BB58015F5;
+        Wed, 16 Jun 2021 10:30:49 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0E5CE5D6AD;
+        Wed, 16 Jun 2021 10:30:46 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210614201435.1379188-27-willy@infradead.org>
+References: <20210614201435.1379188-27-willy@infradead.org> <20210614201435.1379188-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, akpm@linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCH v11 26/33] mm/writeback: Add folio_wait_writeback()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1623836097-61918-1-git-send-email-dh10.jung@samsung.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <815892.1623839446.1@warthog.procyon.org.uk>
+Date:   Wed, 16 Jun 2021 11:30:46 +0100
+Message-ID: <815893.1623839446@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 06:34:55PM +0900, Daehwan Jung wrote:
-> It mislabels its 96 kHz altsetting and that's why it causes some noise
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-I don't care about this.  But the stable tree probably does, please
-read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+> +	struct page *page = &folio->page;
 
-thanks,
+Isn't that a layering violation?  Should it be something like:
 
-greg k-h
+	struct page *page = folio_head();
+
+or:
+
+	struct page *page = folio_subpage(0);
+
+maybe?
+
