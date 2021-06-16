@@ -2,97 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A883A999F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A15C3A99A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbhFPL4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbhFPL4e (ORCPT
+        id S232664AbhFPL4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:56:52 -0400
+Received: from mail-vs1-f46.google.com ([209.85.217.46]:45870 "EHLO
+        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232620AbhFPL4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:56:34 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10649C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 04:54:28 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id e33so1774155pgm.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 04:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=/huNvh8FcTl+3eIIL9X2XXyAfeSSuZDlj/u8PSM9yrQ=;
-        b=OHb8tMfVL85uCUS+wgteKKQ+KxRN0dbYDRU09+owwjuoGJowCI0c0PrLNV8TI5wYQv
-         w0NagKqnk/v4JLGHsbH2ugMCrLmx4HaRJFmwGHokKYl4yu5ozxnRvIPXZcSr27dCirne
-         FYziFZAO8KBN1AK8k8fjnHFQiVX9te15xysWgig8LQZZAs5+DHveqUp8d6jUgzDuIYwO
-         hoydsFVNpWH3NYv4dVCNQ1WakCrmIfpS8fygqcWOnwspiYs6mtuYdH0aealikwyruqCO
-         XV8wPi5GlLzxo2koSWG2OiGRxnjC7HjZtuwNuCd3fiqCZOEWu9qqP1nG0IDesQarpYUx
-         kq+Q==
+        Wed, 16 Jun 2021 07:56:50 -0400
+Received: by mail-vs1-f46.google.com with SMTP id y207so839470vsy.12;
+        Wed, 16 Jun 2021 04:54:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/huNvh8FcTl+3eIIL9X2XXyAfeSSuZDlj/u8PSM9yrQ=;
-        b=ktMBjusZ5BHShkxTbQw37Ov1+cQuVavOuv+agznQSM03sOy4fYJv/iQFPz/2BidELc
-         88TW98UoorEFCGKuQT5xPj0bu2CNSrXwVkgIVhlxOb2h6e8ydl2j3owyVDucYYYyN7Pw
-         Bdptvjq55dxCQbVrkr7AZ/NfrSYOlvgjOvJ0aiN4a2rXwRySctfE9bU1CRNKREpuqlMP
-         FYuDGQXTcMGfizkBhLcSvLAO9RVUCzuXmijgHU8SoQhsIZiUtGPL0oDhXs9g5zvpFnam
-         7LvSueRHSyZOND7+Rwq+SLgDIOdd3KLYKGhM8PmR/mlSOpvCU4M6pBShSJ1wrzVr4nCN
-         Z/3Q==
-X-Gm-Message-State: AOAM532hi/S+GzL2nv/X7H6PlyVtMCY7IFEwwnBIW6koilvvaW7IuvJu
-        lndyBLlXV45K3H0G4Rf3+II=
-X-Google-Smtp-Source: ABdhPJx4GEMY21afq3We29YrJ+5DYBXo3SCf7LGhI6s6iM8IloxqcxKKGEGg56d1KKmIuWg115A+ew==
-X-Received: by 2002:a63:31c2:: with SMTP id x185mr4620146pgx.97.1623844467600;
-        Wed, 16 Jun 2021 04:54:27 -0700 (PDT)
-Received: from bj10045pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id o186sm2091049pfb.59.2021.06.16.04.54.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Jun 2021 04:54:27 -0700 (PDT)
-From:   Zhenguo Zhao <zhenguo6858@gmail.com>
-To:     zhenguo6858@gmail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2] tty: n_gsm: CR bit value should be 0 when config "initiator=0"
-Date:   Wed, 16 Jun 2021 19:53:22 +0800
-Message-Id: <1623844402-4731-1-git-send-email-zhenguo6858@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wIMdD+DC2D0RdmuD95Uw5dpAwzapXJa70AOOqXem39c=;
+        b=ZHiaGs8iHAqnpO760slxdQO53fA88y9UNiTv85O8VfUvHWmLeBnScu7V6L0kVsQPLA
+         RsdsOQoyMpFbr2+2Ib7SAa7Ex4lRoR1ew8pzJy09gKk1LXThZScbsJh5yqMITYrd2fSJ
+         Jar/ZI2NE1q4bxbwv7gI1wN/pI+zxIhFsVahSLxRqvrCyPgjmZKJ+9wYxd4wBQwIvDBp
+         rxkJeJJM6juUnBzV2ojPwmwUlNjRfTbPnt7oVloiJ5qYqkGdGQx2/fy+m00RTVp9J7Yt
+         s9DBPqKd3Gdqbi0ycRE7gN39l2o9Zh7ILgd3/40HkNyqnUi+zuKDdGnFEiStkYkO/4hq
+         qLNQ==
+X-Gm-Message-State: AOAM531snReMos/ldKsh/YgiZh/azUXwWj6jHuPSln3uPy1/Lre0EjWa
+        uYP04evsGjFRn4hU7JrD4T6ES97iISzdG596qsM=
+X-Google-Smtp-Source: ABdhPJygjj/GQan14TLrrLCU+7ALlhFGG2bi4LaHeg93hOogHE6YIpuPFVMx39j4+/3QRMZBcGy3HJjIMmXnc5Ez6zc=
+X-Received: by 2002:a05:6102:c4c:: with SMTP id y12mr9908186vss.18.1623844482960;
+ Wed, 16 Jun 2021 04:54:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <1623749970-38020-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1623749970-38020-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 16 Jun 2021 13:54:31 +0200
+Message-ID: <CAMuHMdWghY8Ktx1o3tQxxcvrL2eoN1jD47kFPFtsU=whjqjwAA@mail.gmail.com>
+Subject: Re: [PATCH -next 1/2] clk: renesas: Remove unneeded semicolon
+To:     yang.lee@linux.alibaba.com
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenguo Zhao <zhenguo.zhao1@unisoc.com>
+On Tue, Jun 15, 2021 at 11:39 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+> Eliminate the following coccicheck warning:
+> ./drivers/clk/renesas/renesas-rzg2l-cpg.c:299:2-3: Unneeded semicolon
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-config "initiator=0",gsmld will receives dlci SABM/DISC control command
-frame,as slaver,the CR bit value check should be 1.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-clk-for-v5.15.
 
-if check "cr == 0",it will goto invalid,so it can't send UA response
-frame and open slaver dlci.
+Gr{oetje,eeting}s,
 
-Signed-off-by: Zhenguo Zhao <zhenguo.zhao1@unisoc.com>
----
- drivers/tty/n_gsm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+                        Geert
 
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 5fea02c..becca2c 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -1779,7 +1779,7 @@ static void gsm_queue(struct gsm_mux *gsm)
- 
- 	switch (gsm->control) {
- 	case SABM|PF:
--		if (cr == 0)
-+		if (cr == 1)
- 			goto invalid;
- 		if (dlci == NULL)
- 			dlci = gsm_dlci_alloc(gsm, address);
-@@ -1793,7 +1793,7 @@ static void gsm_queue(struct gsm_mux *gsm)
- 		}
- 		break;
- 	case DISC|PF:
--		if (cr == 0)
-+		if (cr == 1)
- 			goto invalid;
- 		if (dlci == NULL || dlci->state == DLCI_CLOSED) {
- 			gsm_response(gsm, address, DM);
 -- 
-1.9.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
