@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98DF63A9FF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088CD3A9F5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbhFPPm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:42:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50640 "EHLO mail.kernel.org"
+        id S234910AbhFPPh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:37:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235319AbhFPPkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:40:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FDA1613F3;
-        Wed, 16 Jun 2021 15:37:21 +0000 (UTC)
+        id S234806AbhFPPg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:36:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B8BC6101B;
+        Wed, 16 Jun 2021 15:34:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857841;
-        bh=0Tu5Uz0GUjDfRA36Cq/kM4LadVNUM41ye8xS8GOdVhk=;
+        s=korg; t=1623857691;
+        bh=LoEVDfF09R5hzDYT1kb25NQJIaRXD9XDcfpPBWC+Zeg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zR47J1u+RjgxVvIAfnndB6+h9G9hXnPnh/gAL4Ig01GMJeRTWenBki6zUd3oyWdl8
-         U1ep8dpCrePh/Pz8geAdz9+dxcqh6xFEpttfXZyqtHnxFWeW2gVkLSPtxNs5fqDI8s
-         VyVOevt5RfqyZEW31xVpc9z283oDxEkOYxPQl/o8=
+        b=Ozr1JQz+t9nulJSKpl1Zl19WMHafIONHVqML+IotwJ0YGJ/pg1cNuvcrLYn+17Mpv
+         pq8fERqLXQSPw6GtNli3oIDLbenX61TNYhyBKOXDwXufnxecelTsMMB2n0+93c0yjg
+         UTDFsFFnsNHhuCebR10GlHEM/gxZ2303Cnoco7ZU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Zheng Yongjun <zhengyongjun3@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 28/48] mt76: mt7921: remove leftover 80+80 HE capability
+Subject: [PATCH 5.4 27/28] net: Return the correct errno code
 Date:   Wed, 16 Jun 2021 17:33:38 +0200
-Message-Id: <20210616152837.535977151@linuxfoundation.org>
+Message-Id: <20210616152835.009713792@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-References: <20210616152836.655643420@linuxfoundation.org>
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+References: <20210616152834.149064097@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-[ Upstream commit d4826d17b3931cf0d8351d8f614332dd4b71efc4 ]
+[ Upstream commit 49251cd00228a3c983651f6bb2f33f6a0b8f152e ]
 
-Fixes interop issues with some APs that disable HE Tx if this is present
+When kalloc or kmemdup failed, should return ENOMEM rather than ENOBUF.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210528120304.34751-1-nbd@nbd.name
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7921/main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/compat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/main.c b/drivers/net/wireless/mediatek/mt76/mt7921/main.c
-index ada943c7a950..2c781b6f89e5 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/main.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/main.c
-@@ -74,8 +74,7 @@ mt7921_init_he_caps(struct mt7921_phy *phy, enum nl80211_band band,
- 				IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_IN_2G;
- 		else if (band == NL80211_BAND_5GHZ)
- 			he_cap_elem->phy_cap_info[0] =
--				IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G |
--				IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_80PLUS80_MHZ_IN_5G;
-+				IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G;
+diff --git a/net/compat.c b/net/compat.c
+index c848bcb517f3..f5b88166c44a 100644
+--- a/net/compat.c
++++ b/net/compat.c
+@@ -160,7 +160,7 @@ int cmsghdr_from_user_compat_to_kern(struct msghdr *kmsg, struct sock *sk,
+ 	if (kcmlen > stackbuf_size)
+ 		kcmsg_base = kcmsg = sock_kmalloc(sk, kcmlen, GFP_KERNEL);
+ 	if (kcmsg == NULL)
+-		return -ENOBUFS;
++		return -ENOMEM;
  
- 		he_cap_elem->phy_cap_info[1] =
- 			IEEE80211_HE_PHY_CAP1_LDPC_CODING_IN_PAYLOAD;
+ 	/* Now copy them over neatly. */
+ 	memset(kcmsg, 0, kcmlen);
 -- 
 2.30.2
 
