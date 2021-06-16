@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2C73A8D82
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771823A8D85
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhFPAfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:35:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
+        id S231733AbhFPAfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbhFPAfL (ORCPT
+        with ESMTP id S230244AbhFPAfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:35:11 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A04C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:33:05 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 131so1228075ljj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:33:04 -0700 (PDT)
+        Tue, 15 Jun 2021 20:35:40 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83847C061574;
+        Tue, 15 Jun 2021 17:33:34 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id d7so362905edx.0;
+        Tue, 15 Jun 2021 17:33:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CBfvBtPeeZ+txOyCfuRZiBcTJq4klTe+mp15Vdy8/1A=;
-        b=SmeDvHt0uOBK4zkN8iVTIqG+FjaChfdwC2QGIxtkRL4PGE0lM8qGLzbl4cRN7HzV5w
-         jO2VtBLzpPVhsTyfy7YZsAbgvV+j8Nc61Qw+wNUiccqLf5kSFaP0Zub0/uHF5dtn68Nw
-         1mjlMKuoILO0G/BzShMseFzUbIY2yTZDFBTKI=
+        bh=TsSNYVIozB9ftiPAfUMSru47aMNYHPLKEsM4T0oQcRY=;
+        b=LG+tI/+5s00/IZs+iLkyZfcF/Px7Xc90vcaaxylci9OBEgbg7hXT091ejP96knZxDg
+         U+ZFY8qCwsixshXHnzEt7/eTGh+vHO3LIxv3xvlZ+0V9Fgdt3NkaqSg1enuDfzmZvPdi
+         tlYFm0hfGI0nqBodCt7kZ0yuC3RIsvX1oLBQCq9vnIU9xXIFMKXea0ezU4Ksv4yFhMOe
+         VgnWSyqNIh3vtiYkBJ/2MrJOTrZl7GLi3WGb+s/PmJLbr4v1MUWpU+tv4wOM92DksV7V
+         XzU59GR2t+HHTc8UxRTdrJMldU7rTTta6m58oOA8aDczTPgmJc/DZs10u50PU1C+ZlCw
+         SPaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CBfvBtPeeZ+txOyCfuRZiBcTJq4klTe+mp15Vdy8/1A=;
-        b=ZBKY/HP3Jc1HUJ8+XzVj0/o3K9ZopOgjX9eTmQPEGEk+BZdchbpOEjgsJ2p2tHTsza
-         KByBRjzAr2LCQ0vmWjF/OrvDqeWJx5gvBsYFGMxxZoM2FWsat+mBSPlY1gdhjsDPPGkk
-         AZnjhESoyHU1T4XH+PdY9PYMvNSqOW6wPVV7FAqN46RC+HR83K19A8wu/gNH6R00mBS0
-         IB+/O8ZEAV0dtJfJ1LdqcZEsT3xXpoogkLxNiDHhqBVPnfu3pWnHfDnZUxMebHD9MwU/
-         FrZt3OuCrZjVLR+DhXHd8ZWqeLtnj/UDHgaXRECkU4i7mbuMCntRbH1f34ytgLvAdYlx
-         72ug==
-X-Gm-Message-State: AOAM533URLoLpqGmiAMUM1oidQsd4JZYYxaZkw08wFtpPotY27Cg1w/o
-        K9ayRtnZrW0ieN/FSpdbcclX+aZ5T3UIkk8NL10=
-X-Google-Smtp-Source: ABdhPJwH+py3NWmdBUuBpDyESy1PyFq0f2mmpW4aJ9NqXogNwakCZoDbiBG2Z4XFGP3rQYE6OVQrcQ==
-X-Received: by 2002:a2e:8758:: with SMTP id q24mr1957101ljj.212.1623803582937;
-        Tue, 15 Jun 2021 17:33:02 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id c9sm46483ljr.104.2021.06.15.17.33.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 17:33:02 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id x14so1196458ljp.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:33:02 -0700 (PDT)
-X-Received: by 2002:a2e:9644:: with SMTP id z4mr1939304ljh.507.1623803581822;
- Tue, 15 Jun 2021 17:33:01 -0700 (PDT)
+        bh=TsSNYVIozB9ftiPAfUMSru47aMNYHPLKEsM4T0oQcRY=;
+        b=nQ2voLhPQOOB0G/TQiexjWsr5UbTRl/qfkZktHW7e3PiCZ7nNjNrpPzSHjN0ySaTwC
+         pJa1TRAdsd1IcSrzixRkUriQmFWK2JLLQlqEbg11SGbR1lNRxI4xmLQdEcvA7lZpMHzt
+         2lt3CDbT3P0hhw+LFBc2Ub4VnnGDoPvbC1i+QGXFmtEIVpJCQTUjuWJoYlThWRq9YSyg
+         jB53bT+VW30pp+1/T9akdc1b2l2ksNTjJuD5hMmkN80ArE96rUZYLIJ3aOic142tcop8
+         3s80XVoO7Im1b/FvCxVhXxwf4O0KK82kUCuKUWAF6kjOwZHijguI0W4yoLxXLhiWWDcq
+         lHbQ==
+X-Gm-Message-State: AOAM53103Wc0DtM0oV60wlmIZRTyQM/bvEgubZDAssGktlTHmW31qBrP
+        7Uh8ICxUQ2vI+Xy7BWcmh9xYTFXAQZ9pfFedeKA=
+X-Google-Smtp-Source: ABdhPJxp8c+7fCJGxOWx1AGZi8f4Stfs5QV8Zrs1O3zUnOCyQIW92wTOm+Xpq7nUzLcWUqzeTT4Np55x3Nv7aEI1g2c=
+X-Received: by 2002:a50:9345:: with SMTP id n5mr898254eda.289.1623803613192;
+ Tue, 15 Jun 2021 17:33:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
- <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com> <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org>
-In-Reply-To: <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 15 Jun 2021 17:32:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
-Message-ID: <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
-Subject: Re: [PATCH] afs: fix no return statement in function returning non-void
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        Tom Rix <trix@redhat.com>, linux-afs@lists.infradead.org,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
+ <20210615023812.50885-2-mcroce@linux.microsoft.com> <6cff2a895db94e6fadd4ddffb8906a73@AcuMS.aculab.com>
+ <CAEUhbmV+Vi0Ssyzq1B2RTkbjMpE21xjdj2MSKdLydgW6WuCKtA@mail.gmail.com>
+ <1632006872b04c64be828fa0c4e4eae0@AcuMS.aculab.com> <CAEUhbmU0cPkawmFfDd_sPQnc9V-cfYd32BCQo4Cis3uBKZDpXw@mail.gmail.com>
+ <CANBLGcxi2mEA5MnV-RL2zFpB2T+OytiHyOLKjOrMXgmAh=fHAw@mail.gmail.com>
+In-Reply-To: <CANBLGcxi2mEA5MnV-RL2zFpB2T+OytiHyOLKjOrMXgmAh=fHAw@mail.gmail.com>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Wed, 16 Jun 2021 08:33:21 +0800
+Message-ID: <CAEUhbmX_wsfU9FfRJoOPE0gjUX=Bp7OZWOZDyMNfO6=M-fX_0A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] riscv: optimized memcpy
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Gary Guo <gary@garyguo.net>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 4:58 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+On Wed, Jun 16, 2021 at 12:12 AM Emil Renner Berthing <kernel@esmil.dk> wrote:
 >
-> Some implementations of BUG() are macros, not functions,
+> On Tue, 15 Jun 2021 at 15:29, Bin Meng <bmeng.cn@gmail.com> wrote:
+> > ...
+> > Yes, Gary Guo sent one patch long time ago against the broken assembly
+> > version, but that patch was still not applied as of today.
+> > https://patchwork.kernel.org/project/linux-riscv/patch/20210216225555.4976-1-gary@garyguo.net/
+> >
+> > I suggest Matteo re-test using Gary's version.
+>
+> That's a good idea, but if you read the replies to Gary's original patch
+> https://lore.kernel.org/linux-riscv/20210216225555.4976-1-gary@garyguo.net/
+> .. both Gary, Palmer and David would rather like a C-based version.
+> This is one attempt at providing that.
 
-Not "some", I think. Most.
+Yep, I prefer C as well :)
 
-> so "unreachable" is not applicable AFAIK.
+But if you check commit 04091d6, the assembly version was introduced
+for KASAN. So if we are to change it back to C, please make sure KASAN
+is not broken.
 
-Sure it is. One common pattern is the x86 one:
-
-  #define BUG()                                                   \
-  do {                                                            \
-          instrumentation_begin();                                \
-          _BUG_FLAGS(ASM_UD2, 0);                                 \
-          unreachable();                                          \
-  } while (0)
-
-and that "unreachable()" is exactly what I'm talking about.
-
-So I repeat: what completely broken compiler / config / architecture
-is it that needs that "return 0" after a BUG() statement?
-
-Because that environment is broken, and the warning is bogus and wrong.
-
-It might not be the compiler. It might be some architecture that does
-this wrong. It might be some very particular configuration that does
-something bad and makes the "unreachable()" not work (or not exist).
-
-But *that* is the bug that should be fixed. Not adding a pointless and
-incorrect line that makes no sense, just to hide the real bug.
-
-               Linus
-
-                 Linus
+Regards,
+Bin
