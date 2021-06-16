@@ -2,117 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515483AA47A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1CD3AA47D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232920AbhFPTnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbhFPTnN (ORCPT
+        id S232842AbhFPTpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:45:33 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:33540 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230197AbhFPTpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:43:13 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96131C061574;
-        Wed, 16 Jun 2021 12:41:07 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id x19so1658468pln.2;
-        Wed, 16 Jun 2021 12:41:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=qb5d+U0Id8lIqAWfxQheAcWONeEcboJpT5+z508o/Ww=;
-        b=HQF8dUO0vj/JLY5AGo7v2s8QQaIzYV63qYOxawNXAC3aRARyE+nU5hzCMBYgwpOUA+
-         q8nRzMkhc/tm6xxqwnopRUIz9WhF/HjXQjuanWT1+4mEkJ0UbKeZivFfZx94lhKOnQOP
-         Ts7ZOjGA+YuFjIs9CLzBW3fINp+e9Um330Lz/Ig9wIZRxuRqLJJQam+5oQ2mzJV7WY1H
-         yGwhgdKL8GJ1aWOeIyR1DNwwTwqNOo7pvB7p1J30SaPr82rNVxB7EhI/vk2o1PYt2hoc
-         pp4iCipOjQ4/v83k/wL7M+dB89WD9kEBv4C8g2FUeiatzg/lKnEzH/64bvnzamhh106y
-         ef/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=qb5d+U0Id8lIqAWfxQheAcWONeEcboJpT5+z508o/Ww=;
-        b=iYENDc5yElHPjw4YOGF82Qg2SfN9ravFncjx0gC0p/ww89ZHuTJVcq2Lc51syH/G1o
-         rws5ujpPSHK4QLJj4NyCsTd42pdfCJR9zmwvs+f94SSj7TSk21IVqjb6OHV2bOfA8CQr
-         YMHyyaBzHfusBYIC630haeUMfkKIReyNCi3SqZxMn3BS/l352VpR7pcj389sna7LOK+c
-         wp07OXWOdTsEqeYgQ0r0CRzaVPdzirska+/pCBnvSCmKPo9gV91KEUfJOh2X1vU4n1Y+
-         HekSh3bZG8tuLF+4EJvjR4QfH5aMIrIZi4zTBRJFj0fNZlaZ7t4nmK+QYqsQOFqhpBeg
-         bpPw==
-X-Gm-Message-State: AOAM531djmFcUav1tZQxXOEN4EKJ/ofDpnkdmU3ahvOX9pBRt7Wm+wl6
-        LUiub79CTJBjU7K35m75zX7uZRpocHJeTw==
-X-Google-Smtp-Source: ABdhPJzC0pt4q7UA0ciR0y49Yot7y5oDh8kUDh16LPHavXhtDkCpQ2gTyxwhSMJ+vZZwvexZYwYg7w==
-X-Received: by 2002:a17:90a:9f8f:: with SMTP id o15mr1473325pjp.55.1623872467040;
-        Wed, 16 Jun 2021 12:41:07 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:9d12:c2c8:273e:6ffd? ([2001:df0:0:200c:9d12:c2c8:273e:6ffd])
-        by smtp.gmail.com with ESMTPSA id c14sm3086391pgv.86.2021.06.16.12.40.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 12:41:06 -0700 (PDT)
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-References: <87sg1p30a1.fsf@disp2133>
- <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
- <87pmwsytb3.fsf@disp2133>
- <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
- <87sg1lwhvm.fsf@disp2133>
- <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
- <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com> <87eed4v2dc.fsf@disp2133>
- <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> <87fsxjorgs.fsf@disp2133>
- <CAMuHMdUkhbq+tOyrpyd5hKGGcpYduBnbnXKFBwEfCGjw5XGYVA@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <594ca040-3ad3-5cfe-2b9e-8e7804c199b5@gmail.com>
-Date:   Thu, 17 Jun 2021 07:40:57 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 16 Jun 2021 15:45:32 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5E3AEFC9;
+        Wed, 16 Jun 2021 21:43:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623872604;
+        bh=QoljJieeX9Img5iH6etn4VYAB35CsGHvhXyqcSxnf/Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PdAYSdpajhvJ67PS/DO2g4G1f6efIlvp7BIcw9XGlCdgiZSXAncZWfA6azBtPDiHQ
+         U2RRMD0Hi34EAN48XgW4Pvg6HN2AzUl0TfP7FTlLjsCJ8v5OnUC2MDBxEVUqMT7yFG
+         AWSHfrhXb/vdbOI7Z7Bh7+XRqpiMWkoepvXqSDYI=
+Date:   Wed, 16 Jun 2021 22:43:03 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH] media: omap3isp: Extract struct group for memcpy() region
+Message-ID: <YMpUR34kFSbiyi+q@pendragon.ideasonboard.com>
+References: <20210616185938.1225218-1-keescook@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUkhbq+tOyrpyd5hKGGcpYduBnbnXKFBwEfCGjw5XGYVA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210616185938.1225218-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi Kees,
 
-On 16/06/21 7:38 pm, Geert Uytterhoeven wrote:
-> Hi Eric,
->
-> On Tue, Jun 15, 2021 at 9:32 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->> Do you happen to know if there is userspace that will run
->> in qemu-system-m68k that can be used for testing?
-> There's a link to an image in Laurent's patch series "[PATCH 0/2]
-> m68k: Add Virtual M68k Machine"
-> https://lore.kernel.org/linux-m68k/20210323221430.3735147-1-laurent@vivier.eu/
+Thank you for the patch.
 
-Thanks, I'll try that one.
+On Wed, Jun 16, 2021 at 11:59:38AM -0700, Kees Cook wrote:
+> Avoid writing past the end of a structure member by wrapping the target
+> region in a common named structure. This additionally fixes a
+> misalignment of the copy (since the size of "buf" changes between 64-bit
+> and 32-bit).
 
-I'll try and implement a few of the solutions Eric came up with for 
-alpha, unless someone beats me to it (Andreas?).
+Could you have been mislead by the data64 name ? The difference between
+omap3isp_stat_data_time and omap3isp_stat_data_time32 is the size of the
+ts field, using 32-bit timestamps with legacy userspace, and 64-bit
+timestamps with more recent userspace. In both cases we're dealing with
+a 32-bit platform, as the omap3isp is not used in any 64-bit ARM SoC.
+The size of void __user *buf is thus 4 bytes in all cases, as is __u32
+buf.
 
-Cheers,
+> I actually think this code is completely unused in the real world:
+> I don't think it could have ever worked, as it would either always
+> fail (with an uninitialized data->buf_size) or would cause corruption
+> in userspace due to the copy_to_user() in the call path against an
+> uninitialized data->buf value:
+> 
+> omap3isp_stat_request_statistics_time32(...)
+>     struct omap3isp_stat_data data64;
+>     ...
+>     omap3isp_stat_request_statistics(stat, &data64);
+> 
+> int omap3isp_stat_request_statistics(struct ispstat *stat,
+>                                      struct omap3isp_stat_data *data)
+>     ...
+>     buf = isp_stat_buf_get(stat, data);
+> 
+> static struct ispstat_buffer *isp_stat_buf_get(struct ispstat *stat,
+>                                                struct omap3isp_stat_data *data)
+> ...
+>     if (buf->buf_size > data->buf_size) {
+>             ...
+>             return ERR_PTR(-EINVAL);
+>     }
+>     ...
+>     rval = copy_to_user(data->buf,
+>                         buf->virt_addr,
+>                         buf->buf_size);
+> 
+> Regardless, additionally initialize data64 to be zero-filled to avoid
+> undefined behavior.
+> 
+> Fixes: 378e3f81cb56 ("media: omap3isp: support 64-bit version of omap3isp_stat_data")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/media/platform/omap3isp/ispstat.c |  5 +--
+>  include/uapi/linux/omap3isp.h             | 44 +++++++++++++++++------
+>  2 files changed, 36 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/media/platform/omap3isp/ispstat.c b/drivers/media/platform/omap3isp/ispstat.c
+> index 5b9b57f4d9bf..ea8222fed38e 100644
+> --- a/drivers/media/platform/omap3isp/ispstat.c
+> +++ b/drivers/media/platform/omap3isp/ispstat.c
+> @@ -512,7 +512,7 @@ int omap3isp_stat_request_statistics(struct ispstat *stat,
+>  int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
+>  					struct omap3isp_stat_data_time32 *data)
+>  {
+> -	struct omap3isp_stat_data data64;
+> +	struct omap3isp_stat_data data64 = { };
+>  	int ret;
+>  
+>  	ret = omap3isp_stat_request_statistics(stat, &data64);
+> @@ -521,7 +521,8 @@ int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
+>  
+>  	data->ts.tv_sec = data64.ts.tv_sec;
+>  	data->ts.tv_usec = data64.ts.tv_usec;
+> -	memcpy(&data->buf, &data64.buf, sizeof(*data) - sizeof(data->ts));
+> +	data->buf = (uintptr_t)data64.buf;
+> +	memcpy(&data->frame, &data64.buf, sizeof(data->frame));
+>  
+>  	return 0;
+>  }
+> diff --git a/include/uapi/linux/omap3isp.h b/include/uapi/linux/omap3isp.h
+> index 87b55755f4ff..0a16af91621f 100644
+> --- a/include/uapi/linux/omap3isp.h
+> +++ b/include/uapi/linux/omap3isp.h
+> @@ -159,13 +159,25 @@ struct omap3isp_h3a_aewb_config {
+>  };
+>  
+>  /**
+> - * struct omap3isp_stat_data - Statistic data sent to or received from user
+> - * @ts: Timestamp of returned framestats.
+> - * @buf: Pointer to pass to user.
+> + * struct omap3isp_stat_frame - Statistic data without timestamp nor pointer.
+> + * @buf_size: Size of buffer.
+>   * @frame_number: Frame number of requested stats.
+>   * @cur_frame: Current frame number being processed.
+>   * @config_counter: Number of the configuration associated with the data.
+>   */
+> +struct omap3isp_stat_frame {
+> +	__u32 buf_size;
+> +	__u16 frame_number;
+> +	__u16 cur_frame;
+> +	__u16 config_counter;
+> +};
+> +
+> +/**
+> + * struct omap3isp_stat_data - Statistic data sent to or received from user
+> + * @ts: Timestamp of returned framestats.
+> + * @buf: Pointer to pass to user.
+> + * @frame: Statistic data for frame.
+> + */
+>  struct omap3isp_stat_data {
+>  #ifdef __KERNEL__
+>  	struct {
+> @@ -176,10 +188,15 @@ struct omap3isp_stat_data {
+>  	struct timeval ts;
+>  #endif
+>  	void __user *buf;
+> -	__u32 buf_size;
+> -	__u16 frame_number;
+> -	__u16 cur_frame;
+> -	__u16 config_counter;
+> +	union {
+> +		struct {
+> +			__u32 buf_size;
+> +			__u16 frame_number;
+> +			__u16 cur_frame;
+> +			__u16 config_counter;
+> +		};
+> +		struct omap3isp_stat_frame frame;
+> +	};
+>  };
+>  
+>  #ifdef __KERNEL__
+> @@ -189,10 +206,15 @@ struct omap3isp_stat_data_time32 {
+>  		__s32	tv_usec;
+>  	} ts;
+>  	__u32 buf;
+> -	__u32 buf_size;
+> -	__u16 frame_number;
+> -	__u16 cur_frame;
+> -	__u16 config_counter;
+> +	union {
+> +		struct {
+> +			__u32 buf_size;
+> +			__u16 frame_number;
+> +			__u16 cur_frame;
+> +			__u16 config_counter;
+> +		};
+> +		struct omap3isp_stat_frame frame;
+> +	};
+>  };
+>  #endif
+>  
 
-     Michael
+-- 
+Regards,
 
-
->
-> Gr{oetje,eeting}s,
->
->                          Geert
->
+Laurent Pinchart
