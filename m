@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0689F3A8E15
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4783A8E1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231784AbhFPBMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 21:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhFPBMJ (ORCPT
+        id S231824AbhFPBN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 21:13:28 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:7281 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230265AbhFPBN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 21:12:09 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA074C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 18:10:02 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id q20so1333734lfo.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 18:10:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WkZWfoezrzK3YqSvjNFpximYFS+zPFkT6j8u2nQEHxw=;
-        b=dnZC354fu9ggFFPybBFkrAKpJ+prc+VjiMY0E47wXoZTl70lO0k7nYMjJU+ZV3XOnM
-         cSojlxv0PEOIvvodP7EyyNVyBIDb6VpotqSOH8P7zgKeN99TPu2eM8jtTC5q9GkVMOOm
-         b8n1LUck5mzKRNIURbRp1PAEmcfLJJ6Oofoato99TY3lGZHKhH5BKFQ7LpvdQaSiY3ks
-         8XqJgWXCw95vBde+156oMa/0O8Vezdj3dFRqsmV65VcAY4q1g4/XaEXHKGuGGv4cDCk7
-         k59WzkDTvJnW4oE/NZKDqIjt26ezzGMMFYRpxTy8HV6zFdzzlgpdJBhwNO3hKG5oBQ2q
-         Zfxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WkZWfoezrzK3YqSvjNFpximYFS+zPFkT6j8u2nQEHxw=;
-        b=Ows4YthhIhU3NozNaBWYLM9d0QozUvOJTMMj/7KK21DEwvWH7bEjW3c+c+RJQQ/2PX
-         34/uulwdwr1+v3LiafxUrgozUbgtY3i+Lp/Wy50xN0MmVMJ5gXw4AQfxtThS6T+gDsyk
-         fCrdx6gJHOFpk4Q9ElSya6ykhPrBU8Tt+r03kACg7qH8p9f6+eMcZ9FHha25KAUwmhGK
-         FQ9HN2UyfHyZuJgR0mTleaMqXX57+PtT8pSWmlugUF8RpIRTY0+9zWKMZdtopcICnsDE
-         qFMtC0lFkwpvOc7H7KKq9QaN9ZmVbwyKnsQGuW11XcfRDSIbXIqZ2tiqaJnlvIlM79nw
-         c3fw==
-X-Gm-Message-State: AOAM530gd2TIwU085ze+MLC67OFkgNAojyyag/Uwu7j9zU12D4RO/7No
-        OUELtEwBVLDZ+D31O0JjQkKslEP8PikRYjqmiWEka/HNd/M=
-X-Google-Smtp-Source: ABdhPJzf4qJT4TeIuhj5pb3/BNFUHv6br3mhdn2UFHbIAcsSFEWV1evx9ybM06Xaj2HksP1lPhVlQir+fHv+GF9WmyE=
-X-Received: by 2002:a19:7015:: with SMTP id h21mr1630748lfc.299.1623805800760;
- Tue, 15 Jun 2021 18:10:00 -0700 (PDT)
+        Tue, 15 Jun 2021 21:13:28 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G4RpN1w4Kz1BN1y;
+        Wed, 16 Jun 2021 09:06:20 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 09:11:05 +0800
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 09:11:05 +0800
+Subject: Re: [PATCH -next] tracing: Remove set but not used variable 'ret'
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>
+References: <20210527091032.3878436-1-libaokun1@huawei.com>
+ <4ab45eeb-ad26-03e8-f2c5-2dc4582a2946@huawei.com>
+ <20210615113925.27ad04ea@oasis.local.home>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+Message-ID: <ff4437bb-5285-5bf5-8c87-757dd07e51ef@huawei.com>
+Date:   Wed, 16 Jun 2021 09:11:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
- <20210615113222.edzkaqfvrris4nth@wittgenstein> <20210615124715.nzd5we5tl7xc2n2p@example.org>
-In-Reply-To: <20210615124715.nzd5we5tl7xc2n2p@example.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 15 Jun 2021 18:09:49 -0700
-Message-ID: <CALvZod7po_fK9JpcUNVrN6PyyP9k=hdcyRfZmHjSVE5r_8Laqw@mail.gmail.com>
-Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
-To:     Alexey Gladkov <legion@kernel.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Chris Down <chris@chrisdown.name>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210615113925.27ad04ea@oasis.local.home>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 5:47 AM Alexey Gladkov <legion@kernel.org> wrote:
->
-[...]
->
-> I made the second version of the patch [1], but then I had a conversation
-> with Eric W. Biederman offlist. He convinced me that it is a bad idea to
-> change all the values in meminfo to accommodate cgroups. But we agreed
-> that MemAvailable in /proc/meminfo should respect cgroups limits. This
-> field was created to hide implementation details when calculating
-> available memory. You can see that it is quite widely used [2].
-> So I want to try to move in that direction.
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/legion/linux.git/log/?h=patchset/meminfo/v2.0
-> [2] https://codesearch.debian.net/search?q=MemAvailable%3A
->
+Thank you for your reminder.
 
-Please see following two links on the previous discussion on having
-per-memcg MemAvailable stat.
+Best Regards.
 
-[1] https://lore.kernel.org/linux-mm/alpine.DEB.2.22.394.2006281445210.855265@chino.kir.corp.google.com/
-[2] https://lore.kernel.org/linux-mm/alpine.DEB.2.23.453.2007142018150.2667860@chino.kir.corp.google.com/
 
-MemAvailable itself is an imprecise metric and involving memcg makes
-this metric even more weird. The difference of semantics of swap
-accounting of v1 and v2 is one source of this weirdness (I have not
-checked your patch if it is handling this weirdness). The lazyfree and
-deferred split pages are another source.
-
-So, I am not sure if complicating an already imprecise metric will
-make it more useful.
+在 2021/6/15 23:39, Steven Rostedt 写道:
+> On Tue, 15 Jun 2021 09:59:10 +0800
+> "libaokun (A)" <libaokun1@huawei.com> wrote:
+>
+>> ping
+>>
+>> 在 2021/5/27 17:10, Baokun Li 写道:
+>>> Fixes gcc '-Wunused-but-set-variable' warning:
+>>>
+>>> kernel/trace/trace_events_hist.c: In function 'unregister_field_var_hists':
+>>> kernel/trace/trace_events_hist.c:5228:6: warning:
+>>>    variable ‘ret’ set but not used [-Wunused-but-set-variable]
+>>>
+>>> It never used since introduction.
+> Which was a bug.
+>
+>>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> This was fixed differently:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=6c610dba6e2beb1a16ac309672181d0090fb8d30
+>
+> -- Steve
+> .
