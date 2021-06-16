@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 758F93A9FB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720243A9F5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235202AbhFPPjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:39:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51316 "EHLO mail.kernel.org"
+        id S234934AbhFPPhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:37:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234971AbhFPPhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:37:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05DB8613CD;
-        Wed, 16 Jun 2021 15:35:40 +0000 (UTC)
+        id S234820AbhFPPhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:37:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAEBD61166;
+        Wed, 16 Jun 2021 15:34:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857741;
-        bh=FeqBGE9zqGaarMM+CfYzox4XI66YDFKHiyv3V8hjCS0=;
+        s=korg; t=1623857695;
+        bh=Fkvl+ekjLvpAvM75RY67+eNd6isp7B01ZuiC5Ih7oSI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oqejmKiJseTgOdlrPWu7ZHsR1ibzEvIKQJarD5P8dP8EXFa6+xgK0MLVRbRJ+wL2C
-         Sz/p27cGsiKJ492/gyEn/G8pPMdwIJFcokKZ9XFtMka5AnohugN5/fGMJlulCbs1vC
-         nHRPtlYBBBdZenmSbgOn/zROh1hyJ2FF22sr/2uo=
+        b=a/AvvRiBkPZPykMuEE1hgIweQTRwj20z9od9EeIo/GJh1YHf92WvzhlEiA0ETBoJK
+         EX5wLgoW0U8IbS/5+ASocmkaYA9z8qIR/7mGqfFSN+3kap8iLFRy55VNGWqxFWVc3a
+         R/QgOVp+W3Zl+Mv4+PbU4xkhd9DWdlP3LFoW/QOA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 04/38] HID: hid-input: add mapping for emoji picker key
-Date:   Wed, 16 Jun 2021 17:33:13 +0200
-Message-Id: <20210616152835.545760276@linuxfoundation.org>
+Subject: [PATCH 5.4 03/28] HID: hid-input: add mapping for emoji picker key
+Date:   Wed, 16 Jun 2021 17:33:14 +0200
+Message-Id: <20210616152834.264989719@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
-References: <20210616152835.407925718@linuxfoundation.org>
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+References: <20210616152834.149064097@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -61,7 +61,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 5 insertions(+)
 
 diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
-index d7eaf9100370..982737827b87 100644
+index 9453147d020d..01135713e8f9 100644
 --- a/drivers/hid/hid-debug.c
 +++ b/drivers/hid/hid-debug.c
 @@ -929,6 +929,7 @@ static const char *keys[KEY_MAX + 1] = {
@@ -73,7 +73,7 @@ index d7eaf9100370..982737827b87 100644
  	[KEY_BRIGHTNESS_MAX] = "BrightnessMax",
  	[KEY_BRIGHTNESS_AUTO] = "BrightnessAuto",
 diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index 32024905fd70..d1ab2dccf6fd 100644
+index ec08895e7b1d..6d551ae251c0 100644
 --- a/drivers/hid/hid-input.c
 +++ b/drivers/hid/hid-input.c
 @@ -957,6 +957,9 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
@@ -87,10 +87,10 @@ index 32024905fd70..d1ab2dccf6fd 100644
  		case 0x0e2: map_key_clear(KEY_MUTE);		break;
  		case 0x0e5: map_key_clear(KEY_BASSBOOST);	break;
 diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
-index ee93428ced9a..225ec87d4f22 100644
+index 472cd5bc5567..311a57f3e01a 100644
 --- a/include/uapi/linux/input-event-codes.h
 +++ b/include/uapi/linux/input-event-codes.h
-@@ -611,6 +611,7 @@
+@@ -607,6 +607,7 @@
  #define KEY_VOICECOMMAND		0x246	/* Listening Voice Command */
  #define KEY_ASSISTANT		0x247	/* AL Context-aware desktop assistant */
  #define KEY_KBD_LAYOUT_NEXT	0x248	/* AC Next Keyboard Layout Select */
