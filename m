@@ -2,53 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CC63A9102
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 07:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D67A3A9107
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 07:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhFPFNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 01:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhFPFNG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 01:13:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEA9C061574;
-        Tue, 15 Jun 2021 22:11:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CY93Q8HkdUaFWEd0CM+L3x5mizqDiuZJg8BZfH45oYY=; b=Za6f2SM7Vq7AHXHxN4C8gmjYlo
-        aOIx4ybFJJskaDdxax79/0MYzY21NgV5WE3JHAFi7x+Um3sjhX6a/FN2IYTbAsZRDz0Pc7mD/cvcg
-        im72QL2U72ZNmYStScgb+HO/PW2wnMYrQ6Jtj03yO8dzv9t3az9dpX9HHi+1llCQPdl8nJE3Ybqmi
-        ud8rS3uJbLn8xv+gzURzk+7iD7rtQcrIiYyWAFDQMaZy+Q1Bcjz3bgeS98J0ze/wFJuDPtCl9eK1/
-        2BMYBE8KHqB1eqs+0fUfSvGj1ZYCCyEGvvxVg0WpfsXe5Hz5ay/Obewm4n8dLHBgfxgJ0KJrcRNvr
-        W+u9i8qg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltNon-007cWm-6e; Wed, 16 Jun 2021 05:10:28 +0000
-Date:   Wed, 16 Jun 2021 06:10:25 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Chen Li <chenli@uniontech.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] ramfs: skip mknod if inode already exists.
-Message-ID: <YMmHwTZaahtmjK2z@infradead.org>
-References: <874kdyh65j.wl-chenli@uniontech.com>
+        id S231153AbhFPFQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 01:16:07 -0400
+Received: from ni.piap.pl ([195.187.100.5]:35862 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229476AbhFPFQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 01:16:05 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ni.piap.pl (Postfix) with ESMTPSA id 144EB444303;
+        Wed, 16 Jun 2021 07:13:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 144EB444303
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1623820436; bh=c/pH9U+Ve+BSKl9inLEXRVuYQI7VKgWmeCogGi08N8Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GiPW3wN08r3ictYZ5BYkDFYy0SitE0zaF83usyVCIeUEji/FLl9+rLDA4QSe3WNXl
+         AwRMm8gtyL4iQ0eJ/uc8481vvKQXtGOm2GybRPtVDHHrIm2G5/KGlcN/ogc/ChBO55
+         xe52484+a17wW1/cXNkuQzuwVTOSsrmlXWn4gB4Y=
+From:   Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] TDA1997x: enable EDID support
+Sender: khalasa@piap.pl
+Date:   Wed, 16 Jun 2021 07:13:55 +0200
+Message-ID: <m3mtrq75nw.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874kdyh65j.wl-chenli@uniontech.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 10:53:12AM +0800, Chen Li wrote:
-> 
-> It's possible we try to mknod a dentry, which have
-> already bound to an inode, just skip it.
+Without this patch, the TDA19971 chip's EDID is inactive.
+EDID never worked with this driver, it was all tested with HDMI signal
+sources which don't need EDID support.
 
-How do you think this could happen?
+Signed-off-by: Krzysztof Halasa <khalasa@piap.pl>
+Fixes: 9ac0038db9a7 ("media: i2c: Add TDA1997x HDMI receiver driver")
+
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -2233,6 +2233,7 @@ static int tda1997x_core_init(struct v4l2_subdev *sd)
+ 	/* get initial HDMI status */
+ 	state->hdmi_status =3D io_read(sd, REG_HDMI_FLAGS);
+=20
++	io_write(sd, REG_EDID_ENABLE, EDID_ENABLE_A_EN | EDID_ENABLE_B_EN);
+ 	return 0;
+ }
+=20
+
+--=20
+Krzysztof Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
