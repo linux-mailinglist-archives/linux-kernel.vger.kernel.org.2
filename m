@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC743A9282
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B77A3A9286
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbhFPGaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:30:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59920 "EHLO mail.kernel.org"
+        id S231769AbhFPGaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:30:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231501AbhFPG3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231513AbhFPG3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Jun 2021 02:29:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED317613E9;
-        Wed, 16 Jun 2021 06:27:47 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05B13613EE;
+        Wed, 16 Jun 2021 06:27:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623824868;
-        bh=RluDluVvgOJfMawxkXAd8MJmBCh51i/nH0Xg7JEnU2k=;
+        bh=ZpDN1jUp26cBVjHDeaaWZT1WhCWUTgEqEOlOYOFr4J8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IzCd3O51Aa0LTyprfhtV1oY+MThmVmQRTvvhlUbcOw5JqMQ29Ez8RWXGV4P/hmOt1
-         1l+2neyHuC2niSppanddqI6KPQeZhIiAyA5HDKUgFzSRWGpKCQExOGTkBYhCLTFmFY
-         ahGCzFWIwy4Lfh8RlyJ/XjBUlZHgtAzIRJmABpicXgbyvQV5CgrCK2igr2Fu47jMDy
-         Hz217X2YaDLLX1miXBBbHOK7MqK7H5yNympfqc+Pbe91LVgub1M98y122HCQr2xTad
-         sE36oeNCTbJ+5xNtlKR5jcrGoAffO08oXTNH8xwvGgOg/bHgpzDCsDNEYWLEOF4kQV
-         kUWW2+cyVluEg==
+        b=KHDzNCO8PU/IoEth+i7Ys77KDBfK5TgPPTzqaakGhfVSdOLvf4VOfMP/8t1SoxAhK
+         t46NRGozPlZgXKbAk9iLJZkBuNoh+meYZemCUfOJ5jqgIbDq/ukgcW3Cb0rSXOn9xs
+         YwyFgIa2MQXTSexHBEAHC1Do2otgRbLkPFoa6/Tj0fhitp7bMAA44lL8+gxVo3pQj3
+         c1x/GzRc7M3YAeG9IWBux7ptQUF3WzKeOUgL88kNql6bKKpbpEb3Xx6uhKEWc6a2jm
+         ByN/yALjktj0/SXb2gJ+DNU9NqJkho88rekT/xjOTjeY0Xs4/IFTQpw/x73iCJ25xD
+         Us6hYg06qQdug==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1ltP1e-004kIo-84; Wed, 16 Jun 2021 08:27:46 +0200
+        id 1ltP1e-004kIs-9l; Wed, 16 Jun 2021 08:27:46 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 08/29] docs: core-api: avoid using ReST :doc:`foo` markup
-Date:   Wed, 16 Jun 2021 08:27:23 +0200
-Message-Id: <d967d490b6655735b7df292f88859b5a1b07d0d7.1623824363.git.mchehab+huawei@kernel.org>
+        Daniel Latypov <dlatypov@google.com>,
+        David Gow <davidgow@google.com>,
+        Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 09/29] docs: dev-tools: testing-overview.rst: avoid using ReST :doc:`foo` markup
+Date:   Wed, 16 Jun 2021 08:27:24 +0200
+Message-Id: <6bbecd4170ee08f36f8060b0719a46c64a21aefc.1623824363.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1623824363.git.mchehab+huawei@kernel.org>
 References: <cover.1623824363.git.mchehab+huawei@kernel.org>
@@ -52,83 +51,37 @@ So, use the filename at the sources, instead of :doc:`foo`.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/core-api/bus-virt-phys-mapping.rst | 2 +-
- Documentation/core-api/dma-api.rst               | 5 +++--
- Documentation/core-api/dma-isa-lpc.rst           | 2 +-
- Documentation/core-api/index.rst                 | 4 ++--
- 4 files changed, 7 insertions(+), 6 deletions(-)
+ Documentation/dev-tools/testing-overview.rst | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/core-api/bus-virt-phys-mapping.rst b/Documentation/core-api/bus-virt-phys-mapping.rst
-index c7bc99cd2e21..c72b24a7d52c 100644
---- a/Documentation/core-api/bus-virt-phys-mapping.rst
-+++ b/Documentation/core-api/bus-virt-phys-mapping.rst
-@@ -8,7 +8,7 @@ How to access I/O mapped memory from within device drivers
+diff --git a/Documentation/dev-tools/testing-overview.rst b/Documentation/dev-tools/testing-overview.rst
+index b5b46709969c..65feb81edb14 100644
+--- a/Documentation/dev-tools/testing-overview.rst
++++ b/Documentation/dev-tools/testing-overview.rst
+@@ -71,15 +71,15 @@ can be used to verify that a test is executing particular functions or lines
+ of code. This is useful for determining how much of the kernel is being tested,
+ and for finding corner-cases which are not covered by the appropriate test.
  
- 	The virt_to_bus() and bus_to_virt() functions have been
- 	superseded by the functionality provided by the PCI DMA interface
--	(see :doc:`/core-api/dma-api-howto`).  They continue
-+	(see Documentation/core-api/dma-api-howto.rst).  They continue
- 	to be documented below for historical purposes, but new code
- 	must not use them. --davidm 00/12/12
+-:doc:`gcov` is GCC's coverage testing tool, which can be used with the kernel
+-to get global or per-module coverage. Unlike KCOV, it does not record per-task
+-coverage. Coverage data can be read from debugfs, and interpreted using the
+-usual gcov tooling.
++Documentation/dev-tools/gcov.rst is GCC's coverage testing tool, which can be
++used with the kernel to get global or per-module coverage. Unlike KCOV, it
++does not record per-task coverage. Coverage data can be read from debugfs,
++and interpreted using the usual gcov tooling.
  
-diff --git a/Documentation/core-api/dma-api.rst b/Documentation/core-api/dma-api.rst
-index 00a1d4fa3f9e..6d6d0edd2d27 100644
---- a/Documentation/core-api/dma-api.rst
-+++ b/Documentation/core-api/dma-api.rst
-@@ -5,7 +5,7 @@ Dynamic DMA mapping using the generic device
- :Author: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
+-:doc:`kcov` is a feature which can be built in to the kernel to allow
+-capturing coverage on a per-task level. It's therefore useful for fuzzing and
+-other situations where information about code executed during, for example, a
+-single syscall is useful.
++Documentation/dev-tools/kcov.rst is a feature which can be built in to the
++kernel to allow capturing coverage on a per-task level. It's therefore useful
++for fuzzing and other situations where information about code executed during,
++for example, a single syscall is useful.
  
- This document describes the DMA API.  For a more gentle introduction
--of the API (and actual examples), see :doc:`/core-api/dma-api-howto`.
-+of the API (and actual examples), see Documentation/core-api/dma-api-howto.rst.
  
- This API is split into two pieces.  Part I describes the basic API.
- Part II describes extensions for supporting non-consistent memory
-@@ -479,7 +479,8 @@ without the _attrs suffixes, except that they pass an optional
- dma_attrs.
- 
- The interpretation of DMA attributes is architecture-specific, and
--each attribute should be documented in :doc:`/core-api/dma-attributes`.
-+each attribute should be documented in
-+Documentation/core-api/dma-attributes.rst.
- 
- If dma_attrs are 0, the semantics of each of these functions
- is identical to those of the corresponding function
-diff --git a/Documentation/core-api/dma-isa-lpc.rst b/Documentation/core-api/dma-isa-lpc.rst
-index e59a3d35a93d..17b193603f0a 100644
---- a/Documentation/core-api/dma-isa-lpc.rst
-+++ b/Documentation/core-api/dma-isa-lpc.rst
-@@ -17,7 +17,7 @@ To do ISA style DMA you need to include two headers::
- 	#include <asm/dma.h>
- 
- The first is the generic DMA API used to convert virtual addresses to
--bus addresses (see :doc:`/core-api/dma-api` for details).
-+bus addresses (see Documentation/core-api/dma-api.rst for details).
- 
- The second contains the routines specific to ISA DMA transfers. Since
- this is not present on all platforms make sure you construct your
-diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
-index f1c9d20bd42d..5de2c7a4b1b3 100644
---- a/Documentation/core-api/index.rst
-+++ b/Documentation/core-api/index.rst
-@@ -48,7 +48,7 @@ Concurrency primitives
- ======================
- 
- How Linux keeps everything from happening at the same time.  See
--:doc:`/locking/index` for more related documentation.
-+Documentation/locking/index.rst for more related documentation.
- 
- .. toctree::
-    :maxdepth: 1
-@@ -77,7 +77,7 @@ Memory management
- =================
- 
- How to allocate and use memory in the kernel.  Note that there is a lot
--more memory-management documentation in :doc:`/vm/index`.
-+more memory-management documentation in Documentation/vm/index.rst.
- 
- .. toctree::
-    :maxdepth: 1
+ Dynamic Analysis Tools
 -- 
 2.31.1
 
