@@ -2,101 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFA43AA1E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DC83AA1E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhFPQ6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 12:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhFPQ6w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 12:58:52 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A87C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 09:56:44 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id og14so4994721ejc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 09:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CDUWKMhDng5NBWGQ0iuMjqcvNRC2fdcuBx5BZPpTnHs=;
-        b=VdFt53cWOxe/3XDbVYRmakE9EmrsXFMokamCiiY15CYCKtf4OZ0ItHDjSJ6uMtNsXp
-         DK/7kYxbtSy1jHEfG9Toh8PiHWKzGLyOUsT4F0l3vKozRuIu/aXs/WmIRHGhMuMeZBDt
-         074icNiwRKS26w0nOEKzihcaCTfvkTOY+wjP1e394d3fQogawwHu0tauf0XJG/vEo91R
-         JZ4PHxprUrjnhCsw022zYZ7M+loop5NXjhHHk9Y5U4zj/OC2suhKXjxL7K7SLTYajgGd
-         ysh/Ort/YJdViCCgvyzRN/dxQFnp3r5Ez/7YemD5j3pvMQ6rOsVz8KoEWvWt4uceO5dS
-         136w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CDUWKMhDng5NBWGQ0iuMjqcvNRC2fdcuBx5BZPpTnHs=;
-        b=ZRQ/L/iM+0IoSIoLam20lOZ8mrNBYnlu5wEDVmQ3+w2dvXHvynNRz+abLOKQT0h7ad
-         xl8uM41bzsSFns9FN/7niYZO4ve5BhMosLMvSxcY+BC9LRkXU0+HF4LnbXLu7RCrqfzi
-         t53U5PiAvWKpENwmb570HfTzIk/V74U9J2z9wgp1xttredfpy8kuawwKjyPv/wTbpdBJ
-         H3c9zpAlQYZyiqobu0ujLf95RkGHM4rsOaOCrY012J2SllHFFFrxOwT0ari/BpQ1c32Y
-         aXp/a0wy/oqfilqpp9oPWNoWOFxtR36bxsMNmWnkP6+j3qlkG1i1O+ywhT/x9QVxz0HB
-         i7vQ==
-X-Gm-Message-State: AOAM5317NtKpY94dh6rqExv3qslXwiKG/L/dKoCeinOxwbHPzSqZX/eh
-        Hu1fPw+ganVc5mx8GJw/Fb8=
-X-Google-Smtp-Source: ABdhPJzWQcE3F9VJ/gAUCFIYQHzJFiVfBo0ITH+0drszHNqZs2ESSkKAVXLXEDHtKXNB94LbaSEidA==
-X-Received: by 2002:a17:906:6814:: with SMTP id k20mr455348ejr.455.1623862602139;
-        Wed, 16 Jun 2021 09:56:42 -0700 (PDT)
-Received: from linux.local (host-82-59-55-132.retail.telecomitalia.it. [82.59.55.132])
-        by smtp.gmail.com with ESMTPSA id ci4sm1901102ejc.110.2021.06.16.09.56.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 09:56:41 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     David Kershner <david.kershner@unisys.com>,
-        sparmaintainer@unisys.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v8 RESEND] staging: unisys: visorhba: Convert module from IDR to XArray
-Date:   Wed, 16 Jun 2021 18:56:39 +0200
-Message-ID: <3316425.tqDOt8T8LQ@linux.local>
-In-Reply-To: <YMiT9+msL8H2+3yV@kroah.com>
-References: <20210514081112.19542-1-fmdefrancesco@gmail.com> <YMiT9+msL8H2+3yV@kroah.com>
+        id S230340AbhFPQ7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 12:59:17 -0400
+Received: from mga02.intel.com ([134.134.136.20]:16101 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229547AbhFPQ7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 12:59:16 -0400
+IronPort-SDR: G7qQ2sr5BYzGuuT3lU8Rx686n/De8vCb+UXBTQaSkOacFy0MzdrHS6ktVoluZVGU6IMWVu/TMr
+ WLlMLtvHuXVg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="193338460"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="193338460"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 09:57:08 -0700
+IronPort-SDR: mYNoaYtyvBm9Q6MgRujcgZ0UI0idDyV4BJqp8/cyhURDGfs7g1wCZ1um+pxwZ5A3ly7eDAiRKA
+ UuV2fD3rXdiQ==
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="484952606"
+Received: from sbangalo-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.20.242])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 09:57:07 -0700
+Subject: Re: [PATCH v2 03/12] x86/cpufeatures: Add TDX Guest CPU feature
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <YMI2MtZ/poULESej@zn.tnic>
+ <20210612210219.2164766-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YMnJ5V4NU1JF2KAZ@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <ed65cf5b-0748-fcff-a476-e82963545f0e@linux.intel.com>
+Date:   Wed, 16 Jun 2021 09:57:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <YMnJ5V4NU1JF2KAZ@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, June 15, 2021 1:50:15 PM CEST Greg Kroah-Hartman wrote:
-> On Fri, May 14, 2021 at 10:11:11AM +0200, Fabio M. De Francesco wrote:
-> > Converted visorhba from IDR to XArray. The abstract data type XArray is
-> > more memory-efficient, parallelizable, and cache friendly. It takes
-> > advantage of RCU to perform lookups without locking. Furthermore, IDR is
-> > deprecated because XArray has a better (cleaner and more consistent)
-> > API.
-> > 
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > ---
+
+
+On 6/16/21 2:52 AM, Borislav Petkov wrote:
+> As I had typed, without the "is":
 > 
-> Given a lack of response from the unisys maintainer, I'll go apply this
-> now and see what breaks :)
->
-Hi Greg,
-
-I'm really grateful to you for having applied that patch notwithstanding the 
-lack of response from Unisys. Understanding IDR, XArray, and the flow of the 
-code, has been a hard task for a newcomer having only a month of experience to 
-kernel development.
-
-Thanks very much,
-
-Fabio
+> 	pr_info("Guest initialized\n");
 > 
-> thanks,
+> We're trying to keep dmesg style from becoming prose.:)
+
+Thanks for clarification. I will fix it.
+
 > 
-> greg k-h
+> Rest looks ok.
 
-
-
-
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
