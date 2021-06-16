@@ -2,65 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630473AA36F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343AA3AA375
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhFPSrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 14:47:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230001AbhFPSrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 14:47:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FF50613EF;
-        Wed, 16 Jun 2021 18:45:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623869145;
-        bh=cGUCVYHomHwqNgu6aUOX7H52KAGhAXiilh/Q/DUf0fM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Nn2kI+GV0anZTeOFWqbRiCO2sMskw9+VzvHl2Ld/a92jKx9LcsBZVS/Ug3ZBy/BBQ
-         KOJvjbD8pMnDelhQRWr0FfkF+XXmNJAubFJhpE+QUlUjG59prJ6oJ5JRVE7dE/4K1p
-         HsBxB6uVHVE/MPh6aZ0d2DSGxPiLe8lf5R2hhxpq7VadUQTDPilKxg2unVn/NI0BlG
-         OQqXVHlspHAvO7QtYecgk43UHoDoFPPxVVem+dk8lQfqB4cGlVt3xXAeJeqv99PcTQ
-         kdUSToNm2S/ISvtwKvUde6ANF2jgYWZkCGFP+PDy+1+8xzRjxmXfGVqms3WOwLEf/N
-         CaeTIh64/frOA==
-Subject: Re: [PATCH 5/8] membarrier, kthread: Use _ONCE accessors for task->mm
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     x86 <x86@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <cover.1623813516.git.luto@kernel.org>
- <74ace142f48db7d0e71b05b5ace72bfe8e0a2652.1623813516.git.luto@kernel.org>
- <987970694.9105.1623866911729.JavaMail.zimbra@efficios.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <7e411333-2fbc-6254-671f-bf2cba486bcd@kernel.org>
-Date:   Wed, 16 Jun 2021 11:45:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S232026AbhFPStR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 14:49:17 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:48015 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231942AbhFPStP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 14:49:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623869229; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=rXxMRiUQCFxWYdeEQMd1dqMz8gjZz4tfzN8B1BwOFjg=; b=pUP7fKg1zL2vTyrPMMx0EItzsJXHptVQ+qww3UYULFoNWxdozEmKinpHaOJYrLvJpdzh+Zex
+ tfK6r7e2oSpj8roZKJJlE/wcN33u1dAlXnALO9dl9V0XZE+e2ZD70KEiFmcI+OdqnhNzOIFW
+ TjxcABLRQE/0WcECaz34AzGraGg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60ca4728e27c0cc77f77d3d9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Jun 2021 18:47:04
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B1E61C4338A; Wed, 16 Jun 2021 18:47:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CCE98C433D3;
+        Wed, 16 Jun 2021 18:47:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CCE98C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+Subject: Re: [PATCH v3 1/4] remoteproc: core: Move cdev add before device add
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     bjorn.andersson@linaro.org, ohad@wizery.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, psodagud@codeaurora.org,
+        stable@vger.kernel.org
+References: <1623723671-5517-1-git-send-email-sidgup@codeaurora.org>
+ <1623723671-5517-2-git-send-email-sidgup@codeaurora.org>
+ <YMgy7eg3wde0eVfe@kroah.com>
+ <0a196786-f624-d9bb-8ef9-55c04ed57497@codeaurora.org>
+ <YMmTGD6hAKbpGWMp@kroah.com>
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+Message-ID: <f81acd52-fe59-a296-b221-febbf8281606@codeaurora.org>
+Date:   Wed, 16 Jun 2021 11:47:01 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <987970694.9105.1623866911729.JavaMail.zimbra@efficios.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <YMmTGD6hAKbpGWMp@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 11:08 AM, Mathieu Desnoyers wrote:
-> ----- On Jun 15, 2021, at 11:21 PM, Andy Lutomirski luto@kernel.org wrote:
-> 
->> membarrier reads cpu_rq(remote cpu)->curr->mm without locking.  Use
->> READ_ONCE() and WRITE_ONCE() to remove the data races.
-> 
-> I notice that kernel/exit.c:exit_mm() also has:
-> 
->         current->mm = NULL;
-> 
-> I suspect you may want to add a WRITE_ONCE() there as well ?
 
-Good catch.  I was thinking that exit_mm() couldn't execute concurrently
-with membarrier(), but that's wrong.
+On 6/15/2021 10:58 PM, Greg KH wrote:
+> On Tue, Jun 15, 2021 at 12:03:26PM -0700, Siddharth Gupta wrote:
+>> On 6/14/2021 9:56 PM, Greg KH wrote:
+>>> On Mon, Jun 14, 2021 at 07:21:08PM -0700, Siddharth Gupta wrote:
+>>>> When cdev_add is called after device_add has been called there is no
+>>>> way for the userspace to know about the addition of a cdev as cdev_add
+>>>> itself doesn't trigger a uevent notification, or for the kernel to
+>>>> know about the change to devt. This results in two problems:
+>>>>    - mknod is never called for the cdev and hence no cdev appears on
+>>>>      devtmpfs.
+>>>>    - sysfs links to the new cdev are not established.
+>>>>
+>>>> The cdev needs to be added and devt assigned before device_add() is
+>>>> called in order for the relevant sysfs and devtmpfs entries to be
+>>>> created and the uevent to be properly populated.
+>>> So this means no one ever ran this code on a system that used devtmpfs?
+>>>
+>>> How was it ever tested?
+>> My testing was done with toybox + Android's ueventd ramdisk.
+>> As I mentioned in the discussion, the race became evident
+>> recently. I will make sure to test all such changes without
+>> systemd/ueventd in the future.
+> It isn't an issue of systemd/ueventd, those do not control /dev on a
+> normal system, that is what devtmpfs is for.
+I am not fully aware of when devtmpfs is enabled or not, but in
+case it is not - systemd/ueventd will create these files with
+mknod, right? I was even manually able to call mknod from the
+terminal when some of the remoteproc character device entries
+showed up (using major number from there, and minor number being
+the remoteproc id), and that allowed me to boot up the
+remoteprocs as well.
+>
+> And devtmpfs nodes are only created if you create a struct device
+> somewhere with a proper major/minor, which you were not doing here, so
+> you must have had a static /dev on your test systems, right?
+I am not sure of what you mean by a static /dev? Could you
+explain? In case you mean the character device would be
+non-functional, that is not the case. They have been working
+for us since the beginning.
 
---Andy
+Thanks,
+Sid
+>
+> thanks,
+>
+> greg k-h
