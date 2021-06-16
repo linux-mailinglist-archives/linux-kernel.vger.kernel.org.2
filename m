@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3625D3A9EA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22433A9EA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbhFPPMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:12:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234390AbhFPPMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:12:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CBC161166;
-        Wed, 16 Jun 2021 15:10:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623856212;
-        bh=Ek8PXfa5d4UObasVdBmtYIX6dF9ex+esl93Yz4SV+64=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ju9HXKUUL/hMHyMuwTRFi8zcT0K7NBBCmh+OsVn5EzVUIaAbMIujN6rl53d/iAgCQ
-         B/mlNuTkn1py8GbItBHlYeyRVvaLGZGah330ntXj6FpgLDLC7w7CgC+9y1leiHNZE2
-         HXDPBMh3FmrULZjdPqwNr1B8h5Lgz49q57nVfVDfNLfppTLpjMS0FHsyCMdLT4my0P
-         afRmGH6W0GSAhRy1W4gNJpmQZzqG5cTxgw0iKyUjXo6wFWYXZ7M7pj5w4z5BeHEMAn
-         evBNf6rycjKo16k/HUY90cDrrhqgn1Ly6n78Gi3qc2CFeY0foWgZwg8vQGqlKamHce
-         rAEUw5hTmfqNQ==
-Date:   Thu, 17 Jun 2021 00:10:09 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/2] trace/kprobe: Remove limit on kretprobe maxactive
-Message-Id: <20210617001009.d5ae7b2edfdc34f4f8c19ab5@kernel.org>
-In-Reply-To: <20210616112711.ce318fc66b389038203331d1@kernel.org>
-References: <cover.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-        <a751a0617a2c06e7e233f2c98ccabe8b94a8076d.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-        <20210615183527.9068ef2f70fdd2a45fea78f0@kernel.org>
-        <1623777582.jsiokbdey1.naveen@linux.ibm.com>
-        <20210616094622.c8bd37840898c67dddde1053@kernel.org>
-        <20210615210351.602bc03e@rorschach.local.home>
-        <20210616112711.ce318fc66b389038203331d1@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234474AbhFPPNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:13:21 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:35379 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234390AbhFPPNU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:13:20 -0400
+Received: by mail-ot1-f43.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so2829483oti.2;
+        Wed, 16 Jun 2021 08:11:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2tNS+SX5Cd8wquTO79BQgrSrDCQz8oAeXDAIQqfgP9w=;
+        b=FBGPHekCfkTbffym0CKdWpW00Lsjrbg2DF7gTpJKrKkRtwfrXtVi9f6UkNZSstj8Zu
+         UquI+360IOZ+uEXontHo8mVIRvQVWug/QvHgLmgCFhb97m+dXUV+5Zr9rfS+eUGO8MtM
+         6uxDyDEPOEfn/22IfJF15ijfM4iHAHx4cAYeJ0P5+MMtyYPGMWiEGNjv2IiWnbGY2YuC
+         pVMV32Wyy19cNSWSJZxCmvSIpVqvGrszwElXO/t02MqM3rb52CD5nC43iVLtss2CLtzw
+         +T+VCJbKrCjQRINjhMekGdb+bq80Bre8l2HCf/oQkp30ZXL3JwZfkNpf7aUuQDjwOs75
+         piBQ==
+X-Gm-Message-State: AOAM533xPYIenS4/Ji24JLl65uiPuecFc+SDdPJSw7koyS/yOkscwyBD
+        FYECrQ5yNpXXTTb/XiqtzJpFEPJ/MX/S2AUqXIhg4WRV42A=
+X-Google-Smtp-Source: ABdhPJwehP1inuW1Dc4CyJMV2hvjrf+MTLtwOr0SDgd++yvba1nGLRNPyJTHl//2TodfscIcIm7CNKLAGts2vH/vRj4=
+X-Received: by 2002:a9d:6c4d:: with SMTP id g13mr302741otq.321.1623856273053;
+ Wed, 16 Jun 2021 08:11:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <3140195.44csPzL39Z@kreacher> <1881350.PYKUYFuaPT@kreacher> <f46533e2-1ebe-0130-9323-b045da6ea62d@redhat.com>
+In-Reply-To: <f46533e2-1ebe-0130-9323-b045da6ea62d@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 16 Jun 2021 17:11:01 +0200
+Message-ID: <CAJZ5v0gZ2Fbff_g_v8t46-957=U_1nGe22sP9W=Hc-dohG8=Jg@mail.gmail.com>
+Subject: Re: [PATCH 2/5] ACPI: scan: Make acpi_walk_dep_device_list()
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 11:27:11 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Wed, Jun 16, 2021 at 4:41 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi,
+>
+> On 6/16/21 4:22 PM, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Because acpi_walk_dep_device_list() is only called by the code in the
+> > file in which it is defined, make it static, drop the export of it
+> > and drop its header from acpi.h.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> Actually, acpi_walk_dep_device_list() was split out as a
+> helper function used to implement acpi_dev_clear_dependencies()
+> because it will be used outside of drivers/acpi.
 
-> On Tue, 15 Jun 2021 21:03:51 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > On Wed, 16 Jun 2021 09:46:22 +0900
-> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > 
-> > > To avoid such trouble, I had set the 4096 limitation for the maxactive
-> > > parameter. Of course 4096 may not enough for some use-cases. I'm welcome
-> > > to expand it (e.g. 32k, isn't it enough?), but removing the limitation
-> > > may cause OOM trouble easily.
-> > 
-> > What if you just made the max as 10 * number of possible cpus, or 4096,
-> > which ever is greater? Why would a user need more?
-> 
-> It could be. But actually, that is not correct number because the
-> number of instances depends on the number of processes and the possiblity
-> of recursive. Thus the huge system which runs more than 64k processes,
-> may need more than that.
-> 
-> > I'd still like to get a wrapper around function graph tracing so that
-> > kretprobes could use it. I think that would get rid of the requirement
-> > of maxactive, because isn't that just used to have a way to know the
-> > original return value?
-> 
-> Hmm, yes, on some arch, it can be done. But on other arch we still need
-> current implementation for generic solution.
-> What I need is not fully wrapped by the function graph, but just share
-> the per-task (software) shadow stack.
+Not exactly.
 
-BTW, I have 2 ideas to fix this except for wrapper.
+> Specifically it will be used in the new intel_skl_int3472 driver:
+> https://patchwork.kernel.org/project/platform-driver-x86/patch/20210603224007.120560-6-djrscally@gmail.com/
 
-1. Use func-graph tracer API directly from dynamic event instead of
-  kretprobes. This will be enabled only if the arch supports fgraph
-  tracer and enable it. maxactive will be ignored if this is enabled,
-  and tracefs user may not need except for the return value 
-  (BTW, is that possible to access the stack? In some case, return
-  value can be passed via stack)
+That driver will use acpi_dev_get_first_consumer_dev() which is based
+on acpi_walk_dep_device_list(), but still defined in
+drivers/acpi/scan.c.
 
-2. Move the kretprobe instance pool from kretprobe to struct task.
-  This pool will allocates one page per task, and shared among all
-  kretprobes. This pool will be allocated when the 1st kretprobe
-  is registered. maxactive will be kept for someone who wants to
-  use per-instance data. But since dynamic event doesn't use it,
-  it will be removed from tracefs and perf.
+> Which I plan to merge into pdx86/for-next today, I've just merged
+> your linux-pm/acpi-scan PULL-req which exports acpi_walk_dep_device_list()
+> as preparation for this.
 
-Thank you,
+No, the acpi_walk_dep_device_list() is a leftover there AFAICS.
 
+If it needs to be exported in the future, that still can be done.  ATM
+the export isn't necessary.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Thanks!
