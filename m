@@ -2,56 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35703AA4A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053D73AA4B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbhFPTxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:53:14 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:41214 "EHLO vps0.lunn.ch"
+        id S232976AbhFPTyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:54:55 -0400
+Received: from mga03.intel.com ([134.134.136.65]:43250 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232808AbhFPTxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:53:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=am0d0pk3jVy5OgKLNWHj2eNHd2bP49FJfF7PWRTv824=; b=FCCQNxZt/TF2vWt/xvxoq/bmqf
-        RfptqKJtdguKsusQsWiDTSqJ05iQKq/2dat3cU5MzR6zoKBejU5g1y7Fa9oZZjDC+JjrkZfRY1ADI
-        sZVrsSLjbdvUXcfByW93eg+5AJxjpNdj95ZeNAYFWwn+Y8I+rPGRNVJnUR2GxUi+9qtI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1ltbZ1-009lrg-9W; Wed, 16 Jun 2021 21:51:03 +0200
-Date:   Wed, 16 Jun 2021 21:51:03 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marcin Wojtas <mw@semihalf.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
-        jaz@semihalf.com, gjb@semihalf.com, upstream@semihalf.com,
-        Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com, tn@semihalf.com,
-        rjw@rjwysocki.net, lenb@kernel.org
-Subject: Re: [net-next: PATCH v2 5/7] net: mvmdio: add ACPI support
-Message-ID: <YMpWJ79VF7HmjumQ@lunn.ch>
-References: <20210616190759.2832033-1-mw@semihalf.com>
- <20210616190759.2832033-6-mw@semihalf.com>
+        id S230330AbhFPTyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 15:54:53 -0400
+IronPort-SDR: IDZgJz9ValPFoo/TbxA9qbRr08tSaBhQuV5MQBSLUbMqfp6vb67DIbN6QLFQmR78bZ8bR0fZHG
+ OFZFsSMqBuAw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206284190"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="206284190"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 12:52:46 -0700
+IronPort-SDR: 4PbMpYAmJ3K9aHs7Yq5kwP6O9WEYRNb0R37wplybeYW680U6YCazNwkOoaRJdVPjiaYiWxi3lF
+ Gm6wk7B7xH7Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="640123789"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Jun 2021 12:52:45 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     rjw@rjwysocki.net
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH -next] Revert "ACPI: DPTF: Add new PCH FIVR methods"
+Date:   Wed, 16 Jun 2021 12:52:39 -0700
+Message-Id: <20210616195239.1627552-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616190759.2832033-6-mw@semihalf.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 09:07:57PM +0200, Marcin Wojtas wrote:
-> This patch introducing ACPI support for the mvmdio driver by adding
-> acpi_match_table with two entries:
-> 
-> * "MRVL0100" for the SMI operation
-> * "MRVL0101" for the XSMI mode
-> 
-> Also clk enabling is skipped, because the tables do not contain
-> such data and clock maintenance relies on the firmware.
+This reverts commit bab858b30cbe5619038dd68ab89be469fff9861e.
 
-This last part seems to be no longer true.
+Some user reported issues with this change. Will resubmit for 5.15 cycle.
 
-     Andrew
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ Documentation/ABI/testing/sysfs-platform-dptf | 42 -------------------
+ drivers/acpi/dptf/dptf_pch_fivr.c             |  9 ----
+ 2 files changed, 51 deletions(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-platform-dptf b/Documentation/ABI/testing/sysfs-platform-dptf
+index bce1b745fc56..141834342a4d 100644
+--- a/Documentation/ABI/testing/sysfs-platform-dptf
++++ b/Documentation/ABI/testing/sysfs-platform-dptf
+@@ -111,45 +111,3 @@ Contact:	linux-acpi@vger.kernel.org
+ Description:
+ 		(RW) The PCH FIVR (Fully Integrated Voltage Regulator) switching frequency in MHz,
+ 		when FIVR clock is 38.4MHz.
+-
+-What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fivr_switching_freq_mhz
+-Date:		June, 2021
+-KernelVersion:	v5.14
+-Contact:	linux-acpi@vger.kernel.org
+-Description:
+-		(RO) PCH FIVR switching control frequency in the units of
+-		XTAL_FREQ / 128, where XTAL_FREQ is the (product specific)
+-		Crystal Oscillator frequency.
+-
+-What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fivr_switching_fault_status
+-Date:		June, 2021
+-KernelVersion:	v5.14
+-Contact:	linux-acpi@vger.kernel.org
+-Description:
+-		(RO) Read the FIVR switching frequency control fault status.
+-
+-What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/ssc_clock_info
+-Date:		June, 2021
+-KernelVersion:	v5.14
+-Contact:	linux-acpi@vger.kernel.org
+-Description:
+-		(RO) Presents SSC (spread spectrum clock) information for EMI
+-		(Electro magnetic interference) control. This is a bit mask.
+-		Bits	Description
+-		[7:0]	Sets clock spectrum spread percentage:
+-			0x00=0.2% , 0x3F=10%
+-			1 LSB = 0.1% increase in spread (for
+-			settings 0x01 thru 0x1C)
+-			1 LSB = 0.2% increase in spread (for
+-			settings 0x1E thru 0x3F)
+-		[8]	When set to 1, enables spread
+-			spectrum clock
+-		[9]	0: Triangle mode. FFC frequency
+-			walks around the Fcenter in a linear
+-			fashion
+-			1: Random walk mode. FFC frequency
+-			changes randomly within the SSC
+-			(Spread spectrum clock) range
+-		[10]	0: No white noise. 1: Add white noise
+-			to spread waveform
+-		[11]	When 1, future writes are ignored.
+diff --git a/drivers/acpi/dptf/dptf_pch_fivr.c b/drivers/acpi/dptf/dptf_pch_fivr.c
+index 22c4ae0401ef..5fca18296bf6 100644
+--- a/drivers/acpi/dptf/dptf_pch_fivr.c
++++ b/drivers/acpi/dptf/dptf_pch_fivr.c
+@@ -55,24 +55,15 @@ static ssize_t name##_store(struct device *dev,\
+ 
+ PCH_FIVR_SHOW(freq_mhz_low_clock, GFC0)
+ PCH_FIVR_SHOW(freq_mhz_high_clock, GFC1)
+-PCH_FIVR_SHOW(ssc_clock_info, GEMI)
+-PCH_FIVR_SHOW(fivr_switching_freq_mhz, GFCS)
+-PCH_FIVR_SHOW(fivr_switching_fault_status, GFFS)
+ PCH_FIVR_STORE(freq_mhz_low_clock, RFC0)
+ PCH_FIVR_STORE(freq_mhz_high_clock, RFC1)
+ 
+ static DEVICE_ATTR_RW(freq_mhz_low_clock);
+ static DEVICE_ATTR_RW(freq_mhz_high_clock);
+-static DEVICE_ATTR_RO(ssc_clock_info);
+-static DEVICE_ATTR_RO(fivr_switching_freq_mhz);
+-static DEVICE_ATTR_RO(fivr_switching_fault_status);
+ 
+ static struct attribute *fivr_attrs[] = {
+ 	&dev_attr_freq_mhz_low_clock.attr,
+ 	&dev_attr_freq_mhz_high_clock.attr,
+-	&dev_attr_ssc_clock_info.attr,
+-	&dev_attr_fivr_switching_freq_mhz.attr,
+-	&dev_attr_fivr_switching_fault_status.attr,
+ 	NULL
+ };
+ 
+-- 
+2.30.2
+
