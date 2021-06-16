@@ -2,174 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5A33AA278
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5BC03AA27E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbhFPRgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
+        id S231491AbhFPRgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbhFPRge (ORCPT
+        with ESMTP id S231442AbhFPRgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:36:34 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F44BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 10:34:28 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id t9so2577182pgn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 10:34:28 -0700 (PDT)
+        Wed, 16 Jun 2021 13:36:38 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BA6C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 10:34:29 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id v7so2590463pgl.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 10:34:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dRmBSLhAuXxBVTuhCH5oFREPk0hy4CPzH2ZUQRDqv1I=;
-        b=BQujgSI/SQuHMrtiNYyK9oa6Xkfiw5O6r5xaRKxR6ggIFV/lLfFN2U4CWDUguYX9UY
-         9jpQBY6lck0rgEk9mvySpQp9laDFb9yNlYdGvZOlr3F4VijrCK63JKcT+e63tY4lPKc4
-         urCyYX9XgencbyvDKb5mWWeUJpbjqbPrtdAMUkXSUL7YfIQyK2n68UakUcbe1Xnl+FX5
-         eCuhPaLG2UK8XLqeUEs9M1G4jHPgnO/zdSFIi5NuznYdnN5a60txyM4Xixl4Qm409Uqf
-         u/OPa6yktVFgohfdFrZ9OEVNWZuURcq3GgHDqrzDDozq7G9PSbAjaQ09Al6o5eoYKQ8h
-         LaYw==
+        bh=hs2JqvHLc2VhwLkCLKEeX1pzwKqE7ns6gX3Zd+1Br1s=;
+        b=AuFzhHmQOykzLH+MM2+snE+jgetovtrcAA9tToZ4Hwqpc4ggWwisMmLP8LmdDI1DZP
+         M9wsgjXbeOs/7OrkHYKEI/LYtx9RaTtI6hSxFJVvoKvjlrGCCd+USinhf+sGBgqCzk/9
+         l5scqtjteV8HcG2vA1J63HQUPGEYU6E02fahsVg2hAVBJwA5BtD40lQeGzaEor8q5cX9
+         j2+J8F5sEaaM0/eSedOq2RCBdUUxUgkHGhxWjiUq2v5qR2leo73iWaAAMRQrAaZKEXQp
+         OleZbYNR4kdcdGupYsUdUeRjxVv2R4Wxfd/aA1kE006DimXpl+tShRgh5fbZ1LXzmmqD
+         7hJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dRmBSLhAuXxBVTuhCH5oFREPk0hy4CPzH2ZUQRDqv1I=;
-        b=eoYpdrsnFqSvl6dpAOawBcFQSFmtorCSqlAaA/iqbKc5Y7p8LMUGLrnnAp63WsHPgv
-         e3UAjCP6JP8gm3M9rGa/+MBuQIpxXyVDau1+Y/+4rbOhdviYxQVZYG3AWzJN29ZAOuMG
-         rk1tEnhb81d7QO9SNOVD60jP4L16Hci8Aidsu5OUvTa/DT+cdA3WXVMqsz8Q+NFZKiVs
-         QKCKjTLqN118yjR11Dj1yeJKEFgKUasEIFuCX/7qkmWZ8W1OH9F7Us+irkxF8rpjFI4E
-         ze5fC6x0sAFylNjfGxVfjyRJHCL//+f3oG01X2PVyR08ZCyOIE1bCiu+yEP2rx05WzXI
-         JufA==
-X-Gm-Message-State: AOAM532GdeLNwQV/cATXLbSCJXcfH4Dz8X3PEOCGB1juVnIw5+zOd1Za
-        hZmP6F4ExgE6z/fkH7oxN64=
-X-Google-Smtp-Source: ABdhPJwB7O62mp8ypvQ1bWIM4zK7x+69bkrCnrTVjMC2IdH7tq14Fu/IrkgxzCLmHN30YuRsXaF7OQ==
-X-Received: by 2002:a05:6a00:c2:b029:2ee:9cfc:af85 with SMTP id e2-20020a056a0000c2b02902ee9cfcaf85mr983338pfj.78.1623864867588;
-        Wed, 16 Jun 2021 10:34:27 -0700 (PDT)
+        bh=hs2JqvHLc2VhwLkCLKEeX1pzwKqE7ns6gX3Zd+1Br1s=;
+        b=NoaWwsxxUhWHLgiR/xY1tY6yuyprV6VSU/DXcU/1MxqsR/jaJgiGPjXP3XKm8R+yDO
+         SrgXqhz8sfri4HPSdF/vn09jxo6pUaAgSa/OasjiqUBPjISVkV7C5kfZVBBfRNfm3Q+3
+         TP0oeMMQRMJQkRh4Nv7L5xlgIm4uXnbd6fWq6memSDYilI9LRqlfPzo3ib9GQRQ7UaGe
+         soVJ7pD6LeZyEabj3zGwUmSpKRHTCOz09BKilRS52Ge0b4ZS+UdycgTtcwM12x1hIsvI
+         tfELVqv0rOBxNl9t53Fgx5qdWtHduln+bZkZbguSquPsyfm9B2RDvVy/qwTlOZT4ncvj
+         Zorg==
+X-Gm-Message-State: AOAM530683GNIrLQt1Y3b+B5tc0GfZGbIIimS/1aNM5J1v915qA/WL9J
+        bILV+BJHpCyiD5BSTYyV6jw=
+X-Google-Smtp-Source: ABdhPJwD23Vxr1ODoNWLpOERLWSC6h7gVARUONxTC477QL2wMV0+PuyKXe+dFMJRXPV5NMLcEW/e1w==
+X-Received: by 2002:aa7:92c6:0:b029:2f1:3fbb:3171 with SMTP id k6-20020aa792c60000b02902f13fbb3171mr1043892pfa.0.1623864869005;
+        Wed, 16 Jun 2021 10:34:29 -0700 (PDT)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id m3sm2933901pfh.174.2021.06.16.10.34.26
+        by smtp.gmail.com with ESMTPSA id m3sm2933901pfh.174.2021.06.16.10.34.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 10:34:27 -0700 (PDT)
+        Wed, 16 Jun 2021 10:34:28 -0700 (PDT)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
-        Jiajun Cao <caojiajun@vmware.com>,
+Cc:     Nadav Amit <namit@vmware.com>, Jiajun Cao <caojiajun@vmware.com>,
+        Robin Murphy <robin.murphy@arm.com>,
         Lu Baolu <baolu.lu@linux.intel.com>,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>
-Subject: [PATCH v4 3/7] iommu: Improve iommu_iotlb_gather helpers
-Date:   Wed, 16 Jun 2021 03:04:56 -0700
-Message-Id: <20210616100500.174507-4-namit@vmware.com>
+        Will Deacon <will@kernel.org>
+Subject: [PATCH v4 4/7] iommu: Factor iommu_iotlb_gather_is_disjoint() out
+Date:   Wed, 16 Jun 2021 03:04:57 -0700
+Message-Id: <20210616100500.174507-5-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210616100500.174507-1-namit@vmware.com>
 References: <20210616100500.174507-1-namit@vmware.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Murphy <robin.murphy@arm.com>
+From: Nadav Amit <namit@vmware.com>
 
-The Mediatek driver is not the only one which might want a basic
-address-based gathering behaviour, so although it's arguably simple
-enough to open-code, let's factor it out for the sake of cleanliness.
-Let's also take this opportunity to document the intent of these
-helpers for clarity.
+Refactor iommu_iotlb_gather_add_page() and factor out the logic that
+detects whether IOTLB gather range and a new range are disjoint. To be
+used by the next patch that implements different gathering logic for
+AMD.
+
+Note that updating gather->pgsize unconditionally does not affect
+correctness as the function had (and has) an invariant, in which
+gather->pgsize always represents the flushing granularity of its range.
+Arguably, “size" should never be zero, but lets assume for the matter of
+discussion that it might.
+
+If "size" equals to "gather->pgsize", then the assignment in question
+has no impact.
+
+Otherwise, if "size" is non-zero, then iommu_iotlb_sync() would
+initialize the size and range (see iommu_iotlb_gather_init()), and the
+invariant is kept.
+
+Otherwise, "size" is zero, and "gather" already holds a range, so
+gather->pgsize is non-zero and (gather->pgsize && gather->pgsize !=
+size) is true. Therefore, again, iommu_iotlb_sync() would be called and
+initialize the size.
 
 Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Will Deacon <will@kernel.org>
 Cc: Jiajun Cao <caojiajun@vmware.com>
 Cc: Robin Murphy <robin.murphy@arm.com>
 Cc: Lu Baolu <baolu.lu@linux.intel.com>
 Cc: iommu@lists.linux-foundation.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Cc: linux-kernel@vger.kernel.org>
+Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: Nadav Amit <namit@vmware.com>
-
 ---
+ include/linux/iommu.h | 34 ++++++++++++++++++++++++++--------
+ 1 file changed, 26 insertions(+), 8 deletions(-)
 
-Changes from Robin's version:
-* Added iommu_iotlb_gather_add_range() stub !CONFIG_IOMMU_API
-* Use iommu_iotlb_gather_add_range() in iommu_iotlb_gather_add_page()
----
- drivers/iommu/mtk_iommu.c |  6 +-----
- include/linux/iommu.h     | 38 +++++++++++++++++++++++++++++++++-----
- 2 files changed, 34 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index e06b8a0e2b56..cd457487ce81 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -521,12 +521,8 @@ static size_t mtk_iommu_unmap(struct iommu_domain *domain,
- 			      struct iommu_iotlb_gather *gather)
- {
- 	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
--	unsigned long end = iova + size - 1;
- 
--	if (gather->start > iova)
--		gather->start = iova;
--	if (gather->end < end)
--		gather->end = end;
-+	iommu_iotlb_gather_add_range(gather, iova, size);
- 	return dom->iop->unmap(dom->iop, iova, size, gather);
- }
- 
 diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 32d448050bf7..e554871db46f 100644
+index e554871db46f..979a5ceeea55 100644
 --- a/include/linux/iommu.h
 +++ b/include/linux/iommu.h
-@@ -497,6 +497,38 @@ static inline void iommu_iotlb_sync(struct iommu_domain *domain,
+@@ -497,6 +497,28 @@ static inline void iommu_iotlb_sync(struct iommu_domain *domain,
  	iommu_iotlb_gather_init(iotlb_gather);
  }
  
 +/**
-+ * iommu_iotlb_gather_add_range - Gather for address-based TLB invalidation
++ * iommu_iotlb_gather_is_disjoint - Checks whether a new range is disjoint
++ *
 + * @gather: TLB gather data
 + * @iova: start of page to invalidate
 + * @size: size of page to invalidate
 + *
-+ * Helper for IOMMU drivers to build arbitrarily-sized invalidation commands
-+ * where only the address range matters, and simply minimising intermediate
-+ * syncs is preferred.
++ * Helper for IOMMU drivers to check whether a new range and the gathered range
++ * are disjoint. For many IOMMUs, flushing the IOMMU in this case is better
++ * than merging the two, which might lead to unnecessary invalidations.
 + */
-+static inline void iommu_iotlb_gather_add_range(struct iommu_iotlb_gather *gather,
-+						unsigned long iova, size_t size)
++static inline
++bool iommu_iotlb_gather_is_disjoint(struct iommu_iotlb_gather *gather,
++				    unsigned long iova, size_t size)
 +{
-+	unsigned long end = iova + size - 1;
++	unsigned long start = iova, end = start + size - 1;
 +
-+	if (gather->start > iova)
-+		gather->start = iova;
-+	if (gather->end < end)
-+		gather->end = end;
++	return gather->end != 0 &&
++		(end + 1 < gather->start || start > gather->end + 1);
 +}
 +
-+/**
-+ * iommu_iotlb_gather_add_page - Gather for page-based TLB invalidation
-+ * @domain: IOMMU domain to be invalidated
-+ * @gather: TLB gather data
-+ * @iova: start of page to invalidate
-+ * @size: size of page to invalidate
-+ *
-+ * Helper for IOMMU drivers to build invalidation commands based on individual
-+ * pages, or with page size/table level hints which cannot be gathered if they
-+ * differ.
-+ */
- static inline void iommu_iotlb_gather_add_page(struct iommu_domain *domain,
++
+ /**
+  * iommu_iotlb_gather_add_range - Gather for address-based TLB invalidation
+  * @gather: TLB gather data
+@@ -533,20 +555,16 @@ static inline void iommu_iotlb_gather_add_page(struct iommu_domain *domain,
  					       struct iommu_iotlb_gather *gather,
  					       unsigned long iova, size_t size)
-@@ -515,11 +547,7 @@ static inline void iommu_iotlb_gather_add_page(struct iommu_domain *domain,
- 		gather->pgsize = size;
- 	}
- 
--	if (gather->end < end)
--		gather->end = end;
+ {
+-	unsigned long start = iova, end = start + size - 1;
 -
--	if (gather->start > start)
--		gather->start = start;
-+	iommu_iotlb_gather_add_range(gather, iova, size);
+ 	/*
+ 	 * If the new page is disjoint from the current range or is mapped at
+ 	 * a different granularity, then sync the TLB so that the gather
+ 	 * structure can be rewritten.
+ 	 */
+-	if (gather->pgsize != size ||
+-	    end + 1 < gather->start || start > gather->end + 1) {
+-		if (gather->pgsize)
+-			iommu_iotlb_sync(domain, gather);
+-		gather->pgsize = size;
+-	}
++	if ((gather->pgsize && gather->pgsize != size) ||
++	    iommu_iotlb_gather_is_disjoint(gather, iova, size))
++		iommu_iotlb_sync(domain, gather);
+ 
++	gather->pgsize = size;
+ 	iommu_iotlb_gather_add_range(gather, iova, size);
  }
  
- /* PCI device grouping function */
 -- 
 2.25.1
 
