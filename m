@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D683A8E85
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577F03A8E88
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbhFPBrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 21:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50890 "EHLO
+        id S231903AbhFPBs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 21:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbhFPBra (ORCPT
+        with ESMTP id S231360AbhFPBsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 21:47:30 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74477C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 18:45:24 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so3002217pjn.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 18:45:24 -0700 (PDT)
+        Tue, 15 Jun 2021 21:48:25 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A0CC061574;
+        Tue, 15 Jun 2021 18:46:20 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id t140so809033oih.0;
+        Tue, 15 Jun 2021 18:46:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WiRCci0E3CBaTJSov8aP3aMirNDwvb95s8pJiMPbiLE=;
-        b=wmQs8AlTFSXTCSysIARXEbA1F8qYDvxC/JZv9qRhUh+lThq4r3wrJRyXk8ugI38H86
-         y0k+4ZB8zYKxutk1/McQ5pKFtXVdJueMYp/JakTazJjxEZADr3Wj8VcM1IHHygxxbqIW
-         U9MePSdU1qpFSA98aNOtDswKC5P87uim45JLZPLaRvrxhjK0Sentrc+0CKxTk7uLKPrh
-         49gkCG6Ee+woCarfrV7WwoUITP4+6Sfgmk14OUsutuFFamAOYvspOTdONtIxue2ILu3B
-         aqOuEE+VXZLp0m1wTmZAel7OfkYiJfNuj6amtpSqZCemIEGWt8D97Xx/f4hs7wNgDLdm
-         HBUw==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z4DodPexuFXJM3ooqAYXD9b+NvarcFc46B5kVfXrpkY=;
+        b=D8WasroVcI2LvuRBJYcfwM7jL1YPp9UKZJfEMiI4HtiiRdqYdfTEDqkBZ2d0P943aR
+         //v4Y18ojXIKC8uQqk0mZ42SydQHhiJND/WhiZZmvXSH30+QVN4pK/ZobagFJXBD26VC
+         co4l/Tpuh+3HZhpyZw6drzYqUZdSKeCsbv3vgGOnCNJhVdBifPsGrf6c/lCB5M4tB81H
+         Z46hRZ5xQ5plLa5DXCiolaGBp4DYJk7FhnA8cuKNwCSZHELgnG2nvI7ssOIbxmAUd8tI
+         XzHNB0jSKe4HvFygqSgNn5zg3Kg6zYocACZaRshT421DjHTyf5wMBqJ9Wgt2eYhUfNfF
+         /a9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WiRCci0E3CBaTJSov8aP3aMirNDwvb95s8pJiMPbiLE=;
-        b=JhScWCcjI8xGoxsnGuHaiMjA+90ODNdPpBy1f5pOvuo+sJAUlfsVb6oKvH/ON3XfkI
-         1gfEcR5p7/2W8dYmoa/z34y62onWl+5hWGMkc+uLVTWJw8d4YcPOpDwcdNRKfhCmFowR
-         RObt1wmTPDYQQ4QbxG4ZAV+TI95tFEvOflIbkg47mpvxQE4lrpLTDQDwDovAf0WUUDy4
-         ZXHgV0WacT/rfJW/rTT02xP7vTzoDQqSYSMnYOkZnLPqhKgqSZqHsaRxRMCkgacG/LNk
-         AE6qy8/MCO/a+q0WlDQZie9ocsPFJAitJwEvAwJ7iXNxaxWOAMIvXRu3Kr/7bmQAY0v2
-         O8eQ==
-X-Gm-Message-State: AOAM532/WVulH5mlPfoleFAvohsZKYUP5gcg/v36j6mSw/lwiZLYMGHZ
-        SMGtZsfAEKyOX3W3uVzsrvGNsw==
-X-Google-Smtp-Source: ABdhPJx12mo0fmVKv0fY6g/xDgXHcWqG9HH/gLqDFpEh659OuHf2dlOFn7d4rv5WRJXC1HgIs7MVYA==
-X-Received: by 2002:a17:90b:46c3:: with SMTP id jx3mr2257792pjb.206.1623807923967;
-        Tue, 15 Jun 2021 18:45:23 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id h8sm350000pfn.0.2021.06.15.18.45.22
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=z4DodPexuFXJM3ooqAYXD9b+NvarcFc46B5kVfXrpkY=;
+        b=kSzWnIHJwMK032HZExLgVDAflEy/Nhmga0fDzmHfx+dKmdCJ69OqSuLlc5HPALgKSQ
+         FBdT3ehTBYwJHA9zw0RMuQGW0tOQG5Ri8MruMeakObzXUHTuZ2RGYeJdBKHxPi6q3rDw
+         pXySRDr3GJLKtLQLPwAcE5Lwlg8tH5IvJqFRMB9ofirufvIdQrF54fRmFoZ+2sCGZfaQ
+         makz5fmhwU/wmKZDdUNzx2/JOzyRpoWBukyDTswWN2O+PDJK1mruKkAH10FawecZftCZ
+         zlVkW9LE3gpa8XFp8cq1f3T/ZpiacHCR+Cbh9BIjV7f8YvkZphPQPmaTMnCdK+ocGAlF
+         377A==
+X-Gm-Message-State: AOAM533k89LEeCAmZvrj4Ol7bbTT4+Rgo5Zxf859JFPzwJ7vbX5oXO0o
+        ED6UTelbXFRPlbnZPvKCkDGAnYMD1w4=
+X-Google-Smtp-Source: ABdhPJz4Q1EA2WPCX2VETEFcFRAzcNaq+9QqtWlJgD7OHRHNS6gm6xInukD5N5NPAWaPbhZB8YkpMQ==
+X-Received: by 2002:a05:6808:4c2:: with SMTP id a2mr1346134oie.63.1623807979821;
+        Tue, 15 Jun 2021 18:46:19 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p4sm174027oth.30.2021.06.15.18.46.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 18:45:22 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 07:15:20 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Alistair Strachan <astrachan@google.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-Message-ID: <20210616014520.dkkbdamgelptl3un@vireshk-i7>
-References: <cover.1623326176.git.viresh.kumar@linaro.org>
- <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
- <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
- <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
- <20210611080122.tlkidv6bowuka6fw@vireshk-i7>
- <CAMuHMdVL4VH09ixPcpqqokNJeYd68Th2Y6Lz4PZTF7h06OOBGw@mail.gmail.com>
- <20210615111551.7tcz7teqp4olhodf@vireshk-i7>
- <CACRpkdbyybnxP9p3Jh2TbJMhK+kfLyed-YyrZq9JbOqu1csmww@mail.gmail.com>
+        Tue, 15 Jun 2021 18:46:19 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 15 Jun 2021 18:46:17 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: pmbus: dealing with unsigned mantissa in linear reading
+Message-ID: <20210616014617.GB969448@roeck-us.net>
+References: <67dd830c-c40f-b555-2b4e-3b7d383ef2c9@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdbyybnxP9p3Jh2TbJMhK+kfLyed-YyrZq9JbOqu1csmww@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <67dd830c-c40f-b555-2b4e-3b7d383ef2c9@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-06-21, 22:03, Linus Walleij wrote:
-> On Tue, Jun 15, 2021 at 1:15 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On Tue, Jun 15, 2021 at 11:34:53PM +0000, Chris Packham wrote:
+> Hi Guenter,
 > 
-> > I am now wondering how interrupts can be made to work here. Do you
-> > have anything in mind for that ?
+> I've had a report from someone testing the BPA-RS600.
 > 
-> The aggregator does not aggregate interrupts only lines for now.
+> When they have the input voltage set to >= 256V (apparently the PSU can 
+> handle input up to 264V). The Vin reading goes negative.
 > 
-> > GPIO sysfs already supports interrupts, (...)
+> CMD 0x88, VAL=0xf3f8, Vin=254
+> CMD 0x88, VAL=0xf3fc, Vin=255
+> CMD 0x88, VAL=0xf400, Vin=-256
 > 
-> I hope that doesn't make you tempted to use sysfs to get interrupts,
-> those are awful, they use sysfs_notify_dirent() which means that
-> if two IRQs happen in  fast succession you will miss one of them
-> and think it was only one.
+> Looking at pmbus_reg2data_linear() the mantissa is cast to s16 which is 
+> correct according to section 7.1 of the PMBUS spec which says that the 
+> mantissa is an 11-bit two's complement value.
 > 
-> The GPIO character device supports low latency events forwarding
-> interrupts to userspace including QEMU & similar, timestamps the
-> events as close in time as possible to when they actually happen
-> (which is necessary for any kind of industrial control) and will never
-> miss an event if the hardware can register it. See:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/gpio/gpio-event-mon.c
+> It seems that the BPA-RS600 is using a non-standard format for the 
+> mantissa (probably because the range of the standard linear encoding 
+> can't support values >255V). Does the pmbus infrastructure provide a way 
+> for me to define a custom format/conversion for a given sensor?
 
-The current version of backend (I am working on) will be Linux
-userspace based, so I would be required to get an interrupt there.
+Essentially you'll have to implement a custom read word function and
+convert the value reported by the power supply to a valid linear11
+value. In this case, you may have to shift the reported value by 1 bit
+and increase the exponent by one.
 
-I was planning to use /dev/gpiochipN only for now and not a sysfs
-file, so yes it should be fine.
+Not sure what you mean with "standard linear encoding can't support values
+>255V". Why not ? That is what the exponent is for, after all. It rather
+seems to me that the PS vendor decided to violate the standard to get
+another bit of accuracy. 
 
--- 
-viresh
+Guenter
