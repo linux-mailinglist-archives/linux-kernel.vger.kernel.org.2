@@ -2,279 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21ADF3AA02D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A510A3AA003
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235606AbhFPPpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:45:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56216 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235303AbhFPPmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:42:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF57613F5;
-        Wed, 16 Jun 2021 15:38:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623857898;
-        bh=vZ8ear8SklFFUu79neexW0lLKmB1ja0t2XMihqoEtA8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oAl40Q6w7xbScSERVYRwUNPSyyNN5BRCHZPkfiUZ4ERmhW9ww5s89ccVyJXNTKMku
-         Wj3UqV76BSBnHo7L5s78nT0MRLOxMP/c2fPlNj3b/PRfuETA4jzJWVc4FhzMHf1pe4
-         eS1W0agrs9rdzoKSGRir6UAhhsDby2c9qBv2AZ5oxLHPM8T8rV4E0Cwgf6HH5qrWBx
-         cjmZQz2QIjwUPQzv6e14ATjeTJd7GOhEQAAcyomrvBRtOiTafm/vceYorsY/4zQivf
-         rgLaxztQJ0qY7yuB9WRhVtqhg+3oE6OFZh52I6LsMtkqtr/gH3fPZ2jMEMyVRJELaS
-         tQDV6N/G4wHWQ==
-Received: by mail-ed1-f47.google.com with SMTP id z12so3323879edc.1;
-        Wed, 16 Jun 2021 08:38:18 -0700 (PDT)
-X-Gm-Message-State: AOAM5309ZTiWV/632J2M+McBdc0SJ7EwC+xcTJ8pWbWKUO+Cl1JxfsPx
-        +bwZ8nlsJWV8pzljVXkVbGo9fljSlcJXH1freQ==
-X-Google-Smtp-Source: ABdhPJwb7zhZghWVJ1bxExzLMWySZyyjiyfek5zdHJIuKRwqxlr5K6N5iCW4i5jUdJstMUXFm/r41PNiTUAlFxe6Gd8=
-X-Received: by 2002:aa7:cb19:: with SMTP id s25mr299824edt.194.1623857896842;
- Wed, 16 Jun 2021 08:38:16 -0700 (PDT)
+        id S234860AbhFPPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:44:00 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:4534 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235376AbhFPPlf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:41:35 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15GFVgrr000890;
+        Wed, 16 Jun 2021 15:39:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=9o4zO9/76jPH5jhgzUljYo/DDXq6qELutUc+AEOe64w=;
+ b=lgYqKRI9MPy4nW7kNY2WaylETH8CBbHQUO2m6cLQ2Lh/hkDjeDfAATY3PeHYndQpakKB
+ K+79nVgf/tzE2YkF6QljrxMZFGBNws2CYzGsJ8JBixwuq8LsZcZ+QVzJ8W5032g0YtRH
+ FBwa4zFI/fBZ7ltbjazO4JGrdhSEPxPYyOAtmYEl7Dg6z5dKp5qZuPXInsDVta5Rpe+z
+ Et5nwHgbP9VteRFW7CA2lKGHxvKPaxiFSUJ7nH+AjYcBuFkVPEPumzWM+imbHLPu2lSP
+ d6MMmnb1zIp25L8v+l+Gj9dALkOSdKLkBA++T6gHh5VJfgcf6yk5oSSXF6qS6dE7+cdT vg== 
+Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 397jnqr7r6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Jun 2021 15:39:18 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15GFYxr4079246;
+        Wed, 16 Jun 2021 15:39:17 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2168.outbound.protection.outlook.com [104.47.73.168])
+        by userp3030.oracle.com with ESMTP id 396wap0u7v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Jun 2021 15:39:17 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZBJN0eTMw0U99qaOm8CFe0MiCTUETF/LmmFsaNSxyMvZMRNQmyZv/iYmBaW975rseVcHsE9Qwh0UQwWl/5tr8lGaP38z/04qgsd+Kl1CVZBvMWtyTf4Bq6gYGS8nh7pBaW8QgVpeZyDlE+oOQa7Pv9zlp/uW5E5tVo0HK9tD37pCdCjgMQouqaOhFkWXceAOBby+WLucg3u8Vqlbeb1gLt33j/kihXtVSKPRoN0Sw8cPDTfsErYF7wxXEPAiggaiUSj87QXhkab5i3koV7rEiD+dbt8Z/VltUDOKwe9RRY08jpaAtYzlt9DQBYin04yPVtYhwjXLtdblUErgZkzRTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9o4zO9/76jPH5jhgzUljYo/DDXq6qELutUc+AEOe64w=;
+ b=NnOIjolSG58jDXOfo0uCfTDlONJRkNijR9OFKJgmMUAs+VLGPH97tcO+7PqS20+OOO2i6/AM/ieR08rV2wEo9X4KYsuaI3jEpsVjbrMVp2dyUkTi1W1dX8jMm7GW3z4Z2yh1uSjPmV7GKlOtaEYxnBquw5A0Gh9hlq9NpceUq97LwnNyw7zKUaVDf9R7PV0R1vnIWusR/+xkmgwj2Kec8o9F6KVxp2IEpg8uPxaXx5aQ0l/i6mttbKkICpwjol3oj06Y5orjJj93DMCq2aKuXoLjNhYezkRvUxMv8X5QIIFqaNJ5iq3fKxsm3aI6A6PhXaH9ZbqrqjYuK5//H5hBNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9o4zO9/76jPH5jhgzUljYo/DDXq6qELutUc+AEOe64w=;
+ b=ZtI4ZxZR1MLhG4gtn/sdI3YMq5LF4Zz26C/dm6Xsl7b4CXcvrm+xafMe6q23t47NXOrp865vcQ8oZ9riXvT1RrHdWG+/KbuAhf0PS53bnbINWkDC0jp3D3O0JM0HgODJO309kXfa4VSc2IWZIg48dA3HjK2UsPiNdow0D/FrS2s=
+Authentication-Results: epam.com; dkim=none (message not signed)
+ header.d=none;epam.com; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by MN2PR10MB4288.namprd10.prod.outlook.com (2603:10b6:208:1dc::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Wed, 16 Jun
+ 2021 15:39:15 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::78a3:67d:a8ca:93cf]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::78a3:67d:a8ca:93cf%7]) with mapi id 15.20.4242.019; Wed, 16 Jun 2021
+ 15:39:15 +0000
+Subject: Re: [PATCH 2/2] swiotlb-xen: override common mmap and get_sgtable dma
+ ops
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Roman Skakun <rm.skakun@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Volodymyr Babchuk <volodymyr_babchuk@epam.com>,
+        Roman Skakun <roman_skakun@epam.com>,
+        Andrii Anisov <andrii_anisov@epam.com>
+References: <855a58e2-1e03-4763-cb56-81367b73762c@oracle.com>
+ <20210616114205.38902-1-roman_skakun@epam.com>
+ <20210616114205.38902-2-roman_skakun@epam.com>
+ <2834cdc0-534c-4f07-1901-e468a7713c1f@oracle.com>
+ <20210616142148.GA764@lst.de>
+ <83353b34-2abb-9dfc-bed6-21d500abf49f@oracle.com>
+ <20210616153519.GA6476@lst.de>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <d4e8c822-3f92-d552-018c-611a44299e28@oracle.com>
+Date:   Wed, 16 Jun 2021 11:39:07 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <20210616153519.GA6476@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [160.34.88.136]
+X-ClientProxiedBy: SA9PR11CA0018.namprd11.prod.outlook.com
+ (2603:10b6:806:6e::23) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
 MIME-Version: 1.0
-References: <20210609140412.16058-1-jon.lin@rock-chips.com>
- <20210609140412.16058-2-jon.lin@rock-chips.com> <20210610024350.GA697147@robh.at.kernel.org>
- <e8e7c8c1-4f71-538c-a8e1-b61a894bd4a8@rock-chips.com> <CAAEAJfCyXWvcqswXfmgXBX-et0mq3vxoUacUmHGso9t+XoNqOg@mail.gmail.com>
-In-Reply-To: <CAAEAJfCyXWvcqswXfmgXBX-et0mq3vxoUacUmHGso9t+XoNqOg@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 16 Jun 2021 09:38:05 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL1Sb_TCw6TG7XGBDtmhMVD+_n7d-ii7N9N7w1+A627=w@mail.gmail.com>
-Message-ID: <CAL_JsqL1Sb_TCw6TG7XGBDtmhMVD+_n7d-ii7N9N7w1+A627=w@mail.gmail.com>
-Subject: Re: [PATCH v7 1/9] dt-bindings: rockchip-sfc: Bindings for Rockchip
- serial flash controller
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Kever Yang <kever.yang@rock-chips.com>
-Cc:     Jon Lin <jon.lin@rock-chips.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Johan Jonker <jbx6244@gmail.com>,
-        =?UTF-8?B?6buE5a626ZKX?= <hjc@rock-chips.com>,
-        Yifeng Zhao <yifeng.zhao@rock-chips.com>,
-        Sugar Zhang <sugar.zhang@rock-chips.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Chris Morgan <macroalpha82@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.74.102.136] (160.34.88.136) by SA9PR11CA0018.namprd11.prod.outlook.com (2603:10b6:806:6e::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Wed, 16 Jun 2021 15:39:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9e8f31f4-5250-47c7-72c5-08d930dce567
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4288:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4288A68D4DCCA1623DEE0A078A0F9@MN2PR10MB4288.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0UL7UXMMgLuE6DoiuUnfADfQhdLKp/OHK9PL2ed4eTI9RLPXu+rnsKMvUJlm2fFswTnDXVqXJTPlKCrTPNoa1koZXYWHPh6ugeqeQAwc4uS6P66gBmxBk9m3PBsOBc/O0yHSry4ql8PXePej88tPUVlQtECskpa02NGtmkDzKKt0We9DuvzPKBmrMjgMVaKatHaiXgdbCs1T9bPcftthwi0rLN9+5iqggZe34tsDgWsrXRW3WZsAb+9D2t+L5hgb3MR/QCyLOmzmI/so8m4eycaPCuiUaekdH8GVsUIGIXR5hAfESIlMK07WhxFSs3jPdo8ekXKOAjclG6BOwO/Wa0OndGqP2EboMrj0btndkDdCuPcXYPVeFCawQBL4OljFxJRcMYpPQd62NkHidPF+eUXA01GR+50t5T91Sv4NjfGMKEovFcvrsFLCWII+4eEffl05j7wtyLknoB4T9VyG9+11K2g0snUHuKRQBXqyoWX+A+YwDgCPaOVmqXFxsL2n3CuLy0+ZFNwpJyubLQ3smv5xegS3ytgyjf3SPaOXepP7m7DKFYZEQLR59ZncxEFYXoAiMfCEclTsCZZdLmNZiDU5lUv/ZeZ26vupBWK23vtSA1vuWAuHvorOJ7bGwxkjhGwkqSZxoVjpi/9T6w7MqZQd1gJFfc/r7J+1kWV2CNEpDgdEwSHWcdaI3fhszxR9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(376002)(346002)(366004)(136003)(66556008)(66476007)(66946007)(7416002)(956004)(38100700002)(2616005)(6916009)(53546011)(54906003)(5660300002)(6666004)(44832011)(8676002)(4744005)(4326008)(26005)(16526019)(86362001)(186003)(8936002)(316002)(36756003)(2906002)(31686004)(478600001)(31696002)(6486002)(16576012)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Nkl2dTgwUnhqcjY4SEFSNFk2VFUvTFo0UkJ1UFJJVkhKTUFXU3ZtdUVSNURC?=
+ =?utf-8?B?U1hwUk1NcnZZOG5DMlBvK2dhenpseFBYY1ZWdjBNQ25yb3p2c0VnWjVjcUMr?=
+ =?utf-8?B?MjFKS3BtdU9DakJ0ZmdxZXFleUJ2Y0hLT0VpYWFKT3Fna2JhK1JYU2ZNRkhS?=
+ =?utf-8?B?UkJRY0UweEpQRTdCT2lKVmpqSDhWbndVSXVIcDdzS1J5SE9XOU5QRWRtcW9J?=
+ =?utf-8?B?LzVDa1dMcmdaYjBkUTl5NDlaeDZObS9SMVY3Znl2VGMrT245TG5GWnRCVnhs?=
+ =?utf-8?B?ZXhoTUZpY010SEw4TThTZFNGbEtER1QyM0FSSng1Ny9HNWR3UXkzSTV5bzhS?=
+ =?utf-8?B?czJEUWZaeEJ4bWNSR2Vyby84TWN3WFBJZDZ2QWRCVGppQzQyUWdoQ2h0d0ZS?=
+ =?utf-8?B?TU43R3RKeTU2M0hVVHVRbDhYMGhFS1NDaWRhS2FPOTRNbC82VGhnTjhlVzBu?=
+ =?utf-8?B?bVoxczg5VzBDL1VCbW4wdGVhUU4vaGI2MThNTXlzd3QyWU5GU1k3Z3I5b1dB?=
+ =?utf-8?B?V2ZsWGR5U3g5anJDSXBscVhPaWxhbFhxQmF3QXVXODE3NUl4UERTQlkyYlhZ?=
+ =?utf-8?B?Y1c0dEQ3Z2JwSFJUTCtvQTV0RG1CTXhobkhNU3hGOUxhVUlncXdZY0M2TUZW?=
+ =?utf-8?B?ZnVnVzNxaHh5M2JWNHR2bU16Zlk4bVlMWmtibXQrSjdVRkNPeGE3aXNoSXlW?=
+ =?utf-8?B?Sys4S2w2SGtsOGFJRXRGR3FwdFQ2RHVCeUY2RTV0bEZ0NUZaeFMyWGloRENE?=
+ =?utf-8?B?ZDh6ZHVYanJ5QW5mRzRzOGdNamVNdm54MERyYmk4NWVxbldoNTYvR2RWZnlX?=
+ =?utf-8?B?UWZtKzd3bE1pUHQyU3hHNWtIa0cxTXpnVXlCUE5hVWZqSjZGVlB2elp0RWdh?=
+ =?utf-8?B?bXRLZTFhV1Y0Z2JjS1Azek9CNDhuNDJ5UkVlL2tpR0ZmT1VwSFN0bHcrNXVz?=
+ =?utf-8?B?MlB1Z1pwdlRvVVZPWWJ1ODBkTFVCNWE5aEhjNEtxeVA0Y2xtN0dqWmtNb1Vy?=
+ =?utf-8?B?L2ZUMjI1aTk0eVVhdG1Mam0wOXM0QUZmcTRwcTdTekVnaS83Ri85aWYxRG12?=
+ =?utf-8?B?WjJvd0JsaTZXcExEYjBzdjZvTlBxVkNPZVNlNFRnOHh2dWlHbkF5ZUVlZDhM?=
+ =?utf-8?B?K3E0d29CdTZlZEsvNitCTWVzYU1wc1IreGN2VVUvaUFYK283ckYvdjJwNGJU?=
+ =?utf-8?B?MVg0RzRERTZKaW1KVGRvMWV0UEFZK2V1bkJnWHROaEllOTM0NExHdWhkK3A0?=
+ =?utf-8?B?OXc2MmlHZklQd3laM1lHSzFXOE5HUTVuc3p1QVIreFRZdzdHcC92OHpVTjll?=
+ =?utf-8?B?cXVRNHZua01sU2ZlQnNYcS93RkNod1RvWnFMRTFDcDRBd1VSQkYyVEhlVWRI?=
+ =?utf-8?B?WmswcVdaMUNHU2lBNVpCZTZ0bk5BOEpjOFo0UnNndGtsOStmejRscy8xbWxZ?=
+ =?utf-8?B?ZGdPdDd1OUwzQTRzWXpYUmVSUVNpUS9jTFc2MnBFUEN2QzQ2RmNSWllBR2FD?=
+ =?utf-8?B?c09idEt2MTBJNU5Cbko2VDVvdExnSVBTeUs4aFZSZUNRdVdwbzZkZ3JoTWN4?=
+ =?utf-8?B?R2lsSEZTcXlDUjVTdGI4SzFwUy9vODhCRGZtdlpReFB5Zm1rdzNXcDNRWFZN?=
+ =?utf-8?B?NHBYYTBBK09jZ1dsMW14amVFT2ZsYytJWUt4dXk3Wk4zTjUvNE44aGI4TlE3?=
+ =?utf-8?B?MktrOHpBSWh0aVppckY0aXFCdE1DRGo2bjBuNklYL3NVZDlqNU9mdDBmaFVN?=
+ =?utf-8?Q?FeaCpjFqICWItRg11+Kq79sBQTi7tPQBowjFqzF?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e8f31f4-5250-47c7-72c5-08d930dce567
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 15:39:15.1267
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3ZeGRt4qcV4Kmmp09CJ4TuWSOOBYt6SRkKrTekZXPfkq/lHraD1a0QZoLKMYnIf6pyLGCAfIAOptWqZCfafWCYlURdIeTSPUlYYnmdHbsSs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4288
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10016 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 spamscore=0 adultscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106160089
+X-Proofpoint-GUID: XLkRvkGr5dscz3vWtyy9po6ZAzrd3rO9
+X-Proofpoint-ORIG-GUID: XLkRvkGr5dscz3vWtyy9po6ZAzrd3rO9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 10:33 AM Ezequiel Garcia
-<ezequiel@vanguardiasur.com.ar> wrote:
->
-> Hi all,
->
-> On Thu, 10 Jun 2021 at 00:04, Kever Yang <kever.yang@rock-chips.com> wrot=
-e:
-> >
-> > Hi Rob,
-> >
-> > On 2021/6/10 =E4=B8=8A=E5=8D=8810:43, Rob Herring wrote:
-> > > On Wed, Jun 09, 2021 at 10:04:04PM +0800, Jon Lin wrote:
-> > >> From: Chris Morgan <macromorgan@hotmail.com>
-> > >>
-> > >> Add bindings for the Rockchip serial flash controller. New device
-> > >> specific parameter of rockchip,sfc-no-dma included in documentation.
-> > >>
-> > >> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-> > >> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
-> > >> ---
-> > >>
-> > >> Changes in v7:
-> > >> - Fix up the sclk_sfc parent error in rk3036
-> > >> - Unify to "rockchip,sfc" compatible id because all the feature upda=
-te
-> > >>    will have a new IP version, so the driver is used for the SFC IP =
-in
-> > >>    all SoCs
-> > >> - Change to use node "sfc" to name the SFC pinctrl group
-> > >> - Add subnode reg property check
-> > >> - Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
-> > >> - Limit max_iosize to 32KB
-> > >>
-> > >> Changes in v6:
-> > >> - Add support in device trees for rv1126(Declared in series 5 but no=
-t
-> > >>    submitted)
-> > >> - Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does n=
-ot
-> > >>    affect interpretation and has been widely used
-> > >> - Support sfc tx_dual, tx_quad(Declared in series 5 but not submitte=
-d)
-> > >> - Simplify the code, such as remove "rockchip_sfc_register_all"(Decl=
-ared
-> > >>    in series 5 but not submitted)
-> > >> - Support SFC ver4 ver5(Declared in series 5 but not submitted)
-> > >> - Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
-> > >> - Change to use devm_spi_alloc_master and spi_unregister_master
-> > >>
-> > >> Changes in v5:
-> > >> - Add support in device trees for rv1126
-> > >> - Support sfc tx_dual, tx_quad
-> > >> - Simplify the code, such as remove "rockchip_sfc_register_all"
-> > >> - Support SFC ver4 ver5
-> > >>
-> > >> Changes in v4:
-> > >> - Changing patch back to an "RFC". An engineer from Rockchip
-> > >>    reached out to me to let me know they are working on this patch f=
-or
-> > >>    upstream, I am submitting this v4 for the community to see howeve=
-r
-> > >>    I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
-> > >>    soon and these are the ones we should pursue for mainlining. Jon'=
-s
-> > >>    patch series should include support for more hardware than this
-> > >>    series.
-> > >> - Clean up documentation more and ensure it is correct per
-> > >>    make dt_binding_check.
-> > >> - Add support in device trees for rk3036, rk3308, and rv1108.
-> > >> - Add ahb clock (hclk_sfc) support for rk3036.
-> > >> - Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
-> > >> - Change IRQ code to only mark IRQ as handled if it handles the
-> > >>    specific IRQ (DMA transfer finish) it is supposed to handle.
-> > >>
-> > >> Changes in v3:
-> > >> - Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
-> > >> - Changed the compatible string from rockchip,sfc to
-> > >>    rockchip,rk3036-sfc. A quick glance at the datasheets suggests th=
-is
-> > >>    driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 a=
-nd
-> > >>    RV1108 SoCs, and possibly more. However, I am currently only able
-> > >>    to test this on a PX30 (an RK3326). The technical reference manua=
-ls
-> > >>    appear to list the same registers for each device.
-> > >> - Corrected devicetree documentation for formatting and to note thes=
-e
-> > >>    changes.
-> > >> - Replaced the maintainer with Heiko Stuebner and myself, as we will
-> > >>    take ownership of this going forward.
-> > >> - Noted that the device (per the reference manual) supports 4 CS, bu=
-t
-> > >>    I am only able to test a single CS (CS 0).
-> > >> - Reordered patches to comply with upstream rules.
-> > >>
-> > >> Changes in v2:
-> > >> - Reimplemented driver using spi-mem subsystem.
-> > >> - Removed power management code as I couldn't get it working properl=
-y.
-> > >> - Added device tree bindings for Odroid Go Advance.
-> > >>
-> > >> Changes in v1:
-> > >> hanges made in this new series versus the v8 of the old series:
-> > >> - Added function to read spi-rx-bus-width from device tree, in the
-> > >>    event that the SPI chip supports 4x mode but only has 2 pins
-> > >>    wired (such as the Odroid Go Advance).
-> > >> - Changed device tree documentation from txt to yaml format.
-> > >> - Made "reset" message a dev_dbg from a dev_info.
-> > >> - Changed read and write fifo functions to remove redundant checks.
-> > >> - Changed the write and read from relaxed to non-relaxed when
-> > >>    starting the DMA transfer or reading the DMA IRQ.
-> > >> - Changed from dma_coerce_mask_and_coherent to just
-> > >>    dma_set_mask_and_coherent.
-> > >> - Changed name of get_if_type to rockchip_sfc_get_if_type.
-> > >>
-> > >>   .../devicetree/bindings/spi/rockchip-sfc.yaml | 88 +++++++++++++++=
-++++
-> > >>   1 file changed, 88 insertions(+)
-> > >>   create mode 100644 Documentation/devicetree/bindings/spi/rockchip-=
-sfc.yaml
-> > >>
-> > >> diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml=
- b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
-> > >> new file mode 100644
-> > >> index 000000000000..42e4198e92af
-> > >> --- /dev/null
-> > >> +++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
-> > >> @@ -0,0 +1,88 @@
-> > >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > >> +%YAML 1.2
-> > >> +---
-> > >> +$id: http://devicetree.org/schemas/spi/rockchip-sfc.yaml#
-> > >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > >> +
-> > >> +title: Rockchip Serial Flash Controller (SFC)
-> > >> +
-> > >> +maintainers:
-> > >> +  - Heiko Stuebner <heiko@sntech.de>
-> > >> +  - Chris Morgan <macromorgan@hotmail.com>
-> > >> +
-> > >> +allOf:
-> > >> +  - $ref: spi-controller.yaml#
-> > >> +
-> > >> +properties:
-> > >> +  compatible:
-> > >> +    oneOf:
-> > >> +      - const: rockchip,sfc
-> > > Use 'enum' instead of oneOf+const.
-> > >
-> > > You need an SoC specific compatible.
-> >
-> >
-> > The rockchip sfc controller is a standalone IP with version register,
-> > and the driver can
-> >
-> > handle all the feature difference inside the IP, so we would like to us=
-e
-> > a more generic
 
-Okay, if the version register can be relied on, then this is fine.
-Just add a comment that further differentiation is done using a
-version register.
+On 6/16/21 11:35 AM, Christoph Hellwig wrote:
+> On Wed, Jun 16, 2021 at 11:33:50AM -0400, Boris Ostrovsky wrote:
+>> Isn't the expectation of virt_to_page() that it only works on non-vmalloc'd addresses? (This is not a rhetorical question, I actually don't know).
+> Yes.  Thus is why I'd suggest to just do the vmalloc_to_page or
+> virt_to_page dance in ops_helpers.c and just continue using that.
 
-> >
-> > compatible name instead of bind to any of SoC name. So can we use
-> > "rockchip,sfc"
-> >
-> > like "snps,designware-spi", which is a generic one, instead of an SoC
-> > specific compatible?
 
-That's a licensed IP which is a bit different. Though generic names on
-those are useless too. There's different versions and different
-integration quirks.
+Ah, OK, so something along the lines of what I suggested. (I thought by "helpers" you meant virt_to_page()).
 
-> >
->
-> IIUC, the way this works is along these lines:
->
-> * The SFC driver can only care for the rockchip,sfc compatible string
-> and, if suitable, use the IP version register mentioned by Kever [1].
->
-> * The bindings doc specifies both the SoC-specific and the generic one
-> with:
->
->       - items:
->           - enum:
->               - rockchip,px30-sfc
->           - const: rockchip,sfc
->
-> * The device tree lists both as well:
->
-> compatible =3D "rockchip,px30-sfc", "rockchip,sfc";
->
-> This can apply to all IP cores really; and will allow some
-> compatibility between the downstream/vendor device tree
-> and upstream.
->
-> This scheme is indeed more convoluted than just
-> picking any SoC name for the compatible string, and
-> use that compatible string for all the SoCs (given they
-> are all compatible, again as per [1]).
->
-> IOW, you only have "rockchip,px30-sfc" in the bindings,
-> in the devicetree files and in the driver.
 
-This is fine too, but again if a version or capability register is
-sufficient, no need to put this into DT. Maybe someday h/w designers
-will clue in and always have version and/or capability registers.
+-boris
 
-Rob
