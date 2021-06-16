@@ -2,169 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367E13AA62B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 23:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB143AA62E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 23:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234079AbhFPVdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 17:33:37 -0400
-Received: from mail-db8eur06olkn2034.outbound.protection.outlook.com ([40.92.51.34]:60256
-        "EHLO EUR06-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232410AbhFPVde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 17:33:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dYHHBajI0LSr2LBgufZhUC/vNB3DvE9ckgtOpt6YP59j4ULYw9e9sPYkFJYnV7JhqlF2Q0exz8pziq/0b+9anne3ljwx4T1pVlOGa0FluPQpT9+ZfZAgV1d1wNdrZLFm1G6JDiefUAlz2VOshlKskB0XerB81UIu3pjss3TTvGj69LIFxRuvN21p+aJxlAQ/0xrFeopuFRJpzIdQvozpzjKoypySdtv7yeLrZJ3E47fVoOahBdfKKGOZAogGsXoHkQpIwZljPXxD9MW7VC9urbBcSeXIdq8u4oB2xpLY9xyhUxlrIib+AuHMbtX633FqoExszT6WBPjeKreHnrO4iA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6OiBt5WPmN65/yHVDTAS/BOGqi0vas4pYU36+sKsOVE=;
- b=JUHTTKRNr09e6LSnUv9PtERnxlxuGjNybRL/qcT+S+xk5lnYr3TOv4faws2buqFyOXrt3k8puzczDnijLZvu07iUdVL+FBh5hfeDVBYGtBbF46VFdXOdqTMxXZS5Il/MPXLv2dCfrS+zchIpsmncYG3bc6VxbOdS+fbwCnX63q4zoXyXoBIAdEC3MjU11gqopKQaDsPdhflLMUB9F4g1Y8CefM3NBlN1R29S+r/dmDZPGYYstiAaFlstiRanEJcz2CxbgjZd0noIaphYEetjKNKLNVOwPk34w1o+q1+0ogKriYg5JPfb28inoIfak3npYyohagOTyS5MYg78RlEl1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from VI1EUR06FT054.eop-eur06.prod.protection.outlook.com
- (2a01:111:e400:fc37::4d) by
- VI1EUR06HT037.eop-eur06.prod.protection.outlook.com (2a01:111:e400:fc37::277)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Wed, 16 Jun
- 2021 21:31:24 +0000
-Received: from AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
- (2a01:111:e400:fc37::43) by VI1EUR06FT054.mail.protection.outlook.com
- (2a01:111:e400:fc37::124) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend
- Transport; Wed, 16 Jun 2021 21:31:24 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:74E8CFE3640342A36002F32EFAEBB16B1439925A473632195C6EDC67495A610E;UpperCasedChecksum:EC30D31AE0D8A0AEAD4832465CB5FC280963AD82C831B29186E94B3D5B7BD8DC;SizeAsReceived:9085;Count:48
-Received: from AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e5e5:7b7a:5ea5:c75a]) by AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e5e5:7b7a:5ea5:c75a%9]) with mapi id 15.20.4242.018; Wed, 16 Jun 2021
- 21:31:24 +0000
-Subject: Re: [PATCH v9] exec: Fix dead-lock in de_thread with ptrace_attach
-From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Charles Haithcock <chaithco@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Adrian Reber <areber@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <AM8PR10MB4708AFBD838138A84CE89EF8E4359@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
- <20210610143642.e4535dbdc0db0b1bd3ee5367@linux-foundation.org>
- <AM8PR10MB470896FBC519ABCC20486958E4349@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
- <877diwtn2p.fsf@disp2133>
- <AS8PR10MB47120E7A195A593C1377172CE4309@AS8PR10MB4712.EURPRD10.PROD.OUTLOOK.COM>
-Message-ID: <AM8PR10MB47083E11E2B39ACBDF396954E40F9@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
-Date:   Wed, 16 Jun 2021 23:31:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-In-Reply-To: <AS8PR10MB47120E7A195A593C1377172CE4309@AS8PR10MB4712.EURPRD10.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=windows-1252
+        id S234070AbhFPVfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 17:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232230AbhFPVfu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 17:35:50 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5662DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 14:33:44 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id q10so4070011oij.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 14:33:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ps+mzs5onslHDI+dnpIhDM2BoX/zDh+U15SPZVGxthY=;
+        b=fs1u292toXegX6Dp8U7cg3JRI3hbuN3+WAUqzu10THK3OimialhN7XUz5BlF2KyXHq
+         oACx9zopI58jrzEpOUvhWvD9ctWIjpWtmOKji0DsqJwayP+a1AiLd0o9VahRuybItjZU
+         gVe6dZJek6EXrdJVBOKCuhDI9LjusqnIDMpyFkrEZOUccjlttFvAocjyDjsYpgwiMEHM
+         ywR/A+SmFZ/2Z1IMTRzyrRip1fxqByYthP026VvIN6BsJmgorQuEfEAZIBzaGDjg+ZIp
+         in1rXWJkaGy8LLsL+9vikNVX2PwEmKc3AFbr3aSym/FMg8j1KbKDpIF8snSXI7QR/eqH
+         AGXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ps+mzs5onslHDI+dnpIhDM2BoX/zDh+U15SPZVGxthY=;
+        b=pnzTRdJ1hwAzo8Q774LNqtvUvpQJczn7XyWLVAkI3Vo8vBk+O50nmUFdxstCqTwIN7
+         9GnnGszm9vdpJgRMMZYxeSTA5igeEvnr+3cVpNicH4XLGNt4GX/TqV2GpKi7ThSKjmeL
+         Shua2vAKbJ6dU8i6kDaj9gPiBcvcEcI5pxLtlV4AJ8QfT3lTKeU/6Qyr7U0no780IJix
+         6umMUZd3cx9faNbtQWyNtoHFr6cI4cI0LhsFoXXq9J8DQCRDqo2muuDmd0QxpQ5RGvrn
+         sqKWC4miterTBhWLEQT0Pjf2y9QjTZrgpPdw+ClOrWT4EwHvZ9I1YszlIFGV/bnT4tUK
+         EIdQ==
+X-Gm-Message-State: AOAM533z6Kb4VcPEHQ4yTfIFuSyo+DXlMVotQKkUERqjYPgMQ1nqCP4s
+        oppyKMpO3w0mG8AX7NTM1l8P8szv/O8hCQ==
+X-Google-Smtp-Source: ABdhPJxbTgygjwtlJlyhjRove7EZLhFcq+1y0tGdv/rzKLdZMwW5VwB/5HHx7HaMCjxrOVoLLjbGQw==
+X-Received: by 2002:aca:4dc3:: with SMTP id a186mr8360124oib.63.1623879223473;
+        Wed, 16 Jun 2021 14:33:43 -0700 (PDT)
+Received: from [192.168.1.134] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id m10sm702536oig.9.2021.06.16.14.33.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 14:33:43 -0700 (PDT)
+Subject: Re: [PATCH v2 2/3] io_uring: minor clean up in trace events
+ definition
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <60be7e31.1c69fb81.a8bfb.2e54SMTPIN_ADDED_MISSING@mx.google.com>
+ <2752dcc1-9e56-ba31-54ea-d2363ecb6c93@gmail.com>
+ <def5421f-a3ae-12fd-87a2-6e584f753127@kernel.dk>
+ <20210615193532.6d7916d4@gandalf.local.home>
+ <2ba15b09-2228-9a2a-3ac3-c471dd3fc912@kernel.dk>
+ <3f5447bf02453a034f4eb71f092dd1d1455ec7ad.camel@trillion01.com>
+ <237f71d5-ee6e-247c-c185-e4e6afbd317c@kernel.dk>
+ <1cf91b2f760686678acfbefcc66309cd061986d5.camel@trillion01.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <902fdad6-4011-07fc-ea0e-5bac4e34d7bc@kernel.dk>
+Date:   Wed, 16 Jun 2021 15:33:41 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1cf91b2f760686678acfbefcc66309cd061986d5.camel@trillion01.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TMN:  [Noi30EIOejGx4oUQ+wSn5IR4epgRC91o]
-X-ClientProxiedBy: PR0P264CA0284.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1::32) To AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:364::23)
-X-Microsoft-Original-Message-ID: <7b679873-c316-8f32-a036-45a6b8ff6cd1@hotmail.de>
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.101] (84.57.55.161) by PR0P264CA0284.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15 via Frontend Transport; Wed, 16 Jun 2021 21:31:22 +0000
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 48
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 899d0f65-4211-48db-52fd-08d9310e171b
-X-MS-TrafficTypeDiagnostic: VI1EUR06HT037:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0qYhOcXxL25xssPzTEkg7zuJNIrpK35tZcQKD6d/4EotD12nVVthK+k6ykqGqFuSxl8jJ1hmjc6TUX1bjJNOzRK6TqfnP9EsT4IDsTAWUAzUvrA2Raw+JzxmA262EKQi4b8QiEcq/7Udjae4L1EbgbFvtPT4pPvrXrZ99JUpMIbNu7e5IXYoFKP6Lq4I8D66ueR/kvspNAAaYQjwFhvXNBDaKCvyggr3dvxJ/KWX5/h5k3IME5Uubn1D1Nyhj0Z8xXjnKgfS7saSgmUObwl5e9v3H+MlQmtqim+xrM+P1gCnR1ag7uH47VvqI+z/Km/MJZa/3oXcN3c37VA7VWGQ2wwUNdfzXObCa6ONtV52+MOQt/YMV2O8M3Bpysu2Z9AQmfXWTkSfhcFrulpGEiPFxg==
-X-MS-Exchange-AntiSpam-MessageData: wib9er4KNmhj+EgjicKEzPzI7+UGHCY+4J3jFmvqeWcnn/GevAfEnbSWNXdKOPqU9wNLSBNwmWapDr++2d5Oc4/zBtDV4p6gmRmI8Dma5CYdcU/eOvcM9bemPijTTNx78231wF0AfIWFm6/Ssn7kWg==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 899d0f65-4211-48db-52fd-08d9310e171b
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 21:31:24.0777
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-AuthSource: VI1EUR06FT054.eop-eur06.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1EUR06HT037
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 4:26 PM, Bernd Edlinger wrote:
-> Thanks for your review.
+On 6/16/21 3:30 PM, Olivier Langlois wrote:
+> On Wed, 2021-06-16 at 13:02 -0600, Jens Axboe wrote:
+>> On 6/16/21 1:00 PM, Olivier Langlois wrote:
+>>> On Wed, 2021-06-16 at 06:49 -0600, Jens Axboe wrote:
+>>>>
+>>>> Indeed, that is what is causing the situation, and I do have them
+>>>> here.
+>>>> Olivier, you definitely want to fix your mail setup. It confuses
+>>>> both
+>>>> MUAs, but it also actively prevents using the regular tooling to
+>>>> pull
+>>>> these patches off lore for example.
+>>>>
+>>> Ok, I will... It seems that only my patch emails are having this
+>>> issue.
+>>> I am pretty sure that I can find instances of non patch emails
+>>> going
+>>> making it to the lists...
+>>
+>> The problem is that even if they do make it to the list, you can't
+>> use eg b4 to pull them off the list.
+>>
+> Jens,
 > 
-> On 6/14/21 6:42 PM, Eric W. Biederman wrote:
->> Bernd Edlinger <bernd.edlinger@hotmail.de> writes:
->>
->>> This introduces signal->unsafe_execve_in_progress,
->>> which is used to fix the case when at least one of the
->>> sibling threads is traced, and therefore the trace
->>> process may dead-lock in ptrace_attach, but de_thread
->>> will need to wait for the tracer to continue execution.
->>
->> Userspace processes hang waiting for each other.  Not a proper kernel
->> deadlock.  Annoying but not horrible.  Definitely worth fixing if we can.
->>
+> I am unfamiliar with the regular tooling and eg b4 (which I assume are
+> part of the regular tooling) so I am not fully understanding everything
+> you say.
+
+Sorry, I could have been more clear. b4 is a tool that pulls patches off
+lists managed by lore.kernel.org, and I use it quite often to avoid
+manually saving emails and applying. It'll collect reviews etc as well,
+and I integrate it with git. That means, if you send a patchset of 3
+patches with a cover letter, if I like the series I just do:
+
+$ git b4 <message id of cover>
+
+and it applies it for me, adding links, reviews, etc.
+
+> My take away from all this is that it is very important that my patches
+> do reach the lists and I commit to put the necessary efforts to make
+> that happen.
+
+Yes. Both for tooling, but also so that non-cc'ed people see it and can
+reply.
+
+> My last email was simply myself starting diagnose where my problem
+> could be outloud.
 > 
-> I wonder if I am used a wrong term in the title.
-> Do you have a suggestion for better wording?
+> Steven did mention that he wasn't seeing the Message-Id field in my
+> patch emails. I'm very grateful for this clue!
 > 
->>> The solution is to detect this situation and allow
->>> ptrace_attach to continue, while de_thread() is still
->>> waiting for traced zombies to be eventually released.
->>> When the current thread changed the ptrace status from
->>> non-traced to traced, we can simply abort the whole
->>> execve and restart it by returning -ERESTARTSYS.
->>> This needs to be done before changing the thread leader,
->>> because the PTRACE_EVENT_EXEC needs to know the old
->>> thread pid.
->>
->> Except you are not detecting this situation.  Testing for t->ptrace
->> finds tasks that have completed their ptrace attach and no longer need
->> the cred_gaurd_mutex.
->>
+> My main email client is Gnome Evolution (when Message-Id is present in
+> my mails) and I do the following to send out patches:
 > 
-> The first phase of de_thread needs co-operation from a user task,
-> if and only if any task t except the thread leader has t->ptrace.
-> Taking tasks from RUNNING->EXIT_ZOMBIE only needs co-operation from kernel code,
+> 1. git format-patch -o ~/patches HEAD^
+> 2. Edit patch file by adding recipients listed by
+> scripts/get_maintainer.pl
+> 3. cat patch_file | msmtp -t -a default
 
+Why not just use git send-email? That's literally what that is for. It's
+what I use to send out patches.
 
-Aehm, sorry, that is not correct, what I said here.
+> The weird thing is that when I have noticed that my patches weren't
+> making it to the lists, I started to Cc myself to receive a copy of the
+> patch. When I inspect the copy header, it contains the Message-Id field
+> but it might be the receiving email client that on reception does add
+> the missing field so I don't know exactly what is happening.
+> 
+> you have my word. Next patch I send, it will be make it to the lists.
+> 
+> thx a lot for your comprehension and your assistance!
 
-I totally overlooked ptrace(PTRACE_SEIZE, pid, 0L, PTRACE_O_TRACEEXIT)
+Thanks for sending out patches!
 
-and unfortunately this also prevents even the thread leader to enter the
-EXIT_ZOMBIE state because do_exit does:
+-- 
+Jens Axboe
 
-        ptrace_event(PTRACE_EVENT_EXIT, code);
-
-unfortunately this sends an event to the tracer, and waits not only for
-the tracer to call waitpid, but also needs a PTRACE_CONT before do_exit
-can call exit_notify which does tsk->exit_state = EXIT_ZOMBIE.
-
-So unfortunately this breaks my patch, so I have to withdraw it for now,
-since I see no way how to fix it.
-
-I will clean-up my previous patch which changes the ptrace API to return
-an error if an unsafe execve is detected, and send it to this list.
-
-
-Thanks
-Bernd.
