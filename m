@@ -2,119 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D913A9531
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1623A9533
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbhFPImB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbhFPImA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:42:00 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3C4C061574;
-        Wed, 16 Jun 2021 01:39:53 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id p7so2978330lfg.4;
-        Wed, 16 Jun 2021 01:39:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6YpVa0+q2Eocwluyky2FGEKu1f+VgEpX5T1fuuU2+uE=;
-        b=dJOVRj2ZEWQ7cxt2SkiE47Prb//6AoCzTina/QehwYubPpmPxEMItVLdStvydhXm35
-         dJP97otG9TIkarIptGxLacxgLnUp0djzWcu3xBeuK5ehvGlqalZ70F4uMfnGt8HmLnbS
-         qncyWVSv75bBpoKNsJ6jojmQdPMNQErj/uHUChHiH1O/YPS5OCizRzCcSjax5zJ/6XfN
-         aEzz/LKRtP2Wv3VNzR4n2JP2RcDxP4SY42fpxrb1fqKoMU3O6f47rkkn6dBh0S5vMfUc
-         fUhYkVol1TCvOqSHLejUDhVrjsnriBrKoHOn+AZqcF1/jBQjggK/NZC/rvpTkyNgq1/Q
-         Ej8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6YpVa0+q2Eocwluyky2FGEKu1f+VgEpX5T1fuuU2+uE=;
-        b=jZl9PJBQGf55JH1X3Wu8eMJYwMw1qE9dzcuffpeJKSfX0JA3n0kBiBXXVhIdJALBg9
-         a+1IR3UoWieJ/Ks8QWeiyfnCRXARYmls8nx7RHgyVo1PkemIxNKfW3Atcee/OPYLQrUA
-         YfmKIsfxa4tWBr51fQLH2dsSQQeWpECFDCIyWKgcPWLd+Xgkblu1+mSBwW6Y3MWJ2RBm
-         FiqQLRSEqskUTLbfGw7AFfTNBAsf1qCMoGa71GRUDd5yciqEhdA2e36SmZvPs7PeSiEc
-         XeDU7L43AP06M2ZMxReB5foqQ4XGWXzvJIBnAUAJ0L/+Wqun8FbNtPPLsFg5aTlNRAp0
-         NzZA==
-X-Gm-Message-State: AOAM532K3b70OnFy3hdoOUIkL6tbhW5UcneBUANOHbbMHUNBTwfR7P29
-        GJwh5oXB6uU1Ld206W9S7rwbFTCB5gk=
-X-Google-Smtp-Source: ABdhPJzTk9wKIGkG7m04OdTwoeo1mFBz4o5KFFJj71YQDsV99L/4sFss0gOpN05WFw8rk1asAksAMA==
-X-Received: by 2002:ac2:47eb:: with SMTP id b11mr2938549lfp.455.1623832791520;
-        Wed, 16 Jun 2021 01:39:51 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-31-25.dynamic.spd-mgts.ru. [94.29.31.25])
-        by smtp.googlemail.com with ESMTPSA id k19sm175246lfe.25.2021.06.16.01.39.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 01:39:51 -0700 (PDT)
-Subject: Re: [PATCH v3 4/7] thermal/drivers/tegra: Add driver for Tegra30
- thermal sensor
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Ihor Didenko <tailormoon@rambler.ru>,
-        Ion Agorria <ion@agorria.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>
-References: <20210529170955.32574-1-digetx@gmail.com>
- <20210529170955.32574-5-digetx@gmail.com>
- <6f2b6290-095a-bd39-c160-1616a0ff89b1@linaro.org>
- <20210615102626.dja3agclwzxv2sj4@vireshk-i7>
- <595f5e53-b872-bcc6-e886-ed225e26e9fe@gmail.com>
- <fbdc3b56-4465-6d3e-74db-1d5082813b9c@linaro.org>
- <4c7b23c4-cf6a-0942-5250-63515be4a219@gmail.com>
- <20210616080310.vhvauvo5y6m2sekz@vireshk-i7>
- <CAKfTPtAxvj4_TBpFesjQxcVzvEi3QVUThccfSAJXwwrLtOH-xg@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <96bf59af-20b6-b706-5ff0-fe70f9eba827@gmail.com>
-Date:   Wed, 16 Jun 2021 11:39:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231727AbhFPInl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:43:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231318AbhFPInk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 04:43:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EA2760C41;
+        Wed, 16 Jun 2021 08:41:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623832895;
+        bh=wYwG7LnKrp9lLE5sLvcBvxTZo+OvvtxXnkvbV79A43s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=teKwMP25f+QE6deY5wNZu6b0sKz7NUebvywyvDGOtjzKQGMMzhKlG4LL5HSTKiVxM
+         TmF2/FOWtxhrVmoM0SxPiTB2zwsZJ3QMcllBc2jqcB7r3Hyf8B7VvmHTH4l97UY3Nz
+         nMfCGScy95olGwd4SfZWC5Q1yd9C2QIQt2zLwlTLWUH274lgBNXTARcwWmV+GVJj0l
+         VBfjlQeRC8GsZR6iYfH7+0nvzivZaUU5gU+0YqP5SY3DoGd5/ZKV1EExtgdHj73YGm
+         r6qXHshazikbPeZjxEl5jcsYl46E/5nG+3NyMtDJMOSPsDVuP636gkJMQKgQhUYPOV
+         CcoogsOTCJKgQ==
+Date:   Wed, 16 Jun 2021 11:41:29 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Anand Khoje <anand.a.khoje@oracle.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dledford@redhat.com, jgg@ziepe.ca, haakon.bugge@oracle.com
+Subject: Re: [PATCH v4 for-next 3/3] IB/core: Obtain subnet_prefix from cache
+ in IB devices
+Message-ID: <YMm5OWnN0242e970@unreal>
+References: <20210616065213.987-1-anand.a.khoje@oracle.com>
+ <20210616065213.987-4-anand.a.khoje@oracle.com>
+ <YMmnyE+rpLIf6e0B@unreal>
+ <ac8da9cf-9dec-a207-c80e-e9ee650b40fc@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtAxvj4_TBpFesjQxcVzvEi3QVUThccfSAJXwwrLtOH-xg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ac8da9cf-9dec-a207-c80e-e9ee650b40fc@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-16.06.2021 11:30, Vincent Guittot пишет:
-> On Wed, 16 Jun 2021 at 10:03, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->>
->> +Vincent.
->>
->> On 15-06-21, 22:32, Dmitry Osipenko wrote:
->>> IIUC, the cpufreq already should be prepared for the case where firmware
->>> may override frequency. Viresh, could you please clarify what are the
->>> possible implications of the frequency overriding?
->>
->> The only implication is software would think hardware is running at
->> some other frequency, while it is not. Not sure if something may break
->> as a result of this.
->>
->> The scheduler's view of CPUs will not be same though, i.e. scheduler
->> will see capacity as X, while in reality it has changed to Y.
-> 
-> thermal_pressure is used by scheduler to balance the load between CPUs
-> according to the actual max frequency. If the thermal pressure doesn't
-> reflect reality, scheduler will end up enqueuing too many  tasks on a
-> throttle CPU.
+On Wed, Jun 16, 2021 at 01:12:51PM +0530, Anand Khoje wrote:
+> On 6/16/2021 12:57 PM, Leon Romanovsky wrote:
+> > On Wed, Jun 16, 2021 at 12:22:13PM +0530, Anand Khoje wrote:
+> > > ib_query_port() calls device->ops.query_port() to get the port
+> > > attributes. The method of querying is device driver specific.
+> > > The same function calls device->ops.query_gid() to get the GID and
+> > > extract the subnet_prefix (gid_prefix).
+> > > 
+> > > The GID and subnet_prefix are stored in a cache. But they do not get
+> > > read from the cache if the device is an Infiniband device. The
+> > > following change takes advantage of the cached subnet_prefix.
+> > > Testing with RDBMS has shown a significant improvement in performance
+> > > with this change.
+> > > 
+> > > The function ib_cache_is_initialised() is introduced because
+> > > ib_query_port() gets called early in the stage when the cache is not
+> > > built while reading port immutable property.
+> > > 
+> > > In that case, the default GID still gets read from HCA for IB link-
+> > > layer devices.
+> > > 
+> > > In the situation of an event causing cache update, the subnet_prefix
+> > > will get retrieved from newly updated GID cache in ib_cache_update(),
+> > > so that we do not end up reading a stale value from cache via
+> > > ib_query_port().
+> > > 
+> > > Fixes: fad61ad ("IB/core: Add subnet prefix to port info")
+> > > Suggested-by: Leon Romanovsky <leonro@nvidia.com>
+> > > Suggested-by: Aru Kolappan <aru.kolappan@oracle.com>
+> > > Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
+> > > Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
+> > > ---
+> > > 
+> > > v1 -> v2:
+> > >      -   Split the v1 patch in 3 patches as per Leon's suggestion.
+> > > 
+> > > v2 -> v3:
+> > >      -   Added changes as per Mark Zhang's suggestion of clearing
+> > >          flags in git_table_cleanup_one().
+> > > v3 -> v4:
+> > >      -   Removed the enum ib_port_data_flags and 8 byte flags from
+> > >          struct ib_port_data, and the set_bit()/clear_bit() API
+> > >          used to update this flag as that was not necessary.
+> > >          Done to keep the code simple.
+> > >      -   Added code to read subnet_prefix from updated GID cache in the
+> > >          event of cache update. Prior to this change, ib_cache_update
+> > >          was reading the value for subnet_prefix via ib_query_port(),
+> > >          due to this patch, we ended up reading a stale cached value of
+> > >          subnet_prefix.
+> > > 
+> > > ---
+> > >   drivers/infiniband/core/cache.c  | 18 +++++++++++++++---
+> > >   drivers/infiniband/core/device.c |  9 +++++++++
+> > >   include/rdma/ib_cache.h          |  5 +++++
+> > >   include/rdma/ib_verbs.h          |  1 +
+> > >   4 files changed, 30 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+> > > index 2325171..cd99c46 100644
+> > > --- a/drivers/infiniband/core/cache.c
+> > > +++ b/drivers/infiniband/core/cache.c
+> > > @@ -917,9 +917,11 @@ static void gid_table_cleanup_one(struct ib_device *ib_dev)
+> > >   {
+> > >   	u32 p;
+> > > -	rdma_for_each_port (ib_dev, p)
+> > > +	rdma_for_each_port (ib_dev, p) {
+> > > +		ib_dev->port_data[p].cache_is_initialized = 0;
+> > 
+> > I think that this line is not needed, we are removing device anyway and
+> > and query_port is not allowed at this stage.
+> > 
+> We have kept this for code completeness purposes. Just as we did with
+> set_bit() and clear_bit() APIs.
 
-What if all CPUs are throttled equally and running on the same
-frequency, will throttling have any effect on the scheduler decisions?
+You are not using *_bit() API now, so let's not clear here.
+It is not completeness, but misleading. It gives false assumption
+that cache_is_initialized is used later in the code.
+
+> 
+> > >   		cleanup_gid_table_port(ib_dev, p,
+> > >   				       ib_dev->port_data[p].cache.gid);
+> > > +	}
+> > >   }
+> > >   static int gid_table_setup_one(struct ib_device *ib_dev)
+> > > @@ -1466,6 +1468,7 @@ static int config_non_roce_gid_cache(struct ib_device *device,
+> > >   	struct ib_port_attr       *tprops = NULL;
+> > >   	struct ib_pkey_cache      *pkey_cache = NULL;
+> > >   	struct ib_pkey_cache      *old_pkey_cache = NULL;
+> > > +	union ib_gid               gid;
+> > >   	int                        i;
+> > >   	int                        ret;
+> > > @@ -1523,13 +1526,21 @@ static int config_non_roce_gid_cache(struct ib_device *device,
+> > >   	device->port_data[port].cache.lmc = tprops->lmc;
+> > >   	device->port_data[port].cache.port_state = tprops->state;
+> > > -	device->port_data[port].cache.subnet_prefix = tprops->subnet_prefix;
+> > > +	ret = rdma_query_gid(device, port, 0, &gid);
+> > > +	if (ret) {
+> > > +		write_unlock_irq(&device->cache.lock);
+> > > +		goto err;
+> > > +	}
+> > > +
+> > > +	device->port_data[port].cache.subnet_prefix =
+> > > +			be64_to_cpu(gid.global.subnet_prefix);
+> > > +
+> > >   	write_unlock_irq(&device->cache_lock);
+> > >   	if (enforce_security)
+> > >   		ib_security_cache_change(device,
+> > >   					 port,
+> > > -					 tprops->subnet_prefix);
+> > > +					 be64_to_cpu(gid.global.subnet_prefix));
+> > >   	kfree(old_pkey_cache);
+> > >   	kfree(tprops);
+> > > @@ -1629,6 +1640,7 @@ int ib_cache_setup_one(struct ib_device *device)
+> > >   		err = ib_cache_update(device, p, true, true, true);
+> > >   		if (err)
+> > >   			return err;
+> > > +		device->port_data[p].cache_is_initialized = 1;
+> > >   	}
+> > >   	return 0;
+> > > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> > > index 7a617e4..57b9039 100644
+> > > --- a/drivers/infiniband/core/device.c
+> > > +++ b/drivers/infiniband/core/device.c
+> > > @@ -2057,6 +2057,15 @@ static int __ib_query_port(struct ib_device *device,
+> > >   	    IB_LINK_LAYER_INFINIBAND)
+> > >   		return 0;
+> > > +	if (!ib_cache_is_initialised(device, port_num))
+> > > +		goto query_gid_from_device;
+> > 
+> > IMHO, we don't need this new function and can access ib_port_data
+> > directly. In device.c, we have plenty of places that does it.
+> > 
+> > Not critical.
+> > 
+> Added this function to have a way to check validity of cache, such that it
+> could be used in future for the same check in areas to which ib_port_data is
+> opaque.
+
+
+It is ok, just call directly if (!device->port_data[port_num].cache_is_initialized).
+
+Thanks
