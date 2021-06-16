@@ -2,182 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776343A9DC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1A93A9DDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234059AbhFPOmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:42:42 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52602 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233752AbhFPOmj (ORCPT
+        id S234118AbhFPOn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:43:58 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:39925 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233914AbhFPOn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:42:39 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15GEX8dm038495;
-        Wed, 16 Jun 2021 10:40:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=yiLeMrSrLEesWWLZSuwNrEn49+LwO0E0VWIGiQuRAnY=;
- b=kXuCCZ71RETjmzlGqmrfAO/CSnWU0fOW04SVgjGnv21xYQzfV88ygbORWSmC+s8nbohV
- 9cvxABbU0c7e3UsINUsMrGcf2xW18n+i/KVexY/dOCyf+enOoT/nljkO+r29okP0JpLY
- o2BjazajK4ImhDrkhvSORPtyHhIOi3Cmgy29pxdX5NYpdgQJzmMUjFwan+UXl4WI7amd
- NqK09Q4p1ArDXhwI7FMdI3oyBIDHzdi2tTPznUoPbXu7lPGWvT1AR4aKW8pJunf2iNxs
- xilF7Ny7xcWn0fotnFiNXsdf2ciJu/qFUjLpnoqGy4tFAOTvepDH65oam6J/HFB0E8Lr vg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 397hrxke7a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 10:40:25 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15GEXaat040276;
-        Wed, 16 Jun 2021 10:40:25 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 397hrxke6y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 10:40:25 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15GEcFbw017445;
-        Wed, 16 Jun 2021 14:40:24 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma04dal.us.ibm.com with ESMTP id 3965ytxkmq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 14:40:24 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15GEeN9U36176192
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Jun 2021 14:40:23 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C1711124052;
-        Wed, 16 Jun 2021 14:40:23 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AE6A0124055;
-        Wed, 16 Jun 2021 14:40:23 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 16 Jun 2021 14:40:23 +0000 (GMT)
-Subject: Re: [PATCH] fs: Return raw xattr for security.* if there is size
- disagreement with LSMs
-To:     Roberto Sassu <roberto.sassu@huawei.com>, viro@zeniv.linux.org.uk,
-        zohar@linux.ibm.com, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
-References: <ee75bde9a17f418984186caa70abd33b@huawei.com>
- <20210616132227.999256-1-roberto.sassu@huawei.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <6e1c9807-d7e8-7c26-e0ee-975afa4b9515@linux.ibm.com>
-Date:   Wed, 16 Jun 2021 10:40:23 -0400
+        Wed, 16 Jun 2021 10:43:57 -0400
+Received: from [192.168.1.155] ([95.115.35.150]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MSLEm-1licf82p6u-00SerU; Wed, 16 Jun 2021 16:41:26 +0200
+Subject: Re: [PATCH] drivers: gpio: add virtio-gpio guest driver
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <20210615174911.973-1-info@metux.net>
+ <CACRpkdbwLOOT6nuhpkT5x-AZVipsD2qG8Qu4xoiRotHQNknwzw@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <098f669f-b451-18e1-9aed-a71f400bd581@metux.net>
+Date:   Wed, 16 Jun 2021 16:41:22 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210616132227.999256-1-roberto.sassu@huawei.com>
+In-Reply-To: <CACRpkdbwLOOT6nuhpkT5x-AZVipsD2qG8Qu4xoiRotHQNknwzw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: F0eDltfbP4xgfxmxqWSxxuKCNviflELd
-X-Proofpoint-GUID: D7nLuvTheuIzDQKq0leJ7Mh5mKELchNh
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-16_07:2021-06-15,2021-06-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- phishscore=0 mlxlogscore=999 adultscore=0 suspectscore=0 spamscore=0
- priorityscore=1501 lowpriorityscore=0 clxscore=1011 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106160084
+X-Provags-ID: V03:K1:CR6mpicfGsY9r/evUqTXH8C70befzHJD17gK1boMJb2mNiw2I3w
+ u9bascsokR1YLBsRaAjFl9nCA0nXMUduSAIVdTJsuBt//Y1hu5AbrPkpQ5Bewzb1Peh7x0m
+ OJsttVts/KwE3xipe3/w+Di4ulseb46HgCXAWsbZwtIW1CWD52UQu24Sh7tjYr+AujL6fle
+ DtR3xtegpA75e0CGxI5aw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fMVu1T4nu7g=:4lDZNogMmvE1wFbQcnZQ0B
+ hBMiXVmcPPsYTquq0lJBIq7dqufr+FVBlwhCMtjMCtupVmGeVKmzhQLeZtIn0EqCtwP17PQC1
+ bI4PhWcGXUahcXYS6EV82U3W2kaSYt7WSXN334mB665gcj2/yg90+n9mZ+hGyJiwnS+1XcWQ/
+ U6OflJL9RiKDC/q+61jIjkRcm+8bbuwuCA4idwY9O67k50FabdiGYUKE1RmY05OjaAxgnk0AO
+ jZBLFx00sKx0u7GOr3YKFhpHV84KJIdnhRy9FXO4LOE5OIgUnJDHC+FG2it+fuzaV5ud9zpzM
+ Iztr85Sus6eg7hgkhxUxp+6GOYiOKJSNC1csHjDXN+RIw93lfgeqglRhXvzIDq7qAlKFORGbc
+ SgnoSFASpckcaCipHWdnINRFf+zjpPLo55xzD0+rMIVAbabemAUPj8ZuOEqiYgaqgM/WGa2Hy
+ /xsV6746LXXSuzAPiwPRjHVo4p2NJAqyjnjVbgO/gaw7BsyePIXVOSmAkD1jA7tBvxgXAny0C
+ 6dcDS5dKyeTDANgMo4EGqI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 9:22 AM, Roberto Sassu wrote:
-> vfs_getxattr() differs from vfs_setxattr() in the way it obtains the xattr
-> value. The former gives precedence to the LSMs, and if the LSMs don't
-> provide a value, obtains it from the filesystem handler. The latter does
-> the opposite, first invokes the filesystem handler, and if the filesystem
-> does not support xattrs, passes the xattr value to the LSMs.
->
-> The problem is that not necessarily the user gets the same xattr value that
-> he set. For example, if he sets security.selinux with a value not
-> terminated with '\0', he gets a value terminated with '\0' because SELinux
-> adds it during the translation from xattr to internal representation
-> (vfs_setxattr()) and from internal representation to xattr
-> (vfs_getxattr()).
->
-> Normally, this does not have an impact unless the integrity of xattrs is
-> verified with EVM. The kernel and the user see different values due to the
-> different functions used to obtain them:
->
-> kernel (EVM): uses vfs_getxattr_alloc() which obtains the xattr value from
->                the filesystem handler (raw value);
->
-> user (ima-evm-utils): uses vfs_getxattr() which obtains the xattr value
->                        from the LSMs (normalized value).
+On 16.06.21 10:31, Linus Walleij wrote:
+ > Hi Enrico,
 
-Maybe there should be another implementation similar to 
-vfs_getxattr_alloc() (or modify it) to behave like vfs_getxattr() but do 
-the memory allocation part so that the kernel sees what user space see 
-rather than modifying it with your patch so that user space now sees 
-something different than what it has been for years (previous 
-NUL-terminated SELinux xattr may not be NUL-terminated anymore)?
+ > So now there are two contesting patches for this and that creates a
+ > social problem for us as maintainers. I am not too happy about that.
 
-     Stefan
+note that this is a polished up of a repost of my original driver
+from last year.
+
+ > Can we get the discussion down to actual technical points?
+
+Sure. Perhaps you recall or discussions from late 2020. The missing
+point there was (besides a few wording issues) the missing formal
+specification process w/ virtio TC. (spec was already included in this
+driver as well as the corresponding qemu patches).
+
+My spec was not just meant for VM applications but also actual silicon
+(as already mentioned, some folks of my client also implemented it in
+FPGAs - don't ask me about details, they just mentioned it was quite
+easy for them).
+
+This is why it is so trimmed on things like fixed packet size,
+unidirectional queues, mirroring packets w/ thus a few bits changed,
+etc. In constrast, a more network-like approach might have been looking
+nicer to traditional computer programmers, but much more complex to do
+in pure logic and eat up *lots of* more gates (think of actual memory
+management instead of hardwired latches, more complex decoding, etc).
+
+Meanwhile it played out working nicely in several HIL installations
+
+If I wanted to have a simple and CPU-only approach (just for VMs), I
+would have just mounted some sysfs pieces via 9P :p
+
+Several weeks ago, Viresh just wanted to continue the missing pieces
+(which was: tex'ifying the spec and submitting to virtio TC), but then
+unfortunately he invented something entirely different also put my name
+on it.
+
+Easy to imagine that I'm not amused at all.
 
 
+--mtx
 
-
->
-> Given that the difference between the raw value and the normalized value
-> should be just the additional '\0' not the rest of the content, this patch
-> modifies vfs_getxattr() to compare the size of the xattr value obtained
-> from the LSMs to the size of the raw xattr value. If there is a mismatch
-> and the filesystem handler does not return an error, vfs_getxattr() returns
-> the raw value.
->
-> This patch should have a minimal impact on existing systems, because if the
-> SELinux label is written with the appropriate tools such as setfiles or
-> restorecon, there will not be a mismatch (because the raw value also has
-> '\0').
->
-> In the case where the SELinux label is written directly with setfattr and
-> without '\0', this patch helps to align EVM and ima-evm-utils in terms of
-> result provided (due to the fact that they both verify the integrity of
-> xattrs from raw values).
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Tested-by: Mimi Zohar <zohar@linux.ibm.com>
-> ---
->   fs/xattr.c | 15 +++++++++++++++
->   1 file changed, 15 insertions(+)
->
-> diff --git a/fs/xattr.c b/fs/xattr.c
-> index 5c8c5175b385..412ec875aa07 100644
-> --- a/fs/xattr.c
-> +++ b/fs/xattr.c
-> @@ -420,12 +420,27 @@ vfs_getxattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->   		const char *suffix = name + XATTR_SECURITY_PREFIX_LEN;
->   		int ret = xattr_getsecurity(mnt_userns, inode, suffix, value,
->   					    size);
-> +		int ret_raw;
-> +
->   		/*
->   		 * Only overwrite the return value if a security module
->   		 * is actually active.
->   		 */
->   		if (ret == -EOPNOTSUPP)
->   			goto nolsm;
-> +
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		/*
-> +		 * Read raw xattr if the size from the filesystem handler
-> +		 * differs from that returned by xattr_getsecurity() and is
-> +		 * equal or greater than zero.
-> +		 */
-> +		ret_raw = __vfs_getxattr(dentry, inode, name, NULL, 0);
-> +		if (ret_raw >= 0 && ret_raw != ret)
-> +			goto nolsm;
-> +
->   		return ret;
->   	}
->   nolsm:
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
