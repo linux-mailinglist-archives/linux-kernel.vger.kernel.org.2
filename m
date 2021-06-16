@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150063A9CAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FE93A9CB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233676AbhFPNxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:53:52 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:54841 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233668AbhFPNxS (ORCPT
+        id S233679AbhFPNzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233711AbhFPNyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:53:18 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1ltVwh-003dtG-Ni; Wed, 16 Jun 2021 15:51:07 +0200
-Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1ltVwh-002hI1-HL; Wed, 16 Jun 2021 15:51:07 +0200
-Subject: Re: remove the legacy ide driver v2
-To:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org
-References: <20210616134658.1471835-1-hch@lst.de>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <c5b74922-2c2d-c7bb-5302-65e675debdfe@physik.fu-berlin.de>
-Date:   Wed, 16 Jun 2021 15:51:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 16 Jun 2021 09:54:41 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7E0C0617AE
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:52:16 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id q25so2275720pfh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:52:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=VozsCG34N+zg6xWc2EdM6N9UtXiLzWiPDlKE1T01qD8=;
+        b=RM/yH+l97AcJD0c88YYjnisneTB8PqyPSWJybvmCapob5up+5FdIVgkTd1oMAhqEtc
+         FK3e4DGrNxhA86UeYaWJuKKQRfNP9oclNNTdRIJadzA6uy5fd7m7Ac2admXWqZf2TuF4
+         d7DYSxBx5ymW5Jdz8NTYPqQ76iosjYLG4C17YYIhS4x+FYroEe6GCEfmjaxKXuQ63tzJ
+         3PAtQpH1NDeyy7Pjxb0EQKpVlq5g8bG0WhYFE/fZc19sk9EEnycMcPZKw57lRlRdUxIN
+         llaG+k1ncUCky/IVb6Dr7JpEdv57c/nILbBVLgCvhSaFf4bPVCxBZODvaO+ndftxF71Q
+         LogQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=VozsCG34N+zg6xWc2EdM6N9UtXiLzWiPDlKE1T01qD8=;
+        b=uVu2lVqLDJAybj+/1/PW6tZmb11DECOW+hUcBIf6rPPQp4XR0bUOcnRrlUUSVdoqQj
+         xN/+xhxWZVsRk5Q+fkv2m7w2VZ4C9VYetSK/NvoFIxCgsG0/gMLy3syMFzjcy3znPjWx
+         mqeP3FuI1YblT1NUt0B3DhJUui0cJRHT8FYNivuX/qNwRr3WeSLXWy3pNUJ2cHd+GLZC
+         rjfot/vCcpmThdatQdQVl33siijmHKiEZiHzO6U1v/bzEGSd/BXZyXT0zSQKs5TlqhMp
+         C6bTgcvk3nYFrLiMGZmS5RJkvqBlkhUd9rRWDcRiiubjH5HmNYsPdXfGYW1ZfFfZa7ur
+         5Jxw==
+X-Gm-Message-State: AOAM532gE+rXrxmW4+NH5Af1GYp2tR7RsuK0KVtbWsWjpjaU4EJCz+Lw
+        EwTpmylv0rcPejjH7mgT6q7+rgFB5pgdEw==
+X-Google-Smtp-Source: ABdhPJx3IXQ5qoIgQ/w8ZBD8jeialqo6NKQuXUPwixazluSdr0Kl0TfbBaU8SUEwZV+RW0KWZ7tJbw==
+X-Received: by 2002:a05:6a00:a89:b029:2ee:da59:e89c with SMTP id b9-20020a056a000a89b02902eeda59e89cmr9686789pfl.17.1623851535470;
+        Wed, 16 Jun 2021 06:52:15 -0700 (PDT)
+Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
+        by smtp.gmail.com with ESMTPSA id 20sm2389772pfi.170.2021.06.16.06.52.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 06:52:14 -0700 (PDT)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        senozhatsky@chromium.org, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] printk: Move EXPORT_SYMBOL() closer to vprintk definition
+References: <20210614235635.887365-1-punitagrawal@gmail.com>
+        <8c16059d-6e58-a3e4-25ef-7e2bcabecd86@rasmusvillemoes.dk>
+        <YMmggRL/htxFK2VY@alley> <YMmmhDQSX7gLmnN9@alley>
+        <87im2ent74.fsf@jogness.linutronix.de> <YMnBQW2pInXyW3vv@alley>
+Date:   Wed, 16 Jun 2021 22:52:12 +0900
+In-Reply-To: <YMnBQW2pInXyW3vv@alley> (Petr Mladek's message of "Wed, 16 Jun
+        2021 11:15:45 +0200")
+Message-ID: <87sg1hsyr7.fsf@stealth>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210616134658.1471835-1-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 160.45.32.140
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph!
+Hi Petr,
 
-On 6/16/21 3:46 PM, Christoph Hellwig wrote:
-> libata mostly covers all hardware supported by the legacy ide driver.
-> There are three mips drivers that are not supported, but the linux-mips
-> list could not identify any users of those.  There also are two m68k
-> drivers that do not have libata equivalents, which might or might not
-> have users, so we'll need some input and possibly help from the m68k
-> community here.
+Apologies for the delayed response.
 
-I think the m68k drivers are being addressed at the moment. But Geert will
-know more about the current status.
+Petr Mladek <pmladek@suse.com> writes:
 
-Adrian
+> On Wed 2021-06-16 09:57:11, John Ogness wrote:
+>> On 2021-06-16, Petr Mladek <pmladek@suse.com> wrote:
+>> >>> Petr, as this is causing trouble for the -rt patchset, please
+>> >>> consider if this could make it to Linus before v5.13 release.
+>> >
+>> > Punit, John, would you mind when I queue this change for-5.14?  It
+>> > seems that, you, RT-guys already handled this, so it will not help
+>> > much if I sent it now. It does not look appropriate to send just a
+>> > single cosmetic fix few days before rc7.
+>> 
+>> Since this cosmetic problem was introduced during the 5.13 merge window,
+>> it would help if it is fixed before the 5.13 release. Obviously this is
+>> not a reason to have an rc7. But if there is going to be an rc7, I think
+>> this fix should be included.
+>
+> OK, I have committed the patch into printk/linux.git, branch
+> for-5.13-fixup.
+>
+> I am going to send the pull request later this week, most likely
+> tomorrow.
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Thanks for picking this up.
+
+It's good to have to the patch go in early, but 5.14 would also be fine.
+
+Punit
+
+[...]
+
