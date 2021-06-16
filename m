@@ -2,150 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C21F63A9869
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14423A9856
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbhFPLCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbhFPLCt (ORCPT
+        id S231719AbhFPLAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:00:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46214 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229563AbhFPLAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:02:49 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9C8C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 04:00:42 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id w21so2114185edv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 04:00:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=sYAv+AVeb+Fl5OMylSeVqqG1epfvgEGQg3zps/TWGMY=;
-        b=aO4lKMzMpD+C0oS3UIKPWBQnGIq1n3zblm08F6g5xcTnuaeQtVbzjzgNnIYGEJvmCA
-         t1i9+82HhRWJ8pJrJAIYZCjbS3NlK2vP5ZOU+wOGzKczgcx7YG6DOt1tprLBASNoBW+j
-         JcgEtKpdc8N/7puP3wZsjl167ne/Ch5MonvJIOqsO+hRfv9zqRnnHIJyVWLDdxOWa2tl
-         aEF2V3gS4SyI0GWZ+I7Go9ZAkV6VEfWMYaIo5VXozGt9erIyl9hhhtXvaVp6i/7bIMhL
-         KToyYClsjbvgeaEFgL+zIvDPRumjvqm0dqm0jmyVIYiMRlDYXuvQgAlxhw01Thwl/8rZ
-         jUVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=sYAv+AVeb+Fl5OMylSeVqqG1epfvgEGQg3zps/TWGMY=;
-        b=AlY0hEd+ElaWB2+xTDQUholYsFD73CN3BjlRlJu5J+IXWLbPNN6A3xl5di5kCKzrWu
-         9yUmBU0paXyrw3Pf+tApgQhRDdg6YASH6NxpiG5fA/3dA8rhcoyuxpeCpGAIVxwp+E/N
-         yIQ392c8GUJuXXP2Kiz6GIYudhraYQE8ElTVn5Rorc+oG5VACDIeX/romg7MW+pCI8l+
-         bqB56FGAkEUMEZBCe7mTE1BirI+9Vxptm5gcqh3OMfQv8w4mR7mwA1ybGis+BJWwgcIT
-         Kmr7zh2wT55NjhetOvDF4I3IOng3P10Yd+13VUWPNrMoljOLVNB64+uYzQUbr2gsPYdt
-         es4g==
-X-Gm-Message-State: AOAM5313UMrHCSezQcbLx4KT/UsABGjIkbGpFGK05x8mxZPpTxNbW9P3
-        5Vp7XFwBiCAbppXbxHTqlwaK0EbHpzI=
-X-Google-Smtp-Source: ABdhPJwALbarIGLPP4tky17k4V8t9tif2+4uah9WHyiY+qOeSeASu1heOe0dMT7dChJVH9vsXheYaA==
-X-Received: by 2002:a05:6402:487:: with SMTP id k7mr3323656edv.315.1623841240803;
-        Wed, 16 Jun 2021 04:00:40 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:afc4:3771:10a6:8a6d? ([2a02:908:1252:fb60:afc4:3771:10a6:8a6d])
-        by smtp.gmail.com with ESMTPSA id d22sm1392068ejj.47.2021.06.16.04.00.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 04:00:40 -0700 (PDT)
-Subject: Re: [PATCH] drm/ttm: fix error handling in ttm_bo_handle_move_mem()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Thomas Hellstr <C3@mwanda>, B6@mwanda,
-        m <thomas.hellstrom@linux.intel.com>,
-        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <YMmadPwv8C+Ut1+o@mwanda>
- <03d0b798-d1ab-5b6f-2c27-8140d923d445@gmail.com>
- <20210616083758.GC1901@kadam>
- <520a9d1f-8841-8d5e-595d-23783de8333d@gmail.com>
- <20210616093604.GD1901@kadam>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <7354cd94-06bf-ec36-4539-c3570c1775ae@gmail.com>
-Date:   Wed, 16 Jun 2021 13:00:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 16 Jun 2021 07:00:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623841119;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3to17QVrTqCUHQKHYC721zh9N8G91Zje9XR33PdSe6g=;
+        b=QDuNl616DuVnTVTsexNmXn+iWQ1bBPmjLHvaJklwdJbvNFAPEQJDaYda7ravY7+fok/FWq
+        +VXM4tPRn+D8olhXVPtwqNk6rj5YbWsFZdTXD438NqXG+xHS+Yj8SMH0quBJ+2+sAVYIye
+        IntZPOUH7B4DuyADtb4HuyWVgdt2jkU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-68-Ou8m_Eu3M-OBTpGlU8yPIw-1; Wed, 16 Jun 2021 06:58:38 -0400
+X-MC-Unique: Ou8m_Eu3M-OBTpGlU8yPIw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F1E7107ACF6;
+        Wed, 16 Jun 2021 10:58:37 +0000 (UTC)
+Received: from [10.64.54.84] (vpn2-54-84.bne.redhat.com [10.64.54.84])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8C2CA10023B5;
+        Wed, 16 Jun 2021 10:58:30 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [RFC PATCH] mm/page_reporting: Adjust threshold according to
+ MAX_ORDER
+To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        shan.gavin@gmail.com,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+References: <20210601033319.100737-1-gshan@redhat.com>
+ <76516781-6a70-f2b0-f3e3-da999c84350f@redhat.com>
+ <0c0eb8c8-463d-d6f1-3cec-bbc0af0a229c@redhat.com>
+ <b45b26ea-a6ac-934c-2467-c6e829b5d3ad@redhat.com>
+ <74b0d35f-707d-aa11-19e7-fedb74d77159@redhat.com>
+ <6ebc99f9-649d-fbd2-aadf-87291e41b36d@redhat.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <bd49c9d2-fb0b-5387-45f4-dbaa7a9eac2c@redhat.com>
+Date:   Wed, 16 Jun 2021 22:59:33 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <20210616093604.GD1901@kadam>
+In-Reply-To: <6ebc99f9-649d-fbd2-aadf-87291e41b36d@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Am 16.06.21 um 11:36 schrieb Dan Carpenter:
-> On Wed, Jun 16, 2021 at 10:47:14AM +0200, Christian König wrote:
->>
->> Am 16.06.21 um 10:37 schrieb Dan Carpenter:
->>> On Wed, Jun 16, 2021 at 08:46:33AM +0200, Christian König wrote:
->>>> Sending the first message didn't worked, so let's try again.
->>>>
->>>> Am 16.06.21 um 08:30 schrieb Dan Carpenter:
->>>>> There are three bugs here:
->>>>> 1) We need to call unpopulate() if ttm_tt_populate() succeeds.
->>>>> 2) The "new_man = ttm_manager_type(bdev, bo->mem.mem_type);" assignment
->>>>>       was wrong and it was really assigning "new_mem = old_mem;".  There
->>>>>       is no need for this assignment anyway as we already have the value
->>>>>       for "new_mem".
->>>>> 3) The (!new_man->use_tt) condition is reversed.
+On 6/16/21 5:59 PM, David Hildenbrand wrote:
+> On 16.06.21 03:53, Gavin Shan wrote:
+>> On 6/14/21 9:03 PM, David Hildenbrand wrote:
+>>> On 11.06.21 09:44, Gavin Shan wrote:
+>>>> On 6/1/21 6:01 PM, David Hildenbrand wrote:
+>>>>> On 01.06.21 05:33, Gavin Shan wrote:
+>>>>>> The PAGE_REPORTING_MIN_ORDER is equal to @pageblock_order, taken as
+>>>>>> minimal order (threshold) to trigger page reporting. The page reporting
+>>>>>> is never triggered with the following configurations and settings on
+>>>>>> aarch64. In the particular scenario, the page reporting won't be triggered
+>>>>>> until the largest (2 ^ (MAX_ORDER-1)) free area is achieved from the
+>>>>>> page freeing. The condition is very hard, or even impossible to be met.
+>>>>>>
+>>>>>>      CONFIG_ARM64_PAGE_SHIFT:              16
+>>>>>>      CONFIG_HUGETLB_PAGE:                  Y
+>>>>>>      CONFIG_HUGETLB_PAGE_SIZE_VARIABLE:    N
+>>>>>>      pageblock_order:                      13
+>>>>>>      CONFIG_FORCE_MAX_ZONEORDER:           14
+>>>>>>      MAX_ORDER:                            14
+>>>>>>
+>>>>>> The issue can be reproduced in VM, running kernel with above configurations
+>>>>>> and settings. The 'memhog' is used inside the VM to access 512MB anonymous
+>>>>>> area. The QEMU's RSS doesn't drop accordingly after 'memhog' exits.
+>>>>>>
+>>>>>>      /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64          \
+>>>>>>      -accel kvm -machine virt,gic-version=host                        \
+>>>>>>      -cpu host -smp 8,sockets=2,cores=4,threads=1 -m 4096M,maxmem=64G \
+>>>>>>      -object memory-backend-ram,id=mem0,size=2048M                    \
+>>>>>>      -object memory-backend-ram,id=mem1,size=2048M                    \
+>>>>>>      -numa node,nodeid=0,cpus=0-3,memdev=mem0                         \
+>>>>>>      -numa node,nodeid=1,cpus=4-7,memdev=mem1                         \
+>>>>>>        :                                                              \
+>>>>>>      -device virtio-balloon-pci,id=balloon0,free-page-reporting=yes
+>>>>>>
+>>>>>> This tries to fix the issue by adjusting the threshold to the smaller value
+>>>>>> of @pageblock_order and (MAX_ORDER/2). With this applied, the QEMU's RSS
+>>>>>> drops after 'memhog' exits.
 >>>>>
->>>>> Fixes: ba4e7d973dd0 ("drm: Add the TTM GPU memory manager subsystem.")
->>>>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
->>>>> ---
->>>>> This is from reading the code and I can't swear that I have understood
->>>>> it correctly.  My nouveau driver is currently unusable and this patch
->>>>> has not helped.  But hopefully if I fix enough bugs eventually it will
->>>>> start to work.
->>>> Well NAK, the code previously looked quite well and you are breaking it now.
+>>>>> IIRC, we use pageblock_order to
+>>>>>
+>>>>> a) Reduce the free page reporting overhead. Reporting on small chunks can make us report constantly with little system activity.
+>>>>>
+>>>>> b) Avoid splitting THP in the hypervisor, avoiding downgraded VM performance.
+>>>>>
+>>>>> c) Avoid affecting creation of pageblock_order pages while hinting is active. I think there are cases where "temporary pulling sub-pageblock pages" can negatively affect creation of pageblock_order pages. Concurrent compaction would be one of these cases.
+>>>>>
+>>>>> The monstrosity called aarch64 64k is really special in that sense, because a) does not apply because pageblocks are just very big, b) does sometimes not apply because either our VM isn't backed by (rare) 512MB THP or uses 4k with 2MB THP and c) similarly doesn't apply in smallish VMs because we don't really happen to create 512MB THP either way.
+>>>>>
+>>>>>
+>>>>> For example, going on x86-64 from reporting 2MB to something like 32KB is absolutely undesired.
+>>>>>
+>>>>> I think if we want to go down that path (and I am not 100% sure yet if we want to), we really want to treat only the special case in a special way. Note that even when doing it only for aarch64 with 64k, you will still end up splitting THP in a hypervisor if it uses 64k base pages (b)) and can affect creation of THP, for example, when compacting (c), so there is a negative side to that.
+>>>>>
 >>>>
->>>> What's the problem with nouveau?
+>>>> [Remove Alexander from the cc list as his mail isn't reachable]
 >>>>
->>> The new Firefox seems to excersize nouveau more than the old one so
->>> when I start 10 firefox windows it just hangs the graphics.
 >>>
->>> I've added debug code and it seems like the problem is that
->>> nv50_mem_new() is failing.
->> Sounds like it is running out of memory to me.
+>>> [adding his gmail address which should be the right one]
+>>>
+>>>> David, thanks for your time to review and sorry for the delay and late response.
+>>>> I spent some time to get myself familiar with the code, but there are still some
+>>>> questions to me, explained as below.
+>>>>
+>>>> Yes, @pageblock_order is currently taken as page reporting threshold. It will
+>>>> incur more overhead if the threshold is decreased as you said in (a).
+>>>
+>>> Right. Alex did quite some performance/overhead evaluation when introducing this feature. Changing the reporting granularity on most setups (esp., x86-64) is not desired IMHO.
+>>>
 >>
->> Do you have a dmesg?
+>> Thanks for adding Alex's correct mail address, David.
 >>
-> At first there was a very straight forward use after free bug which I
-> fixed.
-> https://lore.kernel.org/nouveau/YMinJwpIei9n1Pn1@mwanda/T/#u
->
-> But now the use after free is gone the only thing in dmesg is:
-> "[TTM] Buffer eviction failed".  And I have some firmware missing.
->
-> [  205.489763] rfkill: input handler disabled
-> [  205.678292] nouveau 0000:01:00.0: Direct firmware load for nouveau/nva8_fuc084 failed with error -2
-> [  205.678300] nouveau 0000:01:00.0: Direct firmware load for nouveau/nva8_fuc084d failed with error -2
-> [  205.678302] nouveau 0000:01:00.0: msvld: unable to load firmware data
-> [  205.678304] nouveau 0000:01:00.0: msvld: init failed, -19
-> [  296.150632] [TTM] Buffer eviction failed
-> [  417.084265] [TTM] Buffer eviction failed
-> [  447.295961] [TTM] Buffer eviction failed
-> [  510.800231] [TTM] Buffer eviction failed
-> [  556.101384] [TTM] Buffer eviction failed
-> [  616.495790] [TTM] Buffer eviction failed
-> [  692.014007] [TTM] Buffer eviction failed
->
-> The eviction failed message only shows up a minute after the hang so it
-> seems more like a symptom than a root cause.
+>>>>
+>>>> This patch tries to decrease the free page reporting threshold. The @pageblock_order
+>>>> isn't touched. I don't understand how the code changes affecting THP splitting
+>>>> and the creation of page blocks mentioned in (b) and (c). David, could you please
+>>>> provide more details?
+>>>
+>>> Think of it like this: while reporting to the hypervisor, we temporarily turn free/"movable" pieces part of a pageblock "unmovable" -- see __isolate_free_page()->del_page_from_free_list(). While reporting them to the hypervisor, these pages are not available and not even marked as PageBuddy() anymore.
+>>>
+>>> There are at least two scenarios where this could affect creation of free pageblocks I can see:
+>>>
+>>> a. Compaction. While compacting, we might identify completely movable/free pageblocks, however, actual compaction on that pageblock can fail because some part is temporarily unmovable.
+>>>
+>>> b. Free/alloc sequences. Assume a pageblocks is mostly free, except two pages (x and y). Assume the following sequence:
+>>>
+>>> 1. free(x)
+>>> 2. free(y)
+>>> 3. alloc
+>>>
+>>> Before your change, after 1. and 2. we'll have a free pageblock. 3 won't allocate from that pageblock.
+>>>
+>>> With your change, free page reporting might run after 1. After 2, we'll not have a free pageblock (until free page reporting finished), and 3. might just reallocate what we freed in 2 and prevent having a free pageblock.
+>>>
+>>>
+>>> No idea how relevant both points are in practice, however, the fundamental difference to current handling is that we would turn parts of pageblocks temporarily unmovable, instead of complete pageblocks.
+>>>
+>>
+>> Thank you for the details. Without my changes and the page reporting threshold
+>> is @pageblock_order, the whole page block can become 'movable' from 'unmovable'.
+>> I don't think it's what we want, but I need Alex's confirm.
+> 
+> __isolate_free_page() will set the pageblock MIGRATE_MOVABLE in that case. It's only temporarily unmovable, while we're hinting.
+> 
+> Note that MOVABLE vs. UNMOVABLE is just grouping for free pages, and even setting it to the wrong migratetype isn't "wrong" as in "correctness". It doesn't make a difference if there are no free pages because the whole block is isolated.
+> 
 
-Yeah, look at the timing. What happens is that the buffer eviction timed 
-out because the hardware is locked up.
+Yes, It doesn't matter since these pages have been isolated. The migration type is changed to MIGRATE_MOVABLE
+in __isolated_free_page(). My questions are actually:
 
-No idea what that could be. It might not even be kernel related at all.
+(1) Is it possible the migration type is changed from MIGRATE_UNMOVABLE to MIGRATE_MOVABLE
+     in __isolated_free_page()?
+(2) After the free page reporting is completed, the migrate type is restored to MIGRATE_UNMOVABLE?
 
-Regards,
-Christian.
-
->
-> regards,
-> dan carpenter
->
+Thanks,
+Gavin
 
