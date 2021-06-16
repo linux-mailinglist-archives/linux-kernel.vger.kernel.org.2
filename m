@@ -2,107 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AAD3A9CF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F0F3A9CEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233775AbhFPOIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:08:31 -0400
-Received: from mga02.intel.com ([134.134.136.20]:63903 "EHLO mga02.intel.com"
+        id S233764AbhFPOHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:07:23 -0400
+Received: from mga05.intel.com ([192.55.52.43]:46500 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233420AbhFPOI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:08:27 -0400
-IronPort-SDR: GczPlc79uu6ssbfv71Kai5W36lxtYtOQ9LBD11Jxm9qftNo5EsXE5jNpTVmeG9z3tFrZcI+wiu
- 0r2Cvo7ljqQQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="193302315"
+        id S233592AbhFPOHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 10:07:21 -0400
+IronPort-SDR: csX7rbVSL6HOcA1gsVzYpv6R2vywBNftXEQqifo+Qowbx3m3YBehnh/nBMhapghw3//rHYl7TF
+ 59z3W5So5X0Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="291813084"
 X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="193302315"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 07:06:20 -0700
-IronPort-SDR: rhkRQCYvGclBnd+hF191KeKexMCIvZIEqGUBRbNM0royz7cMw/B0MzC6w7/QVj39W8s7NCq2tx
- 8OKg216xfSVg==
-X-ExtLoop1: 1
+   d="scan'208";a="291813084"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 07:05:15 -0700
+IronPort-SDR: dV2AwjTcL1XgrGLea/lTCqvSmWGX79q1zgcOfVt2RnTLz9AGIkyqcnxHK8cmqUz5/bNv8nr2FE
+ Ih/VEAxYqCdQ==
 X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="554816631"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 16 Jun 2021 07:06:19 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id E9E2E2AA; Wed, 16 Jun 2021 17:06:43 +0300 (EEST)
+   d="scan'208";a="554048291"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 07:05:13 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1ltWAI-002pmh-5s; Wed, 16 Jun 2021 17:05:10 +0300
+Date:   Wed, 16 Jun 2021 17:05:10 +0300
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jean Delvare <jdelvare@suse.com>
-Subject: [PATCH v1 1/1] i2c: parport: Switch to use module_parport_driver()
-Date:   Wed, 16 Jun 2021 17:04:41 +0300
-Message-Id: <20210616140441.39479-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Oliver O'Halloran <oohall@gmail.com>
+Subject: Re: [PATCH v2 1/1] powerpc/papr_scm: Properly handle UUID types and
+ API
+Message-ID: <YMoFFn3J+eUzkUYh@smile.fi.intel.com>
+References: <20210616134303.58185-1-andriy.shevchenko@linux.intel.com>
+ <6f895afd-3469-c330-a4da-72db89dba6b3@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6f895afd-3469-c330-a4da-72db89dba6b3@linux.ibm.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to use module_parport_driver() to reduce boilerplate code.
+On Wed, Jun 16, 2021 at 07:17:03PM +0530, Aneesh Kumar K.V wrote:
+> On 6/16/21 7:13 PM, Andy Shevchenko wrote:
+> > Parse to and export from UUID own type, before dereferencing.
+> > This also fixes wrong comment (Little Endian UUID is something else)
+> > and should eliminate the direct strict types assignments.
+> > 
+> > Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
+> > Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
+> 
+> Do we need the Fixes: there? It didn't change any functionality right? The
+> format with which we stored cookie1 remains the same with older and newer
+> code. The newer one is better?
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/i2c/busses/i2c-parport.c | 36 ++++++++++----------------------
- 1 file changed, 11 insertions(+), 25 deletions(-)
+Depends if you are okay with Sparse warnings.
 
-diff --git a/drivers/i2c/busses/i2c-parport.c b/drivers/i2c/busses/i2c-parport.c
-index a535889acca6..ccbbc9306e88 100644
---- a/drivers/i2c/busses/i2c-parport.c
-+++ b/drivers/i2c/busses/i2c-parport.c
-@@ -267,6 +267,16 @@ static void i2c_parport_attach(struct parport *port)
- 	int i;
- 	struct pardev_cb i2c_parport_cb;
- 
-+	if (type < 0) {
-+		pr_warn("adapter type unspecified\n");
-+		return -ENODEV;
-+	}
-+
-+	if (type >= ARRAY_SIZE(adapter_parm)) {
-+		pr_warn("invalid type (%d)\n", type);
-+		return -ENODEV;
-+	}
-+
- 	for (i = 0; i < MAX_DEVICE; i++) {
- 		if (parport[i] == -1)
- 			continue;
-@@ -392,32 +402,8 @@ static struct parport_driver i2c_parport_driver = {
- 	.detach = i2c_parport_detach,
- 	.devmodel = true,
- };
--
--/* ----- Module loading, unloading and information ------------------------ */
--
--static int __init i2c_parport_init(void)
--{
--	if (type < 0) {
--		pr_warn("adapter type unspecified\n");
--		return -ENODEV;
--	}
--
--	if (type >= ARRAY_SIZE(adapter_parm)) {
--		pr_warn("invalid type (%d)\n", type);
--		return -ENODEV;
--	}
--
--	return parport_register_driver(&i2c_parport_driver);
--}
--
--static void __exit i2c_parport_exit(void)
--{
--	parport_unregister_driver(&i2c_parport_driver);
--}
-+module_parport_driver(i2c_parport_driver);
- 
- MODULE_AUTHOR("Jean Delvare <jdelvare@suse.de>");
- MODULE_DESCRIPTION("I2C bus over parallel port");
- MODULE_LICENSE("GPL");
--
--module_init(i2c_parport_init);
--module_exit(i2c_parport_exit);
+> Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+
+Thanks for review!
+
 -- 
-2.30.2
+With Best Regards,
+Andy Shevchenko
+
 
