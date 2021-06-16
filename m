@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53E83A9FCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C36F3A9F7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235224AbhFPPl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:41:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51740 "EHLO mail.kernel.org"
+        id S235097AbhFPPid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:38:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235011AbhFPPjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:39:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DC73613D8;
-        Wed, 16 Jun 2021 15:36:46 +0000 (UTC)
+        id S234931AbhFPPhb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:37:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A01D0613D3;
+        Wed, 16 Jun 2021 15:35:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857807;
-        bh=Vspvsrwq+HMh5zo2lywXb+v0OGmxGRWtwUajJD+vy9k=;
+        s=korg; t=1623857724;
+        bh=uU3E+HpHiuf4G518xekdhVkqedtIxnVtoN6FngjHGNs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vsFEB5Q0DQVUfSS02javytq81vT3Vq/7r1cA1YJJdadHss1tkS6/nGU71jj7DrFuV
-         95cg3mOhKi57Y/lpATut4uIlU9652NAMpmqeEU5nmGPmaGzXSW7cf0p+5LrJoAY/Fw
-         v/Ju1q7T6iQzpvK5TPc90pzNR4WdsliaI7vL2hno=
+        b=fPptK++MjmYbAUwdRkwJ25HxmyWpvOuNXAtUze59WyGVa1y/mn91YIDFzDiLG8xLt
+         t0w6jwMhkDJDsTjNnV3ovb6HKS4BVktT5GRFfNkL374cDsU8yqOJoN/ffwAivCDiGQ
+         4Or7dPD9ndqoJGAcxAdVGy05XL2c4vEeRRTMDxTw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Yongqiang Liu <liuyongqiang13@huawei.com>,
+        Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 13/48] mt76: mt7921: fix max aggregation subframes setting
+Subject: [PATCH 5.10 14/38] ARM: OMAP2+: Fix build warning when mmc_omap is not built
 Date:   Wed, 16 Jun 2021 17:33:23 +0200
-Message-Id: <20210616152837.079530322@linuxfoundation.org>
+Message-Id: <20210616152835.852053939@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-References: <20210616152836.655643420@linuxfoundation.org>
+In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
+References: <20210616152835.407925718@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Yongqiang Liu <liuyongqiang13@huawei.com>
 
-[ Upstream commit 94bb18b03d43f32e9440e8e350b7f533137c40f6 ]
+[ Upstream commit 040ab72ee10ea88e1883ad143b3e2b77596abc31 ]
 
-The hardware can only handle 64 subframes in rx direction and 128 for tx.
-Improves throughput with APs that can handle more than that
+GCC reports the following warning with W=1:
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210507100211.15709-2-nbd@nbd.name
+arch/arm/mach-omap2/board-n8x0.c:325:19: warning:
+variable 'index' set but not used [-Wunused-but-set-variable]
+325 |  int bit, *openp, index;
+    |                   ^~~~~
+
+Fix this by moving CONFIG_MMC_OMAP to cover the rest codes
+in the n8x0_mmc_callback().
+
+Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7921/init.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/mach-omap2/board-n8x0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/init.c b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-index 89a13b4a74a4..c0001e38fcce 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-@@ -74,8 +74,8 @@ mt7921_init_wiphy(struct ieee80211_hw *hw)
- 	struct wiphy *wiphy = hw->wiphy;
+diff --git a/arch/arm/mach-omap2/board-n8x0.c b/arch/arm/mach-omap2/board-n8x0.c
+index 418a61ecb827..5e86145db0e2 100644
+--- a/arch/arm/mach-omap2/board-n8x0.c
++++ b/arch/arm/mach-omap2/board-n8x0.c
+@@ -322,6 +322,7 @@ static int n8x0_mmc_get_cover_state(struct device *dev, int slot)
  
- 	hw->queues = 4;
--	hw->max_rx_aggregation_subframes = IEEE80211_MAX_AMPDU_BUF;
--	hw->max_tx_aggregation_subframes = IEEE80211_MAX_AMPDU_BUF;
-+	hw->max_rx_aggregation_subframes = 64;
-+	hw->max_tx_aggregation_subframes = 128;
+ static void n8x0_mmc_callback(void *data, u8 card_mask)
+ {
++#ifdef CONFIG_MMC_OMAP
+ 	int bit, *openp, index;
  
- 	phy->slottime = 9;
+ 	if (board_is_n800()) {
+@@ -339,7 +340,6 @@ static void n8x0_mmc_callback(void *data, u8 card_mask)
+ 	else
+ 		*openp = 0;
  
+-#ifdef CONFIG_MMC_OMAP
+ 	omap_mmc_notify_cover_event(mmc_device, index, *openp);
+ #else
+ 	pr_warn("MMC: notify cover event not available\n");
 -- 
 2.30.2
 
