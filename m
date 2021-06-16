@@ -2,74 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07523AA20F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 429013AA219
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbhFPRGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:06:00 -0400
-Received: from mga06.intel.com ([134.134.136.31]:61468 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230167AbhFPRFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:05:41 -0400
-IronPort-SDR: WOjpzz011ZUgdnVaglVipYfrqcpYllI1OhzwsoOGBZq/DATe1ZNENHKhAq+JGW0vzBrSWTU82u
- jFrSUK3zmdJQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="267367479"
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="267367479"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 10:03:32 -0700
-IronPort-SDR: XPa3QheejKa7cc5DroKsDdKOQzb6e5GcdrWa/7Nw1E7w3oneN5/z3JzuFUTT5/e4kl+sQz/oRI
- qMxsoU1n7yLw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="488260773"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 16 Jun 2021 10:03:30 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 622365B5; Wed, 16 Jun 2021 20:03:54 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Subject: [PATCH v1 7/7] ACPI: sysfs: Sort headers alphabetically
-Date:   Wed, 16 Jun 2021 20:03:38 +0300
-Message-Id: <20210616170338.23057-7-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210616170338.23057-1-andriy.shevchenko@linux.intel.com>
-References: <20210616170338.23057-1-andriy.shevchenko@linux.intel.com>
+        id S231315AbhFPRGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:06:37 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48305 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231424AbhFPRGR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 13:06:17 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1ltYxO-0006KD-6q; Wed, 16 Jun 2021 17:04:02 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     James Smart <james.smart@broadcom.com>,
+        Ram Vegesna <ram.vegesna@broadcom.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] scsi: elx: libefc: Fix less than zero comparison of a unsigned int
+Date:   Wed, 16 Jun 2021 18:04:01 +0100
+Message-Id: <20210616170401.15831-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the sake of better maintenance, sort included headers alphabetically.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+The comparison of the u32 variable rc to less than zero always
+false because it is unsigned. Fix this by making it an int.
+
+Addresses-Coverity: ("Unsigned compared against 0")
+Fixes: 202bfdffae27 ("scsi: elx: libefc: FC node ELS and state handling")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/acpi/sysfs.c | 2 +-
+ drivers/scsi/elx/libefc/efc_device.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/sysfs.c b/drivers/acpi/sysfs.c
-index 5474563d72b8..00c0ebaab29f 100644
---- a/drivers/acpi/sysfs.c
-+++ b/drivers/acpi/sysfs.c
-@@ -5,11 +5,11 @@
+diff --git a/drivers/scsi/elx/libefc/efc_device.c b/drivers/scsi/elx/libefc/efc_device.c
+index 31a688bce6e9..725ca2a23fb2 100644
+--- a/drivers/scsi/elx/libefc/efc_device.c
++++ b/drivers/scsi/elx/libefc/efc_device.c
+@@ -15,7 +15,7 @@
+ void
+ efc_d_send_prli_rsp(struct efc_node *node, u16 ox_id)
+ {
+-	u32 rc = EFC_SCSI_CALL_COMPLETE;
++	int rc = EFC_SCSI_CALL_COMPLETE;
+ 	struct efc *efc = node->efc;
  
- #define pr_fmt(fmt) "ACPI: " fmt
- 
-+#include <linux/acpi.h>
- #include <linux/bitmap.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/moduleparam.h>
--#include <linux/acpi.h>
- 
- #include "internal.h"
- 
+ 	node->ls_acc_oxid = ox_id;
 -- 
-2.30.2
+2.31.1
 
