@@ -2,144 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEF83AA260
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8550F3AA263
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhFPR0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:26:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:42728 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229741AbhFPR0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:26:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AB1E1042;
-        Wed, 16 Jun 2021 10:24:40 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 868023F70D;
-        Wed, 16 Jun 2021 10:24:37 -0700 (PDT)
-Subject: Re: [PATCH v4 2/3] sched/fair: Take thermal pressure into account
- while estimating energy
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, qperret@google.com,
-        vincent.donnefort@arm.com, Beata.Michalska@arm.com,
-        mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
-        segall@google.com, mgorman@suse.de, bristot@redhat.com,
-        thara.gopinath@linaro.org, amit.kachhap@gmail.com,
-        amitk@kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org
-References: <20210614185815.15136-1-lukasz.luba@arm.com>
- <20210614191128.22735-1-lukasz.luba@arm.com>
- <237ef538-c8ca-a103-b2cc-240fc70298fe@arm.com>
- <d214db57-879c-cf3f-caa8-76c2cd369e0d@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <9821712d-be27-a2e7-991c-b0010e23fa70@arm.com>
-Date:   Wed, 16 Jun 2021 19:24:36 +0200
+        id S231132AbhFPR3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:29:13 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52338 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhFPR3M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 13:29:12 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9EAF221A6D;
+        Wed, 16 Jun 2021 17:27:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623864425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2RjVqTk1bZ89HZ0Vl6VNbgo7QZEJ/jobK5ZhIBC94LU=;
+        b=QV45H5Np7o2LLu6APjdnnUzf3ffFav31ia6AG0BjwJfrRa6x1u/P6WQGBGi97HnfeFmljt
+        wIZ/1OFM4NpiEidsWjX7RknZ8/mlPWJraY5u7g45lItemJdOYA+OVRZ3BvXi50hAR0wQAR
+        TvEhTEO0E9zg4hThThe17lpD+Xw6Cks=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623864425;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2RjVqTk1bZ89HZ0Vl6VNbgo7QZEJ/jobK5ZhIBC94LU=;
+        b=c084dfJJBHvrLr+KvQnACGhqnaAp0yf/EtJf+c5PTjFJI/oBAwMeKwg2HJaOuqXmtu7/+d
+        I33wQdft/HBPr5CQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 7C9C0118DD;
+        Wed, 16 Jun 2021 17:27:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623864425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2RjVqTk1bZ89HZ0Vl6VNbgo7QZEJ/jobK5ZhIBC94LU=;
+        b=QV45H5Np7o2LLu6APjdnnUzf3ffFav31ia6AG0BjwJfrRa6x1u/P6WQGBGi97HnfeFmljt
+        wIZ/1OFM4NpiEidsWjX7RknZ8/mlPWJraY5u7g45lItemJdOYA+OVRZ3BvXi50hAR0wQAR
+        TvEhTEO0E9zg4hThThe17lpD+Xw6Cks=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623864425;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2RjVqTk1bZ89HZ0Vl6VNbgo7QZEJ/jobK5ZhIBC94LU=;
+        b=c084dfJJBHvrLr+KvQnACGhqnaAp0yf/EtJf+c5PTjFJI/oBAwMeKwg2HJaOuqXmtu7/+d
+        I33wQdft/HBPr5CQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id jL7tHWk0ymDcOgAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Wed, 16 Jun 2021 17:27:05 +0000
+Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with
+ split_huge_page()
+To:     Yang Shi <shy828301@gmail.com>, Jann Horn <jannh@google.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jan Kara <jack@suse.cz>, stable <stable@vger.kernel.org>
+References: <20210615012014.1100672-1-jannh@google.com>
+ <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
+ <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
+ <CAHbLzkomex+fgC8RyogXu-s5o2UrORMO6D2yTsSXW5Wo5z9WRA@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <6d21f8cb-4b72-bdec-386c-684ddbcdada1@suse.cz>
+Date:   Wed, 16 Jun 2021 19:27:05 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <d214db57-879c-cf3f-caa8-76c2cd369e0d@arm.com>
+In-Reply-To: <CAHbLzkomex+fgC8RyogXu-s5o2UrORMO6D2yTsSXW5Wo5z9WRA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/06/2021 18:09, Lukasz Luba wrote:
-> 
-> On 6/15/21 4:31 PM, Dietmar Eggemann wrote:
->> On 14/06/2021 21:11, Lukasz Luba wrote:
-
-[...]
-
->> It's important to highlight that this will only fix this issue between
->> schedutil and EAS when it's due to `thermal pressure` (today only via
->> CPU cooling). There are other places which could restrict policy->max
->> via freq_qos_update_request() and EAS will be unaware of it.
-> 
-> True, but for this I have some other plans.
-
-As long as people are aware of the fact that this was developed to be
-beneficial for `EAS - IPA` integration, I'm fine with this.
-
-[...]
-
->> IMHO, this means that this is catered for the IPA governor then. I'm not
->> sure if this would be beneficial when another thermal governor is used?
-> 
-> Yes, it will be, the cpufreq_set_cur_state() is called by
-> thermal exported function:
-> thermal_cdev_update()
->   __thermal_cdev_update()
->     thermal_cdev_set_cur_state()
->       cdev->ops->set_cur_state(cdev, target)
-> 
-> So it can be called not only by IPA. All governors call it, because
-> that's the default mechanism.
-
-True, but I'm still not convinced that it is useful outside `EAS - IPA`.
-
->> The mechanical side of the code would allow for such benefits, I just
->> don't know if their CPU cooling device + thermal zone setups would cater
->> for this?
-> 
-> Yes, it's possible. Even for custom vendor governors (modified clones
-> of IPA)
-
-Let's stick to mainline here ;-) It's complicated enough ...
-
-[...]
-
->> Maybe shorter?
+On 6/16/21 1:10 AM, Yang Shi wrote:
+> On Tue, Jun 15, 2021 at 5:10 AM Jann Horn <jannh@google.com> wrote:
 >>
->>          struct cpumask *pd_mask = perf_domain_span(pd);
->> -       unsigned long cpu_cap =
->> arch_scale_cpu_capacity(cpumask_first(pd_mask));
->> +       int cpu = cpumask_first(pd_mask);
->> +       unsigned long cpu_cap = arch_scale_cpu_capacity(cpu);
->> +       unsigned long _cpu_cap = cpu_cap -
->> arch_scale_thermal_pressure(cpu);
->>          unsigned long max_util = 0, sum_util = 0;
->> -       unsigned long _cpu_cap = cpu_cap;
->> -       int cpu;
->> -
->> -       _cpu_cap -= arch_scale_thermal_pressure(cpumask_first(pd_mask));
-> 
-> Could be, but still, the definitions should be sorted from longest on
-> top, to shortest at the bottom. I wanted to avoid modifying too many
-> lines with this simple patch.
-
-Only if there are no dependencies, but here we have already `cpu_cap ->
-pd_mask`. OK, not a big deal.
-
-[...]
-
->> There is IPA specific code in cpufreq_set_cur_state() ->
->> get_state_freq() which accesses the EM:
+>> On Tue, Jun 15, 2021 at 8:37 AM John Hubbard <jhubbard@nvidia.com> wrote:
+>> > On 6/14/21 6:20 PM, Jann Horn wrote:
+>> > > try_grab_compound_head() is used to grab a reference to a page from
+>> > > get_user_pages_fast(), which is only protected against concurrent
+>> > > freeing of page tables (via local_irq_save()), but not against
+>> > > concurrent TLB flushes, freeing of data pages, or splitting of compound
+>> > > pages.
+>> [...]
+>> > Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 >>
->>      ...
->>      return cpufreq_cdev->em->table[idx].frequency;
->>      ...
+>> Thanks!
 >>
->> Has it been discussed that the `per-PD max (allowed) CPU capacity` (1)
->> could be stored in the EM from there so that code like the EAS wakeup
->> code (compute_energy()) could retrieve this information from the EM?
+>> [...]
+>> > > @@ -55,8 +72,23 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
+>> > >       if (WARN_ON_ONCE(page_ref_count(head) < 0))
+>> > >               return NULL;
+>> > >       if (unlikely(!page_cache_add_speculative(head, refs)))
+>> > >               return NULL;
+>> > > +
+>> > > +     /*
+>> > > +      * At this point we have a stable reference to the head page; but it
+>> > > +      * could be that between the compound_head() lookup and the refcount
+>> > > +      * increment, the compound page was split, in which case we'd end up
+>> > > +      * holding a reference on a page that has nothing to do with the page
+>> > > +      * we were given anymore.
+>> > > +      * So now that the head page is stable, recheck that the pages still
+>> > > +      * belong together.
+>> > > +      */
+>> > > +     if (unlikely(compound_head(page) != head)) {
+>> >
+>> > I was just wondering about what all could happen here. Such as: page gets split,
+>> > reallocated into a different-sized compound page, one that still has page pointing
+>> > to head. I think that's OK, because we don't look at or change other huge page
+>> > fields.
+>> >
+>> > But I thought I'd mention the idea in case anyone else has any clever ideas about
+>> > how this simple check might be insufficient here. It seems fine to me, but I
+>> > routinely lack enough imagination about concurrent operations. :)
+>>
+>> Hmmm... I think the scariest aspect here is probably the interaction
+>> with concurrent allocation of a compound page on architectures with
+>> store-store reordering (like ARM). *If* the page allocator handled
+>> compound pages with lockless, non-atomic percpu freelists, I think it
+>> might be possible that the zeroing of tail_page->compound_head in
+>> put_page() could be reordered after the page has been freed,
+>> reallocated and set to refcount 1 again?
+>>
+>> That shouldn't be possible at the moment, but it is still a bit scary.
 > 
-> No, we haven't think about this approach in these patch sets.
-> The EM structure given to the cpufreq_cooling device and stored in:
-> cpufreq_cdev->em should not be modified. There are a few places which
-> receive the EM, but they all should not touch it. For those clients
-> it's a read-only data structure.
-> 
->> And there wouldn't be any need to pass (1) into the EM (like now via
->> em_cpu_energy()).
->> This would be signalling within the EM compared to external signalling
->> via `CPU cooling -> thermal pressure <- EAS wakeup -> EM`.
-> 
-> I see what you mean, but this might cause some issues in the design
-> (per-cpu scmi cpu perf control). Let's use this EM pointer gently ;)
+> It might be possible after Mel's "mm/page_alloc: Allow high-order
+> pages to be stored on the per-cpu lists" patch
+> (https://patchwork.kernel.org/project/linux-mm/patch/20210611135753.GC30378@techsingularity.net/).
 
-OK, with the requirement that clients see the EM as ro:
+Those would be percpu indeed, but not "lockless, non-atomic", no? They are
+protected by a local_lock.
 
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+>>
+>>
+>> I think the lockless page cache code also has to deal with somewhat
+>> similar ordering concerns when it uses page_cache_get_speculative(),
+>> e.g. in mapping_get_entry() - first it looks up a page pointer with
+>> xas_load(), and any access to the page later on would be a _dependent
+>> load_, but if the page then gets freed, reallocated, and inserted into
+>> the page cache again before the refcount increment and the re-check
+>> using xas_reload(), then there would be no data dependency from
+>> xas_reload() to the following use of the page...
+>>
+> 
+
