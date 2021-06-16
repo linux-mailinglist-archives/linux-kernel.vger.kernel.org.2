@@ -2,230 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324D03A8D7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57803A8D7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhFPAcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbhFPAb6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:31:58 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5411AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:29:52 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id u11so605837oiv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:29:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EA4PTF58a5WW5Zwb9g/rsTBq/ZeU4jikbc1MhO+pikk=;
-        b=D7S9HfghGhsbR0shzfNj0tKkCrOII9s4Ej4+eujaW44E2L7yB4e5+Mb/WxQWflYIel
-         ov3QJDZobt8rnUCtCp1IbFhUHZB8FMzzSCx6LI879XgOF2WnST9/Bbxy9bO85Hw+mtbg
-         KXCBq3dB/+H/U7IjAXE8kanDpzntqUS2baLp6JFb9BM9SeISfcgNfRsUbyjSbkU0EOZC
-         tMH2bXiMHJuxdz6zNN/5yutYDkp81vga2mFDB9He8kmbZ+v2gE0QuM/gtGJPnX9unK3V
-         JDPaQ0H2YRgt6pZX5GQpDQNK4X4VyaPwiHbR5zZRw2auaIXCLmCuRi2gfRegn8YhxVC8
-         DsqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EA4PTF58a5WW5Zwb9g/rsTBq/ZeU4jikbc1MhO+pikk=;
-        b=YqAY5aEITqybpUxV6nK3CgPyn7eS+3Xc7XJpMAL1kBvEDOoBEp82cnnuB5GtJZWmDu
-         LRMyNm3J0QU8bvVAJsW8L+93y9B+s1stDVDKLzB0gWz5a11KrXqYFG9NQH+JUlqtkPJx
-         NJzL8C/fn9htdo0RVgYqUZQ/SUQmo08ZyJk8dFCF3uCS1rztCkcyP7m7XnxIU57UM/i1
-         ixyAv768fwEl9t/IzbNxprBobg2T+vCJgMlX7yqzZwZYELa1pYaj0nUysyRgVj/H0Hg0
-         a9Hem96aqPGy5lTcq6f+ZomaSPPnffzOLUBsT1pdzSZudjsCHjnuoXBGgbPDNg02At9v
-         qBwA==
-X-Gm-Message-State: AOAM532VDB7qFYPluBGe9W9scQvHG3r8ESTDUv3DuUMhizLm0dfqlkFO
-        C2tgCPcL1tgV95WgjjWBq/VLuA==
-X-Google-Smtp-Source: ABdhPJwNlXvrgI+F5cUFbufFHElN+s9m/lJj4u8oOeqDQXGgDjWxspHqX9jcfMnOKHxJgnngjov/SA==
-X-Received: by 2002:aca:c441:: with SMTP id u62mr4988696oif.31.1623803391689;
-        Tue, 15 Jun 2021 17:29:51 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 26sm124078ooy.46.2021.06.15.17.29.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 17:29:51 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 19:29:49 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Martin Botka <martin.botka@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        konrad.dybcio@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] arch: arm64: dts: qcom: Add support for SM6125
-Message-ID: <YMlF/aPn+253UIHn@builder.lan>
-References: <20210613080522.25230-1-martin.botka@somainline.org>
+        id S231716AbhFPAcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:32:16 -0400
+Received: from mga11.intel.com ([192.55.52.93]:62112 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231718AbhFPAcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 20:32:14 -0400
+IronPort-SDR: qT64UeE3pFaKm0U+GpCDUW+unrWRS4U7vUpETAODAwrhi/VLffZWY2632k1a50ONVN70HYnLyQ
+ 7mC38W0IUkMg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="203069507"
+X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
+   d="scan'208";a="203069507"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 17:30:09 -0700
+IronPort-SDR: fmGfdqiVe+U/QyOTHgXczvJh9eHrIAS4EhRhahki1tTo3jrh235h3Db6/CvdsfPNUwFWEnIEtu
+ T7jjSxkRot3w==
+X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
+   d="scan'208";a="621519780"
+Received: from shyvonen-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.209.5.121])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 17:30:06 -0700
+Message-ID: <618b42d66a4f2087ef4c54cc50fd56d01233eab1.camel@intel.com>
+Subject: Re: [PATCH] x86/sgx: Add missing xa_destroy() when virtual EPC is
+ destroyed
+From:   Kai Huang <kai.huang@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, bp@alien8.de, seanjc@google.com,
+        dave.hansen@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        Yang Zhong <yang.zhong@intel.com>
+Date:   Wed, 16 Jun 2021 12:30:04 +1200
+In-Reply-To: <20210615132001.kd6cuktq37dvoq3l@kernel.org>
+References: <20210615101639.291929-1-kai.huang@intel.com>
+         <20210615132001.kd6cuktq37dvoq3l@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210613080522.25230-1-martin.botka@somainline.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 13 Jun 03:05 CDT 2021, Martin Botka wrote:
-
-> This commits adds the Device tree file for SM6125 SoC.
+On Tue, 2021-06-15 at 16:20 +0300, Jarkko Sakkinen wrote:
+> On Tue, Jun 15, 2021 at 10:16:39PM +1200, Kai Huang wrote:
+> > xa_destroy() needs to be called to destroy virtual EPC's page arra
+>                                                                     y
 > 
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> > before calling kfree() to free the virtual EPC.  Currently it is not
+> > calaled.  Add the missing xa_destroy() to fix.
+>   called
 
-Thanks for your work on this Martin, just spotted a few minor finishing
-touches below.
+Thanks Jarkko. I literally need to find some way to avoid such error in future :)
 
-> ---
-> Changes in V2:
-> Update compatibles for mailbox & pinctrl
-> Changes in V3:
-> Fix reg for sdhci1
-> Replace hc_mem with hc and core_mem with core
->  arch/arm64/boot/dts/qcom/sm6125.dtsi | 603 +++++++++++++++++++++++++++
->  1 file changed, 603 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/sm6125.dtsi
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sm6125.dtsi b/arch/arm64/boot/dts/qcom/sm6125.dtsi
-[..]
-> +	soc {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x00 0x00 0x00 0xffffffff>;
-> +		compatible = "simple-bus";
-> +
-> +		tcsr_mutex_regs: syscon@340000 {
+> > Fixes: 540745ddbc70 ("x86/sgx: Introduce virtual EPC for use by KVM guests")
+> > Tested-by: Yang Zhong <yang.zhong@intel.com>
+> > Signed-off-by: Kai Huang <kai.huang@intel.com>
+> > ---
+> >  arch/x86/kernel/cpu/sgx/virt.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
+> > index 6ad165a5c0cc..64511c4a5200 100644
+> > --- a/arch/x86/kernel/cpu/sgx/virt.c
+> > +++ b/arch/x86/kernel/cpu/sgx/virt.c
+> > @@ -212,6 +212,7 @@ static int sgx_vepc_release(struct inode *inode, struct file *file)
+> >  		list_splice_tail(&secs_pages, &zombie_secs_pages);
+> >  	mutex_unlock(&zombie_secs_pages_lock);
+> >  
+> > +	xa_destroy(&vepc->page_array);
+> >  	kfree(vepc);
+> >  
+> >  	return 0;
+> > -- 
+> > 2.31.1
+> > 
+> > 
+> 
+> /Jarkko
 
-It's no longer valid to have a stray syscon like this, so please update
-this in accordance with the tcsr mutex binding.
 
-If this platform needs to poke at the registers at the end of the memory
-region, you can do compatible = "qcom,tcsr-mutex", "syscon"; to make it
-represent both things.
-
-> +			compatible = "syscon";
-> +			reg = <0x00340000 0x20000>;
-> +		};
-> +
-> +		tlmm: pinctrl@500000 {
-> +			compatible = "qcom,sm6125-tlmm";
-> +			reg = <0x00500000 0x400000>,
-> +				<0x00900000 0x400000>,
-> +				<0x00d00000 0x400000>;
-> +			reg-names = "west", "south", "east";
-> +			interrupts = <GIC_SPI 227 IRQ_TYPE_LEVEL_HIGH>;
-> +			gpio-controller;
-> +			gpio-ranges = <&tlmm 0 0 134>;
-> +			#gpio-cells = <2>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <2>;
-> +
-> +			sdc2_state_on: sdc2-on {
-
-As I just forced Konrad to move the on-state definition to the board
-file, can you please do the same?
-
-> +				clk {
-> +					pins = "sdc2_clk";
-> +					bias-disable;
-> +					drive-strength = <16>;
-> +				};
-> +
-> +				cmd {
-> +					pins = "sdc2_cmd";
-> +					bias-pull-up;
-> +					drive-strength = <10>;
-> +				};
-> +
-> +				data {
-> +					pins = "sdc2_data";
-> +					bias-pull-up;
-> +					drive-strength = <10>;
-> +				};
-> +
-> +				sd-cd {
-> +					pins = "gpio98";
-> +					bias-pull-up;
-> +					drive-strength = <2>;
-> +				};
-> +			};
-> +
-> +			sdc2_state_off: sdc2-off {
-
-This should be common between all boards (except possibly the cd line),
-so this is okay to share here.
-
-> +				clk {
-> +					pins = "sdc2_clk";
-> +					bias-disable;
-> +					drive-strength = <2>;
-> +				};
-> +
-> +				cmd {
-> +					pins = "sdc2_cmd";
-> +					bias-pull-up;
-> +					drive-strength = <2>;
-> +				};
-> +
-> +				data {
-> +					pins = "sdc2_data";
-> +					bias-pull-up;
-> +					drive-strength = <2>;
-> +				};
-> +
-> +				sd-cd {
-> +					pins = "gpio98";
-> +					bias-disable;
-> +					drive-strength = <2>;
-> +				};
-> +			};
-> +		};
-> +
-[..]
-> +
-> +		usb3: usb@4ef8800 {
-> +			compatible = "qcom,msm8996-dwc3", "qcom,dwc3";
-> +			reg = <0x04ef8800 0x400>;
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			ranges;
-> +
-> +			clocks = <&gcc GCC_USB30_PRIM_MASTER_CLK>,
-> +				<&gcc GCC_SYS_NOC_USB3_PRIM_AXI_CLK>,
-> +				<&gcc GCC_CFG_NOC_USB3_PRIM_AXI_CLK>,
-> +				<&gcc GCC_USB3_PRIM_CLKREF_CLK>,
-> +				<&gcc GCC_USB30_PRIM_SLEEP_CLK>,
-> +				<&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>;
-> +
-> +			assigned-clocks = <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
-> +					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
-> +			assigned-clock-rates = <19200000>, <66666667>;
-> +
-> +			power-domains = <&gcc USB30_PRIM_GDSC>;
-> +			qcom,select-utmi-as-pipe-clk; 
-
-Stray space at the end of this line.
-
-> +			status = "disabled";
-> +
-> +			usb3_dwc3: dwc3@4e00000 {
-
-These should be usb@ now.
-
-> +				compatible = "snps,dwc3";
-> +				reg = <0x04e00000 0xcd00>;
-> +				interrupts = <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>;
-> +				phys = <&hsusb_phy1>;
-> +				phy-names = "usb2-phy";
-> +				snps,dis_u2_susphy_quirk;
-> +				snps,dis_enblslpm_quirk;
-> +				maximum-speed = "high-speed";
-> +				dr_mode = "peripheral";
-> +			};
-> +		};
-
-Thanks,
-Bjorn
