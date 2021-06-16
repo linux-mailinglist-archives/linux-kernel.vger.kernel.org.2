@@ -2,135 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2027E3A9B8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8F43A9B90
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbhFPNJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:09:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43223 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232934AbhFPNJC (ORCPT
+        id S233252AbhFPNJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233003AbhFPNJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:09:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623848816;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4FsZ+W5sZrXednhxFcSgtJDgo1UvbrnapydD3pMYxu0=;
-        b=SbnoJVFbPc5m3jCfd3MfFq2/voG3/eKBafj6zQrzQ2K0/I5sr24JLyXz7iYGKn79hrhPIP
-        F7vzhX9mVE5BUH25HHwyh1ihfYiAi/yLv/HwklIECiDwzSQ0C4xgJ3JM2X86NjuNwkKpn7
-        5SdknqJzhttPYRokwApNi9imHBNGmeA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-499-sU_-JDyPP9G0uvfGozhLNg-1; Wed, 16 Jun 2021 09:06:55 -0400
-X-MC-Unique: sU_-JDyPP9G0uvfGozhLNg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BAC9E801B3E;
-        Wed, 16 Jun 2021 13:06:51 +0000 (UTC)
-Received: from work-vm (ovpn-115-42.ams2.redhat.com [10.36.115.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EA5666062C;
-        Wed, 16 Jun 2021 13:06:44 +0000 (UTC)
-Date:   Wed, 16 Jun 2021 14:06:42 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-Subject: Re: [PATCH Part1 RFC v3 11/22] x86/sev: Add helper for validating
- pages in early enc attribute changes
-Message-ID: <YMn3Yqp8Jq3TUhvv@work-vm>
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-12-brijesh.singh@amd.com>
- <YMI02+k2zk9eazjQ@zn.tnic>
- <d0759889-94df-73b0-4285-fa064eb187cd@amd.com>
- <YMen5wVqR31D/Q4z@zn.tnic>
- <70db789d-b1aa-c355-2d16-51ace4666b3f@amd.com>
- <YMnNYNBvEEAr5kqd@zn.tnic>
- <f7e70782-701c-13dd-43d2-67c92f8cf36f@amd.com>
- <YMnoeRcuMfAqX5Vf@zn.tnic>
- <9f012bcb-4756-600d-6fe8-b1db9b972f17@amd.com>
+        Wed, 16 Jun 2021 09:09:11 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0596C06175F;
+        Wed, 16 Jun 2021 06:07:04 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id ba2so2626296edb.2;
+        Wed, 16 Jun 2021 06:07:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8b/okOVnhsmC8WOydmuYGzKaGTkrkLvWV3Zt6yVl/cU=;
+        b=Ems3Z3Wy4snMpUrp8UAukFpyWqZQ0pcxSa8V7C/OJuxQkMFvihA8spkzlKwoqQptit
+         fao5ZPLzxEjQOJqyRqaZb/zdZKOkubHt6s95lUHtA1q7SKGfo1Lyf8aS5LOMhcytxf82
+         MbYDOB0xSaZbOdhz12E+ltKWAMCAYJ3Or4IB0MEVZYxiqQHFx1FG2mjNUomNgvtDvQ3E
+         RDI43w/LTEWPlK4/HYJfxI1bDimcsvNaWeoU3yz2lBIH6xBOqLO0owznKx/qmke4ZdzR
+         Gln82sQMEshK1Zm14NgIQvJYMwg8Ix3i6qtKNZhsrY+3sMHCBPcb/EEtrqVxpyNVXR95
+         yO6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8b/okOVnhsmC8WOydmuYGzKaGTkrkLvWV3Zt6yVl/cU=;
+        b=laOJMyBxKNFr+2ZEQuevKjmIHm5NdCpJe9nEOD0JA/wOb4U3m/5m1KRbaAV1WTbk7W
+         NUVK91rC5F2WoLeXhHjXzp1adKU3BNkmAhhiEB/0vZV2wZH9W+EG6VU5IdVbdSxhUwzL
+         p3daExBSODqXPSHcxqyAa8BdvMmjruDDRH0crb53VvsF1U8uz3jdDz8QNn8ii0ZV778K
+         F3btcOvfbegX7s5GafQIdVduRtHG8tEs55yt3DzKZDkVL5+QshueqNK8T3RZYEMmsolm
+         qHEjRmeYSJfefMkdF25TNlanZdHaJ0Pk7nwJlWvwsC66wjnsSVRu+mPNNy5zt8W97iAx
+         o0rQ==
+X-Gm-Message-State: AOAM532B7zbgVolxseq5YpdulqVQG63h1mBe9dnPFYGJzQpVeovprUhX
+        Qu/v6564zanvcgutxralwkY=
+X-Google-Smtp-Source: ABdhPJx2HOuYDcPiSLJADs9bN4VN7WBNFjqgA71Hh99Ixd/1LHWIvCnQZ5kKYyzErotDxYud+D7TBA==
+X-Received: by 2002:a05:6402:b76:: with SMTP id cb22mr4092635edb.112.1623848823499;
+        Wed, 16 Jun 2021 06:07:03 -0700 (PDT)
+Received: from skbuf ([188.26.224.68])
+        by smtp.gmail.com with ESMTPSA id qq26sm1555929ejb.6.2021.06.16.06.07.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 06:07:03 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 16:07:01 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Vadym Kochan <vadym.kochan@plvision.eu>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        linux-kernel@vger.kernel.org,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>,
+        Volodymyr Mytnyk <vmytnyk@marvell.com>,
+        Vadym Kochan <vkochan@marvell.com>
+Subject: Re: [PATCH net-next 1/2] net: marvell: Implement TC flower offload
+Message-ID: <20210616130701.e4k2izlthmj5j6yc@skbuf>
+References: <20210615125444.31538-1-vadym.kochan@plvision.eu>
+ <20210615125444.31538-2-vadym.kochan@plvision.eu>
+ <20210616005453.cuu3ocedgfcafa7o@skbuf>
+ <20210616130424.GB9951@plvision.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9f012bcb-4756-600d-6fe8-b1db9b972f17@amd.com>
-User-Agent: Mutt/2.0.7 (2021-05-04)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210616130424.GB9951@plvision.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Brijesh Singh (brijesh.singh@amd.com) wrote:
+On Wed, Jun 16, 2021 at 04:04:24PM +0300, Vadym Kochan wrote:
+> Hi Vladimir,
 > 
-> On 6/16/21 7:03 AM, Borislav Petkov wrote:
-> > On Wed, Jun 16, 2021 at 06:00:09AM -0500, Brijesh Singh wrote:
-> >> I am trying to be consistent with previous VMGEXIT implementations. If
-> >> the command itself failed then use the command specific error code to
-> >> tell hypervisor why we terminated but if the hypervisor violated the
-> >> GHCB specification then use the "general request termination".
-> > I feel like we're running in circles here: I ask about debuggability
-> > and telling the user what exactly failed and you're giving me some
-> > explanation about what the error codes mean. I can see what they mean.
-> >
-> > So let me try again:
-> >
-> > Imagine you're a guest owner and you haven't written the SNP code and
-> > you don't know how it works.
-> >
-> > You start a guest in the public cloud and it fails because the
-> > hypervisor violates the GHCB protocol and all that guest prints before
-> > it dies is
-> >
-> > "general request termination"
+> On Wed, Jun 16, 2021 at 03:54:53AM +0300, Vladimir Oltean wrote:
+> > On Tue, Jun 15, 2021 at 03:54:43PM +0300, Vadym Kochan wrote:
+> > > +static int prestera_port_set_features(struct net_device *dev,
+> > > +				      netdev_features_t features)
+> > > +{
+> > > +	netdev_features_t oper_features = dev->features;
+> > > +	int err;
+> > > +
+> > > +	err = prestera_port_handle_feature(dev, features, NETIF_F_HW_TC,
+> > > +					   prestera_port_feature_hw_tc);
+> > 
+> > Why do you even make NETIF_F_HW_TC able to be toggled and not just fixed
+> > to "on" in dev->features? If I understand correctly, you could then delete
+> > a bunch of refcounting code whose only purpose is to allow that feature
+> > to be disabled per port.
+> > 
 > 
+> The only case where it can be used is when user want to disable TC
+> offloading and apply set of rules w/o skip_hw.
 > 
-> The GHCB specification does not define a unique error code for every
-> possible condition. Now that we have reserved reason set 1 for the
-> Linux-specific error code, we could add a new error code to cover the
-> cases for the protocol violation. I was highlighting that we should not
-> overload the meaning of GHCB_TERM_PSC. In my mind, the GHCB_TERM_PSC
-> error code is used when the guest sees that the hypervisor failed to
-> change the state . The failure maybe because the guest provided a bogus
-> GPA or invalid operation code, or RMPUPDATE failure or HV does not
-> support SNP feature etc etc. But in this case, the failure was due to
-> the protocol error, and IMO we should not use the GHCB_TERM_PSC.
-> Additionally, we should also update CPUID and other VMGEXITs to use the
-> new error code instead of "general request termination" so that its
-> consistent.
-> 
-> 
-> If you still think that GHCB_TERM_PSC is valid here, then I am okay with it.
+> So you think it is OK to not having an ability to disable offloading at
+> all ?
 
-I'd kind of agree with Borislav, the more hints we can have as to the
-actual failure reason the better - so if you've got multiple cases
-where the guest thinks the hypervisor has screwed up, find a way to give
-an error code to tell us which one.
-
-Dave
-
-> -Brijesh
-> 
-> 
-> 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-
+Because adding "skip_hw" is already possible per filter in the first
+place, I don't think that this feature justifies the added complexity, no.
