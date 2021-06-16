@@ -2,192 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E0A3A8DD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26B43A8DCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhFPAsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231703AbhFPAsh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:48:37 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9F6C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:46:31 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id mj8-20020a17090b3688b029016ee34fc1b3so758862pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 17:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1UGOQAS/gnlRXyh5KGqeT8Vh25LI5tpduRj0+a7sMPk=;
-        b=vo8kqB3upoOfLkcjr7BktRu/G8ZVEhvIzJRE4kky8AJ4PfRn8k2gzYYoapgpQuUbxb
-         eW8RGrn7MgbOV4zezM2DvxEUGloaOcI+ZwM7w+hGK1ODQGZY61Whd9RnPKTR0JjPdOAy
-         gZlhjQRZo7WgJTr5eaAqs0zFWg4doaen5CBF+OQ/OSQS1JEdId+qBnmjbsRXh8Bcc94F
-         UwUUw+zf7f3sRdQ6CmITUZn9WRx5c/WThXOvJbtfrGxqQQj9KFvUmE3zt4KqLqj3Vi9e
-         8vOqYXgaBsZ+ftPDLJY3C8RjB2YsfygyA0wu/S313rMtXG+DAjfSWIE7PNAJaUVVbjMq
-         fihg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1UGOQAS/gnlRXyh5KGqeT8Vh25LI5tpduRj0+a7sMPk=;
-        b=aXF/5m30Uxbx45Qb0crzoSQ+mPb8vYqJkjdjzx6ldjaKNBLEosPB/dp9Fy/3SBJEBG
-         Yn7VHU329MbQxou2fuSTat2o13J9BSW/bgtK8w35waytSwDjpDxyqs51QHTBjiB9F9VO
-         Eat1veNcYgaFqi+okTrQmNvH2ZUJm7CvENygtKWcUtCYjJP4YwSUaAwGxwRbDvMMx2nM
-         imRJXQD+d+tjmVjt+nq/QA7Q0jN82qIiFIZ7w1eUfVjbJHtbLSIKdeVvkpgzDgOYvy6Q
-         xMGO2qHKDQd3xHPYQ6cnk8nB8mz8aoIrfxLqHFeL4hzWp6Oj1G/13JtrvvnMedOxL5OO
-         AIOQ==
-X-Gm-Message-State: AOAM531chZgpMxCqTUUIpoTCrjYCxJAj5K3RjZRJDKyBgAMrwK8sGuxw
-        PkpZcpJn3mOYZ8U47Dbe6iNCVqQdF7vnRe8OM0XkVw==
-X-Google-Smtp-Source: ABdhPJxnjJTq18+nazpJrwCbf8hmuZEuQ5kMFby00dnTlWpwUJ3rx4rFxrMADpX4C943d5rXD+aKPVKy1eqHRare17k=
-X-Received: by 2002:a17:90a:ea8c:: with SMTP id h12mr7535174pjz.149.1623804390579;
- Tue, 15 Jun 2021 17:46:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210604011844.1756145-1-ruansy.fnst@fujitsu.com> <20210604011844.1756145-3-ruansy.fnst@fujitsu.com>
-In-Reply-To: <20210604011844.1756145-3-ruansy.fnst@fujitsu.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 15 Jun 2021 17:46:19 -0700
-Message-ID: <CAPcyv4jA8FW6PMxaETETQxjnpn9aE2Nevq-R96BJr8QzixYRsQ@mail.gmail.com>
-Subject: Re: [PATCH v4 02/10] dax: Introduce holder for dax_device
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        david <david@fromorbit.com>, Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+        id S231791AbhFPAsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:48:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230507AbhFPAs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 20:48:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5B0861153;
+        Wed, 16 Jun 2021 00:46:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623804384;
+        bh=Tfs8NCON6aZ23cjJVAqJGuB3PbUUxl2ih7k0KDLeOko=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WboQ0sdgVD321nkRTISHJ5oGwH+F5hC4xA6lXUu3dRqpY8BBVo2Gzasgz0rh7fbOH
+         GEVXMOC9faSYg8Wk0ONKCjSc1+vim20DakayaqoTgdky9mTDtgGf7FTtmGaVEwPcpr
+         cjPtQLNlVJLpDPRuynphPeELrWVZGIGgT86rZ1QoK4NmtDzckCREPL2Va0cZWGaszq
+         AUPwt25aP5r5FQmgd6MoXSIwb0QRF0IVF5Is21A6dE5faMq5JeWhJ0YICBct0w6VVi
+         vTK4G08TnREdjKKhWBXHwV5s/hjd9zqBeKhHfjWj8lOPOyNQ0NPfWDQiaWh5wjB+i8
+         T4WLUYhf4Z/AA==
+Date:   Wed, 16 Jun 2021 09:46:22 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     Anton Blanchard <anton@ozlabs.org>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 2/2] trace/kprobe: Remove limit on kretprobe maxactive
+Message-Id: <20210616094622.c8bd37840898c67dddde1053@kernel.org>
+In-Reply-To: <1623777582.jsiokbdey1.naveen@linux.ibm.com>
+References: <cover.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
+        <a751a0617a2c06e7e233f2c98ccabe8b94a8076d.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
+        <20210615183527.9068ef2f70fdd2a45fea78f0@kernel.org>
+        <1623777582.jsiokbdey1.naveen@linux.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 6:19 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
->
-> To easily track filesystem from a pmem device, we introduce a holder for
-> dax_device structure, and also its operation.  This holder is used to
-> remember who is using this dax_device:
->  - When it is the backend of a filesystem, the holder will be the
->    superblock of this filesystem.
->  - When this pmem device is one of the targets in a mapped device, the
->    holder will be this mapped device.  In this case, the mapped device
->    has its own dax_device and it will follow the first rule.  So that we
->    can finally track to the filesystem we needed.
->
-> The holder and holder_ops will be set when filesystem is being mounted,
-> or an target device is being activated.
->
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  drivers/dax/super.c | 38 ++++++++++++++++++++++++++++++++++++++
->  include/linux/dax.h | 10 ++++++++++
->  2 files changed, 48 insertions(+)
->
-> diff --git a/drivers/dax/super.c b/drivers/dax/super.c
-> index 5fa6ae9dbc8b..d118e2a7dc70 100644
-> --- a/drivers/dax/super.c
-> +++ b/drivers/dax/super.c
-> @@ -222,8 +222,10 @@ struct dax_device {
->         struct cdev cdev;
->         const char *host;
->         void *private;
+On Tue, 15 Jun 2021 23:11:27 +0530
+"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
 
-@private is likely too generic of a name now, it would be better to
-call this @parent.
+> Masami Hiramatsu wrote:
+> > On Mon, 14 Jun 2021 23:33:29 +0530
+> > "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+> > 
+> >> We currently limit maxactive for a kretprobe to 4096 when registering
+> >> the same through tracefs. The comment indicates that this is done so as
+> >> to keep list traversal reasonable. However, we don't ever iterate over
+> >> all kretprobe_instance structures. The core kprobes infrastructure also
+> >> imposes no such limitation.
+> >> 
+> >> Remove the limit from the tracefs interface. This limit is easy to hit
+> >> on large cpu machines when tracing functions that can sleep.
+> >> 
+> >> Reported-by: Anton Blanchard <anton@ozlabs.org>
+> >> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> > 
+> > OK, but I don't like to just remove the limit (since it can cause
+> > memory shortage easily.)
+> > Can't we make it configurable? I don't mean Kconfig, but 
+> > tracefs/options/kretprobe_maxactive, or kprobes's debugfs knob.
+> > 
+> > Hmm, maybe debugfs/kprobes/kretprobe_maxactive will be better since
+> > it can limit both trace_kprobe and kprobes itself.
+> 
+> I don't think it is good to put a new tunable in debugfs -- we don't 
+> have any kprobes tunable there, so this adds a dependency on debugfs 
+> which shouldn't be necessary.
+> 
+> /proc/sys/debug/ may be a better fit since we have the 
+> kprobes-optimization flag to disable optprobes there, though I'm not 
+> sure if a new sysfs file is agreeable.
 
-> +       void *holder;
+Indeed.
 
-This should probably be called holder_data, and this structure could
-use some kernel-doc to clarify what the fields mean.
+> But, I'm not too sure this really is a problem. Maxactive is a user 
+> _opt-in_ feature which needs to be explicitly added to an event 
+> definition. In that sense, isn't this already a tunable?
 
->         unsigned long flags;
->         const struct dax_operations *ops;
-> +       const struct dax_holder_operations *holder_ops;
->  };
->
->  static ssize_t write_cache_show(struct device *dev,
-> @@ -373,6 +375,24 @@ int dax_zero_page_range(struct dax_device *dax_dev, pgoff_t pgoff,
->  }
->  EXPORT_SYMBOL_GPL(dax_zero_page_range);
->
-> +int dax_corrupted_range(struct dax_device *dax_dev, struct block_device *bdev,
-> +               loff_t offset, size_t size, void *data)
+Let me explain the background of the limiation.
 
-Why is @bdev an argument to this routine?  The primary motivation for
-a 'struct dax_device' is to break the association with 'struct
-block_device'. The filesystem may know that the logical addresses
-associated with a given dax_dev alias with the logical addresses of a
-given bdev, but that knowledge need not leak into the API.
+Maxactive is currently no limit for the kprobe kernel module API,
+because the kernel module developer must take care of the max memory
+usage (and they can).
 
-> +{
-> +       int rc = -ENXIO;
-> +       if (!dax_dev)
-> +               return rc;
-> +
-> +       if (dax_dev->holder) {
-> +               rc = dax_dev->holder_ops->corrupted_range(dax_dev, bdev, offset,
-> +                                                         size, data);
+But the tracefs user may NOT have enough information about what
+happens if they pass something like 10M for maxactive (it will consume
+around 500MB kernel memory for one kretprobe).
 
-A bikeshed comment, but I do not like the name corrupted_range(),
-because "corrupted" implies a permanent state. The source of this
-notification is memory_failure() and that does not convey "permanent"
-vs "transient" it just reports "failure". So, to keep the naming
-consistent with the pgmap notification callback lets call this one
-"notify_failure".
+To avoid such trouble, I had set the 4096 limitation for the maxactive
+parameter. Of course 4096 may not enough for some use-cases. I'm welcome
+to expand it (e.g. 32k, isn't it enough?), but removing the limitation
+may cause OOM trouble easily.
 
-> +               if (rc == -ENODEV)
-> +                       rc = -ENXIO;
-> +       } else
-> +               rc = -EOPNOTSUPP;
-> +       return rc;
-> +}
-> +EXPORT_SYMBOL_GPL(dax_corrupted_range);
+Thank you,
 
-dax_holder_notify_failure() makes it clearer that this is
-communicating a failure up the holder stack.
+> 
+> 
+> - Naveen
+> 
 
-> +
->  #ifdef CONFIG_ARCH_HAS_PMEM_API
->  void arch_wb_cache_pmem(void *addr, size_t size);
->  void dax_flush(struct dax_device *dax_dev, void *addr, size_t size)
-> @@ -624,6 +644,24 @@ void put_dax(struct dax_device *dax_dev)
->  }
->  EXPORT_SYMBOL_GPL(put_dax);
->
-> +void dax_set_holder(struct dax_device *dax_dev, void *holder,
-> +               const struct dax_holder_operations *ops)
-> +{
-> +       if (!dax_dev)
-> +               return;
-> +       dax_dev->holder = holder;
-> +       dax_dev->holder_ops = ops;
 
-I think there needs to be some synchronization here, perhaps a global
-dax_dev_rwsem that is taken for read in the notification path and
-write when adding a holder to the chain.
-
-I also wonder if this should be an event that triggers a dax_dev stack
-to re-report any failure notifications. For example the pmem driver
-may have recorded a list of bad blocks at the beginning of time.
-Likely the filesystem or other holder would like to get that
-pre-existing list of failures at first registration. Have you given
-thought about how the filesystem is told about pre-existing badblocks?
-
-> +}
-> +EXPORT_SYMBOL_GPL(dax_set_holder);
-> +
-> +void *dax_get_holder(struct dax_device *dax_dev)
-> +{
-> +       if (!dax_dev)
-> +               return NULL;
-> +       return dax_dev->holder;
-> +}
-> +EXPORT_SYMBOL_GPL(dax_get_holder);
-
-Where is this used?
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
