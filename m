@@ -2,304 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D083A9653
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C26A3A9654
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbhFPJiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:38:54 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:7305 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbhFPJiv (ORCPT
+        id S232335AbhFPJi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:38:57 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:24906 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232299AbhFPJiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:38:51 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G4g1P24pPz1BN8D;
-        Wed, 16 Jun 2021 17:31:37 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 17:36:35 +0800
-Received: from [10.67.102.248] (10.67.102.248) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 17:36:35 +0800
-Subject: Re: [PATCH v4] perf annotate: Add itrace options support
-To:     Adrian Hunter <adrian.hunter@intel.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210615091704.259202-1-yangjihong1@huawei.com>
- <1e2f6d0e-e171-e0be-4f33-02722b0c50d9@intel.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <24e45769-02c2-ea6c-871e-de533ed5f297@huawei.com>
-Date:   Wed, 16 Jun 2021 17:36:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 16 Jun 2021 05:38:52 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210616093644euoutp024e9adfa58927f6269f3663b1d81ed207~JBmzA-Aqw2533225332euoutp02k
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 09:36:44 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210616093644euoutp024e9adfa58927f6269f3663b1d81ed207~JBmzA-Aqw2533225332euoutp02k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1623836204;
+        bh=wW8MZ+uJeIfwvh/94TGH5oTGzJnnv/yEZfmpRzfEyRA=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=Ut9IJv19vlu6ofz3Pxi6MtHI9O51o+EumiMwUCOR29bC1CjbVs7esdFCP6Y3k4vMx
+         7xPEfAWSiPt8vF3UwKhlSFYIqtLycsC59FA/VAV2rO7idZlMtg1hgJdrqxAujQeHvh
+         zNPpSsDuBFFR6YQY6jvxj3dBSCzJ6cYrfoObXgw8=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210616093644eucas1p29279367444c5360519fecf56264a9e2c~JBmy2_h9g1361513615eucas1p2o;
+        Wed, 16 Jun 2021 09:36:44 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 0A.FB.09444.C26C9C06; Wed, 16
+        Jun 2021 10:36:44 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210616093644eucas1p2edfbd8b164059d77cd8f109eb80b161f~JBmyZ2Iu51360713607eucas1p29;
+        Wed, 16 Jun 2021 09:36:44 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210616093644eusmtrp227d0c29e21469914b29d022e5aea7861~JBmyVOW9J0919909199eusmtrp2D;
+        Wed, 16 Jun 2021 09:36:44 +0000 (GMT)
+X-AuditID: cbfec7f4-dbdff700000024e4-60-60c9c62c3bda
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id B5.56.08705.B26C9C06; Wed, 16
+        Jun 2021 10:36:44 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210616093643eusmtip1e01ea3df96ba5cd79bf0ed941a75903b~JBmx9osCs2395123951eusmtip1T;
+        Wed, 16 Jun 2021 09:36:43 +0000 (GMT)
+Subject: Re: [PATCH 1/3] of: Fix truncation of memory sizes on 32-bit
+ platforms
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <0c2be5ec-8a22-d398-d455-847ddbcece86@samsung.com>
+Date:   Wed, 16 Jun 2021 11:36:42 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <1e2f6d0e-e171-e0be-4f33-02722b0c50d9@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <4a1117e72d13d26126f57be034c20dac02f1e915.1623835273.git.geert+renesas@glider.be>
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.248]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm000003.china.huawei.com (7.185.36.128)
-X-CFilter-Loop: Reflected
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SWUwTURSGvZ1pO9RULyPKSTWoVYkYioBIGm2IBhKJhsQtbg9ChQmobHZA
+        BKJBiFvFhQZZChR3sFiXUqEUZbMCoizSgATBVIUHUUTcNVG0jChv3/nvf5Y/uRRBn+JLqN2x
+        CYwqVhktFYjIisbv7TLPxodh3u8uLJAXW9v48vy3YwJ5UYEGyW2WQoH8yD2rcBU/OKtVFlyl
+        7RcGG/UnBMEfjW7ryR0iRQQTvXs/o1oaECaKGix6zY8fkxwwaJoFaahopho5UYD94ErLqECN
+        RBSNSxG0Wh/wuOITgrIGncDhovFHBJe7FRMdrYYMkjOVIGjPvoq4YhTBe/srocM1A2+Ap11V
+        pINdcCpk9NeMM4EV0GOwIQcLsA+oh9V/NlCUGAeAJXefQybxItBf6uU5eCYOhxFdHt/BYuwM
+        D/MHxsc44Z1grhwmuJFzoXK48C+7Qu9A8XgCwFYKKs+UIu7qICh+riM5ngFDTSYhx3NgrGqi
+        IQPBizaDkCsyEdjS8/52r4S+th/jlxLYA25alnLyajh9qQs5ZMDToGfYmTtiGmgqcglOFsPx
+        ozTndgdt041/a+s7OomzSKqdFE07KY52Uhzt/73nEalHrkwiGxPJsL6xTJIXq4xhE2MjvcLj
+        Yozoz4959KvpkxmVDI16NSAehRoQUITURSxjm8NocYQyOYVRxYWqEqMZtgHNpkipq3iX6Xoo
+        jSOVCcxeholnVBOvPMpJksZDRnvx5x9TPdLKM2fHYz/FSTqzZe0mVXXg7Uyd/WAvEkWnmEJq
+        LnYEmdY9AsmyZ7Wb23v6Io59xTGPnx6O6pyjCeiUyUuJaxs8njmlntnTVi4uTOjfp75zpf6L
+        1TduBUjoszxvpn7x/ZAWvcuWFmeTbO+d5Faf5dZVty2i1I07ktCI+rHtUL1Xd8mx7SUFrB/P
+        zVZd+U3juS3A3yfcYDBL6grnrRk0vekz625m+fqfmo7rXppy3rf/DPT2z1vYfEM/teKrsMpe
+        UQs1yqMhC765z/LdOnLX7YPiiZurJf/+Ce+fQY3zm0M79piXG7Kh1h6SQzXWld+iy6c8LzOe
+        S5eSbJTSZwmhYpW/ASOmgCygAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPIsWRmVeSWpSXmKPExsVy+t/xu7o6x04mGBxcwmQx/8g5VouZb/6z
+        WcydPYnR4vKuOWwWrXuPsDuwekw8q+uxc9Zddo9NqzrZPD5vkgtgidKzKcovLUlVyMgvLrFV
+        ija0MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3S9DLeDr3JWvBf6mKtZNOsDUwzhXt
+        YuTkkBAwkTi7tpkFxBYSWMoocbbNHSIuI3FyWgMrhC0s8edaF1sXIxdQzXtGiTu/DrKBJIQF
+        AiWuX90J1iwiUC2x/tkjZhCbWcBG4sbay4wQDY8YJU5fuwXWwCZgKNH1FmQSBwevgJ3ErumF
+        IGEWAVWJVYtvMYHYogLJEj/Xt4OV8woISpyc+QRsPqdAnMSO7W+h5ptJzNv8EMqWl9j+dg6U
+        LS5x68l8pgmMQrOQtM9C0jILScssJC0LGFlWMYqklhbnpucWG+oVJ+YWl+al6yXn525iBMbU
+        tmM/N+9gnPfqo94hRiYOxkOMEhzMSiK8usUnEoR4UxIrq1KL8uOLSnNSiw8xmgL9M5FZSjQ5
+        HxjVeSXxhmYGpoYmZpYGppZmxkrivFvnrokXEkhPLEnNTk0tSC2C6WPi4JRqYGpJ6jeQ/Dwn
+        XeUezy+m5k2OHJoHlNLZ/RarP0707dpYK7BhpyHf4sci+4pKrY2FBR7t3urYMPHCtsLWKX/X
+        RZhw+Ya80y3Z3S68J+/6rsb9S7a4xbvYydTNPBR2fQbHhJONB3Zeyo6/H7/CQ771xxXBIn6+
+        WfNV3HdFfV6oPeutcbNKQOG6A6I2czx6nl4I/bfgM+e5ZsbFPo+9lyVcn2b1tWfpxiMuH2+w
+        Xn60RfTGWpUJ7hdlv19ctGHv/7g76ybNXxcw4aWDyw9+nZQ31fx7r5ZnzQuxNHDiTpg813Vh
+        4tRIX+EEq4tevL/SRac258UcmFEcbFNWYOGe8PQyU/gs2TPz1no859/WxNmVnqzEUpyRaKjF
+        XFScCADuygo1MgMAAA==
+X-CMS-MailID: 20210616093644eucas1p2edfbd8b164059d77cd8f109eb80b161f
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210616092756eucas1p2bc7078a1a343f83f416bf6ba3acbc9ff
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210616092756eucas1p2bc7078a1a343f83f416bf6ba3acbc9ff
+References: <cover.1623835273.git.geert+renesas@glider.be>
+        <CGME20210616092756eucas1p2bc7078a1a343f83f416bf6ba3acbc9ff@eucas1p2.samsung.com>
+        <4a1117e72d13d26126f57be034c20dac02f1e915.1623835273.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Adrian,
+On 16.06.2021 11:27, Geert Uytterhoeven wrote:
+> Variable "size" has type "phys_addr_t", which can be either 32-bit or
+> 64-bit on 32-bit systems, while "unsigned long" is always 32-bit on
+> 32-bit systems.  Hence the cast in
+>
+>      (unsigned long)size / SZ_1M
+>
+> may truncate a 64-bit size to 32-bit, as casts have a higher operator
+> precedence than divisions.
+>
+> Fix this by inverting the order of the cast and division, which should
+> be safe for memory blocks smaller than 4 PiB.  Note that the division is
+> actually a shift, as SZ_1M is a power-of-two constant, hence there is no
+> need to use div_u64().
+>
+> While at it, use "%lu" to format "unsigned long".
+>
+> Fixes: e8d9d1f5485b52ec ("drivers: of: add initialization code for static reserved memory")
+> Fixes: 3f0c8206644836e4 ("drivers: of: add initialization code for dynamic reserved memory")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>   drivers/of/fdt.c             | 8 ++++----
+>   drivers/of/of_reserved_mem.c | 8 ++++----
+>   2 files changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> index a03d43f95495d8e1..970fa8cdc9303195 100644
+> --- a/drivers/of/fdt.c
+> +++ b/drivers/of/fdt.c
+> @@ -510,11 +510,11 @@ static int __init __reserved_mem_reserve_reg(unsigned long node,
+>   
+>   		if (size &&
+>   		    early_init_dt_reserve_memory_arch(base, size, nomap) == 0)
+> -			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %ld MiB\n",
+> -				uname, &base, (unsigned long)size / SZ_1M);
+> +			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %lu MiB\n",
+> +				uname, &base, (unsigned long)(size / SZ_1M));
+>   		else
+> -			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %ld MiB\n",
+> -				uname, &base, (unsigned long)size / SZ_1M);
+> +			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %lu MiB\n",
+> +				uname, &base, (unsigned long)(size / SZ_1M));
+>   
+>   		len -= t_len;
+>   		if (first) {
+> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+> index 4592b71aba5cf4a1..333d33bad59d7888 100644
+> --- a/drivers/of/of_reserved_mem.c
+> +++ b/drivers/of/of_reserved_mem.c
+> @@ -136,9 +136,9 @@ static int __init __reserved_mem_alloc_size(unsigned long node,
+>   			ret = early_init_dt_alloc_reserved_memory_arch(size,
+>   					align, start, end, nomap, &base);
+>   			if (ret == 0) {
+> -				pr_debug("allocated memory for '%s' node: base %pa, size %ld MiB\n",
+> +				pr_debug("allocated memory for '%s' node: base %pa, size %lu MiB\n",
+>   					uname, &base,
+> -					(unsigned long)size / SZ_1M);
+> +					(unsigned long)(size / SZ_1M));
+>   				break;
+>   			}
+>   			len -= t_len;
+> @@ -148,8 +148,8 @@ static int __init __reserved_mem_alloc_size(unsigned long node,
+>   		ret = early_init_dt_alloc_reserved_memory_arch(size, align,
+>   							0, 0, nomap, &base);
+>   		if (ret == 0)
+> -			pr_debug("allocated memory for '%s' node: base %pa, size %ld MiB\n",
+> -				uname, &base, (unsigned long)size / SZ_1M);
+> +			pr_debug("allocated memory for '%s' node: base %pa, size %lu MiB\n",
+> +				uname, &base, (unsigned long)(size / SZ_1M));
+>   	}
+>   
+>   	if (base == 0) {
 
-On 2021/6/15 18:27, Adrian Hunter wrote:
-> On 15/06/21 12:17 pm, Yang Jihong wrote:
->> The "auxtrace_info" and "auxtrace" functions are not set in "tool" member of
->> "annotate". As a result, perf annotate does not support parsing itrace data.
->>
->> Before:
->>
->>    # perf record -e arm_spe_0/branch_filter=1/ -a sleep 1
->>    [ perf record: Woken up 9 times to write data ]
->>    [ perf record: Captured and wrote 20.874 MB perf.data ]
->>    # perf annotate --stdio
->>    Error:
->>    The perf.data data has no samples!
->>
->> Solution:
->> 1.Add itrace options in help,
->> 2.Set hook functions of "id_index", "auxtrace_info" and "auxtrace" in perf_tool.
->>
->> After:
->>
->>    # perf record --all-user -e arm_spe_0/branch_filter=1/ ls
->>    Couldn't synthesize bpf events.
->>    perf.data
->>    [ perf record: Woken up 1 times to write data ]
->>    [ perf record: Captured and wrote 0.010 MB perf.data ]
->>    # perf annotate --stdio
->>     Percent |      Source code & Disassembly of libc-2.28.so for branch-miss (1 samples, percent: local period)
->>    ------------------------------------------------------------------------------------------------------------
->>             :
->>             :
->>             :
->>             :           Disassembly of section .text:
->>             :
->>             :           0000000000066180 <__getdelim@@GLIBC_2.17>:
->>        0.00 :   66180:  stp     x29, x30, [sp, #-96]!
->>        0.00 :   66184:  cmp     x0, #0x0
->>        0.00 :   66188:  ccmp    x1, #0x0, #0x4, ne  // ne = any
->>        0.00 :   6618c:  mov     x29, sp
->>        0.00 :   66190:  stp     x24, x25, [sp, #56]
->>        0.00 :   66194:  stp     x26, x27, [sp, #72]
->>        0.00 :   66198:  str     x28, [sp, #88]
->>        0.00 :   6619c:  b.eq    66450 <__getdelim@@GLIBC_2.17+0x2d0>  // b.none
->>        0.00 :   661a0:  stp     x22, x23, [x29, #40]
->>        0.00 :   661a4:  mov     x22, x1
->>        0.00 :   661a8:  ldr     w1, [x3]
->>        0.00 :   661ac:  mov     w23, w2
->>        0.00 :   661b0:  stp     x20, x21, [x29, #24]
->>        0.00 :   661b4:  mov     x20, x3
->>        0.00 :   661b8:  mov     x21, x0
->>        0.00 :   661bc:  tbnz    w1, #15, 66360 <__getdelim@@GLIBC_2.17+0x1e0>
->>        0.00 :   661c0:  ldr     x0, [x3, #136]
->>        0.00 :   661c4:  ldr     x2, [x0, #8]
->>        0.00 :   661c8:  str     x19, [x29, #16]
->>        0.00 :   661cc:  mrs     x19, tpidr_el0
->>        0.00 :   661d0:  sub     x19, x19, #0x700
->>        0.00 :   661d4:  cmp     x2, x19
->>        0.00 :   661d8:  b.eq    663f0 <__getdelim@@GLIBC_2.17+0x270>  // b.none
->>        0.00 :   661dc:  mov     w1, #0x1                        // #1
->>        0.00 :   661e0:  ldaxr   w2, [x0]
->>        0.00 :   661e4:  cmp     w2, #0x0
->>        0.00 :   661e8:  b.ne    661f4 <__getdelim@@GLIBC_2.17+0x74>  // b.any
->>        0.00 :   661ec:  stxr    w3, w1, [x0]
->>        0.00 :   661f0:  cbnz    w3, 661e0 <__getdelim@@GLIBC_2.17+0x60>
->>        0.00 :   661f4:  b.ne    66448 <__getdelim@@GLIBC_2.17+0x2c8>  // b.any
->>        0.00 :   661f8:  ldr     x0, [x20, #136]
->>        0.00 :   661fc:  ldr     w1, [x20]
->>        0.00 :   66200:  ldr     w2, [x0, #4]
->>        0.00 :   66204:  str     x19, [x0, #8]
->>        0.00 :   66208:  add     w2, w2, #0x1
->>        0.00 :   6620c:  str     w2, [x0, #4]
->>        0.00 :   66210:  tbnz    w1, #5, 66388 <__getdelim@@GLIBC_2.17+0x208>
->>        0.00 :   66214:  ldr     x19, [x29, #16]
->>        0.00 :   66218:  ldr     x0, [x21]
->>        0.00 :   6621c:  cbz     x0, 66228 <__getdelim@@GLIBC_2.17+0xa8>
->>        0.00 :   66220:  ldr     x0, [x22]
->>        0.00 :   66224:  cbnz    x0, 6623c <__getdelim@@GLIBC_2.17+0xbc>
->>        0.00 :   66228:  mov     x0, #0x78                       // #120
->>        0.00 :   6622c:  str     x0, [x22]
->>        0.00 :   66230:  bl      20710 <malloc@plt>
->>        0.00 :   66234:  str     x0, [x21]
->>        0.00 :   66238:  cbz     x0, 66428 <__getdelim@@GLIBC_2.17+0x2a8>
->>        0.00 :   6623c:  ldr     x27, [x20, #8]
->>        0.00 :   66240:  str     x19, [x29, #16]
->>        0.00 :   66244:  ldr     x19, [x20, #16]
->>        0.00 :   66248:  sub     x19, x19, x27
->>        0.00 :   6624c:  cmp     x19, #0x0
->>        0.00 :   66250:  b.le    66398 <__getdelim@@GLIBC_2.17+0x218>
->>        0.00 :   66254:  mov     x25, #0x0                       // #0
->>        0.00 :   66258:  b       662d8 <__getdelim@@GLIBC_2.17+0x158>
->>        0.00 :   6625c:  nop
->>        0.00 :   66260:  add     x24, x19, x25
->>        0.00 :   66264:  ldr     x3, [x22]
->>        0.00 :   66268:  add     x26, x24, #0x1
->>        0.00 :   6626c:  ldr     x0, [x21]
->>        0.00 :   66270:  cmp     x3, x26
->>        0.00 :   66274:  b.cs    6629c <__getdelim@@GLIBC_2.17+0x11c>  // b.hs, b.nlast
->>        0.00 :   66278:  lsl     x3, x3, #1
->>        0.00 :   6627c:  cmp     x3, x26
->>        0.00 :   66280:  csel    x26, x3, x26, cs  // cs = hs, nlast
->>        0.00 :   66284:  mov     x1, x26
->>        0.00 :   66288:  bl      206f0 <realloc@plt>
->>        0.00 :   6628c:  cbz     x0, 66438 <__getdelim@@GLIBC_2.17+0x2b8>
->>        0.00 :   66290:  str     x0, [x21]
->>        0.00 :   66294:  ldr     x27, [x20, #8]
->>        0.00 :   66298:  str     x26, [x22]
->>        0.00 :   6629c:  mov     x2, x19
->>        0.00 :   662a0:  mov     x1, x27
->>        0.00 :   662a4:  add     x0, x0, x25
->>        0.00 :   662a8:  bl      87390 <explicit_bzero@@GLIBC_2.25+0x50>
->>        0.00 :   662ac:  ldr     x0, [x20, #8]
->>        0.00 :   662b0:  add     x19, x0, x19
->>        0.00 :   662b4:  str     x19, [x20, #8]
->>        0.00 :   662b8:  cbnz    x28, 66410 <__getdelim@@GLIBC_2.17+0x290>
->>        0.00 :   662bc:  mov     x0, x20
->>        0.00 :   662c0:  bl      73b80 <__underflow@@GLIBC_2.17>
->>        0.00 :   662c4:  cmn     w0, #0x1
->>        0.00 :   662c8:  b.eq    66410 <__getdelim@@GLIBC_2.17+0x290>  // b.none
->>        0.00 :   662cc:  ldp     x27, x19, [x20, #8]
->>        0.00 :   662d0:  mov     x25, x24
->>        0.00 :   662d4:  sub     x19, x19, x27
->>        0.00 :   662d8:  mov     x2, x19
->>        0.00 :   662dc:  mov     w1, w23
->>        0.00 :   662e0:  mov     x0, x27
->>        0.00 :   662e4:  bl      807b0 <memchr@@GLIBC_2.17>
->>        0.00 :   662e8:  cmp     x0, #0x0
->>        0.00 :   662ec:  mov     x28, x0
->>        0.00 :   662f0:  sub     x0, x0, x27
->>        0.00 :   662f4:  csinc   x19, x19, x0, eq  // eq = none
->>        0.00 :   662f8:  mov     x0, #0x7fffffffffffffff         // #9223372036854775807
->>        0.00 :   662fc:  sub     x0, x0, x25
->>        0.00 :   66300:  cmp     x19, x0
->>        0.00 :   66304:  b.lt    66260 <__getdelim@@GLIBC_2.17+0xe0>  // b.tstop
->>        0.00 :   66308:  adrp    x0, 17f000 <sys_sigabbrev@@GLIBC_2.17+0x320>
->>        0.00 :   6630c:  ldr     x0, [x0, #3624]
->>        0.00 :   66310:  mrs     x2, tpidr_el0
->>        0.00 :   66314:  ldr     x19, [x29, #16]
->>        0.00 :   66318:  mov     w3, #0x4b                       // #75
->>        0.00 :   6631c:  ldr     w1, [x20]
->>        0.00 :   66320:  mov     x24, #0xffffffffffffffff        // #-1
->>        0.00 :   66324:  str     w3, [x2, x0]
->>        0.00 :   66328:  tbnz    w1, #15, 66340 <__getdelim@@GLIBC_2.17+0x1c0>
->>        0.00 :   6632c:  ldr     x0, [x20, #136]
->>        0.00 :   66330:  ldr     w1, [x0, #4]
->>        0.00 :   66334:  sub     w1, w1, #0x1
->>        0.00 :   66338:  str     w1, [x0, #4]
->>        0.00 :   6633c:  cbz     w1, 663b8 <__getdelim@@GLIBC_2.17+0x238>
->>        0.00 :   66340:  mov     x0, x24
->>        0.00 :   66344:  ldr     x28, [sp, #88]
->>        0.00 :   66348:  ldp     x20, x21, [x29, #24]
->>        0.00 :   6634c:  ldp     x22, x23, [x29, #40]
->>        0.00 :   66350:  ldp     x24, x25, [sp, #56]
->>        0.00 :   66354:  ldp     x26, x27, [sp, #72]
->>        0.00 :   66358:  ldp     x29, x30, [sp], #96
->>        0.00 :   6635c:  ret
->>      100.00 :   66360:  tbz     w1, #5, 66218 <__getdelim@@GLIBC_2.17+0x98>
->>        0.00 :   66364:  ldp     x20, x21, [x29, #24]
->>        0.00 :   66368:  mov     x24, #0xffffffffffffffff        // #-1
->>        0.00 :   6636c:  ldp     x22, x23, [x29, #40]
->>        0.00 :   66370:  mov     x0, x24
->>        0.00 :   66374:  ldp     x24, x25, [sp, #56]
->>        0.00 :   66378:  ldp     x26, x27, [sp, #72]
->>        0.00 :   6637c:  ldr     x28, [sp, #88]
->>        0.00 :   66380:  ldp     x29, x30, [sp], #96
->>        0.00 :   66384:  ret
->>        0.00 :   66388:  mov     x24, #0xffffffffffffffff        // #-1
->>        0.00 :   6638c:  ldr     x19, [x29, #16]
->>        0.00 :   66390:  b       66328 <__getdelim@@GLIBC_2.17+0x1a8>
->>        0.00 :   66394:  nop
->>        0.00 :   66398:  mov     x0, x20
->>        0.00 :   6639c:  bl      73b80 <__underflow@@GLIBC_2.17>
->>        0.00 :   663a0:  cmn     w0, #0x1
->>        0.00 :   663a4:  b.eq    66438 <__getdelim@@GLIBC_2.17+0x2b8>  // b.none
->>        0.00 :   663a8:  ldp     x27, x19, [x20, #8]
->>        0.00 :   663ac:  sub     x19, x19, x27
->>        0.00 :   663b0:  b       66254 <__getdelim@@GLIBC_2.17+0xd4>
->>        0.00 :   663b4:  nop
->>        0.00 :   663b8:  str     xzr, [x0, #8]
->>        0.00 :   663bc:  ldxr    w2, [x0]
->>        0.00 :   663c0:  stlxr   w3, w1, [x0]
->>        0.00 :   663c4:  cbnz    w3, 663bc <__getdelim@@GLIBC_2.17+0x23c>
->>        0.00 :   663c8:  cmp     w2, #0x1
->>        0.00 :   663cc:  b.le    66340 <__getdelim@@GLIBC_2.17+0x1c0>
->>        0.00 :   663d0:  mov     x1, #0x81                       // #129
->>        0.00 :   663d4:  mov     x2, #0x1                        // #1
->>        0.00 :   663d8:  mov     x3, #0x0                        // #0
->>        0.00 :   663dc:  mov     x8, #0x62                       // #98
->>        0.00 :   663e0:  svc     #0x0
->>        0.00 :   663e4:  ldp     x20, x21, [x29, #24]
->>        0.00 :   663e8:  ldp     x22, x23, [x29, #40]
->>        0.00 :   663ec:  b       66370 <__getdelim@@GLIBC_2.17+0x1f0>
->>        0.00 :   663f0:  ldr     w2, [x0, #4]
->>        0.00 :   663f4:  add     w2, w2, #0x1
->>        0.00 :   663f8:  str     w2, [x0, #4]
->>        0.00 :   663fc:  tbz     w1, #5, 66214 <__getdelim@@GLIBC_2.17+0x94>
->>        0.00 :   66400:  mov     x24, #0xffffffffffffffff        // #-1
->>        0.00 :   66404:  ldr     x19, [x29, #16]
->>        0.00 :   66408:  b       66330 <__getdelim@@GLIBC_2.17+0x1b0>
->>        0.00 :   6640c:  nop
->>        0.00 :   66410:  ldr     x0, [x21]
->>        0.00 :   66414:  strb    wzr, [x0, x24]
->>        0.00 :   66418:  ldr     w1, [x20]
->>        0.00 :   6641c:  ldr     x19, [x29, #16]
->>        0.00 :   66420:  b       66328 <__getdelim@@GLIBC_2.17+0x1a8>
->>        0.00 :   66424:  nop
->>        0.00 :   66428:  mov     x24, #0xffffffffffffffff        // #-1
->>        0.00 :   6642c:  ldr     w1, [x20]
->>        0.00 :   66430:  b       66328 <__getdelim@@GLIBC_2.17+0x1a8>
->>        0.00 :   66434:  nop
->>        0.00 :   66438:  mov     x24, #0xffffffffffffffff        // #-1
->>        0.00 :   6643c:  ldr     w1, [x20]
->>        0.00 :   66440:  ldr     x19, [x29, #16]
->>        0.00 :   66444:  b       66328 <__getdelim@@GLIBC_2.17+0x1a8>
->>        0.00 :   66448:  bl      e3ba0 <pthread_setcanceltype@@GLIBC_2.17+0x30>
->>        0.00 :   6644c:  b       661f8 <__getdelim@@GLIBC_2.17+0x78>
->>        0.00 :   66450:  adrp    x0, 17f000 <sys_sigabbrev@@GLIBC_2.17+0x320>
->>        0.00 :   66454:  ldr     x0, [x0, #3624]
->>        0.00 :   66458:  mrs     x1, tpidr_el0
->>        0.00 :   6645c:  mov     w2, #0x16                       // #22
->>        0.00 :   66460:  mov     x24, #0xffffffffffffffff        // #-1
->>        0.00 :   66464:  str     w2, [x1, x0]
->>        0.00 :   66468:  b       66370 <__getdelim@@GLIBC_2.17+0x1f0>
->>        0.00 :   6646c:  ldr     w1, [x20]
->>        0.00 :   66470:  mov     x4, x0
->>        0.00 :   66474:  tbnz    w1, #15, 6648c <__getdelim@@GLIBC_2.17+0x30c>
->>        0.00 :   66478:  ldr     x0, [x20, #136]
->>        0.00 :   6647c:  ldr     w1, [x0, #4]
->>        0.00 :   66480:  sub     w1, w1, #0x1
->>        0.00 :   66484:  str     w1, [x0, #4]
->>        0.00 :   66488:  cbz     w1, 66494 <__getdelim@@GLIBC_2.17+0x314>
->>        0.00 :   6648c:  mov     x0, x4
->>        0.00 :   66490:  bl      20e40 <gnu_get_libc_version@@GLIBC_2.17+0x130>
->>        0.00 :   66494:  str     xzr, [x0, #8]
->>        0.00 :   66498:  ldxr    w2, [x0]
->>        0.00 :   6649c:  stlxr   w3, w1, [x0]
->>        0.00 :   664a0:  cbnz    w3, 66498 <__getdelim@@GLIBC_2.17+0x318>
->>        0.00 :   664a4:  cmp     w2, #0x1
->>        0.00 :   664a8:  b.le    6648c <__getdelim@@GLIBC_2.17+0x30c>
->>        0.00 :   664ac:  mov     x1, #0x81                       // #129
->>        0.00 :   664b0:  mov     x2, #0x1                        // #1
->>        0.00 :   664b4:  mov     x3, #0x0                        // #0
->>        0.00 :   664b8:  mov     x8, #0x62                       // #98
->>        0.00 :   664bc:  svc     #0x0
->>        0.00 :   664c0:  b       6648c <__getdelim@@GLIBC_2.17+0x30c>
->>
->> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
->> Tested-by: Leo Yan <leo.yan@linaro.org>
-> 
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> 
-Thanks for your Acked-by. :)
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-Jihong.
