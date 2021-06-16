@@ -2,113 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E265A3A99F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A773A99FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbhFPMK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:10:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhFPMKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:10:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD51A61245;
-        Wed, 16 Jun 2021 12:08:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623845329;
-        bh=QlkI38WT3hL5S6bnBl68cYI3mNCvqwOg2BtN6RClOD8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gNoqbf4BoEB+mMSkF0LbPACcE8hfdhWziBuc3On0yCSF1OPpARGrphJEZzi5R8zhj
-         EQBk9eSasfJ21LDYEs5fQgad/5i5kQ4hvjwr2VzkCT5qsBkbBa2YuO73damjDS9tPT
-         gEWv6ceU59Ud8WyKcV32BLXCIyoDzCKKiI1Qx1b1D7h7TGQnS6Yc8Hh4jwg0vvdXHU
-         1ESCA6NJ9d+xly0Ts4XCXJSqpVE+kwtWKvwUzczVJ12VkVaF8vrrLoIIMNmcUpnUot
-         CLEWTlb2HNfBG1sx2OnHpHCbJjguomfMTK9NnEnMModJku7GBFKFrxYfN57naGCL26
-         kwPvkXDDNtLyg==
-Date:   Wed, 16 Jun 2021 13:08:38 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v12 00/12] Restricted DMA
-Message-ID: <20210616120837.GA22783@willie-the-truck>
-References: <20210616062157.953777-1-tientzu@chromium.org>
+        id S232241AbhFPMOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:14:30 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4812 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhFPMO1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 08:14:27 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G4kT073x7zXfhj;
+        Wed, 16 Jun 2021 20:07:16 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 20:12:18 +0800
+Received: from [127.0.0.1] (10.174.179.0) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 16 Jun
+ 2021 20:12:18 +0800
+Subject: Re: [PATCH 1/1] tracing: fix spelling mistakes
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210525062047.8951-1-thunder.leizhen@huawei.com>
+ <20210525062047.8951-2-thunder.leizhen@huawei.com>
+ <20210528211314.5dba632a@oasis.local.home>
+ <93006372-8482-84af-52c0-1d6e7f66e187@huawei.com>
+ <20210528221113.4f66aaea@oasis.local.home>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <fafda907-d56f-c04e-658b-42d3618a82f5@huawei.com>
+Date:   Wed, 16 Jun 2021 20:12:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616062157.953777-1-tientzu@chromium.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210528221113.4f66aaea@oasis.local.home>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claire,
 
-On Wed, Jun 16, 2021 at 02:21:45PM +0800, Claire Chang wrote:
-> This series implements mitigations for lack of DMA access control on
-> systems without an IOMMU, which could result in the DMA accessing the
-> system memory at unexpected times and/or unexpected addresses, possibly
-> leading to data leakage or corruption.
+
+On 2021/5/29 10:11, Steven Rostedt wrote:
+> On Sat, 29 May 2021 10:01:31 +0800
+> "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com> wrote:
 > 
-> For example, we plan to use the PCI-e bus for Wi-Fi and that PCI-e bus is
-> not behind an IOMMU. As PCI-e, by design, gives the device full access to
-> system memory, a vulnerability in the Wi-Fi firmware could easily escalate
-> to a full system exploit (remote wifi exploits: [1a], [1b] that shows a
-> full chain of exploits; [2], [3]).
+>> On 2021/5/29 9:13, Steven Rostedt wrote:
+>>> On Tue, 25 May 2021 14:20:47 +0800
+>>> Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>>>   
+>>>> Fix some spelling mistakes in comments:
+>>>> wont ==> won't  
+>>>
+>>> I prefer not to fix that spelling. I sometimes purposely leave off
+>>> single quotes. It's no that big of a deal, and doesn't deserve the
+>>> churn.  
+>>
+>> Yes, all people can get it right by their wits. "Wont" doesn't affect
+>> their reading speed. But most people might think it's best to add the
+>> missing single quote.
+>>
+>> The minority obeys the majority?
 > 
-> To mitigate the security concerns, we introduce restricted DMA. Restricted
-> DMA utilizes the existing swiotlb to bounce streaming DMA in and out of a
-> specially allocated region and does memory allocation from the same region.
-> The feature on its own provides a basic level of protection against the DMA
-> overwriting buffer contents at unexpected times. However, to protect
-> against general data leakage and system memory corruption, the system needs
-> to provide a way to restrict the DMA to a predefined memory region (this is
-> usually done at firmware level, e.g. MPU in ATF on some ARM platforms [4]).
+> I really don't care. In my opinion, it's unnecessary churn, that just
+> adds noise to the git logs.
+
+Hi, Steve:
+
+$ cat scripts/spelling.txt | grep wont
+wont||won't
+
+"wont" has been recognized as a misspelling.
+
 > 
-> [1a] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_4.html
-> [1b] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_11.html
-> [2] https://blade.tencent.com/en/advisories/qualpwn/
-> [3] https://www.bleepingcomputer.com/news/security/vulnerabilities-found-in-highly-popular-firmware-for-wifi-chips/
-> [4] https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
+> -- Steve
 > 
-> v12:
-> Split is_dev_swiotlb_force into is_swiotlb_force_bounce (patch 06/12) and
-> is_swiotlb_for_alloc (patch 09/12)
+> .
+> 
 
-I took this for a spin in an arm64 KVM guest with virtio devices using the
-DMA API and it works as expected on top of swiotlb devel/for-linus-5.14, so:
-
-Tested-by: Will Deacon <will@kernel.org>
-
-Thanks!
-
-Will
