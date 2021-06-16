@@ -2,105 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9C33AA04A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE073AA064
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235724AbhFPPsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:48:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235591AbhFPPrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:47:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F41A460FE3;
-        Wed, 16 Jun 2021 15:45:31 +0000 (UTC)
-Date:   Wed, 16 Jun 2021 16:45:29 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
-Message-ID: <20210616154529.GD22433@arm.com>
-References: <cover.1623813516.git.luto@kernel.org>
- <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
- <YMnPezLs6vb418Wz@hirez.programming.kicks-ass.net>
- <YMnQVoKvM5G34Yan@hirez.programming.kicks-ass.net>
- <20210616103446.GC22278@shell.armlinux.org.uk>
- <YMncQv1uT5QyQ84w@hirez.programming.kicks-ass.net>
- <20210616132226.GD22278@shell.armlinux.org.uk>
- <20210616150456.GC22433@arm.com>
- <20210616152326.GG22278@shell.armlinux.org.uk>
+        id S234454AbhFPPw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234793AbhFPPwY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:52:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3EBC061574;
+        Wed, 16 Jun 2021 08:50:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=E5vX2MLfmqTWkpek062RxTj+YrNTuLmQP4A+jQIoiJ4=; b=dIAWMqFaji5kUvQpp46QKUy+Fh
+        CI4H3SUGQXMsU3C1s3aXacUCPKT9OZeZSNlVyBCfWWzQ6HyJbXbe/P+d6LD5+1Q/m3RWX5zf9tjJo
+        3fqeoVmCohgUa/G1D4G17YK0F+csk105KUK/6RCyBvwWzB7TGQ6q3O8cO0x3h2G+bZpABCAlRL2xv
+        d/u4UMaEMGOMeRdUDHBjV/ZSgn9CazHVFG1o7VxqynEqaiVlfaNW3UqfvWj4NYL1maffO2NnuGDAM
+        jQbxFtRohDPYjrmlVJtnpIaXm/vUUausGSCbPoPi08mZApH3g2EzkV23SAFfWTZLAULsQgvT6um7a
+        5UEuEdtw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltXmp-008DWU-7P; Wed, 16 Jun 2021 15:49:09 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH] afs: Re-enable freezing once a page fault is interrupted
+Date:   Wed, 16 Jun 2021 16:49:00 +0100
+Message-Id: <20210616154900.1958373-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616152326.GG22278@shell.armlinux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 04:23:26PM +0100, Russell King wrote:
-> On Wed, Jun 16, 2021 at 04:04:56PM +0100, Catalin Marinas wrote:
-> > On Wed, Jun 16, 2021 at 02:22:27PM +0100, Russell King wrote:
-> > > If it's a problem, then it needs fixing. sys_cacheflush() is used to
-> > > implement GCC's __builtin___clear_cache(). I'm not sure who added this
-> > > to gcc.
-> > 
-> > I'm surprised that it works. I guess it's just luck that the thread
-> > doing the code writing doesn't migrate before the sys_cacheflush() call.
-> 
-> Maybe the platforms that use ARM MPCore avoid the issue somehow (maybe
-> by not using self-modifying code?)
+If a task is killed during a page fault, it does not currently call
+sb_end_pagefault(), which means that the filesystem cannot be frozen
+at any time thereafter.  This may be reported by lockdep like this:
 
-Not sure how widely it is/was used with JITs. In general, I think the
-systems at the time were quite tolerant to missing I-cache maintenance
-(maybe small caches?). We ran Linux for a while without 826cbdaff297
-("[ARM] 5092/1: Fix the I-cache invalidation on ARMv6 and later CPUs").
+====================================
+WARNING: fsstress/10757 still has locks held!
+5.13.0-rc4-build4+ #91 Not tainted
+------------------------------------
+1 lock held by fsstress/10757:
+ #0: ffff888104eac530
+ (
+sb_pagefaults
 
-> > > Likely only in places where we care about I/D coherency - as the data
-> > > cache is required to be PIPT on these SMP platforms.
-> > 
-> > We had similar issue with the cache maintenance for DMA. The hack we
-> > employed (in cache.S) is relying on the MESI protocol internals and
-> > forcing a read/write for ownership before the D-cache maintenance.
-> > Luckily ARM11MPCore doesn't do speculative data loads to trigger some
-> > migration back.
-> 
-> That's very similar to the hack that was originally implemented for
-> MPCore DMA - see the DMA_CACHE_RWFO configuration option.
+as filesystem freezing is modelled as a lock.
 
-Well, yes, that's what I wrote above ;) (I added the hack and config
-option IIRC).
+Fix this by removing all the direct returns from within the function,
+and using 'ret' to indicate whether we were interrupted or successful.
 
-> An interesting point here is that cache_ops_need_broadcast() reads
-> MMFR3 bits 12..15, which in the MPCore TRM has nothing to with cache
-> operation broadcasting - but luckily is documented as containing zero.
-> So, cache_ops_need_broadcast() returns correctly (true) here.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/afs/write.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-That's typical with any new feature. The 12..15 field was added in ARMv7
-stating that cache maintenance is broadcast in hardware. Prior to this,
-the field was read-as-zero. So it's not luck but we could have avoided
-negating the meaning here, i.e. call it cache_ops_are_broadcast().
-
-> > The simpler fix for flush_icache_range() is to disable preemption, read
-> > a word in a cacheline to force any dirty lines on another CPU to be
-> > evicted and then issue the D-cache maintenance (for those cache lines
-> > which are still dirty on the current CPU).
-> 
-> Is just reading sufficient? If so, why do we do a read-then-write in
-> the MPCore DMA cache ops? Don't we need the write to force exclusive
-> ownership? If we don't have exclusive ownership of the dirty line,
-> how can we be sure to write it out of the caches?
-
-For cleaning (which is the case for I/D coherency), we only need reading
-since we are fine with clean lines being left in the D-cache on other
-CPUs. For invalidation, we indeed need to force the exclusive ownership,
-hence the write.
-
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index a523bb86915d..62dd906f9b72 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -832,6 +832,7 @@ int afs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+  */
+ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ {
++	vm_fault_t ret = VM_FAULT_RETRY;
+ 	struct page *page = thp_head(vmf->page);
+ 	struct file *file = vmf->vma->vm_file;
+ 	struct inode *inode = file_inode(file);
+@@ -848,14 +849,14 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ #ifdef CONFIG_AFS_FSCACHE
+ 	if (PageFsCache(page) &&
+ 	    wait_on_page_fscache_killable(page) < 0)
+-		return VM_FAULT_RETRY;
++		goto out;
+ #endif
+ 
+ 	if (wait_on_page_writeback_killable(page))
+-		return VM_FAULT_RETRY;
++		goto out;
+ 
+ 	if (lock_page_killable(page) < 0)
+-		return VM_FAULT_RETRY;
++		goto out;
+ 
+ 	/* We mustn't change page->private until writeback is complete as that
+ 	 * details the portion of the page we need to write back and we might
+@@ -863,7 +864,7 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ 	 */
+ 	if (wait_on_page_writeback_killable(page) < 0) {
+ 		unlock_page(page);
+-		return VM_FAULT_RETRY;
++		goto out;
+ 	}
+ 
+ 	priv = afs_page_dirty(page, 0, thp_size(page));
+@@ -877,8 +878,10 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ 	}
+ 	file_update_time(file);
+ 
++	ret = VM_FAULT_LOCKED;
++out:
+ 	sb_end_pagefault(inode->i_sb);
+-	return VM_FAULT_LOCKED;
++	return ret;
+ }
+ 
+ /*
 -- 
-Catalin
+2.30.2
+
