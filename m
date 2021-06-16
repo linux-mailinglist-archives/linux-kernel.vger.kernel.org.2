@@ -2,137 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A033AA59C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729D83AA59E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233710AbhFPUwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 16:52:04 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:49094 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233632AbhFPUwA (ORCPT
+        id S233722AbhFPUwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 16:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233711AbhFPUwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 16:52:00 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1ltcTw-00ASGj-NA; Wed, 16 Jun 2021 14:49:52 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1ltcTv-001WUp-L5; Wed, 16 Jun 2021 14:49:52 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-References: <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
-        <87eed4v2dc.fsf@disp2133>
-        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
-        <87fsxjorgs.fsf@disp2133> <87zgvqor7d.fsf_-_@disp2133>
-        <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
-        <87mtrpg47k.fsf@disp2133> <87pmwlek8d.fsf_-_@disp2133>
-        <87eed1ek31.fsf_-_@disp2133> <YMpeP0CrRUVKIysE@zeniv-ca.linux.org.uk>
-        <YMpfBsIvqbK0L4Gh@zeniv-ca.linux.org.uk>
-Date:   Wed, 16 Jun 2021 15:49:44 -0500
-In-Reply-To: <YMpfBsIvqbK0L4Gh@zeniv-ca.linux.org.uk> (Al Viro's message of
-        "Wed, 16 Jun 2021 20:28:54 +0000")
-Message-ID: <87lf798rh3.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 16 Jun 2021 16:52:12 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C887C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:50:06 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id p5-20020a9d45450000b029043ee61dce6bso3890959oti.8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:50:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0e8lLquy/RoPIexchfl/Dy42UhNJgpKcJRp8OKOo2mw=;
+        b=lREE4F/+u3tfPzBJr/PWSAFl0A5hPQXvj5qk3D3NfohfrrusmynYlYzihuvLTf1Ah6
+         aAwPfXpzge+KtBAKPenQbhWZzF4JCVeiibIwoCHJYNkC+OQbPbkqGKXvzCn150+lTRX6
+         OsuAMohC8wjnFK7rcH9pA6KG+8ss9IRUNaV85BDL05E7Ki0ZAU8nYHoYCdGliC6nCsZW
+         PZ9BFkX68xitJHTXA0Jp7HYLLVJmsRxxrywbylFtfd1RcYfjB/LxlfaYfGuqo+1waUy6
+         2LBOIu2pf/Y8Gu1DLg8FJPHALESWktoNesF4Sp5gt9X1JZnzpO6hy+WpViYcbTjEzjLy
+         VmGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0e8lLquy/RoPIexchfl/Dy42UhNJgpKcJRp8OKOo2mw=;
+        b=G+l39w0CKVEnvOhtYJAxtVfFFZi9U2OQUjkLSiRq43bNKDimJj8y6LAzUDQRD0Cnpf
+         3Ri2wh6kmWQDI11Gv5MUw2Mfbo508AkSE6HZzVPzAcFqr8lwGWqx0ucJz2FXVTkxaVsH
+         f9UTHPv4o5AOaO8ZUE9gcdXm/oYBEMM8kClumLwSHkWCWMIDWzG56kB9PSf5sqrlrGRg
+         qxgxrFB/ioaapp/mm97MVsNtGCDrjb3bYjNnlCIOz0xgXJ64LA6FIkgdCpA59xOSyR6z
+         RA7mBsHOVH8Z+yZMjVCwwtFkCBT7v3QeT93Vb5gyHqPH+cNdtlhqCQ7obce1CTuEYH0K
+         Gjqg==
+X-Gm-Message-State: AOAM530ssDOF5sGb4WKpsQ1RLIBLBsU9hNAnFIqoMzJoLLvYW64DhnYN
+        xvPwSUqXy11UmZwDpcGgA+2jVm/P6ifka1UTezLjkA==
+X-Google-Smtp-Source: ABdhPJxlW2IfgGoCEId2VA9mgQdRrEJsE5cGXrU6XetkrHInBTk/URpCE1qYtWk8Tfw45jq9OfaYsqrLxExbzsq1IsA=
+X-Received: by 2002:a9d:1b41:: with SMTP id l59mr1541479otl.8.1623876605241;
+ Wed, 16 Jun 2021 13:50:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1ltcTv-001WUp-L5;;;mid=<87lf798rh3.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+tvGfrhmCRiEkshSDUtMHfA0mFIPg5PpQ=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Al Viro <viro@zeniv.linux.org.uk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 367 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 4.0 (1.1%), b_tie_ro: 2.7 (0.7%), parse: 1.13
-        (0.3%), extract_message_metadata: 14 (3.9%), get_uri_detail_list: 1.65
-        (0.5%), tests_pri_-1000: 12 (3.4%), tests_pri_-950: 1.02 (0.3%),
-        tests_pri_-900: 0.83 (0.2%), tests_pri_-90: 99 (26.9%), check_bayes:
-        97 (26.4%), b_tokenize: 6 (1.6%), b_tok_get_all: 7 (1.9%),
-        b_comp_prob: 1.83 (0.5%), b_tok_touch_all: 79 (21.7%), b_finish: 0.83
-        (0.2%), tests_pri_0: 221 (60.2%), check_dkim_signature: 0.38 (0.1%),
-        check_dkim_adsp: 2.5 (0.7%), poll_dns_idle: 0.26 (0.1%), tests_pri_10:
-        2.8 (0.8%), tests_pri_500: 8 (2.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 2/2] alpha/ptrace: Add missing switch_stack frames
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local> <YL7XXNOnbaDgmTB9@atmark-techno.com>
+ <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com> <20210611062153.GA30906@lst.de>
+ <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
+In-Reply-To: <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
+From:   Jianxiong Gao <jxgao@google.com>
+Date:   Wed, 16 Jun 2021 13:49:54 -0700
+Message-ID: <CAMGD6P1v2JoJoxSuAYL8UjdtCaLCc4K_7xzVkumspeb0qn=LBQ@mail.gmail.com>
+Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb) stable/for-linus-5.12)
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Dominique MARTINET <dominique.martinet@atmark-techno.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lukas Hartmann <lukas@mntmn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Marc Orr <marcorr@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Peter Gonda <pgonda@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Al Viro <viro@zeniv.linux.org.uk> writes:
-
-> On Wed, Jun 16, 2021 at 08:25:35PM +0000, Al Viro wrote:
->> On Wed, Jun 16, 2021 at 01:32:50PM -0500, Eric W. Biederman wrote:
->> 
->> > -.macro	fork_like name
->> > +.macro	allregs name
->> >  	.align	4
->> >  	.globl	alpha_\name
->> >  	.ent	alpha_\name
->> > +	.cfi_startproc
->> >  alpha_\name:
->> >  	.prologue 0
->> > -	bsr	$1, do_switch_stack
->> > +	SAVE_SWITCH_STACK
->> >  	jsr	$26, sys_\name
->> > -	ldq	$26, 56($sp)
->> > -	lda	$sp, SWITCH_STACK_SIZE($sp)
->> > +	RESTORE_SWITCH_STACK
->> 
->> 	No.  You've just added one hell of an overhead to fork(2),
->> for no reason whatsoever.  sys_fork() et.al. does *NOT* modify the
->> callee-saved registers; it's plain C.  So this change is complete
->> BS.
->> 
->> > +allregs exit
->> > +allregs exit_group
->> 
->> 	Details, please - what exactly makes exit(2) different from
->> e.g. open(2)?
+On Fri, Jun 11, 2021 at 3:35 AM Konrad Rzeszutek Wilk
+<konrad.wilk@oracle.com> wrote:
 >
-> Ah... PTRACE_EVENT_EXIT garbage, fortunately having no counterparts in case of
-> open(2)...  Still, WTF would you want to restore callee-saved registers for
-> in case of exit(2)?
+> On Fri, Jun 11, 2021 at 08:21:53AM +0200, Christoph Hellwig wrote:
+> > On Thu, Jun 10, 2021 at 05:52:07PM +0300, Horia Geant=C4=83 wrote:
+> > > I've noticed the failure also in v5.10 and v5.11 stable kernels,
+> > > since the patch set has been backported.
+> >
+> > FYI, there has been a patch on the list that should have fixed this
+> > for about a month:
+> >
+> > https://lore.kernel.org/linux-iommu/20210510091816.GA2084@lst.de/T/#m0d=
+0df6490350a08dcc24c9086c8edc165b402d6f
+> >
+> > but it seems like it never got picked up.
+>
+> Jianxiong,
+> Would you be up for testing this patch on your NVMe rig please? I don't
+> forsee a problem.. but just in case
+>
+I have tested the attached patch and it generates an error when
+formatting a disk to xfs format in Rhel 8 environment:
 
-Someone might want or try to read them in the case of exit.  Which
-without some change will result in a read of other kernel stack content
-on alpha.
+sudo mkfs.xfs -f /dev/nvme0n2
+meta-data=3D/dev/nvme0n2           isize=3D512    agcount=3D4, agsize=3D327=
+68000 blks
+         =3D                       sectsz=3D512   attr=3D2, projid32bit=3D1
+         =3D                       crc=3D1        finobt=3D1, sparse=3D1, r=
+mapbt=3D0
+         =3D                       reflink=3D1
+data     =3D                       bsize=3D4096   blocks=3D131072000, imaxp=
+ct=3D25
+         =3D                       sunit=3D0      swidth=3D0 blks
+naming   =3Dversion 2              bsize=3D4096   ascii-ci=3D0, ftype=3D1
+log      =3Dinternal log           bsize=3D4096   blocks=3D64000, version=
+=3D2
+         =3D                       sectsz=3D512   sunit=3D0 blks, lazy-coun=
+t=3D1
+realtime =3Dnone                   extsz=3D4096   blocks=3D0, rtextents=3D0
+Discarding blocks...Done.
+bad magic number
+bad magic number
+Metadata corruption detected at 0x56211de4c0c8, xfs_sb block 0x0/0x200
+libxfs_writebufr: write verifer failed on xfs_sb bno 0x0/0x200
+releasing dirty buffer (bulk) to free list!
 
-Plus there are coredumps which definitely want to read everything.
-Although admittedly that case no longer matters.
-
-Eric
-
+I applied the patch on commit 06af8679449d.
