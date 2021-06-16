@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2B23A94E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DA83A94E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbhFPIYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:24:03 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:36523 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231727AbhFPIYB (ORCPT
+        id S231882AbhFPIZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231335AbhFPIZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:24:01 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5E96158044E;
-        Wed, 16 Jun 2021 04:21:55 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 16 Jun 2021 04:21:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=o
-        z1afSZtH4HEgY3zg42iH1DY//zDW8wKRe4vHaTi0y0=; b=lN5SUX1uagJ28V30k
-        RC1tmY6DI9XAlPzOqVSgDgaMxG/WoeiuBWcBHIdcB1CXm3e4bqlqrWI/tgyNvqQY
-        yDt1jRi5zrXeechHiBDfSvLWt5RFInLKRWIVKMadud5QfJdauxI4/nL7swM22SIf
-        twheS0P6OfgJsj5/inWXrlarPgGVHEDeZG8kyeel1AXPSPpYaDW8zqRMDXFY8ziX
-        WHcF1E6/pISk7f1Z3cPoMl5dqVwmltX/ND8byzqGhrBMJMzjva9KD2tCSBvA8nfq
-        HJBX+raIEVE+do2fz8IMPl9i4JdqzdtlNe79s7m90CLs19qunnb5tI9S1n2jo/O+
-        Qf2JA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=oz1afSZtH4HEgY3zg42iH1DY//zDW8wKRe4vHaTi0
-        y0=; b=bmm63I7VxeIVqq+/FRSF68A0XI3F7eCYsCEWYOYvN1IcHMho3Bdb6+tvM
-        e7SKSNiRkCRWKx6dobT/WP/YAa/xq65u/NtfnnVMYZ+mnRTbV2Gx14tWEhF7j8yF
-        EEygGeX03XWAv7RVxGALJS1arH8DAcyzqkdTpwDhhlHOaD7kLh6d+i9BPyav4Mzf
-        jWBujeIa9fdV2xmFhMXQb/ZK+wYvHHVQTRugeJkLmt00uNtcsF3JWKZBmWIDSaYY
-        ha+Lj/10tSQ6bJeHQ+NlGmDHfqzXw5nSIYljfpr0K6AnLAF5dnbdBjQlL0Qwcsbv
-        5TDTJJyIPJmabmRS9GZYJJWQ1fl2w==
-X-ME-Sender: <xms:obTJYJOBnmrghJOugX0l7MBAFgaXxK24GMDyHJDS5x7AqgI2oYQsrQ>
-    <xme:obTJYL9ZYQPVBcCEYKzC09vp6b72sKxTvr1EJpQG27SYuu22iiqXyr32n20BZGSV1
-    0cyGdsTzK1Vye7DNEQ>
-X-ME-Received: <xmr:obTJYIQoiTyb_IzglrDMyDVN10hTgNvkwd0EdPYKBhREetI-NuAbsVZEE8LInqvQLOwGRZhl4-D7T5Piw4oqTIbi60qx6ZmCOzGm>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpefgjeettdejgffgffdvteeutdehtdehgeehueetkeefgefhtdetjeekledu
-    gedvudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:obTJYFtEYBd5JB3YPDZATxYUAH4HBhQzopmQFc2JT6yom3hYs_AKhg>
-    <xmx:obTJYBehjpvFtceQCmkSwIDKUK91vq3Ur-_q277EsSdqEljlrGN9fw>
-    <xmx:obTJYB3dj1QPCy50MWLCnS4Dt_uVahxFGaGwFY93tEPsoEMJFzD3FA>
-    <xmx:o7TJYP26NQO9-XFDXfXaF0wuXvyOuehZel8F6E58MuvraDMDZVh_PQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 16 Jun 2021 04:21:53 -0400 (EDT)
-Date:   Wed, 16 Jun 2021 10:21:51 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next] ASoC: hdmi-codec: Make symbol
- 'hdmi_codec_controls' static
-Message-ID: <20210616082151.mrcbswfpponkleve@gilmour>
-References: <20210615172156.2840576-1-weiyongjun1@huawei.com>
+        Wed, 16 Jun 2021 04:25:51 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8E7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:23:45 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1ltQpd-0005HI-Ti; Wed, 16 Jun 2021 10:23:29 +0200
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1ltQpb-0003rt-Rs; Wed, 16 Jun 2021 10:23:27 +0200
+Date:   Wed, 16 Jun 2021 10:23:27 +0200
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     richard@nod.at, yangds.fnst@cn.fujitsu.com, yi.zhang@huawei.com,
+        houtao1@huawei.com, yukuai3@huawei.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] ubifs: Fix races between xattr_{set|get} and
+ listxattr operations
+Message-ID: <20210616082327.GP9782@pengutronix.de>
+References: <20210531125210.1173922-1-chengzhihao1@huawei.com>
+ <20210531125210.1173922-2-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210615172156.2840576-1-weiyongjun1@huawei.com>
+In-Reply-To: <20210531125210.1173922-2-chengzhihao1@huawei.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:19:16 up 118 days, 11:43, 116 users,  load average: 0.04, 0.11,
+ 0.15
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 05:21:56PM +0000, Wei Yongjun wrote:
-> The sparse tool complains as follows:
->=20
-> sound/soc/codecs/hdmi-codec.c:750:25: warning:
->  symbol 'hdmi_codec_controls' was not declared. Should it be static?
->=20
-> This symbol is not used outside of hdmi-codec.c, so marks it static.
->=20
-> Fixes: 366b45b97448 ("ASoC: hdmi-codec: Rework to support more controls")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Hi,
 
-Acked-by: Maxime Ripard <maxime@cerno.tech>
+On Mon, May 31, 2021 at 08:52:09PM +0800, Zhihao Cheng wrote:
+> UBIFS may occur some problems with concurrent xattr_{set|get} and
+> listxattr operations, such as assertion failure, memory corruption,
+> stale xattr value[1].
+> 
+> Fix it by importing a new rw-lock in @ubifs_inode to serilize write
+> operations on xattr, concurrent read operations are still effective,
+> just like ext4.
+> 
+> [1] https://lore.kernel.org/linux-mtd/20200630130438.141649-1-houtao1@huawei.com
 
-Thanks!
-Maxime
+I had a closer look at it and reviewed that you carefully release the
+lock where you claimed it. I can't tell if adding this lock is the right
+approach, but for what it's worth you can add my
+
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+
+> --- a/fs/ubifs/ubifs.h
+> +++ b/fs/ubifs/ubifs.h
+> @@ -356,6 +356,7 @@ struct ubifs_gced_idx_leb {
+>   * @ui_mutex: serializes inode write-back with the rest of VFS operations,
+>   *            serializes "clean <-> dirty" state changes, serializes bulk-read,
+>   *            protects @dirty, @bulk_read, @ui_size, and @xattr_size
+> + * @xattr_sem: serilizes write operations (remove|set|create) on xattr
+
+s/serilizes/serializes/
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
