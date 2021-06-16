@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1383AA275
+	by mail.lfdr.de (Postfix) with ESMTP id DA9043AA276
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhFPRgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
+        id S231405AbhFPRge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhFPRga (ORCPT
+        with ESMTP id S231352AbhFPRgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:36:30 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FED7C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 10:34:24 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so4438623pjs.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 10:34:24 -0700 (PDT)
+        Wed, 16 Jun 2021 13:36:31 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A67C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 10:34:25 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id k6so2742037pfk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 10:34:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ndv/CKBKWeZLGFITwYmA/LrS0ISEm1en6ZoDc/lnmnM=;
-        b=lZBfDvvWzFAzf4Ab0IQdP3N1xb84xSuyTdRiGY3kzvaFhQKHITW1O8ia/0R+O7CVDT
-         fnoFfGPPM4DVROl2yCRQR/5BYgQFpNOobG+b54vQjV5cEsRKqLqU6uZBu3jIGdV+yjkX
-         dlOYuAW+cuSdaCaTDxMcXtHpfoohc2qLCrwgHQ/Z5Viy2a4c/86RWJlStPwfeQdgacAq
-         TE9I786FgA3aI2OdYcpFPXsgUS9+0k+LBs6wSF421VApYV40Rwoy++7vuq4fXez+yaH7
-         dsNhSLWHopSF6HhaUgM3uenPg1rGuFoFY3LrAciWMsFxidEznML6TbtHiXAmfT+FOdHZ
-         TSCA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=jWMknRbD8X1K6AG9lburjdKW9p491bZf6T9lQOWSxxM=;
+        b=WYmmuQrhubPiSJDW9wGOaMi600sb+jgw6jlrzgd9MuDRuGCR80bvURFllIw8BfQXVd
+         4TFjA0fLpdScaKVxoEDyng4DGCWQbHnszW/V0kBgfohgSjKJm3f1tT0vIceGETESOO10
+         /JipqRvLbzUuJytPGb+aKPld2kHiZV5mAV1gx96jX+eW/PNQCcTjV5sXlX2uLBdz3I9O
+         nPlleW5R4avJw5GfeuF2ZgN8grnuRua/eWnJwAZehamQ/XJR2kDzuCvJ2MphojHlFZqJ
+         QUThUTYiB6Z46cVzcvpsYirJLprl+ERslbjm5wGrYVjimjcTTB7NIKBBwKjbT1O/qHOG
+         RFVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ndv/CKBKWeZLGFITwYmA/LrS0ISEm1en6ZoDc/lnmnM=;
-        b=okVIph2mA06DQJ/hTGzXiytsOIxvUOUnzyJN5vOUkNGc0gUoPx5XvgHsrTLgWOXncu
-         +vpWj1Upf9gjaALSBffIv5PNRLiiWgflR8tAXIou0eLmirhKrIANN9uZ5f+asAGPHzgR
-         ENZKfDxigpjflj/a39K2kTVoHH3SAQodynik7G4Dxl5lq3fwFL6w1sWoLTTbkIgzAAmc
-         xURtU/ASNAlyqLtpMo2Sx3RNAg/hz0edbFQRelkWEvQqmyjfgVgRnLIkh6auQZ4d/VV7
-         ZKMqYtMWPKwbPUGttzVQ2XthVArVK22+p4HJl+3e8JzAPNazydlxZnlVtKVUuYyKqJJ2
-         f0nQ==
-X-Gm-Message-State: AOAM533XVXRnrtR6D1PzmpfYRANclfwCoOOaKYRhvElSGm6XaZIniPdI
-        fxnrWpexl8DNFkxJmGyl6Rw=
-X-Google-Smtp-Source: ABdhPJwchOz3b9uNdjbyFvbmTtwXO6fZ9OX/aRp1x8R3ip9DPpfONPoVr7bQ30ZWpFubf5YWF6omeQ==
-X-Received: by 2002:a17:902:6b04:b029:10d:8c9e:5f56 with SMTP id o4-20020a1709026b04b029010d8c9e5f56mr692857plk.8.1623864863480;
-        Wed, 16 Jun 2021 10:34:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jWMknRbD8X1K6AG9lburjdKW9p491bZf6T9lQOWSxxM=;
+        b=MsP8AN1e6OG4Ycc+Tf2djHW6yIFFTAnaEjgkkREDQX8uBpLYcLnSrF/2+7/oa46fVe
+         6C7XKn5kOdFXVEEYuhn5Ujt/nCAKdl4rwuI9ARYxbNduTnqOjVfuHar2F0OLhc5fWfhK
+         OMGGHVRCqaF+eaLEUYT8twe43Xkr/sLwkbLmbeAgLWhEn6YhfJaH0apzSGQH0NUcKb1D
+         1i/d8+cwe7JsuOtx9r8vF0r2yAdsY1HCjuBc0C+vZ28PESY8OOvl1CjgZfH2/ri/NIu1
+         DFmziHnigDA5ySWEOcg7sjOauzzXx6BKGdEDzeMBOPnwoVNn02EAA0cUi/r9ZsoID35g
+         Ed3g==
+X-Gm-Message-State: AOAM530QNTy5TubatOiKPbJEDYa50k9GJrmQTmeRRlzpPd5kOYt4peAD
+        Eu2RI5MbJTfACqjUfMmiILE=
+X-Google-Smtp-Source: ABdhPJz436Zw3YWQKZ/hPtmHRb319Ej3srR8Gc/K3d86FxQPw/wKMhw2zFKWx/8HRIJNrwlO9X6YPw==
+X-Received: by 2002:aa7:9983:0:b029:2e9:e086:7917 with SMTP id k3-20020aa799830000b02902e9e0867917mr943222pfh.57.1623864864946;
+        Wed, 16 Jun 2021 10:34:24 -0700 (PDT)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id m3sm2933901pfh.174.2021.06.16.10.34.22
+        by smtp.gmail.com with ESMTPSA id m3sm2933901pfh.174.2021.06.16.10.34.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 10:34:22 -0700 (PDT)
+        Wed, 16 Jun 2021 10:34:24 -0700 (PDT)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     Joerg Roedel <joro@8bytes.org>
@@ -56,12 +56,13 @@ Cc:     Nadav Amit <namit@vmware.com>, Will Deacon <will@kernel.org>,
         Robin Murphy <robin.murphy@arm.com>,
         Lu Baolu <baolu.lu@linux.intel.com>,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 0/7] iommu/amd: Enable page-selective flushes
-Date:   Wed, 16 Jun 2021 03:04:53 -0700
-Message-Id: <20210616100500.174507-1-namit@vmware.com>
+Subject: [PATCH v4 1/7] iommu/amd: Selective flush on unmap
+Date:   Wed, 16 Jun 2021 03:04:54 -0700
+Message-Id: <20210616100500.174507-2-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210616100500.174507-1-namit@vmware.com>
+References: <20210616100500.174507-1-namit@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -69,26 +70,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadav Amit <namit@vmware.com>
 
-The previous patch, commit 268aa4548277 ("iommu/amd: Page-specific
-invalidations for more than one page") was supposed to enable
-page-selective IOTLB flushes on AMD.
+Recent patch attempted to enable selective page flushes on AMD IOMMU but
+neglected to adapt amd_iommu_iotlb_sync() to use the selective flushes.
 
-Besides the bug that was already fixed by commit a017c567915f
-("iommu/amd: Fix wrong parentheses on page-specific invalidations")
-there are several remaining matters to enable and benefit from
-page-selective IOTLB flushes on AMD:
-
-1. Enable selective flushes on unmap (patch 1)
-2. Avoid using flush-queue on vIOMMUs (patch 2)
-3. Relaxed flushes when gathering, excluding vIOMMUs (patches 3-5)
-4. Syncing once on scatter-gather map operations (patch 6)
-5. Breaking flushes to naturally aligned ranges on vIOMMU (patch 7)
-
-The main difference in this version is that the logic that flushes
-vIOMMU was improved based on Robin's feedback. Batching decisions are
-not based on alignment anymore, but instead the flushing range is broken
-into naturally aligned regions on sync. Doing so allows us to flush only
-the entries that we modified with the minimal number of flushes.
+Adapt amd_iommu_iotlb_sync() to use selective flushes and change
+amd_iommu_unmap() to collect the flushes. As a defensive measure, to
+avoid potential issues as those that the Intel IOMMU driver encountered
+recently, flush the page-walk caches by always setting the "pde"
+parameter. This can be removed later.
 
 Cc: Joerg Roedel <joro@8bytes.org>
 Cc: Will Deacon <will@kernel.org>
@@ -97,42 +86,49 @@ Cc: Robin Murphy <robin.murphy@arm.com>
 Cc: Lu Baolu <baolu.lu@linux.intel.com>
 Cc: iommu@lists.linux-foundation.org
 Cc: linux-kernel@vger.kernel.org
-
+Signed-off-by: Nadav Amit <namit@vmware.com>
 ---
+ drivers/iommu/amd/iommu.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-v3->v4:
-* Breaking flushes to naturally aligned ranges on vIOMMU [Robin]
-* Removing unnecessary stubs; fixing comment [Robin]
-* Removing unused variable [Yong]
-* Changing pr_warn_once() to pr_warn() [Robin]
-* Improving commit log [Will]
-
-v2->v3:
-* Rebase on v5.13-rc5
-* Refactoring (patches 4-5) [Robin]
-* Rework flush logic (patch 5): more relaxed on native
-* Syncing once on scatter-gather operations (patch 6)
-
-v1->v2:
-* Rebase on v5.13-rc3
-
-Nadav Amit (6):
-  iommu/amd: Selective flush on unmap
-  iommu/amd: Do not use flush-queue when NpCache is on
-  iommu: Factor iommu_iotlb_gather_is_disjoint() out
-  iommu/amd: Tailored gather logic for AMD
-  iommu/amd: Sync once for scatter-gather operations
-  iommu/amd: Use only natural aligned flushes in a VM
-
-Robin Murphy (1):
-  iommu: Improve iommu_iotlb_gather helpers
-
- drivers/iommu/amd/init.c  |  7 ++-
- drivers/iommu/amd/iommu.c | 96 +++++++++++++++++++++++++++++++++++----
- drivers/iommu/mtk_iommu.c |  6 +--
- include/linux/iommu.h     | 72 +++++++++++++++++++++++------
- 4 files changed, 153 insertions(+), 28 deletions(-)
-
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 3ac42bbdefc6..3e40f6610b6a 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -2059,12 +2059,17 @@ static size_t amd_iommu_unmap(struct iommu_domain *dom, unsigned long iova,
+ {
+ 	struct protection_domain *domain = to_pdomain(dom);
+ 	struct io_pgtable_ops *ops = &domain->iop.iop.ops;
++	size_t r;
+ 
+ 	if ((amd_iommu_pgtable == AMD_IOMMU_V1) &&
+ 	    (domain->iop.mode == PAGE_MODE_NONE))
+ 		return 0;
+ 
+-	return (ops->unmap) ? ops->unmap(ops, iova, page_size, gather) : 0;
++	r = (ops->unmap) ? ops->unmap(ops, iova, page_size, gather) : 0;
++
++	iommu_iotlb_gather_add_page(dom, gather, iova, page_size);
++
++	return r;
+ }
+ 
+ static phys_addr_t amd_iommu_iova_to_phys(struct iommu_domain *dom,
+@@ -2167,7 +2172,13 @@ static void amd_iommu_flush_iotlb_all(struct iommu_domain *domain)
+ static void amd_iommu_iotlb_sync(struct iommu_domain *domain,
+ 				 struct iommu_iotlb_gather *gather)
+ {
+-	amd_iommu_flush_iotlb_all(domain);
++	struct protection_domain *dom = to_pdomain(domain);
++	unsigned long flags;
++
++	spin_lock_irqsave(&dom->lock, flags);
++	__domain_flush_pages(dom, gather->start, gather->end - gather->start, 1);
++	amd_iommu_domain_flush_complete(dom);
++	spin_unlock_irqrestore(&dom->lock, flags);
+ }
+ 
+ static int amd_iommu_def_domain_type(struct device *dev)
 -- 
 2.25.1
 
