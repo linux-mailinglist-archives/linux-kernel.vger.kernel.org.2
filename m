@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E1C3AA070
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570083AA07D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235650AbhFPP5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:57:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55644 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234753AbhFPPxb (ORCPT
+        id S234799AbhFPP6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:58:12 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:37293 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235033AbhFPPzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:53:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623858679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Qd1Zh0zHMPKxeDxDRV+UTGvygr4iY6Q7mRYXQ+zyWWE=;
-        b=InnjbCPQP8lEzhBeycjDaHFIoPukxBPV3X3kYDyf1s2AMP0T7gZEd0Jc3KnXqsGGYO5ClR
-        Ej5sBsFzEY2G1764AoHzcUDv0j3vnjwwAf6lHtrlEgqCd/za5/XRh6Wj49JzdJMf9JMnUg
-        DFTFMbywItJrwCjYAHNECLqK269wYSM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-212-8t83nTQoN7SIoMNN5VuXkw-1; Wed, 16 Jun 2021 11:50:43 -0400
-X-MC-Unique: 8t83nTQoN7SIoMNN5VuXkw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A88A236260;
-        Wed, 16 Jun 2021 15:50:41 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.40.194.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6C20D60C03;
-        Wed, 16 Jun 2021 15:50:33 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT)), Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH] KVM: x86: fix 32 bit build
-Date:   Wed, 16 Jun 2021 18:50:32 +0300
-Message-Id: <20210616155032.1117176-1-mlevitsk@redhat.com>
+        Wed, 16 Jun 2021 11:55:43 -0400
+Received: from [192.168.1.155] ([95.115.35.150]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MlwJv-1lT2i31xRr-00j4qj; Wed, 16 Jun 2021 17:52:24 +0200
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex Benn?e <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
+        Alistair Strachan <astrachan@google.com>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
+ <YMlwTiN4Y9bK3M4Q@yoga>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <8d58da79-8e54-048b-db89-8c1caaa0320f@metux.net>
+Date:   Wed, 16 Jun 2021 17:52:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
+In-Reply-To: <YMlwTiN4Y9bK3M4Q@yoga>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Provags-ID: V03:K1:zYV2Vb8N523yfGwaAamnyOfO9IKmEQnqd6sTMik2ROSZ7cvYmAN
+ P+VxcmAsXGX6vzb4SRBaxlBoX7KUvdrVZZEJEWZNpRygC9ACFb6Hfn33WlquBmdPoOQZvXX
+ VSqVi2NWO7+sNcnkirbpTVkxHEPc7Jh96VOoZzzK8GfiJ2t1meINaY99JOXByCRWhC1rvRg
+ AGnmOmcNFRqNPwmCe/9/A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bYb/owV9rlA=:ixDRRrjFdE2oUtq7B2uSI1
+ VEXzB2qPM57T1OTriUP7i36IyDMD7R0aEPbCSak0OhU9eTyIcubcYk4ewmTdNVQOX2CrX9zus
+ lj25xXuGUiQgI92OTRbDtrIzc/DWsqS+dZVA5dC7L4Q7Kscv4UqI+5UcmZ8vANAtwyCuJx4Cb
+ 7fvWxGC0d2X3mHk9oVXX5bh+NhcqwJJIUVzAJBbnlxDcN00BsIJFqDZjNvLv6S3kOCOooUY4/
+ 5iMYR9VvrPtCX0StbrMKitflvTjyfcw+HB9Ju2BAGVW5YanTpQjc2WaEui2vykhL1RJ2BMVHQ
+ CD5vZ8JhGdMGu4zMa1/hWSwitBK3L2Ygpkc+sf16cGMoFwKTGATc16XIqFuYAcMMSeFnfg2Kp
+ vwfr4U/Sfvt7HhWkWJRnZGorVVXY7t5VZ10YK8iakVeG1aIHplvTCYZ6WOfGO+DahUv97SB9v
+ aUF9bPHxMB8QjZx/7Od2CXy18DqA0zszh32Xrn4iHELpnRg+FZ4GX6qnL3QEX1bAzEzTJRQxZ
+ 63s4fqdKFtSdtj1IKOVp2M=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that kvm->stat.nx_lpage_splits is 64 bit, use DIV_ROUND_UP_ULL
-when doing division.
+On 16.06.21 05:30, Bjorn Andersson wrote:
 
-Fixes: 7ee093d4f3f5 ("KVM: switch per-VM stats to u64")
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/mmu/mmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Combined with the virtio-i2c effort this could provide an alternative by
+> simply tunneling the busses and GPIOs into Linux and use standard iio
+> drivers, for cases where this suits your product requirements better.
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 720ceb0a1f5c..97372225f183 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -6054,7 +6054,7 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
- 	write_lock(&kvm->mmu_lock);
- 
- 	ratio = READ_ONCE(nx_huge_pages_recovery_ratio);
--	to_zap = ratio ? DIV_ROUND_UP(kvm->stat.nx_lpage_splits, ratio) : 0;
-+	to_zap = ratio ? DIV_ROUND_UP_ULL(kvm->stat.nx_lpage_splits, ratio) : 0;
- 	for ( ; to_zap; --to_zap) {
- 		if (list_empty(&kvm->arch.lpage_disallowed_mmu_pages))
- 			break;
+So, you wanna use virtio as logical interface between the two CPUs ?
+Interesting idea. Usually folks use rpmsg for those things.
+
+What is running on the secondary CPU ? Some OS like Linux or some bare
+metal stuff ? What kind of CPU is that anyways ?
+
+--mtx
+
 -- 
-2.26.3
-
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
