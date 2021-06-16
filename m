@@ -2,147 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3FE3A9DD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A2A3A9DE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbhFPOnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:43:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60373 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234069AbhFPOni (ORCPT
+        id S234158AbhFPOoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:44:05 -0400
+Received: from mail-m121144.qiye.163.com ([115.236.121.144]:39530 "EHLO
+        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233914AbhFPOoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:43:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623854491;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bfIrh+PtaBgYpVTZkV0P8aItcFgfK/vLpnJFRGQ1gH8=;
-        b=Usozt17A2h0cQGlRMmOE80v1SDHa3aS7JAhjgGTQyKtKUJ8JJQtdBlZS5+MzWIhUgx2G9E
-        w6zPoktYcNWzft6DQiBPxlJdh9RCqxqGqyhPQJ2Zw0lMSDw1GuhFdb4tCPmFhXGLrYvopH
-        gFIiJ5FBHSeu7atWgggfhv35o49duik=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-WqqjcgeeNp2mEwtyu6UAfQ-1; Wed, 16 Jun 2021 10:41:30 -0400
-X-MC-Unique: WqqjcgeeNp2mEwtyu6UAfQ-1
-Received: by mail-ed1-f72.google.com with SMTP id df3-20020a05640230a3b029039179c0f290so1162072edb.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:41:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bfIrh+PtaBgYpVTZkV0P8aItcFgfK/vLpnJFRGQ1gH8=;
-        b=dz6e6Oihom+5X/NimDEDqqpkyM0mWLv7fXf2NTLQ51BJ+3HJZD+4u/cqigY7q2a5kZ
-         BQ3jC/lTLV4NHGk5Js1CRYxHCW+jjF9pL0MpWHsHyk6ARZjL/MzR5OxT4bO4tQbf2naU
-         Wkh2rUwPJYUYnAgVj2Dqrf2q7NuO/sZLFNECLAu14BCApMDkX/pZLVRIHzVELKdU9GVW
-         VKHozX5zbCwYx75vCopHd3bCd18JuZ/DVI1mFMK1h1eOLzMszw+0/WE1nbL9pnC+eNu6
-         EwbBkCEu1iypfsuD+Ugzmih059trYrPo9QWmwF/zojYpVyEtEltZ4nm0EFrJ93bQh6ht
-         7etw==
-X-Gm-Message-State: AOAM530xnxm6ZICfhXQQB23T1qUZtZl7Xd1Wy2FRqqifQaS8Tbgz8eR4
-        IZ+nL1rBxR5/8dfU2q0naPA66pHSAeTa0SiRehpW9Du23E7HrSdxy9OVsZyZGKX8FF/dvX1p9+n
-        QDqsojpAkgDT6bwwxMp2rnkhBY2yE23866zMOQpKw4iodafOb8HCPC+QTiRY2FMhxzHCeCMExbo
-        nP
-X-Received: by 2002:a05:6402:40c3:: with SMTP id z3mr4640210edb.187.1623854489026;
-        Wed, 16 Jun 2021 07:41:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw8Kh3kRiNq6WrTKPSmty8tDUn0KpO37cQYGaBM8Rz57QbWzUN1RpAiuEKdLx5kEV/hkxh9lQ==
-X-Received: by 2002:a05:6402:40c3:: with SMTP id z3mr4640191edb.187.1623854488849;
-        Wed, 16 Jun 2021 07:41:28 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id c23sm1774183eds.57.2021.06.16.07.41.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 07:41:28 -0700 (PDT)
-Subject: Re: [PATCH 2/5] ACPI: scan: Make acpi_walk_dep_device_list()
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <3140195.44csPzL39Z@kreacher> <1881350.PYKUYFuaPT@kreacher>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f46533e2-1ebe-0130-9323-b045da6ea62d@redhat.com>
-Date:   Wed, 16 Jun 2021 16:41:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 16 Jun 2021 10:44:00 -0400
+DKIM-Signature: a=rsa-sha256;
+        b=ZeLfAbsON47mDckqA0db4BwOC11IAO/fhpl3DqYiVptZ8ix/fPS5pNhIiRWknn/sL9uSFVaJUVWG1IsJRn9y6QgHs9jMnAFANwDT5z6dO53VAVM1pXjjxKUblnm7zb2czlK6gwPGIy7QNjnzGJ7yMPwXFdEt1535avkjh6lFmCA=;
+        s=default; c=relaxed/relaxed; d=vivo.com; v=1;
+        bh=7jayIAvLdxe4BYaM+zA/siNMUWJMUwXobFneLmZhBhs=;
+        h=date:mime-version:subject:message-id:from;
+Received: from wanjb-KLV-WX9.. (unknown [121.229.73.16])
+        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id AFF13AC0173;
+        Wed, 16 Jun 2021 22:41:52 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Geoff Levand <geoff@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] PS3: Remove unneeded semicolons
+Date:   Wed, 16 Jun 2021 22:41:31 +0800
+Message-Id: <20210616144131.27441-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <1881350.PYKUYFuaPT@kreacher>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQ0IaTFYZHUJKSxhOSx5CGEhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Oj46Ngw6HT8SEU4dMR8aOSwq
+        MEMwCzJVSlVKTUlIQ05PTkpISk1MVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlK
+        SUpVSUlCVUxIVUpNWVdZCAFZQUlLT083Bg++
+X-HM-Tid: 0a7a15457ab5b039kuuuaff13ac0173
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Fix coccicheck warning:
 
-On 6/16/21 4:22 PM, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Because acpi_walk_dep_device_list() is only called by the code in the
-> file in which it is defined, make it static, drop the export of it
-> and drop its header from acpi.h.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+./arch/powerpc/platforms/ps3/system-bus.c:607:2-3: Unneeded semicolon
+./arch/powerpc/platforms/ps3/system-bus.c:766:2-3: Unneeded semicolon
 
-Actually, acpi_walk_dep_device_list() was split out as a
-helper function used to implement acpi_dev_clear_dependencies()
-because it will be used outside of drivers/acpi.
-Specifically it will be used in the new intel_skl_int3472 driver:
-https://patchwork.kernel.org/project/platform-driver-x86/patch/20210603224007.120560-6-djrscally@gmail.com/
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ arch/powerpc/platforms/ps3/system-bus.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Which I plan to merge into pdx86/for-next today, I've just merged
-your linux-pm/acpi-scan PULL-req which exports acpi_walk_dep_device_list()
-as preparation for this.
-
-Regards,
-
-Hans
-
-
-> ---
->  drivers/acpi/scan.c  |    7 +++----
->  include/linux/acpi.h |    3 ---
->  2 files changed, 3 insertions(+), 7 deletions(-)
-> 
-> Index: linux-pm/drivers/acpi/scan.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/scan.c
-> +++ linux-pm/drivers/acpi/scan.c
-> @@ -2145,9 +2145,9 @@ static int acpi_scan_clear_dep(struct ac
->   * negative value is returned by the callback then the loop is broken and that
->   * value is returned as the final error.
->   */
-> -int acpi_walk_dep_device_list(acpi_handle handle,
-> -			      int (*callback)(struct acpi_dep_data *, void *),
-> -			      void *data)
-> +static int acpi_walk_dep_device_list(acpi_handle handle,
-> +				int (*callback)(struct acpi_dep_data *, void *),
-> +				void *data)
->  {
->  	struct acpi_dep_data *dep, *tmp;
->  	int ret = 0;
-> @@ -2164,7 +2164,6 @@ int acpi_walk_dep_device_list(acpi_handl
->  
->  	return ret > 0 ? 0 : ret;
->  }
-> -EXPORT_SYMBOL_GPL(acpi_walk_dep_device_list);
->  
->  /**
->   * acpi_dev_clear_dependencies - Inform consumers that the device is now active
-> Index: linux-pm/include/linux/acpi.h
-> ===================================================================
-> --- linux-pm.orig/include/linux/acpi.h
-> +++ linux-pm/include/linux/acpi.h
-> @@ -668,9 +668,6 @@ extern bool acpi_driver_match_device(str
->  				     const struct device_driver *drv);
->  int acpi_device_uevent_modalias(struct device *, struct kobj_uevent_env *);
->  int acpi_device_modalias(struct device *, char *, int);
-> -int acpi_walk_dep_device_list(acpi_handle handle,
-> -			      int (*callback)(struct acpi_dep_data *, void *),
-> -			      void *data);
->  
->  struct platform_device *acpi_create_platform_device(struct acpi_device *,
->  						    struct property_entry *);
-> 
-> 
-> 
+diff --git a/arch/powerpc/platforms/ps3/system-bus.c b/arch/powerpc/platforms/ps3/system-bus.c
+index 1a5665875165..f57f37fe038c 100644
+--- a/arch/powerpc/platforms/ps3/system-bus.c
++++ b/arch/powerpc/platforms/ps3/system-bus.c
+@@ -604,7 +604,7 @@ static dma_addr_t ps3_ioc0_map_page(struct device *_dev, struct page *page,
+ 	default:
+ 		/* not happned */
+ 		BUG();
+-	};
++	}
+ 	result = ps3_dma_map(dev->d_region, (unsigned long)ptr, size,
+ 			     &bus_addr, iopte_flag);
+ 
+@@ -763,7 +763,7 @@ int ps3_system_bus_device_register(struct ps3_system_bus_device *dev)
+ 		break;
+ 	default:
+ 		BUG();
+-	};
++	}
+ 
+ 	dev->core.of_node = NULL;
+ 	set_dev_node(&dev->core, 0);
+-- 
+2.30.2
 
