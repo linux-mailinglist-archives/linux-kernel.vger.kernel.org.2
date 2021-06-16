@@ -2,132 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8D13A92A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00F13A92A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbhFPGcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:32:55 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:59016 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231496AbhFPGch (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:32:37 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15G6GK6x001082;
-        Wed, 16 Jun 2021 06:30:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=o/BEHhVMiN5l5PBSjswnmAEwrbJUT7EB9erm/zp0qRA=;
- b=LN7BFO6UYmb+EvNPV7qT0cstbDdrmBFDdsokA8qt6MpZVxU7QFzQA+c+MfJXZr1XzVfr
- kQZX7SUo3StgF032uxoeqOlGYEpjWcsXHqaj/aEpYon6lGGTpgydlqXeSCg4AksW0T8y
- PRRL0kfspQQnLPu+W6/BE+Cj6+6PgKkoNNi/LGTYFSXHCewTPxq2+afaimvO8RUhikdX
- jn7uWVTnsg9seEFApc4OpxczR3M7Iw/YcA2kHlThMhTazFILtRFzE6uMNq0y6G5lG2wf
- +Zz4M+ywbO7Qt1NPQPQZxHMQvNnFdhbBWCS5Gk8zouoMWYCly9CE+sIqhrJEKK6Rrt0A pg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 395x06j00k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Jun 2021 06:30:27 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15G6F1Tv101965;
-        Wed, 16 Jun 2021 06:30:26 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 396wasdrd7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Jun 2021 06:30:26 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15G6RnNn160728;
-        Wed, 16 Jun 2021 06:30:25 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 396wasdrc8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Jun 2021 06:30:25 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15G6UKPX022948;
-        Wed, 16 Jun 2021 06:30:20 GMT
-Received: from mwanda (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 16 Jun 2021 06:30:19 +0000
-Date:   Wed, 16 Jun 2021 09:30:12 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Christian Koenig <christian.koenig@amd.com>,
-        Thomas Hellstr <C3@mwanda>, B6@mwanda,
-        m <thomas.hellstrom@linux.intel.com>
-Cc:     Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/ttm: fix error handling in ttm_bo_handle_move_mem()
-Message-ID: <YMmadPwv8C+Ut1+o@mwanda>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610154113.GJ1955@kadam>
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-ORIG-GUID: iEKfwd0av4OdkwdZPfO2LOoQ8kX7B0s6
-X-Proofpoint-GUID: iEKfwd0av4OdkwdZPfO2LOoQ8kX7B0s6
+        id S231513AbhFPGdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:33:23 -0400
+Received: from mga09.intel.com ([134.134.136.24]:61585 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231422AbhFPGdO (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 02:33:14 -0400
+IronPort-SDR: 4231z6lXhQnNK0WDmSloWIi7iRslYNNpWfrl1Q3KuITB2lnrj+IH+CXLOeQZ5O/vSu+05plmPn
+ sIuXV0QZ3CzQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206081980"
+X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
+   d="scan'208";a="206081980"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 23:31:08 -0700
+IronPort-SDR: S7oKWZsrLomh6CXYSo/b5nvAOewFNBsUi2PnpKEYjDIAwVepBbKTOnx33wY/nIm0oXHUdVzkXh
+ 1Fjcdy+nebjA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
+   d="scan'208";a="471912867"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga004.fm.intel.com with ESMTP; 15 Jun 2021 23:31:05 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf stat: Merge uncore events by default for hybrid platform
+Date:   Wed, 16 Jun 2021 14:30:04 +0800
+Message-Id: <20210616063004.2824-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are three bugs here:
-1) We need to call unpopulate() if ttm_tt_populate() succeeds.
-2) The "new_man = ttm_manager_type(bdev, bo->mem.mem_type);" assignment
-   was wrong and it was really assigning "new_mem = old_mem;".  There
-   is no need for this assignment anyway as we already have the value
-   for "new_mem".
-3) The (!new_man->use_tt) condition is reversed.
+On hybrid platform, by default stat aggregates and reports the event counts
+per pmu. For example,
 
-Fixes: ba4e7d973dd0 ("drm: Add the TTM GPU memory manager subsystem.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+  # perf stat -e cycles -a true
+
+   Performance counter stats for 'system wide':
+
+           1,400,445      cpu_core/cycles/
+             680,881      cpu_atom/cycles/
+
+         0.001770773 seconds time elapsed
+
+While for uncore events, that's not a suitable method. Uncore has nothing
+to do with hybrid. So for uncore events, we aggregate event counts from all
+PMUs and report the counts without PMUs.
+
+Before:
+
+  # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
+
+   Performance counter stats for 'system wide':
+
+               2,058      uncore_arb_0/event=0x81,umask=0x1/
+               2,028      uncore_arb_1/event=0x81,umask=0x1/
+                   0      uncore_arb_0/event=0x84,umask=0x1/
+                   0      uncore_arb_1/event=0x84,umask=0x1/
+
+         0.000614498 seconds time elapsed
+
+After:
+
+  # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
+
+   Performance counter stats for 'system wide':
+
+               3,996      arb/event=0x81,umask=0x1/
+                   0      arb/event=0x84,umask=0x1/
+
+         0.000630046 seconds time elapsed
+
+Of course, we also keep the '--no-merge' still works for uncore events.
+
+  # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ --no-merge true
+
+   Performance counter stats for 'system wide':
+
+               1,952      uncore_arb_0/event=0x81,umask=0x1/
+               1,921      uncore_arb_1/event=0x81,umask=0x1/
+                   0      uncore_arb_0/event=0x84,umask=0x1/
+                   0      uncore_arb_1/event=0x84,umask=0x1/
+
+         0.000575536 seconds time elapsed
+
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
-This is from reading the code and I can't swear that I have understood
-it correctly.  My nouveau driver is currently unusable and this patch
-has not helped.  But hopefully if I fix enough bugs eventually it will
-start to work.
+ tools/perf/builtin-stat.c      |  3 ---
+ tools/perf/util/stat-display.c | 29 +++++++++++++++++++++++++----
+ 2 files changed, 25 insertions(+), 7 deletions(-)
 
- drivers/gpu/drm/ttm/ttm_bo.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index ebcffe794adb..72dde093f754 100644
---- a/drivers/gpu/drm/ttm/ttm_bo.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo.c
-@@ -180,12 +180,12 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
- 		 */
- 		ret = ttm_tt_create(bo, old_man->use_tt);
- 		if (ret)
--			goto out_err;
-+			return ret;
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index f9f74a514315..b67a44982b61 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -2442,9 +2442,6 @@ int cmd_stat(int argc, const char **argv)
  
- 		if (mem->mem_type != TTM_PL_SYSTEM) {
- 			ret = ttm_tt_populate(bo->bdev, bo->ttm, ctx);
- 			if (ret)
--				goto out_err;
-+				goto err_destroy;
- 		}
+ 	evlist__check_cpu_maps(evsel_list);
+ 
+-	if (perf_pmu__has_hybrid())
+-		stat_config.no_merge = true;
+-
+ 	/*
+ 	 * Initialize thread_map with comm names,
+ 	 * so we could print it out on output.
+diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+index b759dfd633b4..c6070f4684ca 100644
+--- a/tools/perf/util/stat-display.c
++++ b/tools/perf/util/stat-display.c
+@@ -595,6 +595,19 @@ static void collect_all_aliases(struct perf_stat_config *config, struct evsel *c
  	}
+ }
  
-@@ -193,15 +193,17 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
- 	if (ret) {
- 		if (ret == -EMULTIHOP)
- 			return ret;
--		goto out_err;
-+		goto err_unpopulate;
- 	}
++static bool is_uncore(struct evsel *evsel)
++{
++	struct perf_pmu *pmu;
++
++	if (evsel->pmu_name) {
++		pmu = perf_pmu__find(evsel->pmu_name);
++		if (pmu)
++			return pmu->is_uncore;
++	}
++
++	return false;
++}
++
+ static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
+ 			    void (*cb)(struct perf_stat_config *config, struct evsel *counter, void *data,
+ 				       bool first),
+@@ -603,10 +616,18 @@ static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
+ 	if (counter->merged_stat)
+ 		return false;
+ 	cb(config, counter, data, true);
+-	if (config->no_merge)
+-		uniquify_event_name(counter);
+-	else if (counter->auto_merge_stats)
+-		collect_all_aliases(config, counter, cb, data);
++	if (perf_pmu__has_hybrid()) {
++		if (config->no_merge || !is_uncore(counter))
++			uniquify_event_name(counter);
++		else if (counter->auto_merge_stats)
++			collect_all_aliases(config, counter, cb, data);
++	} else {
++		if (config->no_merge)
++			uniquify_event_name(counter);
++		else if (counter->auto_merge_stats)
++			collect_all_aliases(config, counter, cb, data);
++	}
++
+ 	return true;
+ }
  
- 	ctx->bytes_moved += bo->base.size;
- 	return 0;
- 
--out_err:
--	new_man = ttm_manager_type(bdev, bo->mem.mem_type);
--	if (!new_man->use_tt)
-+err_unpopulate:
-+	if (new_man->use_tt)
-+		ttm_tt_unpopulate(bo->bdev, bo->ttm);
-+err_destroy:
-+	if (new_man->use_tt)
- 		ttm_bo_tt_destroy(bo);
- 
- 	return ret;
 -- 
-2.30.2
+2.17.1
 
