@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856563A9FEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C983A9F4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235049AbhFPPme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:42:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51316 "EHLO mail.kernel.org"
+        id S234813AbhFPPhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:37:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235285AbhFPPj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:39:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1553F613E4;
-        Wed, 16 Jun 2021 15:37:05 +0000 (UTC)
+        id S234750AbhFPPgn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:36:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F5EC613C1;
+        Wed, 16 Jun 2021 15:34:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857826;
-        bh=dgcNpxbz9aCzwe8nT8tB69hZGRYOiIKpI+qPr00x8y4=;
+        s=korg; t=1623857677;
+        bh=F1f9BPH9FyVoFFq5kkKgFr6EFrJQ0itBt5/Ly+P/4xk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uMN0tOdtIAAE7eQCetNNXmfmGNwX0tGzLPm0c0t6BXoQJw9ighE8PWtcbBUC/RLx4
-         ToL0zEhP7uscP9xTFfQ7Z5RDJ2tE8TgMpdyf9HEF3LUpbYMmgTZpEDv4caeWVzsyZg
-         WmkSEBFDCz8mHKGUnjUznqySCNaqqywH2C/U0Am8=
+        b=SzblQy53mg5F4ByU141GEI+dOATSrVa/ARGrzg2aIgJXygWV5kZ4t2Joacd5UT7kK
+         WCmbV25CSr4CcSSn50+tA3gZuzm3ArDRh+Ldpku2byaJc+Mx8v9bdBNvlXiT/lL80P
+         kOKTxYSoUPZmerOp9LERC0hVK/CULAMbgLzN5jyQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 21/48] gfs2: fix a deadlock on withdraw-during-mount
-Date:   Wed, 16 Jun 2021 17:33:31 +0200
-Message-Id: <20210616152837.325028932@linuxfoundation.org>
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 21/28] nvme-loop: check for NVME_LOOP_Q_LIVE in nvme_loop_destroy_admin_queue()
+Date:   Wed, 16 Jun 2021 17:33:32 +0200
+Message-Id: <20210616152834.829572405@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-References: <20210616152836.655643420@linuxfoundation.org>
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+References: <20210616152834.149064097@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,98 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit 865cc3e9cc0b1d4b81c10d53174bced76decf888 ]
+[ Upstream commit 4237de2f73a669e4f89ac0aa2b44fb1a1d9ec583 ]
 
-Before this patch, gfs2 would deadlock because of the following
-sequence during mount:
+We need to check the NVME_LOOP_Q_LIVE flag in
+nvme_loop_destroy_admin_queue() to protect against duplicate
+invocations eg during concurrent reset and remove calls.
 
-mount
-   gfs2_fill_super
-      gfs2_make_fs_rw <--- Detects IO error with glock
-         kthread_stop(sdp->sd_quotad_process);
-            <--- Blocked waiting for quotad to finish
-
-logd
-   Detects IO error and the need to withdraw
-   calls gfs2_withdraw
-      gfs2_make_fs_ro
-         kthread_stop(sdp->sd_quotad_process);
-            <--- Blocked waiting for quotad to finish
-
-gfs2_quotad
-   gfs2_statfs_sync
-      gfs2_glock_wait <---- Blocked waiting for statfs glock to be granted
-
-glock_work_func
-   do_xmote <---Detects IO error, can't release glock: blocked on withdraw
-      glops->go_inval
-      glock_blocked_by_withdraw
-         requeue glock work & exit <--- work requeued, blocked by withdraw
-
-This patch makes a special exception for the statfs system inode glock,
-which allows the statfs glock UNLOCK to proceed normally. That allows the
-quotad daemon to exit during the withdraw, which allows the logd daemon
-to exit during the withdraw, which allows the mount to exit.
-
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/glock.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
+ drivers/nvme/target/loop.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index 7c2ba81213da..611c56febf8c 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -583,6 +583,16 @@ out_locked:
- 	spin_unlock(&gl->gl_lockref.lock);
- }
+diff --git a/drivers/nvme/target/loop.c b/drivers/nvme/target/loop.c
+index f752e9432676..f657a12bf1fe 100644
+--- a/drivers/nvme/target/loop.c
++++ b/drivers/nvme/target/loop.c
+@@ -252,7 +252,8 @@ static const struct blk_mq_ops nvme_loop_admin_mq_ops = {
  
-+static bool is_system_glock(struct gfs2_glock *gl)
-+{
-+	struct gfs2_sbd *sdp = gl->gl_name.ln_sbd;
-+	struct gfs2_inode *m_ip = GFS2_I(sdp->sd_statfs_inode);
-+
-+	if (gl == m_ip->i_gl)
-+		return true;
-+	return false;
-+}
-+
- /**
-  * do_xmote - Calls the DLM to change the state of a lock
-  * @gl: The lock state
-@@ -672,17 +682,25 @@ skip_inval:
- 	 * to see sd_log_error and withdraw, and in the meantime, requeue the
- 	 * work for later.
- 	 *
-+	 * We make a special exception for some system glocks, such as the
-+	 * system statfs inode glock, which needs to be granted before the
-+	 * gfs2_quotad daemon can exit, and that exit needs to finish before
-+	 * we can unmount the withdrawn file system.
-+	 *
- 	 * However, if we're just unlocking the lock (say, for unmount, when
- 	 * gfs2_gl_hash_clear calls clear_glock) and recovery is complete
- 	 * then it's okay to tell dlm to unlock it.
- 	 */
- 	if (unlikely(sdp->sd_log_error && !gfs2_withdrawn(sdp)))
- 		gfs2_withdraw_delayed(sdp);
--	if (glock_blocked_by_withdraw(gl)) {
--		if (target != LM_ST_UNLOCKED ||
--		    test_bit(SDF_WITHDRAW_RECOVERY, &sdp->sd_flags)) {
-+	if (glock_blocked_by_withdraw(gl) &&
-+	    (target != LM_ST_UNLOCKED ||
-+	     test_bit(SDF_WITHDRAW_RECOVERY, &sdp->sd_flags))) {
-+		if (!is_system_glock(gl)) {
- 			gfs2_glock_queue_work(gl, GL_GLOCK_DFT_HOLD);
- 			goto out;
-+		} else {
-+			clear_bit(GLF_INVALIDATE_IN_PROGRESS, &gl->gl_flags);
- 		}
- 	}
- 
+ static void nvme_loop_destroy_admin_queue(struct nvme_loop_ctrl *ctrl)
+ {
+-	clear_bit(NVME_LOOP_Q_LIVE, &ctrl->queues[0].flags);
++	if (!test_and_clear_bit(NVME_LOOP_Q_LIVE, &ctrl->queues[0].flags))
++		return;
+ 	nvmet_sq_destroy(&ctrl->queues[0].nvme_sq);
+ 	blk_cleanup_queue(ctrl->ctrl.admin_q);
+ 	blk_cleanup_queue(ctrl->ctrl.fabrics_q);
 -- 
 2.30.2
 
