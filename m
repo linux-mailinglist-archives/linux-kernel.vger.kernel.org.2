@@ -2,109 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F02C3A9EE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C942D3A9EE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234592AbhFPPZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
+        id S234582AbhFPPZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234558AbhFPPZo (ORCPT
+        with ESMTP id S234554AbhFPPZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:25:44 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9020C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=vztJ5SKsn2QWn9Ydt6vhChg/4PQAGt6omwb1vW9EjfA=; b=eGqtBpc1+Ez10Kt7iInfiZuGe
-        Y4Jh9x1+V8tIEQxy7KxLt4m1nrLZzhNK4i8g+S89g4Yjd298ZY6dYX66OCaXQJyhFgrqHYHk6Dlr6
-        JZZwkaZYCD2xrsQVzaHKJC5g9nH5kT2S+gt4RexAHxCc1z4yovEIG7/heeB1q4XVWnO/FXDT7QAM2
-        mP8BDQTV7bLWaSNzNgu1+Vo+E2cAXfhwnPpFdvaW53M9heT13Kj+IqTR6La8+TZk9qYyoTbJT0miN
-        S34CRzPk6udB9CNarZGqe0q0qcUFpb00MjkwpZBaBPJnRmiGTiC4pJUgAtYIUhw9R7Kh5lXLUFGEU
-        SPNr1ui4w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45074)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1ltXO5-0007US-Op; Wed, 16 Jun 2021 16:23:29 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1ltXO2-00068y-HY; Wed, 16 Jun 2021 16:23:26 +0100
-Date:   Wed, 16 Jun 2021 16:23:26 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
-Message-ID: <20210616152326.GG22278@shell.armlinux.org.uk>
-References: <cover.1623813516.git.luto@kernel.org>
- <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
- <YMnPezLs6vb418Wz@hirez.programming.kicks-ass.net>
- <YMnQVoKvM5G34Yan@hirez.programming.kicks-ass.net>
- <20210616103446.GC22278@shell.armlinux.org.uk>
- <YMncQv1uT5QyQ84w@hirez.programming.kicks-ass.net>
- <20210616132226.GD22278@shell.armlinux.org.uk>
- <20210616150456.GC22433@arm.com>
+        Wed, 16 Jun 2021 11:25:43 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95508C061574;
+        Wed, 16 Jun 2021 08:23:36 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id l3so1785581qvl.0;
+        Wed, 16 Jun 2021 08:23:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4RkdmNkrf3BBo78m/TAwjqmLT/OENZZH2eOGrb77vX4=;
+        b=bzw1YVXlqLHxxl0qzwq/c6+VuhQjm1Q7apIuxtL9KODROgrBOp8xFfHPc7sdYh58zK
+         Qlx3fMYO2vZG2Sqt7uot9as7F2HRHaQhoL5sLOWTiYZb/ghMCKTEg1rqfXiZg44IeC/F
+         vzDKzrZnhMmo6h2PyiMMna8wFpVapRgjYKymXkGnijnQ74KqiFUZLrNFRvmzAQK40Wvc
+         StrYm4C8OG7gM6fi2qit+uz6odcqhOPiJN8rKAL92+PumUvpkXcIS3w13gT4L6y2oCsW
+         eX5cbx/HLm4kTGoXWUvQ46S+xa/OBpHAxIo57bMx6Kmrpuga5JrIoSd36nPP+VouLgIg
+         muXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=4RkdmNkrf3BBo78m/TAwjqmLT/OENZZH2eOGrb77vX4=;
+        b=f2OK+IOY+Mnm6soVUTRkuSBxOtYtE4zgIztS3eWzepDOMf3TRQPRe9R2tYc/zeCcnO
+         31dJGKLQVgwkLHaLs6qya03rLwljJBq5fpZZ+8EhfYhn6m5hAsDssnV6Cw5zfMHwtWy1
+         uo/+Z8J/eZONYpwiVdKZ4+PtwNjZA3+5kmywfclfa35HDUkhU7mpauJ1G6JJmLDOuYQo
+         PHsq+ZwR3gb+tTwos6SpkFOYQzIWHpfbpf7A634F/ovK4znmkYMW7zaTfQBtY+KqXECV
+         PMplp8KE3cEeHhiXSZ4WzoeCKfQDygbNWQJdq0qgTuakLHJ9TE7w/kGm5uKaiSRlc26Z
+         1rDw==
+X-Gm-Message-State: AOAM532Kyt2voduorEz3gF+XtY47FfEYoCBq5Etim2cLe8ymMQtLxoC3
+        6eJmGn5lUKrpiLvaJJoQ4Oc=
+X-Google-Smtp-Source: ABdhPJySeztxTGzuyyO33w/6itru5QmUPDH/0zMlmja2lGi0SRz243v2CgiFD4L9g1ywMFMYOknnkA==
+X-Received: by 2002:a05:6214:1c0d:: with SMTP id u13mr445980qvc.49.1623857015666;
+        Wed, 16 Jun 2021 08:23:35 -0700 (PDT)
+Received: from localhost ([199.192.137.73])
+        by smtp.gmail.com with ESMTPSA id l3sm1392700qth.87.2021.06.16.08.23.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 08:23:35 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 16 Jun 2021 11:23:34 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, stable@vger.kernel.org,
+        Richard Purdie <richard.purdie@linuxfoundation.org>
+Subject: Re: [PATCH] cgroup1: fix leaked context root causing sporadic NULL
+ deref in LTP
+Message-ID: <YMoXdljfOFjoVO93@slm.duckdns.org>
+References: <20210616125157.438837-1-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210616150456.GC22433@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210616125157.438837-1-paul.gortmaker@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 04:04:56PM +0100, Catalin Marinas wrote:
-> On Wed, Jun 16, 2021 at 02:22:27PM +0100, Russell King wrote:
-> > If it's a problem, then it needs fixing. sys_cacheflush() is used to
-> > implement GCC's __builtin___clear_cache(). I'm not sure who added this
-> > to gcc.
+Hello,
+
+On Wed, Jun 16, 2021 at 08:51:57AM -0400, Paul Gortmaker wrote:
+> A fix would be to not leave the stale reference in fc->root as follows:
 > 
-> I'm surprised that it works. I guess it's just luck that the thread
-> doing the code writing doesn't migrate before the sys_cacheflush() call.
-
-Maybe the platforms that use ARM MPCore avoid the issue somehow (maybe
-by not using self-modifying code?)
-
-> > Likely only in places where we care about I/D coherency - as the data
-> > cache is required to be PIPT on these SMP platforms.
+>    --------------
+>                   dput(fc->root);
+>   +               fc->root = NULL;
+>                   deactivate_locked_super(sb);
+>    --------------
 > 
-> We had similar issue with the cache maintenance for DMA. The hack we
-> employed (in cache.S) is relying on the MESI protocol internals and
-> forcing a read/write for ownership before the D-cache maintenance.
-> Luckily ARM11MPCore doesn't do speculative data loads to trigger some
-> migration back.
+> ...but then we are just open-coding a duplicate of fc_drop_locked() so we
+> simply use that instead.
 
-That's very similar to the hack that was originally implemented for
-MPCore DMA - see the DMA_CACHE_RWFO configuration option.
+As this is unlikely to be a real-world problem both in probability and
+circumstances, I'm applying this to cgroup/for-5.14 instead of
+cgroup/for-5.13-fixes.
 
-An interesting point here is that cache_ops_need_broadcast() reads
-MMFR3 bits 12..15, which in the MPCore TRM has nothing to with cache
-operation broadcasting - but luckily is documented as containing zero.
-So, cache_ops_need_broadcast() returns correctly (true) here.
-
-> The simpler fix for flush_icache_range() is to disable preemption, read
-> a word in a cacheline to force any dirty lines on another CPU to be
-> evicted and then issue the D-cache maintenance (for those cache lines
-> which are still dirty on the current CPU).
-
-Is just reading sufficient? If so, why do we do a read-then-write in
-the MPCore DMA cache ops? Don't we need the write to force exclusive
-ownership? If we don't have exclusive ownership of the dirty line,
-how can we be sure to write it out of the caches?
+Thanks.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+tejun
