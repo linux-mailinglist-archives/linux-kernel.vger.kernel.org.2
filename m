@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C36F3A9F7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68BF3A9F36
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbhFPPid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:38:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50334 "EHLO mail.kernel.org"
+        id S234687AbhFPPg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:36:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234931AbhFPPhb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:37:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A01D0613D3;
-        Wed, 16 Jun 2021 15:35:23 +0000 (UTC)
+        id S234662AbhFPPgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:36:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A38C61076;
+        Wed, 16 Jun 2021 15:34:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857724;
-        bh=uU3E+HpHiuf4G518xekdhVkqedtIxnVtoN6FngjHGNs=;
+        s=korg; t=1623857658;
+        bh=JR1LwqcnZRsn5yGfC33MX1dYZ/aFmq2fPUHqT3SXwyY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fPptK++MjmYbAUwdRkwJ25HxmyWpvOuNXAtUze59WyGVa1y/mn91YIDFzDiLG8xLt
-         t0w6jwMhkDJDsTjNnV3ovb6HKS4BVktT5GRFfNkL374cDsU8yqOJoN/ffwAivCDiGQ
-         4Or7dPD9ndqoJGAcxAdVGy05XL2c4vEeRRTMDxTw=
+        b=zKu2QUir34Xh1TStZ1qxHGis8w9QIFKQcRtSzQqXi9schfXdhfsp+eGbQuX1KOR70
+         J1aUcBkiPCYPcI8Zbh1UYPc0+2g+ELBTlpIHrlma7pocwC19QFFBOlsd44BvCxeRgj
+         TuWiXv+GH2sWXm7H0cXW01d+FTM1r3XYyx7RfzKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yongqiang Liu <liuyongqiang13@huawei.com>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Khem Raj <raj.khem@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 14/38] ARM: OMAP2+: Fix build warning when mmc_omap is not built
-Date:   Wed, 16 Jun 2021 17:33:23 +0200
-Message-Id: <20210616152835.852053939@linuxfoundation.org>
+Subject: [PATCH 5.4 13/28] riscv: Use -mno-relax when using lld linker
+Date:   Wed, 16 Jun 2021 17:33:24 +0200
+Message-Id: <20210616152834.567533813@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
-References: <20210616152835.407925718@linuxfoundation.org>
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+References: <20210616152834.149064097@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yongqiang Liu <liuyongqiang13@huawei.com>
+From: Khem Raj <raj.khem@gmail.com>
 
-[ Upstream commit 040ab72ee10ea88e1883ad143b3e2b77596abc31 ]
+[ Upstream commit ec3a5cb61146c91f0f7dcec8b7e7157a4879a9ee ]
 
-GCC reports the following warning with W=1:
+lld does not implement the RISCV relaxation optimizations like GNU ld
+therefore disable it when building with lld, Also pass it to
+assembler when using external GNU assembler ( LLVM_IAS != 1 ), this
+ensures that relevant assembler option is also enabled along. if these
+options are not used then we see following relocations in objects
 
-arch/arm/mach-omap2/board-n8x0.c:325:19: warning:
-variable 'index' set but not used [-Wunused-but-set-variable]
-325 |  int bit, *openp, index;
-    |                   ^~~~~
+0000000000000000 R_RISCV_ALIGN     *ABS*+0x0000000000000002
 
-Fix this by moving CONFIG_MMC_OMAP to cover the rest codes
-in the n8x0_mmc_callback().
+These are then rejected by lld
+ld.lld: error: capability.c:(.fixup+0x0): relocation R_RISCV_ALIGN requires unimplemented linker relaxation; recompile with -mno-relax but the .o is already compiled with -mno-relax
 
-Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-omap2/board-n8x0.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/Makefile | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm/mach-omap2/board-n8x0.c b/arch/arm/mach-omap2/board-n8x0.c
-index 418a61ecb827..5e86145db0e2 100644
---- a/arch/arm/mach-omap2/board-n8x0.c
-+++ b/arch/arm/mach-omap2/board-n8x0.c
-@@ -322,6 +322,7 @@ static int n8x0_mmc_get_cover_state(struct device *dev, int slot)
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index f5e914210245..1cbe0ad78b0f 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -34,6 +34,15 @@ else
+ 	KBUILD_LDFLAGS += -melf32lriscv
+ endif
  
- static void n8x0_mmc_callback(void *data, u8 card_mask)
- {
-+#ifdef CONFIG_MMC_OMAP
- 	int bit, *openp, index;
- 
- 	if (board_is_n800()) {
-@@ -339,7 +340,6 @@ static void n8x0_mmc_callback(void *data, u8 card_mask)
- 	else
- 		*openp = 0;
- 
--#ifdef CONFIG_MMC_OMAP
- 	omap_mmc_notify_cover_event(mmc_device, index, *openp);
- #else
- 	pr_warn("MMC: notify cover event not available\n");
++ifeq ($(CONFIG_LD_IS_LLD),y)
++	KBUILD_CFLAGS += -mno-relax
++	KBUILD_AFLAGS += -mno-relax
++ifneq ($(LLVM_IAS),1)
++	KBUILD_CFLAGS += -Wa,-mno-relax
++	KBUILD_AFLAGS += -Wa,-mno-relax
++endif
++endif
++
+ # ISA string setting
+ riscv-march-$(CONFIG_ARCH_RV32I)	:= rv32ima
+ riscv-march-$(CONFIG_ARCH_RV64I)	:= rv64ima
 -- 
 2.30.2
 
