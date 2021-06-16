@@ -2,169 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35853A9811
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76BD3A9813
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 12:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232308AbhFPKtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 06:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59468 "EHLO
+        id S232386AbhFPKuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 06:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231922AbhFPKts (ORCPT
+        with ESMTP id S231922AbhFPKun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 06:49:48 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E34C061574;
-        Wed, 16 Jun 2021 03:47:41 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id j2so3556874lfg.9;
-        Wed, 16 Jun 2021 03:47:41 -0700 (PDT)
+        Wed, 16 Jun 2021 06:50:43 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B097C061574;
+        Wed, 16 Jun 2021 03:48:36 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id g12so1254386qvx.12;
+        Wed, 16 Jun 2021 03:48:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=M8RbiCOq83IbnSA8G848uSB8CbMVC8ioIh0DaNZa9vc=;
-        b=m0+aLL36GaHNEjSSDDcmlxsML6+AeRiAhb+BmyBDrsanZORVU7IFdQvyNNWt34OjYQ
-         fRxAL1xbVx4pgLFlZqB8eGKklb3XqNxPR5YzyM7HG245bP2FtgV0yewdFAdf1aIte+j4
-         dmTxJp1AyWCUvbdmw5+r/kybXHdgxI0P57XNIzpxzWaP3BGEfcdmOQ8MC5niEfrRb+Vn
-         Etq4qmod4kKq1J3lwgiqGmtH6MpccArW0XGbg3rMNKK5Q1u6hFqKU4fRwClS3/Ealn6I
-         2VRkkpRpuqiDIFFJrNWBt+rJcoDL8/g3gRVi9rNLlRGzuluvRFfPZeoxZuL08TKE/u/1
-         XceA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=90c14hZ9aZADuEVRp5VuroKQzK2oflVWzh1ZITyAGIE=;
+        b=F5ho2QIMyCIFPqcoG+bEjO56CtD+Hgkpx/yUNjxv1h152abZWGYiBImWCmb03gvZv+
+         3SrqwnYQKEwHd3FHffjYLyXXZ5qyCdciyiAZEsmNLwcH8/NnqyCgHXbXGAEYrb8ggnMW
+         ws6fBBrsK2WBHA9s5RuZI9gr65FeyIxYyMNRB0UIILKSUyQGesmxS8aDqPLuwbZVCEVc
+         n6zNDc/clkvfeesH42bhK4i3PwIVRGBDfp5dvYTrzIdCxViLoSE3S4FbxvK4arCrX8it
+         LjdxOrhbbSSJBxTAqGkW+N20luBBMM+hpA6v0yj9VDlDaZ9AfP8AZKWSnORN7j19zUMJ
+         Mi2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M8RbiCOq83IbnSA8G848uSB8CbMVC8ioIh0DaNZa9vc=;
-        b=fKhtepC2msJ36HIIfEfxaCSBgMpUJcOIZP0ZncCGOhWXttctYBbiPkYH/cprUgPoYL
-         EeimqvqNBxA+WV7AjACem/PSARjkMIZDRC5xmJsfbttiG1tF5nB0B10QLYnoJNPQPPvb
-         6AUyUptdMWDCnRffzHy7kPUIdRB86Qffr3FuSsW296OG3qsO3FJjzCjFCNDmYQRt0kBp
-         +9/yDWgJkq4hiASX8sN8iKQHANh+anoPH3YNhWxTThsaaGqfeu/fAoPtkYY3D/SCMBXp
-         tQ0Vrq/351k7Ue0DvdY9jkRSfIWt6cQWGNj9gdkDPT5a+V/OP8FJIbT2h/Zw5BSnwUFW
-         B82Q==
-X-Gm-Message-State: AOAM533XXBgSSiSUYSvJif9qyDJ45KpcArFqGvsnFFTthlhwInNdYqwy
-        1UEu8yQjB4Nwp6f7zsJwlHGEWyQj5LY=
-X-Google-Smtp-Source: ABdhPJz+0Zz9WG1zeE/j95jNz5K1F/ytl7qbFbKxW4oVKx0aC5XmOSp9HDSQN0heEC/zEiU0hkhcrg==
-X-Received: by 2002:ac2:4a6b:: with SMTP id q11mr3292061lfp.321.1623840460086;
-        Wed, 16 Jun 2021 03:47:40 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.googlemail.com with ESMTPSA id h4sm209060lft.184.2021.06.16.03.47.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 03:47:39 -0700 (PDT)
-Subject: Re: [PATCH v3 4/7] thermal/drivers/tegra: Add driver for Tegra30
- thermal sensor
-To:     Thara Gopinath <thara.gopinath@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Ihor Didenko <tailormoon@rambler.ru>,
-        Ion Agorria <ion@agorria.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210529170955.32574-1-digetx@gmail.com>
- <20210529170955.32574-5-digetx@gmail.com>
- <6f2b6290-095a-bd39-c160-1616a0ff89b1@linaro.org>
- <20210615102626.dja3agclwzxv2sj4@vireshk-i7>
- <595f5e53-b872-bcc6-e886-ed225e26e9fe@gmail.com>
- <fbdc3b56-4465-6d3e-74db-1d5082813b9c@linaro.org>
- <4c7b23c4-cf6a-0942-5250-63515be4a219@gmail.com>
- <545974aa-bb0f-169b-6f31-6e8c2461343f@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f06370e0-bfde-87d0-03b4-93c667f81817@gmail.com>
-Date:   Wed, 16 Jun 2021 13:47:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=90c14hZ9aZADuEVRp5VuroKQzK2oflVWzh1ZITyAGIE=;
+        b=r07ctDrSC61es9zQhHtlPdwFPLAZhC7UAYLsaSX91bmCvwj/nSHaWnyGrI3UEr9rym
+         9ovlbXpVLr41BgGJiTy0Y76HFAWkT0mXWWOrp+C6rkh1WVYEyiqk9IKmK8v00QILCDE6
+         dGGBieKAOYoTAlsnN02U2WMwlNm03ebgXNS71mlmgUZZjVx9DBy8RIqC3oYkImzMnSEu
+         rJWI5xxVZcK5jmUnr2JZOK52m7Xov5GZ+LDSEhtKNeGPXbguv/9u1Ilw3XIChKRVbbT6
+         TZm7pQ1pBxf24TrdgakL9XkmUkLCoQrqkwb2dcB6Jb5yDTyZlqznS+8XLKaqbpe8nA9M
+         9C0g==
+X-Gm-Message-State: AOAM533FimjpFMydnyUMnWVulZoNaFjRWGnkky/UGJOSYVG75XayCHEf
+        sfqP41dph87x7LkmLDgMqWU40n4N2vW9DpRPiEg=
+X-Google-Smtp-Source: ABdhPJzh3s1b8WlT7LVSUJDRlfI9LLCuPlFvfWqL/vpowEcHhAKHF9hwaw7KJ7GHohstjA4L8lcfOKdMR7qDcvNSCho=
+X-Received: by 2002:ad4:5c44:: with SMTP id a4mr10410163qva.22.1623840515391;
+ Wed, 16 Jun 2021 03:48:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <545974aa-bb0f-169b-6f31-6e8c2461343f@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
+ <20210615023812.50885-2-mcroce@linux.microsoft.com> <6cff2a895db94e6fadd4ddffb8906a73@AcuMS.aculab.com>
+ <CAEUhbmV+Vi0Ssyzq1B2RTkbjMpE21xjdj2MSKdLydgW6WuCKtA@mail.gmail.com>
+ <1632006872b04c64be828fa0c4e4eae0@AcuMS.aculab.com> <CAEUhbmU0cPkawmFfDd_sPQnc9V-cfYd32BCQo4Cis3uBKZDpXw@mail.gmail.com>
+ <CANBLGcxi2mEA5MnV-RL2zFpB2T+OytiHyOLKjOrMXgmAh=fHAw@mail.gmail.com>
+ <CAEUhbmX_wsfU9FfRJoOPE0gjUX=Bp7OZWOZDyMNfO6=M-fX_0A@mail.gmail.com>
+ <20210616040132.7fbdf6fe@linux.microsoft.com> <db7a011867a742528beb6ec17b692842@AcuMS.aculab.com>
+In-Reply-To: <db7a011867a742528beb6ec17b692842@AcuMS.aculab.com>
+From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Date:   Wed, 16 Jun 2021 19:48:22 +0900
+Message-ID: <CACuRN0OThmL5yAAzGv9r6LjR8Z7q4-FJs4LpU50xWNDtyXQyYw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] riscv: optimized memcpy
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Gary Guo <gary@garyguo.net>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Drew Fustini <drew@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-16.06.2021 05:50, Thara Gopinath пишет:
-...
-> 
-> Hi,
-> 
-> Thermal pressure is letting scheduler know that the max capacity
-> available for a cpu to schedule tasks is reduced due to a thermal event.
-> So you cannot have a h/w thermal pressure and s/w thermal pressure.
-> There is eventually only one capping applied at h/w level and the
-> frequency corresponding to this capping should be used for thermal
-> pressure.
-> 
-> Ideally you should not be having both s/w and h/w trying to throttle at
-> the same time. Why is this a scenario and what prevents you from
-> disabling s/w throttling when h/w throttling is enabled. Now if there
-> has to a aggregation for whatever reason this should be done at the
-> thermal driver level and passed to scheduler.
+On Wed, Jun 16, 2021 at 5:24 PM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Matteo Croce
+> > Sent: 16 June 2021 03:02
+> ...
+> > > > That's a good idea, but if you read the replies to Gary's original
+> > > > patch
+> > > > https://lore.kernel.org/linux-riscv/20210216225555.4976-1-gary@garyguo.net/
+> > > > .. both Gary, Palmer and David would rather like a C-based version.
+> > > > This is one attempt at providing that.
+> > >
+> > > Yep, I prefer C as well :)
+> > >
+> > > But if you check commit 04091d6, the assembly version was introduced
+> > > for KASAN. So if we are to change it back to C, please make sure KASAN
+> > > is not broken.
+> > >
+> ...
+> > Leaving out the first memcpy/set of every test which is always slower, (maybe
+> > because of a cache miss?), the current implementation copies 260 Mb/s when
+> > the low order bits match, and 114 otherwise.
+> > Memset is stable at 278 Mb/s.
+> >
+> > Gary's implementation is much faster, copies still 260 Mb/s when euqlly placed,
+> > and 230 Mb/s otherwise. Memset is the same as the current one.
+>
+> Any idea what the attainable performance is for the cpu you are using?
+> Since both memset and memcpy are running at much the same speed
+> I suspect it is all limited by the writes.
+>
+> 272MB/s is only 34M writes/sec.
+> This seems horribly slow for a modern cpu.
+> So is this actually really limited by the cache writes to physical memory?
+>
+> You might want to do some tests (userspace is fine) where you
+> check much smaller lengths that definitely sit within the data cache.
+>
+> It is also worth checking how much overhead there is for
+> short copies - they are almost certainly more common than
+> you might expect.
+> This is one problem with excessive loop unrolling - the 'special
+> cases' for the ends of the buffer start having a big effect
+> on small copies.
+>
+> For cpu that support misaligned memory accesses, one 'trick'
+> for transfers longer than a 'word' is to do a (probably) misaligned
+> transfer of the last word of the buffer first followed by the
+> transfer of the rest of the buffer (overlapping a few bytes at the end).
+> This saves on conditionals and temporary values.
 
-Hello,
+I am fine with Matteo's memcpy.
 
-The h/w mitigation is much more reactive than software, in the same time
-it's much less flexible than software. It should provide additional
-protection in a cases where software isn't doing a good job. Ideally h/w
-mitigation should stay inactive all the time, nevertheless it should be
-modeled properly by the driver.
+The two culprits seen by the `perf top -Ue task-clock` output during the
+tcp and ucp network are
 
->>>
->>> That is a good question. IMO, first step would be to call
->>> cpufreq_update_limits().
->>
->> Right
->>
->>> [ Cc Thara who implemented the thermal pressure ]
->>>
->>> May be Thara has an idea about how to aggregate both? There is another
->>> series floating around with hardware limiter [1] and the same
->>> problematic.
->>>
->>>   [1] https://lkml.org/lkml/2021/6/8/1791
->>
->> Thanks, it indeed looks similar.
->>
->> I guess the common thermal pressure update code could be moved out into
->> a new special cpufreq thermal QoS handler (policy->thermal_constraints),
->> where handler will select the frequency constraint and set up the
->> pressure accordingly. So there won't be any races in the code.
->>
-> It was a conscious decision to keep thermal pressure update out of qos
-> max freq update because there are platforms that don't use the qos
-> framework. For eg acpi uses cpufreq_update_policy.
-> But you are right. We have two platforms now applying h/w throttling and
-> cpufreq_cooling applying s/w throttling. So it does make sense to have
-> one api doing all the computation to update thermal pressure. I am not
-> sure how exactly/where exactly this will reside.
+> Overhead  Shared O  Symbol
+>  42.22%  [kernel]  [k] memcpy
+>  35.00%  [kernel]  [k] __asm_copy_to_user
 
-The generic cpufreq_cooling already uses QoS for limiting the CPU
-frequency. It could be okay to use QoS for the OF drivers, this needs a
-closer look.
+so we really need to optimize both memcpy and __asm_copy_to_user.
 
-We have the case where CPU frequency is changed by the thermal event and
-the thermal pressure equation is the same for both s/w cpufreq_cooling
-and h/w thermal driver. The pressure is calculated based on the QoS
-cpufreq constraint that is already aggregated.
+The main reason of speed up in memcpy is that
 
-Hence what we may need to do on the thermal event is:
+> The Gary's assembly version of memcpy is improving by not using unaligned
+> access in 64 bit boundary, uses shifting it after reading with offset of
+> aligned access, because every misaligned access is trapped and switches to
+> opensbi in M-mode. The main speed up is coming from avoiding S-mode (kernel)
+> and M-mode (opensbi) switching.
 
-1. Update the QoS request
-2. Update the thermal pressure
-3. Ensure that updates are not racing
+which are in the code:
 
-> So for starters, I think you should replicate the update of thermal
-> pressure in your h/w driver when you know that h/w is
-> throttling/throttled the frequency. You can refer to cpufreq_cooling.c
-> to see how it is done.
-> 
-> Moving to a common api can be done as a separate patch series.
-> 
+Gary's:
++       /* Calculate shifts */
++       slli    t3, a3, 3
++       sub    t4, x0, t3 /* negate is okay as shift will only look at LSBs */
++
++       /* Load the initial value and align a1 */
++       andi    a1, a1, ~(SZREG-1)
++       REG_L    a5, 0(a1)
++
++       addi    t0, t0, -(SZREG-1)
++       /* At least one iteration will be executed here, no check */
++1:
++       srl    a4, a5, t3
++       REG_L    a5, SZREG(a1)
++       addi    a1, a1, SZREG
++       sll    a2, a5, t4
++       or    a2, a2, a4
++       REG_S    a2, 0(a0)
++       addi    a0, a0, SZREG
++       bltu    a0, t0, 1b
 
-Thank you for the clarification and suggestion.
+and Matteo ported to C:
+
++#pragma GCC unroll 8
++        for (next = s.ulong[0]; count >= bytes_long + mask; count -=
+bytes_long) {
++            last = next;
++            next = s.ulong[1];
++
++            d.ulong[0] = last >> (distance * 8) |
++                     next << ((bytes_long - distance) * 8);
++
++            d.ulong++;
++            s.ulong++;
++        }
+
+I believe this is reasonable and enough to be in the upstream.
+
+Akira
+
+
+>
+>         David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+>
