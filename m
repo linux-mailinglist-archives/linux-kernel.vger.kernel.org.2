@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74813A9F9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C623A9FFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234706AbhFPPjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:39:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50126 "EHLO mail.kernel.org"
+        id S235390AbhFPPnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:43:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234857AbhFPPh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:37:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AC276135C;
-        Wed, 16 Jun 2021 15:35:47 +0000 (UTC)
+        id S235286AbhFPPj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:39:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70982613ED;
+        Wed, 16 Jun 2021 15:37:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857748;
-        bh=hsTsiGRzMgltVjd12h6llGDkANXx1gKJJuPNvKaFV/I=;
+        s=korg; t=1623857830;
+        bh=B+nrC2yFQwCH38DZKczpZ6aG8TCc9FQtjKYz+FHicO8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=agTUQPmmWb9gi00tXmpVfNMyZO/sYJSg1/PLDXlYYN6LGQvokDbgsm6vlBXHEDjjr
-         eR7R4FTsYSd+pBTBNywhUvn3z7Sq2xUvfuBqt5C//0FboSaueBentyUGwOpV/CI3og
-         S6gk3YK5ohxHnxpun06cDTdx9Uq33pYvuEUExu68=
+        b=oQ1g76jHyEMuLN7/XHNvyJhGjXzRJDZFH2Q7hpFfe/pRKwQVTff/iORUQoUemmhaj
+         xPqFBUDpsKjGZArPPMGlH1qbndlk6CLHeEyS+nnqjtKLa/q3vcQ5nBz/fQs51mBoJ/
+         c9e+ZVV3PILydZLQuhIbzYbZ5oAoJ5dcnOPlVqpk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Ewan D. Milne" <emilne@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 24/38] scsi: scsi_devinfo: Add blacklist entry for HPE OPEN-V
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 23/48] HID: multitouch: Disable event reporting on suspend on the Asus T101HA touchpad
 Date:   Wed, 16 Jun 2021 17:33:33 +0200
-Message-Id: <20210616152836.162540707@linuxfoundation.org>
+Message-Id: <20210616152837.383895221@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
-References: <20210616152835.407925718@linuxfoundation.org>
+In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
+References: <20210616152836.655643420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +39,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ewan D. Milne <emilne@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit e57f5cd99ca60cddf40201b0f4ced9f1938e299c ]
+[ Upstream commit 31a4cf1d223dc6144d2e7c679cc3a98f84a1607b ]
 
-Apparently some arrays are now returning "HPE" as the vendor.
+The Asus T101HA has a problem with spurious wakeups when the lid is
+closed, this is caused by the screen sitting so close to the touchpad
+that the touchpad ends up reporting touch events, causing these wakeups.
 
-Link: https://lore.kernel.org/r/20210601175214.25719-1-emilne@redhat.com
-Signed-off-by: Ewan D. Milne <emilne@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Add a quirk which disables event reporting on suspend when set, and
+enable this quirk for the Asus T101HA touchpad fixing the spurious
+wakeups, while still allowing the device to be woken by pressing a
+key on the keyboard (which is part of the same USB device).
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_devinfo.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/hid/hid-multitouch.c | 28 ++++++++++++++++++++++++++--
+ 1 file changed, 26 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
-index ba84244c1b4f..9a8f9f902f3b 100644
---- a/drivers/scsi/scsi_devinfo.c
-+++ b/drivers/scsi/scsi_devinfo.c
-@@ -184,6 +184,7 @@ static struct {
- 	{"HP", "C3323-300", "4269", BLIST_NOTQ},
- 	{"HP", "C5713A", NULL, BLIST_NOREPORTLUN},
- 	{"HP", "DISK-SUBSYSTEM", "*", BLIST_REPORTLUN2},
-+	{"HPE", "OPEN-", "*", BLIST_REPORTLUN2 | BLIST_TRY_VPD_PAGES},
- 	{"IBM", "AuSaV1S2", NULL, BLIST_FORCELUN},
- 	{"IBM", "ProFibre 4000R", "*", BLIST_SPARSELUN | BLIST_LARGELUN},
- 	{"IBM", "2105", NULL, BLIST_RETRY_HWERROR},
+diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+index eed81bdc2e86..2e4fb76c45f3 100644
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -70,6 +70,7 @@ MODULE_LICENSE("GPL");
+ #define MT_QUIRK_WIN8_PTP_BUTTONS	BIT(18)
+ #define MT_QUIRK_SEPARATE_APP_REPORT	BIT(19)
+ #define MT_QUIRK_FORCE_MULTI_INPUT	BIT(20)
++#define MT_QUIRK_DISABLE_WAKEUP		BIT(21)
+ 
+ #define MT_INPUTMODE_TOUCHSCREEN	0x02
+ #define MT_INPUTMODE_TOUCHPAD		0x03
+@@ -191,6 +192,7 @@ static void mt_post_parse(struct mt_device *td, struct mt_application *app);
+ #define MT_CLS_EXPORT_ALL_INPUTS		0x0013
+ /* reserved					0x0014 */
+ #define MT_CLS_WIN_8_FORCE_MULTI_INPUT		0x0015
++#define MT_CLS_WIN_8_DISABLE_WAKEUP		0x0016
+ 
+ /* vendor specific classes */
+ #define MT_CLS_3M				0x0101
+@@ -283,6 +285,15 @@ static const struct mt_class mt_classes[] = {
+ 			MT_QUIRK_WIN8_PTP_BUTTONS |
+ 			MT_QUIRK_FORCE_MULTI_INPUT,
+ 		.export_all_inputs = true },
++	{ .name = MT_CLS_WIN_8_DISABLE_WAKEUP,
++		.quirks = MT_QUIRK_ALWAYS_VALID |
++			MT_QUIRK_IGNORE_DUPLICATES |
++			MT_QUIRK_HOVERING |
++			MT_QUIRK_CONTACT_CNT_ACCURATE |
++			MT_QUIRK_STICKY_FINGERS |
++			MT_QUIRK_WIN8_PTP_BUTTONS |
++			MT_QUIRK_DISABLE_WAKEUP,
++		.export_all_inputs = true },
+ 
+ 	/*
+ 	 * vendor specific classes
+@@ -763,7 +774,8 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+ 			return 1;
+ 		case HID_DG_CONFIDENCE:
+ 			if ((cls->name == MT_CLS_WIN_8 ||
+-			     cls->name == MT_CLS_WIN_8_FORCE_MULTI_INPUT) &&
++			     cls->name == MT_CLS_WIN_8_FORCE_MULTI_INPUT ||
++			     cls->name == MT_CLS_WIN_8_DISABLE_WAKEUP) &&
+ 				(field->application == HID_DG_TOUCHPAD ||
+ 				 field->application == HID_DG_TOUCHSCREEN))
+ 				app->quirks |= MT_QUIRK_CONFIDENCE;
+@@ -1753,8 +1765,14 @@ static int mt_probe(struct hid_device *hdev, const struct hid_device_id *id)
+ #ifdef CONFIG_PM
+ static int mt_suspend(struct hid_device *hdev, pm_message_t state)
+ {
++	struct mt_device *td = hid_get_drvdata(hdev);
++
+ 	/* High latency is desirable for power savings during S3/S0ix */
+-	mt_set_modes(hdev, HID_LATENCY_HIGH, true, true);
++	if (td->mtclass.quirks & MT_QUIRK_DISABLE_WAKEUP)
++		mt_set_modes(hdev, HID_LATENCY_HIGH, false, false);
++	else
++		mt_set_modes(hdev, HID_LATENCY_HIGH, true, true);
++
+ 	return 0;
+ }
+ 
+@@ -1813,6 +1831,12 @@ static const struct hid_device_id mt_devices[] = {
+ 		MT_USB_DEVICE(USB_VENDOR_ID_ANTON,
+ 			USB_DEVICE_ID_ANTON_TOUCH_PAD) },
+ 
++	/* Asus T101HA */
++	{ .driver_data = MT_CLS_WIN_8_DISABLE_WAKEUP,
++		HID_DEVICE(BUS_USB, HID_GROUP_MULTITOUCH_WIN_8,
++			   USB_VENDOR_ID_ASUSTEK,
++			   USB_DEVICE_ID_ASUSTEK_T101HA_KEYBOARD) },
++
+ 	/* Asus T304UA */
+ 	{ .driver_data = MT_CLS_ASUS,
+ 		HID_DEVICE(BUS_USB, HID_GROUP_MULTITOUCH_WIN_8,
 -- 
 2.30.2
 
