@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1A83AA058
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8113AA036
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235562AbhFPPt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235504AbhFPPss (ORCPT
+        id S235855AbhFPPqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:46:33 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51716 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235696AbhFPPnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:48:48 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30383C0611BC;
-        Wed, 16 Jun 2021 08:40:32 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id c18so3041956qkc.11;
-        Wed, 16 Jun 2021 08:40:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=qzT+aoRD/micuUO2QotAKO9v1rg3ul7+XoTwzXpmu7I=;
-        b=X14yWQKmOQIhew8GwnEl0Nw3M3HrN3/XAe6nUgife5+zS60oiVzVO//zAS3pubCY7G
-         h/0kKA7gZAqh2FDk6QMQHPGMDJqYT4uyAgmq/2ecDTVQjLlRshe+f0VO6h3anR2ooK1C
-         enKBl78D3xUkDfLnAZZJb3BbW8N1NyfjoJI3gHDkosOntS5zRj2be0MsIdrRH5ZYf5Ln
-         sl8dAeTJZDiwL1OA533izDhvwsryUtnowNO7XyrXCig12rT9/9OBfJMWYl2Z5AIlpOzu
-         osovW7dFAxen+EL7McQ1hJj5EyWbAmxzG0DoqpPUbDl7Miq950N1bzRpitQJzkkdX04p
-         5EfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qzT+aoRD/micuUO2QotAKO9v1rg3ul7+XoTwzXpmu7I=;
-        b=R+W8lstzyrpfLwTS5ectfBwdI2Y//2fChsXzyiETUDBvXEejLzET02YCJhOw+wg4Nx
-         sW9tx2DyAs8/BwY0aoPDCwai+nj7qxUMjBQlE2N/eMF/YtZyvQFCTO5iDRhKrhGORKNk
-         YI2gHi0Sy8GFr5p41VqB6NDe/vohFk0tD9xGPk+xb5/VfdZI7bqwmUl7xQuAt7HNKqCG
-         V1bY5l8QHT8cTaH0jBJAgUBZlwFWfYXyumnwTUsrG9/MVA4cBU0ee0F1iBFOku70xBsP
-         lfKmqC+vq+watIGp9QXdFfgmmLDczSlhiC+d0wp+sAgUe8qgX/I6Wyd61LAziWWGOEKp
-         HRHA==
-X-Gm-Message-State: AOAM530bw4Q/aIknALBkXDs27u/3ISxDES53yiBGWeOlzoRrKo2OMklO
-        ikK7LbsEqm5b12RDU9MXWDw=
-X-Google-Smtp-Source: ABdhPJzoQoQt4lnYIajkrn73fyIbeZvwusV0zc2bf78GNxdsnm5lUH5E1wgfOZvLYWzACvgPBNfx/g==
-X-Received: by 2002:a05:620a:1443:: with SMTP id i3mr638021qkl.193.1623858031421;
-        Wed, 16 Jun 2021 08:40:31 -0700 (PDT)
-Received: from nyarly.rlyeh.local ([179.233.244.167])
-        by smtp.gmail.com with ESMTPSA id m199sm1818009qke.71.2021.06.16.08.40.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 08:40:30 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 12:40:26 -0300
-From:   Thiago Rafael Becker <trbecker@gmail.com>
-To:     =?iso-8859-1?Q?Aur=E9lien?= Aptel <aaptel@suse.com>
-Cc:     ronnie sahlberg <ronniesahlberg@gmail.com>,
-        linux-cifs <linux-cifs@vger.kernel.org>,
-        Steve French <sfrench@samba.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cifs: retry lookup and readdir when EAGAIN is returned.
-Message-ID: <YMobapLxHv/BPzFP@nyarly.rlyeh.local>
-References: <20210615164256.173715-1-trbecker@gmail.com>
- <CAN05THQqBdT-uvVS+jq1Hv8MwDVCTJFHhzan8M0+4ztNbpCZ0g@mail.gmail.com>
- <87zgvqqg09.fsf@suse.com>
+        Wed, 16 Jun 2021 11:43:39 -0400
+X-UUID: 040684fa75ff4f7b84c23e77a91e5f21-20210616
+X-UUID: 040684fa75ff4f7b84c23e77a91e5f21-20210616
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1784630972; Wed, 16 Jun 2021 23:41:30 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Jun 2021 23:41:28 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 16 Jun 2021 23:41:28 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <peterz@infradead.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <mark-pk.tsai@mediatek.com>,
+        <matthias.bgg@gmail.com>, <mhelsley@vmware.com>,
+        <rostedt@goodmis.org>, <samitolvanen@google.com>,
+        <yj.chiang@mediatek.com>
+Subject: [PATCH v4] recordmcount: Correct st_shndx handling
+Date:   Wed, 16 Jun 2021 23:41:26 +0800
+Message-ID: <20210616154126.2794-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87zgvqqg09.fsf@suse.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the comments, I'm working on them.
+From: Peter Zijlstra <peterz@infradead.org>
 
-On Wed, Jun 16, 2021 at 12:07:50PM +0200, Aurélien Aptel wrote:
+One should only use st_shndx when >SHN_UNDEF and <SHN_LORESERVE. When
+SHN_XINDEX, then use .symtab_shndx. Otherwise use 0.
 
-> I guess it looks ok as a quick fix for the issue at hand but:
-> - should we check for more error codes (use is_retryable_error()?)
-> - all syscalls will need something similar, the session can be closed at
->   any point
->   * either we add a loop everywhere
->   * or we change cifs_send_receive to retry (most?) calls
->   * might be worth looking at what nfs does here
+This handles the case: st_shndx >= SHN_LORESERVE && st_shndx != SHN_XINDEX.
 
-Some syscall can return EAGAIN, so we would need to check which
-operation is retryable and if the error is retryable. I don't know if
-all Linux syscalls mappable to smb2 operations in the wire, but it may
-be worth mapping.
+Reported-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+[handle endianness of sym->st_shndx]
+Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+---
+ scripts/recordmcount.h | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-NFS requeues the calls, and fails after a configurable timeout
-for soft mounts, or issues an error message and requeues the request
-for hard mounts (retrans and timeo mount options).
+diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+index f9b19524da11..1e9baa5c4fc6 100644
+--- a/scripts/recordmcount.h
++++ b/scripts/recordmcount.h
+@@ -192,15 +192,20 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
+ 				 Elf32_Word const *symtab_shndx)
+ {
+ 	unsigned long offset;
++	unsigned short shndx = w2(sym->st_shndx);
+ 	int index;
+ 
+-	if (sym->st_shndx != SHN_XINDEX)
+-		return w2(sym->st_shndx);
++	if (shndx > SHN_UNDEF && shndx < SHN_LORESERVE)
++		return shndx;
+ 
+-	offset = (unsigned long)sym - (unsigned long)symtab;
+-	index = offset / sizeof(*sym);
++	if (shndx == SHN_XINDEX) {
++		offset = (unsigned long)sym - (unsigned long)symtab;
++		index = offset / sizeof(*sym);
+ 
+-	return w(symtab_shndx[index]);
++		return w(symtab_shndx[index]);
++	}
++
++	return 0;
+ }
+ 
+ static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
+-- 
+2.18.0
 
-> - Should this be done for both soft (default) and hard mounts? I guess
->   for hard we would retry indefinitely
-
-Good point, but the correct option is to retry on hard mounts until the
-operation succeeds.
-
-NFS hard mounts create issues like being unable to do a clean shutdown on
-a server failure, because oustanding I/O blocks it. The NFS has atempted
-to fix this by adding options to kill all outstanding I/O, but I'm not
-current on the efforts/issues in this front.
-
-So this would create the same issue with outstanding mounts on cifs 
-shares, so a similar solution to NFS may be adapted/created in the future.
-
-One thing that I forgot to mention in the patch is that this uncovered a
-bug in compuond requests, where wait_for_compund_request will block the
-readdir request with EDEADLK, if the share needs reconnect. I'm looking
-into this patch, and will submmit it separatelly, as this looks like a
-corner case uncovered by the patch and specific conditions in the tests.
-
-> Cheers,
-Best regards,
-Thiago
