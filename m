@@ -2,213 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A12D3A93DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7A23A93E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbhFPH3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 03:29:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231913AbhFPH3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:29:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15F8861356;
-        Wed, 16 Jun 2021 07:27:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623828428;
-        bh=KcANELai9z4oRKbo/RBV3hu2dXS6JYx56P/gLJVXPVE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i5yYILo0Bpz/n4I36L/IGroD/8kSb+fOHwiiQ5BH4qCyShwjwKmp1oGj3ofQATSx5
-         od1y2XuPPfhc6oEcHKcz90/Z3DXLfhBnt/zIxMsJQGFL/YeMOS9aQJKwanlsQCGkQj
-         B3naIGTwzV+r6cJasL70s3KZoy7WW0sucaXJPbqBDgQRsQJNvcbvflkmunbfbgMb0M
-         Jm4YNRNnhY6CWlQXzitkZem/6Ta2mz/WXaWD+dstiuiUZv9eO6hD9Wmiqffzu3e/9t
-         LOy2IdXlGyXcqk1oJ26mz+M8kYuJYqV3J+hHZKXhG81EqQrOpvG884iEhnZaGHvBk0
-         rKMxmZ5NK8k0A==
-Date:   Wed, 16 Jun 2021 10:27:04 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Anand Khoje <anand.a.khoje@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dledford@redhat.com, jgg@ziepe.ca, haakon.bugge@oracle.com
-Subject: Re: [PATCH v4 for-next 3/3] IB/core: Obtain subnet_prefix from cache
- in IB devices
-Message-ID: <YMmnyE+rpLIf6e0B@unreal>
-References: <20210616065213.987-1-anand.a.khoje@oracle.com>
- <20210616065213.987-4-anand.a.khoje@oracle.com>
+        id S231827AbhFPHbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231382AbhFPHbS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 03:31:18 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDA1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:29:12 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id v17-20020a4aa5110000b0290249d63900faso458465ook.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 00:29:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JbP1OzFgSfwxUirQ6jqrb0LQmGX7gpjz8D4fdoExXvA=;
+        b=KyswCItanXFaUHAeTPBBuuhn4TH9R0bEzalW7u/84cu40ezyD4L0gvtbCD7vu9DOdl
+         rqrt0mjVmj9YhwykAqxHwQ/ctkZiW0XzTBxbTQcWvt7Ba4oTyomTbhjDQ0cGKgszBepP
+         7kVTNK3Lze0g5FdbtekAB+KYZNZqn+C4IVfgygy3oaBDjuNsakwd5VzxxhrunTKc4WeF
+         t7OeSiw7Tp/4xRrgmzv36f2x46NFVdxtfXk1VI6YDmuziQjCp+nrc4uuLI7WncuHLX4d
+         uHcxqOajAidxY48hjPHSre7+y2XOMnwdgbhixb6LB6cyEQf1kHBnCafXnNARZ00zwTWG
+         51+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JbP1OzFgSfwxUirQ6jqrb0LQmGX7gpjz8D4fdoExXvA=;
+        b=a8a+KOMs2daoO1e7GCiIZz6VWPUEvf6hcUmS7gzPxl1fT8M75Pd4uj2KwGXGW80zKI
+         06HxFOF0383obPHJQIuGFHF53pOl1UY6wOYVMbRCrMbjSEZiU0y/YaYvuTCXiVhTghkB
+         tjHXgplbKxIfX78aVM9YX0bMzysvsNA+4FiEwUBy40DuWh66JGAENUvnPPsXIcaQcrAn
+         24wNfV6KolietGb5R7fble1L9YjM5AtiyjuwNbM9OyKb+uvH7hLuTl4re0rjd9mYWYep
+         C0Iygjoj7fczEQKsDhYXlzI+smSAKCmFwh6wBMi9O42LH+z9kaYYc2fSEDS12U9K5slz
+         Mq+w==
+X-Gm-Message-State: AOAM532YqBTvXAXu1sUztxotWmI1jKyEfr0+RxQYF1UZtJT284y/jkQV
+        FlzrUyYPcaHXe08T4uk3B2H0019TW3M+cEZzRWVJQcU7
+X-Google-Smtp-Source: ABdhPJxonYERwtFL0nI5uSBopGxwJXZV8D5RCyn9CGRpoKzupMnfJ+1obTzw3ngsf8zASvv3qwfn7/1nlCxJL4DLF8k=
+X-Received: by 2002:a4a:c287:: with SMTP id b7mr2743311ooq.8.1623828551699;
+ Wed, 16 Jun 2021 00:29:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616065213.987-4-anand.a.khoje@oracle.com>
+Received: by 2002:ac9:33b2:0:0:0:0:0 with HTTP; Wed, 16 Jun 2021 00:29:11
+ -0700 (PDT)
+In-Reply-To: <YMmYD3rkS8o+1dXr@kroah.com>
+References: <1623812199-31866-1-git-send-email-zhenguo6858@gmail.com> <YMmYD3rkS8o+1dXr@kroah.com>
+From:   =?UTF-8?B?6LW15oyv5Zu9?= <zhenguo6858@gmail.com>
+Date:   Wed, 16 Jun 2021 15:29:11 +0800
+Message-ID: <CAGGV+3JjiuAoXefUwpekbcqB_Xye32xQSMK0jKQ_zNM6dvOPAw@mail.gmail.com>
+Subject: Re: [PATCH] tty: n_gsm: Fix CR bit value when initiator=0
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 12:22:13PM +0530, Anand Khoje wrote:
-> ib_query_port() calls device->ops.query_port() to get the port
-> attributes. The method of querying is device driver specific.
-> The same function calls device->ops.query_gid() to get the GID and
-> extract the subnet_prefix (gid_prefix).
-> 
-> The GID and subnet_prefix are stored in a cache. But they do not get
-> read from the cache if the device is an Infiniband device. The
-> following change takes advantage of the cached subnet_prefix.
-> Testing with RDBMS has shown a significant improvement in performance
-> with this change.
-> 
-> The function ib_cache_is_initialised() is introduced because
-> ib_query_port() gets called early in the stage when the cache is not
-> built while reading port immutable property.
-> 
-> In that case, the default GID still gets read from HCA for IB link-
-> layer devices.
-> 
-> In the situation of an event causing cache update, the subnet_prefix
-> will get retrieved from newly updated GID cache in ib_cache_update(),
-> so that we do not end up reading a stale value from cache via
-> ib_query_port().
-> 
-> Fixes: fad61ad ("IB/core: Add subnet prefix to port info")
-> Suggested-by: Leon Romanovsky <leonro@nvidia.com>
-> Suggested-by: Aru Kolappan <aru.kolappan@oracle.com>
-> Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
-> Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
-> ---
-> 
-> v1 -> v2:
->     -   Split the v1 patch in 3 patches as per Leon's suggestion.
-> 
-> v2 -> v3:
->     -   Added changes as per Mark Zhang's suggestion of clearing
->         flags in git_table_cleanup_one().
-> v3 -> v4:
->     -   Removed the enum ib_port_data_flags and 8 byte flags from
->         struct ib_port_data, and the set_bit()/clear_bit() API
->         used to update this flag as that was not necessary.
->         Done to keep the code simple.
->     -   Added code to read subnet_prefix from updated GID cache in the
->         event of cache update. Prior to this change, ib_cache_update
->         was reading the value for subnet_prefix via ib_query_port(),
->         due to this patch, we ended up reading a stale cached value of
->         subnet_prefix.
-> 
-> ---
->  drivers/infiniband/core/cache.c  | 18 +++++++++++++++---
->  drivers/infiniband/core/device.c |  9 +++++++++
->  include/rdma/ib_cache.h          |  5 +++++
->  include/rdma/ib_verbs.h          |  1 +
->  4 files changed, 30 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-> index 2325171..cd99c46 100644
-> --- a/drivers/infiniband/core/cache.c
-> +++ b/drivers/infiniband/core/cache.c
-> @@ -917,9 +917,11 @@ static void gid_table_cleanup_one(struct ib_device *ib_dev)
->  {
->  	u32 p;
->  
-> -	rdma_for_each_port (ib_dev, p)
-> +	rdma_for_each_port (ib_dev, p) {
-> +		ib_dev->port_data[p].cache_is_initialized = 0;
+Dear gregkh
 
-I think that this line is not needed, we are removing device anyway and
-and query_port is not allowed at this stage.
+1:  Documentation/driver-api/serial/n_gsm.rst
 
->  		cleanup_gid_table_port(ib_dev, p,
->  				       ib_dev->port_data[p].cache.gid);
-> +	}
->  }
->  
->  static int gid_table_setup_one(struct ib_device *ib_dev)
-> @@ -1466,6 +1468,7 @@ static int config_non_roce_gid_cache(struct ib_device *device,
->  	struct ib_port_attr       *tprops = NULL;
->  	struct ib_pkey_cache      *pkey_cache = NULL;
->  	struct ib_pkey_cache      *old_pkey_cache = NULL;
-> +	union ib_gid               gid;
->  	int                        i;
->  	int                        ret;
->  
-> @@ -1523,13 +1526,21 @@ static int config_non_roce_gid_cache(struct ib_device *device,
->  	device->port_data[port].cache.lmc = tprops->lmc;
->  	device->port_data[port].cache.port_state = tprops->state;
->  
-> -	device->port_data[port].cache.subnet_prefix = tprops->subnet_prefix;
-> +	ret = rdma_query_gid(device, port, 0, &gid);
-> +	if (ret) {
-> +		write_unlock_irq(&device->cache.lock);
-> +		goto err;
-> +	}
-> +
-> +	device->port_data[port].cache.subnet_prefix =
-> +			be64_to_cpu(gid.global.subnet_prefix);
-> +
->  	write_unlock_irq(&device->cache_lock);
->  
->  	if (enforce_security)
->  		ib_security_cache_change(device,
->  					 port,
-> -					 tprops->subnet_prefix);
-> +					 be64_to_cpu(gid.global.subnet_prefix));
->  
->  	kfree(old_pkey_cache);
->  	kfree(tprops);
-> @@ -1629,6 +1640,7 @@ int ib_cache_setup_one(struct ib_device *device)
->  		err = ib_cache_update(device, p, true, true, true);
->  		if (err)
->  			return err;
-> +		device->port_data[p].cache_is_initialized = 1;
->  	}
->  
->  	return 0;
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> index 7a617e4..57b9039 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -2057,6 +2057,15 @@ static int __ib_query_port(struct ib_device *device,
->  	    IB_LINK_LAYER_INFINIBAND)
->  		return 0;
->  
-> +	if (!ib_cache_is_initialised(device, port_num))
-> +		goto query_gid_from_device;
+The text introduces the config of master ( c.initiator =3D 1), but the
+config of as responder is different.
+when set gsm->initiator=3D0 by GSMIOC_SETCONF ,ngsm driver should be
+responder(slaver)
 
-IMHO, we don't need this new function and can access ib_port_data
-directly. In device.c, we have plenty of places that does it.
+config=EF=BC=9A
+	c.initiator =3D 0;    // set initiator=3D0=EF=BC=8Cngsm as responder
+	ioctl(fd, GSMIOC_SETCONF, &c);
 
-Not critical.
+2:  if master side send SABM/DISC frame data by uart dev
+    DLC0 control data frame:f9 03 3f 01 1c f9
+    kernel log=EF=BC=9A gsmld_receive: 00000000: f9 03 3f 01 1c f9
 
-> +
-> +	ib_get_cached_subnet_prefix(device, port_num,
-> +				    &port_attr->subnet_prefix);
-> +
-> +	return 0;
-> +
-> +query_gid_from_device:
->  	err = device->ops.query_gid(device, port_num, 0, &gid);
->  	if (err)
->  		return err;
-> diff --git a/include/rdma/ib_cache.h b/include/rdma/ib_cache.h
-> index 226ae37..46b43a7 100644
-> --- a/include/rdma/ib_cache.h
-> +++ b/include/rdma/ib_cache.h
-> @@ -114,4 +114,9 @@ ssize_t rdma_query_gid_table(struct ib_device *device,
->  			     struct ib_uverbs_gid_entry *entries,
->  			     size_t max_entries);
->  
-> +static inline bool ib_cache_is_initialised(struct ib_device *device,
-> +					u32 port_num)
-> +{
-> +	return device->port_data[port_num].cache_is_initialized;
-> +}
->  #endif /* _IB_CACHE_H */
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index c96d601..405f7da 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -2177,6 +2177,7 @@ struct ib_port_data {
->  
->  	spinlock_t netdev_lock;
->  
-> +	u8 cache_is_initialized:1;
->  	struct list_head pkey_list;
->  
->  	struct ib_port_cache cache;
-> -- 
-> 1.8.3.1
-> 
+{
+	cr =3D gsm->address & 1;		/* C/R bit */
+//CR value=3D1
+
+	gsm_print_packet("<--", address, cr, gsm->control, gsm->buf, gsm->len);
+
+	cr ^=3D 1 - gsm->initiator;	/* Flip so 1 always means command */
+//when gsm->initiator is 0, CR value=3D0 by "^=3D" calculation
+	dlci =3D gsm->dlci[address];
+
+	switch (gsm->control) {
+	case SABM|PF:
+		if (cr =3D=3D 0)
+			goto invalid;                       //if CR value=3D0,ngsm will goto
+invalid,but the dlc0 control frame data is right,if we can't modify
+,ngsm can't send UA response data
+}
+
+
+2021-06-16 14:19 GMT+08:00, Greg KH <gregkh@linuxfoundation.org>:
+> On Wed, Jun 16, 2021 at 10:56:39AM +0800, Zhenguo Zhao wrote:
+>> From: Zhenguo Zhao <zhenguo.zhao1@unisoc.com>
+>>
+>> 	When set initiator=3D0,switch to Responder,gsmld received dlci SABM/DIS=
+C
+>> 	frame,CR bit should be 0 by calculation.
+>>
+>> 	receive DLC0 SABM CMD:
+>> 	[69.740263] c1 gsmld_receive: 00000000: f9 03 3f 01 1c f9
+>> 	[69.893247] c1 gsm_queue cr:1
+>> 	[69.897629] c1 <-- 0) C: SABM(P)
+>> 	[69.907516] c1 gsm_queue cr:0
+>
+> Why is this changelog text indented by tabs?
+>
+> And I do not understand the changelog text here, what is this showing?
+> What is wrong here and what is being fixed?
+>
+>> Signed-off-by: Zhenguo Zhao <zhenguo.zhao1@unisoc.com>
+>
+> Does this fix a long-standing issue?  Should a "Fixes:" tag go here?  If
+> so, please provide it.
+>
+> Should it also be sent to stable kernels?
+>
+>> ---
+>>  drivers/tty/n_gsm.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+>> index 5fea02c..becca2c 100644
+>> --- a/drivers/tty/n_gsm.c
+>> +++ b/drivers/tty/n_gsm.c
+>> @@ -1779,7 +1779,7 @@ static void gsm_queue(struct gsm_mux *gsm)
+>>
+>>  	switch (gsm->control) {
+>>  	case SABM|PF:
+>> -		if (cr =3D=3D 0)
+>> +		if (cr =3D=3D 1)
+>
+> How did the original code ever work properly?
+>
+>>  			goto invalid;
+>>  		if (dlci =3D=3D NULL)
+>>  			dlci =3D gsm_dlci_alloc(gsm, address);
+>> @@ -1793,7 +1793,7 @@ static void gsm_queue(struct gsm_mux *gsm)
+>>  		}
+>>  		break;
+>>  	case DISC|PF:
+>> -		if (cr =3D=3D 0)
+>> +		if (cr =3D=3D 1)
+>
+> Same here, how did this ever work?  Are you sure this change is correct?
+>
+> thanks,
+>
+> greg k-h
+>
