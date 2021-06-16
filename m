@@ -2,74 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B533AA150
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D9C3AA157
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbhFPQbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 12:31:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47566 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234654AbhFPQbi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 12:31:38 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1ltYPh-0003ld-IQ; Wed, 16 Jun 2021 16:29:13 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Corey Minyard <minyard@acm.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ipmi: kcs_bmc_aspeed: Fix less than zero comparison of a unsigned int
-Date:   Wed, 16 Jun 2021 17:29:13 +0100
-Message-Id: <20210616162913.15259-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S234965AbhFPQdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 12:33:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232234AbhFPQdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 12:33:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CECD361351;
+        Wed, 16 Jun 2021 16:31:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623861070;
+        bh=exkQJNSPkDaseMRDwokpCtaWrpnVtJkBzMN5rRvGQlo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CcrM6uikMWLtSBxw8H9H/2RY3qDvi+EYYeCjgHO3IJREBFMZI0Pd3wZ6OaIJGk+4N
+         lDguHLiRALRo7Z+MZgOBGkqFhvoeQcekyMghWGkQiFqZVBe/0FDS52/h86X4d/CCxe
+         CC8V6p1zS78I55C0TsuwMalmdvgQ9wrRekivnY6l5IlW6Sj74m5MmO87kgPug79KfJ
+         6JYfmHysfpYqP40QQ0G5/wNlAmnOj0mVxMgo35afLZ4b4etyX0sAy05mvHSib5b4z2
+         yeOWg2lCgxOh59vYBQq/TfJ5tSNzXOoe9fe94711BOMJha3rn6eUQkIF7JhIBU+hVP
+         od/YObWbZ+Itg==
+Received: by mail-ot1-f41.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so3067349oth.9;
+        Wed, 16 Jun 2021 09:31:10 -0700 (PDT)
+X-Gm-Message-State: AOAM5305JSNPw4xbGPfQmRSNnEOZ2Xyd3I5tHIPDkueWTPx6Sua8swiz
+        VOAxjl3fNtVjJCSnEwrFcG5tfRi/N7htU2k4Tww=
+X-Google-Smtp-Source: ABdhPJx9WT46czKGqGKZTMvu1g4TggAjHcYFrL9Wpp+S02PENnTUGH/uK+7MSGI2Zj6GCjUZrEQ4dXYVZrT4krxuSyw=
+X-Received: by 2002:a9d:4c83:: with SMTP id m3mr638863otf.77.1623861070211;
+ Wed, 16 Jun 2021 09:31:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210419005539.22729-1-mick@ics.forth.gr> <20210419005539.22729-6-mick@ics.forth.gr>
+ <CAMuHMdW=23SPXwqcjD+30M_d0azdze2=ChZM-PF1brf9bCNtrA@mail.gmail.com>
+ <fe02eb618eee141e8bc021e8e30906fc@mailhost.ics.forth.gr> <CAMuHMdXtT1L3yfzkTkbhqz3zgUQj89Bcm7mqz+m126NprAsK8Q@mail.gmail.com>
+ <CAL_JsqLHOmZ6az0bYGC3dg__YX3aq=+Un4_x4+R2nNksc0hM2g@mail.gmail.com>
+ <a488d802940f7fc2ae34a4fe583ec187@mailhost.ics.forth.gr> <CAL_Jsq+9eBSHUwzWBipgoSHNDvxqfrTuY4Un0PrRhoaAHugJNw@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+9eBSHUwzWBipgoSHNDvxqfrTuY4Un0PrRhoaAHugJNw@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 16 Jun 2021 18:30:58 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFfG5Sr+ix9xG3OBM8kgg8ARKNt0HFkL6MafB6vp2_xxQ@mail.gmail.com>
+Message-ID: <CAMj1kXFfG5Sr+ix9xG3OBM8kgg8ARKNt0HFkL6MafB6vp2_xxQ@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] RISC-V: Add crash kernel support
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Nick Kossifidis <mick@ics.forth.gr>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, 16 Jun 2021 at 16:55, Rob Herring <robh+dt@kernel.org> wrote:
+>
+> +Ard
+>
+> On Tue, Jun 15, 2021 at 5:29 PM Nick Kossifidis <mick@ics.forth.gr> wrote=
+:
+> >
+> > =CE=A3=CF=84=CE=B9=CF=82 2021-06-15 22:21, Rob Herring =CE=AD=CE=B3=CF=
+=81=CE=B1=CF=88=CE=B5:
+> > > On Tue, Jun 15, 2021 at 12:48 PM Geert Uytterhoeven
+> > > <geert@linux-m68k.org> wrote:
+> > >>
+> > >> Hi Nick,
+> > >>
+> > >> On Tue, Jun 15, 2021 at 8:29 PM Nick Kossifidis <mick@ics.forth.gr>
+> > >> wrote:
+> > >> > =CE=A3=CF=84=CE=B9=CF=82 2021-06-15 16:19, Geert Uytterhoeven =CE=
+=AD=CE=B3=CF=81=CE=B1=CF=88=CE=B5:
+> > >> > > This does not match
+> > >> > > https://github.com/devicetree-org/dt-schema/blob/master/schemas/=
+chosen.yaml#L77:
+> > >> > >
+> > >> > >     $ref: types.yaml#/definitions/uint64-array
+> > >> > >     maxItems: 2
+> > >> > >     description:
+> > >> > >       This property (currently used only on arm64) holds the mem=
+ory
+> > >> > > range,
+> > >> > >       the address and the size, of the elf core header which mai=
+nly
+> > >> > > describes
+> > >> > >       the panicked kernel\'s memory layout as PT_LOAD segments o=
+f elf
+> > >> > > format.
+> > >> > >
+> > >> > > Hence "linux,elfcorehdr" should be a property of the /chosen nod=
+e,
+> > >> > > instead of a memory node with a compatible value of "linux,elfco=
+rehdr".
+> > >> > >
+> > >> >
+> > >> > That's a binding for a property on the /chosen node, that as the t=
+ext
+> > >> > says it's defined for arm64 only and the code that handled it was =
+also
+> > >>
+> > >> That doesn't mean it must not be used on other architectures ;-)
+> > >> Arm64 was just the first one to use it...
+> > >
+> > > It is used on arm64 because memory is often passed by UEFI tables and
+> > > not with /memory node. As riscv is also supporting EFI, I'd think the=
+y
+> > > would do the same.
+> > >
+> >
+> > We've had this discussion before, riscv uses /memory for now and even i=
+f
+> > we switched to getting memory from ACPI/UEFI tables, the elf core heade=
+r
+> > is passed from the crashed kernel to the kdump kernel, it has nothing t=
+o
+> > do with UEFI since the bootloader is the kernel itself. Am I missing
+> > something ?
+>
+> I believe if we originally booted using UEFI tables, then those are
+> passed the kdump kernel as well. The original DT may have had a
+> /memory node, but it's possible it didn't match what was in the UEFI
+> tables. So using the DT /memory nodes for kdump could give surprising
+> results. I think reserved regions also come from UEFI. Ard can
+> probably comment better.
+>
 
-The comparisons of the unsigned int hw_type to less than zero always
-false because it is unsigned. Fix this by using an int for the
-assignment and less than zero check.
+Anything that executes in the context of the UEFI boot firmware
+(loaders, drivers, etc) may use the UEFI memory allocation routines to
+allocate memory, and these allocations are communicated via the UEFI
+memory map, not via the /memory node.
 
-Addresses-Coverity: ("Unsigned compared against 0")
-Fixes: 9d2df9a0ad80 ("ipmi: kcs_bmc_aspeed: Implement KCS SerIRQ configuration")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/char/ipmi/kcs_bmc_aspeed.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c b/drivers/char/ipmi/kcs_bmc_aspeed.c
-index 0401089f8895..92a37b33494c 100644
---- a/drivers/char/ipmi/kcs_bmc_aspeed.c
-+++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
-@@ -301,13 +301,15 @@ static inline int aspeed_kcs_map_serirq_type(u32 dt_type)
- static int aspeed_kcs_config_upstream_irq(struct aspeed_kcs_bmc *priv, u32 id, u32 dt_type)
- {
- 	unsigned int mask, val, hw_type;
-+	int ret;
- 
- 	if (id > 15)
- 		return -EINVAL;
- 
--	hw_type = aspeed_kcs_map_serirq_type(dt_type);
--	if (hw_type < 0)
--		return hw_type;
-+	ret = aspeed_kcs_map_serirq_type(dt_type);
-+	if (ret < 0)
-+		return ret;
-+	hw_type = ret;
- 
- 	priv->upstream_irq.mode = aspeed_kcs_irq_serirq;
- 	priv->upstream_irq.id = id;
--- 
-2.31.1
-
+So it depends whether it matters if the kexec kernel tramples over
+those regions. For kdump scenarios, it might be reasonable, but in the
+general case, we should really respect what UEFI tells us about the
+memory map when booting via UEFI.
