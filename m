@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE453A9C34
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F2B3A9C3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbhFPNly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:41:54 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:33998 "EHLO
+        id S233398AbhFPNmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:42:24 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:33995 "EHLO
         alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233343AbhFPNlb (ORCPT
+        by vger.kernel.org with ESMTP id S233378AbhFPNlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:41:31 -0400
+        Wed, 16 Jun 2021 09:41:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1623850765; x=1655386765;
+  t=1623850771; x=1655386771;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=6dNL8hbqtaxe5R14UIkrbAmyVgSCctSRwQU+f9pGOW4=;
-  b=zX4bxwS5+9GsjzeMgif0dh65r3EYzqB/rluViI4YY+OzlPQXOjdkGjg6
-   O/ulOvkg2ibvdUJYcDL/DCr+qyp0v+JsOnO7kVdbul9XACnK/zGSfAy3R
-   /VOMjexIkSPBhTtNxAfjBo2RlJoPGK9lzQ58jGg0/lyyvNXrry6AEWjgr
-   g=;
+  bh=a7q8EuAYMzxg+4doJVnZ179Qf38aU1OCTgmBjq9gR0M=;
+  b=Pa3e6elR7Dn2DyRKNOrXmZ95grXO60AAMgDEntmeNXJHwteOWKyZ5zgl
+   LwPinFa9TjWi36/P9rHnWAnvl3OK0I3BIzhm3b3zitE4gfqf6qsmRlMue
+   IsQ4LoB0PZchnoGlOf/BFOxvRLAY317CHDk7PCXGATsZbVT/v/DAVlgaH
+   A=;
 Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
   by alexa-out-sd-01.qualcomm.com with ESMTP; 16 Jun 2021 06:39:16 -0700
 X-QCInternal: smtphost
 Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Jun 2021 06:39:10 -0700
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Jun 2021 06:39:11 -0700
 Received: from th-lint-040.qualcomm.com (10.80.80.8) by
  nasanexm03e.na.qualcomm.com (10.85.0.48) with Microsoft SMTP Server (TLS) id
- 15.0.1497.18; Wed, 16 Jun 2021 06:39:09 -0700
+ 15.0.1497.18; Wed, 16 Jun 2021 06:39:10 -0700
 From:   Georgi Djakov <quic_c_gdjako@quicinc.com>
 To:     <will@kernel.org>, <robin.murphy@arm.com>
 CC:     <joro@8bytes.org>, <isaacm@codeaurora.org>,
@@ -37,9 +37,9 @@ CC:     <joro@8bytes.org>, <isaacm@codeaurora.org>,
         <iommu@lists.linux-foundation.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <djakov@kernel.org>
-Subject: [PATCH v7 11/15] iommu/io-pgtable-arm: Implement arm_lpae_map_pages()
-Date:   Wed, 16 Jun 2021 06:38:52 -0700
-Message-ID: <1623850736-389584-12-git-send-email-quic_c_gdjako@quicinc.com>
+Subject: [PATCH v7 12/15] iommu/io-pgtable-arm-v7s: Implement arm_v7s_unmap_pages()
+Date:   Wed, 16 Jun 2021 06:38:53 -0700
+Message-ID: <1623850736-389584-13-git-send-email-quic_c_gdjako@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1623850736-389584-1-git-send-email-quic_c_gdjako@quicinc.com>
 References: <1623850736-389584-1-git-send-email-quic_c_gdjako@quicinc.com>
@@ -54,115 +54,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Isaac J. Manjarres" <isaacm@codeaurora.org>
 
-Implement the map_pages() callback for the ARM LPAE io-pgtable
+Implement the unmap_pages() callback for the ARM v7s io-pgtable
 format.
 
 Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
 Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
 ---
- drivers/iommu/io-pgtable-arm.c | 41 +++++++++++++++++++++++++++++++----------
- 1 file changed, 31 insertions(+), 10 deletions(-)
+ drivers/iommu/io-pgtable-arm-v7s.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-index fe8fa0ee9c98..053df4048a29 100644
---- a/drivers/iommu/io-pgtable-arm.c
-+++ b/drivers/iommu/io-pgtable-arm.c
-@@ -341,20 +341,30 @@ static arm_lpae_iopte arm_lpae_install_table(arm_lpae_iopte *table,
+diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
+index d4004bcf333a..1af060686985 100644
+--- a/drivers/iommu/io-pgtable-arm-v7s.c
++++ b/drivers/iommu/io-pgtable-arm-v7s.c
+@@ -710,15 +710,32 @@ static size_t __arm_v7s_unmap(struct arm_v7s_io_pgtable *data,
+ 	return __arm_v7s_unmap(data, gather, iova, size, lvl + 1, ptep);
  }
  
- static int __arm_lpae_map(struct arm_lpae_io_pgtable *data, unsigned long iova,
--			  phys_addr_t paddr, size_t size, arm_lpae_iopte prot,
--			  int lvl, arm_lpae_iopte *ptep, gfp_t gfp)
-+			  phys_addr_t paddr, size_t size, size_t pgcount,
-+			  arm_lpae_iopte prot, int lvl, arm_lpae_iopte *ptep,
-+			  gfp_t gfp, size_t *mapped)
+-static size_t arm_v7s_unmap(struct io_pgtable_ops *ops, unsigned long iova,
+-			    size_t size, struct iommu_iotlb_gather *gather)
++static size_t arm_v7s_unmap_pages(struct io_pgtable_ops *ops, unsigned long iova,
++				  size_t pgsize, size_t pgcount,
++				  struct iommu_iotlb_gather *gather)
  {
- 	arm_lpae_iopte *cptep, pte;
- 	size_t block_size = ARM_LPAE_BLOCK_SIZE(lvl, data);
- 	size_t tblsz = ARM_LPAE_GRANULE(data);
- 	struct io_pgtable_cfg *cfg = &data->iop.cfg;
-+	int ret = 0, num_entries, max_entries, map_idx_start;
+ 	struct arm_v7s_io_pgtable *data = io_pgtable_ops_to_data(ops);
++	size_t unmapped = 0, ret;
  
- 	/* Find our entry at the current level */
--	ptep += ARM_LPAE_LVL_IDX(iova, lvl, data);
-+	map_idx_start = ARM_LPAE_LVL_IDX(iova, lvl, data);
-+	ptep += map_idx_start;
- 
- 	/* If we can install a leaf entry at this level, then do so */
--	if (size == block_size)
--		return arm_lpae_init_pte(data, iova, paddr, prot, lvl, 1, ptep);
-+	if (size == block_size) {
-+		max_entries = ARM_LPAE_PTES_PER_TABLE(data) - map_idx_start;
-+		num_entries = min_t(int, pgcount, max_entries);
-+		ret = arm_lpae_init_pte(data, iova, paddr, prot, lvl, num_entries, ptep);
-+		if (!ret && mapped)
-+			*mapped += num_entries * size;
-+
-+		return ret;
-+	}
- 
- 	/* We can't allocate tables at the final level */
- 	if (WARN_ON(lvl >= ARM_LPAE_MAX_LEVELS - 1))
-@@ -383,7 +393,8 @@ static int __arm_lpae_map(struct arm_lpae_io_pgtable *data, unsigned long iova,
- 	}
- 
- 	/* Rinse, repeat */
--	return __arm_lpae_map(data, iova, paddr, size, prot, lvl + 1, cptep, gfp);
-+	return __arm_lpae_map(data, iova, paddr, size, pgcount, prot, lvl + 1,
-+			      cptep, gfp, mapped);
- }
- 
- static arm_lpae_iopte arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
-@@ -450,8 +461,9 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
- 	return pte;
- }
- 
--static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
--			phys_addr_t paddr, size_t size, int iommu_prot, gfp_t gfp)
-+static int arm_lpae_map_pages(struct io_pgtable_ops *ops, unsigned long iova,
-+			      phys_addr_t paddr, size_t pgsize, size_t pgcount,
-+			      int iommu_prot, gfp_t gfp, size_t *mapped)
- {
- 	struct arm_lpae_io_pgtable *data = io_pgtable_ops_to_data(ops);
- 	struct io_pgtable_cfg *cfg = &data->iop.cfg;
-@@ -460,7 +472,7 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
- 	arm_lpae_iopte prot;
- 	long iaext = (s64)iova >> cfg->ias;
- 
--	if (WARN_ON(!size || (size & cfg->pgsize_bitmap) != size))
-+	if (WARN_ON(!pgsize || (pgsize & cfg->pgsize_bitmap) != pgsize))
- 		return -EINVAL;
- 
- 	if (cfg->quirks & IO_PGTABLE_QUIRK_ARM_TTBR1)
-@@ -473,7 +485,8 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
+ 	if (WARN_ON(iova >= (1ULL << data->iop.cfg.ias)))
  		return 0;
  
- 	prot = arm_lpae_prot_to_pte(data, iommu_prot);
--	ret = __arm_lpae_map(data, iova, paddr, size, prot, lvl, ptep, gfp);
-+	ret = __arm_lpae_map(data, iova, paddr, pgsize, pgcount, prot, lvl,
-+			     ptep, gfp, mapped);
- 	/*
- 	 * Synchronise all PTE updates for the new mapping before there's
- 	 * a chance for anything to kick off a table walk for the new iova.
-@@ -483,6 +496,13 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
- 	return ret;
- }
- 
-+static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
-+			phys_addr_t paddr, size_t size, int iommu_prot, gfp_t gfp)
-+{
-+	return arm_lpae_map_pages(ops, iova, paddr, size, 1, iommu_prot, gfp,
-+				  NULL);
+-	return __arm_v7s_unmap(data, gather, iova, size, 1, data->pgd);
++	while (pgcount--) {
++		ret = __arm_v7s_unmap(data, gather, iova, pgsize, 1, data->pgd);
++		if (!ret)
++			break;
++
++		unmapped += pgsize;
++		iova += pgsize;
++	}
++
++	return unmapped;
 +}
 +
- static void __arm_lpae_free_pgtable(struct arm_lpae_io_pgtable *data, int lvl,
- 				    arm_lpae_iopte *ptep)
- {
-@@ -787,6 +807,7 @@ arm_lpae_alloc_pgtable(struct io_pgtable_cfg *cfg)
++static size_t arm_v7s_unmap(struct io_pgtable_ops *ops, unsigned long iova,
++			    size_t size, struct iommu_iotlb_gather *gather)
++{
++	return arm_v7s_unmap_pages(ops, iova, size, 1, gather);
+ }
  
+ static phys_addr_t arm_v7s_iova_to_phys(struct io_pgtable_ops *ops,
+@@ -781,6 +798,7 @@ static struct io_pgtable *arm_v7s_alloc_pgtable(struct io_pgtable_cfg *cfg,
  	data->iop.ops = (struct io_pgtable_ops) {
- 		.map		= arm_lpae_map,
-+		.map_pages	= arm_lpae_map_pages,
- 		.unmap		= arm_lpae_unmap,
- 		.unmap_pages	= arm_lpae_unmap_pages,
- 		.iova_to_phys	= arm_lpae_iova_to_phys,
+ 		.map		= arm_v7s_map,
+ 		.unmap		= arm_v7s_unmap,
++		.unmap_pages	= arm_v7s_unmap_pages,
+ 		.iova_to_phys	= arm_v7s_iova_to_phys,
+ 	};
+ 
