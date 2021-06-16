@@ -2,315 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9AF3A8EA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6FB3A8EAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbhFPCDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 22:03:44 -0400
-Received: from mail-ed1-f47.google.com ([209.85.208.47]:35431 "EHLO
-        mail-ed1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbhFPCDn (ORCPT
+        id S231923AbhFPCFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 22:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230454AbhFPCF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 22:03:43 -0400
-Received: by mail-ed1-f47.google.com with SMTP id ba2so517130edb.2;
-        Tue, 15 Jun 2021 19:01:36 -0700 (PDT)
+        Tue, 15 Jun 2021 22:05:28 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D7CC061574;
+        Tue, 15 Jun 2021 19:03:22 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id s15so463863edt.13;
+        Tue, 15 Jun 2021 19:03:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LYfg7PKhdp+WATIC+pyQBj467Sv0P+9cBwDag3yHNuI=;
+        b=tbekHEFI5HN+OdpMATHZZTE3VtIYVTIiAESh7wplxtykS1HjT64yLhnoYwKQtnkNTq
+         ppSTrRmVON92+dTGCCNuXEmNJVxScjPp2po0vFrS4g+ol+WWUWIDGuUPRRCZR3g8/Qvp
+         0HP5d62iJp2mMsro4uBg4uzPT9hvTjNFagZ6lR512NjmR1l3o24B+1je5U/VB0i+Cpm6
+         sxn16IXNlwkeTUBOmIPOHjzpBNHZlhLaUup4OD4pd4JARgNXZQjBqgY6pZUdtT66yjlj
+         6KSG8InnWYyDo4x8all27rb8B9CSAm3HHzTYDvX1JMfpPVXIDcVgzlX101r7A3pS5SCn
+         sufA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=3hLHK5T+cSmgYtqFNHhD8O3b5QvMtN/O2XANsFUDnBg=;
-        b=HLfBJ/w+4cjE+PSFB6yJrorzYfTg3OdGE7KiUWjU6AtTPXTNRE9Ae0CYKSrfkMkUu5
-         fhpAHEz80SdBLyikd7tiRteS6sf0crc9/Qy2ciZphgSZxFWdp0lHV8qT/4WeoG9qstX+
-         HRQyCXv/B+uB/QQtGdLK4OoK4wuGNLsdbD9cW3XVl9P90S3EDA462gI7jWB65lzN0c8e
-         0Kqxo+6Lq44I5AEFY646Lyh819zRTJoL2XhNlY+69aaQqR0UdcZ5+UMv6DLn+7qlsN6o
-         B7RXE31VNR6zmMS0egApxQTybQgC9wHcu14+gRB+mFrYvp3lFWkOiEidg91XMQZDrz2R
-         anEg==
-X-Gm-Message-State: AOAM533Y02cWm9P60tI059H0zmJWJDGsuP5Nm3+T2NV8IFdq4kHf+zpb
-        Md9lGVW4KNzQl6qFIBeHjkXKalYlgSk=
-X-Google-Smtp-Source: ABdhPJzOmNvGNe5p+nSw9fh9WScgTrVq438vD4tB0PlEHyBoLHx94X3s8VSrhZL9KpBaHhqrZz+11Q==
-X-Received: by 2002:a05:6402:1801:: with SMTP id g1mr1202223edy.305.1623808896257;
-        Tue, 15 Jun 2021 19:01:36 -0700 (PDT)
-Received: from localhost (net-37-119-128-179.cust.vodafonedsl.it. [37.119.128.179])
-        by smtp.gmail.com with ESMTPSA id u12sm556020edv.43.2021.06.15.19.01.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 19:01:35 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 04:01:32 +0200
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     Bin Meng <bmeng.cn@gmail.com>
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        David Laight <David.Laight@aculab.com>,
-        Gary Guo <gary@garyguo.net>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>
-Subject: Re: [PATCH 1/3] riscv: optimized memcpy
-Message-ID: <20210616040132.7fbdf6fe@linux.microsoft.com>
-In-Reply-To: <CAEUhbmX_wsfU9FfRJoOPE0gjUX=Bp7OZWOZDyMNfO6=M-fX_0A@mail.gmail.com>
-References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
-        <20210615023812.50885-2-mcroce@linux.microsoft.com>
-        <6cff2a895db94e6fadd4ddffb8906a73@AcuMS.aculab.com>
-        <CAEUhbmV+Vi0Ssyzq1B2RTkbjMpE21xjdj2MSKdLydgW6WuCKtA@mail.gmail.com>
-        <1632006872b04c64be828fa0c4e4eae0@AcuMS.aculab.com>
-        <CAEUhbmU0cPkawmFfDd_sPQnc9V-cfYd32BCQo4Cis3uBKZDpXw@mail.gmail.com>
-        <CANBLGcxi2mEA5MnV-RL2zFpB2T+OytiHyOLKjOrMXgmAh=fHAw@mail.gmail.com>
-        <CAEUhbmX_wsfU9FfRJoOPE0gjUX=Bp7OZWOZDyMNfO6=M-fX_0A@mail.gmail.com>
-Organization: Microsoft
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LYfg7PKhdp+WATIC+pyQBj467Sv0P+9cBwDag3yHNuI=;
+        b=O6+jwXF5JFiST+1R6aYA1NrlBA2ZWpZ56yEVaODhY0mlfJW27dTRs4VpclRRZnxB0E
+         dBhbZzd6wWc3EJ+ibsi+dM+ugHsV7sWyBvH61an0ts+9ZtUpdgz8VZ9hawdHsS3fs7Rw
+         0L1PeLrkwyLNFDpPXeLG+7YowwulDAO28/8OeqihlhqLJYUTxWgOsldmIkaR0/p65xMB
+         uMnqkGpWDttIZOiSM2QC8dn+DkGXtwgKQ+aabiINQSvsOVnbJhVyju3gUxZRKDnke3p1
+         0pCG9KORzTCSBwqfyRY5WeS9uGgtQor8mS57ghnDO9sr1khxd1MhSeam/Bs5A9Q4QE5k
+         44eg==
+X-Gm-Message-State: AOAM532hp+qJHZNfMHiQpwL6Z6dAhjtcCR+jcO80aewfbLQmvDp/jliD
+        UcOAItFRgWe3k5ovCwGc2MMmGHxOZidR4xBa55o=
+X-Google-Smtp-Source: ABdhPJwI+A0qy541efU/8C0ZbvWgFRO9WnnGn6zEiyttVXGWX3WgJHtRSItODLChmyMQwdIbk1nspa7kozZF+uNVX40=
+X-Received: by 2002:aa7:ce86:: with SMTP id y6mr1196279edv.309.1623809001433;
+ Tue, 15 Jun 2021 19:03:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAD-N9QUUCSpZjg5RwdKBNF7xx127E6fUowTZkUhm66C891Fpkg@mail.gmail.com>
+ <20210614163401.52807197@gmail.com> <CAD-N9QV5_91A6n5QcrafmQRbqH_qzFRatno-6z0i7q-V9VnLzg@mail.gmail.com>
+ <20210614172512.799db10d@gmail.com> <CAD-N9QUhQT8pG8Une8Fac1pJaiVd_mi9AU2c_nkPjTi36xbutQ@mail.gmail.com>
+ <20210614174727.6a38b584@gmail.com> <CAD-N9QXUrv7zjSyUjsJsWO6KZDhGYtkTCK9U_ZuPA7awJ8P3Yw@mail.gmail.com>
+ <20210614233011.79ebe38a@gmail.com> <CAD-N9QWj7LpdJvDy7r2+WCeFKw2P7DFos=88186-h3GFZPKAvw@mail.gmail.com>
+ <20210615163458.0cc5c524@gmail.com>
+In-Reply-To: <20210615163458.0cc5c524@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Wed, 16 Jun 2021 10:02:55 +0800
+Message-ID: <CAD-N9QV7o_gQtH4tCCDGheFjtx_7xBh7hgtyfbZo71FebUuUrA@mail.gmail.com>
+Subject: Re: Suggestions on how to debug kernel crashes where printk and gdb
+ both does not work
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     alex.aring@gmail.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        stefan@datenfreihafen.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 08:33:21 +0800
-Bin Meng <bmeng.cn@gmail.com> wrote:
-
-> On Wed, Jun 16, 2021 at 12:12 AM Emil Renner Berthing
-> <kernel@esmil.dk> wrote:
-> >
-> > On Tue, 15 Jun 2021 at 15:29, Bin Meng <bmeng.cn@gmail.com> wrote:
-> > > ...
-> > > Yes, Gary Guo sent one patch long time ago against the broken
-> > > assembly version, but that patch was still not applied as of
-> > > today.
-> > > https://patchwork.kernel.org/project/linux-riscv/patch/20210216225555.4976-1-gary@garyguo.net/
+On Tue, Jun 15, 2021 at 9:35 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
+>
+> On Tue, 15 Jun 2021 18:37:14 +0800
+> Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>
+> > On Tue, Jun 15, 2021 at 4:30 AM Pavel Skripkin <paskripkin@gmail.com>
+> > wrote:
 > > >
-> > > I suggest Matteo re-test using Gary's version.
+> > > On Mon, 14 Jun 2021 23:04:03 +0800
+> > > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > >
+> > > > On Mon, Jun 14, 2021 at 10:47 PM Pavel Skripkin
+> > > > <paskripkin@gmail.com> wrote:
+> > > > >
+> > > > > On Mon, 14 Jun 2021 22:40:55 +0800
+> > > > > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > > > >
+> > > > > > On Mon, Jun 14, 2021 at 10:25 PM Pavel Skripkin
+> > > > > > <paskripkin@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Mon, 14 Jun 2021 22:19:10 +0800
+> > > > > > > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > > > > > >
+> > > > > > > > On Mon, Jun 14, 2021 at 9:34 PM Pavel Skripkin
+> > > > > > > > <paskripkin@gmail.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On Mon, 14 Jun 2021 21:22:43 +0800
+> > > > > > > > > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > > > > > > > >
+> > > > > > > > > > Dear kernel developers,
+> > > > > > > > > >
+> > > > > > > > > > I was trying to debug the crash - memory leak in
+> > > > > > > > > > hwsim_add_one [1] recently. However, I encountered a
+> > > > > > > > > > disgusting issue: my breakpoint and printk/pr_alert
+> > > > > > > > > > in the functions that will be surely executed do not
+> > > > > > > > > > work. The stack trace is in the following. I wrote
+> > > > > > > > > > this email to ask for some suggestions on how to
+> > > > > > > > > > debug such cases?
+> > > > > > > > > >
+> > > > > > > > > > Thanks very much. Looking forward to your reply.
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > Hi, Dongliang!
+> > > > > > > > >
+> > > > > > > > > This bug is not similar to others on the dashboard. I
+> > > > > > > > > spent some time debugging it a week ago. The main
+> > > > > > > > > problem here, that memory allocation happens in the
+> > > > > > > > > boot time:
+> > > > > > > > >
+> > > > > > > > > > [<ffffffff84359255>] kernel_init+0xc/0x1a7
+> > > > > > > > > > init/main.c:1447
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > Oh, nice catch. No wonder why my debugging does not work.
+> > > > > > > > :(
+> > > > > > > >
+> > > > > > > > > and reproducer simply tries to
+> > > > > > > > > free this data. You can use ftrace to look at it. Smth
+> > > > > > > > > like this:
+> > > > > > > > >
+> > > > > > > > > $ echo 'hwsim_*' > $TRACE_DIR/set_ftrace_filter
+> > > > > > > >
+> > > > > > > > Thanks for your suggestion.
+> > > > > > > >
+> > > > > > > > Do you have any conclusions about this case? If you have
+> > > > > > > > found out the root cause and start writing patches, I
+> > > > > > > > will turn my focus to other cases.
+> > > > > > >
+> > > > > > > No, I had some busy days and I have nothing about this bug
+> > > > > > > for now. I've just traced the reproducer execution and
+> > > > > > > that's all :)
+> > > > > > >
+> > > > > > > I guess, some error handling paths are broken, but Im not
+> > > > > > > sure
+> > > > > >
+> > > > > > In the beginning, I agreed with you. However, after I manually
+> > > > > > checked functions: hwsim_probe (initialization) and
+> > > > > > hwsim_remove (cleanup), then things may be different. The
+> > > > > > cleanup looks correct to me. I would like to debug but stuck
+> > > > > > with the debugging process.
+> > > > > >
+> > > > > > And there is another issue: the cleanup function also does not
+> > > > > > output anything or hit the breakpoint. I don't quite
+> > > > > > understand it since the cleanup is not at the boot time.
+> > > > > >
+> > > > > > Any idea?
+> > > > > >
+> > > > >
+> > > > > Output from ftrace (syzkaller repro):
+> > > > >
+> > > > > root@syzkaller:~# cat /sys/kernel/tracing/trace
+> > > > > # tracer: function_graph
+> > > > > #
+> > > > > # CPU  DURATION                  FUNCTION CALLS
+> > > > > # |     |   |                     |   |   |   |
+> > > > >  1)               |  hwsim_del_radio_nl() {
+> > > > >  1)               |    hwsim_del() {
+> > > > >  1)               |      hwsim_edge_unsubscribe_me() {
+> > > > >  1) ! 310.041 us  |        hwsim_free_edge();
+> > > > >  1) ! 665.221 us  |      }
+> > > > >  1) * 52999.05 us |    }
+> > > > >  1) * 53035.38 us |  }
+> > > > >
+> > > > > Cleanup function is not the case, I think :)
+> > > >
+> > > > It seems like I spot the incorrect cleanup function (hwsim_remove
+> > > > is the right one is in my mind). Let me learn how to use ftrace
+> > > > to log the executed functions and then discuss this case with you
+> > > > guys.
+> > > >
+> > >
+> > > Hmmm, I think, there is a mess with lists.
+> > >
+> > > I just want to share my debug results, I have no idea about the fix
+> > > for now.
+> > >
+> > > In hwsim_probe() edge for phy->idx = 1 is allocated, then reproduces
+> > > sends a request to delete phy with idx == 0, so this check in
+> > > hwsim_edge_unsubscribe_me():
+> > >
+> > >         if (e->endpoint->idx == phy->idx) {
+> > >                 ... clean up code ...
+> > >         }
+> > >
+> > > won't be passed and edge won't be freed (because it was allocated
+> > > for phy with idx == 1). Allocated edge for phy 1 becomes leaked
+> > > after hwsim_del(). I can't really see the code where phy with idx
+> > > == 1 can be deleted from list...
 > >
-> > That's a good idea, but if you read the replies to Gary's original
-> > patch
-> > https://lore.kernel.org/linux-riscv/20210216225555.4976-1-gary@garyguo.net/
-> > .. both Gary, Palmer and David would rather like a C-based version.
-> > This is one attempt at providing that.
-> 
-> Yep, I prefer C as well :)
-> 
-> But if you check commit 04091d6, the assembly version was introduced
-> for KASAN. So if we are to change it back to C, please make sure KASAN
-> is not broken.
-> 
-> Regards,
-> Bin
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> > Thanks for sharing your debugging result.
+> >
+> >               hwsim_phys
+> >                        |
+> >    ---------------------------------
+> >    |                                      |
+> > sub0 (edges)                 sub1 (edges)
+> >    ----> e (idx = 1)               ----> e (idx = 0)
+> >
+> > hwsim_del_radio_nl will call hwsim_del to delete phy (idx:1).
+> > However, in this function, it only deletes the e in the edge list of
+> > sub1. Then it deletes phy (i.e., sub0) from the hwsim_phys list. So it
+> > leaves the e in the edge list of sub0 non-free.
+> >
+> > I proposed a patch and test it successfully in the syzbot dashboard.
+> >
+>
+> Cool! I thougth about similar fix before going to bed, but I had really
+> busy morning today :)
+>
+> > diff --git a/drivers/net/ieee802154/mac802154_hwsim.c
+> > b/drivers/net/ieee802154/mac802154_hwsim.c
+> > index da9135231c07..b05159cff33a 100644
+> > --- a/drivers/net/ieee802154/mac802154_hwsim.c
+> > +++ b/drivers/net/ieee802154/mac802154_hwsim.c
+> > @@ -824,9 +824,16 @@ static int hwsim_add_one(struct genl_info *info,
+> > struct device *dev,
+> >  static void hwsim_del(struct hwsim_phy *phy)
+> >  {
+> >   struct hwsim_pib *pib;
+> > + struct hwsim_edge *e;
+> >
+> >   hwsim_edge_unsubscribe_me(phy);
+> >
+> > + // remove the edges in the list
+> > + list_for_each_entry_rcu(e, &phy->edges, list) {
+> > + list_del_rcu(&e->list);
+> > + hwsim_free_edge(e);
+> > + }
+> > +
+>
+> I think, rcu_read_lock() and rcu_read_unlock() are needed here (like in
+> hwsim_edge_unsubscribe_me()). Or you can delete this edges after deleting
+> phy node from global list, then, i guess, rcu locking won't be needed
+> here.
 
-I added a small benchmark for memcpy() and memset() in lib/test_string.c:
+Yes, you're right. rcu_read_lock is needed here. However, from the
+code below list_del(&phy->list), I think we'd better still add
+rcu_read_lock for those statements.
 
-memcpy_align_selftest():
+How do you think about the following patch? BTW, I've sent a patch
+with the prefix PATCH. Maybe we can discuss this patch there.
 
-#define PG_SIZE	(1 << (MAX_ORDER - 1 + PAGE_SHIFT))
+diff --git a/drivers/net/ieee802154/mac802154_hwsim.c
+b/drivers/net/ieee802154/mac802154_hwsim.c
+index da9135231c07..cf659361a3fb 100644
+--- a/drivers/net/ieee802154/mac802154_hwsim.c
++++ b/drivers/net/ieee802154/mac802154_hwsim.c
+@@ -824,12 +824,17 @@ static int hwsim_add_one(struct genl_info *info,
+struct device *dev,
+ static void hwsim_del(struct hwsim_phy *phy)
+ {
+        struct hwsim_pib *pib;
++       struct hwsim_edge *e;
 
-	page1 = alloc_pages(GFP_KERNEL, MAX_ORDER-1);
-	page2 = alloc_pages(GFP_KERNEL, MAX_ORDER-1);
+        hwsim_edge_unsubscribe_me(phy);
 
-	for (i = 0; i < sizeof(void*); i++) {
-		t0 = ktime_get();
-		memset(dst + i, 0, PG_SIZE - i);
-		t1 = ktime_get();
-		printk("Strings selftest: memset(dst+%d): %llu Mb/s\n", i,
-			PG_SIZE * (1000000000l / 1048576l) / (t1-t0));
-	}
+        list_del(&phy->list);
 
-memset_align_selftest():
-	page = alloc_pages(GFP_KERNEL, MAX_ORDER-1);
-	for (i = 0; i < sizeof(void*); i++) {
-		for (j = 0; j < sizeof(void*); j++) {
-			t0 = ktime_get();
-			memcpy(dst + j, src + i, PG_SIZE - max(i, j));
-			t1 = ktime_get();
-			printk("Strings selftest: memcpy(src+%d, dst+%d): %llu Mb/s\n",
-				i, j, PG_SIZE * (1000000000l / 1048576l) / (t1-t0));
-		}
-	}
+        rcu_read_lock();
++       list_for_each_entry_rcu(e, &phy->edges, list) {
++               list_del_rcu(&e->list);
++               hwsim_free_edge(e);
++       }
+        pib = rcu_dereference(phy->pib);
+        rcu_read_unlock();
 
-And I ran it agains the three implementations, current, Gary's assembler
-and mine in C.
-
-Current:
-[   38.980687] Strings selftest: memcpy(src+0, dst+0): 231 Mb/s
-[   39.021612] Strings selftest: memcpy(src+0, dst+1): 113 Mb/s
-[   39.062191] Strings selftest: memcpy(src+0, dst+2): 114 Mb/s
-[   39.102669] Strings selftest: memcpy(src+0, dst+3): 114 Mb/s
-[   39.127423] Strings selftest: memcpy(src+0, dst+4): 209 Mb/s
-[   39.167836] Strings selftest: memcpy(src+0, dst+5): 115 Mb/s
-[   39.208305] Strings selftest: memcpy(src+0, dst+6): 114 Mb/s
-[   39.248712] Strings selftest: memcpy(src+0, dst+7): 115 Mb/s
-[   39.288144] Strings selftest: memcpy(src+1, dst+0): 118 Mb/s
-[   39.309190] Strings selftest: memcpy(src+1, dst+1): 260 Mb/s
-[   39.349721] Strings selftest: memcpy(src+1, dst+2): 114 Mb/s
-[...]
-[   41.289423] Strings selftest: memcpy(src+7, dst+5): 114 Mb/s
-[   41.328801] Strings selftest: memcpy(src+7, dst+6): 118 Mb/s
-[   41.349907] Strings selftest: memcpy(src+7, dst+7): 259 Mb/s
-
-[   41.377735] Strings selftest: memset(dst+0): 241 Mb/s
-[   41.397882] Strings selftest: memset(dst+1): 265 Mb/s
-[   41.417666] Strings selftest: memset(dst+2): 272 Mb/s
-[   41.437169] Strings selftest: memset(dst+3): 277 Mb/s
-[   41.456656] Strings selftest: memset(dst+4): 277 Mb/s
-[   41.476125] Strings selftest: memset(dst+5): 278 Mb/s
-[   41.495555] Strings selftest: memset(dst+6): 278 Mb/s
-[   41.515002] Strings selftest: memset(dst+7): 278 Mb/s
-
-Gary's
-[   27.438112] Strings selftest: memcpy(src+0, dst+0): 232 Mb/s
-[   27.461586] Strings selftest: memcpy(src+0, dst+1): 224 Mb/s
-[   27.484691] Strings selftest: memcpy(src+0, dst+2): 229 Mb/s
-[   27.507693] Strings selftest: memcpy(src+0, dst+3): 230 Mb/s
-[   27.530758] Strings selftest: memcpy(src+0, dst+4): 229 Mb/s
-[   27.553840] Strings selftest: memcpy(src+0, dst+5): 229 Mb/s
-[   27.576793] Strings selftest: memcpy(src+0, dst+6): 231 Mb/s
-[   27.599862] Strings selftest: memcpy(src+0, dst+7): 230 Mb/s
-[   27.622888] Strings selftest: memcpy(src+1, dst+0): 230 Mb/s
-[   27.643964] Strings selftest: memcpy(src+1, dst+1): 259 Mb/s
-[   27.666926] Strings selftest: memcpy(src+1, dst+2): 231 Mb/s
-[...]
-[   28.831726] Strings selftest: memcpy(src+7, dst+5): 230 Mb/s
-[   28.854790] Strings selftest: memcpy(src+7, dst+6): 229 Mb/s
-[   28.875844] Strings selftest: memcpy(src+7, dst+7): 260 Mb/s
-
-[   28.903666] Strings selftest: memset(dst+0): 240 Mb/s
-[   28.923533] Strings selftest: memset(dst+1): 269 Mb/s
-[   28.943100] Strings selftest: memset(dst+2): 275 Mb/s
-[   28.962554] Strings selftest: memset(dst+3): 277 Mb/s
-[   28.982009] Strings selftest: memset(dst+4): 277 Mb/s
-[   29.001412] Strings selftest: memset(dst+5): 278 Mb/s
-[   29.020894] Strings selftest: memset(dst+6): 277 Mb/s
-[   29.040383] Strings selftest: memset(dst+7): 276 Mb/s
-
-Mine:
-[   33.916144] Strings selftest: memcpy(src+0, dst+0): 222 Mb/s
-[   33.939520] Strings selftest: memcpy(src+0, dst+1): 226 Mb/s
-[   33.962666] Strings selftest: memcpy(src+0, dst+2): 229 Mb/s
-[   33.985749] Strings selftest: memcpy(src+0, dst+3): 229 Mb/s
-[   34.008748] Strings selftest: memcpy(src+0, dst+4): 231 Mb/s
-[   34.031970] Strings selftest: memcpy(src+0, dst+5): 228 Mb/s
-[   34.055065] Strings selftest: memcpy(src+0, dst+6): 229 Mb/s
-[   34.078068] Strings selftest: memcpy(src+0, dst+7): 231 Mb/s
-[   34.101177] Strings selftest: memcpy(src+1, dst+0): 229 Mb/s
-[   34.122995] Strings selftest: memcpy(src+1, dst+1): 247 Mb/s
-[   34.146072] Strings selftest: memcpy(src+1, dst+2): 229 Mb/s
-[...]
-[   35.315594] Strings selftest: memcpy(src+7, dst+5): 229 Mb/s
-[   35.338617] Strings selftest: memcpy(src+7, dst+6): 230 Mb/s
-[   35.360464] Strings selftest: memcpy(src+7, dst+7): 247 Mb/s
-
-[   35.388929] Strings selftest: memset(dst+0): 232 Mb/s
-[   35.409351] Strings selftest: memset(dst+1): 260 Mb/s
-[   35.429434] Strings selftest: memset(dst+2): 266 Mb/s
-[   35.449460] Strings selftest: memset(dst+3): 267 Mb/s
-[   35.469479] Strings selftest: memset(dst+4): 267 Mb/s
-[   35.489481] Strings selftest: memset(dst+5): 268 Mb/s
-[   35.509443] Strings selftest: memset(dst+6): 269 Mb/s
-[   35.529449] Strings selftest: memset(dst+7): 268 Mb/s
-
-Leaving out the first memcpy/set of every test which is always slower, (maybe
-because of a cache miss?), the current implementation copies 260 Mb/s when
-the low order bits match, and 114 otherwise.
-Memset is stable at 278 Mb/s.
-
-Gary's implementation is much faster, copies still 260 Mb/s when euqlly placed,
-and 230 Mb/s otherwise. Memset is the same as the current one.
-
-Mine has the same speed of Gary's one when the low order bits mismatch, but
-it's slower when equally aligned, it stops at 247 Mb/s.
-Memset is slighty slower ad 269 Mb/s.
-
-
-I'm not familiar with RISC-V assembly, but looking at Gary's assembler and I
-think that he manually unrolled the loop by copying 16 uint64_t at time
-using 16 registers.
-I managed to do the same with a small change in the C code and a pragma directive:
-
-This for memcpy():
-
-	if (distance) {
-		unsigned long last, next;
-		int i;
-
-		s.u8 -= distance;
-
-		for (; count >= bytes_long * 8 + mask; count -= bytes_long * 8) {
-			next = s.ulong[0];
-			for (i = 0; i < 8; i++) {
-				last = next;
-				next = s.ulong[i + 1];
-
-				d.ulong[i] = last >> (distance * 8) |
-					next << ((bytes_long - distance) * 8);
-			}
-
-			d.ulong += 8;
-			s.ulong += 8;
-		}
-
-		s.u8 += distance;
-	} else {
-		/* 8 byte wide copy */
-		int i;
-		for (; count >= bytes_long * 8; count -= bytes_long * 8) {
-#pragma GCC unroll 8
-			for (i = 0; i < 8; i++)
-				d.ulong[i] = s.ulong[i];
-			d.ulong += 8;
-			s.ulong += 8;
-		}
-	}
-
-And this for memset:
-
-		for (; count >= bytes_long * 8; count -= bytes_long * 8) {
-#pragma GCC unroll 8
-			for (i = 0; i < 8; i++)
-				dest.ulong[i] = cu;
-
-			dest.ulong += 8;
-		}
-
-And the generated machine code is very, very similar to Gary's one!
-And these are the result:
-
-[   35.898366] Strings selftest: memcpy(src+0, dst+0): 231 Mb/s
-[   35.920942] Strings selftest: memcpy(src+0, dst+1): 236 Mb/s
-[   35.943171] Strings selftest: memcpy(src+0, dst+2): 241 Mb/s
-[   35.965291] Strings selftest: memcpy(src+0, dst+3): 242 Mb/s
-[   35.987374] Strings selftest: memcpy(src+0, dst+4): 244 Mb/s
-[   36.009554] Strings selftest: memcpy(src+0, dst+5): 242 Mb/s
-[   36.031721] Strings selftest: memcpy(src+0, dst+6): 242 Mb/s
-[   36.053881] Strings selftest: memcpy(src+0, dst+7): 242 Mb/s
-[   36.075949] Strings selftest: memcpy(src+1, dst+0): 243 Mb/s
-[   36.097084] Strings selftest: memcpy(src+1, dst+1): 258 Mb/s
-[   36.119269] Strings selftest: memcpy(src+1, dst+2): 242 Mb/s
-[...]
-[   37.242433] Strings selftest: memcpy(src+7, dst+5): 242 Mb/s
-[   37.264571] Strings selftest: memcpy(src+7, dst+6): 242 Mb/s
-[   37.285609] Strings selftest: memcpy(src+7, dst+7): 260 Mb/s
-
-[   37.313633] Strings selftest: memset(dst+0): 237 Mb/s
-[   37.333682] Strings selftest: memset(dst+1): 266 Mb/s
-[   37.353375] Strings selftest: memset(dst+2): 273 Mb/s
-[   37.373000] Strings selftest: memset(dst+3): 274 Mb/s
-[   37.392608] Strings selftest: memset(dst+4): 274 Mb/s
-[   37.412220] Strings selftest: memset(dst+5): 274 Mb/s
-[   37.431848] Strings selftest: memset(dst+6): 274 Mb/s
-[   37.451467] Strings selftest: memset(dst+7): 274 Mb/s
-
-This version is even faster than the assembly one, but it won't work for
-copies/set smaller that at least 64 bytes, or even 128. With small buffers
-it will copy bytes one at time, so I don't know if it's worth it.
-
-What is preferred in your opinion, an implementation which is always fast
-with all sizes, or one which is a bit faster but slow with small copies?
-
--- 
-per aspera ad upstream
+>
+> >   list_del(&phy->list);
+> >
+> >   rcu_read_lock();
+> >
+> >  I will send a patch later.
+> >
+> >
+> > >
+> > > Maybe, it's kmemleak bug. Similar strange case was with this one
+> > > https://syzkaller.appspot.com/bug?id=3a325b8389fc41c1bc94de0f4ac437ed13cce584.
+> > > I find it strange, that I could reach leaked pointers after
+> > > kmemleak reported a leak. Im not familiar with kmemleak internals
+> > > and I might be wrong
+> > >
+> > >
+> > > With regards,
+> > > Pavel Skripkin
+>
+>
+>
+>
+> With regards,
+> Pavel Skripkin
