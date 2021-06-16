@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663043A9D64
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DA43A9D67
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233984AbhFPOTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233898AbhFPOTQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:19:16 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE797C061574;
-        Wed, 16 Jun 2021 07:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=3eHDFeOd5JUwGJsCO8IHOvIdyejL0srMm9wcqB5wSRA=; b=G+lsBszZX7wMG+OHqecK1b3Ef
-        /t9Ca2aRzaiTNqrk+K48cYfgJJ1Z8h5HwCFLdsMAeueQZMW0jSh9u2kl+MKgpNmxk+qgsgQdw61re
-        jGud3zPlkE7tJ3VFLt6L7gHHhmCyhVEUv1/+gvySbaLuzqLXwh32sSZqgAirzH3nwOMXSS6EjdppB
-        /J1OOWUZi6aQ3E9DQGCSbN/8lSAZvN3FCBqKE3gWq1Bps6PZ1oLEd91oYz4qVvYVw5KVVjpZgbUBN
-        Gy3Ep68yVKWk4PkZomtI14bAY5QpV1Ash6xKgGxh+tROEhHreGLp8zliJRg0TWElf67zLk/8AVFEu
-        oqChk3zSQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45070)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1ltWLl-0007OY-0K; Wed, 16 Jun 2021 15:17:01 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1ltWLg-00066O-L0; Wed, 16 Jun 2021 15:16:56 +0100
-Date:   Wed, 16 Jun 2021 15:16:56 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 1/6] pata_cypress: add a module option to disable BM-DMA
-Message-ID: <20210616141656.GF22278@shell.armlinux.org.uk>
-References: <20210616134658.1471835-1-hch@lst.de>
- <20210616134658.1471835-2-hch@lst.de>
+        id S234002AbhFPOTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:19:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233854AbhFPOTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 10:19:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 600A461076;
+        Wed, 16 Jun 2021 14:17:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623853063;
+        bh=BZr1kLu0kTw4uOHStX/yZhqy79lxqVneeCZEus9LxIw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=mCA9gyu6gccO/Pr6AY+yPwkyFrJQW3bTVmEmonccEUgGqZsZJKzzKYg4O4E6QaDUB
+         dRkeYHR7FbA9SYvPVN3JAmH5m+g3Qs/z6a3K9vl7DeFUP2WPmM99FzPbyoQDlLvgJd
+         jjDaBuazyB9A88FnkgXBrsTlqaAVuLtnvx1sGKj4KgONs/6J4rXbsfcMC7byC8Njbt
+         +QDh5dFNU9Ij2mgEjYWixqhV3emmvFdrpVkf+swUF3u1hpLIXfv4UhC0pynjTQdSs2
+         JjyOldNhNZzQUxWR2toXlU/dEFLSsU5oBWqrTE1P4IJDa/xdm3D7o7u8cJ27Bof8iu
+         +8xVr+7O7pTag==
+Date:   Wed, 16 Jun 2021 09:17:42 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v2 22/29] docs: PCI: pci.rst: avoid using ReST :doc:`foo`
+ markup
+Message-ID: <20210616141742.GA2973725@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210616134658.1471835-2-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <8697cf945390f6b45fefb4c5fe22ed1c8070e32e.1623824363.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 03:46:53PM +0200, Christoph Hellwig wrote:
-> Multiple users report that they need to disable DMA on this driver,
-> so provide an option to do so without affecting all of libata.
+On Wed, Jun 16, 2021 at 08:27:37AM +0200, Mauro Carvalho Chehab wrote:
+> The :doc:`foo` tag is auto-generated via automarkup.py.
+> So, use the filename at the sources, instead of :doc:`foo`.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Thanks!
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+I do still think it would be nice to have a hint in the commit log
+about *why* we're doing this.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> ---
+>  Documentation/PCI/pci.rst | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/PCI/pci.rst b/Documentation/PCI/pci.rst
+> index 814b40f8360b..fa651e25d98c 100644
+> --- a/Documentation/PCI/pci.rst
+> +++ b/Documentation/PCI/pci.rst
+> @@ -265,7 +265,7 @@ Set the DMA mask size
+>  ---------------------
+>  .. note::
+>     If anything below doesn't make sense, please refer to
+> -   :doc:`/core-api/dma-api`. This section is just a reminder that
+> +   Documentation/core-api/dma-api.rst. This section is just a reminder that
+>     drivers need to indicate DMA capabilities of the device and is not
+>     an authoritative source for DMA interfaces.
+>  
+> @@ -291,7 +291,7 @@ Many 64-bit "PCI" devices (before PCI-X) and some PCI-X devices are
+>  Setup shared control data
+>  -------------------------
+>  Once the DMA masks are set, the driver can allocate "consistent" (a.k.a. shared)
+> -memory.  See :doc:`/core-api/dma-api` for a full description of
+> +memory.  See Documentation/core-api/dma-api.rst for a full description of
+>  the DMA APIs. This section is just a reminder that it needs to be done
+>  before enabling DMA on the device.
+>  
+> @@ -421,7 +421,7 @@ owners if there is one.
+>  
+>  Then clean up "consistent" buffers which contain the control data.
+>  
+> -See :doc:`/core-api/dma-api` for details on unmapping interfaces.
+> +See Documentation/core-api/dma-api.rst for details on unmapping interfaces.
+>  
+>  
+>  Unregister from other subsystems
+> -- 
+> 2.31.1
+> 
