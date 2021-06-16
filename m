@@ -2,173 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13A63A8E62
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B973A8E64
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231821AbhFPBdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 21:33:11 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:6385 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbhFPBdJ (ORCPT
+        id S231871AbhFPBdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 21:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231835AbhFPBdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 21:33:09 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G4SGH28MGz6y5V;
-        Wed, 16 Jun 2021 09:27:03 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 09:31:02 +0800
-Received: from [10.67.77.175] (10.67.77.175) by dggpeml500023.china.huawei.com
- (7.185.36.114) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 16 Jun
- 2021 09:31:01 +0800
-Subject: Re: [PATCH] irqchip/irq-gic-v3-its: Add the checking of ITS version
- for KVM
-To:     Marc Zyngier <maz@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, Wudi Wang <wangwudi@hisilicon.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>
-References: <1623390746-54627-1-git-send-email-zhangshaokun@hisilicon.com>
- <87fsxorfrv.wl-maz@kernel.org>
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-Message-ID: <5820b7a1-d8fb-b81b-e77f-b251aa84079c@hisilicon.com>
-Date:   Wed, 16 Jun 2021 09:31:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 15 Jun 2021 21:33:19 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DD6C061574;
+        Tue, 15 Jun 2021 18:31:14 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id l15-20020a05683016cfb02903fca0eacd15so863615otr.7;
+        Tue, 15 Jun 2021 18:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bdWCIiSOW/s0MZlmPAOty1fkqegkRbIQeTFWMhV1jV4=;
+        b=PZH0nDGpZJzVuFQETD0ktLDMM7cO+9RIo1IkhsU6liVnazq//noXj+7wIXWpvuob8M
+         3cu9CPX7HJR1oXlx9dwWEv6je73JxtNrn4PNgy6/Es0/gtkqGaKtrekE5zrkWYTfs1pj
+         R3VyWmhhS3soTjTC00pMMCF7k10EiPRNZ4uFOm3zhwjAOIKXO500/miU878CrU0PtWyR
+         K/iVQlNOmRoDUGcOF2J5O6gHG8eq7kYzXiM0Tf/9wPpwRD0mzbgAEhkSQEMAq1oavEMG
+         JCT5yvmRr3Nffn+Dt4MohniPJy/JatiSyh8nAnSM4TfjtAaJIhOdV8fEAe1m3uOvGYFG
+         aoAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bdWCIiSOW/s0MZlmPAOty1fkqegkRbIQeTFWMhV1jV4=;
+        b=oWr8NaJ9N/ckHoxY2w2HV/MpPYQgpagkPexG05/vRKyCP4UmThb9aarJm1dbI1b1dT
+         50bEDM2VQBRPcWK8iepWQBJrFK/88t1G7MMyhKUNBU4DESzjUZZe0FdxrjzOOIQHJyTk
+         lg8WZEPV9wuBLPlnFy9ybPMAMfqG5nej7CrNaE7NswokSSS96G3kMsqMyV3q3Qavyogb
+         CWf2hOybFoEeAWhg7dvda6k/Tk35Eywt6gtrtml7FwQmqbmz5HRTcKiz0bgTcj/oh/am
+         ++Wwv6EoRVSvwg5UkUOeoKgK/yp250FjRqZQ6JNK5QhZ7MIzpD4IBghP2kd/AczBoEPQ
+         QIUA==
+X-Gm-Message-State: AOAM530lAFuCRW/CvI6p7FgpptVfpF8WYaHwASO5kj6ktVTnArYz5ctS
+        IASAjD0tMUi+f3AXU0J8tbHAlhlo4FtY/DBtNkZsY9RbU3BL
+X-Google-Smtp-Source: ABdhPJwCACqspiGaKFTVOcgXMedQdoCM7CDVIcF94bpPJbrd+ygkHOAp7566P+LmNAN34S9xXHrONQiL07dQinx03bY=
+X-Received: by 2002:a9d:200a:: with SMTP id n10mr1639132ota.287.1623807073699;
+ Tue, 15 Jun 2021 18:31:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87fsxorfrv.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.77.175]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500023.china.huawei.com (7.185.36.114)
-X-CFilter-Loop: Reflected
+References: <20210615175526.19829-1-george.mccollister@gmail.com> <20210615232242.3j4z5irr7abfhtwz@skbuf>
+In-Reply-To: <20210615232242.3j4z5irr7abfhtwz@skbuf>
+From:   George McCollister <george.mccollister@gmail.com>
+Date:   Tue, 15 Jun 2021 20:31:01 -0500
+Message-ID: <CAFSKS=OEM7bn2G6qXYQ16=9NUUpa-DhN=Nabc8P_E+7spUqKkQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: dsa: xrs700x: forward HSR supervision frames
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On Tue, Jun 15, 2021 at 6:22 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+>
+> On Tue, Jun 15, 2021 at 12:55:26PM -0500, George McCollister wrote:
+> > Forward supervision frames between redunant HSR ports. This was broken
+> > in the last commit.
+> >
+> > Fixes: 1a42624aecba ("net: dsa: xrs700x: allow HSR/PRP supervision dupes
+> > for node_table")
+>
+> It would be good if you could resend with the Fixes: line not wrapped
+> around. There are several scripts around which won't parse that.
 
-Apologies for reply so slow because of a short holiday in China.
+WIll do. I was wondering which way was correct and figured scripts
+should be smart enough to parse it especially since all it should
+really need is Fixes: $HASH. Oh well.
 
-On 2021/6/11 16:01, Marc Zyngier wrote:
-> On Fri, 11 Jun 2021 06:52:26 +0100,
-> Shaokun Zhang <zhangshaokun@hisilicon.com> wrote:
->>
->> From: Wudi Wang <wangwudi@hisilicon.com>
->>
->> The version of GIC used by KVM is provided by gic_v3_kvm_info.
->> The KVM that supports GICv4 or GICv4.1 only checks GIC
->> version. Actually, the GIC and ITS need to work together.
->> So we add the checking of ITS version for KVM: If and only if
->> both GIC & ITS support GICv4, gic_kvm_info.has_v4 is true.
->> If and only if both GIC & ITS support GICv4.1,
->> gic_kvm_info.has_v4_1 is true.
->>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Signed-off-by: Wudi Wang <wangwudi@hisilicon.com>
->> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
->> ---
->>  drivers/irqchip/irq-gic-common.h |  2 ++
->>  drivers/irqchip/irq-gic-v3-its.c |  3 +++
->>  drivers/irqchip/irq-gic-v3.c     | 10 +++++-----
->>  3 files changed, 10 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/irqchip/irq-gic-common.h b/drivers/irqchip/irq-gic-common.h
->> index ccba8b0fe0f5..e5d44998445a 100644
->> --- a/drivers/irqchip/irq-gic-common.h
->> +++ b/drivers/irqchip/irq-gic-common.h
->> @@ -10,6 +10,8 @@
->>  #include <linux/irqdomain.h>
->>  #include <linux/irqchip/arm-gic-common.h>
->>  
->> +extern struct gic_kvm_info gic_v3_kvm_info;
->> +
->>  struct gic_quirk {
->>  	const char *desc;
->>  	const char *compatible;
->> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
->> index 2e6923c2c8a8..45d6163c14d5 100644
->> --- a/drivers/irqchip/irq-gic-v3-its.c
->> +++ b/drivers/irqchip/irq-gic-v3-its.c
->> @@ -5419,6 +5419,9 @@ int __init its_init(struct fwnode_handle *handle, struct rdists *rdists,
->>  		has_v4_1 |= is_v4_1(its);
->>  	}
->>  
->> +	gic_v3_kvm_info.has_v4 = has_v4;
->> +	gic_v3_kvm_info.has_v4_1 = has_v4_1;
-> 
-> If you are going down that road: what if you have multiple ITSs,
-> implementing a variety of v3, v4, v4.1? We currently support this to
-> some extent, but this is breaking it.
+>
+> > Signed-off-by: George McCollister <george.mccollister@gmail.com>
+> > ---
+>
+> Otherwise the change looks reasonably clean, and it agrees with what IEC
+> 62439-3:2018 does seem to imply in "5.3.4 DANH forwarding rules" that
+> HSR_Supervision frames should be forwarded and without discarding
+> duplicates. For PRP, of course the DANP does not forward packets between
+> the redundant ports, so it does not forward PRP_Supervision packets
+> either.
 
-If we have multiple ITSs and GIC supports v4, there are two cases:
-1. None of the ITS supports GICv4(GICv4.1), gic_v3_kvm_info.has_v4(has_v4_1) is false,
-so the KVM will use GICv3;
-2. At least one ITS supports GICv4(GICv4.1), gic_v3_kvm_info.has_v4(has_v4_1) is true,
-so the KVM will use GICv4(GICv4.1);
-Variable has_v4(has_v4_1) can do this.
+Yeah the tricky part with HSR supervision frames is you must forward
+if the other port has received the duplicate frame but not if the
+frame has been sent out the port you're about to send from already. At
+first I set the mirror bit in addition to the allow bit and activity
+was on completely solid as supervision frames looped around.
 
-> 
-> What case are you exactly trying to fix?
-> 
+>
+> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-The first case that the KVM can use GICv4, it seem non-sensible. If we do check the
-ITS version, it will give correct version for KVM.
-
->> +
->>  	/* Don't bother with inconsistent systems */
->>  	if (WARN_ON(!has_v4_1 && rdists->has_rvpeid))
->>  		rdists->has_rvpeid = false;
->> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
->> index 37a23aa6de37..7454f99bf580 100644
->> --- a/drivers/irqchip/irq-gic-v3.c
->> +++ b/drivers/irqchip/irq-gic-v3.c
->> @@ -103,7 +103,7 @@ EXPORT_SYMBOL(gic_nonsecure_priorities);
->>  /* ppi_nmi_refs[n] == number of cpus having ppi[n + 16] set as NMI */
->>  static refcount_t *ppi_nmi_refs;
->>  
->> -static struct gic_kvm_info gic_v3_kvm_info;
->> +struct gic_kvm_info gic_v3_kvm_info;
-> 
-> This will conflict with the rework that is in -next, and maybe cause
-> some lifetime issue (see how the structure is now tagged __initdata).
-> 
-
-OOPS, I didn't check the -next branch, if you are happy about this patch and
-I will rebase the newest -next and repost.
-
-Thanks,
-Shaokun
-
->>  static DEFINE_PER_CPU(bool, has_rss);
->>  
->>  #define MPIDR_RS(mpidr)			(((mpidr) & 0xF0UL) >> 4)
->> @@ -1850,8 +1850,8 @@ static void __init gic_of_setup_kvm_info(struct device_node *node)
->>  	if (!ret)
->>  		gic_v3_kvm_info.vcpu = r;
->>  
->> -	gic_v3_kvm_info.has_v4 = gic_data.rdists.has_vlpis;
->> -	gic_v3_kvm_info.has_v4_1 = gic_data.rdists.has_rvpeid;
->> +	gic_v3_kvm_info.has_v4 &= gic_data.rdists.has_vlpis;
->> +	gic_v3_kvm_info.has_v4_1 &= gic_data.rdists.has_rvpeid;
->>  	gic_set_kvm_info(&gic_v3_kvm_info);
->>  }
->>  
->> @@ -2166,8 +2166,8 @@ static void __init gic_acpi_setup_kvm_info(void)
->>  		vcpu->end = vcpu->start + ACPI_GICV2_VCPU_MEM_SIZE - 1;
->>  	}
->>  
->> -	gic_v3_kvm_info.has_v4 = gic_data.rdists.has_vlpis;
->> -	gic_v3_kvm_info.has_v4_1 = gic_data.rdists.has_rvpeid;
->> +	gic_v3_kvm_info.has_v4 &= gic_data.rdists.has_vlpis;
->> +	gic_v3_kvm_info.has_v4_1 &= gic_data.rdists.has_rvpeid;
->>  	gic_set_kvm_info(&gic_v3_kvm_info);
->>  }
-> 
-> Thanks,
-> 
-> 	M.
-> 
+Thanks
