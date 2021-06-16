@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC093A8F41
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EE43A8F43
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhFPDRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 23:17:34 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7444 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFPDRd (ORCPT
+        id S230236AbhFPDSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 23:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhFPDSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 23:17:33 -0400
-Received: from dggeme751-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G4Vby745szZhkv;
-        Wed, 16 Jun 2021 11:12:30 +0800 (CST)
-Received: from [10.174.177.253] (10.174.177.253) by
- dggeme751-chm.china.huawei.com (10.3.19.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 16 Jun 2021 11:15:25 +0800
-Subject: Re: [PATCH] afs: fix no return statement in function returning
- non-void
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     David Howells <dhowells@redhat.com>,
-        Hulk Robot <hulkci@huawei.com>, Tom Rix <trix@redhat.com>,
-        <linux-afs@lists.infradead.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
- <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com>
- <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org>
- <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
- <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org>
-From:   Zheng Zengkai <zhengzengkai@huawei.com>
-Message-ID: <051421e0-afe8-c6ca-95cd-4dc8cd20a43e@huawei.com>
-Date:   Wed, 16 Jun 2021 11:15:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 15 Jun 2021 23:18:18 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC51CC061574;
+        Tue, 15 Jun 2021 20:16:11 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id i4so933467ybe.2;
+        Tue, 15 Jun 2021 20:16:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M9xlk2ZBsShaAsqV3orNyPJJYg7Vzz29UtFHXqBDhAU=;
+        b=opAbog307i2ZykhXFdHafYS+f6jxVLUCd+pHtDaC4XBZS3dHF4cK8XN7eCsK02Ouel
+         4H58j/iKjyoXplkV4RqPpedtDy8f+wKm9BNi+KV6vpKY3NUeSGL2vjoqT/aedzXEk2ib
+         Q23yU85p/blkIX1JwpFIuitJIsZA+G0IqLuITuOTy5YPAzc+cEPfuDa1eXXylM/gPEhm
+         R9wOCDuEXt+wQVMnf55ueYKrfu4cGJqF7K9EUdil9mJvw04DIVKFTjwUl99pdxcYxaHy
+         Wi+g8uDDEFu8zw9mlEeSV3UWo9jopBqVFmSUGrN1YZFXk9+pC+kiy6sVKp5wjcrMBkxi
+         Xjcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M9xlk2ZBsShaAsqV3orNyPJJYg7Vzz29UtFHXqBDhAU=;
+        b=UfyEiBcVkIHsvyuLR+zc9VW8roVyeAzRfzc3PXkFCBhyT2oVIH1ncMJhG/VZQrDbI7
+         X3KDYi3wG5rOk75eIJwttX+vu7kQChR85vc3qkKJkqU8NpIsN5Xa3Dnus250pDcFF7kH
+         ykx96kQlj+fk9q49AS6fEmRdanWFH4eNyuY+QX5ENQU1ubkq6bpQ+OJTe86LBp4QlC6c
+         mIRhSP5NXPnsZL8A/uEsn5usmsrVGy8hYPrGLs0aqpGr+p3wo7VneEAiiZ2Wl2A0bzAm
+         M8mdSIGg9vJiaBebIMVx06D5Vgv7RmcDjfnyGswWl2zBb0Yyi2ymZtSyWyZwFBMudoPj
+         dwOg==
+X-Gm-Message-State: AOAM533nbOtOmYf4yEw3/YcLHqUm/dGPVf5Oy1pRCg2q0e5OWMgHTM8j
+        v8DlqvZQACuYtCHHV8x/wdCjFYCRapGjzCZbK20=
+X-Google-Smtp-Source: ABdhPJz8un0SBnoHgopqh1bk66DKwxdavj3eROY61VihfQjpDSbrsP0wUC4Y7WeIRKmBuXe6ud85NftBDyOGg1F5/ns=
+X-Received: by 2002:a25:2e43:: with SMTP id b3mr3233353ybn.152.1623813371213;
+ Tue, 15 Jun 2021 20:16:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.253]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme751-chm.china.huawei.com (10.3.19.97)
-X-CFilter-Loop: Reflected
+References: <1592308864-30205-1-git-send-email-yash.shah@sifive.com> <1592308864-30205-3-git-send-email-yash.shah@sifive.com>
+In-Reply-To: <1592308864-30205-3-git-send-email-yash.shah@sifive.com>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Wed, 16 Jun 2021 11:16:00 +0800
+Message-ID: <CAEUhbmXKdukBwd0OL2ApOD67aQ9ytSPns3z=COtXTSP_mm3wvQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] riscv: dts: fu540-c000: define hart clocks
+To:     Yash Shah <yash.shah@sifive.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>, sachin.ghadi@sifive.com,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Green Wan <green.wan@sifive.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        lollivier@baylibre.com, deepa.kernel@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops, Sorry for the late reply and missing the compilation details.
-
-> On 6/15/21 5:32 PM, Linus Torvalds wrote:
->> On Tue, Jun 15, 2021 at 4:58 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>> Some implementations of BUG() are macros, not functions,
->> Not "some", I think. Most.
->>
->>> so "unreachable" is not applicable AFAIK.
->> Sure it is. One common pattern is the x86 one:
->>
->>    #define BUG()                                                   \
->>    do {                                                            \
->>            instrumentation_begin();                                \
->>            _BUG_FLAGS(ASM_UD2, 0);                                 \
->>            unreachable();                                          \
->>    } while (0)
-> duh.
+On Tue, Jun 16, 2020 at 8:01 PM Yash Shah <yash.shah@sifive.com> wrote:
 >
->> and that "unreachable()" is exactly what I'm talking about.
->>
->> So I repeat: what completely broken compiler / config / architecture
->> is it that needs that "return 0" after a BUG() statement?
-> I have seen it on ia64 -- most likely GCC 9.3.0, but I'll have to
-> double check that.
-
-Actually we build the kernel with the following compiler, config and 
-architecture :
-
-powerpc64-linux-gnu-gcc --version
-powerpc64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
-Copyright (C) 2019 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions. There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-CONFIG_AFS_FS=y
-# CONFIG_AFS_DEBUG is not set
-CONFIG_AFS_DEBUG_CURSOR=y
-
-make ARCH=powerpc CROSS_COMPILE=powerpc64-linux-gnu- -j64
-
-...
-
-fs/afs/dir.c: In function ‘afs_dir_set_page_dirty’:
-fs/afs/dir.c:51:1: error: no return statement in function returning 
-non-void [-Werror=return-type]
-    51 | }
-       | ^
-cc1: some warnings being treated as errors
-
->> Because that environment is broken, and the warning is bogus and wrong.
->>
->> It might not be the compiler. It might be some architecture that does
->> this wrong. It might be some very particular configuration that does
->> something bad and makes the "unreachable()" not work (or not exist).
->>
->> But *that* is the bug that should be fixed. Not adding a pointless and
->> incorrect line that makes no sense, just to hide the real bug.
-> .
+> Declare that each hart defined in the FU540 DT data is clocked by the
+> COREPLL. This is in preparation for enabling CPUFreq for the
+> FU540-C000 SoC on the HiFive Unleashed board.
 >
+> Signed-off-by: Yash Shah <yash.shah@sifive.com>
+> ---
+>  arch/riscv/boot/dts/sifive/fu540-c000.dtsi | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+
+Any idea of why this patch was not applied?
+
+Regards,
+Bin
