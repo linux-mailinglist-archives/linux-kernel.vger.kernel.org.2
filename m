@@ -2,92 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEAE3AA3F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38BB3AA3E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbhFPTLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60072 "EHLO
+        id S232191AbhFPTK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:10:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbhFPTLf (ORCPT
+        with ESMTP id S232124AbhFPTK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:11:35 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B98EC061574;
-        Wed, 16 Jun 2021 12:09:29 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id n17so5360951ljg.2;
-        Wed, 16 Jun 2021 12:09:29 -0700 (PDT)
+        Wed, 16 Jun 2021 15:10:28 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306CFC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:08:22 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id p7so6018993lfg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:08:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=qP0j6DhiUJIr/VXjNb28HuyGZ1YtPyQsbTbi/lJTwQs=;
-        b=l/qBch27c62h4HHWiBlWC7/jJQU1idyXByXYYcrkPzcb8PyGzB5g6C7Zu6O3epPIVz
-         SqvEe61LscB3tREgPgn9JttwDeY7Q30CDvFkugD/79ZU+w07FloRl/WC9gWC7F5P13ES
-         SIouCMKh3UW9q8KBxoU1PL+e/pGVn0DwpXbXHw1a/soUawYae0eirijF7VKGT6xHKUkZ
-         g5f34ehZIGHbcAheYWWBtxEKY9yl+sP0cOlg8RVLjtwrScgnI4ddBAVN9G2dRpRgPh6i
-         C+KAnO4oTpLo5YziVTvirhVEplNQhWAV/4eF59iQflHtydE0Jg8nyE2zISU0IWFA0eW3
-         QPUA==
+        bh=CavZCGRLoXvrDbj2owetgbHtF92bmqVvemLNa5eyb70=;
+        b=B2UF53JPjL6gYUiFPakB2njYwlv8sdi901/X4Nj9Luo8S/kjkbfXEaruWGQM8CMtNO
+         gSijOmTrBc4z1qX/cIhERH69HvYX10JSJ/rGyY27h7VRT5kt1X+yN/psuVZnmid1EAd9
+         fesv+QiEtEvWxzFW7PzKYragp6//a9dBo9Ldj4W0W84AqPHi01Y00NKo6y84M5eH+tYo
+         mAvm70UKBqwFunhPnwKndaXjTZAJ3BDHVwfR3UXMlPpqk+lRdXPFaUv8hc+4ZXaLZvUH
+         3cuErd7FAph/xyecADxUCOQIrzIaTn6/lJvtKj/0FTXs9ZSzcwM41MoXnwftX3CBW3sZ
+         dk8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=qP0j6DhiUJIr/VXjNb28HuyGZ1YtPyQsbTbi/lJTwQs=;
-        b=FYf5thrCoemN/xDiVM9a6xI4JRTD3JMaRnTuu3VI9tPiG//tWQE1jBILl8M2nwBFWg
-         a07exKLSRSssMd4RjlAW404cO0iP3dmB/qxWryi0E6tlMspgAvOeiMkAYIdff6pmANNX
-         whWsSoiVAJe24jRSpcU5EkcBIabdSqmwhBiY7htgxM/lTJLn/rVRwR+aUKxhw9YW0ZdI
-         /kuNfI7/HhTQ5dDVOjnHFaap37m/298hGy6y4PuHZdUZzyuttiHa7PDzFtw4XjpHEweU
-         67LGAGAEz6MM6nLv2SYPJO3BzosgZCEBilMLpN2hOcHWRZv2jHRJuIetB7zj+EywEBS9
-         nCcQ==
-X-Gm-Message-State: AOAM5338wyE1yLbjunDUpvpAw6WxPsr57oLxkyd3+8rc/E60scll2aiQ
-        VT3Gd492CmzbF6yMnusJqrk=
-X-Google-Smtp-Source: ABdhPJwEM8TpfK6uV5py9JzlJH8sHbzPoVRWVf6/qmmbJ5mKZ88TEgg2UYn9UHtzFZN53SwQU/RQUQ==
-X-Received: by 2002:a2e:a7c4:: with SMTP id x4mr1196810ljp.420.1623870567633;
-        Wed, 16 Jun 2021 12:09:27 -0700 (PDT)
-Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.gmail.com with ESMTPSA id 9sm333126lfy.41.2021.06.16.12.09.27
+        bh=CavZCGRLoXvrDbj2owetgbHtF92bmqVvemLNa5eyb70=;
+        b=ufw8fvo28LU/DtyZN/dcex4K6dz27Ppayrk9yZ7YL2CvJ1PyPy53oA8PDm+VKZExhk
+         ZyOxpS9x7S0iU6YOn+PC5swCTjLmgE41sdPcuQzQt6XZUNsG3KiFM+w9PEtVYMAZgQ2Z
+         GfRELyWiAH8G/KcPaOmV2nMX4Nqg7fSv6SDTdsjGfATDOZ+F30z+CCAo2WqpReb5cxDt
+         w4jXydS5uk2G/NGQxnBkNC4fqMUwkwwcqkJpuAV7sP40Ln5fAwMKQLJ7exG040TN+Rjf
+         dEb8juvZqeiZLpAKVyv5vPS6bBbunNJX/asHqW8+aE6sS74/4jyl7u8VyGE37bb6EltK
+         BmZg==
+X-Gm-Message-State: AOAM532f7nd5+VcHdZ766yQ1qibamrcO1rR24dzJ4GWDmK4mthwjSfeZ
+        Qjy8ABqgeF8RKux1cZOWTkuywn6Y5NmXZA==
+X-Google-Smtp-Source: ABdhPJxrVjb8+sjTgPNhwvOt8Stre8JI3F6qI6qNlZGwxB3c0vu4rfBLd2SguNV568qUDPWWeJ3Dhw==
+X-Received: by 2002:ac2:4e69:: with SMTP id y9mr860737lfs.593.1623870500095;
+        Wed, 16 Jun 2021 12:08:20 -0700 (PDT)
+Received: from gilgamesh.lab.semihalf.net ([83.142.187.85])
+        by smtp.gmail.com with ESMTPSA id h22sm406939ljl.126.2021.06.16.12.08.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 12:09:27 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-Subject: [PATCH v1] hwmon: (lm90) Use edge-triggered interrupt
-Date:   Wed, 16 Jun 2021 22:07:08 +0300
-Message-Id: <20210616190708.1220-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 16 Jun 2021 12:08:19 -0700 (PDT)
+From:   Marcin Wojtas <mw@semihalf.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
+        jaz@semihalf.com, gjb@semihalf.com, upstream@semihalf.com,
+        Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com, tn@semihalf.com,
+        rjw@rjwysocki.net, lenb@kernel.org, Marcin Wojtas <mw@semihalf.com>
+Subject: [net-next: PATCH v2 0/7] ACPI MDIO support for Marvell controllers
+Date:   Wed, 16 Jun 2021 21:07:52 +0200
+Message-Id: <20210616190759.2832033-1-mw@semihalf.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LM90 driver uses level-based interrupt triggering. The interrupt
-handler prints a warning message about the breached temperature and
-quits. There is no way to stop interrupt from re-triggering since it's
-level-based, thus thousands of warning messages are printed per second
-once interrupt is triggered. Use edge-triggered interrupt in order to
-fix this trouble.
+Hi,
 
-Fixes: 109b1283fb532 ("hwmon: (lm90) Add support to handle IRQ")
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/hwmon/lm90.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The second version of the patchset addresses all comments received
+during v1 review and introduces a couple of new patches that
+were requested.
 
-diff --git a/drivers/hwmon/lm90.c b/drivers/hwmon/lm90.c
-index ebbfd5f352c0..ce8ebe60fcdc 100644
---- a/drivers/hwmon/lm90.c
-+++ b/drivers/hwmon/lm90.c
-@@ -1908,7 +1908,7 @@ static int lm90_probe(struct i2c_client *client)
- 		dev_dbg(dev, "IRQ: %d\n", client->irq);
- 		err = devm_request_threaded_irq(dev, client->irq,
- 						NULL, lm90_irq_thread,
--						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
-+						IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
- 						"lm90", client);
- 		if (err < 0) {
- 			dev_err(dev, "cannot request IRQ %d\n", client->irq);
+fwnode_mdiobus_register() helper routine was added and it is used
+now by 2 drivers (xgmac_mdio and mvmdio). In the latter a clock
+handling was significantly simplified by a switch to
+a devm_clk_bulk_get_optional().
+
+Last but not least two additional MAC configuration modes ACPI
+desctiption were documented ("managed" and "fixed-link") - they
+can be processed by the existing fwnode_ phylink helpers and
+comply with the standard _DSD properties and hierarchical
+data extension. ACPI Maintainers are therefore added to reviewers' list.
+
+More details can be found in the patches and their commit messages.
+
+As before, the feature was verified with ACPI on MacchiatoBin, CN913x-DB
+and Armada 8040 DB (fixed-link handling).
+Moreover regression tests were performed (old firmware with updated kernel,
+new firmware with old kernel and the operation with DT).
+
+The firmware ACPI description is exposed in the public github branch:
+https://github.com/semihalf-wojtas-marcin/edk2-platforms/commits/acpi-mdio-r20210613
+There is also MacchiatoBin firmware binary available for testing:
+https://drive.google.com/file/d/1eigP_aeM4wYQpEaLAlQzs3IN_w1-kQr0
+
+I'm looking forward to the comments or remarks.
+
+Best regards,
+Marcin
+
+Changelog:
+v1->v2
+* 1/7 - new patch
+* 2/7 - new patch
+* 3/7 - new patch
+* 4/7 - new patch
+* 5/7 - remove unnecessary `if (has_acpi_companion())` and rebase onto
+        the new clock handling
+* 6/7 - remove deprecated comment
+* 7/7 - no changes
+
+Marcin Wojtas (7):
+  Documentation: ACPI: DSD: describe additional MAC configuration
+  net: mdiobus: Introduce fwnode_mdbiobus_register()
+  net/fsl: switch to fwnode_mdiobus_register
+  net: mvmdio: simplify clock handling
+  net: mvmdio: add ACPI support
+  net: mvpp2: enable using phylink with ACPI
+  net: mvpp2: remove unused 'has_phy' field
+
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  3 -
+ include/linux/fwnode_mdio.h                     | 12 ++++
+ drivers/net/ethernet/freescale/xgmac_mdio.c     | 11 +--
+ drivers/net/ethernet/marvell/mvmdio.c           | 75 ++++++++------------
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 23 ++++--
+ drivers/net/mdio/fwnode_mdio.c                  | 22 ++++++
+ Documentation/firmware-guide/acpi/dsd/phy.rst   | 55 ++++++++++++++
+ 7 files changed, 138 insertions(+), 63 deletions(-)
+
 -- 
-2.30.2
+2.29.0
 
