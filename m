@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0D73A9FFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C253A9F41
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235659AbhFPPnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:43:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51110 "EHLO mail.kernel.org"
+        id S234764AbhFPPgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:36:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235271AbhFPPj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:39:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B160A6101B;
-        Wed, 16 Jun 2021 15:36:59 +0000 (UTC)
+        id S234729AbhFPPgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:36:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B4056101B;
+        Wed, 16 Jun 2021 15:34:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857820;
-        bh=uU3E+HpHiuf4G518xekdhVkqedtIxnVtoN6FngjHGNs=;
+        s=korg; t=1623857669;
+        bh=YS0FcC9AQL3mpsdPS0K5J5p9Zr6VzQFUyIqPZAkVRMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eYj+RumqZGdZfmqQ7Jo7hItqx/ah1U0QiFZO0D/BBukOyHUlrB2B9ccayV839dkaD
-         QICEo2wRykNvOi5lQYuOKC5sb7wNbN42j17pDRyEc7JNlvVS1hk/Wgyg02Z1TSRLwI
-         RoioJY+f2d8ZBeAmXb96XILSzRdrcbDdPqkaKyj0=
+        b=RcNbJ1WHTQigAB28M9HR/2fOoIHZXT9dYSb3/NPXH4IeSyDOxLAov4QrSSGjaKrBa
+         OmbXdBcnvuQ4R9ZJaiqrDR9p3xh+xySFAKJ0BYdu3uiVxaFnUTq5KVJ1QmVAgGNpLM
+         f51wtizjdZj/G3dCn+keYKdpkudbcb7ooEDPwC1E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yongqiang Liu <liuyongqiang13@huawei.com>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, "Ewan D. Milne" <emilne@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 19/48] ARM: OMAP2+: Fix build warning when mmc_omap is not built
+Subject: [PATCH 5.4 18/28] scsi: scsi_devinfo: Add blacklist entry for HPE OPEN-V
 Date:   Wed, 16 Jun 2021 17:33:29 +0200
-Message-Id: <20210616152837.262034598@linuxfoundation.org>
+Message-Id: <20210616152834.736181315@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-References: <20210616152836.655643420@linuxfoundation.org>
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+References: <20210616152834.149064097@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yongqiang Liu <liuyongqiang13@huawei.com>
+From: Ewan D. Milne <emilne@redhat.com>
 
-[ Upstream commit 040ab72ee10ea88e1883ad143b3e2b77596abc31 ]
+[ Upstream commit e57f5cd99ca60cddf40201b0f4ced9f1938e299c ]
 
-GCC reports the following warning with W=1:
+Apparently some arrays are now returning "HPE" as the vendor.
 
-arch/arm/mach-omap2/board-n8x0.c:325:19: warning:
-variable 'index' set but not used [-Wunused-but-set-variable]
-325 |  int bit, *openp, index;
-    |                   ^~~~~
-
-Fix this by moving CONFIG_MMC_OMAP to cover the rest codes
-in the n8x0_mmc_callback().
-
-Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210601175214.25719-1-emilne@redhat.com
+Signed-off-by: Ewan D. Milne <emilne@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-omap2/board-n8x0.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/scsi_devinfo.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/mach-omap2/board-n8x0.c b/arch/arm/mach-omap2/board-n8x0.c
-index 418a61ecb827..5e86145db0e2 100644
---- a/arch/arm/mach-omap2/board-n8x0.c
-+++ b/arch/arm/mach-omap2/board-n8x0.c
-@@ -322,6 +322,7 @@ static int n8x0_mmc_get_cover_state(struct device *dev, int slot)
- 
- static void n8x0_mmc_callback(void *data, u8 card_mask)
- {
-+#ifdef CONFIG_MMC_OMAP
- 	int bit, *openp, index;
- 
- 	if (board_is_n800()) {
-@@ -339,7 +340,6 @@ static void n8x0_mmc_callback(void *data, u8 card_mask)
- 	else
- 		*openp = 0;
- 
--#ifdef CONFIG_MMC_OMAP
- 	omap_mmc_notify_cover_event(mmc_device, index, *openp);
- #else
- 	pr_warn("MMC: notify cover event not available\n");
+diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
+index fb5a7832353c..7f76bf5cc8a8 100644
+--- a/drivers/scsi/scsi_devinfo.c
++++ b/drivers/scsi/scsi_devinfo.c
+@@ -184,6 +184,7 @@ static struct {
+ 	{"HP", "C3323-300", "4269", BLIST_NOTQ},
+ 	{"HP", "C5713A", NULL, BLIST_NOREPORTLUN},
+ 	{"HP", "DISK-SUBSYSTEM", "*", BLIST_REPORTLUN2},
++	{"HPE", "OPEN-", "*", BLIST_REPORTLUN2 | BLIST_TRY_VPD_PAGES},
+ 	{"IBM", "AuSaV1S2", NULL, BLIST_FORCELUN},
+ 	{"IBM", "ProFibre 4000R", "*", BLIST_SPARSELUN | BLIST_LARGELUN},
+ 	{"IBM", "2105", NULL, BLIST_RETRY_HWERROR},
 -- 
 2.30.2
 
