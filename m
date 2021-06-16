@@ -2,156 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E8C3A9C50
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14FAE3A9C5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233462AbhFPNoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:44:44 -0400
-Received: from mga02.intel.com ([134.134.136.20]:61483 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233142AbhFPNom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:44:42 -0400
-IronPort-SDR: Uor0M6sC97kxaA23DwiC3nOE0W0ppVgjfbG9ah8D5CooVZGYoPz93ecKvb25z81N1MriZqHYf+
- Tb6p6eeaP6+g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="193297671"
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="193297671"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 06:42:35 -0700
-IronPort-SDR: vOT7Y/QOBw6Q2shaeW7IsVwrelqi1cckBIUPtOM58Vxn/+/SKAz2jAZDZ7ChtUKxWqsF2kSVri
- h8i91EWetdwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="554810325"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 16 Jun 2021 06:42:32 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 16 Jun 2021 16:42:31 +0300
-Date:   Wed, 16 Jun 2021 16:42:31 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] usb: typec: tcpm: Relax disconnect threshold during
- power negotiation
-Message-ID: <YMn/x631dHngLxFw@kuha.fi.intel.com>
-References: <20210616090102.1897674-1-kyletso@google.com>
+        id S233525AbhFPNpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:45:23 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54758 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233486AbhFPNpM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 09:45:12 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15GDY2gl055467;
+        Wed, 16 Jun 2021 09:42:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=BnvC9AmBanSlttB1nlOhdd0J404KzEzFF+PWFmcqRRE=;
+ b=Kw+9EGL6WmdP+AXMuo0jDyjhXVXRjMGSzjUzKMZQ/cCGG4bIfu06jA/NyKQlN0Pu22GQ
+ eKlAMuFS3DguuWgnxuQ6JRrQo+Shrap+NX0BFpEK64oqMw1NQFSRVzgyutDJjq55tTtp
+ L+QSwaEstTELITk4MDNkTuU9S/Dry6DgIkxHzUXRwJ1zOCrZolYP4t4aCVITOFSqTmto
+ BBNmX6eyM8e9jpwMgTI1iQXPIRyqu6dh04e2JxxcGG+EsoZiX0Jmw1WYzBy1TStcsR4o
+ wepgtAH5hFXKsuLEXRW73uax2UUHSuxhQjDKYHmA99lPfmKxQR88QQ1ioLXRqlIzfyIQ 0Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 397fuv50ck-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Jun 2021 09:42:47 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15GDZ8xQ065342;
+        Wed, 16 Jun 2021 09:42:47 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 397fuv50bv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Jun 2021 09:42:47 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15GDghF1015703;
+        Wed, 16 Jun 2021 13:42:45 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 394mj8t4bw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Jun 2021 13:42:45 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15GDghH532571706
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Jun 2021 13:42:43 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B5D0A4040;
+        Wed, 16 Jun 2021 13:42:43 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 745DCA4053;
+        Wed, 16 Jun 2021 13:42:41 +0000 (GMT)
+Received: from pratiks-thinkpad.ibmuc.com (unknown [9.79.208.82])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 16 Jun 2021 13:42:41 +0000 (GMT)
+From:   "Pratik R. Sampat" <psampat@linux.ibm.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, psampat@linux.ibm.com,
+        pratik.r.sampat@gmail.com
+Subject: [PATCH 0/1] Interface to represent PAPR firmware attributes
+Date:   Wed, 16 Jun 2021 19:12:39 +0530
+Message-Id: <20210616134240.62195-1-psampat@linux.ibm.com>
+X-Mailer: git-send-email 2.30.2
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: CcgbmkiMrkDL3nRBk2D4GdNICS4oLwAG
+X-Proofpoint-GUID: fF7DxLDj24bdstd717FJFOZhZwtcAWZe
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616090102.1897674-1-kyletso@google.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-16_07:2021-06-15,2021-06-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 adultscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 impostorscore=0
+ phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106160078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 05:01:02PM +0800, Kyle Tso wrote:
-> If the voltage is being decreased in power negotiation, the Source will
-> set the power supply to operate at the new voltage level before sending
-> PS_RDY. Relax the threshold before sending Request Message so that it
-> will not race with Source which begins to adjust the voltage right after
-> it sends Accept Message (PPS) or tSrcTransition (25~35ms) after it sends
-> Accept Message (non-PPS).
-> 
-> The real threshold will be set after Sink receives PS_RDY Message.
-> 
-> Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto Discharge disconnect support")
-> Cc: Badhri Jagan Sridharan <badhri@google.com>
-> Signed-off-by: Kyle Tso <kyletso@google.com>
+RFC --> v1
+RFC: https://lkml.org/lkml/2021/6/4/791
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Changelog:
+Overhaul in interface design to the following:
+/sys/firmware/papr/energy_scale_info/
+   |-- <id>/
+     |-- desc
+     |-- value
+     |-- value_desc (if exists)
+   |-- <id>/
+     |-- desc
+     |-- value
+     |-- value_desc (if exists)
 
-> ---
-> Changes in v3:
-> - move the timing of setting threshold for Fixed RDO as I did for PPS in
->   v2, i.e. move it to tcpm_pd_send_request.
-> - add Cc: tag for Badhri
-> - update the commit message for the above changes
-> 
-> Changes in v2:
-> - move the timing of setting threshold up to "before sending Request"
->   for PPS power negotiation so that it won't race with the Source.
-> - PPS: if it fails to send the Request, fallback to previous threshold
-> - PPS: if the Source doesn't respond Accept, fallback to previous
->   threshold
-> - update the commit message for above changes
-> 
->  drivers/usb/typec/tcpm/tcpm.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 197556038ba4..b1d310ab84c4 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -2604,6 +2604,11 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  			} else {
->  				next_state = SNK_WAIT_CAPABILITIES;
->  			}
-> +
-> +			/* Threshold was relaxed before sending Request. Restore it back. */
-> +			tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
-> +							       port->pps_data.active,
-> +							       port->supply_voltage);
->  			tcpm_set_state(port, next_state, 0);
->  			break;
->  		case SNK_NEGOTIATE_PPS_CAPABILITIES:
-> @@ -2617,6 +2622,11 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  			    port->send_discover)
->  				port->vdm_sm_running = true;
->  
-> +			/* Threshold was relaxed before sending Request. Restore it back. */
-> +			tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
-> +							       port->pps_data.active,
-> +							       port->supply_voltage);
-> +
->  			tcpm_set_state(port, SNK_READY, 0);
->  			break;
->  		case DR_SWAP_SEND:
-> @@ -3336,6 +3346,12 @@ static int tcpm_pd_send_request(struct tcpm_port *port)
->  	if (ret < 0)
->  		return ret;
->  
-> +	/*
-> +	 * Relax the threshold as voltage will be adjusted after Accept Message plus tSrcTransition.
-> +	 * It is safer to modify the threshold here.
-> +	 */
-> +	tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, 0);
-> +
->  	memset(&msg, 0, sizeof(msg));
->  	msg.header = PD_HEADER_LE(PD_DATA_REQUEST,
->  				  port->pwr_role,
-> @@ -3433,6 +3449,9 @@ static int tcpm_pd_send_pps_request(struct tcpm_port *port)
->  	if (ret < 0)
->  		return ret;
->  
-> +	/* Relax the threshold as voltage will be adjusted right after Accept Message. */
-> +	tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, 0);
-> +
->  	memset(&msg, 0, sizeof(msg));
->  	msg.header = PD_HEADER_LE(PD_DATA_REQUEST,
->  				  port->pwr_role,
-> @@ -4196,6 +4215,10 @@ static void run_state_machine(struct tcpm_port *port)
->  		port->hard_reset_count = 0;
->  		ret = tcpm_pd_send_request(port);
->  		if (ret < 0) {
-> +			/* Restore back to the original state */
-> +			tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
-> +							       port->pps_data.active,
-> +							       port->supply_voltage);
->  			/* Let the Source send capabilities again. */
->  			tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
->  		} else {
-> @@ -4206,6 +4229,10 @@ static void run_state_machine(struct tcpm_port *port)
->  	case SNK_NEGOTIATE_PPS_CAPABILITIES:
->  		ret = tcpm_pd_send_pps_request(port);
->  		if (ret < 0) {
-> +			/* Restore back to the original state */
-> +			tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
-> +							       port->pps_data.active,
-> +							       port->supply_voltage);
->  			port->pps_status = ret;
->  			/*
->  			 * If this was called due to updates to sink
-> -- 
-> 2.32.0.272.g935e593368-goog
+Also implemented a POC using this interface for the powerpc-utils'
+ppc64_cpu --frequency command-line tool to utilize this information
+in userspace.
+The POC for the new interface has been hosted here:
+https://github.com/pratiksampat/powerpc-utils/tree/H_GET_ENERGY_SCALE_INFO_v2
+
+Sample output from the powerpc-utils tool is as follows:
+
+# ppc64_cpu --frequency
+Power and Performance Mode: XXXX
+Idle Power Saver Status   : XXXX
+Processor Folding Status  : XXXX --> Printed if Idle power save status is supported
+
+Platform reported frequencies --> Frequencies reported from the platform's H_CALL i.e PAPR interface
+min        :    NNNN GHz
+max        :    NNNN GHz
+static     :    NNNN GHz
+
+Tool Computed frequencies
+min        :    NNNN GHz (cpu XX)
+max        :    NNNN GHz (cpu XX)
+avg        :    NNNN GHz
+
+Pratik R. Sampat (1):
+  powerpc/pseries: Interface to represent PAPR firmware attributes
+
+ .../sysfs-firmware-papr-energy-scale-info     |  26 ++
+ arch/powerpc/include/asm/hvcall.h             |  21 +-
+ arch/powerpc/kvm/trace_hv.h                   |   1 +
+ arch/powerpc/platforms/pseries/Makefile       |   3 +-
+ .../pseries/papr_platform_attributes.c        | 292 ++++++++++++++++++
+ 5 files changed, 341 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
+ create mode 100644 arch/powerpc/platforms/pseries/papr_platform_attributes.c
 
 -- 
-heikki
+2.30.2
+
