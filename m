@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7405A3A9BD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8363A9BD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbhFPNV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
+        id S233024AbhFPNWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhFPNVz (ORCPT
+        with ESMTP id S232949AbhFPNWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:21:55 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB95C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:19:48 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id e10so2972150ybb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 06:19:48 -0700 (PDT)
+        Wed, 16 Jun 2021 09:22:12 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CDFC061574;
+        Wed, 16 Jun 2021 06:20:06 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id my49so3858873ejc.7;
+        Wed, 16 Jun 2021 06:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/KKFaNOwJJ64HA8ycqQn/B1R6RULjAs1yadcEz9FL+Y=;
-        b=SvHBAiYWj2gb1Kt2U4ro6iveRaJsLCayhCgHPdsYZnulD/5J//5IlSdxpNfQ+IGMBE
-         LaMZprglaEJ7LN9/91lYEewFQ9EHDnC6a/YrjQZkhJKhyU281o/ms5k6bDfo53gH7mYl
-         MgtEI9bGDvNgcbwzvPQj+ccSw9/dn3ZD3r9Aep8jJCYJMqD86gaDEpSUGEw2JzD9T0gK
-         oYKg46u2TpAPsJeezXTkqcfR5LBFpYHfW2o9NhP70jyjpwzszoo2WfoWz0g00ewzMHqu
-         Qei9buSfeLUNPLjpv37PF3lt7m+HqwRqXaS21dKeTfKCdvSH4buNCdM/hoEj8pzIJTkw
-         Ypkw==
+        bh=E9xU6WRg5z0sUzGECNos7mIypHHvCktW/w5KjCa93jY=;
+        b=StsJr0hl0cK0uQCN42SYJrcFPIdnL5hJLfW1GDm7ObHbKDHX1i6+plBTcNFiU/IZnH
+         pJaDsmVOLy3osQ0Kp/rEnE54a6PZt2wnvfsFffFRdXx3sjrEmKdLVKxzLxHoMLadgUxp
+         ZVsS3xhURVfNLSD4iPx7EF+yPVahr+C3cMHCB2YrRaIAOrnSSFREexJa856/e0nvuNB2
+         Hi+qPEvPDjQ59a/kqeXk4rgy1B5iB68tKCuNE5AoBQQ/dTNWBUeQOzuYpYiF8Egqmq6d
+         Rm2c8kfH0EncrLVGby+qD1+hqkMSZ5O0WFUXDslga4qARER3Rxi/567AC7GAqhrx8qzn
+         MDaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/KKFaNOwJJ64HA8ycqQn/B1R6RULjAs1yadcEz9FL+Y=;
-        b=iAvF59oF6x2E8wULa9iJJkUUc6IZEuWf/nAWpV/Pe3qmjRXbX+0+YAsYmh8CqzHR0v
-         mCrh71A2pxuboMBjCpSzqmY4CJ3+9VxnkmcJlbT/wQaWXzs2nrqDidtdAeOfRmB1v9X4
-         Uu2Z9yyxZRpCD7oQ3UwFBjQBExU3VCH18XAQvNEaAWzvo2mE3g5jhOfns1+QsBAD90GM
-         WQI4LwiX2Vqs+VtfeCTOtk+LZdBGknwoHyVMUqpnUvz8UK3+V++UTckprWHtSQMlTAFc
-         TvQQjrVL/LcIhBtu7rsEs3kz2IyGu4rDkA75soncQC5r6bVoCg3NtxynbhiglJEsiNR7
-         dBZg==
-X-Gm-Message-State: AOAM5313Xi685qd3EAqna1UhVFNLGfpN8UUme00N+7Xl7Q4LIVzlBDl2
-        PQErlyIFcRXPIixIQKc3X8Wr3++zoXhYzv+zHj0XJQ==
-X-Google-Smtp-Source: ABdhPJyD6+8mGf3jT8Jh+SCs5I4T5guERNb2S8GwEwtPq1cl1WRnWZ2lnFKBAIrGCBOSuWk8GPK+qm9V9cvBEV8M6DA=
-X-Received: by 2002:a25:7ac5:: with SMTP id v188mr6959662ybc.132.1623849587386;
- Wed, 16 Jun 2021 06:19:47 -0700 (PDT)
+        bh=E9xU6WRg5z0sUzGECNos7mIypHHvCktW/w5KjCa93jY=;
+        b=o4/GkFFDl6SRswskPL0IIZXGOaImOvu0Mmg3Yv3i6tBW6OidrNFpiCh11em3geYDd/
+         +ge5nZGH5wt7IP2D6JYjwYS05dkn5dmVt+CKQd8wF1R1yEsfzGu0JBuZLDuFuJ4X3Vu0
+         CHQM3KNKBprl6YhbwftCAU2ODGEG6U1zDBjcdoygopk7+a3avXiUPWOwbyWBheD6Gwq9
+         MkDjFF9lXT4HeC8MoIryqzo4pSHLnTMe9BFfSAy4gaU+S+f/PRYpnz8hgF+E5T54FuKD
+         FFmYHUF+U1XyiMmW4Xwm1figeUawENBDG5r1ndvEIKkkv7SBFYkbnPbmwYKY6dfW/rtk
+         gG8g==
+X-Gm-Message-State: AOAM531LMOIKflqPpleLZ5i+rmF1SU24n7jQ4DkEv5S1mx2Kmvk9BgEb
+        UJ8gm33XoGEifs49Q00CrGG0d5JiceYtDE/FZIw=
+X-Google-Smtp-Source: ABdhPJyFEKtCneHl93v+sbrDC4AyudkYfTDVIu+e/Og+r4lR5oeGhEwo+e8fBFJqr93vnGWzszgMiKmN4mzqAjxaGag=
+X-Received: by 2002:a17:906:7b4f:: with SMTP id n15mr5198906ejo.220.1623849604734;
+ Wed, 16 Jun 2021 06:20:04 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210512144743.039977287@linuxfoundation.org> <20210512144748.600206118@linuxfoundation.org>
  <CANEQ_++O0XVVdvynGtf37YCHSBT8CYHnUkK+VsFkOTqeqwOUtA@mail.gmail.com>
  <YMmlPHMn/+EPdbvm@kroah.com> <CANEQ_++gbwU2Rvcqg5KtngZC1UX1XcjOKfPKRr3Pvxi+VyQX+Q@mail.gmail.com>
  <a388a8018b09429d93a4a6b6852c70b2@AcuMS.aculab.com>
 In-Reply-To: <a388a8018b09429d93a4a6b6852c70b2@AcuMS.aculab.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 16 Jun 2021 15:19:35 +0200
-Message-ID: <CANn89iKsJieaBwtb1DbxCbdsSYCQfO6MiUb0JDkWdCp7JnL-kw@mail.gmail.com>
+From:   Amit Klein <aksecurity@gmail.com>
+Date:   Wed, 16 Jun 2021 16:19:54 +0300
+Message-ID: <CANEQ_++RSG=cOa-hWcHefqVa5_=FRo+PdwuJbE2A-NHA_RNXXQ@mail.gmail.com>
 Subject: Re: [PATCH 5.4 175/244] inet: use bigger hash table for IP ID generation
 To:     David Laight <David.Laight@aculab.com>
-Cc:     Amit Klein <aksecurity@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>,
+        Eric Dumazet <edumazet@google.com>, Willy Tarreau <w@1wt.eu>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -67,38 +66,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 12:19 PM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Amit Klein
-> > Sent: 16 June 2021 10:17
-> ...
-> > -#define IP_IDENTS_SZ 2048u
-> > -
-> > +/* Hash tables of size 2048..262144 depending on RAM size.
-> > + * Each bucket uses 8 bytes.
-> > + */
-> > +static u32 ip_idents_mask __read_mostly;
-> ...
-> > +    /* For modern hosts, this will use 2 MB of memory */
-> > +    idents_hash = alloc_large_system_hash("IP idents",
-> > +                          sizeof(*ip_idents) + sizeof(*ip_tstamps),
-> > +                          0,
-> > +                          16, /* one bucket per 64 KB */
-> > +                          HASH_ZERO,
-> > +                          NULL,
-> > +                          &ip_idents_mask,
-> > +                          2048,
-> > +                          256*1024);
-> > +
+On Wed, Jun 16, 2021 at 1:19 PM David Laight <David.Laight@aculab.com> wrote:
+
 >
 > Can someone explain why this is a good idea for a 'normal' system?
 >
+
+This patch mitigates some techniques that leak internal state due to
+table hash collisions.
+
 > Why should my desktop system 'waste' 2MB of memory on a massive
 > hash table that I don't need.
 
-Only if your desktop has a lot of RAM.
-
-Otherwise the table will be smaller (like it was before this patch)
+In the patch's defense, it only consumes 2MB when the physical RAM is >= 16GB.
 
 > It might be needed by systems than handle massive numbers
 > of concurrent connections - but that isn't 'most systems'.
@@ -106,15 +86,7 @@ Otherwise the table will be smaller (like it was before this patch)
 > Surely it would be better to detect when the number of entries
 > is comparable to the table size and then resize the table.
 
-Please send a patch, instead of always complaining about what others do.
-
-Security comes first.
-
-Then eventually we can ' optimize' .
-
->
->         David
->
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+Security-wise, this approach is not effective. The table size was
+increased to reduce the likelihood of hash collisions. These start
+happening when you have ~N^(1/2) elements (for table size N), so
+you'll need to resize pretty quickly anyway.
