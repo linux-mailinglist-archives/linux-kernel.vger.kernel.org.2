@@ -2,83 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA403AA395
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779723AA398
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbhFPSy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 14:54:57 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:38166 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbhFPSy4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 14:54:56 -0400
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 35B1A20B83F8;
-        Wed, 16 Jun 2021 11:52:50 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 35B1A20B83F8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623869570;
-        bh=rYJD4cBG4CEPoLnWdqiYM4HuZXVnGRaKOU6m/YkZifA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=akaKzAH14Q5cfSsaQe5MAfT+HU+9bU7yDZ1IavJWmRCRwbI9fkfO8hll3j+cUr6NM
-         qPDCwQRYlpb8oHYWTaucsJLQ2fDZjoWJuB5HCnY/P53X6iLScTa3jKYckyawGmwZ75
-         9Ppouaulgc8S8TBQ1Do2QAWq5jdf3f+oXffIDdkk=
-Received: by mail-pj1-f47.google.com with SMTP id 13-20020a17090a08cdb029016eed209ca4so2325737pjn.1;
-        Wed, 16 Jun 2021 11:52:50 -0700 (PDT)
-X-Gm-Message-State: AOAM530W/CIeBTrn2my4daxhlU10J8NlU8za6iT/1B5OaW8wemV+Po/V
-        Zu2Gwfkq0KU0dDV6+eiNpAplc7P8ja07yytBFCg=
-X-Google-Smtp-Source: ABdhPJyyWuopcbCWOsO0GJU76XEW1aKeFZlbubNuh6Kr6/8+/OZoAm8ypz7lE/h+CigtdKqhxy0qyAvQlapQgjB1/Qg=
-X-Received: by 2002:a17:90b:109:: with SMTP id p9mr12340022pjz.11.1623869569699;
- Wed, 16 Jun 2021 11:52:49 -0700 (PDT)
+        id S232147AbhFPSzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 14:55:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232006AbhFPSzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 14:55:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E38DA613B4;
+        Wed, 16 Jun 2021 18:52:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623869579;
+        bh=Yqry3gXTN7L5llHGJ5LYioszkeOqgnImNugNlvlJamM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZdUJ7KXNhkuKNAUX1x7Dbc4PeUFd1RBBDmKso0XmPrKjdsmddGAwUrigYr/JM82Wg
+         QZYY1HboE2uqd3aDHbef4mKiID3gsuvm5EVze2dABZvbyZheNWkpSQusDL9vvTKeTZ
+         llgpyzsvBgZGHBlVCUTvm9DEzi6Hvbi5dJZInB6zEXy5rjMxcXqZdGesyqHMQpTlGH
+         9vnvX5X6f8YAkbV0xff+6rjr3kuqkpugsrxF/ZBh7JF/BjFyZohG2TevhZq78dCe75
+         ZbfCX4ngCfJiMjfS5mqXkORZczgWyrHbvJC4IDDJol6JXrj9FBaLWKtCUNktRtFrtB
+         Ewqj3p90Zv/OQ==
+Subject: Re: [PATCH 8/8] membarrier: Rewrite sync_core_before_usermode() and
+ improve documentation
+To:     Nicholas Piggin <npiggin@gmail.com>, x86@kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>, stable@vger.kernel.org,
+        Will Deacon <will@kernel.org>
+References: <cover.1623813516.git.luto@kernel.org>
+ <07a8b963002cb955b7516e61bad19514a3acaa82.1623813516.git.luto@kernel.org>
+ <1623818343.eko1v01gvr.astroid@bobo.none>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <1e248763-9372-6e4e-5dea-cda999000aeb@kernel.org>
+Date:   Wed, 16 Jun 2021 11:52:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
- <20210615023812.50885-2-mcroce@linux.microsoft.com> <CAJF2gTTreOvQYYXHBYxznB9+vMaASKg8vwA5mkqVo1T6=eVhzw@mail.gmail.com>
-In-Reply-To: <CAJF2gTTreOvQYYXHBYxznB9+vMaASKg8vwA5mkqVo1T6=eVhzw@mail.gmail.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Wed, 16 Jun 2021 20:52:13 +0200
-X-Gmail-Original-Message-ID: <CAFnufp1OHdRd-tbB+Hi0UnXARtxGPdkK6MJktnaNCNt65d3Oew@mail.gmail.com>
-Message-ID: <CAFnufp1OHdRd-tbB+Hi0UnXARtxGPdkK6MJktnaNCNt65d3Oew@mail.gmail.com>
-Subject: Re: [PATCH 1/3] riscv: optimized memcpy
-To:     Guo Ren <guoren@kernel.org>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1623818343.eko1v01gvr.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 1:46 PM Guo Ren <guoren@kernel.org> wrote:
->
-> Hi Matteo,
->
-> Have you tried Glibc generic implementation code?
-> ref: https://lore.kernel.org/linux-arch/20190629053641.3iBfk9-I_D29cDp9yJnIdIg7oMtHNZlDmhLQPTumhEc@z/#t
->
-> If Glibc codes have the same performance in your hardware, then you
-> could give a generic implementation first.
->
+On 6/15/21 9:45 PM, Nicholas Piggin wrote:
+> Excerpts from Andy Lutomirski's message of June 16, 2021 1:21 pm:
+>> The old sync_core_before_usermode() comments suggested that a non-icache-syncing
+>> return-to-usermode instruction is x86-specific and that all other
+>> architectures automatically notice cross-modified code on return to
+>> userspace.
 
-Hi,
+>> +/*
+>> + * XXX: can a powerpc person put an appropriate comment here?
+>> + */
+>> +static inline void membarrier_sync_core_before_usermode(void)
+>> +{
+>> +}
+>> +
+>> +#endif /* _ASM_POWERPC_SYNC_CORE_H */
+> 
+> powerpc's can just go in asm/membarrier.h
 
-I had a look, it seems that it's a C unrolled version with the
-'register' keyword.
-The same one was already merged in nios2:
-https://elixir.bootlin.com/linux/latest/source/arch/nios2/lib/memcpy.c#L68
+$ ls arch/powerpc/include/asm/membarrier.h
+ls: cannot access 'arch/powerpc/include/asm/membarrier.h': No such file
+or directory
 
-I copied _wordcopy_fwd_aligned() from Glibc, and I have a very similar
-result of the other versions:
 
-[  563.359126] Strings selftest: memcpy(src+7, dst+7): 257 Mb/s
+> 
+> /*
+>  * The RFI family of instructions are context synchronising, and
+>  * that is how we return to userspace, so nothing is required here.
+>  */
 
-Regards,
--- 
-per aspera ad upstream
+Thanks!
