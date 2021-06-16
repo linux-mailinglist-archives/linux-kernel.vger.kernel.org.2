@@ -2,115 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FC43AA331
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124A73AA32E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhFPScz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 14:32:55 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:33884 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbhFPScy (ORCPT
+        id S231831AbhFPScd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 14:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231352AbhFPScb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 14:32:54 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1ltaJF-00A84z-5r; Wed, 16 Jun 2021 12:30:41 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1ltaJE-000z9Q-7B; Wed, 16 Jun 2021 12:30:40 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-References: <87sg1p30a1.fsf@disp2133>
-        <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
-        <87pmwsytb3.fsf@disp2133>
-        <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
-        <87sg1lwhvm.fsf@disp2133>
-        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
-        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
-        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
-        <87eed4v2dc.fsf@disp2133>
-        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
-        <87fsxjorgs.fsf@disp2133> <87zgvqor7d.fsf_-_@disp2133>
-        <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
-        <87mtrpg47k.fsf@disp2133>
-Date:   Wed, 16 Jun 2021 13:29:38 -0500
-In-Reply-To: <87mtrpg47k.fsf@disp2133> (Eric W. Biederman's message of "Wed,
-        16 Jun 2021 11:32:47 -0500")
-Message-ID: <87pmwlek8d.fsf_-_@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 16 Jun 2021 14:32:31 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CA9C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:30:24 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso2281897pjp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:30:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oMmBa/UenZSiz8FWRlUYJ1ApLColqphv5fT0ZtHZkco=;
+        b=WKm6uhmxacLHEonEcSMaA5j3VxH+IMGkGzvLS3a/XOVz+YuDdJpchp0+D4dErQF2N4
+         wonuPp+nUW/aooKV8wk4KPh0EYl+GrrdNV1YOFCiej81yxuvF4yh143YqjOuBaKn6Y+t
+         sON6O3h5g4Hi9HtZBtcb1pOPR4F1/Ti3mSp2D+GhLV9l1nJ+e7W25FX356fw1PYVT+/l
+         4UonLYns+/6oImensYAibJDoZiyOmYTRTiFO2QQQWJjHQNLfHmZeBBIZ+qNzgczk/3xz
+         CLxdlkFimaa70/7+COb05076EcfTGenXgd5zn+C27dIvFgZNIQhiyaNzch7jmwhAlQ7k
+         sGpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oMmBa/UenZSiz8FWRlUYJ1ApLColqphv5fT0ZtHZkco=;
+        b=DLTMsQw6Lwu1+fx+hXt0p4hFW9R+UoVYiFg4V3qwHI+um5IJhxoVi9oH1nQ5fTPEOt
+         cYeno0ggIFDtzc6p+2WyCfHQTkVs0o7aqrBOf/lXH8Z3+mI+cdvgT5HYtBhZeukwMQlq
+         FqRMfuhafx44xekRPdQW1wtCW6ubh39CNJWqvixfZdrZ/yFR+gnhlt4Ev3d0p53nV31c
+         5k1aCT8frRvnIO4rU2Krxowuqh0RABLFpC5BvIQFmxyJk/lzwQO02gGgCy3YJnGt6krS
+         4Tx10C/DgJFMkGQWtlvT5crLuQM6NAwyUJoxh4m8YNxoRRKzAeD0sPqyz04RZfjRmJ1S
+         N/Iw==
+X-Gm-Message-State: AOAM5337Qk3TxtwDtgCUP47QrIW5X6aYCEK/JNz2Ynjo+nQLkCyUhpbP
+        u8+VXVmMX1Bd70o5wqY2z+Gl
+X-Google-Smtp-Source: ABdhPJyqynxiYazXV5IbplMzPc2VHuctu11Dn+8ZNjUwy+usenSZ+jMti/oBrereusj21n+iGcgFEQ==
+X-Received: by 2002:a17:90a:bd18:: with SMTP id y24mr12297762pjr.83.1623868223982;
+        Wed, 16 Jun 2021 11:30:23 -0700 (PDT)
+Received: from thinkpad ([2409:4072:17:2c05:a14f:78ce:1082:5556])
+        by smtp.gmail.com with ESMTPSA id h4sm2881664pjv.55.2021.06.16.11.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 11:30:23 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 00:00:17 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Om Prakash Singh <omp@nvidia.com>
+Cc:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        smohanad@codeaurora.org
+Subject: Re: [PATCH 1/5] PCI: endpoint: Add linkdown notifier support
+Message-ID: <20210616183017.GB152639@thinkpad>
+References: <20210616115913.138778-1-manivannan.sadhasivam@linaro.org>
+ <20210616115913.138778-2-manivannan.sadhasivam@linaro.org>
+ <443ec752-08e2-83dd-2b6f-b5e74c7bd8e5@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1ltaJE-000z9Q-7B;;;mid=<87pmwlek8d.fsf_-_@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/QcGeYYkSKc73XnoZZIXFLvqc9Us7t81k=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01,T_XMDrugObfuBody_08,XMNoVowels
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 351 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 11 (3.2%), b_tie_ro: 10 (2.7%), parse: 1.21
-        (0.3%), extract_message_metadata: 3.2 (0.9%), get_uri_detail_list:
-        0.56 (0.2%), tests_pri_-1000: 4.9 (1.4%), tests_pri_-950: 1.37 (0.4%),
-        tests_pri_-900: 1.14 (0.3%), tests_pri_-90: 110 (31.3%), check_bayes:
-        108 (30.8%), b_tokenize: 7 (1.9%), b_tok_get_all: 6 (1.9%),
-        b_comp_prob: 2.0 (0.6%), b_tok_touch_all: 89 (25.5%), b_finish: 0.93
-        (0.3%), tests_pri_0: 199 (56.7%), check_dkim_signature: 0.58 (0.2%),
-        check_dkim_adsp: 3.7 (1.1%), poll_dns_idle: 1.43 (0.4%), tests_pri_10:
-        2.2 (0.6%), tests_pri_500: 8 (2.2%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 0/2] alpha/ptrace: Improved switch_stack handling
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <443ec752-08e2-83dd-2b6f-b5e74c7bd8e5@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 16, 2021 at 11:52:28PM +0530, Om Prakash Singh wrote:
+> 
+> 
+> On 6/16/2021 5:29 PM, Manivannan Sadhasivam wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > Add support to notify the EPF device about the linkdown event from the
+> > EPC device.
+> > 
+> > Usage:
+> > ======
+> > 
+> > EPC
+> > ---
+> > 
+> > ```
+> > static irqreturn_t pcie_ep_irq(int irq, void *data)
+> > {
+> > ...
+> >          case PCIE_EP_INT_LINK_DOWN:
+> >                  pci_epc_linkdown(epc);
+> >                  break;
+> Can you provide use case/scenario when epc will get LINK_DOWN interrupt?
+> 
 
-This pair of changes has not received anything beyond build and boot
-testing.  I am posting these changes as they do a much better job of
-warning of problems and shutting down the security hole.  Making them
-a much better pattern than the my last patch.
+During host shutdown/reboot epc will get LINK_DOWN interrupt. And in our MHI
+function we need to catch that for handling the SYSERR state as per the spec.
 
-I hope to get the test cases soon.
+Thanks,
+Mani
 
- arch/alpha/include/asm/thread_info.h   |  2 ++
- arch/alpha/kernel/entry.S              | 62 ++++++++++++++++++++++++++--------
- arch/alpha/kernel/process.c            |  3 ++
- arch/alpha/kernel/ptrace.c             | 13 +++++--
- arch/alpha/kernel/syscalls/syscall.tbl |  8 ++---
- 5 files changed, 67 insertions(+), 21 deletions(-)
-
-Eric W. Biederman (2):
-      alpha/ptrace: Record and handle the absence of switch_stack
-      alpha/ptrace: Add missing switch_stack frames
-
+> > ...
+> > }
+> > ```
+> > 
+> > EPF
+> > ---
+> > 
+> > ```
+> > static int pci_epf_notifier(struct notifier_block *nb, unsigned long val,
+> >                              void *data)
+> > {
+> > ...
+> >          case LINK_DOWN:
+> >                  /* Handle link down event */
+> >                  break;
+> > ...
+> > }
+> > ```
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >   drivers/pci/endpoint/pci-epc-core.c | 17 +++++++++++++++++
+> >   include/linux/pci-epc.h             |  1 +
+> >   include/linux/pci-epf.h             |  1 +
+> >   3 files changed, 19 insertions(+)
+> > 
+> > diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
+> > index adec9bee72cf..f29d78c18438 100644
+> > --- a/drivers/pci/endpoint/pci-epc-core.c
+> > +++ b/drivers/pci/endpoint/pci-epc-core.c
+> > @@ -641,6 +641,23 @@ void pci_epc_linkup(struct pci_epc *epc)
+> >   }
+> >   EXPORT_SYMBOL_GPL(pci_epc_linkup);
+> > 
+> > +/**
+> > + * pci_epc_linkdown() - Notify the EPF device that EPC device has dropped the
+> > + *                     connection with the Root Complex.
+> > + * @epc: the EPC device which has dropped the link with the host
+> > + *
+> > + * Invoke to Notify the EPF device that the EPC device has dropped the
+> > + * connection with the Root Complex.
+> > + */
+> > +void pci_epc_linkdown(struct pci_epc *epc)
+> > +{
+> > +       if (!epc || IS_ERR(epc))
+> > +               return;
+> > +
+> > +       atomic_notifier_call_chain(&epc->notifier, LINK_DOWN, NULL);
+> > +}
+> > +EXPORT_SYMBOL_GPL(pci_epc_linkdown);
+> > +
+> >   /**
+> >    * pci_epc_init_notify() - Notify the EPF device that EPC device's core
+> >    *                        initialization is completed.
+> > diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
+> > index b82c9b100e97..23590efc13e7 100644
+> > --- a/include/linux/pci-epc.h
+> > +++ b/include/linux/pci-epc.h
+> > @@ -202,6 +202,7 @@ void pci_epc_destroy(struct pci_epc *epc);
+> >   int pci_epc_add_epf(struct pci_epc *epc, struct pci_epf *epf,
+> >                      enum pci_epc_interface_type type);
+> >   void pci_epc_linkup(struct pci_epc *epc);
+> > +void pci_epc_linkdown(struct pci_epc *epc);
+> >   void pci_epc_init_notify(struct pci_epc *epc);
+> >   void pci_epc_remove_epf(struct pci_epc *epc, struct pci_epf *epf,
+> >                          enum pci_epc_interface_type type);
+> > diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
+> > index 6833e2160ef1..e9ad634b1575 100644
+> > --- a/include/linux/pci-epf.h
+> > +++ b/include/linux/pci-epf.h
+> > @@ -20,6 +20,7 @@ enum pci_epc_interface_type;
+> >   enum pci_notify_event {
+> >          CORE_INIT,
+> >          LINK_UP,
+> > +       LINK_DOWN,
+> >   };
+> > 
+> >   enum pci_barno {
+> > --
+> > 2.25.1
+> > 
