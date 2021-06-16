@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5ADA3A94DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64233A94DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbhFPIV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:21:57 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:54416 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231710AbhFPIV4 (ORCPT
+        id S231645AbhFPIXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:23:55 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:40885 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231245AbhFPIXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:21:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1623831589; x=1626423589;
-        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=twN47ShxHvne0ZTgJPFRcqwPGlPklxkV8eYYhOW9sgM=;
-        b=cu8t+X0qIBTaObPhasZGa6OeDRaoEX0Yk/N9DgpHxbhd+jS1i3zp5RKVUmgZHxjV
-        whjNpAe5d39qJYRtG553daMjZTzcfvL05S0hltO5Wk+RVA2hb19Vy5vVKQBPfDvN
-        tPXekKlSKJgPo6O5DHwDwFMtFNTVRCqvaCPjOpCYu84=;
-X-AuditID: c39127d2-a9fbd70000001c5e-5d-60c9b42527a7
-Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id E0.AE.07262.524B9C06; Wed, 16 Jun 2021 10:19:49 +0200 (CEST)
-Received: from lws-ybas.phytec.de ([172.16.21.122])
-          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
-          with ESMTP id 2021061610194945-972463 ;
-          Wed, 16 Jun 2021 10:19:49 +0200 
-From:   Yunus Bas <y.bas@phytec.de>
-To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mfd: mfd-core: Change "Failed to locate of_node" warning to debug
-Date:   Wed, 16 Jun 2021 10:19:49 +0200
-Message-Id: <20210616081949.26618-1-y.bas@phytec.de>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
-X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 16.06.2021 10:19:49,
-        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 16.06.2021 10:19:49
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMJMWRmVeSWpSXmKPExsWyRoCBS1d1y8kEg50/tS3ufz3KaHF51xw2
-        ByaPO9f2sHl83iQXwBTFZZOSmpNZllqkb5fAlbFl4Se2grPsFc/fb2FrYJzL1sXIySEhYCJx
-        cP129i5GLg4hgW2MEqs23mSFcM4zShy9v4MRpIpNQFHi/O23QAkODhEBM4kf9yNBwsICQRK7
-        9xxiAbFZBFQlXi74zgRi8wIN3d/8EGqBvMTJtYeh4oISJ2c+YQGZLyFwhVFiyaprLBBFQhKn
-        F59lBrGZBbQlli18zTyBkXcWkp5ZSFILGJlWMQrlZiZnpxZlZusVZFSWpCbrpaRuYgQGzOGJ
-        6pd2MPbN8TjEyMTBeIhRgoNZSYRXt/hEghBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHeDbwlYUIC
-        6YklqdmpqQWpRTBZJg5OqQbGskUVv5eeXXjIQVRylVHXzC//ji5LktG4uKBdQ/fHzuSpVwsv
-        e1gsDo4ud2qUmPu58qDIJ4ULJ5Qu9S3d/tDj/7+3Co/ivgr3pMUe6dmdmFBwWun6GwHjf+K3
-        ytpL5l3m7/E69mel4fHPBWEeC24G2R0R4pm1Ozosyj7qlknjyfA81c+MLwWPK7EUZyQaajEX
-        FScCAIhu4zIGAgAA
+        Wed, 16 Jun 2021 04:23:54 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 35EA25C01F1;
+        Wed, 16 Jun 2021 04:21:48 -0400 (EDT)
+Received: from imap8 ([10.202.2.58])
+  by compute3.internal (MEProxy); Wed, 16 Jun 2021 04:21:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm1; bh=KCoXZt4Cft/f1cQILn4U+MwRm5df
+        AcTHJ0SChYhfoS0=; b=UJlyvp4eU7amyLvC6pIlBfPxPpsqSZe0cpFZH/Ecm1w1
+        lcoKCAoqFpiaXooSAFLXFW0z+9kvUM4/6JKrRGJ4CeUs7NKYFjqQrU7E8i7nF8yS
+        ObWG8XZ5YsuJcacgvN7PmotoKkThdX8umuG/GG6kZSVwgno/5PXbJgatmpLxgPnx
+        vtqnGCGPaKNqmmLstADIA4YnXNrwp4KrvsFq8/Lost6DevxjLy+jPaMrJorP8n+r
+        qQpgSnXr/FC/gDMPpDG7TNR9zJNv2CGfYswlvuX9GpVeaKROzBQ5p33eSjDQtiyP
+        LReeweo2JzDjBSWDwvNatw9y4Y7wiC6hxlh1xzNCxQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=KCoXZt
+        4Cft/f1cQILn4U+MwRm5dfAcTHJ0SChYhfoS0=; b=wBtogdmuo788kl9I2X9fyg
+        klr8fXjv90iAKyoVUqCzypVYfY+VHazKlrl4EfNZs6Rf46oA6poKK90CmkehstnO
+        8vWHcIzRZa+CtxPEc2hSQ8Ta43KZx6Vq20Ly+0gDmLxJLfV4XBAzRzB44XvlIq19
+        to4WsiozX/EPATm6CI0NoACTcOVGCFqeCLkYWk5qllBY3iEetvegzIETnrgS7xcG
+        dTX1yv87y9QQnh/izG2XDr+/DULDQ8GhQ7hiIqqKYTqLNRdIVpCKte/rzxucOcap
+        o0w1X7LcMWxSRlyJ/sIPtsiHNsjnuyXHuByvZ7xrV5DaGw5HC7Bmr7vHkmdtyBIw
+        ==
+X-ME-Sender: <xms:m7TJYLw8ULbMS0rCCgMD6s1kqBnFOAaOsOYVvZUYCD_YkokEullwZA>
+    <xme:m7TJYDTgAATAkUEpnul3hVFGcWI046zZ6dbPMs9ZD55lePr0r0AuMREkyZMhmXN7Y
+    H06Ri6zZuILj2s870U>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgtdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomheptehlihhs
+    thgrihhruceorghlihhsthgrihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrg
+    htthgvrhhnpeffheffffeludeiiedtheduleetveeuveeguddutdejkedvvddvuefgledu
+    kefhheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
+X-ME-Proxy: <xmx:m7TJYFWGHj26YSBHQmxQZksC1xGhspseE1X8a9lENDAS0E9TlE3qGw>
+    <xmx:m7TJYFj87kNQsAaQiMxpsHh-umg6xHF28jJHcAzU2pKQwiiZdJbGiA>
+    <xmx:m7TJYNBF3NBfC7dZcLOis2057y1o-sjsTLYf85LKaer3YYyoHjNjAQ>
+    <xmx:nLTJYK46mGyArh7tWdeYSBRq_GDwu45ClhDSTf7jw6WFGTCwacjang>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C775B3A040C; Wed, 16 Jun 2021 04:21:47 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-526-gf020ecf851-fm-20210616.001-gf020ecf8
+Mime-Version: 1.0
+Message-Id: <f104cc23-b674-4496-a416-6d582820f429@www.fastmail.com>
+In-Reply-To: <20210616034458.3499522-1-axel.lin@ingics.com>
+References: <20210616034458.3499522-1-axel.lin@ingics.com>
+Date:   Wed, 16 Jun 2021 18:21:27 +1000
+From:   Alistair <alistair@alistair23.me>
+To:     "Axel Lin" <axel.lin@ingics.com>, "Mark Brown" <broonie@kernel.org>
+Cc:     "Lars Ivar Miljeteig" <lars.ivar.miljeteig@remarkable.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?Q?Re:_[PATCH_1/3]_regulator:_sy7636a:_Add_terminating_entry_for_?=
+ =?UTF-8?Q?platform=5Fdevice=5Fid_table?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MFD-core iterates through all subdevices of the corresponding
-MFD-device and checks, if the devicetree subnode has a fitting compatible.
-When nothing is found, a warning is thrown. This can be the case, when it
-is the intention to not use the MFD-device to it's full content.
-Therefore, change the warning to a debug print instead, to also avoid
-irritations.
+On Wed, Jun 16, 2021, at 1:44 PM, Axel Lin wrote:
+> The platform_device_id table is supposed to be zero-terminated.
+> 
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
 
-Signed-off-by: Yunus Bas <y.bas@phytec.de>
----
- drivers/mfd/mfd-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Alistair Francis <alistair@alistair23.me>
 
-diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
-index 6f02b8022c6d..e34c97088943 100644
---- a/drivers/mfd/mfd-core.c
-+++ b/drivers/mfd/mfd-core.c
-@@ -213,7 +213,7 @@ static int mfd=5Fadd=5Fdevice(struct device *parent, in=
-t id,
- 		}
-=20
- 		if (!pdev->dev.of=5Fnode)
--			pr=5Fwarn("%s: Failed to locate of=5Fnode [id: %d]\n",
-+			pr=5Fdebug("%s: Failed to locate of=5Fnode [id: %d]\n",
- 				cell->name, platform=5Fid);
- 	}
-=20
---=20
-2.30.0
-
+> ---
+> drivers/regulator/sy7636a-regulator.c | 1 +
+> 1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/regulator/sy7636a-regulator.c b/drivers/regulator/sy7636a-regulator.c
+> index c384c2b6ac46..54ab1be1001e 100644
+> --- a/drivers/regulator/sy7636a-regulator.c
+> +++ b/drivers/regulator/sy7636a-regulator.c
+> @@ -110,6 +110,7 @@ static int sy7636a_regulator_probe(struct platform_device *pdev)
+>  
+> static const struct platform_device_id sy7636a_regulator_id_table[] = {
+> { "sy7636a-regulator", },
+> + { }
+> };
+> MODULE_DEVICE_TABLE(platform, sy7636a_regulator_id_table);
+>  
+> -- 
+> 2.25.1
+> 
+> 
