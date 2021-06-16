@@ -2,104 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76BB3A9902
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59ACE3A9903
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhFPLXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhFPLW7 (ORCPT
+        id S231922AbhFPLXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:23:09 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42276 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230197AbhFPLXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:22:59 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D00FC061574;
-        Wed, 16 Jun 2021 04:20:52 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id nd37so3331075ejc.3;
-        Wed, 16 Jun 2021 04:20:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=v2H3t1ZLUf6l3uU+JY8lO7wmpQXUkTIz60TPBvkH+VM=;
-        b=ZNea7fiTfcu2/QurpI6aB+4BRBEKqdB/2B6/FLoJOJAHwyky4yMjglB5c2OQ2y44t6
-         iTgWE7EX64Cd1a3xNUdjYOuvqYQvU8BSu7kf392pke52C9SHLr1lroQNwXJvUU79bh7J
-         KlotfgsEm0+6Nix29NXQFlUghrlizZpV9kwEPItZy35ThfuRmRqI6UgRyRJBSSKWuJ8P
-         N1pfIhd6LuE9dEuWG9iIuoaUHyXzY5ccgVzQVm9goKm4SXn1Vb2Lyl3f3vNRk2PQ2OG6
-         fhD/bujK0/J0gId1nCU+JqbKZ8C3/bMKsJ7UoC6s/u+WkGKRtYWHKFZAcpyy8twjR/dF
-         WLuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v2H3t1ZLUf6l3uU+JY8lO7wmpQXUkTIz60TPBvkH+VM=;
-        b=BsI441GCHgy0ZPqglFfYYP4RPF7OYQutPj0FJhu2WTFMomx1UBGAJ7nEkYXL61lC0q
-         79+nN4SrlguIITeCxpHprvPWYWgdRvOWNTjaN15PQBj9SfrYz8JhuZwy4s2J4Qxa5chP
-         OJ3D/MVLk0fCEZ7DpMD0nJtWs7flFOCdUZuWDUmezvMh/XQOlzRKuWTlIe655zcR8yH8
-         G7ZwcO/0e9GGfIsESFISyauXv4rgUuEyXSChe+2u7PRg9nBR/yLEFROAkihlzfPonEKw
-         WbKiabWxQJPrdMVrx/etuNShdtTaUqkMTEI6aRQP4L9eo5eMlI87GdypJ8Ay70cavseL
-         gobA==
-X-Gm-Message-State: AOAM531UKireqQYML2hiDRm7ZN/8ZHRjXzNjG/KIZZB5vLcTDQ7ON34W
-        qwtQYGaKtY8zQHlmVIoYoBDRlBaZroY=
-X-Google-Smtp-Source: ABdhPJyUXYwAJAQo6+RXwFExUiBaJtU3EjZF74bYffyklBFzvCsvQ+JmLIXnvAG1C/RhC/qzhVuKIQ==
-X-Received: by 2002:a17:907:628d:: with SMTP id nd13mr4634035ejc.299.1623842450601;
-        Wed, 16 Jun 2021 04:20:50 -0700 (PDT)
-Received: from [192.168.2.202] (p5487b3a7.dip0.t-ipconnect.de. [84.135.179.167])
-        by smtp.gmail.com with ESMTPSA id x15sm1548068edd.6.2021.06.16.04.20.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 04:20:50 -0700 (PDT)
-Subject: Re: [PATCH -next] platform/x86: think-lmi: Add missing
- MODULE_DEVICE_TABLE
-To:     Zou Wei <zou_wei@huawei.com>, markpearson@lenovo.com,
-        hdegoede@redhat.com, mgross@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1623811809-65099-1-git-send-email-zou_wei@huawei.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <be89ca5c-3484-6d02-440f-8dc89297e48b@gmail.com>
-Date:   Wed, 16 Jun 2021 13:20:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 16 Jun 2021 07:23:08 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 87613219DB;
+        Wed, 16 Jun 2021 11:21:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1623842461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xPDMKpVRTMbj2eUIf+T2kb3aGLBSo2KcxwA0iFoc3sY=;
+        b=YJkUIMxk7uDq9ML0kW+4sM5qjBKmFkNY1eiqsNw+Ahef3xkEC9CjW3tT6JaaFN/MPPRNHe
+        ELhC3lAhlZlHtfO3bWNNllJwJqcE0IzykVoqB+ECXypThveGFMq8ff1iBvv2Ke4Z76YVp2
+        iovrlpdmXvFc2BVXZAn2yun3RI5BTRA=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id C280CA3BBA;
+        Wed, 16 Jun 2021 11:21:00 +0000 (UTC)
+Date:   Wed, 16 Jun 2021 13:21:00 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH next v3 1/2] dump_stack: move cpu lock to printk.c
+Message-ID: <YMnenOBTUclLld9i@alley>
+References: <20210615174947.32057-1-john.ogness@linutronix.de>
+ <20210615174947.32057-2-john.ogness@linutronix.de>
+ <8735tiq0d8.fsf@jogness.linutronix.de>
+ <YMmi5xoTOb82TKtJ@google.com>
+ <87mtrqnu74.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1623811809-65099-1-git-send-email-zou_wei@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87mtrqnu74.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 4:50 AM, Zou Wei wrote:
-> This patch adds missing MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
+On Wed 2021-06-16 09:35:35, John Ogness wrote:
+> On 2021-06-16, Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
+> It isn't about limiting. It is about tracking. The current dump_stack()
+> handles it correctly because the tracking is done in the stack frame of
+> the caller (in @was_locked of dump_stack_lvl()). My previous versions
+> also handled it correctly by using the same technique.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->   drivers/platform/x86/think-lmi.c | 1 +
->   1 file changed, 1 insertion(+)
+> With this series version I moved the tracking into a global variable
+> @printk_cpulock_nested, which is fine, except that a boolean is not
+> capable of tracking more than 1 nesting. Which means that
+> __printk_cpu_unlock() would release cpu lock ownership too soon.
 > 
-> diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
-> index 7771c93..6e1fbc4 100644
-> --- a/drivers/platform/x86/think-lmi.c
-> +++ b/drivers/platform/x86/think-lmi.c
-> @@ -873,6 +873,7 @@ static const struct wmi_device_id tlmi_id_table[] = {
->   	{ .guid_string = LENOVO_BIOS_SETTING_GUID },
->   	{ }
->   };
-> +MODULE_DEVICE_TABLE(vmi, tlmi_id_table);
-
-I assume this should be "wmi", i.e.
-
-     MODULE_DEVICE_TABLE(wmi, tlmi_id_table);
-
-instead of "vmi"?
-
-Regards,
-Max
-
->   
->   static struct wmi_driver tlmi_driver = {
->   	.driver = {
+> Doing this correctly is a simple change:
 > 
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index e67dc510fa1b..5376216e4f3d 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -3535,7 +3535,7 @@ EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
+>  
+>  #ifdef CONFIG_SMP
+>  static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
+> -static bool printk_cpulock_nested;
+> +static atomic_t printk_cpulock_nested = ATOMIC_INIT(0);
+>  
+>  /**
+>   * __printk_wait_on_cpu_lock() - Busy wait until the printk cpu-reentrant
+> @@ -3596,7 +3598,7 @@ int __printk_cpu_trylock(void)
+>  
+>  	} else if (old == cpu) {
+>  		/* This CPU is already the owner. */
+> -		printk_cpulock_nested = true;
+> +		atomic_inc(&printk_cpulock_nested);
+>  		return 1;
+>  	}
+>  
+> @@ -3613,8 +3615,8 @@ EXPORT_SYMBOL(__printk_cpu_trylock);
+>   */
+>  void __printk_cpu_unlock(void)
+>  {
+> -	if (printk_cpulock_nested) {
+> -		printk_cpulock_nested = false;
+> +	if (atomic_read(&printk_cpulock_nested)) {
+> +		atomic_dec(&printk_cpulock_nested);
+
+I think about handling printk_cpulock_nested with only one
+atomic operation. Something like:
+
+	if (atomic_dec_return(&printk_cpulock_level) == 0)
+		atomic_set_release(&printk_cpulock_owner, -1);
+
+It would require always incremanting the number in lock, e.g.
+
+	old = atomic_cmpxchg(&printk_cpulock_owner, -1, cpu);
+	if (old == -1 || old == cpu) {
+		atomic_inc(&printk_cpulock_level);
+		return 1;
+	}
+
+But I am not sure if it is really better. Feel free to keep
+your variant.
+
+>  		return;
+>  	}
+> 
+> > Shall this be a separate patch?
+> 
+> I would prefer a v4 because I also noticed that this patch accidentally
+> implements atomic_set_release() instead of moving over the atomit_set()
+> from dump_stack(). That also needs to be corrected, otherwise the next
+> patch in the series makes no sense.
+
+Yes, this needs to get fixed as well.
+
+Otherwise, the patch looks good to me. I haven't found any other
+problems, except for the two already mentioned (count nested levels,
+introduce atomic_set_release() in 2nd patch).
+
+Best Regards,
+Petr
