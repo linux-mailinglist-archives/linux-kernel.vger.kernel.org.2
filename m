@@ -2,154 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B633C3A9EAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA30F3A9EB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234501AbhFPPOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:14:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234537AbhFPPOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:14:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5478361166;
-        Wed, 16 Jun 2021 15:12:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623856354;
-        bh=79yfQdKxv3qf+Uv+p6L1hNCWKPz5Fwg5T6U9zNgNXKw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BqW78zvfiJFX1WM3aDIknqlHXv25abiaKRQGWflPbVe5mHb8O9l3o/637flx39WEV
-         cxE5w+ImnzJWcupRqiIlSCdWw3mWk3Cx9zyVndQ6dkPj5t43AKjeBGVfcpsgenW4vb
-         OtKupuD0Ntu2vsfS9jGRg8LEs4BP2xDparQODe4NbrpL5Ifi5OWG2B4/P9HW70cQ+p
-         X/YEaHt+LUkVEt4USF3AMG74opsi25veGHPjoUFr0Y86T4K0ypaX1XE8w1CW0XHn0r
-         M7bIYHn+eSLwn7g9EpX8Xjv0jQ72wzH8eddElWFaUDVLoyT0S+osdrecHy6yxIijoO
-         vHMYPlo4SyQqg==
-Received: by mail-ed1-f53.google.com with SMTP id s15so3141786edt.13;
-        Wed, 16 Jun 2021 08:12:34 -0700 (PDT)
-X-Gm-Message-State: AOAM532lCtCMzVKAZETEBvNqLjW+kwqaIONtY78GGoD/rm4MyUFmoZhU
-        cQUSrR8lEzHQcUxRceMGzKqrL9sRZpb2GOWMHw==
-X-Google-Smtp-Source: ABdhPJxABYnhsAzimi3nTGL6QdJk0DeFkDzt1g0oue+DKcU8vorHRba5UMSdbzxFOM1x2Zy6FOyPf8RPn7FkPhkqUPU=
-X-Received: by 2002:a05:6402:cb0:: with SMTP id cn16mr69518edb.165.1623856342407;
- Wed, 16 Jun 2021 08:12:22 -0700 (PDT)
+        id S234510AbhFPPPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:15:00 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:36656 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234547AbhFPPOn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:14:43 -0400
+Received: by mail-ot1-f42.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so2829084otl.3;
+        Wed, 16 Jun 2021 08:12:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lC2NeqII1gOHZUp/j/9qgc6w3CU2D970PqUKrQ/mFLU=;
+        b=lJQzPdoyJEj8bztOgqHx5oMpIe4pnQs8/YM6N7dWTLsFgfnR6sr5XKwLzNzIxQBKm5
+         eo+5yUZVx5k2OFnUiRuBjD/392IUVNcs7ZR/oplr+mijYLg3EHPA11JaBeZQsXV9dBJR
+         gS+OYOKFEzS3G1Xi7tPQGgXH9jWSCRdp3vnQvXDaPY55ATBlCHlKIYBRMn5sIgJL5fto
+         rRrWjwRIEutJag6MothDj9sZaZZN2iMqhKyK/USUrk7lXRCMKvWfV0nJqlxw9o5Np7oJ
+         WIbyTnm2vDFy8sS62cTywkdXIhpnUsJ1VUeRD+VJPlxh7w4SWg/Nkg3y8y2MuIyxf2sG
+         wmXA==
+X-Gm-Message-State: AOAM532yHs3A3l+nITs8+kmDUWjTnkX+gGgAL/YsLeSFBFBN8S42WZ2E
+        XSvIHfVk8hEX2Gx6VzgG3hTGKmR/Cfa8g75saKM=
+X-Google-Smtp-Source: ABdhPJwTcWoUKlmdSeCFjAAb7mGsMmkwf1IFcCiW7T+oKlXk5BNafaGfJbJHX6C0H2swC46Xsap40vgmYbL0rLiTk1k=
+X-Received: by 2002:a9d:3e53:: with SMTP id h19mr345488otg.260.1623856356561;
+ Wed, 16 Jun 2021 08:12:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210221174930.27324-1-nramas@linux.microsoft.com>
- <20210221174930.27324-6-nramas@linux.microsoft.com> <CAMuHMdVSuNS4edh-zM0_sbC0i1AAjQ9Y0n_8Mjz=3CALkW4pgg@mail.gmail.com>
- <CAL_JsqJ2x7zbyP3fAacdfHOWjCVjg6XhraV2YkoBJdZ2jXAMEA@mail.gmail.com>
- <54efb4fce5aac7efbd0b1b3885e9098b1d4ea745.camel@linux.microsoft.com>
- <CAL_JsqJEucP043eViq0Y1kAeqWNTqP5fLjfjz7+ksYx7QP_V5w@mail.gmail.com> <87y2basg27.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87y2basg27.fsf@mpe.ellerman.id.au>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 16 Jun 2021 09:12:10 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+6bKsEBLoUXDBXM3FyYoBxmVzg8divwhayVGmHbHLhFQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+6bKsEBLoUXDBXM3FyYoBxmVzg8divwhayVGmHbHLhFQ@mail.gmail.com>
-Subject: Re: [PATCH v19 05/13] of: Add a common kexec FDT setup function
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     nramas <nramas@linux.microsoft.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        James Morse <james.morse@arm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, dmitry.kasatkin@gmail.com,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Prakhar Srivastava <prsriva@linux.microsoft.com>,
-        balajib@linux.microsoft.com,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <3140195.44csPzL39Z@kreacher> <7272740.EvYhyI6sBW@kreacher> <0cd3a0b5-f656-2b4f-b5bc-67680bc80603@redhat.com>
+In-Reply-To: <0cd3a0b5-f656-2b4f-b5bc-67680bc80603@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 16 Jun 2021 17:12:25 +0200
+Message-ID: <CAJZ5v0hVLGqCV85m3cYxsuWS_4jBww54VJ9YTogPy_Tha8VUDA@mail.gmail.com>
+Subject: Re: [PATCH 3/5] ACPI: scan: Fix device object rescan in acpi_scan_clear_dep()
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 8:23 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+On Wed, Jun 16, 2021 at 4:48 PM Hans de Goede <hdegoede@redhat.com> wrote:
 >
-> Rob Herring <robh@kernel.org> writes:
-> > On Tue, Jun 15, 2021 at 10:13 AM nramas <nramas@linux.microsoft.com> wrote:
-> >>
-> >> On Tue, 2021-06-15 at 08:01 -0600, Rob Herring wrote:
-> >> > On Tue, Jun 15, 2021 at 6:18 AM Geert Uytterhoeven <
-> >> > geert@linux-m68k.org> wrote:
-> >> > >
-> >> > > > +void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
-> >> > > > +                                  unsigned long
-> >> > > > initrd_load_addr,
-> >> > > > +                                  unsigned long initrd_len,
-> >> > > > +                                  const char *cmdline, size_t
-> >> > > > extra_fdt_size)
-> >> > > > +{
-> >> > > > +       /* Did we boot using an initrd? */
-> >> > > > +       prop = fdt_getprop(fdt, chosen_node, "linux,initrd-
-> >> > > > start", NULL);
-> >> > > > +       if (prop) {
-> >> > > > +               u64 tmp_start, tmp_end, tmp_size;
-> >> > > > +
-> >> > > > +               tmp_start = fdt64_to_cpu(*((const fdt64_t *)
-> >> > > > prop));
-> >> > > > +
-> >> > > > +               prop = fdt_getprop(fdt, chosen_node,
-> >> > > > "linux,initrd-end", NULL);
-> >> > > > +               if (!prop) {
-> >> > > > +                       ret = -EINVAL;
-> >> > > > +                       goto out;
-> >> > > > +               }
-> >> > > > +
-> >> > > > +               tmp_end = fdt64_to_cpu(*((const fdt64_t *)
-> >> > > > prop));
-> >> > >
-> >> > > Some kernel code assumes "linux,initrd-{start,end}" are 64-bit,
-> >> > > other code assumes 32-bit.
-> >> >
-> >> > It can be either. The above code was a merge of arm64 and powerpc >> > both
-> >> > of which use 64-bit and still only runs on those arches. It looks >> > like
-> >> > some powerpc platforms may use 32-bit, but this would have been >> > broken
-> >> > before.
+> Hi,
 >
-> >> of_kexec_alloc_and_setup_fdt() is called from elf_64.c (in
-> >> arch/powerpc/kexec) which is for 64-bit powerpc platform only.
+> On 6/16/21 4:23 PM, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > >
-> > 64-bit PPC could be writing 32-bit property values. The architecture
-> > size doesn't necessarily matter. And if the values came from the
-> > bootloader, who knows what size it used.
+> > In general, acpi_bus_attach() can only be run safely under
+> > acpi_scan_lock, but that lock cannot be acquired under
+> > acpi_dep_list_lock, so make acpi_scan_clear_dep() schedule deferred
+> > execution of acpi_bus_attach() under acpi_scan_lock instead of
+> > calling it directly.
 > >
-> > This code is 32-bit powerpc only?:
+> > This also fixes a possible race between acpi_scan_clear_dep() and
+> > device removal that might cause a device object that went away to
+> > be accessed, because acpi_scan_clear_dep() is changed to acquire
+> > a reference on the consumer device object.
 > >
-> > arch/powerpc/boot/main.c-       /* Tell the kernel initrd address via device tree */
-> > arch/powerpc/boot/main.c:       setprop_val(chosen, "linux,initrd-start", (u32)(initrd_addr));
-> > arch/powerpc/boot/main.c-       setprop_val(chosen, "linux,initrd-end", (u32)(initrd_addr+initrd_size));
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >  drivers/acpi/scan.c |   50 +++++++++++++++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 45 insertions(+), 5 deletions(-)
+> >
+> > Index: linux-pm/drivers/acpi/scan.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/acpi/scan.c
+> > +++ linux-pm/drivers/acpi/scan.c
+> > @@ -2115,16 +2115,56 @@ static int acpi_dev_get_first_consumer_d
+> >       return 0;
+> >  }
+> >
+> > -static int acpi_scan_clear_dep(struct acpi_dep_data *dep, void *data)
+> > -{
+> > +struct acpi_scan_clear_dep_work {
+> > +     struct work_struct work;
+> >       struct acpi_device *adev;
+> > +};
+> > +
+> > +static void acpi_scan_clear_dep_fn(struct work_struct *work)
+> > +{
+> > +     struct acpi_scan_clear_dep_work *cdw;
+> > +
+> > +     cdw = container_of(work, struct acpi_scan_clear_dep_work, work);
+> >
+> > -     acpi_bus_get_device(dep->consumer, &adev);
+> > +     acpi_scan_lock_acquire();
+> > +     acpi_bus_attach(cdw->adev, true);
+> > +     acpi_scan_lock_release();
+> > +
+> > +     acpi_dev_put(cdw->adev);
+> > +     kfree(cdw);
+> > +}
+> > +
+> > +static bool acpi_scan_clear_dep_queue(struct acpi_device *adev)
+> > +{
+> > +     struct acpi_scan_clear_dep_work *cdw;
+> > +
+> > +     if (adev->dep_unmet)
+> > +             return false;
+> > +
+> > +     cdw = kmalloc(sizeof(*cdw), GFP_KERNEL);
+> > +     if (!cdw)
+> > +             return false;
+> > +
+> > +     cdw->adev = adev;
+> > +     INIT_WORK(&cdw->work, acpi_scan_clear_dep_fn);
+> > +     /*
+> > +      * Since the work function may block on the lock until the entire
+> > +      * initial enumeration of devices is complete, put it into the unbound
+> > +      * workqueue.
+> > +      */
+> > +     queue_work(system_unbound_wq, &cdw->work);
 >
-> Historically that code was always built 32-bit, even when used with a
-> 64-bit kernel.
+> Hmm, I'm a bit worried about this. Even with the system_unbound_wq
+> some code may expect at least some progress being made with processing
+> works during the initial enumeration. OTOH this does run pretty early on.
 >
-> These days it is also built 64-bit (for ppc64le).
+> Still I wonder if it would not be better to create + use our own workqueue
+> for this ?
+>
+> I guess we can always do this if we run into issues later...
 
-How it is built is immaterial. It's always writing a 32-bit value due
-to the u32 cast.
+Exactly my thought.
 
-> It looks like the drivers/of/fdt.c code can handle either 64 or 32-bit,
-> so I guess that's why it seems to be working.
+> With that said / otherwise the patch looks good to me:
+>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-Yes, that works, but that's not the issue. The question is does the
-main.c code run in combination with kexec. The kexec code above
-(copied straight from PPC code) would not work if linux,initrd-* are
-written by the main.c code.
-
-Rob
+Thanks!
