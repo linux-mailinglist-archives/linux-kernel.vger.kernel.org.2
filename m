@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B873A8E76
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBD73A8E78
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 03:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbhFPBkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 21:40:45 -0400
-Received: from ozlabs.org ([203.11.71.1]:55669 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230371AbhFPBko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 21:40:44 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G4SWd089wz9sXG;
-        Wed, 16 Jun 2021 11:38:36 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623807517;
-        bh=ntMpLfRzfPiBebhmvNxEkqBnOA/8znb4d401tkYzjmw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VET4KqLi3WEoYZPYs6SMGusriHoMB2384EBcYMS759c5l69N7rI3YFi8x3dkKn68v
-         bsJWh6TkzXiKYfA4XiL/eNwRMMiT0NtFhxf2JeHYzI6JaxK82pPwjJRvJC7rtfmSWO
-         eZzn22q8oQw9W8nKbb3IdVEfY9ZZ+g9v8Q0jTDJMpaFns0QP9BTRe3BnIMdAApFuUy
-         OrTRgBgZKdGtDhfybfMhNVmS7Bc3vbGUHB0nWhDaeIti6mWqqlUay+K9tfw1O4BMFk
-         8fxDFSlL0f6cMKFV0IT9nk6CAU+uAWjAmnJJmWDfwGzClkPH2gLLI4XCGej6yXFl9J
-         rfKAmPnFoO73w==
-Date:   Wed, 16 Jun 2021 11:38:35 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Bumyong Lee <bumyong.lee@samsung.com>,
-        Chanho Park <chanho61.park@samsung.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the swiotlb tree
-Message-ID: <20210616113835.0f0d4952@canb.auug.org.au>
+        id S231805AbhFPBku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 21:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230371AbhFPBkt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 21:40:49 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34461C061574;
+        Tue, 15 Jun 2021 18:38:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=L5KFn8XBOltgmecJHtTIarpN0RynVj+N0x57keu5L1M=; b=zje2nSXHYdaUHbbrqiRWIiYNqH
+        xP7CDuUauR7UMJe77t2/v+a8WckSSZMEkKwPZVZ8sY2yGGnDuJcJJifrMEE/u8nx30Ca1LdEUa8IM
+        wWQLX/EWGY86FUcY61dd7P/mJcCfY8Rrx56xyCeb7/ohvnRSs3qMIlyFB2WFtoDWRsE03UAC/5HdL
+        cqmNmN7dgGeCk9190jeId5iyeG8pNdltOqaeyirrlsFeWoAZYphUq0GJc+DnSKInfqI8tiOBgF/x5
+        iQm7NVCRjz3TxLmvZyljGbGDx/mlvEzwtQ5aVYtCm+WG4MBTvLa6WVP0Tz3gyfpdDy8ioeM4R5G+l
+        kXODQh0A==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltKVu-004NmR-OH; Wed, 16 Jun 2021 01:38:42 +0000
+Subject: Re: [PATCH] afs: fix no return statement in function returning
+ non-void
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Zheng Zengkai <zhengzengkai@huawei.com>,
+        Tom Rix <trix@redhat.com>, linux-afs@lists.infradead.org,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
+ <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com>
+ <f2764b10-dd0d-cabf-0264-131ea5829fed@infradead.org>
+ <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c2002123-795c-20ae-677c-a35ba0e361af@infradead.org>
+Date:   Tue, 15 Jun 2021 18:38:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dfzgBL0PQx.njFrR.cC8VMl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAHk-=whPPWYXKQv6YjaPQgQCf+78S+0HmAtyzO1cFMdcqQp5-A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dfzgBL0PQx.njFrR.cC8VMl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 6/15/21 5:32 PM, Linus Torvalds wrote:
+> On Tue, Jun 15, 2021 at 4:58 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> Some implementations of BUG() are macros, not functions,
+> 
+> Not "some", I think. Most.
+> 
+>> so "unreachable" is not applicable AFAIK.
+> 
+> Sure it is. One common pattern is the x86 one:
+> 
+>   #define BUG()                                                   \
+>   do {                                                            \
+>           instrumentation_begin();                                \
+>           _BUG_FLAGS(ASM_UD2, 0);                                 \
+>           unreachable();                                          \
+>   } while (0)
 
-Hi all,
+duh.
 
-After merging the swiotlb tree, today's linux-next build (powerpc
-ppc64_defconfig and x86_64 allmodconfig) produced this warning:
+> and that "unreachable()" is exactly what I'm talking about.
+> 
+> So I repeat: what completely broken compiler / config / architecture
+> is it that needs that "return 0" after a BUG() statement?
 
-In file included from arch/powerpc/include/asm/bug.h:109,
-                 from include/linux/bug.h:5,
-                 from arch/powerpc/include/asm/mmu.h:147,
-                 from arch/powerpc/include/asm/lppaca.h:46,
-                 from arch/powerpc/include/asm/paca.h:17,
-                 from arch/powerpc/include/asm/current.h:13,
-                 from include/linux/sched.h:12,
-                 from include/linux/ratelimit.h:6,
-                 from include/linux/dev_printk.h:16,
-                 from include/linux/device.h:15,
-                 from include/linux/dma-mapping.h:7,
-                 from include/linux/dma-direct.h:9,
-                 from kernel/dma/swiotlb.c:24:
-kernel/dma/swiotlb.c: In function 'swiotlb_bounce':
-include/linux/dev_printk.h:242:23: warning: format '%lu' expects argument o=
-f type 'long unsigned int', but argument 4 has type 'unsigned int' [-Wforma=
-t=3D]
-  242 |  WARN_ONCE(condition, "%s %s: " format, \
-      |                       ^~~~~~~~~
-include/asm-generic/bug.h:97:17: note: in definition of macro '__WARN_print=
-f'
-   97 |   __warn_printk(arg);     \
-      |                 ^~~
-include/asm-generic/bug.h:161:3: note: in expansion of macro 'WARN'
-  161 |   WARN(1, format);    \
-      |   ^~~~
-include/linux/dev_printk.h:242:2: note: in expansion of macro 'WARN_ONCE'
-  242 |  WARN_ONCE(condition, "%s %s: " format, \
-      |  ^~~~~~~~~
-kernel/dma/swiotlb.c:355:3: note: in expansion of macro 'dev_WARN_ONCE'
-  355 |   dev_WARN_ONCE(dev, 1,
-      |   ^~~~~~~~~~~~~
+I have seen it on ia64 -- most likely GCC 9.3.0, but I'll have to
+double check that.
 
-Introduced by commit
-
-  17eb5dcf1f15 ("swiotlb: manipulate orig_addr when tlb_addr has offset")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/dfzgBL0PQx.njFrR.cC8VMl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDJVhsACgkQAVBC80lX
-0GzqawgAizFVDQMp4DV845O5rEiWkw9rOjMmgZVyoX1oiop/IYfr+494NmsaTNVt
-FgwYw55T4qmtY4juN1AV06MhoA57HrN1HEIg+cuh9+ybErSJR5b3dg3PqgUvmIpd
-tM2oam7l5VxYnx+rqj8zuFvzS45UtmJ0RAiloLXPzLD59QAiP0gpDWNKSZLTwU5b
-kIo2yYUdxPXESMmMlT422dFwf5LLkFcS+By0PEb8YSpiYZwuFeD7DmcofSvDbCkg
-zmpx+kCdhfUuD917N9bHuUCYPEASwgHFdIL9OsJXFH4UTp4CdcuNY1UTpf6rusny
-r+Jwc3lEywxX4p5ZZxPZ7L3wPYibsQ==
-=k7j+
------END PGP SIGNATURE-----
-
---Sig_/dfzgBL0PQx.njFrR.cC8VMl--
+> Because that environment is broken, and the warning is bogus and wrong.
+> 
+> It might not be the compiler. It might be some architecture that does
+> this wrong. It might be some very particular configuration that does
+> something bad and makes the "unreachable()" not work (or not exist).
+> 
+> But *that* is the bug that should be fixed. Not adding a pointless and
+> incorrect line that makes no sense, just to hide the real bug.
