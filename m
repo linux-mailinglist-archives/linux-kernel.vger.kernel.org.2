@@ -2,121 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87C23A9F0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F323A9F12
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234484AbhFPPac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:30:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48432 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234357AbhFPPa3 (ORCPT
+        id S234572AbhFPPar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234403AbhFPPaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:30:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623857302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BLas3/nFvDzs67dkoqE0uPTj+WWCmULhYvLflkP+fWo=;
-        b=GGkC1mWrAWu23uiP2Y0xREcTmmf7C3JuBaGHskSMoxQP4Ar5qrmZ9b6YsTImHrkmlaJbqY
-        zBidF4nAqAE1SGhScxDaxwXV4vupAOqlCZ/26lBu6KOF9y0G8e8K5GA+6ckdywo1xncNlI
-        ir20uQjLiKw2A/7BP8EBuOl6R/9LWUU=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-543-kD5j4zOvND6YXVSds5LdBA-1; Wed, 16 Jun 2021 11:28:21 -0400
-X-MC-Unique: kD5j4zOvND6YXVSds5LdBA-1
-Received: by mail-ed1-f72.google.com with SMTP id j3-20020aa7c3430000b0290393f7aad447so1244471edr.18
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:28:21 -0700 (PDT)
+        Wed, 16 Jun 2021 11:30:46 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F367C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:28:40 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id m3so1509999wms.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:28:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=EbhkjQ5j2OcdBaFI2dnpODCHVTEU+UUtKdmpqCWFJRE=;
+        b=IrsFCOeRsye22mFWY64zEY/xcoZX1aX/aJs8wegxcX+91hdYXPwb5646PmscCeweMl
+         tTrOkUWmMGPkb2ksYi88LKfv44fuCIi7YU96VTqfhMBC8NWdwWk34fRu9YQ7eHVexak1
+         cAS6+nNpLh3pPIIe6UqWPqxx1OiJ/Wl6NMfy56J1fWp6MXNdL/Ys1xLwho2q7jvQ48HA
+         mjs0JgAkCC9QxDF/P1ve9ZaGofj3dQdAsdCX9k2d0PmCdeOsJWee+ET+gAlpINZGXXUR
+         vFA3ai4ENsW5SdgmfyJ33o88zms322CGNGZdASx4d8f2s3RLAEz9qDQJWrQRXJRwmbrh
+         YmlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BLas3/nFvDzs67dkoqE0uPTj+WWCmULhYvLflkP+fWo=;
-        b=biqCOmblYBHJZHPuBsfF2ghRt94HwaMb753WjyL9cwMLiTKoTyyZE+hD2H67JkeZQR
-         7jDGfwdNUhDgItHFMJ4Biw5VTkezaotE+g82jfMM/9+70WNQJ1mrqJdlTTfhBTusC44X
-         jyllXh/8hfZs7in+sM1a5Qfs5zTZCSQO8vE6iynh2gCWXp6EiorMOHUN2SYQfnTowThS
-         8KHpFVGHTMq4Y+KHTm5HvF2UKCzX86/441fdruNRVAGlu18C5vq56PI8wfWHXRzaHnP1
-         CMub/B437nR39WzTSWTQDSACwmAEqwubsvY9y7QFjEmyLHWLYrgqma7HsejxE5hOaSlw
-         5Ffw==
-X-Gm-Message-State: AOAM530eGVjK3Mr46yGaXIXaIAGnW4EPipGPiqndP21WWPWqxXahVeRG
-        BUu7WU/IDGQUoeJ1mHLyLf5Jj6E9jt+cjGppQtzYbQvBIZ4KD6XkcDBWxeXO6+WhgYoVZplyep2
-        1kXHj3w2NjDdwQWne0Prd6a8srNKFrldSNvu+6JQA+sHEQ0oPuJLGvEq8udAdnBC+vNMw5gb3LI
-        ZH
-X-Received: by 2002:a17:907:6f2:: with SMTP id yh18mr80065ejb.5.1623857300211;
-        Wed, 16 Jun 2021 08:28:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/ww3BJp4hsJ3ry2mzr6M3d8roZGAdHTBAEdOEGDLnh0e3VRj2B6oTQ86XraJunbgXUJNDuQ==
-X-Received: by 2002:a17:907:6f2:: with SMTP id yh18mr80047ejb.5.1623857299995;
-        Wed, 16 Jun 2021 08:28:19 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id n23sm2136526edr.87.2021.06.16.08.28.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 08:28:19 -0700 (PDT)
-Subject: Re: [PATCH 2/5] ACPI: scan: Make acpi_walk_dep_device_list()
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <3140195.44csPzL39Z@kreacher> <1881350.PYKUYFuaPT@kreacher>
- <f46533e2-1ebe-0130-9323-b045da6ea62d@redhat.com>
- <CAJZ5v0gZ2Fbff_g_v8t46-957=U_1nGe22sP9W=Hc-dohG8=Jg@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <4a08edff-df90-aeee-1d1d-76e6e0b9af4d@redhat.com>
-Date:   Wed, 16 Jun 2021 17:28:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=EbhkjQ5j2OcdBaFI2dnpODCHVTEU+UUtKdmpqCWFJRE=;
+        b=LQyzCqBah48uv/OvhkpX/5FLXmYHWQpVsG8ODJn1aEPQG6JLNP+Uyjj/6LHqOwoaR8
+         3j9n2kUjPBztCkUO4ckeyx7/QgPg9wxocnU4KVKmgc12LzW8zHvnLMrJoCpq/WHZPDLq
+         a9H9E/sM1q/U0yV5QP1qpDkij1vQ1j+CiGhCb8NiVporQV0C8mneH7wtyawf4ClWXBy0
+         ePXp050iJiJoCinzGg5v3TBdka0dxsyYwa/X+DjHwWJM8fIVmcwlG/jbUolqFh2r9bSm
+         D/agMwZgxKUAOM4aMwTQvmRHFHB3s1yNulXYckg3QkM1ZWMBztvNJseB/uDEaCptmYMz
+         nwmw==
+X-Gm-Message-State: AOAM530ZmOdoDN77VEW+ja1ljTHR+Ahft2GVuD1meuFvyEpLiwcVT9bP
+        dtVjogz8w9GAox/X6dh2WDMqKQ==
+X-Google-Smtp-Source: ABdhPJxdji89qsbTpaGF5exaCUoQ9EnsLGw3iVWl12yCnTnq2YZi903Vr7k222qcewg5OWRStI/C4A==
+X-Received: by 2002:a7b:c4da:: with SMTP id g26mr12312570wmk.64.1623857318677;
+        Wed, 16 Jun 2021 08:28:38 -0700 (PDT)
+Received: from dell ([91.110.221.170])
+        by smtp.gmail.com with ESMTPSA id w8sm2399999wmi.45.2021.06.16.08.28.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 08:28:38 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 16:28:36 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     "sameo@linux.intel.com" <sameo@linux.intel.com>,
+        "grant.likely@linaro.org" <grant.likely@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH mfd v2] mfd: Add Renesas Synchronization Management Unit
+ (SMU) support
+Message-ID: <YMoYpF13axL0EXFu@dell>
+References: <1622652224-19103-1-git-send-email-min.li.xe@renesas.com>
+ <YMiwEYLkbKocs8ux@dell>
+ <OS3PR01MB65939641C36B650A3B69DAADBA309@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+ <YMmuz0EVjfEi6MJj@dell>
+ <TYYPR01MB6603047A864DB37F111BDAD9BA0F9@TYYPR01MB6603.jpnprd01.prod.outlook.com>
+ <YMoP7fdkyyYUrDf2@dell>
+ <TYYPR01MB6603D0473CF72D7EFB599D2CBA0F9@TYYPR01MB6603.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0gZ2Fbff_g_v8t46-957=U_1nGe22sP9W=Hc-dohG8=Jg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <TYYPR01MB6603D0473CF72D7EFB599D2CBA0F9@TYYPR01MB6603.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 16 Jun 2021, Min Li wrote:
 
-On 6/16/21 5:11 PM, Rafael J. Wysocki wrote:
-> On Wed, Jun 16, 2021 at 4:41 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> Hi,
->>
->> On 6/16/21 4:22 PM, Rafael J. Wysocki wrote:
->>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>>
->>> Because acpi_walk_dep_device_list() is only called by the code in the
->>> file in which it is defined, make it static, drop the export of it
->>> and drop its header from acpi.h.
->>>
->>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>
->> Actually, acpi_walk_dep_device_list() was split out as a
->> helper function used to implement acpi_dev_clear_dependencies()
->> because it will be used outside of drivers/acpi.
+> > >
+> > > Hi Lee
+> > >
+> > > The PHC driver already existed in the current tree as
+> > > drivers/ptp/ptp_clockmatrix.c and ptp_idt82p33.c
+> > >
+> > > Right now, they act as i2c driver. I plan to change them as a normal
+> > > platform device driver after this MFD change kicked in
+> > >
+> > > That is why I would prefer the name "phc" instead of "clock" since the
+> > > driver is not a normal clk driver under drivers/clk but a ptp clock
+> > > driver. And down the road, we will have our real clock driver and I wanna
+> > reserve the name "clock" for the real clock driver.
+> > 
+> > I see.  To be honest, I wasn't aware of the PTP subsystem.
+> > 
+> > In which case, the name needs to match the one in the driver:
+> > 
+> >  static struct i2c_driver idtcm_driver = {
+> >         .driver = {
+> >                 .of_match_table = of_match_ptr(idtcm_dt_id),
+> >                 .name           = "idtcm",
+> >         },
+> >         .probe          = idtcm_probe,
+> >         .remove         = idtcm_remove,
+> >         .id_table       = idtcm_i2c_id,
+> >  };
+> > 
+> > So, "idtcm" in this case.
+> > 
+> > How else will it match?
+> > 
 > 
-> Not exactly.
+> Hi Lee
 > 
->> Specifically it will be used in the new intel_skl_int3472 driver:
->> https://patchwork.kernel.org/project/platform-driver-x86/patch/20210603224007.120560-6-djrscally@gmail.com/
+> I actually like to comply with the mfd sub device naming convention by naming it 8a3400x-phc
+> About the names in ptp clock driver, I will have to change them anyways down the road to
+> make them work with the mfd driver
 > 
-> That driver will use acpi_dev_get_first_consumer_dev() which is based
-> on acpi_walk_dep_device_list(), but still defined in
-> drivers/acpi/scan.c.
-> 
->> Which I plan to merge into pdx86/for-next today, I've just merged
->> your linux-pm/acpi-scan PULL-req which exports acpi_walk_dep_device_list()
->> as preparation for this.
-> 
-> No, the acpi_walk_dep_device_list() is a leftover there AFAICS.
+> Another match doesn't exist in the current tree yet. It would be a normal platform device driver that I
+> will submit to drivers/misc a little later after this mfd change is merged.
 
-You are right, my bad.
+Okay, leave it as it is then.
 
-So with this resolved, this patch is fine too:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
