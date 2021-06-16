@@ -2,97 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069DD3AA545
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E718B3AA548
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 22:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233479AbhFPU2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 16:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
+        id S233494AbhFPU2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 16:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233451AbhFPU20 (ORCPT
+        with ESMTP id S233451AbhFPU2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 16:28:26 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85653C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:26:18 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso2472283pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:26:18 -0700 (PDT)
+        Wed, 16 Jun 2021 16:28:48 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3048C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:26:40 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so3892290otl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 13:26:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Zi6CxSdFzJAU/uJ8a5qyyg176z2pYarS7df6bpLiqLs=;
-        b=aX6jc6zprHZ43mJUwdioAb6eOdkAIYSqiTwpLB5yQlKOZb8kCeR+jE9eiVkmuWrC60
-         QO8dHZWrF7WXUZWH8/XJA4w1lzkhnNwIXfiNQOTzcCzTu0hhoOANqj+koouM4YDRHPf4
-         pC5yvVDdpWU2AgDlGZc430Qjitj+SeiTil6eU=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=T6gAZUccFikvtHCOVi1+1qn3JiUL2nu1CR9FCcCl0vw=;
+        b=J/uaZSGnkBHGkMQg/39IxMz3uwjTcFNFFgiHfdL/4cg5SNHXVxYnfsS0ciu3LzKJKV
+         rQCAuNJaO1Y7oLoifjLYWa1AdP14YPjexECYs8Fjc15FmDvEil6DaqQ3DJ3SpM4SA5Fm
+         nbu/8lS3NmZKqOZjbzIp18VXH8tYK0Qr3Cr6QdnBFruCkpN6VOnsM07MXtwBTCJ/goGm
+         VCGjjiEatOMYQW+5nkaxVBu11QWLIGH1DQK0gHLHEnCDEbaVssB8oF2EOzQ52POxe/57
+         /4UsfSYfXHOtQmEFLUutCYn7IXYkaUjtTOoZZHRI0GFH55DDkqqed/6u60qo2+JNGYoq
+         dJ5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Zi6CxSdFzJAU/uJ8a5qyyg176z2pYarS7df6bpLiqLs=;
-        b=nkTVYJfchc4Pb38w+XPhPrjCT/vhn5aHvHJ+Oz40sCFWX7es++0O1w0PCd8FXWPO+P
-         p6go1j7BHQ3ZdzpCdaamRCx2mNwyIS0i4sTm5M8T+mXmX/Igo0+u0ywFVeb+2xAahlh9
-         UKxCatj7kwS/pLg8J+9IctiaRUm8If0j9HW4IqEO9wSm/RfQWlbULANpz7Vbp3uwdGAy
-         s3p6xLLj9tkUkxIa0OMStBQ6+Cxgl41gY7h+jiWT6Y9gkwuyAV3bsw+2tfsGMdm0o+Fa
-         6EfZdstVLQjQLB5w357wIUFsMkkHQw6g8x8TjYZw56LzqtUWjvJ0BL26FtNxsIaTmCqV
-         3Yng==
-X-Gm-Message-State: AOAM5315LkDR3wRjsr1rKyQ2DIQBKS2Wpumv2ITLUkLhKq2tH8Nc+ipI
-        ZW6rGod/XDYrRmpKPe+4vYHyVA==
-X-Google-Smtp-Source: ABdhPJy70PETPLLA7ZceudoYAyvQR2YlLTVuaYUK00rS4eyaJVS5ue1+YPGv2YPyNzVPyQQhBjucSA==
-X-Received: by 2002:a17:902:b94c:b029:117:9c88:7744 with SMTP id h12-20020a170902b94cb02901179c887744mr1243178pls.20.1623875178044;
-        Wed, 16 Jun 2021 13:26:18 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f15sm3044037pgg.23.2021.06.16.13.26.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=T6gAZUccFikvtHCOVi1+1qn3JiUL2nu1CR9FCcCl0vw=;
+        b=dqEAGkHCCHCwi7GS8plK0Au8wWa9iflUN4Rk7JN/lfylpjpRwSPammjykdlibnMRI8
+         use8Ry+vDC6vJTQMSQ+3pytIL84eBegDiQBpNBj4P2OPWMXHFb1bghDtjD1QUzbsDLDJ
+         z+mHuRaZ5Z5GwbDUG1NXXLNAbyE+yzC3ZnfU9XM+ii0es4PgOMC+xPyYxVekpfKlpxsu
+         pOglzV2oeacNJWzvBLSI4VZ3ht2g0WWM7UI+vhmqf2OZL2/f5MqJvU+SBwYOlgiUpGdl
+         mWZnuCmSGdiZxa5G6PSM2kDp+OMpwY6h/t2SoC/F+S8dpEVjiBVmKEzF266crmGWbmXp
+         G1QQ==
+X-Gm-Message-State: AOAM530yqPIsKmAk3EOq5/LRex2vw9NyJj/ZXAK7yKUp0x2oO/kaw2Y7
+        R8GH9drq5x6dfV358BAykUK+Vw==
+X-Google-Smtp-Source: ABdhPJwtJnLmMYb4u0xCB0siYoVRKCx2zq1adGTibu3BIJ45pIRYbWxgJUiCYuJ5TeotUMoowtOdwA==
+X-Received: by 2002:a05:6830:411c:: with SMTP id w28mr1462057ott.196.1623875200030;
+        Wed, 16 Jun 2021 13:26:40 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id v1sm796040ota.22.2021.06.16.13.26.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 13:26:17 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] RDMA/core: Use flexible array for mad data
-Date:   Wed, 16 Jun 2021 13:26:15 -0700
-Message-Id: <20210616202615.1247242-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 16 Jun 2021 13:26:39 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 15:26:37 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     jassisinghbrar@gmail.com, manivannan.sadhasivam@linaro.org,
+        agross@kernel.org, rananta@codeaurora.org, vnkgutta@codeaurora.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] mailbox: qcom-ipcc: Fix IPCC mbox channel exhaustion
+Message-ID: <YMpefUyfBhfgsmOh@yoga>
+References: <1623865378-1943-1-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=0f6e0b848f8b2a913015c9c030e5ea98deef9dd8; i=SiK2ULITvZfMNXmqRkr+ofG4gpql69b9o2o0ISRPW4c=; m=fvxiQzqzCA9QcgKSJbJ11pTGymCFRvYOOBlP5e4hgLU=; p=CQ7QTMm85lc4Pgf70Hbu6eKIHRL8Wkals6mfT8l9lfE=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDKXmYACgkQiXL039xtwCZUIhAAmbc fSd5myhlaGN/jMAAF00rs3BZucrXnarQz+pUo4jMYg3H74eGHZXTEIxZuzz31LVqKNnVaPwn9Dulf 6vfBC6R7xgVa2itbSGgmKjZqc9PjipIbq5OZXqsNQSFhnrNF2yM2vnW2THPE7t0P+AgQi3L0+71ti xAi4P0F3wm0KGBbLwZjJ5uzQGQxafo/WmTOs+aNBdvtjaphiR01jOzRgkEL2YCa0WbkkKJlosEX3p tYDCV737ekukksTWBcvWTHfYFZYwKtGd/EBy53H/5RO5znlByzucnRl+pT08UZZPJw6mi91+7X3MR 7RsFCOvVGDQ8tPNpVBl85pokbb3CczKwEjk0qI12yU6MnUpLzwOsgBPEQZf3pTxo+8gkl69PC4hLH Aj03+EaHaduP0I3dOUyt4EZqqyihu/vbziilz8Ts51LwZyTF3zi8NJC+JdP7ODUVQ/QyIyIATexQV SMBJPh42E2LMe/5mZNrL4kgMBZokPbxtnpqvpl5kbGOdkzOAGaG60yz+Aj4bhbwNsvmzP/zKTiIBD ++4wpvw/6iON4fXoQZNdCCa6PTNLasiZo/h0+9Zc4xB2wTRraDJmn8P7SBGDuqwhdRt0Mjc7YWG07 1Y68hnZdy6m+30X2JglzbTwkWgUjb67Esa9MNoUo+Nz0dYu37W5el+hGnhPBd9FY=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1623865378-1943-1-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally read across neighboring array fields.
+On Wed 16 Jun 12:42 CDT 2021, Sibi Sankar wrote:
 
-Without a flexible array, this looks like an attempt to perform a
-memcpy() read beyond the end of the packet->mad.data array:
+> Fix IPCC (Inter-Processor Communication Controller) channel exhaustion by
+> setting the channel private data to NULL on mbox shutdown.
+> 
+> Err Logs:
+> remoteproc: MBA booted without debug policy, loading mpss
+> remoteproc: glink-edge: failed to acquire IPC channel
+> remoteproc: failed to probe subdevices for remoteproc: -16
+> 
+> Fixes: fa74a0257f45 ("mailbox: Add support for Qualcomm IPCC")
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> Cc: stable@vger.kernel.org
 
-drivers/infiniband/core/user_mad.c:
-	memcpy(packet->msg->mad, packet->mad.data, IB_MGMT_MAD_HDR);
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Switch from [0] to [] to use the appropriately handled type for trailing
-bytes.
+Regards,
+Bjorn
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- include/uapi/rdma/ib_user_mad.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/uapi/rdma/ib_user_mad.h b/include/uapi/rdma/ib_user_mad.h
-index 90c0cf228020..10b5f6a4c677 100644
---- a/include/uapi/rdma/ib_user_mad.h
-+++ b/include/uapi/rdma/ib_user_mad.h
-@@ -143,7 +143,7 @@ struct ib_user_mad_hdr {
-  */
- struct ib_user_mad {
- 	struct ib_user_mad_hdr hdr;
--	__aligned_u64	data[0];
-+	__aligned_u64	data[];
- };
- 
- /*
--- 
-2.25.1
-
+> ---
+>  drivers/mailbox/qcom-ipcc.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/mailbox/qcom-ipcc.c b/drivers/mailbox/qcom-ipcc.c
+> index 2d13c72944c6..584700cd1585 100644
+> --- a/drivers/mailbox/qcom-ipcc.c
+> +++ b/drivers/mailbox/qcom-ipcc.c
+> @@ -155,6 +155,11 @@ static int qcom_ipcc_mbox_send_data(struct mbox_chan *chan, void *data)
+>  	return 0;
+>  }
+>  
+> +static void qcom_ipcc_mbox_shutdown(struct mbox_chan *chan)
+> +{
+> +	chan->con_priv = NULL;
+> +}
+> +
+>  static struct mbox_chan *qcom_ipcc_mbox_xlate(struct mbox_controller *mbox,
+>  					const struct of_phandle_args *ph)
+>  {
+> @@ -184,6 +189,7 @@ static struct mbox_chan *qcom_ipcc_mbox_xlate(struct mbox_controller *mbox,
+>  
+>  static const struct mbox_chan_ops ipcc_mbox_chan_ops = {
+>  	.send_data = qcom_ipcc_mbox_send_data,
+> +	.shutdown = qcom_ipcc_mbox_shutdown,
+>  };
+>  
+>  static int qcom_ipcc_setup_mbox(struct qcom_ipcc *ipcc)
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
