@@ -2,132 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053D73AA4B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C829D3AA4B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbhFPTyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:54:55 -0400
-Received: from mga03.intel.com ([134.134.136.65]:43250 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230330AbhFPTyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:54:53 -0400
-IronPort-SDR: IDZgJz9ValPFoo/TbxA9qbRr08tSaBhQuV5MQBSLUbMqfp6vb67DIbN6QLFQmR78bZ8bR0fZHG
- OFZFsSMqBuAw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="206284190"
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="206284190"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 12:52:46 -0700
-IronPort-SDR: 4PbMpYAmJ3K9aHs7Yq5kwP6O9WEYRNb0R37wplybeYW680U6YCazNwkOoaRJdVPjiaYiWxi3lF
- Gm6wk7B7xH7Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="640123789"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
-  by fmsmga005.fm.intel.com with ESMTP; 16 Jun 2021 12:52:45 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     rjw@rjwysocki.net
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH -next] Revert "ACPI: DPTF: Add new PCH FIVR methods"
-Date:   Wed, 16 Jun 2021 12:52:39 -0700
-Message-Id: <20210616195239.1627552-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S233056AbhFPTy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233017AbhFPTy5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 15:54:57 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE840C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:52:50 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id m2so2877990pgk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:52:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iu3sTRI4Ga1ervnK5tO7EMOoHzHR4xBz1C8JdNaGCVA=;
+        b=HKyp4hdkNn98jyZjO/itFbTsAjuWDCJ9LdrFsnrFjPIE9O4IcaTsxVXtZQlIo0dLQ/
+         cnYhJ5liNvDhcDw++oRT6Ryh/xwhamlDfmw0KAuUbL99m94k7DFRvP3qF0ipaNmMCUeD
+         Bk17lIf7tMXZtYDe+4DTcsoZ6VQUi7LPkD6UM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iu3sTRI4Ga1ervnK5tO7EMOoHzHR4xBz1C8JdNaGCVA=;
+        b=fD+9I4tkdOG5i6/qCIxUpkJYitm8yb+lMnYO/Kee5Lp3W0KwvBLFqncjyoDtkDWAM3
+         5gJ7qy54jhs6RNh0SVHZ4C9La5zd1U/WzNnviSUwHMCh2PvV3+jbsCgxtuI/CVTU4cCK
+         AxFEVAbqfijbc1IHqj9ti2I3JSjEk6DyIqZGg1KzpGWBjc6M4vorRw39z7X2Oh+JGbVM
+         jJEXHXNbIdTf0BUlI10gNf6E0Shc6LeY5ZwVkMihIkOpKPti+LjV2Nnk85pNQlgQUr7S
+         QjSMUoD6m2NDWO7l/sRXd+iScKTXvRnrT5W2KD+KEV3fDBLGycfMHnw2LvhA0R3w7YVq
+         m5Tw==
+X-Gm-Message-State: AOAM533MWCP/GrfX9pu1A55w5nd/QGbfikxqXO7rNQSQutrTeV8TbpEV
+        23KFwlW7f0irhVufka322iVONO0KSuH09w==
+X-Google-Smtp-Source: ABdhPJyadA6K+Ch6Os/HN+T0haAfJUcovLTu6Izm91kzA5n2FE4i73pC6hOVv0wKBr8z4HI9aM1eKQ==
+X-Received: by 2002:a05:6a00:b4f:b029:2e9:f6a8:46db with SMTP id p15-20020a056a000b4fb02902e9f6a846dbmr1423427pfo.26.1623873170165;
+        Wed, 16 Jun 2021 12:52:50 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p17sm6355426pjg.54.2021.06.16.12.52.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 12:52:49 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     netdev@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Lennert Buytenhek <buytenh@wantstofly.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Romain Perier <romain.perier@gmail.com>,
+        Allen Pais <allen.lkml@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        wengjianfeng <wengjianfeng@yulong.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] mwl8k: Avoid memcpy() over-reading of ETH_SS_STATS
+Date:   Wed, 16 Jun 2021 12:52:42 -0700
+Message-Id: <20210616195242.1231287-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+X-Patch-Hashes: v=1; h=sha256; g=b6df66ea320e2dd2f60b6aa198c92d8bf5668fd0; i=fgwr8Ir/RkDxDn1oBpfFAI0X5hxNqb8r0Q6WOlTVTWU=; m=oovpy32QOGm7F0CxLPSpC3hYkeAu+GX5CeuC6rbYRG0=; p=rNzffPVViPPasgNsA9kftAkj+3z+yfBDZn11q5PzClA=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDKVokACgkQiXL039xtwCYNRQ//Xds gObSVssEMFebWQY591nCjSvczCvbAxMhxFeUowBL+EmYCR4DnyKWS8Krfdiu251zp3xD+JDcwgC/Z 9vttzBL2ENgbAlPYgR0O1UuwWJ4z9Fl0VZGmRLlBbby/rg2mgfTJWTpp2zkrfxPL6q/YPwcgnUc0j q13dtiAcgzFC4iKqwEdKH/Jx5QFtXrSY3cefkWQyOa7vPYOfWXowV6Q67Ft6bf0LjKFSKZ/9Xje7R Cs7MALDWp5dF4OsJBiWI2KTF1azyN6HE14WW89jqBmxXHvRB8e1n7xqZvb6RwLuVnjVkwWau3LJHZ xzOIfpAd80Wk7qL46BF1szFIUO7igL8BCFU6wluUlio7hDxIzqifpbey0ZUukj30Rj8/dGSIGBiLf RAbM9LQr00fg30YQEnkMiFhV2ZFd+oVbutFX+7ANK5ZsMARomhQagbImPsFMBMe84yrVboiilW4+E qKo0mIJJCnFw+AGiDKb1pcNl4gjdUgreLkIBUpXz9kUJSdnNpNOlwQ0oSuUjy/ld+A2r5ZH251Jjo uGg7zdSPCWgCXVLadKFO/cdYympUc++xzZIPM6aH1+ZblzxJ+stFKqiyEwEy5tUuo2O0PfWeWf180 wPO4kMuZN1gvZq4oeEH8lsx80PlXSrXVnTeNmHxIzhM0XnWE0jOVxOITfmRL1UeY=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit bab858b30cbe5619038dd68ab89be469fff9861e.
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally reading across neighboring array fields. Use the
+sub-structure address directly.
 
-Some user reported issues with this change. Will resubmit for 5.15 cycle.
-
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- Documentation/ABI/testing/sysfs-platform-dptf | 42 -------------------
- drivers/acpi/dptf/dptf_pch_fivr.c             |  9 ----
- 2 files changed, 51 deletions(-)
+ drivers/net/wireless/marvell/mwl8k.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-platform-dptf b/Documentation/ABI/testing/sysfs-platform-dptf
-index bce1b745fc56..141834342a4d 100644
---- a/Documentation/ABI/testing/sysfs-platform-dptf
-+++ b/Documentation/ABI/testing/sysfs-platform-dptf
-@@ -111,45 +111,3 @@ Contact:	linux-acpi@vger.kernel.org
- Description:
- 		(RW) The PCH FIVR (Fully Integrated Voltage Regulator) switching frequency in MHz,
- 		when FIVR clock is 38.4MHz.
--
--What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fivr_switching_freq_mhz
--Date:		June, 2021
--KernelVersion:	v5.14
--Contact:	linux-acpi@vger.kernel.org
--Description:
--		(RO) PCH FIVR switching control frequency in the units of
--		XTAL_FREQ / 128, where XTAL_FREQ is the (product specific)
--		Crystal Oscillator frequency.
--
--What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fivr_switching_fault_status
--Date:		June, 2021
--KernelVersion:	v5.14
--Contact:	linux-acpi@vger.kernel.org
--Description:
--		(RO) Read the FIVR switching frequency control fault status.
--
--What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/ssc_clock_info
--Date:		June, 2021
--KernelVersion:	v5.14
--Contact:	linux-acpi@vger.kernel.org
--Description:
--		(RO) Presents SSC (spread spectrum clock) information for EMI
--		(Electro magnetic interference) control. This is a bit mask.
--		Bits	Description
--		[7:0]	Sets clock spectrum spread percentage:
--			0x00=0.2% , 0x3F=10%
--			1 LSB = 0.1% increase in spread (for
--			settings 0x01 thru 0x1C)
--			1 LSB = 0.2% increase in spread (for
--			settings 0x1E thru 0x3F)
--		[8]	When set to 1, enables spread
--			spectrum clock
--		[9]	0: Triangle mode. FFC frequency
--			walks around the Fcenter in a linear
--			fashion
--			1: Random walk mode. FFC frequency
--			changes randomly within the SSC
--			(Spread spectrum clock) range
--		[10]	0: No white noise. 1: Add white noise
--			to spread waveform
--		[11]	When 1, future writes are ignored.
-diff --git a/drivers/acpi/dptf/dptf_pch_fivr.c b/drivers/acpi/dptf/dptf_pch_fivr.c
-index 22c4ae0401ef..5fca18296bf6 100644
---- a/drivers/acpi/dptf/dptf_pch_fivr.c
-+++ b/drivers/acpi/dptf/dptf_pch_fivr.c
-@@ -55,24 +55,15 @@ static ssize_t name##_store(struct device *dev,\
+diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
+index 84b32a5f01ee..3bf6571f4149 100644
+--- a/drivers/net/wireless/marvell/mwl8k.c
++++ b/drivers/net/wireless/marvell/mwl8k.c
+@@ -4552,7 +4552,7 @@ static int mwl8k_cmd_update_stadb_add(struct ieee80211_hw *hw,
+ 	else
+ 		rates = sta->supp_rates[NL80211_BAND_5GHZ] << 5;
+ 	legacy_rate_mask_to_array(p->legacy_rates, rates);
+-	memcpy(p->ht_rates, sta->ht_cap.mcs.rx_mask, 16);
++	memcpy(p->ht_rates, &sta->ht_cap.mcs, 16);
+ 	p->interop = 1;
+ 	p->amsdu_enabled = 0;
  
- PCH_FIVR_SHOW(freq_mhz_low_clock, GFC0)
- PCH_FIVR_SHOW(freq_mhz_high_clock, GFC1)
--PCH_FIVR_SHOW(ssc_clock_info, GEMI)
--PCH_FIVR_SHOW(fivr_switching_freq_mhz, GFCS)
--PCH_FIVR_SHOW(fivr_switching_fault_status, GFFS)
- PCH_FIVR_STORE(freq_mhz_low_clock, RFC0)
- PCH_FIVR_STORE(freq_mhz_high_clock, RFC1)
+@@ -5034,7 +5034,7 @@ mwl8k_bss_info_changed_sta(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 			ap_legacy_rates =
+ 				ap->supp_rates[NL80211_BAND_5GHZ] << 5;
+ 		}
+-		memcpy(ap_mcs_rates, ap->ht_cap.mcs.rx_mask, 16);
++		memcpy(ap_mcs_rates, &ap->ht_cap.mcs, 16);
  
- static DEVICE_ATTR_RW(freq_mhz_low_clock);
- static DEVICE_ATTR_RW(freq_mhz_high_clock);
--static DEVICE_ATTR_RO(ssc_clock_info);
--static DEVICE_ATTR_RO(fivr_switching_freq_mhz);
--static DEVICE_ATTR_RO(fivr_switching_fault_status);
- 
- static struct attribute *fivr_attrs[] = {
- 	&dev_attr_freq_mhz_low_clock.attr,
- 	&dev_attr_freq_mhz_high_clock.attr,
--	&dev_attr_ssc_clock_info.attr,
--	&dev_attr_fivr_switching_freq_mhz.attr,
--	&dev_attr_fivr_switching_fault_status.attr,
- 	NULL
- };
+ 		rcu_read_unlock();
  
 -- 
-2.30.2
+2.25.1
 
