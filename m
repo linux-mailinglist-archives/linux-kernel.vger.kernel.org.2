@@ -2,124 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60C23A9CF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9DB3A9CEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233752AbhFPOIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:08:22 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:42120 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbhFPOIU (ORCPT
+        id S233768AbhFPOIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:08:01 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:64714 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232796AbhFPOIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:08:20 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15GE5f8W117835;
-        Wed, 16 Jun 2021 09:05:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623852341;
-        bh=qJ2GnQxd+yS6ISLDIaGuRDIGnMu21lKltpoDuOcviVs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Y9lT3fiGcNzub92cli5OVPZlfJJkKpeM+luPVBsr3MFOO6ZPHHHJVpQ+nkPKYeZGc
-         Oigl/gNPm6mvRw7bjJe5x+TOImMI9XtSlzgnK3dGiblZxaNItnhloXDa+TP398uVTd
-         GrMY0JrzySfFxPP8q/iiHvxNcpR1bO38e/T6BowE=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15GE5fR8015784
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Jun 2021 09:05:41 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 16
- Jun 2021 09:05:40 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 16 Jun 2021 09:05:40 -0500
-Received: from [10.250.233.239] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15GE5XZj082268;
-        Wed, 16 Jun 2021 09:05:34 -0500
-Subject: Re: [PATCH v6 0/7] Add SR-IOV support in PCIe Endpoint Core
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>
-CC:     Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-References: <20210517074723.10212-1-kishon@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <d5bcf443-a0ee-fda5-5c5c-d69d25b53bb9@ti.com>
-Date:   Wed, 16 Jun 2021 19:35:33 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 16 Jun 2021 10:08:00 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
+ id 54e0344117152d93; Wed, 16 Jun 2021 16:05:52 +0200
+Received: from kreacher.localnet (89-64-81-4.dynamic.chello.pl [89.64.81.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 15B6D66993E;
+        Wed, 16 Jun 2021 16:05:52 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ACPI: scan: Simplify acpi_table_events_fn()
+Date:   Wed, 16 Jun 2021 16:05:50 +0200
+Message-ID: <4649754.GXAFRqVoOG@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <20210517074723.10212-1-kishon@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.81.4
+X-CLIENT-HOSTNAME: 89-64-81-4.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgjeegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepkeelrdeigedrkedurdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedurdegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=2 Fuz1=2 Fuz2=2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo, Bjorn,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On 17/05/21 1:17 pm, Kishon Vijay Abraham I wrote:
-> Patch series
-> *) Adds support to add virtual functions to enable endpoint controller
->    which supports SR-IOV capability
-> *) Add support in Cadence endpoint driver to configure virtual functions
-> *) Enable pci_endpoint_test driver to create pci_device for virtual
->    functions
-> 
-> v1 of the patch series can be found at [1]
-> v2 of the patch series can be found at [2]
-> v3 of the patch series can be found at [3]
-> v4 of the patch series can be found at [4]
-> v5 of the patch series can be found at [5]
-> 
-> Here both physical functions and virtual functions use the same
-> pci_endpoint_test driver and existing pcitest utility can be used
-> to test virtual functions as well.
-> 
-> Changes from v5:
-> *) Rebased to 5.13-rc1
-> 
-> Changes from v4:
-> *) Added a fix in Cadence driver which was overwriting BAR configuration
->    of physical function.
-> *) Didn't include Tom's Acked-by since Cadence driver is modified in
->    this revision.
-> 
-> Changes from v3:
-> *) Fixed Rob's comment and added his Reviewed-by as suggested by him.
-> 
-> Changes from v2:
-> *) Fixed DT binding documentation comment by Rob
-> *) Fixed the error check in pci-epc-core.c
-> 
-> Changes from v1:
-> *) Re-based and Re-worked to latest kernel 5.10.0-rc2+ (now has generic
->    binding for EP)
-> 
-> [1] -> http://lore.kernel.org/r/20191231113534.30405-1-kishon@ti.com
-> [2] -> http://lore.kernel.org/r/20201112175358.2653-1-kishon@ti.com
-> [3] -> https://lore.kernel.org/r/20210305050410.9201-1-kishon@ti.com
-> [4] -> http://lore.kernel.org/r/20210310160943.7606-1-kishon@ti.com
-> [5] -> https://lore.kernel.org/r/20210419083401.31628-1-kishon@ti.com
+Notice that the table field of struct acpi_table_events_work is never
+read and its event field is always equal to ACPI_TABLE_EVENT_LOAD, so
+both of them are redundant.
 
-Can this series be merged for 5.14? It already includes Ack from Rob for
-dt-binding changes and Ack from Tom for Cadence driver changes.
+Accordingly, drop struct acpi_table_events_work and use struct
+work_struct directly instead of it, simplify acpi_scan_table_handler()
+and rename it to acpi_scan_table_notify().
 
-Thanks
-Kishon
+Moreover, make acpi_bus_table_handler() check the event code against
+ACPI_TABLE_EVENT_LOAD before calling acpi_scan_table_notify(), so it
+is not necessary to do that check in the latter.
+
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/bus.c      |    3 ++-
+ drivers/acpi/internal.h |    2 +-
+ drivers/acpi/scan.c     |   38 ++++++++++----------------------------
+ 3 files changed, 13 insertions(+), 30 deletions(-)
+
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -2471,46 +2471,28 @@ int __init __acpi_probe_device_table(str
+ 	return count;
+ }
+ 
+-struct acpi_table_events_work {
+-	struct work_struct work;
+-	void *table;
+-	u32 event;
+-};
+-
+ static void acpi_table_events_fn(struct work_struct *work)
+ {
+-	struct acpi_table_events_work *tew;
+-
+-	tew = container_of(work, struct acpi_table_events_work, work);
+-
+-	if (tew->event == ACPI_TABLE_EVENT_LOAD) {
+-		acpi_scan_lock_acquire();
+-		acpi_bus_scan(ACPI_ROOT_OBJECT);
+-		acpi_scan_lock_release();
+-	}
++	acpi_scan_lock_acquire();
++	acpi_bus_scan(ACPI_ROOT_OBJECT);
++	acpi_scan_lock_release();
+ 
+-	kfree(tew);
++	kfree(work);
+ }
+ 
+-void acpi_scan_table_handler(u32 event, void *table, void *context)
++void acpi_scan_table_notify(void)
+ {
+-	struct acpi_table_events_work *tew;
++	struct work_struct *work;
+ 
+ 	if (!acpi_scan_initialized)
+ 		return;
+ 
+-	if (event != ACPI_TABLE_EVENT_LOAD)
++	work = kmalloc(sizeof(*work), GFP_KERNEL);
++	if (!work)
+ 		return;
+ 
+-	tew = kmalloc(sizeof(*tew), GFP_KERNEL);
+-	if (!tew)
+-		return;
+-
+-	INIT_WORK(&tew->work, acpi_table_events_fn);
+-	tew->table = table;
+-	tew->event = event;
+-
+-	schedule_work(&tew->work);
++	INIT_WORK(work, acpi_table_events_fn);
++	schedule_work(work);
+ }
+ 
+ int acpi_reconfig_notifier_register(struct notifier_block *nb)
+Index: linux-pm/drivers/acpi/bus.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/bus.c
++++ linux-pm/drivers/acpi/bus.c
+@@ -1195,7 +1195,8 @@ void __init acpi_subsystem_init(void)
+ 
+ static acpi_status acpi_bus_table_handler(u32 event, void *table, void *context)
+ {
+-	acpi_scan_table_handler(event, table, context);
++	if (event == ACPI_TABLE_EVENT_LOAD)
++		acpi_scan_table_notify();
+ 
+ 	return acpi_sysfs_table_handler(event, table, context);
+ }
+Index: linux-pm/drivers/acpi/internal.h
+===================================================================
+--- linux-pm.orig/drivers/acpi/internal.h
++++ linux-pm/drivers/acpi/internal.h
+@@ -86,7 +86,7 @@ void acpi_device_hotplug(struct acpi_dev
+ bool acpi_scan_is_offline(struct acpi_device *adev, bool uevent);
+ 
+ acpi_status acpi_sysfs_table_handler(u32 event, void *table, void *context);
+-void acpi_scan_table_handler(u32 event, void *table, void *context);
++void acpi_scan_table_notify(void);
+ 
+ /* --------------------------------------------------------------------------
+                      Device Node Initialization / Removal
+
+
+
