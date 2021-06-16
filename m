@@ -2,92 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E3A3A9DE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354A33A9DF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234145AbhFPOou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:44:50 -0400
-Received: from pv50p00im-zteg10011401.me.com ([17.58.6.41]:60763 "EHLO
-        pv50p00im-zteg10011401.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233919AbhFPOot (ORCPT
+        id S234152AbhFPOp4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Jun 2021 10:45:56 -0400
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:37540 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233919AbhFPOpy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:44:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1623854562; bh=GfaSmL1QsKEY/ERc3OVL+uPlFioWiHdEBrWy0bXGwiU=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=kbBE+9kVOTPhOo+47S9ODDd1/MPo1/7r0eEPnJIWqHP1C5kVidP+GNq0eQFIDWOkJ
-         N9BI83mtjoMqDvuxCZbQURZAz+qnZrkRMBfEgpp3kQg9yfAMMpEu/hlXHuSYceWWpp
-         7AONLJ1sFjSuOSs6AQhwuXH3KKAJfBjsO2SXlcuEDL6hLzFIwOk6eY7uvQ+eng6f8L
-         D/c5GpapXKChcWzZyH9SL4OCkDjaXShD3fu+3ECA6y8SWofMbu82vNAsblH7AnuMdE
-         4SxkJvW/BWeJ4hlmWreTuhjZLlYnR5wNCqc5W178n52bZj+Mvpcl+6yXO98MD/eaim
-         pulzAtJ9g207Q==
-Received: from xiongwei.. (unknown [120.245.2.120])
-        by pv50p00im-zteg10011401.me.com (Postfix) with ESMTPSA id E3AE090057A;
-        Wed, 16 Jun 2021 14:42:39 +0000 (UTC)
-From:   Xiongwei Song <sxwjean@me.com>
-To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
-Subject: [PATCH] locking/lockdep: print possible warning after counting deps
-Date:   Wed, 16 Jun 2021 22:42:10 +0800
-Message-Id: <20210616144210.278662-2-sxwjean@me.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210616144210.278662-1-sxwjean@me.com>
-References: <20210616144210.278662-1-sxwjean@me.com>
+        Wed, 16 Jun 2021 10:45:54 -0400
+Received: by mail-lf1-f50.google.com with SMTP id p7so4747159lfg.4;
+        Wed, 16 Jun 2021 07:43:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Cvp2mHEQf6K2NmEgmLY5mMra5q/cnwT0U6hmuP4aWWg=;
+        b=CXb4XRHnyltsc1VKVLpop0pVYZN97Mbg0Hb9WGFwTyx4ChPw/W4y6pKVAOXdVqVZN7
+         A/4LKqbztYYLNsIbr+1O8mmlYFclTjQ6b7ufB5FjvBY3YoY7sPaw8koOCXMgqisAndFy
+         JLiNuQs9twnuG7lEeAsolfGlIVxrkmcgU3JgJHindoFjzmSPfq4hsFSg7JF+OJ59O+3t
+         xpIaQ+kSn8soNBCsfuy0sU0XM6b5fhMmxZJcLsW9JktmBro0wJXiJHAwORdXBUQjK70s
+         ifTimogJqJRpE/tgvvuObB1NORwMSd/NHClZPFCQ7agk1QPqI5A8lAT3qm3cTjsf3DSa
+         uBow==
+X-Gm-Message-State: AOAM533ey8/KW6U34/br3ab8aIXexzhefx0cNebONWGTN1Ellpoff0oH
+        1bRU7u0vZO1H1JsWIqXa+MC7mQHv8meRxI/ZBDw=
+X-Google-Smtp-Source: ABdhPJzzKcR2X/FPDGKYSaNfQ+peUf5omp1pYmTrIyN4PYBKzZ/g1ScynelThVaku/b2O9TZzw3VQNy2ZR13qhomz7w=
+X-Received: by 2002:a05:6512:3d08:: with SMTP id d8mr5554lfv.393.1623854627094;
+ Wed, 16 Jun 2021 07:43:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-16_07:2021-06-15,2021-06-16 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=778 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2106160085
+References: <20210603151550.140727-1-mailhol.vincent@wanadoo.fr>
+ <20210603151550.140727-3-mailhol.vincent@wanadoo.fr> <20210616094633.fwg6rsyxyvm2zc6d@pengutronix.de>
+ <CAMZ6RqLj59+3PrQwTCfK_bVebRBHE=HqCfRb31MU9pRDBPxG8w@mail.gmail.com> <20210616142940.wxllr3c55rk66rij@pengutronix.de>
+In-Reply-To: <20210616142940.wxllr3c55rk66rij@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Wed, 16 Jun 2021 23:43:35 +0900
+Message-ID: <CAMZ6RqJWeexWTGVkEJWMvBs1f=HQOc4zjd-PqPsxKnCr_XDFZQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] can: netlink: add interface for CAN-FD Transmitter
+ Delay Compensation (TDC)
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongwei Song <sxwjean@gmail.com>
+On Wed. 16 Jun 2021 à 23:29, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 16.06.2021 22:53:02, Vincent MAILHOL wrote:
+> > On Wed. 16 Jun 2021 at 18:46, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> > > On 04.06.2021 00:15:50, Vincent Mailhol wrote:
+> > > [...]
+> > >
+> > > > +static size_t can_tdc_get_size(const struct net_device *dev)
+> > > > +{
+> > > > +     struct can_priv *priv = netdev_priv(dev);
+> > > > +     size_t size;
+> > > > +
+> > > > +     if (!priv->tdc_const)
+> > > > +             return 0;
+> > > > +
+> > > > +     size = nla_total_size(0);                       /* nest IFLA_CAN_TDC */
+> > > > +     size += nla_total_size(sizeof(u32));            /* IFLA_CAN_TDCV_MAX */
+> > > > +     size += nla_total_size(sizeof(u32));            /* IFLA_CAN_TDCO_MAX */
+> > > > +     size += nla_total_size(sizeof(u32));            /* IFLA_CAN_TDCF_MAX */
+> > > > +
+> > > > +     if (priv->tdc.tdco) {
+> > >
+> > > Naively I'd say, iff the device has tdc_const give the user space the
+> > > tdc parameters, regardless if some value is 0 or not.
+> > >
+> > > What do you think?
+> >
+> > I thought about that.
+> > The first important remark is that if tdc.tdco is zero, then TDC
+> > is off (c.f. documentation of struct can_tdc::tdco).
+> >
+> > Let me illustrate my vision through examples.
+>
+> [...]
+>
+> examples makes sense \o/
 
-The graph walk might hit error when counting dependencies. Once the
-return value is negative, print a warning to reminder users.
+Great!
 
-Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
----
- kernel/locking/lockdep.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+> [...]
+>
+> > Finally, I have one side comment. It seems to me that you did not
+> > understand that the intent of
+> > |     if (priv->tdc.tdco)
+> > was to actually check whether TDC was on or off. In other words, my
+> > code was unclear.
+> >
+> > I am now thinking to introduce an helper macro:
+> > static bool can_tdc_is_enabled(const struct can_priv *priv)
+> > |{
+> > |    return !!priv->tdc.tdco;
+> > |}
+> >
+> > The code would look more clear like that.
+> > -     if (priv->tdc.tdco) {
+> > +     if (can_tdc_is_enabled(priv) {
+>
+> Sounds good, I'm squashing this patch:
+>
+> | diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+> | index 6134bbf69c10..d48be574eae7 100644
+> | --- a/drivers/net/can/dev/netlink.c
+> | +++ b/drivers/net/can/dev/netlink.c
+> | @@ -311,7 +311,7 @@ static size_t can_tdc_get_size(const struct net_device *dev)
+> |         size += nla_total_size(sizeof(u32));            /* IFLA_CAN_TDCO_MAX */
+> |         size += nla_total_size(sizeof(u32));            /* IFLA_CAN_TDCF_MAX */
+> |
+> | -       if (priv->tdc.tdco) {
+> | +       if (can_tdc_is_enabled(priv)) {
+> |                 size += nla_total_size(sizeof(u32));    /* IFLA_CAN_TDCV */
+> |                 size += nla_total_size(sizeof(u32));    /* IFLA_CAN_TDCO */
+> |                 size += nla_total_size(sizeof(u32));    /* IFLA_CAN_TDCF */
+> | @@ -352,6 +352,7 @@ static size_t can_get_size(const struct net_device *dev)
+> |                                        priv->data_bitrate_const_cnt);
+> |         size += sizeof(priv->bitrate_max);                      /* IFLA_CAN_BITRATE_MAX */
+> |         size += can_tdc_get_size(dev);                          /* IFLA_CAN_TDC */
+> | +
+> |         return size;
+> |  }
+> |
+> | @@ -374,7 +375,7 @@ static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev)
+> |             nla_put_u32(skb, IFLA_CAN_TDC_TDCF_MAX, tdc_const->tdcf_max))
+> |                 goto err_cancel;
+> |
+> | -       if (priv->tdc.tdco)
+> | +       if (can_tdc_is_enabled(priv)) {
+> |                 if (nla_put_u32(skb, IFLA_CAN_TDC_TDCV, tdc->tdcv) ||
+> |                     nla_put_u32(skb, IFLA_CAN_TDC_TDCO, tdc->tdco) ||
+> |                     nla_put_u32(skb, IFLA_CAN_TDC_TDCF, tdc->tdcf))
+> | diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+> | index 9de6e9053e34..b6d1db1e7258 100644
+> | --- a/include/linux/can/bittiming.h
+> | +++ b/include/linux/can/bittiming.h
+> | @@ -83,6 +83,11 @@ struct can_tdc_const {
+> |         u32 tdcf_max;
+> |  };
+> |
+> | +static inline bool can_tdc_is_enabled(const struct can_priv *priv)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 7641bd407239..074fd6418c20 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -2028,8 +2028,12 @@ static unsigned long __lockdep_count_forward_deps(struct lock_list *this)
- {
- 	unsigned long  count = 0;
- 	struct lock_list *target_entry;
-+	enum bfs_result ret;
-+
-+	ret = __bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
- 
--	__bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
-+	if (unlikely(bfs_error(ret)))
-+		print_bfs_bug(ret);
- 
- 	return count;
- }
-@@ -2053,8 +2057,12 @@ static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
- {
- 	unsigned long  count = 0;
- 	struct lock_list *target_entry;
-+	enum bfs_result ret;
-+
-+	ret = __bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
- 
--	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
-+	if (unlikely(bfs_error(ret)))
-+		print_bfs_bug(ret);
- 
- 	return count;
- }
--- 
-2.30.2
+Did you try to compile? I am not sure if bittiming.h is able to
+see struct can_priv which is defined in dev.h.
 
+
+Yours sincerely,
+Vincent
+
+> | +{
+> | +       return !!priv->tdc.tdco;
+> | +}
+> | +
+> |  #ifdef CONFIG_CAN_CALC_BITTIMING
+> |  int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
+> |                        const struct can_bittiming_const *btc);
