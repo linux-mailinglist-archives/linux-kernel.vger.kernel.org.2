@@ -2,74 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FDF3AA687
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 00:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858C23AA686
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 00:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbhFPWPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 18:15:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31626 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232258AbhFPWPo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 18:15:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623881616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ynFypKw6yaFTAwjszi5wGpSPgyHOdH7h2sszX4y3jj8=;
-        b=IfXqqk5qaqrzRdlu5QqLvnvN/WViw6bq5BA+bUw0RjzLsxXPdoDKmN3jac/G/WbcEw7KHd
-        fXuR7NVoEDsoHjmfEbPtLUr5p0u688UzX1aVFwuvlmf8bIcUGPOPqI/Swt+0lCdPfBWVva
-        9izL68n31TlNiBTocmkhXcyPeu5huNA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-sP0V_TQWNIyTTK4aNmmkdg-1; Wed, 16 Jun 2021 18:13:33 -0400
-X-MC-Unique: sP0V_TQWNIyTTK4aNmmkdg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 867BA1084F41;
-        Wed, 16 Jun 2021 22:13:31 +0000 (UTC)
-Received: from optiplex-fbsd (unknown [10.3.128.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1BB4710016F4;
-        Wed, 16 Jun 2021 22:13:28 +0000 (UTC)
-Date:   Wed, 16 Jun 2021 18:13:26 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Georgi Djakov <quic_c_gdjako@quicinc.com>,
-        akpm@linux-foundation.org, iamjoonsoo.kim@lge.com,
-        rientjes@google.com, penberg@kernel.org, cl@linux.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, djakov@kernel.org
-Subject: Re: [PATCH] mm/slub: Add taint after the errors are printed
-Message-ID: <YMp3htJJkyVZJglK@optiplex-fbsd>
-References: <1623860738-146761-1-git-send-email-quic_c_gdjako@quicinc.com>
- <4b22baf7-582b-f1ae-a525-046a493ec85f@suse.cz>
+        id S234199AbhFPWPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 18:15:46 -0400
+Received: from mga07.intel.com ([134.134.136.100]:24121 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230368AbhFPWPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 18:15:43 -0400
+IronPort-SDR: 8L+MnNeseRjzg3gxr3ArIC4piPyvUHI6veFUpliEf5EzKHVeUcBhjC2x0msryyGjJG8RJPYRC4
+ dGXNAKm2OZXg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="270115470"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="270115470"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 15:13:35 -0700
+IronPort-SDR: oUKgt15yndK7vFLK6T65adm6r2HILOPLmNGV6zeV+C4srYWj8JS/wae1AJJZ19dn+HfWMzw3iv
+ elD/Ep9E9wqg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="621837931"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by orsmga005.jf.intel.com with ESMTP; 16 Jun 2021 15:13:35 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     hdegoede@redhat.com, mgross@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH 1/2] platform/x86: ISST: Optimize CPU to PCI device mapping
+Date:   Wed, 16 Jun 2021 15:13:28 -0700
+Message-Id: <20210616221329.1909276-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4b22baf7-582b-f1ae-a525-046a493ec85f@suse.cz>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 06:34:41PM +0200, Vlastimil Babka wrote:
-> On 6/16/21 6:25 PM, Georgi Djakov wrote:
-> > When running the kernel with panic_on_taint, the usual slub debug error
-> > messages are not being printed when object corruption happens. That's
-> > because we panic in add_taint(), which is called before printing the
-> > additional information. This is a bit unfortunate as the error messages
-> > are actually very useful, especially before a panic. Let's fix this by
-> > moving add_taint() after the errors are printed on the console.
-> > 
-> > Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
-> 
-> Makes sense.
-> 
-> While at it, I wonder if we should use LOCKDEP_STILL_OK instead of
-> LOCKDEP_NOW_UNRELIABLE. Isn't it too pessimistic to assume that some slab's
-> memory corruption hit some lock state?
->
+It was observed that some of the high performance benchmarks are spending
+more time in kernel depending on which CPU package they are executing.
+The difference is significant and benchmark scores varies more than 10%.
+These benchmarks adjust class of service to improve thread performance
+which run in parallel. This class of service change causes access to
+MMIO region of Intel Speed Select PCI devices depending on the CPU
+package they are executing.
 
-Given there is noted corruption I don't think it's safe to assume otherwise.
+This mapping from CPU to PCI device instance uses a standard Linux PCI
+interface "pci_get_domain_bus_and_slot()". This function does a linear
+search to get to a PCI device. Since these platforms have 100+ PCI
+devices, this search can be expensive in fast path for benchmarks.
+
+Since the device and function of PCI device is fixed for Intel
+Speed Select PCI devices, the CPU to PCI device information can be cached
+at the same time when bus number for the CPU is read. In this way during
+runtime the cached information can be used. This improves performance
+of these benchmarks significantly.
+
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ .../intel_speed_select_if/isst_if_common.c    | 29 +++++++++++++++----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/platform/x86/intel_speed_select_if/isst_if_common.c b/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
+index 0c2aa22c7a12..aedb8310214c 100644
+--- a/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
++++ b/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
+@@ -281,11 +281,27 @@ static int isst_if_get_platform_info(void __user *argp)
+ struct isst_if_cpu_info {
+ 	/* For BUS 0 and BUS 1 only, which we need for PUNIT interface */
+ 	int bus_info[2];
++	struct pci_dev *pci_dev[2];
+ 	int punit_cpu_id;
+ };
+ 
+ static struct isst_if_cpu_info *isst_cpu_info;
+ 
++static struct pci_dev *_isst_if_get_pci_dev(int cpu, int bus_no, int dev, int fn)
++{
++	int bus_number;
++
++	if (bus_no < 0 || bus_no > 1 || cpu < 0 || cpu >= nr_cpu_ids ||
++	    cpu >= num_possible_cpus())
++		return NULL;
++
++	bus_number = isst_cpu_info[cpu].bus_info[bus_no];
++	if (bus_number < 0)
++		return NULL;
++
++	return pci_get_domain_bus_and_slot(0, bus_number, PCI_DEVFN(dev, fn));
++}
++
+ /**
+  * isst_if_get_pci_dev() - Get the PCI device instance for a CPU
+  * @cpu: Logical CPU number.
+@@ -300,17 +316,18 @@ static struct isst_if_cpu_info *isst_cpu_info;
+  */
+ struct pci_dev *isst_if_get_pci_dev(int cpu, int bus_no, int dev, int fn)
+ {
+-	int bus_number;
++	struct pci_dev *pci_dev;
+ 
+ 	if (bus_no < 0 || bus_no > 1 || cpu < 0 || cpu >= nr_cpu_ids ||
+ 	    cpu >= num_possible_cpus())
+ 		return NULL;
+ 
+-	bus_number = isst_cpu_info[cpu].bus_info[bus_no];
+-	if (bus_number < 0)
+-		return NULL;
++	pci_dev = isst_cpu_info[cpu].pci_dev[bus_no];
+ 
+-	return pci_get_domain_bus_and_slot(0, bus_number, PCI_DEVFN(dev, fn));
++	if (pci_dev->devfn == PCI_DEVFN(dev, fn))
++		return pci_dev;
++
++	return _isst_if_get_pci_dev(cpu, bus_no, dev, fn);
+ }
+ EXPORT_SYMBOL_GPL(isst_if_get_pci_dev);
+ 
+@@ -327,6 +344,8 @@ static int isst_if_cpu_online(unsigned int cpu)
+ 	} else {
+ 		isst_cpu_info[cpu].bus_info[0] = data & 0xff;
+ 		isst_cpu_info[cpu].bus_info[1] = (data >> 8) & 0xff;
++		isst_cpu_info[cpu].pci_dev[0] = _isst_if_get_pci_dev(cpu, 0, 0, 1);
++		isst_cpu_info[cpu].pci_dev[1] = _isst_if_get_pci_dev(cpu, 1, 30, 1);
+ 	}
+ 
+ 	ret = rdmsrl_safe(MSR_THREAD_ID_INFO, &data);
+-- 
+2.30.2
 
