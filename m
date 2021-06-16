@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34893A929C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02A43A929A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 08:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbhFPGbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:31:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59948 "EHLO mail.kernel.org"
+        id S231811AbhFPGbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:31:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231532AbhFPG3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231610AbhFPG3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Jun 2021 02:29:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4434C613FB;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 457B7613FE;
         Wed, 16 Jun 2021 06:27:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623824868;
-        bh=10m6lRZyRVnoXgx/oN7Q2inx+Rz6qUWeZ8SRCqU0QQU=;
+        bh=L7h+ou0mKQ8i1B6wVmMcnfpfNQNeeZ14Zy4GBxWvJlg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H4jHZ1HDdq6T04odSzzj5HViTbmbDaYA2PCNO0VdxBftWIFpwvlWjt7D1Ji8sav2h
-         UlqhgKTjco3E+ZT4bk+jfqEaJcEWuCCMK/sHOGnKp1VUGvlJtQSi3qnYlIW27cHZfS
-         2BzHzkO29Jd42sXHhrMs7OV1o+rZs0LtM65eAk1uDGf0XCSS55wIoP1/3bm8YBIkcf
-         zN6CRs7uPAG6YBJzDi/jkEGEG0Imiad5kslVdbA56MjRvn+utg+sLbls9qsexqLGNd
-         Ba9SbQc1yWrnG9VOPggz4fvPVy1rl8EZ8NqOkBvDe6fa2Cze4Gwivl6rtFLqIck/MC
-         HqcWBvtl3yg+Q==
+        b=oUBzmmLmlo1DCg9O4/Swqz9gD3V7ESwieyqEq8DSuTLcDbtrgLFAcx9LehSKKUqRR
+         BJW9wDkrmwTGy3J+Jf7HTrwRyr4lwQkZ56J3Eiq46OmTgO4rSQgm1D8rtL6kb7O++w
+         YXGdJkH1McqmXh+1a/4IOXIE1BjMNzyCUhUlvs6DzYr1T2mpGqLivZVn3wr4AbN7vL
+         f3b+kgisdndfU64L3p00NMnmXX0nRE3T5MlieJqPYhU2p0rZFkpTnE7a7N/MKGP0Wb
+         1682QP2vlzI3lXZYUKNqRUHDxQgiY99e9hwumdmZz8iODQ0XPhP8EktIFnLslBR8Z3
+         HM06slsMj/jLQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1ltP1e-004kJ4-Ex; Wed, 16 Jun 2021 08:27:46 +0200
+        id 1ltP1e-004kJ8-GX; Wed, 16 Jun 2021 08:27:46 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 12/29] docs: doc-guide: avoid using ReST :doc:`foo` markup
-Date:   Wed, 16 Jun 2021 08:27:27 +0200
-Message-Id: <d6cbe5183406e3378ed4bd0f84f4bcf85a15009c.1623824363.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v2 13/29] docs: driver-api: avoid using ReST :doc:`foo` markup
+Date:   Wed, 16 Jun 2021 08:27:28 +0200
+Message-Id: <095b04bff6d49b4097382398bb91102eaa3f0fd3.1623824363.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1623824363.git.mchehab+huawei@kernel.org>
 References: <cover.1623824363.git.mchehab+huawei@kernel.org>
@@ -49,28 +49,22 @@ So, use the filename at the sources, instead of :doc:`foo`.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/doc-guide/contributing.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ Documentation/driver-api/ioctl.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/doc-guide/contributing.rst b/Documentation/doc-guide/contributing.rst
-index 67ee3691f91f..207fd93d7c80 100644
---- a/Documentation/doc-guide/contributing.rst
-+++ b/Documentation/doc-guide/contributing.rst
-@@ -237,10 +237,10 @@ We have been trying to improve the situation through the creation of
- a set of "books" that group documentation for specific readers.  These
- include:
+diff --git a/Documentation/driver-api/ioctl.rst b/Documentation/driver-api/ioctl.rst
+index c455db0e1627..8593cc172f0c 100644
+--- a/Documentation/driver-api/ioctl.rst
++++ b/Documentation/driver-api/ioctl.rst
+@@ -34,7 +34,7 @@ _IO/_IOR/_IOW/_IOWR
  
-- - :doc:`../admin-guide/index`
-- - :doc:`../core-api/index`
-- - :doc:`../driver-api/index`
-- - :doc:`../userspace-api/index`
-+ - Documentation/admin-guide/index.rst
-+ - Documentation/core-api/index.rst
-+ - Documentation/driver-api/index.rst
-+ - Documentation/userspace-api/index.rst
+ type
+    An 8-bit number, often a character literal, specific to a subsystem
+-   or driver, and listed in :doc:`../userspace-api/ioctl/ioctl-number`
++   or driver, and listed in Documentation/userspace-api/ioctl/ioctl-number.rst
  
- As well as this book on documentation itself.
- 
+ nr
+   An 8-bit number identifying the specific command, unique for a give
 -- 
 2.31.1
 
