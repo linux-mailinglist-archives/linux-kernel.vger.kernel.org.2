@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0733AA031
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D17D3A9FBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbhFPPqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:46:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
+        id S235022AbhFPPk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:40:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235276AbhFPPmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:42:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADB5E613D8;
-        Wed, 16 Jun 2021 15:38:09 +0000 (UTC)
+        id S235093AbhFPPic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:38:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA786613DB;
+        Wed, 16 Jun 2021 15:36:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857890;
-        bh=fMrrCZcyMkkO4aYriED/FUNF+bjQd2p730EkAmIZSsM=;
+        s=korg; t=1623857774;
+        bh=gnIHSmiRm2ZA2eahi/RuH956Cu8q5rAqA8rv2HTFy0s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GbX/MSKgmAstWaVZdsFfvZpBW5Xisb0yIn3Uel63tIPJVXsUcG2tVt+KlYx5LdxyM
-         sj4uJOlb0rn/WbDakpmyvOliYGiwRnM+oiBA65uUT7bAc2pYEJSvUkLiV5fIF+caLv
-         wbQ409KBxhWoH5FdvRDwY7C3xIc/tNmDRS6mxv6w=
+        b=gmn2yIvKTKEgGucHfmfgpGOjN0Lh0Sar7bDcWY6A+bDsyD66rPszvSxO4vWQeBGp5
+         Al2SHSZS9nWaHaKGUPnY5zMhQEeSQ9aWve8ljhv6alJ8zUFyjfHIhV3ivPi/qYd06a
+         gugkr1n1e8sEvZV5OJMM9D2++qFzW1IB3FCkiTOY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Ewan D. Milne" <emilne@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 34/48] scsi: scsi_devinfo: Add blacklist entry for HPE OPEN-V
+Subject: [PATCH 5.10 35/38] rtnetlink: Fix missing error code in rtnl_bridge_notify()
 Date:   Wed, 16 Jun 2021 17:33:44 +0200
-Message-Id: <20210616152837.726935636@linuxfoundation.org>
+Message-Id: <20210616152836.507544876@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-References: <20210616152836.655643420@linuxfoundation.org>
+In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
+References: <20210616152835.407925718@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ewan D. Milne <emilne@redhat.com>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit e57f5cd99ca60cddf40201b0f4ced9f1938e299c ]
+[ Upstream commit a8db57c1d285c758adc7fb43d6e2bad2554106e1 ]
 
-Apparently some arrays are now returning "HPE" as the vendor.
+The error code is missing in this code scenario, add the error code
+'-EINVAL' to the return value 'err'.
 
-Link: https://lore.kernel.org/r/20210601175214.25719-1-emilne@redhat.com
-Signed-off-by: Ewan D. Milne <emilne@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Eliminate the follow smatch warning:
+
+net/core/rtnetlink.c:4834 rtnl_bridge_notify() warn: missing error code
+'err'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_devinfo.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/core/rtnetlink.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
-index d92cec12454c..d33355ab6e14 100644
---- a/drivers/scsi/scsi_devinfo.c
-+++ b/drivers/scsi/scsi_devinfo.c
-@@ -184,6 +184,7 @@ static struct {
- 	{"HP", "C3323-300", "4269", BLIST_NOTQ},
- 	{"HP", "C5713A", NULL, BLIST_NOREPORTLUN},
- 	{"HP", "DISK-SUBSYSTEM", "*", BLIST_REPORTLUN2},
-+	{"HPE", "OPEN-", "*", BLIST_REPORTLUN2 | BLIST_TRY_VPD_PAGES},
- 	{"IBM", "AuSaV1S2", NULL, BLIST_FORCELUN},
- 	{"IBM", "ProFibre 4000R", "*", BLIST_SPARSELUN | BLIST_LARGELUN},
- 	{"IBM", "2105", NULL, BLIST_RETRY_HWERROR},
+diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+index eae8e87930cd..83894723ebee 100644
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -4842,8 +4842,10 @@ static int rtnl_bridge_notify(struct net_device *dev)
+ 	if (err < 0)
+ 		goto errout;
+ 
+-	if (!skb->len)
++	if (!skb->len) {
++		err = -EINVAL;
+ 		goto errout;
++	}
+ 
+ 	rtnl_notify(skb, net, 0, RTNLGRP_LINK, NULL, GFP_ATOMIC);
+ 	return 0;
 -- 
 2.30.2
 
