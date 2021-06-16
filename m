@@ -2,152 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0D03A8F60
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662753A8F66
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 05:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhFPD12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 23:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
+        id S230211AbhFPDcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 23:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbhFPD1Z (ORCPT
+        with ESMTP id S230055AbhFPDcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 23:27:25 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4BEC061574;
-        Tue, 15 Jun 2021 20:25:19 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id EBCF0C009; Wed, 16 Jun 2021 05:25:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1623813914; bh=UF41cxCsn59VfZ1zaB/7LANWupA7/gtFYXligXAa+m0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GXJKKONj0LmR6qxboHv01516ugkbcb/tAdWjUdsaQC+P6mkyORKR/rnEASQMStKos
-         o3IdEvGn0AlMO2KiMGMW5Qsb6bGRIN+k6lxYr7Pfmm+ozztcknKvsdvDorT6zwkqSl
-         UoYwAhFeYygyfbwlp5EZAcrBS2g9JpTNA21X2QYOU7KgrrmF1kJIz+QJ/DfLSJJtUA
-         y3xRvgFuJUZG+xlFZcRCoM2z+bDoj6x9r61mSuFiFMIgpnxZXadiGC63/D7NKCOIBB
-         TnRhZx1JmafwcFyt1JVr490l5orIElXVZ1/oawphXgsIzyBdaaFSilYJWEGijZ2KhH
-         /JQHXydXLzS9w==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 7034DC009;
-        Wed, 16 Jun 2021 05:25:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1623813913; bh=UF41cxCsn59VfZ1zaB/7LANWupA7/gtFYXligXAa+m0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oki2/2Uw5o8ufmcpkC4jpFdYETCT0KE82Do6WV0y2d+mVCxEMGzNf3o993+v+EcTL
-         2+aowAQKdzsIBxZcwaa1VbqsMFqY26QmCQATCNMBMqLS/wGcCKS6PM2Eu/G0wvgD6F
-         FUS3QcJCgOJY8LSohYs/gUitLpEj7+ISD/9hfwd9VvvLJyPpC0HddtJRssohu1jLq/
-         bBnWXzYziAEb9d2R4BStq2KgrZFbHrHEqYi1ESFqpNl6EG4rxeZWr8pl+xOZQSnbPl
-         kOSjweO6xP74XWqSp26piXJ8KuNct9hRajPa7vlfRnW3m1qyrbs0i44XokAP173Irp
-         Hp+vDUrjn1r2g==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id ab0577ff;
-        Wed, 16 Jun 2021 03:25:06 +0000 (UTC)
-Date:   Wed, 16 Jun 2021 12:24:51 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     viro@zeniv.linux.org.uk, Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        David Howells <dhowells@redhat.com>,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        dgilbert@redhat.com, v9fs-developer@lists.sourceforge.net,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] init/do_mounts.c: Add root="fstag:<tag>" syntax for root
- device
-Message-ID: <YMlvA2/L/n6XFa2h@codewreck.org>
-References: <20210608153524.GB504497@redhat.com>
- <YMCPPCbjbRoPAEcL@stefanha-x1.localdomain>
- <20210609154543.GA579806@redhat.com>
- <YMHKZhfT0CUgeLno@stefanha-x1.localdomain>
- <YMHOXn2cpGh1T9vz@codewreck.org>
- <YMXyW0KXc3HqdUAj@codewreck.org>
- <20210614142804.GA869400@redhat.com>
- <YMfi3Q50b1wV+lDW@codewreck.org>
- <20210615135057.GB965196@redhat.com>
+        Tue, 15 Jun 2021 23:32:32 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16475C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 20:30:26 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso1068942otl.13
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 20:30:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i86DmE+FsyrX62awkaAfzqwF7YB8JnFdUJaPY+I8i5I=;
+        b=Qfat5UX9GV6c1Wcj/DNLp0BklvW/aL4PZmlQGmMT8PBMP3705UmFoBLCfCrelJbc4y
+         moGxOAKoAQcQax47jPSfd5Rv3vKiemgt/Li6txlGUBX06uIYw/pA+1QB+psYJLstFFPS
+         BRo7zqKLNQFn2V8xlKnTiRgCbLFNFCSH2PjyF2oT5v1rt3mhT0O7wdaLzuMqVd76fiP8
+         KezhGLs4e8NeKHF+o5VhG8nXGGxVA4LmxO21N9FPJgk/z2zw/DuuC/Yq3yfUGAkZ6yHF
+         l5vyY3pioS41p6KtwHqJDUlK3ZWKWG+Bi3Agri8YqthjQmMIocqPgsQQNMan6Hrg+dY6
+         hspg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i86DmE+FsyrX62awkaAfzqwF7YB8JnFdUJaPY+I8i5I=;
+        b=AF/RRs3CmzwPykRIFNOz4+8sJUTar3kRV5jDL9pOOVlfLHzSPOq08H1P0oz5sIkKfo
+         B8GbXxP7K59XZEAmT/68zdNPZYLQfPj3IMGXnAKZXOPJzFEeE97OT//9oVei9NU8EIKr
+         ez5i5nvW8xoQ4dGkiCZon/8E9LTb+9JQnC0xVXrP6DBQmgLLwVg+ydOWYzA+k/O+YqJr
+         dsSAQ1KFp1lKpLXuL4v5/vl9PruK8csfN4gHE0hXGQN3JpycFwRXnlotLAkqFUkvsHzo
+         YsZGnsUu9SXdQYCKhjqJs9Mbyt9QtieLqns3Peq2UTIepo7+CGvABYsGtkP0cuV6bb49
+         t+ww==
+X-Gm-Message-State: AOAM531Gv7POHbMeAW0WFN2R3+LrRziJcYqaIa+D3vMLwHZB5Jao2tIv
+        5/N0vzUDWicsOtXzLCK77EwxOg==
+X-Google-Smtp-Source: ABdhPJxhs/9jElwXtk+L4DLc2u6ZKRZCiYLWJIWb/AnDz3/Z91d0jV126dADdblLKuA65fRJfmQaAA==
+X-Received: by 2002:a05:6830:22e9:: with SMTP id t9mr2019636otc.327.1623814225341;
+        Tue, 15 Jun 2021 20:30:25 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id q6sm247309oth.10.2021.06.15.20.30.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 20:30:24 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 22:30:22 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex Benn?e <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
+        Alistair Strachan <astrachan@google.com>
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+Message-ID: <YMlwTiN4Y9bK3M4Q@yoga>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210615135057.GB965196@redhat.com>
+In-Reply-To: <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vivek Goyal wrote on Tue, Jun 15, 2021 at 09:50:57AM -0400:
->> Ultimately if we go through the explicit whitelist that's not required
->> anyway, and in that case it's probably better to check before as you've
->> said.
+On Thu 10 Jun 15:46 CDT 2021, Linus Walleij wrote:
+[..]
+> Yet another usecase would be to jit this with remoteproc/rpmsg
+> and let a specific signal processor or real-time executive on
+> another CPU with a few GPIOs around present these to
+> Linux using this mechanism. Well that would certainly interest
+> Bjorn and other rpmsg stakeholders, so they should have
+> a look so that this provides what they need they day they
+> need it. (CCed Bjorn and also Google who may want this for
+> their Android emulators.)
 > 
-> Yes, current whitelist based approach will not allow to have both
-> block devices as well as tag/non-block based root devices. Are there
-> any examples where we current filesystems support such things. And
-> can filesystem deal with it instead?
 
-Hmm I had thought ubi might allow for both through mount options, but
-that doesn't seem to be the case.
-I guess it is possible to imagine some fuse filesystem allowing both but
-I'm not sure fuse is a valid target for rootfs, and looking at the list
-of others filesystems which don't have the flag (from a quick grep:
-mm/shmem, ipc/mqueue, nfs, sysfs, ramfs, procfs, overlayfs, hostfs,
-fuse, ecryptfs, devpts, coda, binderfs, cifs, ceph, afs, 9p, cgroups) I
-guess that might not be a problem.
+Right, your typical Qualcomm platform has a dedicated sensor subsystem,
+with some CPU core with dedicated I2C controllers and GPIOs for
+processing sensor input while the rest of the SoC is in deep sleep.
 
-> If this becomes a requirement, then we will have to go back to my
-> previous proposal of "root=fstag=<tag>" instead. That way "root=<foo>"
-> will be interpreted as block device while "root=fstag=<foo>" explicitly
-> says its some kind of tag (and not a block device).
-
-I guess that if it ever becomes an issue we could make rootwait wait for
-only driver_probe_done() at that point, but as it is now sounds good to
-me for now.
+Combined with the virtio-i2c effort this could provide an alternative by
+simply tunneling the busses and GPIOs into Linux and use standard iio
+drivers, for cases where this suits your product requirements better.
 
 
-While I'm looking at this code, I feel that the two
- if (!strncmp(root_device_name, "mtd", 3) ||
-     !strncmp(root_device_name, "ubi", 3)) {
-will eventually cause some problems once we say arbitrary tags are
-allowed if one ever starts with it, but I'm not sure that can be changed
-without breaking something else so let's leave that aside for now as
-well...
+And I've seen similar interest from others in the community as well.
 
->> What I was advocating for is the whole feature being gated by some
->> option - my example with an embdedded device having 9p builtin (because
->> for some reason they have everything builtin) but not wanting to boot on
->> a tcp 9p rootfs still stands even if we're limiting this to a few
->> filesystems.
->> 
->> If you're keeping the idea of tags CONFIG_ROOT_TAGS ?
-> 
-> I thought about it and CONFIG_ROOT_TAGS made less sense because it will
-> disable all filesystem roots. So say you don't want to boot from 9p
-> rootfs but are ok booting from virtiofs rootfs, then disablig whole
-> feature does not allow that.
-> 
-> We probably need to have per filesystem option. Something like CONFIG_ROOT_NFS
-> and CONFIG_CIFS_ROOT. So may be we need to add CONFIG_ROOT_VIRTIOFS
-> and COFIG_ROOT_9P_FS to decide wither to include filesystem in whitelist
-> or not and that will enable/disable boot from root functionality.
-
-Hm, I guess that makes sense.
-A global kill switch might have made integration easier if it's disabled
-by default like others, but you're right that in practice people would
-only want to enable a specific filesystem, right.
-
-
-> I feel that these kind of patches can go in later. Because a user
-> can boot from 9p or virtiofs rootfs anyway using mtd prefix hack
-> or using /dev/root as tag hack and adding these options does not
-> close those paths. So I thought that adding these config
-> options should not be a strict requirement for this patch series and
-> these options can be added separately in respective filesystems. WDYT?
-
-I wasn't aware of such possibilities, good to know :-D
-
-Sounds good to me, I'll do proper review and retest the v2 patch over the
-weekend.
-
--- 
-Dominique
+Regards,
+Bjorn
