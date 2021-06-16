@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8363A9BD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFBC13A9BD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbhFPNWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232949AbhFPNWM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:22:12 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CDFC061574;
-        Wed, 16 Jun 2021 06:20:06 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id my49so3858873ejc.7;
-        Wed, 16 Jun 2021 06:20:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E9xU6WRg5z0sUzGECNos7mIypHHvCktW/w5KjCa93jY=;
-        b=StsJr0hl0cK0uQCN42SYJrcFPIdnL5hJLfW1GDm7ObHbKDHX1i6+plBTcNFiU/IZnH
-         pJaDsmVOLy3osQ0Kp/rEnE54a6PZt2wnvfsFffFRdXx3sjrEmKdLVKxzLxHoMLadgUxp
-         ZVsS3xhURVfNLSD4iPx7EF+yPVahr+C3cMHCB2YrRaIAOrnSSFREexJa856/e0nvuNB2
-         Hi+qPEvPDjQ59a/kqeXk4rgy1B5iB68tKCuNE5AoBQQ/dTNWBUeQOzuYpYiF8Egqmq6d
-         Rm2c8kfH0EncrLVGby+qD1+hqkMSZ5O0WFUXDslga4qARER3Rxi/567AC7GAqhrx8qzn
-         MDaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E9xU6WRg5z0sUzGECNos7mIypHHvCktW/w5KjCa93jY=;
-        b=o4/GkFFDl6SRswskPL0IIZXGOaImOvu0Mmg3Yv3i6tBW6OidrNFpiCh11em3geYDd/
-         +ge5nZGH5wt7IP2D6JYjwYS05dkn5dmVt+CKQd8wF1R1yEsfzGu0JBuZLDuFuJ4X3Vu0
-         CHQM3KNKBprl6YhbwftCAU2ODGEG6U1zDBjcdoygopk7+a3avXiUPWOwbyWBheD6Gwq9
-         MkDjFF9lXT4HeC8MoIryqzo4pSHLnTMe9BFfSAy4gaU+S+f/PRYpnz8hgF+E5T54FuKD
-         FFmYHUF+U1XyiMmW4Xwm1figeUawENBDG5r1ndvEIKkkv7SBFYkbnPbmwYKY6dfW/rtk
-         gG8g==
-X-Gm-Message-State: AOAM531LMOIKflqPpleLZ5i+rmF1SU24n7jQ4DkEv5S1mx2Kmvk9BgEb
-        UJ8gm33XoGEifs49Q00CrGG0d5JiceYtDE/FZIw=
-X-Google-Smtp-Source: ABdhPJyFEKtCneHl93v+sbrDC4AyudkYfTDVIu+e/Og+r4lR5oeGhEwo+e8fBFJqr93vnGWzszgMiKmN4mzqAjxaGag=
-X-Received: by 2002:a17:906:7b4f:: with SMTP id n15mr5198906ejo.220.1623849604734;
- Wed, 16 Jun 2021 06:20:04 -0700 (PDT)
+        id S233068AbhFPNWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:22:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:37186 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232949AbhFPNWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 09:22:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 832C931B;
+        Wed, 16 Jun 2021 06:20:33 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 174803F719;
+        Wed, 16 Jun 2021 06:20:31 -0700 (PDT)
+Subject: Re: sched: Question about big and little cores system with SMP and
+ EAS
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ley Foon Tan <lftan.linux@gmail.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>
+References: <CAFiDJ5-ZO=BuSwBPPPecZhLyjyipTLenQxgCK=t52Pj7r659sQ@mail.gmail.com>
+ <YMni2eclmqf05cL4@hirez.programming.kicks-ass.net>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <c81ac071-c648-54ac-72ad-2dab0fa1dd4b@arm.com>
+Date:   Wed, 16 Jun 2021 15:20:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210512144743.039977287@linuxfoundation.org> <20210512144748.600206118@linuxfoundation.org>
- <CANEQ_++O0XVVdvynGtf37YCHSBT8CYHnUkK+VsFkOTqeqwOUtA@mail.gmail.com>
- <YMmlPHMn/+EPdbvm@kroah.com> <CANEQ_++gbwU2Rvcqg5KtngZC1UX1XcjOKfPKRr3Pvxi+VyQX+Q@mail.gmail.com>
- <a388a8018b09429d93a4a6b6852c70b2@AcuMS.aculab.com>
-In-Reply-To: <a388a8018b09429d93a4a6b6852c70b2@AcuMS.aculab.com>
-From:   Amit Klein <aksecurity@gmail.com>
-Date:   Wed, 16 Jun 2021 16:19:54 +0300
-Message-ID: <CANEQ_++RSG=cOa-hWcHefqVa5_=FRo+PdwuJbE2A-NHA_RNXXQ@mail.gmail.com>
-Subject: Re: [PATCH 5.4 175/244] inet: use bigger hash table for IP ID generation
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>, Willy Tarreau <w@1wt.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YMni2eclmqf05cL4@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 1:19 PM David Laight <David.Laight@aculab.com> wrote:
+- Quentin Perret <quentin.perret@arm.com>
++ Quentin Perret <qperret@google.com>
 
->
-> Can someone explain why this is a good idea for a 'normal' system?
->
+On 16/06/2021 13:39, Peter Zijlstra wrote:
+> On Wed, Jun 16, 2021 at 07:29:26PM +0800, Ley Foon Tan wrote:
+>> Hi all
+>>
+>> Would like to ask the experts here regarding the Symmetric
+>> Multi-Processing mode (SMP) with Energy aware scheduler (EAS) support
+>> on the big + little cores system.
+> 
+> And the you ask a question unrelated to either Symmetric MP or EAS :-)
+> 
+>> Hardware system:
+>> Big and little cores have almost the same ISA, but the big core has
+>> some extension instructions that little core doesn't have.
+> 
+> That problem is unrelated to big.Little / EAS, also by definition that
+> is not SMP seeing how the 'S' is a blatant lie.
+> 
+> The simplest solution is to simply disallow usage of the extended ISA
+> and force mandate the common subset. The complicated answer is something
+> along the lines of:
+> 
+>   https://lkml.kernel.org/r/20210608180313.11502-1-will@kernel.org
 
-This patch mitigates some techniques that leak internal state due to
-table hash collisions.
+We don't encourage asymmetric ISA extensions for EAS*/CAS** on
+big.Little systems.
+It would be simply a nightmare to schedule tasks on such systems.
 
-> Why should my desktop system 'waste' 2MB of memory on a massive
-> hash table that I don't need.
+The exception to this is the 'asymmetric 32-bit Soc' to support 32bit
+legacy Apps. The nightmare for scheduling is reduced in this case to CPU
+affinity, something the task scheduler has to live with already today.
+(+ DL admission control for 32bit tasks).
 
-In the patch's defense, it only consumes 2MB when the physical RAM is >= 16GB.
-
-> It might be needed by systems than handle massive numbers
-> of concurrent connections - but that isn't 'most systems'.
->
-> Surely it would be better to detect when the number of entries
-> is comparable to the table size and then resize the table.
-
-Security-wise, this approach is not effective. The table size was
-increased to reduce the likelihood of hash collisions. These start
-happening when you have ~N^(1/2) elements (for table size N), so
-you'll need to resize pretty quickly anyway.
+*  Documentation/scheduler/sched-energy.rst
+** Documentation/scheduler/sched-capacity.rst
