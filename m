@@ -2,117 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C3F3A9A13
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851D63A9A19
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbhFPMWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:22:30 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:56811 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229503AbhFPMW3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:22:29 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 449BD580561;
-        Wed, 16 Jun 2021 08:20:23 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 16 Jun 2021 08:20:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=kDf3rNI2uOH/mcfgKx6Ye6XWRv3
-        V79fjGB5uhMQ4otA=; b=z2HdRZoa9JfWsbC3/UGzCONbdmyOQluULUbxr5za+LK
-        poGy4GWzpeXRdvHiG2ozkcmblHdE4f7aDRQEwV22sob+3Ib/CwFxsOPtt0It3fhk
-        JRLgiy81rGEr29WUK6sWSGkMdSZ/O7Y8k3yH6mPc+mzsG1wHnjtxf55/ETiM+m5U
-        RA5Wb/mS6svr8WqjXQ57+o5nEjOCkZ/1cinQ8in5Ic5eQH/qrwSGtnFmlhXpVXMC
-        U9mxbB8Bl+FlDYOPZ5oZuSYstypPUpVPxD0mtAwwk0a72hD6FR/fv7ODz0sk8HZa
-        qiU7vqajfsaAvASh1cfPIadM99Bh2tsbMQMlcq3pKdw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=kDf3rN
-        I2uOH/mcfgKx6Ye6XWRv3V79fjGB5uhMQ4otA=; b=bwkpCiX3G0+194zKJaLcoO
-        0k2zbPC/ySz5INgX1tKjrE3cD5iUwEohG7Uj6rd4cLunJPbDDCABYZBjeCrWA87Y
-        UB7NoLz9HdaY8dXdbndcay/GOx/b9A9GrdtZZpdkAN2snrBEBOs1ULPsPYG4icp+
-        G3i+QwLhQKKivlu7bbo/+5sjae5N/F8DNfzMzKuZ4p6nBbkgy3PsWwBzjVgVS63s
-        vY2egCWCYXUXwRV3kDnbfn5gUL7KtJ8iKaP+mdfg/SGDVDg2FNeE0w7ik4IfZPmI
-        EXaEZeFQDyR5xuUohjvPMXUpajcIbpphTI+UoTpuZDNlyISYn6ruRD02lyLQeHOg
-        ==
-X-ME-Sender: <xms:hezJYKE5Vd2AbVJZ4LbjT6zmwiPs21p7AeC30Snsb58H0pKFKCIjXw>
-    <xme:hezJYLVLctXUTFnUHk0obPH-GfMfpNa0BsEX-hcprKLS2aHH1emDXEdEN-oZKTobl
-    l1YLUBqVivU2-PAEhY>
-X-ME-Received: <xmr:hezJYEIy60kb22oNfvhIPkjfwGSv0fSXm62vPaSHIQiYDgwmsRzkyweS-AOPXWb27iAsjTCqcTKaJpWgdvPtbv4Ih85uRGCIgK19>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledghedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:hezJYEEeB56-TfFLDIc-XaFUv6Zh5GS_MEj7WpEgMKUlnGnWxefunA>
-    <xmx:hezJYAUMZiyoDYubalv1z5F7xIwU8OvukmdTnxew3H6ztMIg8kJuoQ>
-    <xmx:hezJYHM4woEo4pMrbsfVDwtenH-pTOe_OPMXYXh7uEJ1o7iuwZxB2Q>
-    <xmx:h-zJYJOpq_QcEAVpFoypBlseK9BBc4V15B4HNE8vOtYWHVtXljxJyg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 16 Jun 2021 08:20:21 -0400 (EDT)
-Date:   Wed, 16 Jun 2021 14:20:19 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH] drm/vc4: hdmi: Rely on interrupts to handle hotplug
-Message-ID: <20210616122019.f4u2zndgbpb32j3f@gilmour>
-References: <20210524132018.264396-1-maxime@cerno.tech>
- <CAPY8ntAqh2wEhN2wO_RQ2jJ7X3ovwB_5UwbrbPypDOhd1KVN6A@mail.gmail.com>
+        id S232768AbhFPMZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:25:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhFPMZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 08:25:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0E9B6128C;
+        Wed, 16 Jun 2021 12:23:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623846215;
+        bh=JQHmCW/leR0CDqLSwgusxk3rhfxZDcyA0XqoiaaOZ5k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T4xAKtxu+l8eMdudgT4MXh8qwS97EpK/VvA/hIGLH5nvQXF4yOTbf7COB+jj9NKNO
+         dFUfvzrIP6f05fGgeZ6hNvWIbHFcYxGmmXAUGBW/LI+iNqParxo7hXEh9ZQ9y06lMI
+         nW/uBtKxILs7bUAd4l2+U9102kr7vjvPFnn1tfwI=
+Date:   Wed, 16 Jun 2021 14:23:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sanjay R Mehta <sanmehta@amd.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Sanjay R Mehta <Sanju.Mehta@amd.com>,
+        dan.j.williams@intel.com, Thomas.Lendacky@amd.com,
+        Shyam-sundar.S-k@amd.com, Nehal-bakulchandra.Shah@amd.com,
+        robh@kernel.org, mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v9 1/3] dmaengine: ptdma: Initial driver for the AMD PTDMA
+Message-ID: <YMntRILEO3ceyeZU@kroah.com>
+References: <1622654551-9204-1-git-send-email-Sanju.Mehta@amd.com>
+ <1622654551-9204-2-git-send-email-Sanju.Mehta@amd.com>
+ <YL+rUBGUJoFLS902@vkoul-mobl>
+ <94bba5dd-b755-81d0-de30-ce3cdaa3f241@amd.com>
+ <YMl6zpjVHls8bk/A@vkoul-mobl>
+ <0bc4e249-b8ce-1d92-ddde-b763667a0bcb@amd.com>
+ <YMmXPMy7Lz9Jo89j@kroah.com>
+ <12ff7989-c89d-d220-da23-c13ddc53384e@amd.com>
+ <YMmt1qhC1dIiYx7O@vkoul-mobl>
+ <627518e2-8b20-d6a9-1e0c-9822c4fa95ed@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="otvofflh35ejfizp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPY8ntAqh2wEhN2wO_RQ2jJ7X3ovwB_5UwbrbPypDOhd1KVN6A@mail.gmail.com>
+In-Reply-To: <627518e2-8b20-d6a9-1e0c-9822c4fa95ed@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 16, 2021 at 05:30:49PM +0530, Sanjay R Mehta wrote:
+> The pt_device is allocated and initialized in the PCI probe function and
+> then we just get the "dev" from the "pci_dev" object and save it in
+> "pt->dev" as shown in below snippet.
+> 
+> 
+>    static int pt_pci_probe(struct pci_dev *pdev, const struct
+> pci_device_id *id)
+>    {
+> 	struct pt_device *pt;
+> 	struct pt_msix *pt_msix;
+> 	struct device *dev = &pdev->dev;
 
---otvofflh35ejfizp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So "dev" is a parent here, or something else?
 
-On Wed, Jun 16, 2021 at 11:09:29AM +0100, Dave Stevenson wrote:
-> On Mon, 24 May 2021 at 14:20, Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > DRM currently polls for the HDMI connector status every 10s, which can
-> > be an issue when we connect/disconnect a display quickly or the device
-> > on the other end only issues a hotplug pulse (for example on EDID
-> > change).
-> >
-> > Switch the driver to rely on the internal controller logic for the
-> > BCM2711/RPi4.
->=20
-> Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+If it is the parent, please call it such otherwise it is confusing.
 
-Applied (with a compilation fix), thanks
-Maxime
+If you are creating child devices, what bus do they belong to?
 
---otvofflh35ejfizp
-Content-Type: application/pgp-signature; name="signature.asc"
+Can you fix up this series and resend it so that we can review it again?
 
------BEGIN PGP SIGNATURE-----
+thanks,
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYMnsgwAKCRDj7w1vZxhR
-xVmIAQCXmcjaJFVs11F+WGsGcVaGWocvj7QWlEeBGoMkSmHSZwD7BIQLyxZla74G
-iAWXVW1wzFikP4mMetsKBkzZdkR48g8=
-=2bbS
------END PGP SIGNATURE-----
-
---otvofflh35ejfizp--
+greg k-h
