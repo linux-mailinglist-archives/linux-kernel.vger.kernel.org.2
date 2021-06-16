@@ -2,159 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAAF3AA25C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DEF83AA260
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231238AbhFPRZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:25:41 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:46115 "EHLO pegase1.c-s.fr"
+        id S231186AbhFPR0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:26:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:42728 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230350AbhFPRZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:25:40 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G4sTw3h6xzBF2H;
-        Wed, 16 Jun 2021 19:23:32 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id yApHasqJizLg; Wed, 16 Jun 2021 19:23:32 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G4sTw2hZ0zBF2F;
-        Wed, 16 Jun 2021 19:23:32 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id ED0A98B7F4;
-        Wed, 16 Jun 2021 19:23:31 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id LawfKpjZWmkI; Wed, 16 Jun 2021 19:23:31 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EBB2C8B7F2;
-        Wed, 16 Jun 2021 19:23:30 +0200 (CEST)
-Subject: Re: [PATCH v13 3/3] kasan: define and use MAX_PTRS_PER_* for early
- shadow tables
-To:     Marco Elver <elver@google.com>, Daniel Axtens <dja@axtens.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, aneesh.kumar@linux.ibm.com,
-        Balbir Singh <bsingharora@gmail.com>
-References: <20210616080244.51236-1-dja@axtens.net>
- <20210616080244.51236-4-dja@axtens.net>
- <CANpmjNN2-nkqaQ8J3nU5QJ4KGkX2mwiNTeTCNPGQYdbb1v2OaA@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <86c9cecd-ec51-533c-0903-87b85c733695@csgroup.eu>
-Date:   Wed, 16 Jun 2021 19:23:28 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229741AbhFPR0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 13:26:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AB1E1042;
+        Wed, 16 Jun 2021 10:24:40 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 868023F70D;
+        Wed, 16 Jun 2021 10:24:37 -0700 (PDT)
+Subject: Re: [PATCH v4 2/3] sched/fair: Take thermal pressure into account
+ while estimating energy
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, qperret@google.com,
+        vincent.donnefort@arm.com, Beata.Michalska@arm.com,
+        mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
+        segall@google.com, mgorman@suse.de, bristot@redhat.com,
+        thara.gopinath@linaro.org, amit.kachhap@gmail.com,
+        amitk@kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org
+References: <20210614185815.15136-1-lukasz.luba@arm.com>
+ <20210614191128.22735-1-lukasz.luba@arm.com>
+ <237ef538-c8ca-a103-b2cc-240fc70298fe@arm.com>
+ <d214db57-879c-cf3f-caa8-76c2cd369e0d@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <9821712d-be27-a2e7-991c-b0010e23fa70@arm.com>
+Date:   Wed, 16 Jun 2021 19:24:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNN2-nkqaQ8J3nU5QJ4KGkX2mwiNTeTCNPGQYdbb1v2OaA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+In-Reply-To: <d214db57-879c-cf3f-caa8-76c2cd369e0d@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 15/06/2021 18:09, Lukasz Luba wrote:
+> 
+> On 6/15/21 4:31 PM, Dietmar Eggemann wrote:
+>> On 14/06/2021 21:11, Lukasz Luba wrote:
 
+[...]
 
-Le 16/06/2021 à 11:07, Marco Elver a écrit :
-> On Wed, 16 Jun 2021 at 10:03, Daniel Axtens <dja@axtens.net> wrote:
-> [...]
->> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
->> index 768d7d342757..fd65f477ac92 100644
->> --- a/include/linux/kasan.h
->> +++ b/include/linux/kasan.h
->> @@ -40,10 +40,22 @@ struct kunit_kasan_expectation {
->>   #define PTE_HWTABLE_PTRS 0
->>   #endif
+>> It's important to highlight that this will only fix this issue between
+>> schedutil and EAS when it's due to `thermal pressure` (today only via
+>> CPU cooling). There are other places which could restrict policy->max
+>> via freq_qos_update_request() and EAS will be unaware of it.
+> 
+> True, but for this I have some other plans.
+
+As long as people are aware of the fact that this was developed to be
+beneficial for `EAS - IPA` integration, I'm fine with this.
+
+[...]
+
+>> IMHO, this means that this is catered for the IPA governor then. I'm not
+>> sure if this would be beneficial when another thermal governor is used?
+> 
+> Yes, it will be, the cpufreq_set_cur_state() is called by
+> thermal exported function:
+> thermal_cdev_update()
+>   __thermal_cdev_update()
+>     thermal_cdev_set_cur_state()
+>       cdev->ops->set_cur_state(cdev, target)
+> 
+> So it can be called not only by IPA. All governors call it, because
+> that's the default mechanism.
+
+True, but I'm still not convinced that it is useful outside `EAS - IPA`.
+
+>> The mechanical side of the code would allow for such benefits, I just
+>> don't know if their CPU cooling device + thermal zone setups would cater
+>> for this?
+> 
+> Yes, it's possible. Even for custom vendor governors (modified clones
+> of IPA)
+
+Let's stick to mainline here ;-) It's complicated enough ...
+
+[...]
+
+>> Maybe shorter?
 >>
->> +#ifndef MAX_PTRS_PER_PTE
->> +#define MAX_PTRS_PER_PTE PTRS_PER_PTE
->> +#endif
->> +
->> +#ifndef MAX_PTRS_PER_PMD
->> +#define MAX_PTRS_PER_PMD PTRS_PER_PMD
->> +#endif
->> +
->> +#ifndef MAX_PTRS_PER_PUD
->> +#define MAX_PTRS_PER_PUD PTRS_PER_PUD
->> +#endif
+>>          struct cpumask *pd_mask = perf_domain_span(pd);
+>> -       unsigned long cpu_cap =
+>> arch_scale_cpu_capacity(cpumask_first(pd_mask));
+>> +       int cpu = cpumask_first(pd_mask);
+>> +       unsigned long cpu_cap = arch_scale_cpu_capacity(cpu);
+>> +       unsigned long _cpu_cap = cpu_cap -
+>> arch_scale_thermal_pressure(cpu);
+>>          unsigned long max_util = 0, sum_util = 0;
+>> -       unsigned long _cpu_cap = cpu_cap;
+>> -       int cpu;
+>> -
+>> -       _cpu_cap -= arch_scale_thermal_pressure(cpumask_first(pd_mask));
 > 
-> This is introducing new global constants in a <linux/..> header. It
-> feels like this should be in <linux/pgtable.h> together with a
-> comment. Because <linux/kasan.h> is actually included in
-> <linux/slab.h>, most of the kernel will get these new definitions.
-> That in itself is fine, but it feels wrong that the KASAN header
-> introduces these.
-> 
-> Thoughts?
-> 
-> Sorry for only realizing this now.
+> Could be, but still, the definitions should be sorted from longest on
+> top, to shortest at the bottom. I wanted to avoid modifying too many
+> lines with this simple patch.
 
-My idea here was to follow the same road as MAX_PTRS_PER_P4D, added by commit 
-https://github.com/linuxppc/linux/commit/c65e774f
+Only if there are no dependencies, but here we have already `cpu_cap ->
+pd_mask`. OK, not a big deal.
 
-That commit spread MAX_PTRS_PER_P4D everywhere.
+[...]
 
-Instead of doing the same, we found that it would be better to define a fallback for when the 
-architecture doesn't define MAX_PTRS_PER_PxD . Now, it can be made more global in pgtable.h, in that 
-case I'd suggest to also include MAX_PTRS_PER_P4D in the dance and avoid architectures like s390 
-having to define it, or even not defining it either in asm-generic/pgtable-nop4d.h
-
-Christophe
-
-> 
-> Thanks,
-> -- Marco
-> 
->>   extern unsigned char kasan_early_shadow_page[PAGE_SIZE];
->> -extern pte_t kasan_early_shadow_pte[PTRS_PER_PTE + PTE_HWTABLE_PTRS];
->> -extern pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD];
->> -extern pud_t kasan_early_shadow_pud[PTRS_PER_PUD];
->> +extern pte_t kasan_early_shadow_pte[MAX_PTRS_PER_PTE + PTE_HWTABLE_PTRS];
->> +extern pmd_t kasan_early_shadow_pmd[MAX_PTRS_PER_PMD];
->> +extern pud_t kasan_early_shadow_pud[MAX_PTRS_PER_PUD];
->>   extern p4d_t kasan_early_shadow_p4d[MAX_PTRS_PER_P4D];
+>> There is IPA specific code in cpufreq_set_cur_state() ->
+>> get_state_freq() which accesses the EM:
 >>
->>   int kasan_populate_early_shadow(const void *shadow_start,
->> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
->> index 348f31d15a97..cc64ed6858c6 100644
->> --- a/mm/kasan/init.c
->> +++ b/mm/kasan/init.c
->> @@ -41,7 +41,7 @@ static inline bool kasan_p4d_table(pgd_t pgd)
->>   }
->>   #endif
->>   #if CONFIG_PGTABLE_LEVELS > 3
->> -pud_t kasan_early_shadow_pud[PTRS_PER_PUD] __page_aligned_bss;
->> +pud_t kasan_early_shadow_pud[MAX_PTRS_PER_PUD] __page_aligned_bss;
->>   static inline bool kasan_pud_table(p4d_t p4d)
->>   {
->>          return p4d_page(p4d) == virt_to_page(lm_alias(kasan_early_shadow_pud));
->> @@ -53,7 +53,7 @@ static inline bool kasan_pud_table(p4d_t p4d)
->>   }
->>   #endif
->>   #if CONFIG_PGTABLE_LEVELS > 2
->> -pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD] __page_aligned_bss;
->> +pmd_t kasan_early_shadow_pmd[MAX_PTRS_PER_PMD] __page_aligned_bss;
->>   static inline bool kasan_pmd_table(pud_t pud)
->>   {
->>          return pud_page(pud) == virt_to_page(lm_alias(kasan_early_shadow_pmd));
->> @@ -64,7 +64,7 @@ static inline bool kasan_pmd_table(pud_t pud)
->>          return false;
->>   }
->>   #endif
->> -pte_t kasan_early_shadow_pte[PTRS_PER_PTE + PTE_HWTABLE_PTRS]
->> +pte_t kasan_early_shadow_pte[MAX_PTRS_PER_PTE + PTE_HWTABLE_PTRS]
->>          __page_aligned_bss;
+>>      ...
+>>      return cpufreq_cdev->em->table[idx].frequency;
+>>      ...
 >>
->>   static inline bool kasan_pte_table(pmd_t pmd)
->> --
->> 2.30.2
->>
->> --
->> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
->> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
->> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210616080244.51236-4-dja%40axtens.net.
+>> Has it been discussed that the `per-PD max (allowed) CPU capacity` (1)
+>> could be stored in the EM from there so that code like the EAS wakeup
+>> code (compute_energy()) could retrieve this information from the EM?
+> 
+> No, we haven't think about this approach in these patch sets.
+> The EM structure given to the cpufreq_cooling device and stored in:
+> cpufreq_cdev->em should not be modified. There are a few places which
+> receive the EM, but they all should not touch it. For those clients
+> it's a read-only data structure.
+> 
+>> And there wouldn't be any need to pass (1) into the EM (like now via
+>> em_cpu_energy()).
+>> This would be signalling within the EM compared to external signalling
+>> via `CPU cooling -> thermal pressure <- EAS wakeup -> EM`.
+> 
+> I see what you mean, but this might cause some issues in the design
+> (per-cpu scmi cpu perf control). Let's use this EM pointer gently ;)
+
+OK, with the requirement that clients see the EM as ro:
+
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
