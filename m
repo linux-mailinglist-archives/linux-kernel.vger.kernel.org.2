@@ -2,136 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86333A9184
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 07:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16713A9188
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 07:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhFPGAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 02:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbhFPGAu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:00:50 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39493C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 22:58:44 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id ei4so1054617pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 22:58:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7xvwoO8Ytc6MOpsNDQsCGNHeuXbvkCIDk/kxP7pcjQw=;
-        b=iiWtZhTEKSWgGjBEaDk01uj2vVqy8X4M33F63CNP79hOR7rBZpln+wYtpS5bvvVFtr
-         BMqbp8n8jtGYVTnOiKN1amjbZKBlrHVPexshpSX6CIWImM/7923hmswcqYM1eidzKS3F
-         HF+rJxOM8mxE7GjAPx2RJLwZXrkFAQZIHXyVlmO30ySOzFgsP7RNkRdFSc+LjohPN7MT
-         CcTWCXzNGVDmw+vCsYZyhyBUMRU5+VR9h+SfVN0HCDu21R0ofQqlrAOsYq6+bbAnEGeA
-         c7KNyOI8ZN5xSlrAw+G8QGgV4qmc7ucYRiXggi1wQrtdHRo6HJ8YqnstWiemdIfsuHxE
-         QDlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7xvwoO8Ytc6MOpsNDQsCGNHeuXbvkCIDk/kxP7pcjQw=;
-        b=MMMSDU/u9EkhcNLfVX53xJvji/M6YL48fjtSNqAeHJns6Vu40OCUyo4EAlgbgYkNtG
-         ALYDTEV6HKn7QpDJsP8+6a5O41PrCmqt6bRhMNoV9ukeJ5GYbhWK0rGG9ekhCX5dIWak
-         j/TtPfySVvx2eJirxus1KMkJ7zrYIBaNVejn1jh6yzHsBGJOeEVCFi3uJbOG+CAaPFPj
-         g6/DJYw1NGQbMw+/QyjNxX67J+Nb8YtWSkmKaYeNkF0IjSO9qe1iJOW6DboxFFghXvbf
-         XetuctvVp12n+DTATDl1/cuvvqBRvY5Pz34HYvidbBwUZHFbEbr0B/TLodELqdPIOgu3
-         m7pA==
-X-Gm-Message-State: AOAM530xCHArzncpxNzz3Plnf7b9vNPgsaQxBqx6sA9SGZR8XZYnPMuT
-        hSPmClHxXg+8sUHFPYa0NeEFpg==
-X-Google-Smtp-Source: ABdhPJx0aKfU6+OwD5FCsycPLn4rb3C3qNctosL+7c1A4Foj1zZFOWT3aGqfI85u8ab7JZzwPgI42g==
-X-Received: by 2002:a17:90b:1d06:: with SMTP id on6mr3350997pjb.50.1623823123716;
-        Tue, 15 Jun 2021 22:58:43 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id m1sm1010827pgd.78.2021.06.15.22.58.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 22:58:43 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 11:28:41 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     "Viresh Kumar )" <vireshk@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "andrew-sh . cheng" <andrew-sh.cheng@mediatek.com>
-Subject: Re: [PATCH] opp: of: Allow lazy-linking of required-opps to non genpd
-Message-ID: <20210616055841.4m7y6nxnxbgw5rzi@vireshk-i7>
-References: <20210616053335.4181780-1-hsinyi@chromium.org>
+        id S231281AbhFPGA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 02:00:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231200AbhFPGA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 02:00:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 750176128C;
+        Wed, 16 Jun 2021 05:58:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623823132;
+        bh=mbCodwMIm1uO6V8GxochPay+jWIcegWFL544VUVwHXg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M5vdOsIe2Zer92PkoDT5IunwubV5UQ1Vs7rNcq2Ea3wSGn7LJIEZLsHqaSeh7Q2wh
+         UYg+Pvtp6gWzOE79brNsTv5CW5vKJV7rMKwVIl6VoHMMs12qrEdR6Sr0L172tju/Fd
+         pPcZ2MXA+slC0xJ12ww6k0enzlONfls4e+4MJJWY=
+Date:   Wed, 16 Jun 2021 07:58:48 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Siddharth Gupta <sidgup@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, ohad@wizery.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, psodagud@codeaurora.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] remoteproc: core: Move cdev add before device add
+Message-ID: <YMmTGD6hAKbpGWMp@kroah.com>
+References: <1623723671-5517-1-git-send-email-sidgup@codeaurora.org>
+ <1623723671-5517-2-git-send-email-sidgup@codeaurora.org>
+ <YMgy7eg3wde0eVfe@kroah.com>
+ <0a196786-f624-d9bb-8ef9-55c04ed57497@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210616053335.4181780-1-hsinyi@chromium.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <0a196786-f624-d9bb-8ef9-55c04ed57497@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-06-21, 13:33, Hsin-Yi Wang wrote:
-> Don't limit required_opp_table to genpd only. One possible use case is
-> cpufreq based devfreq governor, which can use required-opps property to
-> derive devfreq from cpufreq.
+On Tue, Jun 15, 2021 at 12:03:26PM -0700, Siddharth Gupta wrote:
 > 
-> Suggested-by: Chanwoo Choi <cw00.choi@samsung.com>
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
-> This is tested with the non genpd case mt8183-cci with passive
-> governor[1].
-> [1] https://patchwork.kernel.org/project/linux-mediatek/patch/1616499241-4906-2-git-send-email-andrew-sh.cheng@mediatek.com/
-> ---
->  drivers/opp/of.c | 20 +-------------------
->  1 file changed, 1 insertion(+), 19 deletions(-)
-> 
-> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-> index aa75a1caf08a3..9573facce53a5 100644
-> --- a/drivers/opp/of.c
-> +++ b/drivers/opp/of.c
-> @@ -201,17 +201,6 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
->  			lazy = true;
->  			continue;
->  		}
-> -
-> -		/*
-> -		 * We only support genpd's OPPs in the "required-opps" for now,
-> -		 * as we don't know how much about other cases. Error out if the
-> -		 * required OPP doesn't belong to a genpd.
-> -		 */
-> -		if (!required_opp_tables[i]->is_genpd) {
-> -			dev_err(dev, "required-opp doesn't belong to genpd: %pOF\n",
-> -				required_np);
-> -			goto free_required_tables;
-> -		}
->  	}
->  
->  	/* Let's do the linking later on */
-> @@ -379,13 +368,6 @@ static void lazy_link_required_opp_table(struct opp_table *new_table)
->  	struct dev_pm_opp *opp;
->  	int i, ret;
->  
-> -	/*
-> -	 * We only support genpd's OPPs in the "required-opps" for now,
-> -	 * as we don't know much about other cases.
-> -	 */
-> -	if (!new_table->is_genpd)
-> -		return;
-> -
->  	mutex_lock(&opp_table_lock);
->  
->  	list_for_each_entry_safe(opp_table, temp, &lazy_opp_tables, lazy) {
-> @@ -873,7 +855,7 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
->  		return ERR_PTR(-ENOMEM);
->  
->  	ret = _read_opp_key(new_opp, opp_table, np, &rate_not_available);
-> -	if (ret < 0 && !opp_table->is_genpd) {
-> +	if (ret < 0) {
->  		dev_err(dev, "%s: opp key field not found\n", __func__);
->  		goto free_opp;
->  	}
+> On 6/14/2021 9:56 PM, Greg KH wrote:
+> > On Mon, Jun 14, 2021 at 07:21:08PM -0700, Siddharth Gupta wrote:
+> > > When cdev_add is called after device_add has been called there is no
+> > > way for the userspace to know about the addition of a cdev as cdev_add
+> > > itself doesn't trigger a uevent notification, or for the kernel to
+> > > know about the change to devt. This results in two problems:
+> > >   - mknod is never called for the cdev and hence no cdev appears on
+> > >     devtmpfs.
+> > >   - sysfs links to the new cdev are not established.
+> > > 
+> > > The cdev needs to be added and devt assigned before device_add() is
+> > > called in order for the relevant sysfs and devtmpfs entries to be
+> > > created and the uevent to be properly populated.
+> > So this means no one ever ran this code on a system that used devtmpfs?
+> > 
+> > How was it ever tested?
+> My testing was done with toybox + Android's ueventd ramdisk.
+> As I mentioned in the discussion, the race became evident
+> recently. I will make sure to test all such changes without
+> systemd/ueventd in the future.
 
-How are you setting the required OPPs ? I mean when someone tries to
-change frequency of a device which has some required-opps, who is
-configuring those required OPPs ?
+It isn't an issue of systemd/ueventd, those do not control /dev on a
+normal system, that is what devtmpfs is for.
 
--- 
-viresh
+And devtmpfs nodes are only created if you create a struct device
+somewhere with a proper major/minor, which you were not doing here, so
+you must have had a static /dev on your test systems, right?
+
+thanks,
+
+greg k-h
