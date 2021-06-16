@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CF13AA2AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D3C3AA2AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 19:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhFPRy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 13:54:27 -0400
-Received: from mail.efficios.com ([167.114.26.124]:52058 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhFPRyZ (ORCPT
+        id S231455AbhFPR5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 13:57:14 -0400
+Received: from mail-pf1-f177.google.com ([209.85.210.177]:36697 "EHLO
+        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhFPR5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:54:25 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E22C434A83B;
-        Wed, 16 Jun 2021 13:52:18 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 9ZYE4D70ELzT; Wed, 16 Jun 2021 13:52:18 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 67C0B34A83A;
-        Wed, 16 Jun 2021 13:52:18 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 67C0B34A83A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1623865938;
-        bh=4Pql156OANcBAMgk+nu7NzfwOJ207oQZemvg3h8Ppcw=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=XliKh7qEgz1tjdc+X0m8DH60/LgoWT3zYRHvbWVq/EezHiYRVFhFcJnxW2OL2/Yxy
-         CjWtHq2tBuEv7Y5vLTda2YQnYw2qRfYAtXwwI0kHjwSnfgEFARo7mCMIViaJaizIoG
-         3Bs2vIQR5JXlVnVeXqR3ZQHfMTOe//45C02h8Tj+9IpIspbOqGdthl2y3ZtU/9/5xF
-         Y/004qg8YKTc/3qIxWdLwz41GxgV1NpCzCjBGjAp3EWUOOH8i0PqbkPpVvkO5iGpkf
-         GJSQLGd8cQ0p2jt/nb0vvuGSHSq6Kpiu5CtmrGGIwYdplMay37q9T34VpQZZVkY+yP
-         YEuyHEKOwGC1g==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id l8S-TV0E36aw; Wed, 16 Jun 2021 13:52:18 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 57CBB34AA02;
-        Wed, 16 Jun 2021 13:52:18 -0400 (EDT)
-Date:   Wed, 16 Jun 2021 13:52:18 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86 <x86@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Message-ID: <1990263287.9043.1623865938326.JavaMail.zimbra@efficios.com>
-In-Reply-To: <2d45c55c4fbbe38317ff625e2a2158b6fbe0dc2d.1623813516.git.luto@kernel.org>
-References: <cover.1623813516.git.luto@kernel.org> <2d45c55c4fbbe38317ff625e2a2158b6fbe0dc2d.1623813516.git.luto@kernel.org>
-Subject: Re: [PATCH 3/8] membarrier: Remove membarrier_arch_switch_mm()
- prototype in core code
+        Wed, 16 Jun 2021 13:57:13 -0400
+Received: by mail-pf1-f177.google.com with SMTP id d62so839144pfd.3;
+        Wed, 16 Jun 2021 10:55:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jnKj0HBwxlH/ulf+iZejWPSvpBbaHdsnZF9n9H/9ifA=;
+        b=CyBYdsYWL8J/isWXcd9fE+aPlg73GodoC1NPkumtPcQef0CZGjUCn3ZRuEniK8mVWw
+         l0brqNytiM0PQcR9sK1hho1OoRmv3i7tl0FpBTg5kmhpD1Bi9sGyIxzzP9ADf/f1S8NG
+         LnEoArGk8YMC2/xfUfifZlI4Bh4YKENsYTpNNoFRn/g6x6loOFACOeDZWxliIxpomefT
+         uGbIbASXQ13UlR/xQvtWD5cVDYR0TprSb8jTbOsoDm5+d7/WTHJP7yc+ZUJ14GbX+GH2
+         i8liiZslP04giigHEWhqe+oGSeumoQAFd6LK5tTM8dP9BNklycvliJiBWRRAvPwBKZVq
+         Qp0w==
+X-Gm-Message-State: AOAM532N8iGxhbkLc4850rdEvSTSQ+IQwX5Sm5ONu3KvZ4m6If5OtUNy
+        6smEiThCaIgHyArVNOjNrit9CDfXI0c=
+X-Google-Smtp-Source: ABdhPJznn/vGaY7gAHJU0FR2g3wY0tI/TjhNgwHGP5q9o+wMhjlrDPfhsmswD1zUPqIRoCtGvtcS9A==
+X-Received: by 2002:a63:1a5b:: with SMTP id a27mr746650pgm.427.1623866105692;
+        Wed, 16 Jun 2021 10:55:05 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id 1sm6210506pjm.8.2021.06.16.10.55.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 10:55:05 -0700 (PDT)
+Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
+ ufshcd_abort() for PM requests
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-9-git-send-email-cang@codeaurora.org>
+ <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
+ <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
+ <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
+ <75527f0ba5d315d6edbf800a2ddcf8c7@codeaurora.org>
+ <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
+ <3fce15502c2742a4388817538eb4db97@codeaurora.org>
+ <fabc70f8-6bb8-4b62-3311-f6e0ce9eb2c3@acm.org>
+ <8aae95071b9ab3c0a3cab91d1ae138e1@codeaurora.org>
+ <0081ad7c-8a15-62bb-0e6a-82552aab5309@acm.org>
+ <8eadb2f2e30804faf23c9c71e5724d08@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <2fa53602-8968-09e4-60f4-28462d85ae08@acm.org>
+Date:   Wed, 16 Jun 2021 10:55:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <8eadb2f2e30804faf23c9c71e5724d08@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF89 (Linux)/8.8.15_GA_4026)
-Thread-Topic: membarrier: Remove membarrier_arch_switch_mm() prototype in core code
-Thread-Index: po3kb64XWToyumkqJkr6VhDu+QTKbw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jun 15, 2021, at 11:21 PM, Andy Lutomirski luto@kernel.org wrote:
-
-> membarrier_arch_switch_mm()'s sole implementation and caller are in
-> arch/powerpc.  Having a fallback implementation in include/linux is
-> confusing -- remove it.
+On 6/16/21 1:47 AM, Can Guo wrote:
+> On 2021-06-16 12:40, Bart Van Assche wrote:
+>> On 6/15/21 9:00 PM, Can Guo wrote:
+>>> 2. And say we want SCSI layer to resubmit PM requests to prevent 
+>>> suspend/resume fail, we should keep retrying the PM requests (so 
+>>> long as error handler can recover everything successfully),
+>>> meaning we should give them unlimited retries (which I think is a
+>>> bad idea), otherwise (if they have zero retries or limited
+>>> retries), in extreme conditions, what may happen is that error
+>>> handler can recover everything successfully every time, but all
+>>> these retries (say 3) still time out, which block the power
+>>> management for too long (retries * 60 seconds) and, most
+>>> important, when the last retry times out, scsi layer will
+>>> anyways complete the PM request (even we return DID_IMM_RETRY),
+>>> then we end up same - suspend/resume shall run concurrently with
+>>> error handler and we couldn't recover saved PM errors.
+>> 
+>> Hmm ... it is not clear to me why this behavior is considered a
+>> problem?
 > 
-> It's still mentioned in a comment, but a subsequent patch will remove
-> it.
-> 
+> To me, task abort to PM requests does not worth being treated so 
+> differently, after all suspend/resume may fail due to any kinds of
+> UFS errors (as I've explained so many times). My idea is to let PM
+> requests fast fail (60 seconds has passed, a broken device maybe, we
+> have reason to fail it since it is just a passthrough req) and
+> schedule UFS error handler, UFS error handler shall proceed after
+> suspend/resume fails out then start to recover everything in a safe
+> environment. Is this way not working?
+Hi Can,
 
-Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Thank you for the clarification. As you probably know the power
+management subsystem serializes runtime power management (RPM) and
+system suspend callbacks. I was concerned about the consequences of a
+failed RPM transition on system suspend and resume. Having taken a
+closer look at the UFS driver, I see that failed RPM transitions do not
+require special handling in the system suspend or resume callbacks. In
+other words, I'm fine with the approach of failing PM requests fast.
 
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> ---
-> include/linux/sched/mm.h | 7 -------
-> 1 file changed, 7 deletions(-)
-> 
-> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-> index 24d97d1b6252..10aace21d25e 100644
-> --- a/include/linux/sched/mm.h
-> +++ b/include/linux/sched/mm.h
-> @@ -350,13 +350,6 @@ extern void membarrier_exec_mmap(struct mm_struct *mm);
-> extern void membarrier_update_current_mm(struct mm_struct *next_mm);
-> 
-> #else
-> -#ifdef CONFIG_ARCH_HAS_MEMBARRIER_CALLBACKS
-> -static inline void membarrier_arch_switch_mm(struct mm_struct *prev,
-> -					     struct mm_struct *next,
-> -					     struct task_struct *tsk)
-> -{
-> -}
-> -#endif
-> static inline void membarrier_exec_mmap(struct mm_struct *mm)
-> {
-> }
-> --
-> 2.31.1
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Bart.
