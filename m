@@ -2,125 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572333A9A8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9443A9A93
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbhFPMiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:38:10 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:33343 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229456AbhFPMiJ (ORCPT
+        id S232421AbhFPMks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:40:48 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:13224 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229456AbhFPMkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:38:09 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 938D8580564;
-        Wed, 16 Jun 2021 08:36:03 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 16 Jun 2021 08:36:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=1sZx0enZ5rPT3TQVb1y0Ba59AJG
-        Prg0OKYOsTh77X58=; b=tntzNxLB46PwqxA9WAo2p+Kn9/LfuWqGfASWR3L7YkL
-        M7iz2E76/IN7BMTeZMrh2VyCek5EENTJafi2gqUezm1HzjbkytlL+AJ/tnEcjVM4
-        eXG8W44yXDdPl4rNc/aEDItlA7WNjVfScGEizDcdlMTdO0x+XL9TK3H+pq2V7jwa
-        RMnUyzrg0FfML/+eI52F4IS2x1m88XHpziO8guH1xeliHAQl3he6VWhSf9F7Ag0s
-        zTT03OHPE/xxV5VhleEKLIZnyaDOSkSWrtojAbanB4uueSQb8KQ649MOeSJwu9Vx
-        xCR1QFwoksk30jP71UXW6XFHwWurMRP7fBIB4fIc8aQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1sZx0e
-        nZ5rPT3TQVb1y0Ba59AJGPrg0OKYOsTh77X58=; b=Ar+Lqs8mYjHAI0PQADqT6I
-        8DQCuwYHjlX/p3bKccys8lBdePbEc2+vp7A3CzkUDY4IDzwlCTBRoYodwCUqu2sf
-        LXGgpFGjwPHxHUZyvS6u9Z0oEdqUphhNKjs5pE32xM0QKp3HXQH5laZDa9g8lbBZ
-        Khb9qa5PQJUsgGW1jKwDkcBrf53mRJmSvdbcO20ELgPbnnU0orFjByS8FO7zgWbK
-        c8/9bejB75J+wNalU3uVc1SzzA9Lql4pJdr+p9QZCz5+Jakku2Na2XSFLlQZiO8m
-        m9YhdskJZ388c1Q6LSzRArN3USRtmG536ifugdoS35Zd50Q6HqrUdVlQIUfwABlg
-        ==
-X-ME-Sender: <xms:MfDJYJkJnEgwXxd4kHDEpZVSOSx2GUR272-mCsDop8_uLLGuWgq8OA>
-    <xme:MfDJYE2oEerMEQkuQK-34WVL9LaDZOdIRUs6rAR-h0s0PBM9PRDMH1w4Jxg3ZiKO4
-    ScbSiapdlj0wL4H6yE>
-X-ME-Received: <xmr:MfDJYPouFmvfQXcPo7uJxwb_LlGbdW2F-HG-nqkR0rzAQMF29TteVQXV1pLS5ZzaYIUO2z-bSGYxX-dhkDzMFAQ6IrzOYi6CPVSI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvledgheehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:MfDJYJkIAuar1buK7zdZk5OyrAkfeFwNypbEX7UudJ7sjFuCH5TVWA>
-    <xmx:MfDJYH3j5pmCQPHAoi-r0spmsKupu9au_X_CEdqus-T6v1tcb2wKmA>
-    <xmx:MfDJYIvG05XIWf9ce0KmIbPwHS5qvirjr_l2feWngbUi_W9KaGcs8A>
-    <xmx:M_DJYFOUdsw6GSlhueTmhmFDrdRMxkWVRsG-24_Fgat9s4vVQGoZUg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 16 Jun 2021 08:36:01 -0400 (EDT)
-Date:   Wed, 16 Jun 2021 14:35:59 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Anholt <eric@anholt.net>, Emma Anholt <emma@anholt.net>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>
-Subject: Re: [PATCH 3/3] drm/vc4: hdmi: Make sure the controller is powered
- in detect
-Message-ID: <20210616123559.azuo4zudyexxmvsh@gilmour>
-References: <20210525091059.234116-1-maxime@cerno.tech>
- <20210525091059.234116-4-maxime@cerno.tech>
- <CAPY8ntDfoKLwWG6pkPNvq78C3e5WzXNCVtCykJrrHhZ0UcrjTg@mail.gmail.com>
+        Wed, 16 Jun 2021 08:40:42 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15GCcRUW007162;
+        Wed, 16 Jun 2021 14:38:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=QzRWOR2kSXy9UXeKbv50amd1IimDpSe++L963P+6FOY=;
+ b=KNVjFfC39a+P/aoF97I2lFe4Gu5CnlvlVDW0vxViwT5/syW9IPv3zJlvs6n+95dbJ3C0
+ DhJVQmYlYfh1ADTrNvlasiMXnhDDA27j4P34rKcsKQoCogAZ+D0h3l3zy1V8c44aNfqt
+ hyCM9Kxv3HzXdlDNeXBZAkeSs7yv1kCy6AI+2tNxmLNKIKS72atsyErd9D8c3AqD6emm
+ qvxRGm14OwDnsARJei5m6KhdYrgOOQztbOMO4RoGT20bqIpjfwGx2rWPfKYbVLLl1+yl
+ R0QunWbUkQ5agB4BmAOfJIL/401ZCUivoCfUDJ675v7Ea21anLDmvaYWJR7HfQ5MoyS7 Ag== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 397etes260-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Jun 2021 14:38:28 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D73B510002A;
+        Wed, 16 Jun 2021 14:38:27 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BE41D226FC4;
+        Wed, 16 Jun 2021 14:38:27 +0200 (CEST)
+Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 16 Jun
+ 2021 14:38:27 +0200
+Subject: Re: [PATCH 3/4] rpmsg: char: Introduce the "rpmsg-raw" channel
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>, <julien.massot@iot.bzh>
+References: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
+ <20210607173032.30133-4-arnaud.pouliquen@foss.st.com>
+ <20210615200102.GE604521@p14s>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <b55cd4e5-fb9d-a0ab-03a9-3a771898db04@foss.st.com>
+Date:   Wed, 16 Jun 2021 14:38:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vglgsjthekhzshnl"
-Content-Disposition: inline
-In-Reply-To: <CAPY8ntDfoKLwWG6pkPNvq78C3e5WzXNCVtCykJrrHhZ0UcrjTg@mail.gmail.com>
+In-Reply-To: <20210615200102.GE604521@p14s>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-16_07:2021-06-15,2021-06-16 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mathieu,
 
---vglgsjthekhzshnl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 6/15/21 10:01 PM, Mathieu Poirier wrote:
+> On Mon, Jun 07, 2021 at 07:30:31PM +0200, Arnaud Pouliquen wrote:
+>> Allows to probe the endpoint device on a remote name service announcement,
+>> by registering a rpmsg_driverfor the "rpmsg-raw" channel.
+>>
+>> With this patch the /dev/rpmsgX interface can be instantiated by the remote
+>> firmware.
+>>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>> ---
+>>  drivers/rpmsg/rpmsg_char.c | 54 ++++++++++++++++++++++++++++++++++++--
+>>  1 file changed, 52 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+>> index 4199ac1bee10..3b850b218eb0 100644
+>> --- a/drivers/rpmsg/rpmsg_char.c
+>> +++ b/drivers/rpmsg/rpmsg_char.c
+>> @@ -25,6 +25,8 @@
+>>  
+>>  #include "rpmsg_char.h"
+>>  
+>> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
+>> +
+>>  static dev_t rpmsg_major;
+>>  static struct class *rpmsg_class;
+>>  
+>> @@ -416,6 +418,40 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
+>>  }
+>>  EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
+>>  
+>> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+>> +{
+>> +	struct rpmsg_channel_info chinfo;
+>> +
+>> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
+>> +	chinfo.src = rpdev->src;
+>> +	chinfo.dst = rpdev->dst;
+>> +
+>> +	return __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo, true);
+> 
+> I am a little puzzled here as to why we need different modes... Why can't we
+> simply call rpmsg_chrdev_eptdev_create() and let the endpoint be created on
+> open() and destroyed on release() as per the current implementation?
 
-On Wed, Jun 16, 2021 at 11:51:26AM +0100, Dave Stevenson wrote:
-> On Tue, 25 May 2021 at 10:11, Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > If the HPD GPIO is not available and drm_probe_ddc fails, we end up
-> > reading the HDMI_HOTPLUG register, but the controller might be powered
-> > off resulting in a CPU hang. Make sure we have the power domain and the
-> > HSM clock powered during the detect cycle to prevent the hang from
-> > happening.
-> >
-> > Fixes: 4f6e3d66ac52 ("drm/vc4: Add runtime PM support to the HDMI encod=
-er driver")
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
->=20
-> Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+The main reason is the support of the NS announcement
+a NS announcement is received from the remote processor:
+channel name: "rpmsg-raw"
+remote address (dst address): 0x400
+local address (scr address) : RPMSG_ADDR_ANY
+=> no default endpoint, and not local address.
 
-Applied patches 2 and 3, I'll resend a new version of patch 1 after some
-comments by Daniel on IRC.
+case 1) if we use legacy implementation ( no default endpoint)
+=> create/destroy endpoint on open/stop
+- on first open: created endpoint is bound to scr address 0x406
+- a first message is sent to the remote side, the address 0x406 is stored as
+default channel dst address on remote side.
+- on close: endpoint is closed and associated address 0x406 is free.
+- another driver create an enpoint the address 0x406 is reserved for this new
+endpoint.
+- on new open:  scr address is set to next value 0x407
+=> how to inform remote processor that the address has changed?
+=> no reservation mechanism that ensure that you can reuse the same address
 
-Thanks!
-Maxime
+case 2) relying on use_default_ept
+=> Ensure that both side have always the same addresses to communicate.
 
---vglgsjthekhzshnl
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> I'd rather keep things simple for the refactoring and introduce new features
+> later if need be.
 
------BEGIN PGP SIGNATURE-----
+Yes I agree with you, but here it could become a nightmare for the remote
+processor if the Linux endpoint address is not stable.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYMnwLwAKCRDj7w1vZxhR
-xUIoAP9gpqjRqeNY34XJL8wXsE/w4cW6+rVfVIIFqYrRkG6auQEAvnvTLmxyhQBN
-p4+TOmatXf17NWJPuaennvoDX2CEVgs=
-=egla
------END PGP SIGNATURE-----
+Anyway we can consider this as a workaround waiting the extension of the NS
+announcement to have a better management of the address exchange on channel
+initialization.
 
---vglgsjthekhzshnl--
+Thanks
+Arnaud
+
+> 
+> As I said, it may be that I don't understand the usecase.
+> 
+> Thanks,
+> Mathieu
+> 
+>> +}
+>> +
+>> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
+>> +	if (ret)
+>> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
+>> +}
+>> +
+>> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
+>> +	{ .name	= RPMSG_CHAR_DEVNAME },
+>> +	{ },
+>> +};
+>> +
+>> +static struct rpmsg_driver rpmsg_chrdev_driver = {
+>> +	.probe = rpmsg_chrdev_probe,
+>> +	.remove = rpmsg_chrdev_remove,
+>> +	.id_table = rpmsg_chrdev_id_table,
+>> +	.drv = {
+>> +		.name = "rpmsg_chrdev",
+>> +	},
+>> +};
+>> +
+>>  static int rpmsg_chrdev_init(void)
+>>  {
+>>  	int ret;
+>> @@ -429,16 +465,30 @@ static int rpmsg_chrdev_init(void)
+>>  	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
+>>  	if (IS_ERR(rpmsg_class)) {
+>>  		pr_err("failed to create rpmsg class\n");
+>> -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>> -		return PTR_ERR(rpmsg_class);
+>> +		ret = PTR_ERR(rpmsg_class);
+>> +		goto free_region;
+>> +	}
+>> +
+>> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
+>> +	if (ret < 0) {
+>> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
+>> +		goto free_class;
+>>  	}
+>>  
+>>  	return 0;
+>> +
+>> +free_class:
+>> +	class_destroy(rpmsg_class);
+>> +free_region:
+>> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>> +
+>> +	return ret;
+>>  }
+>>  postcore_initcall(rpmsg_chrdev_init);
+>>  
+>>  static void rpmsg_chrdev_exit(void)
+>>  {
+>> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
+>>  	class_destroy(rpmsg_class);
+>>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>>  }
+>> -- 
+>> 2.17.1
+>>
