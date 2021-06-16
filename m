@@ -2,128 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F323A9F12
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C8C3A9F16
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234572AbhFPPar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234403AbhFPPaq (ORCPT
+        id S234270AbhFPPb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:31:59 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:60337 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233949AbhFPPb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:30:46 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F367C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:28:40 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id m3so1509999wms.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 08:28:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=EbhkjQ5j2OcdBaFI2dnpODCHVTEU+UUtKdmpqCWFJRE=;
-        b=IrsFCOeRsye22mFWY64zEY/xcoZX1aX/aJs8wegxcX+91hdYXPwb5646PmscCeweMl
-         tTrOkUWmMGPkb2ksYi88LKfv44fuCIi7YU96VTqfhMBC8NWdwWk34fRu9YQ7eHVexak1
-         cAS6+nNpLh3pPIIe6UqWPqxx1OiJ/Wl6NMfy56J1fWp6MXNdL/Ys1xLwho2q7jvQ48HA
-         mjs0JgAkCC9QxDF/P1ve9ZaGofj3dQdAsdCX9k2d0PmCdeOsJWee+ET+gAlpINZGXXUR
-         vFA3ai4ENsW5SdgmfyJ33o88zms322CGNGZdASx4d8f2s3RLAEz9qDQJWrQRXJRwmbrh
-         YmlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=EbhkjQ5j2OcdBaFI2dnpODCHVTEU+UUtKdmpqCWFJRE=;
-        b=LQyzCqBah48uv/OvhkpX/5FLXmYHWQpVsG8ODJn1aEPQG6JLNP+Uyjj/6LHqOwoaR8
-         3j9n2kUjPBztCkUO4ckeyx7/QgPg9wxocnU4KVKmgc12LzW8zHvnLMrJoCpq/WHZPDLq
-         a9H9E/sM1q/U0yV5QP1qpDkij1vQ1j+CiGhCb8NiVporQV0C8mneH7wtyawf4ClWXBy0
-         ePXp050iJiJoCinzGg5v3TBdka0dxsyYwa/X+DjHwWJM8fIVmcwlG/jbUolqFh2r9bSm
-         D/agMwZgxKUAOM4aMwTQvmRHFHB3s1yNulXYckg3QkM1ZWMBztvNJseB/uDEaCptmYMz
-         nwmw==
-X-Gm-Message-State: AOAM530ZmOdoDN77VEW+ja1ljTHR+Ahft2GVuD1meuFvyEpLiwcVT9bP
-        dtVjogz8w9GAox/X6dh2WDMqKQ==
-X-Google-Smtp-Source: ABdhPJxdji89qsbTpaGF5exaCUoQ9EnsLGw3iVWl12yCnTnq2YZi903Vr7k222qcewg5OWRStI/C4A==
-X-Received: by 2002:a7b:c4da:: with SMTP id g26mr12312570wmk.64.1623857318677;
-        Wed, 16 Jun 2021 08:28:38 -0700 (PDT)
-Received: from dell ([91.110.221.170])
-        by smtp.gmail.com with ESMTPSA id w8sm2399999wmi.45.2021.06.16.08.28.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 08:28:38 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 16:28:36 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     "sameo@linux.intel.com" <sameo@linux.intel.com>,
-        "grant.likely@linaro.org" <grant.likely@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH mfd v2] mfd: Add Renesas Synchronization Management Unit
- (SMU) support
-Message-ID: <YMoYpF13axL0EXFu@dell>
-References: <1622652224-19103-1-git-send-email-min.li.xe@renesas.com>
- <YMiwEYLkbKocs8ux@dell>
- <OS3PR01MB65939641C36B650A3B69DAADBA309@OS3PR01MB6593.jpnprd01.prod.outlook.com>
- <YMmuz0EVjfEi6MJj@dell>
- <TYYPR01MB6603047A864DB37F111BDAD9BA0F9@TYYPR01MB6603.jpnprd01.prod.outlook.com>
- <YMoP7fdkyyYUrDf2@dell>
- <TYYPR01MB6603D0473CF72D7EFB599D2CBA0F9@TYYPR01MB6603.jpnprd01.prod.outlook.com>
+        Wed, 16 Jun 2021 11:31:58 -0400
+X-UUID: f2bd905068764510afb6cb637a10eb58-20210616
+X-UUID: f2bd905068764510afb6cb637a10eb58-20210616
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1351017316; Wed, 16 Jun 2021 23:29:47 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Jun 2021 23:29:46 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 16 Jun 2021 23:29:46 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <peterz@infradead.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <mark-pk.tsai@mediatek.com>,
+        <matthias.bgg@gmail.com>, <mhelsley@vmware.com>,
+        <rostedt@goodmis.org>, <samitolvanen@google.com>,
+        <yj.chiang@mediatek.com>
+Subject: Re: [PATCH v3] recordmcount: Correct st_shndx handling
+Date:   Wed, 16 Jun 2021 23:29:46 +0800
+Message-ID: <20210616152946.2709-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <YMoSNnNXmKnDpJEv@hirez.programming.kicks-ass.net>
+References: <YMoSNnNXmKnDpJEv@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <TYYPR01MB6603D0473CF72D7EFB599D2CBA0F9@TYYPR01MB6603.jpnprd01.prod.outlook.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021, Min Li wrote:
-
-> > >
-> > > Hi Lee
-> > >
-> > > The PHC driver already existed in the current tree as
-> > > drivers/ptp/ptp_clockmatrix.c and ptp_idt82p33.c
-> > >
-> > > Right now, they act as i2c driver. I plan to change them as a normal
-> > > platform device driver after this MFD change kicked in
-> > >
-> > > That is why I would prefer the name "phc" instead of "clock" since the
-> > > driver is not a normal clk driver under drivers/clk but a ptp clock
-> > > driver. And down the road, we will have our real clock driver and I wanna
-> > reserve the name "clock" for the real clock driver.
+> On Wed, Jun 16, 2021 at 12:23:13AM +0800, Mark-PK Tsai wrote:
+> > From: Peter Zijlstra <peterz@infradead.org>
 > > 
-> > I see.  To be honest, I wasn't aware of the PTP subsystem.
+> > One should only use st_shndx when >SHN_UNDEF and <SHN_LORESERVE. When
+> > SHN_XINDEX, then use .symtab_shndx. Otherwise use 0.
 > > 
-> > In which case, the name needs to match the one in the driver:
+> > This handles the case: st_shndx >= SHN_LORESERVE && st_shndx != SHN_XINDEX.
 > > 
-> >  static struct i2c_driver idtcm_driver = {
-> >         .driver = {
-> >                 .of_match_table = of_match_ptr(idtcm_dt_id),
-> >                 .name           = "idtcm",
-> >         },
-> >         .probe          = idtcm_probe,
-> >         .remove         = idtcm_remove,
-> >         .id_table       = idtcm_i2c_id,
-> >  };
+> > Reported-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+> > [handle endianness of sym->st_shndx]
+> > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+> > ---
+> >  scripts/recordmcount.h | 13 +++++++++----
+> >  1 file changed, 9 insertions(+), 4 deletions(-)
 > > 
-> > So, "idtcm" in this case.
-> > 
-> > How else will it match?
-> > 
+> > diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+> > index f9b19524da11..ef9c3425f86b 100644
+> > --- a/scripts/recordmcount.h
+> > +++ b/scripts/recordmcount.h
+> > @@ -194,13 +194,18 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
+> >  	unsigned long offset;
+> >  	int index;
+> >  
+> > +	if (w2(sym->st_shndx) > SHN_UNDEF &&
+> > +	    w2(sym->st_shndx) < SHN_LORESERVE)
+> >  		return w2(sym->st_shndx);
+> >  
+> > +	if (w2(sym->st_shndx) == SHN_XINDEX) {
+> > +		offset = (unsigned long)sym - (unsigned long)symtab;
+> > +		index = offset / sizeof(*sym);
+> >  
+> > +		return w(symtab_shndx[index]);
+> > +	}
+> > +
+> > +	return 0;
+> >  }
 > 
-> Hi Lee
-> 
-> I actually like to comply with the mfd sub device naming convention by naming it 8a3400x-phc
-> About the names in ptp clock driver, I will have to change them anyways down the road to
-> make them work with the mfd driver
-> 
-> Another match doesn't exist in the current tree yet. It would be a normal platform device driver that I
-> will submit to drivers/misc a little later after this mfd change is merged.
+> Thanks. However that leads to atrocious codegen because w2 is an
+> indirect function, something like the below seems much better.
 
-Okay, leave it as it is then.
+Oh, I didn't notice that.
+I'll update in v4.
+Thanks!
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> 
+> 1d00:       41 0f b7 7f 0e          movzwl 0xe(%r15),%edi
+> 1d05:       c0 eb 04                shr    $0x4,%bl
+> 1d08:       ff 15 7a 54 00 00       callq  *0x547a(%rip)        # 7188 <w2>
+> 1d0e:       85 c0                   test   %eax,%eax
+> 1d10:       74 16                   je     1d28 <main+0xba8>
+> 1d12:       41 0f b7 7f 0e          movzwl 0xe(%r15),%edi
+> 1d17:       ff 15 6b 54 00 00       callq  *0x546b(%rip)        # 7188 <w2>
+> 1d1d:       3d ff fe 00 00          cmp    $0xfeff,%eax
+> 1d22:       0f 86 00 03 00 00       jbe    2028 <main+0xea8>
+> 1d28:       41 0f b7 7f 0e          movzwl 0xe(%r15),%edi
+> 1d2d:       ff 15 55 54 00 00       callq  *0x5455(%rip)        # 7188 <w2>
+> 
+> vs
+> 
+> 1d0c:       41 0f b7 7f 0e          movzwl 0xe(%r15),%edi
+> 1d11:       ff 15 71 54 00 00       callq  *0x5471(%rip)        # 7188 <w2>
+> 
+> ---
+> diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+> index f9b19524da11..b3e9d0563c03 100644
+> --- a/scripts/recordmcount.h
+> +++ b/scripts/recordmcount.h
+> @@ -192,15 +192,23 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
+>  				 Elf32_Word const *symtab_shndx)
+>  {
+>  	unsigned long offset;
+> +	unsigned short shndx;
+>  	int index;
+>  
+> -	if (sym->st_shndx != SHN_XINDEX)
+> -		return w2(sym->st_shndx);
+> +	shndx = w2(sym->st_shndx);
+>  
+> -	offset = (unsigned long)sym - (unsigned long)symtab;
+> -	index = offset / sizeof(*sym);
+> +	if (shndx > SHN_UNDEF &&
+> +	    shndx < SHN_LORESERVE)
+> +		return shndx;
+>  
+> -	return w(symtab_shndx[index]);
+> +	if (shndx == SHN_XINDEX) {
+> +		offset = (unsigned long)sym - (unsigned long)symtab;
+> +		index = offset / sizeof(*sym);
+> +
+> +		return w(symtab_shndx[index]);
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
