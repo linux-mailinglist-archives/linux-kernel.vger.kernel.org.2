@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F173E3A9AA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5E53A9AA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232692AbhFPMof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbhFPMoe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:44:34 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A77FC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:42:28 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id m137so2381095oig.6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 05:42:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Ov+6TdsxyPnAE/go4uKPTaq+xRfN+cq8OJH2b808SUw=;
-        b=A4oVgkatl9TNacrtfcviixMIg2w3VwMxysVzP8wO7DgKtO8kcNFJX8iThUl71Pj5+Z
-         3FyfOa+NpST8Bbq830FAWTicGvNDSSQIr5FJ5RbNjguoMRDYSj1u9xIduzXox8fWtWdP
-         wbUPt5mb/NTcEoRBIbgC0k/PGxqrE6BNWXKdRBJbHL6SE2HKKFUwvjzYZliCXNoUs4Ij
-         xik+ZCmuKFLBVAztg2AW6jtV/q96CWj8FxZjOCnQsmJrfuTWPaT9f6eYe5//QCyK/AzC
-         sSyJBWcuBh7uAzJaV7nUzMosYHwxK7Xb1AZU5i/LztwJbMVE7SLO5DrR3TnBdZ9MELNR
-         wlUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ov+6TdsxyPnAE/go4uKPTaq+xRfN+cq8OJH2b808SUw=;
-        b=K/68/fTukPMYoDgjtOiDPr9sBObosR70ADPs9jSCBXXEjMg6KZK1XNAj+S4X42ymHr
-         +TtS1uPdmh1Qzdx2e++ylbontPgGCNgCRjURXLq3m/1TZgtp40LFKNmASvuQdw7z0pl3
-         hwcsFZz/AVtrxrsd0I1ZCszHQxkyV0ZoAG44A+55J831NJQ0GIx1NjidgE3HEHkMa39y
-         3Lxj9jOyl9j4wsR1Wa+LqigI8sxB1qSfZl3oVxjBAz9dOa8E53OatDD7QRb0x5b9+4Gy
-         WgBHpu/KAFb+39fmsUtw/lt1TowbHeqRE6LEVVVMK0aTFCmdFcvkR/f1sdpMAEK9nmoC
-         Erug==
-X-Gm-Message-State: AOAM532cpl6sGyfPtRo5RaSNnq04K7MkvelUIOTtmH5fwB46boz/A2vg
-        +RSSdAB7jJZ8mrmaiY9RfWrQPI5CW39aNA==
-X-Google-Smtp-Source: ABdhPJwiM+LHbbFVezc5+6rmRihd65l8/VxGA9/ZTVL1axeq2pa1ZbpelZlJkgoFpT3TgG1fjW56gA==
-X-Received: by 2002:a05:6808:1482:: with SMTP id e2mr3455908oiw.150.1623847347463;
-        Wed, 16 Jun 2021 05:42:27 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id e10sm501276otr.5.2021.06.16.05.42.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 05:42:27 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] io_uring: Add to traces the req pointer when
- available
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <60be7e1b.1c69fb81.986e4.c6b5SMTPIN_ADDED_MISSING@mx.google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <7e219aa8-a7b0-a15b-531b-f8926d6d7f3c@kernel.dk>
-Date:   Wed, 16 Jun 2021 06:42:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232667AbhFPMnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:43:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230197AbhFPMnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 08:43:42 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D582061078;
+        Wed, 16 Jun 2021 12:41:33 +0000 (UTC)
+Date:   Wed, 16 Jun 2021 13:43:35 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Chris Lesiak <chris.lesiak@licor.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matt Ranostay <matt.ranostay@konsulko.com>
+Subject: Re: [PATCH v3] iio: humidity: hdc100x: Add margin to the conversion
+ time
+Message-ID: <20210616134335.76715e55@jic23-huawei>
+In-Reply-To: <20210614141820.2034827-1-chris.lesiak@licor.com>
+References: <20210614141820.2034827-1-chris.lesiak@licor.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <60be7e1b.1c69fb81.986e4.c6b5SMTPIN_ADDED_MISSING@mx.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/31/21 12:36 AM, Olivier Langlois wrote:
-> The req pointer uniquely identify a specific request.
-> Having it in traces can provide valuable insights that is not possible
-> to have if the calling process is reusing the same user_data value.
+On Mon, 14 Jun 2021 09:18:20 -0500
+Chris Lesiak <chris.lesiak@licor.com> wrote:
 
-Applied 1-3, thanks.
+> The datasheets have the following note for the conversion time
+> specification: "This parameter is specified by design and/or
+> characterization and it is not tested in production."
+> 
+> Parts have been seen that require more time to do 14-bit conversions for
+> the relative humidity channel.  The result is ENXIO due to the address
+> phase of a transfer not getting an ACK.
+> 
+> Delay an additional 1 ms per conversion to allow for additional margin.
+> 
+> Fixes: 4839367d99e3 ("iio: humidity: add HDC100x support")
+> Signed-off-by: Chris Lesiak <chris.lesiak@licor.com>
 
--- 
-Jens Axboe
++CC Matt as this is one of his drivers.
+
+Looks good to me.
+
+> ---
+>  drivers/iio/humidity/hdc100x.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/humidity/hdc100x.c b/drivers/iio/humidity/hdc100x.c
+> index 2a957f19048e..9e0fce917ce4 100644
+> --- a/drivers/iio/humidity/hdc100x.c
+> +++ b/drivers/iio/humidity/hdc100x.c
+> @@ -25,6 +25,8 @@
+>  #include <linux/iio/trigger_consumer.h>
+>  #include <linux/iio/triggered_buffer.h>
+>  
+> +#include <linux/time.h>
+> +
+>  #define HDC100X_REG_TEMP			0x00
+>  #define HDC100X_REG_HUMIDITY			0x01
+>  
+> @@ -166,7 +168,7 @@ static int hdc100x_get_measurement(struct hdc100x_data *data,
+>  				   struct iio_chan_spec const *chan)
+>  {
+>  	struct i2c_client *client = data->client;
+> -	int delay = data->adc_int_us[chan->address];
+> +	int delay = data->adc_int_us[chan->address] + 1*USEC_PER_MSEC;
+>  	int ret;
+>  	__be16 val;
+>  
+> @@ -316,7 +318,7 @@ static irqreturn_t hdc100x_trigger_handler(int irq, void *p)
+>  	struct iio_dev *indio_dev = pf->indio_dev;
+>  	struct hdc100x_data *data = iio_priv(indio_dev);
+>  	struct i2c_client *client = data->client;
+> -	int delay = data->adc_int_us[0] + data->adc_int_us[1];
+> +	int delay = data->adc_int_us[0] + data->adc_int_us[1] + 2*USEC_PER_MSEC;
+>  	int ret;
+>  
+>  	/* dual read starts at temp register */
 
