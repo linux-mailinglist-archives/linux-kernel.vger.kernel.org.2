@@ -2,76 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37CA3A9C06
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8159B3A9C0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233289AbhFPNcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:32:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39606 "EHLO mail.kernel.org"
+        id S233293AbhFPNfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:35:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:37476 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231179AbhFPNcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:32:51 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26B0B61166;
-        Wed, 16 Jun 2021 13:30:44 +0000 (UTC)
-Date:   Wed, 16 Jun 2021 09:30:42 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Chris Down <chris@chrisdown.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>, Jessica Yu <jeyu@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kees Cook <keescook@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
-Subject: Re: [PATCH v7 1/5] string_helpers: Escape double quotes in
- escape_special
-Message-ID: <20210616093042.2036ef2c@gandalf.local.home>
-In-Reply-To: <YMmxcjeEHHzCLKtX@smile.fi.intel.com>
-References: <cover.1623775748.git.chris@chrisdown.name>
-        <af144c5b75e41ce417386253ba2694456bc04118.1623775748.git.chris@chrisdown.name>
-        <CAHp75Vc-edpD5kz0EPsO7Q=zOPHWFckZzc17imO85dQy-PpOgg@mail.gmail.com>
-        <YMk/IKA4okfYSh57@chrisdown.name>
-        <796701ff-18f9-a637-fca4-808ae36b336f@infradead.org>
-        <YMmxcjeEHHzCLKtX@smile.fi.intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230197AbhFPNfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 09:35:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F400F31B;
+        Wed, 16 Jun 2021 06:33:11 -0700 (PDT)
+Received: from [10.57.9.31] (unknown [10.57.9.31])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 790243F719;
+        Wed, 16 Jun 2021 06:33:08 -0700 (PDT)
+Subject: Re: [PATCH v4 0/3] Add allowed CPU capacity knowledge to EAS
+To:     peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, qperret@google.com,
+        dietmar.eggemann@arm.com, vincent.donnefort@arm.com,
+        Beata.Michalska@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
+        rostedt@goodmis.org, segall@google.com, mgorman@suse.de,
+        bristot@redhat.com, thara.gopinath@linaro.org,
+        amit.kachhap@gmail.com, amitk@kernel.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org
+References: <20210614185815.15136-1-lukasz.luba@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <9e8a2c92-161d-e1f3-efd9-ac0fa4d62fd5@arm.com>
+Date:   Wed, 16 Jun 2021 14:33:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210614185815.15136-1-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 11:08:18 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+Hi Peter,
 
-> On Tue, Jun 15, 2021 at 07:05:25PM -0700, Randy Dunlap wrote:
-> > On 6/15/21 5:00 PM, Chris Down wrote:  
-> > > Andy Shevchenko writes:  
-> > >>> I've checked uses of ESCAPE_SPECIAL and %pE across the codebase, and I'm  
-> > >>
-> > >> checked the uses  
-> > > 
-> > > Hmm, what's wrong with using the zero article for "checked uses"? I mean, I don't have any strong resistance, but I don't see anything wrong with it either, and it matches how I'd naturally speak.
-> > > 
-> > > Agreed on the others, though, hopefully they can be massaged in :-)  
-> > 
-> > Ack, I don't see anything wrong with it either.  
+
+On 6/14/21 7:58 PM, Lukasz Luba wrote:
+> Hi all,
 > 
-> I guess you know better than me :-)
+> The patch set v4 aims to add knowledge about reduced CPU capacity
+> into the Energy Model (EM) and Energy Aware Scheduler (EAS). Currently the
+> issue is that SchedUtil CPU frequency and EM frequency are not aligned,
+> when there is a CPU thermal capping. This causes an estimation error.
+> This patch set provides the information about allowed CPU capacity
+> into the EM (thanks to thermal pressure information). This improves the
+> energy estimation. More info about this mechanism can be found in the
+> patches description.
 > 
-> I'm just a mere non-native speaker here to whom it's stylistically harder to
-> parse without the article.
+> Changelog:
+> v4:
+> - removed local variable and improved description in patch 2/3
+> - added Reviewed-by from Vincent for patch 2/3
+> - added Acked-by from Viresh for patch 1/3
+> v3 [3]:
+> - switched to 'raw' per-cpu thermal pressure instead of thermal pressure
+>    geometric series signal, since it more suited for purpose of
+>    this use case: predicting SchedUtil frequency (Vincent, Dietmar)
+> - added more comment in the patch 2/3 header for use case when thermal
+>    capping might be applied even the CPUs are not over-utilized
+>    (Dietmar)
+> - added ACK tag from Rafael for SchedUtil part
+> - added a fix patch for offline CPUs in cpufreq_cooling and per-cpu
+>    thermal_pressure missing update
+> v2 [2]:
+> - clamp the returned value from effective_cpu_util() and avoid irq
+>    util scaling issues (Quentin)
+> v1 is available at [1]
+> 
+> Regards,
+> Lukasz
+> 
+> [1] https://lore.kernel.org/linux-pm/20210602135609.10867-1-lukasz.luba@arm.com/
+> [2] https://lore.kernel.org/lkml/20210604080954.13915-1-lukasz.luba@arm.com/
+> [3] https://lore.kernel.org/lkml/20210610150324.22919-1-lukasz.luba@arm.com/
+> 
+> Lukasz Luba (3):
+>    thermal: cpufreq_cooling: Update also offline CPUs per-cpu
+>      thermal_pressure
+>    sched/fair: Take thermal pressure into account while estimating energy
+>    sched/cpufreq: Consider reduced CPU capacity in energy calculation
+> 
+>   drivers/thermal/cpufreq_cooling.c |  2 +-
+>   include/linux/energy_model.h      | 16 +++++++++++++---
+>   include/linux/sched/cpufreq.h     |  2 +-
+>   kernel/sched/cpufreq_schedutil.c  |  1 +
+>   kernel/sched/fair.c               | 13 +++++++++----
+>   5 files changed, 25 insertions(+), 9 deletions(-)
+> 
 
-English is weird. It sounds fine to me with and without the "the" article,
-but I'll say having "the" does make it a little smoother, and probably
-better for the non-native speaking folks.
+Could you take these 3 patches via your tree, please?
+I'm asking you because the fair.c has most changes
+(apart from energy_model.h) and the patches got
+ACKs from Rafael and Viresh. The patch which touches
+fair.c got Reviewed-by Vincent Guittot. I have address
+all the comment, thus, IMHO it could fly now.
 
-Technically, I'm a native speaker, but I prefer to say my mother tongue is C. ;-)
+Please let me know if you like me to re-base on top
+of some of your branches.
 
--- Steve
+Regards,
+Lukasz
