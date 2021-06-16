@@ -2,220 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFEB3A98C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AF43A98C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbhFPLJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:09:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:34142 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232054AbhFPLJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:09:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B01821042;
-        Wed, 16 Jun 2021 04:07:08 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B7783F70D;
-        Wed, 16 Jun 2021 04:07:07 -0700 (PDT)
-Subject: Re: [PATCH] modified: gpu/drm/panfrost/panfrost_gpu.c
-To:     Chunyou Tang <tangchunyou@163.com>
-Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        alyssa.rosenzweig@collabora.com,
-        tangchunyou <tangchunyou@163.icubecorp.cn>,
-        tangchunyou@icubecorp.cn
-References: <20210609063850.2060-1-tangchunyou@163.com>
- <78a2488a-71d5-548a-e221-7786f788509c@arm.com>
- <20210610210659.00003155@163.com>
- <d1304645-f2bf-8cea-2b60-24e0a3936ed7@arm.com>
- <20210615150452.00007abc@163.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <31644881-134a-2d6e-dddf-e658a3a8176b@arm.com>
-Date:   Wed, 16 Jun 2021 12:07:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230409AbhFPLJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:09:57 -0400
+Received: from outbound-smtp53.blacknight.com ([46.22.136.237]:52977 "EHLO
+        outbound-smtp53.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229943AbhFPLJx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 07:09:53 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp53.blacknight.com (Postfix) with ESMTPS id 2A3EBFAFD2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 12:07:45 +0100 (IST)
+Received: (qmail 31185 invoked from network); 16 Jun 2021 11:07:44 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 16 Jun 2021 11:07:44 -0000
+Date:   Wed, 16 Jun 2021 12:07:43 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, "Tang, Feng" <feng.tang@intel.com>
+Subject: [PATCH] mm/page_alloc: Split pcp->high across all online CPUs for
+ cpuless nodes
+Message-ID: <20210616110743.GK30378@techsingularity.net>
 MIME-Version: 1.0
-In-Reply-To: <20210615150452.00007abc@163.com>
-Content-Type: text/plain; charset=gb18030
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/06/2021 08:04, Chunyou Tang wrote:
-> Hi steve,
-> 	After I send the V2,I found I setting a wrong email 
-> configuration,I hope it doesn't affect the patch submission :)
-> 	Did you received my another patch about panfrost_job.c?
+Dave Hansen reported the following about Feng Tang's tests on a machine
+with persistent memory onlined as a DRAM-like device.
 
-There's still something odd going on with your emails - I haven't
-received them directly (only via the list) and you appear to have sent 3
-copies of "[PATCH 2/2] drm/panfrost:report the full raw fault
-information instead"[1][2][3] - but I can't see any "[PATCH 1/2]" which
-is presumably meant to be the original patch? Can you double check?
-Obviously 2/2 depends on 1/2.
+  Feng Tang tossed these on a "Cascade Lake" system with 96 threads and
+  ~512G of persistent memory and 128G of DRAM.  The PMEM is in "volatile
+  use" mode and being managed via the buddy just like the normal RAM.
 
-[1] https://lore.kernel.org/lkml/20210615054931.707-1-tangchunyou@163.com/
-[2] https://lore.kernel.org/lkml/20210615064659.775-1-tangchunyou@163.com/
-[3] https://lore.kernel.org/lkml/20210615065936.897-1-tangchunyou@163.com/
+  The PMEM zones are big ones:
 
-You also appear to have sneaked a new patch in here - please do post
-patches separately otherwise they tend to get lost.
+        present  65011712 = 248 G
+        high       134595 = 525 M
 
-> 
-> 	Author: tangchunyou <tangchunyou@163.icubecorp.cn>
-> Date:   Wed Jun 9 14:44:52 2021 +0800
-> 
->     modified: gpu/drm/panfrost/panfrost_job.c
+  The PMEM nodes, of course, don't have any CPUs in them.
 
-As mentioned before - please provide a meaningful description of the
-patch in the subject along with the common prefix for the
-subsystem/driver (git log is useful to find out what is common for the
-code you are changing). For Panfrost this is "drm/panfrost: ".
+  With your series, the pcp->high value per-cpu is 69584 pages or about
+  270MB per CPU.  Scaled up by the 96 CPU threads, that's ~26GB of
+  worst-case memory in the pcps per zone, or roughly 10% of the size of
+  the zone.
 
->     The 'break' can cause 'Memory manager not clean during takedown'
->     It cannot use break to finish the circulation,it should use
->     continue to traverse the circulation.
+This should not cause a problem as such although it could trigger reclaim
+due to pages being stored on per-cpu lists for CPUs remote to a node. It
+is not possible to treat cpuless nodes exactly the same as normal nodes
+but the worst-case scenario can be mitigated by splitting pcp->high across
+all online CPUs for cpuless memory nodes.
 
-Have you actually observed this? In what situation?
+Suggested-by: Dave Hansen <dave.hansen@intel.com>
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Dave Hansen <dave.hansen@intel.com>
+---
+ mm/page_alloc.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
->     Signed-off-by: tangchunyou <tangchunyou@163.icubecorp.cn>
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
-> index 6003cfeb1322..52bccc1d2d42 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-> @@ -281,7 +281,7 @@ static void panfrost_job_cleanup(struct kref *ref)
->         if (job->mappings) {
->                 for (i = 0; i < job->bo_count; i++) {
->                         if (!job->mappings[i])
-> -                               break;
-> +                               continue;
-
-So while this change is reasonable as it makes this loop a little more
-robust, I don't see how this could actually happen.
-
-Unless I'm mistaken the situation where some mappings may be NULL is
-caused by the loop in panfrost_lookup_bos() not completing successfully
-(panfrost_gem_mapping_get() returning NULL). In this case if mappings[i]
-is NULL then all following mappings must also be NULL. So 'break' allows
-us to skip the later ones. Admittedly the performance here isn't
-important so I'm not sure it's worth the optimisation, but AIUI this
-code isn't actually wrong.
-
-But if you've got an example of this actually breaking then clearly this
-is something we need to fix.
-
-Thanks,
-
-Steve
-
->                         atomic_dec(&job->mappings[i]->obj->gpu_usecount);
->                         panfrost_gem_mapping_put(job->mappings[i]);
-> 
-> 
-> Thank you!
-> 
-> 
-> 
-> 于 Fri, 11 Jun 2021 11:10:16 +0100
-> Steven Price <steven.price@arm.com> 写道:
-> 
->> On 10/06/2021 14:06, Chunyou Tang wrote:
->>> Hi Steven,
->>
->> Hi Chunyou,
->>
->> For some reason I'm not directly receiving your emails (only via the
->> list) - can you double check your email configuration?
->>
->>>>> The GPU exception fault status register(0x3C),the low 8 bit is the
->>>>> EXCEPTION_TYPE.We can see the description at P3-78 in spec.
->>>
->>> 	You can see the spec
->>> 	<arm_heimdall_technical_reference_manual_100612_0001_00_en.pdf>.
->>
->> Thanks - please include that in the commit message - there are many
->> TRMs (one for each GPU) so without the information about exactly which
->> specification the page number is pretty useless. Sadly this
->> documentation isn't public which would be even better but I don't
->> think there are any public specs for this information.
->>
->>>> However this change is correct - panfrost_exception_name() should
->>>> be taking only the lower 8 bits. Even better though would be to to
->>>> report the full raw fault information as well as the high bits can
->>>> contain useful information:
->>>>
->>>> 	dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
->>>> 0x%016llx\n", fault_status,
->>>> 		 panfrost_exception_name(pfdev, fault_status &
->>>> 0xFF), address);
->>>
->>> So I change it according to what you said?
->>
->> Yes, please send a v2.
->>
->> Thanks,
->>
->> Steve
->>
->>> 于 Thu, 10 Jun 2021 11:41:52 +0100
->>> Steven Price <steven.price@arm.com> 写道:
->>>
->>>> The subject should have the prefix "drm/panfrost" and should
->>>> mention what the patch is changing (not just the filename).
->>>>
->>>> On 09/06/2021 07:38, ChunyouTang wrote:
-> 
->>>>> From: tangchunyou <tangchunyou@163.icubecorp.cn>
->>>>>
->>>>> The GPU exception fault status register(0x3C),the low 8 bit is the
->>>>> EXCEPTION_TYPE.We can see the description at P3-78 in spec.
->>>>
->>>> Nit: When referring to a spec it's always good to mention the name
->>>> - I'm not sure which specification you found this in.
->>>>
->>>>>
->>>>> Signed-off-by: tangchunyou <tangchunyou@163.icubecorp.cn>
->>>>> ---
->>>>>  drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
->>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c
->>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c index
->>>>> 2aae636f1cf5..1fffb6a0b24f 100644 ---
->>>>> a/drivers/gpu/drm/panfrost/panfrost_gpu.c +++
->>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c @@ -33,7 +33,7 @@ static
->>>>> irqreturn_t panfrost_gpu_irq_handler(int irq, void *data) address
->>>>> |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO); 
->>>>>  		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
->>>>> 0x%016llx\n",
->>>>> -			 fault_status & 0xFF,
->>>>> panfrost_exception_name(pfdev, fault_status),
->>>>> +			 fault_status & 0xFF,
->>>>> panfrost_exception_name(pfdev, fault_status & 0xFF),
->>>>
->>>> However this change is correct - panfrost_exception_name() should
->>>> be taking only the lower 8 bits. Even better though would be to to
->>>> report the full raw fault information as well as the high bits can
->>>> contain useful information:
->>>>
->>>> 	dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
->>>> 0x%016llx\n", fault_status,
->>>> 		 panfrost_exception_name(pfdev, fault_status &
->>>> 0xFF), address);
->>>>
->>>> Thanks,
->>>>
->>>> Steve
->>>>
->>>>>  			 address);
->>>>>  
->>>>>  		if (state & GPU_IRQ_MULTIPLE_FAULT)
->>>>>
->>>
->>>
-> 
-> 
-
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3ab6aac2f1a3..21c67a587e36 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6687,7 +6687,7 @@ static int zone_highsize(struct zone *zone, int batch, int cpu_online)
+ {
+ #ifdef CONFIG_MMU
+ 	int high;
+-	int nr_local_cpus;
++	int nr_split_cpus;
+ 	unsigned long total_pages;
+ 
+ 	if (!percpu_pagelist_high_fraction) {
+@@ -6710,10 +6710,14 @@ static int zone_highsize(struct zone *zone, int batch, int cpu_online)
+ 	 * Split the high value across all online CPUs local to the zone. Note
+ 	 * that early in boot that CPUs may not be online yet and that during
+ 	 * CPU hotplug that the cpumask is not yet updated when a CPU is being
+-	 * onlined.
+-	 */
+-	nr_local_cpus = max(1U, cpumask_weight(cpumask_of_node(zone_to_nid(zone)))) + cpu_online;
+-	high = total_pages / nr_local_cpus;
++	 * onlined. For memory nodes that have no CPUs, split pcp->high across
++	 * all online CPUs to mitigate the risk that reclaim is triggered
++	 * prematurely due to pages stored on pcp lists.
++	 */
++	nr_split_cpus = cpumask_weight(cpumask_of_node(zone_to_nid(zone))) + cpu_online;
++	if (!nr_split_cpus)
++		nr_split_cpus = num_online_cpus();
++	high = total_pages / nr_split_cpus;
+ 
+ 	/*
+ 	 * Ensure high is at least batch*4. The multiple is based on the
