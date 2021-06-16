@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5853AA429
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686393AA42C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbhFPTWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:22:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50168 "EHLO mail.kernel.org"
+        id S232691AbhFPTWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:22:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232626AbhFPTWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232628AbhFPTWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Jun 2021 15:22:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4B55461246;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 584AD613C2;
         Wed, 16 Jun 2021 19:20:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623871204;
-        bh=ZhJ6tGBWX3G9f9vOG1ff5pPXMgjnmdRUCgE8GT436Lg=;
+        bh=Cutqgtq1nDFUbNZhrjjIuilBC8+Pyq/0E0b3v0M4HkA=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=aeWm7W/BAfR8MRrkt8J/uBusvfNM9U/Rgr4lqUgIAqUDaMVHLi+tWnLhtulkh+pM3
-         gZ8RfNma2fnCGGHYP6YJ30LOCbxDChYSmH94rjq2u9o2YLUTpmZBWgbwN/3+pihzCF
-         +K5pQX4vYj7eKMOBhc13r5tGf0HX7PuERdRy0vbqB2tSj6B+GSoQNKbUCo087Y7zeH
-         sGT31kWqnrhtk4r0PSW8BZcihuSmUO7JtXVv+zgbmNC3vrmfzu5MiqVo+fGetJvCgt
-         1tFXRtfyF+MndczjtUpMt49CLMdPcjLMkavaDm9+lueW37OHTWW0atBateKhL58XLN
-         gGbgyUN1VhIVA==
+        b=R6UZZsWeGaruZngi80q86c2gYHIE5RO7y+FAzbmEpQJ5UhLHcXAIylkDRL6JcQ1Gl
+         KvxNZfLFl0CIeMhMC7frsycUmclv4HgyDr8y+gnmZEXL3kOqGRBvIdIa3e+0Wlpa7Q
+         b+8bDA72ybbvzEuAmEvZvWldQaYzsqFwPl7Sla5z8BAM6triXr+rEWPHjtdGyRA9r2
+         ipB+XdPufIVA7uq3nJv1eoG2qyHiXDD/7amesXq73evQbs1W1zBf187+djcBSHPkSB
+         zB5PeZ6utvOWs2IFlqTyrmDghBpy8NcSPnTl5+MP5mNSzFJuV4IDCRYepk4iUQ4onj
+         QUYW4YIGVwDUQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3AEBD60953;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 450D060CAA;
         Wed, 16 Jun 2021 19:20:04 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: hsr: don't check sequence number if tag removal
- is offloaded
+Subject: Re: [PATCH net-next v2] net: dsa: xrs700x: forward HSR supervision frames
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162387120423.29488.741420966415811568.git-patchwork-notify@kernel.org>
+Message-Id: <162387120427.29488.8583760405715339736.git-patchwork-notify@kernel.org>
 Date:   Wed, 16 Jun 2021 19:20:04 +0000
-References: <20210615175037.19730-1-george.mccollister@gmail.com>
-In-Reply-To: <20210615175037.19730-1-george.mccollister@gmail.com>
+References: <20210616013903.41564-1-george.mccollister@gmail.com>
+In-Reply-To: <20210616013903.41564-1-george.mccollister@gmail.com>
 To:     George McCollister <george.mccollister@gmail.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        m-karicheri2@ti.com, andrew@lunn.ch, marco.wenzel@a-eberle.de,
-        linux-kernel@vger.kernel.org
+Cc:     netdev@vger.kernel.org, andrew@lunn.ch, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,20 +47,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue, 15 Jun 2021 12:50:37 -0500 you wrote:
-> Don't check the sequence number when deciding when to update time_in in
-> the node table if tag removal is offloaded since the sequence number is
-> part of the tag. This fixes a problem where the times in the node table
-> wouldn't update when 0 appeared to be before or equal to seq_out when
-> tag removal was offloaded.
+On Tue, 15 Jun 2021 20:39:03 -0500 you wrote:
+> Forward supervision frames between redunant HSR ports. This was broken
+> in the last commit.
 > 
+> Fixes: 1a42624aecba ("net: dsa: xrs700x: allow HSR/PRP supervision dupes for node_table")
 > Signed-off-by: George McCollister <george.mccollister@gmail.com>
+> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next] net: hsr: don't check sequence number if tag removal is offloaded
-    https://git.kernel.org/netdev/net-next/c/c2ae34a7deaf
+  - [net-next,v2] net: dsa: xrs700x: forward HSR supervision frames
+    https://git.kernel.org/netdev/net-next/c/a4fc566543c0
 
 You are awesome, thank you!
 --
