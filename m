@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB5C3A9F80
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5853A9FCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235107AbhFPPin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:38:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49726 "EHLO mail.kernel.org"
+        id S235238AbhFPPl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:41:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234940AbhFPPhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:37:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB718613BD;
-        Wed, 16 Jun 2021 15:35:25 +0000 (UTC)
+        id S235221AbhFPPjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:39:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD4B7613CD;
+        Wed, 16 Jun 2021 15:36:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857726;
-        bh=vFujPZe8KpAnuSc1WlBKaNJ1ZOKTml1g6cNa9OjYPJg=;
+        s=korg; t=1623857809;
+        bh=D1pfivEPMAKmTrT5Az8xmoAlOLTXunLrF1aVexSumDg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Luxv0w/sLu5tfETWgOFeuZgdfK9Fk++fbOzCfXV6HXMfvaqk8W25Oo1cU9gbZfGSw
-         eExFCdKEn3tmlfgmSV5PZhGJrKp6NWOwTa0gsc4upg/Pvdm2ai8wis+PaaBvRtkAnE
-         qOgxA/H6nMZlwdMHul6Mg7FAikM7+SdLlkW7v6q4=
+        b=zKV0v8rjl5s+sYC8VWQ+6jwaeHvjnlm9ujkun/A/tdx+wrL7QaFmd6P9W5STZfRLY
+         gK2HQUkHWIM9HT+/JGWUSc0kqC90wyYyO8cpo5rXK0UhhcqTgbdNi2XPRNHjaLaMTt
+         IbgIZCUEBAe5TH1wqgHWki/fmdtdFTpcyPPwFJPA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Gruenbacher <agruenba@redhat.com>,
+        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 15/38] gfs2: Prevent direct-I/O write fallback errors from getting lost
+Subject: [PATCH 5.12 14/48] drm/tegra: sor: Do not leak runtime PM reference
 Date:   Wed, 16 Jun 2021 17:33:24 +0200
-Message-Id: <20210616152835.881680872@linuxfoundation.org>
+Message-Id: <20210616152837.108480050@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
-References: <20210616152835.407925718@linuxfoundation.org>
+In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
+References: <20210616152836.655643420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +40,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Pavel Machek (CIP) <pavel@denx.de>
 
-[ Upstream commit 43a511c44e58e357a687d61a20cf5ef1dc9e5a7c ]
+[ Upstream commit 73a395c46704304b96bc5e2ee19be31124025c0c ]
 
-When a direct I/O write falls entirely and falls back to buffered I/O and the
-buffered I/O fails, the write failed with return value 0 instead of the error
-number reported by the buffered I/O. Fix that.
+It's theoretically possible for the runtime PM reference to leak if the
+code fails anywhere between the pm_runtime_resume_and_get() and
+pm_runtime_put() calls, so make sure to release the runtime PM reference
+in that case.
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Practically this will never happen because none of the functions will
+fail on Tegra, but it's better for the code to be pedantic in case these
+assumptions will ever become wrong.
+
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+[treding@nvidia.com: add commit message]
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/file.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/tegra/sor.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index b39b339feddc..16fb0184ce5e 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -938,8 +938,11 @@ static ssize_t gfs2_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		current->backing_dev_info = inode_to_bdi(inode);
- 		buffered = iomap_file_buffered_write(iocb, from, &gfs2_iomap_ops);
- 		current->backing_dev_info = NULL;
--		if (unlikely(buffered <= 0))
-+		if (unlikely(buffered <= 0)) {
-+			if (!ret)
-+				ret = buffered;
- 			goto out_unlock;
-+		}
+diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
+index 7b88261f57bb..67a80dae1c00 100644
+--- a/drivers/gpu/drm/tegra/sor.c
++++ b/drivers/gpu/drm/tegra/sor.c
+@@ -3125,21 +3125,21 @@ static int tegra_sor_init(struct host1x_client *client)
+ 		if (err < 0) {
+ 			dev_err(sor->dev, "failed to acquire SOR reset: %d\n",
+ 				err);
+-			return err;
++			goto rpm_put;
+ 		}
  
- 		/*
- 		 * We need to ensure that the page cache pages are written to
+ 		err = reset_control_assert(sor->rst);
+ 		if (err < 0) {
+ 			dev_err(sor->dev, "failed to assert SOR reset: %d\n",
+ 				err);
+-			return err;
++			goto rpm_put;
+ 		}
+ 	}
+ 
+ 	err = clk_prepare_enable(sor->clk);
+ 	if (err < 0) {
+ 		dev_err(sor->dev, "failed to enable clock: %d\n", err);
+-		return err;
++		goto rpm_put;
+ 	}
+ 
+ 	usleep_range(1000, 3000);
+@@ -3150,7 +3150,7 @@ static int tegra_sor_init(struct host1x_client *client)
+ 			dev_err(sor->dev, "failed to deassert SOR reset: %d\n",
+ 				err);
+ 			clk_disable_unprepare(sor->clk);
+-			return err;
++			goto rpm_put;
+ 		}
+ 
+ 		reset_control_release(sor->rst);
+@@ -3171,6 +3171,12 @@ static int tegra_sor_init(struct host1x_client *client)
+ 	}
+ 
+ 	return 0;
++
++rpm_put:
++	if (sor->rst)
++		pm_runtime_put(sor->dev);
++
++	return err;
+ }
+ 
+ static int tegra_sor_exit(struct host1x_client *client)
 -- 
 2.30.2
 
