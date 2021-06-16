@@ -2,248 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EF13A9A84
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486D33A9A87
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 14:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232799AbhFPMdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 08:33:37 -0400
-Received: from muru.com ([72.249.23.125]:46588 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232641AbhFPMde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 08:33:34 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id C838C8125;
-        Wed, 16 Jun 2021 12:31:36 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Keerthy <j-keerthy@ti.com>, Tero Kristo <kristo@kernel.org>
-Subject: [Backport for 5.4.y PATCHv2 4/4] clocksource/drivers/timer-ti-dm: Handle dra7 timer wrap errata i940
-Date:   Wed, 16 Jun 2021 15:31:12 +0300
-Message-Id: <20210616123112.65068-4-tony@atomide.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210616123112.65068-1-tony@atomide.com>
-References: <20210616123112.65068-1-tony@atomide.com>
+        id S232524AbhFPMfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 08:35:08 -0400
+Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:57873 "EHLO
+        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230197AbhFPMfH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 08:35:07 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id tUj2lv5vOhqlttUj5lw9Zd; Wed, 16 Jun 2021 14:33:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1623846780; bh=3WAZZPvtq7tHZAUFW1IOnUzW7XaOr60Zli50JP31iCY=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=s5AwnDz/MhHwEkTN/Gc/k++T5v7qiDbPf5bTLwrnwrAWsPnaPqIqyTVC7FZmZzDKO
+         EVEnnaFeI3IFBB5kliVrLp1fh9xtjAntthQDFghaWdae/OUtr6qsM4VewHOb4i3A+c
+         7u4CgpYsZkuoJEV9AR+iw+Iu9MN3nddfWuF/A0nGNfDEQwMbsNyJg9eZbOOCmNL9+b
+         1F1A7nPEUmJwwNJNl6AaQ6rCr14g6YGmTylF5CbBDn91Ne1gzIDZaLiyeORYAsU/zW
+         Y6ziNnSCSgAIdggQvvPuui25XNzV8zM0MxJGBa9phOf0PlcvzHdUy4iDsqKx2tVT8R
+         7yBVpis+ZzqNw==
+Subject: Re: [PATCH 08/11] media: adv7842: better document EDID block size
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+References: <cover.1623846327.git.mchehab+huawei@kernel.org>
+ <6bed7a69367856080a62e3ee89df6a2a3d0d5f20.1623846327.git.mchehab+huawei@kernel.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <766eecb1-253d-d866-401c-40c48685fb96@xs4all.nl>
+Date:   Wed, 16 Jun 2021 14:32:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <6bed7a69367856080a62e3ee89df6a2a3d0d5f20.1623846327.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfLp8EIerXbU2LY156rvXvHuLzkHPIbjhYFll2+5AP7rP35I0rDJfbmeRCX1tC3VbFiGvQn4/74iarsB2Uu5eBTI5iZbmmdiJFxutnD54Zplefrjhore5
+ ZJ58e8NhKLu22ZW+P38+n0LTqWesj2MxA6lDkBJYG+9J0n/LtP1iwpE0Fq+76697YgsegMBkK393QT3GSTAHdil3jpLYbtVjPWNqFm2SmUoQFysguxpcJmBE
+ ehfEPtx7X/EPUswaBzqqLbGT1oYabPEq+3in1NOV9+JYhdU6aQXjbpkpYv7USjHKEPUp0dUPYD7oMxPcGbFYwonvo8q3z59uO/tZ5g+u5MRHlDo0B9MwN375
+ UapNzbTzSpzafeBxhAkhg7NTo9x2gQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 25de4ce5ed02994aea8bc111d133308f6fd62566 upstream.
+On 16/06/2021 14:28, Mauro Carvalho Chehab wrote:
+> While the logic there is correct, it leads to smatch warnings:
+> 	/home/hans/work/build/media-git/drivers/media/i2c/adv7842.c:2538 adv7842_set_edid() error: memcpy() '&state->vga_edid.edid' too small (128 vs 512)
+> 
+> Because the code tricks static analyzers by doing:
+> 	memcpy(&state->hdmi_edid.edid, e->edid, 128 * e->blocks);
+> 
+> for ADV7842_EDID_PORT_VGA, where a logic before that makes
+> e->blocks being either 0 or 1.
+> 
+> Yet, it is ugly to see the "128" magic number all spread about the
+> EDID code. So, while here, replace 128 (and 4 x 128) by macros:
+> 
+> And ensure that the logic which copy into the VGA block
+> will use EDID_MAX_VGA_BLOCKS.
 
-There is a timer wrap issue on dra7 for the ARM architected timer.
-In a typical clock configuration the timer fails to wrap after 388 days.
+Please drop this patch, there is already another patch from me for adv7842 in a pending PR.
 
-To work around the issue, we need to use timer-ti-dm percpu timers instead.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/i2c/adv7842.c | 33 ++++++++++++++++++++++-----------
+>  1 file changed, 22 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
+> index 78e61fe6f2f0..30bddab320b9 100644
+> --- a/drivers/media/i2c/adv7842.c
+> +++ b/drivers/media/i2c/adv7842.c
+> @@ -85,6 +85,10 @@ struct adv7842_format_info {
+>  	u8 op_format_sel;
+>  };
+>  
+> +#define EDID_BLOCK_SIZE		128
+> +#define EDID_MAX_HDMI_BLOCKS	4
+> +#define EDID_MAX_VGA_BLOCKS	1
+> +
+>  struct adv7842_state {
+>  	struct adv7842_platform_data pdata;
+>  	struct v4l2_subdev sd;
+> @@ -98,12 +102,12 @@ struct adv7842_state {
+>  
+>  	v4l2_std_id norm;
+>  	struct {
+> -		u8 edid[512];
+> +		u8 edid[EDID_BLOCK_SIZE * EDID_MAX_HDMI_BLOCKS];
+>  		u32 blocks;
+>  		u32 present;
+>  	} hdmi_edid;
+>  	struct {
+> -		u8 edid[128];
+> +		u8 edid[EDID_MAX_VGA_BLOCKS * EDID_MAX_VGA_BLOCKS];
+>  		u32 blocks;
+>  		u32 present;
+>  	} vga_edid;
+> @@ -732,12 +736,13 @@ static int edid_write_vga_segment(struct v4l2_subdev *sd)
+>  	/* edid segment pointer '1' for VGA port */
+>  	rep_write_and_or(sd, 0x77, 0xef, 0x10);
+>  
+> -	for (i = 0; !err && i < blocks * 128; i += I2C_SMBUS_BLOCK_MAX)
+> +	for (i = 0; && i < blocks * EDID_BLOCK_SIZE; i += I2C_SMBUS_BLOCK_MAX) {
 
-Let's configure dmtimer3 and 4 as percpu timers by default, and warn about
-the issue if the dtb is not configured properly.
+Besides, this change won't compile, so:
 
-For more information, please see the errata for "AM572x Sitara Processors
-Silicon Revisions 1.1, 2.0":
+Nacked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-https://www.ti.com/lit/er/sprz429m/sprz429m.pdf
+Regards,
 
-The concept is based on earlier reference patches done by Tero Kristo and
-Keerthy.
+	Hans
 
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Keerthy <j-keerthy@ti.com>
-Cc: Tero Kristo <kristo@kernel.org>
-[tony@atomide.com: backported to 5.4.y]
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- arch/arm/boot/dts/dra7-l4.dtsi      |  4 +--
- arch/arm/boot/dts/dra7.dtsi         | 20 +++++++++++
- arch/arm/mach-omap2/board-generic.c |  4 +--
- arch/arm/mach-omap2/timer.c         | 53 ++++++++++++++++++++++++++++-
- drivers/clk/ti/clk-7xx.c            |  1 +
- include/linux/cpuhotplug.h          |  1 +
- 6 files changed, 78 insertions(+), 5 deletions(-)
+>  		err = i2c_smbus_write_i2c_block_data(state->i2c_edid, i,
+>  						     I2C_SMBUS_BLOCK_MAX,
+>  						     edid + i);
+> -	if (err)
+> -		return err;
+> +		if (err)
+> +			return err;
+> +	}
+>  
+>  	/* Calculates the checksums and enables I2C access
+>  	 * to internal EDID ram from VGA DDC port.
+> @@ -785,7 +790,7 @@ static int edid_write_hdmi_segment(struct v4l2_subdev *sd, u8 port)
+>  		return 0;
+>  	}
+>  
+> -	pa = v4l2_get_edid_phys_addr(edid, blocks * 128, &spa_loc);
+> +	pa = v4l2_get_edid_phys_addr(edid, blocks * EDID_BLOCK_SIZE, &spa_loc);
+>  	err = v4l2_phys_addr_validate(pa, &parent_pa, NULL);
+>  	if (err)
+>  		return err;
+> @@ -800,7 +805,7 @@ static int edid_write_hdmi_segment(struct v4l2_subdev *sd, u8 port)
+>  	}
+>  
+>  
+> -	for (i = 0; !err && i < blocks * 128; i += I2C_SMBUS_BLOCK_MAX) {
+> +	for (i = 0; !err && i < blocks * EDID_BLOCK_SIZE; i += I2C_SMBUS_BLOCK_MAX) {
+>  		/* set edid segment pointer for HDMI ports */
+>  		if (i % 256 == 0)
+>  			rep_write_and_or(sd, 0x77, 0xef, i >= 256 ? 0x10 : 0x00);
+> @@ -2491,7 +2496,9 @@ static int adv7842_get_edid(struct v4l2_subdev *sd, struct v4l2_edid *edid)
+>  	if (edid->start_block + edid->blocks > blocks)
+>  		edid->blocks = blocks - edid->start_block;
+>  
+> -	memcpy(edid->edid, data + edid->start_block * 128, edid->blocks * 128);
+> +	memcpy(edid->edid,
+> +	       data + edid->start_block * EDID_BLOCK_SIZE,
+> +	       edid->blocks * EDID_BLOCK_SIZE);
+>  
+>  	return 0;
+>  }
+> @@ -2506,9 +2513,12 @@ static int adv7842_get_edid(struct v4l2_subdev *sd, struct v4l2_edid *edid)
+>  static int adv7842_set_edid(struct v4l2_subdev *sd, struct v4l2_edid *e)
+>  {
+>  	struct adv7842_state *state = to_state(sd);
+> -	unsigned int max_blocks = e->pad == ADV7842_EDID_PORT_VGA ? 1 : 4;
+> +	unsigned int max_blocks;
+>  	int err = 0;
+>  
+> +	max_blocks = e->pad == ADV7842_EDID_PORT_VGA ?
+> +		     EDID_MAX_VGA_BLOCKS  : EDID_MAX_HDMI_BLOCKS;
+> +
+>  	memset(e->reserved, 0, sizeof(e->reserved));
+>  
+>  	if (e->pad > ADV7842_EDID_PORT_VGA)
+> @@ -2535,7 +2545,7 @@ static int adv7842_set_edid(struct v4l2_subdev *sd, struct v4l2_edid *e)
+>  		state->vga_edid.blocks = e->blocks;
+>  		state->vga_edid.present = e->blocks ? 0x1 : 0x0;
+>  		if (e->blocks)
+> -			memcpy(&state->vga_edid.edid, e->edid, 128 * e->blocks);
+> +			memcpy(&state->vga_edid.edid, e->edid, EDID_BLOCK_SIZE);
+>  		err = edid_write_vga_segment(sd);
+>  		break;
+>  	case ADV7842_EDID_PORT_A:
+> @@ -2544,7 +2554,8 @@ static int adv7842_set_edid(struct v4l2_subdev *sd, struct v4l2_edid *e)
+>  		state->hdmi_edid.blocks = e->blocks;
+>  		if (e->blocks) {
+>  			state->hdmi_edid.present |= 0x04 << e->pad;
+> -			memcpy(&state->hdmi_edid.edid, e->edid, 128 * e->blocks);
+> +			memcpy(&state->hdmi_edid.edid, e->edid,
+> +			       EDID_BLOCK_SIZE * e->blocks);
+>  		} else {
+>  			state->hdmi_edid.present &= ~(0x04 << e->pad);
+>  			adv7842_s_detect_tx_5v_ctrl(sd);
+> 
 
-diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
---- a/arch/arm/boot/dts/dra7-l4.dtsi
-+++ b/arch/arm/boot/dts/dra7-l4.dtsi
-@@ -1176,7 +1176,7 @@
- 			};
- 		};
- 
--		target-module@34000 {			/* 0x48034000, ap 7 46.0 */
-+		timer3_target: target-module@34000 {	/* 0x48034000, ap 7 46.0 */
- 			compatible = "ti,sysc-omap4-timer", "ti,sysc";
- 			ti,hwmods = "timer3";
- 			reg = <0x34000 0x4>,
-@@ -1204,7 +1204,7 @@
- 			};
- 		};
- 
--		target-module@36000 {			/* 0x48036000, ap 9 4e.0 */
-+		timer4_target: target-module@36000 {	/* 0x48036000, ap 9 4e.0 */
- 			compatible = "ti,sysc-omap4-timer", "ti,sysc";
- 			ti,hwmods = "timer4";
- 			reg = <0x36000 0x4>,
-diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
---- a/arch/arm/boot/dts/dra7.dtsi
-+++ b/arch/arm/boot/dts/dra7.dtsi
-@@ -46,6 +46,7 @@
- 
- 	timer {
- 		compatible = "arm,armv7-timer";
-+		status = "disabled";	/* See ARM architected timer wrap erratum i940 */
- 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
-@@ -766,3 +767,22 @@
- 
- #include "dra7-l4.dtsi"
- #include "dra7xx-clocks.dtsi"
-+
-+/* Local timers, see ARM architected timer wrap erratum i940 */
-+&timer3_target {
-+	ti,no-reset-on-init;
-+	ti,no-idle;
-+	timer@0 {
-+		assigned-clocks = <&l4per_clkctrl DRA7_L4PER_TIMER3_CLKCTRL 24>;
-+		assigned-clock-parents = <&timer_sys_clk_div>;
-+	};
-+};
-+
-+&timer4_target {
-+	ti,no-reset-on-init;
-+	ti,no-idle;
-+	timer@0 {
-+		assigned-clocks = <&l4per_clkctrl DRA7_L4PER_TIMER4_CLKCTRL 24>;
-+		assigned-clock-parents = <&timer_sys_clk_div>;
-+	};
-+};
-diff --git a/arch/arm/mach-omap2/board-generic.c b/arch/arm/mach-omap2/board-generic.c
---- a/arch/arm/mach-omap2/board-generic.c
-+++ b/arch/arm/mach-omap2/board-generic.c
-@@ -327,7 +327,7 @@ DT_MACHINE_START(DRA74X_DT, "Generic DRA74X (Flattened Device Tree)")
- 	.init_late	= dra7xx_init_late,
- 	.init_irq	= omap_gic_of_init,
- 	.init_machine	= omap_generic_init,
--	.init_time	= omap5_realtime_timer_init,
-+	.init_time	= omap3_gptimer_timer_init,
- 	.dt_compat	= dra74x_boards_compat,
- 	.restart	= omap44xx_restart,
- MACHINE_END
-@@ -350,7 +350,7 @@ DT_MACHINE_START(DRA72X_DT, "Generic DRA72X (Flattened Device Tree)")
- 	.init_late	= dra7xx_init_late,
- 	.init_irq	= omap_gic_of_init,
- 	.init_machine	= omap_generic_init,
--	.init_time	= omap5_realtime_timer_init,
-+	.init_time	= omap3_gptimer_timer_init,
- 	.dt_compat	= dra72x_boards_compat,
- 	.restart	= omap44xx_restart,
- MACHINE_END
-diff --git a/arch/arm/mach-omap2/timer.c b/arch/arm/mach-omap2/timer.c
---- a/arch/arm/mach-omap2/timer.c
-+++ b/arch/arm/mach-omap2/timer.c
-@@ -42,6 +42,7 @@
- #include <linux/platform_device.h>
- #include <linux/platform_data/dmtimer-omap.h>
- #include <linux/sched_clock.h>
-+#include <linux/cpu.h>
- 
- #include <asm/mach/time.h>
- 
-@@ -420,6 +421,53 @@ static void __init dmtimer_clkevt_init_common(struct dmtimer_clockevent *clkevt,
- 		timer->rate);
- }
- 
-+static DEFINE_PER_CPU(struct dmtimer_clockevent, dmtimer_percpu_timer);
-+
-+static int omap_gptimer_starting_cpu(unsigned int cpu)
-+{
-+	struct dmtimer_clockevent *clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
-+	struct clock_event_device *dev = &clkevt->dev;
-+	struct omap_dm_timer *timer = &clkevt->timer;
-+
-+	clockevents_config_and_register(dev, timer->rate, 3, ULONG_MAX);
-+	irq_force_affinity(dev->irq, cpumask_of(cpu));
-+
-+	return 0;
-+}
-+
-+static int __init dmtimer_percpu_quirk_init(void)
-+{
-+	struct dmtimer_clockevent *clkevt;
-+	struct clock_event_device *dev;
-+	struct device_node *arm_timer;
-+	struct omap_dm_timer *timer;
-+	int cpu = 0;
-+
-+	arm_timer = of_find_compatible_node(NULL, NULL, "arm,armv7-timer");
-+	if (of_device_is_available(arm_timer)) {
-+		pr_warn_once("ARM architected timer wrap issue i940 detected\n");
-+		return 0;
-+	}
-+
-+	for_each_possible_cpu(cpu) {
-+		clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
-+		dev = &clkevt->dev;
-+		timer = &clkevt->timer;
-+
-+		dmtimer_clkevt_init_common(clkevt, 0, "timer_sys_ck",
-+					   CLOCK_EVT_FEAT_ONESHOT,
-+					   cpumask_of(cpu),
-+					   "assigned-clock-parents",
-+					   500, "percpu timer");
-+	}
-+
-+	cpuhp_setup_state(CPUHP_AP_OMAP_DM_TIMER_STARTING,
-+			  "clockevents/omap/gptimer:starting",
-+			  omap_gptimer_starting_cpu, NULL);
-+
-+	return 0;
-+}
-+
- /* Clocksource code */
- static struct omap_dm_timer clksrc;
- static bool use_gptimer_clksrc __initdata;
-@@ -564,6 +612,9 @@ static void __init __omap_sync32k_timer_init(int clkev_nr, const char *clkev_src
- 					3, /* Timer internal resynch latency */
- 					0xffffffff);
- 
-+	if (soc_is_dra7xx())
-+		dmtimer_percpu_quirk_init();
-+
- 	/* Enable the use of clocksource="gp_timer" kernel parameter */
- 	if (use_gptimer_clksrc || gptimer)
- 		omap2_gptimer_clocksource_init(clksrc_nr, clksrc_src,
-@@ -591,7 +642,7 @@ void __init omap3_secure_sync32k_timer_init(void)
- #endif /* CONFIG_ARCH_OMAP3 */
- 
- #if defined(CONFIG_ARCH_OMAP3) || defined(CONFIG_SOC_AM33XX) || \
--	defined(CONFIG_SOC_AM43XX)
-+	defined(CONFIG_SOC_AM43XX) || defined(CONFIG_SOC_DRA7XX)
- void __init omap3_gptimer_timer_init(void)
- {
- 	__omap_sync32k_timer_init(2, "timer_sys_ck", NULL,
-diff --git a/drivers/clk/ti/clk-7xx.c b/drivers/clk/ti/clk-7xx.c
---- a/drivers/clk/ti/clk-7xx.c
-+++ b/drivers/clk/ti/clk-7xx.c
-@@ -793,6 +793,7 @@ static struct ti_dt_clk dra7xx_clks[] = {
- 	DT_CLK(NULL, "timer_32k_ck", "sys_32k_ck"),
- 	DT_CLK(NULL, "sys_clkin_ck", "timer_sys_clk_div"),
- 	DT_CLK(NULL, "sys_clkin", "sys_clkin1"),
-+	DT_CLK(NULL, "timer_sys_ck", "timer_sys_clk_div"),
- 	DT_CLK(NULL, "atl_dpll_clk_mux", "atl-clkctrl:0000:24"),
- 	DT_CLK(NULL, "atl_gfclk_mux", "atl-clkctrl:0000:26"),
- 	DT_CLK(NULL, "dcan1_sys_clk_mux", "wkupaon-clkctrl:0068:24"),
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -119,6 +119,7 @@ enum cpuhp_state {
- 	CPUHP_AP_ARM_L2X0_STARTING,
- 	CPUHP_AP_EXYNOS4_MCT_TIMER_STARTING,
- 	CPUHP_AP_ARM_ARCH_TIMER_STARTING,
-+	CPUHP_AP_OMAP_DM_TIMER_STARTING,
- 	CPUHP_AP_ARM_GLOBAL_TIMER_STARTING,
- 	CPUHP_AP_JCORE_TIMER_STARTING,
- 	CPUHP_AP_ARM_TWD_STARTING,
--- 
-2.31.1
