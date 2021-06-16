@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108EC3A9FA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DF63A9FF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235231AbhFPPjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:39:36 -0400
+        id S234805AbhFPPm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:42:56 -0400
 Received: from mail.kernel.org ([198.145.29.99]:50640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234675AbhFPPiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:38:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4776061351;
-        Wed, 16 Jun 2021 15:35:56 +0000 (UTC)
+        id S235319AbhFPPkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:40:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FDA1613F3;
+        Wed, 16 Jun 2021 15:37:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857756;
-        bh=JLiPSW/F3RteIc4jb/cRphFsajUUSG+Yu0jZClB4Iw8=;
+        s=korg; t=1623857841;
+        bh=0Tu5Uz0GUjDfRA36Cq/kM4LadVNUM41ye8xS8GOdVhk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YHHBWVR+krkw1leJz7kgVZFbr1qX6rN+RlFVmE4mjz4/SE6UDOOMpONbBW7dRPi2c
-         HTyAr1VzIUQzqRA/Ik6cP4T6GhW0K/fe60SgXnu+EhMQ08j2U56T6MbjGjF1QZuyPT
-         0fz2vyC5soIMT0kKy/SvNnIXUdLdrjiOmfsTaerk=
+        b=zR47J1u+RjgxVvIAfnndB6+h9G9hXnPnh/gAL4Ig01GMJeRTWenBki6zUd3oyWdl8
+         U1ep8dpCrePh/Pz8geAdz9+dxcqh6xFEpttfXZyqtHnxFWeW2gVkLSPtxNs5fqDI8s
+         VyVOevt5RfqyZEW31xVpc9z283oDxEkOYxPQl/o8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 28/38] nvme-loop: do not warn for deleted controllers during reset
-Date:   Wed, 16 Jun 2021 17:33:37 +0200
-Message-Id: <20210616152836.286484102@linuxfoundation.org>
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 28/48] mt76: mt7921: remove leftover 80+80 HE capability
+Date:   Wed, 16 Jun 2021 17:33:38 +0200
+Message-Id: <20210616152837.535977151@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
-References: <20210616152835.407925718@linuxfoundation.org>
+In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
+References: <20210616152836.655643420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit 6622f9acd29cd4f6272720e827e6406f5a970cb0 ]
+[ Upstream commit d4826d17b3931cf0d8351d8f614332dd4b71efc4 ]
 
-During concurrent reset and delete calls the reset workqueue is
-flushed, causing nvme_loop_reset_ctrl_work() to be executed when
-the controller is in state DELETING or DELETING_NOIO.
-But this is expected, so we shouldn't issue a WARN_ON here.
+Fixes interop issues with some APs that disable HE Tx if this is present
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210528120304.34751-1-nbd@nbd.name
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/loop.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7921/main.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/target/loop.c b/drivers/nvme/target/loop.c
-index df0e5288ae6e..16d71cc5a50e 100644
---- a/drivers/nvme/target/loop.c
-+++ b/drivers/nvme/target/loop.c
-@@ -453,8 +453,10 @@ static void nvme_loop_reset_ctrl_work(struct work_struct *work)
- 	nvme_loop_shutdown_ctrl(ctrl);
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/main.c b/drivers/net/wireless/mediatek/mt76/mt7921/main.c
+index ada943c7a950..2c781b6f89e5 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/main.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/main.c
+@@ -74,8 +74,7 @@ mt7921_init_he_caps(struct mt7921_phy *phy, enum nl80211_band band,
+ 				IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_IN_2G;
+ 		else if (band == NL80211_BAND_5GHZ)
+ 			he_cap_elem->phy_cap_info[0] =
+-				IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G |
+-				IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_80PLUS80_MHZ_IN_5G;
++				IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G;
  
- 	if (!nvme_change_ctrl_state(&ctrl->ctrl, NVME_CTRL_CONNECTING)) {
--		/* state change failure should never happen */
--		WARN_ON_ONCE(1);
-+		if (ctrl->ctrl.state != NVME_CTRL_DELETING &&
-+		    ctrl->ctrl.state != NVME_CTRL_DELETING_NOIO)
-+			/* state change failure for non-deleted ctrl? */
-+			WARN_ON_ONCE(1);
- 		return;
- 	}
- 
+ 		he_cap_elem->phy_cap_info[1] =
+ 			IEEE80211_HE_PHY_CAP1_LDPC_CODING_IN_PAYLOAD;
 -- 
 2.30.2
 
