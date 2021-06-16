@@ -2,69 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0443AA4A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35703AA4A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 21:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhFPTxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 15:53:04 -0400
-Received: from mail-il1-f170.google.com ([209.85.166.170]:46685 "EHLO
-        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbhFPTxD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:53:03 -0400
-Received: by mail-il1-f170.google.com with SMTP id i12so3337307ila.13;
-        Wed, 16 Jun 2021 12:50:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=phu7v1JTWvxVrKFYkYrGvzIHVYTPjSMRARDstuVxMZM=;
-        b=HaSrRfVyXFls/R3h1UQzmR/Fm88D/FynoKsGKm4/ZaWdnjyno0MMztt2o38iLYMonf
-         g9R2JTZGpA2oWGNvE2AklxYK6KNtk9Da0FTauOFKYuZo38FQxMyPX8NZwL3gBhMC+J9r
-         jk1ukurtOHzq7VcIGXIE1MFrKFDq7kVGzmzLgXxbjcXyOn1d6sv2Db6dgMPXKQVNaTO0
-         BMBbfVrzadbEjXrdNCaZXblNrV/M600A7kTiXW/uIyCrAVw7aYalek8qd7mVSGPVZcxe
-         yxkNKhnbpy/IOxN0QwVO0lHDPely4XX1a+oQt4tpSz8+kITKKn/KJsNJ0yYmT/ngYTao
-         KjZg==
-X-Gm-Message-State: AOAM533jwGtSwgBfqeblMhUDSXdvTgTaAjMXHKZDhpDJm2FsEO1JIW+N
-        cyvMth+gYdpj1T9bCgvvStlBfcaHow==
-X-Google-Smtp-Source: ABdhPJw7DOClzWysJiLbJ/t+5Yrp5CWxy4JZjxk3+USZ7GS7k+SoLaqDvhZW9W9Nkx8K2G9Xya7qkA==
-X-Received: by 2002:a92:6b06:: with SMTP id g6mr887033ilc.270.1623873055362;
-        Wed, 16 Jun 2021 12:50:55 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id f16sm1148488ilc.53.2021.06.16.12.50.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 12:50:54 -0700 (PDT)
-Received: (nullmailer pid 3827255 invoked by uid 1000);
-        Wed, 16 Jun 2021 19:50:50 -0000
-Date:   Wed, 16 Jun 2021 13:50:50 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 2/3] of: Remove superfluous casts when printing u64 values
-Message-ID: <20210616195050.GA3827179@robh.at.kernel.org>
-References: <cover.1623835273.git.geert+renesas@glider.be>
- <ef3f4f78385b43230695ba0855d078290c958192.1623835273.git.geert+renesas@glider.be>
+        id S232999AbhFPTxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 15:53:14 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:41214 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232808AbhFPTxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 15:53:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=am0d0pk3jVy5OgKLNWHj2eNHd2bP49FJfF7PWRTv824=; b=FCCQNxZt/TF2vWt/xvxoq/bmqf
+        RfptqKJtdguKsusQsWiDTSqJ05iQKq/2dat3cU5MzR6zoKBejU5g1y7Fa9oZZjDC+JjrkZfRY1ADI
+        sZVrsSLjbdvUXcfByW93eg+5AJxjpNdj95ZeNAYFWwn+Y8I+rPGRNVJnUR2GxUi+9qtI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ltbZ1-009lrg-9W; Wed, 16 Jun 2021 21:51:03 +0200
+Date:   Wed, 16 Jun 2021 21:51:03 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
+        jaz@semihalf.com, gjb@semihalf.com, upstream@semihalf.com,
+        Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com, tn@semihalf.com,
+        rjw@rjwysocki.net, lenb@kernel.org
+Subject: Re: [net-next: PATCH v2 5/7] net: mvmdio: add ACPI support
+Message-ID: <YMpWJ79VF7HmjumQ@lunn.ch>
+References: <20210616190759.2832033-1-mw@semihalf.com>
+ <20210616190759.2832033-6-mw@semihalf.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ef3f4f78385b43230695ba0855d078290c958192.1623835273.git.geert+renesas@glider.be>
+In-Reply-To: <20210616190759.2832033-6-mw@semihalf.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 11:27:45 +0200, Geert Uytterhoeven wrote:
-> "u64" is "unsigned long long" on all architectures now.  Hence there is
-> no longer a need to use casts when formatting using the "ll" length
-> modifier.
+On Wed, Jun 16, 2021 at 09:07:57PM +0200, Marcin Wojtas wrote:
+> This patch introducing ACPI support for the mvmdio driver by adding
+> acpi_match_table with two entries:
 > 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  drivers/of/address.c | 14 ++++----------
->  drivers/of/fdt.c     |  6 ++----
->  2 files changed, 6 insertions(+), 14 deletions(-)
+> * "MRVL0100" for the SMI operation
+> * "MRVL0101" for the XSMI mode
 > 
+> Also clk enabling is skipped, because the tables do not contain
+> such data and clock maintenance relies on the firmware.
 
-Applied, thanks!
+This last part seems to be no longer true.
+
+     Andrew
