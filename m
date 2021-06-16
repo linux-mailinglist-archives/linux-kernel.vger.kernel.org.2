@@ -2,122 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490BD3A90B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CEA3A90B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFPEmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 00:42:43 -0400
-Received: from mail-pl1-f177.google.com ([209.85.214.177]:36855 "EHLO
-        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhFPEmm (ORCPT
+        id S230455AbhFPEnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 00:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhFPEnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 00:42:42 -0400
-Received: by mail-pl1-f177.google.com with SMTP id x10so483104plg.3;
-        Tue, 15 Jun 2021 21:40:37 -0700 (PDT)
+        Wed, 16 Jun 2021 00:43:49 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C297BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 21:41:43 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id k7so951910pjf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 21:41:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=yNLs0De7jThuF+2jQNPxEWOcx6TgeD4ov6vuIyTpd+A=;
+        b=lKJIvf6pt1/GdaW2KeqS7wKBIja3w5kpORjD4jLrNWSEFfEOkW3onHIDqBu0GFngkS
+         lxkWv44pwySHTfYWybvEhaBirmSWSJMqraifs7VnqCLsdljizzbcTlkUb4DkuOyQKb70
+         r/j3tlzKy+Tk59kdBEbDxcnNRfRigkfAmLaJI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=t+6BVRDTr9Si4S9xiqSirJ7UPxwVWhjDm67cnQcl9+8=;
-        b=o0d8zp01ccdCwNx/SdAl94CMBbF0g71HUc9yapru11BxYPTJkBuLpnAvqwIK63qBSM
-         5PGoC2qJ3B6TCo3CkG19cY1m17jgZkTEDuq/+3s1+wd9Nuszz6NnM2uISU+m7MPPX8Gi
-         qWX3Pd1l3fKyMfnnRXQs1qQO8tN0nc2mnL+BruJJbdI3hmEaAwD753NigwSrCOULEO6T
-         Q5ZdSgVcQgA+15aO2/lHugolc8hTUPe14E7raNprhyFEIWZoe114GZeMv2CD6iPOFzFJ
-         zdvC+Ff1yBVrbMiq4kwL224mQ0RjA/ExOoQJsFa8Cj8VuXwMSfWjrje/tbG23Ef0nbya
-         40bw==
-X-Gm-Message-State: AOAM533paOkUIejBjMDjj+5kLitszlOBYPL1qjHcLvRx1WdnJtexQaGj
-        C26tIFAzfGqH4BUwEhS1CH+dz5DtDX8=
-X-Google-Smtp-Source: ABdhPJy1EbXO4sAPsHVe93XpTW+l945ZIEjK8+sAnbc6qTr7EwxySrl2lL34Of9ut3w6LjHyTKwLzg==
-X-Received: by 2002:a17:90b:1d02:: with SMTP id on2mr2922771pjb.192.1623818436218;
-        Tue, 15 Jun 2021 21:40:36 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id 92sm4064959pjv.29.2021.06.15.21.40.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 21:40:35 -0700 (PDT)
-Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-9-git-send-email-cang@codeaurora.org>
- <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
- <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
- <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
- <75527f0ba5d315d6edbf800a2ddcf8c7@codeaurora.org>
- <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
- <3fce15502c2742a4388817538eb4db97@codeaurora.org>
- <fabc70f8-6bb8-4b62-3311-f6e0ce9eb2c3@acm.org>
- <8aae95071b9ab3c0a3cab91d1ae138e1@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <0081ad7c-8a15-62bb-0e6a-82552aab5309@acm.org>
-Date:   Tue, 15 Jun 2021 21:40:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=yNLs0De7jThuF+2jQNPxEWOcx6TgeD4ov6vuIyTpd+A=;
+        b=ks0XU++9h1HV6LDMHyb++ixuKP2q6fbkRrTbsUhO0P6B5nMH2+D5fTtj7yNPEH9BpC
+         jjYQctsZzgARFqfqVN/pLT5m8W7XOCspy2WEgewtUNrXDsBVRyP78+2ozVtNRpigl9tK
+         xxXeLoSwJWSvc0onpt6GuH1OiNOPfX0JvWpP9ay+h3Gc5QxfJQrapQsk2C8mxqfmrBNF
+         gCHc2Hkr9P+oLjcJPzgRFlnCsjWxC8JOMNTZxsFuT3pfLUZVjeifrqrfIQrUIhL1RuMS
+         PM5RkAdtX9I62CT+jD2kr3XZnjuRYMQqGQiILRECvpGx0pWoq9QB2lB07Vc5/wG73nPn
+         wjNA==
+X-Gm-Message-State: AOAM5301l07xiCG9I5p/mqKW4V3piGTQG3JxtPcYMRAUvK3rCfTstYMg
+        qGbFZYyOqNmXqz/0z/giXksUxA==
+X-Google-Smtp-Source: ABdhPJxh2trs7JHKAmnz6ypTMfnczKQwyngda5/fDSTUi8HksJLDs/vs/uzec4cWsIlm+tLEn9utjQ==
+X-Received: by 2002:a17:903:228e:b029:101:af04:4e24 with SMTP id b14-20020a170903228eb0290101af044e24mr7415002plh.3.1623818503317;
+        Tue, 15 Jun 2021 21:41:43 -0700 (PDT)
+Received: from localhost ([203.206.29.204])
+        by smtp.gmail.com with ESMTPSA id v10sm726962pgb.46.2021.06.15.21.41.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 21:41:42 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Marco Elver <elver@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        aneesh.kumar@linux.ibm.com, Balbir Singh <bsingharora@gmail.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>
+Subject: Re: [PATCH v12 2/6] kasan: allow architectures to provide an
+ outline readiness check
+In-Reply-To: <CANpmjNN2=gdDBPzYQYsmOtLQVVjSz2qFcwcTMEqB=s_ZWndJLg@mail.gmail.com>
+References: <20210615014705.2234866-1-dja@axtens.net>
+ <20210615014705.2234866-3-dja@axtens.net>
+ <CANpmjNN2=gdDBPzYQYsmOtLQVVjSz2qFcwcTMEqB=s_ZWndJLg@mail.gmail.com>
+Date:   Wed, 16 Jun 2021 14:41:39 +1000
+Message-ID: <87fsxiv2t8.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-In-Reply-To: <8aae95071b9ab3c0a3cab91d1ae138e1@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 9:00 PM, Can Guo wrote:
-> I would like to stick to my way as of now because
-> 
-> 1. Merely preventing task abort cannot prevent suspend/resume fail.
-> Task abort (to PM requests), in real cases, is just one of many kinds
-> of failure which can fail the suspend/resume callbacks. During
-> suspend/resume, if AH8 error and/or UIC errors happen, IRQ handler
-> may complete SSU cmd with errors and schedule the error handler (I've
-> seen such scenarios in real customer cases). My idea is to treat task
-> abort (to PM requests) as a failure (let scsi_execute() return with
-> whatever error) and let error handler recover everything just like
-> any other UFS errors which invoke error handler. In case this, again,
-> goes back to the topic that is why don't just do error recovery in
-> suspend/resume, let me paste my previous reply here -
+Hi Marco,
+>> +       /* Don't touch the shadow memory if arch isn't ready */
+>> +       if (!kasan_arch_is_ready())
+>> +               return;
+>> +
+>
+> What about kasan_poison_last_granule()? kasan_unpoison() currently
+> seems to potentially trip on that.
 
-Does this mean that the IRQ handler can complete an SSU command with an
-error and that the error handler can later recover from that error? That
-sounds completely wrong to me. The IRQ handler should never complete any
-command with an error if that error could be recoverable. Instead, the
-IRQ handler should add that command to a list and leave it to the error
-handler to fail that command or to retry it.
+Ah the perils of rebasing an old series! I'll re-audit the generic code
+for functions that touch memory and make sure I have covered them all.
 
-> 2. And say we want SCSI layer to resubmit PM requests to prevent
-> suspend/resume fail, we should keep retrying the PM requests (so
-> long as error handler can recover everything successfully), meaning
-> we should give them unlimited retries (which I think is a bad idea),
-> otherwise (if they have zero retries or limited retries), in extreme
-> conditions, what may happen is that error handler can recover everything
-> successfully every time, but all these retries (say 3) still time out,
-> which block the power management for too long (retries * 60 seconds) and,
-> most important, when the last retry times out, scsi layer will anyways
-> complete the PM request (even we return DID_IMM_RETRY), then we end up
-> same - suspend/resume shall run concurrently with error handler and we
-> couldn't recover saved PM errors.
+Thanks for the review.
 
-Hmm ... it is not clear to me why this behavior is considered a problem?
+Kind regards,
+Daniel
 
-What is wrong with blocking RPM while a START STOP UNIT command is being
-processed? If there are UFS devices for which it takes long to process
-that command I think it is up to the vendors of these devices to fix
-these UFS devices.
-
-Additionally, if a UFS device needs more than (retries * 60 seconds) to
-process a START STOP UNIT command, shouldn't it be marked as broken?
-
-Thanks,
-
-Bart.
+>
+> -- 
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/CANpmjNN2%3DgdDBPzYQYsmOtLQVVjSz2qFcwcTMEqB%3Ds_ZWndJLg%40mail.gmail.com.
