@@ -2,146 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA3B3A9E1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C18FD3A9E20
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 16:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234211AbhFPOxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 10:53:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58496 "EHLO
+        id S234115AbhFPOy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 10:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234087AbhFPOxf (ORCPT
+        with ESMTP id S234200AbhFPOy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 10:53:35 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECCFAC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:51:28 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id q5so3044246wrm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:51:28 -0700 (PDT)
+        Wed, 16 Jun 2021 10:54:26 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56DBC061767
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:52:20 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id k5so3271189iow.12
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 07:52:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=PO3bafkqYILWJqWytS8gUShKgfwibzvfh84wirCWy1s=;
-        b=bNYdxkGO+wjRgDRieFSzyn8BVGnlO2jMlt1eMjYjfu9AqzoKcL/bY6C6MHP63cIYRR
-         z2aF9F2dpjzPaKe6mgKittxuFMoQE+sRwEj7S9ViKIVkgLP1xz/KFxW2Cin8BdvYD9f0
-         cbssyNEcAj7R9pymnM7nnMwIWckb1U8VpxycM+Agm2AI8XbM3SRoqfZEubeiACeb+xA0
-         932QYj0TmtuJPPLUBKhjQvheDc+Fp8MeubxNkuJ0fkH6fiJfAuDZWm0mUWejCLPRJqDm
-         6a1GUetsm1tIrPbUUdOCcf/HrNbuXBWBdP7wS+KbMb+vlIHpgmAYIzmNfa+96AayfCC0
-         RuWQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ho0nMLLWDiEI8PWRRnO12oSgVwkuBUrJL0BDNxvINsA=;
+        b=hoREoaRWaUrQikoDfDACdirEoAtNi+fOmNy3ydxCJMLyS1AYVOlkcC6i6q2ACi7hoR
+         YdvK7zt01zFnWIoInOM4K4wHv15MobleKQ1Md6yZJgidSl5oEj8UBm6vgBx5+levT+bF
+         gqF6j+MUp/6RnngHTAeIvJzipUGYH5hjKD1VuO/9eya66IdaHMbpo/KgDZ3DVaHvErqA
+         B3qi1ZmurpgN6d4R5YCa0cXu/kDnuxtw+1LeEfjQcxRp6ZbVEoBzspOFJuy/TVVDm65t
+         V0QVWPMfUuOXT+50eXThDDyewiClZ1fYk3Xwe/r2yV0gFF5zxhb9twIsyab3WIZv3KyY
+         DAmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=PO3bafkqYILWJqWytS8gUShKgfwibzvfh84wirCWy1s=;
-        b=hHBjU8TVskh+5ZqLYsSm3zqrfBiNY0+RZ51dYlauv6ju9niBpRh6/ZeFX+oX4MjyFP
-         OiWdkDu48J4NoTyBTDf/ynFm0GciVrbyvsLzhHsPCJm66r0aVasVHdsnO/MPgFCJM+sf
-         /Tri1MsvYiw26cqzB/P2Iv6VwVErYLETQ+KDpSGrUZfkS8QyBFnb+qzWsf3DQrIkYHEg
-         ZFaL3U41UIarzfJo3keqytdixgo74XsigcaETfSvg41IWQSSYvqktI82Ge8GX6T/elnz
-         E60/5B5dB1dS62b8dut69N0s3tfrVROee7bPMAysxIIGiAxKCNVuyPBzlvKcgjo5ssJ/
-         l9lQ==
-X-Gm-Message-State: AOAM532hltYkPK7BeKuZiatku2Zs/AQV0pSYXPr6Ctq0rZofHHiEAqwQ
-        Wmj7Y0ok8LhIe0TiR8NzZnEWXCDM/WAukw==
-X-Google-Smtp-Source: ABdhPJzk1KnTJA4gbt6PFE3FyAoZUcCPSje/BGsicS9oi0jkDqPQyN2CpT46kCnDnRtJzXZty+TEWA==
-X-Received: by 2002:adf:9dd1:: with SMTP id q17mr5869188wre.402.1623855087572;
-        Wed, 16 Jun 2021 07:51:27 -0700 (PDT)
-Received: from dell ([91.110.221.170])
-        by smtp.gmail.com with ESMTPSA id x18sm2349887wrw.19.2021.06.16.07.51.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 07:51:27 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 15:51:25 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     "sameo@linux.intel.com" <sameo@linux.intel.com>,
-        "grant.likely@linaro.org" <grant.likely@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH mfd v2] mfd: Add Renesas Synchronization Management Unit
- (SMU) support
-Message-ID: <YMoP7fdkyyYUrDf2@dell>
-References: <1622652224-19103-1-git-send-email-min.li.xe@renesas.com>
- <YMiwEYLkbKocs8ux@dell>
- <OS3PR01MB65939641C36B650A3B69DAADBA309@OS3PR01MB6593.jpnprd01.prod.outlook.com>
- <YMmuz0EVjfEi6MJj@dell>
- <TYYPR01MB6603047A864DB37F111BDAD9BA0F9@TYYPR01MB6603.jpnprd01.prod.outlook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ho0nMLLWDiEI8PWRRnO12oSgVwkuBUrJL0BDNxvINsA=;
+        b=MM39cvIT9qJa5un4cX9c0QtIfly88MVXktQMuIolRtcDOmLLJLInKShjcUO5C8H4aq
+         nZCtTEKWilW2+nAeAUZuBi08QMF6vcY6J838ihRZ9zmwCgjLj/6/7NsckIa75cufpt68
+         A6X35C6sqs7WUeoPTfnYV5vCXGaDeHspsmTWfwoiq2iJobxbza28cgaQ3z3Y56+Y4R3p
+         eu7Bf9hXS+Y65A9cb+uE/Lo9T7wiZZVUvhTXKWe5Ta/XNW7TJfI+tB1nTu8L0w1qIvx6
+         nekqM9AHrhaoM9H5bWyCtBZfvArdEdhnkpR1IhqkjOxkdRE1CbZjEuSvS8sNM4rPqLUG
+         2p6Q==
+X-Gm-Message-State: AOAM532KVdMsCC+TGwO5Bf3YxeCcRX5A1S2OqTgg5GK/vw84OSmIvmqf
+        R5XT9j+/kPumeYHwL0r5pEhqgQ==
+X-Google-Smtp-Source: ABdhPJwRYyaHR20NfmOGxiiM9sMUCdWhA1YbxXGNbJVFB3qF4ZclbwduUBkSVJG7m8JN/4680wB/fg==
+X-Received: by 2002:a5d:91ca:: with SMTP id k10mr292660ior.23.1623855140114;
+        Wed, 16 Jun 2021 07:52:20 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id h200sm1298166iof.6.2021.06.16.07.52.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 07:52:19 -0700 (PDT)
+Subject: Re: remove the legacy ide driver v2
+To:     Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org
+References: <20210616134658.1471835-1-hch@lst.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4b003372-41d0-507a-b74b-b73aa33189f4@kernel.dk>
+Date:   Wed, 16 Jun 2021 08:52:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210616134658.1471835-1-hch@lst.de>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <TYYPR01MB6603047A864DB37F111BDAD9BA0F9@TYYPR01MB6603.jpnprd01.prod.outlook.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021, Min Li wrote:
-
-> > 
-> > > >
-> > > > > +static struct mfd_cell rsmu_cm_devs[] = {
-> > > > > +	[RSMU_PHC] = {
-> > > > > +		.name = "idtcm-phc",
-> > > >
-> > > > Can't you have a nicer name?
-> > > >
-> > > Hi Lee
-> > >
-> > > I wonder which part of the name that you don't like? PHC stands from PTP
-> > Hardware Clock.
-> > > I was following the name convention like tps65912-regulator.
-> > > Do you accept "8a3400-phc"?
-> > 
-> > I think you're trying to put too much information into the device name.
-> > 
-> > Currently it's:
-> > 
-> >   idt <company name> cm <platform> - phc <exact device type>
-> > 
-> > Where usually we have, taking your example:
-> > 
-> >   tps65912 <chip> - regulator <subsystem>
-> > 
-> > So assuming the PTP HW Clock is just a clock it should be:
-> > 
-> >   8a3400 <chip> - clock <subsystem>
-> > 
-> > It's difficult to say without seeing the associated child device(s).
-> > When do you propose to upstream those?  Maybe they should be part of
-> > this initial set.  I think that would help a lot.
-> > 
+On 6/16/21 7:46 AM, Christoph Hellwig wrote:
+> Hi all,
 > 
-> Hi Lee
+> we've been trying to get rid of the legacy ide driver for a while now,
+> and finally scheduled a removal for 2021, which is three month old now.
 > 
-> The PHC driver already existed in the current tree as drivers/ptp/ptp_clockmatrix.c and
-> ptp_idt82p33.c
+> In general distros and most defconfigs have switched to libata long ago,
+> but there are a few exceptions.  This series first switches over all
+> remaining defconfigs to use libata and then removes the legacy ide
+> driver.
 > 
-> Right now, they act as i2c driver. I plan to change them as a normal platform device driver
-> after this MFD change kicked in
+> libata mostly covers all hardware supported by the legacy ide driver.
+> There are three mips drivers that are not supported, but the linux-mips
+> list could not identify any users of those.  There also are two m68k
+> drivers that do not have libata equivalents, which might or might not
+> have users, so we'll need some input and possibly help from the m68k
+> community here.
 > 
-> That is why I would prefer the name "phc" instead of "clock" since the driver is not a normal clk driver
-> under drivers/clk but a ptp clock driver. And down the road, we will have our real clock driver and I wanna
-> reserve the name "clock" for the real clock driver.
+> This series is against Jens' for-5.14/libata branch.
 
-I see.  To be honest, I wasn't aware of the PTP subsystem.
-
-In which case, the name needs to match the one in the driver:
-
- static struct i2c_driver idtcm_driver = {
-        .driver = {
-                .of_match_table = of_match_ptr(idtcm_dt_id),
-                .name           = "idtcm",
-        },
-        .probe          = idtcm_probe,
-        .remove         = idtcm_remove,
-        .id_table       = idtcm_i2c_id,
- };
-
-So, "idtcm" in this case.
-
-How else will it match?
+Unless someone complains loudly, I plan on queueing this up end this
+week.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Jens Axboe
+
