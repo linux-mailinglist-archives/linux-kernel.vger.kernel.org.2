@@ -2,73 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B41D3A8D88
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29EC3A8DA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 02:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhFPAi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 20:38:56 -0400
-Received: from mga01.intel.com ([192.55.52.88]:22893 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230244AbhFPAiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 20:38:55 -0400
-IronPort-SDR: tyIwjpMfYdw8fli73qKOYRqWPzWgr3hPeA+KWE0GVU1kIBGaKM4VDw7kEb5QbUeF3Pntz0LtPw
- 1B4DYobh7hHw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="227578459"
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="227578459"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 17:36:50 -0700
-IronPort-SDR: IUW+IbsdJrn5LO+okM2ePmFUC8DyNuW2n//StC1Zwjxyk42X2Bkrgx2Zuy829uF4II9aJ4WLTC
- 6l0LFW3sV1/g==
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="639825057"
-Received: from shyvonen-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.209.5.121])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 17:36:47 -0700
-From:   Kai Huang <kai.huang@intel.com>
-To:     linux-sgx@vger.kernel.org, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, bp@alien8.de, seanjc@google.com,
-        jarkko@kernel.org, dave.hansen@intel.com, tglx@linutronix.de,
-        mingo@redhat.com, Yang Zhong <yang.zhong@intel.com>,
-        Kai Huang <kai.huang@intel.com>
-Subject: [PATCH v2] x86/sgx: Add missing xa_destroy() when virtual EPC is destroyed
-Date:   Wed, 16 Jun 2021 12:36:34 +1200
-Message-Id: <20210616003634.320206-1-kai.huang@intel.com>
-X-Mailer: git-send-email 2.31.1
+        id S231861AbhFPAlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 20:41:11 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:49577 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231453AbhFPAlK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 20:41:10 -0400
+X-UUID: 207e7714f84a4e369ddc2a046af24384-20210616
+X-UUID: 207e7714f84a4e369ddc2a046af24384-20210616
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1657454090; Wed, 16 Jun 2021 08:39:03 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Jun 2021 08:39:01 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 16 Jun 2021 08:39:01 +0800
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Subject: [PATCH v10 11/19] clk: mediatek: Add MT8192 imp i2c wrapper clock support
+Date:   Wed, 16 Jun 2021 08:36:35 +0800
+Message-ID: <20210616003643.28648-12-chun-jie.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210616003643.28648-1-chun-jie.chen@mediatek.com>
+References: <20210616003643.28648-1-chun-jie.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xa_destroy() needs to be called to destroy virtual EPC's page array
-before calling kfree() to free the virtual EPC.  Currently it is not
-called.  Add the missing xa_destroy() to fix.
+Add MT8192 imp i2c wrapper clock provider
 
-Fixes: 540745ddbc70 ("x86/sgx: Introduce virtual EPC for use by KVM guests")
-Tested-by: Yang Zhong <yang.zhong@intel.com>
-Acked-by: Dave Hansen <dave.hansen@intel.com>
-Signed-off-by: Kai Huang <kai.huang@intel.com>
+Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
 ---
-v1->v2:
+ drivers/clk/mediatek/Kconfig                  |   6 +
+ drivers/clk/mediatek/Makefile                 |   1 +
+ .../clk/mediatek/clk-mt8192-imp_iic_wrap.c    | 119 ++++++++++++++++++
+ 3 files changed, 126 insertions(+)
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-imp_iic_wrap.c
 
- - Fixed typo in commit msg
- - Added Dave's Acked-by
----
- arch/x86/kernel/cpu/sgx/virt.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-index 6ad165a5c0cc..64511c4a5200 100644
---- a/arch/x86/kernel/cpu/sgx/virt.c
-+++ b/arch/x86/kernel/cpu/sgx/virt.c
-@@ -212,6 +212,7 @@ static int sgx_vepc_release(struct inode *inode, struct file *file)
- 		list_splice_tail(&secs_pages, &zombie_secs_pages);
- 	mutex_unlock(&zombie_secs_pages_lock);
+diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
+index 38011dccfe47..5becf049d9fa 100644
+--- a/drivers/clk/mediatek/Kconfig
++++ b/drivers/clk/mediatek/Kconfig
+@@ -526,6 +526,12 @@ config COMMON_CLK_MT8192_IMGSYS
+ 	help
+ 	  This driver supports MediaTek MT8192 imgsys and imgsys2 clocks.
  
-+	xa_destroy(&vepc->page_array);
- 	kfree(vepc);
- 
- 	return 0;
++config COMMON_CLK_MT8192_IMP_IIC_WRAP
++	bool "Clock driver for MediaTek MT8192 imp_iic_wrap"
++	depends on COMMON_CLK_MT8192
++	help
++	  This driver supports MediaTek MT8192 imp_iic_wrap clocks.
++
+ config COMMON_CLK_MT8516
+ 	bool "Clock driver for MediaTek MT8516"
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
+diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
+index 91392cb333fd..37981626b775 100644
+--- a/drivers/clk/mediatek/Makefile
++++ b/drivers/clk/mediatek/Makefile
+@@ -71,5 +71,6 @@ obj-$(CONFIG_COMMON_CLK_MT8192) += clk-mt8192.o
+ obj-$(CONFIG_COMMON_CLK_MT8192_AUDSYS) += clk-mt8192-aud.o
+ obj-$(CONFIG_COMMON_CLK_MT8192_CAMSYS) += clk-mt8192-cam.o
+ obj-$(CONFIG_COMMON_CLK_MT8192_IMGSYS) += clk-mt8192-img.o
++obj-$(CONFIG_COMMON_CLK_MT8192_IMP_IIC_WRAP) += clk-mt8192-imp_iic_wrap.o
+ obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
+ obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
+diff --git a/drivers/clk/mediatek/clk-mt8192-imp_iic_wrap.c b/drivers/clk/mediatek/clk-mt8192-imp_iic_wrap.c
+new file mode 100644
+index 000000000000..700356ac6a58
+--- /dev/null
++++ b/drivers/clk/mediatek/clk-mt8192-imp_iic_wrap.c
+@@ -0,0 +1,119 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// Copyright (c) 2021 MediaTek Inc.
++// Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
++
++#include <linux/clk-provider.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++
++#include "clk-mtk.h"
++#include "clk-gate.h"
++
++#include <dt-bindings/clock/mt8192-clk.h>
++
++static const struct mtk_gate_regs imp_iic_wrap_cg_regs = {
++	.set_ofs = 0xe08,
++	.clr_ofs = 0xe04,
++	.sta_ofs = 0xe00,
++};
++
++#define GATE_IMP_IIC_WRAP(_id, _name, _parent, _shift)			\
++	GATE_MTK_FLAGS(_id, _name, _parent, &imp_iic_wrap_cg_regs, _shift,	\
++		&mtk_clk_gate_ops_setclr, CLK_OPS_PARENT_ENABLE)
++
++static const struct mtk_gate imp_iic_wrap_c_clks[] = {
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_C_I2C10, "imp_iic_wrap_c_i2c10", "infra_i2c0", 0),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_C_I2C11, "imp_iic_wrap_c_i2c11", "infra_i2c0", 1),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_C_I2C12, "imp_iic_wrap_c_i2c12", "infra_i2c0", 2),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_C_I2C13, "imp_iic_wrap_c_i2c13", "infra_i2c0", 3),
++};
++
++static const struct mtk_gate imp_iic_wrap_e_clks[] = {
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_E_I2C3, "imp_iic_wrap_e_i2c3", "infra_i2c0", 0),
++};
++
++static const struct mtk_gate imp_iic_wrap_n_clks[] = {
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_N_I2C0, "imp_iic_wrap_n_i2c0", "infra_i2c0", 0),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_N_I2C6, "imp_iic_wrap_n_i2c6", "infra_i2c0", 1),
++};
++
++static const struct mtk_gate imp_iic_wrap_s_clks[] = {
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_S_I2C7, "imp_iic_wrap_s_i2c7", "infra_i2c0", 0),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_S_I2C8, "imp_iic_wrap_s_i2c8", "infra_i2c0", 1),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_S_I2C9, "imp_iic_wrap_s_i2c9", "infra_i2c0", 2),
++};
++
++static const struct mtk_gate imp_iic_wrap_w_clks[] = {
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_W_I2C5, "imp_iic_wrap_w_i2c5", "infra_i2c0", 0),
++};
++
++static const struct mtk_gate imp_iic_wrap_ws_clks[] = {
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_WS_I2C1, "imp_iic_wrap_ws_i2c1", "infra_i2c0", 0),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_WS_I2C2, "imp_iic_wrap_ws_i2c2", "infra_i2c0", 1),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_WS_I2C4, "imp_iic_wrap_ws_i2c4", "infra_i2c0", 2),
++};
++
++static const struct mtk_clk_desc imp_iic_wrap_c_desc = {
++	.clks = imp_iic_wrap_c_clks,
++	.num_clks = ARRAY_SIZE(imp_iic_wrap_c_clks),
++};
++
++static const struct mtk_clk_desc imp_iic_wrap_e_desc = {
++	.clks = imp_iic_wrap_e_clks,
++	.num_clks = ARRAY_SIZE(imp_iic_wrap_e_clks),
++};
++
++static const struct mtk_clk_desc imp_iic_wrap_n_desc = {
++	.clks = imp_iic_wrap_n_clks,
++	.num_clks = ARRAY_SIZE(imp_iic_wrap_n_clks),
++};
++
++static const struct mtk_clk_desc imp_iic_wrap_s_desc = {
++	.clks = imp_iic_wrap_s_clks,
++	.num_clks = ARRAY_SIZE(imp_iic_wrap_s_clks),
++};
++
++static const struct mtk_clk_desc imp_iic_wrap_w_desc = {
++	.clks = imp_iic_wrap_w_clks,
++	.num_clks = ARRAY_SIZE(imp_iic_wrap_w_clks),
++};
++
++static const struct mtk_clk_desc imp_iic_wrap_ws_desc = {
++	.clks = imp_iic_wrap_ws_clks,
++	.num_clks = ARRAY_SIZE(imp_iic_wrap_ws_clks),
++};
++
++static const struct of_device_id of_match_clk_mt8192_imp_iic_wrap[] = {
++	{
++		.compatible = "mediatek,mt8192-imp_iic_wrap_c",
++		.data = &imp_iic_wrap_c_desc,
++	}, {
++		.compatible = "mediatek,mt8192-imp_iic_wrap_e",
++		.data = &imp_iic_wrap_e_desc,
++	}, {
++		.compatible = "mediatek,mt8192-imp_iic_wrap_n",
++		.data = &imp_iic_wrap_n_desc,
++	}, {
++		.compatible = "mediatek,mt8192-imp_iic_wrap_s",
++		.data = &imp_iic_wrap_s_desc,
++	}, {
++		.compatible = "mediatek,mt8192-imp_iic_wrap_w",
++		.data = &imp_iic_wrap_w_desc,
++	}, {
++		.compatible = "mediatek,mt8192-imp_iic_wrap_ws",
++		.data = &imp_iic_wrap_ws_desc,
++	}, {
++		/* sentinel */
++	}
++};
++
++static struct platform_driver clk_mt8192_imp_iic_wrap_drv = {
++	.probe = mtk_clk_simple_probe,
++	.driver = {
++		.name = "clk-mt8192-imp_iic_wrap",
++		.of_match_table = of_match_clk_mt8192_imp_iic_wrap,
++	},
++};
++
++builtin_platform_driver(clk_mt8192_imp_iic_wrap_drv);
 -- 
-2.31.1
+2.18.0
 
