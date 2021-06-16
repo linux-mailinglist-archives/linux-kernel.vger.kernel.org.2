@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838BE3A8F0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F893A8F13
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 04:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbhFPCxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 22:53:21 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:10079 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbhFPCxU (ORCPT
+        id S232007AbhFPDAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 23:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231946AbhFPDAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 22:53:20 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G4V424bJDzZfBy;
-        Wed, 16 Jun 2021 10:48:18 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 10:51:13 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 16 Jun
- 2021 10:51:13 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <perex@perex.cz>, <tiwai@suse.com>, <broonie@kernel.org>
-Subject: [PATCH -next] ALSA: fm801: Fix missing pci_release_regions() on error in snd_fm801_create()
-Date:   Wed, 16 Jun 2021 10:55:07 +0800
-Message-ID: <20210616025507.2120103-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+        Tue, 15 Jun 2021 23:00:17 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093B0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 19:58:10 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id b12so358839plg.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 19:58:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=a9KFIkitloa+O/psChmM03Ow9Qedo4UEKz1deWLlXB4=;
+        b=h7OBrycEokCmK0f/mDPrpHqwzx0eG3bCpwj6VTtMjbauPUkI2+PrQ1RrmUI5jpGFN+
+         EEMFrqaMGwVhso4mqC6tiqqJV0n5x0/wdkJWjszph2df12Ad4qCRjCoIN5c8zAw00TiJ
+         WFT8clCX1xdSpyqpv+KqSKUij4mU3fptchCR3dWcyciA7lQ2jUNK0weI9Vr+0jm0/hZs
+         DwWnt76hHkWeUd9+eXekmRr2Z+K11G6RcQEeIbZRiPexZEesKTZqrKZXpEPXOX4Q1Sp6
+         cUT8lACE6ab8TyoCKJRLgNj4zg8rHLE+Ee4TFiiD4yxK5g41NuWyzETLr/uHL8uWLeZC
+         xRwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=a9KFIkitloa+O/psChmM03Ow9Qedo4UEKz1deWLlXB4=;
+        b=K7sQbkzP197IJtGbuI5blmm4nrFmm5M2Fk54NJCAa7p5VjcZGC5OKhFYwBHgTNE/v6
+         xT8N4rM0WDVxehV/effRsX1q0T9TjiqucGzoe22K2B1hIolS8RcXqCPUmFkzIOn+vS7J
+         F23tahN9t8qvcgJC1Yd86QVRjAhJcwujzv6EObRUEnjRrXC5rzbNReef7hwEDhHPEf7L
+         nNLiv44gAqS8lk2HMreC2b+zvVX1os8we8Fi8zwJPMBMPob8ryeeblb93n2GqxN4ZX4c
+         gVFbRn4MnuhkzIxodCsbuTgsgyvgN6JhX1Ngb9UneNibrkeS4tjnhi4qLFwcuO7jWqoZ
+         DUbg==
+X-Gm-Message-State: AOAM531907lXzlr8xyH3qsXNvLZOYjAaZ9RLST1ysMESxx+DVdhqnajg
+        cUvuTVLCfgij8vJai13LhF4FI3liRzS5aQ==
+X-Google-Smtp-Source: ABdhPJxDR7A5NJUK2DL/vLGmMkWMk626fBF8sGRfjMM99XPZ3Y8WBHg87s7gYzkgU/XZTY25H7+rfQ==
+X-Received: by 2002:a17:90a:4812:: with SMTP id a18mr8300581pjh.40.1623812290511;
+        Tue, 15 Jun 2021 19:58:10 -0700 (PDT)
+Received: from bj10045pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id m134sm438923pfd.148.2021.06.15.19.58.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Jun 2021 19:58:10 -0700 (PDT)
+From:   Zhenguo Zhao <zhenguo6858@gmail.com>
+To:     zhenguo6858@gmail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH]        tty: n_gsm: Fix CR bit value when initiator=0
+Date:   Wed, 16 Jun 2021 10:56:39 +0800
+Message-Id: <1623812199-31866-1-git-send-email-zhenguo6858@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the missing pci_release_regions() before return
-from snd_fm801_create() in the error handling case.
+From: Zhenguo Zhao <zhenguo.zhao1@unisoc.com>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+	When set initiator=0,switch to Responder,gsmld received dlci SABM/DISC
+	frame,CR bit should be 0 by calculation.
+
+	receive DLC0 SABM CMD:
+	[69.740263] c1 gsmld_receive: 00000000: f9 03 3f 01 1c f9
+	[69.893247] c1 gsm_queue cr:1
+	[69.897629] c1 <-- 0) C: SABM(P)
+	[69.907516] c1 gsm_queue cr:0
+
+Signed-off-by: Zhenguo Zhao <zhenguo.zhao1@unisoc.com>
 ---
- sound/pci/fm801.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/tty/n_gsm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index ed9dae87145b..adac9c6a67f0 100644
---- a/sound/pci/fm801.c
-+++ b/sound/pci/fm801.c
-@@ -1254,6 +1254,7 @@ static int snd_fm801_create(struct snd_card *card,
- 				IRQF_SHARED, KBUILD_MODNAME, chip)) {
- 			dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
- 			snd_fm801_free(chip);
-+			pci_release_regions(pci);
- 			return -EBUSY;
- 		}
- 		chip->irq = pci->irq;
-@@ -1266,6 +1267,7 @@ static int snd_fm801_create(struct snd_card *card,
- 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
- 	if (err < 0) {
- 		snd_fm801_free(chip);
-+		pci_release_regions(pci);
- 		return err;
- 	}
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index 5fea02c..becca2c 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -1779,7 +1779,7 @@ static void gsm_queue(struct gsm_mux *gsm)
  
-@@ -1273,6 +1275,7 @@ static int snd_fm801_create(struct snd_card *card,
- 	err = v4l2_device_register(&pci->dev, &chip->v4l2_dev);
- 	if (err < 0) {
- 		snd_fm801_free(chip);
-+		pci_release_regions(pci);
- 		return err;
- 	}
- 	chip->tea.v4l2_dev = &chip->v4l2_dev;
-@@ -1285,6 +1288,7 @@ static int snd_fm801_create(struct snd_card *card,
- 		if (snd_tea575x_init(&chip->tea, THIS_MODULE)) {
- 			dev_err(card->dev, "TEA575x radio not found\n");
- 			snd_fm801_free(chip);
-+			pci_release_regions(pci);
- 			return -ENODEV;
+ 	switch (gsm->control) {
+ 	case SABM|PF:
+-		if (cr == 0)
++		if (cr == 1)
+ 			goto invalid;
+ 		if (dlci == NULL)
+ 			dlci = gsm_dlci_alloc(gsm, address);
+@@ -1793,7 +1793,7 @@ static void gsm_queue(struct gsm_mux *gsm)
  		}
- 	} else if ((chip->tea575x_tuner & TUNER_TYPE_MASK) == 0) {
+ 		break;
+ 	case DISC|PF:
+-		if (cr == 0)
++		if (cr == 1)
+ 			goto invalid;
+ 		if (dlci == NULL || dlci->state == DLCI_CLOSED) {
+ 			gsm_response(gsm, address, DM);
 -- 
-2.25.1
+1.9.1
 
