@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6A33A9FC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561993A9F6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234717AbhFPPlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:41:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51360 "EHLO mail.kernel.org"
+        id S234993AbhFPPh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:37:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235128AbhFPPit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:38:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3290C613DF;
-        Wed, 16 Jun 2021 15:36:29 +0000 (UTC)
+        id S234861AbhFPPhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:37:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4133D61356;
+        Wed, 16 Jun 2021 15:35:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857789;
-        bh=HVeLsmrSRwJUos9ss1pz455I7/UCxPtH2jgZwRv0/I4=;
+        s=korg; t=1623857706;
+        bh=Bfy/OINFM5FnQ3Zw0Dk8XG8bs8VbMfZ25+MGvtsyTXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B+I+QNXVInfw/5MU8zSOaFonYU/hCa+9FE/QfXNMgmRIL1loA1ZvEbyX0Vg/0yHF5
-         FWUZpiUfIpZnSMyMTwMxTVJ+iog3PWmvAAiMKP3pQMykPbhBHWLhPhAtcat9w6jRd9
-         7LlNt1Qz28UAaAJeuU4ZaaGw4vfMBa+Sk1EnsXsw=
+        b=e2p1Wp/DCDGIAQ3QfpZ3mvVFhbHgDBfh2tOWlsrUsBE26I1ZCBDU30/3fGwTod0w7
+         yKEpzVUiCgec8xMKmSmxM8od027W/PdefZ0gNXWPMdaBXdzioWOvmd8nG9YPNwlnP+
+         B81dfac21XYL17V1C6fnpZGtBuY5YjmnbZD+gbuQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Anirudh Rayabharam <mail@anirudhrb.com>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 09/38] HID: usbhid: fix info leak in hid_submit_ctrl
-Date:   Wed, 16 Jun 2021 17:33:18 +0200
-Message-Id: <20210616152835.697511779@linuxfoundation.org>
+Subject: [PATCH 5.4 08/28] HID: usbhid: fix info leak in hid_submit_ctrl
+Date:   Wed, 16 Jun 2021 17:33:19 +0200
+Message-Id: <20210616152834.415501842@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
-References: <20210616152835.407925718@linuxfoundation.org>
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+References: <20210616152834.149064097@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -67,7 +67,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-index 17a29ee0ac6c..8d4ac4b9fb9d 100644
+index 17a638f15082..1cfbbaf6901d 100644
 --- a/drivers/hid/usbhid/hid-core.c
 +++ b/drivers/hid/usbhid/hid-core.c
 @@ -374,7 +374,7 @@ static int hid_submit_ctrl(struct hid_device *hid)
@@ -80,10 +80,10 @@ index 17a29ee0ac6c..8d4ac4b9fb9d 100644
  		usbhid->urbctrl->pipe = usb_sndctrlpipe(hid_to_usb_dev(hid), 0);
  		usbhid->urbctrl->transfer_buffer_length = len;
 diff --git a/include/linux/hid.h b/include/linux/hid.h
-index 8578db50ad73..6ed2a97eb55f 100644
+index ae906deb42e8..85bedeb9ca9f 100644
 --- a/include/linux/hid.h
 +++ b/include/linux/hid.h
-@@ -1156,8 +1156,7 @@ static inline void hid_hw_wait(struct hid_device *hdev)
+@@ -1154,8 +1154,7 @@ static inline void hid_hw_wait(struct hid_device *hdev)
   */
  static inline u32 hid_report_len(struct hid_report *report)
  {
