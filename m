@@ -2,80 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBF53AA1B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7EF3AA1B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhFPQpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 12:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhFPQpg (ORCPT
+        id S229741AbhFPQqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 12:46:08 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3257 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229602AbhFPQqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 12:45:36 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2432C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 09:43:30 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id m2so2449813pgk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 09:43:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LJ1OHgnR34ogOAEVHUpUGKUo8aum/tsPypBTkAfpFU8=;
-        b=Pk+mS4DKUQ1J3BqFzsg9jT/dZ5rPDDAQonFTVQeHpjJqyRP1WKGgbZKfUKMsaHW5HH
-         YH85LVmuR5elaXNQYOq3yzhE+GPT+tvz/NQLYXtzNwicAwNfi8DcNM6y70q8Ea2/s2dp
-         Cz6rTQ92VUchxHiESeQpaxsWa2E4NRiLzr3IQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LJ1OHgnR34ogOAEVHUpUGKUo8aum/tsPypBTkAfpFU8=;
-        b=ODy3alWtDLP8lvb7krUhOcRzDEz/vc/2fxxTroJU1I32b9rVNX8HjnOP1LeespMJfM
-         gbjyf5mgmxjcQbPX6/PAyCr7Jj2yuDIK9iUas1XxJau+MWxHVWWJEZik01yKvmBMl0IR
-         f1Ssidb7anooNjQGr1WlYpKtiVDwEAq07VFOSzVv3AKn8AZ6T/eVz4HHTaoG1lO/l4Z3
-         MpJuuy3YP94nnwn9FcBW8s6ABMy+84r5DDnbfA1gdSxQUtOkho7C0KHqK+rCHuCtqt+D
-         UCFqixY0PkG0vyipR1dpP/Jvxf02KWCaYx4b4eCscxpZIxxRxxOminievrf7MeVfxe+9
-         fu4A==
-X-Gm-Message-State: AOAM533om/3iws+gXh3JXP+Yi1udnqBR0X501pWIjBcUhvHadcAmFJ4w
-        d4pQFQ23v2V8c1C5uwrdmYtLqQ==
-X-Google-Smtp-Source: ABdhPJxx8P6LudPS5rIEnTr/BUC6TgWMdgguqNoArRbYwmw7/JgkUI8vh3DGYEEyc1T9SjhYmMEWrA==
-X-Received: by 2002:aa7:9118:0:b029:2eb:2ef3:f197 with SMTP id 24-20020aa791180000b02902eb2ef3f197mr576275pfh.27.1623861810210;
-        Wed, 16 Jun 2021 09:43:30 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id ei23sm5895053pjb.57.2021.06.16.09.43.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 09:43:29 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 09:43:28 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
-Cc:     clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, masahiroy@kernel.org,
-        michal.lkml@markovi.net, nathan@kernel.org,
-        ndesaulniers@google.com, samitolvanen@google.com,
-        yj.chiang@mediatek.com
-Subject: Re: [PATCH] kbuild: lto: fix module versionings mismatch in
- incremental build
-Message-ID: <202106160942.A89674E54@keescook>
-References: <202106150821.B4D3E02@keescook>
- <20210616080252.32046-1-lecopzer.chen@mediatek.com>
+        Wed, 16 Jun 2021 12:46:07 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G4rP54mvYz6K6NX;
+        Thu, 17 Jun 2021 00:34:17 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 18:43:59 +0200
+Received: from localhost (10.52.123.249) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 16 Jun
+ 2021 17:43:58 +0100
+Date:   Wed, 16 Jun 2021 17:43:51 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Alison Schofield <alison.schofield@intel.com>
+CC:     Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] cxl/acpi: Use the ACPI CFMWS to create static
+ decoder objects
+Message-ID: <20210616174351.000023e6@Huawei.com>
+In-Reply-To: <48f1b59105e46f04b38347fc1555bb5c8d654cff.1623800340.git.alison.schofield@intel.com>
+References: <cover.1623800340.git.alison.schofield@intel.com>
+        <48f1b59105e46f04b38347fc1555bb5c8d654cff.1623800340.git.alison.schofield@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616080252.32046-1-lecopzer.chen@mediatek.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.123.249]
+X-ClientProxiedBy: lhreml750-chm.china.huawei.com (10.201.108.200) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 04:02:52PM +0800, Lecopzer Chen wrote:
-> Yes, We can imitate how CLANG_VERSION was implemented in Kconfig.
+On Tue, 15 Jun 2021 17:20:39 -0700
+Alison Schofield <alison.schofield@intel.com> wrote:
+
+> The ACPI CXL Early Discovery Table (CEDT) includes a list of CXL memory
+> resources in CXL Fixed Memory Window Structures (CFMWS). Retrieve each
+> CFMWS in the CEDT and add a cxl_decoder object to the root port (root0)
+> for each memory resource.
 > 
-> Accroding to GNU make release page[1], I've only tested for 3.81,
-> 4.2 and 4.3.
-> 4.2 was released in 2016, I think it's fine for LTO lowest version.
+> Signed-off-by: Alison Schofield <alison.schofield@intel.com>
 
-Okay, sounds good. Are you able to build a patch for this?
+LGTM
 
-Thanks for figuring it out!
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
--- 
-Kees Cook
+> ---
+>  drivers/cxl/acpi.c | 114 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 114 insertions(+)
+> 
+> diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
+> index b6d9cd45428c..e3aa356d4dcd 100644
+> --- a/drivers/cxl/acpi.c
+> +++ b/drivers/cxl/acpi.c
+> @@ -8,8 +8,120 @@
+>  #include <linux/pci.h>
+>  #include "cxl.h"
+>  
+> +/* Encode defined in CXL 2.0 8.2.5.12.7 HDM Decoder Control Register */
+> +#define CFMWS_INTERLEAVE_WAYS(x)	(1 << (x)->interleave_ways)
+> +#define CFMWS_INTERLEAVE_GRANULARITY(x)	((x)->granularity + 8)
+> +
+>  static struct acpi_table_header *cedt_table;
+>  
+> +static unsigned long cfmws_to_decoder_flags(int restrictions)
+> +{
+> +	unsigned long flags = 0;
+> +
+> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE2)
+> +		flags |= CXL_DECODER_F_TYPE2;
+> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE3)
+> +		flags |= CXL_DECODER_F_TYPE3;
+> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE)
+> +		flags |= CXL_DECODER_F_RAM;
+> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_PMEM)
+> +		flags |= CXL_DECODER_F_PMEM;
+> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_FIXED)
+> +		flags |= CXL_DECODER_F_LOCK;
+> +
+> +	return flags;
+> +}
+> +
+> +static int cxl_acpi_cfmws_verify(struct device *dev,
+> +				 struct acpi_cedt_cfmws *cfmws)
+> +{
+> +	int expected_len;
+> +
+> +	if (cfmws->interleave_arithmetic != ACPI_CEDT_CFMWS_ARITHMETIC_MODULO) {
+> +		dev_err(dev, "CFMWS Unsupported Interleave Arithmetic\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!IS_ALIGNED(cfmws->base_hpa, SZ_256M)) {
+> +		dev_err(dev, "CFMWS Base HPA not 256MB aligned\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!IS_ALIGNED(cfmws->window_size, SZ_256M)) {
+> +		dev_err(dev, "CFMWS Window Size not 256MB aligned\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	expected_len = struct_size((cfmws), interleave_targets,
+> +				   CFMWS_INTERLEAVE_WAYS(cfmws));
+> +
+> +	if (expected_len != cfmws->header.length) {
+> +		dev_err(dev, "CFMWS interleave ways and targets mismatch\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void cxl_add_cfmws_decoders(struct device *dev,
+> +				   struct cxl_port *root_port)
+> +{
+> +	struct acpi_cedt_cfmws *cfmws;
+> +	struct cxl_decoder *cxld;
+> +	acpi_size len, cur = 0;
+> +	void *cedt_base;
+> +	int rc;
+> +
+> +	len = cedt_table->length - sizeof(*cedt_table);
+> +	cedt_base = cedt_table + 1;
+> +
+> +	while (cur < len) {
+> +		struct acpi_cedt_header *c = cedt_base + cur;
+> +
+> +		if (c->type != ACPI_CEDT_TYPE_CFMWS) {
+> +			cur += c->length;
+> +			continue;
+> +		}
+> +
+> +		cfmws = cedt_base + cur;
+> +
+> +		if (cfmws->header.length < sizeof(*cfmws)) {
+> +			dev_err(dev, "Invalid CFMWS header length %u\n",
+> +				cfmws->header.length);
+> +			dev_err(dev, "Failed to add decoders\n");
+> +			return;
+> +		}
+> +
+> +		rc = cxl_acpi_cfmws_verify(dev, cfmws);
+> +		if (rc) {
+> +			dev_err(dev, "CFMWS range %#llx-%#llx not registered\n",
+> +				cfmws->base_hpa, cfmws->base_hpa +
+> +				cfmws->window_size - 1);
+> +			cur += c->length;
+> +			continue;
+> +		}
+> +
+> +		cxld = devm_cxl_add_decoder(dev, root_port,
+> +				CFMWS_INTERLEAVE_WAYS(cfmws),
+> +				cfmws->base_hpa, cfmws->window_size,
+> +				CFMWS_INTERLEAVE_WAYS(cfmws),
+> +				CFMWS_INTERLEAVE_GRANULARITY(cfmws),
+> +				CXL_DECODER_EXPANDER,
+> +				cfmws_to_decoder_flags(cfmws->restrictions));
+> +
+> +		if (IS_ERR(cxld)) {
+> +			dev_err(dev, "Failed to add decoder for %#llx-%#llx\n",
+> +				cfmws->base_hpa, cfmws->base_hpa +
+> +				cfmws->window_size - 1);
+> +		} else {
+> +			dev_dbg(dev, "add: %s range %#llx-%#llx\n",
+> +				dev_name(&cxld->dev), cfmws->base_hpa,
+> +				 cfmws->base_hpa + cfmws->window_size - 1);
+> +		}
+> +		cur += c->length;
+> +	}
+> +}
+> +
+>  static struct acpi_cedt_chbs *cxl_acpi_match_chbs(struct device *dev, u32 uid)
+>  {
+>  	struct acpi_cedt_chbs *chbs, *chbs_match = NULL;
+> @@ -251,6 +363,8 @@ static int cxl_acpi_probe(struct platform_device *pdev)
+>  	if (rc)
+>  		goto out;
+>  
+> +	cxl_add_cfmws_decoders(host, root_port);
+> +
+>  	/*
+>  	 * Root level scanned with host-bridge as dports, now scan host-bridges
+>  	 * for their role as CXL uports to their CXL-capable PCIe Root Ports.
+
