@@ -2,63 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4133A93A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7513A93A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 09:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbhFPHTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 03:19:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41444 "EHLO mail.kernel.org"
+        id S231698AbhFPHUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 03:20:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231665AbhFPHTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:19:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EC3F613B9;
-        Wed, 16 Jun 2021 07:17:39 +0000 (UTC)
+        id S231293AbhFPHUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 03:20:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91E5060FEE;
+        Wed, 16 Jun 2021 07:18:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623827860;
-        bh=vzNbASvPNyWJbR89YyZgUGO1Mle5ZgzHENB8vDFYWxg=;
+        s=korg; t=1623827882;
+        bh=yCCQgCaXqKoJI/1+n5rAGup004IhWGxcZxJJCONLi7o=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lXoWR3AdteVbCYG/Xj9z0at1MxpssAcSBg4mXCOKRKN80M+QfcnufYc0z6sW7T4su
-         fL1kZfdbJXxDDdIFSvvZ4DukM+/A1B+waS8gQ0axAU/AKq2+xZ9z0B15psgdpc3Lyq
-         xyHs7Bbq7RFBFR4CK7LpeaaIe2gOI154rsc7bSUc=
-Date:   Wed, 16 Jun 2021 09:17:38 +0200
+        b=ajNSkOcivMoeqNpNyF/JQ9o82YILr8/XtPs2UEMzVE//eel5HetroNtPJ7SPanBON
+         zkmU8RRlevYrRWGu8cs4vEcQ4rw2IPuJtKt1HBfSWCaLymMOzhvOOXxbJBW29yLkH4
+         t7Kma9wr+selU5ncdCm3qx08ytLPki48slC4er1M=
+Date:   Wed, 16 Jun 2021 09:17:59 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Johannes Thumshirn <morbidrsa@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] mcb: Use DEFINE_RES_MEM() to simplify code
-Message-ID: <YMmlkmnEWetYVXdg@kroah.com>
-References: <20210616015509.672-1-thunder.leizhen@huawei.com>
- <20210616015509.672-2-thunder.leizhen@huawei.com>
- <YMmdAQtPN7QRfcNO@kroah.com>
- <8bd6946b-b3f5-35c7-2cbe-51f4c4841d20@huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 4/8] docs: usb: replace some characters
+Message-ID: <YMmlpyxyfmum9r9O@kroah.com>
+References: <cover.1623826294.git.mchehab+huawei@kernel.org>
+ <0a4b0c38a9cd1133402a04a7ff60fefd9682d42e.1623826294.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8bd6946b-b3f5-35c7-2cbe-51f4c4841d20@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0a4b0c38a9cd1133402a04a7ff60fefd9682d42e.1623826294.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 02:57:14PM +0800, Leizhen (ThunderTown) wrote:
+On Wed, Jun 16, 2021 at 08:55:10AM +0200, Mauro Carvalho Chehab wrote:
+> The conversion tools used during DocBook/LaTeX/html/Markdown->ReST
+> conversion and some cut-and-pasted text contain some characters that
+> aren't easily reachable on standard keyboards and/or could cause
+> troubles when parsed by the documentation build system.
 > 
+> Replace the occurences of the following characters:
 > 
-> On 2021/6/16 14:41, Greg Kroah-Hartman wrote:
-> > On Wed, Jun 16, 2021 at 09:55:09AM +0800, Zhen Lei wrote:
-> >> Use DEFINE_RES_MEM() to save a couple of lines of code, which makes the
-> >> code a bit shorter and easier to read. The start address does not need to
-> >> appear twice.
-> >>
-> >> By the way, the value of '.end' should be "start + size - 1". So the
-> >> previous writing should have omitted subtracted 1.
-> > 
-> > Does that mean the current code is wrong and this is a bugfix?  If so,
-> > what commit id does this fix?
+> 	- U+feff ('﻿'): BOM
+> 	  as it is not needed on UTF-8
 > 
-> OK, I'll add Fixes.
-> 
-> However, some people think that only functional fixes need to add "Fixes".
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/usb/ehci.rst           | 2 +-
+>  Documentation/usb/gadget_printer.rst | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-If this is not a "fix" then that is fine, I can take it as-is, it just
-was not obvious.
-
-greg k-h
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
