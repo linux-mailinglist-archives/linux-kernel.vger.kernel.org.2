@@ -2,106 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE013A95CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D243A95CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbhFPJSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:18:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56820 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232218AbhFPJSO (ORCPT
+        id S232363AbhFPJSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232266AbhFPJSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:18:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623834968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T4+c2pc8J0kO0sEZOcAlXdb+PXp9r+TugMlu0OrZfbQ=;
-        b=bqFIAGlw79Bp058FqfRFpGGtalrUC7X9dIggT/tpo4pnSOkA50GtB+kx7MQJex0V4/W2Eh
-        iWURGwWmXUrqi8amcnZlZrN9MqMoJcy3w5VFvsQlxwBtOVtP/7qnKl6L53/hw+gNB+PHDA
-        54asi/eWCGhsixJutRqtTXsPbXeT5eo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-_HXbBplgNFKDDARh4oc90g-1; Wed, 16 Jun 2021 05:16:04 -0400
-X-MC-Unique: _HXbBplgNFKDDARh4oc90g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF662800D55;
-        Wed, 16 Jun 2021 09:16:02 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 43B485D6AD;
-        Wed, 16 Jun 2021 09:16:01 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210614201435.1379188-33-willy@infradead.org>
-References: <20210614201435.1379188-33-willy@infradead.org> <20210614201435.1379188-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v11 32/33] fs/netfs: Add folio fscache functions
+        Wed, 16 Jun 2021 05:18:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09FCC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 02:16:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7LgyNhMeySjLgdtjGJWLbYeWqHj0anBeJjBkkv2F6pE=; b=mnp/CLLIE/CrGvHg8pqIaYBavF
+        WVqiuhpup/iu0fMnxfsmxxzEJYj2wsUZYc3AuynDcVd+E4E9MmuhJaDyYbpQGJI713Fvmqn4wym8j
+        NCZAomLoji9kUrrZIsYjtsarzH8bIA4PdM8uSdKabxzqd1LvTVAufFYcfzW8np6qoyKg26X2NXuZG
+        WszqOILfCKSdfoRfkmKlpwW22hMX/faUZDEsy/f9UnKuQo8qO/i+3ZciwthWBRWVT6CMzpggvkjm0
+        kPNcAttQnd9AbkrvEdAfQcpAYLsvF8VI47bnvCkgpbxQISwkplH6JgjZeIPw01jJL9/HMd9frC8Hi
+        RgLx6pyA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltReP-008HLY-MV; Wed, 16 Jun 2021 09:16:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 13932300269;
+        Wed, 16 Jun 2021 11:16:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 01C3020277F84; Wed, 16 Jun 2021 11:16:03 +0200 (CEST)
+Date:   Wed, 16 Jun 2021 11:16:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 3/6] posix-cpu-timers: Force next_expiration recalc after
+ timer deletion
+Message-ID: <YMnBUybUcUP3Ll/P@hirez.programming.kicks-ass.net>
+References: <20210604113159.26177-1-frederic@kernel.org>
+ <20210604113159.26177-4-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <810721.1623834960.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 16 Jun 2021 10:16:00 +0100
-Message-ID: <810722.1623834960@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604113159.26177-4-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+On Fri, Jun 04, 2021 at 01:31:56PM +0200, Frederic Weisbecker wrote:
+> A timer deletion only dequeues the timer but it doesn't shutdown
+> the related costly process wide cputimer counter and the tick dependency.
+> 
+> The following code snippet keeps this overhead around for one week after
+> the timer deletion:
+> 
+> 	void trigger_process_counter(void)
+> 	{
+> 		timer_t id;
+> 		struct itimerspec val = { };
+> 
+> 		val.it_value.tv_sec = 604800;
+> 		timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id);
+> 		timer_settime(id, 0, &val, NULL);
+> 		timer_delete(id);
+> 	}
+> 
+> Make sure the next target's tick recalculates the nearest expiration and
+> clears the process wide counter and tick dependency if necessary.
 
->  /**
-> - * set_page_fscache - Set PG_fscache on a page and take a ref
-> - * @page: The page.
-> + * folio_start_fscache - Start an fscache operation on a folio.
-> + * @folio: The folio.
->   *
-> - * Set the PG_fscache (PG_private_2) flag on a page and take the refere=
-nce
-> - * needed for the VM to handle its lifetime correctly.  This sets the f=
-lag and
-> - * takes the reference unconditionally, so care must be taken not to se=
-t the
-> - * flag again if it's already set.
-> + * Call this function before an fscache operation starts on a folio.
-> + * Starting a second fscache operation before the first one finishes is
-> + * not allowed.
+> diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
+> index 132fd56fb1cd..bb1f862c785e 100644
+> --- a/kernel/time/posix-cpu-timers.c
+> +++ b/kernel/time/posix-cpu-timers.c
+> @@ -405,6 +405,33 @@ static int posix_cpu_timer_create(struct k_itimer *new_timer)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * Dequeue the timer and reset the base if it was its earliest expiration.
+> + * It makes sure the next tick recalculates the base next expiration so we
+> + * don't keep the costly process wide cputime counter around for a random
+> + * amount of time, along with the tick dependency.
+> + */
+> +static void disarm_timer(struct k_itimer *timer, struct task_struct *p)
+> +{
+> +	struct cpu_timer *ctmr = &timer->it.cpu;
+> +	struct posix_cputimer_base *base;
+> +	int clkidx;
+> +
+> +	if (!cpu_timer_dequeue(ctmr))
+> +		return;
+> +
+> +	clkidx = CPUCLOCK_WHICH(timer->it_clock);
+> +
+> +	if (CPUCLOCK_PERTHREAD(timer->it_clock))
+> +		base = p->posix_cputimers.bases + clkidx;
+> +	else
+> +		base = p->signal->posix_cputimers.bases + clkidx;
+> +
+> +	if (cpu_timer_getexpires(ctmr) == base->nextevt)
+> +		base->nextevt = 0;
+> +}
 
-That's not correct.  It's only used for operations that write from the pag=
-e to
-disk.  Operations that read into the page are covered by the page lock.
+OK, so check_process_timers() unconditionally recomputes ->nextevt in
+collect_posix_cputimers() provided ->timers_active. It also clears
+->timers_active if it finds none are left. This recompute is before all
+actual consumers of ->nextevt, with one exception.
 
-> + * folio_end_fscache - End an fscache operation on a folio.
-> ...
-> + * Call this function after an fscache operation has finished.  This wi=
-ll
-> + * wake any sleepers waiting on this folio.
+This will loose the update of ->nextevt in arm_timer(), if one were to
+happen between this and check_process_timers(), but afaict that has no
+ill effect. Still that might warrant a comment somewhere.
 
-Ditto.
-
-> + * folio_wait_fscache - Wait for an fscache operation on this folio to =
-end.
-> + * @folio: The folio.
->   *
-> + * If an fscache operation is in progress on this folio, wait for it to
-> + * finish.  Another fscache operation may start after this one finishes=
-,
-> + * unless the caller holds the folio lock.
-
-Ditto.
-
-Apart from that, it looks okay.
-
-David
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
