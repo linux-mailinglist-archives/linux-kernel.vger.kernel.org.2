@@ -2,112 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8159B3A9C0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D2B3A9C0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 15:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbhFPNfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 09:35:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:37476 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230197AbhFPNfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:35:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F400F31B;
-        Wed, 16 Jun 2021 06:33:11 -0700 (PDT)
-Received: from [10.57.9.31] (unknown [10.57.9.31])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 790243F719;
-        Wed, 16 Jun 2021 06:33:08 -0700 (PDT)
-Subject: Re: [PATCH v4 0/3] Add allowed CPU capacity knowledge to EAS
-To:     peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, qperret@google.com,
-        dietmar.eggemann@arm.com, vincent.donnefort@arm.com,
-        Beata.Michalska@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        rostedt@goodmis.org, segall@google.com, mgorman@suse.de,
-        bristot@redhat.com, thara.gopinath@linaro.org,
-        amit.kachhap@gmail.com, amitk@kernel.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org
-References: <20210614185815.15136-1-lukasz.luba@arm.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <9e8a2c92-161d-e1f3-efd9-ac0fa4d62fd5@arm.com>
-Date:   Wed, 16 Jun 2021 14:33:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233298AbhFPNfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 09:35:30 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:42712 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230187AbhFPNf2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 09:35:28 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:32852 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1ltVfT-0005SL-R5; Wed, 16 Jun 2021 09:33:19 -0400
+Message-ID: <f3cf3dc047dcee400423f526c1fe31510c5bcf61.camel@trillion01.com>
+Subject: Re: [PATCH v2 2/3] io_uring: minor clean up in trace events
+ definition
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 16 Jun 2021 09:33:18 -0400
+In-Reply-To: <def5421f-a3ae-12fd-87a2-6e584f753127@kernel.dk>
+References: <60be7e31.1c69fb81.a8bfb.2e54SMTPIN_ADDED_MISSING@mx.google.com>
+         <2752dcc1-9e56-ba31-54ea-d2363ecb6c93@gmail.com>
+         <def5421f-a3ae-12fd-87a2-6e584f753127@kernel.dk>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-In-Reply-To: <20210614185815.15136-1-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Tue, 2021-06-15 at 15:50 -0600, Jens Axboe wrote:
+> On 6/15/21 3:48 AM, Pavel Begunkov wrote:
+> > On 5/31/21 7:54 AM, Olivier Langlois wrote:
+> > > Fix tabulation to make nice columns
+> > 
+> > Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+> 
+> I don't have any of the original 1-3 patches, and don't see them on the
+> list either. I'd love to apply for 5.14, but...
+> 
+> Olivier, are you getting any errors sending these out?Usually I'd
+> expect
+> them in my inbox as well outside of the list, but they don't seem to
+> have
+> arrived there either.
+> 
+> In any case, please resend. As Pavel mentioned, a cover letter is
+> always
+> a good idea for a series of more than one patch.
+> 
+I do not get any errors but I have noticed too that my emails weren't
+accepted by the lists.
+
+They will accept replies in already existing threads but they won't let
+me create new ones. ie: accepting my patches.
+
+I'll learn how create a cover email and I will resend the series of
+patches later today.
+
+one thing that I can tell, it is that Pavel and you are always
+recipients along with the lists for my patches... So you should have a
+private copy somewhere in your mailbox...
+
+The other day, I even got this:
+-------- Forwarded Message --------
+From: Mail Delivery System <Mailer-Daemon@cloud48395.mywhc.ca>
+To: olivier@trillion01.com
+Subject: Mail delivery failed: returning message to sender
+Date: Thu, 10 Jun 2021 11:38:51 -0400
+
+This message was created automatically by mail delivery software.
+
+A message that you sent could not be delivered to one or more of its
+recipients. This is a permanent error. The following address(es)
+failed:
+
+  linux-kernel@vger.kernel.org
+    host vger.kernel.org [23.128.96.18]
+    SMTP error from remote mail server after end of data:
+    550 5.7.1 Content-Policy accept-into-freezer-1 msg:
+    Bayes Statistical Bogofilter considers this message SPAM.  BF:<S
+0.9924>  In case you disagree, send the ENTIRE message plus this error
+message to <postmaster@vger.kernel.org> ; S230153AbhFJPkq
+  io-uring@vger.kernel.org
+    host vger.kernel.org [23.128.96.18]
+    SMTP error from remote mail server after end of data:
+    550 5.7.1 Content-Policy accept-into-freezer-1 msg:
+    Bayes Statistical Bogofilter considers this message SPAM.  BF:<S
+0.9924>  In case you disagree, send the ENTIRE message plus this error
+message to <postmaster@vger.kernel.org> ; S230153AbhFJPkq
+
+There is definitely something that the list software doesn't like in my
+emails but I don't know what...
+
+I did send an email to postmaster@vger.kernel.org to tell them about
+the problem but I didn't hear back anything from the postmaster... (My
+email probably went to the SPAM folder as well!)
 
 
-On 6/14/21 7:58 PM, Lukasz Luba wrote:
-> Hi all,
-> 
-> The patch set v4 aims to add knowledge about reduced CPU capacity
-> into the Energy Model (EM) and Energy Aware Scheduler (EAS). Currently the
-> issue is that SchedUtil CPU frequency and EM frequency are not aligned,
-> when there is a CPU thermal capping. This causes an estimation error.
-> This patch set provides the information about allowed CPU capacity
-> into the EM (thanks to thermal pressure information). This improves the
-> energy estimation. More info about this mechanism can be found in the
-> patches description.
-> 
-> Changelog:
-> v4:
-> - removed local variable and improved description in patch 2/3
-> - added Reviewed-by from Vincent for patch 2/3
-> - added Acked-by from Viresh for patch 1/3
-> v3 [3]:
-> - switched to 'raw' per-cpu thermal pressure instead of thermal pressure
->    geometric series signal, since it more suited for purpose of
->    this use case: predicting SchedUtil frequency (Vincent, Dietmar)
-> - added more comment in the patch 2/3 header for use case when thermal
->    capping might be applied even the CPUs are not over-utilized
->    (Dietmar)
-> - added ACK tag from Rafael for SchedUtil part
-> - added a fix patch for offline CPUs in cpufreq_cooling and per-cpu
->    thermal_pressure missing update
-> v2 [2]:
-> - clamp the returned value from effective_cpu_util() and avoid irq
->    util scaling issues (Quentin)
-> v1 is available at [1]
-> 
-> Regards,
-> Lukasz
-> 
-> [1] https://lore.kernel.org/linux-pm/20210602135609.10867-1-lukasz.luba@arm.com/
-> [2] https://lore.kernel.org/lkml/20210604080954.13915-1-lukasz.luba@arm.com/
-> [3] https://lore.kernel.org/lkml/20210610150324.22919-1-lukasz.luba@arm.com/
-> 
-> Lukasz Luba (3):
->    thermal: cpufreq_cooling: Update also offline CPUs per-cpu
->      thermal_pressure
->    sched/fair: Take thermal pressure into account while estimating energy
->    sched/cpufreq: Consider reduced CPU capacity in energy calculation
-> 
->   drivers/thermal/cpufreq_cooling.c |  2 +-
->   include/linux/energy_model.h      | 16 +++++++++++++---
->   include/linux/sched/cpufreq.h     |  2 +-
->   kernel/sched/cpufreq_schedutil.c  |  1 +
->   kernel/sched/fair.c               | 13 +++++++++----
->   5 files changed, 25 insertions(+), 9 deletions(-)
-> 
-
-Could you take these 3 patches via your tree, please?
-I'm asking you because the fair.c has most changes
-(apart from energy_model.h) and the patches got
-ACKs from Rafael and Viresh. The patch which touches
-fair.c got Reviewed-by Vincent Guittot. I have address
-all the comment, thus, IMHO it could fly now.
-
-Please let me know if you like me to re-base on top
-of some of your branches.
-
-Regards,
-Lukasz
