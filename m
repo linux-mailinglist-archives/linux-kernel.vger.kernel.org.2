@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D9F3A9FCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D259D3A9F79
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235356AbhFPPlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:41:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50250 "EHLO mail.kernel.org"
+        id S235077AbhFPPiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:38:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235192AbhFPPjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:39:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73CC361359;
-        Wed, 16 Jun 2021 15:36:44 +0000 (UTC)
+        id S234912AbhFPPh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:37:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73F65613C2;
+        Wed, 16 Jun 2021 15:35:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857804;
-        bh=cF5V4SDiCYcWy6ZhQI1V4h8C12A6fAAAmTs7Yoba0eA=;
+        s=korg; t=1623857721;
+        bh=PIMvvOdcHM/UaNyjKsmWLK9cCLAZzAi4AH7zS+RZbIc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z56fmkwB3f0iWIMpV/qSMZRgOFoQGtTXBdQjxgTy5dB16HLp5XCrwoVRGrITLGsJa
-         M/93wgpvisMY1qI0hcJZO10KYTEiiEyRgwlhP2f3xMiNEmf8+ldORrUTSoBCneOi3h
-         C/O0oNzj3WLbkKe0TsleuN9DN5WmXJ4hbHtJjbE8=
+        b=W3dMnzkr6OY5BuHGwOaXA68GLvDyIR9Q/AirkG3aEaxDYMSkN1J9lUlaBj4f69797
+         fNBU1QmlCuy2awvhnpSCh89I4dlWQhhRJNDckoO9V20zZz6TQpWFiQdpqXLgaR322+
+         NNtJvM7Q1VR6q6vw87yBjRPqzs1gnKewc52A2r18=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+7c2bb71996f95a82524c@syzkaller.appspotmail.com,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 12/48] HID: usbhid: fix info leak in hid_submit_ctrl
+        Maciej Falkowski <maciej.falkowski9@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 13/38] ARM: OMAP1: Fix use of possibly uninitialized irq variable
 Date:   Wed, 16 Jun 2021 17:33:22 +0200
-Message-Id: <20210616152837.047368030@linuxfoundation.org>
+Message-Id: <20210616152835.820371184@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-References: <20210616152836.655643420@linuxfoundation.org>
+In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
+References: <20210616152835.407925718@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Maciej Falkowski <maciej.falkowski9@gmail.com>
 
-[ Upstream commit 6be388f4a35d2ce5ef7dbf635a8964a5da7f799f ]
+[ Upstream commit 3c4e0147c269738a19c7d70cd32395600bcc0714 ]
 
-In hid_submit_ctrl(), the way of calculating the report length doesn't
-take into account that report->size can be zero. When running the
-syzkaller reproducer, a report of size 0 causes hid_submit_ctrl) to
-calculate transfer_buffer_length as 16384. When this urb is passed to
-the usb core layer, KMSAN reports an info leak of 16384 bytes.
+The current control flow of IRQ number assignment to `irq` variable
+allows a request of IRQ of unspecified value,
+generating a warning under Clang compilation with omap1_defconfig on
+linux-next:
 
-To fix this, first modify hid_report_len() to account for the zero
-report size case by using DIV_ROUND_UP for the division. Then, call it
-from hid_submit_ctrl().
+arch/arm/mach-omap1/pm.c:656:11: warning: variable 'irq' is used
+uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+        else if (cpu_is_omap16xx())
+                 ^~~~~~~~~~~~~~~~~
+./arch/arm/mach-omap1/include/mach/soc.h:123:30: note: expanded from macro
+'cpu_is_omap16xx'
+                                        ^~~~~~~~~~~~~
+arch/arm/mach-omap1/pm.c:658:18: note: uninitialized use occurs here
+        if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
+                        ^~~
+arch/arm/mach-omap1/pm.c:656:7: note: remove the 'if' if its condition is
+always true
+        else if (cpu_is_omap16xx())
+             ^~~~~~~~~~~~~~~~~~~~~~
+arch/arm/mach-omap1/pm.c:611:9: note: initialize the variable 'irq' to
+silence this warning
+        int irq;
+               ^
+                = 0
+1 warning generated.
 
-Reported-by: syzbot+7c2bb71996f95a82524c@syzkaller.appspotmail.com
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+The patch provides a default value to the `irq` variable
+along with a validity check.
+
+Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1324
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/usbhid/hid-core.c | 2 +-
- include/linux/hid.h           | 3 +--
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ arch/arm/mach-omap1/pm.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-index 86257ce6d619..4e9077363c96 100644
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -374,7 +374,7 @@ static int hid_submit_ctrl(struct hid_device *hid)
- 	raw_report = usbhid->ctrl[usbhid->ctrltail].raw_report;
- 	dir = usbhid->ctrl[usbhid->ctrltail].dir;
+diff --git a/arch/arm/mach-omap1/pm.c b/arch/arm/mach-omap1/pm.c
+index 2c1e2b32b9b3..a745d64d4699 100644
+--- a/arch/arm/mach-omap1/pm.c
++++ b/arch/arm/mach-omap1/pm.c
+@@ -655,9 +655,13 @@ static int __init omap_pm_init(void)
+ 		irq = INT_7XX_WAKE_UP_REQ;
+ 	else if (cpu_is_omap16xx())
+ 		irq = INT_1610_WAKE_UP_REQ;
+-	if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
+-			NULL))
+-		pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
++	else
++		irq = -1;
++
++	if (irq >= 0) {
++		if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup", NULL))
++			pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
++	}
  
--	len = ((report->size - 1) >> 3) + 1 + (report->id > 0);
-+	len = hid_report_len(report);
- 	if (dir == USB_DIR_OUT) {
- 		usbhid->urbctrl->pipe = usb_sndctrlpipe(hid_to_usb_dev(hid), 0);
- 		usbhid->urbctrl->transfer_buffer_length = len;
-diff --git a/include/linux/hid.h b/include/linux/hid.h
-index 3e33eb14118c..5e79a21c696f 100644
---- a/include/linux/hid.h
-+++ b/include/linux/hid.h
-@@ -1164,8 +1164,7 @@ static inline void hid_hw_wait(struct hid_device *hdev)
-  */
- static inline u32 hid_report_len(struct hid_report *report)
- {
--	/* equivalent to DIV_ROUND_UP(report->size, 8) + !!(report->id > 0) */
--	return ((report->size - 1) >> 3) + 1 + (report->id > 0);
-+	return DIV_ROUND_UP(report->size, 8) + (report->id > 0);
- }
- 
- int hid_report_raw_event(struct hid_device *hid, int type, u8 *data, u32 size,
+ 	/* Program new power ramp-up time
+ 	 * (0 for most boards since we don't lower voltage when in deep sleep)
 -- 
 2.30.2
 
