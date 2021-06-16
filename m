@@ -2,158 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6AC3A98E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7B63A98EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 13:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhFPLMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 07:12:47 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:35926 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhFPLMo (ORCPT
+        id S231441AbhFPLNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 07:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhFPLNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 07:12:44 -0400
-Received: from [192.168.254.32] (unknown [47.187.214.213])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D8DCE20B6C50;
-        Wed, 16 Jun 2021 04:10:37 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D8DCE20B6C50
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623841838;
-        bh=WUztDHkRTHMvJT4FbhrMu1omm7Qd16h31ex9As3+QBk=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=RuhaHoW4wskuJllTYrUI5HXLIHDc2rQajM4zq7x/Ly2YWl8D0BGfSZH5xwaNy/9GC
-         4NwKPLa2flFfs40lGzufd1Zg51BjhDIy7BGbDrjBxXb44DUtdett3ldRCrVQ9ZUZ2N
-         xiZPhS0gLufvNqSTAxqShGWcuiXofBQk3atkSKik=
-Subject: Re: [RFC PATCH v5 2/2] arm64: Create a list of SYM_CODE functions,
- check return PC against list
-To:     Suraj Jitindar Singh <sjitindarsingh@gmail.com>,
-        broonie@kernel.org, mark.rutland@arm.com, jpoimboe@redhat.com,
-        ardb@kernel.org, nobuta.keiya@fujitsu.com, catalin.marinas@arm.com,
-        will@kernel.org, jmorris@namei.org, pasha.tatashin@soleen.com,
-        jthierry@redhat.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
- <20210526214917.20099-1-madvenka@linux.microsoft.com>
- <20210526214917.20099-3-madvenka@linux.microsoft.com>
- <712b44d2af8f8cd3199aad87eb3bc94ea22d6f4a.camel@gmail.com>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <b169a4d6-152a-4853-e465-909f3bba2878@linux.microsoft.com>
-Date:   Wed, 16 Jun 2021 06:10:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 16 Jun 2021 07:13:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D6DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 04:11:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XyMAqdzcY6+j3KeLnrTUviBISDYWLd3gDa93b1F9u2g=; b=DsObk91CK5kGbFl/8uFi5mInm9
+        N59JXOouJ2WtushIn7Kdfp3ryM7nrEPpALT1JPVeLw+CMXxO0XJliHzLziX8dDDopX1L+zZspstm/
+        4/uVt7lasiSvZMfKrkdkp9a9Pi5AWBWed/bQaxuoEntQ/K+e1bI5dghh6HBYcbRfzsNiE31LuNTL7
+        5PE9AZyR68K7Q599y7LB8pIFQLhc0MH9foE52PmbrraQqPNaG9zpxHHf569NarOMujS3Rip/dt1Dc
+        Sm0k/nOOytOPSbZiNv5tSUAMPDJlKL/yVoKipYrU+Vci2Sf+K02zAJzEXzImtaG3bSrdA/HzaW+M7
+        rV2az/lA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltTRm-007xhs-B1; Wed, 16 Jun 2021 11:11:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BE979300252;
+        Wed, 16 Jun 2021 13:10:58 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ADDA420C169EB; Wed, 16 Jun 2021 13:10:58 +0200 (CEST)
+Date:   Wed, 16 Jun 2021 13:10:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
+Message-ID: <YMncQv1uT5QyQ84w@hirez.programming.kicks-ass.net>
+References: <cover.1623813516.git.luto@kernel.org>
+ <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
+ <YMnPezLs6vb418Wz@hirez.programming.kicks-ass.net>
+ <YMnQVoKvM5G34Yan@hirez.programming.kicks-ass.net>
+ <20210616103446.GC22278@shell.armlinux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <712b44d2af8f8cd3199aad87eb3bc94ea22d6f4a.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616103446.GC22278@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/15/21 8:52 PM, Suraj Jitindar Singh wrote:
-> On Wed, 2021-05-26 at 16:49 -0500, madvenka@linux.microsoft.com wrote:
->> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>
->> The unwinder should check if the return PC falls in any function that
->> is considered unreliable from an unwinding perspective. If it does,
->> mark the stack trace unreliable.
->>
+On Wed, Jun 16, 2021 at 11:34:46AM +0100, Russell King (Oracle) wrote:
+> On Wed, Jun 16, 2021 at 12:20:06PM +0200, Peter Zijlstra wrote:
+> > On Wed, Jun 16, 2021 at 12:16:27PM +0200, Peter Zijlstra wrote:
+> > > On Tue, Jun 15, 2021 at 08:21:12PM -0700, Andy Lutomirski wrote:
+> > > > On arm32, the only way to safely flush icache from usermode is to call
+> > > > cacheflush(2).  This also handles any required pipeline flushes, so
+> > > > membarrier's SYNC_CORE feature is useless on arm.  Remove it.
+> > > 
+> > > So SYNC_CORE is there to help an architecture that needs to do something
+> > > per CPU. If I$ invalidation is broadcast and I$ invalidation also
+> > > triggers the flush of any uarch caches derived from it (if there are
+> > > any).
+> > 
+> > Incomplete sentence there: + then we don't need SYNC_CORE.
+> > 
+> > > Now arm_syscall() NR(cacheflush) seems to do flush_icache_user_range(),
+> > > which, if I read things right, end up in arch/arm/mm/*.S, but that
+> > > doesn't consider cache_ops_need_broadcast().
+> > > 
+> > > Will suggests that perhaps ARM 11MPCore might need this due to their I$
+> > > flush maybe not being broadcast
 > 
-> [snip]
-> 
-> Correct me if I'm wrong, but do you not need to move the final frame
-> check to before the unwinder_is_unreliable() call?
-> 
+> If it leaves other cores with incoherent I cache, then that's already
+> a problem for SMP cores, since there could be no guarantee that the
+> modifications made by one core will be visible to some other core that
+> ends up running that code - and there is little option for userspace to
+> work around that except by pinning the thread making the modifications
+> and subsequently executing the code to a core.
 
-That is done in a patch series that has been merged into for-next/stacktrace branch.
-When I merge this patch series with that, the final frame check will be done prior.
+That's where SYNC_CORE can help. Or you make sys_cacheflush() do a
+system wide IPI.
 
-I have mentioned this in the cover letter:
+> The same is also true of flush_icache_range() - which is used when
+> loading a kernel module. In the case Will is referring to, these alias
+> to the same code.
 
-Last stack frame
-================
-
-If a SYM_CODE function occurs in the very last frame in the stack trace,
-then the stack trace is not considered unreliable. This is because there
-is no more unwinding to do. Examples:
-
-        - EL0 exception stack traces end in the top level EL0 exception
-          handlers.
-
-        - All kernel thread stack traces end in ret_from_fork().
-
-Madhavan
-
-> Userland threads which have ret_from_fork as the last entry on the
-> stack will always be marked unreliable as they will always have a
-> SYM_CODE entry on their stack (the ret_from_fork).
-> 
-
-
-> Also given that this means the last frame has been reached and as such
-> there's no more unwinding to do, I don't think we care if the last pc
-> is a code address.
-> 
-> - Suraj
-> 
->>   *
->> @@ -133,7 +236,20 @@ int notrace unwind_frame(struct task_struct
->> *tsk, struct stackframe *frame)
->>  	 *	- Foreign code (e.g. EFI runtime services)
->>  	 *	- Procedure Linkage Table (PLT) entries and veneer
->> functions
->>  	 */
->> -	if (!__kernel_text_address(frame->pc))
->> +	if (!__kernel_text_address(frame->pc)) {
->> +		frame->reliable = false;
->> +		return 0;
->> +	}
->> +
->> +	/*
->> +	 * If the final frame has been reached, there is no more
->> unwinding
->> +	 * to do. There is no need to check if the return PC is
->> considered
->> +	 * unreliable by the unwinder.
->> +	 */
->> +	if (!frame->fp)
->> +		return 0;
-> 
-> if (frame->fp == (unsigned long)task_pt_regs(tsk)->stackframe)
-> 	return -ENOENT;
-> 
->> +
->> +	if (unwinder_is_unreliable(frame->pc))
->>  		frame->reliable = false;
->>  
->>  	return 0;
->> diff --git a/arch/arm64/kernel/vmlinux.lds.S
->> b/arch/arm64/kernel/vmlinux.lds.S
->> index 7eea7888bb02..32e8d57397a1 100644
->> --- a/arch/arm64/kernel/vmlinux.lds.S
->> +++ b/arch/arm64/kernel/vmlinux.lds.S
->> @@ -103,6 +103,12 @@ jiffies = jiffies_64;
->>  #define TRAMP_TEXT
->>  #endif
->>  
->> +#define SYM_CODE_FUNCTIONS                                     \
->> +       . = ALIGN(16);                                           \
->> +       __sym_code_functions_start = .;                         \
->> +       KEEP(*(sym_code_functions))                             \
->> +       __sym_code_functions_end = .;
->> +
->>  /*
->>   * The size of the PE/COFF section that covers the kernel image,
->> which
->>   * runs from _stext to _edata, must be a round multiple of the
->> PE/COFF
->> @@ -218,6 +224,7 @@ SECTIONS
->>  		CON_INITCALL
->>  		INIT_RAM_FS
->>  		*(.init.altinstructions .init.bss)	/* from the
->> EFI stub */
->> +               SYM_CODE_FUNCTIONS
->>  	}
->>  	.exit.data : {
->>  		EXIT_DATA
+Yes, cache_ops_need_broadcast() seems to be missing in more places.
