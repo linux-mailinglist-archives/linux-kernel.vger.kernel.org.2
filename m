@@ -2,162 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DD93A9542
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9853A9543
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 10:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhFPItY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 04:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231354AbhFPItX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:49:23 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC99C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:47:17 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id k7so2524800ejv.12
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 01:47:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=z4dc94oTDTB7k/dvNxTeUZ/Xn7C6MXk+TgQPy7nxzl4=;
-        b=PJLeIRCCQdg8SzX5qXWSd+yUuWOc0gtAy57Oj54iM2e0ehqWFfsFOuWl7Wej7I05EM
-         cvlfs2ZolRf5VMXL0+t2FS5b8wKN6QdHTL+J6OIp3b5b6MHSm6dcdJBsCHgJxPiDgHwf
-         x7XwqPA0DVIgw7n9DyNf1HqJuAnKUp0wOuDpeLZuppWpkXI1/Xqv6EvfQFZJHHceN5nd
-         VbuDdw8cmodjOCG10LqlTMFroelZbukCaoiMCbM/xqpvJx6Y0Q8LzVdN+FtmMJDzGGtU
-         VlJocYRZDahBIL/Z4qRCFiHPYSZYHp18m09n8mxYj8ze3TXSmZTKCMLbWe3tWQbK3+Z7
-         SVcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=z4dc94oTDTB7k/dvNxTeUZ/Xn7C6MXk+TgQPy7nxzl4=;
-        b=C1AS5NMy03Wo2kVw5LfQbvpyPYQZ+UiJScwTK6Jcg5pHomQtfpkoV2IftnLRrVt9Os
-         dz1WYtrbwIE6BTaelU28jsfhufDMGzv8TjXPwfba0SEd0XAtdIPSg7mYNHVDT0VbPhEl
-         MVAYtDACRhzFLyKXquXdHaUrTpy/qii2mGy+3IyApDejuRtbJQWBYEzmROoIPLFxCDDo
-         aJQjhSvn5PPN3EoRO/kx1Wp7Xpx+wNL7X0jZC1blu7UW7mBAsYNR/P+RszXxmpfQIiEo
-         0nUxH0KXrq4+mjC8zr9mPlJkRULvekteZk7jizFKz3vr/D93PGRN0JfZ27OxHdZmZ0BM
-         QVNA==
-X-Gm-Message-State: AOAM530sm5q9VSeFUaUcS49Y2X8vO8ghdvqBKqdZRQ24T27W55uvdVzW
-        hTpezbTHGAF/vSx0ePPcrXM+8zmvo6c=
-X-Google-Smtp-Source: ABdhPJwr6Wm0RBX0yfK2y/3aIJPhnD0E2zEBjG5VGk8xJTw9kK/jzetjFaV2EpoKd264VPISoTHGkg==
-X-Received: by 2002:a17:907:2cef:: with SMTP id hz15mr4115630ejc.253.1623833236147;
-        Wed, 16 Jun 2021 01:47:16 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:afc4:3771:10a6:8a6d? ([2a02:908:1252:fb60:afc4:3771:10a6:8a6d])
-        by smtp.gmail.com with ESMTPSA id s5sm1200586edi.93.2021.06.16.01.47.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 01:47:15 -0700 (PDT)
-Subject: Re: [PATCH] drm/ttm: fix error handling in ttm_bo_handle_move_mem()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Thomas Hellstr <C3@mwanda>, B6@mwanda,
-        m <thomas.hellstrom@linux.intel.com>,
-        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <YMmadPwv8C+Ut1+o@mwanda>
- <03d0b798-d1ab-5b6f-2c27-8140d923d445@gmail.com>
- <20210616083758.GC1901@kadam>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <520a9d1f-8841-8d5e-595d-23783de8333d@gmail.com>
-Date:   Wed, 16 Jun 2021 10:47:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232038AbhFPItw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 04:49:52 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30299 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231354AbhFPItt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 04:49:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623833263; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=UDMXvBeHQdcQ+tqXCHrPDtv2AvZ2wHEj+q2+GdZpS+U=;
+ b=Uh0IqgDEUf1ZEIXWI+GgI9/9FRvLjWTaw9y0RU4C1pIAwPlhhi01osJOaBY5GU24zQYystSF
+ ns9foOglX5231WWCgYq5TBvV6Om4KJJS/MFDvcjqmFT6QQB5TAOXBJ5wKrIkLvSgV8EzxSKb
+ dEPEhqZ5htBWzKvamDn8F4sl6nA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60c9baa5b6ccaab753049d0e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Jun 2021 08:47:33
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B029FC43146; Wed, 16 Jun 2021 08:47:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5252FC433F1;
+        Wed, 16 Jun 2021 08:47:31 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210616083758.GC1901@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 16 Jun 2021 16:47:31 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
+ ufshcd_abort() for PM requests
+In-Reply-To: <0081ad7c-8a15-62bb-0e6a-82552aab5309@acm.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-9-git-send-email-cang@codeaurora.org>
+ <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
+ <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
+ <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
+ <75527f0ba5d315d6edbf800a2ddcf8c7@codeaurora.org>
+ <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
+ <3fce15502c2742a4388817538eb4db97@codeaurora.org>
+ <fabc70f8-6bb8-4b62-3311-f6e0ce9eb2c3@acm.org>
+ <8aae95071b9ab3c0a3cab91d1ae138e1@codeaurora.org>
+ <0081ad7c-8a15-62bb-0e6a-82552aab5309@acm.org>
+Message-ID: <8eadb2f2e30804faf23c9c71e5724d08@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Bart,
 
+On 2021-06-16 12:40, Bart Van Assche wrote:
+> On 6/15/21 9:00 PM, Can Guo wrote:
+>> I would like to stick to my way as of now because
+>> 
+>> 1. Merely preventing task abort cannot prevent suspend/resume fail.
+>> Task abort (to PM requests), in real cases, is just one of many kinds
+>> of failure which can fail the suspend/resume callbacks. During
+>> suspend/resume, if AH8 error and/or UIC errors happen, IRQ handler
+>> may complete SSU cmd with errors and schedule the error handler (I've
+>> seen such scenarios in real customer cases). My idea is to treat task
+>> abort (to PM requests) as a failure (let scsi_execute() return with
+>> whatever error) and let error handler recover everything just like
+>> any other UFS errors which invoke error handler. In case this, again,
+>> goes back to the topic that is why don't just do error recovery in
+>> suspend/resume, let me paste my previous reply here -
+> 
+> Does this mean that the IRQ handler can complete an SSU command with an
+> error and that the error handler can later recover from that error?
 
-Am 16.06.21 um 10:37 schrieb Dan Carpenter:
-> On Wed, Jun 16, 2021 at 08:46:33AM +0200, Christian König wrote:
->> Sending the first message didn't worked, so let's try again.
->>
->> Am 16.06.21 um 08:30 schrieb Dan Carpenter:
->>> There are three bugs here:
->>> 1) We need to call unpopulate() if ttm_tt_populate() succeeds.
->>> 2) The "new_man = ttm_manager_type(bdev, bo->mem.mem_type);" assignment
->>>      was wrong and it was really assigning "new_mem = old_mem;".  There
->>>      is no need for this assignment anyway as we already have the value
->>>      for "new_mem".
->>> 3) The (!new_man->use_tt) condition is reversed.
->>>
->>> Fixes: ba4e7d973dd0 ("drm: Add the TTM GPU memory manager subsystem.")
->>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
->>> ---
->>> This is from reading the code and I can't swear that I have understood
->>> it correctly.  My nouveau driver is currently unusable and this patch
->>> has not helped.  But hopefully if I fix enough bugs eventually it will
->>> start to work.
->> Well NAK, the code previously looked quite well and you are breaking it now.
->>
->> What's the problem with nouveau?
->>
-> The new Firefox seems to excersize nouveau more than the old one so
-> when I start 10 firefox windows it just hangs the graphics.
->
-> I've added debug code and it seems like the problem is that
-> nv50_mem_new() is failing.
+Not exactly, sorry that I didn't put it clearly. There are cases where 
+cmds
+are completed with an error (either OCS is not SUCCESS or device returns
+check condition in resp) and accompanied by fatal or non-fatal UIC 
+errors
+(UIC errors invoke UFS error handler). For example, SSU is completed 
+with
+OCS_MISMATCH_RESPONSE_UPIU_SIZE (whatever the reason is in HW), then 
+auto
+hibern8 enter (AH8 timer timeout hba->ahit is set to a very low value) 
+kicks
+start right after but fails with fatal UIC errors. From dmesg log, these 
+all
+happen at once. I've seen even more complicated cases where all kinds of 
+errors
+mess up together.
 
-Sounds like it is running out of memory to me.
+> That sounds completely wrong to me. The IRQ handler should never 
+> complete any
+> command with an error if that error could be recoverable. Instead, the
+> IRQ handler should add that command to a list and leave it to the error
+> handler to fail that command or to retry it.
+> 
+>> 2. And say we want SCSI layer to resubmit PM requests to prevent
+>> suspend/resume fail, we should keep retrying the PM requests (so
+>> long as error handler can recover everything successfully), meaning
+>> we should give them unlimited retries (which I think is a bad idea),
+>> otherwise (if they have zero retries or limited retries), in extreme
+>> conditions, what may happen is that error handler can recover 
+>> everything
+>> successfully every time, but all these retries (say 3) still time out,
+>> which block the power management for too long (retries * 60 seconds) 
+>> and,
+>> most important, when the last retry times out, scsi layer will anyways
+>> complete the PM request (even we return DID_IMM_RETRY), then we end up
+>> same - suspend/resume shall run concurrently with error handler and we
+>> couldn't recover saved PM errors.
+> 
+> Hmm ... it is not clear to me why this behavior is considered a 
+> problem?
+> 
 
-Do you have a dmesg?
+To me, task abort to PM requests does not worth being treated so 
+differently,
+after all suspend/resume may fail due to any kinds of UFS errors (as 
+I've
+explained so many times). My idea is to let PM requests fast fail (60 
+seconds
+has passed, a broken device maybe, we have reason to fail it since it is 
+just
+a passthrough req) and schedule UFS error handler, UFS error handler 
+shall
+proceed after suspend/resume fails out then start to recover everything 
+in a
+safe environment. Is this way not working?
 
->
->
->>>    drivers/gpu/drm/ttm/ttm_bo.c | 14 ++++++++------
->>>    1 file changed, 8 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
->>> index ebcffe794adb..72dde093f754 100644
->>> --- a/drivers/gpu/drm/ttm/ttm_bo.c
->>> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
->>> @@ -180,12 +180,12 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
->>>    		 */
->>>    		ret = ttm_tt_create(bo, old_man->use_tt);
->>>    		if (ret)
->>> -			goto out_err;
->>> +			return ret;
->>>    		if (mem->mem_type != TTM_PL_SYSTEM) {
->>>    			ret = ttm_tt_populate(bo->bdev, bo->ttm, ctx);
->>>    			if (ret)
->>> -				goto out_err;
->>> +				goto err_destroy;
->>>    		}
->>>    	}
->>> @@ -193,15 +193,17 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
->>>    	if (ret) {
->>>    		if (ret == -EMULTIHOP)
->>>    			return ret;
->>> -		goto out_err;
->>> +		goto err_unpopulate;
->>>    	}
->>>    	ctx->bytes_moved += bo->base.size;
->>>    	return 0;
->>> -out_err:
->>> -	new_man = ttm_manager_type(bdev, bo->mem.mem_type);
->> This here switches new and old manager. E.g. the new_man is now pointing to
->> the existing resource manager.
-> Why not just use "old_man" instead of basically the equivalent to
-> "new_man = old_man"?  Can the old_man change part way through the
-> function?
+Thanks,
 
-Good question :)
+Can Guo.
 
-I don't think that old_man could change and yes that would be much more 
-easier to understand.
-
-Regards,
-Christian.
-
->
-> regards,
-> dan carpenter
->
-
+> What is wrong with blocking RPM while a START STOP UNIT command is 
+> being
+> processed? If there are UFS devices for which it takes long to process
+> that command I think it is up to the vendors of these devices to fix
+> these UFS devices.
+> 
+> Additionally, if a UFS device needs more than (retries * 60 seconds) to
+> process a START STOP UNIT command, shouldn't it be marked as broken?
+> 
+> Thanks,
+> 
+> Bart.
