@@ -2,200 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35283A90BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ACC23A90B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 06:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbhFPEqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 00:46:15 -0400
-Received: from mga04.intel.com ([192.55.52.120]:28123 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229514AbhFPEqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 00:46:14 -0400
-IronPort-SDR: vVZ/Ldlz324WaNfHyPr/JmarSd6IThJR0VfMDUc9XLa1/dSjShcodfvqDQkJ1r3X0oM0T1YCGJ
- r33gWF4uIkcw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="204283778"
-X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
-   d="scan'208";a="204283778"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 21:44:08 -0700
-IronPort-SDR: I721+5FHoocoeMNpn+a8b+mT/WYb0KZYvB8bH4O4pplav1eakN2cuq44IV85HTtU9z/jiBkvqE
- Z1DKpjdrbNCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,277,1616482800"; 
-   d="scan'208";a="421357663"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 15 Jun 2021 21:44:07 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ltNPK-0000rS-RH; Wed, 16 Jun 2021 04:44:06 +0000
-Date:   Wed, 16 Jun 2021 12:44:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS WITH WARNING
- 4692bc775d2180a937335ccba0edce557103d44a
-Message-ID: <60c98192.XkZUQE6jO+Aoycls%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230336AbhFPEnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 00:43:33 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:10086 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhFPEnc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 00:43:32 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G4XW95DQZzZfQp;
+        Wed, 16 Jun 2021 12:38:29 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 12:41:24 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 16 Jun
+ 2021 12:41:24 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <thierry.reding@gmail.com>
+Subject: [PATCH -next 1/3] usb: host: xhci-tegra: add missing put_device() in tegra_xusb_probe()
+Date:   Wed, 16 Jun 2021 12:45:17 +0800
+Message-ID: <20210616044519.2183826-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: 4692bc775d2180a937335ccba0edce557103d44a  x86/sgx: Add missing xa_destroy() when virtual EPC is destroyed
+Goto put_padctl to put refcount of device on error in tegra_xusb_probe()
 
-Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-`-- x86_64-allnoconfig
-    |-- Warning:Kernel-ABI-header-at-tools-arch-x86-include-asm-disabled-features.h-differs-from-latest-version-at-arch-x86-include-asm-disabled-features.h:Force-disable-because-it-s-broken-beyond-repair
-    |-- Warning:Kernel-ABI-header-at-tools-arch-x86-include-asm-disabled-features.h-differs-from-latest-version-at-arch-x86-include-asm-disabled-features.h:define-DISABLE_ENQCMD
-    |-- Warning:Kernel-ABI-header-at-tools-arch-x86-include-asm-disabled-features.h-differs-from-latest-version-at-arch-x86-include-asm-disabled-features.h:define-DISABLE_ENQCMD-(-(X86_FEATURE_ENQCMD-))
-    `-- Warning:Kernel-ABI-header-at-tools-arch-x86-include-asm-disabled-features.h-differs-from-latest-version-at-arch-x86-include-asm-disabled-features.h:ifdef-CONFIG_IOMMU_SUPPORT
-
-elapsed time: 725m
-
-configs tested: 132
-configs skipped: 65
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      chrp32_defconfig
-xtensa                    smp_lx200_defconfig
-mips                          ath79_defconfig
-powerpc                  iss476-smp_defconfig
-h8300                            allyesconfig
-mips                  cavium_octeon_defconfig
-um                           x86_64_defconfig
-arm                          pcm027_defconfig
-powerpc                      ppc64e_defconfig
-xtensa                  audio_kc705_defconfig
-xtensa                generic_kc705_defconfig
-powerpc                 mpc8540_ads_defconfig
-arm                        oxnas_v6_defconfig
-s390                                defconfig
-arm                        multi_v7_defconfig
-powerpc                   lite5200b_defconfig
-arm                        neponset_defconfig
-m68k                         apollo_defconfig
-mips                          rm200_defconfig
-sh                          sdk7786_defconfig
-powerpc                      arches_defconfig
-alpha                               defconfig
-arm                         s3c2410_defconfig
-openrisc                            defconfig
-sh                        sh7763rdp_defconfig
-mips                      bmips_stb_defconfig
-um                            kunit_defconfig
-arm                            zeus_defconfig
-m68k                          atari_defconfig
-arm                        mvebu_v5_defconfig
-ia64                            zx1_defconfig
-powerpc                     ksi8560_defconfig
-ia64                             alldefconfig
-h8300                       h8s-sim_defconfig
-x86_64                           allyesconfig
-arm                           u8500_defconfig
-powerpc                       holly_defconfig
-sh                        sh7785lcr_defconfig
-mips                     cu1000-neo_defconfig
-m68k                       m5275evb_defconfig
-arm                        keystone_defconfig
-arm                         palmz72_defconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                        fsp2_defconfig
-powerpc                     sbc8548_defconfig
-s390                             alldefconfig
-riscv             nommu_k210_sdcard_defconfig
-m68k                          sun3x_defconfig
-i386                                defconfig
-arm                          exynos_defconfig
-sh                           se7343_defconfig
-arm                              alldefconfig
-arm                         hackkit_defconfig
-arm                       imx_v6_v7_defconfig
-m68k                             allmodconfig
-powerpc                      katmai_defconfig
-arm                           viper_defconfig
-s390                          debug_defconfig
-powerpc                 mpc832x_mds_defconfig
-sparc                       sparc64_defconfig
-riscv                          rv32_defconfig
-powerpc                 mpc85xx_cds_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a001-20210615
-x86_64               randconfig-a004-20210615
-x86_64               randconfig-a002-20210615
-x86_64               randconfig-a003-20210615
-x86_64               randconfig-a006-20210615
-x86_64               randconfig-a005-20210615
-i386                 randconfig-a002-20210615
-i386                 randconfig-a006-20210615
-i386                 randconfig-a004-20210615
-i386                 randconfig-a001-20210615
-i386                 randconfig-a005-20210615
-i386                 randconfig-a003-20210615
-i386                 randconfig-a015-20210615
-i386                 randconfig-a013-20210615
-i386                 randconfig-a016-20210615
-i386                 randconfig-a012-20210615
-i386                 randconfig-a014-20210615
-i386                 randconfig-a011-20210615
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210615
-x86_64               randconfig-a015-20210615
-x86_64               randconfig-a011-20210615
-x86_64               randconfig-a012-20210615
-x86_64               randconfig-a014-20210615
-x86_64               randconfig-a016-20210615
-x86_64               randconfig-a013-20210615
-
+Fixes: 971ee247060d ("usb: xhci: tegra: Enable ELPG for runtime/system PM")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/usb/host/xhci-tegra.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
+index 937b78cba89b..281abf10f9fd 100644
+--- a/drivers/usb/host/xhci-tegra.c
++++ b/drivers/usb/host/xhci-tegra.c
+@@ -1450,12 +1450,16 @@ static int tegra_xusb_probe(struct platform_device *pdev)
+ 		return PTR_ERR(tegra->padctl);
+ 
+ 	np = of_parse_phandle(pdev->dev.of_node, "nvidia,xusb-padctl", 0);
+-	if (!np)
+-		return -ENODEV;
++	if (!np) {
++		err = -ENODEV;
++		goto put_padctl;
++	}
+ 
+ 	tegra->padctl_irq = of_irq_get(np, 0);
+-	if (tegra->padctl_irq <= 0)
+-		return (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
++	if (tegra->padctl_irq <= 0) {
++		err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
++		goto put_padctl;
++	}
+ 
+ 	tegra->host_clk = devm_clk_get(&pdev->dev, "xusb_host");
+ 	if (IS_ERR(tegra->host_clk)) {
+-- 
+2.25.1
+
