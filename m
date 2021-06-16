@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D081F3AA341
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416F03AA345
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 20:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231908AbhFPSiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 14:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
+        id S231857AbhFPSlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 14:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbhFPSiu (ORCPT
+        with ESMTP id S230410AbhFPSla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 14:38:50 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F6DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:36:44 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id k15so2902913pfp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 11:36:44 -0700 (PDT)
+        Wed, 16 Jun 2021 14:41:30 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3525C061574;
+        Wed, 16 Jun 2021 11:39:23 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id bb10-20020a17090b008ab029016eef083425so4153251pjb.5;
+        Wed, 16 Jun 2021 11:39:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=68dUbqfE4SHuzDV/ITTjNzfPVwl+Y5E4YdaUjtV5+SM=;
-        b=J+iBSCxVI9jYH68oWvPqs6SrIxZU+B/vsIhREijY8w3hbBXi0m+cMBoTbXebRF6s6x
-         4UxTaREsNGYJa8ehBhFYFDN5idvzz93nPKAEvXMkrPIkJDV3Ju/C/WB6Lz1ii9QwuUMQ
-         OXBorfuFc8hzPkZ9tLz+tSJHcedePwKKCRonrQLqmZLycOG1U6QhEfc+LRgVHVCL5HCX
-         172NrBIiRlHwjuJQa9vHZBjQocLtduj64PkGZrCt1l9JazTF6trQy0l77j9i5+SJhBs0
-         MH2gXxNW8017ZMuqXOHr8S5hLZU1/3/LQbEXmZT+q4sxzIisYpc1r+88qS+ObnSW6FBf
-         JVEA==
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=H2rElKFC7U2cXO3emiTJr7HDkY8mE7KnGy2dC2t7KWI=;
+        b=liZWSI78IF1pebRsG4Qr6Y/RUAlXWcriwEYEX57XnDnJ/aUPDeV+K9IqmXieUufBww
+         o1wQ7dWO7QtggJAesm45Oz8kYm3v3BMY2XEVwF3QDtd05nFgBGyyL+5u4wYOBbeqU23K
+         PNUM6TqYLS6EqMiOCB25djS3hAp8PYVnV5AdiampO+KD1DJD2y4hVeZG90YV65J+AzA8
+         OhIQqr1QXpR2VfrP2RX9gIZyRvJiCf+6j3EFzc3McwYicV3NDxXSjMRt6SNssPmWybU0
+         rPVqEvZaYkWlUhESdTn4GXnI5ugzlchCfWf5e6cJaJEJBkA0qOEAeYq/s7R0FNrr2eVO
+         K+Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=68dUbqfE4SHuzDV/ITTjNzfPVwl+Y5E4YdaUjtV5+SM=;
-        b=cl0xWyxSWH0jIkEv3xaZJ12GSgE8YYWDUXJDZKAPjRNsPPovZmQp9RI2VDCVmHCIPq
-         ZaPbzTuRsKH6Jt3Cj5CTFMvn+eUcQ/lYXGtjpUvfLhbzjhdGkq2a9B37By/mSZYbzLNT
-         RnNTkYsdhslx9PkVYb6NDbjyiinMbVI1pemJowpEkiSHQnJfEW0sl3D1EmiuXgU1LZVh
-         KlC/BYf5zWxUT+jm9x8T6hAtjZqakRor9oZsTC1iH0EbWdtFfsJ1j8bm+G3XHA22IPbd
-         lFKa40nWTylYsjU7OTVAkWYUgVktM+mnKMvRt5HVDFZWGf+QZYC/W8O8tAeCsKWQQ+bu
-         XJrg==
-X-Gm-Message-State: AOAM532ECveGmyXS+zojrpmw5+BbIkg3AU1fep+5jn00/cfPcDLCnxXv
-        JU93fOEL+PNXugoIUC92edA=
-X-Google-Smtp-Source: ABdhPJzlYRExpxBz/5ZI5xAqecq1F1uVwziv1Eqs8rATfkZT1HYyPVtArS2KZGFO5m5Np9AOdUb7GA==
-X-Received: by 2002:a63:d40d:: with SMTP id a13mr972537pgh.382.1623868603888;
-        Wed, 16 Jun 2021 11:36:43 -0700 (PDT)
-Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
-        by smtp.gmail.com with ESMTPSA id b133sm2944503pfb.36.2021.06.16.11.36.41
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=H2rElKFC7U2cXO3emiTJr7HDkY8mE7KnGy2dC2t7KWI=;
+        b=TblnQHEsPuo0yqYKCa6SopQAFmcKAH12zOemlOqApsXp0wi95TrMlVG+rXnbGQNwkt
+         V5vOgfCvyU8wU5aHyyauM+lUWYk9N/a4sMEFYpi30PmFNmPzkDBKA8M5fHxC8mNPQLNb
+         IL2lpRJpxxhoxQ3v1c/i1rTfiz+HmYj9Z7Sl649s1742qKlZLqsT2kE5u8NDaLuZFXCz
+         MBBN+Gpl23vj+cZvZ0mIoDVthXMREfAjuHzGBswq1fp9BTql1sJxLUn7LBTPgeD1g91f
+         Bb7J+JDKzg0NRFQIs2QzF0LYfIgnIuOGz2RR4C2HYxQjin5yFyzD7DbGojjXGb9Xgmru
+         tYHg==
+X-Gm-Message-State: AOAM531MYYB+ugrgRrQuihwFkFRy4C9EbnmLxgazwtU//EStLRRBFxZn
+        r+xOUQOuuj6SbI2/EFtwllSMiUMHk0eMKC+Okw0FhA==
+X-Google-Smtp-Source: ABdhPJym6pTy4/BhByKEpU++XR2IzG0jpIYHthF8Btovdthx8P8EvyNc1YpF45Y1fNLo0md6H3U9fw==
+X-Received: by 2002:a17:90a:e541:: with SMTP id ei1mr1183040pjb.189.1623868762977;
+        Wed, 16 Jun 2021 11:39:22 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
+        by smtp.gmail.com with ESMTPSA id h11sm3008996pgq.68.2021.06.16.11.39.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 11:36:43 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 11:36:39 -0700
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, dvyukov@google.com,
-        gregkh@linuxfoundation.org
-Subject: Re: kmemleak memory scanning
-Message-ID: <YMpEtyUP0vuWo9HV@nuc10>
-References: <YMe8ktUsdtwFKHuF@nuc10>
- <20210615101515.GC26027@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615101515.GC26027@arm.com>
+        Wed, 16 Jun 2021 11:39:22 -0700 (PDT)
+Message-ID: <60ca455a.1c69fb81.17a57.84c7@mx.google.com>
+Date:   Wed, 16 Jun 2021 11:39:22 -0700 (PDT)
+X-Google-Original-Date: Wed, 16 Jun 2021 18:39:16 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
+Subject: RE: [PATCH 5.12 00/48] 5.12.12-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi Catalin,
+On Wed, 16 Jun 2021 17:33:10 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.12.12 release.
+> There are 48 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 18 Jun 2021 15:28:19 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.12-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-On Tue, Jun 15, 2021 at 11:15:15AM +0100, Catalin Marinas wrote:
-> Hi Rustam,
-> 
-> On Mon, Jun 14, 2021 at 01:31:14PM -0700, Rustam Kovhaev wrote:
-> > a) kmemleak scans struct page (kmemleak.c:1462), but it does not scan
-> > the actual contents (page_address(page)) of the page.
-> > if we allocate an object with kmalloc(), then allocate page with
-> > alloc_page(), and if we put kmalloc pointer somewhere inside that page, 
-> > kmemleak will report kmalloc pointer as a false positive.
-> > should we improve kmemleak and make it scan page contents?
-> > or will this bring too many false negatives?
-> 
-> This is indeed on purpose otherwise (1) we'd get a lot of false
-> negatives and (2) the scanning would take significantly longer. There
-> are a lot more pages allocated for user processes than used in the
-> kernel, we don't need to scan them all.
-> 
-> We do have a few places where we explicitly call kmemleak_alloc():
-> neigh_hash_alloc(), alloc_page_ext(), blk_mq_alloc_rqs(),
-> early_amd_iommu_init().
-
-makes sense, tyvm!
-
-> > b) when kmemleak object gets created (kmemleak.c:598) it gets checksum
-> > of 0, by the time user requests kmemleak "scan" via debugfs the pointer
-> > will be most likely changed to some value by the kernel and during
-> > first scan kmemleak won't report the object as orphan even if it did not
-> > find any reference to it, because it will execute update_checksum() and
-> > after that will proceed to updating object->count (kmemleak.c:1502).
-> > and so the user will have to initiate a second "scan" via debugfs and
-> > only then kmemleak will produce the report.
-> > should we document this?
-> 
-> That's a mitigation against false positives. Lot's of objects that get
-> allocated just prior to a memory scan have a tendency to be reported as
-> leaks before they get referenced via e.g. a list (and the in-object
-> list_head structure updated). So you'd need to get the checksum
-> identical in two consecutive scans to report it as a leak.
-> 
-> We should probably document this.
-
-thanks, i'll send a documentation patch for this
+5.12.12-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
