@@ -2,171 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A533A95D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1A83A95DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 11:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbhFPJTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 05:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232279AbhFPJTK (ORCPT
+        id S232376AbhFPJTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 05:19:16 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:29883 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232058AbhFPJTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 05:19:10 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4579FC061574;
-        Wed, 16 Jun 2021 02:17:04 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id hq2so2751459ejc.2;
-        Wed, 16 Jun 2021 02:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LqKUd7jpWI45dwJktjSkPLrqSZglJAQGDy+xWdh0jXY=;
-        b=VaTZhGozIGkXk1Fk0y6lm3uqIM9EpHbCZOsKTehQDM6cFZ10wcgvVXrXpoFZCdGCSV
-         TAlGhae+WPmKjAJ+YMBg4uCBJkgnfubNNxrFmlgfrLDCYMxMEWwqRMpFaqzL3RH57NVa
-         gHTq24s1oRuRMxSn/pwtAEzNIowqYwsRrkERtfIp4ri+Qk35Nge4rDGcRWFCuHAEYRw/
-         TMfRr3g3bMoPfLOVFowcYXZHRUwCbXYROl3X/1Ci1vPYccBRPa2enjDZxjSAnBvVYaKJ
-         WbINiqVIIpIUeZEqYW1/9dV0NR6VoirJVClzxf9HQZuVKZN6KPPHbLwpk+14d+VVYTDt
-         yrHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LqKUd7jpWI45dwJktjSkPLrqSZglJAQGDy+xWdh0jXY=;
-        b=iAtLX6pMM+lZfZSq7DO7Gs1/6nLQoz+meWCntTMBoieaL8ETsz0ZZuKHL1kkFLtUkM
-         T5XFBrv5EBS1hiDKUqPTxDFZsZpY/cQM/396NfRo0wcEO2JQgrviZRDWrclg5Lcrade2
-         6XX+l61IA+dAdVQDsRNukCk6bh6JAdEN8c5xQls9Enl6UeM4EiAisF76sVkSzymb+/43
-         166T/iXaRZVEgDR0nOYctaGClCcSHR6vbs6ny++caT5CWkAOayOjE9e351JKn8huydiC
-         1Ifc2kbHoguzGDVBWPH9C9X0YKolC//d/m3nJF7XqZeWaGgs+xPxS+RmBt8+UDhJgpH0
-         /Jkw==
-X-Gm-Message-State: AOAM532aZOVIpdUai6axUfp9JT55NY1/MSy84oJ0PxAtdMtC0GsC9wJc
-        Fs6LJwGTxAevxGBZkMBI3b+6402xCyB8DHZ3ZT8=
-X-Google-Smtp-Source: ABdhPJybOgsSRMZfoEFaLEQxyeTtpNPDMN0fthWKyW6dAjnJmPwYFo1Zwf/q4os4LkGIYg6EhzdwsZuL8iZ047roZLY=
-X-Received: by 2002:a17:906:994d:: with SMTP id zm13mr4149388ejb.427.1623835022871;
- Wed, 16 Jun 2021 02:17:02 -0700 (PDT)
+        Wed, 16 Jun 2021 05:19:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1623835024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NVzgv2V06B15pCm5f1xhjw0J3ctfeuSX4Dxxa7wqPBM=;
+        b=Eiq+2K+QRcq2/9XyXDcFL4WQKu50HpWCH2mH3PDkA7aOE8fxLUVdGeO5Tdm9PQFHuKfXpD
+        oLuUv5C3WardiXPe1dtOxri4GcWcL+AQUhHkWa7DZ7evLFKGkLKC7sZM1IvM0tDd5x7oD8
+        Zmok8osXB7y3M0qNykmE/nXuDUUXjvQ=
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur05lp2174.outbound.protection.outlook.com [104.47.17.174])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-15-aQHlbZq5NWWbZT0CMG_2Bg-1; Wed, 16 Jun 2021 11:17:03 +0200
+X-MC-Unique: aQHlbZq5NWWbZT0CMG_2Bg-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K5hpJZtz5VT9EXBQHkIfFmk+hC3LzZu/QKaURomGTmUZgWmap2WUh2Xdt2WrrzrPLguscN0C+LbjNQK3i61hW0/UNoJHrpyq8YxBbCUAkqV2qCrvEE8qrNsew4niREjX296ej6jcuOzWYN7EL0HZWpsR0jOsH5p1SpqW2d0sgQw9SIwO/BoBZcOlDpbDHD6m8TlGduP+SHJ4CIkYMADGV75tG0f9Tj7N3SFNC5T9x/a9S267G8SlRjT2gam98Tec8T9YCI+JYQhdxn0UVMA+CHksWaIHKJeRcztBu/Sn+ZgEH8v3jHFvzywSy66inZUTHJmaszb6MyejhoMgzIvdOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pfWC9HiwtaJd8FkOhgGrRn89ZqdZkcYcmC/IjAHxxm0=;
+ b=VoiMjkI51/oBkTbqfXw83O0Np0uWBheU23faZYMAwMdbGsfkfr/32t5cN/W1nrOvR35BkO0Krf1MeozFMQCuZZoyb0IHir55+wqL4/ZXTMWj9dsgcM7P1USjuRx/tT6xlfQ4XvzMMA6ajTowr8RvSDVJphGDh05960ofk7LPizp8b386kUxHjf5cvQZ/kLi/lIwL6prXlzyJwHcDKx+7Zn+e1lZvIcRjiBB5u1d9D57uxhEwYJXx20tOnt8OCuC/OWQ5srh++T7xgsuY2/C5YMdi7u1nqZcobgH4ier+L22RQuzT9knBABh/4tYa6waNE7eb+JvjnoUaJH1htof6GA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=suse.com;
+Received: from AM0PR04MB5650.eurprd04.prod.outlook.com (2603:10a6:208:128::18)
+ by AM9PR04MB8416.eurprd04.prod.outlook.com (2603:10a6:20b:3b5::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Wed, 16 Jun
+ 2021 09:17:01 +0000
+Received: from AM0PR04MB5650.eurprd04.prod.outlook.com
+ ([fe80::55a8:3faa:c572:5e98]) by AM0PR04MB5650.eurprd04.prod.outlook.com
+ ([fe80::55a8:3faa:c572:5e98%7]) with mapi id 15.20.4242.019; Wed, 16 Jun 2021
+ 09:17:01 +0000
+To:     Joerg Roedel <jroedel@suse.de>
+CC:     linux-kernel@vger.kernel.org, Varad Gautam <varad.gautam@suse.com>,
+        kvm@vger.kernel.org, x86@kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20210531125035.21105-1-varad.gautam@suse.com>
+ <20210602141447.18629-1-varadgautam@gmail.com> <YMDVNHh9KHsha4a+@suse.de>
+From:   Varad Gautam <varad.gautam@suse.com>
+Subject: Re: [PATCH v3] x86: Add a test for AMD SEV-ES guest #VC handling
+Message-ID: <77e09c12-0971-e5dc-7002-c88e30e9455e@suse.com>
+Date:   Wed, 16 Jun 2021 11:16:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <YMDVNHh9KHsha4a+@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [95.90.166.153]
+X-ClientProxiedBy: FR3P281CA0018.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1d::11) To AM0PR04MB5650.eurprd04.prod.outlook.com
+ (2603:10a6:208:128::18)
 MIME-Version: 1.0
-References: <20210512144743.039977287@linuxfoundation.org> <20210512144748.600206118@linuxfoundation.org>
- <CANEQ_++O0XVVdvynGtf37YCHSBT8CYHnUkK+VsFkOTqeqwOUtA@mail.gmail.com> <YMmlPHMn/+EPdbvm@kroah.com>
-In-Reply-To: <YMmlPHMn/+EPdbvm@kroah.com>
-From:   Amit Klein <aksecurity@gmail.com>
-Date:   Wed, 16 Jun 2021 12:16:52 +0300
-Message-ID: <CANEQ_++gbwU2Rvcqg5KtngZC1UX1XcjOKfPKRr3Pvxi+VyQX+Q@mail.gmail.com>
-Subject: Re: [PATCH 5.4 175/244] inet: use bigger hash table for IP ID generation
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>, Willy Tarreau <w@1wt.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.77.147] (95.90.166.153) by FR3P281CA0018.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:1d::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.9 via Frontend Transport; Wed, 16 Jun 2021 09:17:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 99b0226b-3502-4090-12f6-08d930a77fb9
+X-MS-TrafficTypeDiagnostic: AM9PR04MB8416:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM9PR04MB84169EB4EACFC3F4A90E4850E00F9@AM9PR04MB8416.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: czCla/7o2AhuZVHD2O2lSRsSkm7QR2g8BQMDJohANR78bF28rU04b8IK0KGrtITzE24zUO4kO4szz2VBW5ALdhQi74/RGHwQ/+P1QgNkEhkr5fLo91KL+ZHHkywdhlWvpFkfW4lPHCgv+ypD73OMd4iO/emJBjGA1b8YWCm3sNnmwGQf+6WPpYppXLnwmMJbU5KN9BNKeZpbIP3zdz7eswPrcUAoftqZ7GhrgfNfE+nBI2u8SRFVQTYq+gZ1/WhHMo0cR7cXfLZJcLwsO9CmInb0iSAXNZwvmy4CyyxH6hJTeMMiUkmXrofB71dl79D4HzLPUmoCtgMArVpHomkYMCSjwVZebxyMdLgLEmqU8XrSHQP1tKKq/gd3+qNU3XVtpmudMDV6np9j8C10+b3GVcQjj+5aqV6wCvxnTetNg2uRb/yU6aABM9vUvCnFjelFLLKalkwNGI4s1a9JlETgvmTv0A82bOR+zkcq0T9SEu7G2jJkWp09mL4JbSHOe2X+gr/gOfDNBdZ/OoyyC3IhRXPQ28GthICMhRfS2p230ygkeXiYdekeOd8Ez8BvllxOF4Vc1Ykj5HTkedqeC9Wj3D5M+3dpmOo4kHfeA+8P2PsdsvElJCVBQHhG+ny6hooSrq1QgUPVEc7taWtYd7s0GyFk9Dp89iXdvOY0zhqKNr00A2z5g5FtgmYUj82mQRBJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5650.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(346002)(396003)(39860400002)(66946007)(66556008)(66476007)(5660300002)(26005)(186003)(16526019)(54906003)(16576012)(316002)(53546011)(38100700002)(66574015)(31686004)(83380400001)(2906002)(6486002)(31696002)(6916009)(86362001)(8676002)(2616005)(4326008)(44832011)(8936002)(36756003)(956004)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?up7234tFdwqygn3YO3HOagDF0lUgSGw2yA1LlKFp9iz/UGBDOkHTw7Eb0LAk?=
+ =?us-ascii?Q?oQllpmK3cvW0ZRVJBxI7Jp78kf9IkvIxoBMAv8opGjyS1EZk5c6ShXgOnNpR?=
+ =?us-ascii?Q?qREbtQu1UMqL6xcyIor4/DndasmxewrUeWPiCnBKaU8HrBOgN6Wzr0+FSNTY?=
+ =?us-ascii?Q?6ZNviw4UBngK7DOWa2VVAvz29Cw/wW2EMBBWIwtKWAaufSHbx9Njk6ON3poQ?=
+ =?us-ascii?Q?oxKHMfIc4bgWu2UGfwx6da9cvTgUWGhTrQNSeZ8CCsIiIDkmw4rfZf/Mtqeo?=
+ =?us-ascii?Q?QXbrdOl1JXOD+VFhdVY3AWKlR+yu/ckkWY0cRJI7vIJWzHdMDDQn7aUxG6ZJ?=
+ =?us-ascii?Q?YB5VHhrJTFNL8xS022ZFBEIgqeiLerF4wPCFucolOafdawm/9QWYsJiQ+SKB?=
+ =?us-ascii?Q?8HdnfMYMnJVptBxwKkW97ckeXn2LFecFKiqXLDFim96OpBoGFLK/t59mqj35?=
+ =?us-ascii?Q?QQqXIw9zzeSrRT9pkNsZEFQxg/GZjCf+afvyPst998keNaiilJ2vKe/J/fWN?=
+ =?us-ascii?Q?Ef6lWuhF1W3tmFztfRBazRFLi08kI8yJF43FfYtZb4qdbnZNmqMLhXCYim1e?=
+ =?us-ascii?Q?6+vtPf9u2JIPXVzMjeLFlEFDGqNKGhtGTm6W0/L/0tO8xVqJG3QpJ0wAtUzn?=
+ =?us-ascii?Q?po6aHOpQXRU4Jf9pfeoiPJkXP6SR3HAY2FiVF4aDXQOrZ/kLIo5oOi1qtCMQ?=
+ =?us-ascii?Q?sug2nPqGE+3LaCkyHOIG0LfK4ByWol7AUoyX9Rmc86fmOOlY4zKt3S3/JNkA?=
+ =?us-ascii?Q?6WCzGzRlnzVCoL03s57rXq7NK+0fUAS+8SzyS5r4zhSp6gr+64FjgWNcZmfK?=
+ =?us-ascii?Q?DrOuM1ZXE8tgkJLMd3k1CcUWQpojMJfe+DUwQu+asV6W1n7s4MuK4dh40yYh?=
+ =?us-ascii?Q?M0VGLiEFhu/UcNHQexgyeL/PO36dksUu5pUOg5YpvIxmvDE29EkaaLQWDnHh?=
+ =?us-ascii?Q?/GlqZEGtgFObNQmLFWQP6BL9kA4EJyTIacsZc+RpJ0SRDnDj9+VZ/Y5oM9Ek?=
+ =?us-ascii?Q?N04cNE9bvtaUSez422L+/zXMWFLgKPgNM9OlBA4+ZRdCgMe4YEqlk5me/FYG?=
+ =?us-ascii?Q?uoRrXL1iawVvrQ84u+RQfYvQLi+xXcEaY9mfD0Lqig+fJZd0a7l6abcnSVD8?=
+ =?us-ascii?Q?/HwjOhyLlSiFx9w9KM2tZ0pAH1gLxdW4CZCDN55KivuUBD0ChElXNJfSdOzs?=
+ =?us-ascii?Q?m/XJtZclnHcE4C82xLH4CH6vIS6brzac050dMhMlw4QVD0SpTfUv8b18Gmi7?=
+ =?us-ascii?Q?2c0yDcjtgd7uqOz8kQqXmSyPjQ6Y57mJQvnhhF0PnjJI8PWOSJaWTkPSMuND?=
+ =?us-ascii?Q?A02OLVdi/K/Dxk4+aPukslkB?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99b0226b-3502-4090-12f6-08d930a77fb9
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5650.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 09:17:01.1881
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: skl6hZX5dT+WIyGDrNd8cY/tMgRFBoOcMXgfT8ODHO5IHYW3mLbuwUO+TZPykj+UM9CWCUQNwoZ6z5dfQwshHw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8416
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here is the patch (minus headers, description, etc. - I believe these
-can be copied as is from the 5.x patch, but not sure about the
-rules...). It can be applied to 4.14.236. If this is OK, I can move on
-to 4.9 and 4.4.
+On 6/9/21 4:50 PM, Joerg Roedel wrote:
+> On Wed, Jun 02, 2021 at 04:14:47PM +0200, Varad Gautam wrote:
+>> From: Varad Gautam <varad.gautam@suse.com>
+>>
+>> Some vmexits on a SEV-ES guest need special handling within the guest
+>> before exiting to the hypervisor. This must happen within the guest's
+>> \#VC exception handler, triggered on every non automatic exit.
+>>
+>> Add a KUnit based test to validate Linux's VC handling. The test:
+>> 1. installs a kretprobe on the #VC handler (sev_es_ghcb_hv_call, to
+>>    access GHCB before/after the resulting VMGEXIT).
+>> 2. tiggers an NAE.
+>> 3. checks that the kretprobe was hit with the right exit_code available
+>>    in GHCB.
+>>
+>> Since relying on kprobes, the test does not cover NMI contexts.
+>>
+>> Signed-off-by: Varad Gautam <varad.gautam@suse.com>
+>> ---
+>>  arch/x86/Kconfig                 |   9 ++
+>>  arch/x86/kernel/Makefile         |   8 ++
+>>  arch/x86/kernel/sev-es-test-vc.c | 155 +++++++++++++++++++++++++++++++
+>=20
+> This looks good to me except for the small comment below, thanks Varad.
+> I ran it in an SEV-ES guest and I am seeing the test results in dmesg.
+> Only thing I am missing is a 'rep movs' test for MMIO, but that can be
+> added later, so
+>=20
+> Tested-by: Joerg Roedel <jroedel@suse.de>
+>=20
+> Btw, should we create a separate directory for such tests like
+> /arch/x86/tests/ or something along those lines?
+>=20
 
+Thanks, I've sent out a v4 with the test moved to arch/x86/tests. This is
+now hidden behind a CONFIG_X86_TESTS, where more stuff can be plugged in.
 
- net/ipv4/route.c | 41 ++++++++++++++++++++++++++++-------------
- 1 file changed, 28 insertions(+), 13 deletions(-)
+>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>> index 0045e1b441902..85b8ac450ba56 100644
+>> --- a/arch/x86/Kconfig
+>> +++ b/arch/x86/Kconfig
+>> @@ -1543,6 +1543,15 @@ config AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
+>>  	  If set to N, then the encryption of system memory can be
+>>  	  activated with the mem_encrypt=3Don command line option.
+>> =20
+>> +config AMD_SEV_ES_TEST_VC
+>> +	bool "Test for AMD SEV-ES VC exception handling."
+>> +	depends on AMD_MEM_ENCRYPT
+>> +	select FUNCTION_TRACER
+>> +	select KPROBES
+>> +	select KUNIT
+>> +	help
+>> +	  Enable KUnit-based testing for AMD SEV-ES #VC exception handling.
+>> +
+>=20
+> I think this should be in arch/x86/Kconfig.debug.
+>=20
+Ack, also moved in v4.
 
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 78d6bc61a1d8..022a2b748da3 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -70,6 +70,7 @@
- #include <linux/types.h>
- #include <linux/kernel.h>
- #include <linux/mm.h>
-+#include <linux/memblock.h>
- #include <linux/string.h>
- #include <linux/socket.h>
- #include <linux/sockios.h>
-@@ -485,8 +486,10 @@ static void ipv4_confirm_neigh(const struct
-dst_entry *dst, const void *daddr)
-     __ipv4_confirm_neigh(dev, *(__force u32 *)pkey);
- }
+Varad
 
--#define IP_IDENTS_SZ 2048u
--
-+/* Hash tables of size 2048..262144 depending on RAM size.
-+ * Each bucket uses 8 bytes.
-+ */
-+static u32 ip_idents_mask __read_mostly;
- static atomic_t *ip_idents __read_mostly;
- static u32 *ip_tstamps __read_mostly;
+--=20
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5
+90409 N=C3=BCrnberg
+Germany
 
-@@ -496,12 +499,16 @@ static u32 *ip_tstamps __read_mostly;
-  */
- u32 ip_idents_reserve(u32 hash, int segs)
- {
--    u32 *p_tstamp = ip_tstamps + hash % IP_IDENTS_SZ;
--    atomic_t *p_id = ip_idents + hash % IP_IDENTS_SZ;
--    u32 old = ACCESS_ONCE(*p_tstamp);
--    u32 now = (u32)jiffies;
-+    u32 bucket, old, now = (u32)jiffies;
-+    atomic_t *p_id;
-+    u32 *p_tstamp;
-     u32 delta = 0;
+HRB 36809, AG N=C3=BCrnberg
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
-+    bucket = hash & ip_idents_mask;
-+    p_tstamp = ip_tstamps + bucket;
-+    p_id = ip_idents + bucket;
-+    old = READ_ONCE(*p_tstamp);
-+
-     if (old != now && cmpxchg(p_tstamp, old, now) == old)
-         delta = prandom_u32_max(now - old);
-
-@@ -3099,17 +3106,25 @@ struct ip_rt_acct __percpu *ip_rt_acct __read_mostly;
- int __init ip_rt_init(void)
- {
-     int rc = 0;
-+    void *idents_hash;
-     int cpu;
-
--    ip_idents = kmalloc(IP_IDENTS_SZ * sizeof(*ip_idents), GFP_KERNEL);
--    if (!ip_idents)
--        panic("IP: failed to allocate ip_idents\n");
-+    /* For modern hosts, this will use 2 MB of memory */
-+    idents_hash = alloc_large_system_hash("IP idents",
-+                          sizeof(*ip_idents) + sizeof(*ip_tstamps),
-+                          0,
-+                          16, /* one bucket per 64 KB */
-+                          HASH_ZERO,
-+                          NULL,
-+                          &ip_idents_mask,
-+                          2048,
-+                          256*1024);
-+
-+    ip_idents = idents_hash;
-
--    prandom_bytes(ip_idents, IP_IDENTS_SZ * sizeof(*ip_idents));
-+    prandom_bytes(ip_idents, (ip_idents_mask + 1) * sizeof(*ip_idents));
-
--    ip_tstamps = kcalloc(IP_IDENTS_SZ, sizeof(*ip_tstamps), GFP_KERNEL);
--    if (!ip_tstamps)
--        panic("IP: failed to allocate ip_tstamps\n");
-+    ip_tstamps = idents_hash + (ip_idents_mask + 1) * sizeof(*ip_idents);
-
-     for_each_possible_cpu(cpu) {
-         struct uncached_list *ul = &per_cpu(rt_uncached_list, cpu);
-
-On Wed, Jun 16, 2021 at 10:16 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jun 16, 2021 at 10:02:44AM +0300, Amit Klein wrote:
-> >  Hi Greg et al.
-> >
-> > I see that you backported this patch (increasing the IP ID hash table size)
-> > to the newer LTS branches more than a month ago. But I don't see that it
-> > was backported to older LTS branches (4.19, 4.14, 4.9, 4.4). Is this
-> > intentional?
->
-> It applies cleanly to 4.19, but not the older ones.  If you think it is
-> needed there for those kernels, please provide a working backport that
-> we can apply.
->
-> thanks,
->
-> greg k-h
