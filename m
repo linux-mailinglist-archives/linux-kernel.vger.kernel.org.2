@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B999F3A9FF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877693A9F4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 17:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235192AbhFPPnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 11:43:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51258 "EHLO mail.kernel.org"
+        id S234803AbhFPPg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 11:36:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235290AbhFPPkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:40:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC3D7613C1;
-        Wed, 16 Jun 2021 15:37:03 +0000 (UTC)
+        id S234744AbhFPPgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:36:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D307613BF;
+        Wed, 16 Jun 2021 15:34:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623857824;
-        bh=h3yfU/nAkZxVju9v0orfVy4nCOFi0WzFrnNTYQYPzLc=;
+        s=korg; t=1623857675;
+        bh=ypz9PQ9qe0SVB/8adFFM25pP4e02WlCyeIliOP7utIo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R2IF4l58aLpv1lX0JtDWq7oN/T+/25w1dJN0KxKUNZprVEo6nIQiOqoW7hS6frnv7
-         z4LnoedanEw46pqUx6MckpiL3vxg0DRXhthBuR3K+bAp3aMgjEDCTtqIkihtRAxAl0
-         zPw39N2LBbS7jAm9Egv+ScPaeUODXKqaDwufyV/Y=
+        b=Ifr+dCgnKUbgW2k5HUYpD/A2TY91zKDcIG2Eoe7IGWljFArzWFlv9CKqKC1Hfa/qj
+         XRaGiwlNooXdbCvZrnFn4QsaPJk/os28JYaUqLqEKWJo7Ca75VyrzwaRvKoWLpF978
+         HaCi0m4oeSO2lXzwDD8xMhUFojZGXjitki5wTDwM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 20/48] gfs2: Prevent direct-I/O write fallback errors from getting lost
-Date:   Wed, 16 Jun 2021 17:33:30 +0200
-Message-Id: <20210616152837.292198696@linuxfoundation.org>
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 20/28] nvme-loop: clear NVME_LOOP_Q_LIVE when nvme_loop_configure_admin_queue() fails
+Date:   Wed, 16 Jun 2021 17:33:31 +0200
+Message-Id: <20210616152834.799739264@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-References: <20210616152836.655643420@linuxfoundation.org>
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+References: <20210616152834.149064097@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit 43a511c44e58e357a687d61a20cf5ef1dc9e5a7c ]
+[ Upstream commit 1c5f8e882a05de5c011e8c3fbeceb0d1c590eb53 ]
 
-When a direct I/O write falls entirely and falls back to buffered I/O and the
-buffered I/O fails, the write failed with return value 0 instead of the error
-number reported by the buffered I/O. Fix that.
+When the call to nvme_enable_ctrl() in nvme_loop_configure_admin_queue()
+fails the NVME_LOOP_Q_LIVE flag is not cleared.
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/file.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/nvme/target/loop.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index 2d500f90cdac..a86e6810237a 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -935,8 +935,11 @@ static ssize_t gfs2_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		current->backing_dev_info = inode_to_bdi(inode);
- 		buffered = iomap_file_buffered_write(iocb, from, &gfs2_iomap_ops);
- 		current->backing_dev_info = NULL;
--		if (unlikely(buffered <= 0))
-+		if (unlikely(buffered <= 0)) {
-+			if (!ret)
-+				ret = buffered;
- 			goto out_unlock;
-+		}
+diff --git a/drivers/nvme/target/loop.c b/drivers/nvme/target/loop.c
+index b4f5503ae570..f752e9432676 100644
+--- a/drivers/nvme/target/loop.c
++++ b/drivers/nvme/target/loop.c
+@@ -395,6 +395,7 @@ static int nvme_loop_configure_admin_queue(struct nvme_loop_ctrl *ctrl)
+ 	return 0;
  
- 		/*
- 		 * We need to ensure that the page cache pages are written to
+ out_cleanup_queue:
++	clear_bit(NVME_LOOP_Q_LIVE, &ctrl->queues[0].flags);
+ 	blk_cleanup_queue(ctrl->ctrl.admin_q);
+ out_cleanup_fabrics_q:
+ 	blk_cleanup_queue(ctrl->ctrl.fabrics_q);
 -- 
 2.30.2
 
