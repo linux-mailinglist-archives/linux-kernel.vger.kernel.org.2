@@ -2,178 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32FA63AA162
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A152B3AA165
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 18:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhFPQft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 12:35:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbhFPQe5 (ORCPT
+        id S230188AbhFPQgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 12:36:02 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:57454 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhFPQfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 12:34:57 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3E7C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 09:32:45 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id t13so2409506pgu.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 09:32:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LgEvtax5sgfmjjrhgKwKQwSVaBY+DvlQnT1NfAz1r9g=;
-        b=1hcP+YAeAqS7ogKiZuC3JOg0nrRosmlQ+/IxyYf9p4F0pHW4TcuQefQCO86PNAAWy1
-         +IOvR/7EL4bbgif/BwOuHFbnEIgOYc5lkobTM9TRoOsIzZfHtSUiWe0vLkFq9FgEjzyZ
-         ByxXRhl9VgLrG2EVdC85CsSFHZbCkxnjcTuJJlxdDQ8+N2hUZ1sJXEBXP5MEfRykqAlK
-         E8meQUJGqUb8qr3bFM6hITb+bowuxf6WG5TxBXG09NyZakyYHPxIerAYpODSo9xquRW7
-         XdFB1CKn7Ekzy+udsg2u/M33tbZ1MJYZHRxlESye7+e3nBCfFzNYpXG4iqhgDXx/cfex
-         LY+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LgEvtax5sgfmjjrhgKwKQwSVaBY+DvlQnT1NfAz1r9g=;
-        b=ofGqIvYHn7RJIMEtKwvN11qVzK42eb3ftSduAn2jSN6rDOtABWw94deg7XtuWrEavn
-         XOCA9309v7V2Yb3lYBSFKLzPusBX2ZaWLkWwQED89uQpLYqIqUS16ZJW4OskgQWWyH6g
-         +OPMEwekDKzcBIT/v4wXx6EBY4XibtanvqK8rBwfMRDNYbic9hK2D0OuHRNwnFv8j4gx
-         Z2dhvy47XFjffnoWl5c8ehoG0Y31fwt90MgmBhM5ftpxdKKRh2hYgOwEz6HfFZfYkvvd
-         5M10uXq9GWYkQnFgD9z0kzhtrSGbX8t0yFeLJeBV4KWfwKBvjLXWAaenAz0VcDZo3l/k
-         oWJA==
-X-Gm-Message-State: AOAM531YrpfDcl3XdKXoVTMneLHSWWxvQFo9cp5EmhYj31WMjOsNE/E2
-        3D5Eia5Cw95C4MdnaAsLzzeFIc70VzRBKfClyJvQ+Q==
-X-Google-Smtp-Source: ABdhPJyZvZL0A0K44zy/aMo4UY4FYkRWBOijbl8gbJYaH2WDdTs7d+pPN30OUFs00aZSFvvgfpO+hxC4Wgxuat0VkIY=
-X-Received: by 2002:a62:8647:0:b029:2c4:b8d6:843 with SMTP id
- x68-20020a6286470000b02902c4b8d60843mr590229pfd.71.1623861164908; Wed, 16 Jun
- 2021 09:32:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1623800340.git.alison.schofield@intel.com>
- <48f1b59105e46f04b38347fc1555bb5c8d654cff.1623800340.git.alison.schofield@intel.com>
- <20210616161740.k4nxeh3bmem56gwa@intel.com>
-In-Reply-To: <20210616161740.k4nxeh3bmem56gwa@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 16 Jun 2021 09:32:34 -0700
-Message-ID: <CAPcyv4hNxAw99iNF_puwuYmegCGBR2mOUhQ_t56q_XZ0p7hjcw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] cxl/acpi: Use the ACPI CFMWS to create static
- decoder objects
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     Alison Schofield <alison.schofield@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        linux-cxl@vger.kernel.org,
+        Wed, 16 Jun 2021 12:35:07 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1ltYTI-009tP8-2t; Wed, 16 Jun 2021 10:32:56 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1ltYTG-000dup-Mk; Wed, 16 Jun 2021 10:32:55 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <87sg1p30a1.fsf@disp2133>
+        <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+        <87pmwsytb3.fsf@disp2133>
+        <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+        <87sg1lwhvm.fsf@disp2133>
+        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+        <87eed4v2dc.fsf@disp2133>
+        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+        <87fsxjorgs.fsf@disp2133> <87zgvqor7d.fsf_-_@disp2133>
+        <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
+Date:   Wed, 16 Jun 2021 11:32:47 -0500
+In-Reply-To: <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
+        (Linus Torvalds's message of "Tue, 15 Jun 2021 15:02:57 -0700")
+Message-ID: <87mtrpg47k.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1ltYTG-000dup-Mk;;;mid=<87mtrpg47k.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19ZfUcio+ODyoVKmYfw3++qcF8Edd+YSDo=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 459 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 4.4 (1.0%), b_tie_ro: 3.0 (0.6%), parse: 1.20
+        (0.3%), extract_message_metadata: 14 (3.0%), get_uri_detail_list: 2.3
+        (0.5%), tests_pri_-1000: 19 (4.1%), tests_pri_-950: 1.00 (0.2%),
+        tests_pri_-900: 0.81 (0.2%), tests_pri_-90: 118 (25.8%), check_bayes:
+        117 (25.5%), b_tokenize: 7 (1.5%), b_tok_get_all: 9 (2.0%),
+        b_comp_prob: 2.4 (0.5%), b_tok_touch_all: 96 (20.8%), b_finish: 0.79
+        (0.2%), tests_pri_0: 288 (62.6%), check_dkim_signature: 0.63 (0.1%),
+        check_dkim_adsp: 2.5 (0.5%), poll_dns_idle: 0.49 (0.1%), tests_pri_10:
+        2.7 (0.6%), tests_pri_500: 7 (1.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] alpha: Add extra switch_stack frames in exit, exec, and kernel threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 9:17 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
+Linus Torvalds <torvalds@linux-foundation.org> writes:
+
+> On Tue, Jun 15, 2021 at 12:36 PM Eric W. Biederman
+> <ebiederm@xmission.com> wrote:
+>>
+>> I looked and there nothing I can do that is not arch specific, so
+>> whack the moles with a minimal backportable fix.
+>>
+>> This change survives boot testing on qemu-system-alpha.
 >
-> On 21-06-15 17:20:39, Alison Schofield wrote:
-> > The ACPI CXL Early Discovery Table (CEDT) includes a list of CXL memory
-> > resources in CXL Fixed Memory Window Structures (CFMWS). Retrieve each
-> > CFMWS in the CEDT and add a cxl_decoder object to the root port (root0)
-> > for each memory resource.
-> >
-> > Signed-off-by: Alison Schofield <alison.schofield@intel.com>
-> > ---
-> >  drivers/cxl/acpi.c | 114 +++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 114 insertions(+)
-> >
-> > diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
-> > index b6d9cd45428c..e3aa356d4dcd 100644
-> > --- a/drivers/cxl/acpi.c
-> > +++ b/drivers/cxl/acpi.c
-> > @@ -8,8 +8,120 @@
-> >  #include <linux/pci.h>
-> >  #include "cxl.h"
-> >
-> > +/* Encode defined in CXL 2.0 8.2.5.12.7 HDM Decoder Control Register */
-> > +#define CFMWS_INTERLEAVE_WAYS(x)     (1 << (x)->interleave_ways)
-> > +#define CFMWS_INTERLEAVE_GRANULARITY(x)      ((x)->granularity + 8)
-> > +
-> >  static struct acpi_table_header *cedt_table;
-> >
-> > +static unsigned long cfmws_to_decoder_flags(int restrictions)
-> > +{
-> > +     unsigned long flags = 0;
-> > +
-> > +     if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE2)
-> > +             flags |= CXL_DECODER_F_TYPE2;
-> > +     if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE3)
-> > +             flags |= CXL_DECODER_F_TYPE3;
-> > +     if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE)
-> > +             flags |= CXL_DECODER_F_RAM;
-> > +     if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_PMEM)
-> > +             flags |= CXL_DECODER_F_PMEM;
-> > +     if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_FIXED)
-> > +             flags |= CXL_DECODER_F_LOCK;
-> > +
-> > +     return flags;
-> > +}
+> So as mentioned in the other thread, I think this patch is exactly right.
 >
-> I know these flags aren't introduced by this patch, but I'm wondering if it
-> makes sense to not just use the spec definitions rather than defining our own.
-> It doesn't do much harm, but it's extra typing everytime the spec adds new flags
-> and I don't really see the upside.
-
-The flags are bounded by what's in HDM decoders, I don't see them
-moving so fast that the kernel can not keep up. The rationale for the
-split is the same as the split between ACPI NFIT and the LIBNVDIMM
-core. The ACPI specifics are just one way to convey a common platform
-attribute to the core.
-
-In fact this was one of the main feedbacks of the initial "ND"
-subsystem which eventually became LIBNVDIMM [1]. ND stood for "NFIT
-Defined" and the arch split between ACPI specific and Linux
-translation has paid off over the years.
-
-[1]: https://lore.kernel.org/lkml/20150420070624.GB13876@gmail.com/
-
-
+> However, the need for this part
 >
-> > +
-> > +static int cxl_acpi_cfmws_verify(struct device *dev,
-> > +                              struct acpi_cedt_cfmws *cfmws)
-> > +{
-> > +     int expected_len;
-> > +
-> > +     if (cfmws->interleave_arithmetic != ACPI_CEDT_CFMWS_ARITHMETIC_MODULO) {
-> > +             dev_err(dev, "CFMWS Unsupported Interleave Arithmetic\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     if (!IS_ALIGNED(cfmws->base_hpa, SZ_256M)) {
-> > +             dev_err(dev, "CFMWS Base HPA not 256MB aligned\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     if (!IS_ALIGNED(cfmws->window_size, SZ_256M)) {
-> > +             dev_err(dev, "CFMWS Window Size not 256MB aligned\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     expected_len = struct_size((cfmws), interleave_targets,
-> > +                                CFMWS_INTERLEAVE_WAYS(cfmws));
-> > +
-> > +     if (expected_len != cfmws->header.length) {
+>> @@ -785,6 +785,7 @@ ret_from_kernel_thread:
+>>         mov     $9, $27
+>>         mov     $10, $16
+>>         jsr     $26, ($9)
+>> +       lda     $sp, SWITCH_STACK_SIZE($sp)
+>>         br      $31, ret_to_user
+>>  .end ret_from_kernel_thread
 >
-> I'd switch this to:
-> if (expected_len < cfmws->header.length)
+> obviously eluded me in my "how about something like this", and I had
+> to really try to figure out why we'd ever return.
 >
-> If it's too big, just print a dev_dbg.
-
-Maybe call it min_len then?
-
-[..]
-> > +
-> > +             cxld = devm_cxl_add_decoder(dev, root_port,
-> > +                             CFMWS_INTERLEAVE_WAYS(cfmws),
-> > +                             cfmws->base_hpa, cfmws->window_size,
-> > +                             CFMWS_INTERLEAVE_WAYS(cfmws),
+> Which is why I came to that "oooh - kernel_execve()" realization.
 >
-> Interesting... this made me question, how can we have a different number of
-> targets and ways?
+> It might be good to comment on that somewhere. And if you can think of
+> some other case, that should be mentioned too.
+>
+> Anyway, thanks for looking into this odd case. And if you have a
+> test-case for this all, it really would be a good thing. Yes, it
+> should only affect a couple of odd-ball architectures, but still... It
+> would also be good to hear that you actually did verify the behavior
+> of this patch wrt that ptrace-of-io-worker-threads case..
 
-These settings can be changed later on a switch-level decoder, for a
-root-level decoder these initial values are fixed.
+*Grumble*
+
+So just going through and looking to see what it takes to instrument
+and put in warnings when things go wrong I have found another issue.
+
+Today there exists:
+PTRACE_EVENT_FORK
+PTRACE_EVENT_VFORK
+PTRACE_EVENT_CLONE
+
+Which happens after the actual fork operation in the kernel.
+
+The following code wraps those operations in arch/alpha/kernel/entry.S
+
+.macro	fork_like name
+	.align	4
+	.globl	alpha_\name
+	.ent	alpha_\name
+alpha_\name:
+	.prologue 0
+	bsr	$1, do_switch_stack
+	jsr	$26, sys_\name
+	ldq	$26, 56($sp)
+	lda	$sp, SWITCH_STACK_SIZE($sp)
+	ret
+.end	alpha_\name
+.endm
+
+The code in the kernel when calls in fork.c calls ptrace_event_pid
+which ultimately calls ptrace_stop.  So userspace can reasonably expect
+to stop the process and change it's registers.
+
+With unconditionally popping the switch stack any of those registers
+that are modified are lost.
+
+So I will update my changes to handle that case as well.
+
+
+Eric
