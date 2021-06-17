@@ -2,138 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4D53AB188
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 356743AB198
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbhFQKnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 06:43:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:51604 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229716AbhFQKnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 06:43:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E46D31B;
-        Thu, 17 Jun 2021 03:41:00 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72B1A3F694;
-        Thu, 17 Jun 2021 03:40:57 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 11:40:46 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86@kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
-Message-ID: <20210617103524.GA82133@C02TD0UTHF1T.local>
-References: <cover.1623813516.git.luto@kernel.org>
- <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
+        id S232155AbhFQKqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 06:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232115AbhFQKqV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 06:46:21 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078A3C06175F;
+        Thu, 17 Jun 2021 03:44:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=IohCMyCwLQNiwDAEmAYJzQsgursOeE+GX9lSyPBU/Mo=; b=BLktE7PiCNGwZTg8bAJT9JCE52
+        e1+/luEIBf0ZS8nKmxMHeargCS49jzZ4Q2/OXsab9fKD/uGFoD1HLos7NwILTyURYdG+mJmWWXwzh
+        cbSgrCDWydLlkxvQoN/twtU8fVz5T5dTmES+dqd1fCoshWyxYnLp3iiP//Z9GR9PcK45Wt9o+8LXv
+        tvVULDOm+A3JBiwVi2x3G/xWnJv8H4gSfbRg93ZUykfg8vr61thKT52HaFU0HUcCetbwni7UlVW1j
+        4Qdc6srEWBc17mvAhspYeolFGUmSCTxZ2JOYbuvrdQwK1sMHFIsPR8bqc0CsTZmzPxBSGEBKq2PgJ
+        I42+6qrQ==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=toshino.localdomain)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <mperttunen@nvidia.com>)
+        id 1ltpVH-0006tB-Kc; Thu, 17 Jun 2021 13:44:07 +0300
+From:   Mikko Perttunen <mperttunen@nvidia.com>
+To:     catalin.marinas@arm.com, will@kernel.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Subject: [PATCH 1/2] arm64: traps: Support for registering SError hooks
+Date:   Thu, 17 Jun 2021 13:40:52 +0300
+Message-Id: <20210617104053.765434-1-mperttunen@nvidia.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: mperttunen@nvidia.com
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 08:21:12PM -0700, Andy Lutomirski wrote:
-> On arm32, the only way to safely flush icache from usermode is to call
-> cacheflush(2).  This also handles any required pipeline flushes, so
-> membarrier's SYNC_CORE feature is useless on arm.  Remove it.
+Add the ability for drivers to register SError hooks to be run
+on a fatal SError interrupt. This allows printing of system-specific
+error information to aid with debugging.
 
-Unfortunately, it's a bit more complicated than that, and these days
-SYNC_CORE is equally necessary on arm as on arm64. This is something
-that changed in the architecture over time, but since ARMv7 we generally
-need both the cache maintenance *and* a context synchronization event
-(the latter must occur on the CPU which will execute the instructions).
+Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+---
+ arch/arm64/include/asm/traps.h |  6 ++++++
+ arch/arm64/kernel/traps.c      | 20 ++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
 
-If you look at the latest ARMv7-AR manual (ARM DDI 406C.d), section
-A3.5.4 "Concurrent modification and execution of instructions" covers
-this. That manual can be found at:
+diff --git a/arch/arm64/include/asm/traps.h b/arch/arm64/include/asm/traps.h
+index 54f32a0675df..054fecfa22f0 100644
+--- a/arch/arm64/include/asm/traps.h
++++ b/arch/arm64/include/asm/traps.h
+@@ -22,8 +22,14 @@ struct undef_hook {
+ 	int (*fn)(struct pt_regs *regs, u32 instr);
+ };
+ 
++struct serror_hook {
++	struct list_head node;
++	void (*fn)(void);
++};
++
+ void register_undef_hook(struct undef_hook *hook);
+ void unregister_undef_hook(struct undef_hook *hook);
++void register_serror_hook(struct serror_hook *hook);
+ void force_signal_inject(int signal, int code, unsigned long address, unsigned int err);
+ void arm64_notify_segfault(unsigned long addr);
+ void arm64_force_sig_fault(int signo, int code, unsigned long far, const char *str);
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index 273066279bb5..02dbaab71ea3 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -890,8 +890,23 @@ void panic_bad_stack(struct pt_regs *regs, unsigned int esr, unsigned long far)
+ }
+ #endif
+ 
++static LIST_HEAD(serror_hook);
++static DEFINE_RAW_SPINLOCK(serror_lock);
++
++void register_serror_hook(struct serror_hook *hook)
++{
++	unsigned long flags;
++
++	raw_spin_lock_irqsave(&serror_lock, flags);
++	list_add(&hook->node, &serror_hook);
++	raw_spin_unlock_irqrestore(&serror_lock, flags);
++}
++
+ void __noreturn arm64_serror_panic(struct pt_regs *regs, u32 esr)
+ {
++	struct serror_hook *hook;
++	unsigned long flags;
++
+ 	console_verbose();
+ 
+ 	pr_crit("SError Interrupt on CPU%d, code 0x%08x -- %s\n",
+@@ -899,6 +914,11 @@ void __noreturn arm64_serror_panic(struct pt_regs *regs, u32 esr)
+ 	if (regs)
+ 		__show_regs(regs);
+ 
++	raw_spin_lock_irqsave(&serror_lock, flags);
++	list_for_each_entry(hook, &serror_hook, node)
++		hook->fn();
++	raw_spin_unlock_irqrestore(&serror_lock, flags);
++
+ 	nmi_panic(regs, "Asynchronous SError Interrupt");
+ 
+ 	cpu_park_loop();
+-- 
+2.30.1
 
-	https://developer.arm.com/documentation/ddi0406/latest/
-
-Likewise for ARMv8-A; the latest manual (ARM DDI 0487G.a) covers this in
-sections B2.2.5 and E2.3.5. That manual can be found at:
-
-	https://developer.arm.com/documentation/ddi0487/ga
-
-I am not sure about exactly what's required 11MPcore, since that's
-somewhat a special case as the only SMP design prior to ARMv7-A
-mandating broadcast maintenance.
-
-For intuition's sake, one reason for this is that once a CPU has fetched
-an instruction from an instruction cache into its pipeline and that
-instruction is "in-flight", changes to that instruction cache are not
-guaranteed to affect the "in-flight" copy (which e.g. could be
-decomposed into micro-ops and so on). While these parts of a CPU aren't
-necessarily designed as caches, they effectively transiently cache a
-stale copy of the instruction while it is being executed.
-
-This is more pronounced on newer designs with more complex execution
-pipelines (e.g. with bigger windows for out-of-order execution and
-speculation), and generally it's unlikely for this to be noticed on
-smaller/simpler designs.
-
-As above, modifying instructions requires two things:
-
-1) Making sure that *subsequent* instruction fetches will see the new
-   instructions. This is what cacheflush(2) does, and this is similar to
-   what SW does on arm64 with DC CVAU + IC IVAU instructions and
-   associated memory barriers.
-
-2) Making sure that a CPU fetches the instructions *after* the cache
-   maintenance is complete. There are a few ways to do this:
-
-   * A context synchronization event (e.g. an ISB or exception return)
-     on the CPU that will execute the instructions. This is what
-     membarrier(SYNC_CORE) does.
-
-   * In ARMv8-A there are some restrictions on the order in which
-     modified instructions are guaranteed to be observed (e.g. if you
-     publish a function, then subsequently install a branch to that new
-     function), where an ISB may not be necessary. In the latest ARMv8-A
-     manual as linked above, those are described in sections:
-
-     - B2.3.8 "Ordering of instruction fetches" (for 64-bit)
-     - E2.3.8 "Ordering of instruction fetches" (for 32-bit)
-
-   * Where we can guarantee that a CPU cannot possibly have an
-     instruction in-flight (e.g. due to a lack of a mapping to fetch
-     instructions from), nothing is necessary. This is what we rely on
-     when faulting in code pages. In these cases, the CPU is liable to
-     take fault on the missing translation anyway.
-
-Thanks,
-Mark.
-
-> 
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> ---
->  arch/arm/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index 24804f11302d..89a885fba724 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -10,7 +10,6 @@ config ARM
->  	select ARCH_HAS_FORTIFY_SOURCE
->  	select ARCH_HAS_KEEPINITRD
->  	select ARCH_HAS_KCOV
-> -	select ARCH_HAS_MEMBARRIER_SYNC_CORE
->  	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
->  	select ARCH_HAS_PTE_SPECIAL if ARM_LPAE
->  	select ARCH_HAS_PHYS_TO_DMA
-> -- 
-> 2.31.1
-> 
