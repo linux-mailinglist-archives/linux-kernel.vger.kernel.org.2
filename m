@@ -2,54 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFD63AA916
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 04:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050403AA8F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 04:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhFQCrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 22:47:15 -0400
-Received: from [122.15.141.162] ([122.15.141.162]:49688 "EHLO
-        UPCDCDAMX02.upcl.org" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230043AbhFQCrN (ORCPT
+        id S231815AbhFQCc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 22:32:28 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:7336 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231572AbhFQCc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 22:47:13 -0400
-Received: from UPCDCDAMX02.upcl.org (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EF99B1346A;
-        Thu, 17 Jun 2021 02:00:02 +0530 (IST)
-Received: from UPCDCDAMX02.upcl.org (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2307A13472;
-        Thu, 17 Jun 2021 01:59:49 +0530 (IST)
-Received: from User (unknown [210.212.82.37])
-        by UPCDCDAMX02.upcl.org (Postfix) with SMTP;
-        Thu, 17 Jun 2021 01:59:48 +0530 (IST)
-Reply-To: <josechoondak@gmail.com>
-From:   "Jose Choondak" <info@infotools.in>
-Subject: Re: Contact Me It Very Urgent.
-Date:   Wed, 16 Jun 2021 20:31:09 -0000
+        Wed, 16 Jun 2021 22:32:27 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G55XB3lMfz6ySF;
+        Thu, 17 Jun 2021 10:26:18 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 10:30:17 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.98) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 10:30:17 +0800
+From:   Pu Lehui <pulehui@huawei.com>
+To:     <harry.wentland@amd.com>, <sunpeng.li@amd.com>,
+        <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
+        <Xinhui.Pan@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <Jun.Lei@amd.com>, <wenjing.liu@amd.com>, <Anson.Jacob@amd.com>,
+        <qingqing.zhuo@amd.com>, <Wesley.Chalmers@amd.com>,
+        <Jimmy.Kizito@amd.com>, <aric.cyr@amd.com>, <martin.tsai@amd.com>,
+        <jinlong.zhang@amd.com>
+CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, <pulehui@huawei.com>,
+        <zhangjinhao2@huawei.com>
+Subject: [PATCH -next] drm/amd/display: Fix gcc unused variable warning
+Date:   Thu, 17 Jun 2021 10:31:09 +0800
+Message-ID: <20210617023109.204591-1-pulehui@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20210616202949.2307A13472@UPCDCDAMX02.upcl.org>
-To:     undisclosed-recipients:;
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSVA-9.1.0.1960-8.6.0.1013-26224.002
-X-TM-AS-Result: No-0.514-5.0-31-10
-X-imss-scan-details: No-0.514-5.0-31-10
-X-TMASE-Version: IMSVA-9.1.0.1960-8.6.1013-26224.002
-X-TMASE-Result: 10-0.513600-10.000000
-X-TMASE-MatchedRID: awbNJYK2QqboJ7ZHxnJI6/6CJzEkJBKD1QKnkgzg6vZ5bx7TGUAszssw
-        rEghLf6dKEGVr0q/O26tNOiSGUvwKTqV8jNP9SD8myiLZetSf8nJ4y0wP1A6AMoI4RYd3wmQ2Kw
-        OXdq4UsPOTw7jcM4POhmwh28tOMvYijr74ISIXwSw0gNx7o/VtOd2r66ykP1T5ovesN7TVeoqoi
-        2h7laWfD9BWL7GG0LsKrauXd3MZDVNsuP/5lMQK6JZimiGoG/MpIyVsI8WTnxJN04+08rPXv8Z8
-        RZsK5EEvvz+1V+xcgseXBB206GQ9uVUzO4EpVyvomJVoMP9vKE6yfYFZPVRaA==
-X-IMSS-DKIM-White-List: No
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.174.98]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-please respond to me, if you are still alive.
+GCC reports the following warning with W=1:
+
+drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c:3635:17:
+warning:
+ variable ‘status’ set but not used [-Wunused-but-set-variable]
+  3635 |  enum dc_status status = DC_ERROR_UNEXPECTED;
+       |                 ^~~~~~
+
+The variable should be used for error check, let's fix it.
+
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
+---
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+index fcb635c85330..cf29265870c8 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+@@ -3681,6 +3681,10 @@ bool dp_retrieve_lttpr_cap(struct dc_link *link)
+ 				DP_LT_TUNABLE_PHY_REPEATER_FIELD_DATA_STRUCTURE_REV,
+ 				lttpr_dpcd_data,
+ 				sizeof(lttpr_dpcd_data));
++		if (status != DC_OK) {
++			dm_error("%s: Read LTTPR caps data failed.\n", __func__);
++			return false;
++		}
+ 
+ 		link->dpcd_caps.lttpr_caps.revision.raw =
+ 				lttpr_dpcd_data[DP_LT_TUNABLE_PHY_REPEATER_FIELD_DATA_STRUCTURE_REV -
+-- 
+2.17.1
+
