@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8FF3AB3BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46423AB3BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhFQMkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:40:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230225AbhFQMkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:40:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 252A7610CA;
-        Thu, 17 Jun 2021 12:37:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623933478;
-        bh=JXZlIvP9Jv7f57Wfb41hYAPLe3/lzlvn9IlwjLKbrf8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sLUpejLzm6khVyg99lx39uFIe+3YsyCNZ3x1fBTlmBClMnh7AasKRaTFw0zN3Ph+L
-         UVEBU6qGkRcIiGFZ3WF//KGW5U9ha0cxD8zbFjM7nNBPBUEvTpLjkMdej2B5d5nGOq
-         TvYunvw+D8eyjtjnaNC3Z/KxX5GN4QSscdln2aa2PcDoxJXO49SXw5tSCuNe/y223U
-         us4vSqdmNMTLwYsIy9IQYl9mtcFhkpuiq9JrFcJWekM4zvBRc/kt6jPGkHjX4yYqKZ
-         0L3LQQFeCGz8qp1SySWogVsfCBcVdtAPfPLUpH35shkgvkaRBVtjpzk0bQsrzQpObF
-         g4PoHrqb+poNA==
-Date:   Thu, 17 Jun 2021 13:37:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH RESEND v10 00/11] Extend regulator notification support
-Message-ID: <20210617123738.GC5067@sirena.org.uk>
-References: <cover.1622628333.git.matti.vaittinen@fi.rohmeurope.com>
+        id S231446AbhFQMkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:40:15 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:36642 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229891AbhFQMkO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 08:40:14 -0400
+Received: by mail-oi1-f174.google.com with SMTP id r16so6372351oiw.3;
+        Thu, 17 Jun 2021 05:38:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oC5deIG40NoiZKemKVqpRg3hah2RwUir4ATSDp7s/lA=;
+        b=M4KloQ/g+7TTgtUWmX2kbvPuXy/dezMjPzGXIRbCo6pJUOiN+jh8XJGsdzws1mEFA7
+         Kaj0eu4O3B8xx520/BeTdxC7ee5rfWTY9vzQunMcOvCVJn1t8TqoPZFJH+IuP6kOBkbU
+         bK8vcy9OMOSX7u/WlCMSQ5ZNDraXh5plr3d8OZe/5NG5/RrAIuwuIvERZM9iZegxnXzf
+         yrmCXOF4SbY8VW6hxG4Qi3X1Jg6Kq5h6+lCg/WLdEdzqstao63zRee8l8xO0++wSc6xs
+         3BfraM0FoSCdFx3J9fj5VsD1apWiUXwILe/x6qIsjhoeQ6TqYbbA+1U+2zzSDby9h61u
+         TVaw==
+X-Gm-Message-State: AOAM530pn30GXetsNlwAHNFO0hF50uWv+We6ZivfrrEwwoAaGC8O7oq9
+        bFmLGqKAl5VDSVESgW3ptpZvtroso/zf4TeUFvI=
+X-Google-Smtp-Source: ABdhPJzfj2c+cLNT1D2Df++KiZvZQQB+oQPww6gJ0F6hEkyKpOzyw+2FSFEu4m7xvIWIYVBpFqkwbDo6IDDLI/wRqE4=
+X-Received: by 2002:a05:6808:f08:: with SMTP id m8mr3108363oiw.69.1623933486213;
+ Thu, 17 Jun 2021 05:38:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kVXhAStRUZ/+rrGn"
-Content-Disposition: inline
-In-Reply-To: <cover.1622628333.git.matti.vaittinen@fi.rohmeurope.com>
-X-Cookie: But it does move!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210615074317.3103832-1-libaokun1@huawei.com>
+In-Reply-To: <20210615074317.3103832-1-libaokun1@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 17 Jun 2021 14:37:55 +0200
+Message-ID: <CAJZ5v0gtSbDdKOkUqfZQKiGvwmWUrhyw5GQN1GrYC7jKG=BM-Q@mail.gmail.com>
+Subject: Re: [PATCH -next v2] acpi/nvs: fix doc warnings in nvs.c
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Yue Haibing <yuehaibing@huawei.com>, yangjihong1@huawei.com,
+        yu kuai <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 15, 2021 at 9:34 AM Baokun Li <libaokun1@huawei.com> wrote:
+>
+> Fixes the following W=1 kernel build warning(s):
+>
+>  drivers/acpi/nvs.c:94: warning: Function parameter or
+>   member 'start' not described in 'suspend_nvs_register'
+>  drivers/acpi/nvs.c:94: warning: Function parameter or
+>   member 'size' not described in 'suspend_nvs_register'
+>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+> V1->V2:
+>         Fix the formatting of this kerneldoc comment
+>
+>  drivers/acpi/nvs.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/acpi/nvs.c b/drivers/acpi/nvs.c
+> index 7f02e399047c..a2b11069e792 100644
+> --- a/drivers/acpi/nvs.c
+> +++ b/drivers/acpi/nvs.c
+> @@ -84,13 +84,13 @@ struct nvs_page {
+>  static LIST_HEAD(nvs_list);
+>
+>  /**
+> - *     suspend_nvs_register - register platform NVS memory region to save
+> - *     @start - physical address of the region
+> - *     @size - size of the region
+> + * suspend_nvs_register - register platform NVS memory region to save
+> + * @start: Physical address of the region.
+> + * @size: Size of the region.
+>   *
+> - *     The NVS region need not be page-aligned (both ends) and we arrange
+> - *     things so that the data from page-aligned addresses in this region will
+> - *     be copied into separate RAM pages.
+> + * The NVS region need not be page-aligned (both ends) and we arrange
+> + * things so that the data from page-aligned addresses in this region will
+> + * be copied into separate RAM pages.
+>   */
+>  static int suspend_nvs_register(unsigned long start, unsigned long size)
+>  {
+> @@ -125,7 +125,7 @@ static int suspend_nvs_register(unsigned long start, unsigned long size)
+>  }
+>
+>  /**
+> - *     suspend_nvs_free - free data pages allocated for saving NVS regions
+> + * suspend_nvs_free - free data pages allocated for saving NVS regions
+>   */
+>  void suspend_nvs_free(void)
+>  {
+> @@ -149,7 +149,7 @@ void suspend_nvs_free(void)
+>  }
+>
+>  /**
+> - *     suspend_nvs_alloc - allocate memory necessary for saving NVS regions
+> + * suspend_nvs_alloc - allocate memory necessary for saving NVS regions
+>   */
+>  int suspend_nvs_alloc(void)
+>  {
+> @@ -166,7 +166,7 @@ int suspend_nvs_alloc(void)
+>  }
+>
+>  /**
+> - *     suspend_nvs_save - save NVS memory regions
+> + * suspend_nvs_save - save NVS memory regions
+>   */
+>  int suspend_nvs_save(void)
+>  {
+> @@ -195,10 +195,10 @@ int suspend_nvs_save(void)
+>  }
+>
+>  /**
+> - *     suspend_nvs_restore - restore NVS memory regions
+> + * suspend_nvs_restore - restore NVS memory regions
+>   *
+> - *     This function is going to be called with interrupts disabled, so it
+> - *     cannot iounmap the virtual addresses used to access the NVS region.
+> + * This function is going to be called with interrupts disabled, so it
+> + * cannot iounmap the virtual addresses used to access the NVS region.
+>   */
+>  void suspend_nvs_restore(void)
+>  {
+> --
 
---kVXhAStRUZ/+rrGn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jun 03, 2021 at 08:40:07AM +0300, Matti Vaittinen wrote:
-> Extend regulator notification support
->=20
-> This series extends the regulator notification and error flag support.
-> Initial discussion on the topic can be found here:
-> https://lore.kernel.org/lkml/6046836e22b8252983f08d5621c35ececb97820d.cam=
-el@fi.rohmeurope.com/
-
-Any thoughts on the reboot or thermal patches?  In the absence of any
-further feedback by the end of the week I might go ahead and apply
-things to the regulator tree if that's OK with people.
-
---kVXhAStRUZ/+rrGn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDLQhEACgkQJNaLcl1U
-h9CFGAf/URUmhopehFCmMlbpAU+UBOk0Mjr8Ko9s6KYYgB+p4HLxz0dSmuS1+iAo
-+oMzCCE6wWOR8uFQ0UvnceyS0ixGE7O2QVds0nz+nk5Kl6rAgOFVx/DpWE238ZGi
-r5v5qjX2mo92x8fvYnQGMeH8rJtXhD92r/kN7vdu+E6Dt3+HPTGS4fSxiWwAq1Pg
-46t5I2wArFhOaGCZJ/68jQJg9BZ3+wE2ThPUWy4eWTB4wwqXmoiUKaLO6Tbsuna+
-G+JbnO2md5U205F15CDlppUAl4e9HpxEYpv8I6MaWhdpsmawHLSiS/us3tqGTZE1
-zBNA4Di/Ay7xzS6WIOA0cza2giFBRg==
-=D9Xy
------END PGP SIGNATURE-----
-
---kVXhAStRUZ/+rrGn--
+Applied as 5.14 material under a slightly edited subject, thanks!
