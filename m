@@ -2,113 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4BD3ABD03
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0113ABD04
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232701AbhFQToq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 15:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
+        id S232820AbhFQTpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 15:45:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231382AbhFQTop (ORCPT
+        with ESMTP id S232724AbhFQTpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 15:44:45 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7EAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 12:42:36 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id fy24-20020a17090b0218b029016c5a59021fso6752147pjb.0;
-        Thu, 17 Jun 2021 12:42:36 -0700 (PDT)
+        Thu, 17 Jun 2021 15:45:02 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE4AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 12:42:53 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id h12so5872139pfe.2;
+        Thu, 17 Jun 2021 12:42:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=da00ZN+RLuSXdFw+Cx3yDmIBQSfROsLCEVIOIeO609g=;
-        b=r5KIycO/y5V1xvjDdhknZKPhmXG0J4r2uoGdS9ISm2AlTMVsGVw/sqoCrlaDqY4Ol/
-         om7m5WK9M/R6GJV9KSGgL7pW67YioAvxGrbZC0y3wWoFiGrM6s0j6HWaIPBeno+wRd0h
-         2VRNQm+4T4wTCKeF0dBlqAQjPXDOlbMSwBxhW9nra4VnhVqqP+PdXgEBNtJ7rmr0fd/3
-         9nXgFrohQATVKF8H85DWNC12wmddYALpM1lmAhgBwr86RXB7e3OP2D7ci9SPNSWPXQPk
-         j/ddPjRJowBoJBJMwYGfOadL4T9Vmz3ZcNGpBQHSYa83IFF+vHus75KHscC0xvvNzncu
-         RK4A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9HgQ9eAiW96/ovGrHzecsI1VfEM+0/YBZu4OcH2CPvU=;
+        b=IDSWM3vrjvw7MeiWIr15DCD+wCW8pjSkdRreLc5MeLbze+tu8Nh8QKvgpZssU2jVh+
+         EMQCfONigNWK4SDSJ/Hw4tHIUeJBc9nrRMdXQo22qr2+R+URmi6vb6T/1TOssz/c/3IK
+         eS5oGDLvCKwpthgHfrcJj4g0SKG5ZZRClREimHO1848jnbGediRxvFf61qDukJXFpd1h
+         SzBCWnmdPDWqQo+KA1dJBHSG6GUv7To0iQ8M2XI0kWZhmbHCuLU2u8Qt+kMsKhGPdyWn
+         Dg7Dn+CNiwz/MxDpXDkKaL2AGon9BTny6fi0WRb+pWbR6spNHihtCmD4S79nIpyFoZA+
+         0ceg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=da00ZN+RLuSXdFw+Cx3yDmIBQSfROsLCEVIOIeO609g=;
-        b=IPIjNqtI8PXberJrmYObejSSVbHZrbWzc5TNlQHzT9CY4RbY1s67Cn9N2DiZgyRI1R
-         5Bb3tOLKTQBN/bGpCYSGN07D7XAtO9PyY1o5B9gCUa0oLS9LYyyN7SAPRY5kl5zsb0F6
-         LvFnWjEdIU5GjPVZDooXsnIQbpg5sxSlvpyvGlmE57qfB5zBhqIT/uRqcCZ7zAX4/8l2
-         eaXdbi6Jl2hpdy05JG6yti09SRijL50oFAzZY49xc0Sn0rICOvIVJ9YyQOrqJYKzI90J
-         k8C/FCmqf6q1Ryy5NQnYVYMN+jROGjhh4D+vBvQ7ryoNMugC8NC2BnO6DUpDMdUU+x4n
-         5YUA==
-X-Gm-Message-State: AOAM531QErC36z70+QfBpnTL+boYsFUlYHT1C+hKghwv3QfE0K+H+wvO
-        1hakbH4unwrbuSYo12H0dUs=
-X-Google-Smtp-Source: ABdhPJwW9q6oBVxAsW32fu7Y2lPktocoo8W4MTKRbk3gM8togfzrbQCQWsps1BCqnVjlRXcZ3xOTHQ==
-X-Received: by 2002:a17:902:7c94:b029:fc:5e8b:e645 with SMTP id y20-20020a1709027c94b02900fc5e8be645mr1413344pll.18.1623958956442;
-        Thu, 17 Jun 2021 12:42:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9HgQ9eAiW96/ovGrHzecsI1VfEM+0/YBZu4OcH2CPvU=;
+        b=T5cm1EcHvOiE+i5ndfqBsPiwh1X17HcUfn+I5soV/0eJoWmo9ZMtMDQH8zv4B0giqS
+         RWXIJTf7zeFtmeQAHNr+k68DlF9M0yxd/RfNPI0Bb97+wRTbL+XV/JsUreIAtedhzR9o
+         uSb6Rgs1LkVmk02xYiXHfX1sAtuS/TvbxiRjNi4bNW90Q1Sh2HRMmvpeO2QdZvW50XSP
+         YdKklze19wVMmKh1X7j3xoALGNFToHIdbp1OAD/zbPq5fGcpSqbvqlz33ppfro3dLjxI
+         IfyxHJGdrnEPBhVQw7uoY1rShq/RqMxibRvOA7QEKqkic78KjIEJDvsKTar1Rya0HRZJ
+         GazA==
+X-Gm-Message-State: AOAM530AB3nA8dxQg9zz8BdOfo3tlJPB0q0TyN6XU0+vXi//QMwTQtUX
+        gFH7naa6zEfUaR8wjiF0fTg=
+X-Google-Smtp-Source: ABdhPJx5ZIxR9ySXUG7SX502EB68UiuFkiJPUuTxkOHSdD37m0SDC1zBokNef3WrEmJMyPMDImpLdw==
+X-Received: by 2002:a63:5360:: with SMTP id t32mr6385187pgl.192.1623958973053;
+        Thu, 17 Jun 2021 12:42:53 -0700 (PDT)
 Received: from archl-c2lm.. ([103.51.75.27])
-        by smtp.gmail.com with ESMTPSA id z9sm5987187pfa.2.2021.06.17.12.42.31
+        by smtp.gmail.com with ESMTPSA id z9sm5987187pfa.2.2021.06.17.12.42.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 12:42:35 -0700 (PDT)
+        Thu, 17 Jun 2021 12:42:52 -0700 (PDT)
 From:   Anand Moon <linux.amoon@gmail.com>
 To:     --to=linux-phy@lists.infradead.org,
         --to=linux-arm-kernel@lists.infradead.org,
         --to=linux-amlogic@lists.infradead.org,
         --to=linux-kernel@vger.kernel.org
 Cc:     Anand Moon <linux.amoon@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
         Neil Armstrong <narmstrong@baylibre.com>,
         Kevin Hilman <khilman@baylibre.com>,
         Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         Philipp Zabel <p.zabel@pengutronix.de>,
         linux-phy@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RFCv1 0/8] Meson-8b and Meson-gxbb USB phy code re-structure
-Date:   Thu, 17 Jun 2021 19:41:35 +0000
-Message-Id: <20210617194154.2397-1-linux.amoon@gmail.com>
+Subject: [RFCv1 1/8] phy: amlogic: meson8b-usb2: Use clock bulk to get clocks for phy
+Date:   Thu, 17 Jun 2021 19:41:36 +0000
+Message-Id: <20210617194154.2397-2-linux.amoon@gmail.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210617194154.2397-1-linux.amoon@gmail.com>
+References: <20210617194154.2397-1-linux.amoon@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Odroid C1+ and Odroid C2 USB feature is broken
-this code changes are just re-structure the code so that
-proper callback function execute in proper order.
+Use clock bulk helpers to get/enable/disable clocks,
+it will be easier to handle clocks. No functional change intended.
 
-Code changes losely based on phy-meson-gxl-usb2.c
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+---
+ drivers/phy/amlogic/phy-meson8b-usb2.c | 44 ++++++++++++++------------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
 
-Initially if we connect USB HDD at initial boot it get detected.
-but after that usb hotplug of USB HDD is broken.
-I did not observe and USB debug events messages to trace the root cause.
-
-Another issue I observed is increase of USB interrupts event
-even if there is not much activity on USB ports.
-I tried some clk changes but it did not workout for me.
-
-$ cat /proc/interrupts | grep usb
- 45:          0          0          0          0     GICv2  62 Level     c9000000.usb, dwc2_hsotg:usb1
- 46:   17488032          0          0          0     GICv2  63 Level     c9100000.usb, dwc2_hsotg:usb2
-
-Thanks
--Anand
-
-Anand Moon (8):
-  phy: amlogic: meson8b-usb2: Use clock bulk to get clocks for phy
-  phy: amlogic: meson8b-usb2: Use phy init callback function
-  phy: amlogic: meson8b-usb2: Use phy exit callback function
-  phy: amlogic: meson8b-usb2: Use phy set_mode callback function
-  phy: amlogic: meson8b-usb2: Reorder phy poweroff callback function
-  phy: amlogic: meson8b-usb2: Use phy reset callback function
-  phy: amlogic: meson8b-usb2: Power off the PHY by putting it into reset
-    mode.
-  phy: amlogic: meson8b-usb2: don't log an error on -EPROBE_DEFER
-
- drivers/phy/amlogic/phy-meson8b-usb2.c | 159 +++++++++++++++++--------
- 1 file changed, 109 insertions(+), 50 deletions(-)
-
+diff --git a/drivers/phy/amlogic/phy-meson8b-usb2.c b/drivers/phy/amlogic/phy-meson8b-usb2.c
+index 03c061dd5f0d..771b73f3b44e 100644
+--- a/drivers/phy/amlogic/phy-meson8b-usb2.c
++++ b/drivers/phy/amlogic/phy-meson8b-usb2.c
+@@ -121,11 +121,16 @@ struct phy_meson8b_usb2_match_data {
+ 	bool			host_enable_aca;
+ };
+ 
++static const char * const meson_phy_clks[] = {
++	"usb_general",
++	"usb",
++};
++
+ struct phy_meson8b_usb2_priv {
+ 	struct regmap					*regmap;
+ 	enum usb_dr_mode				dr_mode;
+-	struct clk					*clk_usb_general;
+-	struct clk					*clk_usb;
++	int                                             num_clks;
++	struct clk_bulk_data                            *clks;
+ 	struct reset_control				*reset;
+ 	const struct phy_meson8b_usb2_match_data	*match;
+ };
+@@ -151,16 +156,9 @@ static int phy_meson8b_usb2_power_on(struct phy *phy)
+ 		}
+ 	}
+ 
+-	ret = clk_prepare_enable(priv->clk_usb_general);
++	ret = clk_bulk_prepare_enable(priv->num_clks, priv->clks);
+ 	if (ret) {
+-		dev_err(&phy->dev, "Failed to enable USB general clock\n");
+-		return ret;
+-	}
+-
+-	ret = clk_prepare_enable(priv->clk_usb);
+-	if (ret) {
+-		dev_err(&phy->dev, "Failed to enable USB DDR clock\n");
+-		clk_disable_unprepare(priv->clk_usb_general);
++		dev_err(&phy->dev, "Failed to enable USB clock\n");
+ 		return ret;
+ 	}
+ 
+@@ -197,8 +195,7 @@ static int phy_meson8b_usb2_power_on(struct phy *phy)
+ 			regmap_read(priv->regmap, REG_ADP_BC, &reg);
+ 			if (reg & REG_ADP_BC_ACA_PIN_FLOAT) {
+ 				dev_warn(&phy->dev, "USB ID detect failed!\n");
+-				clk_disable_unprepare(priv->clk_usb);
+-				clk_disable_unprepare(priv->clk_usb_general);
++				clk_bulk_disable_unprepare(priv->num_clks, priv->clks);
+ 				return -EINVAL;
+ 			}
+ 		}
+@@ -216,8 +213,7 @@ static int phy_meson8b_usb2_power_off(struct phy *phy)
+ 				   REG_DBG_UART_SET_IDDQ,
+ 				   REG_DBG_UART_SET_IDDQ);
+ 
+-	clk_disable_unprepare(priv->clk_usb);
+-	clk_disable_unprepare(priv->clk_usb_general);
++	clk_bulk_disable_unprepare(priv->num_clks, priv->clks);
+ 
+ 	return 0;
+ }
+@@ -234,6 +230,7 @@ static int phy_meson8b_usb2_probe(struct platform_device *pdev)
+ 	struct phy *phy;
+ 	struct phy_provider *phy_provider;
+ 	void __iomem *base;
++	int i, ret;
+ 
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -252,13 +249,18 @@ static int phy_meson8b_usb2_probe(struct platform_device *pdev)
+ 	if (IS_ERR(priv->regmap))
+ 		return PTR_ERR(priv->regmap);
+ 
+-	priv->clk_usb_general = devm_clk_get(&pdev->dev, "usb_general");
+-	if (IS_ERR(priv->clk_usb_general))
+-		return PTR_ERR(priv->clk_usb_general);
++	priv->num_clks = ARRAY_SIZE(meson_phy_clks);
++	priv->clks = devm_kcalloc(&pdev->dev, priv->num_clks,
++				  sizeof(*priv->clks), GFP_KERNEL);
++	if (!priv->clks)
++		return -ENOMEM;
++
++	for (i = 0; i < priv->num_clks; i++)
++		priv->clks[i].id = meson_phy_clks[i];
+ 
+-	priv->clk_usb = devm_clk_get(&pdev->dev, "usb");
+-	if (IS_ERR(priv->clk_usb))
+-		return PTR_ERR(priv->clk_usb);
++	ret = devm_clk_bulk_get(&pdev->dev, priv->num_clks, priv->clks);
++	if (ret)
++		return ret;
+ 
+ 	priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
+ 	if (PTR_ERR(priv->reset) == -EPROBE_DEFER)
 -- 
 2.31.1
 
