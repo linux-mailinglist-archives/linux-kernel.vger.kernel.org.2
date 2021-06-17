@@ -2,314 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A793AB782
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 454B73AB775
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233295AbhFQPay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:30:54 -0400
-Received: from mail-ed1-f44.google.com ([209.85.208.44]:38907 "EHLO
-        mail-ed1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233297AbhFQPac (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:30:32 -0400
-Received: by mail-ed1-f44.google.com with SMTP id t7so4571179edd.5;
-        Thu, 17 Jun 2021 08:28:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dR71mgWuSrKuBRDcO+pO0oyyX07xDs1ZIGNvdSRJDyk=;
-        b=HWvsFHbuiJVl5uokqbR1EPClXvZUlCysjE+hPJphEM0qHxB6yHNBnYJbYFFMnX2pCZ
-         y3EeIzkhnFgeR0LU2KlT0XGMDoQB2tqN8/cmbdziyyLisdJXkQTXysDNEqeVNfGyYZ+e
-         nhM1Aboc0cm1u/vPzu0V7avTWU1TkdDyX9XG8nuE/jzHmZMI4KsAx6ZjFWBV0mtucbDL
-         7LTKg/8Mt15JQjiV1s7p81QJBQoxC2mxNrW0v9/sqkg/Y3skIq9w8Viv2LD3n1V8XUm3
-         ChOWPFGm+rwKl4qc2BnCEMsGk7aJzPiDE1WSR440RGm0/f5PLNhBuV2s7RBoUFtMblOQ
-         BxHg==
-X-Gm-Message-State: AOAM531thnUcHrD5+i2xoG/HfRO2GRJZ62qfH/4DBop4Vz1dTU2tOtW/
-        IUYJcCLCXrk6o7YpuJ08JV0=
-X-Google-Smtp-Source: ABdhPJyghzMD4UFbsUqxDry2kTArzJbHDeI7jbuZSaPtMZIbTcaErWBhhij5IvbkjeAL5cuz1NmHVg==
-X-Received: by 2002:aa7:c547:: with SMTP id s7mr7137201edr.239.1623943703800;
-        Thu, 17 Jun 2021 08:28:23 -0700 (PDT)
-Received: from msft-t490s.teknoraver.net (net-37-119-128-179.cust.vodafonedsl.it. [37.119.128.179])
-        by smtp.gmail.com with ESMTPSA id g11sm4497850edz.12.2021.06.17.08.28.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 08:28:23 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Guo Ren <guoren@kernel.org>
-Subject: [PATCH v3 3/3] riscv: optimized memset
-Date:   Thu, 17 Jun 2021 17:27:54 +0200
-Message-Id: <20210617152754.17960-4-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210617152754.17960-1-mcroce@linux.microsoft.com>
-References: <20210617152754.17960-1-mcroce@linux.microsoft.com>
+        id S233294AbhFQPaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:30:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:55450 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233247AbhFQPaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 11:30:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7F5AC13D5;
+        Thu, 17 Jun 2021 08:28:06 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C017C3F70D;
+        Thu, 17 Jun 2021 08:28:04 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] sched: Fix UCLAMP_FLAG_IDLE setting
+To:     Quentin Perret <qperret@google.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, vincent.guittot@linaro.org, qais.yousef@arm.com,
+        rickyiu@google.com, wvw@google.com, patrick.bellasi@matbug.net,
+        xuewen.yan94@gmail.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+References: <20210610151306.1789549-1-qperret@google.com>
+ <20210610151306.1789549-2-qperret@google.com>
+ <YMJiaO0IN2pN/EYY@hirez.programming.kicks-ass.net>
+ <YMMP9uqcCeDlt95F@google.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <23e44dd5-5229-ac16-5801-3b74f013b7f3@arm.com>
+Date:   Thu, 17 Jun 2021 17:27:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YMMP9uqcCeDlt95F@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+On 11/06/2021 09:25, Quentin Perret wrote:
+> On Thursday 10 Jun 2021 at 21:05:12 (+0200), Peter Zijlstra wrote:
+>> On Thu, Jun 10, 2021 at 03:13:04PM +0000, Quentin Perret wrote:
+>>> The UCLAMP_FLAG_IDLE flag is set on a runqueue when dequeueing the last
+>>> active task to maintain the last uclamp.max and prevent blocked util
+>>> from suddenly becoming visible.
+>>>
+>>> However, there is an asymmetry in how the flag is set and cleared which
+>>> can lead to having the flag set whilst there are active tasks on the rq.
+>>> Specifically, the flag is cleared in the uclamp_rq_inc() path, which is
+>>> called at enqueue time, but set in uclamp_rq_dec_id() which is called
+>>> both when dequeueing a task _and_ in the update_uclamp_active() path. As
+>>> a result, when both uclamp_rq_{dec,ind}_id() are called from
+>>> update_uclamp_active(), the flag ends up being set but not cleared,
+>>> hence leaving the runqueue in a broken state.
+>>>
+>>> Fix this by setting the flag in the uclamp_rq_inc_id() path to ensure
+>>> things remain symmetrical.
+>>
+>> The code you moved is neither in uclamp_rq_inc_id(), although
+>> uclamp_idle_reset() is called from there
+> 
+> Yep, that is what I was trying to say.
+> 
+>> nor does it _set_ the flag.
+> 
+> Ahem. That I don't have a good excuse for ...
 
-The generic memset is defined as a byte at time write. This is always
-safe, but it's slower than a 4 byte or even 8 byte write.
+(A) dequeue -> set
 
-Write a generic memset which fills the data one byte at time until the
-destination is aligned, then fills using the largest size allowed,
-and finally fills the remaining data one byte at time.
+(1) dequeue_task() -> uclamp_rq_dec() ->
 
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+(2) cpu_util_update_eff() -> ... -> uclamp_update_active() ->
+
+uclamp_rq_dec_id()
+
+    uclamp_rq_max_value()
+
+        /* No tasks -- default clamp values */
+        uclamp_idle_value() {
+
+            if (clamp_id == UCLAMP_MAX)
+                rq->uclamp_flags |= UCLAMP_FLAG_IDLE;  <-- set
+        }
+
 ---
- arch/riscv/include/asm/string.h |  10 +--
- arch/riscv/kernel/Makefile      |   1 -
- arch/riscv/kernel/riscv_ksyms.c |  13 ----
- arch/riscv/lib/Makefile         |   1 -
- arch/riscv/lib/memset.S         | 113 --------------------------------
- arch/riscv/lib/string.c         |  39 +++++++++++
- 6 files changed, 42 insertions(+), 135 deletions(-)
- delete mode 100644 arch/riscv/kernel/riscv_ksyms.c
- delete mode 100644 arch/riscv/lib/memset.S
 
-diff --git a/arch/riscv/include/asm/string.h b/arch/riscv/include/asm/string.h
-index 25d9b9078569..90500635035a 100644
---- a/arch/riscv/include/asm/string.h
-+++ b/arch/riscv/include/asm/string.h
-@@ -6,14 +6,10 @@
- #ifndef _ASM_RISCV_STRING_H
- #define _ASM_RISCV_STRING_H
- 
--#include <linux/types.h>
--#include <linux/linkage.h>
--
--#define __HAVE_ARCH_MEMSET
--extern asmlinkage void *memset(void *, int, size_t);
--extern asmlinkage void *__memset(void *, int, size_t);
--
- #ifdef CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE
-+#define __HAVE_ARCH_MEMSET
-+extern void *memset(void *s, int c, size_t count);
-+extern void *__memset(void *s, int c, size_t count);
- #define __HAVE_ARCH_MEMCPY
- extern void *memcpy(void *dest, const void *src, size_t count);
- extern void *__memcpy(void *dest, const void *src, size_t count);
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index d3081e4d9600..e635ce1e5645 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -31,7 +31,6 @@ obj-y	+= syscall_table.o
- obj-y	+= sys_riscv.o
- obj-y	+= time.o
- obj-y	+= traps.o
--obj-y	+= riscv_ksyms.o
- obj-y	+= stacktrace.o
- obj-y	+= cacheinfo.o
- obj-y	+= patch.o
-diff --git a/arch/riscv/kernel/riscv_ksyms.c b/arch/riscv/kernel/riscv_ksyms.c
-deleted file mode 100644
-index 361565c4db7e..000000000000
---- a/arch/riscv/kernel/riscv_ksyms.c
-+++ /dev/null
-@@ -1,13 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * Copyright (C) 2017 Zihao Yu
-- */
--
--#include <linux/export.h>
--#include <linux/uaccess.h>
--
--/*
-- * Assembly functions that may be used (directly or indirectly) by modules
-- */
--EXPORT_SYMBOL(memset);
--EXPORT_SYMBOL(__memset);
-diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
-index 484f5ff7b508..e33263cc622a 100644
---- a/arch/riscv/lib/Makefile
-+++ b/arch/riscv/lib/Makefile
-@@ -1,6 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
- lib-y			+= delay.o
--lib-y			+= memset.o
- lib-$(CONFIG_MMU)	+= uaccess.o
- lib-$(CONFIG_64BIT)	+= tishift.o
- lib-$(CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE) += string.o
-diff --git a/arch/riscv/lib/memset.S b/arch/riscv/lib/memset.S
-deleted file mode 100644
-index 34c5360c6705..000000000000
---- a/arch/riscv/lib/memset.S
-+++ /dev/null
-@@ -1,113 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Copyright (C) 2013 Regents of the University of California
-- */
--
--
--#include <linux/linkage.h>
--#include <asm/asm.h>
--
--/* void *memset(void *, int, size_t) */
--ENTRY(__memset)
--WEAK(memset)
--	move t0, a0  /* Preserve return value */
--
--	/* Defer to byte-oriented fill for small sizes */
--	sltiu a3, a2, 16
--	bnez a3, 4f
--
--	/*
--	 * Round to nearest XLEN-aligned address
--	 * greater than or equal to start address
--	 */
--	addi a3, t0, SZREG-1
--	andi a3, a3, ~(SZREG-1)
--	beq a3, t0, 2f  /* Skip if already aligned */
--	/* Handle initial misalignment */
--	sub a4, a3, t0
--1:
--	sb a1, 0(t0)
--	addi t0, t0, 1
--	bltu t0, a3, 1b
--	sub a2, a2, a4  /* Update count */
--
--2: /* Duff's device with 32 XLEN stores per iteration */
--	/* Broadcast value into all bytes */
--	andi a1, a1, 0xff
--	slli a3, a1, 8
--	or a1, a3, a1
--	slli a3, a1, 16
--	or a1, a3, a1
--#ifdef CONFIG_64BIT
--	slli a3, a1, 32
--	or a1, a3, a1
--#endif
--
--	/* Calculate end address */
--	andi a4, a2, ~(SZREG-1)
--	add a3, t0, a4
--
--	andi a4, a4, 31*SZREG  /* Calculate remainder */
--	beqz a4, 3f            /* Shortcut if no remainder */
--	neg a4, a4
--	addi a4, a4, 32*SZREG  /* Calculate initial offset */
--
--	/* Adjust start address with offset */
--	sub t0, t0, a4
--
--	/* Jump into loop body */
--	/* Assumes 32-bit instruction lengths */
--	la a5, 3f
--#ifdef CONFIG_64BIT
--	srli a4, a4, 1
--#endif
--	add a5, a5, a4
--	jr a5
--3:
--	REG_S a1,        0(t0)
--	REG_S a1,    SZREG(t0)
--	REG_S a1,  2*SZREG(t0)
--	REG_S a1,  3*SZREG(t0)
--	REG_S a1,  4*SZREG(t0)
--	REG_S a1,  5*SZREG(t0)
--	REG_S a1,  6*SZREG(t0)
--	REG_S a1,  7*SZREG(t0)
--	REG_S a1,  8*SZREG(t0)
--	REG_S a1,  9*SZREG(t0)
--	REG_S a1, 10*SZREG(t0)
--	REG_S a1, 11*SZREG(t0)
--	REG_S a1, 12*SZREG(t0)
--	REG_S a1, 13*SZREG(t0)
--	REG_S a1, 14*SZREG(t0)
--	REG_S a1, 15*SZREG(t0)
--	REG_S a1, 16*SZREG(t0)
--	REG_S a1, 17*SZREG(t0)
--	REG_S a1, 18*SZREG(t0)
--	REG_S a1, 19*SZREG(t0)
--	REG_S a1, 20*SZREG(t0)
--	REG_S a1, 21*SZREG(t0)
--	REG_S a1, 22*SZREG(t0)
--	REG_S a1, 23*SZREG(t0)
--	REG_S a1, 24*SZREG(t0)
--	REG_S a1, 25*SZREG(t0)
--	REG_S a1, 26*SZREG(t0)
--	REG_S a1, 27*SZREG(t0)
--	REG_S a1, 28*SZREG(t0)
--	REG_S a1, 29*SZREG(t0)
--	REG_S a1, 30*SZREG(t0)
--	REG_S a1, 31*SZREG(t0)
--	addi t0, t0, 32*SZREG
--	bltu t0, a3, 3b
--	andi a2, a2, SZREG-1  /* Update count */
--
--4:
--	/* Handle trailing misalignment */
--	beqz a2, 6f
--	add a3, t0, a2
--5:
--	sb a1, 0(t0)
--	addi t0, t0, 1
--	bltu t0, a3, 5b
--6:
--	ret
--END(__memset)
-diff --git a/arch/riscv/lib/string.c b/arch/riscv/lib/string.c
-index 9c7009d43c39..1fb4de351516 100644
---- a/arch/riscv/lib/string.c
-+++ b/arch/riscv/lib/string.c
-@@ -112,3 +112,42 @@ EXPORT_SYMBOL(__memmove);
- 
- void *memmove(void *dest, const void *src, size_t count) __weak __alias(__memmove);
- EXPORT_SYMBOL(memmove);
-+
-+void *__memset(void *s, int c, size_t count)
-+{
-+	union types dest = { .u8 = s };
-+
-+	if (count >= MIN_THRESHOLD) {
-+		const int bytes_long = BITS_PER_LONG / 8;
-+		unsigned long cu = (unsigned long)c;
-+
-+		/* Compose an ulong with 'c' repeated 4/8 times */
-+		cu |= cu << 8;
-+		cu |= cu << 16;
-+#if BITS_PER_LONG == 64
-+		cu |= cu << 32;
-+#endif
-+
-+#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-+		/* Fill the buffer one byte at time until the destination
-+		 * is aligned on a 32/64 bit boundary.
-+		 */
-+		for (; count && dest.uptr % bytes_long; count--)
-+			*dest.u8++ = c;
-+#endif
-+
-+		/* Copy using the largest size allowed */
-+		for (; count >= bytes_long; count -= bytes_long)
-+			*dest.ulong++ = cu;
-+	}
-+
-+	/* copy the remainder */
-+	while (count--)
-+		*dest.u8++ = c;
-+
-+	return s;
-+}
-+EXPORT_SYMBOL(__memset);
-+
-+void *memset(void *s, int c, size_t count) __weak __alias(__memset);
-+EXPORT_SYMBOL(memset);
--- 
-2.31.1
+(B) enqueue -> clear
 
+(1) enqueue_task() ->
+
+uclamp_rq_inc() {
+
+(2) cpu_util_update_eff() -> ... -> uclamp_update_active() ->
+
+    uclamp_rq_inc_id() {
+
+        uclamp_idle_reset() {
+    						     <-- new clear
+       }                                                     ^
+    }                                                        |
+                                                             |
+    if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)                 |
+        rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;       <-- old clear
+}
+
+---
+
+uclamp_update_active()
+
+    if (p->uclamp[clamp_id].active) {
+        uclamp_rq_dec_id()            <-- (A2)
+	uclamp_rq_inc_id()            <-- (B2)
+    }
+
+Is this existing asymmetry in setting the flag but not clearing it in
+uclamp_update_active() the only issue this patch fixes?
