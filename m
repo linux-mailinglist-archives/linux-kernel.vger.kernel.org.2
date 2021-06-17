@@ -2,238 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A264E3AAA99
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 06:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BD23AAA9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhFQE7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 00:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48426 "EHLO
+        id S229671AbhFQFCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 01:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhFQE7e (ORCPT
+        with ESMTP id S229546AbhFQFCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 00:59:34 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36B7C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 21:57:25 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id t7so2086231edd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 21:57:25 -0700 (PDT)
+        Thu, 17 Jun 2021 01:02:33 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AB0C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:00:24 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id r16so5149029oiw.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fJto5u8DmQctcTcV4LE+sFMY4MOz8SZ9HZwCgsAenCw=;
-        b=WoYI+XXmLfQOGBc2qkRm5AjyqZj7Z8hjaH6BHifaRL+Buph+dalrksII11s40Uof//
-         eAxWwnioKuc/a1rF/j4JHgZFUkkJ2eHrS51uhHBPBEo++9878Ph5MjPWum2iFwIKWgWI
-         s7b8anPIMvy4VPKqIJwhG6aUESS2z9vpRJKLKT+FONVh9/y6sw5IxeCN8nifJ4FP9fWu
-         hVQRShSXVbRuZFiHx8TUSwEPfzQa6UlXweuhRRzxNYgT97cGHJEbjKHKIMYX4WwbVoa6
-         rNBPMS5/iu2+/fPbWnHHI/4pq7X59LZMcbTW6D1Cc0GGk6WLD7tpSbLL00+kfVnWGWjz
-         r8sw==
+         :cc;
+        bh=raWnpeEpxmUtNl6jyZ72+EBz8BQP/7m6BAr11HMTgc4=;
+        b=Wdp8p0jivNWxEa36llPlZAKbN++nCXMC/w4zhw0j9mwbX/n9bbZhd66sNDN+uNW6ax
+         dCEK779euvve5yCuGpHnmPcT8I7O6qjbzXKzT/k2KUu8cVeIXUq6aXiFroHl9JFiATPB
+         ++H5PrQkKCIOmrCA7LKOf/RFgDsCN7GLKYMZxrZKxaBn0iomOmvC0Ea8Bi2fs+N1uz12
+         OTRTSFhinwsznxxHCwQ/vJEKf3v9whn4BnvaKV88fuVdR3QkkxxjZ+6iitnXvLNrmYUX
+         sKdZhcNSviDBciqm8Yge3yHATxStOdCbSkYPczIIBHlxrfED6CqJRWuceiGY1Z9raonm
+         t0SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fJto5u8DmQctcTcV4LE+sFMY4MOz8SZ9HZwCgsAenCw=;
-        b=oU7puvboO4H6+NAvIzITJLeLjrvGBgq0LnoPGBFV/e5dMaGVk0ww5UWIUr005d/RE4
-         Hfmhfw14P+i4UvrIBBcq9O+UZCk5B1DChlP1T4JEqPEL+leXQWIAqtU7bqGmdU5+CPIa
-         /HImUP9/oUtRlYQZz2A4+GikdJrYAZe4MsLaJYkZMxy0pfGnz8idyEKizO1i3ejZm8TH
-         yusF3q3WokUDdCBwNP1wc/X9dIN78vVtwwPGuWR0GRk6D9t9QLee45ulcO6UdbKBSr93
-         iheq93qguo7EatwhDjOG5vgyAOKNsREKEq0/hergjttADMa5MeLLmIkOKrmLRD6NKn00
-         zyEQ==
-X-Gm-Message-State: AOAM532znLLm1irpfLrL5iT78JDvShMcg65aQEkeX1weaSOwurVB3PKM
-        pCq5e85B/wVoW/clg+Si45jqU3bnSyNgPK4rCC28pg==
-X-Google-Smtp-Source: ABdhPJzFkJSsGF+nwSDua+klS/0qR8fCRLMoV0BKYLKe1ndmAjYRssChGJYPrBXXt+t+6nD5GxpHUpiRRG9mUbzzJBg=
-X-Received: by 2002:a05:6402:22fa:: with SMTP id dn26mr3862100edb.230.1623905844130;
- Wed, 16 Jun 2021 21:57:24 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=raWnpeEpxmUtNl6jyZ72+EBz8BQP/7m6BAr11HMTgc4=;
+        b=dXYu+7YvsBGsd1519yCikJTvMg85ql+5EMKwfJ1qmKfTM1xZebeP+y2qgAyE/FONjU
+         wYstq96Zai0nc2ibiHVPO9zSGUE6hUVWvNhPA5C4uO4uN4z+VeVVF42Ky9Kd+vwGjTKa
+         W5N9c/QNraINya8TljYWYJVO0AbmjXy1VSACgjz1jZXsyN0mf9r8oFXYWknCOkrjPQlQ
+         2BsyEMMESc+b9MK/f3HQO00BghOdCuec36nAIjcnjwQMPEuLpjc5ilWC51+amWFij/qD
+         6VCvv+tt1ZvPxhri97GiphaX+Bb8vGhgfvNrGohhtm30rNgeNEsuGy8rL2aYDsIG/GDt
+         bn3A==
+X-Gm-Message-State: AOAM5317UL/SspO3laWwIaSazWW3wMwg+OwayPa2mRE/T+RSlo+nkv+s
+        UIwYnSLP1hudRwFq2hzmXLXnxq6e5m9OLfqgHd4=
+X-Google-Smtp-Source: ABdhPJzB/f7CbHYttt9ltSAFKe7qMJhNLyiqvvfOf0zVxA+TOWnT8dUdVnScq55ZLfB2CXGwwVYzNNKQTKj7PAkuK/k=
+X-Received: by 2002:aca:f5d6:: with SMTP id t205mr2047840oih.58.1623906023577;
+ Wed, 16 Jun 2021 22:00:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210616152836.655643420@linuxfoundation.org>
-In-Reply-To: <20210616152836.655643420@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 17 Jun 2021 10:27:12 +0530
-Message-ID: <CA+G9fYsVgpgjjw+VQbdKEO=DugwnSNAydQKMqHO+i_QRTy9sEw@mail.gmail.com>
-Subject: Re: [PATCH 5.12 00/48] 5.12.12-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <CAFiDJ5-ZO=BuSwBPPPecZhLyjyipTLenQxgCK=t52Pj7r659sQ@mail.gmail.com>
+ <YMni2eclmqf05cL4@hirez.programming.kicks-ass.net> <c81ac071-c648-54ac-72ad-2dab0fa1dd4b@arm.com>
+In-Reply-To: <c81ac071-c648-54ac-72ad-2dab0fa1dd4b@arm.com>
+From:   Ley Foon Tan <lftan.linux@gmail.com>
+Date:   Thu, 17 Jun 2021 13:00:12 +0800
+Message-ID: <CAFiDJ5-j8UER1mGggC62C309T+t+y6-vy_NuKOJL6TQHrHAGtA@mail.gmail.com>
+Subject: Re: sched: Question about big and little cores system with SMP and EAS
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 at 21:08, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Wed, Jun 16, 2021 at 9:20 PM Dietmar Eggemann
+<dietmar.eggemann@arm.com> wrote:
 >
-> This is the start of the stable review cycle for the 5.12.12 release.
-> There are 48 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> - Quentin Perret <quentin.perret@arm.com>
+> + Quentin Perret <qperret@google.com>
 >
-> Responses should be made by Fri, 18 Jun 2021 15:28:19 +0000.
-> Anything received after that time might be too late.
+> On 16/06/2021 13:39, Peter Zijlstra wrote:
+> > On Wed, Jun 16, 2021 at 07:29:26PM +0800, Ley Foon Tan wrote:
+> >> Hi all
+> >>
+> >> Would like to ask the experts here regarding the Symmetric
+> >> Multi-Processing mode (SMP) with Energy aware scheduler (EAS) support
+> >> on the big + little cores system.
+> >
+> > And the you ask a question unrelated to either Symmetric MP or EAS :-)
+> >
+> >> Hardware system:
+> >> Big and little cores have almost the same ISA, but the big core has
+> >> some extension instructions that little core doesn't have.
+> >
+> > That problem is unrelated to big.Little / EAS, also by definition that
+> > is not SMP seeing how the 'S' is a blatant lie.
+> >
+> > The simplest solution is to simply disallow usage of the extended ISA
+> > and force mandate the common subset. The complicated answer is something
+> > along the lines of:
+> >
+> >   https://lkml.kernel.org/r/20210608180313.11502-1-will@kernel.org
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.12.12-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.12.y
-> and the diffstat can be found below.
+> We don't encourage asymmetric ISA extensions for EAS*/CAS** on
+> big.Little systems.
+> It would be simply a nightmare to schedule tasks on such systems.
 >
-> thanks,
+> The exception to this is the 'asymmetric 32-bit Soc' to support 32bit
+> legacy Apps. The nightmare for scheduling is reduced in this case to CPU
+> affinity, something the task scheduler has to live with already today.
+> (+ DL admission control for 32bit tasks).
 >
-> greg k-h
+> *  Documentation/scheduler/sched-energy.rst
+> ** Documentation/scheduler/sched-capacity.rst
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Thanks for the reply.
+Yes, forsee it is very complicated and nightmare for software to
+support for SMP mode but HW is not real "symmetric".
+That's why post the question here to ask the advice and comment from
+experts here. So that can feedback to HW team.
+Asymmetric extension instructions issue should more complicated than
+asymmetric 32-bit app support, it can happen in all the areas (kernel,
+app, library and etc).
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Thanks!
 
-## Build
-* kernel: 5.12.12-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.12.y
-* git commit: 3197a891c08a4cf4c9300437e2747af3d5cb55e2
-* git describe: v5.12.11-49-g3197a891c08a
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
-.11-49-g3197a891c08a
-
-## No regressions (compared to v5.12.10-174-g38004b22b0ae)
-
-## No fixes (compared to v5.12.10-174-g38004b22b0ae)
-
-## Test result summary
- total: 87611, pass: 70968, fail: 3383, skip: 12489, xfail: 771,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 2 total, 2 passed, 0 failed
-* hi6220-hikey: 2 total, 2 passed, 0 failed
-* i386: 27 total, 27 passed, 0 failed
-* juno-r2: 2 total, 2 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 2 total, 0 passed, 2 failed
-* x86: 2 total, 2 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Regards
+Ley Foon
