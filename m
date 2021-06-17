@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149943AB7D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F83A3AB7DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233485AbhFQPrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:47:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233468AbhFQPrt (ORCPT
+        id S233507AbhFQPs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:48:57 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:39575 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232550AbhFQPst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:47:49 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92A3C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:45:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UnVzt7PAszJTbRa+Jw/bLoAcN+xAospjeFIMWdvAS0k=; b=ClxJu98LX8uxdF0NEb4H11siTr
-        0JScmunNj9H0IW9Z2TR4gtoLTdJlfYCpEWTuk+p++qr7Y4SKN6vi2HuKX9U/NYFsFGNp9yqcqF+OM
-        czuCESzctqnMhC7AxANRB1jEKRlDJi9OLOIgQa7Za1crxt9UrSX4AFIb6oFtyc7XcrBIMxP+8NiQ8
-        yGhsgchA9wqJ6xmCI7FwywqjzePzx5Ovp6+hPzbVtaXxpHbBTV5w5j7LFXzT1amWp/6P6eOqPIoJ/
-        pYaOWPVzygBhpSgVFbxdULbu+788M8E5Htm4T0UeTv4cKJGP8FuaF5ydoE5VKKW5/DW6rdLVxupBm
-        RCQHfxjQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltuCi-008ruZ-Dp; Thu, 17 Jun 2021 15:45:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D9FE1300252;
-        Thu, 17 Jun 2021 17:45:21 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A3FD3220F6EAD; Thu, 17 Jun 2021 17:45:21 +0200 (CEST)
-Date:   Thu, 17 Jun 2021 17:45:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [RFC][PATCH] sched: Use lightweight hazard pointers to grab lazy
- mms
-Message-ID: <YMtuEWJl5xbqPnsK@hirez.programming.kicks-ass.net>
-References: <cover.1623813516.git.luto@kernel.org>
- <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
- <1623816595.myt8wbkcar.astroid@bobo.none>
- <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
- <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
- <1623893358.bbty474jyy.astroid@bobo.none>
- <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
- <c3c7a1cf-1c87-42cc-b2d6-cc2df55e5b57@www.fastmail.com>
- <YMsQ82bzly2KAUsu@hirez.programming.kicks-ass.net>
- <e01859e4-2042-47fd-a3c6-fd65608b9b22@www.fastmail.com>
+        Thu, 17 Jun 2021 11:48:49 -0400
+Received: by mail-oi1-f180.google.com with SMTP id m137so6998775oig.6;
+        Thu, 17 Jun 2021 08:46:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PbzinZ+NAonC9wqlui+dAHlqYhhpl9kkhTWJ6kv1MZc=;
+        b=bq1+gkXgJSMpdRdPHlxymoUlOADVBUVGKoW0K4HLTpuLvyPjpBKGhBll+w4ebldZwX
+         FGceYInZ3soz5/fBL2sJ0wvVvqw6+Js85TRQ2RlxgWEwHuYrbGma/vOnOIXUtKl3Br3t
+         dzAPNlAE2KQxfEo0tFewEb2xwED9HApVWWNNGf/uvXRZAcPiVU2ttw9jF8Pypj/4dTYR
+         GuieRUDdfc3EYum3w7UxXIwDHBMI334gn3i0VDlJV4MYIljAFVDI4D+9meBcPZqLGa/+
+         s+5iCEgkFyJYylbIpFB6rXHw87eHr5l2UKQ9ZIbR8ahSfoCHJppHIDufw4Wv+MXNlZtG
+         37Kg==
+X-Gm-Message-State: AOAM530L42GauWEbtV4OY1pk98KZ/s863hDUovGnV6xJxzdbdS0iErxA
+        mzoukIXKXeBwmB62och78kNhFAK1rRK9INRWOvg=
+X-Google-Smtp-Source: ABdhPJwBDLTRdL1aYnPUuzsn+yps2CWx0f3u/a7Q4Ot0hnvUcWkMC098VZg9oD8NMt6Ex0TvruW6zrSDdUBIDjVVQQk=
+X-Received: by 2002:aca:f0d5:: with SMTP id o204mr2045268oih.71.1623944800016;
+ Thu, 17 Jun 2021 08:46:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e01859e4-2042-47fd-a3c6-fd65608b9b22@www.fastmail.com>
+References: <20210616170338.23057-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210616170338.23057-1-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 17 Jun 2021 17:46:29 +0200
+Message-ID: <CAJZ5v0g1R6Mtr9FECtes6nzXWLVtnRvGTFvi_Q_a8=fcJOhfUA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/7] ACPI: sysfs: Make sparse happy about address space
+ in use
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 07:10:41AM -0700, Andy Lutomirski wrote:
-> On Thu, Jun 17, 2021, at 2:08 AM, Peter Zijlstra wrote:
-> > +extern void mm_unlazy_mm_count(struct mm_struct *mm);
-> 
-> You didn't like mm_many_words_in_the_name_of_the_function()? :)
+On Wed, Jun 16, 2021 at 7:03 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> Sparse is not happy about address space in use in acpi_data_show():
+>
+> drivers/acpi/sysfs.c:428:14: warning: incorrect type in assignment (different address spaces)
+> drivers/acpi/sysfs.c:428:14:    expected void [noderef] __iomem *base
+> drivers/acpi/sysfs.c:428:14:    got void *
+> drivers/acpi/sysfs.c:431:59: warning: incorrect type in argument 4 (different address spaces)
+> drivers/acpi/sysfs.c:431:59:    expected void const *from
+> drivers/acpi/sysfs.c:431:59:    got void [noderef] __iomem *base
+> drivers/acpi/sysfs.c:433:30: warning: incorrect type in argument 1 (different address spaces)
+> drivers/acpi/sysfs.c:433:30:    expected void *logical_address
+> drivers/acpi/sysfs.c:433:30:    got void [noderef] __iomem *base
+>
+> Indeed, acpi_os_map_memory() returns a void pointer with dropped specific
+> address space. Hence, we don't need to carry out __iomem in acpi_data_show().
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/acpi/sysfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/sysfs.c b/drivers/acpi/sysfs.c
+> index 88629d26bd48..767aa65e4bdd 100644
+> --- a/drivers/acpi/sysfs.c
+> +++ b/drivers/acpi/sysfs.c
+> @@ -419,7 +419,7 @@ static ssize_t acpi_data_show(struct file *filp, struct kobject *kobj,
+>                               loff_t offset, size_t count)
+>  {
+>         struct acpi_data_attr *data_attr;
+> -       void __iomem *base;
+> +       void *base;
+>         ssize_t rc;
+>
+>         data_attr = container_of(bin_attr, struct acpi_data_attr, attr);
+> --
 
-:-)
+Applied as 5.14 material along with patches [2-4,7/7] from this series.
 
-> > -	if (mm) {
-> > -		membarrier_mm_sync_core_before_usermode(mm);
-> > -		mmdrop(mm);
-> > -	}
-> 
-> What happened here?
-> 
+Patches [5-6/7] did not apply for me on top of my acpi-sysfs branch
+(that is included into my linux-next branch), so I have not applied
+them.
 
-I forced your patch ontop of tip/master without bothering about the
-membarrier cleanups and figured I could live without that call for a
-little while.
-
-But yes, that needs cleaning up.
+Thanks!
