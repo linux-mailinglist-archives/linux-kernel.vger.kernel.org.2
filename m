@@ -2,126 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0973ABC2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F91A3ABC03
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232071AbhFQSyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 14:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
+        id S233042AbhFQSph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231151AbhFQSyG (ORCPT
+        with ESMTP id S231497AbhFQSpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:54:06 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1C8C061574;
-        Thu, 17 Jun 2021 11:51:57 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id f30so12216297lfj.1;
-        Thu, 17 Jun 2021 11:51:57 -0700 (PDT)
+        Thu, 17 Jun 2021 14:45:36 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF048C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 11:43:28 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso5886591pjx.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 11:43:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=40iSRLWtvPNc31eMVSQCNXCOo1P/U4f/2ame7W8s7LA=;
-        b=rsxaC1znzCn7fziXWptJz1qN5MODcSouxR5lI+u78WoyFsSgt3dsGIF5Tv44ipxQv6
-         kemni53G002ljSgD21taefI9UNC1Yl7M7R4+qVdy+RBLWlayR3c0ovbFqzU+rq1dReE0
-         lHNahHTvby841ZMPr/rNIrzJj6klsQMbCh0mVbpGclEZ72IeBmHO3+BjP+MY8xfP/8mv
-         uFhLWqW9/WtLcbShF3YxfE3G3NeayGKkIFZGyEfmd+TF+P9wiFsKQhbSMue5CNRUfzLi
-         2bvHsgkDWLIADU5pn48jsGYd7xhP078ZpP6u0El9alolLXxEnA+rXUN08/L9CLA5i2xx
-         JEnQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gyq5AgwNRarelbVfRJu9j7YFTw4ZYndkdd1MENGMpcM=;
+        b=gWZpP3zIwfIurArUQbxL6x26k6M7NQMGOIoXhczSoFTIX4xSC63tPJIwWmXBQZNEv8
+         lW0gkj3uUkR5MJwga3sRLggmt5RWp9pCYEenDsV2ZNARm8piT/1jTTELCoWIW7nKgSHt
+         8PHT2Y5ldyNTLAulKlpHT3mEx8SuiatezkEwn3pzNLoyQfLNxdH26AUhQKv9cl8pVNLz
+         ZA6lvwb0EZBYSU1nngjEfSlfLjbA8Ne7uPddGLMO3IwdyOXDlOjpLz0irregyDDYnv9h
+         D8L2RpuxTDRKPAAqGt+F7OXA3lrgJ0q+oWoSGIVH4IHfVUedllnaY+OkUzoeTvPdCQ0y
+         52/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=40iSRLWtvPNc31eMVSQCNXCOo1P/U4f/2ame7W8s7LA=;
-        b=Ph/onVcCCybALHHFtXrPvENN+yMaQc82wFcbIUwhYX+xr733zRF9SMBu6Vli1k5x3w
-         m6u3JX3c87MgacBxujDJUJgOuHyCINsz305qZAiKW5zrOqTTRm3R3uRBFkyHdNL18IJF
-         eEKmGn8eQ0lj3Fg9mkB60hrerCuaYMCyccQUZ38nZfiMGyQ+Y8DUOqaNP3vZ4oRuOt6M
-         Jl02ImcgPXBLDx6K8Uvm1CJjS2BPMQ7g/hhFC2yV3Dw4jlIwNGOt/cET6GvDi5GUQBix
-         EMSyLdwUj7O4AOgcgKhavDWG0KwHPtAsYXxav8vmqlNJE3zrXtpwa3M63bYYH2be8+gI
-         VQhA==
-X-Gm-Message-State: AOAM533YFRinddhJcCdR2iu8ATasbHkY7ez1NMAxj5HG2la7N70bNa8h
-        OZxQpaFixdtxLbY0j4+PBzM=
-X-Google-Smtp-Source: ABdhPJxSIdVAbppcnUgVPWZU81UNJMf0YO8KayLnXtSZpBuvMAVk8l2cBRtQr9dzR26muqB+cJO9Tw==
-X-Received: by 2002:a19:c10:: with SMTP id 16mr5184114lfm.54.1623955913761;
-        Thu, 17 Jun 2021 11:51:53 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.229.24])
-        by smtp.gmail.com with ESMTPSA id i130sm655175lfd.304.2021.06.17.11.51.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 11:51:53 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH] net: can: fix use-after-free in ems_usb_disconnect
-Date:   Thu, 17 Jun 2021 21:51:30 +0300
-Message-Id: <20210617185130.5834-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gyq5AgwNRarelbVfRJu9j7YFTw4ZYndkdd1MENGMpcM=;
+        b=UMeXI+HJboJ0NgswOPOeIuSR9SzTStgZEmmr85TBxyHEq9PMQvr+JtY5v7ZShX+eNg
+         g6F/ssw0LuefPTjYKim4hHnUW8QXLWvCc/7Y+sbg6apyz8V5XB3TtCnTBQjmArMCJtav
+         8rfPvP8tpnBqfwRq4IM7R41XKYc1iTwx+xlK900T6Yo109q2tPQa7Q5vN6+NfHCFHNAX
+         uS/CS+aSZpidm9DczpU2/saDAq/RKkn2SEq3bZh5k1ouJ17m8mrwjuXP59BQ3McZLrsC
+         nWiWFIwuEKdhpb/UNQ5TbHcir/yT7N2Y3vBIudNRM0N4c8hmdfo35UXb0r1W0CIpPo3H
+         3UXQ==
+X-Gm-Message-State: AOAM532CdbhEXFQHDNh2+Z2IbyT6VogTTiiM0eIa5cBN7xlwM+2MfaP8
+        Bjdrkjl1yAn5wum3uMw9K9pcx+lR08FkY8JqCqOWiMkeQNw=
+X-Google-Smtp-Source: ABdhPJwaFJAmgOEgRjD4cfEhmU2a7t5ghngCbSCJl04mt6VLW3ywaJLVGu0DAyE8Tgaw+glmV72oZ6LAJ0ypfw30jJM=
+X-Received: by 2002:a17:90b:1bc4:: with SMTP id oa4mr6993795pjb.18.1623955408330;
+ Thu, 17 Jun 2021 11:43:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1623954233-32092-1-git-send-email-bbhatt@codeaurora.org>
+In-Reply-To: <1623954233-32092-1-git-send-email-bbhatt@codeaurora.org>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Thu, 17 Jun 2021 20:52:26 +0200
+Message-ID: <CAMZdPi-r5CiuPT9vR+Pt3Q0nvy31m_NXW7fb7yJ3jPBSQBVH9A@mail.gmail.com>
+Subject: Re: [PATCH] bus: mhi: pci_generic: Apply no-op for wake using inband
+ wake support flag
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?Q2FybCBZaW4o5q635byg5oiQKQ==?= <carl.yin@quectel.com>,
+        Naveen Kumar <naveen.kumar@quectel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In ems_usb_disconnect() dev pointer, which is
-netdev private data, is used after free_candev() call:
+On Thu, 17 Jun 2021 at 20:24, Bhaumik Bhatt <bbhatt@codeaurora.org> wrote:
+>
+> Devices such as SDX24 do not have the provision for inband wake
+> doorbell in the form of channel 127. Newer devices such as SDX55
+> or SDX65 have it by default. Ensure the functionality is used
+> based on this such that device wake stays held when a client
+> driver uses mhi_device_get() API or the equivalent debugfs entry.
+>
+> Fixes: e3e5e6508fc1 ("bus: mhi: pci_generic: No-Op for device_wake operations")
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-	if (dev) {
-		unregister_netdev(dev->netdev);
-		free_candev(dev->netdev);
-
-		unlink_all_urbs(dev);
-
-		usb_free_urb(dev->intr_urb);
-
-		kfree(dev->intr_in_buffer);
-		kfree(dev->tx_msg_buffer);
-	}
-
-Fix it by simply moving free_candev() at the end of
-the block.
-
-Fail log:
- BUG: KASAN: use-after-free in ems_usb_disconnect
- Read of size 8 at addr ffff88804e041008 by task kworker/1:2/2895
-
- CPU: 1 PID: 2895 Comm: kworker/1:2 Not tainted 5.13.0-rc5+ #164
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.4
- Workqueue: usb_hub_wq hub_event
- Call Trace:
-     dump_stack (lib/dump_stack.c:122)
-     print_address_description.constprop.0.cold (mm/kasan/report.c:234)
-     kasan_report.cold (mm/kasan/report.c:420 mm/kasan/report.c:436)
-     ems_usb_disconnect (drivers/net/can/usb/ems_usb.c:683 drivers/net/can/usb/ems_usb.c:1058)
-
-Fixes: 702171adeed3 ("ems_usb: Added support for EMS CPC-USB/ARM7 CAN/USB interface")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/net/can/usb/ems_usb.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index 5af69787d9d5..0a37af4a3fa4 100644
---- a/drivers/net/can/usb/ems_usb.c
-+++ b/drivers/net/can/usb/ems_usb.c
-@@ -1053,7 +1053,6 @@ static void ems_usb_disconnect(struct usb_interface *intf)
- 
- 	if (dev) {
- 		unregister_netdev(dev->netdev);
--		free_candev(dev->netdev);
- 
- 		unlink_all_urbs(dev);
- 
-@@ -1061,6 +1060,8 @@ static void ems_usb_disconnect(struct usb_interface *intf)
- 
- 		kfree(dev->intr_in_buffer);
- 		kfree(dev->tx_msg_buffer);
-+
-+		free_candev(dev->netdev);
- 	}
- }
- 
--- 
-2.32.0
-
+Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
