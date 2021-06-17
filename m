@@ -2,71 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211AB3AB494
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52E63AB499
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbhFQNYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:24:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhFQNYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:24:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81262613BA;
-        Thu, 17 Jun 2021 13:22:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623936153;
-        bh=m8K5khmOV4Nt95fDzRf7f7CuZlwaLm2UDMhLZOcWULs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xa4OOiGtb2s2c6xosB8LEOG+gNZ84PRyBoDa09ioQao+sz4MK5zqRDenVsZEAZ7yM
-         IQ+1ClNUraerQMlwzeWiacQNxPzdZDVMshXPe0OAYLRpvJMdACX4zZyvC8S8+I6LpH
-         7dWMM5nutSBB2Q8Zfsaalk4e3JA5Wd60BCpUuzFk=
-Date:   Thu, 17 Jun 2021 15:22:30 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Linyu Yuan <linyyuan@codeaurora.org>
-Cc:     Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Linyu Yuan <linyyuan@codeaurora.com>
-Subject: Re: [PATCH v3] usb: gadget: eem: fix echo command packet response
- issue
-Message-ID: <YMtMlmwuIU3YmwAq@kroah.com>
-References: <20210616115142.34075-1-linyyuan@codeaurora.org>
+        id S232557AbhFQNZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhFQNZI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:25:08 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A1EC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 06:23:00 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id a15so4619443qtx.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 06:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EpWxRaSsnLYws7nyDWlyhtmN0+4jL+XRdMFxoBZFNjc=;
+        b=qYJWuKoW9PtFH0BaBavdHQXZ9+p0C7xQmq3feta+NIidPdHSI9MFKCdyx1kNqtfOpg
+         KqwrVyubAH3gQTpeI6o9jbhjf4e5bXent62688TD1VTSRlQz8I1y6Wu1eJ8zsHK6RDpG
+         OYnLDI1J97EFHEm02dAZwqH5IvVSemWWk5jhCh4l+8HyeKmcq+ZHCCsoCz+Pk65nNT0H
+         WrZuO4B/+OyZvmn2W37oZqCq+dr/LuSiONs+3EUOEZUWN5Av3gB5GWbRLGvM+h6RTTEE
+         mExSWQN0MrhdsqePYH2dsvR54j+OhJal4GdCpmXTTJArxMLZufCpWk8KxVW/WZ7Sj83W
+         4qzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EpWxRaSsnLYws7nyDWlyhtmN0+4jL+XRdMFxoBZFNjc=;
+        b=GlKeuaQVWbQxAcK+hSF5Bz+TeQUPo6ObQJhLJFehdX4AMKj2nr8K6dhF6kqquoJYd9
+         cXahnvcoXwxr7xfkNWjqsfQ/8ubKfP3HJYoqH7+lxY4g3ge52v+meCqQjAA/6dhBZrHG
+         pYwhwRdepLCOn/YiiKz/xjdpEawcoinBtHbtLlrG348g17F6gXLIkuOrmfnFmw7WkU32
+         teX/w2uggxyZxyT/07BxaHER08MtzjK8aabya8oD8wzPkTp3H+bQ3P2ZvSd1+Y1KyV/p
+         aPY/d2Vqpeq4Rw2hAwtNo3BJlLWPno2w6+MnUaAbYMa+J23E92jJE+pr6bxu+6lrQ/sH
+         B6Kw==
+X-Gm-Message-State: AOAM531OzOwKoYrQB9TuPQemEb2QIkrXMfqWaGjisqShLwplmf9yUQvb
+        2K9uoyJme916dsVWvRehbiEtrLoFvlW0vYKzMXUG6ALxo9M=
+X-Google-Smtp-Source: ABdhPJxAO2nFYDYfih/PNHQokbVY+LbN/ZwPSGQzc6cgf+MSSXMDBX0GH72V1GWtMo2c7X3wq8BASCM2xClh5j32XZg=
+X-Received: by 2002:a05:622a:81:: with SMTP id o1mr5046038qtw.16.1623936179469;
+ Thu, 17 Jun 2021 06:22:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616115142.34075-1-linyyuan@codeaurora.org>
+References: <20210616190759.2832033-1-mw@semihalf.com> <20210616190759.2832033-4-mw@semihalf.com>
+ <YMpShczKt1TNAqsV@lunn.ch> <CAPv3WKde+LCmxxr6UuA7X=XShF6d4io49baxsjw1kMqR=T7XrA@mail.gmail.com>
+ <YMs/xztdc0xhYbDr@lunn.ch>
+In-Reply-To: <YMs/xztdc0xhYbDr@lunn.ch>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Thu, 17 Jun 2021 15:22:48 +0200
+Message-ID: <CAPv3WKdPiwxsHKHoa1SK7xUu4fCPYsGhyXLr6ZGUWo4tvdOvkw@mail.gmail.com>
+Subject: Re: [net-next: PATCH v2 3/7] net/fsl: switch to fwnode_mdiobus_register
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
+        lenb@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 07:51:42PM +0800, Linyu Yuan wrote:
-> From: Linyu Yuan <linyyuan@codeaurora.com>
-> 
-> when receive eem echo command, it will send a response,
-> but queue this response to the usb request which allocate
-> from gadget device endpoint zero,
-> and transmit the request to IN endpoint of eem interface.
-> 
-> on dwc3 gadget, it will trigger following warning in function
-> __dwc3_gadget_ep_queue(),
-> 
-> 	if (WARN(req->dep != dep, "request %pK belongs to '%s'\n",
-> 				&req->request, req->dep->name))
-> 		return -EINVAL;
+czw., 17 cze 2021 o 14:28 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
+>
+> On Thu, Jun 17, 2021 at 01:39:40AM +0200, Marcin Wojtas wrote:
+> > =C5=9Br., 16 cze 2021 o 21:35 Andrew Lunn <andrew@lunn.ch> napisa=C5=82=
+(a):
+> > >
+> > > On Wed, Jun 16, 2021 at 09:07:55PM +0200, Marcin Wojtas wrote:
+> > > > Utilize the newly added helper routine
+> > > > for registering the MDIO bus via fwnode_
+> > > > interface.
+> > >
+> > > You need to add depends on FWNODE_MDIO
+> > >
+> >
+> > Do you mean something like this?
+> >
+> > --- a/drivers/net/ethernet/freescale/Kconfig
+> > +++ b/drivers/net/ethernet/freescale/Kconfig
+> > @@ -68,8 +68,8 @@ config FSL_PQ_MDIO
+> >  config FSL_XGMAC_MDIO
+> >         tristate "Freescale XGMAC MDIO"
+> >         select PHYLIB
+> > -       depends on OF
+> > -       select OF_MDIO
+> > +       depends on ACPI || OF
+> > +       select FWNODE_MDIO
+> >         help
+>
+> You should not need depends on ACPI || OF. FWNODE_MDIO implies
+> that. And there are no direct calls to of_ functions, so you can drop
+> the depends on OF.
+>
 
-Is this really a problem?  I am guessing the request will not work at
-all?  Or just warn and continue with it?
+Ok, I'll leave:
+depends on FWNODE_MDIO
+only.
 
-How was this ever working?
-
-> 
-> fix it by allocating a usb request from IN endpoint of eem interface,
-> and transmit the usb request to same IN endpoint of eem interface.
-> 
-> Signed-off-by: Linyu Yuan <linyyuan@codeaurora.com>
-> ---
-
-What commit does this fix?  Should it be backported to older stable
-kernels?  If so, how far back?
-
-thanks,
-
-greg k-h
+Thanks,
+Marcin
