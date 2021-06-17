@@ -2,126 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEFA3AB082
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358833AB0A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232051AbhFQJ7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:59:45 -0400
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:42949 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230272AbhFQJ7o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:59:44 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id tom9l2lerhqlttomCl03mC; Thu, 17 Jun 2021 11:57:33 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1623923853; bh=mNLOxBASZ1Rj1Q0TCJlnQtfYaEmFKt0BCfAy0LhPKmM=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=X3Fqw3pUXTbnpQY0zLgjBH2dv22Uiwlmucwp0069twdAiX4EnNQfVRT5mNVOEDXu8
-         +CGFjB5/26tnLe+UokrbNVsaL9FQp8SxfCLA20/aZjPjpy3HcFfd/msRxF9dJRHzA5
-         8Lx9YFiY3/jxd8QqFV5V5LTczjtEP3UZSnBjGXoVrjxQVRc1hgYveHp5+Gk4H4Ai24
-         hoAD6XQMJHlBJ6rnQTAQC5nONwme634ivzc9RQbpkcOsZ7lPhxgEStktUxFcGLnb+A
-         y/OBHoVeYxPv6kGT26PA4u1ikryeMH+Lss2PDOLuCOhV4zbtBEkJg0LVts/zmpw4Ne
-         hPvUGsMJNNEjA==
-Subject: Re: [PATCH 3/7] clk: stm32: Fix ltdc's clock turn off by
- clk_disable_unused() after kernel startup
-To:     dillon.minfei@gmail.com, mchehab@kernel.org,
-        mchehab+huawei@kernel.org, ezequiel@collabora.com,
-        gnurou@gmail.com, pihsun@chromium.org, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org
-Cc:     patrice.chotard@foss.st.com, hugues.fruchet@foss.st.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <1621508727-24486-1-git-send-email-dillon.minfei@gmail.com>
- <1621508727-24486-4-git-send-email-dillon.minfei@gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <cd510ab8-a128-05cc-2f0b-f70f02d23d04@xs4all.nl>
-Date:   Thu, 17 Jun 2021 11:57:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <1621508727-24486-4-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfM4WVfO1x/QqHFAjsJ8BftwtBgjz6mLzYtrj42sOhjPILBFsr8uTR1/QInmrEYs6LtL65IyoLiqZF1Ze8j5tEXKulzVUXbtsQhrCONE4BhUw2qc9Lgy5
- E/vjz1Za/62HatPFYewZMmgIsGNz2NWTuQDZF8xHiZekQmZ1/FrXgOD7YKYpWOvQdVJa90xFcEcEWqsMJNmbddPQMvoeFkS1rMi+QSYxpIY0twSnsbEon8Dm
- A4CNXM2fqNGK1uCA4WRFhM5CkxlaZIVZUXml+OrBHt/E9JrPoq8AIXd8Bwfoq8dxD4JH3Y2gHm83nQoiAA0k+lCEZp/bngfkiXRG2swQRoHByBZGqqhptVyq
- WwWCfsgXR8owQWYEV1bFMh8zAx3+ZKnjR3aiK2iVEFYxkZVhxsFXhbUDiTiiF77sIjY8cE/GVux2kuPcfs2T5uoqOeUBj6Ics0wpx1ToDxU7Ro7UoNVbo7iN
- yaC35coKnh40XhnPZTj5irJDniM9ehFAa4D6SB3aX3D85B4o1to2Pvz8+vyjTy0vbQzI4f6yf5GtA3tTaS+fFUMYoff/XIgnhic3Uhi2SUwkE2Hvfcb/eBFX
- IENsSsWz/qH7z7CbmYi6ciSEaup9bMcxSSjE2AcSrO6pzw8yvl5/h2QXHFq97WygBjhxElW5d0XwYxqTPL7Sr/TaP7jNH/lCmLTH3FPXFFdgGLGskip43Z4C
- fIJZ+fGKn6RbqmiOtB4aCN4va+pUn2CMW0YvNgYzMdzrELFaSl1hZiiHaV2B5NitLKIaruwD/AUzpPRoxycRJqDtvGNHNv++dwGkAA4zHHDbdtfYh0o0e5U8
- n7Ykin3FHrCisDQPuL7Xpw3zHj4gLjRiSVVjkiQDLklxuA7TX2oJ7uJmYAhJcA==
+        id S231352AbhFQKAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 06:00:39 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:23050 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231250AbhFQKAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 06:00:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623923909; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=WWGll7HmhmEFlNTG8J2i0OkkvjNU8iEWPNPSVycSiDY=; b=Wl62fQtxmMXVaDfXcuCYlj/FcuGXtK/uk+iCQSgZPJtWtrv7IF6Zip06i3mU82tSUXTSmj3d
+ inlDgfFuISlkfQ1ZztcLvP9OkR8sYlcePgRfJT5JJ8akxCK6oy14R8mOjnz9LqME9ajlNmL3
+ O1mUakTz6ypxc/YfBYnjQxpgL9k=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60cb1cc351f29e6bae548dd0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Jun 2021 09:58:27
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C97B4C43146; Thu, 17 Jun 2021 09:58:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B7A06C433D3;
+        Thu, 17 Jun 2021 09:58:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B7A06C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        frowand.list@gmail.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        jackp@codeaurora.org, fntoth@gmail.com,
+        heikki.krogerus@linux.intel.com, andy.shevchenko@gmail.com,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH v10 0/6] Re-introduce TX FIFO resize for larger EP bursting
+Date:   Thu, 17 Jun 2021 02:58:13 -0700
+Message-Id: <1623923899-16759-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2021 13:05, dillon.minfei@gmail.com wrote:
-> From: Dillon Min <dillon.minfei@gmail.com>
-> 
-> stm32's clk driver register two ltdc gate clk to clk core by
-> clk_hw_register_gate() and clk_hw_register_composite()
-> 
-> first: 'stm32f429_gates[]', clk name is 'ltdc', which no user to use.
-> second: 'stm32f429_aux_clk[]', clk name is 'lcd-tft', used by ltdc driver
-> 
-> both of them point to the same offset of stm32's RCC register. after
-> kernel enter console, clk core turn off ltdc's clk as 'stm32f429_gates[]'
-> is no one to use. but, actually 'stm32f429_aux_clk[]' is in use.
-> 
-> Fixes: daf2d117cbca ("clk: stm32f4: Add lcd-tft clock")
-> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> Acked-by: Stephen Boyd <sboyd@kernel.org>
-> Link: https://lore.kernel.org/linux-arm-kernel/1590564453-24499-7-git-send-email-dillon.minfei@gmail.com/
+Changes in V10:
+ - Fixed compilation errors in config where OF is not used (error due to
+   unknown symbol for of_add_property()).  Add of_add_property() stub.
+ - Fixed compilation warning for incorrect argument being passed to dwc3_mdwidth
 
-For my understanding: this patch is going/has already gone in via a different
-subsystem, right? And I should skip it when adding this driver to the media subsystem?
+Changes in V9:
+ - Fixed incorrect patch in series.  Removed changes in DTSI, as dwc3-qcom will
+   add the property by default from the kernel.
 
-Regards,
+Changes in V8:
+ - Rebased to usb-testing
+ - Using devm_kzalloc for adding txfifo property in dwc3-qcom
+ - Removed DWC3 QCOM ACPI property for enabling the txfifo resize
 
-	Hans
+Changes in V7:
+ - Added a new property tx-fifo-max-num for limiting how much fifo space the
+   resizing logic can allocate for endpoints with large burst values.  This
+   can differ across platforms, and tie in closely with overall system latency.
+ - Added recommended checks for DWC32.
+ - Added changes to set the tx-fifo-resize property from dwc3-qcom by default
+   instead of modifying the current DTSI files.
+ - Added comments on all APIs/variables introduced.
+ - Updated the DWC3 YAML to include a better description of the tx-fifo-resize
+   property and added an entry for tx-fifo-max-num.
 
-> ---
-> 
-> This patch was submitted in
-> https://lore.kernel.org/lkml/1620990152-19255-1-git-send-email-dillon.minfei@gmail.com/
-> 
->  drivers/clk/clk-stm32f4.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
-> index 18117ce5ff85..b6ab8c3a7994 100644
-> --- a/drivers/clk/clk-stm32f4.c
-> +++ b/drivers/clk/clk-stm32f4.c
-> @@ -211,7 +211,6 @@ static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
->  	{ STM32F4_RCC_APB2ENR, 20,	"spi5",		"apb2_div" },
->  	{ STM32F4_RCC_APB2ENR, 21,	"spi6",		"apb2_div" },
->  	{ STM32F4_RCC_APB2ENR, 22,	"sai1",		"apb2_div" },
-> -	{ STM32F4_RCC_APB2ENR, 26,	"ltdc",		"apb2_div" },
->  };
->  
->  static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
-> @@ -557,13 +556,13 @@ static const struct clk_div_table post_divr_table[] = {
->  
->  #define MAX_POST_DIV 3
->  static const struct stm32f4_pll_post_div_data  post_div_data[MAX_POST_DIV] = {
-> -	{ CLK_I2SQ_PDIV, PLL_I2S, "plli2s-q-div", "plli2s-q",
-> +	{ CLK_I2SQ_PDIV, PLL_VCO_I2S, "plli2s-q-div", "plli2s-q",
->  		CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 0, 5, 0, NULL},
->  
-> -	{ CLK_SAIQ_PDIV, PLL_SAI, "pllsai-q-div", "pllsai-q",
-> +	{ CLK_SAIQ_PDIV, PLL_VCO_SAI, "pllsai-q-div", "pllsai-q",
->  		CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 8, 5, 0, NULL },
->  
-> -	{ NO_IDX, PLL_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
-> +	{ NO_IDX, PLL_VCO_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
->  		STM32F4_RCC_DCKCFGR, 16, 2, 0, post_divr_table },
->  };
->  
-> 
+Changes in V6:
+ - Rebased patches to usb-testing.
+ - Renamed to PATCH series instead of RFC.
+ - Checking for fs_descriptors instead of ss_descriptors for determining the
+   endpoint count for a particular configuration.
+ - Re-ordered patch series to fix patch dependencies.
+
+Changes in V5:
+ - Added check_config() logic, which is used to communicate the number of EPs
+   used in a particular configuration.  Based on this, the DWC3 gadget driver
+   has the ability to know the maximum number of eps utilized in all configs.
+   This helps reduce unnecessary allocation to unused eps, and will catch fifo
+   allocation issues at bind() time.
+ - Fixed variable declaration to single line per variable, and reverse xmas.
+ - Created a helper for fifo clearing, which is used by ep0.c
+
+Changes in V4:
+ - Removed struct dwc3* as an argument for dwc3_gadget_resize_tx_fifos()
+ - Removed WARN_ON(1) in case we run out of fifo space
+ 
+Changes in V3:
+ - Removed "Reviewed-by" tags
+ - Renamed series back to RFC
+ - Modified logic to ensure that fifo_size is reset if we pass the minimum
+   threshold.  Tested with binding multiple FDs requesting 6 FIFOs.
+
+Changes in V2:
+ - Modified TXFIFO resizing logic to ensure that each EP is reserved a
+   FIFO.
+ - Removed dev_dbg() prints and fixed typos from patches
+ - Added some more description on the dt-bindings commit message
+
+Currently, there is no functionality to allow for resizing the TXFIFOs, and
+relying on the HW default setting for the TXFIFO depth.  In most cases, the
+HW default is probably sufficient, but for USB compositions that contain
+multiple functions that require EP bursting, the default settings
+might not be enough.  Also to note, the current SW will assign an EP to a
+function driver w/o checking to see if the TXFIFO size for that particular
+EP is large enough. (this is a problem if there are multiple HW defined
+values for the TXFIFO size)
+
+It is mentioned in the SNPS databook that a minimum of TX FIFO depth = 3
+is required for an EP that supports bursting.  Otherwise, there may be
+frequent occurences of bursts ending.  For high bandwidth functions,
+such as data tethering (protocols that support data aggregation), mass
+storage, and media transfer protocol (over FFS), the bMaxBurst value can be
+large, and a bigger TXFIFO depth may prove to be beneficial in terms of USB
+throughput. (which can be associated to system access latency, etc...)  It
+allows for a more consistent burst of traffic, w/o any interruptions, as
+data is readily available in the FIFO.
+
+With testing done using the mass storage function driver, the results show
+that with a larger TXFIFO depth, the bandwidth increased significantly.
+
+Test Parameters:
+ - Platform: Qualcomm SM8150
+ - bMaxBurst = 6
+ - USB req size = 256kB
+ - Num of USB reqs = 16
+ - USB Speed = Super-Speed
+ - Function Driver: Mass Storage (w/ ramdisk)
+ - Test Application: CrystalDiskMark
+
+Results:
+
+TXFIFO Depth = 3 max packets
+
+Test Case | Data Size | AVG tput (in MB/s)
+-------------------------------------------
+Sequential|1 GB x     | 
+Read      |9 loops    | 193.60
+	  |           | 195.86
+          |           | 184.77
+          |           | 193.60
+-------------------------------------------
+
+TXFIFO Depth = 6 max packets
+
+Test Case | Data Size | AVG tput (in MB/s)
+-------------------------------------------
+Sequential|1 GB x     | 
+Read      |9 loops    | 287.35
+	  |           | 304.94
+          |           | 289.64
+          |           | 293.61
+-------------------------------------------
+
+Wesley Cheng (6):
+  usb: gadget: udc: core: Introduce check_config to verify USB
+    configuration
+  usb: gadget: configfs: Check USB configuration before adding
+  usb: dwc3: Resize TX FIFOs to meet EP bursting requirements
+  of: Add stub for of_add_property()
+  usb: dwc3: dwc3-qcom: Enable tx-fifo-resize property by default
+  dt-bindings: usb: dwc3: Update dwc3 TX fifo properties
+
+ .../devicetree/bindings/usb/snps,dwc3.yaml         |  15 +-
+ drivers/usb/dwc3/core.c                            |   9 +
+ drivers/usb/dwc3/core.h                            |  15 ++
+ drivers/usb/dwc3/dwc3-qcom.c                       |   9 +
+ drivers/usb/dwc3/ep0.c                             |   2 +
+ drivers/usb/dwc3/gadget.c                          | 212 +++++++++++++++++++++
+ drivers/usb/gadget/configfs.c                      |  22 +++
+ drivers/usb/gadget/udc/core.c                      |  25 +++
+ include/linux/of.h                                 |   5 +
+ include/linux/usb/gadget.h                         |   5 +
+ 10 files changed, 317 insertions(+), 2 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
