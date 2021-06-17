@@ -2,70 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9ADE3AB5FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AAE3AB608
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbhFQO3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:29:36 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:8263 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbhFQO3f (ORCPT
+        id S232488AbhFQOgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231346AbhFQOgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:29:35 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G5PQQ1hjlz1BNTN;
-        Thu, 17 Jun 2021 22:22:22 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 22:27:15 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 17 Jun
- 2021 22:27:15 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
-CC:     <pawell@cadence.com>, <gregkh@linuxfoundation.org>
-Subject: [PATCH -next] usb: cdnsp: fix error return code in cdnsp_alloc_priv_device()
-Date:   Thu, 17 Jun 2021 22:31:03 +0800
-Message-ID: <20210617143103.2175477-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 17 Jun 2021 10:36:22 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE55C061574;
+        Thu, 17 Jun 2021 07:34:14 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0eb20047e0d50d7eeccd9e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:b200:47e0:d50d:7eec:cd9e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 407621EC0587;
+        Thu, 17 Jun 2021 16:34:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623940452;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=9A4uzd20AoYeVEiUFQvdsQsn30sk6E2K/EhLxqxg+EQ=;
+        b=gHgITpKSzKbtDNybTfBzGlTdSvlSKZwAKA1n4ZZGggpfiYFEOKpy8+Gw5/R4uUlLjwCnST
+        otpX9GZlcXkvdkh1pBA0ql0EkStmW76B/GIbmmpI6Y4ZwFQyDNTgzXWTb9I+H3hiCB6PvJ
+        JmLV4AumAvBlK3ikYMB33x56owU2aME=
+Date:   Thu, 17 Jun 2021 16:34:01 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, seanjc@google.com,
+        dave.hansen@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        Yang Zhong <yang.zhong@intel.com>
+Subject: Re: [PATCH] x86/sgx: Add missing xa_destroy() when virtual EPC is
+ destroyed
+Message-ID: <YMtdWduyALHxggoP@zn.tnic>
+References: <20210615101639.291929-1-kai.huang@intel.com>
+ <20210615132001.kd6cuktq37dvoq3l@kernel.org>
+ <618b42d66a4f2087ef4c54cc50fd56d01233eab1.camel@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <618b42d66a4f2087ef4c54cc50fd56d01233eab1.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If cdnsp_ring_alloc() fails, cdnsp_alloc_priv_device() need return
-error code.
+On Wed, Jun 16, 2021 at 12:30:04PM +1200, Kai Huang wrote:
+> Thanks Jarkko. I literally need to find some way to avoid such error in future :)
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/usb/cdns3/cdnsp-mem.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+That way is called "integrate checkpatch.pl into your patch creation
+workflow".
 
-diff --git a/drivers/usb/cdns3/cdnsp-mem.c b/drivers/usb/cdns3/cdnsp-mem.c
-index a47948a1623f..c87bf3513844 100644
---- a/drivers/usb/cdns3/cdnsp-mem.c
-+++ b/drivers/usb/cdns3/cdnsp-mem.c
-@@ -694,8 +694,10 @@ static int cdnsp_alloc_priv_device(struct cdnsp_device *pdev)
- 
- 	/* Allocate endpoint 0 ring. */
- 	pdev->eps[0].ring = cdnsp_ring_alloc(pdev, 2, TYPE_CTRL, 0, GFP_ATOMIC);
--	if (!pdev->eps[0].ring)
-+	if (!pdev->eps[0].ring) {
-+		ret = -ENOMEM;
- 		goto fail;
-+	}
- 
- 	/* Point to output device context in dcbaa. */
- 	pdev->dcbaa->dev_context_ptrs[1] = cpu_to_le64(pdev->out_ctx.dma);
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
