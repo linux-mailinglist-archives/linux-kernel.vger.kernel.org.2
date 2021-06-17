@@ -2,78 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696863AAEA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9C73AAEA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhFQIXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 04:23:32 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:7347 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhFQIXb (ORCPT
+        id S230466AbhFQIXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 04:23:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230334AbhFQIXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:23:31 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G5FKF2wzYz6vxm;
-        Thu, 17 Jun 2021 16:17:21 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 16:21:21 +0800
-Received: from thunder-town.china.huawei.com (10.174.179.0) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 16:21:21 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] dmaengine: qcom: Fix possible memory leak
-Date:   Thu, 17 Jun 2021 16:20:58 +0800
-Message-ID: <20210617082058.955-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Thu, 17 Jun 2021 04:23:35 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DEEC061760;
+        Thu, 17 Jun 2021 01:21:27 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0eb200ab657fc0ea7e4260.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:b200:ab65:7fc0:ea7e:4260])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8DBFB1EC0556;
+        Thu, 17 Jun 2021 10:21:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623918086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=p9KkfoMxQXHVpn5PWqJhxG6N2m4bA23fyu2hCz87bkc=;
+        b=MtphHVOANg6LtS7S0gOt47DNm2PwKzgTbELvCzIF3EBJVD8T++yhUobH30A4tJMq5I+loj
+        oeOmDta0pVA240jqgwjSgbdDOC9Jl2xiGynvIrEkLrCc1zXkdYFQr6ddLn94q7VE+BWbe6
+        ryqLv/2QhuZLQep3VB4mtHc+Y3o8e1o=
+Date:   Thu, 17 Jun 2021 10:21:14 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     mchehab@kernel.org, tony.luck@intel.com, james.morse@arm.com,
+        rric@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] edac: Convert list_for_each to entry variant
+Message-ID: <YMsF+lGa/kCLvzRA@zn.tnic>
+References: <1623740110-15764-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1623740110-15764-1-git-send-email-zou_wei@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When krealloc() fails to expand the memory and returns NULL, the original
-memory is not released. In addition, subsequent memcpy() operation will
-overwrite the entire valid memory space, so using krealloc() to preserve
-the old content is not necessary.
+On Tue, Jun 15, 2021 at 02:55:10PM +0800, Zou Wei wrote:
+> convert list_for_each() to list_for_each_entry() where
+> applicable.
 
-Change to release the old memory and then apply for new memory.
+That conversion is applicable to one more place in that file...
 
-Fixes: 5d0c3533a19f ("dmaengine: qcom: Add GPI dma driver")
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/dma/qcom/gpi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/dma/qcom/gpi.c b/drivers/dma/qcom/gpi.c
-index 43ac3ab23d4c..e24fe64f3b63 100644
---- a/drivers/dma/qcom/gpi.c
-+++ b/drivers/dma/qcom/gpi.c
-@@ -1625,7 +1625,8 @@ gpi_peripheral_config(struct dma_chan *chan, struct dma_slave_config *config)
- 	if (!config->peripheral_config)
- 		return -EINVAL;
- 
--	gchan->config = krealloc(gchan->config, config->peripheral_size, GFP_NOWAIT);
-+	kfree(gchan->config);
-+	gchan->config = kmalloc(config->peripheral_size, GFP_NOWAIT);
- 	if (!gchan->config)
- 		return -ENOMEM;
- 
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
