@@ -2,128 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049613AA959
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 05:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A870E3AA95D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 05:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhFQDIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 23:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhFQDIY (ORCPT
+        id S230064AbhFQDK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 23:10:26 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:41780 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhFQDKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 23:08:24 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48977C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 20:06:16 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id k15so3818920pfp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 20:06:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4WB1jB6nT0GNnkzEivbgMBJeFx8gT0oJK+hi8Kq4WRE=;
-        b=iAC/lcEidMUL1pgEoRjyMcGeyXnDOa+uxS/umBrfkwR6yOKHrkNuZno2a+GxRLlnFO
-         XGBMYrQeOR/pyBbykQqFUCP+xjHLC+YLGs+N2CFiKnZxtCDCdFDYuJOiVu6vJ5xY6f01
-         u3/5Cbmyaa8+cQfetYAgNKoBVeEuTXuVEvedRNeFqdd/xSc7Rn6U+RoNp6JoM5kmWAO1
-         byFkVS7uH0iTHMGTtEaEAvJsXW2SsPCHVlvOwMuRMMdfsP65DrTtxJH/oIhW6ojUnON6
-         5SmmRq4gGHTk1ndN0YrsNpDzjo///ADA/4yJLBQ6OXRAF5Wabgw7nLb4ZJV0LDk3Tva1
-         Z9mg==
+        Wed, 16 Jun 2021 23:10:24 -0400
+Received: by mail-il1-f199.google.com with SMTP id v15-20020a92d24f0000b02901e85881a504so2957768ilg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 20:08:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4WB1jB6nT0GNnkzEivbgMBJeFx8gT0oJK+hi8Kq4WRE=;
-        b=tWjpCPypTVYE6lw92XENScmYWh+/UoZqLdlIesyvG6HFWK1/Mg05C6gZ3YTPui45wl
-         i6sqz5Qtrn4cxC6D90bKrNFxjS212r3cSLoOWopbmLxKgsWXwNlbkqe4IjtPsV597bEp
-         Q1nJmcDnHSdgBeuKZZw9p7V5K08Ci/zJAROMDu1kJhGLdw4E2bcY0/qwYgDaHFsIDcZg
-         0r/LRS9e0qJjBB+UtLyN47Sc+aW7zjVpI6qhx97YrdXZVqvXq5HtZuSLTW97DVl1FgUc
-         9xUQ7ugKh/CvdNU4UV6H34I+nrHLzP5c9F6Th1N1+yKW0UAabwyooxXHTWX85xsi7WkJ
-         8wBA==
-X-Gm-Message-State: AOAM531EZXKCk0OG97re496gvnSN2G47uLfzz2HVoN7SvrVUCi/2LFUa
-        A5A0aKGLvwfQ8tO8m9AgtH4c7Q==
-X-Google-Smtp-Source: ABdhPJxO+4Dx6Cgg1M5OJYvF0W8ZkqKGbRTflVIy7v8Nm4WlFrTzqKT6e9gideff3WV12/k8hZkpFA==
-X-Received: by 2002:aa7:9515:0:b029:2e9:c6f4:2c44 with SMTP id b21-20020aa795150000b02902e9c6f42c44mr3204136pfp.28.1623899175589;
-        Wed, 16 Jun 2021 20:06:15 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id o20sm3191289pjq.57.2021.06.16.20.06.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 20:06:14 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 08:36:12 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 2/3] arch_topology: Avoid use-after-free for
- scale_freq_data
-Message-ID: <20210617030612.sksyutwjgwmozka5@vireshk-i7>
-References: <cover.1623825725.git.viresh.kumar@linaro.org>
- <9dba462b4d09a1a8a9fbb75740b74bf91a09a3e1.1623825725.git.viresh.kumar@linaro.org>
- <20210616112544.GA23657@arm.com>
- <20210616113604.e4kc3jxb7ayqskev@vireshk-i7>
- <20210616120057.GA23282@arm.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=5wSLmuEKWVWZ4o/VdXK1flfdY5PDMnv9T0Pa0EDBKs4=;
+        b=d7s2T0pbIGxfAslXrdsP3XVYpn8XjTeoEaMv5yFlgLDCdlBpJXCTY9D/UMOIWhe7H7
+         GtDPHU88dAdOIdRgNY/FUsRKka+Jvd+uXJUbHUONTCM4NT+EragqOYsQ9zC/cQnS8w1y
+         paHuyhEcOcplL1Keokv+yI+7DVe8aECOFn4KtuR5E0lD05w7VH4Y+QV2oRmCNpGEdR0U
+         BWpd53RQe6SInYSXEmcjk8V1MWZniuvEvCvTPHxGYgltxeqI7azu8HfxaqPuDSMqblMW
+         UGwbfWim45gSfCbsKMpKJYhgiJvSe9GLro99jmFwY2SezDD6n49D171DxsXNCfdfQhXw
+         Mw3Q==
+X-Gm-Message-State: AOAM533T/Slbp6nXT0PporvnoeUsNQ08ItgOmwTqWcxg4j+CB6Fun8ik
+        Mjb/jXRWNNZiYsiKqi2XsHnLZ5YkT7YJgkt888yasQyQM3EJ
+X-Google-Smtp-Source: ABdhPJzh2GSokZ9orEWjnJxDm6LyMifBqPM9STFtFZjv4eLrLTlSekPR1QxDjckQPnH80RRogOdC5oR2byHHws+Xj3znahYsBfHD
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616120057.GA23282@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-Received: by 2002:a6b:6617:: with SMTP id a23mr1881927ioc.0.1623899297776;
+ Wed, 16 Jun 2021 20:08:17 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 20:08:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cb8e3a05c4ed84bb@google.com>
+Subject: [syzbot] KASAN: stack-out-of-bounds Read in __show_regs
+From:   syzbot <syzbot+b17d3e853d5dce65f981@syzkaller.appspotmail.com>
+To:     0x7f454c46@gmail.com, bp@alien8.de, chang.seok.bae@intel.com,
+        hpa@zytor.com, krisman@collabora.com, linux-kernel@vger.kernel.org,
+        luto@kernel.org, mingo@redhat.com, sashal@kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-06-21, 13:00, Ionela Voinescu wrote:
-> I would agree if it wasn't for the fact that the driver provides the
-> set_freq_scale() implementation that ends up using driver internal data
-> which could have been freed by the driver's own .exit()/stop_cpu()
-> callbacks. The API and the generic implementation has the responsibility
-> of making sure of sane access to its own structures.
+Hello,
 
-How do you see timer core or workqueue core then ? Why do they make
-sure they don't end up calling user's function once we ask them not to
-?
+syzbot found the following issue on:
 
-And also scheduler's own util update mechanism, the exact thing
-happens there. Users (cpufreq governors) call
-cpufreq_add_update_util_hook() and cpufreq_remove_update_util_hook()
-to pass their own data structure "struct update_util_data", which has
-ia callback within. This is what happens from scheduler's context in
-those cases.
+HEAD commit:    ad347abe Merge tag 'trace-v5.13-rc5-2' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11013e50300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=30f476588412c065
+dashboard link: https://syzkaller.appspot.com/bug?extid=b17d3e853d5dce65f981
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=164b6a70300000
 
-static inline void cpufreq_update_util(struct rq *rq, unsigned int flags)
-{
-	struct update_util_data *data;
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b17d3e853d5dce65f981@syzkaller.appspotmail.com
 
-	data = rcu_dereference_sched(*per_cpu_ptr(&cpufreq_update_util_data,
-						  cpu_of(rq)));
-	if (data)
-		data->func(data, rq_clock(rq), flags);
-}
+ irqentry_exit+0x31/0x80 kernel/entry/common.c:426
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:647
+RIP: 891806d5:0xffffed1002495388
+RSP: 4299d728:ffffc9000b90fbf8 EFLAGS: fffffe00 ORIG_RAX: ffffffff88b60c00
+==================================================================
+BUG: KASAN: stack-out-of-bounds in __show_regs.cold+0x4e/0x508 arch/x86/kernel/process_64.c:80
+Read of size 8 at addr ffffc9000b90fb20 by task systemd-journal/4846
 
-Also note that some kind of synchronisation mechanism is indeed
-required between topology_set_scale_freq_source() and
-topology_clear_scale_freq_source(), there is no race there today,
-sure, but this is an API which is made generic.
+CPU: 0 PID: 4846 Comm: systemd-journal Not tainted 5.13.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5/0x2f8 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
+ __show_regs.cold+0x4e/0x508 arch/x86/kernel/process_64.c:80
+ show_trace_log_lvl+0x25b/0x2ba arch/x86/kernel/dumpstack.c:298
+ sched_show_task kernel/sched/core.c:7371 [inline]
+ sched_show_task+0x443/0x590 kernel/sched/core.c:7345
+ show_state_filter+0xf2/0x2d0 kernel/sched/core.c:7414
+ k_spec drivers/tty/vt/keyboard.c:660 [inline]
+ k_spec+0xe1/0x130 drivers/tty/vt/keyboard.c:649
+ kbd_keycode drivers/tty/vt/keyboard.c:1512 [inline]
+ kbd_event+0xc64/0x1750 drivers/tty/vt/keyboard.c:1531
+ input_to_handler+0x3b9/0x4c0 drivers/input/input.c:118
+ input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
+ input_pass_values drivers/input/input.c:415 [inline]
+ input_handle_event+0x67e/0x1440 drivers/input/input.c:415
+ input_event drivers/input/input.c:446 [inline]
+ input_event+0x8e/0xb0 drivers/input/input.c:438
+ hidinput_hid_event+0x59d/0x18b0 drivers/hid/hid-input.c:1420
+ hid_process_event+0x491/0x570 drivers/hid/hid-core.c:1522
+ hid_input_field drivers/hid/hid-core.c:1580 [inline]
+ hid_report_raw_event+0xe7f/0x11b0 drivers/hid/hid-core.c:1786
+ hid_input_report+0x360/0x4c0 drivers/hid/hid-core.c:1853
+ hid_irq_in+0x50e/0x690 drivers/hid/usbhid/hid-core.c:284
+ __usb_hcd_giveback_urb+0x2b0/0x5c0 drivers/usb/core/hcd.c:1656
+ usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1726
+ dummy_timer+0x11f4/0x32a0 drivers/usb/gadget/udc/dummy_hcd.c:1978
+ call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1431
+ expire_timers kernel/time/timer.c:1476 [inline]
+ __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1745
+ __run_timers kernel/time/timer.c:1726 [inline]
+ run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1758
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:559
+ invoke_softirq kernel/softirq.c:433 [inline]
+ __irq_exit_rcu+0x136/0x200 kernel/softirq.c:637
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:649
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:647
+RIP: 0010:lock_is_held_type+0xfd/0x140 kernel/locking/lockdep.c:5560
+Code: 00 00 b8 ff ff ff ff 65 0f c1 05 8e 7e eb 76 83 f8 01 75 29 9c 58 f6 c4 02 75 3d 48 f7 04 24 00 02 00 00 74 01 fb 48 83 c4 08 <44> 89 e8 5b 5d 41 5c 41 5d 41 5e 41 5f c3 45 31 ed eb b9 0f 0b 48
+RSP: 0018:ffffc9000b62fd38 EFLAGS: 00000282
+RAX: 0000000000000046 RBX: 0000000000000000 RCX: 0000000000000001
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffffff8bf79560 R08: 0000000000000000 R09: ffff888022132200
+R10: ffffffff81a86a1f R11: 0000000000000000 R12: ffff88802c5754c0
+R13: 0000000000000000 R14: 00000000ffffffff R15: ffffffff8dc99b08
+ lock_is_held include/linux/lockdep.h:283 [inline]
+ ___might_sleep+0x23f/0x2c0 kernel/sched/core.c:8304
+ __might_fault+0x6e/0x180 mm/memory.c:5071
+ strncpy_from_user+0x2f/0x3e0 lib/strncpy_from_user.c:117
+ getname_flags.part.0+0x95/0x4f0 fs/namei.c:149
+ getname_flags fs/namei.c:2734 [inline]
+ user_path_at_empty+0xa1/0x100 fs/namei.c:2734
+ user_path_at include/linux/namei.h:60 [inline]
+ do_faccessat+0x127/0x850 fs/open.c:425
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7efdbd9139c7
+Code: 83 c4 08 48 3d 01 f0 ff ff 73 01 c3 48 8b 0d c8 d4 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 15 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a1 d4 2b 00 f7 d8 64 89 01 48
+RSP: 002b:00007fffaef68ff8 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
+RAX: ffffffffffffffda RBX: 00007fffaef6bf10 RCX: 00007efdbd9139c7
+RDX: 00007efdbe384a00 RSI: 0000000000000000 RDI: 000055b1c4e5f9a3
+RBP: 00007fffaef69030 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000069 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fffaef6bf10 R15: 00007fffaef69520
 
-> Even if we would want to keep drivers from shooting themselves in the
-> foot, I would prefer we postpone it until we have more users for this,
-> before we add any synchronisation mechanisms to functionality called
-> on the tick.
 
-The rcu mechanism is very much used in the scheduler itself because it
-is lightweight. Honestly I don't even see any other way (w.r.t.
-locking) users can fix it at their end. They don't know which was the
-last tick that used their callback.
+Memory state around the buggy address:
+ ffffc9000b90fa00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffc9000b90fa80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffffc9000b90fb00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                               ^
+ ffffc9000b90fb80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffc9000b90fc00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
 
-> Let's see if there's a less invasive solution to fix CPPC for now, what
-> do you think?
 
-For me, this change is required in the API despite how CPPC ends up
-using it. Else we are failing at defining the API itself IMHO.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
--- 
-viresh
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
