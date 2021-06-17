@@ -2,141 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FD93AAACE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607163AAAF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhFQFUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 01:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbhFQFUF (ORCPT
+        id S231207AbhFQFVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 01:21:03 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36750 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229912AbhFQFUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 01:20:05 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4527BC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:17:58 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id c15so2218193pls.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:17:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xAYIayTyQWOR4kwnnPVSbR+poJOlYjZtcTLhmbfPzAQ=;
-        b=JXUfqMzbk4vTdFXd7JVYXz/J3FA+a4JJ8hFZTrrJH45zYhi9hpJQ5Jjs/ODCqdaLI/
-         GHJ0C4A1aZOmalQRR+HRIFhlzhAZmnIUsKawZkBSaSE+lcapV+DfYAnXeHtu9evbdVP3
-         Uoo2vfMue6SjRzfjVOrbaQnHt/mqC04rvlvFjd8Kf8KO8pDo1ZvaorXqJ/WZd+F9L59C
-         d6nAN1lnGp+6wr0JtMlrVF+RE1jWUJSu4KUckItYyqjol8VIcGBekw1au+1yb8YvGtk/
-         mbd1ry5wVvg85evMjSvaKgP+ejoIc24+v82F2//+c0JPCUaEysQzlvX50XDc8QNz6ZYm
-         W/ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xAYIayTyQWOR4kwnnPVSbR+poJOlYjZtcTLhmbfPzAQ=;
-        b=OBwgCY2nYetTW9HRIJYQRDcFIgfQ6nKbsefZB3m1L/Dqiph4Yrd/l4qJKCDk+glMzd
-         dTblV8ol3/y4GOW9y11rPJ7/GE6pO4EGwrphtLDyaScq2z7mHw7AFlL7Vnt2BXOo74zk
-         OoaSag0jNl5NEANlSvjeMIZOZWCeb12Du17egt12Zxfoi58hEEbMZwZ/6y7hUCQ28WkN
-         71GAh9mgyJ3MTiCtnmqa/iYnvufrEcHc2FjAXz0jZNfM7KUuI4Aq+OSAVPYaZkjDu0XU
-         FN79QxK3Q25L9IK+VfTJRW2rGgpnKuhjLqu+RTKECZvC8D6oEOV4qxnJtvd78mpfD+bI
-         XczA==
-X-Gm-Message-State: AOAM530Ac+lBqbY+cypbPOKaVOQRcrHlMxa83e6yE7Rgb/sBSGoPyLjx
-        m8Ps9eeE+yfzHnLxmHtXvMDb1w==
-X-Google-Smtp-Source: ABdhPJx+sZ2dJXNI8fLLjYkjBGfkdJ1HXNYG5KHK0JRdn/NvwrIUfcuMdFPuKrJvDqocnDg2mM9KWw==
-X-Received: by 2002:a17:903:31c9:b029:ed:6f56:9d1e with SMTP id v9-20020a17090331c9b02900ed6f569d1emr2930145ple.46.1623907077816;
-        Wed, 16 Jun 2021 22:17:57 -0700 (PDT)
-Received: from localhost.name ([122.177.46.2])
-        by smtp.gmail.com with ESMTPSA id 188sm3900893pfz.146.2021.06.16.22.17.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 22:17:57 -0700 (PDT)
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, lgirdwood@gmail.com,
-        Mark Brown <broonie@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH v3 5/5] regulator: qcom-rpmh: Add new regulator found on SA8155p adp board
-Date:   Thu, 17 Jun 2021 10:47:12 +0530
-Message-Id: <20210617051712.345372-6-bhupesh.sharma@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210617051712.345372-1-bhupesh.sharma@linaro.org>
-References: <20210617051712.345372-1-bhupesh.sharma@linaro.org>
+        Thu, 17 Jun 2021 01:20:51 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15H5GwbR024540;
+        Thu, 17 Jun 2021 07:18:22 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=wOdBXreJaHkgnJPvNm4hYfpoNn+S6pHPol0liOPRIiU=;
+ b=z2FJjBB/w2uA5A+cWou9jrm6EYx+w+CADfX01bkmiFfpARBIZdKZimnWuhp8+mLUtM1l
+ UMYGy5ARGz3af0xutqIioJPfOiARV4iuQKMwdaMFgJWDTa5NrLCc1lmzMlShe1V526rz
+ BZl9n/jOaktT6Tn6yaZBKKUhqau/6KvmG6fM2ire7cPKMBrTem4QwqdnsX53nKiKRUDl
+ ogHHykzDSKCoL2UOS0GJp0cFqM2MFfHWEBFfd970JfNMOou9PvYIVvBlQVT+jUrv1Jf7
+ QFkHbk1LXgLw6djYai/X8/2gDr+vwvSjd+hYR321q1hW4TUMjqRG/4jI+mn5+4a0ieE3 EQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 397p55arr4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 07:18:22 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 40D1D10002A;
+        Thu, 17 Jun 2021 07:18:20 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 18095211278;
+        Thu, 17 Jun 2021 07:18:20 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Jun 2021 07:18:19
+ +0200
+From:   <gabriel.fernandez@foss.st.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Etienne Carriere <etienne.carriere@foss.st.com>,
+        Gabriel Fernandez <gabriel.fernandez@foss.st.com>,
+        <marex@denx.de>
+CC:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [RESEND PATCH v3 00/11] Introduce STM32MP1 RCC in secured mode
+Date:   Thu, 17 Jun 2021 07:18:03 +0200
+Message-ID: <20210617051814.12018-1-gabriel.fernandez@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-17_01:2021-06-15,2021-06-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SA8155p-adp board supports a new regulator - pmm8155au.
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 
-The output power management circuits in this regulator include:
-- FTS510 smps,
-- HFS510 smps, and
-- LDO510 linear regulators
+Platform STM32MP1 can be used in configuration where some clocks and
+IP resets can relate as secure resources.
+These resources are moved from a RCC clock/reset handle to a SCMI
+clock/reset_domain handle.
 
-Add support for the same.
+The RCC clock driver is now dependent of the SCMI driver, then we have
+to manage now the probe defering.
 
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
----
- drivers/regulator/qcom-rpmh-regulator.c | 36 +++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+v2 -> v3:
+  - use determine_rate op instead of round_rate for ck_rtc
+  - remove DT patches from patchset to keek Kernel device tree as there are in basic boot.
+     We will applied scmi clock phandle thanks dtbo in U-boot.
+v1 -> v2:
+  - fix yamllint warnings.
 
-diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
-index af41a517da99..6cca910a76de 100644
---- a/drivers/regulator/qcom-rpmh-regulator.c
-+++ b/drivers/regulator/qcom-rpmh-regulator.c
-@@ -883,6 +883,38 @@ static const struct rpmh_vreg_init_data pm8150l_vreg_data[] = {
- 	{}
- };
- 
-+static const struct rpmh_vreg_init_data pmm8155au_vreg_data[] = {
-+	RPMH_VREG("smps1",  "smp%s1",  &pmic5_ftsmps510, "vdd-s1"),
-+	RPMH_VREG("smps2",  "smp%s2",  &pmic5_ftsmps510, "vdd-s2"),
-+	RPMH_VREG("smps3",  "smp%s3",  &pmic5_ftsmps510, "vdd-s3"),
-+	RPMH_VREG("smps4",  "smp%s4",  &pmic5_hfsmps510, "vdd-s4"),
-+	RPMH_VREG("smps5",  "smp%s5",  &pmic5_hfsmps510, "vdd-s5"),
-+	RPMH_VREG("smps6",  "smp%s6",  &pmic5_ftsmps510, "vdd-s6"),
-+	RPMH_VREG("smps7",  "smp%s7",  &pmic5_ftsmps510, "vdd-s7"),
-+	RPMH_VREG("smps8",  "smp%s8",  &pmic5_ftsmps510, "vdd-s8"),
-+	RPMH_VREG("smps9",  "smp%s9",  &pmic5_ftsmps510, "vdd-s9"),
-+	RPMH_VREG("smps10", "smp%s10", &pmic5_ftsmps510, "vdd-s10"),
-+	RPMH_VREG("ldo1",   "ldo%s1",  &pmic5_nldo,      "vdd-l1-l8-l11"),
-+	RPMH_VREG("ldo2",   "ldo%s2",  &pmic5_pldo,      "vdd-l2-l10"),
-+	RPMH_VREG("ldo3",   "ldo%s3",  &pmic5_nldo,      "vdd-l3-l4-l5-l18"),
-+	RPMH_VREG("ldo4",   "ldo%s4",  &pmic5_nldo,      "vdd-l3-l4-l5-l18"),
-+	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_nldo,      "vdd-l3-l4-l5-l18"),
-+	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_nldo,      "vdd-l6-l9"),
-+	RPMH_VREG("ldo7",   "ldo%s7",  &pmic5_pldo_lv,   "vdd-l7-l12-l14-l15"),
-+	RPMH_VREG("ldo8",   "ldo%s8",  &pmic5_nldo,      "vdd-l1-l8-l11"),
-+	RPMH_VREG("ldo9",   "ldo%s9",  &pmic5_nldo,      "vdd-l6-l9"),
-+	RPMH_VREG("ldo10",  "ldo%s10", &pmic5_pldo,      "vdd-l2-l10"),
-+	RPMH_VREG("ldo11",  "ldo%s11", &pmic5_nldo,      "vdd-l1-l8-l11"),
-+	RPMH_VREG("ldo12",  "ldo%s12", &pmic5_pldo_lv,   "vdd-l7-l12-l14-l15"),
-+	RPMH_VREG("ldo13",  "ldo%s13", &pmic5_pldo,      "vdd-l13-l16-l17"),
-+	RPMH_VREG("ldo14",  "ldo%s14", &pmic5_pldo_lv,   "vdd-l7-l12-l14-l15"),
-+	RPMH_VREG("ldo15",  "ldo%s15", &pmic5_pldo_lv,   "vdd-l7-l12-l14-l15"),
-+	RPMH_VREG("ldo16",  "ldo%s16", &pmic5_pldo,      "vdd-l13-l16-l17"),
-+	RPMH_VREG("ldo17",  "ldo%s17", &pmic5_pldo,      "vdd-l13-l16-l17"),
-+	RPMH_VREG("ldo18",  "ldo%s18", &pmic5_nldo,      "vdd-l3-l4-l5-l18"),
-+	{}
-+};
-+
- static const struct rpmh_vreg_init_data pm8350_vreg_data[] = {
- 	RPMH_VREG("smps1",  "smp%s1",  &pmic5_ftsmps510, "vdd-s1"),
- 	RPMH_VREG("smps2",  "smp%s2",  &pmic5_ftsmps510, "vdd-s2"),
-@@ -1177,6 +1209,10 @@ static const struct of_device_id __maybe_unused rpmh_regulator_match_table[] = {
- 		.compatible = "qcom,pmc8180c-rpmh-regulators",
- 		.data = pm8150l_vreg_data,
- 	},
-+	{
-+		.compatible = "qcom,pmm8155au-rpmh-regulators",
-+		.data = pmm8155au_vreg_data,
-+	},
- 	{
- 		.compatible = "qcom,pmx55-rpmh-regulators",
- 		.data = pmx55_vreg_data,
+Gabriel Fernandez (11):
+  clk: stm32mp1: merge 'clk-hsi-div' and 'ck_hsi' into one clock
+  clk: stm32mp1: merge 'ck_hse_rtc' and 'ck_rtc' into one clock
+  clk: stm32mp1: remove intermediate pll clocks
+  clk: stm32mp1: convert to module driver
+  clk: stm32mp1: move RCC reset controller into RCC clock driver
+  reset: stm32mp1: remove stm32mp1 reset
+  dt-bindings: clock: add IDs for SCMI clocks on stm32mp15
+  dt-bindings: reset: add IDs for SCMI reset domains on stm32mp15
+  dt-bindings: reset: add MCU HOLD BOOT ID for SCMI reset domains on
+    stm32mp15
+  dt-bindings: clock: stm32mp1 new compatible for secure rcc
+  clk: stm32mp1: new compatible for secure RCC support
+
+ .../bindings/clock/st,stm32mp1-rcc.yaml       |   6 +-
+ drivers/clk/Kconfig                           |  10 +
+ drivers/clk/clk-stm32mp1.c                    | 500 +++++++++++++++---
+ drivers/reset/Kconfig                         |   6 -
+ drivers/reset/Makefile                        |   1 -
+ drivers/reset/reset-stm32mp1.c                | 115 ----
+ include/dt-bindings/clock/stm32mp1-clks.h     |  27 +
+ include/dt-bindings/reset/stm32mp1-resets.h   |  15 +
+ 8 files changed, 469 insertions(+), 211 deletions(-)
+ delete mode 100644 drivers/reset/reset-stm32mp1.c
+
 -- 
-2.31.1
+2.17.1
 
