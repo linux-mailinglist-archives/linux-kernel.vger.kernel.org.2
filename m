@@ -2,81 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAC33ABCD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20EBD3ABCDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233543AbhFQTfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 15:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhFQTfS (ORCPT
+        id S233604AbhFQTg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 15:36:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39144 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233572AbhFQTgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 15:35:18 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878F3C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 12:33:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MwRWhtxF23aeMiI4qPp+QqfLbIRWW43NooDmTPhXArg=; b=n/5FgNghKyjRWo6t6NaYB/qmZ9
-        LgDrJHPlHqdHK3+mD+/cmV2VVofL4Qw0lu8Bg09J+p+DLIQm4I6oZwk0WOxT5Tg2Whsop12F6PcNr
-        OItOsPGcGpH2rx+l3vdR6z+wWLvuG1nEfQnwxwBka8Ltq5MiG+Qet8f15J4XwQfx2XgvcztUVk8BL
-        WKMdF/iuYowhLfFFtZysSLdwYG7bvtMsQIjLWUdr9oM2kQ7cAB+Ki1iWxrnUvGesez1Zt3IlvSDUA
-        Cgv5MyQQ9z7TWFU0Ub7Pa+9Plr3GGl+yAUf0PcyOx+WwuVTBsZt38oOvv+kodFf6GLZzLafF9c1cD
-        6ZZtge/A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltxkv-008v2P-Mv; Thu, 17 Jun 2021 19:32:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C3DC33001DB;
-        Thu, 17 Jun 2021 21:32:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A9A0620244CE2; Thu, 17 Jun 2021 21:32:55 +0200 (CEST)
-Date:   Thu, 17 Jun 2021 21:32:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, acme@kernel.org,
-        mark.rutland@arm.com, ak@linux.intel.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        jolsa@redhat.com
-Subject: Re: [PATCH 0/4] perf: Fix the ctx->pmu for a hybrid system
-Message-ID: <YMujZ7a/8ToWXzo+@hirez.programming.kicks-ass.net>
-References: <1623869734-133974-1-git-send-email-kan.liang@linux.intel.com>
- <YMsiiuUsjsrh8ZAC@hirez.programming.kicks-ass.net>
- <YMsy7BuGT8nBTspT@hirez.programming.kicks-ass.net>
- <3d4b9377-30b0-a945-7b11-b412dcc4c51a@linux.intel.com>
+        Thu, 17 Jun 2021 15:36:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623958484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0QVbZGtUMKX0YcURF5RZf3wyVH9YC9/0j+v5ommj7wg=;
+        b=asZppxByX/HXHmwC5Lti2UI1MP3g31E9b7pPpmVbBNXy2VFMmnuFlSIWjJdj21pOatRrpE
+        YWaAI/zt0Zi5u6lcmpJIt72iSVzojAo3HAwwFM/z8Nt7xZBIxNaMO8TR3xaTPfvIxVuW8v
+        n+3aXoM95f3BhExFqMvzQmlmMsBmK9k=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-224-jbL73_L9NNOarvbAH9CH-w-1; Thu, 17 Jun 2021 15:34:31 -0400
+X-MC-Unique: jbL73_L9NNOarvbAH9CH-w-1
+Received: by mail-lf1-f70.google.com with SMTP id p6-20020a0565123126b02902cafc21ffbbso3048650lfd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 12:34:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0QVbZGtUMKX0YcURF5RZf3wyVH9YC9/0j+v5ommj7wg=;
+        b=coaUi6rSNnYtFI7w9BNulkw4BkY2ja+Cvadu7CLHD3WgDCqAAzLNxLi7w//prVOZV+
+         xfgzDYTwaeAIw8Xu6aJLN2kImuJkAyId140chQi6SFjC5l5BCoZu3eK00+ycf0S5EE7m
+         kb7OvQkFmnTSpuRi+5u8VGUaSgenV5d282bRgR8e5FX+OCc3ZQYj81QD6ahUOEgEO1kF
+         8SagxBFa9t5RTiSyjFuVWfJ8vPb/mAwXUQdmQ9mzk3M8n/mwGzm24mdXHEanUM5eTWhU
+         FokAYLnSFE+4Od9BkijEFD3gUVHR592rENgk5TIBqMVVFYlYIrJ+UBxYKM3hBc/avE8q
+         Cx6w==
+X-Gm-Message-State: AOAM531Zm52I9l/2mCA4Xqnvj8GAbwWa3I6GZuUybDBHnIMWiNFqktQz
+        iI7z6tk3gyYhqoVnM55U4cqKWGZkErG07NxbY2+T43iFwAvS10d54YEoplqPckflbgS1n0QHVFM
+        VfBCUAdWPusdbXGL8OfTil2Yxn0qzgZWCa1HhcaD0
+X-Received: by 2002:a05:6512:3d15:: with SMTP id d21mr5249810lfv.252.1623958470380;
+        Thu, 17 Jun 2021 12:34:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxHcTsgvmvxoF61BXQGGx1dFhjz2R0T1Tg7FJZcTOE3TdflaZaCIihOhmtf7XN6SK1XYVxxcMtvKOgOo8AUTTw=
+X-Received: by 2002:a05:6512:3d15:: with SMTP id d21mr5249784lfv.252.1623958470194;
+ Thu, 17 Jun 2021 12:34:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d4b9377-30b0-a945-7b11-b412dcc4c51a@linux.intel.com>
+References: <20210617182242.8637-1-nitesh@redhat.com> <20210617182242.8637-5-nitesh@redhat.com>
+ <ddee52a6-ac70-6e2d-b48e-e9bf38c94265@arm.com>
+In-Reply-To: <ddee52a6-ac70-6e2d-b48e-e9bf38c94265@arm.com>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Thu, 17 Jun 2021 15:34:18 -0400
+Message-ID: <CAFki+LkTqThGZDGui4N6Ko-Z8PMPtX7m-KPm0BM4SvbAxrOqVw@mail.gmail.com>
+Subject: Re: [PATCH v1 04/14] scsi: megaraid_sas: Use irq_set_affinity_and_hint
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
+        tglx@linutronix.de, jesse.brandeburg@intel.com,
+        mtosatti@redhat.com, mingo@kernel.org, jbrandeb@kernel.org,
+        frederic@kernel.org, juri.lelli@redhat.com, abelits@marvell.com,
+        bhelgaas@google.com, rostedt@goodmis.org, peterz@infradead.org,
+        davem@davemloft.net, akpm@linux-foundation.org,
+        sfr@canb.auug.org.au, stephen@networkplumber.org,
+        rppt@linux.vnet.ibm.com, chris.friesen@windriver.com,
+        maz@kernel.org, nhorman@tuxdriver.com, pjwaskiewicz@gmail.com,
+        sassmann@redhat.com, thenzl@redhat.com, kashyap.desai@broadcom.com,
+        sumit.saxena@broadcom.com, shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
+        dick.kennedy@broadcom.com, jkc@redhat.com, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, tariqt@nvidia.com, ahleihel@redhat.com,
+        kheib@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
+        benve@cisco.com, govind@gmx.com, jassisinghbrar@gmail.com,
+        luobin9@huawei.com, ajit.khaparde@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 10:10:37AM -0400, Liang, Kan wrote:
-> I think all the perf_sw_context PMUs share the same pmu_cpu_context. so the
-> cpuctx->ctx.pmu should be always the first registered perf_sw_context PMU
-> which is perf_swevent. The ctx->pmu could be another software PMU.
+On Thu, Jun 17, 2021 at 3:31 PM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2021-06-17 19:22, Nitesh Narayan Lal wrote:
+> > The driver uses irq_set_affinity_hint() specifically for the high IOPS
+> > queue interrupts for two purposes:
+> >
+> > - To set the affinity_hint which is consumed by the userspace for
+> >    distributing the interrupts
+> >
+> > - To apply an affinity that it provides
+> >
+> > The driver enforces its own affinity to bind the high IOPS queue interrupts
+> > to the local NUMA node. However, irq_set_affinity_hint() applying the
+> > provided cpumask as an affinity for the interrupt is an undocumented side
+> > effect.
+> >
+> > To remove this side effect irq_set_affinity_hint() has been marked
+> > as deprecated and new interfaces have been introduced. Hence, replace the
+> > irq_set_affinity_hint() with the new interface irq_set_affinity_and_hint()
+> > that clearly indicates the purpose of the usage and is meant to apply the
+> > affinity and set the affinity_hint pointer. Also, replace
+> > irq_set_affinity_hint() with irq_update_affinity_hint() when only
+> > affinity_hint needs to be updated.
+> >
+> > Change the megasas_set_high_iops_queue_affinity_hint function name to
+> > megasas_set_high_iops_queue_affinity_and_hint to clearly indicate that the
+> > function is setting both affinity and affinity_hint.
+> >
+> > Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> > ---
+> >   drivers/scsi/megaraid/megaraid_sas_base.c | 25 ++++++++++++++---------
+> >   1 file changed, 15 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+> > index 4d4e9dbe5193..54f4eac09589 100644
+> > --- a/drivers/scsi/megaraid/megaraid_sas_base.c
+> > +++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+> > @@ -5666,7 +5666,7 @@ megasas_setup_irqs_msix(struct megasas_instance *instance, u8 is_probe)
+> >                               "Failed to register IRQ for vector %d.\n", i);
+> >                       for (j = 0; j < i; j++) {
+> >                               if (j < instance->low_latency_index_start)
+> > -                                     irq_set_affinity_hint(
+> > +                                     irq_update_affinity_hint(
+> >                                               pci_irq_vector(pdev, j), NULL);
+> >                               free_irq(pci_irq_vector(pdev, j),
+> >                                        &instance->irq_context[j]);
+> > @@ -5709,7 +5709,7 @@ megasas_destroy_irqs(struct megasas_instance *instance) {
+> >       if (instance->msix_vectors)
+> >               for (i = 0; i < instance->msix_vectors; i++) {
+> >                       if (i < instance->low_latency_index_start)
+> > -                             irq_set_affinity_hint(
+> > +                             irq_update_affinity_hint(
+> >                                   pci_irq_vector(instance->pdev, i), NULL);
+> >                       free_irq(pci_irq_vector(instance->pdev, i),
+> >                                &instance->irq_context[i]);
+> > @@ -5840,22 +5840,27 @@ int megasas_get_device_list(struct megasas_instance *instance)
+> >   }
+> >
+> >   /**
+> > - * megasas_set_high_iops_queue_affinity_hint -       Set affinity hint for high IOPS queues
+> > - * @instance:                                        Adapter soft state
+> > - * return:                                   void
+> > + * megasas_set_high_iops_queue_affinity_and_hint -   Set affinity and hint
+> > + *                                                   for high IOPS queues
+> > + * @instance:                                                Adapter soft state
+> > + * return:                                           void
+> >    */
+> >   static inline void
+> > -megasas_set_high_iops_queue_affinity_hint(struct megasas_instance *instance)
+> > +megasas_set_high_iops_queue_affinity_and_hint(struct megasas_instance *instance)
+> >   {
+> >       int i;
+> > +     unsigned int irq;
+> >       int local_numa_node;
+> > +     const struct cpumask *mask;
+> >
+> >       if (instance->perf_mode == MR_BALANCED_PERF_MODE) {
+> >               local_numa_node = dev_to_node(&instance->pdev->dev);
+>
+> Drive-by nit: you could assign mask in this scope.
+>
 
-Is there actually anything that relies on that? IIRC the sw pmus only
-use event->pmu->foo() methods (exactly because the ctx->pmu is
-unreliable for them).
+Sure
 
-> In theory, the perf_sw_context PMUs should have a similar issue. If the
-> events are from different perf_sw_context PMUs, we should perf_pmu_disable()
-> all of the PMUs before schedule them, but the ctx->pmu only tracks the first
-> one.
-> 
-> I don't have a good way to fix the perf_sw_context PMUs. I think we have to
-> go through the event list and find all PMUs. But I don't think it's worth
-> doing.
+> > -             for (i = 0; i < instance->low_latency_index_start; i++)
+> > -                     irq_set_affinity_hint(pci_irq_vector(instance->pdev, i),
+> > -                             cpumask_of_node(local_numa_node));
+> > +             for (i = 0; i < instance->low_latency_index_start; i++) {
+> > +                     irq = pci_irq_vector(instance->pdev, i);
+> > +                     mask = cpumask_of_node(local_numa_node);
+> > +                     irq_update_affinity_hint(irq, mask);
+>
+> And this doesn't seem to match what the commit message says?
+>
 
-Yeah, the software PMUs are misserable, they're one of the things I wish
-I'd done differently. Cleaning that up is *somewhere* on the TODO list.
+Clearly, thanks for catching it.
+This should be irq_set_affinity_and_hint().
 
-So I *think* it should work as is and we can avoid the extra check, but
-let me know what actual testing does.
+> Robin.
+>
+> > +             }
+> >       }
+> >   }
+> >
+> > @@ -5944,7 +5949,7 @@ megasas_alloc_irq_vectors(struct megasas_instance *instance)
+> >               instance->msix_vectors = 0;
+> >
+> >       if (instance->smp_affinity_enable)
+> > -             megasas_set_high_iops_queue_affinity_hint(instance);
+> > +             megasas_set_high_iops_queue_affinity_and_hint(instance);
+> >   }
+> >
+> >   /**
+> >
+>
+
+
+-- 
+Thanks
+Nitesh
+
