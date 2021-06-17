@@ -2,183 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C543AAB0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300BD3AAB0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhFQFes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 01:34:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhFQFeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 01:34:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D793D613DF;
-        Thu, 17 Jun 2021 05:32:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623907959;
-        bh=17mY8uulhVndheqRcx5OgpB9j7P+oGlGE8QxNKUfcy0=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=tUpRlzj1v4+E5IgbjYIIwxCAzwHW2mIjA1hoi39H0AbTkblAL2umRUVfJtB/F/I+/
-         zuMfOgtQjZqZRrHUIja/6V1LWWieTHXM8ZNvgN5ko4SCuyyZqLHQgasR4QYwU5PNea
-         cJiQ/KZjanCdfxKPRSW3cxK78GRHUhLgcp1Pow0wNE5xJyKjTBNJbyTACusU1kTx2O
-         SUfh3c+Q/IXZAfNpl4ef9TqJXlfBQBnhDa7gacX+dzy9H9dQkLbvwR7/EU/U79tc3i
-         ae1f9tkomIaaZdfAnlMRal/Zyl6QpvtGPKZFllq05Kz8HfjPl8POX4wtJS5x3/0esv
-         WuzLjkWAUJurA==
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id EC26F27C0054;
-        Thu, 17 Jun 2021 01:32:37 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute2.internal (MEProxy); Thu, 17 Jun 2021 01:32:37 -0400
-X-ME-Sender: <xms:dd7KYHw4xnOseSIUg2a0fs-1fL1S8X85JA5uRupTPLfRn29Db4cBKA>
-    <xme:dd7KYPSQa0Si0UV8TexR9guPX5xmo9fN2rrP_Hz0F3WaQyL2h_-qJKMEHkjcpNWgh
-    AHtvtmigQcphH8zdJ8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeftddgledvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
-    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepuefgueefveekhedvtdffgfekleehgfekheevteegieekgeehiedv
-    fffgjeetudfhnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhguhidomhgvshhmthhprghu
-    thhhphgvrhhsohhnrghlihhthidqudduiedukeehieefvddqvdeifeduieeitdekqdhluh
-    htoheppehkvghrnhgvlhdrohhrgheslhhinhhugidrlhhuthhordhush
-X-ME-Proxy: <xmx:dd7KYBVIWPb4tEQdQE8KcR-DtXXhzY7DVW7Sj4K6-Tnt12hvXCw7AQ>
-    <xmx:dd7KYBj7mCJCI_fqjPbfzNdgZb-HUXLiBGgHzx8WIPl3Av6mCpiREw>
-    <xmx:dd7KYJA9HrMARep_kIRirKr8umf7iRNgOoBj8xAOe68ywZmsbgQ-Hw>
-    <xmx:dd7KYDBAa1fuSoufTDI82M9PbtDZnqb9ybBcuQ4OzeC-wq6KD8fUsIQ48mc>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 60BB951C0060; Thu, 17 Jun 2021 01:32:37 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-526-gf020ecf851-fm-20210616.001-gf020ecf8
-Mime-Version: 1.0
-Message-Id: <c3c7a1cf-1c87-42cc-b2d6-cc2df55e5b57@www.fastmail.com>
-In-Reply-To: <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
-References: <cover.1623813516.git.luto@kernel.org>
- <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
- <1623816595.myt8wbkcar.astroid@bobo.none>
- <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
- <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
- <1623893358.bbty474jyy.astroid@bobo.none>
- <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
-Date:   Wed, 16 Jun 2021 22:32:15 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Nicholas Piggin" <npiggin@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Rik van Riel" <riel@surriel.com>
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org,
-        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH 4/8] membarrier: Make the post-switch-mm barrier explicit
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S229560AbhFQFgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 01:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhFQFgt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 01:36:49 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EBBC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:34:42 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id u190so177379pgd.8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:34:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5vymR9vEe1gwFyB1z0N/gT3waUjY8ME8wV8pdxM/FA4=;
+        b=gdm7KB+XnV2iwLdfceOGNsWjtIxYaeqOY89xhyab9IFBN5WTkxN+zAoZ+ljSWyjJHm
+         oPdczqKf12eYRW4tEN1K9vM2J5hioDyKNQo7WBbqShjzcQYtvf3HwyHp7kOKwg3nwuZp
+         aVdQJySvYAdGXDAB3rDPjKaeB6QbIR0eWvgEDzLeGQX9cW2Qcga7VKkv6u1YxN2r4KSD
+         z5AKp6RPpzgf67pFJmwH6ZxOg0+gFBL7fLLdYf/F8+4lME5aNS5gozxIwSyZ8AztAlC1
+         CS4K55CMckfXAsYkk5dr+vnSvRRgz8ly17Lket8WhF+aWeUukl+Iukp//9c6YfgekSoL
+         N1PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5vymR9vEe1gwFyB1z0N/gT3waUjY8ME8wV8pdxM/FA4=;
+        b=lUhsJ/MFeqp6a4o/9mM6nOrFi0mqqkiL5HgtwwGsPgLOln4V4GWfgjKUDMSOQG2qfH
+         9De+d3dTUo3f5vzeCtleY8vWP7ZJDH3Ep6xiD4NY2cubri3/acufyDkiHZktiy+E0ZlE
+         FuAODmF4V1lcFxSuiMwFCLaT5fN4Vvqaaa5iMjGKIMa0Wv17ir5CHqX3dkfALFSK4U/f
+         EpuWVfmUkfnhwd0fxkJfYiippv34MtQjvUUBPp3WqMrQ2EjJv6d2wj6MdlLyPcRW9K8B
+         FL117ApC+LKo0ji1PEONmuADhkUnii/XF3nG/O8I0d2M+wprOXUgMDU0b3BVyLqwCm+I
+         lgiQ==
+X-Gm-Message-State: AOAM530K6PAey4XLo8mSE88XOG7wo45ODJrgrvTnFg5UVj6VHmNcj018
+        q1r1xy6B8gGyk1z8J49URzvDlA==
+X-Google-Smtp-Source: ABdhPJzp3Zjon4xOYV28bQpQM+rS40C5QGV1ys7Wdo8Mri8ZAyc2BtPPzujTjS3udRism8J2LvXRkA==
+X-Received: by 2002:a63:3c17:: with SMTP id j23mr3311249pga.281.1623908082292;
+        Wed, 16 Jun 2021 22:34:42 -0700 (PDT)
+Received: from localhost.name ([122.177.46.2])
+        by smtp.gmail.com with ESMTPSA id m126sm4056405pfb.15.2021.06.16.22.34.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 22:34:41 -0700 (PDT)
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, lgirdwood@gmail.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH v3 0/4] pinctrl: qcom/pinctrl-spmi-gpio: Add support for pmic-gpio on SA8155p-adp
+Date:   Thu, 17 Jun 2021 11:04:28 +0530
+Message-Id: <20210617053432.350486-1-bhupesh.sharma@linaro.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021, at 7:57 PM, Andy Lutomirski wrote:
->=20
->=20
-> On Wed, Jun 16, 2021, at 6:37 PM, Nicholas Piggin wrote:
-> > Excerpts from Andy Lutomirski's message of June 17, 2021 4:41 am:
-> > > On 6/16/21 12:35 AM, Peter Zijlstra wrote:
-> > >> On Wed, Jun 16, 2021 at 02:19:49PM +1000, Nicholas Piggin wrote:
-> > >>> Excerpts from Andy Lutomirski's message of June 16, 2021 1:21 pm=
-:
-> > >>>> membarrier() needs a barrier after any CPU changes mm.  There i=
-s currently
-> > >>>> a comment explaining why this barrier probably exists in all ca=
-ses.  This
-> > >>>> is very fragile -- any change to the relevant parts of the sche=
-duler
-> > >>>> might get rid of these barriers, and it's not really clear to m=
-e that
-> > >>>> the barrier actually exists in all necessary cases.
-> > >>>
-> > >>> The comments and barriers in the mmdrop() hunks? I don't see wha=
-t is=20
-> > >>> fragile or maybe-buggy about this. The barrier definitely exists=
-.
-> > >>>
-> > >>> And any change can change anything, that doesn't make it fragile=
-. My
-> > >>> lazy tlb refcounting change avoids the mmdrop in some cases, but=
- it
-> > >>> replaces it with smp_mb for example.
-> > >>=20
-> > >> I'm with Nick again, on this. You're adding extra barriers for no=
+Changes since v2:
+-----------------
+- v2 series can be found here: https://lore.kernel.org/linux-arm-msm/20210615074543.26700-1-bhupesh.sharma@linaro.org/T/#m8303d27d561b30133992da88198abb78ea833e21 
+- Addressed review comments from Bjorn and Mark.
+- As per suggestion from Bjorn, separated the patches in different
+  patchsets (specific to each subsystem) to ease review and patch application.
 
-> > >> discernible reason, that's not generally encouraged, seeing how e=
-xtra
-> > >> barriers is extra slow.
-> > >>=20
-> > >> Both mmdrop() itself, as well as the callsite have comments sayin=
-g how
-> > >> membarrier relies on the implied barrier, what's fragile about th=
-at?
-> > >>=20
-> > >=20
-> > > My real motivation is that mmgrab() and mmdrop() don't actually ne=
-ed to
-> > > be full barriers.  The current implementation has them being full
-> > > barriers, and the current implementation is quite slow.  So let's =
-try
-> > > that commit message again:
-> > >=20
-> > > membarrier() needs a barrier after any CPU changes mm.  There is c=
-urrently
-> > > a comment explaining why this barrier probably exists in all cases=
-. The
-> > > logic is based on ensuring that the barrier exists on every contro=
-l flow
-> > > path through the scheduler.  It also relies on mmgrab() and mmdrop=
-() being
-> > > full barriers.
-> > >=20
-> > > mmgrab() and mmdrop() would be better if they were not full barrie=
-rs.  As a
-> > > trivial optimization, mmgrab() could use a relaxed atomic and mmdr=
-op()
-> > > could use a release on architectures that have these operations.
-> >=20
-> > I'm not against the idea, I've looked at something similar before (n=
-ot
-> > for mmdrop but a different primitive). Also my lazy tlb shootdown se=
-ries=20
-> > could possibly take advantage of this, I might cherry pick it and te=
-st=20
-> > performance :)
-> >=20
-> > I don't think it belongs in this series though. Should go together w=
-ith
-> > something that takes advantage of it.
->=20
-> I=E2=80=99m going to see if I can get hazard pointers into shape quick=
-ly.
+Changes since v1:
+-----------------
+- v1 series can be found here: https://lore.kernel.org/linux-arm-msm/20210607113840.15435-1-bhupesh.sharma@linaro.org/T/#mc524fe82798d4c4fb75dd0333318955e0406ad18
+- Addressed review comments from Bjorn and Vinod received on the v1
+  series.
 
-Here it is.  Not even boot tested!
+This series adds the pmic-gpio support code for SA8155p-adp board
+which is based on Qualcomm snapdragon sa8155p SoC which in turn is
+simiar to the sm8150 SoC. 
 
-https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=
-=3Dsched/lazymm&id=3Decc3992c36cb88087df9c537e2326efb51c95e31
+This board supports a new PMIC -> PMM8155AU.
 
-Nick, I think you can accomplish much the same thing as your patch by:
+While at it, also make some cosmetic changes to the qcom pinctrl-spmi-gpio
+driver and dt-bindings to make sure the compatibles are 
+in alphabetical order.
 
-#define for_each_possible_lazymm_cpu while (false)
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-although a more clever definition might be even more performant.
+Bhupesh Sharma (4):
+  dt-bindings: pinctrl: qcom,pmic-gpio: Arrange compatibles
+    alphabetically
+  dt-bindings: pinctrl: qcom,pmic-gpio: Add compatible for SA8155p-adp
+  pinctrl: qcom/pinctrl-spmi-gpio: Arrange compatibles alphabetically
+  pinctrl: qcom/pinctrl-spmi-gpio: Add compatible for pmic-gpio on
+    SA8155p-adp
 
-I would appreciate everyone's thoughts as to whether this scheme is sane=
-.
+ .../bindings/pinctrl/qcom,pmic-gpio.txt       | 60 ++++++++++---------
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c      | 33 +++++-----
+ 2 files changed, 48 insertions(+), 45 deletions(-)
 
-Paul, I'm adding you for two reasons.  First, you seem to enjoy bizarre =
-locking schemes.  Secondly, because maybe RCU could actually work here. =
- The basic idea is that we want to keep an mm_struct from being freed at=
- an inopportune time.  The problem with naively using RCU is that each C=
-PU can use one single mm_struct while in an idle extended quiescent stat=
-e (but not a user extended quiescent state).  So rcu_read_lock() is righ=
-t out.  If RCU could understand this concept, then maybe it could help u=
-s, but this seems a bit out of scope for RCU.
+-- 
+2.31.1
 
---Andy
