@@ -2,118 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5B43AAC8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03313AAC8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhFQGl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 02:41:57 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:49281 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229551AbhFQGl4 (ORCPT
+        id S230184AbhFQGmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 02:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229805AbhFQGmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 02:41:56 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id AAA3F5C013E;
-        Thu, 17 Jun 2021 02:39:48 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 17 Jun 2021 02:39:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=/DzQCe
-        zx4ySB6yO+xHiB8fElUQ69/Gax99EYsyjZLbc=; b=DntMJCOWRDqEesqmaPOHiy
-        a7Jux6Uw0HlgUcZ9tw04JsiHBUiyXpY5BfbB8kTt6m6qPkeuquN7uPa16Zn1gINB
-        +lP/sspwcsvvcWXzqhcciJPMd33Gi6wRYctCcHYmFP1Mi51RgrmkVLoCcWKzGtgL
-        FIKbyan2V1Stij809d/Eup6MIGyfyOKICM4aKqEKadaB9zMlgKfSSkpYp8jXEPTR
-        jDN8S1GOF0qPgTAAQHYLWft0nPpiKxpkIzxkV7/hkmr1GJ6gVUInRGKL8b0hdmBY
-        Ye87ucfuhJbQu92+zwBFDP3hh/qzywtKPTZvA92wQe+p7FenfAwcP0OKaVsIuF3w
-        ==
-X-ME-Sender: <xms:NO7KYOLB8lGY762oZBmjGKurjkjjkkkVu82sPOc0wSTvsv9NxCIUbQ>
-    <xme:NO7KYGK12_7DhC4Z-_J2xcWQkda0o2VC-NGEbSruscgvn4ur5NXX6pBVu92Kk3br5
-    raXa9oTFzNeUtM>
-X-ME-Received: <xmr:NO7KYOueOhKBbZf0lv0AdVptIH2Go5xnZplVMIr_BJBa6f8cxe6Vlwc89oz1CwRVx0S58RbJ_VJyIOCjK0wPJU270R6aVQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeftddguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudeh
-    leetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
-    guohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:NO7KYDY4RP0fevjDUjdYvc_f7CRglEgYBg2LKXkgvJuUkiVU9jNYNA>
-    <xmx:NO7KYFY3mAJFY-xa3ym5xjMLOl_4Hz5XJc9wVHYRsQCEWFjGBcxs_g>
-    <xmx:NO7KYPBvtfTnE63PztnfQLpcEKwsoLXcJjmjr0qPkXr0aPAUO9rpIA>
-    <xmx:NO7KYEXKwSHKIQuh2jPHswkZhkGvf2mDPFoO2MarUIsQ7XP7xe9CqA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 17 Jun 2021 02:39:47 -0400 (EDT)
-Date:   Thu, 17 Jun 2021 09:39:43 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-Cc:     jiri@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vadym Kochan <vadym.kochan@plvision.eu>
-Subject: Re: [PATCH net-next] drivers: net: netdevsim: fix devlink_trap
- selftests failing
-Message-ID: <YMruL84N3A3yq1qy@shredder>
-References: <20210616183405.3715-1-oleksandr.mazur@plvision.eu>
+        Thu, 17 Jun 2021 02:42:01 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721F9C06175F;
+        Wed, 16 Jun 2021 23:39:54 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id y15so4203454pfl.4;
+        Wed, 16 Jun 2021 23:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=3c+7D3426Z3aclSIEt2nDTfGpaHgF5oXTySH+Anf78k=;
+        b=DsiA/OHOXeLRPwemFwMe/Zp1PYmbDerspIMt7cOqn3wyfoHLBJj+Ced3CPhNRgpitL
+         xoDu5YUQbKmtfW13GEj429XK4m9QT2oh2k8iVI/pWR8YVQLijUiJtX/Prr9xiHLSqnq+
+         SevVqg+vOkP2MbpF2ejZY3PXcfy7R46aBSHecuYhXuLlQMP83kQXFBYIT+7gZrM8odxd
+         nCBy+Chubtt5D6xx102jkZP+kN39UAUODLAlFiVOE6RL7w6Q00w6DkCq144m848wr431
+         yo/cHpkDFrdzvo6Ek3pPm2zKIW9LL9a5Jxp8UtdrjKf5rBTI4vBLv5S9s3GuuXJHJrCP
+         VnHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=3c+7D3426Z3aclSIEt2nDTfGpaHgF5oXTySH+Anf78k=;
+        b=NxiDS6mCPH5vhBTM+ZkYoKQ3Usu5VKwYotjLw7MTL401hW1xEfzNRgGTT2dU8M/9mN
+         +4OWjm8RUZM4hRgxCTTAMIxD8PZ9LC/0oipOkdjpDw8Dl3N/MBbeaIKtgR8pDnqsgYXe
+         yM1047hIJKjpr6JQ8qyRCp8lwlXfaDEgDRRH1LtZDGW7VwWFxAJVYb1tVke1t/R++msJ
+         lEZxdXSz8mUlq4eDlk893VEfCuvoUvF9LNY2aleroP2L/LGxe/RtHh++o54T8gC8Lbg+
+         eyLoIrW816g1gLIc2O+iige0z0s96kCFwh6eESt7Sx6EuewzQvvGv+gJkNPiHDPIEapC
+         3Y5w==
+X-Gm-Message-State: AOAM532Ij+s9w/W/KwNcIoe7WHWbkLqxjp4VpkO6f82pzKsQhxgPIFtb
+        RkdWiCuEDPJEvJn1MEGNRlE=
+X-Google-Smtp-Source: ABdhPJwecDN3dI4toxn9FfTRz+gyv/a0xyyYpF8hY4fOWjZ2lix0SPGU54VaNJfBFfkkYMFhra6hqA==
+X-Received: by 2002:a63:8c05:: with SMTP id m5mr3549092pgd.223.1623911993924;
+        Wed, 16 Jun 2021 23:39:53 -0700 (PDT)
+Received: from localhost ([223.184.24.109])
+        by smtp.gmail.com with ESMTPSA id s22sm4228256pfd.94.2021.06.16.23.39.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Jun 2021 23:39:52 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 12:09:46 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     sre@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sanjanasrinidhi1810@gmail.com
+Subject: [PATCH] drivers: power: supply: ab8500_charger.c: Add blank line
+ after declaration
+Message-ID: <20210617063946.ziyswdxsk46xw63a@kewl-virtual-machine>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210616183405.3715-1-oleksandr.mazur@plvision.eu>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 09:34:05PM +0300, Oleksandr Mazur wrote:
+Added blank line after declaration
+Removed repetition of "the" in comment block
+Fixed indentation of conditional statement
+Replaced spaces with tabs
+This is done to manintain uniformity in coding style
 
-You need to add a proper commit message here
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+---
+ drivers/power/supply/ab8500_charger.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-> Fixes: a7b3527a43fe ("drivers: net: netdevsim: add devlink trap_drop_counter_get implementation")
-> 
+diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply/ab8500_charger.c
+index ac77c8882d17..4d71e1a769b2 100644
+--- a/drivers/power/supply/ab8500_charger.c
++++ b/drivers/power/supply/ab8500_charger.c
+@@ -237,7 +237,7 @@ struct ab8500_charger_max_usb_in_curr {
+  * @adc_main_charger_c	ADC channel for main charger current
+  * @adc_vbus_v		ADC channel for USB charger voltage
+  * @adc_usb_charger_c	ADC channel for USB charger current
+- * @bm:           	Platform specific battery management information
++ * @bm:			Platform specific battery management information
+  * @flags:		Structure for information about events triggered
+  * @usb_state:		Structure for usb stack information
+  * @max_usb_in_curr:	Max USB charger input current
+@@ -1059,6 +1059,7 @@ static int ab8500_vbus_in_curr_to_regval(struct ab8500_charger *di, int curr)
+ static int ab8500_charger_get_usb_cur(struct ab8500_charger *di)
+ {
+ 	int ret = 0;
++
+ 	switch (di->usb_state.usb_current) {
+ 	case 100:
+ 		di->max_usb_in_curr.usb_type_max = USB_CH_IP_CUR_LVL_0P09;
+@@ -1206,6 +1207,7 @@ static int ab8500_charger_set_current(struct ab8500_charger *di,
+ 		}
+ 	} else {
+ 		bool allow = true;
++
+ 		for (i = prev_curr_index + 1; i <= curr_index && allow; i++) {
+ 			dev_dbg(di->dev, "curr change_2 to: %x for 0x%02x\n",
+ 				(u8)i << shift_value, reg);
+@@ -1893,6 +1895,7 @@ static int ab8500_charger_get_ext_psy_data(struct device *dev, void *data)
+ 	/* Go through all properties for the psy */
+ 	for (j = 0; j < ext->desc->num_properties; j++) {
+ 		enum power_supply_property prop;
++
+ 		prop = ext->desc->properties[j];
+ 
+ 		if (power_supply_get_property(ext, prop, &ret))
+@@ -1922,7 +1925,7 @@ static int ab8500_charger_get_ext_psy_data(struct device *dev, void *data)
+  * Due to a asic bug it is necessary to lower the input current to the vbus
+  * charger when charging with at some specific levels. This issue is only valid
+  * for below a certain battery voltage. This function makes sure that the
+- * the allowed current limit isn't exceeded.
++ * allowed current limit isn't exceeded.
+  */
+ static void ab8500_charger_check_vbat_work(struct work_struct *work)
+ {
+@@ -1958,7 +1961,7 @@ static void ab8500_charger_check_vbat_work(struct work_struct *work)
+ 	 */
+ 	if (di->vbat < (VBAT_TRESH_IP_CUR_RED + 100) &&
+ 		(di->vbat > (VBAT_TRESH_IP_CUR_RED - 100)))
+-			t = 1;
++		t = 1;
+ 
+ 	queue_delayed_work(di->charger_wq, &di->check_vbat_work, t * HZ);
+ }
+-- 
+2.17.1
 
-No blank line between Fixes and SoB
-
-> Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-> ---
-> Test-results:
-> selftests: drivers/net/netdevsim: devlink_trap.sh
-> TEST: Initialization                                                [ OK ]
-> TEST: Trap action                                                   [ OK ]
-> TEST: Trap metadata                                                 [ OK ]
-> TEST: Non-existing trap                                             [ OK ]
-> TEST: Non-existing trap action                                      [ OK ]
-> TEST: Trap statistics                                               [ OK ]
-> TEST: Trap group action                                             [ OK ]
-> TEST: Non-existing trap group                                       [ OK ]
-> TEST: Trap group statistics                                         [ OK ]
-> TEST: Trap policer                                                  [ OK ]
-> TEST: Trap policer binding                                          [ OK ]
-> TEST: Port delete                                                   [ OK ]
-> TEST: Device delete                                                 [ OK ]
-
-This can be in the commit message
-
-> ---
->  drivers/net/netdevsim/dev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
-> index d85521989753..aad5e3d4a2b6 100644
-> --- a/drivers/net/netdevsim/dev.c
-> +++ b/drivers/net/netdevsim/dev.c
-> @@ -269,7 +269,7 @@ static int nsim_dev_debugfs_init(struct nsim_dev *nsim_dev)
->  		err = PTR_ERR(nsim_dev->nodes_ddir);
->  		goto err_out;
->  	}
-> -	debugfs_create_bool("fail_trap_counter_get", 0600,
-> +	debugfs_create_bool("fail_trap_drop_counter_get", 0600,
->  			    nsim_dev->ddir,
->  			    &nsim_dev->fail_trap_counter_get);
-
-Please change the name of the variable to match the name of the
-corresponding debugfs file
-
->  	nsim_udp_tunnels_debugfs_create(nsim_dev);
-> -- 
-> 2.17.1
-> 
