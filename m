@@ -2,67 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869C23AAAA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E783AAAA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhFQFJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 01:09:40 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:11045 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhFQFJh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 01:09:37 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G592l1qbYzZflX;
-        Thu, 17 Jun 2021 13:04:31 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 13:07:27 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 17 Jun
- 2021 13:07:26 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <elder@kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>
-Subject: [PATCH net-next] net: ipa: Add missing of_node_put() in ipa_firmware_load()
-Date:   Thu, 17 Jun 2021 13:11:19 +0800
-Message-ID: <20210617051119.1153120-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S229783AbhFQFOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 01:14:43 -0400
+Received: from verein.lst.de ([213.95.11.211]:57035 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229495AbhFQFOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 01:14:42 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 91CAC68C4E; Thu, 17 Jun 2021 07:12:32 +0200 (CEST)
+Date:   Thu, 17 Jun 2021 07:12:32 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Dominique MARTINET <dominique.martinet@atmark-techno.com>
+Cc:     Konrad Rzeszutek Wilk <konrad@darnok.org>,
+        Jianxiong Gao <jxgao@google.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lukas Hartmann <lukas@mntmn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Marc Orr <marcorr@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Peter Gonda <pgonda@google.com>
+Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb)
+ stable/for-linus-5.12)
+Message-ID: <20210617051232.GB27192@lst.de>
+References: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local> <YL7XXNOnbaDgmTB9@atmark-techno.com> <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com> <20210611062153.GA30906@lst.de> <YMM8Ua0HMmErLIQg@0xbeefdead.lan> <CAMGD6P1v2JoJoxSuAYL8UjdtCaLCc4K_7xzVkumspeb0qn=LBQ@mail.gmail.com> <YMqW+/gQvM+uWUTw@fedora> <YMqZswFnSNKk4Z7B@atmark-techno.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMqZswFnSNKk4Z7B@atmark-techno.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This node pointer is returned by of_parse_phandle() with refcount
-incremented in this function. of_node_put() on it before exiting
-this function.
+On Thu, Jun 17, 2021 at 09:39:15AM +0900, Dominique MARTINET wrote:
+> Konrad Rzeszutek Wilk wrote on Wed, Jun 16, 2021 at 08:27:39PM -0400:
+> > Thank you for testing that - and this is a bummer indeed.
+> 
+> Hm, actually not that surprising if it was working without the offset
+> adjustments and doing non-aligned mappings -- perhaps the nvme code just
+> needs to round the offsets down instead of expecting swiotlb to do it?
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/net/ipa/ipa_main.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 2243e3e5b7ea..f82130db32f6 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -530,6 +530,7 @@ static int ipa_firmware_load(struct device *dev)
- 	}
- 
- 	ret = of_address_to_resource(node, 0, &res);
-+	of_node_put(node);
- 	if (ret) {
- 		dev_err(dev, "error %d getting \"memory-region\" resource\n",
- 			ret);
--- 
-2.25.1
-
+It can't.  The whole point of the series was to keep the original offsets.
