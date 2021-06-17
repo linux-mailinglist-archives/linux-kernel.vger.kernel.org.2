@@ -2,132 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3C73ABF58
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 01:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E4B3ABF6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 01:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233027AbhFQX2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 19:28:34 -0400
-Received: from mail.klausen.dk ([157.90.24.29]:53242 "EHLO mail.klausen.dk"
+        id S232516AbhFQXcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 19:32:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233003AbhFQX2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 19:28:33 -0400
-X-Greylist: delayed 4444 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Jun 2021 19:28:33 EDT
-Subject: Re: [PATCH] loop: Fix missing discard support when using
- LOOP_CONFIGURE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=klausen.dk; s=dkim;
-        t=1623972380;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vbn0+3h5DgI8ES1Iq5xmrf83w+go5eMbfDrACNi+IXI=;
-        b=EEWCeGBCComITFZI0wjYvj4fzKKJPD21r1GbCyHZzX/yBTQlPh1EBQxjkJ0QQfWNsvaXT1
-        CbpEfu0vIK5DQu4oEsdBjAjh6sg6ZJDUyO+MTwZYninaAZs3QWWzJlj06ZZRx3xkQzZiLj
-        zIFOPvDFu1p6qyRCsJGd0jImD71exHg=
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     linux-block@vger.kernel.org, stable@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210617221158.7045-1-kristian@klausen.dk>
- <YMvUw3E51fvezQN/@T590>
-From:   Kristian Klausen <kristian@klausen.dk>
-Message-ID: <8445d1b6-0118-37d4-c927-3b7e6ff480ea@klausen.dk>
-Date:   Fri, 18 Jun 2021 01:26:19 +0200
+        id S231476AbhFQXcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 19:32:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 668C56113E;
+        Thu, 17 Jun 2021 23:30:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623972646;
+        bh=rr/c3XeFS+9sdYq4bUvVJ43Rq1hQvVCPc1yQzRKz0M4=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=WNUjjRc9qiEKd1v6ch2oCBMCLr//p27BpMcgjvENehNLikMoev5Wqn272QTxx71CW
+         3D3qfUT5ju+4mKjQzOKKH9gG669sTY/7NSboz0Exn9xL7XiAsYwisipa8+ZFly/R/o
+         DXSq4guI2oTMIWCnLtIfK2u7Aepnlt6Tlb4iaOHXykPvtPc0PDNGmILxhwM/W20xwP
+         EkxLcDsLyTSrutO0JMWUgmxdcIo9gQkjJat7Q9uy0cpusxn7iT8yBAyZlIVSiyaPd+
+         yrJcoSW9cwD0kiFZO94T+u3eUXoEusH4WrtVqLy3ZnfWy+/EPI7J5AbbnN0JrKQ05d
+         sMIO+8CCUsK0g==
+Date:   Thu, 17 Jun 2021 16:30:43 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Claire Chang <tientzu@chromium.org>
+cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        jxgao@google.com, joonas.lahtinen@linux.intel.com,
+        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        matthew.auld@intel.com, rodrigo.vivi@intel.com,
+        thomas.hellstrom@linux.intel.com
+Subject: Re: [PATCH v13 01/12] swiotlb: Refactor swiotlb init functions
+In-Reply-To: <20210617062635.1660944-2-tientzu@chromium.org>
+Message-ID: <alpine.DEB.2.21.2106171434480.24906@sstabellini-ThinkPad-T480s>
+References: <20210617062635.1660944-1-tientzu@chromium.org> <20210617062635.1660944-2-tientzu@chromium.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <YMvUw3E51fvezQN/@T590>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.06.2021 01.03, Ming Lei wrote:
-> On Fri, Jun 18, 2021 at 12:11:57AM +0200, Kristian Klausen wrote:
->
-> Commit log?
-
-I will try to come up with a commit message. AFAIU the missing call to 
-loop_config_discard() causes the block device to report "no discard 
-support" (best-case) or stale/incorrect discard support (ex: if the loop 
-device was configured with LOOP_SET_STATUS(64) and later LOOP_CONFIGURE).
-
->
->> Cc: <stable@vger.kernel.org> # 5.8.x-
->> Fixes: 3448914e8cc5 ("loop: Add LOOP_CONFIGURE ioctl")
->> Signed-off-by: Kristian Klausen <kristian@klausen.dk>
->> ---
->> Tested like so (without the patch):
->> losetup 2.37<= uses LOOP_CONFIGURE instead of LOOP_SET_STATUS64[1]
->>
->> # fallocate -l100M disk.img
->> # rmmod loop
->> # losetup --version
->> losetup from util-linux 2.36.2
->> # losetup --find --show disk.img
->> /dev/loop0
->> # grep '' /sys/devices/virtual/block/loop0/queue/*discard*
->> /sys/devices/virtual/block/loop0/queue/discard_granularity:4096
->> /sys/devices/virtual/block/loop0/queue/discard_max_bytes:4294966784
->> /sys/devices/virtual/block/loop0/queue/discard_max_hw_bytes:4294966784
->> /sys/devices/virtual/block/loop0/queue/discard_zeroes_data:0
->> /sys/devices/virtual/block/loop0/queue/max_discard_segments:1
->> # losetup -d /dev/loop0
->> # [update util-linux]
->> # losetup --version
->> losetup from util-linux 2.37
->> # rmmod loop
->> # losetup --find --show disk.img
->> /dev/loop0
->> # grep '' /sys/devices/virtual/block/loop0/queue/*discard*
->> /sys/devices/virtual/block/loop0/queue/discard_granularity:0
->> /sys/devices/virtual/block/loop0/queue/discard_max_bytes:0
->> /sys/devices/virtual/block/loop0/queue/discard_max_hw_bytes:0
->> /sys/devices/virtual/block/loop0/queue/discard_zeroes_data:0
->> /sys/devices/virtual/block/loop0/queue/max_discard_segments:1
->>
->>
->> With the patch applied:
->>
->> # losetup --version
->> losetup from util-linux 2.37
->> # rmmod loop
->> # losetup --find --show disk.img
->> /dev/loop0
->> # grep '' /sys/devices/virtual/block/loop0/queue/*discard*
->> /sys/devices/virtual/block/loop0/queue/discard_granularity:4096
->> /sys/devices/virtual/block/loop0/queue/discard_max_bytes:4294966784
->> /sys/devices/virtual/block/loop0/queue/discard_max_hw_bytes:4294966784
->> /sys/devices/virtual/block/loop0/queue/discard_zeroes_data:0
->> /sys/devices/virtual/block/loop0/queue/max_discard_segments:1
->>
->> [1] https://github.com/karelzak/util-linux/pull/1152
->>
->>   drivers/block/loop.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
->> index 76e12f3482a9..ec957f6d8a49 100644
->> --- a/drivers/block/loop.c
->> +++ b/drivers/block/loop.c
->> @@ -1168,6 +1168,8 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
->>   	if (partscan)
->>   		lo->lo_disk->flags &= ~GENHD_FL_NO_PART_SCAN;
->>   
->> +	loop_config_discard(lo);
->> +
-> It could be better to move loop_config_discard() around
-> loop_update_rotational/loop_update_dio(), then we setup everything
-> before updating loop as Lo_bound.
-
-I will move it before loop_update_rotational().
-
->
-> Otherwise, this patch looks fine.
->
->
-> Thanks,
-> Ming
->
-
+On Thu, 17 Jun 2021, Claire Chang wrote:
+> Add a new function, swiotlb_init_io_tlb_mem, for the io_tlb_mem struct
+> initialization to make the code reusable.
+> 
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Tested-by: Stefano Stabellini <sstabellini@kernel.org>
+> Tested-by: Will Deacon <will@kernel.org>
+> ---
+>  kernel/dma/swiotlb.c | 50 ++++++++++++++++++++++----------------------
+>  1 file changed, 25 insertions(+), 25 deletions(-)
+> 
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index 52e2ac526757..47bb2a766798 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -168,9 +168,28 @@ void __init swiotlb_update_mem_attributes(void)
+>  	memset(vaddr, 0, bytes);
+>  }
+>  
+> -int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+> +static void swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
+> +				    unsigned long nslabs, bool late_alloc)
+>  {
+> +	void *vaddr = phys_to_virt(start);
+>  	unsigned long bytes = nslabs << IO_TLB_SHIFT, i;
+> +
+> +	mem->nslabs = nslabs;
+> +	mem->start = start;
+> +	mem->end = mem->start + bytes;
+> +	mem->index = 0;
+> +	mem->late_alloc = late_alloc;
+> +	spin_lock_init(&mem->lock);
+> +	for (i = 0; i < mem->nslabs; i++) {
+> +		mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
+> +		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
+> +		mem->slots[i].alloc_size = 0;
+> +	}
+> +	memset(vaddr, 0, bytes);
+> +}
+> +
+> +int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+> +{
+>  	struct io_tlb_mem *mem;
+>  	size_t alloc_size;
+>  
+> @@ -186,16 +205,8 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+>  	if (!mem)
+>  		panic("%s: Failed to allocate %zu bytes align=0x%lx\n",
+>  		      __func__, alloc_size, PAGE_SIZE);
+> -	mem->nslabs = nslabs;
+> -	mem->start = __pa(tlb);
+> -	mem->end = mem->start + bytes;
+> -	mem->index = 0;
+> -	spin_lock_init(&mem->lock);
+> -	for (i = 0; i < mem->nslabs; i++) {
+> -		mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
+> -		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
+> -		mem->slots[i].alloc_size = 0;
+> -	}
+> +
+> +	swiotlb_init_io_tlb_mem(mem, __pa(tlb), nslabs, false);
+>  
+>  	io_tlb_default_mem = mem;
+>  	if (verbose)
+> @@ -282,8 +293,8 @@ swiotlb_late_init_with_default_size(size_t default_size)
+>  int
+>  swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
+>  {
+> -	unsigned long bytes = nslabs << IO_TLB_SHIFT, i;
+>  	struct io_tlb_mem *mem;
+> +	unsigned long bytes = nslabs << IO_TLB_SHIFT;
+>  
+>  	if (swiotlb_force == SWIOTLB_NO_FORCE)
+>  		return 0;
+> @@ -297,20 +308,9 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
+>  	if (!mem)
+>  		return -ENOMEM;
+>  
+> -	mem->nslabs = nslabs;
+> -	mem->start = virt_to_phys(tlb);
+> -	mem->end = mem->start + bytes;
+> -	mem->index = 0;
+> -	mem->late_alloc = 1;
+> -	spin_lock_init(&mem->lock);
+> -	for (i = 0; i < mem->nslabs; i++) {
+> -		mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
+> -		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
+> -		mem->slots[i].alloc_size = 0;
+> -	}
+> -
+> +	memset(mem, 0, sizeof(*mem));
+> +	swiotlb_init_io_tlb_mem(mem, virt_to_phys(tlb), nslabs, true);
+>  	set_memory_decrypted((unsigned long)tlb, bytes >> PAGE_SHIFT);
+> -	memset(tlb, 0, bytes);
+ 
+This is good for swiotlb_late_init_with_tbl. However I have just noticed
+that mem could also be allocated from swiotlb_init_with_tbl, in which
+case the zeroing is missing. I think we need another memset in
+swiotlb_init_with_tbl as well. Or maybe it could be better to have a
+single memset at the beginning of swiotlb_init_io_tlb_mem instead. Up to
+you.
