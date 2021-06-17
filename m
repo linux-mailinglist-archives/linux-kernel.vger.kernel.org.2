@@ -2,73 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1183AAF13
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484033AAF19
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhFQIyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 04:54:22 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4831 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhFQIyT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:54:19 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G5Fzc0JjjzXglp
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 16:47:08 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 16:52:10 +0800
-Received: from thunder-town.china.huawei.com (10.174.179.0) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 16:52:10 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] hpfs: remove unnecessary oom message
-Date:   Thu, 17 Jun 2021 16:52:03 +0800
-Message-ID: <20210617085203.1332-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S231281AbhFQIyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 04:54:54 -0400
+Received: from phobos.denx.de ([85.214.62.61]:56462 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231276AbhFQIyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 04:54:53 -0400
+Received: from localhost (dslb-084-062-104-230.084.062.pools.vodafone-ip.de [84.62.104.230])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: ch@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 2FD3980488;
+        Thu, 17 Jun 2021 10:52:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1623919964;
+        bh=vC+2dzjgp/JxAjdCV0NbI2OvRkd+qLzEHvMIz/YJSvg=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=JuXzL/8Vx0sFPPmI50+yYILg74j+d8QYUN6Ncd/K6ISsGVbgSCingNM+HLY5NUtFn
+         YZuiUfQgbhGkXbe+dKLp+46Ig4TggRBXQEB3katuNgg88553zS2swFe+6TxrcFLsUJ
+         Bp6XYBlQBhsooL4HyHtOEFLMdgaZT5GaGwqrsTmouHQ6jQJRcZKpi2/EJen0Ltu8lS
+         ySbjZgnsdVhJ9qmN4mpiqhT+0RpdaGh7i+PECUer03CNeU+5/ykYl4B6ysBIvcfrre
+         YU+BHNxVs5vbTueRQHs8Var8BOEEe2ell0M7naE+qrM3lKO1ZrdDqzoqXO1tiMEXcY
+         pLqTRU0Q4Qpxw==
+From:   Claudius Heine <ch@denx.de>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        Marek Vasut <marex@denx.de>, Claudius Heine <ch@denx.de>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Sia Jee Heng <jee.heng.sia@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Annaliese McDermond <nh6z@nh6z.net>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/3] ASoC: tlv320aic32x4: add type to device private data struct
+Date:   Thu, 17 Jun 2021 10:52:28 +0200
+Message-Id: <20210617085230.1851503-2-ch@denx.de>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210617085230.1851503-1-ch@denx.de>
+References: <20210617085230.1851503-1-ch@denx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes scripts/checkpatch.pl warning:
-WARNING: Possible unnecessary 'out of memory' message
+While this driver can already handle different device variants, the
+variant information cannot be used in the driver code and therefor
+cannot have different code paths depending on the device variant.
 
-Remove it can help us save a bit of memory.
+This change adds a `type` value into the `aic32x4_priv` structure, that
+contains a device variant identifier, which was set when the driver was
+bound to the device.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Claudius Heine <ch@denx.de>
 ---
- fs/hpfs/dnode.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/codecs/tlv320aic32x4-i2c.c | 20 ++++++++++++++++----
+ sound/soc/codecs/tlv320aic32x4-spi.c | 23 +++++++++++++++++++----
+ sound/soc/codecs/tlv320aic32x4.c     |  3 +++
+ sound/soc/codecs/tlv320aic32x4.h     |  5 +++++
+ 4 files changed, 43 insertions(+), 8 deletions(-)
 
-diff --git a/fs/hpfs/dnode.c b/fs/hpfs/dnode.c
-index 4ada525c5c43..40edbd6c2b7e 100644
---- a/fs/hpfs/dnode.c
-+++ b/fs/hpfs/dnode.c
-@@ -34,10 +34,8 @@ int hpfs_add_pos(struct inode *inode, loff_t *pos)
- 				return 0;
- 	if (!(i&0x0f)) {
- 		ppos = kmalloc_array(i + 0x11, sizeof(loff_t *), GFP_NOFS);
--		if (!ppos) {
--			pr_err("out of memory for position list\n");
-+		if (!ppos)
- 			return -ENOMEM;
--		}
- 		if (hpfs_inode->i_rddir_off) {
- 			memcpy(ppos, hpfs_inode->i_rddir_off, i * sizeof(loff_t));
- 			kfree(hpfs_inode->i_rddir_off);
+diff --git a/sound/soc/codecs/tlv320aic32x4-i2c.c b/sound/soc/codecs/tlv320aic32x4-i2c.c
+index 6d54cbf70a0b..247fb1e13674 100644
+--- a/sound/soc/codecs/tlv320aic32x4-i2c.c
++++ b/sound/soc/codecs/tlv320aic32x4-i2c.c
+@@ -16,6 +16,8 @@
+ 
+ #include "tlv320aic32x4.h"
+ 
++static const struct of_device_id aic32x4_of_id[];
++
+ static int aic32x4_i2c_probe(struct i2c_client *i2c,
+ 			     const struct i2c_device_id *id)
+ {
+@@ -27,6 +29,16 @@ static int aic32x4_i2c_probe(struct i2c_client *i2c,
+ 	config.val_bits = 8;
+ 
+ 	regmap = devm_regmap_init_i2c(i2c, &config);
++
++	if (i2c->dev.of_node) {
++		const struct of_device_id *oid;
++
++		oid = of_match_node(aic32x4_of_id, i2c->dev.of_node);
++		dev_set_drvdata(&i2c->dev, (void *)oid->data);
++	} else if (id) {
++		dev_set_drvdata(&i2c->dev, (void *)id->driver_data);
++	}
++
+ 	return aic32x4_probe(&i2c->dev, regmap);
+ }
+ 
+@@ -36,15 +48,15 @@ static int aic32x4_i2c_remove(struct i2c_client *i2c)
+ }
+ 
+ static const struct i2c_device_id aic32x4_i2c_id[] = {
+-	{ "tlv320aic32x4", 0 },
+-	{ "tlv320aic32x6", 1 },
++	{ "tlv320aic32x4", (kernel_ulong_t)AIC32X4_TYPE_AIC32X4 },
++	{ "tlv320aic32x6", (kernel_ulong_t)AIC32X4_TYPE_AIC32X6 },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(i2c, aic32x4_i2c_id);
+ 
+ static const struct of_device_id aic32x4_of_id[] = {
+-	{ .compatible = "ti,tlv320aic32x4", },
+-	{ .compatible = "ti,tlv320aic32x6", },
++	{ .compatible = "ti,tlv320aic32x4", .data = (void *)AIC32X4_TYPE_AIC32X4 },
++	{ .compatible = "ti,tlv320aic32x6", .data = (void *)AIC32X4_TYPE_AIC32X6 },
+ 	{ /* senitel */ }
+ };
+ MODULE_DEVICE_TABLE(of, aic32x4_of_id);
+diff --git a/sound/soc/codecs/tlv320aic32x4-spi.c b/sound/soc/codecs/tlv320aic32x4-spi.c
+index a22e7700bfc8..e81c72958a82 100644
+--- a/sound/soc/codecs/tlv320aic32x4-spi.c
++++ b/sound/soc/codecs/tlv320aic32x4-spi.c
+@@ -16,6 +16,8 @@
+ 
+ #include "tlv320aic32x4.h"
+ 
++static const struct of_device_id aic32x4_of_id[];
++
+ static int aic32x4_spi_probe(struct spi_device *spi)
+ {
+ 	struct regmap *regmap;
+@@ -28,6 +30,19 @@ static int aic32x4_spi_probe(struct spi_device *spi)
+ 	config.read_flag_mask = 0x01;
+ 
+ 	regmap = devm_regmap_init_spi(spi, &config);
++
++	if (spi->dev.of_node) {
++		const struct of_device_id *oid;
++
++		oid = of_match_node(aic32x4_of_id, spi->dev.of_node);
++		dev_set_drvdata(&spi->dev, (void *)oid->data);
++	} else {
++		const struct spi_device_id *id_entry;
++
++		id_entry = spi_get_device_id(spi);
++		dev_set_drvdata(&spi->dev, (void *)id_entry->driver_data);
++	}
++
+ 	return aic32x4_probe(&spi->dev, regmap);
+ }
+ 
+@@ -37,15 +52,15 @@ static int aic32x4_spi_remove(struct spi_device *spi)
+ }
+ 
+ static const struct spi_device_id aic32x4_spi_id[] = {
+-	{ "tlv320aic32x4", 0 },
+-	{ "tlv320aic32x6", 1 },
++	{ "tlv320aic32x4", (kernel_ulong_t)AIC32X4_TYPE_AIC32X4 },
++	{ "tlv320aic32x6", (kernel_ulong_t)AIC32X4_TYPE_AIC32X6 },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(spi, aic32x4_spi_id);
+ 
+ static const struct of_device_id aic32x4_of_id[] = {
+-	{ .compatible = "ti,tlv320aic32x4", },
+-	{ .compatible = "ti,tlv320aic32x6", },
++	{ .compatible = "ti,tlv320aic32x4", .data = (void *)AIC32X4_TYPE_AIC32X4 },
++	{ .compatible = "ti,tlv320aic32x6", .data = (void *)AIC32X4_TYPE_AIC32X6 },
+ 	{ /* senitel */ }
+ };
+ MODULE_DEVICE_TABLE(of, aic32x4_of_id);
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index b689f26fc4be..70a1574fb72a 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -48,6 +48,7 @@ struct aic32x4_priv {
+ 
+ 	struct aic32x4_setup_data *setup;
+ 	struct device *dev;
++	enum aic32x4_type type;
+ };
+ 
+ static int aic32x4_reset_adc(struct snd_soc_dapm_widget *w,
+@@ -1198,6 +1199,8 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
+ 		return -ENOMEM;
+ 
+ 	aic32x4->dev = dev;
++	aic32x4->type = (enum aic32x4_type)dev_get_drvdata(dev);
++
+ 	dev_set_drvdata(dev, aic32x4);
+ 
+ 	if (pdata) {
+diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
+index 7550122e9f8a..8a18dbec76a6 100644
+--- a/sound/soc/codecs/tlv320aic32x4.h
++++ b/sound/soc/codecs/tlv320aic32x4.h
+@@ -10,6 +10,11 @@
+ struct device;
+ struct regmap_config;
+ 
++enum aic32x4_type {
++	AIC32X4_TYPE_AIC32X4 = 0,
++	AIC32X4_TYPE_AIC32X6,
++};
++
+ extern const struct regmap_config aic32x4_regmap_config;
+ int aic32x4_probe(struct device *dev, struct regmap *regmap);
+ int aic32x4_remove(struct device *dev);
 -- 
-2.25.1
-
+2.32.0
 
