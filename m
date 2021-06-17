@@ -2,340 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54703ABF89
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 01:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02103ABF9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 01:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbhFQXdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 19:33:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49258 "EHLO mail.kernel.org"
+        id S232208AbhFQXkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 19:40:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233077AbhFQXdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 19:33:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEEAC6117A;
-        Thu, 17 Jun 2021 23:31:10 +0000 (UTC)
+        id S230447AbhFQXkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 19:40:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2566C61184;
+        Thu, 17 Jun 2021 23:38:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623972672;
-        bh=OQTvXWc5KTHXd26e21lniSV4nLp1qu2sC2xgNiM6A40=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=igsWuyQPQeQ/DRXp976arBlh2Cd5oMHU2rmslY5U2yOFBKGWeEuqoDHh/Bj3mGHkd
-         bLMM1Kw2CstAytFNmlUOY8WTs+QEtmm/R9UpxalWSGPL6zjJqu+ywf2zRKIqqo2Vn2
-         ska/hVnarr3cmbXV1zh/4q6O7Ya6EcMANA1sH0BM5teIhgKxWe/aPUjXDGMJHDQcyG
-         02ttdVu/nqV8fLZFut1pkllMnC/G+MCX8oF5zPpY6lMJCM4R+UgwgZXWkVN0xhuJAr
-         UeEfhIO3NooiVZttZkgEwUTjN1Qplp4be+9ogZRntMC6T8c0ripHJgEPpcV4OFRjHa
-         ks0He4jC+xUpQ==
-Date:   Thu, 17 Jun 2021 16:31:10 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Claire Chang <tientzu@chromium.org>
-cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v13 09/12] swiotlb: Add restricted DMA alloc/free
- support
-In-Reply-To: <20210617062635.1660944-10-tientzu@chromium.org>
-Message-ID: <alpine.DEB.2.21.2106171448490.24906@sstabellini-ThinkPad-T480s>
-References: <20210617062635.1660944-1-tientzu@chromium.org> <20210617062635.1660944-10-tientzu@chromium.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        s=k20201202; t=1623973089;
+        bh=KiD+BfJ+qYLwA/lIAGT2/IP2dL1kIspW0vUrVZZ4zyE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=B8l5pCGD0pgflCpjM0LQSOHGF2jPusPjl3MDXtyy3XTjEG3IAOKddf95MPxHkEO0t
+         CFJCTIixeMzjx40hNYKt2oLZZx+sOFN65yO2ELfby6qpZlra056DM/dzsIKBgraz1z
+         322TYvS9iUUTeNKLphmx2Qhr/Eg2O4fjDdG0uMsrL6jlxxTmJok+p8hwnvyGO46gKM
+         Vh23tBoPHfAr4/pBtO1ZdAgcJf/iBUqQAin3xHAeesZEO57mhR/9SIH/rp+SJEbQsk
+         zTkaZEXwq/KLnrEaFJuTGO4E4SlQLJqddPovESsHxod8V5CJGLpXwazQCrsklOsDG8
+         BDBiOfyfBx6GA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Gaurav Srivastava <gaurav.srivastava@broadcom.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] scsi: lpfc: Reduce scope of uuid in lpfc_queuecommand()
+Date:   Thu, 17 Jun 2021 16:37:59 -0700
+Message-Id: <20210617233759.2355447-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021, Claire Chang wrote:
-> Add the functions, swiotlb_{alloc,free} and is_swiotlb_for_alloc to
-> support the memory allocation from restricted DMA pool.
-> 
-> The restricted DMA pool is preferred if available.
-> 
-> Note that since coherent allocation needs remapping, one must set up
-> another device coherent pool by shared-dma-pool and use
-> dma_alloc_from_dev_coherent instead for atomic coherent allocation.
-> 
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Tested-by: Stefano Stabellini <sstabellini@kernel.org>
-> Tested-by: Will Deacon <will@kernel.org>
+When CONFIG_SCSI_LPFC_DEBUG_FS is unset, uuid's declaration is not
+present, resulting in a compiler error:
 
-Acked-by: Stefano Stabellini <sstabellini@kernel.org>
+drivers/scsi/lpfc/lpfc_scsi.c:5595:3: error: use of undeclared
+identifier 'uuid'
+                uuid = lpfc_is_command_vm_io(cmnd);
+                ^
 
+uuid is only used in the if statement so reduce its scope to solve the
+build error. Additionally, uuid is a char *, instead of u8 *.
 
-> ---
->  include/linux/swiotlb.h | 26 ++++++++++++++++++++++
->  kernel/dma/direct.c     | 49 +++++++++++++++++++++++++++++++----------
->  kernel/dma/swiotlb.c    | 38 ++++++++++++++++++++++++++++++--
->  3 files changed, 99 insertions(+), 14 deletions(-)
-> 
-> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> index 8d8855c77d9a..a73fad460162 100644
-> --- a/include/linux/swiotlb.h
-> +++ b/include/linux/swiotlb.h
-> @@ -85,6 +85,7 @@ extern enum swiotlb_force swiotlb_force;
->   * @debugfs:	The dentry to debugfs.
->   * @late_alloc:	%true if allocated using the page allocator
->   * @force_bounce: %true if swiotlb bouncing is forced
-> + * @for_alloc:  %true if the pool is used for memory allocation
->   */
->  struct io_tlb_mem {
->  	phys_addr_t start;
-> @@ -96,6 +97,7 @@ struct io_tlb_mem {
->  	struct dentry *debugfs;
->  	bool late_alloc;
->  	bool force_bounce;
-> +	bool for_alloc;
->  	struct io_tlb_slot {
->  		phys_addr_t orig_addr;
->  		size_t alloc_size;
-> @@ -156,4 +158,28 @@ static inline void swiotlb_adjust_size(unsigned long size)
->  extern void swiotlb_print_info(void);
->  extern void swiotlb_set_max_segment(unsigned int);
->  
-> +#ifdef CONFIG_DMA_RESTRICTED_POOL
-> +struct page *swiotlb_alloc(struct device *dev, size_t size);
-> +bool swiotlb_free(struct device *dev, struct page *page, size_t size);
-> +
-> +static inline bool is_swiotlb_for_alloc(struct device *dev)
-> +{
-> +	return dev->dma_io_tlb_mem->for_alloc;
-> +}
-> +#else
-> +static inline struct page *swiotlb_alloc(struct device *dev, size_t size)
-> +{
-> +	return NULL;
-> +}
-> +static inline bool swiotlb_free(struct device *dev, struct page *page,
-> +				size_t size)
-> +{
-> +	return false;
-> +}
-> +static inline bool is_swiotlb_for_alloc(struct device *dev)
-> +{
-> +	return false;
-> +}
-> +#endif /* CONFIG_DMA_RESTRICTED_POOL */
-> +
->  #endif /* __LINUX_SWIOTLB_H */
-> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> index a92465b4eb12..2de33e5d302b 100644
-> --- a/kernel/dma/direct.c
-> +++ b/kernel/dma/direct.c
-> @@ -75,6 +75,15 @@ static bool dma_coherent_ok(struct device *dev, phys_addr_t phys, size_t size)
->  		min_not_zero(dev->coherent_dma_mask, dev->bus_dma_limit);
->  }
->  
-> +static void __dma_direct_free_pages(struct device *dev, struct page *page,
-> +				    size_t size)
-> +{
-> +	if (IS_ENABLED(CONFIG_DMA_RESTRICTED_POOL) &&
-> +	    swiotlb_free(dev, page, size))
-> +		return;
-> +	dma_free_contiguous(dev, page, size);
-> +}
-> +
->  static struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
->  		gfp_t gfp)
->  {
-> @@ -86,6 +95,16 @@ static struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
->  
->  	gfp |= dma_direct_optimal_gfp_mask(dev, dev->coherent_dma_mask,
->  					   &phys_limit);
-> +	if (IS_ENABLED(CONFIG_DMA_RESTRICTED_POOL) &&
-> +	    is_swiotlb_for_alloc(dev)) {
-> +		page = swiotlb_alloc(dev, size);
-> +		if (page && !dma_coherent_ok(dev, page_to_phys(page), size)) {
-> +			__dma_direct_free_pages(dev, page, size);
-> +			return NULL;
-> +		}
-> +		return page;
-> +	}
-> +
->  	page = dma_alloc_contiguous(dev, size, gfp);
->  	if (page && !dma_coherent_ok(dev, page_to_phys(page), size)) {
->  		dma_free_contiguous(dev, page, size);
-> @@ -142,7 +161,7 @@ void *dma_direct_alloc(struct device *dev, size_t size,
->  		gfp |= __GFP_NOWARN;
->  
->  	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
-> -	    !force_dma_unencrypted(dev)) {
-> +	    !force_dma_unencrypted(dev) && !is_swiotlb_for_alloc(dev)) {
->  		page = __dma_direct_alloc_pages(dev, size, gfp & ~__GFP_ZERO);
->  		if (!page)
->  			return NULL;
-> @@ -155,18 +174,23 @@ void *dma_direct_alloc(struct device *dev, size_t size,
->  	}
->  
->  	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
-> -	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-> -	    !dev_is_dma_coherent(dev))
-> +	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev) &&
-> +	    !is_swiotlb_for_alloc(dev))
->  		return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
->  
->  	/*
->  	 * Remapping or decrypting memory may block. If either is required and
->  	 * we can't block, allocate the memory from the atomic pools.
-> +	 * If restricted DMA (i.e., is_swiotlb_for_alloc) is required, one must
-> +	 * set up another device coherent pool by shared-dma-pool and use
-> +	 * dma_alloc_from_dev_coherent instead.
->  	 */
->  	if (IS_ENABLED(CONFIG_DMA_COHERENT_POOL) &&
->  	    !gfpflags_allow_blocking(gfp) &&
->  	    (force_dma_unencrypted(dev) ||
-> -	     (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev))))
-> +	     (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-> +	      !dev_is_dma_coherent(dev))) &&
-> +	    !is_swiotlb_for_alloc(dev))
->  		return dma_direct_alloc_from_pool(dev, size, dma_handle, gfp);
->  
->  	/* we always manually zero the memory once we are done */
-> @@ -237,7 +261,7 @@ void *dma_direct_alloc(struct device *dev, size_t size,
->  			return NULL;
->  	}
->  out_free_pages:
-> -	dma_free_contiguous(dev, page, size);
-> +	__dma_direct_free_pages(dev, page, size);
->  	return NULL;
->  }
->  
-> @@ -247,15 +271,15 @@ void dma_direct_free(struct device *dev, size_t size,
->  	unsigned int page_order = get_order(size);
->  
->  	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
-> -	    !force_dma_unencrypted(dev)) {
-> +	    !force_dma_unencrypted(dev) && !is_swiotlb_for_alloc(dev)) {
->  		/* cpu_addr is a struct page cookie, not a kernel address */
->  		dma_free_contiguous(dev, cpu_addr, size);
->  		return;
->  	}
->  
->  	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
-> -	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-> -	    !dev_is_dma_coherent(dev)) {
-> +	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev) &&
-> +	    !is_swiotlb_for_alloc(dev)) {
->  		arch_dma_free(dev, size, cpu_addr, dma_addr, attrs);
->  		return;
->  	}
-> @@ -273,7 +297,7 @@ void dma_direct_free(struct device *dev, size_t size,
->  	else if (IS_ENABLED(CONFIG_ARCH_HAS_DMA_CLEAR_UNCACHED))
->  		arch_dma_clear_uncached(cpu_addr, size);
->  
-> -	dma_free_contiguous(dev, dma_direct_to_page(dev, dma_addr), size);
-> +	__dma_direct_free_pages(dev, dma_direct_to_page(dev, dma_addr), size);
->  }
->  
->  struct page *dma_direct_alloc_pages(struct device *dev, size_t size,
-> @@ -283,7 +307,8 @@ struct page *dma_direct_alloc_pages(struct device *dev, size_t size,
->  	void *ret;
->  
->  	if (IS_ENABLED(CONFIG_DMA_COHERENT_POOL) &&
-> -	    force_dma_unencrypted(dev) && !gfpflags_allow_blocking(gfp))
-> +	    force_dma_unencrypted(dev) && !gfpflags_allow_blocking(gfp) &&
-> +	    !is_swiotlb_for_alloc(dev))
->  		return dma_direct_alloc_from_pool(dev, size, dma_handle, gfp);
->  
->  	page = __dma_direct_alloc_pages(dev, size, gfp);
-> @@ -310,7 +335,7 @@ struct page *dma_direct_alloc_pages(struct device *dev, size_t size,
->  	*dma_handle = phys_to_dma_direct(dev, page_to_phys(page));
->  	return page;
->  out_free_pages:
-> -	dma_free_contiguous(dev, page, size);
-> +	__dma_direct_free_pages(dev, page, size);
->  	return NULL;
->  }
->  
-> @@ -329,7 +354,7 @@ void dma_direct_free_pages(struct device *dev, size_t size,
->  	if (force_dma_unencrypted(dev))
->  		set_memory_encrypted((unsigned long)vaddr, 1 << page_order);
->  
-> -	dma_free_contiguous(dev, page, size);
-> +	__dma_direct_free_pages(dev, page, size);
->  }
->  
->  #if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) || \
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index ff09341bb9f5..6499cfbfe95f 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -463,8 +463,9 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
->  
->  	index = wrap = wrap_index(mem, ALIGN(mem->index, stride));
->  	do {
-> -		if ((slot_addr(tbl_dma_addr, index) & iotlb_align_mask) !=
-> -		    (orig_addr & iotlb_align_mask)) {
-> +		if (orig_addr &&
-> +		    (slot_addr(tbl_dma_addr, index) & iotlb_align_mask) !=
-> +			    (orig_addr & iotlb_align_mask)) {
->  			index = wrap_index(mem, index + 1);
->  			continue;
->  		}
-> @@ -703,3 +704,36 @@ static int __init swiotlb_create_default_debugfs(void)
->  late_initcall(swiotlb_create_default_debugfs);
->  
->  #endif
-> +
-> +#ifdef CONFIG_DMA_RESTRICTED_POOL
-> +struct page *swiotlb_alloc(struct device *dev, size_t size)
-> +{
-> +	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-> +	phys_addr_t tlb_addr;
-> +	int index;
-> +
-> +	if (!mem)
-> +		return NULL;
-> +
-> +	index = swiotlb_find_slots(dev, 0, size);
-> +	if (index == -1)
-> +		return NULL;
-> +
-> +	tlb_addr = slot_addr(mem->start, index);
-> +
-> +	return pfn_to_page(PFN_DOWN(tlb_addr));
-> +}
-> +
-> +bool swiotlb_free(struct device *dev, struct page *page, size_t size)
-> +{
-> +	phys_addr_t tlb_addr = page_to_phys(page);
-> +
-> +	if (!is_swiotlb_buffer(dev, tlb_addr))
-> +		return false;
-> +
-> +	swiotlb_release_slots(dev, tlb_addr);
-> +
-> +	return true;
-> +}
-> +
-> +#endif /* CONFIG_DMA_RESTRICTED_POOL */
-> -- 
-> 2.32.0.288.g62a8d224e6-goog
-> 
+Fixes: 33c79741deaf ("scsi: lpfc: vmid: Introduce VMID in I/O path")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/scsi/lpfc/lpfc_scsi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
+index 46bfe251c2fe..e8af51e38614 100644
+--- a/drivers/scsi/lpfc/lpfc_scsi.c
++++ b/drivers/scsi/lpfc/lpfc_scsi.c
+@@ -5457,7 +5457,6 @@ lpfc_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *cmnd)
+ 	int err, idx;
+ #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+ 	uint64_t start = 0L;
+-	u8 *uuid = NULL;
+ 
+ 	if (phba->ktime_on)
+ 		start = ktime_get_ns();
+@@ -5592,7 +5591,7 @@ lpfc_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *cmnd)
+ 	     LPFC_VMID_PRIO_TAG_ALL_TARGETS)) {
+ 		/* is the I/O generated by a VM, get the associated virtual */
+ 		/* entity id */
+-		uuid = lpfc_is_command_vm_io(cmnd);
++		char *uuid = lpfc_is_command_vm_io(cmnd);
+ 
+ 		if (uuid) {
+ 			err = lpfc_vmid_get_appid(vport, uuid, cmnd,
+
+base-commit: ebc076b3eddc807729bd81f7bc48e798a3ddc477
+-- 
+2.32.0.93.g670b81a890
+
