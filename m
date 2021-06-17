@@ -2,119 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9F13AAF8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A243AAF92
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhFQJU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:20:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231490AbhFQJU2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:20:28 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996E9C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:18:19 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id l9so2951520wms.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9BepfpuI4gTK3FDci2Lw1qhlFFFZ3rGxYCCkc+cXF5A=;
-        b=rEJJW1nGT5ylLY1WRR4sbUmeZ+p69uWBzd918Tu6NWXyw8VSh+KQa6pYyJAWoYqaLQ
-         SzDs7ugq8o7Y//fBT9oADwN+jcDPoRyabCUpBKHewMC+2S0XY++dYKEhC/EUtMecou+N
-         jV5e/igrVRQ2jSRPsXRaS8Y2MAU/20IcwzZR7EGTuGshicwMsn4hYr18RP7cOeZgLJoE
-         7zt7Awhz2L2OnsrCfo+uIBsAfgeX0mhS6hCbr/e8VfL6oURjdrApFJaLIsOOlHMpIuT4
-         6KOtpNt1NwQWzzMRqiPE8/L6tP4x5/gf0J+y32KCqGHNmyGojBowXqx6hPaLukvnOqzh
-         hD2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9BepfpuI4gTK3FDci2Lw1qhlFFFZ3rGxYCCkc+cXF5A=;
-        b=nnoEEKxqHoE0JkJyuO+1bQwz4YtmjJyC/ud7jWNJLWqlgqVS5b/BR6xT/BVNrbVM9G
-         wBu/3eH3oTRsOp2LHfQgtooYQpS72J9aPZGuHHvi6ZXGXZe016qe7pGk78ZpUejmEMkk
-         GzIvK4986YJhGqfosrASsDPjImq3yynZi75dei4gEKilW8k/FJH9SRmxuXszwPeOKg8h
-         CW9aScSg64iJa2sOfTNnygKwa8KCDMuhidyoI2Hj8PRMadE2F/ds2nTxjJBgcyKMg1MT
-         pJ5jbmLvyIm2dFFF0joMphSgqLcIoOX1SZG5+friQUYXBgLOIiC/i5I6UYM65Alr8PcG
-         Dn2g==
-X-Gm-Message-State: AOAM530DfLf49AjEySvgDfMUvbAuBhiZ61gDgBfGNvEwfOZjg6Mb0liA
-        Zsea3yirkB6iVLh5FmVsLcbtkw==
-X-Google-Smtp-Source: ABdhPJxTg0xGDQpF89VezzMjDxw0WHX0T5a/cJf/rozDCBGUj8PS8Tt5YHO54OPysoA+ej/KVYtqrg==
-X-Received: by 2002:a1c:5418:: with SMTP id i24mr3926482wmb.1.1623921497930;
-        Thu, 17 Jun 2021 02:18:17 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:dde2:86fa:532c:18b9])
-        by smtp.gmail.com with ESMTPSA id p13sm3711248wrt.89.2021.06.17.02.18.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 02:18:16 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 10:18:16 +0100
-From:   Matthias Maennich <maennich@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Subject: Re: [PATCH] kbuild: mkcompile_h: consider timestamp if
- KBUILD_BUILD_TIMESTAMP is set
-Message-ID: <YMsTWAYSV1ZZFYvH@google.com>
-References: <20210612141838.1073085-1-maennich@google.com>
- <CAK7LNAQkoqTG540EOER27G83z+DO5fkeHi-in-vRYkrbX-o0cg@mail.gmail.com>
- <CAK7LNAR=Fwzio6CQqDOYQJj9tYrf5a_-sYQ+Yr2=Qt5cYq8wOA@mail.gmail.com>
+        id S231531AbhFQJWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:22:23 -0400
+Received: from mail-eopbgr80051.outbound.protection.outlook.com ([40.107.8.51]:22180
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231398AbhFQJWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 05:22:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D6SNmU/W6dyBmHEZEQwSghCCi5TIJhjXTJ0vDVUflrX1wBbMI/Ny4eF8Bt5JKJDm9XURys/JHIQrATorRFkCpM9UjXH8wyNgZc66n8SLFr9lt2R75iLYqY0MW5x7tf0HDfXEfVaJzhk4VfdJ9PlII6a8O6WzXFgg/MNnLHWqjIFcVTcsjaZT+GTQqVCdzWReL+hvMtdGzvL+VT8xfafoavw8fsnzYQAF+o9P0NgeQld2yo6MvD9rNB7kaFNxXIDzWzUPPtdDHSUSfg1MzXfsa9R8YDZ/8YhttjxgmBOE8InboouseW0WsSE9wmdiyC6qkKJiq7wtylAE+dsNi2KPag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=akgVAqoUyXpYCzj7FDEekxywENfU6srRYjH89yPZ1/c=;
+ b=PUxV8wyvnM0qG1axpYBY2JkmQ0FbBetLMwrNOAmrs38I49T7wdhNl9AbUbNw2FIZ5EV62JtW0Du4GdqXGHMv6mN3ZhsCGlUNMgiWUxyQcZJsiIP1k/Qc34Tp1rJ/f9AmAAFTr11lK/p2y9J0VslwoprkuckLwAmoSecq1PSOIz71gwUpgGEdl3B1QpwLj8laouNiCK5ZeAfVbDPriFtPkyHZDRlHRE99Z80E7NuS9kfZ2mMXkdOWiDQyb5W54hYFvRePuLTuWcF/hIHJ21wGkwb+0Dha7Zi0Qhfx2nnJqlAW30jWDPTUKBuxSkw/2d3u6ATc0FvU/YPbAnsIO/3KFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=akgVAqoUyXpYCzj7FDEekxywENfU6srRYjH89yPZ1/c=;
+ b=jJV2QjfJXBxE1B/bK6N9mHUrz/Jp6IljLXBOvFN+aOkt0I7+1yuue1KeB4x0ktAt10J/fyKvc+kQTMM5MgfbP+dEhPZeCb70jvE8haDw/ucQV1kK+tUNaSGMscDOHiMe2eT4Lo7FZXvFUnKgwVDsEP2OOzMJR1DoNryNxlBAj/Y=
+Authentication-Results: gondor.apana.org.au; dkim=none (message not signed)
+ header.d=none;gondor.apana.org.au; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
+ by VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.23; Thu, 17 Jun
+ 2021 09:20:11 +0000
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::4dde:d71f:1082:6351]) by VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::4dde:d71f:1082:6351%3]) with mapi id 15.20.4242.019; Thu, 17 Jun 2021
+ 09:20:11 +0000
+From:   =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Pankaj Gupta <pankaj.gupta@nxp.com>,
+        linux-crypto@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: update caam crypto driver maintainers list
+Date:   Thu, 17 Jun 2021 12:19:26 +0300
+Message-Id: <20210617091926.23517-1-horia.geanta@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [83.217.231.2]
+X-ClientProxiedBy: AM3PR05CA0153.eurprd05.prod.outlook.com
+ (2603:10a6:207:3::31) To VI1PR04MB4046.eurprd04.prod.outlook.com
+ (2603:10a6:803:4d::29)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAR=Fwzio6CQqDOYQJj9tYrf5a_-sYQ+Yr2=Qt5cYq8wOA@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv15138.swis.ro-buh01.nxp.com (83.217.231.2) by AM3PR05CA0153.eurprd05.prod.outlook.com (2603:10a6:207:3::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Thu, 17 Jun 2021 09:20:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 84676460-9b55-4944-2c21-08d931711b9e
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3405:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB34057CE8AA5557CEADB3AD62980E9@VI1PR0402MB3405.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:345;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: F5jMA0GPxtk9Pyho10DVGEQ5YimF0qWOHLllNI1iZZUBRt4rYCYTeTHWqsO0LknIWc5q95CS4SkZ+IEiFeWFnwTJc6MIAdpUTDoFof0/e1PLoLAMzPWrLAlIUQfFqqsPDUSa2dOIM4NTh3qSyWBbFd1/13dNn6rURszlwd3CKVrnkz7gczqnmLCj97C+BIj/AvlwvLzUxusGZbfZ+heVeHTqnQoQeC0gd2d//CfP/HebbyVajV+V1gHkzD0JvKpDejx5CiIMoTme8fMOjcUv84Z+7bo87vW42YOg8VTaizEi4aEZgynAXBmxlgRO3a88fQ4F/G0PyoTos4TPxhs4GYkasGSDEhBJV558pkxXcS/aps/A33tSSEdisRr09h8d7FWI36jYY3LQBbIsA9LjyLQ5+fGG/TOYws6p9GYLZaJuUkr5GdNGCetbFgIxoUBrdXqAE1xpW9CbQJyZShlL7LQmDvqvIqD0kVk+V87ahRkl3mjPhE9gSNjevQ4RSK9rEELO7uWo4rK+B58kb4q1hqbC7l+YGeRcrhkMzEqMTNiXsUumGKQyjGyIgVVzF7k2PvUC0eYpnXqaNngxRvLMcAYuY7GEJIhxLO80mC8GhME5gmrJ2LSLjzd01ifwENq0MBoDoeE1ZxTCKxzZ8EPm6g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39840400004)(376002)(346002)(396003)(136003)(8676002)(8936002)(38100700002)(38350700002)(4326008)(4744005)(52116002)(7696005)(1076003)(478600001)(5660300002)(36756003)(83380400001)(2906002)(2616005)(316002)(956004)(54906003)(6666004)(86362001)(66476007)(66946007)(66556008)(186003)(6486002)(16526019)(26005)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OUxNeWc2aXNTZjQ0Tm96OHRJQjdLemoyVUdQY1d6d1daajV0UXlEUFBEOXBx?=
+ =?utf-8?B?WVZvWUhya3Y1SzJxWGdYV0R4VEh5ZkY3bHE2M3UvZU9SYkN1WVh3QnowL3pm?=
+ =?utf-8?B?YzkwTzJHWXA0bDkwY0xIbjZRUE9lYmNGdHhKaUVqK2R2cVVuc2tUYlI0SS9l?=
+ =?utf-8?B?YUVMV3ZkcVEwQUN3VHN3dE9GMjhiMUNRT3dWaTVXYmJvUlJDY3FWeG9QbnBV?=
+ =?utf-8?B?d2hwbm9pTitXRGV4NDBHMy93bnpRL1grTHMrdVRDdm1YbTA1dFEvMWFWU1pB?=
+ =?utf-8?B?MGQ2Tm5tZnBOYmQ3c3pCdVpPSC9EZzlITjJMODNXWWRSRTZsbzhqVm4xcE1S?=
+ =?utf-8?B?djhPSmdKQmFzWjk5eWh4MkwyVmJKeURDRFVxV1RVUHNYU1ZiNkRHRHZ3c3pM?=
+ =?utf-8?B?QkFDOElFRjJYVlpQUkh0dlVCalhLRm04WHkxRGNRMmtEZWRpU3RQS1l6OVRB?=
+ =?utf-8?B?dnV6Z1NuakY4Wkg3blNSbERYSTRIY2pBclNmRDBvRUJtV21vbk1RejBWTHJh?=
+ =?utf-8?B?bzhSL1U2aVRqalJMWkZINi94Mm92Qy9qa2hjUlY5MlR2SmozcFZ4ZFVYTVdn?=
+ =?utf-8?B?SWdyaEo5RHJUNjl3eDRUZHlBa244eUdvZDBtYlNBWnZ3UlM5ZTdmTVdTL1d0?=
+ =?utf-8?B?dmRwUFg0UWZrN0NQWUkrcUJMSEh0b2RUZUkyMk92cVErT0k3MDFUNE50blNY?=
+ =?utf-8?B?TCt1clFOZUh5NE1jMG1ocTRLcVRFYURVUVpKTitxRVdLNk5xUzBCMnAvT1pu?=
+ =?utf-8?B?ZFI3akNST1JpcytKOTQ2ZWJvRlNNbnZ2c0pETGRYRVp4S2NIL0hUVkNpLzRm?=
+ =?utf-8?B?Y1J3OFpUdnVkaTlpcHVhM2QzMzBXbUlEU0FwWlJlczRlejV4bUlOa2JiYTRs?=
+ =?utf-8?B?clRuM3Y2Y2Z0M1gwNngwbGhTdUhvTFZ5V09hK0xOelVIdTFVcHFjb01nc3hF?=
+ =?utf-8?B?VktqYXk4MEJzRXlkUGowSi9UYmU5VXRCRzB0SEFFblRjVi81cms5TXQvMmxL?=
+ =?utf-8?B?QXZ1NkltL2ZwVDVVSmpBeXdNVjh4aWFrOXpCQmR1WWNQMmlWeU40QlJQRVp3?=
+ =?utf-8?B?clZYOHJMRERLeldoTmVUOUI5OHQ2V29aMkZ0WFEwWFIvVFg3WlZvcnlvM2RG?=
+ =?utf-8?B?QVNYNlJYbUxzT3czM2J6SmI5UWRneU5SemVoN3hlZmgrVCs3QnVMWGFndWNj?=
+ =?utf-8?B?S3p2L05NQ1hQTkQ2Q2tjaE9lQUFrRCtRUDRobHFVZHRtTE5LTEFaS3g2UjVl?=
+ =?utf-8?B?WDhUWVhOdW15MmQzbkxaQVlpRXhocHpORmtLbG1vUHg1K3ZwaGlWTHQzVTla?=
+ =?utf-8?B?THFpeWprU29RUzZVclgvR2VkMS91djN3MnhwTmt6Y0JwdmpiSmJjaFRvamNO?=
+ =?utf-8?B?ZnNtaHpGUkNvdWxaQ1N6MWFDUmNEYTFUUnBBT0pEVG1BMzhDY1I0bThMZHd3?=
+ =?utf-8?B?cWY2YUYyWEo4ekc1cHlzRUNLZnJjQmpyaUdpajVrV0pCekFtSFBzelBIZUJr?=
+ =?utf-8?B?cFJreUgzclEyVzJsMnA3bFdYQzdZNStoSG4xcWJSWXkzQnBxSmNPaUxITE9T?=
+ =?utf-8?B?ME5EaW9oeFpXcFpsRDA2YXZCZHIxTG4vNlZ6T3NaR1M3T3g3Q0xoTCs1SGR6?=
+ =?utf-8?B?c0tsSVZkL3QyT1laYWY3WDFqbkh0VnZHMHZtT05IZkJwaGp2eWxsYUhaVWoz?=
+ =?utf-8?B?ZldYRURXL0d3RjBVV01MeXpDOHVJNk9mZXd6OXFXcHl3WDM5d3RLczd1VVJO?=
+ =?utf-8?Q?aTfN6ew3QesTGOi7SlkSt2B3S720RjILMFnTQiC?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84676460-9b55-4944-2c21-08d931711b9e
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 09:20:11.6001
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zt15hbqOy16Lmlqpbsy7bKAC65OJ1NVisGrFunrRKci00wEujILMes4nc2g1S/ppXG3jONGUq9MeIm+AwdXq7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3405
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 10:43:19AM +0900, Masahiro Yamada wrote:
->On Thu, Jun 17, 2021 at 10:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->>
->> On Sat, Jun 12, 2021 at 11:18 PM Matthias Maennich <maennich@google.com> wrote:
->> >
->> > To avoid unnecessary recompilations, mkcompile_h does not regenerate
->> > compile.h if just the timestamp changed.
->> > Though, if KBUILD_BUILD_TIMESTAMP is set, an explicit timestamp for the
->> > build was requested, in which case we should not ignore it.
->> >
->> > If a user follows the documentation for reproducible builds [1] and
->> > defines KBUILD_BUILD_TIMESTAMP as the git commit timestamp, a clean
->> > build will have the correct timestamp. A subsequent cherry-pick (or
->> > amend) changes the commit timestamp and if an incremental build is done
->> > with a different KBUILD_BUILD_TIMESTAMP now, that new value is not taken
->> > into consideration. But it should for reproducibility.
->> >
->> > Hence, whenever KBUILD_BUILD_TIMESTAMP is explicitly set, do not ignore
->> > UTS_VERSION when making a decision about whether the regenerated version
->> > of compile.h should be moved into place.
->> >
->> > [1] https://www.kernel.org/doc/html/latest/kbuild/reproducible-builds.html
->> >
->> > Cc: Masahiro Yamada <masahiroy@kernel.org>
->> > Cc: linux-kbuild@vger.kernel.org
->> > Signed-off-by: Matthias Maennich <maennich@google.com>
->> > ---
->>
->>
->> Applied to linux-kbuild. Thanks.
+Aymen steps down as caam maintainer, being replaced by Pankaj.
 
-Thanks!
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->>
->
->This may not be a big deal, but when KBUILD_BUILD_TIMESTAMP is unset,
->the timestamp is not updated.  It still has a user-specified string.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 388924c2d23a..690e54bf7e23 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7159,7 +7159,7 @@ F:	include/video/
+ 
+ FREESCALE CAAM (Cryptographic Acceleration and Assurance Module) DRIVER
+ M:	Horia Geantă <horia.geanta@nxp.com>
+-M:	Aymen Sghaier <aymen.sghaier@nxp.com>
++M:	Pankaj Gupta <pankaj.gupta@nxp.com>
+ L:	linux-crypto@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/crypto/fsl-sec4.txt
+-- 
+2.17.1
 
-I think treating this like any other 'random' prior timestamp is ok.
-So, I agree: not a big deal.
-
-Cheers,
-Matthias
->
->
->
->
->-- 
->Best Regards
->Masahiro Yamada
