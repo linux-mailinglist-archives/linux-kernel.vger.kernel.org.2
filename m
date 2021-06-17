@@ -2,316 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7AC3AA7DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1DB3AA7E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234867AbhFQAEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 20:04:48 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:35550 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbhFQAEr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 20:04:47 -0400
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BA888E53;
-        Thu, 17 Jun 2021 02:02:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1623888159;
-        bh=vMpmdDeMy2cFwrutYp/XAGNd7WXv6nEqX7IEH7vlbE0=;
-        h=Reply-To:To:Cc:References:From:Subject:Date:In-Reply-To:From;
-        b=DQyAOhrLj17rDAkGY2g7FvRunX4VyJrAFVP2j8MtsgVlKp29u37ypTi2yENnKZxY+
-         HPxA6nO+WWwk3KfSf8o8mf8y9SakScWbU9wv9GxDzOf6zTZp7HdlR9NKnaCvDZ8x95
-         v2GgQccwHWEK3OfcqivI5DJMP6Ej8JAIoyG9QUGU=
-Reply-To: kieran.bingham@ideasonboard.com
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210419142345.53152-1-jacopo+renesas@jmondi.org>
- <20210419142345.53152-4-jacopo+renesas@jmondi.org>
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Organization: Ideas on Board
-Subject: Re: [PATCH v5 3/7] media: i2c: max9286: Use "maxim,gpio-poc" property
-Message-ID: <fea0f6e4-cd24-4c2e-1470-d86957408254@ideasonboard.com>
-Date:   Thu, 17 Jun 2021 01:02:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234870AbhFQALk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 20:11:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230481AbhFQALj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 20:11:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70EFE61351;
+        Thu, 17 Jun 2021 00:09:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623888572;
+        bh=mN2okVVdTICmc/8v91DABSXp7kK2mc41VelpLLMzraM=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=ZYuvhN96769HVBf9HwXfEMrx5h2joXFESxJj/lRenrF7yXWLZjtrg1PWIka+vT/Q0
+         oFtXyOpOZ9yR7QPt6WZ9qiVwYGYEJ72zE5pEW7HiR62r0bK1cPffUlPeluSwwsGV++
+         8riMe4sA8jh8H05UnuJF58KJLPG9dNHhkmEpW63Symhvau9C6X5CTpmeRZXg03FBNA
+         YdmM71is91QiA8p/farR5qTSk/+kZjwaUjrHEt7/cAUyCA79A0OF17vUa8D0c+gd+H
+         nwIEeujLTdx4sfeAu0ptJEutsq4BmObXoP4A9/HlakW6ogsicBITdzMemlH7LIUWJw
+         GZfH7kl1LZ6XQ==
+Date:   Wed, 16 Jun 2021 17:09:29 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Claire Chang <tientzu@chromium.org>
+cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        jxgao@google.com, joonas.lahtinen@linux.intel.com,
+        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        matthew.auld@intel.com, rodrigo.vivi@intel.com,
+        thomas.hellstrom@linux.intel.com
+Subject: Re: [PATCH v12 11/12] dt-bindings: of: Add restricted DMA pool
+In-Reply-To: <20210616062157.953777-12-tientzu@chromium.org>
+Message-ID: <alpine.DEB.2.21.2106161651290.24906@sstabellini-ThinkPad-T480s>
+References: <20210616062157.953777-1-tientzu@chromium.org> <20210616062157.953777-12-tientzu@chromium.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20210419142345.53152-4-jacopo+renesas@jmondi.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
-
-On 19/04/2021 15:23, Jacopo Mondi wrote:
-> The 'maxim,gpio-poc' property is used when the remote camera
-> power-over-coax is controlled by one of the MAX9286 gpio lines,
-> to instruct the driver about which line to use and what the line
-> polarity is.
+On Wed, 16 Jun 2021, Claire Chang wrote:
+> Introduce the new compatible string, restricted-dma-pool, for restricted
+> DMA. One can specify the address and length of the restricted DMA memory
+> region by restricted-dma-pool in the reserved-memory node.
 > 
-> Add to the max9286 driver support for parsing the newly introduced
-> property and use it if available in place of the usual supply, as it is
-> not possible to establish one as consumer of the max9286 gpio
-> controller.
-> 
-> If the new property is present, no gpio controller is registered and
-> 'poc-supply' is ignored.
-> 
-> In order to maximize code re-use, break out the max9286 gpio handling
-> function so that they can be used by the gpio controller through the
-> gpio-consumer API, or directly by the driver code.
-> 
-> Wrap the power up and power down routines to their own function to
-> be able to use either the gpio line directly or the supply. This will
-> make it easier to control the remote camera power at run time.
-
-I think I've seen Laurent's despair at the auxillary device bus already,
-but I can't help but feel it might be a way to register the gpio and
-regulator fully without having to handle any probe deferrals and allow
-the GPIO chip to be used as it's own regulator. (I.e. solve the issues I
-was facing last time I looked at it)
-
-But that said however, it's only a hypothesis having not yet fully
-investigated the option. It seems a shame to have to expose multiple
-ways of powering up the cameras, but I guess ultimately it's how the
-hardware is connected.
-
-Have we confirmed that the start up delays are no longer needed for the
-RDACM20 cameras? (which we've previously exposed as a regulator power up
-delay?)
-
-How would this handle those delays if required?
-
-
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
 > ---
->  drivers/media/i2c/max9286.c | 125 +++++++++++++++++++++++++++---------
->  1 file changed, 94 insertions(+), 31 deletions(-)
+>  .../reserved-memory/reserved-memory.txt       | 36 +++++++++++++++++--
+>  1 file changed, 33 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> index 6fd4d59fcc72..99160aa68a5f 100644
-> --- a/drivers/media/i2c/max9286.c
-> +++ b/drivers/media/i2c/max9286.c
-> @@ -15,6 +15,7 @@
->  #include <linux/fwnode.h>
->  #include <linux/gpio/consumer.h>
->  #include <linux/gpio/driver.h>
-> +#include <linux/gpio/machine.h>
->  #include <linux/i2c.h>
->  #include <linux/i2c-mux.h>
->  #include <linux/module.h>
-> @@ -165,6 +166,9 @@ struct max9286_priv {
+> diff --git a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+> index e8d3096d922c..46804f24df05 100644
+> --- a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+> +++ b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+> @@ -51,6 +51,23 @@ compatible (optional) - standard definition
+>            used as a shared pool of DMA buffers for a set of devices. It can
+>            be used by an operating system to instantiate the necessary pool
+>            management subsystem if necessary.
+> +        - restricted-dma-pool: This indicates a region of memory meant to be
+> +          used as a pool of restricted DMA buffers for a set of devices. The
+> +          memory region would be the only region accessible to those devices.
+> +          When using this, the no-map and reusable properties must not be set,
+> +          so the operating system can create a virtual mapping that will be used
+> +          for synchronization. The main purpose for restricted DMA is to
+> +          mitigate the lack of DMA access control on systems without an IOMMU,
+> +          which could result in the DMA accessing the system memory at
+> +          unexpected times and/or unexpected addresses, possibly leading to data
+> +          leakage or corruption. The feature on its own provides a basic level
+> +          of protection against the DMA overwriting buffer contents at
+> +          unexpected times. However, to protect against general data leakage and
+> +          system memory corruption, the system needs to provide way to lock down
+> +          the memory access, e.g., MPU. Note that since coherent allocation
+> +          needs remapping, one must set up another device coherent pool by
+> +          shared-dma-pool and use dma_alloc_from_dev_coherent instead for atomic
+> +          coherent allocation.
+>          - vendor specific string in the form <vendor>,[<device>-]<usage>
+>  no-map (optional) - empty property
+>      - Indicates the operating system must not create a virtual mapping
+> @@ -85,10 +102,11 @@ memory-region-names (optional) - a list of names, one for each corresponding
 >  
->  	u32 reverse_channel_mv;
+>  Example
+>  -------
+> -This example defines 3 contiguous regions are defined for Linux kernel:
+> +This example defines 4 contiguous regions for Linux kernel:
+>  one default of all device drivers (named linux,cma@72000000 and 64MiB in size),
+> -one dedicated to the framebuffer device (named framebuffer@78000000, 8MiB), and
+> -one for multimedia processing (named multimedia-memory@77000000, 64MiB).
+> +one dedicated to the framebuffer device (named framebuffer@78000000, 8MiB),
+> +one for multimedia processing (named multimedia-memory@77000000, 64MiB), and
+> +one for restricted dma pool (named restricted_dma_reserved@0x50000000, 64MiB).
 >  
-> +	u32 gpio_poc;
-> +	u32 gpio_poc_flags;
+>  / {
+>  	#address-cells = <1>;
+> @@ -120,6 +138,11 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
+>  			compatible = "acme,multimedia-memory";
+>  			reg = <0x77000000 0x4000000>;
+>  		};
 > +
->  	struct v4l2_ctrl_handler ctrls;
->  	struct v4l2_ctrl *pixelrate;
+> +		restricted_dma_reserved: restricted_dma_reserved {
+> +			compatible = "restricted-dma-pool";
+> +			reg = <0x50000000 0x4000000>;
+> +		};
+>  	};
 >  
-> @@ -1022,20 +1026,27 @@ static int max9286_setup(struct max9286_priv *priv)
->  	return 0;
->  }
->  
-> -static void max9286_gpio_set(struct gpio_chip *chip,
-> -			     unsigned int offset, int value)
-> +static int max9286_gpio_set(struct max9286_priv *priv, unsigned int offset,
-> +			    int value)
->  {
-> -	struct max9286_priv *priv = gpiochip_get_data(chip);
-> -
->  	if (value)
->  		priv->gpio_state |= BIT(offset);
->  	else
->  		priv->gpio_state &= ~BIT(offset);
->  
-> -	max9286_write(priv, 0x0f, MAX9286_0X0F_RESERVED | priv->gpio_state);
-> +	return max9286_write(priv, 0x0f,
-> +			     MAX9286_0X0F_RESERVED | priv->gpio_state);
-> +}
+>  	/* ... */
+> @@ -138,4 +161,11 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
+>  		memory-region = <&multimedia_reserved>;
+>  		/* ... */
+>  	};
 > +
-> +static void max9286_gpiochip_set(struct gpio_chip *chip,
-> +				 unsigned int offset, int value)
-> +{
-> +	struct max9286_priv *priv = gpiochip_get_data(chip);
-> +
-> +	max9286_gpio_set(priv, offset, value);
->  }
->  
-> -static int max9286_gpio_get(struct gpio_chip *chip, unsigned int offset)
-> +static int max9286_gpiochip_get(struct gpio_chip *chip, unsigned int offset)
->  {
->  	struct max9286_priv *priv = gpiochip_get_data(chip);
->  
-> @@ -1055,16 +1066,81 @@ static int max9286_register_gpio(struct max9286_priv *priv)
->  	gpio->of_node = dev->of_node;
->  	gpio->ngpio = 2;
->  	gpio->base = -1;
-> -	gpio->set = max9286_gpio_set;
-> -	gpio->get = max9286_gpio_get;
-> +	gpio->set = max9286_gpiochip_set;
-> +	gpio->get = max9286_gpiochip_get;
->  	gpio->can_sleep = true;
->  
-> +	ret = devm_gpiochip_add_data(dev, gpio, priv);
-> +	if (ret)
-> +		dev_err(dev, "Unable to create gpio_chip\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static int max9286_parse_gpios(struct max9286_priv *priv)
-> +{
-> +	struct device *dev = &priv->client->dev;
-> +	u32 gpio_poc[2];
-> +	int ret;
-> +
->  	/* GPIO values default to high */
->  	priv->gpio_state = BIT(0) | BIT(1);
->  
-> -	ret = devm_gpiochip_add_data(dev, gpio, priv);
-> +	/*
-> +	 * Parse the "gpio-poc" vendor property. If the camera power is
-> +	 * controlled by one of the MAX9286 gpio lines, do not register
-> +	 * the gpio controller and ignore 'poc-supply'.
-> +	 */
-> +	ret = of_property_read_u32_array(dev->of_node,
-> +					 "maxim,gpio-poc", gpio_poc, 2);
-> +	if (!ret) {
-> +		priv->gpio_poc = gpio_poc[0];
-> +		priv->gpio_poc_flags = gpio_poc[1];
-> +		if (priv->gpio_poc > 1 ||
-> +		    (priv->gpio_poc_flags != GPIO_ACTIVE_HIGH &&
-> +		     priv->gpio_poc_flags != GPIO_ACTIVE_LOW)) {
-> +			dev_err(dev, "Invalid 'gpio-poc': (%u %u)\n",
-> +				priv->gpio_poc, priv->gpio_poc_flags);
-> +			return -EINVAL;
-> +		}
-> +
-> +		return 0;
-> +	}
-> +
-> +	ret = max9286_register_gpio(priv);
->  	if (ret)
-> -		dev_err(dev, "Unable to create gpio_chip\n");
-> +		return ret;
-> +
-> +	priv->regulator = devm_regulator_get(dev, "poc");
-> +	if (IS_ERR(priv->regulator)) {
-> +		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
-> +			dev_err(dev, "Unable to get PoC regulator (%ld)\n",
-> +				PTR_ERR(priv->regulator));
-> +		return PTR_ERR(priv->regulator);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int max9286_poc_enable(struct max9286_priv *priv, bool enable)
-> +{
-> +	int ret;
-> +
-> +	/* If "poc-gpio" is used, toggle the line and do not use regulator. */
-> +	if (enable)
-> +		ret = priv->regulator
-> +		    ? regulator_enable(priv->regulator)
-> +		    : max9286_gpio_set(priv, priv->gpio_poc,
-> +				       enable ^ priv->gpio_poc_flags);
-> +	else
-> +		ret = priv->regulator
-> +		    ? regulator_disable(priv->regulator)
-> +		    : max9286_gpio_set(priv, priv->gpio_poc,
-> +				       enable ^ priv->gpio_poc_flags);
-> +
-> +	if (ret < 0)
-> +		dev_err(&priv->client->dev, "Unable to turn PoC %s\n",
-> +			enable ? "on" : "off");
->  
->  	return ret;
->  }
-> @@ -1078,17 +1154,14 @@ static int max9286_init(struct device *dev)
->  	client = to_i2c_client(dev);
->  	priv = i2c_get_clientdata(client);
->  
-> -	/* Enable the bus power. */
-> -	ret = regulator_enable(priv->regulator);
-> -	if (ret < 0) {
-> -		dev_err(&client->dev, "Unable to turn PoC on\n");
-> +	ret = max9286_poc_enable(priv, true);
-> +	if (ret)
->  		return ret;
-> -	}
->  
->  	ret = max9286_setup(priv);
->  	if (ret) {
->  		dev_err(dev, "Unable to setup max9286\n");
-> -		goto err_regulator;
-> +		goto err_poc_disable;
->  	}
->  
->  	/*
-> @@ -1098,7 +1171,7 @@ static int max9286_init(struct device *dev)
->  	ret = max9286_v4l2_register(priv);
->  	if (ret) {
->  		dev_err(dev, "Failed to register with V4L2\n");
-> -		goto err_regulator;
-> +		goto err_poc_disable;
->  	}
->  
->  	ret = max9286_i2c_mux_init(priv);
-> @@ -1114,8 +1187,8 @@ static int max9286_init(struct device *dev)
->  
->  err_v4l2_register:
->  	max9286_v4l2_unregister(priv);
-> -err_regulator:
-> -	regulator_disable(priv->regulator);
-> +err_poc_disable:
-> +	max9286_poc_enable(priv, false);
->  
->  	return ret;
->  }
-> @@ -1286,20 +1359,10 @@ static int max9286_probe(struct i2c_client *client)
->  	 */
->  	max9286_configure_i2c(priv, false);
->  
-> -	ret = max9286_register_gpio(priv);
-> +	ret = max9286_parse_gpios(priv);
->  	if (ret)
->  		goto err_powerdown;
->  
-> -	priv->regulator = devm_regulator_get(&client->dev, "poc");
-> -	if (IS_ERR(priv->regulator)) {
-> -		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
-> -			dev_err(&client->dev,
-> -				"Unable to get PoC regulator (%ld)\n",
-> -				PTR_ERR(priv->regulator));
-> -		ret = PTR_ERR(priv->regulator);
-> -		goto err_powerdown;
-> -	}
-> -
->  	ret = max9286_parse_dt(priv);
->  	if (ret)
->  		goto err_powerdown;
-> @@ -1326,7 +1389,7 @@ static int max9286_remove(struct i2c_client *client)
->  
->  	max9286_v4l2_unregister(priv);
->  
-> -	regulator_disable(priv->regulator);
-> +	max9286_poc_enable(priv, false);
->  
->  	gpiod_set_value_cansleep(priv->gpiod_pwdn, 0);
->  
-> 
+> +	pcie_device: pcie_device@0,0 {
+> +		reg = <0x83010000 0x0 0x00000000 0x0 0x00100000
+> +		       0x83010000 0x0 0x00100000 0x0 0x00100000>;
+> +		memory-region = <&restricted_dma_mem_reserved>;
 
--- 
-Regards
---
-Kieran
+Shouldn't it be &restricted_dma_reserved ?
+
