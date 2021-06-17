@@ -2,92 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA47D3ABC82
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A503ABC86
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbhFQTVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 15:21:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38708 "EHLO mail.kernel.org"
+        id S233238AbhFQTWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 15:22:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232733AbhFQTVQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 15:21:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD38D613CB;
-        Thu, 17 Jun 2021 19:19:08 +0000 (UTC)
+        id S231298AbhFQTWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 15:22:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B0179613EC;
+        Thu, 17 Jun 2021 19:20:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623957548;
-        bh=dQx9GNo8/dKMJOBYJVEAPIPFPLBir1HJFwkmMUcGrcw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SO3tbdxhAdZivFy698NbEheUp2ZudQaOABYU4ZKP2MLe1z/phYlne+MlwYqNLSv+W
-         ebOLdYH9O6r5AsOOL0nCfyk3JagrLLLmDQ9sVudOYcXPlvdO4uVA4URstZf4+D5pK6
-         sU8eqi/k8ESwhvRoOP/Y2yuMRaSzGejUlC6X+aTmfGC50Xga4oFGn9yRXkt8QzFKni
-         I/NdpA/niakRQJAlzxm+aLa8WjofZ+dc+OFRU87B1FRPbKk0wfyvjdpqda7LF4/4YL
-         1skpi9p5o9bnc+K2fvhQO4R3oJdF/sxMaNQP7rkZubDPLdVTCgoaqlLrm9j2bCeECd
-         FAaascit5woXA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8D81840F21; Thu, 17 Jun 2021 16:19:06 -0300 (-03)
-Date:   Thu, 17 Jun 2021 16:19:06 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 2/4] perf test: Pass the verbose option to shell tests
-Message-ID: <YMugKlkH7lTWxTQ/@kernel.org>
-References: <20210617184216.2075588-1-irogers@google.com>
- <20210617184216.2075588-2-irogers@google.com>
+        s=k20201202; t=1623957603;
+        bh=caGavXiiTWPybO6DqNsnHt5xJmkjD88UwYkIYqQ2w8A=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Bqq7wKlam46E8Tn8cxPHYYiFUVmHJ+dPP79/2+dfWvl6D9D/QMAWedtNPEdKuki9c
+         uGCWgg5PEcM50Q3qDxNKpaKmHq/Fxwz2fIlNuoE71fk1fC98orop5xcR1xo8wCiCiS
+         aBhev3H3PnZaQSWXQEJbUnbfQNamHzBTeceB8eJ3ACcnl+QqJfKf4S1fjMEoZErzdE
+         wu7J6QxVTL94TpG+82rsglI90at7/1XjL6etrbQk/Otwyv3fO8EW6YpV4FA8SbbumO
+         AEjpF7m4xqyFP5QID5nmVKAFBaA0Yyj/9ckdyXYnR049BPnFJG3lfXQGX0Cy1CP1lw
+         X1lrIDHt60+Jg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A191960A54;
+        Thu, 17 Jun 2021 19:20:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617184216.2075588-2-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: qed: Fix memcpy() overflow of qed_dcbx_params()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162395760365.22568.16521741419925994690.git-patchwork-notify@kernel.org>
+Date:   Thu, 17 Jun 2021 19:20:03 +0000
+References: <20210617170953.3410334-1-keescook@chromium.org>
+In-Reply-To: <20210617170953.3410334-1-keescook@chromium.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     alobakin@pm.me, aelior@marvell.com, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        GR-everest-linux-l2@marvell.com, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jun 17, 2021 at 11:42:14AM -0700, Ian Rogers escreveu:
-> Having a verbose option will allow shell tests to provide extra failure
-> details when the fail or skip.
- 
+Hello:
 
-Thanks, applied to perf/core.
+This patch was applied to netdev/net.git (refs/heads/master):
 
-- Arnaldo
-
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/tests/builtin-test.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+On Thu, 17 Jun 2021 10:09:53 -0700 you wrote:
+> The source (&dcbx_info->operational.params) and dest
+> (&p_hwfn->p_dcbx_info->set.config.params) are both struct qed_dcbx_params
+> (560 bytes), not struct qed_dcbx_admin_params (564 bytes), which is used
+> as the memcpy() size.
 > 
-> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> index cbbfe48ab802..a8160b1684de 100644
-> --- a/tools/perf/tests/builtin-test.c
-> +++ b/tools/perf/tests/builtin-test.c
-> @@ -577,11 +577,14 @@ struct shell_test {
->  static int shell_test__run(struct test *test, int subdir __maybe_unused)
->  {
->  	int err;
-> -	char script[PATH_MAX];
-> +	char script[PATH_MAX + 3];
->  	struct shell_test *st = test->priv;
->  
->  	path__join(script, sizeof(script), st->dir, st->file);
->  
-> +	if (verbose)
-> +		strncat(script, " -v", sizeof(script));
-> +
->  	err = system(script);
->  	if (!err)
->  		return TEST_OK;
-> -- 
-> 2.32.0.288.g62a8d224e6-goog
+> However it seems that struct qed_dcbx_operational_params
+> (dcbx_info->operational)'s layout matches struct qed_dcbx_admin_params
+> (p_hwfn->p_dcbx_info->set.config)'s 4 byte difference (3 padding, 1 byte
+> for "valid").
 > 
+> [...]
 
--- 
+Here is the summary with links:
+  - net: qed: Fix memcpy() overflow of qed_dcbx_params()
+    https://git.kernel.org/netdev/net/c/1c200f832e14
 
-- Arnaldo
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
