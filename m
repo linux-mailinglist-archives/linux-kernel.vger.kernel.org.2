@@ -2,101 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131663AAC86
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5B43AAC8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhFQGlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 02:41:00 -0400
-Received: from m32-153.88.com ([43.250.32.153]:49867 "EHLO email.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229560AbhFQGlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 02:41:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=To:From:Date; bh=gVCYY4y0rSp4bU2KZBiLrHcjxN8EnJN3SmevO
-        doeLWw=; b=fR0qkOXpjoXIAMLAxI0vO97MUZshMdGho4C0qfsyN5yatD4ogvPWc
-        3Vzth/IsxQ4jbMkhjOOYY7DjIlySERwck6U5lnCnp9vqSo5r48Ll89mPORPvrNAB
-        myWSj7ekfJz2slK3mXYDMWo11o09BH33BWw4IMQsFf3zfFggRWtETo=
-Received: from [0.0.0.0] (unknown [113.251.12.91])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgBnPfz07cpg9jMZAA--.1960S3;
-        Thu, 17 Jun 2021 14:38:45 +0800 (CST)
-Subject: Re: [PATCH] docs: add traditional Chinese translation for kernel
- Documentation
-To:     Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210607132414.44601-1-src.res@email.cn>
- <4ecfaca0-801b-1827-2d6a-13690e016957@email.cn> <87wnqxbcjb.fsf@meer.lwn.net>
- <YMagPMuKYKWDpUj8@casper.infradead.org>
-From:   Hu Haowen <src.res@email.cn>
-Message-ID: <ecb06eb5-9319-a851-98e3-6b1554b90a37@email.cn>
-Date:   Thu, 17 Jun 2021 14:38:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230083AbhFQGl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 02:41:57 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:49281 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229551AbhFQGl4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 02:41:56 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id AAA3F5C013E;
+        Thu, 17 Jun 2021 02:39:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 17 Jun 2021 02:39:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=/DzQCe
+        zx4ySB6yO+xHiB8fElUQ69/Gax99EYsyjZLbc=; b=DntMJCOWRDqEesqmaPOHiy
+        a7Jux6Uw0HlgUcZ9tw04JsiHBUiyXpY5BfbB8kTt6m6qPkeuquN7uPa16Zn1gINB
+        +lP/sspwcsvvcWXzqhcciJPMd33Gi6wRYctCcHYmFP1Mi51RgrmkVLoCcWKzGtgL
+        FIKbyan2V1Stij809d/Eup6MIGyfyOKICM4aKqEKadaB9zMlgKfSSkpYp8jXEPTR
+        jDN8S1GOF0qPgTAAQHYLWft0nPpiKxpkIzxkV7/hkmr1GJ6gVUInRGKL8b0hdmBY
+        Ye87ucfuhJbQu92+zwBFDP3hh/qzywtKPTZvA92wQe+p7FenfAwcP0OKaVsIuF3w
+        ==
+X-ME-Sender: <xms:NO7KYOLB8lGY762oZBmjGKurjkjjkkkVu82sPOc0wSTvsv9NxCIUbQ>
+    <xme:NO7KYGK12_7DhC4Z-_J2xcWQkda0o2VC-NGEbSruscgvn4ur5NXX6pBVu92Kk3br5
+    raXa9oTFzNeUtM>
+X-ME-Received: <xmr:NO7KYOueOhKBbZf0lv0AdVptIH2Go5xnZplVMIr_BJBa6f8cxe6Vlwc89oz1CwRVx0S58RbJ_VJyIOCjK0wPJU270R6aVQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeftddguddtiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
+    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
+    htvghrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudeh
+    leetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
+    guohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:NO7KYDY4RP0fevjDUjdYvc_f7CRglEgYBg2LKXkgvJuUkiVU9jNYNA>
+    <xmx:NO7KYFY3mAJFY-xa3ym5xjMLOl_4Hz5XJc9wVHYRsQCEWFjGBcxs_g>
+    <xmx:NO7KYPBvtfTnE63PztnfQLpcEKwsoLXcJjmjr0qPkXr0aPAUO9rpIA>
+    <xmx:NO7KYEXKwSHKIQuh2jPHswkZhkGvf2mDPFoO2MarUIsQ7XP7xe9CqA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 17 Jun 2021 02:39:47 -0400 (EDT)
+Date:   Thu, 17 Jun 2021 09:39:43 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+Cc:     jiri@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vadym Kochan <vadym.kochan@plvision.eu>
+Subject: Re: [PATCH net-next] drivers: net: netdevsim: fix devlink_trap
+ selftests failing
+Message-ID: <YMruL84N3A3yq1qy@shredder>
+References: <20210616183405.3715-1-oleksandr.mazur@plvision.eu>
 MIME-Version: 1.0
-In-Reply-To: <YMagPMuKYKWDpUj8@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: GiKnCgBnPfz07cpg9jMZAA--.1960S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr18Cr1UGF47urWDtFW7twb_yoW8AF1Dpr
-        4YgFy7C3WUAr1akwnakr48ua18tFs5Gw45Xr1rKwn5Ja98A34rKF4Sy3s0kFyY9F4xGF42
-        vr4YgryrGF1DA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUglb7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-        cIk0rVWUuVWrJwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-        v20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2
-        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4
-        CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4U
-        Jr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY4
-        87MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC6x0Y
-        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
-        AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
-        IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
-        CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVF
-        xhVjvjDU0xZFpf9x07jHBTOUUUUU=
-X-Originating-IP: [113.251.12.91]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616183405.3715-1-oleksandr.mazur@plvision.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 16, 2021 at 09:34:05PM +0300, Oleksandr Mazur wrote:
 
-在 2021/6/14 上午8:18, Matthew Wilcox 写道:
-> On Sun, Jun 13, 2021 at 04:55:04PM -0600, Jonathan Corbet wrote:
->> Hu Haowen <src.res@email.cn> writes:
->>> 在 2021/6/7 下午9:24, Hu Haowen 写道:
->>>> Add traditional Chinese translation (zh_TW) for the Linux Kernel
->>>> documentation with a series of translated files.
->>> Is this patch applied? I have another amount of changes on this, so
->>> please handle it as soon as possible.
->> I have been away from the keyboard for the last week, and haven't had a
->> chance to look at it yet.  That will happen soon.  Meanwhile, please be
->> patient; it has not yet even been a week since you posted this work.
->>
->> Taking a quick look, there are a couple of things you can do:
->>
->>   - We have a Chinese translation, now you are creating a different one.
->>     Please explain why that is needed?
-> I think this explains it:
->
-> https://stackoverflow.com/questions/4892372/language-codes-for-simplified-chinese-and-traditional-chinese
->
-> So if we would consider having (eg) fr_FR and fr_CA, it's reasonable to
-> have both zh_CN and zh_TW.  No, I'm not volunteering to produce en_GB
-> (or is that en_UK?)
-In my view, Chinese is not like other languages. The traditional Chinese
-has numerous differences from the simplified Chinese, both in characters
-and word groups. Hence it may make readers who favors traditional Chinese
-feel unconfortable to read the translated content based on simplified
-Chinese. So I think it's not a "volunteered" job but a meaningful thing.
+You need to add a proper commit message here
 
-Also, it is not a bad idea to bridge the gap for readers whose mother
-tongue is traditional Chinese. That's the aim of the kernel documentation
+> Fixes: a7b3527a43fe ("drivers: net: netdevsim: add devlink trap_drop_counter_get implementation")
+> 
 
-translation work -- to provide as many translations as possible.
+No blank line between Fixes and SoB
 
+> Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+> ---
+> Test-results:
+> selftests: drivers/net/netdevsim: devlink_trap.sh
+> TEST: Initialization                                                [ OK ]
+> TEST: Trap action                                                   [ OK ]
+> TEST: Trap metadata                                                 [ OK ]
+> TEST: Non-existing trap                                             [ OK ]
+> TEST: Non-existing trap action                                      [ OK ]
+> TEST: Trap statistics                                               [ OK ]
+> TEST: Trap group action                                             [ OK ]
+> TEST: Non-existing trap group                                       [ OK ]
+> TEST: Trap group statistics                                         [ OK ]
+> TEST: Trap policer                                                  [ OK ]
+> TEST: Trap policer binding                                          [ OK ]
+> TEST: Port delete                                                   [ OK ]
+> TEST: Device delete                                                 [ OK ]
 
-Thx,
+This can be in the commit message
 
-Hu Haowen
+> ---
+>  drivers/net/netdevsim/dev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
+> index d85521989753..aad5e3d4a2b6 100644
+> --- a/drivers/net/netdevsim/dev.c
+> +++ b/drivers/net/netdevsim/dev.c
+> @@ -269,7 +269,7 @@ static int nsim_dev_debugfs_init(struct nsim_dev *nsim_dev)
+>  		err = PTR_ERR(nsim_dev->nodes_ddir);
+>  		goto err_out;
+>  	}
+> -	debugfs_create_bool("fail_trap_counter_get", 0600,
+> +	debugfs_create_bool("fail_trap_drop_counter_get", 0600,
+>  			    nsim_dev->ddir,
+>  			    &nsim_dev->fail_trap_counter_get);
 
+Please change the name of the variable to match the name of the
+corresponding debugfs file
 
+>  	nsim_udp_tunnels_debugfs_create(nsim_dev);
+> -- 
+> 2.17.1
+> 
