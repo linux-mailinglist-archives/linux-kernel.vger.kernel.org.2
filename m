@@ -2,217 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23213ABD1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E273ABD21
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbhFQTxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 15:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhFQTxO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 15:53:14 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C06C061574;
-        Thu, 17 Jun 2021 12:51:05 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id he7so11896587ejc.13;
-        Thu, 17 Jun 2021 12:51:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=K/2cLHHtY/R1Pi5mGLI4iU87e/5TgWVFJ+Ivk23EuxE=;
-        b=MSql+6Rg8gMvT5etyTjxdclYd0n7mib6dUZA8ZqAPi14hAc/EnE8BDrmNau1nulfSm
-         yc6kxGx2IWrnGeGItZLET/NRNQJqtz9cCboKcRQmPMibFnydGdBG0Uu4ptt9Ay9UIaLc
-         Q94ZjW9hkBDdYzQMx77tqyAbWLV0niDBRlphnH3e3J+OKq2hvJP5ggXBtD/oB4qSbF/x
-         u47qyJ6w2uuMVFlWZUd33OxOoG4ck6njbO9PtFTCv6WkvXwken+9dl5m5NhKb+j0x9mU
-         Hfp5l4a/3AxfR1lTNHyGrikuO7i7IDyCz1UJXmHC/3+yJ6B+McD0UXHe8oCV2BQ051qD
-         3Pzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K/2cLHHtY/R1Pi5mGLI4iU87e/5TgWVFJ+Ivk23EuxE=;
-        b=WDfdyGhTPVvBVPM9Q13kOPvLoWc2OuVFDM2ilQHM2wjVOdzJl591V8VCVKeC325l6T
-         k4lpf1f7P7+ufwt0LRcE43MoHMGSGk1Gqybq1sqdo/6VS4NhVnCO/8nb4TAxWaibN90R
-         jWUqUgHc5oYrAbuBF9YcWAIl8gGVhSTLBcVy8p+6mhos8j1WOJiojIyFLJ44D60pWaJa
-         H6osfY1iNLoxup+ucFQmiz23GqID0woo32ETOomBRPXeIwlnIDp7UQgfDicVaNE0a53g
-         xXSO10vpkN1/fQRWpWKZ09g16680c/vT4zmwEZDLGpKw15xzgaw7BYWPYrJpQmJZeY7N
-         HPxQ==
-X-Gm-Message-State: AOAM533MfmmiKJrd18SS8+RPC/x+IPikfbbYkMJSqNwIwxLdIaWiUbGO
-        I1ZN5lEugGI1vxEqREpB6ew=
-X-Google-Smtp-Source: ABdhPJykeig0ygfwghsku+xlVnk6pgm/afn/czMDUWwVJB75gYYLZcRsBKut/F+wgrKNCzIjq6xKjQ==
-X-Received: by 2002:a17:906:f744:: with SMTP id jp4mr7072953ejb.210.1623959464276;
-        Thu, 17 Jun 2021 12:51:04 -0700 (PDT)
-Received: from skbuf ([188.26.224.68])
-        by smtp.gmail.com with ESMTPSA id aq21sm4904522ejc.83.2021.06.17.12.51.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 12:51:03 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 22:51:02 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Boris Sukholitko <boris.sukholitko@broadcom.com>,
-        jiri@resnulli.us, idosch@idosch.org
-Subject: Re: [PATCH net-next] net/sched: cls_flower: fix resetting of ether
- proto mask
-Message-ID: <20210617195102.h3bg6khvaogc2vwh@skbuf>
-References: <20210617161435.8853-1-vadym.kochan@plvision.eu>
- <20210617164155.li3fct6ad45a6j7h@skbuf>
-MIME-Version: 1.0
+        id S230411AbhFQTyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 15:54:13 -0400
+Received: from mail-eopbgr10088.outbound.protection.outlook.com ([40.107.1.88]:10941
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232339AbhFQTyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 15:54:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AxAumthsBrcIoSCJSnIamVeKh9laqeK606ghQ4fayWpD0rLCVMCt0bbL4iKXTQ1YD0myXUx2zj6q/Jthjrld3X2zB09YHdmMOfaOb6ByUotxcsCiKDxvsaMWZ8GHvK/fbwksBOJSBRO1o+WMj1Y3WAMNG6x5oDdnXR7AHD7NJTDnRX1/a2p2UOnlg1oUkXnuAvELfLfEp36s9A9/b+aKZdXUzML1vy/0OI692AMEc9LQjitpd2Bw7GR9L9WXFpoCsQ0svEEN1zaSGkKPJOft5Wi0mdOtTmzqzXCN3FNuTdd6ydTUu6eBFqbTIQihGW0uCbgh9vCo2goXrCTXzYs+4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R1fUK6jb102OshIN7cLZbpIRhHx/sKCK/MmuXr9uLe4=;
+ b=eUoKXMB2R65ltSoMGUbmwyZ7B3kYQv27HfvV4tSkRzz3CeR8LpS0sazV597J2fU6StY17XXz/igrEwOQKxZ/vAXWpwjp1q0PwgpLY3KYvCXzo0t/1MkW7qzcAz5tOIj6GBDONH2fPaiQ/dEZVWD1BdMBCl/zTKSsx2gLhrgLSIXLr087JycV3mSPVLyir3AWBSjMF5jfRP/hDP2SE/YTbcppfzNpZwxAOo5ILLNF0zGoP5dUPXSOtypTHujNKyXSUCrRY/wGmWY1T+yFWWfg1rV5CzNqLAkKwLkdp6LBKlcNECIEp1wsDH6+CMaGFwSsbV1uR0sK2ShhKTaB6Cc6vQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=orolia.com; dmarc=pass action=none header.from=orolia.com;
+ dkim=pass header.d=orolia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=orolia.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R1fUK6jb102OshIN7cLZbpIRhHx/sKCK/MmuXr9uLe4=;
+ b=URhxhAdt22QinRCDK3pU+sSo0B2YwHgusB3FQ7vf6p+RMtQwrhxVMQA0uRIfShkX59ESWhuai6bFe72sqZxzhTxAASCJ15S5L8LuK4q2topWVfx54TgWEP4RauzeYmKMle6ouk6HaL4Ybq7L+6/aw4AVwt0FUzIT/Bd7eISPIGk=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=orolia.com;
+Received: from PR1PR06MB4746.eurprd06.prod.outlook.com (2603:10a6:102:11::28)
+ by PAXPR06MB7710.eurprd06.prod.outlook.com (2603:10a6:102:de::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15; Thu, 17 Jun
+ 2021 19:52:00 +0000
+Received: from PR1PR06MB4746.eurprd06.prod.outlook.com
+ ([fe80::81ef:de90:c451:d6e3]) by PR1PR06MB4746.eurprd06.prod.outlook.com
+ ([fe80::81ef:de90:c451:d6e3%5]) with mapi id 15.20.4195.030; Thu, 17 Jun 2021
+ 19:51:59 +0000
+Date:   Thu, 17 Jun 2021 21:51:28 +0200
+From:   Olivier Dautricourt <olivier.dautricourt@orolia.com>
+To:     Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Stefan Roese <sr@denx.de>
+Cc:     Olivier Dautricourt <olivier.dautricourt@orolia.com>,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] *** altera-msgdma: make response port optional ***
+Message-ID: <cover.1623898678.git.olivier.dautricourt@orolia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210617164155.li3fct6ad45a6j7h@skbuf>
+X-Originating-IP: [2a01:e34:ec42:fd70:167:681b:bc47:e8b1]
+X-ClientProxiedBy: LO2P265CA0516.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:13b::23) To PR1PR06MB4746.eurprd06.prod.outlook.com
+ (2603:10a6:102:11::28)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from orolia.com (2a01:e34:ec42:fd70:167:681b:bc47:e8b1) by LO2P265CA0516.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:13b::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Thu, 17 Jun 2021 19:51:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d9a402f8-a31d-47f1-ccc5-08d931c95eb9
+X-MS-TrafficTypeDiagnostic: PAXPR06MB7710:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PAXPR06MB7710D84ECFA650762E6D6D788F0E9@PAXPR06MB7710.eurprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:651;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eM7t+cjnikGU5Oco7dyiui3vrH5QzWf3MzvdNzNqxC5QonLtj/hOJIFPwp/MG2vz7Ef9yr558vvshisLozeHiQAdLUHSYEjzmfYlgiNPzCK5qMg3hJquTr4tjsm0UU+33JmfRLdT8aQGOY4Iife6HhAd+Cpe5DBiOIEm89Hz95HgDWwTxrpvs9IMD1hFust0Xf8fVgwZ9Bt8csD0lrmcAnpB67K1PtKl6eIkMybBpKUlGbre2fgxOXtlGBMLqWHAHGqEAg8g2mt6/T14vlgEI9u6hv/qa32HVDE6oCNghJQGkGQK/Yjh7fEfDAdpu6Mqf878S8ZkOkWltAXdsUZlSGfqGt9TNL5HQXU9XcmFCP+JOobhMhsz3lWRb9jZgvovlH8eQgEsayAaEIGubMxFQNguSImXdd3iqTVCxDZEy7OLDfaA774VbQLjQ6JrsMnvQqw6df5arv9bHd+6lJ3G7h4fo4CkNdTew9uhwo+3mB8vTXzCOvntKXENh5e6+ATB84fS7SaHbZ0gWH+K2J1hxpwMDqJqaWvBBkv/jM4pd2/Z4pb07KcXzwCAXKKPVlWc8NWX3UNGPVzKeFsfALPMPLJEuqy2q9L5A6sv4wpMqPk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR1PR06MB4746.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39840400004)(376002)(136003)(396003)(83380400001)(8676002)(86362001)(8886007)(2616005)(478600001)(55016002)(36756003)(4744005)(38100700002)(186003)(4326008)(44832011)(16526019)(66476007)(66556008)(6666004)(66946007)(316002)(110136005)(5660300002)(8936002)(7696005)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZhgKvQkyGEzCqNNMohDLha/sS989wzwT1A8zekN9jfo8Oew06SPGvZoFq5Yh?=
+ =?us-ascii?Q?jZlGn9wJ/oGIw2dAZkqIPUdqFKyWZLVrituYEiKis9PRtqi1n4bcSV9uu3n/?=
+ =?us-ascii?Q?rcaGXmGRyc5HT2yW5Z3ODn7jHnl7zgNfM/R+uoctoSKkiFlPWz2bhWi/i7xj?=
+ =?us-ascii?Q?qtXwofHV5v0DpqbHjl14HG70N6PdDLC6zv2yhLJBdL+nrerHU1tzKjTlmZMX?=
+ =?us-ascii?Q?WLLLlAqiN9gB8j+ctDBEWXol1N26qKZLgLRA/Vwt77WIbvP5OXIsbZb3ftlK?=
+ =?us-ascii?Q?L3rHH0n0e2Ybl1VsODLvGaLRQtXbpz2pvszuUcG6aiE7zY45r2RqldT67yPM?=
+ =?us-ascii?Q?xM5MVyNGrfXu7V73Z8FVruFWjmMeGE5fMkRdMCm9vAR4NH+R7dG8MjquNzeY?=
+ =?us-ascii?Q?VtPGxJ36HqNcpucKD4lKi+L0S8Zb+IjcnJeAbwX39OCuIH9Jc5m4Va2vebBl?=
+ =?us-ascii?Q?qTDr6HOH9B/FvPpLViq9PwsFNZNe3TM9x6F7eYcWht/RVomSAWD3Tn+rLYFr?=
+ =?us-ascii?Q?JXsP5F1BDJChNVQzL7wfM3WfZYuaZE60s7nGUqxhqinyGIAdul8Pyuncqzk5?=
+ =?us-ascii?Q?LALFyeLu6Z1qJaqR9fnSnVtm8XuEabAFhGtxOkFGs9EROmT2WqkVqSCXRcXy?=
+ =?us-ascii?Q?azk4A+z2JAk/mxey2G/FfzL6SWa9Lu030xXITXUyHctuhpvn7R3KD7esBM/N?=
+ =?us-ascii?Q?zW4FuJIMjdMLKbZchunKTzo1/8vJ7MgU5BrZ+iA7BY1pFLoOoxW8nfnl+7Ho?=
+ =?us-ascii?Q?ETvmzML/2CkVddC4Feblx4A/IcgoEh5O3fhLYddqBj3cme+0PaYf8NpUtxXW?=
+ =?us-ascii?Q?WGgIHpLT/Hfn+WHHNcaXHXR+On/Tz06igchuGQXbZiJMFRsZS7o+Nfnx4BJ0?=
+ =?us-ascii?Q?vca45Up8UZJrDobTF5i9ohTTgyw6Q0kAahoGmDe80Ogl0TMbamUkafUO16Tb?=
+ =?us-ascii?Q?ZoP5QWeQBD4kK8mTwwsTBr6baNOYj33uT59cNlR2bz+xYgTxHQER5M1gFq+U?=
+ =?us-ascii?Q?wRgCAY5MgIuDM4NzYRY/YrvyrtS3pJzxfbg921zLCAoZDnnFsnGT4tW0BnZt?=
+ =?us-ascii?Q?/NQ0VgY7JceR9TE9wFsSVE9MQWqWCMxkkbl5XPuUN1tJQVHWO1xCnpBxP9W1?=
+ =?us-ascii?Q?zXrTFRoyb/lc2TwBLQ4fPySYyt6rIj4pDtm9pUWgYSCsTp1/Hu2Z/aLPfClS?=
+ =?us-ascii?Q?hE19P0Bv1HwYC4sXvIrQvUSAtDOQJDcuSztz7kmff4/kdSyGNO1WjszrlnpB?=
+ =?us-ascii?Q?R2efVxlXNk+lMhs9tu+VIEL9lWbfxm6IQyQdq/AHc6+/TGu7iUrBUUEuL6IU?=
+ =?us-ascii?Q?uNk072/vWx9e58og+DMmAC+LBVqNUkF2Pl0mr+mDGQo25ffK78//nqTNMoip?=
+ =?us-ascii?Q?xFJDA++F6j9phy3ToTTs+ysEqnFP?=
+X-OriginatorOrg: orolia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9a402f8-a31d-47f1-ccc5-08d931c95eb9
+X-MS-Exchange-CrossTenant-AuthSource: PR1PR06MB4746.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 19:51:59.8177
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a263030c-9c1b-421f-9471-1dec0b29c664
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YNEB0WF7uy7GGyWSHumx24MmrfRDaBRQHjbMVgHpSHwDq80dO5DG+SU30Pr0HSYy29SluFtBbCcxd7fjuL2kO4S3EspEFBVMBjAKRJAjcL8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR06MB7710
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 07:41:55PM +0300, Vladimir Oltean wrote:
-> On Thu, Jun 17, 2021 at 07:14:35PM +0300, Vadym Kochan wrote:
-> > In case of matching 'protocol' the rule does not work:
-> >
-> >     tc filter add dev $DEV ingress prio 1 protocol $PROTO flower skip_sw action drop
-> >
-> > so clear the ether proto mask only for CVLAN case.
-> >
-> > The issue was observed by testing on Marvell Prestera Switchdev driver
-> > with recent 'flower' offloading feature.
-> >
-> > Fixes: 0dca2c7404a9 ("net/sched: cls_flower: Remove match on n_proto")
-> > CC: Boris Sukholitko <boris.sukholitko@broadcom.com>
-> > Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> > ---
->
-> You resent the patch very quickly, did you find out why Boris' patch was
-> working in the first place?
+Response port can be disabled in the ip core configuration,
+so allow not to specify one.
 
-I guess not.
+This patch serie is applicable on
+git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git next
 
-The question day is, really, "what is skb->protocol?"
+Olivier Dautricourt (2):
+  dt-bindings: dma: altera-msgdma: make response port optional
+  dmaengine: altera-msgdma: make response port optional
 
-Boris said that the main classification routine - __tcf_classify -
-already selects the adequate classifier (a struct tcf_proto) from the
-classifier chain on the ingress qdisc of the interface. The selected
-struct tcf_proto has a protocol field equal to the skb->protocol of the
-packet.
-
-So given three filters:
-
-tc qdisc add dev sw1p0 clsact
-tc filter add dev sw1p0 ingress handle 10 protocol ipv4 flower src_ip 192.168.1.1 skip_hw action drop
-tc filter add dev sw1p0 ingress handle 10 protocol ipv4 flower src_ip 192.168.1.2 skip_hw action drop
-tc filter add dev sw1p0 ingress handle 10 protocol ipv4 flower src_ip 192.168.1.3 skip_hw action drop
-tc filter add dev sw1p0 ingress handle 10 protocol ipv4 flower src_ip 192.168.1.4 skip_hw action drop
-tc filter add dev sw1p0 ingress handle 11 protocol 0x8864 flower skip_hw action drop
-tc filter add dev sw1p0 ingress handle 12 protocol 0x8862 flower skip_hw action drop
-
-there will be 3 tcf_proto structures: one for protocol ipv4 (0x0800),
-one for 0x8864 and one for 0x8862.
-
-Boris points out that skb_flow_dissect() does not always set the
-key->basic.n_proto value to the EtherType, but rather to the innermost
-protocol, if the EtherType is for a 'tunneling' protocol like PPPoE.
-That's just how the flow dissector works.
-
-But Boris goes on to argue that he wants to match packets with EtherType
-0x8864, and the flow dissector is stopping him from doing that, since it
-is coded up to look inside the PPPoE session header, and return either
-ETH_P_IP or ETH_P_IPV6.
-
-How does Boris solve the problem?
-He removes the key->basic.n_proto from the set of keys used by the flow dissector
-instantiated by the flower classifier associated with this struct tcf_proto.
-Because the protocol is already taken into account by virtue of __tcf_classify()
-looking at skb_protocol(skb), it appears to be redundant to give the
-flow dissector a chance to have its own shot at what the skb protocol is.
-
-Why does classification by protocol still work?
-Because, for example, this filter:
-
-tc filter add dev sw1p0 ingress handle 11 protocol 0x8864 flower skip_hw action drop
-
-will be the only filter of the tcf_proto classifier for protocol 0x8864
-which is found by __tcf_classify(). By the time the flower's fl_classify()
-is called, the tp_proto for 0x8864 will have only one mask, and despite
-the lack of any valid flow dissector keys, fl_mask_lookup() will always
-find that one filter.
-
-If there are multiple filters for the same tcf_proto classifier, I guess
-it's random which one will match.
-
-What does Boris break?
-Offloading, of course. fl_hw_replace_filter() and fl_reoffload() create
-a struct flow_cls_offload with a rule->match.mask member derived from
-the mask of the software classifier: &f->mask->key - that same mask that
-is used for initializing the flow dissector keys, and the one from which
-Boris removed the basic.n_proto member because it was bothering him.
+ .../devicetree/bindings/dma/altr,msgdma.yaml  |  4 +-
+ drivers/dma/altera-msgdma.c                   | 37 +++++++++++++------
+ 2 files changed, 29 insertions(+), 12 deletions(-)
 
 
-Now, having understood the problem, it is clear that Boris's patch needs
-more work to not break offloading. If we decide that Boris's approach is
-good and the classifier protocol does mean something close to the
-EtherType (although again, still not always the EtherType, see below),
-then we probably need to keep a different fl_flow_mask/fl_flow_key
-structure for passing to the flow dissector compared to the
-fl_flow_mask/fl_flow_key we pass to the offloading driver.
+base-commit: 656758425f98693bd61a08f6b51c4c5aa26c9d50
+--
+2.31.0.rc2
 
-However, I think we need to take a step back and see how the situation
-should be dealt with.
-
-I tried to see what does "man tc.8" say about the "protocol" field, and
-of course, it says nothing - I guess it's just too obvious to mention.
-But the tc classifiers use skb->protocol, not the EtherType, and
-skb->protocol is derived from eth_type_trans(), which in itself does
-some really magik tricks. For example, packets received on a DSA master
-will have a skb->protocol of 0x00F8, regardless of the EtherType of the
-actual packet. DSA then registers a ptype_handler for this magik value,
-and that's how it sniffs and processes those packets.  But no one really
-expected this information to leak to user space in this way, I mean if
-you add a software filter on a DSA master it will need to be for
-protocol 0xf8, but that isn't documented anywhere unless you read the
-code (and of course, offloaded filters behave totally differently
-because they have no idea of eth_type_trans and its tricks).
-Then, DSA has adjustment code in the flow dissector again such that the
-DSA header, if present, is transparent and just skipped over - revealing
-the basic.n_proto value behind that (ETH_P_IP or whatever) and other
-headers. So.. you can match on IP headers using tc on a DSA master?
-Well, no, because the protocol is 0xf8, not ipv4, so the tc user space
-parser won't allow you to set IPv4 keys for the flower classifier :)
-
-But maybe we decide that no, we really need an unadulterated EtherType
-to match in tc-flower. Jamal considered that the generic tc filter protocol
-is good enough for that, but it clearly isn't. The trouble is - even
-if we make the tc program continue to pass the TCA_FLOWER_KEY_ETH_TYPE
-netlink attribute as a potentially different value compared to the
-filter protocol (right now they are kept in sync by user space) - the
-flow dissector will not give us the EtherType in basic.n_proto, but
-rather the innermost protocol in the case of tunnelling protocols.
-So maybe it is the flow dissector we need to fix, to make it give us an
-additional pure EtherType if asked for, make tc-flower use that
-dissector key instead, and then revert Jamal's user space patch, and we
-should all install our tc filters as:
-
-tc filter add dev sw1p0 ingress handle 11 protocol all flower eth_type 0x8864 skip_hw action drop
-
-?
-
-Or maybe just be like you, say I don't care about any of that, I just
-want it to behave as before, and simply revert Boris's patch. Ok, maybe
-for various reasons we decide to go that route, for example if we can't
-decide on anything better, and there is an obvious regression being
-introduced - broken offloading. But at the very least, your revert needs
-work too. Please use straight "git revert -s 0dca2c7404a9" and don't
-just do partial reverts. I don't know whether intentionally or not, but
-you left the C-VLAN case broken - the mask->key.basic.n_proto is still
-being set to zero, despite there being information in the netlink
-attribute.
-
-In any case, please do a better job of describing the change you are
-making and why you are making it this way.
