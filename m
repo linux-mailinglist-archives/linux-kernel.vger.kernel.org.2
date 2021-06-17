@@ -2,111 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52E63AB499
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D843AB4A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbhFQNZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFQNZI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:25:08 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A1EC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 06:23:00 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id a15so4619443qtx.13
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 06:23:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EpWxRaSsnLYws7nyDWlyhtmN0+4jL+XRdMFxoBZFNjc=;
-        b=qYJWuKoW9PtFH0BaBavdHQXZ9+p0C7xQmq3feta+NIidPdHSI9MFKCdyx1kNqtfOpg
-         KqwrVyubAH3gQTpeI6o9jbhjf4e5bXent62688TD1VTSRlQz8I1y6Wu1eJ8zsHK6RDpG
-         OYnLDI1J97EFHEm02dAZwqH5IvVSemWWk5jhCh4l+8HyeKmcq+ZHCCsoCz+Pk65nNT0H
-         WrZuO4B/+OyZvmn2W37oZqCq+dr/LuSiONs+3EUOEZUWN5Av3gB5GWbRLGvM+h6RTTEE
-         mExSWQN0MrhdsqePYH2dsvR54j+OhJal4GdCpmXTTJArxMLZufCpWk8KxVW/WZ7Sj83W
-         4qzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EpWxRaSsnLYws7nyDWlyhtmN0+4jL+XRdMFxoBZFNjc=;
-        b=GlKeuaQVWbQxAcK+hSF5Bz+TeQUPo6ObQJhLJFehdX4AMKj2nr8K6dhF6kqquoJYd9
-         cXahnvcoXwxr7xfkNWjqsfQ/8ubKfP3HJYoqH7+lxY4g3ge52v+meCqQjAA/6dhBZrHG
-         pYwhwRdepLCOn/YiiKz/xjdpEawcoinBtHbtLlrG348g17F6gXLIkuOrmfnFmw7WkU32
-         teX/w2uggxyZxyT/07BxaHER08MtzjK8aabya8oD8wzPkTp3H+bQ3P2ZvSd1+Y1KyV/p
-         aPY/d2Vqpeq4Rw2hAwtNo3BJlLWPno2w6+MnUaAbYMa+J23E92jJE+pr6bxu+6lrQ/sH
-         B6Kw==
-X-Gm-Message-State: AOAM531OzOwKoYrQB9TuPQemEb2QIkrXMfqWaGjisqShLwplmf9yUQvb
-        2K9uoyJme916dsVWvRehbiEtrLoFvlW0vYKzMXUG6ALxo9M=
-X-Google-Smtp-Source: ABdhPJxAO2nFYDYfih/PNHQokbVY+LbN/ZwPSGQzc6cgf+MSSXMDBX0GH72V1GWtMo2c7X3wq8BASCM2xClh5j32XZg=
-X-Received: by 2002:a05:622a:81:: with SMTP id o1mr5046038qtw.16.1623936179469;
- Thu, 17 Jun 2021 06:22:59 -0700 (PDT)
+        id S232500AbhFQN0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:26:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:53560 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229931AbhFQN0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:26:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0412F106F;
+        Thu, 17 Jun 2021 06:24:29 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 57AE23F719;
+        Thu, 17 Jun 2021 06:24:26 -0700 (PDT)
+Subject: Re: [PATCH v15 0/7] MTE support for KVM guest
+To:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210614090525.4338-1-steven.price@arm.com>
+ <20210617121322.GC6314@arm.com> <87im2cd443.wl-maz@kernel.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <db4cf3c1-d5eb-f8cf-23ff-d52e3b6ae9b1@arm.com>
+Date:   Thu, 17 Jun 2021 14:24:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210616190759.2832033-1-mw@semihalf.com> <20210616190759.2832033-4-mw@semihalf.com>
- <YMpShczKt1TNAqsV@lunn.ch> <CAPv3WKde+LCmxxr6UuA7X=XShF6d4io49baxsjw1kMqR=T7XrA@mail.gmail.com>
- <YMs/xztdc0xhYbDr@lunn.ch>
-In-Reply-To: <YMs/xztdc0xhYbDr@lunn.ch>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Thu, 17 Jun 2021 15:22:48 +0200
-Message-ID: <CAPv3WKdPiwxsHKHoa1SK7xUu4fCPYsGhyXLr6ZGUWo4tvdOvkw@mail.gmail.com>
-Subject: Re: [net-next: PATCH v2 3/7] net/fsl: switch to fwnode_mdiobus_register
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
-        lenb@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87im2cd443.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-czw., 17 cze 2021 o 14:28 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
->
-> On Thu, Jun 17, 2021 at 01:39:40AM +0200, Marcin Wojtas wrote:
-> > =C5=9Br., 16 cze 2021 o 21:35 Andrew Lunn <andrew@lunn.ch> napisa=C5=82=
-(a):
-> > >
-> > > On Wed, Jun 16, 2021 at 09:07:55PM +0200, Marcin Wojtas wrote:
-> > > > Utilize the newly added helper routine
-> > > > for registering the MDIO bus via fwnode_
-> > > > interface.
-> > >
-> > > You need to add depends on FWNODE_MDIO
-> > >
-> >
-> > Do you mean something like this?
-> >
-> > --- a/drivers/net/ethernet/freescale/Kconfig
-> > +++ b/drivers/net/ethernet/freescale/Kconfig
-> > @@ -68,8 +68,8 @@ config FSL_PQ_MDIO
-> >  config FSL_XGMAC_MDIO
-> >         tristate "Freescale XGMAC MDIO"
-> >         select PHYLIB
-> > -       depends on OF
-> > -       select OF_MDIO
-> > +       depends on ACPI || OF
-> > +       select FWNODE_MDIO
-> >         help
->
-> You should not need depends on ACPI || OF. FWNODE_MDIO implies
-> that. And there are no direct calls to of_ functions, so you can drop
-> the depends on OF.
->
+On 17/06/2021 14:15, Marc Zyngier wrote:
+> On Thu, 17 Jun 2021 13:13:22 +0100,
+> Catalin Marinas <catalin.marinas@arm.com> wrote:
+>>
+>> On Mon, Jun 14, 2021 at 10:05:18AM +0100, Steven Price wrote:
+>>> I realise there are still open questions[1] around the performance of
+>>> this series (the 'big lock', tag_sync_lock, introduced in the first
+>>> patch). But there should be no impact on non-MTE workloads and until we
+>>> get real MTE-enabled hardware it's hard to know whether there is a need
+>>> for something more sophisticated or not. Peter Collingbourne's patch[3]
+>>> to clear the tags at page allocation time should hide more of the impact
+>>> for non-VM cases. So the remaining concern is around VM startup which
+>>> could be effectively serialised through the lock.
+>> [...]
+>>> [1]: https://lore.kernel.org/r/874ke7z3ng.wl-maz%40kernel.org
+>>
+>> Start-up, VM resume, migration could be affected by this lock, basically
+>> any time you fault a page into the guest. As you said, for now it should
+>> be fine as long as the hardware doesn't support MTE or qemu doesn't
+>> enable MTE in guests. But the problem won't go away.
+> 
+> Indeed. And I find it odd to say "it's not a problem, we don't have
+> any HW available". By this token, why should we merge this work the
+> first place, or any of the MTE work that has gone into the kernel over
+> the past years?
+> 
+>> We have a partial solution with an array of locks to mitigate against
+>> this but there's still the question of whether we should actually bother
+>> for something that's unlikely to happen in practice: MAP_SHARED memory
+>> in guests (ignoring the stage 1 case for now).
+>>
+>> If MAP_SHARED in guests is not a realistic use-case, we have the vma in
+>> user_mem_abort() and if the VM_SHARED flag is set together with MTE
+>> enabled for guests, we can reject the mapping.
+> 
+> That's a reasonable approach. I wonder whether we could do that right
+> at the point where the memslot is associated with the VM, like this:
+> 
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index a36a2e3082d8..ebd3b3224386 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -1376,6 +1376,9 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+>  		if (!vma)
+>  			break;
+>  
+> +		if (kvm_has_mte(kvm) && vma->vm_flags & VM_SHARED)
+> +			return -EINVAL;
+> +
+>  		/*
+>  		 * Take the intersection of this VMA with the memory region
+>  		 */
+> 
+> which takes the problem out of the fault path altogether? We document
+> the restriction and move on. With that, we can use a non-locking
+> version of mte_sync_page_tags().
 
-Ok, I'll leave:
-depends on FWNODE_MDIO
-only.
+Does this deal with the case where the VMAs are changed after the
+memslot is created? While we can do the check here to give the VMM a
+heads-up if it gets it wrong, I think we also need it in
+user_mem_abort() to deal with a VMM which mmap()s over the VA of the
+memslot. Or am I missing something?
+
+But if everyone is happy with the restriction (just for KVM) of not
+allowing MTE+VM_SHARED then that sounds like a good way forward.
 
 Thanks,
-Marcin
+
+Steve
+
+>> We can discuss the stage 1 case separately from this series.
+> 
+> Works for me.
+> 
+> Thanks,
+> 
+> 	M.
+> 
+
