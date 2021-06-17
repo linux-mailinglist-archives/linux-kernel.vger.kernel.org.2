@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3633ABDF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 23:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C223ABDF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 23:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbhFQV2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 17:28:51 -0400
-Received: from mail-il1-f182.google.com ([209.85.166.182]:39586 "EHLO
-        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232939AbhFQV2s (ORCPT
+        id S232919AbhFQV2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 17:28:45 -0400
+Received: from mail-io1-f41.google.com ([209.85.166.41]:36760 "EHLO
+        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232666AbhFQV2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 17:28:48 -0400
-Received: by mail-il1-f182.google.com with SMTP id j14so6659208ila.6;
-        Thu, 17 Jun 2021 14:26:40 -0700 (PDT)
+        Thu, 17 Jun 2021 17:28:44 -0400
+Received: by mail-io1-f41.google.com with SMTP id s19so4764385ioc.3;
+        Thu, 17 Jun 2021 14:26:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=S2QnEMjPyLJ51Kht1z23VYTeVyxh5naJwxQU5uQBV3s=;
-        b=uSl4axqlk210owmikZ8EI6VtVClK1YCM4MV3tZP9OVADKb+WDw9fq7b/y2Z8IXJ6Hd
-         saFhuQ5A88VoPXPtDTQmV9bXcuq3PdWVcUtP6Bt+rCWlqQCQHVG9kFFrJnfMY7kMIMB7
-         DDs7Vwclg4rhkB3xr+EAUAkJJrQGvmmx674xQ512gB6VP4xDWrfssLZdRG1k22/J+xVz
-         6kXD6jzbIJ5lx3/Ebdwa3/vSd2flrAAu5n7yvyMrO6BAbulgmDSKIHjbmQhzbOmaVXgp
-         laSFd6a9deDPfP7GgaCOPIuy3nrI+XL2/3N3QdSxMn0+tD3FbkK/t+LiJPIR1g+QhPkc
-         /mPg==
-X-Gm-Message-State: AOAM533y5RfjrHBHrxrlLL9SCdHyhmCPXGeAHuYwDkbNhmNbdkxMU8G+
-        viME6R2UtCBtXtPWqfDLekBFWAU95Q==
-X-Google-Smtp-Source: ABdhPJwx/O9pKEetV4vbZYQ02eGDkjwiDJt/qlFofKiX/u2XNE3H0grx7CaSNbe0xBL5h6oggqcfNg==
-X-Received: by 2002:a05:6e02:13e5:: with SMTP id w5mr5050540ilj.112.1623965200227;
-        Thu, 17 Jun 2021 14:26:40 -0700 (PDT)
+        bh=5eq4f8x/PBXQ0L0KWI8lbvRWrLgR98TD03TAWNAHP0I=;
+        b=RLZ8baUGn3mMwxscg1PB4BmaGhW+cpemNE1WAt9OhJkJbgRix9er3lhRYjV++OlFc5
+         16Q4XoGuY2VSFyi1P9yIjk1DmLB0bpvkDcablA71OWY9n7WyRzyzyl/WihnCcJ/mgPCo
+         pigiczyNJXa14brZKgfNITY0pUp4cpcQMWG4QkBOR0EgNA4SybRxE7td+vYP0t8RAfSX
+         Y6vUnVjMU8d6YyCZmE6c4+85/qVDxi8XmtoZHx/uN5tCLtWYAIV69xWcm6ysdnzT+Gog
+         mi2L7pJXaZ8P9XwTnUBfp8giVeeJ7Yh1sMJ2810C0VN71djsEPJNmaiVo8UZ9EVXNQ1A
+         JEOw==
+X-Gm-Message-State: AOAM533yAqzqXIDCK/lieo0xl7Ns9/XyguEFnhAw/8A084qA7ol6Zrmb
+        lAUQjnRA3Fhqu3I1PRQXzQ==
+X-Google-Smtp-Source: ABdhPJzKYftIYW1nBl+6hxGS0Ti9h9zAzlQz9WsWpBDeaZqwQntNxz3ul/G3t+wNmMg4w6xTU/xNXw==
+X-Received: by 2002:a05:6602:581:: with SMTP id v1mr5561875iox.192.1623965195650;
+        Thu, 17 Jun 2021 14:26:35 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id q6sm95080ilm.45.2021.06.17.14.26.37
+        by smtp.gmail.com with ESMTPSA id 6sm3685511ioe.43.2021.06.17.14.26.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 14:26:39 -0700 (PDT)
-Received: (nullmailer pid 3336121 invoked by uid 1000);
+        Thu, 17 Jun 2021 14:26:35 -0700 (PDT)
+Received: (nullmailer pid 3336117 invoked by uid 1000);
         Thu, 17 Jun 2021 21:26:24 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        freedreno@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210617144349.28448-2-jonathan@marek.ca>
-References: <20210617144349.28448-1-jonathan@marek.ca> <20210617144349.28448-2-jonathan@marek.ca>
-Subject: Re: [PATCH v4 1/3] dt-bindings: msm: dsi: add missing 7nm bindings
+To:     Trevor Wu <trevor.wu@mediatek.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, cychiang@google.com, tiwai@suse.com,
+        broonie@kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, matthias.bgg@gmail.com, jiaxin.yu@mediatek.com,
+        bicycle.tsai@mediatek.com
+In-Reply-To: <20210617054740.8081-9-trevor.wu@mediatek.com>
+References: <20210617054740.8081-1-trevor.wu@mediatek.com> <20210617054740.8081-9-trevor.wu@mediatek.com>
+Subject: Re: [PATCH 8/8] dt-bindings: mediatek: mt8195: add mt8195-mt6359-rt1019-rt5682 document
 Date:   Thu, 17 Jun 2021 15:26:24 -0600
-Message-Id: <1623965184.580046.3336120.nullmailer@robh.at.kernel.org>
+Message-Id: <1623965184.524304.3336116.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 10:43:33 -0400, Jonathan Marek wrote:
-> These got lost when going from .txt to .yaml bindings, add them back.
+On Thu, 17 Jun 2021 13:47:39 +0800, Trevor Wu wrote:
+> This patch adds document for mt8195 board with mt6359, rt1019 and rt5682
 > 
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
 > ---
->  .../bindings/display/msm/dsi-phy-7nm.yaml     | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.yaml
+>  .../sound/mt8195-mt6359-rt1019-rt5682.yaml    | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
+./Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml:10:4: [warning] wrong indentation: expected 2 but found 3 (indentation)
+./Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml:17:7: [warning] wrong indentation: expected 4 but found 6 (indentation)
 
 dtschema/dtc warnings/errors:
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/display/msm/dsi-phy-common.yaml'
-xargs: dt-doc-validate: exited with status 255; aborting
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.example.dt.yaml'
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/display/msm/dsi-phy-common.yaml'
-make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.example.dt.yaml] Error 255
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1416: dt_binding_check] Error 2
+Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.example.dt.yaml:0:0: /example-0/mt8195-sound: failed to match any schema with compatible: ['mediatek,mt8195-sound']
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1493583
+See https://patchwork.ozlabs.org/patch/1493198
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
