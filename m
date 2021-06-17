@@ -2,231 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D26F3AB1C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9053AB1CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbhFQLAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:00:49 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4837 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232243AbhFQLAn (ORCPT
+        id S232235AbhFQLBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231318AbhFQLB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:00:43 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G5JnS1xHjzXgmf;
-        Thu, 17 Jun 2021 18:53:32 +0800 (CST)
-Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 18:58:32 +0800
-Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 18:58:32 +0800
-From:   Yanan Wang <wangyanan55@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "Quentin Perret" <qperret@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>, <wanghaibin.wang@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
-        Yanan Wang <wangyanan55@huawei.com>
-Subject: [PATCH v7 4/4] KVM: arm64: Move guest CMOs to the fault handlers
-Date:   Thu, 17 Jun 2021 18:58:24 +0800
-Message-ID: <20210617105824.31752-5-wangyanan55@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210617105824.31752-1-wangyanan55@huawei.com>
-References: <20210617105824.31752-1-wangyanan55@huawei.com>
+        Thu, 17 Jun 2021 07:01:28 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A559AC061574;
+        Thu, 17 Jun 2021 03:59:19 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso3430750wms.1;
+        Thu, 17 Jun 2021 03:59:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6x8CcN9jxreq8OwS1dIiZGQ5hktrk4/e5THJPCD0kvI=;
+        b=mmnHMB5zTtVzYXMqi/Dp2XKT3VuxhI8faVhz6ARvQWYgA2ek7zaAOwFogKjAaF1d/S
+         tw32ykkVct4FQFNrqfcjkg+VyLbrALrvxf8mLrapTLOiimMU+/pTJiyEK/6i9DmoBZBl
+         Fczjja9YYiEAIfSy70X5d7uqxtIpBT7YNkm1fO+7wKHV6yDR3+oHwxUItmNC3o776XAh
+         bHGEA40czMzsVO4V4NLlievFZKZahNtIUPWEX2ceA9P6MAuQ09aMTJsT1x3B7jIP34yx
+         zbwj5IRIrJw9iIw/NAxOr/qpScyZVCDWNB4kMabDMH23GY1TFJSw8pgkNhgVNCvceLCR
+         JNJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6x8CcN9jxreq8OwS1dIiZGQ5hktrk4/e5THJPCD0kvI=;
+        b=RkEOwmDpnYFLSGCsPiSNWf1A4jtY8Wxo53VahuPKAu4bAU13Omoz2AjN/ZwMQzO2j4
+         ZLDpCyBB4SS2m9K4QN4vlL/W3bjztGuXrRNQZ/0kyKD8PbqL5dX6/ECiOrqOWNRVdp4t
+         3G1kdJ927GM3FTD30dozepoYquQs++qjsFac3U+Gzs7zHU8U9iBvmmgD7ZA/U+4/K1Ip
+         Ft7/zLFhGJNCD/Q96n3LS6PsWS2ACg28uDM/v9zhhBxvElKLr4K7C40xS6PICMT+wNBl
+         l/bc8Q4Q0umxLpLUfhL/jT9t93Fg+XF0zWZ8OCYrm8xupi05BHpZBIWUC+rfeVIydTUY
+         GtdA==
+X-Gm-Message-State: AOAM530BBNx8cRO15qzwDK/WirhEzLWbLpL554i9vPHwAn7J0MWphfCZ
+        ti1LBnGGnbdzCMnGA1YU9Aw=
+X-Google-Smtp-Source: ABdhPJwSHawMNtLs3IJ+Gf1S4whGlzSu0FA9me30XOuLZDHNifF92wnkdx1prUOtH6iKWutXYTRoJw==
+X-Received: by 2002:a1c:4c15:: with SMTP id z21mr4348664wmf.57.1623927558172;
+        Thu, 17 Jun 2021 03:59:18 -0700 (PDT)
+Received: from debian (host-84-13-31-66.opaltelecom.net. [84.13.31.66])
+        by smtp.gmail.com with ESMTPSA id r1sm4612634wmh.32.2021.06.17.03.59.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 03:59:17 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 11:59:15 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/28] 5.4.127-rc1 review
+Message-ID: <YMsrA1tndr7gwY+G@debian>
+References: <20210616152834.149064097@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500023.china.huawei.com (7.185.36.83)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We currently uniformly permorm CMOs of D-cache and I-cache in function
-user_mem_abort before calling the fault handlers. If we get concurrent
-guest faults(e.g. translation faults, permission faults) or some really
-unnecessary guest faults caused by BBM, CMOs for the first vcpu are
-necessary while the others later are not.
+Hi Greg,
 
-By moving CMOs to the fault handlers, we can easily identify conditions
-where they are really needed and avoid the unnecessary ones. As it's a
-time consuming process to perform CMOs especially when flushing a block
-range, so this solution reduces much load of kvm and improve efficiency
-of the stage-2 page table code.
+On Wed, Jun 16, 2021 at 05:33:11PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.127 release.
+> There are 28 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 18 Jun 2021 15:28:19 +0000.
+> Anything received after that time might be too late.
 
-We can imagine two specific scenarios which will gain much benefit:
-1) In a normal VM startup, this solution will improve the efficiency of
-handling guest page faults incurred by vCPUs, when initially populating
-stage-2 page tables.
-2) After live migration, the heavy workload will be resumed on the
-destination VM, however all the stage-2 page tables need to be rebuilt
-at the moment. So this solution will ease the performance drop during
-resuming stage.
+Build test:
+mips (gcc version 11.1.1 20210615): 65 configs -> no failure
+arm (gcc version 11.1.1 20210615): 107 configs -> no new failure
+arm64 (gcc version 11.1.1 20210615): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
-Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
----
- arch/arm64/kvm/hyp/pgtable.c | 38 +++++++++++++++++++++++++++++-------
- arch/arm64/kvm/mmu.c         | 37 ++++++++++++++---------------------
- 2 files changed, 46 insertions(+), 29 deletions(-)
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
 
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index d99789432b05..760c551f61da 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -577,12 +577,24 @@ static void stage2_put_pte(kvm_pte_t *ptep, struct kvm_s2_mmu *mmu, u64 addr,
- 	mm_ops->put_page(ptep);
- }
- 
-+static bool stage2_pte_cacheable(struct kvm_pgtable *pgt, kvm_pte_t pte)
-+{
-+	u64 memattr = pte & KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR;
-+	return memattr == KVM_S2_MEMATTR(pgt, NORMAL);
-+}
-+
-+static bool stage2_pte_executable(kvm_pte_t pte)
-+{
-+	return !(pte & KVM_PTE_LEAF_ATTR_HI_S2_XN);
-+}
-+
- static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
- 				      kvm_pte_t *ptep,
- 				      struct stage2_map_data *data)
- {
- 	kvm_pte_t new, old = *ptep;
- 	u64 granule = kvm_granule_size(level), phys = data->phys;
-+	struct kvm_pgtable *pgt = data->mmu->pgt;
- 	struct kvm_pgtable_mm_ops *mm_ops = data->mm_ops;
- 
- 	if (!kvm_block_mapping_supported(addr, end, phys, level))
-@@ -606,6 +618,14 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
- 		stage2_put_pte(ptep, data->mmu, addr, level, mm_ops);
- 	}
- 
-+	/* Perform CMOs before installation of the guest stage-2 PTE */
-+	if (mm_ops->clean_invalidate_dcache && stage2_pte_cacheable(pgt, new))
-+		mm_ops->clean_invalidate_dcache(kvm_pte_follow(new, mm_ops),
-+						granule);
-+
-+	if (mm_ops->invalidate_icache && stage2_pte_executable(new))
-+		mm_ops->invalidate_icache(kvm_pte_follow(new, mm_ops), granule);
-+
- 	smp_store_release(ptep, new);
- 	if (stage2_pte_is_counted(new))
- 		mm_ops->get_page(ptep);
-@@ -798,12 +818,6 @@ int kvm_pgtable_stage2_set_owner(struct kvm_pgtable *pgt, u64 addr, u64 size,
- 	return ret;
- }
- 
--static bool stage2_pte_cacheable(struct kvm_pgtable *pgt, kvm_pte_t pte)
--{
--	u64 memattr = pte & KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR;
--	return memattr == KVM_S2_MEMATTR(pgt, NORMAL);
--}
--
- static int stage2_unmap_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
- 			       enum kvm_pgtable_walk_flags flag,
- 			       void * const arg)
-@@ -874,6 +888,7 @@ static int stage2_attr_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
- {
- 	kvm_pte_t pte = *ptep;
- 	struct stage2_attr_data *data = arg;
-+	struct kvm_pgtable_mm_ops *mm_ops = data->mm_ops;
- 
- 	if (!kvm_pte_valid(pte))
- 		return 0;
-@@ -888,8 +903,17 @@ static int stage2_attr_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
- 	 * but worst-case the access flag update gets lost and will be
- 	 * set on the next access instead.
- 	 */
--	if (data->pte != pte)
-+	if (data->pte != pte) {
-+		/*
-+		 * Invalidate instruction cache before updating the guest
-+		 * stage-2 PTE if we are going to add executable permission.
-+		 */
-+		if (mm_ops->invalidate_icache &&
-+		    stage2_pte_executable(pte) && !stage2_pte_executable(*ptep))
-+			mm_ops->invalidate_icache(kvm_pte_follow(pte, mm_ops),
-+						  kvm_granule_size(level));
- 		WRITE_ONCE(*ptep, pte);
-+	}
- 
- 	return 0;
- }
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index b980f8a47cbb..c9f002d74ab4 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -434,14 +434,16 @@ int create_hyp_exec_mappings(phys_addr_t phys_addr, size_t size,
- }
- 
- static struct kvm_pgtable_mm_ops kvm_s2_mm_ops = {
--	.zalloc_page		= stage2_memcache_zalloc_page,
--	.zalloc_pages_exact	= kvm_host_zalloc_pages_exact,
--	.free_pages_exact	= free_pages_exact,
--	.get_page		= kvm_host_get_page,
--	.put_page		= kvm_host_put_page,
--	.page_count		= kvm_host_page_count,
--	.phys_to_virt		= kvm_host_va,
--	.virt_to_phys		= kvm_host_pa,
-+	.zalloc_page			= stage2_memcache_zalloc_page,
-+	.zalloc_pages_exact		= kvm_host_zalloc_pages_exact,
-+	.free_pages_exact		= free_pages_exact,
-+	.get_page			= kvm_host_get_page,
-+	.put_page			= kvm_host_put_page,
-+	.page_count			= kvm_host_page_count,
-+	.phys_to_virt			= kvm_host_va,
-+	.virt_to_phys			= kvm_host_pa,
-+	.clean_invalidate_dcache	= clean_dcache_guest_page,
-+	.invalidate_icache		= invalidate_icache_guest_page,
- };
- 
- /**
-@@ -1012,15 +1014,8 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	if (writable)
- 		prot |= KVM_PGTABLE_PROT_W;
- 
--	if (fault_status != FSC_PERM && !device)
--		clean_dcache_guest_page(page_address(pfn_to_page(pfn)),
--					vma_pagesize);
--
--	if (exec_fault) {
-+	if (exec_fault)
- 		prot |= KVM_PGTABLE_PROT_X;
--		invalidate_icache_guest_page(page_address(pfn_to_page(pfn)),
--					     vma_pagesize);
--	}
- 
- 	if (device)
- 		prot |= KVM_PGTABLE_PROT_DEVICE;
-@@ -1218,12 +1213,10 @@ bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
- 	WARN_ON(range->end - range->start != 1);
- 
- 	/*
--	 * We've moved a page around, probably through CoW, so let's treat it
--	 * just like a translation fault and clean the cache to the PoC.
--	 */
--	clean_dcache_guest_page(page_address(pfn_to_page(pfn), PAGE_SIZE);
--
--	/*
-+	 * We've moved a page around, probably through CoW, so let's treat
-+	 * it just like a translation fault and the map handler will clean
-+	 * the cache to the PoC.
-+	 *
- 	 * The MMU notifiers will have unmapped a huge PMD before calling
- 	 * ->change_pte() (which in turn calls kvm_set_spte_gfn()) and
- 	 * therefore we never need to clear out a huge PMD through this
--- 
-2.23.0
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
 
