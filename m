@@ -2,134 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03313AAC8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00AF33AAC8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhFQGmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 02:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
+        id S230215AbhFQGmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 02:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhFQGmB (ORCPT
+        with ESMTP id S229709AbhFQGmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 02:42:01 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721F9C06175F;
-        Wed, 16 Jun 2021 23:39:54 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id y15so4203454pfl.4;
-        Wed, 16 Jun 2021 23:39:54 -0700 (PDT)
+        Thu, 17 Jun 2021 02:42:11 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8871BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:40:04 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso3243022pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:40:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=3c+7D3426Z3aclSIEt2nDTfGpaHgF5oXTySH+Anf78k=;
-        b=DsiA/OHOXeLRPwemFwMe/Zp1PYmbDerspIMt7cOqn3wyfoHLBJj+Ced3CPhNRgpitL
-         xoDu5YUQbKmtfW13GEj429XK4m9QT2oh2k8iVI/pWR8YVQLijUiJtX/Prr9xiHLSqnq+
-         SevVqg+vOkP2MbpF2ejZY3PXcfy7R46aBSHecuYhXuLlQMP83kQXFBYIT+7gZrM8odxd
-         nCBy+Chubtt5D6xx102jkZP+kN39UAUODLAlFiVOE6RL7w6Q00w6DkCq144m848wr431
-         yo/cHpkDFrdzvo6Ek3pPm2zKIW9LL9a5Jxp8UtdrjKf5rBTI4vBLv5S9s3GuuXJHJrCP
-         VnHg==
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z5tXXD3iVvEIVZ0tTMhEKfG6zykuiGGLtMWYWjRDWYs=;
+        b=ZvI05WcGmnfe5oUfXHNoGdM/4PM/h3nxOJp96Y+tFn5U15FBFxeWkFmjh3oZf1EL8A
+         ADkJUTvU+y/ObXXNwK0vGCrvjU1eU92ZHL7pmy1vKZFrzb+YG+Yqm32icH5OIHbXYy2p
+         a2oGBtVpOoRVNRRYQe6ovJIHlhAuYmObTEb5E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=3c+7D3426Z3aclSIEt2nDTfGpaHgF5oXTySH+Anf78k=;
-        b=NxiDS6mCPH5vhBTM+ZkYoKQ3Usu5VKwYotjLw7MTL401hW1xEfzNRgGTT2dU8M/9mN
-         +4OWjm8RUZM4hRgxCTTAMIxD8PZ9LC/0oipOkdjpDw8Dl3N/MBbeaIKtgR8pDnqsgYXe
-         yM1047hIJKjpr6JQ8qyRCp8lwlXfaDEgDRRH1LtZDGW7VwWFxAJVYb1tVke1t/R++msJ
-         lEZxdXSz8mUlq4eDlk893VEfCuvoUvF9LNY2aleroP2L/LGxe/RtHh++o54T8gC8Lbg+
-         eyLoIrW816g1gLIc2O+iige0z0s96kCFwh6eESt7Sx6EuewzQvvGv+gJkNPiHDPIEapC
-         3Y5w==
-X-Gm-Message-State: AOAM532Ij+s9w/W/KwNcIoe7WHWbkLqxjp4VpkO6f82pzKsQhxgPIFtb
-        RkdWiCuEDPJEvJn1MEGNRlE=
-X-Google-Smtp-Source: ABdhPJwecDN3dI4toxn9FfTRz+gyv/a0xyyYpF8hY4fOWjZ2lix0SPGU54VaNJfBFfkkYMFhra6hqA==
-X-Received: by 2002:a63:8c05:: with SMTP id m5mr3549092pgd.223.1623911993924;
-        Wed, 16 Jun 2021 23:39:53 -0700 (PDT)
-Received: from localhost ([223.184.24.109])
-        by smtp.gmail.com with ESMTPSA id s22sm4228256pfd.94.2021.06.16.23.39.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Jun 2021 23:39:52 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 12:09:46 +0530
-From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sanjanasrinidhi1810@gmail.com
-Subject: [PATCH] drivers: power: supply: ab8500_charger.c: Add blank line
- after declaration
-Message-ID: <20210617063946.ziyswdxsk46xw63a@kewl-virtual-machine>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z5tXXD3iVvEIVZ0tTMhEKfG6zykuiGGLtMWYWjRDWYs=;
+        b=R7fhIxGJSV1mf8pU3XtDa/jAi00kvLYs6E8jI3cAe7/EXn3X0PGlBttHPnUOa73mK5
+         YR/RK+d/WqpBhAWQZMiUIYG5PJc0jqfO1JpoUADSuE9Ndz1hGLGkYQbmSeXBjOTWUGAG
+         pQ8M3LiACoJf7PiSmQFWXhQVAwvpcgccma04SnZMXvD4iyC49CBBTx9A5YMBCH7zcRKk
+         hHHRZflZhwEDQUFbaH20szA3A4y1DZiFFC1lfDpYFODNEf0RmYXsq69TgjTfOZXM26rQ
+         +RaEBruytN0LE/4idhJCqg3gxPoWJbnST31MBtY9WwMQIuJFpLFheepo7Onzp7BkBfuT
+         XlRA==
+X-Gm-Message-State: AOAM530XJe34zhYBTblvhIRc+Oj7x29jHLJRRvVvaWBK8QuKICUTIYwX
+        2LEMYDTwv9UGZLhdi0uifcab+xhBCppa3w==
+X-Google-Smtp-Source: ABdhPJzXBEGC2svL4/w6uQzTlhwr8EKMXDJngko+LKuujG1Wr3mcyI7qAM8QXo2oeD3ihoXSYQO+3A==
+X-Received: by 2002:a17:90a:f193:: with SMTP id bv19mr15312947pjb.86.1623912003744;
+        Wed, 16 Jun 2021 23:40:03 -0700 (PDT)
+Received: from localhost ([203.206.29.204])
+        by smtp.gmail.com with ESMTPSA id b1sm4112148pgb.91.2021.06.16.23.40.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 23:40:03 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com, elver@google.com,
+        akpm@linux-foundation.org, andreyknvl@gmail.com
+Cc:     linuxppc-dev@lists.ozlabs.org, christophe.leroy@csgroup.eu,
+        aneesh.kumar@linux.ibm.com, bsingharora@gmail.com,
+        Daniel Axtens <dja@axtens.net>
+Subject: [PATCH v14 0/4] KASAN core changes for ppc64 radix KASAN
+Date:   Thu, 17 Jun 2021 16:39:52 +1000
+Message-Id: <20210617063956.94061-1-dja@axtens.net>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added blank line after declaration
-Removed repetition of "the" in comment block
-Fixed indentation of conditional statement
-Replaced spaces with tabs
-This is done to manintain uniformity in coding style
+Building on the work of Christophe, Aneesh and Balbir, I've ported
+KASAN to 64-bit Book3S kernels running on the Radix MMU. I've been
+trying this for a while, but we keep having collisions between the
+kasan code in the mm tree and the code I want to put in to the ppc
+tree.
 
-Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
----
- drivers/power/supply/ab8500_charger.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+This series just contains the kasan core changes that we need. These
+can go in via the mm tree. I will then propose the powerpc changes for
+a later cycle. (The most recent RFC for the powerpc changes is in the
+v12 series at
+https://lore.kernel.org/linux-mm/20210615014705.2234866-1-dja@axtens.net/
+)
 
-diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply/ab8500_charger.c
-index ac77c8882d17..4d71e1a769b2 100644
---- a/drivers/power/supply/ab8500_charger.c
-+++ b/drivers/power/supply/ab8500_charger.c
-@@ -237,7 +237,7 @@ struct ab8500_charger_max_usb_in_curr {
-  * @adc_main_charger_c	ADC channel for main charger current
-  * @adc_vbus_v		ADC channel for USB charger voltage
-  * @adc_usb_charger_c	ADC channel for USB charger current
-- * @bm:           	Platform specific battery management information
-+ * @bm:			Platform specific battery management information
-  * @flags:		Structure for information about events triggered
-  * @usb_state:		Structure for usb stack information
-  * @max_usb_in_curr:	Max USB charger input current
-@@ -1059,6 +1059,7 @@ static int ab8500_vbus_in_curr_to_regval(struct ab8500_charger *di, int curr)
- static int ab8500_charger_get_usb_cur(struct ab8500_charger *di)
- {
- 	int ret = 0;
-+
- 	switch (di->usb_state.usb_current) {
- 	case 100:
- 		di->max_usb_in_curr.usb_type_max = USB_CH_IP_CUR_LVL_0P09;
-@@ -1206,6 +1207,7 @@ static int ab8500_charger_set_current(struct ab8500_charger *di,
- 		}
- 	} else {
- 		bool allow = true;
-+
- 		for (i = prev_curr_index + 1; i <= curr_index && allow; i++) {
- 			dev_dbg(di->dev, "curr change_2 to: %x for 0x%02x\n",
- 				(u8)i << shift_value, reg);
-@@ -1893,6 +1895,7 @@ static int ab8500_charger_get_ext_psy_data(struct device *dev, void *data)
- 	/* Go through all properties for the psy */
- 	for (j = 0; j < ext->desc->num_properties; j++) {
- 		enum power_supply_property prop;
-+
- 		prop = ext->desc->properties[j];
- 
- 		if (power_supply_get_property(ext, prop, &ret))
-@@ -1922,7 +1925,7 @@ static int ab8500_charger_get_ext_psy_data(struct device *dev, void *data)
-  * Due to a asic bug it is necessary to lower the input current to the vbus
-  * charger when charging with at some specific levels. This issue is only valid
-  * for below a certain battery voltage. This function makes sure that the
-- * the allowed current limit isn't exceeded.
-+ * allowed current limit isn't exceeded.
-  */
- static void ab8500_charger_check_vbat_work(struct work_struct *work)
- {
-@@ -1958,7 +1961,7 @@ static void ab8500_charger_check_vbat_work(struct work_struct *work)
- 	 */
- 	if (di->vbat < (VBAT_TRESH_IP_CUR_RED + 100) &&
- 		(di->vbat > (VBAT_TRESH_IP_CUR_RED - 100)))
--			t = 1;
-+		t = 1;
- 
- 	queue_delayed_work(di->charger_wq, &di->check_vbat_work, t * HZ);
- }
--- 
-2.17.1
+v14 applies to next-20210611. There should be no noticeable changes to
+other platforms.
 
+Changes since v13: move the MAX_PTR_PER_* definitions out of kasan and
+into pgtable.h. Add a build time error to hopefully prevent any
+confusion about when the new hook is applicable. Thanks Marco and
+Christophe.
+
+Changes since v12: respond to Marco's review comments - clean up the
+help for ARCH_DISABLE_KASAN_INLINE, and add an arch readiness check to
+the new granule poisioning function. Thanks Marco.
+
+Daniel Axtens (4):
+  kasan: allow an architecture to disable inline instrumentation
+  kasan: allow architectures to provide an outline readiness check
+  mm: define default MAX_PTRS_PER_* in include/pgtable.h
+  kasan: use MAX_PTRS_PER_* for early shadow tables
