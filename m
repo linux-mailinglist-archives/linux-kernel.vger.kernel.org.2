@@ -2,72 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B183ABD51
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 22:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DFA3ABD55
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 22:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbhFQURe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 16:17:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59136 "EHLO mail.kernel.org"
+        id S232573AbhFQUTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 16:19:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232431AbhFQURc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 16:17:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 662FF613D8;
-        Thu, 17 Jun 2021 20:15:24 +0000 (UTC)
+        id S232037AbhFQUTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 16:19:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4A2D161026;
+        Thu, 17 Jun 2021 20:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623960924;
-        bh=L9FplHBnsT4DdGAjNwBoZQiikqRViJZ8+NMc/aNkOAw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=dWY/gRmg8kph/qjI/K1gLLsyrOeYNJhLgXUWRlznBt+Blgng7S/7x7WsVBaquYYO3
-         OkrVUaMT8zBsFzz59PAR+3MJPEiG7Z8wty2lhmZGmRYBhYZ6slJT3c/XpX7jC69kBL
-         lht1ccQldDhWB2o4U3sKYA7o56bo7nKjBZ+DTQsoTOUn9VwuAHGBS8khslDDzoaic5
-         znHOBuu1nGn/Dg8SoCUKoMT8xS+RNj08+w8igyA33ch2+dnUpTRM5nRpcXfBqoS1gG
-         rYTdr4nJM0IKro6C1uXMQN/fXka5On3dci1Lha+AwELRsO+2CdIGqNKGOW38A6WFXc
-         PfRfCtWvWPSRA==
-Date:   Thu, 17 Jun 2021 15:15:23 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Xogium <contact@xogium.me>, linux-pci@vger.kernel.org,
-        Remi Pommarel <repk@triplefau.lt>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] PCI: aardvark: Fix kernel panic during PIO
- transfer
-Message-ID: <20210617201523.GA3104553@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <162322862108.3345.4160808336030929680.b4-ty@arm.com>
+        s=k20201202; t=1623961031;
+        bh=ni5L8ASMyGlatUBZrcCiRjK0h+RkTYYiREk49Aupy8Y=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=km/HCML1GlDPyJ98mi7zHhil0siGTwI0OXeHaC757HFlE5SdNajGe+kxI6TWxa1eR
+         7sFL/Kb9sgKUmwdXm5JfkA2QAWS9nnMc0Wg0oSF1WxMXN3lm8RlypTf2bCeSZAUVGx
+         iOZ3BLiR8Liq0QD6+SoDu2ht1JKDPP8N9CABtCTGPNGo5Q4/jmsr+A9oeFCMWyKAIG
+         t33F6C/PQtQnsPGYxGy9JXhevNExEEnMSYdItg0z6XvVREfwGnx9nsU5uc8efhH1YG
+         HPb705+3bBtIuJaGiPEdHpgFCMSJj9SNUeNq5swtek8MJcGbCjIepVPSPFb7YuACc7
+         yvYb7gBmKZ8UA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 36D83609EA;
+        Thu, 17 Jun 2021 20:17:11 +0000 (UTC)
+Subject: Re: [GIT PULL] KVM changes for 5.13-rc7
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210617183603.844718-1-pbonzini@redhat.com>
+References: <20210617183603.844718-1-pbonzini@redhat.com>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210617183603.844718-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: d8ac05ea13d789d5491a5920d70a05659015441d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: fd0aa1a4567d0f09e1bfe367a950b004f99ac290
+Message-Id: <162396103116.22648.4631664208754684417.pr-tracker-bot@kernel.org>
+Date:   Thu, 17 Jun 2021 20:17:11 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 09:50:39AM +0100, Lorenzo Pieralisi wrote:
-> On Tue, 8 Jun 2021 22:36:55 +0200, Pali Rohár wrote:
-> > Trying to start a new PIO transfer by writing value 0 in PIO_START register
-> > when previous transfer has not yet completed (which is indicated by value 1
-> > in PIO_START) causes an External Abort on CPU, which results in kernel
-> > panic:
-> > 
-> >     SError Interrupt on CPU0, code 0xbf000002 -- SError
-> >     Kernel panic - not syncing: Asynchronous SError Interrupt
-> > 
-> > [...]
-> 
-> Applied to pci/aardvark, thanks!
-> 
-> [1/1] PCI: aardvark: Fix kernel panic during PIO transfer
->       https://git.kernel.org/lpieralisi/pci/c/f77378171b
+The pull request you sent on Thu, 17 Jun 2021 14:36:03 -0400:
 
-Since this fixes a panic and only affects aardvark, I cherry picked
-this to my for-linus branch.
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-Can you drop it, Lorenzo?  It's currently the only thing on your
-pci/aardvark branch, so I just dropped that whole branch from -next.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/fd0aa1a4567d0f09e1bfe367a950b004f99ac290
 
-Bjorn
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
