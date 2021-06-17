@@ -2,73 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C88183AB5B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6CC3AB5B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231986AbhFQOVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:21:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbhFQOVp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:21:45 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA92C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 07:19:38 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        id S232021AbhFQOWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:22:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231666AbhFQOWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 10:22:36 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 8DC832224E;
-        Thu, 17 Jun 2021 16:19:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1623939575;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wx+5UmqijqNtHgfTJre4bvhnb/XrYaC5F0NIuouRxPA=;
-        b=ruMVyV0pGjEPRIiNTFIPi+0xBD9roaxS82PV/lSpcpOTRkajEF8TP2+3ITi4iXHkr6sdsN
-        JEucsOTX8Usb/LrUyMTvVogfgUybEEuJWrtK7woK0aHhx+ielp+LTj9lzPpTkQQirxDVYH
-        IvAEBLcTtow3txnywow2rDCdw3KPRVA=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 17 Jun 2021 16:19:34 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Reto Schneider <code@reto-schneider.ch>
-Cc:     linux-mtd@lists.infradead.org, Stefan Roese <sr@denx.de>,
-        Reto Schneider <reto.schneider@husqvarnagroup.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mtd: spi-nor: Add support for XM25QH64C
-In-Reply-To: <f022abf3-a6fe-d060-9868-985303c4e8a0@reto-schneider.ch>
-References: <20210613121248.1529292-1-code@reto-schneider.ch>
- <1ba367f93650cb65122acd32fb4a4159@walle.cc>
- <f022abf3-a6fe-d060-9868-985303c4e8a0@reto-schneider.ch>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <3bb5ae427dc01b82be4434dff39e6c8e@walle.cc>
-X-Sender: michael@walle.cc
+        by mail.kernel.org (Postfix) with ESMTPSA id 8279C6135C;
+        Thu, 17 Jun 2021 14:20:28 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1ltssc-008C7g-Jn; Thu, 17 Jun 2021 15:20:26 +0100
+Date:   Thu, 17 Jun 2021 15:20:26 +0100
+Message-ID: <87eed0d13p.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Yanan Wang <wangyanan55@huawei.com>,
+        Quentin Perret <qperret@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>, wanghaibin.wang@huawei.com,
+        zhukeqian1@huawei.com, yuzenghui@huawei.com
+Subject: Re: [PATCH v7 1/4] KVM: arm64: Introduce two cache maintenance callbacks
+In-Reply-To: <20210617123837.GA24457@willie-the-truck>
+References: <20210617105824.31752-1-wangyanan55@huawei.com>
+        <20210617105824.31752-2-wangyanan55@huawei.com>
+        <20210617123837.GA24457@willie-the-truck>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: will@kernel.org, wangyanan55@huawei.com, qperret@google.com, alexandru.elisei@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, gshan@redhat.com, wanghaibin.wang@huawei.com, zhukeqian1@huawei.com, yuzenghui@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reto,
-
-Am 2021-06-17 13:59, schrieb Reto Schneider:
->> NB. XMC ignores the continuation codes and this particular device will
->> collide with M25PE64/M45PE64. Although I couldn't find any datasheet,
->> so I don't know if these devices actually exist.
+On Thu, 17 Jun 2021 13:38:37 +0100,
+Will Deacon <will@kernel.org> wrote:
 > 
-> M25PE64 yields quite some hits on Google. Is supporting this (all?)
-> XMC device in upstream a good idea nevertheless? Does "first come,
-> first served" apply here?
+> On Thu, Jun 17, 2021 at 06:58:21PM +0800, Yanan Wang wrote:
+> > To prepare for performing CMOs for guest stage-2 in the fault handlers
+> > in pgtable.c, here introduce two cache maintenance callbacks in struct
+> > kvm_pgtable_mm_ops. We also adjust the comment alignment for the
+> > existing part but make no real content change at all.
+> > 
+> > Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> > ---
+> >  arch/arm64/include/asm/kvm_pgtable.h | 42 +++++++++++++++++-----------
+> >  1 file changed, 25 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> > index c3674c47d48c..b6ce34aa44bb 100644
+> > --- a/arch/arm64/include/asm/kvm_pgtable.h
+> > +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> > @@ -27,23 +27,29 @@ typedef u64 kvm_pte_t;
+> >  
+> >  /**
+> >   * struct kvm_pgtable_mm_ops - Memory management callbacks.
+> > - * @zalloc_page:	Allocate a single zeroed memory page. The @arg parameter
+> > - *			can be used by the walker to pass a memcache. The
+> > - *			initial refcount of the page is 1.
+> > - * @zalloc_pages_exact:	Allocate an exact number of zeroed memory pages. The
+> > - *			@size parameter is in bytes, and is rounded-up to the
+> > - *			next page boundary. The resulting allocation is
+> > - *			physically contiguous.
+> > - * @free_pages_exact:	Free an exact number of memory pages previously
+> > - *			allocated by zalloc_pages_exact.
+> > - * @get_page:		Increment the refcount on a page.
+> > - * @put_page:		Decrement the refcount on a page. When the refcount
+> > - *			reaches 0 the page is automatically freed.
+> > - * @page_count:		Return the refcount of a page.
+> > - * @phys_to_virt:	Convert a physical address into a virtual address mapped
+> > - *			in the current context.
+> > - * @virt_to_phys:	Convert a virtual address mapped in the current context
+> > - *			into a physical address.
+> > + * @zalloc_page:		Allocate a single zeroed memory page.
+> > + *				The @arg parameter can be used by the walker
+> > + *				to pass a memcache. The initial refcount of
+> > + *				the page is 1.
+> > + * @zalloc_pages_exact:		Allocate an exact number of zeroed memory pages.
+> > + *				The @size parameter is in bytes, and is rounded
+> > + *				up to the next page boundary. The resulting
+> > + *				allocation is physically contiguous.
+> > + * @free_pages_exact:		Free an exact number of memory pages previously
+> > + *				allocated by zalloc_pages_exact.
+> > + * @get_page:			Increment the refcount on a page.
+> > + * @put_page:			Decrement the refcount on a page. When the
+> > + *				refcount reaches 0 the page is automatically
+> > + *				freed.
+> > + * @page_count:			Return the refcount of a page.
+> > + * @phys_to_virt:		Convert a physical address into a virtual address
+> > + *				mapped in the current context.
+> > + * @virt_to_phys:		Convert a virtual address mapped in the current
+> > + *				context into a physical address.
+> > + * @clean_invalidate_dcache:	Clean and invalidate the data cache for the
+> > + *				specified memory address range.
+> 
+> This should probably be explicit about whether this to the PoU/PoC/PoP.
 
-That is up to the maintainers, but sooner or later we will have to face
-the problem regarding the duplicate IDs.
+Indeed. I can fix that locally if there is nothing else that requires
+adjusting.
 
--michael
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
