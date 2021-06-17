@@ -2,160 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AC63AB715
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4276A3AB719
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbhFQPP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46298 "EHLO
+        id S233230AbhFQPQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:16:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbhFQPPW (ORCPT
+        with ESMTP id S233223AbhFQPQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:15:22 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C247DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:13:13 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id k5so3497065iow.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:13:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R6IjdE1Ab1c2r5GwqgV+dlCerZLtvAuLnafRfT9ALeI=;
-        b=nl7kh8mTFxsEnrvy3uxWmeHdlgAwdDUBxobn/V+RwZr8AMgFHO4ca227CVwWr7sqe5
-         g/bMVkljqXrEglmAfcmsHcYrO8bQX+ED/ca9WgTANuCj7on/KMwFt8r7n7k5SzNzs4Uh
-         U9dzh0EgHfUUE9BhwGwA+gn2WV7Ft7hbRSFfHieiq1Re6wqLKlP3WDy22ReM5+GE0VrP
-         kQSqdpIWhSFBoEmIoERYF8ODAXIlbMMsjCIA6rAO4/j1iNl7KWr85EKPt7gRIWABksgt
-         9PZdk7hxVuGrbIA6BiTyMKWJxvOG47F0JrBiCcBIhuwftgCne91VH6fXT/Xhjg0SYaqY
-         HPAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R6IjdE1Ab1c2r5GwqgV+dlCerZLtvAuLnafRfT9ALeI=;
-        b=C4GoYpcdbIrTk2D5Yl+0cjnzCPWnTh5v12/oizDiGtswXq80dJndiMYv3bOEUQaReb
-         QPOkvQp0rTh4FnngBxEX86ax/Qu3L8hrumzXkIFmJvWw70iNs2I2qfggrtWkYRIH4gL5
-         /RE6xOsWtkWssKUzd6O2qnHzgvMJhpqYmn4qUGKs8ZTePsjbcqD+/bweZcK7m7P0O1fM
-         QbcOY6VcLk36rV9/+1fpYkPvMDtPXyUnARAC31JkTZAAf+d/H74zGFaNir4CXqsA8VvC
-         nJvpigx6SwU4I//Ubz2t8yVWLdtRTWDrCcIq1SztKqfub33aJmsOMxEM//2rGztBwAaJ
-         6P2Q==
-X-Gm-Message-State: AOAM532+ZLfXU5Vb8BX2UfFpLgxq9upLu9ufCwpGubUxTiFpgS4AH6Pq
-        FyuVnP0NK7VrCWk+xX0YN34MH2Rz3cU=
-X-Google-Smtp-Source: ABdhPJzQLwXN8hjiPsQAVsVVjP/3da+2bL8knlxyM23LHNPyThEiaiqNwN08tcCOxsoPwgtrI+4uaw==
-X-Received: by 2002:a02:cc3b:: with SMTP id o27mr6409jap.84.1623942793219;
-        Thu, 17 Jun 2021 08:13:13 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id n2sm3078950iod.54.2021.06.17.08.13.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 08:13:12 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 1B41327C0054;
-        Thu, 17 Jun 2021 11:13:11 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 17 Jun 2021 11:13:12 -0400
-X-ME-Sender: <xms:h2bLYH87d6pfISyGfDvODbhWhnADftyAHIclWvFjFphbG-x25UGf1g>
-    <xme:h2bLYDuLQvfQS3NIfKtOCyCJ7PEwvpaiQYW1vE9BqSX7f4CSfpJH6uCjtusgVcEQ-
-    8kjnuTwv_R6jY0Bpw>
-X-ME-Received: <xmr:h2bLYFCiMIyO574cr_ul2C8Ie4tyeSRBPfpWpjT7mrctAS5JhGyOQHQvnw4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefuddgkeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehg
-    mhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpedvleeigedugfegveejhfejveeuve
-    eiteejieekvdfgjeefudehfefhgfegvdegjeenucevlhhushhtvghrufhiiigvpedtnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrsh
-    honhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghn
-    gheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:h2bLYDdoLKmv8vBJzwcjhTHFDREf8wXEeXLTNAUdD965iNEJ6zbhfQ>
-    <xmx:h2bLYMONge4bT16uxeW6TYeMjZXr1qMlVLfCJfq1TDs1DZg5Eq5Huw>
-    <xmx:h2bLYFkqMT3r1x8gnyanvXKxkxmIMpyFaJCtptw59xy50GLKcKmEuw>
-    <xmx:h2bLYIB-tnenrONEF9uU3cXR-Ugl5UsYnYRKf1OapqTZ86RYuqRs5g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 17 Jun 2021 11:13:11 -0400 (EDT)
-Date:   Thu, 17 Jun 2021 23:12:46 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Xiongwei Song <sxwjean@me.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, linux-kernel@vger.kernel.org,
-        Xiongwei Song <sxwjean@gmail.com>
-Subject: Re: [PATCH 3/3] locking/lockdep: print possible warning after
- counting deps
-Message-ID: <YMtmbjw5EGdXRdD8@boqun-archlinux>
-References: <20210617142828.346111-1-sxwjean@me.com>
- <20210617142828.346111-4-sxwjean@me.com>
+        Thu, 17 Jun 2021 11:16:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2377C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:14:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GXlfWx9JUbP9b8gxj5LZ7fqJzEAeMsow2tbZ3FScmGI=; b=Dd2DRPf8zwHWhsHi+D/Xh1yD9J
+        vCRzuhMpjvfQ0ih4Al0suioKYF6scvJqkrDHWKfvJiYVUggKi1LyCWO802Gb+BVQiVEfFIf0OPVMI
+        A6+Excr1zXAbyAyDvL3+e7AwLap+P3VMe3u9i8VhARA3GUM+5NZx2bEVimsBvKJFfsybfzv6Q4gmJ
+        XNsAEqWBXD47IJ/wsRFhRumGQYNBdciil39xyWkAcEe+xFtjsbH1CftWFoelhMPop0ymDVQlL7hXg
+        TD1kwcEz/Iqh5BjVOLde8AUoIPA9w9g2bd/qrG90L3M1dPxOPbPMAbDTxaeXfFspvrO3spYhUk3lV
+        0H26fPEQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltthn-009Ge2-OG; Thu, 17 Jun 2021 15:13:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4A966300204;
+        Thu, 17 Jun 2021 17:13:17 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0CD832BD52F2E; Thu, 17 Jun 2021 17:13:17 +0200 (CEST)
+Date:   Thu, 17 Jun 2021 17:13:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
+Message-ID: <YMtmjUzmv5QW9b7x@hirez.programming.kicks-ass.net>
+References: <cover.1623813516.git.luto@kernel.org>
+ <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
+ <20210617103524.GA82133@C02TD0UTHF1T.local>
+ <20210617112305.GK22278@shell.armlinux.org.uk>
+ <20210617113349.GB82133@C02TD0UTHF1T.local>
+ <394219d4-36a6-4e7f-a03c-8590551b099a@www.fastmail.com>
+ <20210617135133.GA86101@C02TD0UTHF1T.local>
+ <33241b25-4d45-4278-a4e6-ec9c12b0e1f3@www.fastmail.com>
+ <YMtj4Xoo5lh4fGSx@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210617142828.346111-4-sxwjean@me.com>
+In-Reply-To: <YMtj4Xoo5lh4fGSx@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Jun 17, 2021 at 10:28:28PM +0800, Xiongwei Song wrote:
-> From: Xiongwei Song <sxwjean@gmail.com>
+On Thu, Jun 17, 2021 at 05:01:53PM +0200, Peter Zijlstra wrote:
+> On Thu, Jun 17, 2021 at 07:00:26AM -0700, Andy Lutomirski wrote:
+> > On Thu, Jun 17, 2021, at 6:51 AM, Mark Rutland wrote:
 > 
-> The graph walk might hit error when counting dependencies. Once the
-> return value is negative, print a warning to reminder users.
+> > > It's not clear to me what "the right thing" would mean specifically, and
+> > > on architectures with userspace cache maintenance JITs can usually do
+> > > the most optimal maintenance, and only need help for the context
+> > > synchronization.
+> > > 
+> > 
+> > This I simply don't believe -- I doubt that any sane architecture
+> > really works like this.  I wrote an email about it to Intel that
+> > apparently generated internal discussion but no results.  Consider:
+> > 
+> > mmap(some shared library, some previously unmapped address);
+> > 
+> > this does no heavyweight synchronization, at least on x86.  There is
+> > no "serializing" instruction in the fast path, and it *works* despite
+> > anything the SDM may or may not say.
 > 
-
-Thanks for the improvement, but please see below:
-
-> Suggested-by: Waiman Long <longman@redhat.com>
-> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-> ---
->  kernel/locking/lockdep.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
+> I'm confused; why do you think that is relevant?
 > 
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index cb94097014d8..cfe0f4374594 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -2028,8 +2028,12 @@ static unsigned long __lockdep_count_forward_deps(struct lock_list *this)
->  {
->  	unsigned long  count = 0;
->  	struct lock_list *target_entry;
-> +	enum bfs_result ret;
-> +
-> +	ret = __bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
->  
-> -	__bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
-> +	if (bfs_error(ret))
-> +		print_bfs_bug(ret);
-
-Here print_bfs_bug() will eventually call debug_locks_off_graph_unlock()
-to release the graph lock, and the caller (lockdep_count_fowards_deps())
-will also call graph_unlock() afterwards, and that means we unlock
-*twice* if a BFS error happens... although in that case, lockdep should
-stop working so messing up with the graph lock may not hurt anything,
-but still, I don't think we want to do that.
-
-So probably you can open-code __lockdep_count_forward_deps() into
-lockdep_count_forwards_deps(), and call print_bfs_bug() or
-graph_unlock() accordingly. The body of __lockdep_count_forward_deps()
-is really small, so I think it's OK to open-code it into its caller.
-
-Regards,
-Boqun
-
->  
->  	return count;
->  }
-> @@ -2053,8 +2057,12 @@ static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
->  {
->  	unsigned long  count = 0;
->  	struct lock_list *target_entry;
-> +	enum bfs_result ret;
-> +
-> +	ret = __bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
->  
-> -	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
-> +	if (bfs_error(ret))
-> +		print_bfs_bug(ret);
->  
->  	return count;
->  }
-> -- 
-> 2.30.2
+> The only way to get into a memory address space is CR3 write, which is
+> serializing and will flush everything. Since there wasn't anything
+> mapped, nothing could be 'cached' from that location.
 > 
+> So that has to work...
+
+Ooh, you mean mmap where there was something mmap'ed before. Not virgin
+space so to say.
+
+But in that case, the unmap() would've caused a TLB invalidate, which on
+x86 is IPIs, which is IRET.
+
+Other architectures include I/D cache flushes in their TLB
+invalidations -- but as elsewhere in the thread, that might not be
+suffient on its own.
+
+But yes, I think TLBI has to imply flushing micro-arch instruction
+related buffers for any of that to work.
