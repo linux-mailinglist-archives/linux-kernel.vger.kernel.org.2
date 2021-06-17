@@ -2,320 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4803AAE94
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12703AAE99
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhFQIUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 04:20:30 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:38737 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhFQIU2 (ORCPT
+        id S230343AbhFQIVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 04:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhFQIV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:20:28 -0400
-Received: (Authenticated sender: jacopo@jmondi.org)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 8A0481C0006;
-        Thu, 17 Jun 2021 08:18:17 +0000 (UTC)
-Date:   Thu, 17 Jun 2021 10:19:06 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/7] media: i2c: max9286: Use "maxim,gpio-poc" property
-Message-ID: <20210617081906.7g32j7bh6wletvet@uno.localdomain>
-References: <20210419142345.53152-1-jacopo+renesas@jmondi.org>
- <20210419142345.53152-4-jacopo+renesas@jmondi.org>
- <fea0f6e4-cd24-4c2e-1470-d86957408254@ideasonboard.com>
+        Thu, 17 Jun 2021 04:21:28 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F61CC061574;
+        Thu, 17 Jun 2021 01:19:20 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id t11-20020a1cc30b0000b02901cec841b6a0so3785281wmf.0;
+        Thu, 17 Jun 2021 01:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:mime-version:from:to:subject
+         :content-transfer-encoding;
+        bh=m23FkcTpSbNnpGC+SlBcypLFRWWqdG3+ErURqb57YnE=;
+        b=miIM9//NWleAyVq9NBLFq/rFMnM1knoTUZ+2/qxJu/iT9OqQtkGla6HDlcHvIoES5+
+         TmRQauP+1eX6mRVYeAcbyYwYUXfyo6uQBlNr21y9pB8FwA3lq8fXHAcVOxev41WGEttH
+         bZPuB9g4qEPLRfzbWwHdXny6pXJz8bJzu5vKpTN95A9Rqin8tXWiYIE04veWrggd8kT+
+         biJ/fDcWNe1Ovkyz7bCoqkqxJnPCEYaXZ/q/gTZLm0TO/6OYjr+VL0Vrv3oYeZXiScV9
+         DxRgLm7jw4SSSXdxUJvotnNimvwOOwBlCFx+z/BRYurwExKuwvSg32z3T/BkXWq8mtOC
+         St4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:from:to:subject
+         :content-transfer-encoding;
+        bh=m23FkcTpSbNnpGC+SlBcypLFRWWqdG3+ErURqb57YnE=;
+        b=hb1EizEvaQoizPOwG+9VynsXV0wLDXai9Lobf5B6lPnOQACQto8OvbPZNuHURxbuqj
+         JNyc+9ZL7jPeL6HLNN/jUC0BrG2Y8l7fkb11gzSwtUmc9OoFhqpq1qHuKmM7I8F0mxOW
+         byo6exEKlTVmlAe/r9tbYNdXzA0WnAbS3dqyAE8HyZ7VXqCiyN6tairWzrx1Rog2PKh0
+         +6GYJQd0uaWtgXciXUhESYsVMX6+6nxl7dlvqOdoC2NT56EgC2oY1AHJ74g/5qhRxUSR
+         gtxMlUazMLARpWrcO52EdDZFsnWeozDtmsCaMZi0ZyLzfUpLHuHnjQ/jbjtfXK7Z0hUO
+         OU9w==
+X-Gm-Message-State: AOAM531fVK09Dr5MkaiuZBYYkWvVTt2a6MzubJOqEkNQHzVOZamHBEK0
+        PjdPo3qQWDJ1umJYNMM8SeoOh9ar7vcBX4Nu
+X-Google-Smtp-Source: ABdhPJzMLK29L+nxWeJsp/F9zI3AW8VTwosq64Vcj8KgXQFqQjkPx7TCVss4ZExsAhmMTX+LKitd5w==
+X-Received: by 2002:a7b:c346:: with SMTP id l6mr3550663wmj.109.1623917958820;
+        Thu, 17 Jun 2021 01:19:18 -0700 (PDT)
+Received: from DESKTOP-A66711V ([5.29.25.101])
+        by smtp.gmail.com with ESMTPSA id z12sm4573522wrw.97.2021.06.17.01.19.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Jun 2021 01:19:18 -0700 (PDT)
+Message-ID: <60cb0586.1c69fb81.8015b.37a1@mx.google.com>
+Date:   Thu, 17 Jun 2021 01:19:18 -0700 (PDT)
+X-Google-Original-Date: 17 Jun 2021 11:19:17 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <fea0f6e4-cd24-4c2e-1470-d86957408254@ideasonboard.com>
+From:   "Amit Klein" <aksecurity@gmail.com>
+To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        stable@vger.kernel.org, edumazet@google.com, w@1wt.eu,
+        davem@davemloft.net, netdev@vger.kernel.org
+Subject: [PATCH 4.19] inet: use bigger hash table for IP ID generation
+ (backported to 4.19)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran
+Subject: inet: use bigger hash table for IP ID generation (backpo=
+rted to 4.19)=0AFrom: Amit Klein <aksecurity@gmail.com>=0A=0AThis=
+ is a backport to 4.19 of the following patch, originally=0Adevel=
+oped by Eric Dumazet.=0A=0AIn commit 73f156a6e8c1 ("inetpeer: get=
+ rid of ip_id_count")=0AI used a very small hash table that could=
+ be abused=0Aby patient attackers to reveal sensitive information=
+.=0A=0ASwitch to a dynamic sizing, depending on RAM size.=0A=0ATy=
+pical big hosts will now use 128x more storage (2 MB)=0Ato get a =
+similar increase in security and reduction=0Aof hash collisions.=0A=
+=0AAs a bonus, use of alloc_large_system_hash() spreads=0Aallocat=
+ed memory among all NUMA nodes.=0A=0AFixes: 73f156a6e8c1 ("inetpe=
+er: get rid of ip_id_count")=0AReported-by: Amit Klein <aksecurit=
+y@gmail.com>=0ACc: stable@vger.kernel.org=0ACc: Eric Dumazet <edu=
+mazet@google.com>=0ACc: Willy Tarreau <w@1wt.eu>=0A---=0A net/ipv=
+4/route.c | 42 ++++++++++++++++++++++++++++--------------=0A 1 fi=
+le changed, 28 insertions(+), 14 deletions(-)=0A=0A(limited to 'n=
+et/ipv4/route.c')=0A=0Adiff --git a/net/ipv4/route.c b/net/ipv4/r=
+oute.c=0Aindex 0470442ff61d6..ea916df1bbf5e 100644=0A--- a/net/ip=
+v4/route.c=0A+++ b/net/ipv4/route.c=0A@@ -66,6 +66,7 @@=0A #inclu=
+de <linux/types.h>=0A #include <linux/kernel.h>=0A #include <linu=
+x/mm.h>=0A+#include <linux/bootmem.h>=0A #include <linux/string.h=
+>=0A #include <linux/socket.h>=0A #include <linux/sockios.h>=0A@@=
+ -452,8 +453,10 @@ static void ipv4_confirm_neigh(const struct ds=
+t_entry *dst, const void *daddr)=0A 	__ipv4_confirm_neigh(dev, *(=
+__force u32 *)pkey);=0A }=0A =0A-#define IP_IDENTS_SZ 2048u=0A-=0A=
++/* Hash tables of size 2048..262144 depending on RAM size.=0A+ *=
+ Each bucket uses 8 bytes.=0A+ */=0A+static u32 ip_idents_mask __=
+read_mostly;=0A static atomic_t *ip_idents __read_mostly;=0A stat=
+ic u32 *ip_tstamps __read_mostly;=0A =0A@@ -463,12 +466,16 @@ sta=
+tic u32 *ip_tstamps __read_mostly;=0A  */=0A u32 ip_idents_reserv=
+e(u32 hash, int segs)=0A {=0A-	u32 *p_tstamp =3D ip_tstamps + has=
+h % IP_IDENTS_SZ;=0A-	atomic_t *p_id =3D ip_idents + hash % IP_ID=
+ENTS_SZ;=0A-	u32 old =3D READ_ONCE(*p_tstamp);=0A-	u32 now =3D (u=
+32)jiffies;=0A+	u32 bucket, old, now =3D (u32)jiffies;=0A+	atomic=
+_t *p_id;=0A+	u32 *p_tstamp;=0A 	u32 delta =3D 0;=0A =0A+	bucket =
+=3D hash & ip_idents_mask;=0A+	p_tstamp =3D ip_tstamps + bucket;=0A=
++	p_id =3D ip_idents + bucket;=0A+	old =3D READ_ONCE(*p_tstamp);=0A=
++=0A 	if (old !=3D now && cmpxchg(p_tstamp, old, now) =3D=3D old)=
+=0A 		delta =3D prandom_u32_max(now - old);=0A =0A@@ -3557,18 +35=
+64,25 @@ struct ip_rt_acct __percpu *ip_rt_acct __read_mostly;=0A=
+ =0A int __init ip_rt_init(void)=0A {=0A+	void *idents_hash;=0A 	=
+int cpu;=0A =0A-	ip_idents =3D kmalloc_array(IP_IDENTS_SZ, sizeof=
+(*ip_idents),=0A-				  GFP_KERNEL);=0A-	if (!ip_idents)=0A-		pani=
+c("IP: failed to allocate ip_idents\n");=0A+	/* For modern hosts,=
+ this will use 2 MB of memory */=0A+	idents_hash =3D alloc_large_=
+system_hash("IP idents",=0A+					      sizeof(*ip_idents) + sizeo=
+f(*ip_tstamps),=0A+					      0,=0A+					      16, /* one bucket =
+per 64 KB */=0A+					      HASH_ZERO,=0A+					      NULL,=0A+				=
+	      &ip_idents_mask,=0A+					      2048,=0A+					      256*102=
+4);=0A+=0A+	ip_idents =3D idents_hash;=0A =0A-	prandom_bytes(ip_i=
+dents, IP_IDENTS_SZ * sizeof(*ip_idents));=0A+	prandom_bytes(ip_i=
+dents, (ip_idents_mask + 1) * sizeof(*ip_idents));=0A =0A-	ip_tst=
+amps =3D kcalloc(IP_IDENTS_SZ, sizeof(*ip_tstamps), GFP_KERNEL);=0A=
+-	if (!ip_tstamps)=0A-		panic("IP: failed to allocate ip_tstamps\=
+n");=0A+	ip_tstamps =3D idents_hash + (ip_idents_mask + 1) * size=
+of(*ip_idents);=0A =0A 	for_each_possible_cpu(cpu) {=0A 		struct =
+uncached_list *ul =3D &per_cpu(rt_uncached_list, cpu);=0A-- =0Acg=
+it 1.2.3-1.el7=0A=0A
 
-On Thu, Jun 17, 2021 at 01:02:36AM +0100, Kieran Bingham wrote:
-> Hi Jacopo,
->
-> On 19/04/2021 15:23, Jacopo Mondi wrote:
-> > The 'maxim,gpio-poc' property is used when the remote camera
-> > power-over-coax is controlled by one of the MAX9286 gpio lines,
-> > to instruct the driver about which line to use and what the line
-> > polarity is.
-> >
-> > Add to the max9286 driver support for parsing the newly introduced
-> > property and use it if available in place of the usual supply, as it is
-> > not possible to establish one as consumer of the max9286 gpio
-> > controller.
-> >
-> > If the new property is present, no gpio controller is registered and
-> > 'poc-supply' is ignored.
-> >
-> > In order to maximize code re-use, break out the max9286 gpio handling
-> > function so that they can be used by the gpio controller through the
-> > gpio-consumer API, or directly by the driver code.
-> >
-> > Wrap the power up and power down routines to their own function to
-> > be able to use either the gpio line directly or the supply. This will
-> > make it easier to control the remote camera power at run time.
->
-> I think I've seen Laurent's despair at the auxillary device bus already,
-> but I can't help but feel it might be a way to register the gpio and
-> regulator fully without having to handle any probe deferrals and allow
-> the GPIO chip to be used as it's own regulator. (I.e. solve the issues I
-> was facing last time I looked at it)
->
-> But that said however, it's only a hypothesis having not yet fully
-> investigated the option. It seems a shame to have to expose multiple
-> ways of powering up the cameras, but I guess ultimately it's how the
-> hardware is connected.
-
-I can't really comment as I don't know what auxillary bus is, but I
-guess this simple solution is enough to unblock eagle upstreaming and
-doesn't tie our hands if we want to switch to something completely
-different in future.
-
->
-> Have we confirmed that the start up delays are no longer needed for the
-> RDACM20 cameras? (which we've previously exposed as a regulator power up
-> delay?)
-
-Yes, not delay needed as long as
-https://patchwork.linuxtv.org/project/linux-media/patch/20210616124616.49249-12-jacopo+renesas@jmondi.org/
-is applied
-
->
-> How would this handle those delays if required?
->
->
-> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > ---
-> >  drivers/media/i2c/max9286.c | 125 +++++++++++++++++++++++++++---------
-> >  1 file changed, 94 insertions(+), 31 deletions(-)
-> >
-> > diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> > index 6fd4d59fcc72..99160aa68a5f 100644
-> > --- a/drivers/media/i2c/max9286.c
-> > +++ b/drivers/media/i2c/max9286.c
-> > @@ -15,6 +15,7 @@
-> >  #include <linux/fwnode.h>
-> >  #include <linux/gpio/consumer.h>
-> >  #include <linux/gpio/driver.h>
-> > +#include <linux/gpio/machine.h>
-> >  #include <linux/i2c.h>
-> >  #include <linux/i2c-mux.h>
-> >  #include <linux/module.h>
-> > @@ -165,6 +166,9 @@ struct max9286_priv {
-> >
-> >  	u32 reverse_channel_mv;
-> >
-> > +	u32 gpio_poc;
-> > +	u32 gpio_poc_flags;
-> > +
-> >  	struct v4l2_ctrl_handler ctrls;
-> >  	struct v4l2_ctrl *pixelrate;
-> >
-> > @@ -1022,20 +1026,27 @@ static int max9286_setup(struct max9286_priv *priv)
-> >  	return 0;
-> >  }
-> >
-> > -static void max9286_gpio_set(struct gpio_chip *chip,
-> > -			     unsigned int offset, int value)
-> > +static int max9286_gpio_set(struct max9286_priv *priv, unsigned int offset,
-> > +			    int value)
-> >  {
-> > -	struct max9286_priv *priv = gpiochip_get_data(chip);
-> > -
-> >  	if (value)
-> >  		priv->gpio_state |= BIT(offset);
-> >  	else
-> >  		priv->gpio_state &= ~BIT(offset);
-> >
-> > -	max9286_write(priv, 0x0f, MAX9286_0X0F_RESERVED | priv->gpio_state);
-> > +	return max9286_write(priv, 0x0f,
-> > +			     MAX9286_0X0F_RESERVED | priv->gpio_state);
-> > +}
-> > +
-> > +static void max9286_gpiochip_set(struct gpio_chip *chip,
-> > +				 unsigned int offset, int value)
-> > +{
-> > +	struct max9286_priv *priv = gpiochip_get_data(chip);
-> > +
-> > +	max9286_gpio_set(priv, offset, value);
-> >  }
-> >
-> > -static int max9286_gpio_get(struct gpio_chip *chip, unsigned int offset)
-> > +static int max9286_gpiochip_get(struct gpio_chip *chip, unsigned int offset)
-> >  {
-> >  	struct max9286_priv *priv = gpiochip_get_data(chip);
-> >
-> > @@ -1055,16 +1066,81 @@ static int max9286_register_gpio(struct max9286_priv *priv)
-> >  	gpio->of_node = dev->of_node;
-> >  	gpio->ngpio = 2;
-> >  	gpio->base = -1;
-> > -	gpio->set = max9286_gpio_set;
-> > -	gpio->get = max9286_gpio_get;
-> > +	gpio->set = max9286_gpiochip_set;
-> > +	gpio->get = max9286_gpiochip_get;
-> >  	gpio->can_sleep = true;
-> >
-> > +	ret = devm_gpiochip_add_data(dev, gpio, priv);
-> > +	if (ret)
-> > +		dev_err(dev, "Unable to create gpio_chip\n");
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int max9286_parse_gpios(struct max9286_priv *priv)
-> > +{
-> > +	struct device *dev = &priv->client->dev;
-> > +	u32 gpio_poc[2];
-> > +	int ret;
-> > +
-> >  	/* GPIO values default to high */
-> >  	priv->gpio_state = BIT(0) | BIT(1);
-> >
-> > -	ret = devm_gpiochip_add_data(dev, gpio, priv);
-> > +	/*
-> > +	 * Parse the "gpio-poc" vendor property. If the camera power is
-> > +	 * controlled by one of the MAX9286 gpio lines, do not register
-> > +	 * the gpio controller and ignore 'poc-supply'.
-> > +	 */
-> > +	ret = of_property_read_u32_array(dev->of_node,
-> > +					 "maxim,gpio-poc", gpio_poc, 2);
-> > +	if (!ret) {
-> > +		priv->gpio_poc = gpio_poc[0];
-> > +		priv->gpio_poc_flags = gpio_poc[1];
-> > +		if (priv->gpio_poc > 1 ||
-> > +		    (priv->gpio_poc_flags != GPIO_ACTIVE_HIGH &&
-> > +		     priv->gpio_poc_flags != GPIO_ACTIVE_LOW)) {
-> > +			dev_err(dev, "Invalid 'gpio-poc': (%u %u)\n",
-> > +				priv->gpio_poc, priv->gpio_poc_flags);
-> > +			return -EINVAL;
-> > +		}
-> > +
-> > +		return 0;
-> > +	}
-> > +
-> > +	ret = max9286_register_gpio(priv);
-> >  	if (ret)
-> > -		dev_err(dev, "Unable to create gpio_chip\n");
-> > +		return ret;
-> > +
-> > +	priv->regulator = devm_regulator_get(dev, "poc");
-> > +	if (IS_ERR(priv->regulator)) {
-> > +		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
-> > +			dev_err(dev, "Unable to get PoC regulator (%ld)\n",
-> > +				PTR_ERR(priv->regulator));
-> > +		return PTR_ERR(priv->regulator);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int max9286_poc_enable(struct max9286_priv *priv, bool enable)
-> > +{
-> > +	int ret;
-> > +
-> > +	/* If "poc-gpio" is used, toggle the line and do not use regulator. */
-> > +	if (enable)
-> > +		ret = priv->regulator
-> > +		    ? regulator_enable(priv->regulator)
-> > +		    : max9286_gpio_set(priv, priv->gpio_poc,
-> > +				       enable ^ priv->gpio_poc_flags);
-> > +	else
-> > +		ret = priv->regulator
-> > +		    ? regulator_disable(priv->regulator)
-> > +		    : max9286_gpio_set(priv, priv->gpio_poc,
-> > +				       enable ^ priv->gpio_poc_flags);
-> > +
-> > +	if (ret < 0)
-> > +		dev_err(&priv->client->dev, "Unable to turn PoC %s\n",
-> > +			enable ? "on" : "off");
-> >
-> >  	return ret;
-> >  }
-> > @@ -1078,17 +1154,14 @@ static int max9286_init(struct device *dev)
-> >  	client = to_i2c_client(dev);
-> >  	priv = i2c_get_clientdata(client);
-> >
-> > -	/* Enable the bus power. */
-> > -	ret = regulator_enable(priv->regulator);
-> > -	if (ret < 0) {
-> > -		dev_err(&client->dev, "Unable to turn PoC on\n");
-> > +	ret = max9286_poc_enable(priv, true);
-> > +	if (ret)
-> >  		return ret;
-> > -	}
-> >
-> >  	ret = max9286_setup(priv);
-> >  	if (ret) {
-> >  		dev_err(dev, "Unable to setup max9286\n");
-> > -		goto err_regulator;
-> > +		goto err_poc_disable;
-> >  	}
-> >
-> >  	/*
-> > @@ -1098,7 +1171,7 @@ static int max9286_init(struct device *dev)
-> >  	ret = max9286_v4l2_register(priv);
-> >  	if (ret) {
-> >  		dev_err(dev, "Failed to register with V4L2\n");
-> > -		goto err_regulator;
-> > +		goto err_poc_disable;
-> >  	}
-> >
-> >  	ret = max9286_i2c_mux_init(priv);
-> > @@ -1114,8 +1187,8 @@ static int max9286_init(struct device *dev)
-> >
-> >  err_v4l2_register:
-> >  	max9286_v4l2_unregister(priv);
-> > -err_regulator:
-> > -	regulator_disable(priv->regulator);
-> > +err_poc_disable:
-> > +	max9286_poc_enable(priv, false);
-> >
-> >  	return ret;
-> >  }
-> > @@ -1286,20 +1359,10 @@ static int max9286_probe(struct i2c_client *client)
-> >  	 */
-> >  	max9286_configure_i2c(priv, false);
-> >
-> > -	ret = max9286_register_gpio(priv);
-> > +	ret = max9286_parse_gpios(priv);
-> >  	if (ret)
-> >  		goto err_powerdown;
-> >
-> > -	priv->regulator = devm_regulator_get(&client->dev, "poc");
-> > -	if (IS_ERR(priv->regulator)) {
-> > -		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
-> > -			dev_err(&client->dev,
-> > -				"Unable to get PoC regulator (%ld)\n",
-> > -				PTR_ERR(priv->regulator));
-> > -		ret = PTR_ERR(priv->regulator);
-> > -		goto err_powerdown;
-> > -	}
-> > -
-> >  	ret = max9286_parse_dt(priv);
-> >  	if (ret)
-> >  		goto err_powerdown;
-> > @@ -1326,7 +1389,7 @@ static int max9286_remove(struct i2c_client *client)
-> >
-> >  	max9286_v4l2_unregister(priv);
-> >
-> > -	regulator_disable(priv->regulator);
-> > +	max9286_poc_enable(priv, false);
-> >
-> >  	gpiod_set_value_cansleep(priv->gpiod_pwdn, 0);
-> >
-> >
->
-> --
-> Regards
-> --
-> Kieran
