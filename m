@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB703AAB2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77163AAB31
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbhFQFs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 01:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59256 "EHLO
+        id S230064AbhFQFsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 01:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhFQFsY (ORCPT
+        with ESMTP id S229709AbhFQFs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 01:48:24 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E55C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:46:16 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id m15-20020a17090a5a4fb029016f385ffad0so353287pji.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:46:16 -0700 (PDT)
+        Thu, 17 Jun 2021 01:48:28 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAC1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:46:20 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id h16so3129939pjv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:46:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ryRtK61SYm8PEwrY11LaHJtoPw6grUNXacSgX8/XdGk=;
-        b=JyOySvn4xq7TtrN+FSXsQ3XX5BVRq1nskC0TUkM0+94B96ge24dhGRVvmr2XxW4NEb
-         zVs5XJaZz++JB3ODhl5V2FUzxSVl1gvN+r+FZxmYcl0ddWrumUUt6KoAupfXBk+6vb7X
-         LfyzPLt+Z6qOoS/JVAyWqCGXDW3EMA4tJqmARKKLpb3JxWGnSoFzyrFOZqHe9EkSko5+
-         +q9yYEDdY6NNsfyOciEpWmEimUnMO9TyW5cj/OYmiRsaWCHav4yu22YUj9vMWd4SSgGD
-         ic7WlW13W0I9B2K32etV5tEaHegGsfMeRRnD2Tspuu4TRR7yivH/IzGaHP3iFNrM8+3T
-         Upsg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hsJhWYmZBDgj/tFiSi4wj9WE1h/l2+Md9lyjAfn8iR8=;
+        b=wOOS4VAbMd2nYdoJCV7egK2DDp1ZSn2v/Mh602YP5TNj1U98qN22pMvHXCHEVEA1Qt
+         FbyLCP/dCif4jQFWf3+IQ80pEwNx1KWoyuxvxDN4xBTRxVAK5KPkQrUMidoUvPsLrV2Y
+         n5CnoG9OS5jzBKxDG0is7darEbEt6H5odeZdifnyx4BiSpS0sml8er8yu8ZxY/q/DdEV
+         KWSXIp+GlJhrNVUPzExysq+4SJxfPgyMraAN80OoymMQy0T+SmOmp/Ly0UDSIBixYa2V
+         tpqC94gmiLEU+4HZiv3obFyR7lGPQb3aBysr9T8Su+88O1hF9nBP8mEv6qUsnh4augaT
+         GDmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ryRtK61SYm8PEwrY11LaHJtoPw6grUNXacSgX8/XdGk=;
-        b=Igpm64GkSrb6jTsV2H1iB29Ry0wdCBFka0f0J503FU/L54zE341vL607XvtYJEh29h
-         yn1aiZi8ijQLcRHaqobU3wkrmEQwN+FkysmC4TCAP8sJqnob2BpTTKxojDsRBN6b7s7R
-         dYhGXMeLffc+5t9ErCAaIg8RuM8wifr0dS56bXWo3JNUQYOb32+ykmD3EX7kVk+Y1uAD
-         2Ow/cK8AHxc+oDcNcPMHjP7haIvXusnjwBwE0lB1g3g4kS4Tt1fv+1wvIKQusFBhG5qq
-         u7SQM54xi3kHoWmulyzeQs+G2oc6Lgn4jjfIAoY2i6e1K4uXht023U/Onv3QFtg5ZVKZ
-         KjEQ==
-X-Gm-Message-State: AOAM530k9Dw8r156Ul1O78YmBGO8BhPM2DOeuk/vqGSzxLqvCWmDF+vi
-        dsJSXi9CCa16JXWl3d6EUHzVQQ==
-X-Google-Smtp-Source: ABdhPJybhCmh4U2ZGmx78zsnS156XuPnmscAJ0WSf8+NDyCc4u+8RiFjDLToqb4QldrOdKpgwBY6hg==
-X-Received: by 2002:a17:90a:2ac7:: with SMTP id i7mr3882063pjg.139.1623908776486;
-        Wed, 16 Jun 2021 22:46:16 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hsJhWYmZBDgj/tFiSi4wj9WE1h/l2+Md9lyjAfn8iR8=;
+        b=NdP80iMIrpdmZFt32/7DZCNWaDzZ7pGrzvopx9JQQnaP6DH+uafBqAsRPsjjAfAPv/
+         Ts+8hofL9+Vzwy6+dzeKcO/C1Y+RPLJT9lOa9ResyvAHzthCdMIjZEXJbTi5RjaB3hHQ
+         RHm+jX2sPpELDmr9PI1TkKEykzQoA8lnmo+/AS/VPHj8/Ej98dKzW6zwkglP9SDSEOZ2
+         NZ/tmscDg/Nq4+VCDdzdC6aoths1cnzgqQ0I9jVtOrKBD2zK55eijturjN79r2KzrbHQ
+         MA0/ii2j0TxmUV/TYpeyJORfg3POcsjkKVnHLFhdCS3UJQ/kegTafHEABSSIqq54x+hv
+         +Vlw==
+X-Gm-Message-State: AOAM532oPHcGIxCprn/PbZmep5pMjOaN+g0Db90Vceiid8D15CVQ9uq0
+        fmqS2KqmahoW90c6OFSs321c7A==
+X-Google-Smtp-Source: ABdhPJwFGa8BwqCx26oWn0H764ybHhUWQQnQydJTCyAex86fJTVXNqRgghY+dzqJ0C8cV4n8umQWMg==
+X-Received: by 2002:a17:90a:d483:: with SMTP id s3mr14661286pju.61.1623908780546;
+        Wed, 16 Jun 2021 22:46:20 -0700 (PDT)
 Received: from localhost.name ([122.177.46.2])
-        by smtp.gmail.com with ESMTPSA id y27sm3882700pff.202.2021.06.16.22.46.12
+        by smtp.gmail.com with ESMTPSA id y27sm3882700pff.202.2021.06.16.22.46.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 22:46:16 -0700 (PDT)
+        Wed, 16 Jun 2021 22:46:20 -0700 (PDT)
 From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
         linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH v3 0/5] arm64: dts: qcom: Add SA8155p-adp board DTS
-Date:   Thu, 17 Jun 2021 11:15:43 +0530
-Message-Id: <20210617054548.353293-1-bhupesh.sharma@linaro.org>
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH v3 1/5] dt-bindings: arm: qcom: Add compatible for sm8150-mtp board
+Date:   Thu, 17 Jun 2021 11:15:44 +0530
+Message-Id: <20210617054548.353293-2-bhupesh.sharma@linaro.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210617054548.353293-1-bhupesh.sharma@linaro.org>
+References: <20210617054548.353293-1-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes since v2:
------------------
-- v2 series can be found here: https://lore.kernel.org/linux-arm-msm/20210615074543.26700-1-bhupesh.sharma@linaro.org/T/#m8303d27d561b30133992da88198abb78ea833e21 
-- Addressed review comments from Bjorn and Mark.
-- As per suggestion from Bjorn, separated the patches in different
-  patchsets (specific to each subsystem) to ease review and patch application.
+sm8150-mtp board is based on Qualcomm Snapdragon sm8150
+SoC.
 
-Changes since v1:
------------------
-- v1 series can be found here: https://lore.kernel.org/linux-arm-msm/20210607113840.15435-1-bhupesh.sharma@linaro.org/T/#mc524fe82798d4c4fb75dd0333318955e0406ad18
-- Addressed review comments from Bjorn and Vinod received on the v1
-  series.
-
-This series adds DTS for SA8155p-adp board which is based on
-Qualcomm snapdragon sa8155p SoC which is simiar to sm8150 SoC.
-
-This patchset also includes DTS for the new PMIC PMM8155AU
-found on the adp board.
-
-This series is in turn dependent on the pinctrl and regulator
-series for the SA8155p-adp board (see [1] and [2]), for the
-requisite driver and dt-binding (compatible) changes.
-
-[1]. pinctrl: https://lore.kernel.org/linux-arm-msm/20210617053432.350486-1-bhupesh.sharma@linaro.org/T/#m2b1bf2d32dfdde3196dc5342722e356ee1f87456
-[2]. regulator: https://lore.kernel.org/linux-arm-msm/20210617051712.345372-1-bhupesh.sharma@linaro.org/T/#m058e8a6bc33979532779078b31d5c3698eaf25db
+Add support for the same in dt-bindings.
 
 Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Andy Gross <agross@kernel.org>
+Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+---
+ Documentation/devicetree/bindings/arm/qcom.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Bhupesh Sharma (5):
-  dt-bindings: arm: qcom: Add compatible for sm8150-mtp board
-  dt-bindings: arm: qcom: Add compatible for SA8155p-adp board
-  arm64: dts: qcom: pmm8155au_1: Add base dts file
-  arm64: dts: qcom: pmm8155au_2: Add base dts file
-  arm64: dts: qcom: sa8155p-adp: Add base dts file
-
- .../devicetree/bindings/arm/qcom.yaml         |  13 +
- arch/arm64/boot/dts/qcom/Makefile             |   1 +
- arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi     | 134 +++++++
- arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi     | 107 ++++++
- arch/arm64/boot/dts/qcom/sa8155p-adp.dts      | 360 ++++++++++++++++++
- 5 files changed, 615 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
- create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi
- create mode 100644 arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-
+diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+index 9b27e991bddc..d7bb90e5082c 100644
+--- a/Documentation/devicetree/bindings/arm/qcom.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+@@ -42,6 +42,7 @@ description: |
+         sdm660
+         sdm845
+         sdx55
++        sm8150
+         sm8250
+         sm8350
+ 
+@@ -198,6 +199,11 @@ properties:
+               - qcom,ipq6018-cp01-c1
+           - const: qcom,ipq6018
+ 
++      - items:
++          - enum:
++              - qcom,sm8150-mtp
++          - const: qcom,sm8150
++
+       - items:
+           - enum:
+               - qcom,qrb5165-rb5
 -- 
 2.31.1
 
