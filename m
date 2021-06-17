@@ -2,95 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9053AB1CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2233AB1D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbhFQLBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbhFQLB2 (ORCPT
+        id S232182AbhFQLCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:02:38 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:8257 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231559AbhFQLCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:01:28 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A559AC061574;
-        Thu, 17 Jun 2021 03:59:19 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso3430750wms.1;
-        Thu, 17 Jun 2021 03:59:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6x8CcN9jxreq8OwS1dIiZGQ5hktrk4/e5THJPCD0kvI=;
-        b=mmnHMB5zTtVzYXMqi/Dp2XKT3VuxhI8faVhz6ARvQWYgA2ek7zaAOwFogKjAaF1d/S
-         tw32ykkVct4FQFNrqfcjkg+VyLbrALrvxf8mLrapTLOiimMU+/pTJiyEK/6i9DmoBZBl
-         Fczjja9YYiEAIfSy70X5d7uqxtIpBT7YNkm1fO+7wKHV6yDR3+oHwxUItmNC3o776XAh
-         bHGEA40czMzsVO4V4NLlievFZKZahNtIUPWEX2ceA9P6MAuQ09aMTJsT1x3B7jIP34yx
-         zbwj5IRIrJw9iIw/NAxOr/qpScyZVCDWNB4kMabDMH23GY1TFJSw8pgkNhgVNCvceLCR
-         JNJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6x8CcN9jxreq8OwS1dIiZGQ5hktrk4/e5THJPCD0kvI=;
-        b=RkEOwmDpnYFLSGCsPiSNWf1A4jtY8Wxo53VahuPKAu4bAU13Omoz2AjN/ZwMQzO2j4
-         ZLDpCyBB4SS2m9K4QN4vlL/W3bjztGuXrRNQZ/0kyKD8PbqL5dX6/ECiOrqOWNRVdp4t
-         3G1kdJ927GM3FTD30dozepoYquQs++qjsFac3U+Gzs7zHU8U9iBvmmgD7ZA/U+4/K1Ip
-         Ft7/zLFhGJNCD/Q96n3LS6PsWS2ACg28uDM/v9zhhBxvElKLr4K7C40xS6PICMT+wNBl
-         l/bc8Q4Q0umxLpLUfhL/jT9t93Fg+XF0zWZ8OCYrm8xupi05BHpZBIWUC+rfeVIydTUY
-         GtdA==
-X-Gm-Message-State: AOAM530BBNx8cRO15qzwDK/WirhEzLWbLpL554i9vPHwAn7J0MWphfCZ
-        ti1LBnGGnbdzCMnGA1YU9Aw=
-X-Google-Smtp-Source: ABdhPJwSHawMNtLs3IJ+Gf1S4whGlzSu0FA9me30XOuLZDHNifF92wnkdx1prUOtH6iKWutXYTRoJw==
-X-Received: by 2002:a1c:4c15:: with SMTP id z21mr4348664wmf.57.1623927558172;
-        Thu, 17 Jun 2021 03:59:18 -0700 (PDT)
-Received: from debian (host-84-13-31-66.opaltelecom.net. [84.13.31.66])
-        by smtp.gmail.com with ESMTPSA id r1sm4612634wmh.32.2021.06.17.03.59.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 03:59:17 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 11:59:15 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/28] 5.4.127-rc1 review
-Message-ID: <YMsrA1tndr7gwY+G@debian>
-References: <20210616152834.149064097@linuxfoundation.org>
+        Thu, 17 Jun 2021 07:02:36 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G5Jqd2R89z1BNWY;
+        Thu, 17 Jun 2021 18:55:25 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 19:00:27 +0800
+Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
+ (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 17
+ Jun 2021 19:00:27 +0800
+Subject: Re: [PATCH v6 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
+ PMU
+To:     Will Deacon <will@kernel.org>, Linuxarm <linuxarm@huawei.com>
+CC:     <mark.rutland@arm.com>, <bhelgaas@google.com>,
+        <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <zhangshaokun@hisilicon.com>
+References: <1622467951-32114-1-git-send-email-liuqi115@huawei.com>
+ <1622467951-32114-3-git-send-email-liuqi115@huawei.com>
+ <20210611162347.GA16284@willie-the-truck>
+ <a299d053-b45f-e941-7a2e-c853079b8cdd@huawei.com>
+ <20210615093519.GB19878@willie-the-truck>
+ <8e15e8d6-cfe8-0926-0ca1-b162302e52a5@huawei.com>
+ <20210616134257.GA22905@willie-the-truck>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <678f7d55-9408-f323-da53-b5afe2595271@huawei.com>
+Date:   Thu, 17 Jun 2021 19:00:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+In-Reply-To: <20210616134257.GA22905@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.38.203]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
 
-On Wed, Jun 16, 2021 at 05:33:11PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.127 release.
-> There are 28 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+
+On 2021/6/16 21:42, Will Deacon wrote:
+> Hi,
 > 
-> Responses should be made by Fri, 18 Jun 2021 15:28:19 +0000.
-> Anything received after that time might be too late.
+> On Wed, Jun 16, 2021 at 09:54:23AM +0800, liuqi (BA) wrote:
+>> On 2021/6/15 17:35, Will Deacon wrote:
+>>> On Tue, Jun 15, 2021 at 04:57:09PM +0800, liuqi (BA) wrote:
+>>>> On 2021/6/12 0:23, Will Deacon wrote:
+>>>>> On Mon, May 31, 2021 at 09:32:31PM +0800, Qi Liu wrote:
+>>>>>> +	/* Process data to set unit of latency as "us". */
+>>>>>> +	if (is_latency_event(idx))
+>>>>>> +		return div64_u64(data * us_per_cycle, data_ext);
+>>>>>> +
+>>>>>> +	if (is_bus_util_event(idx))
+>>>>>> +		return div64_u64(data * us_per_cycle, data_ext);
+>>>>>> +
+>>>>>> +	if (is_buf_util_event(idx))
+>>>>>> +		return div64_u64(data, data_ext * us_per_cycle);
+>>>>>
+>>>>> Why do we need to do all this division in the kernel? Can't we just expose
+>>>>> the underlying values and let userspace figure out what it wants to do with
+>>>>> the numbers?
+>>>>>
+>>>> Our PMU hardware support 8 sets of counters to count bandwidth, latency and
+>>>> utilization events.
+>>>>
+>>>> For example, when users set latency event, common counter will count delay
+>>>> cycles, and extern counter count number of PCIe packets automaticly. And we
+>>>> do not have a event number for counting number of PCIe packets.
+>>>>
+>>>> So this division cannot move to userspace tool.
+>>>
+>>> Why can't you expose the packet counter as an extra event to userspace?
+>>>
+>> Maybe I didn’t express it clearly.
+>>
+>> As there is no hardware event number for PCIe packets counting, extern
+>> counter count packets *automaticly* when latency events is selected by
+>> users.
+>>
+>> This means users cannot set "config=0xXX" to start packets counting event.
+>> So we can only get the value of counter and extern counter in driver and do
+>> the division, then pass the result to userspace.
+> 
+> I still think it would be ideal if we could expose both values to userspace
+> rather than combine them somehow. Hmm. Anyway...
+> 
+> I struggled to figure out exactly what's being counted from the
+> documentation patch (please update that). Please can you explain exactly
+> what appears in the HISI_PCIE_CNT and HISI_PCIE_EXT_CNT registers for the
+> different modes of operation? Without that, the ratios you've chosen to
+> report seem rather arbitrary.
+> 
 
-Build test:
-mips (gcc version 11.1.1 20210615): 65 configs -> no failure
-arm (gcc version 11.1.1 20210615): 107 configs -> no new failure
-arm64 (gcc version 11.1.1 20210615): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+Hi Will,
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
+PCIe PMU events can be devided into 2 types: one type is counted by 
+HISI_PCIE_CNT, the other type is counted by HISI_PCIE_EXT_CNT and 
+HISI_PCIE_CNT, including bandwidth events, latency events, buffer 
+utilization and bus utilization.
 
+if user sets "event=0x10, subevent=0x02", this means "latency of RX 
+memory read" is selected. HISI_PCIE_CNT counts total delay cycles and 
+HISI_PCIE_EXT_CNT counts PCIe packets number at the same time. So PMU 
+driver could obtain average latency by caculating: HISI_PCIE_CNT / 
+HISI_PCIE_EXT_CNT.
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+if users sets "event=0x04, subevent=0x01", this means bandwidth of RX 
+memory read is selected. HISI_PCIE_CNT counts total packet data volume 
+and HISI_PCIE_EXT_CNT counts cycles, so PMU driver could obtain average 
+bandwidth by caculating: HISI_PCIE_CNT / HISI_PCIE_EXT_CNT.
 
---
-Regards
-Sudip
+The same logic is used when calculating bus utilization and buffer 
+utilization. Seems I should add this part in Document patch,I 'll do 
+this in next version, thanks.
+
+> I also couldn't figure out how the latency event works. For example, I was
+> assuming it would be a filter (a bit like the length), so you could say
+> things like "I'm only interested in packets with a latency higher than x"
+> but it doesn't look like it works that way.
+> 
+> Thanks,
+> 
+latency is not a filter, PCIe PMU has a group of lactency events, their 
+event number are within the latency_events_list, and the above explains 
+how latency events work.
+
+PMU drivers have TLP length filter for bandwidth events, users could set 
+like "I only interested in bandwidth of packets with TLP length bigger 
+than x".
+
+Thanks,
+Qi
+
+> Will
+> .
+> 
 
