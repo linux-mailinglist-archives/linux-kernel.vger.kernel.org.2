@@ -2,151 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2112D3AB6CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8AAF3AB6D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbhFQPEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:04:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33890 "EHLO mail.kernel.org"
+        id S233117AbhFQPE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:04:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233058AbhFQPEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:04:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7D7C613FB;
-        Thu, 17 Jun 2021 15:02:14 +0000 (UTC)
+        id S233104AbhFQPEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 11:04:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 386E6610A3;
+        Thu, 17 Jun 2021 15:02:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623942134;
-        bh=EYhlWS7OTYyNZbRfd1Ohd426NpjeeKUY8OwIo+YZT4E=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=inZYgQ5bi8uw6oOAX8EPOOtfKFDme0eliRQCBHGcYtTPCdQgFm7kSehT40IZDhwmM
-         j9yFA4byMAK2cOqkoLtSNQe0bdInutyaeuvRd4VFac83IAkwZhZxn5NYR3JTcX/YXf
-         zSGdF2Y8sk1RriYT/0Jv5jCCMshQ6luu5baJQ2aVGKRrQfgA+inSSeYDJBSY2IWoqc
-         72ANYFGU4rSMcDqQ8wLB37eYsBI7EHUNfn/tfDO3CJrybo3ksV4DYA3141QjilF6RK
-         BFN7jxPyAtrpYqIRUl+psX5ig39XJdBidkQpgmd1XamdAwax5ASMW4TgUXv/S4TROI
-         zxeePoHFBwLmQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8B6AF5C02A9; Thu, 17 Jun 2021 08:02:14 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 08:02:14 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [PATCH 4/8] membarrier: Make the post-switch-mm barrier explicit
-Message-ID: <20210617150214.GX4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <cover.1623813516.git.luto@kernel.org>
- <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
- <1623816595.myt8wbkcar.astroid@bobo.none>
- <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
- <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
- <1623893358.bbty474jyy.astroid@bobo.none>
- <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
- <c3c7a1cf-1c87-42cc-b2d6-cc2df55e5b57@www.fastmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c3c7a1cf-1c87-42cc-b2d6-cc2df55e5b57@www.fastmail.com>
+        s=k20201202; t=1623942163;
+        bh=z1iyLhNJsf7wtbsK5AmP9LuCmt80iLYAIIgiUSThkRk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mm8n+Tlbxe2H14BC1lijg42X/bWhlB+XtItSgLm9Fb8/9MioxRxj6Rg3MZQCqqt2B
+         BNZzK3hsNMmKmZZ7a1ORDbjU5lzS4bEE932nlB5xg3DZ3fwj8++O5jgbrnBcRBXNFK
+         4BvyBLrYovGKEwflMQHGFfjE8cy9BTqcP/5iDkZaP204BQ8qCioWg7ahpok558d524
+         1lucS75wb7jK9VFFrpJDLVmY/Zjqj3RtdF96MzxRe1iUgNB09XvhEiYVNhAe5krmBg
+         JxcY8nNQYJQY7u1wR69KDUJ9yMhcgPjmVnLHIeGh/M5BjW1/zmI7ccRVr7DZh9F7iD
+         WFmIJSdx7uHRw==
+Date:   Fri, 18 Jun 2021 00:02:39 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Subject: Re: [PATCH -tip v7 09/13] kprobes: Setup instruction pointer in
+ __kretprobe_trampoline_handler
+Message-Id: <20210618000239.f95de17418beae6d84ce783d@kernel.org>
+In-Reply-To: <20210617234001.54cd2ff60410ff82a39a2020@kernel.org>
+References: <162209754288.436794.3904335049560916855.stgit@devnote2>
+        <162209762943.436794.874947392889792501.stgit@devnote2>
+        <20210617043909.fgu2lhnkxflmy5mk@treble>
+        <20210617044032.txng4enhiduacvt6@treble>
+        <20210617234001.54cd2ff60410ff82a39a2020@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 10:32:15PM -0700, Andy Lutomirski wrote:
-> On Wed, Jun 16, 2021, at 7:57 PM, Andy Lutomirski wrote:
-> > On Wed, Jun 16, 2021, at 6:37 PM, Nicholas Piggin wrote:
-> > > Excerpts from Andy Lutomirski's message of June 17, 2021 4:41 am:
-> > > > On 6/16/21 12:35 AM, Peter Zijlstra wrote:
-> > > >> On Wed, Jun 16, 2021 at 02:19:49PM +1000, Nicholas Piggin wrote:
-> > > >>> Excerpts from Andy Lutomirski's message of June 16, 2021 1:21 pm:
-> > > >>>> membarrier() needs a barrier after any CPU changes mm.  There is currently
-> > > >>>> a comment explaining why this barrier probably exists in all cases.  This
-> > > >>>> is very fragile -- any change to the relevant parts of the scheduler
-> > > >>>> might get rid of these barriers, and it's not really clear to me that
-> > > >>>> the barrier actually exists in all necessary cases.
-> > > >>>
-> > > >>> The comments and barriers in the mmdrop() hunks? I don't see what is 
-> > > >>> fragile or maybe-buggy about this. The barrier definitely exists.
-> > > >>>
-> > > >>> And any change can change anything, that doesn't make it fragile. My
-> > > >>> lazy tlb refcounting change avoids the mmdrop in some cases, but it
-> > > >>> replaces it with smp_mb for example.
-> > > >> 
-> > > >> I'm with Nick again, on this. You're adding extra barriers for no
-> > > >> discernible reason, that's not generally encouraged, seeing how extra
-> > > >> barriers is extra slow.
-> > > >> 
-> > > >> Both mmdrop() itself, as well as the callsite have comments saying how
-> > > >> membarrier relies on the implied barrier, what's fragile about that?
-> > > >> 
+On Thu, 17 Jun 2021 23:40:01 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> On Wed, 16 Jun 2021 23:40:32 -0500
+> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> 
+> > On Wed, Jun 16, 2021 at 11:39:11PM -0500, Josh Poimboeuf wrote:
+> > > On Thu, May 27, 2021 at 03:40:29PM +0900, Masami Hiramatsu wrote:
+> > > > To simplify the stacktrace with pt_regs from kretprobe handler,
+> > > > set the correct return address to the instruction pointer in
+> > > > the pt_regs before calling kretprobe handlers.
 > > > > 
-> > > > My real motivation is that mmgrab() and mmdrop() don't actually need to
-> > > > be full barriers.  The current implementation has them being full
-> > > > barriers, and the current implementation is quite slow.  So let's try
-> > > > that commit message again:
+> > > > Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > > Tested-by: Andrii Nakryik <andrii@kernel.org>
+> > > > ---
+> > > >  Changes in v3:
+> > > >   - Cast the correct_ret_addr to unsigned long.
+> > > > ---
+> > > >  kernel/kprobes.c |    3 +++
+> > > >  1 file changed, 3 insertions(+)
 > > > > 
-> > > > membarrier() needs a barrier after any CPU changes mm.  There is currently
-> > > > a comment explaining why this barrier probably exists in all cases. The
-> > > > logic is based on ensuring that the barrier exists on every control flow
-> > > > path through the scheduler.  It also relies on mmgrab() and mmdrop() being
-> > > > full barriers.
+> > > > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > > > index 54e5b89aad67..1598aca375c9 100644
+> > > > --- a/kernel/kprobes.c
+> > > > +++ b/kernel/kprobes.c
+> > > > @@ -1914,6 +1914,9 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+> > > >  		BUG_ON(1);
+> > > >  	}
+> > > >  
+> > > > +	/* Set the instruction pointer to the correct address */
+> > > > +	instruction_pointer_set(regs, (unsigned long)correct_ret_addr);
+> > > > +
+> > > >  	/* Run them. */
+> > > >  	first = current->kretprobe_instances.first;
+> > > >  	while (first) {
 > > > > 
-> > > > mmgrab() and mmdrop() would be better if they were not full barriers.  As a
-> > > > trivial optimization, mmgrab() could use a relaxed atomic and mmdrop()
-> > > > could use a release on architectures that have these operations.
 > > > 
-> > > I'm not against the idea, I've looked at something similar before (not
-> > > for mmdrop but a different primitive). Also my lazy tlb shootdown series 
-> > > could possibly take advantage of this, I might cherry pick it and test 
-> > > performance :)
+> > > Hi Masami,
 > > > 
-> > > I don't think it belongs in this series though. Should go together with
-> > > something that takes advantage of it.
+> > > I know I suggested this patch, but I believe it would only be useful in
+> > > combination with the use of UNWIND_HINT_REGS in SAVE_REGS_STRING.  But I
+> > > think that would be tricky to pull off correctly.  Instead, we have
+> > > UNWIND_HINT_FUNC, which is working fine.
+> > > 
+> > > So I'd suggest dropping this patch, as the unwinder isn't actually
+> > > reading regs->ip after all.
 > > 
-> > I’m going to see if I can get hazard pointers into shape quickly.
-
-One textbook C implementation is in perfbook CodeSamples/defer/hazptr.[hc]
-git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/perfbook.git
-
-A production-tested C++ implementation is in the folly library:
-
-https://github.com/facebook/folly/blob/master/folly/synchronization/Hazptr.h
-
-However, the hazard-pointers get-a-reference operation requires a full
-barrier.  There are ways to optimize this away in some special cases,
-one of which is used in the folly-library hash-map code.
-
-> Here it is.  Not even boot tested!
+> > ... and I guess this means patches 6-8 are no longer necessary.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=sched/lazymm&id=ecc3992c36cb88087df9c537e2326efb51c95e31
-> 
-> Nick, I think you can accomplish much the same thing as your patch by:
-> 
-> #define for_each_possible_lazymm_cpu while (false)
-> 
-> although a more clever definition might be even more performant.
-> 
-> I would appreciate everyone's thoughts as to whether this scheme is sane.
-> 
-> Paul, I'm adding you for two reasons.  First, you seem to enjoy bizarre locking schemes.  Secondly, because maybe RCU could actually work here.  The basic idea is that we want to keep an mm_struct from being freed at an inopportune time.  The problem with naively using RCU is that each CPU can use one single mm_struct while in an idle extended quiescent state (but not a user extended quiescent state).  So rcu_read_lock() is right out.  If RCU could understand this concept, then maybe it could help us, but this seems a bit out of scope for RCU.
+> OK, I also confirmed that dropping those patche does not make any change
+> on the stacktrace. 
+> Let me update the series without those. 
 
-OK, I should look at your patch, but that will be after morning meetings.
+Oops, Andrii, can you also test the kernel without this patch?
+(you don't need to drop patch 6-8) 
+This changes the kretprobe to pass the return address via regs->ip to handler.
+Dynamic-event doesn't use it, but I'm not sure bcc is using it or not.
 
-On RCU and idle, much of the idle code now allows rcu_read_lock() to be
-directly, thanks to Peter's recent work.  Any sort of interrupt or NMI
-from idle can also use rcu_read_lock(), including the IPIs that are now
-done directly from idle.  RCU_NONIDLE() makes RCU pay attention to the
-code supplied as its sole argument.
+Thank you,
 
-Or is your patch really having the CPU expect a mm_struct to stick around
-across the full idle sojourn, and without the assistance of mmgrab()
-and mmdrop()?
+> 
+> Thank you,
+> 
+> > 
+> > -- 
+> > Josh
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
 
-Anyway, off to meetings...  Hope this helps in the meantime.
 
-							Thanx, Paul
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
