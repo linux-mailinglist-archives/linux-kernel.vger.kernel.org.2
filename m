@@ -2,114 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B6F3ABAC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC5A3ABAC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbhFQRpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
+        id S232547AbhFQRqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFQRpC (ORCPT
+        with ESMTP id S232525AbhFQRpy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:45:02 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2496BC061574;
-        Thu, 17 Jun 2021 10:42:54 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id l1so11237660ejb.6;
-        Thu, 17 Jun 2021 10:42:54 -0700 (PDT)
+        Thu, 17 Jun 2021 13:45:54 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BBBC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:43:44 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id i94so7704190wri.4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:43:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7MHD7EiSpY3e0ERtwOHvIB+KaRhM2Um7f/06TGmH7Gg=;
-        b=ISiz3+CBB3cS1Fjzms1hdR9IOCuWXdV/3OZsAmuGA0u24iyp1VIHRdmDtsT0ZCTDEr
-         6xRvIJTzHq19O7CIonVqvqT5KoNboIJFFofrV9S1qL6xWomF76y1mqpy96Ayf09PDu8Y
-         1F/iId/lDj1MLIEAdk7KjCspqeheaGab+uxzjCKK+tRfDzZi73Scn+qjPBfxHRJniFVl
-         Mh3LLnvEYE8eiKmUVob2T5c0J84jhYChrB+V3br1n5fVFc1nhVxZlUQPGbiF/zQqroVs
-         iwuUT0RO25hRq1026WPDY/sFUqqW89zfqf7etBnfS8mRpohw9uv5ffFsayrcCTX+EUU4
-         UFAg==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lwAc1yJsU7uwawBw0jrP48508Sb+GisUBuf8mUw0CSQ=;
+        b=GHO/YGfyYyqABj7MtIl2Wu+QGpEAaK9gSOyMEBLNUmZuKIoPtNcNpaudIKwcLpYNwq
+         v9yErUT7CVuhhu7WS69FNtnv6SfOcLPFdEPbOuwWHMX3IkFPjoPqlR+nw3M+e8XdPImB
+         fyvTLKdD9PlteoBOzvL3i7bIoZXW972HX8tfE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7MHD7EiSpY3e0ERtwOHvIB+KaRhM2Um7f/06TGmH7Gg=;
-        b=kHEQP+8i58cnd2kmN3dFcUUxo9uPyn/OMAUWUkJcKdCARAiDlg35krq9jn4Zj5haUL
-         HQsmzTgTDCp1AuWosOvmvpP/0bx28yqL34mjJ8M7OUS4SklwFEzKiN1RGL5C0EdcrOKH
-         aFyoooRdANdisBNGT6ZuVIV1FxD+q1aQj1z+7FpiBh7uCvXr+seLLAGkmVJ0mBqiegw4
-         JE53Fxo2kuqcgV2I5pykiRW54WZHAjOMRiJsE0oTlyBdfroBTsRnnRlA7gE7BTFtDE1h
-         HMUdiEDuqpwoK44XrppKQPqrgnRJsWUVTriX3clRyvvwuudyqOFRKyc/+3DNFn4UhkmX
-         vSwA==
-X-Gm-Message-State: AOAM533M2YRA+Di00pQtKOrL1KayuUGzUf767iSyehXlOd/8tCf5KUUv
-        kymQrJ2bdYQvva32WnQ3CdU=
-X-Google-Smtp-Source: ABdhPJwWNLIULh5OpxfozVq/mF6ozU+8u/EdBodGq5HallWZ8jCIVaPdxjyiv0YLWeBZz65OeLTGJQ==
-X-Received: by 2002:a17:907:3f08:: with SMTP id hq8mr6490774ejc.150.1623951772740;
-        Thu, 17 Jun 2021 10:42:52 -0700 (PDT)
-Received: from localhost ([185.246.22.209])
-        by smtp.gmail.com with ESMTPSA id b10sm4776610edf.77.2021.06.17.10.42.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=lwAc1yJsU7uwawBw0jrP48508Sb+GisUBuf8mUw0CSQ=;
+        b=Oqs2Dkf8A7GUtWkV3EMMrt0tBF6/RXhWcAT7eysmusc8WeLeUQI30cvSV6ajq2vRLm
+         8PtMhJsxSBuKfNz9FwPma41PDLNWqA7sJQ5bVnFpWNFtScQuOKh8rhv9DALN9jz0Vw71
+         TwhdlrxMCRNfbGEbH04zJbvC6oKl3ECUBuX3c/+4HGj98T5eeK3/3hePUs8zYTJDW5aN
+         VLl5wk3Mbn8PB5QTjsoEoogvkvy/bz3uhHFO1ekR63CCuszVR5xEJm+e9alzlVPvd+Ho
+         DCnOfIRAu4Go/CwKyvRHJuGKyn7oHgLR2QKFUoEgCuktuRBTOWYIS6Q1NSNptVIrR6FG
+         w2IA==
+X-Gm-Message-State: AOAM533vTB0z1a2ybyAshmxYt2Zuf3DZdKGMfOtrkrViqs5V30Fms68L
+        s7cwzB6pLXQx7elJZOvTwSCx1g==
+X-Google-Smtp-Source: ABdhPJy8rMAYADtfeD34I2hGI8dldj1XQ3SPJhezGzk35Mij40UgqvDBe673mzz+rNw00QZ0B4G+Cg==
+X-Received: by 2002:a5d:6443:: with SMTP id d3mr7390981wrw.389.1623951823445;
+        Thu, 17 Jun 2021 10:43:43 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id z18sm3195872wmf.18.2021.06.17.10.43.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 10:42:52 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 19:42:47 +0200
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Yangbo Lu <yangbo.lu@nxp.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, mptcp@lists.linux.dev,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Rui Sousa <rui.sousa@nxp.com>,
-        Sebastien Laveze <sebastien.laveze@nxp.com>
-Subject: Re: [net-next, v3, 02/10] ptp: support ptp physical/virtual clocks
- conversion
-Message-ID: <20210617174247.GB4770@localhost>
-References: <20210615094517.48752-1-yangbo.lu@nxp.com>
- <20210615094517.48752-3-yangbo.lu@nxp.com>
+        Thu, 17 Jun 2021 10:43:42 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 19:43:40 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Yu Jiahua <yujiahua1@huawei.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] apply: use DEFINE_SPINLOCK() instead of
+ spin_lock_init().
+Message-ID: <YMuJzDxblPNkpFjH@phenom.ffwll.local>
+Mail-Followup-To: Yu Jiahua <yujiahua1@huawei.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210616031713.24959-1-yujiahua1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210615094517.48752-3-yangbo.lu@nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210616031713.24959-1-yujiahua1@huawei.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 05:45:09PM +0800, Yangbo Lu wrote:
+On Tue, Jun 15, 2021 at 07:17:13PM -0800, Yu Jiahua wrote:
+> From: Jiahua Yu <yujiahua1@huawei.com>
+> 
+> spinlock can be initialized automatically with DEFINE_SPINLOCK()
+> rather than explicitly calling spin_lock_init().
+> 
+> Signed-off-by: Jiahua Yu <yujiahua1@huawei.com>
 
-> diff --git a/Documentation/ABI/testing/sysfs-ptp b/Documentation/ABI/testing/sysfs-ptp
-> index 2363ad810ddb..2ef11b775f47 100644
-> --- a/Documentation/ABI/testing/sysfs-ptp
-> +++ b/Documentation/ABI/testing/sysfs-ptp
-> @@ -61,6 +61,19 @@ Description:
->  		This file contains the number of programmable pins
->  		offered by the PTP hardware clock.
+Stuffed into drm-misc-next. The subject looked a bit strange, so I fixed
+that up.
+-Daniel
+
+> ---
+>  drivers/video/fbdev/omap2/omapfb/dss/apply.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/apply.c b/drivers/video/fbdev/omap2/omapfb/dss/apply.c
+> index c71021091828..acca991c7540 100644
+> --- a/drivers/video/fbdev/omap2/omapfb/dss/apply.c
+> +++ b/drivers/video/fbdev/omap2/omapfb/dss/apply.c
+> @@ -108,7 +108,7 @@ static struct {
+>  } dss_data;
 >  
-> +What:		/sys/class/ptp/ptpN/n_vclocks
-> +Date:		May 2021
-> +Contact:	Yangbo Lu <yangbo.lu@nxp.com>
-> +Description:
-> +		This file contains the ptp virtual clocks number in use,
-> +		based on current ptp physical clock. In default, the
-> +		value is 0 meaning only ptp physical clock is in use.
-> +		Setting the value can create corresponding number of ptp
-> +		virtual clocks to use. But current ptp physical clock is
-> +		guaranteed to stay free running. Setting the value back
-> +		to 0 can delete ptp virtual clocks and back use ptp
-> +		physical clock again.
+>  /* protects dss_data */
+> -static spinlock_t data_lock;
+> +static DEFINE_SPINLOCK(data_lock);
+>  /* lock for blocking functions */
+>  static DEFINE_MUTEX(apply_lock);
+>  static DECLARE_COMPLETION(extra_updated_completion);
+> @@ -131,8 +131,6 @@ static void apply_init_priv(void)
+>  	struct mgr_priv_data *mp;
+>  	int i;
+>  
+> -	spin_lock_init(&data_lock);
+> -
+>  	for (i = 0; i < num_ovls; ++i) {
+>  		struct ovl_priv_data *op;
+>  
+> -- 
+> 2.17.1
+> 
 
-The native speaker in me suggests:
-
-		This file contains the number of virtual PTP clocks in
-		use.  By default, the value is 0 meaning that only the
-		physical clock is in use.  Setting the value creates
-		the corresponding number of virtual clocks and causes
-		the physical clock to become free running.  Setting the
-		value back to 0 deletes the virtual clocks and
-		switches the physical clock back to normal, adjustable
-		operation.
-
-Thanks,
-Richard
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
