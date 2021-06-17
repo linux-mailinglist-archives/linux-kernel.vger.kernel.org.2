@@ -2,129 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922BE3AA8A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D228A3AA8A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbhFQBfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 21:35:14 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:14983 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231953AbhFQBfN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 21:35:13 -0400
-Received: from epcas3p4.samsung.com (unknown [182.195.41.22])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210617013305epoutp03f8f4faeabfe354c9be5f98e71b79cd77~JOpytgFwC1028310283epoutp03O
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 01:33:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210617013305epoutp03f8f4faeabfe354c9be5f98e71b79cd77~JOpytgFwC1028310283epoutp03O
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1623893585;
-        bh=D1qpqMB+OkXfuoIE8lfCNhPZsTDS/KWRKBsTuRhnzk4=;
-        h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
-        b=i28FkUl/aDW/UCLtvJrqynJLATyhM98s3OtUUf/QuTyASSRMHgoo+eQbIpzVTFD3W
-         jan8vR2+WrfmuDB/0SXtdFUAjaoJzzAnv7aHYnpwJ3xNuK1DLoVTf9mIepYYgac9QP
-         ofaq+c48DOE5jC1x7ze0YRg8fvGlMlg4Erbi5m58=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas3p1.samsung.com (KnoxPortal) with ESMTP id
-        20210617013304epcas3p17a347b736bc80bc03e0350435c8944c2~JOpx7PZ6P1174411744epcas3p1O;
-        Thu, 17 Jun 2021 01:33:04 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp4.localdomain
-        (Postfix) with ESMTP id 4G54Lm2bBjz4x9QM; Thu, 17 Jun 2021 01:33:04 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH] scsi: ufs: Add indent for code alignment
-Reply-To: keosung.park@samsung.com
-Sender: Keoseong Park <keosung.park@samsung.com>
-From:   Keoseong Park <keosung.park@samsung.com>
-To:     Joe Perches <joe@perches.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "satyat@google.com" <satyat@google.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <e0950e65c5e7f8f0db132cfd22bdd24ee27c63e7.camel@perches.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <2038148563.21623893584364.JavaMail.epsvc@epcpadp4>
-Date:   Thu, 17 Jun 2021 10:28:39 +0900
-X-CMS-MailID: 20210617012839epcms2p16d271ab83109fd286939bbb48ebba30f
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210610040731epcms2p7533bc62d13b82a0e86590f30ac4b6c30
-References: <e0950e65c5e7f8f0db132cfd22bdd24ee27c63e7.camel@perches.com>
-        <1891546521.01623299401994.JavaMail.epsvc@epcpadp3>
-        <CGME20210610040731epcms2p7533bc62d13b82a0e86590f30ac4b6c30@epcms2p1>
+        id S232136AbhFQBfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 21:35:02 -0400
+Received: from mail-bn8nam12on2070.outbound.protection.outlook.com ([40.107.237.70]:22598
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231942AbhFQBfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 21:35:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dbVaTCpA+N02I05JJ5JF5/Fx25sQFJlNWu2YSpTrGS6C9qg2BA7l5dSREV6KvPeP740Rzs0jTj/GbOGpw+pZSjA3GHMXfLb9szKzQi6PdNMTJsOZnYB53HQLqCB5V/E4YqPEXczO50OQqAbVGJJOmA1+iV7iwAJg/3tKiUty7v6Smn/fQGF4Mk0kTcVZD1DWIwFGS6jZx4QlHDthHESbWDIJDSxOeyJQnLDLV1PbfYGSPEQaJO0YO9WgqwOUTXhf3P4J3dYRIxhwzhjXWWiXhrQKEb9r/l40f99tw4A9fXt7pxyH/2TIXLu47gBAmNzpF1PZCLUydkUFDO4qJc6nNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YlKxOOj/AlWvHMoZ8DOO/LDTIY/Jx4h3ym5obh4MHLc=;
+ b=TydQBzJQAGX8QBtecXbtiJb49nVRx7N3gN4MxNJyhcL1gKbS70hqslDagn4dfuHp26IS2JuXP1H+aKy2mY67hJzBKMwpTrhnBX1Dfz1icsHdrXrDajrQ/AtpeZt9TF00rPNJ5YendRMIKcKn8vEk2if2n7SqoFL+Axc4gxQS6OkO/RubJJlFgWDSg9wOiIyhFnjq6prk0oKlFe4/P2xhOVCG4+1Gii4GDOXfMsF7PeD7RQzWCHklw4oTHhKXyRYOV+hvjd5klAkXU0qblU+pmN1g0r+YQck+LrCfcIgzABNrv1uc0ENqw/z4dYjXham0LKi0/7RGDA6oHCVmcjrNwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YlKxOOj/AlWvHMoZ8DOO/LDTIY/Jx4h3ym5obh4MHLc=;
+ b=JOgN0vY5ibhL6QVJO1g5UsFCe/CHS6lJM1oMfc2H23e5paDDVPEt0ie4khKXbjBRv7DdMx8zB2LryRyHxbzJZQefmMkwN8WsTNtruHiDBa5ZvHvDGXy+Gu8fyFDS6HfR7baNA4CSctB2BGMnoITC86YPJEG2eJGu7oxeFGvH6bxk/xnJh8T1I67CX5CQ9zllkeR6Szgm5PcsQ/e8/B4KGpBvneUVAWAX0NbYTmCGADkTXy0dV+6FAzb8ZBrfIPiD0R3nO/qbNUg7ksNG1oeojSYDk6pzhZ2r8k6NjbAwclfqGpFL1GJBEdsISD+tfk+jW3NbjA5rQvbgyymCZXuEmg==
+Received: from MWHPR12CA0069.namprd12.prod.outlook.com (2603:10b6:300:103::31)
+ by DM6PR12MB3355.namprd12.prod.outlook.com (2603:10b6:5:115::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16; Thu, 17 Jun
+ 2021 01:32:52 +0000
+Received: from CO1NAM11FT009.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:103:cafe::4) by MWHPR12CA0069.outlook.office365.com
+ (2603:10b6:300:103::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend
+ Transport; Thu, 17 Jun 2021 01:32:52 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT009.mail.protection.outlook.com (10.13.175.61) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4242.16 via Frontend Transport; Thu, 17 Jun 2021 01:32:52 +0000
+Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Jun
+ 2021 01:32:49 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <rcampbell@nvidia.com>,
+        <willy@infradead.org>, <linux-doc@vger.kernel.org>,
+        <nouveau@lists.freedesktop.org>, <hughd@google.com>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <hch@infradead.org>, <peterx@redhat.com>, <shakeelb@google.com>,
+        <bskeggs@redhat.com>, <jgg@nvidia.com>, <jhubbard@nvidia.com>
+Subject: Re: [PATCH v11 00/10] Add support for SVM atomics in Nouveau
+Date:   Thu, 17 Jun 2021 11:32:46 +1000
+Message-ID: <2551705.0ki4MfuhJX@nvdebian>
+In-Reply-To: <20210616163529.7de2f6e24d395c4ef7a367b6@linux-foundation.org>
+References: <20210616105937.23201-1-apopple@nvidia.com> <20210616163529.7de2f6e24d395c4ef7a367b6@linux-foundation.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 77e5d6e3-4aa9-4502-0660-08d9312fd320
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3355:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB33557DFC4C046DE70127C91EDF0E9@DM6PR12MB3355.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xsS9q+2gn1MR585nd5i7vlqx8Ayu4mqD9z29YOlA7DDk7mliiY/obV5ZBE7W6BCKw5Z6WNJWfqc42IKUa2h9lgINgxWU8MkFdWVss9y3Vz1RREJVF3Olxo7S29BrT9VzzY6e8DhaI8kREx9N6h7r92qPdmmUzu1pDWgba0spwRe+bObOwdb+VAFwxO7cOe9IfdJSlCN9i1Bu2kz8QXy1dVMGn7RcX3QIVmW6A8YuLb6Mwrs8N4EhKf/wuX3L1jPRinXWjd0Em4X8T3hBsfB5DZbkJvc7CpD9GBxym+C/EikG/Jun34r19gvJdaisVUidWv+LUD+sdlPmdHytysNLNn1SvQ0FJkQR/WEKWiA/OiWRa0szDmGQ2lPmW11SZG3wmbHUx7yVNB6BY8CxsKghucSVCu2wM3iPIM4CA0EfZAPQLYkW+OQpLuYYz4nYNlkw1qCT/DxaWANtJ58QK/PrKXFzQ5ZfUEia54ctrb3LFXMlkxYq2jYi+1ix950tGn765CnR9ZMYdFig0mbWWzym5tlKWTpMN4bvqLNegJgoYHN+vQoqJQWkLmlahQ09oXYVAj/vzk1W1xpUguONkJ07auysDC4TePQiWf45VlmXwdcR1T+PlFxlLqONeXNpj1NCTC6pKXIA/einAwqYCfqhrCD0B8VQ8Bp7u9w3omjH7PH+hYa2ujUMpLZzFQ3APRiU
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(39860400002)(346002)(46966006)(36840700001)(82310400003)(86362001)(356005)(70586007)(36906005)(9576002)(2906002)(4326008)(70206006)(107886003)(9686003)(8936002)(83380400001)(7416002)(7636003)(6666004)(26005)(8676002)(82740400003)(4744005)(478600001)(316002)(6916009)(33716001)(54906003)(16526019)(47076005)(5660300002)(426003)(186003)(336012)(36860700001)(39026012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 01:32:52.3821
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77e5d6e3-4aa9-4502-0660-08d9312fd320
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT009.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3355
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On Thu, 2021-06-10 at 13:07 +0900, Keoseong Park wrote:
->> Add indentation to return statement.
->[]
->> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->[]
->> @@ -903,7 +903,7 @@ static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
->>  	else
->>  		return false;
->>  #else
->> -return true;
->> +	return true;
->>  #endif
->>  }
->>  
->
->Perhaps a little refactoring instead:
->---
-> drivers/scsi/ufs/ufshcd.h | 12 ++++--------
-> 1 file changed, 4 insertions(+), 8 deletions(-)
->
->diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->index c98d540ac044d..ed89839476b3b 100644
->--- a/drivers/scsi/ufs/ufshcd.h
->+++ b/drivers/scsi/ufs/ufshcd.h
->@@ -894,15 +894,11 @@ static inline bool ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
-> static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
-> {
-> /* DWC UFS Core has the Interrupt aggregation feature but is not detectable*/
->-#ifndef CONFIG_SCSI_UFS_DWC
->-	if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
->-	    !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
->+	if (IS_ENABLED(CONFIG_SCSI_UFS_DWC))
-> 		return true;
->-	else
->-		return false;
->-#else
->-return true;
->-#endif
->+
->+	return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
->+		!(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
-> }
+On Thursday, 17 June 2021 9:35:29 AM AEST Andrew Morton wrote:
+> On Wed, 16 Jun 2021 20:59:27 +1000 Alistair Popple <apopple@nvidia.com> 
+wrote:
 > 
-> static inline bool ufshcd_can_aggressive_pc(struct ufs_hba *hba)
->
+> > This is my series to add support for SVM atomics in Nouveau
+> 
+> Can we please have a nice [0/n] overview for this patchset?
+> 
 
-Hello Joe,
-Thanks for your advice.
-As you mentioned, refactoring looks good.
-However, since the content does not match the title, can I submit a patch with a new title?
+Sorry, I forgot to include that this time. Please see the update I just 
+posted. Let me know if you need me to resend the whole series with the updated 
+cover letter. Thanks.
 
-Best Regards,
-Keoseong
+ - Alistair
+
+
+
