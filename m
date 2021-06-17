@@ -2,81 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8793ABACA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140183ABACC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbhFQRqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:46:40 -0400
-Received: from mout.gmx.net ([212.227.15.19]:45679 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230523AbhFQRqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:46:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1623951861;
-        bh=p7yOt8Sqqwg0+64uhl7jjD3EXyo9D1HBcssfQqYQmQ0=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=fUdcjcjInBNGszsPGx2vM+W7ZQ4HnqdSALwJUCE1bW1RucH6ycINfiDX7tYmrx2/R
-         wM6yENoXKrcBR17tOmNhkqN+eCmnxBpk6fcv7/Qr+uYirYUuNVWZjjJLxsOqDhK29J
-         BScqaw762H9hygIR6hhzc5bpJImzaOMWI4Y/Vh2Q=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([149.172.234.120]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MwfWa-1l4jJn32j4-00y5O9; Thu, 17
- Jun 2021 19:44:21 +0200
-Subject: Re: [PATCH] serial: amba-pl011: add RS485 support
-To:     Jiri Slaby <jirislaby@kernel.org>, gregkh@linuxfoundation.org
-Cc:     linux@armlinux.org.uk, linux-serial@vger.kernel.org,
+        id S232624AbhFQRqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232590AbhFQRqo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 13:46:44 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C58C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:44:36 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id h11-20020a05600c350bb02901b59c28e8b4so6949324wmq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:44:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0gu9khqafYbRngyKiTFSC+bYHLyhKbFlrZ0UOe7U7qE=;
+        b=TtQWcNMpgBza9QW4TQTgS7qaug29DGNm1h5of6PDbO5NKu/566NDNLdiXFPjsk/tPn
+         5MQuis9g9zgNew6kPlb2UPtbpgxrY/g+J+IygEQrlm/xIfJCIS9VtJivuDmk2/k1kvtr
+         T6jJmg1SmjBCk9i6QpHnkerzC5uA+d5z+NOdw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=0gu9khqafYbRngyKiTFSC+bYHLyhKbFlrZ0UOe7U7qE=;
+        b=KLguKaM/OSZWABJvdYBBY8nb6HUrrn3xCLFkDRac1ux4rzSzHeOQaV55I0QWeeM2EW
+         O6PhmpWXjGAYvk6lzR68mrxOYgM1D/Eu+g5v9fRZDC1mYPj0Cm475CNtXesJOgGEUVbg
+         d2rB2/L++tBCq46Ial4Q8F/wn7EyCH9h5PBCF//fyhN9/uxuI+SCVfDpgmixp2/+1b4s
+         2vk8mKcAD9Omx3pwpYEULte4HMzivj1y8TAUcXiGIrDiuUDOTSLKKDBWfjOWmvE8EglU
+         /4etR/1bq3k8ioCGz8djwnM4U6G64HB7VmrAZQMn6bIZuNxiJg/ReP3v/hzpKi9c0LNg
+         auAw==
+X-Gm-Message-State: AOAM533GGKloGZL4P71ZQPHesv+yQU0/KYodZDzEe7O/kJAaUDhval6K
+        yftDYQ1VoRahniHCqmVsZHDbwg==
+X-Google-Smtp-Source: ABdhPJyTvxlyO/vdBn2yGT4wglYu6U9uOEjCwb9SQTK3XbdJmVJMN8xZehNwz7qHud6fuzXVGMfreA==
+X-Received: by 2002:a7b:c110:: with SMTP id w16mr6685991wmi.4.1623951874860;
+        Thu, 17 Jun 2021 10:44:34 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t9sm5506437wmq.14.2021.06.17.10.44.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 10:44:34 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 19:44:32 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-References: <20210610135004.7585-1-LinoSanfilippo@gmx.de>
- <5f00ff43-9287-4027-7d80-474da957703c@kernel.org>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <7c0ac56d-58da-5e8a-b6be-44bafb183443@gmx.de>
-Date:   Thu, 17 Jun 2021 19:44:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH] drm/i915/gt: Fix duplicate included intel_region_lmem.h
+Message-ID: <YMuKAHhaYOaLP8JL@phenom.ffwll.local>
+Mail-Followup-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, airlied@linux.ie,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <1623823318-6759-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <5f00ff43-9287-4027-7d80-474da957703c@kernel.org>
-Content-Type: text/plain; charset=iso-8859-2
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Jh2NaU0qBdY0oHOTZ9WDd6NQuapDUwCMl8vXx7fGOIXDeDQF0rq
- ZU5J8Eu2cn31J/RlaguLdKG+oDDiSz+SKeRAG91C8jw/PadL6O0uFox1B6wVal/nDHwbLWQ
- a9hrrKQWeKya7kMRZ+uxIJWLqetztQMQ6lb9H8kmo/e4SmomSjI3GBOrFSdLUvdwGtCg0ps
- i1MBTThGM0rmCLxzCFTew==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XxZZ6/QTf7Q=:VkhEKu0XfIC0jNxdeQ3/Vi
- lmElive9Cbl1xYCRlOJhK55b4jdqAIUVwmHNsLucsdxKZwV7QWiBbbcuerLYJntaDbXOEKQpD
- WOgVdlCYU4yX1xInBGfG1hxftu0jBLAV4dreKPWL8GAIPnb+RNSah6v0+AoL7uumZDwG5yNoC
- yKXl7caqguB3/rg+B+3gWtgVP6s4ntPMmUaSqh2BY3kQdr1vHHdpsJMN7XuxJGOkD72zmNpi2
- ihS9tNIGhpPoBHzEsusFbMiEE6U/ZvtKazYXMOu4ZUq3o0oPb9PzgogfADKXCDIXUDs7zUxxs
- rzbFPk7kmOhNNBOp6Z1JTfoCjM/wnwSVzPNkEknMqGmT9+1XQT5mLo6IvOWcCV/3RxUjBSrM7
- 9fz2U6BtvTAINormfUoAdZmN2ssQe+TPgj0nWJ97HSLR843baTgtFVCLQiYy96dRq13LmwYZu
- VbTMIZm99XbMzqSgwLhbPAq/GdmvevtbGBrts1IQPNAaAKxo87bB7j++7WnaNkrHmJuF+Cs+1
- 6+7MvPzhsgxnlbCxc2AHvOZ74y8NLnRWjnFEVg8bUVZCydqGIDoeHKyhKexDbjovQdy0QLV5d
- ka2BsjlAo4CwLZfagv2AMUJQIfDCPvfW4YKG3BBnkS10Klxt+RKbq1bChozB5lwEZxM0MYbzE
- C6cl3x8ggBCbDVzoD8oq1aWXNqBpw0j9zZw4fmR8VrXLOGeHgtIO+6clxD6w7Xuectn+auIz0
- nxw1HsCCNqt7NxXHLqvL2+GXsjV4IvcgoQZx+XsRMYUgsWrk5a5/nzzGcZ9ecU48+fxOBsxYl
- dcchrKU4csaIFMblT65v85WzmlpK0a6ZjuZGEOquhLym0v2BDDuyEmey+Fvm6DvDQhSGm6n0g
- PuxnUOvcH0k5YUcUDvEOdo1Bw51MzEZ6xtHGPJ1TjxFlP+skL0TwoH7+ZdTqSSFfMWZ/CwgG8
- gEmoVSMLZ5rlbiYl1gIpZ7fniPCMm3TQTHd6Hruc+mHTs3bzLhGgmrprNLdD0TR3Bfs92C2Rz
- Rx7GHnTxNLK0g5QcBJ23w4q7uyzIQkWHBC6QJqHLBwCmFxGfB/FNbFLKVs9h4swRzXLfZk8R2
- BEWY7DgdM7WYGUQFBWOLeIULPiQAzCbLM6IqBwNW3B0G7qbViky0vmUXw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1623823318-6759-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 16, 2021 at 02:01:58PM +0800, Jiapeng Chong wrote:
+> Clean up the following includecheck warning:
+> 
+> ./drivers/gpu/drm/i915/gt/intel_region_lmem.c: intel_region_lmem.h is
+> included more than once.
+> 
+> No functional change.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Hi,
+Already merged another one of these:
 
-On 16.06.21 at 08:18, Jiri Slaby wrote:
-=A0=A0=A0=A0=A0=A0=A0 mdelay(port->rs485.delay_rts_before_send);
->
-> This is up to 1 second delay with interrupts disabled. Definitely not ni=
-ce. 8250 clamps this to 100 ms at least, why did you choose 1000 ms?
->
+commit 6796c772850574ec0a9adc977e9889606b23d0f4 (HEAD -> drm-intel-gt-next, drm-intel/drm-intel-gt-next)
+Author: Wan Jiabing <wanjiabing@vivo.com>
+Date:   Tue Jun 15 19:35:20 2021 +0800
 
-AFAICS the 8250 driver does not clamp values read from the device tree pro=
-perty "rs485-rts-delay"
-(set by uart_get_rs485_mode()). Is this on purpose?
+    drm/i915: Remove duplicate include of intel_region_lmem.h
 
-Regards,
-Lino
+Thanks anyway.
+
+Cheers, Daniel
+
+> ---
+>  drivers/gpu/drm/i915/gt/intel_region_lmem.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/gt/intel_region_lmem.c b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
+> index f7366b0..aa3cfca 100644
+> --- a/drivers/gpu/drm/i915/gt/intel_region_lmem.c
+> +++ b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
+> @@ -5,7 +5,6 @@
+>  
+>  #include "i915_drv.h"
+>  #include "intel_memory_region.h"
+> -#include "intel_region_lmem.h"
+>  #include "intel_region_ttm.h"
+>  #include "gem/i915_gem_lmem.h"
+>  #include "gem/i915_gem_region.h"
+> -- 
+> 1.8.3.1
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
