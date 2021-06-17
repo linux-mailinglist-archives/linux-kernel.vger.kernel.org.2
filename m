@@ -2,248 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07CB3ABE30
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 23:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0023ABE33
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 23:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhFQVeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 17:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45702 "EHLO
+        id S231589AbhFQVfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 17:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhFQVeH (ORCPT
+        with ESMTP id S229816AbhFQVfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 17:34:07 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461EEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 14:31:58 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id x73so6040112pfc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 14:31:58 -0700 (PDT)
+        Thu, 17 Jun 2021 17:35:14 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E4EC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 14:33:04 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id c15so3540569pls.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 14:33:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1ccgujzKU0wd1rTQD6F7407N4rqCkqhTNutbrnYFWtg=;
-        b=WCNyRPMVg2wLmtyRu4Q86ZkFVzZRNALeN5pyVCm8G4dypcQJ3TGnleGQmkEiA4JeyU
-         jesAcv+AuM4Dscak2YZck5c5jelmQbWSHYPSR0hJz49njhPn/M2RtpW9/OMu2gkCdCYJ
-         maHwqM3cfk4m9XRhTBu9YgHwSVK7ATU6T2WV7H5SF7anvyjRD5qFfik23D1rhOVnMNt6
-         YvW8WIasWseTwDihmlQjbL5GyeiDIF8R3P/V2fm9Z2UxWklxNVzbrM1iuPNaqYzUgYYG
-         M9YjNwwLGp0Uzz8c71T/Xz6EEcWaYGEKa58ynqKGUwoyfIihWRWszWsx6WizDVcgVh6w
-         ekQw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fS1IJ6TzwO6C+OzSRzcjdeJWlMUD6y1F2r8zjTclHRs=;
+        b=jNVuog+4ffatfbk+9lGpyumsZBu+LAjqmSc9EpVk91rzyDnwBBGfOVIkhWfUdAGk0Z
+         dQgPmqzpHQnzXIW7xBFIOJF8NkIT+e+r5VfM3+vfbZr/wZqAJL06aJhwldhuk9IoxOJI
+         2GdW6WIIWznYq7o8TqUsBQFQYYpSPYoHxeV3k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1ccgujzKU0wd1rTQD6F7407N4rqCkqhTNutbrnYFWtg=;
-        b=rMPcoddCCS0bzLQt2A+38oIDTSzT2eyOkOa5octSXWGiZ15znSQT9RWF8PiC2olsjn
-         Pw/MsMQf4eE43OH3nr8GFMRNRlfaInqHAk/jcwTKQDbkiKoikiwr79P6Cehbp9N45PbX
-         MUlkf3hCPflWGPI7nLJUy0sd2OZga08e6sETxaj802//KLdLQM4Qm+o9JAYyjM/+IVHN
-         LzMnfTWJDa0Ojq1bRTsuunLkem8FMaIY+ZATryrb9+H9kcNI6bdOtrz80WrEWYWckX25
-         F48suuN9REPWgu3uvC6T+7A+Lz5OMondCGZ5+MwiQb/6MMK5zARUSCq2LObsVLPNFtcQ
-         ZOcg==
-X-Gm-Message-State: AOAM5334eOeNWDTaYrJdF6sSqgQhpO8AjRHrtL3i+JO7jFs0XNMH/C+4
-        ZXZQeBL85d3NSVkYQ8Q/jnKPyQ==
-X-Google-Smtp-Source: ABdhPJzOrEoYf/jCUQCsNh5XyhYT9KkBS5CH+qyULEC4ubHHawqvFVVl7uCnL4PzJIRqcKKlJ3ly7Q==
-X-Received: by 2002:a63:d452:: with SMTP id i18mr6909316pgj.0.1623965517755;
-        Thu, 17 Jun 2021 14:31:57 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id y190sm6179714pfc.85.2021.06.17.14.31.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fS1IJ6TzwO6C+OzSRzcjdeJWlMUD6y1F2r8zjTclHRs=;
+        b=MxVsuDoSF+IxcxO8S0hbIEpGWqBS6t/WuObsgrPeEMDCc9XkyAgUeTsC3hdVBbi5s5
+         aCHMSjdfmfJXBrcu49YPbXhn9VSSD2MHfH1fYqmUHfunwgVaQJlvD2J8CC3sr7zEfDEj
+         89L6ck7ZpYmdE+hv0YiKhWrkXh+6/ViriIkPD6bDzKF2mdUG8wfAb/1QgWYcjQdbCQn5
+         XcL7gYulAb3KmPgb1LBVIWIwIKxFBNldpq5sC3CnBGKUHLTT8uAwU50eLuSc9LW4g4de
+         C1lTA+sxYWX34dvsC9GcMFyEXhk6XFlqm/ZS0upPumuktoMKIEZZ4POOfbHA0AML/o2a
+         V17Q==
+X-Gm-Message-State: AOAM532y2ibi8IobEScb9FqRLoi0EgRaY17HlvJ43bMawVJ3GQIAsOC/
+        pJUuP5Uj0GSoeZJWCjjfMp3j6Q==
+X-Google-Smtp-Source: ABdhPJxbWQKZLjs+rw64HWqBE7ko7yyXGjKQE49Pupm/Cr9/rCzk+XZ1xIl4rS1QaviH3cca3qmeRg==
+X-Received: by 2002:a17:90b:1188:: with SMTP id gk8mr7335611pjb.138.1623965584305;
+        Thu, 17 Jun 2021 14:33:04 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j3sm6070951pfe.98.2021.06.17.14.33.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 14:31:56 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 15:31:54 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com, julien.massot@iot.bzh
-Subject: Re: [PATCH 3/4] rpmsg: char: Introduce the "rpmsg-raw" channel
-Message-ID: <20210617213154.GA790564@p14s>
-References: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
- <20210607173032.30133-4-arnaud.pouliquen@foss.st.com>
- <20210615200102.GE604521@p14s>
- <b55cd4e5-fb9d-a0ab-03a9-3a771898db04@foss.st.com>
+        Thu, 17 Jun 2021 14:33:03 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jani Nikula <jani.nikula@intel.com>
+Cc:     Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>, Imre Deak <imre.deak@intel.com>,
+        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] drm/i915/display: Do not zero past infoframes.vsc
+Date:   Thu, 17 Jun 2021 14:33:01 -0700
+Message-Id: <20210617213301.1824728-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b55cd4e5-fb9d-a0ab-03a9-3a771898db04@foss.st.com>
+Content-Type: text/plain; charset=UTF-8
+X-Patch-Hashes: v=1; h=sha256; g=159c28c0988fe3dd328148661b4874971d7d94b5; i=nJcT74OCxmrsu5fVKZDiyHDOdGmj9X8nJA8lBJQl7ec=; m=q1YJ++MeJDFcFl+Cf3nxp20mAdZ+kSexLTyJPU0JBMU=; p=LX6t+7jX+yB87pAiW5zd+P27H8PBFA92eg7Pfg2toyg=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDLv40ACgkQiXL039xtwCZo4BAAg6l 3wUzLYLJ3MHZ+4OqpqZBB9HzXAQSuTl+cIaRgktEYXmXjticTEsiuuLw2nE/0aSND5a9mT3YphdEV rcPQ9Kt6R9Ia+Std/Um8I17ooXyzeIp/2ADQZlTgAx9y+oJup9rbxQQiABcLOGZ4LZxzHxry0EsLH 0ByltM1dqT3L9ocCQQYRZf1XXtULUHkHesRRTroCIJLhPff7+SkjYHjBv6tvPYBBb3I2o8gFIEyVx 6/w+MGgxi9Tu7HEuxPquYv9a6JYyQ3aMfGhlj61tl5EHgQNh1AIS1Pp1DXprS11cT4y6FJw9PkwdJ GpmawGNzd+dYN/AMhv9vtlrgcIBxBwEWhglAJRnUgdeXRwDpgjdH+UU/0fC0w9I7A56fzZ1R1Jhsy TMo2IdjskPU+KKUso9RXlpD5HuLCX940sE33xkqJWhqzk2ATnQ0BMqNvrlm7yq1Z3YCkUlPG8Paii 65fo7E/sT7PXgMOnu3YPqyLdbQBi9D/R9sfVp776P32vhUVtxiLM7P3MPf3rA70PlMnNGhylQxByx cj5wr63IbSqHlfRd4xK8NwuqbE6+GJBWKy2Jbg29RhcQptMHc49v8L7gyIiotHSieJJ7HgfH2W2MN 8/zm5lbxidhpb6TkTotHkqmVuawhIt3OLogK1248NkFEZTaISnZhWycT7mWMAelk=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 02:38:26PM +0200, Arnaud POULIQUEN wrote:
-> Hi Mathieu,
-> 
-> On 6/15/21 10:01 PM, Mathieu Poirier wrote:
-> > On Mon, Jun 07, 2021 at 07:30:31PM +0200, Arnaud Pouliquen wrote:
-> >> Allows to probe the endpoint device on a remote name service announcement,
-> >> by registering a rpmsg_driverfor the "rpmsg-raw" channel.
-> >>
-> >> With this patch the /dev/rpmsgX interface can be instantiated by the remote
-> >> firmware.
-> >>
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> >> ---
-> >>  drivers/rpmsg/rpmsg_char.c | 54 ++++++++++++++++++++++++++++++++++++--
-> >>  1 file changed, 52 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> >> index 4199ac1bee10..3b850b218eb0 100644
-> >> --- a/drivers/rpmsg/rpmsg_char.c
-> >> +++ b/drivers/rpmsg/rpmsg_char.c
-> >> @@ -25,6 +25,8 @@
-> >>  
-> >>  #include "rpmsg_char.h"
-> >>  
-> >> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
-> >> +
-> >>  static dev_t rpmsg_major;
-> >>  static struct class *rpmsg_class;
-> >>  
-> >> @@ -416,6 +418,40 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
-> >>  }
-> >>  EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
-> >>  
-> >> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
-> >> +{
-> >> +	struct rpmsg_channel_info chinfo;
-> >> +
-> >> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
-> >> +	chinfo.src = rpdev->src;
-> >> +	chinfo.dst = rpdev->dst;
-> >> +
-> >> +	return __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo, true);
-> > 
-> > I am a little puzzled here as to why we need different modes... Why can't we
-> > simply call rpmsg_chrdev_eptdev_create() and let the endpoint be created on
-> > open() and destroyed on release() as per the current implementation?
-> 
-> The main reason is the support of the NS announcement
-> a NS announcement is received from the remote processor:
-> channel name: "rpmsg-raw"
-> remote address (dst address): 0x400
-> local address (scr address) : RPMSG_ADDR_ANY
-> => no default endpoint, and not local address.
-> 
-> case 1) if we use legacy implementation ( no default endpoint)
-> => create/destroy endpoint on open/stop
-> - on first open: created endpoint is bound to scr address 0x406
-> - a first message is sent to the remote side, the address 0x406 is stored as
-> default channel dst address on remote side.
-> - on close: endpoint is closed and associated address 0x406 is free.
-> - another driver create an enpoint the address 0x406 is reserved for this new
-> endpoint.
-> - on new open:  scr address is set to next value 0x407
-> => how to inform remote processor that the address has changed?
-> => no reservation mechanism that ensure that you can reuse the same address
-> 
-> case 2) relying on use_default_ept
-> => Ensure that both side have always the same addresses to communicate.
+intel_dp_vsc_sdp_unpack() was using a memset() size (36, struct dp_sdp)
+larger than the destination (24, struct drm_dp_vsc_sdp), clobbering
+fields in struct intel_crtc_state after infoframes.vsc. Use the actual
+target size for the memset().
 
-I see the problem and your solution is adequate - I think the code simply needs
-to be moved around a little.  Here is what I suggest:
+Fixes: 1b404b7dbb10 ("drm/i915/dp: Read out DP SDPs")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/gpu/drm/i915/display/intel_dp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-1) Create the endpoint in rpmsg_chrdev_probe(), just before calling
-rpmsg_chrdev_eptdev_create().  That way changes to rpmsg_eptdev_open() can be
-kept to a minimum.  I don't think we'll be needing
-__rpmsg_chrdev_eptdev_create() anymore.
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index 5c9222283044..6cc03b9e4321 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -2868,7 +2868,7 @@ static int intel_dp_vsc_sdp_unpack(struct drm_dp_vsc_sdp *vsc,
+ 	if (size < sizeof(struct dp_sdp))
+ 		return -EINVAL;
+ 
+-	memset(vsc, 0, size);
++	memset(vsc, 0, sizeof(*vsc));
+ 
+ 	if (sdp->sdp_header.HB0 != 0)
+ 		return -EINVAL;
+-- 
+2.25.1
 
-2) We can get rid of use_default_ept by taking advantage of the fact that the
-rpmsg_char driver does not use rpmsg_device::ept.  If we create the endpoint in
-rpmsg_chrdev_probe() we know that if rpdev->ept exists, we must not create
-or destroy the endpoint in rpmsg_eptdev_open() and rpmsg_eptdev_release().
-
-3) Function rpmsg_eptdev_open() doesn't change much.  If rpdev->ept is NULL than
-an endpoint is created as the current implementation.  Otherwise we simply do:
-
-        eptdev->ept = rpdev->ept;
-
-4) Make sure the teardown path works as well.  From what I can see, it should.
-
-5) Add a __lot__ of comments.
-
-If the above all works this entire patchset should become really small.
-
-> 
-> > 
-> > I'd rather keep things simple for the refactoring and introduce new features
-> > later if need be.
-> 
-> Yes I agree with you, but here it could become a nightmare for the remote
-> processor if the Linux endpoint address is not stable.
-> 
-> Anyway we can consider this as a workaround waiting the extension of the NS
-> announcement to have a better management of the address exchange on channel
-> initialization.
-> 
-> Thanks
-> Arnaud
-> 
-> > 
-> > As I said, it may be that I don't understand the usecase.
-> > 
-> > Thanks,
-> > Mathieu
-> > 
-> >> +}
-> >> +
-> >> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
-> >> +{
-> >> +	int ret;
-> >> +
-> >> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
-> >> +	if (ret)
-> >> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
-> >> +}
-> >> +
-> >> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
-> >> +	{ .name	= RPMSG_CHAR_DEVNAME },
-> >> +	{ },
-> >> +};
-> >> +
-> >> +static struct rpmsg_driver rpmsg_chrdev_driver = {
-> >> +	.probe = rpmsg_chrdev_probe,
-> >> +	.remove = rpmsg_chrdev_remove,
-> >> +	.id_table = rpmsg_chrdev_id_table,
-> >> +	.drv = {
-> >> +		.name = "rpmsg_chrdev",
-> >> +	},
-> >> +};
-> >> +
-> >>  static int rpmsg_chrdev_init(void)
-> >>  {
-> >>  	int ret;
-> >> @@ -429,16 +465,30 @@ static int rpmsg_chrdev_init(void)
-> >>  	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
-> >>  	if (IS_ERR(rpmsg_class)) {
-> >>  		pr_err("failed to create rpmsg class\n");
-> >> -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> >> -		return PTR_ERR(rpmsg_class);
-> >> +		ret = PTR_ERR(rpmsg_class);
-> >> +		goto free_region;
-> >> +	}
-> >> +
-> >> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
-> >> +	if (ret < 0) {
-> >> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
-> >> +		goto free_class;
-> >>  	}
-> >>  
-> >>  	return 0;
-> >> +
-> >> +free_class:
-> >> +	class_destroy(rpmsg_class);
-> >> +free_region:
-> >> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> >> +
-> >> +	return ret;
-> >>  }
-> >>  postcore_initcall(rpmsg_chrdev_init);
-> >>  
-> >>  static void rpmsg_chrdev_exit(void)
-> >>  {
-> >> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
-> >>  	class_destroy(rpmsg_class);
-> >>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> >>  }
-> >> -- 
-> >> 2.17.1
-> >>
