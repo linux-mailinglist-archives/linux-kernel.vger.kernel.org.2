@@ -2,170 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800953AAFBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE053AAFA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbhFQJcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbhFQJcy (ORCPT
+        id S231611AbhFQJ2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:28:52 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:11051 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231433AbhFQJ2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:32:54 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3596FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:30:47 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id ei4so3435560pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:30:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jAXfPAXKGHI5d5AfauBRh2rw8y0WXn7UCziFxxBa2G8=;
-        b=J9G3pN4FhbqRJPqASQ8qt+CEBkWuvvRU/rw38HT/3meNPQk+HthB+65dgOlLVPsG/+
-         OgtxlTlJ26xmGHZ34aiyGW1dqvAoOBnFAsJcoqPGmRFN49OrSQjpIAEfsPIblsbQsb8R
-         sfesjLQh+52EJAox9Ost1FtWIufCsCNqgf0yI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jAXfPAXKGHI5d5AfauBRh2rw8y0WXn7UCziFxxBa2G8=;
-        b=UWmsS9jw7bQ7TaGNNyF5KzlTxAn1uKmQlm3DiJlgEOpxZDLklAnEssiYRRsYyEVsjC
-         s3VKRp8/e+w8Rc3YwbvQ8u3h+6Y+1LVaky1GXhIB9GkNBjzF2X17v8MW+nXsGW0nOXsi
-         +y6CjYLDl8aB9hx6saA/NyDNYkOZ/ZG2v00IPxnWLYEj1da0ifikOVYipUVYO8fDrIUv
-         9pwFe7MnQPZn9A0ZKRtytKzmva0EY2ENpLDjG8Jg9dsXBjg16FX5FUEzRKHkqlG9xIq7
-         v8ixW/ged1RToN1wabfZkEiebdBDNmTwIDUSOgOCyNT8M0fnT4fBD1kBOnE1oxyFNYuX
-         j9fQ==
-X-Gm-Message-State: AOAM533VXI1tmpY62D8Z0n9bh1Xf4EWwsPa0aYEbrbMBZI25yjUwFylm
-        ijgOhMqy53tdt2HwqF+dTfzZiXaYT5Lbqw==
-X-Google-Smtp-Source: ABdhPJziDsm92Q8ZeF77qbXKOrLgOBSfL1/bSWAlt+9ZfcRv3k6RL55+fUErfACWDJuxtEoYMzljXQ==
-X-Received: by 2002:a17:90a:f094:: with SMTP id cn20mr4668681pjb.157.1623922246569;
-        Thu, 17 Jun 2021 02:30:46 -0700 (PDT)
-Received: from localhost ([203.206.29.204])
-        by smtp.gmail.com with ESMTPSA id t14sm5692272pgm.9.2021.06.17.02.30.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 02:30:46 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com, elver@google.com,
-        akpm@linux-foundation.org, andreyknvl@gmail.com
-Cc:     linuxppc-dev@lists.ozlabs.org, christophe.leroy@csgroup.eu,
-        aneesh.kumar@linux.ibm.com, bsingharora@gmail.com,
-        Daniel Axtens <dja@axtens.net>
-Subject: [PATCH v15 2/4] kasan: allow architectures to provide an outline readiness check
-Date:   Thu, 17 Jun 2021 19:30:30 +1000
-Message-Id: <20210617093032.103097-3-dja@axtens.net>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210617093032.103097-1-dja@axtens.net>
-References: <20210617093032.103097-1-dja@axtens.net>
+        Thu, 17 Jun 2021 05:28:49 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G5Gnq1TlXzZfmx;
+        Thu, 17 Jun 2021 17:23:43 +0800 (CST)
+Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 17:26:38 +0800
+Received: from huawei.com (10.175.113.32) by dggpemm000001.china.huawei.com
+ (7.185.36.245) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 17 Jun
+ 2021 17:26:37 +0800
+From:   Nanyong Sun <sunnanyong@huawei.com>
+To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <palmerdabbelt@google.com>, <atish.patra@wdc.com>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+Subject: [PATCH v2 -next] riscv: mm: fix build errors caused by mk_pmd()
+Date:   Thu, 17 Jun 2021 17:58:31 +0800
+Message-ID: <20210617095831.2398438-1-sunnanyong@huawei.com>
+X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm000001.china.huawei.com (7.185.36.245)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow architectures to define a kasan_arch_is_ready() hook that bails
-out of any function that's about to touch the shadow unless the arch
-says that it is ready for the memory to be accessed. This is fairly
-uninvasive and should have a negligible performance penalty.
+With "riscv: mm: add THP support on 64-bit", mk_pmd() function
+introduce build errors,
+1.build with CONFIG_ARCH_RV32I=y:
+arch/riscv/include/asm/pgtable.h: In function 'mk_pmd':
+arch/riscv/include/asm/pgtable.h:513:9: error: implicit declaration of function 'pfn_pmd';
+ did you mean 'pfn_pgd'? [-Werror=implicit-function-declaration]
 
-This will only work in outline mode, so an arch must specify
-ARCH_DISABLE_KASAN_INLINE if it requires this.
+2.build with CONFIG_SPARSEMEM=y && CONFIG_SPARSEMEM_VMEMMAP=n
+arch/riscv/include/asm/pgtable.h: In function 'mk_pmd':
+include/asm-generic/memory_model.h:64:14: error: implicit declaration of function 'page_to_section';
+ did you mean 'present_section'? [-Werror=implicit-function-declaration]
 
-Cc: Balbir Singh <bsingharora@gmail.com>
-Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Reviewed-by: Marco Elver <elver@google.com>
-Signed-off-by: Daniel Axtens <dja@axtens.net>
+Move the definition of mk_pmd to pgtable-64.h to fix the first error.
+Use macro definition instead of inline function for mk_pmd
+to fix the second problem. It is similar to the mk_pte macro.
 
---
-
-Both previous RFCs for ppc64 - by 2 different people - have
-needed this trick! See:
- - https://lore.kernel.org/patchwork/patch/592820/ # ppc64 hash series
- - https://patchwork.ozlabs.org/patch/795211/      # ppc radix series
-
-Build tested on arm64 with SW_TAGS and x86 with INLINE: the error fires
-if I add a kasan_arch_is_ready define.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
 ---
- mm/kasan/common.c  | 4 ++++
- mm/kasan/generic.c | 3 +++
- mm/kasan/kasan.h   | 6 ++++++
- mm/kasan/shadow.c  | 8 ++++++++
- 4 files changed, 21 insertions(+)
+Changes in v2:
+- Move mk_pmd to pgtable-64.h
+---
+ arch/riscv/include/asm/pgtable-64.h | 2 ++
+ arch/riscv/include/asm/pgtable.h    | 5 -----
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 10177cc26d06..0ad615f3801d 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -331,6 +331,10 @@ static inline bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
- 	u8 tag;
- 	void *tagged_object;
+diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
+index 1439017b16f8..228261aa9628 100644
+--- a/arch/riscv/include/asm/pgtable-64.h
++++ b/arch/riscv/include/asm/pgtable-64.h
+@@ -79,6 +79,8 @@ static inline unsigned long _pmd_pfn(pmd_t pmd)
+ 	return pmd_val(pmd) >> _PAGE_PFN_SHIFT;
+ }
  
-+	/* Bail if the arch isn't ready */
-+	if (!kasan_arch_is_ready())
-+		return false;
++#define mk_pmd(page, prot)    pfn_pmd(page_to_pfn(page), prot)
 +
- 	tag = get_tag(object);
- 	tagged_object = object;
- 	object = kasan_reset_tag(object);
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 53cbf28859b5..c3f5ba7a294a 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -163,6 +163,9 @@ static __always_inline bool check_region_inline(unsigned long addr,
- 						size_t size, bool write,
- 						unsigned long ret_ip)
+ #define pmd_ERROR(e) \
+ 	pr_err("%s:%d: bad pmd %016lx.\n", __FILE__, __LINE__, pmd_val(e))
+ 
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 5ae51e6bd5ab..6bc2582f82e9 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -516,11 +516,6 @@ static inline unsigned long pmd_pfn(pmd_t pmd)
+ 	return ((__pmd_to_phys(pmd) & PMD_MASK) >> PAGE_SHIFT);
+ }
+ 
+-static inline pmd_t mk_pmd(struct page *page, pgprot_t prot)
+-{
+-	return pfn_pmd(page_to_pfn(page), prot);
+-}
+-
+ static inline pmd_t pmd_modify(pmd_t pmd, pgprot_t newprot)
  {
-+	if (!kasan_arch_is_ready())
-+		return true;
-+
- 	if (unlikely(size == 0))
- 		return true;
- 
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 8f450bc28045..4dbc8def64f4 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -449,6 +449,12 @@ static inline void kasan_poison_last_granule(const void *address, size_t size) {
- 
- #endif /* CONFIG_KASAN_GENERIC */
- 
-+#ifndef kasan_arch_is_ready
-+static inline bool kasan_arch_is_ready(void)	{ return true; }
-+#elif !defined(CONFIG_KASAN_GENERIC) || !defined(CONFIG_KASAN_OUTLINE)
-+#error kasan_arch_is_ready only works in KASAN generic outline mode!
-+#endif
-+
- /*
-  * Exported functions for interfaces called from assembly or from generated
-  * code. Declarations here to avoid warning about missing declarations.
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index 082ee5b6d9a1..3c7f7efe6f68 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -73,6 +73,10 @@ void kasan_poison(const void *addr, size_t size, u8 value, bool init)
- {
- 	void *shadow_start, *shadow_end;
- 
-+	/* Don't touch the shadow memory if arch isn't ready */
-+	if (!kasan_arch_is_ready())
-+		return;
-+
- 	/*
- 	 * Perform shadow offset calculation based on untagged address, as
- 	 * some of the callers (e.g. kasan_poison_object_data) pass tagged
-@@ -99,6 +103,10 @@ EXPORT_SYMBOL(kasan_poison);
- #ifdef CONFIG_KASAN_GENERIC
- void kasan_poison_last_granule(const void *addr, size_t size)
- {
-+	/* Don't touch the shadow memory if arch isn't ready */
-+	if (!kasan_arch_is_ready())
-+		return;
-+
- 	if (size & KASAN_GRANULE_MASK) {
- 		u8 *shadow = (u8 *)kasan_mem_to_shadow(addr + size);
- 		*shadow = size & KASAN_GRANULE_MASK;
+ 	return pte_pmd(pte_modify(pmd_pte(pmd), newprot));
 -- 
-2.30.2
+2.18.0.huawei.25
 
