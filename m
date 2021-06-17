@@ -2,280 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 041733AB486
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEDB3AB48C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbhFQNWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:22:33 -0400
-Received: from mga04.intel.com ([192.55.52.120]:14628 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230055AbhFQNWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:22:32 -0400
-IronPort-SDR: 3oEi7EdTOgqseg7T7GrDmZNzrH89bRsVstF9qYc6u+XQXo1DI3PoZsIUAwbSRlc0MMMA0e0K93
- H1YHU7NejmdQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="204537506"
-X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
-   d="scan'208";a="204537506"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 06:20:23 -0700
-IronPort-SDR: 8WURhsTDt+xN53Ko5Zw1xe0BJ+xNJ/Aic8zwvq6jP5cjLrsIZgB/aHgX7KEb4BePKOES2oVot4
- It9/EjH2IP5w==
-X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
-   d="scan'208";a="404640873"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 06:20:19 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1ltrwO-003Lrr-GE; Thu, 17 Jun 2021 16:20:16 +0300
-Date:   Thu, 17 Jun 2021 16:20:16 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>, Christoph Hellwig <hch@lst.de>
-Cc:     Dejin Zheng <zhengdejin5@gmail.com>, corbet@lwn.net,
-        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
-        Sanket.Goswami@amd.com, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v7 1/4] PCI: Introduce pcim_alloc_irq_vectors()
-Message-ID: <YMtMELqsY0O7djB4@smile.fi.intel.com>
-References: <YMMu0kgEn1emRQvo@smile.fi.intel.com>
- <20210616192543.GA2924004@bjorn-Precision-5520>
+        id S232365AbhFQNXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:23:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231702AbhFQNXT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:23:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623936071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hwGEMKYQQJMv/CxGUZtjWsZj084biuCitqUYtWHA6Pc=;
+        b=QGMtsbjA/TEXHqQk9jwNrFmDVdwRWzlb6C6kHhigBwUSKUEQfqhkTjQxqWBEpUxkpOHySY
+        02xad4AL8Df7bayUp8x648v63KQD8J1T/vTNvG/gHEwDASc1h5J1NDyACgSx3HKiRw0TjR
+        W/XRw0zx7bl4BQW9ok9Tj3Fc2DXYKv8=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-324-xVEZo99PP7a2Y134OF_wdg-1; Thu, 17 Jun 2021 09:21:10 -0400
+X-MC-Unique: xVEZo99PP7a2Y134OF_wdg-1
+Received: by mail-ot1-f70.google.com with SMTP id f4-20020a0568302044b029044be209a5d7so657962otp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 06:21:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=hwGEMKYQQJMv/CxGUZtjWsZj084biuCitqUYtWHA6Pc=;
+        b=atPwlELaQ67qkvo8lWg7rvCndwuj1PucSYcNiAsIxTGMzEeM9sgcoFUvlaIbBcf/rs
+         G/t8f7j8lUWHmA68ocBSKlRrKGaKBmkkfckHiF7xKeNmzypWyc7GykJwGGiyk/+Cr4Fm
+         voaW1YYgbMZbQpqtDvsPFnlzePHL8X/J6YlCdlseOBNASnRjJffdxdyKUPzsnYhDt4yV
+         LqZcV9URbzqAsLn5BPrLMLm4ljEVzBZqj+XUkAvcpjHpyn0wdDiChCFqJ7zygrS1q26b
+         /kJGR3e3+URZaSI9byb0BSZWaSZvjLtTC/aZia6if9WjB+5USwWv+5SC+FQ5OmbTJqhJ
+         vvDA==
+X-Gm-Message-State: AOAM530erWsf7NbIXvmlbNr2Q+cNUcwqwbSWNRIPNCW4AABBVW91HbFP
+        qLrRxQCJZUg8b6T5sBO3ZnkHP/Zs3PII7EwzZxI4PoqJxI8YEJ5Irw61omPLFfsCImPl+S9mb02
+        ow9trTLzCc4Gwy8OYdpqEr/nw
+X-Received: by 2002:a05:6808:1486:: with SMTP id e6mr10274740oiw.9.1623936070108;
+        Thu, 17 Jun 2021 06:21:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw931LqYJItw0hcQXVJGwWvQ9NYX/nBhC2hX9cM9jm2EmErBb/zfH6Daxmhleh0YKe15pmFdA==
+X-Received: by 2002:a05:6808:1486:: with SMTP id e6mr10274728oiw.9.1623936069920;
+        Thu, 17 Jun 2021 06:21:09 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id e23sm1264022otk.67.2021.06.17.06.21.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jun 2021 06:21:09 -0700 (PDT)
+Subject: Re: [PATCH v4 1/4] fpga: dfl: reorganize to subdir layout
+To:     "Wu, Hao" <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>
+Cc:     "corbet@lwn.net" <corbet@lwn.net>,
+        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "krzysztof.kozlowski@canonical.com" 
+        <krzysztof.kozlowski@canonical.com>,
+        "nava.manne@xilinx.com" <nava.manne@xilinx.com>,
+        "Xu, Yilun" <yilun.xu@intel.com>,
+        "davidgow@google.com" <davidgow@google.com>,
+        "fpacheco@redhat.com" <fpacheco@redhat.com>,
+        "Gong, Richard" <richard.gong@intel.com>,
+        "luca@lucaceresoli.net" <luca@lucaceresoli.net>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210614201648.3358206-1-trix@redhat.com>
+ <20210614201648.3358206-3-trix@redhat.com>
+ <DM6PR11MB381964374223D0D2958AFA6985309@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <d64b0fb8-5f83-2995-7ee9-b4ed2932ef60@redhat.com>
+ <DM6PR11MB3819259241791EB04A2CB9C8850F9@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <YMrS9OUSaCdtGwrE@epycbox.lan>
+ <DM6PR11MB381924F43550A6699CB55213850E9@DM6PR11MB3819.namprd11.prod.outlook.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <9c527087-3646-2f22-1234-2b0247511cc9@redhat.com>
+Date:   Thu, 17 Jun 2021 06:21:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616192543.GA2924004@bjorn-Precision-5520>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <DM6PR11MB381924F43550A6699CB55213850E9@DM6PR11MB3819.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dejin, why Christoph's email suddenly disappeared during updating?
 
-On Wed, Jun 16, 2021 at 02:25:43PM -0500, Bjorn Helgaas wrote:
-> On Fri, Jun 11, 2021 at 12:37:22PM +0300, Andy Shevchenko wrote:
-> > On Thu, Jun 10, 2021 at 05:41:43PM -0500, Bjorn Helgaas wrote:
-> > > On Mon, Jun 07, 2021 at 11:39:13PM +0800, Dejin Zheng wrote:
-> > > > Introduce pcim_alloc_irq_vectors(), a device-managed version of
-> > > > pci_alloc_irq_vectors(). Introducing this function can simplify
-> > > > the error handling path in many drivers.
-> > > > 
-> > > > And use pci_free_irq_vectors() to replace some code in pcim_release(),
-> > > > they are equivalent, and no functional change. It is more explicit
-> > > > that pcim_alloc_irq_vectors() is a device-managed function.
-> > 
-> > ...
-> > 
-> > > > @@ -1989,10 +1989,7 @@ static void pcim_release(struct device *gendev, void *res)
-> > > >  	struct pci_devres *this = res;
-> > > >  	int i;
-> > > >  
-> > > > -	if (dev->msi_enabled)
-> > > > -		pci_disable_msi(dev);
-> > > > -	if (dev->msix_enabled)
-> > > > -		pci_disable_msix(dev);
-> > > > +	pci_free_irq_vectors(dev);
-> > > 
-> > > If I understand correctly, this hunk is a nice simplification, but
-> > > actually has nothing to do with making pcim_alloc_irq_vectors().  I
-> > > have it split to a separate patch in my local tree.  Or am I wrong
-> > > about that?
-> > 
-> > It's a good simplification that had to be done when pci_free_irq_vectors()
-> > appeared.
-> 
-> Sorry to be pedantic.  You say the simplification "had to be done,"
-> but AFAICT there was no actual *requirement* for this simplification
-> to be done since pci_free_irq_vectors() is functionally identical to
-> the previous code.
-> I think we should do it because it's a little
-> simpler, but not because it *fixes* anything.
+On 6/17/21 1:34 AM, Wu, Hao wrote:
+>> On Wed, Jun 16, 2021 at 01:05:36AM +0000, Wu, Hao wrote:
+>>>> On 6/15/21 1:08 AM, Wu, Hao wrote:
+>>>>>> Subject: [PATCH v4 1/4] fpga: dfl: reorganize to subdir layout
+>>>>>>
+>>>>>> From: Tom Rix <trix@redhat.com>
+>>>>>>
+>>>>>> Follow drivers/net/ethernet/ which has control configs
+>>>>>> NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+>>>>>> Since fpgas do not have many vendors, drop the 'VENDOR' and use
+>>>>>> FPGA_BLA.
+>>>>> Hi Tom,
+>>>>>
+>>>>> Thanks for this patch. : )
+>>>>>
+>>>>> DFL is not a vendor, but something can be shared/reused. It's possible that
+>>>>> other vendors reuse the same concepts and the drivers of DFL. If vendor
+>>>>> drivers need to be moved inside sub folders, then maybe it's better to
+>>>>> leave DFL in the parent folder?
+>>>> xrt is also not a vendor, more a subdevice framework like dfl.
+>>>>
+>>>> I am not sure what you mean by other dfl vendors can you give an example ?
+>>> It's fine, but the description here is a little confusing on vendor/framework
+>>> handling. No other vendor so far, but it's possible, DFL can be used in
+>>> non-intel device, and related drivers can be reused as well. Then a fpga
+>>> mgr driver depends on DFL, should be put inside dfl folder or new
+>>> vendor's subfolder?
+>>>
+>>> Hao
+>>>
+>> I'm somewhat neutral on this. If someone non-intel starts using DFL we could
+>> also
+>> move the common parts back ...
+> That's fine.
+>
+>> That being said, I'm not super convinced we have to move stuff in the
+>> first place.
+> I remember that the first submission of our code is having everything inside a sub
+> folder, but was suggested that to have everything moved out, this is why we have
+> dfl files here now. To be honest, I have the similar feeling as you, I didn't see any
+> strong reason to make this something we must do, but both solutions should be
+> fine. : )
 
-It makes things more straightforward. So it definitely "fixes" something, but
-not the code in this case, rather how we maintain this code.
+xrt is bringing in the subdir xrt/
 
-> > But here is the fact that indirectly it's related to the pcim_*()
-> > APIs, i.e. pcim_alloc_irq_vectors(), because you may noticed this is inside
-> > pcim_release().
-> 
-> Yes.  For posterity, my notes about the call chain (after applying
-> this patch):
-> 
->   pci_alloc_irq_vectors
->     pci_alloc_irq_vectors_affinity
->       __pci_enable_msix_range                 # MSI-X path
->         __pci_enable_msix
->           msix_capability_init
->             msix_setup_entries
->               for (...)
->                 entry = alloc_msi_entry
->                   kzalloc(msi_desc)           <--- alloc
->                   kmemdup(msi_desc->affinity) <--- alloc
->             dev->msix_enabled = 1             # MSI-X enabled
->       __pci_enable_msi_range                  # MSI path
->         msi_capability_init
->           msi_setup_entry
->             alloc_msi_entry                   <--- alloc
->           dev->msi_enabled = 1                # MSI enabled
-> 
->   pcim_release
->     pci_free_irq_vectors
->       pci_disable_msix                        # MSI-X
->         if (!dev->msix_enabled)
->           return
->         pci_msix_shutdown
->           dev->msix_enabled = 0               # MSI-X disabled
->         free_msi_irqs
->           list_for_each_entry_safe(..., msi_list, ...)
->             free_msi_entry
->               kfree(msi_desc->affinity)       <--- free
->               kfree(msi_desc)                 <--- free
->       pci_disable_msi                         # MSI
->         if (!dev->msi_enabled)
->           return
->         pci_msi_shutdown
->           dev->msi_enabled = 0                # MSI disabled
->         free_msi_irqs                         <--- free
-> 
-> So I *think* (correct me if I'm wrong):
-> 
->   - If a driver calls pcim_enable_device(), we will call
->     pcim_release() when the last reference to the device is dropped.
-> 
->   - pci_alloc_irq_vectors() allocates msi_desc and irq_affinity_desc
->     structures via msix_setup_entries() or msi_setup_entry().
-> 
->   - pcim_release() will free those msi_desc and irq_affinity_desc
->     structures.
-> 
->   - Even before this series, pcim_release() frees msi_desc and
->     irq_affinity_desc structures by calling pci_disable_msi() and
->     pci_disable_msix().
-> 
->   - Calling pci_free_irq_vectors() (or pci_disable_msi() or
->     pci_disable_msix()) twice is unnecessary but probably harmless
->     because they bail out early.
+Even after the likely move of xrt subdevices to other subsystems, there 
+will be about as many files in fpga/xrt/ as in fpga/
 
-> So this series actually does not fix any problems whatsoever.
+If both of you are fine with a mixed files and subdir organization, then 
+I'll drop this patchset.
 
-I tend to disagree.
+If you want only files, then xrt needs to refactor, so let them know.
 
-The PCI managed API is currently inconsistent and what you got is what I
-already know and had been using until (see below) Christoph told not to do [1].
+Tom
 
-Even do you as PCI maintainer it took some time to figure this out. But current
-APIs make it hard for mere users who wants to use it in the drivers.
-
-So, main point of fix here is _API inconsistency_ [0].
-
-But hey, I believe you have been Cc'ed to the initial submission of the
-pci_*_irq_vector*() rework done by Christoph [2] (hmm... don't see your
-name there). And he updated documentation as well [3].
-
-Moreover, he insisted to use pci_free_irq_vectors() whenever we are using
-pci_alloc_irq_vectors(). And he suggested if we want to avoid this we have to
-make pcim_ variant of the API (see [1] again).
-
-Maybe you, guys, should got some agreement and clarify it in the documentation?
-
-[0]: We have a few functions with pcim_ prefix, few without and some from the
-     latter group imply to behave _differently_ when pcim_enable_device() had
-     been called.
-[1]: I'm not able to find the archive of the mailing, but I remember that it
-     was something like that IIRC during 8250_lpss.c development.
-[2]: https://lore.kernel.org/linux-pci/1467621574-8277-1-git-send-email-hch@lst.de/
-[3]: https://www.kernel.org/doc/html/latest/PCI/msi-howto.html#using-msi
-
-> It *does* remove unnecessary pci_free_irq_vectors() calls from
-> i2c-designware-pcidrv.c.
-> 
-> But because pci_alloc_irq_vectors() and related interfaces are
-> *already* managed as soon as a driver calls pcim_enable_device(),
-> we can simply remove the pci_free_irq_vectors() without doing anything
-> else.
-> 
-> I don't think we *should* do anything else.
-
-See above.
-
-> There are many callers of
-> pcim_enable_device() that also call pci_alloc_irq_vectors(),
-> pci_enable_msix_range(), etc.  We don't have pcim_enable_msix_range(),
-> pcim_enable_msi(), pcim_alloc_irq_vectors_affinity(), etc.  I don't
-> think it's worth the churn of adding all those and changing all the
-> callers to use pcim_*() (as in patch 4/4 here).
-> 
-> Browsing the output of this:
-> 
->   git grep -En "pcim_enable_device|pci_alloc_irq_vectors|pci_enable_msix_|pci_free_irq_vectors|pci_disable_msi"
-> 
-> leads me to believe there are similar calls of pci_free_irq_vectors()
-> that could be removed here:
-> 
->   mtip_pci_probe
->   sp_pci_probe
->   dw_edma_pcie_probe
->   hisi_dma_probe
->   ioat_pci_probe
->   plx_dma_probe
->   cci_pci_probe
->   hibmc_pci_probe
->   ...
-> 
-> and many more, but I got tired of looking.
-> 
-> > > > +/**
-> > > > + * pcim_alloc_irq_vectors - a device-managed pci_alloc_irq_vectors()
-> > > > + * @dev:		PCI device to operate on
-> > > > + * @min_vecs:		minimum number of vectors required (must be >= 1)
-> > > > + * @max_vecs:		maximum (desired) number of vectors
-> > > > + * @flags:		flags or quirks for the allocation
-> > > > + *
-> > > > + * Return the number of vectors allocated, (which might be smaller than
-> > > > + * @max_vecs) if successful, or a negative error code on error. If less
-> > > > + * than @min_vecs interrupt vectors are available for @dev the function
-> > > > + * will fail with -ENOSPC.
-> > > > + *
-> > > > + * It depends on calling pcim_enable_device() to make IRQ resources
-> > > > + * manageable.
-> > > > + */
-> > > > +static inline int
-> > > > +pcim_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
-> > > > +			unsigned int max_vecs, unsigned int flags)
-> > > > +{
-> > > > +	if (!pci_is_managed(dev))
-> > > > +		return -EINVAL;
-> > > > +	return pci_alloc_irq_vectors(dev, min_vecs, max_vecs, flags);
-> > > 
-> > > This is great, but can you explain how pci_alloc_irq_vectors()
-> > > magically becomes a managed interface if we've already called
-> > > pcim_enable_device()?
-> > > 
-> > > I certainly believe it does; I'd just like to put a hint in the commit
-> > > log since my 5 minutes of grepping around didn't make it obvious to
-> > > me.
-> > > 
-> > > I see that pcim_enable_device() sets pdev->is_managed, but I didn't
-> > > find the connection between that and pci_alloc_irq_vectors().
-> > 
-> > One needs to read and understand the code, I agree. The explanation is spread
-> > between pcim_release() and __pci_enable_msi/x_range().
-> > 
-> > The call chain is
-> > 
-> > msi_capability_init() / msix_capability_init()
-> >   ...
-> >   <- __pci_enable_msi/x_range()
-> >     <- pci_alloc_irq_vectors_affinity()
-> >       <- pci_alloc_irq_vectors()
-> > 
-> > where device msi_enabled / msix_enabled is set.
-> > 
-> > So, it may deserve to be explained in the commit message.
-> > 
-> > > > +}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> Thanks
+> Hao
+>
+>> - Moritz
 
