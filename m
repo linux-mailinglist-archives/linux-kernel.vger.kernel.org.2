@@ -2,129 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FD53AAF9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C653AAFA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbhFQJZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:25:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49677 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230162AbhFQJZA (ORCPT
+        id S231600AbhFQJ2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231433AbhFQJ2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:25:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623921773;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3KysMvllyHPoDyzaTHkhdiOfQlu8vxXEh89IxvBC1IU=;
-        b=cXXp7jxpbC8hwyIPaPDDUTBvJ6X3WRGI9xCGhHnaZEysLtzY3JoDwhxcxqTgIQmczhMXy5
-        vlN7Hfhjr6xrKpaMLU96kiqZv0nYrlYVk3uVlt0J/9srHx/v0eRx4FIbSWnKk1fgvqsI4O
-        hWh7rI/XAh5rKbqHdxo7tE5Cm7QZ6w4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-526-i3zd8byWPiqGtBVRZY_7zw-1; Thu, 17 Jun 2021 05:22:51 -0400
-X-MC-Unique: i3zd8byWPiqGtBVRZY_7zw-1
-Received: by mail-wr1-f72.google.com with SMTP id e9-20020a5d6d090000b0290119e91be97dso2672777wrq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:22:51 -0700 (PDT)
+        Thu, 17 Jun 2021 05:28:46 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DDAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:26:38 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id k15so4527971pfp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:26:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KryS05F8yykdJ8/Bn8WDRh+2BxDJ+KUha/fXyOsgM+k=;
+        b=mwkZAfu8nN4ynVz14N+KSOMx2lFJa0zpV6jz3LMyfqwWkVuUXcNe0X4Fmgf6P8LnWp
+         nfVYEamHkpIyn9n5G4puh42hw9uY3AKFIf7j+C1OoVpJC7RRJ0L2g5+QDEgFTrBJcoDl
+         bhZiSiNwD/KckITc8WjOyzFTtEXQlf2uH/GyT+4R4Qju7yKFVxqOlX+8CRTWJ+K1EVV1
+         olMd3mcghY9eIKCe6rOBwZVjOcrv76f0C/qizyrWw2kx36yLLSoBMZZb7zMr1hI3CAu/
+         rHoLsuKfIwf4FrRVutQH41m4bF2WT5kZcKb3HdHmK9bwJ+QPjUbf5HRbZK0a9EYjeVIZ
+         t4gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3KysMvllyHPoDyzaTHkhdiOfQlu8vxXEh89IxvBC1IU=;
-        b=ZIP5IHI1HxRlL4sME0/3tzREuw+L5mYm8GtFmemvILospkLmymaD5Efh6IBFdWIcRW
-         OZCRmaAlCNkMciy54V6uhNDCCzyo9XpzOL3NMUkdcN9+I3OZyHYxKTpgtLM641etgmcP
-         rV3B+SiY79Y1bnIIUvWlhoWZtpkjHP9kpI05YwkDnthSzouVfwah6ATZ+o7pW1bA6OHT
-         hbvG1rijiebDiVc+v9fJKk0Cqgk7EHgNBDtpdo0kw7mzLJ1gXD+ANs+mFzn6PDaNTMFa
-         Tsj94/L8J0lsjp2XWZp+QCfPGUd/2D7siJnqvk0YmtQZG4MpuqAVLZSO+VPJUvDSKy8r
-         RVdQ==
-X-Gm-Message-State: AOAM531j7geCbnRVNsCr1CKZWsF7IvUuIV9xs9bq4lC5iyWmtVmrEJ1e
-        3SovgSQfuh3ZEGFP0WdTHXjTbgeOqQfbmbLD1WeTKq8LZjZ6qKe624LqKzETWEBamQ5V2lEeLt7
-        EpuEoFwLwL1KUqq67PBmg/GU=
-X-Received: by 2002:a1c:9dd4:: with SMTP id g203mr3940603wme.132.1623921770627;
-        Thu, 17 Jun 2021 02:22:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxtAXwHrTnFjJ33bdE+rVfG/hzys+v4plGgnWztV9/gYM8Kp47+O94Jytb/YjTPw/AXGcVjPw==
-X-Received: by 2002:a1c:9dd4:: with SMTP id g203mr3940576wme.132.1623921770396;
-        Thu, 17 Jun 2021 02:22:50 -0700 (PDT)
-Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
-        by smtp.gmail.com with ESMTPSA id f14sm4508599wri.16.2021.06.17.02.22.49
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KryS05F8yykdJ8/Bn8WDRh+2BxDJ+KUha/fXyOsgM+k=;
+        b=hgWq0lbpQcazIFUUQHSmboUXcxBCxPuIX5Az8OvXYtD/NGYzPLP0+v8NNo3Zx5aimQ
+         UJ4tm8XMVt2Uudqv/1vpO657NUp5FhrsXWloAI1gwQeggs7DpSWMVD8rq1egWGE5lWe9
+         QGRCi0ZTcaCG4y7YBqMn+kVG6a+QDhBK8hNI3j9hKoFN4cJY2Io24psMZt4E3c2zxqdO
+         wBKRqYatiGnYTcYlvqzk4aEIX+8bdYUVD7cH/PJCA93vaeLT08e+o2pnkuxBYhZW/DGM
+         UdPv5S7/H72m51eOquDmbsvlD2ulhLvQZ7CrSu+tL2iQJ33rg2H6Zhtg1kwrN32rFwXs
+         9WEg==
+X-Gm-Message-State: AOAM533k9LCmZEUIBHhw7AOsV2VMJidbBaI963/Zoi0ravHfuq6lW+S6
+        zxZYFoAwyDz7YXL1ghqM5A==
+X-Google-Smtp-Source: ABdhPJwGLC8Fu6UDSezxtpMdxDFypGbC7quTIZJN3STK+uD+rnZ1Wpq13LqooTXVoT7ko+VN42dZfQ==
+X-Received: by 2002:a05:6a00:bc7:b029:2f5:7bdb:f694 with SMTP id x7-20020a056a000bc7b02902f57bdbf694mr4355722pfu.41.1623921997787;
+        Thu, 17 Jun 2021 02:26:37 -0700 (PDT)
+Received: from localhost.localdomain (h175-177-040-153.catv02.itscom.jp. [175.177.40.153])
+        by smtp.gmail.com with ESMTPSA id b65sm4635030pfa.32.2021.06.17.02.26.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 02:22:50 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 10:22:49 +0100
-From:   Aaron Tomlin <atomlin@redhat.com>
-To:     Georgi Djakov <quic_c_gdjako@quicinc.com>
-Cc:     vbabka@suse.cz, akpm@linux-foundation.org, iamjoonsoo.kim@lge.com,
-        rientjes@google.com, penberg@kernel.org, cl@linux.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, djakov@kernel.org
-Subject: Re: [PATCH] mm/slub: Add taint after the errors are printed
-Message-ID: <20210617092249.5v6kh3q6skawkae6@ava.usersys.com>
-X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
-X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
-References: <1623860738-146761-1-git-send-email-quic_c_gdjako@quicinc.com>
+        Thu, 17 Jun 2021 02:26:37 -0700 (PDT)
+From:   Naoya Horiguchi <nao.horiguchi@gmail.com>
+To:     linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH mmotm v1] mm/hwpoison: disable pcp for page_handle_poison()
+Date:   Thu, 17 Jun 2021 18:26:26 +0900
+Message-Id: <20210617092626.291006-1-nao.horiguchi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1623860738-146761-1-git-send-email-quic_c_gdjako@quicinc.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-06-16 09:25 -0700, Georgi Djakov wrote:
-> When running the kernel with panic_on_taint, the usual slub debug error
-> messages are not being printed when object corruption happens. That's
-> because we panic in add_taint(), which is called before printing the
-> additional information. This is a bit unfortunate as the error messages
-> are actually very useful, especially before a panic. Let's fix this by
-> moving add_taint() after the errors are printed on the console.
-> 
-> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
-> ---
->  mm/slub.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index a8b0daa1a307..ce7b8e4551b5 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -719,8 +719,6 @@ static void slab_bug(struct kmem_cache *s, char *fmt, ...)
->  	pr_err("=============================================================================\n");
->  	pr_err("BUG %s (%s): %pV\n", s->name, print_tainted(), &vaf);
->  	pr_err("-----------------------------------------------------------------------------\n\n");
-> -
-> -	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
->  	va_end(args);
->  }
->  
-> @@ -801,6 +799,7 @@ void object_err(struct kmem_cache *s, struct page *page,
->  
->  	slab_bug(s, "%s", reason);
->  	print_trailer(s, page, object);
-> +	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
->  }
->  
->  static __printf(3, 4) void slab_err(struct kmem_cache *s, struct page *page,
-> @@ -818,6 +817,7 @@ static __printf(3, 4) void slab_err(struct kmem_cache *s, struct page *page,
->  	slab_bug(s, "%s", buf);
->  	print_page_info(page);
->  	dump_stack();
-> +	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
->  }
->  
->  static void init_object(struct kmem_cache *s, void *object, u8 val)
-> @@ -869,6 +869,7 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
->  					fault, end - 1, fault - addr,
->  					fault[0], value);
->  	print_trailer(s, page, object);
-> +	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
->  
->  skip_bug_print:
->  	restore_bytes(s, what, value, fault, end);
-> 
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
-Good catch. Thanks!
+Recent changes by patch "mm/page_alloc: allow high-order pages to be
+stored on the per-cpu lists" makes kernels determine whether to use pcp
+by pcp_allowed_order(), which breaks soft-offline for hugetlb pages.
 
-Reviewed-by: Aaron Tomlin <atomlin@redhat.com>
+Soft-offline dissolves a migration source page, then removes it from
+buddy free list, so it's assumed that any subpage of the soft-offlined
+hugepage are recognized as a buddy page just after returning from
+dissolve_free_huge_page().  pcp_allowed_order() returns true for
+hugetlb, so this assumption is no longer true.
 
+So disable pcp during dissolve_free_huge_page() and
+take_page_off_buddy() to prevent soft-offlined hugepages from linking to
+pcp lists.  Soft-offline should not be common events so the impact on
+performance should be minimal.  And I think that the optimization of
+Mel's patch could benefit to hugetlb so zone_pcp_disable() is called
+only in hwpoison context.
+
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+---
+ mm/memory-failure.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+diff --git v5.13-rc6-mmotm-2021-06-15-20-24/mm/memory-failure.c v5.13-rc6-mmotm-2021-06-15-20-24_patched/mm/memory-failure.c
+index 1842822a10da..593079766655 100644
+--- v5.13-rc6-mmotm-2021-06-15-20-24/mm/memory-failure.c
++++ v5.13-rc6-mmotm-2021-06-15-20-24_patched/mm/memory-failure.c
+@@ -66,6 +66,19 @@ int sysctl_memory_failure_recovery __read_mostly = 1;
+ 
+ atomic_long_t num_poisoned_pages __read_mostly = ATOMIC_LONG_INIT(0);
+ 
++static bool __page_handle_poison(struct page *page)
++{
++	bool ret;
++
++	zone_pcp_disable(page_zone(page));
++	ret = dissolve_free_huge_page(page);
++	if (!ret)
++		ret = take_page_off_buddy(page);
++	zone_pcp_enable(page_zone(page));
++
++	return ret;
++}
++
+ static bool page_handle_poison(struct page *page, bool hugepage_or_freepage, bool release)
+ {
+ 	if (hugepage_or_freepage) {
+@@ -73,7 +86,7 @@ static bool page_handle_poison(struct page *page, bool hugepage_or_freepage, boo
+ 		 * Doing this check for free pages is also fine since dissolve_free_huge_page
+ 		 * returns 0 for non-hugetlb pages as well.
+ 		 */
+-		if (dissolve_free_huge_page(page) || !take_page_off_buddy(page))
++		if (!__page_handle_poison(page))
+ 			/*
+ 			 * We could fail to take off the target page from buddy
+ 			 * for example due to racy page allocation, but that's
+@@ -986,7 +999,7 @@ static int me_huge_page(struct page *p, unsigned long pfn)
+ 		 */
+ 		if (PageAnon(hpage))
+ 			put_page(hpage);
+-		if (!dissolve_free_huge_page(p) && take_page_off_buddy(p)) {
++		if (__page_handle_poison(p)) {
+ 			page_ref_inc(p);
+ 			res = MF_RECOVERED;
+ 		}
+@@ -1441,7 +1454,7 @@ static int memory_failure_hugetlb(unsigned long pfn, int flags)
+ 		res = get_hwpoison_page(p, flags);
+ 		if (!res) {
+ 			res = MF_FAILED;
+-			if (!dissolve_free_huge_page(p) && take_page_off_buddy(p)) {
++			if (__page_handle_poison(p)) {
+ 				page_ref_inc(p);
+ 				res = MF_RECOVERED;
+ 			}
 -- 
-Aaron Tomlin
+2.25.1
 
