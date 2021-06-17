@@ -2,168 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4C23AAFB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8123AAFB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhFQJbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231513AbhFQJbk (ORCPT
+        id S231617AbhFQJbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:31:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29233 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231574AbhFQJbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:31:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC57C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:29:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jlXDPomU3J80b7rZcVaqkAvYVsOqQvPD78Mqg6RhEJs=; b=hmoidzanKUPTg1SDOFE4/t1U3K
-        NZdjSb6RhplGpaJ80TK5s6bME7s4mdCBynJ0FaNgFXjhXs5CPKufFZ4/gwMz1zHs2G73rZ8/0blMp
-        m8hYHU+txOK0TVdEsKY8p8KgKeXratSilMtsOk5hG2AYMwzWsZWT+zU3/LQUvtc3a7H4ObN8yiSNT
-        FNuZOHGU1SOFY/tomZD/Ii4gsyUUwUVcc/IjeuLkJ92+vqZZ3CUvCZRqixAJtEhDGOgDVvXSsDIJ8
-        PHbyjkkJ20fU3/HR6kSCEKz1bE6KjPiBrslng20pb+y3cOFSgNEsfGJD3fiakN2jhul+XHb3K/Toz
-        rxv+dCSg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltoK9-008xx7-E8; Thu, 17 Jun 2021 09:28:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 08F19300252;
-        Thu, 17 Jun 2021 11:28:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D21F32BF4234C; Thu, 17 Jun 2021 11:28:30 +0200 (CEST)
-Date:   Thu, 17 Jun 2021 11:28:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [RFC][PATCH] sched: Use lightweight hazard pointers to grab lazy
- mms
-Message-ID: <YMsVvsMRJ2yKf1WM@hirez.programming.kicks-ass.net>
-References: <cover.1623813516.git.luto@kernel.org>
- <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
- <1623816595.myt8wbkcar.astroid@bobo.none>
- <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
- <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
- <1623893358.bbty474jyy.astroid@bobo.none>
- <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
- <c3c7a1cf-1c87-42cc-b2d6-cc2df55e5b57@www.fastmail.com>
- <YMsQ82bzly2KAUsu@hirez.programming.kicks-ass.net>
+        Thu, 17 Jun 2021 05:31:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623922132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZHuAloMa0AoC5AC95gAOi+y4HlERZPMXvHRDbIrYdzQ=;
+        b=aN+KqcHqisoqe4FN6dT24Z0qjjPYFouPiTvLMr7sxjAyIwdEHqFbczrVXAFdytRU6GpGlf
+        1JRP9cGVJZ8bhfN+3X19KWNEI0q8gRq7+GFEtHe/P7jToEvGOjol9IUwi9nZVcesT3iRzq
+        t1Q4/dQp11SD127irwvuL0N+Ad2xLVE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-596-oWj_O5zuO7S_gG10zKELJQ-1; Thu, 17 Jun 2021 05:28:51 -0400
+X-MC-Unique: oWj_O5zuO7S_gG10zKELJQ-1
+Received: by mail-wr1-f71.google.com with SMTP id f9-20020a5d64c90000b029011a3c2a0337so2683802wri.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:28:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ZHuAloMa0AoC5AC95gAOi+y4HlERZPMXvHRDbIrYdzQ=;
+        b=WevsBGxNJnigjIJLVZsQBaCpB0vMpnz4GzBD2ceIcaBipqHsnpErWR6TCfeo+HgfKO
+         ilJhf6WPsK2ble1NSeBRVmmP6+zWzdcIzUcmo3Ugr/6AGp7u5noXM0Bgz400YhgPBpGR
+         RnSnMUr54VCIZMslz2AJU46tosgUNkDs7M2mIkDg0qNab6hzofekOhLfAu0d0aQca/BP
+         /0i8UgMqteqTsd/OEkzsEoBZaENaNw0SSZ+om8VV0IaLYS6ElTvkmyyESl6VC36j69nK
+         snw95UOfpDTG96nCaAkwsnrIWNgeuDIt+vPS9/GV0QUoO7NpUc6ozz8+4t4ovnt0nAZa
+         /12A==
+X-Gm-Message-State: AOAM531flI6cwSXP0ur6m2q2/theSfGw2BPic9aIziRBYCW/vSbV41IV
+        kDxcSZraV1Akz7L+Wt1UDYRB/EQEeVeXwCQBRFlSMJv56gj/eKNl18pCe7Z/SYn564y9hjsycHX
+        Q5rRIgssVRb57Z2fUVETQrZWcVJxfEHwKdodk8opm14D83Z9RQMKoxoqqt4t+RInPXdT6la1o
+X-Received: by 2002:a5d:630f:: with SMTP id i15mr4441976wru.155.1623922130176;
+        Thu, 17 Jun 2021 02:28:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwbp/CgEWTSA9q+X90xdM1xBCuvBeZxwu3T85kkR9KT3yteRTWZ5b4a5zBMKxntq75+BWb/8Q==
+X-Received: by 2002:a5d:630f:: with SMTP id i15mr4441947wru.155.1623922129949;
+        Thu, 17 Jun 2021 02:28:49 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6170.dip0.t-ipconnect.de. [91.12.97.112])
+        by smtp.gmail.com with ESMTPSA id f14sm4526726wri.16.2021.06.17.02.28.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jun 2021 02:28:49 -0700 (PDT)
+Subject: Re: [PATCH mmotm v1] mm/hwpoison: disable pcp for
+ page_handle_poison()
+To:     Naoya Horiguchi <nao.horiguchi@gmail.com>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+References: <20210617092626.291006-1-nao.horiguchi@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <e7f75111-5b65-8756-2764-f5c98c4747ea@redhat.com>
+Date:   Thu, 17 Jun 2021 11:28:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMsQ82bzly2KAUsu@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210617092626.291006-1-nao.horiguchi@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 11:08:03AM +0200, Peter Zijlstra wrote:
+On 17.06.21 11:26, Naoya Horiguchi wrote:
+> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> 
+> Recent changes by patch "mm/page_alloc: allow high-order pages to be
+> stored on the per-cpu lists" makes kernels determine whether to use pcp
+> by pcp_allowed_order(), which breaks soft-offline for hugetlb pages.
+> 
+> Soft-offline dissolves a migration source page, then removes it from
+> buddy free list, so it's assumed that any subpage of the soft-offlined
+> hugepage are recognized as a buddy page just after returning from
+> dissolve_free_huge_page().  pcp_allowed_order() returns true for
+> hugetlb, so this assumption is no longer true.
+> 
+> So disable pcp during dissolve_free_huge_page() and
+> take_page_off_buddy() to prevent soft-offlined hugepages from linking to
+> pcp lists.  Soft-offline should not be common events so the impact on
+> performance should be minimal.  And I think that the optimization of
+> Mel's patch could benefit to hugetlb so zone_pcp_disable() is called
+> only in hwpoison context.
 
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index e595e77913eb..57415cca088c 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1104,6 +1104,8 @@ static inline void __mmput(struct mm_struct *mm)
->  	}
->  	if (mm->binfmt)
->  		module_put(mm->binfmt->module);
-> +
-> +	mm_unlazy_mm_count(mm);
->  	mmdrop(mm);
->  }
->  
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 8ac693d542f6..e102ec53c2f6 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -19,6 +19,7 @@
-
-> +/*
-> + * This converts all lazy_mm references to mm to mm_count refcounts.  Our
-> + * caller holds an mm_count reference, so we don't need to worry about mm
-> + * being freed out from under us.
-> + */
-> +void mm_unlazy_mm_count(struct mm_struct *mm)
-> +{
-> +	unsigned int drop_count = num_possible_cpus();
-> +	int cpu;
-> +
-> +	/*
-> +	 * mm_users is zero, so no cpu will set its rq->lazy_mm to mm.
-> +	 */
-> +	WARN_ON_ONCE(atomic_read(&mm->mm_users) != 0);
-> +
-> +	/* Grab enough references for the rest of this function. */
-> +	atomic_add(drop_count, &mm->mm_count);
-
-So that had me puzzled for a little while. Would something like this be
-a better comment?
-
-	/*
-	 * Because this can race with mmdrop_lazy(), mm_count must be
-	 * incremented before setting any rq->drop_mm value, otherwise
-	 * it is possible to free mm early.
-	 */
-
-> +
-> +	for_each_possible_lazymm_cpu(cpu, mm) {
-> +		struct rq *rq = cpu_rq(cpu);
-> +		struct mm_struct *old_mm;
-> +
-> +		if (smp_load_acquire(&rq->lazy_mm) != mm)
-> +			continue;
-> +
-> +		drop_count--;	/* grab a reference; cpu will drop it later. */
-
-Totally confusing comment that :-)
-
-> +
-
-And with that, we rely on xchg() here to be at at least RELEASE, such
-that that mm_count increment must be visible when drop_mm is seen.
-
-> +		old_mm = xchg(&rq->drop_mm, mm);
-
-Similarly, we rely on it being at least ACQUIRE for the !NULL return
-case I think.
-
-> +
-> +		/*
-> +		 * We know that old_mm != mm: when we did the xchg(), we were
-> +		 * the only cpu to be putting mm into any drop_mm variable.
-> +		 */
-> +		WARN_ON_ONCE(old_mm == mm);
-> +		if (unlikely(old_mm)) {
-> +			/*
-> +			 * We just stole an mm reference from the target CPU.
-> +			 *
-> +			 * drop_mm was set to old by another call to
-> +			 * mm_unlazy_mm_count().  After that call xchg'd old
-> +			 * into drop_mm, the target CPU did:
-> +			 *
-> +			 *  smp_store_release(&rq->lazy_mm, mm);
-> +			 *
-> +			 * which synchronized with our smp_load_acquire()
-> +			 * above, so we know that the target CPU is done with
-> +			 * old. Drop old on its behalf.
-> +			 */
-> +			mmdrop(old_mm);
-> +		}
-> +	}
-> +
-> +	atomic_sub(drop_count, &mm->mm_count);
-> +}
+Mel, Oscar, does alloc_contig_range() now have similar issues or is it 
+avoided because the pageblock(s) are set MIGRATE_ISOLATE?
 
 
+-- 
+Thanks,
+
+David / dhildenb
 
