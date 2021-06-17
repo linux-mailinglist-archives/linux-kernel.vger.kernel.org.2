@@ -2,114 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC5A3ABAC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8793ABACA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232547AbhFQRqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232525AbhFQRpy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:45:54 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BBBC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:43:44 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id i94so7704190wri.4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:43:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lwAc1yJsU7uwawBw0jrP48508Sb+GisUBuf8mUw0CSQ=;
-        b=GHO/YGfyYyqABj7MtIl2Wu+QGpEAaK9gSOyMEBLNUmZuKIoPtNcNpaudIKwcLpYNwq
-         v9yErUT7CVuhhu7WS69FNtnv6SfOcLPFdEPbOuwWHMX3IkFPjoPqlR+nw3M+e8XdPImB
-         fyvTLKdD9PlteoBOzvL3i7bIoZXW972HX8tfE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=lwAc1yJsU7uwawBw0jrP48508Sb+GisUBuf8mUw0CSQ=;
-        b=Oqs2Dkf8A7GUtWkV3EMMrt0tBF6/RXhWcAT7eysmusc8WeLeUQI30cvSV6ajq2vRLm
-         8PtMhJsxSBuKfNz9FwPma41PDLNWqA7sJQ5bVnFpWNFtScQuOKh8rhv9DALN9jz0Vw71
-         TwhdlrxMCRNfbGEbH04zJbvC6oKl3ECUBuX3c/+4HGj98T5eeK3/3hePUs8zYTJDW5aN
-         VLl5wk3Mbn8PB5QTjsoEoogvkvy/bz3uhHFO1ekR63CCuszVR5xEJm+e9alzlVPvd+Ho
-         DCnOfIRAu4Go/CwKyvRHJuGKyn7oHgLR2QKFUoEgCuktuRBTOWYIS6Q1NSNptVIrR6FG
-         w2IA==
-X-Gm-Message-State: AOAM533vTB0z1a2ybyAshmxYt2Zuf3DZdKGMfOtrkrViqs5V30Fms68L
-        s7cwzB6pLXQx7elJZOvTwSCx1g==
-X-Google-Smtp-Source: ABdhPJy8rMAYADtfeD34I2hGI8dldj1XQ3SPJhezGzk35Mij40UgqvDBe673mzz+rNw00QZ0B4G+Cg==
-X-Received: by 2002:a5d:6443:: with SMTP id d3mr7390981wrw.389.1623951823445;
-        Thu, 17 Jun 2021 10:43:43 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id z18sm3195872wmf.18.2021.06.17.10.43.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 10:43:42 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 19:43:40 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Yu Jiahua <yujiahua1@huawei.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] apply: use DEFINE_SPINLOCK() instead of
- spin_lock_init().
-Message-ID: <YMuJzDxblPNkpFjH@phenom.ffwll.local>
-Mail-Followup-To: Yu Jiahua <yujiahua1@huawei.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210616031713.24959-1-yujiahua1@huawei.com>
+        id S232601AbhFQRqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:46:40 -0400
+Received: from mout.gmx.net ([212.227.15.19]:45679 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230523AbhFQRqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 13:46:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1623951861;
+        bh=p7yOt8Sqqwg0+64uhl7jjD3EXyo9D1HBcssfQqYQmQ0=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=fUdcjcjInBNGszsPGx2vM+W7ZQ4HnqdSALwJUCE1bW1RucH6ycINfiDX7tYmrx2/R
+         wM6yENoXKrcBR17tOmNhkqN+eCmnxBpk6fcv7/Qr+uYirYUuNVWZjjJLxsOqDhK29J
+         BScqaw762H9hygIR6hhzc5bpJImzaOMWI4Y/Vh2Q=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([149.172.234.120]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MwfWa-1l4jJn32j4-00y5O9; Thu, 17
+ Jun 2021 19:44:21 +0200
+Subject: Re: [PATCH] serial: amba-pl011: add RS485 support
+To:     Jiri Slaby <jirislaby@kernel.org>, gregkh@linuxfoundation.org
+Cc:     linux@armlinux.org.uk, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210610135004.7585-1-LinoSanfilippo@gmx.de>
+ <5f00ff43-9287-4027-7d80-474da957703c@kernel.org>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <7c0ac56d-58da-5e8a-b6be-44bafb183443@gmx.de>
+Date:   Thu, 17 Jun 2021 19:44:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616031713.24959-1-yujiahua1@huawei.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <5f00ff43-9287-4027-7d80-474da957703c@kernel.org>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Jh2NaU0qBdY0oHOTZ9WDd6NQuapDUwCMl8vXx7fGOIXDeDQF0rq
+ ZU5J8Eu2cn31J/RlaguLdKG+oDDiSz+SKeRAG91C8jw/PadL6O0uFox1B6wVal/nDHwbLWQ
+ a9hrrKQWeKya7kMRZ+uxIJWLqetztQMQ6lb9H8kmo/e4SmomSjI3GBOrFSdLUvdwGtCg0ps
+ i1MBTThGM0rmCLxzCFTew==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XxZZ6/QTf7Q=:VkhEKu0XfIC0jNxdeQ3/Vi
+ lmElive9Cbl1xYCRlOJhK55b4jdqAIUVwmHNsLucsdxKZwV7QWiBbbcuerLYJntaDbXOEKQpD
+ WOgVdlCYU4yX1xInBGfG1hxftu0jBLAV4dreKPWL8GAIPnb+RNSah6v0+AoL7uumZDwG5yNoC
+ yKXl7caqguB3/rg+B+3gWtgVP6s4ntPMmUaSqh2BY3kQdr1vHHdpsJMN7XuxJGOkD72zmNpi2
+ ihS9tNIGhpPoBHzEsusFbMiEE6U/ZvtKazYXMOu4ZUq3o0oPb9PzgogfADKXCDIXUDs7zUxxs
+ rzbFPk7kmOhNNBOp6Z1JTfoCjM/wnwSVzPNkEknMqGmT9+1XQT5mLo6IvOWcCV/3RxUjBSrM7
+ 9fz2U6BtvTAINormfUoAdZmN2ssQe+TPgj0nWJ97HSLR843baTgtFVCLQiYy96dRq13LmwYZu
+ VbTMIZm99XbMzqSgwLhbPAq/GdmvevtbGBrts1IQPNAaAKxo87bB7j++7WnaNkrHmJuF+Cs+1
+ 6+7MvPzhsgxnlbCxc2AHvOZ74y8NLnRWjnFEVg8bUVZCydqGIDoeHKyhKexDbjovQdy0QLV5d
+ ka2BsjlAo4CwLZfagv2AMUJQIfDCPvfW4YKG3BBnkS10Klxt+RKbq1bChozB5lwEZxM0MYbzE
+ C6cl3x8ggBCbDVzoD8oq1aWXNqBpw0j9zZw4fmR8VrXLOGeHgtIO+6clxD6w7Xuectn+auIz0
+ nxw1HsCCNqt7NxXHLqvL2+GXsjV4IvcgoQZx+XsRMYUgsWrk5a5/nzzGcZ9ecU48+fxOBsxYl
+ dcchrKU4csaIFMblT65v85WzmlpK0a6ZjuZGEOquhLym0v2BDDuyEmey+Fvm6DvDQhSGm6n0g
+ PuxnUOvcH0k5YUcUDvEOdo1Bw51MzEZ6xtHGPJ1TjxFlP+skL0TwoH7+ZdTqSSFfMWZ/CwgG8
+ gEmoVSMLZ5rlbiYl1gIpZ7fniPCMm3TQTHd6Hruc+mHTs3bzLhGgmrprNLdD0TR3Bfs92C2Rz
+ Rx7GHnTxNLK0g5QcBJ23w4q7uyzIQkWHBC6QJqHLBwCmFxGfB/FNbFLKVs9h4swRzXLfZk8R2
+ BEWY7DgdM7WYGUQFBWOLeIULPiQAzCbLM6IqBwNW3B0G7qbViky0vmUXw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 07:17:13PM -0800, Yu Jiahua wrote:
-> From: Jiahua Yu <yujiahua1@huawei.com>
-> 
-> spinlock can be initialized automatically with DEFINE_SPINLOCK()
-> rather than explicitly calling spin_lock_init().
-> 
-> Signed-off-by: Jiahua Yu <yujiahua1@huawei.com>
 
-Stuffed into drm-misc-next. The subject looked a bit strange, so I fixed
-that up.
--Daniel
+Hi,
 
-> ---
->  drivers/video/fbdev/omap2/omapfb/dss/apply.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/apply.c b/drivers/video/fbdev/omap2/omapfb/dss/apply.c
-> index c71021091828..acca991c7540 100644
-> --- a/drivers/video/fbdev/omap2/omapfb/dss/apply.c
-> +++ b/drivers/video/fbdev/omap2/omapfb/dss/apply.c
-> @@ -108,7 +108,7 @@ static struct {
->  } dss_data;
->  
->  /* protects dss_data */
-> -static spinlock_t data_lock;
-> +static DEFINE_SPINLOCK(data_lock);
->  /* lock for blocking functions */
->  static DEFINE_MUTEX(apply_lock);
->  static DECLARE_COMPLETION(extra_updated_completion);
-> @@ -131,8 +131,6 @@ static void apply_init_priv(void)
->  	struct mgr_priv_data *mp;
->  	int i;
->  
-> -	spin_lock_init(&data_lock);
-> -
->  	for (i = 0; i < num_ovls; ++i) {
->  		struct ovl_priv_data *op;
->  
-> -- 
-> 2.17.1
-> 
+On 16.06.21 at 08:18, Jiri Slaby wrote:
+=A0=A0=A0=A0=A0=A0=A0 mdelay(port->rs485.delay_rts_before_send);
+>
+> This is up to 1 second delay with interrupts disabled. Definitely not ni=
+ce. 8250 clamps this to 100 ms at least, why did you choose 1000 ms?
+>
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+AFAICS the 8250 driver does not clamp values read from the device tree pro=
+perty "rs485-rts-delay"
+(set by uart_get_rs485_mode()). Is this on purpose?
+
+Regards,
+Lino
