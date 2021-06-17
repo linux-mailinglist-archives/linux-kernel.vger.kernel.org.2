@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B44D13AB267
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836213AB26F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbhFQLYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:24:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232530AbhFQLYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:24:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CCEA613BF;
-        Thu, 17 Jun 2021 11:22:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623928953;
-        bh=7W6ZUJUgvAuyObY+Gwz9gOCcH56okP5pyM7YKdKyOxQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lAHH/dgtPd9TF6pgepsFS3oIce5b/X13/xa4cXrZijhnfCujrutwtL+w/5QqaFKqj
-         fNxiZSUO/wGfLHgifF5FtVPwbYcOykde0m2ZAPmCZTVEcZ8cKGX1Yt9WTyh0oEyvDh
-         RMjF4Kb74h8ho702XmfG/6m778hgdk0njFLmxqJY=
-Date:   Thu, 17 Jun 2021 13:22:30 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-Cc:     jirislaby@kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org,
-        andrianov@ispras.ru
-Subject: Re: [PATCH] tty: serial: owl: Fix data race in owl_uart_remove
-Message-ID: <YMswdqNpjb9n1pdW@kroah.com>
-References: <20210617110443.6526-1-saubhik.mukherjee@gmail.com>
+        id S232549AbhFQLZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232545AbhFQLZa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 07:25:30 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889FBC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:23:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=JXDXDLb/QIF75AJOX9ohvjSu+6uIrUNwcseh+WML+vw=; b=DM0LmQMgaAJK5lRc4d2fK8U23
+        tmHTratjNX+m60IpRCKHGGrdqWzF9uDHt4aRdt6A9aBqKUXkldnAOsrmNonZacg58aKLcLAdwwnIS
+        VQ8Og3KArTPSSYXvQC3+B1TVbxwT8FSGPd+XkEs7hYbE9/+I2aec7qh3JktHRNX6Dtam1Y8PqfJy8
+        QzxohAc2YiO9sZVgN/7pGGmJBbauEjUif6qJEZ37AdDOsXLzuPjIuvrtJ630vI+LwWI6KkSNPTaJh
+        5YkuuFUaSYjYjTkcQ+ghC/q+RtZ3XOYIhcCTB28TblZUEf9vbssjsYCKBFALJtARe985BMx92dZkQ
+        gxvri/Fdg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45102)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1ltq76-00009r-Qg; Thu, 17 Jun 2021 12:23:12 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1ltq6z-0006xh-FC; Thu, 17 Jun 2021 12:23:05 +0100
+Date:   Thu, 17 Jun 2021 12:23:05 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
+Message-ID: <20210617112305.GK22278@shell.armlinux.org.uk>
+References: <cover.1623813516.git.luto@kernel.org>
+ <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
+ <20210617103524.GA82133@C02TD0UTHF1T.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210617110443.6526-1-saubhik.mukherjee@gmail.com>
+In-Reply-To: <20210617103524.GA82133@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 04:34:43PM +0530, Saubhik Mukherjee wrote:
-> Suppose the driver is registered and a UART port is added. Once an
-> application opens the port, owl_uart_startup is called which registers
-> the interrupt handler owl_uart_irq.
+On Thu, Jun 17, 2021 at 11:40:46AM +0100, Mark Rutland wrote:
+> On Tue, Jun 15, 2021 at 08:21:12PM -0700, Andy Lutomirski wrote:
+> > On arm32, the only way to safely flush icache from usermode is to call
+> > cacheflush(2).  This also handles any required pipeline flushes, so
+> > membarrier's SYNC_CORE feature is useless on arm.  Remove it.
 > 
-> We could have the following race condition:
+> Unfortunately, it's a bit more complicated than that, and these days
+> SYNC_CORE is equally necessary on arm as on arm64. This is something
+> that changed in the architecture over time, but since ARMv7 we generally
+> need both the cache maintenance *and* a context synchronization event
+> (the latter must occur on the CPU which will execute the instructions).
 > 
-> When device is removed, owl_uart_remove is called, which calls
-> uart_remove_one_port, which calls owl_uart_release_port, which writes
-> NULL to port->membase. At this point parallely, an interrupt could be
-> handled by owl_uart_irq which reads port->membase.
+> If you look at the latest ARMv7-AR manual (ARM DDI 406C.d), section
+> A3.5.4 "Concurrent modification and execution of instructions" covers
+> this. That manual can be found at:
 > 
-> This is because it is possible to remove device without closing a port.
-> Thus, we need to check it and call owl_uart_shutdown in owl_uart_remove.
-> 
-> Found by Linux Driver Verification project (linuxtesting.org).
-> 
-> Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-> ---
->  drivers/tty/serial/owl-uart.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/owl-uart.c b/drivers/tty/serial/owl-uart.c
-> index 91f1eb0058d7..ac4e3aae2719 100644
-> --- a/drivers/tty/serial/owl-uart.c
-> +++ b/drivers/tty/serial/owl-uart.c
-> @@ -751,8 +751,15 @@ static int owl_uart_probe(struct platform_device *pdev)
->  static int owl_uart_remove(struct platform_device *pdev)
->  {
->  	struct owl_uart_port *owl_port = platform_get_drvdata(pdev);
-> +	struct uart_port *port = &owl_port->port;
->  
-> -	uart_remove_one_port(&owl_uart_driver, &owl_port->port);
-> +	/* It is possible to release device without closing a port.
-> +	 * Thus, need to check it and call shutdown.
-> +	 */
-> +	if (owl_uart_read(port, OWL_UART_CTL) & OWL_UART_CTL_EN)
-> +		owl_uart_shutdown(port);
+> 	https://developer.arm.com/documentation/ddi0406/latest/
 
-How is this read determining if the device is here or not?  And what
-happens if the state change happens right _after_ the check?
+Looking at that, sys_cacheflush() meets this. The manual details a
+series of cache maintenance calls in "step 1" that the modifying thread
+must issue - this is exactly what sys_cacheflush() does. The same is
+true for ARMv6, except the "ISB" terminology is replaced by a
+"PrefetchFlush" terminology. (I checked DDI0100I).
 
-Also, your comment style is for networking, not the rest of the kernel
-:)
+"step 2" requires an ISB on the "other CPU" prior to executing that
+code. As I understand it, in ARMv7, userspace can issue an ISB itself.
 
-thanks,
+For ARMv6K, it doesn't have ISB, but instead has a CP15 instruction
+for this that isn't availble to userspace. This is where we come to
+the situation about ARM 11MPCore, and whether we continue to support
+it or not.
 
-greg k-h
+So, I think we're completely fine with ARMv7 under 32-bit ARM kernels
+as userspace has everything that's required. ARMv6K is a different
+matter as we've already identified for several reasons.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
