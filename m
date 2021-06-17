@@ -2,113 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14403AB425
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50ED43AB428
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhFQNAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:00:35 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7473 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhFQNAb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:00:31 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5MV425MJzZjKX;
-        Thu, 17 Jun 2021 20:55:24 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 20:58:19 +0800
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 20:58:19 +0800
-Subject: Re: [PATCH -next v2] ACPI: sysfs: fix doc warnings in device_sysfs.c
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "ACPI Devel Maling List" <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        "Yue Haibing" <yuehaibing@huawei.com>, <yangjihong1@huawei.com>,
-        yu kuai <yukuai3@huawei.com>
-References: <20210615071914.3067407-1-libaokun1@huawei.com>
- <CAJZ5v0iMGTDAbY+JivBFRP6soTC5v_imqWZ9jSZoQVeYdgVoCw@mail.gmail.com>
-From:   "libaokun (A)" <libaokun1@huawei.com>
-Message-ID: <6e737a9a-72e9-509c-faa5-85a9f89da9ab@huawei.com>
-Date:   Thu, 17 Jun 2021 20:58:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S232105AbhFQNBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:01:17 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42580 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230137AbhFQNBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:01:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=hHXkwgKnNfp9L6OW35d26XLF9j9waBFBIWrHzICzUiA=; b=2jrxKMoVFqfxXdyWvZ5FM9OnW/
+        7OssGebI5yQ27lLxmuqijnmLicIFZoQ/xbeDezh7OeDMum/zxlJlPDMFk53Z3+JBkxFWb74NmM46v
+        QFNqnErKV4bez28i7VyL3LjN7I2lrMP7lRUyQ3yXjKKx9XLQYUduLHgdMiCHr4bZDW2s=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ltrbt-009u8e-CN; Thu, 17 Jun 2021 14:59:05 +0200
+Date:   Thu, 17 Jun 2021 14:59:05 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
+        lenb@kernel.org
+Subject: Re: [net-next: PATCH v2 2/7] net: mdiobus: Introduce
+ fwnode_mdbiobus_register()
+Message-ID: <YMtHGV/Yr6h3TKKI@lunn.ch>
+References: <20210616190759.2832033-1-mw@semihalf.com>
+ <20210616190759.2832033-3-mw@semihalf.com>
+ <YMpR+lJqcgQU2DMO@lunn.ch>
+ <CAPv3WKdOkxV695DbhhYr+wf1rnphtj-pyERZ-74RrdZyQJGt=g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0iMGTDAbY+JivBFRP6soTC5v_imqWZ9jSZoQVeYdgVoCw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPv3WKdOkxV695DbhhYr+wf1rnphtj-pyERZ-74RrdZyQJGt=g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your advice.
+> Actually mvmdio driver is using this fallback for non-dt platforms
+> (e.g. Orion). Therefore I would prefer to keep the current behavior.
 
-I'll follow your advice strictly.
+A quick look at Orion5x, it is now a multi arch MACH. It selects
+ARCH_MULTI_V5. Which seems to imply ARCH_MULTIPLATFORM which selects
+USE_OF which selects OF.
 
-Best Regards.
+At least for ARM, i'm not sure you can realistically disable OF.
 
+Having said that acpi_mdiobus_register() also falls back to
+mdiobus_register(mdio). So it is symmetric. And
+fwmode_mdiobus_register() falling back would keep with the
+symmetry. So, O.K.
 
-在 2021/6/17 20:34, Rafael J. Wysocki 写道:
-> On Tue, Jun 15, 2021 at 9:10 AM Baokun Li <libaokun1@huawei.com> wrote:
->> Fixes the following W=1 kernel build warning(s):
->>
->>   drivers/acpi/device_sysfs.c:278: warning: Function parameter or
->>    member 'dev' not described in 'acpi_device_uevent_modalias'
->>   drivers/acpi/device_sysfs.c:278: warning: Function parameter or
->>    member 'env' not described in 'acpi_device_uevent_modalias'
->>   drivers/acpi/device_sysfs.c:323: warning: Function parameter or
->>    member 'dev' not described in 'acpi_device_modalias'
->>   drivers/acpi/device_sysfs.c:323: warning: Function parameter or
->>    member 'buf' not described in 'acpi_device_modalias'
->>   drivers/acpi/device_sysfs.c:323: warning: Function parameter or
->>    member 'size' not described in 'acpi_device_modalias'
->>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->> V1->V2:
->>          Make comments more appropriate
->>
->>   drivers/acpi/device_sysfs.c | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
->> index a393e0e09381..d96e38b2a0d1 100644
->> --- a/drivers/acpi/device_sysfs.c
->> +++ b/drivers/acpi/device_sysfs.c
->> @@ -268,6 +268,8 @@ int __acpi_device_uevent_modalias(struct acpi_device *adev,
->>
->>   /**
->>    * acpi_device_uevent_modalias - uevent modalias for ACPI-enumerated devices.
->> + * @dev: Struct device to get acpi device node.
->> + * @env: Environment variables of the kobject uevent.
->>    *
->>    * Create the uevent modalias field for ACPI-enumerated devices.
->>    *
->> @@ -313,6 +315,9 @@ static int __acpi_device_modalias(struct acpi_device *adev, char *buf, int size)
->>
->>   /**
->>    * acpi_device_modalias - modalias sysfs attribute for ACPI-enumerated devices.
->> + * @dev: Struct device to get acpi device node.
->> + * @buf: The buffer to save pnp_modalias and of_modalias.
->> + * @size: Size of buffer.
->>    *
->>    * Create the modalias sysfs attribute for ACPI-enumerated devices.
->>    *
->> --
-> Applied as 5.14 material with fixed spelling ("acpi" -> "ACPI").
->
-> Please always spell ACPI in capitals in comments, patch changelogs,
-> subjects and similar.
->
-> Thanks!
-> .
+	  Andrew
