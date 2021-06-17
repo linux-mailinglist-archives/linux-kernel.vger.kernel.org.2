@@ -2,150 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F0E3AB7DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90873AB7DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhFQPtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232550AbhFQPtm (ORCPT
+        id S233485AbhFQPuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:50:10 -0400
+Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:42101 "EHLO
+        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233371AbhFQPuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:49:42 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D3BC061574;
-        Thu, 17 Jun 2021 08:47:33 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id c7so3748431edn.6;
-        Thu, 17 Jun 2021 08:47:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lk7/EHcABy0uGn74EGnMmedO8vl0ZDyyXsIzLqJ/JMU=;
-        b=tyjupme6WZKvcs6O5cG9I7Br0ci3RubAZEj+Xmh9/ukduEZ5lmySa9Ob6IREfr/W0d
-         l27IKzur1AluotOY0GUxuZFHSFHsHzkg7EddUfHkhmmOCeWw3HV4+HXd1xcD5deK2aM9
-         wxP9AOUQYp82Kj265p+Gt/56HdyGTZeOTUb+SSDeaFFu5sM7fr/DD93RVitu88I1/I+u
-         TDE0WYCB79zJAmWKv9ZCh4x1GDaix/DbzEafHfxCnultqqnmTKRZ4UflkmGMLJO6hVoe
-         tQZzmfP8tn/N0MbTU5t2eTnzBzBnQjmCEicEPXFLvGktpoBz8LczDnwazqi0Dm1Lfh2y
-         BqdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lk7/EHcABy0uGn74EGnMmedO8vl0ZDyyXsIzLqJ/JMU=;
-        b=nmyLWP23J5VJoIMBQ9CfZbFvXLMIvoYvJhxu3S6seARVUtA5w2+zoqZpogk/6Kaj41
-         zIq9NfTWtKj+C/EKlA1fgRIcwqlBJTCuovhH7FV0VeavKxeUd+B7frFJZQywzmqytWMa
-         3dbdixnvP12GNGi8nDeFRU4GZyu7DvApWau9jxA9mv9tRg8I4ePz96qn8IxN/h+SGfCG
-         hiZgmKqr+VwuS6q/mFcO5pKUZ/+P2RRswtViAm0Knl6IznqaXPyNSP0SSmCEAG3pH7nn
-         T2Zuv2VZGTfyjjDBJvNzvHrjLzk7CMlO5BUOURHrCszPNUfUvkteLmQ7zdzreJrn3Ccl
-         mJ6g==
-X-Gm-Message-State: AOAM530hs1UxOLjQNSPEDLoS1HZwJTWYUzDn8QELknbfrj4w4oeMrtTM
-        cNglSBb1OzbW9cqFlQevQma6oOgNY3tKSA==
-X-Google-Smtp-Source: ABdhPJzAyWffhjQQscfABwEcFJAeZ6PSFkN1A1tW2+1/ihFGU5LwCZv3yYsFVORcvM+LgLF0uuh0TQ==
-X-Received: by 2002:aa7:d344:: with SMTP id m4mr7551638edr.281.1623944851670;
-        Thu, 17 Jun 2021 08:47:31 -0700 (PDT)
-Received: from jernej-laptop.localnet (cpe1-4-249.cable.triera.net. [213.161.4.249])
-        by smtp.gmail.com with ESMTPSA id ci4sm3980380ejc.110.2021.06.17.08.47.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 08:47:31 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Andre Przywara <andre.przywara@arm.com>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh@kernel.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 16/19] arm64: dts: allwinner: Add Allwinner H616 .dtsi file
-Date:   Thu, 17 Jun 2021 17:47:29 +0200
-Message-ID: <8040051.UxXjYCDM83@jernej-laptop>
-In-Reply-To: <20210617154242.iovbze64up4u7wba@gilmour>
-References: <20210615110636.23403-1-andre.przywara@arm.com> <20210616110630.54061205@slackpad.fritz.box> <20210617154242.iovbze64up4u7wba@gilmour>
+        Thu, 17 Jun 2021 11:50:09 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id 1D2D0F8483
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 16:48:01 +0100 (IST)
+Received: (qmail 11209 invoked from network); 17 Jun 2021 15:48:00 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 17 Jun 2021 15:48:00 -0000
+Date:   Thu, 17 Jun 2021 16:47:59 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] sched/fair: Age the average idle time
+Message-ID: <20210617154759.GR30378@techsingularity.net>
+References: <20210615111611.GH30378@techsingularity.net>
+ <20210615204228.GB4272@worktop.programming.kicks-ass.net>
+ <CAKfTPtAZ_Aq_S-O2qh5LPyxExkBq3G0kxh51fT7sSC_z8He4+w@mail.gmail.com>
+ <20210617074401.GL30378@techsingularity.net>
+ <CAKfTPtC8d37ZrXfDF2jkgg=tDPb1qAvFQQGXHhTf9LLR59hd8Q@mail.gmail.com>
+ <20210617094040.GM30378@techsingularity.net>
+ <CAKfTPtB-UCduEiQ5e8NxbOwsfjYGj3ron5rAg4_5ag2Fne7v3A@mail.gmail.com>
+ <20210617110548.GN30378@techsingularity.net>
+ <CAKfTPtBJkpSMFFGwgdFLyO5aSnGuzQSPrtpwOFckMQa4xaex=Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtBJkpSMFFGwgdFLyO5aSnGuzQSPrtpwOFckMQa4xaex=Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne =C4=8Detrtek, 17. junij 2021 ob 17:42:42 CEST je Maxime Ripard napisal(=
-a):
-> On Wed, Jun 16, 2021 at 11:06:30AM +0100, Andre Przywara wrote:
-> > > > +	reserved-memory {
-> > > > +		#address-cells =3D <2>;
-> > > > +		#size-cells =3D <2>;
-> > > > +		ranges;
-> > > > +
-> > > > +		/* 512KiB reserved for ARM Trusted Firmware (BL31) */
-> > > > +		secmon_reserved: secmon@40000000 {
-> > > > +			reg =3D <0x0 0x40000000 0x0 0x80000>;
-> > > > +			no-map;
-> > > > +		};
-> > > > +	};
-> > >=20
-> > > Can't this be added by ATF directly?
-> >=20
-> > It actually is, and if you use U-Boot's DT ($fdtcontroladdr), that
-> > actually works. But as it stands right now, U-Boot fails to propagate
-> > this to any DTB that gets *loaded*. Fixing this requires generic code
-> > fixes, so I can't just hack this in for sunxi quickly.
-> > So I wanted to keep this around for a while, as missing this is a
-> > showstopper for booting Linux.
->=20
-> It looks like we didn't need it for the H6, what makes it any different?
+On Thu, Jun 17, 2021 at 05:03:54PM +0200, Vincent Guittot wrote:
+> On Thu, 17 Jun 2021 at 13:05, Mel Gorman <mgorman@techsingularity.net> wrote:
+> >
+> > On Thu, Jun 17, 2021 at 12:02:56PM +0200, Vincent Guittot wrote:
+> > > > > >
+> > > > > > Fundamentally though, as the changelog notes "due to the nature of the
+> > > > > > patch, this is a regression magnet". There are going to be examples
+> > > > > > where a deep search is better even if a machine is fully busy or
+> > > > > > overloaded and examples where cutting off the search is better. I think
+> > > > > > it's better to have an idle estimate that gets updated if CPUs are fully
+> > > > > > busy even if it's not a universal win.
+> > > > >
+> > > > > Although I agree that using a stall average idle time value of local
+> > > > > is not good, I'm not sure this proposal is better. The main problem is
+> > > > > that we use the avg_idle of the local CPU to estimate how many times
+> > > > > we should loop and try to find another idle CPU. But there is no
+> > > > > direct relation between both.
+> > > >
+> > > > This is true. The idle time of the local CPU is used to estimate the
+> > > > idle time of the domain which is inevitably going to be inaccurate but
+> > >
+> > > I'm more and more convinced that using average idle time  (of the
+> > > local cpu or the full domain) is not the right metric. In
+> > > select_idle_cpu(), we looks for an idle CPU but we don't care about
+> > > how long it will be idle.
+> >
+> > Can we predict that accurately? cpufreq for intel_pstate used to try
+> > something like that but it was a bit fuzzy and I don't know if the
+> > scheduler could do much better. There is some idle prediction stuff but
+> > it's related to nohz which does not really help us if a machine is nearly
+> > fully busy or overloaded.
+> >
+> > I guess for tracking idle that revisiting
+> > https://lore.kernel.org/lkml/1615872606-56087-1-git-send-email-aubrey.li@intel.com/
+> > is an option now that the scan is somewhat unified. A two-pass scan
+> > could be used to check potentially idle CPUs first and if there is
+> > sufficient search depth left, scan other CPUs. There were some questions
+> 
+> I think it's the other way around:
+> a CPU is busy for sure if it is not set in the cpuidle_mask and we
+> don't need to check it. But a cpu might not be idle even if it is set
+> in the idle mask might because it's cleared during the tick
+> 
 
-H616 TF-A resides in DRAM and H6 resides in SRAM A2 (IIRC). H616 has much l=
-ess=20
-useful SRAM due to ARISC removal.
+Tick is a long time so scan depth may still be a problem.
 
-Best regards,
-Jernej
+> > Selecting based on avg idle time could be interesting but hazardous. If
+> > for example, we prioritised selecting a CPU that is mostly idle, it'll
+> > also pick CPUs that are potentially in a deep idle state incurring a
+> > larger wakeup cost. Right now we are not much better because we just
+> > select an idle CPU and hope for the best but always targetting the most
+> > idle CPU could have problems. There would also be the cost of tracking
+> > idle CPUs in priority order. It would eliminate the scan depth cost
+> > calculations but the overall cost would be much worse.
+> >
+> > Hence, I still think we can improve the scan depth costs in the short
+> > term until a replacement is identified that works reasonably well.
+> >
+> > > Even more, we can scan all CPUs whatever the
+> > > avg idle time if there is a chance that there is an idle core.
+> > >
+> >
+> > That is an important, but separate topic. It's known that the idle core
+> > detection can yield false positives. Putting core scanning under SIS_PROP
+> > had mixed results when we last tried but things change. Again, it doesn't
+> > help with scan depth calculations.
+> 
+> my point was mainly to highlight that the path can take opposite
+> decision for the same avg_idle value:
+> - scan all cpus if has_idle_core is true whatever avg_idle
+> - limit the depth if has_idle_core is false and avg_idle is short
+> 
 
->=20
-> > > > +		mmc0: mmc@4020000 {
-> > > > +			compatible =3D "allwinner,sun50i-h616-mmc",
-> > > > +				     "allwinner,sun50i-a100-
-mmc";
-> > > > +			reg =3D <0x04020000 0x1000>;
-> > > > +			clocks =3D <&ccu CLK_BUS_MMC0>, <&ccu=20
-CLK_MMC0>;
-> > > > +			clock-names =3D "ahb", "mmc";
-> > > > +			resets =3D <&ccu RST_BUS_MMC0>;
-> > > > +			reset-names =3D "ahb";
-> > > > +			interrupts =3D <GIC_SPI 35=20
-IRQ_TYPE_LEVEL_HIGH>;
-> > > > +			pinctrl-names =3D "default";
-> > > > +			pinctrl-0 =3D <&mmc0_pins>;
-> > > > +			status =3D "disabled";
-> > > > +			max-frequency =3D <150000000>;
-> > > > +			cap-sd-highspeed;
-> > > > +			cap-mmc-highspeed;
-> > > > +			mmc-ddr-3_3v;
-> > > > +			mmc-ddr-1_8v;
-> > >=20
-> > > This is not something you know in the DTSI? It entirely depends on how
-> > > the board has been designed.
-> >=20
-> > Are you referring just to the last property?
->=20
-> Initially, yes, but the argument is for both...
->=20
-> > This is copying what the driver unconditionally sets for the other
-> >=20
-> > SoCs at the moment (minus the H5 screwup):
-> > 	mmc->caps      |=3D MMC_CAP_1_8V_DDR | MMC_CAP_3_3V_DDR;
-> >=20
-> > IIUC 1.8V operation requires a 1.8V regulator for vqmmc to actually
-> > work, so this property alone won't enable anything.
-> > But if it's just about the 1.8V property, I can of course move this to
-> > the board dts files.
->=20
-> ... Since we've seen boards with only 3.3v or 1.8v wired to vqmmc, so we
-> should really just push this to the boards for new SoCs
->=20
-> Maxime
+I do understand the point but the idle core scan anomaly was not
+intended to be addressed in the patch because putting the idle scan
+under SIS_PROP potentially means using cpus with active idle siblings
+prematurely.
 
+> >
+> > > > tracking idle time for the domain will be cache write intensive and
+> > > > potentially very expensive. I think this was discussed before but maybe
+> > > > it is my imaginaction.
+> > > >
+> > > > > Typically, a short average idle time on
+> > > > > the local CPU doesn't mean that there are less idle CPUs and that's
+> > > > > why we have a mix a gain and loss
+> > > > >
+> > > >
+> > > > Can you evaluate if scanning proportional to cores helps if applied on
+> > > > top? The patch below is a bit of pick&mix and has only seen a basic build
+> > >
+> > > I will queue it for some test later today
+> > >
+> >
+> > Thanks. The proposed patch since passed a build and boot test,
+> > performance evaluation is under way but as it's x86 and SMT2, I'm mostly
+> > just checking that it's neutral.
+> 
+> Results stay similar:
+> group  tip/sched/core      + this patch             + latest addon
+> 1      13.358(+/- 1.82%)   12.850(+/- 2.21%) +4%    13.411(+/- 2.47%) -0%
+> 4      4.286(+/- 2.77%)    4.114(+/- 2.25%)  +4%    4.163(+/- 1.88%)  +3%
+> 16     3.175(+/- 0.55%)    3.559(+/- 0.43%)  -12%   3.535(+/- 0.52%)  -11%
+> 32     2.912(+/- 0.79%)    3.165(+/- 0.95%)  -8%    3.153(+/- 0.76%)  -10%
+> 64     2.859(+/- 1.12%)    2.937(+/- 0.91%)  -3%    2.919(+/- 0.73%)  -2%
+> 128    3.092(+/- 4.75%)    3.003(+/-5.18%)   +3%    2.973(+/- 0.90%)  +4%
+> 256    3.233(+/- 3.03%)    2.973(+/- 0.80%)  +8%    3.036(+/- 1.05%)  +6%
+> 
 
+Ok, accounting for SMT4 didn't help.
 
-
+-- 
+Mel Gorman
+SUSE Labs
