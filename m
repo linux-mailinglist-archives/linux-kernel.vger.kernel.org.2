@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57CB3AABF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6123AAC01
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhFQG3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 02:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
+        id S230330AbhFQG3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 02:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbhFQG33 (ORCPT
+        with ESMTP id S230103AbhFQG3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 02:29:29 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5AE6C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:27:21 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id h12so4192286pfe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:27:21 -0700 (PDT)
+        Thu, 17 Jun 2021 02:29:37 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C17C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:27:30 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id fy24-20020a17090b0218b029016c5a59021fso5510872pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:27:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zt9ftl2GgG6zLHGKuFNKcb10jEqN4NFqjv4UdPB0c0s=;
-        b=I9lZlzpZbxhq5xBhP7M+6kWMnnmbT4As/+TtYFRnm2RkjBuetycyYLTw15piFzRzmY
-         pc7T619hVo2Xs7ezKavzjM6pcXqAYf2ybMqNdh8HJ/uXnc2Isjl3Agjergl9lcUGkfHV
-         NtQtJptIhUFitpqIg8s6xtVxaSvrBp8LbMuaE=
+        bh=KelymLiaUr2kAqb1cjw3xb5mAGn5EZZnSyDtFIgOmrQ=;
+        b=PW7z41PFDNTlIGuzfq05csmDjr4qMLdCaE7tmGdf4gvlKN/znqHktRWbHssSA3dnOt
+         FhN+nliA+Vw4JPIVDX6ymQbXExTG7M1+qNG2rsrEvRcC/Dq+1XMIQs/vlMESkfIVcSXG
+         55tMikicnW50hUKlHGe6oPGyW7NPEGqY7+RII=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zt9ftl2GgG6zLHGKuFNKcb10jEqN4NFqjv4UdPB0c0s=;
-        b=mcWLTfMnC2tx28tMa/fPEpD2b5ZD33hHTW5XikUgDfzTVa+CCvN1cxdUndhk4RwMJW
-         Nq7Krsk/woRs58NuRYaYfu78yeMR8nuXLaIZVX6AaUeYt1+8EpNdJiKHFg9r9mt1ghyr
-         OXW30nK96cxoTtZ159dMLGdjdWL1bvjuG/XbHqs/tfjdtpXhQmfxz8ovoLUwAmtrB22r
-         5nJ3zy6Fr69sbHvihmgbiRdhr4sWatEHU4y6CcJ2F9DiOGwqskIK5nO7V6mvJ/8hbCqA
-         DjmdO/bo08iUrIzTJM8cELqcvMNNU6HnyOwY/qeYSxMvy+41i6rdfkfnhwFlb3KpsVhl
-         iRXQ==
-X-Gm-Message-State: AOAM531qA0ha8LQxuilBN7lc41HUvmcYerNg36lVTB9dbTQOPyvDWhp+
-        Qd6HfUcpUQwR3MuuBqiyVzfapQ==
-X-Google-Smtp-Source: ABdhPJxGCqAZFc2OdjcM7HCpPJ/7nqm7w1lmyGtnWHSp15jnjjZqon+J4Vxv5k08FCH+83ciqwnwRQ==
-X-Received: by 2002:a05:6a00:18a7:b029:2f2:b099:7b1a with SMTP id x39-20020a056a0018a7b02902f2b0997b1amr3582676pfh.59.1623911241486;
-        Wed, 16 Jun 2021 23:27:21 -0700 (PDT)
+        bh=KelymLiaUr2kAqb1cjw3xb5mAGn5EZZnSyDtFIgOmrQ=;
+        b=qHxfUu72tYYIIPAXeGaTAodE075Xb1d05hFo+gy6+0prh+2dHvyC36fkjHJvEdixg+
+         9CB0K6vi7huAKVsYHydtCGdzOsXVInXLO+363Roc2fuZ0fCcz+FB/nDGanyUSTqb8aje
+         EHJ+mgdWza2Mk/dAr+pQe+SxBarYFFnIB+JxvjY0K9hkoTkTE0TrZi5LRvzXng0lVTod
+         tMVo2GZT1l6TgqItwid3WQUjMzMDLtiNQRHt0kHKMDHHo4+lHjXUJwnqY2ZwElbmK9pv
+         EaC4Hk5F+6F1RAZCJ8Cd3cNtU42xqGpZIj9Yp+vUoMkJRjPK17Wkeg1WwNJ363HknTgt
+         6mCQ==
+X-Gm-Message-State: AOAM5307oAw/DW3IOPyGg11hdbyqnZov5q8EZLpNchB0NmJBo7Y65FxZ
+        FGi0zbZ9fxgYzhMBzl09RUZKmg==
+X-Google-Smtp-Source: ABdhPJx2kV7GPTVnVnDwmspJJj04dwjp3LHB/TRZ3kQtKfgjzJx3d4GCcV0I6QuHxBDRWzUo37vpdA==
+X-Received: by 2002:a17:90a:4e85:: with SMTP id o5mr15147777pjh.22.1623911250177;
+        Wed, 16 Jun 2021 23:27:30 -0700 (PDT)
 Received: from localhost ([2401:fa00:95:205:e349:a6ae:d3d0:1621])
-        by smtp.gmail.com with UTF8SMTPSA id d15sm3950443pfd.35.2021.06.16.23.27.13
+        by smtp.gmail.com with UTF8SMTPSA id gk21sm7239729pjb.20.2021.06.16.23.27.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 23:27:20 -0700 (PDT)
+        Wed, 16 Jun 2021 23:27:29 -0700 (PDT)
 From:   Claire Chang <tientzu@chromium.org>
 To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
         Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
@@ -79,9 +79,9 @@ Cc:     benh@kernel.crashing.org, paulus@samba.org,
         joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
         maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
         rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-Subject: [PATCH v13 04/12] swiotlb: Update is_swiotlb_buffer to add a struct device argument
-Date:   Thu, 17 Jun 2021 14:26:27 +0800
-Message-Id: <20210617062635.1660944-5-tientzu@chromium.org>
+Subject: [PATCH v13 05/12] swiotlb: Update is_swiotlb_active to add a struct device argument
+Date:   Thu, 17 Jun 2021 14:26:28 +0800
+Message-Id: <20210617062635.1660944-6-tientzu@chromium.org>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
 In-Reply-To: <20210617062635.1660944-1-tientzu@chromium.org>
 References: <20210617062635.1660944-1-tientzu@chromium.org>
@@ -91,7 +91,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update is_swiotlb_buffer to add a struct device argument. This will be
+Update is_swiotlb_active to add a struct device argument. This will be
 useful later to allow for different pools.
 
 Signed-off-by: Claire Chang <tientzu@chromium.org>
@@ -99,179 +99,104 @@ Reviewed-by: Christoph Hellwig <hch@lst.de>
 Tested-by: Stefano Stabellini <sstabellini@kernel.org>
 Tested-by: Will Deacon <will@kernel.org>
 ---
- drivers/iommu/dma-iommu.c | 12 ++++++------
- drivers/xen/swiotlb-xen.c |  2 +-
- include/linux/swiotlb.h   |  7 ++++---
- kernel/dma/direct.c       |  6 +++---
- kernel/dma/direct.h       |  6 +++---
- 5 files changed, 17 insertions(+), 16 deletions(-)
+ drivers/gpu/drm/i915/gem/i915_gem_internal.c | 2 +-
+ drivers/gpu/drm/nouveau/nouveau_ttm.c        | 2 +-
+ drivers/pci/xen-pcifront.c                   | 2 +-
+ include/linux/swiotlb.h                      | 4 ++--
+ kernel/dma/direct.c                          | 2 +-
+ kernel/dma/swiotlb.c                         | 4 ++--
+ 6 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 3087d9fa6065..10997ef541f8 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -507,7 +507,7 @@ static void __iommu_dma_unmap_swiotlb(struct device *dev, dma_addr_t dma_addr,
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_internal.c b/drivers/gpu/drm/i915/gem/i915_gem_internal.c
+index a9d65fc8aa0e..4b7afa0fc85d 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_internal.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_internal.c
+@@ -42,7 +42,7 @@ static int i915_gem_object_get_pages_internal(struct drm_i915_gem_object *obj)
  
- 	__iommu_dma_unmap(dev, dma_addr, size);
+ 	max_order = MAX_ORDER;
+ #ifdef CONFIG_SWIOTLB
+-	if (is_swiotlb_active()) {
++	if (is_swiotlb_active(obj->base.dev->dev)) {
+ 		unsigned int max_segment;
  
--	if (unlikely(is_swiotlb_buffer(phys)))
-+	if (unlikely(is_swiotlb_buffer(dev, phys)))
- 		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
- }
- 
-@@ -578,7 +578,7 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
+ 		max_segment = swiotlb_max_segment();
+diff --git a/drivers/gpu/drm/nouveau/nouveau_ttm.c b/drivers/gpu/drm/nouveau/nouveau_ttm.c
+index 9662522aa066..be15bfd9e0ee 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_ttm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_ttm.c
+@@ -321,7 +321,7 @@ nouveau_ttm_init(struct nouveau_drm *drm)
  	}
  
- 	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
--	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
-+	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(dev, phys))
- 		swiotlb_tbl_unmap_single(dev, phys, org_size, dir, attrs);
- 	return iova;
- }
-@@ -749,7 +749,7 @@ static void iommu_dma_sync_single_for_cpu(struct device *dev,
- 	if (!dev_is_dma_coherent(dev))
- 		arch_sync_dma_for_cpu(phys, size, dir);
+ #if IS_ENABLED(CONFIG_SWIOTLB) && IS_ENABLED(CONFIG_X86)
+-	need_swiotlb = is_swiotlb_active();
++	need_swiotlb = is_swiotlb_active(dev->dev);
+ #endif
  
--	if (is_swiotlb_buffer(phys))
-+	if (is_swiotlb_buffer(dev, phys))
- 		swiotlb_sync_single_for_cpu(dev, phys, size, dir);
- }
+ 	ret = ttm_bo_device_init(&drm->ttm.bdev, &nouveau_bo_driver,
+diff --git a/drivers/pci/xen-pcifront.c b/drivers/pci/xen-pcifront.c
+index b7a8f3a1921f..0d56985bfe81 100644
+--- a/drivers/pci/xen-pcifront.c
++++ b/drivers/pci/xen-pcifront.c
+@@ -693,7 +693,7 @@ static int pcifront_connect_and_init_dma(struct pcifront_device *pdev)
  
-@@ -762,7 +762,7 @@ static void iommu_dma_sync_single_for_device(struct device *dev,
- 		return;
+ 	spin_unlock(&pcifront_dev_lock);
  
- 	phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), dma_handle);
--	if (is_swiotlb_buffer(phys))
-+	if (is_swiotlb_buffer(dev, phys))
- 		swiotlb_sync_single_for_device(dev, phys, size, dir);
- 
- 	if (!dev_is_dma_coherent(dev))
-@@ -783,7 +783,7 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
- 		if (!dev_is_dma_coherent(dev))
- 			arch_sync_dma_for_cpu(sg_phys(sg), sg->length, dir);
- 
--		if (is_swiotlb_buffer(sg_phys(sg)))
-+		if (is_swiotlb_buffer(dev, sg_phys(sg)))
- 			swiotlb_sync_single_for_cpu(dev, sg_phys(sg),
- 						    sg->length, dir);
- 	}
-@@ -800,7 +800,7 @@ static void iommu_dma_sync_sg_for_device(struct device *dev,
- 		return;
- 
- 	for_each_sg(sgl, sg, nelems, i) {
--		if (is_swiotlb_buffer(sg_phys(sg)))
-+		if (is_swiotlb_buffer(dev, sg_phys(sg)))
- 			swiotlb_sync_single_for_device(dev, sg_phys(sg),
- 						       sg->length, dir);
- 
-diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-index 4c89afc0df62..0c6ed09f8513 100644
---- a/drivers/xen/swiotlb-xen.c
-+++ b/drivers/xen/swiotlb-xen.c
-@@ -100,7 +100,7 @@ static int is_xen_swiotlb_buffer(struct device *dev, dma_addr_t dma_addr)
- 	 * in our domain. Therefore _only_ check address within our domain.
- 	 */
- 	if (pfn_valid(PFN_DOWN(paddr)))
--		return is_swiotlb_buffer(paddr);
-+		return is_swiotlb_buffer(dev, paddr);
- 	return 0;
- }
- 
+-	if (!err && !is_swiotlb_active()) {
++	if (!err && !is_swiotlb_active(&pdev->xdev->dev)) {
+ 		err = pci_xen_swiotlb_init_late();
+ 		if (err)
+ 			dev_err(&pdev->xdev->dev, "Could not setup SWIOTLB!\n");
 diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 216854a5e513..d1f3d95881cd 100644
+index d1f3d95881cd..dd1c30a83058 100644
 --- a/include/linux/swiotlb.h
 +++ b/include/linux/swiotlb.h
-@@ -2,6 +2,7 @@
- #ifndef __LINUX_SWIOTLB_H
- #define __LINUX_SWIOTLB_H
- 
-+#include <linux/device.h>
- #include <linux/dma-direction.h>
- #include <linux/init.h>
- #include <linux/types.h>
-@@ -101,9 +102,9 @@ struct io_tlb_mem {
- };
- extern struct io_tlb_mem *io_tlb_default_mem;
- 
--static inline bool is_swiotlb_buffer(phys_addr_t paddr)
-+static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
- {
--	struct io_tlb_mem *mem = io_tlb_default_mem;
-+	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
- 
- 	return mem && paddr >= mem->start && paddr < mem->end;
- }
-@@ -115,7 +116,7 @@ bool is_swiotlb_active(void);
+@@ -112,7 +112,7 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+ void __init swiotlb_exit(void);
+ unsigned int swiotlb_max_segment(void);
+ size_t swiotlb_max_mapping_size(struct device *dev);
+-bool is_swiotlb_active(void);
++bool is_swiotlb_active(struct device *dev);
  void __init swiotlb_adjust_size(unsigned long size);
  #else
  #define swiotlb_force SWIOTLB_NO_FORCE
--static inline bool is_swiotlb_buffer(phys_addr_t paddr)
-+static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+@@ -132,7 +132,7 @@ static inline size_t swiotlb_max_mapping_size(struct device *dev)
+ 	return SIZE_MAX;
+ }
+ 
+-static inline bool is_swiotlb_active(void)
++static inline bool is_swiotlb_active(struct device *dev)
  {
  	return false;
  }
 diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index f737e3347059..84c9feb5474a 100644
+index 84c9feb5474a..7a88c34d0867 100644
 --- a/kernel/dma/direct.c
 +++ b/kernel/dma/direct.c
-@@ -343,7 +343,7 @@ void dma_direct_sync_sg_for_device(struct device *dev,
- 	for_each_sg(sgl, sg, nents, i) {
- 		phys_addr_t paddr = dma_to_phys(dev, sg_dma_address(sg));
- 
--		if (unlikely(is_swiotlb_buffer(paddr)))
-+		if (unlikely(is_swiotlb_buffer(dev, paddr)))
- 			swiotlb_sync_single_for_device(dev, paddr, sg->length,
- 						       dir);
- 
-@@ -369,7 +369,7 @@ void dma_direct_sync_sg_for_cpu(struct device *dev,
- 		if (!dev_is_dma_coherent(dev))
- 			arch_sync_dma_for_cpu(paddr, sg->length, dir);
- 
--		if (unlikely(is_swiotlb_buffer(paddr)))
-+		if (unlikely(is_swiotlb_buffer(dev, paddr)))
- 			swiotlb_sync_single_for_cpu(dev, paddr, sg->length,
- 						    dir);
- 
-@@ -504,7 +504,7 @@ size_t dma_direct_max_mapping_size(struct device *dev)
- bool dma_direct_need_sync(struct device *dev, dma_addr_t dma_addr)
+@@ -495,7 +495,7 @@ int dma_direct_supported(struct device *dev, u64 mask)
+ size_t dma_direct_max_mapping_size(struct device *dev)
  {
- 	return !dev_is_dma_coherent(dev) ||
--		is_swiotlb_buffer(dma_to_phys(dev, dma_addr));
-+	       is_swiotlb_buffer(dev, dma_to_phys(dev, dma_addr));
+ 	/* If SWIOTLB is active, use its maximum mapping size */
+-	if (is_swiotlb_active() &&
++	if (is_swiotlb_active(dev) &&
+ 	    (dma_addressing_limited(dev) || swiotlb_force == SWIOTLB_FORCE))
+ 		return swiotlb_max_mapping_size(dev);
+ 	return SIZE_MAX;
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index de79e9437030..409694d7a8ad 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -664,9 +664,9 @@ size_t swiotlb_max_mapping_size(struct device *dev)
+ 	return ((size_t)IO_TLB_SIZE) * IO_TLB_SEGSIZE;
  }
  
- /**
-diff --git a/kernel/dma/direct.h b/kernel/dma/direct.h
-index 50afc05b6f1d..13e9e7158d94 100644
---- a/kernel/dma/direct.h
-+++ b/kernel/dma/direct.h
-@@ -56,7 +56,7 @@ static inline void dma_direct_sync_single_for_device(struct device *dev,
+-bool is_swiotlb_active(void)
++bool is_swiotlb_active(struct device *dev)
  {
- 	phys_addr_t paddr = dma_to_phys(dev, addr);
- 
--	if (unlikely(is_swiotlb_buffer(paddr)))
-+	if (unlikely(is_swiotlb_buffer(dev, paddr)))
- 		swiotlb_sync_single_for_device(dev, paddr, size, dir);
- 
- 	if (!dev_is_dma_coherent(dev))
-@@ -73,7 +73,7 @@ static inline void dma_direct_sync_single_for_cpu(struct device *dev,
- 		arch_sync_dma_for_cpu_all();
- 	}
- 
--	if (unlikely(is_swiotlb_buffer(paddr)))
-+	if (unlikely(is_swiotlb_buffer(dev, paddr)))
- 		swiotlb_sync_single_for_cpu(dev, paddr, size, dir);
- 
- 	if (dir == DMA_FROM_DEVICE)
-@@ -113,7 +113,7 @@ static inline void dma_direct_unmap_page(struct device *dev, dma_addr_t addr,
- 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
- 		dma_direct_sync_single_for_cpu(dev, addr, size, dir);
- 
--	if (unlikely(is_swiotlb_buffer(phys)))
-+	if (unlikely(is_swiotlb_buffer(dev, phys)))
- 		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
+-	return io_tlb_default_mem != NULL;
++	return dev->dma_io_tlb_mem != NULL;
  }
- #endif /* _KERNEL_DMA_DIRECT_H */
+ EXPORT_SYMBOL_GPL(is_swiotlb_active);
+ 
 -- 
 2.32.0.288.g62a8d224e6-goog
 
