@@ -2,184 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8513AB520
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011453AB526
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhFQNtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:49:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37344 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231886AbhFQNtV (ORCPT
+        id S232604AbhFQNuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232559AbhFQNuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:49:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623937633;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wd1jgvwSy93wjHiyys1SAuQrEvjJBrCsIo1P11oaA30=;
-        b=JSYTXQLqrjqLSz89Fj8PgVaVmJZzHAVTjnM0NSu7ymel1GiuuXZ37sSW9De9+s99vNWguO
-        tMmq0FT63yj1VYZ2p47lJIvHSMEw0QICWokwC6HEWKFVrg5q3dhPYnqqcxRxMxB8MJ9tNB
-        Tu2VALLAcMZv2qCkCwizJScNADy/xuo=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581-QZrCWGMYPu-9pwJoHbE4Ww-1; Thu, 17 Jun 2021 09:47:12 -0400
-X-MC-Unique: QZrCWGMYPu-9pwJoHbE4Ww-1
-Received: by mail-wm1-f71.google.com with SMTP id w186-20020a1cdfc30000b02901ced88b501dso2160728wmg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 06:47:12 -0700 (PDT)
+        Thu, 17 Jun 2021 09:50:20 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B93DC061574;
+        Thu, 17 Jun 2021 06:48:11 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id f30so10690871lfj.1;
+        Thu, 17 Jun 2021 06:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=r+WSgPEpOCcz2ZWxrp9FCsB4CB9DuPrqyD11wi3qMmo=;
+        b=XkWn9gYDAKkfWlGpxGGJ59Qsp7+izVtH8LBds7sYhfG2Io2jbO+IiuYdAn7/YNA0J5
+         yLqeYLy03BpjPLb/5e+62h7xKB4oWxrpuqdO6ecrIi21Uttar8TsGFgkXuHEpTaNzBW5
+         JB3+/vxPp2A1oO+P7DnkYFqxAIhQKltCnYaDIbRQ4C46xOL0zL89iGCZcC2vq9AskD4+
+         HFRdFyn9TPVLkkfw7xIfDKvTaVzIsh6Z1vhxfYAv+0sEQ7QQ4MZRb7Pa6RJjzWpLEV8E
+         nanfDOV5Fy6s4PGfMCAFW/MwNkpwClwv12cGL4kWNejyezQ11ek0DMmCIq93yInKzTS1
+         VuDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=wd1jgvwSy93wjHiyys1SAuQrEvjJBrCsIo1P11oaA30=;
-        b=Gw3x3ji40g67Qa2r+C3WE3Z8HAnl6WHzYhjBL9j8f2ycwJUjpA9i4uf886wEXZThjl
-         mwOo+COoZSoS72+IymBYYHKFCt0eaJJBilG/mLuOo2SWVwG5yWat7ocG4fSjVswCGmlh
-         Krxf8MjCUZ63db8W8CPfzPYVXnw99xmTV8RFMgyhjUNwGgAhA3UOXUXIwjgjUXLGVEmZ
-         eIllf5s7DXejiE8Cp5y6xr0cSnhqmYgf4g2t+ZLWcIbaBG8AqZCh4jYJTJILlgaZI2W9
-         hWqT82FWc6jgfHh0nGEn7Vhux2ztBkCsRrTtaEBgf/bzalAeiG8FahQk0g4H3tEFRo+n
-         TKXw==
-X-Gm-Message-State: AOAM531Fi/krk8S40ot7UioFXI8CkcN1wSNeOILy3Dpq+ZPZ866CY2uz
-        z4v+5E+CJtJ3urL5ExSFf9bm+qOZlFZU7s79dgWqVWWBNlrUk0GHc3iQtyVNs+eBC7gqQOzpqkj
-        AN50T0znZSkRZDMtEUHJ2ej6h
-X-Received: by 2002:a05:600c:20d:: with SMTP id 13mr5263415wmi.174.1623937631057;
-        Thu, 17 Jun 2021 06:47:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyUyVfNf4oswCXiVl+tihhzfOLhyAxMHHePLdWtquIMEW6+6AMiTxB2pqsusdTOV3Wd3VJFxQ==
-X-Received: by 2002:a05:600c:20d:: with SMTP id 13mr5263382wmi.174.1623937630796;
-        Thu, 17 Jun 2021 06:47:10 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6170.dip0.t-ipconnect.de. [91.12.97.112])
-        by smtp.gmail.com with ESMTPSA id c7sm5595252wrs.23.2021.06.17.06.47.00
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=r+WSgPEpOCcz2ZWxrp9FCsB4CB9DuPrqyD11wi3qMmo=;
+        b=kVPxGndZ6P0SNp3yvxAyNSUcIm4n4pJzbscRBiDYXPxQONCffd3fmAy4O9I2NwD5YQ
+         Uos07MUU5/1ttxRB+Rg+y11rUN2DarrnLWcxPS2S8sYkQ0WH1sio/yyCVuT4/7qGRlxS
+         +20wyVHMIcC5Fs2l367dP8pwWkXnAm7Lk3qZ8Tr9FUGQyM+26svxZutGpnE2Ab8UfiLI
+         95DXAvzrSYlrWIWtMSJCP2Rf5sOKieH1O9O754AYLcnf9MAbvcCjeE0gvfsoyj99rTSD
+         qedJtrJGCd3j/9Z4cjFuEjBLpm69Yj2bJnh+mbq4MosvPbCbEdG4HQl035TZ+hu2D/I2
+         VNeA==
+X-Gm-Message-State: AOAM533DchaYiUi29WeUR4oz8XaQqKrMxiAMwE61HoszYSptoIdVHuWK
+        ybsWcvt+EJOZaxZbmbxlQiWOjD6yDaQ=
+X-Google-Smtp-Source: ABdhPJyFPRzHnR84XKOyXT8nH8X4PQbctGQpx0x7WgQ033Up6jZz2wBqEtTi+5sGciWF6LjX0yeucw==
+X-Received: by 2002:ac2:42c2:: with SMTP id n2mr4171088lfl.0.1623937689804;
+        Thu, 17 Jun 2021 06:48:09 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.googlemail.com with ESMTPSA id p4sm588029lfr.87.2021.06.17.06.48.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 06:47:10 -0700 (PDT)
-To:     Michel Lespinasse <michel@lespinasse.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-Kernel <linux-kernel@vger.kernel.org>
-Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Andy Lutomirski <luto@kernel.org>
-References: <20210430195232.30491-1-michel@lespinasse.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH 00/29] Speculative page faults (anon vmas only)
-Message-ID: <3047d699-2793-e051-e1eb-deef7c5764a8@redhat.com>
-Date:   Thu, 17 Jun 2021 15:46:57 +0200
+        Thu, 17 Jun 2021 06:48:09 -0700 (PDT)
+Subject: Re: [PATCH v1] hwmon: (lm90) Use edge-triggered interrupt
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+References: <20210616190708.1220-1-digetx@gmail.com>
+ <20210617001243.GA3211292@roeck-us.net>
+ <3c6cbaf3-187b-1682-69b8-a2b34f23b928@gmail.com>
+ <20210617131205.GA59767@roeck-us.net>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <de7682c2-ae34-c594-d237-330ea33cbc78@gmail.com>
+Date:   Thu, 17 Jun 2021 16:48:08 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210430195232.30491-1-michel@lespinasse.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210617131205.GA59767@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.04.21 21:52, Michel Lespinasse wrote:
-> This patchset is my take on speculative page faults (spf).
-> It builds on ideas that have been previously proposed by Laurent Dufour,
-> Peter Zijlstra and others before. While Laurent's previous proposal
-> was rejected around the time of LSF/MM 2019, I am hoping we can revisit
-> this now based on what I think is a simpler and more bisectable approach,
-> much improved scaling numbers in the anonymous vma case, and the Android
-> use case that has since emerged. I will expand on these points towards
-> the end of this message.
-> 
-> The patch series applies on top of linux v5.12;
-> a git tree is also available:
-> git fetch https://github.com/lespinasse/linux.git v5.12-spf-anon
-> 
-> I believe these patches should be considered for merging.
-> My github also has a v5.12-spf branch which extends this mechanism
-> for handling file mapped vmas too; however I believe these are less
-> mature and I am not submitting them for inclusion at this point.
-> 
-> 
-> Compared to the previous (RFC) proposal, I have split out / left out
-> the file VMA handling parts, fixed some config specific build issues,
-> added a few more comments and modified the speculative fault handling
-> to use rcu_read_lock() rather than local_irq_disable() in the
-> MMU_GATHER_RCU_TABLE_FREE case.
-> 
-> 
-> Classical page fault processing takes the mmap read lock in order to
-> prevent races with mmap writers. In contrast, speculative fault
-> processing does not take the mmap read lock, and instead verifies,
-> when the results of the page fault are about to get committed and
-> become visible to other threads, that no mmap writers have been
-> running concurrently with the page fault. If the check fails,
-> speculative updates do not get committed and the fault is retried
-> in the usual, non-speculative way (with the mmap read lock held).
-> 
-> The concurrency check is implemented using a per-mm mmap sequence count.
-> The counter is incremented at the beginning and end of each mmap write
-> operation. If the counter is initially observed to have an even value,
-> and has the same value later on, the observer can deduce that no mmap
-> writers have been running concurrently with it between those two times.
-> This is similar to a seqlock, except that readers never spin on the
-> counter value (they would instead revert to taking the mmap read lock),
-> and writers are allowed to sleep. One benefit of this approach is that
-> it requires no writer side changes, just some hooks in the mmap write
-> lock APIs that writers already use.
-> 
-> The first step of a speculative page fault is to look up the vma and
-> read its contents (currently by making a copy of the vma, though in
-> principle it would be sufficient to only read the vma attributes that
-> are used in page faults). The mmap sequence count is used to verify
-> that there were no mmap writers concurrent to the lookup and copy steps.
-> Note that walking rbtrees while there may potentially be concurrent
-> writers is not an entirely new idea in linux, as latched rbtrees
-> are already doing this. This is safe as long as the lookup is
-> followed by a sequence check to verify that concurrency did not
-> actually occur (and abort the speculative fault if it did).
-> 
-> The next step is to walk down the existing page table tree to find the
-> current pte entry. This is done with interrupts disabled to avoid
-> races with munmap(). Again, not an entirely new idea, as this repeats
-> a pattern already present in fast GUP. Similar precautions are also
-> taken when taking the page table lock.
+17.06.2021 16:12, Guenter Roeck пишет:
+> On Thu, Jun 17, 2021 at 10:11:19AM +0300, Dmitry Osipenko wrote:
+>> 17.06.2021 03:12, Guenter Roeck пишет:
+>>> On Wed, Jun 16, 2021 at 10:07:08PM +0300, Dmitry Osipenko wrote:
+>>>> The LM90 driver uses level-based interrupt triggering. The interrupt
+>>>> handler prints a warning message about the breached temperature and
+>>>> quits. There is no way to stop interrupt from re-triggering since it's
+>>>> level-based, thus thousands of warning messages are printed per second
+>>>> once interrupt is triggered. Use edge-triggered interrupt in order to
+>>>> fix this trouble.
+>>>>
+>>>> Fixes: 109b1283fb532 ("hwmon: (lm90) Add support to handle IRQ")
+>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>> ---
+>>>>  drivers/hwmon/lm90.c | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/hwmon/lm90.c b/drivers/hwmon/lm90.c
+>>>> index ebbfd5f352c0..ce8ebe60fcdc 100644
+>>>> --- a/drivers/hwmon/lm90.c
+>>>> +++ b/drivers/hwmon/lm90.c
+>>>> @@ -1908,7 +1908,7 @@ static int lm90_probe(struct i2c_client *client)
+>>>>  		dev_dbg(dev, "IRQ: %d\n", client->irq);
+>>>>  		err = devm_request_threaded_irq(dev, client->irq,
+>>>>  						NULL, lm90_irq_thread,
+>>>> -						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+>>>> +						IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+>>>>  						"lm90", client);
+>>>
+>>> We can't do that. Problem is that many of the devices supported by this driver
+>>> behave differently when it comes to interrupts. Specifically, the interrupt
+>>> handler is supposed to reset the interrupt condition (ie reading the status
+>>> register should reset it). If that is the not the case for a specific chip,
+>>> we'll have to update the code to address the problem for that specific chip.
+>>> The above code would probably just generate a single interrupt while never
+>>> resetting the interrupt condition, which is obviously not what we want to
+>>> happen.
+>>
+>> The nct1008/72 datasheet [1] says that reading the status register
+>> doesn't reset interrupt until temperature is returned back into normal
+>> state, which is what I'm witnessing.
+>>
+>> [1] https://www.onsemi.com/pdf/datasheet/nct1008-d.pdf
+>>
+>> Page 10 "Status Register":
+>>
+>> "Reading the status register clears the five flags, Bit 6 to Bit 2,
+>> provided the error conditions causing the flags to beset  have  gone
+>> away.  A  flag  bit  can  be  reset  only  if  the corresponding
+>> value    register    contains    an    in-limit measurement or if the
+>> sensor is good."
+>>
+>> So the interrupt handler doesn't actually stop interrupt from
+>> reoccurring and the whole KMSG is instantly spammed with:
+>>
+>> ...
+>> [  217.484034] lm90 0-004c: temp2 out of range, please check!
+>> [  217.484569] lm90 0-004c: temp2 out of range, please check!
+>> [  217.485006] systemd-journald[179]: /dev/kmsg buffer overrun, some
+>> messages lost.
+>> [  217.485109] lm90 0-004c: temp2 out of range, please check!
+>> [  217.485699] lm90 0-004c: temp2 out of range, please check!
+>> [  217.486235] lm90 0-004c: temp2 out of range, please check!
+>> [  217.486776] lm90 0-004c: temp2 out of range, please check!
+>> [  217.486874] systemd-journald[179]: /dev/kmsg buffer overrun, ...
+>>
+>> It's interesting that the very first version of the nct1008-support
+>> patch used edge-triggered interrupt flags [2].
+>>
+>> [2] http://lkml.iu.edu/hypermail/linux/kernel/1104.1/01669.html
+>>
+> A lot of this depends on the chip and its wiring, as well as on chip
+> configuration. Even for a specific chip there may be configuration
+> dependencies. The interrupt configuration in situations like this
+> should really be determined by devicetree configuration, and not
+> be hardcoded. Is this a devicetree based system ? If so, there should
+> be an entry for this chip pointing to the interrupt, and that entry
+> should include a trigger mask. That mask should be set to edge
+> triggered.
 
-Hi Michel,
+This is a device-tree based system, in particular it's NVIDIA Tegra30
+Nexus 7. The interrupt support was originally added to the lm90 driver
+by Wei Ni who works at NVIDIA and did it for the Tegra boards. The Tegra
+device-trees are specifying the trigger mask and apparently they all are
+cargo-culted and wrong because they use IRQ_TYPE_LEVEL_HIGH, while it
+should be IRQ_TYPE_EDGE_FALLING.
 
-I just started working on a project to reclaim page tables inside 
-running processes that are no longer needed (for example, empty after 
-madvise(DISCARD)). Long story short, there are scenarios where we want 
-to scan for such page tables asynchronously to free up memory (which can 
-be quite significant in some use cases).
-
-Now that I (mostly) understood the complex locking, I'm looking for 
-other mm features that might be "problematic" in that regard and require 
-properly planning to get right (or let them run mutually exclusive).
-
-As I essentially rip out page tables from the page table hierarchy to 
-free them (in the simplest case within a VMA to get started), I 
-certainly need the mmap lock in read right now to scan the page table 
-hierarchy, and the mmap lock in write when actually removing a page 
-table. This is similar handling as khugepagd when collapsing a THP and 
-removing a page table. Of course, we could use any kind of 
-synchronization mechanism (-> rcu) to make sure nobody is using a page 
-table anymore before actually freeing it.
-
-1. I now wonder how your code actually protects against e.g., khugepaged 
-and how it could protect against page table reclaim. Will we be using 
-RCU while walking the page tables? That would make life easier.
-
-2. You mention "interrupts disabled to avoid races with munmap()". Can 
-you elaborate how that is supposed to work? Shouldn't we rather be using 
-RCU than manually disabling interrupts? What is the rationale?
-
-
-Thanks a lot in advance!
-
--- 
-Thanks,
-
-David / dhildenb
-
+The IRQF flag in devm_request_threaded_irq() overrides the trigger mask
+specified in a device-tree. IIUC, the interrupt is used only by OF-based
+devices, hence I think we could simply remove the IRQF flag from the
+code and fix the device-trees. Does it sound good to you?
