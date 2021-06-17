@@ -2,100 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A3E3AB6D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9933AB6BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbhFQPEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232267AbhFQPEi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:04:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB8CC061574;
-        Thu, 17 Jun 2021 08:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=V9go7Y/UucnNrXIa1S8r+WI1e5UGRrj5UmJdJeNO/dA=; b=DH3TBb6PTIQLbsLVSV75pzrQdw
-        YOvlaQGhwgDxkO+n6YHcCAQcekOch3TTkgmTSQyJSG+PTfbr9rhv8w+vKtjZcSboPUa0yed3OM6Xv
-        O2jUrIlTuYUi1y9vgYNACiS7Lc+7ouOb55q+Nq6PJsitEvRbdvdo2XiQhbmMvNFacge2ptH3eu7lm
-        kSPZJfLJpFpr7d6jZ/bbyyUf75MzrK66LY/+Mz9z5jfs6Fexynhfz7Qqc0uisvf4WVdV/gybL68W9
-        5mQy5IpZrCBaK6A9Zus6JuMao0B8Fy0DFPW3ThfNH2q2ELD5/gn0XQHA7VNHkqqrlpUPYOsjOVAqp
-        ixUOZqwg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lttVj-009Fr5-UE; Thu, 17 Jun 2021 15:00:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 48ADC300252;
-        Thu, 17 Jun 2021 17:00:48 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 31A2A2BD52F2F; Thu, 17 Jun 2021 17:00:48 +0200 (CEST)
-Date:   Thu, 17 Jun 2021 17:00:48 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v6 1/2] x86/sev: Make sure IRQs are disabled while GHCB
- is active
-Message-ID: <YMtjoLLQpKyveVlS@hirez.programming.kicks-ass.net>
-References: <20210616184913.13064-1-joro@8bytes.org>
- <20210616184913.13064-2-joro@8bytes.org>
+        id S232804AbhFQPDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:03:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231683AbhFQPDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 11:03:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E74FB60C3E;
+        Thu, 17 Jun 2021 15:01:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623942098;
+        bh=lkbsX4FMEiNZKCX7KQ+nzx+aak0hcYsazGytF8y6tIY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=sE3bXLVcxWoF78FD2whKfWctmaVtxZ8XaKSJZ4SEBVspQK2rcdEd/rEa9lbhEY8O7
+         X8z9YlX9eZYRBNpdILtrrZyhuawE2ik4tYZ8zilW2O2RAwsCuO2tIBuucP0LSgPHQH
+         K6eaxzKolaKfCnUlf6RE65UTOU+2BL0ULeVhgzmsiKzUfxfqfxk7SNsbSNzzpzAwCA
+         rcgJSCot3WIi5iQF9Nw4htRAxd24zhAakLX4yhYHH+BNvNyIBQXSyPQ3hFtJh6Vy+K
+         RY/2SYdJfMAivxNLgHcNPN/kWclD5fhsHj+53ppmvM4dSNAXcaGEiFSzgus/z+6Xf+
+         EHjolozry+xcA==
+From:   Mark Brown <broonie@kernel.org>
+To:     michal.simek@xilinx.com, robh+dt@kernel.org,
+        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: spi: xilinx: convert to yaml
+Date:   Thu, 17 Jun 2021 16:01:12 +0100
+Message-Id: <162394121400.19455.420926451779149783.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210605002931.858031-1-iwamatsu@nigauri.org>
+References: <20210605002931.858031-1-iwamatsu@nigauri.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616184913.13064-2-joro@8bytes.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 08:49:12PM +0200, Joerg Roedel wrote:
+On Sat, 5 Jun 2021 09:29:31 +0900, Nobuhiro Iwamatsu wrote:
+> Convert SPI for Xilinx bindings documentation to YAML schemas.
 
->  static void sev_es_ap_hlt_loop(void)
->  {
->  	struct ghcb_state state;
-> +	unsigned long flags;
->  	struct ghcb *ghcb;
->  
-> -	ghcb = sev_es_get_ghcb(&state);
-> +	local_irq_save(flags);
-> +
-> +	ghcb = __sev_get_ghcb(&state);
->  
->  	while (true) {
->  		vc_ghcb_invalidate(ghcb);
-> @@ -692,7 +704,9 @@ static void sev_es_ap_hlt_loop(void)
->  			break;
->  	}
->  
-> -	sev_es_put_ghcb(&state);
-> +	__sev_put_ghcb(&state);
-> +
-> +	local_irq_restore(flags);
->  }
+Applied to
 
-I think this is broken, at this point RCU is quite dead on this CPU and
-local_irq_save/restore include tracing and all sorts.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Also, shouldn't IRQs already be disabled by the time we get here?
+Thanks!
+
+[1/1] dt-bindings: spi: xilinx: convert to yaml
+      commit: 476ad3ff8952db3569a77d9ed4a067c5f0f4b733
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
