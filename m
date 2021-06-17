@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C643AB24E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7203AB25B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbhFQLTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:19:07 -0400
-Received: from outbound-smtp38.blacknight.com ([46.22.139.221]:34155 "EHLO
-        outbound-smtp38.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232480AbhFQLTF (ORCPT
+        id S232492AbhFQLTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:19:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34662 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232480AbhFQLTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:19:05 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp38.blacknight.com (Postfix) with ESMTPS id DE3EE1C7C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 12:16:56 +0100 (IST)
-Received: (qmail 15591 invoked from network); 17 Jun 2021 11:16:56 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 17 Jun 2021 11:16:56 -0000
-Date:   Thu, 17 Jun 2021 12:16:55 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH mmotm v1] mm/hwpoison: disable pcp for
- page_handle_poison()
-Message-ID: <20210617111655.GP30378@techsingularity.net>
-References: <20210617092626.291006-1-nao.horiguchi@gmail.com>
- <e7f75111-5b65-8756-2764-f5c98c4747ea@redhat.com>
+        Thu, 17 Jun 2021 07:19:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623928655;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=ut8mBDS/J21Tbda7DvgLRQmHjd21yKq2MA4wJcOqS9o=;
+        b=Z8sawRvR6sourkTADP3v3/t8emCFzXabCYGjF4TjCO8wAn0bR9XJZ9/52896PmjZ0pTTF3
+        5A6g9Iq69Efj9EVeNvjnorqX2/7eFj6UgMUmv2Q+3WDdSsQ83jDuKNS/HXYaT15aYT0kmN
+        RHcSWv4SNv0uDdfFcSeDpzQqofw0jD4=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-494-rdSNBiZdMK6e014nt95RCg-1; Thu, 17 Jun 2021 07:17:34 -0400
+X-MC-Unique: rdSNBiZdMK6e014nt95RCg-1
+Received: by mail-yb1-f198.google.com with SMTP id a17-20020a5b09110000b0290547160c87c9so7870384ybq.19
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:17:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=ut8mBDS/J21Tbda7DvgLRQmHjd21yKq2MA4wJcOqS9o=;
+        b=o8cKQESXppynpxSc+oOAJy48ViGgGoHC2zXvYQmITisXk7HKmWxNadHov64b9AX2wB
+         SOHMNl3PHxBP2sQqDukHo21x2igNwBFUKMhkhUNakWOaoSyEPbXLq338DgZkwURxxUoE
+         12C0zv++zfHVHsqyshGhJkPopvMDA5U45OFnqXuPOWJknzjXNPTnVx0Tj81wJWL+0PuE
+         /0IxJNL2NRUcFOq5sluP7sk37PVXHdX7GGqj26QAoYMhZv8OP0F05iPv+JW0J7Nx8kLL
+         SI9CAbo1qxE4H5Y5yMm/xkIswzkIvJhE3ffYTdKy8mhTcRabx2ut0Pnw5ko5uOqU57w1
+         fHGw==
+X-Gm-Message-State: AOAM532n5NX1q/orcafiW3brjTkcejH2gz3xxXNlTze7BVEt24PgWyH9
+        cdV5Pc7T0MnUEt8XNIcA5lQo2w+6wUpMGNCFzShWgkolS78Sc+OREPv9rzLcQx5zrBK6PWS61Pm
+        3cN+jgIeZE/aTeT8GvqJHe9NEKSm+KB7yxPQjxrig
+X-Received: by 2002:a25:354:: with SMTP id 81mr5383487ybd.134.1623928654039;
+        Thu, 17 Jun 2021 04:17:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxzNxOVXVniR7azNK6QqojUcyleUy/9jraJw0k8tqORFUUqHsc6saxsCzJhpnNSwV7cjxwNOBzaz9bZRMiMM7E=
+X-Received: by 2002:a25:354:: with SMTP id 81mr5383471ybd.134.1623928653895;
+ Thu, 17 Jun 2021 04:17:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <e7f75111-5b65-8756-2764-f5c98c4747ea@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Ming Lei <ming.lei@redhat.com>
+Date:   Thu, 17 Jun 2021 19:17:23 +0800
+Message-ID: <CAFj5m9+ckHjfMVW_O20NBAPvnauPdABa8edPy--dSEf=XdhYRA@mail.gmail.com>
+Subject: [Bug] fio hang when running multiple job io_uring/hipri over nvme
+To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 11:28:49AM +0200, David Hildenbrand wrote:
-> On 17.06.21 11:26, Naoya Horiguchi wrote:
-> > From: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > 
-> > Recent changes by patch "mm/page_alloc: allow high-order pages to be
-> > stored on the per-cpu lists" makes kernels determine whether to use pcp
-> > by pcp_allowed_order(), which breaks soft-offline for hugetlb pages.
-> > 
-> > Soft-offline dissolves a migration source page, then removes it from
-> > buddy free list, so it's assumed that any subpage of the soft-offlined
-> > hugepage are recognized as a buddy page just after returning from
-> > dissolve_free_huge_page().  pcp_allowed_order() returns true for
-> > hugetlb, so this assumption is no longer true.
-> > 
-> > So disable pcp during dissolve_free_huge_page() and
-> > take_page_off_buddy() to prevent soft-offlined hugepages from linking to
-> > pcp lists.  Soft-offline should not be common events so the impact on
-> > performance should be minimal.  And I think that the optimization of
-> > Mel's patch could benefit to hugetlb so zone_pcp_disable() is called
-> > only in hwpoison context.
-> 
-> Mel, Oscar, does alloc_contig_range() now have similar issues or is it
-> avoided because the pageblock(s) are set MIGRATE_ISOLATE?
-> 
+Hello,
 
-I'd expect MIGRATE_ISOLATE to be sufficient because they should bypass
-the PCP list in free_unref_page.
+fio hangs when running the test[1], and doesn't observe this issue
+when running a
+such single job test.
 
--- 
-Mel Gorman
-SUSE Labs
+v5.12 is good, both v5.13-rc3 and the latest v5.13-rc6 are bad.
+
+
+[1] fio test script and log
++ fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri
+--iodepth=64 --iodepth_batch_submit=16
+--iodepth_batch_complete_min=16 --filename=/dev/nvme0n1 --direct=1
+--runtime=20 --numjobs=4 --rw=randread
+--name=test --group_reporting
+
+test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T)
+4096B-4096B, ioengine=io_uring, iodepth=64
+...
+fio-3.25
+Starting 4 processes
+fio: filehash.c:64: __lookup_file_hash: Assertion `f->fd != -1' failed.
+fio: pid=1122, got signal=6
+^Cbs: 3 (f=0): [f(1),r(1),K(1),r(1)][63.6%][eta 00m:20s]
+
+Thanks,
+
