@@ -2,131 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17453AB714
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AC63AB715
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbhFQPOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
+        id S233218AbhFQPP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbhFQPOr (ORCPT
+        with ESMTP id S230442AbhFQPPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:14:47 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A70C061574;
-        Thu, 17 Jun 2021 08:12:39 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id i8-20020a4aa1080000b0290201edd785e7so1676038ool.1;
-        Thu, 17 Jun 2021 08:12:39 -0700 (PDT)
+        Thu, 17 Jun 2021 11:15:22 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C247DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:13:13 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id k5so3497065iow.12
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:13:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=tC24+pOMac4To09F5eTA/4RPnsOweW0hc6BAA6YoMnQ=;
-        b=nfdW0YeVWdjSUYyB1QdDtOIkMgLIcyXIgaCbmVm0QNd02N18EysBAPAZVS0Y00W8Io
-         v58Ms5itK3EwlYgaA2+hbdWamVl+v0RxVJLl8HaF590nSiywo+e1ptFgo0eutIq2tYpk
-         EyKgtefeB9h3op9njcrE2k813gvyGx0yc0hsGyuTLSZhGb8kcBm24UOQrDuF0E2dBFlh
-         fJPBUEfGkKpWm1U/2LbY67MFOS5oCBGU/cp1RJxbvuxxas7cCLSe8gumB89G4U9GLXud
-         okRLvVeVbBu9+AcJjkhWnXGzq9HiuKo93TpR04+C+TifxL1+ai1zgSSjNb6iv0RqWT/Y
-         j9ww==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=R6IjdE1Ab1c2r5GwqgV+dlCerZLtvAuLnafRfT9ALeI=;
+        b=nl7kh8mTFxsEnrvy3uxWmeHdlgAwdDUBxobn/V+RwZr8AMgFHO4ca227CVwWr7sqe5
+         g/bMVkljqXrEglmAfcmsHcYrO8bQX+ED/ca9WgTANuCj7on/KMwFt8r7n7k5SzNzs4Uh
+         U9dzh0EgHfUUE9BhwGwA+gn2WV7Ft7hbRSFfHieiq1Re6wqLKlP3WDy22ReM5+GE0VrP
+         kQSqdpIWhSFBoEmIoERYF8ODAXIlbMMsjCIA6rAO4/j1iNl7KWr85EKPt7gRIWABksgt
+         9PZdk7hxVuGrbIA6BiTyMKWJxvOG47F0JrBiCcBIhuwftgCne91VH6fXT/Xhjg0SYaqY
+         HPAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=tC24+pOMac4To09F5eTA/4RPnsOweW0hc6BAA6YoMnQ=;
-        b=RYcKRR1Mm+ZZjtBSTBexZchBi5+jG2xKpEVvRz5KXtLUMxeyJJuzyXjTq6C3oNS1Ch
-         TLcPYBftaVCXdA+8y8rxLAELTa/hk3OSKC7gpwCRf4vywYp0aagkGcQfhDwK2IyaH3nl
-         wUXuWdnVc84/S0L32vnFIvFjBRGW2ZWPOYMQdXn0KrCeKxWF+T9oPhQu15VVRU/xvQhQ
-         OnZotrtcxqLVSW8q2f8pCuQk9p1EAnwjzzVXZ4mf2/Al0utzLhkyoywNjfErmXmoKFdQ
-         Edfeu2INzPeALKMgWrcot/wDuJKoHoG1Zu9WKCiwo/MYJIMxEvueNr7slvkAhgSXlB1R
-         LqVQ==
-X-Gm-Message-State: AOAM530SCeiETDmnuRce7NCaLkKdGp8EPGTPCSoAQJuPY9lr/+wbzmSU
-        5JNDd9KORTbELwiu3jJ6o/0=
-X-Google-Smtp-Source: ABdhPJwxvDzV5BxEOinFYI/F3uUaXXWyUCdGvnrSUcc2CnbllyTqgykS/87aVytNWz3Vi0XliNzxfA==
-X-Received: by 2002:a4a:9c8a:: with SMTP id z10mr4903692ooj.56.1623942757913;
-        Thu, 17 Jun 2021 08:12:37 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j132sm1154974oih.11.2021.06.17.08.12.37
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R6IjdE1Ab1c2r5GwqgV+dlCerZLtvAuLnafRfT9ALeI=;
+        b=C4GoYpcdbIrTk2D5Yl+0cjnzCPWnTh5v12/oizDiGtswXq80dJndiMYv3bOEUQaReb
+         QPOkvQp0rTh4FnngBxEX86ax/Qu3L8hrumzXkIFmJvWw70iNs2I2qfggrtWkYRIH4gL5
+         /RE6xOsWtkWssKUzd6O2qnHzgvMJhpqYmn4qUGKs8ZTePsjbcqD+/bweZcK7m7P0O1fM
+         QbcOY6VcLk36rV9/+1fpYkPvMDtPXyUnARAC31JkTZAAf+d/H74zGFaNir4CXqsA8VvC
+         nJvpigx6SwU4I//Ubz2t8yVWLdtRTWDrCcIq1SztKqfub33aJmsOMxEM//2rGztBwAaJ
+         6P2Q==
+X-Gm-Message-State: AOAM532+ZLfXU5Vb8BX2UfFpLgxq9upLu9ufCwpGubUxTiFpgS4AH6Pq
+        FyuVnP0NK7VrCWk+xX0YN34MH2Rz3cU=
+X-Google-Smtp-Source: ABdhPJzQLwXN8hjiPsQAVsVVjP/3da+2bL8knlxyM23LHNPyThEiaiqNwN08tcCOxsoPwgtrI+4uaw==
+X-Received: by 2002:a02:cc3b:: with SMTP id o27mr6409jap.84.1623942793219;
+        Thu, 17 Jun 2021 08:13:13 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id n2sm3078950iod.54.2021.06.17.08.13.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 08:12:37 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 17 Jun 2021 08:12:36 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v1] hwmon: (lm90) Use edge-triggered interrupt
-Message-ID: <20210617151236.GB2676642@roeck-us.net>
-References: <20210616190708.1220-1-digetx@gmail.com>
- <20210617001243.GA3211292@roeck-us.net>
- <3c6cbaf3-187b-1682-69b8-a2b34f23b928@gmail.com>
- <20210617131205.GA59767@roeck-us.net>
- <de7682c2-ae34-c594-d237-330ea33cbc78@gmail.com>
- <20210617141300.GA1366442@roeck-us.net>
- <bc3e3595-fe10-c7ae-9560-0c7676facba2@gmail.com>
+        Thu, 17 Jun 2021 08:13:12 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 1B41327C0054;
+        Thu, 17 Jun 2021 11:13:11 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 17 Jun 2021 11:13:12 -0400
+X-ME-Sender: <xms:h2bLYH87d6pfISyGfDvODbhWhnADftyAHIclWvFjFphbG-x25UGf1g>
+    <xme:h2bLYDuLQvfQS3NIfKtOCyCJ7PEwvpaiQYW1vE9BqSX7f4CSfpJH6uCjtusgVcEQ-
+    8kjnuTwv_R6jY0Bpw>
+X-ME-Received: <xmr:h2bLYFCiMIyO574cr_ul2C8Ie4tyeSRBPfpWpjT7mrctAS5JhGyOQHQvnw4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefuddgkeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
+    dttddtvdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehg
+    mhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpedvleeigedugfegveejhfejveeuve
+    eiteejieekvdfgjeefudehfefhgfegvdegjeenucevlhhushhtvghrufhiiigvpedtnecu
+    rfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrsh
+    honhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghn
+    gheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:h2bLYDdoLKmv8vBJzwcjhTHFDREf8wXEeXLTNAUdD965iNEJ6zbhfQ>
+    <xmx:h2bLYMONge4bT16uxeW6TYeMjZXr1qMlVLfCJfq1TDs1DZg5Eq5Huw>
+    <xmx:h2bLYFkqMT3r1x8gnyanvXKxkxmIMpyFaJCtptw59xy50GLKcKmEuw>
+    <xmx:h2bLYIB-tnenrONEF9uU3cXR-Ugl5UsYnYRKf1OapqTZ86RYuqRs5g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 17 Jun 2021 11:13:11 -0400 (EDT)
+Date:   Thu, 17 Jun 2021 23:12:46 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Xiongwei Song <sxwjean@me.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, linux-kernel@vger.kernel.org,
+        Xiongwei Song <sxwjean@gmail.com>
+Subject: Re: [PATCH 3/3] locking/lockdep: print possible warning after
+ counting deps
+Message-ID: <YMtmbjw5EGdXRdD8@boqun-archlinux>
+References: <20210617142828.346111-1-sxwjean@me.com>
+ <20210617142828.346111-4-sxwjean@me.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bc3e3595-fe10-c7ae-9560-0c7676facba2@gmail.com>
+In-Reply-To: <20210617142828.346111-4-sxwjean@me.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 05:46:33PM +0300, Dmitry Osipenko wrote:
-> 17.06.2021 17:13, Guenter Roeck пишет:
-> ...
-> >> This is a device-tree based system, in particular it's NVIDIA Tegra30
-> >> Nexus 7. The interrupt support was originally added to the lm90 driver
-> >> by Wei Ni who works at NVIDIA and did it for the Tegra boards. The Tegra
-> >> device-trees are specifying the trigger mask and apparently they all are
-> >> cargo-culted and wrong because they use IRQ_TYPE_LEVEL_HIGH, while it
-> > 
-> > Be fair, no one is perfect.
-> 
-> This is a very minor problem, so no wonder that nobody noticed or
-> bothered to fix it yet. I'm just clarifying the status here.
-> 
-> >> should be IRQ_TYPE_EDGE_FALLING.
-> > 
-> > It should probably be both IRQ_TYPE_EDGE_FALLING and IRQ_TYPE_EDGE_RISING,
-> 
-> For now I see that the rising edge isn't needed, the TEMP_ALERT goes
-> HIGH by itself when temperature backs to normal. But I will try to
-> double check.
-> 
-The point is that a sysfs event should be sent to userspace on both
-edges, not only when an alarm is raised. But, you are correct,
-IRQ_TYPE_EDGE_RISING is currently not needed since sysfs events
-are not generated.
+Hi,
 
-> > and the interrupt handler should call hwmon_notify_event() instead of
-> > clogging the kernel log, but that should be done in a separate patch.
+On Thu, Jun 17, 2021 at 10:28:28PM +0800, Xiongwei Song wrote:
+> From: Xiongwei Song <sxwjean@gmail.com>
 > 
-> Thank you for suggestion, I will take a look.
+> The graph walk might hit error when counting dependencies. Once the
+> return value is negative, print a warning to reminder users.
 > 
-> > Anyway, the tegra30 dts files in the upstream kernel either use
-> > IRQ_TYPE_LEVEL_LOW or no interrupts for nct1008. The Nexus 7 dts file
-> > in the upstream kernel has no interrupt configured (and coincidentally
-> > it was you who added that entry). Where do you see IRQ_TYPE_LEVEL_HIGH ?
-> 
-> I have a patch that will add the interrupt property, it's stashed
-> locally for the next kernel release.
-> 
-> IIUC, it's not only the Tegra30 dts, but all the TegraXXX boards that
-> use IRQ_TYPE_LEVEL_LOW are in the same position.
 
-I still don't see a IRQ_TYPE_LEVEL_HIGH, though.
+Thanks for the improvement, but please see below:
 
-Thanks,
-Guenter
+> Suggested-by: Waiman Long <longman@redhat.com>
+> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+> ---
+>  kernel/locking/lockdep.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> index cb94097014d8..cfe0f4374594 100644
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -2028,8 +2028,12 @@ static unsigned long __lockdep_count_forward_deps(struct lock_list *this)
+>  {
+>  	unsigned long  count = 0;
+>  	struct lock_list *target_entry;
+> +	enum bfs_result ret;
+> +
+> +	ret = __bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
+>  
+> -	__bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
+> +	if (bfs_error(ret))
+> +		print_bfs_bug(ret);
 
+Here print_bfs_bug() will eventually call debug_locks_off_graph_unlock()
+to release the graph lock, and the caller (lockdep_count_fowards_deps())
+will also call graph_unlock() afterwards, and that means we unlock
+*twice* if a BFS error happens... although in that case, lockdep should
+stop working so messing up with the graph lock may not hurt anything,
+but still, I don't think we want to do that.
+
+So probably you can open-code __lockdep_count_forward_deps() into
+lockdep_count_forwards_deps(), and call print_bfs_bug() or
+graph_unlock() accordingly. The body of __lockdep_count_forward_deps()
+is really small, so I think it's OK to open-code it into its caller.
+
+Regards,
+Boqun
+
+>  
+>  	return count;
+>  }
+> @@ -2053,8 +2057,12 @@ static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
+>  {
+>  	unsigned long  count = 0;
+>  	struct lock_list *target_entry;
+> +	enum bfs_result ret;
+> +
+> +	ret = __bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
+>  
+> -	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
+> +	if (bfs_error(ret))
+> +		print_bfs_bug(ret);
+>  
+>  	return count;
+>  }
+> -- 
+> 2.30.2
 > 
-> >> The IRQF flag in devm_request_threaded_irq() overrides the trigger mask
-> >> specified in a device-tree. IIUC, the interrupt is used only by OF-based
-> >> devices, hence I think we could simply remove the IRQF flag from the
-> >> code and fix the device-trees. Does it sound good to you?
-> > 
-> > Yes, that is a better approach.
-> 
-> Thank you for reviewing this patch. I'll prepare v2.
