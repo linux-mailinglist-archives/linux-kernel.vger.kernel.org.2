@@ -2,148 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F473AB77C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEAF3AB78D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233291AbhFQPa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:30:27 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42652 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232257AbhFQPaW (ORCPT
+        id S232131AbhFQPeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231661AbhFQPeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:30:22 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HF3HfG023885;
-        Thu, 17 Jun 2021 11:28:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=B5VyyTlpO5CWTD+3XudEaDgMMTv1yACF6z5CahQ2DIU=;
- b=gQT7QubTv+Ka2B7ACzCO4BYwZhvt7AberwLPhzS6ajKIx+qJVAGPO+7hGgWQ7qq6PEFL
- 9dZsleclcluVIS2mn3IUE8fBWHmJfsqomT5D5tVP5SIu1aDaiSvsalW/nRo6KN0/2gXj
- EPMMPAZDhI6KRc8h/3G6NwM8l5iPG36M1dcnjCV5YtFQVlbDBO9mEvqjarIcUjTBNcD/
- f42Ebk+xJn3RPOJYc6BS43F8O4712+l6SenLtkWTSaiZuLxbj82R+WkqFH5tBXv704QR
- PyCQez73mwj+vzfLKTe9XeLzWO+InecUrh0gY2EhZpWKWy/8S+6KYn6dFjyFG7EkZ0yj cQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3987hkbws2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 11:28:07 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15HF3eIv029293;
-        Thu, 17 Jun 2021 11:28:07 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3987hkbwr0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 11:28:07 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15HFRZoH013773;
-        Thu, 17 Jun 2021 15:28:04 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03fra.de.ibm.com with ESMTP id 394mj91j61-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 15:28:04 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15HFS2WG30212590
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Jun 2021 15:28:02 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 53B7711C052;
-        Thu, 17 Jun 2021 15:28:02 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 58EE811C04A;
-        Thu, 17 Jun 2021 15:28:00 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.34.125])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 17 Jun 2021 15:28:00 +0000 (GMT)
-Message-ID: <d822efcc0bb05178057ab2f52293575124cde1fc.camel@linux.ibm.com>
-Subject: Re: [PATCH] fs: Return raw xattr for security.* if there is size
- disagreement with LSMs
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "paul@paul-moore.com" <paul@paul-moore.com>,
-        "stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>,
-        "casey@schaufler-ca.com" <casey@schaufler-ca.com>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Date:   Thu, 17 Jun 2021 11:27:59 -0400
-In-Reply-To: <9cb676de40714d0288f85292c1f1a430@huawei.com>
-References: <ee75bde9a17f418984186caa70abd33b@huawei.com>
-         <20210616132227.999256-1-roberto.sassu@huawei.com>
-         <6e1c9807-d7e8-7c26-e0ee-975afa4b9515@linux.ibm.com>
-         <9cb676de40714d0288f85292c1f1a430@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lRZmVtAh7jKl-0j2JO-JPd-N0B_lzhWX
-X-Proofpoint-ORIG-GUID: t0JJjBXIxLsvFzMMht6ohgmQa3Iwa8OC
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 17 Jun 2021 11:34:03 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C2BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:31:55 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id y13-20020a1c4b0d0000b02901c20173e165so3981817wma.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=VAjzq9mhAWtZ8EHGSkPZvo+bLtkwjx1qvP4uAFGkPj0=;
+        b=aNUg+W40bNFPooxDaKIY+OpuKpPaTYzqrKODqK7cN5q3G/gyVLwYtYExf++sTz9csm
+         D7jogoYW14iB5p3tBLglLiIKafXPxzL9EyoDpRVJOmh5d8Na1nXAL43wo2ORkUDOaHUf
+         SlRIJ3oYvBuAy+ytr6XIQ5yhORI918ReSLlEKWzwWsgLy8Hsi5hNSMX7n9RaaCHZvmOI
+         ptmSecREc6efIr9wQIbWDXWuhRayVT35fzxUy0S91oAMf0P/65mHOORw2KKJ6mBmomcd
+         9S1i6KwR8ZgPFZu+Eqn9b9ZWetH5sSUm//nCSBRkGL1ZNXp8DhXUDITM7jHI5egDgugs
+         zhzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=VAjzq9mhAWtZ8EHGSkPZvo+bLtkwjx1qvP4uAFGkPj0=;
+        b=jqnIM2MewINUz5grAboomjqXt6Ckcn5bv2EhDJXTdnfhz1tsT4JqFgjlutJT8ftVXj
+         aJ04EC5HFxPIM5GHoEOyFOrYohhl/ePh0d2N111T2o+A64TefKqnRUM4cKnV3qaPj7V5
+         CPMgrhrEFSCM1Q+LCtx1p6pLFAGU724nLQRs++45KmlLz+hjSjSpSQdUAOBXgrBjbfz2
+         ALuQp/8jSVx429QB6OBtN9oahK1eHvp1tFXaU3PR2omsee8FInLSRQeb8O+44BLD++tx
+         f5NxvQMj6YCRzEK6AK3G6ZaEVwUFR3+ZXoZXqI4GIdbDD6gjEvqB+UmSEydpZg/7ysYH
+         120Q==
+X-Gm-Message-State: AOAM530RAX0a87+0B7OBZw9k2SkFLOyBpLHOEwvuUrFKsKoRnhzu59n1
+        XVWuXMKDV5fO0k/5ozfjXv4aEK5DfYQRpYGX
+X-Google-Smtp-Source: ABdhPJxEFRrlycHoxLlGNtCO6tr3Fi4GTVtXp61cXSTq9xjkAJaYVyP2Xjo9FIGAzvm6vTe0XyqKRw==
+X-Received: by 2002:a1c:7f96:: with SMTP id a144mr5839635wmd.22.1623943913680;
+        Thu, 17 Jun 2021 08:31:53 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:a8dd:a686:47bc:b03a? ([2a01:e34:ed2f:f020:a8dd:a686:47bc:b03a])
+        by smtp.googlemail.com with ESMTPSA id z6sm2935412wrl.15.2021.06.17.08.31.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jun 2021 08:31:53 -0700 (PDT)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [GIT PULL] timer drivers for v5.14
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Evan Benn <evanbenn@chromium.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Zhou Yanjie <zhouyanjie@wanyeetech.com>,
+        Andrea Merello <andrea.merello@gmail.com>, zou_wei@huawei.com,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-ID: <65ed5f60-d7a5-b4ae-ff78-0382d4671cc5@linaro.org>
+Date:   Thu, 17 Jun 2021 17:31:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-17_13:2021-06-15,2021-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 clxscore=1011 priorityscore=1501 mlxscore=0 suspectscore=0
- impostorscore=0 adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106170096
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-17 at 07:09 +0000, Roberto Sassu wrote:
-> > From: Stefan Berger [mailto:stefanb@linux.ibm.com]
-> > Sent: Wednesday, June 16, 2021 4:40 PM
-> > On 6/16/21 9:22 AM, Roberto Sassu wrote:
-> > > vfs_getxattr() differs from vfs_setxattr() in the way it obtains the xattr
-> > > value. The former gives precedence to the LSMs, and if the LSMs don't
-> > > provide a value, obtains it from the filesystem handler. The latter does
-> > > the opposite, first invokes the filesystem handler, and if the filesystem
-> > > does not support xattrs, passes the xattr value to the LSMs.
-> > >
-> > > The problem is that not necessarily the user gets the same xattr value that
-> > > he set. For example, if he sets security.selinux with a value not
-> > > terminated with '\0', he gets a value terminated with '\0' because SELinux
-> > > adds it during the translation from xattr to internal representation
-> > > (vfs_setxattr()) and from internal representation to xattr
-> > > (vfs_getxattr()).
-> > >
-> > > Normally, this does not have an impact unless the integrity of xattrs is
-> > > verified with EVM. The kernel and the user see different values due to the
-> > > different functions used to obtain them:
-> > >
-> > > kernel (EVM): uses vfs_getxattr_alloc() which obtains the xattr value from
-> > >                the filesystem handler (raw value);
-> > >
-> > > user (ima-evm-utils): uses vfs_getxattr() which obtains the xattr value
-> > >                        from the LSMs (normalized value).
-> > 
-> > Maybe there should be another implementation similar to
-> > vfs_getxattr_alloc() (or modify it) to behave like vfs_getxattr() but do
-> > the memory allocation part so that the kernel sees what user space see
-> > rather than modifying it with your patch so that user space now sees
-> > something different than what it has been for years (previous
-> > NUL-terminated SELinux xattr may not be NUL-terminated anymore)?
-> 
-> I'm concerned that this would break HMACs/digital signatures
-> calculated with raw values.
+Hi Thomas,
 
-Which would happen if the LSM is not enabled (e.g. "lsm=" boot command
-line option).
+The following changes since commit 245a057fee18be08d6ac12357463579d06bea077:
 
-> 
-> An alternative would be to do the EVM verification twice if the
-> first time didn't succeed (with vfs_getxattr_alloc() and with the
-> new function that behaves like vfs_getxattr()).
+  timer_list: Print name of per-cpu wakeup device (2021-05-31 17:04:49
++0200)
 
-Unfortunately, I don't see an alternative.
+are available in the Git repository at:
 
-thanks,
+  https://git.linaro.org/people/daniel.lezcano/linux.git tags/timers-v5.14
 
-Mimi
+for you to fetch changes up to 3d41fff3ae3980c055f3c7861264c46c924f3e4c:
 
+  clocksource/drivers/timer-ti-dm: Drop unnecessary restore (2021-06-16
+17:33:04 +0200)
+
+----------------------------------------------------------------
+- Remove arch_timer_rate1 variable as it is unused in the architected
+  ARM timer (Jisheng Zhang)
+
+- Minor cleanups (whitespace, constification, ...) for the Samsung pwm
+  timer (Krzysztof Kozlowski)
+
+- Acknowledge and disable the timer interrupt at suspend time to
+  prevent the suspend to be aborted by the ATF if there is a pending
+  one on the Mediatek timer (Evan Benn)
+
+- Save and restore the configuration register at suspend/resume time
+  for TI dm timer (Tony Lindgren)
+
+- Set the scene for the next timers support by renaming the array
+  variables on the Ingenic time (Zhou Yanjie)
+
+- Add the clock rate change notification to adjust the prescalar value
+  and compensate the clock source on the ARM global timer (Andrea
+  Merello)
+
+- Add missing variable static annotation on the ARM global timer (Zou
+  Wei)
+
+- Remove a duplicate argument when building the bits field on the ARM
+  global timer (Wan Jiabing)
+
+- Improve the timer workaround function by reducing the loop on the
+  Allwinner A64 timer (Samuel Holland)
+
+- Do no restore the register context in case of error on the TI dm
+  timer (Tony Lindgren)
+
+----------------------------------------------------------------
+Andrea Merello (2):
+      clocksource/drivers/arm_global_timer: Implement rate compensation
+whenever source clock changes
+      arm: zynq: don't disable CONFIG_ARM_GLOBAL_TIMER due to
+CONFIG_CPU_FREQ anymore
+
+Evan Benn (1):
+      clocksource/drivers/mediatek: Ack and disable interrupts on suspend
+
+Jisheng Zhang (1):
+      clocksource/drivers/arm_arch_timer: Remove arch_timer_rate1
+
+Krzysztof Kozlowski (4):
+      clocksource/drivers/samsung_pwm: Minor whitespace cleanup
+      clocksource/drivers/samsung_pwm: Constify passed structure
+      clocksource/drivers/samsung_pwm: Cleanup on init error
+      clocksource/drivers/samsung_pwm: Constify source IO memory
+
+Samuel Holland (1):
+      clocksource/arm_arch_timer: Improve Allwinner A64 timer workaround
+
+Tony Lindgren (2):
+      clocksource/drivers/timer-ti-dm: Save and restore timer TIOCP_CFG
+      clocksource/drivers/timer-ti-dm: Drop unnecessary restore
+
+Wan Jiabing (1):
+      clocksource/drivers/arm_global_timer: Remove duplicated argument
+in arm_global_timer
+
+Zou Wei (1):
+      clocksource/drivers/arm_global_timer: Make symbol
+'gt_clk_rate_change_nb' static
+
+周琰杰 (Zhou Yanjie) (1):
+      clocksource/drivers/ingenic: Rename unreasonable array names
+
+ arch/arm/mach-zynq/Kconfig              |   2 +-
+ drivers/clocksource/Kconfig             |  14 ++++++++++++++
+ drivers/clocksource/arm_arch_timer.c    |   3 +--
+ drivers/clocksource/arm_global_timer.c  | 122
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------
+ drivers/clocksource/ingenic-sysost.c    |  10 +++++-----
+ drivers/clocksource/samsung_pwm_timer.c |  41
++++++++++++++++++++++++++++++------------
+ drivers/clocksource/timer-mediatek.c    |  24 ++++++++++++++++++++++++
+ drivers/clocksource/timer-ti-dm.c       |   9 ++++++++-
+ include/clocksource/samsung_pwm.h       |   3 ++-
+ include/clocksource/timer-ti-dm.h       |   1 +
+ 10 files changed, 197 insertions(+), 32 deletions(-)
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
