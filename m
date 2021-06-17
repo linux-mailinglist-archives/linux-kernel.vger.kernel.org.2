@@ -2,108 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B1A3ABE91
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE14C3ABE9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhFQWO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 18:14:29 -0400
-Received: from mail.klausen.dk ([157.90.24.29]:51186 "EHLO mail.klausen.dk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229915AbhFQWO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 18:14:28 -0400
-From:   Kristian Klausen <kristian@klausen.dk>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=klausen.dk; s=dkim;
-        t=1623967938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Q7RbCKgSk5h1jem9dXNZ5yqfit5y4sv6R9H/UHSF8xg=;
-        b=18dAxXYSeh3O6HtlKbvDbc35tXLIHZCBiVTqkScX+7q5NKHJdIijAy8GnBMMGR1TIcPYSv
-        HKyn6VJeqFrNPy3WmpjeYQmueaLiwXhxTO7GJY1ofEAjSK4pOEsY1oBiwrbCZexKYhSQmJ
-        1WA2QzQKBxTgtuGxi5E/yqxt8WU/404=
-To:     linux-block@vger.kernel.org
-Cc:     Kristian Klausen <kristian@klausen.dk>, stable@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] loop: Fix missing discard support when using LOOP_CONFIGURE
-Date:   Fri, 18 Jun 2021 00:11:57 +0200
-Message-Id: <20210617221158.7045-1-kristian@klausen.dk>
-X-Mailer: git-send-email 2.32.0
+        id S231948AbhFQWS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 18:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231650AbhFQWS1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 18:18:27 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61E1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 15:16:18 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id ho18so12481574ejc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 15:16:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AwVsJszErVtiyw5bOlSHdlACIUbk2leEVGsI22Nm16c=;
+        b=kJNfxLLxB72H4z5568lAYK6FwqUG64zbFQZGgHu0rNw3JSMmfIYJbli8QZgaHLkqwN
+         dqGNlVi2B663P/UJFyPxXHsOhsML6veC9Sd2PIGMz+hwSi5aFjrSo3GNcjioZsymEJUA
+         Xhw6CnEwgNZYNP8zdNaBu9ylCoLnUsO5jungvWWNorKlZiHs1kgXoMFXvdFI1r7NaBvB
+         RiG6cxxfC+TpLGLP/RjArtcTWQvjExLFct8del+j85LN7oAyvABr2nfvp7j0pfgPYSCq
+         xkmpWB1uJFj/dGkh35bZJSCxegWSck8lfgZIDsnyTimeTZJqygEl2DagMKzgWpmXb54G
+         LfDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AwVsJszErVtiyw5bOlSHdlACIUbk2leEVGsI22Nm16c=;
+        b=U8+6ABi3zTwK6+KV126YqkIkXf+9fPI7XZ0VSh1kHnQjuh36XxZnMSkecJ0Y+bOYgP
+         XUsmL/emF8OeqU1NbHXjLWUiemUUgjZSGEDAyZ4FyVbumDXZ9VVPQqkmdGYmPnM7Glvc
+         P8/+QUBypK//MwGl/VY39Xphf295xpVLh99qUJnYYWkwhABtb81pZwfoaF+muFs2Qlv0
+         iSnzuW8hSrULmv8fY5IuZQWqBgimhHy9b7zft1HJK8jmHQ7SLlGM9H7BcjHT2epVsjZO
+         b/SsXDYgxcBITcG2M+uCYMv5fgsY+fykJZT3nUCNrwKg5ebxCWUOLfUsXMQ8nGFTgRs4
+         xbpQ==
+X-Gm-Message-State: AOAM530WEiWm8PtcDvb4XBGkf1OF0Ff7Ev7/A4/qh9LOpJ9D66dsyIcu
+        Pjq+Rp4mUdGy8y44g0Rv4ZaScT/N65j18EkYzpQ=
+X-Google-Smtp-Source: ABdhPJwq5lDCttRtdcLtp8xWWsEyuZqDh41mR0y7tmleLZioJ3kdB5nIgDKCGPjdhNhzugBo1SrbqHNC/5oB4qsNROA=
+X-Received: by 2002:a17:907:9607:: with SMTP id gb7mr7735421ejc.208.1623968177208;
+ Thu, 17 Jun 2021 15:16:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210617194154.2397-1-linux.amoon@gmail.com> <20210617194154.2397-5-linux.amoon@gmail.com>
+In-Reply-To: <20210617194154.2397-5-linux.amoon@gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 18 Jun 2021 00:16:06 +0200
+Message-ID: <CAFBinCB1rrmJ5=M0tSGS_47BarFcrs2Kz5qFzrHw8+OEYxX3DA@mail.gmail.com>
+Subject: Re: [RFCv1 4/8] phy: amlogic: meson8b-usb2: Use phy set_mode callback function
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: <stable@vger.kernel.org> # 5.8.x-
-Fixes: 3448914e8cc5 ("loop: Add LOOP_CONFIGURE ioctl")
-Signed-off-by: Kristian Klausen <kristian@klausen.dk>
----
-Tested like so (without the patch):
-losetup 2.37<= uses LOOP_CONFIGURE instead of LOOP_SET_STATUS64[1]
+Hi Anand,
 
-# fallocate -l100M disk.img
-# rmmod loop
-# losetup --version
-losetup from util-linux 2.36.2
-# losetup --find --show disk.img
-/dev/loop0
-# grep '' /sys/devices/virtual/block/loop0/queue/*discard*
-/sys/devices/virtual/block/loop0/queue/discard_granularity:4096
-/sys/devices/virtual/block/loop0/queue/discard_max_bytes:4294966784
-/sys/devices/virtual/block/loop0/queue/discard_max_hw_bytes:4294966784
-/sys/devices/virtual/block/loop0/queue/discard_zeroes_data:0
-/sys/devices/virtual/block/loop0/queue/max_discard_segments:1
-# losetup -d /dev/loop0
-# [update util-linux]
-# losetup --version
-losetup from util-linux 2.37
-# rmmod loop
-# losetup --find --show disk.img
-/dev/loop0
-# grep '' /sys/devices/virtual/block/loop0/queue/*discard*
-/sys/devices/virtual/block/loop0/queue/discard_granularity:0
-/sys/devices/virtual/block/loop0/queue/discard_max_bytes:0
-/sys/devices/virtual/block/loop0/queue/discard_max_hw_bytes:0
-/sys/devices/virtual/block/loop0/queue/discard_zeroes_data:0
-/sys/devices/virtual/block/loop0/queue/max_discard_segments:1
+On Thu, Jun 17, 2021 at 9:43 PM Anand Moon <linux.amoon@gmail.com> wrote:
+>
+> Reorder the code for phy set_mode in .set_mode callback function.
+> For now configure the phy in host mode.
+as mentioned in the cover-letter: to my knowledge these register bits
+are "static"
+The settings for dr_mode == USB_DR_MODE_HOST mainly apply to the
+second PHY (usb1_phy)
+
+[...]
+> +static int phy_meson8b_usb2_setmode(struct phy *phy, enum phy_mode mode,
+> +                                   int submode)
+>  {
+>         struct phy_meson8b_usb2_priv *priv = phy_get_drvdata(phy);
+>         u32 reg;
+>
+> +       switch (mode) {
+> +       case PHY_MODE_USB_HOST:
+> +               if (priv->match->host_enable_aca) {
+> +                       regmap_update_bits(priv->regmap, REG_ADP_BC,
+> +                                          REG_ADP_BC_ACA_ENABLE,
+> +                                          REG_ADP_BC_ACA_ENABLE);
+> +
+> +                       udelay(ACA_ENABLE_COMPLETE_TIME);
+> +
+> +                       regmap_read(priv->regmap, REG_ADP_BC, &reg);
+> +                       if (reg & REG_ADP_BC_ACA_PIN_FLOAT) {
+> +                               dev_warn(&phy->dev, "USB ID detect failed!\n");
+> +                               return -EINVAL;
+> +                       }
+> +               }
+> +               break;
+> +       default:
+> +               dev_warn(&phy->dev, "USB ID detect failed to setnode! %d\n", mode);
+> +               return -EINVAL;
+I have tested this driver already with PHY_MODE_USB_DEVICE (on my
+Odroid-C1) so I don't see why we should drop support for this
+Also if we want runtime mode switching in this driver then we would
+need to undo the changes from "case PHY_MODE_USB_HOST" above
+
+I suggest dropping this patch until we know for sure if and which
+registers need to be updated based on the DR mode.
 
 
-With the patch applied:
-
-# losetup --version
-losetup from util-linux 2.37
-# rmmod loop
-# losetup --find --show disk.img
-/dev/loop0
-# grep '' /sys/devices/virtual/block/loop0/queue/*discard*
-/sys/devices/virtual/block/loop0/queue/discard_granularity:4096
-/sys/devices/virtual/block/loop0/queue/discard_max_bytes:4294966784
-/sys/devices/virtual/block/loop0/queue/discard_max_hw_bytes:4294966784
-/sys/devices/virtual/block/loop0/queue/discard_zeroes_data:0
-/sys/devices/virtual/block/loop0/queue/max_discard_segments:1
-
-[1] https://github.com/karelzak/util-linux/pull/1152
-
- drivers/block/loop.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 76e12f3482a9..ec957f6d8a49 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -1168,6 +1168,8 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
- 	if (partscan)
- 		lo->lo_disk->flags &= ~GENHD_FL_NO_PART_SCAN;
- 
-+	loop_config_discard(lo);
-+
- 	/* Grab the block_device to prevent its destruction after we
- 	 * put /dev/loopXX inode. Later in __loop_clr_fd() we bdput(bdev).
- 	 */
-
-base-commit: 70585216fe7730d9fb5453d3e2804e149d0fe201
--- 
-2.32.0
-
+Best regards,
+Martin
