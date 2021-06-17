@@ -2,119 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCAC3ABA4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14593ABA4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhFQRMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:12:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47710 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231250AbhFQRMv (ORCPT
+        id S231882AbhFQRNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231852AbhFQRNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:12:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623949842;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gkrtd4zlmynN9eouBHUbPWTXmyAYZ9OeNLaj/f5dRaA=;
-        b=UHKEh5857kiWmSTk3xmlWswZroyU5uiL78GZmdEdZUZUufAI4GLc/0oko4mtb93NVfLhGo
-        F6jCzdJpWSbQ7A+UmT//xa2mVCpRW6/CCHgh6Br/ROOoVuFr2Y4a5vreSdZorrQVIc1YtY
-        GoyZOyxkEIQ4wc2tqv+cU7Eu3dNqSRw=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-N9-grCARM5KyhdWJxe198w-1; Thu, 17 Jun 2021 13:10:41 -0400
-X-MC-Unique: N9-grCARM5KyhdWJxe198w-1
-Received: by mail-ej1-f72.google.com with SMTP id j26-20020a170906411ab02904774cb499f8so194303ejk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:10:41 -0700 (PDT)
+        Thu, 17 Jun 2021 13:13:10 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60233C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:11:01 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id x19so3290346pln.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:11:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=THyXgCl+/VLw3FN9PWQYnLIIdZwbsOot+/12m2pLZlY=;
+        b=g4EEdUPwW+b9mL8UNx5CjZq3x7m7HAxr1SW3Ic3Ug9BDb+d9X+IMGlRDY/tjrUxuWv
+         ztJVDHtsLiz0DGgc0POI6RnssCfMQJm+ebPeeSYbTlCHavvGZZRMPO3R413COkVGzo/7
+         WKFE6AVn8MHHgSWDZmm5a2TGF94dIHOPBd2ew=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Gkrtd4zlmynN9eouBHUbPWTXmyAYZ9OeNLaj/f5dRaA=;
-        b=SioeHRbrehDg11cgMxuYSel1VC47lP8VsGkVkFeUmdD2D238LIa7MiOP8263C/wH7z
-         DCUw3QY7GKJh7FmG1Xg8ZTVJDxSyj8yW0WbRnpl9hVXspJy7CbfVUiMGBHPw1g5I7g47
-         jHua/u9a7cvflusa2DyCPxkRoniREf+qHu0uW5vBWvRtDEuv/CrSuR6xC+fjCgIqnmZr
-         ZhtkvGpt73XPjhEWluXbxzQiBFAn6vbwiyTXPboYrtlWRcI/RClUVgUFByAEkIk6txSk
-         yC9LGzTT7k0VQl/wXEWN5y8cW1kd2Dlcht04zDyHz4PStJ7uwdbN7w2WoRy3Qy5NwP2G
-         j+ww==
-X-Gm-Message-State: AOAM5339BerW0mikET0sBVt3xJ2yyrNTb/AA3Z9gBQGA0airpKOW6RLH
-        B8tawCZfVoEHNF/g4ak4gchRynCd/9wy+uZQVRJ+eSBrgQ+HDElElPAK4wn4YbkZ2WgTrirKAIq
-        EyPfLYFHU+uzDYbPWPQWzJ/R1hJp8sdwUsa0dALQm4NJinM9ldysDcAXr3XhzcdIVWMbCCfUVS2
-        4i
-X-Received: by 2002:a50:ce0b:: with SMTP id y11mr8287092edi.356.1623949840126;
-        Thu, 17 Jun 2021 10:10:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyxgrjNFCkVJDmMzw18MmfhTo25hKFgmRgXcrXL1uqSbTO766v4CAqIwKN4rNXnV4svQSLmNQ==
-X-Received: by 2002:a50:ce0b:: with SMTP id y11mr8287058edi.356.1623949839922;
-        Thu, 17 Jun 2021 10:10:39 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id v8sm4753484edc.59.2021.06.17.10.10.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 10:10:39 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86/mmu: Grab nx_lpage_splits as an unsigned long
- before division
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210615162905.2132937-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <53476904-08ce-63ec-3842-9443a92550db@redhat.com>
-Date:   Thu, 17 Jun 2021 19:10:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        bh=THyXgCl+/VLw3FN9PWQYnLIIdZwbsOot+/12m2pLZlY=;
+        b=QJC+SIBJPn6yxrxkhAJWpZAE13QFDsVYbQmclCwwZsG3CbNFg2FQRhsnZjofvX7vtm
+         dAsoJpXFhX+DgNDsD3gRbTTtICxGpEtH1S+ALMdLayVJD7noSmbGeJIlcQnHegSQOod8
+         JdsX3IGROT/dVK2BOSrgizIK4SO2B7C2Rr6zS7Jn/cdy7pa11iAUEEFCQksyVMk0Qz6m
+         O+hWT4hUWNtepNQGYH4wo8IlPgpP3jXDv3tJf9HJlheswlbYDmnPGDw8PV4Og5vWs6M4
+         cMOq0X09SRSrCboMMjwi8FuWVD4WSRRYwzqwHCsTVqU5A8sE6sp+ZDzjXb6ybNYVjIEL
+         sNBQ==
+X-Gm-Message-State: AOAM533xQDI/zMnOPTjxUM418A8Uvw4an1J+hQtRoizziBDNLzOL5jsi
+        +XwpoSUukTPbboEUpnZkdNRybw==
+X-Google-Smtp-Source: ABdhPJzdACvbMXnVPGIrxxnbd5Bb/c0fcJX064+TUUdqkjoTucP5FHRvPftG7jPOe/HYsGERGOhLfg==
+X-Received: by 2002:a17:90a:c397:: with SMTP id h23mr17706498pjt.101.1623949861035;
+        Thu, 17 Jun 2021 10:11:01 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id ls13sm5631016pjb.23.2021.06.17.10.11.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 10:11:00 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] wcn36xx: Avoid memset() beyond end of struct field
+Date:   Thu, 17 Jun 2021 10:10:58 -0700
+Message-Id: <20210617171058.3410494-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210615162905.2132937-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Patch-Hashes: v=1; h=sha256; g=d2dd7d45b161d7c8a9329c5a8b75525e820a8c46; i=Edz8jhuXuQ6wfwSNfGvEB9SGPd5eZN+nH8oppZ9YUF4=; m=dq0ACCynqzLx07HlxuFYrIrrlO3EnmhT1nG2nGfdDCE=; p=q86YgQ2o199u+8UL8Yc1oxLTwQpOhWxEuOiMHII0TtU=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDLgiIACgkQiXL039xtwCYtvQ/8Cb0 sLxpN9+ykUVmXYnSytjXPDVjkMOo9ndEUnU4KeKEBe4LmSwyDPY7vKbBbhUopf09U0ljUORb06LqY OxRBirA0qa/RTthtpyQpd3yMRmPFCwQ/UdgtG4oeMORQWBihX4wyOlRtIvzhWUvgUN/VCaeGkBhbL /suFSGf/DzR85VaZWc2D+dFJSaLt5vr9953FYSlk/XuurO+OeAjLglCBWeun42tQJXBhaJaAsjBwl u345+rQJeewnJ8/sbmtfugefw37dzuudhlMGcNMKv1+77YVU7xDiGczsUAyGvZDDfibRCj8lQnDBv 1RH+pl9aTVmAtmjhjlWRIsypvVICupIWvJCIzgDMm/mqLd1CJctISDmK8x3Tt1EfPFJbOiDB4hLGz zuzY1C2r2BuHXlPf1uk+O4674PT/VWgsSXgVU1vW85flDexh+hmXIEyHr8ba/LnMN2wDI+VdcjtDl 7RAiqWOEZ9wy6UCazxPwJx+Crb3sOwhSvUkHa2k9Vmz/AW0VvjvwOXchXrTwox+lyFmjgAgpBCfyF /uuIrDL9wEf5e1jS93x0qWuwZ1mP5nYEbJDHrb6dilgrj+hM49XuZAadhOM/n9sgh6x/8viFc8gUK s1/xAfqaw/kZd5IWHQ1DxeQcKmdFzrFEaUgaeI2gDJ4kpA8L1QXCjt6HAifaD0NU=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/06/21 18:29, Sean Christopherson wrote:
-> Snapshot kvm->stats.nx_lpage_splits into a local unsigned long to avoid
-> 64-bit division on 32-bit kernels.  Casting to an unsigned long is safe
-> because the maximum number of shadow pages, n_max_mmu_pages, is also an
-> unsigned long, i.e. KVM will start recycling shadow pages before the
-> number of splits can exceed a 32-bit value.
-> 
->    ERROR: modpost: "__udivdi3" [arch/x86/kvm/kvm.ko] undefined!
-> 
-> Fixes: 7ee093d4f3f5 ("KVM: switch per-VM stats to u64")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/mmu/mmu.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 720ceb0a1f5c..7d3e57678d34 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -6043,6 +6043,7 @@ static int set_nx_huge_pages_recovery_ratio(const char *val, const struct kernel
->   
->   static void kvm_recover_nx_lpages(struct kvm *kvm)
->   {
-> +	unsigned long nx_lpage_splits = kvm->stat.nx_lpage_splits;
->   	int rcu_idx;
->   	struct kvm_mmu_page *sp;
->   	unsigned int ratio;
-> @@ -6054,7 +6055,7 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
->   	write_lock(&kvm->mmu_lock);
->   
->   	ratio = READ_ONCE(nx_huge_pages_recovery_ratio);
-> -	to_zap = ratio ? DIV_ROUND_UP(kvm->stat.nx_lpage_splits, ratio) : 0;
-> +	to_zap = ratio ? DIV_ROUND_UP(nx_lpage_splits, ratio) : 0;
->   	for ( ; to_zap; --to_zap) {
->   		if (list_empty(&kvm->arch.lpage_disallowed_mmu_pages))
->   			break;
-> 
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memset(), avoid intentionally writing across
+neighboring array fields.
 
-Queued, thanks.
+Instead of writing past the end of the header to reach the rest of
+the body, replace the redundant function with existing macro to wipe
+struct contents and set field values. Additionally adjusts macro to add
+missing parens.
 
-Paolo
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/wireless/ath/wcn36xx/smd.c | 21 +++++----------------
+ 1 file changed, 5 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/wcn36xx/smd.c b/drivers/net/wireless/ath/wcn36xx/smd.c
+index d0c3a1557e8d..b3bea07d0641 100644
+--- a/drivers/net/wireless/ath/wcn36xx/smd.c
++++ b/drivers/net/wireless/ath/wcn36xx/smd.c
+@@ -445,22 +445,12 @@ static int wcn36xx_smd_send_and_wait(struct wcn36xx *wcn, size_t len)
+ 	return ret;
+ }
+ 
+-static void init_hal_msg(struct wcn36xx_hal_msg_header *hdr,
+-			 enum wcn36xx_hal_host_msg_type msg_type,
+-			 size_t msg_size)
+-{
+-	memset(hdr, 0, msg_size + sizeof(*hdr));
+-	hdr->msg_type = msg_type;
+-	hdr->msg_version = WCN36XX_HAL_MSG_VERSION0;
+-	hdr->len = msg_size + sizeof(*hdr);
+-}
+-
+ #define __INIT_HAL_MSG(msg_body, type, version) \
+ 	do {								\
+-		memset(&msg_body, 0, sizeof(msg_body));			\
+-		msg_body.header.msg_type = type;			\
+-		msg_body.header.msg_version = version;			\
+-		msg_body.header.len = sizeof(msg_body);			\
++		memset(&(msg_body), 0, sizeof(msg_body));		\
++		(msg_body).header.msg_type = type;			\
++		(msg_body).header.msg_version = version;		\
++		(msg_body).header.len = sizeof(msg_body);		\
+ 	} while (0)							\
+ 
+ #define INIT_HAL_MSG(msg_body, type)	\
+@@ -2729,8 +2719,7 @@ int wcn36xx_smd_set_mc_list(struct wcn36xx *wcn,
+ 
+ 	msg_body = (struct wcn36xx_hal_rcv_flt_pkt_set_mc_list_req_msg *)
+ 		   wcn->hal_buf;
+-	init_hal_msg(&msg_body->header, WCN36XX_HAL_8023_MULTICAST_LIST_REQ,
+-		     sizeof(msg_body->mc_addr_list));
++	INIT_HAL_MSG(*msg_body, WCN36XX_HAL_8023_MULTICAST_LIST_REQ);
+ 
+ 	/* An empty list means all mc traffic will be received */
+ 	if (fp)
+-- 
+2.25.1
 
