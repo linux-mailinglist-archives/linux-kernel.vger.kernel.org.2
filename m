@@ -2,103 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212B53ABBEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE8F3ABBF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbhFQSiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 14:38:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36814 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230151AbhFQSiP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:38:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623954966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=N/27r8jjnxPGdpC0ykYj/q5IIkngOTZIKQLUhzWLbTA=;
-        b=EXDv/ROb9DubvUe7CcVY2zjCCs4o4hukIvwsl6J8N/XaY3N45fhuAioLN/d507H3CgYGG4
-        +HGazNf6DiF3AS3jsvh47Vkc8260bbV7fUykaT3f/j9zus1oX7Fcmwi+wBFOo9bs+2UfZK
-        6gAVVzlfov65xzgkahKPKEuoZE3hJoU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-162-SvJ4QTmCPgenZh_8kcQZAw-1; Thu, 17 Jun 2021 14:36:05 -0400
-X-MC-Unique: SvJ4QTmCPgenZh_8kcQZAw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44EAB818703;
-        Thu, 17 Jun 2021 18:36:04 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E7EBAF6EA;
-        Thu, 17 Jun 2021 18:36:03 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] KVM changes for 5.13-rc7
-Date:   Thu, 17 Jun 2021 14:36:03 -0400
-Message-Id: <20210617183603.844718-1-pbonzini@redhat.com>
+        id S232198AbhFQSmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:42:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51776 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232270AbhFQSmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 14:42:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id EB6D3613FA;
+        Thu, 17 Jun 2021 18:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623955206;
+        bh=tu8vo2m2Z5AYvkCpyO8TGhwltuDaX6bzoZO/CTXwI34=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=RJx1RYyGdYEk9TLi6Ch0vOs/5KjIF26E8ZinK7fUu5qAMtm3hdHKI7pfkrUvwqj5b
+         +/OW8rmeuAJrzZni5HSyWgIBJsCFkeDYvHLrhAFpslnAyKkpyKbew+JYnXPm8ORtWJ
+         8e0rNZcQmNOdLjUsKHTPBFaxpNWybIFNt3iOhzzZShWAEiePBe+h2xokbWMEvoxfLt
+         Z5+8B5ZQ3BuvN2Sjkd5h4ZCWrWHqv73oiOUBTHAwvzPMf6GqdHPq8Cp/v4pJEQvAsA
+         KOKi9/0B8knmNw8ceYmjW3wEoEc8FbrmdOv3sGyRBjC3ht/BXqbIEDL0ciw8OM3F6X
+         J+qTKMjujtl0w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E18FF609EA;
+        Thu, 17 Jun 2021 18:40:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Subject: Re: [PATCH net-next] net: sched: fix error return code in
+ tcf_del_walker()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162395520591.2276.12208043961160895460.git-patchwork-notify@kernel.org>
+Date:   Thu, 17 Jun 2021 18:40:05 +0000
+References: <20210617080207.1346017-1-yangyingliang@huawei.com>
+In-Reply-To: <20210617080207.1346017-1-yangyingliang@huawei.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hello:
 
-The following changes since commit 4422829e8053068e0225e4d0ef42dc41ea7c9ef5:
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-  kvm: fix previous commit for 32-bit builds (2021-06-09 01:49:13 -0400)
+On Thu, 17 Jun 2021 16:02:07 +0800 you wrote:
+> When nla_put_u32() fails, 'ret' could be 0, it should
+> return error code in tcf_del_walker().
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  net/sched/act_api.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-are available in the Git repository at:
+Here is the summary with links:
+  - [net-next] net: sched: fix error return code in tcf_del_walker()
+    https://git.kernel.org/netdev/net-next/c/55d96f72e8dd
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-for you to fetch changes up to d8ac05ea13d789d5491a5920d70a05659015441d:
-
-  KVM: selftests: Fix kvm_check_cap() assertion (2021-06-17 13:06:57 -0400)
-
-----------------------------------------------------------------
-Miscellaneous bugfixes.  The main interesting one is a NULL pointer dereference
-reported by syzkaller ("KVM: x86: Immediately reset the MMU context when the SMM
-flag is cleared").
-
-----------------------------------------------------------------
-Alper Gun (1):
-      KVM: SVM: Call SEV Guest Decommission if ASID binding fails
-
-ChenXiaoSong (1):
-      KVM: SVM: fix doc warnings
-
-Fuad Tabba (1):
-      KVM: selftests: Fix kvm_check_cap() assertion
-
-Gustavo A. R. Silva (1):
-      KVM: x86: Fix fall-through warnings for Clang
-
-Jim Mattson (1):
-      kvm: LAPIC: Restore guard to prevent illegal APIC register access
-
-Sean Christopherson (2):
-      KVM: x86: Immediately reset the MMU context when the SMM flag is cleared
-      KVM: x86/mmu: Calculate and check "full" mmu_role for nested MMU
-
-Wanpeng Li (1):
-      KVM: X86: Fix x86_emulator slab cache leak
-
-Yanan Wang (1):
-      KVM: selftests: Fix compiling errors when initializing the static structure
-
- arch/x86/kvm/cpuid.c                        |  1 +
- arch/x86/kvm/lapic.c                        |  3 +++
- arch/x86/kvm/mmu/mmu.c                      | 26 +++++++++++++++++++-
- arch/x86/kvm/svm/avic.c                     |  6 ++---
- arch/x86/kvm/svm/sev.c                      | 20 +++++++++++----
- arch/x86/kvm/vmx/vmx.c                      |  1 +
- arch/x86/kvm/x86.c                          |  6 ++++-
- tools/testing/selftests/kvm/lib/kvm_util.c  |  2 +-
- tools/testing/selftests/kvm/lib/test_util.c | 38 ++++++++++++++---------------
- 9 files changed, 73 insertions(+), 30 deletions(-)
 
