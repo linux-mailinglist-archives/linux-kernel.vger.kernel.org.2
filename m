@@ -2,250 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970F13AB37C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63753AB37E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232816AbhFQMZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:25:51 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56942 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232806AbhFQMZu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:25:50 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HC3rDY119493;
-        Thu, 17 Jun 2021 08:23:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=8DYHt3VzSL2WAPks3Uh1iMF9OqT7VGrzc0uy53hiDBs=;
- b=mZ76Tdp3L9qvJOwnsci48jHw4LpaK997fIYTplokMnBl8qeFZlWIgd8ZK3ovJwGQLyIC
- 2OpB7mF8NCB8Z0uOU6rwfDRbWjgtB8PyCqefQXEsr0qJlU/33r7w+zUm7YPqZ1yx6+gw
- UBHJqUoY025PcBf3BgOydWkxo+ptxOvdf98pDR6ifkZ0v3OILxoCLFxqO/7hPUR1Ly32
- jUHdBEBnrKuzp6wG7lMJwg6nyjf6MYl7WooOnVCSdEbIRT2pQopIZeid11DiCdc8/07S
- tfvR2NwxxrUwmh899ndEXGg2qCF7bczhicYu7QtogdhuQvgdVvyqoNoEd9qI4jqfIVBp pQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3984w8348n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 08:23:40 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15HC44DO121441;
-        Thu, 17 Jun 2021 08:23:39 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3984w8347y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 08:23:39 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15HCCLDr031817;
-        Thu, 17 Jun 2021 12:23:38 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma05fra.de.ibm.com with ESMTP id 394mj8hgb3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 12:23:37 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15HCNYC618546948
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Jun 2021 12:23:34 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A28625205A;
-        Thu, 17 Jun 2021 12:23:34 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.46.143])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id CDE7452050;
-        Thu, 17 Jun 2021 12:23:33 +0000 (GMT)
-Subject: Re: [PATCH v5 2/2] s390/vfio-ap: r/w lock for PQAP interception
- handler function pointer
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210616141618.938494-1-akrowiak@linux.ibm.com>
- <20210616141618.938494-3-akrowiak@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <82462c00-46da-fbbe-7a8f-d52286cfc7db@de.ibm.com>
-Date:   Thu, 17 Jun 2021 14:23:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210616141618.938494-3-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S232823AbhFQM0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:26:02 -0400
+Received: from mail-oln040092075031.outbound.protection.outlook.com ([40.92.75.31]:62392
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232690AbhFQM0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 08:26:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j2q74SEmIwZK8kPo5UopzbVNWU+Y6qNTt7xcR21YtXT/LBboklz3MD26G4IH4lPO0V/5Lu9xFbkDeSogytV5lwdD7MdDDwPOcjLFBXislIk3OhbvnutOe9xsQXDgzMnpUkofmPdgvPNRItUYWRQVNrTw5SDfO+XXWCuQ9AXAtHF8Zg2IAdCflN6Kud2822nJNOuYo8sAeC2zX8FXKXJjOMyLvhfA3JqcuUPJO82AhfVlhXktp7HoQcFowvrpFiXsPnJ2VE6E/2pOZiYMf2Rnxsuuh/Eh3EAf9GF0zkEAVQ1ONWVmOF52H7nnM3MMVPSqbLVdA1GhdelUiVcg8fhHMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CIzUbznV664F/B/jvLyuiGu712ufDNsWbRitNS+yZPA=;
+ b=G3Rmb+VTb6ytYX/G3S+rCs4fYbDRI0gsB/rgOm8+tqCu6zMmHm5LZuJ6OJQ14eK1HsWGsHDO284RTGtyzEmF5/vDta0hgFpswvL9p/ybCXRK0kXXd7rA4w2XadZHeqOtQCk4PFkU7gBdy4xI4RkLp7AzOXjZc9eLvCJtGZUwBPSWnHmKaIcQgUPCWvgQgSM/yCQing7PG4M0lei+urAkl/CMyqK24cHH4L8y/Z/PD4+Q5O2teW+77Uq0pVpwgDMVOAvw6klkGmnXyr0pgcKnxqNbJvwr0MKdz00BMacsCwtKrkzTJPonAlorRUZL5Pk0at6w6uxv9EbCAzEDAOqpiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from VI1EUR04FT039.eop-eur04.prod.protection.outlook.com
+ (2a01:111:e400:7e0e::4e) by
+ VI1EUR04HT180.eop-eur04.prod.protection.outlook.com (2a01:111:e400:7e0e::66)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16; Thu, 17 Jun
+ 2021 12:23:51 +0000
+Received: from AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
+ (2a01:111:e400:7e0e::49) by VI1EUR04FT039.mail.protection.outlook.com
+ (2a01:111:e400:7e0e::315) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend
+ Transport; Thu, 17 Jun 2021 12:23:50 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:E8F058413FB5AAA58BC5A8C7C6DA16D5525DFAF91C8ECB46424B716D25EE644B;UpperCasedChecksum:5AAF016DE26ED6173091C4EAA8E3FEC31B41C1ABE62C27A68D092658E38D4D44;SizeAsReceived:8591;Count:45
+Received: from AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::d5c4:2d6f:ddf3:3119]) by AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::d5c4:2d6f:ddf3:3119%9]) with mapi id 15.20.4242.021; Thu, 17 Jun 2021
+ 12:23:50 +0000
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Adrian Reber <areber@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
+Subject: [PATCH v10] exec: Fix dead-lock in de_thread with ptrace_attach
+Message-ID: <AM8PR10MB470801D01A0CF24BC32C25E7E40E9@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
+Date:   Thu, 17 Jun 2021 14:23:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: SIBhfp5W6VWPw9tRWIZCB1Y7vuVhZVqI
-X-Proofpoint-ORIG-GUID: g8hhtZa6tYYHgVJRdHOKszBQEDBfuWbr
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-17_05:2021-06-15,2021-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- bulkscore=0 phishscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
- mlxscore=0 mlxlogscore=999 impostorscore=0 priorityscore=1501 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106170079
+X-TMN:  [7Dr51V9HpzS4AqnJOjIDGFi5c5PVmmqc]
+X-ClientProxiedBy: PR0P264CA0146.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1b::14) To AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:364::23)
+X-Microsoft-Original-Message-ID: <160f025e-0b7b-7da1-1743-cf29c3e12f53@hotmail.de>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.101] (84.57.55.161) by PR0P264CA0146.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1b::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15 via Frontend Transport; Thu, 17 Jun 2021 12:23:49 +0000
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 45
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: 2c02be13-119f-4e77-9505-08d9318ac355
+X-MS-TrafficTypeDiagnostic: VI1EUR04HT180:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I2Zt+LTx+Fu+6nFsN1BtWpYdNVWb21TQ3z2x1yyc1N6CykJC71mReabZskEX+Q6C3OIS9z2FJLD2kZT5PSIly+vq8cZo/y/Nj8pd2zQZXA0zXOcRSARMU7cl4NU4hUkY7CBZqNYQ0XRui0jXdXt520q3ilKwX2zokBhJ9MBpqFIHjeV/cXUJ3hUtqDTgsopZ03/RVdeawNDWy5zUwTy1TDrCRW9IIy5xhmoAWskumc5ltfPFo92tAGf0Zl8R2m6gkZSm/0wJ75aag6RzEHFJF1VNtEbsESI8/G7JiQjK9O/whwtzHFhaTsdW+N8Gf8I/LIfgv4EQARpG98oEi6+FKdVv9LuqREoMq9TphdHmJjU0xt+QZdXzknksCsYzrvNHJIcCA+wq+X1O5Ow5YI3RyQ==
+X-MS-Exchange-AntiSpam-MessageData: Z/eilA5YEGT7TE9bFMUzVjEK/LjW1gn7HoxP3Y+u87xTtJ9w5u0JsVtKmrpk5TCBTnRYCinjItKTv5q+6IcePpCu0IpoNbH7CFhKLk5xDgPSGBO3eWfVpnc/k401B5ljxOOUvIG0X3O1ey1Fx4gW/w==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c02be13-119f-4e77-9505-08d9318ac355
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 12:23:50.8750
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-AuthSource: VI1EUR04FT039.eop-eur04.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1EUR04HT180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This introduces signal->unsafe_execve_in_progress,
+which is used to fix the case when at least one of the
+sibling threads is traced, and therefore the trace
+process may dead-lock in ptrace_attach, but de_thread
+will need to wait for the tracer to continue execution.
 
+All threads that are traced with PTRACE_O_TRACEEXIT
+send a PTRACE_EVENT_EXIT to the tracer, and wait
+for the tracer to do a PTRACE_CONT before reaching
+the ZOMBIE state.  This wait state is not interrupted
+by zap_other_threads.
 
-On 16.06.21 16:16, Tony Krowiak wrote:
-> The function pointer to the interception handler for the PQAP instruction
-> can get changed during the interception process. Let's add a
-> semaphore to struct kvm_s390_crypto to control read/write access to the
-> function pointer contained therein.
-> 
-> The semaphore must be locked for write access by the vfio_ap device driver
-> when notified that the KVM pointer has been set or cleared. It must be
-> locked for read access by the interception framework when the PQAP
-> instruction is intercepted.
-> 
+All threads except the thread leader do also wait
+for the tracer to receive the exit signal with waitpid
+before de_thread can continue.
 
-The locking looks so much nicer now. One (optional) thing.
+When the cred_guard_mutex is held for so long time,
+any attempt to ptrace_attach this thread will block
+the tracer.
 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->   arch/s390/include/asm/kvm_host.h      |  6 +++---
->   arch/s390/kvm/kvm-s390.c              |  1 +
->   arch/s390/kvm/priv.c                  |  6 +++---
->   drivers/s390/crypto/vfio_ap_ops.c     | 21 ++++++++++++++++-----
->   drivers/s390/crypto/vfio_ap_private.h |  2 +-
->   5 files changed, 24 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-> index 8925f3969478..58edaa3f9602 100644
-> --- a/arch/s390/include/asm/kvm_host.h
-> +++ b/arch/s390/include/asm/kvm_host.h
-> @@ -803,14 +803,14 @@ struct kvm_s390_cpu_model {
->   	unsigned short ibc;
->   };
->   
-> -struct kvm_s390_module_hook {
-> +struct kvm_s390_crypto_hook {
->   	int (*hook)(struct kvm_vcpu *vcpu);
-> -	struct module *owner;
->   };
+The solution is to detect this situation and make
+ptrace_attach return -EAGAIN.  Do that only after all
+other checks have been done, and only for the thread
+that does the execve, other threads can be allowed to
+proceed, since that has not influence the credentials
+of the new process.
 
-Can we actually get rid of the structure and use
-    	int (*pqap_hook)(struct kvm_vcpu *vcpu);
->   
->   struct kvm_s390_crypto {
->   	struct kvm_s390_crypto_cb *crycb;
-> -	struct kvm_s390_module_hook *pqap_hook;
-> +	struct rw_semaphore pqap_hook_rwsem;
-> +	struct kvm_s390_crypto_hook *pqap_hook;
+This means this is an API change, but only when some
+threads are being traced while execve happens in a
+non-traced thread.
 
-here and below
+See tools/testing/selftests/ptrace/vmaccess.c
+for a test case that gets fixed by this change.
 
->   	__u32 crycbd;
->   	__u8 aes_kw;
->   	__u8 dea_kw;
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 1296fc10f80c..418d910df569 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -2606,6 +2606,7 @@ static void kvm_s390_crypto_init(struct kvm *kvm)
->   {
->   	kvm->arch.crypto.crycb = &kvm->arch.sie_page2->crycb;
->   	kvm_s390_set_crycb_format(kvm);
-> +	init_rwsem(&kvm->arch.crypto.pqap_hook_rwsem);
->   
->   	if (!test_kvm_facility(kvm, 76))
->   		return;
-> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
-> index 9928f785c677..bbbd84ffe239 100644
-> --- a/arch/s390/kvm/priv.c
-> +++ b/arch/s390/kvm/priv.c
-> @@ -657,15 +657,15 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
->   	 * Verify that the hook callback is registered, lock the owner
->   	 * and call the hook.
->   	 */
-> +	down_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
->   	if (vcpu->kvm->arch.crypto.pqap_hook) {
-> -		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
-> -			return -EOPNOTSUPP;
->   		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
-    		ret = vcpu->kvm->arch.crypto.pqap_hook(vcpu);
-					
-> -		module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
->   		if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
->   			kvm_s390_set_psw_cc(vcpu, 3);
-> +		up_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
->   		return ret;
->   	}
-> +	up_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
->   	/*
->   	 * A vfio_driver must register a hook.
->   	 * No hook means no driver to enable the SIE CRYCB and no queues.
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 122c85c22469..d8abe5a11e49 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -353,7 +353,6 @@ static int vfio_ap_mdev_create(struct mdev_device *mdev)
->   	init_waitqueue_head(&matrix_mdev->wait_for_kvm);
->   	mdev_set_drvdata(mdev, matrix_mdev);
->   	matrix_mdev->pqap_hook.hook = handle_pqap;
-> -	matrix_mdev->pqap_hook.owner = THIS_MODULE;
->   	mutex_lock(&matrix_dev->lock);
->   	list_add(&matrix_mdev->node, &matrix_dev->mdev_list);
->   	mutex_unlock(&matrix_dev->lock);
-> @@ -1115,15 +1114,20 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
->   		}
->   
->   		kvm_get_kvm(kvm);
-> +		matrix_mdev->kvm = kvm;
->   		matrix_mdev->kvm_busy = true;
->   		mutex_unlock(&matrix_dev->lock);
-> +
-> +		down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
-> +		up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +
->   		kvm_arch_crypto_set_masks(kvm,
->   					  matrix_mdev->matrix.apm,
->   					  matrix_mdev->matrix.aqm,
->   					  matrix_mdev->matrix.adm);
-> +
->   		mutex_lock(&matrix_dev->lock);
-> -		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
-> -		matrix_mdev->kvm = kvm;
->   		matrix_mdev->kvm_busy = false;
->   		wake_up_all(&matrix_mdev->wait_for_kvm);
->   	}
-> @@ -1189,10 +1193,17 @@ static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
->   	if (matrix_mdev->kvm) {
->   		matrix_mdev->kvm_busy = true;
->   		mutex_unlock(&matrix_dev->lock);
-> -		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> +
-> +		if (matrix_mdev->kvm->arch.crypto.crycbd) {
-> +			down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +			matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> +			up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +
-> +			kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> +		}
-> +
->   		mutex_lock(&matrix_dev->lock);
->   		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-> -		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
->   		kvm_put_kvm(matrix_mdev->kvm);
->   		matrix_mdev->kvm = NULL;
->   		matrix_mdev->kvm_busy = false;
-> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-> index f82a6396acae..5d4fe6efbc73 100644
-> --- a/drivers/s390/crypto/vfio_ap_private.h
-> +++ b/drivers/s390/crypto/vfio_ap_private.h
-> @@ -86,7 +86,7 @@ struct ap_matrix_mdev {
->   	bool kvm_busy;
->   	wait_queue_head_t wait_for_kvm;
->   	struct kvm *kvm;
-> -	struct kvm_s390_module_hook pqap_hook;
+Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
+---
+ fs/exec.c                    | 26 +++++++++++++++++++++++++-
+ fs/proc/base.c               |  6 ++++++
+ include/linux/sched/signal.h | 13 +++++++++++++
+ kernel/ptrace.c              | 24 ++++++++++++++++++++++++
+ kernel/seccomp.c             | 12 +++++++++---
+ 5 files changed, 77 insertions(+), 4 deletions(-)
 
-and here?
+v10: Changes to previous version, make the PTRACE_ATTACH
+retun -EAGAIN, instead of execve return -ERESTARTSYS.
+Added some lessions learned to the description.
 
-> +	struct kvm_s390_crypto_hook pqap_hook;
->   	struct mdev_device *mdev;
->   };
->   
-> 
+diff --git a/fs/exec.c b/fs/exec.c
+index 8344fba..9b987ef 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1040,6 +1040,7 @@ static int de_thread(struct task_struct *tsk)
+ 	struct signal_struct *sig = tsk->signal;
+ 	struct sighand_struct *oldsighand = tsk->sighand;
+ 	spinlock_t *lock = &oldsighand->siglock;
++	struct task_struct *t = tsk;
+ 
+ 	if (thread_group_empty(tsk))
+ 		goto no_thread_group;
+@@ -1062,6 +1063,17 @@ static int de_thread(struct task_struct *tsk)
+ 	if (!thread_group_leader(tsk))
+ 		sig->notify_count--;
+ 
++	while_each_thread(tsk, t) {
++		if (unlikely(t->ptrace))
++			sig->unsafe_execve_in_progress = true;
++	}
++
++	if (unlikely(sig->unsafe_execve_in_progress)) {
++		spin_unlock_irq(lock);
++		mutex_unlock(&sig->cred_guard_mutex);
++		spin_lock_irq(lock);
++	}
++
+ 	while (sig->notify_count) {
+ 		__set_current_state(TASK_KILLABLE);
+ 		spin_unlock_irq(lock);
+@@ -1152,6 +1164,12 @@ static int de_thread(struct task_struct *tsk)
+ 		release_task(leader);
+ 	}
+ 
++	if (unlikely(sig->unsafe_execve_in_progress)) {
++		if (mutex_lock_killable(&sig->cred_guard_mutex))
++			goto killed;
++		sig->unsafe_execve_in_progress = false;
++	}
++
+ 	sig->group_exit_task = NULL;
+ 	sig->notify_count = 0;
+ 
+@@ -1466,6 +1484,11 @@ static int prepare_bprm_creds(struct linux_binprm *bprm)
+ 	if (mutex_lock_interruptible(&current->signal->cred_guard_mutex))
+ 		return -ERESTARTNOINTR;
+ 
++	if (unlikely(current->signal->unsafe_execve_in_progress)) {
++		mutex_unlock(&current->signal->cred_guard_mutex);
++		return -ERESTARTNOINTR;
++	}
++
+ 	bprm->cred = prepare_exec_creds();
+ 	if (likely(bprm->cred))
+ 		return 0;
+@@ -1482,7 +1505,8 @@ static void free_bprm(struct linux_binprm *bprm)
+ 	}
+ 	free_arg_pages(bprm);
+ 	if (bprm->cred) {
+-		mutex_unlock(&current->signal->cred_guard_mutex);
++		if (!current->signal->unsafe_execve_in_progress)
++			mutex_unlock(&current->signal->cred_guard_mutex);
+ 		abort_creds(bprm->cred);
+ 	}
+ 	if (bprm->file) {
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 3851bfc..3b2a55c 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -2739,6 +2739,12 @@ static ssize_t proc_pid_attr_write(struct file * file, const char __user * buf,
+ 	if (rv < 0)
+ 		goto out_free;
+ 
++	if (unlikely(current->signal->unsafe_execve_in_progress)) {
++		mutex_unlock(&current->signal->cred_guard_mutex);
++		rv = -ERESTARTNOINTR;
++		goto out_free;
++	}
++
+ 	rv = security_setprocattr(PROC_I(inode)->op.lsm,
+ 				  file->f_path.dentry->d_name.name, page,
+ 				  count);
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index 3f6a0fc..220a083 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -214,6 +214,17 @@ struct signal_struct {
+ #endif
+ 
+ 	/*
++	 * Set while execve is executing but is *not* holding
++	 * cred_guard_mutex to avoid possible dead-locks.
++	 * The cred_guard_mutex is released *after* de_thread() has
++	 * called zap_other_threads(), therefore a fatal signal is
++	 * guaranteed to be already pending in the unlikely event, that
++	 * current->signal->unsafe_execve_in_progress happens to be
++	 * true after the cred_guard_mutex was acquired.
++	 */
++	bool unsafe_execve_in_progress;
++
++	/*
+ 	 * Thread is the potential origin of an oom condition; kill first on
+ 	 * oom
+ 	 */
+@@ -227,6 +238,8 @@ struct signal_struct {
+ 	struct mutex cred_guard_mutex;	/* guard against foreign influences on
+ 					 * credential calculations
+ 					 * (notably. ptrace)
++					 * Held while execve runs, except when
++					 * a sibling thread is being traced.
+ 					 * Deprecated do not use in new code.
+ 					 * Use exec_update_lock instead.
+ 					 */
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 61db50f..b10530a 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -402,6 +402,21 @@ static int ptrace_attach(struct task_struct *task, long request,
+ 	if (task->ptrace)
+ 		goto unlock_tasklist;
+ 
++	/*
++	 * It may happen that de_thread() has to release the
++	 * cred_guard_mutex in order to prevent deadlocks.
++	 * In that case unsafe_execve_in_progress will be set.
++	 * If that happens you cannot assume that the usual
++	 * guarantees implied by cred_guard_mutex are valid.
++	 * Just return -EAGAIN in that case.
++	 * The tracer is expected to call wait(2) and handle
++	 * possible events before calling this API again.
++	 */
++	retval = -EAGAIN;
++	if (unlikely(task->signal->unsafe_execve_in_progress) &&
++	    task->in_execve)
++		goto unlock_tasklist;
++
+ 	if (seize)
+ 		flags |= PT_SEIZED;
+ 	task->ptrace = flags;
+@@ -468,6 +483,14 @@ static int ptrace_traceme(void)
+ {
+ 	int ret = -EPERM;
+ 
++	if (mutex_lock_interruptible(&current->signal->cred_guard_mutex))
++		return -ERESTARTNOINTR;
++
++	if (unlikely(current->signal->unsafe_execve_in_progress)) {
++		mutex_unlock(&current->signal->cred_guard_mutex);
++		return -ERESTARTNOINTR;
++	}
++
+ 	write_lock_irq(&tasklist_lock);
+ 	/* Are we already being traced? */
+ 	if (!current->ptrace) {
+@@ -483,6 +506,7 @@ static int ptrace_traceme(void)
+ 		}
+ 	}
+ 	write_unlock_irq(&tasklist_lock);
++	mutex_unlock(&current->signal->cred_guard_mutex);
+ 
+ 	return ret;
+ }
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 1d60fc2..b1389ee 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1824,9 +1824,15 @@ static long seccomp_set_mode_filter(unsigned int flags,
+ 	 * Make sure we cannot change seccomp or nnp state via TSYNC
+ 	 * while another thread is in the middle of calling exec.
+ 	 */
+-	if (flags & SECCOMP_FILTER_FLAG_TSYNC &&
+-	    mutex_lock_killable(&current->signal->cred_guard_mutex))
+-		goto out_put_fd;
++	if (flags & SECCOMP_FILTER_FLAG_TSYNC) {
++		if (mutex_lock_killable(&current->signal->cred_guard_mutex))
++			goto out_put_fd;
++
++		if (unlikely(current->signal->unsafe_execve_in_progress)) {
++			mutex_unlock(&current->signal->cred_guard_mutex);
++			goto out_put_fd;
++		}
++	}
+ 
+ 	spin_lock_irq(&current->sighand->siglock);
+ 
+-- 
+1.9.1
