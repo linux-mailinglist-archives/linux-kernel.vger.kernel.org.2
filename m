@@ -2,318 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800583ABEB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2193ABEBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhFQWUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 18:20:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232088AbhFQWTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 18:19:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0DD6613B4;
-        Thu, 17 Jun 2021 22:17:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623968224;
-        bh=8lLNvAQJFBYHcwyHgNEpUKH4liF//tJL8IXh/++g2VQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=huvrHHpH2Av8vejTexiFgCIX8gaey/rp/0fjLnRAt1uHvre0POa9FMvPn6CSKF4vP
-         c1dyDYSMYo16eAP+y8b7jCtqCSK/GxM08QdxX1G394l3E8JBesdgSfezsVwCObf+XY
-         7aWLgTlzsBBO6TKNEHxE7nsZ/+OgD85yLW8ohdjh7wOtV4YkqobaNmS5taze+KHWCO
-         fK6lrJ8I7DNEWJB2YicAQ/PLhU6Y66Is1uaJonoeXzDn/9t9wK0lIH/tQqckcXFuET
-         u5Swl2hwja6dodRo6iE7Vpv+Vl8JR6ZLXVJxbLuKQjO/HsCiolAUliP6AHbf478B1T
-         ZnwiO+IrhijxQ==
-Received: by mail-ej1-f42.google.com with SMTP id g8so12572868ejx.1;
-        Thu, 17 Jun 2021 15:17:03 -0700 (PDT)
-X-Gm-Message-State: AOAM533H3WTBiNxJM6fB2cmYC7GQaa7pmWFlsaU47n2KIwiQ92m1Lq8f
-        UK4pz+k6qhTXDxkxwrDizAPdZXHPBGMyCwOnhw==
-X-Google-Smtp-Source: ABdhPJxzgkf6C07sPN7yjl1phyvHCv9pAxXmIQ1iuWsb7n6aw/LK46UKCpGaWvweVtQco41YaA9gmDx268LBgSxFl4o=
-X-Received: by 2002:a17:907:264b:: with SMTP id ar11mr7391845ejc.525.1623968222450;
- Thu, 17 Jun 2021 15:17:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210615191543.1043414-1-robh@kernel.org> <bb8c18f6-139d-76be-87e7-0c93e03cc92c@ti.com>
-In-Reply-To: <bb8c18f6-139d-76be-87e7-0c93e03cc92c@ti.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 17 Jun 2021 16:16:50 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+-ggeBMT_507HN+mM1KirM+w2ZnhZNe+Q7tRsFRJxDOw@mail.gmail.com>
-Message-ID: <CAL_Jsq+-ggeBMT_507HN+mM1KirM+w2ZnhZNe+Q7tRsFRJxDOw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: Drop redundant minItems/maxItems
-To:     Suman Anna <s-anna@ti.com>
-Cc:     devicetree@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>, Linux I2C <linux-i2c@vger.kernel.org>,
-        linux-phy@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        David Airlie <airlied@linux.ie>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jakub Kicinski <kuba@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        linux-can@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-crypto@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dmaengine@vger.kernel.org, Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Cameron <jic23@kernel.org>
+        id S231889AbhFQWWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 18:22:34 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:27493 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231250AbhFQWWc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 18:22:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623968424; h=Content-Transfer-Encoding: Mime-Version:
+ Content-Type: References: In-Reply-To: Date: Cc: To: From: Subject:
+ Message-ID: Sender; bh=lfg9G+z1oyuoX9i4YW1GyqxNjd/ALOc/mwtXcsjJNIE=; b=utYowlfSJ2BsiFdUHeu2iRBqIXcdRW+iszjaw/7izPUsWkJ1Kcz2JAuNxWLbzBYjygCzAEdV
+ ZHuUvS81GYJHHa0OoP3/zsX6QhBKsyl3D/107awhGy9g/0714wcsT0NJOPXJHX4lhEvhyoij
+ cORt2hg7Tss36ScKXMvKyeC4RHw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60cbca9eed59bf69ccd11499 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Jun 2021 22:20:14
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 58679C4338A; Thu, 17 Jun 2021 22:20:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hemantk-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7E540C433F1;
+        Thu, 17 Jun 2021 22:20:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7E540C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Message-ID: <1623968407.10055.6.camel@codeaurora.org>
+Subject: Re: [PATCH v1 4/4] bus: mhi: core: Enable support for event ring
+ priorities
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, carl.yin@quectel.com,
+        naveen.kumar@quectel.com, loic.poulain@linaro.org
+Date:   Thu, 17 Jun 2021 15:20:07 -0700
+In-Reply-To: <1623965435-30224-5-git-send-email-bbhatt@codeaurora.org>
+References: <1623965435-30224-1-git-send-email-bbhatt@codeaurora.org>
+         <1623965435-30224-5-git-send-email-bbhatt@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Evolution 3.18.5.2-0ubuntu3.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 10:06 AM Suman Anna <s-anna@ti.com> wrote:
->
-> Hi Rob,
->
-> On 6/15/21 2:15 PM, Rob Herring wrote:
-> > If a property has an 'items' list, then a 'minItems' or 'maxItems' with=
- the
-> > same size as the list is redundant and can be dropped. Note that is DT
-> > schema specific behavior and not standard json-schema behavior. The too=
-ling
-> > will fixup the final schema adding any unspecified minItems/maxItems.
-> >
-> > This condition is partially checked with the meta-schema already, but
-> > only if both 'minItems' and 'maxItems' are equal to the 'items' length.
-> > An improved meta-schema is pending.
-> >
-> > Cc: Jens Axboe <axboe@kernel.dk>
-> > Cc: Stephen Boyd <sboyd@kernel.org>
-> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > Cc: Kamal Dasu <kdasu.kdev@gmail.com>
-> > Cc: Jonathan Cameron <jic23@kernel.org>
-> > Cc: Lars-Peter Clausen <lars@metafoo.de>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Joerg Roedel <joro@8bytes.org>
-> > Cc: Jassi Brar <jassisinghbrar@gmail.com>
-> > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> > Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> > Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: Wolfgang Grandegger <wg@grandegger.com>
-> > Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> > Cc: Andrew Lunn <andrew@lunn.ch>
-> > Cc: Vivien Didelot <vivien.didelot@gmail.com>
-> > Cc: Vladimir Oltean <olteanv@gmail.com>
-> > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > Cc: "Uwe Kleine-K=C3=B6nig" <u.kleine-koenig@pengutronix.de>
-> > Cc: Lee Jones <lee.jones@linaro.org>
-> > Cc: Ohad Ben-Cohen <ohad@wizery.com>
-> > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> > Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> > Cc: Albert Ou <aou@eecs.berkeley.edu>
-> > Cc: Alessandro Zummo <a.zummo@towertech.it>
-> > Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Mark Brown <broonie@kernel.org>
-> > Cc: Zhang Rui <rui.zhang@intel.com>
-> > Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> > Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-> > Cc: Guenter Roeck <linux@roeck-us.net>
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml          | 1 -
-> >  .../devicetree/bindings/clock/allwinner,sun4i-a10-ccu.yaml  | 2 --
-> >  .../devicetree/bindings/clock/qcom,gcc-apq8064.yaml         | 1 -
-> >  Documentation/devicetree/bindings/clock/qcom,gcc-sdx55.yaml | 2 --
-> >  .../devicetree/bindings/clock/qcom,gcc-sm8350.yaml          | 2 --
-> >  .../devicetree/bindings/clock/sprd,sc9863a-clk.yaml         | 1 -
-> >  .../devicetree/bindings/crypto/allwinner,sun8i-ce.yaml      | 2 --
-> >  Documentation/devicetree/bindings/crypto/fsl-dcp.yaml       | 1 -
-> >  .../display/allwinner,sun4i-a10-display-backend.yaml        | 6 ------
-> >  .../bindings/display/allwinner,sun6i-a31-mipi-dsi.yaml      | 1 -
-> >  .../bindings/display/allwinner,sun8i-a83t-dw-hdmi.yaml      | 4 ----
-> >  .../bindings/display/allwinner,sun8i-a83t-hdmi-phy.yaml     | 2 --
-> >  .../bindings/display/allwinner,sun8i-r40-tcon-top.yaml      | 2 --
-> >  .../devicetree/bindings/display/bridge/cdns,mhdp8546.yaml   | 2 --
-> >  .../bindings/display/rockchip/rockchip,dw-hdmi.yaml         | 2 --
-> >  Documentation/devicetree/bindings/display/st,stm32-dsi.yaml | 2 --
-> >  .../devicetree/bindings/display/st,stm32-ltdc.yaml          | 1 -
-> >  .../devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml | 4 ----
-> >  .../devicetree/bindings/dma/renesas,rcar-dmac.yaml          | 1 -
-> >  .../devicetree/bindings/edac/amazon,al-mc-edac.yaml         | 2 --
-> >  Documentation/devicetree/bindings/eeprom/at24.yaml          | 1 -
-> >  Documentation/devicetree/bindings/example-schema.yaml       | 2 --
-> >  Documentation/devicetree/bindings/gpu/brcm,bcm-v3d.yaml     | 1 -
-> >  Documentation/devicetree/bindings/gpu/vivante,gc.yaml       | 1 -
-> >  Documentation/devicetree/bindings/i2c/brcm,brcmstb-i2c.yaml | 1 -
-> >  .../devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml        | 2 --
-> >  .../devicetree/bindings/i2c/mellanox,i2c-mlxbf.yaml         | 1 -
-> >  .../devicetree/bindings/iio/adc/amlogic,meson-saradc.yaml   | 1 -
-> >  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml     | 2 --
-> >  .../bindings/interrupt-controller/fsl,irqsteer.yaml         | 1 -
-> >  .../bindings/interrupt-controller/loongson,liointc.yaml     | 1 -
-> >  Documentation/devicetree/bindings/iommu/arm,smmu-v3.yaml    | 1 -
-> >  .../devicetree/bindings/iommu/renesas,ipmmu-vmsa.yaml       | 1 -
-> >  .../devicetree/bindings/mailbox/st,stm32-ipcc.yaml          | 2 --
-> >  .../devicetree/bindings/media/amlogic,gx-vdec.yaml          | 1 -
-> >  Documentation/devicetree/bindings/media/i2c/adv7604.yaml    | 1 -
-> >  .../devicetree/bindings/media/marvell,mmp2-ccic.yaml        | 1 -
-> >  .../devicetree/bindings/media/qcom,sc7180-venus.yaml        | 1 -
-> >  .../devicetree/bindings/media/qcom,sdm845-venus-v2.yaml     | 1 -
-> >  .../devicetree/bindings/media/qcom,sm8250-venus.yaml        | 1 -
-> >  Documentation/devicetree/bindings/media/renesas,drif.yaml   | 1 -
-> >  .../bindings/memory-controllers/mediatek,smi-common.yaml    | 6 ++----
-> >  .../bindings/memory-controllers/mediatek,smi-larb.yaml      | 1 -
-> >  .../devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml    | 2 --
-> >  Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml    | 1 -
-> >  Documentation/devicetree/bindings/mmc/mtk-sd.yaml           | 2 --
-> >  Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml     | 2 --
-> >  Documentation/devicetree/bindings/mmc/sdhci-am654.yaml      | 1 -
-> >  Documentation/devicetree/bindings/mmc/sdhci-pxa.yaml        | 1 -
-> >  .../devicetree/bindings/net/amlogic,meson-dwmac.yaml        | 2 --
-> >  .../devicetree/bindings/net/brcm,bcm4908-enet.yaml          | 2 --
-> >  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml  | 2 --
-> >  Documentation/devicetree/bindings/net/dsa/brcm,sf2.yaml     | 2 --
-> >  Documentation/devicetree/bindings/net/snps,dwmac.yaml       | 2 --
-> >  Documentation/devicetree/bindings/net/stm32-dwmac.yaml      | 1 -
-> >  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml    | 2 --
-> >  Documentation/devicetree/bindings/pci/loongson.yaml         | 1 -
-> >  .../devicetree/bindings/pci/mediatek-pcie-gen3.yaml         | 1 -
-> >  .../devicetree/bindings/pci/microchip,pcie-host.yaml        | 2 --
-> >  Documentation/devicetree/bindings/perf/arm,cmn.yaml         | 1 -
-> >  .../devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml      | 1 -
-> >  .../devicetree/bindings/phy/brcm,brcmstb-usb-phy.yaml       | 3 ---
-> >  Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml    | 1 -
-> >  Documentation/devicetree/bindings/phy/mediatek,tphy.yaml    | 2 --
-> >  .../devicetree/bindings/phy/phy-cadence-sierra.yaml         | 2 --
-> >  .../devicetree/bindings/phy/phy-cadence-torrent.yaml        | 4 ----
-> >  .../devicetree/bindings/phy/qcom,ipq806x-usb-phy-hs.yaml    | 1 -
-> >  .../devicetree/bindings/phy/qcom,ipq806x-usb-phy-ss.yaml    | 1 -
-> >  Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml     | 1 -
-> >  Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml   | 2 --
-> >  Documentation/devicetree/bindings/phy/renesas,usb2-phy.yaml | 2 --
-> >  Documentation/devicetree/bindings/phy/renesas,usb3-phy.yaml | 1 -
-> >  .../devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml   | 1 -
-> >  .../devicetree/bindings/power/amlogic,meson-ee-pwrc.yaml    | 1 -
-> >  .../devicetree/bindings/pwm/allwinner,sun4i-a10-pwm.yaml    | 1 -
-> >  .../devicetree/bindings/remoteproc/st,stm32-rproc.yaml      | 2 --
-> >  .../devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml     | 1 -
-> >  .../devicetree/bindings/remoteproc/ti,omap-remoteproc.yaml  | 1 -
-> >  Documentation/devicetree/bindings/reset/fsl,imx-src.yaml    | 1 -
-> >  .../devicetree/bindings/riscv/sifive-l2-cache.yaml          | 1 -
-> >  .../devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml    | 1 -
-> >  Documentation/devicetree/bindings/rtc/imxdi-rtc.yaml        | 1 -
-> >  Documentation/devicetree/bindings/serial/fsl-lpuart.yaml    | 2 --
-> >  Documentation/devicetree/bindings/serial/samsung_uart.yaml  | 1 -
-> >  .../devicetree/bindings/soc/qcom/qcom,geni-se.yaml          | 1 -
-> >  Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml      | 2 --
-> >  .../bindings/sound/nvidia,tegra-audio-graph-card.yaml       | 1 -
-> >  .../devicetree/bindings/sound/nvidia,tegra210-i2s.yaml      | 2 --
-> >  Documentation/devicetree/bindings/sound/st,stm32-sai.yaml   | 3 ---
-> >  .../devicetree/bindings/spi/amlogic,meson-gx-spicc.yaml     | 1 -
-> >  .../devicetree/bindings/spi/brcm,spi-bcm-qspi.yaml          | 2 --
-> >  .../bindings/thermal/allwinner,sun8i-a83t-ths.yaml          | 2 --
-> >  Documentation/devicetree/bindings/thermal/qcom-tsens.yaml   | 1 -
-> >  .../bindings/timer/allwinner,sun5i-a13-hstimer.yaml         | 1 -
-> >  Documentation/devicetree/bindings/timer/arm,arch_timer.yaml | 1 -
-> >  .../devicetree/bindings/timer/arm,arch_timer_mmio.yaml      | 2 --
-> >  .../devicetree/bindings/timer/intel,ixp4xx-timer.yaml       | 1 -
-> >  .../devicetree/bindings/usb/maxim,max3420-udc.yaml          | 2 --
-> >  .../devicetree/bindings/usb/nvidia,tegra-xudc.yaml          | 4 ----
-> >  Documentation/devicetree/bindings/usb/renesas,usbhs.yaml    | 3 ---
-> >  .../devicetree/bindings/watchdog/st,stm32-iwdg.yaml         | 1 -
-> >  101 files changed, 2 insertions(+), 163 deletions(-)
-> >
->
-> [snip]
->
-> > diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rpr=
-oc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> > index 6070456a7b67..f399743b631b 100644
-> > --- a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> > +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> > @@ -57,7 +57,6 @@ properties:
-> >
-> >    memory-region:
-> >      minItems: 2
-> > -    maxItems: 8
-> >      description: |
-> >        phandle to the reserved memory nodes to be associated with the r=
-emoteproc
-> >        device. There should be at least two reserved memory nodes defin=
-ed. The
->
-> Does this enforce the maxItems to be 2 only now? Or should this be droppi=
-ng the
-> minItems here which matches the length of items instead of maxItems?
->
-> I have originally listed the individual item list only for the mandatory =
-items
-> and rest are scalable. I provided this through "additionalItems: true" un=
-der
-> this property.
+On Thu, 2021-06-17 at 14:30 -0700, Bhaumik Bhatt wrote:
+> Priority set in the event ring configuration by the controllers
+> has been unused by the MHI host driver until now. Enable usage of
+> those priorities set with the introduction of the enums for
+> default or high priority tasklet scheduling options.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> 
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
-Good catch. This should be dropped. The meta-schema doesn't enforce
-this if "additionalItems: true" which is rarely used.
-
-> Also, have the exact same usage in
-> Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml as well=
- which
-> is not included in this patch.
-
-Yeah, I just missed this one. I've double checked and there aren't any more=
-.
-
-Rob
