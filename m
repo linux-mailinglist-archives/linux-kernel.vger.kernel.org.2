@@ -2,93 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964F93ABC9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B161F3ABC9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233258AbhFQTXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 15:23:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40788 "EHLO mail.kernel.org"
+        id S232560AbhFQTYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 15:24:14 -0400
+Received: from ms.lwn.net ([45.79.88.28]:53142 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233463AbhFQTX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 15:23:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B94286113C;
-        Thu, 17 Jun 2021 19:21:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623957677;
-        bh=q5hlbRHsFfjAH3UdAr/zMY+SdxbDvMeHp5XqmXpwAXk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NvOGs48Qy8+G0VLwCZWag7aP5F3xT4A3ZpNoreo0uTmngyd9DiBQDDppqsXgcLbhC
-         kx9SFL2G+tiHlddtoqZsbcMhx+uwB041KHG6Xg3v5UhuuYp4Go1GdiN9MLgJoe1x03
-         QOVzn/W2GBzqiPXz3fDBxDq7r4uecx63Bc835t5mrVjSJdC5CV9JXYqoqQ4SdHFnZt
-         EubX502xsTN5kelmirnMgJrhVUYdOKYilWh/84EfD2+1cCiZnTc6U+fonwhvRw///2
-         u+K9VONqxAybZIAnKQ1TvUL5u/WDwLfcmLqgoR1cKqUzbYhq25Xe7L5N3bGKRciX2z
-         BwCtq+QB7OK5g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4577F40B1A; Thu, 17 Jun 2021 16:21:15 -0300 (-03)
-Date:   Thu, 17 Jun 2021 16:21:15 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 4/4] perf test: Make stat bpf counters test more robust
-Message-ID: <YMugqwLGdkJrrrRT@kernel.org>
-References: <20210617184216.2075588-1-irogers@google.com>
- <20210617184216.2075588-4-irogers@google.com>
+        id S231593AbhFQTYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 15:24:12 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d:444a:d152:279d:1dbb])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 912031F59;
+        Thu, 17 Jun 2021 19:22:04 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 912031F59
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1623957724; bh=8XV5uuo2SyFjV+1k9vRtS3CPPARtnY7eD16ygceAdEo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=cC3TzDzol2e8yeIeUo4h9QfRoutk6FXJJLw4y9gMcE/9I1Brmvm1tEoa7+XuWM8T0
+         WRjKfSGtEbCJ+0teCmREBtyMSx6exqzLwg8+yg9/KZBZiuHYh82mYPbOPEfBRLAz+L
+         jZMEPW95qi1kWZ+IV2gbZOCiFdWVr9brIbLOcP+cbaxKwrsLYrqL3JPKgUBbvoSxm0
+         5DyRvIA0ujZg/cYnZzRdAOKha8YNeDPUt0ARpXR82yAh4KZESUDvX9ZBPh0Bi5e+T+
+         IfSr+RuLWWVjpL7+uyzrrV4Ur0Nesel28mHHgbhF95R9Ov97Jzpc+cntivjhGegyE9
+         amvbhRbQpr7wA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Hao Chen <chenhaoa@uniontech.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hao Chen <chenhaoa@uniontech.com>
+Subject: Re: [PATCH] Documentation: ACPI: fix error script name
+In-Reply-To: <20210617023300.30114-1-chenhaoa@uniontech.com>
+References: <20210617023300.30114-1-chenhaoa@uniontech.com>
+Date:   Thu, 17 Jun 2021 13:22:04 -0600
+Message-ID: <87tulwthyb.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617184216.2075588-4-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jun 17, 2021 at 11:42:16AM -0700, Ian Rogers escreveu:
-> If the test is run on a hypervisor then the cycles event may not be
-> counted, skip the test in this situation. Fail the test if cycles are
-> not counted in the subsequent bpf counter run.
+Hao Chen <chenhaoa@uniontech.com> writes:
 
-Thanks, applied.
-
-- Arnaldo
-
- 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+> The correct script name should be 'divergence.sh' instead of
+> 'divergences.sh'.
+> I didn't find divergences.sh in the path of acpica/generate/linux/.
+>
+> Signed-off-by: Hao Chen <chenhaoa@uniontech.com>
 > ---
->  tools/perf/tests/shell/stat_bpf_counters.sh | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
-> index 81d61b6e1208..2aed20dc2262 100755
-> --- a/tools/perf/tests/shell/stat_bpf_counters.sh
-> +++ b/tools/perf/tests/shell/stat_bpf_counters.sh
-> @@ -31,7 +31,15 @@ if ! perf stat --bpf-counters true > /dev/null 2>&1; then
->  fi
->  
->  base_cycles=$(perf stat --no-big-num -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
-> +if [ "$base_cycles" == "<not" ]; then
-> +	echo "Skipping: cycles event not counted"
-> +	exit 2
-> +fi
->  bpf_cycles=$(perf stat --no-big-num --bpf-counters -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
-> +if [ "$bpf_cycles" == "<not" ]; then
-> +	echo "Failed: cycles not counted with --bpf-counters"
-> +	exit 1
-> +fi
->  
->  compare_number $base_cycles $bpf_cycles
->  exit 0
-> -- 
-> 2.32.0.288.g62a8d224e6-goog
-> 
+>  Documentation/driver-api/acpi/linuxized-acpica.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/driver-api/acpi/linuxized-acpica.rst b/Documentation/driver-api/acpi/linuxized-acpica.rst
+> index 6bee03383225..cc234353d2c4 100644
+> --- a/Documentation/driver-api/acpi/linuxized-acpica.rst
+> +++ b/Documentation/driver-api/acpi/linuxized-acpica.rst
+> @@ -276,4 +276,4 @@ before they become available from the ACPICA release process.
+>     # git clone https://github.com/acpica/acpica
+>     # git clone https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>     # cd acpica
+> -   # generate/linux/divergences.sh -s ../linux
+> +   # generate/linux/divergence.sh -s ../linux
 
--- 
+Applied, thanks.
 
-- Arnaldo
+jon
