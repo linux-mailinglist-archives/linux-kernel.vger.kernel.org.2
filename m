@@ -2,189 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6692C3AB036
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE193AB038
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhFQJvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:51:49 -0400
-Received: from first.geanix.com ([116.203.34.67]:41964 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231945AbhFQJvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:51:39 -0400
-Received: from localhost (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id 7C79F4C329F;
-        Thu, 17 Jun 2021 09:49:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1623923369; bh=feNRlUYMtFeRKEObT62vVB8ErOgRqSori+/2ECKwuUU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=F4gY/oqMXIkpltdc8EckPCqLjHXZdafUjLweVqy2phE2PidsqCBeqaeZj5KBn7Qdl
-         vRZL48V+IlkLUWz4TIL9tPzhlupmNWa4yqG00ji0baSUdfqOYw1n7i28YkrmH3w9hU
-         cdj3+UkeMvOSOhJTz8aRGR/ndoDn5iLZfjocLMC7RB6OVksFXhf3+oddVArgLpM0Rs
-         PeBflBvD8MBW6SngntdM6unsSE+ZS6vY8AJA7/oj0cncAqaj1FcEn61Eg7IDoVJto7
-         86fFK2gfFMeq2z9xIWhv1207Cf5tiQIDJrMi8ZXqQZKzSnntAG8Rkk4s5tsFE7C2ps
-         vYGxcsZYCPRTQ==
-From:   Esben Haabendal <esben@geanix.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 6/6] net: gianfar: Implement rx_missed_errors counter
-Date:   Thu, 17 Jun 2021 11:49:28 +0200
-Message-Id: <6786b85ee59f57f64cfe60683fc7be498ad8cf47.1623922686.git.esben@geanix.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1623922686.git.esben@geanix.com>
-References: <cover.1623922686.git.esben@geanix.com>
+        id S230151AbhFQJwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:52:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231873AbhFQJwL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 05:52:11 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4046CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:50:03 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id o3so6022410wri.8
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:50:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+H6wKF7xQqNDFdYl9az7WY1nv2FLyIYMEfN7sgkUEiY=;
+        b=hF8XnvEXgLP2ROnnuJGuHofsPQsTcvxklfJnozKtQ8v0kfdn3LQMQnUyx52IkmJs48
+         28av2eC5sXu/LuF5QawXFF3a0GYNEOLjTGA+UeIPqH9eelnaCqHDaypRq+R18b3d+yv2
+         byhBC0Asb1jBvCaz2ycl7FcQCw12oUsM/sVx7Y2jVAWO/vlZk715TyaXc+EVaa7czF30
+         gJshpjuCG1CnYThSBeDCy5znZoIl+PkntuqTUXVj7Npv2OwYXxCRIp8zBft5EWd7TzS4
+         8osbHqBFdqwa6qBd6vr6L3UwrqQpLdzOkOKhF0php4qDQ+w+kH4qxvOV3zZDfbqj3T2k
+         DKDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+H6wKF7xQqNDFdYl9az7WY1nv2FLyIYMEfN7sgkUEiY=;
+        b=cUlyiW9lvFOB0f1JeW+xXnXBzSLLTyrst8KDMpG/roekGEpT+w7F5KM80Pl2q8jWio
+         DvjS3WS/fTi+WFKHFRjjHrYB7Tc4GTa2XoYWPvdMlwSV7lD3sJV0uKf1SL4sgA+j7uTn
+         7oWQC+6IlQtXz6VSRPabCax/CSJxbITwOd2eqNBzAcb3fMJQj5HC6/qTWF8N9JIUhqQn
+         BXqhMLG4LbJE5O1ILSbqFsXnXwW3hDAlkuGAVX2TaoHQw7vyTS8i6433PEbQAP3D8AEQ
+         1MZbhkraekvRWNeT3KoL5RGd/4INLdKZDFua7CZozgeD47LmNCoqWwJkHz1Q9y/gqSe1
+         MyYg==
+X-Gm-Message-State: AOAM531b282pDYqoSboMiHAFt002rN4COjv3T81lcO4RVnekfwrK4x1e
+        HgfBPreffjNGuXeVxPzi82KdHQ==
+X-Google-Smtp-Source: ABdhPJzbnOjdea5+8A1wqVqc/KbTUeYF9C+JRetN46EbNO3fLfhkVr94LppHFXoFPVqUNzu8ZJI25g==
+X-Received: by 2002:adf:d1cb:: with SMTP id b11mr4555597wrd.186.1623923401873;
+        Thu, 17 Jun 2021 02:50:01 -0700 (PDT)
+Received: from dell ([91.110.221.170])
+        by smtp.gmail.com with ESMTPSA id a1sm6390704wra.63.2021.06.17.02.50.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 02:50:01 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 10:49:59 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, Alan Cox <alan@lxorguk.ukuu.org.uk>,
+        ALWAYS copy <linux-ide@vger.kernel.org>,
+        Andre Hedrick <andre@linux-ide.org>, ATI Inc <hyu@ati.com>,
+        benh@kernel.crashing.org, Mark Lord <mlord@pobox.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 00/11] Rid W=1 warnings from ATA
+Message-ID: <YMsaxwTWvbABmA1c@dell>
+References: <20210528090502.1799866-1-lee.jones@linaro.org>
+ <463f14c8-c597-2b29-88ff-2929df55acdd@kernel.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
+In-Reply-To: <463f14c8-c597-2b29-88ff-2929df55acdd@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Devices with RMON support has a 16-bit RDRP counter.  It provides: "Receive
-dropped packets counter. Increments for frames received which are streamed
-to system but are later dropped due to lack of system resources."
+On Wed, 16 Jun 2021, Jens Axboe wrote:
 
-To handle more than 2^16 dropped packets, a carry bit in CAR1 register is
-set on overflow, so we enable irq when this is set, extending the counter
-to 2^64 for handling situations where lots of packets are missed (e.g.
-during heavy network storms).
+> On 5/28/21 3:04 AM, Lee Jones wrote:
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> 
+> Queued up for 5.14, thanks.
 
-Signed-off-by: Esben Haabendal <esben@geanix.com>
----
- drivers/net/ethernet/freescale/gianfar.c | 50 ++++++++++++++++++++++--
- drivers/net/ethernet/freescale/gianfar.h | 10 +++++
- 2 files changed, 57 insertions(+), 3 deletions(-)
+Ideal.  Thanks a bunch Jens.
 
-diff --git a/drivers/net/ethernet/freescale/gianfar.c b/drivers/net/ethernet/freescale/gianfar.c
-index 4608c0c337bc..9646483137c4 100644
---- a/drivers/net/ethernet/freescale/gianfar.c
-+++ b/drivers/net/ethernet/freescale/gianfar.c
-@@ -289,6 +289,29 @@ static void gfar_get_stats64(struct net_device *dev, struct rtnl_link_stats64 *s
- 		stats->tx_bytes += priv->tx_queue[i]->stats.tx_bytes;
- 		stats->tx_packets += priv->tx_queue[i]->stats.tx_packets;
- 	}
-+
-+	if (priv->device_flags & FSL_GIANFAR_DEV_HAS_RMON) {
-+		struct rmon_mib __iomem *rmon = &priv->gfargrp[0].regs->rmon;
-+		unsigned long flags;
-+		u32 rdrp, car, car_before;
-+		u64 rdrp_offset;
-+
-+		spin_lock_irqsave(&priv->rmon_overflow.lock, flags);
-+		car = gfar_read(&rmon->car1) & CAR1_C1RDR;
-+		do {
-+			car_before = car;
-+			rdrp = gfar_read(&rmon->rdrp);
-+			car = gfar_read(&rmon->car1) & CAR1_C1RDR;
-+		} while (car != car_before);
-+		if (car) {
-+			priv->rmon_overflow.rdrp++;
-+			gfar_write(&rmon->car1, car);
-+		}
-+		rdrp_offset = priv->rmon_overflow.rdrp;
-+		spin_unlock_irqrestore(&priv->rmon_overflow.lock, flags);
-+
-+		stats->rx_missed_errors = rdrp + (rdrp_offset << 16);
-+	}
- }
- 
- /* Set the appropriate hash bit for the given addr */
-@@ -379,7 +402,8 @@ static void gfar_ints_enable(struct gfar_private *priv)
- 	for (i = 0; i < priv->num_grps; i++) {
- 		struct gfar __iomem *regs = priv->gfargrp[i].regs;
- 		/* Unmask the interrupts we look for */
--		gfar_write(&regs->imask, IMASK_DEFAULT);
-+		gfar_write(&regs->imask,
-+			   IMASK_DEFAULT | priv->rmon_overflow.imask);
- 	}
- }
- 
-@@ -2287,7 +2311,7 @@ static irqreturn_t gfar_receive(int irq, void *grp_id)
- 	if (likely(napi_schedule_prep(&grp->napi_rx))) {
- 		spin_lock_irqsave(&grp->grplock, flags);
- 		imask = gfar_read(&grp->regs->imask);
--		imask &= IMASK_RX_DISABLED;
-+		imask &= IMASK_RX_DISABLED | grp->priv->rmon_overflow.imask;
- 		gfar_write(&grp->regs->imask, imask);
- 		spin_unlock_irqrestore(&grp->grplock, flags);
- 		__napi_schedule(&grp->napi_rx);
-@@ -2311,7 +2335,7 @@ static irqreturn_t gfar_transmit(int irq, void *grp_id)
- 	if (likely(napi_schedule_prep(&grp->napi_tx))) {
- 		spin_lock_irqsave(&grp->grplock, flags);
- 		imask = gfar_read(&grp->regs->imask);
--		imask &= IMASK_TX_DISABLED;
-+		imask &= IMASK_TX_DISABLED | grp->priv->rmon_overflow.imask;
- 		gfar_write(&grp->regs->imask, imask);
- 		spin_unlock_irqrestore(&grp->grplock, flags);
- 		__napi_schedule(&grp->napi_tx);
-@@ -2682,6 +2706,18 @@ static irqreturn_t gfar_error(int irq, void *grp_id)
- 		}
- 		netif_dbg(priv, tx_err, dev, "Transmit Error\n");
- 	}
-+	if (events & IEVENT_MSRO) {
-+		struct rmon_mib __iomem *rmon = &regs->rmon;
-+		u32 car;
-+
-+		spin_lock(&priv->rmon_overflow.lock);
-+		car = gfar_read(&rmon->car1) & CAR1_C1RDR;
-+		if (car) {
-+			priv->rmon_overflow.rdrp++;
-+			gfar_write(&rmon->car1, car);
-+		}
-+		spin_unlock(&priv->rmon_overflow.lock);
-+	}
- 	if (events & IEVENT_BSY) {
- 		dev->stats.rx_over_errors++;
- 		atomic64_inc(&priv->extra_stats.rx_bsy);
-@@ -3259,6 +3295,14 @@ static int gfar_probe(struct platform_device *ofdev)
- 
- 	gfar_hw_init(priv);
- 
-+	if (priv->device_flags & FSL_GIANFAR_DEV_HAS_RMON) {
-+		struct rmon_mib __iomem *rmon = &priv->gfargrp[0].regs->rmon;
-+
-+		spin_lock_init(&priv->rmon_overflow.lock);
-+		priv->rmon_overflow.imask = IMASK_MSRO;
-+		gfar_write(&rmon->cam1, gfar_read(&rmon->cam1) & ~CAM1_M1RDR);
-+	}
-+
- 	/* Carrier starts down, phylib will bring it up */
- 	netif_carrier_off(dev);
- 
-diff --git a/drivers/net/ethernet/freescale/gianfar.h b/drivers/net/ethernet/freescale/gianfar.h
-index c8aa140a910f..ca5e14f908fe 100644
---- a/drivers/net/ethernet/freescale/gianfar.h
-+++ b/drivers/net/ethernet/freescale/gianfar.h
-@@ -663,6 +663,15 @@ struct rmon_mib
- 	u32	cam2;	/* 0x.73c - Carry Mask Register Two */
- };
- 
-+struct rmon_overflow {
-+	/* lock for synchronization of the rdrp field of this struct, and
-+	 * CAR1/CAR2 registers
-+	 */
-+	spinlock_t lock;
-+	u32	imask;
-+	u64	rdrp;
-+};
-+
- struct gfar_extra_stats {
- 	atomic64_t rx_alloc_err;
- 	atomic64_t rx_large;
-@@ -1150,6 +1159,7 @@ struct gfar_private {
- 
- 	/* Network Statistics */
- 	struct gfar_extra_stats extra_stats;
-+	struct rmon_overflow rmon_overflow;
- 
- 	/* PHY stuff */
- 	phy_interface_t interface;
 -- 
-2.32.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
