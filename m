@@ -2,144 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BE33AB9CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD383AB9D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhFQQhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 12:37:24 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38076 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229671AbhFQQhW (ORCPT
+        id S230076AbhFQQkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 12:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhFQQki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 12:37:22 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HGY2BW155142;
-        Thu, 17 Jun 2021 12:34:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=/sPXZunF9nblcWygwPRcOY/gzNe54CJjCcPZXy/7Q14=;
- b=sh+MmPRP27VJgFWUbi02FtXTWQujsustk8cQKYQkmli600WK1WCJ+14e9tFXroikc86o
- +rkc4krTMOVcx2wb491sWUlGysg2U1ObWOpavB2sofLd0UtSvqP46i95lsX5yL3x/DDr
- m3CfMNgdmpd7cWzEskYS5/l6H7QTzEg9NryAx63MTB/uvspryVt7uxL3xK8ZxeAzwExL
- MWuVpsk/Jo1LSMOKw42IpZZIkFsUOE5TF898WiOgxvTamNJJFwdpl6u5BI8PAV8hiJX9
- 5s4DLOX2hqd6gYICC+elqnrR8HKMFfonQWrau8apeoDZ6nW3PwVkggsiMKXNeS2qDwjX 6Q== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3988v1jfxx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 12:34:41 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15HGScDB017338;
-        Thu, 17 Jun 2021 16:34:38 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 395c3t9bbd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 16:34:38 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15HGYaib25166228
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Jun 2021 16:34:36 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7A66142042;
-        Thu, 17 Jun 2021 16:34:36 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D8FFF42041;
-        Thu, 17 Jun 2021 16:34:35 +0000 (GMT)
-Received: from localhost (unknown [9.85.123.186])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 17 Jun 2021 16:34:35 +0000 (GMT)
-Date:   Thu, 17 Jun 2021 22:04:34 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [PATCH 2/2] trace/kprobe: Remove limit on kretprobe maxactive
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Anton Blanchard <anton@ozlabs.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <cover.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-        <a751a0617a2c06e7e233f2c98ccabe8b94a8076d.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-        <20210615183527.9068ef2f70fdd2a45fea78f0@kernel.org>
-        <1623777582.jsiokbdey1.naveen@linux.ibm.com>
-        <20210616094622.c8bd37840898c67dddde1053@kernel.org>
-        <20210615210351.602bc03e@rorschach.local.home>
-        <20210616112711.ce318fc66b389038203331d1@kernel.org>
-        <20210617001009.d5ae7b2edfdc34f4f8c19ab5@kernel.org>
-In-Reply-To: <20210617001009.d5ae7b2edfdc34f4f8c19ab5@kernel.org>
+        Thu, 17 Jun 2021 12:40:38 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E810BC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 09:38:29 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so6720223oth.9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 09:38:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=m0MVvsZb1hr1a4TsaY4Ry0fJgtY0P//6ZgkDcV/EML0=;
+        b=OsqstlLT8KtiNyRWrLQNtz8IWq8jH/tJb5Bb7eE3U1S8OpERF7i43RsrCB5HA/04kJ
+         Axnsm6sUW+Udp7rEpvazZTPpjJxQni9nOSfzyLbrD/ZBKH/tGdGd05jn5s2h1CRUjxwM
+         Q5KW9bRXkM++3VlOLfOZVFwt1D5rzoXpg1Xr9BRMDbvLjREo8rN9a4VuqRhQ8xBp/x8s
+         dU0FYdCzMm1oTEOLD+YUg0552YG7vZ44f5MWfD0VcNS0ELy9RhqINRe/vQ2Mfhi58bma
+         1jx1Pr9TjgwQdJri9eZZ8SAmH9iZngv5Hes3mHhgmBOoL8sz5FYK11vGz4+SagBfIdYM
+         0Y0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=m0MVvsZb1hr1a4TsaY4Ry0fJgtY0P//6ZgkDcV/EML0=;
+        b=m1s5nr+EN8r9jBvDSotUhszb/JkxRT6jJyBjISoQrpuTCNvk/DAhJ8y2NHBpKi+WML
+         mKult75z8cDzJkHhSfY5dmdxAfPOtFbPx3Cm3Lg43Ns8J8Qj8VYiAYpbMpXjXZbhw+FQ
+         iPnVCfxfmMy2PotZCXAXPZ7yB0vDnvbq4p3bJo1pFaVNyvOrSHk39vWbHnnJPRGwMQUK
+         LlObaBkRg+T9+dzOXtKz+CId8qtcsnbxAjN4VC/hHuMy+ch4yzT/faHaR/xKeixJHVHh
+         voUUNTZ/pkl1g6YEJLazeJ/3/i2oEDPxEi5p7s4iwB3mzDytaz2msohQMfEVkMKhnZQb
+         DLOw==
+X-Gm-Message-State: AOAM530CvweXqxKEVFnHm/qOkC2dNZSmx7zeQAhPSILtU5OYkS5SKvN+
+        3tg+MgemsWA1GgW5jDS8kBVlkg==
+X-Google-Smtp-Source: ABdhPJx+MUc+bMLm1uA7ND4jpKXvbyWaKmupBmC32xaDSHkqCCohvWqBDS+ZHh+9+EvfVZr+E3aAfQ==
+X-Received: by 2002:a9d:6e03:: with SMTP id e3mr2640982otr.218.1623947909079;
+        Thu, 17 Jun 2021 09:38:29 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id p203sm1177819oib.40.2021.06.17.09.38.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 09:38:28 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 11:38:26 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
+Message-ID: <YMt6gvXQKijtPOql@yoga>
+References: <20210615231828.835164-1-bjorn.andersson@linaro.org>
+ <20210615231828.835164-2-bjorn.andersson@linaro.org>
+ <20210616075637.jtoa25uyhnqkctlu@pengutronix.de>
+ <YMq/6VhXrYJoTVnj@yoga>
+ <20210617062449.qwsjcpkyiwzdyfi3@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: astroid/v0.15-23-gcdc62b30
- (https://github.com/astroidmail/astroid)
-Message-Id: <1623946796.80yhllbpmp.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: K0ijb9ok1twIhuZ83R2JmFplVvsnQ1v3
-X-Proofpoint-ORIG-GUID: K0ijb9ok1twIhuZ83R2JmFplVvsnQ1v3
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-17_14:2021-06-15,2021-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- phishscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
- suspectscore=0 impostorscore=0 clxscore=1015 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106170104
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210617062449.qwsjcpkyiwzdyfi3@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masami Hiramatsu wrote:
-> On Wed, 16 Jun 2021 11:27:11 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
->=20
->> On Tue, 15 Jun 2021 21:03:51 -0400
->> Steven Rostedt <rostedt@goodmis.org> wrote:
->>=20
->> > On Wed, 16 Jun 2021 09:46:22 +0900
->> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
->> >=20
->> > > To avoid such trouble, I had set the 4096 limitation for the maxacti=
-ve
->> > > parameter. Of course 4096 may not enough for some use-cases. I'm wel=
-come
->> > > to expand it (e.g. 32k, isn't it enough?), but removing the limitati=
-on
->> > > may cause OOM trouble easily.
->> >=20
->> > What if you just made the max as 10 * number of possible cpus, or 4096=
-,
->> > which ever is greater? Why would a user need more?
->>=20
->> It could be. But actually, that is not correct number because the
->> number of instances depends on the number of processes and the possiblit=
-y
->> of recursive. Thus the huge system which runs more than 64k processes,
->> may need more than that.
->>=20
->> > I'd still like to get a wrapper around function graph tracing so that
->> > kretprobes could use it. I think that would get rid of the requirement
->> > of maxactive, because isn't that just used to have a way to know the
->> > original return value?
->>=20
->> Hmm, yes, on some arch, it can be done. But on other arch we still need
->> current implementation for generic solution.
->> What I need is not fully wrapped by the function graph, but just share
->> the per-task (software) shadow stack.
->=20
-> BTW, I have 2 ideas to fix this except for wrapper.
->=20
-> 1. Use func-graph tracer API directly from dynamic event instead of
->   kretprobes. This will be enabled only if the arch supports fgraph
->   tracer and enable it. maxactive will be ignored if this is enabled,
->   and tracefs user may not need except for the return value=20
->   (BTW, is that possible to access the stack? In some case, return
->   value can be passed via stack)
->=20
-> 2. Move the kretprobe instance pool from kretprobe to struct task.
->   This pool will allocates one page per task, and shared among all
->   kretprobes. This pool will be allocated when the 1st kretprobe
->   is registered. maxactive will be kept for someone who wants to
->   use per-instance data. But since dynamic event doesn't use it,
->   it will be removed from tracefs and perf.
+On Thu 17 Jun 01:24 CDT 2021, Uwe Kleine-K?nig wrote:
 
-Won't this result in _more_ memory usage compared to what we have now?
+> Hello Bjorn,
+> 
+> On Wed, Jun 16, 2021 at 10:22:17PM -0500, Bjorn Andersson wrote:
+> > > > +static int ti_sn_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> > > > +			   const struct pwm_state *state)
+> > > > +{
+> > > > +	struct ti_sn65dsi86 *pdata = pwm_chip_to_ti_sn_bridge(chip);
+> > > > +	unsigned int pwm_en_inv;
+> > > > +	unsigned int backlight;
+> > > > +	unsigned int pre_div;
+> > > > +	unsigned int scale;
+> > > > +	int ret;
+> > > > +
+> > > > +	if (!pdata->pwm_enabled) {
+> > > > +		ret = pm_runtime_get_sync(pdata->dev);
+> > > > +		if (ret < 0)
+> > > > +			return ret;
+> > > > +
+> > > > +		ret = regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
+> > > > +				SN_GPIO_MUX_MASK << (2 * SN_PWM_GPIO_IDX),
+> > > > +				SN_GPIO_MUX_SPECIAL << (2 * SN_PWM_GPIO_IDX));
+> > > > +		if (ret) {
+> > > > +			dev_err(pdata->dev, "failed to mux in PWM function\n");
+> > > > +			goto out;
+> > > > +		}
+> > > 
+> > > Do you need to do this even if state->enabled is false?
+> > 
+> > I presume I should be able to explicitly mux in the GPIO function and
+> > configure that to output low. But I am not able to find anything in the
+> > data sheet that would indicate this to be preferred.
+> 
+> My question targetted a different case. If the PWM is off
+> (!pdata->pwm_enabled) and should remain off (state->enabled is false)
+> you can shortcut here, can you not?
+> 
 
-Thanks,
-Naveen
+Right, if we're going off->off then we don't need to touch the hardware.
+
+But am I expected to -EINVAL improper period and duty cycle even though
+enabled is false?
+
+
+And also, what is the supposed behavior of enabled = false? Is it
+supposedly equivalent of asking for a duty_cycle of 0?
+
+> > > Does this already modify the output pin?
+> > 
+> > Yes, coming out of reset this pin is configured as input, so switching
+> > the mux here will effectively start driving the pin.
+> 
+> So please document this in the format the recently added drivers do,
+> too. See e.g. drivers/pwm/pwm-sifive.c. (The idea is to start that with
+> " * Limitations:" to make it easy to grep it.)
+> 
+
+Okay, will do. Although I believe that for this driver it makes sense to
+place such comment close to this function, rather than at the top of the
+driver.
+
+> > > Lets continue the above example with the fixed calculation. So we have:
+> > > 
+> > > 	pdata->pwm_refclk_freq = 3333334
+> > > 	state->period = 100000 [ns]
+> > > 	state->duty_cycle = 600
+> > > 	scale = 332
+> > > 
+> > > so the actually emitted period = 99899.98002000399 ns
+> > > 
+> > > Now you calculate:
+> > > 
+> > > 	backlight = 1
+> > > 
+> > > which yields an actual duty_cycle of 299.99994 ns, with backlight = 2
+> > > you would get an actual duty_cycle of 599.99988 ns, which is better. The
+> > > culprit here is that you divide by state->period but instead should
+> > > divide by the actual period.
+> > 
+> > What do I do about the case where the actual period is lower than the
+> > requested one and thereby the duty cycle becomes larger than the period?
+> 
+> The general principle is: Pick the biggest possible duty_cycle available
+> for the just picked period. So in your example you have to clamp it to
+> period (assuming you can, otherwise pick the next lower possible value).
+> 
+
+Sounds good.
+
+Thank you,
+Bjorn
+
+> Best regards
+> Uwe
+> 
+> -- 
+> Pengutronix e.K.                           | Uwe Kleine-König            |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
 
