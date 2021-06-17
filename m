@@ -2,58 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE2B3AAE4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFD93AAE50
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFQID1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 04:03:27 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50724 "EHLO deadmen.hmeau.com"
+        id S230082AbhFQIDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 04:03:31 -0400
+Received: from verein.lst.de ([213.95.11.211]:57681 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229716AbhFQIDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:03:10 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1ltmxP-0003hM-8f; Thu, 17 Jun 2021 16:00:59 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1ltmxJ-0002md-OH; Thu, 17 Jun 2021 16:00:53 +0800
-Date:   Thu, 17 Jun 2021 16:00:53 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>, weiyongjun1@huawei.com,
-        yuehaibing@huawei.com, yangjihong1@huawei.com, yukuai3@huawei.com,
-        linux-crypto@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next v2] crypto: ccp - Use list_move_tail instead of
- list_del/list_add_tail in ccp-dmaengine.c
-Message-ID: <20210617080053.GB10662@gondor.apana.org.au>
-References: <20210609071526.1338089-1-libaokun1@huawei.com>
+        id S230055AbhFQIDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 04:03:17 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 0355768C4E; Thu, 17 Jun 2021 10:01:08 +0200 (CEST)
+Date:   Thu, 17 Jun 2021 10:01:07 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
+Message-ID: <20210617080107.GA1422@lst.de>
+References: <20210427131344.139443-1-senozhatsky@chromium.org> <20210427131344.139443-9-senozhatsky@chromium.org> <10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl> <YMsAIVs7G2hUDR2F@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210609071526.1338089-1-libaokun1@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YMsAIVs7G2hUDR2F@google.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 03:15:26PM +0800, Baokun Li wrote:
-> Using list_move_tail() instead of list_del() + list_add_tail() in ccp-dmaengine.c.
+On Thu, Jun 17, 2021 at 04:56:17PM +0900, Sergey Senozhatsky wrote:
+> > This function can use some comments. What is happening AFAICS is that
+> > buf->vaddr is either set in vb2_dc_alloc_coherent (unless
+> > DMA_ATTR_NO_KERNEL_MAPPING was set), it is obtained through dma_buf_vmap()
+> > if the buffer was attached to a dma_buf, or it is allocated via
+> > dma_vmap_noncontiguous() for non-coherent memory.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
-> V1->V2:
-> 	CC mailist
+> Yeah, it's complicated. Maybe we can make things more symmetrical.
 > 
->  drivers/crypto/ccp/ccp-dmaengine.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> > But this leaves coherent memory with DMA_ATTR_NO_KERNEL_MAPPING set, what
+> > is vaddr in that case? I think it will call dma_vmap_noncontiguous()
+> > incorrectly in that case, shouldn't there be a check for !buf->coherent_mem
+> > before the call to dma_vmap_noncontiguous()?
+> 
+> Thanks a lot for looking into it.
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Can we just kill off DMA_ATTR_NO_KERNEL_MAPPING in v4l now?  There really is
+no good reason to use that with dma_alloc_noncoherent/noncontiguous
+available, and I plan to eventually remove that interface entirely.
