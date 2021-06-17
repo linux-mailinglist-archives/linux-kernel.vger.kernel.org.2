@@ -2,198 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE943AB2C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AED23AB2C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbhFQLjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:39:05 -0400
-Received: from mail-eopbgr60110.outbound.protection.outlook.com ([40.107.6.110]:34908
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232592AbhFQLjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:39:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LWX0zYoBMkh3un3k2o3a+qhSexgjyCU0GN7qoIoKMM2+gufzeZoIfF00YLHEUMnSdvOx+CviZ11ftYscKslBCxJ0Siqf0+/l2wRBw1CRqdE2iT6h0nSdcvyesewvQjxmI5nsliAL7iJYRe0nDCY79SaWUssq4uI98tY9C6xz2RqSNmnJxzSCMGXSxDYV9z8fdhkkjXQQJcH/IX9MzaxCBMLybAt1LR61kt+pwMjmxXVQU6mR0CSUuVj5ly+FM3iNpXj6QM2fLRjvaiZnORlp/iArVOid4nAnu2Is4sBF43hrWM1OX7iZRp+KiM9iZQ4nR2Kkw+wW6rGvz+oynfkCiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mw/3ZeqO4X/b0pk8Cmi+w/JrjcEYKV8NQsh5lP8mjdo=;
- b=cNgXxRfYuHlfBkKyWEb8l0ttWZpJIiPDQJzNOYDxMr6yb+TDq4GO1P7t29QiQ6NDYfGdqeu1ihlxGkkNHpWTThs3+9TyR4QYQjvHjZMsV1nstBICFPZfPFQoWW4tmqIgrQahIv/U47u5TWDlrinZ8+xSZEMqXtv6E2uhtZOCRdxTuU54wG0+iF2qMsIhPYFTkyfDQZFccalLGMK4IzHp20xyeLXHy9Cp+viCzyJiLOrn4OOBPrHauNCx+P00WIVZ1Ss+Smj3t6IMcXVUuCICnMP0InwFVNO6DfsHRE5axB0I2zQe2V4OswnJSYMcRmtI/5PUfgOlAFsXlOjrjGNYQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mw/3ZeqO4X/b0pk8Cmi+w/JrjcEYKV8NQsh5lP8mjdo=;
- b=ZrfiVbP4fpuUE37OZB3sow6LP5jV3VWR6uEY8GBmNju32LrUiO+FbbFFuON29KjIaamheScWIjQ2R2ZSAz/SoUOi2KaBR0rZ0JVeEcTetzSsdfcR0UZ3HSlqOTlWDFrVJNnm6Vb7z7G2e+3j+qk6j0kco5lU3UgVMx9NtJsD5v4=
-Authentication-Results: plvision.eu; dkim=none (message not signed)
- header.d=none;plvision.eu; dmarc=none action=none header.from=plvision.eu;
-Received: from AM0P190MB0738.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:19b::9)
- by AM8P190MB0836.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:1d2::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Thu, 17 Jun
- 2021 11:36:53 +0000
-Received: from AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
- ([fe80::d018:6384:155:a2fe]) by AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
- ([fe80::d018:6384:155:a2fe%9]) with mapi id 15.20.4219.025; Thu, 17 Jun 2021
- 11:36:53 +0000
-From:   Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-To:     oleksandr.mazur@plvision.eu, jiri@nvidia.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vadym Kochan <vadym.kochan@plvision.eu>, idosch@idosch.org
-Subject: [PATCH net-next v2] drivers: net: netdevsim: fix devlink_trap selftests failing
-Date:   Thu, 17 Jun 2021 14:36:32 +0300
-Message-Id: <20210617113632.21665-1-oleksandr.mazur@plvision.eu>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [217.20.186.93]
-X-ClientProxiedBy: AM6P195CA0064.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:209:87::41) To AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:208:19b::9)
+        id S232606AbhFQLjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:39:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45867 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232591AbhFQLjO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 07:39:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623929826;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zIsWIjmGNY76gABLgykoc5YhaI64FcwdtGn88E4ap8I=;
+        b=SsTcJ1VzLYnwMU+2MF7ne3dbLK6pULtMMFpb6KZrxPFG6dL7Zsx4/LUQ9u/gdX3a8knE0S
+        brsInEIWhnxGDVSLhsixOzaxr1g4+nbzRFou88chhiQcOEqGvBZscOtkGhmT1CfDFqDpt6
+        wFr9KjHmtadg8LZWYEqeBonaMAmAZM4=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-YRJZ5MIzNhStm8TWeNCysw-1; Thu, 17 Jun 2021 07:37:05 -0400
+X-MC-Unique: YRJZ5MIzNhStm8TWeNCysw-1
+Received: by mail-ed1-f70.google.com with SMTP id p24-20020aa7c8980000b0290393c37fdcb8so1333056eds.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:37:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zIsWIjmGNY76gABLgykoc5YhaI64FcwdtGn88E4ap8I=;
+        b=OmHvvzpyfVIgGHGZ/SvElS3KlzD1GZ86Uvbd5KxbQv3i9bfDBXIcn7dKe7jv7/oJjz
+         1ljTlSHmPhtP+862Q6VtKMsNBi0Sp8sVSA/JOd5zDp2sgtnryJJrXUmJx2klSdFyjc6C
+         R5BUwgg9P7BIkx11wT7/PEe+BhXZLPiLaM8mG+PRDyPcMx8BfEgdeGEAGAjC69GUd3fM
+         2FeiBRrbLo6sTSCRePY24ItoIoU3sCgt0OqtJ00zcqKQnQTc+Z8LAIcMd25sPntXr1wb
+         AWon+2iBXPREhZmmfB726DvKB2Y4xZAghPf5Iym0AqTHI3Ox1o7zuZHPyzw/Mu+wpXuU
+         J36Q==
+X-Gm-Message-State: AOAM531gOLf1l7+zTMLb0Uf2O5GB1QJmhCp5Kh1pdVVPgOOS/JbIgo4m
+        nxki8ClRBINDwdHPs299nc1pY3e8kSxxHMnmjaLw8ySd1DvvdZk3QzY4d5vgG/HcjyrSR6lf77G
+        Y3gwE44gG67bZoRyYKdsnNLhhCIhsU0Tm77eU4wV+nSCousGz2A/IoInYAiWHEFl+zJIDdOA5Ft
+        Tx
+X-Received: by 2002:aa7:cc19:: with SMTP id q25mr5834556edt.56.1623929823901;
+        Thu, 17 Jun 2021 04:37:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzmU8SgdOE57jIvv3FPAbzafJA7zuo+uXWROMxQc7Q+Imd2O7vmt+x2HrGK92DscISS0qnusg==
+X-Received: by 2002:aa7:cc19:: with SMTP id q25mr5834537edt.56.1623929823749;
+        Thu, 17 Jun 2021 04:37:03 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id e18sm3566060ejh.64.2021.06.17.04.37.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jun 2021 04:37:03 -0700 (PDT)
+Subject: Re: [PATCH 1/2] platform/x86: ISST: Optimize CPU to PCI device
+ mapping
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        mgross@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210616221329.1909276-1-srinivas.pandruvada@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <b93fc0c0-77f9-a9b4-e5dd-28a781332691@redhat.com>
+Date:   Thu, 17 Jun 2021 13:37:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from omazur.x.ow.s (217.20.186.93) by AM6P195CA0064.EURP195.PROD.OUTLOOK.COM (2603:10a6:209:87::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Thu, 17 Jun 2021 11:36:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0adbbd8e-0b8a-41bc-9892-08d93184346d
-X-MS-TrafficTypeDiagnostic: AM8P190MB0836:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM8P190MB083683E5095E0E7EACED7A6CE40E9@AM8P190MB0836.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 51+9NFqvV1qwd9AAQgpMbdALXeRB7yeGv70mWMo0aCBhgD7bwSreDv0E8wKmBSsPhqb4+lni0FiymIEjetLnqghaHYREYpLaa7X9XZUkgMpSizBUZTjv7HHjuQClwsYj1Kw9zX0KXv46w6ESnIZ1bz3B92KN4ZH6JBMC4LdRstQNdQR7SsFQ39ecUs9Xw/P5nHkOy7YHJ8e2BvaRVu/nR5p+HiOBP/iHf7CTJ8nUU/25wFtGjQhkCtCuIG71Vl+1xdMrjvohWTiTE3oDTwpywd/45hD0JBnWmp7w/0E3SbHTWnIvDJaJ9n27Evp3PqZtiejjrNVzKnpPcGkSMh3LQrkN5nBAHMprZA1xqOsqkq+s1S037S9GGZ9kPp2CTOti4f3beIhUlhBbmnr3sy8UkegYfX/piuBCMv6dvm4tWLTtDNmlPzHXBPcZ7fsfP2rw0YTbxOz74oDEJBt9DgZTIgSeaSSS1rQka6x7wGj5rztc7+Qi2DoCkRN5LgUPTgyu3rBge+TZr4mhFqcUtC3E1kHOEoCNwe+ipIxa5vkHPzOcBNQCErw9uxRW4tiQ2teIfMi0+y/5aLOq48+dyLZOd5p9mAn52hlJ8+HJes4/ohnhBHayJs6aQRY+c8vFh2t0VecWOAESOyCMIOgkcFFCfV/Y4ygD5q6xnDUATPGcKRc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0P190MB0738.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39830400003)(376002)(346002)(136003)(396003)(366004)(6506007)(52116002)(36756003)(316002)(956004)(8676002)(38350700002)(38100700002)(2616005)(6512007)(478600001)(26005)(8936002)(6666004)(5660300002)(1076003)(86362001)(6486002)(44832011)(83380400001)(4326008)(16526019)(186003)(2906002)(66476007)(66556008)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?u4+GKhk08RJBGQG4VuXf1RpPMwtPRZMZkrkEcSAKKZ5Uuf6vWlxkA5boLyv+?=
- =?us-ascii?Q?r6JaD+aVLGFbU4CzjxG+xZrcHG4Ww63A7HmXgbrcsMqaJDZmotoYPLTJbmw9?=
- =?us-ascii?Q?yKT6jO3KQvK+fC3ESjJqRgSIMMDkmvnmb0FuKh3iJ0ZSceGKDC5ZX2SPafbm?=
- =?us-ascii?Q?aj+CP/1Rqwf5DD/LWv3CR1XjIeqU9tHkKaxXlJ/AwZLP0IaBcM4Oa8//sJ0T?=
- =?us-ascii?Q?EaJPwz7s8ob8t7Wo3wxznLL1BKoNBU7qhA43N7XlUSaRvi8pEw9MktaDaeJe?=
- =?us-ascii?Q?nCzAuS+us3eWyXlreoiHblGYR/SYO/Gq3lz4U46Ln2RxaMMaf9ji8H2LBs+r?=
- =?us-ascii?Q?JBwzsTRoRVeKLnxNJBK7aP6btjDD3QWq5/O4s1qfapHe/n20pbpJhVzeALv9?=
- =?us-ascii?Q?9HQfoIA7Vr6YeI4COh7vUhjwZybuq0oqcfTpCJxTp6HPBTeRNdSkHV9Ft+A7?=
- =?us-ascii?Q?8qMOnpTnvZQUi+0Tw4UldoqTuzgF8N92BsaA838VMyQCNr+0ruU9DxBfmVgR?=
- =?us-ascii?Q?W5Hn+GT08+AeyB1OFjpBBqBplt7MG3jBvPUPnJwaib5EoN2P+ZUwf0xiQ2GU?=
- =?us-ascii?Q?zxplWliKARYwW399xnBRKK4olIeqnLRWUUijqQ+fQ+N24QRcPC/RLrXKuDsg?=
- =?us-ascii?Q?mukcnwFmNQuYZra2geDukGzdRvsYLlNGFDwR42IFB2TxJ2aKqnZPJMvPjcR+?=
- =?us-ascii?Q?Vou46QRPNmm2CRuk34DGjwKVUYtRq6vkObo1l7Wd3yazosUtIwWrad9Io8RX?=
- =?us-ascii?Q?V5ZUpcHgs+4I2BVOYVQmwetlnR8LHfF3cQlbnFMlXaUs45fr6jYvwocePHWx?=
- =?us-ascii?Q?3yVm5A02AYNXavmjKdp4pfRmzXi6wGM2x9OXQkG1BG0OvE6u6noFoRRZhpLD?=
- =?us-ascii?Q?d/gvr7Q7KUSMEXWLlY4xUT5i4aGVi3kWSDLpARjxdnhRug7LEVToqt2xHPet?=
- =?us-ascii?Q?QulbAr2cHuHiNwqyiS18hB7egmu3ukYFiP2XzJnQIKKsc3ZFQfa+FbKzzdoo?=
- =?us-ascii?Q?2icbaPF5JUhrnTudUe8IMsDmWZ3zHYss4yBwCzD/ZZDQOXOsHh0UIT1n8Edx?=
- =?us-ascii?Q?VlHyLNFN8be7RHKtGFLKrzL4ukXrn2BVKkV3dizMGmNuM2EIgBj7UnPF1gLr?=
- =?us-ascii?Q?nYdKcDmuZFM8IRj4oJOTAkHWKlW1utiKElzhQqq4JL4w4C16CkOEtSW8wgZJ?=
- =?us-ascii?Q?UNsKl5Uf8URszL3YBl1IBMzm4MM8B+uKhi6nFBLNo9VVY/3sAhAregnI1KOE?=
- =?us-ascii?Q?u+AqjnRphCCyKW475KTYwIpvovOEMe2sbeZNSAPex0yLb2qK/6jEY3I5+QGm?=
- =?us-ascii?Q?hEOKWNWHtaLIRRuIamJdzQ7u?=
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0adbbd8e-0b8a-41bc-9892-08d93184346d
-X-MS-Exchange-CrossTenant-AuthSource: AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 11:36:53.7694
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VDWTvWj9ZXfOgDiVx59okTCY8epVg7FWa8y1zI3ugzjP9ZvqJ8qjBPcqzUB3aR3SwztEn5mYUVFwp2MMtGUhVD1bOurW/XtxmVOUmCATX5I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8P190MB0836
+In-Reply-To: <20210616221329.1909276-1-srinivas.pandruvada@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devlink_trap tests for the netdevsim fail due to misspelled
-debugfs file name. Change this name, as well as name of callback
-function, to match the naming as in the devlink itself - 'trap_drop_counter'.
+Hi Srinivas,
 
-Test-results:
-selftests: drivers/net/netdevsim: devlink_trap.sh
-TEST: Initialization                                                [ OK ]
-TEST: Trap action                                                   [ OK ]
-TEST: Trap metadata                                                 [ OK ]
-TEST: Non-existing trap                                             [ OK ]
-TEST: Non-existing trap action                                      [ OK ]
-TEST: Trap statistics                                               [ OK ]
-TEST: Trap group action                                             [ OK ]
-TEST: Non-existing trap group                                       [ OK ]
-TEST: Trap group statistics                                         [ OK ]
-TEST: Trap policer                                                  [ OK ]
-TEST: Trap policer binding                                          [ OK ]
-TEST: Port delete                                                   [ OK ]
-TEST: Device delete                                                 [ OK ]
+On 6/17/21 12:13 AM, Srinivas Pandruvada wrote:
+> It was observed that some of the high performance benchmarks are spending
+> more time in kernel depending on which CPU package they are executing.
+> The difference is significant and benchmark scores varies more than 10%.
+> These benchmarks adjust class of service to improve thread performance
+> which run in parallel. This class of service change causes access to
+> MMIO region of Intel Speed Select PCI devices depending on the CPU
+> package they are executing.
+> 
+> This mapping from CPU to PCI device instance uses a standard Linux PCI
+> interface "pci_get_domain_bus_and_slot()". This function does a linear
+> search to get to a PCI device. Since these platforms have 100+ PCI
+> devices, this search can be expensive in fast path for benchmarks.
+> 
+> Since the device and function of PCI device is fixed for Intel
+> Speed Select PCI devices, the CPU to PCI device information can be cached
+> at the same time when bus number for the CPU is read. In this way during
+> runtime the cached information can be used. This improves performance
+> of these benchmarks significantly.
+> 
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> ---
+>  .../intel_speed_select_if/isst_if_common.c    | 29 +++++++++++++++----
+>  1 file changed, 24 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel_speed_select_if/isst_if_common.c b/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
+> index 0c2aa22c7a12..aedb8310214c 100644
+> --- a/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
+> +++ b/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
+> @@ -281,11 +281,27 @@ static int isst_if_get_platform_info(void __user *argp)
+>  struct isst_if_cpu_info {
+>  	/* For BUS 0 and BUS 1 only, which we need for PUNIT interface */
+>  	int bus_info[2];
+> +	struct pci_dev *pci_dev[2];
+>  	int punit_cpu_id;
+>  };
+>  
+>  static struct isst_if_cpu_info *isst_cpu_info;
+>  
+> +static struct pci_dev *_isst_if_get_pci_dev(int cpu, int bus_no, int dev, int fn)
+> +{
+> +	int bus_number;
+> +
+> +	if (bus_no < 0 || bus_no > 1 || cpu < 0 || cpu >= nr_cpu_ids ||
+> +	    cpu >= num_possible_cpus())
+> +		return NULL;
+> +
+> +	bus_number = isst_cpu_info[cpu].bus_info[bus_no];
+> +	if (bus_number < 0)
+> +		return NULL;
+> +
+> +	return pci_get_domain_bus_and_slot(0, bus_number, PCI_DEVFN(dev, fn));
+> +}
+> +
+>  /**
+>   * isst_if_get_pci_dev() - Get the PCI device instance for a CPU
+>   * @cpu: Logical CPU number.
+> @@ -300,17 +316,18 @@ static struct isst_if_cpu_info *isst_cpu_info;
+>   */
+>  struct pci_dev *isst_if_get_pci_dev(int cpu, int bus_no, int dev, int fn)
+>  {
+> -	int bus_number;
+> +	struct pci_dev *pci_dev;
+>  
+>  	if (bus_no < 0 || bus_no > 1 || cpu < 0 || cpu >= nr_cpu_ids ||
+>  	    cpu >= num_possible_cpus())
+>  		return NULL;
+>  
+> -	bus_number = isst_cpu_info[cpu].bus_info[bus_no];
+> -	if (bus_number < 0)
+> -		return NULL;
+> +	pci_dev = isst_cpu_info[cpu].pci_dev[bus_no];
 
-Fixes: a7b3527a43fe ("drivers: net: netdevsim: add devlink trap_drop_counter_get implementation")
-Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
----
-V2:
- 1) change the name of the debugfs-entry variable inside nsim_dev to match the name of
-    the entry itself.
- 2) change name of the registered devlink callback-ops function to match the
-    'trap_drop_counter' naming convention.
----
- drivers/net/netdevsim/dev.c       | 14 +++++++-------
- drivers/net/netdevsim/netdevsim.h |  2 +-
- 2 files changed, 8 insertions(+), 8 deletions(-)
+If the _isst_if_get_pci_dev() call below fails, then pci_dev might
+end up getting set to NULL here.
 
-diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
-index d85521989753..6348307bfa84 100644
---- a/drivers/net/netdevsim/dev.c
-+++ b/drivers/net/netdevsim/dev.c
-@@ -269,9 +269,9 @@ static int nsim_dev_debugfs_init(struct nsim_dev *nsim_dev)
- 		err = PTR_ERR(nsim_dev->nodes_ddir);
- 		goto err_out;
- 	}
--	debugfs_create_bool("fail_trap_counter_get", 0600,
-+	debugfs_create_bool("fail_trap_drop_counter_get", 0600,
- 			    nsim_dev->ddir,
--			    &nsim_dev->fail_trap_counter_get);
-+			    &nsim_dev->fail_trap_drop_counter_get);
- 	nsim_udp_tunnels_debugfs_create(nsim_dev);
- 	return 0;
- 
-@@ -1208,14 +1208,14 @@ static int nsim_rate_node_parent_set(struct devlink_rate *child,
- }
- 
- static int
--nsim_dev_devlink_trap_hw_counter_get(struct devlink *devlink,
--				     const struct devlink_trap *trap,
--				     u64 *p_drops)
-+nsim_dev_devlink_trap_drop_counter_get(struct devlink *devlink,
-+				       const struct devlink_trap *trap,
-+				       u64 *p_drops)
- {
- 	struct nsim_dev *nsim_dev = devlink_priv(devlink);
- 	u64 *cnt;
- 
--	if (nsim_dev->fail_trap_counter_get)
-+	if (nsim_dev->fail_trap_drop_counter_get)
- 		return -EINVAL;
- 
- 	cnt = &nsim_dev->trap_data->trap_pkt_cnt;
-@@ -1247,7 +1247,7 @@ static const struct devlink_ops nsim_dev_devlink_ops = {
- 	.rate_node_del = nsim_rate_node_del,
- 	.rate_leaf_parent_set = nsim_rate_leaf_parent_set,
- 	.rate_node_parent_set = nsim_rate_node_parent_set,
--	.trap_drop_counter_get = nsim_dev_devlink_trap_hw_counter_get,
-+	.trap_drop_counter_get = nsim_dev_devlink_trap_drop_counter_get,
- };
- 
- #define NSIM_DEV_MAX_MACS_DEFAULT 32
-diff --git a/drivers/net/netdevsim/netdevsim.h b/drivers/net/netdevsim/netdevsim.h
-index f2304e61919a..ae462957dcee 100644
---- a/drivers/net/netdevsim/netdevsim.h
-+++ b/drivers/net/netdevsim/netdevsim.h
-@@ -249,7 +249,7 @@ struct nsim_dev {
- 	bool fail_trap_group_set;
- 	bool fail_trap_policer_set;
- 	bool fail_trap_policer_counter_get;
--	bool fail_trap_counter_get;
-+	bool fail_trap_drop_counter_get;
- 	struct {
- 		struct udp_tunnel_nic_shared utn_shared;
- 		u32 __ports[2][NSIM_UDP_TUNNEL_N_PORTS];
--- 
-2.17.1
+>  
+> -	return pci_get_domain_bus_and_slot(0, bus_number, PCI_DEVFN(dev, fn));
+> +	if (pci_dev->devfn == PCI_DEVFN(dev, fn))
+
+And then this would lead to a NULL ptr deref, I've replaced this
+the above if with:
+
+	if (pci_dev && pci_dev->devfn == PCI_DEVFN(dev, fn))
+
+to avoid this.
+
+I've applied this series with the above change
+to my review-hans  branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
+
+
+> +		return pci_dev;
+> +
+> +	return _isst_if_get_pci_dev(cpu, bus_no, dev, fn);
+>  }
+>  EXPORT_SYMBOL_GPL(isst_if_get_pci_dev);
+>  
+> @@ -327,6 +344,8 @@ static int isst_if_cpu_online(unsigned int cpu)
+>  	} else {
+>  		isst_cpu_info[cpu].bus_info[0] = data & 0xff;
+>  		isst_cpu_info[cpu].bus_info[1] = (data >> 8) & 0xff;
+> +		isst_cpu_info[cpu].pci_dev[0] = _isst_if_get_pci_dev(cpu, 0, 0, 1);
+> +		isst_cpu_info[cpu].pci_dev[1] = _isst_if_get_pci_dev(cpu, 1, 30, 1);
+>  	}
+>  
+>  	ret = rdmsrl_safe(MSR_THREAD_ID_INFO, &data);
+> 
 
