@@ -2,302 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6933AA81B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299E93AA81E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234986AbhFQA3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 20:29:16 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:35744 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbhFQA3P (ORCPT
+        id S234995AbhFQA3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 20:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231322AbhFQA3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 20:29:15 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 35DFCE53;
-        Thu, 17 Jun 2021 02:27:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1623889627;
-        bh=Th5o8J8hs9v1zoXZJZh0p0Fv2GICFqM8vU9S7gTd4Lw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TZ/2UILULEsL++XMklhgssEUOhO7jL0S7Rl0H+I+U14LSnZo+VwqxXmyNl4EFDLWf
-         kdI3NsqL5MUK6meh48C9N/k3IUTVhA7DFb0VkeOo6Im/XkiAVdgPcSPRsr1zvLbpQv
-         TI1DiOhBiU9lVAVvu4f8YZ6U8h/UoJ7F/BlfMmNY=
-Date:   Thu, 17 Jun 2021 03:26:46 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/7] media: i2c: max9286: Use "maxim,gpio-poc" property
-Message-ID: <YMqWxoC47UAoShU5@pendragon.ideasonboard.com>
-References: <20210419142345.53152-1-jacopo+renesas@jmondi.org>
- <20210419142345.53152-4-jacopo+renesas@jmondi.org>
- <YMqWpJfAwPlSgC/d@pendragon.ideasonboard.com>
+        Wed, 16 Jun 2021 20:29:52 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C08C061574;
+        Wed, 16 Jun 2021 17:27:44 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id a15so3349534qtx.13;
+        Wed, 16 Jun 2021 17:27:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=KIvX93fO1J/dtkzHBZn8boN5+A8/IK0ceANMVQz1H7w=;
+        b=qyWGlEfBCmuW1vkYP1a/17mpWZwFwo2b5T6H+eLhobsEMeZT9UI2+HPorM9Gaxj2TJ
+         K+Pmp82x05L9FQvOlDVvPBw8SU6Id7yv/C5zy8Pu/j195dQDGp7mIDjoTA+f+4t9SX8A
+         56+ONe+Ce1iadJJrIdcf0xlCKR2r0bFVDuP708nvc7PQL5ioQf7Xl1S0jDNnky2J9cLr
+         WN7uqwghTSmqJHcsO9rWBJO7clEh5DG+MocU4I7rnYOowVJkXo8ozuNW1LaG/Mz4b6e9
+         ylqKMrlWM2mtHfrykRQND+VsO9m/Xe9moKN42gmu+XTbXxQNOLm0V9FweP67GI93V7jd
+         Jw7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=KIvX93fO1J/dtkzHBZn8boN5+A8/IK0ceANMVQz1H7w=;
+        b=q84JL6lZypDOI74c4l8/o7ZoCVCxqtdoqj23YqP5mppfZ48mwzxshPp6wjukZZF5O5
+         TDBvMXkgmZgLv6WVhiD6BJt4BXXc9Wn4Nz8Q9Ub6/D86nCwTmtyC0eHNIK7/i1tVfHCY
+         kNrH6Ow3DkoEqAx8WsDJC2ttYE5vqh4G4TNyQiaPTfK+Qa7Wg2lPF3Ipq0aBKUsI4T18
+         PJ8mfVyiYfsxbegnBjWqFORxluvOcvthtp5Sq4x9/h7budLHlM4XvKUl6BbQri7Ejl/m
+         ywH5MhdJQwMe5cu31njORSv3SRvnrS8kpsDycdWedlTdE9f1/3EF9x+yVTyJJeK5h6ih
+         Hp+Q==
+X-Gm-Message-State: AOAM530qoc88FGh2UkmrA1QIjcawN7j0Haz/nF9Ypu5ybNRsZXa/gR77
+        Z3oqlaRVrYE2r0TlAJTXyB/tjmM8m628HA==
+X-Google-Smtp-Source: ABdhPJw3JMIhmiMleh1odDPpGbOyCHN65qWDrIoPtWJ7bPJpDzLoarpEgqHnr4snhp+s2K9Zkc/uIA==
+X-Received: by 2002:ac8:7d0c:: with SMTP id g12mr2469507qtb.248.1623889663317;
+        Wed, 16 Jun 2021 17:27:43 -0700 (PDT)
+Received: from fedora (cpe-24-59-204-221.twcny.res.rr.com. [24.59.204.221])
+        by smtp.gmail.com with ESMTPSA id o12sm668710qki.44.2021.06.16.17.27.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 17:27:42 -0700 (PDT)
+Sender: Konrad Rzeszutek Wilk <konrad.r.wilk@gmail.com>
+Date:   Wed, 16 Jun 2021 20:27:39 -0400
+From:   Konrad Rzeszutek Wilk <konrad@darnok.org>
+To:     Jianxiong Gao <jxgao@google.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dominique MARTINET <dominique.martinet@atmark-techno.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lukas Hartmann <lukas@mntmn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Marc Orr <marcorr@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Peter Gonda <pgonda@google.com>
+Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb)
+ stable/for-linus-5.12)
+Message-ID: <YMqW+/gQvM+uWUTw@fedora>
+References: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local>
+ <YL7XXNOnbaDgmTB9@atmark-techno.com>
+ <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com>
+ <20210611062153.GA30906@lst.de>
+ <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
+ <CAMGD6P1v2JoJoxSuAYL8UjdtCaLCc4K_7xzVkumspeb0qn=LBQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YMqWpJfAwPlSgC/d@pendragon.ideasonboard.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMGD6P1v2JoJoxSuAYL8UjdtCaLCc4K_7xzVkumspeb0qn=LBQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 03:26:13AM +0300, Laurent Pinchart wrote:
-> Hi Jacopo,
-> 
-> Thank you for the patch.
+On Wed, Jun 16, 2021 at 01:49:54PM -0700, Jianxiong Gao wrote:
+> On Fri, Jun 11, 2021 at 3:35 AM Konrad Rzeszutek Wilk
+> <konrad.wilk@oracle.com> wrote:
+> >
+> > On Fri, Jun 11, 2021 at 08:21:53AM +0200, Christoph Hellwig wrote:
+> > > On Thu, Jun 10, 2021 at 05:52:07PM +0300, Horia Geantă wrote:
+> > > > I've noticed the failure also in v5.10 and v5.11 stable kernels,
+> > > > since the patch set has been backported.
+> > >
+> > > FYI, there has been a patch on the list that should have fixed this
+> > > for about a month:
+> > >
+> > > https://lore.kernel.org/linux-iommu/20210510091816.GA2084@lst.de/T/#m0d0df6490350a08dcc24c9086c8edc165b402d6f
+> > >
+> > > but it seems like it never got picked up.
+> >
+> > Jianxiong,
+> > Would you be up for testing this patch on your NVMe rig please? I don't
+> > forsee a problem.. but just in case
+> >
+> I have tested the attached patch and it generates an error when
+> formatting a disk to xfs format in Rhel 8 environment:
 
-I forgot to mention, shouldn't this patch and the previous one be sent
-to the linux-media mailing list as well ?
+Thank you for testing that - and this is a bummer indeed.
 
-> On Mon, Apr 19, 2021 at 04:23:41PM +0200, Jacopo Mondi wrote:
-> > The 'maxim,gpio-poc' property is used when the remote camera
-> > power-over-coax is controlled by one of the MAX9286 gpio lines,
-> > to instruct the driver about which line to use and what the line
-> > polarity is.
-> > 
-> > Add to the max9286 driver support for parsing the newly introduced
-> > property and use it if available in place of the usual supply, as it is
-> > not possible to establish one as consumer of the max9286 gpio
-> > controller.
-> > 
-> > If the new property is present, no gpio controller is registered and
-> > 'poc-supply' is ignored.
-> > 
-> > In order to maximize code re-use, break out the max9286 gpio handling
-> > function so that they can be used by the gpio controller through the
-> > gpio-consumer API, or directly by the driver code.
-> > 
-> > Wrap the power up and power down routines to their own function to
-> > be able to use either the gpio line directly or the supply. This will
-> > make it easier to control the remote camera power at run time.
-> > 
-> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> > ---
-> >  drivers/media/i2c/max9286.c | 125 +++++++++++++++++++++++++++---------
-> >  1 file changed, 94 insertions(+), 31 deletions(-)
-> > 
-> > diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> > index 6fd4d59fcc72..99160aa68a5f 100644
-> > --- a/drivers/media/i2c/max9286.c
-> > +++ b/drivers/media/i2c/max9286.c
-> > @@ -15,6 +15,7 @@
-> >  #include <linux/fwnode.h>
-> >  #include <linux/gpio/consumer.h>
-> >  #include <linux/gpio/driver.h>
-> > +#include <linux/gpio/machine.h>
-> >  #include <linux/i2c.h>
-> >  #include <linux/i2c-mux.h>
-> >  #include <linux/module.h>
-> > @@ -165,6 +166,9 @@ struct max9286_priv {
-> >  
-> >  	u32 reverse_channel_mv;
-> >  
-> > +	u32 gpio_poc;
-> > +	u32 gpio_poc_flags;
-> > +
-> >  	struct v4l2_ctrl_handler ctrls;
-> >  	struct v4l2_ctrl *pixelrate;
-> >  
-> > @@ -1022,20 +1026,27 @@ static int max9286_setup(struct max9286_priv *priv)
-> >  	return 0;
-> >  }
-> >  
-> > -static void max9286_gpio_set(struct gpio_chip *chip,
-> > -			     unsigned int offset, int value)
-> > +static int max9286_gpio_set(struct max9286_priv *priv, unsigned int offset,
-> > +			    int value)
-> >  {
-> > -	struct max9286_priv *priv = gpiochip_get_data(chip);
-> > -
-> >  	if (value)
-> >  		priv->gpio_state |= BIT(offset);
-> >  	else
-> >  		priv->gpio_state &= ~BIT(offset);
-> >  
-> > -	max9286_write(priv, 0x0f, MAX9286_0X0F_RESERVED | priv->gpio_state);
-> > +	return max9286_write(priv, 0x0f,
-> > +			     MAX9286_0X0F_RESERVED | priv->gpio_state);
-> > +}
-> > +
-> > +static void max9286_gpiochip_set(struct gpio_chip *chip,
-> > +				 unsigned int offset, int value)
-> > +{
-> > +	struct max9286_priv *priv = gpiochip_get_data(chip);
-> > +
-> > +	max9286_gpio_set(priv, offset, value);
-> >  }
-> >  
-> > -static int max9286_gpio_get(struct gpio_chip *chip, unsigned int offset)
-> > +static int max9286_gpiochip_get(struct gpio_chip *chip, unsigned int offset)
-> >  {
-> >  	struct max9286_priv *priv = gpiochip_get_data(chip);
-> >  
-> > @@ -1055,16 +1066,81 @@ static int max9286_register_gpio(struct max9286_priv *priv)
-> >  	gpio->of_node = dev->of_node;
-> >  	gpio->ngpio = 2;
-> >  	gpio->base = -1;
-> > -	gpio->set = max9286_gpio_set;
-> > -	gpio->get = max9286_gpio_get;
-> > +	gpio->set = max9286_gpiochip_set;
-> > +	gpio->get = max9286_gpiochip_get;
-> >  	gpio->can_sleep = true;
-> >  
-> > +	ret = devm_gpiochip_add_data(dev, gpio, priv);
-> > +	if (ret)
-> > +		dev_err(dev, "Unable to create gpio_chip\n");
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int max9286_parse_gpios(struct max9286_priv *priv)
-> > +{
-> > +	struct device *dev = &priv->client->dev;
-> > +	u32 gpio_poc[2];
-> > +	int ret;
-> > +
-> >  	/* GPIO values default to high */
-> >  	priv->gpio_state = BIT(0) | BIT(1);
-> >  
-> > -	ret = devm_gpiochip_add_data(dev, gpio, priv);
-> > +	/*
-> > +	 * Parse the "gpio-poc" vendor property. If the camera power is
-> > +	 * controlled by one of the MAX9286 gpio lines, do not register
-> > +	 * the gpio controller and ignore 'poc-supply'.
-> > +	 */
-> > +	ret = of_property_read_u32_array(dev->of_node,
-> > +					 "maxim,gpio-poc", gpio_poc, 2);
-> > +	if (!ret) {
-> > +		priv->gpio_poc = gpio_poc[0];
-> > +		priv->gpio_poc_flags = gpio_poc[1];
-> > +		if (priv->gpio_poc > 1 ||
-> > +		    (priv->gpio_poc_flags != GPIO_ACTIVE_HIGH &&
-> > +		     priv->gpio_poc_flags != GPIO_ACTIVE_LOW)) {
-> > +			dev_err(dev, "Invalid 'gpio-poc': (%u %u)\n",
-> > +				priv->gpio_poc, priv->gpio_poc_flags);
-> > +			return -EINVAL;
-> > +		}
-> > +
-> > +		return 0;
-> > +	}
-> > +
-> > +	ret = max9286_register_gpio(priv);
-> >  	if (ret)
-> > -		dev_err(dev, "Unable to create gpio_chip\n");
-> > +		return ret;
-> > +
-> > +	priv->regulator = devm_regulator_get(dev, "poc");
-> > +	if (IS_ERR(priv->regulator)) {
-> > +		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
-> > +			dev_err(dev, "Unable to get PoC regulator (%ld)\n",
-> > +				PTR_ERR(priv->regulator));
-> > +		return PTR_ERR(priv->regulator);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int max9286_poc_enable(struct max9286_priv *priv, bool enable)
-> > +{
-> > +	int ret;
-> > +
-> > +	/* If "poc-gpio" is used, toggle the line and do not use regulator. */
-> > +	if (enable)
-> > +		ret = priv->regulator
-> > +		    ? regulator_enable(priv->regulator)
-> > +		    : max9286_gpio_set(priv, priv->gpio_poc,
-> > +				       enable ^ priv->gpio_poc_flags);
-> > +	else
-> > +		ret = priv->regulator
-> > +		    ? regulator_disable(priv->regulator)
-> > +		    : max9286_gpio_set(priv, priv->gpio_poc,
-> > +				       enable ^ priv->gpio_poc_flags);
-> > +
-> > +	if (ret < 0)
-> > +		dev_err(&priv->client->dev, "Unable to turn PoC %s\n",
-> > +			enable ? "on" : "off");
-> >  
-> >  	return ret;
-> >  }
-> > @@ -1078,17 +1154,14 @@ static int max9286_init(struct device *dev)
-> >  	client = to_i2c_client(dev);
-> >  	priv = i2c_get_clientdata(client);
-> >  
-> > -	/* Enable the bus power. */
-> > -	ret = regulator_enable(priv->regulator);
-> > -	if (ret < 0) {
-> > -		dev_err(&client->dev, "Unable to turn PoC on\n");
-> > +	ret = max9286_poc_enable(priv, true);
-> > +	if (ret)
-> >  		return ret;
-> > -	}
-> >  
-> >  	ret = max9286_setup(priv);
-> >  	if (ret) {
-> >  		dev_err(dev, "Unable to setup max9286\n");
-> > -		goto err_regulator;
-> > +		goto err_poc_disable;
-> >  	}
-> >  
-> >  	/*
-> > @@ -1098,7 +1171,7 @@ static int max9286_init(struct device *dev)
-> >  	ret = max9286_v4l2_register(priv);
-> >  	if (ret) {
-> >  		dev_err(dev, "Failed to register with V4L2\n");
-> > -		goto err_regulator;
-> > +		goto err_poc_disable;
-> >  	}
-> >  
-> >  	ret = max9286_i2c_mux_init(priv);
-> > @@ -1114,8 +1187,8 @@ static int max9286_init(struct device *dev)
-> >  
-> >  err_v4l2_register:
-> >  	max9286_v4l2_unregister(priv);
-> > -err_regulator:
-> > -	regulator_disable(priv->regulator);
-> > +err_poc_disable:
-> > +	max9286_poc_enable(priv, false);
-> >  
-> >  	return ret;
-> >  }
-> > @@ -1286,20 +1359,10 @@ static int max9286_probe(struct i2c_client *client)
-> >  	 */
-> >  	max9286_configure_i2c(priv, false);
-> >  
-> > -	ret = max9286_register_gpio(priv);
-> > +	ret = max9286_parse_gpios(priv);
-> >  	if (ret)
-> >  		goto err_powerdown;
-> >  
-> > -	priv->regulator = devm_regulator_get(&client->dev, "poc");
-> > -	if (IS_ERR(priv->regulator)) {
-> > -		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
-> > -			dev_err(&client->dev,
-> > -				"Unable to get PoC regulator (%ld)\n",
-> > -				PTR_ERR(priv->regulator));
-> > -		ret = PTR_ERR(priv->regulator);
-> > -		goto err_powerdown;
-> > -	}
-> > -
-> >  	ret = max9286_parse_dt(priv);
-> >  	if (ret)
-> >  		goto err_powerdown;
-> > @@ -1326,7 +1389,7 @@ static int max9286_remove(struct i2c_client *client)
-> >  
-> >  	max9286_v4l2_unregister(priv);
-> >  
-> > -	regulator_disable(priv->regulator);
-> > +	max9286_poc_enable(priv, false);
-> >  
-> >  	gpiod_set_value_cansleep(priv->gpiod_pwdn, 0);
-> >  
+Jianxiong,
+How unique is this NVMe? Should I be able to reproduce this with any
+type or is it specific to Google Cloud?
 
--- 
-Regards,
+Dominique, Horia,
 
-Laurent Pinchart
+Are those crypto devices somehow easily available to test out the
+patches?
+
+P.S.
+Most unfortunate timing - I am out in rural areas in US with not great
+Internet, so won't be able to get fully down to this until Monday.
