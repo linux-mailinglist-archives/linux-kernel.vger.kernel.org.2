@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C213AB343
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4FA3AB345
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbhFQMJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:09:21 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:42911 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhFQMJU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:09:20 -0400
-Received: by mail-ot1-f42.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so5850017oth.9;
-        Thu, 17 Jun 2021 05:07:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=70Prv0Q9PiR2Mu1RsII1XZ4V8W5RAajPqngPjwLFOeo=;
-        b=qIbPRxZ8VNE3CIqpmpIntA6oA9+tF5RH6xhHHSJ+x353HDab4UWxE2F7aaNlnISNnp
-         2by1hLfkHE3X9H/+vPDDqCgmK3GuPMcvndvMCLllEekzC8TiEvb69vYFEya1gzi2+fpH
-         cy8ElREI9Db9HIQ/FyfgFgGd5OpSZchlFFzBWAVdbOgZ+tkqnFZABfvR+y5X/VMaC8F1
-         oDEP9Nvv/7nO94T9TOLhN4s/ySjvgSm8C3KbaxdouzHCPHLZjsN9cFk8tzmIBwftwscx
-         aGreh8u4jMtSMQbwWzKLTfUicb4cOyD22fMIm82RngXAHQuVc+1KD33ytf9ZSkuNzvhw
-         d7mw==
-X-Gm-Message-State: AOAM533fxxku2SZx8bsmE/sEVQ6ETCJDGV9M+sUKhqb0JDQwa6bpD199
-        qP5FRAm7+DsxRvN9EVZW2wd4FUMuvTFR0BLLL4w=
-X-Google-Smtp-Source: ABdhPJz7lh+lT2LPBBP08RYxXR+wg480zZHpwCz0fatQfQ+GHy+L8yGM+nwGS6GgAMByJ5ZW3peHoLOa1q+GzGkCN8s=
-X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr4450235otb.206.1623931632819;
- Thu, 17 Jun 2021 05:07:12 -0700 (PDT)
+        id S232698AbhFQMKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:10:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231299AbhFQMKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 08:10:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B2FC610EA;
+        Thu, 17 Jun 2021 12:08:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623931688;
+        bh=i6kJUpBxHxG+QzGCDo+Do5icLvOgpxju9jJwwtE9c60=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B/MF8VS5eLhlJg7fqU/4oVwicWtdYZrsBUlhtr0IshhwqQr/yWHEbmL8gV6+k/4Ma
+         HCNySERsghT73XoINOrMFjd85j9xERAS/2UL6pyZAM+eV3z8t5aWkhNCepKtKcxrBg
+         yKPstJrlTl6T6Xedpb5AR9zwZl+MMpxKlRA9Gj1soZttmwEvwDlT3q56Im7yAFcm7Y
+         2E8aRmsggzinAf9XrDXPhZoZXC+v+LfJvYVfQ3TII6YdQPUtf+1ZV6Nj1Kfw93tFat
+         lwUfksBlcWAEdmcYLRyDLyg2/YZ19zyBkBbEdrj+ujMc5tTf6NhN57b9QvM//bTiWF
+         YGy8ozgXe9l0g==
+Date:   Thu, 17 Jun 2021 13:07:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     =?utf-8?B?54+t5rab?= <fengzheng923@gmail.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        mripard@kernel.org, wens@csie.org, jernej.skrabec@gmail.com,
+        p.zabel@pengutronix.de, Samuel Holland <samuel@sholland.org>,
+        krzk@kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
+Message-ID: <20210617120747.GB5067@sirena.org.uk>
+References: <20210615130326.2044-1-fengzheng923@gmail.com>
+ <20210615132207.GG5149@sirena.org.uk>
+ <CAE=m61-kHPeKNvEEc08w8DeUwssGPWNf5UaYojRPNZRJ0v=arw@mail.gmail.com>
+ <20210617104828.GA5067@sirena.org.uk>
+ <CAE=m618Gtx_RQ4+h=8+TFvbcuSTpNWVcx1bry+8OggL6uDCzfw@mail.gmail.com>
 MIME-Version: 1.0
-References: <1623415027-36130-1-git-send-email-tanxiaofei@huawei.com>
- <CAJZ5v0gvzZ-64AJuEsOg2M=veZYz+9ciG5wFEQT7ghki2SNpPA@mail.gmail.com> <d38b018d-2adf-9549-ba55-44289c816fed@huawei.com>
-In-Reply-To: <d38b018d-2adf-9549-ba55-44289c816fed@huawei.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 17 Jun 2021 14:07:01 +0200
-Message-ID: <CAJZ5v0jRrow5nXF3mXCVKerzaURKqDJBMp_PDfQDLF2OVpEeGA@mail.gmail.com>
-Subject: Re: [PATCH v7] ACPI / APEI: fix the regression of synchronous
- external aborts occur in user-mode
-To:     Xiaofei Tan <tanxiaofei@huawei.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxarm@openeuler.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="s2ZSL+KKDSLx8OML"
+Content-Disposition: inline
+In-Reply-To: <CAE=m618Gtx_RQ4+h=8+TFvbcuSTpNWVcx1bry+8OggL6uDCzfw@mail.gmail.com>
+X-Cookie: But it does move!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 5:47 AM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
->
-> Hi Rafael,
->
-> On 2021/6/14 23:46, Rafael J. Wysocki wrote:
-> > On Fri, Jun 11, 2021 at 2:40 PM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
-> >>
-> >> Before commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
-> >> synchronise with APEI's irq work"), do_sea() would unconditionally
-> >> signal the affected task from the arch code. Since that change,
-> >> the GHES driver sends the signals.
-> >>
-> >> This exposes a problem as errors the GHES driver doesn't understand
-> >> or doesn't handle effectively are silently ignored. It will cause
-> >> the errors get taken again, and circulate endlessly. User-space task
-> >> get stuck in this loop.
-> >>
-> >> Existing firmware on Kunpeng9xx systems reports cache errors with the
-> >> 'ARM Processor Error' CPER records.
-> >>
-> >> Do memory failure handling for ARM Processor Error Section just like
-> >> for Memory Error Section.
-> >
-> > Still, I'm not convinced that this is the right way to address the problem.
-> >
-> > In particular, is it guaranteed that "ARM Processor Error" will always
-> > mean "memory failure" on all platforms?
-> >
->
-> There are two sources for ARM Processor cache errors(no second case for the platform that doesn't support poison mechanism).
-> 1.occur in the cache. If it is transient, we have a chance to recover by doing memory failure.
-> If it is persistent, we have to handle in other place, such as do cache way isolation in firmware,
-> or trigger cpu core isolation in user space. I think most platform can't support such feature,
-> so the most simple and effective way is report as fatal error and do isolation during firmware start-up phase.
->
-> 2.error transferred from other RAS node. If it is from DDR, i think there is no doubt, and this is
-> the most cases we met before.If it is from other place of SoC, such as internal SRAM(the probability is very little compare to DDR),
-> the error is still in the hardware. But the RAS node that detected the SRAM error will also report the error.
->
-> To sum up the above, it is effective for most situation, and no harm for the others.
 
-OK, so applied as 5.14 material under edited subject.
+--s2ZSL+KKDSLx8OML
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
+On Thu, Jun 17, 2021 at 07:50:42PM +0800, =E7=8F=AD=E6=B6=9B wrote:
+> Mark Brown <broonie@kernel.org> =E4=BA=8E2021=E5=B9=B46=E6=9C=8817=E6=97=
+=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=886:48=E5=86=99=E9=81=93=EF=BC=9A
+> > On Thu, Jun 17, 2021 at 03:42:43PM +0800, =E7=8F=AD=E6=B6=9B wrote:
+> > > Mark Brown <broonie@kernel.org> =E4=BA=8E2021=E5=B9=B46=E6=9C=8815=E6=
+=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=889:22=E5=86=99=E9=81=93=EF=BC=9A
+
+> > No, that's what you have already make the entire thing a C++ comment
+> > with //s.
+
+> I don=E2=80=99t understand. For example, sun4i-codec.c sun4i-i2s.c
+> sun8i-codec.c and sun4i-spdif.c files are the same as mine.
+
+Other people doing a bad job is no excuse for doing a bad job yourself.
+
+> Which file can I refer to? what should I do......
+
+Make every line of the comment start with //.  See soc-core.c
+
+--s2ZSL+KKDSLx8OML
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDLOxIACgkQJNaLcl1U
+h9B0Zwf9F77pXhY9/b+1fLkmyUPL4p+njHaVTXcpjPLK+YIOfmiX/pNhREBXmMnc
+LdIdlGNvIBKzJ0VDd8SBzL8ARlpaQe7tKqzaxBOHMU5dwnN8q0QueQcYWsO3CeJt
+5r6781yl1ugFsKrzC3BIhebjleMk6a+qng15JFRX+cHj04xhbEtBDfcsLwJ1nZMz
++THnsoZRSTCF85GXriv8+fJsXHrTGUEFnveSSXhuAuWAMZJzqIrHdyBo0xhzWpRh
+69xN583U++MDxvV5evOlyGJ9OC7KSqRqSIZOsADHlgEhWaHhZt9sz1nbNRmquXY3
+9U/3IhGf/VSvyYqELpfU4Ka8wL672Q==
+=JYR3
+-----END PGP SIGNATURE-----
+
+--s2ZSL+KKDSLx8OML--
