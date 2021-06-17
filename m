@@ -2,227 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3293AAF4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976283AAF50
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbhFQJJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbhFQJJw (ORCPT
+        id S231403AbhFQJKW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Jun 2021 05:10:22 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:46393 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230473AbhFQJKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:09:52 -0400
-Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A91C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:07:43 -0700 (PDT)
-Received: by mail-vk1-xa33.google.com with SMTP id k71so1219749vka.11
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wXHJ7ss3OtBtqBAeFZEzYKlhCeBHxtiwTpmWUd/NWDM=;
-        b=Z4Rj3kpkc5jZPGLcD2bVuGjbTkUQHbRePGY25Bfpmh+ykfEXHyhUouBKBNIaffz0Ql
-         ycQXFOy/i36aor27toKh+Qw13Q8tmHElBuSC06bznCg+E1AnbimyDtH3uNbQc23bLO4M
-         br6RuaCIaKLXQtEVqZV3sjPCTeE1yPFz50G70O/9+ejnWPbjpFxluoOyNTmhnh7Np1em
-         5Zr1D5bSE6mkbGVEXWZQmGpdXx0t6dWhIwOevL9yzJuy0EDAx3fEnew97M805rOKnXZO
-         CbzXFLQ6QDjOmkviHWRnZZVe+HkByejaZVFcy+dnrpy2KIlvcQOV7qkAs6o+mEN/yYqS
-         c03g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wXHJ7ss3OtBtqBAeFZEzYKlhCeBHxtiwTpmWUd/NWDM=;
-        b=AIP9HP6JwAUyUjMNfKBFnJQNO45erII6rZV8Mv+yJ0/4o4DV5F4k0sJ1d8j5ZbJVwn
-         VB366qBe02kPtMJAc4HHZCqMKOXRqPsv6enjDYg11UojeU5ms7DZIqgdNq6gK9xvk1+J
-         RrOlkEJkZ4/6f8CGosw4fH6DlumvpvkGBm9MLwVIMNCireueKVj1Fny9jmsPzvgfkSAO
-         doEGEJhS77w2Hncj8OvyAegYO6Joq4p653+oBDgAkR2/kb8P8QpRbrLA/SasOZh+f8wB
-         8rl7H9xi91fRVqUxtAybXoa/TiVq/OoFGp0XzeuHJhAlABuLdYLtzBu9Ak/8Nn23UOBx
-         cgtw==
-X-Gm-Message-State: AOAM531TNXO4n5FKFIjxDYR78MHOOAqJP+3sP1B5qg9bgwm+djzcqqyB
-        JEDNBhZik1VOQsOOaA3hu9CoK7naRYgiwb8NcJszSA==
-X-Google-Smtp-Source: ABdhPJwsJbOl/h0XxpwZ5ApmB06rowa2s6aG7gZ8PpXfjBG6cq6wvSVLfgxujkX4WdL82WHn85SUKUS8Lp3ou0oDK90=
-X-Received: by 2002:a1f:9542:: with SMTP id x63mr2943949vkd.15.1623920862482;
- Thu, 17 Jun 2021 02:07:42 -0700 (PDT)
+        Thu, 17 Jun 2021 05:10:20 -0400
+Received: (Authenticated sender: paul@opendingux.net)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 5B3051BF208;
+        Thu, 17 Jun 2021 09:08:09 +0000 (UTC)
+Date:   Thu, 17 Jun 2021 10:08:02 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2 2/2] iio: core: Support reading extended name as label
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Message-Id: <ED9UUQ.EDOA8S56T8BP@crapouillou.net>
+In-Reply-To: <CA+U=DsrP6+Zjnca8Sqd0jAi9a4aDqAV4suJZc95ayqm7K0+mCw@mail.gmail.com>
+References: <20210616155706.17444-1-paul@crapouillou.net>
+        <20210616155706.17444-3-paul@crapouillou.net>
+        <CA+U=DsrP6+Zjnca8Sqd0jAi9a4aDqAV4suJZc95ayqm7K0+mCw@mail.gmail.com>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
- <20210611101540.3379937-3-dmitry.baryshkov@linaro.org> <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
- <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
- <CAPDyKFoMC_7kJx_Wb4LKgxvRCoqHYFtwsJ2b7Cr4OvjA94DtHg@mail.gmail.com> <YMjNaM0z+OzhAeO/@yoga>
-In-Reply-To: <YMjNaM0z+OzhAeO/@yoga>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 17 Jun 2021 11:07:06 +0200
-Message-ID: <CAPDyKFo_eNwEx5rryg3bHt_-pxBeeYfVrUZuTOHoL-x94LBwDA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Rajendra
+Hi Alexandru,
 
-On Tue, 15 Jun 2021 at 17:55, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Tue 15 Jun 05:17 CDT 2021, Ulf Hansson wrote:
->
-> > + Mark
-> >
-> > On Fri, 11 Jun 2021 at 16:34, Dmitry Baryshkov
-> > <dmitry.baryshkov@linaro.org> wrote:
-> > >
-> > > Added Stephen to Cc list
-> > >
-> > > On Fri, 11 Jun 2021 at 16:50, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > >
-> > > > On Fri, 11 Jun 2021 at 12:15, Dmitry Baryshkov
-> > > > <dmitry.baryshkov@linaro.org> wrote:
-> > > > >
-> > > > > In case of nested genpds it is easy to get the following warning from
-> > > > > lockdep, because all genpd's mutexes share same locking class. Use the
-> > > > > per-genpd locking class to stop lockdep from warning about possible
-> > > > > deadlocks. It is not possible to directly use genpd nested locking, as
-> > > > > it is not the genpd code calling genpd. There are interim calls to
-> > > > > regulator core.
-> > > > >
-> > > > > [    3.030219] ============================================
-> > > > > [    3.030220] WARNING: possible recursive locking detected
-> > > > > [    3.030221] 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480 Not tainted
-> > > > > [    3.030222] --------------------------------------------
-> > > > > [    3.030223] kworker/u16:0/7 is trying to acquire lock:
-> > > > > [    3.030224] ffffde0eabd29aa0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
-> > > > > [    3.030236]
-> > > > > [    3.030236] but task is already holding lock:
-> > > > > [    3.030236] ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
-> > > > > [    3.030240]
-> > > > > [    3.030240] other info that might help us debug this:
-> > > > > [    3.030240]  Possible unsafe locking scenario:
-> > > > > [    3.030240]
-> > > > > [    3.030241]        CPU0
-> > > > > [    3.030241]        ----
-> > > > > [    3.030242]   lock(&genpd->mlock);
-> > > > > [    3.030243]   lock(&genpd->mlock);
-> > > > > [    3.030244]
-> > > > > [    3.030244]  *** DEADLOCK ***
-> > > > > [    3.030244]
-> > > > > [    3.030244]  May be due to missing lock nesting notation
-> > > > > [    3.030244]
-> > > > > [    3.030245] 6 locks held by kworker/u16:0/7:
-> > > > > [    3.030246]  #0: ffff6cca00010938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
-> > > > > [    3.030252]  #1: ffff8000100c3db0 (deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
-> > > > > [    3.030255]  #2: ffff6cca00ce3188 (&dev->mutex){....}-{3:3}, at: __device_attach+0x3c/0x184
-> > > > > [    3.030260]  #3: ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
-> > > > > [    3.030264]  #4: ffff8000100c3968 (regulator_ww_class_acquire){+.+.}-{0:0}, at: regulator_lock_dependent+0x6c/0x1b0
-> > > > > [    3.030270]  #5: ffff6cca00a59158 (regulator_ww_class_mutex){+.+.}-{3:3}, at: regulator_lock_recursive+0x94/0x1d0
-> > > > > [    3.030273]
-> > > > > [    3.030273] stack backtrace:
-> > > > > [    3.030275] CPU: 6 PID: 7 Comm: kworker/u16:0 Not tainted 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480
-> > > > > [    3.030276] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
-> > > > > [    3.030278] Workqueue: events_unbound deferred_probe_work_func
-> > > > > [    3.030280] Call trace:
-> > > > > [    3.030281]  dump_backtrace+0x0/0x1a0
-> > > > > [    3.030284]  show_stack+0x18/0x24
-> > > > > [    3.030286]  dump_stack+0x108/0x188
-> > > > > [    3.030289]  __lock_acquire+0xa20/0x1e0c
-> > > > > [    3.030292]  lock_acquire.part.0+0xc8/0x320
-> > > > > [    3.030294]  lock_acquire+0x68/0x84
-> > > > > [    3.030296]  __mutex_lock+0xa0/0x4f0
-> > > > > [    3.030299]  mutex_lock_nested+0x40/0x50
-> > > > > [    3.030301]  genpd_lock_mtx+0x18/0x2c
-> > > > > [    3.030303]  dev_pm_genpd_set_performance_state+0x94/0x1a0
-> > > > > [    3.030305]  reg_domain_enable+0x28/0x4c
-> > > > > [    3.030308]  _regulator_do_enable+0x420/0x6b0
-> > > > > [    3.030310]  _regulator_enable+0x178/0x1f0
-> > > > > [    3.030312]  regulator_enable+0x3c/0x80
-> > > >
-> > > > At a closer look, I am pretty sure that it's the wrong code design
-> > > > that triggers this problem, rather than that we have a real problem in
-> > > > genpd. To put it simply, the code in genpd isn't designed to work like
-> > > > this. We will end up in circular looking paths, leading to deadlocks,
-> > > > sooner or later if we allow the above code path.
-> > > >
-> > > > To fix it, the regulator here needs to be converted to a proper PM
-> > > > domain. This PM domain should be assigned as the parent to the one
-> > > > that is requested to be powered on.
-> > >
-> > > This more or less resembles original design, replaced per review
-> > > request to use separate regulator
-> > > (https://lore.kernel.org/linux-arm-msm/160269659638.884498.4031967462806977493@swboyd.mtv.corp.google.com/,
-> > > https://lore.kernel.org/linux-arm-msm/20201023131925.334864-1-dmitry.baryshkov@linaro.org/).
-> >
-> > Thanks for the pointers. In hindsight, it looks like the
-> > "regulator-fixed-domain" DT binding wasn't the right thing.
-> >
-> > Fortunately, it looks like the problem can be quite easily fixed, by
-> > moving to a correct model of the domain hierarchy.
-> >
->
-> Can you give some pointers to how we actually fix this?
->
-> The problem that lead us down this path is that drivers/clk/qcom/gdsc.c
-> describes power domains, which are parented by domains provided by
-> drivers/soc/qcom/rpmhpd.c.
->
-> But I am unable to find a way for the gdsc driver to get hold of the
-> struct generic_pm_domain of the resources exposed by the rpmhpd driver.
+Le jeu., juin 17 2021 at 10:22:35 +0300, Alexandru Ardelean 
+<ardeleanalex@gmail.com> a écrit :
+> On Wed, Jun 16, 2021 at 7:00 PM Paul Cercueil <paul@crapouillou.net> 
+> wrote:
+>> 
+>>  The point of this new change is to make the IIO tree actually 
+>> parsable.
+>> 
+>>  Before, given this attribute as a filename:
+>>  in_voltage0_aux_sample_rate
+>> 
+>>  Userspace had no way to know if the attribute name was
+>>  "aux_sample_rate" with no extended name, or "sample_rate" with 
+>> "aux" as
+>>  the extended name, or just "rate" with "aux_sample" as the extended
+>>  name.
+>> 
+>>  This was somewhat possible to deduce when there was more than one
+>>  attribute present for a given channel, e.g:
+>>  in_voltage0_aux_sample_rate
+>>  in_voltage0_aux_frequency
+>> 
+>>  There, it was possible to deduce that "aux" was the extended name. 
+>> But
+>>  even with more than one attribute, this wasn't very robust, as two
+>>  attributes starting with the same prefix (e.g. "sample_rate" and
+>>  "sample_size") would result in the first part of the prefix being
+>>  interpreted as being part of the extended name.
+>> 
+>>  To address the issue, knowing that channels will never have both a 
+>> label
+>>  and an extended name, set the channel's label to the extended name.
+>>  In this case, the label's attribute will also have the extended 
+>> name in
+>>  its filename, but we can live with that - userspace can open
+>>  in_voltage0_<prefix>_label and verify that it returns <prefix> to 
+>> obtain
+>>  the extended name.
+>> 
+> 
+> The best way would have been for all drivers [using extend_name] to
+> implement their own read_label hook.
 
-You don't need a handle to the struct generic_pm_domain, to assign a
-parent/child domain. Instead you can use of_genpd_add_subdomain(),
-which takes two "struct of_phandle_args*" corresponding to the
-parent/child device nodes of the genpd providers and then let genpd
-internally do the look up.
+Let's agree to disagree :)
 
-As an example, you may have a look at how the PM domain topology in
-drivers/cpuidle/cpuidle-psci-domain.c are being created.
+> But this can work fine as well [as the other method would add some 
+> duplication].
+> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>   drivers/iio/industrialio-core.c | 10 +++++++---
+>>   1 file changed, 7 insertions(+), 3 deletions(-)
+>> 
+>>  diff --git a/drivers/iio/industrialio-core.c 
+>> b/drivers/iio/industrialio-core.c
+>>  index 81f40dab778a..9b37e96538c2 100644
+>>  --- a/drivers/iio/industrialio-core.c
+>>  +++ b/drivers/iio/industrialio-core.c
+>>  @@ -717,8 +717,12 @@ static ssize_t iio_read_channel_label(struct 
+>> device *dev,
+>>          struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>          struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+>> 
+>>  -       if (!indio_dev->info->read_label)
+>>  -               return -EINVAL;
+>>  +       if (!indio_dev->info->read_label) {
+>>  +               if (this_attr->c->extend_name)
+>>  +                       return sprintf(buf, "%s\n", 
+>> this_attr->c->extend_name);
+>>  +               else
+> 
+> nitpick: else statement has no effect
+> 
+> well, this block could be reworked a bit as:
+> 
+> ----------------------------------------------------
+> if (indio_dev->info->read_label)
+>    return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
+> 
+> if (this_attr->c->extend_name)
+>     return sprintf(buf, "%s\n", this_attr->c->extend_name);
+> 
+> return -EINVAL;
+> ----------------------------------------------------
 
->
->
-> The second thing that Dmitry's regulator driver does is to cast the
-> appropriate performance state vote on the rpmhpd resource, but I _think_
-> we can do that using OPP tables in the gdsc client's node...
+I generally prefer to make the diff as small as possible so that the 
+changes are more obvious. But this does look better.
 
-Yes, it looks like using an OPP table and to specify a
-"required-opps", at some device node is the right thing to do.
+-Paul
 
-In this case, I wonder if the "required-opps" belongs to the genpd
-provider node of the new power-domain (as it seems like it only
-supports one fixed performance state when it's powered on). On the
-other hand, specifying this at the consumer node should work as well,
-I think.
+> 
+>>  +                       return -EINVAL;
+>>  +       }
+>> 
+>>          return indio_dev->info->read_label(indio_dev, this_attr->c, 
+>> buf);
+>>   }
+>>  @@ -1160,7 +1164,7 @@ static int 
+>> iio_device_add_channel_label(struct iio_dev *indio_dev,
+>>          struct iio_dev_opaque *iio_dev_opaque = 
+>> to_iio_dev_opaque(indio_dev);
+>>          int ret;
+>> 
+>>  -       if (!indio_dev->info->read_label)
+>>  +       if (!indio_dev->info->read_label && !chan->extend_name)
+>>                  return 0;
+>> 
+>>          ret = __iio_add_chan_devattr("label",
+>>  --
+>>  2.30.2
+>> 
 
-Actually, this relates to the changes [1] that Rajendra is working on
-with "assigned-performance-state" (that we agreed to move to
-OPP/required-opps) for genpd.
 
->
-> > Beyond this, perhaps we should consider removing the
-> > "regulator-fixed-domain" DT property, as to avoid similar problems
-> > from cropping up?
-> >
->
-> Currently there's a single user upstream, but we have the exact same
-> problem in at least 3-4 platforms with patches in the pipeline.
->
-> In order to avoid breakage with existing DT I would prefer to see
-> regulator-fixed-domain to live for at least one kernel release beyond
-> the introduction of the other model.
-
-Yes, this seems reasonable to me.
-
-As Mark suggested, let's mark the regulator-fixed-domain DT property
-as deprecated and remove it once we have the new solution in place.
-
-[...]
-
-Kind regards
-Uffe
