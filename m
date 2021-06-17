@@ -2,112 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E61D3AB3D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EFEF3AB3DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhFQMnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:43:49 -0400
-Received: from mga02.intel.com ([134.134.136.20]:51984 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229891AbhFQMnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:43:47 -0400
-IronPort-SDR: 4MhOBV7INAHhjx/JLrU0wkxXh+E58nltD62/yWlZ7w16dIkig33SsuC+8BgNVec0ZxHq4HCqDk
- VDH0VUe5x8JA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="193487923"
-X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
-   d="scan'208";a="193487923"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 05:41:39 -0700
-IronPort-SDR: +Lhz+pz9Dy+dov93trqEkBpD8LKyTxVijDNA07kQJ3g/EKsoFv/IT/gP0LSSIdenc0qxPcg9Gn
- srh3cfaa9OEw==
-X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
-   d="scan'208";a="485278416"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 05:41:35 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1ltrKu-003LFy-KC; Thu, 17 Jun 2021 15:41:32 +0300
-Date:   Thu, 17 Jun 2021 15:41:32 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "libaokun (A)" <libaokun1@huawei.com>
-Cc:     kernel test robot <lkp@intel.com>, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com, gregkh@linuxfoundation.org,
-        kaixuxia@tencent.com, gustavoars@kernel.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        weiyongjun1@huawei.com
-Subject: Re: [PATCH -next v3] media: staging: atomisp: use list_splice_init
- in atomisp_compat_css20.c
-Message-ID: <YMtC/CmZeni2dD1W@smile.fi.intel.com>
-References: <20210611081004.1348026-1-libaokun1@huawei.com>
- <202106171617.BN97N8mw-lkp@intel.com>
- <d39a3cb0-4024-4abe-ad28-937fee53bc98@huawei.com>
+        id S231668AbhFQMoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:44:10 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48830 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231623AbhFQMoJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 08:44:09 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1A4381FDCE;
+        Thu, 17 Jun 2021 12:42:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623933721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6du5rShliFs1Bihe7PeBJuT9EHklARbBwoRJSKEtKeU=;
+        b=lNHBj8bXqXTgwZrQKp4vYm9yRDk3nKf7c5FzUIFdsefnE9O2/xakcY9ph392s2J5G3ZzKj
+        rKaJsWxr1cik2c/H0uU9dYm3QiyTOCemz4kLxVCumnTbztE1aA36v5zwehdHC2fPAaeWgj
+        JOpqO48BqvhCIjuZFI0vFSfgvA5RZwg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623933721;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6du5rShliFs1Bihe7PeBJuT9EHklARbBwoRJSKEtKeU=;
+        b=BIzN87Jil0w4+rdZZlaiMgmJcqAcFHL9saHXYfKH+ghinjVRkjKOAT5SIKHqzoQf3YTanu
+        a33I4oCgJbsJ4vBw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 01321118DD;
+        Thu, 17 Jun 2021 12:42:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623933721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6du5rShliFs1Bihe7PeBJuT9EHklARbBwoRJSKEtKeU=;
+        b=lNHBj8bXqXTgwZrQKp4vYm9yRDk3nKf7c5FzUIFdsefnE9O2/xakcY9ph392s2J5G3ZzKj
+        rKaJsWxr1cik2c/H0uU9dYm3QiyTOCemz4kLxVCumnTbztE1aA36v5zwehdHC2fPAaeWgj
+        JOpqO48BqvhCIjuZFI0vFSfgvA5RZwg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623933721;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6du5rShliFs1Bihe7PeBJuT9EHklARbBwoRJSKEtKeU=;
+        b=BIzN87Jil0w4+rdZZlaiMgmJcqAcFHL9saHXYfKH+ghinjVRkjKOAT5SIKHqzoQf3YTanu
+        a33I4oCgJbsJ4vBw==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id tI7+OhhDy2BELAAALh3uQQ
+        (envelope-from <bp@suse.de>); Thu, 17 Jun 2021 12:42:00 +0000
+Date:   Thu, 17 Jun 2021 14:41:48 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V2 21/52] x86/fpu: Get rid of copy_supervisor_to_kernel()
+Message-ID: <YMtDDFgYy8+ubmve@zn.tnic>
+References: <20210614154408.673478623@linutronix.de>
+ <20210614155355.841581418@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d39a3cb0-4024-4abe-ad28-937fee53bc98@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210614155355.841581418@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 08:14:28PM +0800, libaokun (A) wrote:
-> Sorry, I only tested it with 'x86_64.config'.
+On Mon, Jun 14, 2021 at 05:44:29PM +0200, Thomas Gleixner wrote:
+> If the fast path of restoring the FPU state on sigreturn fails or is not
+> taken and the current task's FPU is active then the FPU has to be
+> deactivated for the slow path to allow a safe update of the tasks FPU
+> memory state.
 > 
-> I'm about to send a patch v4 with the changes to fix the error under your
-> config.
+> With supervisor states enabled, this requires to save the supervisor state
+> in the memory state first. Supervisor states require XSAVES so saving only
+> the supervisor state requires to reshuffle the memory buffer because XSAVES
+> uses the compacted format and therefore stores the supervisor states at the
+> beginning of the memory state. That's just an overengineered optimization.
+> 
+> Get rid of it and save the full state for this case.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Reviewed-by: Andy Lutomirski <luto@kernel.org>
+> ---
+>  arch/x86/include/asm/fpu/xstate.h |    1 
+>  arch/x86/kernel/fpu/signal.c      |   13 +++++---
+>  arch/x86/kernel/fpu/xstate.c      |   55 --------------------------------------
+>  3 files changed, 8 insertions(+), 61 deletions(-)
 
-Please, do not top-post!
+Simplification? To the FPU stinking pile of turds?
 
+Hell yeah!
 
-Problem here that you tested without additional warnings enabled.
-
-Next time try to start with `make W=1 ...`
-
-If you have installed Sparse tool, the better option would be
-`make W=1 C=1 CF=-D__CHECK_ENDIAN__ ...`
-
-> 在 2021/6/17 16:52, kernel test robot 写道:
-> > Hi Baokun,
-> > 
-> > Thank you for the patch! Yet something to improve:
-> > 
-> > [auto build test ERROR on next-20210616]
-> > 
-> > url:    https://github.com/0day-ci/linux/commits/Baokun-Li/media-staging-atomisp-use-list_splice_init-in-atomisp_compat_css20-c/20210617-043443
-> > base:    c7d4c1fd91ab4a6d2620497921a9c6bf54650ab8
-> > config: i386-allyesconfig (attached as .config)
-> > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> > reproduce (this is a W=1 build):
-> >          # https://github.com/0day-ci/linux/commit/05c714d7b4e1722a75f949e40c5305f3ba28d048
-> >          git remote add linux-review https://github.com/0day-ci/linux
-> >          git fetch --no-tags linux-review Baokun-Li/media-staging-atomisp-use-list_splice_init-in-atomisp_compat_css20-c/20210617-043443
-> >          git checkout 05c714d7b4e1722a75f949e40c5305f3ba28d048
-> >          # save the attached .config to linux build tree
-> >          make W=1 ARCH=i386
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > All errors (new ones prefixed by >>):
-> > 
-> >     drivers/staging/media/atomisp/pci/atomisp_compat_css20.c: In function 'atomisp_css_stop':
-> > > > drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2156:50: error: 'struct atomisp_sub_device' has no member named 'asd'
-> >      2156 |   list_splice_init(&asd->metadata_in_css[i], &asd->asd->metadata[i]);
-> >           |                                                  ^~
-> >     drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2157:49: error: 'struct atomisp_sub_device' has no member named 'asd'
-> >      2157 |   list_splice_init(&asd->metadata_ready[i], &asd->asd->metadata[i]);
-> >           |                                                 ^~
-> >     drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2107:31: warning: unused variable 'md_buf' [-Wunused-variable]
-> >      2107 |  struct atomisp_metadata_buf *md_buf;
-> >           |                               ^~~~~~
-> >     drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2106:26: warning: unused variable 'dis_buf' [-Wunused-variable]
-> >      2106 |  struct atomisp_dis_buf *dis_buf;
-> >           |                          ^~~~~~~
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards/Gruss,
+    Boris.
 
-
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
