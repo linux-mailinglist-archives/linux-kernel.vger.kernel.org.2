@@ -2,401 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BBF3ABB48
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB023ABB34
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbhFQSTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 14:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59318 "EHLO
+        id S232572AbhFQSNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbhFQSTf (ORCPT
+        with ESMTP id S232317AbhFQSNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:19:35 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3C8A1C061574;
-        Thu, 17 Jun 2021 11:17:23 -0700 (PDT)
+        Thu, 17 Jun 2021 14:13:11 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50761C061574;
+        Thu, 17 Jun 2021 11:11:02 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id j18so3843708wms.3;
+        Thu, 17 Jun 2021 11:11:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=Z7XdKee+EQziVNAT70nU6H2kFcBGtBk/Ik
-        TlYkN+608=; b=pwmNuilLchHvhnQ95iPishmHe7zrrSfvVpv5QIBqC/kMMA7ejI
-        MGIoi0ObTjFjSUurH24FH0ZRmETTzQMPgFnJb2lYn7ZwCczhQef+1Gm3rWK9zAlX
-        0z7q5XNeqPJbOA1+s8/aWauGQepEvQ/tCjgsH4qUtTLhlKgFYa8ak7Kas=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAnKYFskctgSkT3AA--.4906S2;
-        Fri, 18 Jun 2021 02:16:13 +0800 (CST)
-Date:   Fri, 18 Jun 2021 02:10:38 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>, schwab@linux-m68k.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, ryabinin.a.a@gmail.com, glider@google.com,
-        andreyknvl@gmail.com, dvyukov@google.com, bjorn@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        luke.r.nels@gmail.com, xi.wang@gmail.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] riscv: Ensure BPF_JIT_REGION_START aligned with PMD
- size
-Message-ID: <20210618021038.52c2f558@xhacker>
-In-Reply-To: <20210618014648.1857a62a@xhacker>
-References: <mhng-042979fe-75f0-4873-8afd-f8c07942f792@palmerdabbelt-glaptop>
-        <ae256a5d-70ac-3a5f-ca55-5e4210a0624c@ghiti.fr>
-        <50ebc99c-f0a2-b4ea-fc9b-cd93a8324697@ghiti.fr>
-        <20210618012731.345657bf@xhacker>
-        <20210618014648.1857a62a@xhacker>
+        d=gmail.com; s=20161025;
+        h=to:references:from:subject:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=FoKuKYc+BPPyd7lTl1f3+SqZVhtdYo1VgkqZGafgdiI=;
+        b=P+/fjNVxFhnnnB5YkN5YIZuNWCXnUNUkhK5qMJLHoghGJPVIIZYvoD07iP0wYTHFOP
+         C8gxzRUpkHjyvbGmpMWBNBo2OYAPYoPPCxfhUXvtA2HsL+zWNP+JZ0soirQzTIE3iNoh
+         SEqUX6Ejx3mrP9nKGg+mmU0y4/D7IQfPpk7CuYsGgsLCurZyphrREoeiUW9isyYhV0lB
+         DbVKV+gNWc8D1byP090Ae+GtISh/3yzUJC6e1gvMMBqsGLT5BnmM3V61aDrtdwteJK0g
+         ptwqz/66F8PC6Kw1Z04NBJ9XLHi3ZGI3LDtJMYvpx4i2zHegJrEnKU0kzCeL9I+Ui999
+         CG+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FoKuKYc+BPPyd7lTl1f3+SqZVhtdYo1VgkqZGafgdiI=;
+        b=qp0EJGWLRhTSDRUgeHIJumqiBhUU2CM83C9KJi7agaF3A/u2PuPRNn4aLE8N6Q/7fp
+         LBjMXMxFXrKgbYTntn09DhI+t7z/41ejg8FmOwDjBh/C0z2K+OMVWK8nrcxtcpA574Wf
+         c73IpJkobABEcEEvGrlXT4xmCv1Yvn7oy5ERCq7hkpbbUAfteIvN8LckOrv+/ghSWCYd
+         dXsElR/rujNdqSrcUPCsm2YlkXrMnfq1GKt5zaQKTRkXa5xfQnf5qoHmF1M53n1iyFwb
+         7zKIHeaZsW7ckz/8QkiG/V7G2HCHjydx1gWigKZT47UE3s7sIrVdgcadmN0pmBYeQEK1
+         7FwQ==
+X-Gm-Message-State: AOAM531nDFrU8krzZ5RJpy90vxqIeah9wTYHLxZu01N8Z/avs4Brv4yN
+        nlbtDRxXXlU3qpOghNOCkUUJ6U1O0M/z2g==
+X-Google-Smtp-Source: ABdhPJzdAgxvU5FHUnM0wjs50H8yVV7R7C+dhD5svkG101dp2hWpRhQ7Z/JpEFxBELrtr+2trWt9gw==
+X-Received: by 2002:a1c:cc02:: with SMTP id h2mr6580293wmb.39.1623953460318;
+        Thu, 17 Jun 2021 11:11:00 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.93])
+        by smtp.gmail.com with ESMTPSA id m7sm6798429wrv.35.2021.06.17.11.10.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jun 2021 11:10:59 -0700 (PDT)
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <60c13bec.1c69fb81.73967.f06dSMTPIN_ADDED_MISSING@mx.google.com>
+ <84e42313-d738-fb19-c398-08a4ed0e0d9c@gmail.com>
+ <4b5644bff43e072a98a19d7a5ca36bb5e11497ec.camel@trillion01.com>
+ <a7d6f2fd-b59e-e6fa-475a-23962d45b6fa@gmail.com>
+ <9938f22a0bb09f344fa5c9c5c1b91f0d12e7566f.camel@trillion01.com>
+ <a12e218a-518d-1dac-5e8c-d9784c9850b0@gmail.com>
+ <b0a8c92cffb3dc1b48b081e5e19b016fee4c6511.camel@trillion01.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH] io_uring: reduce latency by reissueing the operation
+Message-ID: <7d9a481b-ae8c-873e-5c61-ab0a57243905@gmail.com>
+Date:   Thu, 17 Jun 2021 19:10:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-CM-TRANSID: LkAmygAnKYFskctgSkT3AA--.4906S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Zw1ftF1xGr13XF1kXF48tFb_yoWkXF1kpr
-        1DJF43GrW8Jr18X342qry5GryUtw1UA3ZFqr1DJa4rJF9rKF1jqr1UXFy7urnFqF4xJ3W2
-        yr4DJrsIv345Aw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvEb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
-        wI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jr
-        v_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-        evJa73UjIFyTuYvjxUg0D7DUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+In-Reply-To: <b0a8c92cffb3dc1b48b081e5e19b016fee4c6511.camel@trillion01.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Jun 2021 01:46:48 +0800
-Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
+On 6/11/21 4:55 AM, Olivier Langlois wrote:
+> On Thu, 2021-06-10 at 20:32 +0100, Pavel Begunkov wrote:
+>> On 6/10/21 6:56 PM, Olivier Langlois wrote:
+>>>
+>>>
+>>> Can you think of other numbers that would be useful to know to
+>>> evaluate
+>>> the patch performance?
+>>
+>> If throughput + latency (avg + several nines) are better (or any
+>> other measurable improvement), it's a good enough argument to me,
+>> but not sure what test case you're looking at. Single threaded?
+>> Does it saturate your CPU?
+>>
+> I don't know what are the ideal answers to your 2 last questions ;-)
+> 
+> I have several possible configurations to my application.
+> 
+> The most complex one is a 2 threads setup each having their own
+> io_uring instance where one of the threads is managing 50-85 TCP
+> connections over which JSON stream encapsulated in the WebSocket
+> protocol are received.
+> 
+> That more complex setup is also using IORING_SETUP_ATTACH_WQ to share
+> the sqpoll thread between the 2 instances.
+> 
+> In that more complex config, the sqpoll thread is running at 85-95% of
+> its dedicated CPU.
+> 
+> For the patch performance testing I did use the simplest config:
+> Single thread, 1 TCP connection, no sqpoll.
 
-> On Fri, 18 Jun 2021 01:27:31 +0800
-> Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
->=20
-> > On Thu, 17 Jun 2021 16:18:54 +0200
-> > Alex Ghiti <alex@ghiti.fr> wrote:
-> >  =20
-> > > Le 17/06/2021 =C3=A0 10:09, Alex Ghiti a =C3=A9crit=C2=A0:   =20
-> > > > Le 17/06/2021 =C3=A0 09:30, Palmer Dabbelt a =C3=A9crit=C2=A0:     =
-=20
-> > > >> On Tue, 15 Jun 2021 17:03:28 PDT (-0700), jszhang3@mail.ustc.edu.c=
-n=20
-> > > >> wrote:     =20
-> > > >>> On Tue, 15 Jun 2021 20:54:19 +0200
-> > > >>> Alex Ghiti <alex@ghiti.fr> wrote:
-> > > >>>     =20
-> > > >>>> Hi Jisheng,     =20
-> > > >>>
-> > > >>> Hi Alex,
-> > > >>>     =20
-> > > >>>>
-> > > >>>> Le 14/06/2021 =C3=A0 18:49, Jisheng Zhang a =C3=A9crit=C2=A0:   =
-  =20
-> > > >>>> > From: Jisheng Zhang <jszhang@kernel.org>     =20
-> > > >>>> > > Andreas reported commit fc8504765ec5 ("riscv: bpf: Avoid    =
-  =20
-> > > >>>> breaking W^X")     =20
-> > > >>>> > breaks booting with one kind of config file, I reproduced a ke=
-rnel      =20
-> > > >>>> panic     =20
-> > > >>>> > with the config:     =20
-> > > >>>> > > [=C2=A0=C2=A0=C2=A0 0.138553] Unable to handle kernel paging=
- request at virtual      =20
-> > > >>>> address ffffffff81201220     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.139159] Oops [#1]
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.139303] Modules linked in:
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.139601] CPU: 0 PID: 1 Comm: swapper/0 No=
-t tainted      =20
-> > > >>>> 5.13.0-rc5-default+ #1     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.139934] Hardware name: riscv-virtio,qemu=
- (DT)
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.140193] epc : __memset+0xc4/0xfc
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.140416]=C2=A0 ra : skb_flow_dissector_in=
-it+0x1e/0x82
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.140609] epc : ffffffff8029806c ra : ffff=
-ffff8033be78 sp :      =20
-> > > >>>> ffffffe001647da0     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.140878]=C2=A0 gp : ffffffff81134b08 tp :=
- ffffffe001654380 t0 :      =20
-> > > >>>> ffffffff81201158     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.141156]=C2=A0 t1 : 0000000000000002 t2 :=
- 0000000000000154 s0 :      =20
-> > > >>>> ffffffe001647dd0     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.141424]=C2=A0 s1 : ffffffff80a43250 a0 :=
- ffffffff81201220 a1 :      =20
-> > > >>>> 0000000000000000     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.141654]=C2=A0 a2 : 000000000000003c a3 :=
- ffffffff81201258 a4 :      =20
-> > > >>>> 0000000000000064     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.141893]=C2=A0 a5 : ffffffff8029806c a6 :=
- 0000000000000040 a7 :      =20
-> > > >>>> ffffffffffffffff     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.142126]=C2=A0 s2 : ffffffff81201220 s3 :=
- 0000000000000009 s4 :      =20
-> > > >>>> ffffffff81135088     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.142353]=C2=A0 s5 : ffffffff81135038 s6 :=
- ffffffff8080ce80 s7 :      =20
-> > > >>>> ffffffff80800438     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.142584]=C2=A0 s8 : ffffffff80bc6578 s9 :=
- 0000000000000008 s10:      =20
-> > > >>>> ffffffff806000ac     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.142810]=C2=A0 s11: 0000000000000000 t3 :=
- fffffffffffffffc t4 :      =20
-> > > >>>> 0000000000000000     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.143042]=C2=A0 t5 : 0000000000000155 t6 :=
- 00000000000003ff
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.143220] status: 0000000000000120 badaddr=
-: ffffffff81201220      =20
-> > > >>>> cause: 000000000000000f     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.143560] [<ffffffff8029806c>] __memset+0x=
-c4/0xfc
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.143859] [<ffffffff8061e984>]      =20
-> > > >>>> init_default_flow_dissectors+0x22/0x60     =20
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.144092] [<ffffffff800010fc>] do_one_init=
-call+0x3e/0x168
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.144278] [<ffffffff80600df0>] kernel_init=
-_freeable+0x1c8/0x224
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.144479] [<ffffffff804868a8>] kernel_init=
-+0x12/0x110
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.144658] [<ffffffff800022de>] ret_from_ex=
-ception+0x0/0xc
-> > > >>>> > [=C2=A0=C2=A0=C2=A0 0.145124] ---[ end trace f1e9643daa46d591 =
-]---     =20
-> > > >>>> > > After some investigation, I think I found the root cause: co=
-mmit     =20
-> > > >>>> > 2bfc6cd81bd ("move kernel mapping outside of linear mapping") =
-moves
-> > > >>>> > BPF JIT region after the kernel:     =20
-> > > >>>> > > The &_end is unlikely aligned with PMD size, so the front bp=
-f jit     =20
-> > > >>>> > region sits with part of kernel .data section in one PMD size =
-     =20
-> > > >>>> mapping.     =20
-> > > >>>> > But kernel is mapped in PMD SIZE, when bpf_jit_binary_lock_ro(=
-) is
-> > > >>>> > called to make the first bpf jit prog ROX, we will make part o=
-f      =20
-> > > >>>> kernel     =20
-> > > >>>> > .data section RO too, so when we write to, for example memset =
-the
-> > > >>>> > .data section, MMU will trigger a store page fault.     =20
-> > > >>>> Good catch, we make sure no physical allocation happens between =
-_end=20
-> > > >>>> and the next PMD aligned address, but I missed this one.
-> > > >>>>     =20
-> > > >>>> > > To fix the issue, we need to ensure the BPF JIT region is PM=
-D size     =20
-> > > >>>> > aligned. This patch acchieve this goal by restoring the BPF JI=
-T      =20
-> > > >>>> region     =20
-> > > >>>> > to original position, I.E the 128MB before kernel .text sectio=
-n.     =20
-> > > >>>> But I disagree with your solution: I made sure modules and BPF=20
-> > > >>>> programs get their own virtual regions to avoid worst case scena=
-rio=20
-> > > >>>> where one could allocate all the space and leave nothing to the=
-=20
-> > > >>>> other (we are limited to +- 2GB offset). Why don't just align=20
-> > > >>>> BPF_JIT_REGION_START to the next PMD aligned address?     =20
-> > > >>>
-> > > >>> Originally, I planed to fix the issue by aligning=20
-> > > >>> BPF_JIT_REGION_START, but
-> > > >>> IIRC, BPF experts are adding (or have added) "Calling kernel=20
-> > > >>> functions from BPF"
-> > > >>> feature, there's a risk that BPF JIT region is beyond the 2GB of=
-=20
-> > > >>> module region:
-> > > >>>
-> > > >>> ------
-> > > >>> module
-> > > >>> ------
-> > > >>> kernel
-> > > >>> ------
-> > > >>> BPF_JIT
-> > > >>>
-> > > >>> So I made this patch finally. In this patch, we let BPF JIT regio=
-n sit
-> > > >>> between module and kernel.
-> > > >>>
-> > > >>> To address "make sure modules and BPF programs get their own virt=
-ual=20
-> > > >>> regions",
-> > > >>> what about something as below (applied against this patch)?
-> > > >>>
-> > > >>> diff --git a/arch/riscv/include/asm/pgtable.h=20
-> > > >>> b/arch/riscv/include/asm/pgtable.h
-> > > >>> index 380cd3a7e548..da1158f10b09 100644
-> > > >>> --- a/arch/riscv/include/asm/pgtable.h
-> > > >>> +++ b/arch/riscv/include/asm/pgtable.h
-> > > >>> @@ -31,7 +31,7 @@
-> > > >>> =C2=A0#define BPF_JIT_REGION_SIZE=C2=A0=C2=A0=C2=A0 (SZ_128M)
-> > > >>> =C2=A0#ifdef CONFIG_64BIT
-> > > >>> =C2=A0#define BPF_JIT_REGION_START=C2=A0=C2=A0=C2=A0 (BPF_JIT_REG=
-ION_END -=20
-> > > >>> BPF_JIT_REGION_SIZE)
-> > > >>> -#define BPF_JIT_REGION_END=C2=A0=C2=A0=C2=A0 (MODULES_END)
-> > > >>> +#define BPF_JIT_REGION_END=C2=A0=C2=A0=C2=A0 (PFN_ALIGN((unsigne=
-d long)&_start))
-> > > >>> =C2=A0#else
-> > > >>> =C2=A0#define BPF_JIT_REGION_START=C2=A0=C2=A0=C2=A0 (PAGE_OFFSET=
- - BPF_JIT_REGION_SIZE)
-> > > >>> =C2=A0#define BPF_JIT_REGION_END=C2=A0=C2=A0=C2=A0 (VMALLOC_END)
-> > > >>> @@ -40,7 +40,7 @@
-> > > >>> =C2=A0/* Modules always live before the kernel */
-> > > >>> =C2=A0#ifdef CONFIG_64BIT
-> > > >>> =C2=A0#define MODULES_VADDR=C2=A0=C2=A0=C2=A0 (PFN_ALIGN((unsigne=
-d long)&_end) - SZ_2G)
-> > > >>> -#define MODULES_END=C2=A0=C2=A0=C2=A0 (PFN_ALIGN((unsigned long)=
-&_start))
-> > > >>> +#define MODULES_END=C2=A0=C2=A0=C2=A0 (BPF_JIT_REGION_END)
-> > > >>> =C2=A0#endif
-> > > >>>
-> > > >>>
-> > > >>>     =20
-> > > >>>>
-> > > >>>> Again, good catch, thanks,
-> > > >>>>
-> > > >>>> Alex
-> > > >>>>     =20
-> > > >>>> > > Reported-by: Andreas Schwab <schwab@linux-m68k.org>     =20
-> > > >>>> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > > >>>> > ---
-> > > >>>> >=C2=A0=C2=A0 arch/riscv/include/asm/pgtable.h | 5 ++---
-> > > >>>> >=C2=A0=C2=A0 1 file changed, 2 insertions(+), 3 deletions(-)   =
-  =20
-> > > >>>> > > diff --git a/arch/riscv/include/asm/pgtable.h      =20
-> > > >>>> b/arch/riscv/include/asm/pgtable.h     =20
-> > > >>>> > index 9469f464e71a..380cd3a7e548 100644
-> > > >>>> > --- a/arch/riscv/include/asm/pgtable.h
-> > > >>>> > +++ b/arch/riscv/include/asm/pgtable.h
-> > > >>>> > @@ -30,9 +30,8 @@     =20
-> > > >>>> > >=C2=A0=C2=A0 #define BPF_JIT_REGION_SIZE=C2=A0=C2=A0=C2=A0 (S=
-Z_128M)     =20
-> > > >>>> >=C2=A0=C2=A0 #ifdef CONFIG_64BIT
-> > > >>>> > -/* KASLR should leave at least 128MB for BPF after the kernel=
- */
-> > > >>>> > -#define BPF_JIT_REGION_START=C2=A0=C2=A0=C2=A0 PFN_ALIGN((uns=
-igned long)&_end)
-> > > >>>> > -#define BPF_JIT_REGION_END=C2=A0=C2=A0=C2=A0 (BPF_JIT_REGION_=
-START +      =20
-> > > >>>> BPF_JIT_REGION_SIZE)     =20
-> > > >>>> > +#define BPF_JIT_REGION_START=C2=A0=C2=A0=C2=A0 (BPF_JIT_REGIO=
-N_END -      =20
-> > > >>>> BPF_JIT_REGION_SIZE)     =20
-> > > >>>> > +#define BPF_JIT_REGION_END=C2=A0=C2=A0=C2=A0 (MODULES_END)
-> > > >>>> >=C2=A0=C2=A0 #else
-> > > >>>> >=C2=A0=C2=A0 #define BPF_JIT_REGION_START=C2=A0=C2=A0=C2=A0 (PA=
-GE_OFFSET - BPF_JIT_REGION_SIZE)
-> > > >>>> >=C2=A0=C2=A0 #define BPF_JIT_REGION_END=C2=A0=C2=A0=C2=A0 (VMAL=
-LOC_END)
-> > > >>>> >      =20
-> > > >>
-> > > >> This, when applied onto fixes, is breaking early boot on KASAN=20
-> > > >> configurations for me.     =20
-> >=20
-> > I can reproduce this issue.
-> >  =20
-> > > >=20
-> > > > Not surprising, I took a shortcut when initializing KASAN for modul=
-es,=20
-> > > > kernel and BPF:
-> > > >=20
-> > > >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kasan_populate(kasan_me=
-m_to_shadow((const void *)MODULES_VADDR),
-> > > >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kasan_me=
-m_to_shadow((const void=20
-> > > > *)BPF_JIT_REGION_END));
-> > > >=20
-> > > > The kernel is then not covered, I'm taking a look at how to fix tha=
-t=20
-> > > > properly.
-> > > >     =20
-> > >=20
-> > > The following based on "riscv: Introduce structure that group all=20
-> > > variables regarding kernel mapping" fixes the issue:
-> > >=20
-> > > diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-> > > index 9daacae93e33..2a45ea909e7f 100644
-> > > --- a/arch/riscv/mm/kasan_init.c
-> > > +++ b/arch/riscv/mm/kasan_init.c
-> > > @@ -199,9 +199,12 @@ void __init kasan_init(void)
-> > >                  kasan_populate(kasan_mem_to_shadow(start),=20
-> > > kasan_mem_to_shadow(end));
-> > >          }
-> > >=20
-> > > -       /* Populate kernel, BPF, modules mapping */
-> > > +       /* Populate BPF and modules mapping: modules mapping encompas=
-ses=20
-> > > BPF mapping */
-> > >          kasan_populate(kasan_mem_to_shadow((const void *)MODULES_VAD=
-DR),
-> > > -                      kasan_mem_to_shadow((const void=20
-> > > *)BPF_JIT_REGION_END));
-> > > +                      kasan_mem_to_shadow((const void *)MODULES_END)=
-);
-> > > +       /* Populate kernel mapping */
-> > > +       kasan_populate(kasan_mem_to_shadow((const void=20
-> > > *)kernel_map.virt_addr),
-> > > +                      kasan_mem_to_shadow((const void=20
-> > > *)kernel_map.virt_addr + kernel_map.size));
-> > >   =20
-> > If this patch works, maybe we can still use one kasan_populate() to cov=
-er
-> > kernel, bpf, and module:
-> >=20
-> >         kasan_populate(kasan_mem_to_shadow((const void *)MODULES_VADDR),
-> > -                      kasan_mem_to_shadow((const void *)BPF_JIT_REGION=
-_END));
-> > +                      kasan_mem_to_shadow((const void *)MODULES_VADDR =
-+ SZ_2G));
-> >  =20
->=20
-> I made a mistake. Below patch works:
->=20
->         kasan_populate(kasan_mem_to_shadow((const void *)MODULES_VADDR),
-> -                      kasan_mem_to_shadow((const void *)BPF_JIT_REGION_E=
-ND));
-> +                      kasan_mem_to_shadow((const void *)(MODULES_VADDR +=
- SZ_2G)));
+Queue depth (QD) 1, right?
 
-This isn't the key. I knew the reason now. kasan_init() has local vars named
-as _start and _end, then MODULES_VADDR is defined as:
-#define MODULES_VADDR   (PFN_ALIGN((unsigned long)&_end) - SZ_2G)
+> To process an incoming 5Mbps stream, it takes about 5% of the CPU.
 
-So MODULES_VADDR isn't what we expected. To fix it, we must rename the local
-vars
+I see, under utilised, and so your main concern is latency
+here. 
 
->=20
-> > However, both can't solve the early boot hang issue. I'm not sure what'=
-s missing.
-> >=20
-> > I applied your patch on rc6 + solution below "replace kernel_map.virt_a=
-ddr with kernel_virt_addr and
-> > kernel_map.size with load_sz"
-> >=20
-> >=20
-> > Thanks
-> >   =20
-> > >=20
-> > > Without the mentioned patch, replace kernel_map.virt_addr with=20
-> > > kernel_virt_addr and kernel_map.size with load_sz. Note that load_sz =
-was=20
-> > > re-exposed in v6 of the patchset "Map the kernel with correct=20
-> > > permissions the first time".
-> > >    =20
-> >=20
-> >=20
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv =20
->=20
+> 
+> Here is the testing methodology:
+> add 2 fields in  struct io_rw:
+>     u64             startTs;
+>     u8              readType;
+> 
+> startTs is set with ktime_get_raw_fast_ns() in io_read_prep()
+> 
+> readType is set to:
+> 0: data ready
+> 1: use fast poll (we ignore those)
+> 2: reissue
+> 3: async
+> 
+> readType is used to know what type of measurement it is at the
+> recording point.
+> 
+> end time is measured at 3 recording point:
+> 1. In __io_queue_sqe() when io_issue_sqe() returns 0
+> 2. In __io_queue_sqe() after io_queue_async_work() call
+> 3. In io_wq_submit_work() after the while loop.
+> 
+> So I took 4 measurements.
+> 
+> 1. The time it takes to process a read request when data is already
+> available
+> 2. The time it takes to process by calling twice io_issue_sqe() after
+> vfs_poll() indicated that data was available
+> 3. The time it takes to execute io_queue_async_work()
+> 4. The time it takes to complete a read request asynchronously
+> 
+> Before presenting the results, I want to mention that 2.25% of the
+> total number of my read requests ends up in the situation where the
+> read() syscall did return EAGAIN but data became available by the time
+> vfs_poll gets called.
+> 
+> My expectations were that reissuing a sqe could be on par or a bit more
+> expensive than placing it on io-wq for async processing and that would
+> put the patch in some gray zone with pros and cons in terms of
+> performance.
+> 
+> The reality is instead super nice (numbers in nSec):
+> 
+> ready data (baseline)
+> avg	3657.94182918628
+> min	580
+> max	20098
+> stddev	1213.15975908162
+> 	
+> reissue	completion
+> average	7882.67567567568
+> min	2316
+> max	28811
+> stddev	1982.79172973284
+> 	
+> insert io-wq time	
+> average	8983.82276995305
+> min	3324
+> max	87816
+> stddev	2551.60056552038
+> 	
+> async time completion
+> average	24670.4758861127
+> min	10758
+> max	102612
+> stddev	3483.92416873804
+> 
+> Conclusion:
+> On average reissuing the sqe with the patch code is 1.1uSec faster and
+> in the worse case scenario 59uSec faster than placing the request on
+> io-wq
+> 
+> On average completion time by reissuing the sqe with the patch code is
+> 16.79uSec faster and in the worse case scenario 73.8uSec faster than
+> async completion.
+
+Hah, you took it fundamentally. I'm trying to get it, correct me
+I am mistaken.
+
+1) it's avg completion for those 2.5%, not for all requests
+
+2) Do they return equivalent number of bytes? And what the
+read/recv size (e.g. buffer size)?
+
+Because in theory can be that during a somewhat small delay for
+punting to io-wq, more data had arrived and so async completion
+pulls more data that takes more time. In that case the time
+difference should also account the difference in amount of
+data that it reads. 
+
+3) Curious, why read but not recv as you're working with sockets
+
+4) Did you do any userspace measurements. And a question to
+everyone in general, do we have any good net benchmarking tool
+that works with io_uring? Like netperf? Hopefully spitting
+out latency distribution.
 
 
+Also, not particularly about reissue stuff, but a note to myself:
+59us is much, so I wonder where the overhead comes from.
+Definitely not the iowq queueing (i.e. putting into a list).
+- waking a worker?
+- creating a new worker? Do we manage workers sanely? e.g.
+  don't keep them constantly recreated and dying back.
+- scheduling a worker?
+
+Olivier, for how long did you run the test? >1 min?
+
+
+> One important detail to mention about the async completion time, in the
+> testing the ONLY way that a request can end up being completed async is
+> if vfs_poll() reports that the file is ready. Otherwise, the request
+> ends up being processed with io_uring fast poll feature.
+> 
+> So there does not seem to have any downside to the patch. TBH, at the
+> initial patch submission, I only did use my intuition to evaluate the
+> merit of my patch but, thx to your healthy skepticism, Pavel, this did
+> force me to actually measure the patch and it appears to incontestably
+> improve performance for both the reissued SQE and also all the other
+> sqes found in a batch submission.
+
+Interesting what would be a difference if done through
+io_req_task_work_add(), and what would be a percent of such reqs
+for a hi-QD workload.
+
+But regardless, don't expect any harm, so sounds good to me.
+Agree with Jens' comment about return value. I think it will
+go in quickly once resubmitted with the adjustment.
+
+
+> Hopefully, the results will please you as much as they have for me!
+
+-- 
+Pavel Begunkov
