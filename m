@@ -2,131 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC31A3ABD19
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C613ABD1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233220AbhFQTtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 15:49:32 -0400
-Received: from mga17.intel.com ([192.55.52.151]:23303 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233057AbhFQTta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 15:49:30 -0400
-IronPort-SDR: TR8lXcpHxbed9EszQJjZtbQ5y1D/jGbZNZu7jSPcy8FX0QTeNspHc7D3SGqn1385pfDrr257Jc
- 0s4aWtQ3VMbw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="186818419"
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="186818419"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 12:47:22 -0700
-IronPort-SDR: MprMayKO8/gtCYVlX9IaZQPRQFqztxrVqbt9byaOD2vrPghqLKIFyolw41o5ztTnoG0BFK0kX9
- niEzMGYN8+pA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="443343800"
-Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by orsmga007.jf.intel.com with ESMTP; 17 Jun 2021 12:47:21 -0700
-Subject: [PATCH] x86/mm: avoid truncating memblocks for SGX memory
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>, fan.du@intel.com,
-        reinette.chatre@intel.com, jarkko@kernel.org,
-        dan.j.williams@intel.com, dave.hansen@intel.com, x86@kernel.org,
-        linux-sgx@vger.kernel.org, luto@kernel.org, peterz@infradead.org
-From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Thu, 17 Jun 2021 12:46:57 -0700
-Message-Id: <20210617194657.0A99CB22@viggo.jf.intel.com>
+        id S233014AbhFQTut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 15:50:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230161AbhFQTur (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 15:50:47 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A09EC061574;
+        Thu, 17 Jun 2021 12:48:40 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d:444a:d152:279d:1dbb])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id BED119A9;
+        Thu, 17 Jun 2021 19:48:39 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BED119A9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1623959319; bh=ZInPe7rb2hVV4jWX2+NphKYQLL17I62Jt5XXMTdyq8M=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=D4QfKxr0uIXqFTu7jVHeIouq+1rtDp9T9pgLow4m7TvU5ldNVROZ7d3Yo4MY95FYk
+         vzQWAO/vThVYmFTpUxzHd9gufYRvf9ilQxn6MPKv4RLKuJyg4BUDZrj5YwPYUGB7zx
+         AswQ1zC+jdQLNrGDLRFsUdWFGNBANVPt7g9hk7ZDgjF9S3faw8bjIEzI1qHIiBTgzb
+         Zd1YEEA3wWchx2icn2XcIHX95vDSlBNrtMN2S7brj2FHQYlY/ITvNhrPEagGndCHEx
+         4frrylG4bK15qTKphKplc19HHYOWrGTu6g33KhjB0bgJpBsHoWahvoGKH5I3RQgcKJ
+         6CcGo9DmiP3cQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Hu Haowen <src.res@email.cn>, bobwxc@email.cn,
+        siyanteng@loongson.cn
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] docs/zh_CN: create new translations for
+ zh_CN/dev-tools/testing-overview
+In-Reply-To: <20210617070051.32794-1-src.res@email.cn>
+References: <20210617070051.32794-1-src.res@email.cn>
+Date:   Thu, 17 Jun 2021 13:48:39 -0600
+Message-ID: <87czsktgq0.fsf@meer.lwn.net>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hu Haowen <src.res@email.cn> writes:
 
-From: Fan Du <fan.du@intel.com>
+> Create new translations for dev-tools/testing-overview.rst and link it
+> to dev-tools/index.rst with TODOList modifications.
+>
+> Signed-off-by: Hu Haowen <src.res@email.cn>
+> Reviewed-by: Wu XiangCheng <bobwxc@email.cn>
+> Reviewed-by: Yanteng Si <siyanteng@loongson.cn>
+> ---
+>  .../translations/zh_CN/dev-tools/index.rst    |   5 +
+>  .../zh_CN/dev-tools/testing-overview.rst      | 110 ++++++++++++++++++
+>  2 files changed, 115 insertions(+)
+>  create mode 100644 Documentation/translations/zh_CN/dev-tools/testing-overview.rst
+>
+> diff --git a/Documentation/translations/zh_CN/dev-tools/index.rst b/Documentation/translations/zh_CN/dev-tools/index.rst
 
-tl;dr:
+This patch doesn't apply to current docs-next.  I can fix that, but then
+it also adds this build warning:
 
-Several SGX users reported seeing the following message on NUMA systems:
+  /stuff/k/git/kernel/Documentation/translations/zh_CN/dev-tools/testing-overview.rst:78: WARNING: unknown document: kcov
 
-	sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback to the NUMA node 0.
+Please, build-test your patches before sending them to me...
 
-This turned out to be the 'memblock' code mistakenly throwing away
-SGX memory.
+Thanks,
 
-=== Full Changelog ===
-
-The 'max_pfn' variable represents the highest known RAM address.  It can
-be used, for instance, to quickly determine for which physical addresses
-there is mem_map[] space allocated.  The numa_meminfo code makes an
-effort to throw out ("trim") all memory blocks which are above 'max_pfn'.
-
-SGX memory is not considered RAM (it is marked as "Reserved" in the
-e820) and is not taken into account by max_pfn.  Despite this, SGX
-memory areas have NUMA affinity and are enumerated in the ACPI SRAT.
-The existing SGX code uses the numa_meminfo mechanism to look up the
-NUMA affinity for its memory areas.
-
-In cases where SGX memory was above max_pfn (usually just the one EPC
-section in the last highest NUMA node), the numa_memblock is truncated
-at 'max_pfn', which is below the SGX memory.  When the SGX code tries to
-look up the affinity of this memory, it fails and produces an error message:
-
-	sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback to the NUMA node 0.
-
-and assigns the memory to NUMA node 0.
-
-Instead of silently truncating the memory block at 'max_pfn' and
-dropping the SGX memory, add the truncated portion to
-'numa_reserved_meminfo'.  This allows the SGX code to later determine
-the NUMA affinity of its 'Reserved' area.
-
-Without this patch, numa_meminfo looks like this (from 'crash'):
-
-  blk = { start =          0x0, end = 0x2080000000, nid = 0x0 }
-        { start = 0x2080000000, end = 0x4000000000, nid = 0x1 }
-
-numa_reserved_meminfo is empty.
-
-After the patch, numa_meminfo looks like this:
-
-  blk = { start =          0x0, end = 0x2080000000, nid = 0x0 }
-        { start = 0x2080000000, end = 0x4000000000, nid = 0x1 }
-
-and numa_reserved_meminfo has an entry for node 1's SGX memory:
-
-  blk =  { start = 0x4000000000, end = 0x4080000000, nid = 0x1 }
-
- [ daveh: completely rewrote/reworked changelog ]
-
-Signed-off-by: Fan Du <fan.du@intel.com>
-Reported-by: Reinette Chatre <reinette.chatre@intel.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-Fixes: 5d30f92e7631 ("x86/NUMA: Provide a range-to-target_node lookup facility")
-Cc: x86@kernel.org
-Cc: linux-sgx@vger.kernel.org
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
----
-
- b/arch/x86/mm/numa.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff -puN arch/x86/mm/numa.c~sgx-srat arch/x86/mm/numa.c
---- a/arch/x86/mm/numa.c~sgx-srat	2021-06-17 11:23:05.116159990 -0700
-+++ b/arch/x86/mm/numa.c	2021-06-17 11:55:46.117155100 -0700
-@@ -254,7 +254,13 @@ int __init numa_cleanup_meminfo(struct n
- 
- 		/* make sure all non-reserved blocks are inside the limits */
- 		bi->start = max(bi->start, low);
--		bi->end = min(bi->end, high);
-+
-+		/* preserve info for non-RAM areas above 'max_pfn': */
-+		if (bi->end > high) {
-+			numa_add_memblk_to(bi->nid, high, bi->end,
-+					   &numa_reserved_meminfo);
-+			bi->end = high;
-+		}
- 
- 		/* and there's no empty block */
- 		if (bi->start >= bi->end)
-_
+jon
