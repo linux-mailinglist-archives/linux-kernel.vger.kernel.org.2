@@ -2,120 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B203AB5BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1DD3AB5C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbhFQOX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:23:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:54246 "EHLO foss.arm.com"
+        id S232048AbhFQOYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:24:17 -0400
+Received: from mga04.intel.com ([192.55.52.120]:20346 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231892AbhFQOX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:23:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DF6E12FC;
-        Thu, 17 Jun 2021 07:21:19 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83CBC3F719;
-        Thu, 17 Jun 2021 07:21:16 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 15:20:46 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
-Message-ID: <20210617142046.GA87858@C02TD0UTHF1T.local>
-References: <cover.1623813516.git.luto@kernel.org>
- <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
- <20210617103524.GA82133@C02TD0UTHF1T.local>
- <20210617112305.GK22278@shell.armlinux.org.uk>
- <20210617113349.GB82133@C02TD0UTHF1T.local>
- <394219d4-36a6-4e7f-a03c-8590551b099a@www.fastmail.com>
- <20210617135133.GA86101@C02TD0UTHF1T.local>
- <33241b25-4d45-4278-a4e6-ec9c12b0e1f3@www.fastmail.com>
+        id S231654AbhFQOYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 10:24:15 -0400
+IronPort-SDR: WisNd1PIitRBTMCJQmObwy3Ra5XgsFfbim3/nf1aHbZm0v2wUiQKhE6A28HGRwhbC4OmqN/W1p
+ hTdTW22U1Hkw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="204549763"
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="204549763"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 07:22:07 -0700
+IronPort-SDR: Z4HIb70qCwinYy0ChMzIEgOI8sKy5FPd2zHPeL8lBe989yjckX8dIR9kXqHbRd/cTrh5SLbGy2
+ 8pIe+Mh1c9gg==
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="452794702"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 07:22:04 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1ltsu9-003Mad-8G; Thu, 17 Jun 2021 17:22:01 +0300
+Date:   Thu, 17 Jun 2021 17:22:01 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, kaixuxia@tencent.com,
+        gustavoars@kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        weiyongjun1@huawei.com, yuehaibing@huawei.com,
+        yangjihong1@huawei.com, yukuai3@huawei.com,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next v6] media: staging: atomisp: use list_splice_init
+ in atomisp_compat_css20.c
+Message-ID: <YMtaidhBu25wxwv3@smile.fi.intel.com>
+References: <20210617140926.887680-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <33241b25-4d45-4278-a4e6-ec9c12b0e1f3@www.fastmail.com>
+In-Reply-To: <20210617140926.887680-1-libaokun1@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 07:00:26AM -0700, Andy Lutomirski wrote:
+On Thu, Jun 17, 2021 at 10:09:26PM +0800, Baokun Li wrote:
 > 
+> Using list_splice_init() instead of entire while-loops
+> in atomisp_compat_css20.c.
+
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+> V1->V2:
+>         CC mailist
+> V2->V3:
+>         Using list_move_tail() -> Using list_splice_init()
+> V3->V4:
+>         Remove redundant 'asd->'
+> V4->V5:
+>         Add the version information for 'V3->V4:'
+> V5->V6:
+>         Remove unused variable 'md_buf','dis_buf','s3a_buf'
 > 
-> On Thu, Jun 17, 2021, at 6:51 AM, Mark Rutland wrote:
-> > On Thu, Jun 17, 2021 at 06:41:41AM -0700, Andy Lutomirski wrote:
+>  .../media/atomisp/pci/atomisp_compat_css20.c  | 38 +++----------------
+>  1 file changed, 5 insertions(+), 33 deletions(-)
 > 
-> > > In any event, I’m even more convinced that no new SYNC_CORE arches
-> > > should be added. We need a new API that just does the right thing. 
-> > 
-> > My intuition is the other way around, and that this is a gnereally
-> > useful thing for architectures that require context synchronization.
+> diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+> index f60198bb8a1a..99a632f33d2d 100644
+> --- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+> +++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+> @@ -2102,9 +2102,6 @@ void atomisp_css_stop(struct atomisp_sub_device *asd,
+>  		      enum ia_css_pipe_id pipe_id, bool in_reset)
+>  {
+>  	struct atomisp_device *isp = asd->isp;
+> -	struct atomisp_s3a_buf *s3a_buf;
+> -	struct atomisp_dis_buf *dis_buf;
+> -	struct atomisp_metadata_buf *md_buf;
+>  	unsigned long irqflags;
+>  	unsigned int i;
+>  
+> @@ -2144,42 +2141,17 @@ void atomisp_css_stop(struct atomisp_sub_device *asd,
+>  	}
+>  
+>  	/* move stats buffers to free queue list */
+> -	while (!list_empty(&asd->s3a_stats_in_css)) {
+> -		s3a_buf = list_entry(asd->s3a_stats_in_css.next,
+> -				     struct atomisp_s3a_buf, list);
+> -		list_del(&s3a_buf->list);
+> -		list_add_tail(&s3a_buf->list, &asd->s3a_stats);
+> -	}
+> -	while (!list_empty(&asd->s3a_stats_ready)) {
+> -		s3a_buf = list_entry(asd->s3a_stats_ready.next,
+> -				     struct atomisp_s3a_buf, list);
+> -		list_del(&s3a_buf->list);
+> -		list_add_tail(&s3a_buf->list, &asd->s3a_stats);
+> -	}
+> +	list_splice_init(&asd->s3a_stats_in_css, &asd->s3a_stats);
+> +	list_splice_init(&asd->s3a_stats_ready, &asd->s3a_stats);
+>  
+>  	spin_lock_irqsave(&asd->dis_stats_lock, irqflags);
+> -	while (!list_empty(&asd->dis_stats_in_css)) {
+> -		dis_buf = list_entry(asd->dis_stats_in_css.next,
+> -				     struct atomisp_dis_buf, list);
+> -		list_del(&dis_buf->list);
+> -		list_add_tail(&dis_buf->list, &asd->dis_stats);
+> -	}
+> +	list_splice_init(&asd->dis_stats_in_css, &asd->dis_stats);
+>  	asd->params.dis_proj_data_valid = false;
+>  	spin_unlock_irqrestore(&asd->dis_stats_lock, irqflags);
+>  
+>  	for (i = 0; i < ATOMISP_METADATA_TYPE_NUM; i++) {
+> -		while (!list_empty(&asd->metadata_in_css[i])) {
+> -			md_buf = list_entry(asd->metadata_in_css[i].next,
+> -					    struct atomisp_metadata_buf, list);
+> -			list_del(&md_buf->list);
+> -			list_add_tail(&md_buf->list, &asd->metadata[i]);
+> -		}
+> -		while (!list_empty(&asd->metadata_ready[i])) {
+> -			md_buf = list_entry(asd->metadata_ready[i].next,
+> -					    struct atomisp_metadata_buf, list);
+> -			list_del(&md_buf->list);
+> -			list_add_tail(&md_buf->list, &asd->metadata[i]);
+> -		}
+> +		list_splice_init(&asd->metadata_in_css[i], &asd->metadata[i]);
+> +		list_splice_init(&asd->metadata_ready[i], &asd->metadata[i]);
+>  	}
+>  
+>  	atomisp_flush_params_queue(&asd->video_out_capture);
+> -- 
+> 2.31.1
 > 
-> Except that you can't use it in a generic way.  You have to know the
-> specific rules for your arch.
 
-That's generally true for modifying instruction streams though? The man
-page for cacheflush(2) calls out that it is not portable.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-I think what's necessary here is some mandatory per-arch documentation?
 
-> > It's not clear to me what "the right thing" would mean specifically, and
-> > on architectures with userspace cache maintenance JITs can usually do
-> > the most optimal maintenance, and only need help for the context
-> > synchronization.
-> > 
-> 
-> This I simply don't believe -- I doubt that any sane architecture
-> really works like this.  I wrote an email about it to Intel that
-> apparently generated internal discussion but no results.  Consider:
-> 
-> mmap(some shared library, some previously unmapped address);
-> 
-> this does no heavyweight synchronization, at least on x86.  There is
-> no "serializing" instruction in the fast path, and it *works* despite
-> anything the SDM may or may not say.
-
-Sure, and I called this case out specifically when I said:
-
-|   * Where we can guarantee that a CPU cannot possibly have an
-|     instruction in-flight (e.g. due to a lack of a mapping to fetch
-|     instructions from), nothing is necessary. This is what we rely on
-|     when faulting in code pages. In these cases, the CPU is liable to
-|     take fault on the missing translation anyway.
-
-.. what really matters is whether the CPU had the oppoprtunity to fetch
-something stale; the context synchronization is necessary to discard
-that.
-
-Bear in mind that in many cases where this could occur in theory, we
-don't hit in practice because CPUs don't happen to predict/speculate as
-aggressively as they are permitted to. On arm/arm64 it's obvious that
-this is a problem because the documentation clearly defines the
-boundaries of what a CPU is permitted to do, whereas on other
-architectures docuentation is not necessarily as clear whether this is
-permited or whether the architecture mandates additional guarantees.
-
-> We can and, IMO, should develop a sane way for user programs to
-> install instructions into VMAs, for security-conscious software to
-> verify them (by splitting the read and write sides?), and for their
-> consumers to execute them, without knowing any arch details.  And I
-> think this can be done with no IPIs except for possible TLB flushing
-> when needed, at least on most architectures.  It would require a
-> nontrivial amount of design work, and it would not resemble
-> sys_cacheflush() or SYNC_CORE.
-
-I'm not opposed to adding new interfaces for stuff like that, but I
-don't think that membarrier(SYNC_CORE) or cacheflush(2) are necessarily
-wrong as-is.
-
-Thanks,
-Mark.
