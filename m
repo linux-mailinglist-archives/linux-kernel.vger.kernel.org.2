@@ -2,94 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059773AB48E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211AB3AB494
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232429AbhFQNXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:23:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58282 "EHLO mail.kernel.org"
+        id S232500AbhFQNYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:24:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231702AbhFQNX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:23:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD02A6112D;
-        Thu, 17 Jun 2021 13:21:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623936082;
-        bh=9m33aIOJbia+ShcJ940DomACgwPzr98gLkW2wr4hC0U=;
+        id S229931AbhFQNYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:24:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81262613BA;
+        Thu, 17 Jun 2021 13:22:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623936153;
+        bh=m8K5khmOV4Nt95fDzRf7f7CuZlwaLm2UDMhLZOcWULs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vb3e9ZS14SiSso4EXORRrKwxfAZT20KMhCseWc54VYAc5MtG70waEtim/es9NVznb
-         KZxnCTX+u/dwRN/5pESaYM3FZpZSC05Lqzsa5HbAJrOk43pEdk/krdZ10NrbEYSBzu
-         HfhjoHpdabOfk6XKx0eib42VKJhHjwqmBoyD6YKubuKZB9QC7T1Ifr9yD+K3eflqBc
-         uKupbuBOkbtc6w8EBmowP9qnR7esHF7xQpck+/SAfRDdi3Ub4ts1YhYRx3ohwTp1Rp
-         vjynNariT2gyLgNMJbZfqpwB/XC45+n+U4u5f4GgnvMLcdI2596NypKVEF6jSxtVED
-         B4DjgJJgNh+Lw==
-Date:   Thu, 17 Jun 2021 14:21:16 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Yanan Wang <wangyanan55@huawei.com>,
-        Quentin Perret <qperret@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>, wanghaibin.wang@huawei.com,
-        zhukeqian1@huawei.com, yuzenghui@huawei.com
-Subject: Re: [PATCH v7 4/4] KVM: arm64: Move guest CMOs to the fault handlers
-Message-ID: <20210617132115.GA24656@willie-the-truck>
-References: <20210617105824.31752-1-wangyanan55@huawei.com>
- <20210617105824.31752-5-wangyanan55@huawei.com>
- <20210617124557.GB24457@willie-the-truck>
- <87k0msd4ue.wl-maz@kernel.org>
+        b=xa4OOiGtb2s2c6xosB8LEOG+gNZ84PRyBoDa09ioQao+sz4MK5zqRDenVsZEAZ7yM
+         IQ+1ClNUraerQMlwzeWiacQNxPzdZDVMshXPe0OAYLRpvJMdACX4zZyvC8S8+I6LpH
+         7dWMM5nutSBB2Q8Zfsaalk4e3JA5Wd60BCpUuzFk=
+Date:   Thu, 17 Jun 2021 15:22:30 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Linyu Yuan <linyyuan@codeaurora.org>
+Cc:     Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Linyu Yuan <linyyuan@codeaurora.com>
+Subject: Re: [PATCH v3] usb: gadget: eem: fix echo command packet response
+ issue
+Message-ID: <YMtMlmwuIU3YmwAq@kroah.com>
+References: <20210616115142.34075-1-linyyuan@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87k0msd4ue.wl-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210616115142.34075-1-linyyuan@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 01:59:37PM +0100, Marc Zyngier wrote:
-> On Thu, 17 Jun 2021 13:45:57 +0100,
-> Will Deacon <will@kernel.org> wrote:
-> > On Thu, Jun 17, 2021 at 06:58:24PM +0800, Yanan Wang wrote:
-> > > @@ -606,6 +618,14 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
-> > >  		stage2_put_pte(ptep, data->mmu, addr, level, mm_ops);
-> > >  	}
-> > >  
-> > > +	/* Perform CMOs before installation of the guest stage-2 PTE */
-> > > +	if (mm_ops->clean_invalidate_dcache && stage2_pte_cacheable(pgt, new))
-> > > +		mm_ops->clean_invalidate_dcache(kvm_pte_follow(new, mm_ops),
-> > > +						granule);
-> > > +
-> > > +	if (mm_ops->invalidate_icache && stage2_pte_executable(new))
-> > > +		mm_ops->invalidate_icache(kvm_pte_follow(new, mm_ops), granule);
-> > 
-> > One thing I'm missing here is why we need the indirection via mm_ops. Are
-> > there cases where we would want to pass a different function pointer for
-> > invalidating the icache? If not, why not just call the function directly?
-> > 
-> > Same for the D side.
+On Wed, Jun 16, 2021 at 07:51:42PM +0800, Linyu Yuan wrote:
+> From: Linyu Yuan <linyyuan@codeaurora.com>
 > 
-> If we didn't do that, we'd end-up having to track whether the guest
-> context requires CMOs with additional flags, which is pretty ugly (see
-> v5 of this series for reference [1]).
+> when receive eem echo command, it will send a response,
+> but queue this response to the usb request which allocate
+> from gadget device endpoint zero,
+> and transmit the request to IN endpoint of eem interface.
+> 
+> on dwc3 gadget, it will trigger following warning in function
+> __dwc3_gadget_ep_queue(),
+> 
+> 	if (WARN(req->dep != dep, "request %pK belongs to '%s'\n",
+> 				&req->request, req->dep->name))
+> 		return -EINVAL;
 
-Fair enough, although the function pointers here _are_ being used as flags,
-as they only ever have one of two possible values (NULL or the CMO function),
-so it's a shame to bring in the indirect branch as well.
+Is this really a problem?  I am guessing the request will not work at
+all?  Or just warn and continue with it?
 
-> It also means that we would have to drag the CM functions into the EL2
-> object, something that we don't need with this approach.
+How was this ever working?
 
-I think it won't be long before we end up with CMO functions at EL2 and
-you'd hope we'd be able to use the same code as EL1 for something like
-that. But I also wouldn't want to put money on it...
+> 
+> fix it by allocating a usb request from IN endpoint of eem interface,
+> and transmit the usb request to same IN endpoint of eem interface.
+> 
+> Signed-off-by: Linyu Yuan <linyyuan@codeaurora.com>
+> ---
 
-Anyway, no strong opinion on this, it just jumped out when I skimmed the
-patches.
+What commit does this fix?  Should it be backported to older stable
+kernels?  If so, how far back?
 
-Will
+thanks,
+
+greg k-h
