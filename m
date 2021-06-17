@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ACD73AB7B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA113AB7C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbhFQPmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:42:20 -0400
-Received: from outbound-smtp32.blacknight.com ([81.17.249.64]:32882 "EHLO
-        outbound-smtp32.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233372AbhFQPmQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:42:16 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp32.blacknight.com (Postfix) with ESMTPS id 22F873E00C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 16:40:08 +0100 (IST)
-Received: (qmail 7930 invoked from network); 17 Jun 2021 15:40:07 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 17 Jun 2021 15:40:07 -0000
-Date:   Thu, 17 Jun 2021 16:40:06 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] sched/fair: Age the average idle time
-Message-ID: <20210617154006.GQ30378@techsingularity.net>
-References: <20210615111611.GH30378@techsingularity.net>
- <20210615204228.GB4272@worktop.programming.kicks-ass.net>
- <20210616090314.GJ30378@techsingularity.net>
- <YMtjvF0en9NjIspl@lorien.usersys.redhat.com>
+        id S233412AbhFQPoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:44:17 -0400
+Received: from mga11.intel.com ([192.55.52.93]:61391 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232540AbhFQPoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 11:44:14 -0400
+IronPort-SDR: Z8QBuhE89bAgtQR6igJgWGQFnv+7RZvVjHKnPKVRpuCvbjfYm8/HlIxn+keDWD87PPZf/V66Ps
+ 0DG5mIOuGeVg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="203369145"
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="203369145"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 08:41:37 -0700
+IronPort-SDR: mytfaOilOdXvYMEbtHvbfBDM13SCmLv/Wm7VsvDxgcKC++yQ4jC5pJb8LDnGmrew5xiPiW01Ps
+ Py9rX4QwFM+Q==
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="451057047"
+Received: from mkalyani-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.138.30])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 08:41:36 -0700
+Date:   Thu, 17 Jun 2021 08:41:33 -0700
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Alison Schofield <alison.schofield@intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] CXL ACPI tables for object creation
+Message-ID: <20210617154133.zb54zf46foxcss3c@intel.com>
+References: <cover.1623890468.git.alison.schofield@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMtjvF0en9NjIspl@lorien.usersys.redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <cover.1623890468.git.alison.schofield@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 11:01:16AM -0400, Phil Auld wrote:
-> > Thanks, so far no serious objection :)
-> > 
-> > The latest results as I see them have been copied to
-> > https://beta.suse.com/private/mgorman/melt/v5.13-rc5/3-perf-test/sched/sched-avgidle-v1r6/html/dashboard.html
-> > They will move from here if the patch is accepted to 5-assembly replacing
-> > 3-perf-test. This naming is part of my workflow for evaluating topic
-> > branches separetly and then putting them together for another round
-> > of testing.
-> > 
-> > NAS shows small differences but NAS would see limited impact from the
-> > patch. Specjbb shows small losses and some minor gains which is unfortunate
-> > but the workload tends to see small gains and losses all the time.
-> > redis is a mixed bag but has some wins. hackbench is the main benefit
-> > because it's wakeup intensive and tends to overload machines where deep
-> > searches hurt.
-> > 
-> > There are other results in there if you feel like digging around
-> > such as sched-core tested with no processes getting tagged with prctl
-> > https://beta.suse.com/private/mgorman/melt/v5.13-rc5/5-assembly/sched/sched-schedcore-v1r2/html/dashboard.html
-> >
+On 21-06-16 18:11:06, Alison Schofield wrote:
+> Jonathan - I updated Patch 2 so I didn't keep your Reviewed-by tag.
 > 
-> Thanks for the links. It's cool to see what your results dashboard looks like.
-> It's really small, what are you plotting in those heat maps?
+> Changes since v2 [1]:
+> - Warn and continue, rather than error out, on these acpi table parsing issues:
+>   table length mismatch for either CHBS or CFMWS; duplicate uid's for CHBS.
+>   (Ben, Jonathan)
+> - Update flow in cxl_acpi_match_chbs()  (Ben, Jonathan)
+> - Improve naming cedt_table->acpi_cedt, cedt_base->cedt_subtable (Ben)
+> - Emit debug message only if CFMWS is greater than its expected length (Ben)
+> - Update the dev_err messages wrt the CFMWS expected length failure.
+> - Remove blank line before error handling block (Jonathan)
+> - Rebase to the CXL pending branch [2]
 > 
-> It's hard for me to publish the results that come from our testing (web based
-> on intranet) but we don't see any major differences with this patch.  There
-> are some gains here and there mostly balanced by some loses.  Overall it comes
-> out basically as a wash across our main performance test workload.
+> [1]: https://lore.kernel.org/linux-cxl/cover.1623800340.git.alison.schofield@intel.com/ 
+> [2]: https://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl.git/log/?h=pending
 > 
-
-Ok, that's unfortunate. It's also somewhat surprising but then again, I
-don't know what tests were executed.
-
-> It'll be interesting to see if it effects a sensitive, proprietary perf test
-> suite from a European company with a 3 letter name :)
+> --
+> Parse the ACPI CXL Early Discovery Table (CEDT) and use the CHBS & CFMWS
+> when creating port and decoder objects.
 > 
+> CHBS: CXL Host Bridge Structure - Patch 1
+> CFMWS: CXL Fixed Memory Window Structure - Patch 2
+> 
+> Alison Schofield (2):
+>   cxl/acpi: Add the Host Bridge base address to CXL port objects
+>   cxl/acpi: Use the ACPI CFMWS to create static decoder objects
+> 
+>  drivers/cxl/acpi.c | 217 +++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 212 insertions(+), 5 deletions(-)
+> 
+> 
+> base-commit: 21083f51521fb0f60dbac591f175c3ed48435af4
 
-I don't think it's worth the effort if it's failing microbenchmarks at
-the moment.
+It might be nice to add a header kdoc for acpi.c now that it's become sufficiently
+complex. Can be follow-on patch.
 
--- 
-Mel Gorman
-SUSE Labs
+Both are:
+Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
