@@ -2,158 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C4D3AB4C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9A03AB4CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232354AbhFQNdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:33:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53922 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231654AbhFQNdN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:33:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623936665;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TMovp/d/024BNKenOEssFH9bGIj4wb2wQ+scwOxwK/o=;
-        b=RnYGCoirfJLXSfbmUxVdJBXIAD/axBjOwi9Fxigui1gVwR48qoMFhT0v4U0/3FiKutDJBm
-        pcm01wEFYDpimV7MqohYhHXpbkSj/Xv+R5ON7Cw3EaIYVjjwpCDoxSLdLsKTqO6T5wZh4N
-        Pdm07HYkczFZu0L7yMIRFgwNGseQa9g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240-Bpa5gYRbOL-FXBAJ9jWMlw-1; Thu, 17 Jun 2021 09:31:02 -0400
-X-MC-Unique: Bpa5gYRbOL-FXBAJ9jWMlw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10775192FDA8;
-        Thu, 17 Jun 2021 13:31:01 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-162.rdu2.redhat.com [10.10.116.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8F58A62462;
-        Thu, 17 Jun 2021 13:30:53 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id E8277220BCF; Thu, 17 Jun 2021 09:30:52 -0400 (EDT)
-Date:   Thu, 17 Jun 2021 09:30:52 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com, miklos@szeredi.hu, stefanha@redhat.com,
-        dgilbert@redhat.com, viro@zeniv.linux.org.uk, dhowells@redhat.com,
-        richard.weinberger@gmail.com, asmadeus@codewreck.org,
-        v9fs-developer@lists.sourceforge.net
-Subject: Re: [PATCH v2 0/2] Add support to boot virtiofs and 9pfs as rootfs
-Message-ID: <20210617133052.GA1142820@redhat.com>
-References: <20210614174454.903555-1-vgoyal@redhat.com>
- <YMsgaPS90iKIqSvi@infradead.org>
+        id S232392AbhFQNdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:33:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231654AbhFQNdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:33:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C81D6044F;
+        Thu, 17 Jun 2021 13:31:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623936695;
+        bh=u0qd6O0XohK2blFPQxVjvBt/wYTUHl/fZzzKtLhEk7E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gsmcnqVxOrJtKmRUja/eV6hZhh9xFUtY4FQU7G4cPnZWA3Z/MNAN+W/ur6Sazs6VL
+         sI+R36fTde9mqKcZZjB3PQ48qhcdWlLZDRrZmLa7XrNtiXCzhJQkbaodqG+fs60A/h
+         06kGpw4YNvtfIm0YJD5yKXkPtL4igREkK3VE7RgY=
+Date:   Thu, 17 Jun 2021 15:31:32 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ikjoon Jang <ikjn@chromium.org>,
+        Tianping Fang <tianping.fang@mediatek.com>
+Subject: Re: [PATCH] usb: xhci-mtk: allow multiple Start-Split in a microframe
+Message-ID: <YMtOtC1j2DouJ9Is@kroah.com>
+References: <1623895911-29259-1-git-send-email-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMsgaPS90iKIqSvi@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <1623895911-29259-1-git-send-email-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 11:14:00AM +0100, Christoph Hellwig wrote:
-> Why not something like the version below that should work for all nodev
-> file systems?
-
-Hi Christoph,
-
-Thanks for this patch. It definitely looks much better. I had a fear
-of breaking something if I were to go through this path of using
-FS_REQUIRES_DEV.
-
-This patch works for me with "root=myfs rootfstype=virtiofs rw". Have
-few thoughts inline.
+On Thu, Jun 17, 2021 at 10:11:51AM +0800, Chunfeng Yun wrote:
+> This patch is used to relax bandwidth schedule by allowing multiple
+> Start-Split in the same microframe.
 > 
-> diff --git a/init/do_mounts.c b/init/do_mounts.c
-> index 74aede860de7..3c5676603fef 100644
-> --- a/init/do_mounts.c
-> +++ b/init/do_mounts.c
-> @@ -530,6 +530,39 @@ static int __init mount_cifs_root(void)
->  }
->  #endif
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  drivers/usb/host/xhci-mtk-sch.c | 16 ----------------
+>  drivers/usb/host/xhci-mtk.h     |  2 --
+>  2 files changed, 18 deletions(-)
+> 
+> diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
+> index c07411d9b16f..149a0f4a6ec4 100644
+> --- a/drivers/usb/host/xhci-mtk-sch.c
+> +++ b/drivers/usb/host/xhci-mtk-sch.c
+> @@ -470,11 +470,9 @@ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
 >  
-> +static int __init mount_nodev_root(void)
-> +{
-> +	struct file_system_type *fs = get_fs_type(root_fs_names);
-
-get_fs_type() assumes root_fs_names is not null. So if I pass
-"root=myfs rw", it crashes with null pointer dereference.
-
-
-> +	char *fs_names, *p;
-> +	int err = -ENODEV;
-> +
-> +	if (!fs)
-> +		goto out;
-> +	if (fs->fs_flags & FS_REQUIRES_DEV)
-> +		goto out_put_filesystem;
-> +
-> +	fs_names = (void *)__get_free_page(GFP_KERNEL);
-> +	if (!fs_names)
-> +		goto out_put_filesystem;
-> +	get_fs_names(fs_names);
-
-I am wondering what use case we are trying to address by calling
-get_fs_names() and trying do_mount_root() on all filesystems
-returned by get_fs_names(). I am assuming following use cases
-you have in mind.
-
-A. User passes a single filesystem in rootfstype.
-   
-   root=myfs rootfstype=virtiofs rw
-
-B. User passes multiple filesystems in rootfstype and kernel tries all
-   of them one after the other
-
-   root=myfs, rootfstype=9p,virtiofs rw
-
-C. User does not pass a filesystem type at all. And kernel will get a
-   list of in-built filesystems and will try these one after the other.
-
-   root=myfs rw
-
-If that's the thought, will it make sense to call get_fs_names() first
-and then inside the for loop call get_fs_type() and try mounting
-only if FS_REQUIRES_DEV is not set, otherwise skip and move onto th
-next filesystem in the list (fs_names).
-
-Thanks
-Vivek
-
-> +
-> +	for (p = fs_names; *p; p += strlen(p) + 1) {
-> +		err = do_mount_root(root_device_name, p, root_mountflags,
-> +					root_mount_data);
-> +		if (!err)
-> +			break;
-> +		if (err != -EACCES && err != -EINVAL)
-> +			panic("VFS: Unable to mount root \"%s\" (%s), err=%d\n",
-> +				      root_device_name, p, err);
-> +	}
-> +
-> +	free_page((unsigned long)fs_names);
-> +out_put_filesystem:
-> +	put_filesystem(fs);
-> +out:
-> +	return err;
-> +}
-> +
->  void __init mount_root(void)
+>  static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
 >  {
->  #ifdef CONFIG_ROOT_NFS
-> @@ -546,6 +579,8 @@ void __init mount_root(void)
->  		return;
->  	}
->  #endif
-> +	if (ROOT_DEV == 0 && mount_nodev_root() == 0)
-> +		return;
->  #ifdef CONFIG_BLOCK
->  	{
->  		int err = create_dev("/dev/root", ROOT_DEV);
-> 
+> -	struct mu3h_sch_tt *tt = sch_ep->sch_tt;
+>  	u32 extra_cs_count;
+>  	u32 start_ss, last_ss;
+>  	u32 start_cs, last_cs;
+> -	int i;
+>  
+>  	if (!sch_ep->sch_tt)
+>  		return 0;
+> @@ -491,10 +489,6 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
+>  		if (!(start_ss == 7 || last_ss < 6))
+>  			return -ESCH_SS_Y6;
+>  
+> -		for (i = 0; i < sch_ep->cs_count; i++)
+> -			if (test_bit(offset + i, tt->ss_bit_map))
+> -				return -ESCH_SS_OVERLAP;
+> -
+>  	} else {
+>  		u32 cs_count = DIV_ROUND_UP(sch_ep->maxpkt, FS_PAYLOAD_MAX);
+>  
+> @@ -521,9 +515,6 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
+>  		if (cs_count > 7)
+>  			cs_count = 7; /* HW limit */
+>  
+> -		if (test_bit(offset, tt->ss_bit_map))
+> -			return -ESCH_SS_OVERLAP;
+> -
+>  		sch_ep->cs_count = cs_count;
+>  		/* one for ss, the other for idle */
+>  		sch_ep->num_budget_microframes = cs_count + 2;
+> @@ -558,13 +549,6 @@ static void update_sch_tt(struct mu3h_sch_ep_info *sch_ep, bool used)
+>  	for (i = 0; i < num_esit; i++) {
+>  		base = sch_ep->offset + i * sch_ep->esit;
+>  
+> -		for (j = 0; j < bits; j++) {
 
+Now that bits is no longer used, we get a build warning.
+
+Can you fix this patch and resend it?
+
+thanks,
+
+greg k-h
