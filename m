@@ -2,111 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68663AB058
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB05D3AB05D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbhFQJyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58286 "EHLO
+        id S231983AbhFQJzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231373AbhFQJyf (ORCPT
+        with ESMTP id S231893AbhFQJzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:54:35 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B80C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:52:27 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id o3so6031138wri.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:52:27 -0700 (PDT)
+        Thu, 17 Jun 2021 05:55:41 -0400
+Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EDDC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:53:33 -0700 (PDT)
+Received: by mail-ed1-x549.google.com with SMTP id cb4-20020a0564020b64b02903947455afa5so1202573edb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:53:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=cFwCQ8jUzVcqwNmbSuUnriVBVuZxeCFs/UoupLmubI8=;
-        b=XxKQgXLNJzh7Tr3GpBP2pQ+TiRnX4kmS/MFch1+8EJwGCxumz08pcTlbDwFDulJwKT
-         euZzfg6MHav3OPnGW+uCKmqB5I/Q1l9hWBtzGacrodThetdorXucyhl9ERo07mPxrWI4
-         hr59cwIo6yNbOd74gbjcg52x3nCc3n0z2PRjMUPVTxCcQxq7I74253Ymogstt+oWELrO
-         pjxXSFLJ6B9W7uSvL6KIQqAUYgv8KF+Ab8iGbuhmCR7ElXe8nH85e0XeoWHeNCaoAn7e
-         oiNxESkPXNOtNkFJuKe9DkBB4JXhoYzvlsYfoNdUtnDh/5mWZdepLvP/5ZC0UC6aEMc0
-         SKOQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=a+zdbgiBb9ArM5mcAv9PP3FFuftdHwNPy6WG5ezhuhg=;
+        b=qxObvzoX4JdSGrxQ3ZuyPpBkDeRxJZg+BzJtMUVId5XO7aYRatSQFvH6BaFR5n1YYT
+         ozu0EXR9FPJfKda227z7e6mgME/Njuw/mhM3Sqj0NDlnTfs3mOf7Zfqqunthk+Zi+Tpi
+         3IFpuIYt7INLA9ujbK7GVHPR7irOutzijhzx2zywr+/kktXLCZk/yS0JJLFK8ct66m/6
+         PRlsCJVmqVCYYUiZBNM0OKjvm6XcdSdQnpwQIy1Hz/MbzkgKHUvn3fC1fkph7vlazrFY
+         Uh7euAWtna3Lk7mdeg6VNymy6MUoH5sF3CYu5Bj99IvKSlgMReTolU+nHXHVKLk3g2mq
+         xT7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=cFwCQ8jUzVcqwNmbSuUnriVBVuZxeCFs/UoupLmubI8=;
-        b=bHmM+KMEjjFceJttwUSatreUJvdQkyu0+wBKHW/G1t6DAWi6F4wy49mRX8J1lM3bji
-         PW4pb6PwYiFDAkL0JBV0XolTRjeYUNl+HZolLW/D/Ofw2GXAPziv/H9ROZaB8SmUhHRl
-         HZjH2jQEKVYBiFZdYHwatMREGyO/ImQavqfKP+bjMVfknQJ30hbiMP/Kxi0l/88gN/1D
-         3MJHDhWOxcpmXKOHBT+TlbEsMFPObRlqMlVJ5SrqO21BZf1f4mz0Zgv2VIUEgC/SidAs
-         LIMEcT2CbyOzIKbNQwzD+L9nCvXM+WGbejvtR3icoo7vBz44PEXXi/ov707E/GSUeEcK
-         cfgw==
-X-Gm-Message-State: AOAM530V6F5FD9OZqjC5ndToklQ17xqllhztI2r2Wt/oS7llSSpWOhhb
-        75DtldUXuLfnWfR5eLtqowBAdGze/Gt05A==
-X-Google-Smtp-Source: ABdhPJxmnEY2UOpjdIp1+AepGIkbAU/BDCL+RhC0yTSa2aLLyAk4/hXLw3x6hSHhIqC3uxYZOn4/kw==
-X-Received: by 2002:adf:d209:: with SMTP id j9mr4523631wrh.328.1623923545439;
-        Thu, 17 Jun 2021 02:52:25 -0700 (PDT)
-Received: from dell ([91.110.221.170])
-        by smtp.gmail.com with ESMTPSA id l23sm2251743wmc.5.2021.06.17.02.52.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 02:52:24 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 10:52:23 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>
-Subject: Re: [PATCH 09/16] char: agp: backend: Demote some non-conformant
- kernel-doc headers
-Message-ID: <YMsbVykDtF+Cz9mG@dell>
-References: <20210520121347.3467794-1-lee.jones@linaro.org>
- <20210520121347.3467794-10-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210520121347.3467794-10-lee.jones@linaro.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=a+zdbgiBb9ArM5mcAv9PP3FFuftdHwNPy6WG5ezhuhg=;
+        b=ns6Q6IBRhEtmHeGqhVKRSlSy1wE+coyUFWjT1QNLdDn/s6C9I1Zto2lDG/LNCGuv9W
+         FtOza+vNyaoOjx7f+VcvI0UsQ7r4qm7YklR/ouPejpTLlJb7rgn3YQ0u8Pz1A6+uaZE5
+         TK4eKJf6LqZdqCcFQtiEAUdYHUWFT5YcFt4zm/rj477ec/t8B01cnE4++vZRGlUplGUA
+         eDqhgwr9MTFTkuudMsmWOK0XbcmcpZmrxBvuzje1iCqPYs6aMfGj2EFBnabdCBju2cCR
+         ja4aiZkls27FFAsx5FAj+wJA2EpoADweqfpmMVdEzNBgJmHp+UFmcdPepg9Q7G/qoFsK
+         hZ1Q==
+X-Gm-Message-State: AOAM532Wtv0UZ8J/8XRzSIDdmDsapCw6bIZd3jZme9ZuUtDryM9u0iZb
+        R/RxFl248isEYT7c9Xow3RjhCoyqSld57dXd
+X-Google-Smtp-Source: ABdhPJx+PI0fe7iUwOHHvsHwzw9nummcEoOdT9cgCgSTBXi6D0g39LHeXPVGfIyF2IUCTYY0OhGKjTEw6YgI+NNU
+X-Received: from mklencke.zrh.corp.google.com ([2a00:79e0:48:202:aed9:dffa:ca7e:ac4d])
+ (user=stapelberg job=sendgmr) by 2002:aa7:c547:: with SMTP id
+ s7mr5202848edr.239.1623923611816; Thu, 17 Jun 2021 02:53:31 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 11:53:03 +0200
+Message-Id: <20210617095309.3542373-1-stapelberg+linux@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
+Subject: [PATCH] backing_dev_info: introduce min_bw/max_bw limits
+From:   Michael Stapelberg <stapelberg+linux@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Michael Stapelberg <stapelberg+linux@google.com>,
+        Tejun Heo <tj@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Roman Gushchin <guro@fb.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Jan Kara <jack@suse.cz>, Song Liu <song@kernel.org>,
+        David Sterba <dsterba@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021, Lee Jones wrote:
+These new knobs allow e.g. FUSE file systems to guide kernel memory
+writeback bandwidth throttling.
 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/char/agp/backend.c:68: warning: Function parameter or member 'pdev' not described in 'agp_backend_acquire'
->  drivers/char/agp/backend.c:93: warning: Function parameter or member 'bridge' not described in 'agp_backend_release'
-> 
-> Cc: David Airlie <airlied@linux.ie>
+Background:
 
-David, are you planning on taking these 'agp' patches please?
+When using mmap(2) to read/write files, the page-writeback code tries to
+measure how quick file system backing devices (BDI) are able to write data,
+so that it can throttle processes accordingly.
 
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/char/agp/backend.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/char/agp/backend.c b/drivers/char/agp/backend.c
-> index 004a3ce8ba72d..c901c719fba89 100644
-> --- a/drivers/char/agp/backend.c
-> +++ b/drivers/char/agp/backend.c
-> @@ -60,7 +60,7 @@ EXPORT_SYMBOL(agp_bridge);
->  EXPORT_SYMBOL(agp_bridges);
->  EXPORT_SYMBOL(agp_find_bridge);
->  
-> -/**
-> +/*
->   *	agp_backend_acquire  -  attempt to acquire an agp backend.
->   *
->   */
-> @@ -81,7 +81,7 @@ struct agp_bridge_data *agp_backend_acquire(struct pci_dev *pdev)
->  EXPORT_SYMBOL(agp_backend_acquire);
->  
->  
-> -/**
-> +/*
->   *	agp_backend_release  -  release the lock on the agp backend.
->   *
->   *	The caller must insure that the graphics aperture translation table
+Unfortunately, certain usage patterns, such as linkers (tested with GCC,
+but also the Go linker) seem to hit an unfortunate corner case when writing
+their large executable output files: the kernel only ever measures
+the (non-representative) rising slope of the starting bulk write, but the
+whole file write is already over before the kernel could possibly measure
+the representative steady-state.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+As a consequence, with each program invocation hitting this corner case,
+the FUSE write bandwidth steadily sinks in a downward spiral, until it
+eventually reaches 0 (!). This results in the kernel heavily throttling
+page dirtying in programs trying to write to FUSE, which in turn manifests
+itself in slow or even entirely stalled linker processes.
+
+Change:
+
+This commit adds 2 knobs which allow avoiding this situation entirely on a
+per-file-system basis by restricting the minimum/maximum bandwidth.
+
+There are no negative effects expected from applying this patch.
+
+At Google, we have been running this patch for about 1 year on many
+thousands of developer PCs without observing any issues. Our in-house FUSE
+filesystems pin the BDI write rate at its default setting of 100 MB/s,
+which successfully prevents the bug described above.
+
+Usage:
+
+To inspect the measured bandwidth, check the BdiWriteBandwidth field in
+e.g. /sys/kernel/debug/bdi/0:93/stats.
+
+To pin the measured bandwidth to its default of 100 MB/s, use:
+
+    echo 25600 > /sys/class/bdi/0:42/min_bw
+    echo 25600 > /sys/class/bdi/0:42/max_bw
+
+Notes:
+
+For more discussion, including a test program for reproducing the issue,
+see the following discussion thread on the Linux Kernel Mailing List:
+
+https://lore.kernel.org/linux-fsdevel/CANnVG6n=3DySfe1gOr=3D0ituQidp56idGAR=
+DKHzP0hv=3DERedeMrMA@mail.gmail.com/
+
+Why introduce these knobs instead of trying to tweak the
+throttling/measurement algorithm? The effort required to systematically
+analyze, improve and land such an algorithm change exceeds the time budget
+I have available. For comparison, check out this quote about the original
+patch set from 2011: =E2=80=9CFengguang said he draw more than 10K performa=
+nce
+graphs and read even more in the past year.=E2=80=9D (from
+http://bardofschool.blogspot.com/2011/). Given that nobody else has stepped
+up, despite the problem being known since 2016, my suggestion is to add the
+knobs until someone can spend significant time on a revision to the
+algorithm.
+
+Signed-off-by: Michael Stapelberg <stapelberg+linux@google.com>
+---
+ include/linux/backing-dev-defs.h |  2 ++
+ include/linux/backing-dev.h      |  3 +++
+ mm/backing-dev.c                 | 40 ++++++++++++++++++++++++++++++++
+ mm/page-writeback.c              | 28 ++++++++++++++++++++++
+ 4 files changed, 73 insertions(+)
+
+diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-d=
+efs.h
+index 1d7edad9914f..e34797bb62a1 100644
+--- a/include/linux/backing-dev-defs.h
++++ b/include/linux/backing-dev-defs.h
+@@ -175,6 +175,8 @@ struct backing_dev_info {
+ 	unsigned int capabilities; /* Device capabilities */
+ 	unsigned int min_ratio;
+ 	unsigned int max_ratio, max_prop_frac;
++	u64 min_bw;
++	u64 max_bw;
+=20
+ 	/*
+ 	 * Sum of avg_write_bw of wbs with dirty inodes.  > 0 if there are
+diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+index 44df4fcef65c..bb812a4df3a1 100644
+--- a/include/linux/backing-dev.h
++++ b/include/linux/backing-dev.h
+@@ -107,6 +107,9 @@ static inline unsigned long wb_stat_error(void)
+ int bdi_set_min_ratio(struct backing_dev_info *bdi, unsigned int min_ratio=
+);
+ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio=
+);
+=20
++int bdi_set_min_bw(struct backing_dev_info *bdi, u64 min_bw);
++int bdi_set_max_bw(struct backing_dev_info *bdi, u64 max_bw);
++
+ /*
+  * Flags in backing_dev_info::capability
+  *
+diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+index 271f2ca862c8..0201345d41f2 100644
+--- a/mm/backing-dev.c
++++ b/mm/backing-dev.c
+@@ -197,6 +197,44 @@ static ssize_t max_ratio_store(struct device *dev,
+ }
+ BDI_SHOW(max_ratio, bdi->max_ratio)
+=20
++static ssize_t min_bw_store(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct backing_dev_info *bdi =3D dev_get_drvdata(dev);
++	unsigned long long limit;
++	ssize_t ret;
++
++	ret =3D kstrtoull(buf, 10, &limit);
++	if (ret < 0)
++		return ret;
++
++	ret =3D bdi_set_min_bw(bdi, limit);
++	if (!ret)
++		ret =3D count;
++
++	return ret;
++}
++BDI_SHOW(min_bw, bdi->min_bw)
++
++static ssize_t max_bw_store(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct backing_dev_info *bdi =3D dev_get_drvdata(dev);
++	unsigned long long limit;
++	ssize_t ret;
++
++	ret =3D kstrtoull(buf, 10, &limit);
++	if (ret < 0)
++		return ret;
++
++	ret =3D bdi_set_max_bw(bdi, limit);
++	if (!ret)
++		ret =3D count;
++
++	return ret;
++}
++BDI_SHOW(max_bw, bdi->max_bw)
++
+ static ssize_t stable_pages_required_show(struct device *dev,
+ 					  struct device_attribute *attr,
+ 					  char *buf)
+@@ -211,6 +249,8 @@ static struct attribute *bdi_dev_attrs[] =3D {
+ 	&dev_attr_read_ahead_kb.attr,
+ 	&dev_attr_min_ratio.attr,
+ 	&dev_attr_max_ratio.attr,
++	&dev_attr_min_bw.attr,
++	&dev_attr_max_bw.attr,
+ 	&dev_attr_stable_pages_required.attr,
+ 	NULL,
+ };
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 9f63548f247c..1ee9636e6088 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -701,6 +701,22 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, un=
+signed max_ratio)
+ }
+ EXPORT_SYMBOL(bdi_set_max_ratio);
+=20
++int bdi_set_min_bw(struct backing_dev_info *bdi, u64 min_bw)
++{
++	spin_lock_bh(&bdi_lock);
++	bdi->min_bw =3D min_bw;
++	spin_unlock_bh(&bdi_lock);
++	return 0;
++}
++
++int bdi_set_max_bw(struct backing_dev_info *bdi, u64 max_bw)
++{
++	spin_lock_bh(&bdi_lock);
++	bdi->max_bw =3D max_bw;
++	spin_unlock_bh(&bdi_lock);
++	return 0;
++}
++
+ static unsigned long dirty_freerun_ceiling(unsigned long thresh,
+ 					   unsigned long bg_thresh)
+ {
+@@ -1068,6 +1084,15 @@ static void wb_position_ratio(struct dirty_throttle_=
+control *dtc)
+ 	dtc->pos_ratio =3D pos_ratio;
+ }
+=20
++static u64 clamp_bw(struct backing_dev_info *bdi, u64 bw)
++{
++	if (bdi->min_bw > 0 && bw < bdi->min_bw)
++		bw =3D bdi->min_bw;
++	if (bdi->max_bw > 0 && bw > bdi->max_bw)
++		bw =3D bdi->max_bw;
++	return bw;
++}
++
+ static void wb_update_write_bandwidth(struct bdi_writeback *wb,
+ 				      unsigned long elapsed,
+ 				      unsigned long written)
+@@ -1091,12 +1116,15 @@ static void wb_update_write_bandwidth(struct bdi_wr=
+iteback *wb,
+ 	bw *=3D HZ;
+ 	if (unlikely(elapsed > period)) {
+ 		bw =3D div64_ul(bw, elapsed);
++		bw =3D clamp_bw(wb->bdi, bw);
+ 		avg =3D bw;
+ 		goto out;
+ 	}
+ 	bw +=3D (u64)wb->write_bandwidth * (period - elapsed);
+ 	bw >>=3D ilog2(period);
+=20
++	bw =3D clamp_bw(wb->bdi, bw);
++
+ 	/*
+ 	 * one more level of smoothing, for filtering out sudden spikes
+ 	 */
+--=20
+2.32.0.288.g62a8d224e6-goog
+
