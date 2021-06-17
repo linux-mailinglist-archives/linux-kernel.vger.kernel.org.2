@@ -2,156 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D07103ABD77
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 22:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422FA3ABDB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 22:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbhFQUdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 16:33:39 -0400
-Received: from mail-bn8nam12on2053.outbound.protection.outlook.com ([40.107.237.53]:56179
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232306AbhFQUdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 16:33:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hWEqTLdbByD+tbrSzZlJ43uftinx1galA/grYXLqWvhoReUM9JLqWNM9Ag/STSjkHMytx+VwM3i9bdFNQXW54KZifLK0xep5HRAZOevftr2Oe+IKIwOCiP2ISyzNpiVCphEicIRcfxM2RTSdVIqL76/6oGJ2Uzin3GGBMnZF1L5mt3MwQAzF7E4MwXro3cmOVMwUYpHjDgwVIX//aywHMgC6guk6OFL+Ex9pGyYUMxYlVV62TU+/Tec6/0t0+6vh2u5Zg2vgT+BMfpE9E1oDwPs5UWD7ZPe3fHD/vQamS3ixqM3T8usGMIoh+t+bRPSaJye6NbYUxZTu37L9VdDrew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e9zSYnFTOJjFyplreG5rMbmKjeLNFDyRB/J7qq1KH5A=;
- b=d1jyyDkXfRL2A/7k7VUdJMjV1utEFp4bwQGjaXaBBFT2+WquI1bR4o2CTzje8tM/XA9GzMQH7z7c2ZQj84gcRiJ/+b1Sun1yTS3ULqYcrO1l15NyNGlyrQ2srFlJqvvsSerXzBQ5QVv/hcQZ9w7nsuYxLpZLcw/yb8Sctn4wUZWAqpF/Ucjm5QMhDKXb9wD4hmuBjuYgfbfkXc/BRBURq15CqNnZZAXzBtIz9XgRMddjc1C+oxBle5Yr9llzzkVX/s9lPXqBrVDEQTk0PIa1IHiYdUKazT9f1bl8MOy8R0/6VrWb8mki+0+jmCJglVj/pVeWd9n8Y2cGXCTaWpsWqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.36) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e9zSYnFTOJjFyplreG5rMbmKjeLNFDyRB/J7qq1KH5A=;
- b=b6GKCySqgPeCFJ+9Bab2/encpTHmRD4dT2l17BRrzGisTGWpbjV8PaWPKfstjqeLoqmHS3kNj/JVskeuUY3n8NtYqBn7lSg1AmWoZ7GiqDy58FCVVrjCejCk+GJlJ3UjzOgxvGRmnXOWbRmUZ5K5zjWgOr6YUeFx+rJAG1/NMJ+Z87ZdSF7htcv9t1z0ZQThjSXAjjFMVEsKD9htOu1NTaM1/uhAnrq6Fgp7Nkuizx3MNIc8u3exF7hYKq3MTxZLjVlxtXkrsBofUBJoPtrwjcKAUddcF2PoqHL7dFmBAGg1kMdBL1AodI4fcUUDfna/fSf/Iy8i4IpqoDHbEQjZ8w==
-Received: from BN9PR03CA0213.namprd03.prod.outlook.com (2603:10b6:408:f8::8)
- by DM6PR12MB3881.namprd12.prod.outlook.com (2603:10b6:5:148::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Thu, 17 Jun
- 2021 20:31:27 +0000
-Received: from BN8NAM11FT062.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:f8:cafe::df) by BN9PR03CA0213.outlook.office365.com
- (2603:10b6:408:f8::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19 via Frontend
- Transport; Thu, 17 Jun 2021 20:31:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
- smtp.mailfrom=nvidia.com; arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.36; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.36) by
- BN8NAM11FT062.mail.protection.outlook.com (10.13.177.34) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4242.16 via Frontend Transport; Thu, 17 Jun 2021 20:31:27 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Jun
- 2021 20:31:26 +0000
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Jun
- 2021 20:31:26 +0000
-Received: from amhetre.nvidia.com (172.20.187.5) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Jun 2021 20:31:24 +0000
-From:   Ashish Mhetre <amhetre@nvidia.com>
-To:     <amhetre@nvidia.com>, <robin.murphy@arm.com>, <will@kernel.org>,
-        <vdumpa@nvidia.com>
-CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [Patch V2 2/2] iommu/arm-smmu: Fix race condition during iommu_group creation
-Date:   Fri, 18 Jun 2021 02:00:37 +0530
-Message-ID: <1623961837-12540-3-git-send-email-amhetre@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1623961837-12540-1-git-send-email-amhetre@nvidia.com>
-References: <1623961837-12540-1-git-send-email-amhetre@nvidia.com>
-X-NVConfidentiality: public
+        id S232305AbhFQUrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 16:47:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27506 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231826AbhFQUrr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 16:47:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623962738;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vpTnIUemqOshEpd//f5xMntFtlQkGOaInP6j17WpXWI=;
+        b=iTflhj/coDAw8So9pBsifMvIWEP4HGtkRlNesWPk36aeADUcubbNOKRbiv6yjd2rpDgf8j
+        Scf7FcxGWql1ds1GoqgKR4LsU8OFoCW0GTJ5DhHJ1nAMFqN2q5V5S4l4zFC9FV2zNov9F2
+        bZJ97k2LjCfyv8vpJFXjsa/gEsLQ75o=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-236-NMUWDyRqPGu9gtOtyxLXXg-1; Thu, 17 Jun 2021 16:45:37 -0400
+X-MC-Unique: NMUWDyRqPGu9gtOtyxLXXg-1
+Received: by mail-qk1-f200.google.com with SMTP id t131-20020a37aa890000b02903a9f6c1e8bfso3175604qke.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 13:45:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=vpTnIUemqOshEpd//f5xMntFtlQkGOaInP6j17WpXWI=;
+        b=mXta17AfSer5al08xWsMAjTkRUHNFv/Du5zHk86nWsnqss/6W9uiwPY/so9h8Ycrbr
+         PtAJs5nqv55eIlpNVaBqge5rTD39T2I6K89M/YU1E+aWzZsk3YeWDDlnRgyDqqfYXR59
+         ODP0IH2RT9373vK3hcXScMW6e+fuO7LNUXf2c/99iLiWQuSvoMPAgAC3GUSCP3Q51NXF
+         PeJl7tAmMVe+qUcajTeIOaa4JH89YlMqVNYcfae1HFb+74GbTbrNzE+h9AelpYDXP+Yh
+         UCKgSqyMIyFNyqiPbs5+577FeAp73BfZFcamHEevAc/mjT9pZiOkdRxhaWfe3/+6udyz
+         sIUw==
+X-Gm-Message-State: AOAM531YwHlC5BN7gz5nDgKsXhBZEVLtlpKs3GAKZDehMzEfWovYKOiy
+        pRpD1ww6HiJW6NAXbeJLV3zcn+VD4b8tJMaGoAeY6YA0NDPIn+6ewyWiXzg1MIgXpbro1nv7B93
+        KtOid7y7UBjJl72SajN1rJNLQ
+X-Received: by 2002:ac8:5e87:: with SMTP id r7mr1753321qtx.325.1623962737278;
+        Thu, 17 Jun 2021 13:45:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz+oHpsqIx+NBzTLes07czJPTW873K6oP8vENp+xLmoU04jdAkKJ4RFfNYLnjvR6dWKWFFv/g==
+X-Received: by 2002:ac8:5e87:: with SMTP id r7mr1753310qtx.325.1623962737068;
+        Thu, 17 Jun 2021 13:45:37 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id t196sm2477328qke.50.2021.06.17.13.45.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jun 2021 13:45:36 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 3/5] cgroup/cpuset: Allow non-top parent partition root to
+ distribute out all CPUs
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+References: <20210603212416.25934-1-longman@redhat.com>
+ <20210603212416.25934-4-longman@redhat.com>
+ <YMplzNzg7mMCU4JJ@slm.duckdns.org>
+Message-ID: <7f0a0f23-3fcd-a1a3-341a-2dbbde1f25ec@redhat.com>
+Date:   Thu, 17 Jun 2021 16:45:35 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2564e868-5114-4be5-fcbb-08d931cee23f
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3881:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3881EFB2E989B2E600FF334ACA0E9@DM6PR12MB3881.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:773;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eSDQWY2pwKSVr8P6Gz8zZLxlmBKp/OtLZGoHwEybFTdjMikMD60gAIuc/+nNivMDCbgn47i6edl3wTSOJcZlBAnHaFR3ede/jd+gPl8xF/dWxwArRY1uiRbMqzaByIjowpxE83q8lDdKd4TyPA0D4VeSSgKiKdxd/sqecIU3XRmiVY0AnQ0zM+zvohSgfUpgzqs0q7SvwZ6mSsqvCvbmUHS1ObMTLkXEJu48mRXcNzZtx/Y9ljowF9HNki2RKj3ZqD9h/TpNxzstDRN9pngpPcdvMpsRY9jwJTcxmBXKJ3zWFa63DJahfucxIIrEoZZSHjH4R9AZ9G28tHMTsOW8ax0LcHalTloXL2jTMrSnXkArxAohtjerj4iuNp/8iUUAKBueyffAY3/0uh/NOB41gvOEAeww0WGkpFY/Gjutj5VUgiiHALqyoT9S+N7BEGzXwWfnf9fgBlVP2zdMB4niUKBh2pF4Qw7pfIu2aALRxmKochkYLsUzWCJxO+Nf4zrv1puNXvlW9SNd7htRk2LpaRnNNOJPSzPrclE7bYN2utIhWt/E69ejNf+O5b6DuA25q4sB66yTPl6OgXZdUTpT/V9cjEM+AP8MX1tqsCnRbIu6tSCIzDKmT4JbW9WdgKrpbmfeq2g6SbVnbmWZtxKkPQ==
-X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(39860400002)(346002)(36840700001)(46966006)(7696005)(70586007)(70206006)(7636003)(6666004)(26005)(47076005)(478600001)(36860700001)(356005)(54906003)(5660300002)(8676002)(86362001)(82310400003)(4326008)(2906002)(36756003)(82740400003)(186003)(36906005)(110136005)(83380400001)(316002)(2616005)(6636002)(426003)(336012)(8936002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 20:31:27.6755
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2564e868-5114-4be5-fcbb-08d931cee23f
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT062.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3881
+In-Reply-To: <YMplzNzg7mMCU4JJ@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krishna Reddy <vdumpa@nvidia.com>
+On 6/16/21 4:57 PM, Tejun Heo wrote:
+> Hello,
+>
+> On Thu, Jun 03, 2021 at 05:24:14PM -0400, Waiman Long wrote:
+>> @@ -2181,6 +2192,13 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+>>   	    (cpumask_empty(cs->cpus_allowed) || nodes_empty(cs->mems_allowed)))
+>>   		goto out_unlock;
+>>   
+>> +	/*
+>> +	 * On default hierarchy, task cannot be moved to a cpuset with empty
+>> +	 * effective cpus.
+>> +	 */
+>> +	if (is_in_v2_mode() && cpumask_empty(cs->effective_cpus))
+>> +		goto out_unlock;
+>> +
+> This is inconsistent with how other events which leave a root partition
+> empty is handled. Woudln't it be more consistent to switch the parent to
+> PRS_ERROR and behave accordingly but allow it to have valid child roots?
 
-iommu_group is getting created more than once during asynchronous multiple
-display heads(devices) probe on Tegra194 SoC. All the display heads share
-same SID and are expected to be in same iommu_group.
-As arm_smmu_device_group() is not protecting group creation across devices,
-it is leading to multiple groups creation across devices with same SID and
-subsequent IOMMU faults.
-During race, the iommu_probe_device() call for two display devices is
-ending up in arm_smmu_device_group() twice and hence two groups are getting
-created. Ideally after group creation for first display device, same group
-should be used by second display device.
-This race is leading to context faults when one display device is accessing
-IOVA from other display device which shouldn't be the case for devices
-sharing same SID.
-Fix this by protecting group creation with smmu->stream_map_mutex.
+ From my point of view, PRS_ERROR is used when cpus are gone because of 
+cpu hotplug (offline). It can be a temporary condition that will be 
+corrected later on. I don't want to use PRS_ERROR for the particular 
+case that the users have explicitly distributed out all the cpus to 
+child partitions. I will clarify it in the next version and double check 
+to make sure that this rule is consistently apply.
 
-Signed-off-by: Krishna Reddy <vdumpa@nvidia.com>
----
-Changes since V1:
-- Update the commit message per Will's suggestion
-
- drivers/iommu/arm/arm-smmu/arm-smmu.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index 6f72c4d..21af179 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -1458,6 +1458,7 @@ static struct iommu_group *arm_smmu_device_group(struct device *dev)
- 	struct iommu_group *group = NULL;
- 	int i, idx;
- 
-+	mutex_lock(&smmu->stream_map_mutex);
- 	for_each_cfg_sme(cfg, fwspec, i, idx) {
- 		if (group && smmu->s2crs[idx].group &&
- 		    group != smmu->s2crs[idx].group)
-@@ -1466,8 +1467,10 @@ static struct iommu_group *arm_smmu_device_group(struct device *dev)
- 		group = smmu->s2crs[idx].group;
- 	}
- 
--	if (group)
-+	if (group) {
-+		mutex_unlock(&smmu->stream_map_mutex);
- 		return iommu_group_ref_get(group);
-+	}
- 
- 	if (dev_is_pci(dev))
- 		group = pci_device_group(dev);
-@@ -1481,6 +1484,7 @@ static struct iommu_group *arm_smmu_device_group(struct device *dev)
- 		for_each_cfg_sme(cfg, fwspec, i, idx)
- 			smmu->s2crs[idx].group = group;
- 
-+	mutex_unlock(&smmu->stream_map_mutex);
- 	return group;
- }
- 
--- 
-2.7.4
+Thanks,
+Longman
 
