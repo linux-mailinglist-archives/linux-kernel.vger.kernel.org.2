@@ -2,292 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB05D3AB05D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFADD3AB062
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbhFQJzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbhFQJzl (ORCPT
+        id S232001AbhFQJ4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:56:50 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:57613 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231580AbhFQJ4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:55:41 -0400
-Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EDDC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:53:33 -0700 (PDT)
-Received: by mail-ed1-x549.google.com with SMTP id cb4-20020a0564020b64b02903947455afa5so1202573edb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:53:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=a+zdbgiBb9ArM5mcAv9PP3FFuftdHwNPy6WG5ezhuhg=;
-        b=qxObvzoX4JdSGrxQ3ZuyPpBkDeRxJZg+BzJtMUVId5XO7aYRatSQFvH6BaFR5n1YYT
-         ozu0EXR9FPJfKda227z7e6mgME/Njuw/mhM3Sqj0NDlnTfs3mOf7Zfqqunthk+Zi+Tpi
-         3IFpuIYt7INLA9ujbK7GVHPR7irOutzijhzx2zywr+/kktXLCZk/yS0JJLFK8ct66m/6
-         PRlsCJVmqVCYYUiZBNM0OKjvm6XcdSdQnpwQIy1Hz/MbzkgKHUvn3fC1fkph7vlazrFY
-         Uh7euAWtna3Lk7mdeg6VNymy6MUoH5sF3CYu5Bj99IvKSlgMReTolU+nHXHVKLk3g2mq
-         xT7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=a+zdbgiBb9ArM5mcAv9PP3FFuftdHwNPy6WG5ezhuhg=;
-        b=ns6Q6IBRhEtmHeGqhVKRSlSy1wE+coyUFWjT1QNLdDn/s6C9I1Zto2lDG/LNCGuv9W
-         FtOza+vNyaoOjx7f+VcvI0UsQ7r4qm7YklR/ouPejpTLlJb7rgn3YQ0u8Pz1A6+uaZE5
-         TK4eKJf6LqZdqCcFQtiEAUdYHUWFT5YcFt4zm/rj477ec/t8B01cnE4++vZRGlUplGUA
-         eDqhgwr9MTFTkuudMsmWOK0XbcmcpZmrxBvuzje1iCqPYs6aMfGj2EFBnabdCBju2cCR
-         ja4aiZkls27FFAsx5FAj+wJA2EpoADweqfpmMVdEzNBgJmHp+UFmcdPepg9Q7G/qoFsK
-         hZ1Q==
-X-Gm-Message-State: AOAM532Wtv0UZ8J/8XRzSIDdmDsapCw6bIZd3jZme9ZuUtDryM9u0iZb
-        R/RxFl248isEYT7c9Xow3RjhCoyqSld57dXd
-X-Google-Smtp-Source: ABdhPJx+PI0fe7iUwOHHvsHwzw9nummcEoOdT9cgCgSTBXi6D0g39LHeXPVGfIyF2IUCTYY0OhGKjTEw6YgI+NNU
-X-Received: from mklencke.zrh.corp.google.com ([2a00:79e0:48:202:aed9:dffa:ca7e:ac4d])
- (user=stapelberg job=sendgmr) by 2002:aa7:c547:: with SMTP id
- s7mr5202848edr.239.1623923611816; Thu, 17 Jun 2021 02:53:31 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 11:53:03 +0200
-Message-Id: <20210617095309.3542373-1-stapelberg+linux@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH] backing_dev_info: introduce min_bw/max_bw limits
-From:   Michael Stapelberg <stapelberg+linux@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Michael Stapelberg <stapelberg+linux@google.com>,
-        Tejun Heo <tj@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Roman Gushchin <guro@fb.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Jan Kara <jack@suse.cz>, Song Liu <song@kernel.org>,
-        David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 17 Jun 2021 05:56:49 -0400
+Received: from [192.168.1.155] ([95.114.94.184]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1M60HD-1lvAAr3UNf-007Xz4; Thu, 17 Jun 2021 11:54:18 +0200
+Subject: Re: [PATCH] drivers: gpio: add virtio-gpio guest driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>
+References: <20210616114934.n3grzuh6c64wlaj6@vireshk-i7>
+ <5cffb354-0d00-5ace-260d-61ac0c4c7491@metux.net>
+ <20210617035901.kfzps6kg2emthjf4@vireshk-i7>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <116f8135-4ddf-e8fc-6838-94093702ec3d@metux.net>
+Date:   Thu, 17 Jun 2021 11:54:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210617035901.kfzps6kg2emthjf4@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:5xfAZwTzZ4o+ia6PMSDH0Shm5BlgIfrnYFFtxNKVaZA+eeGOifF
+ E1Rcvz5bYbbeICB9r1PkgEDUEv7BbvbdBQUc7HKsfwKH89QdGYgMF5/GkRR0T4cvR+BAFgd
+ /En00EAh1ZrRxqcRbYwemPjB3rg4aJqgZ7q3Ehs+PGl0xtFeNt8K6o+dAvCm1NnaBRbmxNM
+ 7/LFPWxR5qx61e53pLVaw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:N+tpquxcvGw=:zleIr4Jj0R75RtKPmlxQ0m
+ pmQ0d1rYmnaAZtR1cOYKVZ5sry1UNCDR3fi5cUQvIs+S6HxRaufVLFskObQxWDQ+GgSSlgYMb
+ hSF2DiO4MbJHE8VzYc7rruwFWh10t9sOFVDqHvbdS8gxG29kAA9Pz/ViYyFMg4+6We64J1VCn
+ D/3dCLP0i6zRQxuQXztpnAqZhoZ/Z8mims5FbUa61RFaICIb6YfWFWCg1sq4/XyEqGMhgIgIx
+ UgE3sYWWv+y3aq+n984ZtiqAwSnwLTRxCtsxWeLeEsSBErQOa8TlE8+C1NgN4p1/lh/ncn3uv
+ CSDNPlbAqujzTWWdu2lRQQySWJhPasul8Av/Lkm8EIC1GJ9Q8kVZ5aIBhsngRmjncq5BH6RN6
+ b3Lk0zHhUNzr29GU4b0rDybT63hcNqlcg/ZUow5saWUOMTBicMakygkgTw4D47qL5LL80m2o7
+ labfGjGeoMrP2x+sshnINvvlFhoSvsE67j1JPOJwQA4wys6K35eYhaMf9uLowTGUENCX0+kk2
+ 7RCpLmn9v6Ycmaaq8S0vJ0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These new knobs allow e.g. FUSE file systems to guide kernel memory
-writeback bandwidth throttling.
+On 17.06.21 05:59, Viresh Kumar wrote:
 
-Background:
+ > Okay, we figured out now that you _haven't_ subscribed to virtio lists
+ > and so your stuff never landed in anyone's inbox. But you did send
+ > something and didn't completely went away.
 
-When using mmap(2) to read/write files, the page-writeback code tries to
-measure how quick file system backing devices (BDI) are able to write data,
-so that it can throttle processes accordingly.
+Actually, I am subscribed in the list. We already had debates on it,
+including on your postings (but also other things). And the ascii
+version of the spec actually landed on the list last year, we had
+discussions about it there.
 
-Unfortunately, certain usage patterns, such as linkers (tested with GCC,
-but also the Go linker) seem to hit an unfortunate corner case when writing
-their large executable output files: the kernel only ever measures
-the (non-representative) rising slope of the starting bulk write, but the
-whole file write is already over before the kernel could possibly measure
-the representative steady-state.
+I've just had the problem that my patches didn't go through, which is
+very strange, since I actually am on the list and other mails of mine
+went through all the time. I'm now suspecting it's triggered by some
+subtle difference between my regular mail clients and git send-email.
 
-As a consequence, with each program invocation hitting this corner case,
-the FUSE write bandwidth steadily sinks in a downward spiral, until it
-eventually reaches 0 (!). This results in the kernel heavily throttling
-page dirtying in programs trying to write to FUSE, which in turn manifests
-itself in slow or even entirely stalled linker processes.
+ > Since you started this all and still want to do it, I will take my
+ > patches back and let you finish with what you started. I will help
+ > review them.
 
-Change:
+Thank you very much.
 
-This commit adds 2 knobs which allow avoiding this situation entirely on a
-per-file-system basis by restricting the minimum/maximum bandwidth.
+Please don't me wrong, I really don't wanna any kind of power play, just
+wanna get an technically good solution. If there had been any mis-
+understandings at that point, I'm officially saying sorry here.
 
-There are no negative effects expected from applying this patch.
+Let's be friends.
 
-At Google, we have been running this patch for about 1 year on many
-thousands of developer PCs without observing any issues. Our in-house FUSE
-filesystems pin the BDI write rate at its default setting of 100 MB/s,
-which successfully prevents the bug described above.
+You mentioned you've been missing with my spec. Please come foreward and
+tell us what exactly you're missing and what your use cases are.
 
-Usage:
+Note that I've intentionally left off certain "more sophisticated"
+functionality we find on *some* gpio controllers, eg. per-line irq
+masking, pinmux settings for several reasons, e.g.:
 
-To inspect the measured bandwidth, check the BdiWriteBandwidth field in
-e.g. /sys/kernel/debug/bdi/0:93/stats.
+* those are only implemented by some hardware
+* often implemented in or at least need to be coordinated with other
+   pieces of hw (e.g. in SoCs, pinmux is usually done in a separate
+   device)
+* it shall be possible to support even the most simple devices and
+   have the more sophisticated things totally optional. minium
+   requirements for silicon implementations should be the lowest possible
+   (IOW: minimal number of logic gates)
 
-To pin the measured bandwidth to its default of 100 MB/s, use:
+ >> You sound like a politician that tries to push an hidden agenda,
+ >> made by some secret interest group in the back room, against the
+ >> people - like "resistance is futile".
+ >
+ > :)
 
-    echo 25600 > /sys/class/bdi/0:42/min_bw
-    echo 25600 > /sys/class/bdi/0:42/max_bw
+Perhaps I've been a bit overreacting at that point. But: this is really
+that kind of talking we hear from politicians and corporate leaders
+since many years, whenever they wanna push something through that we the
+people don't want. Politicians use that as a social engineering tool for
+demotivating any resistance. Over heare in Germany this even had become
+a meme, and folks from CCC made a radio show about and named by that
+(the German word is "alternativlos" - in english: without any
+alternative). No idea about other countries, maybe it's a cultural
+issue, but over here, those kind of talking had become a red light.
 
-Notes:
+Of course, I never intended to accuse you of being one of these people.
+Sorry if there's been misunderstanding.
 
-For more discussion, including a test program for reproducing the issue,
-see the following discussion thread on the Linux Kernel Mailing List:
 
-https://lore.kernel.org/linux-fsdevel/CANnVG6n=3DySfe1gOr=3D0ituQidp56idGAR=
-DKHzP0hv=3DERedeMrMA@mail.gmail.com/
+Let's get back to your implementation: you've mentioned you're routing
+raw virtio traffic into userland, to some other process (outside VMMs
+like qemu) - how exactly are you doing that ?
 
-Why introduce these knobs instead of trying to tweak the
-throttling/measurement algorithm? The effort required to systematically
-analyze, improve and land such an algorithm change exceeds the time budget
-I have available. For comparison, check out this quote about the original
-patch set from 2011: =E2=80=9CFengguang said he draw more than 10K performa=
-nce
-graphs and read even more in the past year.=E2=80=9D (from
-http://bardofschool.blogspot.com/2011/). Given that nobody else has stepped
-up, despite the problem being known since 2016, my suggestion is to add the
-knobs until someone can spend significant time on a revision to the
-algorithm.
+That could be interesting for completely different scenarios. For
+example, I'm currently exploring how to get VirGL running between 
+separate processes running under the same kernel instance (fow now we
+only have the driver side inside VM and the device outside it), means
+driver and device are running as separate processes.
 
-Signed-off-by: Michael Stapelberg <stapelberg+linux@google.com>
+The primary use case are containers that shall have really GPU generic
+drivers, not knowing anything about the actual hardware on the host.
+Currently, container workloads wanting to use a GPU need to have special
+drivers for exactly the HW the host happens to have. This makes generic,
+portable container images a tuff problem.
+
+I haven't digged deeply into the matter, but some virtio-tap transport
+could be an relatively easy (probably not the most efficient) way to
+solve this problem. In that scanario it would like this:
+
+* we have a "virgl server" (could be some X or wayland application, or
+   completely own compositor) opens up the device-end of an "virtio-tap"
+   transport and attaches its virtio-gpio device emulation on it.
+* "virtio-tap" now creates a driver-end, kernel probes an virtio-gpu
+   instance on this (also leading to a new DRI device)
+* container runtime picks the new DRI device and maps it into the
+   container(s)
+   [ yet open question, whether one DRI device for many containers
+     is enough ]
+* container application sees that virtio-gpu DRI device and speaks to
+   it (mesa->virgl backend)
+* the "virgl-server" receives buffers and commands from via virtio and
+   sends them to the host's GL or Gallium API.
+
+Once we're already there, we might think whether it could make sense
+putting virtio routing into kvm itself, instead of letting qemu catch
+page faults and virtual irqs. Yet have to see whether that's a good
+idea, but I can imagine some performance improvements here.
+
+
+
+--mtx
+
+-- 
 ---
- include/linux/backing-dev-defs.h |  2 ++
- include/linux/backing-dev.h      |  3 +++
- mm/backing-dev.c                 | 40 ++++++++++++++++++++++++++++++++
- mm/page-writeback.c              | 28 ++++++++++++++++++++++
- 4 files changed, 73 insertions(+)
-
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-d=
-efs.h
-index 1d7edad9914f..e34797bb62a1 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -175,6 +175,8 @@ struct backing_dev_info {
- 	unsigned int capabilities; /* Device capabilities */
- 	unsigned int min_ratio;
- 	unsigned int max_ratio, max_prop_frac;
-+	u64 min_bw;
-+	u64 max_bw;
-=20
- 	/*
- 	 * Sum of avg_write_bw of wbs with dirty inodes.  > 0 if there are
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index 44df4fcef65c..bb812a4df3a1 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -107,6 +107,9 @@ static inline unsigned long wb_stat_error(void)
- int bdi_set_min_ratio(struct backing_dev_info *bdi, unsigned int min_ratio=
-);
- int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio=
-);
-=20
-+int bdi_set_min_bw(struct backing_dev_info *bdi, u64 min_bw);
-+int bdi_set_max_bw(struct backing_dev_info *bdi, u64 max_bw);
-+
- /*
-  * Flags in backing_dev_info::capability
-  *
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 271f2ca862c8..0201345d41f2 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -197,6 +197,44 @@ static ssize_t max_ratio_store(struct device *dev,
- }
- BDI_SHOW(max_ratio, bdi->max_ratio)
-=20
-+static ssize_t min_bw_store(struct device *dev,
-+		struct device_attribute *attr, const char *buf, size_t count)
-+{
-+	struct backing_dev_info *bdi =3D dev_get_drvdata(dev);
-+	unsigned long long limit;
-+	ssize_t ret;
-+
-+	ret =3D kstrtoull(buf, 10, &limit);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret =3D bdi_set_min_bw(bdi, limit);
-+	if (!ret)
-+		ret =3D count;
-+
-+	return ret;
-+}
-+BDI_SHOW(min_bw, bdi->min_bw)
-+
-+static ssize_t max_bw_store(struct device *dev,
-+		struct device_attribute *attr, const char *buf, size_t count)
-+{
-+	struct backing_dev_info *bdi =3D dev_get_drvdata(dev);
-+	unsigned long long limit;
-+	ssize_t ret;
-+
-+	ret =3D kstrtoull(buf, 10, &limit);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret =3D bdi_set_max_bw(bdi, limit);
-+	if (!ret)
-+		ret =3D count;
-+
-+	return ret;
-+}
-+BDI_SHOW(max_bw, bdi->max_bw)
-+
- static ssize_t stable_pages_required_show(struct device *dev,
- 					  struct device_attribute *attr,
- 					  char *buf)
-@@ -211,6 +249,8 @@ static struct attribute *bdi_dev_attrs[] =3D {
- 	&dev_attr_read_ahead_kb.attr,
- 	&dev_attr_min_ratio.attr,
- 	&dev_attr_max_ratio.attr,
-+	&dev_attr_min_bw.attr,
-+	&dev_attr_max_bw.attr,
- 	&dev_attr_stable_pages_required.attr,
- 	NULL,
- };
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 9f63548f247c..1ee9636e6088 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -701,6 +701,22 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, un=
-signed max_ratio)
- }
- EXPORT_SYMBOL(bdi_set_max_ratio);
-=20
-+int bdi_set_min_bw(struct backing_dev_info *bdi, u64 min_bw)
-+{
-+	spin_lock_bh(&bdi_lock);
-+	bdi->min_bw =3D min_bw;
-+	spin_unlock_bh(&bdi_lock);
-+	return 0;
-+}
-+
-+int bdi_set_max_bw(struct backing_dev_info *bdi, u64 max_bw)
-+{
-+	spin_lock_bh(&bdi_lock);
-+	bdi->max_bw =3D max_bw;
-+	spin_unlock_bh(&bdi_lock);
-+	return 0;
-+}
-+
- static unsigned long dirty_freerun_ceiling(unsigned long thresh,
- 					   unsigned long bg_thresh)
- {
-@@ -1068,6 +1084,15 @@ static void wb_position_ratio(struct dirty_throttle_=
-control *dtc)
- 	dtc->pos_ratio =3D pos_ratio;
- }
-=20
-+static u64 clamp_bw(struct backing_dev_info *bdi, u64 bw)
-+{
-+	if (bdi->min_bw > 0 && bw < bdi->min_bw)
-+		bw =3D bdi->min_bw;
-+	if (bdi->max_bw > 0 && bw > bdi->max_bw)
-+		bw =3D bdi->max_bw;
-+	return bw;
-+}
-+
- static void wb_update_write_bandwidth(struct bdi_writeback *wb,
- 				      unsigned long elapsed,
- 				      unsigned long written)
-@@ -1091,12 +1116,15 @@ static void wb_update_write_bandwidth(struct bdi_wr=
-iteback *wb,
- 	bw *=3D HZ;
- 	if (unlikely(elapsed > period)) {
- 		bw =3D div64_ul(bw, elapsed);
-+		bw =3D clamp_bw(wb->bdi, bw);
- 		avg =3D bw;
- 		goto out;
- 	}
- 	bw +=3D (u64)wb->write_bandwidth * (period - elapsed);
- 	bw >>=3D ilog2(period);
-=20
-+	bw =3D clamp_bw(wb->bdi, bw);
-+
- 	/*
- 	 * one more level of smoothing, for filtering out sudden spikes
- 	 */
---=20
-2.32.0.288.g62a8d224e6-goog
-
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
