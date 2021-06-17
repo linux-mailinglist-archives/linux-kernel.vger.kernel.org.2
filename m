@@ -2,62 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38AAE3AB608
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B596D3AB60B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbhFQOgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231346AbhFQOgW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:36:22 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE55C061574;
-        Thu, 17 Jun 2021 07:34:14 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0eb20047e0d50d7eeccd9e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:b200:47e0:d50d:7eec:cd9e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 407621EC0587;
-        Thu, 17 Jun 2021 16:34:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623940452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9A4uzd20AoYeVEiUFQvdsQsn30sk6E2K/EhLxqxg+EQ=;
-        b=gHgITpKSzKbtDNybTfBzGlTdSvlSKZwAKA1n4ZZGggpfiYFEOKpy8+Gw5/R4uUlLjwCnST
-        otpX9GZlcXkvdkh1pBA0ql0EkStmW76B/GIbmmpI6Y4ZwFQyDNTgzXWTb9I+H3hiCB6PvJ
-        JmLV4AumAvBlK3ikYMB33x56owU2aME=
-Date:   Thu, 17 Jun 2021 16:34:01 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, seanjc@google.com,
-        dave.hansen@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        Yang Zhong <yang.zhong@intel.com>
-Subject: Re: [PATCH] x86/sgx: Add missing xa_destroy() when virtual EPC is
- destroyed
-Message-ID: <YMtdWduyALHxggoP@zn.tnic>
-References: <20210615101639.291929-1-kai.huang@intel.com>
- <20210615132001.kd6cuktq37dvoq3l@kernel.org>
- <618b42d66a4f2087ef4c54cc50fd56d01233eab1.camel@intel.com>
+        id S232949AbhFQOhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:37:51 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42856 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232816AbhFQOhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 10:37:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Lv7YF61cRg5b+c6h339gNfE39+KuqQcnJ+b/h7HNkMs=; b=QUfvcRzR4oJjA4WPHLIaSqaKAk
+        NYz7dnytOzzG4oSiSmqxRHWmpYnbhfClg78+4VOjhM+LtXPV66UqQbj/jwfN6S+z8hBmqpLTYiXX3
+        3VL9VoFd0eG8AvLXtXdTZ97gf0YK0iVDeyIsrQP2f01nXPWpRpNF6kJzsu7JJR7wGFe8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ltt75-009vTA-Id; Thu, 17 Jun 2021 16:35:23 +0200
+Date:   Thu, 17 Jun 2021 16:35:23 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Gatis Peisenieks <gatis@mikrotik.com>
+Cc:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        hkallweit1@gmail.com, jesse.brandeburg@intel.com,
+        dchickles@marvell.com, tully@mikrotik.com, eric.dumazet@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] atl1c: improve reliability of mdio ops on Mikrotik
+ 10/25G NIC
+Message-ID: <YMtdq1SbLqM65vBq@lunn.ch>
+References: <20210617122553.2970190-1-gatis@mikrotik.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <618b42d66a4f2087ef4c54cc50fd56d01233eab1.camel@intel.com>
+In-Reply-To: <20210617122553.2970190-1-gatis@mikrotik.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 12:30:04PM +1200, Kai Huang wrote:
-> Thanks Jarkko. I literally need to find some way to avoid such error in future :)
+On Thu, Jun 17, 2021 at 03:25:53PM +0300, Gatis Peisenieks wrote:
+> MDIO ops on Mikrotik 10/25G NIC can occasionally take longer
+> to complete. This increases the timeout from 1.2 to 12ms.
 
-That way is called "integrate checkpatch.pl into your patch creation
-workflow".
+That seems a very long time. A C22 transaction is 64 bits, and it is
+clocked out at 2.5MHz. So it should take (1/2.5*1000*1000)*64 =
+0.0000256s, i.e. 0.0256ms. 1.2ms is already 50 times longer than
+needed, and now you are suggesting to make it 500 times longer than
+needed?
 
--- 
-Regards/Gruss,
-    Boris.
+Are you sure there is not something else going on here?  I notice
+atl1c_stop_phy_polling() does not check the return from
+atl1c_wait_mdio_idle(). Maybe this is your problem, you are not
+waiting long enough for the MAC to stop directly accessing the PHY?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+	Andrew
