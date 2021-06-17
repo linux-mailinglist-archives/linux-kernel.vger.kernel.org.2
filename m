@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1731A3AAB39
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C372A3AAB42
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhFQFsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 01:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
+        id S230269AbhFQFsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 01:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbhFQFsg (ORCPT
+        with ESMTP id S230238AbhFQFsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 01:48:36 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39030C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:46:29 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id e22so4001286pgv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:46:29 -0700 (PDT)
+        Thu, 17 Jun 2021 01:48:43 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E979C0613A3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:46:33 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id e33so4033556pgm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:46:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TTzo1X6mV9W2PxKItj/q6YwMruyeGBnEnmIaedUDegw=;
-        b=dmOWihjEIb+styuVVaPUeGrioleqeiisos1r++nvYs953nJgoC8wUz+lmrbchRgDHr
-         C3VncXUxuIl0teSUshnNh4qNoLtNC8k546EGf8ex5vxe5eSX4v6jwQ407g9dxQLTVbwQ
-         f2KYTy+/r6sAT8eJnY9y/DWximSLDaFyB5ebEtPL+a3oOa5cm08jpIti0hPearI2ET5P
-         EomgxepYXSqdsVnL0FTbGqqmUa8WQzVTdNYzogclAX9GUUzMB1K+VFIagHtv0wvmbpJy
-         bk38MFYwfRc76RP9YSJzASZLuv/4t7D/VNuOHj4dos+7q90Uw1vNHdtqi44oecO4obqC
-         XPxA==
+        bh=/UKzT5tHNyrCtmsqkqYRrpb8fD178fqkEWWYV9zJ+Sw=;
+        b=RCJlYV66QaV7p11YyDciyWIvseLVxMEpd3sIXfr5dEqljBi/gBcoDUTTN8WgrJn5IC
+         ECJiUXcnNnzFwN2FB1g3V3z/GfGTOjbWpx5Ct/rOKNn3q6qhxPoko1mqXtGH3+03xWna
+         h6yL/6puWOL6PymhwB6uugcb5zPPb0cYC/r3Mk+rnG0jo3i9PQOkzaX/ZED5mMSzlhai
+         Ld/h2bJyQ80wcAiVzLczhk7Ht45dUajQHSoINkBGdb2yBTPN/Or55SJZuSXoAgOIYBVx
+         MTA/ix8FmtVFJRyARsWe5G9o23P89v3elgtgELacPyCd1wF8S9mAXvUupOyH8rbaObll
+         8myg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TTzo1X6mV9W2PxKItj/q6YwMruyeGBnEnmIaedUDegw=;
-        b=NMZgDe52UvqHx0oP6vkyvZjLl/8wMfXOSsrtztffu4DtLjTRb7etm+YcZIhpb10RtW
-         l0iavNzGhohWrOE5l4q668eWLYHDhQcERxDe80IjNihjuvnTzlYbAgwa+70axEMMRlGk
-         kKWX5dpVZtqdqu6NrhwkRDDjIUnVXhPaPFju7WM3gJhr91i87zx4hhrc2jj714myMZ7u
-         tfRL0HD/bvPDJqiVKlRZ6dFvzeSWlcWAvLXK8nxGDtuyRo64Gc50GsL3efA8yUw7Wwwr
-         RSTUkbbpxOSyC38CfRkSjnUn6SxQHUA6E/CPRq7L35sN4QsUiwo6hXkACcZFVBdNlah4
-         kbzg==
-X-Gm-Message-State: AOAM531uowG/GJkNvTzU2k9QdMfPe5O5vXZzd7b/ZC+/YWCMgR4h/WRy
-        4/5BzKYxJj0D9m43NTyfjXg5pg==
-X-Google-Smtp-Source: ABdhPJzjqkH/+emHIXDX18dHKKV3NouPjTTgnfGaa1BcmvB6qbp6amy7YkFUW9idD+coWTM96YkKcQ==
-X-Received: by 2002:a63:5915:: with SMTP id n21mr3380529pgb.58.1623908788767;
-        Wed, 16 Jun 2021 22:46:28 -0700 (PDT)
+        bh=/UKzT5tHNyrCtmsqkqYRrpb8fD178fqkEWWYV9zJ+Sw=;
+        b=NUlW30F/tWZMozh6EA3oxf1ZpirRKW+d42ySuAwndr5Q//xF1+ZWKTeJ2PCADj+1gX
+         UWNsCT1nIjRyZWgKKaRJrAxZSFM1rMGf4u+4MaRPsAHMiOo1ArSYDjqGM60qv2mNJZ7X
+         9AR/pv3F4ur4/y6aj8qQapf5JnGHCOvLinKmLpUFznla8+QubWtxkpmGsl5IjuBwJ/VX
+         Af4y7wQkSkWGL/BD8hUAou3IxVoFhOCpjBtPcNpQlZb6hoSJvAErgS/CSGpUiS5l14Lu
+         Cf1RBhiOr6gaBL8KmArmptP/grG71+J7F8kzGXBUDH3a9tZKoQ9MBNTWuP3Ax7veN90p
+         Tb5g==
+X-Gm-Message-State: AOAM530Htu18PeZnceKAZPZ5tZ/n9NzQU4oGw3BBJktRlcQcOCzeePMc
+        +uuahVYM5KaDXM8qAM7AI3+5EmHa6a1sDQ==
+X-Google-Smtp-Source: ABdhPJzi2FwVCB5GDMFuDu4AUnxjS6M7QI1kgRMbytxW4/MNqwel+SPlRhE8HmyndD3zQ21MHmLqig==
+X-Received: by 2002:a63:1a4f:: with SMTP id a15mr3295630pgm.313.1623908793161;
+        Wed, 16 Jun 2021 22:46:33 -0700 (PDT)
 Received: from localhost.name ([122.177.46.2])
-        by smtp.gmail.com with ESMTPSA id y27sm3882700pff.202.2021.06.16.22.46.24
+        by smtp.gmail.com with ESMTPSA id y27sm3882700pff.202.2021.06.16.22.46.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 22:46:28 -0700 (PDT)
+        Wed, 16 Jun 2021 22:46:32 -0700 (PDT)
 From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
@@ -55,9 +55,9 @@ Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
         devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
         Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH v3 3/5] arm64: dts: qcom: pmm8155au_1: Add base dts file
-Date:   Thu, 17 Jun 2021 11:15:46 +0530
-Message-Id: <20210617054548.353293-4-bhupesh.sharma@linaro.org>
+Subject: [PATCH v3 4/5] arm64: dts: qcom: pmm8155au_2: Add base dts file
+Date:   Thu, 17 Jun 2021 11:15:47 +0530
+Message-Id: <20210617054548.353293-5-bhupesh.sharma@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210617054548.353293-1-bhupesh.sharma@linaro.org>
 References: <20210617054548.353293-1-bhupesh.sharma@linaro.org>
@@ -67,7 +67,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add base DTS file for pmm8155au_1 along with GPIOs, power-on, rtc and vadc
+Add base DTS file for pmm8155au_2 along with GPIOs, power-on, rtc and vadc
 nodes.
 
 Cc: Mark Brown <broonie@kernel.org>
@@ -75,16 +75,16 @@ Cc: Vinod Koul <vkoul@kernel.org>
 Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi | 134 ++++++++++++++++++++++
- 1 file changed, 134 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+ arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi | 107 ++++++++++++++++++++++
+ 1 file changed, 107 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi
 
-diff --git a/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi b/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+diff --git a/arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi b/arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi
 new file mode 100644
-index 000000000000..b04c28e54470
+index 000000000000..0c7d7a66c0b5
 --- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
-@@ -0,0 +1,134 @@
++++ b/arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi
+@@ -0,0 +1,107 @@
 +// SPDX-License-Identifier: BSD-3-Clause
 +/*
 + * Copyright (c) 2021, Linaro Limited
@@ -93,15 +93,14 @@ index 000000000000..b04c28e54470
 +#include <dt-bindings/input/input.h>
 +#include <dt-bindings/interrupt-controller/irq.h>
 +#include <dt-bindings/spmi/spmi.h>
-+#include <dt-bindings/iio/qcom,spmi-vadc.h>
 +
 +/ {
 +	thermal-zones {
-+		pmm8155au-1-thermal {
++		pmm8155au-2-thermal {
 +			polling-delay-passive = <100>;
 +			polling-delay = <0>;
 +
-+			thermal-sensors = <&pmm8155au_1_temp>;
++			thermal-sensors = <&pmm8155au_2_temp>;
 +
 +			trips {
 +				trip0 {
@@ -127,42 +126,35 @@ index 000000000000..b04c28e54470
 +};
 +
 +&spmi_bus {
-+	pmic@0 {
++	pmic@4 {
 +		compatible = "qcom,pmm8155au", "qcom,spmi-pmic";
-+		reg = <0x0 SPMI_USID>;
++		reg = <0x4 SPMI_USID>;
 +		#address-cells = <1>;
 +		#size-cells = <0>;
 +
-+		pon: power-on@800 {
++		power-on@800 {
 +			compatible = "qcom,pm8916-pon";
 +			reg = <0x0800>;
-+			pwrkey {
-+				compatible = "qcom,pm8941-pwrkey";
-+				interrupts = <0x0 0x8 0x0 IRQ_TYPE_EDGE_BOTH>;
-+				debounce = <15625>;
-+				bias-pull-up;
-+				linux,code = <KEY_POWER>;
 +
-+				status = "disabled";
-+			};
++			status = "disabled";
 +		};
 +
-+		pmm8155au_1_temp: temp-alarm@2400 {
++		pmm8155au_2_temp: temp-alarm@2400 {
 +			compatible = "qcom,spmi-temp-alarm";
 +			reg = <0x2400>;
-+			interrupts = <0x0 0x24 0x0 IRQ_TYPE_EDGE_BOTH>;
-+			io-channels = <&pmm8155au_1_adc ADC5_DIE_TEMP>;
++			interrupts = <0x4 0x24 0x0 IRQ_TYPE_EDGE_BOTH>;
++			io-channels = <&pmm8155au_2_adc ADC5_DIE_TEMP>;
 +			io-channel-names = "thermal";
 +			#thermal-sensor-cells = <0>;
 +		};
 +
-+		pmm8155au_1_adc: adc@3100 {
++		pmm8155au_2_adc: adc@3100 {
 +			compatible = "qcom,spmi-adc5";
 +			reg = <0x3100>;
 +			#address-cells = <1>;
 +			#size-cells = <0>;
 +			#io-channel-cells = <1>;
-+			interrupts = <0x0 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
++			interrupts = <0x4 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
 +
 +			ref-gnd@0 {
 +				reg = <ADC5_REF_GND>;
@@ -183,26 +175,7 @@ index 000000000000..b04c28e54470
 +			};
 +		};
 +
-+		pmm8155au_1_adc_tm: adc-tm@3500 {
-+			compatible = "qcom,spmi-adc-tm5";
-+			reg = <0x3500>;
-+			interrupts = <0x0 0x35 0x0 IRQ_TYPE_EDGE_RISING>;
-+			#thermal-sensor-cells = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		pmm8155au_1_rtc: rtc@6000 {
-+			compatible = "qcom,pm8941-rtc";
-+			reg = <0x6000>;
-+			reg-names = "rtc", "alarm";
-+			interrupts = <0x0 0x61 0x1 IRQ_TYPE_NONE>;
-+
-+			status = "disabled";
-+		};
-+
-+		pmm8155au_1_gpios: gpio@c000 {
++		pmm8155au_2_gpios: gpio@c000 {
 +			compatible = "qcom,pmm8155au-gpio";
 +			reg = <0xc000>;
 +			gpio-controller;
@@ -212,9 +185,9 @@ index 000000000000..b04c28e54470
 +		};
 +	};
 +
-+	pmic@1 {
++	pmic@5 {
 +		compatible = "qcom,pmm8155au", "qcom,spmi-pmic";
-+		reg = <0x1 SPMI_USID>;
++		reg = <0x5 SPMI_USID>;
 +		#address-cells = <1>;
 +		#size-cells = <0>;
 +	};
