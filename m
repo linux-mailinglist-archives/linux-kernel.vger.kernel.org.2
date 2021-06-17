@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB74C3ABBC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7B83ABBCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbhFQS24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 14:28:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37566 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231720AbhFQS22 (ORCPT
+        id S232270AbhFQSaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhFQSaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:28:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623954379;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XvRDiOu3L2aDPvixr4wW0PI+YISrBEUZXNM7z6Kd0Ug=;
-        b=i03K+5E+3a7yAlrR8xc7sYkSTK6lPXRVS0l56Eyx+FPzJr5n1nZsDbMP4Yh9ZAb6vubO6I
-        YgQmDBgeLO4Wz6U+cNavAPlhRlGe8cAs+H266J20XjUxYrvY5ENwksVaohFFUWaC3Fmg/L
-        eHRKG6Ep8rKJj3+ZaBB0OLytPmKlAug=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-XsrQFFbYON2R5xXLsdEpWA-1; Thu, 17 Jun 2021 14:26:18 -0400
-X-MC-Unique: XsrQFFbYON2R5xXLsdEpWA-1
-Received: by mail-ej1-f71.google.com with SMTP id br12-20020a170906d14cb02904311c0f32adso2784281ejb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 11:26:18 -0700 (PDT)
+        Thu, 17 Jun 2021 14:30:01 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACA6C061574;
+        Thu, 17 Jun 2021 11:27:52 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id g20so11678669ejt.0;
+        Thu, 17 Jun 2021 11:27:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=z9dDka7WqooF8QCzzctsFQ5AKA9e87F9WYFEk1ZSQcs=;
+        b=AyaTj1aLjzpje1OtpqcJshH5hFvoLUhyOYXtR59yQuHG27PVY7Rd7fRhPV1SqeOEvF
+         W4iuM/Sc7iDgwNK4ExCcYGQzPYwi5JEGEvgpVh9TBrkdMDHekt6NxEaaUvJpqAyV3HE9
+         jhUOEdDntyO7yrxvC1JFGSt/m6hmeCN2UejRfoPxewkZzN8M3ukSsdx/1FaSPV4h7Ny/
+         y1k/KRm+W3/G7kCbJCGsq0DcEOReF6xsxVsbIFT9ZkuE00w0r+d2nHyEGRuv+xvL5QL5
+         40Nnt9eMlxJACYj3NaH/2iqCEsmYX/cKKOvqFA+Xhxq0HnhEHPE3wV3MjneUxti535ml
+         whYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XvRDiOu3L2aDPvixr4wW0PI+YISrBEUZXNM7z6Kd0Ug=;
-        b=mL1mfuFQo3Wlb6BcehvE8UuDcCvLp8lf4yrAwvt8v9idGTA0yQZZf4TzFsYRrxs93x
-         ue9yGZbGQHxuArs6f2FN/DMzPT155Ox3P2ePEAeKJh89onlGdEQEu28k3/hC+5o1II5j
-         D2yfT3WpCVLHuJfcmYiJItJzp5xhPNLCrHJ/g9MP/38MpNFcj9XU/xWlR6O5T5jo7HwP
-         zEKZsKmU3X17rx0JrIry3QN1O1mpAu+ysKoPN7nIVpBEjpZ3vnVCSIxhegzpNPwTj5A5
-         9lb5uwRlR7Xon+06bYIqomCP3FFKmuB3/SEL9v4jX/QZyuVEGxote8/9fpjVquaa6lJ8
-         uJEQ==
-X-Gm-Message-State: AOAM530ioZ7Dd1VPEueYovpgjbLNBskgKGNOOWhUYd1Njd2TWY2iwwRg
-        U0R8bhQTvz6Q12zl5M0nZKqF35sdLH6yT63nd/UrbQqry7hjBpKh5LjMWCU3JRuRFcBBYpcWIHc
-        ++DlQzW8PvxAOGDZ4sFWiUr1M
-X-Received: by 2002:a05:6402:31f3:: with SMTP id dy19mr8407669edb.153.1623954377523;
-        Thu, 17 Jun 2021 11:26:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwHC/0zrifPDrAWmAlm02JHo9HIKYIOLCBfKF2EIzEF/aYCysomV9DjE4RzUEhNqpvTWbYIiA==
-X-Received: by 2002:a05:6402:31f3:: with SMTP id dy19mr8407653edb.153.1623954377328;
-        Thu, 17 Jun 2021 11:26:17 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u21sm4202016eja.59.2021.06.17.11.26.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 11:26:16 -0700 (PDT)
-Subject: Re: [PATCH v3] KVM: LAPIC: Keep stored TMCCT register value 0 after
- KVM_SET_LAPIC
-To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <1623223000-18116-1-git-send-email-wanpengli@tencent.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <02391363-6713-1548-fa4b-70b70cc96f79@redhat.com>
-Date:   Thu, 17 Jun 2021 20:26:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=z9dDka7WqooF8QCzzctsFQ5AKA9e87F9WYFEk1ZSQcs=;
+        b=o8FsTaq/8fg/UgFn3di1CRhnuV9ZbwxggglU8Doxf4/rk3SBv4sDIRezljxDfpgogH
+         V5V0dTgEwzf3k2n6N8a2nZ7Tg1zChAdb5uvNA0GIKJqdWv7tTKwjuf3KYt53je+zLX6H
+         zY3oUCB+7BjA9xcOsdjCjxKAxzTZpObdzZQRPE67Qmybu14Lg9iR0Pa8o+gWrNFwKiCV
+         lXebQ4qYKcSolCi+uEcq1oXIAI7/SYuKLrb/NtC5BW3LBNfICBwFl3Lp+12tyTQ+osv9
+         FJo8TMq3+nRUAElXZN305hkImIq4JfBHHSTmDVI945cqSJ/8I6TcKUf9NumDCUBkIv8F
+         0fuw==
+X-Gm-Message-State: AOAM5339AUGfpgpjyxca7Sgq+FeAjCSR/2Y/QyLAFBiLQAoJH/3+PSS2
+        5acaQkUw2TSEtYe8e16ksrQm7Gi1FYw=
+X-Google-Smtp-Source: ABdhPJypw9hZOdaqWcpGkUc3xFICl20D/p5X8o0IST2ZLxYVKIwHB4cA0WK4vA9Y4STPcKtfNnxTzA==
+X-Received: by 2002:a05:6402:1355:: with SMTP id y21mr1917680edw.136.1623954471027;
+        Thu, 17 Jun 2021 11:27:51 -0700 (PDT)
+Received: from localhost ([185.246.22.209])
+        by smtp.gmail.com with ESMTPSA id r23sm34618edy.13.2021.06.17.11.27.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 11:27:50 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 20:27:45 +0200
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Yangbo Lu <yangbo.lu@nxp.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, mptcp@lists.linux.dev,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Rui Sousa <rui.sousa@nxp.com>,
+        Sebastien Laveze <sebastien.laveze@nxp.com>
+Subject: Re: [net-next, v3, 02/10] ptp: support ptp physical/virtual clocks
+ conversion
+Message-ID: <20210617182745.GC4770@localhost>
+References: <20210615094517.48752-1-yangbo.lu@nxp.com>
+ <20210615094517.48752-3-yangbo.lu@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <1623223000-18116-1-git-send-email-wanpengli@tencent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615094517.48752-3-yangbo.lu@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06/21 09:16, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> KVM_GET_LAPIC stores the current value of TMCCT and KVM_SET_LAPIC's memcpy
-> stores it in vcpu->arch.apic->regs, KVM_SET_LAPIC could store zero in
-> vcpu->arch.apic->regs after it uses it, and then the stored value would
-> always be zero. In addition, the TMCCT is always computed on-demand and
-> never directly readable.
-> 
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
->   arch/x86/kvm/lapic.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 6d72d8f43310..9bd29b3ca790 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2628,6 +2628,7 @@ int kvm_apic_set_state(struct kvm_vcpu *vcpu, struct kvm_lapic_state *s)
->   	apic_manage_nmi_watchdog(apic, kvm_lapic_get_reg(apic, APIC_LVT0));
->   	update_divide_count(apic);
->   	__start_apic_timer(apic, APIC_TMCCT);
-> +	kvm_lapic_set_reg(apic, APIC_TMCCT, 0);
->   	kvm_apic_update_apicv(vcpu);
->   	apic->highest_isr_cache = -1;
->   	if (vcpu->arch.apicv_active) {
-> 
+On Tue, Jun 15, 2021 at 05:45:09PM +0800, Yangbo Lu wrote:
 
-Queued, thanks.
+> diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
+> index 3f388d63904c..6949afc9d733 100644
+> --- a/drivers/ptp/ptp_private.h
+> +++ b/drivers/ptp/ptp_private.h
+> @@ -46,6 +46,9 @@ struct ptp_clock {
+>  	const struct attribute_group *pin_attr_groups[2];
+>  	struct kthread_worker *kworker;
+>  	struct kthread_delayed_work aux_work;
+> +	u8 n_vclocks;
 
-Paolo
+Hm, type is u8, but ...
 
+> +	struct mutex n_vclocks_mux; /* protect concurrent n_vclocks access */
+> +	bool vclock_flag;
+>  };
+>  
+
+>  #define info_to_vclock(d) container_of((d), struct ptp_vclock, info)
+> diff --git a/include/uapi/linux/ptp_clock.h b/include/uapi/linux/ptp_clock.h
+> index 1d108d597f66..4b933dc1b81b 100644
+> --- a/include/uapi/linux/ptp_clock.h
+> +++ b/include/uapi/linux/ptp_clock.h
+> @@ -69,6 +69,11 @@
+>   */
+>  #define PTP_PEROUT_V1_VALID_FLAGS	(0)
+>  
+> +/*
+> + * Max number of PTP virtual clocks per PTP physical clock
+> + */
+> +#define PTP_MAX_VCLOCKS			20
+
+Only 20 clocks are allowed?  Why?
+
+Thanks,
+Richard
