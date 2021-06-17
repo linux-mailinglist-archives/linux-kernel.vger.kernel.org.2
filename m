@@ -2,68 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFBE3AB41A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14403AB425
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232083AbhFQM5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:57:46 -0400
-Received: from mga14.intel.com ([192.55.52.115]:56980 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230137AbhFQM5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:57:44 -0400
-IronPort-SDR: LjwjDrABvrSZU5k9Xoid7m+pguyBzEpLZuNwZCsab1hVsH5QarZ3PTV/1iqZap+6/dcRMOw8rM
- x05b+KKVaWcQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="206180083"
-X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
-   d="scan'208";a="206180083"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 05:55:30 -0700
-IronPort-SDR: 9hRuB0jGPR1x7UZWUt9VVEzVQJC4wSSuZGxMHE5FzVnxbkwDr9VMb/OsQSk1ji14e+cIbwkOB1
- R7Sss0cYTfpg==
-X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
-   d="scan'208";a="637833283"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 05:55:27 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1ltrYK-003LQb-91; Thu, 17 Jun 2021 15:55:24 +0300
-Date:   Thu, 17 Jun 2021 15:55:24 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
-        gregkh@linuxfoundation.org, kaixuxia@tencent.com,
-        gustavoars@kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        weiyongjun1@huawei.com, yuehaibing@huawei.com,
-        yangjihong1@huawei.com, yukuai3@huawei.com,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next v4] media: staging: atomisp: use list_splice_init
- in atomisp_compat_css20.c
-Message-ID: <YMtGPPgM+zv0iL5u@smile.fi.intel.com>
-References: <20210617124709.670936-1-libaokun1@huawei.com>
+        id S232103AbhFQNAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:00:35 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7473 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230137AbhFQNAb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:00:31 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5MV425MJzZjKX;
+        Thu, 17 Jun 2021 20:55:24 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 20:58:19 +0800
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 20:58:19 +0800
+Subject: Re: [PATCH -next v2] ACPI: sysfs: fix doc warnings in device_sysfs.c
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "ACPI Devel Maling List" <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        "Yue Haibing" <yuehaibing@huawei.com>, <yangjihong1@huawei.com>,
+        yu kuai <yukuai3@huawei.com>
+References: <20210615071914.3067407-1-libaokun1@huawei.com>
+ <CAJZ5v0iMGTDAbY+JivBFRP6soTC5v_imqWZ9jSZoQVeYdgVoCw@mail.gmail.com>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+Message-ID: <6e737a9a-72e9-509c-faa5-85a9f89da9ab@huawei.com>
+Date:   Thu, 17 Jun 2021 20:58:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617124709.670936-1-libaokun1@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAJZ5v0iMGTDAbY+JivBFRP6soTC5v_imqWZ9jSZoQVeYdgVoCw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 08:47:09PM +0800, Baokun Li wrote:
-> Using list_splice_init() instead of entire while-loops
-> in atomisp_compat_css20.c.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
+Thank you for your advice.
 
-You missed changelog.
-And I believe you missed the changes.
-So, what's the point?
+I'll follow your advice strictly.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Best Regards.
 
 
+在 2021/6/17 20:34, Rafael J. Wysocki 写道:
+> On Tue, Jun 15, 2021 at 9:10 AM Baokun Li <libaokun1@huawei.com> wrote:
+>> Fixes the following W=1 kernel build warning(s):
+>>
+>>   drivers/acpi/device_sysfs.c:278: warning: Function parameter or
+>>    member 'dev' not described in 'acpi_device_uevent_modalias'
+>>   drivers/acpi/device_sysfs.c:278: warning: Function parameter or
+>>    member 'env' not described in 'acpi_device_uevent_modalias'
+>>   drivers/acpi/device_sysfs.c:323: warning: Function parameter or
+>>    member 'dev' not described in 'acpi_device_modalias'
+>>   drivers/acpi/device_sysfs.c:323: warning: Function parameter or
+>>    member 'buf' not described in 'acpi_device_modalias'
+>>   drivers/acpi/device_sysfs.c:323: warning: Function parameter or
+>>    member 'size' not described in 'acpi_device_modalias'
+>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>> V1->V2:
+>>          Make comments more appropriate
+>>
+>>   drivers/acpi/device_sysfs.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+>> index a393e0e09381..d96e38b2a0d1 100644
+>> --- a/drivers/acpi/device_sysfs.c
+>> +++ b/drivers/acpi/device_sysfs.c
+>> @@ -268,6 +268,8 @@ int __acpi_device_uevent_modalias(struct acpi_device *adev,
+>>
+>>   /**
+>>    * acpi_device_uevent_modalias - uevent modalias for ACPI-enumerated devices.
+>> + * @dev: Struct device to get acpi device node.
+>> + * @env: Environment variables of the kobject uevent.
+>>    *
+>>    * Create the uevent modalias field for ACPI-enumerated devices.
+>>    *
+>> @@ -313,6 +315,9 @@ static int __acpi_device_modalias(struct acpi_device *adev, char *buf, int size)
+>>
+>>   /**
+>>    * acpi_device_modalias - modalias sysfs attribute for ACPI-enumerated devices.
+>> + * @dev: Struct device to get acpi device node.
+>> + * @buf: The buffer to save pnp_modalias and of_modalias.
+>> + * @size: Size of buffer.
+>>    *
+>>    * Create the modalias sysfs attribute for ACPI-enumerated devices.
+>>    *
+>> --
+> Applied as 5.14 material with fixed spelling ("acpi" -> "ACPI").
+>
+> Please always spell ACPI in capitals in comments, patch changelogs,
+> subjects and similar.
+>
+> Thanks!
+> .
