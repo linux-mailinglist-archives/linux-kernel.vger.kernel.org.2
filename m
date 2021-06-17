@@ -2,92 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBCA3AAD9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061F63AADA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhFQHd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 03:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhFQHdU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 03:33:20 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AD5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 00:31:10 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id h22-20020a05600c3516b02901a826f84095so3057576wmq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 00:31:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oD7WDBfksAob2uZAfcWpNAeg423Dg1GjH5fkSqNC5wM=;
-        b=dmcjOxA0mi2L+tbtJzma0ccU3XNkduDfY0HLx+3yKvLU77NYaVHKruZylatcJ/WWnF
-         DYxmQVSu6lJL8JoD7+z9W8qKPkz+H5qgOUUSWYwYbyZZwro6JKtu5P/cG87tctm7PSL+
-         XxmCjTzb4x9bn7MreZdwwAzgHkh4jxmFzcjSedIsVN9cMAifrDb/s1qMYbWiA1YUogLi
-         x5vW/3TiYWch6rZzrf4w2/T84vEn0Bpy/8geRltOgfPMyWHUHD+d3Zkzm2LL7ZT/5cI9
-         qTYqk6Qlf5UmyWL7hPHbq0nSwSYDS/ELb6YNQMmBUoXo8gkGBsyH+DZt/fp9f4vDckJd
-         KdQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oD7WDBfksAob2uZAfcWpNAeg423Dg1GjH5fkSqNC5wM=;
-        b=KqqwG3rm9zgUU50n/AzSmnq3iJ6HG2cZoGLCxu+nlmk8sEP8rk8oFxpBu3l1EWbrdR
-         liqDXtyk19gul1XVQ69se5VXmZ/90GDyznBZopdGk15H5yAmgLfo8PtOPTlzJ2uGyder
-         M9pQJYQbE2J3nYIOaO6N1oZ57RJHOLUWuh49jAdWxCQikIQmKWHa5KIvfCUkWB46H5K2
-         o34Zo5ARGphvBAClGgCpefFNCctHFrGCPo4KGJEd1eNDmI8D0kUMpr0m38+Sx6GKrTK8
-         C7HvJQPa8S58do5xssGfYCWGSl74dfhFbhzGpnIFtfaXxoUm7Q4KwZMyw+zI89CTLNiX
-         3jAw==
-X-Gm-Message-State: AOAM531Bqvp5nMbZ/CSzZ1G1RzMho4cxVGp8gklxaIXnzXb+eEyQRg5K
-        uHg5aMlwdLsKv5vUK9/tQEOjtQ==
-X-Google-Smtp-Source: ABdhPJwJf8qVlb6hUI5k1EBTGLPeoFc3WMybe9sFed2u3OyI7D5giPPASvHC23WoHajEWbNv9i4lYA==
-X-Received: by 2002:a05:600c:1908:: with SMTP id j8mr3446015wmq.86.1623915069448;
-        Thu, 17 Jun 2021 00:31:09 -0700 (PDT)
-Received: from dell.default ([91.110.221.170])
-        by smtp.gmail.com with ESMTPSA id z10sm3896549wmb.26.2021.06.17.00.31.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 00:31:08 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 1/1] arm64: KVM: Bump debugging information print down to KERN_DEBUG
-Date:   Thu, 17 Jun 2021 08:30:59 +0100
-Message-Id: <20210617073059.315542-1-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.32.0
+        id S230280AbhFQHdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 03:33:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230161AbhFQHd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 03:33:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26A03613BF;
+        Thu, 17 Jun 2021 07:31:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623915081;
+        bh=B+8PluC5gn7PaaKMr6F+x7FROpiA8NE9BPOp7pIbW30=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1AbMsNS+L7wOdvtcLLG0BWoG35WDrhc8RYxBB1YDWHN19qXYhjQRLPC3xgigZ+6HB
+         ZEUi6T3Kxdm950FfKr/ivFPqSmlWnHvts/zogwtNrBUJrmWLOeHhl4PzNV0KfiH7P/
+         4hrv7Dgy04/79wanH2jY+V3DfxZ/S4na+Ilq/wPE=
+Date:   Thu, 17 Jun 2021 09:31:19 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sai Krishna Potthuri <lakshmis@xilinx.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michals@xilinx.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        git <git@xilinx.com>,
+        "saikrishna12468@gmail.com" <saikrishna12468@gmail.com>
+Subject: Re: [PATCH v6 3/3] pinctrl: Add Xilinx ZynqMP pinctrl driver support
+Message-ID: <YMr6R34n2j2BWXlf@kroah.com>
+References: <1619080202-31924-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <1619080202-31924-4-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <CAHp75VfCbbnN-TBJiYFb=6Rhf30jA-Hz1p1UORsubF7UG6-ATw@mail.gmail.com>
+ <DM5PR02MB3877B234F85F3B4887DF3A95BD429@DM5PR02MB3877.namprd02.prod.outlook.com>
+ <CAHp75VfugGqLNU8LKJ_K3dPr=-eh6LHx75eV=33jH9OnryBoGA@mail.gmail.com>
+ <DM5PR02MB387726AB4144F0DB28105007BD409@DM5PR02MB3877.namprd02.prod.outlook.com>
+ <DM5PR02MB38771A8BEEB3E01006B14E46BD539@DM5PR02MB3877.namprd02.prod.outlook.com>
+ <MW2PR02MB388198021497399F280A374EBD0E9@MW2PR02MB3881.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW2PR02MB388198021497399F280A374EBD0E9@MW2PR02MB3881.namprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This sort of information is only generally useful when debugging.
+On Thu, Jun 17, 2021 at 06:37:18AM +0000, Sai Krishna Potthuri wrote:
+> Ping!
 
-No need to have these sprinkled through the kernel log otherwise.
-
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- arch/arm64/kernel/smp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 46e710bef5174..6f6ff072acbde 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -344,7 +344,7 @@ void __cpu_die(unsigned int cpu)
- 		pr_crit("CPU%u: cpu didn't die\n", cpu);
- 		return;
- 	}
--	pr_notice("CPU%u: shutdown\n", cpu);
-+	pr_debug("CPU%u: shutdown\n", cpu);
- 
- 	/*
- 	 * Now that the dying CPU is beyond the point of no return w.r.t.
--- 
-2.32.0
-
+ping what?
