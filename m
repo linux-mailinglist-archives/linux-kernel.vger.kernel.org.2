@@ -2,148 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399523AB551
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A61A63AB552
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhFQOGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:06:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229915AbhFQOGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:06:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52C5A611CA;
-        Thu, 17 Jun 2021 14:03:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623938640;
-        bh=7iMyIFiSoJXd3K14sBheP7uL6Rq2qTf2UHkmkhu2924=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=NhQTimeuQEnwr6Kl7WM4Tidnu+ngXruFZnSrnEEI1FsUNUyvaIn2gysfGMuFIWHWZ
-         LfBd8hRKGaxLXsTjV5DG0VJFh6IKrjx84aMb8n2SXfLmjNj2xKdkDOhZcCun2wWEtv
-         toprt7E23/8cF3mhMVcbm9Y8NxtD5dG6BzEbHSvAiJZMeiKYPstj6oAOjNYoi7Zhlj
-         C2RgHWwJerbblUhskCAElnkzB3mdmtNnRv6JSOGbfuRJjMJqGMAqefocyGf2NlL5ob
-         9RpnCevYGj6Rv0UZ9r5B1ZJH+65o1xEpua8iQUSIRVgmgXwYsKbRWb+PeWn7iOO88O
-         Q7zanEUwrKIhw==
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 659F027C0060;
-        Thu, 17 Jun 2021 10:03:58 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute2.internal (MEProxy); Thu, 17 Jun 2021 10:03:58 -0400
-X-ME-Sender: <xms:TVbLYP2WyuISm3JGhlrKTdXqVrVhuxbrhgKBr2RA3N7086aKysrnhw>
-    <xme:TVbLYOGzG3PWQwwpoR25ce0GR_rjB_zC_4q6QPX9MLClK5kGczybU7jP9SUMbA-5a
-    rP6MpjDxY65ii9vlzs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefuddgjedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpeegjefghfdtledvfeegfeelvedtgfevkeeugfekffdvveeffeetieeh
-    ueetveekfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
-    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
-    drlhhuthhordhush
-X-ME-Proxy: <xmx:TVbLYP4UNM_0jfxmulQ8MGM0tujcLFKwEPF_dOJN5KUJ7VErl-_Vyg>
-    <xmx:TVbLYE2QFOdrAqSzL5rQUxwNr4lyT-amcnqc4-n28UJPwi-P2nG3fQ>
-    <xmx:TVbLYCFjpuYEH0dvWEkfrgsstc7y3BMMzpbWzi_6kgYWa_0ToB9YEA>
-    <xmx:TlbLYF34zUX80YNHWM-Co8BGbhoyn26wGQJRuMf1CWpdegmlwVv7Pkq3jac>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 64DEE51C0060; Thu, 17 Jun 2021 10:03:57 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-526-gf020ecf851-fm-20210616.001-gf020ecf8
-Mime-Version: 1.0
-Message-Id: <616a869c-fd19-4de8-b1c0-68e03955b1b0@www.fastmail.com>
-In-Reply-To: <YMsVvsMRJ2yKf1WM@hirez.programming.kicks-ass.net>
-References: <cover.1623813516.git.luto@kernel.org>
- <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
- <1623816595.myt8wbkcar.astroid@bobo.none>
- <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
- <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
- <1623893358.bbty474jyy.astroid@bobo.none>
- <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
- <c3c7a1cf-1c87-42cc-b2d6-cc2df55e5b57@www.fastmail.com>
- <YMsQ82bzly2KAUsu@hirez.programming.kicks-ass.net>
- <YMsVvsMRJ2yKf1WM@hirez.programming.kicks-ass.net>
-Date:   Thu, 17 Jun 2021 07:03:36 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc:     "Nicholas Piggin" <npiggin@gmail.com>,
-        "Rik van Riel" <riel@surriel.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org,
-        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: =?UTF-8?Q?Re:_[RFC][PATCH]_sched:_Use_lightweight_hazard_pointers_to_gra?=
- =?UTF-8?Q?b_lazy_mms?=
-Content-Type: text/plain
+        id S231145AbhFQOGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:06:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43204 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229915AbhFQOGa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 10:06:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623938662;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=25IAmcYGl3crCnoWt1z2qiUGGrmE3OdaCwxpg3/NRzM=;
+        b=PxN7zjACji/3P9UN2SCv/6aJovMAE680K0VPhFcEt4Yq0WnF1nFlTGwl5hZXonnftymF4l
+        lTIDE4qJT90rjzgMh+icSjAoWR5ZTqE0LCai0qE3t8iqOQ7UPNBd0eJUkNPKgYpYElaH6w
+        GRae34/sIqL/HW+NbqVDRerO1mGl8b0=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-p5P2iMcoMDCk7RowanjUkQ-1; Thu, 17 Jun 2021 10:04:21 -0400
+X-MC-Unique: p5P2iMcoMDCk7RowanjUkQ-1
+Received: by mail-ej1-f72.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so2274780ejz.5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 07:04:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=25IAmcYGl3crCnoWt1z2qiUGGrmE3OdaCwxpg3/NRzM=;
+        b=Ll5rB1XZI8OJtaENSm1fKAQnhJDt1t/D/+4EGJWetTIds7cENqOYo+DALkkpqBMSbo
+         Pn8YUWi42ixxCI9fbJAFd8EZEE0qDQiuMwtgfgyyWi4IVtI/W/+XzEeMXhSbjNMQHrMQ
+         hsBhTyzuBueZdQaVG0LNXO2qtlz6j2+XFs1zm4tWQTZ8lETUzIHtcVQVYdoSX1JQSLaX
+         UzSUaSP1aevNCmjx2LZ+qnvLoPCGXHyuQiuqjNJdFLIyNg9lCSmK76Z1FsyT8AOJjcgj
+         VqWq4pa11rencacTBE/uGKb2MGyp5N/u+/+NnOlux5UJXei2EyV/DZoGYvhQgOp/gw/x
+         5Qaw==
+X-Gm-Message-State: AOAM5329mkf3SO2fPiFkHc3yAl+6zJRl869MgVE26jQFchgmrYg+XnAb
+        +OG9+VgYawLOh/wQXkiu/8eTDwDOOP6ea3o97yqIQAm2FNXHnwFKZ/8W2eMYVHHVKUQ48ynk2ha
+        7NksJARyFyl0xL1mqfoXSx3ipgpQ0GsBUKnwnhCzKh5W8xxraWtBGWn0aGgmrolOmL7+vK5bt4V
+        Ya
+X-Received: by 2002:a05:6402:702:: with SMTP id w2mr6688427edx.189.1623938660176;
+        Thu, 17 Jun 2021 07:04:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyfoH8LKSDwEj1+JIjkV0x3Lg5pKBFOIDurBFIj8B5tANiOs5WpxdID033TUEbyI8xeAjnM6g==
+X-Received: by 2002:a05:6402:702:: with SMTP id w2mr6688392edx.189.1623938659938;
+        Thu, 17 Jun 2021 07:04:19 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id x3sm3864697ejw.69.2021.06.17.07.04.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jun 2021 07:04:19 -0700 (PDT)
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Subject: [GIT PULL] Immutable branch between drivers/platform/x86 and
+ drivers/extcon due for the v5.14 merge window
+Message-ID: <667247a0-e40a-84d9-889b-8ecf51e5d453@redhat.com>
+Date:   Thu, 17 Jun 2021 16:04:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Chanwoo,
+
+As discussed here is a pull-req from an immutable branch with the
+devm-helper changes from Matti for you to merge into the extcon tree.
+
+I have already merged this into my review-hans branch and once the
+builders had a chance to play with this I will push this
+branch to platform-drivers-x86/for-next.
+
+Regards,
+
+Hans
 
 
-On Thu, Jun 17, 2021, at 2:28 AM, Peter Zijlstra wrote:
-> On Thu, Jun 17, 2021 at 11:08:03AM +0200, Peter Zijlstra wrote:
-> 
-> > diff --git a/kernel/fork.c b/kernel/fork.c
-> > index e595e77913eb..57415cca088c 100644
-> > --- a/kernel/fork.c
-> > +++ b/kernel/fork.c
-> > @@ -1104,6 +1104,8 @@ static inline void __mmput(struct mm_struct *mm)
-> >  	}
-> >  	if (mm->binfmt)
-> >  		module_put(mm->binfmt->module);
-> > +
-> > +	mm_unlazy_mm_count(mm);
-> >  	mmdrop(mm);
-> >  }
-> >  
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 8ac693d542f6..e102ec53c2f6 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -19,6 +19,7 @@
-> 
-> > +/*
-> > + * This converts all lazy_mm references to mm to mm_count refcounts.  Our
-> > + * caller holds an mm_count reference, so we don't need to worry about mm
-> > + * being freed out from under us.
-> > + */
-> > +void mm_unlazy_mm_count(struct mm_struct *mm)
-> > +{
-> > +	unsigned int drop_count = num_possible_cpus();
-> > +	int cpu;
-> > +
-> > +	/*
-> > +	 * mm_users is zero, so no cpu will set its rq->lazy_mm to mm.
-> > +	 */
-> > +	WARN_ON_ONCE(atomic_read(&mm->mm_users) != 0);
-> > +
-> > +	/* Grab enough references for the rest of this function. */
-> > +	atomic_add(drop_count, &mm->mm_count);
-> 
-> So that had me puzzled for a little while. Would something like this be
-> a better comment?
-> 
-> 	/*
-> 	 * Because this can race with mmdrop_lazy(), mm_count must be
-> 	 * incremented before setting any rq->drop_mm value, otherwise
-> 	 * it is possible to free mm early.
-> 	 */
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-Nope, because the caller already did it.  It's an optimization, but maybe it's a poorly done optimization -- I'd rather do two atomic ops than many.
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-How about:
+are available in the Git repository at:
 
-drop_count = 0;
+  git://git.kernel.org/pub/scm/linux/kernel/git/hansg/linux.git tags/devm-helpers-v5.14-1
 
-...
+for you to fetch changes up to 87ee8de23c9df3a368504f34cf3d7f9be9207717:
 
-if (!drop_count) {
-   /* Collect lots of references.  We'll drop the ones we don't use. */
-  drop_count = num_possible_cpus();
-  atomic_inc(drop_count, &->mm_count);
-}
-drop_count--;
+  extcon: extcon-max8997: Simplify driver using devm (2021-06-17 13:22:27 +0200)
+
+----------------------------------------------------------------
+Signed tag for the immutable devm-helpers branch for merging
+into the extcon and pdx86 trees.
+
+----------------------------------------------------------------
+Matti Vaittinen (5):
+      devm-helpers: Add resource managed version of work init
+      extcon: extcon-max14577: Fix potential work-queue cancellation race
+      extcon: extcon-max77693.c: Fix potential work-queue cancellation race
+      extcon: extcon-max8997: Fix IRQ freeing at error path
+      extcon: extcon-max8997: Simplify driver using devm
+
+ drivers/extcon/extcon-max14577.c | 16 +++++---------
+ drivers/extcon/extcon-max77693.c | 17 +++++----------
+ drivers/extcon/extcon-max8997.c  | 45 ++++++++++++++--------------------------
+ include/linux/devm-helpers.h     | 25 ++++++++++++++++++++++
+ 4 files changed, 50 insertions(+), 53 deletions(-)
 
