@@ -2,146 +2,422 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D303AB37F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063123AB382
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbhFQM00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:26:26 -0400
-Received: from mail-eopbgr20080.outbound.protection.outlook.com ([40.107.2.80]:61963
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231310AbhFQM0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:26:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ggYJTaEn2YIn2v5dyMIFlAXkopvJ75wHry615f6FPyFnsHr7bFcfrH+CiRGtk+6QO1oQZiQnxdlK6ePQw2bSvtRr7r8lI7bLW8MxpNAJvMUqDDgp2QJ/HTeoEzA9mFV12LjPa/DA6VbYNjPGUP+2tw8vJ91SstchcVFeoWWF9jcklvqeAR38sVV3JzuSf9bZG+6n0MxMQAwRvBGJzZyKe+qBR5H01AtoHx3sJhuopQdtbkflACEUu9zL7Zrbnf0/Ws2aM+krFbwd8N2FloPWluWdjH2mY8x7h4sQQ6eVKgdsYtXNO05BK2ee+SC+pwon869FD6V2u0b0ssUsldBWxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6SfhF7BrKl/88cx5ewQBQRmXdCky3SYGO81AsllaUuQ=;
- b=ADfsbyxYhFG3YyGja0z3Vekj/DAVZ5UNMR5iPlaETuoUgJXZ2xLkhyZE20bBzje2Odm+4RkezIOxUF558KOTgb0CuSxeQc/Qo1HddsOYvqfdHCpushAt0yiN0u2T2reeHwwqACqf+cqEcrDGDQlcqpmZnobOQDcwGnAxa/EWmBU35FCBkBHVFrpxzO9Vzdl88/isabU9TK6nOBcXTV5si/68dstN/VQQ9M1hWHF4an2VQCSNhej1vmuBmWK2fBz1G6lr8oMfsuXs32kxTryYhD1NKAecOe2E9vmjh/GVD03aFEAp5le166CfMbSrBlXPVXkgGlfiGMun749AJnVLRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6SfhF7BrKl/88cx5ewQBQRmXdCky3SYGO81AsllaUuQ=;
- b=TkWIGZJCuR+1yaTOJmpqvcd3NjDCkBVBjrl3tTW4xRP5ed5o299PFkZLNE0FDp7oO8X7w5FhHCJs3amIt1kF44Qh2nw7pPMIorxFtsSwt+8BJWVCycupkvDLMsNZO8Jr2lTwNtLEVag9mivffZtJ9Pv+kF9TK1jkfUew7qofN6Q=
-Received: from DB9PR04MB8477.eurprd04.prod.outlook.com (2603:10a6:10:2c3::11)
- by DU2PR04MB8837.eurprd04.prod.outlook.com (2603:10a6:10:2e0::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15; Thu, 17 Jun
- 2021 12:24:12 +0000
-Received: from DB9PR04MB8477.eurprd04.prod.outlook.com
- ([fe80::9daa:ab21:f749:36d2]) by DB9PR04MB8477.eurprd04.prod.outlook.com
- ([fe80::9daa:ab21:f749:36d2%9]) with mapi id 15.20.4242.021; Thu, 17 Jun 2021
- 12:24:12 +0000
-From:   Aisheng Dong <aisheng.dong@nxp.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Frank Li <frank.li@nxp.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] drivers/perf: fix the missed ida_simple_remove() in
- ddr_perf_probe()
-Thread-Topic: [PATCH] drivers/perf: fix the missed ida_simple_remove() in
- ddr_perf_probe()
-Thread-Index: AQHXY3LbGvPWieJUlUGiOQLqGZfB06sYH/Vg
-Date:   Thu, 17 Jun 2021 12:24:12 +0000
-Message-ID: <DB9PR04MB84777974EF797DA08E9DFD6F800E9@DB9PR04MB8477.eurprd04.prod.outlook.com>
-References: <20210617122614.166823-1-jingxiangfeng@huawei.com>
-In-Reply-To: <20210617122614.166823-1-jingxiangfeng@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1f8d1ad1-481a-4dce-8bf3-08d9318ad0b6
-x-ms-traffictypediagnostic: DU2PR04MB8837:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DU2PR04MB88370E8333803B3A926CE542800E9@DU2PR04MB8837.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: opkG3W8LRK6wbAOmB4o6y8NBTgvhq9zUB1tkSdyRjd+drfUaDjB03PLEG00penX19dKYyPEWSMtI9Bm+Ta5iV3YbRT1nxaQnkFIHkbe4xxt/bVGpyHQVAwDbpcKhufHnaDk5z9a9nQIal9/Kc4OIvYa3D421nruR3lyXLQObvHRfxRE0+0owI+ibRXYG62LccpzfZamefJFSizaPlLt7NtD9QFMvzSZCjvYakg9+Rv6av8P0Es4Bl1tU5ehxS1bjl8xpWKJQzyLrEBAEo6JfilWnCilIqSWmFJDxFihje1biNHsXSU/dmj9I6GK4ED9EWgmN9WBGD1hx809zFkuJuiOVZkOZtGyWiBDoVOKGnlIR2nAW1tr/mMmYko3QGeo/h2RYepVcD2hQg+aifnSIL8+yMdU9SPzWBfZWIh8LPHTBCDKa49tDUBzPx4ghnv9HShtAX52sBs+Ul+EE4UFeJpm2BW+gHZhd/2XeHj1B1onajorXpE4w3Z7UhFxbC2PS4JdJ3CS1ZF6MpjF7PxI6XvspuBxy0Y0iozawElhv4HxdhBns+h1hVkK3E6YBdTzYaxYfEDA9hAFwxfa8oEfIsA3QWB0pvWp/mMpMuhiJNms=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB8477.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39850400004)(396003)(376002)(136003)(346002)(83380400001)(8676002)(86362001)(71200400001)(478600001)(6506007)(9686003)(55016002)(2906002)(38100700002)(122000001)(53546011)(186003)(76116006)(4326008)(66476007)(64756008)(66446008)(66556008)(6636002)(66946007)(44832011)(316002)(110136005)(5660300002)(8936002)(52536014)(7696005)(26005)(33656002)(54906003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MzhwS1ZHQm4wbm5XYkt3aUU3aUVIYU9qQkhYUG1EVktUVjZPMUdqQ2R0azRZ?=
- =?utf-8?B?cHM4TzlUM2MwWThsU1lmaWJLek1qdkJ2VmpSU0xZVVUrckRQRzBzNStVS3U5?=
- =?utf-8?B?QTUvWnlOYnBrcFZHQXMwYzdkTHp2eGVmcmx4alptVWFHY09iZnBaVDF1YkV6?=
- =?utf-8?B?RjhiWXpycDZobGhWQksyUFpGNDNENDdCUnRmK0t5b2RPY2FqK0Z5amhqVTBl?=
- =?utf-8?B?VE9TM1JEeVI5TG5jZmoxQlg1bkdrQW1Pb1prUWRTZ1J0VmZuSStqd2hzdU8r?=
- =?utf-8?B?OWNEQjVUdkt4OEVSeCtmc0N6T3dFK1VJU2w5ckkyRnlSVzkzQ1VTQmI3TTNz?=
- =?utf-8?B?cXlQeks0YTdaWm4xaTRuTGZUMHlwR25DeU1lM3hRTVd3LzJ2Mm9RUVJWNWs5?=
- =?utf-8?B?M3RSeHowdkxEVFJSck5QMmlvVmpLVTdXVzdPbFl0SHdXdERTcmdvWXZ0UHd1?=
- =?utf-8?B?MldPSDRsYTRRZHZZT1V1UUs1M2RNdFloemhTeVZFS2FQOFNXdk1LTGQ5Rit6?=
- =?utf-8?B?RHpsSnBlR0VyakRUK3BiWnlpSVhTNG0wUnB3a2ZLSU12dlFiMGwwOHVFdU1J?=
- =?utf-8?B?Q1BFdUJ6VkJqTWpQZVhIQ1oyU0RPcDRzaCs5Nkl1Y216YXdTOXBmVGtlK0ZN?=
- =?utf-8?B?b2dBZVluOW15b3VVdWd3dTBUTlFxMTFuTzVpS2NaVTl4bW1UMS9YY25mNHY2?=
- =?utf-8?B?ZEk5RnZ4QnE3NjlJVkkyenc2RDhwZG5BSlhuVEFoSDNKdW1XOUNtLzZCc0N3?=
- =?utf-8?B?Q0JsMDd3TlE4L1RXU0g0b25USVgvd1VSV2cxTHVlelFCTm91bDFzWWd0SnBV?=
- =?utf-8?B?ekpXMmJDQ0oyWi9EOXRuWFBCaitteVBrYzVSZU9NMncwY29qVFlHVkRmZDZU?=
- =?utf-8?B?L0IzVEZqSE9PVEtVZU9IVTdySzV6M2RXcHViUHB4WWRYdzdSVkZOL2FRUVhD?=
- =?utf-8?B?dFE3YzNEeWllSU14Zjd3Nkd0bzJBOG9mYVlTWnpheG1pSUxEMUZtdWxkQjZO?=
- =?utf-8?B?Q24yOExFL3VBa3hyS1d5dS9YOWdkNHhYRTl2TE5aTHFkZGRJWTJDL0dpMHdM?=
- =?utf-8?B?ZWNtZDVVMWtDV2pPc0YxR2R6VHZicStXckRrUzd1UVlkQzZhVTFIeUN6NjZo?=
- =?utf-8?B?aFdiSk4wc1Y2ZVJxNGxjTklBZkZlUTRQU3pSQTNxS04vMHgwYmNhaHZ4SmJw?=
- =?utf-8?B?NWw1dkpSVlRlTVMwYzNwTERIdWhFaXdCZ1JvWWxwTFRKVUdjRmd2M3p5UWs5?=
- =?utf-8?B?QkhvQ2ViSjNsdjh6dW1SWndIY0c3N0tvTzU5R3VnbWFSQ29PcXIrSXpmUHRZ?=
- =?utf-8?B?QzlZaDdnRnBpMElITHNyRzdyT2R0TXdXN0J0TWxoYmpaY09hRjByVFVUMnd5?=
- =?utf-8?B?eGJGQzRjVnhVdFFGZStwcW1oTFR6SzJPVUlnWStORndnNENFeFB4VXhrdklE?=
- =?utf-8?B?cjFiWlZJQ3JrM2pnRVVkZ3B2RmYzVDBFVW4vV2grRkZVN01OWndzamtNRGM4?=
- =?utf-8?B?aGhVYXJ0Ylkrc2FlWDhqTEswRlV2c3ZSaEVieHR3QXlWMXB4aGs0TjJmVDQ1?=
- =?utf-8?B?dlRibUloZHE3L3FCREZuOTArSFo3YWVOWWNaSzVTUCt3Q2llYnA4N3h3dEt3?=
- =?utf-8?B?VUdlTmdVSG1FV0xBM29oRFJ5ZHZjb0JYRml3NFd0UXlrU213YjdTZFkyalV4?=
- =?utf-8?B?RGxzdmZjTHkyVzhZZXdxNlorR01sYnpzSWpZSDF3ZWF0aHdHMTNaMVB5Z3pv?=
- =?utf-8?Q?H46e0P/d8dp7suJWCN6CEkFO6x8pGYHUxAxhJhH?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S232083AbhFQM2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231301AbhFQM2I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 08:28:08 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA88C061574;
+        Thu, 17 Jun 2021 05:26:00 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id di5so3332324ejc.9;
+        Thu, 17 Jun 2021 05:26:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k3TVRDhr4luopUweKfr85DBxbwwXK8Sy+b1ey7mzQeY=;
+        b=YhZPQwDy0E8jpQThgvwN57N3hpE8XeRlZ6TNx5SIDTSHMIeWOB8so+JAGdd19UMtBK
+         D20igznA+WIj0hOzWj+md44eVTsaBFqAZ5iZ1T1QpGg0F1Kkwj1/hELbaWDVzink2p4C
+         9NARUZuVXOINg42uPUXVkDZPIBaBXOiE8mKEJFyE12mcE/8WFkGFuQUoKXmNxUF24yFy
+         EOw9net7I5i7XwekV/nK/AdboMoQHf8vfP/N0AKc7fWMAHqbFWVWoh3T5/rPI/+AFyUM
+         6O5hUIPSp7I3XDfviupqxmDGSS/F7OzS/UTUbFZ1+u64fgJEXyQd7NZGPiHaFonXryVh
+         Vytw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k3TVRDhr4luopUweKfr85DBxbwwXK8Sy+b1ey7mzQeY=;
+        b=GnJ4qD1jJp+PDS2h6L+sSvFLkA9wZ6AMI+8bqn78w5qWOMIxWhv5+GZQF9bUjQ8Svr
+         UqAqk3DaL0ZjTqr7Iul/R5e3ytR+9Ed9neq7uWspxgDfwV8vkercI6PKUXU/tIViQS9l
+         SXvZ9vxflVr71PoCJlbaB1eNRYhwh1sSf2Cbm+17mO4SWga21b8Qgn5CO9t0+oVE0HLI
+         ARl11cIJqni6zknlE+0+zqBfmzOrNWwkCdP9G5jEzD7xFlGCr4IFX7Dyn6OU6ZUZhBgh
+         FIBe19kqr/z3LdKElpBGwGv7wTiC1K47Lc18feQ1ozDFwa1btBEBGv6mXjz8Ac0E7ZR2
+         HPew==
+X-Gm-Message-State: AOAM532f2xxyd99LEufWgEA9iwiwSHUbxm56dQgz42oYOy4XQWcri2Ot
+        RlhRQaqLOrc0HlvjzxKjeuOnf813897ok5w9SWI=
+X-Google-Smtp-Source: ABdhPJyDAY/Iqx/8tko+9HxeiXE+1lqE5Oec0+Op5lvrKDtbuC2yszisOVUGLe4LIYgIkqVhUt9UqMGlgVdsolzuBP8=
+X-Received: by 2002:a17:907:70d3:: with SMTP id yk19mr4915750ejb.450.1623932758405;
+ Thu, 17 Jun 2021 05:25:58 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB8477.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f8d1ad1-481a-4dce-8bf3-08d9318ad0b6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jun 2021 12:24:12.5870
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: raYooXZS3OGYmnYA+l94L5NXADiVF2o/aXZ0VAtMQXzMigXPHsaZZNYrSgn01cEaacIxW6JT/B6uvtIypbd3Gw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8837
+References: <20210612133134.2738-1-peng.fan@oss.nxp.com> <20210612133134.2738-5-peng.fan@oss.nxp.com>
+ <CAHCN7x+bCVcfgb-MmOApBgM=69rz0G8WhsU171SHF3H-12wSfw@mail.gmail.com>
+ <CAHCN7xK86pdcx_BouriGTchnBdamNN1Cjjh-UuF-Oy=abq7rrw@mail.gmail.com>
+ <7683ab0b-f905-dff1-aa4f-76ad638da568@oss.nxp.com> <CAHCN7xLZZSwbjrUTb6uBOqWYWJdS_+nSr+iPDnh+dNLFSQOuLQ@mail.gmail.com>
+ <AM5PR0402MB2756584781B774A75378D28F880E9@AM5PR0402MB2756.eurprd04.prod.outlook.com>
+In-Reply-To: <AM5PR0402MB2756584781B774A75378D28F880E9@AM5PR0402MB2756.eurprd04.prod.outlook.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Thu, 17 Jun 2021 07:25:47 -0500
+Message-ID: <CAHCN7xL3CtNN9qY_gCt-pZhqjNf1YMhwTqRBQOWXuj_D2no9cg@mail.gmail.com>
+Subject: Re: [PATCH V7 4/4] soc: imx: Add blk-ctl driver for i.MX8MM
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
+        Marek Vasut <marex@denx.de>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jacky Bai <ping.bai@nxp.com>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        Abel Vesa <abel.vesa@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBKaW5nIFhpYW5nZmVuZyA8amluZ3hpYW5nZmVuZ0BodWF3ZWkuY29tPg0KPiBTZW50
-OiBUaHVyc2RheSwgSnVuZSAxNywgMjAyMSA4OjI2IFBNDQo+IFN1YmplY3Q6IFtQQVRDSF0gZHJp
-dmVycy9wZXJmOiBmaXggdGhlIG1pc3NlZCBpZGFfc2ltcGxlX3JlbW92ZSgpIGluDQo+IGRkcl9w
-ZXJmX3Byb2JlKCkNCj4gDQoNCmRyaXZlcnMvcGVyZjogaW14OF9kZHI6IHh4eHgNCg0KT3RoZXJ3
-aXNlOg0KDQpSZXZpZXdlZC1ieTogRG9uZyBBaXNoZW5nIDxhaXNoZW5nLmRvbmdAbnhwLmNvbT4N
-Cg0KUmVnYXJkcw0KQWlzaGVuZw0KDQo+IGRkcl9wZXJmX3Byb2JlKCkgbWlzc2VzIHRvIGNhbGwg
-aWRhX3NpbXBsZV9yZW1vdmUoKSBpbiBhbiBlcnJvciBwYXRoLg0KPiBKdW1wIHRvIGNwdWhwX3N0
-YXRlX2VyciB0byBmaXggaXQuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBKaW5nIFhpYW5nZmVuZyA8
-amluZ3hpYW5nZmVuZ0BodWF3ZWkuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvcGVyZi9mc2xfaW14
-OF9kZHJfcGVyZi5jIHwgNiArKysrLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMo
-KyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wZXJmL2ZzbF9p
-bXg4X2Rkcl9wZXJmLmMgYi9kcml2ZXJzL3BlcmYvZnNsX2lteDhfZGRyX3BlcmYuYw0KPiBpbmRl
-eCAyYmJiOTMxODgwNjQuLjdiODdhYWYyNjdkNSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9wZXJm
-L2ZzbF9pbXg4X2Rkcl9wZXJmLmMNCj4gKysrIGIvZHJpdmVycy9wZXJmL2ZzbF9pbXg4X2Rkcl9w
-ZXJmLmMNCj4gQEAgLTcwNSw4ICs3MDUsMTAgQEAgc3RhdGljIGludCBkZHJfcGVyZl9wcm9iZShz
-dHJ1Y3QgcGxhdGZvcm1fZGV2aWNlDQo+ICpwZGV2KQ0KPiANCj4gIAluYW1lID0gZGV2bV9rYXNw
-cmludGYoJnBkZXYtPmRldiwgR0ZQX0tFUk5FTCwNCj4gRERSX1BFUkZfREVWX05BTUUgIiVkIiwN
-Cj4gIAkJCSAgICAgIG51bSk7DQo+IC0JaWYgKCFuYW1lKQ0KPiAtCQlyZXR1cm4gLUVOT01FTTsN
-Cj4gKwlpZiAoIW5hbWUpIHsNCj4gKwkJcmV0ID0gLUVOT01FTTsNCj4gKwkJZ290byBjcHVocF9z
-dGF0ZV9lcnI7DQo+ICsJfQ0KPiANCj4gIAlwbXUtPmRldnR5cGVfZGF0YSA9IG9mX2RldmljZV9n
-ZXRfbWF0Y2hfZGF0YSgmcGRldi0+ZGV2KTsNCj4gDQo+IC0tDQo+IDIuMjYuMC4xMDYuZzlmYWRl
-ZGQNCg0K
+On Wed, Jun 16, 2021 at 10:14 PM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
+>
+> > Subject: Re: [PATCH V7 4/4] soc: imx: Add blk-ctl driver for i.MX8MM
+> >
+> > On Tue, Jun 15, 2021 at 6:05 AM Peng Fan (OSS) <peng.fan@oss.nxp.com>
+> > wrote:
+> > >
+> > >
+> > > On 2021/6/15 3:29, Adam Ford wrote:
+> > > > On Mon, Jun 14, 2021 at 1:07 PM Adam Ford <aford173@gmail.com>
+> > wrote:
+> > > >>
+> > > >> On Sat, Jun 12, 2021 at 7:58 AM Peng Fan (OSS) <peng.fan@oss.nxp.com>
+> > wrote:
+> > > >>>
+> > > >>> From: Peng Fan <peng.fan@nxp.com>
+> > > >>>
+> > > >>> The i.MX8MM SoC has dispmix BLK-CTL and vpumix BLK-CTL, so we
+> > add
+> > > >>> that support in this driver.
+> > > >>>
+> > > >>> Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
+> > > >>> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > >>
+> > > >> Maybe my TF-A is too old, but I am not able to wake the device from
+> > > >> suspend-to-ram with this series.  I used the device tree from [1]
+> > > >> to enable both the GPCv2 and the blk-ctl stuff.
+> > > >>
+> > > >> [1] -
+> > > >> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fp
+> > > >>
+> > atchwork.kernel.org%2Fproject%2Flinux-arm-kernel%2Fpatch%2F20210604
+> > > >>
+> > 111005.6804-1-peng.fan%40oss.nxp.com%2F&amp;data=04%7C01%7Cpeng.
+> > fan
+> > > >> %40nxp.com%7C29fe5fa2af704121c2d508d930b25126%7C686ea1d3bc
+> > 2b4c6fa92
+> > > >>
+> > cd99c5c301635%7C0%7C0%7C637594364693096718%7CUnknown%7CTWF
+> > pbGZsb3d8
+> > > >>
+> > eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3
+> > D%
+> > > >>
+> > 7C1000&amp;sdata=owV810qvJWHnaoav%2BZDlpd%2FmjALiZkk0uWM44gqj
+> > jQ8%3D
+> > > >> &amp;reserved=0
+> > > >>
+> > > >> I based both off Shawn's for-next branch.
+> > > >
+> > > > I tried to enable USB with the GPCv2 stuff pulled into Shawn's
+> > > > for-next branch, and my board hangs when USB is loaded, but USB
+> > > > doesn't use blk-ctl, it just uses GPCv2.
+> > > >
+> > > > I looked at some of the changes with GPCv2, and I noticed a comment
+> > > > in the GPCv2 function called imx_pgc_power_up.  The comment reads:
+> > > >
+> > > > /*
+> > > > * ret = regmap_read_poll_timeout(domain->regmap, GPC_PU_PWRHSK,
+> > reg_val,
+> > > > *   (reg_val & domain->bits.hskack), 0,
+> > > > *   USEC_PER_MSEC);
+> > > > * Technically we need the commented code to wait handshake. But that
+> > > > needs
+> > > > * the BLK-CTL module BUS clk-en bit being set.
+> > > > *
+> > > > * There is a separate BLK-CTL module and we will have such a driver
+> > > > for it,
+> > > > * that driver will set the BUS clk-en bit and handshake will be
+> > > > triggered
+> > > > * automatically there. Just add a delay and suppose the handshake
+> > > > finish
+> > > > * after that.
+> > > > */
+> > > >
+> > > > I didn't see a delay here despite the comment saying we should add one.
+> > > >
+> > > > With the blk-ctl enabled, I attempted to uncomment the above line of
+> > > > code without much success in preventing the board from hanging.
+> > > >
+> > > > If BUS clk-en bit needs to be set in order for the handshake to
+> > > > work, should all these power domains reference it to bring it up?
+> > > > If we decide against using the BUS clk-en bit, what should this delay be?
+> > >
+> > > It is only for power domain has mix and need delay for the handshake.
+> > > USB no need that handshake.
+> >
+> > Don't the OTG domains depend on hsiomix?
+>
+>
+> It works well with this change in dtsi.
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> index 0e01ff649956..e930ae3122ec 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> @@ -1087,6 +1087,7 @@ usbotg1: usb@32e40000 {
+>                                 assigned-clock-parents = <&clk IMX8MM_SYS_PLL2_500M>;
+>                                 fsl,usbphy = <&usbphynop1>;
+>                                 fsl,usbmisc = <&usbmisc1 0>;
+> +                               power-domains = <&pgc_otg1>;
+>                                 status = "disabled";
+>                         };
+>
+> @@ -1106,6 +1107,7 @@ usbotg2: usb@32e50000 {
+>                                 assigned-clock-parents = <&clk IMX8MM_SYS_PLL2_500M>;
+>                                 fsl,usbphy = <&usbphynop2>;
+>                                 fsl,usbmisc = <&usbmisc2 0>;
+> +                               power-domains = <&pgc_otg2>;
+>                                 status = "disabled";
+>                         };
+>
+
+Even with USB disabled, I was still having issues resuming from
+suspend-to-ram.  I'll enable these and try again.
+
+adam
+>
+> Regards,
+> Peng.
+>
+> >
+> > >
+> > > Could you post a github branch, then I could give a look?
+> >
+> > No problem.
+> >
+> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.
+> > com%2Faford173%2Flinux%2Ftree%2Ffor-next&amp;data=04%7C01%7Cpen
+> > g.fan%40nxp.com%7C29fe5fa2af704121c2d508d930b25126%7C686ea1d3bc
+> > 2b4c6fa92cd99c5c301635%7C0%7C0%7C637594364693106714%7CUnknow
+> > n%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1ha
+> > WwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=6tiEiL7TMioVeb88WKHTYxVPxE
+> > MT1pboN%2FSMxiKA1yM%3D&amp;reserved=0
+> >
+> > thanks
+> >
+> > adam
+> >
+> > >
+> > > Thanks,
+> > > Peng.
+> > >
+> > > >
+> > > > adam
+> > > >>
+> > > >> adam
+> > > >>
+> > > >>> ---
+> > > >>>   drivers/soc/imx/Makefile         |   2 +-
+> > > >>>   drivers/soc/imx/blk-ctl-imx8mm.c | 139
+> > +++++++++++++++++++++++++++++++
+> > > >>>   2 files changed, 140 insertions(+), 1 deletion(-)
+> > > >>>   create mode 100644 drivers/soc/imx/blk-ctl-imx8mm.c
+> > > >>>
+> > > >>> diff --git a/drivers/soc/imx/Makefile b/drivers/soc/imx/Makefile
+> > > >>> index d3d2b49a386c..c260b962f495 100644
+> > > >>> --- a/drivers/soc/imx/Makefile
+> > > >>> +++ b/drivers/soc/imx/Makefile
+> > > >>> @@ -4,4 +4,4 @@ obj-$(CONFIG_ARCH_MXC) += soc-imx.o
+> > > >>>   endif
+> > > >>>   obj-$(CONFIG_HAVE_IMX_GPC) += gpc.o
+> > > >>>   obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) += gpcv2.o
+> > > >>> -obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o blk-ctl.o
+> > > >>> +obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o blk-ctl.o
+> > blk-ctl-imx8mm.o
+> > > >>> diff --git a/drivers/soc/imx/blk-ctl-imx8mm.c
+> > > >>> b/drivers/soc/imx/blk-ctl-imx8mm.c
+> > > >>> new file mode 100644
+> > > >>> index 000000000000..59443588f892
+> > > >>> --- /dev/null
+> > > >>> +++ b/drivers/soc/imx/blk-ctl-imx8mm.c
+> > > >>> @@ -0,0 +1,139 @@
+> > > >>> +// SPDX-License-Identifier: GPL-2.0
+> > > >>> +/*
+> > > >>> + * Copyright 2021 NXP
+> > > >>> + */
+> > > >>> +
+> > > >>> +#include <dt-bindings/clock/imx8mm-clock.h>
+> > > >>> +#include <dt-bindings/power/imx8mm-power.h>
+> > > >>> +#include <linux/clk.h>
+> > > >>> +#include <linux/err.h>
+> > > >>> +#include <linux/io.h>
+> > > >>> +#include <linux/module.h>
+> > > >>> +#include <linux/mutex.h>
+> > > >>> +#include <linux/of_address.h>
+> > > >>> +#include <linux/of_device.h>
+> > > >>> +#include <linux/platform_device.h> #include <linux/slab.h>
+> > > >>> +#include <linux/types.h> #include <linux/pm_domain.h> #include
+> > > >>> +<linux/regmap.h>
+> > > >>> +
+> > > >>> +#include "blk-ctl.h"
+> > > >>> +
+> > > >>> +#define MEDIA_BLK_BUS_RSTN_BLK_SYNC_SFT_EN
+> > BIT(6)
+> > > >>> +#define MEDIA_BLK_MIPI_DSI_I_PRESETN_SFT_EN
+> > BIT(5)
+> > > >>> +#define MEDIA_BLK_MIPI_CSI_I_PRESETN_SFT_EN
+> > BIT(4)
+> > > >>> +#define MEDIA_BLK_CAMERA_PIXEL_RESET_N_SFT_EN
+> > BIT(3)
+> > > >>> +#define MEDIA_BLK_CSI_BRIDGE_SFT_EN
+> > GENMASK(2, 0)
+> > > >>> +
+> > > >>> +#define MEDIA_BLK_BUS_PD_MASK
+> > BIT(12)
+> > > >>> +#define MEDIA_BLK_MIPI_CSI_PD_MASK
+> > GENMASK(11, 10)
+> > > >>> +#define MEDIA_BLK_MIPI_DSI_PD_MASK
+> > GENMASK(9, 8)
+> > > >>> +#define MEDIA_BLK_LCDIF_PD_MASK
+> > GENMASK(7, 6)
+> > > >>> +#define MEDIA_BLK_CSI_BRIDGE_PD_MASK
+> > GENMASK(5, 0)
+> > > >>> +
+> > > >>> +static struct imx_blk_ctl_hw imx8mm_dispmix_blk_ctl_pds[] = {
+> > > >>> +       IMX_BLK_CTL_PD("CSI_BRIDGE", NULL,
+> > IMX8MM_BLK_CTL_PD_DISPMIX_CSI_BRIDGE, 0x4,
+> > > >>> +                      MEDIA_BLK_CSI_BRIDGE_PD_MASK, 0,
+> > MEDIA_BLK_CSI_BRIDGE_SFT_EN,
+> > > >>> +                      IMX_BLK_CTL_PD_RESET),
+> > > >>> +       IMX_BLK_CTL_PD("LCDIF", NULL,
+> > IMX8MM_BLK_CTL_PD_DISPMIX_LCDIF, 0x4,
+> > > >>> +                      MEDIA_BLK_LCDIF_PD_MASK, -1, -1, 0),
+> > > >>> +       IMX_BLK_CTL_PD("MIPI_DSI", "mipi",
+> > IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_DSI, 0x4,
+> > > >>> +                      MEDIA_BLK_MIPI_DSI_PD_MASK, 0,
+> > MEDIA_BLK_MIPI_DSI_I_PRESETN_SFT_EN,
+> > > >>> +                      IMX_BLK_CTL_PD_RESET),
+> > > >>> +       IMX_BLK_CTL_PD("MIPI_CSI", "mipi",
+> > IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_CSI, 0x4,
+> > > >>> +                      MEDIA_BLK_MIPI_CSI_PD_MASK, 0,
+> > > >>> +
+> > MEDIA_BLK_MIPI_CSI_I_PRESETN_SFT_EN |
+> > MEDIA_BLK_CAMERA_PIXEL_RESET_N_SFT_EN,
+> > > >>> +                      IMX_BLK_CTL_PD_RESET),
+> > > >>> +       IMX_BLK_CTL_PD("DISPMIX_BUS", "dispmix",
+> > IMX8MM_BLK_CTL_PD_DISPMIX_BUS, 0x4,
+> > > >>> +                      MEDIA_BLK_BUS_PD_MASK, 0,
+> > MEDIA_BLK_BUS_RSTN_BLK_SYNC_SFT_EN,
+> > > >>> +                      IMX_BLK_CTL_PD_HANDSHAKE |
+> > > >>> +IMX_BLK_CTL_PD_RESET) };
+> > > >>> +
+> > > >>> +static struct imx_blk_ctl_hw imx8mm_vpumix_blk_ctl_pds[] = {
+> > > >>> +       IMX_BLK_CTL_PD("VPU_BLK_CTL_G2", "vpu-g2",
+> > IMX8MM_BLK_CTL_PD_VPU_G2, 0x4,
+> > > >>> +                      BIT(0), 0, BIT(0),
+> > IMX_BLK_CTL_PD_RESET),
+> > > >>> +       IMX_BLK_CTL_PD("VPU_BLK_CTL_G1", "vpu-g1",
+> > IMX8MM_BLK_CTL_PD_VPU_G1, 0x4,
+> > > >>> +                      BIT(1), 0, BIT(1),
+> > IMX_BLK_CTL_PD_RESET),
+> > > >>> +       IMX_BLK_CTL_PD("VPU_BLK_CTL_H1", "vpu-h1",
+> > IMX8MM_BLK_CTL_PD_VPU_H1, 0x4,
+> > > >>> +                      BIT(2), 0, BIT(2),
+> > IMX_BLK_CTL_PD_RESET),
+> > > >>> +       IMX_BLK_CTL_PD("VPU_BLK_CTL_BUS", "vpumix",
+> > IMX8MM_BLK_CTL_PD_VPU_BUS, 0x4,
+> > > >>> +                      BIT(2), 0, BIT(2),
+> > IMX_BLK_CTL_PD_HANDSHAKE
+> > > >>> +| IMX_BLK_CTL_PD_RESET) };
+> > > >>> +
+> > > >>> +static const struct regmap_config imx8mm_blk_ctl_regmap_config = {
+> > > >>> +       .reg_bits               = 32,
+> > > >>> +       .reg_stride             = 4,
+> > > >>> +       .val_bits               = 32,
+> > > >>> +       .max_register           = 0x30,
+> > > >>> +       .fast_io                = true,
+> > > >>> +};
+> > > >>> +
+> > > >>> +static const struct imx_blk_ctl_dev_data
+> > imx8mm_vpumix_blk_ctl_dev_data = {
+> > > >>> +       .pds = imx8mm_vpumix_blk_ctl_pds,
+> > > >>> +       .pds_num = ARRAY_SIZE(imx8mm_vpumix_blk_ctl_pds),
+> > > >>> +       .max_num = IMX8MM_BLK_CTL_PD_VPU_MAX,
+> > > >>> +       .hw_hsk = &imx8mm_vpumix_blk_ctl_pds[3],
+> > > >>> +       .config = imx8mm_blk_ctl_regmap_config,
+> > > >>> +       .name = "imx-vpumix-blk-ctl", };
+> > > >>> +
+> > > >>> +static const struct imx_blk_ctl_dev_data
+> > imx8mm_dispmix_blk_ctl_dev_data = {
+> > > >>> +       .pds = imx8mm_dispmix_blk_ctl_pds,
+> > > >>> +       .pds_num = ARRAY_SIZE(imx8mm_dispmix_blk_ctl_pds),
+> > > >>> +       .max_num = IMX8MM_BLK_CTL_PD_DISPMIX_MAX,
+> > > >>> +       .hw_hsk = &imx8mm_dispmix_blk_ctl_pds[4],
+> > > >>> +       .config = imx8mm_blk_ctl_regmap_config,
+> > > >>> +       .name = "imx-dispmix-blk-ctl", };
+> > > >>> +
+> > > >>> +static int imx8mm_blk_ctl_probe(struct platform_device *pdev) {
+> > > >>> +       struct device *dev = &pdev->dev;
+> > > >>> +       const struct imx_blk_ctl_dev_data *dev_data =
+> > of_device_get_match_data(dev);
+> > > >>> +       struct regmap *regmap;
+> > > >>> +       struct imx_blk_ctl *ctl;
+> > > >>> +       void __iomem *base;
+> > > >>> +
+> > > >>> +       ctl = devm_kzalloc(dev, sizeof(*ctl), GFP_KERNEL);
+> > > >>> +       if (!ctl)
+> > > >>> +               return -ENOMEM;
+> > > >>> +
+> > > >>> +       base = devm_platform_ioremap_resource(pdev, 0);
+> > > >>> +       if (IS_ERR(base))
+> > > >>> +               return PTR_ERR(base);
+> > > >>> +
+> > > >>> +       regmap = devm_regmap_init_mmio(dev, base,
+> > &dev_data->config);
+> > > >>> +       if (IS_ERR(regmap))
+> > > >>> +               return PTR_ERR(regmap);
+> > > >>> +
+> > > >>> +       ctl->regmap = regmap;
+> > > >>> +       ctl->dev = dev;
+> > > >>> +       mutex_init(&ctl->lock);
+> > > >>> +
+> > > >>> +       ctl->num_clks = devm_clk_bulk_get_all(dev, &ctl->clks);
+> > > >>> +       if (ctl->num_clks < 0)
+> > > >>> +               return ctl->num_clks;
+> > > >>> +
+> > > >>> +       dev_set_drvdata(dev, ctl);
+> > > >>> +       ctl->dev_data = dev_data;
+> > > >>> +
+> > > >>> +       return imx_blk_ctl_register(dev); }
+> > > >>> +
+> > > >>> +static const struct of_device_id imx_blk_ctl_of_match[] = {
+> > > >>> +       { .compatible = "fsl,imx8mm-vpumix-blk-ctl", .data =
+> > &imx8mm_vpumix_blk_ctl_dev_data },
+> > > >>> +       { .compatible = "fsl,imx8mm-dispmix-blk-ctl", .data =
+> > &imx8mm_dispmix_blk_ctl_dev_data },
+> > > >>> +       { /* Sentinel */ }
+> > > >>> +};
+> > > >>> +MODULE_DEVICE_TABLE(of, imx_blk_ctl_of_match);
+> > > >>> +
+> > > >>> +static struct platform_driver imx_blk_ctl_driver = {
+> > > >>> +       .probe = imx8mm_blk_ctl_probe,
+> > > >>> +       .driver = {
+> > > >>> +               .name = "imx8mm-blk-ctl",
+> > > >>> +               .of_match_table =
+> > of_match_ptr(imx_blk_ctl_of_match),
+> > > >>> +               .pm = &imx_blk_ctl_pm_ops,
+> > > >>> +       },
+> > > >>> +};
+> > > >>> +module_platform_driver(imx_blk_ctl_driver);
+> > > >>> --
+> > > >>> 2.30.0
+> > > >>>
