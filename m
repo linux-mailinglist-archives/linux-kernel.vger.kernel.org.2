@@ -2,164 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5A53AAA74
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 06:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A043AAA87
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 06:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhFQEqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 00:46:01 -0400
-Received: from ozlabs.org ([203.11.71.1]:33285 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229495AbhFQEqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 00:46:00 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G58Zs498Pz9sW6;
-        Thu, 17 Jun 2021 14:43:49 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623905031;
-        bh=YYZQRTaEz+8GiSnTFk9Nc8Rsg78+vdZcMemhOChNeBA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=KBhDBqcg+IGpXAhHRn87yNWvpZOJ5M9mvOSerBFkzb3begNXASKK4C8qtduyp2mXw
-         sXOs1p/uk7z6zx1BTTUvLJm0QVF/70MBDEjJTeBbxZNFOZnLl636bolBqEUnbP6/K0
-         VyDbAJMoHGEo1KVhv6wS4smzM80UxYIiugOBaZ8TtanI1c4uDQbFIVux41/qoIMPOl
-         ONDMdobyk1A/Uo9psTL1JhqdZIua0tfFRceKKMDlEcVVA7Y4nRYUYOEoHi93z77fkz
-         w7SdpdOkdnIIRGKsylNyOiSNWXBUSbVA2MxyJyYrdtTtCVZ9AT0R5bVkU/Ke/e+hup
-         JcAkZXLG5s83g==
-Date:   Thu, 17 Jun 2021 14:43:46 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Olof Johansson <olof@lixom.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Subject: linux-next: manual merge of the usb tree with the arm-soc tree
-Message-ID: <20210617144346.564be887@canb.auug.org.au>
+        id S229816AbhFQEwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 00:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhFQEwJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 00:52:09 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1887AC061574;
+        Wed, 16 Jun 2021 21:50:02 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id e22so1496971wrc.1;
+        Wed, 16 Jun 2021 21:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G8xBS3pgbjn1u0NzXrJPbnHQ5MKIiawbeczldYN/4uY=;
+        b=gRZDlpwJC98qkdPgrOJkADH6IP23iv9SrTRmpkw2AkJwJ+KoAtVQFY5MmhSCAgzXAP
+         CQz3L5elU7d+jI1qjhW5wSKAeqqhaKHpG5zGPQYTJsPxU+uyYo8xdEWOD3FyBVrz6U4T
+         t9kdWVXw9nJkuoavkjqU2+EaWpZ15IsQXvOuIGJAjqyXo3CIA+iBOegeI61ukmYECbBA
+         VUW32LtiG9zLQrTt3ks8Fa4r3tiOjyYN9J63rQSGwNvTPLBf3nLnPijM1+6SkPYs3BVv
+         vw1c8ANYTHxRNeSFxUpKblCz+MmmUnte44HQ4js1hQ8cAY7Qu9JEN0KWpf2qg60dvjy4
+         vMDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G8xBS3pgbjn1u0NzXrJPbnHQ5MKIiawbeczldYN/4uY=;
+        b=K2GEvE5ukp11trGPmK8CjDvCvWLiFGm/JvJF7CFIbYZ01cXDSBKfbUgLK2hZkc8jCO
+         XmpJXCE4f7bkdOC+0ki0qHm6fimnw3MT0/VIQTj4G2G+iifcmOAHa18S5+2HERlY0I3+
+         HSRlgy1S7xTLt+c81/ioSgBydgxy6Tptcn54jxIeb3sZ+8+x6jdYaNtYzM+BEktpwVmN
+         KryTJy40zTTp/Cwa2SFcRqr71ACB0PeQBJwfT6WkfYgUPq1ac49tX/aaFUge5f4L5YRL
+         Hqr89wZbz0xc4EPsySzByW/9pKq085PcfKVkGNKMHxsN8UKXo2f7njJU6rO1CP5LDCUF
+         GqWQ==
+X-Gm-Message-State: AOAM533MtpfQBlZ7WvDwJssoWew4KrKbEzuTDRMXj7twYpMMvJQdk6pM
+        8nPpFf04qN2bT6wtC+YBew==
+X-Google-Smtp-Source: ABdhPJx88fGa0319NJTKdbmepy1yUaY/3BNtC2Mjf2cyEjMmkgRDpZVAMMnOMoXSvFjVc38WHmCZMQ==
+X-Received: by 2002:adf:facf:: with SMTP id a15mr3278608wrs.308.1623905400757;
+        Wed, 16 Jun 2021 21:50:00 -0700 (PDT)
+Received: from localhost.localdomain (ip5b434b8b.dynamic.kabel-deutschland.de. [91.67.75.139])
+        by smtp.googlemail.com with ESMTPSA id n13sm4587460wrg.75.2021.06.16.21.50.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 21:50:00 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     devicetree@vger.kernel.org, balbi@kernel.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH 1/3] arm64: dts: rockchip: add ES8316 codec for Rock Pi4
+Date:   Thu, 17 Jun 2021 06:49:53 +0200
+Message-Id: <20210617044955.598994-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Eo.BL+GwBgSHqa1w194kSj=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Eo.BL+GwBgSHqa1w194kSj=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Rock Pi4 boards have the codec connected to i2s0 and it is accessible
+via i2c1 address 0x11.
+Add an audio-graph-card it.
 
-Hi all,
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
+---
+ .../boot/dts/rockchip/rk3399-rock-pi-4.dtsi   | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-Today's linux-next merge of the usb tree got conflicts in:
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+index 7d0a7c697703..e5c1083174ff 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+@@ -36,6 +36,12 @@ sdio_pwrseq: sdio-pwrseq {
+ 		reset-gpios = <&gpio0 RK_PB2 GPIO_ACTIVE_LOW>;
+ 	};
+ 
++	sound {
++		compatible = "audio-graph-card";
++		label = "rockchip,rk3399";
++		dais = <&i2s0_p0>;
++	};
++
+ 	vcc12v_dcin: dc-12v {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vcc12v_dcin";
+@@ -422,6 +428,20 @@ &i2c1 {
+ 	i2c-scl-rising-time-ns = <300>;
+ 	i2c-scl-falling-time-ns = <15>;
+ 	status = "okay";
++
++	es8316: codec@11 {
++		compatible = "everest,es8316";
++		reg = <0x11>;
++		clocks = <&cru SCLK_I2S_8CH_OUT>;
++		clock-names = "mclk";
++		#sound-dai-cells = <0>;
++
++		port {
++			es8316_p0_0: endpoint {
++				remote-endpoint = <&i2s0_p0_0>;
++			};
++		};
++	};
+ };
+ 
+ &i2c3 {
+@@ -441,6 +461,14 @@ &i2s0 {
+ 	rockchip,capture-channels = <2>;
+ 	rockchip,playback-channels = <2>;
+ 	status = "okay";
++
++	i2s0_p0: port {
++		i2s0_p0_0: endpoint {
++			dai-format = "i2s";
++			mclk-fs = <256>;
++			remote-endpoint = <&es8316_p0_0>;
++		};
++	};
+ };
+ 
+ &i2s1 {
+-- 
+2.27.0
 
-  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-
-between commit:
-
-  39441f73d91a ("arm64: dts: qcom: sc7180: lazor: Simplify disabling of cha=
-rger thermal zone")
-
-from the arm-soc tree and commit:
-
-  1da8116eb0c5 ("arm64: dts: qcom: sc7180-trogdor: Add nodes for onboard US=
-B hub")
-
-from the usb tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-index 30e3e769d2b4,bae85f6b2bfa..000000000000
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-@@@ -14,17 -14,15 +14,6 @@@
-  	compatible =3D "google,lazor-rev0", "qcom,sc7180";
-  };
- =20
-- &pp3300_hub {
-- 	/* pp3300_l7c is used to power the USB hub */
-- 	/delete-property/regulator-always-on;
-- 	/delete-property/regulator-boot-on;
-- };
--=20
-- &pp3300_l7c {
-- 	regulator-always-on;
-- 	regulator-boot-on;
- -/*
- - * Lazor is stuffed with a 47k NTC as charger thermistor which currently =
-is
- - * not supported by the PM6150 ADC driver. Disable the charger thermal zo=
-ne
- - * to avoid using bogus temperature values.
- - */
- -&charger_thermal {
- -	status =3D "disabled";
---};
---
-  &sn65dsi86_out {
-  	/*
-  	 * Lane 0 was incorrectly mapped on the cable, but we've now decided
-diff --cc arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-index c2ef06367baf,343ed457efb2..000000000000
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-@@@ -14,13 -14,20 +14,10 @@@
-  	compatible =3D "google,lazor-rev1", "google,lazor-rev2", "qcom,sc7180";
-  };
- =20
-- &pp3300_hub {
-- 	/* pp3300_l7c is used to power the USB hub */
-- 	/delete-property/regulator-always-on;
-- 	/delete-property/regulator-boot-on;
- -/*
- - * Lazor is stuffed with a 47k NTC as charger thermistor which currently =
-is
- - * not supported by the PM6150 ADC driver. Disable the charger thermal zo=
-ne
- - * to avoid using bogus temperature values.
- - */
- -&charger_thermal {
- -	status =3D "disabled";
- -};
- -
- -
-+ &usb_hub_2_0 {
-+ 	 vdd-supply =3D <&pp3300_l7c>;
-  };
- =20
-- &pp3300_l7c {
-- 	regulator-always-on;
-- 	regulator-boot-on;
-+ &usb_hub_3_0 {
-+ 	 vdd-supply =3D <&pp3300_l7c>;
-  };
-
---Sig_/Eo.BL+GwBgSHqa1w194kSj=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDK0wIACgkQAVBC80lX
-0GwW/Af/VIpOA7khWDE6TWFICkUJ+u7Q6zy+YUIqAbUfV5pnKfqrxygEq1MgNptw
-yFn1bntEwK1a0TRSqBQ23OG6ViEjyL8Iley8YFD9tUZvy8LdgjvqLdG+hFte/rM5
-dFsGUV1kzacfOKajUsZj5rfl56Sqg9Ljz6CbEjTUxROsZEWEPS5OsefKaHUKgbXQ
-igaXFKFcG0dBXAKGIRW5dyCZLTMbYbRn2dGSR4rzteZ2V3onCtWLtCwF7DdYwS/U
-GG85n/PFrrBrbOFHJaXC5gHykpDNWJfHFr8tNvvO9UM+8DUPP6rbhVWWKG1yVUmj
-lDurFMy2owkeXi7sSCw817QVfDu7NQ==
-=/dM6
------END PGP SIGNATURE-----
-
---Sig_/Eo.BL+GwBgSHqa1w194kSj=--
