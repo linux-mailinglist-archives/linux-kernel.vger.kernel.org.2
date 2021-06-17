@@ -2,107 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12DE3AB3FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78483AB3FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231887AbhFQMue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:50:34 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35182 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231933AbhFQMub (ORCPT
+        id S231997AbhFQMuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:50:44 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:8258 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231935AbhFQMug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:50:31 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8BA4E21AAD;
-        Thu, 17 Jun 2021 12:48:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623934102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DN/4AxAo8ebwftMrb6LxrY21RNCTWf2fWPr9rz/QTtI=;
-        b=tkB1pKAYKF0hp2ccZ33ZUc6pVW+6ySKB5PgemXmFq2vmKXfhNvqjQ9RoAvHvTXvLAGjhtH
-        X46Hlik8dNXRccIiC4LJuwEfFGMjftmGkRRFZ4Fjjl8KL4OclWhi2wIYx91KpT87SFWRnC
-        2dnVRF1wI5lZbvuiZJzDOe0PUrZDBBw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623934102;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DN/4AxAo8ebwftMrb6LxrY21RNCTWf2fWPr9rz/QTtI=;
-        b=h7QRiY2uZuhlI3sLBBbtD0+kPvxgEZR/fmfLkBXqL3inqdLM0GEYnqz1Dj/6tMsg3FcuXB
-        xqNMhB0Fhk8f9hBg==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 79531118DD;
-        Thu, 17 Jun 2021 12:48:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623934102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DN/4AxAo8ebwftMrb6LxrY21RNCTWf2fWPr9rz/QTtI=;
-        b=tkB1pKAYKF0hp2ccZ33ZUc6pVW+6ySKB5PgemXmFq2vmKXfhNvqjQ9RoAvHvTXvLAGjhtH
-        X46Hlik8dNXRccIiC4LJuwEfFGMjftmGkRRFZ4Fjjl8KL4OclWhi2wIYx91KpT87SFWRnC
-        2dnVRF1wI5lZbvuiZJzDOe0PUrZDBBw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623934102;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DN/4AxAo8ebwftMrb6LxrY21RNCTWf2fWPr9rz/QTtI=;
-        b=h7QRiY2uZuhlI3sLBBbtD0+kPvxgEZR/fmfLkBXqL3inqdLM0GEYnqz1Dj/6tMsg3FcuXB
-        xqNMhB0Fhk8f9hBg==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id gJeMHJZEy2BgLwAALh3uQQ
-        (envelope-from <bp@suse.de>); Thu, 17 Jun 2021 12:48:22 +0000
-Date:   Thu, 17 Jun 2021 14:48:17 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V2 22/52] x86/fpu: Rename copy_xregs_to_kernel() and
- copy_kernel_to_xregs()
-Message-ID: <YMtEkXXv1uyEI4th@zn.tnic>
-References: <20210614154408.673478623@linutronix.de>
- <20210614155355.958020458@linutronix.de>
+        Thu, 17 Jun 2021 08:50:36 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G5MDB4s34z1BNZL;
+        Thu, 17 Jun 2021 20:43:22 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 20:48:25 +0800
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 20:48:24 +0800
+Subject: Re: [PATCH -next v4] media: staging: atomisp: use list_splice_init in
+ atomisp_compat_css20.c
+To:     <mchehab@kernel.org>, <sakari.ailus@linux.intel.com>,
+        <gregkh@linuxfoundation.org>, <andriy.shevchenko@linux.intel.com>,
+        <kaixuxia@tencent.com>, <gustavoars@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-staging@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>
+References: <20210617124709.670936-1-libaokun1@huawei.com>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+Message-ID: <64892fe9-018f-a87a-66ea-414c1b814a3b@huawei.com>
+Date:   Thu, 17 Jun 2021 20:48:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210617124709.670936-1-libaokun1@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210614155355.958020458@linutronix.de>
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 05:44:30PM +0200, Thomas Gleixner wrote:
-> The function names for xsave[s]/xrstor[s] operations are horribly named and
-> a permanent source of confusion.
-> 
-> Rename:
-> 	copy_xregs_to_kernel() to xsave_to_kernel()
-> 	copy_kernel_to_xregs() to xrstor_from_kernel()
+Please ignore this email.
 
-Yap, better.
+I have forgot the version information.
 
-I wonder if simply calling them xsave() and xrstor() won't make it
-even easier. The to/from kernel thing is kinda weird. If we need
-to differentiate where we're saving, we can call the user variants
-"to/from_user" instead, like the copy_to_/from_user things...
+I'm about to send a patch v5 with the version information.
 
--- 
-Regards/Gruss,
-    Boris.
+Best Regards.
 
-SUSE Software Solutions Germany GmbH, GF: Felix ImendÃ¶rffer, HRB 36809, AG NÃ¼rnberg
+
+ÔÚ 2021/6/17 20:47, Baokun Li Ð´µÀ:
+> Using list_splice_init() instead of entire while-loops
+> in atomisp_compat_css20.c.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>   .../media/atomisp/pci/atomisp_compat_css20.c  | 35 +++----------------
+>   1 file changed, 5 insertions(+), 30 deletions(-)
+>
+> diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+> index f60198bb8a1a..7831bdac96ff 100644
+> --- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+> +++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+> @@ -2144,42 +2144,17 @@ void atomisp_css_stop(struct atomisp_sub_device *asd,
+>   	}
+>   
+>   	/* move stats buffers to free queue list */
+> -	while (!list_empty(&asd->s3a_stats_in_css)) {
+> -		s3a_buf = list_entry(asd->s3a_stats_in_css.next,
+> -				     struct atomisp_s3a_buf, list);
+> -		list_del(&s3a_buf->list);
+> -		list_add_tail(&s3a_buf->list, &asd->s3a_stats);
+> -	}
+> -	while (!list_empty(&asd->s3a_stats_ready)) {
+> -		s3a_buf = list_entry(asd->s3a_stats_ready.next,
+> -				     struct atomisp_s3a_buf, list);
+> -		list_del(&s3a_buf->list);
+> -		list_add_tail(&s3a_buf->list, &asd->s3a_stats);
+> -	}
+> +	list_splice_init(&asd->s3a_stats_in_css, &asd->s3a_stats);
+> +	list_splice_init(&asd->s3a_stats_ready, &asd->s3a_stats);
+>   
+>   	spin_lock_irqsave(&asd->dis_stats_lock, irqflags);
+> -	while (!list_empty(&asd->dis_stats_in_css)) {
+> -		dis_buf = list_entry(asd->dis_stats_in_css.next,
+> -				     struct atomisp_dis_buf, list);
+> -		list_del(&dis_buf->list);
+> -		list_add_tail(&dis_buf->list, &asd->dis_stats);
+> -	}
+> +	list_splice_init(&asd->dis_stats_in_css, &asd->dis_stats);
+>   	asd->params.dis_proj_data_valid = false;
+>   	spin_unlock_irqrestore(&asd->dis_stats_lock, irqflags);
+>   
+>   	for (i = 0; i < ATOMISP_METADATA_TYPE_NUM; i++) {
+> -		while (!list_empty(&asd->metadata_in_css[i])) {
+> -			md_buf = list_entry(asd->metadata_in_css[i].next,
+> -					    struct atomisp_metadata_buf, list);
+> -			list_del(&md_buf->list);
+> -			list_add_tail(&md_buf->list, &asd->metadata[i]);
+> -		}
+> -		while (!list_empty(&asd->metadata_ready[i])) {
+> -			md_buf = list_entry(asd->metadata_ready[i].next,
+> -					    struct atomisp_metadata_buf, list);
+> -			list_del(&md_buf->list);
+> -			list_add_tail(&md_buf->list, &asd->metadata[i]);
+> -		}
+> +		list_splice_init(&asd->metadata_in_css[i], &asd->metadata[i]);
+> +		list_splice_init(&asd->metadata_ready[i], &asd->metadata[i]);
+>   	}
+>   
+>   	atomisp_flush_params_queue(&asd->video_out_capture);
