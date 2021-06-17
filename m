@@ -2,102 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565643AB764
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9CD3AB76A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhFQPYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48456 "EHLO
+        id S233279AbhFQPZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233274AbhFQPYw (ORCPT
+        with ESMTP id S233130AbhFQPZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:24:52 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDC7C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:22:44 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id ei4so3964523pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:22:44 -0700 (PDT)
+        Thu, 17 Jun 2021 11:25:50 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7E6C061574;
+        Thu, 17 Jun 2021 08:23:42 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id y15so5283035pfl.4;
+        Thu, 17 Jun 2021 08:23:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MBGbqvseaowVXgAUsLtxjTmL1uju2aQqqvQPrdOEUMI=;
-        b=HE2F97TOVFlVyHorUtSDPv87VQGzS+EG8uzGtZ9iJ/SPN5vRg9BJXjdhsHysIMT5vL
-         RnMGklcRV5fYPciomdLDZQGbZ63cPWs7NqaPdH72A+bdeKMJhIjSQuex6+TXdIOg29Ox
-         ffOezYXKeorOiCgIUgUuzCfPDYbc6xTz5iHr2qH9s6Xj7VngTfJtypZRqGeMULSgL+nw
-         gzYLIht4/5QD2eb2ALIdS2g9Nv09mNUVZsr+YKh4aTv3xJC9WRR46W8Yk47bK/3zfgLT
-         i8YMQ1m37rJbGmSV0B18SWLh3CyX6MfIri5tPDeFuOAZW3yQUN7cm0Q8MGBBIQkMJ3Fv
-         DaXg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BGbeP7ZnDkY2DJidMpRViqieliUtB17GFMkW1zVFjRU=;
+        b=Oa3ubTr0Q6/AN8zuP9Ab/2Kl+m1AAVUY/MDQf2YhYJMxoR2QNRnHh/uPRS4KEd8FwY
+         7lYpYXWtliofo4M15KX6kB/FCkMTAvkAF5RyYzkFKpXKvFcmdbiszr2IFGVTZVh653X0
+         JlXGmk/4/4qPnXOO/m3zhD3PlhS2nlPXPnbBDrYB95ZdveGJ8MePV/9NK38Q1rNXPizi
+         QKad2ZO6qF2xPjJ6PWs5ki8uHBBzjnc1piJNAtBZfryD4TVocKpZsNdt08Prz2cW6xPh
+         dwpLwl/ECtvKrpW71zqf6I/ocCQRj1JzvqPxhMJBmEKXb5ymNHU6ksoRABqmBJzbHy7l
+         YMpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MBGbqvseaowVXgAUsLtxjTmL1uju2aQqqvQPrdOEUMI=;
-        b=grnfyz+hcAInwYizdh1ELzHurzFmvlWhYIy6+DDSerZNtuuC3j6tTbBZQleO/3zaqQ
-         Ci8e4pdiBe296R3gTi3mJwAwXGVGCtJZi2z0D/sKlM4mHx3wIrBfMVXBBTPBPj7Uo00T
-         sqBiAKLWAybGLAwV9w50BtbqIkGCmlHGurqDhfTi1GaOn48ZsPgtGvBmyKFfEw8pIyHh
-         wSSezqenHDvgP7v/pDQZtGqLSwS8TRBuwfRV6sU3ykRyVGk2kn8+DWaIvKG3OK3pd2gU
-         9tDzUYum8ZUyRxkI+FdF/p3j9PcQ8hgdBHFVR7GQbllE9uktoMZAG3igfZogxHbU1HN+
-         daCg==
-X-Gm-Message-State: AOAM5320TA5hgJoqGZ/JVWKBeJ9dNYQMnFRK2YtDurin78zbHiNR/zbJ
-        0DreHFKQ4/huHzQNuFDJqiUC
-X-Google-Smtp-Source: ABdhPJxFRZNfk3bxzecym17syOMw+PdHrMsWneLe7XMo51guW95xIB+Y+XkOdV/nbOkW7I6IlBxqPw==
-X-Received: by 2002:a17:90a:aa98:: with SMTP id l24mr6118532pjq.156.1623943364299;
-        Thu, 17 Jun 2021 08:22:44 -0700 (PDT)
-Received: from localhost.localdomain ([2409:4072:601:a552:f5:b632:aa12:8667])
-        by smtp.gmail.com with ESMTPSA id n69sm5639857pfd.132.2021.06.17.08.22.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 08:22:43 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        robh@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        hemantk@codeaurora.org, smohanad@codeaurora.org,
-        bjorn.andersson@linaro.org, svarbanov@mm-sol.com,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v3 3/3] MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
-Date:   Thu, 17 Jun 2021 20:52:02 +0530
-Message-Id: <20210617152202.83361-4-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210617152202.83361-1-manivannan.sadhasivam@linaro.org>
-References: <20210617152202.83361-1-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BGbeP7ZnDkY2DJidMpRViqieliUtB17GFMkW1zVFjRU=;
+        b=PIWp0ZoCiSnAjkgrrXWJZ43NxUBoRi9I5seWERZ2liYi6+BefaXzV91K2vGVF/PJ4d
+         gyAsgrrCv38bbwNO1cVkegwXFPwXfTmhO/zHF6OaFcrZRh67M3EGwhkwT+RZpOAWK8Nf
+         8ziG223Kk4pOSiukybsE4TX2djJjKEb1HcUE7/yDGaJiTc5CHGCUK9QrVmbMIARFpf+I
+         ounQutBb2Jgljh/0ao13CuaLvifUJCW2L5E2bBjzoLrGScGngC7EKlQnu1ke+WxctvrW
+         /EFctzbQe6MNrytUU6YfVeaWA17dK2ezF3AKD+KwgeCq0VcWUySgeAzzYqGE0IAZU1GQ
+         /aJg==
+X-Gm-Message-State: AOAM530fF75sPLe7mTLAYADIrWdDEVZRH0h+lxeOUTXVC52fA4pLsxoK
+        1RfDVsGnHG3t0yTWvzh8EWA=
+X-Google-Smtp-Source: ABdhPJx/5easlY7XHWhEyK556EoCIVPAIfLRotdyXcjQ6+Cu9D7hlZkBnahXppkI8S5hMejMrFyBwQ==
+X-Received: by 2002:aa7:905a:0:b029:2f6:d759:6c2d with SMTP id n26-20020aa7905a0000b02902f6d7596c2dmr249155pfo.33.1623943421659;
+        Thu, 17 Jun 2021 08:23:41 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id v6sm6434212pgk.33.2021.06.17.08.23.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jun 2021 08:23:41 -0700 (PDT)
+Subject: Re: [PATCH] block: break circular locks in blk_request_module
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        linux-mtd@lists.infradead.org
+References: <20210617092016.522985-1-desmondcheongzx@gmail.com>
+ <YMs3O/cg4V7ywlVq@infradead.org>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <ce1567cf-bc94-790c-cfc0-e4e429e1a86a@gmail.com>
+Date:   Thu, 17 Jun 2021 23:23:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YMs3O/cg4V7ywlVq@infradead.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MAINTAINERS entry for Qualcomm PCIe Endpoint driver and its
-devicetree binding. While at it, let's also fix the PCIE RC entry to
-cover only the RC driver.
+On 17/6/21 7:51 pm, Christoph Hellwig wrote:
+> On Thu, Jun 17, 2021 at 05:20:16PM +0800, Desmond Cheong Zhi Xi wrote:
+>>   	mutex_lock(&major_names_lock);
+>>   	for (n = &major_names[major_to_index(major)]; *n; n = &(*n)->next) {
+>>   		if ((*n)->major == major && (*n)->probe) {
+>> -			(*n)->probe(devt);
+>> +			probe = (*n)->probe;
+>>   			mutex_unlock(&major_names_lock);
+>> +			probe(devt);
+> 
+> And now you can all probe after it has been freed and/or the module has
+> been unloaded. The obviously correct fix is to only hold mtd_table_mutex
+> for the actually required critical section:
+> 
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- MAINTAINERS | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Thank you for the correction, Christoph. I hadn't thought of the 
+scenario where the module is unloaded. I'll be more conscientious in the 
+future.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..cdd370138b9f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14254,7 +14254,15 @@ M:	Stanimir Varbanov <svarbanov@mm-sol.com>
- L:	linux-pci@vger.kernel.org
- L:	linux-arm-msm@vger.kernel.org
- S:	Maintained
--F:	drivers/pci/controller/dwc/*qcom*
-+F:	drivers/pci/controller/dwc/pcie-qcom.c
-+
-+PCIE ENDPOINT DRIVER FOR QUALCOMM
-+M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-+L:	linux-pci@vger.kernel.org
-+L:	linux-arm-msm@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-+F:	drivers/pci/controller/dwc/pcie-qcom-ep.c
- 
- PCIE DRIVER FOR ROCKCHIP
- M:	Shawn Lin <shawn.lin@rock-chips.com>
--- 
-2.25.1
+> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+> index fb8e12d590a1..065d94f9b1fb 100644
+> --- a/drivers/mtd/mtd_blkdevs.c
+> +++ b/drivers/mtd/mtd_blkdevs.c
+> @@ -529,13 +529,11 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
+>   		register_mtd_user(&blktrans_notifier);
+>   
+>   
+> -	mutex_lock(&mtd_table_mutex);
+>   
+>   	ret = register_blkdev(tr->major, tr->name);
+>   	if (ret < 0) {
+>   		printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
+>   		       tr->name, tr->major, ret);
+> -		mutex_unlock(&mtd_table_mutex);
+>   		return ret;
+>   	}
+>   
+> @@ -545,12 +543,12 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
+>   	tr->blkshift = ffs(tr->blksize) - 1;
+>   
+>   	INIT_LIST_HEAD(&tr->devs);
+> -	list_add(&tr->list, &blktrans_majors);
+>   
+> +	mutex_lock(&mtd_table_mutex);
+> +	list_add(&tr->list, &blktrans_majors);
+>   	mtd_for_each_device(mtd)
+>   		if (mtd->type != MTD_ABSENT)
+>   			tr->add_mtd(tr, mtd);
+> -
+>   	mutex_unlock(&mtd_table_mutex);
+>   	return 0;
+>   }
+> 
 
+This fix passes the Syzkaller repro test on my local machine and on 
+Syzbot. I can prepare a v2 patch for this. May I include you with the 
+Co-developed-by: and Signed-off-by: tags? If another tag would be more 
+appropriate, or if you want to submit the patch yourself, please let me 
+know.
+
+Best wishes,
+Desmond
