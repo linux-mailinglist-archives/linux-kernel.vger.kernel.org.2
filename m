@@ -2,103 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA553AB32C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF253AB336
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbhFQMEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
+        id S232691AbhFQMGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:06:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232649AbhFQMEF (ORCPT
+        with ESMTP id S231527AbhFQMGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:04:05 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BF6C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:01:58 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id f2so6452995wri.11
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=PZ6ISBSnRrzVuSGvUd0b/8GChX0lbxx7dZ00sY7kWSQ=;
-        b=ClmgFWz8+2HypoYvC+r5XNcMSnn1uiYnYp9+/m/RvaoK11RlmLCbs34RQTbCbb6cbu
-         2eQf+wKIYAocO/nXeeV61afl8dulo+jZrID6MlWbalOUB/oTE2h8iG5eveHIGujPTPnV
-         UtX8AHiXIb60iJU58NIuKJ4AO8EKGXwWL1+nETQGyRH8W9j0M6BYHxOUXiMGXyowzkTB
-         d3b5FzexoMOIxC1W0zO5Q7jzFPxPvd+M8KwrFeCNr4JRxojO8hfd+gzUJ50cqvy53OLK
-         hvP0OMPF0pgl5d7kNwZWWufubnFSrBBGqLzs7Hazj6PBc3uXj1F19829cgHCp+GZLipT
-         eZXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=PZ6ISBSnRrzVuSGvUd0b/8GChX0lbxx7dZ00sY7kWSQ=;
-        b=Si7gfgSGM8RQThZn/atqrjKY/syjnM1AbhuJ6fC7gf5u8l9/Y/YE8LDTSlkCTcLaoY
-         d0G7xwIAJeTkZ3xSkxoJyfpJ8zQIHrPbsog4f54V0VlL8J4Y3dRahucYFLzM2i+Jw+C1
-         W7CYqia4i8JUX6jGGoceX98GoAxwafc1aKtgH/PDh91tsB+WMWysGo8KIuDeiTkUan0o
-         y3aPwJiPqIFvZKfZNHOuE3BmFMHprW9YDM4D26stFAjxU/ak3/B//cYtITpalrHZcpbJ
-         JvHyj1IA6UYHaQ+LEZIM5JfNE/7tJsWc0ifzPG+44YYmYp+X9tHlWA3iYjloXyMrJToQ
-         uhrQ==
-X-Gm-Message-State: AOAM533bI1WAundVvDzDMGFE2sfGt0E9+4C9I+N7V69fcfu6aAmkurKE
-        XW1PJ9XJFLnVml/R6J+OGjNRpCi4F2oRTA==
-X-Google-Smtp-Source: ABdhPJx5r/jGmOfQQj6nA8f4ig9gMPFor5XBGiyM22eY1yqPLWqZk6GnztPSqq+w26fAvTSFl472kQ==
-X-Received: by 2002:a05:6000:186c:: with SMTP id d12mr5255316wri.123.1623931316627;
-        Thu, 17 Jun 2021 05:01:56 -0700 (PDT)
-Received: from dell ([91.110.221.170])
-        by smtp.gmail.com with ESMTPSA id 61sm5597887wrp.4.2021.06.17.05.01.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 05:01:56 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 13:01:54 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
-Subject: Re: [PATCH 1/1] cgroup-v1: Grant CAP_SYS_NICE holders permission to
- move tasks between cgroups
-Message-ID: <YMs5ssb50B208Aad@dell>
-References: <20210617090941.340135-1-lee.jones@linaro.org>
- <YMs08Ij8PZ/gemLL@slm.duckdns.org>
+        Thu, 17 Jun 2021 08:06:06 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18B5C061574;
+        Thu, 17 Jun 2021 05:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ONSVTi/kXecAO7V8H03TQdoNf9PX+WyPNXJRe3/v7sQ=; b=uzxZPVJhTiOi3OOpR3yGnEWNTE
+        DTgOig6t+xTIAwna3vLRTyT1bA2nVUzt/NFNkri8pChy6tfrl1hABkHAH/OL9w86UyTRU0cj9qUl7
+        rNcmXHtDQdvhVY84d4JVk6ZAgKbnx0R2LaWBWquWfpPK01XyD1oj6hnOi37N+20oNuWQdPt7BbzQR
+        aBLVMja0ra7hgO15ifzYoc/I8Htc38+90fGfuDSjanpheLRMxi2CUFq9z/SZqhURSumRvMFLqwigW
+        ZCNtpRz91Zd5W+SRdE+YlS8TXFETDF+S2nQIIcOJZnmj8PxDcLf/3gVT369P7lcHsWq+fYST3N6ul
+        j7J0BOQg==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <cyndis@kapsi.fi>)
+        id 1ltqkV-0004aa-Qk; Thu, 17 Jun 2021 15:03:55 +0300
+Subject: Re: [PATCH 1/2] arm64: traps: Support for registering SError hooks
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210617104053.765434-1-mperttunen@nvidia.com>
+ <20210617114618.GC82133@C02TD0UTHF1T.local>
+From:   Mikko Perttunen <cyndis@kapsi.fi>
+Message-ID: <241fa310-b13f-0444-0fa6-ca448a875917@kapsi.fi>
+Date:   Thu, 17 Jun 2021 15:03:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YMs08Ij8PZ/gemLL@slm.duckdns.org>
+In-Reply-To: <20210617114618.GC82133@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: cyndis@kapsi.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tejun,
-
-Thanks for your reply.
-
-On Thu, 17 Jun 2021, Tejun Heo wrote:
-> On Thu, Jun 17, 2021 at 10:09:41AM +0100, Lee Jones wrote:
-> > It should be possible for processes with CAP_SYS_NICE capabilities
-> > (privileges) to move lower priority tasks within the same namespace to
-> > different cgroups.
+On 6/17/21 2:46 PM, Mark Rutland wrote:
+> On Thu, Jun 17, 2021 at 01:40:52PM +0300, Mikko Perttunen wrote:
+>> Add the ability for drivers to register SError hooks to be run
+>> on a fatal SError interrupt. This allows printing of system-specific
+>> error information to aid with debugging.
+>>
+>> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
 > 
-> I'm not sure that "should" is justified that easily given that cgroup can
-> affect things like device access permissions and basic system organization.
-
-The latter part of that sentence does provide some additional caveats.
-
-> > One extremely common example of this is Android's 'system_server',
-> > which moves processes around to different cgroups/cpusets, but should
-> > not require any other root privileges.
+> Can't you dump information unconditionally in a panic notifier?
 > 
-> Why is this being brought up now after all the years?
+> That wouldn't require any new infrastructure.
 
-This has been discussed before?
+That does indeed work also, thanks for the tip! Will change to use those.
 
-I didn't find any evidence of that on the lists.
+Thanks,
+Mikko
 
-> Isn't android moving onto cgroup2 anyway?
-
-That I would have to check.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> 
+> Thanks,
+> Mark.
+> 
+>> ---
+>>   arch/arm64/include/asm/traps.h |  6 ++++++
+>>   arch/arm64/kernel/traps.c      | 20 ++++++++++++++++++++
+>>   2 files changed, 26 insertions(+)
+>>
+>> diff --git a/arch/arm64/include/asm/traps.h b/arch/arm64/include/asm/traps.h
+>> index 54f32a0675df..054fecfa22f0 100644
+>> --- a/arch/arm64/include/asm/traps.h
+>> +++ b/arch/arm64/include/asm/traps.h
+>> @@ -22,8 +22,14 @@ struct undef_hook {
+>>   	int (*fn)(struct pt_regs *regs, u32 instr);
+>>   };
+>>   
+>> +struct serror_hook {
+>> +	struct list_head node;
+>> +	void (*fn)(void);
+>> +};
+>> +
+>>   void register_undef_hook(struct undef_hook *hook);
+>>   void unregister_undef_hook(struct undef_hook *hook);
+>> +void register_serror_hook(struct serror_hook *hook);
+>>   void force_signal_inject(int signal, int code, unsigned long address, unsigned int err);
+>>   void arm64_notify_segfault(unsigned long addr);
+>>   void arm64_force_sig_fault(int signo, int code, unsigned long far, const char *str);
+>> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+>> index 273066279bb5..02dbaab71ea3 100644
+>> --- a/arch/arm64/kernel/traps.c
+>> +++ b/arch/arm64/kernel/traps.c
+>> @@ -890,8 +890,23 @@ void panic_bad_stack(struct pt_regs *regs, unsigned int esr, unsigned long far)
+>>   }
+>>   #endif
+>>   
+>> +static LIST_HEAD(serror_hook);
+>> +static DEFINE_RAW_SPINLOCK(serror_lock);
+>> +
+>> +void register_serror_hook(struct serror_hook *hook)
+>> +{
+>> +	unsigned long flags;
+>> +
+>> +	raw_spin_lock_irqsave(&serror_lock, flags);
+>> +	list_add(&hook->node, &serror_hook);
+>> +	raw_spin_unlock_irqrestore(&serror_lock, flags);
+>> +}
+>> +
+>>   void __noreturn arm64_serror_panic(struct pt_regs *regs, u32 esr)
+>>   {
+>> +	struct serror_hook *hook;
+>> +	unsigned long flags;
+>> +
+>>   	console_verbose();
+>>   
+>>   	pr_crit("SError Interrupt on CPU%d, code 0x%08x -- %s\n",
+>> @@ -899,6 +914,11 @@ void __noreturn arm64_serror_panic(struct pt_regs *regs, u32 esr)
+>>   	if (regs)
+>>   		__show_regs(regs);
+>>   
+>> +	raw_spin_lock_irqsave(&serror_lock, flags);
+>> +	list_for_each_entry(hook, &serror_hook, node)
+>> +		hook->fn();
+>> +	raw_spin_unlock_irqrestore(&serror_lock, flags);
+>> +
+>>   	nmi_panic(regs, "Asynchronous SError Interrupt");
+>>   
+>>   	cpu_park_loop();
+>> -- 
+>> 2.30.1
+>>
