@@ -2,252 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA113ABE79
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 23:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46563ABE67
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 23:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhFQV57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 17:57:59 -0400
-Received: from mga07.intel.com ([134.134.136.100]:16700 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231474AbhFQV5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 17:57:50 -0400
-IronPort-SDR: NEeFg25bXG5PX5/vKnnK3CEvjCseNoh2eQ7phqAo89Rn09asn76q24fSKuhYXwizUK0aIbxP9D
- +HH4K/B8hthw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="270304155"
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="270304155"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 14:55:41 -0700
-IronPort-SDR: 6ZHkDpGlx3WOn7uW+LShkGAYsoxClCtz1c8DC6jJ2sPs1sryqVMZoFaktpayaobN/Dsw27577J
- AsJSvaZ63O1A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="488810897"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga002.fm.intel.com with ESMTP; 17 Jun 2021 14:55:41 -0700
-Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
-        by linux.intel.com (Postfix) with ESMTP id EC13C580224;
-        Thu, 17 Jun 2021 14:55:40 -0700 (PDT)
-From:   "David E. Box" <david.e.box@linux.intel.com>
-To:     lee.jones@linaro.org, david.e.box@linux.intel.com,
-        hdegoede@redhat.com, mgross@linux.intel.com, bhelgaas@google.com
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH 4/4] MFD: intel-extended-cap: Add support for PCIe VSEC structures
-Date:   Thu, 17 Jun 2021 14:54:08 -0700
-Message-Id: <20210617215408.1412409-5-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210617215408.1412409-1-david.e.box@linux.intel.com>
-References: <20210617215408.1412409-1-david.e.box@linux.intel.com>
+        id S229915AbhFQV4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 17:56:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59844 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229816AbhFQV4g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 17:56:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623966866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oq9kffVK8f1Sa0DR5BkzICWYZziNXpt3UUdoQe11Qgo=;
+        b=eoXdI0Doe1X3nj+DfVRMLC4KKt4UtQ7EBGyZInytzstwosE4NnjK4yq6hKuOZaBIMTNhS2
+        DbK6/zY5L6vZ1tS2dzcmgA4uXIGevfGk7fNNpI+5k57fK7jktb7GuKm5Joj1JPjq8NXDP0
+        anbazkRqrcAO4zMJ4v+jJVpixoCZiec=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-401-UvrrMC2GPi218wC9aJUcXQ-1; Thu, 17 Jun 2021 17:54:25 -0400
+X-MC-Unique: UvrrMC2GPi218wC9aJUcXQ-1
+Received: by mail-oo1-f72.google.com with SMTP id n13-20020a4ae1cd0000b029024af40d0cc4so4673604oot.7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 14:54:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oq9kffVK8f1Sa0DR5BkzICWYZziNXpt3UUdoQe11Qgo=;
+        b=Mw+4YZe5bCAh0or+SEMRw5XEgvIjGCERmtZJzO0s5qX5HVeVub25T70VLC1de/L74P
+         XAP4Il4RVcRoK6kgx6q47GvRUM28fuhOAwsMN9KsVbCwCteB638KGVUCVP6FMqFxg6Mq
+         7rU9kaqK2VGHRl2YAxOVrJ4nxttUfF9/lzRA7334efr6ensoBpKiQpMZTNiKvM4g5UfL
+         ZDEsA22LujoDcsiAOaPxfyS35fT6bHUv/mcdr3EPWuisBYAuxn830N/2uP8zpvmA8bl9
+         qq9NKKaIY0azEEViN/hqWwaVvB+wfP3d3Udnk5XfgIfCtEkiOyqJqDRPzkC/9mqFk9Gg
+         7HFw==
+X-Gm-Message-State: AOAM530+all3huFsmYpT0dbiPaiLbsN/W3vDPpjkSoIdptWk4XjtNbdJ
+        OdMAcaVCiUF9DFKsXOiMiML83bqmc/usngeTYPvUin1wXi9mc14DfC5A90rbZwPEGbYFe696hdK
+        ZgxjGOFsV6Zo3KeQCOi4Z7RVG
+X-Received: by 2002:aca:ab4c:: with SMTP id u73mr4958315oie.26.1623966864511;
+        Thu, 17 Jun 2021 14:54:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyo7BwMtFjeIYDSFNCTepqIb+7Z7yOe/HtmPkjlgbgsZe5nw6U0ZtyUF9gTPIhaoCEL7PLD9w==
+X-Received: by 2002:aca:ab4c:: with SMTP id u73mr4958310oie.26.1623966864411;
+        Thu, 17 Jun 2021 14:54:24 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id q11sm1414494ooc.27.2021.06.17.14.54.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 14:54:24 -0700 (PDT)
+From:   trix@redhat.com
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] ice: change return type of ice_ptp_request_ts() to s8
+Date:   Thu, 17 Jun 2021 14:54:19 -0700
+Message-Id: <20210617215419.3502075-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support for discovering Intel extended capability features from
-Vendor Specific Extended Capability (VSEC) registers in PCIe config space.
-While doing so place the existing DVSEC and new VSEC code in separate
-functions.
+From: Tom Rix <trix@redhat.com>
 
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+A gcc 10.3.1 compile error
+ice_ptp.h:149:1: error: return type defaults to
+  'int' [-Werror=return-type]
+  149 | ice_ptp_request_ts(struct ice_ptp_tx *tx, ...
+      | ^~~~~~~~~~~~~~~~~~
+
+This stub's return needs to match the decl for
+CONFIG_PTP_I588_CLOCK, which matches its use in
+ice_txrt.c
+
+Change the implicit int return to s8.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- drivers/mfd/intel_extended_caps.c | 159 ++++++++++++++++++++----------
- 1 file changed, 109 insertions(+), 50 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_ptp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/intel_extended_caps.c b/drivers/mfd/intel_extended_caps.c
-index 89cf1ae6f65b..9b60defda856 100644
---- a/drivers/mfd/intel_extended_caps.c
-+++ b/drivers/mfd/intel_extended_caps.c
-@@ -105,7 +105,7 @@ static int intel_ext_cap_add_dev(struct pci_dev *pdev, struct intel_ext_cap_head
- 		header->offset >>= 3;
- 
- 	/*
--	 * The DVSEC contains the starting offset and count for a block of
-+	 * The DVSEC/VSEC contains the starting offset and count for a block of
- 	 * discovery tables, each providing access to monitoring facilities for
- 	 * a section of the device. Create a resource list of these tables to
- 	 * provide to the driver.
-@@ -124,11 +124,112 @@ static int intel_ext_cap_add_dev(struct pci_dev *pdev, struct intel_ext_cap_head
- 	return devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO, cell, 1, NULL, 0, NULL);
+diff --git a/drivers/net/ethernet/intel/ice/ice_ptp.h b/drivers/net/ethernet/intel/ice/ice_ptp.h
+index 41e14f98f0e66..d01507eba0364 100644
+--- a/drivers/net/ethernet/intel/ice/ice_ptp.h
++++ b/drivers/net/ethernet/intel/ice/ice_ptp.h
+@@ -145,7 +145,7 @@ static inline int ice_get_ptp_clock_index(struct ice_pf *pf)
+ 	return -1;
  }
  
-+static bool intel_ext_cap_walk_dvsec(struct pci_dev *pdev, unsigned long quirks)
-+{
-+	int count = 0;
-+	int pos = 0;
-+
-+	do {
-+		struct intel_ext_cap_header header;
-+		u32 table, hdr;
-+		u16 vid;
-+		int ret;
-+
-+		pos = pci_find_next_ext_capability(pdev, pos, PCI_EXT_CAP_ID_DVSEC);
-+		if (!pos)
-+			break;
-+
-+		pci_read_config_dword(pdev, pos + PCI_DVSEC_HEADER1, &hdr);
-+		vid = PCI_DVSEC_HEADER1_VID(hdr);
-+		if (vid != PCI_VENDOR_ID_INTEL)
-+			continue;
-+
-+		/* Support only revision 1 */
-+		header.rev = PCI_DVSEC_HEADER1_REV(hdr);
-+		if (header.rev != 1) {
-+			dev_warn(&pdev->dev, "Unsupported DVSEC revision %d\n",
-+				 header.rev);
-+			continue;
-+		}
-+
-+		header.length = PCI_DVSEC_HEADER1_LEN(hdr);
-+
-+		pci_read_config_byte(pdev, pos + INTEL_DVSEC_ENTRIES,
-+				     &header.num_entries);
-+		pci_read_config_byte(pdev, pos + INTEL_DVSEC_SIZE,
-+				     &header.entry_size);
-+		pci_read_config_dword(pdev, pos + INTEL_DVSEC_TABLE,
-+				      &table);
-+
-+		header.tbir = INTEL_DVSEC_TABLE_BAR(table);
-+		header.offset = INTEL_DVSEC_TABLE_OFFSET(table);
-+
-+		pci_read_config_dword(pdev, pos + PCI_DVSEC_HEADER2, &hdr);
-+		header.id = PCI_DVSEC_HEADER2_ID(hdr);
-+
-+		ret = intel_ext_cap_add_dev(pdev, &header, quirks);
-+		if (ret)
-+			continue;
-+
-+		count++;
-+	} while (true);
-+
-+	return count;
-+}
-+
-+static bool intel_ext_cap_walk_vsec(struct pci_dev *pdev, unsigned long quirks)
-+{
-+	int count = 0;
-+	int pos = 0;
-+
-+	do {
-+		struct intel_ext_cap_header header;
-+		u32 table, hdr;
-+		int ret;
-+
-+		pos = pci_find_next_ext_capability(pdev, pos, PCI_EXT_CAP_ID_VNDR);
-+		if (!pos)
-+			break;
-+
-+		pci_read_config_dword(pdev, pos + PCI_VNDR_HEADER, &hdr);
-+
-+		/* Support only revision 1 */
-+		header.rev = PCI_VNDR_HEADER_REV(hdr);
-+		if (header.rev != 1) {
-+			dev_warn(&pdev->dev, "Unsupported VSEC revision %d\n",
-+				 header.rev);
-+			continue;
-+		}
-+
-+		header.id = PCI_VNDR_HEADER_ID(hdr);
-+		header.length = PCI_VNDR_HEADER_LEN(hdr);
-+
-+		/* entry, size, and table offset are the same as DVSEC */
-+		pci_read_config_byte(pdev, pos + INTEL_DVSEC_ENTRIES,
-+				     &header.num_entries);
-+		pci_read_config_byte(pdev, pos + INTEL_DVSEC_SIZE,
-+				     &header.entry_size);
-+		pci_read_config_dword(pdev, pos + INTEL_DVSEC_TABLE,
-+				      &table);
-+
-+		header.tbir = INTEL_DVSEC_TABLE_BAR(table);
-+		header.offset = INTEL_DVSEC_TABLE_OFFSET(table);
-+
-+		ret = intel_ext_cap_add_dev(pdev, &header, quirks);
-+		if (ret)
-+			continue;
-+
-+		count++;
-+	} while (true);
-+
-+	return count;
-+}
-+
- int intel_ext_cap_probe(struct pci_dev *pdev, struct intel_ext_cap_platform_info *info)
+-static inline
++static inline s8
+ ice_ptp_request_ts(struct ice_ptp_tx *tx, struct sk_buff *skb)
  {
- 	unsigned long quirks = 0;
--	bool found_devices = false;
--	int ret, pos;
-+	int device_count = 0;
-+	int ret;
- 
- 	if (info)
- 		quirks = info->quirks;
-@@ -144,59 +245,17 @@ int intel_ext_cap_probe(struct pci_dev *pdev, struct intel_ext_cap_platform_info
- 					 "Failed to add device for DVSEC id %d\n",
- 					 (*header)->id);
- 			else
--				found_devices = true;
-+				device_count++;
- 
- 			header++;
- 		}
--	} else {
--		/* Find DVSEC features */
--		pos = 0;
--		do {
--			struct intel_ext_cap_header header;
--			u32 table, hdr;
--			u16 vid;
--
--			pos = pci_find_next_ext_capability(pdev, pos, PCI_EXT_CAP_ID_DVSEC);
--			if (!pos)
--				break;
--
--			pci_read_config_dword(pdev, pos + PCI_DVSEC_HEADER1, &hdr);
--			vid = PCI_DVSEC_HEADER1_VID(hdr);
--			if (vid != PCI_VENDOR_ID_INTEL)
--				continue;
--
--			/* Support only revision 1 */
--			header.rev = PCI_DVSEC_HEADER1_REV(hdr);
--			if (header.rev != 1) {
--				dev_warn(&pdev->dev, "Unsupported DVSEC revision %d\n",
--					 header.rev);
--				continue;
--			}
--
--			header.length = PCI_DVSEC_HEADER1_LEN(hdr);
--
--			pci_read_config_byte(pdev, pos + INTEL_DVSEC_ENTRIES,
--					     &header.num_entries);
--			pci_read_config_byte(pdev, pos + INTEL_DVSEC_SIZE,
--					     &header.entry_size);
--			pci_read_config_dword(pdev, pos + INTEL_DVSEC_TABLE,
--					      &table);
--
--			header.tbir = INTEL_DVSEC_TABLE_BAR(table);
--			header.offset = INTEL_DVSEC_TABLE_OFFSET(table);
--
--			pci_read_config_dword(pdev, pos + PCI_DVSEC_HEADER2, &hdr);
--			header.id = PCI_DVSEC_HEADER2_ID(hdr);
--
--			ret = intel_ext_cap_add_dev(pdev, &header, quirks);
--			if (ret)
--				continue;
- 
--			found_devices = true;
--		} while (true);
-+	} else {
-+		device_count += intel_ext_cap_walk_dvsec(pdev, quirks);
-+		device_count += intel_ext_cap_walk_vsec(pdev, quirks);
- 	}
- 
--	if (!found_devices)
-+	if (!device_count)
- 		return -ENODEV;
- 
- 	return 0;
+ 	return -1;
 -- 
-2.25.1
+2.26.3
 
