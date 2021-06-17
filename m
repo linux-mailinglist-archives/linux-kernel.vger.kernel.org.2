@@ -2,96 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081553AB6E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA6B3AB6F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhFQPJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:09:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233142AbhFQPJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:09:12 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5D12610A2;
-        Thu, 17 Jun 2021 15:07:01 +0000 (UTC)
-Date:   Thu, 17 Jun 2021 11:07:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Young <dyoung@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Sasha Levin <sashal@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vivek Goyal <vgoyal@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [next] [clang] x86_64-linux-gnu-ld: mm/mremap.o: in function
- `move_pgt_entry': mremap.c:(.text+0x763): undefined reference to
- `__compiletime_assert_342'
-Message-ID: <20210617110700.091efd15@gandalf.local.home>
-In-Reply-To: <CA+G9fYukjZU9_88KuhW5FpG-Y6EOH4ehXgdKm9pGO0v4y4wsmA@mail.gmail.com>
-References: <CA+G9fYsWHE5Vu9T3FV-vtHHbVFJWEF=bmjQxwaZs3uVYef028g@mail.gmail.com>
-        <CA+G9fYvvf+XTvZg1sTq4_f9OrVFsCazGo0ozaEbjVYgSeKCkWA@mail.gmail.com>
-        <YMtTdU2b9fI3dnFD@casper.infradead.org>
-        <CA+G9fYukjZU9_88KuhW5FpG-Y6EOH4ehXgdKm9pGO0v4y4wsmA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233152AbhFQPLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233059AbhFQPLb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 11:11:31 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE706C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:09:23 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id f16so969039qvs.7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uJTGcAdupVs9Ugv04FHACXamoJzkCvHB9LUInm949rQ=;
+        b=0kwTwa8f3hL8cWbkSabeU4ie2c9poFkRbJwAggFGl/9viq04wZmf6V6XbbKd1TiAnN
+         jCXYwWonNLnHSk4ogPtzJpv/SkyQOz9+jlMxA0jXywR3iIFgFUTH+dvFrnDJkQnSZJcB
+         6WnI5/68gIlAVUn/yb4Dih1Nsp9TIuYps08ChmTbRaAuXAknAaLXwVeSl6zQXPc3lXgj
+         ksQTS8LFPtiSlkkEb6rHbt7q1V8obRSc6xpK6B55Ma0BMqvqakvbu9B7Gq/7fSKZvIun
+         KMbI5DWSAyKE5FDiAeI7NttzZCF6KjWOgp7X3zeCgz7HsDUorQ3YkXnXjdho/4uGL/3x
+         oc5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uJTGcAdupVs9Ugv04FHACXamoJzkCvHB9LUInm949rQ=;
+        b=eFwyh/cVNKUxueJhRlEQWGgjglsnDT0+mJvkv82NRq6+vroDVanUGwSilvV93j5QvY
+         YpAs5ROu5mk3y/dmkPwRdh0LRnjKOM8KOHWxD93S5GgjbsbdoPK9GunfjvbsN9j2IFzx
+         7ZatqXixPAaGHAf0e0f36BYFzain+ViqiJIiIJq70vp61D1eeCWSs/jJSo+n24+XsV5x
+         pQTaWHGBr2WQ+C6sM7OUIa6918xapY0unCoMjf1GuTMOYzfPtqCdoqoWHWIAmHFgyuWL
+         7X53Fur0jGUOrMJWmV/T8/cd7reMiUMy4JIifigvo6R2v+ZhXGvcL2BFmTPMXhe0fHre
+         b7sA==
+X-Gm-Message-State: AOAM531MMH9gi2pNGErO9t4cElvqE5igDVy5y2sl0y5Rt/3Os+dULPdq
+        v2OwrfnUuiDwCBj6x36HateOIQ==
+X-Google-Smtp-Source: ABdhPJwJejmVo9lW9I1PL6mSnmsN3+f7RnHD762sdEeQaHmkPGliIyoIwmCfZe6dH6xvZmtgm3QnOQ==
+X-Received: by 2002:ad4:4772:: with SMTP id d18mr342093qvx.35.1623942562870;
+        Thu, 17 Jun 2021 08:09:22 -0700 (PDT)
+Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id h17sm3297933qtk.23.2021.06.17.08.09.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jun 2021 08:09:21 -0700 (PDT)
+Subject: Re: [v1 1/3] dt-bindings: msm/dsi: Add yaml schema for 7nm DSI PHY
+To:     rajeevny@codeaurora.org, Rob Herring <robh@kernel.org>,
+        robh+dt@kernel.org
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sean@poorly.run, robdclark@gmail.com,
+        abhinavk@codeaurora.org, kalyan_t@codeaurora.org,
+        mkrishn@codeaurora.org
+References: <1622468035-8453-1-git-send-email-rajeevny@codeaurora.org>
+ <1622468035-8453-2-git-send-email-rajeevny@codeaurora.org>
+ <20210601205848.GA1025498@robh.at.kernel.org>
+ <ec1bcb4e734b784ab17c4fc558a5fab9@codeaurora.org>
+ <27dec6f881a3b8bd5e13ba32990f975b@codeaurora.org>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <a453734a-ab1f-bf35-9272-0b94c713f05b@marek.ca>
+Date:   Thu, 17 Jun 2021 11:07:07 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <27dec6f881a3b8bd5e13ba32990f975b@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 20:15:13 +0530
-Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-
-> > Your git bisect probably went astray.  There's no way that commit
-> > caused that regression.  
+On 6/16/21 1:50 AM, rajeevny@codeaurora.org wrote:
+> On 03-06-2021 01:32, rajeevny@codeaurora.org wrote:
+>> On 02-06-2021 02:28, Rob Herring wrote:
+>>> On Mon, May 31, 2021 at 07:03:53PM +0530, Rajeev Nandan wrote:
+>>
+>>>> +
+>>>> +properties:
+>>>> +  compatible:
+>>>> +    oneOf:
+>>>> +      - const: qcom,dsi-phy-7nm
+>>>
+>>> When would one use this?
+>> This is for SM8250.
+>>
+>>>
+>>>> +      - const: qcom,dsi-phy-7nm-7280
+>>>> +      - const: qcom,dsi-phy-7nm-8150
+>>>
+>>> These don't look like full SoC names (sm8150?) and it's
+>>> <vendor>,<soc>-<block>.
+>>
+>> Thanks, Rob, for the review.
+>>
+>> I just took the `compatible` property currently used in the DSI PHY 
+>> driver
+>> (drivers/gpu/drm/msm/dsi/phy/dsi_phy.c), and added a new entry for 
+>> sc7280.
+>> A similar pattern of `compatible` names are used in other variants of the
+>> DSI PHY driver e.g. qcom,qcom,dsi-phy-10nm-8998, qcom,dsi-phy-14nm-660 
+>> etc.
+>>
+>> The existing compatible names "qcom,dsi-phy-7nm-8150" (SoC at the end) 
+>> make
+>> some sense, if we look at the organization of the dsi phy driver code.
+>> I am new to this and don't know the reason behind the current code
+>> organization and this naming.
+>>
+>> Yes, I agree with you, we should use full SoC names. Adding
+>> the SoC name at the end does not feel very convincing, so I will 
+>> change this
+>> to the suggested format e.g. "qcom,sm8250-dsi-phy-7nm", and will 
+>> rename the
+>> occurrences in the driver and device tree accordingly.
+>> Do I need to make changes for 10nm, 14nm, 20nm, and 28nm DSI PHY too?
+>> Bindings doc for these PHYs recently got merged to msm-next [1]
+>>
+>>
+>> [1]
+>> https://gitlab.freedesktop.org/drm/msm/-/commit/8fc939e72ff80116c090aaf03952253a124d2a8e 
+>>
+>>
 > 
-> Sorry for pointing to incorrect bad commits coming from git bisect.
+> Hi Rob,
 > 
-> Any best way to run git bisect on  linux next tree ?
+> I missed adding "robh+dt@kernel.org" earlier in this thread.
 > 
-> Here is the git bisect log from gitlab pipeline,
-> https://gitlab.com/Linaro/lkft/bisect/-/jobs/1354963448
+> Please check my response to your review comments. Regarding your 
+> suggestion to use <vendor>,<soc>-<block> format for compatible property, 
+> should I also upload a new patch to make changes in 10nm, 14nm, 20nm, 
+> and 28nm DSI PHY DT bindings?
+> 
+> Thanks,
+> Rajeev
+> 
 
-Is it possible that it's not 100% reproducible?
+Hi,
 
-Anyway, before posting the result of any commit as the buggy commit from a
-git bisect, it is best to confirm it by:
+I missed this and ended up sending a similar patch a week later (as part 
+of my cphy series, because I needed it to add a "phy-type" property).
 
- 1) Checking out the tree at the bad commit.
- 2) Verify that the tree at that point is bad
- 3) Check out the parent of that commit (the commit before the bad commit
-    was applied).
- 4) Verify that the tree at that point is good
+"qcom,dsi-phy-7nm" and "qcom,dsi-phy-7nm-8150" aren't new compatibles, 
+they were previously documented in the .txt bindings, which are getting 
+removed, but the new .yaml bindings didn't include them. Documenting 
+them is just a fixup to that patch [1] which is already R-B'd by RobH 
+(and has similar compatibles such as "qcom,dsi-phy-10nm" and 
+"qcom,dsi-phy-10nm-8998
+").
 
-May need to repeat the above a couple of times, in case the issue is not
-100% reproducible.
+You can use a different/better naming scheme for sc7280, but changing 
+the others has nothing to do with adding support for sc7280.
 
-If the above is true, then post the patch as the bad commit. If it is not,
-then something went wrong with the bisect.
+[1] 
+https://gitlab.freedesktop.org/drm/msm/-/commit/8fc939e72ff80116c090aaf03952253a124d2a8e 
 
--- Steve
+
+
 
