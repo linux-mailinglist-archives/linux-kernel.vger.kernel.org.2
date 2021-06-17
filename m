@@ -2,141 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE663AA991
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 05:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651BD3AA994
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 05:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhFQD1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 23:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbhFQD00 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 23:26:26 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476C4C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 20:24:19 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id x73so3832359pfc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 20:24:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vQ1H5KpmR6igc6vGa3WgsWAZHbvCNMb9RNa0+vWcC+c=;
-        b=pntVkEhpVrje7UZgQbd5ogPor9DVKmZh+o6VM42V9+9qGmWQTuQzsaHU4FnqosSDmb
-         u17goz6U6MbKUWtgPZ2z/kEYiWnj2LdJPSeaTUKddqGqX1hljiGnYSuqgO3xnbuA/rGW
-         mowV5PmjPrGCx4rh/iIiUR21ylReC92w4TwqUIOIepfFOgD8YR7MOcBEi5XbrSDbfD5Z
-         GtKkRctOBp9uRnUhtDWJFWtFXaCh70/wvTRZoiRC20upA5jumdFMJIXMa7R4WxRwBIbP
-         IKFLPW3Bze94fMiXlrw1bSLFK23kQ1KVGMhB7dQQddbF3zIDvW0un1963cTibr45SyPp
-         lqgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vQ1H5KpmR6igc6vGa3WgsWAZHbvCNMb9RNa0+vWcC+c=;
-        b=gR4VIY+0BK8wdkVYhNtBWFFZ69fslR/zct09zjQuXWZNQ04gJ0XxJzp/6oUl3VLQ0N
-         iWMrUgZ2q2xc8p/ggAcCqt632A0EZVmhLAJYpBGBMbyhvI7mhmmlrkLLRiaEE7gG/A6m
-         tMyKYKAK/pScE0dj4kIVUVy3cQui5WNtc2DuyL4H72X0fjvibhxVLs03ozsULzmMvSWO
-         8MSrlSJQbc4PU0tVyrk1ERA7vLYvzzfUB/aIgMKnzwjt+768+LddiiLQakP7Dd3nyJgR
-         1kBJW9X/UDSQOjcsM7vck6ZrFEVyLcKEoPk5m883twfeVuBKIDkt2Bosjb1vCEvFAoGf
-         AWRw==
-X-Gm-Message-State: AOAM530QJ7sQCrFZlwai6RvtWTMGo7ptdJvT6rI5VxKDshwemdCX9p7A
-        EssooxvvoRzj29gwzotFXLkc2y5qnUW3Uw==
-X-Google-Smtp-Source: ABdhPJx+WjlyD29L4tT+M6GTV9f9nyqfrcFUEahFhzIAo+O28+IHwvB1LDeBisMZcWKceUhx2vCJYw==
-X-Received: by 2002:a05:6a00:1794:b029:2ee:c59c:56bf with SMTP id s20-20020a056a001794b02902eec59c56bfmr3071994pfg.2.1623900258819;
-        Wed, 16 Jun 2021 20:24:18 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id n14sm3306910pfa.138.2021.06.16.20.24.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 20:24:18 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 08:54:16 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 3/3] cpufreq: CPPC: Add support for frequency
- invariance
-Message-ID: <20210617032416.r2gfp25xxvhc5t4x@vireshk-i7>
-References: <cover.1623825725.git.viresh.kumar@linaro.org>
- <e7e653ede3ef54acc906d2bde47a3b9a41533404.1623825725.git.viresh.kumar@linaro.org>
- <20210616124806.GA6495@arm.com>
+        id S230299AbhFQD12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 23:27:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230269AbhFQD11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 23:27:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A373613E2;
+        Thu, 17 Jun 2021 03:25:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623900320;
+        bh=J0kzdhaMtpUvhbUW6biNjc2y50gU7Sy+I3gf/5v19Xw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AzmeQwm0Mm9a2QQ4rlF5B/3kk2Ym5VIE/9YrI00DosgWiREjUivMMufy/WNlEHuez
+         UpX4TOy/7k2cE/vSuI6Kis0TXF/a/O98gYEKz2RnjsKbaXbPkHkjOm6+2dZ9nS3Xjl
+         e7SXa6tle0ASPATqjVFrXh29nQsXaGve1ZjQgIUTS5QbHEdmr7Khj5/DxOW8MQU7gw
+         xiZucwiJNAj4ZjI83TnToeqx3h6zjZEmlHWc4cDVyyCAnS5xSx3XP0tRTFNv0y2OKl
+         XBdl2+uW2GSKE8/nztvlcsNqXrPMlXRzxi1ALnEAXEfF8yxi2OTWQN4j3kHqFtz31c
+         a3ZMz9VAqVbbQ==
+Date:   Wed, 16 Jun 2021 20:25:19 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v3 07/10] mmc: handle error from blk_ksm_register()
+Message-ID: <YMrAn7EkKkNVEjUW@sol.localdomain>
+References: <20210604195900.2096121-1-satyat@google.com>
+ <20210604195900.2096121-8-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210616124806.GA6495@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210604195900.2096121-8-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-06-21, 13:48, Ionela Voinescu wrote:
-> I was looking forward to the complete removal of stop_cpu() :).
-
-No one wants to remove more code than I do :)
-
-> I'll only comment on this for now as I should know the rest.
+On Fri, Jun 04, 2021 at 07:58:57PM +0000, Satya Tangirala wrote:
+> Handle any error from blk_ksm_register() in the callers. Previously,
+> the callers ignored the return value because blk_ksm_register() wouldn't
+> fail as long as the request_queue didn't have integrity support too, but
+> as this is no longer the case, it's safer for the callers to just handle
+> the return value appropriately.
 > 
-> Let's assume we don't have these, what happens now is the following:
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> ---
+>  drivers/mmc/core/crypto.c | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
 > 
-> 1. We hotplug out the last CPU in a policy, we call the
->    .stop_cpu()/exit() function which will free the cppc_cpudata structure.
-> 
->    The only vulnerability is if we have a last tick on that last CPU,
->    after the above callback was called.
-> 
-> 2. When the CPU at 1. gets hotplugged back in, the cppc_fi->cpu_data is
->    stale.
-> 
-> We do not have a problem when removing the CPPC cpufreq module as we're
-> doing cppc_freq_invariance_exit() before unregistering the driver and
-> freeing the data.
-> 
-> Are 1. and 2 the only problems we have, or have I missed any?
+> diff --git a/drivers/mmc/core/crypto.c b/drivers/mmc/core/crypto.c
+> index 419a368f8402..cccd8c7d7e7a 100644
+> --- a/drivers/mmc/core/crypto.c
+> +++ b/drivers/mmc/core/crypto.c
+> @@ -21,8 +21,17 @@ void mmc_crypto_set_initial_state(struct mmc_host *host)
+>  
+>  void mmc_crypto_setup_queue(struct request_queue *q, struct mmc_host *host)
+>  {
+> -	if (host->caps2 & MMC_CAP2_CRYPTO)
+> -		blk_ksm_register(&host->ksm, q);
+> +	if (host->caps2 & MMC_CAP2_CRYPTO) {
+> +		/*
+> +		 * This WARN_ON should never trigger since &host->ksm won't be
+> +		 * "empty" (i.e. will support at least 1 crypto capability), an
+> +		 * MMC device's request queue doesn't support integrity, and
+> +		 * it also satisfies all the block layer constraints (i.e.
+> +		 * supports SG gaps, doesn't have chunk sectors, has a
+> +		 * sufficiently large supported max_segments per bio)
+> +		 */
+> +		WARN_ON(!blk_ksm_register(&host->ksm, q));
+> +	}
+>  }
 
-There is more to it. For simplicity, lets assume a quad-core setup,
-with all 4 CPUs sharing the cpufreq policy. And here is what happens
-without the new changes:
+There appear to be some MMC host drivers that set max_segments to 1, so this
+explanation may not hold.  It may hold for every driver that actually supports
+crypto, though.
 
-- On CPPC cpufreq driver insertion, we start 4 kthreads/irq-works (1
-  for each CPU as it fires from tick) from the ->init() callback.
-
-- Now lets say we offline CPU3. The CPPC cpufreq driver isn't notified
-  by anyone and it hasn't registered itself to hotplug notifier as
-  well. So, the irq-work/kthread isn't stopped. This results in the
-  issue reported by Qian earlier.
-
-  The very same thing happens with schedutil governor too, which uses
-  very similar mechanisms, and the cpufreq core takes care of it there
-  by stopping the governor before removing the CPU from policy->cpus
-  and starting it again. So there we stop irq-work/kthread for all 4
-  CPUs, then start them only for remaining 3.
-
-  I thought about that approach as well, but it was too heavy to stop
-  everyone and start again in this case. And so I invented start_cpu()
-  and stop_cpu() callbacks.
-
-- In this case, because the CPU is going away, we need to make sure we
-  don't queue any more irq-work or kthread to it and this is one of
-  the main reasons for adding synchronization in the topology core,
-  because we need a hard guarantee here that irq-work won't fire
-  again, as the CPU won't be there or will not be in a sane state.
-
-- The same sequence of events is true for the case where the last CPU
-  of a policy goes away (not in this example, but lets say quad-core
-  setup with separate policies for each CPU).
-
-- Not just the policy, but the CPU may be going away as well.
-
-I hope I was able to clarify a bit here.
-
--- 
-viresh
+- Eric
