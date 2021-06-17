@@ -2,102 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775AC3AA856
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3FC3AA838
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbhFQBBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 21:01:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231361AbhFQBBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 21:01:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FC39613BF;
-        Thu, 17 Jun 2021 00:59:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623891551;
-        bh=LnI42oM+huJkD4bxD8CwkKH5CzDJoXGskz8GSzrb1rg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ksFcBsQkNvpToZyi/yTyHHpYIJxHDVOpUX9I3EVrioRxluRpXF6wlu1T1fng7kXns
-         TUo+rFosOWDwyAXUzvPCGAWc5zAZ4rLM+RYo+82JzrAr9X50vKXjFzdKW2dzwlVf5b
-         7u3uYPKEpW7DqSKtD9ed1t2ojqUNcGVMVJanPgSbVaYTqHcriJSGyKgpTnBn6MOxbw
-         SbMuCNWzsOJvK4K+V8tc/F3gjlZAI8xSKoQJ2MDRA+d4nLtjxkuFPHtz5lgBW9ByFh
-         tLdFp5BV8zfDpRtzieyyRU1z+21PKMPyqFK23NjzHQINgHHml8K1SP3zYVbXgrWdg0
-         rR+oO7HVl7QIw==
-Subject: Re: [PATCH rdma-next v2 00/15] Reorganize sysfs file creation for
- struct ib_devices
-To:     Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        clang-built-linux@googlegroups.com,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Gal Pressman <galpress@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <cover.1623427137.git.leonro@nvidia.com>
- <20210617000021.GA1899410@nvidia.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <0b6de703-1071-ca39-5657-cd00862bfbfd@kernel.org>
-Date:   Wed, 16 Jun 2021 17:59:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234995AbhFQAmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 20:42:38 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:41843 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230350AbhFQAmb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 20:42:31 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210617004022epoutp0455c34c96cf0fe9f1d1ea81eb24882cd8~JN7xiEb9V0795607956epoutp04V
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 00:40:22 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210617004022epoutp0455c34c96cf0fe9f1d1ea81eb24882cd8~JN7xiEb9V0795607956epoutp04V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1623890422;
+        bh=ztHsB24trgV+hpc4lN7exTQ5OEFZrVEMZIGj5xyUugE=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=esi+CExcFSBv84AiZ+fQDNFS7zTWtJ4FYRpTSq5gXHT1RjtVzSdnSR1kgj8c0X1kQ
+         qEqNcDUH0GbnwCMoxaVG7wz9c399XyGao6O0SAau/q06C4mtHmdFUn7s8RXz8GRwie
+         2dWXZPsCrrBQxdWw6KEbJLUYkvODtoaH9q3xZ5TA=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210617004022epcas1p4fe44a33441c99a79c5260d88229287ba~JN7xIi66G3107931079epcas1p4Q;
+        Thu, 17 Jun 2021 00:40:22 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.153]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4G539t6fQnz4x9Px; Thu, 17 Jun
+        2021 00:40:18 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        89.D0.09701.FE99AC06; Thu, 17 Jun 2021 09:40:15 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210617004013epcas1p184c165a548af19bfcccdaae9c8d03b3d~JN7oylLHB2390723907epcas1p1m;
+        Thu, 17 Jun 2021 00:40:13 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210617004013epsmtrp2713fea3f7d31380feca9b4460913ba6c~JN7oxlhd21111911119epsmtrp21;
+        Thu, 17 Jun 2021 00:40:13 +0000 (GMT)
+X-AuditID: b6c32a36-647ff700000025e5-58-60ca99ef3945
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        88.6A.08637.DE99AC06; Thu, 17 Jun 2021 09:40:13 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210617004013epsmtip1c28a0800d678df7ab390d7004c5d1b8b~JN7ohjTsO2519725197epsmtip1c;
+        Thu, 17 Jun 2021 00:40:13 +0000 (GMT)
+Subject: Re: [PATCH 2/2] clocksource/drivers/exynos_mct: Mark MCT device as
+ CLOCK_EVT_FEAT_PERCPU
+To:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <2556dd26-c072-5bbc-18fc-9fdec46b0657@samsung.com>
+Date:   Thu, 17 Jun 2021 09:59:14 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-In-Reply-To: <20210617000021.GA1899410@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210608154341.10794-3-will@kernel.org>
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCJsWRmVeSWpSXmKPExsWy7bCmge77macSDH7/F7KY91nW4vz5DewW
+        G9/+YLLY9Pgaq8XlXXPYLNYeuctusXnTVGaLljumDhwesxp62Tw2repk87hzbQ+bx7tz59g9
+        Ni+p9+jbsorR4/MmuQD2qGybjNTElNQihdS85PyUzLx0WyXv4HjneFMzA0NdQ0sLcyWFvMTc
+        VFslF58AXbfMHKCTlBTKEnNKgUIBicXFSvp2NkX5pSWpChn5xSW2SqkFKTkFlgV6xYm5xaV5
+        6XrJ+blWhgYGRqZAhQnZGa1HHrEXzOWuOHrlDlMD41HOLkZODgkBE4lDL1pZuhi5OIQEdjBK
+        LHu5jQnC+cQo0ffgL1TmG6PEzS23mWBaZpxqYoNI7GWUaF5yjBXCec8o8f91D1AVB4ewQLLE
+        mqYQkAYRAXuJ2xMfg01iFuhlkli0opkdJMEmoCWx/8UNNhCbX0BR4uqPx4wgNq+AncSnVWvB
+        algEVCUuzn7LAmKLCoRJnNzWAlUjKHFy5hOwOKeAqcSFXbOZQWxmAXGJW0/mM0HY8hLb385h
+        BlksIbCFQ+LclTfsIMdJCLhItL3TgPhGWOLV8S3sELaUxOd3e9kg7GqJlSePsEH0djBKbNl/
+        gRUiYSyxf+lksCeZBTQl1u/ShwgrSuz8PZcRYi+fxLuvPawQq3glOtqEIEqUJS4/uAsNREmJ
+        xe2dbBMYlWYh+WYWkg9mIflgFsKyBYwsqxjFUguKc9NTiw0LjJBjexMjOLlqme1gnPT2g94h
+        RiYOxkOMEhzMSiK8usUnEoR4UxIrq1KL8uOLSnNSiw8xmgLDdyKzlGhyPjC955XEG5oaGRsb
+        W5gYmpkaGiqJ8+5kO5QgJJCeWJKanZpakFoE08fEwSnVwBRf3cEfP/9t9M+0NbHzwj6t3P9b
+        7nbEs5IQ1YofptJFfDK9BwVvu1eqmpveV+hdouohlMzr82r/wSDja+avZX2erXiaNG9u3JTU
+        +Wl2f3x6Kzcr+ewKr+5h9ryafrOVW6TjAG/j+kmqr6/yh9/gYZ6+3OHag5VNc3XPBd6I3LA5
+        d+GV9zXBZbG8Ar1VX6LZZULvF6TUX/y3Z/3shp3cvHfb8sKM3xo9yn+9htH8WVmSeZvWj3aj
+        1mczZJer+VXz+i9ovvJ+mc9v2+q6ibIzNz1d5j+1fk1MZhjfh9ijc1ebq2dkbRLbpR1lcpWr
+        YcORc8sWvQpccn6yldrShgf/N9u1TNs6+diV7+92rYx9NU+JpTgj0VCLuag4EQCCjiG+NwQA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjkeLIzCtJLcpLzFFi42LZdlhJTvftzFMJBntaRSzmfZa1OH9+A7vF
+        xrc/mCw2Pb7GanF51xw2i7VH7rJbbN40ldmi5Y6pA4fHrIZeNo9NqzrZPO5c28Pm8e7cOXaP
+        zUvqPfq2rGL0+LxJLoA9issmJTUnsyy1SN8ugSuj9cgj9oK53BVHr9xhamA8ytnFyMkhIWAi
+        MeNUE1sXIxeHkMBuRok3P8+wQCQkJaZdPMrcxcgBZAtLHD5cDFHzllFizsS1TCBxYYFkiTVN
+        ISDlIgL2ErcnPmYBqWEWmMgkseDWQlaQhJDAZkaJle3CIDabgJbE/hc32EBsfgFFias/HjOC
+        2LwCdhKfVq1lB7FZBFQlLs5+C3aDqECYxM4lj5kgagQlTs58AhbnFDCVuLBrNjOIzSygLvFn
+        3iUoW1zi1pP5TBC2vMT2t3OYJzAKz0LSPgtJyywkLbOQtCxgZFnFKJlaUJybnltsWGCYl1qu
+        V5yYW1yal66XnJ+7iREcZVqaOxi3r/qgd4iRiYPxEKMEB7OSCK9u8YkEId6UxMqq1KL8+KLS
+        nNTiQ4zSHCxK4rwXuk7GCwmkJ5akZqemFqQWwWSZODilGpgOPG/ZdIDthnNlBlfLh+XerbdZ
+        VRmCNRRX/lnudLj2XvGn6zyLeC891yy85KKtuTp0++sYryyNw9Y9oVPVezLmxJvfX1W4wzCZ
+        i++Prftyi322nAHztKdo1ytVyohV8K++eGpdcK6FdMrpY72adsu+TZTTft398Hxy92oF2xOp
+        eXvuutqZCkjvq1AO2R7/aIfl1sw/Wv1yxXbP1Ran3w0TtJm04FJQ2pPTC664bV0l2vTWUSVQ
+        7cQJoXqZ/6+d6zkE7mV+KPMJyr+2IWVr7MOcGY+Lq/Oc9iybkyFwYdnurkteSlsPBkR0MPy8
+        45Vuvz7tIOf3ZYHV5z6uWbX4yPSnJatkVDjeGdfvnFVkGa7EUpyRaKjFXFScCABEUcz9IQMA
+        AA==
+X-CMS-MailID: 20210617004013epcas1p184c165a548af19bfcccdaae9c8d03b3d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210608154402epcas1p401cdd1cd14425e2f542a344a0ebcc97e
+References: <20210608154341.10794-1-will@kernel.org>
+        <CGME20210608154402epcas1p401cdd1cd14425e2f542a344a0ebcc97e@epcas1p4.samsung.com>
+        <20210608154341.10794-3-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/2021 5:00 PM, Jason Gunthorpe wrote:
-> On Fri, Jun 11, 2021 at 07:00:19PM +0300, Leon Romanovsky wrote:
+On 6/9/21 12:43 AM, Will Deacon wrote:
+> The "mct_tick" is a per-cpu clockevents device. Set the
+> CLOCK_EVT_FEAT_PERCPU feature to prevent e.g. mct_tick0 being unsafely
+> designated as the global broadcast timer and instead treat the device as
+> a per-cpu wakeup timer.
 > 
->> Jason Gunthorpe (15):
->>    RDMA: Split the alloc_hw_stats() ops to port and device variants
->>    RDMA/core: Replace the ib_port_data hw_stats pointers with a ib_port
->>      pointer
->>    RDMA/core: Split port and device counter sysfs attributes
->>    RDMA/core: Split gid_attrs related sysfs from add_port()
->>    RDMA/core: Simplify how the gid_attrs sysfs is created
->>    RDMA/core: Simplify how the port sysfs is created
->>    RDMA/core: Create the device hw_counters through the normal groups
->>      mechanism
->>    RDMA/core: Remove the kobject_uevent() NOP
->>    RDMA/core: Expose the ib port sysfs attribute machinery
->>    RDMA/cm: Use an attribute_group on the ib_port_attribute intead of
->>      kobj's
->>    RDMA/qib: Use attributes for the port sysfs
->>    RDMA/hfi1: Use attributes for the port sysfs
->>    RDMA: Change ops->init_port to ops->port_groups
->>    RDMA/core: Allow port_groups to be used with namespaces
->>    RDMA: Remove rdma_set_device_sysfs_group()
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  drivers/clocksource/exynos_mct.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Applied to for-next, thanks everyone
-> 
-> Jason
+> diff --git a/drivers/clocksource/exynos_mct.c b/drivers/clocksource/exynos_mct.c
+> index 804d3e01c8f4..5e3e96d3d1b9 100644
+> --- a/drivers/clocksource/exynos_mct.c
+> +++ b/drivers/clocksource/exynos_mct.c
+> @@ -465,7 +465,8 @@ static int exynos4_mct_starting_cpu(unsigned int cpu)
+>  	evt->set_state_oneshot = set_state_shutdown;
+>  	evt->set_state_oneshot_stopped = set_state_shutdown;
+>  	evt->tick_resume = set_state_shutdown;
+> -	evt->features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT;
+> +	evt->features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT |
+> +			CLOCK_EVT_FEAT_PERCPU;
+>  	evt->rating = MCT_CLKEVENTS_RATING,
+>  
+>  	exynos4_mct_write(TICK_BASE_CNT, mevt->base + MCT_L_TCNTB_OFFSET);
 > 
 
-I just got done verifying that v2 still fixes the Control Flow Integrity 
-violations. In case it is useful:
+Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-
-Cheers,
-Nathan
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
