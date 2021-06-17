@@ -2,119 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220843ABA37
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4083ABA40
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhFQRHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:07:22 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:48820 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229784AbhFQRHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:07:19 -0400
-Received: from zn.tnic (p200300ec2f0eb200a2ba6960566addd7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:b200:a2ba:6960:566a:ddd7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 49FC51EC0587;
-        Thu, 17 Jun 2021 19:05:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623949509;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=L8efLSpUhyaEMmGw2xebh6U+9/gmONiS7Hq0tHA+th8=;
-        b=OfBSQjo7MxE/7Oi8VDTmesKbBLWAIZNi2B9GQxVvU14IRK37dT/w+cT2RWQxwPRLJGIcem
-        WQlWQAag4e6OWZuIpGNHr/R7yc8Md+x6gOLiYN/lwkVRIT8KFVlDFj76ckX4oAqFuPfUl0
-        17TdEVbvXxNlMyxPsXCWL2BpfTSyzbk=
-Date:   Thu, 17 Jun 2021 19:05:00 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/12] x86/x86: Add early_is_tdx_guest() interface
-Message-ID: <YMuAvP7bqwHVSCw8@zn.tnic>
-References: <YMJ/IrBZiCsNMtvO@zn.tnic>
- <20210612210445.2164948-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S231703AbhFQRIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231164AbhFQRIE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 13:08:04 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A83BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:05:55 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id k15so345046pfp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=spDOLTpTEkP0pQRlVnvSw7EzDBOy7ixf6KlEeu5zAFw=;
+        b=gvFkjdJ8/nWFYJ6eh4eGwDZH3O/FzRYCKAixYJ+bNuEKuwuss5/DVmrjbX+uVysNvs
+         i+qXxnRozSclnhV9Ko6zmIrYMI87h5HmYTek2HI51jvn+xNCD0bg4XrN4Yqp9qib8CR9
+         CUbQjexgtNkQUUYY4uYwd9nqQU44N+MdMqNFnAuiyyvQF/75BrkWVJgcEymLk/Yr4jeG
+         LXwy06acDKVCdG2uCzuuG+EAuw4cXh15bV4ak7aa62CQzu1ula2LAtWnB2igv14GYA4W
+         lXzfTYxIUy2PbsQtOWmWpcG+YtKPZhkz3VQN8S2EtJE6uuvXzzN4PNXTSebZUa2p7xNz
+         g78g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=spDOLTpTEkP0pQRlVnvSw7EzDBOy7ixf6KlEeu5zAFw=;
+        b=Mgs+4NEnJXCO6/jryG0Dh7A+Hx4AghcYddS8JYd6cja8TNXgONUm/qxCBYi7pMBeQb
+         +mqin0lM9PAaXgX7tZSYkm3YFztq9rb3+sOTlixGPysaREK4X+Vo526xI+ndVxp91hKj
+         KTiH1nGhyqRwm8Go+TTXaG8dOhjDZgtNer7CZg6MM8H/2nN779Pth3JSwYG5dRD2UDjD
+         xA2bC9nwJmlGvc/f8WM1tedyuYnwaGxJjVylj4HQCBG0J36eKzFNpSOhneRKSNaFC2sw
+         SxVhe623frUlK47T/vuaLz7XcyFAbqzwf4Dhia5qpXgB1zIxC1vniPYr4QnOKw54seCg
+         f88Q==
+X-Gm-Message-State: AOAM533jHhk6kn1vE6qA49vrTaerzAOquFN1CZO6z9c3ooB9FFm7CwQh
+        AGj21bko7L3w28nvbMRiqPE7
+X-Google-Smtp-Source: ABdhPJwaG6/j71e6DUZJ1nF3XYcWFet57gwEKHoW0R5fI/eRI2bpxAbaOGhdC3lH0rW9KnnXYL+7tA==
+X-Received: by 2002:a63:d117:: with SMTP id k23mr5831729pgg.60.1623949554810;
+        Thu, 17 Jun 2021 10:05:54 -0700 (PDT)
+Received: from workstation ([120.138.13.64])
+        by smtp.gmail.com with ESMTPSA id nv1sm5562052pjb.43.2021.06.17.10.05.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 17 Jun 2021 10:05:54 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 22:35:50 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Om Prakash Singh <omp@nvidia.com>
+Cc:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        smohanad@codeaurora.org
+Subject: Re: [PATCH 0/5] PCI: endpoint: Add support for additional notifiers
+Message-ID: <20210617170549.GA3075@workstation>
+References: <20210616115913.138778-1-manivannan.sadhasivam@linaro.org>
+ <9fd37c43-e2ab-f5b2-13dc-a23bd83d3c7b@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210612210445.2164948-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <9fd37c43-e2ab-f5b2-13dc-a23bd83d3c7b@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 02:04:45PM -0700, Kuppuswamy Sathyanarayanan wrote:
+Hi,
 
-> Subject: Re: [PATCH v2 04/12] x86/x86: Add early_is_tdx_guest() interface
+On Thu, Jun 17, 2021 at 12:42:07AM +0530, Om Prakash Singh wrote:
+> Hi Mani,
+> Adding more notifier types will surely help but I believe the list is not
+> exhaustive. What you are trying here is to pass various vendor-specific epc
+> interrupts to EPF driver. That can be taken care by a single notifier
+> interface as well, "pci_epc_custom_notify" from your implementation.
 
-Subject prefix should be "x86/tdx:" ofc.
+That's what I initially thought eventhough not all the notifiers are
+vendor specific. But Kishon suggested to add notifiers for generic ones
+such as BME, PME etc... and that sounded reasonable to me.
 
-> diff --git a/arch/x86/boot/compressed/tdx.c b/arch/x86/boot/compressed/tdx.c
-> new file mode 100644
-> index 000000000000..ddfa4a6d1939
-> --- /dev/null
-> +++ b/arch/x86/boot/compressed/tdx.c
-> @@ -0,0 +1,28 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * tdx.c - Early boot code for TDX
-> + */
-> +
-> +#include <asm/tdx.h>
+> This
+> also requires to have pre-defined values of "data" argument to standardize
+> the interface.
+> 
 
-Please no kernel proper includes in the decompressor stage - that thing
-is an include hell mess and needs cleaning up. Use cpuid_count() from
-arch/x86/boot/cpuflags.c by exporting it properly and add the other
-defines here instead of using kernel proper facilities.
+No, I don't think we can standardize the arguments to "custom" notifier.
+The custom notifier is supposed to deal with vendor specific events and
+I don't see any benefit on standardizing it. I see it more like an
+opaque driver_data field where we pass driver specific arguments.
 
-I know, I know, there is other misuse but it has to stop.
+Thanks,
+Mani
 
-> +static int __ro_after_init tdx_guest = -1;
-> +
-> +static inline bool native_cpuid_has_tdx_guest(void)
-
-Why is this function prefixed with "native_"?
-
-> +{
-> +	u32 eax = TDX_CPUID_LEAF_ID, sig[3] = {0};
-> +
-> +	if (native_cpuid_eax(0) < TDX_CPUID_LEAF_ID)
-> +		return false;
-> +
-> +	native_cpuid(&eax, &sig[0], &sig[1], &sig[2]);
-> +
-> +	return !memcmp("IntelTDX    ", sig, 12);
-> +}
-> +
-> +bool early_is_tdx_guest(void)
-
-So I guess this is going to be used somewhere, because I don't see it.
-Or is it going away in favor of prot_guest_has(PR_GUEST_TDX) ?
-
-This is the problem with sending new versions of patches as a reply to
-the old ones in the patchset: I get confused. Why don't you wait until
-the whole thing has been reviewed and then send a new revision which has
-all the changes and I can find my way in the context?
-
-And with the amount of changes so far, you should probably send a new
-revision of the initial support set now-ish instead of me reviewing this
-one 'til the end.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> your thoughts?
+> 
+> Thanks,
+> Om
+> 
+> On 6/16/2021 5:29 PM, Manivannan Sadhasivam wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > Hello,
+> > 
+> > This series adds support for additional notifiers in the PCI endpoint
+> > framework. The notifiers LINK_DOWN, BME, PME, and D_STATE are generic
+> > for all PCI endpoints but there is also a custom notifier (CUSTOM) added
+> > to pass the device/vendor specific events to EPF from EPC.
+> > 
+> > The example usage of all notifiers is provided in the commit description.
+> > 
+> > Thanks,
+> > Mani
+> > 
+> > Manivannan Sadhasivam (5):
+> >    PCI: endpoint: Add linkdown notifier support
+> >    PCI: endpoint: Add BME notifier support
+> >    PCI: endpoint: Add PME notifier support
+> >    PCI: endpoint: Add D_STATE notifier support
+> >    PCI: endpoint: Add custom notifier support
+> > 
+> >   drivers/pci/endpoint/pci-epc-core.c | 89 +++++++++++++++++++++++++++++
+> >   include/linux/pci-epc.h             |  5 ++
+> >   include/linux/pci-epf.h             |  5 ++
+> >   3 files changed, 99 insertions(+)
+> > 
+> > --
+> > 2.25.1
+> > 
