@@ -2,69 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A383AB6E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 081553AB6E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhFQPJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231712AbhFQPJJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:09:09 -0400
-Received: from mxout014.mail.hostpoint.ch (mxout014.mail.hostpoint.ch [IPv6:2a00:d70:0:e::314])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 436F7C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:07:01 -0700 (PDT)
-Received: from [10.0.2.46] (helo=asmtp013.mail.hostpoint.ch)
-        by mxout014.mail.hostpoint.ch with esmtp (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1lttbd-000Fys-JU; Thu, 17 Jun 2021 17:06:57 +0200
-Received: from [2a02:168:6182:1:d64b:e086:4fb7:9a87]
-        by asmtp013.mail.hostpoint.ch with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1lttbd-000FSt-Gl; Thu, 17 Jun 2021 17:06:57 +0200
-X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
-Subject: Re: [PATCH v1] mtd: spi-nor: Add support for XM25QH64C
-To:     linux-mtd@lists.infradead.org
-Cc:     Stefan Roese <sr@denx.de>,
-        Reto Schneider <reto.schneider@husqvarnagroup.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, Michael Walle <michael@walle.cc>
-References: <20210613121248.1529292-1-code@reto-schneider.ch>
- <1ba367f93650cb65122acd32fb4a4159@walle.cc>
- <f022abf3-a6fe-d060-9868-985303c4e8a0@reto-schneider.ch>
- <3bb5ae427dc01b82be4434dff39e6c8e@walle.cc>
-From:   Reto Schneider <code@reto-schneider.ch>
-Message-ID: <d9ff3a7a-7c2e-80a2-7910-3cc1a530833e@reto-schneider.ch>
-Date:   Thu, 17 Jun 2021 17:06:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233130AbhFQPJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:09:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233142AbhFQPJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 11:09:12 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5D12610A2;
+        Thu, 17 Jun 2021 15:07:01 +0000 (UTC)
+Date:   Thu, 17 Jun 2021 11:07:00 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Young <dyoung@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Sasha Levin <sashal@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vivek Goyal <vgoyal@redhat.com>, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [next] [clang] x86_64-linux-gnu-ld: mm/mremap.o: in function
+ `move_pgt_entry': mremap.c:(.text+0x763): undefined reference to
+ `__compiletime_assert_342'
+Message-ID: <20210617110700.091efd15@gandalf.local.home>
+In-Reply-To: <CA+G9fYukjZU9_88KuhW5FpG-Y6EOH4ehXgdKm9pGO0v4y4wsmA@mail.gmail.com>
+References: <CA+G9fYsWHE5Vu9T3FV-vtHHbVFJWEF=bmjQxwaZs3uVYef028g@mail.gmail.com>
+        <CA+G9fYvvf+XTvZg1sTq4_f9OrVFsCazGo0ozaEbjVYgSeKCkWA@mail.gmail.com>
+        <YMtTdU2b9fI3dnFD@casper.infradead.org>
+        <CA+G9fYukjZU9_88KuhW5FpG-Y6EOH4ehXgdKm9pGO0v4y4wsmA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <3bb5ae427dc01b82be4434dff39e6c8e@walle.cc>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Thu, 17 Jun 2021 20:15:13 +0530
+Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
 
-On 17.06.21 16:19, Michael Walle wrote:
-> That is up to the maintainers, but sooner or later we will have to face
-> the problem regarding the duplicate IDs.
+> > Your git bisect probably went astray.  There's no way that commit
+> > caused that regression.  
+> 
+> Sorry for pointing to incorrect bad commits coming from git bisect.
+> 
+> Any best way to run git bisect on  linux next tree ?
+> 
+> Here is the git bisect log from gitlab pipeline,
+> https://gitlab.com/Linaro/lkft/bisect/-/jobs/1354963448
 
-A strongly worded statement by the maintainer(s) ("the Linux crowd") 
-against ignoring the continuation codes might help (me) to put pressure 
-on non-compliant manufacturers.
+Is it possible that it's not 100% reproducible?
 
-Any chance something like this is already out there? Could not find 
-anything.
+Anyway, before posting the result of any commit as the buggy commit from a
+git bisect, it is best to confirm it by:
 
-Kind regards,
-Reto
+ 1) Checking out the tree at the bad commit.
+ 2) Verify that the tree at that point is bad
+ 3) Check out the parent of that commit (the commit before the bad commit
+    was applied).
+ 4) Verify that the tree at that point is good
+
+May need to repeat the above a couple of times, in case the issue is not
+100% reproducible.
+
+If the above is true, then post the patch as the bad commit. If it is not,
+then something went wrong with the bisect.
+
+-- Steve
+
