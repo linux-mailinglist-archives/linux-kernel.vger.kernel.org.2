@@ -2,109 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645973ABC7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7C43ABC7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbhFQTUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 15:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
+        id S233159AbhFQTUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 15:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbhFQTUB (ORCPT
+        with ESMTP id S230484AbhFQTUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 15:20:01 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C91C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 12:17:51 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id l9so4133287wms.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 12:17:51 -0700 (PDT)
+        Thu, 17 Jun 2021 15:20:37 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1381C061574;
+        Thu, 17 Jun 2021 12:18:27 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso5388286wmc.1;
+        Thu, 17 Jun 2021 12:18:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cyKaQCeyHLS4EathuQVksg4S7Jponx+EApTJ2kRHanM=;
-        b=LlfNDK0UOBDhPM4icZWg0U1hqnlUirGnt9g8bDduYnZVgb74v7YtAJu5ZSszaIchx+
-         1LglqLJkgtMk9YvpMJr3gbLNb5va96BbmIPqUbvW4vo2Xnb+kxt/1NqcRXqjks1lNgvg
-         uci7OCDYW5WAFt6GYfi/zQwwZbiTt26k/coDA=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G25iPlaj2HGTX4/c5/P02HpluiLJKUaToUtVn3p2XEU=;
+        b=oAmGXcFGyeOAMdXRXsgNwuJK8YrgMHMqNbf/jUmBfo09nMs4tNOfpzEwrFBQTuDEoB
+         2OzbF89eiKcCQFluqpTZxdF3MmLRxkP5tT9jr0JxSLb8jJJnzK/mrjzZGn5gPOf9Q3l5
+         ypeuuUO/xtF36cJ+0tEFgFZQjw6kpYcfIEaspKDuZjo4HUsvK8tKt8Dk3xJryAo40moS
+         sspmM+Q7d93o9rfmRBnA0BCM6NpsM9nofBLk5ompjot9iDYctYKXe9OYMpsDZO/7aJVn
+         RK184oyaH/a7qwsN/5Y9JRy7BXgpAdrPpTsuAABTpSEAyCUA1Iru7C3wieFEEGiLhoz6
+         lcNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=cyKaQCeyHLS4EathuQVksg4S7Jponx+EApTJ2kRHanM=;
-        b=OkekbYuEjnPBC/jCkQTgXImEknVhtB7xxlPRCzZ/twjUb9iIWHTLPF7mZVI333Tevw
-         +VfwHmxEpQHSPX3y8UB/rEJqcZYz7K5IkEtH0DOLGFCgVOW2VUvJxL4Iu3XykudNVb8l
-         mEkqVakaSBY3mhK/r1mJI9yJMppAylSj1YyT+kvX6TxJfhnxpQ3E0CUKYljDQPpNOlhD
-         K9xcH8KWUVFonO+VAcL4QH3IOS1ObYCnEGQOh6mfrI4oETC8gTDUJtvMc0mxOTNvqdck
-         OMtjl6MwQodkNSeyJhH3gI13MtZP4aVzRL083hWqQyw9gvzGBfcTPyuAQIkBvlW5Wp4X
-         Zfsw==
-X-Gm-Message-State: AOAM533oJTHMcBLf1ffI8pKtxTgRifM+vB7jZh3LsUmUXPA/OxSgrP3t
-        xv1RuCWuIUlIcK6vdbywoBHdRw==
-X-Google-Smtp-Source: ABdhPJz9r3Zc1W04RbJHA8pEKhmLAqX+WD+p/Bg8XfAFkOoVW2zFgvW7BDV3Hpiz1ea7DIxR9MNF7Q==
-X-Received: by 2002:a1c:df09:: with SMTP id w9mr3003192wmg.91.1623957470485;
-        Thu, 17 Jun 2021 12:17:50 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id w23sm9415180wmi.0.2021.06.17.12.17.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 12:17:50 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 21:17:48 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Qiang Ma <maqianga@uniontech.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/auth: Move master pointer from drm_device to drm_file
-Message-ID: <YMuf3BHk+3ROGJ09@phenom.ffwll.local>
-Mail-Followup-To: Qiang Ma <maqianga@uniontech.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210617094733.8429-1-maqianga@uniontech.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G25iPlaj2HGTX4/c5/P02HpluiLJKUaToUtVn3p2XEU=;
+        b=gbi4+TKxPkESInvfEQaW+25Inh/+qwKiKCbpriwtdZ4R3JUFbVgGImseYnni8JAT48
+         fSSXF7F86/IU27kQhq99EFc52cdse9Z57QIl/84RWf8Bpyjs7tn/JwIQzuZXrzicnLKj
+         e6txQKXOw+kqT52wAurLIcSPgnPuvj4c9wJtH8PYfbdAQ4oDq6626JbJIrVxXsf4lJPl
+         lXuiSnvDZPv/7C7Wh+IqNW+GYpFt0LDXv5Ly8b3cO0ZizcZuv/6aQ+3YO1qK0qVLJMuw
+         FzlIdJ7CdqFnz7lIc6c3Ywe8jxUaiSdnbX4ltOEoybOavlojhiVEyb55/1BFbLyrPJl3
+         erPw==
+X-Gm-Message-State: AOAM533fYVPR0vSUDdKYQXJ1AgRJ7lXcktmH2eg5JcOVjDwrZ+2fMHe7
+        PoqTwPnPKBr7HMDZ/6lMu9g=
+X-Google-Smtp-Source: ABdhPJxD+RhPQTQ8UkShaehTZ5CaMDskeoT8/i9aZqxMLyXGYQXYXEoCFr7uSbC5Mg7664IMHGb18w==
+X-Received: by 2002:a7b:cb03:: with SMTP id u3mr7174032wmj.119.1623957506595;
+        Thu, 17 Jun 2021 12:18:26 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
+        by smtp.gmail.com with ESMTPSA id s5sm6779320wrn.38.2021.06.17.12.18.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jun 2021 12:18:25 -0700 (PDT)
+Subject: Re: [PATCH] Bluetooth: fix a grammar mistake
+To:     13145886936@163.com, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
+References: <20210616082524.10754-1-13145886936@163.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <0e895cfb-21f0-70da-540b-72d6b5d06d8b@gmail.com>
+Date:   Thu, 17 Jun 2021 20:18:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617094733.8429-1-maqianga@uniontech.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <20210616082524.10754-1-13145886936@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 05:47:33PM +0800, Qiang Ma wrote:
-> The drm_file pointer clears to zero during multi-user switching,
-> so it needs to call drm_new_set_master for master pointer from drm_file.
-
-That sounds like a bug. drm_file->master should be always the same -
-either you become a new stand-alone thing, our you get linked to the
-current master.
-
-Or I'm completely missing what you're trying to fix here.
--Daniel
-
+On 16/06/2021 09:25, 13145886936@163.com wrote:
+> From: gushengxian <gushengxian@yulong.com>
 > 
-> Signed-off-by: Qiang Ma <maqianga@uniontech.com>
+> Fix a grammar mistake.
+> 
+> Signed-off-by: gushengxian <gushengxian@yulong.com>
 > ---
->  drivers/gpu/drm/drm_auth.c | 2 +-
+>  net/bluetooth/hci_event.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
-> index f2d46b7ac6f9..02431af6d0c5 100644
-> --- a/drivers/gpu/drm/drm_auth.c
-> +++ b/drivers/gpu/drm/drm_auth.c
-> @@ -302,7 +302,7 @@ int drm_master_open(struct drm_file *file_priv)
->  	/* if there is no current master make this fd it, but do not create
->  	 * any master object for render clients */
->  	mutex_lock(&dev->master_mutex);
-> -	if (!dev->master)
-> +	if (!file_priv->master)
->  		ret = drm_new_set_master(dev, file_priv);
->  	else
->  		file_priv->master = drm_master_get(dev->master);
-> -- 
-> 2.20.1
-> 
-> 
-> 
+> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+> index 98ec486743ba..a33838a72f19 100644
+> --- a/net/bluetooth/hci_event.c
+> +++ b/net/bluetooth/hci_event.c
+> @@ -5780,7 +5780,7 @@ static void hci_le_remote_feat_complete_evt(struct hci_dev *hdev,
+>  			 * for unsupported remote feature gets returned.
+>  			 *
+>  			 * In this specific case, allow the connection to
+> -			 * transition into connected state and mark it as
+> +			 * transit into connected state and mark it as
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Nack.  The original phrasing is correct; "transition" is the proper
+ technical term for a change of state in a state machine.
+
+-ed
