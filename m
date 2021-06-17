@@ -2,59 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6140A3AA87F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996A33AA881
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbhFQBRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 21:17:50 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43357 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231920AbhFQBRs (ORCPT
+        id S232023AbhFQBRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 21:17:54 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:11043 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231912AbhFQBRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 21:17:48 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15H1FbjR031347
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Jun 2021 21:15:37 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id D49AD15C3CB8; Wed, 16 Jun 2021 21:15:36 -0400 (EDT)
-Date:   Wed, 16 Jun 2021 21:15:36 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] ext4: fix memory leak in ext4_fill_super
-Message-ID: <YMqiOJwJfvqPyOmy@mit.edu>
-References: <YIt9IFY4Xsf5K+eZ@mit.edu>
- <20210430185046.15742-1-paskripkin@gmail.com>
+        Wed, 16 Jun 2021 21:17:51 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G53vL4VqgzZfjy;
+        Thu, 17 Jun 2021 09:12:46 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 09:15:42 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.98) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 09:15:42 +0800
+From:   Pu Lehui <pulehui@huawei.com>
+To:     <harry.wentland@amd.com>, <sunpeng.li@amd.com>,
+        <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
+        <Xinhui.Pan@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <Anson.Jacob@amd.com>, <Nicholas.Kazlauskas@amd.com>,
+        <roman.li@amd.com>
+CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, <pulehui@huawei.com>,
+        <zhangjinhao2@huawei.com>
+Subject: [PATCH -next] drm/amd/display: remove unused variable 'dc'
+Date:   Thu, 17 Jun 2021 09:16:32 +0800
+Message-ID: <20210617011632.187690-1-pulehui@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210430185046.15742-1-paskripkin@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.174.98]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 09:50:46PM +0300, Pavel Skripkin wrote:
-> static int kthread(void *_create) will return -ENOMEM
-> or -EINTR in case of internal failure or
-> kthread_stop() call happens before threadfn call.
-> 
-> To prevent fancy error checking and make code
-> more straightforward we moved all cleanup code out
-> of kmmpd threadfn.
-> 
-> Also, dropped struct mmpd_data at all. Now struct super_block
-> is a threadfn data and struct buffer_head embedded into
-> struct ext4_sb_info.
-> 
-> Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+GCC reports the following warning with W=1:
 
-Applied, thanks!  (And apologies for the delay)
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_psr.c:70:13:
+warning:
+ variable ‘dc’ set but not used [-Wunused-but-set-variable]
+    70 |  struct dc *dc = NULL;
+       |             ^~
 
-						- Ted
+This variable is not used in function, this commit remove it to
+fix the warning.
+
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_psr.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_psr.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_psr.c
+index f7c77ae0d965..70a554f1e725 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_psr.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_psr.c
+@@ -67,14 +67,12 @@ bool amdgpu_dm_link_setup_psr(struct dc_stream_state *stream)
+ 	struct dc_link *link = NULL;
+ 	struct psr_config psr_config = {0};
+ 	struct psr_context psr_context = {0};
+-	struct dc *dc = NULL;
+ 	bool ret = false;
+ 
+ 	if (stream == NULL)
+ 		return false;
+ 
+ 	link = stream->link;
+-	dc = link->ctx->dc;
+ 
+ 	psr_config.psr_version = link->dpcd_caps.psr_caps.psr_version;
+ 
+-- 
+2.17.1
 
