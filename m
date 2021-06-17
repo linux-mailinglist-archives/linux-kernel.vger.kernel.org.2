@@ -2,119 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224FC3AB65B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1873AB66C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbhFQOsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhFQOsp (ORCPT
+        id S231683AbhFQOuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:50:10 -0400
+Received: from mail.efficios.com ([167.114.26.124]:37974 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231691AbhFQOuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:48:45 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C46C06175F;
-        Thu, 17 Jun 2021 07:46:36 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id d16so3528047lfn.3;
-        Thu, 17 Jun 2021 07:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9j+Wyv6gEsr4bQvSqZKhNp0tbHi8dmvVZ6iYWoKc418=;
-        b=UjnzfFEQ/4oJrwosy918uSLpxJIEklHylQ+O8/XfG/6w+Z6sMZtM4bce19YMnHJmjX
-         sVXWyTwn4IO2BqyUaVfk2cbm1i7H24GU022Epq3xNx0TSTf+xpyyN/UhGRUtAflH3OeY
-         1AfoXK52vLasLsUzcTw96f341vgQNPjPCi2M09rMMBz565k8NG1IKlgfCcDpIuxtzuIH
-         cutkZlB9jLCdKC7mZXAdRUaSQmoGrfe1aBzjVKddWzL+9VPf2kFyRNmtOqHNuYuQ9Gwi
-         +F30gUEtFPzvydQWCumlwHA4o+6BoU4YmM/H9PaJGu2ddDURLBmW0UJO4sgRCjSLRpns
-         Fa9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9j+Wyv6gEsr4bQvSqZKhNp0tbHi8dmvVZ6iYWoKc418=;
-        b=HqrbjVuETl85oX1FttVtb96vFAccWjcvaQOB0c1GRmEAAyfESYlogvx0jn89m9nP80
-         1kgsdl31dgo8ialLgoujSDW9aTW7F62T+ViQD4V5bcdUwmeX2FvHdlWERD6e7YfW6/lS
-         SiqPSJcNha4lOMtqLBtJbq3qIE9JFDKCLx5T8RxHWe5Wn2Ziuuk+XoggxJHEVPcDFu4k
-         0nQs9U+2XDuZNwNFxQbdM09A3COMBNcaSKKTGF7KDao+myZo1sPMPzigQonWaf2FwRrQ
-         QeuxlBnElcOhN6/1tmH/4ZbrxJArh1Ecp3ulZ5rqr86hNTsBqyfkYK70AiVHvmiyi+lN
-         VHNg==
-X-Gm-Message-State: AOAM533XSD9wCU+BrFNMMsuCBRHttPudHYQiaktdE8iwHEttOEHb3SRY
-        SVC6hCDxD03yGdypY2oLnMJlEpsB/b8=
-X-Google-Smtp-Source: ABdhPJxNQWvk6I5WMxpYLjKYKCq31Nat1HT+gbIT8U/E+EiI+oIIWNig9aPa2YMg+l6lTvA1uTA/+A==
-X-Received: by 2002:ac2:5b8f:: with SMTP id o15mr4181380lfn.606.1623941194516;
-        Thu, 17 Jun 2021 07:46:34 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.googlemail.com with ESMTPSA id y12sm600339lfg.135.2021.06.17.07.46.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 07:46:34 -0700 (PDT)
-Subject: Re: [PATCH v1] hwmon: (lm90) Use edge-triggered interrupt
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-References: <20210616190708.1220-1-digetx@gmail.com>
- <20210617001243.GA3211292@roeck-us.net>
- <3c6cbaf3-187b-1682-69b8-a2b34f23b928@gmail.com>
- <20210617131205.GA59767@roeck-us.net>
- <de7682c2-ae34-c594-d237-330ea33cbc78@gmail.com>
- <20210617141300.GA1366442@roeck-us.net>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <bc3e3595-fe10-c7ae-9560-0c7676facba2@gmail.com>
-Date:   Thu, 17 Jun 2021 17:46:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 17 Jun 2021 10:50:06 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 72CD133BA55;
+        Thu, 17 Jun 2021 10:47:58 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id DhKZCbvlP3-9; Thu, 17 Jun 2021 10:47:58 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 0B78F33B931;
+        Thu, 17 Jun 2021 10:47:58 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 0B78F33B931
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1623941278;
+        bh=PLmeUNZK9WR3Sr2WIFWT3Vd6iXIZKutqycMR2Hdur10=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=LtCwpDBN1PTYJi8ZUiyQpNX/3B26iJ4YFHCpUNkxuC/DZxtG3R6gq98F+vllh70f0
+         guHwV9++CTJrY4RDnupUW+jaxChkzDohlXWciw2tLcDiWNYXn2xycDnQhQa36ejE6l
+         KKldpFqf6Uk5K7tMJhpa6pdzDA+WlEKBzmrHXGLX6LnwfcnIGfSePdTMpU43LAcU77
+         UNxM6gZcfhC/2UZ01A4uHToBHCHifVRJtheU6Q8N5MMh9bTFFssD1RjhmX/G84s5on
+         ezWOAG3wYMTK1m0vqxL8md2AC8nSYL352pUYY4SjHetyz3Irro/zNq5B22qbECQcNY
+         lGpIFbMb3uCgQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id mjoObxJ2a_KR; Thu, 17 Jun 2021 10:47:58 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id EE8A133B8A0;
+        Thu, 17 Jun 2021 10:47:57 -0400 (EDT)
+Date:   Thu, 17 Jun 2021 10:47:57 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86 <x86@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        stable <stable@vger.kernel.org>
+Message-ID: <827549827.10547.1623941277868.JavaMail.zimbra@efficios.com>
+In-Reply-To: <07a8b963002cb955b7516e61bad19514a3acaa82.1623813516.git.luto@kernel.org>
+References: <cover.1623813516.git.luto@kernel.org> <07a8b963002cb955b7516e61bad19514a3acaa82.1623813516.git.luto@kernel.org>
+Subject: Re: [PATCH 8/8] membarrier: Rewrite sync_core_before_usermode() and
+ improve documentation
 MIME-Version: 1.0
-In-Reply-To: <20210617141300.GA1366442@roeck-us.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF89 (Linux)/8.8.15_GA_4026)
+Thread-Topic: membarrier: Rewrite sync_core_before_usermode() and improve documentation
+Thread-Index: HZuOJZBerHSq1IbJ6WneE0wVP8/5rA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.06.2021 17:13, Guenter Roeck пишет:
-...
->> This is a device-tree based system, in particular it's NVIDIA Tegra30
->> Nexus 7. The interrupt support was originally added to the lm90 driver
->> by Wei Ni who works at NVIDIA and did it for the Tegra boards. The Tegra
->> device-trees are specifying the trigger mask and apparently they all are
->> cargo-culted and wrong because they use IRQ_TYPE_LEVEL_HIGH, while it
+----- On Jun 15, 2021, at 11:21 PM, Andy Lutomirski luto@kernel.org wrote:
+
+> The old sync_core_before_usermode() comments suggested that a non-icache-syncing
+> return-to-usermode instruction is x86-specific and that all other
+> architectures automatically notice cross-modified code on return to
+> userspace.
 > 
-> Be fair, no one is perfect.
-
-This is a very minor problem, so no wonder that nobody noticed or
-bothered to fix it yet. I'm just clarifying the status here.
-
->> should be IRQ_TYPE_EDGE_FALLING.
+> This is misleading.  The incantation needed to modify code from one
+> CPU and execute it on another CPU is highly architecture dependent.
+> On x86, according to the SDM, one must modify the code, issue SFENCE
+> if the modification was WC or nontemporal, and then issue a "serializing
+> instruction" on the CPU that will execute the code.  membarrier() can do
+> the latter.
 > 
-> It should probably be both IRQ_TYPE_EDGE_FALLING and IRQ_TYPE_EDGE_RISING,
-
-For now I see that the rising edge isn't needed, the TEMP_ALERT goes
-HIGH by itself when temperature backs to normal. But I will try to
-double check.
-
-> and the interrupt handler should call hwmon_notify_event() instead of
-> clogging the kernel log, but that should be done in a separate patch.
-
-Thank you for suggestion, I will take a look.
-
-> Anyway, the tegra30 dts files in the upstream kernel either use
-> IRQ_TYPE_LEVEL_LOW or no interrupts for nct1008. The Nexus 7 dts file
-> in the upstream kernel has no interrupt configured (and coincidentally
-> it was you who added that entry). Where do you see IRQ_TYPE_LEVEL_HIGH ?
-
-I have a patch that will add the interrupt property, it's stashed
-locally for the next kernel release.
-
-IIUC, it's not only the Tegra30 dts, but all the TegraXXX boards that
-use IRQ_TYPE_LEVEL_LOW are in the same position.
-
->> The IRQF flag in devm_request_threaded_irq() overrides the trigger mask
->> specified in a device-tree. IIUC, the interrupt is used only by OF-based
->> devices, hence I think we could simply remove the IRQF flag from the
->> code and fix the device-trees. Does it sound good to you?
+> On arm64 and powerpc, one must flush the icache and then flush the pipeline
+> on the target CPU, although the CPU manuals don't necessarily use this
+> language.
 > 
-> Yes, that is a better approach.
+> So let's drop any pretense that we can have a generic way to define or
+> implement membarrier's SYNC_CORE operation and instead require all
+> architectures to define the helper and supply their own documentation as to
+> how to use it.
 
-Thank you for reviewing this patch. I'll prepare v2.
+Agreed. Documentation of the sequence of operations that need to be performed
+when cross-modifying code on SMP should be per-architecture. The documentation
+of the architectural effects of membarrier sync-core should be per-arch as well.
+
+> This means x86, arm64, and powerpc for now.
+
+And also arm32, as discussed in the other leg of the patchset's email thread.
+
+> Let's also
+> rename the function from sync_core_before_usermode() to
+> membarrier_sync_core_before_usermode() because the precise flushing details
+> may very well be specific to membarrier, and even the concept of
+> "sync_core" in the kernel is mostly an x86-ism.
+
+OK
+
+> 
+[...]
+> 
+> static void ipi_rseq(void *info)
+> {
+> @@ -368,12 +373,14 @@ static int membarrier_private_expedited(int flags, int
+> cpu_id)
+> 	smp_call_func_t ipi_func = ipi_mb;
+> 
+> 	if (flags == MEMBARRIER_FLAG_SYNC_CORE) {
+> -		if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE))
+> +#ifndef CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE
+> 			return -EINVAL;
+> +#else
+> 		if (!(atomic_read(&mm->membarrier_state) &
+> 		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY))
+> 			return -EPERM;
+> 		ipi_func = ipi_sync_core;
+> +#endif
+
+Please change back this #ifndef / #else / #endif within function for
+
+if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE)) {
+  ...
+} else {
+  ...
+}
+
+I don't think mixing up preprocessor and code logic makes it more readable.
+
+Thanks,
+
+Mathieu
+
+> 	} else if (flags == MEMBARRIER_FLAG_RSEQ) {
+> 		if (!IS_ENABLED(CONFIG_RSEQ))
+> 			return -EINVAL;
+> --
+> 2.31.1
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
