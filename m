@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA96A3AB519
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61653AB51C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232343AbhFQNrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:47:01 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7475 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbhFQNrA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:47:00 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5NWk21c9zZdR8;
-        Thu, 17 Jun 2021 21:41:54 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 21:44:50 +0800
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 21:44:49 +0800
-Subject: Re: [PATCH -next v5] media: staging: atomisp: use list_splice_init in
- atomisp_compat_css20.c
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     <mchehab@kernel.org>, <sakari.ailus@linux.intel.com>,
-        <gregkh@linuxfoundation.org>, <kaixuxia@tencent.com>,
-        <gustavoars@kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>
-References: <20210617125357.675562-1-libaokun1@huawei.com>
- <YMtNh+yZAthTjFJn@smile.fi.intel.com>
-From:   "libaokun (A)" <libaokun1@huawei.com>
-Message-ID: <045418a7-181b-d11f-4c6f-5bfcb6d65c22@huawei.com>
-Date:   Thu, 17 Jun 2021 21:44:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S232457AbhFQNsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:48:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231510AbhFQNsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:48:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3F8D6044F;
+        Thu, 17 Jun 2021 13:45:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623937560;
+        bh=tQ+yqCax4zzP70ihLHBFwrr+fy4dGyFl396i7XGw0OE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yb26U//c3tUN3DSiviKHVass/DY/VJ2ABx5cInn6UGcIQfg08W3t9jWgjIrFJmfdQ
+         HqBU+oh1Q7l2W/8CLNv/r3AWQLqq0O4DBoROqK+HUHLZ8b16Om0EZbHu+5aPDabX/l
+         G3EI8C+5DEkuZ/UE82PrSAOgs6Sr+jaSWc87mTxI=
+Date:   Thu, 17 Jun 2021 15:45:57 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.or, lkft-triage@lists.linaro.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [next] [arm64] allmodconfig build failed - xhci-plat.c:427:
+ undefined reference to `onboard_hub_destroy_pdevs'
+Message-ID: <YMtSFVg6UoOpDqIP@kroah.com>
+References: <CA+G9fYu6er1nZ602gCnrY+-JNtDHrUJk-RH2biPmjRoe06_m4Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YMtNh+yZAthTjFJn@smile.fi.intel.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYu6er1nZ602gCnrY+-JNtDHrUJk-RH2biPmjRoe06_m4Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your advice.
+On Thu, Jun 17, 2021 at 07:09:15PM +0530, Naresh Kamboju wrote:
+> The arm64 allmodconfig build failed on Linux next 20210617 tag due to
+> the commit,
+> 
+> c950686b382d ("usb: host: xhci-plat: Create platform device for
+> onboard hubs in probe()")
+> 
+> build error:
+> ------------
+> aarch64-linux-gnu-ld: drivers/usb/host/xhci-plat.o: in function
+> `xhci_plat_remove':
+> drivers/usb/host/xhci-plat.c:427: undefined reference to
+> `onboard_hub_destroy_pdevs'
+> drivers/usb/host/xhci-plat.c:427:(.text+0x82c): relocation truncated
+> to fit: R_AARCH64_CALL26 against undefined symbol
+> `onboard_hub_destroy_pdevs'
+> aarch64-linux-gnu-ld: drivers/usb/host/xhci-plat.o: in function
+> `xhci_plat_probe':
+> drivers/usb/host/xhci-plat.c:379: undefined reference to
+> `onboard_hub_create_pdevs'
+> drivers/usb/host/xhci-plat.c:379:(.text+0x131c): relocation truncated
+> to fit: R_AARCH64_CALL26 against undefined symbol
+> `onboard_hub_create_pdevs'
+> make[1]: *** [Makefile:1252: vmlinux] Error 1
+> make[1]: Target '__all' not remade because of errors.
+> make: *** [Makefile:222: __sub-make] Error 2
+> make: Target '__all' not remade because of errors.
 
-I'm about to send a patch v6 with the changes suggested by you.
+Matthias, this is due to your patch, yet-another config option mis-match
+somewhere. Can you please fix it up?
 
-Best Regards.
+thanks,
 
-
-ÔÚ 2021/6/17 21:26, Andy Shevchenko Ð´µÀ:
-> On Thu, Jun 17, 2021 at 08:53:57PM +0800, Baokun Li wrote:
->> Using list_splice_init() instead of entire while-loops
->> in atomisp_compat_css20.c.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->> V1->V2:
->> 	CC mailist
->> V2->V3:
->>          Using list_move_tail() -> Using list_splice_init()
->> V3->V4:
->>          Remove redundant 'asd->'
->> V4->V5:
->>          Add the version information for 'V3->V4:'
-> What about
->
-> drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2107:31: warning: unused variable 'md_buf' [-Wunused-variable]
-> 2107 |  struct atomisp_metadata_buf *md_buf;
-> drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2106:26: warning: unused variable 'dis_buf' [-Wunused-variable]
-> 2106 |  struct atomisp_dis_buf *dis_buf;
-> drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2105:26: warning: unused variable 's3a_buf' [-Wunused-variable]
-> 2105 |  struct atomisp_s3a_buf *s3a_buf;
->
-> ?
->
+greg k-h
