@@ -2,64 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7DB3ABA46
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CDA3ABA4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhFQRJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:09:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230028AbhFQRJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:09:22 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84BE1613AA;
-        Thu, 17 Jun 2021 17:07:14 +0000 (UTC)
-Date:   Thu, 17 Jun 2021 13:07:13 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Anton Blanchard <anton@ozlabs.org>,
-        linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/2] trace/kprobe: Remove limit on kretprobe maxactive
-Message-ID: <20210617130713.194a7152@gandalf.local.home>
-In-Reply-To: <1623946796.80yhllbpmp.naveen@linux.ibm.com>
-References: <cover.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-        <a751a0617a2c06e7e233f2c98ccabe8b94a8076d.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-        <20210615183527.9068ef2f70fdd2a45fea78f0@kernel.org>
-        <1623777582.jsiokbdey1.naveen@linux.ibm.com>
-        <20210616094622.c8bd37840898c67dddde1053@kernel.org>
-        <20210615210351.602bc03e@rorschach.local.home>
-        <20210616112711.ce318fc66b389038203331d1@kernel.org>
-        <20210617001009.d5ae7b2edfdc34f4f8c19ab5@kernel.org>
-        <1623946796.80yhllbpmp.naveen@linux.ibm.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231806AbhFQRMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230028AbhFQRMG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 13:12:06 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6DEC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:09:57 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id g22so5486089pgk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:09:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W/S32u3ekjPeReAIcSVPK84B3McfcY02qau4OC949Fo=;
+        b=IgBimoOgYkL5HrKYTQgnDtuqkUgHEAELBT8PhXEEbGPQV3ZILOOxH6uqp64AzPyQ2X
+         L/4CEMA5zwqvjlsbdhNLPR2cL0rk08cu5TFNds7PVrz5UMVqPyiCHnot3r+39vCeOX89
+         8hVNW/j3mhGRLTHhXTiog5Qz5L1ykBrnaSqj0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W/S32u3ekjPeReAIcSVPK84B3McfcY02qau4OC949Fo=;
+        b=Q6BPc70vearaPFLinC4WBfN5bD8a/PWMEel86MDge4aLN3QTDcWKO3Wcngf/W06OBS
+         +gMokGnKUq7g5LUwnlcpeKEx0lBhxequz0AHxjemgTDcbsqqYU9zKd4k9lDirtCyrPEJ
+         S646PF92GVX9wZ7iK8ctP1cC9eHvOVV3memZnAgV7nsmqgPD3N4hwjBb460YI0FKBVsA
+         JlIeVpRkqUSNcdry8v2WEkqiKePq3dfgdwjkE5YsU6Hknn28kLpoqcrbrGvB3LnsveKY
+         s2HYPQu9byLIl9XYoP265Ql2hijbOGLtCsnDEMZYsX+UPOh9JXr42KF7IOfgHbJIL57k
+         rbuw==
+X-Gm-Message-State: AOAM530o3tnBonC+EN6oHgUbA0Pyr/NiWatcKvGzZssKAIz2yl73XNy1
+        UwNmUUTXYfHJK3kFV0jsdVX91Q==
+X-Google-Smtp-Source: ABdhPJzfVVxxl4/obG5AKUZMNwwQGXdHf6ZfEgj/rA3dG8YJz6YKHXafcOT6QkyYzgFsV8lcWYA1Og==
+X-Received: by 2002:a62:1b91:0:b029:2fd:2904:938a with SMTP id b139-20020a621b910000b02902fd2904938amr733177pfb.18.1623949797155;
+        Thu, 17 Jun 2021 10:09:57 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n5sm2589727pgf.35.2021.06.17.10.09.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 10:09:56 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Ariel Elior <aelior@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        GR-everest-linux-l2@marvell.com, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] net: qed: Fix memcpy() overflow of qed_dcbx_params()
+Date:   Thu, 17 Jun 2021 10:09:53 -0700
+Message-Id: <20210617170953.3410334-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Patch-Hashes: v=1; h=sha256; g=7ee16d0c85b43265f1b056049a01025c7810232c; i=7UynV2bzrbyVcxIExxwAR2qPDHrjOVlt1/0kMWRdngo=; m=2tWE1O18O7/RX9jY2E+cZNsP6H6Af9JdA55eVc/s3NQ=; p=h9rajczpeiIMkXn0tERvoj5tzIpf9alLTkjRcrTfInk=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDLgeAACgkQiXL039xtwCaa7w/+MUC Jj9Che+mSHBlh+Ij5I0hZF4uNeub1HtZ/Nj23qSxIJ1tgPUpZItnEW+cgd8fW7QW+oAV9TCACXYlo 19vn/7m1UAR8oa3pEc2Wdl/zxCJHbrIHH2FF+4Rv1G0Z50pWCZAMsH+o+V+h9t2pOn8/yOp7Am6Ng 4TYQT6wLcffX4W+Hy3a6xtJ3+55r/5Ogd0AfdBKgAUIbHS/DQQv26HMshKHYgfmRMX1MCgUR9he84 kt6Eu1cY8ecJBnlzcF3vjdIIqc8Gs5pLLCVfo1fJ0taHEdQEc3JFmq1UUOMD7bGzcw+rcbWQFNH1r OWRzajC+s1YGUUuhv6Cf47xDFrgvxsODGf+qm6FHsQ+pIYv2iGyrh7unpaVjdZNGJqm3hHZ4AIw1g h7z83PMBsdRlk/kaJZ/D/bA4nC5u+FgGcVljfhbAKddUzsnLF1kzS1F5HXY6HM/uQOKOYYk09Zhvf OKAOdWu62fIPaKDvXjlENb557CaH3/qV0DwV82EMVGhkOY9VxoWhEWaKaVZcenVIOP6bDH/WQTbyq 5BMbcJXhP0RpaNqrbJoXQxtIM3m49YRr0zc4dANKxzpWSlBZCtWlbAwaWvr2x3L48xg5iCgmOXkHV F/olOjqrMYtTy7dS0d76YDEJUtJXVKgRW43aLOhN79hMfPyU4DaGbDV+9ygASAas=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 22:04:34 +0530
-"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+The source (&dcbx_info->operational.params) and dest
+(&p_hwfn->p_dcbx_info->set.config.params) are both struct qed_dcbx_params
+(560 bytes), not struct qed_dcbx_admin_params (564 bytes), which is used
+as the memcpy() size.
 
-> > 2. Move the kretprobe instance pool from kretprobe to struct task.
-> >   This pool will allocates one page per task, and shared among all
-> >   kretprobes. This pool will be allocated when the 1st kretprobe
-> >   is registered. maxactive will be kept for someone who wants to
-> >   use per-instance data. But since dynamic event doesn't use it,
-> >   it will be removed from tracefs and perf.  
-> 
-> Won't this result in _more_ memory usage compared to what we have now?
+However it seems that struct qed_dcbx_operational_params
+(dcbx_info->operational)'s layout matches struct qed_dcbx_admin_params
+(p_hwfn->p_dcbx_info->set.config)'s 4 byte difference (3 padding, 1 byte
+for "valid").
 
-Maybe or maybe not. At least with this approach (or the function graph
-one), you will allocate enough for the environment involved. If there's
-thousands of tasks, then yes, it will allocate more memory. But if you are
-running thousands of tasks, you should have a lot of memory in the machine.
+On the assumption that the size is wrong (rather than the source structure
+type), adjust the memcpy() size argument to be 4 bytes smaller and add
+a BUILD_BUG_ON() to validate any changes to the structure sizes.
 
-If you are only running a few tasks, it will be less than the current
-approach.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/ethernet/qlogic/qed/qed_dcbx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
--- Steve
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_dcbx.c b/drivers/net/ethernet/qlogic/qed/qed_dcbx.c
+index 17d5b649eb36..e81dd34a3cac 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_dcbx.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_dcbx.c
+@@ -1266,9 +1266,11 @@ int qed_dcbx_get_config_params(struct qed_hwfn *p_hwfn,
+ 		p_hwfn->p_dcbx_info->set.ver_num |= DCBX_CONFIG_VERSION_STATIC;
+ 
+ 	p_hwfn->p_dcbx_info->set.enabled = dcbx_info->operational.enabled;
++	BUILD_BUG_ON(sizeof(dcbx_info->operational.params) !=
++		     sizeof(p_hwfn->p_dcbx_info->set.config.params));
+ 	memcpy(&p_hwfn->p_dcbx_info->set.config.params,
+ 	       &dcbx_info->operational.params,
+-	       sizeof(struct qed_dcbx_admin_params));
++	       sizeof(p_hwfn->p_dcbx_info->set.config.params));
+ 	p_hwfn->p_dcbx_info->set.config.valid = true;
+ 
+ 	memcpy(params, &p_hwfn->p_dcbx_info->set, sizeof(struct qed_dcbx_set));
+-- 
+2.25.1
+
