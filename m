@@ -2,108 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775713AA7F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376633AA7FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234870AbhFQAOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 20:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhFQAOy (ORCPT
+        id S234927AbhFQAQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 20:16:30 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:35632 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229575AbhFQAQ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 20:14:54 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A432AC061574;
-        Wed, 16 Jun 2021 17:12:46 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so4371511otk.5;
-        Wed, 16 Jun 2021 17:12:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=c1QRfJ3FQUjszVpJw97vQrskX9QRXSSLNiih/kSbDYI=;
-        b=ZhGHRq2ULz+JOedfCh0u88xzLZyZDF2DxIF3kyWi8hR3zIVUuPvenaKGKllRQjFyWb
-         bEUPSoN1B9sB8PgPUj0v7TxNJZi8fYaoDIrQ7Jd/nnW0XMz+swuLh0cyoLj8NDS4Jj3R
-         7zk4RzpoLsq07WwF84JqDZqAvrT+C+6KStgVusjLAYlcMD6VjcqS+NIcRBqGKCDI48/U
-         Xd4y1y4NaUAr0sePFLyRc/HjenWFPYPu5TKPkmnzUWJcCsoNwNDm/nqxLO6c/q+Haynm
-         AKYleSAYu8ZlIe8cH+vKbTi0ZFnQInCKb04KsBmJs5ASZI3LVyydPaQLB8ocbEQIELjW
-         zlpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=c1QRfJ3FQUjszVpJw97vQrskX9QRXSSLNiih/kSbDYI=;
-        b=c+D/b+6Jz2MkFTocmhypYAtfrMuNiURs8cnYSge8+iGl3NXc8G8oqAwfMNuPeqkApG
-         RVJ5fj9rG7RLdxQzCtZZPm+0Jz3DIO4mdsE2ntVtSjTtG3WeEpw8qDqxBodgHxC6XXZJ
-         9FI4cB7zLeYvUnwUXZlDgKKx4t3qIsR1iMmzpSFsenwd7gzHShqTI1n8ZSBZfwozaosK
-         Qg2y/1EoFbPqNdCWPfrz8ojTMd2lwyf802cTp7HxxkKcvo7Qe4prcLlxB3NtBgEhnSgV
-         PSwaGbA1j8PnvIJip8NlPrUEZqAkMcoPHnkIOjN/0pL4cWSWp3eU17ch1DFfDtvQhAJO
-         oc6w==
-X-Gm-Message-State: AOAM532UE4td2Y/285bGyfzbmTBBeDD6196gEmLTFKXBdhO/INcHXyHc
-        DDc87fG/50PyAX/YTr/FKWE=
-X-Google-Smtp-Source: ABdhPJxA/NzbyZFEhopTCXIpREDwYBfU9OKAhkDRw7BP4Y9E4B9WVvojCamGtcXnwoXk4GuHMXd+8w==
-X-Received: by 2002:a9d:bc4:: with SMTP id 62mr2037024oth.253.1623888766030;
-        Wed, 16 Jun 2021 17:12:46 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v10sm794271ool.45.2021.06.16.17.12.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 17:12:45 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 16 Jun 2021 17:12:43 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v1] hwmon: (lm90) Use edge-triggered interrupt
-Message-ID: <20210617001243.GA3211292@roeck-us.net>
-References: <20210616190708.1220-1-digetx@gmail.com>
+        Wed, 16 Jun 2021 20:16:29 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3A523E53;
+        Thu, 17 Jun 2021 02:14:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623888861;
+        bh=svs3vUIJuC6A6roJ+ePsXNyS9UtpzRg+9JcxB6phfBE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H+XL0LVMhHyfoKOfKUrxKm3zWcVdc/92j1EIOxkXOCxqZAqjnS2zFSLflpasUJH/q
+         E+g4XHL8MinFCIbNl5NsHbFgI22sDdozqcI99hDThBlu9Qi3CFSrUmwGdJ7XAtIgZa
+         0YJFG+Pv8C6lx5ksMvx9K3803yZ7ZJR1NxEi/x9Q=
+Date:   Thu, 17 Jun 2021 03:14:00 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 12/15] media: i2c: rdacm20: Embed 'serializer' field
+Message-ID: <YMqTyFvxer0vjsKT@pendragon.ideasonboard.com>
+References: <20210616124616.49249-1-jacopo+renesas@jmondi.org>
+ <20210616124616.49249-13-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210616190708.1220-1-digetx@gmail.com>
+In-Reply-To: <20210616124616.49249-13-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 10:07:08PM +0300, Dmitry Osipenko wrote:
-> The LM90 driver uses level-based interrupt triggering. The interrupt
-> handler prints a warning message about the breached temperature and
-> quits. There is no way to stop interrupt from re-triggering since it's
-> level-based, thus thousands of warning messages are printed per second
-> once interrupt is triggered. Use edge-triggered interrupt in order to
-> fix this trouble.
+Hi Jacopo,
+
+Thank you for the patch.
+
+This should be moved before 11/15 to avoid a bisection breakage (or
+11/15 should be fixed, and this patch updated accordingly).
+
+On Wed, Jun 16, 2021 at 02:46:13PM +0200, Jacopo Mondi wrote:
+> There's no reason to allocate dynamically the 'serializer' field in
+> the driver structure.
 > 
-> Fixes: 109b1283fb532 ("hwmon: (lm90) Add support to handle IRQ")
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Embed the field and adjust all its users in the driver.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 > ---
->  drivers/hwmon/lm90.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/media/i2c/rdacm20.c | 36 +++++++++++++++---------------------
+>  1 file changed, 15 insertions(+), 21 deletions(-)
 > 
-> diff --git a/drivers/hwmon/lm90.c b/drivers/hwmon/lm90.c
-> index ebbfd5f352c0..ce8ebe60fcdc 100644
-> --- a/drivers/hwmon/lm90.c
-> +++ b/drivers/hwmon/lm90.c
-> @@ -1908,7 +1908,7 @@ static int lm90_probe(struct i2c_client *client)
->  		dev_dbg(dev, "IRQ: %d\n", client->irq);
->  		err = devm_request_threaded_irq(dev, client->irq,
->  						NULL, lm90_irq_thread,
-> -						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
-> +						IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
->  						"lm90", client);
+> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> index 5e0314a2b1ca..029af8fd7485 100644
+> --- a/drivers/media/i2c/rdacm20.c
+> +++ b/drivers/media/i2c/rdacm20.c
+> @@ -312,7 +312,7 @@ static const struct ov10635_reg {
+>  
+>  struct rdacm20_device {
+>  	struct device			*dev;
+> -	struct max9271_device		*serializer;
+> +	struct max9271_device		serializer;
+>  	struct i2c_client		*sensor;
+>  	struct v4l2_subdev		sd;
+>  	struct media_pad		pad;
+> @@ -399,7 +399,7 @@ static int rdacm20_s_stream(struct v4l2_subdev *sd, int enable)
+>  {
+>  	struct rdacm20_device *dev = sd_to_rdacm20(sd);
+>  
+> -	return max9271_set_serial_link(dev->serializer, enable);
+> +	return max9271_set_serial_link(&dev->serializer, enable);
+>  }
+>  
+>  static int rdacm20_enum_mbus_code(struct v4l2_subdev *sd,
+> @@ -455,10 +455,10 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+>  	unsigned int retry = 3;
+>  	int ret;
+>  
+> -	max9271_wake_up(dev->serializer);
+> +	max9271_wake_up(&dev->serializer);
+>  
+>  	/* Serial link disabled during config as it needs a valid pixel clock. */
+> -	ret = max9271_set_serial_link(dev->serializer, false);
+> +	ret = max9271_set_serial_link(&dev->serializer, false);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -466,35 +466,35 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+>  	 *  Ensure that we have a good link configuration before attempting to
+>  	 *  identify the device.
+>  	 */
+> -	max9271_configure_i2c(dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
+> -					       MAX9271_I2CSLVTO_1024US |
+> -					       MAX9271_I2CMSTBT_105KBPS);
+> +	max9271_configure_i2c(&dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
+> +						MAX9271_I2CSLVTO_1024US |
+> +						MAX9271_I2CMSTBT_105KBPS);
+>  
+> -	max9271_configure_gmsl_link(dev->serializer);
+> +	max9271_configure_gmsl_link(&dev->serializer);
+>  
+> -	ret = max9271_verify_id(dev->serializer);
+> +	ret = max9271_verify_id(&dev->serializer);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	ret = max9271_set_address(dev->serializer, dev->addrs[0]);
+> +	ret = max9271_set_address(&dev->serializer, dev->addrs[0]);
+>  	if (ret < 0)
+>  		return ret;
+> -	dev->serializer->client->addr = dev->addrs[0];
+> +	dev->serializer.client->addr = dev->addrs[0];
+>  
+>  	/*
+>  	 * Reset the sensor by cycling the OV10635 reset signal connected to the
+>  	 * MAX9271 GPIO1 and verify communication with the OV10635.
+>  	 */
+> -	ret = max9271_enable_gpios(dev->serializer, MAX9271_GPIO1OUT);
+> +	ret = max9271_enable_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = max9271_clear_gpios(dev->serializer, MAX9271_GPIO1OUT);
+> +	ret = max9271_clear_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+>  	if (ret)
+>  		return ret;
+>  	usleep_range(10000, 15000);
+>  
+> -	ret = max9271_set_gpios(dev->serializer, MAX9271_GPIO1OUT);
+> +	ret = max9271_set_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+>  	if (ret)
+>  		return ret;
+>  	usleep_range(10000, 15000);
+> @@ -564,13 +564,7 @@ static int rdacm20_probe(struct i2c_client *client)
+>  	if (!dev)
+>  		return -ENOMEM;
+>  	dev->dev = &client->dev;
+> -
+> -	dev->serializer = devm_kzalloc(&client->dev, sizeof(*dev->serializer),
+> -				       GFP_KERNEL);
+> -	if (!dev->serializer)
+> -		return -ENOMEM;
+> -
+> -	dev->serializer->client = client;
+> +	dev->serializer.client = client;
+>  
+>  	ret = of_property_read_u32_array(client->dev.of_node, "reg",
+>  					 dev->addrs, 2);
 
-We can't do that. Problem is that many of the devices supported by this driver
-behave differently when it comes to interrupts. Specifically, the interrupt
-handler is supposed to reset the interrupt condition (ie reading the status
-register should reset it). If that is the not the case for a specific chip,
-we'll have to update the code to address the problem for that specific chip.
-The above code would probably just generate a single interrupt while never
-resetting the interrupt condition, which is obviously not what we want to
-happen.
+-- 
+Regards,
 
-Guenter
-
->  		if (err < 0) {
->  			dev_err(dev, "cannot request IRQ %d\n", client->irq);
-> -- 
-> 2.30.2
-> 
+Laurent Pinchart
