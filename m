@@ -2,114 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D232A3ABB22
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAD53ABB25
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbhFQSEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 14:04:43 -0400
-Received: from server.eikelenboom.it ([91.121.65.215]:42784 "EHLO
-        server.eikelenboom.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbhFQSEn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:04:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=eikelenboom.it; s=20180706; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=PiN3z2mKDdT5442Y+muKtJpynotCbE1hW/7caNM/RJk=; b=SFGTJae2VtNYejTAt/O1zGbbFs
-        WqNBFGLdNgegQgVYtdoSjbl7L5z3kKUVETjdj8jFbq5hVa3nKtFGd0AZvB97rSgiBOzlYFHcPHVIL
-        zua+3fLh2ng3XN3RDLyuLGzPskn7WR6QA31nbq3EZCvvyJkm1lihbSwwq4f6BxAa/Hyo=;
-Received: from 76-24-144-85.ftth.glasoperator.nl ([85.144.24.76]:51064 helo=[172.16.1.50])
-        by server.eikelenboom.it with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <linux@eikelenboom.it>)
-        id 1ltwQB-0006fU-Be; Thu, 17 Jun 2021 20:07:19 +0200
-Subject: Re: Linux 5.13-rc6 regression to 5.12.x: kernel OOM and panic during
- kernel boot in low memory Xen VM's (256MB assigned memory).
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-References: <ee8bf04c-6e55-1d9b-7bdb-25e6108e8e1e@eikelenboom.it>
- <CAHk-=wjgg67NMBNG99naEQ1cM0mXBBzdhCJaYFH-kC+mLK+J2g@mail.gmail.com>
- <9108c22e-3521-9e24-6124-7776d947b788@rasmusvillemoes.dk>
-From:   Sander Eikelenboom <linux@eikelenboom.it>
-Message-ID: <0b12f27b-1109-b621-c969-10814b2c1c2f@eikelenboom.it>
-Date:   Thu, 17 Jun 2021 20:02:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231602AbhFQSFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:05:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229972AbhFQSFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 14:05:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC61561241;
+        Thu, 17 Jun 2021 18:02:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623952975;
+        bh=fcHJRF+HkDvnIqayIlyJg+KA7dLX7hNwPHMpsiYp03Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pT7MmJp04q0a1YmU0Q9w5QFKIXr18Znz39NDDpzPBUSZabZOlALqxHXtHdV/m1ebc
+         P7wQPiegEviQb0zFiQ5FHFsNcmEAivSeKnNrXfqRXZFi3b2ozOJM2hnrExcwDUUE2K
+         4VhteZg29OWN1IthoCRAM5CJNYKbmqTE/veRMbA76lz3QQAgsEwIGO+lkCcMn8jHyM
+         vLxKzJXXpBD3RvlFSxPKaHzzO6y3iOzG5ybLmoQke+aIJHbLnZtPTjRjxqoF4MQOh3
+         4F90jcmKKhZ5pIk3f/7so+RahCpv9eUm3LTJ8Rem2NgbANQ/jdXymYHs8QKc17qMue
+         mnjZ8lBWhP1wQ==
+Date:   Thu, 17 Jun 2021 11:02:50 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-next@vger.kernel.org, clang-built-linux@googlegroups.com,
+        lkft-triage@lists.linaro.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [next] [clang] x86_64-linux-gnu-ld: mm/mremap.o: in function
+ `move_pgt_entry': mremap.c:(.text+0x763): undefined reference to
+ `__compiletime_assert_342'
+Message-ID: <YMuOSnJsL9qkxweY@archlinux-ax161>
+References: <CA+G9fYsWHE5Vu9T3FV-vtHHbVFJWEF=bmjQxwaZs3uVYef028g@mail.gmail.com>
+ <CA+G9fYvvf+XTvZg1sTq4_f9OrVFsCazGo0ozaEbjVYgSeKCkWA@mail.gmail.com>
+ <YMtTdU2b9fI3dnFD@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <9108c22e-3521-9e24-6124-7776d947b788@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMtTdU2b9fI3dnFD@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/06/2021 17:37, Rasmus Villemoes wrote:
-> On 17/06/2021 17.01, Linus Torvalds wrote:
->> On Thu, Jun 17, 2021 at 2:26 AM Sander Eikelenboom <linux@eikelenboom.it> wrote:
->>>
->>> I just tried to upgrade and test the linux kernel going from the 5.12 kernel series to 5.13-rc6 on my homeserver with Xen, but ran in some trouble.
->>>
->>> Some VM's boot fine (with more than 256MB memory assigned), but the smaller (memory wise) PVH ones crash during kernel boot due to OOM.
->>> Booting VM's with 5.12(.9) kernel still works fine, also when dom0 is running 5.13-rc6 (but it has more memory assigned, so that is not unexpected).
->>
->> Adding Rasmus to the cc, because this looks kind of like the async
->> roofs population thing that caused some other oom issues too.
-> 
-> Yes, that looks like the same issue.
-> 
->> Rasmus? Original report here:
->>
->>     https://lore.kernel.org/lkml/ee8bf04c-6e55-1d9b-7bdb-25e6108e8e1e@eikelenboom.it/
->>
->> I do find it odd that we'd be running out of memory so early..
-> 
-> Indeed. It would be nice to know if these also reproduce with
-> initramfs_async=0 on the command line.
-> 
-> But what is even more curious is that in the other report
-> (https://lore.kernel.org/lkml/20210607144419.GA23706@xsang-OptiPlex-9020/),
-> it seemed to trigger with _more_ memory - though I may be misreading
-> what Oliver was telling me:
-> 
->> please be noted that we use 'vmalloc=512M' for both parent and this
-> commit.
->> since it's ok on parent but oom on this commit, we want to send this
-> report
->> to show the potential problem of the commit on some cases.
->>
->> we also tested by changing to use 'vmalloc=128M', it will succeed.
-> 
-> Those tests were done in a VM with 16G memory, and then he also wrote
-> 
->> we also tried to follow exactly above steps to test on
->> some local machine (8G memory), but cannot reproduce.
-> 
-> Are there some special rules for what memory pools PID1 versus the
-> kworker threads can dip into?
-> 
-> 
-> Side note: I also had a ppc64 report with different symptoms (the
-> initramfs was corrupted), but that turned out to also reproduce with
-> e7cb072eb98 reverted, so that is likely unrelated. But just FTR that
-> thread is here:
-> https://lore.kernel.org/lkml/CA+QYu4qxf2CYe2gC6EYnOHXPKS-+cEXL=MnUvqRFaN7W1i6ahQ@mail.gmail.com/
-> 
-> Rasmus
-> 
+Rebuilt the CC list because most people were added based on the
+incorrect bisect result.
 
-I choose to first finish the bisection attempt, not so suprising it ends up with:
-e7cb072eb988e46295512617c39d004f9e1c26f8 is the first bad commit
+On Thu, Jun 17, 2021 at 02:51:49PM +0100, Matthew Wilcox wrote:
+> On Thu, Jun 17, 2021 at 06:15:45PM +0530, Naresh Kamboju wrote:
+> > On Thu, 17 Jun 2021 at 17:41, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > > x86_64-linux-gnu-ld: mm/mremap.o: in function `move_pgt_entry':
+> > > mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
+> > 
+> > The git bisect pointed out the first bad commit.
+> > 
+> > The first bad commit:
+> > commit 928cf6adc7d60c96eca760c05c1000cda061604e
+> > Author: Stephen Boyd <swboyd@chromium.org>
+> > Date:   Thu Jun 17 15:21:35 2021 +1000
+> >     module: add printk formats to add module build ID to stacktraces
+> 
+> Your git bisect probably went astray.  There's no way that commit
+> caused that regression.
 
-So at least that link is confirmed.
+My bisect landed on commit 83f85ac75855 ("mm/mremap: convert huge PUD
+move to separate helper"). flush_pud_tlb_range() evaluates to
+BUILD_BUG() when CONFIG_TRANSPARENT_HUGEPAGE is unset but this function
+is present just based on the value of
+CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD.
 
-I also checked out booting with "initramfs_async=0" and now the guest boots with the 5.13-rc6-ish kernel which fails without that.
+$ make -skj(nproc) ARCH=x86_64 CC=clang O=build/x86_64 distclean allnoconfig mm/mremap.o
 
---
-Sander
+$ llvm-readelf -s build/x86_64/mm/mremap.o &| rg __compiletime_assert
+    21: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT   UND __compiletime_assert_337
 
+$ rg TRANSPARENT_ build/x86_64/.config
+450:CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE=y
+451:CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD=y
+562:# CONFIG_TRANSPARENT_HUGEPAGE is not set
+
+Not sure why this does not happen on newer clang versions, presumably
+something with inlining decisions? Still seems like a legitimate issue
+to me.
+
+Cheers,
+Nathan
