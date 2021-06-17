@@ -2,121 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB323AA9C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 05:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C0A3AA9C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 06:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhFQEB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 00:01:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
+        id S229827AbhFQECi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 00:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhFQEBr (ORCPT
+        with ESMTP id S229693AbhFQECg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 00:01:47 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9A2C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 20:59:04 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso3043284pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 20:59:04 -0700 (PDT)
+        Thu, 17 Jun 2021 00:02:36 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C28DCC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 21:00:29 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso3058266pjp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 21:00:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=a5D+ny1Y0c3O7KxzHuyI+M5mGXvaRgQ84CvvtncVlG0=;
-        b=fRcFPkiIxPDt9py7J1PQBOFWa8GEY8lHPvIBnBm1ce3CL3iHZHu/UZCEhEGJOVVCaA
-         VHKOkUgSyIJQ2Ruk0A2HflJ0G72K5plXNdgLkY4e1ZUcxSzfYUKbwM5q0pG5lNePiwOv
-         7FXxll2wYUEI85aVEsP19np7Ju9bEl8kDfsr25mfOtrQe07owDGhAhZzToqNsjeA/IPH
-         E+9IHrMS1E0RR1+reFfHNJI5ouyJ2XoNtLzW9AM3mUdmwZItucn/6F40ftKaCGJEwq2c
-         uQOFRr7oRd61zssn2NtqMyTC3iNCwKJ7UXnmUrPPz521WtPzXyoeZj+nlHxs99HDqXOZ
-         4nfw==
+        bh=pC2Nbi4igIwZvfic20raTQXRqc481qbOBEUTVrlffcM=;
+        b=W/Iz1s1iFfzN5NvkND/sJwgBiBkIIUdYhZYEzcC69P6VQr3inUKzT+ewHPDavXOzNO
+         gZ31rQmoZCHRo6c2NQ7VfiginGJ7AUWhmtRgUnqa0x9cBbcszsTueHaYbpCjB6lLpVIZ
+         D2KqiGtwlGPX4/es4yI89OKiOePddqF2eV9F9Wh+mbArFJKYELXwj69oSh02zy/CwfuG
+         yxnXCk7kpy28qm41eFsC+lXhmF2JgHtndb4UsQV24wb05SNfxCLRjK2Meu3oOPJ5Ex04
+         JpMS078ZqB1H6bwcCtAPHVb9EuFp1QmZ+a8XHyEd2q4VpGyTAlNqTVjvb2DFDgcquz1y
+         0DjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=a5D+ny1Y0c3O7KxzHuyI+M5mGXvaRgQ84CvvtncVlG0=;
-        b=Z0aSKz10nU/g06f+FRM6tcuJvIr9TC3vfzS8loRnl0qNkXo2bn5WXS9Jspjv9r/+3Q
-         bSpft7noF8HrgKFWJAPvvJU+kViLz8uAoxQTKi8zleZATJ1zajHCsMFHk8bAZTW/mqWZ
-         oNr+U8/0oKU1s7dcaojODUZQktf6fuuPclMkXfiH2UbR9XOd6mfBkxMkNbnTgnfmkZyJ
-         U6fobCjU6Zfwc63npOt27PeI1qrIc9CLyv9wPPq/JiL83qCiarsRzwbzObkcC/HxMH8g
-         z6JfbgKKJbh0ECosG6Boj5zSyEXDVWjNnG9GVnpYzbE1CTNO1gNERnjDKlm3QL+I1Rxa
-         ruow==
-X-Gm-Message-State: AOAM532cen7lwbBYODbk1rzhBfiPOjYVsIy6VlQm/7QAhq9v3DyPRhAe
-        LwtZaFgEIUzB6m7Y5JjTPhG0qg==
-X-Google-Smtp-Source: ABdhPJyK8z8cdDdyBhx0CBSqDGBDOEf/ee2crujfR5xEIC5Ea+opK/+E62HCRvXJLb044uPARRa9xQ==
-X-Received: by 2002:a17:902:8d97:b029:113:d891:2ea0 with SMTP id v23-20020a1709028d97b0290113d8912ea0mr2678159plo.61.1623902343697;
-        Wed, 16 Jun 2021 20:59:03 -0700 (PDT)
+        bh=pC2Nbi4igIwZvfic20raTQXRqc481qbOBEUTVrlffcM=;
+        b=P1V2v8T3q2hw4cVbfQ/3Rilvcoi6rsxhJLMzdONbBY7cfeEGpW8NTdkMUUyb4mQ9hF
+         4lSvUaPGhXH2Sq1s8MMoxN/Pm6Ro/fNGpnPr0oT9smewCp3GKlt605NoDOqleKWkrmkk
+         c+gsw2Uh2dBOE7SBu/Z0bl66alQlFKcL7gqBQ2w8hI6LM6/W7LUgy1gB1Ud9t7/Pe62r
+         nOTHiYOnxmwkpe4moqNJgg3Z3QJWSjFRuzYl3RAo9Wmr6GEc8Dqk0fvzAa7toelPDOUU
+         aggRH451kniuzWxmcw8eQ3wp22706jOvH0h3nY4kD7eo+otGFt7ls3jk5BN+c5ntdlm6
+         gRlw==
+X-Gm-Message-State: AOAM530qiKswYCy8kVn+TDfWxacvjEfCn42rmONJIgDGLkJO6lK9vAIl
+        Qql2wp7Z9uubdArC/1rgGTQ+8g==
+X-Google-Smtp-Source: ABdhPJyDv7ubI5q+IKKJfE9KSESdn7Qn3OCPz3FLjbADh/Q4cQNBLHiksqUAZ4ofi1gqIRGVprwt/Q==
+X-Received: by 2002:a17:902:bd09:b029:ec:7e58:a54a with SMTP id p9-20020a170902bd09b02900ec7e58a54amr2751421pls.62.1623902429381;
+        Wed, 16 Jun 2021 21:00:29 -0700 (PDT)
 Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id j10sm3388366pjb.36.2021.06.16.20.59.02
+        by smtp.gmail.com with ESMTPSA id 20sm3495193pfi.170.2021.06.16.21.00.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 20:59:03 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 09:29:01 +0530
+        Wed, 16 Jun 2021 21:00:28 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 09:30:27 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>
-Subject: Re: [PATCH] drivers: gpio: add virtio-gpio guest driver
-Message-ID: <20210617035901.kfzps6kg2emthjf4@vireshk-i7>
-References: <20210616114934.n3grzuh6c64wlaj6@vireshk-i7>
- <5cffb354-0d00-5ace-260d-61ac0c4c7491@metux.net>
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        "Viresh Kumar )" <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "andrew-sh . cheng" <andrew-sh.cheng@mediatek.com>
+Subject: Re: [PATCH] opp: of: Allow lazy-linking of required-opps to non genpd
+Message-ID: <20210617040027.vtqlhxqq7cwzeygg@vireshk-i7>
+References: <20210616053335.4181780-1-hsinyi@chromium.org>
+ <CGME20210616075555epcas1p136129544501878b4bedaf8e46f9a43dc@epcas1p1.samsung.com>
+ <20210616075548.ghp3lmjf4y6pyxoy@vireshk-i7>
+ <b9310754-2105-2a93-ecbf-513d9a80a91a@samsung.com>
+ <20210616090945.sn337tftdcp7y7y6@vireshk-i7>
+ <742b2623-e8ff-db1f-9168-bdbde98110dd@samsung.com>
+ <20210617033351.44pxdpjicm62byuh@vireshk-i7>
+ <c40f535b-3075-62eb-3b82-837ad13d67d4@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5cffb354-0d00-5ace-260d-61ac0c4c7491@metux.net>
+In-Reply-To: <c40f535b-3075-62eb-3b82-837ad13d67d4@samsung.com>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-06-21, 17:04, Enrico Weigelt, metux IT consult wrote:
-> Half correct: I sent it to the list, but this wasn't tex'ified yet.
+On 17-06-21, 13:09, Chanwoo Choi wrote:
+> On 6/17/21 12:33 PM, Viresh Kumar wrote:
+> > On 17-06-21, 10:13, Chanwoo Choi wrote:
+> >> The devfreq driver(exynos-bus.c) has used the dev_pm_opp_set_rate()
+> >> and used the passive governor without the required-opp property.
+> > 
+> > Which is fine.
+> > 
+> >> I have a plan to use the required-opp property
+> >> between devfreq drivers (exynos-bus.c) with dev_pm_opp_set_rate().
+> >>
+> >> I'll support them on later if this approach doesn't break the any
+> >> rule of required-opp property.
+> > 
+> > You will be required to make some changes in core for that I am
+> > afraid. It won't work automatically.
 > 
-> When we had an email conversation about this, it was about submitting
-> the existing spec in a formal correct way. Don't get me wrong: I
-> apreciate that somebody's doing the beaurocratic work. But still have
-> no idea why you changed it completely, so there's quite nothing left
-> but the name and that it somehow does gpio via virtio.
+> Do you think that better to use clk_enable/regulator_enable directly
+> instead of dev_pm_opp_set_rate() for using required-opp property?
 
-> The one I've resent (now texified) a few days ago. It had been submitted
-> in ascii form last year. The answer from virtio TC folks whas that there
-> are some formal steps to be done and it needs to be patched int their
-> tex document.
-
-Okay, we figured out now that you _haven't_ subscribed to virtio lists
-and so your stuff never landed in anyone's inbox. But you did send
-something and didn't completely went away.
-
-Since you started this all and still want to do it, I will take my
-patches back and let you finish with what you started. I will help
-review them.
-
-Please start with specification first, and resend them as soon as
-possible. So we can start with reviews there.
-
-Also please cc relevant people directly, like GPIO maintainers in
-kernel and few more from CC list of this email, as most of these
-people aren't subscribed to virtio lists, they will never get your
-patches otherwise. Lets get over this once and for all.
-
-> You sound like a politician that tries to push an hidden agenda,
-> made by some secret interest group in the back room, against the
-> people - like "resistance is futile".
-
-:)
+No. All I am saying is that the OPP core won't work for your use case
+today and may need some updates.
 
 -- 
 viresh
