@@ -2,122 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3BD3ABD14
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC31A3ABD19
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233152AbhFQTs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 15:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233057AbhFQTsx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 15:48:53 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184F0C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 12:46:45 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id h1so3504177plt.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 12:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mLMovYIS5wutKY2giDQVw91ffLZtZ5xk7cMLtNk1wWs=;
-        b=CDwjpD1m8l6rzkJJVXYXwxmirxd5y9t5OchOdaVxeXIpxlv0IzhtgFv1IvvR00hSsP
-         vTBZl9ZEsIu/YfWoKwtyPMWUx81M/vrE58QB66pmHvsd4IyvraYpjHgspnN+eImt+98S
-         nC/Kh8b3uXo9gp4HRHBLNpTCFivRKl26wUv+U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mLMovYIS5wutKY2giDQVw91ffLZtZ5xk7cMLtNk1wWs=;
-        b=Pss7gGDU2MiKcF4fSwCOLcdGAhe2oOSts9KuUxjRGZeArGhT1h7jBRPZXxcYrmO8Uq
-         j2lrO3SlS7WPfaz6RpjknePp8nKTrLyS8w9XdmT5q3hkptTCnCoWWKkxMAakQ1iPPTEu
-         b8R37oZPtrZTMRiLaYScJUxW8DPAgC45fKSpvxAYvRz5mBXkqGDgfapZJUQ4zx0IkEn4
-         XibslKS54oo23ZSP5kjFnIx0ZAAOXKsV2/cCW1p7lpsO/epn+NL7HLlzVoOl+GwpeYsb
-         LtLZg6242esIflMnee8cr3xleLuDJRcbs2fpkXv2vQsWCjTcScSIFPyamZO8fH+oFnc0
-         jH0Q==
-X-Gm-Message-State: AOAM532+eZDbunPm70MA/Z0gct759ydIihNFyOoWnDbi53QBj7BLm905
-        nAykAVA8pw0MCZGHHbggpZDvzg==
-X-Google-Smtp-Source: ABdhPJx7A1V5hUtyXJ2RGi3Cdv7bj/EHxPhVbb1JmsGrLlHgSwDHgOKn++g2VIYAKFQNIhmNSkxNhg==
-X-Received: by 2002:a17:90a:4217:: with SMTP id o23mr18255367pjg.110.1623959204558;
-        Thu, 17 Jun 2021 12:46:44 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s16sm5934637pfc.33.2021.06.17.12.46.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 12:46:44 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 12:46:43 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jack Morgenstein <jackm@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] IB/mlx4: Avoid field-overflowing memcpy()
-Message-ID: <202106171239.C425161E8@keescook>
-References: <20210616203744.1248551-1-keescook@chromium.org>
- <YMr4ypsh7D3q1R5+@unreal>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMr4ypsh7D3q1R5+@unreal>
+        id S233220AbhFQTtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 15:49:32 -0400
+Received: from mga17.intel.com ([192.55.52.151]:23303 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233057AbhFQTta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 15:49:30 -0400
+IronPort-SDR: TR8lXcpHxbed9EszQJjZtbQ5y1D/jGbZNZu7jSPcy8FX0QTeNspHc7D3SGqn1385pfDrr257Jc
+ 0s4aWtQ3VMbw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="186818419"
+X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
+   d="scan'208";a="186818419"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 12:47:22 -0700
+IronPort-SDR: MprMayKO8/gtCYVlX9IaZQPRQFqztxrVqbt9byaOD2vrPghqLKIFyolw41o5ztTnoG0BFK0kX9
+ niEzMGYN8+pA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
+   d="scan'208";a="443343800"
+Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
+  by orsmga007.jf.intel.com with ESMTP; 17 Jun 2021 12:47:21 -0700
+Subject: [PATCH] x86/mm: avoid truncating memblocks for SGX memory
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>, fan.du@intel.com,
+        reinette.chatre@intel.com, jarkko@kernel.org,
+        dan.j.williams@intel.com, dave.hansen@intel.com, x86@kernel.org,
+        linux-sgx@vger.kernel.org, luto@kernel.org, peterz@infradead.org
+From:   Dave Hansen <dave.hansen@linux.intel.com>
+Date:   Thu, 17 Jun 2021 12:46:57 -0700
+Message-Id: <20210617194657.0A99CB22@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 10:24:58AM +0300, Leon Romanovsky wrote:
-> On Wed, Jun 16, 2021 at 01:37:44PM -0700, Kees Cook wrote:
-> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > field bounds checking for memcpy(), memmove(), and memset(), avoid
-> > intentionally writing across neighboring array fields.
-> > 
-> > Use the ether_addr_copy() helper instead, as already done for smac.
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  drivers/infiniband/hw/mlx4/qp.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-> > index 2ae22bf50016..4a2ef7daaded 100644
-> > --- a/drivers/infiniband/hw/mlx4/qp.c
-> > +++ b/drivers/infiniband/hw/mlx4/qp.c
-> > @@ -3144,7 +3144,7 @@ static int build_mlx_header(struct mlx4_ib_qp *qp, const struct ib_ud_wr *wr,
-> >  		mlx->sched_prio = cpu_to_be16(pcp);
-> >  
-> >  		ether_addr_copy(sqp->ud_header.eth.smac_h, ah->av.eth.s_mac);
-> > -		memcpy(sqp->ud_header.eth.dmac_h, ah->av.eth.mac, 6);
-> > +		ether_addr_copy(sqp->ud_header.eth.dmac_h, ah->av.eth.mac);
-> >  		memcpy(&ctrl->srcrb_flags16[0], ah->av.eth.mac, 2);
-> >  		memcpy(&ctrl->imm, ah->av.eth.mac + 2, 4);
-> 
-> I don't understand the last three lines. We are copying 6 bytes to
-> ah->av.eth.mac and immediately after that overwriting them.
 
-I'm not following (the memcpy() is replaced by ether_addr_copy()). I only
-see ah->av.eth.mac being read from (not written to). And the destinations
-are {s,d}mac_h:
+From: Fan Du <fan.du@intel.com>
 
-ah->av.eth.s_mac   -> sqp->ud_header.eth.smac_h (s_mac to smac_h: 6 bytes)
-ah->av.eth.mac     -> sqp->ud_header.eth.dmac_h (mac to dmac_h: 6 bytes)
+tl;dr:
 
-after that I see:
+Several SGX users reported seeing the following message on NUMA systems:
 
-ah->av.eth.mac     -> &ctrl->srcrb_flags16[0] (2 bytes)
-ah->av.eth.mac + 2 -> ctrl->imm (4 bytes)
+	sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback to the NUMA node 0.
 
-The last two copies mac again in pieces, but I don't know what any of
-this is actually used for, which I what I assume you're asking about. :)
+This turned out to be the 'memblock' code mistakenly throwing away
+SGX memory.
 
-> Jack, 
-> 
-> Do you remember what you wanted to achieve in commit
-> 6ee51a4e866b ("mlx4: Adjust QP1 multiplexing for RoCE/SRIOV")
-> 
-> Thanks
+=== Full Changelog ===
 
--Kees
+The 'max_pfn' variable represents the highest known RAM address.  It can
+be used, for instance, to quickly determine for which physical addresses
+there is mem_map[] space allocated.  The numa_meminfo code makes an
+effort to throw out ("trim") all memory blocks which are above 'max_pfn'.
 
--- 
-Kees Cook
+SGX memory is not considered RAM (it is marked as "Reserved" in the
+e820) and is not taken into account by max_pfn.  Despite this, SGX
+memory areas have NUMA affinity and are enumerated in the ACPI SRAT.
+The existing SGX code uses the numa_meminfo mechanism to look up the
+NUMA affinity for its memory areas.
+
+In cases where SGX memory was above max_pfn (usually just the one EPC
+section in the last highest NUMA node), the numa_memblock is truncated
+at 'max_pfn', which is below the SGX memory.  When the SGX code tries to
+look up the affinity of this memory, it fails and produces an error message:
+
+	sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback to the NUMA node 0.
+
+and assigns the memory to NUMA node 0.
+
+Instead of silently truncating the memory block at 'max_pfn' and
+dropping the SGX memory, add the truncated portion to
+'numa_reserved_meminfo'.  This allows the SGX code to later determine
+the NUMA affinity of its 'Reserved' area.
+
+Without this patch, numa_meminfo looks like this (from 'crash'):
+
+  blk = { start =          0x0, end = 0x2080000000, nid = 0x0 }
+        { start = 0x2080000000, end = 0x4000000000, nid = 0x1 }
+
+numa_reserved_meminfo is empty.
+
+After the patch, numa_meminfo looks like this:
+
+  blk = { start =          0x0, end = 0x2080000000, nid = 0x0 }
+        { start = 0x2080000000, end = 0x4000000000, nid = 0x1 }
+
+and numa_reserved_meminfo has an entry for node 1's SGX memory:
+
+  blk =  { start = 0x4000000000, end = 0x4080000000, nid = 0x1 }
+
+ [ daveh: completely rewrote/reworked changelog ]
+
+Signed-off-by: Fan Du <fan.du@intel.com>
+Reported-by: Reinette Chatre <reinette.chatre@intel.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Dave Hansen <dave.hansen@intel.com>
+Fixes: 5d30f92e7631 ("x86/NUMA: Provide a range-to-target_node lookup facility")
+Cc: x86@kernel.org
+Cc: linux-sgx@vger.kernel.org
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+---
+
+ b/arch/x86/mm/numa.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff -puN arch/x86/mm/numa.c~sgx-srat arch/x86/mm/numa.c
+--- a/arch/x86/mm/numa.c~sgx-srat	2021-06-17 11:23:05.116159990 -0700
++++ b/arch/x86/mm/numa.c	2021-06-17 11:55:46.117155100 -0700
+@@ -254,7 +254,13 @@ int __init numa_cleanup_meminfo(struct n
+ 
+ 		/* make sure all non-reserved blocks are inside the limits */
+ 		bi->start = max(bi->start, low);
+-		bi->end = min(bi->end, high);
++
++		/* preserve info for non-RAM areas above 'max_pfn': */
++		if (bi->end > high) {
++			numa_add_memblk_to(bi->nid, high, bi->end,
++					   &numa_reserved_meminfo);
++			bi->end = high;
++		}
+ 
+ 		/* and there's no empty block */
+ 		if (bi->start >= bi->end)
+_
