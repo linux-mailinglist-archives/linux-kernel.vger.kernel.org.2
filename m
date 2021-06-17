@@ -2,100 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1793AB774
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D840B3AB777
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233256AbhFQPaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:30:14 -0400
-Received: from mail-ed1-f52.google.com ([209.85.208.52]:37548 "EHLO
-        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233242AbhFQPaJ (ORCPT
+        id S233283AbhFQPaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233279AbhFQPaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:30:09 -0400
-Received: by mail-ed1-f52.google.com with SMTP id b11so4593420edy.4;
-        Thu, 17 Jun 2021 08:27:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/itsTxOH83bOMIRckT66tyt/S9hpeX8jx9OaBl4TWV0=;
-        b=N+iMDiHD7MhP2cIP0oTuCsTqx3ZMDJMAIr9B926LL5+TjwBZPDgZ397UwZujgQEB94
-         JGPF9b8htOAvTgfmFDTeVYVNLXI6svACKn5KzxuDRzjR0Gv8+eyEg97KEU9OYMQiFesh
-         +UOOx83vI3n5bNyLGu3Paj/muCxhWkfIcAZN9Eg5Unris1QxTUjeKby5JXewbmyusyWz
-         kUK/SwOkrrJB4Z+Q+CEG8SyMR7/dqVUAnkKIvdoeg8aPnMWJNZbf/bRrgqPFr5ZkyIN+
-         HQvW4qGAZE1lNCdMU1orCvx4XoaUFQ0yZS4tWFgyAaSDJqLl3nsJTZljOenju5tWy6OX
-         iT6w==
-X-Gm-Message-State: AOAM5321tnnw3jpqAt2UkB+AbKYwLknPM2pSJO7zus2Vim9vtSf8HNJH
-        QwAl2so+L4Cg2DqPRD4Ltpc=
-X-Google-Smtp-Source: ABdhPJxyh7aN+l7/mCAyGUcuIcJt4RJVaR6/rIZKwCDs8R4EFI26qFf9plfyF1MS+s2K9o3DmCDvAw==
-X-Received: by 2002:a05:6402:1216:: with SMTP id c22mr7314917edw.36.1623943677554;
-        Thu, 17 Jun 2021 08:27:57 -0700 (PDT)
-Received: from msft-t490s.teknoraver.net (net-37-119-128-179.cust.vodafonedsl.it. [37.119.128.179])
-        by smtp.gmail.com with ESMTPSA id g11sm4497850edz.12.2021.06.17.08.27.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 08:27:56 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Guo Ren <guoren@kernel.org>
-Subject: [PATCH v3 0/3] riscv: optimized mem* functions
-Date:   Thu, 17 Jun 2021 17:27:51 +0200
-Message-Id: <20210617152754.17960-1-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 17 Jun 2021 11:30:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A27C061760;
+        Thu, 17 Jun 2021 08:28:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PbwGL8bUjpxYyR+0WdEYqqiUEuC45HxDaoltM49QXvE=; b=sLJ65hxSTVZnExEtD7X5O31nHy
+        mSv3dwFtB4qX5QQAtpcN22wofXoNPi/gqbGN3t+/h27T56amfUa7c/Of8T/kqJZWy56GFoEk20nOC
+        /GhdwR/qIZMwyIZ6YJQs5UPLUL/pBKR0UHbLxYzaYu7Lg4zvdJo28Crs1NvL66xYxv3LxcZaXaOS/
+        qOY5oFzn4diY1r5wam6CQgd1mPxszPTx5vW7joIP55WfuM17haOFZ98mpEgCTXaEPW2rdV2WJTwI4
+        xP900Iq2zL0r6wKNClUtISYRV3wiuDkzjqDBV1RV59URj0GJgjg/ZGUTvaL25yeH+U4nXEkNuAMEg
+        iKNubhCg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lttvr-009HTX-EK; Thu, 17 Jun 2021 15:27:52 +0000
+Date:   Thu, 17 Jun 2021 16:27:51 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] block: break circular locks in blk_request_module
+Message-ID: <YMtp957WK8sO4hwL@infradead.org>
+References: <20210617092016.522985-1-desmondcheongzx@gmail.com>
+ <YMs3O/cg4V7ywlVq@infradead.org>
+ <ce1567cf-bc94-790c-cfc0-e4e429e1a86a@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ce1567cf-bc94-790c-cfc0-e4e429e1a86a@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+On Thu, Jun 17, 2021 at 11:23:36PM +0800, Desmond Cheong Zhi Xi wrote:
+> This fix passes the Syzkaller repro test on my local machine and on Syzbot.
+> I can prepare a v2 patch for this. May I include you with the
+> Co-developed-by: and Signed-off-by: tags? If another tag would be more
+> appropriate, or if you want to submit the patch yourself, please let me
+> know.
 
-Replace the assembly mem{cpy,move,set} with C equivalent.
-
-Try to access RAM with the largest bit width possible, but without
-doing unaligned accesses.
-
-Tested on a BeagleV Starlight with a SiFive U74 core, where the
-improvement is noticeable.
-
-v2 -> v3:
-- alias mem* to __mem* and not viceversa
-- use __alias instead of a tail call
-
-v1 -> v2:
-- reduce the threshold from 64 to 16 bytes
-- fix KASAN build
-- optimize memset
-
-Matteo Croce (3):
-  riscv: optimized memcpy
-  riscv: optimized memmove
-  riscv: optimized memset
-
- arch/riscv/include/asm/string.h |  18 ++--
- arch/riscv/kernel/Makefile      |   1 -
- arch/riscv/kernel/riscv_ksyms.c |  17 ----
- arch/riscv/lib/Makefile         |   4 +-
- arch/riscv/lib/memcpy.S         | 108 ----------------------
- arch/riscv/lib/memmove.S        |  64 -------------
- arch/riscv/lib/memset.S         | 113 -----------------------
- arch/riscv/lib/string.c         | 153 ++++++++++++++++++++++++++++++++
- 8 files changed, 163 insertions(+), 315 deletions(-)
- delete mode 100644 arch/riscv/kernel/riscv_ksyms.c
- delete mode 100644 arch/riscv/lib/memcpy.S
- delete mode 100644 arch/riscv/lib/memmove.S
- delete mode 100644 arch/riscv/lib/memset.S
- create mode 100644 arch/riscv/lib/string.c
-
--- 
-2.31.1
-
+Sounds good to me, thanks!
