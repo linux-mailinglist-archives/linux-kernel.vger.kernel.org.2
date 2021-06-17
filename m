@@ -2,206 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D9F3AB86D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FEB73AB88C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbhFQQIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 12:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232750AbhFQQHi (ORCPT
+        id S233758AbhFQQIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 12:08:52 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:53309 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232512AbhFQQIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 12:07:38 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55962C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 09:05:30 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id j2so11390046lfg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 09:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UrBx5lMs/mUFoByWegYArpXaLnuJJbdWrIJvMQgXhDY=;
-        b=CCqhDTHs7UtjOPsdzd4Gv2AlGsNNk9YXJCpvNDKN3cERuaaEXqyfwc0yD+q+fT2/uB
-         D6Jeo7jar/ulhFbnIiBOhxRUFN9dmBLIkd2KaHBvXTpWUq7+fUBcobUMkIgnjqpvtv/j
-         VgoU1ShbeIZyRw4KA41PDcmP7/dtA93z5uKZv57U0dvNNa/4/jOSxvhRV8Mdfp6+sH9n
-         55SILMJBa2aNvZX/K/6wVkUOkD6wYHwDq+3es6cZHtU2t8hDXW6yCOrJHdO+1UUNQ2eX
-         ojYP10BOZIGEBP2/mrX5e9FTgJDVQAF2BI3PulJo9tvK87LA3QDUk2EBMDjMNlgeSI4T
-         adTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UrBx5lMs/mUFoByWegYArpXaLnuJJbdWrIJvMQgXhDY=;
-        b=SzhtuIlCVUyJnVjKu0man1EFrEM3ak4vcNAsUB79NjdGRbxGE2GHLEZtxEMZUda5r8
-         AfPXu7yHwdXgLkrmTPMEdncObWHMIcVg2nQS/aKErlZU18stcWjav41vtvDtnIZklUdz
-         +bd6dyyoYcmUr9Bhls3Q0dStylAv5LymMDJ3p+QSFB6SiUYZq5ok3Ky3QvaeQzdRPIn+
-         4HQIhm8tGXcmyO11PXla0iKSXGHsYXDBSV4Nn/kW2dALwhIV1HufjoWJTKU6+GObv+H/
-         hkYKjWCbsV6NWGv4jHHN6GZ/m+SCxvvbbGAopMlO5MGO8o8YlwQ5l2u1KE5NS2WRMnEM
-         EM6A==
-X-Gm-Message-State: AOAM531U7/8lrlA4Zy86Ak0A1fYoaq/Z7hBkCJ5R4p2i/eiVKrxHTDqS
-        iWt6HXTzhXpMPES6TIWsyTeuiu+C2OpuFQuTCZibIw==
-X-Google-Smtp-Source: ABdhPJzPxKHffaUjgMOJ+0S3kV3P0Z6KOOSmA+DvxgzkBsKUiqcUqwFn2XZJXpbSvwZ2J2SKwIcH11+WtVgnR1pLZUg=
-X-Received: by 2002:a19:ca0e:: with SMTP id a14mr4901442lfg.305.1623945926813;
- Thu, 17 Jun 2021 09:05:26 -0700 (PDT)
+        Thu, 17 Jun 2021 12:08:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623945972; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=S/3+eYb013cEoEfSg59q8XR8ipiEIZP75HRjgZgsG1U=; b=IPdXAGf4w26ej+XoRu9ylk5CVaKj70S2ZzObpXYBuwkpOwPphggmqqaOvVVA9pc5SahMn+gm
+ 2DtbsQqWlEKIVxheJ5WOSuOcfQSd6E9Jg504fyHCaXX8kWJofXh50vLhHnRKYdF/olf/51Zv
+ K2QFqq8b5N984gVQeBl74y9rpU4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60cb72ebed59bf69ccf5ba79 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Jun 2021 16:06:03
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 507A4C433F1; Thu, 17 Jun 2021 16:06:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.29.110] (unknown [49.37.156.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 25F4FC433F1;
+        Thu, 17 Jun 2021 16:05:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 25F4FC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+Subject: Re: [PATCH v3 1/2] mm: compaction: support triggering of proactive
+ compaction by user
+To:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
+        nigupta@nvidia.com, hannes@cmpxchg.org, corbet@lwn.net,
+        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        aarcange@redhat.com, cl@linux.com, xi.fengfei@h3c.com,
+        mchehab+huawei@kernel.org, andrew.a.klychkov@gmail.com,
+        dave.hansen@linux.intel.com, bhe@redhat.com,
+        iamjoonsoo.kim@lge.com, mateusznosek0@gmail.com, sh_def@163.com,
+        vinmenon@codeaurora.org
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <cover.1622454385.git.charante@codeaurora.org>
+ <7db6a29a64b29d56cde46c713204428a4b95f0ab.1622454385.git.charante@codeaurora.org>
+ <88abfdb6-2c13-b5a6-5b46-742d12d1c910@suse.cz>
+ <0ca491e8-6d3a-6537-dfa0-ece5f3bb6a1e@codeaurora.org>
+ <0d516cfa-f41c-5ccc-26aa-67871f23dcd3@suse.cz>
+From:   Charan Teja Kalla <charante@codeaurora.org>
+Message-ID: <8d91a81b-09f3-e814-c9ce-16ff246ed359@codeaurora.org>
+Date:   Thu, 17 Jun 2021 21:35:52 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210615111611.GH30378@techsingularity.net> <20210615204228.GB4272@worktop.programming.kicks-ass.net>
- <CAKfTPtAZ_Aq_S-O2qh5LPyxExkBq3G0kxh51fT7sSC_z8He4+w@mail.gmail.com>
- <20210617074401.GL30378@techsingularity.net> <CAKfTPtC8d37ZrXfDF2jkgg=tDPb1qAvFQQGXHhTf9LLR59hd8Q@mail.gmail.com>
- <20210617094040.GM30378@techsingularity.net> <CAKfTPtB-UCduEiQ5e8NxbOwsfjYGj3ron5rAg4_5ag2Fne7v3A@mail.gmail.com>
- <20210617110548.GN30378@techsingularity.net> <CAKfTPtBJkpSMFFGwgdFLyO5aSnGuzQSPrtpwOFckMQa4xaex=Q@mail.gmail.com>
- <20210617154759.GR30378@techsingularity.net>
-In-Reply-To: <20210617154759.GR30378@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 17 Jun 2021 18:05:15 +0200
-Message-ID: <CAKfTPtCHxXTWVAKYT906_4U-skmOBDyxMUm10bT66cVAGHciLA@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: Age the average idle time
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0d516cfa-f41c-5ccc-26aa-67871f23dcd3@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 at 17:48, Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> On Thu, Jun 17, 2021 at 05:03:54PM +0200, Vincent Guittot wrote:
-> > On Thu, 17 Jun 2021 at 13:05, Mel Gorman <mgorman@techsingularity.net> wrote:
-> > >
-> > > On Thu, Jun 17, 2021 at 12:02:56PM +0200, Vincent Guittot wrote:
-> > > > > > >
-> > > > > > > Fundamentally though, as the changelog notes "due to the nature of the
-> > > > > > > patch, this is a regression magnet". There are going to be examples
-> > > > > > > where a deep search is better even if a machine is fully busy or
-> > > > > > > overloaded and examples where cutting off the search is better. I think
-> > > > > > > it's better to have an idle estimate that gets updated if CPUs are fully
-> > > > > > > busy even if it's not a universal win.
-> > > > > >
-> > > > > > Although I agree that using a stall average idle time value of local
-> > > > > > is not good, I'm not sure this proposal is better. The main problem is
-> > > > > > that we use the avg_idle of the local CPU to estimate how many times
-> > > > > > we should loop and try to find another idle CPU. But there is no
-> > > > > > direct relation between both.
-> > > > >
-> > > > > This is true. The idle time of the local CPU is used to estimate the
-> > > > > idle time of the domain which is inevitably going to be inaccurate but
-> > > >
-> > > > I'm more and more convinced that using average idle time  (of the
-> > > > local cpu or the full domain) is not the right metric. In
-> > > > select_idle_cpu(), we looks for an idle CPU but we don't care about
-> > > > how long it will be idle.
-> > >
-> > > Can we predict that accurately? cpufreq for intel_pstate used to try
-> > > something like that but it was a bit fuzzy and I don't know if the
-> > > scheduler could do much better. There is some idle prediction stuff but
-> > > it's related to nohz which does not really help us if a machine is nearly
-> > > fully busy or overloaded.
-> > >
-> > > I guess for tracking idle that revisiting
-> > > https://lore.kernel.org/lkml/1615872606-56087-1-git-send-email-aubrey.li@intel.com/
-> > > is an option now that the scan is somewhat unified. A two-pass scan
-> > > could be used to check potentially idle CPUs first and if there is
-> > > sufficient search depth left, scan other CPUs. There were some questions
-> >
-> > I think it's the other way around:
-> > a CPU is busy for sure if it is not set in the cpuidle_mask and we
-> > don't need to check it. But a cpu might not be idle even if it is set
-> > in the idle mask might because it's cleared during the tick
-> >
->
-> Tick is a long time so scan depth may still be a problem.
+Thanks Vlastimil !!
 
-Thinking a bit more on the cpuidle_mask patch, I'm not sure that we
-really need to scale the depth of the scan according to avg_idle and
-avg_scane_cost. A fixed value (which one ? might be the tricky point)
-should be enough. The reason for using a fix number of loop is:
-- ideally cpuidle_mask has only idle CPUs which means that the 1st
-loop should return an idle CPU
-- but we might have some false idle CPUs in the mask when we have UC
-with a lot of wakeup/sleep task
-- In this case, we will start to loop more than once on the
-cpuidle_mask because CPUs are not idle. We can also consider that if
-the 1st X CPUs are false idle, the probability that next ones will be
-false idle too is significant and it isn't worth looking at further .
-- Currently, we limit the number of loop to not delay too much the
-wakeup path and to not stole too much time on the task running on
-local cpu so we could at least check if the local cpu is idle and
-select a fix number of loop that doesn't harm too much the wakeup
-latency
+On 6/17/2021 8:07 PM, Vlastimil Babka wrote:
+> On 6/17/21 9:30 AM, Charan Teja Kalla wrote:
+>> Thanks Vlastimil for your inputs!!
+>>
+>> On 6/16/2021 5:29 PM, Vlastimil Babka wrote:
+>>>> This triggering of proactive compaction is done on a write to
+>>>> sysctl.compaction_proactiveness by user.
+>>>>
+>>>> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
+>>>>
+>>>> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+>>>> ---
+>>>> changes in V2:
+>>> You forgot to also summarize the changes. Please do in next version.
+>>
+>> I think we can get rid off 'proactive_defer' thread variable with the
+>> timeout approach you suggested. But it is still requires to have one
+>> additional variable 'proactive_compact_trigger', which main purpose is
+>> to decide if the kcompactd wakeup is for proactive compaction or not.
+>> Please see below code:
+>>    if (wait_event_freezable_timeout() && !proactive_compact_trigger) {
+>> 	// do the non-proactive work
+>> 	continue
+>>    }
+>>    // do the proactive work
+>>      .................
+>>
+>> Thus I feel that on writing new proactiveness, it is required to do
+>> wakeup_kcomppactd() + set a flag that this wakeup is for proactive work.
+>>
+>> Am I failed to get your point here?
+> 
+> The check whether to do non-proactive work is already guarded by
+> kcompactd_work_requested(), which looks at pgdat->kcompactd_max_order and this
+> is set by wakeup_kcompactd().
+> 
+> So with a plain wakeup where we don't set pgdat->kcompactd_max_order will make
+> it consider proactive work instead and we don't need another trigger variable
+> AFAICS.
 
-I'm going to play a bit with this
+The wait_event/freezable_timeout() documentation says that:
+ * Returns:
+ * 0 if the @condition evaluated to %false after the @timeout elapsed,
+			or
+ * 1 if the @condition evaluated to %true after the @timeout elapsed,
+ * or the remaining jiffies (at least 1) if the @condition evaluated
+ * to %true before the @timeout elapsed.
 
+which means the condition must be evaluated to true or timeout should be
+elapsed for the function wait_event_freezable_timeout() to return.
 
->
-> > > Selecting based on avg idle time could be interesting but hazardous. If
-> > > for example, we prioritised selecting a CPU that is mostly idle, it'll
-> > > also pick CPUs that are potentially in a deep idle state incurring a
-> > > larger wakeup cost. Right now we are not much better because we just
-> > > select an idle CPU and hope for the best but always targetting the most
-> > > idle CPU could have problems. There would also be the cost of tracking
-> > > idle CPUs in priority order. It would eliminate the scan depth cost
-> > > calculations but the overall cost would be much worse.
-> > >
-> > > Hence, I still think we can improve the scan depth costs in the short
-> > > term until a replacement is identified that works reasonably well.
-> > >
-> > > > Even more, we can scan all CPUs whatever the
-> > > > avg idle time if there is a chance that there is an idle core.
-> > > >
-> > >
-> > > That is an important, but separate topic. It's known that the idle core
-> > > detection can yield false positives. Putting core scanning under SIS_PROP
-> > > had mixed results when we last tried but things change. Again, it doesn't
-> > > help with scan depth calculations.
-> >
-> > my point was mainly to highlight that the path can take opposite
-> > decision for the same avg_idle value:
-> > - scan all cpus if has_idle_core is true whatever avg_idle
-> > - limit the depth if has_idle_core is false and avg_idle is short
-> >
->
-> I do understand the point but the idle core scan anomaly was not
-> intended to be addressed in the patch because putting the idle scan
-> under SIS_PROP potentially means using cpus with active idle siblings
-> prematurely.
->
-> > >
-> > > > > tracking idle time for the domain will be cache write intensive and
-> > > > > potentially very expensive. I think this was discussed before but maybe
-> > > > > it is my imaginaction.
-> > > > >
-> > > > > > Typically, a short average idle time on
-> > > > > > the local CPU doesn't mean that there are less idle CPUs and that's
-> > > > > > why we have a mix a gain and loss
-> > > > > >
-> > > > >
-> > > > > Can you evaluate if scanning proportional to cores helps if applied on
-> > > > > top? The patch below is a bit of pick&mix and has only seen a basic build
-> > > >
-> > > > I will queue it for some test later today
-> > > >
-> > >
-> > > Thanks. The proposed patch since passed a build and boot test,
-> > > performance evaluation is under way but as it's x86 and SMT2, I'm mostly
-> > > just checking that it's neutral.
-> >
-> > Results stay similar:
-> > group  tip/sched/core      + this patch             + latest addon
-> > 1      13.358(+/- 1.82%)   12.850(+/- 2.21%) +4%    13.411(+/- 2.47%) -0%
-> > 4      4.286(+/- 2.77%)    4.114(+/- 2.25%)  +4%    4.163(+/- 1.88%)  +3%
-> > 16     3.175(+/- 0.55%)    3.559(+/- 0.43%)  -12%   3.535(+/- 0.52%)  -11%
-> > 32     2.912(+/- 0.79%)    3.165(+/- 0.95%)  -8%    3.153(+/- 0.76%)  -10%
-> > 64     2.859(+/- 1.12%)    2.937(+/- 0.91%)  -3%    2.919(+/- 0.73%)  -2%
-> > 128    3.092(+/- 4.75%)    3.003(+/-5.18%)   +3%    2.973(+/- 0.90%)  +4%
-> > 256    3.233(+/- 3.03%)    2.973(+/- 0.80%)  +8%    3.036(+/- 1.05%)  +6%
-> >
->
-> Ok, accounting for SMT4 didn't help.
->
-> --
-> Mel Gorman
-> SUSE Labs
+Please check the macro implementation of __wait_event, where it will be
+in for(;;) till the condition is evaluated to true or timeout happens.
+#define __wait_event_freezable_timeout(wq_head, condition, timeout)
+
+        ___wait_event(wq_head, ___wait_cond_timeout(condition),
+
+                      TASK_INTERRUPTIBLE, 0, timeout,
+
+                      __ret = freezable_schedule_timeout(__ret))
+
+Thus the plain wakeup of kcompactd don't do the proactive compact work.
+And so we should identify its wakeup for proactive work with a separate
+flag.
+> 
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+Forum, a Linux Foundation Collaborative Project
