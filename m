@@ -2,561 +2,543 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBF63AB4B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D493AB4A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbhFQN3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:29:14 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4780 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232837AbhFQN3L (ORCPT
+        id S232591AbhFQN2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhFQN2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:29:11 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HDBCRM115055;
-        Thu, 17 Jun 2021 09:26:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=nVmFgpvgNJ3jL7GMlzDLScaM32PewOG4vYTc2WkQSQs=;
- b=jMOmQTy2hp0M08LE1hMgfZ4Bwb3wdgUm3chn0Fh1YMGsE40gSvPwpKTkBFQY2s7Aj2Fm
- 9G4w1YtVw7YQMlsxVe27l9hC6TUYzkxK2utU5W987eQnWluWiQ7xhPHYYDajtXIyr6R2
- bZqymXVr4GL/rg5uwD1Bd/9rrO40YbfcT8bOlvTistkG6xdfNYrcwNDSyUY+CWxvNrMT
- iZxo9AiTy5R6NAOnpUobRUBCMGYsRuOHWfTEFMYAVRcXWCcsNLCWnwZmS12lPNY//XaP
- Ej3KniOBsDR7nsDKWHS5rz7Rt6+2NYQRp65iN+UIXc8Del1+HYEXXlJtzufFfdzI+83v mg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3985xsakje-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 09:26:41 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15HDD0BM007287;
-        Thu, 17 Jun 2021 13:26:40 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 394m6htqph-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 13:26:40 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15HDQba625166134
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Jun 2021 13:26:37 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 38727AE04D;
-        Thu, 17 Jun 2021 13:26:37 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E7BB6AE056;
-        Thu, 17 Jun 2021 13:26:33 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.199.36.139])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 17 Jun 2021 13:26:33 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        peterz@infradead.org
-Cc:     maddy@linux.vnet.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com, ira.weiny@intel.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        kjain@linux.ibm.com, rnsastry@linux.ibm.com
-Subject: [PATCH v3 3/4] powerpc/papr_scm: Add perf interface support
-Date:   Thu, 17 Jun 2021 18:56:16 +0530
-Message-Id: <20210617132617.99529-4-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210617132617.99529-1-kjain@linux.ibm.com>
-References: <20210617132617.99529-1-kjain@linux.ibm.com>
+        Thu, 17 Jun 2021 09:28:32 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B2FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 06:26:23 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id u190so1155587pgd.8
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 06:26:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qx4jays+L+KH8X2JCPyPqSjH+k3+j2HUU6/XgwBhYyQ=;
+        b=HjFW9P093SA38oP+UnwHyAsPmXRrH2+slKn/iwKEqxRK5Irfti0ZW56nrrfrGKc5ow
+         IuVawY1npmoS0tHvXXz/UQ3EEKHvgXfR1b8uPkbSAB2FTY4asTrrkrXwCtxwRRsXnzDR
+         oV82tws8AWk3OKw6PTBMZBYXSWr49nTRMVR/im+qFBDXzKAs4u9lmAULKKyFhPaB8pe1
+         hmyRjfc+UYb9YlN5pqKctMWvwiSKfsjRWI/Ex7PXmG7IVe39disaT1Fwl17bpkQhu6+O
+         WEgmYDMkSl9IQ4vvanjCJFypIJOJtTbBQiacASysnMIzHpzPH06s8jYqlwChr+r9mQbl
+         uGKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qx4jays+L+KH8X2JCPyPqSjH+k3+j2HUU6/XgwBhYyQ=;
+        b=MVfW7qOyk2JvdlnAJ/avHk4QGVm9itlwdoAwYoTU4B3n8p2KQ6bvipYFYWeeKq6m01
+         gSoRBXrz592b0zaBYWCqRQrCHijcXBwhj8mz2bep1ecAGXN5LlkF9L1zoZA048etjLQj
+         q5u7xbSn/isE/V5mMSMRJAxFR/CvnlFqk7ZkKsXzhvjd8DwDvUBwkqvjM02izQC1pmuK
+         l8Nn0g0r564PUoxSmNaSCBRzgnvUTCKE4AErhLN/LCxWHwrDK5Agl49emH+jYMhiooxg
+         78aCfjVhcKrcVMsVaftEBbl3iPM2QzEZ92cuqIEGR3Lfm1qY3N9PKUoHGVMMHiztw+8N
+         RzmA==
+X-Gm-Message-State: AOAM533QMgSbrActOpBDjI8ZUuyxnOeDWZaUlZLyC84oX8L7QOMydz4/
+        bOwv+xO4U7PU1KuxOHeSVA==
+X-Google-Smtp-Source: ABdhPJw6T0YbNlO7zr0O+iSQ5A+XwDPh/CzNVUhTCcZm6+zV4iw7EtxAbfvi9eJECcDYOaeqeyGpiA==
+X-Received: by 2002:a63:5445:: with SMTP id e5mr5068836pgm.62.1623936383298;
+        Thu, 17 Jun 2021 06:26:23 -0700 (PDT)
+Received: from INTERNET-129.allwinnertech.com ([223.197.233.48])
+        by smtp.gmail.com with ESMTPSA id ip7sm5221142pjb.39.2021.06.17.06.26.20
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Jun 2021 06:26:22 -0700 (PDT)
+From:   Ban Tao <fengzheng923@gmail.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@gmail.com, fengzheng923@gmail.com,
+        p.zabel@pengutronix.de, samuel@sholland.org, krzk@kernel.org
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: [PATCH v2 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
+Date:   Thu, 17 Jun 2021 21:26:16 +0800
+Message-Id: <20210617132616.2697-1-fengzheng923@gmail.com>
+X-Mailer: git-send-email 2.22.0.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: mCL_TrORJBwfS9yYHxLpL0vidgEQsYJs
-X-Proofpoint-ORIG-GUID: mCL_TrORJBwfS9yYHxLpL0vidgEQsYJs
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-17_10:2021-06-15,2021-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 spamscore=0 adultscore=0
- suspectscore=0 priorityscore=1501 phishscore=0 clxscore=1015
- mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2106170085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Performance monitoring support for papr-scm nvdimm devices
-via perf interface is added which includes addition of pmu
-functions like add/del/read/event_init for nvdimm_pmu struture.
+The Allwinner H6 and later SoCs have an DMIC block
+which is capable of capture.
 
-A new parameter 'priv' in added to the pdev_archdata structure to save
-nvdimm_pmu device pointer, to handle the unregistering of pmu device.
+Signed-off-by: Ban Tao <fengzheng923@gmail.com>
 
-papr_scm_pmu_register function populates the nvdimm_pmu structure
-with events, cpumask, attribute groups along with event handling
-functions. Finally the populated nvdimm_pmu structure is passed to
-register the pmu device.
-Event handling functions internally uses hcall to get events and
-counter data.
-
-Result in power9 machine with 2 nvdimm device:
-
-Ex: List all event by perf list
-
-command:# perf list nmem
-
-  nmem0/cchrhcnt/                                    [Kernel PMU event]
-  nmem0/cchwhcnt/                                    [Kernel PMU event]
-  nmem0/critrscu/                                    [Kernel PMU event]
-  nmem0/ctlresct/                                    [Kernel PMU event]
-  nmem0/ctlrestm/                                    [Kernel PMU event]
-  nmem0/fastwcnt/                                    [Kernel PMU event]
-  nmem0/hostlcnt/                                    [Kernel PMU event]
-  nmem0/hostldur/                                    [Kernel PMU event]
-  nmem0/hostscnt/                                    [Kernel PMU event]
-  nmem0/hostsdur/                                    [Kernel PMU event]
-  nmem0/medrcnt/                                     [Kernel PMU event]
-  nmem0/medrdur/                                     [Kernel PMU event]
-  nmem0/medwcnt/                                     [Kernel PMU event]
-  nmem0/medwdur/                                     [Kernel PMU event]
-  nmem0/memlife/                                     [Kernel PMU event]
-  nmem0/noopstat/                                    [Kernel PMU event]
-  nmem0/ponsecs/                                     [Kernel PMU event]
-  nmem1/cchrhcnt/                                    [Kernel PMU event]
-  nmem1/cchwhcnt/                                    [Kernel PMU event]
-  nmem1/critrscu/                                    [Kernel PMU event]
-  ...
-  nmem1/noopstat/                                    [Kernel PMU event]
-  nmem1/ponsecs/                                     [Kernel PMU event]
-
-Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
 ---
- arch/powerpc/include/asm/device.h         |   5 +
- arch/powerpc/platforms/pseries/papr_scm.c | 365 ++++++++++++++++++++++
- 2 files changed, 370 insertions(+)
+v1->v2:
+1.fix some compilation errors.
+2.Modify some code styles.
+---
+ MAINTAINERS                   |   7 +
+ sound/soc/sunxi/Kconfig       |   8 +
+ sound/soc/sunxi/Makefile      |   1 +
+ sound/soc/sunxi/sun50i-dmic.c | 405 ++++++++++++++++++++++++++++++++++
+ 4 files changed, 421 insertions(+)
+ create mode 100644 sound/soc/sunxi/sun50i-dmic.c
 
-diff --git a/arch/powerpc/include/asm/device.h b/arch/powerpc/include/asm/device.h
-index 219559d65864..47ed639f3b8f 100644
---- a/arch/powerpc/include/asm/device.h
-+++ b/arch/powerpc/include/asm/device.h
-@@ -48,6 +48,11 @@ struct dev_archdata {
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b4094f07214e..1b87225c39b0 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -760,6 +760,13 @@ L:	linux-media@vger.kernel.org
+ S:	Maintained
+ F:	drivers/staging/media/sunxi/cedrus/
  
- struct pdev_archdata {
- 	u64 dma_mask;
-+	/*
-+	 * Pointer to nvdimm_pmu structure, to handle the unregistering
-+	 * of pmu device
-+	 */
-+	void *priv;
- };
- 
- #endif /* _ASM_POWERPC_DEVICE_H */
-diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-index ef26fe40efb0..92632b4a4a60 100644
---- a/arch/powerpc/platforms/pseries/papr_scm.c
-+++ b/arch/powerpc/platforms/pseries/papr_scm.c
-@@ -18,6 +18,8 @@
- #include <asm/plpar_wrappers.h>
- #include <asm/papr_pdsm.h>
- #include <asm/mce.h>
-+#include <linux/perf_event.h>
-+#include <linux/ctype.h>
- 
- #define BIND_ANY_ADDR (~0ul)
- 
-@@ -67,6 +69,8 @@
- #define PAPR_SCM_PERF_STATS_EYECATCHER __stringify(SCMSTATS)
- #define PAPR_SCM_PERF_STATS_VERSION 0x1
- 
-+#define to_nvdimm_pmu(_pmu)	container_of(_pmu, struct nvdimm_pmu, pmu)
++ALLWINNER DMIC DRIVERS
++M:	Ban Tao <fengzheng923@gmail.com>
++L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++S:	Maintained
++F:	Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
++F:	sound/soc/sunxi/sun50i-dmic.c
 +
- /* Struct holding a single performance metric */
- struct papr_scm_perf_stat {
- 	u8 stat_id[8];
-@@ -116,6 +120,12 @@ struct papr_scm_priv {
+ ALPHA PORT
+ M:	Richard Henderson <rth@twiddle.net>
+ M:	Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index ddcaaa98d3cb..2a3bf7722e11 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -56,6 +56,14 @@ config SND_SUN4I_SPDIF
+ 	  Say Y or M to add support for the S/PDIF audio block in the Allwinner
+ 	  A10 and affiliated SoCs.
  
- 	/* length of the stat buffer as expected by phyp */
- 	size_t stat_buffer_len;
++config SND_SUN50I_DMIC
++	tristate "Allwinner H6 DMIC Support"
++	depends on (OF && ARCH_SUNXI) || COMPILE_TEST
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++	help
++	  Say Y or M to add support for the DMIC audio block in the Allwinner
++	  H6 and affiliated SoCs.
 +
-+	 /* array to have event_code and stat_id mappings */
-+	char **nvdimm_events_map;
+ config SND_SUN8I_ADDA_PR_REGMAP
+ 	tristate
+ 	select REGMAP
+diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
+index a86be340a076..4483fe9c94ef 100644
+--- a/sound/soc/sunxi/Makefile
++++ b/sound/soc/sunxi/Makefile
+@@ -6,3 +6,4 @@ obj-$(CONFIG_SND_SUN8I_CODEC_ANALOG) += sun8i-codec-analog.o
+ obj-$(CONFIG_SND_SUN50I_CODEC_ANALOG) += sun50i-codec-analog.o
+ obj-$(CONFIG_SND_SUN8I_CODEC) += sun8i-codec.o
+ obj-$(CONFIG_SND_SUN8I_ADDA_PR_REGMAP) += sun8i-adda-pr-regmap.o
++obj-$(CONFIG_SND_SUN50I_DMIC) += sun50i-dmic.o
+diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
+new file mode 100644
+index 000000000000..d495ee0f6a2d
+--- /dev/null
++++ b/sound/soc/sunxi/sun50i-dmic.c
+@@ -0,0 +1,405 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++//
++// This driver supports the DMIC in Allwinner's H6 SoCs.
++//
++// Copyright 2021 Ban Tao <fengzheng923@gmail.com>
 +
-+	/* count of supported events */
-+	u32 total_events;
- };
- 
- static int papr_scm_pmem_flush(struct nd_region *nd_region,
-@@ -329,6 +339,354 @@ static ssize_t drc_pmem_query_stats(struct papr_scm_priv *p,
- 	return 0;
- }
- 
-+PMU_FORMAT_ATTR(event, "config:0-4");
++#include <linux/clk.h>
++#include <linux/device.h>
++#include <linux/of_device.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++#include <linux/reset.h>
++#include <sound/dmaengine_pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
 +
-+static struct attribute *nvdimm_pmu_format_attr[] = {
-+	&format_attr_event.attr,
-+	NULL,
++
++#define SUN50I_DMIC_EN_CTL		(0x00)
++	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
++	#define SUN50I_DMIC_EN_CTL_CHAN(v)		((v) << 0)
++	#define SUN50I_DMIC_EN_CTL_CHAN_MASK		GENMASK(7, 0)
++#define SUN50I_DMIC_SR			(0x04)
++	#define SUN50I_DMIC_SR_SAMOLE_RATE(v)		((v) << 0)
++	#define SUN50I_DMIC_SR_SAMOLE_RATE_MASK		GENMASK(2, 0)
++#define SUN50I_DMIC_CTL			(0x08)
++	#define SUN50I_DMIC_CTL_OVERSAMPLE_RATE		BIT(0)
++#define SUN50I_DMIC_DATA			(0x10)
++#define SUN50I_DMIC_INTC			(0x14)
++	#define SUN50I_DMIC_FIFO_DRQ_EN			BIT(2)
++#define SUN50I_DMIC_INT_STA		(0x18)
++	#define SUN50I_DMIC_INT_STA_OVERRUN_IRQ_PENDING	BIT(1)
++	#define SUN50I_DMIC_INT_STA_DATA_IRQ_PENDING	BIT(0)
++#define SUN50I_DMIC_RXFIFO_CTL		(0x1c)
++	#define SUN50I_DMIC_RXFIFO_CTL_FLUSH		BIT(31)
++	#define SUN50I_DMIC_RXFIFO_CTL_MODE		BIT(9)
++	#define SUN50I_DMIC_RXFIFO_CTL_RESOLUTION	BIT(8)
++#define SUN50I_DMIC_CH_NUM		(0x24)
++	#define SUN50I_DMIC_CH_NUM_N(v)			((v) << 0)
++	#define SUN50I_DMIC_CH_NUM_N_MASK		GENMASK(2, 0)
++#define SUN50I_DMIC_CNT			(0x2c)
++	#define SUN50I_DMIC_CNT_N			BIT(0)
++#define SUN50I_DMIC_HPF_CTRL		(0x38)
++#define SUN50I_DMIC_VERSION		(0x50)
++
++
++struct sun50i_dmic_dev {
++	struct clk *dmic_clk;
++	struct clk *bus_clk;
++	struct reset_control *rst;
++	struct regmap *regmap;
++	struct snd_dmaengine_dai_dma_data dma_params_rx;
++	unsigned int chan_en;
 +};
 +
-+static struct attribute_group nvdimm_pmu_format_group = {
-+	.name = "format",
-+	.attrs = nvdimm_pmu_format_attr,
++struct dmic_rate {
++	unsigned int samplerate;
++	unsigned int rate_bit;
 +};
 +
-+static int papr_scm_pmu_get_value(struct perf_event *event, struct device *dev, u64 *count)
++static int sun50i_dmic_startup(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *cpu_dai)
 +{
-+	struct papr_scm_perf_stat *stat;
-+	struct papr_scm_perf_stats *stats;
-+	struct papr_scm_priv *p = (struct papr_scm_priv *)dev->driver_data;
-+	int rc, size;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
 +
-+	/* Allocate request buffer enough to hold single performance stat */
-+	size = sizeof(struct papr_scm_perf_stats) +
-+		sizeof(struct papr_scm_perf_stat);
-+
-+	if (!p || !p->nvdimm_events_map)
++	/* only support capture */
++	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
 +		return -EINVAL;
 +
-+	stats = kzalloc(size, GFP_KERNEL);
-+	if (!stats)
-+		return -ENOMEM;
-+
-+	stat = &stats->scm_statistic[0];
-+	memcpy(&stat->stat_id,
-+	       p->nvdimm_events_map[event->attr.config - 1],
-+		sizeof(stat->stat_id));
-+	stat->stat_val = 0;
-+
-+	rc = drc_pmem_query_stats(p, stats, 1);
-+	if (rc < 0) {
-+		kfree(stats);
-+		return rc;
-+	}
-+
-+	*count = be64_to_cpu(stat->stat_val);
-+	kfree(stats);
-+	return 0;
-+}
-+
-+static int papr_scm_pmu_event_init(struct perf_event *event)
-+{
-+	struct nvdimm_pmu *nd_pmu = to_nvdimm_pmu(event->pmu);
-+	struct papr_scm_priv *p;
-+
-+	if (!nd_pmu)
-+		return -EINVAL;
-+
-+	/* test the event attr type for PMU enumeration */
-+	if (event->attr.type != event->pmu->type)
-+		return -ENOENT;
-+
-+	/* it does not support event sampling mode */
-+	if (is_sampling_event(event))
-+		return -EOPNOTSUPP;
-+
-+	/* no branch sampling */
-+	if (has_branch_stack(event))
-+		return -EOPNOTSUPP;
-+
-+	p = (struct papr_scm_priv *)nd_pmu->dev->driver_data;
-+	if (!p)
-+		return -EINVAL;
-+
-+	/* Invalid eventcode */
-+	if (event->attr.config == 0 || event->attr.config > p->total_events)
-+		return -EINVAL;
++	regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++			   SUN50I_DMIC_RXFIFO_CTL_FLUSH,
++			   SUN50I_DMIC_RXFIFO_CTL_FLUSH);
++	regmap_write(host->regmap, SUN50I_DMIC_CNT, SUN50I_DMIC_CNT_N);
 +
 +	return 0;
 +}
 +
-+static int papr_scm_pmu_add(struct perf_event *event, int flags)
-+{
-+	u64 count;
-+	int rc;
-+	struct nvdimm_pmu *nd_pmu = to_nvdimm_pmu(event->pmu);
-+
-+	if (!nd_pmu)
-+		return -EINVAL;
-+
-+	if (flags & PERF_EF_START) {
-+		rc = papr_scm_pmu_get_value(event, nd_pmu->dev, &count);
-+		if (rc)
-+			return rc;
-+
-+		local64_set(&event->hw.prev_count, count);
-+	}
-+
-+	return 0;
-+}
-+
-+static void papr_scm_pmu_read(struct perf_event *event)
-+{
-+	u64 prev, now;
-+	int rc;
-+	struct nvdimm_pmu *nd_pmu = to_nvdimm_pmu(event->pmu);
-+
-+	if (!nd_pmu)
-+		return;
-+
-+	rc = papr_scm_pmu_get_value(event, nd_pmu->dev, &now);
-+	if (rc)
-+		return;
-+
-+	prev = local64_xchg(&event->hw.prev_count, now);
-+	local64_add(now - prev, &event->count);
-+}
-+
-+static void papr_scm_pmu_del(struct perf_event *event, int flags)
-+{
-+	papr_scm_pmu_read(event);
-+}
-+
-+static ssize_t device_show_string(struct device *dev, struct device_attribute *attr,
-+				  char *buf)
-+{
-+	struct perf_pmu_events_attr *d;
-+
-+	d = container_of(attr, struct perf_pmu_events_attr, attr);
-+
-+	return sysfs_emit(buf, "%s\n", (char *)d->event_str);
-+}
-+
-+static char *strtolower(char *updated_name)
++static int sun50i_dmic_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params,
++				 struct snd_soc_dai *cpu_dai)
 +{
 +	int i = 0;
++	unsigned long rate = params_rate(params);
++	unsigned int mclk = 0;
++	unsigned int channels = params_channels(params);
++	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
++	struct dmic_rate dmic_rate_s[] = {
++		{44100, 0x0},
++		{48000, 0x0},
++		{22050, 0x2},
++		{24000, 0x2},
++		{11025, 0x4},
++		{12000, 0x4},
++		{32000, 0x1},
++		{16000, 0x3},
++		{8000,  0x5},
++	};
 +
-+	while (updated_name[i]) {
-+		if (isupper(updated_name[i]))
-+			updated_name[i] = tolower(updated_name[i]);
-+		i++;
-+	}
-+	updated_name[i] = '\0';
-+	return strim(updated_name);
-+}
++	/* DMIC num is N+1 */
++	regmap_update_bits(host->regmap, SUN50I_DMIC_CH_NUM,
++			   SUN50I_DMIC_CH_NUM_N_MASK,
++			   SUN50I_DMIC_CH_NUM_N(channels - 1));
++	host->chan_en = (1 << channels) - 1;
++	regmap_write(host->regmap, SUN50I_DMIC_HPF_CTRL, host->chan_en);
 +
-+/* device_str_attr_create : Populate event "name" and string "str" in attribute */
-+static struct attribute *device_str_attr_create_(char *name, char *str)
-+{
-+	struct perf_pmu_events_attr *attr;
-+
-+	attr = kzalloc(sizeof(*attr), GFP_KERNEL);
-+
-+	if (!attr)
-+		return NULL;
-+
-+	sysfs_attr_init(&attr->attr.attr);
-+	attr->event_str = str;
-+	attr->attr.attr.name = strtolower(name);
-+	attr->attr.attr.mode = 0444;
-+	attr->attr.show = device_show_string;
-+
-+	return &attr->attr.attr;
-+}
-+
-+static int papr_scm_pmu_check_events(struct papr_scm_priv *p, struct nvdimm_pmu *nd_pmu)
-+{
-+	struct papr_scm_perf_stat *stat;
-+	struct papr_scm_perf_stats *stats, *single_stats;
-+	int index, size, rc, count;
-+	u32 available_events;
-+	struct attribute **events;
-+	char *eventcode, *eventname, *statid;
-+	struct attribute_group *nvdimm_pmu_events_group;
-+
-+	if (!p->stat_buffer_len)
-+		return -ENOENT;
-+
-+	available_events = (p->stat_buffer_len  - sizeof(struct papr_scm_perf_stats))
-+			/ sizeof(struct papr_scm_perf_stat);
-+
-+	/* Allocate memory for events attribute group */
-+	nvdimm_pmu_events_group = kzalloc(sizeof(*nvdimm_pmu_events_group), GFP_KERNEL);
-+	if (!nvdimm_pmu_events_group)
-+		return -ENOMEM;
-+
-+	/* Allocate the buffer for phyp where stats are written */
-+	stats = kzalloc(p->stat_buffer_len, GFP_KERNEL);
-+	if (!stats) {
-+		rc = -ENOMEM;
-+		goto out_nvdimm_pmu_events_group;
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++				   SUN50I_DMIC_RXFIFO_CTL_MODE,
++				   SUN50I_DMIC_RXFIFO_CTL_MODE);
++		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION, 0);
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++				   SUN50I_DMIC_RXFIFO_CTL_MODE, 0);
++		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION,
++				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION);
++		break;
++	default:
++		dev_err(cpu_dai->dev, "Invalid format!\n");
++		return -EINVAL;
 +	}
 +
-+	/* Allocate memory to nvdimm_event_map */
-+	p->nvdimm_events_map = kcalloc(available_events, sizeof(char *), GFP_KERNEL);
-+	if (!p->nvdimm_events_map) {
-+		rc = -ENOMEM;
-+		goto out_stats;
++	switch (rate) {
++	case 11025:
++	case 22050:
++	case 44100:
++		mclk = 22579200;
++		break;
++	case 8000:
++	case 12000:
++	case 16000:
++	case 24000:
++	case 32000:
++	case 48000:
++		mclk = 24576000;
++		break;
++	default:
++		dev_err(cpu_dai->dev, "Invalid rate!\n");
++		return -EINVAL;
 +	}
 +
-+	/* Called to get list of events supported */
-+	rc = drc_pmem_query_stats(p, stats, 0);
-+	if (rc)
-+		goto out_nvdimm_events_map;
-+
-+	/* Allocate buffer to hold single performance stat */
-+	size = sizeof(struct papr_scm_perf_stats) + sizeof(struct papr_scm_perf_stat);
-+
-+	single_stats = kzalloc(size, GFP_KERNEL);
-+	if (!single_stats) {
-+		rc = -ENOMEM;
-+		goto out_nvdimm_events_map;
++	if (clk_set_rate(host->dmic_clk, mclk)) {
++		dev_err(cpu_dai->dev, "mclk : %u not support\n", mclk);
++		return -EINVAL;
 +	}
 +
-+	events = kzalloc(available_events * sizeof(struct attribute *), GFP_KERNEL);
-+	if (!events) {
-+		rc = -ENOMEM;
-+		goto out_single_stats;
-+	}
-+
-+	for (index = 0, stat = stats->scm_statistic, count = 0;
-+		     index < available_events; index++, ++stat) {
-+
-+		single_stats->scm_statistic[0] = *stat;
-+		rc = drc_pmem_query_stats(p, single_stats, 1);
-+
-+		if (rc < 0) {
-+			pr_info("Event not supported %s for device %s\n",
-+				stat->stat_id, nvdimm_name(p->nvdimm));
-+		} else {
-+			eventcode = kasprintf(GFP_KERNEL, "event=0x%x", count + 1);
-+			eventname = kzalloc(strlen(stat->stat_id) + 1, GFP_KERNEL);
-+			statid = kzalloc(strlen(stat->stat_id) + 1, GFP_KERNEL);
-+
-+			if (!eventname || !statid || !eventcode)
-+				goto out;
-+
-+			strcpy(eventname, stat->stat_id);
-+			events[count] = device_str_attr_create_(eventname,
-+								eventcode);
-+			if (!events[count])
-+				goto out;
-+
-+			strcpy(statid, stat->stat_id);
-+			p->nvdimm_events_map[count] = statid;
-+			count++;
-+			continue;
-+out:
-+			kfree(eventcode);
-+			kfree(eventname);
-+			kfree(statid);
++	for (i = 0; i < ARRAY_SIZE(dmic_rate_s); i++) {
++		if (dmic_rate_s[i].samplerate == rate) {
++			regmap_update_bits(host->regmap, SUN50I_DMIC_SR,
++					   SUN50I_DMIC_SR_SAMOLE_RATE_MASK,
++					   SUN50I_DMIC_SR_SAMOLE_RATE(dmic_rate_s[i].rate_bit));
++			break;
 +		}
 +	}
 +
-+	if (!count)
-+		goto out_events;
++	switch (params_physical_width(params)) {
++	case 16:
++		host->dma_params_rx.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++		break;
++	case 32:
++		host->dma_params_rx.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++		break;
++	default:
++		dev_err(cpu_dai->dev, "Unsupported physical sample width: %d\n",
++			params_physical_width(params));
++		return -EINVAL;
++	}
 +
-+	events[count] = NULL;
-+	p->nvdimm_events_map[count] = NULL;
-+	p->total_events = count;
++	/* oversamplerate adjust */
++	if (params_rate(params) >= 24000)
++		regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
++				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE,
++				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE);
++	else
++		regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
++				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE, 0);
 +
-+	nvdimm_pmu_events_group->name = "events";
-+	nvdimm_pmu_events_group->attrs = events;
-+
-+	/* Fill attribute groups for the nvdimm pmu device */
-+	nd_pmu->attr_groups[NVDIMM_PMU_FORMAT_ATTR] = &nvdimm_pmu_format_group;
-+	nd_pmu->attr_groups[NVDIMM_PMU_EVENT_ATTR] = nvdimm_pmu_events_group;
-+	nd_pmu->attr_groups[NVDIMM_PMU_NULL_ATTR] = NULL;
-+
-+	kfree(single_stats);
-+	kfree(stats);
 +	return 0;
-+
-+out_events:
-+	kfree(events);
-+out_single_stats:
-+	kfree(single_stats);
-+out_nvdimm_events_map:
-+	kfree(p->nvdimm_events_map);
-+out_stats:
-+	kfree(stats);
-+out_nvdimm_pmu_events_group:
-+	kfree(nvdimm_pmu_events_group);
-+	return rc;
 +}
 +
-+/* Function to free the attr_groups which are dynamically allocated */
-+static void papr_scm_pmu_mem_free(struct nvdimm_pmu *nd_pmu)
++static int sun50i_dmic_trigger(struct snd_pcm_substream *substream, int cmd,
++			       struct snd_soc_dai *dai)
 +{
-+	if (nd_pmu) {
-+		if (nd_pmu->attr_groups[NVDIMM_PMU_EVENT_ATTR])
-+			kfree(nd_pmu->attr_groups[NVDIMM_PMU_EVENT_ATTR]->attrs);
-+		kfree(nd_pmu->attr_groups[NVDIMM_PMU_EVENT_ATTR]);
++	int ret = 0;
++	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(dai);
++
++	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++		return -EINVAL;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		/* DRQ ENABLE */
++		regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
++				   SUN50I_DMIC_FIFO_DRQ_EN,
++				   SUN50I_DMIC_FIFO_DRQ_EN);
++		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
++				   SUN50I_DMIC_EN_CTL_CHAN_MASK,
++				   SUN50I_DMIC_EN_CTL_CHAN(host->chan_en));
++		/* Global enable */
++		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
++				   SUN50I_DMIC_EN_CTL_GLOBE,
++				   SUN50I_DMIC_EN_CTL_GLOBE);
++		break;
++
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		/* DRQ DISABLE */
++		regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
++				   SUN50I_DMIC_FIFO_DRQ_EN, 0);
++		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
++				   SUN50I_DMIC_EN_CTL_CHAN_MASK,
++				   SUN50I_DMIC_EN_CTL_CHAN(0));
++		/* Global disable */
++		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
++				   SUN50I_DMIC_EN_CTL_GLOBE, 0);
++		break;
++
++	default:
++		ret = -EINVAL;
++		break;
 +	}
++	return ret;
 +}
 +
-+static void papr_scm_pmu_register(struct papr_scm_priv *p)
++static int sun50i_dmic_soc_dai_probe(struct snd_soc_dai *dai)
 +{
-+	struct nvdimm_pmu *nd_pmu;
-+	int rc, nodeid;
++	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(dai);
 +
-+	nd_pmu = kzalloc(sizeof(*nd_pmu), GFP_KERNEL);
-+	if (!nd_pmu) {
-+		rc = -ENOMEM;
-+		goto pmu_err_print;
++	snd_soc_dai_init_dma_data(dai, NULL, &host->dma_params_rx);
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops sun50i_dmic_dai_ops = {
++	.startup	= sun50i_dmic_startup,
++	.trigger	= sun50i_dmic_trigger,
++	.hw_params	= sun50i_dmic_hw_params,
++};
++
++static const struct regmap_config sun50i_dmic_regmap_config = {
++	.reg_bits = 32,
++	.reg_stride = 4,
++	.val_bits = 32,
++	.max_register = SUN50I_DMIC_VERSION,
++	.cache_type = REGCACHE_NONE,
++};
++
++#define	SUN50I_DMIC_RATES (SNDRV_PCM_RATE_8000_48000)
++#define SUN50I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
++
++static struct snd_soc_dai_driver sun50i_dmic_dai = {
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 8,
++		.rates = SUN50I_DMIC_RATES,
++		.formats = SUN50I_FORMATS,
++	},
++	.probe = sun50i_dmic_soc_dai_probe,
++	.ops = &sun50i_dmic_dai_ops,
++	.name = "dmic",
++};
++
++static const struct of_device_id sun50i_dmic_of_match[] = {
++	{
++		.compatible = "allwinner,sun50i-h6-dmic",
++	},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
++
++static const struct snd_soc_component_driver sun50i_dmic_component = {
++	.name		= "sun50i-dmic",
++};
++
++static int sun50i_dmic_runtime_suspend(struct device *dev)
++{
++	struct sun50i_dmic_dev *host  = dev_get_drvdata(dev);
++
++	clk_disable_unprepare(host->dmic_clk);
++	clk_disable_unprepare(host->bus_clk);
++
++	return 0;
++}
++
++static int sun50i_dmic_runtime_resume(struct device *dev)
++{
++	struct sun50i_dmic_dev *host  = dev_get_drvdata(dev);
++	int ret;
++
++	ret = clk_prepare_enable(host->dmic_clk);
++	if (ret)
++		return ret;
++	ret = clk_prepare_enable(host->bus_clk);
++	if (ret)
++		clk_disable_unprepare(host->dmic_clk);
++
++	return ret;
++}
++
++static int sun50i_dmic_probe(struct platform_device *pdev)
++{
++	struct sun50i_dmic_dev *host;
++	struct resource *res;
++	int ret;
++	void __iomem *base;
++
++	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
++	if (!host)
++		return -ENOMEM;
++
++	/* Get the addresses */
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(base))
++		return dev_err_probe(&pdev->dev, PTR_ERR(base),
++				     "get resource failed.\n");
++
++	host->regmap = devm_regmap_init_mmio(&pdev->dev, base,
++						&sun50i_dmic_regmap_config);
++
++	/* Clocks */
++	host->bus_clk = devm_clk_get(&pdev->dev, "bus");
++	if (IS_ERR(host->bus_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(host->bus_clk),
++				     "failed to get bus clock.\n");
++
++	host->dmic_clk = devm_clk_get(&pdev->dev, "mod");
++	if (IS_ERR(host->dmic_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(host->dmic_clk),
++				     "failed to get dmic clock.\n");
++
++	host->dma_params_rx.addr = res->start + SUN50I_DMIC_DATA;
++	host->dma_params_rx.maxburst = 8;
++
++	platform_set_drvdata(pdev, host);
++
++	host->rst = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
++	if (IS_ERR(host->rst))
++		return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
++				     "Failed to get reset.\n");
++	reset_control_deassert(host->rst);
++
++	ret = devm_snd_soc_register_component(&pdev->dev,
++				&sun50i_dmic_component, &sun50i_dmic_dai, 1);
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret,
++				     "failed to register component.\n");
++
++	pm_runtime_enable(&pdev->dev);
++	if (!pm_runtime_enabled(&pdev->dev)) {
++		ret = sun50i_dmic_runtime_resume(&pdev->dev);
++		if (ret)
++			goto err_unregister;
 +	}
 +
-+	rc = papr_scm_pmu_check_events(p, nd_pmu);
-+	if (rc)
-+		goto pmu_check_events_err;
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	if (ret)
++		goto err_suspend;
 +
-+	nd_pmu->name = nvdimm_name(p->nvdimm);
-+	nd_pmu->event_init = papr_scm_pmu_event_init;
-+	nd_pmu->read = papr_scm_pmu_read;
-+	nd_pmu->add = papr_scm_pmu_add;
-+	nd_pmu->del = papr_scm_pmu_del;
-+
-+	/*updating the cpumask variable */
-+	nodeid = dev_to_node(&p->pdev->dev);
-+	nd_pmu->arch_cpumask = *cpumask_of_node(nodeid);
-+
-+	/* cpumask should not be NULL */
-+	WARN_ON_ONCE(cpumask_empty(&nd_pmu->arch_cpumask));
-+
-+	rc = register_nvdimm_pmu(nd_pmu, p->pdev);
-+	if (rc)
-+		goto pmu_register_err;
-+
-+	/*
-+	 * Set archdata.priv value to nvdimm_pmu structure, to handle the
-+	 * unregistering of pmu device.
-+	 */
-+	p->pdev->archdata.priv = nd_pmu;
-+	return;
-+
-+pmu_register_err:
-+	papr_scm_pmu_mem_free(nd_pmu);
-+	kfree(p->nvdimm_events_map);
-+pmu_check_events_err:
-+	kfree(nd_pmu);
-+pmu_err_print:
-+	dev_info(&p->pdev->dev, "nvdimm pmu didn't register rc=%d\n", rc);
++	return 0;
++err_suspend:
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		sun50i_dmic_runtime_suspend(&pdev->dev);
++err_unregister:
++	pm_runtime_disable(&pdev->dev);
++	return ret;
 +}
 +
-+static void papr_scm_pmu_uninit(struct nvdimm_pmu *nd_pmu)
++static int sun50i_dmic_remove(struct platform_device *pdev)
 +{
-+	unregister_nvdimm_pmu(nd_pmu);
-+	papr_scm_pmu_mem_free(nd_pmu);
-+	kfree(nd_pmu);
++	pm_runtime_disable(&pdev->dev);
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		sun50i_dmic_runtime_suspend(&pdev->dev);
++
++	return 0;
 +}
 +
- /*
-  * Issue hcall to retrieve dimm health info and populate papr_scm_priv with the
-  * health information.
-@@ -1177,6 +1535,7 @@ static int papr_scm_probe(struct platform_device *pdev)
- 		goto err2;
- 
- 	platform_set_drvdata(pdev, p);
-+	papr_scm_pmu_register(p);
- 
- 	return 0;
- 
-@@ -1195,6 +1554,12 @@ static int papr_scm_remove(struct platform_device *pdev)
- 
- 	nvdimm_bus_unregister(p->bus);
- 	drc_pmem_unbind(p);
++static const struct dev_pm_ops sun50i_dmic_pm = {
++	SET_RUNTIME_PM_OPS(sun50i_dmic_runtime_suspend,
++			   sun50i_dmic_runtime_resume, NULL)
++};
 +
-+	if (pdev->archdata.priv)
-+		papr_scm_pmu_uninit(pdev->archdata.priv);
++static struct platform_driver sun50i_dmic_driver = {
++	.driver		= {
++		.name	= "sun50i-dmic",
++		.of_match_table = of_match_ptr(sun50i_dmic_of_match),
++		.pm	= &sun50i_dmic_pm,
++	},
++	.probe		= sun50i_dmic_probe,
++	.remove		= sun50i_dmic_remove,
++};
 +
-+	pdev->archdata.priv = NULL;
-+	kfree(p->nvdimm_events_map);
- 	kfree(p->bus_desc.provider_name);
- 	kfree(p);
- 
++module_platform_driver(sun50i_dmic_driver);
++
++MODULE_DESCRIPTION("Allwinner sun50i DMIC SoC Interface");
++MODULE_AUTHOR("Ban Tao <fengzheng923@gmail.com>");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:sun50i-dmic");
 -- 
-2.27.0
+2.29.0
 
