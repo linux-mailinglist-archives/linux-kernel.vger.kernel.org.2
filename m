@@ -2,81 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0D73AB321
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1115D3AB324
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbhFQMBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbhFQMBd (ORCPT
+        id S232642AbhFQMCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:02:12 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41916 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231490AbhFQMCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:01:33 -0400
-Received: from mxout017.mail.hostpoint.ch (mxout017.mail.hostpoint.ch [IPv6:2a00:d70:0:e::317])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDBEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:59:24 -0700 (PDT)
-Received: from [10.0.2.44] (helo=asmtp014.mail.hostpoint.ch)
-        by mxout017.mail.hostpoint.ch with esmtp (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1ltqg3-000CfJ-TB; Thu, 17 Jun 2021 13:59:19 +0200
-Received: from [2a02:168:6182:1:d64b:e086:4fb7:9a87]
-        by asmtp014.mail.hostpoint.ch with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1ltqg3-0008sS-PS; Thu, 17 Jun 2021 13:59:19 +0200
-X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
-Subject: Re: [PATCH v1] mtd: spi-nor: Add support for XM25QH64C
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-mtd@lists.infradead.org, Stefan Roese <sr@denx.de>,
-        Reto Schneider <reto.schneider@husqvarnagroup.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-References: <20210613121248.1529292-1-code@reto-schneider.ch>
- <1ba367f93650cb65122acd32fb4a4159@walle.cc>
-From:   Reto Schneider <code@reto-schneider.ch>
-Message-ID: <f022abf3-a6fe-d060-9868-985303c4e8a0@reto-schneider.ch>
-Date:   Thu, 17 Jun 2021 13:59:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 17 Jun 2021 08:02:09 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 965851FDCE;
+        Thu, 17 Jun 2021 12:00:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623931201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GHVrctRoTY/gEqharNKyVDHQJHZtEHuXRUMHJKQVWf8=;
+        b=n2GJctvUXVf5Bd1JN3AyN4gvP18JeYvBEGNTRZ6i3faXPGjQKznOcozuUMF0KAg4ubYszn
+        tSenYFeYujDf6g2R+4bWyzaKcH03zVleLGLjketefgc3wB0bfUrV/os/20VhvVqVMJ3wrZ
+        LY/on7w8nuli1jTTPnXlAeH7nWE1K64=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623931201;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GHVrctRoTY/gEqharNKyVDHQJHZtEHuXRUMHJKQVWf8=;
+        b=WWLQSxRlGzOKYudDY9QEkeUupMgjiy7GSvuRkwPxHIqayvqc/3gyOK2XILsbkRAh746+Nq
+        xZtOQADt2qMCdGCg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 83541118DD;
+        Thu, 17 Jun 2021 12:00:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623931201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GHVrctRoTY/gEqharNKyVDHQJHZtEHuXRUMHJKQVWf8=;
+        b=n2GJctvUXVf5Bd1JN3AyN4gvP18JeYvBEGNTRZ6i3faXPGjQKznOcozuUMF0KAg4ubYszn
+        tSenYFeYujDf6g2R+4bWyzaKcH03zVleLGLjketefgc3wB0bfUrV/os/20VhvVqVMJ3wrZ
+        LY/on7w8nuli1jTTPnXlAeH7nWE1K64=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623931201;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GHVrctRoTY/gEqharNKyVDHQJHZtEHuXRUMHJKQVWf8=;
+        b=WWLQSxRlGzOKYudDY9QEkeUupMgjiy7GSvuRkwPxHIqayvqc/3gyOK2XILsbkRAh746+Nq
+        xZtOQADt2qMCdGCg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id Y+L4HkE5y2DTFQAALh3uQQ
+        (envelope-from <bp@suse.de>); Thu, 17 Jun 2021 12:00:01 +0000
+Date:   Thu, 17 Jun 2021 13:59:56 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V2 18/52] x86/fpu: Get rid of using_compacted_format()
+Message-ID: <YMs5PGxFcmt46H47@zn.tnic>
+References: <20210614154408.673478623@linutronix.de>
+ <20210614155355.548963297@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1ba367f93650cb65122acd32fb4a4159@walle.cc>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210614155355.548963297@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+On Mon, Jun 14, 2021 at 05:44:26PM +0200, Thomas Gleixner wrote:
+> @@ -590,9 +576,9 @@ static void do_extra_xstate_size_checks(
+>  		check_xstate_against_struct(i);
+>  		/*
+>  		 * Supervisor state components can be managed only by
+> -		 * XSAVES, which is compacted-format only.
+> +		 * XSAVES.
+>  		 */
+> -		if (!using_compacted_format())
+> +		if (!static_cpu_has(X86_FEATURE_XSAVES))
+>  			XSTATE_WARN_ON(xfeature_is_supervisor(i));
+>  
+>  		/* Align from the end of the previous feature */
+> @@ -602,9 +588,9 @@ static void do_extra_xstate_size_checks(
+>  		 * The offset of a given state in the non-compacted
+>  		 * format is given to us in a CPUID leaf.  We check
+>  		 * them for being ordered (increasing offsets) in
+> -		 * setup_xstate_features().
+> +		 * setup_xstate_features(). XSAVES uses compacted format.
+>  		 */
+> -		if (!using_compacted_format())
+> +		if (!static_cpu_has(X86_FEATURE_XSAVES))
 
-Thanks for your feedback.
+both: cpu_feature_enabled()
 
-On 14.06.21 08:56, Michael Walle wrote:
-> Could you add that as a "Datasheet:" tag before your Sob tag?
+and yes, I have complained about that one in the past so good riddance.
 
-Will do for v2.
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
->> This chip has been (briefly) tested on the MediaTek MT7688 based GARDENA
->> smart gateway.
-> 
-> Could you also apply my SFDP patch [1] and send the dump? Unfortunately,
-> I can't think of a good way to do that along with the patch and if this
-> in some way regarded as copyrighted material. So feel free to send it to
-> me privately. I'm starting to build a database.
+Btw, that patch looks like it could be moved to the beginning of the
+patchset, right after the urgent fixes as it is an independent cleanup.
 
-Will do. If interested, I could also include the predecessor (XM25QH64A).
+Thx.
 
-> NB. XMC ignores the continuation codes and this particular device will
-> collide with M25PE64/M45PE64. Although I couldn't find any datasheet,
-> so I don't know if these devices actually exist.
+-- 
+Regards/Gruss,
+    Boris.
 
-M25PE64 yields quite some hits on Google. Is supporting this (all?) XMC 
-device in upstream a good idea nevertheless? Does "first come, first 
-served" apply here?
-
-Kind regards,
-Reto
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
