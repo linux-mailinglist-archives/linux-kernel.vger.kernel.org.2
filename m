@@ -2,137 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9CD3AB76A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660963AB772
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbhFQPZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        id S233269AbhFQPaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233130AbhFQPZu (ORCPT
+        with ESMTP id S233130AbhFQPaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:25:50 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7E6C061574;
-        Thu, 17 Jun 2021 08:23:42 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id y15so5283035pfl.4;
-        Thu, 17 Jun 2021 08:23:42 -0700 (PDT)
+        Thu, 17 Jun 2021 11:30:02 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02120C061574;
+        Thu, 17 Jun 2021 08:27:53 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id k8so9528043lja.4;
+        Thu, 17 Jun 2021 08:27:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BGbeP7ZnDkY2DJidMpRViqieliUtB17GFMkW1zVFjRU=;
-        b=Oa3ubTr0Q6/AN8zuP9Ab/2Kl+m1AAVUY/MDQf2YhYJMxoR2QNRnHh/uPRS4KEd8FwY
-         7lYpYXWtliofo4M15KX6kB/FCkMTAvkAF5RyYzkFKpXKvFcmdbiszr2IFGVTZVh653X0
-         JlXGmk/4/4qPnXOO/m3zhD3PlhS2nlPXPnbBDrYB95ZdveGJ8MePV/9NK38Q1rNXPizi
-         QKad2ZO6qF2xPjJ6PWs5ki8uHBBzjnc1piJNAtBZfryD4TVocKpZsNdt08Prz2cW6xPh
-         dwpLwl/ECtvKrpW71zqf6I/ocCQRj1JzvqPxhMJBmEKXb5ymNHU6ksoRABqmBJzbHy7l
-         YMpQ==
+        bh=c2e7kNsCGT85GsTUjiDwru6wY3UfFbgVKt2c+k6Ksis=;
+        b=mBmvA+aak/sfdxRTB9RvZIlo/zFa91SejUS4yQcpOmO3tp7YtLqdS2sl0orVa571cL
+         SJKYU6AV1aK/4MxsHa10IjnmZdMbLme1oHAKUDJLvo9AYwc0lLlgYzY0JIYMGvd5ZnE6
+         CrULLpNUBIx+hYI11Cyj8LEyHeb9r/mknWzC4Fw5JH+sK85wQQuY4nrM/AktlzRAls5G
+         EpuMyhcJe2JgAKeS4umdjFk2pqi487kmiZltL5ynwBMhh7ptZzU6TEkJQl5lo0ZXNb/q
+         N5lS4Y7wBTA+RpwJEylf55acqMAgFziIG+Ao0wtxXzJ+XD9Wv1t9YEY3PlTCexZgyZuk
+         gSZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=BGbeP7ZnDkY2DJidMpRViqieliUtB17GFMkW1zVFjRU=;
-        b=PIWp0ZoCiSnAjkgrrXWJZ43NxUBoRi9I5seWERZ2liYi6+BefaXzV91K2vGVF/PJ4d
-         gyAsgrrCv38bbwNO1cVkegwXFPwXfTmhO/zHF6OaFcrZRh67M3EGwhkwT+RZpOAWK8Nf
-         8ziG223Kk4pOSiukybsE4TX2djJjKEb1HcUE7/yDGaJiTc5CHGCUK9QrVmbMIARFpf+I
-         ounQutBb2Jgljh/0ao13CuaLvifUJCW2L5E2bBjzoLrGScGngC7EKlQnu1ke+WxctvrW
-         /EFctzbQe6MNrytUU6YfVeaWA17dK2ezF3AKD+KwgeCq0VcWUySgeAzzYqGE0IAZU1GQ
-         /aJg==
-X-Gm-Message-State: AOAM530fF75sPLe7mTLAYADIrWdDEVZRH0h+lxeOUTXVC52fA4pLsxoK
-        1RfDVsGnHG3t0yTWvzh8EWA=
-X-Google-Smtp-Source: ABdhPJx/5easlY7XHWhEyK556EoCIVPAIfLRotdyXcjQ6+Cu9D7hlZkBnahXppkI8S5hMejMrFyBwQ==
-X-Received: by 2002:aa7:905a:0:b029:2f6:d759:6c2d with SMTP id n26-20020aa7905a0000b02902f6d7596c2dmr249155pfo.33.1623943421659;
-        Thu, 17 Jun 2021 08:23:41 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id v6sm6434212pgk.33.2021.06.17.08.23.38
+        bh=c2e7kNsCGT85GsTUjiDwru6wY3UfFbgVKt2c+k6Ksis=;
+        b=LDWpClSWp6FwSVfLCOce5tSuKvSGD7aa8Uch4oEfy8hdNWnxeikbHJj8A+zmxYWujN
+         7c2fHE6i+Z02PlRMR5BAHyqA9XEvzpkPQqPMi9hLnr6yRPWagKdT6MQiI+YEp421eOul
+         akKEWCHWefD7VgJNHWxxFZoT9HUF8InkviKZaTERFpYw9gU6AkHfZVGJUbdF54BMniLV
+         hkHETP4p863gRnlhcFJGHvsxcfX4UpjA7/3lsLGW+ck/pJsrk1xGlGCb2qoKjXp/yz7g
+         /xurYxldwUXVoXTwKHILuec4wop8Mo7qOmjvi6rZtugRjlv5PkT/7hz/8tm0Wf/w1bxi
+         vzFQ==
+X-Gm-Message-State: AOAM532ljFyzkNq4KyWV6Cndv2g6Ci1dZ8ttp+KAUwwXkJJuaAl+Amlk
+        8+wJPLLbuEuZi5QGI0a3Z2NNiF/DtAw=
+X-Google-Smtp-Source: ABdhPJwxXY0YliY/v8QKwNZZ13AJaFFOGuYA0LobGWU/S5Or2aVdHYPIjW0s6+zlecbCVNV/m4QTQg==
+X-Received: by 2002:a05:651c:3dc:: with SMTP id f28mr5180858ljp.294.1623943671133;
+        Thu, 17 Jun 2021 08:27:51 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.googlemail.com with ESMTPSA id o14sm610933lfg.34.2021.06.17.08.27.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 08:23:41 -0700 (PDT)
-Subject: Re: [PATCH] block: break circular locks in blk_request_module
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org
-References: <20210617092016.522985-1-desmondcheongzx@gmail.com>
- <YMs3O/cg4V7ywlVq@infradead.org>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <ce1567cf-bc94-790c-cfc0-e4e429e1a86a@gmail.com>
-Date:   Thu, 17 Jun 2021 23:23:36 +0800
+        Thu, 17 Jun 2021 08:27:50 -0700 (PDT)
+Subject: Re: [PATCH v1] hwmon: (lm90) Use edge-triggered interrupt
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+References: <20210616190708.1220-1-digetx@gmail.com>
+ <20210617001243.GA3211292@roeck-us.net>
+ <3c6cbaf3-187b-1682-69b8-a2b34f23b928@gmail.com>
+ <20210617131205.GA59767@roeck-us.net>
+ <de7682c2-ae34-c594-d237-330ea33cbc78@gmail.com>
+ <20210617141300.GA1366442@roeck-us.net>
+ <bc3e3595-fe10-c7ae-9560-0c7676facba2@gmail.com>
+ <20210617151236.GB2676642@roeck-us.net>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b97e3a75-f1aa-95a4-187d-97dc95e57e2b@gmail.com>
+Date:   Thu, 17 Jun 2021 18:27:50 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YMs3O/cg4V7ywlVq@infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20210617151236.GB2676642@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/6/21 7:51 pm, Christoph Hellwig wrote:
-> On Thu, Jun 17, 2021 at 05:20:16PM +0800, Desmond Cheong Zhi Xi wrote:
->>   	mutex_lock(&major_names_lock);
->>   	for (n = &major_names[major_to_index(major)]; *n; n = &(*n)->next) {
->>   		if ((*n)->major == major && (*n)->probe) {
->> -			(*n)->probe(devt);
->> +			probe = (*n)->probe;
->>   			mutex_unlock(&major_names_lock);
->> +			probe(devt);
-> 
-> And now you can all probe after it has been freed and/or the module has
-> been unloaded. The obviously correct fix is to only hold mtd_table_mutex
-> for the actually required critical section:
-> 
+17.06.2021 18:12, Guenter Roeck пишет:
+>> For now I see that the rising edge isn't needed, the TEMP_ALERT goes
+>> HIGH by itself when temperature backs to normal. But I will try to
+>> double check.
+>>
+> The point is that a sysfs event should be sent to userspace on both
+> edges, not only when an alarm is raised. But, you are correct,
+> IRQ_TYPE_EDGE_RISING is currently not needed since sysfs events
+> are not generated.
 
-Thank you for the correction, Christoph. I hadn't thought of the 
-scenario where the module is unloaded. I'll be more conscientious in the 
-future.
+Ok, thank you for the clarification.
 
-> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-> index fb8e12d590a1..065d94f9b1fb 100644
-> --- a/drivers/mtd/mtd_blkdevs.c
-> +++ b/drivers/mtd/mtd_blkdevs.c
-> @@ -529,13 +529,11 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
->   		register_mtd_user(&blktrans_notifier);
->   
->   
-> -	mutex_lock(&mtd_table_mutex);
->   
->   	ret = register_blkdev(tr->major, tr->name);
->   	if (ret < 0) {
->   		printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
->   		       tr->name, tr->major, ret);
-> -		mutex_unlock(&mtd_table_mutex);
->   		return ret;
->   	}
->   
-> @@ -545,12 +543,12 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
->   	tr->blkshift = ffs(tr->blksize) - 1;
->   
->   	INIT_LIST_HEAD(&tr->devs);
-> -	list_add(&tr->list, &blktrans_majors);
->   
-> +	mutex_lock(&mtd_table_mutex);
-> +	list_add(&tr->list, &blktrans_majors);
->   	mtd_for_each_device(mtd)
->   		if (mtd->type != MTD_ABSENT)
->   			tr->add_mtd(tr, mtd);
-> -
->   	mutex_unlock(&mtd_table_mutex);
->   	return 0;
->   }
-> 
+>>> Anyway, the tegra30 dts files in the upstream kernel either use
+>>> IRQ_TYPE_LEVEL_LOW or no interrupts for nct1008. The Nexus 7 dts file
+>>> in the upstream kernel has no interrupt configured (and coincidentally
+>>> it was you who added that entry). Where do you see IRQ_TYPE_LEVEL_HIGH ?
+>> I have a patch that will add the interrupt property, it's stashed
+>> locally for the next kernel release.
+>>
+>> IIUC, it's not only the Tegra30 dts, but all the TegraXXX boards that
+>> use IRQ_TYPE_LEVEL_LOW are in the same position.
+> I still don't see a IRQ_TYPE_LEVEL_HIGH, though.
 
-This fix passes the Syzkaller repro test on my local machine and on 
-Syzbot. I can prepare a v2 patch for this. May I include you with the 
-Co-developed-by: and Signed-off-by: tags? If another tag would be more 
-appropriate, or if you want to submit the patch yourself, please let me 
-know.
-
-Best wishes,
-Desmond
+Could you please clarify why you're looking for HIGH and not for LOW?
+The TEMP_ALERT is active-low.
