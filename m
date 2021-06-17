@@ -2,84 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAF33ABE84
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447ED3ABE86
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhFQWDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 18:03:45 -0400
-Received: from mail-io1-f48.google.com ([209.85.166.48]:42610 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbhFQWDo (ORCPT
+        id S231693AbhFQWEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 18:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhFQWEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 18:03:44 -0400
-Received: by mail-io1-f48.google.com with SMTP id s26so1530277ioe.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 15:01:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0jCUxN5VHbSW7yt0ADd96KTkL0vWh52LCH6fuo5IQ6o=;
-        b=qorarSrslEoCvfSHtdRVpU/fcmCou3+v8F+alTL7SW0xSPjq2J4CRkdF82VR0BIRzf
-         CPWxNajJEYSwtDXDtcs852L8S1dSt7gmPpd2B/EBg7R5kzkGhv+2t3IXekWtcFDH4QC1
-         68HXf6t59O5akakxsagmIdW4JwbdpDWjDTvdCKQITeOfAv9q3+ANkD8kwDca+aAuw4sJ
-         1qiW+NGvZ3cAKc5dZhSUIKiE8S/RKxXb9PuO5foLkZFr+DYe2ltjaq0ojJ65x+UPQnK7
-         T7hQEhoCFFkc5KCLLL/YbsVL0D5CMVL1IJ4Iq6u2LCyPue1Q6qCI6QPtDhfNGVuNDPTa
-         YmZw==
-X-Gm-Message-State: AOAM5318lARRUOCJxarVDPliPfEiB02r0E5acgTjb4HJ9Ai4Ytpt/dbp
-        zute9C2QzCiZeHZYFtpFKLQ=
-X-Google-Smtp-Source: ABdhPJzZezAeX+10l0RtyH2LwFjrlZTciRKNZU8/wa4NlvJjN3TjD369mvVHqO9ZrhRcKYBIojYZjw==
-X-Received: by 2002:a05:6602:2c4e:: with SMTP id x14mr5472295iov.194.1623967295221;
-        Thu, 17 Jun 2021 15:01:35 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id f7sm996452ioc.18.2021.06.17.15.01.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 15:01:34 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 22:01:33 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] percpu: optimize locking in pcpu_balance_workfn()
-Message-ID: <YMvGPWHY993l3OYj@google.com>
-References: <20210617190322.3636731-1-guro@fb.com>
- <YMuo55c9QM91pc9p@casper.infradead.org>
+        Thu, 17 Jun 2021 18:04:52 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A8DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 15:02:44 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 098B62B9;
+        Thu, 17 Jun 2021 15:02:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1623967364;
+        bh=FQzjrW5WNAOrVkJs/Hts+Ik3+Hqt7NokValuBbhexNw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=F9Tcc6TKUxeEZshhBHAE4lTP1tdqkb4gjBU2K/1a+9NCGvuD0das9eNYChfQpq3Qu
+         4/myI7/JUaErXS8bPiH3kt6RTx0Bl2ejRLMqUxZ+n9RbXyHRkeNxhxYjdypO1opJLT
+         s1VuxP9adGTe1ztK7An+nQdgXLN1L3ZPDoKybD6M=
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     Zev Weiss <zev@bewilderbeest.net>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        linux-aspeed@lists.ozlabs.org, Andrew Jeffery <andrew@aj.id.au>,
+        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Subject: [PATCH v3] media: aspeed-video: ignore interrupts that aren't enabled
+Date:   Thu, 17 Jun 2021 17:02:29 -0500
+Message-Id: <20210617220229.7352-1-zev@bewilderbeest.net>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMuo55c9QM91pc9p@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+As partially addressed in commit 65d270acb2d6 ("media: aspeed: clear
+garbage interrupts"), the ASpeed video engine sometimes asserts
+interrupts that the driver hasn't enabled.  In addition to the
+CAPTURE_COMPLETE and FRAME_COMPLETE interrupts dealt with in that
+patch, COMP_READY has also been observed.  Instead of playing
+whack-a-mole with each one individually, we can instead just blanket
+ignore everything we haven't explicitly enabled.
 
-On Thu, Jun 17, 2021 at 08:56:23PM +0100, Matthew Wilcox wrote:
-> On Thu, Jun 17, 2021 at 12:03:22PM -0700, Roman Gushchin wrote:
-> > +++ b/mm/percpu.c
-> > @@ -1980,6 +1980,9 @@ void __percpu *__alloc_reserved_percpu(size_t size, size_t align)
-> >   * If empty_only is %false, reclaim all fully free chunks regardless of the
-> >   * number of populated pages.  Otherwise, only reclaim chunks that have no
-> >   * populated pages.
-> > + *
-> > + * CONTEXT:
-> > + * pcpu_lock (can be dropped temporarily)
-> >   */
-> 
-> What's the shouting all about?  I would write it like this:
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+---
 
-At this point it's just to keep the code consistent.
+Changes since v2 [1]:
+ - minor commit message improvements
 
-> 
->  * Context: Process context.  Caller must hold pcpu_lock with interrupts
->  * disabled.  This function may drop the lock and re-enable interrupts if
->  * it needs to sleep, but will return with the lock held and interrupts
->  * disabled.
-> 
+Changes since v1 [0]:
+ - dropped error message
+ - switched to a blanket-ignore approach as suggested by Ryan
 
-This is related to background work done via a workqueue not in process
-context. I'll take a look at cleaning up the documentation in the
-future.
+[0] https://lore.kernel.org/linux-arm-kernel/20201215024542.18888-1-zev@bewilderbeest.net/
+[1] https://lore.kernel.org/openbmc/20210506234048.3214-1-zev@bewilderbeest.net/
 
-Thanks,
-Dennis
+ drivers/media/platform/aspeed-video.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+index 7bb6babdcade..77611c296a25 100644
+--- a/drivers/media/platform/aspeed-video.c
++++ b/drivers/media/platform/aspeed-video.c
+@@ -563,6 +563,12 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
+ 	struct aspeed_video *video = arg;
+ 	u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
+ 
++	/*
++	 * Hardware sometimes asserts interrupts that we haven't actually
++	 * enabled; ignore them if so.
++	 */
++	sts &= aspeed_video_read(video, VE_INTERRUPT_CTRL);
++
+ 	/*
+ 	 * Resolution changed or signal was lost; reset the engine and
+ 	 * re-initialize
+@@ -629,16 +635,6 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
+ 			aspeed_video_start_frame(video);
+ 	}
+ 
+-	/*
+-	 * CAPTURE_COMPLETE and FRAME_COMPLETE interrupts come even when these
+-	 * are disabled in the VE_INTERRUPT_CTRL register so clear them to
+-	 * prevent unnecessary interrupt calls.
+-	 */
+-	if (sts & VE_INTERRUPT_CAPTURE_COMPLETE)
+-		sts &= ~VE_INTERRUPT_CAPTURE_COMPLETE;
+-	if (sts & VE_INTERRUPT_FRAME_COMPLETE)
+-		sts &= ~VE_INTERRUPT_FRAME_COMPLETE;
+-
+ 	return sts ? IRQ_NONE : IRQ_HANDLED;
+ }
+ 
+-- 
+2.32.0
+
