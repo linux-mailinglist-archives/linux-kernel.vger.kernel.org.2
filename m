@@ -2,109 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4128A3AAA72
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 06:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5A53AAA74
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 06:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhFQEpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 00:45:42 -0400
-Received: from mail-pg1-f176.google.com ([209.85.215.176]:46696 "EHLO
-        mail-pg1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhFQEpl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 00:45:41 -0400
-Received: by mail-pg1-f176.google.com with SMTP id n12so3876264pgs.13;
-        Wed, 16 Jun 2021 21:43:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ER3Bi6TVKIRud7DpBpxLSpXeMQufYCROiIwToeMbm+g=;
-        b=B+lZxfVzW2SYsBfb2hEDPuc6nBo+8ycQflAOLONRybyIX/s9UuPBEMqeWA6TOQU5lU
-         g7fcCkNegawtqoovelCQDkDSMicyPFCj1T9JMiSEIE0egGn9p+AaErpdu6MZ8UWEghBA
-         sqxGkJsQ9BWD4vD3Zfj3r+63RSEGhzSRzJy0kFKGYnKpe7UzOeZ2wkFAdjVvu8/pWqWW
-         h5uyY74ask8BJJtQDeBvYv2PSMoSq98y+M9Ym07AhB9NTpe/StvCFfnCjkOUIICutaXW
-         i6YgW4XGyybJpEyFvsB8SCGiGWtDd7dsd9u8b0EAU+UJ1G974T7XL70V4JvSur5d6Pd1
-         KzoQ==
-X-Gm-Message-State: AOAM532mIGtUfwB/3vsvxA+0ad5R7TgW8S6ZsjUn15TQnXUEogaoy6vk
-        ES4ujvxNtDNlsyqjJ+8Wl8o=
-X-Google-Smtp-Source: ABdhPJztcpfwm5nNoeBnKE0CupxSIL8mRtJz17LReIOn+Gr1e7h7Rf/6ig2So/BP+WLWGWoF7QJH+A==
-X-Received: by 2002:a65:52cb:: with SMTP id z11mr3146184pgp.201.1623905014537;
-        Wed, 16 Jun 2021 21:43:34 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id j15sm3590350pjn.28.2021.06.16.21.43.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 21:43:33 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 21:43:32 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     Tom Rix <trix@redhat.com>, "mdf@kernel.org" <mdf@kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "krzysztof.kozlowski@canonical.com" 
-        <krzysztof.kozlowski@canonical.com>,
-        "nava.manne@xilinx.com" <nava.manne@xilinx.com>,
-        "Xu, Yilun" <yilun.xu@intel.com>,
-        "davidgow@google.com" <davidgow@google.com>,
-        "fpacheco@redhat.com" <fpacheco@redhat.com>,
-        "Gong, Richard" <richard.gong@intel.com>,
-        "luca@lucaceresoli.net" <luca@lucaceresoli.net>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v4 1/4] fpga: dfl: reorganize to subdir layout
-Message-ID: <YMrS9OUSaCdtGwrE@epycbox.lan>
-References: <20210614201648.3358206-1-trix@redhat.com>
- <20210614201648.3358206-3-trix@redhat.com>
- <DM6PR11MB381964374223D0D2958AFA6985309@DM6PR11MB3819.namprd11.prod.outlook.com>
- <d64b0fb8-5f83-2995-7ee9-b4ed2932ef60@redhat.com>
- <DM6PR11MB3819259241791EB04A2CB9C8850F9@DM6PR11MB3819.namprd11.prod.outlook.com>
+        id S229805AbhFQEqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 00:46:01 -0400
+Received: from ozlabs.org ([203.11.71.1]:33285 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229495AbhFQEqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 00:46:00 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G58Zs498Pz9sW6;
+        Thu, 17 Jun 2021 14:43:49 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623905031;
+        bh=YYZQRTaEz+8GiSnTFk9Nc8Rsg78+vdZcMemhOChNeBA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KBhDBqcg+IGpXAhHRn87yNWvpZOJ5M9mvOSerBFkzb3begNXASKK4C8qtduyp2mXw
+         sXOs1p/uk7z6zx1BTTUvLJm0QVF/70MBDEjJTeBbxZNFOZnLl636bolBqEUnbP6/K0
+         VyDbAJMoHGEo1KVhv6wS4smzM80UxYIiugOBaZ8TtanI1c4uDQbFIVux41/qoIMPOl
+         ONDMdobyk1A/Uo9psTL1JhqdZIua0tfFRceKKMDlEcVVA7Y4nRYUYOEoHi93z77fkz
+         w7SdpdOkdnIIRGKsylNyOiSNWXBUSbVA2MxyJyYrdtTtCVZ9AT0R5bVkU/Ke/e+hup
+         JcAkZXLG5s83g==
+Date:   Thu, 17 Jun 2021 14:43:46 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Olof Johansson <olof@lixom.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Subject: linux-next: manual merge of the usb tree with the arm-soc tree
+Message-ID: <20210617144346.564be887@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB3819259241791EB04A2CB9C8850F9@DM6PR11MB3819.namprd11.prod.outlook.com>
+Content-Type: multipart/signed; boundary="Sig_/Eo.BL+GwBgSHqa1w194kSj=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 01:05:36AM +0000, Wu, Hao wrote:
-> > On 6/15/21 1:08 AM, Wu, Hao wrote:
-> > >> Subject: [PATCH v4 1/4] fpga: dfl: reorganize to subdir layout
-> > >>
-> > >> From: Tom Rix <trix@redhat.com>
-> > >>
-> > >> Follow drivers/net/ethernet/ which has control configs
-> > >> NET_VENDOR_BLA that map to drivers/net/ethernet/bla
-> > >> Since fpgas do not have many vendors, drop the 'VENDOR' and use
-> > >> FPGA_BLA.
-> > > Hi Tom,
-> > >
-> > > Thanks for this patch. : )
-> > >
-> > > DFL is not a vendor, but something can be shared/reused. It's possible that
-> > > other vendors reuse the same concepts and the drivers of DFL. If vendor
-> > > drivers need to be moved inside sub folders, then maybe it's better to
-> > > leave DFL in the parent folder?
-> > 
-> > xrt is also not a vendor, more a subdevice framework like dfl.
-> > 
-> > I am not sure what you mean by other dfl vendors can you give an example ?
-> 
-> It's fine, but the description here is a little confusing on vendor/framework
-> handling. No other vendor so far, but it's possible, DFL can be used in 
-> non-intel device, and related drivers can be reused as well. Then a fpga 
-> mgr driver depends on DFL, should be put inside dfl folder or new
-> vendor's subfolder?
-> 
-> Hao
-> 
+--Sig_/Eo.BL+GwBgSHqa1w194kSj=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I'm somewhat neutral on this. If someone non-intel starts using DFL we could also
-move the common parts back ...
+Hi all,
 
-That being said, I'm not super convinced we have to move stuff in the
-first place.
+Today's linux-next merge of the usb tree got conflicts in:
 
-- Moritz
+  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
+  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
+
+between commit:
+
+  39441f73d91a ("arm64: dts: qcom: sc7180: lazor: Simplify disabling of cha=
+rger thermal zone")
+
+from the arm-soc tree and commit:
+
+  1da8116eb0c5 ("arm64: dts: qcom: sc7180-trogdor: Add nodes for onboard US=
+B hub")
+
+from the usb tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
+index 30e3e769d2b4,bae85f6b2bfa..000000000000
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
+@@@ -14,17 -14,15 +14,6 @@@
+  	compatible =3D "google,lazor-rev0", "qcom,sc7180";
+  };
+ =20
+- &pp3300_hub {
+- 	/* pp3300_l7c is used to power the USB hub */
+- 	/delete-property/regulator-always-on;
+- 	/delete-property/regulator-boot-on;
+- };
+-=20
+- &pp3300_l7c {
+- 	regulator-always-on;
+- 	regulator-boot-on;
+ -/*
+ - * Lazor is stuffed with a 47k NTC as charger thermistor which currently =
+is
+ - * not supported by the PM6150 ADC driver. Disable the charger thermal zo=
+ne
+ - * to avoid using bogus temperature values.
+ - */
+ -&charger_thermal {
+ -	status =3D "disabled";
+--};
+--
+  &sn65dsi86_out {
+  	/*
+  	 * Lane 0 was incorrectly mapped on the cable, but we've now decided
+diff --cc arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
+index c2ef06367baf,343ed457efb2..000000000000
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
+@@@ -14,13 -14,20 +14,10 @@@
+  	compatible =3D "google,lazor-rev1", "google,lazor-rev2", "qcom,sc7180";
+  };
+ =20
+- &pp3300_hub {
+- 	/* pp3300_l7c is used to power the USB hub */
+- 	/delete-property/regulator-always-on;
+- 	/delete-property/regulator-boot-on;
+ -/*
+ - * Lazor is stuffed with a 47k NTC as charger thermistor which currently =
+is
+ - * not supported by the PM6150 ADC driver. Disable the charger thermal zo=
+ne
+ - * to avoid using bogus temperature values.
+ - */
+ -&charger_thermal {
+ -	status =3D "disabled";
+ -};
+ -
+ -
++ &usb_hub_2_0 {
++ 	 vdd-supply =3D <&pp3300_l7c>;
+  };
+ =20
+- &pp3300_l7c {
+- 	regulator-always-on;
+- 	regulator-boot-on;
++ &usb_hub_3_0 {
++ 	 vdd-supply =3D <&pp3300_l7c>;
+  };
+
+--Sig_/Eo.BL+GwBgSHqa1w194kSj=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDK0wIACgkQAVBC80lX
+0GwW/Af/VIpOA7khWDE6TWFICkUJ+u7Q6zy+YUIqAbUfV5pnKfqrxygEq1MgNptw
+yFn1bntEwK1a0TRSqBQ23OG6ViEjyL8Iley8YFD9tUZvy8LdgjvqLdG+hFte/rM5
+dFsGUV1kzacfOKajUsZj5rfl56Sqg9Ljz6CbEjTUxROsZEWEPS5OsefKaHUKgbXQ
+igaXFKFcG0dBXAKGIRW5dyCZLTMbYbRn2dGSR4rzteZ2V3onCtWLtCwF7DdYwS/U
+GG85n/PFrrBrbOFHJaXC5gHykpDNWJfHFr8tNvvO9UM+8DUPP6rbhVWWKG1yVUmj
+lDurFMy2owkeXi7sSCw817QVfDu7NQ==
+=/dM6
+-----END PGP SIGNATURE-----
+
+--Sig_/Eo.BL+GwBgSHqa1w194kSj=--
