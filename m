@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F8B3AB3B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B313AB3B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhFQMjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:39:01 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:46884
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S230225AbhFQMjB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:39:01 -0400
-Received: by ajax-webmail-mail-app4 (Coremail) ; Thu, 17 Jun 2021 20:36:46
- +0800 (GMT+08:00)
-X-Originating-IP: [114.87.236.26]
-Date:   Thu, 17 Jun 2021 20:36:46 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   LinMa <linma@zju.edu.cn>
-To:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re:Re: [PATCH 5.4 39/78] Bluetooth: use correct lock to prevent UAF
- of hdev object
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S231389AbhFQMjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:39:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231345AbhFQMjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 08:39:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3723610CA;
+        Thu, 17 Jun 2021 12:36:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623933423;
+        bh=vtIoA3RUe9cfBWUdhTz7R1sk/khl1Kit7uv87wGgMwE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N3s56ziwwBuYAAcAAaOb5NasxsTephHi7oyHCorEYVIRQufV3DpM+2sYXh/hqTEo0
+         0xZU8wn8q+6PmzRxv3He6H+rW1zIuk5XDBdfnMOV8DahEKn8nW/ZAD09IGyiH8DVeu
+         pfePkV2t/q4AZHSV7cR0iXMqNsU5geItSPo3ys2Vt7UEx53v2Kq8JiYMI86mYEW0wV
+         nqJNFxofVKcLvxWJM8mlB6i38wThfWdODjuR5vPy/U46LDlJurv8mJQQVW3no6rlXL
+         W9CC21egH4K6TdC7T9WFDEGUv5XXwPrrJ7qc9/3z/mbB3NF6vfYFvluImOdz9rGP1L
+         7DpeLTuYBaarQ==
+Date:   Thu, 17 Jun 2021 14:36:56 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
+Subject: Re: [PATCH v7 0/5] printk: Userspace format indexing support
+Message-ID: <YMtB6Anv98O4mW9C@linux.fritz.box>
+References: <cover.1623775748.git.chris@chrisdown.name>
+ <YMsfo3/b1LvOoiM0@alley>
 MIME-Version: 1.0
-Message-ID: <70042d9f.111abd.17a19f94b84.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgC3L0DfQctgalBhAA--.11166W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwMTElNG3CvYeAABsC
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YMsfo3/b1LvOoiM0@alley>
+X-OS:   Linux linux.fritz.box 5.12.9-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ck9vcHMsIHNvcnJ5IGZvciB0aGUgZGVsYXkgaGVyZS4gSSBqdXN0IGZvcmdvdCB0byBjaGVjayB0
-aGUgbWFpbHMuCgpUaGlzIGNvbW1lbnQgaXMgcmlnaHQsIHdoZW4gSSBzdWJtaXQgdGhpcyBwYXRj
-aCBJIG1lbnRpb25lZCB0aGF0IHRoZSByZXBsYWNlbWVudCBvZiB0aGlzIGxvY2sgY2FuIGhhbmcg
-dGhlIGRldGFjaGluZyByb3V0aW5lIGJlY2F1c2UgaXQgbmVlZHMgdG8gd2FpdCB0aGUgcmVsZWFz
-ZSBvZiB0aGUgbG9ja19zb2NrKCkuCgpCdXQgdGhpcyBkb2VzIG5vIGhhcm0gaW4gbXkgdGVzdGlu
-Zy4gSW4gZmFjdCwgdGhlIHJlbGV2YW50IGNvZGUgY2FuIG9ubHkgYmUgZXhlY3V0ZWQgd2hlbiBy
-ZW1vdmluZyB0aGUgY29udHJvbGxlci4gSSB0aGluayBpdCBjYW4gd2FpdCBmb3IgdGhlIGxvY2su
-IE1vcmVvdmVyLCB0aGlzIHBhdGNoIGNhbiBmaXggdGhlIHBvdGVudGlhbCBVQUYgaW5kZWVkLgoK
-PiBtYXkgbmVlZCBmdXJ0aGVyIGRpc2N1c3Npb24uICh3cm90ZSBpbiBwcmV2aW91cyBtYWlsIGxp
-c3QKCldlbGNvbWUgdGhlIGFkZGl0aW9uYWwgYWR2aXNlIG9uIHRoaXMuIERvZXMgdGhpcyByZWFs
-bHkgYnJva2VuIHRoZSBsb2NrIHByaW5jaXBsZT8KClJlZ2FyZHMgTGluIE1hCgrlnKggMjAyMS0w
-Ni0xNiAyMzowMTowOO+8jCJHcmVnIEtyb2FoLUhhcnRtYW4iIDxncmVna2hAbGludXhmb3VuZGF0
-aW9uLm9yZz4g5YaZ6YGT77yaCgo+T24gTW9uLCBKdW4gMTQsIDIwMjEgYXQgMDQ6MTU6MDJQTSAr
-MDIwMCwgRXJpYyBEdW1hemV0IHdyb3RlOgo+PiAKPj4gCj4+IE9uIDYvOC8yMSA4OjI3IFBNLCBH
-cmVnIEtyb2FoLUhhcnRtYW4gd3JvdGU6Cj4+ID4gRnJvbTogTGluIE1hIDxsaW5tYUB6anUuZWR1
-LmNuPgo+PiA+IAo+PiA+IGNvbW1pdCBlMzA1NTA5ZTY3OGIzYTRhZjJiM2NmZDQxMGY0MDlmN2Nk
-YWFiYjUyIHVwc3RyZWFtLgo+PiA+IAo+PiA+IFRoZSBoY2lfc29ja19kZXZfZXZlbnQoKSBmdW5j
-dGlvbiB3aWxsIGNsZWFudXAgdGhlIGhkZXYgb2JqZWN0IGZvcgo+PiA+IHNvY2tldHMgZXZlbiBp
-ZiB0aGlzIG9iamVjdCBtYXkgc3RpbGwgYmUgaW4gdXNlZCB3aXRoaW4gdGhlCj4+ID4gaGNpX3Nv
-Y2tfYm91bmRfaW9jdGwoKSBmdW5jdGlvbiwgcmVzdWx0IGluIFVBRiB2dWxuZXJhYmlsaXR5Lgo+
-PiA+IAo+PiA+IFRoaXMgcGF0Y2ggcmVwbGFjZSB0aGUgQkggY29udGV4dCBsb2NrIHRvIHNlcmlh
-bGl6ZSB0aGVzZSBhZmZhaXJzCj4+ID4gYW5kIHByZXZlbnQgdGhlIHJhY2UgY29uZGl0aW9uLgo+
-PiA+IAo+PiA+IFNpZ25lZC1vZmYtYnk6IExpbiBNYSA8bGlubWFAemp1LmVkdS5jbj4KPj4gPiBT
-aWduZWQtb2ZmLWJ5OiBNYXJjZWwgSG9sdG1hbm4gPG1hcmNlbEBob2x0bWFubi5vcmc+Cj4+ID4g
-U2lnbmVkLW9mZi1ieTogR3JlZyBLcm9haC1IYXJ0bWFuIDxncmVna2hAbGludXhmb3VuZGF0aW9u
-Lm9yZz4KPj4gPiAtLS0KPj4gPiAgbmV0L2JsdWV0b290aC9oY2lfc29jay5jIHwgICAgNCArKy0t
-Cj4+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4+
-ID4gCj4+ID4gLS0tIGEvbmV0L2JsdWV0b290aC9oY2lfc29jay5jCj4+ID4gKysrIGIvbmV0L2Js
-dWV0b290aC9oY2lfc29jay5jCj4+ID4gQEAgLTc1NSw3ICs3NTUsNyBAQCB2b2lkIGhjaV9zb2Nr
-X2Rldl9ldmVudChzdHJ1Y3QgaGNpX2RldiAqCj4+ID4gIAkJLyogRGV0YWNoIHNvY2tldHMgZnJv
-bSBkZXZpY2UgKi8KPj4gPiAgCQlyZWFkX2xvY2soJmhjaV9za19saXN0LmxvY2spOwo+PiA+ICAJ
-CXNrX2Zvcl9lYWNoKHNrLCAmaGNpX3NrX2xpc3QuaGVhZCkgewo+PiA+IC0JCQliaF9sb2NrX3Nv
-Y2tfbmVzdGVkKHNrKTsKPj4gPiArCQkJbG9ja19zb2NrKHNrKTsKPj4gPiAgCQkJaWYgKGhjaV9w
-aShzayktPmhkZXYgPT0gaGRldikgewo+PiA+ICAJCQkJaGNpX3BpKHNrKS0+aGRldiA9IE5VTEw7
-Cj4+ID4gIAkJCQlzay0+c2tfZXJyID0gRVBJUEU7Cj4+ID4gQEAgLTc2NCw3ICs3NjQsNyBAQCB2
-b2lkIGhjaV9zb2NrX2Rldl9ldmVudChzdHJ1Y3QgaGNpX2RldiAqCj4+ID4gIAo+PiA+ICAJCQkJ
-aGNpX2Rldl9wdXQoaGRldik7Cj4+ID4gIAkJCX0KPj4gPiAtCQkJYmhfdW5sb2NrX3NvY2soc2sp
-Owo+PiA+ICsJCQlyZWxlYXNlX3NvY2soc2spOwo+PiA+ICAJCX0KPj4gPiAgCQlyZWFkX3VubG9j
-aygmaGNpX3NrX2xpc3QubG9jayk7Cj4+ID4gIAl9Cj4+ID4gCj4+ID4gCj4+IAo+PiAKPj4gVGhp
-cyBwYXRjaCBpcyBidWdneS4KPj4gCj4+IGxvY2tfc29jaygpIGNhbiBzbGVlcC4KPj4gCj4+IEJ1
-dCB0aGUgcmVhZF9sb2NrKCZoY2lfc2tfbGlzdC5sb2NrKSB0d28gbGluZXMgYmVmb3JlIGlzIG5v
-dCBnb2luZyB0byBhbGxvdyB0aGUgc2xlZXAuCj4+IAo+PiBIbW1tID8KPj4gCj4+IAo+Cj5PZGQs
-IExpbiwgZGlkIHlvdSBzZWUgYW55IHByb2JsZW1zIHdpdGggeW91ciB0ZXN0aW5nIG9mIHRoaXM/
-Cj4K
++++ Petr Mladek [17/06/21 12:10 +0200]:
+>On Tue 2021-06-15 17:52:20, Chris Down wrote:
+>> We have a number of systems industry-wide that have a subset of their
+>> functionality that works as follows:
+>>
+>> 1. Receive a message from local kmsg, serial console, or netconsole;
+>> 2. Apply a set of rules to classify the message;
+>> 3. Do something based on this classification (like scheduling a
+>>    remediation for the machine), rinse, and repeat.
+>>
+>> This provides a solution to the issue of silently changed or deleted
+>> printks: we record pointers to all printk format strings known at
+>> compile time into a new .printk_index section, both in vmlinux and
+>> modules. At runtime, this can then be iterated by looking at
+>> <debugfs>/printk/index/<module>, which emits the following format, both
+>> readable by humans and able to be parsed by machines:
+>>
+>>     $ head -1 vmlinux; shuf -n 5 vmlinux
+>>     # <level[,flags]> filename:line function "format"
+>>     <5> block/blk-settings.c:661 disk_stack_limits "%s: Warning: Device %s is misaligned\n"
+>>     <4> kernel/trace/trace.c:8296 trace_create_file "Could not create tracefs '%s' entry\n"
+>>     <6> arch/x86/kernel/hpet.c:144 _hpet_print_config "hpet: %s(%d):\n"
+>>     <6> init/do_mounts.c:605 prepare_namespace "Waiting for root device %s...\n"
+>>     <6> drivers/acpi/osl.c:1410 acpi_no_auto_serialize_setup "ACPI: auto-serialization disabled\n"
+>>
+>> This mitigates the majority of cases where we have a highly-specific
+>> printk which we want to match on, as we can now enumerate and check
+>> whether the format changed or the printk callsite disappeared entirely
+>> in userspace. This allows us to catch changes to printks we monitor
+>> earlier and decide what to do about it before it becomes problematic.
+>>
+>> There is no additional runtime cost for printk callers or printk itself,
+>> and the assembly generated is exactly the same.
+>>
+>> Chris Down (5):
+>>   string_helpers: Escape double quotes in escape_special
+>>   printk: Straighten out log_flags into printk_info_flags
+>>   printk: Rework parse_prefix into printk_parse_prefix
+>>   printk: Userspace format indexing support
+>>   printk: index: Add indexing support to dev_printk
+>
+>The patchset looks ready for linux-next from my POV. I could fixup the
+>messages as suggested by Andy when pushing.
+>
+>Well, I would still like to get acks from:
+>
+>   + Andy for the 1st patch
+>   + Jessica for the changes in the module loader code in 4th patch.
+
+Hi Petr, the module.{c,h} changes are fine by me:
+
+     Acked-by: Jessica Yu <jeyu@kernel.org>
+
+Thank you,
+
+Jessica
