@@ -2,233 +2,476 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DFE3AB793
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B18D3AB79C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbhFQPgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:36:48 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:37520 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231661AbhFQPgo (ORCPT
+        id S232541AbhFQPic convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Jun 2021 11:38:32 -0400
+Received: from mail-yb1-f169.google.com ([209.85.219.169]:46642 "EHLO
+        mail-yb1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231661AbhFQPib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:36:44 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HFQxis003388;
-        Thu, 17 Jun 2021 10:34:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=ZWlX/sKpUGcPSj/SPb1oTSUr/7SHFkb0kqclKOs2YCA=;
- b=Z0VTMRJs6DLqlqEepZKhSG2qH+h8LtSHY90a9+/MfEtvMp7E6ZzhgMHF0856i3WysZBa
- +ZShuFzY8xq4aIcEpaiPbB7/5HebVAFWK0VnZxnVt9vUFZie5eUUxMNbkTR7YJS1Nb1C
- ZKzp0RNzQhAV4LPKGZ8f9MdRmgbZF3RhmeZF23/nis9QS6vdVmfr7PpqCY9dE9VAJaZ7
- ZjJPo+k5TciZ84JsBYlBU2EbUl1VdOCROuW7/keBwZqXC+AWc59jt9pQ6mJ763sm1cHF
- 2wzgW6rn3BezkxszftsIdbozDqP7Ij1X+dzPJt/KdKXNMj4UtoNV/WH8TrCkQcBpzGef tw== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 397ab2jq1s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 17 Jun 2021 10:34:22 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 17 Jun
- 2021 16:34:21 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Thu, 17 Jun 2021 16:34:21 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.68])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C0BE52B2;
-        Thu, 17 Jun 2021 15:34:19 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
-        <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] soundwire: stream: Use polling for DP Prepare completion
-Date:   Thu, 17 Jun 2021 16:34:10 +0100
-Message-ID: <20210617153410.27922-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 17 Jun 2021 11:38:31 -0400
+Received: by mail-yb1-f169.google.com with SMTP id h15so8790878ybm.13;
+        Thu, 17 Jun 2021 08:36:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bdQuWeQt6RjtSg4ZgCNzfCdi542ckNbGHKSYlXEGyqc=;
+        b=CmbZl1Amn6alLwaP39jIztg2dD9wT5HYaMH0vmRGifBh4O9nlTVntZ/dRdTsXIHCy5
+         aTh2DRVNXfiWAqANtD/pUERXjkAtIdW1dGoHl49GRR5vG2itgJNC1weZctaLxKzhKh/x
+         H3oHthJ94nO9WtDnJyduIpOvaS3S+XsAHZEBK96FH/vMfire943t0vEXNU3PewttYvWN
+         eOUf2T5OiCAvROVOw/+IyOw+FZgjMux7RBZw5FHDLyCEACzztoaxEvbvBNIA6rRzDbaU
+         BRblfCX+ibq4xPvyvcW69lLhwifffygdpTYKyOQgexWCCMms3ih56dlQi7wbbuB7Zs8K
+         +1Vw==
+X-Gm-Message-State: AOAM532x2SksKqr62l8MSLO6wY/n52uNJfLjksCrkhhZs4q/iX+GBNOi
+        TbJP9BsPmXiGgAa+AgXNyozdfUdcKybWT3hytqY=
+X-Google-Smtp-Source: ABdhPJxoPYfA3myfATBHrxyD3e4u4v3B9+ji5LUHFHCGi4wP9+vD9SA5XsaTpiL8O+ftIHM/TIJOdgJDp988HdsjugA=
+X-Received: by 2002:a25:3d41:: with SMTP id k62mr6597424yba.479.1623944183284;
+ Thu, 17 Jun 2021 08:36:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: FPNt1Es1ya0FIeLF4-ytsavhjvH8W67v
-X-Proofpoint-GUID: FPNt1Es1ya0FIeLF4-ytsavhjvH8W67v
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
- spamscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0 adultscore=0
- suspectscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106170098
+References: <20210616181545.496149-1-kernel@esmil.dk> <20210616181545.496149-3-kernel@esmil.dk>
+ <20210617150740.GA2676642@roeck-us.net>
+In-Reply-To: <20210617150740.GA2676642@roeck-us.net>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Thu, 17 Jun 2021 17:36:12 +0200
+Message-ID: <CANBLGczCSosEP-aRCs_arfS_DRx15XRZsCZp0+TxXQNX33svvg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] hwmon: (sfctemp) Add StarFive JH7100 temperature sensor
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sdw_prep_deprep_slave_ports() cannot use the port interrupt to signal
-CP_SM completion because it is called while holding the bus lock, which
-blocks the alert handler from running.
+On Thu, 17 Jun 2021 at 17:07, Guenter Roeck <linux@roeck-us.net> wrote:
+> On Wed, Jun 16, 2021 at 08:15:45PM +0200, Emil Renner Berthing wrote:
+> > Register definitions based on sfctemp driver in the StarFive
+> > 5.10 kernel by Samin Guo <samin.guo@starfivetech.com>.
+> >
+> > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> > ---
+> >
+> > @Samin: Only the register definitions and conversion constants are left
+> > from your driver, but still it would be really nice if you could reply
+> > to this mail with your Signed-off-by. Thanks!
+> >
+> >
+> >  drivers/hwmon/Kconfig   |   9 ++
+> >  drivers/hwmon/Makefile  |   1 +
+> >  drivers/hwmon/sfctemp.c | 309 ++++++++++++++++++++++++++++++++++++++++
+>
+> Documentation/hwmon/sfctemp is missing.
+>
+> >  3 files changed, 319 insertions(+)
+> >  create mode 100644 drivers/hwmon/sfctemp.c
+> >
+> > diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> > index 87624902ea80..fa7562920dfa 100644
+> > --- a/drivers/hwmon/Kconfig
+> > +++ b/drivers/hwmon/Kconfig
+> > @@ -1751,6 +1751,15 @@ config SENSORS_STTS751
+> >         This driver can also be built as a module. If so, the module
+> >         will be called stts751.
+> >
+> > +config SENSORS_SFCTEMP
+> > +     tristate "Starfive JH7100 temperature sensor"
+> > +     help
+> > +       If you say yes here you get support for temperature sensor
+> > +       on the Starfive JH7100 SoC.
+> > +
+> > +       This driver can also be built as a module.  If so, the module
+> > +       will be called sfctemp.
+> > +
+> >  config SENSORS_SMM665
+> >       tristate "Summit Microelectronics SMM665"
+> >       depends on I2C
+> > diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> > index 59e78bc212cf..3723eb580bf3 100644
+> > --- a/drivers/hwmon/Makefile
+> > +++ b/drivers/hwmon/Makefile
+> > @@ -167,6 +167,7 @@ obj-$(CONFIG_SENSORS_SBTSI)       += sbtsi_temp.o
+> >  obj-$(CONFIG_SENSORS_SCH56XX_COMMON)+= sch56xx-common.o
+> >  obj-$(CONFIG_SENSORS_SCH5627)        += sch5627.o
+> >  obj-$(CONFIG_SENSORS_SCH5636)        += sch5636.o
+> > +obj-$(CONFIG_SENSORS_SFCTEMP)        += sfctemp.o
+> >  obj-$(CONFIG_SENSORS_SL28CPLD)       += sl28cpld-hwmon.o
+> >  obj-$(CONFIG_SENSORS_SHT15)  += sht15.o
+> >  obj-$(CONFIG_SENSORS_SHT21)  += sht21.o
+> > diff --git a/drivers/hwmon/sfctemp.c b/drivers/hwmon/sfctemp.c
+> > new file mode 100644
+> > index 000000000000..62a838063e4e
+> > --- /dev/null
+> > +++ b/drivers/hwmon/sfctemp.c
+> > @@ -0,0 +1,309 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk>
+> > + * Copyright (C) 2021 Samin Guo <samin.guo@starfivetech.com>
+> > + */
+> > +#include <linux/completion.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/hwmon.h>
+> > +#include <linux/interrupt.h>
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/of.h>
+> > +#include <linux/platform_device.h>
+>
+> This may work on some systems, but on others it will result in:
+>
+> drivers/hwmon/sfctemp.c: In function ‘sfctemp_power_up’:
+> drivers/hwmon/sfctemp.c:76:2: error: implicit declaration of function ‘writel’
+>
+> drivers/hwmon/sfctemp.c: In function ‘sfctemp_convert’:
+> drivers/hwmon/sfctemp.c:144:17: error: implicit declaration of function ‘readl’
+>
+> It is necessary to include <linux/io.h>.
+>
+> > +
+> > +/* TempSensor reset. The RSTN can be de-asserted once the analog core has
+> > + * powered up. Trst(min 100ns)
+> > + * 0:reset  1:de-assert */
+>
+> /*
+>  * Please use standard multi-line comments.
+>  * checkpatch would tell you, plus it has other complaints.
+>  * Please run checkpatch --strict and fix what it reports.
+>  */
+> > +#define SFCTEMP_RSTN     BIT(0)
+> > +
+> > +/* TempSensor analog core power down. The analog core will be powered up
+> > + * Tpu(min 50us) after PD is de-asserted. RSTN should be held low until the
+> > + * analog core is powered up.
+> > + * 0:power up  1:power down */
+> > +#define SFCTEMP_PD       BIT(1)
+> > +
+> > +/* TempSensor start conversion enable.
+> > + * 0:disable  1:enable */
+> > +#define SFCTEMP_RUN      BIT(2)
+> > +
+> > +/* TempSensor calibration mode enable.
+> > + * 0:disable  1:enable */
+> > +#define SFCTEMP_CAL      BIT(4)
+> > +
+> > +/* TempSensor signature enable. Generate a toggle value outputting on DOUT for
+> > + * test purpose.
+> > + * 0:disable  1:enable */
+> > +#define SFCTEMP_SGN      BIT(5)
+> > +
+> > +/* TempSensor test access control.
+> > + * 0000:normal 0001:Test1  0010:Test2  0011:Test3
+> > + * 0100:Test4  1000:Test8  1001:Test9 */
+> > +#define SFCTEMP_TM_Pos   12
+> > +#define SFCTEMP_TM_Msk   GENMASK(15, 12)
+>
+> Defines should upper case. Besides, the above defines are not
+> used. Please remove unused defines, and please rename the others
+> to be upper case only.
+>
+> > +
+> > +/* TempSensor conversion value output.
+> > + * Temp(c)=DOUT*Y/4094 - K */
+> > +#define SFCTEMP_DOUT_Pos 16
+> > +#define SFCTEMP_DOUT_Msk GENMASK(27, 16)
+> > +
+> > +/* TempSensor digital test output. */
+> > +#define SFCTEMP_DIGO     BIT(31)
+> > +
+> > +/* DOUT to Celcius conversion constants */
+> > +#define SFCTEMP_Y1000 237500L
+> > +#define SFCTEMP_Z       4094L
+>
+> Please use
+>
+> #define<space><definition><tab><value>, eg
+>
+> #define SFCTEMP_Y1000   237500L
+> #define SFCTEMP_Z       4094L
+>
+> for all defines.
+>
+> > +#define SFCTEMP_K1000  81100L
+> > +
+> > +struct sfctemp {
+> > +     struct mutex lock;
+> > +     struct completion conversion_done;
+> > +     void __iomem *regs;
+> > +     bool enabled;
+> > +};
+> > +
+> > +static irqreturn_t sfctemp_isr(int irq, void *data)
+> > +{
+> > +     struct sfctemp *sfctemp = data;
+> > +
+> > +     complete(&sfctemp->conversion_done);
+> > +     return IRQ_HANDLED;
+> > +}
+> > +
+> > +static void sfctemp_power_up(struct sfctemp *sfctemp)
+> > +{
+> > +     /* make sure we're powered down first */
+> > +     writel(SFCTEMP_PD, sfctemp->regs);
+> > +     udelay(1);
+> > +
+> > +     writel(0, sfctemp->regs);
+> > +     /* wait t_pu(50us) + t_rst(100ns) */
+> > +     usleep_range(60, 200);
+> > +
+> > +     /* de-assert reset */
+> > +     writel(SFCTEMP_RSTN, sfctemp->regs);
+> > +     udelay(1); /* wait t_su(500ps) */
+> > +}
+> > +
+> > +static void sfctemp_power_down(struct sfctemp *sfctemp)
+> > +{
+> > +     writel(SFCTEMP_PD, sfctemp->regs);
+> > +}
+> > +
+> > +static void sfctemp_run_single(struct sfctemp *sfctemp)
+> > +{
+> > +     writel(SFCTEMP_RSTN | SFCTEMP_RUN, sfctemp->regs);
+> > +     udelay(1);
+> > +     writel(SFCTEMP_RSTN, sfctemp->regs);
+> > +}
+> > +
+> > +static int sfctemp_enable(struct sfctemp *sfctemp)
+> > +{
+> > +     mutex_lock(&sfctemp->lock);
+> > +     if (sfctemp->enabled)
+> > +             goto done;
+> > +
+> > +     sfctemp_power_up(sfctemp);
+> > +     sfctemp->enabled = true;
+> > +done:
+> > +     mutex_unlock(&sfctemp->lock);
+> > +     return 0;
+> > +}
+> > +
+> > +static int sfctemp_disable(struct sfctemp *sfctemp)
+> > +{
+> > +     mutex_lock(&sfctemp->lock);
+> > +     if (!sfctemp->enabled)
+> > +             goto done;
+> > +
+> > +     sfctemp_power_down(sfctemp);
+> > +     sfctemp->enabled = false;
+> > +done:
+> > +     mutex_unlock(&sfctemp->lock);
+> > +     return 0;
+> > +}
+> > +
+> > +static int sfctemp_convert(struct sfctemp *sfctemp, long *val)
+> > +{
+> > +     long ret;
+>
+> Why long ? Sure, wait_for_completion_interruptible_timeout()
+> returns a long, but it will never return a value large enough to warrant
+> a long here.
+>
+> > +
+> > +     mutex_lock(&sfctemp->lock);
+> > +     if (!sfctemp->enabled) {
+> > +             ret = -ENODATA;
+> > +             goto out;
+> > +     }
+> > +
+> > +     sfctemp_run_single(sfctemp);
+> > +
+> > +     ret = wait_for_completion_interruptible_timeout(&sfctemp->conversion_done,
+> > +                                                     msecs_to_jiffies(10));
+> > +     if (ret < 0)
+> > +             goto out;
+> > +
+> > +     /* calculate temperature in milli Celcius */
+> > +     *val = (long)((readl(sfctemp->regs) & SFCTEMP_DOUT_Msk) >> SFCTEMP_DOUT_Pos)
+> > +             * SFCTEMP_Y1000 / SFCTEMP_Z - SFCTEMP_K1000;
+> > +
+> > +     ret = 0;
+> > +out:
+> > +     mutex_unlock(&sfctemp->lock);
+> > +     return ret;
+> > +}
+> > +
+> > +static umode_t sfctemp_is_visible(const void *data, enum hwmon_sensor_types type,
+> > +                               u32 attr, int channel)
+> > +{
+> > +     switch (type) {
+> > +     case hwmon_temp:
+> > +             switch (attr) {
+> > +             case hwmon_temp_enable:
+> > +                     return 0644;
+> > +             case hwmon_temp_input:
+> > +                     return 0444;
+> > +             }
+> > +             return 0;
+> > +     default:
+> > +             return 0;
+> > +     }
+> > +}
+> > +
+> > +static int sfctemp_read(struct device *dev, enum hwmon_sensor_types type,
+> > +                     u32 attr, int channel, long *val)
+> > +{
+> > +     struct sfctemp *sfctemp = dev_get_drvdata(dev);
+> > +
+> > +     switch (type) {
+> > +     case hwmon_temp:
+> > +             switch (attr) {
+> > +             case hwmon_temp_enable:
+> > +                     *val = sfctemp->enabled;
+> > +                     return 0;
+> > +             case hwmon_temp_input:
+> > +                     return sfctemp_convert(sfctemp, val);
+> > +             }
+> > +             return -EINVAL;
+> > +     default:
+> > +             return -EINVAL;
+> > +     }
+> > +}
+> > +
+> > +static int sfctemp_write(struct device *dev, enum hwmon_sensor_types type,
+> > +                      u32 attr, int channel, long val)
+> > +{
+> > +     struct sfctemp *sfctemp = dev_get_drvdata(dev);
+> > +
+> > +     switch (type) {
+> > +     case hwmon_temp:
+> > +             switch (attr) {
+> > +             case hwmon_temp_enable:
+> > +                     if (val == 0)
+> > +                             return sfctemp_disable(sfctemp);
+> > +                     if (val == 1)
+> > +                             return sfctemp_enable(sfctemp);
+> > +                     break;
+> > +             }
+> > +             return -EINVAL;
+> > +     default:
+> > +             return -EINVAL;
+> > +     }
+> > +}
+> > +
+> > +static const struct hwmon_channel_info *sfctemp_info[] = {
+> > +     HWMON_CHANNEL_INFO(chip, HWMON_C_REGISTER_TZ),
+> > +     HWMON_CHANNEL_INFO(temp, HWMON_T_ENABLE | HWMON_T_INPUT),
+> > +     NULL
+> > +};
+> > +
+> > +static const struct hwmon_ops sfctemp_hwmon_ops = {
+> > +     .is_visible = sfctemp_is_visible,
+> > +     .read = sfctemp_read,
+> > +     .write = sfctemp_write,
+> > +};
+> > +
+> > +static const struct hwmon_chip_info sfctemp_chip_info = {
+> > +     .ops = &sfctemp_hwmon_ops,
+> > +     .info = sfctemp_info,
+> > +};
+> > +
+> > +static int sfctemp_probe(struct platform_device *pdev)
+> > +{
+> > +     struct device *dev = &pdev->dev;
+> > +     struct device *hwmon_dev;
+> > +     struct resource *mem;
+> > +     struct sfctemp *sfctemp;
+> > +     long val;
+> > +     int ret;
+> > +
+> > +     sfctemp = devm_kzalloc(dev, sizeof(*sfctemp), GFP_KERNEL);
+> > +     if (!sfctemp)
+> > +             return -ENOMEM;
+> > +
+> > +     dev_set_drvdata(dev, sfctemp);
+> > +     mutex_init(&sfctemp->lock);
+> > +     init_completion(&sfctemp->conversion_done);
+> > +
+> > +     mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +     sfctemp->regs = devm_ioremap_resource(dev, mem);
+> > +     if (IS_ERR(sfctemp->regs))
+> > +             return PTR_ERR(sfctemp->regs);
+> > +
+> > +     ret = platform_get_irq(pdev, 0);
+> > +     if (ret < 0)
+> > +             return ret;
+> > +
+> > +     ret = devm_request_irq(dev, ret, sfctemp_isr,
+> > +                            IRQF_SHARED, pdev->name, sfctemp);
+> > +     if (ret) {
+> > +             dev_err(dev, "request irq failed: %d\n", ret);
+> > +             return ret;
+> > +     }
+> > +
+> > +     ret = sfctemp_enable(sfctemp);
+> > +     if (ret)
+> > +             return ret;
+>
+> Please consider adding devm_add_action_or_reset() to disable the sensor.
+> Then you can use devm_hwmon_device_register_with_info(), and there is
+> no need for a remove function.
+> > +
+> > +     hwmon_dev = hwmon_device_register_with_info(dev, pdev->name, sfctemp,
+> > +                                                 &sfctemp_chip_info, NULL);
+> > +     if (IS_ERR(hwmon_dev))
+> > +             return PTR_ERR(hwmon_dev);
+> > +
+> > +     /* do a conversion to check everything works */
+> > +     ret = sfctemp_convert(sfctemp, &val);
+>
+> Please drop this check; it will result in substantial boot delays.
+> The assumption is the the hardware works; the system should not be
+> optimized (slowed down) to handle a potential and hopefully rare
+> failure case.
+>
+> > +     if (ret) {
+> > +             hwmon_device_unregister(hwmon_dev);
+> > +             return ret;
+> > +     }
+> > +
+> > +     dev_info(dev, "%ld.%03ld C\n", val / 1000, val % 1000);
+>
+> Please drop this message. Anyone interested in boot-time temperature
+> readings can add a script and get it from sysfs attributes as needed.
+>
+> > +     return 0;
+> > +}
+> > +
+> > +static int sfctemp_remove(struct platform_device *pdev)
+> > +{
+> > +     struct device *dev = &pdev->dev;
+> > +     struct sfctemp *sfctemp = dev_get_drvdata(dev);
+> > +
+> > +     hwmon_device_unregister(dev);
+> > +     return sfctemp_disable(sfctemp);
+> > +}
+> > +
+> > +static const struct of_device_id sfctemp_of_match[] = {
+> > +     { .compatible = "starfive,jh7100-temp" },
+> > +     { /* sentinel */ }
+> > +};
+> > +
+> > +MODULE_DEVICE_TABLE(of, sfctemp_of_match);
+> > +
+> > +static struct platform_driver sfctemp_driver = {
+> > +     .driver = {
+> > +             .name = "sfctemp",
+> > +             .of_match_table = of_match_ptr(sfctemp_of_match),
+> > +     },
+> > +     .probe  = sfctemp_probe,
+> > +     .remove = sfctemp_remove,
+> > +};
+> > +module_platform_driver(sfctemp_driver);
+> > +
+> > +MODULE_AUTHOR("Emil Renner Berthing");
+> > +MODULE_DESCRIPTION("StarFive JH7100 temperature sensor driver");
+> > +MODULE_LICENSE("GPL");
 
-Change to polling the PREPARESTATUS register and remove the
-infrastructure that was implemented for the previous interrupt waiting.
+Hi Guenter,
 
-A new configuration field 'ch_prep_poll_us' is added to struct
-sdw_dpn_prop so that the peripheral driver may select a polling interval.
-If this is left at zero a default interval of 500 usec is used.
+Thanks for the review. It all sounds reasonable. I'll address it all in v2.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- drivers/soundwire/bus.c       |  2 --
- drivers/soundwire/slave.c     |  4 ----
- drivers/soundwire/stream.c    | 24 ++++++++++++++----------
- include/linux/soundwire/sdw.h |  8 ++++++--
- 4 files changed, 20 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index adcbf3969110..606fc26d407f 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1351,7 +1351,6 @@ static int sdw_handle_dp0_interrupt(struct sdw_slave *slave, u8 *slave_status)
- 		 */
- 
- 		if (status & SDW_DP0_INT_PORT_READY) {
--			complete(&slave->port_ready[0]);
- 			clear |= SDW_DP0_INT_PORT_READY;
- 		}
- 
-@@ -1429,7 +1428,6 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
- 		 * for ports implementing CP_SM.
- 		 */
- 		if (status & SDW_DPN_INT_PORT_READY) {
--			complete(&slave->port_ready[port]);
- 			clear |= SDW_DPN_INT_PORT_READY;
- 		}
- 
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index 669d7573320b..55ca884ea951 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -26,7 +26,6 @@ int sdw_slave_add(struct sdw_bus *bus,
- {
- 	struct sdw_slave *slave;
- 	int ret;
--	int i;
- 
- 	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
- 	if (!slave)
-@@ -62,9 +61,6 @@ int sdw_slave_add(struct sdw_bus *bus,
- 	slave->probed = false;
- 	slave->first_interrupt_done = false;
- 
--	for (i = 0; i < SDW_MAX_PORTS; i++)
--		init_completion(&slave->port_ready[i]);
--
- 	mutex_lock(&bus->bus_lock);
- 	list_add_tail(&slave->node, &bus->slaves);
- 	mutex_unlock(&bus->bus_lock);
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 1eaedaaba094..bd6b3b64de90 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -8,11 +8,13 @@
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/init.h>
-+#include <linux/iopoll.h>
- #include <linux/module.h>
- #include <linux/mod_devicetable.h>
- #include <linux/slab.h>
- #include <linux/soundwire/sdw_registers.h>
- #include <linux/soundwire/sdw.h>
-+#include <linux/time.h>
- #include <sound/soc.h>
- #include "bus.h"
- 
-@@ -419,11 +421,10 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 				       struct sdw_port_runtime *p_rt,
- 				       bool prep)
- {
--	struct completion *port_ready;
- 	struct sdw_dpn_prop *dpn_prop;
- 	struct sdw_prepare_ch prep_ch;
--	unsigned int time_left;
- 	bool intr = false;
-+	unsigned long prep_poll_us, prep_timeout_us;
- 	int ret = 0, val;
- 	u32 addr;
- 
-@@ -478,16 +479,19 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 		}
- 
- 		/* Wait for completion on port ready */
--		port_ready = &s_rt->slave->port_ready[prep_ch.num];
--		time_left = wait_for_completion_timeout(port_ready,
--				msecs_to_jiffies(dpn_prop->ch_prep_timeout));
-+		prep_timeout_us = dpn_prop->ch_prep_timeout * USEC_PER_MSEC;
-+		if (dpn_prop->ch_prep_poll_us)
-+			prep_poll_us = dpn_prop->ch_prep_poll_us;
-+		else
-+			prep_poll_us = SDW_DEFAULT_DP_PREP_POLL_US;
- 
--		val = sdw_read(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
--		val &= p_rt->ch_mask;
--		if (!time_left || val) {
-+		ret = read_poll_timeout(sdw_read, val, ((val & p_rt->ch_mask) == 0),
-+					prep_poll_us, prep_timeout_us, false,
-+					s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
-+		if (ret < 0) {
- 			dev_err(&s_rt->slave->dev,
--				"Chn prep failed for port:%d\n", prep_ch.num);
--			return -ETIMEDOUT;
-+				"Chn prep failed for port %d: %d\n", prep_ch.num, ret);
-+			return ret;
- 		}
- 	}
- 
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index ddbeb00799e4..4e5290b083bf 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -67,6 +67,9 @@ enum {
- #define SDW_BLOCK_PACKG_PER_PORT	BIT(0)
- #define SDW_BLOCK_PACKG_PER_CH		BIT(1)
- 
-+/* Default interval to poll for DP prepare completion */
-+#define SDW_DEFAULT_DP_PREP_POLL_US	500
-+
- /**
-  * enum sdw_slave_status - Slave status
-  * @SDW_SLAVE_UNATTACHED: Slave is not attached with the bus.
-@@ -295,6 +298,8 @@ struct sdw_dpn_audio_mode {
-  * @simple_ch_prep_sm: If the port supports simplified channel prepare state
-  * machine
-  * @ch_prep_timeout: Port-specific timeout value, in milliseconds
-+ * @ch_prep_poll_us: Interval to poll for CP_SM prepare completion. Zero means
-+ *                   poll at SDW_DEFAULT_DP_PREP_POLL_US intervals.
-  * @imp_def_interrupts: If set, each bit corresponds to support for
-  * implementation-defined interrupts
-  * @max_ch: Maximum channels supported
-@@ -321,6 +326,7 @@ struct sdw_dpn_prop {
- 	u32 max_grouping;
- 	bool simple_ch_prep_sm;
- 	u32 ch_prep_timeout;
-+	u32 ch_prep_poll_us;
- 	u32 imp_def_interrupts;
- 	u32 max_ch;
- 	u32 min_ch;
-@@ -641,7 +647,6 @@ struct sdw_slave_ops {
-  * @prop: Slave properties
-  * @debugfs: Slave debugfs
-  * @node: node for bus list
-- * @port_ready: Port ready completion flag for each Slave port
-  * @m_port_map: static Master port map for each Slave port
-  * @dev_num: Current Device Number, values can be 0 or dev_num_sticky
-  * @dev_num_sticky: one-time static Device Number assigned by Bus
-@@ -673,7 +678,6 @@ struct sdw_slave {
- 	struct dentry *debugfs;
- #endif
- 	struct list_head node;
--	struct completion port_ready[SDW_MAX_PORTS];
- 	unsigned int m_port_map[SDW_MAX_PORTS];
- 	u16 dev_num;
- 	u16 dev_num_sticky;
--- 
-2.20.1
-
+/Emil
