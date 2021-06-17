@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AA53ABD09
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9247B3ABD0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233688AbhFQTqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 15:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
+        id S233735AbhFQTq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 15:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbhFQTqI (ORCPT
+        with ESMTP id S231186AbhFQTqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 15:46:08 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBC3C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 12:44:00 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so2404531pjo.3;
-        Thu, 17 Jun 2021 12:44:00 -0700 (PDT)
+        Thu, 17 Jun 2021 15:46:24 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E9AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 12:44:16 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id a127so5833181pfa.10;
+        Thu, 17 Jun 2021 12:44:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Hdzvs1xs4XG3cpyN4NkJEKqbHLmgGkruX+DR+rsCUB8=;
-        b=KzJwSd6ASPVS70vFaIeoMnaFl69YBeca53kGHvijVtBhgsWbanwrpO8qZcVlpjhzGy
-         oqCWhUzPocyp1GqUVxqQDpd+pdcZV1buOgaveUqgEA/lu9wT5s1/sOtP99BFFCoIUB9h
-         GrFF+nn++sPbetBCyrdoZDL3Mj7Kr6RTEYETq17limuCSOIk0ZIfVM59aw31RIiXxuJ6
-         AjKTH1Y0cpascG4sdEbQxbdRZZBIIWd85cV/dvG0FOUXPWqeNcMnfw1EOOLCS9Kdyb3P
-         3CjoywJ+C4DOZz3YxtWeZZJJ1MGuYNJBJeWQ7jgqaT8avdVT4bWQbRypsrfPvmWe+vB3
-         cbIA==
+        bh=083k0zv8Ytg086lmX8X+TtAKRzXKvvth7IVx9plMtXg=;
+        b=iuajfJilA0fwo4o/4oh4VDEAW6K9CA+mAVG1N73pVcpReCbdShNd7WB85LybfZQHjB
+         Xby86N2VkOHbLyYxQhP0vKv//8KimP7qM2RAnzNuEewy84WGVtavZPyAfT0PMEevO3kh
+         YaCKWXcZGDrqVekkPU+9J9+1Ei4tLb74yW5VYooD8DsMYNcE8WIgtr31HhazXJFoAoJ/
+         hQs+rCZgYmqhhuNKGE8q7CaRprAt6+6XzW/O5CC6BAL4huoAdKKyxewif5XV+9HJ0lxb
+         0lQhHy7HhGKhmK/hs8qUlRhJcBWJYce1ZjdCFMBc6WrmHw3Y9np3Oja+5GynM0VhzNmB
+         bwOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Hdzvs1xs4XG3cpyN4NkJEKqbHLmgGkruX+DR+rsCUB8=;
-        b=HNRhghDFFk9iU64/F8XJrCPCgWBe3JgYOgoqVbhAd6qs1naINWOjiV4gm10Myl39FV
-         u05c5JJz5O6Mcu4NcFcR4BxjSae1T+NQ7TnxRNWcZb5/5Pe5N0MoMgC2PPmnZcjoJ+0U
-         wo/g28jiGmMHdFpMj/KxiFk12dEYIxCqC5cjZjIfBvf04vB5fCUKhuydGO98xt58jwjI
-         2C6bsFIBBXUePlPZyxLrVvyiltQuFOtgobG/iHYFPKful+vBA7jBix7em/HNxPffyX49
-         RJh0SqkgeyZ771Ue6phcP004VIXKbzK8G7Q22j00hNVapf5WNA2JsJmRSzYpI+/wSfR9
-         Fzow==
-X-Gm-Message-State: AOAM531mcOWFemgJtrj/opHsz0oaCwYe2VsP1rNnFZtzb3u/FfC+1qgl
-        zzPkUwtJjIn9AdbkTKpurSk=
-X-Google-Smtp-Source: ABdhPJyONX1RytaqS/1Abh60D0SZ6YpWdjvwgyXHIGp/cDL0NRrUFyKJEfDLIqaBQz0JNR6EF1p1Lw==
-X-Received: by 2002:a17:90b:3147:: with SMTP id ip7mr7180115pjb.8.1623959039950;
-        Thu, 17 Jun 2021 12:43:59 -0700 (PDT)
+        bh=083k0zv8Ytg086lmX8X+TtAKRzXKvvth7IVx9plMtXg=;
+        b=P6m5ny36Aapdttl7nBksMi0u/8s4LOfPivnoCX8wNRx3i4NQULsBTbX8K/DvVfu4k/
+         wGAI7kphfb46VlQ1wK61kMZLwBJlakIJCo8fewZhmtyvgj+5KycztIaRLzkY068BkiWn
+         v9bkg671rMC99aVpfSm4o/AhHGv14kwUUEM3JeT2ysASjiH7IH4Mh2KonrVR/y2IRfh8
+         8Gu86HZmZi6TXnIwtwn26cgHQGPD3kv+4GaHEEMztRkes/x1vBknMcXmIubfOb1NfBNB
+         QDKk3Ee0gZP/YQEnjBrpA9Op20coh2jzPtoB+3pOxq5/Q8zhzrAYA3ymhRSeNslAxBkR
+         Sa+w==
+X-Gm-Message-State: AOAM532xlBeFOsX8UrMEezCc3v0YzzhkqogAQHw8nT6PRTRaHoMyJ/kR
+        K04herp8ec1fKzNd55YnIxQ=
+X-Google-Smtp-Source: ABdhPJxt9c7UvvRETV6duPF5gupqd/aXsSexrgfUjLHqotY9ZIoS1gjWqBegyutCZwZkYOgqDB/Dmw==
+X-Received: by 2002:a65:4242:: with SMTP id d2mr6293256pgq.243.1623959056538;
+        Thu, 17 Jun 2021 12:44:16 -0700 (PDT)
 Received: from archl-c2lm.. ([103.51.75.27])
-        by smtp.gmail.com with ESMTPSA id z9sm5987187pfa.2.2021.06.17.12.43.54
+        by smtp.gmail.com with ESMTPSA id z9sm5987187pfa.2.2021.06.17.12.44.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 12:43:59 -0700 (PDT)
+        Thu, 17 Jun 2021 12:44:16 -0700 (PDT)
 From:   Anand Moon <linux.amoon@gmail.com>
 To:     --to=linux-phy@lists.infradead.org,
         --to=linux-arm-kernel@lists.infradead.org,
@@ -64,9 +64,9 @@ Cc:     Anand Moon <linux.amoon@gmail.com>,
         linux-phy@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RFCv1 5/8] phy: amlogic: meson8b-usb2: Reorder phy poweroff callback function
-Date:   Thu, 17 Jun 2021 19:41:40 +0000
-Message-Id: <20210617194154.2397-6-linux.amoon@gmail.com>
+Subject: [RFCv1 6/8] phy: amlogic: meson8b-usb2: Use phy reset callback function
+Date:   Thu, 17 Jun 2021 19:41:41 +0000
+Message-Id: <20210617194154.2397-7-linux.amoon@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210617194154.2397-1-linux.amoon@gmail.com>
 References: <20210617194154.2397-1-linux.amoon@gmail.com>
@@ -76,60 +76,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the phy_meson8b_usb2_power_off fundtion to avoid compilation
-error.
-
-drivers/phy/amlogic/phy-meson8b-usb2.c:247:3: error:
-	implicit declaration of function 'phy_meson8b_usb2_power_off';
+Reoder the code for phy reset mode in .reset callback function.
+Reset control is shared between two phy so use the phy name
+as shared id.
 
 Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Signed-off-by: Anand Moon <linux.amoon@gmail.com>
 ---
- drivers/phy/amlogic/phy-meson8b-usb2.c | 24 +++++++++++-------------
- 1 file changed, 11 insertions(+), 13 deletions(-)
+ drivers/phy/amlogic/phy-meson8b-usb2.c | 35 ++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/phy/amlogic/phy-meson8b-usb2.c b/drivers/phy/amlogic/phy-meson8b-usb2.c
-index 18e0986f6ed2..ab23a584d7b7 100644
+index ab23a584d7b7..c1ed2e5c80d8 100644
 --- a/drivers/phy/amlogic/phy-meson8b-usb2.c
 +++ b/drivers/phy/amlogic/phy-meson8b-usb2.c
-@@ -205,6 +205,17 @@ static int phy_meson8b_usb2_setmode(struct phy *phy, enum phy_mode mode,
+@@ -133,6 +133,7 @@ struct phy_meson8b_usb2_priv {
+ 	struct clk_bulk_data                            *clks;
+ 	struct reset_control				*reset;
+ 	const struct phy_meson8b_usb2_match_data	*match;
++	int						is_enabled;
+ };
+ 
+ static const struct regmap_config phy_meson8b_usb2_regmap_conf = {
+@@ -147,14 +148,6 @@ static int phy_meson8b_usb2_init(struct phy *phy)
+ 	struct phy_meson8b_usb2_priv *priv = phy_get_drvdata(phy);
+ 	int ret;
+ 
+-	if (!IS_ERR_OR_NULL(priv->reset)) {
+-		ret = reset_control_reset(priv->reset);
+-		if (ret) {
+-			dev_err(&phy->dev, "Failed to trigger USB reset\n");
+-			return ret;
+-		}
+-	}
+-
+ 	ret = clk_bulk_prepare_enable(priv->num_clks, priv->clks);
+ 	if (ret) {
+ 		dev_err(&phy->dev, "Failed to enable USB clock\n");
+@@ -173,6 +166,22 @@ static int phy_meson8b_usb2_exit(struct phy *phy)
  	return 0;
  }
  
-+static int phy_meson8b_usb2_power_off(struct phy *phy)
++static int phy_meson8b_usb2_reset(struct phy *phy)
 +{
 +	struct phy_meson8b_usb2_priv *priv = phy_get_drvdata(phy);
++	int ret;
 +
-+	if (priv->dr_mode == USB_DR_MODE_HOST)
-+		regmap_update_bits(priv->regmap, REG_DBG_UART,
-+				   REG_DBG_UART_SET_IDDQ,
-+				   REG_DBG_UART_SET_IDDQ);
++	if (priv->is_enabled) {
++		ret = reset_control_reset(priv->reset);
++		if (ret) {
++			dev_err(&phy->dev, "Failed to trigger USB reset\n");
++			return ret;
++		}
++	}
++
 +	return 0;
 +}
 +
- static int phy_meson8b_usb2_power_on(struct phy *phy)
+ static int phy_meson8b_usb2_setmode(struct phy *phy, enum phy_mode mode,
+ 				    int submode)
+ {
+@@ -200,6 +209,8 @@ static int phy_meson8b_usb2_setmode(struct phy *phy, enum phy_mode mode,
+ 		return -EINVAL;
+ 	}
+ 
++	phy_meson8b_usb2_reset(phy);
++
+ 	priv->dr_mode = mode;
+ 
+ 	return 0;
+@@ -209,6 +220,8 @@ static int phy_meson8b_usb2_power_off(struct phy *phy)
  {
  	struct phy_meson8b_usb2_priv *priv = phy_get_drvdata(phy);
-@@ -240,19 +251,6 @@ static int phy_meson8b_usb2_power_on(struct phy *phy)
- 	return 0;
- }
  
--static int phy_meson8b_usb2_power_off(struct phy *phy)
--{
--	struct phy_meson8b_usb2_priv *priv = phy_get_drvdata(phy);
++	priv->is_enabled = 0;
++
+ 	if (priv->dr_mode == USB_DR_MODE_HOST)
+ 		regmap_update_bits(priv->regmap, REG_DBG_UART,
+ 				   REG_DBG_UART_SET_IDDQ,
+@@ -221,6 +234,8 @@ static int phy_meson8b_usb2_power_on(struct phy *phy)
+ 	struct phy_meson8b_usb2_priv *priv = phy_get_drvdata(phy);
+ 	int ret;
+ 
++	priv->is_enabled = 1;
++
+ 	regmap_update_bits(priv->regmap, REG_CONFIG, REG_CONFIG_CLK_32k_ALTSEL,
+ 			   REG_CONFIG_CLK_32k_ALTSEL);
+ 
+@@ -229,7 +244,6 @@ static int phy_meson8b_usb2_power_on(struct phy *phy)
+ 
+ 	regmap_update_bits(priv->regmap, REG_CTRL, REG_CTRL_FSEL_MASK,
+ 			   0x5 << REG_CTRL_FSEL_SHIFT);
 -
--	if (priv->dr_mode == USB_DR_MODE_HOST)
--		regmap_update_bits(priv->regmap, REG_DBG_UART,
--				   REG_DBG_UART_SET_IDDQ,
--				   REG_DBG_UART_SET_IDDQ);
--
--
--	return 0;
--}
--
- static const struct phy_ops phy_meson8b_usb2_ops = {
- 	.init           = phy_meson8b_usb2_init,
- 	.exit           = phy_meson8b_usb2_exit,
+ 	/* reset the PHY */
+ 	regmap_update_bits(priv->regmap, REG_CTRL, REG_CTRL_POWER_ON_RESET,
+ 			   REG_CTRL_POWER_ON_RESET);
+@@ -257,6 +271,7 @@ static const struct phy_ops phy_meson8b_usb2_ops = {
+ 	.power_on	= phy_meson8b_usb2_power_on,
+ 	.power_off	= phy_meson8b_usb2_power_off,
+ 	.set_mode	= phy_meson8b_usb2_setmode,
++	.reset		= phy_meson8b_usb2_reset,
+ 	.owner		= THIS_MODULE,
+ };
+ 
+@@ -301,7 +316,7 @@ static int phy_meson8b_usb2_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
++	priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, "phy");
+ 	if (PTR_ERR(priv->reset) == -EPROBE_DEFER)
+ 		return PTR_ERR(priv->reset);
+ 
 -- 
 2.31.1
 
