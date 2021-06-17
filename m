@@ -2,83 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132013AB4AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB543AB4B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbhFQN2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:28:48 -0400
-Received: from mga07.intel.com ([134.134.136.100]:37262 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232607AbhFQN2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:28:45 -0400
-IronPort-SDR: XTMP6wZoTp6+k/xSQ2Vm0eD06SUkJzHTI48+qI/Itbp8PIw4dwNJOKBqNDWfh5fHe3vmaAV/5d
- j8qWfc2B6txw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="270215209"
-X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
-   d="scan'208";a="270215209"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 06:26:37 -0700
-IronPort-SDR: CsOA3JyKINmJL7mwTbegK0PA8EHx/ohm0UjvZyEXLhIQQfcu3Ow9ZDnmv91mlKuqkqMKeVrEd+
- oMIwGT7e+qZA==
-X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
-   d="scan'208";a="554399326"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 06:26:34 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lts2R-003LwZ-Hl; Thu, 17 Jun 2021 16:26:31 +0300
-Date:   Thu, 17 Jun 2021 16:26:31 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
-        gregkh@linuxfoundation.org, kaixuxia@tencent.com,
-        gustavoars@kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        weiyongjun1@huawei.com, yuehaibing@huawei.com,
-        yangjihong1@huawei.com, yukuai3@huawei.com,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next v5] media: staging: atomisp: use list_splice_init
- in atomisp_compat_css20.c
-Message-ID: <YMtNh+yZAthTjFJn@smile.fi.intel.com>
-References: <20210617125357.675562-1-libaokun1@huawei.com>
+        id S232734AbhFQN3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:29:30 -0400
+Received: from mail-oo1-f41.google.com ([209.85.161.41]:41811 "EHLO
+        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232566AbhFQN31 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:29:27 -0400
+Received: by mail-oo1-f41.google.com with SMTP id k21-20020a4a2a150000b029024955603642so1572299oof.8;
+        Thu, 17 Jun 2021 06:27:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ollDyGm2vsE66p3W2pXSBidOuVtCigtqaBXQiBNHZRg=;
+        b=iOBpvDGN782y6yKb7W/O+oZ8L1FXJrAXDGuWbqpBFMe4u/pn0QDXDemrbc3CVs06aR
+         BSPoVpYAydYoXwuYth6HqQALPUZGWC8jnaN3snmpLd14wQaW1IelL/wWUiGmcpafNNC5
+         HpfRv1+aBER1IPUTD3xkdhTCBmKaLFTybs2NRD0do4cyO06Yv6vNpTaKJ3POKxOvK5Yk
+         IWrH8c+h89kxrQWkWP+KQVroyS+2GNFwFAjWrgAARf9EtuC46LQMm1FAFE5sGy7FaJVe
+         Sp96+akH4AEEOAAtN268/Vi9ZTEQz+IFhvguMQRSGmWc3PExYEu2F92AbvNl0I4Gq9rb
+         sTDQ==
+X-Gm-Message-State: AOAM533XluPrsqF0smBCAU7zQQCc3hogVJJKMw9TXS1I2Sceao4W0/RU
+        nwVwmNnON7VqLl6cjsigZEOUmC+RwjBio6M4I80=
+X-Google-Smtp-Source: ABdhPJwJcA+js2nczb58BLINvmjOBBspq4YNKeZAcc/pO8Ne6Cwg9A+Dk8ePmdhLFXcCdvI9mChoVn4AJUY1CXaWyKU=
+X-Received: by 2002:a4a:9bcb:: with SMTP id b11mr4502217ook.44.1623936438630;
+ Thu, 17 Jun 2021 06:27:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617125357.675562-1-libaokun1@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <cover.1623825358.git.viresh.kumar@linaro.org> <5c8da9d378dee39d9c6063713b093f51d271fa9d.1623825358.git.viresh.kumar@linaro.org>
+In-Reply-To: <5c8da9d378dee39d9c6063713b093f51d271fa9d.1623825358.git.viresh.kumar@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 17 Jun 2021 15:27:07 +0200
+Message-ID: <CAJZ5v0iR2FeKGQRcAFzNWCvkoMOnnGOT6FThK1LBHFt=VWySww@mail.gmail.com>
+Subject: Re: [PATCH V2 2/3] cpufreq: intel_pstate: Migrate to ->exit()
+ callback instead of ->stop_cpu()
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dirk Brandewie <dirk.brandewie@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 08:53:57PM +0800, Baokun Li wrote:
-> Using list_splice_init() instead of entire while-loops
-> in atomisp_compat_css20.c.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+On Wed, Jun 16, 2021 at 8:41 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> commit 367dc4aa932b ("cpufreq: Add stop CPU callback to cpufreq_driver
+> interface") added the stop_cpu() callback to allow the drivers to do
+> clean up before the CPU is completely down and its state can't be
+> modified.
+>
+> At that time the CPU hotplug framework used to call the cpufreq core's
+> registered notifier for different events like CPU_DOWN_PREPARE and
+> CPU_POST_DEAD. The stop_cpu() callback was called during the
+> CPU_DOWN_PREPARE event.
+>
+> This is no longer the case, cpuhp_cpufreq_offline() is called only once
+> by the CPU hotplug core now and we don't really need two separate
+> callbacks for cpufreq drivers, i.e. stop_cpu() and exit(), as everything
+> can be done from the exit() callback itself.
+>
+> Migrate to using the exit() callback instead of stop_cpu().
+>
+> Cc: Dirk Brandewie <dirk.brandewie@gmail.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
-> V1->V2:
-> 	CC mailist
-> V2->V3:
->         Using list_move_tail() -> Using list_splice_init()
-> V3->V4:
->         Remove redundant 'asd->'
-> V4->V5:
->         Add the version information for 'V3->V4:'
+>  drivers/cpufreq/intel_pstate.c | 9 +--------
+>  1 file changed, 1 insertion(+), 8 deletions(-)
+>
+> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> index 0e69dffd5a76..37ad42926904 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -2374,17 +2374,11 @@ static int intel_pstate_cpu_online(struct cpufreq_policy *policy)
+>         return 0;
+>  }
+>
+> -static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
+> -{
+> -       pr_debug("CPU %d stopping\n", policy->cpu);
+> -
+> -       intel_pstate_clear_update_util_hook(policy->cpu);
+> -}
+> -
+>  static int intel_pstate_cpu_exit(struct cpufreq_policy *policy)
+>  {
+>         pr_debug("CPU %d exiting\n", policy->cpu);
+>
+> +       intel_pstate_clear_update_util_hook(policy->cpu);
 
-What about
+This addresses the ->exit case, but it doesn't address the ->offline
+case AFAICS.
 
-drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2107:31: warning: unused variable 'md_buf' [-Wunused-variable]
-2107 |  struct atomisp_metadata_buf *md_buf;
-drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2106:26: warning: unused variable 'dis_buf' [-Wunused-variable]
-2106 |  struct atomisp_dis_buf *dis_buf;
-drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2105:26: warning: unused variable 's3a_buf' [-Wunused-variable]
-2105 |  struct atomisp_s3a_buf *s3a_buf;
-
-?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>         policy->fast_switch_possible = false;
+>
+>         return 0;
+> @@ -2451,7 +2445,6 @@ static struct cpufreq_driver intel_pstate = {
+>         .resume         = intel_pstate_resume,
+>         .init           = intel_pstate_cpu_init,
+>         .exit           = intel_pstate_cpu_exit,
+> -       .stop_cpu       = intel_pstate_stop_cpu,
+>         .offline        = intel_pstate_cpu_offline,
+>         .online         = intel_pstate_cpu_online,
+>         .update_limits  = intel_pstate_update_limits,
+> --
