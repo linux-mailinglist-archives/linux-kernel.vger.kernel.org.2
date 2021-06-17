@@ -2,216 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBC43ABEFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262043ABF03
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhFQWgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 18:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbhFQWgf (ORCPT
+        id S232605AbhFQWiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 18:38:14 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46770 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232203AbhFQWiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 18:36:35 -0400
-Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A160C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 15:34:27 -0700 (PDT)
-Received: from [192.168.1.101] (83.6.168.10.neoplus.adsl.tpnet.pl [83.6.168.10])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Thu, 17 Jun 2021 18:38:13 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 0D9B63F647;
-        Fri, 18 Jun 2021 00:34:24 +0200 (CEST)
-Subject: Re: [PATCH v3 3/5] arm64: dts: qcom: pmm8155au_1: Add base dts file
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     bhupesh.linux@gmail.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, agross@kernel.org,
-        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-References: <20210617054548.353293-1-bhupesh.sharma@linaro.org>
- <20210617054548.353293-4-bhupesh.sharma@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <cba788c2-f826-94f0-0bcd-bae491ac4189@somainline.org>
-Date:   Fri, 18 Jun 2021 00:34:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210617054548.353293-4-bhupesh.sharma@linaro.org>
-Content-Type: text/plain; charset=utf-8
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3B3251FD68;
+        Thu, 17 Jun 2021 22:36:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623969364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cV2NE8rEWBmZDfrtXKLfyFZ8c/X4r6DiAAuSsUO6DA8=;
+        b=rDXJnATdWYSr69kKXMTVE9dP5gncBYGdgr3GUIjHRui/3n2j10pItkszIea/OUzY3+hrpz
+        m5Y03yZ0RBddw/KkZEyglzsNQP/XqQYFnNAhXXSyhHvyQACoBXSzQ1DbLE9B6+o27ZlvFu
+        m18WdJkng41VCTi1FoOKTBUgW5kZ/Iw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623969364;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cV2NE8rEWBmZDfrtXKLfyFZ8c/X4r6DiAAuSsUO6DA8=;
+        b=v9wQxqIe7asZmS+7Z8rjrVZh0dD8nVrpqwgngUo6epZLjj0ZWFfIVtDrDdmmqOXa08n4nJ
+        AlEq+lsufIbSeRCg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 20F13118DD;
+        Thu, 17 Jun 2021 22:36:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623969364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cV2NE8rEWBmZDfrtXKLfyFZ8c/X4r6DiAAuSsUO6DA8=;
+        b=rDXJnATdWYSr69kKXMTVE9dP5gncBYGdgr3GUIjHRui/3n2j10pItkszIea/OUzY3+hrpz
+        m5Y03yZ0RBddw/KkZEyglzsNQP/XqQYFnNAhXXSyhHvyQACoBXSzQ1DbLE9B6+o27ZlvFu
+        m18WdJkng41VCTi1FoOKTBUgW5kZ/Iw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623969364;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cV2NE8rEWBmZDfrtXKLfyFZ8c/X4r6DiAAuSsUO6DA8=;
+        b=v9wQxqIe7asZmS+7Z8rjrVZh0dD8nVrpqwgngUo6epZLjj0ZWFfIVtDrDdmmqOXa08n4nJ
+        AlEq+lsufIbSeRCg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id Wtj0MFDOy2AXOwAALh3uQQ
+        (envelope-from <neilb@suse.de>); Thu, 17 Jun 2021 22:36:00 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+MIME-Version: 1.0
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Fox Chen" <foxhlchen@gmail.com>
+Cc:     "Fox Chen" <foxhlchen@gmail.com>, corbet@lwn.net,
+        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
+        rdunlap@infradead.org, grandmaster@al2klimov.de,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH v3 00/13] docs: path-lookup: Update pathlookup docs
+In-reply-to: <20210527091618.287093-1-foxhlchen@gmail.com>
+References: <20210527091618.287093-1-foxhlchen@gmail.com>
+Date:   Fri, 18 Jun 2021 08:35:57 +1000
+Message-id: <162396935764.29912.16256561662425331146@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 27 May 2021, Fox Chen wrote:
+> The Path lookup is a very complex subject in VFS. The path-lookup
+> document provides a very detailed guidance to help people understand
+> how path lookup works in the kernel. This document was originally
+> written based on three lwn articles five years ago. As times goes by,
+> some of the content is outdated. This patchset is intended to update
+> the document to make it more relevant to current codebase.
+> 
 
-On 17.06.2021 07:45, Bhupesh Sharma wrote:
-> Add base DTS file for pmm8155au_1 along with GPIOs, power-on, rtc and vadc
-> nodes.
->
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi | 134 ++++++++++++++++++++++
->  1 file changed, 134 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
->
-> diff --git a/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi b/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
-> new file mode 100644
-> index 000000000000..b04c28e54470
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
-> @@ -0,0 +1,134 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2021, Linaro Limited
-> + */
-> +
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/spmi/spmi.h>
-> +#include <dt-bindings/iio/qcom,spmi-vadc.h>
-> +
-> +/ {
-> +	thermal-zones {
-> +		pmm8155au-1-thermal {
-> +			polling-delay-passive = <100>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&pmm8155au_1_temp>;
-> +
-> +			trips {
-> +				trip0 {
-> +					temperature = <95000>;
-> +					hysteresis = <0>;
-> +					type = "passive";
-> +				};
-> +
-> +				trip1 {
-> +					temperature = <115000>;
-> +					hysteresis = <0>;
-> +					type = "hot";
-> +				};
-> +
-> +				trip2 {
-> +					temperature = <145000>;
-> +					hysteresis = <0>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&spmi_bus {
-> +	pmic@0 {
-> +		compatible = "qcom,pmm8155au", "qcom,spmi-pmic";
-> +		reg = <0x0 SPMI_USID>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		pon: power-on@800 {
-> +			compatible = "qcom,pm8916-pon";
-> +			reg = <0x0800>;
-> +			pwrkey {
-> +				compatible = "qcom,pm8941-pwrkey";
-> +				interrupts = <0x0 0x8 0x0 IRQ_TYPE_EDGE_BOTH>;
-> +				debounce = <15625>;
-> +				bias-pull-up;
-> +				linux,code = <KEY_POWER>;
-> +
-> +				status = "disabled";
-> +			};
+Thanks for persisting.  Sorry for the delay.
 
-Oh, okay, so the power key is there, then I withdraw my worries from _2.
+All:
+  Reviewed-by: NeilBrown <neilb@suse.de>
 
-I'm still interested in the reg situation though.
+I've noted a couple of little issues with one patch.  Hopefully Jon can
+simply fix those up rather than requiring a resubmission of the whole
+series.
 
+To be honest, I haven't examined patch 4 in as much detail as I'd like,
+and it required the biggest change since last time.  But I think it is
+good enough.  It might even be excellent.
 
-
-> +		};
-> +
-> +		pmm8155au_1_temp: temp-alarm@2400 {
-> +			compatible = "qcom,spmi-temp-alarm";
-> +			reg = <0x2400>;
-> +			interrupts = <0x0 0x24 0x0 IRQ_TYPE_EDGE_BOTH>;
-> +			io-channels = <&pmm8155au_1_adc ADC5_DIE_TEMP>;
-> +			io-channel-names = "thermal";
-> +			#thermal-sensor-cells = <0>;
-> +		};
-> +
-> +		pmm8155au_1_adc: adc@3100 {
-> +			compatible = "qcom,spmi-adc5";
-> +			reg = <0x3100>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			#io-channel-cells = <1>;
-> +			interrupts = <0x0 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
-> +
-> +			ref-gnd@0 {
-> +				reg = <ADC5_REF_GND>;
-> +				qcom,pre-scaling = <1 1>;
-> +				label = "ref_gnd";
-> +			};
-> +
-> +			vref-1p25@1 {
-> +				reg = <ADC5_1P25VREF>;
-> +				qcom,pre-scaling = <1 1>;
-> +				label = "vref_1p25";
-> +			};
-> +
-> +			die-temp@6 {
-> +				reg = <ADC5_DIE_TEMP>;
-> +				qcom,pre-scaling = <1 1>;
-> +				label = "die_temp";
-> +			};
-> +		};
-> +
-> +		pmm8155au_1_adc_tm: adc-tm@3500 {
-> +			compatible = "qcom,spmi-adc-tm5";
-> +			reg = <0x3500>;
-> +			interrupts = <0x0 0x35 0x0 IRQ_TYPE_EDGE_RISING>;
-> +			#thermal-sensor-cells = <1>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			status = "disabled";
-> +		};
-> +
-> +		pmm8155au_1_rtc: rtc@6000 {
-> +			compatible = "qcom,pm8941-rtc";
-> +			reg = <0x6000>;
-> +			reg-names = "rtc", "alarm";
-> +			interrupts = <0x0 0x61 0x1 IRQ_TYPE_NONE>;
-> +
-> +			status = "disabled";
-> +		};
-> +
-> +		pmm8155au_1_gpios: gpio@c000 {
-> +			compatible = "qcom,pmm8155au-gpio";
-> +			reg = <0xc000>;
-> +			gpio-controller;
-> +			#gpio-cells = <2>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <2>;
-> +		};
-
-And the same question about gpio-ranges from _2.
-
-
-
-> +	};
-> +
-> +	pmic@1 {
-> +		compatible = "qcom,pmm8155au", "qcom,spmi-pmic";
-> +		reg = <0x1 SPMI_USID>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +	};
-> +};
->
-
-Konrad
-
+NeilBrown
