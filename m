@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E74B3ABBE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212B53ABBEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233160AbhFQSeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 14:34:23 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:45086 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233686AbhFQSeS (ORCPT
+        id S232093AbhFQSiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:38:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36814 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230151AbhFQSiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:34:18 -0400
-Received: from [192.168.254.32] (unknown [47.187.214.213])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 596D320B83DE;
-        Thu, 17 Jun 2021 11:32:09 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 596D320B83DE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623954730;
-        bh=LUzAs8YwcV9OEjtCvxPMYvniuVgxNyeebthHhcHDNUQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=kD5E+KGp4yOxOp+fj4nhFGdWt11PntzW4A2NBd2U7SL9Wq6IYTKJGhJ2Llf3RGlH6
-         BUxM+DWFZ1d/2vXkeI7mU0HYUo1l0qw6abtjuebcP7c7ZP9BRSkYZk76H7PkkJQvil
-         0x+dEVwDwzioelIYxXPSSVJu8UuooGch59mPIrMI=
-Subject: Re: [RFC PATCH 1/1] arm64: implement live patching
-To:     "nobuta.keiya@fujitsu.com" <nobuta.keiya@fujitsu.com>,
-        Suraj Jitindar Singh <surajjs@amazon.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "duwe@lst.de" <duwe@lst.de>,
-        "sjitindarsingh@gmail.com" <sjitindarsingh@gmail.com>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210604235930.603-1-surajjs@amazon.com>
- <TYAPR01MB526348C06BB8E410DF8CE3D3850E9@TYAPR01MB5263.jpnprd01.prod.outlook.com>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <7080d2a9-6ec2-94e9-3577-e5f7233ad3ab@linux.microsoft.com>
-Date:   Thu, 17 Jun 2021 13:32:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 17 Jun 2021 14:38:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623954966;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=N/27r8jjnxPGdpC0ykYj/q5IIkngOTZIKQLUhzWLbTA=;
+        b=EXDv/ROb9DubvUe7CcVY2zjCCs4o4hukIvwsl6J8N/XaY3N45fhuAioLN/d507H3CgYGG4
+        +HGazNf6DiF3AS3jsvh47Vkc8260bbV7fUykaT3f/j9zus1oX7Fcmwi+wBFOo9bs+2UfZK
+        6gAVVzlfov65xzgkahKPKEuoZE3hJoU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-162-SvJ4QTmCPgenZh_8kcQZAw-1; Thu, 17 Jun 2021 14:36:05 -0400
+X-MC-Unique: SvJ4QTmCPgenZh_8kcQZAw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44EAB818703;
+        Thu, 17 Jun 2021 18:36:04 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E7EBAF6EA;
+        Thu, 17 Jun 2021 18:36:03 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM changes for 5.13-rc7
+Date:   Thu, 17 Jun 2021 14:36:03 -0400
+Message-Id: <20210617183603.844718-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <TYAPR01MB526348C06BB8E410DF8CE3D3850E9@TYAPR01MB5263.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=iso-2022-jp
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Linus,
 
+The following changes since commit 4422829e8053068e0225e4d0ef42dc41ea7c9ef5:
 
-On 6/17/21 4:29 AM, nobuta.keiya@fujitsu.com wrote:
-> 
->> It's my understanding that the two pieces of work required to enable live
->> patching on arm are in flight upstream;
->> - Reliable stack traces as implemented by Madhavan T. Venkataraman [1]
->> - Objtool as implemented by Julien Thierry [2]
->>
->> This is the remaining part required to enable live patching on arm.
->> Based on work by Torsten Duwe [3]
->>
->> Allocate a task flag used to represent the patch pending state for the
->> task. Also implement generic functions klp_arch_set_pc() &
->> klp_get_ftrace_location().
->>
->> In klp_arch_set_pc() it is sufficient to set regs->pc as in
->> ftrace_common_return() the return address is loaded from the stack.
->>
->> ldr     x9, [sp, #S_PC]
->> <snip>
->> ret     x9
->>
->> In klp_get_ftrace_location() it is necessary to advance the address by
->> AARCH64_INSN_SIZE (4) to point to the BL in the callsite as 2 nops were
->> placed at the start of the function, one to be patched to save the LR and
->> another to be patched to branch to the ftrace call, and
->> klp_get_ftrace_location() is expected to return the address of the BL. It
->> may also be necessary to advance the address by another AARCH64_INSN_SIZE
->> if CONFIG_ARM64_BTI_KERNEL is enabled due to the instruction placed at the
->> branch target to satisfy BTI,
->>
->> Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
->>
->> [1] https://lkml.org/lkml/2021/5/26/1212
->> [2] https://lkml.org/lkml/2021/3/3/1135
->> [3] https://lkml.org/lkml/2018/10/26/536
->> ---
-> 
-> AFAIU Madhavan's patch series linked in the above [1] is currently awaiting
-> review by Mark Rutland. It seems that not only this patch series but also the
-> implementation of arch_stack_walk_reliable() at the below link is required
-> to enable livepatch.
-> 
+  kvm: fix previous commit for 32-bit builds (2021-06-09 01:49:13 -0400)
 
-Yes. I have a patch ready for that. But I can submit that only after the previous
-series has been accepted.
+are available in the Git repository at:
 
-Thanks
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-Madhavan
+for you to fetch changes up to d8ac05ea13d789d5491a5920d70a05659015441d:
+
+  KVM: selftests: Fix kvm_check_cap() assertion (2021-06-17 13:06:57 -0400)
+
+----------------------------------------------------------------
+Miscellaneous bugfixes.  The main interesting one is a NULL pointer dereference
+reported by syzkaller ("KVM: x86: Immediately reset the MMU context when the SMM
+flag is cleared").
+
+----------------------------------------------------------------
+Alper Gun (1):
+      KVM: SVM: Call SEV Guest Decommission if ASID binding fails
+
+ChenXiaoSong (1):
+      KVM: SVM: fix doc warnings
+
+Fuad Tabba (1):
+      KVM: selftests: Fix kvm_check_cap() assertion
+
+Gustavo A. R. Silva (1):
+      KVM: x86: Fix fall-through warnings for Clang
+
+Jim Mattson (1):
+      kvm: LAPIC: Restore guard to prevent illegal APIC register access
+
+Sean Christopherson (2):
+      KVM: x86: Immediately reset the MMU context when the SMM flag is cleared
+      KVM: x86/mmu: Calculate and check "full" mmu_role for nested MMU
+
+Wanpeng Li (1):
+      KVM: X86: Fix x86_emulator slab cache leak
+
+Yanan Wang (1):
+      KVM: selftests: Fix compiling errors when initializing the static structure
+
+ arch/x86/kvm/cpuid.c                        |  1 +
+ arch/x86/kvm/lapic.c                        |  3 +++
+ arch/x86/kvm/mmu/mmu.c                      | 26 +++++++++++++++++++-
+ arch/x86/kvm/svm/avic.c                     |  6 ++---
+ arch/x86/kvm/svm/sev.c                      | 20 +++++++++++----
+ arch/x86/kvm/vmx/vmx.c                      |  1 +
+ arch/x86/kvm/x86.c                          |  6 ++++-
+ tools/testing/selftests/kvm/lib/kvm_util.c  |  2 +-
+ tools/testing/selftests/kvm/lib/test_util.c | 38 ++++++++++++++---------------
+ 9 files changed, 73 insertions(+), 30 deletions(-)
+
