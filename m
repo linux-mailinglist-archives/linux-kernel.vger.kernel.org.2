@@ -2,88 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FAB3AAE9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6623AAE9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhFQIWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 04:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhFQIWT (ORCPT
+        id S230387AbhFQIV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 04:21:56 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:49377 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhFQIVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:22:19 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA5AC061574;
-        Thu, 17 Jun 2021 01:20:10 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id g20so8477308ejt.0;
-        Thu, 17 Jun 2021 01:20:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cbx+euKbC7pUOUFJX8fVnmfL9og6wRNSoZ+8uoVLuNc=;
-        b=vSu2TqRQlWulfmJEHmuSF8Cib4kDDcimF6HRxu6MrcUZjzVcRTPlhxPATXSsSOqjA+
-         sIL8ssPR7NhnrBsjvYAPjn2cBJs9JAkGwJ3sbreR8J0hXO4zHbkRMKu8LPPQfkM2WLpr
-         SGBoGdQBFsL0CFqCDWaCs1ixQBVu/dIiGgfGoJsrZGfplHKrqLW4hQziPw8DUTFgLriT
-         03DILPl5dd08ZM6b9+TtemW8ziSMgC8diEQ4Rc255QlmDVs8mEKXpgTkMEGLarblvcwB
-         gBWaM18olnHiRF95smz0bw1n9WJAeR4UYkQ1svp0+u0MHDDqyHlTq5mbElln7Ycl+B+l
-         SAEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cbx+euKbC7pUOUFJX8fVnmfL9og6wRNSoZ+8uoVLuNc=;
-        b=hMM3xJT0u79AhsBjKIQ6Z3Doe9QkJodg4ATIwDy9aNHJ0JtCMUWFkduJM545gIFAbp
-         okikQEcLqBUUdDYrUQ3OQzxSvdJbUzHZsvysIwuIaXAk4CWQXe3LSbb/LQuYWEQlO3oq
-         VdWmkQEJbUobXiV9izj1HSLMXGlNsUD3fMgR31allGRQRR1oT7nsGa8xT8Cl0soBOwbM
-         1LjfCZsbJrC8TeoilhUW+lnYp06iehiENKEeCLYp6yzgRHILVVrBGSlZOdvhrnltyFXz
-         kamEQNp/EsGV4HU434JOZtpvEceOc/4DZoXF0H/+/E6XpHHiv0SB0NQBdUGVe0quMfLd
-         q0rQ==
-X-Gm-Message-State: AOAM5314KCJ7XaZm/gUTsWS1fESZzknwdYo51iZx13w0xBnyu6OBxN5h
-        CleOkfzup8LyP9bheb7eTKAaTb5+kEnfsOfUrPY=
-X-Google-Smtp-Source: ABdhPJxfviJNanv9BtjCASk5zipdYe9YHYnZ47Rz2RV+RCT5gY2DbPpAUbOjQKhWs2GpxjoEt9jV3dqsfT90O9ISWww=
-X-Received: by 2002:a17:907:1b1b:: with SMTP id mp27mr3901941ejc.538.1623918009568;
- Thu, 17 Jun 2021 01:20:09 -0700 (PDT)
+        Thu, 17 Jun 2021 04:21:53 -0400
+Received: (Authenticated sender: jacopo@jmondi.org)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 5E077240002;
+        Thu, 17 Jun 2021 08:19:41 +0000 (UTC)
+Date:   Thu, 17 Jun 2021 10:20:30 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 12/15] media: i2c: rdacm20: Embed 'serializer' field
+Message-ID: <20210617082030.lgtr3thsngt3zhem@uno.localdomain>
+References: <20210616124616.49249-1-jacopo+renesas@jmondi.org>
+ <20210616124616.49249-13-jacopo+renesas@jmondi.org>
+ <YMqTyFvxer0vjsKT@pendragon.ideasonboard.com>
+ <1e6e5cd0-82b1-db7a-ec70-ebb8831c11c4@xs4all.nl>
+ <20210617074222.4lbcewsydre4b2nb@uno.localdomain>
+ <1c460f30-91d3-25a3-78dd-7108bfa24d7c@xs4all.nl>
 MIME-Version: 1.0
-References: <20210512144743.039977287@linuxfoundation.org> <20210512144748.600206118@linuxfoundation.org>
- <CANEQ_++O0XVVdvynGtf37YCHSBT8CYHnUkK+VsFkOTqeqwOUtA@mail.gmail.com>
- <YMmlPHMn/+EPdbvm@kroah.com> <YMoRZDBIua3ionOW@kroah.com>
-In-Reply-To: <YMoRZDBIua3ionOW@kroah.com>
-From:   Amit Klein <aksecurity@gmail.com>
-Date:   Thu, 17 Jun 2021 11:19:58 +0300
-Message-ID: <CANEQ_+LOxmCJGT3Y+EMT=BtX9-5miNpHdhsZ3Lp8NvMq_EDqBw@mail.gmail.com>
-Subject: Re: [PATCH 5.4 175/244] inet: use bigger hash table for IP ID generation
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>, Willy Tarreau <w@1wt.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1c460f30-91d3-25a3-78dd-7108bfa24d7c@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I just sent a revised patch for 4.19.
 
-On Wed, Jun 16, 2021 at 5:57 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jun 16, 2021 at 09:16:12AM +0200, Greg Kroah-Hartman wrote:
-> > On Wed, Jun 16, 2021 at 10:02:44AM +0300, Amit Klein wrote:
-> > >  Hi Greg et al.
-> > >
-> > > I see that you backported this patch (increasing the IP ID hash table size)
-> > > to the newer LTS branches more than a month ago. But I don't see that it
-> > > was backported to older LTS branches (4.19, 4.14, 4.9, 4.4). Is this
-> > > intentional?
+On Thu, Jun 17, 2021 at 10:12:26AM +0200, Hans Verkuil wrote:
+> On 17/06/2021 09:42, Jacopo Mondi wrote:
+> > Hello,
 > >
-> > It applies cleanly to 4.19, but not the older ones.  If you think it is
-> > needed there for those kernels, please provide a working backport that
-> > we can apply.
+> > On Thu, Jun 17, 2021 at 08:18:42AM +0200, Hans Verkuil wrote:
+> >> On 17/06/2021 02:14, Laurent Pinchart wrote:
+> >>> Hi Jacopo,
+> >>>
+> >>> Thank you for the patch.
+> >>>
+> >>> This should be moved before 11/15 to avoid a bisection breakage (or
+> >>> 11/15 should be fixed, and this patch updated accordingly).
+> >>
+> >> Good catch!
+> >
+> > Good catch indeed... Sorry about this I shuffled patches around
+> > multiple times and missed this one
+> >
+> >>
+> >> Jacopo, I dropped the PR I made. It you just want to swap patch 11 and 12,
+> >> then I can do that, if you want more extensive changes, then I need a v6.
+> >>
+> >> Let me know what you want.
+> >
+> > I think swapping 11 and 12 is enough, thanks for handling it.
+> > (BTW there's one additional tag from Kieran to collect which is not in
+> > v5. Would you like a v6 for that ?)
 >
-> It breaks the build on 4.19, which is why I didn't apply it there, so I
-> would need a working version for that tree as well.
+> Updated the PR and added Kieran's tag. So no need for you to do anything.
+
+Thanks a lot then and sorry for hiccup
+
 >
-> thanks,
+> Regards,
 >
-> greg k-h
+> 	Hans
+>
+> >
+> > Thanks
+> >   j
+> >
+> >>
+> >> 	Hans
+> >>
+> >>>
+> >>> On Wed, Jun 16, 2021 at 02:46:13PM +0200, Jacopo Mondi wrote:
+> >>>> There's no reason to allocate dynamically the 'serializer' field in
+> >>>> the driver structure.
+> >>>>
+> >>>> Embed the field and adjust all its users in the driver.
+> >>>>
+> >>>> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> >>>> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> >>>> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> >>>> ---
+> >>>>  drivers/media/i2c/rdacm20.c | 36 +++++++++++++++---------------------
+> >>>>  1 file changed, 15 insertions(+), 21 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> >>>> index 5e0314a2b1ca..029af8fd7485 100644
+> >>>> --- a/drivers/media/i2c/rdacm20.c
+> >>>> +++ b/drivers/media/i2c/rdacm20.c
+> >>>> @@ -312,7 +312,7 @@ static const struct ov10635_reg {
+> >>>>
+> >>>>  struct rdacm20_device {
+> >>>>  	struct device			*dev;
+> >>>> -	struct max9271_device		*serializer;
+> >>>> +	struct max9271_device		serializer;
+> >>>>  	struct i2c_client		*sensor;
+> >>>>  	struct v4l2_subdev		sd;
+> >>>>  	struct media_pad		pad;
+> >>>> @@ -399,7 +399,7 @@ static int rdacm20_s_stream(struct v4l2_subdev *sd, int enable)
+> >>>>  {
+> >>>>  	struct rdacm20_device *dev = sd_to_rdacm20(sd);
+> >>>>
+> >>>> -	return max9271_set_serial_link(dev->serializer, enable);
+> >>>> +	return max9271_set_serial_link(&dev->serializer, enable);
+> >>>>  }
+> >>>>
+> >>>>  static int rdacm20_enum_mbus_code(struct v4l2_subdev *sd,
+> >>>> @@ -455,10 +455,10 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+> >>>>  	unsigned int retry = 3;
+> >>>>  	int ret;
+> >>>>
+> >>>> -	max9271_wake_up(dev->serializer);
+> >>>> +	max9271_wake_up(&dev->serializer);
+> >>>>
+> >>>>  	/* Serial link disabled during config as it needs a valid pixel clock. */
+> >>>> -	ret = max9271_set_serial_link(dev->serializer, false);
+> >>>> +	ret = max9271_set_serial_link(&dev->serializer, false);
+> >>>>  	if (ret)
+> >>>>  		return ret;
+> >>>>
+> >>>> @@ -466,35 +466,35 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+> >>>>  	 *  Ensure that we have a good link configuration before attempting to
+> >>>>  	 *  identify the device.
+> >>>>  	 */
+> >>>> -	max9271_configure_i2c(dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
+> >>>> -					       MAX9271_I2CSLVTO_1024US |
+> >>>> -					       MAX9271_I2CMSTBT_105KBPS);
+> >>>> +	max9271_configure_i2c(&dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
+> >>>> +						MAX9271_I2CSLVTO_1024US |
+> >>>> +						MAX9271_I2CMSTBT_105KBPS);
+> >>>>
+> >>>> -	max9271_configure_gmsl_link(dev->serializer);
+> >>>> +	max9271_configure_gmsl_link(&dev->serializer);
+> >>>>
+> >>>> -	ret = max9271_verify_id(dev->serializer);
+> >>>> +	ret = max9271_verify_id(&dev->serializer);
+> >>>>  	if (ret < 0)
+> >>>>  		return ret;
+> >>>>
+> >>>> -	ret = max9271_set_address(dev->serializer, dev->addrs[0]);
+> >>>> +	ret = max9271_set_address(&dev->serializer, dev->addrs[0]);
+> >>>>  	if (ret < 0)
+> >>>>  		return ret;
+> >>>> -	dev->serializer->client->addr = dev->addrs[0];
+> >>>> +	dev->serializer.client->addr = dev->addrs[0];
+> >>>>
+> >>>>  	/*
+> >>>>  	 * Reset the sensor by cycling the OV10635 reset signal connected to the
+> >>>>  	 * MAX9271 GPIO1 and verify communication with the OV10635.
+> >>>>  	 */
+> >>>> -	ret = max9271_enable_gpios(dev->serializer, MAX9271_GPIO1OUT);
+> >>>> +	ret = max9271_enable_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+> >>>>  	if (ret)
+> >>>>  		return ret;
+> >>>>
+> >>>> -	ret = max9271_clear_gpios(dev->serializer, MAX9271_GPIO1OUT);
+> >>>> +	ret = max9271_clear_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+> >>>>  	if (ret)
+> >>>>  		return ret;
+> >>>>  	usleep_range(10000, 15000);
+> >>>>
+> >>>> -	ret = max9271_set_gpios(dev->serializer, MAX9271_GPIO1OUT);
+> >>>> +	ret = max9271_set_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+> >>>>  	if (ret)
+> >>>>  		return ret;
+> >>>>  	usleep_range(10000, 15000);
+> >>>> @@ -564,13 +564,7 @@ static int rdacm20_probe(struct i2c_client *client)
+> >>>>  	if (!dev)
+> >>>>  		return -ENOMEM;
+> >>>>  	dev->dev = &client->dev;
+> >>>> -
+> >>>> -	dev->serializer = devm_kzalloc(&client->dev, sizeof(*dev->serializer),
+> >>>> -				       GFP_KERNEL);
+> >>>> -	if (!dev->serializer)
+> >>>> -		return -ENOMEM;
+> >>>> -
+> >>>> -	dev->serializer->client = client;
+> >>>> +	dev->serializer.client = client;
+> >>>>
+> >>>>  	ret = of_property_read_u32_array(client->dev.of_node, "reg",
+> >>>>  					 dev->addrs, 2);
+> >>>
+> >>
+>
