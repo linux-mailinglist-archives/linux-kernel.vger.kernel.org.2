@@ -2,180 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB983AB4D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56573AB4D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232783AbhFQNfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:35:45 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:44943 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231654AbhFQNfi (ORCPT
+        id S232317AbhFQNgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:36:03 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:48473 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231654AbhFQNgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:35:38 -0400
-Received: by mail-ot1-f49.google.com with SMTP id q5-20020a9d66450000b02903f18d65089fso6109852otm.11;
-        Thu, 17 Jun 2021 06:33:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uplD831DStQ1N/g38yxe3fctKRp7RZTAFl6NF9p1dbY=;
-        b=kxxxpEI4hgadW2aXn3wj4HTYEEBQDyazhddReLhOPoI2Eve3CR4SLJfNRL1IgD3Fwe
-         GNASat72jNyefOeqe+v6A9sJ4i72qbdHiXjKAj43Xk0yELfhSRvXompJHbO9PFjKi87J
-         nQggP4TuA6I4UZuFqvRc5/VdPzesuIsmhQ0rGvXsAbMhiSAIUHsePFoz/22m9V7ZQHkl
-         9CS5LRquA/h6UH/i3LNkcYwe8igQoKvdP/eX7m0gUp9Ldb3eegvSN2Ol9B9fQFrP3zJj
-         ezl12AY02u2eQvk2yhaw4wBB4nxcV7vhJa7rHryWn9uUAAUGgNmozoonejIGTPdjKSzZ
-         nDlw==
-X-Gm-Message-State: AOAM5313R8o+cboj9D4F+prAyFkcmRsFMG5AT9f2hrFpilCoUzTr+atC
-        6ANSthPREI71EppkDSf99yGIqstXYxuJbVxPkvw=
-X-Google-Smtp-Source: ABdhPJyG8Xb3s9HktdqJ9NAE4FVQBVWDaCtM5GohFPMProI+vxpB8hmOShZpLaQkUC4E/9UT2N+fZqvqjtL1k+zires=
-X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr4796335otb.206.1623936811005;
- Thu, 17 Jun 2021 06:33:31 -0700 (PDT)
+        Thu, 17 Jun 2021 09:36:01 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 75B2940011;
+        Thu, 17 Jun 2021 13:33:49 +0000 (UTC)
+Subject: Re: [PATCH v6 0/3] Introduce 64b relocatable kernel
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <20210518101252.1484465-1-alex@ghiti.fr>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <8512c6b0-3dff-5485-b5d8-638044594973@ghiti.fr>
+Date:   Thu, 17 Jun 2021 15:33:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <cover.1623825725.git.viresh.kumar@linaro.org> <2ffbaf079a21c2810c402cb5bba4e9c14c4a0ff4.1623825725.git.viresh.kumar@linaro.org>
-In-Reply-To: <2ffbaf079a21c2810c402cb5bba4e9c14c4a0ff4.1623825725.git.viresh.kumar@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 17 Jun 2021 15:33:19 +0200
-Message-ID: <CAJZ5v0gBUMXs=oANZRuOO7uUVdSD-n1inwYsoLr5or=2gEa2Mg@mail.gmail.com>
-Subject: Re: [PATCH V2 1/3] cpufreq: Add start_cpu() and stop_cpu() callbacks
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210518101252.1484465-1-alex@ghiti.fr>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 8:48 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On CPU hot-unplug, the cpufreq core doesn't call any driver specific
-> callback unless all the CPUs of a policy went away, in which case we
-> call stop_cpu() callback.
->
-> For the CPPC cpufreq driver, we need to perform per-cpu init/exit work
-> which that can't be performed from policy specific init()/exit()
-> callbacks.
->
-> This patch adds a new callback, start_cpu() and modifies the stop_cpu()
-> callback, to perform such CPU specific work.
->
-> These routines are called whenever a CPU is added or removed from a
-> policy.
->
-> Note that this also moves the setting of policy->cpus to online CPUs
-> only, outside of rwsem as we needed to call start_cpu() for online CPUs
-> only. This shouldn't have any side effects.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  Documentation/cpu-freq/cpu-drivers.rst |  7 +++++--
->  drivers/cpufreq/cpufreq.c              | 19 +++++++++++++++----
->  include/linux/cpufreq.h                |  5 ++++-
->  3 files changed, 24 insertions(+), 7 deletions(-)
->
-> diff --git a/Documentation/cpu-freq/cpu-drivers.rst b/Documentation/cpu-freq/cpu-drivers.rst
-> index a697278ce190..15cfe42b4075 100644
-> --- a/Documentation/cpu-freq/cpu-drivers.rst
-> +++ b/Documentation/cpu-freq/cpu-drivers.rst
-> @@ -71,8 +71,11 @@ And optionally
->   .exit - A pointer to a per-policy cleanup function called during
->   CPU_POST_DEAD phase of cpu hotplug process.
->
-> - .stop_cpu - A pointer to a per-policy stop function called during
-> - CPU_DOWN_PREPARE phase of cpu hotplug process.
-> + .start_cpu - A pointer to a per-policy per-cpu start function called
-> + during CPU online phase.
-> +
-> + .stop_cpu - A pointer to a per-policy per-cpu stop function called
-> + during CPU offline phase.
->
->   .suspend - A pointer to a per-policy suspend function which is called
->   with interrupts disabled and _after_ the governor is stopped for the
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 802abc925b2a..128dfb1b0cdf 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -1119,6 +1119,10 @@ static int cpufreq_add_policy_cpu(struct cpufreq_policy *policy, unsigned int cp
->
->         cpumask_set_cpu(cpu, policy->cpus);
->
-> +       /* Do CPU specific initialization if required */
-> +       if (cpufreq_driver->start_cpu)
-> +               cpufreq_driver->start_cpu(policy, cpu);
-> +
->         if (has_target()) {
->                 ret = cpufreq_start_governor(policy);
->                 if (ret)
-> @@ -1375,13 +1379,19 @@ static int cpufreq_online(unsigned int cpu)
->                 cpumask_copy(policy->related_cpus, policy->cpus);
->         }
->
-> -       down_write(&policy->rwsem);
->         /*
->          * affected cpus must always be the one, which are online. We aren't
->          * managing offline cpus here.
->          */
->         cpumask_and(policy->cpus, policy->cpus, cpu_online_mask);
->
-> +       /* Do CPU specific initialization if required */
-> +       if (cpufreq_driver->start_cpu) {
-> +               for_each_cpu(j, policy->cpus)
-> +                       cpufreq_driver->start_cpu(policy, j);
-> +       }
-> +
-> +       down_write(&policy->rwsem);
->         if (new_policy) {
->                 for_each_cpu(j, policy->related_cpus) {
->                         per_cpu(cpufreq_cpu_data, j) = policy;
-> @@ -1581,6 +1591,10 @@ static int cpufreq_offline(unsigned int cpu)
->                 policy->cpu = cpumask_any(policy->cpus);
->         }
->
-> +       /* Do CPU specific de-initialization if required */
-> +       if (cpufreq_driver->stop_cpu)
-> +               cpufreq_driver->stop_cpu(policy, cpu);
-> +
->         /* Start governor again for active policy */
->         if (!policy_is_inactive(policy)) {
->                 if (has_target()) {
-> @@ -1597,9 +1611,6 @@ static int cpufreq_offline(unsigned int cpu)
->                 policy->cdev = NULL;
->         }
->
-> -       if (cpufreq_driver->stop_cpu)
-> -               cpufreq_driver->stop_cpu(policy);
-> -
+Le 18/05/2021 à 12:12, Alexandre Ghiti a écrit :
+> After multiple attempts, this patchset is now based on the fact that the
+> 64b kernel mapping was moved outside the linear mapping.
+> 
+> The first patch allows to build relocatable kernels but is not selected
+> by default. That patch should ease KASLR implementation a lot.
+> The second and third patches take advantage of an already existing powerpc
+> script that checks relocations at compile-time, and uses it for riscv.
 
-This should be a separate patch IMO, after you've migrated everyone to
-->offline/->exit.
+@Palmer, any thought about that? There are no users for now, do you want 
+to wait for a KASLR implementation to use it before merging this? If so, 
+I can work on a KASLR implementation based on older implementation from 
+Zong.
 
-BTW, IMO it might be better to migrate ->stop_cpu to ->offline rather
-than to ->exit.
+Thanks,
 
->         if (has_target())
->                 cpufreq_exit_governor(policy);
->
-> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-> index 353969c7acd3..c281b3df4e2f 100644
-> --- a/include/linux/cpufreq.h
-> +++ b/include/linux/cpufreq.h
-> @@ -371,7 +371,10 @@ struct cpufreq_driver {
->         int             (*online)(struct cpufreq_policy *policy);
->         int             (*offline)(struct cpufreq_policy *policy);
->         int             (*exit)(struct cpufreq_policy *policy);
-> -       void            (*stop_cpu)(struct cpufreq_policy *policy);
-> +
-> +       /* CPU specific start/stop */
-> +       void            (*start_cpu)(struct cpufreq_policy *policy, unsigned int cpu);
-> +       void            (*stop_cpu)(struct cpufreq_policy *policy, unsigned int cpu);
->         int             (*suspend)(struct cpufreq_policy *policy);
->         int             (*resume)(struct cpufreq_policy *policy);
->
-> --
-> 2.31.1.272.g89b43f80a514
->
+> 
+> This patchset was tested on:
+> 
+> * kernel:
+> - rv32: OK
+> - rv64 with RELOCATABLE: OK and checked that "suspicious" relocations are caught.
+> - rv64 without RELOCATABLE: OK
+> - powerpc: build only and checked that "suspicious" relocations are caught.
+>                                                                                   
+> * xipkernel:
+> - rv32: build only
+> - rv64: OK
+> 
+> * nommukernel:
+> - rv64: build only
+> 
+> Changes in v6:
+>    * Remove the kernel move to vmalloc zone
+>    * Rebased on top of for-next
+>    * Remove relocatable property from 32b kernel as the kernel is mapped in
+>      the linear mapping and would then need to be copied physically too
+>    * CONFIG_RELOCATABLE depends on !XIP_KERNEL
+>    * Remove Reviewed-by from first patch as it changed a bit
+> 
+> Changes in v5:
+>    * Add "static __init" to create_kernel_page_table function as reported by
+>      Kbuild test robot
+>    * Add reviewed-by from Zong
+>    * Rebase onto v5.7
+> 
+> Changes in v4:
+>    * Fix BPF region that overlapped with kernel's as suggested by Zong
+>    * Fix end of module region that could be larger than 2GB as suggested by Zong
+>    * Fix the size of the vm area reserved for the kernel as we could lose
+>      PMD_SIZE if the size was already aligned on PMD_SIZE
+>    * Split compile time relocations check patch into 2 patches as suggested by Anup
+>    * Applied Reviewed-by from Zong and Anup
+> 
+> Changes in v3:
+>    * Move kernel mapping to vmalloc
+> 
+> Changes in v2:
+>    * Make RELOCATABLE depend on MMU as suggested by Anup
+>    * Rename kernel_load_addr into kernel_virt_addr as suggested by Anup
+>    * Use __pa_symbol instead of __pa, as suggested by Zong
+>    * Rebased on top of v5.6-rc3
+>    * Tested with sv48 patchset
+>    * Add Reviewed/Tested-by from Zong and Anup
+> 
+> Alexandre Ghiti (3):
+>    riscv: Introduce CONFIG_RELOCATABLE
+>    powerpc: Move script to check relocations at compile time in scripts/
+>    riscv: Check relocations at compile time
+> 
+>   arch/powerpc/tools/relocs_check.sh | 18 ++--------
+>   arch/riscv/Kconfig                 | 12 +++++++
+>   arch/riscv/Makefile                |  5 ++-
+>   arch/riscv/Makefile.postlink       | 36 ++++++++++++++++++++
+>   arch/riscv/kernel/vmlinux.lds.S    |  6 ++++
+>   arch/riscv/mm/Makefile             |  4 +++
+>   arch/riscv/mm/init.c               | 53 +++++++++++++++++++++++++++++-
+>   arch/riscv/tools/relocs_check.sh   | 26 +++++++++++++++
+>   scripts/relocs_check.sh            | 20 +++++++++++
+>   9 files changed, 162 insertions(+), 18 deletions(-)
+>   create mode 100644 arch/riscv/Makefile.postlink
+>   create mode 100755 arch/riscv/tools/relocs_check.sh
+>   create mode 100755 scripts/relocs_check.sh
+> 
