@@ -2,92 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F163AB1E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C433AB1EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbhFQLIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232330AbhFQLHu (ORCPT
+        id S232369AbhFQLIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:08:25 -0400
+Received: from outbound-smtp18.blacknight.com ([46.22.139.245]:40491 "EHLO
+        outbound-smtp18.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232322AbhFQLIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:07:50 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16972C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:05:42 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id d11so3914799wrm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:05:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vUFn8vVyODrswNQB/UdSBDPFH88/MOPHHSA7kAmhlUc=;
-        b=YVPz/AgKRT5m6CJ7rOCMPDWcZv3JwMHNmlgpJ8uHxHjHxO207ioU8MpX73i5hr8gZh
-         d8924gGz2boMuHQ5jIc0orcPLNVFgTRT93yz9iVppJ+noJV/QPF5CXRuXBfLiokXKPi9
-         pVxulBYemzM7Fl0qx+ac8y2ANLy6MwiC2k9XC6Bw35ZaMsApvKn4rx65ZHpdZoERsAl3
-         YvAExUroguCFxZVHKTQcBFCQKhZX2oPLyhuPO2vp394Ov/zhFJLpHaJ3LlLR9aZNbsF4
-         RUxYFj45RGsYQ6zf4A3GLxB5umykTLp5yi0lWqdpASwbe+TEKvjQPaRNSnlM1vM+3J73
-         J7UA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vUFn8vVyODrswNQB/UdSBDPFH88/MOPHHSA7kAmhlUc=;
-        b=de8TFvWryhAGm4nmsEiCLVJi4bm3lVcloBhkhVtjyueKO/IEukXT6z+ubkFCo8Tx1B
-         dt2L+BrziWUnT1VHlCDgkg+1ua/+rtcj6OAt1XkZHoXHemKRNycCx0mG5/J1+nmNKIUR
-         NrEbV+Tw+cmLqlHW48tHBoRQkGndf5B1vKtc8hz2f3bFUBJp1LGy5oTdQpYl3CzY0HIH
-         mXIqRuIHOO/gHCxujv445tXZdpzNlvZP2omUiSveCy/cLe1bGQdTTlCDWTOMEQat4jrB
-         6ghwAJRbtSIioJVspfoCXHZU6pwrQcouzfwIvqIHPw2uf7fpZnP3A/pUy51z925SvSOw
-         EOKg==
-X-Gm-Message-State: AOAM5325iMEyfLph4B9W8BH6+NhN2D0G4pOrCUv5tu+KtNpqq2VGf+Z3
-        wS0gLBGbDI2YeoBkJUuvOh/L5Q==
-X-Google-Smtp-Source: ABdhPJydInITVN/efLeuHtC42CzSmNJy7NWStiFE09zDfgUsoVOqaFXdyneCQUQSI9ZBpC/jr1/X/w==
-X-Received: by 2002:a05:6000:1889:: with SMTP id a9mr5032421wri.288.1623927940675;
-        Thu, 17 Jun 2021 04:05:40 -0700 (PDT)
-Received: from dell.default ([91.110.221.170])
-        by smtp.gmail.com with ESMTPSA id v18sm5249487wrb.10.2021.06.17.04.05.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 04:05:40 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Subject: [PATCH 8/8] bus: fsl-mc: mc-io: Correct misdocumentation of 'dpmcp_dev' param
-Date:   Thu, 17 Jun 2021 12:05:00 +0100
-Message-Id: <20210617110500.15907-8-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210617110500.15907-1-lee.jones@linaro.org>
-References: <20210617110500.15907-1-lee.jones@linaro.org>
+        Thu, 17 Jun 2021 07:08:01 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp18.blacknight.com (Postfix) with ESMTPS id 981F41C3ADC
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 12:05:49 +0100 (IST)
+Received: (qmail 19741 invoked from network); 17 Jun 2021 11:05:49 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 17 Jun 2021 11:05:49 -0000
+Date:   Thu, 17 Jun 2021 12:05:48 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] sched/fair: Age the average idle time
+Message-ID: <20210617110548.GN30378@techsingularity.net>
+References: <20210615111611.GH30378@techsingularity.net>
+ <20210615204228.GB4272@worktop.programming.kicks-ass.net>
+ <CAKfTPtAZ_Aq_S-O2qh5LPyxExkBq3G0kxh51fT7sSC_z8He4+w@mail.gmail.com>
+ <20210617074401.GL30378@techsingularity.net>
+ <CAKfTPtC8d37ZrXfDF2jkgg=tDPb1qAvFQQGXHhTf9LLR59hd8Q@mail.gmail.com>
+ <20210617094040.GM30378@techsingularity.net>
+ <CAKfTPtB-UCduEiQ5e8NxbOwsfjYGj3ron5rAg4_5ag2Fne7v3A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtB-UCduEiQ5e8NxbOwsfjYGj3ron5rAg4_5ag2Fne7v3A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Thu, Jun 17, 2021 at 12:02:56PM +0200, Vincent Guittot wrote:
+> > > >
+> > > > Fundamentally though, as the changelog notes "due to the nature of the
+> > > > patch, this is a regression magnet". There are going to be examples
+> > > > where a deep search is better even if a machine is fully busy or
+> > > > overloaded and examples where cutting off the search is better. I think
+> > > > it's better to have an idle estimate that gets updated if CPUs are fully
+> > > > busy even if it's not a universal win.
+> > >
+> > > Although I agree that using a stall average idle time value of local
+> > > is not good, I'm not sure this proposal is better. The main problem is
+> > > that we use the avg_idle of the local CPU to estimate how many times
+> > > we should loop and try to find another idle CPU. But there is no
+> > > direct relation between both.
+> >
+> > This is true. The idle time of the local CPU is used to estimate the
+> > idle time of the domain which is inevitably going to be inaccurate but
+> 
+> I'm more and more convinced that using average idle time  (of the
+> local cpu or the full domain) is not the right metric. In
+> select_idle_cpu(), we looks for an idle CPU but we don't care about
+> how long it will be idle.
 
- drivers/bus/fsl-mc/mc-io.c:70: warning: Function parameter or member 'dpmcp_dev' not described in 'fsl_create_mc_io'
+Can we predict that accurately? cpufreq for intel_pstate used to try
+something like that but it was a bit fuzzy and I don't know if the
+scheduler could do much better. There is some idle prediction stuff but
+it's related to nohz which does not really help us if a machine is nearly
+fully busy or overloaded.
 
-Cc: Stuart Yoder <stuyoder@gmail.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
----
- drivers/bus/fsl-mc/mc-io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I guess for tracking idle that revisiting
+https://lore.kernel.org/lkml/1615872606-56087-1-git-send-email-aubrey.li@intel.com/
+is an option now that the scan is somewhat unified. A two-pass scan
+could be used to check potentially idle CPUs first and if there is
+sufficient search depth left, scan other CPUs. There were some questions
+on how accurate the idle mask was and how expensive it was to maintain.
+Unfortunately, it would not help with scan depth calculations, it just
+might reduce useless scanning.
 
-diff --git a/drivers/bus/fsl-mc/mc-io.c b/drivers/bus/fsl-mc/mc-io.c
-index 9af6b05b89d6f..95b10a6cf3073 100644
---- a/drivers/bus/fsl-mc/mc-io.c
-+++ b/drivers/bus/fsl-mc/mc-io.c
-@@ -55,7 +55,7 @@ static void fsl_mc_io_unset_dpmcp(struct fsl_mc_io *mc_io)
-  * @dev: device to be associated with the MC I/O object
-  * @mc_portal_phys_addr: physical address of the MC portal to use
-  * @mc_portal_size: size in bytes of the MC portal
-- * @dpmcp-dev: Pointer to the DPMCP object associated with this MC I/O
-+ * @dpmcp_dev: Pointer to the DPMCP object associated with this MC I/O
-  * object or NULL if none.
-  * @flags: flags for the new MC I/O object
-  * @new_mc_io: Area to return pointer to newly created MC I/O object
+Selecting based on avg idle time could be interesting but hazardous. If
+for example, we prioritised selecting a CPU that is mostly idle, it'll
+also pick CPUs that are potentially in a deep idle state incurring a
+larger wakeup cost. Right now we are not much better because we just
+select an idle CPU and hope for the best but always targetting the most
+idle CPU could have problems. There would also be the cost of tracking
+idle CPUs in priority order. It would eliminate the scan depth cost
+calculations but the overall cost would be much worse.
+
+Hence, I still think we can improve the scan depth costs in the short
+term until a replacement is identified that works reasonably well.
+
+> Even more, we can scan all CPUs whatever the
+> avg idle time if there is a chance that there is an idle core.
+> 
+
+That is an important, but separate topic. It's known that the idle core
+detection can yield false positives. Putting core scanning under SIS_PROP
+had mixed results when we last tried but things change. Again, it doesn't
+help with scan depth calculations.
+
+> > tracking idle time for the domain will be cache write intensive and
+> > potentially very expensive. I think this was discussed before but maybe
+> > it is my imaginaction.
+> >
+> > > Typically, a short average idle time on
+> > > the local CPU doesn't mean that there are less idle CPUs and that's
+> > > why we have a mix a gain and loss
+> > >
+> >
+> > Can you evaluate if scanning proportional to cores helps if applied on
+> > top? The patch below is a bit of pick&mix and has only seen a basic build
+> 
+> I will queue it for some test later today
+> 
+
+Thanks. The proposed patch since passed a build and boot test,
+performance evaluation is under way but as it's x86 and SMT2, I'm mostly
+just checking that it's neutral.
+
 -- 
-2.32.0
-
+Mel Gorman
+SUSE Labs
