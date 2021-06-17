@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D453A3AB406
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2713AB40E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhFQMwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbhFQMwH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:52:07 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F37FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:50:00 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623934198;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cJCHG5L9FgcmNBqUbBknyuX+5QElRmpUfzjgyYF9gyY=;
-        b=oSEnYthPEl43ABFCdQvzF1Rf5VwwdPwSocJCdG42Rm8GGVeVBcmdSOkq2wv4fzV1qiQ04+
-        8VESBPDTKL9IlZ/g/GH4FlIcx/Pq6fwIPAKQPHEJXRn01i/hqHU0tsVf7z0ADsM9Qm4G/D
-        FH880b5PsfAwMT6uq03pcJVI7jGo9xb20ydSlOHyZl7RzM7ETchVA7DfK/moX1cY7eG/pF
-        RpRu5FHEwnToUeKp2a/Xblxe5njl03wid16k5MG7VsaB0PL3chbT5rBlfQQ3XPL76fcDcP
-        Ck8jrdW932uIg+yRu/Lob3IeCRTCYu9znuxsTxtvc6321DSiQniTbjWak6Ncvg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623934198;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cJCHG5L9FgcmNBqUbBknyuX+5QElRmpUfzjgyYF9gyY=;
-        b=DEvihgDSVs1ZKcpHwmMVYVZ6gLGRRwAx8LkvXJ6k3k7igiidjIGpmm4tBhvk6FRk0e5Unf
-        yuaH6iAw3YSjaeDg==
-To:     Borislav Petkov <bp@suse.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V2 20/52] x86/fpu: Cleanup arch_set_user_pkey_access()
-In-Reply-To: <YMs+cwXZGrEf2gI/@zn.tnic>
-References: <20210614154408.673478623@linutronix.de> <20210614155355.744726133@linutronix.de> <YMs+cwXZGrEf2gI/@zn.tnic>
-Date:   Thu, 17 Jun 2021 14:49:58 +0200
-Message-ID: <87pmwkfyfd.ffs@nanos.tec.linutronix.de>
+        id S232055AbhFQMxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:53:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231757AbhFQMxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 08:53:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91F3A611CA;
+        Thu, 17 Jun 2021 12:51:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623934301;
+        bh=H2fT8hqje6WTi+InK+PnuiNbOt43avFsdwJxXo3eyuM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bg45Pa+iM+e7xwXtpdzjA5G2NjtdUmBWLW18iALSJZ1xGFEOTAFnjispa7sWoLPrX
+         t+aMfkuA9wy/EFS02nQnCfbL3qaC9WXpFWb/UZ77OhzesHoj3B6AlVXDRS1J0DC8q0
+         tpWUKozbdi+/aTfxfKP8e4p4mB12CSa3w9AaNzB+8531z4Iy92KwhoBsUHiUCkPD1j
+         b56+b/QqOOh5tu9LNr1WCt4GfPd40KAPCy80acKO38HaZf/yA1L+KDq31PeVsr+AFz
+         /pwYuj4YFtCY95WRUQfnL2apBoTV4DzMcLiAldBMX39BD/AhZgJfh1aQ4fj02p/3be
+         4Y0gCSzMIhPdQ==
+Date:   Thu, 17 Jun 2021 13:51:20 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCHv4 1/6] spi: add ancillary device support
+Message-ID: <20210617125120.GA14944@sirena.org.uk>
+References: <20210609151235.48964-1-sebastian.reichel@collabora.com>
+ <20210609151235.48964-2-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="a8Wt8u1KmwUX3Y2C"
+Content-Disposition: inline
+In-Reply-To: <20210609151235.48964-2-sebastian.reichel@collabora.com>
+X-Cookie: So much food
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17 2021 at 14:22, Borislav Petkov wrote:
-> On Mon, Jun 14, 2021 at 05:44:28PM +0200, Thomas Gleixner wrote:
->>  	/*
->>  	 * This check implies XSAVE support.  OSPKE only gets
->
-> There's a boot_cpu_has() check
->
-> <--- here
->
-> Might wanna convert it to cpu_feature_enabled(), while at it.
 
-There's a later patch which cleans up the whole cpu feature mess of
-OSPKE. That takes care of it.
+--a8Wt8u1KmwUX3Y2C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jun 09, 2021 at 05:12:30PM +0200, Sebastian Reichel wrote:
+> Introduce support for ancillary devices, similar to existing
+> implementation for I2C. This is useful for devices having
+> multiple chip-selects, for example some microcontrollers
+> provide a normal SPI interface and a flashing SPI interface.
+
+This doesn't apply against current code, please check and resend.
+
+--a8Wt8u1KmwUX3Y2C
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDLRUgACgkQJNaLcl1U
+h9DvQQf+MQ61hJiWh+EZt/3wqJRsGgT5FbVj37Smy30cyY6i9zJq27svHsxvIpfH
+iIlo9dwUND8pIewXnQYIcmwWnGeM6mCgywrtB6F+PweYhttSStv6c1/G/lA9Bicn
+QOZr42ZTcKAlsufRTsuL/LItdAOpwGJhWe0z/QRNlzTgBvSjAA5ex+AxzgsFUpYB
+6pQLgQA2LQXfNPgtfgh49EGMiUsh9RT1GbBw6yG8qFnymaff3wfkVWSaZHE8lRlc
+JLRFO0C+Nb4uq09vWzhAz/IB9Fot278iFVMPj5f1L0JK8Z+JW/HI+hEW+a3u84DP
+iBIyQrbP+ATCd5ll0OP5nAd9HniPzA==
+=XVlv
+-----END PGP SIGNATURE-----
+
+--a8Wt8u1KmwUX3Y2C--
