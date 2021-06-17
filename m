@@ -2,61 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68C93AA9B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 05:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E4C3AA9BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 05:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbhFQDxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 23:53:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229673AbhFQDxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 23:53:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8C106117A;
-        Thu, 17 Jun 2021 03:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623901863;
-        bh=1flQ5v/jNp4/ps/FZDuKqGxBV/Yzlof4nAnM0HGqJPQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=usY7AOlur5KXNcKsTy+fPuDEOvwWgNyLPfAa2n4xELsWhM7bYgpnKVmgONbrZKWHF
-         67cSWdPCiiKB0B0Ymw6LH+nQGPGNov/05A7DOi+65gtpLWTQ1CyxckqtIaXD6zQsxQ
-         1e6sRdXeduApgyJM32w2I+Yztm13DlDQysbcpKdH0VsmixMdX5nZQMFMOL2PK58H/s
-         iD/AdVvZKLl/nGJwIbXY9qvA9uZa4H2450vdMAzYoaMHg+7puhDygj7Wm+f5UhNqfJ
-         f86KsDt9/r0GatXnf1AkEKMGlQLaGX1M8cJUTObblfHYv3yDoN46d1vXy2Hm333BWg
-         zQhCXrunwVOFA==
-Date:   Wed, 16 Jun 2021 20:51:01 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v3 00/10] ensure bios aren't split in middle of crypto
- data unit
-Message-ID: <YMrGpfXYtGmvtSsO@sol.localdomain>
-References: <20210604195900.2096121-1-satyat@google.com>
+        id S230087AbhFQDxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 23:53:55 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:7340 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhFQDxt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 23:53:49 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G57L52rymz6yS5;
+        Thu, 17 Jun 2021 11:47:41 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 11:51:35 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 17
+ Jun 2021 11:51:34 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <ulli.kroll@googlemail.com>, <linus.walleij@linaro.org>,
+        <clabbe@baylibre.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] crypto: sl3516 - Fix build warning without CONFIG_PM
+Date:   Thu, 17 Jun 2021 11:51:29 +0800
+Message-ID: <20210617035129.4948-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604195900.2096121-1-satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 07:58:50PM +0000, Satya Tangirala wrote:
-> When a bio has an encryption context, its size must be aligned to its
-> crypto data unit size. A bio must not be split in the middle of a data
-> unit. Currently, bios are split at logical block boundaries, but a crypto
-> data unit size might be larger than the logical block size - e.g. a machine
-> could be using fscrypt (which uses 4K crypto data units) with an eMMC block
-> device with inline encryption hardware that has a logical block size of 512
-> bytes. So we need to support cases where the data unit size is larger than
-> the logical block size.
+drivers/crypto/gemini/sl3516-ce-core.c:345:12:
+ warning: ‘sl3516_ce_pm_resume’ defined but not used [-Wunused-function]
+ static int sl3516_ce_pm_resume(struct device *dev)
+            ^~~~~~~~~~~~~~~~~~~
 
-It's worth explaining the motivation for this more clearly.  Currently the only
-user of blk-crypto is fscrypt (on ext4 and f2fs), which (currently) only submits
-bios where the size of each segment is a multiple of data_unit_size.  That
-happens to avoid most of the cases where bios could be split in the middle of a
-data unit.  However, when support for direct I/O on encrypted files is added, or
-when support for filesystem metadata encryption is added, it will be possible
-for bios to have segment lengths that are only multiples of the logical block
-size.  So the block layer needs to start handling this case appropriately.
+Use #ifdef macro to guard this.
 
-- Eric
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/crypto/gemini/sl3516-ce-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/crypto/gemini/sl3516-ce-core.c b/drivers/crypto/gemini/sl3516-ce-core.c
+index da6cd529a6c0..00bfc5e19818 100644
+--- a/drivers/crypto/gemini/sl3516-ce-core.c
++++ b/drivers/crypto/gemini/sl3516-ce-core.c
+@@ -320,6 +320,7 @@ static void sl3516_ce_unregister_algs(struct sl3516_ce_dev *ce)
+ 	}
+ }
+ 
++#ifdef CONFIG_PM
+ static void sl3516_ce_start(struct sl3516_ce_dev *ce)
+ {
+ 	ce->ctx = 0;
+@@ -365,6 +366,7 @@ static int sl3516_ce_pm_resume(struct device *dev)
+ 	sl3516_ce_pm_suspend(dev);
+ 	return err;
+ }
++#endif
+ 
+ static const struct dev_pm_ops sl3516_ce_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(sl3516_ce_pm_suspend, sl3516_ce_pm_resume, NULL)
+-- 
+2.17.1
+
