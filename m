@@ -2,86 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592B83AAB2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB703AAB2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhFQFrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 01:47:09 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:37607 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhFQFrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 01:47:07 -0400
+        id S229827AbhFQFs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 01:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229741AbhFQFsY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 01:48:24 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E55C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:46:16 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id m15-20020a17090a5a4fb029016f385ffad0so353287pji.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:46:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1623908700;
-  x=1655444700;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=S0SZp+MtB0FHehHfzfK9jQoLO67WK2V4tsZ4tytRZpo=;
-  b=F2h2JIbTOkCZNmNFfvBJR5bgzKJWpoxsTckkmsWVGwaWLO3d/m4VSDna
-   EaWkNTUpqIk9M8iEAZ+TwR39uphq+xvQqjbGJ5+MnDe+3U2DpNjw2lKKj
-   3kXC6DdnWy49qxY15+4iYRmSwXY5l7q2O7tJo0ez3h6MOVpn/c2yl/oDX
-   5Ni6pVZBJuiHVO7sbFMvbAHO+msN8vRF3hexLKazIJav483aR8O9XYlre
-   mMscH6S69AnxB6COnUG0LsIYxRdR5OcJUfq3U6/TkkFBk5iehBKMkrQNk
-   bI/DIMXYTRVE5qU5y9jfZrYvoXbb5vi7S++V+lGyt+jXp0jB4BwIYEvi1
-   Q==;
-Date:   Thu, 17 Jun 2021 07:44:58 +0200
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-CC:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        kernel <kernel@axis.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <James.Bottomley@HansenPartnership.com>, <l.sanfilippo@kunbus.com>
-Subject: Re: [PATCH 2/2] tpm: Fix crash on tmprm release
-Message-ID: <20210617054458.GB4049@axis.com>
-References: <20210615091410.17007-1-vincent.whitchurch@axis.com>
- <20210615091410.17007-2-vincent.whitchurch@axis.com>
- <20210615131848.cynblt5qindtvtiz@kernel.org>
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ryRtK61SYm8PEwrY11LaHJtoPw6grUNXacSgX8/XdGk=;
+        b=JyOySvn4xq7TtrN+FSXsQ3XX5BVRq1nskC0TUkM0+94B96ge24dhGRVvmr2XxW4NEb
+         zVs5XJaZz++JB3ODhl5V2FUzxSVl1gvN+r+FZxmYcl0ddWrumUUt6KoAupfXBk+6vb7X
+         LfyzPLt+Z6qOoS/JVAyWqCGXDW3EMA4tJqmARKKLpb3JxWGnSoFzyrFOZqHe9EkSko5+
+         +q9yYEDdY6NNsfyOciEpWmEimUnMO9TyW5cj/OYmiRsaWCHav4yu22YUj9vMWd4SSgGD
+         ic7WlW13W0I9B2K32etV5tEaHegGsfMeRRnD2Tspuu4TRR7yivH/IzGaHP3iFNrM8+3T
+         Upsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ryRtK61SYm8PEwrY11LaHJtoPw6grUNXacSgX8/XdGk=;
+        b=Igpm64GkSrb6jTsV2H1iB29Ry0wdCBFka0f0J503FU/L54zE341vL607XvtYJEh29h
+         yn1aiZi8ijQLcRHaqobU3wkrmEQwN+FkysmC4TCAP8sJqnob2BpTTKxojDsRBN6b7s7R
+         dYhGXMeLffc+5t9ErCAaIg8RuM8wifr0dS56bXWo3JNUQYOb32+ykmD3EX7kVk+Y1uAD
+         2Ow/cK8AHxc+oDcNcPMHjP7haIvXusnjwBwE0lB1g3g4kS4Tt1fv+1wvIKQusFBhG5qq
+         u7SQM54xi3kHoWmulyzeQs+G2oc6Lgn4jjfIAoY2i6e1K4uXht023U/Onv3QFtg5ZVKZ
+         KjEQ==
+X-Gm-Message-State: AOAM530k9Dw8r156Ul1O78YmBGO8BhPM2DOeuk/vqGSzxLqvCWmDF+vi
+        dsJSXi9CCa16JXWl3d6EUHzVQQ==
+X-Google-Smtp-Source: ABdhPJybhCmh4U2ZGmx78zsnS156XuPnmscAJ0WSf8+NDyCc4u+8RiFjDLToqb4QldrOdKpgwBY6hg==
+X-Received: by 2002:a17:90a:2ac7:: with SMTP id i7mr3882063pjg.139.1623908776486;
+        Wed, 16 Jun 2021 22:46:16 -0700 (PDT)
+Received: from localhost.name ([122.177.46.2])
+        by smtp.gmail.com with ESMTPSA id y27sm3882700pff.202.2021.06.16.22.46.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 22:46:16 -0700 (PDT)
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH v3 0/5] arm64: dts: qcom: Add SA8155p-adp board DTS
+Date:   Thu, 17 Jun 2021 11:15:43 +0530
+Message-Id: <20210617054548.353293-1-bhupesh.sharma@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210615131848.cynblt5qindtvtiz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 03:18:48PM +0200, Jarkko Sakkinen wrote:
-> On Tue, Jun 15, 2021 at 11:14:09AM +0200, Vincent Whitchurch wrote:
-> > If the tpm_tis module is removed (or a system shutdown is triggered)
-> > while the tpmrm device is use, the kernel crashes due to chip->ops being
-> > NULL:
-> > 
-> >  # exec 3<>/dev/tpmrm0
-> >  # rmmod tpm_tis
-> >  # exit
-> >  ==================================================================
-> >  BUG: KASAN: null-ptr-deref in tpm_chip_start+0x2d/0x120 [tpm]
-> >  Read of size 8 at addr 0000000000000060 by task sh/994
-> > 
-> >  Call Trace:
-> >   kasan_report.cold.13+0x10f/0x111
-> >   tpm_chip_start+0x2d/0x120 [tpm]
-> >   tpm2_del_space+0x2c/0xa0 [tpm]
-> >   tpmrm_release+0x3f/0x50 [tpm]
-> >   __fput+0x110/0x3c0
-> >   task_work_run+0x94/0xd0
-> >   do_exit+0x683/0x13e0
-> >   do_group_exit+0x8b/0x140
-> >   do_syscall_64+0x3c/0x80
-> >  ==================================================================
-> > 
-> > Fix this by making tpm2_del_space() use tpm_try_get_ops().  The latter
-> > already includes the calls to tpm_chip_start() and tpm_chip_stop().
-> 
-> This lacks explanation why migrating to tpm_try_get_ops() fixes the
-> issue. Saying that doing something fixes something is not good enough
-> explanation. So, can you extend this paragraph just a bit in the next
-> version?
+Changes since v2:
+-----------------
+- v2 series can be found here: https://lore.kernel.org/linux-arm-msm/20210615074543.26700-1-bhupesh.sharma@linaro.org/T/#m8303d27d561b30133992da88198abb78ea833e21 
+- Addressed review comments from Bjorn and Mark.
+- As per suggestion from Bjorn, separated the patches in different
+  patchsets (specific to each subsystem) to ease review and patch application.
 
-Thank you for the review, but I see now that James already proposed a
-more-or-less identical fix earlier, so I'll let that patch run its due
-course:
+Changes since v1:
+-----------------
+- v1 series can be found here: https://lore.kernel.org/linux-arm-msm/20210607113840.15435-1-bhupesh.sharma@linaro.org/T/#mc524fe82798d4c4fb75dd0333318955e0406ad18
+- Addressed review comments from Bjorn and Vinod received on the v1
+  series.
 
- https://lore.kernel.org/linux-integrity/e7566e1e48f5be9dca034b4bfb67683b5d3cb88f.camel@HansenPartnership.com/
- https://lore.kernel.org/linux-integrity/327f4c87-e652-6cbe-c624-16a6edf0c31d@kunbus.com/
+This series adds DTS for SA8155p-adp board which is based on
+Qualcomm snapdragon sa8155p SoC which is simiar to sm8150 SoC.
+
+This patchset also includes DTS for the new PMIC PMM8155AU
+found on the adp board.
+
+This series is in turn dependent on the pinctrl and regulator
+series for the SA8155p-adp board (see [1] and [2]), for the
+requisite driver and dt-binding (compatible) changes.
+
+[1]. pinctrl: https://lore.kernel.org/linux-arm-msm/20210617053432.350486-1-bhupesh.sharma@linaro.org/T/#m2b1bf2d32dfdde3196dc5342722e356ee1f87456
+[2]. regulator: https://lore.kernel.org/linux-arm-msm/20210617051712.345372-1-bhupesh.sharma@linaro.org/T/#m058e8a6bc33979532779078b31d5c3698eaf25db
+
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>
+
+Bhupesh Sharma (5):
+  dt-bindings: arm: qcom: Add compatible for sm8150-mtp board
+  dt-bindings: arm: qcom: Add compatible for SA8155p-adp board
+  arm64: dts: qcom: pmm8155au_1: Add base dts file
+  arm64: dts: qcom: pmm8155au_2: Add base dts file
+  arm64: dts: qcom: sa8155p-adp: Add base dts file
+
+ .../devicetree/bindings/arm/qcom.yaml         |  13 +
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi     | 134 +++++++
+ arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi     | 107 ++++++
+ arch/arm64/boot/dts/qcom/sa8155p-adp.dts      | 360 ++++++++++++++++++
+ 5 files changed, 615 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/sa8155p-adp.dts
+
+-- 
+2.31.1
+
