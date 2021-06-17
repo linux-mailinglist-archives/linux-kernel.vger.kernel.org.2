@@ -2,63 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BC23ABF0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7C33ABF0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbhFQWlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 18:41:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232716AbhFQWkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 18:40:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3328613F0;
-        Thu, 17 Jun 2021 22:38:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623969527;
-        bh=vsL7NMNbpUi0a0GtGlHv6l88o9ybIXECaQOQai63XvA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iuWiiTWUYp95/L4KxWLLzIh9hYgcMAC+eHFr1LtnLfL1bTVgN4PKpLnbRo1qr3t5C
-         gRWMjcqJ5BnICIKR/d7mSzdn9CWpXtr4yDqe4fSOEgOP0wkDRUZyYNJeG7WcgExHZJ
-         LTDg9NbBthg6PegLX3foYdQ4WA8+pSv7xyBljQZoEbY3pe31QVeTBYo9rhuKybkX3U
-         y466X79gR3I+Vr2UYRZQJlU0T9KaNOLJxYmSvvLAeBkpei9AcshfvZFtk4rxOoOXYK
-         /gR4mMQW0JBDxExGBw0AIBZWYNSbLHnx4ioPfn4u/46YTni6O2JuZAeGJ+U5AfkFJG
-         Dj9IntYjqNW3Q==
-From:   Will Deacon <will@kernel.org>
-To:     Tuan Phan <tuanphan@os.amperecomputing.com>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH] perf/arm-cmn: Fix invalid pointer when access dtc object sharing the same IRQ number
-Date:   Thu, 17 Jun 2021 23:38:36 +0100
-Message-Id: <162395550334.941145.17283094312971235409.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1623946129-3290-1-git-send-email-tuanphan@os.amperecomputing.com>
-References: <1623946129-3290-1-git-send-email-tuanphan@os.amperecomputing.com>
+        id S232701AbhFQWmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 18:42:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21717 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231408AbhFQWmF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 18:42:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623969596;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=emxWcjkIG4L80S5gttO8GBQmev22i+AiArghauOxLZY=;
+        b=gIyYlCqcw0d7BVpT77zfXZkmTdnNEkNIjXpMx96e6tN6HCvCwskhqg4PjZn2/oBIh3bQLi
+        8ggt7T2yXLmHfXNoSG9zpMJA4lENHEvegFinUGiv6VGIkESM5HDJFLExFZ2Eis1kO4jBVV
+        1zHEWr9wSly7/L35FP1RDhz8BakA2f0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-fNcSeow_P0-LqGG7H2l9dw-1; Thu, 17 Jun 2021 18:39:55 -0400
+X-MC-Unique: fNcSeow_P0-LqGG7H2l9dw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29447801B14;
+        Thu, 17 Jun 2021 22:39:54 +0000 (UTC)
+Received: from T590 (ovpn-12-22.pek2.redhat.com [10.72.12.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C841B1F6;
+        Thu, 17 Jun 2021 22:39:48 +0000 (UTC)
+Date:   Fri, 18 Jun 2021 06:39:43 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
+Subject: Re: [Bug] fio hang when running multiple job io_uring/hipri over nvme
+Message-ID: <YMvPL/WhRsFfMIfi@T590>
+References: <CAFj5m9+ckHjfMVW_O20NBAPvnauPdABa8edPy--dSEf=XdhYRA@mail.gmail.com>
+ <6691cf72-3a26-a1bb-228d-ddec8391620f@kernel.dk>
+ <1b56a4f7-ce56-ee32-67d5-0fcd5dc6c0cb@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1b56a4f7-ce56-ee32-67d5-0fcd5dc6c0cb@kernel.dk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 09:08:49 -0700, Tuan Phan wrote:
-> When multiple dtcs share the same IRQ number, the irq_friend which
-> used to refer to dtc object gets calculated incorrect which leads
-> to invalid pointer.
+On Thu, Jun 17, 2021 at 10:56:53AM -0600, Jens Axboe wrote:
+> On 6/17/21 10:48 AM, Jens Axboe wrote:
+> > On 6/17/21 5:17 AM, Ming Lei wrote:
+> >> Hello,
+> >>
+> >> fio hangs when running the test[1], and doesn't observe this issue
+> >> when running a
+> >> such single job test.
+> >>
+> >> v5.12 is good, both v5.13-rc3 and the latest v5.13-rc6 are bad.
+> >>
+> >>
+> >> [1] fio test script and log
+> >> + fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri
+> >> --iodepth=64 --iodepth_batch_submit=16
+> >> --iodepth_batch_complete_min=16 --filename=/dev/nvme0n1 --direct=1
+> >> --runtime=20 --numjobs=4 --rw=randread
+> >> --name=test --group_reporting
+> >>
+> >> test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T)
+> >> 4096B-4096B, ioengine=io_uring, iodepth=64
+> >> ...
+> >> fio-3.25
+> >> Starting 4 processes
+> >> fio: filehash.c:64: __lookup_file_hash: Assertion `f->fd != -1' failed.
+> >> fio: pid=1122, got signal=6
+> >> ^Cbs: 3 (f=0): [f(1),r(1),K(1),r(1)][63.6%][eta 00m:20s]
+> > 
+> > Funky, would it be possible to bisect this? I'll see if I can reproduce.
 > 
-> Fixes: 0ba64770a2f2 ("perf: Add Arm CMN-600 PMU driver")
+> Actually, this looks like a fio bug, that assert is a bit too trigger
+> happy. Current -git should work, please test and see if things work.
+> I believe it's just kernel timing that causes this, not a kernel issue.
 
-Applied to will (for-next/perf), thanks!
+Yeah, current -git does work, thanks the fix!
 
-[1/1] perf/arm-cmn: Fix invalid pointer when access dtc object sharing the same IRQ number
-      https://git.kernel.org/will/c/4e16f283edc2
-
-Cheers,
 -- 
-Will
+Ming
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
