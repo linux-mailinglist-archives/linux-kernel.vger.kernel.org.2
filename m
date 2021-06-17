@@ -2,210 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17BE3AAF3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBECB3AAF3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhFQJCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:02:43 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3262 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231341AbhFQJCj (ORCPT
+        id S231336AbhFQJD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:03:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56014 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230242AbhFQJD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:02:39 -0400
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G5G3p5ZLLz6L7lv;
-        Thu, 17 Jun 2021 16:50:46 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 11:00:30 +0200
-Received: from localhost (10.52.126.9) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 17 Jun
- 2021 10:00:29 +0100
-Date:   Thu, 17 Jun 2021 10:00:22 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Alison Schofield <alison.schofield@intel.com>
-CC:     Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] cxl/acpi: Use the ACPI CFMWS to create static
- decoder objects
-Message-ID: <20210617100022.00004665@Huawei.com>
-In-Reply-To: <e6ed0f7d4859fb0d2369ed251ef2648a228c0d41.1623890468.git.alison.schofield@intel.com>
-References: <cover.1623890468.git.alison.schofield@intel.com>
-        <e6ed0f7d4859fb0d2369ed251ef2648a228c0d41.1623890468.git.alison.schofield@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Thu, 17 Jun 2021 05:03:26 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15H8ebU0191396;
+        Thu, 17 Jun 2021 05:01:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=FEeLf/q0OqT9c/q4+Ave8tvpYTbPmwXpMNYPsfzILjg=;
+ b=CGRvs1FuIxlE0VTSa91aBBZQMxFW3e7FAgHyp1O6X3GHSecaBIJgUieT87kXJqeVQFuk
+ JOHCMCTASwkbjzcsrVs9Ts1PrbOfT1h27zuao8+TOS+Y/mXyYfjzETuSmoIY+PUgAhkK
+ qbDCbFLxXE0i4coiRKpiw5akpfnqmAumikBvcls25efdTzk6xSo4tGekc0ikVpHG9x+I
+ urVnuItyauqaZvKiBMty3BivTHSLbQWqNRt7j0/EWI/SowEh3KBgNrlFIyk/9gGSZaN9
+ bfU/qp9gOlNZ/1lwj89Y+XxwHx5TQFI1pJfplnH7E5AUQx9FXbT9rejEs8qvFfG1veUT +g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3982quh4wu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 05:01:15 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15H8flK1193870;
+        Thu, 17 Jun 2021 05:01:14 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3982quh4up-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 05:01:14 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15H8qviW023657;
+        Thu, 17 Jun 2021 09:01:11 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 394mj8tk9x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 09:01:11 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15H9185516908710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Jun 2021 09:01:08 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E9FFF52075;
+        Thu, 17 Jun 2021 09:01:07 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.46.143])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 87C1252069;
+        Thu, 17 Jun 2021 09:01:06 +0000 (GMT)
+Subject: Re: [PATCH v5 1/2] s390/vfio-ap: clean up mdev resources when remove
+ callback invoked
+To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210616141618.938494-1-akrowiak@linux.ibm.com>
+ <20210616141618.938494-2-akrowiak@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <182da44d-a621-3a55-03af-d705b8763501@de.ibm.com>
+Date:   Thu, 17 Jun 2021 11:01:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <20210616141618.938494-2-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.126.9]
-X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: RVM1G4k0nt2_PRt66VHE5Z9BWOiP5SbI
+X-Proofpoint-ORIG-GUID: 54xWZnJ-MmDz6pOx8cU5WEv8-n68OKtO
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-17_05:2021-06-15,2021-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ bulkscore=0 adultscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106170059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 18:11:08 -0700
-Alison Schofield <alison.schofield@intel.com> wrote:
 
-> The ACPI CXL Early Discovery Table (CEDT) includes a list of CXL memory
-> resources in CXL Fixed Memory Window Structures (CFMWS). Retrieve each
-> CFMWS in the CEDT and add a cxl_decoder object to the root port (root0)
-> for each memory resource.
+
+On 16.06.21 16:16, Tony Krowiak wrote:
+> The mdev remove callback for the vfio_ap device driver bails out with
+> -EBUSY if the mdev is in use by a KVM guest (i.e., the KVM pointer in the
+> struct ap_matrix_mdev is not NULL). The intended purpose was
+> to prevent the mdev from being removed while in use. There are two
+> problems with this scenario:
 > 
-> Signed-off-by: Alison Schofield <alison.schofield@intel.com>
+> 1. Returning a non-zero return code from the remove callback does not
+>     prevent the removal of the mdev.
+> 
+> 2. The KVM pointer in the struct ap_matrix_mdev will always be NULL because
+>     the remove callback will not get invoked until the mdev fd is closed.
+>     When the mdev fd is closed, the mdev release callback is invoked and
+>     clears the KVM pointer from the struct ap_matrix_mdev.
+> 
+> Let's go ahead and remove the check for KVM in the remove callback and
+> allow the cleanup of mdev resources to proceed.
+> 
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+queued. Do we need cc stable?
 
 > ---
->  drivers/cxl/acpi.c | 119 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 119 insertions(+)
+>   drivers/s390/crypto/vfio_ap_ops.c | 10 ----------
+>   1 file changed, 10 deletions(-)
 > 
-> diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
-> index 852b5c270464..018f5ac73b78 100644
-> --- a/drivers/cxl/acpi.c
-> +++ b/drivers/cxl/acpi.c
-> @@ -10,6 +10,123 @@
->  
->  static struct acpi_table_header *acpi_cedt;
->  
-> +/* Encode defined in CXL 2.0 8.2.5.12.7 HDM Decoder Control Register */
-> +#define CFMWS_INTERLEAVE_WAYS(x)	(1 << (x)->interleave_ways)
-> +#define CFMWS_INTERLEAVE_GRANULARITY(x)	((x)->granularity + 8)
-> +
-> +static unsigned long cfmws_to_decoder_flags(int restrictions)
-> +{
-> +	unsigned long flags = 0;
-> +
-> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE2)
-> +		flags |= CXL_DECODER_F_TYPE2;
-> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE3)
-> +		flags |= CXL_DECODER_F_TYPE3;
-> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE)
-> +		flags |= CXL_DECODER_F_RAM;
-> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_PMEM)
-> +		flags |= CXL_DECODER_F_PMEM;
-> +	if (restrictions & ACPI_CEDT_CFMWS_RESTRICT_FIXED)
-> +		flags |= CXL_DECODER_F_LOCK;
-> +
-> +	return flags;
-> +}
-> +
-> +static int cxl_acpi_cfmws_verify(struct device *dev,
-> +				 struct acpi_cedt_cfmws *cfmws)
-> +{
-> +	int expected_len;
-> +
-> +	if (cfmws->interleave_arithmetic != ACPI_CEDT_CFMWS_ARITHMETIC_MODULO) {
-> +		dev_err(dev, "CFMWS Unsupported Interleave Arithmetic\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!IS_ALIGNED(cfmws->base_hpa, SZ_256M)) {
-> +		dev_err(dev, "CFMWS Base HPA not 256MB aligned\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!IS_ALIGNED(cfmws->window_size, SZ_256M)) {
-> +		dev_err(dev, "CFMWS Window Size not 256MB aligned\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	expected_len = struct_size((cfmws), interleave_targets,
-> +				   CFMWS_INTERLEAVE_WAYS(cfmws));
-> +
-> +	if (cfmws->header.length < expected_len) {
-> +		dev_err(dev, "CFMWS length %d less than expected %d\n",
-> +			cfmws->header.length, expected_len);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (cfmws->header.length > expected_len)
-> +		dev_dbg(dev, "CFMWS length %d greater than expected %d\n",
-> +			cfmws->header.length, expected_len);
-> +
-> +	return 0;
-> +}
-> +
-> +static void cxl_add_cfmws_decoders(struct device *dev,
-> +				   struct cxl_port *root_port)
-> +{
-> +	struct acpi_cedt_cfmws *cfmws;
-> +	struct cxl_decoder *cxld;
-> +	acpi_size len, cur = 0;
-> +	void *cedt_subtable;
-> +	int rc;
-> +
-> +	len = acpi_cedt->length - sizeof(*acpi_cedt);
-> +	cedt_subtable = acpi_cedt + 1;
-> +
-> +	while (cur < len) {
-> +		struct acpi_cedt_header *c = cedt_subtable + cur;
-> +
-> +		if (c->type != ACPI_CEDT_TYPE_CFMWS) {
-> +			cur += c->length;
-> +			continue;
-> +		}
-> +
-> +		cfmws = cedt_subtable + cur;
-> +
-> +		if (dev_WARN_ONCE(dev, cfmws->header.length < sizeof(*cfmws),
-> +				  "CFMWS entry skipped: invalid length:%u\n",
-> +				  cfmws->header.length)) {
-> +			cur += c->length;
-> +			continue;
-> +		}
-> +
-> +		rc = cxl_acpi_cfmws_verify(dev, cfmws);
-> +		if (rc) {
-> +			dev_err(dev, "CFMWS range %#llx-%#llx not registered\n",
-> +				cfmws->base_hpa, cfmws->base_hpa +
-> +				cfmws->window_size - 1);
-> +			cur += c->length;
-> +			continue;
-> +		}
-> +
-> +		cxld = devm_cxl_add_decoder(dev, root_port,
-> +				CFMWS_INTERLEAVE_WAYS(cfmws),
-> +				cfmws->base_hpa, cfmws->window_size,
-> +				CFMWS_INTERLEAVE_WAYS(cfmws),
-> +				CFMWS_INTERLEAVE_GRANULARITY(cfmws),
-> +				CXL_DECODER_EXPANDER,
-> +				cfmws_to_decoder_flags(cfmws->restrictions));
-> +
-> +		if (IS_ERR(cxld)) {
-> +			dev_err(dev, "Failed to add decoder for %#llx-%#llx\n",
-> +				cfmws->base_hpa, cfmws->base_hpa +
-> +				cfmws->window_size - 1);
-
-This sounds rather fatal... I guess it'll be exposed later as we won't have
-any means of using the decoder so we don't have to error out here though.
-
-> +		} else {
-> +			dev_dbg(dev, "add: %s range %#llx-%#llx\n",
-> +				dev_name(&cxld->dev), cfmws->base_hpa,
-> +				 cfmws->base_hpa + cfmws->window_size - 1);
-> +		}
-> +		cur += c->length;
-> +	}
-> +}
-> +
->  static struct acpi_cedt_chbs *cxl_acpi_match_chbs(struct device *dev, u32 uid)
->  {
->  	struct acpi_cedt_chbs *chbs, *chbs_match = NULL;
-> @@ -271,6 +388,8 @@ static int cxl_acpi_probe(struct platform_device *pdev)
->  	if (rc)
->  		goto out;
->  
-> +	cxl_add_cfmws_decoders(host, root_port);
-> +
->  	/*
->  	 * Root level scanned with host-bridge as dports, now scan host-bridges
->  	 * for their role as CXL uports to their CXL-capable PCIe Root Ports.
-
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index b2c7e10dfdcd..122c85c22469 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -366,16 +366,6 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
+>   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+>   
+>   	mutex_lock(&matrix_dev->lock);
+> -
+> -	/*
+> -	 * If the KVM pointer is in flux or the guest is running, disallow
+> -	 * un-assignment of control domain.
+> -	 */
+> -	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
+> -		mutex_unlock(&matrix_dev->lock);
+> -		return -EBUSY;
+> -	}
+> -
+>   	vfio_ap_mdev_reset_queues(mdev);
+>   	list_del(&matrix_mdev->node);
+>   	kfree(matrix_mdev);
+> 
