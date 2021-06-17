@@ -2,75 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040423AB4A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73AC3AB4B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbhFQN07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:26:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48828 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFQN06 (ORCPT
+        id S232855AbhFQN3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:29:12 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61404 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232701AbhFQN3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:26:58 -0400
-Date:   Thu, 17 Jun 2021 13:24:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623936289;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XkHTCtUP8KBggHG+WfJ7zK47K2/eZAJX2uaiZRFdYf0=;
-        b=vNWsp/of9xrMtOnJyN8xDTdplTzp3a/0yVm+nsDBuOsdvRY6Rsc00nGeLl75c61yAyISi4
-        oQt7qs1kxJU8Gfkd4/eehFtBpdM3H93pBqMDfTapU64b+ykzrxYSbkvz+oLzMpDdnG7Qv3
-        pSjrfN795tF10B3dyibsoW3jZwzEz0iYWeTJjSOEuAGDY6gOXv7hUOGJ47PpshE8FME1tr
-        bXt5fdSMRIOJUPRXVC00qNUpEa2YriHONogHxHKyfeNh39cfcKz6bKtgtD2m80tDin2qJU
-        /BTxUQUMdkEGlREu3cloig7vq7Cw2uJ6/XXI/QkFfS2CkY507bQVbJNI5JJ4aw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623936289;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XkHTCtUP8KBggHG+WfJ7zK47K2/eZAJX2uaiZRFdYf0=;
-        b=AiZjAL3p16JjdQALVkT4gKS7+OvLFd/160gsI56vMbJbuGFq9iCPqRadMP0Kotq7Bqqe/T
-        G8gLiiyOUQg8KHCg==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] Merge tag 'irqchip-fixes-5.13-2' of
- git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into
- irq/urgent
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210610171127.2404752-1-maz@kernel.org>
-References: <20210610171127.2404752-1-maz@kernel.org>
+        Thu, 17 Jun 2021 09:29:10 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HD3RSO183331;
+        Thu, 17 Jun 2021 09:26:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=yi2bEAVOHZr/srPy2qxKj3ID5qDzfBu9iUVVxb5z0zo=;
+ b=hTyBumF4cuH5mXvf5lWgZ39QtR8LUVbX3iC3NZimGn8PeOxEuasGtskdSRvCaLOBQz7A
+ BnU8Sd7Y/3msyaYaQ+I3aFkeQZ4bDuLQ8QSoMWOA1R5DqOaU/rZQEwT5m6R2zdHr2ksx
+ DbsgOOuwOYpytC7iQ+WH2+zrouabtDxJRPPFIaAdi9gEDnkCLY1pA/Ps1s2RPLdXue0L
+ k4Y+8zV8/f6PxuakGaw+1i5J5k+yUVBAgp4I7+b+AYIbQzrj1rZt6kEa9S0OhYfPkq6i
+ HFRB3q0cc5x/74V/jf7ccGWM666wfbjjXx0VQYVSI0Z1qU7KBGUdfYzEj7si61iYAQnn Pw== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3984w84use-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 09:26:30 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15HDDMaT007666;
+        Thu, 17 Jun 2021 13:26:29 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 394mj8tr0m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 13:26:28 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15HDQQUi33685848
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Jun 2021 13:26:26 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 25DC2AE04D;
+        Thu, 17 Jun 2021 13:26:26 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B9FA6AE045;
+        Thu, 17 Jun 2021 13:26:22 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.199.36.139])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Jun 2021 13:26:22 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        peterz@infradead.org
+Cc:     maddy@linux.vnet.ibm.com, santosh@fossix.org,
+        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
+        dan.j.williams@intel.com, ira.weiny@intel.com,
+        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
+        kjain@linux.ibm.com, rnsastry@linux.ibm.com
+Subject: [PATCH v3 0/4] Add perf interface to expose nvdimm
+Date:   Thu, 17 Jun 2021 18:56:13 +0530
+Message-Id: <20210617132617.99529-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Ar9wrjnEd6BGdJhLZo3Dhnd-TOyiY1Kt
+X-Proofpoint-ORIG-GUID: Ar9wrjnEd6BGdJhLZo3Dhnd-TOyiY1Kt
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Message-ID: <162393628874.19906.12290535771615558990.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-17_10:2021-06-15,2021-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
+ mlxscore=0 mlxlogscore=999 impostorscore=0 priorityscore=1501 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106170085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+Patchset adds performance stats reporting support for nvdimm.
+Added interface includes support for pmu register/unregister
+functions. A structure is added called nvdimm_pmu to be used for
+adding arch/platform specific data such as supported events, cpumask
+pmu event functions like event_init/add/read/del.
+User could use the standard perf tool to access perf
+events exposed via pmu.
 
-Commit-ID:     a13d0f8d117ca6b7885b51c4b21fe8d5a9eae714
-Gitweb:        https://git.kernel.org/tip/a13d0f8d117ca6b7885b51c4b21fe8d5a9eae714
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 17 Jun 2021 15:22:31 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 17 Jun 2021 15:22:31 +02:00
+Added implementation to expose IBM pseries platform nmem*
+device performance stats using this interface.
 
-Merge tag 'irqchip-fixes-5.13-2' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/urgent
+Result from power9 pseries lpar with 2 nvdimm device:
+command:# perf list nmem
+  nmem0/cchrhcnt/                                    [Kernel PMU event]
+  nmem0/cchwhcnt/                                    [Kernel PMU event]
+  nmem0/critrscu/                                    [Kernel PMU event]
+  nmem0/ctlresct/                                    [Kernel PMU event]
+  nmem0/ctlrestm/                                    [Kernel PMU event]
+  nmem0/fastwcnt/                                    [Kernel PMU event]
+  nmem0/hostlcnt/                                    [Kernel PMU event]
+  nmem0/hostldur/                                    [Kernel PMU event]
+  nmem0/hostscnt/                                    [Kernel PMU event]
+  nmem0/hostsdur/                                    [Kernel PMU event]
+  nmem0/medrcnt/                                     [Kernel PMU event]
+  nmem0/medrdur/                                     [Kernel PMU event]
+  nmem0/medwcnt/                                     [Kernel PMU event]
+  nmem0/medwdur/                                     [Kernel PMU event]
+  nmem0/memlife/                                     [Kernel PMU event]
+  nmem0/noopstat/                                    [Kernel PMU event]
+  nmem0/ponsecs/                                     [Kernel PMU event]
+  nmem1/cchrhcnt/                                    [Kernel PMU event]
+  nmem1/cchwhcnt/                                    [Kernel PMU event]
+  nmem1/critrscu/                                    [Kernel PMU event]
+  ...
+  nmem1/noopstat/                                    [Kernel PMU event]
+  nmem1/ponsecs/                                     [Kernel PMU event]
 
-Pull irqchip fixes from Marc Zyngier:
+Patch1:
+        Introduces the nvdimm_pmu structure
+Patch2:
+	Adds common interface to add arch/platform specific data
+	includes supported events, pmu event functions. It also
+	adds code for cpu hotplug support.
+Patch3:
+        Add code in arch/powerpc/platform/pseries/papr_scm.c to expose
+        nmem* pmu. It fills in the nvdimm_pmu structure with event attrs
+        cpumask andevent functions and then registers the pmu by adding
+        callbacks to register_nvdimm_pmu.
+Patch4:
+        Sysfs documentation patch
 
-- Fix GICv3 NMI handling where an IRQ could be mistakenly handled
-  as a NMI, with disatrous effects
-
-Link: https://lore.kernel.org/r/20210610171127.2404752-1-maz@kernel.org
+Changelog
 ---
+v2 -> v3
+- Added Tested-by tag.
+
+- Fix nvdimm mailing list in the ABI Documentation.
+
+- Link to the patchset v2: https://lkml.org/lkml/2021/6/14/25
+
+v1 -> v2
+- Fix hotplug code by adding pmu migration call
+  incase current designated cpu got offline. As
+  pointed by Peter Zijlstra.
+
+- Removed the retun -1 part from cpu hotplug offline
+  function.
+
+- Link to the patchset v1: https://lkml.org/lkml/2021/6/8/500
+---
+Kajol Jain (4):
+  drivers/nvdimm: Add nvdimm pmu structure
+  drivers/nvdimm: Add perf interface to expose nvdimm performance stats
+  powerpc/papr_scm: Add perf interface support
+  powerpc/papr_scm: Document papr_scm sysfs event format entries
+
+ Documentation/ABI/testing/sysfs-bus-papr-pmem |  31 ++
+ arch/powerpc/include/asm/device.h             |   5 +
+ arch/powerpc/platforms/pseries/papr_scm.c     | 365 ++++++++++++++++++
+ drivers/nvdimm/Makefile                       |   1 +
+ drivers/nvdimm/nd_perf.c                      | 230 +++++++++++
+ include/linux/nd.h                            |  46 +++
+ 6 files changed, 678 insertions(+)
+ create mode 100644 drivers/nvdimm/nd_perf.c
+
+-- 
+2.27.0
+
