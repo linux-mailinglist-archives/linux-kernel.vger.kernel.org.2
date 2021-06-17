@@ -2,193 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F053ABB2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222EB3ABB30
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhFQSJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 14:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
+        id S232392AbhFQSKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232193AbhFQSJE (ORCPT
+        with ESMTP id S232024AbhFQSKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:09:04 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103B7C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 11:06:55 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id q10so7458620oij.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 11:06:55 -0700 (PDT)
+        Thu, 17 Jun 2021 14:10:54 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C94CC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 11:08:46 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id u11so7488106oiv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 11:08:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=j0BoPIDWyRZ7eAOWVfRNbOKSmlASWPNoA23yKtrI5ho=;
-        b=nagItiJOYVW49+/5vU4doda2lcVxieX6XBp6OU1p7rLIlna2fWea5Hzux1s9Qv3XPp
-         mkzQFz/7ikotqVDzlYJEj7ohH6nAydgqN72Cu9zo574X732cQLhnEgh/L13zG2sJ+qh1
-         q/b1FeD7vJCdGWeHuuMLDulmYr3r3z53O5102oNNr6ZdqLVzmD/xbqeG3E5vN/MmmZON
-         bjGoe89sMUlSJHu8JKkSGkN8CZqvBk+2xvO3phc9VAsxPO7IoCf4pgZP8H/H8tidQ0l3
-         Hi+whcqq//54vhfzIak3thse8mRnFwNvO9xR/GOknzjYbXWSGH3Qv3DUH2ELZpbBkR2P
-         Dcog==
+         :content-disposition:in-reply-to;
+        bh=ZWAtKejhgz7UVc2zxEARtNZRO1cFJMdr53epcTcnzQU=;
+        b=SmXNfNN2GaeN/N9ZSUYywQZRxGS1n0N3xvZ9k20jD/BQxh/8cpcWPHrfQ4V0PBbsLw
+         7pG7rMJxSCTKe4/c0KWbQzAiQvGRd3P5jTfMElHq8h+N9/XxlzRCeA/li264bWpoulP8
+         W5iq9X83wZjEhb3EMAgTYTszLcWT/wy/qT3anZD7LVMbacfbAdnGyPfSot69Ce0p6uLe
+         JcBS07LfKiLpYxMuW7DbxUnAjVmluJ6l4sETLGuTnkU2VP+esxiJlTejCn5z0pcQkKIi
+         Vnov8GzWZvbXq2/MWj3kI5ZJg2uRnFY2OyJooAGoBQ17cD0aVUR94WMg+dOCpCL69pUm
+         301g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=j0BoPIDWyRZ7eAOWVfRNbOKSmlASWPNoA23yKtrI5ho=;
-        b=FICs9G3LWKmA1Wa74O3BQWDdqLMn7Lvy+01rmXPWq5o3CSjnRGALBEqICfksgl+s5Q
-         JETtJ8xrrJfU9zFgvGn3eQ2D+BD2CuBjBnAKKJKS0MJkO+FEhIVnY20ImwDlQBwEfU4T
-         z5RUCSF2efd+gfvDYlpHXtabqMTN8+sbkZLOE06WAoG+/fBHq9l6rPNlFYdVTl1oye55
-         tCI8aFKauqpyao7HVXM9iKY+3KkSRUocvVlZi7yuyP30CGoq71t3gX8rQtI3GAozuGhc
-         gW7xV7psxi4K0xDektlpoqgKWfzRNscrPbsjMHMDXHvYS8n/73RhO80Z6CfYFFVa40nd
-         /BBA==
-X-Gm-Message-State: AOAM531mU8TS+PvBxdRZkwNQ31T5nRv0Yp/R++DgpUhdiZh0mCe1yK7B
-        ng0OglUyuleE2vwHJ7vqFQiV8g==
-X-Google-Smtp-Source: ABdhPJy+fr+LYbN4bzr1VMR9PctoEjjX+j+mrqwEdqZJcP5Mn9YqiVzeZEiVjQZScItvxKRqPZxw8g==
-X-Received: by 2002:aca:3385:: with SMTP id z127mr4149757oiz.142.1623953214100;
-        Thu, 17 Jun 2021 11:06:54 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l24sm1219735oii.45.2021.06.17.11.06.52
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZWAtKejhgz7UVc2zxEARtNZRO1cFJMdr53epcTcnzQU=;
+        b=uRzSV+JkM0Q+ofFNfbuwKG9+UQIB5JX6u+wDifRJrWTlAFetJimQOLvztW3dGQr+ya
+         bJ6FYBrbRSobninDA72MNgxar8tM9EkRxlZgmxDR8y6QePisC94xD2gOlupQ1nzQAdVM
+         BENW4xIPTqDY1B9bKzOBQe++BSaghVZCmazyuR5FMZ+icJy1HX//bL8Gp93k2LcwHSsW
+         dKYb2hGlptAErizBoz9lgXSopI5gEPpE1FtMo1afn0oTXS/txDok8+7BPbQZ+vDt2zkZ
+         Wth/r8hOxFHmbLi/1z8V8KD2+SaLl5+gonMrSdoex6dypIJqpDnE+ZPi+xcxdlIIZ+gU
+         rmBg==
+X-Gm-Message-State: AOAM531UDCLObUV7e3JpV70krb8juY4ou4xkYv0xKZMDy66x63ujepLy
+        pUg54OySFTIXasiunwwMtg4S5px79rce5Q==
+X-Google-Smtp-Source: ABdhPJxzYhs5dxvu+rAjh/dDCuwN000ZxS95j0d7tuw6JhuGYHb0ckK49VOQdB3Jwk6DvH7y19F7PQ==
+X-Received: by 2002:aca:d54f:: with SMTP id m76mr11073112oig.178.1623953325492;
+        Thu, 17 Jun 2021 11:08:45 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id o20sm371996ook.40.2021.06.17.11.08.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 11:06:53 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 13:06:51 -0500
+        Thu, 17 Jun 2021 11:08:44 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 13:08:43 -0500
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
-Message-ID: <YMuPO3iKRSFNLbNZ@yoga>
-References: <20210615231828.835164-1-bjorn.andersson@linaro.org>
- <20210615231828.835164-2-bjorn.andersson@linaro.org>
- <20210616075637.jtoa25uyhnqkctlu@pengutronix.de>
- <YMq/6VhXrYJoTVnj@yoga>
- <20210617062449.qwsjcpkyiwzdyfi3@pengutronix.de>
- <YMt6gvXQKijtPOql@yoga>
- <20210617165433.ltugrrj6ntmc6j57@pengutronix.de>
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] arch: arm64: dts: qcom: Add support for SM6125
+Message-ID: <YMuPqwzeG/UgnJAA@builder.lan>
+References: <20210613080522.25230-1-martin.botka@somainline.org>
+ <YMlF/aPn+253UIHn@builder.lan>
+ <ZIPSUQ.3JME0AID86CV1@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210617165433.ltugrrj6ntmc6j57@pengutronix.de>
+In-Reply-To: <ZIPSUQ.3JME0AID86CV1@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 17 Jun 11:54 CDT 2021, Uwe Kleine-K?nig wrote:
+On Wed 16 Jun 08:01 CDT 2021, Martin Botka wrote:
 
-> Hello Bjorn,
 > 
-> On Thu, Jun 17, 2021 at 11:38:26AM -0500, Bjorn Andersson wrote:
-> > On Thu 17 Jun 01:24 CDT 2021, Uwe Kleine-K?nig wrote:
-> > > On Wed, Jun 16, 2021 at 10:22:17PM -0500, Bjorn Andersson wrote:
-> > > > > > +static int ti_sn_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-> > > > > > +			   const struct pwm_state *state)
-> > > > > > +{
-> > > > > > +	struct ti_sn65dsi86 *pdata = pwm_chip_to_ti_sn_bridge(chip);
-> > > > > > +	unsigned int pwm_en_inv;
-> > > > > > +	unsigned int backlight;
-> > > > > > +	unsigned int pre_div;
-> > > > > > +	unsigned int scale;
-> > > > > > +	int ret;
-> > > > > > +
-> > > > > > +	if (!pdata->pwm_enabled) {
-> > > > > > +		ret = pm_runtime_get_sync(pdata->dev);
-> > > > > > +		if (ret < 0)
-> > > > > > +			return ret;
-> > > > > > +
-> > > > > > +		ret = regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
-> > > > > > +				SN_GPIO_MUX_MASK << (2 * SN_PWM_GPIO_IDX),
-> > > > > > +				SN_GPIO_MUX_SPECIAL << (2 * SN_PWM_GPIO_IDX));
-> > > > > > +		if (ret) {
-> > > > > > +			dev_err(pdata->dev, "failed to mux in PWM function\n");
-> > > > > > +			goto out;
-> > > > > > +		}
-> > > > > 
-> > > > > Do you need to do this even if state->enabled is false?
-> > > > 
-> > > > I presume I should be able to explicitly mux in the GPIO function and
-> > > > configure that to output low. But I am not able to find anything in the
-> > > > data sheet that would indicate this to be preferred.
+> 
+> On Tue, Jun 15 2021 at 07:29:49 PM -0500, Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+> > On Sun 13 Jun 03:05 CDT 2021, Martin Botka wrote:
+> > 
+> > >  This commits adds the Device tree file for SM6125 SoC.
 > > > 
-> > > My question targetted a different case. If the PWM is off
-> > > (!pdata->pwm_enabled) and should remain off (state->enabled is false)
-> > > you can shortcut here, can you not?
+> > >  Signed-off-by: Martin Botka <martin.botka@somainline.org>
 > > 
-> > Right, if we're going off->off then we don't need to touch the hardware.
-> > 
-> > But am I expected to -EINVAL improper period and duty cycle even though
-> > enabled is false?
-> > 
-> > And also, what is the supposed behavior of enabled = false? Is it
-> > supposedly equivalent of asking for a duty_cycle of 0?
+> > Thanks for your work on this Martin, just spotted a few minor finishing
+> > touches below.
 > 
-> In my book enabled = false is just syntactic sugar to say:
-> "duty_cycle=0, period=something small". So to answer your questions: if
-> enabled = false, the consumer doesn't really care about period and
-> duty_cycle. Some care that the output becomes inactive, some others
-> don't, so from my POV just emit the inactive level on the output and
-> ignore period and duty_cycle.
+> :)
+> 
+> > 
+> > >  ---
+> > >  Changes in V2:
+> > >  Update compatibles for mailbox & pinctrl
+> > >  Changes in V3:
+> > >  Fix reg for sdhci1
+> > >  Replace hc_mem with hc and core_mem with core
+> > >   arch/arm64/boot/dts/qcom/sm6125.dtsi | 603
+> > > +++++++++++++++++++++++++++
+> > >   1 file changed, 603 insertions(+)
+> > >   create mode 100644 arch/arm64/boot/dts/qcom/sm6125.dtsi
+> > > 
+> > >  diff --git a/arch/arm64/boot/dts/qcom/sm6125.dtsi
+> > > b/arch/arm64/boot/dts/qcom/sm6125.dtsi
+[..]
+> > >  +			sdc2_state_off: sdc2-off {
+> > 
+> > This should be common between all boards (except possibly the cd line),
+> > so this is okay to share here.
+> 
+> Do you want me to move the cd as well or
+> do you want it to stay in here?
 > 
 
-Giving this some further thought.
+While the pin assignment typically follows the reference design, in my
+view it's just any random GPIO and hence better suited to live in the
+board file.
 
-In order to have a known state of the PWM signal we need the sn65dsi86
-to be powered. The documentation describes a "suspend mode", but this is
-currently not implemented in the driver, so there's a large power cost
-coming from just keeping the pin low when disabled.
-
-As such in the current implementation I use state->enabled to also
-control if the device should be kept powered, which means that this
-follows the backlight power status of the pwm-backlight. Which is
-sufficient as the backlight won't be powered when !state->enabled.
-
-
-For the typical use case the pwm-backlight has some independent control
-over gpio and power to toggle the actual backlight. But in the even that
-this wouldn't be available I think we need to extend the driver to
-implement the suspend mode.
-
-In which case muxing in the PWM function should probably happen at the
-time the PWM channel is requested.
-
-This does come at an additional power cost (not as high as keeping the
-chip awake though), so (in addition to the effort) I think it's
-reasonable to document this as a limitation for now and implement this
-as the need arise.
-
-Thanks,
+Regards,
 Bjorn
-
-> > > > > Does this already modify the output pin?
-> > > > 
-> > > > Yes, coming out of reset this pin is configured as input, so switching
-> > > > the mux here will effectively start driving the pin.
-> > > 
-> > > So please document this in the format the recently added drivers do,
-> > > too. See e.g. drivers/pwm/pwm-sifive.c. (The idea is to start that with
-> > > " * Limitations:" to make it easy to grep it.)
-> > > 
-> > 
-> > Okay, will do. Although I believe that for this driver it makes sense to
-> > place such comment close to this function, rather than at the top of the
-> > driver.
-> 
-> Yes, agreed.
-> 
-> Best regards
-> Uwe
-> 
-> -- 
-> Pengutronix e.K.                           | Uwe Kleine-König            |
-> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
-
