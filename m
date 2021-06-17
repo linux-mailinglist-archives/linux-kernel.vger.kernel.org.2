@@ -2,81 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98413AB4C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C4D3AB4C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232317AbhFQNco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:32:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231176AbhFQNcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:32:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 986E861026;
-        Thu, 17 Jun 2021 13:30:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623936634;
-        bh=xlbIXi7JbyJzE3qSeyqhFbJJovuNN0NtZ7HgQ2zU/XM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nz1Tskep2no7gsD9oTzCWb379gPRG6tC7Ln7keaHrCj8kHTaiRCQci3gR02KSNZFM
-         LDmI0S5T3SNlKaW9ClYtWh11chGBpuEGg7kXjjdiMVwnMVKyF7NaogYKv9AK0GW4cW
-         ecuQoJSguLXS86WiFosQkfiiCifPT8Nz5HE4an5o=
-Date:   Thu, 17 Jun 2021 15:30:31 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        balbi@kernel.org
-Subject: Re: [PATCH -next] usb: gadget: hid: fix error return code
-Message-ID: <YMtOd9qsL4D/glmZ@kroah.com>
-References: <20210617065625.1206872-1-yangyingliang@huawei.com>
+        id S232354AbhFQNdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:33:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53922 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231654AbhFQNdN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:33:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623936665;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TMovp/d/024BNKenOEssFH9bGIj4wb2wQ+scwOxwK/o=;
+        b=RnYGCoirfJLXSfbmUxVdJBXIAD/axBjOwi9Fxigui1gVwR48qoMFhT0v4U0/3FiKutDJBm
+        pcm01wEFYDpimV7MqohYhHXpbkSj/Xv+R5ON7Cw3EaIYVjjwpCDoxSLdLsKTqO6T5wZh4N
+        Pdm07HYkczFZu0L7yMIRFgwNGseQa9g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-240-Bpa5gYRbOL-FXBAJ9jWMlw-1; Thu, 17 Jun 2021 09:31:02 -0400
+X-MC-Unique: Bpa5gYRbOL-FXBAJ9jWMlw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10775192FDA8;
+        Thu, 17 Jun 2021 13:31:01 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-162.rdu2.redhat.com [10.10.116.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8F58A62462;
+        Thu, 17 Jun 2021 13:30:53 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id E8277220BCF; Thu, 17 Jun 2021 09:30:52 -0400 (EDT)
+Date:   Thu, 17 Jun 2021 09:30:52 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, miklos@szeredi.hu, stefanha@redhat.com,
+        dgilbert@redhat.com, viro@zeniv.linux.org.uk, dhowells@redhat.com,
+        richard.weinberger@gmail.com, asmadeus@codewreck.org,
+        v9fs-developer@lists.sourceforge.net
+Subject: Re: [PATCH v2 0/2] Add support to boot virtiofs and 9pfs as rootfs
+Message-ID: <20210617133052.GA1142820@redhat.com>
+References: <20210614174454.903555-1-vgoyal@redhat.com>
+ <YMsgaPS90iKIqSvi@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210617065625.1206872-1-yangyingliang@huawei.com>
+In-Reply-To: <YMsgaPS90iKIqSvi@infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 02:56:25PM +0800, Yang Yingliang wrote:
-> Fix to return a negative error code from the error handling
-> case instead of 0.
+On Thu, Jun 17, 2021 at 11:14:00AM +0100, Christoph Hellwig wrote:
+> Why not something like the version below that should work for all nodev
+> file systems?
+
+Hi Christoph,
+
+Thanks for this patch. It definitely looks much better. I had a fear
+of breaking something if I were to go through this path of using
+FS_REQUIRES_DEV.
+
+This patch works for me with "root=myfs rootfstype=virtiofs rw". Have
+few thoughts inline.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/usb/gadget/legacy/hid.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+> diff --git a/init/do_mounts.c b/init/do_mounts.c
+> index 74aede860de7..3c5676603fef 100644
+> --- a/init/do_mounts.c
+> +++ b/init/do_mounts.c
+> @@ -530,6 +530,39 @@ static int __init mount_cifs_root(void)
+>  }
+>  #endif
+>  
+> +static int __init mount_nodev_root(void)
+> +{
+> +	struct file_system_type *fs = get_fs_type(root_fs_names);
+
+get_fs_type() assumes root_fs_names is not null. So if I pass
+"root=myfs rw", it crashes with null pointer dereference.
+
+
+> +	char *fs_names, *p;
+> +	int err = -ENODEV;
+> +
+> +	if (!fs)
+> +		goto out;
+> +	if (fs->fs_flags & FS_REQUIRES_DEV)
+> +		goto out_put_filesystem;
+> +
+> +	fs_names = (void *)__get_free_page(GFP_KERNEL);
+> +	if (!fs_names)
+> +		goto out_put_filesystem;
+> +	get_fs_names(fs_names);
+
+I am wondering what use case we are trying to address by calling
+get_fs_names() and trying do_mount_root() on all filesystems
+returned by get_fs_names(). I am assuming following use cases
+you have in mind.
+
+A. User passes a single filesystem in rootfstype.
+   
+   root=myfs rootfstype=virtiofs rw
+
+B. User passes multiple filesystems in rootfstype and kernel tries all
+   of them one after the other
+
+   root=myfs, rootfstype=9p,virtiofs rw
+
+C. User does not pass a filesystem type at all. And kernel will get a
+   list of in-built filesystems and will try these one after the other.
+
+   root=myfs rw
+
+If that's the thought, will it make sense to call get_fs_names() first
+and then inside the for loop call get_fs_type() and try mounting
+only if FS_REQUIRES_DEV is not set, otherwise skip and move onto th
+next filesystem in the list (fs_names).
+
+Thanks
+Vivek
+
+> +
+> +	for (p = fs_names; *p; p += strlen(p) + 1) {
+> +		err = do_mount_root(root_device_name, p, root_mountflags,
+> +					root_mount_data);
+> +		if (!err)
+> +			break;
+> +		if (err != -EACCES && err != -EINVAL)
+> +			panic("VFS: Unable to mount root \"%s\" (%s), err=%d\n",
+> +				      root_device_name, p, err);
+> +	}
+> +
+> +	free_page((unsigned long)fs_names);
+> +out_put_filesystem:
+> +	put_filesystem(fs);
+> +out:
+> +	return err;
+> +}
+> +
+>  void __init mount_root(void)
+>  {
+>  #ifdef CONFIG_ROOT_NFS
+> @@ -546,6 +579,8 @@ void __init mount_root(void)
+>  		return;
+>  	}
+>  #endif
+> +	if (ROOT_DEV == 0 && mount_nodev_root() == 0)
+> +		return;
+>  #ifdef CONFIG_BLOCK
+>  	{
+>  		int err = create_dev("/dev/root", ROOT_DEV);
 > 
-> diff --git a/drivers/usb/gadget/legacy/hid.c b/drivers/usb/gadget/legacy/hid.c
-> index c4eda7fe7ab4..3912cc805f3a 100644
-> --- a/drivers/usb/gadget/legacy/hid.c
-> +++ b/drivers/usb/gadget/legacy/hid.c
-> @@ -99,8 +99,10 @@ static int do_config(struct usb_configuration *c)
->  
->  	list_for_each_entry(e, &hidg_func_list, node) {
->  		e->f = usb_get_function(e->fi);
-> -		if (IS_ERR(e->f))
-> +		if (IS_ERR(e->f)) {
-> +			status = PTR_ERR(e->f);
 
-Are you _SURE_ that you now want to return an error?  This code has
-never done this, what is going to break now that it will?
-
->  			goto put;
-> +		}
->  		status = usb_add_function(c, e->f);
->  		if (status < 0) {
->  			usb_put_function(e->f);
-> @@ -171,8 +173,10 @@ static int hid_bind(struct usb_composite_dev *cdev)
->  		struct usb_descriptor_header *usb_desc;
->  
->  		usb_desc = usb_otg_descriptor_alloc(gadget);
-> -		if (!usb_desc)
-> +		if (!usb_desc) {
-> +			status = -ENOMEM;
-
-This looks correct, can you resend just this chunk, and then go test the
-above change to verify it doesn't break things?
-
-thanks,
-
-greg k-h
