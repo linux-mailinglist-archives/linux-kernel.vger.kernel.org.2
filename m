@@ -2,118 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4603AB626
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA79D3AB62D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232868AbhFQOk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37810 "EHLO mail.kernel.org"
+        id S232925AbhFQOmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:42:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230299AbhFQOky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:40:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7E3C61369;
-        Thu, 17 Jun 2021 14:38:37 +0000 (UTC)
-Date:   Thu, 17 Jun 2021 16:38:34 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>, johan@kernel.org,
-        ojeda@kernel.org, jeyu@kernel.org, masahiroy@kernel.org,
-        joe@perches.com, Jan Kara <jack@suse.cz>, hare@suse.de,
-        Jens Axboe <axboe@kernel.dk>, tj@kernel.org,
-        gregkh@linuxfoundation.org, song@kernel.org,
-        NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Barret Rhoden <brho@google.com>, f.fainelli@gmail.com,
-        palmerdabbelt@google.com, wangkefeng.wang@huawei.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, vbabka@suse.cz,
-        Alexander Potapenko <glider@google.com>, pmladek@suse.com,
-        johannes.berg@intel.com,
-        "Eric W. Biederman" <ebiederm@xmission.com>, jojing64@gmail.com,
-        terrelln@fb.com, geert@linux-m68k.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, arnd@arndb.de,
-        Chris Down <chris@chrisdown.name>, mingo@kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH v6 2/2] init/do_mounts.c: create second mount for
- initramfs
-Message-ID: <20210617143834.ybxk6cxhpavlf4gg@wittgenstein>
-References: <20210605034447.92917-1-dong.menglong@zte.com.cn>
- <20210605034447.92917-3-dong.menglong@zte.com.cn>
- <20210605115019.umjumoasiwrclcks@wittgenstein>
- <CADxym3bs1r_+aPk9Z_5Y7QBBV_RzUbW9PUqSLB7akbss_dJi_g@mail.gmail.com>
- <20210607103147.yhniqeulw4pmvjdr@wittgenstein>
- <20210607121524.GB3896@www>
- <20210617035756.GA228302@www>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210617035756.GA228302@www>
+        id S230299AbhFQOmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 10:42:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AB90610EA;
+        Thu, 17 Jun 2021 14:40:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623940805;
+        bh=DuloBXiAXa8E55JQLkThi/HShz77I2A5WiXoBs7eIts=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=reA2Tf4N+00RWrxP7K1Q4/OHaaHuX8gp/oRgzh+Q90SVGjmeA2p/cwTddYQBlrDg/
+         jmlIhElcOCMAF3VlJdjNDiplBTT6Rp0tNRyWnzZAOI5MmiZ36MK9auTnu75mH1j/L4
+         IlqpAmMVb5Auy9BTgAdrrrxC683MaZBaDA+T/EddXaSNURctc8JA+kGU67zzMpQ6lj
+         +//AcQ4z2CrSWDCub/3TAHX1goo4BztgflPeW4Iiky6b80cf7afLcTt8wbqDNXvUHb
+         OVRxPdrbPC6YgQk9wW/IwhcVQgT0ZtcxiWEmTUyiZmipWM3x+G2eWFYxkQ0PMtTxnu
+         FaCMmWryIp+2w==
+Date:   Thu, 17 Jun 2021 23:40:01 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v7 09/13] kprobes: Setup instruction pointer in
+ __kretprobe_trampoline_handler
+Message-Id: <20210617234001.54cd2ff60410ff82a39a2020@kernel.org>
+In-Reply-To: <20210617044032.txng4enhiduacvt6@treble>
+References: <162209754288.436794.3904335049560916855.stgit@devnote2>
+        <162209762943.436794.874947392889792501.stgit@devnote2>
+        <20210617043909.fgu2lhnkxflmy5mk@treble>
+        <20210617044032.txng4enhiduacvt6@treble>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 08:57:56PM -0700, Menglong Dong wrote:
-> Hello,
-> 
-> On Mon, Jun 07, 2021 at 05:15:24AM -0700, menglong8.dong@gmail.com wrote:
-> > On Mon, Jun 07, 2021 at 12:31:47PM +0200, Christian Brauner wrote:
-> > > On Sat, Jun 05, 2021 at 10:47:07PM +0800, Menglong Dong wrote:
-> > [...]
-> > > > 
-> > > > I think it's necessary, as I explained in the third patch. When the rootfs
-> > > > is a block device, ramfs is used in init_mount_tree() unconditionally,
-> > > > which can be seen from the enable of is_tmpfs.
-> > > > 
-> > > > That makes sense, because rootfs will not become the root if a block
-> > > > device is specified by 'root' in boot cmd, so it makes no sense to use
-> > > > tmpfs, because ramfs is more simple.
-> > > > 
-> > > > Here, I make rootfs as ramfs for the same reason: the first mount is not
-> > > > used as the root, so make it ramfs which is more simple.
+On Wed, 16 Jun 2021 23:40:32 -0500
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+
+> On Wed, Jun 16, 2021 at 11:39:11PM -0500, Josh Poimboeuf wrote:
+> > On Thu, May 27, 2021 at 03:40:29PM +0900, Masami Hiramatsu wrote:
+> > > To simplify the stacktrace with pt_regs from kretprobe handler,
+> > > set the correct return address to the instruction pointer in
+> > > the pt_regs before calling kretprobe handlers.
 > > > 
-> > > Ok. If you don't mind I'd like to pull and test this before moving
-> > > further. (Btw, I talked about this at Plumbers before btw.)
-> > > What did you use for testing this? Any way you can share it?
+> > > Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > Tested-by: Andrii Nakryik <andrii@kernel.org>
+> > > ---
+> > >  Changes in v3:
+> > >   - Cast the correct_ret_addr to unsigned long.
+> > > ---
+> > >  kernel/kprobes.c |    3 +++
+> > >  1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > > index 54e5b89aad67..1598aca375c9 100644
+> > > --- a/kernel/kprobes.c
+> > > +++ b/kernel/kprobes.c
+> > > @@ -1914,6 +1914,9 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+> > >  		BUG_ON(1);
+> > >  	}
+> > >  
+> > > +	/* Set the instruction pointer to the correct address */
+> > > +	instruction_pointer_set(regs, (unsigned long)correct_ret_addr);
+> > > +
+> > >  	/* Run them. */
+> > >  	first = current->kretprobe_instances.first;
+> > >  	while (first) {
+> > > 
 > > 
+> > Hi Masami,
+> > 
+> > I know I suggested this patch, but I believe it would only be useful in
+> > combination with the use of UNWIND_HINT_REGS in SAVE_REGS_STRING.  But I
+> > think that would be tricky to pull off correctly.  Instead, we have
+> > UNWIND_HINT_FUNC, which is working fine.
+> > 
+> > So I'd suggest dropping this patch, as the unwinder isn't actually
+> > reading regs->ip after all.
 > 
-> I notice that it have been ten days, and is it ok to move a little
-> further? (knock-knock :/)
+> ... and I guess this means patches 6-8 are no longer necessary.
 
-Hey Menglong,
+OK, I also confirmed that dropping those patche does not make any change
+on the stacktrace. 
+Let me update the series without those. 
 
-Since we're very close to the next kernel release it's unlikely that
-anything will happen before the merge window has closed.
-Otherwise I think we're close. I haven't had the time to test yet but if
-nothing major comes up I'll pick it up and route it through my tree.
-We need to be sure there's no regressions for anyone using this.
-
-Thanks!
-Christian
+Thank you,
 
 > 
-> Thanks!
-> Menglong Dong
+> -- 
+> Josh
 > 
-> > Ok, no problem definitely. I tested this function in 3 way mainly:
-> > 
-> > 1. I debug the kernel with qemu and gdb, and trace the the whole
-> >    process, to ensure that there is no abnormal situation.
-> > 2. I tested pivot_root() in initramfs and ensured that it can be
-> >    used normally. What's more, I also tested docker and ensured
-> >    container can run normally without 'DOCKER_RAMDISK=yes' set in
-> >    initramfs.
-> > 3. I tried to enable and disable CONFIG_INITRAMFS_MOUNT, and
-> >    ensured that the system can boot successfully from initramfs, initrd
-> >    and sda.
-> > 
-> > What's more, our team is going to test it comprehensively, such as
-> > ltp, etc.
-> > 
-> > Thanks!
-> > Menglong Dong                                                                                                                                                         
-> > 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
