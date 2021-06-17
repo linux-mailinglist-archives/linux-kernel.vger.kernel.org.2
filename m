@@ -2,258 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55383AB3ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D123AB3F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbhFQMsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbhFQMsG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:48:06 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8120C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:45:57 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id gt18so9633117ejc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:45:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mhQF38qVkFPjYjvziQjLIcfMR/G9GUoa3asUn5y7JgI=;
-        b=iP9jNH0tsNgPvuewn/VT+nVMdkY8d7VD8RToapmMVc4oEjDzV28adxdL/W2cfFUJ5C
-         F5CwqmsZmzqzCH0tvwCxTMPDtTLpuL1dWTEs6CA6jqifpQWiNkzlLilq5tMnzwzUnRuu
-         FuT1f41khwhCA+Hz2m7SS+epxPjt/j1kED+vLCKKjz+YYC0vwOlHzQmdBFDzhbvo5yaS
-         WkNusz1ipM2tUWcNf7gQRPDyD98E9eOJxJC57z9FAIbl+flpt17+4VIb+u7UB3ggQT7n
-         mSvZTEBcsORfg730BYGVj9SVW6YZioO+2nF3oL5C0GaOzKQnTIioSsSp23D6Kx3zMka7
-         caKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mhQF38qVkFPjYjvziQjLIcfMR/G9GUoa3asUn5y7JgI=;
-        b=Y1im2B8/+IsHju0YN2L6GSj2fh5uXY6S6Lb8Z8PzudxnYmk3Hy6Uj/f0oLpjRswiNu
-         fAfkPjpRx3uezhLP5SDUuLFtd8VaNI7Fx5SPewGq6ozqdlUCRrO2NG02EvRGZxy8wa7H
-         lwkhbTNEG8s9fT+105cLDKWRTB3pfHKSeF0sh26SySClRag+3rtJPieQzAV/mEsmsUfa
-         9uUO4TSarY1k/PFKdlFuVL/s4L0MB23r3xmg1cYTYQbzpRtyXy5+eM5eYGI6LnKOD3MV
-         Bvy1/cdOAVmEcA3Ilc3UOXZ3Mh6ZCbzFuoRoJLlliZrTBEhgZgjerydqgDNHwemhBMsE
-         UlaA==
-X-Gm-Message-State: AOAM531Ej/tW5+prPOfEFBUQHYfq6Zr/mzRJNdyWb+rnL55fUvrTghGs
-        Xl2H3/Yr+YffTFUaQwyEr1VpwLK3m8ErKZn526LaJw==
-X-Google-Smtp-Source: ABdhPJw1z6C1ZQTkrUSlrFP8dk8VNTUofFEUxmGc5v/SabozxjsTDxMyELOzWkfDFYMMvqPHipsb+8mbE3xu0NWDWzQ=
-X-Received: by 2002:a17:906:480a:: with SMTP id w10mr5071539ejq.18.1623933956354;
- Thu, 17 Jun 2021 05:45:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYsWHE5Vu9T3FV-vtHHbVFJWEF=bmjQxwaZs3uVYef028g@mail.gmail.com>
-In-Reply-To: <CA+G9fYsWHE5Vu9T3FV-vtHHbVFJWEF=bmjQxwaZs3uVYef028g@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 17 Jun 2021 18:15:45 +0530
-Message-ID: <CA+G9fYvvf+XTvZg1sTq4_f9OrVFsCazGo0ozaEbjVYgSeKCkWA@mail.gmail.com>
-Subject: Re: [next] [clang] x86_64-linux-gnu-ld: mm/mremap.o: in function
- `move_pgt_entry': mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        id S231822AbhFQMsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:48:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231809AbhFQMsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 08:48:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D6DD610CA;
+        Thu, 17 Jun 2021 12:46:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623933963;
+        bh=7qOj++G8f7HBqpudTlVSPdk49xIpm6jF4dp4gG131hg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BsKqjiuEZJFdx1tzoQh4H02boL1lqjLg0qo5P92kukhKvHa/z2pQUh3XcXY87rYYW
+         PsnwyXusiLXSSThp1+HzYdvv6G0IBqSilnlbBh+8Z34+6YVi/quFPGJ+LD/joh15k8
+         ZeEuryqaErAHbqj+Jxq+G8CO+/O9wp1EGLmmPlQzjHxJUNQhZh94zv99j2TJeyOUzW
+         G9sNGwyluJHeJIRWXvqGxsrIxZpCZao+MvePiCIbx1+R9o6/BKPjZIkHkSrUVhExaM
+         ZmiQOuJjJiQhVqmFWNTFiTNCwddi8VehgAcbwk4QRl54zNucgOH5GP3+zYhuf8nH9c
+         nRm23EO1cftyg==
+Date:   Thu, 17 Jun 2021 13:45:57 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Quentin Perret <qperret@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Young <dyoung@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Sasha Levin <sashal@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vivek Goyal <vgoyal@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>, wanghaibin.wang@huawei.com,
+        zhukeqian1@huawei.com, yuzenghui@huawei.com
+Subject: Re: [PATCH v7 4/4] KVM: arm64: Move guest CMOs to the fault handlers
+Message-ID: <20210617124557.GB24457@willie-the-truck>
+References: <20210617105824.31752-1-wangyanan55@huawei.com>
+ <20210617105824.31752-5-wangyanan55@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210617105824.31752-5-wangyanan55@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 at 17:41, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> Linux next 20210617 tag following x86_64 builds failed with clang-10
-> and clang-11.
-> Regressions found on x86_64:
->
->  - build/clang-11-tinyconfig
->  - build/clang-11-allnoconfig
->  - build/clang-10-tinyconfig
->  - build/clang-10-allnoconfig
->  - build/clang-11-x86_64_defconfig
->  - build/clang-10-defconfig
->
-> We are running git bisect to identify the bad commit.
->
-> Build log:
-> ------------
-> drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
-> eb_relocate_parse_slow()+0x466: stack state mismatch: cfa1=4+120
-> cfa2=-1+0
-> drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
-> eb_copy_relocations()+0x1e0: stack state mismatch: cfa1=4+104
-> cfa2=-1+0
-> x86_64-linux-gnu-ld: mm/mremap.o: in function `move_pgt_entry':
-> mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
+On Thu, Jun 17, 2021 at 06:58:24PM +0800, Yanan Wang wrote:
+> We currently uniformly permorm CMOs of D-cache and I-cache in function
+> user_mem_abort before calling the fault handlers. If we get concurrent
+> guest faults(e.g. translation faults, permission faults) or some really
+> unnecessary guest faults caused by BBM, CMOs for the first vcpu are
+> necessary while the others later are not.
+> 
+> By moving CMOs to the fault handlers, we can easily identify conditions
+> where they are really needed and avoid the unnecessary ones. As it's a
+> time consuming process to perform CMOs especially when flushing a block
+> range, so this solution reduces much load of kvm and improve efficiency
+> of the stage-2 page table code.
+> 
+> We can imagine two specific scenarios which will gain much benefit:
+> 1) In a normal VM startup, this solution will improve the efficiency of
+> handling guest page faults incurred by vCPUs, when initially populating
+> stage-2 page tables.
+> 2) After live migration, the heavy workload will be resumed on the
+> destination VM, however all the stage-2 page tables need to be rebuilt
+> at the moment. So this solution will ease the performance drop during
+> resuming stage.
+> 
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> ---
+>  arch/arm64/kvm/hyp/pgtable.c | 38 +++++++++++++++++++++++++++++-------
+>  arch/arm64/kvm/mmu.c         | 37 ++++++++++++++---------------------
+>  2 files changed, 46 insertions(+), 29 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index d99789432b05..760c551f61da 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -577,12 +577,24 @@ static void stage2_put_pte(kvm_pte_t *ptep, struct kvm_s2_mmu *mmu, u64 addr,
+>  	mm_ops->put_page(ptep);
+>  }
+>  
+> +static bool stage2_pte_cacheable(struct kvm_pgtable *pgt, kvm_pte_t pte)
+> +{
+> +	u64 memattr = pte & KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR;
+> +	return memattr == KVM_S2_MEMATTR(pgt, NORMAL);
+> +}
+> +
+> +static bool stage2_pte_executable(kvm_pte_t pte)
+> +{
+> +	return !(pte & KVM_PTE_LEAF_ATTR_HI_S2_XN);
+> +}
+> +
+>  static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>  				      kvm_pte_t *ptep,
+>  				      struct stage2_map_data *data)
+>  {
+>  	kvm_pte_t new, old = *ptep;
+>  	u64 granule = kvm_granule_size(level), phys = data->phys;
+> +	struct kvm_pgtable *pgt = data->mmu->pgt;
+>  	struct kvm_pgtable_mm_ops *mm_ops = data->mm_ops;
+>  
+>  	if (!kvm_block_mapping_supported(addr, end, phys, level))
+> @@ -606,6 +618,14 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>  		stage2_put_pte(ptep, data->mmu, addr, level, mm_ops);
+>  	}
+>  
+> +	/* Perform CMOs before installation of the guest stage-2 PTE */
+> +	if (mm_ops->clean_invalidate_dcache && stage2_pte_cacheable(pgt, new))
+> +		mm_ops->clean_invalidate_dcache(kvm_pte_follow(new, mm_ops),
+> +						granule);
+> +
+> +	if (mm_ops->invalidate_icache && stage2_pte_executable(new))
+> +		mm_ops->invalidate_icache(kvm_pte_follow(new, mm_ops), granule);
 
-The git bisect pointed out the first bad commit.
+One thing I'm missing here is why we need the indirection via mm_ops. Are
+there cases where we would want to pass a different function pointer for
+invalidating the icache? If not, why not just call the function directly?
 
-The first bad commit:
-commit 928cf6adc7d60c96eca760c05c1000cda061604e
-Author: Stephen Boyd <swboyd@chromium.org>
-Date:   Thu Jun 17 15:21:35 2021 +1000
-    module: add printk formats to add module build ID to stacktraces
+Same for the D side.
 
-    Let's make kernel stacktraces easier to identify by including the build
-    ID[1] of a module if the stacktrace is printing a symbol from a module.
-    This makes it simpler for developers to locate a kernel module's full
-    debuginfo for a particular stacktrace.  Combined with
-    scripts/decode_stracktrace.sh, a developer can download the matching
-    debuginfo from a debuginfod[2] server and find the exact file and line
-    number for the functions plus offsets in a stacktrace that match the
-    module.  This is especially useful for pstore crash debugging where the
-    kernel crashes are recorded in something like console-ramoops and the
-    recovery kernel/modules are different or the debuginfo doesn't exist on
-    the device due to space concerns (the debuginfo can be too large for space
-    limited devices).
-
-    Originally, I put this on the %pS format, but that was quickly rejected
-    given that %pS is used in other places such as ftrace where build IDs
-    aren't meaningful.  There was some discussions on the list to put every
-    module build ID into the "Modules linked in:" section of the stacktrace
-    message but that quickly becomes very hard to read once you have more than
-    three or four modules linked in.  It also provides too much information
-    when we don't expect each module to be traversed in a stacktrace.  Having
-    the build ID for modules that aren't important just makes things messy.
-    Splitting it to multiple lines for each module quickly explodes the number
-    of lines printed in an oops too, possibly wrapping the warning off the
-    console.  And finally, trying to stash away each module used in a
-    callstack to provide the ID of each symbol printed is cumbersome and would
-    require changes to each architecture to stash away modules and return
-    their build IDs once unwinding has completed.
-
-    Instead, we opt for the simpler approach of introducing new printk formats
-    '%pS[R]b' for "pointer symbolic backtrace with module build ID" and '%pBb'
-    for "pointer backtrace with module build ID" and then updating the few
-    places in the architecture layer where the stacktrace is printed to use
-    this new format.
-
-    Before:
-
-     Call trace:
-      lkdtm_WARNING+0x28/0x30 [lkdtm]
-      direct_entry+0x16c/0x1b4 [lkdtm]
-      full_proxy_write+0x74/0xa4
-      vfs_write+0xec/0x2e8
-
-    After:
-
-     Call trace:
-      lkdtm_WARNING+0x28/0x30 [lkdtm 6c2215028606bda50de823490723dc4bc5bf46f9]
-      direct_entry+0x16c/0x1b4 [lkdtm 6c2215028606bda50de823490723dc4bc5bf46f9]
-      full_proxy_write+0x74/0xa4
-      vfs_write+0xec/0x2e8
-
-    Link: https://lkml.kernel.org/r/20210511003845.2429846-6-swboyd@chromium.org
-    Link: https://fedoraproject.org/wiki/Releases/FeatureBuildId [1]
-    Link: https://sourceware.org/elfutils/Debuginfod.html [2]
-    Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-    Cc: Jiri Olsa <jolsa@kernel.org>
-    Cc: Alexei Starovoitov <ast@kernel.org>
-    Cc: Jessica Yu <jeyu@kernel.org>
-    Cc: Evan Green <evgreen@chromium.org>
-    Cc: Hsin-Yi Wang <hsinyi@chromium.org>
-    Cc: Petr Mladek <pmladek@suse.com>
-    Cc: Steven Rostedt <rostedt@goodmis.org>
-    Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-    Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-    Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-    Cc: Matthew Wilcox <willy@infradead.org>
-    Cc: Baoquan He <bhe@redhat.com>
-    Cc: Borislav Petkov <bp@alien8.de>
-    Cc: Catalin Marinas <catalin.marinas@arm.com>
-    Cc: Dave Young <dyoung@redhat.com>
-    Cc: Ingo Molnar <mingo@redhat.com>
-    Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-    Cc: Sasha Levin <sashal@kernel.org>
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Cc: Vivek Goyal <vgoyal@redhat.com>
-    Cc: Will Deacon <will@kernel.org>
-    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-    Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
- Documentation/core-api/printk-formats.rst |  11 ++++
- include/linux/kallsyms.h                  |  20 +++++-
- include/linux/module.h                    |   8 ++-
- kernel/kallsyms.c                         | 101 ++++++++++++++++++++++++------
- kernel/module.c                           |  31 ++++++++-
- lib/vsprintf.c                            |   8 ++-
- 6 files changed, 154 insertions(+), 25 deletions(-)
-Previous HEAD position was b2dcc0267277 dump_stack: add vmlinux build
-ID to stack traces
-HEAD is now at 7d9c6b8147bd Add linux-next specific files for 20210617
-
-
-
-> make[1]: *** [/builds/linux/Makefile:1252: vmlinux] Error 1
-> make[1]: Target '__all' not remade because of errors.
-> make: *** [Makefile:222: __sub-make] Error 2
-> make: Target '__all' not remade because of errors.
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=x86_64
-> CROSS_COMPILE=x86_64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-> clang' headers_install
-> INSTALL_HDR_PATH=/home/tuxbuild/.cache/tuxmake/builds/current/install_hdr/
-> tar caf /home/tuxbuild/.cache/tuxmake/builds/current/headers.tar.xz -C
-> /home/tuxbuild/.cache/tuxmake/builds/current/install_hdr .
->
-> ref:
-> https://builds.tuxbuild.com/1u4ZKFTh12vrYBVf8b1xGpaFOrE/
->
-> # TuxMake is a command line tool and Python library that provides
-> # portable and repeatable Linux kernel builds across a variety of
-> # architectures, toolchains, kernel configurations, and make targets.
-> #
-> # TuxMake supports the concept of runtimes.
-> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
-> # that you install podman or docker on your system.
-> #
-> # To install tuxmake on your system globally:
-> # sudo pip3 install -U tuxmake
-> #
-> # See https://docs.tuxmake.org/ for complete documentation.
->
-> tuxmake --runtime podman --target-arch x86_64 --toolchain clang-11
-> --kconfig x86_64_defconfig
->
-> ref:
-> https://builds.tuxbuild.com/1u4ZKFTh12vrYBVf8b1xGpaFOrE/
->
-> build info:
->     git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->     git_sha: 7d9c6b8147bdd76d7eb2cf6f74f84c6918ae0939
->     git_short_log: 7d9c6b8147bd (\Add linux-next specific files for 20210617\)
->     kconfig: x86_64_defconfig
->     kernel_image:
->     kernel_version: 5.13.0-rc6
->     toolchain: clang-11
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+Will
