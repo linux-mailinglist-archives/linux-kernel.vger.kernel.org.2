@@ -2,185 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973C13AABC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDFF3AABC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhFQGU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 02:20:57 -0400
-Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:38111 "EHLO
-        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229515AbhFQGUz (ORCPT
+        id S229943AbhFQGVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 02:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhFQGVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 02:20:55 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id tlMQlmuimhg8ZtlMTlShud; Thu, 17 Jun 2021 08:18:46 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1623910726; bh=6HmWS6ynFzcb3UWknvmVlnIFSb1h9WntxYhD/ZWpF34=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=qBJReWXZezuzQcDtMbd0KgJ+8DwUXaWEeXL8Ja7ZhY5UPvjQBnvX6KJV1SAfn5Vob
-         ObcXaK+rhtmyxTUN4T/gdB5Pkp0hBEXUWvc3zQY1zZj/ur3ajp6DIVNPkAuXjMWSzB
-         lYR9lBUjjk8Gb50il+fIfOvRi2QjNsf/n2xdbPBkv6R0yRo1NqVw5mngajPGeC2Mm7
-         nTJy+egUQWAwNKerwbaTMjlBN9jDqqJUfN92U4TIYR8AJ7S1BGPXmIfNv3m7Z1MTLr
-         MZFeQ+6wtAv03dbwHNfclY21Zk1ZqDYoFw15ezWzdtLROd1PnJHc9Wo5/iWw8yi03V
-         dBiUMcMFUgLnA==
-Subject: Re: [PATCH v5 12/15] media: i2c: rdacm20: Embed 'serializer' field
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210616124616.49249-1-jacopo+renesas@jmondi.org>
- <20210616124616.49249-13-jacopo+renesas@jmondi.org>
- <YMqTyFvxer0vjsKT@pendragon.ideasonboard.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <1e6e5cd0-82b1-db7a-ec70-ebb8831c11c4@xs4all.nl>
-Date:   Thu, 17 Jun 2021 08:18:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Thu, 17 Jun 2021 02:21:41 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C74C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:19:33 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id s26so1867815ioe.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:19:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=xvffQSPLbbIWjnHD3bFs3q6kUY6y/vNDuj5fwCIowxw=;
+        b=Yc3Lx9rTJhr2p7EgZ8kvBqqunSGxSxWehDjZC2VD1OlRIhxOxtmSOHGfg+60JTN18+
+         caFc6YGXNiWYiuze5LVTQNlETlipzqlCUbU8/06yvkuFAMQNYXG5JbLXdugFS5E7Kp7u
+         igOgBZtGXnIe1m9ED4vsxbXwQzgZeVmgEughFva6bNTjIBYltPPWqC0OR+M7ahqf2aov
+         71SCuHIpOrs7Sc9JXNlkZQTRfeS02zYVXVtTvoFuui4LwtBES3GIVYyCsjvjt4NS5Q7e
+         Vd7rxp5jmGvdR7zNgXxAOxOWhbg058mRQmGdhmWJK2Yzb0OeGJeS9X/sY6Tn9NnT3b6R
+         MQkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=xvffQSPLbbIWjnHD3bFs3q6kUY6y/vNDuj5fwCIowxw=;
+        b=S64t1n6bRZMqzQhFbCKjT1f+Y0/e0talW7vOAIN1qbBpXrWlT5XxQG6UaVlCbKWW4Y
+         M5jJNTiojqmDetYW0MyI8wsQrbdLescRKl3aTMJncAxQwV5OGScGitHJwNLCScuBPke1
+         oi6A5ynBMoskxqYcr+rRUzTZRmWSsMWiyHuxjThhZLM96C6lTDuuvtP0eVA+M9/nGhr9
+         bWmZqC1Ux1CaiOPWTlPoooJf/2c0+eXMNZ6IYnAHND2h3aKtZ6oFaA8Lp62XDNF712Uh
+         QcPJObWL/ffLE4HHvsKLtiL+2K4VC9mJNMIr4h6TtD8kcIRsiYyerDqvJ36lXODR/K1b
+         qxEQ==
+X-Gm-Message-State: AOAM530WAt5t4FZzeeY1QlDOadaH2XfzgHheuwTtSGitrpisAu37rQcM
+        0ngDsrWqFjZgI8QRnAbRuomlCQvlxpv+b8Ln5HuSgnxD
+X-Google-Smtp-Source: ABdhPJzHYyKaFz96FSABoUIEY7kR6jzkjGlc0P5WK0mE5iyacLQrYv0UgFhxT/QcG2CLtMz29Vl0FiZS79wij6xQnpI=
+X-Received: by 2002:a02:c88a:: with SMTP id m10mr3085484jao.136.1623910772724;
+ Wed, 16 Jun 2021 23:19:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YMqTyFvxer0vjsKT@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfKc9TqgYXNnwKK3A9jTVqfgmUnrCdOL1KDLjWDjAPZOnmsVcOjCr/buMwniKu0PgQ51CsqEVlLpC9qzgVKJpF6FvIWRQnv/D4eqDbsxmGLQwwsgWWa6b
- wXDcuqMiS7M6HHFoXweEyq6yFynYqAHwcnHC3NsC7Zv4ZTVFVYcCRI8hC/pGeHe1DRRGQAAeR6gOimTu7i9+QhmSxxJKZZpnW1fGgLPP1JUAUx9B1S2KQG3M
- 8PMobmPj+r7kkKQT5ng27G1l9vYg8usiBvGRgZpU5FYP+xBk4vtJP/bNMpqtBSHA1H8RTv2UiZZxACabgNnkTMy94H183DhS5lY+72BnPhNJoJ8TjUYGcfSx
- /OF+Wp+4rfeupzZjXwLpPd3GDW5WzvqHM03BBls8aI/XWe7HPEdAhkQ5Jc1fjBPSuTdD62p942ymJP1pVa1xT2V/es+VxtNFIp3nF3KRg3yb4ltCt/yxPxJc
- ZH1Vq9zj/L0k7N0JOO59eMhZtH/bYBBptbnMg16sHT+woS5DQ869CyupXRXnqK0ZF/cGCfffhcngtmiMy/KE65ANxn0x0H/lZlCP7Q==
+References: <CADPMZDD=1W-jb+9o15djZ-VhdzB8=RT1oNQJ=DxBmcvXhcjnCg@mail.gmail.com>
+In-Reply-To: <CADPMZDD=1W-jb+9o15djZ-VhdzB8=RT1oNQJ=DxBmcvXhcjnCg@mail.gmail.com>
+From:   denis bider <denisbider.ietf@gmail.com>
+Date:   Thu, 17 Jun 2021 01:19:21 -0500
+Message-ID: <CADPMZDDoUcy+ik8gDsN-Hd3gJJ2kys92qPbLpqzd6a4i7uVbxw@mail.gmail.com>
+Subject: Re: Linus's "let's kill people" rant (Re: Maintainers / Kernel Summit
+ 2021 planning kick-off)
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/06/2021 02:14, Laurent Pinchart wrote:
-> Hi Jacopo,
-> 
-> Thank you for the patch.
-> 
-> This should be moved before 11/15 to avoid a bisection breakage (or
-> 11/15 should be fixed, and this patch updated accordingly).
+Following up to this - the following is a most excellent video, one of
+the best I've seen, featuring Dr. Peter McCullough, talking with
+Reiner Fuellmich:
 
-Good catch!
+https://www.bitchute.com/video/rKP61hruGxIt/
 
-Jacopo, I dropped the PR I made. It you just want to swap patch 11 and 12,
-then I can do that, if you want more extensive changes, then I need a v6.
+Anyone who is going around convincing people to get sterilized or
+killed - by which I mean, get an experimental treatment for a pandemic
+that's over which they definitely don't need - should first take the
+48 minutes to watch this from start to finish. You can reduce this to
+38 minutes if you watch at 1.25x speed.
 
-Let me know what you want.
+The whole video is so incredibly invaluable at the moment.
 
-	Hans
+Please, watch it.
 
-> 
-> On Wed, Jun 16, 2021 at 02:46:13PM +0200, Jacopo Mondi wrote:
->> There's no reason to allocate dynamically the 'serializer' field in
->> the driver structure.
->>
->> Embed the field and adjust all its users in the driver.
->>
->> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
->> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
->> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->> ---
->>  drivers/media/i2c/rdacm20.c | 36 +++++++++++++++---------------------
->>  1 file changed, 15 insertions(+), 21 deletions(-)
->>
->> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
->> index 5e0314a2b1ca..029af8fd7485 100644
->> --- a/drivers/media/i2c/rdacm20.c
->> +++ b/drivers/media/i2c/rdacm20.c
->> @@ -312,7 +312,7 @@ static const struct ov10635_reg {
->>  
->>  struct rdacm20_device {
->>  	struct device			*dev;
->> -	struct max9271_device		*serializer;
->> +	struct max9271_device		serializer;
->>  	struct i2c_client		*sensor;
->>  	struct v4l2_subdev		sd;
->>  	struct media_pad		pad;
->> @@ -399,7 +399,7 @@ static int rdacm20_s_stream(struct v4l2_subdev *sd, int enable)
->>  {
->>  	struct rdacm20_device *dev = sd_to_rdacm20(sd);
->>  
->> -	return max9271_set_serial_link(dev->serializer, enable);
->> +	return max9271_set_serial_link(&dev->serializer, enable);
->>  }
->>  
->>  static int rdacm20_enum_mbus_code(struct v4l2_subdev *sd,
->> @@ -455,10 +455,10 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
->>  	unsigned int retry = 3;
->>  	int ret;
->>  
->> -	max9271_wake_up(dev->serializer);
->> +	max9271_wake_up(&dev->serializer);
->>  
->>  	/* Serial link disabled during config as it needs a valid pixel clock. */
->> -	ret = max9271_set_serial_link(dev->serializer, false);
->> +	ret = max9271_set_serial_link(&dev->serializer, false);
->>  	if (ret)
->>  		return ret;
->>  
->> @@ -466,35 +466,35 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
->>  	 *  Ensure that we have a good link configuration before attempting to
->>  	 *  identify the device.
->>  	 */
->> -	max9271_configure_i2c(dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
->> -					       MAX9271_I2CSLVTO_1024US |
->> -					       MAX9271_I2CMSTBT_105KBPS);
->> +	max9271_configure_i2c(&dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
->> +						MAX9271_I2CSLVTO_1024US |
->> +						MAX9271_I2CMSTBT_105KBPS);
->>  
->> -	max9271_configure_gmsl_link(dev->serializer);
->> +	max9271_configure_gmsl_link(&dev->serializer);
->>  
->> -	ret = max9271_verify_id(dev->serializer);
->> +	ret = max9271_verify_id(&dev->serializer);
->>  	if (ret < 0)
->>  		return ret;
->>  
->> -	ret = max9271_set_address(dev->serializer, dev->addrs[0]);
->> +	ret = max9271_set_address(&dev->serializer, dev->addrs[0]);
->>  	if (ret < 0)
->>  		return ret;
->> -	dev->serializer->client->addr = dev->addrs[0];
->> +	dev->serializer.client->addr = dev->addrs[0];
->>  
->>  	/*
->>  	 * Reset the sensor by cycling the OV10635 reset signal connected to the
->>  	 * MAX9271 GPIO1 and verify communication with the OV10635.
->>  	 */
->> -	ret = max9271_enable_gpios(dev->serializer, MAX9271_GPIO1OUT);
->> +	ret = max9271_enable_gpios(&dev->serializer, MAX9271_GPIO1OUT);
->>  	if (ret)
->>  		return ret;
->>  
->> -	ret = max9271_clear_gpios(dev->serializer, MAX9271_GPIO1OUT);
->> +	ret = max9271_clear_gpios(&dev->serializer, MAX9271_GPIO1OUT);
->>  	if (ret)
->>  		return ret;
->>  	usleep_range(10000, 15000);
->>  
->> -	ret = max9271_set_gpios(dev->serializer, MAX9271_GPIO1OUT);
->> +	ret = max9271_set_gpios(&dev->serializer, MAX9271_GPIO1OUT);
->>  	if (ret)
->>  		return ret;
->>  	usleep_range(10000, 15000);
->> @@ -564,13 +564,7 @@ static int rdacm20_probe(struct i2c_client *client)
->>  	if (!dev)
->>  		return -ENOMEM;
->>  	dev->dev = &client->dev;
->> -
->> -	dev->serializer = devm_kzalloc(&client->dev, sizeof(*dev->serializer),
->> -				       GFP_KERNEL);
->> -	if (!dev->serializer)
->> -		return -ENOMEM;
->> -
->> -	dev->serializer->client = client;
->> +	dev->serializer.client = client;
->>  
->>  	ret = of_property_read_u32_array(client->dev.of_node, "reg",
->>  					 dev->addrs, 2);
-> 
+Dr. Peter McCullough and Reiner Fuellmich are serious people. They are
+not a joke.
 
+Linus especially, after his statement, should take the time and watch
+this. Merging commits that break userspace can wait.
+
+
+On Mon, Jun 14, 2021 at 10:59 AM denis bider <denisbider.ietf@gmail.com> wrote:
+>
+> Linus -
+>
+> what you wrote here on June 10 is fatally wrong. You mistake a neat,
+> cute narrative of how we imagine mRNA works, with what these vaccines
+> actually do in the body.
+>
+> You owe it to yourself, and to anyone who trusts you, to postpone
+> non-urgent work, and spend a month researching these vaccines.
+>
+> Look into the number of deaths and side effects "after" the vaccines.
+> Even the numbers in official reports (VAERS and its European
+> equivalent) are unprecedented compared to any previous treatment. The
+> number of deaths officially logged is hundreds of times beyond
+> anything before.
+>
+> These unprecedented numbers are accompanied by suppression of
+> information, deplatforming and censorship that we had never seen.
+> Doctors and nurses are being fired and having licenses suspended for
+> doubting the administrators' narrative. Filling out a VAERS report is
+> 12+ pages of work with penalties.
+>
+> The VAERS numbers are backlogged and suppressed, and the real numbers
+> may be 10x higher.
+>
+> You believe these vaccines are saving millions. But the same
+> dishonesty which is used to suppress information about them was used
+> to inflate the pandemic, in all ways you can think of.
+>
+> Putting people with respiratory issues into nursing homes LITERALLY to
+> drive up deaths. PCR tests with 40+ cycles and 10% false positives,
+> while testing much of the population every week. Rewarding hospitals
+> $13k for each Covid diagnosis and $30k to put them on a ventilator,
+> which is a death sentence. Changed reporting guidelines so that deaths
+> "with virus" are treated as if "of" the virus. If the common cold were
+> treated this way, it would be the most lethal disease in history.
+> According to CDC, only 6% of US deaths "with Covid" actually listed it
+> as the single cause. Suppressing HCQ and ivermectin EVEN NOW when
+> hundreds of studies have shown they are safe and effective cures. In
+> Queensland, a doctor can't prescribe HCQ for Covid on penalty of up to
+> 6 months in prison.
+>
+> Now with these vaccines, the opposite. Every death "with" Covid is
+> because of Covid, but every death "after" vaccines is unrelated to
+> vaccines. An anonymous report by a doctor in the Kansas City area
+> states that out of 500 people who got vaccinated in nursing homes, 22
+> died within 48 hours. Are you willing to bet your life that this is
+> false?
+>
+> You are making the stereotypical mistake of an engineer. You work with
+> simple deterministic systems. This gives you confidence to treat
+> everything as a simple deterministic system - including the body.
+>
+> You have little in common with PhDs who treat the body as complex and
+> holistic, and warn about the effects of our interventions. Such people
+> seem like Debby Downers to you.
+>
+> You find much more in common with those drug and vaccine developers
+> who use a gung-ho, engineer mentality. Even when the penalty for their
+> mistakes and dishonesty is death.
+>
+> Can you recall, off-hand, the most recent experience of merging a
+> kernel commit which you 100% believed will not break userspace - and
+> then it broke userspace? Isn't it nice, for you, that the penalty for
+> this is not disability or death for 5% of your users?
+>
+> Count the number of times you have done this. How many of your users
+> would still be alive if your product was an annual injectable? What
+> does this say about a vax developed this way?
+>
+> You MUST research this, or more will die; including people you know.
+> Your current knowledge - not to even mention the statement you made -
+> is extremely dangerous and harmful.
+>
+> The West Coast is a bubble bordering on self-indoctrinated and insane.
+> There's nothing technical that you can do right now that's more
+> important than waking yourself up from this.
+>
+> It's not that this discussion does not belong on this mailing list.
+> It's that 90% of the work on this mailing list should stop right now,
+> and EVERYONE should research Covid and the vaccines.
+>
+> Regards,
+>
+> denis bider
+>
+>
+> ----- Original Message -----
+>
+> >
+> > And I know *a lot* of people who will never take part in this generic
+> > human experiment that basically creates a new humanoid race (people
+> > who generate and exhaust the toxic spike proteine, whose gene sequence
+> > doesn't look quote natural). I'm one of them, as my whole family.
+>
+> Please keep your insane and technically incorrect anti-vax comments to yourself.
+>
+> You don't know what you are talking about, you don't know what mRNA
+> is, and you're spreading idiotic lies. Maybe you do so unwittingly,
+> because of bad education. Maybe you do so because you've talked to
+> "experts" or watched youtube videos by charlatans that don't know what
+> they are talking about.
+>
+> But dammit, regardless of where you have gotten your mis-information
+> from, any Linux kernel discussion list isn't going to have your
+> idiotic drivel pass uncontested from me.
+>
+> Vaccines have saved the lives of literally tens of millions of people.
+>
+> Just for your edification in case you are actually willing to be
+> educated: mRNA doesn't change your genetic sequence in any way. It is
+> the exact same intermediate - and temporary - kind of material that
+> your cells generate internally all the time as part of your normal
+> cell processes, and all that the mRNA vaccines do is to add a dose
+> their own specialized sequence that then makes your normal cell
+> machinery generate that spike protein so that your body learns how to
+> recognize it.
+>
+> The half-life of mRNA is a few hours. Any injected mRNA will be all
+> gone from your body in a day or two. It doesn't change anything
+> long-term, except for that natural "your body now knows how to
+> recognize and fight off a new foreign protein" (which then tends to
+> fade over time too, but lasts a lot longer than a few days). And yes,
+> while your body learns to fight off that foreign material, you may
+> feel like shit for a while. That's normal, and it's your natural
+> response to your cells spending resources on learning how to deal with
+> the new threat.
+>
+> And of the vaccines, the mRNA ones are the most modern, and the most
+> targeted - exactly because they do *not* need to have any of the other
+> genetic material that you traditionally have in a vaccine (ie no need
+> for basically the whole - if weakened - bacterial or virus genetic
+> material). So the mRNA vaccines actually have *less* of that foreign
+> material in them than traditional vaccines do. And a *lot* less than
+> the very real and actual COVID-19 virus that is spreading in your
+> neighborhood.
+>
+> Honestly, anybody who has told you differently, and who has told you
+> that it changes your genetic material, is simply uneducated. You need
+> to stop believing the anti-vax lies, and you need to start protecting
+> your family and the people around you. Get vaccinated.
+>
+> I think you are in Germany, and COVID-19 numbers are going down. It's
+> spreading a lot less these days, largely because people around you
+> have started getting the vaccine - about half having gotten their
+> first dose around you, and about a quarter being fully vaccinated. If
+> you and your family are more protected these days, it's because of all
+> those other people who made the right choice, but it's worth noting
+> that as you see the disease numbers go down in your neighborhood,
+> those diminishing numbers are going to predominantly be about people
+> like you and your family.
+>
+> So don't feel all warm and fuzzy about the fact that covid cases have
+> dropped a lot around you. Yes, all those vaccinated people around you
+> will protect you too, but if there is another wave, possibly due to a
+> more transmissible version - you and your family will be at _much_
+> higher risk than those vaccinated people because of your ignorance and
+> mis-information.
+>
+> Get vaccinated. Stop believing the anti-vax lies.
+>
+> And if you insist on believing in the crazy conspiracy theories, at
+> least SHUT THE HELL UP about it on Linux kernel discussion lists.
+>
+> Linus
