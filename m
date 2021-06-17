@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9293AB20C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579CC3AB214
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhFQLOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:14:42 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7469 "EHLO
+        id S232425AbhFQLPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:15:45 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7470 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232403AbhFQLO1 (ORCPT
+        with ESMTP id S231593AbhFQLPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:14:27 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5K7k0kwRzZhsf;
-        Thu, 17 Jun 2021 19:09:22 +0800 (CST)
+        Thu, 17 Jun 2021 07:15:41 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5K9842QwzZjG0;
+        Thu, 17 Jun 2021 19:10:36 +0800 (CST)
 Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
  dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 19:12:18 +0800
+ 15.1.2176.2; Thu, 17 Jun 2021 19:13:32 +0800
 Received: from linux-lmwb.huawei.com (10.175.103.112) by
  dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 17 Jun 2021 19:12:17 +0800
+ 15.1.2176.2; Thu, 17 Jun 2021 19:13:32 +0800
 From:   Zou Wei <zou_wei@huawei.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] ASoC: tegra: Add missing of_node_put() in tegra_machine_parse_phandle()
-Date:   Thu, 17 Jun 2021 19:30:47 +0800
-Message-ID: <1623929447-4335-1-git-send-email-zou_wei@huawei.com>
+To:     <stanley.chu@mediatek.com>, <alim.akhtar@samsung.com>,
+        <avri.altman@wdc.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <matthias.bgg@gmail.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Zou Wei" <zou_wei@huawei.com>
+Subject: [PATCH -next] scsi: ufs-mediatek: Add missing of_node_put() in ufs_mtk_probe()
+Date:   Thu, 17 Jun 2021 19:32:02 +0800
+Message-ID: <1623929522-4389-1-git-send-email-zou_wei@huawei.com>
 X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggemi762-chm.china.huawei.com (10.1.198.148)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -49,25 +51,19 @@ before returning.
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- sound/soc/tegra/tegra_asoc_machine.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/scsi/ufs/ufs-mediatek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
-index 397f326..cba55ca 100644
---- a/sound/soc/tegra/tegra_asoc_machine.c
-+++ b/sound/soc/tegra/tegra_asoc_machine.c
-@@ -336,9 +336,12 @@ tegra_machine_parse_phandle(struct device *dev, const char *name)
- 	}
+diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
+index 1a517c9..d2c2516 100644
+--- a/drivers/scsi/ufs/ufs-mediatek.c
++++ b/drivers/scsi/ufs/ufs-mediatek.c
+@@ -1120,6 +1120,7 @@ static int ufs_mtk_probe(struct platform_device *pdev)
+ 	if (err)
+ 		dev_info(dev, "probe failed %d\n", err);
  
- 	err = devm_add_action_or_reset(dev, tegra_machine_node_release, np);
--	if (err)
-+	if (err) {
-+		of_node_put(np);
- 		return ERR_PTR(err);
-+	}
- 
-+	of_node_put(np);
- 	return np;
++	of_node_put(reset_node);
+ 	return err;
  }
  
 -- 
