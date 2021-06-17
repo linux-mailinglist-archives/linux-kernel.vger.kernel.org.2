@@ -2,169 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F6D3AB2B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE943AB2C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbhFQLha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231695AbhFQLh1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:37:27 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A68C061574;
-        Thu, 17 Jun 2021 04:35:19 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id g142so2726433qke.4;
-        Thu, 17 Jun 2021 04:35:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=8tErQQGqVARuWTPJ1UZnyWbISdS7OqCTl4R1CLBW1Bw=;
-        b=rZOgBxNZ5BtwSpmkYY+as1qvp1TbrqJ0z57PQkLfw1swif02hqM2t3ddSmm12goxP7
-         5rzGLL3ijB2rNQ7d9tJ+AiQUj31PuPwM/ILmpA3dNUvBsZ8ZnCVXG4H8mDNusWZPWvkZ
-         1jW/4PmJM6x9UxKd9H4usq7jqu+TBfv80XZpAdhwKT03+93nKzte+SIxS+msrftT0d+h
-         EeIlZCBo9wP3Mn1y9LzgjQF2n9ptqbMem6VXoN1WnqYnHzC90MRLI2nRHisW0eOkRSAU
-         2BzaogoZcyOXoBsMDx9NEck5auNah20J2Nu59lPcoUA78T0XKszLlMvLnd4LslXqxP0D
-         gSoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=8tErQQGqVARuWTPJ1UZnyWbISdS7OqCTl4R1CLBW1Bw=;
-        b=QBwgVOfec2daXiustEpbOijx6rbO3uFgj7n6OCJ4sC5AH57SXM6uGVpoghD+7oBsv7
-         kMrNuTz8/KDHh7PFSUwWM1FVrU9mj8aoFxMVUGdcA/01/irT3rxyIuh2kwA2sGrUOITG
-         1CTm9vMhkoV4nFKoF1PbLGjCo46zpR/PV/SKc4DLtQKOSnPG5mrAVqV/onVODYEBzCVZ
-         hbA6HI7UDXvcLhoJ2v8i/SSR8cyDDPpMUSyRFOLIvbJaM2qdukkczqbAc2s8A8doawcm
-         khXBS1ow86pecSw+g04ZdJvseTKNlilO6ybJyd/JLnH2/Z6ehU53vZbc8uZotgXidix6
-         aE1A==
-X-Gm-Message-State: AOAM530BwjDnkPMhjtLL/RIN5TbYRqp93mYqvBFHDXWavVf1sexSK8W9
-        TRAv0QJfB3yOO65UbGwqaVQ=
-X-Google-Smtp-Source: ABdhPJwvYMe52BcZr+JE8BaqGbvb1iv78gnjVOMlpQLdxJauIyJdXY4BjI+L07ic566Orq7pHwZFMQ==
-X-Received: by 2002:a05:620a:140c:: with SMTP id d12mr3277055qkj.228.1623929718452;
-        Thu, 17 Jun 2021 04:35:18 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id t30sm1489260qkm.11.2021.06.17.04.35.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 04:35:17 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     "Boehme, Markus" <markubo@amazon.de>
-Cc:     "sj38.park@gmail.com" <sj38.park@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "Foerster, Leonard" <foersleo@amazon.de>,
-        "guoju.fgj@alibaba-inc.com" <guoju.fgj@alibaba-inc.com>,
-        "brendanhiggins@google.com" <brendanhiggins@google.com>,
-        "riel@surriel.com" <riel@surriel.com>,
-        "greg@kroah.com" <greg@kroah.com>,
-        "linux-damon@amazon.com" <linux-damon@amazon.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "Heyne, Maximilian" <mheyne@amazon.de>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Gowans, James" <jgowans@amazon.com>,
-        "Park, Seongjae" <sjpark@amazon.de>,
-        "snu@zelle79.org" <snu@zelle79.org>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "Jonathan.Cameron@Huawei.com" <Jonathan.Cameron@Huawei.com>,
-        "Sieber, Fernand" <sieberf@amazon.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "zgf574564920@gmail.com" <zgf574564920@gmail.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "amit@kernel.org" <amit@kernel.org>,
-        "fan.du@intel.com" <fan.du@intel.com>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "gthelen@google.com" <gthelen@google.com>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "elver@google.com" <elver@google.com>,
-        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v30 12/13] mm/damon: Add user space selftests
-Date:   Thu, 17 Jun 2021 11:35:04 +0000
-Message-Id: <20210617113504.5525-1-sjpark@amazon.de>
+        id S232597AbhFQLjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:39:05 -0400
+Received: from mail-eopbgr60110.outbound.protection.outlook.com ([40.107.6.110]:34908
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232592AbhFQLjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 07:39:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LWX0zYoBMkh3un3k2o3a+qhSexgjyCU0GN7qoIoKMM2+gufzeZoIfF00YLHEUMnSdvOx+CviZ11ftYscKslBCxJ0Siqf0+/l2wRBw1CRqdE2iT6h0nSdcvyesewvQjxmI5nsliAL7iJYRe0nDCY79SaWUssq4uI98tY9C6xz2RqSNmnJxzSCMGXSxDYV9z8fdhkkjXQQJcH/IX9MzaxCBMLybAt1LR61kt+pwMjmxXVQU6mR0CSUuVj5ly+FM3iNpXj6QM2fLRjvaiZnORlp/iArVOid4nAnu2Is4sBF43hrWM1OX7iZRp+KiM9iZQ4nR2Kkw+wW6rGvz+oynfkCiw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mw/3ZeqO4X/b0pk8Cmi+w/JrjcEYKV8NQsh5lP8mjdo=;
+ b=cNgXxRfYuHlfBkKyWEb8l0ttWZpJIiPDQJzNOYDxMr6yb+TDq4GO1P7t29QiQ6NDYfGdqeu1ihlxGkkNHpWTThs3+9TyR4QYQjvHjZMsV1nstBICFPZfPFQoWW4tmqIgrQahIv/U47u5TWDlrinZ8+xSZEMqXtv6E2uhtZOCRdxTuU54wG0+iF2qMsIhPYFTkyfDQZFccalLGMK4IzHp20xyeLXHy9Cp+viCzyJiLOrn4OOBPrHauNCx+P00WIVZ1Ss+Smj3t6IMcXVUuCICnMP0InwFVNO6DfsHRE5axB0I2zQe2V4OswnJSYMcRmtI/5PUfgOlAFsXlOjrjGNYQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mw/3ZeqO4X/b0pk8Cmi+w/JrjcEYKV8NQsh5lP8mjdo=;
+ b=ZrfiVbP4fpuUE37OZB3sow6LP5jV3VWR6uEY8GBmNju32LrUiO+FbbFFuON29KjIaamheScWIjQ2R2ZSAz/SoUOi2KaBR0rZ0JVeEcTetzSsdfcR0UZ3HSlqOTlWDFrVJNnm6Vb7z7G2e+3j+qk6j0kco5lU3UgVMx9NtJsD5v4=
+Authentication-Results: plvision.eu; dkim=none (message not signed)
+ header.d=none;plvision.eu; dmarc=none action=none header.from=plvision.eu;
+Received: from AM0P190MB0738.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:19b::9)
+ by AM8P190MB0836.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:1d2::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Thu, 17 Jun
+ 2021 11:36:53 +0000
+Received: from AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
+ ([fe80::d018:6384:155:a2fe]) by AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
+ ([fe80::d018:6384:155:a2fe%9]) with mapi id 15.20.4219.025; Thu, 17 Jun 2021
+ 11:36:53 +0000
+From:   Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+To:     oleksandr.mazur@plvision.eu, jiri@nvidia.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vadym Kochan <vadym.kochan@plvision.eu>, idosch@idosch.org
+Subject: [PATCH net-next v2] drivers: net: netdevsim: fix devlink_trap selftests failing
+Date:   Thu, 17 Jun 2021 14:36:32 +0300
+Message-Id: <20210617113632.21665-1-oleksandr.mazur@plvision.eu>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <1ad122038f283961b787b26bb838a063ff7c43cf.camel@amazon.de>
+Content-Type: text/plain
+X-Originating-IP: [217.20.186.93]
+X-ClientProxiedBy: AM6P195CA0064.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:209:87::41) To AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:208:19b::9)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from omazur.x.ow.s (217.20.186.93) by AM6P195CA0064.EURP195.PROD.OUTLOOK.COM (2603:10a6:209:87::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Thu, 17 Jun 2021 11:36:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0adbbd8e-0b8a-41bc-9892-08d93184346d
+X-MS-TrafficTypeDiagnostic: AM8P190MB0836:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM8P190MB083683E5095E0E7EACED7A6CE40E9@AM8P190MB0836.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 51+9NFqvV1qwd9AAQgpMbdALXeRB7yeGv70mWMo0aCBhgD7bwSreDv0E8wKmBSsPhqb4+lni0FiymIEjetLnqghaHYREYpLaa7X9XZUkgMpSizBUZTjv7HHjuQClwsYj1Kw9zX0KXv46w6ESnIZ1bz3B92KN4ZH6JBMC4LdRstQNdQR7SsFQ39ecUs9Xw/P5nHkOy7YHJ8e2BvaRVu/nR5p+HiOBP/iHf7CTJ8nUU/25wFtGjQhkCtCuIG71Vl+1xdMrjvohWTiTE3oDTwpywd/45hD0JBnWmp7w/0E3SbHTWnIvDJaJ9n27Evp3PqZtiejjrNVzKnpPcGkSMh3LQrkN5nBAHMprZA1xqOsqkq+s1S037S9GGZ9kPp2CTOti4f3beIhUlhBbmnr3sy8UkegYfX/piuBCMv6dvm4tWLTtDNmlPzHXBPcZ7fsfP2rw0YTbxOz74oDEJBt9DgZTIgSeaSSS1rQka6x7wGj5rztc7+Qi2DoCkRN5LgUPTgyu3rBge+TZr4mhFqcUtC3E1kHOEoCNwe+ipIxa5vkHPzOcBNQCErw9uxRW4tiQ2teIfMi0+y/5aLOq48+dyLZOd5p9mAn52hlJ8+HJes4/ohnhBHayJs6aQRY+c8vFh2t0VecWOAESOyCMIOgkcFFCfV/Y4ygD5q6xnDUATPGcKRc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0P190MB0738.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39830400003)(376002)(346002)(136003)(396003)(366004)(6506007)(52116002)(36756003)(316002)(956004)(8676002)(38350700002)(38100700002)(2616005)(6512007)(478600001)(26005)(8936002)(6666004)(5660300002)(1076003)(86362001)(6486002)(44832011)(83380400001)(4326008)(16526019)(186003)(2906002)(66476007)(66556008)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?u4+GKhk08RJBGQG4VuXf1RpPMwtPRZMZkrkEcSAKKZ5Uuf6vWlxkA5boLyv+?=
+ =?us-ascii?Q?r6JaD+aVLGFbU4CzjxG+xZrcHG4Ww63A7HmXgbrcsMqaJDZmotoYPLTJbmw9?=
+ =?us-ascii?Q?yKT6jO3KQvK+fC3ESjJqRgSIMMDkmvnmb0FuKh3iJ0ZSceGKDC5ZX2SPafbm?=
+ =?us-ascii?Q?aj+CP/1Rqwf5DD/LWv3CR1XjIeqU9tHkKaxXlJ/AwZLP0IaBcM4Oa8//sJ0T?=
+ =?us-ascii?Q?EaJPwz7s8ob8t7Wo3wxznLL1BKoNBU7qhA43N7XlUSaRvi8pEw9MktaDaeJe?=
+ =?us-ascii?Q?nCzAuS+us3eWyXlreoiHblGYR/SYO/Gq3lz4U46Ln2RxaMMaf9ji8H2LBs+r?=
+ =?us-ascii?Q?JBwzsTRoRVeKLnxNJBK7aP6btjDD3QWq5/O4s1qfapHe/n20pbpJhVzeALv9?=
+ =?us-ascii?Q?9HQfoIA7Vr6YeI4COh7vUhjwZybuq0oqcfTpCJxTp6HPBTeRNdSkHV9Ft+A7?=
+ =?us-ascii?Q?8qMOnpTnvZQUi+0Tw4UldoqTuzgF8N92BsaA838VMyQCNr+0ruU9DxBfmVgR?=
+ =?us-ascii?Q?W5Hn+GT08+AeyB1OFjpBBqBplt7MG3jBvPUPnJwaib5EoN2P+ZUwf0xiQ2GU?=
+ =?us-ascii?Q?zxplWliKARYwW399xnBRKK4olIeqnLRWUUijqQ+fQ+N24QRcPC/RLrXKuDsg?=
+ =?us-ascii?Q?mukcnwFmNQuYZra2geDukGzdRvsYLlNGFDwR42IFB2TxJ2aKqnZPJMvPjcR+?=
+ =?us-ascii?Q?Vou46QRPNmm2CRuk34DGjwKVUYtRq6vkObo1l7Wd3yazosUtIwWrad9Io8RX?=
+ =?us-ascii?Q?V5ZUpcHgs+4I2BVOYVQmwetlnR8LHfF3cQlbnFMlXaUs45fr6jYvwocePHWx?=
+ =?us-ascii?Q?3yVm5A02AYNXavmjKdp4pfRmzXi6wGM2x9OXQkG1BG0OvE6u6noFoRRZhpLD?=
+ =?us-ascii?Q?d/gvr7Q7KUSMEXWLlY4xUT5i4aGVi3kWSDLpARjxdnhRug7LEVToqt2xHPet?=
+ =?us-ascii?Q?QulbAr2cHuHiNwqyiS18hB7egmu3ukYFiP2XzJnQIKKsc3ZFQfa+FbKzzdoo?=
+ =?us-ascii?Q?2icbaPF5JUhrnTudUe8IMsDmWZ3zHYss4yBwCzD/ZZDQOXOsHh0UIT1n8Edx?=
+ =?us-ascii?Q?VlHyLNFN8be7RHKtGFLKrzL4ukXrn2BVKkV3dizMGmNuM2EIgBj7UnPF1gLr?=
+ =?us-ascii?Q?nYdKcDmuZFM8IRj4oJOTAkHWKlW1utiKElzhQqq4JL4w4C16CkOEtSW8wgZJ?=
+ =?us-ascii?Q?UNsKl5Uf8URszL3YBl1IBMzm4MM8B+uKhi6nFBLNo9VVY/3sAhAregnI1KOE?=
+ =?us-ascii?Q?u+AqjnRphCCyKW475KTYwIpvovOEMe2sbeZNSAPex0yLb2qK/6jEY3I5+QGm?=
+ =?us-ascii?Q?hEOKWNWHtaLIRRuIamJdzQ7u?=
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0adbbd8e-0b8a-41bc-9892-08d93184346d
+X-MS-Exchange-CrossTenant-AuthSource: AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 11:36:53.7694
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VDWTvWj9ZXfOgDiVx59okTCY8epVg7FWa8y1zI3ugzjP9ZvqJ8qjBPcqzUB3aR3SwztEn5mYUVFwp2MMtGUhVD1bOurW/XtxmVOUmCATX5I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8P190MB0836
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+devlink_trap tests for the netdevsim fail due to misspelled
+debugfs file name. Change this name, as well as name of callback
+function, to match the naming as in the devlink itself - 'trap_drop_counter'.
 
-Hello Markus,
+Test-results:
+selftests: drivers/net/netdevsim: devlink_trap.sh
+TEST: Initialization                                                [ OK ]
+TEST: Trap action                                                   [ OK ]
+TEST: Trap metadata                                                 [ OK ]
+TEST: Non-existing trap                                             [ OK ]
+TEST: Non-existing trap action                                      [ OK ]
+TEST: Trap statistics                                               [ OK ]
+TEST: Trap group action                                             [ OK ]
+TEST: Non-existing trap group                                       [ OK ]
+TEST: Trap group statistics                                         [ OK ]
+TEST: Trap policer                                                  [ OK ]
+TEST: Trap policer binding                                          [ OK ]
+TEST: Port delete                                                   [ OK ]
+TEST: Device delete                                                 [ OK ]
 
-On Thu, 17 Jun 2021 11:29:41 +0000 "Boehme, Markus" <markubo@amazon.de> wrote:
+Fixes: a7b3527a43fe ("drivers: net: netdevsim: add devlink trap_drop_counter_get implementation")
+Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+---
+V2:
+ 1) change the name of the debugfs-entry variable inside nsim_dev to match the name of
+    the entry itself.
+ 2) change name of the registered devlink callback-ops function to match the
+    'trap_drop_counter' naming convention.
+---
+ drivers/net/netdevsim/dev.c       | 14 +++++++-------
+ drivers/net/netdevsim/netdevsim.h |  2 +-
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-> On Thu, 2021-06-17 at 11:28 +0000, Boehme, Markus wrote:
-> > On Wed, 2021-06-16 at 07:31 +0000, SeongJae Park wrote:
-> > > From: SeongJae Park <sjpark@amazon.de>
-> > > 
-> > > This commit adds a simple user space tests for DAMON.  The tests
-> > > are
-> > > using kselftest framework.
-> > > 
-> > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > > ---
-> > >  tools/testing/selftests/damon/Makefile        |  7 ++
-> > >  .../selftests/damon/_chk_dependency.sh        | 28 +++++++
-> > >  .../testing/selftests/damon/debugfs_attrs.sh  | 75
-> > > +++++++++++++++++++
-> > >  3 files changed, 110 insertions(+)
-> > >  create mode 100644 tools/testing/selftests/damon/Makefile
-> > >  create mode 100644
-> > > tools/testing/selftests/damon/_chk_dependency.sh
-> > >  create mode 100755 tools/testing/selftests/damon/debugfs_attrs.sh
-> > > 
-> > > [...]
-> > > diff --git a/tools/testing/selftests/damon/debugfs_attrs.sh
-> > > b/tools/testing/selftests/damon/debugfs_attrs.sh
-> > > new file mode 100755
-> > > index 000000000000..60342d6c86d8
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/damon/debugfs_attrs.sh
-[...]
-> > > +
-> > > +test_content() {
-> > > +	file=$1
-> > > +	orig_content=$2
-> > > +	expected=$3
-> > > +	expect_reason=$4
-> > > +
-> > > +	content=$(cat "$file")
-> > > +	if [ "$content" != "$content" ]
-> > 
-> > That'll always evaluate false and should compare against "expected"
-> > instead.
+diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
+index d85521989753..6348307bfa84 100644
+--- a/drivers/net/netdevsim/dev.c
++++ b/drivers/net/netdevsim/dev.c
+@@ -269,9 +269,9 @@ static int nsim_dev_debugfs_init(struct nsim_dev *nsim_dev)
+ 		err = PTR_ERR(nsim_dev->nodes_ddir);
+ 		goto err_out;
+ 	}
+-	debugfs_create_bool("fail_trap_counter_get", 0600,
++	debugfs_create_bool("fail_trap_drop_counter_get", 0600,
+ 			    nsim_dev->ddir,
+-			    &nsim_dev->fail_trap_counter_get);
++			    &nsim_dev->fail_trap_drop_counter_get);
+ 	nsim_udp_tunnels_debugfs_create(nsim_dev);
+ 	return 0;
+ 
+@@ -1208,14 +1208,14 @@ static int nsim_rate_node_parent_set(struct devlink_rate *child,
+ }
+ 
+ static int
+-nsim_dev_devlink_trap_hw_counter_get(struct devlink *devlink,
+-				     const struct devlink_trap *trap,
+-				     u64 *p_drops)
++nsim_dev_devlink_trap_drop_counter_get(struct devlink *devlink,
++				       const struct devlink_trap *trap,
++				       u64 *p_drops)
+ {
+ 	struct nsim_dev *nsim_dev = devlink_priv(devlink);
+ 	u64 *cnt;
+ 
+-	if (nsim_dev->fail_trap_counter_get)
++	if (nsim_dev->fail_trap_drop_counter_get)
+ 		return -EINVAL;
+ 
+ 	cnt = &nsim_dev->trap_data->trap_pkt_cnt;
+@@ -1247,7 +1247,7 @@ static const struct devlink_ops nsim_dev_devlink_ops = {
+ 	.rate_node_del = nsim_rate_node_del,
+ 	.rate_leaf_parent_set = nsim_rate_leaf_parent_set,
+ 	.rate_node_parent_set = nsim_rate_node_parent_set,
+-	.trap_drop_counter_get = nsim_dev_devlink_trap_hw_counter_get,
++	.trap_drop_counter_get = nsim_dev_devlink_trap_drop_counter_get,
+ };
+ 
+ #define NSIM_DEV_MAX_MACS_DEFAULT 32
+diff --git a/drivers/net/netdevsim/netdevsim.h b/drivers/net/netdevsim/netdevsim.h
+index f2304e61919a..ae462957dcee 100644
+--- a/drivers/net/netdevsim/netdevsim.h
++++ b/drivers/net/netdevsim/netdevsim.h
+@@ -249,7 +249,7 @@ struct nsim_dev {
+ 	bool fail_trap_group_set;
+ 	bool fail_trap_policer_set;
+ 	bool fail_trap_policer_counter_get;
+-	bool fail_trap_counter_get;
++	bool fail_trap_drop_counter_get;
+ 	struct {
+ 		struct udp_tunnel_nic_shared utn_shared;
+ 		u32 __ports[2][NSIM_UDP_TUNNEL_N_PORTS];
+-- 
+2.17.1
 
-Good catch, I will fix so in the next spin.
-
-> > 
-> 
-> Feel free to add Reviewed-by: Markus Boehme <markubo@amazon.de> when
-> this is fixed.
-
-Thank you!
-
-> 
-> > > +	then
-> > > +		echo "reading $file expected $expected but $content"
-> > > +		echo "expected because: $expect_reason"
-> > > +		echo "$orig_content" > "$file"
-> > > +		exit 1
-> > > +	fi
-> > > +}
-
-
-Thanks,
-SeongJae Park
-
-[...]
