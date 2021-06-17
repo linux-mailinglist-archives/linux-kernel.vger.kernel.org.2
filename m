@@ -2,99 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE84D3AB1F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437043AB1F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232088AbhFQLJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:09:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhFQLJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:09:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2541861209;
-        Thu, 17 Jun 2021 11:07:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623928040;
-        bh=PeGZ1cLj00k0RPgo/UNeh5ota3U/cIizQo1ijpzwC/k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0Xq1mc3q7DJ5UQnfNr3Zh+Xu8FrlLQWpyAo0fDePKavzGfsEq47TDz33O1zvfkFIp
-         bcmgvK4ak4mxsOtOwIjxHjJnCUGo2xDsswdaeWa3o5AFu5Yd6Pqrj9TjdYzzLhczmh
-         nZyr0J1A2x+q7Ftcji7YxcPfRKFJzt21PZxam2Po=
-Date:   Thu, 17 Jun 2021 13:07:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     balbi@kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, frowand.list@gmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        jackp@codeaurora.org, fntoth@gmail.com,
-        heikki.krogerus@linux.intel.com, andy.shevchenko@gmail.com
-Subject: Re: [PATCH v10 2/6] usb: gadget: configfs: Check USB configuration
- before adding
-Message-ID: <YMss5tFFBjokk1k6@kroah.com>
-References: <1623923899-16759-1-git-send-email-wcheng@codeaurora.org>
- <1623923899-16759-3-git-send-email-wcheng@codeaurora.org>
+        id S232340AbhFQLKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232174AbhFQLKj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 07:10:39 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B6AC061574;
+        Thu, 17 Jun 2021 04:08:31 -0700 (PDT)
+Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 23EAA82A10;
+        Thu, 17 Jun 2021 13:08:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1623928108;
+        bh=pcOzzBeQhCrTCv1Dfu8x46w7ZuAgbD8BUEYPJTGCU+Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=a0yNqq3sjmORZW77MSohtqeYYoA3G69lnGi1lbZm/clpKyPHxltJzLbuuajrrAyOn
+         wsorzPbdm9VpTy+opuIZG4jp1oFrRDm7veum0LyrKQbi8T+sZsW0EOMFQ8pQD3FLz/
+         TnUJ+Y61UNgDnGAzOWRlRPZ93RxTs6+Qk4Sy0wiwBdyc0a31s/ZvmcDpE3E8UNq2bP
+         zepudZLJRMB2sAXTVdv7GHawruFhmwI8gQPFLY2xdMb1TonG9kniUI6BY4uodVmZ2t
+         xiT38Jd+w+alEYsESWzsxw5sQVw1gXQEz5orYdsQNgC4AdfPfOBRoW45cVgEAtWL3Y
+         HGu4nWHgiIXqg==
+Date:   Thu, 17 Jun 2021 13:08:21 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>, stefan.agner@toradex.com,
+        krzk@kernel.org, Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [RFC 0/4] net: l2switch: Provide support for L2 switch on
+ i.MX28 SoC
+Message-ID: <20210617130821.465c7522@ktm>
+In-Reply-To: <20201127010811.GR2075216@lunn.ch>
+References: <20201125232459.378-1-lukma@denx.de>
+        <20201126123027.ocsykutucnhpmqbt@skbuf>
+        <20201127003549.3753d64a@jawa>
+        <20201127010811.GR2075216@lunn.ch>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1623923899-16759-3-git-send-email-wcheng@codeaurora.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/QloJitVVT20CNPsZ=oxvahO"; protocol="application/pgp-signature"
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 02:58:15AM -0700, Wesley Cheng wrote:
-> Ensure that the USB gadget is able to support the configuration being
-> added based on the number of endpoints required from all interfaces.  This
-> is for accounting for any bandwidth or space limitations.
-> 
-> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-> ---
->  drivers/usb/gadget/configfs.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/drivers/usb/gadget/configfs.c b/drivers/usb/gadget/configfs.c
-> index 15a607c..76b9983 100644
-> --- a/drivers/usb/gadget/configfs.c
-> +++ b/drivers/usb/gadget/configfs.c
-> @@ -1374,6 +1374,7 @@ static int configfs_composite_bind(struct usb_gadget *gadget,
->  		struct usb_function *f;
->  		struct usb_function *tmp;
->  		struct gadget_config_name *cn;
-> +		unsigned long ep_map = 0;
->  
->  		if (gadget_is_otg(gadget))
->  			c->descriptors = otg_desc;
-> @@ -1403,7 +1404,28 @@ static int configfs_composite_bind(struct usb_gadget *gadget,
->  				list_add(&f->list, &cfg->func_list);
->  				goto err_purge_funcs;
->  			}
-> +			if (f->fs_descriptors) {
-> +				struct usb_descriptor_header **d;
-> +
-> +				d = f->fs_descriptors;
-> +				for (; *d; ++d) {
+--Sig_/QloJitVVT20CNPsZ=oxvahO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-With this check, there really is not a need to check for
-f->fs_descriptors above in the if statement, right?
+Hi Andrew,
 
-> +					struct usb_endpoint_descriptor *ep;
-> +					int addr;
-> +
-> +					if ((*d)->bDescriptorType != USB_DT_ENDPOINT)
-> +						continue;
-> +
-> +					ep = (struct usb_endpoint_descriptor *)*d;
-> +					addr = ((ep->bEndpointAddress & 0x80) >> 3) |
-> +						(ep->bEndpointAddress & 0x0f);
+> > > I would push back and say that the switch offers bridge
+> > > acceleration for the FEC.  =20
+> >=20
+> > Am I correct, that the "bridge acceleration" means in-hardware
+> > support for L2 packet bridging?  =20
+>=20
+> You should think of the hardware as an accelerator, not a switch. The
+> hardware is there to accelerate what linux can already do. You setup a
+> software bridge in linux, and then offload L2 switching to the
+> accelerator. You setup vlans in linux, and then offload the filtering
+> of them to the accelerator. If there is something linux can do, but
+> the hardware cannot accelerate, you leave linux to do it in software.
+>=20
+> > Do you propose to catch some kind of notification when user calls:
+> >=20
+> > ip link add name br0 type bridge; ip link set br0 up;
+> > ip link set lan1 up; ip link set lan2 up;
+> > ip link set lan1 master br0; ip link set lan2 master br0;
+> > bridge link
 
-Don't we have direction macros for this type of check?
+^^^^^^^^^^^^^ [*]
 
-> +					set_bit(addr, &ep_map);
-> +				}
+> >=20
+> > And then configure the FEC driver to use this L2 switch driver? =20
+>=20
+> That is what switchdev does. There are various hooks in the network
+> stack which call into switchdev to ask it to offload operations to the
+> accelerator.
 
-What is this loop trying to do?  Please document it as I can not figure
-it out at all.
+I'm a bit confused about the interfaces that pop up when I do enable
+bridging acceleration.
 
-thanks,
+Without bridge I do have:
+- eth0 (this is a 'primary' interface -> it also controls MII/PHY for
+  eth1)
+- eth1 (it uses the MII/PHY control from eth0)
 
-greg k-h
+Both interfaces works correctly.
+
+And after starting the bridge (and switchdev) with commands from [*] I
+do have:
+
+- br0 (created bridge - need to assign IP to it to communicate outside,
+  even when routing is set via eth0, and eth0 has the same IP address)
+- eth0 (just is used to control PHY - ifconfig up/down)
+- eth1 (just is used to control PHY - ifconfig up/down)
+
+And now the question, how internally shall I tackle the transmission
+(i.e. DMA setups)?
+
+Now, I do use some hacks to re-use code for eth0 to perform the
+transmission from/to imx28 L2 switch. The eth1 is stopped (it only
+controls the PHY - responds to MII interrupts).
+
+The above setup works, and the code adjustment for fec_main.c driver is
+really small.
+
+However, I do wonder how conceptually it "mix" with br0 interface? I
+could leave br0 as is, but then why do I need to asign the IP address
+to it to communicate?
+As I need to do it - then conceptually (re-)using eth0 internal
+structures (and the driver in fact) looks like some kind of abusement.=20
+However, adding the transmission handling to br0 net device would bloat
+and potentially duplicate the code.
+
+I would prefer to re-use code from eth0 interface - it would be also
+easier to cleanu up after disabling the L2 switch.
+
+Any feedback and help is more than welcome.
+
+>=20
+> > The differences from "normal" DSA switches:
+> >=20
+> > 1. It uses mapped memory (for its register space) for
+> > configuration/statistics gathering (instead of e.g. SPI, I2C) =20
+>=20
+> That does not matter. And there are memory mapped DSA switches. The
+> DSA framework puts no restrictions on how the control plane works.
+>=20
+> > (Of course the "Section 32.5.8.2" is not available) =20
+>=20
+> It is in the Vybrid datasheet :-)
+>=20
+>    Andrew
+
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/QloJitVVT20CNPsZ=oxvahO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDLLSUACgkQAR8vZIA0
+zr3aGgf/XSfvHyEfZtP+OBkQl6d44dJrfbj27lGTMqODsZoYWHjMl8tuYiWS8B1p
+Bl8uU/Ivn7dMnc9/e5LFqNEMg8W7T5O09L7q45rNNdr2JRXsG5VgUMpFzRUecHau
+9l81DsnTAXowlhOnxIKSvSBEqRhsMsbcAwQnLF3sUNv0VgGFp5UxoJB7aOrPAZGy
+eh54N+E4aCQcVmf32PYlhF7Dcw6zSlokLpsIA3Kd75o9wtCGpeoTvoc4czt3i/K9
+9vZIqUXfvHas9W5i7jszTtL9KZxMGyJrw/543U7+Nz8EapKQ4zqjN7p63t+vbxkg
+xWDTktJdRWwFjBFagBHbYI3IYvU/tg==
+=Mmkl
+-----END PGP SIGNATURE-----
+
+--Sig_/QloJitVVT20CNPsZ=oxvahO--
