@@ -2,74 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A11913AB35E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E53D3AB35B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbhFQMRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:17:10 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:44968 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232766AbhFQMRI (ORCPT
+        id S232761AbhFQMRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:17:02 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:45186 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232736AbhFQMRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:17:08 -0400
-Received: by mail-oi1-f182.google.com with SMTP id a26so6268957oie.11;
-        Thu, 17 Jun 2021 05:15:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=il0YVEJ4LTnZZbFctE8FNLc2eOIfsG2A+MLI98TWHXM=;
-        b=aR+Ie9GINrCXmhTlsrbfVzjWoP4700E4S/YDyi0C5La9FY7vdfn9CPQoYT50KrH5gu
-         Rp2rbxjycAsg1J+co75freHVLD9vGOF6oBx7JkMdwwRTRfbpltS4nPpLcitOCCEwS3Sc
-         fzYSegXQc6OMXzB7LrZickwzfKMF8rGw2RWdoodFGGyx8cVQV0zNh/j8tyBRx0uW1pY8
-         cueA0VSk+gX3TA8daPbQTRtMY2ps2tddeNl+Fzz1jGiVF7GWuUeA9bjLtvBQZCGp9fLG
-         bseEQtcu+ieAl1YDg5+tTJOI/BMHGaQyLfBagpIEZsI+GAVhwtC8JBi13exA6/GoexXh
-         pTEQ==
-X-Gm-Message-State: AOAM532TleMJ/eZan847Q5BM8SMd7kFXCf7CmqwDbwMNsX88oXXpH9ua
-        d0MNqoWi4dhkoxO8PPMiQ4MbdBX6TOk6ArF9oXw=
-X-Google-Smtp-Source: ABdhPJwEJ95hqDTAnX77P36ntjuOEayBgpcNAsCu5KWsNYZ2gU9OVAoth1zg3Y/nJdE1ted+kdRUaUZWNI9EOeyxLqE=
-X-Received: by 2002:a05:6808:f08:: with SMTP id m8mr3043926oiw.69.1623932099706;
- Thu, 17 Jun 2021 05:14:59 -0700 (PDT)
+        Thu, 17 Jun 2021 08:17:01 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1ltqv4-0005tS-6S; Thu, 17 Jun 2021 12:14:50 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jon Mason <jdmason@kudzu.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: neterion: vxge: remove redundant continue statement
+Date:   Thu, 17 Jun 2021 13:14:49 +0100
+Message-Id: <20210617121449.12496-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210615114921.8340-1-wanjiabing@vivo.com>
-In-Reply-To: <20210615114921.8340-1-wanjiabing@vivo.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 17 Jun 2021 14:14:48 +0200
-Message-ID: <CAJZ5v0gH5qsy2RWAc547znnCVoZmctSQtC5Q90sSg+dGGiW8hw@mail.gmail.com>
-Subject: Re: [PATCH] cpuidle: remove unneeded semicolon in teo.c
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 1:49 PM Wan Jiabing <wanjiabing@vivo.com> wrote:
->
-> Fix following coccicheck warning:
-> drivers/cpuidle/governors/teo.c:315:10-11: Unneeded semicolon
->
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  drivers/cpuidle/governors/teo.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/cpuidle/governors/teo.c b/drivers/cpuidle/governors/teo.c
-> index 1e0b2f828abb..7b91060e82f6 100644
-> --- a/drivers/cpuidle/governors/teo.c
-> +++ b/drivers/cpuidle/governors/teo.c
-> @@ -312,7 +312,7 @@ static int teo_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
->
->         /* Check if there is any choice in the first place. */
->         if (drv->state_count < 2) {
-> -               idx = 0;;
-> +               idx = 0;
->                 goto end;
->         }
->         if (!dev->states_usage[0].disable) {
-> --
+From: Colin Ian King <colin.king@canonical.com>
 
-Applied as 5.14 material, thanks!
+The continue statement at the end of a for-loop has no effect,
+invert the if expression and remove the continue.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/neterion/vxge/vxge-main.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.c b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+index 0528b8f49061..82eef4c72f01 100644
+--- a/drivers/net/ethernet/neterion/vxge/vxge-main.c
++++ b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+@@ -3678,10 +3678,9 @@ static int vxge_config_vpaths(struct vxge_hw_device_config *device_config,
+ 			driver_config->vpath_per_dev = 1;
+ 
+ 		for (i = 0; i < VXGE_HW_MAX_VIRTUAL_PATHS; i++)
+-			if (!vxge_bVALn(vpath_mask, i, 1))
+-				continue;
+-			else
++			if (vxge_bVALn(vpath_mask, i, 1))
+ 				default_no_vpath++;
++
+ 		if (default_no_vpath < driver_config->vpath_per_dev)
+ 			driver_config->vpath_per_dev = default_no_vpath;
+ 
+-- 
+2.31.1
+
