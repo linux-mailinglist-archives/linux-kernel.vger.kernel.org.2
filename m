@@ -2,237 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C816C3AB38B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A984F3AB390
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbhFQM3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231503AbhFQM3b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:29:31 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4499C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:27:22 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id n20so3740205edv.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:27:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=dasXWH3vbrqnz/8qFPE8sSbqVTMnmvkZjNS38SkXCrY=;
-        b=rMVybnc9cMfNAJTSJ3678hWH2pTH4ZqIVZO6v0GnLeoPZa45+UdxLsLgJhDvK1BKBh
-         4KFaIdXmg/y3CoCMpyezLqLhS2W4lpWLJf7kJoJNXJ3TWrviLgZ5dCi4YVkbKbiRhv5C
-         eQ7fKauGGuHgDi4UuMrJ7OUKIugUdhZMTwMVRAnKtJq8fPYWG+I7CZcF51nR3wvYWG79
-         5kFT1o8W+fZiRlAuwZtDzeZRYvkdKYlFbWrpdK7Juj5oYUzeFvEyzyzqJJBBAGMKLd69
-         UDnO0jTfx0U0l1RN22x+aVehvQu/xsSOdtwqzsgt2OACNmtHe61oHLZvfSYTob1s2Lfx
-         Te9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=dasXWH3vbrqnz/8qFPE8sSbqVTMnmvkZjNS38SkXCrY=;
-        b=KhkEO7iaAZ4heAGDYwDqPvJeaiYI8Gs3d3UBlGnkcIXde9m7qKDRbXm62icSdm3nMf
-         mxYtitJYXAXpkFbOvGPXejXIhWzDQZ6JAWC8kBdIrC6GXFgHTu0Wc4tSOr8iJy7pZi6x
-         LPN5iJ2X4a+fN8uijnh9erezNON/wTS+93tSBbta/Q5K8RpzBnlzzBrtnC5elJklR5lX
-         KjUp5bKY9g+UxnYre3vdVvi7itAQPJ93dj4IhMxiepeWgwR4gUdfKJGiFOvRD58ZqXei
-         IdxFTIOfJyROJq0ZZp+tjQwX1J7Zu+dfg3kpdiwjJtIuRjwJ0RNgyvhisDSgHqW5qUJ9
-         pekA==
-X-Gm-Message-State: AOAM531K3poz1d9u53lUJ2Nsms5xnDLlwYBbbW7Rn1uXye52RFY079RR
-        Kf8/7x2ur34heMLHwbSHUl92FVn5drrBAMlG5n863Q==
-X-Google-Smtp-Source: ABdhPJxUi/pHyLtsU8asHCjI4InTgxNRLnMu+BNiB4Vb2VcCk/8JhUCa2i6SBHHHaLrM+om6DdvTSbbiiC8Moq2lnhg=
-X-Received: by 2002:a05:6402:220d:: with SMTP id cq13mr6102680edb.52.1623932841150;
- Thu, 17 Jun 2021 05:27:21 -0700 (PDT)
+        id S232156AbhFQMaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:30:05 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42512 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230039AbhFQMaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 08:30:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=GiGpZns0Mi4Sb70U2EK/i9ybnYabrH86R/LdMEIJYSA=; b=f6
+        Td2aPkoqdNtPvuI+Q/x/GvVGvXuQ1JI2ZluciH9ImRiLYAy8DQ6ItOCDn8vuAAh/ZE4tM85HYsAMu
+        IEj4CeRbRpM8jNG8eJjQ5Nsn7X2gc4/QhDiC2EWXiB8UFte9/PhDsLSIYBcfwZ4qmHusuHdaamrg5
+        MNRWVfFVhoiHMBQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ltr7f-009tlx-Ov; Thu, 17 Jun 2021 14:27:51 +0200
+Date:   Thu, 17 Jun 2021 14:27:51 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
+        lenb@kernel.org
+Subject: Re: [net-next: PATCH v2 3/7] net/fsl: switch to
+ fwnode_mdiobus_register
+Message-ID: <YMs/xztdc0xhYbDr@lunn.ch>
+References: <20210616190759.2832033-1-mw@semihalf.com>
+ <20210616190759.2832033-4-mw@semihalf.com>
+ <YMpShczKt1TNAqsV@lunn.ch>
+ <CAPv3WKde+LCmxxr6UuA7X=XShF6d4io49baxsjw1kMqR=T7XrA@mail.gmail.com>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 17 Jun 2021 17:57:10 +0530
-Message-ID: <CA+G9fYsn-3rZXkHTtH33Oo0y97nfgkQmR_Echbu_-=WAbfo4Ug@mail.gmail.com>
-Subject: [next] [clang] s390: clang: error: unable to execute command:
- Segmentation fault (core dumped)
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPv3WKde+LCmxxr6UuA7X=XShF6d4io49baxsjw1kMqR=T7XrA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux next 20210617 tag following s390 builds failed with clang-10,
-clang-11 and clang-12.
+On Thu, Jun 17, 2021 at 01:39:40AM +0200, Marcin Wojtas wrote:
+> śr., 16 cze 2021 o 21:35 Andrew Lunn <andrew@lunn.ch> napisał(a):
+> >
+> > On Wed, Jun 16, 2021 at 09:07:55PM +0200, Marcin Wojtas wrote:
+> > > Utilize the newly added helper routine
+> > > for registering the MDIO bus via fwnode_
+> > > interface.
+> >
+> > You need to add depends on FWNODE_MDIO
+> >
+> 
+> Do you mean something like this?
+> 
+> --- a/drivers/net/ethernet/freescale/Kconfig
+> +++ b/drivers/net/ethernet/freescale/Kconfig
+> @@ -68,8 +68,8 @@ config FSL_PQ_MDIO
+>  config FSL_XGMAC_MDIO
+>         tristate "Freescale XGMAC MDIO"
+>         select PHYLIB
+> -       depends on OF
+> -       select OF_MDIO
+> +       depends on ACPI || OF
+> +       select FWNODE_MDIO
+>         help
 
-Regressions found on s390:
+You should not need depends on ACPI || OF. FWNODE_MDIO implies
+that. And there are no direct calls to of_ functions, so you can drop
+the depends on OF.
 
- - build/clang-11-tinyconfig
- - build/clang-11-allnoconfig
- - build/clang-12-allnoconfig
- - build/clang-12-defconfig
- - build/clang-10-tinyconfig
- - build/clang-11-defconfig
- - build/clang-10-allnoconfig
- - build/clang-12-tinyconfig
- - build/clang-10-defconfig
-
-Build log:
-------------
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=s390
-CROSS_COMPILE=s390x-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-clang'
-PLEASE submit a bug report to https://bugs.llvm.org/ and include the
-crash backtrace, preprocessed source, and associated run script.
-Stack dump:
-0.Program arguments: /usr/lib/llvm-12/bin/clang -cc1 -triple
-s390x-unknown-linux-gnu -S -disable-free -disable-llvm-verifier
--discard-value-names -main-file-name core.c -mrelocation-model pic
--pic-level 2 -pic-is-pie -fno-delete-null-pointer-checks -mllvm
--warn-stack-size=2048 -mframe-pointer=none -relaxed-aliasing
--fmath-errno -fno-rounding-math -no-integrated-as
--mconstructor-aliases -target-cpu zEC12 -target-feature +soft-float
--mbackchain -mpacked-stack -msoft-float -mfloat-abi soft
--fno-split-dwarf-inlining -debug-info-kind=limited -dwarf-version=4
--debugger-tuning=gdb -nostdsysteminc -nobuiltininc -resource-dir
-/usr/lib/llvm-12/lib/clang/12.0.1 -dependency-file
-kernel/sched/.core.o.d -MT kernel/sched/core.o -isystem
-/usr/lib/llvm-12/lib/clang/12.0.1/include -include
-/builds/linux/include/linux/compiler-version.h -include
-/builds/linux/include/linux/kconfig.h -include
-/builds/linux/include/linux/compiler_types.h -I
-/builds/linux/arch/s390/include -I ./arch/s390/include/generated -I
-/builds/linux/include -I ./include -I
-/builds/linux/arch/s390/include/uapi -I
-./arch/s390/include/generated/uapi -I /builds/linux/include/uapi -I
-./include/generated/uapi -D __KERNEL__ -D __PACK_STACK -D
-CONFIG_AS_CFI_VAL_OFFSET=1 -D CC_USING_NOP_MCOUNT -D CC_USING_FENTRY
--I /builds/linux/kernel/sched -I ./kernel/sched -D
-KBUILD_MODFILE=\"kernel/sched/core\" -D KBUILD_BASENAME=\"core\" -D
-KBUILD_MODNAME=\"core\" -D __KBUILD_MODNAME=kmod_core
--fmacro-prefix-map=/builds/linux/= -O2 -Wall -Wundef
--Werror=strict-prototypes -Wno-trigraphs
--Werror=implicit-function-declaration -Werror=implicit-int
--Werror=return-type -Wno-format-security
--Werror=unknown-warning-option -Wno-sign-compare -Wno-frame-address
--Wno-address-of-packed-member -Wno-format-invalid-specifier -Wno-gnu
--Wno-unused-const-variable -Wdeclaration-after-statement -Wvla
--Wno-pointer-sign -Wno-array-bounds -Werror=date-time
--Werror=incompatible-pointer-types -Wno-initializer-overrides
--Wno-format -Wno-sign-compare -Wno-format-zero-length
--Wno-pointer-to-enum-cast
--Wno-tautological-constant-out-of-range-compare -std=gnu89
--fno-dwarf-directory-asm -fdebug-compilation-dir
-/home/tuxbuild/.cache/tuxmake/builds/current -ferror-limit 19 -pg
--mfentry -mnop-mcount -mrecord-mcount -fwrapv -fno-signed-char
--fwchar-type=short -fno-signed-wchar -fgnuc-version=4.2.1
--vectorize-loops -vectorize-slp -o /tmp/core-eaad47.s -x c
-/builds/linux/kernel/sched/core.c
-1.<eof> parser at end of file
-2.Code generation
-3.Running pass 'Function Pass Manager' on module
-'/builds/linux/kernel/sched/core.c'.
-4.Running pass 'SystemZ DAG->DAG Pattern Instruction Selection' on
-function '@trace_event_raw_event_sched_switch'
- #0 0x00007f7227e2e693 llvm::sys::PrintStackTrace(llvm::raw_ostream&,
-int) (/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0xd12693)
- #1 0x00007f7227e2c9b0 llvm::sys::RunSignalHandlers()
-(/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0xd109b0)
- #2 0x00007f7227e2ecff (/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0xd12cff)
- #3 0x00007f722f7cb140 __restore_rt
-(/lib/x86_64-linux-gnu/libpthread.so.0+0x14140)
- #4 0x00007f7227dba772 llvm::LLT::print(llvm::raw_ostream&) const
-(/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0xc9e772)
- #5 0x00007f72284a850b
-llvm::SelectionDAGBuilder::visitInlineAsm(llvm::CallBase const&)
-(/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0x138c50b)
- #6 0x00007f722848ade7
-llvm::SelectionDAGBuilder::visit(llvm::Instruction const&)
-(/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0x136ede7)
- #7 0x00007f72285198b9
-llvm::SelectionDAGISel::SelectBasicBlock(llvm::ilist_iterator<llvm::ilist_detail::node_options<llvm::Instruction,
-false, false, void>, false, true>,
-llvm::ilist_iterator<llvm::ilist_detail::node_options<llvm::Instruction,
-false, false, void>, false, true>, bool&)
-(/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0x13fd8b9)
- #8 0x00007f722851926a
-llvm::SelectionDAGISel::SelectAllBasicBlocks(llvm::Function const&)
-(/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0x13fd26a)
- #9 0x00007f7228516fa6
-llvm::SelectionDAGISel::runOnMachineFunction(llvm::MachineFunction&)
-(/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0x13fafa6)
-#10 0x00007f7229f07742 (/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0x2deb742)
-#11 0x00007f722813b09e
-llvm::MachineFunctionPass::runOnFunction(llvm::Function&)
-(/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0x101f09e)
-#12 0x00007f7227f5619d
-llvm::FPPassManager::runOnFunction(llvm::Function&)
-(/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0xe3a19d)
-#13 0x00007f7227f5bb83 llvm::FPPassManager::runOnModule(llvm::Module&)
-(/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0xe3fb83)
-#14 0x00007f7227f567ef
-llvm::legacy::PassManagerImpl::run(llvm::Module&)
-(/usr/lib/x86_64-linux-gnu/libLLVM-12.so.1+0xe3a7ef)
-#15 0x00007f722e092be6
-clang::EmitBackendOutput(clang::DiagnosticsEngine&,
-clang::HeaderSearchOptions const&, clang::CodeGenOptions const&,
-clang::TargetOptions const&, clang::LangOptions const&,
-llvm::DataLayout const&, llvm::Module*, clang::BackendAction,
-std::unique_ptr<llvm::raw_pwrite_stream,
-std::default_delete<llvm::raw_pwrite_stream> >)
-(/usr/lib/x86_64-linux-gnu/libclang-cpp.so.12+0x1614be6)
-#16 0x00007f722e32bd9f (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.12+0x18add9f)
-#17 0x00007f722d487054 clang::ParseAST(clang::Sema&, bool, bool)
-(/usr/lib/x86_64-linux-gnu/libclang-cpp.so.12+0xa09054)
-#18 0x00007f722ea20268 clang::FrontendAction::Execute()
-(/usr/lib/x86_64-linux-gnu/libclang-cpp.so.12+0x1fa2268)
-#19 0x00007f722e9adcf1
-clang::CompilerInstance::ExecuteAction(clang::FrontendAction&)
-(/usr/lib/x86_64-linux-gnu/libclang-cpp.so.12+0x1f2fcf1)
-#20 0x00007f722ea83282
-clang::ExecuteCompilerInvocation(clang::CompilerInstance*)
-(/usr/lib/x86_64-linux-gnu/libclang-cpp.so.12+0x2005282)
-#21 0x0000000000413352 cc1_main(llvm::ArrayRef<char const*>, char
-const*, void*) (/usr/lib/llvm-12/bin/clang+0x413352)
-#22 0x00000000004116ce (/usr/lib/llvm-12/bin/clang+0x4116ce)
-#23 0x00000000004114de main (/usr/lib/llvm-12/bin/clang+0x4114de)
-#24 0x00007f7226c50d0a __libc_start_main
-(/lib/x86_64-linux-gnu/libc.so.6+0x26d0a)
-#25 0x000000000040e88a _start (/usr/lib/llvm-12/bin/clang+0x40e88a)
-clang: error: unable to execute command: Segmentation fault (core dumped)
-clang: error: clang frontend command failed due to signal (use -v to
-see invocation)
-Debian clang version 12.0.1-+rc1-1
-Target: s390x-unknown-linux-gnu
-Thread model: posix
-InstalledDir: /usr/local/bin
-clang: note: diagnostic msg:
-********************
-
-PLEASE ATTACH THE FOLLOWING FILES TO THE BUG REPORT:
-Preprocessed source(s) and associated run script(s) are located at:
-clang: note: diagnostic msg: /tmp/core-86ba67.c
-clang: note: diagnostic msg: /tmp/core-86ba67.sh
-clang: note: diagnostic msg:
-
-********************
-make[3]: *** [/builds/linux/scripts/Makefile.build:272:
-kernel/sched/core.o] Error 254
-
-ref:
-https://builds.tuxbuild.com/1u4ZMVtVqiZtUcCrP9YE89mx9iU/
-
-Build:
---------
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-    git_sha: 7d9c6b8147bdd76d7eb2cf6f74f84c6918ae0939
-    git_short_log: 7d9c6b8147bd (\Add linux-next specific files for 20210617\)
-    kconfig: defconfig
-    target_arch: s390
-    toolchain: clang-12
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
---
-Linaro LKFT
-https://lkft.linaro.org
+    Andrew
