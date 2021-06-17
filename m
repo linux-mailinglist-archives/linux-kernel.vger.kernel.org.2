@@ -2,182 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072713AAD32
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C3E3AAD42
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbhFQHTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 03:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbhFQHTr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 03:19:47 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5838C061574;
-        Thu, 17 Jun 2021 00:17:39 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so1220983pjo.3;
-        Thu, 17 Jun 2021 00:17:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=6kcZM1AuUHKoJf07Jbs5/QblaBEoUa9v/xeJVHYHGUA=;
-        b=RYw47Yu7cF8r6MO9Ypc1ZR7oq+oEGMs1VjF0UKu2PEJmplPQz1S363LMYeCIzn7cob
-         yiWdnVkGCT387nMCnkVCjVRUeYDOIRG3521hEOEo+T6PHqio31L8k7ntYpXdsnwwyzp0
-         yizRykObD8XGmJwiE2FcV6hvRg0My6JmxaI4fm3t5mKG9F4xvx62uZk+GPMa8YH+aPAW
-         gDqtqVS+PI8tjV7e5kVdQnF230UB6yvbwCd6/cp3NkUAOm915wStaEbrhCxVt61dDYIB
-         Khts+vf4cXEY0niHjItqWyNdriEOtPNPw5ePpMg6oWc2zlLRmOjoKp+IxKaZ8raiaMpC
-         cF8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=6kcZM1AuUHKoJf07Jbs5/QblaBEoUa9v/xeJVHYHGUA=;
-        b=bxe1qSJaZrN3F7DDVhaX0ewVkZDlN8vI2NVEifr/E7HKHQSIhpRihLCexQzhR2K0T3
-         APfKq0DXxeu7NDRxUOF4VtC0WAV8Z4Jti6ymadprZivIjpnHlhHDJGDwKQvNhRVfwcV9
-         4ipwmxdkXaFlcdAiBV6NS//MFrP89iT+9X/dKqq3MDjAXCWdDc5rJY7bpRJW5oSTnntT
-         HuQ1gf4B8IIixmYGlPihvi3GW0AyfvFMMLvoRtDYX4PbCLC2vbsp92f/o2mOhblZSHG8
-         4T88apu6bWPojsmAV+oi1azekie8KFevX6ZBOV1Ne2bm/HP3MbAVBWVKfr+0IaRR2/pp
-         Muag==
-X-Gm-Message-State: AOAM532QYXNhhCDcPE/N/PGjjR2wM1ZTmOEBy5tvnYMJyZQb2pqe1qDo
-        XIvhKg42doie726xYA7qdlo=
-X-Google-Smtp-Source: ABdhPJzxtGPSlMGvuZxn6tzh0yol5JOA4lulk6EnhYMT5MJFhiVOfnq2k3x0G6C2LgUkovBqSoAbwQ==
-X-Received: by 2002:a17:90a:9910:: with SMTP id b16mr4090833pjp.94.1623914259266;
-        Thu, 17 Jun 2021 00:17:39 -0700 (PDT)
-Received: from localhost ([223.184.24.109])
-        by smtp.gmail.com with ESMTPSA id r6sm7161741pjm.12.2021.06.17.00.17.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 17 Jun 2021 00:17:38 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 12:47:32 +0530
-From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
-To:     pali@kernel.org
-Cc:     dmurphy@ti.com, sre@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sanjanasrinidhi1810@gmail.com
-Subject: [PATCH] drivers: power: supply: bq27xxx_battery.c: Remove spaces
- before tabs
-Message-ID: <20210617071732.vbsn2okr2ed3l4dk@kewl-virtual-machine>
+        id S230161AbhFQHVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 03:21:50 -0400
+Received: from mga18.intel.com ([134.134.136.126]:15266 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229580AbhFQHVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 03:21:49 -0400
+IronPort-SDR: CwdatrSVIiiBu/FAD2xuCb68PCittdRUM9NwMmrGI6vgvKLN9LJerrBBvlmJcsFGIskug5YA/r
+ mKDEc6UrXPYQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="193629430"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="193629430"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 00:19:36 -0700
+IronPort-SDR: 4208CIkwC6S+691a5DBLW9+0D4NjiPL+joRWtB185dL7teYQSJYN5f4tubIu2cTlp4b+dxbs2f
+ wn2GiQiSEX0w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="472326350"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Jun 2021 00:19:30 -0700
+Cc:     baolu.lu@linux.intel.com, joro@8bytes.org, isaacm@codeaurora.org,
+        pratikp@codeaurora.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        djakov@kernel.org
+Subject: Re: [PATCH v7 07/15] iommu: Hook up '->unmap_pages' driver callback
+To:     Georgi Djakov <quic_c_gdjako@quicinc.com>, will@kernel.org,
+        robin.murphy@arm.com
+References: <1623850736-389584-1-git-send-email-quic_c_gdjako@quicinc.com>
+ <1623850736-389584-8-git-send-email-quic_c_gdjako@quicinc.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <0cb188c0-defd-e179-ad0e-471f48dfb54e@linux.intel.com>
+Date:   Thu, 17 Jun 2021 15:18:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20171215
+In-Reply-To: <1623850736-389584-8-git-send-email-quic_c_gdjako@quicinc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed extra spaces before ','
-Added blank line after declaration
-Spaces have been replaced with tabs
-This is done to maintain uniformity in coding style
+On 6/16/21 9:38 PM, Georgi Djakov wrote:
+> From: Will Deacon <will@kernel.org>
+> 
+> Extend iommu_pgsize() to populate an optional 'count' parameter so that
+> we can direct unmapping operation to the ->unmap_pages callback if it
+> has been provided by the driver.
+> 
+> Signed-off-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
+> ---
+>   drivers/iommu/iommu.c | 59 +++++++++++++++++++++++++++++++++++++++++++--------
+>   1 file changed, 50 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 80e14c139d40..725622c7e603 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -2376,11 +2376,11 @@ phys_addr_t iommu_iova_to_phys(struct iommu_domain *domain, dma_addr_t iova)
+>   EXPORT_SYMBOL_GPL(iommu_iova_to_phys);
+>   
+>   static size_t iommu_pgsize(struct iommu_domain *domain, unsigned long iova,
+> -			   phys_addr_t paddr, size_t size)
+> +			   phys_addr_t paddr, size_t size, size_t *count)
+>   {
+> -	unsigned int pgsize_idx;
+> +	unsigned int pgsize_idx, pgsize_idx_next;
+>   	unsigned long pgsizes;
+> -	size_t pgsize;
+> +	size_t offset, pgsize, pgsize_next;
+>   	unsigned long addr_merge = paddr | iova;
+>   
+>   	/* Page sizes supported by the hardware and small enough for @size */
+> @@ -2396,7 +2396,36 @@ static size_t iommu_pgsize(struct iommu_domain *domain, unsigned long iova,
+>   	/* Pick the biggest page size remaining */
+>   	pgsize_idx = __fls(pgsizes);
+>   	pgsize = BIT(pgsize_idx);
+> +	if (!count)
+> +		return pgsize;
+>   
+> +	/* Find the next biggest support page size, if it exists */
+> +	pgsizes = domain->pgsize_bitmap & ~GENMASK(pgsize_idx, 0);
+> +	if (!pgsizes)
+> +		goto out_set_count;
+> +
+> +	pgsize_idx_next = __ffs(pgsizes);
+> +	pgsize_next = BIT(pgsize_idx_next);
+> +
+> +	/*
+> +	 * There's no point trying a bigger page size unless the virtual
+> +	 * and physical addresses are similarly offset within the larger page.
+> +	 */
+> +	if ((iova ^ paddr) & (pgsize_next - 1))
+> +		goto out_set_count;
+> +
+> +	/* Calculate the offset to the next page size alignment boundary */
+> +	offset = pgsize_next - (addr_merge & (pgsize_next - 1));
+> +
+> +	/*
+> +	 * If size is big enough to accommodate the larger page, reduce
+> +	 * the number of smaller pages.
+> +	 */
+> +	if (offset + pgsize_next <= size)
+> +		size = offset;
+> +
+> +out_set_count:
+> +	*count = size >> pgsize_idx;
+>   	return pgsize;
+>   }
+>   
+> @@ -2434,7 +2463,7 @@ static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
+>   	pr_debug("map: iova 0x%lx pa %pa size 0x%zx\n", iova, &paddr, size);
+>   
+>   	while (size) {
+> -		size_t pgsize = iommu_pgsize(domain, iova, paddr, size);
+> +		size_t pgsize = iommu_pgsize(domain, iova, paddr, size, NULL);
+>   
+>   		pr_debug("mapping: iova 0x%lx pa %pa pgsize 0x%zx\n",
+>   			 iova, &paddr, pgsize);
+> @@ -2485,6 +2514,19 @@ int iommu_map_atomic(struct iommu_domain *domain, unsigned long iova,
+>   }
+>   EXPORT_SYMBOL_GPL(iommu_map_atomic);
+>   
+> +static size_t __iommu_unmap_pages(struct iommu_domain *domain,
+> +				  unsigned long iova, size_t size,
+> +				  struct iommu_iotlb_gather *iotlb_gather)
+> +{
+> +	const struct iommu_ops *ops = domain->ops;
+> +	size_t pgsize, count;
+> +
+> +	pgsize = iommu_pgsize(domain, iova, iova, size, &count);
+> +	return ops->unmap_pages ?
+> +	       ops->unmap_pages(domain, iova, pgsize, count, iotlb_gather) :
+> +	       ops->unmap(domain, iova, pgsize, iotlb_gather);
+> +}
+> +
+>   static size_t __iommu_unmap(struct iommu_domain *domain,
+>   			    unsigned long iova, size_t size,
+>   			    struct iommu_iotlb_gather *iotlb_gather)
+> @@ -2494,7 +2536,7 @@ static size_t __iommu_unmap(struct iommu_domain *domain,
+>   	unsigned long orig_iova = iova;
+>   	unsigned int min_pagesz;
+>   
+> -	if (unlikely(ops->unmap == NULL ||
+> +	if (unlikely(!(ops->unmap || ops->unmap_pages) ||
+>   		     domain->pgsize_bitmap == 0UL))
+>   		return 0;
+>   
+> @@ -2522,10 +2564,9 @@ static size_t __iommu_unmap(struct iommu_domain *domain,
+>   	 * or we hit an area that isn't mapped.
+>   	 */
+>   	while (unmapped < size) {
+> -		size_t pgsize;
+> -
+> -		pgsize = iommu_pgsize(domain, iova, iova, size - unmapped);
+> -		unmapped_page = ops->unmap(domain, iova, pgsize, iotlb_gather);
+> +		unmapped_page = __iommu_unmap_pages(domain, iova,
+> +						    size - unmapped,
+> +						    iotlb_gather);
+>   		if (!unmapped_page)
+>   			break;
+>   
+> 
 
-Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
----
- drivers/power/supply/bq27xxx_battery.c | 50 +++++++++++++-------------
- 1 file changed, 26 insertions(+), 24 deletions(-)
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
-index 4c4a7b1c64c5..bf090b7ebcec 100644
---- a/drivers/power/supply/bq27xxx_battery.c
-+++ b/drivers/power/supply/bq27xxx_battery.c
-@@ -938,26 +938,26 @@ static struct {
- 	enum power_supply_property *props;
- 	size_t props_size;
- } bq27xxx_chip_data[] = {
--	[BQ27000]   = BQ27XXX_DATA(bq27000,   0         , BQ27XXX_O_ZERO | BQ27XXX_O_SOC_SI | BQ27XXX_O_HAS_CI),
--	[BQ27010]   = BQ27XXX_DATA(bq27010,   0         , BQ27XXX_O_ZERO | BQ27XXX_O_SOC_SI | BQ27XXX_O_HAS_CI),
--	[BQ2750X]   = BQ27XXX_DATA(bq2750x,   0         , BQ27XXX_O_OTDC),
--	[BQ2751X]   = BQ27XXX_DATA(bq2751x,   0         , BQ27XXX_O_OTDC),
--	[BQ2752X]   = BQ27XXX_DATA(bq2752x,   0         , BQ27XXX_O_OTDC),
-+	[BQ27000]   = BQ27XXX_DATA(bq27000,   0, BQ27XXX_O_ZERO | BQ27XXX_O_SOC_SI | BQ27XXX_O_HAS_CI),
-+	[BQ27010]   = BQ27XXX_DATA(bq27010,   0, BQ27XXX_O_ZERO | BQ27XXX_O_SOC_SI | BQ27XXX_O_HAS_CI),
-+	[BQ2750X]   = BQ27XXX_DATA(bq2750x,   0, BQ27XXX_O_OTDC),
-+	[BQ2751X]   = BQ27XXX_DATA(bq2751x,   0, BQ27XXX_O_OTDC),
-+	[BQ2752X]   = BQ27XXX_DATA(bq2752x,   0, BQ27XXX_O_OTDC),
- 	[BQ27500]   = BQ27XXX_DATA(bq27500,   0x04143672, BQ27XXX_O_OTDC),
--	[BQ27510G1] = BQ27XXX_DATA(bq27510g1, 0         , BQ27XXX_O_OTDC),
--	[BQ27510G2] = BQ27XXX_DATA(bq27510g2, 0         , BQ27XXX_O_OTDC),
--	[BQ27510G3] = BQ27XXX_DATA(bq27510g3, 0         , BQ27XXX_O_OTDC),
--	[BQ27520G1] = BQ27XXX_DATA(bq27520g1, 0         , BQ27XXX_O_OTDC),
--	[BQ27520G2] = BQ27XXX_DATA(bq27520g2, 0         , BQ27XXX_O_OTDC),
--	[BQ27520G3] = BQ27XXX_DATA(bq27520g3, 0         , BQ27XXX_O_OTDC),
--	[BQ27520G4] = BQ27XXX_DATA(bq27520g4, 0         , BQ27XXX_O_OTDC),
--	[BQ27521]   = BQ27XXX_DATA(bq27521,   0         , 0),
--	[BQ27530]   = BQ27XXX_DATA(bq27530,   0         , BQ27XXX_O_UTOT),
--	[BQ27531]   = BQ27XXX_DATA(bq27531,   0         , BQ27XXX_O_UTOT),
--	[BQ27541]   = BQ27XXX_DATA(bq27541,   0         , BQ27XXX_O_OTDC),
--	[BQ27542]   = BQ27XXX_DATA(bq27542,   0         , BQ27XXX_O_OTDC),
--	[BQ27546]   = BQ27XXX_DATA(bq27546,   0         , BQ27XXX_O_OTDC),
--	[BQ27742]   = BQ27XXX_DATA(bq27742,   0         , BQ27XXX_O_OTDC),
-+	[BQ27510G1] = BQ27XXX_DATA(bq27510g1, 0, BQ27XXX_O_OTDC),
-+	[BQ27510G2] = BQ27XXX_DATA(bq27510g2, 0, BQ27XXX_O_OTDC),
-+	[BQ27510G3] = BQ27XXX_DATA(bq27510g3, 0, BQ27XXX_O_OTDC),
-+	[BQ27520G1] = BQ27XXX_DATA(bq27520g1, 0, BQ27XXX_O_OTDC),
-+	[BQ27520G2] = BQ27XXX_DATA(bq27520g2, 0, BQ27XXX_O_OTDC),
-+	[BQ27520G3] = BQ27XXX_DATA(bq27520g3, 0, BQ27XXX_O_OTDC),
-+	[BQ27520G4] = BQ27XXX_DATA(bq27520g4, 0, BQ27XXX_O_OTDC),
-+	[BQ27521]   = BQ27XXX_DATA(bq27521,   0, 0),
-+	[BQ27530]   = BQ27XXX_DATA(bq27530,   0, BQ27XXX_O_UTOT),
-+	[BQ27531]   = BQ27XXX_DATA(bq27531,   0, BQ27XXX_O_UTOT),
-+	[BQ27541]   = BQ27XXX_DATA(bq27541,   0, BQ27XXX_O_OTDC),
-+	[BQ27542]   = BQ27XXX_DATA(bq27542,   0, BQ27XXX_O_OTDC),
-+	[BQ27546]   = BQ27XXX_DATA(bq27546,   0, BQ27XXX_O_OTDC),
-+	[BQ27742]   = BQ27XXX_DATA(bq27742,   0, BQ27XXX_O_OTDC),
- 	[BQ27545]   = BQ27XXX_DATA(bq27545,   0x04143672, BQ27XXX_O_OTDC),
- 	[BQ27411]   = BQ27XXX_DATA(bq27411,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
- 	[BQ27421]   = BQ27XXX_DATA(bq27421,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
-@@ -965,9 +965,9 @@ static struct {
- 	[BQ27426]   = BQ27XXX_DATA(bq27426,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
- 	[BQ27441]   = BQ27XXX_DATA(bq27441,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
- 	[BQ27621]   = BQ27XXX_DATA(bq27621,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
--	[BQ27Z561]  = BQ27XXX_DATA(bq27z561,  0         , BQ27Z561_O_BITS),
--	[BQ28Z610]  = BQ27XXX_DATA(bq28z610,  0         , BQ27Z561_O_BITS),
--	[BQ34Z100]  = BQ27XXX_DATA(bq34z100,  0         , BQ27XXX_O_OTDC | BQ27XXX_O_SOC_SI | \
-+	[BQ27Z561]  = BQ27XXX_DATA(bq27z561,  0, BQ27Z561_O_BITS),
-+	[BQ28Z610]  = BQ27XXX_DATA(bq28z610,  0, BQ27Z561_O_BITS),
-+	[BQ34Z100]  = BQ27XXX_DATA(bq34z100,  0, BQ27XXX_O_OTDC | BQ27XXX_O_SOC_SI | \
- 							  BQ27XXX_O_HAS_CI | BQ27XXX_O_MUL_CHEM),
- };
- 
-@@ -1304,6 +1304,7 @@ static int bq27xxx_battery_cfgupdate_priv(struct bq27xxx_device_info *di, bool a
- static inline int bq27xxx_battery_set_cfgupdate(struct bq27xxx_device_info *di)
- {
- 	int ret = bq27xxx_battery_cfgupdate_priv(di, true);
-+
- 	if (ret < 0 && ret != -EINVAL)
- 		dev_err(di->dev, "bus error on set_cfgupdate: %d\n", ret);
- 
-@@ -1313,6 +1314,7 @@ static inline int bq27xxx_battery_set_cfgupdate(struct bq27xxx_device_info *di)
- static inline int bq27xxx_battery_soft_reset(struct bq27xxx_device_info *di)
- {
- 	int ret = bq27xxx_battery_cfgupdate_priv(di, false);
-+
- 	if (ret < 0 && ret != -EINVAL)
- 		dev_err(di->dev, "bus error on soft_reset: %d\n", ret);
- 
-@@ -1332,7 +1334,6 @@ static int bq27xxx_battery_write_dm_block(struct bq27xxx_device_info *di,
- 		ret = bq27xxx_battery_set_cfgupdate(di);
- 		if (ret < 0)
- 			return ret;
--	}
- 
- 	ret = bq27xxx_write(di, BQ27XXX_DM_CTRL, 0, true);
- 	if (ret < 0)
-@@ -1407,6 +1408,7 @@ static void bq27xxx_battery_set_config(struct bq27xxx_device_info *di,
- 
- 	if (info->voltage_min_design_uv != -EINVAL) {
- 		bool same = bd.class == bt.class && bd.block == bt.block;
-+
- 		if (!same)
- 			bq27xxx_battery_read_dm_block(di, &bt);
- 		bq27xxx_battery_update_dm_block(di, same ? &bd : &bt,
-@@ -1689,7 +1691,7 @@ static bool bq27xxx_battery_overtemp(struct bq27xxx_device_info *di, u16 flags)
- {
- 	if (di->opts & BQ27XXX_O_OTDC)
- 		return flags & (BQ27XXX_FLAG_OTC | BQ27XXX_FLAG_OTD);
--        if (di->opts & BQ27XXX_O_UTOT)
-+	if (di->opts & BQ27XXX_O_UTOT)
- 		return flags & BQ27XXX_FLAG_OT;
- 
- 	return false;
--- 
-2.17.1
-
+Best regards,
+baolu
