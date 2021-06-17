@@ -2,185 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437043AB1F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1973AB1F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbhFQLKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
+        id S232351AbhFQLLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232174AbhFQLKj (ORCPT
+        with ESMTP id S229901AbhFQLLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:10:39 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B6AC061574;
-        Thu, 17 Jun 2021 04:08:31 -0700 (PDT)
-Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 23EAA82A10;
-        Thu, 17 Jun 2021 13:08:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1623928108;
-        bh=pcOzzBeQhCrTCv1Dfu8x46w7ZuAgbD8BUEYPJTGCU+Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=a0yNqq3sjmORZW77MSohtqeYYoA3G69lnGi1lbZm/clpKyPHxltJzLbuuajrrAyOn
-         wsorzPbdm9VpTy+opuIZG4jp1oFrRDm7veum0LyrKQbi8T+sZsW0EOMFQ8pQD3FLz/
-         TnUJ+Y61UNgDnGAzOWRlRPZ93RxTs6+Qk4Sy0wiwBdyc0a31s/ZvmcDpE3E8UNq2bP
-         zepudZLJRMB2sAXTVdv7GHawruFhmwI8gQPFLY2xdMb1TonG9kniUI6BY4uodVmZ2t
-         xiT38Jd+w+alEYsESWzsxw5sQVw1gXQEz5orYdsQNgC4AdfPfOBRoW45cVgEAtWL3Y
-         HGu4nWHgiIXqg==
-Date:   Thu, 17 Jun 2021 13:08:21 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>, stefan.agner@toradex.com,
-        krzk@kernel.org, Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [RFC 0/4] net: l2switch: Provide support for L2 switch on
- i.MX28 SoC
-Message-ID: <20210617130821.465c7522@ktm>
-In-Reply-To: <20201127010811.GR2075216@lunn.ch>
-References: <20201125232459.378-1-lukma@denx.de>
-        <20201126123027.ocsykutucnhpmqbt@skbuf>
-        <20201127003549.3753d64a@jawa>
-        <20201127010811.GR2075216@lunn.ch>
-Organization: denx.de
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 17 Jun 2021 07:11:12 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D222C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:09:04 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so1548499pjo.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:09:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ubwQxfJ7r76nVrpUfP56UmNpDWURO/0W1EJ6byvdhqE=;
+        b=b5XI3pLjW8Bkk/y11RUW1X7ngiOhbQFGpfWTdcOaHe5dmr05zK6CWVzeaz4OzqyEEc
+         PquhzWGNflnMM4bLsK/zokD2Dq5JCGWKPp9aw6QWSqbHj5hS8b2s2kmkSbzaQf1u1CLJ
+         uhJ1pxjoR62dGO69hVN5zfYOrXoeZunG3st/U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ubwQxfJ7r76nVrpUfP56UmNpDWURO/0W1EJ6byvdhqE=;
+        b=Vo2azmE6kCZL8r+C7+3dSgw2obnHEmdMEhhhk0DraqoavmxelYn3PfWfuoDg5YzcrA
+         H0A4LC3jvPAEAuE1RBJcfu7R+LW3VDVFGgS4cSPnDnrq9dqaWUV3yNtlexKKWvv0Nwy4
+         ne8o1Q+tMyHTe9yLj1L5tv6y/X5fqBzzCYdMfa7/I6v86/7+OYtBMa35RI/l7XypTOB5
+         CZlAyGrZJ1+hcPTrU6CzOtqk5RaxIDQtiGC3sElxsMGHYaWlsS/gT4vNiQNzziFqjK//
+         PgoKVm0MOSUdkiZ2k8Gv7GJ1cvW0DcP2jdfHe2EzRTNn1ttbGqIeZUCTMOpbevITcli8
+         y+/g==
+X-Gm-Message-State: AOAM530BSrjmTI6NNZ3XsBTOZvhlsXDQQBmYX6I5sweYh0bf1M9YhUYs
+        bmSQy1jXV95MNQei+P/I+vbfNg==
+X-Google-Smtp-Source: ABdhPJycLWzQ7dy1nlmhvg7TDELG8aFVZlwmZYpNF4L7lWSgp591SZSMCq+urKC1TyrjVB7unThsUQ==
+X-Received: by 2002:a17:90b:108f:: with SMTP id gj15mr5213022pjb.124.1623928143531;
+        Thu, 17 Jun 2021 04:09:03 -0700 (PDT)
+Received: from shiro.work ([2400:4162:2428:2f01:7285:c2ff:fe8e:66d7])
+        by smtp.googlemail.com with ESMTPSA id n23sm5094397pff.93.2021.06.17.04.09.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 04:09:03 -0700 (PDT)
+From:   Daniel Palmer <daniel@0x0f.com>
+To:     miquel.raynal@bootlin.com, richard@nod.at
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Daniel Palmer <daniel@0x0f.com>
+Subject: [RFC PATCH] mtd: spinand: core: Properly fill the OOB area.
+Date:   Thu, 17 Jun 2021 20:08:42 +0900
+Message-Id: <20210617110842.2358461-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.32.0.rc0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/QloJitVVT20CNPsZ=oxvahO"; protocol="application/pgp-signature"
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/QloJitVVT20CNPsZ=oxvahO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The comment in spinand_write_to_cache_op() says that
+spinand_ondie_ecc_prepare_io_req() should 0xff fill the OOB
+area but it doesn't.
 
-Hi Andrew,
+This causes the OOB area to get filled with zeros
+and anytime the first page in a block the bad block marker
+is cleared and it becomes a bad block on the next boot.
 
-> > > I would push back and say that the switch offers bridge
-> > > acceleration for the FEC.  =20
-> >=20
-> > Am I correct, that the "bridge acceleration" means in-hardware
-> > support for L2 packet bridging?  =20
->=20
-> You should think of the hardware as an accelerator, not a switch. The
-> hardware is there to accelerate what linux can already do. You setup a
-> software bridge in linux, and then offload L2 switching to the
-> accelerator. You setup vlans in linux, and then offload the filtering
-> of them to the accelerator. If there is something linux can do, but
-> the hardware cannot accelerate, you leave linux to do it in software.
->=20
-> > Do you propose to catch some kind of notification when user calls:
-> >=20
-> > ip link add name br0 type bridge; ip link set br0 up;
-> > ip link set lan1 up; ip link set lan2 up;
-> > ip link set lan1 master br0; ip link set lan2 master br0;
-> > bridge link
+This was observed on Longsys FORSEE branded parts and
+might be specific to these parts.
 
-^^^^^^^^^^^^^ [*]
+Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+---
+ drivers/mtd/nand/spi/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> >=20
-> > And then configure the FEC driver to use this L2 switch driver? =20
->=20
-> That is what switchdev does. There are various hooks in the network
-> stack which call into switchdev to ask it to offload operations to the
-> accelerator.
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 6f2d39f9bb06..f1c76fa0e220 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -281,6 +281,9 @@ static int spinand_ondie_ecc_prepare_io_req(struct nand_device *nand,
+ 	struct spinand_device *spinand = nand_to_spinand(nand);
+ 	bool enable = (req->mode != MTD_OPS_RAW);
+ 
++	memset(spinand->databuf + nanddev_page_size(nand),
++			0xff, nanddev_per_page_oobsize(nand));
++
+ 	/* Only enable or disable the engine */
+ 	return spinand_ecc_enable(spinand, enable);
+ }
+-- 
+2.32.0.rc0
 
-I'm a bit confused about the interfaces that pop up when I do enable
-bridging acceleration.
-
-Without bridge I do have:
-- eth0 (this is a 'primary' interface -> it also controls MII/PHY for
-  eth1)
-- eth1 (it uses the MII/PHY control from eth0)
-
-Both interfaces works correctly.
-
-And after starting the bridge (and switchdev) with commands from [*] I
-do have:
-
-- br0 (created bridge - need to assign IP to it to communicate outside,
-  even when routing is set via eth0, and eth0 has the same IP address)
-- eth0 (just is used to control PHY - ifconfig up/down)
-- eth1 (just is used to control PHY - ifconfig up/down)
-
-And now the question, how internally shall I tackle the transmission
-(i.e. DMA setups)?
-
-Now, I do use some hacks to re-use code for eth0 to perform the
-transmission from/to imx28 L2 switch. The eth1 is stopped (it only
-controls the PHY - responds to MII interrupts).
-
-The above setup works, and the code adjustment for fec_main.c driver is
-really small.
-
-However, I do wonder how conceptually it "mix" with br0 interface? I
-could leave br0 as is, but then why do I need to asign the IP address
-to it to communicate?
-As I need to do it - then conceptually (re-)using eth0 internal
-structures (and the driver in fact) looks like some kind of abusement.=20
-However, adding the transmission handling to br0 net device would bloat
-and potentially duplicate the code.
-
-I would prefer to re-use code from eth0 interface - it would be also
-easier to cleanu up after disabling the L2 switch.
-
-Any feedback and help is more than welcome.
-
->=20
-> > The differences from "normal" DSA switches:
-> >=20
-> > 1. It uses mapped memory (for its register space) for
-> > configuration/statistics gathering (instead of e.g. SPI, I2C) =20
->=20
-> That does not matter. And there are memory mapped DSA switches. The
-> DSA framework puts no restrictions on how the control plane works.
->=20
-> > (Of course the "Section 32.5.8.2" is not available) =20
->=20
-> It is in the Vybrid datasheet :-)
->=20
->    Andrew
-
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/QloJitVVT20CNPsZ=oxvahO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDLLSUACgkQAR8vZIA0
-zr3aGgf/XSfvHyEfZtP+OBkQl6d44dJrfbj27lGTMqODsZoYWHjMl8tuYiWS8B1p
-Bl8uU/Ivn7dMnc9/e5LFqNEMg8W7T5O09L7q45rNNdr2JRXsG5VgUMpFzRUecHau
-9l81DsnTAXowlhOnxIKSvSBEqRhsMsbcAwQnLF3sUNv0VgGFp5UxoJB7aOrPAZGy
-eh54N+E4aCQcVmf32PYlhF7Dcw6zSlokLpsIA3Kd75o9wtCGpeoTvoc4czt3i/K9
-9vZIqUXfvHas9W5i7jszTtL9KZxMGyJrw/543U7+Nz8EapKQ4zqjN7p63t+vbxkg
-xWDTktJdRWwFjBFagBHbYI3IYvU/tg==
-=Mmkl
------END PGP SIGNATURE-----
-
---Sig_/QloJitVVT20CNPsZ=oxvahO--
