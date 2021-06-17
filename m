@@ -2,113 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9467B3AA845
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E483AA849
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbhFQAuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 20:50:32 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:35831 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbhFQAub (ORCPT
+        id S235067AbhFQAvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 20:51:54 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:53126 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231496AbhFQAvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 20:50:31 -0400
-Received: by mail-io1-f70.google.com with SMTP id y14-20020a6bc80e0000b02904dc72726661so523452iof.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 17:48:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=bQLVYc/0egDMgAo7Qbl2g2RvIzD2ELXlMK3a6DuGMw4=;
-        b=KIUS/KdXE3CBP9HevYXbsrjrOZuAm+WE6BwaESb0clapWf8CW4hIOAy4mzp1ZBGXPQ
-         qCsxmWyEMWurcZKQx6pytkGysIUoYuqpl59Vc/HoZw38pdjS+ymlh5M4jMxp0gzNG5TU
-         IhyC7/Wc4MhjSLzGq5oMmUSfj2JuhHx9qFsPMWRUy0FWI6Wt4LoxzQbQWaZgpmalH6bX
-         E6W64ExgHie0jwiGvpH+tRcp/Lge7PFwoGZtJrcsZE7B/t9ybFnff/OipEClmoBRueXF
-         G8Eg6LMk6eJJ2BTK+Y9iIBjqLNJY+BiO7MqSgkW948qPW7vKJtKxB0nTkKKSi34ylZic
-         BgHQ==
-X-Gm-Message-State: AOAM532v+vAgU3DKTvN1y6tBMNy0sevphI9nH44VBxn7wLzx3g6lV+RD
-        BJAA+GjdAVz8JFe8Z9JNOGeq0Zo8t0N1mxsRziT9E93uS510
-X-Google-Smtp-Source: ABdhPJyCUDvKIU4XyvKWBO/BWFacrvdOQKI9efl3MV++sWxyfgHOXZ9iwR4M60rDDzz+qbP5+n7QGKlnnT8pOau/H0M6tt0lkKmf
+        Wed, 16 Jun 2021 20:51:54 -0400
+Received: from dread.disaster.area (pa49-179-138-183.pa.nsw.optusnet.com.au [49.179.138.183])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id ACD431044A50;
+        Thu, 17 Jun 2021 10:49:43 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1ltgE2-00DcT4-3U; Thu, 17 Jun 2021 10:49:42 +1000
+Date:   Thu, 17 Jun 2021 10:49:42 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 4/4] vfs: keep inodes with page cache off the inode
+ shrinker LRU
+Message-ID: <20210617004942.GF2419729@dread.disaster.area>
+References: <20210614211904.14420-1-hannes@cmpxchg.org>
+ <20210614211904.14420-4-hannes@cmpxchg.org>
+ <20210615062640.GD2419729@dread.disaster.area>
+ <YMj2YbqJvVh1busC@cmpxchg.org>
+ <20210616012008.GE2419729@dread.disaster.area>
+ <YMmD9xhBm9wGqYhf@cmpxchg.org>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:5b06:: with SMTP id v6mr1624334ioh.84.1623890903365;
- Wed, 16 Jun 2021 17:48:23 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 17:48:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000072faae05c4eb9024@google.com>
-Subject: [syzbot] WARNING in __page_cache_alloc
-From:   syzbot <syzbot+710d700d430546fc3dd5@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMmD9xhBm9wGqYhf@cmpxchg.org>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0
+        a=MnllW2CieawZLw/OcHE/Ng==:117 a=MnllW2CieawZLw/OcHE/Ng==:17
+        a=kj9zAlcOel0A:10 a=r6YtysWOX24A:10 a=7-415B0cAAAA:8
+        a=9QrUW9syPe-c7OGs3v4A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jun 16, 2021 at 12:54:15AM -0400, Johannes Weiner wrote:
+> On Wed, Jun 16, 2021 at 11:20:08AM +1000, Dave Chinner wrote:
+> > On Tue, Jun 15, 2021 at 02:50:09PM -0400, Johannes Weiner wrote:
+> > > On Tue, Jun 15, 2021 at 04:26:40PM +1000, Dave Chinner wrote:
+> > > > On Mon, Jun 14, 2021 at 05:19:04PM -0400, Johannes Weiner wrote:
+> > > > > @@ -1123,6 +1125,9 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
+> > > > >  			shadow = workingset_eviction(page, target_memcg);
+> > > > >  		__delete_from_page_cache(page, shadow);
+> > > > >  		xa_unlock_irq(&mapping->i_pages);
+> > > > > +		if (mapping_shrinkable(mapping))
+> > > > > +			inode_add_lru(mapping->host);
+> > > > > +		spin_unlock(&mapping->host->i_lock);
+> > > > >  
+> > > > 
+> > > > No. Inode locks have absolutely no place serialising core vmscan
+> > > > algorithms.
+> > > 
+> > > What if, and hear me out on this one, core vmscan algorithms change
+> > > the state of the inode?
+> > 
+> > Then the core vmscan algorithm has a layering violation.
+> 
+> You're just playing a word game here.
 
-syzbot found the following issue on:
+No, I've given you plenty of constructive justification and ways to
+restructure your patches to acheive what you say needs to be done.
 
-HEAD commit:    ad347abe Merge tag 'trace-v5.13-rc5-2' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ae5b4fd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=30f476588412c065
-dashboard link: https://syzkaller.appspot.com/bug?extid=710d700d430546fc3dd5
+You're the one that is rejecting any proposal I make outright and
+making unjustified claims that "I don't understand this code".
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Serious, Johannes, I understand how the inode cache shrinkers work
+better than most people out there, and for you to just reject my
+comments and suggestions outright with "you don't understand this
+stuff so go learn about it' is pretty obnoxious and toxic behaviour.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+710d700d430546fc3dd5@syzkaller.appspotmail.com
+I haven't disagreed at all with what you are trying to do, nor do I
+think that being more selective about how we track inodes on the
+LRUs is a bad thing. What I'm commenting on is that the proposed
+changes are *really bad code*.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 26 at mm/page_alloc.c:4159 __alloc_pages_slowpath.constprop.0+0x1dae/0x2140 mm/page_alloc.c:4961
-Modules linked in:
-CPU: 1 PID: 26 Comm: kworker/u4:1 Not tainted 5.13.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: writeback wb_workfn (flush-8:0)
-RIP: 0010:__alloc_pages_may_oom mm/page_alloc.c:4159 [inline]
-RIP: 0010:__alloc_pages_slowpath.constprop.0+0x1dae/0x2140 mm/page_alloc.c:4899
-Code: 48 89 54 24 18 e8 d2 09 09 00 8b 74 24 20 48 8b 54 24 18 e9 ff f0 ff ff 48 8b bc 24 80 00 00 00 e8 c7 09 09 00 e9 e2 fe ff ff <0f> 0b 8b 74 24 0c 4c 89 f1 ba 44 00 00 00 8b 7c 24 30 e8 9b ad ff
-RSP: 0018:ffffc90000e0f0d8 EFLAGS: 00010206
-RAX: 0000000000008000 RBX: ffff888015feb880 RCX: 1ffff920001c1e08
-RDX: ffff888015feb880 RSI: ffffffff819ac5dd RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff819ac2d7 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffffc90000e0f328 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000031246d0 CR3: 000000002e797000 CR4: 0000000000350ee0
-Call Trace:
- __alloc_pages+0x422/0x500 mm/page_alloc.c:5213
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- __page_cache_alloc mm/filemap.c:1005 [inline]
- __page_cache_alloc+0x303/0x3a0 mm/filemap.c:990
- pagecache_get_page+0x38f/0x18d0 mm/filemap.c:1885
- find_or_create_page include/linux/pagemap.h:420 [inline]
- grow_dev_page fs/buffer.c:974 [inline]
- grow_buffers fs/buffer.c:1039 [inline]
- __getblk_slow+0x213/0xb60 fs/buffer.c:1066
- __getblk_gfp+0x70/0x80 fs/buffer.c:1359
- sb_getblk include/linux/buffer_head.h:327 [inline]
- __ext4_get_inode_loc+0x348/0x1130 fs/ext4/inode.c:4330
- __ext4_get_inode_loc_noinmem fs/ext4/inode.c:4440 [inline]
- ext4_write_inode+0x38b/0x630 fs/ext4/inode.c:5228
- write_inode fs/fs-writeback.c:1320 [inline]
- __writeback_single_inode+0xae9/0xfd0 fs/fs-writeback.c:1525
- writeback_sb_inodes+0x53d/0xef0 fs/fs-writeback.c:1732
- __writeback_inodes_wb+0xc6/0x280 fs/fs-writeback.c:1801
- wb_writeback+0x814/0xc40 fs/fs-writeback.c:1907
- wb_check_start_all fs/fs-writeback.c:2031 [inline]
- wb_do_writeback fs/fs-writeback.c:2057 [inline]
- wb_workfn+0xb98/0x12d0 fs/fs-writeback.c:2091
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2276
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+If you can work out a *clean* way to move inodes onto the LRU when
+they are dirty then I'm all for it. But sprinkling inode->i_lock all
+over the mm/ subsystem and then adding seemling randomly placed
+inode lru manipulations isn't the way to do it.
 
+You should consider centralising all the work involved marking a
+mapping clean somewhere inside the mm/ code. Then add a single
+callout that does the inode LRU work, similar to how the
+fs-writeback.c code does it when the inode is marked clean by
+inode_sync_complete().
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+IOWs, if you can't accept that there are problems with your approach
+nor accept that it needs to be improved because *I* said there are
+problems (and it seems that you mostly only react this way when *I*
+happen to say "needs improvement"), then you need to go take a good
+hard look at yourself.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Fix up your code so that it is acceptible to reviewers - telling
+reviewers they don't know shit is a sure way to piss people off
+unnecesarily. It doesn't make you look very good at all, and it
+makes other people think twice about wanting to review your code or
+work with you in future.
+
+So, again, until you see fit to be stop being obnoxious and toxic
+and that your patches need work before they are acceptible for
+merging, I maintain my NACK on this patch as it standsi and I am
+complete done with this discusion.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
