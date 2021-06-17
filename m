@@ -2,68 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754C83AB4DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734073AB4CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232837AbhFQNhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:37:03 -0400
-Received: from m12-15.163.com ([220.181.12.15]:39069 "EHLO m12-15.163.com"
+        id S232566AbhFQNe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:34:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231355AbhFQNhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:37:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=yvhTj
-        szTo8tQ9r8I8hyR5rQ1GLc/Yb4fdHEDaHDNtsI=; b=iDLkQfZIEndzvU8CZWiRM
-        C3yefEKCEbeVs3sB1d1sOSRlml12CCGExYw+PWpN+18i3YhKnUfo+sHjRh3tDGJi
-        LrBZ5HYYAB5xPcw+jpx9+1qGihk+o3cbzo4eKDKoot3ozk/pQUOSQ92725ePMqZN
-        l8uYe0Qi03p/PJBSJF58JY=
-Received: from yangjunlin.ccdomain.com (unknown [218.17.89.92])
-        by smtp11 (Coremail) with SMTP id D8CowADHz3ciT8tgUvmYAA--.257S2;
-        Thu, 17 Jun 2021 21:34:36 +0800 (CST)
-From:   angkery <angkery@163.com>
-To:     sean.wang@mediatek.com, vkoul@kernel.org, matthias.bgg@gmail.com
-Cc:     dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: [PATCH] dmaengine: mediatek: Return the correct errno code
-Date:   Thu, 17 Jun 2021 21:32:29 +0800
-Message-Id: <20210617133229.1497-1-angkery@163.com>
-X-Mailer: git-send-email 2.24.0.windows.2
+        id S231654AbhFQNey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:34:54 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62E776044F;
+        Thu, 17 Jun 2021 13:32:45 +0000 (UTC)
+Date:   Thu, 17 Jun 2021 09:32:43 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexander Potapenko <glider@google.com>
+Subject: Re: [PATCH next v4 1/2] lib/dump_stack: move cpu lock to printk.c
+Message-ID: <20210617093243.795b4853@gandalf.local.home>
+In-Reply-To: <20210617095051.4808-2-john.ogness@linutronix.de>
+References: <20210617095051.4808-1-john.ogness@linutronix.de>
+        <20210617095051.4808-2-john.ogness@linutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: D8CowADHz3ciT8tgUvmYAA--.257S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1DJw45ZFyDGFyxGrWfKrg_yoW3Wwb_u3
-        4v9rWxWF1DAwn3Ar1rWr1Uury7tFZ5uF1fWF43Kr1avrW5ur4DCryq9rnIvw43Xwn2vF97
-        WF1UZrnakFsxGjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5PuctUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiLAy0I1spa1-21wAAsQ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junlin Yang <yangjunlin@yulong.com>
+On Thu, 17 Jun 2021 11:56:50 +0206
+John Ogness <john.ogness@linutronix.de> wrote:
 
-When devm_kzalloc failed, should return ENOMEM rather than ENODEV.
+> dump_stack() implements its own cpu-reentrant spinning lock to
+> best-effort serialize stack traces in the printk log. However,
+> there are other functions (such as show_regs()) that can also
+> benefit from this serialization.
+> 
+> Move the cpu-reentrant spinning lock (cpu lock) into new helper
+> functions printk_cpu_lock_irqsave()/printk_cpu_unlock_irqrestore()
+> so that it is available for others as well. For !CONFIG_SMP the
+> cpu lock is a NOP.
+> 
+> Note that having multiple cpu locks in the system can easily
+> lead to deadlock. Code needing a cpu lock should use the
+> printk cpu lock, since the printk cpu lock could be acquired
+> from any code and any context.
+> 
+> Also note that it is not necessary for a cpu lock to disable
+> interrupts. However, in upcoming work this cpu lock will be used
+> for emergency tasks (for example, atomic consoles during kernel
+> crashes) and any interruptions while holding the cpu lock should
+> be avoided if possible.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> ---
 
-Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
----
- drivers/dma/mediatek/mtk-uart-apdma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Can we add this lock to early_printk() ?
 
-diff --git a/drivers/dma/mediatek/mtk-uart-apdma.c b/drivers/dma/mediatek/mtk-uart-apdma.c
-index 375e7e6..a4cb30f 100644
---- a/drivers/dma/mediatek/mtk-uart-apdma.c
-+++ b/drivers/dma/mediatek/mtk-uart-apdma.c
-@@ -529,7 +529,7 @@ static int mtk_uart_apdma_probe(struct platform_device *pdev)
- 	for (i = 0; i < mtkd->dma_requests; i++) {
- 		c = devm_kzalloc(mtkd->ddev.dev, sizeof(*c), GFP_KERNEL);
- 		if (!c) {
--			rc = -ENODEV;
-+			rc = -ENOMEM;
- 			goto err_no_dma;
- 		}
+This would make early_printk() so much more readable.
+
+-- Steve
+
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 421c35571797..2b749c745c1f 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2259,6 +2259,7 @@ struct console *early_console;
  
--- 
-1.9.1
-
+ asmlinkage __visible void early_printk(const char *fmt, ...)
+ {
++	unsigned long flags;
+ 	va_list ap;
+ 	char buf[512];
+ 	int n;
+@@ -2270,7 +2271,9 @@ asmlinkage __visible void early_printk(const char *fmt, ...)
+ 	n = vscnprintf(buf, sizeof(buf), fmt, ap);
+ 	va_end(ap);
+ 
++	printk_cpu_lock_irqsave(flags);
+ 	early_console->write(early_console, buf, n);
++	printk_cpu_unlock_irqrestore(flags);
+ }
+ #endif
+ 
