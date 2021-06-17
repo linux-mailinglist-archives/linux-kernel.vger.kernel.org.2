@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422373AAFCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEB63AAFE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhFQJfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:35:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhFQJfd (ORCPT
+        id S231691AbhFQJko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:40:44 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7465 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230411AbhFQJkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:35:33 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA3AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:33:24 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id v9so5964833wrx.6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=J/+vcuBc8bymPMNx/GbDiK5qW8QgKkIlkchq1oDH3As=;
-        b=l/cOEQsCwf3RYIXnqg/dUZgFz59rluZo++RmrFoERVhD2bd/NKDcCC5EtoKQUNNpxQ
-         M17Ypmsp7rWzpxKeytwtAYPcYJqprwrUs/R04XNjL4NjpYYOzQG9X2Scb4PFgjc67GfZ
-         fbqsqhzei2M3YPP7wywhfIeti7RQ4urjrKeUsbhAwxTiDg60JjJYM92SGiDl0vbvGVpo
-         uanKcie22+ouGvsUBIu11OSkCAA8B46FGfMnXNk1TOQmkrAzVJ1rj0oVIbqIFbDvL7VJ
-         JdP0nuAnh1yx6O28p+GnqoWAOeLeNf2NGyxLLv8+CpAPvpHGrjYDI1kiqSmTMibGaYxj
-         9Gzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=J/+vcuBc8bymPMNx/GbDiK5qW8QgKkIlkchq1oDH3As=;
-        b=mzZ4U00mVMRT0bGzuJfV2Fnr8WWnszcCPJSmL3hn3xVHM2EDJVTjapKg7v9XiZcDL1
-         Ia7PcIjFuTB+Qh4eyWSctEiQNOCLKyH7d65/gMgbM5SHmHuj5OV1hBT5bgeNfPMNGUSK
-         zsjyUZydiQ6jqhOnO8A9ms+IfKcfNAtJCfec51seCo6uRVeZjt8jCPrSKqRDrr7nV3fb
-         pxmIxYbT1iCEOgK+6Y5OGYfs87UIpSOJx6N56gABh0V4IBaDrOb4Bl1/g+GecZiRaxNA
-         u2rfP9dXbdJwGroVW7poIJhUma+hh1Dg45R9RYL5f1YW7FgPMAHVbhgFysuC6J+/1yfD
-         /9WA==
-X-Gm-Message-State: AOAM5306V1j+dWiKPVNm6TE0LIIiQI98QCTarvazn3dmrWD8UQ2vZrg+
-        IPB0gJY9iR5pvJDRpze7pDQUjg==
-X-Google-Smtp-Source: ABdhPJw+bYEfRB3+YieH8Fbx51nH+uBGBVoK6wNpmOLBRuRMkf3pdrx1I2LkIZXkfwNHnPJo2rdIcA==
-X-Received: by 2002:a5d:42c2:: with SMTP id t2mr1545262wrr.382.1623922403305;
-        Thu, 17 Jun 2021 02:33:23 -0700 (PDT)
-Received: from dell ([91.110.221.170])
-        by smtp.gmail.com with ESMTPSA id o3sm5744984wrc.0.2021.06.17.02.33.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 02:33:22 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 10:33:21 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Daisuke Nojiri <dnojiri@chromium.org>
-Cc:     vpalatin@chromium.org, Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/2] mfd: cros_ec: Add peripheral device charger
-Message-ID: <YMsW4QZ8SmGM7dj+@dell>
-References: <20210616185131.1792509-1-dnojiri@chromium.org>
- <20210616185131.1792509-2-dnojiri@chromium.org>
+        Thu, 17 Jun 2021 05:40:43 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5H3S3CQ5zZhbh;
+        Thu, 17 Jun 2021 17:35:32 +0800 (CST)
+Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 17:38:28 +0800
+Received: from [10.174.177.125] (10.174.177.125) by
+ dggpemm000001.china.huawei.com (7.185.36.245) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 17:38:28 +0800
+Subject: Re: [PATCH -next] riscv: mm: remove redundant trampoline PGD for
+ 64bit
+To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <anup.patel@wdc.com>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <palmerdabbelt@google.com>, <atish.patra@wdc.com>,
+        <wangkefeng.wang@huawei.com>
+References: <20210527144819.12101-1-sunnanyong@huawei.com>
+From:   "Sunnanyong (Nanyong Sun, Intelligent Computing Solution Development
+        Dep)" <sunnanyong@huawei.com>
+Message-ID: <a58c4cde-6212-29f3-080a-f4e50221db21@huawei.com>
+Date:   Thu, 17 Jun 2021 17:38:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210527144819.12101-1-sunnanyong@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210616185131.1792509-2-dnojiri@chromium.org>
+X-Originating-IP: [10.174.177.125]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm000001.china.huawei.com (7.185.36.245)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021, Daisuke Nojiri wrote:
+On 2021/5/27 22:48, Nanyong Sun wrote:
 
-> This patch adds a cell entry for PCHG (Peripheral CHarGer). PCHG is a
-> framework managing power supplies for peripheral devices.
-> 
-> Signed-off-by: Daisuke Nojiri <dnojiri@chromium.org>
-> Acked-for-mfd-by: Lee Jones <lee.jones@linaro.org>
-> ---
-> v2
-> * None
-> v3
-> * None
-> v4
-> * None
-> V5
-> * None
-> V6
-> * None
-> v7
-> * Rebase on torvalds/master.
-> ---
->  drivers/mfd/cros_ec_dev.c | 1 +
->  1 file changed, 1 insertion(+)
+> Remove redundant trampoline PGD for 64bit and add more comment
+> for why 32bit systems need trampoline PGD.
+>
+> There was a patch and discussion similar to this,refer to
+> the link [1][2].
+>
+> The trampoline PGD is redundant for 64bit systems because:
+> 1. The early PGD covers the entire kernel mapping. Directly
+> loading early PGD can achieve the result in boot stage.
+> A more trampoline PGD makes code hard to understand.
+> 2. Directly loading early PGD is safe in 64bit systems since
+> the kernel virtual address starts as 0xFFFFxxxxxxxxxxxx,
+> which has a very big gap with RAM address.It won't fall into
+> the corner case that 32bit system worrys.
+> 3. Remove redundant trampoline PGD can benefit to code maintaince,
+> because 64bit systems have more page table levels.For example:
+> If we want to support SV48 which has 4 page table levels, we have
+> to add a trampoline_pud and insert it before trampoline_pmd.
+>
+> Reference link:
+> [1]https://lore.kernel.org/linux-riscv/20190325092234.5451-4-anup.patel@wdc.com/
+> [2]https://lkml.org/lkml/2019/3/28/147
 
-Applied, thanks.
+Long time no response.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Hi anup,
+
+     do you agree this?
+
