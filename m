@@ -2,176 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650713AA85B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D3F3AA865
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbhFQBEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 21:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231628AbhFQBET (ORCPT
+        id S235093AbhFQBGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 21:06:48 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:7310 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231441AbhFQBGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 21:04:19 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6684FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 18:02:11 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id u20so3473356qtx.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 18:02:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V60FAIdwpRuq7i04YiGCgFlyof6pScSFtvGQvRXWUdk=;
-        b=BI53e5Dlvr281LKLOlpIuAolvA0Y7t9NryNGS9dc8HvcR+eIOcXZeaESFKfvWgHpCg
-         8AJpxgc6EAI1cdYUY///BpVT9F1F2Yx6emJQrRdYeYckCCmiVBtjYI+1JLNLnZWuxXD4
-         wzc9vZABt4WH0Hr7L64R134+gqb+Wibt4GvkWiawOBkbfzYwtsOyDz7SYZnUFr/FYPoh
-         wijyqLcnvSoLLsEPImDCyXkn7y11VSIhdRYt4+47Q/GaUxC6W7dgaW+7fnyIS9xSqi/f
-         f8LwcLloAgWWLqUsSb2k4LHGwmJt/Qz8BcTdxXNhxEDb4Kj9LUs9YNROVPK6UCwG8dbB
-         0HHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V60FAIdwpRuq7i04YiGCgFlyof6pScSFtvGQvRXWUdk=;
-        b=XbuFvl3CMRu3iM1E1z3JkXvpMnZ6xmCQBDwNSVypAEVZMtl54pcrYBrAxjx3UQfdZ6
-         j5qi2/uqaLsVIP05PLVGvE1IrRYdnHHP9Ju6TNiPqK23vYgZsGjv+nmJMTiPRilAf46r
-         wWNxUmLF6DNquyylnSOfE8iMrFYKh1at9q3SNwbvk/HMD2jETbTOsIGqefbWAQvtK86U
-         Q6jDqWCa3DGWkTjFd4b1F1DLvPu8C/1gtw2NIivesoYZeusvgyfGb7dJ458ezaEQ0Sw/
-         wPtyxpnRbbb6GsytfibMS2O3mnkP02rJutbyY71QoYD002IZXuMILPAk1zeJzA4DDWoq
-         HgTA==
-X-Gm-Message-State: AOAM532v7Zd5Gu3EPTkQSUo+26l5PDS/lc90INGwnQf36SV+SRwsmtav
-        nrDPCK44wjnSS8c2V02PV9rXH93bh42hENilKQcskg==
-X-Google-Smtp-Source: ABdhPJxssU4BEEs8oDkkNcTl7zTEvFfaLouKo/5hp9PLxFb4AorucmdYnxwMqNkRXpz/PQNMcwun+XOLeK8Zm3hiQZM=
-X-Received: by 2002:ac8:5d55:: with SMTP id g21mr2615210qtx.101.1623891730223;
- Wed, 16 Jun 2021 18:02:10 -0700 (PDT)
+        Wed, 16 Jun 2021 21:06:46 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G53c642QYz1BMmV;
+        Thu, 17 Jun 2021 08:59:34 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 09:04:36 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 09:04:36 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+Subject: [PATCH net v2] net: sched: add barrier to ensure correct ordering for lockless qdisc
+Date:   Thu, 17 Jun 2021 09:04:14 +0800
+Message-ID: <1623891854-57416-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20210608231132.32012-1-joshdon@google.com> <YMobzbLecaFYuLtq@slm.duckdns.org>
-In-Reply-To: <YMobzbLecaFYuLtq@slm.duckdns.org>
-From:   Josh Don <joshdon@google.com>
-Date:   Wed, 16 Jun 2021 18:01:59 -0700
-Message-ID: <CABk29NtcRUwskBjrvLKkEKQ0hpNPSrdzrGAGZy+bHSfnznOUSg@mail.gmail.com>
-Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paul Turner <pjt@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steve Sistare <steven.sistare@oracle.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rik van Riel <riel@surriel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Tejun,
+The spin_trylock() was assumed to contain the implicit
+barrier needed to ensure the correct ordering between
+STATE_MISSED setting/clearing and STATE_MISSED checking
+in commit a90c57f2cedd ("net: sched: fix packet stuck
+problem for lockless qdisc").
 
-Thanks for taking a look.
+But it turns out that spin_trylock() only has load-acquire
+semantic, for strongly-ordered system(like x86), the compiler
+barrier implicitly contained in spin_trylock() seems enough
+to ensure the correct ordering. But for weakly-orderly system
+(like arm64), the store-release semantic is needed to ensure
+the correct ordering as clear_bit() and test_bit() is store
+operation, see queued_spin_lock().
 
-On Wed, Jun 16, 2021 at 8:42 AM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Tue, Jun 08, 2021 at 04:11:32PM -0700, Josh Don wrote:
-> > This extends SCHED_IDLE to cgroups.
-> >
-> > Interface: cgroup/cpu.idle.
-> >  0: default behavior
-> >  1: SCHED_IDLE
-> >
-> > Extending SCHED_IDLE to cgroups means that we incorporate the existing
-> > aspects of SCHED_IDLE; a SCHED_IDLE cgroup will count all of its
-> > descendant threads towards the idle_h_nr_running count of all of its
-> > ancestor cgroups. Thus, sched_idle_rq() will work properly.
-> > Additionally, SCHED_IDLE cgroups are configured with minimum weight.
-> >
-> > There are two key differences between the per-task and per-cgroup
-> > SCHED_IDLE interface:
-> >
-> > - The cgroup interface allows tasks within a SCHED_IDLE hierarchy to
-> > maintain their relative weights. The entity that is "idle" is the
-> > cgroup, not the tasks themselves.
-> >
-> > - Since the idle entity is the cgroup, our SCHED_IDLE wakeup preemption
-> > decision is not made by comparing the current task with the woken task,
-> > but rather by comparing their matching sched_entity.
-> >
-> > A typical use-case for this is a user that creates an idle and a
-> > non-idle subtree. The non-idle subtree will dominate competition vs
-> > the idle subtree, but the idle subtree will still be high priority
-> > vs other users on the system. The latter is accomplished via comparing
-> > matching sched_entity in the waken preemption path (this could also be
-> > improved by making the sched_idle_rq() decision dependent on the
-> > perspective of a specific task).
->
-> A high-level problem that I see with the proposal is that this would bake
-> the current recursive implementation into the interface. The semantics of
-> the currently exposed interface, at least the weight based part, is abstract
-> and doesn't necessarily dictate how the scheduling is actually performed.
-> Adding this would mean that we're now codifying the current behavior of
-> fully nested scheduling into the interface.
->
-> There are several practical challenges with the current implementation
-> caused by the full nesting - e.g. nesting levels are expensive for context
-> switch heavy applicaitons often going over >1% per level, and heuristics
-> which assume global queue may behave unexpectedly - ie. we can create
-> conditions where things like idle-wakeup boost behave very differently
-> depending on whether tasks are inside a cgroup or not even when the eventual
-> relative weights and past usages are similar.
+So add the explicit barrier to ensure the correct ordering
+for the above case.
 
-To be clear, are you talking mainly about the idle_h_nr_running
-accounting? The fact that setting cpu.idle propagates changes upwards
-to ancestor cgroups?
+Fixes: a90c57f2cedd ("net: sched: fix packet stuck problem for lockless qdisc")
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+---
+V2: add the missing Fixes tag.
 
-The goal is to match the SCHED_IDLE semantics here, which requires
-this behavior. The end result is no different than a nested cgroup
-with SCHED_IDLE tasks. One possible alternative would be to only count
-root-level cpu.idle cgroups towards the overall idle_h_nr_running.
-I've not opted for that, in order to make this work more similarly to
-the task interface. Also note that there isn't additional overhead
-from the accounting, since enqueue/dequeue already traverses these
-nesting levels.
+The above ordering issue can easily cause out of order packet
+problem when testing lockless qdisc bypass patchset [1] with
+two iperf threads and one netdev queue in arm64 system.
 
-Could you elaborate a bit more on your statement here?
+1. https://lkml.org/lkml/2021/6/2/1417
+---
+ include/net/sch_generic.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-> Can you please give more details on why this is beneficial? Is the benefit
-> mostly around making configuration easy or are there actual scheduling
-> behaviors that you can't achieve otherwise?
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index 1e62551..5771030 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -163,6 +163,12 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ 		if (spin_trylock(&qdisc->seqlock))
+ 			goto nolock_empty;
+ 
++		/* Paired with smp_mb__after_atomic() to make sure
++		 * STATE_MISSED checking is synchronized with clearing
++		 * in pfifo_fast_dequeue().
++		 */
++		smp_mb__before_atomic();
++
+ 		/* If the MISSED flag is set, it means other thread has
+ 		 * set the MISSED flag before second spin_trylock(), so
+ 		 * we can return false here to avoid multi cpus doing
+@@ -180,6 +186,12 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ 		 */
+ 		set_bit(__QDISC_STATE_MISSED, &qdisc->state);
+ 
++		/* spin_trylock() only has load-acquire semantic, so use
++		 * smp_mb__after_atomic() to ensure STATE_MISSED is set
++		 * before doing the second spin_trylock().
++		 */
++		smp_mb__after_atomic();
++
+ 		/* Retry again in case other CPU may not see the new flag
+ 		 * after it releases the lock at the end of qdisc_run_end().
+ 		 */
+-- 
+2.7.4
 
-There are actual scheduling behaviors that cannot be achieved without
-the cgroup interface. The task SCHED_IDLE mechanism is a combination
-of special SCHED_IDLE handling (idle_h_nr_running,
-check_preempt_wakeup), and minimum scheduling weight.
-
-Consider a tree like
-
-                  root
-             /             \
-            A              C
-        /      \             |
-      B       idle       t4
-     |           |     \
-     t1         t2   t3
-
-Here, 'idle' is our cpu.idle cgroup. The following properties would
-not be possible if we moved t2/t3 into SCHED_IDLE without the cgroup
-interface:
-- t1 always preempts t2/t3 on wakeup, but t4 does not
-- t2 and t3 have different, non-minimum weights. Technically we could
-also achieve this by adding another layer of nested cgroups, but that
-starts to make the hierarchy much more complex.
-- I've also discussed with Peter a possible extension (vruntime
-adjustments) to the current SCHED_IDLE semantics. Similarly to the
-first bullet here, we'd need a cgroup idle toggle to achieve certain
-scheduling behaviors with this.
-
-Thanks,
-Josh
