@@ -2,77 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86B73AB31D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0D73AB321
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhFQMAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
+        id S232626AbhFQMBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbhFQMAA (ORCPT
+        with ESMTP id S230162AbhFQMBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:00:00 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A7EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:57:52 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id l9so3264713wms.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:57:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MZ33EQrarFipwDO2m7oPj7Kr+yPURVsoLgLKn7NF/gc=;
-        b=GAnRF6DteSW4bz0NcB/IQ2an6fFiZC0ZVY/HAzR08nL7hELTxD7N9ThKwDa4Pz5GIG
-         qHgX7VOTSEaxM2qqxQNlAFUkzf6KqrYEBMj6oIM9D3sk5T72UAUfjLHG5BAU/jkZC/5X
-         8Flxfu+obukQ4lKPL/n7ni3iRycmHJeKpibsY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MZ33EQrarFipwDO2m7oPj7Kr+yPURVsoLgLKn7NF/gc=;
-        b=hVZC0MDAih5zgDdrgvRIQJDtL9hDMKW5Rz0WVu5h/cHs24REv4qBdXLHtQ8fEb+vNY
-         uOZIjTWmwEi9crvHyaRHLF8k7LKBMp/oXuMtTtp5Nb39SDermdYYh9RZyql0VGxqgjwL
-         xpK7jMcGweao3a30i0GDQhfBpRmfw4n4ZWBee3iXRlzPbwVzOn65wEtqGGgI1H9EYARK
-         vZFtnvWF2UHF4mmI9NJuDbFEAiIRISetKl99RXvjYWAdnSP5y+4rceFr7zz/ECFpo8hJ
-         MG5zBpYlqGjrut1CjSIjenNCnDKir6I5UN8tekZw6P9qKxu78Vy8cQcHY3exd3oEJOau
-         uI9A==
-X-Gm-Message-State: AOAM532eK7GyVBUUooHnB1Dc05GS/j1SxUqSpsGGG5KmJt84dIQF+65k
-        s00qK/St1SEewzmaZ4AAvOjV734xOQlMt09jr08=
-X-Google-Smtp-Source: ABdhPJxiiYSnnZ1YYSEWZm2dtZWZJ1s+9dT/BwbIkOwbry+XZ9Xg/zy+QbTixUFUGaM9MJXJJ+/i2w==
-X-Received: by 2002:a1c:59c9:: with SMTP id n192mr4603151wmb.81.1623931071194;
-        Thu, 17 Jun 2021 04:57:51 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:7326])
-        by smtp.gmail.com with ESMTPSA id k67sm2513624wma.14.2021.06.17.04.57.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 04:57:50 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 12:57:49 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
-        kbuild-all@lists.01.org, Petr Mladek <pmladek@suse.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v7 4/5] printk: Userspace format indexing support
-Message-ID: <YMs4vZVsYlgZ1RhN@chrisdown.name>
-References: <e42070983637ac5e384f17fbdbe86d19c7b212a5.1623775748.git.chris@chrisdown.name>
- <202106171546.7koPrJBA-lkp@intel.com>
- <YMsJ6ORGRKmSlvJO@smile.fi.intel.com>
+        Thu, 17 Jun 2021 08:01:33 -0400
+Received: from mxout017.mail.hostpoint.ch (mxout017.mail.hostpoint.ch [IPv6:2a00:d70:0:e::317])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDBEC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:59:24 -0700 (PDT)
+Received: from [10.0.2.44] (helo=asmtp014.mail.hostpoint.ch)
+        by mxout017.mail.hostpoint.ch with esmtp (Exim 4.94.2 (FreeBSD))
+        (envelope-from <code@reto-schneider.ch>)
+        id 1ltqg3-000CfJ-TB; Thu, 17 Jun 2021 13:59:19 +0200
+Received: from [2a02:168:6182:1:d64b:e086:4fb7:9a87]
+        by asmtp014.mail.hostpoint.ch with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2 (FreeBSD))
+        (envelope-from <code@reto-schneider.ch>)
+        id 1ltqg3-0008sS-PS; Thu, 17 Jun 2021 13:59:19 +0200
+X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
+Subject: Re: [PATCH v1] mtd: spi-nor: Add support for XM25QH64C
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-mtd@lists.infradead.org, Stefan Roese <sr@denx.de>,
+        Reto Schneider <reto.schneider@husqvarnagroup.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+References: <20210613121248.1529292-1-code@reto-schneider.ch>
+ <1ba367f93650cb65122acd32fb4a4159@walle.cc>
+From:   Reto Schneider <code@reto-schneider.ch>
+Message-ID: <f022abf3-a6fe-d060-9868-985303c4e8a0@reto-schneider.ch>
+Date:   Thu, 17 Jun 2021 13:59:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YMsJ6ORGRKmSlvJO@smile.fi.intel.com>
-User-Agent: Mutt/2.1 (4b100969) (2021-06-12)
+In-Reply-To: <1ba367f93650cb65122acd32fb4a4159@walle.cc>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy Shevchenko writes:
->Chris, to avoid such issues, use `git format-patch --base ...` when sending a
->series / patches.
+Hi Michael,
 
-Ah, I forgot about that. Will do, thanks.
+Thanks for your feedback.
+
+On 14.06.21 08:56, Michael Walle wrote:
+> Could you add that as a "Datasheet:" tag before your Sob tag?
+
+Will do for v2.
+
+>> This chip has been (briefly) tested on the MediaTek MT7688 based GARDENA
+>> smart gateway.
+> 
+> Could you also apply my SFDP patch [1] and send the dump? Unfortunately,
+> I can't think of a good way to do that along with the patch and if this
+> in some way regarded as copyrighted material. So feel free to send it to
+> me privately. I'm starting to build a database.
+
+Will do. If interested, I could also include the predecessor (XM25QH64A).
+
+> NB. XMC ignores the continuation codes and this particular device will
+> collide with M25PE64/M45PE64. Although I couldn't find any datasheet,
+> so I don't know if these devices actually exist.
+
+M25PE64 yields quite some hits on Google. Is supporting this (all?) XMC 
+device in upstream a good idea nevertheless? Does "first come, first 
+served" apply here?
+
+Kind regards,
+Reto
