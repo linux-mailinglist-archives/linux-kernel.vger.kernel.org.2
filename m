@@ -2,130 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18C33AB724
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66EA3AB754
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhFQPTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47298 "EHLO
+        id S233230AbhFQPYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:24:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233111AbhFQPTy (ORCPT
+        with ESMTP id S233111AbhFQPYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:19:54 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAE7C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:17:46 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id d9so3557353ioo.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:17:46 -0700 (PDT)
+        Thu, 17 Jun 2021 11:24:03 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3C6C061574;
+        Thu, 17 Jun 2021 08:21:55 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so6301116pjs.2;
+        Thu, 17 Jun 2021 08:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LIhMT1j3iJAaXNuZq7hCeQqZfqVMaOKz+Q/ejpSNsmM=;
-        b=u0q5DeNvodHE8xRpUKhXNXBu+sU9kNfLU/cggfhap651/3HEdh64j4DtxLmv399HWs
-         GLbwSArvZ8kWb3Ygw7zmUqaCwbeaF2uvJBejEL6wGXUmbX55P0S9vSMgK4A7kPW8WYVo
-         4m/8QXXlAq6x4v1ru1WhfphsafwXUnSGv6brvYcg68mC/DWcksFwgUf5AdADtzjlywTU
-         8QTie9FFUqCPFr8saxiet2Yr0z24PWiNKoEi9pEwcS5aSWaA24H4BXxfc1FZ1LMvnUVa
-         FtCAow0S9EnjoTgLzL9K7Kzjnnk0PcTjLZa/F/jkool1KEiW1zNUa0Lq65iVRX5FprzM
-         wM5g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7Y5GMN6FiWT3RZ9stwoM18lhVvKOaYLrtUlnA5+xu5w=;
+        b=ZK+bQixDW3Kz04tAtjGbJiPTg4/iZEM5+2CWDBAXtcTFRddlfa1cfEIwzpPh5Y5xMf
+         rKHQ3gFlHo2FK+l2zUApOOylNi631kiz+nmAh0Vm5rg/WcwlQwlo9cvP1KqZnbyZLgiD
+         fIYUoEt8vQE3GiNa3OTULSRI/XEPbczQ2yR/VTRj5J8DUHxqDfGB5VrDZVDwEpo3TvRT
+         G27/7Nz/HWkIwrAKA7dCO0ff5S1I+OjhGLTY4qvbIZVSbqaLiA0S7EPXYTywFQsxmGK/
+         XznjtVioNy3ReC+vB/reHgIXM8lkp+peDbD4y6BGUObwv0w51UKq+jTQD/o5ld/n01W9
+         tjVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LIhMT1j3iJAaXNuZq7hCeQqZfqVMaOKz+Q/ejpSNsmM=;
-        b=Nkum5ghaktF8XR3/QqtEarCz9NYJFvdvb1eHtTQyNjLImvuTCo13PGL3KLV9Dyj/5k
-         tvC/oYyA8uSWVvjSKxX2DODQwMfLEcRFlchcx0C4JGJniS3vdnXWcjBfvIY9rrWzLoJU
-         ltC9K+pBPXsO5q0wRJCeH/YtZgVrSjUNqloM3eotFVVve8mwIRs6UJM3O2ig8V94uluV
-         E5phlCDltViwf4wOHp4T5vkaraSAuMaeyG5RXjXOawnXOuJSFVnEqVBl1Gvj1HtLSOKl
-         5h4S9rlb7yB39MWU8IBocZJr5M+ELGRERRAD9zrsQY3uHTfqOyIyR3kNC0AMBDRCgobh
-         688w==
-X-Gm-Message-State: AOAM533acsp2Nx52OMNlmHIJHgBi44qpKzYt9aXNUSlwhsyFs0q3YLAX
-        A2k4Fnu9TDnoT3Dax/z25cM=
-X-Google-Smtp-Source: ABdhPJzDzfwESP9Oxxp9U0vkxfzO3rKlzoHqYLE0FT4LsKmGJvFagAnunefg4nc8bNp/rVNARshp3Q==
-X-Received: by 2002:a05:6638:144f:: with SMTP id l15mr5207242jad.131.1623943065959;
-        Thu, 17 Jun 2021 08:17:45 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id d18sm888035ils.5.2021.06.17.08.17.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 08:17:45 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id DD5B427C0054;
-        Thu, 17 Jun 2021 11:17:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 17 Jun 2021 11:17:44 -0400
-X-ME-Sender: <xms:mGfLYENoI1u02rK0lSe6K7-1r1dumMjWWTXivGUZR8wxRYovEFIzLQ>
-    <xme:mGfLYK-yeR0nRhPfGVNaP3oTC7xdC6v8DytBVJydLYkWVa-f-7XBTS2jZbNalQjjH
-    1PYqWCBnXXdfTZBQQ>
-X-ME-Received: <xmr:mGfLYLSmDlZ8QiIBqlUJbx9TZjtSe54MosBKBVxUiu5GnzCf_sAedM2NMbU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefuddgkeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehg
-    mhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpedvleeigedugfegveejhfejveeuve
-    eiteejieekvdfgjeefudehfefhgfegvdegjeenucevlhhushhtvghrufhiiigvpedtnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrsh
-    honhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghn
-    gheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:mGfLYMse1th2PetMonSSHS6ER-rfFyJ5lwM8pSc77oU5TU6EbA1f-A>
-    <xmx:mGfLYMdCPVwupe8thfe8Bq2Dj6e97t02QU1T2m-wvgI7dGaDtVyr-A>
-    <xmx:mGfLYA3VbvJUT7XAIHd1EMRcnkMpcPrw6LpwIxvgsTKQCiWxNmbsNA>
-    <xmx:mGfLYERkl3SdierB5kAudywbICGUsUF4hnCf7eIHPa3yWuK5CMT8vg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 17 Jun 2021 11:17:44 -0400 (EDT)
-Date:   Thu, 17 Jun 2021 23:17:19 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Xiongwei Song <sxwjean@me.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, linux-kernel@vger.kernel.org,
-        Xiongwei Song <sxwjean@gmail.com>
-Subject: Re: [PATCH] locking/lockdep: correct the description error for
- check_redundant()
-Message-ID: <YMtnf4lOEiF++32w@boqun-archlinux>
-References: <20210617150523.454965-1-sxwjean@me.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7Y5GMN6FiWT3RZ9stwoM18lhVvKOaYLrtUlnA5+xu5w=;
+        b=CLPkJk91DIKCdEgAFAt7zALCG2eVs1bG1aTnHBFcOqSaM89aFTRkLzBwvpcmE/fnsW
+         B3nQwrjrWI7wp2K/hSHoU19yvmKvC3ya8Wko2wCIjc0YHtS1M7CzP2+3qFFdNpsT25tL
+         DSVL4iqTaqzeYDJeG0Jrh2vjpsSg91LJdWHT9MUULcN9EnUn4SfCREegyEUNUkc/TWzS
+         8Pfh5paiVvoAdOX+k+7L2AE7SYJCjWaP4NolrMQV7skjRbPuM713Ddz3/Q9yvH7Ci0uJ
+         qbKSDQrDXJu2DbCEY3TQTJXqxHJFaTTxjeWLA4KlekDMnqJ8jM2+HSDOGg0QaBwBnNOP
+         8aZg==
+X-Gm-Message-State: AOAM530yWDgVub9EnVerwpo2/uipu0gyTzj/GRfEtU7dDFfa7bnqowR6
+        TdyM6M0VSCKPAffYVACu1I4iyDQZ6mFpcoaDrPw=
+X-Google-Smtp-Source: ABdhPJwmoy5v2TRjlHnD6igB0E65N/FFyREMflvaeLcr9NvBLLK8YAI/KGpYVvh0m44yzwP9Mswq85QctQtnlkI5+Nc=
+X-Received: by 2002:a17:902:3:b029:11f:e733:408f with SMTP id
+ 3-20020a1709020003b029011fe733408fmr545961pla.21.1623943315210; Thu, 17 Jun
+ 2021 08:21:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617150523.454965-1-sxwjean@me.com>
+References: <1623924351-22489-1-git-send-email-akhilrajeev@nvidia.com>
+In-Reply-To: <1623924351-22489-1-git-send-email-akhilrajeev@nvidia.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 17 Jun 2021 18:21:38 +0300
+Message-ID: <CAHp75VdBQUv+yri453KGGBz5ynd0pETxdOngCgPe3mbG22sLXQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: tegra186: Add ACPI support
+To:     Akhil R <akhilrajeev@nvidia.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Suresh Mangipudi <smangipudi@nvidia.com>,
+        Krishna Yarlagadda <kyarlagadda@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 11:05:23PM +0800, Xiongwei Song wrote:
-> From: Xiongwei Song <sxwjean@gmail.com>
-> 
-> If there is no matched result, check_redundant() will return BFS_RNOMATCH.
-> 
-> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+On Thu, Jun 17, 2021 at 1:18 PM Akhil R <akhilrajeev@nvidia.com> wrote:
+>
+> From: Akhil Rajeev <akhilrajeev@nvidia.com>
+>
+> Add ACPI module ID to probe the driver from the ACPI based bootloader
+> firmware.
 
-Good catch!
+...
 
-Nit: you may want to capitalize the first letter after subsystem tag in
-the patch title, like:
+> +#include <linux/acpi.h>
 
-	"locking/lockdep: Correct ..."
+It probably should be property.h, see below.
 
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+...
 
-Regards,
-Boqun
+> +       if (has_acpi_companion(&pdev->dev)) {
+> +               gpio->secure = devm_platform_ioremap_resource(pdev, 0);
+> +               gpio->base = devm_platform_ioremap_resource(pdev, 1);
+> +       } else {
+> +               gpio->secure = devm_platform_ioremap_resource_byname(pdev, "security");
+> +               gpio->base = devm_platform_ioremap_resource_byname(pdev, "gpio");
+> +       }
 
-> ---
->  kernel/locking/lockdep.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index cfe0f4374594..1f126ca7fbd7 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -2726,7 +2726,7 @@ static inline bool usage_skip(struct lock_list *entry, void *mask)
->   * <target> or not. If it can, <src> -> <target> dependency is already
->   * in the graph.
->   *
-> - * Return BFS_RMATCH if it does, or BFS_RMATCH if it does not, return BFS_E* if
-> + * Return BFS_RMATCH if it does, or BFS_RNOMATCH if it does not, return BFS_E* if
->   * any error appears in the bfs search.
->   */
->  static noinline enum bfs_result
-> -- 
-> 2.30.2
-> 
+General comment here.
+Can't we rather try named resources first and fallback to indexed
+ones? (Or other way around)
+
+In this case you don't need to check for ACPI at all.
+
+...
+
+> +               .acpi_match_table = ACPI_PTR(tegra186_gpio_acpi_match),
+
+You can drop ACPI_PTR() along with ugly ifdeffery.
+
+-- 
+With Best Regards,
+Andy Shevchenko
