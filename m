@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C02D3AAB5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8CA3AAB66
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhFQFuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 01:50:55 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:46304 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229912AbhFQFus (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 01:50:48 -0400
-X-UUID: c43d7aac53ee49dd9d686c953eeb5722-20210617
-X-UUID: c43d7aac53ee49dd9d686c953eeb5722-20210617
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1271350912; Thu, 17 Jun 2021 13:48:36 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 17 Jun 2021 13:48:36 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Jun 2021 13:48:36 +0800
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <bicycle.tsai@mediatek.com>, <jiaxin.yu@mediatek.com>,
-        <cychiang@google.com>
-Subject: [PATCH 8/8] dt-bindings: mediatek: mt8195: add mt8195-mt6359-rt1019-rt5682 document
-Date:   Thu, 17 Jun 2021 13:47:39 +0800
-Message-ID: <20210617054740.8081-9-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210617054740.8081-1-trevor.wu@mediatek.com>
-References: <20210617054740.8081-1-trevor.wu@mediatek.com>
+        id S229683AbhFQFwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 01:52:24 -0400
+Received: from www.zeus03.de ([194.117.254.33]:43668 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229709AbhFQFwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 01:52:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=txV8Finzg7rGGU0YURmRHYvLobGc
+        EfiaKSowZNWDJVY=; b=HjNWC/Evgt4kqDKXfI5VamHFThUEmLCRh7Y2yPlH73TP
+        K7opLL7qwa2VR5I9SQRq15TdsaJDrJEdPMaTXgdldKz7RAnQyvZSwhMJEr6ELNFj
+        DtoEfnRUwXYKhA/OCmoDlPnxkkStBczp0vFas8gDwMwqt+DThYbbF4dIsAFHGkQ=
+Received: (qmail 212463 invoked from network); 17 Jun 2021 07:50:11 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 17 Jun 2021 07:50:11 +0200
+X-UD-Smtp-Session: l3s3148p1@I0PDx+/EVM4gAwDPXxG6AGBCCTPRmR7s
+Date:   Thu, 17 Jun 2021 07:50:11 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     netdev@vger.kernel.org,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michael Walle <michael@walle.cc>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] sh_eth: Avoid memcpy() over-reading of ETH_SS_STATS
+Message-ID: <YMrik9LBVYvu3Xkw@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michael Walle <michael@walle.cc>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210616195333.1231715-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OZ12UJaMUBfcACI+"
+Content-Disposition: inline
+In-Reply-To: <20210616195333.1231715-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds document for mt8195 board with mt6359, rt1019 and rt5682
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- .../sound/mt8195-mt6359-rt1019-rt5682.yaml    | 39 +++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
+--OZ12UJaMUBfcACI+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
-new file mode 100644
-index 000000000000..fc93809300ae
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
-@@ -0,0 +1,39 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/mt8195-mt6359-rt1019-rt5682.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Mediatek MT8195 with MT6359, RT1019 and RT5682 ASoC sound card driver
-+
-+maintainers:
-+   - Trevor Wu <trevor.wu@mediatek.com>
-+
-+description:
-+  This binding describes the MT8195 sound card.
-+
-+properties:
-+  compatible:
-+      const: mediatek,mt8195_mt6359_rt1019_rt5682
-+
-+  mediatek,platform:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 ASoC platform.
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - mediatek,platform
-+
-+examples:
-+  - |
-+
-+    sound: mt8195-sound {
-+        compatible = "mediatek,mt8195-sound";
-+        mediatek,platform = <&afe>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&aud_pins_default>;
-+    };
-+
-+...
--- 
-2.18.0
+On Wed, Jun 16, 2021 at 12:53:33PM -0700, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memcpy(), memmove(), and memset(), avoid
+> intentionally reading across neighboring array fields.
+>=20
+> The memcpy() is copying the entire structure, not just the first array.
+> Adjust the source argument so the compiler can do appropriate bounds
+> checking.
+>=20
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
+For the record:
+
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+
+--OZ12UJaMUBfcACI+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDK4pIACgkQFA3kzBSg
+KbYVvg//dtV8RU8D/hpGH2BEQIDcYy8gwypQ8GJLk2kiWH1H9M2CjnQciapF/8l0
+WeMMCSD70iVw9nTNT0DMv64M8LxpPTYS9fEMmbtfEn45Yb25ax3TPyiAT4FxA3yB
+iQN+m7Q9FbdZfEQzH7itu9AMtCqZZPB5BeWLM8NLDrPgkZEV4wCKxDk3f49Gx8mD
+3K0pvPEbn5yiqrmhkADYND75RT9cJX4pzLdQuRnSFRd8WLvOJCaze+zGrwdVsa22
+kgWuXT9U8IxuXPUaW2JbV/DzjTHbin5kmmWl3jcJgjSWDeNJ8F0l4W3Ydp3UMLtW
+mBmohFQZMfxM6414ZPg4GTmq/rUIMc2tePgqPWmFMzGE/EA7ShsXXwbuhAtO3WH3
+VpL3QvmIqG1zZW7IXGBQ/xbyjjIwvS7LKVGv9KovEcfikJ4VjCQhoDmJ9YvPttsp
+8ZujPnk6cQMAAvdQFzNKSxHhwaLynu4eKpUS1h8H31Hg0CY3P1IdLLuZ1Qfvm+ZY
+HVdp1JUSbzhCnkkiUaIC6QgzxcAGIOqY3yORuWJ+IDMeBKf/KmRUEofkkxN1ZCht
+0Cqcvep3wJHZjBetRgLAonjmIaApw6nMzH09oy6NAhqYB4LM0LJdbmaDnR4UMRwH
+FxmptOJGqgzguBOjKYsQblJs1dFWvcBfc6CoIwrORAw344klKjs=
+=GZHy
+-----END PGP SIGNATURE-----
+
+--OZ12UJaMUBfcACI+--
