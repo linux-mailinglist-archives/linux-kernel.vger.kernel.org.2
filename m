@@ -2,134 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31743AAEA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3463AAEAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhFQIZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 04:25:05 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:8251 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhFQIZC (ORCPT
+        id S230391AbhFQI0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 04:26:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21106 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229773AbhFQI0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:25:02 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G5FKp5jXQz1BGTR;
-        Thu, 17 Jun 2021 16:17:50 +0800 (CST)
-Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 16:22:53 +0800
-Received: from [10.174.187.128] (10.174.187.128) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 16:22:52 +0800
-Subject: Re: [PATCH v6 1/4] KVM: arm64: Introduce cache maintenance callbacks
- for guest stage-2
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Will Deacon <will@kernel.org>, Quentin Perret <qperret@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>, <wanghaibin.wang@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>
-References: <20210616095200.38008-1-wangyanan55@huawei.com>
- <20210616095200.38008-2-wangyanan55@huawei.com>
- <87eed2lzcc.wl-maz@kernel.org>
- <8340be12-cc80-8c2a-3597-ecba05eaf35a@huawei.com>
- <87o8c4dikn.wl-maz@kernel.org>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <0dced974-b507-ce48-b89d-344d41a02418@huawei.com>
-Date:   Thu, 17 Jun 2021 16:22:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 17 Jun 2021 04:26:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623918242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Ecr4SaZppkR6LC4jjThumUcPziwAjzPppqw1CbdJdos=;
+        b=cLShJXPIdOgZ/wbturV6RHeb/bd4xay3toSW4Y0i1ccdETJWmDlQgfhqwh/9fKpyR3N0aF
+        H6aD9638PS2jNwBF71aNFaPm3qu1PtLREYYVo0lg+lHlpHpRgOIKIctJsBjTZqYJkaX6OV
+        YBlQd5FO8f/NZYu9TfavpCKEAT4GV0M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-82-x2ro2a0eNQuCs3530FCC5A-1; Thu, 17 Jun 2021 04:23:59 -0400
+X-MC-Unique: x2ro2a0eNQuCs3530FCC5A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF051100C62B;
+        Thu, 17 Jun 2021 08:23:57 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CD47B5C1C5;
+        Thu, 17 Jun 2021 08:23:52 +0000 (UTC)
+Subject: [PATCH v2 0/3] netfs, afs: Fix netfs_write_begin and THP handling
+From:   David Howells <dhowells@redhat.com>
+To:     linux-cachefs@redhat.com, linux-afs@lists.infradead.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        ceph-devel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew W Elble <aweits@rit.edu>, dhowells@redhat.com,
+        Jeff Layton <jlayton@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 17 Jun 2021 09:23:51 +0100
+Message-ID: <162391823192.1173366.9740514875196345746.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <87o8c4dikn.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
- dggpemm500023.china.huawei.com (7.185.36.83)
-X-CFilter-Loop: Reflected
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Here are some patches to fix netfs_write_begin() and the handling of THPs in
+that and afs_write_begin/end() in the following ways:
 
-On 2021/6/17 16:03, Marc Zyngier wrote:
-> On Thu, 17 Jun 2021 07:48:29 +0100,
-> "wangyanan (Y)" <wangyanan55@huawei.com> wrote:
->> Hi Marc,
->>
->> On 2021/6/16 21:21, Marc Zyngier wrote:
->>> Hi Yanan,
->>>
->>> On Wed, 16 Jun 2021 10:51:57 +0100,
->>> Yanan Wang <wangyanan55@huawei.com> wrote:
->>>> To prepare for performing guest CMOs in the fault handlers in pgtable.c,
->>>> introduce two cache maintenance callbacks in struct kvm_pgtable_mm_ops.
->>>>
->>>> The new callbacks are specific for guest stage-2, so they will only be
->>>> initialized in 'struct kvm_pgtable_mm_ops kvm_s2_mm_ops'.
->>>>
->>>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
->>>> ---
->>>>    arch/arm64/include/asm/kvm_pgtable.h | 7 +++++++
->>>>    1 file changed, 7 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
->>>> index c3674c47d48c..302eca32e0af 100644
->>>> --- a/arch/arm64/include/asm/kvm_pgtable.h
->>>> +++ b/arch/arm64/include/asm/kvm_pgtable.h
->>>> @@ -44,6 +44,11 @@ typedef u64 kvm_pte_t;
->>>>     *			in the current context.
->>>>     * @virt_to_phys:	Convert a virtual address mapped in the current context
->>>>     *			into a physical address.
->>>> + * @flush_dcache:	Clean data cache for a guest page address range before
->>>> + *			creating the corresponding stage-2 mapping.
->>> Please don't reintroduce the word 'flush'. We are really trying to
->>> move away from it as it doesn't describe what we want to do.
->> I agree with this. I intended to make the names short and laconic, but this
->> missed the information about the callback's actual behaviors.
->>> Here this
->>> should be 'clean_invalidate_dcache' which, despite being a mouthful,
->>> describe accurately what we expect it to do.
->> Sure, I will change the name as you suggested.
->>> The comment is also missing the invalidate part, and we shouldn't
->>> assume that this is only used for S2 mapping.
->> Ok, will refine the comment. I think something like"Clean and invalidate the
->> date cache for the specified memory address range" may be generic enough.
->>>> + * @flush_icache:	Invalidate instruction cache for a guest page address
->>>> + *			range before creating or updating the corresponding
->>>> + *			stage-2 mapping.
->>> Same thing here; this should be 'invalidate_icache', and the comment
->>> cleaned up.
->> Thanks, I will also correct this part.
->>
->> Besides the callback names and comments, is there anything else that still
->> needs some adjustment in the other three patches? :)
-> It looks pretty good so far, much nicer than the previous versions.
->
-> I have a small nit on the last patch, which should be dead easy to
-> address. I'm currently running a bunch of tests, hopefully nothing bad
-> will come out of it.
->
-> If you respin it shortly, that nothing fails, and unless someone
-> shouts, I'll queue it for -next.
-It would be nice, thanks!
-I will address the nit and respin the series soon.
+ (1) Use offset_in_thp() rather than manually calculating the offset into
+     the page.
 
-Thanks,
-Yanan
-.
-> Thanks,
->
-> 	M.
->
+ (2) In the future, the len parameter may extend beyond the page allocated.
+     This is because the page allocation is deferred to write_begin() and
+     that gets to decide what size of THP to allocate.
+
+ (3) In netfs_write_begin(), extract the decision about whether to skip a
+     page out to its own helper and have that clear around the region to be
+     written, but not clear that region.  This requires the filesystem to
+     patch it up afterwards if the hole doesn't get completely filled.
+
+ (4) Due to (3), afs_write_end() now needs to handle short data write into
+     the page by generic_perform_write().  I've adopted an analogous
+     approach to ceph of just returning 0 in this case and letting the
+     caller go round again.
+
+I wonder if generic_perform_write() should pass in a flag indicating
+whether this is the first attempt or a second attempt at this, and on the
+second attempt we just completely prefill the page and just let the partial
+write stand - which we have to do if the page was already uptodate when we
+started.
+
+The patches can be found here:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-fixes
+
+David
+
+Link: https://lore.kernel.org/r/20210613233345.113565-1-jlayton@kernel.org/
+Link: https://lore.kernel.org/r/162367681795.460125.11729955608839747375.stgit@warthog.procyon.org.uk/
+
+Changes
+=======
+
+ver #2:
+   - Removed a var that's no longer used (spotted by the kernel test robot)
+   - Removed a forgotten "noinline".
+
+ver #1:
+   - Prefixed the Jeff's new helper with "netfs_".
+   - Don't call zero_user_segments() for a full-page write.
+   - Altered the beyond-last-page check to avoid a DIV.
+   - Removed redundant zero-length-file check.
+   - Added patches to fix afs.
+
+---
+David Howells (2):
+      afs: Handle len being extending over page end in write_begin/write_end
+      afs: Fix afs_write_end() to handle short writes
+
+Jeff Layton (1):
+      netfs: fix test for whether we can skip read when writing beyond EOF
+
+
+ fs/afs/write.c         | 12 +++++++++--
+ fs/netfs/read_helper.c | 49 +++++++++++++++++++++++++++++++-----------
+ 2 files changed, 46 insertions(+), 15 deletions(-)
+
 
