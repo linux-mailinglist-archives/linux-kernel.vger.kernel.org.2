@@ -2,140 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65573AA93E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 04:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A873AA941
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 04:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhFQC7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 22:59:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39999 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229845AbhFQC7c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 22:59:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623898644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DAFQKb5VrgrYV0k/wY/7SUmNCOTFhI8VI1aGDC5iIO8=;
-        b=Jcaba2sjm3xtgD+41q9NtOflWiE+Pu157aXqzq8ftYx4PdDhyRuiN0EOv/D7UK9OJDMwRj
-        ue6ccSw1tpICuLuaWPPTzO58+xG167gSdc2f4UqDtm3O7A9eKzgnBKMeD2+wZTbT2K0Lik
-        B+t5rtVS469LzOp27G/e3vyJb9e+AmQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-517-r6lDFtJaMbiqyaHaEsl38Q-1; Wed, 16 Jun 2021 22:57:23 -0400
-X-MC-Unique: r6lDFtJaMbiqyaHaEsl38Q-1
-Received: by mail-wr1-f70.google.com with SMTP id d5-20020a0560001865b0290119bba6e1c7so2260799wri.20
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 19:57:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=DAFQKb5VrgrYV0k/wY/7SUmNCOTFhI8VI1aGDC5iIO8=;
-        b=gKSt0mzH2GfRQ7PvDheb4I3yXPbVcBC8SW84bvYa4kOmo/Mie1fIKH+hde3gE915MV
-         qwnoEgrFY5f8/G+4u/iEQpWTMAM9/S8nUuP6vxbWtaezasaXoyPfrgZ9miPnZ/pQ9id7
-         iRXnSJuDMGjeuX8pm5o5rzcMjIDpRgwA3fFN21oGT0lFie9Y1MnFW6C70KRCP0ABlavT
-         Bg9Tfd/CXq2DqS2MZcgaTVwIEKuK2kwFNOhoAajTOpkuFceyuNOA2O2HtRkMwFZBIeUz
-         Zx9VDiuZu+HK9E3T/9Lxj8vt2aZGiyw17bITrxoOE+zDu//6ch/fF0OK+AYcwKRt23TY
-         4G6w==
-X-Gm-Message-State: AOAM532Xxa3KRq1BAlzuV4IdLUEH0i5qE4f3JXRB7ciwC3T5mZE2Pcn8
-        5KRxMUYqBZQ0oTYjolG0Wplou6uxsxly0oDlA2GeYjrmJt3G2wTSi0obQ4UyMP0UpuLkTk6lNi2
-        /sk+fxh+A40A5eYXf5TWVqPNB
-X-Received: by 2002:adf:fa08:: with SMTP id m8mr2588911wrr.319.1623898642537;
-        Wed, 16 Jun 2021 19:57:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzCrsdMs441mSf9ppOn+tdXQjRSYRgSoQKu8IvgKpu90SjG1vEtnx9wN6BEODI05JDaMf9R/Q==
-X-Received: by 2002:adf:fa08:: with SMTP id m8mr2588889wrr.319.1623898642332;
-        Wed, 16 Jun 2021 19:57:22 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id x7sm3933291wrn.3.2021.06.16.19.57.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 19:57:21 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 2/5] cgroup/cpuset: Add new cpus.partition type with no
- load balancing
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <20210603212416.25934-1-longman@redhat.com>
- <20210603212416.25934-3-longman@redhat.com>
- <YMpjbCWpSDIz4bHt@slm.duckdns.org>
-Message-ID: <557d7fdb-5dae-11e1-4f82-ae9f4334c06a@redhat.com>
-Date:   Wed, 16 Jun 2021 22:57:18 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <YMpjbCWpSDIz4bHt@slm.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S230047AbhFQDA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 23:00:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229614AbhFQDA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 23:00:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 419616102A;
+        Thu, 17 Jun 2021 02:58:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623898699;
+        bh=bIBZrweDay9LQzFP2yvtyfQ8zfOsTpcNUjojQFpzFV0=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=k4eyZMrg1O7umGMQrWM60kljALZxXGQgswKriLhQWDBLgy7Bs57z63quhJwgE9h53
+         FoT+as3PM6EEIabHXHgQSBvQhgZzI94jbYL2XKvWi3WPJVy5KUyI5bcqTHltqK/SV2
+         jznjfQI2Jk0Bo+GkswxkIflk+dW941xqZAz+Yh2WcTvdS0X0k7WVzTGQdj+oIwG3w5
+         i9nxbxgZe5UjvwR6OFAANuOwyiC7EHrd0ue7yr5heqG86zkzbbK9E2zoKSZzV7IG3v
+         XiyMmUncNzG7yUyFvqClWHu8WrdO4ZuMdm+3PZKXWO+TFKPYwm88z/fsnOp/H+Iisg
+         CvKeyAcwxbReA==
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 48A9F27C0054;
+        Wed, 16 Jun 2021 22:58:18 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute2.internal (MEProxy); Wed, 16 Jun 2021 22:58:18 -0400
+X-ME-Sender: <xms:SbrKYCBeqG8pydUEWFrYfPI63g_c1BmVBVkDhg4kPu151OjJAbIBlg>
+    <xme:SbrKYMjvtpzNM0DwjdSMd6qVKvxAa6fQThnOr6B0u2-drat8ms5i4a9BqEKLZdC8r
+    sk3nKH6Ik1oqwkRqUY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeftddgiedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
+    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:SbrKYFkgEokPiO8ogStIQB97b0l9l6OyC-u6O6QWmMNjc61Vj0UDvQ>
+    <xmx:SbrKYAwot-qMNhiL6wpx8naWDT0W7hp5JDje4wRuw9CHhpIWq8u8iw>
+    <xmx:SbrKYHSZSg0g0SxBh2EcJNliqAV18hQ9kyR5P8WPJBoGP7QnJ_-Egw>
+    <xmx:SrrKYILbzxmNPvJ1CsG6EtXQdQuIcfxlPdmwnRd0ICre2J5Gx5rtfJvmFec>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id A939E51C0060; Wed, 16 Jun 2021 22:58:17 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-526-gf020ecf851-fm-20210616.001-gf020ecf8
+Mime-Version: 1.0
+Message-Id: <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
+In-Reply-To: <1623893358.bbty474jyy.astroid@bobo.none>
+References: <cover.1623813516.git.luto@kernel.org>
+ <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
+ <1623816595.myt8wbkcar.astroid@bobo.none>
+ <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
+ <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
+ <1623893358.bbty474jyy.astroid@bobo.none>
+Date:   Wed, 16 Jun 2021 19:57:57 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Nicholas Piggin" <npiggin@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org,
+        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Subject: Re: [PATCH 4/8] membarrier: Make the post-switch-mm barrier explicit
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 4:47 PM, Tejun Heo wrote:
-> Hello,
->
-> Generally looks fine to me.
->
-> On Thu, Jun 03, 2021 at 05:24:13PM -0400, Waiman Long wrote:
->> @@ -1984,12 +1987,31 @@ static int update_prstate(struct cpuset *cs, int val)
->>   			goto out;
->>   
->>   		err = update_parent_subparts_cpumask(cs, partcmd_enable,
->> -						     NULL, &tmp);
->> +						     NULL, &tmpmask);
->> +
->>   		if (err) {
->>   			update_flag(CS_CPU_EXCLUSIVE, cs, 0);
->>   			goto out;
->> +		} else if (new_prs == PRS_ENABLED_NOLB) {
->> +			/*
->> +			 * Disable the load balance flag should not return an
->                                   ^ing
->
-> and "else if" after "if (err) goto out" block is weird. The two conditions
-> don't need to be tied together.
-
-Yes, the else part is redundant in this case. Will remove it.
 
 
->
->> @@ -2518,6 +2547,9 @@ static int sched_partition_show(struct seq_file *seq, void *v)
->>   	case PRS_ENABLED:
->>   		seq_puts(seq, "root\n");
->>   		break;
->> +	case PRS_ENABLED_NOLB:
->> +		seq_puts(seq, "root-nolb\n");
->> +		break;
->>   	case PRS_DISABLED:
->>   		seq_puts(seq, "member\n");
->>   		break;
->> @@ -2544,6 +2576,8 @@ static ssize_t sched_partition_write(struct kernfs_open_file *of, char *buf,
->>   		val = PRS_ENABLED;
->>   	else if (!strcmp(buf, "member"))
->>   		val = PRS_DISABLED;
->> +	else if (!strcmp(buf, "root-nolb"))
->> +		val = PRS_ENABLED_NOLB;
->>   	else
->>   		return -EINVAL;
-> I wonder whether there's a better name than "root-nolb" because nolb isn't
-> the most readable and we are using space as the delimiter for other names.
-> Would something like "isolated" work?
+On Wed, Jun 16, 2021, at 6:37 PM, Nicholas Piggin wrote:
+> Excerpts from Andy Lutomirski's message of June 17, 2021 4:41 am:
+> > On 6/16/21 12:35 AM, Peter Zijlstra wrote:
+> >> On Wed, Jun 16, 2021 at 02:19:49PM +1000, Nicholas Piggin wrote:
+> >>> Excerpts from Andy Lutomirski's message of June 16, 2021 1:21 pm:
+> >>>> membarrier() needs a barrier after any CPU changes mm.  There is =
+currently
+> >>>> a comment explaining why this barrier probably exists in all case=
+s.  This
+> >>>> is very fragile -- any change to the relevant parts of the schedu=
+ler
+> >>>> might get rid of these barriers, and it's not really clear to me =
+that
+> >>>> the barrier actually exists in all necessary cases.
+> >>>
+> >>> The comments and barriers in the mmdrop() hunks? I don't see what =
+is=20
+> >>> fragile or maybe-buggy about this. The barrier definitely exists.
+> >>>
+> >>> And any change can change anything, that doesn't make it fragile. =
+My
+> >>> lazy tlb refcounting change avoids the mmdrop in some cases, but i=
+t
+> >>> replaces it with smp_mb for example.
+> >>=20
+> >> I'm with Nick again, on this. You're adding extra barriers for no
+> >> discernible reason, that's not generally encouraged, seeing how ext=
+ra
+> >> barriers is extra slow.
+> >>=20
+> >> Both mmdrop() itself, as well as the callsite have comments saying =
+how
+> >> membarrier relies on the implied barrier, what's fragile about that=
+?
+> >>=20
+> >=20
+> > My real motivation is that mmgrab() and mmdrop() don't actually need=
+ to
+> > be full barriers.  The current implementation has them being full
+> > barriers, and the current implementation is quite slow.  So let's tr=
+y
+> > that commit message again:
+> >=20
+> > membarrier() needs a barrier after any CPU changes mm.  There is cur=
+rently
+> > a comment explaining why this barrier probably exists in all cases. =
+The
+> > logic is based on ensuring that the barrier exists on every control =
+flow
+> > path through the scheduler.  It also relies on mmgrab() and mmdrop()=
+ being
+> > full barriers.
+> >=20
+> > mmgrab() and mmdrop() would be better if they were not full barriers=
+.  As a
+> > trivial optimization, mmgrab() could use a relaxed atomic and mmdrop=
+()
+> > could use a release on architectures that have these operations.
+>=20
+> I'm not against the idea, I've looked at something similar before (not=
 
-Right. "isolated" is a better name and it corresponds better with the 
-isolcpus kernel command line option. Will change the name.
+> for mmdrop but a different primitive). Also my lazy tlb shootdown seri=
+es=20
+> could possibly take advantage of this, I might cherry pick it and test=
+=20
+> performance :)
+>=20
+> I don't think it belongs in this series though. Should go together wit=
+h
+> something that takes advantage of it.
 
-Thanks,
-Longman
+I=E2=80=99m going to see if I can get hazard pointers into shape quickly=
+.
 
+>=20
+> Thanks,
+> Nick
+>=20
