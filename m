@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14703AAD7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8554A3AAD80
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhFQH0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 03:26:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50526 "EHLO mail.kernel.org"
+        id S229714AbhFQH1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 03:27:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230146AbhFQH0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 03:26:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FF946135C;
-        Thu, 17 Jun 2021 07:24:36 +0000 (UTC)
+        id S229683AbhFQH1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 03:27:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 105A26135C;
+        Thu, 17 Jun 2021 07:25:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623914676;
-        bh=kYpRoCitoYvT/w7g/xkzemT/VH7zaHQLehAHc215/n0=;
+        s=k20201202; t=1623914701;
+        bh=Sbblh3hwD2BaQ81tKBnnpgdkyDBrz2PvnAvQk8AMWOQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u9nXki9XryJ0w2TIGZbHhR0OzLjq+ljjJL32qKnh1KhUhq3I1Qivim3Bv2fRyJJmR
-         Yq/h2/ofn67jCzAb0f15vDFYV9S6UC75P5E88t0YL5fzQZ6hci6niRglzQfR7VZRik
-         6ZZC30PBLFCPSQYv7F2QbzI1M6Aac8tmKU6dEYEv///jLTpOpC+A0VluUGjZtQeM3M
-         nFpBq+en+IkO1K7Ca+k3ihTF1Eju8W7Tyc64I82s8C+Nlx7fw4XlB3RJOleEQtHfU1
-         dWjk9YlMw7tSlK6pAjbHvtjYgKeUSe6+N2S3NZO7pGSfF64oC+g22KfnEh4LbFZJ+X
-         qAkZjR8r7murA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1ltmO9-0001Av-JK; Thu, 17 Jun 2021 09:24:33 +0200
-Date:   Thu, 17 Jun 2021 09:24:33 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Pho Tran <pho.tran@silabs.com>, Stefan Agner <stefan@agner.ch>,
-        Tung Pham <tung.pham@silabs.com>
-Subject: Re: linux-next: manual merge of the usb-serial tree with Linus' tree
-Message-ID: <YMr4sYHUNiGrjB8P@hovoldconsulting.com>
-References: <20210617150224.19213166@canb.auug.org.au>
+        b=l3g3Bluo1oqyuRFLWlXlY+tODWOWwaJ7jImdeom9lhnH9mt8qCNBbmiBvr80gJF5v
+         QYY543gKEU4+23C8LpRKqnpRrV6+zzEtyB41DjZ8LxEuasAjzMpDU4gcXWPtUpLYsq
+         rQ3UBVgY6p2EMQcqkoKb3vfbJlMlzSOQg8+5Kj4sWSd8suQTfaT1esUoCh/X8Qcc8k
+         QpYtFi+xef8VbqTGGD9/gkz+PSI0RT+jA61Xs44wu8nj2Rd+vNL46iKFDgvfzKDigJ
+         yL9QsmDPZvP23TvSTb2FQ+/jom+oaEWteFYHlPFTrZs1Xn7VSBkm+aF75jd1+B/DMW
+         l7ocP0qTSa22A==
+Date:   Thu, 17 Jun 2021 10:24:58 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Kees Cook <keescook@chromium.org>,
+        Jack Morgenstein <jackm@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Yishai Hadas <yishaih@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] IB/mlx4: Avoid field-overflowing memcpy()
+Message-ID: <YMr4ypsh7D3q1R5+@unreal>
+References: <20210616203744.1248551-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ryjozJGk4o7WYpH/"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210617150224.19213166@canb.auug.org.au>
+In-Reply-To: <20210616203744.1248551-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 16, 2021 at 01:37:44PM -0700, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memcpy(), memmove(), and memset(), avoid
+> intentionally writing across neighboring array fields.
+> 
+> Use the ether_addr_copy() helper instead, as already done for smac.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/infiniband/hw/mlx4/qp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+> index 2ae22bf50016..4a2ef7daaded 100644
+> --- a/drivers/infiniband/hw/mlx4/qp.c
+> +++ b/drivers/infiniband/hw/mlx4/qp.c
+> @@ -3144,7 +3144,7 @@ static int build_mlx_header(struct mlx4_ib_qp *qp, const struct ib_ud_wr *wr,
+>  		mlx->sched_prio = cpu_to_be16(pcp);
+>  
+>  		ether_addr_copy(sqp->ud_header.eth.smac_h, ah->av.eth.s_mac);
+> -		memcpy(sqp->ud_header.eth.dmac_h, ah->av.eth.mac, 6);
+> +		ether_addr_copy(sqp->ud_header.eth.dmac_h, ah->av.eth.mac);
+>  		memcpy(&ctrl->srcrb_flags16[0], ah->av.eth.mac, 2);
+>  		memcpy(&ctrl->imm, ah->av.eth.mac + 2, 4);
 
---ryjozJGk4o7WYpH/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I don't understand the last three lines. We are copying 6 bytes to
+ah->av.eth.mac and immediately after that overwriting them.
 
-On Thu, Jun 17, 2021 at 03:02:24PM +1000, Stephen Rothwell wrote:
-> Hi all,
->=20
-> Today's linux-next merge of the usb-serial tree got a conflict in:
->=20
->   drivers/usb/serial/cp210x.c
->=20
-> between commit:
->=20
->   6f7ec77cc8b6 ("USB: serial: cp210x: fix alternate function for CP2102N =
-QFN20")
->=20
-> from Linus' tree and commit:
->=20
->   8051334e901f ("USB: serial: cp210x: add support for GPIOs on CP2108")
->=20
-> from the usb-serial tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+Jack, 
 
-Thanks, looks good.
+Do you remember what you wanted to achieve in commit
+6ee51a4e866b ("mlx4: Adjust QP1 multiplexing for RoCE/SRIOV")
 
-Johan
+Thanks
 
---ryjozJGk4o7WYpH/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQQHbPq+cpGvN/peuzMLxc3C7H1lCAUCYMr4qQAKCRALxc3C7H1l
-CGrNAQCwkFz1f3N3MP+mkAJVHqoOIzGaGYlbA5RR/omLbW91kwEAnJX4plxwldbT
-XfshzbSvSlPH5yLf9N9ypudASw8AzA8=
-=Ngpi
------END PGP SIGNATURE-----
-
---ryjozJGk4o7WYpH/--
+>  
+> -- 
+> 2.25.1
+> 
