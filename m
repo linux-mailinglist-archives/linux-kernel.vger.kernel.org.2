@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7C43ABC7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441353ABC7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233159AbhFQTUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 15:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbhFQTUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 15:20:37 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1381C061574;
-        Thu, 17 Jun 2021 12:18:27 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso5388286wmc.1;
-        Thu, 17 Jun 2021 12:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G25iPlaj2HGTX4/c5/P02HpluiLJKUaToUtVn3p2XEU=;
-        b=oAmGXcFGyeOAMdXRXsgNwuJK8YrgMHMqNbf/jUmBfo09nMs4tNOfpzEwrFBQTuDEoB
-         2OzbF89eiKcCQFluqpTZxdF3MmLRxkP5tT9jr0JxSLb8jJJnzK/mrjzZGn5gPOf9Q3l5
-         ypeuuUO/xtF36cJ+0tEFgFZQjw6kpYcfIEaspKDuZjo4HUsvK8tKt8Dk3xJryAo40moS
-         sspmM+Q7d93o9rfmRBnA0BCM6NpsM9nofBLk5ompjot9iDYctYKXe9OYMpsDZO/7aJVn
-         RK184oyaH/a7qwsN/5Y9JRy7BXgpAdrPpTsuAABTpSEAyCUA1Iru7C3wieFEEGiLhoz6
-         lcNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G25iPlaj2HGTX4/c5/P02HpluiLJKUaToUtVn3p2XEU=;
-        b=gbi4+TKxPkESInvfEQaW+25Inh/+qwKiKCbpriwtdZ4R3JUFbVgGImseYnni8JAT48
-         fSSXF7F86/IU27kQhq99EFc52cdse9Z57QIl/84RWf8Bpyjs7tn/JwIQzuZXrzicnLKj
-         e6txQKXOw+kqT52wAurLIcSPgnPuvj4c9wJtH8PYfbdAQ4oDq6626JbJIrVxXsf4lJPl
-         lXuiSnvDZPv/7C7Wh+IqNW+GYpFt0LDXv5Ly8b3cO0ZizcZuv/6aQ+3YO1qK0qVLJMuw
-         FzlIdJ7CdqFnz7lIc6c3Ywe8jxUaiSdnbX4ltOEoybOavlojhiVEyb55/1BFbLyrPJl3
-         erPw==
-X-Gm-Message-State: AOAM533fYVPR0vSUDdKYQXJ1AgRJ7lXcktmH2eg5JcOVjDwrZ+2fMHe7
-        PoqTwPnPKBr7HMDZ/6lMu9g=
-X-Google-Smtp-Source: ABdhPJxD+RhPQTQ8UkShaehTZ5CaMDskeoT8/i9aZqxMLyXGYQXYXEoCFr7uSbC5Mg7664IMHGb18w==
-X-Received: by 2002:a7b:cb03:: with SMTP id u3mr7174032wmj.119.1623957506595;
-        Thu, 17 Jun 2021 12:18:26 -0700 (PDT)
-Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
-        by smtp.gmail.com with ESMTPSA id s5sm6779320wrn.38.2021.06.17.12.18.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 12:18:25 -0700 (PDT)
-Subject: Re: [PATCH] Bluetooth: fix a grammar mistake
-To:     13145886936@163.com, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-References: <20210616082524.10754-1-13145886936@163.com>
-From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <0e895cfb-21f0-70da-540b-72d6b5d06d8b@gmail.com>
-Date:   Thu, 17 Jun 2021 20:18:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S233242AbhFQTUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 15:20:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232733AbhFQTUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 15:20:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 126B56113C;
+        Thu, 17 Jun 2021 19:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623957511;
+        bh=vCVS05Pp89HYnhbA7y+ao2uqgP3WCql562KkD9r/PLs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gBQ6I7t/ZXtNcVgHrq0+LxeWI+ACik7qP7iXmFmWThwykXa3l0uYEq0SlKqckg/PV
+         HtVFjNNQLI+A98ssq2tJyJpqRz9eh4xgKIXa0lRXj3BfucnX4EbtBnH+kiJVmAQmhJ
+         BFcmx/Av9PC2T0F+Oc2JMNuhtCCGSWxBg1iweDvWLJm5ymN1g6Wo9XW8WEqqiRzgAp
+         l/DnWvKS2/p2kJqB49JudUD5cZrjlo38mC2VfWzRxE5V+wo69am+B4Sz5G/8Hhp6I5
+         dKPMsQzZWVddDU/07KmAO7Yzi1gtqqkRdM0IpHQbPHMgesUp3ogN97aWQOCfREwKYJ
+         gqxE78p8z2BOg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E83D440B1A; Thu, 17 Jun 2021 16:18:27 -0300 (-03)
+Date:   Thu, 17 Jun 2021 16:18:27 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 1/4] perf test: Fix non-bash issue with stat bpf counters
+Message-ID: <YMugA9HDxB57MFTS@kernel.org>
+References: <20210617184216.2075588-1-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210616082524.10754-1-13145886936@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210617184216.2075588-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/06/2021 09:25, 13145886936@163.com wrote:
-> From: gushengxian <gushengxian@yulong.com>
-> 
-> Fix a grammar mistake.
-> 
-> Signed-off-by: gushengxian <gushengxian@yulong.com>
+Em Thu, Jun 17, 2021 at 11:42:13AM -0700, Ian Rogers escreveu:
+> $(( .. )) is a bash feature but the test's interpreter is !/bin/sh,
+> switch the code to use expr.
+
+
+Thanks, applied to perf/urgent.
+
+- Arnaldo
+
+ 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
->  net/bluetooth/hci_event.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  tools/perf/tests/shell/stat_bpf_counters.sh | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> index 98ec486743ba..a33838a72f19 100644
-> --- a/net/bluetooth/hci_event.c
-> +++ b/net/bluetooth/hci_event.c
-> @@ -5780,7 +5780,7 @@ static void hci_le_remote_feat_complete_evt(struct hci_dev *hdev,
->  			 * for unsupported remote feature gets returned.
->  			 *
->  			 * In this specific case, allow the connection to
-> -			 * transition into connected state and mark it as
-> +			 * transit into connected state and mark it as
+> diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
+> index 22eb31e48ca7..2f9948b3d943 100755
+> --- a/tools/perf/tests/shell/stat_bpf_counters.sh
+> +++ b/tools/perf/tests/shell/stat_bpf_counters.sh
+> @@ -11,9 +11,9 @@ compare_number()
+>         second_num=$2
+>  
+>         # upper bound is first_num * 110%
+> -       upper=$(( $first_num + $first_num / 10 ))
+> +       upper=$(expr $first_num + $first_num / 10 )
+>         # lower bound is first_num * 90%
+> -       lower=$(( $first_num - $first_num / 10 ))
+> +       lower=$(expr $first_num - $first_num / 10 )
+>  
+>         if [ $second_num -gt $upper ] || [ $second_num -lt $lower ]; then
+>                 echo "The difference between $first_num and $second_num are greater than 10%."
+> -- 
+> 2.32.0.288.g62a8d224e6-goog
+> 
 
-Nack.  The original phrasing is correct; "transition" is the proper
- technical term for a change of state in a state machine.
+-- 
 
--ed
+- Arnaldo
