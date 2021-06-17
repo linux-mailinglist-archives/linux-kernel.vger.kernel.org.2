@@ -2,543 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D493AB4A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D4D3AB4B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhFQN2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFQN2c (ORCPT
+        id S232766AbhFQN3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:29:10 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5514 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232730AbhFQN3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:28:32 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B2FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 06:26:23 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id u190so1155587pgd.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 06:26:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qx4jays+L+KH8X2JCPyPqSjH+k3+j2HUU6/XgwBhYyQ=;
-        b=HjFW9P093SA38oP+UnwHyAsPmXRrH2+slKn/iwKEqxRK5Irfti0ZW56nrrfrGKc5ow
-         IuVawY1npmoS0tHvXXz/UQ3EEKHvgXfR1b8uPkbSAB2FTY4asTrrkrXwCtxwRRsXnzDR
-         oV82tws8AWk3OKw6PTBMZBYXSWr49nTRMVR/im+qFBDXzKAs4u9lmAULKKyFhPaB8pe1
-         hmyRjfc+UYb9YlN5pqKctMWvwiSKfsjRWI/Ex7PXmG7IVe39disaT1Fwl17bpkQhu6+O
-         WEgmYDMkSl9IQ4vvanjCJFypIJOJtTbBQiacASysnMIzHpzPH06s8jYqlwChr+r9mQbl
-         uGKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qx4jays+L+KH8X2JCPyPqSjH+k3+j2HUU6/XgwBhYyQ=;
-        b=MVfW7qOyk2JvdlnAJ/avHk4QGVm9itlwdoAwYoTU4B3n8p2KQ6bvipYFYWeeKq6m01
-         gSoRBXrz592b0zaBYWCqRQrCHijcXBwhj8mz2bep1ecAGXN5LlkF9L1zoZA048etjLQj
-         q5u7xbSn/isE/V5mMSMRJAxFR/CvnlFqk7ZkKsXzhvjd8DwDvUBwkqvjM02izQC1pmuK
-         l8Nn0g0r564PUoxSmNaSCBRzgnvUTCKE4AErhLN/LCxWHwrDK5Agl49emH+jYMhiooxg
-         78aCfjVhcKrcVMsVaftEBbl3iPM2QzEZ92cuqIEGR3Lfm1qY3N9PKUoHGVMMHiztw+8N
-         RzmA==
-X-Gm-Message-State: AOAM533QMgSbrActOpBDjI8ZUuyxnOeDWZaUlZLyC84oX8L7QOMydz4/
-        bOwv+xO4U7PU1KuxOHeSVA==
-X-Google-Smtp-Source: ABdhPJw6T0YbNlO7zr0O+iSQ5A+XwDPh/CzNVUhTCcZm6+zV4iw7EtxAbfvi9eJECcDYOaeqeyGpiA==
-X-Received: by 2002:a63:5445:: with SMTP id e5mr5068836pgm.62.1623936383298;
-        Thu, 17 Jun 2021 06:26:23 -0700 (PDT)
-Received: from INTERNET-129.allwinnertech.com ([223.197.233.48])
-        by smtp.gmail.com with ESMTPSA id ip7sm5221142pjb.39.2021.06.17.06.26.20
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Jun 2021 06:26:22 -0700 (PDT)
-From:   Ban Tao <fengzheng923@gmail.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@gmail.com, fengzheng923@gmail.com,
-        p.zabel@pengutronix.de, samuel@sholland.org, krzk@kernel.org
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: [PATCH v2 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
-Date:   Thu, 17 Jun 2021 21:26:16 +0800
-Message-Id: <20210617132616.2697-1-fengzheng923@gmail.com>
-X-Mailer: git-send-email 2.22.0.windows.1
+        Thu, 17 Jun 2021 09:29:05 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HD3NDf040656;
+        Thu, 17 Jun 2021 09:26:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=P2ntlsJFhaLxk2Wju96nSx5qkn74oT771eWVNBBgutA=;
+ b=CPsaUlAP0asx1wanWVgHKWM5lY8Vf4Jwi5wACzMCCRQ8Mym7ByEqozGRYFHGYgkPKBLx
+ s2JGqPEOlMHoOuz+6ms5iNMtv876x7K4S8LC1YJ9c2JwbUh2Id0QXfKDVEdqINx39cmX
+ Ts9qrLR1xOdvHyGh14BKu1Nyr1Kfbfy6X7vED2UL7WXNSbRePU4+zO8njpGB0QccAGv0
+ 51pYT7nBI4anD5CQ3S6JVKjQEqAv6yBC3KWehnZAQXWiiy0ceadrBtM0kgQOFLh+wSRC
+ sW2MtdiQ/ZZ06QG83Ujfud8q6msQN3K3pgAXprLj3kc1Q9zYV7U5UMFCoPVw5X+aMtN+ aQ== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3985y1b0xm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 09:26:46 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15HDD6jW031722;
+        Thu, 17 Jun 2021 13:26:44 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 3966jph0d5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 13:26:44 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15HDQfHO21627286
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Jun 2021 13:26:41 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2FDCDAE051;
+        Thu, 17 Jun 2021 13:26:41 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9659CAE045;
+        Thu, 17 Jun 2021 13:26:37 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.199.36.139])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Jun 2021 13:26:37 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        peterz@infradead.org
+Cc:     maddy@linux.vnet.ibm.com, santosh@fossix.org,
+        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
+        dan.j.williams@intel.com, ira.weiny@intel.com,
+        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
+        kjain@linux.ibm.com, rnsastry@linux.ibm.com
+Subject: [PATCH v3 4/4] powerpc/papr_scm: Document papr_scm sysfs event format entries
+Date:   Thu, 17 Jun 2021 18:56:17 +0530
+Message-Id: <20210617132617.99529-5-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210617132617.99529-1-kjain@linux.ibm.com>
+References: <20210617132617.99529-1-kjain@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: SUSDWMJF2PqZRpHDktesoNj3-OF_8iZC
+X-Proofpoint-GUID: SUSDWMJF2PqZRpHDktesoNj3-OF_8iZC
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-17_10:2021-06-15,2021-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 suspectscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
+ mlxscore=0 clxscore=1015 bulkscore=0 lowpriorityscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106170085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Allwinner H6 and later SoCs have an DMIC block
-which is capable of capture.
+Details is added for the event, cpumask and format attributes
+in the ABI documentation.
 
-Signed-off-by: Ban Tao <fengzheng923@gmail.com>
-
+Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
 ---
-v1->v2:
-1.fix some compilation errors.
-2.Modify some code styles.
----
- MAINTAINERS                   |   7 +
- sound/soc/sunxi/Kconfig       |   8 +
- sound/soc/sunxi/Makefile      |   1 +
- sound/soc/sunxi/sun50i-dmic.c | 405 ++++++++++++++++++++++++++++++++++
- 4 files changed, 421 insertions(+)
- create mode 100644 sound/soc/sunxi/sun50i-dmic.c
+ Documentation/ABI/testing/sysfs-bus-papr-pmem | 31 +++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b4094f07214e..1b87225c39b0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -760,6 +760,13 @@ L:	linux-media@vger.kernel.org
- S:	Maintained
- F:	drivers/staging/media/sunxi/cedrus/
- 
-+ALLWINNER DMIC DRIVERS
-+M:	Ban Tao <fengzheng923@gmail.com>
-+L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
-+F:	sound/soc/sunxi/sun50i-dmic.c
+diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
+index 92e2db0e2d3d..be91de341454 100644
+--- a/Documentation/ABI/testing/sysfs-bus-papr-pmem
++++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
+@@ -59,3 +59,34 @@ Description:
+ 		* "CchRHCnt" : Cache Read Hit Count
+ 		* "CchWHCnt" : Cache Write Hit Count
+ 		* "FastWCnt" : Fast Write Count
 +
- ALPHA PORT
- M:	Richard Henderson <rth@twiddle.net>
- M:	Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-index ddcaaa98d3cb..2a3bf7722e11 100644
---- a/sound/soc/sunxi/Kconfig
-+++ b/sound/soc/sunxi/Kconfig
-@@ -56,6 +56,14 @@ config SND_SUN4I_SPDIF
- 	  Say Y or M to add support for the S/PDIF audio block in the Allwinner
- 	  A10 and affiliated SoCs.
- 
-+config SND_SUN50I_DMIC
-+	tristate "Allwinner H6 DMIC Support"
-+	depends on (OF && ARCH_SUNXI) || COMPILE_TEST
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	help
-+	  Say Y or M to add support for the DMIC audio block in the Allwinner
-+	  H6 and affiliated SoCs.
++What:		/sys/devices/nmemX/format
++Date:		June 2021
++Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
++Description:	(RO) Attribute group to describe the magic bits
++                that go into perf_event_attr.config for a particular pmu.
++                (See ABI/testing/sysfs-bus-event_source-devices-format).
 +
- config SND_SUN8I_ADDA_PR_REGMAP
- 	tristate
- 	select REGMAP
-diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
-index a86be340a076..4483fe9c94ef 100644
---- a/sound/soc/sunxi/Makefile
-+++ b/sound/soc/sunxi/Makefile
-@@ -6,3 +6,4 @@ obj-$(CONFIG_SND_SUN8I_CODEC_ANALOG) += sun8i-codec-analog.o
- obj-$(CONFIG_SND_SUN50I_CODEC_ANALOG) += sun50i-codec-analog.o
- obj-$(CONFIG_SND_SUN8I_CODEC) += sun8i-codec.o
- obj-$(CONFIG_SND_SUN8I_ADDA_PR_REGMAP) += sun8i-adda-pr-regmap.o
-+obj-$(CONFIG_SND_SUN50I_DMIC) += sun50i-dmic.o
-diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
-new file mode 100644
-index 000000000000..d495ee0f6a2d
---- /dev/null
-+++ b/sound/soc/sunxi/sun50i-dmic.c
-@@ -0,0 +1,405 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+//
-+// This driver supports the DMIC in Allwinner's H6 SoCs.
-+//
-+// Copyright 2021 Ban Tao <fengzheng923@gmail.com>
++                Each attribute under this group defines a bit range of the
++                perf_event_attr.config. Supported attribute is listed
++                below::
 +
-+#include <linux/clk.h>
-+#include <linux/device.h>
-+#include <linux/of_device.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/reset.h>
-+#include <sound/dmaengine_pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
++		    event  = "config:0-4"  - event ID
 +
++		For example::
++		    noopstat = "event=0x1"
 +
-+#define SUN50I_DMIC_EN_CTL		(0x00)
-+	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
-+	#define SUN50I_DMIC_EN_CTL_CHAN(v)		((v) << 0)
-+	#define SUN50I_DMIC_EN_CTL_CHAN_MASK		GENMASK(7, 0)
-+#define SUN50I_DMIC_SR			(0x04)
-+	#define SUN50I_DMIC_SR_SAMOLE_RATE(v)		((v) << 0)
-+	#define SUN50I_DMIC_SR_SAMOLE_RATE_MASK		GENMASK(2, 0)
-+#define SUN50I_DMIC_CTL			(0x08)
-+	#define SUN50I_DMIC_CTL_OVERSAMPLE_RATE		BIT(0)
-+#define SUN50I_DMIC_DATA			(0x10)
-+#define SUN50I_DMIC_INTC			(0x14)
-+	#define SUN50I_DMIC_FIFO_DRQ_EN			BIT(2)
-+#define SUN50I_DMIC_INT_STA		(0x18)
-+	#define SUN50I_DMIC_INT_STA_OVERRUN_IRQ_PENDING	BIT(1)
-+	#define SUN50I_DMIC_INT_STA_DATA_IRQ_PENDING	BIT(0)
-+#define SUN50I_DMIC_RXFIFO_CTL		(0x1c)
-+	#define SUN50I_DMIC_RXFIFO_CTL_FLUSH		BIT(31)
-+	#define SUN50I_DMIC_RXFIFO_CTL_MODE		BIT(9)
-+	#define SUN50I_DMIC_RXFIFO_CTL_RESOLUTION	BIT(8)
-+#define SUN50I_DMIC_CH_NUM		(0x24)
-+	#define SUN50I_DMIC_CH_NUM_N(v)			((v) << 0)
-+	#define SUN50I_DMIC_CH_NUM_N_MASK		GENMASK(2, 0)
-+#define SUN50I_DMIC_CNT			(0x2c)
-+	#define SUN50I_DMIC_CNT_N			BIT(0)
-+#define SUN50I_DMIC_HPF_CTRL		(0x38)
-+#define SUN50I_DMIC_VERSION		(0x50)
++What:		/sys/devices/nmemX/events
++Date:		June 2021
++Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
++Description:    (RO) Attribute group to describe performance monitoring
++                events specific to papr-scm. Each attribute in this group describes
++                a single performance monitoring event supported by this nvdimm pmu.
++                The name of the file is the name of the event.
++                (See ABI/testing/sysfs-bus-event_source-devices-events).
 +
-+
-+struct sun50i_dmic_dev {
-+	struct clk *dmic_clk;
-+	struct clk *bus_clk;
-+	struct reset_control *rst;
-+	struct regmap *regmap;
-+	struct snd_dmaengine_dai_dma_data dma_params_rx;
-+	unsigned int chan_en;
-+};
-+
-+struct dmic_rate {
-+	unsigned int samplerate;
-+	unsigned int rate_bit;
-+};
-+
-+static int sun50i_dmic_startup(struct snd_pcm_substream *substream,
-+			       struct snd_soc_dai *cpu_dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
-+
-+	/* only support capture */
-+	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
-+		return -EINVAL;
-+
-+	regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-+			   SUN50I_DMIC_RXFIFO_CTL_FLUSH,
-+			   SUN50I_DMIC_RXFIFO_CTL_FLUSH);
-+	regmap_write(host->regmap, SUN50I_DMIC_CNT, SUN50I_DMIC_CNT_N);
-+
-+	return 0;
-+}
-+
-+static int sun50i_dmic_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *cpu_dai)
-+{
-+	int i = 0;
-+	unsigned long rate = params_rate(params);
-+	unsigned int mclk = 0;
-+	unsigned int channels = params_channels(params);
-+	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct dmic_rate dmic_rate_s[] = {
-+		{44100, 0x0},
-+		{48000, 0x0},
-+		{22050, 0x2},
-+		{24000, 0x2},
-+		{11025, 0x4},
-+		{12000, 0x4},
-+		{32000, 0x1},
-+		{16000, 0x3},
-+		{8000,  0x5},
-+	};
-+
-+	/* DMIC num is N+1 */
-+	regmap_update_bits(host->regmap, SUN50I_DMIC_CH_NUM,
-+			   SUN50I_DMIC_CH_NUM_N_MASK,
-+			   SUN50I_DMIC_CH_NUM_N(channels - 1));
-+	host->chan_en = (1 << channels) - 1;
-+	regmap_write(host->regmap, SUN50I_DMIC_HPF_CTRL, host->chan_en);
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-+				   SUN50I_DMIC_RXFIFO_CTL_MODE,
-+				   SUN50I_DMIC_RXFIFO_CTL_MODE);
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-+				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION, 0);
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-+				   SUN50I_DMIC_RXFIFO_CTL_MODE, 0);
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-+				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION,
-+				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION);
-+		break;
-+	default:
-+		dev_err(cpu_dai->dev, "Invalid format!\n");
-+		return -EINVAL;
-+	}
-+
-+	switch (rate) {
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+		mclk = 22579200;
-+		break;
-+	case 8000:
-+	case 12000:
-+	case 16000:
-+	case 24000:
-+	case 32000:
-+	case 48000:
-+		mclk = 24576000;
-+		break;
-+	default:
-+		dev_err(cpu_dai->dev, "Invalid rate!\n");
-+		return -EINVAL;
-+	}
-+
-+	if (clk_set_rate(host->dmic_clk, mclk)) {
-+		dev_err(cpu_dai->dev, "mclk : %u not support\n", mclk);
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(dmic_rate_s); i++) {
-+		if (dmic_rate_s[i].samplerate == rate) {
-+			regmap_update_bits(host->regmap, SUN50I_DMIC_SR,
-+					   SUN50I_DMIC_SR_SAMOLE_RATE_MASK,
-+					   SUN50I_DMIC_SR_SAMOLE_RATE(dmic_rate_s[i].rate_bit));
-+			break;
-+		}
-+	}
-+
-+	switch (params_physical_width(params)) {
-+	case 16:
-+		host->dma_params_rx.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+		break;
-+	case 32:
-+		host->dma_params_rx.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		break;
-+	default:
-+		dev_err(cpu_dai->dev, "Unsupported physical sample width: %d\n",
-+			params_physical_width(params));
-+		return -EINVAL;
-+	}
-+
-+	/* oversamplerate adjust */
-+	if (params_rate(params) >= 24000)
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
-+				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE,
-+				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE);
-+	else
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
-+				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE, 0);
-+
-+	return 0;
-+}
-+
-+static int sun50i_dmic_trigger(struct snd_pcm_substream *substream, int cmd,
-+			       struct snd_soc_dai *dai)
-+{
-+	int ret = 0;
-+	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(dai);
-+
-+	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
-+		return -EINVAL;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		/* DRQ ENABLE */
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
-+				   SUN50I_DMIC_FIFO_DRQ_EN,
-+				   SUN50I_DMIC_FIFO_DRQ_EN);
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-+				   SUN50I_DMIC_EN_CTL_CHAN_MASK,
-+				   SUN50I_DMIC_EN_CTL_CHAN(host->chan_en));
-+		/* Global enable */
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-+				   SUN50I_DMIC_EN_CTL_GLOBE,
-+				   SUN50I_DMIC_EN_CTL_GLOBE);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		/* DRQ DISABLE */
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
-+				   SUN50I_DMIC_FIFO_DRQ_EN, 0);
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-+				   SUN50I_DMIC_EN_CTL_CHAN_MASK,
-+				   SUN50I_DMIC_EN_CTL_CHAN(0));
-+		/* Global disable */
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-+				   SUN50I_DMIC_EN_CTL_GLOBE, 0);
-+		break;
-+
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+	return ret;
-+}
-+
-+static int sun50i_dmic_soc_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(dai);
-+
-+	snd_soc_dai_init_dma_data(dai, NULL, &host->dma_params_rx);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops sun50i_dmic_dai_ops = {
-+	.startup	= sun50i_dmic_startup,
-+	.trigger	= sun50i_dmic_trigger,
-+	.hw_params	= sun50i_dmic_hw_params,
-+};
-+
-+static const struct regmap_config sun50i_dmic_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = SUN50I_DMIC_VERSION,
-+	.cache_type = REGCACHE_NONE,
-+};
-+
-+#define	SUN50I_DMIC_RATES (SNDRV_PCM_RATE_8000_48000)
-+#define SUN50I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
-+
-+static struct snd_soc_dai_driver sun50i_dmic_dai = {
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+		.rates = SUN50I_DMIC_RATES,
-+		.formats = SUN50I_FORMATS,
-+	},
-+	.probe = sun50i_dmic_soc_dai_probe,
-+	.ops = &sun50i_dmic_dai_ops,
-+	.name = "dmic",
-+};
-+
-+static const struct of_device_id sun50i_dmic_of_match[] = {
-+	{
-+		.compatible = "allwinner,sun50i-h6-dmic",
-+	},
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
-+
-+static const struct snd_soc_component_driver sun50i_dmic_component = {
-+	.name		= "sun50i-dmic",
-+};
-+
-+static int sun50i_dmic_runtime_suspend(struct device *dev)
-+{
-+	struct sun50i_dmic_dev *host  = dev_get_drvdata(dev);
-+
-+	clk_disable_unprepare(host->dmic_clk);
-+	clk_disable_unprepare(host->bus_clk);
-+
-+	return 0;
-+}
-+
-+static int sun50i_dmic_runtime_resume(struct device *dev)
-+{
-+	struct sun50i_dmic_dev *host  = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = clk_prepare_enable(host->dmic_clk);
-+	if (ret)
-+		return ret;
-+	ret = clk_prepare_enable(host->bus_clk);
-+	if (ret)
-+		clk_disable_unprepare(host->dmic_clk);
-+
-+	return ret;
-+}
-+
-+static int sun50i_dmic_probe(struct platform_device *pdev)
-+{
-+	struct sun50i_dmic_dev *host;
-+	struct resource *res;
-+	int ret;
-+	void __iomem *base;
-+
-+	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
-+	if (!host)
-+		return -ENOMEM;
-+
-+	/* Get the addresses */
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(base))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(base),
-+				     "get resource failed.\n");
-+
-+	host->regmap = devm_regmap_init_mmio(&pdev->dev, base,
-+						&sun50i_dmic_regmap_config);
-+
-+	/* Clocks */
-+	host->bus_clk = devm_clk_get(&pdev->dev, "bus");
-+	if (IS_ERR(host->bus_clk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(host->bus_clk),
-+				     "failed to get bus clock.\n");
-+
-+	host->dmic_clk = devm_clk_get(&pdev->dev, "mod");
-+	if (IS_ERR(host->dmic_clk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(host->dmic_clk),
-+				     "failed to get dmic clock.\n");
-+
-+	host->dma_params_rx.addr = res->start + SUN50I_DMIC_DATA;
-+	host->dma_params_rx.maxburst = 8;
-+
-+	platform_set_drvdata(pdev, host);
-+
-+	host->rst = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-+	if (IS_ERR(host->rst))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
-+				     "Failed to get reset.\n");
-+	reset_control_deassert(host->rst);
-+
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+				&sun50i_dmic_component, &sun50i_dmic_dai, 1);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "failed to register component.\n");
-+
-+	pm_runtime_enable(&pdev->dev);
-+	if (!pm_runtime_enabled(&pdev->dev)) {
-+		ret = sun50i_dmic_runtime_resume(&pdev->dev);
-+		if (ret)
-+			goto err_unregister;
-+	}
-+
-+	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-+	if (ret)
-+		goto err_suspend;
-+
-+	return 0;
-+err_suspend:
-+	if (!pm_runtime_status_suspended(&pdev->dev))
-+		sun50i_dmic_runtime_suspend(&pdev->dev);
-+err_unregister:
-+	pm_runtime_disable(&pdev->dev);
-+	return ret;
-+}
-+
-+static int sun50i_dmic_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+	if (!pm_runtime_status_suspended(&pdev->dev))
-+		sun50i_dmic_runtime_suspend(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops sun50i_dmic_pm = {
-+	SET_RUNTIME_PM_OPS(sun50i_dmic_runtime_suspend,
-+			   sun50i_dmic_runtime_resume, NULL)
-+};
-+
-+static struct platform_driver sun50i_dmic_driver = {
-+	.driver		= {
-+		.name	= "sun50i-dmic",
-+		.of_match_table = of_match_ptr(sun50i_dmic_of_match),
-+		.pm	= &sun50i_dmic_pm,
-+	},
-+	.probe		= sun50i_dmic_probe,
-+	.remove		= sun50i_dmic_remove,
-+};
-+
-+module_platform_driver(sun50i_dmic_driver);
-+
-+MODULE_DESCRIPTION("Allwinner sun50i DMIC SoC Interface");
-+MODULE_AUTHOR("Ban Tao <fengzheng923@gmail.com>");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:sun50i-dmic");
++What:		/sys/devices/nmemX/cpumask
++Date:		June 2021
++Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
++Description:	(RO) This sysfs file exposes the cpumask which is designated to make
++                HCALLs to retrieve nvdimm pmu event counter data.
 -- 
-2.29.0
+2.27.0
 
