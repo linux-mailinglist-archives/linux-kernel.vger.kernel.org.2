@@ -2,104 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876483AB263
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A45F3AB25F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232512AbhFQLXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50244 "EHLO
+        id S232500AbhFQLVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232513AbhFQLXf (ORCPT
+        with ESMTP id S231422AbhFQLVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:23:35 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE29C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:21:25 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id f10so630215plg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:21:25 -0700 (PDT)
+        Thu, 17 Jun 2021 07:21:47 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EDBC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:19:39 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id e33so4717697pgm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:19:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K6R0FEjF7oq2KNX8VeWTVUIbsW8u4UsYJd42ph9pC1A=;
-        b=PcR1UbEaott76KwONcj2/b42uiSTpdpLzTRqYZ7Zis8SWGf7xyLwEn0GtL2ne1L+18
-         wCfph9vmWzbdYnI6FcinYpwauKitP4wABDd1thfzdQ8MFeDrug5xwuCK70rswtCJV4kl
-         DyuefhJG2uPvwl1t4tvgJJGOKBtsJ+NrjRPZ4oJn9/cEn8FHu2qmwqFwz9zjvKa8lX/i
-         fcWd+mi4caT1DaltYD+vwJ7KtPfhHlDN3yGdgeXN9SwaHQAfYoJIdBj48lxEyzsWaN4Q
-         W2A4uQo129ywnOx83HHPm7MFgLVrEPH3aSxiqUTThVhU3bwUVa7jhWMKMDxKgPdko1Iq
-         NREQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Np/lQVozeidMH5d/F8qOsmZ9gxCf0/IInqaWOQ/30j4=;
+        b=L7dHSltwk04Vk547K8izfarGGRCbF4ISWk6Fb0R1ubDfVGBnc2sFCI9UVohrf3z8hM
+         bfHXvQH6gcaLZHZArDnbvRp9HvDkJnyrua/eizeIjvKJHpLMJusIHhjNATDE7h6TErC5
+         7CZz6Ul0kbXdmlmjXzNHbpmCZxZ/4AiIkQ0CxGMY2QcMDrzN4s/c3O73uMvTPD7Wxb6C
+         MwCRLlkrqHRt8Pcv/UF1TmBMAudCnqRwKjwGjUF8EZYf/MOud9ege9kPmavrzYcEkjSx
+         Furj36cWPM+oRKegQtePu4ABTLDiHiuTjbnzmNQETeUYIDjPgNzrEffPnFNsGlVDOIUv
+         a6Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K6R0FEjF7oq2KNX8VeWTVUIbsW8u4UsYJd42ph9pC1A=;
-        b=StixFN5v8UEpr7RSpy7/25LEeSfdNwGmOkkZBGVMHKkbUBxNshvJjvvcNwAWMBSRBp
-         T6/UX3cR41EH0KnfubUwT6lpZedx3xQ77rEdaNiP9xntkpTbfODrgyGGrY0g46RRE57s
-         w6KDq9Bar/dFRyTvdZtnFuD/t1bQAR+FkjpjZFzjHsYFdGLyOkKyQSW3EujhGuveN8A/
-         yEfTv1sW621j0DrllzAOAvucAKAGxYk/YHCQm/JqVmzua298k5Ag4HdLOXRnaRNjarDd
-         rqRvp0+uuCvlWkakP1XV9UGx9KaYSx3vEcZ0PZNOGrZQvXGSHVR2fpO3ii9TaPAbmzAH
-         X5IQ==
-X-Gm-Message-State: AOAM531Cz6NuhUox6ArhH78SLU/ZRj34liUoPQZ8Y77CBwp7MSgkKEvn
-        GokjVOyGHONMmB/x/H2dYjE=
-X-Google-Smtp-Source: ABdhPJysJyKGyvAca3XdWxeEe9FRr9MA/N49yAGeiH7inBCWjDFaoXYUfLRacqfnq1+IFe3kS5rdsg==
-X-Received: by 2002:a17:902:c407:b029:106:302e:534 with SMTP id k7-20020a170902c407b0290106302e0534mr4068908plk.17.1623928884766;
-        Thu, 17 Jun 2021 04:21:24 -0700 (PDT)
-Received: from 167-179-157-192.a7b39d.syd.nbn.aussiebb.net (167-179-157-192.a7b39d.syd.nbn.aussiebb.net. [167.179.157.192])
-        by smtp.gmail.com with ESMTPSA id v67sm5035585pfb.193.2021.06.17.04.21.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Np/lQVozeidMH5d/F8qOsmZ9gxCf0/IInqaWOQ/30j4=;
+        b=ktttMS4lcKjBUfQeRzUndtZpnDriIgUFtKnUDPHSEm9ea7oVb8lsRhACEXI00u+5cv
+         +02OFNSsLFCSDqwyXM0Xf6XiwsD33vLhFrh+jXyIP1OMng2T0ftPS04j+CbNYrDNsuIZ
+         GKk7t7xRa8ZPu+wwQhI9b4IVJgEN6XOEHhb5DvYzgsPhMntxwyyHncLoZMNGhzYOebHg
+         kK1vb6QuCPUNrecLBwi3FXJ2C0TEG5JOSg5Sj/7rSbcDy9kdpSBlNSH/pW5rgYgV3bqZ
+         hcCQM1c4gxBUpcZ9WQNsrmtSCAt0qeHl8JPOvWHXBf6WDN/VVyl5oP/wh9F3HDRBmem+
+         +Ysw==
+X-Gm-Message-State: AOAM531D4W0bdkt8vZ9EC0wJdYZVb9Xd4Hiymc09QhpQGnn8qaZVIdyX
+        llcoGFQtc+7GpWlfWQAiPW1Qpw==
+X-Google-Smtp-Source: ABdhPJxBREtkjK9RmmpOaSHHRyEaKsZymNNG87E3Vgz5LObhwmg1rfNrxRVlX8yXxTFnGAN0vI7hpQ==
+X-Received: by 2002:aa7:8f28:0:b029:2f4:9245:4ed with SMTP id y8-20020aa78f280000b02902f4924504edmr4735299pfr.24.1623928779088;
+        Thu, 17 Jun 2021 04:19:39 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id v15sm4886439pfm.216.2021.06.17.04.19.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 04:21:24 -0700 (PDT)
-From:   Jonathan Liu <net147@gmail.com>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Jonathan Liu <net147@gmail.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marek Vasut <marex@denx.de>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
-Subject: [PATCH] drm/bridge: ti-sn65dsi83: Fix null pointer dereference in remove callback
-Date:   Thu, 17 Jun 2021 21:19:25 +1000
-Message-Id: <20210617111925.162120-1-net147@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 17 Jun 2021 04:19:38 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 16:49:36 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 3/3] cpufreq: CPPC: Add support for frequency
+ invariance
+Message-ID: <20210617111936.cfjzoh6g5zvolaf5@vireshk-i7>
+References: <cover.1623825725.git.viresh.kumar@linaro.org>
+ <e7e653ede3ef54acc906d2bde47a3b9a41533404.1623825725.git.viresh.kumar@linaro.org>
+ <20210616124806.GA6495@arm.com>
+ <20210617032416.r2gfp25xxvhc5t4x@vireshk-i7>
+ <20210617103415.GA29877@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210617103415.GA29877@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If attach has not been called, unloading the driver can result in a null
-pointer dereference in mipi_dsi_detach as ctx->dsi has not been assigned
-yet.
+On 17-06-21, 11:34, Ionela Voinescu wrote:
+> I might be missing something, but when you offline a single CPU in a
+> policy, the worse that can happen is that a last call to
+> cppc_scale_freq_tick() would have sneaked in before irqs and the tick
+> are disabled. But even if we have a last call to
+> cppc_scale_freq_workfn(), the counter read methods would know how to
+> cope with hotplug, and the cppc_cpudata structure would still be
+> allocated and have valid desired_perf and highest_perf values.
 
-Fixes: ceb515ba29ba6b ("drm/bridge: ti-sn65dsi83: Add TI SN65DSI83 and SN65DSI84 driver")
-Signed-off-by: Jonathan Liu <net147@gmail.com>
----
- drivers/gpu/drm/bridge/ti-sn65dsi83.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Okay, I somehow assumed that cppc_scale_freq_workfn() needs to run on the local
+CPU, while it can actually land anywhere. My fault.
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-index 750f2172ef08..8e9f45c5c7c1 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-@@ -671,8 +671,11 @@ static int sn65dsi83_remove(struct i2c_client *client)
- {
- 	struct sn65dsi83 *ctx = i2c_get_clientdata(client);
- 
--	mipi_dsi_detach(ctx->dsi);
--	mipi_dsi_device_unregister(ctx->dsi);
-+	if (ctx->dsi) {
-+		mipi_dsi_detach(ctx->dsi);
-+		mipi_dsi_device_unregister(ctx->dsi);
-+	}
-+
- 	drm_bridge_remove(&ctx->bridge);
- 	of_node_put(ctx->host_node);
- 
+But the irq-work being queued here is per-cpu and it will get queued on the
+local CPU where the tick occurred.
+
+Now I am not sure of what will happen to this irq-work in that case. I tried to
+look now and I see that these irq-work items are processed first on tick and
+then the tick handler of scheduler is called, so that will again queue the cppc
+irq-work.
+
+What happens if this happens along with CPU hotplug ? I am not sure I understand
+that. There may or may not be any side effects of this. Lets assume the work
+item is left in the queue as is and no tick happens after that as the CPU is
+offlined. We are good.
+
+Now if we unload the cpufreq driver at this moment, the driver will call
+irq_work_sync(), which may end up in a while loop ? There is no
+irq-work-cancel() API.
+
+Peter: Can you help here on this ? Lemme try to explain a bit here:
+
+We are starting an irq-work (in cppc cpufreq driver) from
+scheduler_tick()->arch_scale_freq_tick(). What will happen if the driver doesn't
+take care of CPU hotplug explicitly and make sure this work isn't queued again
+from the next tick.
+
+Is it important for user to make sure it gets rid of the irq-work during hotplug
+here ?
+
+> Worse case, the last scale factor set for the CPU will be meaningless,
+> but it's already meaningless as the CPU is going down.
+> 
+> When you are referring to the issue reported by Qian I suppose you are
+> referring to this [1]. I think this is the case where you hotplug the
+> last CPU in a policy and free cppc_cpudata.
+> 
+> [1] https://lore.kernel.org/linux-pm/41f5195e-0e5f-fdfe-ba37-34e1fd8e4064@quicinc.com/
+
+Yes, I was talking about this report only, I am not sure now if I understand
+what actually happened here :)
+
+Ionela: I have skipped replying to rest of your email, will get back to that
+once we have clarification on the above first.
+
+Thanks a lot for your reviews, always on time :)
+
 -- 
-2.32.0
-
+viresh
