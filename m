@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27A83ABA2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33653ABA30
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbhFQRFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:05:21 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:36481 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229714AbhFQRFT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:05:19 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id E65B65C00DA;
-        Thu, 17 Jun 2021 13:03:10 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 17 Jun 2021 13:03:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=SG/wjR
-        EXc8BaNicjIGxOchjI9PU6hMiLkZ1+/qLVuL0=; b=mdLcxJ4Xo/fbLgCPBZOQsv
-        kBSZwpNWG/xeRm9ScfQFLYYahI/amT1IkJo3PWId1pWP8HRoYkoMMS2oKEe7rzFt
-        yddV+ne6hi31cZxtrkw1G+hA2JI/R0BZW/BcXzVLctsbcK+jiI389empe+zniu4P
-        qvPQ3tZ/2jjjwFUroqT4dHf5qL15+qEfuGB8sKpQ+TplsdvS3ah3TtSlzWeRQyGF
-        D33sJSR5IePgpCEpfpDGlqpkFoXhOagmeRKa9UzyNgfUVQALQ23h9CGCUl21dQt1
-        sGXXXqZO+UWgVk5yH0wBzjQdt2GJVLCtv5qrvvgoHxegSq8CDy0Q6UfRpjegCLZg
-        ==
-X-ME-Sender: <xms:ToDLYO_dTOJf6Bnq0Liu3jHYywDbgc6uWEkIdqfNLI6Vs5MQP3m1Dw>
-    <xme:ToDLYOtUaYwVhSxdNf043nAUGwZsuCIKn0fAKp9dEPryseuVv_Rbrku6wVcGmQCY3
-    7s0DCRr9WY9mvg>
-X-ME-Received: <xmr:ToDLYECiKHWjHba3gLBm05KTzmRwltlqLiLkGtUI8MtdoHKoy7abKTOuL5QC021vvIYawUF9poVWOfgr8B_xjgvoeUaqvA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefuddguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudeh
-    leetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
-    guohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:ToDLYGcB9rvRxQV86tWSu5hwSLla0ehfwSdqwBwwz7VmDlha6gdF1Q>
-    <xmx:ToDLYDPnOOYqMKURz3BWbJ-NrIb48SnP6_wK2QJ3FPR2ffKGv_Z4gw>
-    <xmx:ToDLYAnf3APEs2Ei50z7Z5l3p8TaWEikPaDdsTnrzhDfH-l8FejPkg>
-    <xmx:ToDLYIp9ncbvUThPNcOjGUKNC9gVmZCarstdfSPBZx0J2JRmTib-jw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 17 Jun 2021 13:03:10 -0400 (EDT)
-Date:   Thu, 17 Jun 2021 20:03:07 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-Cc:     jiri@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vadym Kochan <vadym.kochan@plvision.eu>
-Subject: Re: [PATCH net-next v2] drivers: net: netdevsim: fix devlink_trap
- selftests failing
-Message-ID: <YMuAS++AH6DknYPA@shredder>
-References: <20210617113632.21665-1-oleksandr.mazur@plvision.eu>
+        id S231433AbhFQRF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:05:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:56756 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230411AbhFQRFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 13:05:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A7CC13D5;
+        Thu, 17 Jun 2021 10:03:14 -0700 (PDT)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A2223F694;
+        Thu, 17 Jun 2021 10:03:12 -0700 (PDT)
+Subject: Re: [PATCH v4 18/24] x86/resctrl: Make ctrlval arrays the same size
+To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        lcherian@marvell.com
+References: <20210614200941.12383-1-james.morse@arm.com>
+ <20210614200941.12383-19-james.morse@arm.com>
+ <bfb7310d-7a38-e0b9-b63b-d12ec453ac85@intel.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <46b42971-724c-c585-efec-c824838d7434@arm.com>
+Date:   Thu, 17 Jun 2021 18:03:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617113632.21665-1-oleksandr.mazur@plvision.eu>
+In-Reply-To: <bfb7310d-7a38-e0b9-b63b-d12ec453ac85@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 02:36:32PM +0300, Oleksandr Mazur wrote:
-> devlink_trap tests for the netdevsim fail due to misspelled
-> debugfs file name. Change this name, as well as name of callback
-> function, to match the naming as in the devlink itself - 'trap_drop_counter'.
-> 
-> Test-results:
-> selftests: drivers/net/netdevsim: devlink_trap.sh
-> TEST: Initialization                                                [ OK ]
-> TEST: Trap action                                                   [ OK ]
-> TEST: Trap metadata                                                 [ OK ]
-> TEST: Non-existing trap                                             [ OK ]
-> TEST: Non-existing trap action                                      [ OK ]
-> TEST: Trap statistics                                               [ OK ]
-> TEST: Trap group action                                             [ OK ]
-> TEST: Non-existing trap group                                       [ OK ]
-> TEST: Trap group statistics                                         [ OK ]
-> TEST: Trap policer                                                  [ OK ]
-> TEST: Trap policer binding                                          [ OK ]
-> TEST: Port delete                                                   [ OK ]
-> TEST: Device delete                                                 [ OK ]
-> 
-> Fixes: a7b3527a43fe ("drivers: net: netdevsim: add devlink trap_drop_counter_get implementation")
-> Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+Hi Reinette,
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-Tested-by: Ido Schimmel <idosch@nvidia.com>
+On 15/06/2021 19:09, Reinette Chatre wrote:
+> On 6/14/2021 1:09 PM, James Morse wrote:
+>> The CODE and DATA resources report a num_closid that is half the
+>> actual size supported by the hardware. This behaviour is visible
+>> to user-space when CDP is enabled.
+>> The CODE and DATA resources have their own ctrlval arrays which are half
+>> the size of the underlying hardware because num_closid was already
+>> adjusted. One holds the odd configurations values, the other even.
+>>
+>> Before the CDP resources can be merged, the 'half the closids'
+>> behaviour needs to be implemented by schemata_list_create(), but
+>> this causes the ctrl_val[] array to be full sized.
+>>
+>> Remove the logic from the architecture specific rdt_get_cdp_config()
+>> setup, and add it to schemata_list_create(). Functions that
+>> walk take num_closid directly from struct rdt_hw_resource also
+> 
+> This is unclear to me ... "Functions that walk ..." seems like it is missing to describe
+> what they are walking.
+
+Yup, I'm missing at least a word here! Fixed as:
+| functions that walk all the configurations, such as domain_setup_ctrlval() and
+| reset_all_ctrls() , take the num_closids directly from...
+
+
+>> have to halve num_closid as only the lower half of each array is
+>> in use. domain_setup_ctrlval() and reset_all_ctrls() both copy
+>> struct rdt_hw_resource's num_closid to a struct msr_param. Correct
+>> the value here. This is temporary as a subsequent patch will merge
+>> the all three ctrl_val[] arrays such that when CDP is in use, the
+> 
+> the all three -> all three ?
+
+Yes. Thanks!
+
+(I've never managed to spot things like this in text I wrote)
+
+
+Thanks,
+
+James
