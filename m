@@ -2,120 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 714073ABE5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 23:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC9B3ABE58
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 23:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhFQVvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 17:51:17 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:41018 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbhFQVvQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 17:51:16 -0400
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E508420B83FA;
-        Thu, 17 Jun 2021 14:49:07 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E508420B83FA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623966547;
-        bh=iOxmam1hxsYf6Bv7Bb3oOlwGwzgEo/722mgFg6/iGpE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ibSIfbBmyJYDw8/UWYKpUQGxmHNuDu0MRvAyGNy+c95/BnDOp7ZTW9zNpKxPLts19
-         55NTE3ZXCYEnTQtGM6ekpqtH/wNPoAHdCCpkShwRMFY/T9Or3HT+s/tqiH1SqxhxqB
-         h9CoAbLv2b8xsr//Egwd30wlGBPyEax2qpzc4XbU=
-Received: by mail-pf1-f182.google.com with SMTP id k15so909580pfp.6;
-        Thu, 17 Jun 2021 14:49:07 -0700 (PDT)
-X-Gm-Message-State: AOAM531a4dNrHsjMuKyEOP/P48vrde16mjYzga9GRW2EVUuD5yMuStaA
-        pbuFrrz1zv3TfpZKdf1z/1eq7YVkIA7OZYZEmVE=
-X-Google-Smtp-Source: ABdhPJyke/C7KbeDnN/bSq8cETCQLuetyQe+T++OgpvF6JWJDrzSnoEja5DxSnRQ8F98Myf3zBKubi+N4iHqVOpCEZo=
-X-Received: by 2002:a63:d053:: with SMTP id s19mr6823948pgi.326.1623966547451;
- Thu, 17 Jun 2021 14:49:07 -0700 (PDT)
+        id S231281AbhFQVuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 17:50:54 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59874 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229683AbhFQVuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 17:50:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623966524; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=eATf/nMRgpGYmlXyMTtnhQYqD5pqdm6H+bv15GdGkHU=; b=e2xpqdeHdOs8PD/uCZZ0zmFXG9sQ/eSAOODyYmNcHiMd3k90IKnHVd0glzW3ZDY/bLDnjiAO
+ vGZiY6d9TD8mqfOdCUvYPeF157hnLlNosa26ErGfWFk63LeoFtdDlRYNxyD0tjhfkUmgzLUe
+ YZDGBiDH3zckbwOT2vllTSWWekQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60cbc33af726fa4188fc5a63 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Jun 2021 21:48:42
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 37DE0C4338A; Thu, 17 Jun 2021 21:48:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.110.94.190] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91D65C433F1;
+        Thu, 17 Jun 2021 21:48:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 91D65C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v10 0/6] Re-introduce TX FIFO resize for larger EP
+ bursting
+To:     Ferry Toth <fntoth@gmail.com>, balbi@kernel.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, frowand.list@gmail.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        jackp@codeaurora.org, heikki.krogerus@linux.intel.com,
+        andy.shevchenko@gmail.com
+References: <1623923899-16759-1-git-send-email-wcheng@codeaurora.org>
+ <cfb83fe4-369c-ec72-7887-3bcb0f20fe15@gmail.com>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <ec8050c5-c013-4af6-b39e-69779c009a9c@codeaurora.org>
+Date:   Thu, 17 Jun 2021 14:48:37 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
- <20210615023812.50885-2-mcroce@linux.microsoft.com> <CAJF2gTTreOvQYYXHBYxznB9+vMaASKg8vwA5mkqVo1T6=eVhzw@mail.gmail.com>
- <CAFnufp1OHdRd-tbB+Hi0UnXARtxGPdkK6MJktnaNCNt65d3Oew@mail.gmail.com> <f9b78350d9504e889813fc47df41f3fe@AcuMS.aculab.com>
-In-Reply-To: <f9b78350d9504e889813fc47df41f3fe@AcuMS.aculab.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Thu, 17 Jun 2021 23:48:31 +0200
-X-Gmail-Original-Message-ID: <CAFnufp1CA7g=poF3UpKjX7YYz569Wxc1YORSv+uhpU5847xuXw@mail.gmail.com>
-Message-ID: <CAFnufp1CA7g=poF3UpKjX7YYz569Wxc1YORSv+uhpU5847xuXw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] riscv: optimized memcpy
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Guo Ren <guoren@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cfb83fe4-369c-ec72-7887-3bcb0f20fe15@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 11:30 PM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Matteo Croce
-> > Sent: 16 June 2021 19:52
-> > To: Guo Ren <guoren@kernel.org>
-> >
-> > On Wed, Jun 16, 2021 at 1:46 PM Guo Ren <guoren@kernel.org> wrote:
-> > >
-> > > Hi Matteo,
-> > >
-> > > Have you tried Glibc generic implementation code?
-> > > ref: https://lore.kernel.org/linux-arch/20190629053641.3iBfk9-
-> > I_D29cDp9yJnIdIg7oMtHNZlDmhLQPTumhEc@z/#t
-> > >
-> > > If Glibc codes have the same performance in your hardware, then you
-> > > could give a generic implementation first.
->
-> Isn't that a byte copy loop - the performance of that ought to be terrible.
-> ...
->
-> > I had a look, it seems that it's a C unrolled version with the
-> > 'register' keyword.
-> > The same one was already merged in nios2:
-> > https://elixir.bootlin.com/linux/latest/source/arch/nios2/lib/memcpy.c#L68
->
-> I know a lot about the nios2 instruction timings.
-> (I've looked at code execution in the fpga's intel 'logic analiser.)
-> It is a very simple 4-clock pipeline cpu with a 2-clock delay
-> before a value read from 'tightly coupled memory' (aka cache)
-> can be used in another instruction.
-> There is also a subtle pipeline stall if a read follows a write
-> to the same memory block because the write is executed one
-> clock later - and would collide with the read.
-> Since it only ever executes one instruction per clock loop
-> unrolling does help - since you never get the loop control 'for free'.
-> OTOH you don't need to use that many registers.
-> But an unrolled loop should approach 2 bytes/clock (32bit cpu).
->
-> > I copied _wordcopy_fwd_aligned() from Glibc, and I have a very similar
-> > result of the other versions:
-> >
-> > [  563.359126] Strings selftest: memcpy(src+7, dst+7): 257 Mb/s
->
-> What clock speed is that running at?
-> It seems very slow for a 64bit cpu (that isn't an fpga soft-cpu).
->
-> While the small riscv cpu might be similar to the nios2 (and mips
-> for that matter), there are also bigger/faster cpu.
-> I'm sure these can execute multiple instructions/clock
-> and possible even read and write at the same time.
-> Unless they also support significant instruction re-ordering
-> the trivial copy loops are going to be slow on such cpu.
->
+Hi,
 
-It's running at 1 GHz.
+On 6/17/2021 2:01 PM, Ferry Toth wrote:
+> Hi
+> 
+> Op 17-06-2021 om 11:58 schreef Wesley Cheng:
+>> Changes in V10:
+>>   - Fixed compilation errors in config where OF is not used (error due to
+>>     unknown symbol for of_add_property()).  Add of_add_property() stub.
+>>   - Fixed compilation warning for incorrect argument being passed to
+>> dwc3_mdwidth
+> This fixes the OOPS I had in V9. I do not see any change in performance
+> on Merrifield though.
 
-I get 257 Mb/s with a memcpy, a bit more with a memset,
-but I get 1200 Mb/s with a cyle which just reads memory with 64 bit addressing.
+I see...thanks Ferry! With your testing, are you writing to the device's
+internal storage (ie UFS, eMMC, etc...), or did you use a ramdisk as well?
+
+If not with a ramdisk, we might want to give that a try to avoid the
+storage path being the bottleneck.  You can use "dd" to create an empty
+file, and then just use that as the LUN's backing file.
+
+echo ramdisk.img >
+/sys/kernel/config/usb_gadget/g1/functions/mass_storage.0/lun.0/file
+
+Thanks
+Wesley Cheng
+
+>> Changes in V9:
+>>   - Fixed incorrect patch in series.  Removed changes in DTSI, as
+>> dwc3-qcom will
+>>     add the property by default from the kernel.
+>>
+>> Changes in V8:
+>>   - Rebased to usb-testing
+>>   - Using devm_kzalloc for adding txfifo property in dwc3-qcom
+>>   - Removed DWC3 QCOM ACPI property for enabling the txfifo resize
+>>
+>> Changes in V7:
+>>   - Added a new property tx-fifo-max-num for limiting how much fifo
+>> space the
+>>     resizing logic can allocate for endpoints with large burst
+>> values.  This
+>>     can differ across platforms, and tie in closely with overall
+>> system latency.
+>>   - Added recommended checks for DWC32.
+>>   - Added changes to set the tx-fifo-resize property from dwc3-qcom by
+>> default
+>>     instead of modifying the current DTSI files.
+>>   - Added comments on all APIs/variables introduced.
+>>   - Updated the DWC3 YAML to include a better description of the
+>> tx-fifo-resize
+>>     property and added an entry for tx-fifo-max-num.
+>>
+>> Changes in V6:
+>>   - Rebased patches to usb-testing.
+>>   - Renamed to PATCH series instead of RFC.
+>>   - Checking for fs_descriptors instead of ss_descriptors for
+>> determining the
+>>     endpoint count for a particular configuration.
+>>   - Re-ordered patch series to fix patch dependencies.
+>>
+>> Changes in V5:
+>>   - Added check_config() logic, which is used to communicate the
+>> number of EPs
+>>     used in a particular configuration.  Based on this, the DWC3
+>> gadget driver
+>>     has the ability to know the maximum number of eps utilized in all
+>> configs.
+>>     This helps reduce unnecessary allocation to unused eps, and will
+>> catch fifo
+>>     allocation issues at bind() time.
+>>   - Fixed variable declaration to single line per variable, and
+>> reverse xmas.
+>>   - Created a helper for fifo clearing, which is used by ep0.c
+>>
+>> Changes in V4:
+>>   - Removed struct dwc3* as an argument for dwc3_gadget_resize_tx_fifos()
+>>   - Removed WARN_ON(1) in case we run out of fifo space
+>>   Changes in V3:
+>>   - Removed "Reviewed-by" tags
+>>   - Renamed series back to RFC
+>>   - Modified logic to ensure that fifo_size is reset if we pass the
+>> minimum
+>>     threshold.  Tested with binding multiple FDs requesting 6 FIFOs.
+>>
+>> Changes in V2:
+>>   - Modified TXFIFO resizing logic to ensure that each EP is reserved a
+>>     FIFO.
+>>   - Removed dev_dbg() prints and fixed typos from patches
+>>   - Added some more description on the dt-bindings commit message
+>>
+>> Currently, there is no functionality to allow for resizing the
+>> TXFIFOs, and
+>> relying on the HW default setting for the TXFIFO depth.  In most
+>> cases, the
+>> HW default is probably sufficient, but for USB compositions that contain
+>> multiple functions that require EP bursting, the default settings
+>> might not be enough.  Also to note, the current SW will assign an EP to a
+>> function driver w/o checking to see if the TXFIFO size for that
+>> particular
+>> EP is large enough. (this is a problem if there are multiple HW defined
+>> values for the TXFIFO size)
+>>
+>> It is mentioned in the SNPS databook that a minimum of TX FIFO depth = 3
+>> is required for an EP that supports bursting.  Otherwise, there may be
+>> frequent occurences of bursts ending.  For high bandwidth functions,
+>> such as data tethering (protocols that support data aggregation), mass
+>> storage, and media transfer protocol (over FFS), the bMaxBurst value
+>> can be
+>> large, and a bigger TXFIFO depth may prove to be beneficial in terms
+>> of USB
+>> throughput. (which can be associated to system access latency,
+>> etc...)  It
+>> allows for a more consistent burst of traffic, w/o any interruptions, as
+>> data is readily available in the FIFO.
+>>
+>> With testing done using the mass storage function driver, the results
+>> show
+>> that with a larger TXFIFO depth, the bandwidth increased significantly.
+>>
+>> Test Parameters:
+>>   - Platform: Qualcomm SM8150
+>>   - bMaxBurst = 6
+>>   - USB req size = 256kB
+>>   - Num of USB reqs = 16
+>>   - USB Speed = Super-Speed
+>>   - Function Driver: Mass Storage (w/ ramdisk)
+>>   - Test Application: CrystalDiskMark
+>>
+>> Results:
+>>
+>> TXFIFO Depth = 3 max packets
+>>
+>> Test Case | Data Size | AVG tput (in MB/s)
+>> -------------------------------------------
+>> Sequential|1 GB x     |
+>> Read      |9 loops    | 193.60
+>>       |           | 195.86
+>>            |           | 184.77
+>>            |           | 193.60
+>> -------------------------------------------
+>>
+>> TXFIFO Depth = 6 max packets
+>>
+>> Test Case | Data Size | AVG tput (in MB/s)
+>> -------------------------------------------
+>> Sequential|1 GB x     |
+>> Read      |9 loops    | 287.35
+>>       |           | 304.94
+>>            |           | 289.64
+>>            |           | 293.61
+>> -------------------------------------------
+>>
+>> Wesley Cheng (6):
+>>    usb: gadget: udc: core: Introduce check_config to verify USB
+>>      configuration
+>>    usb: gadget: configfs: Check USB configuration before adding
+>>    usb: dwc3: Resize TX FIFOs to meet EP bursting requirements
+>>    of: Add stub for of_add_property()
+>>    usb: dwc3: dwc3-qcom: Enable tx-fifo-resize property by default
+>>    dt-bindings: usb: dwc3: Update dwc3 TX fifo properties
+>>
+>>   .../devicetree/bindings/usb/snps,dwc3.yaml         |  15 +-
+>>   drivers/usb/dwc3/core.c                            |   9 +
+>>   drivers/usb/dwc3/core.h                            |  15 ++
+>>   drivers/usb/dwc3/dwc3-qcom.c                       |   9 +
+>>   drivers/usb/dwc3/ep0.c                             |   2 +
+>>   drivers/usb/dwc3/gadget.c                          | 212
+>> +++++++++++++++++++++
+>>   drivers/usb/gadget/configfs.c                      |  22 +++
+>>   drivers/usb/gadget/udc/core.c                      |  25 +++
+>>   include/linux/of.h                                 |   5 +
+>>   include/linux/usb/gadget.h                         |   5 +
+>>   10 files changed, 317 insertions(+), 2 deletions(-)
+>>
 
 -- 
-per aspera ad upstream
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
