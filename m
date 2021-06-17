@@ -2,73 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42143ABB4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474B93ABBC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbhFQSWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 14:22:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58906 "EHLO mail.kernel.org"
+        id S233624AbhFQS3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:29:07 -0400
+Received: from mga01.intel.com ([192.55.52.88]:59217 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229816AbhFQSWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:22:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AC960613E1;
-        Thu, 17 Jun 2021 18:20:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623954003;
-        bh=V6wpjAnkawqPIR0EXb+NS0jx+gumDb8lkhTsONQB1js=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=nfyRalhK36Cv2dOIENycULZOVTv0b7ojsAXI7QsXBB+MpmvopdFY/i5nmm89qJVOW
-         n3tNYxrF84scC2OoCHa3t25gzySiGUwrouJzGpZQP3ctv2JzmplwRBbxkJN0aLAg6q
-         N/9G2ZBZojM03CxMKvlUcviPfdMOabXnacpJn3Fw1qWI8S6z0JXIaHKInleJoS6ZJg
-         ji7KlTVW3pVXeMBtN1fTSKNlk2oj9RrJgjHeQZVHhl1HI69ZRt7NSRKFP53+FOW+lI
-         ghbml5N4PQu42PamRKBuj4/veXNBPar9IDWp1TBO0lci5LeZ3/TRVyH0/9NMi7HGhf
-         Cvir+9h9YskCg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9C179609EA;
-        Thu, 17 Jun 2021 18:20:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next][V2] net: pcs: xpcs: Fix a less than zero u16 comparison
- error
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162395400363.25060.1069176598126607006.git-patchwork-notify@kernel.org>
-Date:   Thu, 17 Jun 2021 18:20:03 +0000
-References: <20210615135253.59159-1-colin.king@canonical.com>
-In-Reply-To: <20210615135253.59159-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     olteanv@gmail.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S230137AbhFQS2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 14:28:44 -0400
+IronPort-SDR: qtM571ZOqwwCHH7nLx2U734tkQbSAFkF/NECb2v2QAWBUq4WrA4F/WSa2rPYDev96W3LCsBo5J
+ K6ikk2AX4JQw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="227947786"
+X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
+   d="scan'208";a="227947786"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 11:25:58 -0700
+IronPort-SDR: XqMueJ2pzXcsO73STbWPvBO3YD0SjyKkh5cmX7L8RNUIFGio0TwDXtbDuPXjZxIihJwwiABjC5
+ yZu1vzTaUrDw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
+   d="scan'208";a="421956685"
+Received: from alison-desk.jf.intel.com (HELO alison-desk) ([10.54.74.53])
+  by orsmga002.jf.intel.com with ESMTP; 17 Jun 2021 11:25:58 -0700
+From:   Alison Schofield <alison.schofield@intel.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: [PATCH v4 0/2] CXL ACPI tables for object creation
+Date:   Thu, 17 Jun 2021 11:21:36 -0700
+Message-Id: <cover.1623950781.git.alison.schofield@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Changes since v3 [1]:
+- Align func params to open parens (Checkpatch, Ben)
+- Added Ben & Jonathan Reviewed-by tags
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+[1] https://lore.kernel.org/linux-cxl/cover.1623890468.git.alison.schofield@intel.com/
 
-On Tue, 15 Jun 2021 14:52:53 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the check for the u16 variable val being less than zero is
-> always false because val is unsigned. Fix this by using the int
-> variable for the assignment and less than zero check.
-> 
-> Addresses-Coverity: ("Unsigned compared against 0")
-> Fixes: f7380bba42fd ("net: pcs: xpcs: add support for NXP SJA1110")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> 
-> [...]
-
-Here is the summary with links:
-  - [next,V2] net: pcs: xpcs: Fix a less than zero u16 comparison error
-    https://git.kernel.org/netdev/net-next/c/d356dbe23f60
-
-You are awesome, thank you!
 --
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Parse the ACPI CXL Early Discovery Table (CEDT) and use the CHBS & CFMWS
+when creating port and decoder objects.
 
+CHBS: CXL Host Bridge Structure - Patch 1
+CFMWS: CXL Fixed Memory Window Structure - Patch 2
+
+
+Alison Schofield (2):
+  cxl/acpi: Add the Host Bridge base address to CXL port objects
+  cxl/acpi: Use the ACPI CFMWS to create static decoder objects
+
+ drivers/cxl/acpi.c | 219 +++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 214 insertions(+), 5 deletions(-)
+
+
+base-commit: 21083f51521fb0f60dbac591f175c3ed48435af4
+-- 
+2.26.2
 
