@@ -2,235 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C033AA9D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 06:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE263AA9DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 06:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhFQESO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 00:18:14 -0400
-Received: from mga01.intel.com ([192.55.52.88]:55830 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229495AbhFQESM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 00:18:12 -0400
-IronPort-SDR: Xiz9Puz/dcf373lXwKx5m8Wb4Ucn2mP1JxGbPw+5WXw40+UHYChwaNBRzv1k12FgDDDrNf1xiO
- 7WpKRDTbBQ6g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="227808580"
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="227808580"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 21:16:05 -0700
-IronPort-SDR: mFDPeJFEKzfJ2K82PG6aAlks5BfO/9fPjehImcg9wjsVToqZuRrT2oWbaQXX6+ZDKcfkM1L/Op
- +SO2A+CFip+w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
-   d="scan'208";a="415998396"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Jun 2021 21:16:04 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ltjRk-0001nb-10; Thu, 17 Jun 2021 04:16:04 +0000
-Date:   Thu, 17 Jun 2021 12:15:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.06.15a] BUILD SUCCESS
- aec6e1b943147877a3f08e73426ae903362758a7
-Message-ID: <60cacc51.H3U8vkUYGV9y72gR%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229716AbhFQEYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 00:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229447AbhFQEYe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 00:24:34 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BCDC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 21:22:26 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so993429pjo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 21:22:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CrPkgLjFYI9pDTXOpVz36tZTA4Car3owMc7e2HcyHUQ=;
+        b=NGJ6Z9DZYKBavzR5sMWG+s5v7qSPUy+DtykG+R89TvWJH2BJy0oFL2qh0eQgdOwWXh
+         slSJrXvOj5r3QM/TGoL72kN/AMl7ioI17/LZxSWmJD9cm7NZnobNc/EfTsd79pp+pN19
+         2QY2mAdun4w4dhDEjUa+qXtGIrMHvKA7SaX3Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CrPkgLjFYI9pDTXOpVz36tZTA4Car3owMc7e2HcyHUQ=;
+        b=K9aMgb3iobFYfeS4NNgezoViBtGKOfSTNqkKoTpmS/KRFKeLzZ9zB+y1ED4ZoUCF6F
+         xov/rvN5DvaYMGb5BaHtSi1dgIiV3jCBqtEAVQeOeXTsw5zeix8iL4vQcYyEiCFci+tz
+         AIGtIW9CF6OFmFHj2tmjxSWkCVRWL72HWgWy0tlTv25G5JryLdiIrz7HFqWjlGWH0P3N
+         tpSIp4t/UPAlggkFcsb4VFiaExOLyAnG0JN7XBZGs4xIs39kQRCKFua7n7WmxuG3+d0g
+         RiIpalX3PpyFBx7yp2jw//oX/v/fAAe5N3u7Hk4A0ueHeQZfO0nU9A9deS+k2Mc//6CT
+         rupA==
+X-Gm-Message-State: AOAM530WVnGn97w0AIBwUkuILdyY9wyu3FHZm9wJU8pcJb6Sfv1A7Dq/
+        vtUieT/5Z0XtseqzI+/XX635Ng==
+X-Google-Smtp-Source: ABdhPJxdU10c5lMpAx+co146/isyntZhB47mLDloLf9t234l5Xv+hDh7rnTntKGdDkT+bcXmlFzisg==
+X-Received: by 2002:a17:90a:e541:: with SMTP id ei1mr3444120pjb.189.1623903746021;
+        Wed, 16 Jun 2021 21:22:26 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q2sm6988159pje.50.2021.06.16.21.22.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 21:22:24 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 21:22:23 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH] media: omap3isp: Extract struct group for memcpy() region
+Message-ID: <202106162119.859E9A80B@keescook>
+References: <20210616185938.1225218-1-keescook@chromium.org>
+ <YMpUR34kFSbiyi+q@pendragon.ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <YMpUR34kFSbiyi+q@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.06.15a
-branch HEAD: aec6e1b943147877a3f08e73426ae903362758a7  torture: Log more kvm-remote.sh information
+On Wed, Jun 16, 2021 at 10:43:03PM +0300, Laurent Pinchart wrote:
+> Hi Kees,
+> 
+> Thank you for the patch.
+> 
+> On Wed, Jun 16, 2021 at 11:59:38AM -0700, Kees Cook wrote:
+> > Avoid writing past the end of a structure member by wrapping the target
+> > region in a common named structure. This additionally fixes a
+> > misalignment of the copy (since the size of "buf" changes between 64-bit
+> > and 32-bit).
+> 
+> Could you have been mislead by the data64 name ? The difference between
+> omap3isp_stat_data_time and omap3isp_stat_data_time32 is the size of the
+> ts field, using 32-bit timestamps with legacy userspace, and 64-bit
+> timestamps with more recent userspace. In both cases we're dealing with
+> a 32-bit platform, as the omap3isp is not used in any 64-bit ARM SoC.
+> The size of void __user *buf is thus 4 bytes in all cases, as is __u32
+> buf.
 
-elapsed time: 729m
+Ah, yes, that's true. I was hitting this on arm64 builds
+(CONFIG_COMPILE_TEST) where __user *buf is 64-bit. So, the "additionally
+fixes" bit above is misleading in the sense that nothing was ever built
+in the real world like that.
 
-configs tested: 173
-configs skipped: 2
+The patch still fixes the compile-time warnings, though.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+However, I don't think anything actually uses any of this code
+regardless. ;)
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nios2                            alldefconfig
-sh                ecovec24-romimage_defconfig
-mips                    maltaup_xpa_defconfig
-arm                        vexpress_defconfig
-arm                          pxa910_defconfig
-powerpc                    sam440ep_defconfig
-arm                           omap1_defconfig
-arm                          ep93xx_defconfig
-arm                        magician_defconfig
-powerpc                     kmeter1_defconfig
-m68k                                defconfig
-m68k                       m5475evb_defconfig
-arm                  colibri_pxa270_defconfig
-mips                          ath79_defconfig
-arm                            mps2_defconfig
-m68k                         apollo_defconfig
-arm                           h3600_defconfig
-arm                            pleb_defconfig
-sh                            shmin_defconfig
-powerpc                      makalu_defconfig
-arm                         shannon_defconfig
-sh                          sdk7786_defconfig
-sh                     magicpanelr2_defconfig
-parisc                generic-64bit_defconfig
-arc                            hsdk_defconfig
-xtensa                  audio_kc705_defconfig
-mips                            e55_defconfig
-powerpc                 mpc837x_rdb_defconfig
-mips                        workpad_defconfig
-xtensa                generic_kc705_defconfig
-arm                           sama5_defconfig
-arm                         s5pv210_defconfig
-ia64                         bigsur_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                     taishan_defconfig
-m68k                            mac_defconfig
-powerpc                 mpc834x_itx_defconfig
-powerpc                       eiger_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                     kilauea_defconfig
-arm                         axm55xx_defconfig
-arm                        clps711x_defconfig
-arm                     eseries_pxa_defconfig
-x86_64                            allnoconfig
-powerpc                     pseries_defconfig
-arm                          ixp4xx_defconfig
-arm                        multi_v7_defconfig
-s390                          debug_defconfig
-sh                          sdk7780_defconfig
-sparc                            alldefconfig
-arm                             ezx_defconfig
-arc                        nsimosci_defconfig
-powerpc                  mpc866_ads_defconfig
-mips                        jmr3927_defconfig
-arm                           spitz_defconfig
-mips                   sb1250_swarm_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                     rainier_defconfig
-powerpc                     powernv_defconfig
-sh                           se7619_defconfig
-arm                       mainstone_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                        maltaup_defconfig
-m68k                           sun3_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210617
-x86_64               randconfig-a001-20210617
-x86_64               randconfig-a002-20210617
-x86_64               randconfig-a003-20210617
-x86_64               randconfig-a006-20210617
-x86_64               randconfig-a005-20210617
-i386                 randconfig-a002-20210615
-i386                 randconfig-a006-20210615
-i386                 randconfig-a004-20210615
-i386                 randconfig-a001-20210615
-i386                 randconfig-a005-20210615
-i386                 randconfig-a003-20210615
-i386                 randconfig-a002-20210617
-i386                 randconfig-a006-20210617
-i386                 randconfig-a001-20210617
-i386                 randconfig-a004-20210617
-i386                 randconfig-a005-20210617
-i386                 randconfig-a003-20210617
-i386                 randconfig-a015-20210617
-i386                 randconfig-a013-20210617
-i386                 randconfig-a016-20210617
-i386                 randconfig-a012-20210617
-i386                 randconfig-a014-20210617
-i386                 randconfig-a011-20210617
-i386                 randconfig-a015-20210615
-i386                 randconfig-a013-20210615
-i386                 randconfig-a016-20210615
-i386                 randconfig-a012-20210615
-i386                 randconfig-a014-20210615
-i386                 randconfig-a011-20210615
-x86_64               randconfig-a001-20210615
-x86_64               randconfig-a004-20210615
-x86_64               randconfig-a002-20210615
-x86_64               randconfig-a003-20210615
-x86_64               randconfig-a006-20210615
-x86_64               randconfig-a005-20210615
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+-Kees
 
-clang tested configs:
-x86_64               randconfig-b001-20210615
-x86_64               randconfig-b001-20210617
-x86_64               randconfig-a015-20210617
-x86_64               randconfig-a011-20210617
-x86_64               randconfig-a014-20210617
-x86_64               randconfig-a012-20210617
-x86_64               randconfig-a013-20210617
-x86_64               randconfig-a016-20210617
-x86_64               randconfig-a015-20210615
-x86_64               randconfig-a011-20210615
-x86_64               randconfig-a012-20210615
-x86_64               randconfig-a014-20210615
-x86_64               randconfig-a016-20210615
-x86_64               randconfig-a013-20210615
-x86_64               randconfig-a004-20210616
-x86_64               randconfig-a001-20210616
-x86_64               randconfig-a002-20210616
-x86_64               randconfig-a003-20210616
-x86_64               randconfig-a006-20210616
-x86_64               randconfig-a005-20210616
+> 
+> > I actually think this code is completely unused in the real world:
+> > I don't think it could have ever worked, as it would either always
+> > fail (with an uninitialized data->buf_size) or would cause corruption
+> > in userspace due to the copy_to_user() in the call path against an
+> > uninitialized data->buf value:
+> > 
+> > omap3isp_stat_request_statistics_time32(...)
+> >     struct omap3isp_stat_data data64;
+> >     ...
+> >     omap3isp_stat_request_statistics(stat, &data64);
+> > 
+> > int omap3isp_stat_request_statistics(struct ispstat *stat,
+> >                                      struct omap3isp_stat_data *data)
+> >     ...
+> >     buf = isp_stat_buf_get(stat, data);
+> > 
+> > static struct ispstat_buffer *isp_stat_buf_get(struct ispstat *stat,
+> >                                                struct omap3isp_stat_data *data)
+> > ...
+> >     if (buf->buf_size > data->buf_size) {
+> >             ...
+> >             return ERR_PTR(-EINVAL);
+> >     }
+> >     ...
+> >     rval = copy_to_user(data->buf,
+> >                         buf->virt_addr,
+> >                         buf->buf_size);
+> > 
+> > Regardless, additionally initialize data64 to be zero-filled to avoid
+> > undefined behavior.
+> > 
+> > Fixes: 378e3f81cb56 ("media: omap3isp: support 64-bit version of omap3isp_stat_data")
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  drivers/media/platform/omap3isp/ispstat.c |  5 +--
+> >  include/uapi/linux/omap3isp.h             | 44 +++++++++++++++++------
+> >  2 files changed, 36 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/drivers/media/platform/omap3isp/ispstat.c b/drivers/media/platform/omap3isp/ispstat.c
+> > index 5b9b57f4d9bf..ea8222fed38e 100644
+> > --- a/drivers/media/platform/omap3isp/ispstat.c
+> > +++ b/drivers/media/platform/omap3isp/ispstat.c
+> > @@ -512,7 +512,7 @@ int omap3isp_stat_request_statistics(struct ispstat *stat,
+> >  int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
+> >  					struct omap3isp_stat_data_time32 *data)
+> >  {
+> > -	struct omap3isp_stat_data data64;
+> > +	struct omap3isp_stat_data data64 = { };
+> >  	int ret;
+> >  
+> >  	ret = omap3isp_stat_request_statistics(stat, &data64);
+> > @@ -521,7 +521,8 @@ int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
+> >  
+> >  	data->ts.tv_sec = data64.ts.tv_sec;
+> >  	data->ts.tv_usec = data64.ts.tv_usec;
+> > -	memcpy(&data->buf, &data64.buf, sizeof(*data) - sizeof(data->ts));
+> > +	data->buf = (uintptr_t)data64.buf;
+> > +	memcpy(&data->frame, &data64.buf, sizeof(data->frame));
+> >  
+> >  	return 0;
+> >  }
+> > diff --git a/include/uapi/linux/omap3isp.h b/include/uapi/linux/omap3isp.h
+> > index 87b55755f4ff..0a16af91621f 100644
+> > --- a/include/uapi/linux/omap3isp.h
+> > +++ b/include/uapi/linux/omap3isp.h
+> > @@ -159,13 +159,25 @@ struct omap3isp_h3a_aewb_config {
+> >  };
+> >  
+> >  /**
+> > - * struct omap3isp_stat_data - Statistic data sent to or received from user
+> > - * @ts: Timestamp of returned framestats.
+> > - * @buf: Pointer to pass to user.
+> > + * struct omap3isp_stat_frame - Statistic data without timestamp nor pointer.
+> > + * @buf_size: Size of buffer.
+> >   * @frame_number: Frame number of requested stats.
+> >   * @cur_frame: Current frame number being processed.
+> >   * @config_counter: Number of the configuration associated with the data.
+> >   */
+> > +struct omap3isp_stat_frame {
+> > +	__u32 buf_size;
+> > +	__u16 frame_number;
+> > +	__u16 cur_frame;
+> > +	__u16 config_counter;
+> > +};
+> > +
+> > +/**
+> > + * struct omap3isp_stat_data - Statistic data sent to or received from user
+> > + * @ts: Timestamp of returned framestats.
+> > + * @buf: Pointer to pass to user.
+> > + * @frame: Statistic data for frame.
+> > + */
+> >  struct omap3isp_stat_data {
+> >  #ifdef __KERNEL__
+> >  	struct {
+> > @@ -176,10 +188,15 @@ struct omap3isp_stat_data {
+> >  	struct timeval ts;
+> >  #endif
+> >  	void __user *buf;
+> > -	__u32 buf_size;
+> > -	__u16 frame_number;
+> > -	__u16 cur_frame;
+> > -	__u16 config_counter;
+> > +	union {
+> > +		struct {
+> > +			__u32 buf_size;
+> > +			__u16 frame_number;
+> > +			__u16 cur_frame;
+> > +			__u16 config_counter;
+> > +		};
+> > +		struct omap3isp_stat_frame frame;
+> > +	};
+> >  };
+> >  
+> >  #ifdef __KERNEL__
+> > @@ -189,10 +206,15 @@ struct omap3isp_stat_data_time32 {
+> >  		__s32	tv_usec;
+> >  	} ts;
+> >  	__u32 buf;
+> > -	__u32 buf_size;
+> > -	__u16 frame_number;
+> > -	__u16 cur_frame;
+> > -	__u16 config_counter;
+> > +	union {
+> > +		struct {
+> > +			__u32 buf_size;
+> > +			__u16 frame_number;
+> > +			__u16 cur_frame;
+> > +			__u16 config_counter;
+> > +		};
+> > +		struct omap3isp_stat_frame frame;
+> > +	};
+> >  };
+> >  #endif
+> >  
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Kees Cook
