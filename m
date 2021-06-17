@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 855A03ABBDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CFB33ABBE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233174AbhFQSdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 14:33:02 -0400
-Received: from mga07.intel.com ([134.134.136.100]:1024 "EHLO mga07.intel.com"
+        id S233282AbhFQSdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:33:10 -0400
+Received: from mga06.intel.com ([134.134.136.31]:41916 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231855AbhFQSc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:32:59 -0400
-IronPort-SDR: CLFKu7rKeamioiCk02DPO8ZS/WO446B148MgfH7anT0RwsCZ1rsuqk/y8HM8so5yZC4v+xNBdj
- f/u37cG5Mh5w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="270276451"
+        id S232046AbhFQSdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 14:33:00 -0400
+IronPort-SDR: 1+8jNpWjqZw7/1nktWeQ02rieYU7V2VW+MPdfcIX61CwomdUmpNd5NkH75es0HIT9UFe9Z2o5r
+ dNQzjxL1Koyw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="267575194"
 X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="270276451"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 11:30:50 -0700
-IronPort-SDR: UAD3dpxy3ynjzkVl+rCLz2MRDeqmkl9L0N6ldsAT4oJwiEbdpkm72tP481kD20pas68Eq3wpD5
- 4sgU4la/8yjQ==
+   d="scan'208";a="267575194"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 11:30:51 -0700
+IronPort-SDR: /A6QnV/C6ydYqXLbvM73szmHefaiTET/74wsxacq2VOhMtJKAHVvb5JI+hSfjmcHwaYsZbVE0V
+ HITqWwft7eUw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="421957911"
+   d="scan'208";a="485381105"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 17 Jun 2021 11:30:48 -0700
+  by orsmga001.jf.intel.com with ESMTP; 17 Jun 2021 11:30:48 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id EE8882DA; Thu, 17 Jun 2021 21:31:12 +0300 (EEST)
+        id 03BFB431; Thu, 17 Jun 2021 21:31:12 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Hans de Goede <hdegoede@redhat.com>,
         Mario Limonciello <mario.limonciello@amd.com>,
@@ -35,9 +35,9 @@ To:     Hans de Goede <hdegoede@redhat.com>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
 Cc:     Mark Gross <mgross@linux.intel.com>
-Subject: [PATCH v1 3/4] platform/x86: intel_skl_int3472: Move to intel/ subfolder
-Date:   Thu, 17 Jun 2021 21:30:30 +0300
-Message-Id: <20210617183031.70685-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 4/4] platform/x86: intel_cht_int33fe: Move to its own subfolder
+Date:   Thu, 17 Jun 2021 21:30:31 +0300
+Message-Id: <20210617183031.70685-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210617183031.70685-1-andriy.shevchenko@linux.intel.com>
 References: <20210617183031.70685-1-andriy.shevchenko@linux.intel.com>
@@ -47,144 +47,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Start collecting Intel x86 related drivers in its own subfolder.
-Move intel_skl_int3472 first.
+Since we have started collecting Intel x86 specific drivers in its own folder,
+Move intel_cht_int33fe to own subfolder there.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/platform/x86/Kconfig                  |  4 ++--
- drivers/platform/x86/Makefile                 |  3 ++-
- drivers/platform/x86/intel/Kconfig            | 21 +++++++++++++++++++
- drivers/platform/x86/intel/Makefile           |  7 +++++++
- .../{intel-int3472 => intel/int3472}/Kconfig  |  0
- .../{intel-int3472 => intel/int3472}/Makefile |  0
- .../intel_skl_int3472_clk_and_regulator.c     |  0
- .../int3472}/intel_skl_int3472_common.c       |  0
- .../int3472}/intel_skl_int3472_common.h       |  0
- .../int3472}/intel_skl_int3472_discrete.c     |  0
- .../int3472}/intel_skl_int3472_tps68470.c     |  0
- 11 files changed, 32 insertions(+), 3 deletions(-)
- create mode 100644 drivers/platform/x86/intel/Kconfig
- create mode 100644 drivers/platform/x86/intel/Makefile
- rename drivers/platform/x86/{intel-int3472 => intel/int3472}/Kconfig (100%)
- rename drivers/platform/x86/{intel-int3472 => intel/int3472}/Makefile (100%)
- rename drivers/platform/x86/{intel-int3472 => intel/int3472}/intel_skl_int3472_clk_and_regulator.c (100%)
- rename drivers/platform/x86/{intel-int3472 => intel/int3472}/intel_skl_int3472_common.c (100%)
- rename drivers/platform/x86/{intel-int3472 => intel/int3472}/intel_skl_int3472_common.h (100%)
- rename drivers/platform/x86/{intel-int3472 => intel/int3472}/intel_skl_int3472_discrete.c (100%)
- rename drivers/platform/x86/{intel-int3472 => intel/int3472}/intel_skl_int3472_tps68470.c (100%)
+ drivers/platform/x86/Kconfig                  | 24 ------------------
+ drivers/platform/x86/Makefile                 |  4 ---
+ drivers/platform/x86/intel/Kconfig            |  1 +
+ drivers/platform/x86/intel/Makefile           |  1 +
+ drivers/platform/x86/intel/int33fe/Kconfig    | 25 +++++++++++++++++++
+ drivers/platform/x86/intel/int33fe/Makefile   |  5 ++++
+ .../int33fe}/intel_cht_int33fe_common.c       |  0
+ .../int33fe}/intel_cht_int33fe_common.h       |  0
+ .../int33fe}/intel_cht_int33fe_microb.c       |  0
+ .../int33fe}/intel_cht_int33fe_typec.c        |  0
+ 10 files changed, 32 insertions(+), 28 deletions(-)
+ create mode 100644 drivers/platform/x86/intel/int33fe/Kconfig
+ create mode 100644 drivers/platform/x86/intel/int33fe/Makefile
+ rename drivers/platform/x86/{ => intel/int33fe}/intel_cht_int33fe_common.c (100%)
+ rename drivers/platform/x86/{ => intel/int33fe}/intel_cht_int33fe_common.h (100%)
+ rename drivers/platform/x86/{ => intel/int33fe}/intel_cht_int33fe_microb.c (100%)
+ rename drivers/platform/x86/{ => intel/int33fe}/intel_cht_int33fe_typec.c (100%)
 
 diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index ccb827b57f1f..79d095c0ab61 100644
+index 79d095c0ab61..7d385c3b2239 100644
 --- a/drivers/platform/x86/Kconfig
 +++ b/drivers/platform/x86/Kconfig
-@@ -651,6 +651,8 @@ config THINKPAD_LMI
- 	  To compile this driver as a module, choose M here: the module will
- 	  be called think-lmi.
+@@ -687,30 +687,6 @@ config INTEL_ATOMISP2_PM
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called intel_atomisp2_pm.
  
-+source "drivers/platform/x86/intel/Kconfig"
-+
- config INTEL_ATOMISP2_LED
- 	tristate "Intel AtomISP2 camera LED driver"
- 	depends on GPIOLIB && LEDS_GPIO
-@@ -709,8 +711,6 @@ config INTEL_CHT_INT33FE
- 	  device and CONFIG_TYPEC_FUSB302=m and CONFIG_BATTERY_MAX17042=m
- 	  for Type-C device.
- 
--source "drivers/platform/x86/intel-int3472/Kconfig"
+-config INTEL_CHT_INT33FE
+-	tristate "Intel Cherry Trail ACPI INT33FE Driver"
+-	depends on X86 && ACPI && I2C && REGULATOR
+-	depends on CHARGER_BQ24190=y || (CHARGER_BQ24190=m && m)
+-	depends on USB_ROLES_INTEL_XHCI=y || (USB_ROLES_INTEL_XHCI=m && m)
+-	depends on TYPEC_MUX_PI3USB30532=y || (TYPEC_MUX_PI3USB30532=m && m)
+-	help
+-	  This driver add support for the INT33FE ACPI device found on
+-	  some Intel Cherry Trail devices.
+-
+-	  There are two kinds of INT33FE ACPI device possible: for hardware
+-	  with USB Type-C and Micro-B connectors. This driver supports both.
+-
+-	  The INT33FE ACPI device has a CRS table with I2cSerialBusV2
+-	  resources for Fuel Gauge Controller and (in the Type-C variant)
+-	  FUSB302 USB Type-C Controller and PI3USB30532 USB switch.
+-	  This driver instantiates i2c-clients for these, so that standard
+-	  i2c drivers for these chips can bind to the them.
+-
+-	  If you enable this driver it is advised to also select
+-	  CONFIG_BATTERY_BQ27XXX=m or CONFIG_BATTERY_BQ27XXX_I2C=m for Micro-B
+-	  device and CONFIG_TYPEC_FUSB302=m and CONFIG_BATTERY_MAX17042=m
+-	  for Type-C device.
 -
  config INTEL_HID_EVENT
  	tristate "INTEL HID Event"
  	depends on ACPI
 diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index a1f64613af71..e03b59ce3f9f 100644
+index e03b59ce3f9f..7ee369aab10d 100644
 --- a/drivers/platform/x86/Makefile
 +++ b/drivers/platform/x86/Makefile
-@@ -66,6 +66,8 @@ obj-$(CONFIG_THINKPAD_ACPI)	+= thinkpad_acpi.o
- obj-$(CONFIG_THINKPAD_LMI)	+= think-lmi.o
+@@ -70,10 +70,6 @@ obj-$(CONFIG_X86_PLATFORM_DRIVERS_INTEL)		+= intel/
  
- # Intel
-+obj-$(CONFIG_X86_PLATFORM_DRIVERS_INTEL)		+= intel/
-+
  obj-$(CONFIG_INTEL_ATOMISP2_LED)	+= intel_atomisp2_led.o
  obj-$(CONFIG_INTEL_ATOMISP2_PM)		+= intel_atomisp2_pm.o
- obj-$(CONFIG_INTEL_CHT_INT33FE)		+= intel_cht_int33fe.o
-@@ -76,7 +78,6 @@ obj-$(CONFIG_INTEL_HID_EVENT)		+= intel-hid.o
+-obj-$(CONFIG_INTEL_CHT_INT33FE)		+= intel_cht_int33fe.o
+-intel_cht_int33fe-objs			:= intel_cht_int33fe_common.o \
+-					   intel_cht_int33fe_typec.o \
+-					   intel_cht_int33fe_microb.o
+ obj-$(CONFIG_INTEL_HID_EVENT)		+= intel-hid.o
  obj-$(CONFIG_INTEL_INT0002_VGPIO)	+= intel_int0002_vgpio.o
  obj-$(CONFIG_INTEL_MENLOW)		+= intel_menlow.o
- obj-$(CONFIG_INTEL_OAKTRAIL)		+= intel_oaktrail.o
--obj-$(CONFIG_INTEL_SKL_INT3472)		+= intel-int3472/
- obj-$(CONFIG_INTEL_VBTN)		+= intel-vbtn.o
- 
- # MSI
 diff --git a/drivers/platform/x86/intel/Kconfig b/drivers/platform/x86/intel/Kconfig
-new file mode 100644
-index 000000000000..33f2dab03d3d
---- /dev/null
+index 33f2dab03d3d..f2eef337eb98 100644
+--- a/drivers/platform/x86/intel/Kconfig
 +++ b/drivers/platform/x86/intel/Kconfig
-@@ -0,0 +1,21 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Intel x86 Platform Specific Drivers
-+#
-+
-+menuconfig X86_PLATFORM_DRIVERS_INTEL
-+	bool "Intel x86 Platform Specific Device Drivers"
-+	default y
-+	help
-+	  Say Y here to get to see options for device drivers for
-+	  various Intel x86 platforms, including vendor-specific
-+	  drivers. This option alone does not add any kernel code.
-+
-+	  If you say N, all options in this submenu will be skipped
-+	  and disabled.
-+
-+if X86_PLATFORM_DRIVERS_INTEL
-+
-+source "drivers/platform/x86/intel/int3472/Kconfig"
-+
-+endif # X86_PLATFORM_DRIVERS_INTEL
+@@ -16,6 +16,7 @@ menuconfig X86_PLATFORM_DRIVERS_INTEL
+ 
+ if X86_PLATFORM_DRIVERS_INTEL
+ 
++source "drivers/platform/x86/intel/int33fe/Kconfig"
+ source "drivers/platform/x86/intel/int3472/Kconfig"
+ 
+ endif # X86_PLATFORM_DRIVERS_INTEL
 diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
-new file mode 100644
-index 000000000000..3ac795d810f1
---- /dev/null
+index 3ac795d810f1..0653055942d5 100644
+--- a/drivers/platform/x86/intel/Makefile
 +++ b/drivers/platform/x86/intel/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Makefile for drivers/platform/x86/intel
-+# Intel x86 Platform-Specific Drivers
-+#
+@@ -4,4 +4,5 @@
+ # Intel x86 Platform-Specific Drivers
+ #
+ 
++obj-$(CONFIG_INTEL_CHT_INT33FE)		+= int33fe/
+ obj-$(CONFIG_INTEL_SKL_INT3472)		+= int3472/
+diff --git a/drivers/platform/x86/intel/int33fe/Kconfig b/drivers/platform/x86/intel/int33fe/Kconfig
+new file mode 100644
+index 000000000000..c7efb461d97d
+--- /dev/null
++++ b/drivers/platform/x86/intel/int33fe/Kconfig
+@@ -0,0 +1,25 @@
++# SPDX-License-Identifier: GPL-2.0-only
++config INTEL_CHT_INT33FE
++	tristate "Intel Cherry Trail ACPI INT33FE Driver"
++	depends on X86 && ACPI && I2C && REGULATOR
++	depends on CHARGER_BQ24190=y || (CHARGER_BQ24190=m && m)
++	depends on USB_ROLES_INTEL_XHCI=y || (USB_ROLES_INTEL_XHCI=m && m)
++	depends on TYPEC_MUX_PI3USB30532=y || (TYPEC_MUX_PI3USB30532=m && m)
++	help
++	  This driver add support for the INT33FE ACPI device found on
++	  some Intel Cherry Trail devices.
 +
-+obj-$(CONFIG_INTEL_SKL_INT3472)		+= int3472/
-diff --git a/drivers/platform/x86/intel-int3472/Kconfig b/drivers/platform/x86/intel/int3472/Kconfig
++	  There are two kinds of INT33FE ACPI device possible: for hardware
++	  with USB Type-C and Micro-B connectors. This driver supports both.
++
++	  The INT33FE ACPI device has a CRS table with I2cSerialBusV2
++	  resources for Fuel Gauge Controller and (in the Type-C variant)
++	  FUSB302 USB Type-C Controller and PI3USB30532 USB switch.
++	  This driver instantiates i2c-clients for these, so that standard
++	  i2c drivers for these chips can bind to the them.
++
++	  If you enable this driver it is advised to also select
++	  CONFIG_BATTERY_BQ27XXX=m or CONFIG_BATTERY_BQ27XXX_I2C=m for Micro-B
++	  device and CONFIG_TYPEC_FUSB302=m and CONFIG_BATTERY_MAX17042=m
++	  for Type-C device.
++
+diff --git a/drivers/platform/x86/intel/int33fe/Makefile b/drivers/platform/x86/intel/int33fe/Makefile
+new file mode 100644
+index 000000000000..cc11183ce179
+--- /dev/null
++++ b/drivers/platform/x86/intel/int33fe/Makefile
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0-only
++obj-$(CONFIG_INTEL_CHT_INT33FE)		+= intel_cht_int33fe.o
++intel_cht_int33fe-objs			:= intel_cht_int33fe_common.o \
++					   intel_cht_int33fe_typec.o \
++					   intel_cht_int33fe_microb.o
+diff --git a/drivers/platform/x86/intel_cht_int33fe_common.c b/drivers/platform/x86/intel/int33fe/intel_cht_int33fe_common.c
 similarity index 100%
-rename from drivers/platform/x86/intel-int3472/Kconfig
-rename to drivers/platform/x86/intel/int3472/Kconfig
-diff --git a/drivers/platform/x86/intel-int3472/Makefile b/drivers/platform/x86/intel/int3472/Makefile
+rename from drivers/platform/x86/intel_cht_int33fe_common.c
+rename to drivers/platform/x86/intel/int33fe/intel_cht_int33fe_common.c
+diff --git a/drivers/platform/x86/intel_cht_int33fe_common.h b/drivers/platform/x86/intel/int33fe/intel_cht_int33fe_common.h
 similarity index 100%
-rename from drivers/platform/x86/intel-int3472/Makefile
-rename to drivers/platform/x86/intel/int3472/Makefile
-diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c b/drivers/platform/x86/intel/int3472/intel_skl_int3472_clk_and_regulator.c
+rename from drivers/platform/x86/intel_cht_int33fe_common.h
+rename to drivers/platform/x86/intel/int33fe/intel_cht_int33fe_common.h
+diff --git a/drivers/platform/x86/intel_cht_int33fe_microb.c b/drivers/platform/x86/intel/int33fe/intel_cht_int33fe_microb.c
 similarity index 100%
-rename from drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c
-rename to drivers/platform/x86/intel/int3472/intel_skl_int3472_clk_and_regulator.c
-diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_common.c b/drivers/platform/x86/intel/int3472/intel_skl_int3472_common.c
+rename from drivers/platform/x86/intel_cht_int33fe_microb.c
+rename to drivers/platform/x86/intel/int33fe/intel_cht_int33fe_microb.c
+diff --git a/drivers/platform/x86/intel_cht_int33fe_typec.c b/drivers/platform/x86/intel/int33fe/intel_cht_int33fe_typec.c
 similarity index 100%
-rename from drivers/platform/x86/intel-int3472/intel_skl_int3472_common.c
-rename to drivers/platform/x86/intel/int3472/intel_skl_int3472_common.c
-diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h b/drivers/platform/x86/intel/int3472/intel_skl_int3472_common.h
-similarity index 100%
-rename from drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
-rename to drivers/platform/x86/intel/int3472/intel_skl_int3472_common.h
-diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c b/drivers/platform/x86/intel/int3472/intel_skl_int3472_discrete.c
-similarity index 100%
-rename from drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
-rename to drivers/platform/x86/intel/int3472/intel_skl_int3472_discrete.c
-diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_tps68470.c b/drivers/platform/x86/intel/int3472/intel_skl_int3472_tps68470.c
-similarity index 100%
-rename from drivers/platform/x86/intel-int3472/intel_skl_int3472_tps68470.c
-rename to drivers/platform/x86/intel/int3472/intel_skl_int3472_tps68470.c
+rename from drivers/platform/x86/intel_cht_int33fe_typec.c
+rename to drivers/platform/x86/intel/int33fe/intel_cht_int33fe_typec.c
 -- 
 2.30.2
 
