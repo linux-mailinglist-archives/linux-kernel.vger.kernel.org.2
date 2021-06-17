@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00AF33AAC8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDCB3AAC92
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhFQGmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 02:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
+        id S230242AbhFQGmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 02:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbhFQGmL (ORCPT
+        with ESMTP id S229709AbhFQGmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 02:42:11 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8871BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:40:04 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso3243022pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:40:04 -0700 (PDT)
+        Thu, 17 Jun 2021 02:42:16 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516E5C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:40:09 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id fy24-20020a17090b0218b029016c5a59021fso5528253pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:40:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=axtens.net; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z5tXXD3iVvEIVZ0tTMhEKfG6zykuiGGLtMWYWjRDWYs=;
-        b=ZvI05WcGmnfe5oUfXHNoGdM/4PM/h3nxOJp96Y+tFn5U15FBFxeWkFmjh3oZf1EL8A
-         ADkJUTvU+y/ObXXNwK0vGCrvjU1eU92ZHL7pmy1vKZFrzb+YG+Yqm32icH5OIHbXYy2p
-         a2oGBtVpOoRVNRRYQe6ovJIHlhAuYmObTEb5E=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=FhcxQma+NItwG5Mp37m/KF4tp14MA8dMkKZlGGIww7w=;
+        b=NX/qvxr8dhuE37o1z5sgt2XG3iamjEnXiWs3Cjuob6iS4N7i54VKlfizgYe8xGGkPG
+         ECD5YCGaTs51KaCl4epayh0dHJ+o8LndpifLgVU7jrsZXsK+fxf956QA+f9kaEQexM97
+         ESKPsh4uIbJJ1pXHDwjoTPF3Wsz2Knn+hfVYc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z5tXXD3iVvEIVZ0tTMhEKfG6zykuiGGLtMWYWjRDWYs=;
-        b=R7fhIxGJSV1mf8pU3XtDa/jAi00kvLYs6E8jI3cAe7/EXn3X0PGlBttHPnUOa73mK5
-         YR/RK+d/WqpBhAWQZMiUIYG5PJc0jqfO1JpoUADSuE9Ndz1hGLGkYQbmSeXBjOTWUGAG
-         pQ8M3LiACoJf7PiSmQFWXhQVAwvpcgccma04SnZMXvD4iyC49CBBTx9A5YMBCH7zcRKk
-         hHHRZflZhwEDQUFbaH20szA3A4y1DZiFFC1lfDpYFODNEf0RmYXsq69TgjTfOZXM26rQ
-         +RaEBruytN0LE/4idhJCqg3gxPoWJbnST31MBtY9WwMQIuJFpLFheepo7Onzp7BkBfuT
-         XlRA==
-X-Gm-Message-State: AOAM530XJe34zhYBTblvhIRc+Oj7x29jHLJRRvVvaWBK8QuKICUTIYwX
-        2LEMYDTwv9UGZLhdi0uifcab+xhBCppa3w==
-X-Google-Smtp-Source: ABdhPJzXBEGC2svL4/w6uQzTlhwr8EKMXDJngko+LKuujG1Wr3mcyI7qAM8QXo2oeD3ihoXSYQO+3A==
-X-Received: by 2002:a17:90a:f193:: with SMTP id bv19mr15312947pjb.86.1623912003744;
-        Wed, 16 Jun 2021 23:40:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=FhcxQma+NItwG5Mp37m/KF4tp14MA8dMkKZlGGIww7w=;
+        b=KW5NXjn0tuqBhL2U2yGkc10yWZIC2G/+06ikQCCvZmzGWd4qTzPlICe2m2mdu3hnPh
+         VYKkNf/1DtTH7/znysUG7R9OSxnHBINQI9ap3KcIUd5yE2YyiE0I5dW24VhvTshOyQgd
+         lHh4+X/KN4FAG8jOX/dUKcXjBM2W18RT+4sXeDKxgmCbrWZdPF0ydQUXo+zNARopaxVc
+         BHWm/NNZykZ4fjamYRnHL7OIrbaZxsy2VeD+x16owubni1u+LKmawwVtlwenOyjB5mWH
+         S6FenoJHug+Ar+i5s3Sts82/GsmZ59qOuqeFCgAzPxQUVHHproNXYpw6gHre7p+Mg5fH
+         Z3wQ==
+X-Gm-Message-State: AOAM532Xr/IHTkPSIIkb7CASd5wRTNwqHynfYPKizvZHA2tbjpP7WArl
+        3kJa1D6BbcI9PXuIDASD/4d27MzrMVWkSQ==
+X-Google-Smtp-Source: ABdhPJzfeN5byN4YxzyNu/GjCulyBlU25iQrctXCoCFZvJ5L0B+A23QQj4gHY87HwYK24nhSnOkqEg==
+X-Received: by 2002:a17:90b:38ca:: with SMTP id nn10mr4147573pjb.127.1623912008754;
+        Wed, 16 Jun 2021 23:40:08 -0700 (PDT)
 Received: from localhost ([203.206.29.204])
-        by smtp.gmail.com with ESMTPSA id b1sm4112148pgb.91.2021.06.16.23.40.02
+        by smtp.gmail.com with ESMTPSA id d12sm3987316pfo.113.2021.06.16.23.40.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 23:40:03 -0700 (PDT)
+        Wed, 16 Jun 2021 23:40:08 -0700 (PDT)
 From:   Daniel Axtens <dja@axtens.net>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         kasan-dev@googlegroups.com, elver@google.com,
@@ -52,43 +52,88 @@ To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
 Cc:     linuxppc-dev@lists.ozlabs.org, christophe.leroy@csgroup.eu,
         aneesh.kumar@linux.ibm.com, bsingharora@gmail.com,
         Daniel Axtens <dja@axtens.net>
-Subject: [PATCH v14 0/4] KASAN core changes for ppc64 radix KASAN
-Date:   Thu, 17 Jun 2021 16:39:52 +1000
-Message-Id: <20210617063956.94061-1-dja@axtens.net>
+Subject: [PATCH v14 1/4] kasan: allow an architecture to disable inline instrumentation
+Date:   Thu, 17 Jun 2021 16:39:53 +1000
+Message-Id: <20210617063956.94061-2-dja@axtens.net>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210617063956.94061-1-dja@axtens.net>
+References: <20210617063956.94061-1-dja@axtens.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Building on the work of Christophe, Aneesh and Balbir, I've ported
-KASAN to 64-bit Book3S kernels running on the Radix MMU. I've been
-trying this for a while, but we keep having collisions between the
-kasan code in the mm tree and the code I want to put in to the ppc
-tree.
+For annoying architectural reasons, it's very difficult to support inline
+instrumentation on powerpc64.*
 
-This series just contains the kasan core changes that we need. These
-can go in via the mm tree. I will then propose the powerpc changes for
-a later cycle. (The most recent RFC for the powerpc changes is in the
-v12 series at
-https://lore.kernel.org/linux-mm/20210615014705.2234866-1-dja@axtens.net/
-)
+Add a Kconfig flag to allow an arch to disable inline. (It's a bit
+annoying to be 'backwards', but I'm not aware of any way to have
+an arch force a symbol to be 'n', rather than 'y'.)
 
-v14 applies to next-20210611. There should be no noticeable changes to
-other platforms.
+We also disable stack instrumentation in this case as it does things that
+are functionally equivalent to inline instrumentation, namely adding
+code that touches the shadow directly without going through a C helper.
 
-Changes since v13: move the MAX_PTR_PER_* definitions out of kasan and
-into pgtable.h. Add a build time error to hopefully prevent any
-confusion about when the new hook is applicable. Thanks Marco and
-Christophe.
+* on ppc64 atm, the shadow lives in virtual memory and isn't accessible in
+real mode. However, before we turn on virtual memory, we parse the device
+tree to determine which platform and MMU we're running under. That calls
+generic DT code, which is instrumented. Inline instrumentation in DT would
+unconditionally attempt to touch the shadow region, which we won't have
+set up yet, and would crash. We can make outline mode wait for the arch to
+be ready, but we can't change what the compiler inserts for inline mode.
 
-Changes since v12: respond to Marco's review comments - clean up the
-help for ARCH_DISABLE_KASAN_INLINE, and add an arch readiness check to
-the new granule poisioning function. Thanks Marco.
+Signed-off-by: Daniel Axtens <dja@axtens.net>
+---
+ lib/Kconfig.kasan | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-Daniel Axtens (4):
-  kasan: allow an architecture to disable inline instrumentation
-  kasan: allow architectures to provide an outline readiness check
-  mm: define default MAX_PTRS_PER_* in include/pgtable.h
-  kasan: use MAX_PTRS_PER_* for early shadow tables
+diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+index cffc2ebbf185..cb5e02d09e11 100644
+--- a/lib/Kconfig.kasan
++++ b/lib/Kconfig.kasan
+@@ -12,6 +12,15 @@ config HAVE_ARCH_KASAN_HW_TAGS
+ config HAVE_ARCH_KASAN_VMALLOC
+ 	bool
+ 
++config ARCH_DISABLE_KASAN_INLINE
++	bool
++	help
++	  Sometimes an architecture might not be able to support inline
++	  instrumentation but might be able to support outline instrumentation.
++	  This option allows an architecture to prevent inline and stack
++	  instrumentation from being enabled.
++
++
+ config CC_HAS_KASAN_GENERIC
+ 	def_bool $(cc-option, -fsanitize=kernel-address)
+ 
+@@ -130,6 +139,7 @@ config KASAN_OUTLINE
+ 
+ config KASAN_INLINE
+ 	bool "Inline instrumentation"
++	depends on !ARCH_DISABLE_KASAN_INLINE
+ 	help
+ 	  Compiler directly inserts code checking shadow memory before
+ 	  memory accesses. This is faster than outline (in some workloads
+@@ -141,6 +151,7 @@ endchoice
+ config KASAN_STACK
+ 	bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
+ 	depends on KASAN_GENERIC || KASAN_SW_TAGS
++	depends on !ARCH_DISABLE_KASAN_INLINE
+ 	default y if CC_IS_GCC
+ 	help
+ 	  The LLVM stack address sanitizer has a know problem that
+@@ -154,6 +165,9 @@ config KASAN_STACK
+ 	  but clang users can still enable it for builds without
+ 	  CONFIG_COMPILE_TEST.	On gcc it is assumed to always be safe
+ 	  to use and enabled by default.
++	  If the architecture disables inline instrumentation, this is
++	  also disabled as it adds inline-style instrumentation that
++	  is run unconditionally.
+ 
+ config KASAN_SW_TAGS_IDENTIFY
+ 	bool "Enable memory corruption identification"
+-- 
+2.30.2
+
