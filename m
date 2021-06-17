@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5513AB9A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6953AB9B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhFQQaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 12:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231856AbhFQQaK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 12:30:10 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9219C061574;
-        Thu, 17 Jun 2021 09:28:01 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id d2so9832874ljj.11;
-        Thu, 17 Jun 2021 09:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=7+Z1bV4FOTanHXemOPJDEdNQl11Mbnn5WjwrTgxFZG8=;
-        b=rZtfsjtjz//HOJ58os6SGx9pDu6tubGCGWZkoCII4wh4LRVejhac9iaVm6hMVn8W/G
-         p+uspfmfAxziOhyCFXYBOJAOHb7JGWGMFxXmTWJwYNnyTcMOY70p87/Kc/tVvivTsmbo
-         oaurNtD4FNXqdO8QRZU7UJ+SzdGybxdsqJZPrhrZ5YlnQT+TdAeOxnGjdU4z55m0A/k2
-         TTF1mxJXMZlYPIltu7H3eZxmkUkrAc7vMkxGAYzueBc0N8TsYv3nsOQyHjVfxOEfcYk9
-         13ERMDMc8peKRKIsjVqUY0lg5kHZyECx3KyHeQxv+r0MM5Eo3+AqKLAtnqcj2dI4FVvw
-         pO7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=7+Z1bV4FOTanHXemOPJDEdNQl11Mbnn5WjwrTgxFZG8=;
-        b=ha76ltnn4a1ANJJ5AsrkwEXVVEnQnB5rcqDkz72JU6VypkVKkXxef5UkbY/Yte2kca
-         aB6ys948Q49LnyAVfMPqdCxd7CLsLLLaw+3pZzwPEnPQSyDQ+6Xba7KDEwwuZUatx5nd
-         AY7xRlYPu28YCvhfa7mCvgZ4DrUGMUYYKVBkRpYvlKmJdfG+TuO+feSHdYn7JMlL8fWc
-         uU11pAmuKhpos7Ul0znHGslzN5CV7w6CqnQy51SleotyU8RLc9YzJGK0lvdTcutnNvli
-         cfbG/83kMFT0bSn/pittiE765+JPDpdpvc54aej3CxCiFKdYvAIZhwqW5yyBW9yYWYBb
-         YE0Q==
-X-Gm-Message-State: AOAM533YIvzUdVxa6xwT+/lEFOmIsTtaTKsfbuNLLLSbak+WRVNoHtEf
-        dkAyKS+RmSylz+ktO/Lz+jo=
-X-Google-Smtp-Source: ABdhPJwajEKCsQmHWuHngDG4xSYmOCNXpaXzwwD6d5I1/UQIjqzezIxD9P1BKJfnpL8V8vjrOopooA==
-X-Received: by 2002:a05:651c:324:: with SMTP id b4mr5367779ljp.166.1623947280259;
-        Thu, 17 Jun 2021 09:28:00 -0700 (PDT)
-Received: from localhost ([195.238.92.77])
-        by smtp.gmail.com with ESMTPSA id n18sm625065lfe.174.2021.06.17.09.27.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 17 Jun 2021 09:27:58 -0700 (PDT)
-From:   Ruslan Bilovol <ruslan.bilovol@gmail.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Fabien Chouteau <fabien.chouteau@barco.com>,
-        Segiy Stetsyuk <serg_stetsuk@ukr.net>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@kernel.org
-Subject: [PATCH] usb: gadget: f_hid: fix endianness issue with descriptors
-Date:   Thu, 17 Jun 2021 19:27:55 +0300
-Message-Id: <20210617162755.29676-1-ruslan.bilovol@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S232908AbhFQQcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 12:32:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232710AbhFQQbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 12:31:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E294E613BA;
+        Thu, 17 Jun 2021 16:29:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623947380;
+        bh=h8mWdalnwqOGxgPzDDjfRank/448I/bBBc4d6qKMLj8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LvZ0+KKAuAFqDjU/hLzVEd/T///kIjlioxINYjvjY7itetWi7+YvxllivGbc8WZCA
+         ORi9Vj+QxOVl5mxSGnXm3rnUbFdSJRtgVd3zyegtwCxVEeq3uHQVMZsoUFYEtUdzMm
+         AMHHcEKm/UdgfO/1cSxmAhUe/3ZPmUuhZjB0XkoSlesVpDNSsQclTVcEzCqUejVc3Z
+         hT0kUcrnqEfr44kKGRNLVCfuRtMItcmE6KXjzrWYYWb6lIIu5vLgXEUaKKtZC9nCfN
+         7g3gTL9VyYi/X6olvFozUsgvwlVkp06+lQKmQ1G2Vh5KzlXVbUztan/2qWZ/nSsFJ9
+         85uOir0giuq2Q==
+Date:   Thu, 17 Jun 2021 17:29:19 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     ChiYuan Huang <u0084500@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>, lgirdwood@gmail.com,
+        matthias.bgg@gmail.com, gene_chen@richtek.com,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, cy_huang <cy_huang@richtek.com>,
+        gene.chen.richtek@gmail.com
+Subject: Re: [PATCH 1/2] regulator: mt6360: Add optional
+ mediatek.power-off-sequence in bindings document
+Message-ID: <20210617162919.GH5067@sirena.org.uk>
+References: <1622616875-22740-1-git-send-email-u0084500@gmail.com>
+ <20210611201643.GA1583875@robh.at.kernel.org>
+ <CADiBU39Prz99ZLtkYdcM9XDQsd0nKKeiEGjW3wq=u75JGjwX=g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4C6bbPZ6c/S1npyF"
+Content-Disposition: inline
+In-Reply-To: <CADiBU39Prz99ZLtkYdcM9XDQsd0nKKeiEGjW3wq=u75JGjwX=g@mail.gmail.com>
+X-Cookie: But it does move!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running sparse checker it shows warning message about
-incorrect endianness used for descriptor initialization:
 
-| f_hid.c:91:43: warning: incorrect type in initializer (different base types)
-| f_hid.c:91:43:    expected restricted __le16 [usertype] bcdHID
-| f_hid.c:91:43:    got int
+--4C6bbPZ6c/S1npyF
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixing issue with cpu_to_le16() macro
+On Mon, Jun 14, 2021 at 11:04:01PM +0800, ChiYuan Huang wrote:
+> Rob Herring <robh@kernel.org> =E6=96=BC 2021=E5=B9=B46=E6=9C=8812=E6=97=
+=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=884:16=E5=AF=AB=E9=81=93=EF=BC=9A
 
-Fixes: 71adf1189469 ("USB: gadget: add HID gadget driver")
-Cc: Fabien Chouteau <fabien.chouteau@barco.com>
-Cc: Segiy Stetsyuk <serg_stetsuk@ukr.net>
-Cc: stable@kernel.org
-Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
----
- drivers/usb/gadget/function/f_hid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > Originally, we think it must write in platform dependent code like as=
+ bootloader.
+> > > But after the evaluation, it must write only when system normal HALT =
+or POWER_OFF.
+> > > For the other cases, just follow HW immediate off by default.
 
-diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
-index 70774d8cb14e..02683ac0719d 100644
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -88,7 +88,7 @@ static struct usb_interface_descriptor hidg_interface_desc = {
- static struct hid_descriptor hidg_desc = {
- 	.bLength			= sizeof hidg_desc,
- 	.bDescriptorType		= HID_DT_HID,
--	.bcdHID				= 0x0101,
-+	.bcdHID				= cpu_to_le16(0x0101),
- 	.bCountryCode			= 0x00,
- 	.bNumDescriptors		= 0x1,
- 	/*.desc[0].bDescriptorType	= DYNAMIC */
--- 
-2.17.1
+> > Wouldn't this be handled by PSCI implementation?
 
+> No, the current application default on powers buck1/buck2/ldo7/ldo6
+> are for Dram power.
+> It's not the soc core power. It seems not appropriate  to implement
+> like as PSCI.
+> MT6360 play the role for the subpmic in the SOC application reference des=
+ign.
+
+If this is part of the overall system power off that seems like it fits
+well enough into what PSCI is doing - it's got operations like
+SYSTEM_OFF which talk about the system as a whole.
+
+--4C6bbPZ6c/S1npyF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDLeF8ACgkQJNaLcl1U
+h9DoNAf/ay42021AEwWsgvVf64PZ7bfN1VQtq5/Gvxa3qKXwvF2ElhI0rEWVv+TD
+ykW5worWSNVBlrmXT5e5pG0vDPAqQ4XSgOsubJCj7BWz/o8vebLSclpZz0PDQCav
+Dbt3qvsDnTcOMOMucTRf2X4u9SHAVgE06JDUiZTcEqprRk4Vd4ye6i6REqw2t2wX
+ydNjf2EsU1b9nzoVuyzhnLA9p1p5wiiYEzhCoFw+4x2BYypYNT4bk6xRQ/IitcIl
+ZrtklyKL+G3Ty7Ul9AREvr++U177bA902zg+5kCh2NvrmcPDwQahA3zx06NePexK
+B6Ch9wofiE4v/hRfzXuS7w4Q85k2Vg==
+=/WVl
+-----END PGP SIGNATURE-----
+
+--4C6bbPZ6c/S1npyF--
