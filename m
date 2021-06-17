@@ -2,101 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660963AB772
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1793AB774
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbhFQPaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233130AbhFQPaC (ORCPT
+        id S233256AbhFQPaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:30:14 -0400
+Received: from mail-ed1-f52.google.com ([209.85.208.52]:37548 "EHLO
+        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233242AbhFQPaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:30:02 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02120C061574;
-        Thu, 17 Jun 2021 08:27:53 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id k8so9528043lja.4;
-        Thu, 17 Jun 2021 08:27:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c2e7kNsCGT85GsTUjiDwru6wY3UfFbgVKt2c+k6Ksis=;
-        b=mBmvA+aak/sfdxRTB9RvZIlo/zFa91SejUS4yQcpOmO3tp7YtLqdS2sl0orVa571cL
-         SJKYU6AV1aK/4MxsHa10IjnmZdMbLme1oHAKUDJLvo9AYwc0lLlgYzY0JIYMGvd5ZnE6
-         CrULLpNUBIx+hYI11Cyj8LEyHeb9r/mknWzC4Fw5JH+sK85wQQuY4nrM/AktlzRAls5G
-         EpuMyhcJe2JgAKeS4umdjFk2pqi487kmiZltL5ynwBMhh7ptZzU6TEkJQl5lo0ZXNb/q
-         N5lS4Y7wBTA+RpwJEylf55acqMAgFziIG+Ao0wtxXzJ+XD9Wv1t9YEY3PlTCexZgyZuk
-         gSZw==
+        Thu, 17 Jun 2021 11:30:09 -0400
+Received: by mail-ed1-f52.google.com with SMTP id b11so4593420edy.4;
+        Thu, 17 Jun 2021 08:27:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=c2e7kNsCGT85GsTUjiDwru6wY3UfFbgVKt2c+k6Ksis=;
-        b=LDWpClSWp6FwSVfLCOce5tSuKvSGD7aa8Uch4oEfy8hdNWnxeikbHJj8A+zmxYWujN
-         7c2fHE6i+Z02PlRMR5BAHyqA9XEvzpkPQqPMi9hLnr6yRPWagKdT6MQiI+YEp421eOul
-         akKEWCHWefD7VgJNHWxxFZoT9HUF8InkviKZaTERFpYw9gU6AkHfZVGJUbdF54BMniLV
-         hkHETP4p863gRnlhcFJGHvsxcfX4UpjA7/3lsLGW+ck/pJsrk1xGlGCb2qoKjXp/yz7g
-         /xurYxldwUXVoXTwKHILuec4wop8Mo7qOmjvi6rZtugRjlv5PkT/7hz/8tm0Wf/w1bxi
-         vzFQ==
-X-Gm-Message-State: AOAM532ljFyzkNq4KyWV6Cndv2g6Ci1dZ8ttp+KAUwwXkJJuaAl+Amlk
-        8+wJPLLbuEuZi5QGI0a3Z2NNiF/DtAw=
-X-Google-Smtp-Source: ABdhPJwxXY0YliY/v8QKwNZZ13AJaFFOGuYA0LobGWU/S5Or2aVdHYPIjW0s6+zlecbCVNV/m4QTQg==
-X-Received: by 2002:a05:651c:3dc:: with SMTP id f28mr5180858ljp.294.1623943671133;
-        Thu, 17 Jun 2021 08:27:51 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.googlemail.com with ESMTPSA id o14sm610933lfg.34.2021.06.17.08.27.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 08:27:50 -0700 (PDT)
-Subject: Re: [PATCH v1] hwmon: (lm90) Use edge-triggered interrupt
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-References: <20210616190708.1220-1-digetx@gmail.com>
- <20210617001243.GA3211292@roeck-us.net>
- <3c6cbaf3-187b-1682-69b8-a2b34f23b928@gmail.com>
- <20210617131205.GA59767@roeck-us.net>
- <de7682c2-ae34-c594-d237-330ea33cbc78@gmail.com>
- <20210617141300.GA1366442@roeck-us.net>
- <bc3e3595-fe10-c7ae-9560-0c7676facba2@gmail.com>
- <20210617151236.GB2676642@roeck-us.net>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b97e3a75-f1aa-95a4-187d-97dc95e57e2b@gmail.com>
-Date:   Thu, 17 Jun 2021 18:27:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=/itsTxOH83bOMIRckT66tyt/S9hpeX8jx9OaBl4TWV0=;
+        b=N+iMDiHD7MhP2cIP0oTuCsTqx3ZMDJMAIr9B926LL5+TjwBZPDgZ397UwZujgQEB94
+         JGPF9b8htOAvTgfmFDTeVYVNLXI6svACKn5KzxuDRzjR0Gv8+eyEg97KEU9OYMQiFesh
+         +UOOx83vI3n5bNyLGu3Paj/muCxhWkfIcAZN9Eg5Unris1QxTUjeKby5JXewbmyusyWz
+         kUK/SwOkrrJB4Z+Q+CEG8SyMR7/dqVUAnkKIvdoeg8aPnMWJNZbf/bRrgqPFr5ZkyIN+
+         HQvW4qGAZE1lNCdMU1orCvx4XoaUFQ0yZS4tWFgyAaSDJqLl3nsJTZljOenju5tWy6OX
+         iT6w==
+X-Gm-Message-State: AOAM5321tnnw3jpqAt2UkB+AbKYwLknPM2pSJO7zus2Vim9vtSf8HNJH
+        QwAl2so+L4Cg2DqPRD4Ltpc=
+X-Google-Smtp-Source: ABdhPJxyh7aN+l7/mCAyGUcuIcJt4RJVaR6/rIZKwCDs8R4EFI26qFf9plfyF1MS+s2K9o3DmCDvAw==
+X-Received: by 2002:a05:6402:1216:: with SMTP id c22mr7314917edw.36.1623943677554;
+        Thu, 17 Jun 2021 08:27:57 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-37-119-128-179.cust.vodafonedsl.it. [37.119.128.179])
+        by smtp.gmail.com with ESMTPSA id g11sm4497850edz.12.2021.06.17.08.27.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 08:27:56 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     linux-riscv@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Guo Ren <guoren@kernel.org>
+Subject: [PATCH v3 0/3] riscv: optimized mem* functions
+Date:   Thu, 17 Jun 2021 17:27:51 +0200
+Message-Id: <20210617152754.17960-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210617151236.GB2676642@roeck-us.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.06.2021 18:12, Guenter Roeck пишет:
->> For now I see that the rising edge isn't needed, the TEMP_ALERT goes
->> HIGH by itself when temperature backs to normal. But I will try to
->> double check.
->>
-> The point is that a sysfs event should be sent to userspace on both
-> edges, not only when an alarm is raised. But, you are correct,
-> IRQ_TYPE_EDGE_RISING is currently not needed since sysfs events
-> are not generated.
+From: Matteo Croce <mcroce@microsoft.com>
 
-Ok, thank you for the clarification.
+Replace the assembly mem{cpy,move,set} with C equivalent.
 
->>> Anyway, the tegra30 dts files in the upstream kernel either use
->>> IRQ_TYPE_LEVEL_LOW or no interrupts for nct1008. The Nexus 7 dts file
->>> in the upstream kernel has no interrupt configured (and coincidentally
->>> it was you who added that entry). Where do you see IRQ_TYPE_LEVEL_HIGH ?
->> I have a patch that will add the interrupt property, it's stashed
->> locally for the next kernel release.
->>
->> IIUC, it's not only the Tegra30 dts, but all the TegraXXX boards that
->> use IRQ_TYPE_LEVEL_LOW are in the same position.
-> I still don't see a IRQ_TYPE_LEVEL_HIGH, though.
+Try to access RAM with the largest bit width possible, but without
+doing unaligned accesses.
 
-Could you please clarify why you're looking for HIGH and not for LOW?
-The TEMP_ALERT is active-low.
+Tested on a BeagleV Starlight with a SiFive U74 core, where the
+improvement is noticeable.
+
+v2 -> v3:
+- alias mem* to __mem* and not viceversa
+- use __alias instead of a tail call
+
+v1 -> v2:
+- reduce the threshold from 64 to 16 bytes
+- fix KASAN build
+- optimize memset
+
+Matteo Croce (3):
+  riscv: optimized memcpy
+  riscv: optimized memmove
+  riscv: optimized memset
+
+ arch/riscv/include/asm/string.h |  18 ++--
+ arch/riscv/kernel/Makefile      |   1 -
+ arch/riscv/kernel/riscv_ksyms.c |  17 ----
+ arch/riscv/lib/Makefile         |   4 +-
+ arch/riscv/lib/memcpy.S         | 108 ----------------------
+ arch/riscv/lib/memmove.S        |  64 -------------
+ arch/riscv/lib/memset.S         | 113 -----------------------
+ arch/riscv/lib/string.c         | 153 ++++++++++++++++++++++++++++++++
+ 8 files changed, 163 insertions(+), 315 deletions(-)
+ delete mode 100644 arch/riscv/kernel/riscv_ksyms.c
+ delete mode 100644 arch/riscv/lib/memcpy.S
+ delete mode 100644 arch/riscv/lib/memmove.S
+ delete mode 100644 arch/riscv/lib/memset.S
+ create mode 100644 arch/riscv/lib/string.c
+
+-- 
+2.31.1
+
