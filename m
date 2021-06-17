@@ -2,131 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC22E3AB350
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 534B53AB354
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232728AbhFQMNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232040AbhFQMNc (ORCPT
+        id S232730AbhFQMOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:14:46 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:41775 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231252AbhFQMOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:13:32 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0BFC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:11:24 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id gt18so9454417ejc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:11:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=abjyLhbT3u74Zgq1l+BEIdPMtx/D7+UT5cqLY6XM2/Y=;
-        b=fzpEeib8QDNsXnonqUGJlZswtaQQxypCfy9fyjSw/U7Av49giNR+QSlWqnxQuaTia9
-         umQwoADVt0GaiLDNambhR9MFHty7iCQiOSG0iLtYrmW0UbbJbmsmAmlv5L+caH9ZGwyM
-         OWZuim0CrGslrkbqcsfUavjt9WCkh4XZy8U08eK5a7f/lWMnOrBgtiupj8qN//Pc5zkI
-         dO0yPUEDaEP/aPDybzeQ088g/QaLJJDSuC0/mqiVAiwVMbJhcMcyvNRt1/+vUv2xvS3A
-         K8HoAXLR4qZiEPIkN1CbV8eEosVdxhScorayuALxv0eLG9BOFk348bt4XtEmErIwn+gJ
-         0A7Q==
+        Thu, 17 Jun 2021 08:14:45 -0400
+Received: by mail-ot1-f47.google.com with SMTP id w23-20020a0568301117b029044c37262dadso526214otq.8;
+        Thu, 17 Jun 2021 05:12:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=abjyLhbT3u74Zgq1l+BEIdPMtx/D7+UT5cqLY6XM2/Y=;
-        b=q6aFHQZdHlxepkmmEVq4X9oV0h22ORcrudRjTV8+d0EYSX9A7G5BlHrKOVaQ2n+GB7
-         YIOMY0CyKGXHJ7+kbo0u9hmbSwKnmbppWflhhDtw/9GN4Qcy+mDh5u4MQ4BYyAuB/1/V
-         SXqVYK9xJRmKJXY6ViJeXI/8TEOmxCf5qiYfu4vWnSQifMxQyQFXY7m/M4pkI24yQMec
-         D4Jch4yyFAEqLjnhFFd6gzW5VUQmYSXrzu0+1MVhVz5WhOpbzJrHU5Hdj/AFKENO/mEW
-         1lsKiLp54Y7fx8W4zWZYjJEZAm+YcyDwn4zejYxqY1hhGFL4FN/3tYyh7dBSq4+S7gvQ
-         ESyw==
-X-Gm-Message-State: AOAM533Fxd8IJu/CpPBZenu41WiiT+oJ10xQ23slEl2qGJxHNoyxeGrz
-        n91TBBHtw5IAyPFLD6EAVxYQvX77cLEd/gw1knt4SA==
-X-Google-Smtp-Source: ABdhPJyFQtRp3k9GLGGUUL5cU0unA/h1TSqJ0oPCzicqdiMTG2yE3IuJ43v1Qi5mKXryABq6IPLP0MkYbP1boPfsbXE=
-X-Received: by 2002:a17:906:9d05:: with SMTP id fn5mr4763120ejc.133.1623931883222;
- Thu, 17 Jun 2021 05:11:23 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UXLDf/zBwxcg6JRYUw5vSzsqMPchC5DDa1UwTpdQ4zI=;
+        b=E+CLePaPKn1GH4E6We1Jk3yr3W0IGBRFyiQuxnsxRJ0luFqNCpsuZEECqXFXKC9+Kw
+         Dffxp7QC1XnoRvrkemDDhVwlKEzQKQeCDoQcnXLmN4AtxV0y8xQoUYI3kFs3Dxvp78fs
+         T3QEUkEdOMZtpi3pn03FzK7mY+YfOmdqZc/kDXNkqTti3m0WcHSyN8DRAikP3ipTDfrH
+         Za+rMtTt+eFSmRKTbLqhNyq46qJ1NgOcu/4ZHbSQBCq4Fj8jhsTLh7LmhiabnuiklsFN
+         dIORzKF+jCSPvhbU81fmjT842ew/+eodDPfXr9roWs1BeA4CMYuGB/ULb4W0f/COuQG7
+         9ckQ==
+X-Gm-Message-State: AOAM532t0mszGwP11zMCjNJqq/E701hdy1cCKQfRb8mkwI1gLMU42afm
+        pTGXW7IcCzMY+OGqs9QYvvrg7JWD7WIzWCIgI8c=
+X-Google-Smtp-Source: ABdhPJwMdnLsLMcBrvB0YymtXaieQXS5htbXgFwOQnTNfWI0shOnas+luLylAychSWsQ/79xgLH1q25lk9rEMz0PTNE=
+X-Received: by 2002:a9d:3e53:: with SMTP id h19mr4306429otg.260.1623931958133;
+ Thu, 17 Jun 2021 05:12:38 -0700 (PDT)
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 17 Jun 2021 17:41:11 +0530
-Message-ID: <CA+G9fYsWHE5Vu9T3FV-vtHHbVFJWEF=bmjQxwaZs3uVYef028g@mail.gmail.com>
-Subject: [next] [clang] x86_64-linux-gnu-ld: mm/mremap.o: in function
- `move_pgt_entry': mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <20210615033535.2907295-1-libaokun1@huawei.com>
+In-Reply-To: <20210615033535.2907295-1-libaokun1@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 17 Jun 2021 14:12:27 +0200
+Message-ID: <CAJZ5v0iajoHXbJO-HgOMZkDo1GfRNEgDoNaSmFcOpeJGhgrYdA@mail.gmail.com>
+Subject: Re: [PATCH -next v2] x86/power: fix doc warnings in cpu.c
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Yue Haibing <yuehaibing@huawei.com>, yangjihong1@huawei.com,
+        yu kuai <yukuai3@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux next 20210617 tag following x86_64 builds failed with clang-10
-and clang-11.
-Regressions found on x86_64:
+On Tue, Jun 15, 2021 at 5:26 AM Baokun Li <libaokun1@huawei.com> wrote:
+>
+> Fixes the following W=1 kernel build warning(s):
+>
+>  arch/x86/power/cpu.c:76: warning: Function parameter or
+>   member 'ctxt' not described in '__save_processor_state'
+>  arch/x86/power/cpu.c:192: warning: Function parameter or
+>   member 'ctxt' not described in '__restore_processor_state'
+>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+> V1->V2:
+>         Fix the formatting of this kerneldoc comment
+>
+>  arch/x86/power/cpu.c | 31 ++++++++++++++++---------------
+>  1 file changed, 16 insertions(+), 15 deletions(-)
+>
+> diff --git a/arch/x86/power/cpu.c b/arch/x86/power/cpu.c
+> index 3a070e7cdb8b..54b530db5ed0 100644
+> --- a/arch/x86/power/cpu.c
+> +++ b/arch/x86/power/cpu.c
+> @@ -58,19 +58,20 @@ static void msr_restore_context(struct saved_context *ctxt)
+>  }
+>
+>  /**
+> - *     __save_processor_state - save CPU registers before creating a
+> - *             hibernation image and before restoring the memory state from it
+> - *     @ctxt - structure to store the registers contents in
+> + * __save_processor_statei() - Save CPU registers before creating a
+> + *                             hibernation image and before restoring
+> + *                             the memory state from it
+> + * @ctxt: Structure to store the registers contents in.
+>   *
+> - *     NOTE: If there is a CPU register the modification of which by the
+> - *     boot kernel (ie. the kernel used for loading the hibernation image)
+> - *     might affect the operations of the restored target kernel (ie. the one
+> - *     saved in the hibernation image), then its contents must be saved by this
+> - *     function.  In other words, if kernel A is hibernated and different
+> - *     kernel B is used for loading the hibernation image into memory, the
+> - *     kernel A's __save_processor_state() function must save all registers
+> - *     needed by kernel A, so that it can operate correctly after the resume
+> - *     regardless of what kernel B does in the meantime.
+> + * NOTE: If there is a CPU register the modification of which by the
+> + * boot kernel (ie. the kernel used for loading the hibernation image)
+> + * might affect the operations of the restored target kernel (ie. the one
+> + * saved in the hibernation image), then its contents must be saved by this
+> + * function.  In other words, if kernel A is hibernated and different
+> + * kernel B is used for loading the hibernation image into memory, the
+> + * kernel A's __save_processor_state() function must save all registers
+> + * needed by kernel A, so that it can operate correctly after the resume
+> + * regardless of what kernel B does in the meantime.
+>   */
+>  static void __save_processor_state(struct saved_context *ctxt)
+>  {
+> @@ -181,9 +182,9 @@ static void fix_processor_context(void)
+>  }
+>
+>  /**
+> - * __restore_processor_state - restore the contents of CPU registers saved
+> - *                             by __save_processor_state()
+> - * @ctxt - structure to load the registers contents from
+> + * __restore_processor_state() - Restore the contents of CPU registers saved
+> + *                               by __save_processor_state()
+> + * @ctxt: Structure to load the registers contents from.
+>   *
+>   * The asm code that gets us here will have restored a usable GDT, although
+>   * it will be pointing to the wrong alias.
+> --
 
- - build/clang-11-tinyconfig
- - build/clang-11-allnoconfig
- - build/clang-10-tinyconfig
- - build/clang-10-allnoconfig
- - build/clang-11-x86_64_defconfig
- - build/clang-10-defconfig
-
-We are running git bisect to identify the bad commit.
-
-Build log:
-------------
-drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
-eb_relocate_parse_slow()+0x466: stack state mismatch: cfa1=4+120
-cfa2=-1+0
-drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
-eb_copy_relocations()+0x1e0: stack state mismatch: cfa1=4+104
-cfa2=-1+0
-x86_64-linux-gnu-ld: mm/mremap.o: in function `move_pgt_entry':
-mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
-make[1]: *** [/builds/linux/Makefile:1252: vmlinux] Error 1
-make[1]: Target '__all' not remade because of errors.
-make: *** [Makefile:222: __sub-make] Error 2
-make: Target '__all' not remade because of errors.
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=x86_64
-CROSS_COMPILE=x86_64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-clang' headers_install
-INSTALL_HDR_PATH=/home/tuxbuild/.cache/tuxmake/builds/current/install_hdr/
-tar caf /home/tuxbuild/.cache/tuxmake/builds/current/headers.tar.xz -C
-/home/tuxbuild/.cache/tuxmake/builds/current/install_hdr .
-
-ref:
-https://builds.tuxbuild.com/1u4ZKFTh12vrYBVf8b1xGpaFOrE/
-
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
-
-tuxmake --runtime podman --target-arch x86_64 --toolchain clang-11
---kconfig x86_64_defconfig
-
-ref:
-https://builds.tuxbuild.com/1u4ZKFTh12vrYBVf8b1xGpaFOrE/
-
-build info:
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-    git_sha: 7d9c6b8147bdd76d7eb2cf6f74f84c6918ae0939
-    git_short_log: 7d9c6b8147bd (\Add linux-next specific files for 20210617\)
-    kconfig: x86_64_defconfig
-    kernel_image:
-    kernel_version: 5.13.0-rc6
-    toolchain: clang-11
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Applied as 5.14 material, thanks!
