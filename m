@@ -2,166 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13723AB171
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305343AB17D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhFQKgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 06:36:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:51508 "EHLO foss.arm.com"
+        id S231685AbhFQKjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 06:39:21 -0400
+Received: from mga14.intel.com ([192.55.52.115]:47103 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231882AbhFQKgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 06:36:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DD5031B;
-        Thu, 17 Jun 2021 03:34:17 -0700 (PDT)
-Received: from localhost (e108754-lin.cambridge.arm.com [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3DE7E3F694;
-        Thu, 17 Jun 2021 03:34:17 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 11:34:15 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 3/3] cpufreq: CPPC: Add support for frequency
- invariance
-Message-ID: <20210617103415.GA29877@arm.com>
-References: <cover.1623825725.git.viresh.kumar@linaro.org>
- <e7e653ede3ef54acc906d2bde47a3b9a41533404.1623825725.git.viresh.kumar@linaro.org>
- <20210616124806.GA6495@arm.com>
- <20210617032416.r2gfp25xxvhc5t4x@vireshk-i7>
+        id S229868AbhFQKjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 06:39:18 -0400
+IronPort-SDR: HMqzS92VmNmeOyLbr1mce4LCXsK/Z44uRQ+iCsOiMHeKiAgENrS1my1qNzX9KoV7TYJnEGF1Ka
+ WD5uO9bt47RQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="206163266"
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="206163266"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 03:37:10 -0700
+IronPort-SDR: 2PuCF4bAZ+esssDVmmcjwCVsseGKNTfBNg7OYii1MRpg6OfOV1PUiZnSC5HZrbj40EdeeCwvl5
+ rHTKc6JGGrYw==
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="404609716"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 03:37:04 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1ltpON-003Hgz-VB; Thu, 17 Jun 2021 13:36:59 +0300
+Date:   Thu, 17 Jun 2021 13:36:59 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jamin Lin <jamin_lin@aspeedtech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jean Delvare <jdelvare@suse.de>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Khalil Blaiech <kblaiech@mellanox.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Bence =?iso-8859-1?B?Q3Pza+Fz?= <bence98@sch.bme.hu>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        chiawei_wang@aspeedtech.com, troy_lee@aspeedtech.com,
+        steven_lee@aspeedtech.com
+Subject: Re: [PATCH 3/3] i2c:support new register set for ast2600
+Message-ID: <YMslyzUKp/7J0ncu@smile.fi.intel.com>
+References: <20210617094424.27123-1-jamin_lin@aspeedtech.com>
+ <20210617094424.27123-4-jamin_lin@aspeedtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210617032416.r2gfp25xxvhc5t4x@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210617094424.27123-4-jamin_lin@aspeedtech.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many thanks for the details!
-
-On Thursday 17 Jun 2021 at 08:54:16 (+0530), Viresh Kumar wrote:
-> On 16-06-21, 13:48, Ionela Voinescu wrote:
-> > I was looking forward to the complete removal of stop_cpu() :).
+On Thu, Jun 17, 2021 at 05:43:40PM +0800, Jamin Lin wrote:
+> Add i2c new driver to support new register set for AST2600.
+> AST2600 support three modes for data transfer which are
+> byte mode, buffer mode and dma mode, respectively.
+> The global driver of i2c is used to set the new register
+> mode and define the base clock frequency
+> of baseclk_1~baseclk_4.
 > 
-> No one wants to remove more code than I do :)
-> 
-> > I'll only comment on this for now as I should know the rest.
-> > 
-> > Let's assume we don't have these, what happens now is the following:
-> > 
-> > 1. We hotplug out the last CPU in a policy, we call the
-> >    .stop_cpu()/exit() function which will free the cppc_cpudata structure.
-> > 
-> >    The only vulnerability is if we have a last tick on that last CPU,
-> >    after the above callback was called.
-> > 
-> > 2. When the CPU at 1. gets hotplugged back in, the cppc_fi->cpu_data is
-> >    stale.
-> > 
-> > We do not have a problem when removing the CPPC cpufreq module as we're
-> > doing cppc_freq_invariance_exit() before unregistering the driver and
-> > freeing the data.
-> > 
-> > Are 1. and 2 the only problems we have, or have I missed any?
-> 
-> There is more to it. For simplicity, lets assume a quad-core setup,
-> with all 4 CPUs sharing the cpufreq policy. And here is what happens
-> without the new changes:
-> 
-> - On CPPC cpufreq driver insertion, we start 4 kthreads/irq-works (1
->   for each CPU as it fires from tick) from the ->init() callback.
-> 
-> - Now lets say we offline CPU3. The CPPC cpufreq driver isn't notified
->   by anyone and it hasn't registered itself to hotplug notifier as
->   well. So, the irq-work/kthread isn't stopped. This results in the
->   issue reported by Qian earlier.
-> 
+> Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
+> ---
+>  drivers/i2c/busses/Kconfig              |   11 +
+>  drivers/i2c/busses/Makefile             |    1 +
+>  drivers/i2c/busses/ast2600-i2c-global.c |  205 +++
+>  drivers/i2c/busses/ast2600-i2c-global.h |   25 +
+>  drivers/i2c/busses/i2c-new-aspeed.c     | 1796 +++++++++++++++++++++++
 
-I might be missing something, but when you offline a single CPU in a
-policy, the worse that can happen is that a last call to
-cppc_scale_freq_tick() would have sneaked in before irqs and the tick
-are disabled. But even if we have a last call to
-cppc_scale_freq_workfn(), the counter read methods would know how to
-cope with hotplug, and the cppc_cpudata structure would still be
-allocated and have valid desired_perf and highest_perf values.
+I commented _something_ (but read comments carefully, they will cover much
+more). The overall it seems you have to:
+ - shrink the code base by at least ~15% (it's possible), i.e. -200 LOCs
+ - rethink how you do calculations and bit operations
+ - better code style
 
-Worse case, the last scale factor set for the CPU will be meaningless,
-but it's already meaningless as the CPU is going down.
-
-When you are referring to the issue reported by Qian I suppose you are
-referring to this [1]. I think this is the case where you hotplug the
-last CPU in a policy and free cppc_cpudata.
-
-[1] https://lore.kernel.org/linux-pm/41f5195e-0e5f-fdfe-ba37-34e1fd8e4064@quicinc.com/
-
->   The very same thing happens with schedutil governor too, which uses
->   very similar mechanisms, and the cpufreq core takes care of it there
->   by stopping the governor before removing the CPU from policy->cpus
->   and starting it again. So there we stop irq-work/kthread for all 4
->   CPUs, then start them only for remaining 3.
-> 
-
-Things are different for sugov: you have to stop the governor when one
-CPU in the policy goes down, and it's normal for sugov not to allow its
-hooks to be called while the governor is down so it has to do a full
-cleanup when going down and a full bringup when going back up.
-
-The difference for CPPC invariance is that only a CPU can trigger the
-work to update its own scale factor, through the tick. No other CPU x
-can trigger a scale factor update for CPU y, but x can carry out the
-work for CPU y (x can run the cppc_scale_freq_workfn(y)).
-
-So when y goes down, it won't have a tick to queue any irq or kthread
-work any longer until it's brought back up. So I believe that the only
-cleanup that needs to be done when a CPU goes offline, is to ensure
-that the work triggered by that last tick is done safely.
-
->   I thought about that approach as well, but it was too heavy to stop
->   everyone and start again in this case. And so I invented start_cpu()
->   and stop_cpu() callbacks.
-> 
-
-> - In this case, because the CPU is going away, we need to make sure we
->   don't queue any more irq-work or kthread to it and this is one of
->   the main reasons for adding synchronization in the topology core,
->   because we need a hard guarantee here that irq-work won't fire
->   again, as the CPU won't be there or will not be in a sane state.
-> 
-
-We can't queue any more work for it as there's no tick for the offline
-CPU.
-
-> - The same sequence of events is true for the case where the last CPU
->   of a policy goes away (not in this example, but lets say quad-core
->   setup with separate policies for each CPU).
-> 
-> - Not just the policy, but the CPU may be going away as well.
-> 
-> I hope I was able to clarify a bit here.
-> 
-
-Thanks! I do agree it is better to be cautious, but I initially wanted to
-understand we don't see the problem bigger than it actually is.
-
-Thanks,
-Ionela.
-
-P.S. I'll give more thought to the rcu use in the arch_topology driver.
-I'm the boring kind that likes to err on the side of caution, so I tend
-to agree that it might be good to have even if the current problem could
-be solved in this driver.
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-> -- 
-> viresh
