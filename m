@@ -2,247 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299F93ABA9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276A63ABA9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232159AbhFQR3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48260 "EHLO
+        id S232245AbhFQRaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbhFQR3u (ORCPT
+        with ESMTP id S231168AbhFQRaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:29:50 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D947C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:27:41 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so6880700oth.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:27:41 -0700 (PDT)
+        Thu, 17 Jun 2021 13:30:07 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B4AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:27:58 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id n35-20020a05600c3ba3b02901cdecb6bda8so6875580wms.5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:27:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+ZJ+y6rDUHKiUZHa41ggyo56j9VFDaR2HjEFSWzMuIQ=;
-        b=pM9flxdNof14UnfKdF2p41XmPl0NOaK+BF/VpOe+qf3gFBY/8aoyK+rMtyOLnM6m0P
-         fqyWYg1JzHFq0lUTBJsYti17vKlsXW+kVq/eNA9Z7fGv4D7XN/hYtnnQRMYzIfYkng12
-         PQcWSgNBwWTs1fkveSDaOZP5sI50SrwIJS0Y8pHzbLL7mDduRXEZnUMYL5qscAYtwPM0
-         YZdz8VvjA+1YImPQAaPwf6mL6kbhkJtsH4B3dgChFpnNU/ecwKR17tNWY4rAy5Id2sUj
-         fjAnyMl3VBmU2U2/IfRwylyhwWAayvWqjBIs3Dw3jFb8vY4Y/TX3OVz4J3mdyqly2UOr
-         AaGQ==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0rYmV0YXtK4/nqaonlfBI2ZVrcL6ia1eSA0EQ16ruOQ=;
+        b=It1GxSN3S5y9Trm6vYbJWhkBW5/YWLQUavNk7vMkhYNUT6SsH+RiOdGnBv0HZGMXhA
+         FG25pKlLChS9R351yezpDLOhXooDNj3dMxYGSjH2DdulTvFjM7ZiQNfmm4PsuRlRQu1z
+         yWRb0z9CT8imI7dfaDygeflKO2ToYyM9rDKaI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+ZJ+y6rDUHKiUZHa41ggyo56j9VFDaR2HjEFSWzMuIQ=;
-        b=aqW3GddIuZVQW/kLF9ZClQPvJ3LuGYVO/LMx+NVnlJ3vQ5iMc4QJTlH8XRossKFM+k
-         A2QhwNBdXC1pNHY4cJKUvX9+2ULJR2VTAiuPsX35+p/mWIU6nzfwBu9KGMK4XZUU8CMY
-         dwzFzBb92OIur5afqHMLE9MLdog2L+3VvOsWrBqDYNw332QPfYiErW/d1VwwsO/Vc5Bw
-         yejGsLOemkQQwbz0W3o+ukmr6h0aaFJU5a3qNUiTDS45/XV96YQavzwwbpgOFQh40nBg
-         bMgkMAFOo+hWtrYnXyExbH2BX0+f5+E0zbTXcwr1drlHSzFVjcAxaj71Y7ivjwN5dWE7
-         eVPw==
-X-Gm-Message-State: AOAM530DtSxg7V72P7pOBpl0z16cbceftuI+AfiEsHXlUcew+4bK4DhA
-        AF43OesicqgG8KGaHxADokYpBg==
-X-Google-Smtp-Source: ABdhPJynok1s++q9mYKs5kebbtVJnTurBADvxSpRD8r3WnDSOT51HiHRmyRWlQhBivJ3IR3N7e/GnQ==
-X-Received: by 2002:a05:6830:2467:: with SMTP id x39mr5520805otr.192.1623950860790;
-        Thu, 17 Jun 2021 10:27:40 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 35sm1342255oth.49.2021.06.17.10.27.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=0rYmV0YXtK4/nqaonlfBI2ZVrcL6ia1eSA0EQ16ruOQ=;
+        b=aGuzqb0hDtMpH8JzuRsfKmSObmc3KITKm7kG1WNPqhjvBp+y+CIDs46xAuDiNB/ZtR
+         /wNQXWwxP7QM021TZyPUDJBmYAQXN0dnnssmjigwXBUWb8wHCxVgduncjLnw2czJmkyQ
+         UO7gHAVwoDFMfSRy/VljQ6Y9/Ed2ZdHqy86u2Dwa3QmY4y5aBx07u24rF4U0ICsQKgXG
+         pcIwQkPUoXPd8tBY0ONY2601XuXLif9RLZV68jL2fGML4eX35NVX4HXdp1d/9q5kmXc4
+         lm/1uN6kZPlzNxhPMVrz21wDFDKuzzte8q9rtK9xx7m5pv9tv1NPxYYjrQVxv+22iQxW
+         SFiA==
+X-Gm-Message-State: AOAM532HvBfcTQ8mYB8T4E20F3gkMev7H8QtpFPIlEpl5e6eXWaUfUzR
+        tkM+9l2bHW/ZqZGrWulf0rHV0A==
+X-Google-Smtp-Source: ABdhPJxsLrEArRcm6UbP0rGPkUBgJPQeD7XUjXHyScHm1ESkZ8AEEaliLgRWCmS0480Kuhv67+nQxg==
+X-Received: by 2002:a05:600c:214c:: with SMTP id v12mr6358655wml.33.1623950877233;
+        Thu, 17 Jun 2021 10:27:57 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id w23sm9180464wmi.0.2021.06.17.10.27.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 10:27:40 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 12:27:38 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Mike Tipton <mdtipton@codeaurora.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
-Message-ID: <YMuGCjg2H3eHVe8K@yoga>
-References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
- <20210611101540.3379937-3-dmitry.baryshkov@linaro.org>
- <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
- <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
- <CAPDyKFoMC_7kJx_Wb4LKgxvRCoqHYFtwsJ2b7Cr4OvjA94DtHg@mail.gmail.com>
- <YMjNaM0z+OzhAeO/@yoga>
- <CAPDyKFo_eNwEx5rryg3bHt_-pxBeeYfVrUZuTOHoL-x94LBwDA@mail.gmail.com>
- <9136597d-f30b-bf75-77c3-b42533d822fa@linaro.org>
+        Thu, 17 Jun 2021 10:27:56 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 19:27:54 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Matthew Auld <matthew.william.auld@gmail.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: drm/i915: __GFP_RETRY_MAYFAIL allocations in stable kernels
+Message-ID: <YMuGGqs4cDotxuKO@phenom.ffwll.local>
+Mail-Followup-To: Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Matthew Auld <matthew.william.auld@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <YMdPcWZi4x7vnCxI@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9136597d-f30b-bf75-77c3-b42533d822fa@linaro.org>
+In-Reply-To: <YMdPcWZi4x7vnCxI@google.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 17 Jun 11:19 CDT 2021, Dmitry Baryshkov wrote:
-
-> On 17/06/2021 12:07, Ulf Hansson wrote:
-> > + Rajendra
-> > 
-> > On Tue, 15 Jun 2021 at 17:55, Bjorn Andersson
-> > <bjorn.andersson@linaro.org> wrote:
-> > > 
-> > > On Tue 15 Jun 05:17 CDT 2021, Ulf Hansson wrote:
-> > > 
-> > > > + Mark
-> > > > 
-> > > > On Fri, 11 Jun 2021 at 16:34, Dmitry Baryshkov
-> > > > <dmitry.baryshkov@linaro.org> wrote:
-> > > > > 
-> > > > > Added Stephen to Cc list
-> > > > > 
-> > > > > On Fri, 11 Jun 2021 at 16:50, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > > > 
-> > > > > > On Fri, 11 Jun 2021 at 12:15, Dmitry Baryshkov
-> > > > > > <dmitry.baryshkov@linaro.org> wrote:
-> > > > > > > 
-> > > > > > > In case of nested genpds it is easy to get the following warning from
-> > > > > > > lockdep, because all genpd's mutexes share same locking class. Use the
-> > > > > > > per-genpd locking class to stop lockdep from warning about possible
-> > > > > > > deadlocks. It is not possible to directly use genpd nested locking, as
-> > > > > > > it is not the genpd code calling genpd. There are interim calls to
-> > > > > > > regulator core.
-> > > > > > > 
-> > > > > > > [    3.030219] ============================================
-> > > > > > > [    3.030220] WARNING: possible recursive locking detected
-> > > > > > > [    3.030221] 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480 Not tainted
-> > > > > > > [    3.030222] --------------------------------------------
-> > > > > > > [    3.030223] kworker/u16:0/7 is trying to acquire lock:
-> > > > > > > [    3.030224] ffffde0eabd29aa0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
-> > > > > > > [    3.030236]
-> > > > > > > [    3.030236] but task is already holding lock:
-> > > > > > > [    3.030236] ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
-> > > > > > > [    3.030240]
-> > > > > > > [    3.030240] other info that might help us debug this:
-> > > > > > > [    3.030240]  Possible unsafe locking scenario:
-> > > > > > > [    3.030240]
-> > > > > > > [    3.030241]        CPU0
-> > > > > > > [    3.030241]        ----
-> > > > > > > [    3.030242]   lock(&genpd->mlock);
-> > > > > > > [    3.030243]   lock(&genpd->mlock);
-> > > > > > > [    3.030244]
-> > > > > > > [    3.030244]  *** DEADLOCK ***
-> > > > > > > [    3.030244]
-> > > > > > > [    3.030244]  May be due to missing lock nesting notation
-> > > > > > > [    3.030244]
-> > > > > > > [    3.030245] 6 locks held by kworker/u16:0/7:
-> > > > > > > [    3.030246]  #0: ffff6cca00010938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
-> > > > > > > [    3.030252]  #1: ffff8000100c3db0 (deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
-> > > > > > > [    3.030255]  #2: ffff6cca00ce3188 (&dev->mutex){....}-{3:3}, at: __device_attach+0x3c/0x184
-> > > > > > > [    3.030260]  #3: ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
-> > > > > > > [    3.030264]  #4: ffff8000100c3968 (regulator_ww_class_acquire){+.+.}-{0:0}, at: regulator_lock_dependent+0x6c/0x1b0
-> > > > > > > [    3.030270]  #5: ffff6cca00a59158 (regulator_ww_class_mutex){+.+.}-{3:3}, at: regulator_lock_recursive+0x94/0x1d0
-> > > > > > > [    3.030273]
-> > > > > > > [    3.030273] stack backtrace:
-> > > > > > > [    3.030275] CPU: 6 PID: 7 Comm: kworker/u16:0 Not tainted 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480
-> > > > > > > [    3.030276] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
-> > > > > > > [    3.030278] Workqueue: events_unbound deferred_probe_work_func
-> > > > > > > [    3.030280] Call trace:
-> > > > > > > [    3.030281]  dump_backtrace+0x0/0x1a0
-> > > > > > > [    3.030284]  show_stack+0x18/0x24
-> > > > > > > [    3.030286]  dump_stack+0x108/0x188
-> > > > > > > [    3.030289]  __lock_acquire+0xa20/0x1e0c
-> > > > > > > [    3.030292]  lock_acquire.part.0+0xc8/0x320
-> > > > > > > [    3.030294]  lock_acquire+0x68/0x84
-> > > > > > > [    3.030296]  __mutex_lock+0xa0/0x4f0
-> > > > > > > [    3.030299]  mutex_lock_nested+0x40/0x50
-> > > > > > > [    3.030301]  genpd_lock_mtx+0x18/0x2c
-> > > > > > > [    3.030303]  dev_pm_genpd_set_performance_state+0x94/0x1a0
-> > > > > > > [    3.030305]  reg_domain_enable+0x28/0x4c
-> > > > > > > [    3.030308]  _regulator_do_enable+0x420/0x6b0
-> > > > > > > [    3.030310]  _regulator_enable+0x178/0x1f0
-> > > > > > > [    3.030312]  regulator_enable+0x3c/0x80
-> > > > > > 
-> > > > > > At a closer look, I am pretty sure that it's the wrong code design
-> > > > > > that triggers this problem, rather than that we have a real problem in
-> > > > > > genpd. To put it simply, the code in genpd isn't designed to work like
-> > > > > > this. We will end up in circular looking paths, leading to deadlocks,
-> > > > > > sooner or later if we allow the above code path.
-> > > > > > 
-> > > > > > To fix it, the regulator here needs to be converted to a proper PM
-> > > > > > domain. This PM domain should be assigned as the parent to the one
-> > > > > > that is requested to be powered on.
-> > > > > 
-> > > > > This more or less resembles original design, replaced per review
-> > > > > request to use separate regulator
-> > > > > (https://lore.kernel.org/linux-arm-msm/160269659638.884498.4031967462806977493@swboyd.mtv.corp.google.com/,
-> > > > > https://lore.kernel.org/linux-arm-msm/20201023131925.334864-1-dmitry.baryshkov@linaro.org/).
-> > > > 
-> > > > Thanks for the pointers. In hindsight, it looks like the
-> > > > "regulator-fixed-domain" DT binding wasn't the right thing.
-> > > > 
-> > > > Fortunately, it looks like the problem can be quite easily fixed, by
-> > > > moving to a correct model of the domain hierarchy.
-> > > > 
-> > > 
-> > > Can you give some pointers to how we actually fix this?
-> > > 
-> > > The problem that lead us down this path is that drivers/clk/qcom/gdsc.c
-> > > describes power domains, which are parented by domains provided by
-> > > drivers/soc/qcom/rpmhpd.c.
-> > > 
-> > > But I am unable to find a way for the gdsc driver to get hold of the
-> > > struct generic_pm_domain of the resources exposed by the rpmhpd driver.
-> > 
-> > You don't need a handle to the struct generic_pm_domain, to assign a
-> > parent/child domain. Instead you can use of_genpd_add_subdomain(),
-> > which takes two "struct of_phandle_args*" corresponding to the
-> > parent/child device nodes of the genpd providers and then let genpd
-> > internally do the look up.
-> > 
-> > As an example, you may have a look at how the PM domain topology in
-> > drivers/cpuidle/cpuidle-psci-domain.c are being created.
-> > 
-> > > 
-> > > 
-> > > The second thing that Dmitry's regulator driver does is to cast the
-> > > appropriate performance state vote on the rpmhpd resource, but I _think_
-> > > we can do that using OPP tables in the gdsc client's node...
-> > 
-> > Yes, it looks like using an OPP table and to specify a
-> > "required-opps", at some device node is the right thing to do.
-> > 
-> > In this case, I wonder if the "required-opps" belongs to the genpd
-> > provider node of the new power-domain (as it seems like it only
-> > supports one fixed performance state when it's powered on). On the
-> > other hand, specifying this at the consumer node should work as well,
-> > I think.
-> > 
-> > Actually, this relates to the changes [1] that Rajendra is working on
-> > with "assigned-performance-state" (that we agreed to move to
-> > OPP/required-opps) for genpd.
+On Mon, Jun 14, 2021 at 09:45:37PM +0900, Sergey Senozhatsky wrote:
+> Hi,
 > 
-> What about the following dts snippet?
-> I do not want to add power-domains directly to the dispcc node (as it's not
-> a device's power domain, just gdsc's parent power domain).
+> We are observing some user-space crashes (sigabort, segfaults etc.)
+> under moderate memory pressure (pretty far from severe pressure) which
+> have one thing in common - restrictive GFP mask in setup_scratch_page().
+> 
+> For instance, (stable 4.19) drivers/gpu/drm/i915/i915_gem_gtt.c
+> 
+> (trimmed down version)
+> 
+> static int gen8_init_scratch(struct i915_address_space *vm)
+> {
+>         setup_scratch_page(vm, __GFP_HIGHMEM);
+> 
+>         vm->scratch_pt = alloc_pt(vm);
+>         vm->scratch_pd = alloc_pd(vm);
+>         if (use_4lvl(vm)) {
+>                 vm->scratch_pdp = alloc_pdp(vm);
+>         }
+> }
+> 
+> gen8_init_scratch() function puts a rather inconsistent restrictions on mm.
+> 
+> Looking at it line by line:
+> 
+> setup_scratch_page() uses very restrictive gfp mask:
+> 	__GFP_HIGHMEM | __GFP_ZERO | __GFP_RETRY_MAYFAIL
+> 
+> it doesn't try to reclaim anything and fails almost immediately.
+> 
+> alloc_pt() - uses more permissive gfp mask:
+> 	GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
+> 
+> alloc_pd() - likewise:
+> 	GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
+> 
+> alloc_pdp() - very permissive gfp mask:
+> 	GFP_KERNEL
 > 
 > 
-> dispcc: clock-controller@af00000 {
-> 	compatible = "qcom,sm8250-dispcc";
-> 	[....]
-> 	#power-domain-cells = <1>;
+> So can all allocations in gen8_init_scratch() use
+> 	GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
+
+Yeah that looks all fairly broken tbh. The only thing I didn't know was
+that GFP_DMA32 wasn't a full gfp mask with reclaim bits set as needed. I
+guess it would be clearer if we use GFP_KERNEL | __GFP_DMA32 for these.
+
+The commit that introduced a lot of this, including I915_GFP_ALLOW_FAIL
+seems to be
+
+commit 1abb70f5955d1a9021f96359a2c6502ca569b68d
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Tue May 22 09:36:43 2018 +0100
+
+    drm/i915/gtt: Allow pagedirectory allocations to fail
+
+which used a selftest as justification, not real world workloads, so looks
+rather dubious.
+
+Adding Matt Auld to this thread, maybe he has ideas.
+
+Thanks, Daniel
+
+> ?
 > 
-> 	mmss_gdsc {
-> 		power-domains = <&rpmhpd SM8250_MMCX>;
->                 required-opps = <&rpmhpd_opp_low_svs>;
-> 	};
-> };
+> E.g.
+> 
+> ---
+> diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
+> index a12430187108..e862680b9c93 100644
+> --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
+> +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
+> @@ -792,7 +792,7 @@ alloc_pdp(struct i915_address_space *vm)
+>  
+>         GEM_BUG_ON(!use_4lvl(vm));
+>  
+> -       pdp = kzalloc(sizeof(*pdp), GFP_KERNEL);
+> +       pdp = kzalloc(sizeof(*pdp), I915_GFP_ALLOW_FAIL);
+>         if (!pdp)
+>                 return ERR_PTR(-ENOMEM);
+>  
+> @@ -1262,7 +1262,7 @@ static int gen8_init_scratch(struct i915_address_space *vm)
+>  {
+>         int ret;
+>  
+> -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
+> +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
+>         if (ret)
+>                 return ret;
+>  
+> @@ -1972,7 +1972,7 @@ static int gen6_ppgtt_init_scratch(struct gen6_hw_ppgtt *ppgtt)
+>         u32 pde;
+>         int ret;
+>  
+> -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
+> +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
+>         if (ret)
+>                 return ret;
+>  
+> @@ -3078,7 +3078,7 @@ static int ggtt_probe_common(struct i915_ggtt *ggtt, u64 size)
+>                 return -ENOMEM;
+>         }
+>  
+> -       ret = setup_scratch_page(&ggtt->vm, GFP_DMA32);
+> +       ret = setup_scratch_page(&ggtt->vm, GFP_KERNEL | GFP_DMA32);
+>         if (ret) {
+>                 DRM_ERROR("Scratch setup failed\n");
+>                 /* iounmap will also get called at remove, but meh */
+> ---
+> 
+> 
+> 
+> It's quite similar on stable 5.4 - setup_scratch_page() uses restrictive
+> gfp mask again.
+> 
+> ---
+> diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
+> index f614646ed3f9..99d78b1052df 100644
+> --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
+> +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
+> @@ -1378,7 +1378,7 @@ static int gen8_init_scratch(struct i915_address_space *vm)
+>                 return 0;
+>         }
+>  
+> -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
+> +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
+>         if (ret)
+>                 return ret;
+>  
+> @@ -1753,7 +1753,7 @@ static int gen6_ppgtt_init_scratch(struct gen6_ppgtt *ppgtt)
+>         struct i915_page_directory * const pd = ppgtt->base.pd;
+>         int ret;
+>  
+> -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
+> +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
+>         if (ret)
+>                 return ret;
+>  
+> @@ -2860,7 +2860,7 @@ static int ggtt_probe_common(struct i915_ggtt *ggtt, u64 size)
+>                 return -ENOMEM;
+>         }
+>  
+> -       ret = setup_scratch_page(&ggtt->vm, GFP_DMA32);
+> +       ret = setup_scratch_page(&ggtt->vm, GFP_KERNEL | GFP_DMA32);
+>         if (ret) {
+>                 DRM_ERROR("Scratch setup failed\n");
+>                 /* iounmap will also get called at remove, but meh */
+> ---
 
-According to the documentation dispcc actually sits in MMCX (I thought
-it sat in CX...). So it seems appropriate to just specify that as the
-one and only power-domain for &dispcc and use that as the parent for
-MDSS_GDSC.
-
-That said, I do think we have other GDSCs in the system where the
-controller sits in one power-domain and the parent power-domain is a
-different one. I presume the right path here is to list all the
-power-domains in DT and then use some name based matching?
-
-Regards,
-Bjorn
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
