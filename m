@@ -2,130 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046DF3AAA25
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 06:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1CE3AAA2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 06:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbhFQEfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 00:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhFQEfg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 00:35:36 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1AAC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 21:33:28 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id l15so2705808lje.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 21:33:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XZjUR44YaNoQXcJB+dlktg3mNBZU4O2yhCDUy1ikvnA=;
-        b=VTA9HcmiANLZolcCm6eIiiATqHIyWdcIcc/pObJ3eMq4PmtDTYhHmSCCMSEIG+AAYH
-         JIMtKQg0rUlWhZh0BxBC6WbrtwS7DtZSEY+tivkhFdpNZ7WnoUf5E/L5gjDrxNp4bxIs
-         rhPLQAsPvvaoPdEJ040GMoeD3Spe+426FQIQ11pnUCpa77ib3GALo1RxAqBPhMkm9TvV
-         FEhqPO98wdT40c0ldFgbOmBsFPeLxJCqgR4/DfeW38Or3kmXng6LRI1+nmCqaWHHHPi1
-         dAdJiGoPoj9MPX3wC+nF+gXynznwQE6cEL3a/m2S/N7rQHT2FW2hGxvlQVL7wkwDnxRc
-         0Wcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XZjUR44YaNoQXcJB+dlktg3mNBZU4O2yhCDUy1ikvnA=;
-        b=U67jcG+lBhUfv6eqDcZTfz/c/AMvRY/agFA9GyADoOFkFpGhb5A/dNlMG87/RGvMt6
-         J/rN4+8Olm3sRaUjY5viIt7YmGH8RaCjVDlyMYGEHQW7jLKt1yGiwcNamPZSsiB5lXFr
-         /1V0TSEln3zn29LsiDLHGAEnQJcPTT/WaNO3bmK45FtT6XtXipVsAgUYoIt8w1i9NVzk
-         +S9AP5Jkz35GJyuR4JJASCyRY8wi0bp61Ut2IpIGx/pNJ200VQsAPmf1HEAxVR6lyGz4
-         KyAUqeC+Itr10d2aooF4DVP/XVkiguXKGyQydDwWxDtk1Gv0Ex85uusnxbWUlljrLDQ2
-         iTcw==
-X-Gm-Message-State: AOAM533YEWptv4sHCxcUy/2ZJ+VVN9sadozv5DwAyqZRcwNvdtqREWyJ
-        krLHTRYWDPg/BAuS8dtH00DeKGP69YoKEbbDasUK/w==
-X-Google-Smtp-Source: ABdhPJxaiyDi1aNHhmmcMlUBaaNXuxoKEaKMW5FSsqO8dU/Wz2t9fQ5Q9biZFQUJ797nIe45j6+PqatZ0FSdX6tHSnU=
-X-Received: by 2002:a2e:311:: with SMTP id 17mr2780769ljd.442.1623904407105;
- Wed, 16 Jun 2021 21:33:27 -0700 (PDT)
+        id S229783AbhFQEhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 00:37:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229515AbhFQEhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 00:37:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BF2B613BF;
+        Thu, 17 Jun 2021 04:34:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623904494;
+        bh=hdAU2EvYyDRmpCAW4XPIVGpByZPe+MkYFJ1VpttRoBw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r7oBxu1xBOojP5x2hHn2eEWDnKiHPQnbqdZB2GypBhlAMEo3E+MupDfSOleCnAfT5
+         KpFIg0YSsKau6XmeP9trKbcQM8mGY0PeXyxF81khTlQ3JUfL3+Ckzb7JQv+qqCG4+v
+         MQlVJTQ6E+uN674TiCMTdU4sVyh9gOhCH1OQbcS8JYRQnBFWb2f6Kv5bDt1o2MWGjP
+         Aum5zy5AtVu7wxRZWpoy4pgTT0JfNpH/1fXs08oET7rXINSk26GvG94cSFboiyZR5z
+         qrUcGPa40fSsMU5WzjF7PzWxyMkM/0KZ1U1JINTMmiRyRG7aPK1rmlDI/AXh+Ky+wt
+         h+2vzItqTy1mA==
+Date:   Wed, 16 Jun 2021 21:34:52 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v3 04/10] block: respect bio_required_sector_alignment()
+ in blk-crypto-fallback
+Message-ID: <YMrQ7KjD8BpbqNyK@sol.localdomain>
+References: <20210604195900.2096121-1-satyat@google.com>
+ <20210604195900.2096121-5-satyat@google.com>
+ <YMqZuBssXiMvDxIf@sol.localdomain>
 MIME-Version: 1.0
-References: <20210616103649.2662395-1-jens.wiklander@linaro.org>
-In-Reply-To: <20210616103649.2662395-1-jens.wiklander@linaro.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 17 Jun 2021 10:03:14 +0530
-Message-ID: <CAFA6WYMrxNfR09doWQgYKCQSYKyUMVKqSTPuRYn=-nueY9pSvQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/7] Asynchronous notifications from secure world
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jerome Forissier <jerome@forissier.org>,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMqZuBssXiMvDxIf@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
+On Wed, Jun 16, 2021 at 05:39:20PM -0700, Eric Biggers wrote:
+> On Fri, Jun 04, 2021 at 07:58:54PM +0000, Satya Tangirala wrote:
+> > Make blk_crypto_split_bio_if_needed() respect
+> > bio_required_sector_alignment() when calling bio_split(). Without this,
+> > blk-crypto-fallback could possibly split a bio in the middle of a data
+> > unit, and the resulting bios can no longer be encrypted (since encryption
+> > can only be done on complete crypto data units).
+> > 
+> > Signed-off-by: Satya Tangirala <satyat@google.com>
+> > ---
+> >  block/blk-crypto-fallback.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/block/blk-crypto-fallback.c b/block/blk-crypto-fallback.c
+> > index c322176a1e09..85c813ef670b 100644
+> > --- a/block/blk-crypto-fallback.c
+> > +++ b/block/blk-crypto-fallback.c
+> > @@ -19,6 +19,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/random.h>
+> >  
+> > +#include "blk.h"
+> >  #include "blk-crypto-internal.h"
+> >  
+> >  static unsigned int num_prealloc_bounce_pg = 32;
+> > @@ -225,6 +226,8 @@ static bool blk_crypto_split_bio_if_needed(struct bio **bio_ptr)
+> >  	if (num_sectors < bio_sectors(bio)) {
+> >  		struct bio *split_bio;
+> >  
+> > +		num_sectors = round_down(num_sectors,
+> > +					 bio_required_sector_alignment(bio));
+> >  		split_bio = bio_split(bio, num_sectors, GFP_NOIO,
+> >  				      &crypto_bio_split);
+> >  		if (!split_bio) {
+> > -- 
+> 
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-On Wed, 16 Jun 2021 at 16:07, Jens Wiklander <jens.wiklander@linaro.org> wrote:
->
-> Hi all,
->
-> This adds support for asynchronous notifications from OP-TEE in secure
-> world to the OP-TEE driver. This allows a design with a top half and bottom
-> half type of driver where the top half runs in secure interrupt context and
-> a notifications tells normal world to schedule a yielding call to do the
-> bottom half processing.
->
-> An interrupt is used to notify the driver that there are asynchronous
-> notifications pending.
->
+Hmm, on second thought, I don't think this patch makes sense without the patch
+"block: blk-crypto-fallback: handle data unit split across multiple bvecs"
+which Satya sent out in his other series
+(https://lkml.kernel.org/r/20210604210908.2105870-2-satyat@google.com).
+Either blk-crypto-fallback assumes that the length of every bio_vec is aligned
+to data_unit_size (this is the status quo), in which case the round_down() is
+unnecessary, *or* it assumes that only the total length is aligned to
+data_unit_size, in which case both patches are needed.  So I'm thinking these
+should be combined into one patch.
 
-It looks like a nice feature. I would like to get hands on with this.
-Can I test this feature on Qemu?
-
--Sumit
-
-> v2:
-> * Added documentation
-> * Converted optee bindings to json-schema and added interrupt property
-> * Configure notification interrupt from DT instead of getting it
->   from secure world, suggested by Ard Biesheuvel <ardb@kernel.org>.
->
-> Thanks,
-> Jens
->
-> Jens Wiklander (7):
->   docs: staging/tee.rst: add a section on OP-TEE notifications
->   dt-bindings: arm: Convert optee binding to json-schema
->   dt-bindings: arm: optee: add interrupt property
->   tee: fix put order in teedev_close_context()
->   tee: add tee_dev_open_helper() primitive
->   optee: separate notification functions
->   optee: add asynchronous notifications
->
->  .../bindings/arm/firmware/linaro,optee-tz.txt |  31 ---
->  .../arm/firmware/linaro,optee-tz.yaml         |  57 +++++
->  Documentation/staging/tee.rst                 |  27 +++
->  drivers/tee/optee/Makefile                    |   1 +
->  drivers/tee/optee/call.c                      |  27 +++
->  drivers/tee/optee/core.c                      |  87 +++++--
->  drivers/tee/optee/notif.c                     | 226 ++++++++++++++++++
->  drivers/tee/optee/optee_msg.h                 |   9 +
->  drivers/tee/optee/optee_private.h             |  23 +-
->  drivers/tee/optee/optee_rpc_cmd.h             |  31 +--
->  drivers/tee/optee/optee_smc.h                 |  75 +++++-
->  drivers/tee/optee/rpc.c                       |  73 +-----
->  drivers/tee/tee_core.c                        |  37 ++-
->  include/linux/tee_drv.h                       |  27 +++
->  14 files changed, 576 insertions(+), 155 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
->  create mode 100644 drivers/tee/optee/notif.c
->
-> --
-> 2.31.1
->
+- Eric
