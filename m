@@ -2,103 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FAD3AB5AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05EB33AB5B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231853AbhFQOTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:19:40 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34288 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhFQOTa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:19:30 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B52601FD7D;
-        Thu, 17 Jun 2021 14:17:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623939441; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vk+cyjGJ36YWDJsgfR+xPOajoQrdSBKg4DxQNTPCfEg=;
-        b=N2Z0gOflTAsA4kIhg0oygEqDHAhKnphs62XVn/Utgy0N4qsYUjrRwHDHeKnXpO5J8IIyG7
-        +tGkkMXA+LkycQs7tgOA0KXU8T+xIz5s2/Rv97qyIXZyWmTG5oG4kVnBC+5LvxyuqO3bgB
-        q+J04bIs14tFsMrMPr9t6eDG+X3WQDs=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 85DBEA3BB8;
-        Thu, 17 Jun 2021 14:17:21 +0000 (UTC)
-Date:   Thu, 17 Jun 2021 16:17:21 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH RFCv4 3/4] lib/test_printf.c: split write-beyond-buffer
- check in two
-Message-ID: <YMtZcVy4gvmMtYv+@alley>
-References: <20210615154952.2744-1-justin.he@arm.com>
- <20210615154952.2744-4-justin.he@arm.com>
+        id S231892AbhFQOUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:20:47 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42818 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231846AbhFQOUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 10:20:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=3Ot9bRG4UGOhknIs3KrZRAdz/ZdNqp7qKa5NdrkwD8E=; b=f7Vtledvt65n+YULvHKCRKGw3S
+        ioDeQSEVsjUPrpPyggJEEO383gSvdLOqIj7IfKepyx5J7cx8pxf8K3VKxe7sAVDbXJEJ3SGNRehlf
+        FgK9GGV5ne0SEygEjB7ygQQDgUgxgKfjrmVdDoEkC1GJuJ+o55ArG5tW7hg/NfWJ8aVk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ltsqg-009vL3-DN; Thu, 17 Jun 2021 16:18:26 +0200
+Date:   Thu, 17 Jun 2021 16:18:26 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Callum Sinclair <callum.sinclair@alliedtelesis.co.nz>
+Cc:     dsahern@kernel.org, nikolay@nvidia.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linus.luessing@c0d3.blue
+Subject: Re: [PATCH 1/1] net: Allow all multicast packets to be received on a
+ interface.
+Message-ID: <YMtZspsYH0wd9SVf@lunn.ch>
+References: <20210617095020.28628-1-callum.sinclair@alliedtelesis.co.nz>
+ <20210617095020.28628-2-callum.sinclair@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210615154952.2744-4-justin.he@arm.com>
+In-Reply-To: <20210617095020.28628-2-callum.sinclair@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-06-15 23:49:51, Jia He wrote:
-> From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+On Thu, Jun 17, 2021 at 09:50:20PM +1200, Callum Sinclair wrote:
+> To receive IGMP or MLD packets on a IP socket on any interface the
+> multicast group needs to be explicitly joined. This works well for when
+> the multicast group the user is interested in is known, but does not
+> provide an easy way to snoop all packets in the 224.0.0.0/8 or the
+> FF00::/8 range.
 > 
-> Before each invocation of vsnprintf(), do_test() memsets the entire
-> allocated buffer to a sentinel value. That buffer includes leading and
-> trailing padding which is never included in the buffer area handed to
-> vsnprintf (spaces merely for clarity):
-> 
->   pad  test_buffer      pad
->   **** **************** ****
-> 
-> Then vsnprintf() is invoked with a bufsize argument <=
-> BUF_SIZE. Suppose bufsize=10, then we'd have e.g.
-> 
->  |pad |   test_buffer    |pad |
->   **** pizza0 **** ****** ****
->  A    B      C    D           E
-> 
-> where vsnprintf() was given the area from B to D.
-> 
-> It is obviously a bug for vsnprintf to touch anything between A and B
-> or between D and E. The former is checked for as one would expect. But
-> for the latter, we are actually a little stricter in that we check the
-> area between C and E.
-> 
-> Split that check in two, providing a clearer error message in case it
-> was a genuine buffer overrun and not merely a write within the
-> provided buffer, but after the end of the generated string.
-> 
-> So far, no part of the vsnprintf() implementation has had any use for
-> using the whole buffer as scratch space, but it's not unreasonable to
-> allow that, as long as the result is properly nul-terminated and the
-> return value is the right one. However, it is somewhat unusual, and
-> most %<something> won't need this, so keep the [C,D] check, but make
-> it easy for a later patch to make that part opt-out for certain tests.
+> Define a new sysctl to allow a given interface to become a IGMP or MLD
+> snooper. When set the interface will allow any IGMP or MLD packet to be
+> received on sockets bound to these devices.
 
-Excellent commit message.
+Hi Callum
 
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Tested-by: Jia He <justin.he@arm.com>
-> Signed-off-by: Jia He <justin.he@arm.com>
+What is the big picture here? Are you trying to move the snooping
+algorithm into user space? User space will then add/remove Multicast
+FIB entries to the bridge to control where mulitcast frames are sent?
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+In the past i have written a multicast routing daemon. It is a similar
+problem. You need access to all the join/leaves. But the stack does
+provide them, if you bind to the multicast routing socket. Why not use
+that mechanism? Look in the mrouted sources for an example.
 
-Best Regards,
-Petr
+     Andrew
