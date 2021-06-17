@@ -2,66 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F3A3AB33D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C213AB343
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232702AbhFQMHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:07:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59694 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231527AbhFQMHE (ORCPT
+        id S232627AbhFQMJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:09:21 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:42911 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231299AbhFQMJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:07:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623931496;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w3DWU7HfIYHS+RygXYUk8MWIxhHo4n71DR7hT+nkhVM=;
-        b=QaYl1Q3JOXGym0KAlfB4scvJvB8BCOgtv9Q7cu+6Qrxbn6B5LTZiafzKJJiMItavUloCKx
-        A+az0xcJUfGvCiUszvY1FQt/0RCPe9ct/ZWVLKcC+tAvYtBoGlKie1gmcPY5sE2AuIlcMC
-        AObqT1au6yzrU9VtqgUYW+sJ6nMofx8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-189-2RfWm_lrNx-UgGsr_MmP5w-1; Thu, 17 Jun 2021 08:04:53 -0400
-X-MC-Unique: 2RfWm_lrNx-UgGsr_MmP5w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A25E1084F42;
-        Thu, 17 Jun 2021 12:04:52 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 82D7260C54;
-        Thu, 17 Jun 2021 12:04:50 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210615115453.63bc3a63@oasis.local.home>
-References: <20210615115453.63bc3a63@oasis.local.home> <YLAXfvZ+rObEOdc/@localhost.localdomain> <643721.1623754699@warthog.procyon.org.uk>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     dhowells@redhat.com, Alexey Dobriyan <adobriyan@gmail.com>,
-        akpm@linux-foundation.org, linux-afs@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] afs: fix tracepoint string placement with built-in AFS
+        Thu, 17 Jun 2021 08:09:20 -0400
+Received: by mail-ot1-f42.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so5850017oth.9;
+        Thu, 17 Jun 2021 05:07:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=70Prv0Q9PiR2Mu1RsII1XZ4V8W5RAajPqngPjwLFOeo=;
+        b=qIbPRxZ8VNE3CIqpmpIntA6oA9+tF5RH6xhHHSJ+x353HDab4UWxE2F7aaNlnISNnp
+         2by1hLfkHE3X9H/+vPDDqCgmK3GuPMcvndvMCLllEekzC8TiEvb69vYFEya1gzi2+fpH
+         cy8ElREI9Db9HIQ/FyfgFgGd5OpSZchlFFzBWAVdbOgZ+tkqnFZABfvR+y5X/VMaC8F1
+         oDEP9Nvv/7nO94T9TOLhN4s/ySjvgSm8C3KbaxdouzHCPHLZjsN9cFk8tzmIBwftwscx
+         aGreh8u4jMtSMQbwWzKLTfUicb4cOyD22fMIm82RngXAHQuVc+1KD33ytf9ZSkuNzvhw
+         d7mw==
+X-Gm-Message-State: AOAM533fxxku2SZx8bsmE/sEVQ6ETCJDGV9M+sUKhqb0JDQwa6bpD199
+        qP5FRAm7+DsxRvN9EVZW2wd4FUMuvTFR0BLLL4w=
+X-Google-Smtp-Source: ABdhPJz7lh+lT2LPBBP08RYxXR+wg480zZHpwCz0fatQfQ+GHy+L8yGM+nwGS6GgAMByJ5ZW3peHoLOa1q+GzGkCN8s=
+X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr4450235otb.206.1623931632819;
+ Thu, 17 Jun 2021 05:07:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1192146.1623931489.1@warthog.procyon.org.uk>
-Date:   Thu, 17 Jun 2021 13:04:49 +0100
-Message-ID: <1192147.1623931489@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <1623415027-36130-1-git-send-email-tanxiaofei@huawei.com>
+ <CAJZ5v0gvzZ-64AJuEsOg2M=veZYz+9ciG5wFEQT7ghki2SNpPA@mail.gmail.com> <d38b018d-2adf-9549-ba55-44289c816fed@huawei.com>
+In-Reply-To: <d38b018d-2adf-9549-ba55-44289c816fed@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 17 Jun 2021 14:07:01 +0200
+Message-ID: <CAJZ5v0jRrow5nXF3mXCVKerzaURKqDJBMp_PDfQDLF2OVpEeGA@mail.gmail.com>
+Subject: Re: [PATCH v7] ACPI / APEI: fix the regression of synchronous
+ external aborts occur in user-mode
+To:     Xiaofei Tan <tanxiaofei@huawei.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxarm@openeuler.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Jun 15, 2021 at 5:47 AM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
+>
+> Hi Rafael,
+>
+> On 2021/6/14 23:46, Rafael J. Wysocki wrote:
+> > On Fri, Jun 11, 2021 at 2:40 PM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
+> >>
+> >> Before commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
+> >> synchronise with APEI's irq work"), do_sea() would unconditionally
+> >> signal the affected task from the arch code. Since that change,
+> >> the GHES driver sends the signals.
+> >>
+> >> This exposes a problem as errors the GHES driver doesn't understand
+> >> or doesn't handle effectively are silently ignored. It will cause
+> >> the errors get taken again, and circulate endlessly. User-space task
+> >> get stuck in this loop.
+> >>
+> >> Existing firmware on Kunpeng9xx systems reports cache errors with the
+> >> 'ARM Processor Error' CPER records.
+> >>
+> >> Do memory failure handling for ARM Processor Error Section just like
+> >> for Memory Error Section.
+> >
+> > Still, I'm not convinced that this is the right way to address the problem.
+> >
+> > In particular, is it guaranteed that "ARM Processor Error" will always
+> > mean "memory failure" on all platforms?
+> >
+>
+> There are two sources for ARM Processor cache errors(no second case for the platform that doesn't support poison mechanism).
+> 1.occur in the cache. If it is transient, we have a chance to recover by doing memory failure.
+> If it is persistent, we have to handle in other place, such as do cache way isolation in firmware,
+> or trigger cpu core isolation in user space. I think most platform can't support such feature,
+> so the most simple and effective way is report as fatal error and do isolation during firmware start-up phase.
+>
+> 2.error transferred from other RAS node. If it is from DDR, i think there is no doubt, and this is
+> the most cases we met before.If it is from other place of SoC, such as internal SRAM(the probability is very little compare to DDR),
+> the error is still in the hardware. But the RAS node that detected the SRAM error will also report the error.
+>
+> To sum up the above, it is effective for most situation, and no harm for the others.
 
-> Looks fine to me, and even saves 4 bytes on 64 bit machines (events are
-> rounded up to 4 byte increments, so the u16 is no different than a u32
-> here).
+OK, so applied as 5.14 material under edited subject.
 
-Can I put that down as a Reviewed-by?
-
-David
-
+Thanks!
