@@ -2,131 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D4D3AB4B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132013AB4AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232766AbhFQN3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:29:10 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5514 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232730AbhFQN3F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:29:05 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HD3NDf040656;
-        Thu, 17 Jun 2021 09:26:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=P2ntlsJFhaLxk2Wju96nSx5qkn74oT771eWVNBBgutA=;
- b=CPsaUlAP0asx1wanWVgHKWM5lY8Vf4Jwi5wACzMCCRQ8Mym7ByEqozGRYFHGYgkPKBLx
- s2JGqPEOlMHoOuz+6ms5iNMtv876x7K4S8LC1YJ9c2JwbUh2Id0QXfKDVEdqINx39cmX
- Ts9qrLR1xOdvHyGh14BKu1Nyr1Kfbfy6X7vED2UL7WXNSbRePU4+zO8njpGB0QccAGv0
- 51pYT7nBI4anD5CQ3S6JVKjQEqAv6yBC3KWehnZAQXWiiy0ceadrBtM0kgQOFLh+wSRC
- sW2MtdiQ/ZZ06QG83Ujfud8q6msQN3K3pgAXprLj3kc1Q9zYV7U5UMFCoPVw5X+aMtN+ aQ== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3985y1b0xm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 09:26:46 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15HDD6jW031722;
-        Thu, 17 Jun 2021 13:26:44 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 3966jph0d5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 13:26:44 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15HDQfHO21627286
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Jun 2021 13:26:41 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2FDCDAE051;
-        Thu, 17 Jun 2021 13:26:41 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9659CAE045;
-        Thu, 17 Jun 2021 13:26:37 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.199.36.139])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 17 Jun 2021 13:26:37 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        peterz@infradead.org
-Cc:     maddy@linux.vnet.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com, ira.weiny@intel.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        kjain@linux.ibm.com, rnsastry@linux.ibm.com
-Subject: [PATCH v3 4/4] powerpc/papr_scm: Document papr_scm sysfs event format entries
-Date:   Thu, 17 Jun 2021 18:56:17 +0530
-Message-Id: <20210617132617.99529-5-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210617132617.99529-1-kjain@linux.ibm.com>
-References: <20210617132617.99529-1-kjain@linux.ibm.com>
+        id S232653AbhFQN2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:28:48 -0400
+Received: from mga07.intel.com ([134.134.136.100]:37262 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232607AbhFQN2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:28:45 -0400
+IronPort-SDR: XTMP6wZoTp6+k/xSQ2Vm0eD06SUkJzHTI48+qI/Itbp8PIw4dwNJOKBqNDWfh5fHe3vmaAV/5d
+ j8qWfc2B6txw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="270215209"
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="270215209"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 06:26:37 -0700
+IronPort-SDR: CsOA3JyKINmJL7mwTbegK0PA8EHx/ohm0UjvZyEXLhIQQfcu3Ow9ZDnmv91mlKuqkqMKeVrEd+
+ oMIwGT7e+qZA==
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="554399326"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 06:26:34 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lts2R-003LwZ-Hl; Thu, 17 Jun 2021 16:26:31 +0300
+Date:   Thu, 17 Jun 2021 16:26:31 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, kaixuxia@tencent.com,
+        gustavoars@kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        weiyongjun1@huawei.com, yuehaibing@huawei.com,
+        yangjihong1@huawei.com, yukuai3@huawei.com,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next v5] media: staging: atomisp: use list_splice_init
+ in atomisp_compat_css20.c
+Message-ID: <YMtNh+yZAthTjFJn@smile.fi.intel.com>
+References: <20210617125357.675562-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: SUSDWMJF2PqZRpHDktesoNj3-OF_8iZC
-X-Proofpoint-GUID: SUSDWMJF2PqZRpHDktesoNj3-OF_8iZC
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-17_10:2021-06-15,2021-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 suspectscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 clxscore=1015 bulkscore=0 lowpriorityscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106170085
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210617125357.675562-1-libaokun1@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Details is added for the event, cpumask and format attributes
-in the ABI documentation.
+On Thu, Jun 17, 2021 at 08:53:57PM +0800, Baokun Li wrote:
+> Using list_splice_init() instead of entire while-loops
+> in atomisp_compat_css20.c.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+> V1->V2:
+> 	CC mailist
+> V2->V3:
+>         Using list_move_tail() -> Using list_splice_init()
+> V3->V4:
+>         Remove redundant 'asd->'
+> V4->V5:
+>         Add the version information for 'V3->V4:'
 
-Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
----
- Documentation/ABI/testing/sysfs-bus-papr-pmem | 31 +++++++++++++++++++
- 1 file changed, 31 insertions(+)
+What about
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-index 92e2db0e2d3d..be91de341454 100644
---- a/Documentation/ABI/testing/sysfs-bus-papr-pmem
-+++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-@@ -59,3 +59,34 @@ Description:
- 		* "CchRHCnt" : Cache Read Hit Count
- 		* "CchWHCnt" : Cache Write Hit Count
- 		* "FastWCnt" : Fast Write Count
-+
-+What:		/sys/devices/nmemX/format
-+Date:		June 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
-+Description:	(RO) Attribute group to describe the magic bits
-+                that go into perf_event_attr.config for a particular pmu.
-+                (See ABI/testing/sysfs-bus-event_source-devices-format).
-+
-+                Each attribute under this group defines a bit range of the
-+                perf_event_attr.config. Supported attribute is listed
-+                below::
-+
-+		    event  = "config:0-4"  - event ID
-+
-+		For example::
-+		    noopstat = "event=0x1"
-+
-+What:		/sys/devices/nmemX/events
-+Date:		June 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
-+Description:    (RO) Attribute group to describe performance monitoring
-+                events specific to papr-scm. Each attribute in this group describes
-+                a single performance monitoring event supported by this nvdimm pmu.
-+                The name of the file is the name of the event.
-+                (See ABI/testing/sysfs-bus-event_source-devices-events).
-+
-+What:		/sys/devices/nmemX/cpumask
-+Date:		June 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
-+Description:	(RO) This sysfs file exposes the cpumask which is designated to make
-+                HCALLs to retrieve nvdimm pmu event counter data.
+drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2107:31: warning: unused variable 'md_buf' [-Wunused-variable]
+2107 |  struct atomisp_metadata_buf *md_buf;
+drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2106:26: warning: unused variable 'dis_buf' [-Wunused-variable]
+2106 |  struct atomisp_dis_buf *dis_buf;
+drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:2105:26: warning: unused variable 's3a_buf' [-Wunused-variable]
+2105 |  struct atomisp_s3a_buf *s3a_buf;
+
+?
+
 -- 
-2.27.0
+With Best Regards,
+Andy Shevchenko
+
 
