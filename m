@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6ACB3AB39E
+	by mail.lfdr.de (Postfix) with ESMTP id CAEC93AB39F
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhFQMf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:35:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhFQMfY (ORCPT
+        id S230494AbhFQMfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:35:30 -0400
+Received: from mail.aperture-lab.de ([116.203.183.178]:45452 "EHLO
+        mail.aperture-lab.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230316AbhFQMfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:35:24 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07A2C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:33:16 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id y15so4903058pfl.4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qw5j2pWzqbWJOcDMTiutKDLrZNJ5CmDl2cszSS1n3VQ=;
-        b=nu3M8N9FLDMYEv3mqulW4zo7DRwTysVeor33sV4CuoHv7R3juqt62gB5FTr0FgzJ0H
-         nVTiczA1FYIv8ymXZzj8VgCRBdv4OI9i3s7KUgUh6l+qzGWOHXZdUiIkBjdou19gC/sV
-         exDwXhAnJ8lGNtYrkZO+fjy9u7cPmDzccgtepBawvdqbQd7I8CMrdRCfVZsbtqMKXzX8
-         vI3qhS5IG+y+QJp8A8pLqvEHxWY5K7uk9i+sQM3LEusofKHq7+p4KXxe9DqxVdyxGmCt
-         SsaPhKfANSSGOHm1yOSYpG0xFeWbQblvHRKz5p+ca0/umglCIZjuGUOhW3uhNnOG2oMQ
-         TRDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qw5j2pWzqbWJOcDMTiutKDLrZNJ5CmDl2cszSS1n3VQ=;
-        b=MLu+O7AqD2RnSPWghEy0FxNuwuQzAqh+nCc4vNFCL0C5SDZpZ2XCWj8ezH4xBhDZSI
-         B3sPQ197XJppZ1WGfp144MvSYcDPz1Bl3+8+pqWrMQnz9+QxsLjc6H+LxjQkySmS3qfL
-         lUCp2PMSCghZFhakCNRbWVc8W3Qtqe8SENkx3NTsSHPzsJN5xT0fcJzr8rE661k1TfZf
-         ySncPGc2wyv9sVLdi/3Jl8s27QV/Y8wbnwgRs5oZAwY78QxJLHmmYKIQ7FRHJULUKk+U
-         zHCp87z4KrOntWjKHnMQzucgAuB9KtP0hs7p5pw5FTjXq2rjq1Kl7XTyVU74IYkGpAwE
-         apkg==
-X-Gm-Message-State: AOAM533tRRKsWdPdasEneeRqEtjdd3YgWFWld+hUb02Z3NaR76qYFSSs
-        VKo30W6rX5Iuz4mWF4T6uKl5w9y3Tonp3QwZ/t0=
-X-Google-Smtp-Source: ABdhPJz+wtfHF9+/5Yhg4sQDvIGgpv3AVDSInHojZ6O4QcwH8U90SgvmSeOazFazkL4MgdJsN7lmuZsWK12pGQV2IH8=
-X-Received: by 2002:a63:4145:: with SMTP id o66mr4857925pga.4.1623933196378;
- Thu, 17 Jun 2021 05:33:16 -0700 (PDT)
+        Thu, 17 Jun 2021 08:35:25 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3F0303E904;
+        Thu, 17 Jun 2021 14:33:12 +0200 (CEST)
+Date:   Thu, 17 Jun 2021 14:33:09 +0200
+From:   Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
+To:     Callum Sinclair <callum.sinclair@alliedtelesis.co.nz>
+Cc:     dsahern@kernel.org, nikolay@nvidia.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, troglobit@gmail.com
+Subject: Re: [PATCH 1/1] net: Allow all multicast packets to be received on a
+ interface.
+Message-ID: <20210617123309.GB2262@otheros>
+References: <20210617095020.28628-1-callum.sinclair@alliedtelesis.co.nz>
+ <20210617095020.28628-2-callum.sinclair@alliedtelesis.co.nz>
 MIME-Version: 1.0
-References: <cover.1623775748.git.chris@chrisdown.name> <YMsfo3/b1LvOoiM0@alley>
-In-Reply-To: <YMsfo3/b1LvOoiM0@alley>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 17 Jun 2021 15:33:00 +0300
-Message-ID: <CAHp75VchoFoso54i1XHom_Wt49MtMEnjxZ-vq_C+OXCCK2=8sA@mail.gmail.com>
-Subject: Re: [PATCH v7 0/5] printk: Userspace format indexing support
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Chris Down <chris@chrisdown.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210617095020.28628-2-callum.sinclair@alliedtelesis.co.nz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Last-TLS-Session-Version: TLSv1.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 2:10 PM Petr Mladek <pmladek@suse.com> wrote:
-> On Tue 2021-06-15 17:52:20, Chris Down wrote:
+Hi Callum,
 
-> > Chris Down (5):
-> >   string_helpers: Escape double quotes in escape_special
-> >   printk: Straighten out log_flags into printk_info_flags
-> >   printk: Rework parse_prefix into printk_parse_prefix
-> >   printk: Userspace format indexing support
-> >   printk: index: Add indexing support to dev_printk
->
-> The patchset looks ready for linux-next from my POV. I could fixup the
-> messages as suggested by Andy when pushing.
->
-> Well, I would still like to get acks from:
->
->    + Andy for the 1st patch
->    + Jessica for the changes in the module loader code in 4th patch.
+On Thu, Jun 17, 2021 at 09:50:20PM +1200, Callum Sinclair wrote:
+> +mc_snooping - BOOLEAN
+> +	Enable multicast snooping on the interface. This allows any given
+> +	multicast group to be received without explicitly being joined.
+> +	The kernel needs to be compiled with CONFIG_MROUTE and/or
+> +	CONFIG_IPV6_MROUTE.
+> +	conf/all/mc_snooping must also be set to TRUE to enable multicast
+> +	snooping for the interface.
+> +
 
-Assuming that Chris indeed spent time on checking string_esape_mem()
-users along with %*pE (and all its variations with hardcoded length)
-and haven't found any problems,
-Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Generally this sounds like a useful feature. One note: When there
+are snooping bridges/switches involved, you might run into issues
+in receiving all multicast packets, as due to the missing IGMP/MLD
+reports the snooping switches won't forward to you.
+
+In that case, to conform to RFC4541 you would also need to become
+the selected IGMP/MLD querier and send IGMP/MLD query messages. Or
+better, you'd need to send Multicast Router Advertisements
+(RFC4286). The latter is the recommended, more flexible way but
+might not be supported by all multicast snooping switches yet.
+The Linux bridge supports this.
+
+There is a userspace tool called mrdisc you can use for MRD-Adv.
+though: https://github.com/troglobit/mrdisc. So no need to
+implement MRD Advertisements in the kernel with this patch (though
+I could imagine that it might be a useful feature to have, having
+MRD support out-of-the-box with this option). Just a note that some
+IGMP/MLD Querier or MRD Adv. would be needed when IGMP/MLD snooping
+switches are invoved might be nice to have in the mc_snooping
+description for now, to avoid potential confusion later.
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+I'm also wondering if it could be useful to configure it via
+setsockopt() per application instead of per device via sysctl. Either by
+adding a new socket option. Or by allowing the any IP address
+0.0.0.0 / :: with IP_ADD_MEMBERSHIP/IPV6_JOIN_GROUP. So that you
+could use this for instance:
+
+$ socat -u UDP6-RECV:1234,reuseaddr,ipv6-join-group="[::]:eth0" -
+(currently :: fails with "Invalid argument")
+
+I'm not sure however what the requirements for adding or extending
+socket options are, if there are some POSIX standards that'd need
+to be followed for compatibility with other OSes, for instance.
+
+
+Hm, actually, I just noticed that there seem to be some multicast
+related setsockopt()s already:
+
+- PACKET_MR_PROMISC
+- PACKET_MR_MULTICAST
+- PACKET_MR_ALLMULTI
+
+The last one seems to be what you are looking for, I think, the
+manpage here says:
+
+"PACKET_MR_ALLMULTI sets the socket up to receive all multicast
+packets arriving at the interface"
+https://www.man7.org/linux/man-pages/man7/packet.7.html
+
+Or would you prefer to be able to use a layer 3 IP instead of
+a layer 2 packet socket?
+
+Regards, Linus
