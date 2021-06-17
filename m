@@ -2,74 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98ABA3AAF1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A566F3AAF18
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231298AbhFQIy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 04:54:58 -0400
-Received: from phobos.denx.de ([85.214.62.61]:56772 "EHLO phobos.denx.de"
+        id S231272AbhFQIyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 04:54:44 -0400
+Received: from verein.lst.de ([213.95.11.211]:57801 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231283AbhFQIy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:54:56 -0400
-Received: from localhost (dslb-084-062-104-230.084.062.pools.vodafone-ip.de [84.62.104.230])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: ch@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 47B3982024;
-        Thu, 17 Jun 2021 10:52:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1623919968;
-        bh=xeDue/WnOOtGXp+2ku3MmnMQPyFPmeXZP5vSiFO0p24=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iQgnirbV2ldVLDDkgvLyQa3BRo6DqY1N3zdtuKIzLpuPGeF6gTGnQd/RGGB3TwXYI
-         yRKBn11SbXvuA1QL6ybmL+L8m+0Rfcyq5SisjVg/60nnBv44Ynrs5t13Gq8oB4yJti
-         OmVHcHsDrEHeS4cBe/u7tF+EzrTBmOJGRRxzQBfuIrgbMbEc8N0x8m8QlFUL6nqNnj
-         Xx4xjONQJ+ysdZI3eh4pGJ/evCh4p81iDo44iXL6u3albdbI0p766tgkNCXAlrgfGB
-         gYuOMXRN+shDYXSd6mo2rzS+XV0DxXyKmMmwBRgwQmCrACPHGQ+YZBwOwTuxnJRcVy
-         fhTvA38OR7GMQ==
-From:   Claudius Heine <ch@denx.de>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        Marek Vasut <marex@denx.de>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Cc:     Claudius Heine <ch@denx.de>
-Subject: [PATCH v2 3/3] ASoC: tlv320aic32x4: dt-bindings: add TAS2505 to compatible
-Date:   Thu, 17 Jun 2021 10:52:30 +0200
-Message-Id: <20210617085230.1851503-4-ch@denx.de>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210617085230.1851503-1-ch@denx.de>
-References: <20210617085230.1851503-1-ch@denx.de>
+        id S231249AbhFQIyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 04:54:43 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id ED1A168C4E; Thu, 17 Jun 2021 10:52:33 +0200 (CEST)
+Date:   Thu, 17 Jun 2021 10:52:33 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
+Message-ID: <20210617085233.GA4702@lst.de>
+References: <20210427131344.139443-1-senozhatsky@chromium.org> <20210427131344.139443-9-senozhatsky@chromium.org> <10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl> <YMsAIVs7G2hUDR2F@google.com> <20210617080107.GA1422@lst.de> <CAAFQd5DiPstn-s+yQM3iMd=G9oaag39qCyX483a7-Jrn=gxWCA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAFQd5DiPstn-s+yQM3iMd=G9oaag39qCyX483a7-Jrn=gxWCA@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds 'ti,tas2505' for TAS2505 to the list of allowed compatible
-strings.
+On Thu, Jun 17, 2021 at 05:30:11PM +0900, Tomasz Figa wrote:
+> We still have use cases for dma_alloc_coherent() and DMA_ATTR_NO_KERNEL_MAPPING.
 
-Signed-off-by: Claudius Heine <ch@denx.de>
----
- Documentation/devicetree/bindings/sound/tlv320aic32x4.txt | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-index ca75890f0d07..f59125bc79d1 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-@@ -6,6 +6,7 @@ Required properties:
-  - compatible - "string" - One of:
- 	"ti,tlv320aic32x4" TLV320AIC3204
- 	"ti,tlv320aic32x6" TLV320AIC3206, TLV320AIC3256
-+	"ti,tas2505" TAS2505, TAS2521
-  - reg: I2C slave address
-  - supply-*: Required supply regulators are:
-     "iov" - digital IO power supply
--- 
-2.32.0
-
+dma_alloc_coherent does not take a flags argument, so you can't use
+DMA_ATTR_NO_KERNEL_MAPPING with it.  What would your use case be here
+anyway?  In general DMA_ATTR_NO_KERNEL_MAPPING is rather misnamed, as
+usually there is a kernel mapping, just not one that is coherent and
+should be used.
