@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF4A3AAEFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567123AAF03
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbhFQIop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 04:44:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54459 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229784AbhFQIon (ORCPT
+        id S231181AbhFQIqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 04:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhFQIqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:44:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623919356;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sS6kybXx9hY6peXNH5/f9ArBP3605EB1bdQQ5Et7bb4=;
-        b=BH3ca2tvy7w+N2Q5cJSox6o2mSbzlby3hQ7JRc3+75fWwU0Qt7jmZAVg27erv6LV1kXQ0/
-        x61Ugi5rkk9bmWjOZ+VEdTP3wXrqYLHMC7uLG8lvobH+WCoc9ceco4B83NfQyX38AL7Svw
-        f8wCDDx3ofq4fBmQzcuiIFscHfhKxys=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-LiQAtsP0NSOl8OzSLl1ddA-1; Thu, 17 Jun 2021 04:42:34 -0400
-X-MC-Unique: LiQAtsP0NSOl8OzSLl1ddA-1
-Received: by mail-wm1-f69.google.com with SMTP id t11-20020a05600c198bb02901bf95ba8642so1928887wmq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 01:42:34 -0700 (PDT)
+        Thu, 17 Jun 2021 04:46:10 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4025C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 01:44:01 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id v9so5787349wrx.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 01:44:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qse5cGxpg1Wx1K/bFNdJr9abCnEgN9q8mxTJmYsQZpY=;
+        b=RKz7GWfEoYX/wB//GhA2SxpmZrhOz/Is37pPWrWzXguZKd7CXPjsZ4s7jqc9DhCjVH
+         +D744kyllXPUmwoT2MsQ1Wj46SMJZ+NQ4JsKzo/HBgBdTMV0qBdEudSLO2zpoOxb217l
+         z+yUfieKJm0Xvay4hafzUsmwM9iQKJpGuDLp487db7eF6QohcJHROgfKg9qAYYOHlroC
+         EO/+QVAm5vWbDwGQadcJvKlmRZtM/PojwHH/yYy0J3vZF0sJkmSNIdVM2qWorDab1OJE
+         STTJ1VcgXNk1smE+f1jijBz6UjPZ3TfL8fbRiolK5o5ufKhH/OO1OiXSQOePhcBBu0J+
+         mgZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=sS6kybXx9hY6peXNH5/f9ArBP3605EB1bdQQ5Et7bb4=;
-        b=ba0T0mafdWEwq9kfGQWvPjYZc50l01CUjs4kaLfdCYZdFKq2U/+Z15cWHdg43KDwOX
-         JbFmbueYW3tZovduAm/1GECrVfhGuq/iYO7jt+Xn+RvPUN+wJfv6SVDhPiKdGo03CcHY
-         nwvZCdhxLecGge9r2W06sdUWj+N7YEcIUILaMUF0ITAWu3DgvT6SXlSReRdyXl/+xplg
-         UA8qYWymw4kSZZ6FnuXsVPwtLmKSM9oBl40CBGAbvDxvKj5kE+zp/RDoTTghYUIHsz2s
-         CiLu88xcRKIgOmmjsQYKEsoM0zAXUj0puKbjbDfSytsza2LAKzW+HuJxtXliaANtN5PG
-         zh3A==
-X-Gm-Message-State: AOAM532smzrqx86C2xdpsGS+5ws9T7LzhfCYdnYmZTy8TGwda0hMi0Ur
-        o4IYi7iuyY9aVvRksVQWsjKXWbu6fApxjbXzA6jEK08yem3FZ3KSAN7d22eEJEfytS6UB+IYzbW
-        L97jqappXjnKYa+V/1CtR7aIA
-X-Received: by 2002:a5d:6a41:: with SMTP id t1mr4339148wrw.113.1623919353701;
-        Thu, 17 Jun 2021 01:42:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzgyAySce1qxN63jHG7zCIwNglZXJq5pK6V0M+5PBzfDOhc3A7qqxXGjPafRDi1waNvg3aeUg==
-X-Received: by 2002:a5d:6a41:: with SMTP id t1mr4339135wrw.113.1623919353505;
-        Thu, 17 Jun 2021 01:42:33 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6170.dip0.t-ipconnect.de. [91.12.97.112])
-        by smtp.gmail.com with ESMTPSA id l10sm4681548wrv.82.2021.06.17.01.42.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 01:42:33 -0700 (PDT)
-Subject: Re: vmemmap alloc failure in hot_add_req()
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>,
-        Hillf Danton <hdanton@sina.com>
-References: <YMO+CoYnCgObRtOI@DESKTOP-1V8MEUQ.localdomain>
- <20210612021115.2136-1-hdanton@sina.com>
- <951ddbaf-3d74-7043-4866-3809ff991cfd@redhat.com>
- <d6a82778-024a-3a01-a081-dab6c8b54d62@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <98cba3fa-f787-081f-b833-cfea3a124254@redhat.com>
-Date:   Thu, 17 Jun 2021 10:42:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qse5cGxpg1Wx1K/bFNdJr9abCnEgN9q8mxTJmYsQZpY=;
+        b=e3OtQAet4fAB5ybc7fbHeLoQGIr7LB2K6Y3HV71anmYoicooFv2fl7LfAYfT8Dqusw
+         hb4PaQ2KjkSIh4nd2CGSvcGVOgNPTm2jNfsTCZGJSOUZD3ieGd8xM3ep/ZgZPBq/SLYl
+         rADs13I/aS7Dk34XTnkiYN4+R3xnN9VR1ao1A9JGFDeTGbrW3pBtrdT4z3W+l+p9Nopl
+         vQ0+rytSgtM63cC0ysSurMuuU5iOfR3opN74tqFOGBpTDHxqcj76F5+PCvt37TJkeAYH
+         XSR8xOSLczlE36dB5IiyJTId3RLnwPSzq9LnkWZ3B9kV6NGFp4LXF7KVdGSoimvF5S0Q
+         mF2w==
+X-Gm-Message-State: AOAM531Xvho7F3pZZYfNCe89SJA5UHHtqiC9ma8xB9ayKpTxLnWV3gdd
+        CF6PhO7Y+PSJXaH0eod3jApe7AZ0ECqB6Al3A7UPsA==
+X-Google-Smtp-Source: ABdhPJxOBpMutGoMuzup8QLNPLn8QcJqEWEo5782gvYAl8dZNlSDV39AzkhvczUy3q4r3U76ISw1EGO0x+5bYVo/XJo=
+X-Received: by 2002:a5d:5151:: with SMTP id u17mr4339152wrt.302.1623919440466;
+ Thu, 17 Jun 2021 01:44:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d6a82778-024a-3a01-a081-dab6c8b54d62@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210617081330.98629-1-dja@axtens.net>
+In-Reply-To: <20210617081330.98629-1-dja@axtens.net>
+From:   David Gow <davidgow@google.com>
+Date:   Thu, 17 Jun 2021 16:43:49 +0800
+Message-ID: <CABVgOSmYiVA008enEkGy4XTooVQ7DftXvWySFLL16bZETocpqg@mail.gmail.com>
+Subject: Re: [PATCH] mm/vmalloc: unbreak kasan vmalloc support
+To:     Daniel Axtens <dja@axtens.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> It does look like this kernel configuration has
-> CONFIG_MEMORY_HOTPLUG_DEFAULT_ONLINE=y.
+On Thu, Jun 17, 2021 at 4:13 PM Daniel Axtens <dja@axtens.net> wrote:
+>
+> In commit 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings"),
+> __vmalloc_node_range was changed such that __get_vm_area_node was no
+> longer called with the requested/real size of the vmalloc allocation, but
+> rather with a rounded-up size.
+>
+> This means that __get_vm_area_node called kasan_unpoision_vmalloc() with
+> a rounded up size rather than the real size. This led to it allowing
+> access to too much memory and so missing vmalloc OOBs and failing the
+> kasan kunit tests.
+>
+> Pass the real size and the desired shift into __get_vm_area_node. This
+> allows it to round up the size for the underlying allocators while
+> still unpoisioning the correct quantity of shadow memory.
+>
+> Adjust the other call-sites to pass in PAGE_SHIFT for the shift value.
+>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: David Gow <davidgow@google.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=213335
+> Fixes: 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings")
+> Signed-off-by: Daniel Axtens <dja@axtens.net>
+> ---
 
-Okay, so then it's most likely really more of an issue with fragmented 
-physical memory -- which is suboptimal but not a show blocker in your setup.
+This fixes the KUnit test failure I was seeing on x86_64, thanks!
 
-(there are still cases where memory onlining can fail, especially with 
-kasan running, but these are rather corner cases)
+Tested-by: David Gow <davidgow@google.com>
 
-> 
->> If it's not getting onlined, you easily sport after hotplug e.g., via
->> "lsmem" that there are quite some offline memory blocks.
->>
->> Note that x86_64 code will fallback from populating huge pages to
->> populating base pages for the vmemmap; this can happen easily when under
->> memory pressure.
-> 
-> Not sure if it is relevant or not but this warning can show up within a
-> minute of startup without me doing anything in particular.
-
-I remember that Hyper-V will start with a certain (configured) boot VM 
-memory size and once the guest is up and running, use memory stats of 
-the guest to decide whether to add (hotplug) or remove (balloon inflate) 
-memory from the VM.
-
-So this could just be Hyper-V trying to apply its heuristics.
-
-> 
->> If adding memory would fail completely, you'd see another "hot_add
->> memory failed error is ..." error message from hyper-v in the kernel
->> log. If that doesn't show up, it's simply suboptimal, but hotplugging
->> memory still succeeded.
-> 
-> I did notice that from the code in hv_balloon.c but I do not think I
-> have ever seen that message in my logs.
-
-Okay, so at least hotplugging memory is working.
-
--- 
-Thanks,
-
-David / dhildenb
-
+Cheers,
+-- David
