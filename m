@@ -2,115 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923453AB655
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A663A3AB662
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhFQOrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:47:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbhFQOri (ORCPT
+        id S231847AbhFQOs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:48:56 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:8518 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231434AbhFQOsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:47:38 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5E8C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 07:45:26 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id og14so10327118ejc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 07:45:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QbWq0G6XjbCduvI65yRZVLjLavdA7VxZZ+xXMBekQFk=;
-        b=Xk1bAexllS8vp1gHoHrLty8VQJesbY1Sy2KuHy2fsrtfFMsIZpLy67Dsdd8veMj3qm
-         dU1ejkYwLizmoiF2FZTp4dV4SBgY6G5EMdmB43rfK8qTgtIqyykeljt1LYIZCIVCx3cD
-         06DdcJYKr7pnTVZwKKaZs+qmNPnHAv5qKgwRYGpHIvDmdZs42fcOrgPWfnhd2HDA8QnD
-         oVqKRP78tGwbaQHbkk7iXslsTgdZssxCpshMBK5SgJgEVYDPpZBXMaC/Uklxz0fpWFvC
-         Zhzg85B5/Kx8scFPImx0m0bDqlFzA6mv6giKr/HEdo4YC3hA6c/o+aoypecSGgaP0sfe
-         CdQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QbWq0G6XjbCduvI65yRZVLjLavdA7VxZZ+xXMBekQFk=;
-        b=CJ/6Y1iZ/Ud/TzoitfgVd47nzjcCUy+bHxS8qpNoE4Q0okjyFsbMgSn34NlOguaXni
-         8po0q0llT0m3px0rqzeBw3mX3ngX8Ki9JiTcHTOk3WeDm/f/9NDWkdl2Lgb2SCjp8Mgw
-         SRCiEy5z6dxmL9L8c/CDhN8ieXI7jfkldkrTrWfJaqBN0+FEVnEKXGdjwIMDAAvfKrql
-         z+hahGQs1Uhf7Ga9dJQ8Vo5RqAfnN7nSoGlGYk61AV6oY0LrzxkNt/6NBlhj/lwBgiO/
-         InULRY0urQC4h3tAZfIHrH4joo+6i8jp4sfip2uXSWYpvkqr1LNF36pz5UdZ19qhFSU1
-         aP9w==
-X-Gm-Message-State: AOAM532+q0oZa1XRtBpqImNmqoGKQ2utRuCbh5k1hGcUTBF5QRYm4GG1
-        Royz8az9ebbRtSOhMzicBo7UtIxR8QEQyTohcehoXw==
-X-Google-Smtp-Source: ABdhPJzMEmCI7Tke0VrCtGirOAfdE63ZxUPB49pKUc7efrdqjk0LOdFq6BFeO40+k5DnFq432ug3nCDFwy8nhR1mjx8=
-X-Received: by 2002:a17:906:d0da:: with SMTP id bq26mr5761449ejb.287.1623941125231;
- Thu, 17 Jun 2021 07:45:25 -0700 (PDT)
+        Thu, 17 Jun 2021 10:48:55 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HEgZlG011624;
+        Thu, 17 Jun 2021 16:46:22 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=9eAIH/c1C9SoJMJkgfe4NdUCCQ+ZQVB7bmyQrk0Sfcs=;
+ b=pubXGlpDeccznFIc17ANWReKErIUzfdXf8xl5diEzX9w3eSTosaoF6+Hv+k6sozjgUU0
+ kRPe0KSZ+a17fM6RMQ+HTcc/+WTLiHRcKM5amQxJT8ev4OfmKuqaIGoIVX+rp6winWQ2
+ AWJsEZJame4sXpwtpI/apPkq2kXm+5kyljeIXCD60YoBJ3vGDXSYXB8wZUjLZYtOYO8W
+ hNLG1qzepspXNaA56LssfzzYoWAD0ZEfshz6x5Wb9VabVDc1z6nDQjxYeDTXFpYBOdF/
+ 5lj1v+hiJkMRiwWxSM7S62T1Lm0qS5Z5VpuoiaWOmjYjz9BsuY+cScPvaNywyMPtlhUn rg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3984bm1kmg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 16:46:22 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id ED1C910002A;
+        Thu, 17 Jun 2021 16:46:21 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D892F22AEDB;
+        Thu, 17 Jun 2021 16:46:21 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Jun 2021 16:46:21
+ +0200
+From:   Fabien Dessenne <fabien.dessenne@foss.st.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-gpio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Fabien Dessenne <fabien.dessenne@foss.st.com>
+Subject: [PATCH] pinctrl: stm32: check for IRQ MUX validity during alloc()
+Date:   Thu, 17 Jun 2021 16:46:02 +0200
+Message-ID: <20210617144602.2557619-1-fabien.dessenne@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CA+G9fYsWHE5Vu9T3FV-vtHHbVFJWEF=bmjQxwaZs3uVYef028g@mail.gmail.com>
- <CA+G9fYvvf+XTvZg1sTq4_f9OrVFsCazGo0ozaEbjVYgSeKCkWA@mail.gmail.com> <YMtTdU2b9fI3dnFD@casper.infradead.org>
-In-Reply-To: <YMtTdU2b9fI3dnFD@casper.infradead.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 17 Jun 2021 20:15:13 +0530
-Message-ID: <CA+G9fYukjZU9_88KuhW5FpG-Y6EOH4ehXgdKm9pGO0v4y4wsmA@mail.gmail.com>
-Subject: Re: [next] [clang] x86_64-linux-gnu-ld: mm/mremap.o: in function
- `move_pgt_entry': mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Young <dyoung@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Sasha Levin <sashal@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vivek Goyal <vgoyal@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-17_13:2021-06-15,2021-06-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
+Considering the following irq_domain_ops call chain:
+- .alloc() is called when a clients calls platform_get_irq() or
+  gpiod_to_irq()
+- .activate() is called next, when the clients calls
+  request_threaded_irq()
+Check for the IRQ MUX conflict during the first stage (alloc instead of
+activate). This avoids to provide the client with an IRQ that can't be
+used.
 
-On Thu, 17 Jun 2021 at 19:22, Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Thu, Jun 17, 2021 at 06:15:45PM +0530, Naresh Kamboju wrote:
-> > On Thu, 17 Jun 2021 at 17:41, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > > x86_64-linux-gnu-ld: mm/mremap.o: in function `move_pgt_entry':
-> > > mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
-> >
-> > The git bisect pointed out the first bad commit.
-> >
-> > The first bad commit:
-> > commit 928cf6adc7d60c96eca760c05c1000cda061604e
-> > Author: Stephen Boyd <swboyd@chromium.org>
-> > Date:   Thu Jun 17 15:21:35 2021 +1000
-> >     module: add printk formats to add module build ID to stacktraces
->
-> Your git bisect probably went astray.  There's no way that commit
-> caused that regression.
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+---
+ drivers/pinctrl/stm32/pinctrl-stm32.c | 79 ++++++++++++++-------------
+ 1 file changed, 40 insertions(+), 39 deletions(-)
 
-Sorry for pointing to incorrect bad commits coming from git bisect.
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
+index ad9eb5ed8e81..63e0c78d4a7e 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
+@@ -414,57 +414,25 @@ static int stm32_gpio_domain_activate(struct irq_domain *d,
+ {
+ 	struct stm32_gpio_bank *bank = d->host_data;
+ 	struct stm32_pinctrl *pctl = dev_get_drvdata(bank->gpio_chip.parent);
+-	unsigned long flags;
+ 	int ret = 0;
+ 
+-	/*
+-	 * gpio irq mux is shared between several banks, a lock has to be done
+-	 * to avoid overriding.
+-	 */
+-	spin_lock_irqsave(&pctl->irqmux_lock, flags);
+-
+ 	if (pctl->hwlock) {
+ 		ret = hwspin_lock_timeout_in_atomic(pctl->hwlock,
+ 						    HWSPNLCK_TIMEOUT);
+ 		if (ret) {
+ 			dev_err(pctl->dev, "Can't get hwspinlock\n");
+-			goto unlock;
++			return ret;
+ 		}
+ 	}
+ 
+-	if (pctl->irqmux_map & BIT(irq_data->hwirq)) {
+-		dev_err(pctl->dev, "irq line %ld already requested.\n",
+-			irq_data->hwirq);
+-		ret = -EBUSY;
+-		if (pctl->hwlock)
+-			hwspin_unlock_in_atomic(pctl->hwlock);
+-		goto unlock;
+-	} else {
+-		pctl->irqmux_map |= BIT(irq_data->hwirq);
+-	}
+-
+ 	regmap_field_write(pctl->irqmux[irq_data->hwirq], bank->bank_ioport_nr);
+ 
+ 	if (pctl->hwlock)
+ 		hwspin_unlock_in_atomic(pctl->hwlock);
+ 
+-unlock:
+-	spin_unlock_irqrestore(&pctl->irqmux_lock, flags);
+ 	return ret;
+ }
+ 
+-static void stm32_gpio_domain_deactivate(struct irq_domain *d,
+-					 struct irq_data *irq_data)
+-{
+-	struct stm32_gpio_bank *bank = d->host_data;
+-	struct stm32_pinctrl *pctl = dev_get_drvdata(bank->gpio_chip.parent);
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&pctl->irqmux_lock, flags);
+-	pctl->irqmux_map &= ~BIT(irq_data->hwirq);
+-	spin_unlock_irqrestore(&pctl->irqmux_lock, flags);
+-}
+-
+ static int stm32_gpio_domain_alloc(struct irq_domain *d,
+ 				   unsigned int virq,
+ 				   unsigned int nr_irqs, void *data)
+@@ -472,9 +440,28 @@ static int stm32_gpio_domain_alloc(struct irq_domain *d,
+ 	struct stm32_gpio_bank *bank = d->host_data;
+ 	struct irq_fwspec *fwspec = data;
+ 	struct irq_fwspec parent_fwspec;
+-	irq_hw_number_t hwirq;
++	struct stm32_pinctrl *pctl = dev_get_drvdata(bank->gpio_chip.parent);
++	irq_hw_number_t hwirq = fwspec->param[0];
++	unsigned long flags;
++	int ret = 0;
++
++	/*
++	 * Check first that the IRQ MUX of that line is free.
++	 * gpio irq mux is shared between several banks, protect with a lock
++	 */
++	spin_lock_irqsave(&pctl->irqmux_lock, flags);
++
++	if (pctl->irqmux_map & BIT(hwirq)) {
++		dev_err(pctl->dev, "irq line %ld already requested.\n", hwirq);
++		ret = -EBUSY;
++	} else {
++		pctl->irqmux_map |= BIT(hwirq);
++	}
++
++	spin_unlock_irqrestore(&pctl->irqmux_lock, flags);
++	if (ret)
++		return ret;
+ 
+-	hwirq = fwspec->param[0];
+ 	parent_fwspec.fwnode = d->parent->fwnode;
+ 	parent_fwspec.param_count = 2;
+ 	parent_fwspec.param[0] = fwspec->param[0];
+@@ -486,12 +473,26 @@ static int stm32_gpio_domain_alloc(struct irq_domain *d,
+ 	return irq_domain_alloc_irqs_parent(d, virq, nr_irqs, &parent_fwspec);
+ }
+ 
++static void stm32_gpio_domain_free(struct irq_domain *d, unsigned int virq,
++				   unsigned int nr_irqs)
++{
++	struct stm32_gpio_bank *bank = d->host_data;
++	struct stm32_pinctrl *pctl = dev_get_drvdata(bank->gpio_chip.parent);
++	struct irq_data *irq_data = irq_domain_get_irq_data(d, virq);
++	unsigned long flags, hwirq = irq_data->hwirq;
++
++	irq_domain_free_irqs_common(d, virq, nr_irqs);
++
++	spin_lock_irqsave(&pctl->irqmux_lock, flags);
++	pctl->irqmux_map &= ~BIT(hwirq);
++	spin_unlock_irqrestore(&pctl->irqmux_lock, flags);
++}
++
+ static const struct irq_domain_ops stm32_gpio_domain_ops = {
+-	.translate      = stm32_gpio_domain_translate,
+-	.alloc          = stm32_gpio_domain_alloc,
+-	.free           = irq_domain_free_irqs_common,
++	.translate	= stm32_gpio_domain_translate,
++	.alloc		= stm32_gpio_domain_alloc,
++	.free		= stm32_gpio_domain_free,
+ 	.activate	= stm32_gpio_domain_activate,
+-	.deactivate	= stm32_gpio_domain_deactivate,
+ };
+ 
+ /* Pinctrl functions */
+-- 
+2.25.1
 
-Any best way to run git bisect on  linux next tree ?
-
-Here is the git bisect log from gitlab pipeline,
-https://gitlab.com/Linaro/lkft/bisect/-/jobs/1354963448
-
-- Naresh
