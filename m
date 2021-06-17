@@ -2,161 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E989D3AAE05
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0693AAE06
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhFQHyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 03:54:03 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4829 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhFQHyB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 03:54:01 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G5Df15mp4zXg6h;
-        Thu, 17 Jun 2021 15:46:49 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 15:51:52 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 15:51:51 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [BUG] Crash after module unload if it use DO_ONCE mechanism
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hannes Frederic Sowa <hannes@stressinduktion.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Linux Kernel Network Developers" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Message-ID: <eaa6c371-465e-57eb-6be9-f4b16b9d7cbf@huawei.com>
-Date:   Thu, 17 Jun 2021 15:51:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S230262AbhFQHyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 03:54:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:49806 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229666AbhFQHyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 03:54:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 042F81042;
+        Thu, 17 Jun 2021 00:52:05 -0700 (PDT)
+Received: from e123083-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B28F03F694;
+        Thu, 17 Jun 2021 00:52:03 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 09:51:54 +0200
+From:   Morten Rasmussen <morten.rasmussen@arm.com>
+To:     Ley Foon Tan <lftan.linux@gmail.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>
+Subject: Re: sched: Question about big and little cores system with SMP and
+ EAS
+Message-ID: <20210617074942.GA21285@e123083-lin>
+References: <CAFiDJ5-ZO=BuSwBPPPecZhLyjyipTLenQxgCK=t52Pj7r659sQ@mail.gmail.com>
+ <YMni2eclmqf05cL4@hirez.programming.kicks-ass.net>
+ <c81ac071-c648-54ac-72ad-2dab0fa1dd4b@arm.com>
+ <CAFiDJ5-j8UER1mGggC62C309T+t+y6-vy_NuKOJL6TQHrHAGtA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFiDJ5-j8UER1mGggC62C309T+t+y6-vy_NuKOJL6TQHrHAGtA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Thu, Jun 17, 2021 at 01:00:12PM +0800, Ley Foon Tan wrote:
+> On Wed, Jun 16, 2021 at 9:20 PM Dietmar Eggemann
+> <dietmar.eggemann@arm.com> wrote:
+> >
+> > - Quentin Perret <quentin.perret@arm.com>
+> > + Quentin Perret <qperret@google.com>
+> >
+> > On 16/06/2021 13:39, Peter Zijlstra wrote:
+> > > On Wed, Jun 16, 2021 at 07:29:26PM +0800, Ley Foon Tan wrote:
+> > >> Hi all
+> > >>
+> > >> Would like to ask the experts here regarding the Symmetric
+> > >> Multi-Processing mode (SMP) with Energy aware scheduler (EAS) support
+> > >> on the big + little cores system.
+> > >
+> > > And the you ask a question unrelated to either Symmetric MP or EAS :-)
+> > >
+> > >> Hardware system:
+> > >> Big and little cores have almost the same ISA, but the big core has
+> > >> some extension instructions that little core doesn't have.
+> > >
+> > > That problem is unrelated to big.Little / EAS, also by definition that
+> > > is not SMP seeing how the 'S' is a blatant lie.
+> > >
+> > > The simplest solution is to simply disallow usage of the extended ISA
+> > > and force mandate the common subset. The complicated answer is something
+> > > along the lines of:
+> > >
+> > >   https://lkml.kernel.org/r/20210608180313.11502-1-will@kernel.org
+> >
+> > We don't encourage asymmetric ISA extensions for EAS*/CAS** on
+> > big.Little systems.
+> > It would be simply a nightmare to schedule tasks on such systems.
+> >
+> > The exception to this is the 'asymmetric 32-bit Soc' to support 32bit
+> > legacy Apps. The nightmare for scheduling is reduced in this case to CPU
+> > affinity, something the task scheduler has to live with already today.
+> > (+ DL admission control for 32bit tasks).
+> >
+> > *  Documentation/scheduler/sched-energy.rst
+> > ** Documentation/scheduler/sched-capacity.rst
+> 
+> Thanks for the reply.
+> Yes, forsee it is very complicated and nightmare for software to
+> support for SMP mode but HW is not real "symmetric".
+> That's why post the question here to ask the advice and comment from
+> experts here. So that can feedback to HW team.
+> Asymmetric extension instructions issue should more complicated than
+> asymmetric 32-bit app support, it can happen in all the areas (kernel,
+> app, library and etc).
 
-We met a crash[3] after module unload if it uses DO_ONCE mechanism,
-also we could reproduce by the demo module[1] and the hack patch[2].
+Indeed. Detecting what extensions a task might use difficult, if not
+impossible. Also, we certainly don't want to end up in situation where
+the CPU subsets supporting two extensions are disjoint and a task
+requires both extensions.
 
-The DO_ONCE mechanism could be use directly(eg, testmgr.c), and there 
-are some macro which is used by lots of net drivers,
-"prandom_init_once"
-"get_random_once/get_random_once_wait"
-"net_get_random_once/net_get_random_once_wait"
-
-The analysis of crash is as follows,
-
-init_module
-  get_random_once
-   DO_ONCE
-   DEFINE_STATIC_KEY_TRUE(___once_key);
-   __do_once_done
-     once_disable_jump(once_key);
-       INIT_WORK(&w->work, once_deferred);
-       struct once_work *w;
-       w->key = key;
-       schedule_work(&w->work);                    cleanup_module
-                                                    *the key is destroy*
-process_one_work
-  once_deferred
-    BUG_ON(!static_key_enabled(work->key));
-       static_key_count((struct static_key *)x)   //*access key, crash*
-
-I can't find a good way to fix the issue, any suggestion?
-
-Thanks.
-
-
-
-[1] test module
-static int test;
-int init_module(void) {
-	pr_info("Hello\n");
-	get_random_once(&test, sizeof(int));
-	return 0;
-}
-void cleanup_module(void) {
-	pr_info("Bye %x!\n", test);
-}
-[2] hack to add some delay
-diff --git a/lib/once.c b/lib/once.c
-index 8b7d6235217e..b56b8ced4bab 100644
---- a/lib/once.c
-+++ b/lib/once.c
-@@ -14,6 +14,7 @@ static void once_deferred(struct work_struct *w)
-         struct once_work *work;
-
-         work = container_of(w, struct once_work, work);
-+       msleep(8000);
-         BUG_ON(!static_key_enabled(work->key));
-         static_branch_disable(work->key);
-         kfree(work);
-
-[3] crash log
-[  253.560859] Hello
-[  253.562851] Bye 92bbb335!
-[  261.585813] Unable to handle kernel paging request at virtual address 
-ffff000001293018
-[  261.585815] Mem abort info:
-[  261.585816]   ESR = 0x96000007
-[  261.585817]   Exception class = DABT (current EL), IL = 32 bits
-[  261.585818]   SET = 0, FnV = 0
-[  261.585818]   EA = 0, S1PTW = 0
-[  261.585819] Data abort info:
-[  261.585820]   ISV = 0, ISS = 0x00000007
-[  261.585821]   CM = 0, WnR = 0
-[  261.585822] swapper pgtable: 4k pages, 48-bit VAs, pgdp = 
-00000000e45c016c
-[  261.585823] [ffff000001293018] pgd=000000023fffe003, 
-pud=000000023354b003, pmd=00000001d4099003, pte=0000000000000000
-[  261.585827] Internal error: Oops: 96000007 [#1] SMP
-[  261.586458] Process kworker/25:1 (pid: 291, stack limit = 
-0xffff0000841b0000)
-[  261.586880] CPU: 25 PID: 291 Comm: kworker/25:1 Kdump: loaded 
-Tainted: P        W  OE     4.19.90+ #14
-[  261.587415] Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 
-02/06/2015
-[  261.587819] Workqueue: events once_deferred
-[  261.588062] pstate: 60c00005 (nZCv daif +PAN +UAO)
-[  261.588341] pc : static_key_count+0x18/0x30
-[  261.588584] lr : once_deferred+0x30/0x80
-[  261.588810] sp : ffff0000841b3d70
-[  261.589000] x29: ffff0000841b3d70 x28: 0000000000000000
-[  261.589308] x27: 0000000000000000 x26: ffff00008131f330
-[  261.589615] x25: 0000000000000000 x24: ffff8001defd1c08
-[  261.590025] x23: 0000000000000000 x22: ffff8001ff4d3000
-[  261.590414] x21: ffff8001ff4cee80 x20: ffff8001f3bbd100
-[  261.590868] x19: ffff000001293018 x18: ffffffffffffffff
-[  261.591254] x17: 0000000000000000 x16: 0000000000000000
-[  261.591638] x15: ffff0000812fa748 x14: ffff0000814f1d50
-[  261.592026] x13: ffff0000814f1996 x12: ffffffffffffffac
-[  261.592409] x11: 0000000000000000 x10: 0000000000000b80
-[  261.592794] x9 : ffff0000841b3bf0 x8 : 3535303030303030
-[  261.593179] x7 : 303078302079656b x6 : ffff0000814f0f80
-[  261.593564] x5 : 00ffffffffffffff x4 : 0000000000000000
-[  261.593978] x3 : 0000000000000000 x2 : 173087582665d800
-[  261.594362] x1 : 0000000000000000 x0 : ffff00008055a888
-[  261.594748] Call trace:
-[  261.594928]  static_key_count+0x18/0x30
-[  261.595207]  once_deferred+0x30/0x80
-[  261.595469]  process_one_work+0x1b8/0x458
-[  261.595762]  worker_thread+0x158/0x498
-[  261.596034]  kthread+0x134/0x138
-[  261.596271]  ret_from_fork+0x10/0x18
-[  261.596531] Code: f9000bf3 aa0003f3 aa1e03e0 d503201f (b9400260)
-
+Morten
