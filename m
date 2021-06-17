@@ -2,231 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F5A3AA8CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC223AA8D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbhFQBx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 21:53:58 -0400
-Received: from regular1.263xmail.com ([211.150.70.206]:43056 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232191AbhFQBx5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 21:53:57 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by regular1.263xmail.com (Postfix) with ESMTP id 14F3B1B67;
-        Thu, 17 Jun 2021 09:51:47 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from [172.16.12.120] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P15326T140654340470528S1623894702990941_;
-        Thu, 17 Jun 2021 09:51:44 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <8676accae82e1e2e8682e39c204adf18>
-X-RL-SENDER: kever.yang@rock-chips.com
-X-SENDER: yk@rock-chips.com
-X-LOGIN-NAME: kever.yang@rock-chips.com
-X-FST-TO: macromorgan@hotmail.com
-X-RCPT-COUNT: 21
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Subject: Re: [PATCH v7 1/9] dt-bindings: rockchip-sfc: Bindings for Rockchip
- serial flash controller
-To:     Rob Herring <robh@kernel.org>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Jon Lin <jon.lin@rock-chips.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Johan Jonker <jbx6244@gmail.com>,
-        =?UTF-8?B?6buE5a626ZKX?= <hjc@rock-chips.com>,
-        Yifeng Zhao <yifeng.zhao@rock-chips.com>,
-        Sugar Zhang <sugar.zhang@rock-chips.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Chris Morgan <macroalpha82@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>
-References: <20210609140412.16058-1-jon.lin@rock-chips.com>
- <20210609140412.16058-2-jon.lin@rock-chips.com>
- <20210610024350.GA697147@robh.at.kernel.org>
- <e8e7c8c1-4f71-538c-a8e1-b61a894bd4a8@rock-chips.com>
- <CAAEAJfCyXWvcqswXfmgXBX-et0mq3vxoUacUmHGso9t+XoNqOg@mail.gmail.com>
- <CAL_JsqL1Sb_TCw6TG7XGBDtmhMVD+_n7d-ii7N9N7w1+A627=w@mail.gmail.com>
-From:   Kever Yang <kever.yang@rock-chips.com>
-Message-ID: <e2be59ae-37a0-4455-e5a6-f7156da29e95@rock-chips.com>
-Date:   Thu, 17 Jun 2021 09:51:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232191AbhFQCAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 22:00:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229951AbhFQCAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 22:00:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3D8E611AE;
+        Thu, 17 Jun 2021 01:58:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623895116;
+        bh=LkxoxsV2uINtsMRapfS1F+4SusO/sYiAFsTPioDWf6g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HNP1+W3p4MLCD0PatOpsw1yqpHlTAzEfaAhNgKxPalX/iz8e1tW0A2CUHwFsbKsGx
+         lif1teVMxMoyKPfo0NIPZGtza+g0uJ3KPrw59xVa8NVugS3da9qgTJ+35miL0TJbpi
+         qGT1oYgWjsuad4f89AhsxhidTuH5Yz4oP8TbdrhrKIceh+OHwH7WFbbx4IbklXqUGc
+         Eu6n+225l3N6vQT/qd7NPyWx4E3p7+7gtSCnP9Fk2TPj/jiSIrwMHvRPmnpApup+uY
+         7EPidXZP1KNhwU9aLjzmtLjon1KEI5GtvSakQuYN9iaQgbedLoET6jwf2JrrUl9w6T
+         PppZlN1oB4/bw==
+Date:   Wed, 16 Jun 2021 18:58:35 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v3 05/10] block: keyslot-manager: introduce
+ blk_ksm_restrict_dus_to_queue_limits()
+Message-ID: <YMqsS0ehsVlyySOQ@sol.localdomain>
+References: <20210604195900.2096121-1-satyat@google.com>
+ <20210604195900.2096121-6-satyat@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqL1Sb_TCw6TG7XGBDtmhMVD+_n7d-ii7N9N7w1+A627=w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604195900.2096121-6-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Fri, Jun 04, 2021 at 07:58:55PM +0000, Satya Tangirala wrote:
+> Not all crypto data unit sizes might be supported by the block layer due to
+> certain queue limits. This new function checks the queue limits and
+> appropriately modifies the keyslot manager to reflect only the supported
+> crypto data unit sizes. blk_ksm_register() runs any given ksm through this
+> function before actually registering the ksm with a queue.
+> 
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> ---
+>  block/keyslot-manager.c | 91 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 91 insertions(+)
+> 
+> diff --git a/block/keyslot-manager.c b/block/keyslot-manager.c
+> index 88211581141a..6a355867be59 100644
+> --- a/block/keyslot-manager.c
+> +++ b/block/keyslot-manager.c
+> @@ -458,12 +458,103 @@ bool blk_ksm_is_empty(struct blk_keyslot_manager *ksm)
+>  }
+>  EXPORT_SYMBOL_GPL(blk_ksm_is_empty);
+>  
+> +/*
+> + * Restrict the supported data unit sizes of the ksm based on the request queue
+> + * limits
+> + */
+> +static void
+> +blk_ksm_restrict_dus_to_queue_limits(struct blk_keyslot_manager *ksm,
+> +				     struct request_queue *q)
+> +{
+> +	/* The largest possible data unit size we support is PAGE_SIZE. */
+> +	unsigned long largest_dus = PAGE_SIZE;
+> +	unsigned int dus_allowed_mask;
+> +	int i;
+> +	bool dus_was_restricted = false;
+> +	struct queue_limits *limits = &q->limits;
+> +
+> +	/*
+> +	 * If the queue doesn't support SG gaps, a bio might get split in the
+> +	 * middle of a data unit. So require SG gap support for inline
+> +	 * encryption for any data unit size larger than a single sector.
+> +	 *
+> +	 * A crypto data unit might straddle an SG gap, and only a single sector
+> +	 * of that data unit might be before the gap - the block layer will need
+> +	 * to split that bio at the gap, which will result in an incomplete
+> +	 * crypto data unit unless the crypto data unit size is a single sector.
+> +	 */
+> +	if (limits->virt_boundary_mask)
+> +		largest_dus = SECTOR_SIZE;
 
-On 2021/6/16 下午11:38, Rob Herring wrote:
-> On Fri, Jun 11, 2021 at 10:33 AM Ezequiel Garcia
-> <ezequiel@vanguardiasur.com.ar> wrote:
->> Hi all,
->>
->> On Thu, 10 Jun 2021 at 00:04, Kever Yang <kever.yang@rock-chips.com> wrote:
->>> Hi Rob,
->>>
->>> On 2021/6/10 上午10:43, Rob Herring wrote:
->>>> On Wed, Jun 09, 2021 at 10:04:04PM +0800, Jon Lin wrote:
->>>>> From: Chris Morgan <macromorgan@hotmail.com>
->>>>>
->>>>> Add bindings for the Rockchip serial flash controller. New device
->>>>> specific parameter of rockchip,sfc-no-dma included in documentation.
->>>>>
->>>>> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
->>>>> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
->>>>> ---
->>>>>
->>>>> Changes in v7:
->>>>> - Fix up the sclk_sfc parent error in rk3036
->>>>> - Unify to "rockchip,sfc" compatible id because all the feature update
->>>>>     will have a new IP version, so the driver is used for the SFC IP in
->>>>>     all SoCs
->>>>> - Change to use node "sfc" to name the SFC pinctrl group
->>>>> - Add subnode reg property check
->>>>> - Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
->>>>> - Limit max_iosize to 32KB
->>>>>
->>>>> Changes in v6:
->>>>> - Add support in device trees for rv1126(Declared in series 5 but not
->>>>>     submitted)
->>>>> - Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
->>>>>     affect interpretation and has been widely used
->>>>> - Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
->>>>> - Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
->>>>>     in series 5 but not submitted)
->>>>> - Support SFC ver4 ver5(Declared in series 5 but not submitted)
->>>>> - Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
->>>>> - Change to use devm_spi_alloc_master and spi_unregister_master
->>>>>
->>>>> Changes in v5:
->>>>> - Add support in device trees for rv1126
->>>>> - Support sfc tx_dual, tx_quad
->>>>> - Simplify the code, such as remove "rockchip_sfc_register_all"
->>>>> - Support SFC ver4 ver5
->>>>>
->>>>> Changes in v4:
->>>>> - Changing patch back to an "RFC". An engineer from Rockchip
->>>>>     reached out to me to let me know they are working on this patch for
->>>>>     upstream, I am submitting this v4 for the community to see however
->>>>>     I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
->>>>>     soon and these are the ones we should pursue for mainlining. Jon's
->>>>>     patch series should include support for more hardware than this
->>>>>     series.
->>>>> - Clean up documentation more and ensure it is correct per
->>>>>     make dt_binding_check.
->>>>> - Add support in device trees for rk3036, rk3308, and rv1108.
->>>>> - Add ahb clock (hclk_sfc) support for rk3036.
->>>>> - Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
->>>>> - Change IRQ code to only mark IRQ as handled if it handles the
->>>>>     specific IRQ (DMA transfer finish) it is supposed to handle.
->>>>>
->>>>> Changes in v3:
->>>>> - Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
->>>>> - Changed the compatible string from rockchip,sfc to
->>>>>     rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
->>>>>     driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
->>>>>     RV1108 SoCs, and possibly more. However, I am currently only able
->>>>>     to test this on a PX30 (an RK3326). The technical reference manuals
->>>>>     appear to list the same registers for each device.
->>>>> - Corrected devicetree documentation for formatting and to note these
->>>>>     changes.
->>>>> - Replaced the maintainer with Heiko Stuebner and myself, as we will
->>>>>     take ownership of this going forward.
->>>>> - Noted that the device (per the reference manual) supports 4 CS, but
->>>>>     I am only able to test a single CS (CS 0).
->>>>> - Reordered patches to comply with upstream rules.
->>>>>
->>>>> Changes in v2:
->>>>> - Reimplemented driver using spi-mem subsystem.
->>>>> - Removed power management code as I couldn't get it working properly.
->>>>> - Added device tree bindings for Odroid Go Advance.
->>>>>
->>>>> Changes in v1:
->>>>> hanges made in this new series versus the v8 of the old series:
->>>>> - Added function to read spi-rx-bus-width from device tree, in the
->>>>>     event that the SPI chip supports 4x mode but only has 2 pins
->>>>>     wired (such as the Odroid Go Advance).
->>>>> - Changed device tree documentation from txt to yaml format.
->>>>> - Made "reset" message a dev_dbg from a dev_info.
->>>>> - Changed read and write fifo functions to remove redundant checks.
->>>>> - Changed the write and read from relaxed to non-relaxed when
->>>>>     starting the DMA transfer or reading the DMA IRQ.
->>>>> - Changed from dma_coerce_mask_and_coherent to just
->>>>>     dma_set_mask_and_coherent.
->>>>> - Changed name of get_if_type to rockchip_sfc_get_if_type.
->>>>>
->>>>>    .../devicetree/bindings/spi/rockchip-sfc.yaml | 88 +++++++++++++++++++
->>>>>    1 file changed, 88 insertions(+)
->>>>>    create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
->>>>> new file mode 100644
->>>>> index 000000000000..42e4198e92af
->>>>> --- /dev/null
->>>>> +++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
->>>>> @@ -0,0 +1,88 @@
->>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>>> +%YAML 1.2
->>>>> +---
->>>>> +$id: http://devicetree.org/schemas/spi/rockchip-sfc.yaml#
->>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>>> +
->>>>> +title: Rockchip Serial Flash Controller (SFC)
->>>>> +
->>>>> +maintainers:
->>>>> +  - Heiko Stuebner <heiko@sntech.de>
->>>>> +  - Chris Morgan <macromorgan@hotmail.com>
->>>>> +
->>>>> +allOf:
->>>>> +  - $ref: spi-controller.yaml#
->>>>> +
->>>>> +properties:
->>>>> +  compatible:
->>>>> +    oneOf:
->>>>> +      - const: rockchip,sfc
->>>> Use 'enum' instead of oneOf+const.
->>>>
->>>> You need an SoC specific compatible.
->>>
->>> The rockchip sfc controller is a standalone IP with version register,
->>> and the driver can
->>>
->>> handle all the feature difference inside the IP, so we would like to use
->>> a more generic
-> Okay, if the version register can be relied on, then this is fine.
-> Just add a comment that further differentiation is done using a
-> version register.
+This seems unnecessarily pessimistic, as the length of each bio_vec will still
+be aligned to logical_block_size.  virt_boundary_mask only causes splits between
+bio_vec's, not within a bio_vec.
 
+I think we want something like:
 
-Thanks for your confirm, this will make things much simple for driver 
-maintain.
+	/*
+	 * If the queue doesn't support SG gaps, then a bio may have to be split
+	 * between any two bio_vecs.  Since the size of each bio_vec is only
+	 * guaranteed to be a multiple of logical_block_size, logical_block_size
+	 * is also the maximum crypto data unit size that can be supported in
+	 * this case, as bios must not be split in the middle of a data unit.
+	 */
+	if (limits->virt_boundary_mask)
+		largest_dus = queue_logical_block_size(q);
 
-@Jon, please update your patch per Rob's requirement.
+> +	/*
+> +	 * If the queue has chunk_sectors, the bio might be split within a data
+> +	 * unit if the data unit size is larger than a single sector. So only
+> +	 * support a single sector data unit size in this case.
+> +	 *
+> +	 * Just like the SG gap case above, a crypto data unit might straddle a
+> +	 * chunk sector boundary, and in the worst case, only a single sector of
+> +	 * the data unit might be before/after the boundary.
+> +	 */
+> +	if (limits->chunk_sectors)
+> +		largest_dus = SECTOR_SIZE;
 
+I think the same applies here.  As I understand it, chunk_sectors has to be a
+multiple of logical_block_size.  Here's what I'm thinking:
 
-Thanks,
-- Kever
+	/*
+	 * Similarly, if chunk_sectors is set and a bio is submitted that
+	 * crosses a chunk boundary, then that bio may have to be split at a
+	 * boundary that is only logical_block_size aligned.  So that limits the
+	 * crypto data unit size to logical_block_size as well.
+	 */
+	if (limits->chunk_sectors)
+		largest_dus = queue_logical_block_size(q);
 
+Although, that also raises the question of whether we should require that
+'bi_sector' be crypto_data_size aligned for inline encryption to be used.  Then
+I think we could remove the above limitation.
 
+I suppose the main concern with that is that if someone was to e.g. create a
+filesystem on a partition which starts at a location that isn't 4K aligned, they
+wouldn't be able to use inline encryption on that filesystem...  I'm not sure
+how much of a problem that would be in practice.
+
+> +
+> +	/*
+> +	 * Any bio sent to the queue must be allowed to contain at least a
+> +	 * data_unit_size worth of data. Since each segment in a bio contains
+> +	 * at least a SECTOR_SIZE worth of data, it's sufficient that
+> +	 * queue_max_segments(q) * SECTOR_SIZE >= data_unit_size. So disable
+> +	 * all data_unit_sizes not satisfiable.
+> +	 *
+> +	 * We assume the worst case of only SECTOR_SIZE bytes of data in each
+> +	 * segment since users of the block layer are free to construct bios
+> +	 * with such segments.
+> +	 */
+> +	largest_dus = min(largest_dus,
+> +			1UL << (fls(limits->max_segments) - 1 + SECTOR_SHIFT));
+
+And similarly here too.  As far as I can tell, the minimum size of a segment is
+logical_block_size, which is not necessarily SECTOR_SIZE.
+
+We can also make use of rounddown_pow_of_two() here.
+
+Here is what I'm thinking:
+
+	/*
+	 * Each bio_vec can be as small as logical_block_size.  Therefore the
+	 * crypto data unit size can't be greater than 'max_segments *
+	 * logical_block_size', as otherwise in the worst case there would be no
+	 * way to process the first data unit without exceeding max_segments.
+	 */
+	largest_dus = min(largest_dus,
+			  rounddown_pow_of_two(limits->max_segments) *
+			  queue_logical_block_size(q));
+
+> +	/* Clear all unsupported data unit sizes. */
+> +	dus_allowed_mask = (largest_dus << 1) - 1;
+> +	for (i = 0; i < ARRAY_SIZE(ksm->crypto_modes_supported); i++) {
+> +		if (ksm->crypto_modes_supported[i] & (~dus_allowed_mask))
+> +			dus_was_restricted = true;
+> +		ksm->crypto_modes_supported[i] &= dus_allowed_mask;
+> +	}
+> +
+> +	if (dus_was_restricted) {
+> +		pr_warn("Disallowed use of encryption data unit sizes above %lu bytes with inline encryption hardware because of device request queue limits on device %s.\n",
+> +			largest_dus, q->backing_dev_info->dev_name);
+> +	}
+
+The disk name should go at the beginning of the log message.
+
+> +/**
+> + * blk_ksm_register() - Sets the queue's keyslot manager to the provided ksm, if
+> + *			compatible
+> + * @ksm: The ksm to register
+> + * @q: The request_queue to register the ksm to
+> + *
+> + * Checks if the keyslot manager provided is compatible with the request queue
+> + * (i.e. the queue shouldn't also support integrity). After that, the crypto
+> + * capabilities of the given keyslot manager are restricted to what the queue
+> + * can support based on it's limits. Note that if @ksm doesn't support any
+> + * crypto capabilities after the capability restriction, the queue's ksm is
+> + * set to NULL, instead of being set to a pointer to the now "empty" @ksm.
+> + *
+> + * Return: true if @q's ksm is set to the provided @ksm, false otherwise
+> + *	   (including the case when @ksm becomes "empty" due to crypto
+> + *	    capability restrictions)
+> + */
+>  bool blk_ksm_register(struct blk_keyslot_manager *ksm, struct request_queue *q)
+>  {
+>  	if (blk_integrity_queue_supports_integrity(q)) {
+>  		pr_warn("Integrity and hardware inline encryption are not supported together. Disabling hardware inline encryption.\n");
+>  		return false;
+>  	}
+> +
+> +	blk_ksm_restrict_dus_to_queue_limits(ksm, q);
+> +
+> +	if (blk_ksm_is_empty(ksm))
+> +		return false;
+> +
+>  	q->ksm = ksm;
+>  	return true;
+>  }
+
+The behavior of this function is a bit odd.  If no crypto capabilities can be
+registered, it returns false, but it may or may not modify @ksm.  It should
+probably leave @ksm unmodified in that case (which we could do by turning
+blk_ksm_restrict_dus_to_queue_limits() into something that just calculates the
+largest supported data unit size, and making blk_ksm_register() do the rest).
+
+- Eric
