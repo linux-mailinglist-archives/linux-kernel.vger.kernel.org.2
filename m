@@ -2,245 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925343AB2BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954953AB2C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbhFQLiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:38:08 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:41155 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232593AbhFQLiF (ORCPT
+        id S232591AbhFQLkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhFQLko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:38:05 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210617113556epoutp0283e7ab2441ac49e6653abf203f53fc7c~JW4J2d3LT2569125691epoutp02F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 11:35:56 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210617113556epoutp0283e7ab2441ac49e6653abf203f53fc7c~JW4J2d3LT2569125691epoutp02F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1623929756;
-        bh=d+EWMXyJ0y/ivOouip2NQgjzDqHjUOuiHNgCsJW29IM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IIXlwCVmxSyrcOFnS7zv//1PkDZ+tbHLJoLYYrFwkArZXyk7PCoGmIl5I8+mRvp7t
-         ZpZUOKwJMX1OM8Bovb5zetNVs+SJuk82UQJnTYwOkOvQy+SPBfPnVSRcoI7X9J2UHw
-         qdTEJaV5AkYVFaDBFtuzjGzBkIdLZ4kcE1FK7uR4=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20210617113555epcas5p35b00eba18e2929ed6fb8eb320a359465~JW4JDJa2c0539705397epcas5p39;
-        Thu, 17 Jun 2021 11:35:55 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F2.68.09606.B933BC06; Thu, 17 Jun 2021 20:35:55 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210617113314epcas5p4652e98d24d7f56a7c8461175bbb25456~JW1y3quT_0518505185epcas5p4Q;
-        Thu, 17 Jun 2021 11:33:14 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210617113314epsmtrp231efdd9e1b42df4e739b5fb615221221~JW1y26hTx2292622926epsmtrp28;
-        Thu, 17 Jun 2021 11:33:14 +0000 (GMT)
-X-AuditID: b6c32a49-bf1ff70000002586-98-60cb339b7750
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E7.DF.08637.AF23BC06; Thu, 17 Jun 2021 20:33:14 +0900 (KST)
-Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
-        [107.108.73.139]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210617113313epsmtip2238d67173ca06484a305225171411508~JW1x41cIt2453424534epsmtip2Q;
-        Thu, 17 Jun 2021 11:33:13 +0000 (GMT)
-From:   Alim Akhtar <alim.akhtar@samsung.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org
-Cc:     krzysztof.kozlowski@canonical.com,
-        linux-samsung-soc@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Subject: [PATCH 2/2] arm64: dts: exynos5433: Add cpu cache information
-Date:   Thu, 17 Jun 2021 17:07:39 +0530
-Message-Id: <20210617113739.66911-2-alim.akhtar@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210617113739.66911-1-alim.akhtar@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDIsWRmVeSWpSXmKPExsWy7bCmuu5s49MJBj23lS0ezNvGZrHx7Q8m
-        i02Pr7FaXN41h81ixvl9TBate4+wO7B5zGroZfPYtKqTzWPzknqPvi2rGD0+b5ILYI3isklJ
-        zcksSy3St0vgyvi1uom1YKZ8xfTH3SwNjP/Fuxg5OSQETCTmfv/L3MXIxSEksJtRYsKWzYwQ
-        zidGiS/bnrNDON8YJR4/2cUK07L9wFc2iMReRonNW++zQDgtTBI/WqaBVbEJaEvcnb6FCcQW
-        EYiReLhnHlicWaBQ4kXLTXYQW1jATeLZxl9ANRwcLAKqEnt+J4GYvAI2Eiv60iF2yUus3nCA
-        GcTmFLCVuH+vC+wgCYF97BLPzsxlBamXEHCRuLakGqJeWOLV8S3sELaUxOd3e9kgSrIlenYZ
-        Q4RrJJbOO8YCYdtLHLgyhwWkhFlAU2L9Ln2IsKzE1FPrmCDu5ZPo/f2ECSLOK7FjHoytKtH8
-        7irUGGmJid3d0NDxkFg57xQ0dCYwSkxs/cw0gVFuFsKKBYyMqxglUwuKc9NTi00LDPNSy/WK
-        E3OLS/PS9ZLzczcxghOAlucOxrsPPugdYmTiYDzEKMHBrCTCq1t8IkGINyWxsiq1KD++qDQn
-        tfgQozQHi5I471L2QwlCAumJJanZqakFqUUwWSYOTqkGpuabVj7yub8N1/KGzv15NTJKWTD4
-        3E79fXuN9it+irLQWSS07NPNhU95PkW9Cz6wzLj66PxW9skrZl1VCPkiteP5Z3XXEuNVi62O
-        f01KX//s3ZT3nP80G25ePnL85rtmOxn+xy55bPtnWC0xV5c902XFtLXlgkraU/GzD5P3aJ4T
-        XtL8veaz5My6VR0qC4PP/SraeuFgk9dLQZl9TWHZG61tevM2PLFp2bPvPJuhiXqrYu/+w3mz
-        GY+ty7no/VBK+qbBqVXaL7eI3975i31+41njqnnRTG9kZ+o80lRbHnwkgtv4jDrHEpvIE+/8
-        c3Tun3EUuXmze/b8J58vlmi+rlpxMs53bfJmzTvmH5r/bJirxFKckWioxVxUnAgAVzzkbm8D
-        AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmluLIzCtJLcpLzFFi42LZdlhJXveX0ekEgwsTRSwezNvGZrHx7Q8m
-        i02Pr7FaXN41h81ixvl9TBate4+wO7B5zGroZfPYtKqTzWPzknqPvi2rGD0+b5ILYI3isklJ
-        zcksSy3St0vgyvi1uom1YKZ8xfTH3SwNjP/Fuxg5OSQETCS2H/jK1sXIxSEksJtR4kDjRjaI
-        hLTE9Y0T2CFsYYmV/56D2UICTUwSJ897g9hsAtoSd6dvYepi5OAQEYiTaF1fDWIyCxRLnP7F
-        BFIhLOAm8WzjL7AKFgFViT2/k0BMXgEbiRV96RCz5SVWbzjADGJzCthK3L/XxQ5SIgRUsnsB
-        zwRGvgWMDKsYJVMLinPTc4sNCwzzUsv1ihNzi0vz0vWS83M3MYLDS0tzB+P2VR/0DjEycTAe
-        YpTgYFYS4dUtPpEgxJuSWFmVWpQfX1Sak1p8iFGag0VJnPdC18l4IYH0xJLU7NTUgtQimCwT
-        B6dUA1OVsuyTtZNPFtrf+PIly+1N26oDPad96hp8vmpuM5+890y1uFbM4pPLFDS4RarM/qil
-        PLKwN1285p3ismWvNgdfeKhy5W1/gM8asRMbf9u9Vd3y/s/vuf26d2a6bMzsXJ9yOcqII/jO
-        ycV+X4tuX6jwUvyxPm1dcEzrARG1OasaUpv9A7Zuk3j4PHJxU7SbVPSFm695j/Ws3LdgXnye
-        2PKK1xdzMix3vdJetWDa5Tku3/a+tdZ1mc+5ZecSsWXe99oud3P6fppTs0e80ihf7kZC+Vp1
-        y7/qewXDa7YpTFFZUMqzwdl16uW21qINJn/bt++WuVTMMFHE49TO9pS05rhDLGc4L288sYP3
-        8l/WLQqqSizFGYmGWsxFxYkAzuVwap4CAAA=
-X-CMS-MailID: 20210617113314epcas5p4652e98d24d7f56a7c8461175bbb25456
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210617113314epcas5p4652e98d24d7f56a7c8461175bbb25456
-References: <20210617113739.66911-1-alim.akhtar@samsung.com>
-        <CGME20210617113314epcas5p4652e98d24d7f56a7c8461175bbb25456@epcas5p4.samsung.com>
+        Thu, 17 Jun 2021 07:40:44 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2A9C0617A6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:38:34 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d9so4370401qtp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mdk2K6YNuHKJ6sAQSHbbeZM3FdkcC1jUn1HPsXDQrYs=;
+        b=NATwsH0MXZ8ptooy1rdEXZ9P9/6iQo7OWrWaefdx8x3l0zx/JF1XMLHloh58tz7qfB
+         jcN6FX8BdnoDC5fR/973ZoDQKdjctdB0YqhIKFyG3fWdITs4BWdbdEmkGy3NaJ6iJYR+
+         3iJUtrAGKMDIeADBYulbStwssW/RhnKWucQY0Lr1LGLxsgRNXO5TpzbZytUlvp+0KWhz
+         wQZo1ioGePEuklWmSzvgh4tILW+BDb12x2BKBisA+zyeoHI/xUbdhM5kPAisCQ0wRbxy
+         TbQE7CjIfQ15pwBE2kgSjkK0OXmbE8SPdXQbatyILWmmtLt653mTNU1D3bSOJNrPWZJu
+         qz3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mdk2K6YNuHKJ6sAQSHbbeZM3FdkcC1jUn1HPsXDQrYs=;
+        b=omOCt5VOsDavNVb0H7zxUOzaA6wDqaEBevH0vOb6Iy8lHJ7gQOONRGqRgarCGMEztC
+         gYnuyaGcqqUOVokwHVZ2A7rOQgNjsqz2A8Wud1fR4sVeNH/E/dwJzvhmwpvmTjmwrIZt
+         Kmqag+fkZvpWtzUonbr833KRhvozzO6Ivx7TPtUMMjyM+0paYvEV8snD4LPnt/vpu/LY
+         +gHrWRZ8GxcOj+ivdQ9VQPkXNH2CTDRr7JeORNNOKJxxsd1C+Oj696F7yy7YJU8GGehU
+         PMrbYHWtP/KvZxBc79Teybo3dd1qUALxcDXKj1ZFkf7kEahuJi9wrqll0eiyaA28mmoC
+         muaA==
+X-Gm-Message-State: AOAM530Ft1GDPSNXQ7JK9wtT6iEkc130T1UFv5ODj8g/UZtehdf5to9z
+        3qlZYyXbnA+GeMFKvp7rwgWhAAlb1RumXvSzYX2Gtg==
+X-Google-Smtp-Source: ABdhPJxxHL8NMTqFW3cHSYDHh2fPjkrEnNFvrLFNsItjM2EAtS7aSKtfmcXBYvaZy5awOj13fDDhgAY6SR5a327Ksgs=
+X-Received: by 2002:ac8:5dce:: with SMTP id e14mr4504876qtx.43.1623929912762;
+ Thu, 17 Jun 2021 04:38:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210512181836.GA3445257@paulmck-ThinkPad-P17-Gen-1>
+ <CACT4Y+Z+7qPaanHNQc4nZ-mCfbqm8B0uiG7OtsgdB34ER-vDYA@mail.gmail.com>
+ <20210517164411.GH4441@paulmck-ThinkPad-P17-Gen-1> <CANpmjNPbXmm9jQcquyrNGv4M4+KW_DgcrXHsgDtH=tYQ6=RU4Q@mail.gmail.com>
+ <20210518204226.GR4441@paulmck-ThinkPad-P17-Gen-1> <CANpmjNN+nS1CAz=0vVdJLAr_N+zZxqp3nm5cxCCiP-SAx3uSyA@mail.gmail.com>
+ <20210519185305.GC4441@paulmck-ThinkPad-P17-Gen-1> <CANpmjNMskihABCyNo=cK5c0vbNBP=fcUO5-ZqBJCiO4XGM47DA@mail.gmail.com>
+ <CANpmjNMPvAucMQoZeLQAP_WiwiLT6XBoss=EZ4xAbrHnMwdt5g@mail.gmail.com>
+In-Reply-To: <CANpmjNMPvAucMQoZeLQAP_WiwiLT6XBoss=EZ4xAbrHnMwdt5g@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 17 Jun 2021 13:38:21 +0200
+Message-ID: <CACT4Y+YEVQQ7sGePt_k=byu91tXh=OB=vZ13PB3Q3=G91b4oog@mail.gmail.com>
+Subject: Re: Functional Coverage via RV? (was: "Learning-based Controlled
+ Concurrency Testing")
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, bristot@redhat.com,
+        syzkaller <syzkaller@googlegroups.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds cpu caches information to its dt
-nodes so that the same is available to userspace
-via sysfs.
-This SoC has 48/32 KB I/D cache for each A57 cores
-with 2MB L2 cache.
-And 32/32 KB I/D cache for each A53 cores with
-256KB L2 cache.
+On Thu, Jun 17, 2021 at 1:20 PM 'Marco Elver' via syzkaller
+<syzkaller@googlegroups.com> wrote:
+>
+> [+Daniel, just FYI. We had a discussion about "functional coverage"
+> and fuzzing, and I've just seen your wonderful work on RV. If you have
+> thought about fuzzing with RV and how coverage of the model impacts
+> test generation, I'd be curious to hear.]
+>
+> Looks like there is ongoing work on specifying models and running them
+> along with the kernel: https://lwn.net/Articles/857862/
+>
+> Those models that are run alongside the kernel would have their own
+> coverage, and since there's a mapping between real code and model, a
+> fuzzer trying to reach new code in one or the other will ultimately
+> improve coverage for both.
+>
+> Just wanted to document this here, because it seems quite relevant.
+> I'm guessing that "functional coverage" would indeed be a side-effect
+> of a good RV model?
 
-Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
----
- arch/arm64/boot/dts/exynos/exynos5433.dtsi | 70 ++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
+Ha! That's interesting. RV can indeed be a source of high-quality
+meaningful states.
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos5433.dtsi b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-index 18a912eee360..8183a59e9046 100644
---- a/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-@@ -62,6 +62,13 @@
- 			clock-names = "apolloclk";
- 			operating-points-v2 = <&cluster_a53_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0x8000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&apollo_l2>;
- 		};
- 
- 		cpu1: cpu@101 {
-@@ -72,6 +79,13 @@
- 			clock-frequency = <1300000000>;
- 			operating-points-v2 = <&cluster_a53_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0x8000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&apollo_l2>;
- 		};
- 
- 		cpu2: cpu@102 {
-@@ -82,6 +96,13 @@
- 			clock-frequency = <1300000000>;
- 			operating-points-v2 = <&cluster_a53_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0x8000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&apollo_l2>;
- 		};
- 
- 		cpu3: cpu@103 {
-@@ -92,6 +113,13 @@
- 			clock-frequency = <1300000000>;
- 			operating-points-v2 = <&cluster_a53_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0x8000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&apollo_l2>;
- 		};
- 
- 		cpu4: cpu@0 {
-@@ -104,6 +132,13 @@
- 			clock-names = "atlasclk";
- 			operating-points-v2 = <&cluster_a57_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0xc000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <256>;
-+			next-level-cache = <&atlas_l2>;
- 		};
- 
- 		cpu5: cpu@1 {
-@@ -114,6 +149,13 @@
- 			clock-frequency = <1900000000>;
- 			operating-points-v2 = <&cluster_a57_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0xc000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <256>;
-+			next-level-cache = <&atlas_l2>;
- 		};
- 
- 		cpu6: cpu@2 {
-@@ -124,6 +166,13 @@
- 			clock-frequency = <1900000000>;
- 			operating-points-v2 = <&cluster_a57_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0xc000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <256>;
-+			next-level-cache = <&atlas_l2>;
- 		};
- 
- 		cpu7: cpu@3 {
-@@ -134,6 +183,27 @@
- 			clock-frequency = <1900000000>;
- 			operating-points-v2 = <&cluster_a57_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0xc000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <256>;
-+			next-level-cache = <&atlas_l2>;
-+		};
-+
-+		atlas_l2: l2-cache0 {
-+			compatible = "cache";
-+			cache-size = <0x200000>;
-+			cache-line-size = <64>;
-+			cache-sets = <2048>;
-+		};
-+
-+		apollo_l2: l2-cache1 {
-+			compatible = "cache";
-+			cache-size = <0x40000>;
-+			cache-line-size = <64>;
-+			cache-sets = <256>;
- 		};
- 	};
- 
--- 
-2.17.1
+The idea behind states is to "multiply" code coverage by the dimension
+of states, right? Instead of checking "have we covered this code?", we
+will be checking "have we covered this code in this state or not?".
+This will require some way of figuring what code is affected by what
+model, right? Otherwise it still can lead to state explosion I think.
+E.g. if we have 5 models with 5 states each, it will increase the
+amount of effective coverage by 5^5.
 
+The preemption model in the example is "global" (per-task), but there
+are also per-object models. I remember we discussed sockets as an
+example on LPC. But I don't remember what was proposed API for tieing
+states to objects. Maybe that API will help with code regions as
+well?...
+
+
+> Previous discussion below.
+>
+> Thanks,
+> -- Marco
+>
+> On Wed, 19 May 2021 at 22:24, Marco Elver <elver@google.com> wrote:
+> > On Wed, 19 May 2021 at 20:53, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > On Wed, May 19, 2021 at 11:02:43AM +0200, Marco Elver wrote:
+> > > > On Tue, 18 May 2021 at 22:42, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > [...]
+> > > > > > All the above sound like "functional coverage" to me, and could be
+> > > > > > implemented on top of a well-thought-out functional coverage API.
+> > > > > > Functional coverage is common in the hardware verification space to
+> > > > > > drive simulation and model checking; for example, functional coverage
+> > > > > > could be "buffer is full" vs just structural (code) coverage which
+> > > > > > cannot capture complex state properties like that easily.
+> > > > > >
+> > > > > > Similarly, you could then say things like "number of held locks" or
+> > > > > > even alluding to your example (5) above, "observed race on address
+> > > > > > range". In the end, with decent functional coverage abstractions,
+> > > > > > anything should hopefully be possible.
+> > > > >
+> > > > > Those were in fact the lines along which I was thinking.
+> > > > >
+> > > > > > I've been wondering if this could be something useful for the Linux
+> > > > > > kernel, but my guess has always been that it'd not be too-well
+> > > > > > received because people don't like to see strange annotations in their
+> > > > > > code. But maybe I'm wrong.
+> > > > >
+> > > > > I agree that it is much easier to get people to use a tool that does not
+> > > > > require annotations.  In fact, it is best if it requires nothing at all
+> > > > > from them...
+> > > >
+> > > > While I'd like to see something like that, because it'd be beneficial
+> > > > to see properties of the code written down to document its behaviour
+> > > > better and at the same time machine checkable, like you say, if it
+> > > > requires additional effort, it's a difficult sell. (Although the same
+> > > > is true for all other efforts to improve reliability that require a
+> > > > departure from the "way it used to be done", be it data_race(), or
+> > > > even efforts introducing whole new programming languages to the
+> > > > kernel.)
+> > >
+> > > Fair point!  But what exactly did you have in mind?
+> >
+> > Good question, I'll try to be more concrete -- most of it are
+> > half-baked ideas and questions ;-), but if any of it makes sense, I
+> > should maybe write a doc to summarize.
+> >
+> > What I had in mind is a system to write properties for both functional
+> > coverage, but also checking more general properties of the kernel. The
+> > latter I'm not sure about how useful. But all this isn't really used
+> > for anything other than in debug builds.
+> >
+> > Assume we start with macros such as "ASSERT_COVER(...)" (for
+> > functional coverage) and "ASSERT(...)" (just plain-old assertions).
+> > The former is a way to document potentially interesting states (useful
+> > for fuzzers to reach them), and the latter just a way to just specify
+> > properties of the system (useful for finding the actual bugs).
+> > Implementation-wise the latter is trivial, the former requires some
+> > thought on how to expose that information to fuzzers and how to use
+> > (as Dmitry suggested it's not trivial). I'd also imagine we can have
+> > module-level variants ("GLOBAL_ASSERT*(...)") that monitor some global
+> > state, and also add support for some subset of temporal properties
+> > like "GLOBAL_ASSERT_EVENTUALLY(precond, eventually_holds)" as
+> > suggested below.
+> >
+> > I guess maybe I'd have to take a step back and just ask why we have no
+> > way to write plain and simple assertions that are removed in non-debug
+> > builds? Some subsystems seem to roll their own, which a 'git grep
+> > "#define ASSERT"' tells me.
+> >
+> > Is there a fundamental reason why we shouldn't have them, perhaps
+> > there was some past discussion? Today we have things like
+> > lockdep_assert_held(), but nothing to even write a simple assert
+> > otherwise. If I had to guess why something like ASSERT is bad, it is
+> > because it gives people a way to check for unexpected conditions, but
+> > if those checks disappear in non-debug builds, the kernel might be
+> > unstable. Therefore every possible state must be handled and we must
+> > always be able to recover. The argument in favor is, if the ASSERT()s
+> > are proven invariants or conditions where we'd recover either way, and
+> > are only there to catch accidental regressions during testing; and in
+> > non-debug builds we don't suffer the performance overheads.
+> ..
+> > > > > > My ideal abstractions I've been thinking of isn't just for coverage,
+> > > > > > but to also capture temporal properties (which should be inspired by
+> > > > > > something like LTL or such), on top of which you can also build
+> > > > > > coverage. Then we can specify things like "if I observe some state X,
+> > > > > > then eventually we observe state Y", and such logic can also just be
+> > > > > > used to define functional coverage of interest (again all this
+> > > > > > inspired by what's already done in hardware verification).
+> > > > >
+> > > > > Promela/spin provides an LTL interface, but of course cannot handle
+> > > > > much of RCU, let alone of the entire kernel.  And LTL can be quite
+> > > > > useful.  But in a runtime system, how do you decide when "eventually"
+> > > > > has arrived?  The lockdep system does so by tracking entry to idle
+> > > > > and to userspace execution, along with exit from interrupt handlers.
+> > > > > Or did you have something else in mind?
+> > > >
+> > > > For coverage, one could simply await the transition to the "eventually
+> > > > state" indefinitely; once reached we have coverage.
+> > > >
+> > > > But for verification, because unlike explicit state model checkers
+> > > > like Spin, we don't have the complete state and can't build an
+> > > > exhaustive state-graph, we'd have to approximate. And without knowing
+> > > > exactly what it is we're waiting for, the simplest option would be to
+> > > > just rely on a timeout, either part of the property or implicit. What
+> > > > the units of that timeout are I'm not sure, because a system might
+> > > > e.g. be put to sleep.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller/CANpmjNMPvAucMQoZeLQAP_WiwiLT6XBoss%3DEZ4xAbrHnMwdt5g%40mail.gmail.com.
