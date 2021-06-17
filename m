@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8255C3AA8DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 04:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6D33AA8DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 04:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbhFQCEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 22:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbhFQCEb (ORCPT
+        id S231297AbhFQCON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 22:14:13 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:12240 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230118AbhFQCOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 22:04:31 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B10C061574;
-        Wed, 16 Jun 2021 19:02:23 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id l12so4727349oig.2;
-        Wed, 16 Jun 2021 19:02:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cnqToFcjMI3Em0jBGFW7EOkssV0AHEWFs0bIeBQtX+Y=;
-        b=nIDqVwmF/82NP+wdUidq2Y3LedQXg9tkNYuzA0lswx8GKAxKiL8UgrGTDXE78dXmOD
-         V3AJkhcnYEWcRf+cVZ6On2aX8Saqcebqj02dLCIBi3r8uKqEEBbtyVIuI7Fxf3ZtNdtA
-         cLWQYbDAf9IXmLlRYGBKcyaX/fxnyja0CqSlZ7eHmGqfuxGb/ICJQgBiA2iycbVb8h9e
-         GE59O6ZLDukW2Wz0lyEHVdJqxAEywjFgnGtIiHOOdkvvvonuwayc++Q3H/Mx2OiMp2Cq
-         EcEC4li0gnUYWVRzeQjkXAd+eSRL/YMxFN1JpEn2mHUcpfFYvDJc0LCtFLzLD122TH2Q
-         CiDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=cnqToFcjMI3Em0jBGFW7EOkssV0AHEWFs0bIeBQtX+Y=;
-        b=pAKrAtIHXfzmk3zhZV4S2o94eyuyshk3YVPpgAg+gAKlGDj2+YsrZsdE03W8j1zEzE
-         4QchdQqf83yRu1FJZuCuQxS9SjTMUg22j7/XnRn4mQhZwb7vnPOlCTcSl1NlQmV6VOti
-         jwnaMoCsoTRmepo0lmUm+WNtEqMMCiOSlXbjU9gtb/TOh6zTsUqdEsC6EirjDmwKaJma
-         Q2PYrDW0PsATYDLR7bEmipIgN/e5yp0UMPNz6MFo/bMJhYBrTxJk4b2M8oT81gItOfZT
-         LOgi7x+EhlmZzUfW6ajbWW5NgqVBhMaD2tLE+LFi4BJqZRNbZGvnCe5AqC/eSEaWvpGT
-         0XNA==
-X-Gm-Message-State: AOAM532e+UHVHyjz5KymuGpRaKpgzA3yqjuFVDZfhWu0Q+cHeR+QkE8S
-        Sa2QTgSqecLhfRikCQEc5lo7fkGl41c=
-X-Google-Smtp-Source: ABdhPJzdf4aZRnTcU5iQe6hIURz+vS46Un4iiQSpzzx2b5P8HT8/1/+b2aBzSX+8+ZrwuBlEET3aHA==
-X-Received: by 2002:a05:6808:1522:: with SMTP id u34mr1589473oiw.100.1623895343115;
-        Wed, 16 Jun 2021 19:02:23 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 79sm960465otc.34.2021.06.16.19.02.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 19:02:22 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 16 Jun 2021 19:02:21 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     linux-kernel@vger.kernel.org, wim@linux-watchdog.org,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH 2/2] watchdog: iTCO_wdt: use dev_err() instead of pr_err()
-Message-ID: <20210617020221.GB3214397@roeck-us.net>
-References: <20210616181708.19530-1-info@metux.net>
- <20210616181708.19530-2-info@metux.net>
+        Wed, 16 Jun 2021 22:14:11 -0400
+X-UUID: 1289382f5bf141bcbd2e6a6c0a42fefa-20210617
+X-UUID: 1289382f5bf141bcbd2e6a6c0a42fefa-20210617
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 843784421; Thu, 17 Jun 2021 10:11:59 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 17 Jun 2021 10:11:54 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 17 Jun 2021 10:11:53 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Mathias Nyman <mathias.nyman@intel.com>
+CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Ikjoon Jang <ikjn@chromium.org>,
+        Tianping Fang <tianping.fang@mediatek.com>
+Subject: [PATCH] usb: xhci-mtk: allow multiple Start-Split in a microframe
+Date:   Thu, 17 Jun 2021 10:11:51 +0800
+Message-ID: <1623895911-29259-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616181708.19530-2-info@metux.net>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: D9DC66C5FC1492E721221298018CCB4E230063AF50C8F5FE0A995F5FD8CDB16D2000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 08:17:08PM +0200, Enrico Weigelt, metux IT consult wrote:
-> Use dev_err() instead of pr_err(), so device name is also shown in the log.
-> 
-> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+This patch is used to relax bandwidth schedule by allowing multiple
+Start-Split in the same microframe.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+ drivers/usb/host/xhci-mtk-sch.c | 16 ----------------
+ drivers/usb/host/xhci-mtk.h     |  2 --
+ 2 files changed, 18 deletions(-)
 
-> ---
->  drivers/watchdog/iTCO_wdt.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
-> index 6ba2b2f60737..35ff8d3fd9fc 100644
-> --- a/drivers/watchdog/iTCO_wdt.c
-> +++ b/drivers/watchdog/iTCO_wdt.c
-> @@ -479,13 +479,13 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
->  		if (!devm_request_region(dev, p->smi_res->start,
->  					 resource_size(p->smi_res),
->  					 pdev->name)) {
-> -			pr_err("I/O address 0x%04llx already in use, device disabled\n",
-> +			dev_err(dev, "I/O address 0x%04llx already in use, device disabled\n",
->  			       (u64)SMI_EN(p));
->  			return -EBUSY;
->  		}
->  	} else if (iTCO_vendorsupport ||
->  		   turn_SMI_watchdog_clear_off >= p->iTCO_version) {
-> -		pr_err("SMI I/O resource is missing\n");
-> +		dev_err(dev, "SMI I/O resource is missing\n");
->  		return -ENODEV;
->  	}
->  
-> -- 
-> 2.20.1
-> 
+diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
+index c07411d9b16f..149a0f4a6ec4 100644
+--- a/drivers/usb/host/xhci-mtk-sch.c
++++ b/drivers/usb/host/xhci-mtk-sch.c
+@@ -470,11 +470,9 @@ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
+ 
+ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
+ {
+-	struct mu3h_sch_tt *tt = sch_ep->sch_tt;
+ 	u32 extra_cs_count;
+ 	u32 start_ss, last_ss;
+ 	u32 start_cs, last_cs;
+-	int i;
+ 
+ 	if (!sch_ep->sch_tt)
+ 		return 0;
+@@ -491,10 +489,6 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
+ 		if (!(start_ss == 7 || last_ss < 6))
+ 			return -ESCH_SS_Y6;
+ 
+-		for (i = 0; i < sch_ep->cs_count; i++)
+-			if (test_bit(offset + i, tt->ss_bit_map))
+-				return -ESCH_SS_OVERLAP;
+-
+ 	} else {
+ 		u32 cs_count = DIV_ROUND_UP(sch_ep->maxpkt, FS_PAYLOAD_MAX);
+ 
+@@ -521,9 +515,6 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
+ 		if (cs_count > 7)
+ 			cs_count = 7; /* HW limit */
+ 
+-		if (test_bit(offset, tt->ss_bit_map))
+-			return -ESCH_SS_OVERLAP;
+-
+ 		sch_ep->cs_count = cs_count;
+ 		/* one for ss, the other for idle */
+ 		sch_ep->num_budget_microframes = cs_count + 2;
+@@ -558,13 +549,6 @@ static void update_sch_tt(struct mu3h_sch_ep_info *sch_ep, bool used)
+ 	for (i = 0; i < num_esit; i++) {
+ 		base = sch_ep->offset + i * sch_ep->esit;
+ 
+-		for (j = 0; j < bits; j++) {
+-			if (used)
+-				set_bit(base + j, tt->ss_bit_map);
+-			else
+-				clear_bit(base + j, tt->ss_bit_map);
+-		}
+-
+ 		for (j = 0; j < sch_ep->cs_count; j++)
+ 			tt->fs_bus_bw[base + j] += bw_updated;
+ 	}
+diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
+index cd3a37bb73e6..390cb5a86082 100644
+--- a/drivers/usb/host/xhci-mtk.h
++++ b/drivers/usb/host/xhci-mtk.h
+@@ -24,12 +24,10 @@
+ #define XHCI_MTK_MAX_ESIT	64
+ 
+ /**
+- * @ss_bit_map: used to avoid start split microframes overlay
+  * @fs_bus_bw: array to keep track of bandwidth already used for FS
+  * @ep_list: Endpoints using this TT
+  */
+ struct mu3h_sch_tt {
+-	DECLARE_BITMAP(ss_bit_map, XHCI_MTK_MAX_ESIT);
+ 	u32 fs_bus_bw[XHCI_MTK_MAX_ESIT];
+ 	struct list_head ep_list;
+ };
+-- 
+2.18.0
+
