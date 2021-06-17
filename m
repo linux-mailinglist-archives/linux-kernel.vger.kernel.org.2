@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9A43ABF0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BC23ABF0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbhFQWlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 18:41:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33600 "EHLO mail.kernel.org"
+        id S232735AbhFQWlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 18:41:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232180AbhFQWkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 18:40:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C33C4613E9;
-        Thu, 17 Jun 2021 22:38:41 +0000 (UTC)
+        id S232716AbhFQWkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 18:40:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3328613F0;
+        Thu, 17 Jun 2021 22:38:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623969522;
-        bh=a4dBuG/a3oG0tKglZCN4sWMO5PsJEFISDC1+iX1wPnM=;
+        s=k20201202; t=1623969527;
+        bh=vsL7NMNbpUi0a0GtGlHv6l88o9ybIXECaQOQai63XvA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jVUkazckL1w0mnpYELOxRgUkzfRnsu3k+0QV6mcbAUT7r4eObwunpcwF864fEc2DU
-         khUBWFrN+hmmjAiqxAyduFimmGxJCa45lUREO4Q2pi6I23OUCXA9JD9lWVucAhdkDX
-         xJ+qhfWKqJDMHsPmOm6dQBiCYx4JqQbuvIjygf7qtHS0d1R1Obia+3d6hSSpXM8d7N
-         ca88AbCkcofYBUF/HRv+j658aT/BcDCKu8vtY5rzyjGSG0PHaPf4mTe/3y0fVuxWZ4
-         yO76btAc/t6MWeOzIBSlfiF9xQ50DyH/ZxiX/KB+NBYMC6Wjuauaw8R1uYbF+zwmRP
-         xQIOhJYfJ+kOQ==
+        b=iuWiiTWUYp95/L4KxWLLzIh9hYgcMAC+eHFr1LtnLfL1bTVgN4PKpLnbRo1qr3t5C
+         gRWMjcqJ5BnICIKR/d7mSzdn9CWpXtr4yDqe4fSOEgOP0wkDRUZyYNJeG7WcgExHZJ
+         LTDg9NbBthg6PegLX3foYdQ4WA8+pSv7xyBljQZoEbY3pe31QVeTBYo9rhuKybkX3U
+         y466X79gR3I+Vr2UYRZQJlU0T9KaNOLJxYmSvvLAeBkpei9AcshfvZFtk4rxOoOXYK
+         /gR4mMQW0JBDxExGBw0AIBZWYNSbLHnx4ioPfn4u/46YTni6O2JuZAeGJ+U5AfkFJG
+         Dj9IntYjqNW3Q==
 From:   Will Deacon <will@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
+To:     Tuan Phan <tuanphan@os.amperecomputing.com>
 Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] arm64: KVM: Bump debugging information print down to KERN_DEBUG
-Date:   Thu, 17 Jun 2021 23:38:34 +0100
-Message-Id: <162396615830.1467937.16143448603491809431.b4-ty@kernel.org>
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH] perf/arm-cmn: Fix invalid pointer when access dtc object sharing the same IRQ number
+Date:   Thu, 17 Jun 2021 23:38:36 +0100
+Message-Id: <162395550334.941145.17283094312971235409.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210617073059.315542-1-lee.jones@linaro.org>
-References: <20210617073059.315542-1-lee.jones@linaro.org>
+In-Reply-To: <1623946129-3290-1-git-send-email-tuanphan@os.amperecomputing.com>
+References: <1623946129-3290-1-git-send-email-tuanphan@os.amperecomputing.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,17 +43,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 08:30:59 +0100, Lee Jones wrote:
-> This sort of information is only generally useful when debugging.
+On Thu, 17 Jun 2021 09:08:49 -0700, Tuan Phan wrote:
+> When multiple dtcs share the same IRQ number, the irq_friend which
+> used to refer to dtc object gets calculated incorrect which leads
+> to invalid pointer.
 > 
-> No need to have these sprinkled through the kernel log otherwise.
+> Fixes: 0ba64770a2f2 ("perf: Add Arm CMN-600 PMU driver")
 
-Not sure why this has "KVM" in the subject, so I replaced it with "smp".
+Applied to will (for-next/perf), thanks!
 
-Applied to arm64 (for-next/misc), thanks!
-
-[1/1] arm64: smp: Bump debugging information print down to KERN_DEBUG
-      https://git.kernel.org/arm64/c/cf814bcfa1e6
+[1/1] perf/arm-cmn: Fix invalid pointer when access dtc object sharing the same IRQ number
+      https://git.kernel.org/will/c/4e16f283edc2
 
 Cheers,
 -- 
