@@ -2,90 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33653ABA30
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153953ABA32
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbhFQRF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:05:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:56756 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230411AbhFQRFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:05:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A7CC13D5;
-        Thu, 17 Jun 2021 10:03:14 -0700 (PDT)
-Received: from [192.168.0.14] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A2223F694;
-        Thu, 17 Jun 2021 10:03:12 -0700 (PDT)
-Subject: Re: [PATCH v4 18/24] x86/resctrl: Make ctrlval arrays the same size
-To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        lcherian@marvell.com
-References: <20210614200941.12383-1-james.morse@arm.com>
- <20210614200941.12383-19-james.morse@arm.com>
- <bfb7310d-7a38-e0b9-b63b-d12ec453ac85@intel.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <46b42971-724c-c585-efec-c824838d7434@arm.com>
-Date:   Thu, 17 Jun 2021 18:03:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231503AbhFQRFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231479AbhFQRFm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 13:05:42 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7720FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:03:33 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id m18so7585671wrv.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:03:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P2OqZXWKAR/Nh7o7FiibEBbsTU6CctnyyZIJIra5gAA=;
+        b=cvvPQLBdUOqIj79dOux/F+t0GCmXHos+aHXHdeFtZfyHfVVSDKe0AQRWNWG+vf36Jh
+         RDiiIh+3j5dSM1eHga3sJwJzGxkOKtWFyTRGn/12TvTMX2xLbt3K+Cj5zIkgkZI+EcYR
+         xX8+gfGE5Z7meEKVw+rj5pUK7yYB5jb0ZSgsI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=P2OqZXWKAR/Nh7o7FiibEBbsTU6CctnyyZIJIra5gAA=;
+        b=B049sSDWyvkK/FzERgYXq2tqpNEJgUGrSpNg48F5581RcdZ7q5SqSDas4kv2wA/AG5
+         TkTYSkXSMvODVEfp8CQI6zxLBHFNf/UBNtt7krLfd/leZmIrcoadJddp4hLNSQ3Xu9OI
+         USAmtXCLvBcy7lAv8pqvfZ2YZxGHDA3FAQira6Wu7LMiKkW07bo/BgMQ2wtfDVlZsfnE
+         i2kHyIk84ldmsjAW7yzmHPDKpQFJ34tWh9ZloRSqnCXfGs759wadJAru2ZS70ZAnrNbe
+         KnYamR+KSBBGzkToswiM+cyb+9s+PNMFeZBQUMzofvSwFeF0kELEROCNqE06M2kEedlE
+         pW4w==
+X-Gm-Message-State: AOAM53077UspNkdhCu+g6BXsAZThNMhfhWThGaPft7qLWd++zhTK2Da9
+        y/k3TDLWpdSBuOc1+Wz9zPBrPzYs9sS5aw==
+X-Google-Smtp-Source: ABdhPJwTwjrqCv16JL9cAsH58inHK2BluIVvwN7+zmPuBW9wkMsE6yrgGS+C7hKAYSLGaPPb+7o4nA==
+X-Received: by 2002:adf:ea49:: with SMTP id j9mr7082442wrn.366.1623949412107;
+        Thu, 17 Jun 2021 10:03:32 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t9sm5414660wmq.14.2021.06.17.10.03.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 10:03:31 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 19:03:29 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        emil.l.velikov@gmail.com, Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: [PATCH v2 1/2] drm: Add a locked version of drm_is_current_master
+Message-ID: <YMuAYaZF+qW7GUFT@phenom.ffwll.local>
+Mail-Followup-To: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        emil.l.velikov@gmail.com
+References: <20210615023645.6535-1-desmondcheongzx@gmail.com>
+ <20210615023645.6535-2-desmondcheongzx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <bfb7310d-7a38-e0b9-b63b-d12ec453ac85@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615023645.6535-2-desmondcheongzx@gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
-
-On 15/06/2021 19:09, Reinette Chatre wrote:
-> On 6/14/2021 1:09 PM, James Morse wrote:
->> The CODE and DATA resources report a num_closid that is half the
->> actual size supported by the hardware. This behaviour is visible
->> to user-space when CDP is enabled.
->> The CODE and DATA resources have their own ctrlval arrays which are half
->> the size of the underlying hardware because num_closid was already
->> adjusted. One holds the odd configurations values, the other even.
->>
->> Before the CDP resources can be merged, the 'half the closids'
->> behaviour needs to be implemented by schemata_list_create(), but
->> this causes the ctrl_val[] array to be full sized.
->>
->> Remove the logic from the architecture specific rdt_get_cdp_config()
->> setup, and add it to schemata_list_create(). Functions that
->> walk take num_closid directly from struct rdt_hw_resource also
+On Tue, Jun 15, 2021 at 10:36:44AM +0800, Desmond Cheong Zhi Xi wrote:
+> While checking the master status of the DRM file in
+> drm_is_current_master(), the device's master mutex should be
+> held. Without the mutex, the pointer fpriv->master may be freed
+> concurrently by another process calling drm_setmaster_ioctl(). This
+> could lead to use-after-free errors when the pointer is subsequently
+> dereferenced in drm_lease_owner().
 > 
-> This is unclear to me ... "Functions that walk ..." seems like it is missing to describe
-> what they are walking.
-
-Yup, I'm missing at least a word here! Fixed as:
-| functions that walk all the configurations, such as domain_setup_ctrlval() and
-| reset_all_ctrls() , take the num_closids directly from...
-
-
->> have to halve num_closid as only the lower half of each array is
->> in use. domain_setup_ctrlval() and reset_all_ctrls() both copy
->> struct rdt_hw_resource's num_closid to a struct msr_param. Correct
->> the value here. This is temporary as a subsequent patch will merge
->> the all three ctrl_val[] arrays such that when CDP is in use, the
+> The callers of drm_is_current_master() from drm_auth.c hold the
+> device's master mutex, but external callers do not. Hence, we implement
+> drm_is_current_master_locked() to be used within drm_auth.c, and
+> modify drm_is_current_master() to grab the device's master mutex
+> before checking the master status.
 > 
-> the all three -> all three ?
+> Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
+> ---
+>  drivers/gpu/drm/drm_auth.c | 23 +++++++++++++++++++----
+>  1 file changed, 19 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
+> index 232abbba3686..c6bf52c310a9 100644
+> --- a/drivers/gpu/drm/drm_auth.c
+> +++ b/drivers/gpu/drm/drm_auth.c
+> @@ -61,6 +61,8 @@
+>   * trusted clients.
+>   */
+>  
+> +static bool drm_is_current_master_locked(struct drm_file *fpriv);
 
-Yes. Thanks!
+A bit a bikeshed, but we try to avoid forward declarations when they're
+not needed. If you don't want to tear apart drm_is_current_master and the
+_locked version then just move them together.
 
-(I've never managed to spot things like this in text I wrote)
+Can you pls do that and respin?
+
+Otherwise looks all great.
+-Daniel
 
 
-Thanks,
+> +
+>  int drm_getmagic(struct drm_device *dev, void *data, struct drm_file *file_priv)
+>  {
+>  	struct drm_auth *auth = data;
+> @@ -223,7 +225,7 @@ int drm_setmaster_ioctl(struct drm_device *dev, void *data,
+>  	if (ret)
+>  		goto out_unlock;
+>  
+> -	if (drm_is_current_master(file_priv))
+> +	if (drm_is_current_master_locked(file_priv))
+>  		goto out_unlock;
+>  
+>  	if (dev->master) {
+> @@ -272,7 +274,7 @@ int drm_dropmaster_ioctl(struct drm_device *dev, void *data,
+>  	if (ret)
+>  		goto out_unlock;
+>  
+> -	if (!drm_is_current_master(file_priv)) {
+> +	if (!drm_is_current_master_locked(file_priv)) {
+>  		ret = -EINVAL;
+>  		goto out_unlock;
+>  	}
+> @@ -321,7 +323,7 @@ void drm_master_release(struct drm_file *file_priv)
+>  	if (file_priv->magic)
+>  		idr_remove(&file_priv->master->magic_map, file_priv->magic);
+>  
+> -	if (!drm_is_current_master(file_priv))
+> +	if (!drm_is_current_master_locked(file_priv))
+>  		goto out;
+>  
+>  	drm_legacy_lock_master_cleanup(dev, master);
+> @@ -342,6 +344,13 @@ void drm_master_release(struct drm_file *file_priv)
+>  	mutex_unlock(&dev->master_mutex);
+>  }
+>  
+> +static bool drm_is_current_master_locked(struct drm_file *fpriv)
+> +{
+> +	lockdep_assert_held_once(&fpriv->master->dev->master_mutex);
+> +
+> +	return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
+> +}
+> +
+>  /**
+>   * drm_is_current_master - checks whether @priv is the current master
+>   * @fpriv: DRM file private
+> @@ -354,7 +363,13 @@ void drm_master_release(struct drm_file *file_priv)
+>   */
+>  bool drm_is_current_master(struct drm_file *fpriv)
+>  {
+> -	return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
+> +	bool ret;
+> +
+> +	mutex_lock(&fpriv->master->dev->master_mutex);
+> +	ret = drm_is_current_master_locked(fpriv);
+> +	mutex_unlock(&fpriv->master->dev->master_mutex);
+> +
+> +	return ret;
+>  }
+>  EXPORT_SYMBOL(drm_is_current_master);
+>  
+> -- 
+> 2.25.1
+> 
 
-James
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
