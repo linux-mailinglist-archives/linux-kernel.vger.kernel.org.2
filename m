@@ -2,219 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954953AB2C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828DC3AB2C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhFQLkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
+        id S232488AbhFQLkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFQLko (ORCPT
+        with ESMTP id S229584AbhFQLke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:40:44 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2A9C0617A6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:38:34 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d9so4370401qtp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mdk2K6YNuHKJ6sAQSHbbeZM3FdkcC1jUn1HPsXDQrYs=;
-        b=NATwsH0MXZ8ptooy1rdEXZ9P9/6iQo7OWrWaefdx8x3l0zx/JF1XMLHloh58tz7qfB
-         jcN6FX8BdnoDC5fR/973ZoDQKdjctdB0YqhIKFyG3fWdITs4BWdbdEmkGy3NaJ6iJYR+
-         3iJUtrAGKMDIeADBYulbStwssW/RhnKWucQY0Lr1LGLxsgRNXO5TpzbZytUlvp+0KWhz
-         wQZo1ioGePEuklWmSzvgh4tILW+BDb12x2BKBisA+zyeoHI/xUbdhM5kPAisCQ0wRbxy
-         TbQE7CjIfQ15pwBE2kgSjkK0OXmbE8SPdXQbatyILWmmtLt653mTNU1D3bSOJNrPWZJu
-         qz3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mdk2K6YNuHKJ6sAQSHbbeZM3FdkcC1jUn1HPsXDQrYs=;
-        b=omOCt5VOsDavNVb0H7zxUOzaA6wDqaEBevH0vOb6Iy8lHJ7gQOONRGqRgarCGMEztC
-         gYnuyaGcqqUOVokwHVZ2A7rOQgNjsqz2A8Wud1fR4sVeNH/E/dwJzvhmwpvmTjmwrIZt
-         Kmqag+fkZvpWtzUonbr833KRhvozzO6Ivx7TPtUMMjyM+0paYvEV8snD4LPnt/vpu/LY
-         +gHrWRZ8GxcOj+ivdQ9VQPkXNH2CTDRr7JeORNNOKJxxsd1C+Oj696F7yy7YJU8GGehU
-         PMrbYHWtP/KvZxBc79Teybo3dd1qUALxcDXKj1ZFkf7kEahuJi9wrqll0eiyaA28mmoC
-         muaA==
-X-Gm-Message-State: AOAM530Ft1GDPSNXQ7JK9wtT6iEkc130T1UFv5ODj8g/UZtehdf5to9z
-        3qlZYyXbnA+GeMFKvp7rwgWhAAlb1RumXvSzYX2Gtg==
-X-Google-Smtp-Source: ABdhPJxxHL8NMTqFW3cHSYDHh2fPjkrEnNFvrLFNsItjM2EAtS7aSKtfmcXBYvaZy5awOj13fDDhgAY6SR5a327Ksgs=
-X-Received: by 2002:ac8:5dce:: with SMTP id e14mr4504876qtx.43.1623929912762;
- Thu, 17 Jun 2021 04:38:32 -0700 (PDT)
+        Thu, 17 Jun 2021 07:40:34 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9FEC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:38:27 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1ltqLo-0004eZ-TD; Thu, 17 Jun 2021 13:38:25 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:653d:6f2f:e25e:5f2e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 85A0163E04B;
+        Thu, 17 Jun 2021 11:38:23 +0000 (UTC)
+Date:   Thu, 17 Jun 2021 13:38:22 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v2 2/2] can: netlink: add interface for CAN-FD
+ Transmitter Delay Compensation (TDC)
+Message-ID: <20210617113822.gdpesbumwnoixjqs@pengutronix.de>
+References: <20210603151550.140727-1-mailhol.vincent@wanadoo.fr>
+ <20210603151550.140727-3-mailhol.vincent@wanadoo.fr>
+ <20210616094633.fwg6rsyxyvm2zc6d@pengutronix.de>
+ <CAMZ6RqLj59+3PrQwTCfK_bVebRBHE=HqCfRb31MU9pRDBPxG8w@mail.gmail.com>
+ <20210616142940.wxllr3c55rk66rij@pengutronix.de>
+ <CAMZ6RqJWeexWTGVkEJWMvBs1f=HQOc4zjd-PqPsxKnCr_XDFZQ@mail.gmail.com>
+ <20210616144640.l4hjc6mc3ndw25hj@pengutronix.de>
+ <CAMZ6RqLZAO3UX=B8yVUse=4DAVG_zGPrdoYpd-7Cp_To58CChw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210512181836.GA3445257@paulmck-ThinkPad-P17-Gen-1>
- <CACT4Y+Z+7qPaanHNQc4nZ-mCfbqm8B0uiG7OtsgdB34ER-vDYA@mail.gmail.com>
- <20210517164411.GH4441@paulmck-ThinkPad-P17-Gen-1> <CANpmjNPbXmm9jQcquyrNGv4M4+KW_DgcrXHsgDtH=tYQ6=RU4Q@mail.gmail.com>
- <20210518204226.GR4441@paulmck-ThinkPad-P17-Gen-1> <CANpmjNN+nS1CAz=0vVdJLAr_N+zZxqp3nm5cxCCiP-SAx3uSyA@mail.gmail.com>
- <20210519185305.GC4441@paulmck-ThinkPad-P17-Gen-1> <CANpmjNMskihABCyNo=cK5c0vbNBP=fcUO5-ZqBJCiO4XGM47DA@mail.gmail.com>
- <CANpmjNMPvAucMQoZeLQAP_WiwiLT6XBoss=EZ4xAbrHnMwdt5g@mail.gmail.com>
-In-Reply-To: <CANpmjNMPvAucMQoZeLQAP_WiwiLT6XBoss=EZ4xAbrHnMwdt5g@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 17 Jun 2021 13:38:21 +0200
-Message-ID: <CACT4Y+YEVQQ7sGePt_k=byu91tXh=OB=vZ13PB3Q3=G91b4oog@mail.gmail.com>
-Subject: Re: Functional Coverage via RV? (was: "Learning-based Controlled
- Concurrency Testing")
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, bristot@redhat.com,
-        syzkaller <syzkaller@googlegroups.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wmbiwwgij6c7c54c"
+Content-Disposition: inline
+In-Reply-To: <CAMZ6RqLZAO3UX=B8yVUse=4DAVG_zGPrdoYpd-7Cp_To58CChw@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 1:20 PM 'Marco Elver' via syzkaller
-<syzkaller@googlegroups.com> wrote:
->
-> [+Daniel, just FYI. We had a discussion about "functional coverage"
-> and fuzzing, and I've just seen your wonderful work on RV. If you have
-> thought about fuzzing with RV and how coverage of the model impacts
-> test generation, I'd be curious to hear.]
->
-> Looks like there is ongoing work on specifying models and running them
-> along with the kernel: https://lwn.net/Articles/857862/
->
-> Those models that are run alongside the kernel would have their own
-> coverage, and since there's a mapping between real code and model, a
-> fuzzer trying to reach new code in one or the other will ultimately
-> improve coverage for both.
->
-> Just wanted to document this here, because it seems quite relevant.
-> I'm guessing that "functional coverage" would indeed be a side-effect
-> of a good RV model?
 
-Ha! That's interesting. RV can indeed be a source of high-quality
-meaningful states.
+--wmbiwwgij6c7c54c
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The idea behind states is to "multiply" code coverage by the dimension
-of states, right? Instead of checking "have we covered this code?", we
-will be checking "have we covered this code in this state or not?".
-This will require some way of figuring what code is affected by what
-model, right? Otherwise it still can lead to state explosion I think.
-E.g. if we have 5 models with 5 states each, it will increase the
-amount of effective coverage by 5^5.
+On 17.06.2021 00:44:12, Vincent MAILHOL wrote:
+> > > Did you try to compile?
+> >
+> > Not before sending that mail :)
+> >
+> > > I am not sure if bittiming.h is able to see struct can_priv which is
+> > > defined in dev.h.
+> >
+> > Nope it doesn't, I moved the can_tdc_is_enabled() to
+> > include/linux/can/dev.h
+>=20
+> Ack. It seems to be the only solution=E2=80=A6
+>=20
+> Moving forward, I will do one more round of tests and send the
+> patch for iproute2-next (warning, the RFC I sent last month has
+> some issues, if you wish to test it on your side, please wait).
+>=20
+> I will also apply can_tdc_is_enabled() to the etas_es58x driver.
+>=20
+> Could you push the recent changes on the testing branch of linux-can-next=
+? It
+> would be really helpful for me!
 
-The preemption model in the example is "global" (per-task), but there
-are also per-object models. I remember we discussed sockets as an
-example on LPC. But I don't remember what was proposed API for tieing
-states to objects. Maybe that API will help with code regions as
-well?...
+done
 
+Marc.
 
-> Previous discussion below.
->
-> Thanks,
-> -- Marco
->
-> On Wed, 19 May 2021 at 22:24, Marco Elver <elver@google.com> wrote:
-> > On Wed, 19 May 2021 at 20:53, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > On Wed, May 19, 2021 at 11:02:43AM +0200, Marco Elver wrote:
-> > > > On Tue, 18 May 2021 at 22:42, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > [...]
-> > > > > > All the above sound like "functional coverage" to me, and could be
-> > > > > > implemented on top of a well-thought-out functional coverage API.
-> > > > > > Functional coverage is common in the hardware verification space to
-> > > > > > drive simulation and model checking; for example, functional coverage
-> > > > > > could be "buffer is full" vs just structural (code) coverage which
-> > > > > > cannot capture complex state properties like that easily.
-> > > > > >
-> > > > > > Similarly, you could then say things like "number of held locks" or
-> > > > > > even alluding to your example (5) above, "observed race on address
-> > > > > > range". In the end, with decent functional coverage abstractions,
-> > > > > > anything should hopefully be possible.
-> > > > >
-> > > > > Those were in fact the lines along which I was thinking.
-> > > > >
-> > > > > > I've been wondering if this could be something useful for the Linux
-> > > > > > kernel, but my guess has always been that it'd not be too-well
-> > > > > > received because people don't like to see strange annotations in their
-> > > > > > code. But maybe I'm wrong.
-> > > > >
-> > > > > I agree that it is much easier to get people to use a tool that does not
-> > > > > require annotations.  In fact, it is best if it requires nothing at all
-> > > > > from them...
-> > > >
-> > > > While I'd like to see something like that, because it'd be beneficial
-> > > > to see properties of the code written down to document its behaviour
-> > > > better and at the same time machine checkable, like you say, if it
-> > > > requires additional effort, it's a difficult sell. (Although the same
-> > > > is true for all other efforts to improve reliability that require a
-> > > > departure from the "way it used to be done", be it data_race(), or
-> > > > even efforts introducing whole new programming languages to the
-> > > > kernel.)
-> > >
-> > > Fair point!  But what exactly did you have in mind?
-> >
-> > Good question, I'll try to be more concrete -- most of it are
-> > half-baked ideas and questions ;-), but if any of it makes sense, I
-> > should maybe write a doc to summarize.
-> >
-> > What I had in mind is a system to write properties for both functional
-> > coverage, but also checking more general properties of the kernel. The
-> > latter I'm not sure about how useful. But all this isn't really used
-> > for anything other than in debug builds.
-> >
-> > Assume we start with macros such as "ASSERT_COVER(...)" (for
-> > functional coverage) and "ASSERT(...)" (just plain-old assertions).
-> > The former is a way to document potentially interesting states (useful
-> > for fuzzers to reach them), and the latter just a way to just specify
-> > properties of the system (useful for finding the actual bugs).
-> > Implementation-wise the latter is trivial, the former requires some
-> > thought on how to expose that information to fuzzers and how to use
-> > (as Dmitry suggested it's not trivial). I'd also imagine we can have
-> > module-level variants ("GLOBAL_ASSERT*(...)") that monitor some global
-> > state, and also add support for some subset of temporal properties
-> > like "GLOBAL_ASSERT_EVENTUALLY(precond, eventually_holds)" as
-> > suggested below.
-> >
-> > I guess maybe I'd have to take a step back and just ask why we have no
-> > way to write plain and simple assertions that are removed in non-debug
-> > builds? Some subsystems seem to roll their own, which a 'git grep
-> > "#define ASSERT"' tells me.
-> >
-> > Is there a fundamental reason why we shouldn't have them, perhaps
-> > there was some past discussion? Today we have things like
-> > lockdep_assert_held(), but nothing to even write a simple assert
-> > otherwise. If I had to guess why something like ASSERT is bad, it is
-> > because it gives people a way to check for unexpected conditions, but
-> > if those checks disappear in non-debug builds, the kernel might be
-> > unstable. Therefore every possible state must be handled and we must
-> > always be able to recover. The argument in favor is, if the ASSERT()s
-> > are proven invariants or conditions where we'd recover either way, and
-> > are only there to catch accidental regressions during testing; and in
-> > non-debug builds we don't suffer the performance overheads.
-> ..
-> > > > > > My ideal abstractions I've been thinking of isn't just for coverage,
-> > > > > > but to also capture temporal properties (which should be inspired by
-> > > > > > something like LTL or such), on top of which you can also build
-> > > > > > coverage. Then we can specify things like "if I observe some state X,
-> > > > > > then eventually we observe state Y", and such logic can also just be
-> > > > > > used to define functional coverage of interest (again all this
-> > > > > > inspired by what's already done in hardware verification).
-> > > > >
-> > > > > Promela/spin provides an LTL interface, but of course cannot handle
-> > > > > much of RCU, let alone of the entire kernel.  And LTL can be quite
-> > > > > useful.  But in a runtime system, how do you decide when "eventually"
-> > > > > has arrived?  The lockdep system does so by tracking entry to idle
-> > > > > and to userspace execution, along with exit from interrupt handlers.
-> > > > > Or did you have something else in mind?
-> > > >
-> > > > For coverage, one could simply await the transition to the "eventually
-> > > > state" indefinitely; once reached we have coverage.
-> > > >
-> > > > But for verification, because unlike explicit state model checkers
-> > > > like Spin, we don't have the complete state and can't build an
-> > > > exhaustive state-graph, we'd have to approximate. And without knowing
-> > > > exactly what it is we're waiting for, the simplest option would be to
-> > > > just rely on a timeout, either part of the property or implicit. What
-> > > > the units of that timeout are I'm not sure, because a system might
-> > > > e.g. be put to sleep.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller/CANpmjNMPvAucMQoZeLQAP_WiwiLT6XBoss%3DEZ4xAbrHnMwdt5g%40mail.gmail.com.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--wmbiwwgij6c7c54c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDLNCwACgkQqclaivrt
+76m0agf/b+zqU+/7C7Jr48RNm7EXvLLK8LrH6QU5JhByWuozN3adqsbR3VkhwLg4
+vi/46MXTWQ3sZOffrPSwzWotpBp0dNRUXCmTlk1+aStany3ekVHhmQqeemo0SR25
+7Ef4mr1omagm19TGFAdGxQcj/bjIw/3pk2d1TFsEjj8OS7AHCAByWiPSGvhyEYev
+PLyAjqjMCzdxaraMNuBFcttH7wZrgdj4ew5R7WSOoSNm48JvieMef8Ar4WhzxID3
+4Y4DCHMrMEUPhThAYeR5pFlcRP7YISa62f865o/16IJVe0NnKyQugadk3lk9DdVM
+S2IpApA4V3JoQpZukzqo6i7tqT9/CA==
+=nuoX
+-----END PGP SIGNATURE-----
+
+--wmbiwwgij6c7c54c--
