@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2683AB290
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE5B3AB28B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232546AbhFQLax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:30:53 -0400
-Received: from gimli.rothwell.id.au ([103.230.158.156]:36815 "EHLO
-        gimli.rothwell.id.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231276AbhFQLaw (ORCPT
+        id S232520AbhFQL35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:29:57 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5025 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229783AbhFQL34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:30:52 -0400
-Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4G5KYp6B7rzyNc;
-        Thu, 17 Jun 2021 21:28:30 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
-        s=201702; t=1623929313;
-        bh=Ehrvqd9Y00b/N1Kep2o7tgU3IrmuKv5IjdIFBhghzWE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rlrVfqJ9B4fh7Z95BYqHn9EDBdKZIfoxVmBokcmNpXWkmRUyHJUXi4mam9SubIrPy
-         iq7j93YJbWFCWFCDvCG35pW2YbUe4sxpMnJol1GPExy8/bwNRVtmUaPqykeZDyXqGN
-         2tH7lSEB2TGUbpFS8N930ZcwGMDU9/qQExXwJwkJGLWmRGMsA8GAvmgAQHE1u2ahbE
-         jzdeOdWvXq9JpwNqTRCUGvEGuG2/7X5gEAriTGJeTKuJSoXycarN+hWIo2QIk5gcSU
-         uuWc7Uqi2MdnBk4sxS6I5ZKQea8qJWJEsENiGnB8ykSguxnzAV6GKIlS0YBRY2xwgx
-         D/sT69pvZGvfg==
-Date:   Thu, 17 Jun 2021 21:28:29 +1000
-From:   Stephen Rothwell <sfr@rothwell.id.au>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH next v4 0/2] introduce printk cpu lock
-Message-ID: <20210617212829.33032350@elm.ozlabs.ibm.com>
-In-Reply-To: <YMswqJ7sV5RCxNim@alley>
-References: <20210617095051.4808-1-john.ogness@linutronix.de>
-        <YMswqJ7sV5RCxNim@alley>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 17 Jun 2021 07:29:56 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G5KR80jC9zXgnq;
+        Thu, 17 Jun 2021 19:22:44 +0800 (CST)
+Received: from dggpemm500016.china.huawei.com (7.185.36.25) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 19:27:46 +0800
+Received: from huawei.com (10.67.174.205) by dggpemm500016.china.huawei.com
+ (7.185.36.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 17 Jun
+ 2021 19:27:46 +0800
+From:   Chen Jiahao <chenjiahao16@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <grygorii.strashko@ti.com>, <jesse.brandeburg@intel.com>,
+        <vigneshr@ti.com>, <peter.ujfalusi@ti.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <chenjiahao16@huawei.com>, <heying24@huawei.com>
+Subject: [PATCH] net: ethernet: ti: fix netdev_queue compiling error
+Date:   Thu, 17 Jun 2021 19:28:38 +0800
+Message-ID: <20210617112838.143314-1-chenjiahao16@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/f=RK7xnOIhHTNY7mAr9sOE/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.174.205]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500016.china.huawei.com (7.185.36.25)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/f=RK7xnOIhHTNY7mAr9sOE/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+There is a compiling error in am65-cpsw-nuss.c while not selecting
+CONFIG_BQL:
 
-Hi all,
+drivers/net/ethernet/ti/am65-cpsw-nuss.c: In function
+‘am65_cpsw_nuss_ndo_host_tx_timeout’:
+drivers/net/ethernet/ti/am65-cpsw-nuss.c:353:26: error:
+‘struct netdev_queue’ has no member named ‘dql’
+  353 |      dql_avail(&netif_txq->dql),
+      |                          ^~
 
-On Thu, 17 Jun 2021 13:23:20 +0200 Petr Mladek <pmladek@suse.com> wrote:
->
-> On Thu 2021-06-17 11:56:49, John Ogness wrote:
-> >=20
-> > This series is against next-20210616.
->=20
-> The patchset is ready for linux-next from my POV. We are getting close
-> to the merge window so I am going to push it tomorrow. We could always
-> remove it when anyone has comments the following week.
+This problem is solved by adding the #ifdef CONFIG_BQL directive
+where struct dql is used.
 
-Unless this patch series is going to be part of Andrew Morton's
-post-next patch series, it must not be based on the whole of linux-next.
+Fixes: 93a76530316a ("net: ethernet: ti: introduce am65x/j721e gigabit eth subsystem driver")
+Signed-off-by: Chen Jiahao <chenjiahao16@huawei.com>
+---
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---=20
-Cheers,
-Stephen Rothwell
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+index 6a67b026df0b..a0b30bb763ea 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+@@ -346,12 +346,20 @@ static void am65_cpsw_nuss_ndo_host_tx_timeout(struct net_device *ndev,
+ 	tx_chn = &common->tx_chns[txqueue];
+ 	trans_start = netif_txq->trans_start;
+ 
++#ifdef CONFIG_BQL
+ 	netdev_err(ndev, "txq:%d DRV_XOFF:%d tmo:%u dql_avail:%d free_desc:%zu\n",
+ 		   txqueue,
+ 		   netif_tx_queue_stopped(netif_txq),
+ 		   jiffies_to_msecs(jiffies - trans_start),
+ 		   dql_avail(&netif_txq->dql),
+ 		   k3_cppi_desc_pool_avail(tx_chn->desc_pool));
++#else
++	netdev_err(ndev, "txq:%d DRV_XOFF:%d tmo:%u free_desc:%zu\n",
++		   txqueue,
++		   netif_tx_queue_stopped(netif_txq),
++		   jiffies_to_msecs(jiffies - trans_start),
++		   k3_cppi_desc_pool_avail(tx_chn->desc_pool));
++#endif
+ 
+ 	if (netif_tx_queue_stopped(netif_txq)) {
+ 		/* try recover if stopped by us */
+-- 
+2.31.1
 
---Sig_/f=RK7xnOIhHTNY7mAr9sOE/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDLMd0ACgkQAVBC80lX
-0GxTiQgAg9bpYLcrRlgFZHYBTJDrT2JIZfEoOtwcaoKxj4iBrQXrdWLMXTXxHp3B
-RFd/9/gKDYjPpTTWFNNocBtew5kOzlIKHKN40k59jY73sU//rdb5MAp0Z387jc/s
-qua9ycVGmUiS/0qtalJHIasURJ7G71DhHmA6bPPtaEd30Ghu/x3S5TblbGLmZAxD
-Fkma7zC0QvEaGyJNMyWTQ6bW4bLB3fXqfVZ+cbhFbHDe68rkf6+mGm5nXhK1RMUo
-uLRNkLfyj0QMaVu8HRthEeTRMa7+n7J5ghAXIEg3+u17fxzA4v2t16RHTAXceSIh
-zRtdGnJYEHqYRgK/wgMU+iNWjVOqdQ==
-=hLaM
------END PGP SIGNATURE-----
-
---Sig_/f=RK7xnOIhHTNY7mAr9sOE/--
