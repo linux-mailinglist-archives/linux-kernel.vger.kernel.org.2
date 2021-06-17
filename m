@@ -2,113 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B6D3ABDBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 22:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE06B3ABD95
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 22:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232782AbhFQU7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 16:59:04 -0400
-Received: from smtprelay0204.hostedemail.com ([216.40.44.204]:54456 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231241AbhFQU7C (ORCPT
+        id S232435AbhFQUkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 16:40:07 -0400
+Received: from st43p00im-ztdg10073201.me.com ([17.58.63.177]:40662 "EHLO
+        st43p00im-ztdg10073201.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231656AbhFQUkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 16:59:02 -0400
-Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id BC68C181D341E;
-        Thu, 17 Jun 2021 20:56:52 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 67AC22EBFA9;
-        Thu, 17 Jun 2021 20:56:50 +0000 (UTC)
-Message-ID: <d6c939f27ee67dda21562e4eb1573e6180ecef1c.camel@perches.com>
-Subject: Re: Re: [PATCH] scsi: ufs: Add indent for code alignment
-From:   Joe Perches <joe@perches.com>
-To:     keosung.park@samsung.com, ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "satyat@google.com" <satyat@google.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-In-Reply-To: <2038148563.21623893584364.JavaMail.epsvc@epcpadp4>
-References: <e0950e65c5e7f8f0db132cfd22bdd24ee27c63e7.camel@perches.com>
-         <1891546521.01623299401994.JavaMail.epsvc@epcpadp3>
-         <CGME20210610040731epcms2p7533bc62d13b82a0e86590f30ac4b6c30@epcms2p1>
-         <2038148563.21623893584364.JavaMail.epsvc@epcpadp4>
-Content-Type: text/plain; charset="ISO-8859-1"
+        Thu, 17 Jun 2021 16:40:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1623961714; bh=WzHqbhruriJHXJn315Aj0/FTYYvgpr9/wzdxCiEiD4o=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+        b=hiV/hzP2DQnxBM14AyeLP+pryXAkpeaYZdkwJlVsxqDtnIe3CEMCOZWf0uRMJAg46
+         Twy8IWpEGwWns1Urthp+NAmjqwovDJueVrQI2i+LcXcMOgKCOexhLRjJr1MrsZPncs
+         a8lCIEpiC+pcNh5geGGlIhdTYkrWKxMrmFETaePh1CBFTKSCNzaR1TC2qVU4CyMV+9
+         U0hWcrUk6ljgY9aHBLaMiz55I97nACW5sYXBJRDChEx8iejKJuwDlP2RINbR78ZAkB
+         fH0SB1bmHsVf3lI1R7DCj1bvNC1nxQj6HKml/ceuQL0Sc6A6geWsGLVYh7Wif7ZYZz
+         ifUa8WmIMOugw==
+Received: from gnbcxl0029.gnb.st.com (101.220.150.77.rev.sfr.net [77.150.220.101])
+        by st43p00im-ztdg10073201.me.com (Postfix) with ESMTPSA id 647AC22185D;
+        Thu, 17 Jun 2021 20:28:32 +0000 (UTC)
+Date:   Thu, 17 Jun 2021 22:28:28 +0200
+From:   Alain Volmat <avolmat@me.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 0/7] clk: st: embed clock outputs within drivers
+Message-ID: <20210617202827.GA3089@gnbcxl0029.gnb.st.com>
+Mail-Followup-To: Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210331201632.24530-1-avolmat@me.com>
+ <20210430164830.GA6248@gnbcxl0029.gnb.st.com>
 MIME-Version: 1.0
-Date:   Wed, 16 Jun 2021 20:35:26 -0700
-User-Agent: Evolution 3.40.0-1 
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.82
-X-Stat-Signature: z3xgzx8m9jjdsnu1s1ughpj8i4gd4pod
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 67AC22EBFA9
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19iIO6/WA0deVKmYeoqXnlVruH+W3b95WY=
-X-HE-Tag: 1623963410-885665
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210430164830.GA6248@gnbcxl0029.gnb.st.com>
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.391,18.0.790,17.0.607.475.0000000_definitions?=
+ =?UTF-8?Q?=3D2021-06-17=5F15:2021-06-15=5F02,2021-06-17=5F15,2020-04-07?=
+ =?UTF-8?Q?=5F01_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ clxscore=1015 adultscore=0 malwarescore=0 mlxscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2106170123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-17 at 10:28 +0900, Keoseong Park wrote:
-> > On Thu, 2021-06-10 at 13:07 +0900, Keoseong Park wrote:
-> > > Add indentation to return statement.
-> > []
-> > > diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> > []
-> > > @@ -903,7 +903,7 @@ static inline bool
-> > > ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
-> > >  	else
-> > >  		return false;
-> > >  #else
-> > > -return true;
-> > > +	return true;
-> > >  #endif
-> > >  }
-> > >  
+Hi Stephen,
+
+gentle reminder about this serie. Patrick and Rob have given their
+Reviewed-by already. Could you have a look at it ?
+
+Thanks.
+Alain
+
+On Fri, Apr 30, 2021 at 06:48:30PM +0200, Alain Volmat wrote:
+> Hi,
+> 
+> Gentle reminder about this serie concerning STi platform clock drivers.
+> Could you have a look at them ?
+> 
+> Thanks.
+> Alain
+> 
+> On Wed, Mar 31, 2021 at 10:16:25PM +0200, Alain Volmat wrote:
+> > Most of ST clock drivers used by STi platform are updated in
+> > order to introduce clock outputs informations within each drivers
+> > and thus allow to avoid having to rely on clock-output-names properties
+> > within DT clock nodes.
+> > For that purpose, drivers are updated to allow handling both modes
+> > (with or without clock-output-names).
+> > Once all DT will have been updated, the legacy mode could be removed
+> > from the drivers.
+> > This will also allow, once all STi DT will be corrected, to remove the
+> > of_clk_detect_critical API from clk core code since STi clock drivers
+> > are the only drivers using this API.
 > > 
-> > Perhaps a little refactoring instead:
+> > Alain Volmat (7):
+> >   clk: st: clkgen-pll: remove unused variable of struct clkgen_pll
+> >   clk: st: flexgen: embed soc clock outputs within compatible data
+> >   dt-bindings: clock: st: flexgen: add new introduced compatible
+> >   clk: st: clkgen-pll: embed soc clock outputs within compatible data
+> >   dt-bindings: clock: st: clkgen-pll: add new introduced compatible
+> >   clk: st: clkgen-fsyn: embed soc clock outputs within compatible data
+> >   dt-bindings: clock: st: clkgen-fsyn: add new introduced compatible
+> > 
+> >  .../bindings/clock/st/st,clkgen-pll.txt       |   3 +
+> >  .../bindings/clock/st/st,flexgen.txt          |  10 +
+> >  .../bindings/clock/st/st,quadfs.txt           |   3 +
+> >  drivers/clk/st/clk-flexgen.c                  | 367 +++++++++++++++++-
+> >  drivers/clk/st/clkgen-fsyn.c                  | 113 +++++-
+> >  drivers/clk/st/clkgen-pll.c                   | 121 +++++-
+> >  6 files changed, 576 insertions(+), 41 deletions(-)
+> > 
 > > ---
-> > drivers/scsi/ufs/ufshcd.h | 12 ++++--------
-> > 1 file changed, 4 insertions(+), 8 deletions(-)
+> > v4: - add an additional CLK_IS_CRITICAL within flexgen driver
+> > v3: - removal some useless CLK_IS_CRITICAL and add some comments
+> >     - only keep clk drivers/binding patches within the serie
 > > 
-> > diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> > index c98d540ac044d..ed89839476b3b 100644
-> > --- a/drivers/scsi/ufs/ufshcd.h
-> > +++ b/drivers/scsi/ufs/ufshcd.h
-> > @@ -894,15 +894,11 @@ static inline bool
-> > ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
-> > static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
-> > {
-> > /* DWC UFS Core has the Interrupt aggregation feature but is not
-> > detectable*/
-> > -#ifndef CONFIG_SCSI_UFS_DWC
-> > -	if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
-> > -	    !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
-> > +	if (IS_ENABLED(CONFIG_SCSI_UFS_DWC))
-> > 		return true;
-> > -	else
-> > -		return false;
-> > -#else
-> > -return true;
-> > -#endif
-> > +
-> > +	return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
-> > +		!(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
-> > }
-> > 
-> > static inline bool ufshcd_can_aggressive_pc(struct ufs_hba *hba)
+> > -- 
+> > 2.17.1
 > > 
 > 
-> Hello Joe,
-> Thanks for your advice.
-> As you mentioned, refactoring looks good.
-> However, since the content does not match the title, can I submit a
-> patch with a new title?
-
-Yes of course.
-
