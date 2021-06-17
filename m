@@ -2,138 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBECB3AAF3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7DA3AAF3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhFQJD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:03:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56014 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230242AbhFQJD0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:03:26 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15H8ebU0191396;
-        Thu, 17 Jun 2021 05:01:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=FEeLf/q0OqT9c/q4+Ave8tvpYTbPmwXpMNYPsfzILjg=;
- b=CGRvs1FuIxlE0VTSa91aBBZQMxFW3e7FAgHyp1O6X3GHSecaBIJgUieT87kXJqeVQFuk
- JOHCMCTASwkbjzcsrVs9Ts1PrbOfT1h27zuao8+TOS+Y/mXyYfjzETuSmoIY+PUgAhkK
- qbDCbFLxXE0i4coiRKpiw5akpfnqmAumikBvcls25efdTzk6xSo4tGekc0ikVpHG9x+I
- urVnuItyauqaZvKiBMty3BivTHSLbQWqNRt7j0/EWI/SowEh3KBgNrlFIyk/9gGSZaN9
- bfU/qp9gOlNZ/1lwj89Y+XxwHx5TQFI1pJfplnH7E5AUQx9FXbT9rejEs8qvFfG1veUT +g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3982quh4wu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 05:01:15 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15H8flK1193870;
-        Thu, 17 Jun 2021 05:01:14 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3982quh4up-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 05:01:14 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15H8qviW023657;
-        Thu, 17 Jun 2021 09:01:11 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 394mj8tk9x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 09:01:11 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15H9185516908710
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Jun 2021 09:01:08 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E9FFF52075;
-        Thu, 17 Jun 2021 09:01:07 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.46.143])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 87C1252069;
-        Thu, 17 Jun 2021 09:01:06 +0000 (GMT)
-Subject: Re: [PATCH v5 1/2] s390/vfio-ap: clean up mdev resources when remove
- callback invoked
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        id S231350AbhFQJEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:04:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:50500 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230242AbhFQJEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 05:04:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 416C21042;
+        Thu, 17 Jun 2021 02:02:23 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8D923F694;
+        Thu, 17 Jun 2021 02:02:21 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 10:02:19 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Tejun Heo <tj@kernel.org>, Quentin Perret <qperret@google.com>,
+        Wei Wang <wvw@google.com>, Yun Hsiang <hsiang023167@gmail.com>,
+        Xuewen Yan <xuewen.yan94@gmail.com>,
         linux-kernel@vger.kernel.org
-Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210616141618.938494-1-akrowiak@linux.ibm.com>
- <20210616141618.938494-2-akrowiak@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <182da44d-a621-3a55-03af-d705b8763501@de.ibm.com>
-Date:   Thu, 17 Jun 2021 11:01:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Subject: Re: [PATCH] sched/uclamp: Fix uclamp_tg_restrict()
+Message-ID: <20210617090219.6s5zxbvr7n4yr3wa@e107158-lin.cambridge.arm.com>
+References: <20210611122246.3475897-1-qais.yousef@arm.com>
+ <0b47fb7f-c96b-c2d6-e5e4-9a63683d6d56@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210616141618.938494-2-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: RVM1G4k0nt2_PRt66VHE5Z9BWOiP5SbI
-X-Proofpoint-ORIG-GUID: 54xWZnJ-MmDz6pOx8cU5WEv8-n68OKtO
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-17_05:2021-06-15,2021-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- bulkscore=0 adultscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
- impostorscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106170059
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0b47fb7f-c96b-c2d6-e5e4-9a63683d6d56@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06/16/21 19:09, Dietmar Eggemann wrote:
+> On 11/06/2021 14:22, Qais Yousef wrote:
+> > Now cpu.uclamp.min acts as a protection, we need to make sure that the
+> > uclamp request of the task is within the allowed range of the cgroup,
+> > that is it is clamp()'ed correctly by tg->uclamp[UCLAMP_MIN] and
+> > tg->uclamp[UCLAMP_MAX].
+> > 
+> > As reported by Xuewen [1] we can have some corner cases where there's
+> > inverstion between uclamp requested by task (p) and the uclamp values of
+> 
+> s/inverstion/inversion
 
+Fixed.
 
-On 16.06.21 16:16, Tony Krowiak wrote:
-> The mdev remove callback for the vfio_ap device driver bails out with
-> -EBUSY if the mdev is in use by a KVM guest (i.e., the KVM pointer in the
-> struct ap_matrix_mdev is not NULL). The intended purpose was
-> to prevent the mdev from being removed while in use. There are two
-> problems with this scenario:
 > 
-> 1. Returning a non-zero return code from the remove callback does not
->     prevent the removal of the mdev.
+> [...]
 > 
-> 2. The KVM pointer in the struct ap_matrix_mdev will always be NULL because
->     the remove callback will not get invoked until the mdev fd is closed.
->     When the mdev fd is closed, the mdev release callback is invoked and
->     clears the KVM pointer from the struct ap_matrix_mdev.
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 9e9a5be35cde..0318b00baa97 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -1403,38 +1403,28 @@ static void uclamp_sync_util_min_rt_default(void)
+> >  static inline struct uclamp_se
+> >  uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+> >  {
+> > -	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
+> > +	/* Copy by value as we could modify it */
+> > +	struct uclamp_se uc_eff = p->uclamp_req[clamp_id];
+> >  #ifdef CONFIG_UCLAMP_TASK_GROUP
+> > +	unsigned int tg_min, tg_max, value;
+> >  
+> >  	/*
+> >  	 * Tasks in autogroups or root task group will be
+> >  	 * restricted by system defaults.
+> >  	 */
+> >  	if (task_group_is_autogroup(task_group(p)))
+> > -		return uc_req;
+> > +		return uc_eff;
+> >  	if (task_group(p) == &root_task_group)
+> > -		return uc_req;
+> > +		return uc_eff;
+> >  
+> > -	switch (clamp_id) {
+> > -	case UCLAMP_MIN: {
+> > -		struct uclamp_se uc_min = task_group(p)->uclamp[clamp_id];
+> > -		if (uc_req.value < uc_min.value)
+> > -			return uc_min;
+> > -		break;
+> > -	}
+> > -	case UCLAMP_MAX: {
+> > -		struct uclamp_se uc_max = task_group(p)->uclamp[clamp_id];
+> > -		if (uc_req.value > uc_max.value)
+> > -			return uc_max;
+> > -		break;
+> > -	}
+> > -	default:
+> > -		WARN_ON_ONCE(1);
+> > -		break;
+> > -	}
+> > +	tg_min = task_group(p)->uclamp[UCLAMP_MIN].value;
+> > +	tg_max = task_group(p)->uclamp[UCLAMP_MAX].value;
+> > +	value = uc_eff.value;
+> > +	value = clamp(value, tg_min, tg_max);
+> > +	uclamp_se_set(&uc_eff, value, false);
+> >  #endif
+> >  
+> > -	return uc_req;
+> > +	return uc_eff;
+> >  }
 > 
-> Let's go ahead and remove the check for KVM in the remove callback and
-> allow the cleanup of mdev resources to proceed.
+> I got confused by the renaming uc_req -> uc_eff.
 > 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> We have:
+> 
+> uclamp_eff_value()                                     (1)
+> 
+>   uclamp_se  uc_eff = uclamp_eff_get(p, clamp_id);     (2)
+> 
+>     uclamp_se uc_req = uclamp_tg_restrict(p, clamp_id) (3)
+> 
+>       struct uclamp_se uc_eff = p->uclamp_req[clamp_id];
+>       ....
+> 
+> (3) is now calling it uc_eff where (2) still uses uc_req for the return
+> of (3). IMHO uc_*eff* was used after the system level (
+> uclamp_default) have been applied.
 
-queued. Do we need cc stable?
+Renamed it back to uc_req.
 
-> ---
->   drivers/s390/crypto/vfio_ap_ops.c | 10 ----------
->   1 file changed, 10 deletions(-)
 > 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index b2c7e10dfdcd..122c85c22469 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -366,16 +366,6 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
->   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->   
->   	mutex_lock(&matrix_dev->lock);
-> -
-> -	/*
-> -	 * If the KVM pointer is in flux or the guest is running, disallow
-> -	 * un-assignment of control domain.
-> -	 */
-> -	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
-> -		mutex_unlock(&matrix_dev->lock);
-> -		return -EBUSY;
-> -	}
-> -
->   	vfio_ap_mdev_reset_queues(mdev);
->   	list_del(&matrix_mdev->node);
->   	kfree(matrix_mdev);
+> [...]
 > 
+> > @@ -1670,10 +1659,8 @@ uclamp_update_active_tasks(struct cgroup_subsys_state *css,
+> >  
+> >  	css_task_iter_start(css, 0, &it);
+> >  	while ((p = css_task_iter_next(&it))) {
+> > -		for_each_clamp_id(clamp_id) {
+> > -			if ((0x1 << clamp_id) & clamps)
+> > -				uclamp_update_active(p, clamp_id);
+> > -		}
+> > +		for_each_clamp_id(clamp_id)
+> > +			uclamp_update_active(p, clamp_id);
+> >  	}
+> >  	css_task_iter_end(&it);
+> >  }
+> > @@ -9626,7 +9613,7 @@ static void cpu_util_update_eff(struct cgroup_subsys_state *css)
+> >  		}
+> >  
+> >  		/* Immediately update descendants RUNNABLE tasks */
+> > -		uclamp_update_active_tasks(css, clamps);
+> > +		uclamp_update_active_tasks(css);
+> 
+> Since we now always have to update both clamp_id's, can you not update
+> both under the same task_rq_lock() (in uclamp_update_active())?
+
+Good idea. Done this
+
+--->8---
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index b4e856a4335d..fdb9a109fd68 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1620,8 +1620,9 @@ static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
+ }
+
+ static inline void
+-uclamp_update_active(struct task_struct *p, enum uclamp_id clamp_id)
++uclamp_update_active(struct task_struct *p)
+ {
++       enum uclamp_id clamp_id;
+        struct rq_flags rf;
+        struct rq *rq;
+
+@@ -1641,9 +1642,11 @@ uclamp_update_active(struct task_struct *p, enum uclamp_id clamp_id)
+         * affecting a valid clamp bucket, the next time it's enqueued,
+         * it will already see the updated clamp bucket value.
+         */
+-       if (p->uclamp[clamp_id].active) {
+-               uclamp_rq_dec_id(rq, p, clamp_id);
+-               uclamp_rq_inc_id(rq, p, clamp_id);
++       for_each_clamp_id(clamp_id) {
++               if (p->uclamp[clamp_id].active) {
++                       uclamp_rq_dec_id(rq, p, clamp_id);
++                       uclamp_rq_inc_id(rq, p, clamp_id);
++               }
+        }
+
+        task_rq_unlock(rq, p, &rf);
+@@ -1653,15 +1656,12 @@ uclamp_update_active(struct task_struct *p, enum uclamp_id clamp_id)
+ static inline void
+ uclamp_update_active_tasks(struct cgroup_subsys_state *css)
+ {
+-       enum uclamp_id clamp_id;
+        struct css_task_iter it;
+        struct task_struct *p;
+
+        css_task_iter_start(css, 0, &it);
+-       while ((p = css_task_iter_next(&it))) {
+-               for_each_clamp_id(clamp_id)
+-                       uclamp_update_active(p, clamp_id);
+-       }
++       while ((p = css_task_iter_next(&it)))
++               uclamp_update_active(p);
+        css_task_iter_end(&it);
+ }
+
+--->8---
+
+Thanks!
+
+--
+Qais Yousef
