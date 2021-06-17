@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F903AADDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DD93AADF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbhFQHnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 03:43:18 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:37471 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhFQHnQ (ORCPT
+        id S229901AbhFQHtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 03:49:50 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3259 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhFQHtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 03:43:16 -0400
-Received: by mail-vs1-f45.google.com with SMTP id f21so2493569vsl.4;
-        Thu, 17 Jun 2021 00:41:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mEGYEeCbT5Y3uQ9ge9kDdnlguyAqVWsX/tNFbsNf0Go=;
-        b=Moqa9taiDTiQWwD0gOSFHENLtdB9DzuM4IbaIWtH2cLaJoDIq2WEQJgDOEttfG9HE9
-         lRhYL8SNCBFnZOLD3mfKKfGat6QHHfpqxGijJ8/hlVyoV9Xsh3MzU2dFgr4SRqYtll8i
-         14hKvcxcutYtKGkrEK04PE5Gy7k6kfpz8WkN+xtN1cp3KSi9hxbNadRR6+p1XRbmkSqe
-         C30OicRfMa3R2DtYATveMUtVVSFt1iGYV/A5MUDtbwWoIXgHeWe5Sh0uoOsLQ33BzdEX
-         GP1/oLvXEjON1FtCKJQOWR6TC1dEKc/CLNQmWSk8RJwrFQhNWo4APX1T7lt8Yq3vUwiW
-         OB/w==
-X-Gm-Message-State: AOAM533wxcYjILP9NfEQGqrjtO3UHSigkTZpxITSxvgXH9yOcZAlQE9U
-        vRIFg8uZ+uVCmm9tT9D14pmLnTXTTm22L7mLkd+TWzKMnbLIVg==
-X-Google-Smtp-Source: ABdhPJyHZxhvEExJJyJ3FbSwGF668SvWyL06uTu3qETPTb/srzA8PVzp9Tn2bLHdvfcixgGT2j6f4leexfxLrEfBZGw=
-X-Received: by 2002:a67:3c2:: with SMTP id 185mr3196825vsd.42.1623915668798;
- Thu, 17 Jun 2021 00:41:08 -0700 (PDT)
+        Thu, 17 Jun 2021 03:49:46 -0400
+Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G5DRj6q8Rz6L7kw;
+        Thu, 17 Jun 2021 15:37:53 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 09:47:36 +0200
+Received: from [10.47.95.81] (10.47.95.81) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 17 Jun
+ 2021 08:47:36 +0100
+Subject: Re: [PATCH v13 6/6] iommu: Remove mode argument from
+ iommu_set_dma_strict()
+To:     Lu Baolu <baolu.lu@linux.intel.com>, <joro@8bytes.org>,
+        <will@kernel.org>, <dwmw2@infradead.org>, <robin.murphy@arm.com>,
+        <corbet@lwn.net>
+CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
+        <chenxiang66@hisilicon.com>, <linux-doc@vger.kernel.org>
+References: <1623841437-211832-1-git-send-email-john.garry@huawei.com>
+ <1623841437-211832-7-git-send-email-john.garry@huawei.com>
+ <de6a2874-3d6d-ed2a-78f5-fb1fb0195228@linux.intel.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <c61376c8-5285-1121-046f-3ab12eee9902@huawei.com>
+Date:   Thu, 17 Jun 2021 08:41:24 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <20210419142345.53152-1-jacopo+renesas@jmondi.org>
- <20210419142345.53152-7-jacopo+renesas@jmondi.org> <YMqXjZREJbIEJxs5@pendragon.ideasonboard.com>
-In-Reply-To: <YMqXjZREJbIEJxs5@pendragon.ideasonboard.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 17 Jun 2021 09:40:57 +0200
-Message-ID: <CAMuHMdWULq9GTsWgVnyrBL2_pK4dT5kuAHS=4i7zPX0Hu51L7g@mail.gmail.com>
-Subject: Re: [PATCH v5 6/7] arm64: dts: renesas: eagle: Add GMSL .dtsi
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <de6a2874-3d6d-ed2a-78f5-fb1fb0195228@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.95.81]
+X-ClientProxiedBy: lhreml743-chm.china.huawei.com (10.201.108.193) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
 
-On Thu, Jun 17, 2021 at 2:30 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
-> On Mon, Apr 19, 2021 at 04:23:44PM +0200, Jacopo Mondi wrote:
-> > From: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> >
-> > Describe the FAKRA connector available on Eagle board that allows
-> > connecting GMSL camera modules such as IMI RDACM20 and RDACM21.
-> >
-> > Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+>> @@ -349,10 +349,9 @@ static int __init iommu_dma_setup(char *str)
+>>   }
+>>   early_param("iommu.strict", iommu_dma_setup);
+>> -void iommu_set_dma_strict(bool strict)
+>> +void iommu_set_dma_strict(void)
+>>   {
+>> -    if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
+>> -        iommu_dma_strict = strict;
+>> +    iommu_dma_strict = true;
+> 
+> Sorry, I still can't get how iommu.strict kernel option works.
+> 
+> static int __init iommu_dma_setup(char *str)
+> {
+>          int ret = kstrtobool(str, &iommu_dma_strict);
+> 
+>          if (!ret)
+>                  iommu_cmd_line |= IOMMU_CMD_LINE_STRICT;
+>          return ret;
+> }
+> early_param("iommu.strict", iommu_dma_setup);
+> 
+> The bit IOMMU_CMD_LINE_STRICT is only set, but not used anywhere.
 
->
-> This won't scale when we'll support more than two different cameras, but
-> we'll switch to overlays then :-)
+It is used in patch 2/6:
 
-FTR, overlay support has landed upstream.
-Still not sure about .dts vs .dtso...
++	pr_info("DMA domain TLB invalidation policy: %s mode %s\n",
++		iommu_dma_strict ? "strict" : "lazy",
++		(iommu_cmd_line & IOMMU_CMD_LINE_STRICT) ?
++			"(set via kernel command line)" : "");
 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Hence,
+> I am wondering how could it work? A bug or I missed anything?
 
-The DT parts are still pending acceptance of "maxim,gpio-poc", right?
+It is really just used for informative purpose now.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+john
