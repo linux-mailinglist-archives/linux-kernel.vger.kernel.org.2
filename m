@@ -2,138 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B263AB122
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467143AB129
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbhFQKRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 06:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
+        id S229887AbhFQKTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 06:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbhFQKRb (ORCPT
+        with ESMTP id S230473AbhFQKTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 06:17:31 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25ABAC061574;
-        Thu, 17 Jun 2021 03:15:24 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id o5so707203iob.4;
-        Thu, 17 Jun 2021 03:15:24 -0700 (PDT)
+        Thu, 17 Jun 2021 06:19:33 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0AA9C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 03:17:25 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id i12so4872172ila.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 03:17:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KGL/4St8CT2Ac963azeQRyk+IlITL+qEpVPNlHM/37o=;
-        b=bKwHB0IKV5OjeMW4X7r3ZB08hgO7efxr9ryo6e32en43D2rUiBX017lGE/UFlz1grh
-         U/qx4ESV7D/TSrZHIw6iYvTxd4GeVbV1uwkabZhjNnIiDC19As3hxCeiM9Qa9YbGYyzs
-         Dfq/20Vh27eRY6FV06PXE+/eL+23GBwPZYUJkj9ObL++f8+NmIaG8iKsUArb+pNpE18c
-         F2zmJy29m2PkjPXFhXUru6Mgr2GD/rdx0QvLK3dkvTYCLK1SCrr6Pwfh2MBaKYaSYFLp
-         pSnqxRj/umVc/AWGsRizGiharAiQBsnWIUrCnLPRAfEXP/O9onaDzwhJeC0ttSCuW47A
-         mX+w==
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TgPllGimVmcNN4ah98danBO0E/RhAz5y3uGjSnBg5Bc=;
+        b=PXgXAzeg2+TFQw/5cu/tUjYhxtgHMrg6wM9mTZ/2DUYOajPAZuwkcnT3BA3Vl1uMwJ
+         z4AuUF5RRXZKCLYUpFoOruA4jtT6Ej0anJhopRkQcoBSuVzsWXee54XbXWYhRwG79RTt
+         TBkG7fMwJoLkYro4pHZQW3dtYgjPtxkyMFwSg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KGL/4St8CT2Ac963azeQRyk+IlITL+qEpVPNlHM/37o=;
-        b=gq8afAOAvqQasNpa/lbzhO03f3lUL4w7yhB1oT/9IBGZTz6AHIOzOIVUc9+u+pNKOW
-         PNcOfbh4+IKAiQgaHCZPE6ZEhOI4xwNHfYPCf6QdnQKWizZpEBibZ+ARlX8qoGXNmLba
-         QZN0gWxzB9+/U+OIcjCgm6ehJMyL8GdpJYbs/z9775w6bnINHaDfTCD2+NjmPK2D+kso
-         y0WNWtqIg3H/vKnyQR5FsX8FE8L4acmrfemV331Nu0odQbNKMXdIYBPoZGehT9h8OGwI
-         Lor1GbVQFoL4jxSvItD6XzS5vHuJmVdT4EMMu7cIy13rulWoEDbjgqmFGYviLFnx3Z05
-         1AUg==
-X-Gm-Message-State: AOAM533bRiGeQDlPfmTLLC0oWzLusrH+7Rtv3DXBEbdy5LSbDy2wqRr5
-        0s9s+8B4KL6kFP/LNu2nBo2bzIJHpLE6GvoQvC4=
-X-Google-Smtp-Source: ABdhPJzbB+2xozr5c3nEbDgidEIonumRpZapZoSLiEZmV8b80pA0Y6QT5+aRwOkO+0YwvNKs3B2sbAuiL7VqpUym2fM=
-X-Received: by 2002:a02:5b45:: with SMTP id g66mr3970817jab.62.1623924923627;
- Thu, 17 Jun 2021 03:15:23 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TgPllGimVmcNN4ah98danBO0E/RhAz5y3uGjSnBg5Bc=;
+        b=or9su0KVNuHhKwkpBDmmbZZKUsWbNJLCvWAUGYhTAPJyRNDOGqt3ZtzCCnoMxeiz1/
+         4erP5jvNa6ZHKaOoihCuBkbR7BcqhGr7Rw7TisrQ7FXhozE2Sd5WXwALawi5hcRStq7J
+         lPgGYVACE7WYN5G9qLhBWyqS7dndyK9HoX4N4ZHX8xD/ocQ2XJDE1g0DfPUyGcgQSG8L
+         bO31cvPRGB0wS8VwqnrG+qzXKnYRPW0XHmr+Gqt7ODrBh7cgYvBR3OKipymTi2aOP0uy
+         K2tDKqAD4sFPitOtARiYS1mdu5H0aiJheW0BJ66NlOIWR+RxHUSwVbC7qrC8s34kCwoB
+         il7A==
+X-Gm-Message-State: AOAM532mxu3r1nXdxKBm0HiQ03xGUMzDvf4EskTDHUvrJgA4gKtfQMad
+        KVnhNapRtx3iecM7Yk9uMP4Ed4Jaya7Mkg==
+X-Google-Smtp-Source: ABdhPJz2LAw4NBLhpIqLHyfUazN/hOQHG2W76Bos6afm67s91rmSwPdAKQDg2dDZUAmHkyvazNdM+g==
+X-Received: by 2002:a92:3302:: with SMTP id a2mr2993017ilf.62.1623925044956;
+        Thu, 17 Jun 2021 03:17:24 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id r8sm2488194iln.35.2021.06.17.03.17.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jun 2021 03:17:24 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: ipa: Add missing of_node_put() in
+ ipa_firmware_load()
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     elder@kernel.org, davem@davemloft.net, kuba@kernel.org
+References: <20210617051119.1153120-1-yangyingliang@huawei.com>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <dc64b44a-12a7-e5e0-1532-577d6479d7c0@ieee.org>
+Date:   Thu, 17 Jun 2021 05:17:23 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <1621508727-24486-1-git-send-email-dillon.minfei@gmail.com>
- <1621508727-24486-2-git-send-email-dillon.minfei@gmail.com> <0f3145ce-3a01-3a77-2b65-85450bf9d920@xs4all.nl>
-In-Reply-To: <0f3145ce-3a01-3a77-2b65-85450bf9d920@xs4all.nl>
-From:   Dillon Min <dillon.minfei@gmail.com>
-Date:   Thu, 17 Jun 2021 18:14:47 +0800
-Message-ID: <CAL9mu0KeZ9Fq5wN-jJwK5S94N0qPXmsENtZXUx-KfjWxNjjecw@mail.gmail.com>
-Subject: Re: [PATCH 1/7] media: admin-guide: add stm32-dma2d description
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Alexandre TORGUE <Alexandre.torgue@foss.st.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        mchehab+huawei@kernel.org, ezequiel@collabora.com,
-        gnurou@gmail.com, Pi-Hsun Shih <pihsun@chromium.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Patrice CHOTARD <patrice.chotard@foss.st.com>,
-        hugues.fruchet@foss.st.com,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210617051119.1153120-1-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans
+On 6/17/21 12:11 AM, Yang Yingliang wrote:
+> This node pointer is returned by of_parse_phandle() with refcount
+> incremented in this function. of_node_put() on it before exiting
+> this function.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
-Thanks for your review on my code.
+Acked-by: Alex Elder <elder@linaro.org>
 
-On Thu, Jun 17, 2021 at 5:56 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wro=
-te:
->
-> On 20/05/2021 13:05, dillon.minfei@gmail.com wrote:
-> > From: Dillon Min <dillon.minfei@gmail.com>
-> >
-> > add stm32-dma2d description for dma2d driver
-> >
-> > Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> > ---
-> >  Documentation/admin-guide/media/platform-cardlist.rst | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/Documentation/admin-guide/media/platform-cardlist.rst b/Do=
-cumentation/admin-guide/media/platform-cardlist.rst
-> > index 261e7772eb3e..ac73c4166d1e 100644
-> > --- a/Documentation/admin-guide/media/platform-cardlist.rst
-> > +++ b/Documentation/admin-guide/media/platform-cardlist.rst
-> > @@ -60,6 +60,7 @@ s5p-mfc            Samsung S5P MFC Video Codec
-> >  sh_veu             SuperH VEU mem2mem video processing
-> >  sh_vou             SuperH VOU video output
-> >  stm32-dcmi         STM32 Digital Camera Memory Interface (DCMI)
-> > +stm32-dma2d        STM32 Chrom-Art Accelerator Unit
->
-> I have to ask: it is really 'Chrom-Art' and not Chrome-Art or Choma-Art?
+> ---
+>   drivers/net/ipa/ipa_main.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+> index 2243e3e5b7ea..f82130db32f6 100644
+> --- a/drivers/net/ipa/ipa_main.c
+> +++ b/drivers/net/ipa/ipa_main.c
+> @@ -530,6 +530,7 @@ static int ipa_firmware_load(struct device *dev)
+>   	}
+>   
+>   	ret = of_address_to_resource(node, 0, &res);
+> +	of_node_put(node);
+>   	if (ret) {
+>   		dev_err(dev, "error %d getting \"memory-region\" resource\n",
+>   			ret);
+> 
 
-Yes, I just double checked it from [1], it's really 'Chrom-Art' :)
-it's should not be an spelling mistake, i check the soc's datasheet,
-reference Manuel, all used 'Chrom-Art'.
-
-...
-Graphics
-
-Chrom-ART Accelerator=E2=84=A2 (DMA2D), graphical hardware accelerator
-enabling enhanced graphical user interface with minimum CPU load
-...
-
-
-[1] https://www.st.com/en/microcontrollers-microprocessors/stm32f469ni.html
-
-Thanks.
-
-Best Regards
-Dillon
-
->
-> It's probably correct, but I have to check this :-)
->
-> Regards,
->
->         Hans
->
-> >  sun4i-csi          Allwinner A10 CMOS Sensor Interface Support
-> >  sun6i-csi          Allwinner V3s Camera Sensor Interface
-> >  sun8i-di           Allwinner Deinterlace
-> >
->
