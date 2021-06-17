@@ -2,127 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929E83AB34A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC22E3AB350
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232717AbhFQMLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:11:46 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56592 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232040AbhFQMLo (ORCPT
+        id S232728AbhFQMNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232040AbhFQMNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:11:44 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6789C21AAF;
-        Thu, 17 Jun 2021 12:09:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623931776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zf1PZcsWl5sHjafZT4XLuZyzuMtooZSh0kC7gjynjXM=;
-        b=L9jlI6SdIlJXp9nR48+e68MCSscnPO70jY3et2F54pV1R6R+qeLz48oEiA0rJ76YXAIsNN
-        IUmwyWoT3FXBNT5R9GjmPx5xqRaWIDuuUgrNIZ6cQfjBS7h6XygibUKoptdz6/oNkHmxsy
-        nO9nJ05nqfer2UaxIuZEi8q/t+tD4LM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623931776;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zf1PZcsWl5sHjafZT4XLuZyzuMtooZSh0kC7gjynjXM=;
-        b=xNmxaOlVAnpyaM9UpjL/UhyicW433ZiMaD3w2OhANlVgjKdEZBmDDcrzvpOdBswEp7CS+l
-        Gedz6N9AB5DmV2AA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 5064C118DD;
-        Thu, 17 Jun 2021 12:09:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623931776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zf1PZcsWl5sHjafZT4XLuZyzuMtooZSh0kC7gjynjXM=;
-        b=L9jlI6SdIlJXp9nR48+e68MCSscnPO70jY3et2F54pV1R6R+qeLz48oEiA0rJ76YXAIsNN
-        IUmwyWoT3FXBNT5R9GjmPx5xqRaWIDuuUgrNIZ6cQfjBS7h6XygibUKoptdz6/oNkHmxsy
-        nO9nJ05nqfer2UaxIuZEi8q/t+tD4LM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623931776;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zf1PZcsWl5sHjafZT4XLuZyzuMtooZSh0kC7gjynjXM=;
-        b=xNmxaOlVAnpyaM9UpjL/UhyicW433ZiMaD3w2OhANlVgjKdEZBmDDcrzvpOdBswEp7CS+l
-        Gedz6N9AB5DmV2AA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id jqPNE4A7y2DmGgAALh3uQQ
-        (envelope-from <bp@suse.de>); Thu, 17 Jun 2021 12:09:36 +0000
-Date:   Thu, 17 Jun 2021 14:09:31 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V2 19/52] x86/kvm: Avoid looking up PKRU in XSAVE buffer
-Message-ID: <YMs7exTqkCwdCKkM@zn.tnic>
-References: <20210614154408.673478623@linutronix.de>
- <20210614155355.646122849@linutronix.de>
+        Thu, 17 Jun 2021 08:13:32 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0BFC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:11:24 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id gt18so9454417ejc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:11:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=abjyLhbT3u74Zgq1l+BEIdPMtx/D7+UT5cqLY6XM2/Y=;
+        b=fzpEeib8QDNsXnonqUGJlZswtaQQxypCfy9fyjSw/U7Av49giNR+QSlWqnxQuaTia9
+         umQwoADVt0GaiLDNambhR9MFHty7iCQiOSG0iLtYrmW0UbbJbmsmAmlv5L+caH9ZGwyM
+         OWZuim0CrGslrkbqcsfUavjt9WCkh4XZy8U08eK5a7f/lWMnOrBgtiupj8qN//Pc5zkI
+         dO0yPUEDaEP/aPDybzeQ088g/QaLJJDSuC0/mqiVAiwVMbJhcMcyvNRt1/+vUv2xvS3A
+         K8HoAXLR4qZiEPIkN1CbV8eEosVdxhScorayuALxv0eLG9BOFk348bt4XtEmErIwn+gJ
+         0A7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=abjyLhbT3u74Zgq1l+BEIdPMtx/D7+UT5cqLY6XM2/Y=;
+        b=q6aFHQZdHlxepkmmEVq4X9oV0h22ORcrudRjTV8+d0EYSX9A7G5BlHrKOVaQ2n+GB7
+         YIOMY0CyKGXHJ7+kbo0u9hmbSwKnmbppWflhhDtw/9GN4Qcy+mDh5u4MQ4BYyAuB/1/V
+         SXqVYK9xJRmKJXY6ViJeXI/8TEOmxCf5qiYfu4vWnSQifMxQyQFXY7m/M4pkI24yQMec
+         D4Jch4yyFAEqLjnhFFd6gzW5VUQmYSXrzu0+1MVhVz5WhOpbzJrHU5Hdj/AFKENO/mEW
+         1lsKiLp54Y7fx8W4zWZYjJEZAm+YcyDwn4zejYxqY1hhGFL4FN/3tYyh7dBSq4+S7gvQ
+         ESyw==
+X-Gm-Message-State: AOAM533Fxd8IJu/CpPBZenu41WiiT+oJ10xQ23slEl2qGJxHNoyxeGrz
+        n91TBBHtw5IAyPFLD6EAVxYQvX77cLEd/gw1knt4SA==
+X-Google-Smtp-Source: ABdhPJyFQtRp3k9GLGGUUL5cU0unA/h1TSqJ0oPCzicqdiMTG2yE3IuJ43v1Qi5mKXryABq6IPLP0MkYbP1boPfsbXE=
+X-Received: by 2002:a17:906:9d05:: with SMTP id fn5mr4763120ejc.133.1623931883222;
+ Thu, 17 Jun 2021 05:11:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210614155355.646122849@linutronix.de>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 17 Jun 2021 17:41:11 +0530
+Message-ID: <CA+G9fYsWHE5Vu9T3FV-vtHHbVFJWEF=bmjQxwaZs3uVYef028g@mail.gmail.com>
+Subject: [next] [clang] x86_64-linux-gnu-ld: mm/mremap.o: in function
+ `move_pgt_entry': mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 05:44:27PM +0200, Thomas Gleixner wrote:
-> @@ -4632,18 +4633,20 @@ static void load_xsave(struct kvm_vcpu *
->  	 */
->  	valid = xstate_bv & ~XFEATURE_MASK_FPSSE;
->  	while (valid) {
-> +		u32 size, offset, ecx, edx;
->  		u64 xfeature_mask = valid & -valid;
->  		int xfeature_nr = fls64(xfeature_mask) - 1;
-> -		void *dest = get_xsave_addr(xsave, xfeature_nr);
->  
-> -		if (dest) {
-> -			u32 size, offset, ecx, edx;
-> -			cpuid_count(XSTATE_CPUID, xfeature_nr,
-> -				    &size, &offset, &ecx, &edx);
-> -			if (xfeature_nr == XFEATURE_PKRU)
-> -				memcpy(&vcpu->arch.pkru, src + offset,
-> -				       sizeof(vcpu->arch.pkru));
-> -			else
-> +		cpuid_count(XSTATE_CPUID, xfeature_nr,
-> +			    &size, &offset, &ecx, &edx);
-> +
-> +		if (xfeature_nr == XFEATURE_PKRU) {
-> +			memcpy(&vcpu->arch.pkru, src + offset,
-> +			       sizeof(vcpu->arch.pkru));
-> +		} else {
-> +			void *dest = get_xsave_addr(xsave, xfeature_nr);
-> +
+Linux next 20210617 tag following x86_64 builds failed with clang-10
+and clang-11.
+Regressions found on x86_64:
 
-With that superfluous newline removed:
+ - build/clang-11-tinyconfig
+ - build/clang-11-allnoconfig
+ - build/clang-10-tinyconfig
+ - build/clang-10-allnoconfig
+ - build/clang-11-x86_64_defconfig
+ - build/clang-10-defconfig
 
-Reviewed-by: Borislav Petkov <bp@suse.de>
+We are running git bisect to identify the bad commit.
 
-> +			if (dest)
->  				memcpy(dest, src + offset, size);
->  		}
+Build log:
+------------
+drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
+eb_relocate_parse_slow()+0x466: stack state mismatch: cfa1=4+120
+cfa2=-1+0
+drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
+eb_copy_relocations()+0x1e0: stack state mismatch: cfa1=4+104
+cfa2=-1+0
+x86_64-linux-gnu-ld: mm/mremap.o: in function `move_pgt_entry':
+mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
+make[1]: *** [/builds/linux/Makefile:1252: vmlinux] Error 1
+make[1]: Target '__all' not remade because of errors.
+make: *** [Makefile:222: __sub-make] Error 2
+make: Target '__all' not remade because of errors.
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=x86_64
+CROSS_COMPILE=x86_64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+clang' headers_install
+INSTALL_HDR_PATH=/home/tuxbuild/.cache/tuxmake/builds/current/install_hdr/
+tar caf /home/tuxbuild/.cache/tuxmake/builds/current/headers.tar.xz -C
+/home/tuxbuild/.cache/tuxmake/builds/current/install_hdr .
 
--- 
-Regards/Gruss,
-    Boris.
+ref:
+https://builds.tuxbuild.com/1u4ZKFTh12vrYBVf8b1xGpaFOrE/
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
+
+tuxmake --runtime podman --target-arch x86_64 --toolchain clang-11
+--kconfig x86_64_defconfig
+
+ref:
+https://builds.tuxbuild.com/1u4ZKFTh12vrYBVf8b1xGpaFOrE/
+
+build info:
+    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+    git_sha: 7d9c6b8147bdd76d7eb2cf6f74f84c6918ae0939
+    git_short_log: 7d9c6b8147bd (\Add linux-next specific files for 20210617\)
+    kconfig: x86_64_defconfig
+    kernel_image:
+    kernel_version: 5.13.0-rc6
+    toolchain: clang-11
+
+--
+Linaro LKFT
+https://lkft.linaro.org
