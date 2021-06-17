@@ -2,149 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3415E3AACFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E325A3AAD02
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhFQHJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 03:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
+        id S230087AbhFQHJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 03:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhFQHJ3 (ORCPT
+        with ESMTP id S230052AbhFQHJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 03:09:29 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63D8C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 00:06:40 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id w127so5421057oig.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 00:06:40 -0700 (PDT)
+        Thu, 17 Jun 2021 03:09:44 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A38C06175F;
+        Thu, 17 Jun 2021 00:07:35 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id y15so4257266pfl.4;
+        Thu, 17 Jun 2021 00:07:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=x3f7kXNEAio7wn8rN5Q4qZlH4cBywzmH0Nokkyx4dn0=;
-        b=TUHB1N3eQfQ+/6r1GQXAlEPc8aNokCkZd1BTVoHNgFnFfyyaHuQ8Tf7NNKqMlBvak5
-         YbMSSm+I9FLnG6TB8exQz/e5/DYGCNOU/HrQl7W9jHCTKMaPj48hgCrwO9HAqgsa6PUU
-         LgzrPRiShRHFjIi0iMpIAfWuzyxY+yn074UknITQ6pWASp1mjiJ0xWYaLULgti2EgPfe
-         CFsnD12vzglyKQp2quLeZjsZzcUBopxr/0CtrPKM2M5H+yt81jGEmvHjQ1GSTNFrUFim
-         x4jAoOqmxpNRbiiJmDV+4C3HGdD1V9gQCdcX2DPFH21+kPNkDgzSy0vHY/OkTpHX6gs3
-         BhYg==
+        bh=LTOj6xfPO3fsV1CEIiylHgE3vD+iDDnuC1azPtYCNX0=;
+        b=DRQ5tSHVtx3G7/1u/hpCsP42+aMBuGl6MJf+zD6fKAGhuB0GY0hE7tz/0AgF/Vqa5Y
+         tbVOi2NfOVFfz4/Sx8VTuhTMdMYa1Gnx1PjsReCL4ngXvg7/9jLU2lzElEAChofFi3uX
+         6W4UuK8ogbB5NwoVjkGWXv+r56GBYgZQdOwCdSBvDbf7GNP8XgvjvwymLFtCjCcI85wY
+         ahWO3PhxLnZcq2LibmiI3KQx33AIde5fmMMZFy44k1d4lRmojIeccUCF/Z5YUVPqX05t
+         W7t+fIie63EXEA+to2CDo7Ovl+LdRy8rSSGXFoTegYEr4ZzQY4ZrXRvlIv77qVArZCXZ
+         7I0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=x3f7kXNEAio7wn8rN5Q4qZlH4cBywzmH0Nokkyx4dn0=;
-        b=YkMxZJ7FaAekmwrZoAXcxbvpFuR24N0yiMj1EbJeqLugv+rz85JUPbSmd0k+BLixfn
-         dew0bmenUHGRq6pYXRmU/ghwR9HbvusfVAEB17liHtrigrzufSHRgX3XxGGy1GJRYZ2p
-         Ovtzb/Uo/G3/oIcyL/WHiz0A8DuvRnBZNHt34wIX3iIn8cokvZj+rOtTG8i+8eDoW3S9
-         UHjzyRpZP9hrbb103GE/OBisYOUP01vXJrWt7G6ENDFbQnSKkLQyOepo/nircWVN+kpp
-         9cbWO0xf4RlzcNg6V9Z35LkoXMvcakk7sYHJ41oQCuscGAxScI3aw2zFFYF61ylZuk44
-         FHkA==
-X-Gm-Message-State: AOAM5329uVKKBgJLLYVREWVc+q+9kPkisNoWlB2f2dNj0fAY8seZtvep
-        iMksfWXcit+5e41KI+PSD8snwdLqdN4tRq/eDpqmmg==
-X-Google-Smtp-Source: ABdhPJyZGKvGnxD2CIdMiQREsVQ1HcwtZM1JRfUu9L6kEngXp5CZ452oDL3g8DnPzot/p3uA3kuCYblnTqzbZUjMv6k=
-X-Received: by 2002:a05:6808:bd5:: with SMTP id o21mr2268625oik.172.1623913599850;
- Thu, 17 Jun 2021 00:06:39 -0700 (PDT)
+        bh=LTOj6xfPO3fsV1CEIiylHgE3vD+iDDnuC1azPtYCNX0=;
+        b=PCP2X66mClHV2GBOOw8tS/30kJbT4FWyQ9ycr5gHJc4bReCOxahzmpQGTcWk6zuviK
+         S15x1jough8JwAudOG4HKqqGrcCR8n1kYilDK4VJQxlXfsauxhNm8iDC3di+31GHjTfZ
+         ONXTQShyWxZtvEgwBk+OOuMNRethiRMN3dZdbHVA7+g61RD/2AOeIji3vD0pOrfrQgkH
+         IEeyjrpZNec9mUPPIdvzrPth37CT1+FAdyDVLynW8bsQoqExG3zFa0pwBXT+VdE8euvR
+         aMiiaDmXDOdcHlC90CLoy8vYuMron1SWPHLn6a/GQCAiQ+V0Mt3YUFu05WzO0nZrLAiS
+         J50A==
+X-Gm-Message-State: AOAM533HEdj6y3iTxaErdAbZJTVIYWu+Jvqw79S0qr59GLFXaAqCGKLK
+        tv4llEpXfwJp5Ht2hjH9m/2r0xPlzKhLKCDQ8EVyRlo23jk=
+X-Google-Smtp-Source: ABdhPJzIxRJtTuS6xsgzFG4n1rzZprPGin+rzMki23EjsAvTRZeldD9nMVWMOrUOdSqxYhJak4NoNeSLip3VKtkJOT8=
+X-Received: by 2002:a05:6a00:8c4:b029:2b4:8334:ed4d with SMTP id
+ s4-20020a056a0008c4b02902b48334ed4dmr3847867pfu.36.1623913654992; Thu, 17 Jun
+ 2021 00:07:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210617063956.94061-1-dja@axtens.net> <20210617063956.94061-2-dja@axtens.net>
-In-Reply-To: <20210617063956.94061-2-dja@axtens.net>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 17 Jun 2021 09:06:28 +0200
-Message-ID: <CANpmjNPw2_Av0HVSBMP0nj0a2dwqKxMopWwvsyQF1vv5hN0zzA@mail.gmail.com>
-Subject: Re: [PATCH v14 1/4] kasan: allow an architecture to disable inline instrumentation
-To:     Daniel Axtens <dja@axtens.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        aneesh.kumar@linux.ibm.com, Balbir Singh <bsingharora@gmail.com>
+References: <20210616155706.17444-1-paul@crapouillou.net> <20210616155706.17444-2-paul@crapouillou.net>
+In-Reply-To: <20210616155706.17444-2-paul@crapouillou.net>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Thu, 17 Jun 2021 10:07:23 +0300
+Message-ID: <CA+U=Dsqcf5EERsFHh5LFHwe5U9MhpPxQNLBVUjM9boTMnp+rQQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] iio: core: Forbid use of both labels and extended names
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 at 08:40, Daniel Axtens <dja@axtens.net> wrote:
+On Wed, Jun 16, 2021 at 7:01 PM Paul Cercueil <paul@crapouillou.net> wrote:
 >
-> For annoying architectural reasons, it's very difficult to support inline
-> instrumentation on powerpc64.*
+> Extended names are a problem for user-space as they make the filenames
+> in sysfs sometimes not parsable. They are now deprecated in favor of
+> labels.
 >
-> Add a Kconfig flag to allow an arch to disable inline. (It's a bit
-> annoying to be 'backwards', but I'm not aware of any way to have
-> an arch force a symbol to be 'n', rather than 'y'.)
+> This change makes sure that a device driver won't provide both labels
+> and extended names for its channels. It has never been the case and we
+> don't want it to happen.
 >
-> We also disable stack instrumentation in this case as it does things that
-> are functionally equivalent to inline instrumentation, namely adding
-> code that touches the shadow directly without going through a C helper.
->
-> * on ppc64 atm, the shadow lives in virtual memory and isn't accessible in
-> real mode. However, before we turn on virtual memory, we parse the device
-> tree to determine which platform and MMU we're running under. That calls
-> generic DT code, which is instrumented. Inline instrumentation in DT would
-> unconditionally attempt to touch the shadow region, which we won't have
-> set up yet, and would crash. We can make outline mode wait for the arch to
-> be ready, but we can't change what the compiler inserts for inline mode.
->
-> Signed-off-by: Daniel Axtens <dja@axtens.net>
 
-Reviewed-by: Marco Elver <elver@google.com>
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
 
-
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
->  lib/Kconfig.kasan | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+>  drivers/iio/industrialio-core.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
 >
-> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-> index cffc2ebbf185..cb5e02d09e11 100644
-> --- a/lib/Kconfig.kasan
-> +++ b/lib/Kconfig.kasan
-> @@ -12,6 +12,15 @@ config HAVE_ARCH_KASAN_HW_TAGS
->  config HAVE_ARCH_KASAN_VMALLOC
->         bool
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index 59efb36db2c7..81f40dab778a 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -1836,6 +1836,24 @@ static int iio_check_unique_scan_index(struct iio_dev *indio_dev)
+>         return 0;
+>  }
 >
-> +config ARCH_DISABLE_KASAN_INLINE
-> +       bool
-> +       help
-> +         Sometimes an architecture might not be able to support inline
-> +         instrumentation but might be able to support outline instrumentation.
-> +         This option allows an architecture to prevent inline and stack
-> +         instrumentation from being enabled.
+> +static int iio_check_extended_name(const struct iio_dev *indio_dev)
+> +{
+> +       unsigned int i;
 > +
+> +       if (!indio_dev->info->read_label)
+> +               return 0;
 > +
->  config CC_HAS_KASAN_GENERIC
->         def_bool $(cc-option, -fsanitize=kernel-address)
+> +       for (i = 0; i < indio_dev->num_channels; i++) {
+> +               if (indio_dev->channels[i].extend_name) {
+> +                       dev_err(&indio_dev->dev,
+> +                               "Cannot use labels and extend_name at the same time\n");
+> +                       return -EINVAL;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static const struct iio_buffer_setup_ops noop_ring_setup_ops;
 >
-> @@ -130,6 +139,7 @@ config KASAN_OUTLINE
+>  int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
+> @@ -1860,6 +1878,10 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
+>         if (ret < 0)
+>                 return ret;
 >
->  config KASAN_INLINE
->         bool "Inline instrumentation"
-> +       depends on !ARCH_DISABLE_KASAN_INLINE
->         help
->           Compiler directly inserts code checking shadow memory before
->           memory accesses. This is faster than outline (in some workloads
-> @@ -141,6 +151,7 @@ endchoice
->  config KASAN_STACK
->         bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
->         depends on KASAN_GENERIC || KASAN_SW_TAGS
-> +       depends on !ARCH_DISABLE_KASAN_INLINE
->         default y if CC_IS_GCC
->         help
->           The LLVM stack address sanitizer has a know problem that
-> @@ -154,6 +165,9 @@ config KASAN_STACK
->           but clang users can still enable it for builds without
->           CONFIG_COMPILE_TEST.  On gcc it is assumed to always be safe
->           to use and enabled by default.
-> +         If the architecture disables inline instrumentation, this is
-> +         also disabled as it adds inline-style instrumentation that
-> +         is run unconditionally.
+> +       ret = iio_check_extended_name(indio_dev);
+> +       if (ret < 0)
+> +               return ret;
+> +
+>         iio_device_register_debugfs(indio_dev);
 >
->  config KASAN_SW_TAGS_IDENTIFY
->         bool "Enable memory corruption identification"
+>         ret = iio_buffers_alloc_sysfs_and_mask(indio_dev);
 > --
 > 2.30.2
 >
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210617063956.94061-2-dja%40axtens.net.
