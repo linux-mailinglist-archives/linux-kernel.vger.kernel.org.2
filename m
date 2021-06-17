@@ -2,97 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2846C3ABEF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBC43ABEFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhFQWfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 18:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59222 "EHLO
+        id S231438AbhFQWgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 18:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbhFQWfp (ORCPT
+        with ESMTP id S232482AbhFQWgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 18:35:45 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DF7C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 15:33:36 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id s6so5872538edu.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 15:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OaoP1XPBwGk1yK5n09/1HQPhsRu1MIRshfXxsvpXFEY=;
-        b=AuD2WdEmm3enMlcrr8WgqrpyI6kR1vZW7RtXxN7W1WvwB/4/+XMMUMSVDGN7mp0ZCo
-         2IDJMrYjYjClOYU19NJnG8qCyB41siT+DQ9ltGLm3gpGXcJpCLtlmAFhgSQxJnUjZtTU
-         0F58BykXf/Ihm45GNEvbJdkG/NBf4oa+4AEur2xLoT+WmGhxRNm9NemCGoaKMF/oWtQV
-         iOCKGr5lf5NCgHGyWvmy5J7BSpJ5J600tdiHjyX4hN0C+J0MxOp2tTv94KunSanPfEHV
-         sK7oGw/gFHqiK52SyahSOWZmoKPQ3KOZmLLT+A4puT069ncGTav4cWjRwbe4j9kJ+QAB
-         hFtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OaoP1XPBwGk1yK5n09/1HQPhsRu1MIRshfXxsvpXFEY=;
-        b=d7qoRvd4yokCeh7wJP9ugDnOz3s9P1EmJJYg8mmqlZ3IWffoA2nWSWT8hQojVjAz1L
-         7n9/t446jLVT7nJ3rVi2GSH1IpIhV5cwrU4HXDCGbCjssje06xjKiMIONWQnHruweuWq
-         7sgoqbdYodpI7XgMVqvUHFO4C6XD7/b5G+sCy57GEqoou8uRlGnW0RaSnzW3wTRlTPcV
-         yrSIvQQZuhiIIYVMTL2T3Ymj5ohsvJm8brKfpVMcmIJnAAwtEFWX9zigEhOtUEXjeUrb
-         lE0zdVNMqxeoQ4TIqyND9nxK8oj3g9uXaTg0nlS07H5floznAj8vLj3IQTv2jBw+wN5d
-         CNtw==
-X-Gm-Message-State: AOAM530qnHZAvRc9CweeG+FmluYMBXvyS2W0odFV4ntux5rBbCjcUBMJ
-        j0d/1CIq8xr8CKpyhrj4Ib0cPc0CVlmPBp0ezI0=
-X-Google-Smtp-Source: ABdhPJzH7Auby+UpfdN925mgN1EmQk+eJ1uoHhcMCWAa33jXnDkaDWCJ17XcAI3qk6jxhazLHLxEu83SYBoFGqBA38Q=
-X-Received: by 2002:aa7:de1a:: with SMTP id h26mr812353edv.176.1623969214809;
- Thu, 17 Jun 2021 15:33:34 -0700 (PDT)
+        Thu, 17 Jun 2021 18:36:35 -0400
+Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A160C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 15:34:27 -0700 (PDT)
+Received: from [192.168.1.101] (83.6.168.10.neoplus.adsl.tpnet.pl [83.6.168.10])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 0D9B63F647;
+        Fri, 18 Jun 2021 00:34:24 +0200 (CEST)
+Subject: Re: [PATCH v3 3/5] arm64: dts: qcom: pmm8155au_1: Add base dts file
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     bhupesh.linux@gmail.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, agross@kernel.org,
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20210617054548.353293-1-bhupesh.sharma@linaro.org>
+ <20210617054548.353293-4-bhupesh.sharma@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <cba788c2-f826-94f0-0bcd-bae491ac4189@somainline.org>
+Date:   Fri, 18 Jun 2021 00:34:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210617194154.2397-1-linux.amoon@gmail.com> <20210617194154.2397-2-linux.amoon@gmail.com>
-In-Reply-To: <20210617194154.2397-2-linux.amoon@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Fri, 18 Jun 2021 00:33:24 +0200
-Message-ID: <CAFBinCC4_bsTEwj5+=iH-ZF3LpSzSjN-x44Yr_XU4R9=Wzq-Mw@mail.gmail.com>
-Subject: Re: [RFCv1 1/8] phy: amlogic: meson8b-usb2: Use clock bulk to get
- clocks for phy
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210617054548.353293-4-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anand,
 
-On Thu, Jun 17, 2021 at 9:42 PM Anand Moon <linux.amoon@gmail.com> wrote:
-[...]
-> +       int                                             num_clks;
-> +       struct clk_bulk_data                            *clks;
-personally I'd get rid of the num_clks as this value is static
-instead I would add a #define with the number of clocks and then...
+On 17.06.2021 07:45, Bhupesh Sharma wrote:
+> Add base DTS file for pmm8155au_1 along with GPIOs, power-on, rtc and vadc
+> nodes.
+>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi | 134 ++++++++++++++++++++++
+>  1 file changed, 134 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+>
+> diff --git a/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi b/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+> new file mode 100644
+> index 000000000000..b04c28e54470
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+> @@ -0,0 +1,134 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2021, Linaro Limited
+> + */
+> +
+> +#include <dt-bindings/input/input.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/spmi/spmi.h>
+> +#include <dt-bindings/iio/qcom,spmi-vadc.h>
+> +
+> +/ {
+> +	thermal-zones {
+> +		pmm8155au-1-thermal {
+> +			polling-delay-passive = <100>;
+> +			polling-delay = <0>;
+> +
+> +			thermal-sensors = <&pmm8155au_1_temp>;
+> +
+> +			trips {
+> +				trip0 {
+> +					temperature = <95000>;
+> +					hysteresis = <0>;
+> +					type = "passive";
+> +				};
+> +
+> +				trip1 {
+> +					temperature = <115000>;
+> +					hysteresis = <0>;
+> +					type = "hot";
+> +				};
+> +
+> +				trip2 {
+> +					temperature = <145000>;
+> +					hysteresis = <0>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&spmi_bus {
+> +	pmic@0 {
+> +		compatible = "qcom,pmm8155au", "qcom,spmi-pmic";
+> +		reg = <0x0 SPMI_USID>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		pon: power-on@800 {
+> +			compatible = "qcom,pm8916-pon";
+> +			reg = <0x0800>;
+> +			pwrkey {
+> +				compatible = "qcom,pm8941-pwrkey";
+> +				interrupts = <0x0 0x8 0x0 IRQ_TYPE_EDGE_BOTH>;
+> +				debounce = <15625>;
+> +				bias-pull-up;
+> +				linux,code = <KEY_POWER>;
+> +
+> +				status = "disabled";
+> +			};
 
->         struct reset_control                            *reset;
-... use something like:
-struct clk_bulk_data                            clks[MESON8B_USB2_PHY_NUM_CLKS];
+Oh, okay, so the power key is there, then I withdraw my worries from _2.
 
-[...]
-> +               dev_err(&phy->dev, "Failed to enable USB clock\n");
-clock -> clocks
-
-[...]
-> +       priv->num_clks = ARRAY_SIZE(meson_phy_clks);
-> +       priv->clks = devm_kcalloc(&pdev->dev, priv->num_clks,
-> +                                 sizeof(*priv->clks), GFP_KERNEL);
-> +       if (!priv->clks)
-> +               return -ENOMEM;
-by using a fixed-size array as suggested above you don't need to
-dynamically allocate memory anymore
+I'm still interested in the reg situation though.
 
 
-Best regards,
-Martin
+
+> +		};
+> +
+> +		pmm8155au_1_temp: temp-alarm@2400 {
+> +			compatible = "qcom,spmi-temp-alarm";
+> +			reg = <0x2400>;
+> +			interrupts = <0x0 0x24 0x0 IRQ_TYPE_EDGE_BOTH>;
+> +			io-channels = <&pmm8155au_1_adc ADC5_DIE_TEMP>;
+> +			io-channel-names = "thermal";
+> +			#thermal-sensor-cells = <0>;
+> +		};
+> +
+> +		pmm8155au_1_adc: adc@3100 {
+> +			compatible = "qcom,spmi-adc5";
+> +			reg = <0x3100>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			#io-channel-cells = <1>;
+> +			interrupts = <0x0 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
+> +
+> +			ref-gnd@0 {
+> +				reg = <ADC5_REF_GND>;
+> +				qcom,pre-scaling = <1 1>;
+> +				label = "ref_gnd";
+> +			};
+> +
+> +			vref-1p25@1 {
+> +				reg = <ADC5_1P25VREF>;
+> +				qcom,pre-scaling = <1 1>;
+> +				label = "vref_1p25";
+> +			};
+> +
+> +			die-temp@6 {
+> +				reg = <ADC5_DIE_TEMP>;
+> +				qcom,pre-scaling = <1 1>;
+> +				label = "die_temp";
+> +			};
+> +		};
+> +
+> +		pmm8155au_1_adc_tm: adc-tm@3500 {
+> +			compatible = "qcom,spmi-adc-tm5";
+> +			reg = <0x3500>;
+> +			interrupts = <0x0 0x35 0x0 IRQ_TYPE_EDGE_RISING>;
+> +			#thermal-sensor-cells = <1>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			status = "disabled";
+> +		};
+> +
+> +		pmm8155au_1_rtc: rtc@6000 {
+> +			compatible = "qcom,pm8941-rtc";
+> +			reg = <0x6000>;
+> +			reg-names = "rtc", "alarm";
+> +			interrupts = <0x0 0x61 0x1 IRQ_TYPE_NONE>;
+> +
+> +			status = "disabled";
+> +		};
+> +
+> +		pmm8155au_1_gpios: gpio@c000 {
+> +			compatible = "qcom,pmm8155au-gpio";
+> +			reg = <0xc000>;
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+
+And the same question about gpio-ranges from _2.
+
+
+
+> +	};
+> +
+> +	pmic@1 {
+> +		compatible = "qcom,pmm8155au", "qcom,spmi-pmic";
+> +		reg = <0x1 SPMI_USID>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +	};
+> +};
+>
+
+Konrad
+
