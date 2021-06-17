@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB273AB6BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B663AB6C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbhFQPDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:03:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33326 "EHLO mail.kernel.org"
+        id S232969AbhFQPDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:03:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231712AbhFQPDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:03:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F2FE60C3E;
-        Thu, 17 Jun 2021 15:01:40 +0000 (UTC)
+        id S232943AbhFQPDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 11:03:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C01AE60C3E;
+        Thu, 17 Jun 2021 15:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623942101;
-        bh=3RE7WRrA88CdxT7JvZykyqTLFvdVb+YMRibG14mS8LY=;
+        s=k20201202; t=1623942104;
+        bh=NK0hn3vw5IKcdns+8rADQfTxpAK7UdjTsHCh/B4bILA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pd1GNfenFPnLQaobl+oQhagXfO2dbKFv8POIZgo2FkTelsWvmx74wqC3BjKU1XRLT
-         26TWPgGNbND4XlIb+oHeC21ZCpPmGEcMQ3LnFw77mJpGxpJzm/OvAcsAUYMQNuMSjP
-         Lm+YTR/ktxssHyYxI1mO1BnEgUCuRG/bBeezBaQ8aGh+pbiKtJWBkJMDPc6Zsmkodb
-         abthEJVkKdn2Zo5emkpWS3P9CcTRBgmdspXinwbVwIiLKbLh62+Ch5p9AnMKQ/ntLV
-         JQTrZOMbp9Kwpt5054MwtH6ab0D8RxyW/5Ne7PCwsbsSBzEGUAFMkWmsPEGsKfH/7h
-         v1j4Ero+rtxgw==
+        b=hHuMLbzUhQZbegtkzsLAxghPUBYwDlNPx/Mgbujp25Pc9qfz6uf4XHbFgCBbBaEsY
+         IAQGUcoR3E8nzCvgJRUeCegbuIrjgctFpf/baqOQM/nwG/n9M96LAFDwWt2RERH2Ve
+         oeI1RUL/3MEZA7otr+8zMIY1kVTaVtIerXdnG2jbQbTImvPPiHDaYpyjcNHc0z2cri
+         YqbzqE4Z36kbPArEE6sVpKQPmqPHPoODh44aWp8oL8d+W1etwZVyuiJW/avmFX60X+
+         D9xS3b5euA7e0IlSsVSnShxYSKYi4dGbnR7j4Cy1dxOEsMK8S9m2ywMZkm8FlqfWyS
+         p612Q6qWPQfTg==
 From:   Mark Brown <broonie@kernel.org>
-To:     michal.simek@xilinx.com, robh+dt@kernel.org,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        harinik@xilinx.com, devicetree@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: spi: convert Cadence SPI bindings to YAML
-Date:   Thu, 17 Jun 2021 16:01:13 +0100
-Message-Id: <162394121400.19455.13291098800034403183.b4-ty@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        alsa-devel@alsa-project.org
+Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+Subject: Re: [PATCH -next] ASoC: sprd: Use devm_platform_get_and_ioremap_resource()
+Date:   Thu, 17 Jun 2021 16:01:14 +0100
+Message-Id: <162394075659.19104.18167768597198191135.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210605003811.858676-1-iwamatsu@nigauri.org>
-References: <20210605003811.858676-1-iwamatsu@nigauri.org>
+In-Reply-To: <20210617033237.605808-1-yangyingliang@huawei.com>
+References: <20210617033237.605808-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,17 +41,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 5 Jun 2021 09:38:11 +0900, Nobuhiro Iwamatsu wrote:
-> Convert spi for Cadence SPI bindings documentation to YAML.
+On Thu, 17 Jun 2021 11:32:37 +0800, Yang Yingliang wrote:
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] dt-bindings: spi: convert Cadence SPI bindings to YAML
-      commit: aa7968682a2b8a9cecf1d7d07e1c8ae8c08d211e
+[1/1] ASoC: sprd: Use devm_platform_get_and_ioremap_resource()
+      commit: 19b71456f3684f8dba078619a31afab05ee47c3a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
