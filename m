@@ -2,79 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F5A3ABF07
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E19D3ABF0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 00:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232660AbhFQWjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 18:39:45 -0400
-Received: from ozlabs.org ([203.11.71.1]:52055 "EHLO ozlabs.org"
+        id S232466AbhFQWkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 18:40:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232661AbhFQWjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 18:39:44 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G5cPm331wz9sRf;
-        Fri, 18 Jun 2021 08:37:32 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623969453;
-        bh=M5UB9WRJ6An9Z6EqUYEWOhrgrmtFtXMCXaZLA/HVdK8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CY52DDXIZwgnqK5VyplUJG+HH9GTu1tgH92SuVVm2sVEYC9yCxft4RBDf0+IdLBK1
-         btiFdFseyKI+2j9FqcjQIrUaDLSdVq4QcKjGVzdoI47odv8Xlbc+JQq0N3q1LXuD+N
-         WVDGo25SxZ45tfpE7OIF2XWBbeOsErRls0fComHIVKizFLxHi0eDbdAVfX2IM2572Z
-         xMqw5gc8qKP5wZxx1Ks1yZrTrau/rq+pYjzeaN9MGwlM73vsXd6aayidRzdipgleNF
-         mDUQ49KoH8DmZxHNphhup17oCNi/XXTGWKicN0qTOnCl5ink4muRgThRQqsrfINIaZ
-         yOQG6o76Uq2EA==
-Date:   Fri, 18 Jun 2021 08:37:31 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mark.gross@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commits in the drivers-x86
- tree
-Message-ID: <20210618083731.2481f7b5@canb.auug.org.au>
+        id S231295AbhFQWkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 18:40:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35AFE60FD8;
+        Thu, 17 Jun 2021 22:38:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623969521;
+        bh=qqHRTTZGb8fmRoew8uf2CS8qX5xAPH3gA6rFAi+Yplw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=R5Ly58EFnYZGK9sLng2WwQ0BQZkeW2iMVad/RKf5RRMyF4JtKMgmbyVRQnQZRtHpO
+         9P7vcq4Vg5J42eK0prvofVOdygMMmedXoSjoM9nLhDquvxM3vlI7+jWJHvJnwKT37V
+         kJmxqFrA/9C479jZ4u+Bu5jPxx/m7ylQnqRPuwO6LNP6e+VFd58L5DQB9cdjvuf+ve
+         k9OByJV9wHetNfRyiyaq2mN24njiLyUu30ThvhxbU1o11Pg5nbjjPCnlQFHDApul45
+         E74Eoc/WVZCANFhhVhDRTAAjFSkqn0pdwzcfUineCsFy0E+8TJP57nNT9jqIsVQEeJ
+         bRRerckKd1oZg==
+From:   Will Deacon <will@kernel.org>
+To:     shawnguo@kernel.org, festevam@gmail.com, s.hauer@pengutronix.de,
+        linux-imx@nxp.com, kernel@pengutronix.de, mark.rutland@arm.com,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>, Frank.li@nxp.com
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] drivers/perf: fix the missed ida_simple_remove() in ddr_perf_probe()
+Date:   Thu, 17 Jun 2021 23:38:33 +0100
+Message-Id: <162395552450.941285.1019877721781779869.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210617122614.166823-1-jingxiangfeng@huawei.com>
+References: <20210617122614.166823-1-jingxiangfeng@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GD18h2yq8Mf_15FBd=KSs4/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GD18h2yq8Mf_15FBd=KSs4/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 17 Jun 2021 20:26:14 +0800, Jing Xiangfeng wrote:
+> ddr_perf_probe() misses to call ida_simple_remove() in an error path.
+> Jump to cpuhp_state_err to fix it.
 
-Hi all,
+Applied to will (for-next/perf), thanks!
 
-Commits
+[1/1] drivers/perf: fix the missed ida_simple_remove() in ddr_perf_probe()
+      https://git.kernel.org/will/c/d96b1b8c9f79
 
-  de5db8ebe7de ("tools/power/x86/intel-speed-select: v1.10 release")
-  f45d05b29cca ("tools/power/x86/intel-speed-select: Fix uncore memory freq=
-uency display")
-
-are missing a Signed-off-by from their committer.
-
---=20
 Cheers,
-Stephen Rothwell
+-- 
+Will
 
---Sig_/GD18h2yq8Mf_15FBd=KSs4/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDLzqsACgkQAVBC80lX
-0GwTiwf/ThW36llcpem4mhBg4QdM6hoktM3PLQaQbNtd7GQPlaD8/XdEMtzEq9OX
-b0dgGGrSIAsucnpOSu9bV16MBYWGfV2zaLHBNhq/qDZ1B706ICi29S1o2QwO/lde
-xpVfvNo8RgGorgjaAlTtPtBPSLxRF11MRsdR5X4pCcRrJJSm/9UwOaTO3DdD0kHB
-RjR9dhBHHJKCkfiaOaPEzS0EPe1O1DNbtigsfnESDkzSk5/0qgbB3pD3Ehj5kz+T
-lHmN82ODtb1URTqv+U9CA2tGH508Uj10lZb5RZzWC5eTflKxfkABiCu/2QGq0wAR
-vx54fmEYfAmiusl6JtjrfmqNIHewbw==
-=JlnV
------END PGP SIGNATURE-----
-
---Sig_/GD18h2yq8Mf_15FBd=KSs4/--
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
