@@ -2,103 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1FA3AB1B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CA13AB1BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbhFQK7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 06:59:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231279AbhFQK7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 06:59:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5136961027;
-        Thu, 17 Jun 2021 10:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623927447;
-        bh=IOLXRmg80R/OU5e3aquf/aBP/w6TFTssC0a1ZsufaBE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TPlg5Wc/RxKgHEl1up2Fz/iVJ91x7qOxxX4mM+GJ16SvC4RMKwYnw4X3ChgWjl2Fs
-         Uaj6YIViwFXCBIBAlKiNr2D1D/huDd7WzT8lHAV0tMAoJWGyxumolOoDVIMr6xIZUd
-         hmKopnh6JO/rofkgakPk+guzigeSt6MK5BaQ1dC0=
-Date:   Thu, 17 Jun 2021 12:57:24 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        German Rivera <German.Rivera@freescale.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-omap@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Stuart Yoder <stuyoder@gmail.com>,
-        Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 00/10] Rid W=1 warnings from Bus
-Message-ID: <YMsqlAywR2toXd+3@kroah.com>
-References: <20210526081038.544942-1-lee.jones@linaro.org>
- <74eb170b-348b-1bba-432c-52c9541b05fe@nxp.com>
- <YMsajH2uxw4RHPeF@dell>
- <1711c37d-19d3-b923-d02a-433586c951ee@nxp.com>
+        id S232221AbhFQLAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:00:37 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:8256 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231454AbhFQLAh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 07:00:37 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G5JnK2bvcz1BNRZ;
+        Thu, 17 Jun 2021 18:53:25 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 18:58:27 +0800
+Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 18:58:26 +0800
+From:   Yanan Wang <wangyanan55@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        "Quentin Perret" <qperret@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>, <wanghaibin.wang@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
+        Yanan Wang <wangyanan55@huawei.com>
+Subject: [PATCH v7 0/4] KVM: arm64: Improve efficiency of stage2 page table
+Date:   Thu, 17 Jun 2021 18:58:20 +0800
+Message-ID: <20210617105824.31752-1-wangyanan55@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1711c37d-19d3-b923-d02a-433586c951ee@nxp.com>
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 01:11:39PM +0300, Laurentiu Tudor wrote:
-> 
-> 
-> On 6/17/2021 12:49 PM, Lee Jones wrote:
-> > On Wed, 26 May 2021, Laurentiu Tudor wrote:
-> > 
-> >> Hi Lee,
-> >>
-> >> On 5/26/2021 11:10 AM, Lee Jones wrote:
-> >>> This set is part of a larger effort attempting to clean-up W=1
-> >>> kernel builds, which are currently overwhelmingly riddled with
-> >>> niggly little warnings.
-> >>>
-> >>> Lee Jones (10):
-> >>>   bus: fsl-mc: mc-io: Supply function names for 'fsl_create_mc_io()' and
-> >>>     'fsl_destroy_mc_io()'
-> >>>   bus: fsl-mc: mc-sys: Supply missing function names in kernel-doc
-> >>>     headers
-> >>>   bus: fsl-mc: fsl-mc-bus: Demote a bunch of non-conformant kernel-doc
-> >>>     headers and help others
-> >>>   bus: fsl-mc: dprc: Fix a couple of misspelling and formatting issues
-> >>>   bus: fsl-mc: dprc-driver: Fix some missing/incorrect function
-> >>>     parameter descriptions
-> >>>   bus: fsl-mc: fsl-mc-allocator: Fix misspelling of 'new_mc_adev' and
-> >>>     demote non-kernel-doc headers
-> >>>   bus: qcom-ebi2: Fix incorrect documentation for '{slow,fast}_cfg'
-> >>>   bus: fsl-mc-msi: Fix a little doc-rot pertaining to 'np' to 'fwnode'
-> >>>     conversion
-> >>>   bus: ti-sysc: Correct misdocumentation of 'sysc_ioremap()'
-> >>>   bus: fsl-mc: mc-io: Correct misdocumentation of 'dpmcp_dev' param
-> >>>
-> >>>  drivers/bus/fsl-mc/dprc-driver.c      |  8 +++++---
-> >>>  drivers/bus/fsl-mc/dprc.c             |  4 ++--
-> >>>  drivers/bus/fsl-mc/fsl-mc-allocator.c | 10 +++++-----
-> >>>  drivers/bus/fsl-mc/fsl-mc-bus.c       | 19 ++++++++++---------
-> >>>  drivers/bus/fsl-mc/fsl-mc-msi.c       |  2 +-
-> >>>  drivers/bus/fsl-mc/mc-io.c            |  6 +++---
-> >>>  drivers/bus/fsl-mc/mc-sys.c           | 19 ++++++++++---------
-> >>
-> >> Thanks for this. For drivers/bus/fsl-mc/*:
-> >>
-> >> Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-> > 
-> > Any idea who will take the 'fsl-mc' patches please?
-> > 
-> 
-> Usually GregKH (added in the thread) picks them up through his char-misc
-> tree.
+Hello,
+This series makes some efficiency improvement of guest stage-2 page
+table code, and there are some test results to quantify the benefit.
 
-If you resend just the fsl-mc patches as a series, I can pick them up
-that way.  Otherwise trying to pick out individual ones here is pretty
-much impossible...
+Description for this series:
+We currently uniformly permorm CMOs of D-cache and I-cache in function
+user_mem_abort before calling the fault handlers. If we get concurrent
+guest faults(e.g. translation faults, permission faults) or some really
+unnecessary guest faults caused by BBM, CMOs for the first vcpu are
+necessary while the others later are not.
 
-thanks,
+By moving CMOs to the fault handlers, we can easily identify conditions
+where they are really needed and avoid the unnecessary ones. As it's a
+time consuming process to perform CMOs especially when flushing a block
+range, so this solution reduces much load of kvm and improve efficiency
+of the stage-2 page table code.
 
-greg k-h
+We can imagine two specific scenarios which will gain much benefit:
+1) In a normal VM startup, this solution will improve the efficiency of
+handling guest page faults incurred by vCPUs, when initially populating
+stage-2 page tables.
+2) After live migration, the heavy workload will be resumed on the
+destination VM, however all the stage-2 page tables need to be rebuilt
+at the moment. So this solution will ease the performance drop during
+resuming stage.
+
+The following are test results originally from v3 [1] to represent how
+much benefit was introduced by movement of CMOs. We can use KVM selftest
+to simulate a scenario of concurrent guest memory access and test the
+execution time that KVM uses to create new stage-2 mappings, update the
+existing mappings, split/rebuild huge mappings during/after dirty logging.
+
+hardware platform: HiSilicon Kunpeng920 Server
+host kernel: Linux mainline v5.12-rc2
+test tools: KVM selftest [2]
+[1] https://lore.kernel.org/lkml/20210326031654.3716-1-wangyanan55@huawei.com/
+[2] https://lore.kernel.org/lkml/20210302125751.19080-1-wangyanan55@huawei.com/
+
+cmdline: ./kvm_page_table_test -m 4 -s anonymous -b 1G -v 80
+           (80 vcpus, 1G memory, page mappings(normal 4K))
+KVM_CREATE_MAPPINGS: before 104.35s -> after  90.42s  +13.35%
+KVM_UPDATE_MAPPINGS: before  78.64s -> after  75.45s  + 4.06%
+
+cmdline: ./kvm_page_table_test -m 4 -s anonymous_thp -b 20G -v 40
+           (40 vcpus, 20G memory, block mappings(THP 2M))
+KVM_CREATE_MAPPINGS: before  15.66s -> after   6.92s  +55.80%
+KVM_UPDATE_MAPPINGS: before 178.80s -> after 123.35s  +31.00%
+KVM_REBUILD_BLOCKS:  before 187.34s -> after 131.76s  +30.65%
+
+cmdline: ./kvm_page_table_test -m 4 -s anonymous_hugetlb_1gb -b 20G -v 40
+           (40 vcpus, 20G memory, block mappings(HUGETLB 1G))
+KVM_CREATE_MAPPINGS: before 104.54s -> after   3.70s  +96.46%
+KVM_UPDATE_MAPPINGS: before 174.20s -> after 115.94s  +33.44%
+KVM_REBUILD_BLOCKS:  before 103.95s -> after   2.96s  +97.15%
+
+---
+
+Changelogs:
+v6->v7:
+- refine the new callback names and the related comments (Marc)
+- refine the patch subject and commit messages
+- v6: https://lore.kernel.org/lkml/20210616095200.38008-1-wangyanan55@huawei.com/
+
+v5->v6:
+- convert the guest CMO functions into callbacks in kvm_pgtable_mm_ops (Marc)
+- drop patch #6 in v5 since we are stuffing topup into mmu_lock section (Quentin)
+- rebased on latest kvmarm/tree
+- v5: https://lore.kernel.org/lkml/20210415115032.35760-1-wangyanan55@huawei.com/
+
+v4->v5:
+- rebased on the latest kvmarm/tree to adapt to the new stage-2 page-table code
+- v4: https://lore.kernel.org/lkml/20210409033652.28316-1-wangyanan55@huawei.com
+
+---
+
+Yanan Wang (4):
+  KVM: arm64: Introduce two cache maintenance callbacks
+  KVM: arm64: Introduce mm_ops member for structure stage2_attr_data
+  KVM: arm64: Tweak parameters of guest cache maintenance functions
+  KVM: arm64: Move guest CMOs to the fault handlers
+
+ arch/arm64/include/asm/kvm_mmu.h     |  9 +----
+ arch/arm64/include/asm/kvm_pgtable.h | 42 ++++++++++++---------
+ arch/arm64/kvm/hyp/pgtable.c         | 48 ++++++++++++++++++------
+ arch/arm64/kvm/mmu.c                 | 55 +++++++++++++---------------
+ 4 files changed, 89 insertions(+), 65 deletions(-)
+
+-- 
+2.23.0
+
