@@ -2,225 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CEE3AA84D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650713AA85B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbhFQA4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 20:56:52 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:56929 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbhFQA4v (ORCPT
+        id S231775AbhFQBEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 21:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231628AbhFQBET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 20:56:51 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210617005443epoutp045471f82565e6908e80f6aa81aeb61495~JOISxk3531798117981epoutp049
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 00:54:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210617005443epoutp045471f82565e6908e80f6aa81aeb61495~JOISxk3531798117981epoutp049
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1623891283;
-        bh=Pk+kGhGf8WOsTr8n6Nk2Q9N0imKFPx+eWrNowitJSnY=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=ogyc8hIUO1F0McF/v5r3kEAUh/OQmX116QPfd036eBlkZNFVBBlMPXp1yyMGurGTd
-         3vkd7MRh9bDhzSvvUaMNfdlDLqpfxT9to+TyUWMygVbqfiP2Hos0s2n0HLUVhCjNas
-         cAYfxwePV8KnyNRAkaHSehcHdzODmqVAs2/zc1Gg=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210617005442epcas1p407c369a53e36535711a9d12747f958f6~JOISTTCXy1198311983epcas1p4b;
-        Thu, 17 Jun 2021 00:54:42 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.152]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4G53VS37Svz4x9QC; Thu, 17 Jun
-        2021 00:54:40 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        97.1D.09736.E4D9AC06; Thu, 17 Jun 2021 09:54:38 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210617005438epcas1p41b598063c342ff446e585221fb813184~JOIONeLeN1192911929epcas1p41;
-        Thu, 17 Jun 2021 00:54:38 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210617005438epsmtrp2cbd56ab5fbbb17b3264508086db3b949~JOIOMa3US1693916939epsmtrp2u;
-        Thu, 17 Jun 2021 00:54:38 +0000 (GMT)
-X-AuditID: b6c32a39-8d9ff70000002608-07-60ca9d4ef9a2
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        46.8B.08637.E4D9AC06; Thu, 17 Jun 2021 09:54:38 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210617005437epsmtip2b9fbb73ac68ddddc25afd2a18c493c2b~JOIN6kiUf1236112361epsmtip2M;
-        Thu, 17 Jun 2021 00:54:37 +0000 (GMT)
-Subject: Re: [PATCH] opp: of: Allow lazy-linking of required-opps to non
- genpd
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        "Viresh Kumar )" <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "andrew-sh . cheng" <andrew-sh.cheng@mediatek.com>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <742b2623-e8ff-db1f-9168-bdbde98110dd@samsung.com>
-Date:   Thu, 17 Jun 2021 10:13:38 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Wed, 16 Jun 2021 21:04:19 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6684FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 18:02:11 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id u20so3473356qtx.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 18:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V60FAIdwpRuq7i04YiGCgFlyof6pScSFtvGQvRXWUdk=;
+        b=BI53e5Dlvr281LKLOlpIuAolvA0Y7t9NryNGS9dc8HvcR+eIOcXZeaESFKfvWgHpCg
+         8AJpxgc6EAI1cdYUY///BpVT9F1F2Yx6emJQrRdYeYckCCmiVBtjYI+1JLNLnZWuxXD4
+         wzc9vZABt4WH0Hr7L64R134+gqb+Wibt4GvkWiawOBkbfzYwtsOyDz7SYZnUFr/FYPoh
+         wijyqLcnvSoLLsEPImDCyXkn7y11VSIhdRYt4+47Q/GaUxC6W7dgaW+7fnyIS9xSqi/f
+         f8LwcLloAgWWLqUsSb2k4LHGwmJt/Qz8BcTdxXNhxEDb4Kj9LUs9YNROVPK6UCwG8dbB
+         0HHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V60FAIdwpRuq7i04YiGCgFlyof6pScSFtvGQvRXWUdk=;
+        b=XbuFvl3CMRu3iM1E1z3JkXvpMnZ6xmCQBDwNSVypAEVZMtl54pcrYBrAxjx3UQfdZ6
+         j5qi2/uqaLsVIP05PLVGvE1IrRYdnHHP9Ju6TNiPqK23vYgZsGjv+nmJMTiPRilAf46r
+         wWNxUmLF6DNquyylnSOfE8iMrFYKh1at9q3SNwbvk/HMD2jETbTOsIGqefbWAQvtK86U
+         Q6jDqWCa3DGWkTjFd4b1F1DLvPu8C/1gtw2NIivesoYZeusvgyfGb7dJ458ezaEQ0Sw/
+         wPtyxpnRbbb6GsytfibMS2O3mnkP02rJutbyY71QoYD002IZXuMILPAk1zeJzA4DDWoq
+         HgTA==
+X-Gm-Message-State: AOAM532v7Zd5Gu3EPTkQSUo+26l5PDS/lc90INGwnQf36SV+SRwsmtav
+        nrDPCK44wjnSS8c2V02PV9rXH93bh42hENilKQcskg==
+X-Google-Smtp-Source: ABdhPJxssU4BEEs8oDkkNcTl7zTEvFfaLouKo/5hp9PLxFb4AorucmdYnxwMqNkRXpz/PQNMcwun+XOLeK8Zm3hiQZM=
+X-Received: by 2002:ac8:5d55:: with SMTP id g21mr2615210qtx.101.1623891730223;
+ Wed, 16 Jun 2021 18:02:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210616090945.sn337tftdcp7y7y6@vireshk-i7>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEJsWRmVeSWpSXmKPExsWy7bCmga7f3FMJBl+eqlhsX/+C1WJC63Zm
-        i8u75rBZfO49wmjx5sdZJot/1zayWGz86mGx+cExNgcOj9kNF1k8Nq3qZPO4c20Pm0fLyf0s
-        HsdvbGfy+LxJLoAtKtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJ
-        xSdA1y0zB+geJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BZYFecWJucWleul5y
-        fq6VoYGBkSlQYUJ2xq65fxkLDipU/Jw4ib2B8ZFkFyMnh4SAicT6bd+Zuxi5OIQEdjBK7PjZ
-        zgbhfGKUWLF9MhOE841Rom3XYjaYlq2nH0Ml9jJKHJvcC9XynlFiwqdDrCBVwgIBEptX/mTs
-        YuTgEBHQknh5MxWkhlngD6PE5L9nWEBq2IDi+1/cAJvKL6AocfXHY0YQm1fATqLpEITNIqAq
-        8X7zAWYQW1QgTOLkthaoGkGJkzOfgM3hFLCUOP/xEDuIzSwgLnHryXwmCFteYvvbOWDPSQgs
-        5ZA48m8uK8QLLhILmzYxQdjCEq+Ob2GHsKUkPr/bC/VmtcTKk0fYIJo7GCW27L8A1WwssX8p
-        KGA4gDZoSqzfpQ8RVpTY+XsuI8RiPol3X3tYQUokBHglOtqEIEqUJS4/uAu1VlJicXsn2wRG
-        pVlI3pmF5IVZSF6YhbBsASPLKkax1ILi3PTUYsMCU+To3sQITqxaljsYp7/9oHeIkYmD8RCj
-        BAezkgivbvGJBCHelMTKqtSi/Pii0pzU4kOMpsAAnsgsJZqcD0zteSXxhqZGxsbGFiaGZqaG
-        hkrivDvZDiUICaQnlqRmp6YWpBbB9DFxcEo1MAX63Xh3PGazNO+xg0ejd4SxT5HXYfvMuiRM
-        tdOzl6Xa7uvpa2Fb701bI/mqbb30gnebpknFmih27Ky8KLFy4oojx5tluqwbZv/c22eZs66t
-        +1feXV5nlg3LdYWYFDt5P2WzMngdstq0xuT8xnWVSRdi3qk/MHgyd2vAisML03cte70nvSlC
-        U+/xqhfv6u12PPxg8nFSQ3RccFJB0vOYQ4KVJfl+qhd2LRe5kiqw+ubeMyduBjA43LL7YTzb
-        LT7eXSjx8awk3VPSJ3fJrVjLYKCntE5YRXwRy2pHHRWftz6X5bpKq2/oVmVvLuA7nn9g9tfv
-        a91zE19oy5V8sHqxcq7bn+ezzhnxl7Ovdvgvza3EUpyRaKjFXFScCAAv+FScNQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphkeLIzCtJLcpLzFFi42LZdlhJXtdv7qkEg5YpnBbb179gtZjQup3Z
-        4vKuOWwWn3uPMFq8+XGWyeLftY0sFhu/elhsfnCMzYHDY3bDRRaPTas62TzuXNvD5tFycj+L
-        x/Eb25k8Pm+SC2CL4rJJSc3JLEst0rdL4MrYNfcvY8FBhYqfEyexNzA+kuxi5OSQEDCR2Hr6
-        MVMXIxeHkMBuRolp3V1MEAlJiWkXjzJ3MXIA2cIShw8XQ9S8ZZT4sfALG0iNsICfxKO5k8Fq
-        RAS0JF7eTAWpYRb4xyjxbuJuNoiGhUwSS051s4A0sAEV7X9xA6yZX0BR4uqPx4wgNq+AnUTT
-        IQibRUBV4v3mA8wgtqhAmMTOJY+ZIGoEJU7OfAI2h1PAUuL8x0PsIDazgLrEn3mXmCFscYlb
-        T+YzQdjyEtvfzmGewCg8C0n7LCQts5C0zELSsoCRZRWjZGpBcW56brFhgWFearlecWJucWle
-        ul5yfu4mRnCEaWnuYNy+6oPeIUYmDsZDjBIczEoivLrFJxKEeFMSK6tSi/Lji0pzUosPMUpz
-        sCiJ817oOhkvJJCeWJKanZpakFoEk2Xi4JRqYMqp87qvzvjOWrJSzcB4wlJ+r3bvU+9YzD+J
-        2ysu/PhvkipX+ZFa/+DTexV+H/oj++gNd1xCAYvzi5UHrq74LzK1Z+HGs4qdHv0fJY9xP7Zr
-        uSV0ri9I//uVuob7kYb9P+Zffe+3MfuPssrntn9fQ1ey+omETmhqPWjboVZ8v6BqjfrE7TM0
-        rZeZnLQN+si8V8atfG3/sUumTFvj1mZIXliu3lqzqmHvtV2qD97liuRrG3zq0DwYcO38mze2
-        gbEZiaYMFXe6yluVXD5L6l/KqG06vWuu4T+N9olq91d2LfsRZW7Ad0d1QnaKTMdHM7klU3g6
-        JvL4MLRrZGsf/3xqhZr1TDPWe4yZbUyX31cLKLEUZyQaajEXFScCAJcK2MwfAwAA
-X-CMS-MailID: 20210617005438epcas1p41b598063c342ff446e585221fb813184
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210616075555epcas1p136129544501878b4bedaf8e46f9a43dc
-References: <20210616053335.4181780-1-hsinyi@chromium.org>
-        <CGME20210616075555epcas1p136129544501878b4bedaf8e46f9a43dc@epcas1p1.samsung.com>
-        <20210616075548.ghp3lmjf4y6pyxoy@vireshk-i7>
-        <b9310754-2105-2a93-ecbf-513d9a80a91a@samsung.com>
-        <20210616090945.sn337tftdcp7y7y6@vireshk-i7>
+References: <20210608231132.32012-1-joshdon@google.com> <YMobzbLecaFYuLtq@slm.duckdns.org>
+In-Reply-To: <YMobzbLecaFYuLtq@slm.duckdns.org>
+From:   Josh Don <joshdon@google.com>
+Date:   Wed, 16 Jun 2021 18:01:59 -0700
+Message-ID: <CABk29NtcRUwskBjrvLKkEKQ0hpNPSrdzrGAGZy+bHSfnznOUSg@mail.gmail.com>
+Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rik van Riel <riel@surriel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 6:09 PM, Viresh Kumar wrote:
-> On 16-06-21, 17:47, Chanwoo Choi wrote:
->> On 6/16/21 4:55 PM, Viresh Kumar wrote:
->>> On 16-06-21, 13:33, Hsin-Yi Wang wrote:
->>>> Don't limit required_opp_table to genpd only. One possible use case is
->>>> cpufreq based devfreq governor, which can use required-opps property to
->>>> derive devfreq from cpufreq.
->>>>
->>>> Suggested-by: Chanwoo Choi <cw00.choi@samsung.com>
->>>> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
->>>> ---
->>>> This is tested with the non genpd case mt8183-cci with passive
->>>> governor[1].
->>>> [1] https://patchwork.kernel.org/project/linux-mediatek/patch/1616499241-4906-2-git-send-email-andrew-sh.cheng@mediatek.com/
->>>> ---
->>>>  drivers/opp/of.c | 20 +-------------------
->>>>  1 file changed, 1 insertion(+), 19 deletions(-)
->>>>
->>>> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
->>>> index aa75a1caf08a3..9573facce53a5 100644
->>>> --- a/drivers/opp/of.c
->>>> +++ b/drivers/opp/of.c
->>>> @@ -201,17 +201,6 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
->>>>  			lazy = true;
->>>>  			continue;
->>>>  		}
->>>> -
->>>> -		/*
->>>> -		 * We only support genpd's OPPs in the "required-opps" for now,
->>>> -		 * as we don't know how much about other cases. Error out if the
->>>> -		 * required OPP doesn't belong to a genpd.
->>>> -		 */
->>>> -		if (!required_opp_tables[i]->is_genpd) {
->>>> -			dev_err(dev, "required-opp doesn't belong to genpd: %pOF\n",
->>>> -				required_np);
->>>> -			goto free_required_tables;
->>>> -		}
->>>>  	}
->>>>  
->>>>  	/* Let's do the linking later on */
->>>> @@ -379,13 +368,6 @@ static void lazy_link_required_opp_table(struct opp_table *new_table)
->>>>  	struct dev_pm_opp *opp;
->>>>  	int i, ret;
->>>>  
->>>> -	/*
->>>> -	 * We only support genpd's OPPs in the "required-opps" for now,
->>>> -	 * as we don't know much about other cases.
->>>> -	 */
->>>> -	if (!new_table->is_genpd)
->>>> -		return;
->>>> -
->>>>  	mutex_lock(&opp_table_lock);
->>>>  
->>>>  	list_for_each_entry_safe(opp_table, temp, &lazy_opp_tables, lazy) {
->>>> @@ -873,7 +855,7 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
->>>>  		return ERR_PTR(-ENOMEM);
->>>>  
->>>>  	ret = _read_opp_key(new_opp, opp_table, np, &rate_not_available);
->>>> -	if (ret < 0 && !opp_table->is_genpd) {
->>>> +	if (ret < 0) {
->>>>  		dev_err(dev, "%s: opp key field not found\n", __func__);
->>>>  		goto free_opp;
->>>>  	}
->>>
->>> Plus this and few changes to commit log.
->>>
->>> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
->>> index e366218d6736..b335c077f215 100644
->>> --- a/drivers/opp/core.c
->>> +++ b/drivers/opp/core.c
->>> @@ -893,6 +893,16 @@ static int _set_required_opps(struct device *dev,
->>>         if (!required_opp_tables)
->>>                 return 0;
->>>  
->>> +       /*
->>> +        * We only support genpd's OPPs in the "required-opps" for now, as we
->>> +        * don't know much about other use cases. Error out if the required OPP
->>> +        * doesn't belong to a genpd.
->>> +        */
->>> +       if (unlikely(!required_opp_tables[0]->is_genpd)) {
->>> +               dev_err(dev, "required-opps don't belong to a genpd\n");
->>> +               return -ENOENT;
->>> +       }
->>> +
->>
->> If you add this checking statement, I think that 
->> when using dev_pm_opp_set_rate with required-opp property, it will be failed.
-> 
-> Yes, that is exactly what I am trying to do here. Hsin already
-> confirmed that you guys won't use this API, isn't ?
-> 
-> The point here is that the _set_required_opps() function only updates
-> the performance state of genpds today. So it won't work for you guys
-> anyway.
+Hey Tejun,
 
-The devfreq driver(exynos-bus.c) has used the dev_pm_opp_set_rate()
-and used the passive governor without the required-opp property.
+Thanks for taking a look.
 
-I have a plan to use the required-opp property
-between devfreq drivers (exynos-bus.c) with dev_pm_opp_set_rate().
+On Wed, Jun 16, 2021 at 8:42 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Tue, Jun 08, 2021 at 04:11:32PM -0700, Josh Don wrote:
+> > This extends SCHED_IDLE to cgroups.
+> >
+> > Interface: cgroup/cpu.idle.
+> >  0: default behavior
+> >  1: SCHED_IDLE
+> >
+> > Extending SCHED_IDLE to cgroups means that we incorporate the existing
+> > aspects of SCHED_IDLE; a SCHED_IDLE cgroup will count all of its
+> > descendant threads towards the idle_h_nr_running count of all of its
+> > ancestor cgroups. Thus, sched_idle_rq() will work properly.
+> > Additionally, SCHED_IDLE cgroups are configured with minimum weight.
+> >
+> > There are two key differences between the per-task and per-cgroup
+> > SCHED_IDLE interface:
+> >
+> > - The cgroup interface allows tasks within a SCHED_IDLE hierarchy to
+> > maintain their relative weights. The entity that is "idle" is the
+> > cgroup, not the tasks themselves.
+> >
+> > - Since the idle entity is the cgroup, our SCHED_IDLE wakeup preemption
+> > decision is not made by comparing the current task with the woken task,
+> > but rather by comparing their matching sched_entity.
+> >
+> > A typical use-case for this is a user that creates an idle and a
+> > non-idle subtree. The non-idle subtree will dominate competition vs
+> > the idle subtree, but the idle subtree will still be high priority
+> > vs other users on the system. The latter is accomplished via comparing
+> > matching sched_entity in the waken preemption path (this could also be
+> > improved by making the sched_idle_rq() decision dependent on the
+> > perspective of a specific task).
+>
+> A high-level problem that I see with the proposal is that this would bake
+> the current recursive implementation into the interface. The semantics of
+> the currently exposed interface, at least the weight based part, is abstract
+> and doesn't necessarily dictate how the scheduling is actually performed.
+> Adding this would mean that we're now codifying the current behavior of
+> fully nested scheduling into the interface.
+>
+> There are several practical challenges with the current implementation
+> caused by the full nesting - e.g. nesting levels are expensive for context
+> switch heavy applicaitons often going over >1% per level, and heuristics
+> which assume global queue may behave unexpectedly - ie. we can create
+> conditions where things like idle-wakeup boost behave very differently
+> depending on whether tasks are inside a cgroup or not even when the eventual
+> relative weights and past usages are similar.
 
-I'll support them on later if this approach doesn't break the any
-rule of required-opp property.
+To be clear, are you talking mainly about the idle_h_nr_running
+accounting? The fact that setting cpu.idle propagates changes upwards
+to ancestor cgroups?
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+The goal is to match the SCHED_IDLE semantics here, which requires
+this behavior. The end result is no different than a nested cgroup
+with SCHED_IDLE tasks. One possible alternative would be to only count
+root-level cpu.idle cgroups towards the overall idle_h_nr_running.
+I've not opted for that, in order to make this work more similarly to
+the task interface. Also note that there isn't additional overhead
+from the accounting, since enqueue/dequeue already traverses these
+nesting levels.
+
+Could you elaborate a bit more on your statement here?
+
+> Can you please give more details on why this is beneficial? Is the benefit
+> mostly around making configuration easy or are there actual scheduling
+> behaviors that you can't achieve otherwise?
+
+There are actual scheduling behaviors that cannot be achieved without
+the cgroup interface. The task SCHED_IDLE mechanism is a combination
+of special SCHED_IDLE handling (idle_h_nr_running,
+check_preempt_wakeup), and minimum scheduling weight.
+
+Consider a tree like
+
+                  root
+             /             \
+            A              C
+        /      \             |
+      B       idle       t4
+     |           |     \
+     t1         t2   t3
+
+Here, 'idle' is our cpu.idle cgroup. The following properties would
+not be possible if we moved t2/t3 into SCHED_IDLE without the cgroup
+interface:
+- t1 always preempts t2/t3 on wakeup, but t4 does not
+- t2 and t3 have different, non-minimum weights. Technically we could
+also achieve this by adding another layer of nested cgroups, but that
+starts to make the hierarchy much more complex.
+- I've also discussed with Peter a possible extension (vruntime
+adjustments) to the current SCHED_IDLE semantics. Similarly to the
+first bullet here, we'd need a cgroup idle toggle to achieve certain
+scheduling behaviors with this.
+
+Thanks,
+Josh
