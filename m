@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CDF3AB265
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44D13AB267
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbhFQLYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:24:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232562AbhFQLYR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:24:17 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70101C061574;
-        Thu, 17 Jun 2021 04:22:09 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id a26so6111765oie.11;
-        Thu, 17 Jun 2021 04:22:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+3INCVEV276y9PyA28A8dmPdbjmiUIA+NCZCOMh4VJU=;
-        b=dxppriilotvgpOIvCBUwYvvBzHvCpCt6rbgIiMiMA1L/SUisF582YYswPTFmgfHmli
-         jHqTRTFdHTl9+plwaGBtcbiYs8GaQu8Ix9Ah9oPZKDFOZPvi3d4tu6LTqj5qZQb5qZd6
-         WDWz1+ON627eFCdgwKelu+0zWgTKUbUAx1Jq85WKczsbhQsdN7z5X6QwiTyeUQ+DquNH
-         bSQ9uEgYRycIftJV1JoFQOTU5r8wuXOyWLImXZiUVDOMQxMKdJ1S6IGkOfSfGmSscbav
-         3xUUWyAU1glVsLMvcqNZsuP5I41QbtiPFVtTF/6sCD/vDqrF1ZKotp9tSFeVAU3r1zq7
-         RB/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=+3INCVEV276y9PyA28A8dmPdbjmiUIA+NCZCOMh4VJU=;
-        b=Ox4CQrxMfg2IBEhSAWVTmqFOO49qV2RQdpmQfWyi4UFjaXzcrHyzpxkKsJp7vWrWpa
-         k0rQ2LHk6cJr2/a/j5sLPU57ofsbcNWUEKdrbV9H33cY+LX23G2nl2uGdYKGSMfk6E0u
-         7SIq61HBL1afBpLffTSyIkHocu0PO1UkMaNn9mhTOuCWCH8ZLTFslpwWPKJTZcx2EhSR
-         Fh5B1F30s52v6RDKiGTAIjGgZgSXe3ggzMYLc8BT7OjhRPe62/LxWpu717jVI9yafLiN
-         IebTY7UdXyo+w1RXyx1OYNKjvISj1+DfwhczYV5dasvz4IeXpFtjywDFzvqGz4oPo/lz
-         53Kg==
-X-Gm-Message-State: AOAM531uTda95QBI34DpFS7z1+oGJ8Vqyr/3BooiaPn/fXA2JRWONMJx
-        9BntnLJDHSvihekgx29AnZgkuqO+Hms=
-X-Google-Smtp-Source: ABdhPJyK3QYjvaCP1vsxfIQEMshEMcUMjDN+Duju+wGyTtIUciWBpC0u631zZd1dHoPjaRgdVM5+lw==
-X-Received: by 2002:aca:a9c3:: with SMTP id s186mr2908200oie.103.1623928928873;
-        Thu, 17 Jun 2021 04:22:08 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w17sm1038513oif.44.2021.06.17.04.22.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 04:22:08 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 17 Jun 2021 04:22:06 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (pmbus/bpa-rs600): Handle Vin readings >= 256V
-Message-ID: <20210617112206.GA1579582@roeck-us.net>
-References: <20210616034218.25821-1-chris.packham@alliedtelesis.co.nz>
+        id S232537AbhFQLYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:24:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232530AbhFQLYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 07:24:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CCEA613BF;
+        Thu, 17 Jun 2021 11:22:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623928953;
+        bh=7W6ZUJUgvAuyObY+Gwz9gOCcH56okP5pyM7YKdKyOxQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lAHH/dgtPd9TF6pgepsFS3oIce5b/X13/xa4cXrZijhnfCujrutwtL+w/5QqaFKqj
+         fNxiZSUO/wGfLHgifF5FtVPwbYcOykde0m2ZAPmCZTVEcZ8cKGX1Yt9WTyh0oEyvDh
+         RMjF4Kb74h8ho702XmfG/6m778hgdk0njFLmxqJY=
+Date:   Thu, 17 Jun 2021 13:22:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+Cc:     jirislaby@kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org,
+        andrianov@ispras.ru
+Subject: Re: [PATCH] tty: serial: owl: Fix data race in owl_uart_remove
+Message-ID: <YMswdqNpjb9n1pdW@kroah.com>
+References: <20210617110443.6526-1-saubhik.mukherjee@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210616034218.25821-1-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20210617110443.6526-1-saubhik.mukherjee@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 03:42:18PM +1200, Chris Packham wrote:
-> The BPA-RS600 doesn't follow the PMBus spec for linear data.
-> Specifically it treats the mantissa as an unsigned 11-bit value instead
-> of a two's complement 11-bit value. At this point it's unclear whether
-> this only affects Vin or if Pin/Pout1 are affected as well. Erring on
-> the side of caution only Vin is dealt with here.
+On Thu, Jun 17, 2021 at 04:34:43PM +0530, Saubhik Mukherjee wrote:
+> Suppose the driver is registered and a UART port is added. Once an
+> application opens the port, owl_uart_startup is called which registers
+> the interrupt handler owl_uart_irq.
 > 
-> Fixes: 15b2703e5e02 ("hwmon: (pmbus) Add driver for BluTek BPA-RS600")
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> We could have the following race condition:
+> 
+> When device is removed, owl_uart_remove is called, which calls
+> uart_remove_one_port, which calls owl_uart_release_port, which writes
+> NULL to port->membase. At this point parallely, an interrupt could be
+> handled by owl_uart_irq which reads port->membase.
+> 
+> This is because it is possible to remove device without closing a port.
+> Thus, we need to check it and call owl_uart_shutdown in owl_uart_remove.
+> 
+> Found by Linux Driver Verification project (linuxtesting.org).
+> 
+> Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+> ---
+>  drivers/tty/serial/owl-uart.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/owl-uart.c b/drivers/tty/serial/owl-uart.c
+> index 91f1eb0058d7..ac4e3aae2719 100644
+> --- a/drivers/tty/serial/owl-uart.c
+> +++ b/drivers/tty/serial/owl-uart.c
+> @@ -751,8 +751,15 @@ static int owl_uart_probe(struct platform_device *pdev)
+>  static int owl_uart_remove(struct platform_device *pdev)
+>  {
+>  	struct owl_uart_port *owl_port = platform_get_drvdata(pdev);
+> +	struct uart_port *port = &owl_port->port;
+>  
+> -	uart_remove_one_port(&owl_uart_driver, &owl_port->port);
+> +	/* It is possible to release device without closing a port.
+> +	 * Thus, need to check it and call shutdown.
+> +	 */
+> +	if (owl_uart_read(port, OWL_UART_CTL) & OWL_UART_CTL_EN)
+> +		owl_uart_shutdown(port);
 
-Applied.
+How is this read determining if the device is here or not?  And what
+happens if the state change happens right _after_ the check?
 
-Thanks,
-Guenter
+Also, your comment style is for networking, not the rest of the kernel
+:)
+
+thanks,
+
+greg k-h
