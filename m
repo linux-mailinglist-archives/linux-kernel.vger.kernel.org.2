@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B962A3AB1E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E15E3AB1E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbhFQLHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46534 "EHLO
+        id S232310AbhFQLHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232306AbhFQLHa (ORCPT
+        with ESMTP id S232291AbhFQLHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:07:30 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ABD0C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:05:23 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id h22-20020a05600c3516b02901a826f84095so3423849wmq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:05:23 -0700 (PDT)
+        Thu, 17 Jun 2021 07:07:37 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388FCC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:05:28 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id n7so6301255wri.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:05:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=z51VYo/dwgbgXrPC5AvHEopoxeO2cRhnhIjL09//Lpc=;
-        b=JZfaYlmDmNwIb9d9INbklY6CzlygTueVMT3j9Oj5Uay4WmGVHkmpBR89lFjc5Opgx/
-         OVkSQ2WbPuepx9ofcsmq8XcpJJZEHoZPQzzlxO08zZZP5kVbcWiKUor5bvxV6AkMGC0k
-         Id1k2QZ/FQyjZ7Xb+wJNlmJsPuyqjV9tc0V5hjt664vD1rsjzLZuuHY2xgX/zTTyiqUu
-         QcEtlXz791Ascv0B8KIUv6dwQ1mbsauAMTFMjkcT/EYGKt4X7Ypo04fnZbIPHAk2JN2e
-         8DxirEAt4ln+B/RBUyP8uXwQBvk3zryn6BX9SctLb7R2QdguY9CfE2e5LE/P8SEdjRli
-         /G7A==
+        bh=qOyMMWhfP6MWOMw5YpJV2nOghpwWcvUPkfKCZHt0P9Y=;
+        b=Rgdx1B8vPPqCsga5Zdv5K2+aZJ1JH+riMhs0hBlai/LfZ1iIJBiOS9W2lRMgHznuWu
+         rtWHKaLdpFLDzpW5htir1wpQz+AQLbLGnh8uhoWugEJP8F5YxOqojpS3y8uFxZWpW3fY
+         stWflfYf5mFQcuab5W+yWK1/n58vV3Q1m+hLgsSA32zFY/xIFSngmAeCqIPOIxou8jf6
+         igsuNEJpc9pBBfjIyJtm1l2c0qCOTjxzG1iAuOpAsoeWyFi0Ic0x0Ro2hrMNU8Z+VWgY
+         SsIlgxwhPvJFTRQ4tAB9h9CCBT0nkJVwHwIxbIrCbeUle/fJ+sXoffSKyfU+AaC0oPBc
+         CW+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=z51VYo/dwgbgXrPC5AvHEopoxeO2cRhnhIjL09//Lpc=;
-        b=RNVGf+D7ShUz/GuJgMkHgKnS9F2qOSUQsKQlFMWu3RwbzEB6YP3dNwKHnVX7d9wSn6
-         xvG0+v+3gpbWWRl5GxVtK4eOHezdgNW9LgdHKBl4IXxBreuDuQR4Z99uYhiFg8muWmWO
-         PZg/YAWTbKpc9NZ5txuHkFZqQMndILt/wGlI7uv+jjuD4L43rM387CqtXryt0I6ZQnUP
-         dTHJWEAqPsvQaJVlBURp16R2wnoVvNO/8fmwWPQsLKWF2Z1cBf2zK3KZHUrGn2c9G/if
-         hiS/YjyO990vTv3WUuJQk85D/gT43wZnS8fWQAsqa8If8BIGmRRIXImslmFrQpSvLSVa
-         Alog==
-X-Gm-Message-State: AOAM5330U/DCeDnW+dseQsRufbB+hpMtNBln/1cQ32khenk+L1uZKpVX
-        ABeRjVw2NhaKPEO+DiV7X0Dbxg==
-X-Google-Smtp-Source: ABdhPJwS49hytGMvF6UmEG3DoDMrCgisa7Dnu75J6wDRXTJC6COt0OGzRHJVxca9+kAQ7gdpEVHKCA==
-X-Received: by 2002:a7b:c304:: with SMTP id k4mr4440049wmj.68.1623927921828;
-        Thu, 17 Jun 2021 04:05:21 -0700 (PDT)
+        bh=qOyMMWhfP6MWOMw5YpJV2nOghpwWcvUPkfKCZHt0P9Y=;
+        b=lLrdSQf04IBrUR83+mjVPp4jHKJXZcmLXkhD+J2BsRvDBIX0JlNK5sBo3JZuQbmMXm
+         QDs/J1ioAEX19a9sN8qdPic1rXvoukcG7THRjQBIikrAapWKSzj5kADvy72YjyGeGp5S
+         I2/BhiHOdZ433ZICSpVElFA//WcH9QriyTh6aeHfGX0/zgBXDElvC0gzZVYJ9/ntrOcf
+         mCJ5Zbz0R0jk5hWiugSBGepZ766kPGeDbh2ZPy3FzCHWQ67BhJAAymcl1SvE7T61R4O4
+         jJryQz7amKiyCj2cwnfRJXs9jY3DhZKbzlaBJ84briuBqczNYIXNBQ2syDGQXfgo6TBN
+         mNtw==
+X-Gm-Message-State: AOAM532WCjAUklHpudJfgIYeNdKReS2OjqLhj7AuuQ2kAM4BOOYvFIU5
+        dDbpgCeAsd76s8m4He46uIXHDw==
+X-Google-Smtp-Source: ABdhPJx5yFP7d4NQEOhnnQWJ0nKS/7qT5YFxRgXwq9Cvxl0ab3E6ORI+wa5aPNLCKTET0CDNeLY/qg==
+X-Received: by 2002:a5d:47cf:: with SMTP id o15mr5048726wrc.6.1623927926856;
+        Thu, 17 Jun 2021 04:05:26 -0700 (PDT)
 Received: from dell.default ([91.110.221.170])
-        by smtp.gmail.com with ESMTPSA id v18sm5249487wrb.10.2021.06.17.04.05.16
+        by smtp.gmail.com with ESMTPSA id v18sm5249487wrb.10.2021.06.17.04.05.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 04:05:21 -0700 (PDT)
+        Thu, 17 Jun 2021 04:05:26 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org, gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
+        German Rivera <German.Rivera@freescale.com>,
         Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Subject: [PATCH 4/8] bus: fsl-mc: dprc: Fix a couple of misspelling and formatting issues
-Date:   Thu, 17 Jun 2021 12:04:56 +0100
-Message-Id: <20210617110500.15907-4-lee.jones@linaro.org>
+Subject: [PATCH 5/8] bus: fsl-mc: dprc-driver: Fix some missing/incorrect function parameter descriptions
+Date:   Thu, 17 Jun 2021 12:04:57 +0100
+Message-Id: <20210617110500.15907-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210617110500.15907-1-lee.jones@linaro.org>
 References: <20210617110500.15907-1-lee.jones@linaro.org>
@@ -66,38 +67,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/bus/fsl-mc/dprc.c:345: warning: Function parameter or member 'attr' not described in 'dprc_get_attributes'
- drivers/bus/fsl-mc/dprc.c:521: warning: Function parameter or member 'obj_type' not described in 'dprc_get_obj_region'
+ drivers/bus/fsl-mc/dprc-driver.c:360: warning: Function parameter or member 'alloc_interrupts' not described in 'dprc_scan_container'
+ drivers/bus/fsl-mc/dprc-driver.c:383: warning: Function parameter or member 'irq_num' not described in 'dprc_irq0_handler'
+ drivers/bus/fsl-mc/dprc-driver.c:383: warning: Excess function parameter 'irq' description in 'dprc_irq0_handler'
+ drivers/bus/fsl-mc/dprc-driver.c:394: warning: Function parameter or member 'irq_num' not described in 'dprc_irq0_handler_thread'
+ drivers/bus/fsl-mc/dprc-driver.c:394: warning: Excess function parameter 'irq' description in 'dprc_irq0_handler_thread'
 
 Cc: Stuart Yoder <stuyoder@gmail.com>
+Cc: German Rivera <German.Rivera@freescale.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 ---
- drivers/bus/fsl-mc/dprc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/bus/fsl-mc/dprc-driver.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/bus/fsl-mc/dprc.c b/drivers/bus/fsl-mc/dprc.c
-index 27b0a01bad9b0..d129338b8bc08 100644
---- a/drivers/bus/fsl-mc/dprc.c
-+++ b/drivers/bus/fsl-mc/dprc.c
-@@ -334,7 +334,7 @@ int dprc_clear_irq_status(struct fsl_mc_io *mc_io,
-  * @mc_io:	Pointer to MC portal's I/O object
-  * @cmd_flags:	Command flags; one or more of 'MC_CMD_FLAG_'
-  * @token:	Token of DPRC object
-- * @attributes	Returned container attributes
-+ * @attr:	Returned container attributes
+diff --git a/drivers/bus/fsl-mc/dprc-driver.c b/drivers/bus/fsl-mc/dprc-driver.c
+index e3e2ae41c22b3..315e830b6ecda 100644
+--- a/drivers/bus/fsl-mc/dprc-driver.c
++++ b/drivers/bus/fsl-mc/dprc-driver.c
+@@ -350,7 +350,8 @@ int dprc_scan_objects(struct fsl_mc_device *mc_bus_dev,
+  * dprc_scan_container - Scans a physical DPRC and synchronizes Linux bus state
   *
-  * Return:     '0' on Success; Error code otherwise.
+  * @mc_bus_dev: pointer to the fsl-mc device that represents a DPRC object
+- *
++ * @alloc_interrupts: if true the function allocates the interrupt pool,
++ *                    otherwise the interrupt allocation is delayed
+  * Scans the physical DPRC and synchronizes the state of the Linux
+  * bus driver with the actual state of the MC by adding and removing
+  * devices as appropriate.
+@@ -373,10 +374,11 @@ int dprc_scan_container(struct fsl_mc_device *mc_bus_dev,
+ 	return error;
+ }
+ EXPORT_SYMBOL_GPL(dprc_scan_container);
++
+ /**
+  * dprc_irq0_handler - Regular ISR for DPRC interrupt 0
+  *
+- * @irq: IRQ number of the interrupt being handled
++ * @irq_num: IRQ number of the interrupt being handled
+  * @arg: Pointer to device structure
   */
-@@ -504,7 +504,7 @@ EXPORT_SYMBOL_GPL(dprc_set_obj_irq);
-  * @mc_io:	Pointer to MC portal's I/O object
-  * @cmd_flags:	Command flags; one or more of 'MC_CMD_FLAG_'
-  * @token:	Token of DPRC object
-- * @obj_type;	Object type as returned in dprc_get_obj()
-+ * @obj_type:	Object type as returned in dprc_get_obj()
-  * @obj_id:	Unique object instance as returned in dprc_get_obj()
-  * @region_index: The specific region to query
-  * @region_desc:  Returns the requested region descriptor
+ static irqreturn_t dprc_irq0_handler(int irq_num, void *arg)
+@@ -387,7 +389,7 @@ static irqreturn_t dprc_irq0_handler(int irq_num, void *arg)
+ /**
+  * dprc_irq0_handler_thread - Handler thread function for DPRC interrupt 0
+  *
+- * @irq: IRQ number of the interrupt being handled
++ * @irq_num: IRQ number of the interrupt being handled
+  * @arg: Pointer to device structure
+  */
+ static irqreturn_t dprc_irq0_handler_thread(int irq_num, void *arg)
 -- 
 2.32.0
 
