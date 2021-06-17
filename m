@@ -2,113 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835683AB360
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D053E3AB362
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbhFQMR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:17:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        id S232766AbhFQMSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:18:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231726AbhFQMR4 (ORCPT
+        with ESMTP id S232750AbhFQMSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:17:56 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB9EC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:15:48 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id s6so3662923edu.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:15:47 -0700 (PDT)
+        Thu, 17 Jun 2021 08:18:08 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A1DC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:16:00 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id t140so6358119oih.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 05:16:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qja68kctcb7tECvcD3vKyKnzp3JkFSLhCUKx4V5p/io=;
-        b=vacGRMy/kpEKBpEJGikZRYXVrAAkQ3UOW9ogN8REKVbe499gzllInYYjWKB7dyFEar
-         ROMtah+mlXF8sVew9m5uWj4hs0CW7Qg64fQ0Bh0R6sZ3tFpiP3H/DD93IRGXlxiWEImB
-         NBbbtSdfoyKOzNvHt+PNyAdXYRKm2FIgre2YK6Yrq1/Q3wWCtQITRvmIOYoQ5WMSejK9
-         gmLIR194sNOsIG2O8fSX5X3YsViFTXtOTfbPlS2T1OZumRsN94VMRfiHaJ5eg8olv25M
-         bnHqEwtskQX7no1N8OVsmeruikmjNJ0wAzRpsPYTd6z/zAKHemxBjFTBur1AeoyKGbvV
-         K7hw==
+        d=broadcom.com; s=google;
+        h=from:references:in-reply-to:mime-version:thread-index:date
+         :message-id:subject:to:cc;
+        bh=GLxoCHqCfdGqlLqEmVFz7YDufia7TUZpYbN7xzDWLoU=;
+        b=U4gWswrkolXbBmrHCAaH9huAVbFw9wdhMSa74cSmoB6ps3sOeMy+HsUdVmFpf9pnu3
+         DBc1K6SgPJe/kEIOyZkwEDUYwY5+Z8IPCIRUqKvmO6Oh7LVEBehBQx3xXN8uBUZmY59m
+         ElIZ8R/3PZxRTS5IKWogJ6s2g1D9A5CXC7gKU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qja68kctcb7tECvcD3vKyKnzp3JkFSLhCUKx4V5p/io=;
-        b=d5H81B4GgUk928jH9t511I5PzG8XSufP1GXzOvibd6nyozKjNsQkxWJA0b8fnqixnt
-         YVo13Km4YfEeHmUXP8fThcUAlsSUoyDP52uL6NefzpqLalbe+7djNdztPa3ZLAIB6noy
-         6wCWMwDn3iswGJ/QaXnRLNdoJV/HprHelNahVgUKRpA6+eJb4AIvQ/KpsTrf9Hex7Ctz
-         m3A2sQMFYJ10WCJj2yXwe2fOCpwpUyDK+DkPrxHEWIWnVSGlgR8QiLX6hOgg0/o1oGcY
-         OcBNLiyhr/mks/nb82Oiyst6Ufsn3XGewH3e0Jsz8Puxilr2zx0wYFBEXiL4l/lyv2Ty
-         tjJw==
-X-Gm-Message-State: AOAM530SQjKDOX3Py6LxlwHx1eB7Tta3MGpeu2qYGH92LZ1kWc6/qA6H
-        Qfl7DirKsvo3wRh/j8pjg8ykyQkS6hAwZBjABJJUFA==
-X-Google-Smtp-Source: ABdhPJxScap+bpjJHGCJGL/6faTbZ8og0NFlPnI724tvKuQtyYMLaheWpTBmohhNcXt0wfyEb0oyqWyzgYy7W7qibYU=
-X-Received: by 2002:a05:6402:220d:: with SMTP id cq13mr6037900edb.52.1623932146500;
- Thu, 17 Jun 2021 05:15:46 -0700 (PDT)
+        h=x-gm-message-state:from:references:in-reply-to:mime-version
+         :thread-index:date:message-id:subject:to:cc;
+        bh=GLxoCHqCfdGqlLqEmVFz7YDufia7TUZpYbN7xzDWLoU=;
+        b=bTnB5gvpSKhmQnW7hF1c0IVKfmHVFGH4EZpJjg/G1AwFzAJK0gDxEAr/0PBdw5JWq8
+         omcBRmmvHR2Cly1h2XCZh1l1knifVMIAEDbseA4WSKR5iJi6/DtxjGzFL/toQtyvKSON
+         o3HKtwzqIIVn6EH7XN0cmGV0k7HnbuTjIbUzWv4i2/ExJvivLD2iIfUH/T+aoNs4lmP8
+         E0UpZn4Lcu8PgdSkJeomHa6yl6wpM11Zahqjy0RSPDz3I4jbm8trRMOdTQ9K+sjuFdeM
+         V8Zb3pJIhcA9IjnlQ3b7GgAkUtYEWs1eRIiFZCt0wdc6CbQ4MoawYARpixN+HTXK1hGP
+         jOCQ==
+X-Gm-Message-State: AOAM5311RiUgQniIFfOmOdaNqLCaE9YursCpdJ8kqTw2sbx9npOtqTIz
+        CieWfLlTSQNjrgfVSp50oG46M89ykPnkNx5Paj08fEsBHNyoFUcOot2vtOrAzYWFOCR/YGi/6pE
+        ENTjYQJORzBJvxZaDClDJ36y22Rl3STv6Ln/xARieOA==
+X-Google-Smtp-Source: ABdhPJyZkjksmvGyZRwzknX0Yiri2wjaZvTjOsFEBM8Zh2Iu85dfxUeMh4Dvez3Ya5TF942VAkYZHPjAFV+fQAKRPpY=
+X-Received: by 2002:aca:4944:: with SMTP id w65mr3159574oia.104.1623932160046;
+ Thu, 17 Jun 2021 05:16:00 -0700 (PDT)
+From:   Muneendra Kumar M <muneendra.kumar@broadcom.com>
+References: <20210617193203.39f40d0d@canb.auug.org.au>
+In-Reply-To: <20210617193203.39f40d0d@canb.auug.org.au>
 MIME-Version: 1.0
-References: <CA+G9fYvvm2tW5QAe9hzPgs7sV8udsoufxs0Qu6N0ZjV0Z686vw@mail.gmail.com>
- <20210615115044.GC20598@willie-the-truck>
-In-Reply-To: <20210615115044.GC20598@willie-the-truck>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 17 Jun 2021 17:45:34 +0530
-Message-ID: <CA+G9fYvCX5fd5dHdaGpQ7wpZNcea-=vtuhapW00D8AUkE5VUqA@mail.gmail.com>
-Subject: Re: [next] [arm64] kernel BUG at arch/arm64/mm/physaddr.c
-To:     Will Deacon <will@kernel.org>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, regressions@lists.linux.dev,
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQK0NDHJ1oLraDda6uxp2YzKnjU4KKlee9rg
+Date:   Thu, 17 Jun 2021 17:45:58 +0530
+Message-ID: <53305fcee334c0f8cb0b66acc6d3381f@mail.gmail.com>
+Subject: RE: linux-next: build failure after merge of the akpm tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        tj@kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000008e6b6805c4f52b37"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+--0000000000008e6b6805c4f52b37
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 15 Jun 2021 at 17:20, Will Deacon <will@kernel.org> wrote:
->
-> Hi Naresh,
->
-> On Tue, Jun 15, 2021 at 04:41:25PM +0530, Naresh Kamboju wrote:
-> > Following kernel crash reported while boot linux next 20210615 tag on qemu_arm64
-> > with allmodconfig build.
+Hi Stephen,
+A small query.
+How do I look at the tree where the build is failing.
 
-<trim>
+Regards,
+Muneendra.
 
-> Thanks for the report, although since this appears to be part of a broader
-> testing effort, here are some things that I think would make the reports
-> even more useful:
->
->   1. An indication as to whether or not this is a regression (i.e. do you
->      have a known good build, perhaps even a bisection?)
->
->   2. Either a link to the vmlinux, or faddr2line run on the backtrace.
->      Looking at the above, I can't tell what sparse_init_nid+0x98/0x6d0
->      actually is.
->
->   3. The exact QEMU command-line you are using, so I can try to reproduce
->      this locally. I think the 0-day bot wraps the repro up in a shell
->      script for you.
->
->   4. Whether or not the issue is reproducible.
->
->   5. Information about the toolchain you used to build the kernel (it
->      happens to be present here because it's in the kernel log, but
->      generally I think it would be handy to specify that in the report).
->
-> Please can you provide that information for this crash? It would really
-> help in debugging it.
 
-Sorry for the incomplete bug report.
 
-Thanks for sharing these details.
-Next time I will include the suggested data points in my email report.
+-----Original Message-----
+From: Stephen Rothwell [mailto:sfr@canb.auug.org.au]
+Sent: Thursday, June 17, 2021 3:02 PM
+To: Andrew Morton <akpm@linux-foundation.org>; Martin K. Petersen
+<martin.petersen@oracle.com>
+Cc: Muneendra Kumar <muneendra.kumar@broadcom.com>; Linux Kernel Mailing
+List <linux-kernel@vger.kernel.org>; Linux Next Mailing List
+<linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the akpm tree
 
-- Naresh
+Hi all,
+
+After merging the akpm tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
+
+ERROR: modpost: "cgroup_get_e_css" [drivers/nvme/host/nvme-fc.ko]
+undefined!
+ERROR: modpost: "cgroup_get_e_css" [drivers/block/loop.ko] undefined!
+
+Caused by patch
+
+  kernel/cgroup/cgroup.c: don't export cgroup_get_e_css twice
+
+I am not sure what happened here, but this patch interacts with commit
+
+  6b658c4863c1 ("scsi: cgroup: Add cgroup_get_from_id()")
+
+from the scsi-mkp tree which adds the EXPORT_SYMBOL_GPL().
+
+I have reverted that akpm tree patch for today.
+
+-- 
+Cheers,
+Stephen Rothwell
+
+-- 
+This electronic communication and the information and any files transmitted 
+with it, or attached to it, are confidential and are intended solely for 
+the use of the individual or entity to whom it is addressed and may contain 
+information that is confidential, legally privileged, protected by privacy 
+laws, or otherwise restricted from disclosure to anyone else. If you are 
+not the intended recipient or the person responsible for delivering the 
+e-mail to the intended recipient, you are hereby notified that any use, 
+copying, distributing, dissemination, forwarding, printing, or copying of 
+this e-mail is strictly prohibited. If you received this e-mail in error, 
+please return the e-mail to the sender, delete it from your computer, and 
+destroy any printed copy of it.
+
+--0000000000008e6b6805c4f52b37
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+6dyIRB5g0cWmkcO89O0W56d+wWwa7GeeTIJHMzJ0rco8nzcXkz/oeEmXSjZU3erpKBaLCQBkZud1
+iNM/8mFL1vZxCwUACcMw+a8FhrHJq29QwrBHqDJ1ocrJlDaZcn1UDQIDAQABo4IB3TCCAdkwDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAnBgNVHREEIDAegRxtdW5lZW5kcmEua3VtYXJAYnJvYWRjb20uY29tMBMGA1UdJQQMMAoGCCsG
+AQUFBwMEMB8GA1UdIwQYMBaAFJYz0eZYF1s0dYqBVmTVvkjeoY/PMB0GA1UdDgQWBBTMJfPJzmVP
+1lwJptwb21ozx4G7wzANBgkqhkiG9w0BAQsFAAOCAQEAmz4/3oyLhfXMYVZWtDEKcP5Bk/6JAhfa
+9q4eZDy1W/1FSuRfEWMq7xi9T3DvxUQqJtpJ8bM6SU37fZAvvMdRF23qdKRy6gBZ9NkYOCP7Tr2u
+wNYznMfaHEGY/aa65EiywAsbVn1X7vKMKqSj3cmpEUO2I+FcRtPdyicqyU2E3856b5d+fMc01FRg
+pQQRz3kWlIpG/CJ2SiOg0gpkZIkUde0r4e6ipDi+xVSoBdOOJzirs8IkwOeJ4w9GPS9uOkB1bRvJ
+RU+Nz1h4p9eH2nsPAq7S5l6y/n3+g/olazbUoiEx8GRFqzoHLudsqmnzISDPoe+rczkpYreF/mEU
+Y6pL2DGCAm0wggJpAgEBMGswWzELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYt
+c2ExMTAvBgNVBAMTKEdsb2JhbFNpZ24gR0NDIFIzIFBlcnNvbmFsU2lnbiAyIENBIDIwMjACDHE+
+9dgalq0zfRWBQDANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgcO3nkzN87de2sBv1
+yYIlgvaBHrwqmKpT/8otaPNKAxIwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
+CQUxDxcNMjEwNjE3MTIxNjAwWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
+ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
+CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAEGz11WDa2erOA+mJKUglzF6zs1yUvmtt0H4
+1F3hjSNzI75DSz6hnftuVTJQvexPeQjao8gd5RzuWSn9ya7CYoa9xWMNBoJv0e6+KRb1C3WFbvov
+zG71dt4BsByJVK+/EZHir/QXwrKXavp7AbglqaHvA1oncoiLBmGs/mc3U7KdW191uDmTsYGjQUFQ
+tI4ezvIm4nLluIYwCAbMFf3PunDCuAy/evcUexYs3yCHmzxWT9byTn+rvambJYRRlhqKE8ymXxTN
+PqT+kiC1FsCn9mUySTKcCDTTG4jQlNWbgP0G9SExvnxAOETS6UpQYa+Dwpiiyorc89Hbp03l0CWH
+2Pw=
+--0000000000008e6b6805c4f52b37--
