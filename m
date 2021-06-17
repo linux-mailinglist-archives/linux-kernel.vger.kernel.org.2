@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6493AB549
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3D03AB54B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbhFQOBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:01:04 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:53108 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231843AbhFQOBD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:01:03 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HDqi6C010624;
-        Thu, 17 Jun 2021 13:58:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=VX31teF+koyDYOcsIQloz16k2tTpGxd1spdkC3BfdDw=;
- b=cZtk6rSvhjmpuVhNH3U5jFFh7qz7fgSOouVeFXvwGxF7LWnIHxrYsxe3NbLStBcVBipp
- 51D5nndIpoRghEUnc86Qk264TeyhK08MCm0aupLfOYCecNBgOXWg5/A5d+wJoeGRGHdw
- ejOiUusHP9PwEdLACc6UGJACVeVD1rNC7rmfgrpGhbhcV9tk6eF4G7pEFBe8buKkNPWK
- FgaBdORPwYsMkIPUd/cDJ4HuFdBKmTqB0NfIE9edfZlN/47edb06v8LKVmuOYoPa73j9
- in7tRtl/5M+pBzxemsChbQVZkHNqBiC5+YElWW6Dsc/lxJaCRAFc1su1jd7Zkfk4Km2I MQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39770hbcrm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Jun 2021 13:58:36 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15HDpDJQ047777;
-        Thu, 17 Jun 2021 13:58:35 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 396wavmaw9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Jun 2021 13:58:35 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15HDwZor081654;
-        Thu, 17 Jun 2021 13:58:35 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 396wavmav4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Jun 2021 13:58:35 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 15HDwWBu018758;
-        Thu, 17 Jun 2021 13:58:32 GMT
-Received: from kadam (/102.222.70.252)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Jun 2021 13:58:31 +0000
-Date:   Thu, 17 Jun 2021 16:58:24 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com
-Subject: Re: [PATCH -next resend] media: staging: media: atomisp: pci: fix
- error return code in atomisp_pci_probe()
-Message-ID: <20210617135824.GO1901@kadam>
-References: <20210617135500.2158302-1-yangyingliang@huawei.com>
+        id S232932AbhFQOBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:01:23 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:22188 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231651AbhFQOBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 10:01:23 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4G5Nvk3mNMzBBqj;
+        Thu, 17 Jun 2021 15:59:14 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id afJekXhDhNvo; Thu, 17 Jun 2021 15:59:14 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4G5Nvg4NlXzBBsC;
+        Thu, 17 Jun 2021 15:59:11 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 49CEC8B81B;
+        Thu, 17 Jun 2021 15:59:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id PdJWFZHSalpG; Thu, 17 Jun 2021 15:59:11 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BF7898B815;
+        Thu, 17 Jun 2021 15:59:10 +0200 (CEST)
+Subject: Re: [PATCH v3 1/5] powerpc/interrupt: Rename and lightly change
+ syscall_exit_prepare_main()
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <8071cd2e2f2bdc0711e6ac435dff4a09ff21fee2.1623745949.git.christophe.leroy@csgroup.eu>
+ <1623929016.jy0026dpmc.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <b0d1d683-613b-6947-7923-015b6b36fe30@csgroup.eu>
+Date:   Thu, 17 Jun 2021 15:58:57 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617135500.2158302-1-yangyingliang@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: kjBdQJ2afXYCotmgI3nGnAbwCcYpJLSS
-X-Proofpoint-ORIG-GUID: kjBdQJ2afXYCotmgI3nGnAbwCcYpJLSS
+In-Reply-To: <1623929016.jy0026dpmc.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good.
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-But next time please use v2 in the subject instead of "resend".  "resend"
-means that the process broke down somehow and we ignored your first
-patch.
-
-On Thu, Jun 17, 2021 at 09:55:00PM +0800, Yang Yingliang wrote:
-> If init_atomisp_wdts() fails, atomisp_pci_probe() need return
-> error code.
+Le 17/06/2021 à 13:25, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of June 15, 2021 6:33 pm:
+>> Rename syscall_exit_prepare_main() into interrupt_exit_prepare_main()
+>>
+>> Make it static as it is not used anywhere else.
+>>
+>> Pass it the 'ret' so that it can 'or' it directly instead of
+>> oring twice, once inside the function and once outside.
+>>
+>> And remove 'r3' parameter which is not used.
+>>
+>> Also fix a typo where CONFIG_PPC_BOOK3S should be CONFIG_PPC_BOOK3S_64.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+>> ---
+>> This series applies on top of Nic's series speeding up interrupt return on 64s
+>>
+>>   arch/powerpc/kernel/interrupt.c | 11 +++++------
+>>   1 file changed, 5 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+>> index 74c995a42399..ba2d602d2da6 100644
+>> --- a/arch/powerpc/kernel/interrupt.c
+>> +++ b/arch/powerpc/kernel/interrupt.c
+>> @@ -243,11 +243,10 @@ static notrace void booke_load_dbcr0(void)
+>>   #endif
+>>   }
+>>   
+>> -notrace unsigned long syscall_exit_prepare_main(unsigned long r3,
+>> -						struct pt_regs *regs)
+>> +static notrace unsigned long
+>> +interrupt_exit_user_prepare_main(struct pt_regs *regs, unsigned long ret)
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
-Put a note here under the --- cut off line to say what happened since
-the last version.
+> Hmm, I tried switching the order of the arguments thinking it would
+> match caller and return registers better but didn't seem to help
+> generated code. Yet I think I will make that change to your patch if
+> you don't mind.
 
-v2: style change
+That's a static function that most likely gets inlined so the order of parameters makes no difference.
+I tend to like that almost all functions dealing with interrupts take regs as first param, but I 
+have no strong opinion about it so you can change it if that's better for you.
 
-
->  drivers/staging/media/atomisp/pci/atomisp_v4l2.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-
-regards,
-dan carpenter
-
+Christophe
