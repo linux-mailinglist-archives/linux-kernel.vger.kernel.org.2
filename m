@@ -2,128 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91573AB6D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2112D3AB6CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233105AbhFQPFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:05:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232144AbhFQPFf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:05:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745EEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:03:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KX8gk6ZCpqOC9nSWaqvOCHcylVovoN9q1sfHRCr4AO4=; b=TQhZXMBCxo6OqEwuNBxuB4jzyQ
-        ihW5/nuSgPzxb5nDabSP6Izlg1MYt/879HJH7Od4DGdiT7/dt/tf2BlesZpz21FgW+sPSZOffB0BG
-        DtLaAe3nf1CNfSAX5qKf7LtqGxS2G6bRUz3+ERRJfdNXRgvF2Vr/2ZhG0zEsZy+HNlZhybvB2g2rl
-        HL43muztl0ALPQgQcjj9VydyJlSSV7yJ4+cA/3BgZd0bVAZ1+yUtyDOFGkOIn0jhdn3vtOLbuL+MS
-        VdhSFkkpR2uU/FRcwRFC25C7jCgsWw8uhiG1b6ZcE7pLHlgXrOBGCbLeuWRn3urxajOo1LfbYO6dQ
-        oUHMcRWg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lttWk-009FwM-7Q; Thu, 17 Jun 2021 15:02:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 648DD300252;
-        Thu, 17 Jun 2021 17:01:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 473772BD52F30; Thu, 17 Jun 2021 17:01:53 +0200 (CEST)
-Date:   Thu, 17 Jun 2021 17:01:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
+        id S233088AbhFQPEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:04:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233058AbhFQPEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 11:04:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7D7C613FB;
+        Thu, 17 Jun 2021 15:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623942134;
+        bh=EYhlWS7OTYyNZbRfd1Ohd426NpjeeKUY8OwIo+YZT4E=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=inZYgQ5bi8uw6oOAX8EPOOtfKFDme0eliRQCBHGcYtTPCdQgFm7kSehT40IZDhwmM
+         j9yFA4byMAK2cOqkoLtSNQe0bdInutyaeuvRd4VFac83IAkwZhZxn5NYR3JTcX/YXf
+         zSGdF2Y8sk1RriYT/0Jv5jCCMshQ6luu5baJQ2aVGKRrQfgA+inSSeYDJBSY2IWoqc
+         72ANYFGU4rSMcDqQ8wLB37eYsBI7EHUNfn/tfDO3CJrybo3ksV4DYA3141QjilF6RK
+         BFN7jxPyAtrpYqIRUl+psX5ig39XJdBidkQpgmd1XamdAwax5ASMW4TgUXv/S4TROI
+         zxeePoHFBwLmQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 8B6AF5C02A9; Thu, 17 Jun 2021 08:02:14 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 08:02:14 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        the arch/x86 maintainers <x86@kernel.org>,
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Dave Hansen <dave.hansen@intel.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm@kvack.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
-Message-ID: <YMtj4Xoo5lh4fGSx@hirez.programming.kicks-ass.net>
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [PATCH 4/8] membarrier: Make the post-switch-mm barrier explicit
+Message-ID: <20210617150214.GX4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <cover.1623813516.git.luto@kernel.org>
- <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
- <20210617103524.GA82133@C02TD0UTHF1T.local>
- <20210617112305.GK22278@shell.armlinux.org.uk>
- <20210617113349.GB82133@C02TD0UTHF1T.local>
- <394219d4-36a6-4e7f-a03c-8590551b099a@www.fastmail.com>
- <20210617135133.GA86101@C02TD0UTHF1T.local>
- <33241b25-4d45-4278-a4e6-ec9c12b0e1f3@www.fastmail.com>
+ <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
+ <1623816595.myt8wbkcar.astroid@bobo.none>
+ <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
+ <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
+ <1623893358.bbty474jyy.astroid@bobo.none>
+ <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
+ <c3c7a1cf-1c87-42cc-b2d6-cc2df55e5b57@www.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <33241b25-4d45-4278-a4e6-ec9c12b0e1f3@www.fastmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c3c7a1cf-1c87-42cc-b2d6-cc2df55e5b57@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 07:00:26AM -0700, Andy Lutomirski wrote:
-> On Thu, Jun 17, 2021, at 6:51 AM, Mark Rutland wrote:
-
-> > It's not clear to me what "the right thing" would mean specifically, and
-> > on architectures with userspace cache maintenance JITs can usually do
-> > the most optimal maintenance, and only need help for the context
-> > synchronization.
+On Wed, Jun 16, 2021 at 10:32:15PM -0700, Andy Lutomirski wrote:
+> On Wed, Jun 16, 2021, at 7:57 PM, Andy Lutomirski wrote:
+> > On Wed, Jun 16, 2021, at 6:37 PM, Nicholas Piggin wrote:
+> > > Excerpts from Andy Lutomirski's message of June 17, 2021 4:41 am:
+> > > > On 6/16/21 12:35 AM, Peter Zijlstra wrote:
+> > > >> On Wed, Jun 16, 2021 at 02:19:49PM +1000, Nicholas Piggin wrote:
+> > > >>> Excerpts from Andy Lutomirski's message of June 16, 2021 1:21 pm:
+> > > >>>> membarrier() needs a barrier after any CPU changes mm.  There is currently
+> > > >>>> a comment explaining why this barrier probably exists in all cases.  This
+> > > >>>> is very fragile -- any change to the relevant parts of the scheduler
+> > > >>>> might get rid of these barriers, and it's not really clear to me that
+> > > >>>> the barrier actually exists in all necessary cases.
+> > > >>>
+> > > >>> The comments and barriers in the mmdrop() hunks? I don't see what is 
+> > > >>> fragile or maybe-buggy about this. The barrier definitely exists.
+> > > >>>
+> > > >>> And any change can change anything, that doesn't make it fragile. My
+> > > >>> lazy tlb refcounting change avoids the mmdrop in some cases, but it
+> > > >>> replaces it with smp_mb for example.
+> > > >> 
+> > > >> I'm with Nick again, on this. You're adding extra barriers for no
+> > > >> discernible reason, that's not generally encouraged, seeing how extra
+> > > >> barriers is extra slow.
+> > > >> 
+> > > >> Both mmdrop() itself, as well as the callsite have comments saying how
+> > > >> membarrier relies on the implied barrier, what's fragile about that?
+> > > >> 
+> > > > 
+> > > > My real motivation is that mmgrab() and mmdrop() don't actually need to
+> > > > be full barriers.  The current implementation has them being full
+> > > > barriers, and the current implementation is quite slow.  So let's try
+> > > > that commit message again:
+> > > > 
+> > > > membarrier() needs a barrier after any CPU changes mm.  There is currently
+> > > > a comment explaining why this barrier probably exists in all cases. The
+> > > > logic is based on ensuring that the barrier exists on every control flow
+> > > > path through the scheduler.  It also relies on mmgrab() and mmdrop() being
+> > > > full barriers.
+> > > > 
+> > > > mmgrab() and mmdrop() would be better if they were not full barriers.  As a
+> > > > trivial optimization, mmgrab() could use a relaxed atomic and mmdrop()
+> > > > could use a release on architectures that have these operations.
+> > > 
+> > > I'm not against the idea, I've looked at something similar before (not
+> > > for mmdrop but a different primitive). Also my lazy tlb shootdown series 
+> > > could possibly take advantage of this, I might cherry pick it and test 
+> > > performance :)
+> > > 
+> > > I don't think it belongs in this series though. Should go together with
+> > > something that takes advantage of it.
 > > 
+> > I’m going to see if I can get hazard pointers into shape quickly.
+
+One textbook C implementation is in perfbook CodeSamples/defer/hazptr.[hc]
+git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/perfbook.git
+
+A production-tested C++ implementation is in the folly library:
+
+https://github.com/facebook/folly/blob/master/folly/synchronization/Hazptr.h
+
+However, the hazard-pointers get-a-reference operation requires a full
+barrier.  There are ways to optimize this away in some special cases,
+one of which is used in the folly-library hash-map code.
+
+> Here it is.  Not even boot tested!
 > 
-> This I simply don't believe -- I doubt that any sane architecture
-> really works like this.  I wrote an email about it to Intel that
-> apparently generated internal discussion but no results.  Consider:
+> https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=sched/lazymm&id=ecc3992c36cb88087df9c537e2326efb51c95e31
 > 
-> mmap(some shared library, some previously unmapped address);
+> Nick, I think you can accomplish much the same thing as your patch by:
 > 
-> this does no heavyweight synchronization, at least on x86.  There is
-> no "serializing" instruction in the fast path, and it *works* despite
-> anything the SDM may or may not say.
+> #define for_each_possible_lazymm_cpu while (false)
+> 
+> although a more clever definition might be even more performant.
+> 
+> I would appreciate everyone's thoughts as to whether this scheme is sane.
+> 
+> Paul, I'm adding you for two reasons.  First, you seem to enjoy bizarre locking schemes.  Secondly, because maybe RCU could actually work here.  The basic idea is that we want to keep an mm_struct from being freed at an inopportune time.  The problem with naively using RCU is that each CPU can use one single mm_struct while in an idle extended quiescent state (but not a user extended quiescent state).  So rcu_read_lock() is right out.  If RCU could understand this concept, then maybe it could help us, but this seems a bit out of scope for RCU.
 
-I'm confused; why do you think that is relevant?
+OK, I should look at your patch, but that will be after morning meetings.
 
-The only way to get into a memory address space is CR3 write, which is
-serializing and will flush everything. Since there wasn't anything
-mapped, nothing could be 'cached' from that location.
+On RCU and idle, much of the idle code now allows rcu_read_lock() to be
+directly, thanks to Peter's recent work.  Any sort of interrupt or NMI
+from idle can also use rcu_read_lock(), including the IPIs that are now
+done directly from idle.  RCU_NONIDLE() makes RCU pay attention to the
+code supplied as its sole argument.
 
-So that has to work...
+Or is your patch really having the CPU expect a mm_struct to stick around
+across the full idle sojourn, and without the assistance of mmgrab()
+and mmdrop()?
 
-> We can and, IMO, should develop a sane way for user programs to
-> install instructions into VMAs, for security-conscious software to
-> verify them (by splitting the read and write sides?), and for their
-> consumers to execute them, without knowing any arch details.  And I
-> think this can be done with no IPIs except for possible TLB flushing
-> when needed, at least on most architectures.  It would require a
-> nontrivial amount of design work, and it would not resemble
-> sys_cacheflush() or SYNC_CORE.
+Anyway, off to meetings...  Hope this helps in the meantime.
 
-The interesting use-case is where we modify code that is under active
-execution in a multi-threaded process; where CPU0 runs code and doesn't
-make any syscalls at all, while CPU1 modifies code that is visible to
-CPU0.
-
-In that case CPU0 can have various internal state still reflecting the
-old instructions that no longer exist in memory -- presumably.
-
-We also need to inject at least a full memory barrier and pipeline
-flush, to create a proper before and after modified. To reason about
-when the *other* threads will be able to observe the new code.
-
-Now, the SDM documents that prefetch and trace buffers are not flushed
-on i$ invalidate (actual implementations might of course differ) and
-doing this requires the SERIALIZE instruction or one of the many
-instructions that implies this, one of which is IRET.
-
-For the cross-modifying case, I really don't see how you can not send an
-IPI and expect behavour one can reason about, irrespective of any
-non-coherent behaviour.
-
-Now, the SDM documents non-coherent behaviour and requires SERIALIZE,
-while at the same time any IPI already implies IRET which implies
-SERIALIZE -- except some Luto guy was having plans to optimize the IRET
-paths so we couldn't rely on that.
+							Thanx, Paul
