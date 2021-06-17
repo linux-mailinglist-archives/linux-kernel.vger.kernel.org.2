@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02383AB59A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4587A3AB5A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbhFQOQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
+        id S231720AbhFQOQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhFQOQZ (ORCPT
+        with ESMTP id S231668AbhFQOQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:16:25 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5F6C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 07:14:18 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 944B6E7B;
-        Thu, 17 Jun 2021 16:14:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1623939256;
-        bh=hF29H5G9lOwa6KnCuMQqI5VpXy3ivxjr+tXdvvRfXTM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xr1iuQiFQN0JP+F1bWWhREP4z4ue0UrpoU6ZSoZgKA3hFvBNRBJImfRiXk3ULE5Tr
-         MbMwi1y2cYYD3Yytq6G6kGQM/3uENT5NFqnFbWbenJy0pqjPeLon7Y1mLhY4UkWC+t
-         4e8Uk7cjhFo+VgpieMuOtgU5nViwE69/w5kwdLYQ=
-Date:   Thu, 17 Jun 2021 17:13:53 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jonathan Liu <net147@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marek Vasut <marex@denx.de>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
-Subject: Re: [PATCH] drm/bridge: ti-sn65dsi83: Fix null pointer dereference
- in remove callback
-Message-ID: <YMtYoaSIIRhb85fh@pendragon.ideasonboard.com>
-References: <20210617111925.162120-1-net147@gmail.com>
+        Thu, 17 Jun 2021 10:16:50 -0400
+Received: from mxout017.mail.hostpoint.ch (mxout017.mail.hostpoint.ch [IPv6:2a00:d70:0:e::317])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C78FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 07:14:42 -0700 (PDT)
+Received: from [10.0.2.44] (helo=asmtp014.mail.hostpoint.ch)
+        by mxout017.mail.hostpoint.ch with esmtp (Exim 4.94.2 (FreeBSD))
+        (envelope-from <code@reto-schneider.ch>)
+        id 1ltsmt-000L01-SB; Thu, 17 Jun 2021 16:14:31 +0200
+Received: from [2a02:168:6182:1:d64b:e086:4fb7:9a87] (helo=eleanor.home.reto-schneider.ch)
+        by asmtp014.mail.hostpoint.ch with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2 (FreeBSD))
+        (envelope-from <code@reto-schneider.ch>)
+        id 1ltsmt-0001DK-Q5; Thu, 17 Jun 2021 16:14:31 +0200
+X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
+From:   Reto Schneider <code@reto-schneider.ch>
+To:     linux-mtd@lists.infradead.org
+Cc:     Stefan Roese <sr@denx.de>,
+        Reto Schneider <reto.schneider@husqvarnagroup.com>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mtd: spi-nor: Add support for XM25QH64C
+Date:   Thu, 17 Jun 2021 16:14:23 +0200
+Message-Id: <20210617141423.143584-1-code@reto-schneider.ch>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210617111925.162120-1-net147@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+From: Reto Schneider <reto.schneider@husqvarnagroup.com>
 
-Thank you for the patch.
+This chip has been (briefly) tested on the MediaTek MT7688 based GARDENA
+smart gateway.
 
-On Thu, Jun 17, 2021 at 09:19:25PM +1000, Jonathan Liu wrote:
-> If attach has not been called, unloading the driver can result in a null
-> pointer dereference in mipi_dsi_detach as ctx->dsi has not been assigned
-> yet.
+Datasheet: http://xmcwh.com/Uploads/2020-12-17/XM25QH64C_Ver1.1.pdf
+Signed-off-by: Reto Schneider <reto.schneider@husqvarnagroup.com>
+Reviewed-by: Michael Walle <michael@walle.cc>
 
-Shouldn't this be done in a brige .detach() operation instead ?
+---
 
-> Fixes: ceb515ba29ba6b ("drm/bridge: ti-sn65dsi83: Add TI SN65DSI83 and SN65DSI84 driver")
-> Signed-off-by: Jonathan Liu <net147@gmail.com>
-> ---
->  drivers/gpu/drm/bridge/ti-sn65dsi83.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> index 750f2172ef08..8e9f45c5c7c1 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> @@ -671,8 +671,11 @@ static int sn65dsi83_remove(struct i2c_client *client)
->  {
->  	struct sn65dsi83 *ctx = i2c_get_clientdata(client);
->  
-> -	mipi_dsi_detach(ctx->dsi);
-> -	mipi_dsi_device_unregister(ctx->dsi);
-> +	if (ctx->dsi) {
-> +		mipi_dsi_detach(ctx->dsi);
-> +		mipi_dsi_device_unregister(ctx->dsi);
-> +	}
-> +
->  	drm_bridge_remove(&ctx->bridge);
->  	of_node_put(ctx->host_node);
->  
+Changes in v2:
+- Use Datasheet: tag
 
+ drivers/mtd/spi-nor/xmc.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
+index 2c7773b68993..b6ac37bd59b8 100644
+--- a/drivers/mtd/spi-nor/xmc.c
++++ b/drivers/mtd/spi-nor/xmc.c
+@@ -12,6 +12,8 @@ static const struct flash_info xmc_parts[] = {
+ 	/* XMC (Wuhan Xinxin Semiconductor Manufacturing Corp.) */
+ 	{ "XM25QH64A", INFO(0x207017, 0, 64 * 1024, 128,
+ 			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "XM25QH64C", INFO(0x204017, 0, 64 * 1024, 128,
++			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256,
+ 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ };
 -- 
-Regards,
+2.30.2
 
-Laurent Pinchart
