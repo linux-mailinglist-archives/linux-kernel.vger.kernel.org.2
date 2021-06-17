@@ -2,157 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CC63AB58D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11003AB58E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231598AbhFQOME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:12:04 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33778 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbhFQOME (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:12:04 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 0C2331FD68;
-        Thu, 17 Jun 2021 14:09:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623938995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BkqQiO9KSRkh5HLhqz7NulrNPfY6/VvozJpBVz8MwPo=;
-        b=jNPWz1UpsZsq6nqeGeyraszV0WlKT77iXcScMQ3vsX2YsxoiGIn9ppDE3kHTL+k1rtBgnm
-        HLeZM5ZjeXPyO/r53Uz82M2ewRLp3MKO3+0oiO1Q/9p/ssPNWSejkTA8jLNebwJ/RUEjo6
-        y6Qe6oFVHOxuwnuht3HjcgKaQRlq84g=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S231634AbhFQOMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:12:50 -0400
+Received: from mga11.intel.com ([192.55.52.93]:53106 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230361AbhFQOMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 10:12:48 -0400
+IronPort-SDR: kO+L9xwhs8edk87ylEp0sham0dHzj6L3XeYxQRe4h0JCfxqVgf/eVjviL7KjNeKtuYNiL3rn9j
+ bOKRHnEbu8Vg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="203351117"
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="203351117"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 07:10:40 -0700
+IronPort-SDR: qa0ct736u3CBtXZhy/CS/dkj7KpmyKejvgyZOgd37JpSRXwZdJyFf8O1UrdLkJBJ6li9tjDM0d
+ NXH5Uvkv0SFg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="404654939"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 17 Jun 2021 07:10:40 -0700
+Received: from [10.212.234.139] (kliang2-MOBL.ccr.corp.intel.com [10.212.234.139])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8A9EEA3BBA;
-        Thu, 17 Jun 2021 14:09:54 +0000 (UTC)
-Date:   Thu, 17 Jun 2021 16:09:54 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH RFCv4 2/4] lib/vsprintf.c: make '%pD' print full path for
- file
-Message-ID: <YMtXshP8G4RZvr4m@alley>
-References: <20210615154952.2744-1-justin.he@arm.com>
- <20210615154952.2744-3-justin.he@arm.com>
+        by linux.intel.com (Postfix) with ESMTPS id 22C175808A3;
+        Thu, 17 Jun 2021 07:10:39 -0700 (PDT)
+Subject: Re: [PATCH 0/4] perf: Fix the ctx->pmu for a hybrid system
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mark.rutland@arm.com, ak@linux.intel.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        jolsa@redhat.com
+References: <1623869734-133974-1-git-send-email-kan.liang@linux.intel.com>
+ <YMsiiuUsjsrh8ZAC@hirez.programming.kicks-ass.net>
+ <YMsy7BuGT8nBTspT@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <3d4b9377-30b0-a945-7b11-b412dcc4c51a@linux.intel.com>
+Date:   Thu, 17 Jun 2021 10:10:37 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615154952.2744-3-justin.he@arm.com>
+In-Reply-To: <YMsy7BuGT8nBTspT@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-06-15 23:49:50, Jia He wrote:
-> Previously, the specifier '%pD' is for printing dentry name of struct
-> file. It may not be perfect (by default it only prints one component.)
+
+
+On 6/17/2021 7:33 AM, Peter Zijlstra wrote:
+> On Thu, Jun 17, 2021 at 12:23:06PM +0200, Peter Zijlstra wrote:
+>> On Wed, Jun 16, 2021 at 11:55:30AM -0700, kan.liang@linux.intel.com wrote:
+>>
+>>> To fix the issue, the generic perf codes have to understand the
+>>> supported CPU mask of a specific hybrid PMU. So it can update the
+>>> ctx->pmu accordingly, when a task is scheduled on a CPU which has
+>>> a different type of PMU from the previous CPU. The supported_cpus
+>>> has to be moved to the struct pmu.
+>>
+>> Urghh.. I so hate this :-/
+>>
+>> I *did* point you to:
+>>
+>>    https://lore.kernel.org/lkml/20181010104559.GO5728@hirez.programming.kicks-ass.net/
+>>
+>> when you started this whole hybrid crud
+
+Yes, to work around the hybrid, I updated the PMU for the CPU context 
+accordingly, but not the task context. :( This issue is found in a 
+stress test that was not ready at that time. Sorry for that.
+
+>>, and I think that's still the
+>> correct thing to do.
+>> >> Still, let me consider if there's a workable short-term cludge I hate
+>> less.
 > 
-> As suggested by Linus at [1]:
-> A dentry has a parent, but at the same time, a dentry really does
-> inherently have "one name" (and given just the dentry pointers, you
-> can't show mount-related parenthood, so in many ways the "show just
-> one name" makes sense for "%pd" in ways it doesn't necessarily for
-> "%pD"). But while a dentry arguably has that "one primary component",
-> a _file_ is certainly not exclusively about that last component.
+> How's this? We already have x86_pmu_update_cpu_context() setting the
+> 'correct' pmu in the cpuctx, so we can simply fold that back into the
+> task context.
 > 
-> Hence change the behavior of '%pD' to print full path of that file.
+> For normal use this is a no-op.
 > 
-> Precision is never going to be used with %p (or any of its kernel
-> extensions) if -Wformat is turned on.
-> .
+> Now I need to go audit all ctx->pmu usage :-(
 > 
-> [1] https://lore.kernel.org/lkml/CAHk-=wimsMqGdzik187YWLb-ru+iktb4MYbMQG1rnZ81dXYFVg@mail.gmail.com/
-> 
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Jia He <justin.he@arm.com>
-
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -920,13 +921,41 @@ char *dentry_name(char *buf, char *end, const struct dentry *d, struct printf_sp
->  }
->  
->  static noinline_for_stack
-> -char *file_dentry_name(char *buf, char *end, const struct file *f,
-> +char *file_d_path_name(char *buf, char *end, const struct file *f,
->  			struct printf_spec spec, const char *fmt)
->  {
-> +	const struct path *path;
-> +	char *p;
-> +	int prepend_len, reserved_size, dpath_len;
-> +
->  	if (check_pointer(&buf, end, f, spec))
->  		return buf;
->  
-> -	return dentry_name(buf, end, f->f_path.dentry, spec, fmt);
-> +	path = &f->f_path;
-> +	if (check_pointer(&buf, end, path, spec))
-> +		return buf;
-> +
-> +	p = d_path_unsafe(path, buf, end - buf, &prepend_len);
-> +
-> +	/* Calculate the full d_path length, ignoring the tail '\0' */
-> +	dpath_len = end - buf - prepend_len - 1;
-> +
-> +	reserved_size = max_t(int, dpath_len, spec.field_width);
-
-"reserved_size" is kind of confusing. "dpath_widen_len" or just "widen_len"
-look much more obvious.
-
-The below comments are not bad. But they still made me thing about it
-more than I wanted ;-) I wonder if it following is better:
-
-> +	/* case 1: no space at all, forward the buf with reserved size */
-> +	if (buf >= end)
-> +		return buf + reserved_size;
-
-	/* Case 1: Already started past the buffer. Just forward @buf. */
-	if (buf >= end)
-		return buf + widen_len;
-
+> ---
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index db4604c4c502..6a496c29ef00 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -3822,9 +3822,16 @@ static void perf_event_context_sched_in(struct perf_event_context *ctx,
+>   					struct task_struct *task)
+>   {
+>   	struct perf_cpu_context *cpuctx;
+> -	struct pmu *pmu = ctx->pmu;
+> +	struct pmu *pmu;
+>   
+>   	cpuctx = __get_cpu_context(ctx);
 > +
 > +	/*
-> +	 * case 2: small scratch space for long d_path name. The space
-> +	 * [buf,end] has been filled with truncated string. Hence use the
-> +	 * full dpath_len for further string widening.
+> +	 * HACK; for HETEROGENOUS the task context might have switched to a
+> +	 * different PMU, don't bother gating this.
 > +	 */
-> +	if (prepend_len < 0)
-> +		return widen_string(buf + dpath_len, dpath_len, end, spec);
+> +	pmu = ctx->pmu = cpuctx->ctx.pmu;
+> +
 
-	/*
-	 * Case 2: The entire remaining space of the buffer filled by
-	 * the truncated path. Still need to get moved right when
-	 * the filed width is greather than the full path length.
-	 */
-	if (prepend_len < 0)
-		return widen_string(buf + dpath_len, dpath_len, end, spec);
+I think all the perf_sw_context PMUs share the same pmu_cpu_context. so 
+the cpuctx->ctx.pmu should be always the first registered 
+perf_sw_context PMU which is perf_swevent. The ctx->pmu could be another 
+software PMU.
 
-> +	/* case3: space is big enough */
-> +	return string_nocheck(buf, end, p, spec);
+In theory, the perf_sw_context PMUs should have a similar issue. If the 
+events are from different perf_sw_context PMUs, we should 
+perf_pmu_disable() all of the PMUs before schedule them, but the 
+ctx->pmu only tracks the first one.
 
-	/*
-	 * Case 3: The full path is printed at the end of the buffer.
-	 * Print it at the right location in the same buffer.
-	 */
-	return string_nocheck(buf, end, p, spec);
->  }
->  #ifdef CONFIG_BLOCK
->  static noinline_for_stack
+I don't have a good way to fix the perf_sw_context PMUs. I think we have 
+to go through the event list and find all PMUs. But I don't think it's 
+worth doing.
 
-In each case, I am happy that it was possible to simplify the logic.
-I got lost several times in the previous version.
+Maybe we should only apply the change for the hybrid PMUs, and leave 
+other PMUs as is.
 
-Best Regards,
-Petr
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 6fee4a7..df9cce6 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -3821,9 +3821,19 @@ static void perf_event_context_sched_in(struct 
+perf_event_context *ctx,
+  					struct task_struct *task)
+  {
+  	struct perf_cpu_context *cpuctx;
+-	struct pmu *pmu = ctx->pmu;
++	struct pmu *pmu;
+
+  	cpuctx = __get_cpu_context(ctx);
++
++	if (ctx->pmu->capabilities & PERF_PMU_CAP_HETEROGENEOUS_CPUS) {
++		/*
++		 * HACK; for HETEROGENOUS the task context might have switched to a
++		 * different PMU, don't bother gating this.
++		 */
++		pmu = ctx->pmu = cpuctx->ctx.pmu;
++	} else
++		pmu = ctx->pmu;
++
+  	if (cpuctx->task_ctx == ctx) {
+  		if (cpuctx->sched_cb_usage)
+  			__perf_pmu_sched_task(cpuctx, true);
+
+
+
+Thanks,
+Kan
