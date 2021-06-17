@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DAF3AB6E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A383AB6E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232991AbhFQPHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:07:45 -0400
-Received: from pv50p00im-ztdg10011201.me.com ([17.58.6.39]:35721 "EHLO
-        pv50p00im-ztdg10011201.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231712AbhFQPHo (ORCPT
+        id S233096AbhFQPJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231712AbhFQPJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:07:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1623942336; bh=sbpr7pTnQ+UXVVLcsU5mLj6Dl52CAls13Z+HWM/69w8=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=K0k3mjHRWeulvVqrSnaMfZpiaHxu4nZ1tPf0yQxrh5QUtygwEb6YeQvhcjg1QPTn0
-         XqTk8cDxNV7NspGA5s+xFCxqWfQLBjlBP1jBXFkXlBT1uQVVq1w+0ah8hkxLtGJ2v0
-         pHovor2bHgWoYHvacnuvvDqgk5yvg1rVEHtIh8zIIt1rHsFZ0NfpEFinw+w4na2nOT
-         J0MVRueAXIGsG4W+pFN+Hao5rpBBcQ6kDIey7wSa6PxmmMyRxFbAzbXo9iNuRWRHcU
-         +8l+b8DiTcgAVA2SP6/5/u9VT8TxuOMbYSMLBqc26F0Sge1zTObXz3xlI0eFMhH3ki
-         H0KX/t3OQ55UA==
-Received: from xiongwei.. (unknown [120.245.2.120])
-        by pv50p00im-ztdg10011201.me.com (Postfix) with ESMTPSA id C21922A02CF;
-        Thu, 17 Jun 2021 15:05:32 +0000 (UTC)
-From:   Xiongwei Song <sxwjean@me.com>
-To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
-Subject: [PATCH] locking/lockdep: correct the description error for check_redundant()
-Date:   Thu, 17 Jun 2021 23:05:23 +0800
-Message-Id: <20210617150523.454965-1-sxwjean@me.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 17 Jun 2021 11:09:09 -0400
+Received: from mxout014.mail.hostpoint.ch (mxout014.mail.hostpoint.ch [IPv6:2a00:d70:0:e::314])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 436F7C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:07:01 -0700 (PDT)
+Received: from [10.0.2.46] (helo=asmtp013.mail.hostpoint.ch)
+        by mxout014.mail.hostpoint.ch with esmtp (Exim 4.94.2 (FreeBSD))
+        (envelope-from <code@reto-schneider.ch>)
+        id 1lttbd-000Fys-JU; Thu, 17 Jun 2021 17:06:57 +0200
+Received: from [2a02:168:6182:1:d64b:e086:4fb7:9a87]
+        by asmtp013.mail.hostpoint.ch with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2 (FreeBSD))
+        (envelope-from <code@reto-schneider.ch>)
+        id 1lttbd-000FSt-Gl; Thu, 17 Jun 2021 17:06:57 +0200
+X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
+Subject: Re: [PATCH v1] mtd: spi-nor: Add support for XM25QH64C
+To:     linux-mtd@lists.infradead.org
+Cc:     Stefan Roese <sr@denx.de>,
+        Reto Schneider <reto.schneider@husqvarnagroup.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, Michael Walle <michael@walle.cc>
+References: <20210613121248.1529292-1-code@reto-schneider.ch>
+ <1ba367f93650cb65122acd32fb4a4159@walle.cc>
+ <f022abf3-a6fe-d060-9868-985303c4e8a0@reto-schneider.ch>
+ <3bb5ae427dc01b82be4434dff39e6c8e@walle.cc>
+From:   Reto Schneider <code@reto-schneider.ch>
+Message-ID: <d9ff3a7a-7c2e-80a2-7910-3cc1a530833e@reto-schneider.ch>
+Date:   Thu, 17 Jun 2021 17:06:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-17_14:2021-06-15,2021-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=742 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2106170097
+In-Reply-To: <3bb5ae427dc01b82be4434dff39e6c8e@walle.cc>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongwei Song <sxwjean@gmail.com>
+Hi all,
 
-If there is no matched result, check_redundant() will return BFS_RNOMATCH.
+On 17.06.21 16:19, Michael Walle wrote:
+> That is up to the maintainers, but sooner or later we will have to face
+> the problem regarding the duplicate IDs.
 
-Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
----
- kernel/locking/lockdep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+A strongly worded statement by the maintainer(s) ("the Linux crowd") 
+against ignoring the continuation codes might help (me) to put pressure 
+on non-compliant manufacturers.
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index cfe0f4374594..1f126ca7fbd7 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -2726,7 +2726,7 @@ static inline bool usage_skip(struct lock_list *entry, void *mask)
-  * <target> or not. If it can, <src> -> <target> dependency is already
-  * in the graph.
-  *
-- * Return BFS_RMATCH if it does, or BFS_RMATCH if it does not, return BFS_E* if
-+ * Return BFS_RMATCH if it does, or BFS_RNOMATCH if it does not, return BFS_E* if
-  * any error appears in the bfs search.
-  */
- static noinline enum bfs_result
--- 
-2.30.2
+Any chance something like this is already out there? Could not find 
+anything.
 
+Kind regards,
+Reto
