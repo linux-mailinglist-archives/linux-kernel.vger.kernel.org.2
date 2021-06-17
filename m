@@ -2,131 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4083ABA40
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0903ABA43
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhFQRIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43302 "EHLO
+        id S231756AbhFQRJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231164AbhFQRIE (ORCPT
+        with ESMTP id S230028AbhFQRJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:08:04 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A83BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:05:55 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id k15so345046pfp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:05:55 -0700 (PDT)
+        Thu, 17 Jun 2021 13:09:07 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D80FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:06:59 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id df12so2524238edb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=spDOLTpTEkP0pQRlVnvSw7EzDBOy7ixf6KlEeu5zAFw=;
-        b=gvFkjdJ8/nWFYJ6eh4eGwDZH3O/FzRYCKAixYJ+bNuEKuwuss5/DVmrjbX+uVysNvs
-         i+qXxnRozSclnhV9Ko6zmIrYMI87h5HmYTek2HI51jvn+xNCD0bg4XrN4Yqp9qib8CR9
-         CUbQjexgtNkQUUYY4uYwd9nqQU44N+MdMqNFnAuiyyvQF/75BrkWVJgcEymLk/Yr4jeG
-         LXwy06acDKVCdG2uCzuuG+EAuw4cXh15bV4ak7aa62CQzu1ula2LAtWnB2igv14GYA4W
-         lXzfTYxIUy2PbsQtOWmWpcG+YtKPZhkz3VQN8S2EtJE6uuvXzzN4PNXTSebZUa2p7xNz
-         g78g==
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dBVXQS+ylKBG0bfyc6u9OxuiaPrfrMUBNYtXDRwH6rE=;
+        b=Twbo1hoJtrr1QYAOMFgezeK6qjEFBO2LSa1gDLBQdPSN0HHfpJTeQG+NvizXyjGggT
+         5qOcKbTwVoRfRAlPrxKnZh2Zzfh+I+c3U/FY4EawWfXLIpdZ78VNokK+tUQog6zWm9Mf
+         2o/Kxi3ANHBhs4xEi4h6OEUmn5pjdMGDx+ioJh2SOTD2sRezAD7IREFqUwHEoILO2r8B
+         K+5lkn/phM3e9vCxvJCgk3WGzSl+bmjX1i+ANJnv9OR80oGrjyswTtym1mZwebA013IJ
+         gcs4CbIqeUmB1wO8JmtNKXA4BvsF7f7h0IkDI5EZqhjdfkSMrWC582NbEzaWZDf97ot5
+         XDmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=spDOLTpTEkP0pQRlVnvSw7EzDBOy7ixf6KlEeu5zAFw=;
-        b=Mgs+4NEnJXCO6/jryG0Dh7A+Hx4AghcYddS8JYd6cja8TNXgONUm/qxCBYi7pMBeQb
-         +mqin0lM9PAaXgX7tZSYkm3YFztq9rb3+sOTlixGPysaREK4X+Vo526xI+ndVxp91hKj
-         KTiH1nGhyqRwm8Go+TTXaG8dOhjDZgtNer7CZg6MM8H/2nN779Pth3JSwYG5dRD2UDjD
-         xA2bC9nwJmlGvc/f8WM1tedyuYnwaGxJjVylj4HQCBG0J36eKzFNpSOhneRKSNaFC2sw
-         SxVhe623frUlK47T/vuaLz7XcyFAbqzwf4Dhia5qpXgB1zIxC1vniPYr4QnOKw54seCg
-         f88Q==
-X-Gm-Message-State: AOAM533jHhk6kn1vE6qA49vrTaerzAOquFN1CZO6z9c3ooB9FFm7CwQh
-        AGj21bko7L3w28nvbMRiqPE7
-X-Google-Smtp-Source: ABdhPJwaG6/j71e6DUZJ1nF3XYcWFet57gwEKHoW0R5fI/eRI2bpxAbaOGhdC3lH0rW9KnnXYL+7tA==
-X-Received: by 2002:a63:d117:: with SMTP id k23mr5831729pgg.60.1623949554810;
-        Thu, 17 Jun 2021 10:05:54 -0700 (PDT)
-Received: from workstation ([120.138.13.64])
-        by smtp.gmail.com with ESMTPSA id nv1sm5562052pjb.43.2021.06.17.10.05.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 17 Jun 2021 10:05:54 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 22:35:50 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Om Prakash Singh <omp@nvidia.com>
-Cc:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        smohanad@codeaurora.org
-Subject: Re: [PATCH 0/5] PCI: endpoint: Add support for additional notifiers
-Message-ID: <20210617170549.GA3075@workstation>
-References: <20210616115913.138778-1-manivannan.sadhasivam@linaro.org>
- <9fd37c43-e2ab-f5b2-13dc-a23bd83d3c7b@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dBVXQS+ylKBG0bfyc6u9OxuiaPrfrMUBNYtXDRwH6rE=;
+        b=XS8l3/5/hNi+pcuqY5NkQ+6D2BaYz3xWrmVbGJuuKaLIEm21lE3AYjtvxtbV2ZWSoM
+         a+zyTyaduYqw01ap00CsmXer6b9tln3o1Zei8cW/N1KarjeZmnU4INuHIcYkV26NByTu
+         n9xnbWP6dSnwc1czBze6GRr/oqkYOYE8ASNBNYUJkJkCnaNDfne0895podr4pF00f3z4
+         syzmX/tQupo50mrVmLob1sKO7Fu7nPqIVyMW7GB6lO7YFm8KzuaHIcGQMyD8RP1zx+Qk
+         fjxG/XCnJIwC3Mt6A2EQqt0mDZrk2nWnCr6RJzoOA88vkl9tcM1LcxOX8o6mhsnXxYaA
+         LJuw==
+X-Gm-Message-State: AOAM533zOL5IFD24zEqF7N5GIXG3xt571b1r0westyel+dSmaHzNIFTJ
+        09BgXHI8MjJF1VdqH9HCDHgv8WcATH7QM5wLUnI8Sw==
+X-Google-Smtp-Source: ABdhPJz/2I2K2MjVMWAixrgjAXoh9TwNDYWckTB04s6rH3ZA4pjwWpJKopZhb04A237Vju4rgvPe6MUtpLFBCwjFhQA=
+X-Received: by 2002:aa7:db16:: with SMTP id t22mr7992522eds.49.1623949617650;
+ Thu, 17 Jun 2021 10:06:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9fd37c43-e2ab-f5b2-13dc-a23bd83d3c7b@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200917022547.198090-1-linux@roeck-us.net> <20200917022547.198090-2-linux@roeck-us.net>
+In-Reply-To: <20200917022547.198090-2-linux@roeck-us.net>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Thu, 17 Jun 2021 14:06:46 -0300
+Message-ID: <CAAEAJfDdW-Xwyz=USE2v0vKcdO8paBgsQVkJ4FUP+xuP9iO9WA@mail.gmail.com>
+Subject: Re: [PATCH RESEND v3 1/5] media: uvcvideo: Cancel async worker earlier
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        linux-uvc-devel@lists.sourceforge.net,
+        linux-usb <linux-usb@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Laurent,
 
-On Thu, Jun 17, 2021 at 12:42:07AM +0530, Om Prakash Singh wrote:
-> Hi Mani,
-> Adding more notifier types will surely help but I believe the list is not
-> exhaustive. What you are trying here is to pass various vendor-specific epc
-> interrupts to EPF driver. That can be taken care by a single notifier
-> interface as well, "pci_epc_custom_notify" from your implementation.
+On Wed, 16 Sept 2020 at 23:33, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> So far the asynchronous control worker was canceled only in
+> uvc_ctrl_cleanup_device. This is much later than the call to
+> uvc_disconnect. However, after the call to uvc_disconnect returns,
+> there must be no more USB activity. This can result in all kinds
+> of problems in the USB code. One observed example:
+>
+> URB ffff993e83d0bc00 submitted while active
+> WARNING: CPU: 0 PID: 4046 at drivers/usb/core/urb.c:364 usb_submit_urb+0x4ba/0x55e
+> Modules linked in: <...>
+> CPU: 0 PID: 4046 Comm: kworker/0:35 Not tainted 4.19.139 #18
+> Hardware name: Google Phaser/Phaser, BIOS Google_Phaser.10952.0.0 08/09/2018
+> Workqueue: events uvc_ctrl_status_event_work [uvcvideo]
+> RIP: 0010:usb_submit_urb+0x4ba/0x55e
+> Code: <...>
+> RSP: 0018:ffffb08d471ebde8 EFLAGS: 00010246
+> RAX: a6da85d923ea5d00 RBX: ffff993e71985928 RCX: 0000000000000000
+> RDX: ffff993f37a1de90 RSI: ffff993f37a153d0 RDI: ffff993f37a153d0
+> RBP: ffffb08d471ebe28 R08: 000000000000003b R09: 001424bf85822e96
+> R10: 0000001000000000 R11: ffffffff975a4398 R12: ffff993e83d0b000
+> R13: ffff993e83d0bc00 R14: 0000000000000000 R15: 00000000fffffff0
+> FS:  0000000000000000(0000) GS:ffff993f37a00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000ec9c0000 CR3: 000000025b160000 CR4: 0000000000340ef0
+> Call Trace:
+>  uvc_ctrl_status_event_work+0xd6/0x107 [uvcvideo]
+>  process_one_work+0x19b/0x4c5
+>  worker_thread+0x10d/0x286
+>  kthread+0x138/0x140
+>  ? process_one_work+0x4c5/0x4c5
+>  ? kthread_associate_blkcg+0xc1/0xc1
+>  ret_from_fork+0x1f/0x40
+>
+> Introduce new function uvc_ctrl_stop_device() to cancel the worker
+> and call it from uvc_unregister_video() to solve the problem.
+>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: Alan Stern <stern@rowland.harvard.edu>
+> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-That's what I initially thought eventhough not all the notifiers are
-vendor specific. But Kishon suggested to add notifiers for generic ones
-such as BME, PME etc... and that sounded reasonable to me.
+If I understand correctly, this patch is correct and can be merged
+independently of the rest in this series.
 
-> This
-> also requires to have pre-defined values of "data" argument to standardize
-> the interface.
-> 
+I think it could also be fixed with a check in uvc_ctrl_status_event_work,
+to prevent pending workers from accessing the device, which is now disconnected.
+Something like this (untested):
 
-No, I don't think we can standardize the arguments to "custom" notifier.
-The custom notifier is supposed to deal with vendor specific events and
-I don't see any benefit on standardizing it. I see it more like an
-opaque driver_data field where we pass driver specific arguments.
+@@ -1325,6 +1325,10 @@ static void uvc_ctrl_status_event_work(struct
+work_struct *work)
 
-Thanks,
-Mani
+        uvc_ctrl_status_event(w->chain, w->ctrl, w->data);
 
-> your thoughts?
-> 
-> Thanks,
-> Om
-> 
-> On 6/16/2021 5:29 PM, Manivannan Sadhasivam wrote:
-> > External email: Use caution opening links or attachments
-> > 
-> > 
-> > Hello,
-> > 
-> > This series adds support for additional notifiers in the PCI endpoint
-> > framework. The notifiers LINK_DOWN, BME, PME, and D_STATE are generic
-> > for all PCI endpoints but there is also a custom notifier (CUSTOM) added
-> > to pass the device/vendor specific events to EPF from EPC.
-> > 
-> > The example usage of all notifiers is provided in the commit description.
-> > 
-> > Thanks,
-> > Mani
-> > 
-> > Manivannan Sadhasivam (5):
-> >    PCI: endpoint: Add linkdown notifier support
-> >    PCI: endpoint: Add BME notifier support
-> >    PCI: endpoint: Add PME notifier support
-> >    PCI: endpoint: Add D_STATE notifier support
-> >    PCI: endpoint: Add custom notifier support
-> > 
-> >   drivers/pci/endpoint/pci-epc-core.c | 89 +++++++++++++++++++++++++++++
-> >   include/linux/pci-epc.h             |  5 ++
-> >   include/linux/pci-epf.h             |  5 ++
-> >   3 files changed, 99 insertions(+)
-> > 
-> > --
-> > 2.25.1
-> > 
++       /* Don't submit URBs if the device was disconnected */
++       if (!usb_get_intfdata(dev->intf))
++               return;
++
+
+In any case, it'd be nice to fix this case now, and pospone taking care
+of the other race conditions in the core, as you suggested in the cover letter.
+
+Thanks!
+Ezequiel
