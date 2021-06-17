@@ -2,538 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA78A3AB45F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952F63AB461
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhFQNOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46874 "EHLO
+        id S232193AbhFQNOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231767AbhFQNOD (ORCPT
+        with ESMTP id S231911AbhFQNOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:14:03 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8362C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 06:11:55 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k5so3766551pjj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 06:11:55 -0700 (PDT)
+        Thu, 17 Jun 2021 09:14:17 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D787C061574;
+        Thu, 17 Jun 2021 06:12:08 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id 67-20020a4a01460000b0290245b81f6261so1562242oor.6;
+        Thu, 17 Jun 2021 06:12:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k1mMifaUViIdhx41SvMo5+HqbWf4AE6y2TfAbhNdz0k=;
-        b=Iwx8GWtfsSXfY0Rz/ZAxt0SyMVSvzPMgxYJHGL5phkuIrS2sw3LA9Marx23tweYb1x
-         l0M0vii7+5JFHK7HQb/3sUo34FpeK2W0EV6fKnfKmjT2swlW7Mmdq/aW7MqahYvYm3ch
-         CiAokqfsrN72gpzUVihI8r8TqalD4zOl9VO7ay3MYvr1ZVRL4dInb3316RcfPZI4g0Pg
-         X2dUpEwa9IbBBeHqVsZn04+nEIkmVu7bKs5lXNtNYhLyouSJKjWL7PjbgnsqTHVQt7Wa
-         1iIm1XrSeRlAHYm/CobtzsdtpFySFciUBhIXe8MQlimvqRIygEqcY7X3ncKO6fAftjJj
-         PUgw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=R1yhSqOyCTOxsIcvCglHbRy/SpZ1b+YtIXM50m2wYmo=;
+        b=FoOoWX1W+Fy8/RnN/fLNDPa/Fo9fJeDV92SoISrLXC1Q4vR5fP9EqTJoQrDVu1VH/3
+         HRtP3KAXMuaLD+L1SdSmCvSTBHjTFjPYdBzBjf122Yy+EsJzwvA+yUd7g6DJ4N3kT2Cc
+         g1NVex/INTSVlZCk7ynkRzpDo6lKUc5JAObWbpGCfc5w4CYEkgu7H2H9qT9kqtLzVumz
+         3aUnngQ+ML8MwFf3tHuZu06LbrydUvyzDK5COVObRHdRZFDePA4EQ7nWqMgiUn2HnFJ1
+         yn0bYxpVrCmM8Z3dGo1XpdAIIxgfhGufeqdcAe9l5g2yZrpKquX21RQXzoSKm9QOoMDB
+         7Pzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k1mMifaUViIdhx41SvMo5+HqbWf4AE6y2TfAbhNdz0k=;
-        b=d3LMMolhGdL6+An2FM2r0dASkfgFXv3RGhb2lL2wFfemLX89gLtALQ8VCbpC2ZpExm
-         ztSHA9++bhiCzijMu5FUPeoKcw54QnIh+8PZ+q3n+Vwn/OS6Lo2DwyQaWn7G+Eb+5mb6
-         KbqAmi/pedH8tLmHpIPHcUqo9dbT0VAXIiteGAFUzH/V8StJe6VuEmZTomK+RNYRwxnw
-         +tM0nrsR5k49n0xPFtCBoLPRl+F1KVFEiKk8CO19pWxCFJnQQWoTxDad9qRPQZkTFUYV
-         gXMMeBsMRyp+3rmmxxy0jOa7XhN2/DN6vSAnCGqQJZSQEhZ2QhnhszKDIXwYCmrm97oC
-         qULQ==
-X-Gm-Message-State: AOAM532U2msb8SO1c2AgR+s2s9spiz6/IIQDBpYM6Pfm4wGOA9Fz4rGo
-        9sp8uy7UO/9Va5rE9kdTIA==
-X-Google-Smtp-Source: ABdhPJydgXCadhcW697DPTjTkLP3qubMtLyl0BbxnPzjeBlj+5d4PjQ/Ru5Tb7hx3rN8hgjG70NWaw==
-X-Received: by 2002:a17:902:ed95:b029:ee:aa46:547a with SMTP id e21-20020a170902ed95b02900eeaa46547amr4445651plj.27.1623935515328;
-        Thu, 17 Jun 2021 06:11:55 -0700 (PDT)
-Received: from INTERNET-129.allwinnertech.com ([223.197.233.48])
-        by smtp.gmail.com with ESMTPSA id v14sm5855657pgo.89.2021.06.17.06.11.52
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Jun 2021 06:11:55 -0700 (PDT)
-From:   Ban Tao <fengzheng923@gmail.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@gmail.com, fengzheng923@gmail.com,
-        p.zabel@pengutronix.de, samuel@sholland.org, krzk@kernel.org
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: [PATCH v2 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
-Date:   Thu, 17 Jun 2021 21:11:48 +0800
-Message-Id: <20210617131148.2472-1-fengzheng923@gmail.com>
-X-Mailer: git-send-email 2.22.0.windows.1
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=R1yhSqOyCTOxsIcvCglHbRy/SpZ1b+YtIXM50m2wYmo=;
+        b=U+Nkswyau6HiWsgR41m44YbAy26ZNAIIJoxia6/Ms4CvA5asO12JEZBgS2PtKkAZsD
+         xqt2uK3dKJ5eI66cCr/NRokWm2Ugccw4vZM06JsihOVQXexQymq4iP0tmIL7zxpZ8hVv
+         OWCiBjHkyKzMtUSYd3c6oKLaYpnRlOVTH64YiwKfaqI8n1f5E3OGTgspXysKRq00+Hg/
+         XasUYJpgvTYG4or+4DTT5GCIENzXmMfIm6es6gVcswgwXmN0C8KqnFcunRwlBhE2UPay
+         lsViKwtwQmxuV9ZHSMiT+RyRDlJ934oeboiJeRZ4w/B2otXP3ijPOgSwr6VEwhOGhyTt
+         y+ZQ==
+X-Gm-Message-State: AOAM53086bbMjf6TdL2ljtK9B38Hwid71b+CqOOhVPem4lS4ihcV/dE9
+        wnXccxtzly7+46z9QaMg/m8=
+X-Google-Smtp-Source: ABdhPJxBoeD6KeM9g13I3LqtWR4C3O/sYZ4yZ1OQx4W6BmyLnU9U/vku0FUkx4m3p0pUlS2U4dWrtA==
+X-Received: by 2002:a4a:1d85:: with SMTP id 127mr4447502oog.18.1623935527846;
+        Thu, 17 Jun 2021 06:12:07 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l18sm1233382otr.50.2021.06.17.06.12.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 06:12:06 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 17 Jun 2021 06:12:05 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v1] hwmon: (lm90) Use edge-triggered interrupt
+Message-ID: <20210617131205.GA59767@roeck-us.net>
+References: <20210616190708.1220-1-digetx@gmail.com>
+ <20210617001243.GA3211292@roeck-us.net>
+ <3c6cbaf3-187b-1682-69b8-a2b34f23b928@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <3c6cbaf3-187b-1682-69b8-a2b34f23b928@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Allwinner H6 and later SoCs have an DMIC block
-which is capable of capture.
+On Thu, Jun 17, 2021 at 10:11:19AM +0300, Dmitry Osipenko wrote:
+> 17.06.2021 03:12, Guenter Roeck пишет:
+> > On Wed, Jun 16, 2021 at 10:07:08PM +0300, Dmitry Osipenko wrote:
+> >> The LM90 driver uses level-based interrupt triggering. The interrupt
+> >> handler prints a warning message about the breached temperature and
+> >> quits. There is no way to stop interrupt from re-triggering since it's
+> >> level-based, thus thousands of warning messages are printed per second
+> >> once interrupt is triggered. Use edge-triggered interrupt in order to
+> >> fix this trouble.
+> >>
+> >> Fixes: 109b1283fb532 ("hwmon: (lm90) Add support to handle IRQ")
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> >>  drivers/hwmon/lm90.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/hwmon/lm90.c b/drivers/hwmon/lm90.c
+> >> index ebbfd5f352c0..ce8ebe60fcdc 100644
+> >> --- a/drivers/hwmon/lm90.c
+> >> +++ b/drivers/hwmon/lm90.c
+> >> @@ -1908,7 +1908,7 @@ static int lm90_probe(struct i2c_client *client)
+> >>  		dev_dbg(dev, "IRQ: %d\n", client->irq);
+> >>  		err = devm_request_threaded_irq(dev, client->irq,
+> >>  						NULL, lm90_irq_thread,
+> >> -						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+> >> +						IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+> >>  						"lm90", client);
+> > 
+> > We can't do that. Problem is that many of the devices supported by this driver
+> > behave differently when it comes to interrupts. Specifically, the interrupt
+> > handler is supposed to reset the interrupt condition (ie reading the status
+> > register should reset it). If that is the not the case for a specific chip,
+> > we'll have to update the code to address the problem for that specific chip.
+> > The above code would probably just generate a single interrupt while never
+> > resetting the interrupt condition, which is obviously not what we want to
+> > happen.
+> 
+> The nct1008/72 datasheet [1] says that reading the status register
+> doesn't reset interrupt until temperature is returned back into normal
+> state, which is what I'm witnessing.
+> 
+> [1] https://www.onsemi.com/pdf/datasheet/nct1008-d.pdf
+> 
+> Page 10 "Status Register":
+> 
+> "Reading the status register clears the five flags, Bit 6 to Bit 2,
+> provided the error conditions causing the flags to beset  have  gone
+> away.  A  flag  bit  can  be  reset  only  if  the corresponding
+> value    register    contains    an    in-limit measurement or if the
+> sensor is good."
+> 
+> So the interrupt handler doesn't actually stop interrupt from
+> reoccurring and the whole KMSG is instantly spammed with:
+> 
+> ...
+> [  217.484034] lm90 0-004c: temp2 out of range, please check!
+> [  217.484569] lm90 0-004c: temp2 out of range, please check!
+> [  217.485006] systemd-journald[179]: /dev/kmsg buffer overrun, some
+> messages lost.
+> [  217.485109] lm90 0-004c: temp2 out of range, please check!
+> [  217.485699] lm90 0-004c: temp2 out of range, please check!
+> [  217.486235] lm90 0-004c: temp2 out of range, please check!
+> [  217.486776] lm90 0-004c: temp2 out of range, please check!
+> [  217.486874] systemd-journald[179]: /dev/kmsg buffer overrun, ...
+> 
+> It's interesting that the very first version of the nct1008-support
+> patch used edge-triggered interrupt flags [2].
+> 
+> [2] http://lkml.iu.edu/hypermail/linux/kernel/1104.1/01669.html
+> 
+A lot of this depends on the chip and its wiring, as well as on chip
+configuration. Even for a specific chip there may be configuration
+dependencies. The interrupt configuration in situations like this
+should really be determined by devicetree configuration, and not
+be hardcoded. Is this a devicetree based system ? If so, there should
+be an entry for this chip pointing to the interrupt, and that entry
+should include a trigger mask. That mask should be set to edge
+triggered.
 
-Signed-off-by: Ban Tao <fengzheng923@gmail.com>
----
- MAINTAINERS                   |   7 +
- sound/soc/sunxi/Kconfig       |   8 +
- sound/soc/sunxi/Makefile      |   1 +
- sound/soc/sunxi/sun50i-dmic.c | 405 ++++++++++++++++++++++++++++++++++
- 4 files changed, 421 insertions(+)
- create mode 100644 sound/soc/sunxi/sun50i-dmic.c
+> Limiting the interrupt rate could be an alternative solution.
+> 
+> What do you think about something like this:
+> 
+A sleep in an interrupt handler to "prevent" an interrupt storm
+is never acceptable.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b4094f07214e..1b87225c39b0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -760,6 +760,13 @@ L:	linux-media@vger.kernel.org
- S:	Maintained
- F:	drivers/staging/media/sunxi/cedrus/
- 
-+ALLWINNER DMIC DRIVERS
-+M:	Ban Tao <fengzheng923@gmail.com>
-+L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
-+F:	sound/soc/sunxi/sun50i-dmic.c
-+
- ALPHA PORT
- M:	Richard Henderson <rth@twiddle.net>
- M:	Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-index ddcaaa98d3cb..2a3bf7722e11 100644
---- a/sound/soc/sunxi/Kconfig
-+++ b/sound/soc/sunxi/Kconfig
-@@ -56,6 +56,14 @@ config SND_SUN4I_SPDIF
- 	  Say Y or M to add support for the S/PDIF audio block in the Allwinner
- 	  A10 and affiliated SoCs.
- 
-+config SND_SUN50I_DMIC
-+	tristate "Allwinner H6 DMIC Support"
-+	depends on (OF && ARCH_SUNXI) || COMPILE_TEST
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	help
-+	  Say Y or M to add support for the DMIC audio block in the Allwinner
-+	  H6 and affiliated SoCs.
-+
- config SND_SUN8I_ADDA_PR_REGMAP
- 	tristate
- 	select REGMAP
-diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
-index a86be340a076..4483fe9c94ef 100644
---- a/sound/soc/sunxi/Makefile
-+++ b/sound/soc/sunxi/Makefile
-@@ -6,3 +6,4 @@ obj-$(CONFIG_SND_SUN8I_CODEC_ANALOG) += sun8i-codec-analog.o
- obj-$(CONFIG_SND_SUN50I_CODEC_ANALOG) += sun50i-codec-analog.o
- obj-$(CONFIG_SND_SUN8I_CODEC) += sun8i-codec.o
- obj-$(CONFIG_SND_SUN8I_ADDA_PR_REGMAP) += sun8i-adda-pr-regmap.o
-+obj-$(CONFIG_SND_SUN50I_DMIC) += sun50i-dmic.o
-diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
-new file mode 100644
-index 000000000000..d495ee0f6a2d
---- /dev/null
-+++ b/sound/soc/sunxi/sun50i-dmic.c
-@@ -0,0 +1,405 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+//
-+// This driver supports the DMIC in Allwinner's H6 SoCs.
-+//
-+// Copyright 2021 Ban Tao <fengzheng923@gmail.com>
-+
-+#include <linux/clk.h>
-+#include <linux/device.h>
-+#include <linux/of_device.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/reset.h>
-+#include <sound/dmaengine_pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+
-+
-+#define SUN50I_DMIC_EN_CTL		(0x00)
-+	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
-+	#define SUN50I_DMIC_EN_CTL_CHAN(v)		((v) << 0)
-+	#define SUN50I_DMIC_EN_CTL_CHAN_MASK		GENMASK(7, 0)
-+#define SUN50I_DMIC_SR			(0x04)
-+	#define SUN50I_DMIC_SR_SAMOLE_RATE(v)		((v) << 0)
-+	#define SUN50I_DMIC_SR_SAMOLE_RATE_MASK		GENMASK(2, 0)
-+#define SUN50I_DMIC_CTL			(0x08)
-+	#define SUN50I_DMIC_CTL_OVERSAMPLE_RATE		BIT(0)
-+#define SUN50I_DMIC_DATA			(0x10)
-+#define SUN50I_DMIC_INTC			(0x14)
-+	#define SUN50I_DMIC_FIFO_DRQ_EN			BIT(2)
-+#define SUN50I_DMIC_INT_STA		(0x18)
-+	#define SUN50I_DMIC_INT_STA_OVERRUN_IRQ_PENDING	BIT(1)
-+	#define SUN50I_DMIC_INT_STA_DATA_IRQ_PENDING	BIT(0)
-+#define SUN50I_DMIC_RXFIFO_CTL		(0x1c)
-+	#define SUN50I_DMIC_RXFIFO_CTL_FLUSH		BIT(31)
-+	#define SUN50I_DMIC_RXFIFO_CTL_MODE		BIT(9)
-+	#define SUN50I_DMIC_RXFIFO_CTL_RESOLUTION	BIT(8)
-+#define SUN50I_DMIC_CH_NUM		(0x24)
-+	#define SUN50I_DMIC_CH_NUM_N(v)			((v) << 0)
-+	#define SUN50I_DMIC_CH_NUM_N_MASK		GENMASK(2, 0)
-+#define SUN50I_DMIC_CNT			(0x2c)
-+	#define SUN50I_DMIC_CNT_N			BIT(0)
-+#define SUN50I_DMIC_HPF_CTRL		(0x38)
-+#define SUN50I_DMIC_VERSION		(0x50)
-+
-+
-+struct sun50i_dmic_dev {
-+	struct clk *dmic_clk;
-+	struct clk *bus_clk;
-+	struct reset_control *rst;
-+	struct regmap *regmap;
-+	struct snd_dmaengine_dai_dma_data dma_params_rx;
-+	unsigned int chan_en;
-+};
-+
-+struct dmic_rate {
-+	unsigned int samplerate;
-+	unsigned int rate_bit;
-+};
-+
-+static int sun50i_dmic_startup(struct snd_pcm_substream *substream,
-+			       struct snd_soc_dai *cpu_dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
-+
-+	/* only support capture */
-+	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
-+		return -EINVAL;
-+
-+	regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-+			   SUN50I_DMIC_RXFIFO_CTL_FLUSH,
-+			   SUN50I_DMIC_RXFIFO_CTL_FLUSH);
-+	regmap_write(host->regmap, SUN50I_DMIC_CNT, SUN50I_DMIC_CNT_N);
-+
-+	return 0;
-+}
-+
-+static int sun50i_dmic_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *cpu_dai)
-+{
-+	int i = 0;
-+	unsigned long rate = params_rate(params);
-+	unsigned int mclk = 0;
-+	unsigned int channels = params_channels(params);
-+	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct dmic_rate dmic_rate_s[] = {
-+		{44100, 0x0},
-+		{48000, 0x0},
-+		{22050, 0x2},
-+		{24000, 0x2},
-+		{11025, 0x4},
-+		{12000, 0x4},
-+		{32000, 0x1},
-+		{16000, 0x3},
-+		{8000,  0x5},
-+	};
-+
-+	/* DMIC num is N+1 */
-+	regmap_update_bits(host->regmap, SUN50I_DMIC_CH_NUM,
-+			   SUN50I_DMIC_CH_NUM_N_MASK,
-+			   SUN50I_DMIC_CH_NUM_N(channels - 1));
-+	host->chan_en = (1 << channels) - 1;
-+	regmap_write(host->regmap, SUN50I_DMIC_HPF_CTRL, host->chan_en);
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-+				   SUN50I_DMIC_RXFIFO_CTL_MODE,
-+				   SUN50I_DMIC_RXFIFO_CTL_MODE);
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-+				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION, 0);
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-+				   SUN50I_DMIC_RXFIFO_CTL_MODE, 0);
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-+				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION,
-+				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION);
-+		break;
-+	default:
-+		dev_err(cpu_dai->dev, "Invalid format!\n");
-+		return -EINVAL;
-+	}
-+
-+	switch (rate) {
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+		mclk = 22579200;
-+		break;
-+	case 8000:
-+	case 12000:
-+	case 16000:
-+	case 24000:
-+	case 32000:
-+	case 48000:
-+		mclk = 24576000;
-+		break;
-+	default:
-+		dev_err(cpu_dai->dev, "Invalid rate!\n");
-+		return -EINVAL;
-+	}
-+
-+	if (clk_set_rate(host->dmic_clk, mclk)) {
-+		dev_err(cpu_dai->dev, "mclk : %u not support\n", mclk);
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(dmic_rate_s); i++) {
-+		if (dmic_rate_s[i].samplerate == rate) {
-+			regmap_update_bits(host->regmap, SUN50I_DMIC_SR,
-+					   SUN50I_DMIC_SR_SAMOLE_RATE_MASK,
-+					   SUN50I_DMIC_SR_SAMOLE_RATE(dmic_rate_s[i].rate_bit));
-+			break;
-+		}
-+	}
-+
-+	switch (params_physical_width(params)) {
-+	case 16:
-+		host->dma_params_rx.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+		break;
-+	case 32:
-+		host->dma_params_rx.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		break;
-+	default:
-+		dev_err(cpu_dai->dev, "Unsupported physical sample width: %d\n",
-+			params_physical_width(params));
-+		return -EINVAL;
-+	}
-+
-+	/* oversamplerate adjust */
-+	if (params_rate(params) >= 24000)
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
-+				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE,
-+				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE);
-+	else
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
-+				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE, 0);
-+
-+	return 0;
-+}
-+
-+static int sun50i_dmic_trigger(struct snd_pcm_substream *substream, int cmd,
-+			       struct snd_soc_dai *dai)
-+{
-+	int ret = 0;
-+	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(dai);
-+
-+	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
-+		return -EINVAL;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		/* DRQ ENABLE */
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
-+				   SUN50I_DMIC_FIFO_DRQ_EN,
-+				   SUN50I_DMIC_FIFO_DRQ_EN);
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-+				   SUN50I_DMIC_EN_CTL_CHAN_MASK,
-+				   SUN50I_DMIC_EN_CTL_CHAN(host->chan_en));
-+		/* Global enable */
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-+				   SUN50I_DMIC_EN_CTL_GLOBE,
-+				   SUN50I_DMIC_EN_CTL_GLOBE);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		/* DRQ DISABLE */
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
-+				   SUN50I_DMIC_FIFO_DRQ_EN, 0);
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-+				   SUN50I_DMIC_EN_CTL_CHAN_MASK,
-+				   SUN50I_DMIC_EN_CTL_CHAN(0));
-+		/* Global disable */
-+		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-+				   SUN50I_DMIC_EN_CTL_GLOBE, 0);
-+		break;
-+
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+	return ret;
-+}
-+
-+static int sun50i_dmic_soc_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(dai);
-+
-+	snd_soc_dai_init_dma_data(dai, NULL, &host->dma_params_rx);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops sun50i_dmic_dai_ops = {
-+	.startup	= sun50i_dmic_startup,
-+	.trigger	= sun50i_dmic_trigger,
-+	.hw_params	= sun50i_dmic_hw_params,
-+};
-+
-+static const struct regmap_config sun50i_dmic_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = SUN50I_DMIC_VERSION,
-+	.cache_type = REGCACHE_NONE,
-+};
-+
-+#define	SUN50I_DMIC_RATES (SNDRV_PCM_RATE_8000_48000)
-+#define SUN50I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
-+
-+static struct snd_soc_dai_driver sun50i_dmic_dai = {
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+		.rates = SUN50I_DMIC_RATES,
-+		.formats = SUN50I_FORMATS,
-+	},
-+	.probe = sun50i_dmic_soc_dai_probe,
-+	.ops = &sun50i_dmic_dai_ops,
-+	.name = "dmic",
-+};
-+
-+static const struct of_device_id sun50i_dmic_of_match[] = {
-+	{
-+		.compatible = "allwinner,sun50i-h6-dmic",
-+	},
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
-+
-+static const struct snd_soc_component_driver sun50i_dmic_component = {
-+	.name		= "sun50i-dmic",
-+};
-+
-+static int sun50i_dmic_runtime_suspend(struct device *dev)
-+{
-+	struct sun50i_dmic_dev *host  = dev_get_drvdata(dev);
-+
-+	clk_disable_unprepare(host->dmic_clk);
-+	clk_disable_unprepare(host->bus_clk);
-+
-+	return 0;
-+}
-+
-+static int sun50i_dmic_runtime_resume(struct device *dev)
-+{
-+	struct sun50i_dmic_dev *host  = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = clk_prepare_enable(host->dmic_clk);
-+	if (ret)
-+		return ret;
-+	ret = clk_prepare_enable(host->bus_clk);
-+	if (ret)
-+		clk_disable_unprepare(host->dmic_clk);
-+
-+	return ret;
-+}
-+
-+static int sun50i_dmic_probe(struct platform_device *pdev)
-+{
-+	struct sun50i_dmic_dev *host;
-+	struct resource *res;
-+	int ret;
-+	void __iomem *base;
-+
-+	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
-+	if (!host)
-+		return -ENOMEM;
-+
-+	/* Get the addresses */
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(base))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(base),
-+				     "get resource failed.\n");
-+
-+	host->regmap = devm_regmap_init_mmio(&pdev->dev, base,
-+						&sun50i_dmic_regmap_config);
-+
-+	/* Clocks */
-+	host->bus_clk = devm_clk_get(&pdev->dev, "bus");
-+	if (IS_ERR(host->bus_clk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(host->bus_clk),
-+				     "failed to get bus clock.\n");
-+
-+	host->dmic_clk = devm_clk_get(&pdev->dev, "mod");
-+	if (IS_ERR(host->dmic_clk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(host->dmic_clk),
-+				     "failed to get dmic clock.\n");
-+
-+	host->dma_params_rx.addr = res->start + SUN50I_DMIC_DATA;
-+	host->dma_params_rx.maxburst = 8;
-+
-+	platform_set_drvdata(pdev, host);
-+
-+	host->rst = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-+	if (IS_ERR(host->rst))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
-+				     "Failed to get reset.\n");
-+	reset_control_deassert(host->rst);
-+
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+				&sun50i_dmic_component, &sun50i_dmic_dai, 1);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "failed to register component.\n");
-+
-+	pm_runtime_enable(&pdev->dev);
-+	if (!pm_runtime_enabled(&pdev->dev)) {
-+		ret = sun50i_dmic_runtime_resume(&pdev->dev);
-+		if (ret)
-+			goto err_unregister;
-+	}
-+
-+	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-+	if (ret)
-+		goto err_suspend;
-+
-+	return 0;
-+err_suspend:
-+	if (!pm_runtime_status_suspended(&pdev->dev))
-+		sun50i_dmic_runtime_suspend(&pdev->dev);
-+err_unregister:
-+	pm_runtime_disable(&pdev->dev);
-+	return ret;
-+}
-+
-+static int sun50i_dmic_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+	if (!pm_runtime_status_suspended(&pdev->dev))
-+		sun50i_dmic_runtime_suspend(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops sun50i_dmic_pm = {
-+	SET_RUNTIME_PM_OPS(sun50i_dmic_runtime_suspend,
-+			   sun50i_dmic_runtime_resume, NULL)
-+};
-+
-+static struct platform_driver sun50i_dmic_driver = {
-+	.driver		= {
-+		.name	= "sun50i-dmic",
-+		.of_match_table = of_match_ptr(sun50i_dmic_of_match),
-+		.pm	= &sun50i_dmic_pm,
-+	},
-+	.probe		= sun50i_dmic_probe,
-+	.remove		= sun50i_dmic_remove,
-+};
-+
-+module_platform_driver(sun50i_dmic_driver);
-+
-+MODULE_DESCRIPTION("Allwinner sun50i DMIC SoC Interface");
-+MODULE_AUTHOR("Ban Tao <fengzheng923@gmail.com>");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:sun50i-dmic");
--- 
-2.29.0
+Guenter
 
+> diff --git a/drivers/hwmon/lm90.c b/drivers/hwmon/lm90.c
+> index ce8ebe60fcdc..74886b8066ab 100644
+> --- a/drivers/hwmon/lm90.c
+> +++ b/drivers/hwmon/lm90.c
+> @@ -79,6 +79,7 @@
+>   * concern all supported chipsets, unless mentioned otherwise.
+>   */
+> 
+> +#include <linux/delay.h>
+>  #include <linux/module.h>
+>  #include <linux/init.h>
+>  #include <linux/slab.h>
+> @@ -201,6 +202,9 @@ enum chips { lm90, adm1032, lm99, lm86, max6657,
+> max6659, adt7461, max6680,
+>  #define MAX6696_STATUS2_R2OT2	(1 << 6) /* remote2 emergency limit
+> tripped */
+>  #define MAX6696_STATUS2_LOT2	(1 << 7) /* local emergency limit tripped */
+> 
+> +/* Prevent instant interrupt re-triggering */
+> +#define LM90_IRQ_DELAY		(15 * MSEC_PER_SEC)
+> +
+>  /*
+>   * Driver data (common to all clients)
+>   */
+> @@ -1756,10 +1760,12 @@ static irqreturn_t lm90_irq_thread(int irq, void
+> *dev_id)
+>  	struct i2c_client *client = dev_id;
+>  	u16 status;
+> 
+> -	if (lm90_is_tripped(client, &status))
+> -		return IRQ_HANDLED;
+> -	else
+> +	if (!lm90_is_tripped(client, &status))
+>  		return IRQ_NONE;
+> +
+> +	msleep(LM90_IRQ_DELAY);
+> +
+> +	return IRQ_HANDLED;
+>  }
+> 
+>  static void lm90_remove_pec(void *dev)
