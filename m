@@ -2,126 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788A43AAC84
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131663AAC86
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhFQGk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 02:40:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229560AbhFQGk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 02:40:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26F7A613F1;
-        Thu, 17 Jun 2021 06:38:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623911900;
-        bh=NES46J8fLBM5sWODCW8AHAPNTZbARRH1Rzn7KVC8Z6U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=L42u0fbIEQAvXZf6Gc5BsPkY8+OAyrphe38pHeaoFDtIEeFaiSva1l7BSkdZDGNbi
-         XIHYUSj+vTh0VAnmuROhOwd7iisBNas0uDyCl6Jnf06IVBqr3Lgdnu98BktnpJqL7U
-         qpxCZfVuZHQyPNr/EZ0ukwgRG7PfSWkT2rBjLZwP35vl+XR0/tJX/CwZgTEuTs2R/y
-         C+gCkbJSUNtvGwqc8NGZOGko40E+iO1jbq/T+DN7C2vPQA+wdbFZsfbFWFFrTdoZtO
-         3tm4HMbhRB5O5oQbaDimOH1R38z29MtPXOUe8SamCRowmFuTa+Te4wo9MWP4SzA13x
-         DZKkNFy2EUSSQ==
-Date:   Thu, 17 Jun 2021 08:38:15 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 11/29] docs: devicetree: bindings:
- submitting-patches.rst: avoid using ReST :doc:`foo` markup
-Message-ID: <20210617083815.3a588868@coco.lan>
-In-Reply-To: <CAL_JsqLtZhox5-d81FnWywqM6waBv5fJ26z2n9rMw8wrn4aDqg@mail.gmail.com>
-References: <cover.1623824363.git.mchehab+huawei@kernel.org>
-        <0048c23d47b582dd1a1959628fd2b895209ac826.1623824363.git.mchehab+huawei@kernel.org>
-        <CAL_JsqLtZhox5-d81FnWywqM6waBv5fJ26z2n9rMw8wrn4aDqg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S230146AbhFQGlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 02:41:00 -0400
+Received: from m32-153.88.com ([43.250.32.153]:49867 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229560AbhFQGlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 02:41:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=To:From:Date; bh=gVCYY4y0rSp4bU2KZBiLrHcjxN8EnJN3SmevO
+        doeLWw=; b=fR0qkOXpjoXIAMLAxI0vO97MUZshMdGho4C0qfsyN5yatD4ogvPWc
+        3Vzth/IsxQ4jbMkhjOOYY7DjIlySERwck6U5lnCnp9vqSo5r48Ll89mPORPvrNAB
+        myWSj7ekfJz2slK3mXYDMWo11o09BH33BWw4IMQsFf3zfFggRWtETo=
+Received: from [0.0.0.0] (unknown [113.251.12.91])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgBnPfz07cpg9jMZAA--.1960S3;
+        Thu, 17 Jun 2021 14:38:45 +0800 (CST)
+Subject: Re: [PATCH] docs: add traditional Chinese translation for kernel
+ Documentation
+To:     Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210607132414.44601-1-src.res@email.cn>
+ <4ecfaca0-801b-1827-2d6a-13690e016957@email.cn> <87wnqxbcjb.fsf@meer.lwn.net>
+ <YMagPMuKYKWDpUj8@casper.infradead.org>
+From:   Hu Haowen <src.res@email.cn>
+Message-ID: <ecb06eb5-9319-a851-98e3-6b1554b90a37@email.cn>
+Date:   Thu, 17 Jun 2021 14:38:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YMagPMuKYKWDpUj8@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: GiKnCgBnPfz07cpg9jMZAA--.1960S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr18Cr1UGF47urWDtFW7twb_yoW8AF1Dpr
+        4YgFy7C3WUAr1akwnakr48ua18tFs5Gw45Xr1rKwn5Ja98A34rKF4Sy3s0kFyY9F4xGF42
+        vr4YgryrGF1DA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUglb7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+        cIk0rVWUuVWrJwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+        v20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4
+        CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4U
+        Jr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY4
+        87MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC6x0Y
+        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
+        AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
+        IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
+        CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVF
+        xhVjvjDU0xZFpf9x07jHBTOUUUUU=
+X-Originating-IP: [113.251.12.91]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 16 Jun 2021 16:08:05 -0600
-Rob Herring <robh+dt@kernel.org> escreveu:
 
-> On Wed, Jun 16, 2021 at 12:27 AM Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org> wrote:
-> >
-> > The :doc:`foo` tag is auto-generated via automarkup.py.
-> > So, use the filename at the sources, instead of :doc:`foo`.
-> >
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  .../devicetree/bindings/submitting-patches.rst        | 11 ++++++-----
-> >  1 file changed, 6 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/submitting-patches.rst b/Documentation/devicetree/bindings/submitting-patches.rst
-> > index 104fa8fb2c17..8087780f1685 100644
-> > --- a/Documentation/devicetree/bindings/submitting-patches.rst
-> > +++ b/Documentation/devicetree/bindings/submitting-patches.rst
-> > @@ -7,8 +7,8 @@ Submitting Devicetree (DT) binding patches
-> >  I. For patch submitters
-> >  =======================
-> >
-> > -  0) Normal patch submission rules from Documentation/process/submitting-patches.rst
-> > -     applies.
-> > +  0) Normal patch submission rules from
-> > +     Documentation/process/submitting-patches.rst applies.
-> >
-> >    1) The Documentation/ and include/dt-bindings/ portion of the patch should
-> >       be a separate patch. The preferred subject prefix for binding patches is::
-> > @@ -25,8 +25,8 @@ I. For patch submitters
-> >
-> >         make dt_binding_check
-> >
-> > -     See Documentation/devicetree/bindings/writing-schema.rst for more details about
-> > -     schema and tools setup.
-> > +     See Documentation/devicetree/bindings/writing-schema.rst for more details
-> > +     about schema and tools setup.  
-> 
-> These don't match $subject.
+在 2021/6/14 上午8:18, Matthew Wilcox 写道:
+> On Sun, Jun 13, 2021 at 04:55:04PM -0600, Jonathan Corbet wrote:
+>> Hu Haowen <src.res@email.cn> writes:
+>>> 在 2021/6/7 下午9:24, Hu Haowen 写道:
+>>>> Add traditional Chinese translation (zh_TW) for the Linux Kernel
+>>>> documentation with a series of translated files.
+>>> Is this patch applied? I have another amount of changes on this, so
+>>> please handle it as soon as possible.
+>> I have been away from the keyboard for the last week, and haven't had a
+>> chance to look at it yet.  That will happen soon.  Meanwhile, please be
+>> patient; it has not yet even been a week since you posted this work.
+>>
+>> Taking a quick look, there are a couple of things you can do:
+>>
+>>   - We have a Chinese translation, now you are creating a different one.
+>>     Please explain why that is needed?
+> I think this explains it:
+>
+> https://stackoverflow.com/questions/4892372/language-codes-for-simplified-chinese-and-traditional-chinese
+>
+> So if we would consider having (eg) fr_FR and fr_CA, it's reasonable to
+> have both zh_CN and zh_TW.  No, I'm not volunteering to produce en_GB
+> (or is that en_UK?)
+In my view, Chinese is not like other languages. The traditional Chinese
+has numerous differences from the simplified Chinese, both in characters
+and word groups. Hence it may make readers who favors traditional Chinese
+feel unconfortable to read the translated content based on simplified
+Chinese. So I think it's not a "volunteered" job but a meaningful thing.
 
-Well, I just seek for all places where Documentation/* are, and adjusted
-them to 80-columns. I'll add a comment. 
+Also, it is not a bad idea to bridge the gap for readers whose mother
+tongue is traditional Chinese. That's the aim of the kernel documentation
 
-> 
-> >
-> >    3) DT binding files should be dual licensed. The preferred license tag is
-> >       (GPL-2.0-only OR BSD-2-Clause).
-> > @@ -84,7 +84,8 @@ II. For kernel maintainers
-> >  III. Notes
-> >  ==========
-> >
-> > -  0) Please see :doc:`ABI` for details regarding devicetree ABI.
-> > +  0) Please see Documentation/devicetree/bindings/ABI.rst for details
-> > +     regarding devicetree ABI.  
-> 
-> Is this new? You did review my oneliner adding ':doc:' not too long ago.
-
-Yes. It is due to some discussion we had upstream:
-
-	https://lore.kernel.org/linux-doc/871r9k6rmy.fsf@meer.lwn.net/
-
-While the html/latex/pdf output is identical (as automarkup.py will
-convert Documentation/foo.rst into a cross-reference), using full path
-names allow developers to jump directly to other documents when they
-have the path name.
-
-> 
-> >
-> >    1) This document is intended as a general familiarization with the process as
-> >       decided at the 2013 Kernel Summit.  When in doubt, the current word of the
-> > --
-> > 2.31.1
-> >  
+translation work -- to provide as many translations as possible.
 
 
+Thx,
 
-Thanks,
-Mauro
+Hu Haowen
+
+
