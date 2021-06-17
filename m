@@ -2,248 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB023ABB34
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02863ABB59
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232572AbhFQSNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 14:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
+        id S233017AbhFQSYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232317AbhFQSNL (ORCPT
+        with ESMTP id S232675AbhFQSYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:13:11 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50761C061574;
-        Thu, 17 Jun 2021 11:11:02 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id j18so3843708wms.3;
-        Thu, 17 Jun 2021 11:11:02 -0700 (PDT)
+        Thu, 17 Jun 2021 14:24:15 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A05BAC061574;
+        Thu, 17 Jun 2021 11:22:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:from:subject:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=FoKuKYc+BPPyd7lTl1f3+SqZVhtdYo1VgkqZGafgdiI=;
-        b=P+/fjNVxFhnnnB5YkN5YIZuNWCXnUNUkhK5qMJLHoghGJPVIIZYvoD07iP0wYTHFOP
-         C8gxzRUpkHjyvbGmpMWBNBo2OYAPYoPPCxfhUXvtA2HsL+zWNP+JZ0soirQzTIE3iNoh
-         SEqUX6Ejx3mrP9nKGg+mmU0y4/D7IQfPpk7CuYsGgsLCurZyphrREoeiUW9isyYhV0lB
-         DbVKV+gNWc8D1byP090Ae+GtISh/3yzUJC6e1gvMMBqsGLT5BnmM3V61aDrtdwteJK0g
-         ptwqz/66F8PC6Kw1Z04NBJ9XLHi3ZGI3LDtJMYvpx4i2zHegJrEnKU0kzCeL9I+Ui999
-         CG+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FoKuKYc+BPPyd7lTl1f3+SqZVhtdYo1VgkqZGafgdiI=;
-        b=qp0EJGWLRhTSDRUgeHIJumqiBhUU2CM83C9KJi7agaF3A/u2PuPRNn4aLE8N6Q/7fp
-         LBjMXMxFXrKgbYTntn09DhI+t7z/41ejg8FmOwDjBh/C0z2K+OMVWK8nrcxtcpA574Wf
-         c73IpJkobABEcEEvGrlXT4xmCv1Yvn7oy5ERCq7hkpbbUAfteIvN8LckOrv+/ghSWCYd
-         dXsElR/rujNdqSrcUPCsm2YlkXrMnfq1GKt5zaQKTRkXa5xfQnf5qoHmF1M53n1iyFwb
-         7zKIHeaZsW7ckz/8QkiG/V7G2HCHjydx1gWigKZT47UE3s7sIrVdgcadmN0pmBYeQEK1
-         7FwQ==
-X-Gm-Message-State: AOAM531nDFrU8krzZ5RJpy90vxqIeah9wTYHLxZu01N8Z/avs4Brv4yN
-        nlbtDRxXXlU3qpOghNOCkUUJ6U1O0M/z2g==
-X-Google-Smtp-Source: ABdhPJzdAgxvU5FHUnM0wjs50H8yVV7R7C+dhD5svkG101dp2hWpRhQ7Z/JpEFxBELrtr+2trWt9gw==
-X-Received: by 2002:a1c:cc02:: with SMTP id h2mr6580293wmb.39.1623953460318;
-        Thu, 17 Jun 2021 11:11:00 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.93])
-        by smtp.gmail.com with ESMTPSA id m7sm6798429wrv.35.2021.06.17.11.10.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 11:10:59 -0700 (PDT)
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <60c13bec.1c69fb81.73967.f06dSMTPIN_ADDED_MISSING@mx.google.com>
- <84e42313-d738-fb19-c398-08a4ed0e0d9c@gmail.com>
- <4b5644bff43e072a98a19d7a5ca36bb5e11497ec.camel@trillion01.com>
- <a7d6f2fd-b59e-e6fa-475a-23962d45b6fa@gmail.com>
- <9938f22a0bb09f344fa5c9c5c1b91f0d12e7566f.camel@trillion01.com>
- <a12e218a-518d-1dac-5e8c-d9784c9850b0@gmail.com>
- <b0a8c92cffb3dc1b48b081e5e19b016fee4c6511.camel@trillion01.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH] io_uring: reduce latency by reissueing the operation
-Message-ID: <7d9a481b-ae8c-873e-5c61-ab0a57243905@gmail.com>
-Date:   Thu, 17 Jun 2021 19:10:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=X/NggHltieBlSZghv1lcNzH+L1pnmckyMP
+        SOwkpW5XA=; b=N6gznjnEf6w9Oi6WJJ945y6FCCIUp/n8EtnK99duJwY2zBQrrv
+        FI9Cd2dXx9T6uI3H8p0/frLPnXWIjOWn8TjMQaSFc6pYNUrCOFqHQIOwpCYOqZhC
+        JeBSwGy90PRxyDiw4hY+hJczbamaLJ/660QP21+3rx7CHB6fkbP8lxxjw=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygD3+YGVkstg3kr3AA--.4612S2;
+        Fri, 18 Jun 2021 02:21:10 +0800 (CST)
+Date:   Fri, 18 Jun 2021 02:15:35 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Alex Ghiti <alex@ghiti.fr>, Palmer Dabbelt <palmer@dabbelt.com>,
+        schwab@linux-m68k.org, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, ryabinin.a.a@gmail.com, glider@google.com,
+        andreyknvl@gmail.com, dvyukov@google.com, bjorn@kernel.org,
+        ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, luke.r.nels@gmail.com, xi.wang@gmail.com
+Cc:     daniel@iogearbox.net, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH v2] riscv: Ensure BPF_JIT_REGION_START aligned with PMD size
+Message-ID: <20210618021535.29099c75@xhacker>
+In-Reply-To: <20210618021038.52c2f558@xhacker>
+References: <mhng-042979fe-75f0-4873-8afd-f8c07942f792@palmerdabbelt-glaptop>
+        <ae256a5d-70ac-3a5f-ca55-5e4210a0624c@ghiti.fr>
+        <50ebc99c-f0a2-b4ea-fc9b-cd93a8324697@ghiti.fr>
+        <20210618012731.345657bf@xhacker>
+        <20210618014648.1857a62a@xhacker>
+        <20210618021038.52c2f558@xhacker>
 MIME-Version: 1.0
-In-Reply-To: <b0a8c92cffb3dc1b48b081e5e19b016fee4c6511.camel@trillion01.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygD3+YGVkstg3kr3AA--.4612S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ww18tFWUCF1xKw45Wr4fAFb_yoW7KF4rpr
+        45tr1xGr48JryUX3W8A34Y9r1UA3W7C3W3JrnxJrn8XFyUGr1DJr1UtFW3Zr1DXF4rJ3W2
+        yr1DGrWUKr1UAw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkCb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUqhvKUU
+        UUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/11/21 4:55 AM, Olivier Langlois wrote:
-> On Thu, 2021-06-10 at 20:32 +0100, Pavel Begunkov wrote:
->> On 6/10/21 6:56 PM, Olivier Langlois wrote:
->>>
->>>
->>> Can you think of other numbers that would be useful to know to
->>> evaluate
->>> the patch performance?
->>
->> If throughput + latency (avg + several nines) are better (or any
->> other measurable improvement), it's a good enough argument to me,
->> but not sure what test case you're looking at. Single threaded?
->> Does it saturate your CPU?
->>
-> I don't know what are the ideal answers to your 2 last questions ;-)
-> 
-> I have several possible configurations to my application.
-> 
-> The most complex one is a 2 threads setup each having their own
-> io_uring instance where one of the threads is managing 50-85 TCP
-> connections over which JSON stream encapsulated in the WebSocket
-> protocol are received.
-> 
-> That more complex setup is also using IORING_SETUP_ATTACH_WQ to share
-> the sqpoll thread between the 2 instances.
-> 
-> In that more complex config, the sqpoll thread is running at 85-95% of
-> its dedicated CPU.
-> 
-> For the patch performance testing I did use the simplest config:
-> Single thread, 1 TCP connection, no sqpoll.
+Andreas reported commit fc8504765ec5 ("riscv: bpf: Avoid breaking W^X")
+breaks booting with one kind of defconfig, I reproduced a kernel panic
+with the defconfig:
 
-Queue depth (QD) 1, right?
+[    0.138553] Unable to handle kernel paging request at virtual address ffffffff81201220
+[    0.139159] Oops [#1]
+[    0.139303] Modules linked in:
+[    0.139601] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5-default+ #1
+[    0.139934] Hardware name: riscv-virtio,qemu (DT)
+[    0.140193] epc : __memset+0xc4/0xfc
+[    0.140416]  ra : skb_flow_dissector_init+0x1e/0x82
+[    0.140609] epc : ffffffff8029806c ra : ffffffff8033be78 sp : ffffffe001647da0
+[    0.140878]  gp : ffffffff81134b08 tp : ffffffe001654380 t0 : ffffffff81201158
+[    0.141156]  t1 : 0000000000000002 t2 : 0000000000000154 s0 : ffffffe001647dd0
+[    0.141424]  s1 : ffffffff80a43250 a0 : ffffffff81201220 a1 : 0000000000000000
+[    0.141654]  a2 : 000000000000003c a3 : ffffffff81201258 a4 : 0000000000000064
+[    0.141893]  a5 : ffffffff8029806c a6 : 0000000000000040 a7 : ffffffffffffffff
+[    0.142126]  s2 : ffffffff81201220 s3 : 0000000000000009 s4 : ffffffff81135088
+[    0.142353]  s5 : ffffffff81135038 s6 : ffffffff8080ce80 s7 : ffffffff80800438
+[    0.142584]  s8 : ffffffff80bc6578 s9 : 0000000000000008 s10: ffffffff806000ac
+[    0.142810]  s11: 0000000000000000 t3 : fffffffffffffffc t4 : 0000000000000000
+[    0.143042]  t5 : 0000000000000155 t6 : 00000000000003ff
+[    0.143220] status: 0000000000000120 badaddr: ffffffff81201220 cause: 000000000000000f
+[    0.143560] [<ffffffff8029806c>] __memset+0xc4/0xfc
+[    0.143859] [<ffffffff8061e984>] init_default_flow_dissectors+0x22/0x60
+[    0.144092] [<ffffffff800010fc>] do_one_initcall+0x3e/0x168
+[    0.144278] [<ffffffff80600df0>] kernel_init_freeable+0x1c8/0x224
+[    0.144479] [<ffffffff804868a8>] kernel_init+0x12/0x110
+[    0.144658] [<ffffffff800022de>] ret_from_exception+0x0/0xc
+[    0.145124] ---[ end trace f1e9643daa46d591 ]---
 
-> To process an incoming 5Mbps stream, it takes about 5% of the CPU.
+After some investigation, I think I found the root cause: commit
+2bfc6cd81bd ("move kernel mapping outside of linear mapping") moves
+BPF JIT region after the kernel:
 
-I see, under utilised, and so your main concern is latency
-here. 
+The &_end is unlikely aligned with PMD size, so the front bpf jit
+region sits with part of kernel .data section in one PMD size mapping.
+But kernel is mapped in PMD SIZE, when bpf_jit_binary_lock_ro() is
+called to make the first bpf jit prog ROX, we will make part of kernel
+.data section RO too, so when we write to, for example memset the
+.data section, MMU will trigger a store page fault.
 
-> 
-> Here is the testing methodology:
-> add 2 fields in  struct io_rw:
->     u64             startTs;
->     u8              readType;
-> 
-> startTs is set with ktime_get_raw_fast_ns() in io_read_prep()
-> 
-> readType is set to:
-> 0: data ready
-> 1: use fast poll (we ignore those)
-> 2: reissue
-> 3: async
-> 
-> readType is used to know what type of measurement it is at the
-> recording point.
-> 
-> end time is measured at 3 recording point:
-> 1. In __io_queue_sqe() when io_issue_sqe() returns 0
-> 2. In __io_queue_sqe() after io_queue_async_work() call
-> 3. In io_wq_submit_work() after the while loop.
-> 
-> So I took 4 measurements.
-> 
-> 1. The time it takes to process a read request when data is already
-> available
-> 2. The time it takes to process by calling twice io_issue_sqe() after
-> vfs_poll() indicated that data was available
-> 3. The time it takes to execute io_queue_async_work()
-> 4. The time it takes to complete a read request asynchronously
-> 
-> Before presenting the results, I want to mention that 2.25% of the
-> total number of my read requests ends up in the situation where the
-> read() syscall did return EAGAIN but data became available by the time
-> vfs_poll gets called.
-> 
-> My expectations were that reissuing a sqe could be on par or a bit more
-> expensive than placing it on io-wq for async processing and that would
-> put the patch in some gray zone with pros and cons in terms of
-> performance.
-> 
-> The reality is instead super nice (numbers in nSec):
-> 
-> ready data (baseline)
-> avg	3657.94182918628
-> min	580
-> max	20098
-> stddev	1213.15975908162
-> 	
-> reissue	completion
-> average	7882.67567567568
-> min	2316
-> max	28811
-> stddev	1982.79172973284
-> 	
-> insert io-wq time	
-> average	8983.82276995305
-> min	3324
-> max	87816
-> stddev	2551.60056552038
-> 	
-> async time completion
-> average	24670.4758861127
-> min	10758
-> max	102612
-> stddev	3483.92416873804
-> 
-> Conclusion:
-> On average reissuing the sqe with the patch code is 1.1uSec faster and
-> in the worse case scenario 59uSec faster than placing the request on
-> io-wq
-> 
-> On average completion time by reissuing the sqe with the patch code is
-> 16.79uSec faster and in the worse case scenario 73.8uSec faster than
-> async completion.
+To fix the issue, we need to ensure the BPF JIT region is PMD size
+aligned. This patch acchieve this goal by restoring the BPF JIT region
+to original position, I.E the 128MB before kernel .text section. The
+modification to kasan_init.c is inspired by Alexandre.
 
-Hah, you took it fundamentally. I'm trying to get it, correct me
-I am mistaken.
+Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
 
-1) it's avg completion for those 2.5%, not for all requests
+Since v1:
+ - Fix early boot hang when kasan is enabled
+ - Update Documentation/riscv/vm-layout.rst
 
-2) Do they return equivalent number of bytes? And what the
-read/recv size (e.g. buffer size)?
+ Documentation/riscv/vm-layout.rst |  4 ++--
+ arch/riscv/include/asm/pgtable.h  |  5 ++---
+ arch/riscv/mm/kasan_init.c        | 10 +++++-----
+ 3 files changed, 9 insertions(+), 10 deletions(-)
 
-Because in theory can be that during a somewhat small delay for
-punting to io-wq, more data had arrived and so async completion
-pulls more data that takes more time. In that case the time
-difference should also account the difference in amount of
-data that it reads. 
-
-3) Curious, why read but not recv as you're working with sockets
-
-4) Did you do any userspace measurements. And a question to
-everyone in general, do we have any good net benchmarking tool
-that works with io_uring? Like netperf? Hopefully spitting
-out latency distribution.
-
-
-Also, not particularly about reissue stuff, but a note to myself:
-59us is much, so I wonder where the overhead comes from.
-Definitely not the iowq queueing (i.e. putting into a list).
-- waking a worker?
-- creating a new worker? Do we manage workers sanely? e.g.
-  don't keep them constantly recreated and dying back.
-- scheduling a worker?
-
-Olivier, for how long did you run the test? >1 min?
-
-
-> One important detail to mention about the async completion time, in the
-> testing the ONLY way that a request can end up being completed async is
-> if vfs_poll() reports that the file is ready. Otherwise, the request
-> ends up being processed with io_uring fast poll feature.
-> 
-> So there does not seem to have any downside to the patch. TBH, at the
-> initial patch submission, I only did use my intuition to evaluate the
-> merit of my patch but, thx to your healthy skepticism, Pavel, this did
-> force me to actually measure the patch and it appears to incontestably
-> improve performance for both the reissued SQE and also all the other
-> sqes found in a batch submission.
-
-Interesting what would be a difference if done through
-io_req_task_work_add(), and what would be a percent of such reqs
-for a hi-QD workload.
-
-But regardless, don't expect any harm, so sounds good to me.
-Agree with Jens' comment about return value. I think it will
-go in quickly once resubmitted with the adjustment.
-
-
-> Hopefully, the results will please you as much as they have for me!
-
+diff --git a/Documentation/riscv/vm-layout.rst b/Documentation/riscv/vm-layout.rst
+index 329d32098af4..b7f98930d38d 100644
+--- a/Documentation/riscv/vm-layout.rst
++++ b/Documentation/riscv/vm-layout.rst
+@@ -58,6 +58,6 @@ RISC-V Linux Kernel SV39
+                                                               |
+   ____________________________________________________________|____________________________________________________________
+                     |            |                  |         |
+-   ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | modules
+-   ffffffff80000000 |   -2    GB | ffffffffffffffff |    2 GB | kernel, BPF
++   ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | modules, BPF
++   ffffffff80000000 |   -2    GB | ffffffffffffffff |    2 GB | kernel
+   __________________|____________|__________________|_________|____________________________________________________________
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 9469f464e71a..380cd3a7e548 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -30,9 +30,8 @@
+ 
+ #define BPF_JIT_REGION_SIZE	(SZ_128M)
+ #ifdef CONFIG_64BIT
+-/* KASLR should leave at least 128MB for BPF after the kernel */
+-#define BPF_JIT_REGION_START	PFN_ALIGN((unsigned long)&_end)
+-#define BPF_JIT_REGION_END	(BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
++#define BPF_JIT_REGION_START	(BPF_JIT_REGION_END - BPF_JIT_REGION_SIZE)
++#define BPF_JIT_REGION_END	(MODULES_END)
+ #else
+ #define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+ #define BPF_JIT_REGION_END	(VMALLOC_END)
+diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+index 9daacae93e33..d7189c8714a9 100644
+--- a/arch/riscv/mm/kasan_init.c
++++ b/arch/riscv/mm/kasan_init.c
+@@ -169,7 +169,7 @@ static void __init kasan_shallow_populate(void *start, void *end)
+ 
+ void __init kasan_init(void)
+ {
+-	phys_addr_t _start, _end;
++	phys_addr_t p_start, p_end;
+ 	u64 i;
+ 
+ 	/*
+@@ -189,9 +189,9 @@ void __init kasan_init(void)
+ 			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
+ 
+ 	/* Populate the linear mapping */
+-	for_each_mem_range(i, &_start, &_end) {
+-		void *start = (void *)__va(_start);
+-		void *end = (void *)__va(_end);
++	for_each_mem_range(i, &p_start, &p_end) {
++		void *start = (void *)__va(p_start);
++		void *end = (void *)__va(p_end);
+ 
+ 		if (start >= end)
+ 			break;
+@@ -201,7 +201,7 @@ void __init kasan_init(void)
+ 
+ 	/* Populate kernel, BPF, modules mapping */
+ 	kasan_populate(kasan_mem_to_shadow((const void *)MODULES_VADDR),
+-		       kasan_mem_to_shadow((const void *)BPF_JIT_REGION_END));
++		       kasan_mem_to_shadow((const void *)MODULES_VADDR + SZ_2G));
+ 
+ 	for (i = 0; i < PTRS_PER_PTE; i++)
+ 		set_pte(&kasan_early_shadow_pte[i],
 -- 
-Pavel Begunkov
+2.32.0
+
+
