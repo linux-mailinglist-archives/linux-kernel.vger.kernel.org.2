@@ -2,322 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3B23AB80E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D9F3AB86D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbhFQQAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 12:00:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231941AbhFQQAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 12:00:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5758361351;
-        Thu, 17 Jun 2021 15:58:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623945504;
-        bh=Q6/JU/E0btuKwbG5TetUX1vsUfsVbPrY8xkHBDYqwIc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Y26Ymu84AfR2wvDLO2NKU00KsE3y8ppLK6t25Mr+96EKQMjfAyQue3hVQAfa5cq8A
-         77mwrdQIEjuudC7Egcuw+ovgpEFNEK1EbmFhlyldkQldKq98S6R4LPW8i3HPrxb9Cd
-         rKRlLTlmFISd1+JEJmGPVw5Em8MPVJ/vActCqEV1PHsckAjDNDk4Clpd8rVnOI/Pf1
-         gHZ5Edw1o7iVo+bpsClulUKqWKtP5JpdPBBRF0M0n7VMHc71brfUNkd7guxN5TdSgs
-         kkeUZbcrQuN7j6hee4H0jLVUzwRThTJSFCL12b9vE9UPa2eqaLAHuEn22dzKFPdYI+
-         n27q+2q17Oi/g==
-Date:   Thu, 17 Jun 2021 10:58:23 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Dejin Zheng <zhengdejin5@gmail.com>, corbet@lwn.net,
-        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
-        Sanket.Goswami@amd.com, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v7 1/4] PCI: Introduce pcim_alloc_irq_vectors()
-Message-ID: <20210617155823.GA3077181@bjorn-Precision-5520>
+        id S231487AbhFQQIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 12:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232750AbhFQQHi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 12:07:38 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55962C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 09:05:30 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id j2so11390046lfg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 09:05:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UrBx5lMs/mUFoByWegYArpXaLnuJJbdWrIJvMQgXhDY=;
+        b=CCqhDTHs7UtjOPsdzd4Gv2AlGsNNk9YXJCpvNDKN3cERuaaEXqyfwc0yD+q+fT2/uB
+         D6Jeo7jar/ulhFbnIiBOhxRUFN9dmBLIkd2KaHBvXTpWUq7+fUBcobUMkIgnjqpvtv/j
+         VgoU1ShbeIZyRw4KA41PDcmP7/dtA93z5uKZv57U0dvNNa/4/jOSxvhRV8Mdfp6+sH9n
+         55SILMJBa2aNvZX/K/6wVkUOkD6wYHwDq+3es6cZHtU2t8hDXW6yCOrJHdO+1UUNQ2eX
+         ojYP10BOZIGEBP2/mrX5e9FTgJDVQAF2BI3PulJo9tvK87LA3QDUk2EBMDjMNlgeSI4T
+         adTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UrBx5lMs/mUFoByWegYArpXaLnuJJbdWrIJvMQgXhDY=;
+        b=SzhtuIlCVUyJnVjKu0man1EFrEM3ak4vcNAsUB79NjdGRbxGE2GHLEZtxEMZUda5r8
+         AfPXu7yHwdXgLkrmTPMEdncObWHMIcVg2nQS/aKErlZU18stcWjav41vtvDtnIZklUdz
+         +bd6dyyoYcmUr9Bhls3Q0dStylAv5LymMDJ3p+QSFB6SiUYZq5ok3Ky3QvaeQzdRPIn+
+         4HQIhm8tGXcmyO11PXla0iKSXGHsYXDBSV4Nn/kW2dALwhIV1HufjoWJTKU6+GObv+H/
+         hkYKjWCbsV6NWGv4jHHN6GZ/m+SCxvvbbGAopMlO5MGO8o8YlwQ5l2u1KE5NS2WRMnEM
+         EM6A==
+X-Gm-Message-State: AOAM531U7/8lrlA4Zy86Ak0A1fYoaq/Z7hBkCJ5R4p2i/eiVKrxHTDqS
+        iWt6HXTzhXpMPES6TIWsyTeuiu+C2OpuFQuTCZibIw==
+X-Google-Smtp-Source: ABdhPJzPxKHffaUjgMOJ+0S3kV3P0Z6KOOSmA+DvxgzkBsKUiqcUqwFn2XZJXpbSvwZ2J2SKwIcH11+WtVgnR1pLZUg=
+X-Received: by 2002:a19:ca0e:: with SMTP id a14mr4901442lfg.305.1623945926813;
+ Thu, 17 Jun 2021 09:05:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMtMELqsY0O7djB4@smile.fi.intel.com>
+References: <20210615111611.GH30378@techsingularity.net> <20210615204228.GB4272@worktop.programming.kicks-ass.net>
+ <CAKfTPtAZ_Aq_S-O2qh5LPyxExkBq3G0kxh51fT7sSC_z8He4+w@mail.gmail.com>
+ <20210617074401.GL30378@techsingularity.net> <CAKfTPtC8d37ZrXfDF2jkgg=tDPb1qAvFQQGXHhTf9LLR59hd8Q@mail.gmail.com>
+ <20210617094040.GM30378@techsingularity.net> <CAKfTPtB-UCduEiQ5e8NxbOwsfjYGj3ron5rAg4_5ag2Fne7v3A@mail.gmail.com>
+ <20210617110548.GN30378@techsingularity.net> <CAKfTPtBJkpSMFFGwgdFLyO5aSnGuzQSPrtpwOFckMQa4xaex=Q@mail.gmail.com>
+ <20210617154759.GR30378@techsingularity.net>
+In-Reply-To: <20210617154759.GR30378@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 17 Jun 2021 18:05:15 +0200
+Message-ID: <CAKfTPtCHxXTWVAKYT906_4U-skmOBDyxMUm10bT66cVAGHciLA@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: Age the average idle time
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 04:20:16PM +0300, Andy Shevchenko wrote:
-> On Wed, Jun 16, 2021 at 02:25:43PM -0500, Bjorn Helgaas wrote:
-> > On Fri, Jun 11, 2021 at 12:37:22PM +0300, Andy Shevchenko wrote:
-> > > On Thu, Jun 10, 2021 at 05:41:43PM -0500, Bjorn Helgaas wrote:
-> > > > On Mon, Jun 07, 2021 at 11:39:13PM +0800, Dejin Zheng wrote:
-> > > > > Introduce pcim_alloc_irq_vectors(), a device-managed version of
-> > > > > pci_alloc_irq_vectors(). Introducing this function can simplify
-> > > > > the error handling path in many drivers.
-> > > > > 
-> > > > > And use pci_free_irq_vectors() to replace some code in pcim_release(),
-> > > > > they are equivalent, and no functional change. It is more explicit
-> > > > > that pcim_alloc_irq_vectors() is a device-managed function.
-> > > 
-> > > ...
-> > > 
-> > > > > @@ -1989,10 +1989,7 @@ static void pcim_release(struct device *gendev, void *res)
-> > > > >  	struct pci_devres *this = res;
-> > > > >  	int i;
-> > > > >  
-> > > > > -	if (dev->msi_enabled)
-> > > > > -		pci_disable_msi(dev);
-> > > > > -	if (dev->msix_enabled)
-> > > > > -		pci_disable_msix(dev);
-> > > > > +	pci_free_irq_vectors(dev);
-> > > > 
-> > > > If I understand correctly, this hunk is a nice simplification, but
-> > > > actually has nothing to do with making pcim_alloc_irq_vectors().  I
-> > > > have it split to a separate patch in my local tree.  Or am I wrong
-> > > > about that?
-> > > 
-> > > It's a good simplification that had to be done when pci_free_irq_vectors()
-> > > appeared.
-> > 
-> > Sorry to be pedantic.  You say the simplification "had to be done,"
-> > but AFAICT there was no actual *requirement* for this simplification
-> > to be done since pci_free_irq_vectors() is functionally identical to
-> > the previous code.
-> > I think we should do it because it's a little
-> > simpler, but not because it *fixes* anything.
-> 
-> It makes things more straightforward. So it definitely "fixes" something, but
-> not the code in this case, rather how we maintain this code.
-> 
-> > > But here is the fact that indirectly it's related to the pcim_*()
-> > > APIs, i.e. pcim_alloc_irq_vectors(), because you may noticed this is inside
-> > > pcim_release().
-> > 
-> > Yes.  For posterity, my notes about the call chain (after applying
-> > this patch):
-> > 
-> >   pci_alloc_irq_vectors
-> >     pci_alloc_irq_vectors_affinity
-> >       __pci_enable_msix_range                 # MSI-X path
-> >         __pci_enable_msix
-> >           msix_capability_init
-> >             msix_setup_entries
-> >               for (...)
-> >                 entry = alloc_msi_entry
-> >                   kzalloc(msi_desc)           <--- alloc
-> >                   kmemdup(msi_desc->affinity) <--- alloc
-> >             dev->msix_enabled = 1             # MSI-X enabled
-> >       __pci_enable_msi_range                  # MSI path
-> >         msi_capability_init
-> >           msi_setup_entry
-> >             alloc_msi_entry                   <--- alloc
-> >           dev->msi_enabled = 1                # MSI enabled
-> > 
-> >   pcim_release
-> >     pci_free_irq_vectors
-> >       pci_disable_msix                        # MSI-X
-> >         if (!dev->msix_enabled)
-> >           return
-> >         pci_msix_shutdown
-> >           dev->msix_enabled = 0               # MSI-X disabled
-> >         free_msi_irqs
-> >           list_for_each_entry_safe(..., msi_list, ...)
-> >             free_msi_entry
-> >               kfree(msi_desc->affinity)       <--- free
-> >               kfree(msi_desc)                 <--- free
-> >       pci_disable_msi                         # MSI
-> >         if (!dev->msi_enabled)
-> >           return
-> >         pci_msi_shutdown
-> >           dev->msi_enabled = 0                # MSI disabled
-> >         free_msi_irqs                         <--- free
-> > 
-> > So I *think* (correct me if I'm wrong):
-> > 
-> >   - If a driver calls pcim_enable_device(), we will call
-> >     pcim_release() when the last reference to the device is dropped.
-> > 
-> >   - pci_alloc_irq_vectors() allocates msi_desc and irq_affinity_desc
-> >     structures via msix_setup_entries() or msi_setup_entry().
-> > 
-> >   - pcim_release() will free those msi_desc and irq_affinity_desc
-> >     structures.
-> > 
-> >   - Even before this series, pcim_release() frees msi_desc and
-> >     irq_affinity_desc structures by calling pci_disable_msi() and
-> >     pci_disable_msix().
-> > 
-> >   - Calling pci_free_irq_vectors() (or pci_disable_msi() or
-> >     pci_disable_msix()) twice is unnecessary but probably harmless
-> >     because they bail out early.
-> 
-> > So this series actually does not fix any problems whatsoever.
-> 
-> I tend to disagree.
-> 
-> The PCI managed API is currently inconsistent and what you got is
-> what I already know and had been using until (see below) Christoph
-> told not to do [1].
-> 
-> Even do you as PCI maintainer it took some time to figure this out.
-> But current APIs make it hard for mere users who wants to use it in
-> the drivers.
-> 
-> So, main point of fix here is _API inconsistency_ [0].
-> 
-> But hey, I believe you have been Cc'ed to the initial submission of
-> the pci_*_irq_vector*() rework done by Christoph [2] (hmm... don't
-> see your name there). And he updated documentation as well [3].
-> 
-> Moreover, he insisted to use pci_free_irq_vectors() whenever we are
-> using pci_alloc_irq_vectors(). And he suggested if we want to avoid
-> this we have to make pcim_ variant of the API (see [1] again).
+On Thu, 17 Jun 2021 at 17:48, Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> On Thu, Jun 17, 2021 at 05:03:54PM +0200, Vincent Guittot wrote:
+> > On Thu, 17 Jun 2021 at 13:05, Mel Gorman <mgorman@techsingularity.net> wrote:
+> > >
+> > > On Thu, Jun 17, 2021 at 12:02:56PM +0200, Vincent Guittot wrote:
+> > > > > > >
+> > > > > > > Fundamentally though, as the changelog notes "due to the nature of the
+> > > > > > > patch, this is a regression magnet". There are going to be examples
+> > > > > > > where a deep search is better even if a machine is fully busy or
+> > > > > > > overloaded and examples where cutting off the search is better. I think
+> > > > > > > it's better to have an idle estimate that gets updated if CPUs are fully
+> > > > > > > busy even if it's not a universal win.
+> > > > > >
+> > > > > > Although I agree that using a stall average idle time value of local
+> > > > > > is not good, I'm not sure this proposal is better. The main problem is
+> > > > > > that we use the avg_idle of the local CPU to estimate how many times
+> > > > > > we should loop and try to find another idle CPU. But there is no
+> > > > > > direct relation between both.
+> > > > >
+> > > > > This is true. The idle time of the local CPU is used to estimate the
+> > > > > idle time of the domain which is inevitably going to be inaccurate but
+> > > >
+> > > > I'm more and more convinced that using average idle time  (of the
+> > > > local cpu or the full domain) is not the right metric. In
+> > > > select_idle_cpu(), we looks for an idle CPU but we don't care about
+> > > > how long it will be idle.
+> > >
+> > > Can we predict that accurately? cpufreq for intel_pstate used to try
+> > > something like that but it was a bit fuzzy and I don't know if the
+> > > scheduler could do much better. There is some idle prediction stuff but
+> > > it's related to nohz which does not really help us if a machine is nearly
+> > > fully busy or overloaded.
+> > >
+> > > I guess for tracking idle that revisiting
+> > > https://lore.kernel.org/lkml/1615872606-56087-1-git-send-email-aubrey.li@intel.com/
+> > > is an option now that the scan is somewhat unified. A two-pass scan
+> > > could be used to check potentially idle CPUs first and if there is
+> > > sufficient search depth left, scan other CPUs. There were some questions
+> >
+> > I think it's the other way around:
+> > a CPU is busy for sure if it is not set in the cpuidle_mask and we
+> > don't need to check it. But a cpu might not be idle even if it is set
+> > in the idle mask might because it's cleared during the tick
+> >
+>
+> Tick is a long time so scan depth may still be a problem.
 
-I'd like to consider this, but it's hard without a reference :)
+Thinking a bit more on the cpuidle_mask patch, I'm not sure that we
+really need to scale the depth of the scan according to avg_idle and
+avg_scane_cost. A fixed value (which one ? might be the tricky point)
+should be enough. The reason for using a fix number of loop is:
+- ideally cpuidle_mask has only idle CPUs which means that the 1st
+loop should return an idle CPU
+- but we might have some false idle CPUs in the mask when we have UC
+with a lot of wakeup/sleep task
+- In this case, we will start to loop more than once on the
+cpuidle_mask because CPUs are not idle. We can also consider that if
+the 1st X CPUs are false idle, the probability that next ones will be
+false idle too is significant and it isn't worth looking at further .
+- Currently, we limit the number of loop to not delay too much the
+wakeup path and to not stole too much time on the task running on
+local cpu so we could at least check if the local cpu is idle and
+select a fix number of loop that doesn't harm too much the wakeup
+latency
 
-I do think it would be helpful to have clear guidance about when
-drivers need to use pci_free_irq_vectors().  The existing text in
-msi-howto.rst doesn't address pcim_ at all.
+I'm going to play a bit with this
 
-> Maybe you, guys, should got some agreement and clarify it in the
-> documentation?
 
-I agree that the pcim_*() API is confusing at best and it would be
-nice to improve it and document it, but I don't think this series
-really does it.
-
-There are several MSI-related interfaces that use alloc_msi_entry()
-and hence magically become managed if we call pcim_enable_device():
-
-  pci_alloc_irq_vectors()            # ~150 callers
-  pci_alloc_irq_vectors_affinity()   #  ~10 callers
-  pci_enable_msix_exact()            #  ~20 callers (deprecated)
-  pci_enable_msix_range()            #  ~50 callers (deprecated)
-  pci_enable_msi()                   # ~100 callers (deprecated)
-
-This series adds pcim_alloc_irq_vectors(), which sort of fixes *one*
-of them and makes this sequence look nice:
-
-  pcim_enable_device();
-  pcim_alloc_irq_vectors();
-
-but all the others are still potentially managed even though the name
-doesn't indicate it.  And it really doesn't improve the documentation.
-
-Possible steps forward:
-
-  - Add comments in include/linux/pci.h to indicate deprecation
-    (AFAICS, deprecation is currently only mentioned in
-    msi-howto.rst).
-
-  - Migrate callers away from deprecated interfaces (a lot of work).
-
-  - Remove deprecated interfaces.
-
-  - Add pcim_ variants of remaining interfaces (I think only
-    pci_alloc_*()).  Consider returning error for pci_alloc_*() usage
-    by managed drivers.
-
-  - Convert managed callers from pci_alloc_*() to pcim_alloc_*() and
-    remove usage of pci_free_irq_vectors(), pci_disable_msi(),
-    pci_disable_msix().
-
-> [0]: We have a few functions with pcim_ prefix, few without and some from the
->      latter group imply to behave _differently_ when pcim_enable_device() had
->      been called.
-> [1]: I'm not able to find the archive of the mailing, but I remember that it
->      was something like that IIRC during 8250_lpss.c development.
-> [2]: https://lore.kernel.org/linux-pci/1467621574-8277-1-git-send-email-hch@lst.de/
-> [3]: https://www.kernel.org/doc/html/latest/PCI/msi-howto.html#using-msi
-> 
-> > It *does* remove unnecessary pci_free_irq_vectors() calls from
-> > i2c-designware-pcidrv.c.
-> > 
-> > But because pci_alloc_irq_vectors() and related interfaces are
-> > *already* managed as soon as a driver calls pcim_enable_device(),
-> > we can simply remove the pci_free_irq_vectors() without doing anything
-> > else.
-> > 
-> > I don't think we *should* do anything else.
-> 
-> See above.
-> 
-> > There are many callers of
-> > pcim_enable_device() that also call pci_alloc_irq_vectors(),
-> > pci_enable_msix_range(), etc.  We don't have pcim_enable_msix_range(),
-> > pcim_enable_msi(), pcim_alloc_irq_vectors_affinity(), etc.  I don't
-> > think it's worth the churn of adding all those and changing all the
-> > callers to use pcim_*() (as in patch 4/4 here).
-> > 
-> > Browsing the output of this:
-> > 
-> >   git grep -En "pcim_enable_device|pci_alloc_irq_vectors|pci_enable_msix_|pci_free_irq_vectors|pci_disable_msi"
-> > 
-> > leads me to believe there are similar calls of pci_free_irq_vectors()
-> > that could be removed here:
-> > 
-> >   mtip_pci_probe
-> >   sp_pci_probe
-> >   dw_edma_pcie_probe
-> >   hisi_dma_probe
-> >   ioat_pci_probe
-> >   plx_dma_probe
-> >   cci_pci_probe
-> >   hibmc_pci_probe
-> >   ...
-> > 
-> > and many more, but I got tired of looking.
-> > 
-> > > > > +/**
-> > > > > + * pcim_alloc_irq_vectors - a device-managed pci_alloc_irq_vectors()
-> > > > > + * @dev:		PCI device to operate on
-> > > > > + * @min_vecs:		minimum number of vectors required (must be >= 1)
-> > > > > + * @max_vecs:		maximum (desired) number of vectors
-> > > > > + * @flags:		flags or quirks for the allocation
-> > > > > + *
-> > > > > + * Return the number of vectors allocated, (which might be smaller than
-> > > > > + * @max_vecs) if successful, or a negative error code on error. If less
-> > > > > + * than @min_vecs interrupt vectors are available for @dev the function
-> > > > > + * will fail with -ENOSPC.
-> > > > > + *
-> > > > > + * It depends on calling pcim_enable_device() to make IRQ resources
-> > > > > + * manageable.
-> > > > > + */
-> > > > > +static inline int
-> > > > > +pcim_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
-> > > > > +			unsigned int max_vecs, unsigned int flags)
-> > > > > +{
-> > > > > +	if (!pci_is_managed(dev))
-> > > > > +		return -EINVAL;
-> > > > > +	return pci_alloc_irq_vectors(dev, min_vecs, max_vecs, flags);
-> > > > 
-> > > > This is great, but can you explain how pci_alloc_irq_vectors()
-> > > > magically becomes a managed interface if we've already called
-> > > > pcim_enable_device()?
-> > > > 
-> > > > I certainly believe it does; I'd just like to put a hint in the commit
-> > > > log since my 5 minutes of grepping around didn't make it obvious to
-> > > > me.
-> > > > 
-> > > > I see that pcim_enable_device() sets pdev->is_managed, but I didn't
-> > > > find the connection between that and pci_alloc_irq_vectors().
-> > > 
-> > > One needs to read and understand the code, I agree. The explanation is spread
-> > > between pcim_release() and __pci_enable_msi/x_range().
-> > > 
-> > > The call chain is
-> > > 
-> > > msi_capability_init() / msix_capability_init()
-> > >   ...
-> > >   <- __pci_enable_msi/x_range()
-> > >     <- pci_alloc_irq_vectors_affinity()
-> > >       <- pci_alloc_irq_vectors()
-> > > 
-> > > where device msi_enabled / msix_enabled is set.
-> > > 
-> > > So, it may deserve to be explained in the commit message.
-> > > 
-> > > > > +}
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+>
+> > > Selecting based on avg idle time could be interesting but hazardous. If
+> > > for example, we prioritised selecting a CPU that is mostly idle, it'll
+> > > also pick CPUs that are potentially in a deep idle state incurring a
+> > > larger wakeup cost. Right now we are not much better because we just
+> > > select an idle CPU and hope for the best but always targetting the most
+> > > idle CPU could have problems. There would also be the cost of tracking
+> > > idle CPUs in priority order. It would eliminate the scan depth cost
+> > > calculations but the overall cost would be much worse.
+> > >
+> > > Hence, I still think we can improve the scan depth costs in the short
+> > > term until a replacement is identified that works reasonably well.
+> > >
+> > > > Even more, we can scan all CPUs whatever the
+> > > > avg idle time if there is a chance that there is an idle core.
+> > > >
+> > >
+> > > That is an important, but separate topic. It's known that the idle core
+> > > detection can yield false positives. Putting core scanning under SIS_PROP
+> > > had mixed results when we last tried but things change. Again, it doesn't
+> > > help with scan depth calculations.
+> >
+> > my point was mainly to highlight that the path can take opposite
+> > decision for the same avg_idle value:
+> > - scan all cpus if has_idle_core is true whatever avg_idle
+> > - limit the depth if has_idle_core is false and avg_idle is short
+> >
+>
+> I do understand the point but the idle core scan anomaly was not
+> intended to be addressed in the patch because putting the idle scan
+> under SIS_PROP potentially means using cpus with active idle siblings
+> prematurely.
+>
+> > >
+> > > > > tracking idle time for the domain will be cache write intensive and
+> > > > > potentially very expensive. I think this was discussed before but maybe
+> > > > > it is my imaginaction.
+> > > > >
+> > > > > > Typically, a short average idle time on
+> > > > > > the local CPU doesn't mean that there are less idle CPUs and that's
+> > > > > > why we have a mix a gain and loss
+> > > > > >
+> > > > >
+> > > > > Can you evaluate if scanning proportional to cores helps if applied on
+> > > > > top? The patch below is a bit of pick&mix and has only seen a basic build
+> > > >
+> > > > I will queue it for some test later today
+> > > >
+> > >
+> > > Thanks. The proposed patch since passed a build and boot test,
+> > > performance evaluation is under way but as it's x86 and SMT2, I'm mostly
+> > > just checking that it's neutral.
+> >
+> > Results stay similar:
+> > group  tip/sched/core      + this patch             + latest addon
+> > 1      13.358(+/- 1.82%)   12.850(+/- 2.21%) +4%    13.411(+/- 2.47%) -0%
+> > 4      4.286(+/- 2.77%)    4.114(+/- 2.25%)  +4%    4.163(+/- 1.88%)  +3%
+> > 16     3.175(+/- 0.55%)    3.559(+/- 0.43%)  -12%   3.535(+/- 0.52%)  -11%
+> > 32     2.912(+/- 0.79%)    3.165(+/- 0.95%)  -8%    3.153(+/- 0.76%)  -10%
+> > 64     2.859(+/- 1.12%)    2.937(+/- 0.91%)  -3%    2.919(+/- 0.73%)  -2%
+> > 128    3.092(+/- 4.75%)    3.003(+/-5.18%)   +3%    2.973(+/- 0.90%)  +4%
+> > 256    3.233(+/- 3.03%)    2.973(+/- 0.80%)  +8%    3.036(+/- 1.05%)  +6%
+> >
+>
+> Ok, accounting for SMT4 didn't help.
+>
+> --
+> Mel Gorman
+> SUSE Labs
