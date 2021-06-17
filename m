@@ -2,61 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217AA3AA8D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3EC3AA8D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 04:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232281AbhFQCBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 22:01:09 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:40286 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229951AbhFQCBH (ORCPT
+        id S232282AbhFQCEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 22:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231262AbhFQCEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 22:01:07 -0400
-X-UUID: b889ef0790d8420989e32647fe327073-20210617
-X-UUID: b889ef0790d8420989e32647fe327073-20210617
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 365747547; Thu, 17 Jun 2021 09:58:56 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 17 Jun 2021 09:58:54 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Jun 2021 09:58:55 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <keescook@chromium.org>
-CC:     <clang-built-linux@googlegroups.com>, <lecopzer.chen@mediatek.com>,
-        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <masahiroy@kernel.org>, <michal.lkml@markovi.net>,
-        <nathan@kernel.org>, <ndesaulniers@google.com>,
-        <samitolvanen@google.com>, <yj.chiang@mediatek.com>
-Subject: Re: [PATCH] kbuild: lto: fix module versionings mismatch in incremental build
-Date:   Thu, 17 Jun 2021 09:58:55 +0800
-Message-ID: <20210617015855.6098-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <202106160942.A89674E54@keescook>
-References: <202106160942.A89674E54@keescook>
+        Wed, 16 Jun 2021 22:04:10 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F602C061574;
+        Wed, 16 Jun 2021 19:02:03 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so4632375otl.0;
+        Wed, 16 Jun 2021 19:02:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yIbg81wAoQ5hR4s9vM2buCmpTMZ97ZZ4K19Br71xyb8=;
+        b=k82TGA5sSPPxVHmXCPcqNnX1MlQQssUE8mOiuFBNWm4ALfcuaYhZWD4IdPP+TFaRmF
+         SHzVtZISE/mCJQQYpDXZIt78fyS+FWbJd4Ykq++I7gO50ImiUKhmokwXLH7n2E/qwjv9
+         eDzEcyohN5J/hbtRuV1UA/nHdnTySZFH6r9EocrAD/Q9NF5TlrUnimSykHC/Dri1Gv5k
+         qVv5jEtQiXSdQkEhCu7MmWST8mfxYsgdAygumrbGJLdoywrKVsKEYvrH9zU3l0BBa/ce
+         FPU8ATVjSWWyXPeZRFGVtpHT0Jgje0+sxk5P6pTmqbOdRdcxyCvnWVMk5NuF86ra1XP6
+         MPaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=yIbg81wAoQ5hR4s9vM2buCmpTMZ97ZZ4K19Br71xyb8=;
+        b=WCmy9odCcY8HSGCAm7R8FRYYlh0lgW9hs0tRm6+oHzVnTDjRzQJVSqRB6oInkKMCPs
+         mj526a0OKctrzjVdGIsrKSwpb0o8FRzMroxVQwFKz3vf+Re9GawfTdK0wCqyruDrOpj8
+         Oq7PZd7jN8U6KaZ80UONOZGqqGC0BWaAOBgfk10BMSxIKjFSWkY5DVvX7GzpYNlj4B3T
+         X6bPqCjN4DTj5vmpA+H3pPB+EsCU3szrlvjcwiKWcaJRaq5KpKUN6BFsGKQgPLg4nryx
+         KcgqzUxTN16wesu0ZkyG55AlGZEh9hzDvRZdajdPqY4ruGhc6cOeS+2wNQxPYRuG0Vz8
+         jfdQ==
+X-Gm-Message-State: AOAM531t4bH/LyCK/jiZlx9Kd71BITk8tAagcVz5V325iWfye3peJs01
+        cCU7r46cUxTa1x1kbqRbGZv8PVJ63FY=
+X-Google-Smtp-Source: ABdhPJyIEXp3MSeBVJdR9I2oyFY66qhColXpF8DcKIBQylBk6uXVlxhdkMvulRgBZYRjdLzpBhtpuA==
+X-Received: by 2002:a05:6830:1686:: with SMTP id k6mr2206487otr.291.1623895322489;
+        Wed, 16 Jun 2021 19:02:02 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x7sm909628ooc.23.2021.06.16.19.02.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 19:02:01 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 16 Jun 2021 19:02:00 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     linux-kernel@vger.kernel.org, wim@linux-watchdog.org,
+        linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH 1/2] watchdog: iTCO_wdt: use pm_ptr()
+Message-ID: <20210617020200.GA3214397@roeck-us.net>
+References: <20210616181708.19530-1-info@metux.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616181708.19530-1-info@metux.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed, Jun 16, 2021 at 04:02:52PM +0800, Lecopzer Chen wrote:
-> > Yes, We can imitate how CLANG_VERSION was implemented in Kconfig.
-> > 
-> > Accroding to GNU make release page[1], I've only tested for 3.81,
-> > 4.2 and 4.3.
-> > 4.2 was released in 2016, I think it's fine for LTO lowest version.
+On Wed, Jun 16, 2021 at 08:17:07PM +0200, Enrico Weigelt, metux IT consult wrote:
+> Reduce a little bit of boilerplate by using pm_ptr().
 > 
-> Okay, sounds good. Are you able to build a patch for this?
-> 
-> Thanks for figuring it out!
-> 
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 
-Okay, I'll send a patch in a couple of weeks.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Thanks,
-Lecopzer
+> ---
+>  drivers/watchdog/iTCO_wdt.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
+> index bf31d7b67a69..6ba2b2f60737 100644
+> --- a/drivers/watchdog/iTCO_wdt.c
+> +++ b/drivers/watchdog/iTCO_wdt.c
+> @@ -636,16 +636,13 @@ static const struct dev_pm_ops iTCO_wdt_pm = {
+>  	.resume_noirq = iTCO_wdt_resume_noirq,
+>  };
+>  
+> -#define ITCO_WDT_PM_OPS	(&iTCO_wdt_pm)
+> -#else
+> -#define ITCO_WDT_PM_OPS	NULL
+>  #endif /* CONFIG_PM_SLEEP */
+>  
+>  static struct platform_driver iTCO_wdt_driver = {
+>  	.probe          = iTCO_wdt_probe,
+>  	.driver         = {
+>  		.name   = DRV_NAME,
+> -		.pm     = ITCO_WDT_PM_OPS,
+> +		.pm     = pm_ptr(&iTCO_wdt_pm),
+>  	},
+>  };
+>  
+> -- 
+> 2.20.1
+> 
