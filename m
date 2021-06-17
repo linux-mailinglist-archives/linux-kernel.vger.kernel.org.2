@@ -2,70 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E533AB532
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E563AB53E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbhFQNx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:53:27 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:7355 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhFQNx0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:53:26 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G5Ndv0NVcz6yV9;
-        Thu, 17 Jun 2021 21:47:15 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 21:51:09 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 17 Jun
- 2021 21:51:08 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-staging@lists.linux.dev>,
-        <linux-media@vger.kernel.org>
-CC:     <mchehab@kernel.org>, <sakari.ailus@linux.intel.com>,
-        <dan.carpenter@oracle.com>
-Subject: [PATCH -next resend] media: staging: media: atomisp: pci: fix error return code in atomisp_pci_probe()
-Date:   Thu, 17 Jun 2021 21:55:00 +0800
-Message-ID: <20210617135500.2158302-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S232795AbhFQN5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:57:18 -0400
+Received: from verein.lst.de ([213.95.11.211]:58866 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230411AbhFQN5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:57:17 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 2935468C4E; Thu, 17 Jun 2021 15:55:08 +0200 (CEST)
+Date:   Thu, 17 Jun 2021 15:55:07 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     JK Kim <jongkang.kim2@gmail.com>
+Cc:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nvme-pci: fix var. type for increasing cq_head
+Message-ID: <20210617135507.GC28419@lst.de>
+References: <YMrlaTjfyy9slGg6@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMrlaTjfyy9slGg6@localhost>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If init_atomisp_wdts() fails, atomisp_pci_probe() need return
-error code.
+Thanks,
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/staging/media/atomisp/pci/atomisp_v4l2.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-index 948769ca6539..d50c38e1cd1d 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-@@ -1763,7 +1763,8 @@ static int atomisp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *i
- 	if (err < 0)
- 		goto register_entities_fail;
- 	/* init atomisp wdts */
--	if (init_atomisp_wdts(isp) != 0)
-+	err = init_atomisp_wdts(isp);
-+	if (err)
- 		goto wdt_work_queue_fail;
- 
- 	/* save the iunit context only once after all the values are init'ed. */
--- 
-2.25.1
-
+applied to nvme-5.14.
