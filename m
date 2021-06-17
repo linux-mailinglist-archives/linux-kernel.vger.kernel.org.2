@@ -2,135 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A013ABA33
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220843ABA37
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbhFQRGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:06:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:56788 "EHLO foss.arm.com"
+        id S231250AbhFQRHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:07:22 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:48820 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231148AbhFQRGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:06:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8BB2913D5;
-        Thu, 17 Jun 2021 10:04:00 -0700 (PDT)
-Received: from [192.168.0.14] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 895DB3F694;
-        Thu, 17 Jun 2021 10:03:58 -0700 (PDT)
-Subject: Re: [PATCH v4 00/24] x86/resctrl: Merge the CDP resources
-To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        lcherian@marvell.com, "Luck, Tony" <tony.luck@intel.com>
-References: <20210614200941.12383-1-james.morse@arm.com>
- <cc452592-491f-3ddf-983a-8669ad12df9a@intel.com>
- <4d2ba7c1-395b-d1ec-c92b-f906e2a551a1@arm.com>
- <f0f112c3-e17d-958f-2378-b73643c7ca58@intel.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <6bf16e35-003a-0847-c15e-ed66fb302390@arm.com>
-Date:   Thu, 17 Jun 2021 18:03:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229784AbhFQRHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 13:07:19 -0400
+Received: from zn.tnic (p200300ec2f0eb200a2ba6960566addd7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:b200:a2ba:6960:566a:ddd7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 49FC51EC0587;
+        Thu, 17 Jun 2021 19:05:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623949509;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=L8efLSpUhyaEMmGw2xebh6U+9/gmONiS7Hq0tHA+th8=;
+        b=OfBSQjo7MxE/7Oi8VDTmesKbBLWAIZNi2B9GQxVvU14IRK37dT/w+cT2RWQxwPRLJGIcem
+        WQlWQAag4e6OWZuIpGNHr/R7yc8Md+x6gOLiYN/lwkVRIT8KFVlDFj76ckX4oAqFuPfUl0
+        17TdEVbvXxNlMyxPsXCWL2BpfTSyzbk=
+Date:   Thu, 17 Jun 2021 19:05:00 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 04/12] x86/x86: Add early_is_tdx_guest() interface
+Message-ID: <YMuAvP7bqwHVSCw8@zn.tnic>
+References: <YMJ/IrBZiCsNMtvO@zn.tnic>
+ <20210612210445.2164948-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <f0f112c3-e17d-958f-2378-b73643c7ca58@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20210612210445.2164948-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
+On Sat, Jun 12, 2021 at 02:04:45PM -0700, Kuppuswamy Sathyanarayanan wrote:
 
-On 15/06/2021 19:05, Reinette Chatre wrote:
-> On 6/15/2021 9:48 AM, James Morse wrote:
->> On 15/06/2021 17:16, Reinette Chatre wrote:
->>> On 6/14/2021 1:09 PM, James Morse wrote:
->>> For the most part I think this series looks good. The one thing I am concerned about is
->>> the resctrl user interface change. On a system that supports L3 CDP there is a visible
->>> change when CDP is not enabled:
->>>
->>> Before this series:
->>> # cat schemata
->>>     L3:0=fffff;1=fffff
->>>
->>> After this series:
->>> # cat schemata
->>> L3:0=fffff;1=fffff
->>
->> Hmm, I thought I'd fixed this with v2, ... I see this is subtly different.
->>
->> This could be tweaked by getting schemata_list_add() to include the length of the longest
->> suffix if the resource supports CDP, but its not enabled. (Discovering that means
->> cdp_capable moves to be something the 'fs' bits of resctrl can see.)
+> Subject: Re: [PATCH v2 04/12] x86/x86: Add early_is_tdx_guest() interface
 
->> I'm a little nervous 'adding 4 spaces' because user-space expects them. (I agree if it
->> breaks user-space it has to be done). I guess this is the problem with string parsing as
->> part of the interface!
+Subject prefix should be "x86/tdx:" ofc.
 
-> This is a tricky and interesting one. It seems that the original intended behavior is
-> indeed the way you changed it to. By originally using for_each_enabled_rdt_resource() to
-> determine the maximum width in de016df88f23 ("x86/intel_rdt: Update schemata read to show
-> data in tabular format"). This was added in v4.12 and dictated the interface until v4.13.
-> This was changed in 1b5c0b758317 ("x86/intel_rdt: Cleanup namespace to support RDT
-> monitoring") when it used for_each_alloc_capable_rdt_resource(r) instead, added in v4.14
-> that is a stable kernel and the most likely interface used by users.
-> 
-> To me the less risky change is to maintain the existing interface, but perhaps there are
-> some other guidance in this regard?
+> diff --git a/arch/x86/boot/compressed/tdx.c b/arch/x86/boot/compressed/tdx.c
+> new file mode 100644
+> index 000000000000..ddfa4a6d1939
+> --- /dev/null
+> +++ b/arch/x86/boot/compressed/tdx.c
+> @@ -0,0 +1,28 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * tdx.c - Early boot code for TDX
+> + */
+> +
+> +#include <asm/tdx.h>
 
-I think this is just the problem with having anything other than 'one value per file', as
-sysfs does. Maintaining it involves getting painted into a corner by the worst parser
-user-space manages to come up with!
+Please no kernel proper includes in the decompressor stage - that thing
+is an include hell mess and needs cleaning up. Use cpuid_count() from
+arch/x86/boot/cpuflags.c by exporting it properly and add the other
+defines here instead of using kernel proper facilities.
 
+I know, I know, there is other misuse but it has to stop.
 
->> I assume that in the (distant) future having CDP capable resources with names more than 2
->> characters isn't going to be a problem. (I don't have an example)
-> 
-> The last statement is not clear to me. Could you please elaborate why two characters would
-> be significant? From what I understand the expectation would be that the width is the
-> maximum name length of all possible schema, whether they are enabled or not.
+> +static int __ro_after_init tdx_guest = -1;
+> +
+> +static inline bool native_cpuid_has_tdx_guest(void)
 
-Great - I was nervous that if shorter strings are a problem, what about longer?
+Why is this function prefixed with "native_"?
 
-( Arm SoCs often have a system-cache that lives between the LLC and DRAM. Its not a CPU
-cache, so its not really L4. Because of the way CDP gets emulated it affects all caches.
-If people build these things with MPAM support - and we choose to add a schema for them:
-you'd end up with 'SYSTEM-CACHECODE' and 'SYSTEM-CACHEDATA'. Its not a real example as if
-its needed, 'SC' is probably acceptable.)
+> +{
+> +	u32 eax = TDX_CPUID_LEAF_ID, sig[3] = {0};
+> +
+> +	if (native_cpuid_eax(0) < TDX_CPUID_LEAF_ID)
+> +		return false;
+> +
+> +	native_cpuid(&eax, &sig[0], &sig[1], &sig[2]);
+> +
+> +	return !memcmp("IntelTDX    ", sig, 12);
+> +}
+> +
+> +bool early_is_tdx_guest(void)
 
+So I guess this is going to be used somewhere, because I don't see it.
+Or is it going away in favor of prot_guest_has(PR_GUEST_TDX) ?
 
->>> There are a few user space tools that parse the resctrl schemata file and it may be easier
->>> to keep the interface consistent than to find and audit them all to ensure they will keep
->>> working.
-> 
-> To me this continues the biggest hurdle in maintaining the behavior as you have it in this
-> series.
+This is the problem with sending new versions of patches as a reply to
+the old ones in the patchset: I get confused. Why don't you wait until
+the whole thing has been reviewed and then send a new revision which has
+all the changes and I can find my way in the context?
 
-No problem - I've changed it as described.
+And with the amount of changes so far, you should probably send a new
+revision of the initial support set now-ish instead of me reviewing this
+one 'til the end.
 
+Thx.
 
->>> A heads-up is that there are some kernel-doc fixups in the works that will conflict with
->>> your series. You yourself fix at least one of these kernel-doc issues in this series - the
->>> description of mbm_width in the first patch. I will ask the submitter of the kernel-doc
->>> fixups to use your text to help with the merging.
->>
->> Please point me at something to rebase onto!
->> (as far as I can see, tip/x86/cache hasn't moved)
-> 
-> These patches have not yet been merged. The most recent version was sent yesterday. Your
-> current base is good.
+-- 
+Regards/Gruss,
+    Boris.
 
-I've based on tip/master, which merged rc6....
-
-
-Thanks,
-
-James
+https://people.kernel.org/tglx/notes-about-netiquette
