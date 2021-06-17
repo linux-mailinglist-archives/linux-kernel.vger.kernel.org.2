@@ -2,114 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828DC3AB2C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651CB3AB2CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbhFQLkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:40:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54094 "EHLO
+        id S232469AbhFQLlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFQLke (ORCPT
+        with ESMTP id S229584AbhFQLln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:40:34 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9FEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:38:27 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1ltqLo-0004eZ-TD; Thu, 17 Jun 2021 13:38:25 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:653d:6f2f:e25e:5f2e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 85A0163E04B;
-        Thu, 17 Jun 2021 11:38:23 +0000 (UTC)
-Date:   Thu, 17 Jun 2021 13:38:22 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v2 2/2] can: netlink: add interface for CAN-FD
- Transmitter Delay Compensation (TDC)
-Message-ID: <20210617113822.gdpesbumwnoixjqs@pengutronix.de>
-References: <20210603151550.140727-1-mailhol.vincent@wanadoo.fr>
- <20210603151550.140727-3-mailhol.vincent@wanadoo.fr>
- <20210616094633.fwg6rsyxyvm2zc6d@pengutronix.de>
- <CAMZ6RqLj59+3PrQwTCfK_bVebRBHE=HqCfRb31MU9pRDBPxG8w@mail.gmail.com>
- <20210616142940.wxllr3c55rk66rij@pengutronix.de>
- <CAMZ6RqJWeexWTGVkEJWMvBs1f=HQOc4zjd-PqPsxKnCr_XDFZQ@mail.gmail.com>
- <20210616144640.l4hjc6mc3ndw25hj@pengutronix.de>
- <CAMZ6RqLZAO3UX=B8yVUse=4DAVG_zGPrdoYpd-7Cp_To58CChw@mail.gmail.com>
+        Thu, 17 Jun 2021 07:41:43 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B7DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:39:34 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id h12so4816502pfe.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:39:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yclVrwqPGhUvimc8CwIG9SL/Y2EGnIDn3pohj+uriwg=;
+        b=h8j+OkWM68Hh/SzuW8UfucveRyD6fOOTQP7qgh++v3NuAVjYWPMgXKPMDVA5x6RnJq
+         rcZSQAO0E3iD4vbZSnlkaoWDwLVa+dSmR4BkinA0uoYx5a3KSGK9O5V1od3iM/MDD/Jf
+         /5+yUA2MC98qdXaA707UtUY/lYIUVr9PzC3ZE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yclVrwqPGhUvimc8CwIG9SL/Y2EGnIDn3pohj+uriwg=;
+        b=qi0v/xdWH21kTKt/hw64NIXYby5qRVEH9BSI+6EWO+WmDjnh3qNN6g3CFLF6BI8Ro4
+         HYeImyGLAbTnsO/ZdS5wDc2tqIjMXz/zr8DA2gWuPEfnGcqtSTz/1L/u1syYZe0ImsDn
+         4z/HlrgLZ7xiy7jXxt4WD7MEEcxkjo54u2w8l5OSf3pEo5OT97GAPr4lkXxh4GcErVFl
+         3/bTCS90sJdnhJDFjlILjZaNVb4gvLnrRwK0EO2c2vtZZNXGP/MD9WGob7FgXUlEUHm5
+         guszTNnF0tiAgo/Sy1z3fZzxl+u/UuAlOvmNgGsQZ57yUpf14ACreACbU9Aw651zBK69
+         ClXA==
+X-Gm-Message-State: AOAM532Qxb3sVZSSohS85i83T1OX43tD8/XUdd1iO16hhY1oFbDzJWwX
+        PafWD/wxOheOAMfAIGgAoUxLfQ==
+X-Google-Smtp-Source: ABdhPJxXmnPa1gr131ie/DQVg7wlrciiO15HHca/g1gXIn0aNfTYAnIK2ROkbQO/DOn1t50FMl8lRA==
+X-Received: by 2002:aa7:8b07:0:b029:2f7:d38e:ff1 with SMTP id f7-20020aa78b070000b02902f7d38e0ff1mr4848538pfd.72.1623929974147;
+        Thu, 17 Jun 2021 04:39:34 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:32ae:4292:bec1:e4])
+        by smtp.gmail.com with ESMTPSA id y66sm5163256pfb.91.2021.06.17.04.39.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 04:39:33 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 20:39:28 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH next v4 0/2] introduce printk cpu lock
+Message-ID: <YMs0cCklgBTwhrbo@google.com>
+References: <20210617095051.4808-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wmbiwwgij6c7c54c"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMZ6RqLZAO3UX=B8yVUse=4DAVG_zGPrdoYpd-7Cp_To58CChw@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210617095051.4808-1-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (21/06/17 11:56), John Ogness wrote:
+> John Ogness (2):
+>   lib/dump_stack: move cpu lock to printk.c
+>   printk: fix cpu lock ordering
 
---wmbiwwgij6c7c54c
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 17.06.2021 00:44:12, Vincent MAILHOL wrote:
-> > > Did you try to compile?
-> >
-> > Not before sending that mail :)
-> >
-> > > I am not sure if bittiming.h is able to see struct can_priv which is
-> > > defined in dev.h.
-> >
-> > Nope it doesn't, I moved the can_tdc_is_enabled() to
-> > include/linux/can/dev.h
->=20
-> Ack. It seems to be the only solution=E2=80=A6
->=20
-> Moving forward, I will do one more round of tests and send the
-> patch for iproute2-next (warning, the RFC I sent last month has
-> some issues, if you wish to test it on your side, please wait).
->=20
-> I will also apply can_tdc_is_enabled() to the etas_es58x driver.
->=20
-> Could you push the recent changes on the testing branch of linux-can-next=
-? It
-> would be really helpful for me!
-
-done
-
-Marc.
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---wmbiwwgij6c7c54c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDLNCwACgkQqclaivrt
-76m0agf/b+zqU+/7C7Jr48RNm7EXvLLK8LrH6QU5JhByWuozN3adqsbR3VkhwLg4
-vi/46MXTWQ3sZOffrPSwzWotpBp0dNRUXCmTlk1+aStany3ekVHhmQqeemo0SR25
-7Ef4mr1omagm19TGFAdGxQcj/bjIw/3pk2d1TFsEjj8OS7AHCAByWiPSGvhyEYev
-PLyAjqjMCzdxaraMNuBFcttH7wZrgdj4ew5R7WSOoSNm48JvieMef8Ar4WhzxID3
-4Y4DCHMrMEUPhThAYeR5pFlcRP7YISa62f865o/16IJVe0NnKyQugadk3lk9DdVM
-S2IpApA4V3JoQpZukzqo6i7tqT9/CA==
-=nuoX
------END PGP SIGNATURE-----
-
---wmbiwwgij6c7c54c--
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
