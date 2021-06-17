@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37FA3AA8C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76883AA8C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhFQBqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 21:46:25 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:20274 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232184AbhFQBqX (ORCPT
+        id S232217AbhFQBsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 21:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232204AbhFQBsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 21:46:23 -0400
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 15H1huVf009347;
-        Thu, 17 Jun 2021 10:43:57 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 15H1huVf009347
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1623894237;
-        bh=wjle6ONnIAord5cqRzKuWQUDNDJxzTYVAbaSXw18SKs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qU6uBj2X7Hnfapm7LiTzm1euiOSK+bL4VVZnJ7KVTn/i5DahMqcuYZu53QEIWy3Td
-         szDZjRxMEbGVeye0BDWsFQ3KwUWiIMEY7gZOyiv+b5zi7WgC/q/4rV+8PpkwJbYFBo
-         ukreAtJk5gasEwCXa12unM/azjyYYuv8yyw0Or6wjdaZY3CUg6CnYoLM1Mq+rDFTMP
-         O4eqMzijOQMk3c46xMw12PDvOaT9y4/9Je0ewRfnBHjb3u8MY8JxI9vd5C7FtfMbyG
-         S1gjnLpE4xTSh4HTSqbr7XJ+qVOG6Iog+ZeuvYC8KoKw9ZOfEJrQODMkBFGy27BYzj
-         cna8L74KOZEiw==
-X-Nifty-SrcIP: [209.85.210.182]
-Received: by mail-pf1-f182.google.com with SMTP id g6so3703525pfq.1;
-        Wed, 16 Jun 2021 18:43:57 -0700 (PDT)
-X-Gm-Message-State: AOAM5336ZK6b3HXOdm3fJUJBKEEnMJQuJNhu5FT6guawJe29HWOYVELr
-        lFLpQz+Z8EAmM5GxL1zk53VVGkKZ1BH/+EmmX/A=
-X-Google-Smtp-Source: ABdhPJw3BCV6PVCg+sScvyPLQpDO0KODxRfAFcRXVfUn4JyQ6ZXE4MGMIGXTbKinAUO4r+NNuSOGF9iVELFEzBlofTU=
-X-Received: by 2002:aa7:962f:0:b029:2ed:cf:1f90 with SMTP id
- r15-20020aa7962f0000b02902ed00cf1f90mr2761373pfg.76.1623894236332; Wed, 16
- Jun 2021 18:43:56 -0700 (PDT)
+        Wed, 16 Jun 2021 21:48:50 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8DFC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 18:46:42 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d62so1704616pfd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 18:46:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aCu4LkD8DzzqfW0LqAc59fm9y5Or9nczlrM9Hg9t/o4=;
+        b=TEuDdg4PDrfRk+ENI85vuqFt7iHDIWll3icoHcSJBroSYUZQXHN3mSZXTklYG2OUoi
+         I7QWlYpfEersSBaqmqhxouOWrW9gV/FaX/NUFP0b1t5wXnFwUkiU7AXOuRqe11tP+JYk
+         16F1D7cnZfhCgIbW5xvbMm3zik+Z6qQiufaTI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aCu4LkD8DzzqfW0LqAc59fm9y5Or9nczlrM9Hg9t/o4=;
+        b=iXG92HSVPp8fzN9GQU1qwzH1WUid90Kff7rHNbzMIqqNotfb6PmOKSmkRM67f202mL
+         e0tZhcx7fP9UdxxrVN5hvFeD8CZxsg81uR28fyRfTPEk5rfQ/oDdeejFuS741KuRCT2y
+         CbrSB9OjBjbQHh30T6ad+LNegH1xkLeQhpIkZlSIMDPRkT/8S6Iruond4iDz8YWr9LmP
+         b8+sjJgxrSvkN931g4QAJplibEjyn5zZ4HN6fKnArWnA7ddXBlK+ra6+qi0qiPgm0HCj
+         H35kAbhlyCUdSOcp3QtgyBPSvOWdHKftBovYE3EAsAvjHajSWHB3PBZEzwlYhUFgq0CV
+         U2hw==
+X-Gm-Message-State: AOAM531hU3gWFAOssmtaSFjRfZbfS8IkkxjSHJUlIS8joRDbJ78A57At
+        4IMlcTci3Q6fivAET9I440YJbw==
+X-Google-Smtp-Source: ABdhPJzX2BJ54oHHJad88jmZ+ROH3fq5TXvxRH30zU61ZUJHG6rDLHXUqRg2LrxGaOn40G9auSApxw==
+X-Received: by 2002:a65:6256:: with SMTP id q22mr2549354pgv.391.1623894401080;
+        Wed, 16 Jun 2021 18:46:41 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:32ae:4292:bec1:e4])
+        by smtp.gmail.com with ESMTPSA id s63sm374107pjj.35.2021.06.16.18.46.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 18:46:40 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 10:46:36 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 7/8] videobuf2: handle V4L2_MEMORY_FLAG_NON_COHERENT
+ flag
+Message-ID: <YMqpfI6udqgbMg82@google.com>
+References: <20210427131344.139443-1-senozhatsky@chromium.org>
+ <20210427131344.139443-8-senozhatsky@chromium.org>
+ <93d99f68-7363-6ba3-2634-f052a95e5fe0@xs4all.nl>
 MIME-Version: 1.0
-References: <20210612141838.1073085-1-maennich@google.com> <CAK7LNAQkoqTG540EOER27G83z+DO5fkeHi-in-vRYkrbX-o0cg@mail.gmail.com>
-In-Reply-To: <CAK7LNAQkoqTG540EOER27G83z+DO5fkeHi-in-vRYkrbX-o0cg@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 17 Jun 2021 10:43:19 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR=Fwzio6CQqDOYQJj9tYrf5a_-sYQ+Yr2=Qt5cYq8wOA@mail.gmail.com>
-Message-ID: <CAK7LNAR=Fwzio6CQqDOYQJj9tYrf5a_-sYQ+Yr2=Qt5cYq8wOA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: mkcompile_h: consider timestamp if
- KBUILD_BUILD_TIMESTAMP is set
-To:     Matthias Maennich <maennich@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <93d99f68-7363-6ba3-2634-f052a95e5fe0@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 10:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Sat, Jun 12, 2021 at 11:18 PM Matthias Maennich <maennich@google.com> wrote:
-> >
-> > To avoid unnecessary recompilations, mkcompile_h does not regenerate
-> > compile.h if just the timestamp changed.
-> > Though, if KBUILD_BUILD_TIMESTAMP is set, an explicit timestamp for the
-> > build was requested, in which case we should not ignore it.
-> >
-> > If a user follows the documentation for reproducible builds [1] and
-> > defines KBUILD_BUILD_TIMESTAMP as the git commit timestamp, a clean
-> > build will have the correct timestamp. A subsequent cherry-pick (or
-> > amend) changes the commit timestamp and if an incremental build is done
-> > with a different KBUILD_BUILD_TIMESTAMP now, that new value is not taken
-> > into consideration. But it should for reproducibility.
-> >
-> > Hence, whenever KBUILD_BUILD_TIMESTAMP is explicitly set, do not ignore
-> > UTS_VERSION when making a decision about whether the regenerated version
-> > of compile.h should be moved into place.
-> >
-> > [1] https://www.kernel.org/doc/html/latest/kbuild/reproducible-builds.html
-> >
-> > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > Cc: linux-kbuild@vger.kernel.org
-> > Signed-off-by: Matthias Maennich <maennich@google.com>
-> > ---
->
->
-> Applied to linux-kbuild. Thanks.
->
+On (21/06/03 13:32), Hans Verkuil wrote:
+[..]
+> > +static void validate_memory_flags(struct vb2_queue *q,
+> > +				  int memory,
+> > +				  u32 *flags)
+> > +{
+> > +	if (!q->allow_cache_hints || memory != V4L2_MEMORY_MMAP) {
+> > +		/*
+> > +		 * This needs to clear V4L2_MEMORY_FLAG_NON_COHERENT only,
+> > +		 * but in order to avoid bugs we zero out all bits.
+> > +		 */
+> > +		*flags = 0;
+> 
+> Wouldn't it make sense to add:
+> 
+> 	} else {
+> 		*flags &= ~V4L2_MEMORY_FLAG_NON_COHERENT;
+> 
+> I.e., clear all unknown flags.
 
-This may not be a big deal, but when KBUILD_BUILD_TIMESTAMP is unset,
-the timestamp is not updated.  It still has a user-specified string.
+Done.
 
+[..]
+> > @@ -2003,9 +2003,6 @@ static int v4l_reqbufs(const struct v4l2_ioctl_ops *ops,
+> >  
+> >  	if (ret)
+> >  		return ret;
+> > -
+> > -	CLEAR_AFTER_FIELD(p, capabilities);
+> 
+> Shouldn't this be:
+> 
+> 	CLEAR_AFTER_FIELD(p, flags);
+> 
+> You still need to zero the reserved array, after all.
 
-
-
--- 
-Best Regards
-Masahiro Yamada
+Done.
