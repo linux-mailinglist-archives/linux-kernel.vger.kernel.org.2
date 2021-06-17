@@ -2,123 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3E33AA8B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9727A3AA8B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbhFQBkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 21:40:08 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:57827 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbhFQBkH (ORCPT
+        id S232168AbhFQBjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 21:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229713AbhFQBjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 21:40:07 -0400
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 15H1bkrf005688;
-        Thu, 17 Jun 2021 10:37:46 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 15H1bkrf005688
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1623893867;
-        bh=HIoxq7OeXB/HXXPGf7C+LKUoLnaEXtnEaOxI1wYpvEo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JTge8z/GOUCA3sW+79rtIX8Bpdl6e4ZYhkoxmOZiGyC3mvO304Vj45DJckHrjQacU
-         PbnXFt2Z7ftvipWWsV0HlYgo9U+oEVukn5pYIpUbjeqwzVtzP+1QZiRgz/DvGANhmT
-         mw9sOge2n90BKEwdPCWkpHy0J/JX/LG5fERB3QQerQqIcplIKrDrblkiejje0MFsDN
-         lMmQC8r71JRGCNu0iXYyggmAaql+AfPA3MTkUttAjbKeZWji5lXc8swSD+zrYWvK7o
-         1YY7DpNojmM4b6iKsoOvPkzmOTms0oMMuicj/1vLrTJVBAe3/sy234ASkKc33yMrrd
-         MtPABW0veC18w==
-X-Nifty-SrcIP: [209.85.215.171]
-Received: by mail-pg1-f171.google.com with SMTP id q15so3567669pgg.12;
-        Wed, 16 Jun 2021 18:37:46 -0700 (PDT)
-X-Gm-Message-State: AOAM532z9pQwj7444r3Fr43myDuO33HRQIpwC4tvb5BmZoUik/W51STu
-        WWtONVT+/AVzpydL/ZaenM+6sbuHMsfr01t7Avk=
-X-Google-Smtp-Source: ABdhPJyBN58fpyRPEPgPvXIEGSZZ6tyzFeJu+323C2GaSIURzTNSrGTPPm18fMAv8mtw8Rnc9+X/B301RsFcQZH75So=
-X-Received: by 2002:aa7:9ed2:0:b029:2fc:b328:ad67 with SMTP id
- r18-20020aa79ed20000b02902fcb328ad67mr2669207pfq.63.1623893866033; Wed, 16
- Jun 2021 18:37:46 -0700 (PDT)
+        Wed, 16 Jun 2021 21:39:40 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1EFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 18:37:33 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id g22so3608098pgk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 18:37:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=Nbl87QZp4G8A2CDe/cUWud1I+sN33vpXEyaZOU+NVnU=;
+        b=rOSk7N6LOygZBNwvYUgPnrbQZvNmdImxd6J+evzqzPUPfw9tk+U3VqpfIViOP9GhhV
+         4wJ4ufIclF2zMB3wvtpuzNnq4HrrOjZqvrecMj9kfkWeq7tOCsuCX6SURe5qAU75dDXF
+         2p/ZXy+AZ+pkTFc8/cxZw9mTEnFPQuYWzFv9WJLq3EutJKMoi0qvT1oY/sW1Dt2hEtXJ
+         Yz/ZJPFBHtWBIUNMbW3a/OTFsOWa+9u+s9e+3NX9WwC7Q0MAuf6yTRtZCxhusnVbei5g
+         2hga2+XqdWeNemECkshqVW+TgP+vOGEIUap/zwGeWHutl1vzZPcDOA2Xk+UtOFfRLTf7
+         q6mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=Nbl87QZp4G8A2CDe/cUWud1I+sN33vpXEyaZOU+NVnU=;
+        b=DXv6EHQzwrFZVP6BxUIpsCDpbbtKgJWF2mPxZgPFd1UUpX6TMZ+9OrEPsAcd1VU186
+         b4QHmUsVHS9QHdgwO4YXz92ygqEXe+XaUH4El0DdcRdfWO1GTm6r7+hJ6I39AbRy75i4
+         hd56qqM95YBQ/X+zBPvaxb7ck7hY4KcKqCbWXyUL1eBNHzxJFV+mueY0uAs3DlTHzmpi
+         LhHWX/r5T2e+l/zXjjmrhufD8gRMmyNpwmjcY8ehkkGtNvuu12DOryb4pCVPO1zCgqwN
+         o5s2HHiXFTjuydzFcz5C6dkN/taBcMNydp8j1HaKmWWtNTT8Fi+oPaU1GIgCSgHWQ27X
+         AN6A==
+X-Gm-Message-State: AOAM532FodQIR+82Tvu2Xtg0lyCyfyDsWtHftzS3A8rc9EPjrODGNcGK
+        ClPh6Q/1exLuZQM5I+ReZWI=
+X-Google-Smtp-Source: ABdhPJwWixdjAyQzzO+A6MibZh7XlTuuirIW5NpTWbf8VvQYk/vcWCN6PVqngVXurXBetngNVHpigA==
+X-Received: by 2002:a63:4653:: with SMTP id v19mr2557630pgk.240.1623893853436;
+        Wed, 16 Jun 2021 18:37:33 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id r135sm3310612pfc.184.2021.06.16.18.37.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 18:37:33 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 11:37:27 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 4/8] membarrier: Make the post-switch-mm barrier explicit
+To:     Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        x86@kernel.org
+References: <cover.1623813516.git.luto@kernel.org>
+        <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
+        <1623816595.myt8wbkcar.astroid@bobo.none>
+        <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
+        <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
+In-Reply-To: <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
 MIME-Version: 1.0
-References: <20210602140213.132936-1-masahiroy@kernel.org>
-In-Reply-To: <20210602140213.132936-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 17 Jun 2021 10:37:09 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARLctyjSoVCwLkwrGqRH6QFc93xTP8LFAJVgAz+f4YqFA@mail.gmail.com>
-Message-ID: <CAK7LNARLctyjSoVCwLkwrGqRH6QFc93xTP8LFAJVgAz+f4YqFA@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: remove trailing slashes from $(KBUILD_EXTMOD)
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Michal Marek <michal.lkml@markovi.net>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1623893358.bbty474jyy.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 11:02 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> M= (or KBUILD_EXTMOD) generally expects a directory path without any
-> trailing slashes, like M=a/b/c.
->
-> If you add a trailing slash, like M=a/b/c/, you will get ugly build
-> logs (two slashes in a series), but it still works fine as long as it
-> is consistent between 'make modules' and 'make modules_install'.
->
-> The following commands correctly build and install the modules.
->
->   $ make M=a/b/c/ modules
->   $ sudo make M=a/b/c/ modules_install
->
-> Since commit ccae4cfa7bfb ("kbuild: refactor scripts/Makefile.modinst"),
-> a problem happens if you add a trailing slash only for modules_install.
->
->   $ make M=a/b/c modules
->   $ sudo make M=a/b/c/ modules_install
->
-> No module is installed in this case, Johannes Berg reported. [1]
->
-> Trim any trailing slashes from $(KBUILD_EXTMOD).
->
-> I used the 'dirname' command to remove all the trailing slashes in
-> case someone adds more slashes like M=a/b/c/////. The Make's built-in
-> function, $(dir ...) cannot take care of such a case.
->
-> [1]: https://lore.kernel.org/lkml/10cc8522b27a051e6a9c3e158a4c4b6414fd04a0.camel@sipsolutions.net/
->
-> Fixes: ccae4cfa7bfb ("kbuild: refactor scripts/Makefile.modinst")
-> Reported-by: Johannes Berg <johannes@sipsolutions.net>
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+Excerpts from Andy Lutomirski's message of June 17, 2021 4:41 am:
+> On 6/16/21 12:35 AM, Peter Zijlstra wrote:
+>> On Wed, Jun 16, 2021 at 02:19:49PM +1000, Nicholas Piggin wrote:
+>>> Excerpts from Andy Lutomirski's message of June 16, 2021 1:21 pm:
+>>>> membarrier() needs a barrier after any CPU changes mm.  There is curre=
+ntly
+>>>> a comment explaining why this barrier probably exists in all cases.  T=
+his
+>>>> is very fragile -- any change to the relevant parts of the scheduler
+>>>> might get rid of these barriers, and it's not really clear to me that
+>>>> the barrier actually exists in all necessary cases.
+>>>
+>>> The comments and barriers in the mmdrop() hunks? I don't see what is=20
+>>> fragile or maybe-buggy about this. The barrier definitely exists.
+>>>
+>>> And any change can change anything, that doesn't make it fragile. My
+>>> lazy tlb refcounting change avoids the mmdrop in some cases, but it
+>>> replaces it with smp_mb for example.
+>>=20
+>> I'm with Nick again, on this. You're adding extra barriers for no
+>> discernible reason, that's not generally encouraged, seeing how extra
+>> barriers is extra slow.
+>>=20
+>> Both mmdrop() itself, as well as the callsite have comments saying how
+>> membarrier relies on the implied barrier, what's fragile about that?
+>>=20
+>=20
+> My real motivation is that mmgrab() and mmdrop() don't actually need to
+> be full barriers.  The current implementation has them being full
+> barriers, and the current implementation is quite slow.  So let's try
+> that commit message again:
+>=20
+> membarrier() needs a barrier after any CPU changes mm.  There is currentl=
+y
+> a comment explaining why this barrier probably exists in all cases. The
+> logic is based on ensuring that the barrier exists on every control flow
+> path through the scheduler.  It also relies on mmgrab() and mmdrop() bein=
+g
+> full barriers.
+>=20
+> mmgrab() and mmdrop() would be better if they were not full barriers.  As=
+ a
+> trivial optimization, mmgrab() could use a relaxed atomic and mmdrop()
+> could use a release on architectures that have these operations.
 
-Applied to linux-kbuild.
+I'm not against the idea, I've looked at something similar before (not
+for mmdrop but a different primitive). Also my lazy tlb shootdown series=20
+could possibly take advantage of this, I might cherry pick it and test=20
+performance :)
 
+I don't think it belongs in this series though. Should go together with
+something that takes advantage of it.
 
-
-> Changes in v2:
->   - Use $(filter %/, ) so that the shell invocation is avoided
->     if M= is already good.
->
->  Makefile | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/Makefile b/Makefile
-> index b79e0e8acbe3..8018b8adbcaf 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -129,6 +129,11 @@ endif
->  $(if $(word 2, $(KBUILD_EXTMOD)), \
->         $(error building multiple external modules is not supported))
->
-> +# Remove trailing slashes
-> +ifneq ($(filter %/, $(KBUILD_EXTMOD)),)
-> +KBUILD_EXTMOD := $(shell dirname $(KBUILD_EXTMOD).)
-> +endif
-> +
->  export KBUILD_EXTMOD
->
->  # Kbuild will save output files in the current working directory.
-> --
-> 2.27.0
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+Thanks,
+Nick
