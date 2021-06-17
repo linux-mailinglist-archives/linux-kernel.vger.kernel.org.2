@@ -2,185 +2,505 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5E03AAB67
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 238B93AAB6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbhFQFyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 01:54:06 -0400
-Received: from mail-mw2nam12on2089.outbound.protection.outlook.com ([40.107.244.89]:24833
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229515AbhFQFyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 01:54:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q19Ot0t6OqBfeJC/3qs6Ju0IZbJ7ZwV/y67kAuVWUNwjpP6vHpId3gR6TUY1NJjDFH0dm1YRFvA+5MFUh+cOflk8/2aQi/TBcK8TCMqwem/6TItey3wik6eQDgDXrfMrNxuD3+hjCXeJ8GvAeTD0yK4PDarvS1/q/dv/ruDBkcF78I84JNHYiz0X2wqs7bEGZf+zslVB9die3G3LPHoCU769UHULx/P4TI7YVnTh5ThdRbJJxnZX76Jwy12Xi3AMmJTX5tuL48wP4ziRfYhB4VxCx6AWGcKe4qpwWK8Ekf0YJUKjV8sp9u6XPpCDwt9ueVFJI0qyPN6A3svSwaO1OA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8Rk0Tr5PbW9/2vXBsnb8a2hlO4SsJEBZ1oFO+LVYSsk=;
- b=IPS0Eb6j3aW/hbNfmWgYGcgMpU2sv0HUO43C39BJXcjsXcpjueUCRt8I+K6IZ57Rw+0DPUTyMrkAZkyUm9qMLt9+d9IAGXlFSsmRauzVLWixcl3cdx7By8nVzQpTGvYV/ogHVon5plGxf0IEZT2ZNHRw1YJiZR7pEFTvkwLoYH3OABlE2EHPWk/n6llnNLJJzr6B3FK3xyQDSFCmvGvXDmHKm/4PXIfQIdZaOuMGZKHQkSXGrVbE4vzTNWM6WtHQeZe194JT5XIXqZmM7VvVeJj2//AYV5H0ybMwIMnVomN0Zz+C52GlGgRycovAH/dxrDHRhcIxYqvVudG5F/yVSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8Rk0Tr5PbW9/2vXBsnb8a2hlO4SsJEBZ1oFO+LVYSsk=;
- b=aEweZLqTXfdNkSwzzcHbE/BcXm9bcW3gAW3iy3PBpIsAODtkFThyK6E7/iu36QobqErL7Ir4D1xJ7GT7VUAN/NbDrjBpkTqMZkLuTxm8f04YF7BL0Z1geXlYHFR3YJU4nAhyd4OcW4lisX/G7WholuE3wCk63TDH11qy7TThXM2CWsVrtXJbXoqVj0QNOTrj9TtiGw+2zJJL3T7Z8GkxKu5RS6avq4JISuNPTSBnjDXdbbv9jl0vrmS/NUXrCtTOltjbjVcS0jaCO/56cAtvI64HqrRlg04zxxKmu6Q2Bg60pRjdSh01tp4FOIsUzVRQT+NUWaxwULoe663qhR9T3w==
-Received: from DM5PR18CA0088.namprd18.prod.outlook.com (2603:10b6:3:3::26) by
- BL1PR12MB5270.namprd12.prod.outlook.com (2603:10b6:208:31e::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4242.18; Thu, 17 Jun 2021 05:51:55 +0000
-Received: from DM6NAM11FT022.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:3:cafe::87) by DM5PR18CA0088.outlook.office365.com
- (2603:10b6:3:3::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19 via Frontend
- Transport; Thu, 17 Jun 2021 05:51:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT022.mail.protection.outlook.com (10.13.172.210) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4242.16 via Frontend Transport; Thu, 17 Jun 2021 05:51:55 +0000
-Received: from [10.40.103.48] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Jun
- 2021 05:51:52 +0000
-Subject: Re: [PATCH 1/2] iommu: Fix race condition during default domain
- allocation
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
-        <vdumpa@nvidia.com>
-CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <1623298614-31755-1-git-send-email-amhetre@nvidia.com>
- <1623298614-31755-2-git-send-email-amhetre@nvidia.com>
- <20210611104524.GD15274@willie-the-truck>
- <faf4504c-43f2-f68e-9a00-5e450dd7f352@arm.com>
-From:   Ashish Mhetre <amhetre@nvidia.com>
-Message-ID: <315fe1c5-2685-6ee3-2aa4-35a27233127b@nvidia.com>
-Date:   Thu, 17 Jun 2021 11:21:39 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229868AbhFQFyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 01:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229834AbhFQFyQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 01:54:16 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D227BC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:52:08 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id p66so1802241iod.8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:52:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y9YmWN3ejD6pzrKoHrGIGgPWXjNjdQmoDeyA5xdpeqg=;
+        b=VYYZNfUAEN4up+T8rpc1B8UTWV40no6kfeKPYa+91bCqaV5AUFvU9flGhqB1k6fH8X
+         ZIdyD7A1mkLusc9Pg7+8g+5nWwUo4wmJNCEnz45bXnhadNdKWLOTUb2Wond6MTfihYxL
+         B94NqB2ncpYHeNeC3UMsQA3tBFVvq4ujLHbnY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y9YmWN3ejD6pzrKoHrGIGgPWXjNjdQmoDeyA5xdpeqg=;
+        b=n2uNUtmEDVgQ5m6xlxxxpVHLCSSISLdyObAj4r2E8eb/h9kf4cUE/whcZto01QRH/c
+         3+4IfZQqslB9Q7FRH3T4gY7ROKUKX45Y6UvO6/YYe5mcgDhYsKiKDJ2ccZhhpyRfXSKV
+         cJZlfgWZ6Ncl/ab6QmzXZY+QyUAPDodwftwyLThgNDf5P814pKRhF/htVj1EV2GMqQLI
+         +418/1+kvM5SvA0pt05g0PzE+NHnvT5Cr5/1Hq95KQR47uUkUI/kf82PSNiN22Cfuknj
+         PYRoVKk+VvZLMKmqgoO9Tn904jfi9ffU8ngPhQ1zI+4oOdn+X756Px8BGrqjJBui7M97
+         bkmg==
+X-Gm-Message-State: AOAM532h5/bkvcpZ4pFIqVVeP9/VU6RtttNLuYtzn0m2upFJlh15x2bB
+        F5PjhJ42vAHSQFqXiJGkcfwnuXZJLWjvOs8M4J0jbw==
+X-Google-Smtp-Source: ABdhPJyKdwJp1iKRU0kd1q/h5cD5jJ+B+Cs2ATYKqCYu6eaoiXdDwlEt05pQeDH6nP71lPpzwUXdApEd091giIm5SDw=
+X-Received: by 2002:a02:9f97:: with SMTP id a23mr2968525jam.114.1623909128110;
+ Wed, 16 Jun 2021 22:52:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <faf4504c-43f2-f68e-9a00-5e450dd7f352@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d476eb37-637f-4f17-9ccf-08d93154036d
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5270:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5270323C8134A20E7DC31F7ACA0E9@BL1PR12MB5270.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NgKBSx0OsX18aQsVDtW+Lne+5qn9VVTHlK31P7DCcN5FchydaFB0/j1zLhGpMkcCO55HUYmKvxCaHMippBmA4sqcCmDcT5CsoW87LIZhPUOBcUqGhhvE/6QfspnMOl0W4G1jUf4KMfA1hX+5bohpwzEMX1fzb9s9Aw5D2qy1yPEg298blnjFEeaExElE4tlTG41x37ci7hxkbAX4FjYfc+lmuMO+f3AShoVMe49sJZiSP5w6/n736BrCyfq1iufIavf7FqcCWTltxFRrxpOQ6GVfT0e/3Laj+TGfa9u4heAJlMpRxS7VlHQn0Oauht9axsnaS4fyuKCvcsOlXr6LBeMirve1R8pCEmYwPGM0QUrfNNcxrcf0btu9DOwHhtYS/B5euLwU4wZF3+65QYvLTIHDvP8jYaenF3hcYXvsdWee8FgGevn9r4cy8MOqXKa4opG4Pbtw/d+JzF04XKfUhGgoNIm9cxBE7YQOhCqp+85t2jPF3I43jLAphjlbtyHOoVyZI8PgDL9M41dgulzr0PDgbW6QvS+B2moMEc4KDeouxWoQwBpk9TtJSDCO4fr0SRnxyr5idsfFphSOX+B4gwm1FyfUV5uQm/AFcWXcbEzcWssKE5BrqK6HwF8K+JoYGI+7QDRnjhXqGpSF1LhMiSwnzX2+sFViVgk09OFIhFUjDw2zzRIygcNsnbf/9ndw
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(136003)(396003)(46966006)(36840700001)(47076005)(16576012)(4326008)(5660300002)(110136005)(186003)(26005)(478600001)(54906003)(36906005)(2616005)(336012)(82740400003)(86362001)(2906002)(356005)(36860700001)(426003)(7636003)(316002)(8936002)(70206006)(82310400003)(70586007)(6636002)(31686004)(53546011)(36756003)(31696002)(16526019)(6666004)(8676002)(83380400001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 05:51:55.3035
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d476eb37-637f-4f17-9ccf-08d93154036d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT022.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5270
+References: <CGME20210617054647epcas1p431edaffea5bf7f3792b55dc3d91289ae@epcas1p4.samsung.com>
+ <20210617060546.26933-1-cw00.choi@samsung.com> <20210617060546.26933-4-cw00.choi@samsung.com>
+In-Reply-To: <20210617060546.26933-4-cw00.choi@samsung.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Thu, 17 Jun 2021 13:51:42 +0800
+Message-ID: <CAJMQK-i+VnmNybe+0fKJJkEb5gmKyo59pvAoKvH5det1fJ0UBQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] PM / devfreq: Add cpu based scaling support to
+ passive governor
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     "Andrew-sh.Cheng" <andrew-sh.cheng@mediatek.com>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>, chanwoo@kernel.org,
+        cwchoi00@gmail.com, Linux PM <linux-pm@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Saravana Kannan <skannan@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 17, 2021 at 1:46 PM Chanwoo Choi <cw00.choi@samsung.com> wrote:
+>
+> From: Saravana Kannan <skannan@codeaurora.org>
+>
+> Many CPU architectures have caches that can scale independent of the
+> CPUs. Frequency scaling of the caches is necessary to make sure that the
+> cache is not a performance bottleneck that leads to poor performance and
+> power. The same idea applies for RAM/DDR.
+>
+> To achieve this, this patch adds support for cpu based scaling to the
+> passive governor. This is accomplished by taking the current frequency
+> of each CPU frequency domain and then adjust the frequency of the cache
+> (or any devfreq device) based on the frequency of the CPUs. It listens
+> to CPU frequency transition notifiers to keep itself up to date on the
+> current CPU frequency.
+>
+> To decide the frequency of the device, the governor does one of the
+> following:
+> * Derives the optimal devfreq device opp from required-opps property of
+>   the parent cpu opp_table.
+>
+> * Scales the device frequency in proportion to the CPU frequency. So, if
+>   the CPUs are running at their max frequency, the device runs at its
+>   max frequency. If the CPUs are running at their min frequency, the
+>   device runs at its min frequency. It is interpolated for frequencies
+>   in between.
+>
+> Signed-off-by: Saravana Kannan <skannan@codeaurora.org>
+> [Sibi: Integrated cpu-freqmap governor into passive_governor]
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> [Chanwoo: Fix conflict with latest code and clean code up]
+> Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+> ---
+>  drivers/devfreq/governor.h         |  22 +++
+>  drivers/devfreq/governor_passive.c | 264 ++++++++++++++++++++++++++++-
+>  include/linux/devfreq.h            |  16 +-
+>  3 files changed, 293 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/devfreq/governor.h b/drivers/devfreq/governor.h
+> index 9a9495f94ac6..3c36c92c89a9 100644
+> --- a/drivers/devfreq/governor.h
+> +++ b/drivers/devfreq/governor.h
+> @@ -47,6 +47,28 @@
+>  #define DEVFREQ_GOV_ATTR_POLLING_INTERVAL              BIT(0)
+>  #define DEVFREQ_GOV_ATTR_TIMER                         BIT(1)
+>
+> +/**
+> + * struct devfreq_cpu_data - Hold the per-cpu data
+> + * @dev:       reference to cpu device.
+> + * @first_cpu: the cpumask of the first cpu of a policy.
+> + * @opp_table: reference to cpu opp table.
+> + * @cur_freq:  the current frequency of the cpu.
+> + * @min_freq:  the min frequency of the cpu.
+> + * @max_freq:  the max frequency of the cpu.
+> + *
+> + * This structure stores the required cpu_data of a cpu.
+> + * This is auto-populated by the governor.
+> + */
+> +struct devfreq_cpu_data {
+> +       struct device *dev;
+> +       unsigned int first_cpu;
+> +
+> +       struct opp_table *opp_table;
+> +       unsigned int cur_freq;
+> +       unsigned int min_freq;
+> +       unsigned int max_freq;
+> +};
+> +
+>  /**
+>   * struct devfreq_governor - Devfreq policy governor
+>   * @node:              list node - contains registered devfreq governors
+> diff --git a/drivers/devfreq/governor_passive.c b/drivers/devfreq/governor_passive.c
+> index fc09324a03e0..07e864509b7e 100644
+> --- a/drivers/devfreq/governor_passive.c
+> +++ b/drivers/devfreq/governor_passive.c
+> @@ -8,11 +8,84 @@
+>   */
+>
+>  #include <linux/module.h>
+> +#include <linux/cpu.h>
+> +#include <linux/cpufreq.h>
+> +#include <linux/cpumask.h>
+> +#include <linux/slab.h>
+>  #include <linux/device.h>
+>  #include <linux/devfreq.h>
+>  #include "governor.h"
+>
+> -static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
+> +#define HZ_PER_KHZ     1000
+> +
+> +static unsigned long get_taget_freq_by_required_opp(struct device *p_dev,
+> +                                               struct opp_table *p_opp_table,
+> +                                               struct opp_table *opp_table,
+> +                                               unsigned long freq)
+> +{
+> +       struct dev_pm_opp *opp = NULL, *p_opp = NULL;
+> +
+> +       if (!p_dev || !p_opp_table || !opp_table || !freq)
+> +               return 0;
+> +
+> +       p_opp = devfreq_recommended_opp(p_dev, &freq, 0);
+> +       if (IS_ERR(p_opp))
+> +               return 0;
+> +
+> +       opp = dev_pm_opp_xlate_required_opp(p_opp_table, opp_table, p_opp);
+> +       dev_pm_opp_put(p_opp);
+> +
+> +       if (IS_ERR(opp))
+> +               return 0;
+> +
+> +       freq = dev_pm_opp_get_freq(opp);
+> +       dev_pm_opp_put(opp);
+> +
+> +       return freq;
+> +}
+> +
+> +static int get_target_freq_with_cpufreq(struct devfreq *devfreq,
+> +                                       unsigned long *target_freq)
+> +{
+> +       struct devfreq_passive_data *p_data =
+> +                               (struct devfreq_passive_data *)devfreq->data;
+> +       struct devfreq_cpu_data *cpu_data;
+We might have to rename the cpu_data variable.
 
+For some architectures, cpu_data is defined as macro. This results in
+errors such as
 
-On 6/11/2021 6:19 PM, Robin Murphy wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On 2021-06-11 11:45, Will Deacon wrote:
->> On Thu, Jun 10, 2021 at 09:46:53AM +0530, Ashish Mhetre wrote:
->>> Domain is getting created more than once during asynchronous multiple
->>> display heads(devices) probe. All the display heads share same SID and
->>> are expected to be in same domain. As iommu_alloc_default_domain() call
->>> is not protected, the group->default_domain and group->domain are ending
->>> up with different domains and leading to subsequent IOMMU faults.
->>> Fix this by protecting iommu_alloc_default_domain() call with 
->>> group->mutex.
->>
->> Can you provide some more information about exactly what the h/w
->> configuration is, and the callstack which exhibits the race, please?
-> 
-> It'll be basically the same as the issue reported long ago with PCI
-> groups in the absence of ACS not being constructed correctly. Triggering
-> the iommu_probe_device() replay in of_iommu_configure() off the back of
-> driver probe is way too late and allows calls to happen in the wrong
-> order, or indeed race in parallel as here. Fixing that is still on my
-> radar, but will not be simple, and will probably go hand-in-hand with
-> phasing out the bus ops (for the multiple-driver-coexistence problem).
-> 
-For iommu group creation, the stack flow during race is like:
-Display device 1:
-iommu_probe_device -> iommu_group_get_for_dev -> arm_smmu_device_group
-Display device 2:
-iommu_probe_device -> iommu_group_get_for_dev -> arm_smmu_device_group
+include/linux/devfreq.h:331:27: note: in expansion of macro 'cpu_data'
+     331 |  struct devfreq_cpu_data *cpu_data[NR_CPUS];
+         |                           ^~~~~~~~
+   In file included from include/linux/devfreq_cooling.h:13,
+                    from drivers/devfreq/devfreq.c:14:
+   include/linux/devfreq.h:332:1: warning: no semicolon at end of
+struct or union
 
-And this way it ends up in creating 2 groups for 2 display devices 
-sharing same SID.
-Ideally for 2nd display device, iommu_group_get call from 
-iommu_group_get_for_dev should return same group as 1st display device. 
-But due to the race, it ends up with 2 groups.
-
-For default domain, the stack flow during race is like:
-Display device 1:
-iommu_probe_device -> iommu_alloc_default_domain -> arm_smmu_domain_alloc
-Display device 2:
-iommu_probe_device -> iommu_alloc_default_domain -> arm_smmu_domain_alloc
-
-Here also 2nd device should already have domain allocated and 
-'if(group->default_domain)' condition from iommu_alloc_default_domain 
-should be true for 2nd device.
-
-Issue with this is IOVA accesses from 2nd device results in context faults.
-
->>> Signed-off-by: Ashish Mhetre <amhetre@nvidia.com>
->>> ---
->>>   drivers/iommu/iommu.c | 2 ++
->>>   1 file changed, 2 insertions(+)
->>>
->>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->>> index 808ab70..2700500 100644
->>> --- a/drivers/iommu/iommu.c
->>> +++ b/drivers/iommu/iommu.c
->>> @@ -273,7 +273,9 @@ int iommu_probe_device(struct device *dev)
->>>       * support default domains, so the return value is not yet
->>>       * checked.
->>>       */
->>> +    mutex_lock(&group->mutex);
->>>      iommu_alloc_default_domain(group, dev);
->>> +    mutex_unlock(&group->mutex);
->>
->> It feels wrong to serialise this for everybody just to cater for systems
->> with aliasing SIDs between devices.
-> 
-> If two or more devices are racing at this point then they're already
-> going to be serialised by at least iommu_group_add_device(), so I doubt
-> there would be much impact - only the first device through here will
-> hold the mutex for any appreciable length of time. Every other path
-> which modifies group->domain does so with the mutex held (note the
-> "expected" default domain allocation flow in bus_iommu_probe() in
-> particular), so not holding it here does seem like a straightforward
-> oversight.
-> 
-> Robin.
-Serialization will only happen for the devices sharing same group. Only 
-the first device in group will hold this till domain is created. For 
-rest of the devices it will just check for existing domain in 
-iommu_alloc_default_domain and then return and release the mutex.
-
-
+> +       unsigned long cpu, cpu_cur, cpu_min, cpu_max, cpu_percent;
+> +       unsigned long dev_min, dev_max;
+> +       unsigned long freq = 0;
+> +
+> +       for_each_online_cpu(cpu) {
+> +               cpu_data = p_data->cpu_data[cpu];
+> +               if (!cpu_data || cpu_data->first_cpu != cpu)
+> +                       continue;
+> +
+> +               /* Get target freq via required opps */
+> +               cpu_cur = cpu_data->cur_freq * HZ_PER_KHZ;
+> +               freq = get_taget_freq_by_required_opp(cpu_data->dev,
+> +                                       cpu_data->opp_table,
+> +                                       devfreq->opp_table, cpu_cur);
+> +               if (freq) {
+> +                       *target_freq = max(freq, *target_freq);
+> +                       continue;
+> +               }
+> +
+> +               /* Use Interpolation if required opps is not available */
+> +               devfreq_get_freq_range(devfreq, &dev_min, &dev_max);
+> +
+> +               cpu_min = cpu_data->min_freq;
+> +               cpu_max = cpu_data->max_freq;
+> +               cpu_cur = cpu_data->cur_freq;
+> +
+> +               cpu_percent = ((cpu_cur - cpu_min) * 100) / (cpu_max - cpu_min);
+> +               freq = dev_min + mult_frac(dev_max - dev_min, cpu_percent, 100);
+> +
+> +               *target_freq = max(freq, *target_freq);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int get_target_freq_with_devfreq(struct devfreq *devfreq,
+>                                         unsigned long *freq)
+>  {
+>         struct devfreq_passive_data *p_data
+> @@ -99,6 +172,172 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
+>         return 0;
+>  }
+>
+> +static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
+> +                                          unsigned long *freq)
+> +{
+> +       struct devfreq_passive_data *p_data =
+> +                               (struct devfreq_passive_data *)devfreq->data;
+> +       int ret;
+> +
+> +       if (!p_data)
+> +               return -EINVAL;
+> +
+> +       /*
+> +        * If the devfreq device with passive governor has the specific method
+> +        * to determine the next frequency, should use the get_target_freq()
+> +        * of struct devfreq_passive_data.
+> +        */
+> +       if (p_data->get_target_freq)
+> +               return p_data->get_target_freq(devfreq, freq);
+> +
+> +       switch (p_data->parent_type) {
+> +       case DEVFREQ_PARENT_DEV:
+> +               ret = get_target_freq_with_devfreq(devfreq, freq);
+> +               break;
+> +       case CPUFREQ_PARENT_DEV:
+> +               ret = get_target_freq_with_cpufreq(devfreq, freq);
+> +               break;
+> +       default:
+> +               ret = -EINVAL;
+> +               dev_err(&devfreq->dev, "Invalid parent type\n");
+> +               break;
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +static int cpufreq_passive_notifier_call(struct notifier_block *nb,
+> +                                        unsigned long event, void *ptr)
+> +{
+> +       struct devfreq_passive_data *data =
+> +                       container_of(nb, struct devfreq_passive_data, nb);
+> +       struct devfreq *devfreq = (struct devfreq *)data->this;
+> +       struct devfreq_cpu_data *cpu_data;
+> +       struct cpufreq_freqs *freqs = ptr;
+> +       unsigned int cur_freq;
+> +       int ret;
+> +
+> +       if (event != CPUFREQ_POSTCHANGE || !freqs ||
+> +               !data->cpu_data[freqs->policy->cpu])
+> +               return 0;
+> +
+> +       cpu_data = data->cpu_data[freqs->policy->cpu];
+> +       if (cpu_data->cur_freq == freqs->new)
+> +               return 0;
+> +
+> +       cur_freq = cpu_data->cur_freq;
+> +       cpu_data->cur_freq = freqs->new;
+> +
+> +       mutex_lock(&devfreq->lock);
+> +       ret = devfreq_update_target(devfreq, freqs->new);
+> +       mutex_unlock(&devfreq->lock);
+> +       if (ret) {
+> +               cpu_data->cur_freq = cur_freq;
+> +               dev_err(&devfreq->dev, "failed to update the frequency.\n");
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int cpufreq_passive_register_notifier(struct devfreq *devfreq)
+> +{
+> +       struct devfreq_passive_data *p_data
+> +                       = (struct devfreq_passive_data *)devfreq->data;
+> +       struct device *dev = devfreq->dev.parent;
+> +       struct opp_table *opp_table = NULL;
+> +       struct devfreq_cpu_data *cpu_data;
+> +       struct cpufreq_policy *policy;
+> +       struct device *cpu_dev;
+> +       unsigned int cpu;
+> +       int ret;
+> +
+> +       get_online_cpus();
+> +
+> +       p_data->nb.notifier_call = cpufreq_passive_notifier_call;
+> +       ret = cpufreq_register_notifier(&p_data->nb, CPUFREQ_TRANSITION_NOTIFIER);
+> +       if (ret) {
+> +               dev_err(dev, "failed to register cpufreq notifier\n");
+> +               p_data->nb.notifier_call = NULL;
+> +               goto out;
+> +       }
+> +
+> +       for_each_online_cpu(cpu) {
+> +               if (p_data->cpu_data[cpu])
+> +                       continue;
+> +
+> +               policy = cpufreq_cpu_get(cpu);
+> +               if (policy) {
+> +                       cpu_data = kzalloc(sizeof(*cpu_data), GFP_KERNEL);
+> +                       if (!cpu_data) {
+> +                               ret = -ENOMEM;
+> +                               goto out;
+> +                       }
+> +
+> +                       cpu_dev = get_cpu_device(cpu);
+> +                       if (!cpu_dev) {
+> +                               dev_err(dev, "failed to get cpu device\n");
+> +                               ret = -ENODEV;
+> +                               goto out;
+> +                       }
+> +
+> +                       opp_table = dev_pm_opp_get_opp_table(cpu_dev);
+> +                       if (IS_ERR(opp_table)) {
+> +                               ret = PTR_ERR(opp_table);
+> +                               goto out;
+> +                       }
+> +
+> +                       cpu_data->dev = cpu_dev;
+> +                       cpu_data->opp_table = opp_table;
+> +                       cpu_data->first_cpu = cpumask_first(policy->related_cpus);
+> +                       cpu_data->cur_freq = policy->cur;
+> +                       cpu_data->min_freq = policy->cpuinfo.min_freq;
+> +                       cpu_data->max_freq = policy->cpuinfo.max_freq;
+> +
+> +                       p_data->cpu_data[cpu] = cpu_data;
+> +                       cpufreq_cpu_put(policy);
+> +               } else {
+> +                       ret = -EPROBE_DEFER;
+> +                       goto out;
+> +               }
+> +       }
+> +out:
+> +       put_online_cpus();
+> +       if (ret)
+> +               return ret;
+> +
+> +       mutex_lock(&devfreq->lock);
+> +       ret = devfreq_update_target(devfreq, 0L);
+> +       mutex_unlock(&devfreq->lock);
+> +       if (ret)
+> +               dev_err(dev, "failed to update the frequency\n");
+> +
+> +       return ret;
+> +}
+> +
+> +static int cpufreq_passive_unregister_notifier(struct devfreq *devfreq)
+> +{
+> +       struct devfreq_passive_data *p_data
+> +                       = (struct devfreq_passive_data *)devfreq->data;
+> +       struct devfreq_cpu_data *cpu_data;
+> +       int cpu;
+> +
+> +       if (p_data->nb.notifier_call)
+> +               cpufreq_unregister_notifier(&p_data->nb, CPUFREQ_TRANSITION_NOTIFIER);
+> +
+> +       for_each_possible_cpu(cpu) {
+> +               cpu_data = p_data->cpu_data[cpu];
+> +               if (cpu_data) {
+> +                       if (cpu_data->opp_table)
+> +                               dev_pm_opp_put_opp_table(cpu_data->opp_table);
+> +                       kfree(cpu_data);
+> +                       cpu_data = NULL;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int devfreq_passive_notifier_call(struct notifier_block *nb,
+>                                 unsigned long event, void *ptr)
+>  {
+> @@ -140,7 +379,7 @@ static int devfreq_passive_event_handler(struct devfreq *devfreq,
+>         struct notifier_block *nb = &p_data->nb;
+>         int ret = 0;
+>
+> -       if (!parent)
+> +       if (p_data->parent_type == DEVFREQ_PARENT_DEV && !parent)
+>                 return -EPROBE_DEFER;
+>
+>         switch (event) {
+> @@ -148,13 +387,24 @@ static int devfreq_passive_event_handler(struct devfreq *devfreq,
+>                 if (!p_data->this)
+>                         p_data->this = devfreq;
+>
+> -               nb->notifier_call = devfreq_passive_notifier_call;
+> -               ret = devfreq_register_notifier(parent, nb,
+> -                                       DEVFREQ_TRANSITION_NOTIFIER);
+> +               if (p_data->parent_type == DEVFREQ_PARENT_DEV) {
+> +                       nb->notifier_call = devfreq_passive_notifier_call;
+> +                       ret = devfreq_register_notifier(parent, nb,
+> +                                               DEVFREQ_TRANSITION_NOTIFIER);
+> +               } else if (p_data->parent_type == CPUFREQ_PARENT_DEV) {
+> +                       ret = cpufreq_passive_register_notifier(devfreq);
+> +               } else {
+> +                       ret = -EINVAL;
+> +               }
+>                 break;
+>         case DEVFREQ_GOV_STOP:
+> -               WARN_ON(devfreq_unregister_notifier(parent, nb,
+> -                                       DEVFREQ_TRANSITION_NOTIFIER));
+> +               if (p_data->parent_type == DEVFREQ_PARENT_DEV)
+> +                       WARN_ON(devfreq_unregister_notifier(parent, nb,
+> +                                               DEVFREQ_TRANSITION_NOTIFIER));
+> +               else if (p_data->parent_type == CPUFREQ_PARENT_DEV)
+> +                       WARN_ON(cpufreq_passive_unregister_notifier(devfreq));
+> +               else
+> +                       ret = -EINVAL;
+>                 break;
+>         default:
+>                 break;
+> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
+> index 142474b4af96..cfa0ef54841e 100644
+> --- a/include/linux/devfreq.h
+> +++ b/include/linux/devfreq.h
+> @@ -38,6 +38,7 @@ enum devfreq_timer {
+>
+>  struct devfreq;
+>  struct devfreq_governor;
+> +struct devfreq_cpu_data;
+>  struct thermal_cooling_device;
+>
+>  /**
+> @@ -288,6 +289,11 @@ struct devfreq_simple_ondemand_data {
+>  #endif
+>
+>  #if IS_ENABLED(CONFIG_DEVFREQ_GOV_PASSIVE)
+> +enum devfreq_parent_dev_type {
+> +       DEVFREQ_PARENT_DEV,
+> +       CPUFREQ_PARENT_DEV,
+> +};
+> +
+>  /**
+>   * struct devfreq_passive_data - ``void *data`` fed to struct devfreq
+>   *     and devfreq_add_device
+> @@ -299,8 +305,10 @@ struct devfreq_simple_ondemand_data {
+>   *                     using governors except for passive governor.
+>   *                     If the devfreq device has the specific method to decide
+>   *                     the next frequency, should use this callback.
+> - * @this:      the devfreq instance of own device.
+> - * @nb:                the notifier block for DEVFREQ_TRANSITION_NOTIFIER list
+> + + * @parent_type      parent type of the device
+> + + * @this:            the devfreq instance of own device.
+> + + * @nb:              the notifier block for DEVFREQ_TRANSITION_NOTIFIER list
+> + + * @cpu_data:                the state min/max/current frequency of all online cpu's
+>   *
+>   * The devfreq_passive_data have to set the devfreq instance of parent
+>   * device with governors except for the passive governor. But, don't need to
+> @@ -314,9 +322,13 @@ struct devfreq_passive_data {
+>         /* Optional callback to decide the next frequency of passvice device */
+>         int (*get_target_freq)(struct devfreq *this, unsigned long *freq);
+>
+> +       /* Should set the type of parent device */
+> +       enum devfreq_parent_dev_type parent_type;
+> +
+>         /* For passive governor's internal use. Don't need to set them */
+>         struct devfreq *this;
+>         struct notifier_block nb;
+> +       struct devfreq_cpu_data *cpu_data[NR_CPUS];
+>  };
+>  #endif
+>
+> --
+> 2.17.1
+>
