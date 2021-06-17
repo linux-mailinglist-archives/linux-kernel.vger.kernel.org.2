@@ -2,125 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534B53AB354
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F378B3AB356
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbhFQMOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:14:46 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:41775 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbhFQMOp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:14:45 -0400
-Received: by mail-ot1-f47.google.com with SMTP id w23-20020a0568301117b029044c37262dadso526214otq.8;
-        Thu, 17 Jun 2021 05:12:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UXLDf/zBwxcg6JRYUw5vSzsqMPchC5DDa1UwTpdQ4zI=;
-        b=E+CLePaPKn1GH4E6We1Jk3yr3W0IGBRFyiQuxnsxRJ0luFqNCpsuZEECqXFXKC9+Kw
-         Dffxp7QC1XnoRvrkemDDhVwlKEzQKQeCDoQcnXLmN4AtxV0y8xQoUYI3kFs3Dxvp78fs
-         T3QEUkEdOMZtpi3pn03FzK7mY+YfOmdqZc/kDXNkqTti3m0WcHSyN8DRAikP3ipTDfrH
-         Za+rMtTt+eFSmRKTbLqhNyq46qJ1NgOcu/4ZHbSQBCq4Fj8jhsTLh7LmhiabnuiklsFN
-         dIORzKF+jCSPvhbU81fmjT842ew/+eodDPfXr9roWs1BeA4CMYuGB/ULb4W0f/COuQG7
-         9ckQ==
-X-Gm-Message-State: AOAM532t0mszGwP11zMCjNJqq/E701hdy1cCKQfRb8mkwI1gLMU42afm
-        pTGXW7IcCzMY+OGqs9QYvvrg7JWD7WIzWCIgI8c=
-X-Google-Smtp-Source: ABdhPJwMdnLsLMcBrvB0YymtXaieQXS5htbXgFwOQnTNfWI0shOnas+luLylAychSWsQ/79xgLH1q25lk9rEMz0PTNE=
-X-Received: by 2002:a9d:3e53:: with SMTP id h19mr4306429otg.260.1623931958133;
- Thu, 17 Jun 2021 05:12:38 -0700 (PDT)
+        id S232734AbhFQMPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:15:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232382AbhFQMPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 08:15:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C580D610EA;
+        Thu, 17 Jun 2021 12:13:24 +0000 (UTC)
+Date:   Thu, 17 Jun 2021 13:13:22 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v15 0/7] MTE support for KVM guest
+Message-ID: <20210617121322.GC6314@arm.com>
+References: <20210614090525.4338-1-steven.price@arm.com>
 MIME-Version: 1.0
-References: <20210615033535.2907295-1-libaokun1@huawei.com>
-In-Reply-To: <20210615033535.2907295-1-libaokun1@huawei.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 17 Jun 2021 14:12:27 +0200
-Message-ID: <CAJZ5v0iajoHXbJO-HgOMZkDo1GfRNEgDoNaSmFcOpeJGhgrYdA@mail.gmail.com>
-Subject: Re: [PATCH -next v2] x86/power: fix doc warnings in cpu.c
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Yue Haibing <yuehaibing@huawei.com>, yangjihong1@huawei.com,
-        yu kuai <yukuai3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614090525.4338-1-steven.price@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 5:26 AM Baokun Li <libaokun1@huawei.com> wrote:
->
-> Fixes the following W=1 kernel build warning(s):
->
->  arch/x86/power/cpu.c:76: warning: Function parameter or
->   member 'ctxt' not described in '__save_processor_state'
->  arch/x86/power/cpu.c:192: warning: Function parameter or
->   member 'ctxt' not described in '__restore_processor_state'
->
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
-> V1->V2:
->         Fix the formatting of this kerneldoc comment
->
->  arch/x86/power/cpu.c | 31 ++++++++++++++++---------------
->  1 file changed, 16 insertions(+), 15 deletions(-)
->
-> diff --git a/arch/x86/power/cpu.c b/arch/x86/power/cpu.c
-> index 3a070e7cdb8b..54b530db5ed0 100644
-> --- a/arch/x86/power/cpu.c
-> +++ b/arch/x86/power/cpu.c
-> @@ -58,19 +58,20 @@ static void msr_restore_context(struct saved_context *ctxt)
->  }
->
->  /**
-> - *     __save_processor_state - save CPU registers before creating a
-> - *             hibernation image and before restoring the memory state from it
-> - *     @ctxt - structure to store the registers contents in
-> + * __save_processor_statei() - Save CPU registers before creating a
-> + *                             hibernation image and before restoring
-> + *                             the memory state from it
-> + * @ctxt: Structure to store the registers contents in.
->   *
-> - *     NOTE: If there is a CPU register the modification of which by the
-> - *     boot kernel (ie. the kernel used for loading the hibernation image)
-> - *     might affect the operations of the restored target kernel (ie. the one
-> - *     saved in the hibernation image), then its contents must be saved by this
-> - *     function.  In other words, if kernel A is hibernated and different
-> - *     kernel B is used for loading the hibernation image into memory, the
-> - *     kernel A's __save_processor_state() function must save all registers
-> - *     needed by kernel A, so that it can operate correctly after the resume
-> - *     regardless of what kernel B does in the meantime.
-> + * NOTE: If there is a CPU register the modification of which by the
-> + * boot kernel (ie. the kernel used for loading the hibernation image)
-> + * might affect the operations of the restored target kernel (ie. the one
-> + * saved in the hibernation image), then its contents must be saved by this
-> + * function.  In other words, if kernel A is hibernated and different
-> + * kernel B is used for loading the hibernation image into memory, the
-> + * kernel A's __save_processor_state() function must save all registers
-> + * needed by kernel A, so that it can operate correctly after the resume
-> + * regardless of what kernel B does in the meantime.
->   */
->  static void __save_processor_state(struct saved_context *ctxt)
->  {
-> @@ -181,9 +182,9 @@ static void fix_processor_context(void)
->  }
->
->  /**
-> - * __restore_processor_state - restore the contents of CPU registers saved
-> - *                             by __save_processor_state()
-> - * @ctxt - structure to load the registers contents from
-> + * __restore_processor_state() - Restore the contents of CPU registers saved
-> + *                               by __save_processor_state()
-> + * @ctxt: Structure to load the registers contents from.
->   *
->   * The asm code that gets us here will have restored a usable GDT, although
->   * it will be pointing to the wrong alias.
-> --
+On Mon, Jun 14, 2021 at 10:05:18AM +0100, Steven Price wrote:
+> I realise there are still open questions[1] around the performance of
+> this series (the 'big lock', tag_sync_lock, introduced in the first
+> patch). But there should be no impact on non-MTE workloads and until we
+> get real MTE-enabled hardware it's hard to know whether there is a need
+> for something more sophisticated or not. Peter Collingbourne's patch[3]
+> to clear the tags at page allocation time should hide more of the impact
+> for non-VM cases. So the remaining concern is around VM startup which
+> could be effectively serialised through the lock.
+[...]
+> [1]: https://lore.kernel.org/r/874ke7z3ng.wl-maz%40kernel.org
 
-Applied as 5.14 material, thanks!
+Start-up, VM resume, migration could be affected by this lock, basically
+any time you fault a page into the guest. As you said, for now it should
+be fine as long as the hardware doesn't support MTE or qemu doesn't
+enable MTE in guests. But the problem won't go away.
+
+We have a partial solution with an array of locks to mitigate against
+this but there's still the question of whether we should actually bother
+for something that's unlikely to happen in practice: MAP_SHARED memory
+in guests (ignoring the stage 1 case for now).
+
+If MAP_SHARED in guests is not a realistic use-case, we have the vma in
+user_mem_abort() and if the VM_SHARED flag is set together with MTE
+enabled for guests, we can reject the mapping.
+
+We can discuss the stage 1 case separately from this series.
+
+-- 
+Catalin
