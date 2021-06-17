@@ -2,100 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104BB3AAE6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E5B3AAE7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhFQIIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 04:08:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229666AbhFQIIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:08:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD8C0610A0;
-        Thu, 17 Jun 2021 08:06:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623917195;
-        bh=YuScG7SzWSSRa8w1px2qbFZAuK3KvyU2T8TThbFj484=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KZtZND8jBB1VBzwKJ37okD6sz+7yOm9yfkVXZvMIlMjMbU+/QQz+2xByOFDnV5kBI
-         6efKtbVV9eT5xS4zzlnh8n7ZsNw9HbZ9sDLEp85/CilwlCFxqxCmQTdmDzguDQa7Lp
-         4x2Vb3YyD9PDnbpAeR5LjMTKQ1CrYzZ7y+T6cKTgZhf9ln2FEaUfw4ZsIG57QvUrn+
-         mYwOMefXgMUm+fnsHxN3SSZb5+ntdFmtUv2FZAMaHM6Nw2i3Q4grHbNXZezuo5XuAw
-         2Pb+WKjNG8oat7wV5SyAWARDp1KJqOMhozk0z+QSanSSEdBFilprNmu6ZdBXqQ2fFd
-         yOrn1FJC0gCnw==
-Date:   Thu, 17 Jun 2021 13:36:32 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     abhinavk@codeaurora.org
-Cc:     Rob Clark <robdclark@gmail.com>, DTML <devicetree@vger.kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno <freedreno@lists.freedesktop.org>
-Subject: Re: [Freedreno] [RFC PATCH 00/13] drm/msm: Add Display Stream
- Compression Support
-Message-ID: <YMsCiOThaPEvHs1S@vkoul-mobl>
-References: <20210521124946.3617862-1-vkoul@kernel.org>
- <CAOCk7Nqep_Db+z3fr5asHZ1u0j8+6fKkPFs2Ai8CbA_zGqV6ZA@mail.gmail.com>
- <YK3gxqXBRupN/N+Q@vkoul-mobl.Dlink>
- <CAOCk7NqvhGvYw8xCBctqj7H+o-Qwp2UuUJK1gatW9EWfXv56xA@mail.gmail.com>
- <CAF6AEGuoyPr8PgfwFX0JCYZ7S_pryn_OXacHBqoMAAPvSq6aRw@mail.gmail.com>
- <YLdlEB3Ea6OWaLw4@vkoul-mobl>
- <a14c18a2545408e8156dcafc846b17a2@codeaurora.org>
+        id S230197AbhFQILp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 04:11:45 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:52489 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229716AbhFQILn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 04:11:43 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 4B98A20017;
+        Thu, 17 Jun 2021 08:09:23 +0000 (UTC)
+Subject: Re: [PATCH] riscv: Ensure BPF_JIT_REGION_START aligned with PMD size
+To:     Palmer Dabbelt <palmer@dabbelt.com>, jszhang3@mail.ustc.edu.cn
+Cc:     schwab@linux-m68k.org, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, ryabinin.a.a@gmail.com, glider@google.com,
+        andreyknvl@gmail.com, dvyukov@google.com, bjorn@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        luke.r.nels@gmail.com, xi.wang@gmail.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <mhng-042979fe-75f0-4873-8afd-f8c07942f792@palmerdabbelt-glaptop>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <ae256a5d-70ac-3a5f-ca55-5e4210a0624c@ghiti.fr>
+Date:   Thu, 17 Jun 2021 10:09:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a14c18a2545408e8156dcafc846b17a2@codeaurora.org>
+In-Reply-To: <mhng-042979fe-75f0-4873-8afd-f8c07942f792@palmerdabbelt-glaptop>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-06-21, 16:40, abhinavk@codeaurora.org wrote:
-> On 2021-06-02 04:01, Vinod Koul wrote:
-> > On 27-05-21, 16:30, Rob Clark wrote:
-> > 
-> > yeah that is always a very different world. although it might make sense
-> > to use information in tables and try to deduce information about the
-> > system can be helpful...
-> > 
-> > > I'd worry more about what makes sense in a DT world, when it comes to
-> > > DT bindings.
-> > 
-> > And do you have thoughts on that..?
+Le 17/06/2021 à 09:30, Palmer Dabbelt a écrit :
+> On Tue, 15 Jun 2021 17:03:28 PDT (-0700), jszhang3@mail.ustc.edu.cn wrote:
+>> On Tue, 15 Jun 2021 20:54:19 +0200
+>> Alex Ghiti <alex@ghiti.fr> wrote:
+>>
+>>> Hi Jisheng,
+>>
+>> Hi Alex,
+>>
+>>>
+>>> Le 14/06/2021 à 18:49, Jisheng Zhang a écrit :
+>>> > From: Jisheng Zhang <jszhang@kernel.org>
+>>> > > Andreas reported commit fc8504765ec5 ("riscv: bpf: Avoid breaking 
+>>> W^X")
+>>> > breaks booting with one kind of config file, I reproduced a kernel 
+>>> panic
+>>> > with the config:
+>>> > > [    0.138553] Unable to handle kernel paging request at virtual 
+>>> address ffffffff81201220
+>>> > [    0.139159] Oops [#1]
+>>> > [    0.139303] Modules linked in:
+>>> > [    0.139601] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 
+>>> 5.13.0-rc5-default+ #1
+>>> > [    0.139934] Hardware name: riscv-virtio,qemu (DT)
+>>> > [    0.140193] epc : __memset+0xc4/0xfc
+>>> > [    0.140416]  ra : skb_flow_dissector_init+0x1e/0x82
+>>> > [    0.140609] epc : ffffffff8029806c ra : ffffffff8033be78 sp : 
+>>> ffffffe001647da0
+>>> > [    0.140878]  gp : ffffffff81134b08 tp : ffffffe001654380 t0 : 
+>>> ffffffff81201158
+>>> > [    0.141156]  t1 : 0000000000000002 t2 : 0000000000000154 s0 : 
+>>> ffffffe001647dd0
+>>> > [    0.141424]  s1 : ffffffff80a43250 a0 : ffffffff81201220 a1 : 
+>>> 0000000000000000
+>>> > [    0.141654]  a2 : 000000000000003c a3 : ffffffff81201258 a4 : 
+>>> 0000000000000064
+>>> > [    0.141893]  a5 : ffffffff8029806c a6 : 0000000000000040 a7 : 
+>>> ffffffffffffffff
+>>> > [    0.142126]  s2 : ffffffff81201220 s3 : 0000000000000009 s4 : 
+>>> ffffffff81135088
+>>> > [    0.142353]  s5 : ffffffff81135038 s6 : ffffffff8080ce80 s7 : 
+>>> ffffffff80800438
+>>> > [    0.142584]  s8 : ffffffff80bc6578 s9 : 0000000000000008 s10: 
+>>> ffffffff806000ac
+>>> > [    0.142810]  s11: 0000000000000000 t3 : fffffffffffffffc t4 : 
+>>> 0000000000000000
+>>> > [    0.143042]  t5 : 0000000000000155 t6 : 00000000000003ff
+>>> > [    0.143220] status: 0000000000000120 badaddr: ffffffff81201220 
+>>> cause: 000000000000000f
+>>> > [    0.143560] [<ffffffff8029806c>] __memset+0xc4/0xfc
+>>> > [    0.143859] [<ffffffff8061e984>] 
+>>> init_default_flow_dissectors+0x22/0x60
+>>> > [    0.144092] [<ffffffff800010fc>] do_one_initcall+0x3e/0x168
+>>> > [    0.144278] [<ffffffff80600df0>] kernel_init_freeable+0x1c8/0x224
+>>> > [    0.144479] [<ffffffff804868a8>] kernel_init+0x12/0x110
+>>> > [    0.144658] [<ffffffff800022de>] ret_from_exception+0x0/0xc
+>>> > [    0.145124] ---[ end trace f1e9643daa46d591 ]---
+>>> > > After some investigation, I think I found the root cause: commit
+>>> > 2bfc6cd81bd ("move kernel mapping outside of linear mapping") moves
+>>> > BPF JIT region after the kernel:
+>>> > > The &_end is unlikely aligned with PMD size, so the front bpf jit
+>>> > region sits with part of kernel .data section in one PMD size mapping.
+>>> > But kernel is mapped in PMD SIZE, when bpf_jit_binary_lock_ro() is
+>>> > called to make the first bpf jit prog ROX, we will make part of kernel
+>>> > .data section RO too, so when we write to, for example memset the
+>>> > .data section, MMU will trigger a store page fault.
+>>> Good catch, we make sure no physical allocation happens between _end 
+>>> and the next PMD aligned address, but I missed this one.
+>>>
+>>> > > To fix the issue, we need to ensure the BPF JIT region is PMD size
+>>> > aligned. This patch acchieve this goal by restoring the BPF JIT region
+>>> > to original position, I.E the 128MB before kernel .text section.
+>>> But I disagree with your solution: I made sure modules and BPF 
+>>> programs get their own virtual regions to avoid worst case scenario 
+>>> where one could allocate all the space and leave nothing to the other 
+>>> (we are limited to +- 2GB offset). Why don't just align 
+>>> BPF_JIT_REGION_START to the next PMD aligned address?
+>>
+>> Originally, I planed to fix the issue by aligning 
+>> BPF_JIT_REGION_START, but
+>> IIRC, BPF experts are adding (or have added) "Calling kernel functions 
+>> from BPF"
+>> feature, there's a risk that BPF JIT region is beyond the 2GB of 
+>> module region:
+>>
+>> ------
+>> module
+>> ------
+>> kernel
+>> ------
+>> BPF_JIT
+>>
+>> So I made this patch finally. In this patch, we let BPF JIT region sit
+>> between module and kernel.
+>>
+>> To address "make sure modules and BPF programs get their own virtual 
+>> regions",
+>> what about something as below (applied against this patch)?
+>>
+>> diff --git a/arch/riscv/include/asm/pgtable.h 
+>> b/arch/riscv/include/asm/pgtable.h
+>> index 380cd3a7e548..da1158f10b09 100644
+>> --- a/arch/riscv/include/asm/pgtable.h
+>> +++ b/arch/riscv/include/asm/pgtable.h
+>> @@ -31,7 +31,7 @@
+>>  #define BPF_JIT_REGION_SIZE    (SZ_128M)
+>>  #ifdef CONFIG_64BIT
+>>  #define BPF_JIT_REGION_START    (BPF_JIT_REGION_END - 
+>> BPF_JIT_REGION_SIZE)
+>> -#define BPF_JIT_REGION_END    (MODULES_END)
+>> +#define BPF_JIT_REGION_END    (PFN_ALIGN((unsigned long)&_start))
+>>  #else
+>>  #define BPF_JIT_REGION_START    (PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+>>  #define BPF_JIT_REGION_END    (VMALLOC_END)
+>> @@ -40,7 +40,7 @@
+>>  /* Modules always live before the kernel */
+>>  #ifdef CONFIG_64BIT
+>>  #define MODULES_VADDR    (PFN_ALIGN((unsigned long)&_end) - SZ_2G)
+>> -#define MODULES_END    (PFN_ALIGN((unsigned long)&_start))
+>> +#define MODULES_END    (BPF_JIT_REGION_END)
+>>  #endif
+>>
+>>
+>>
+>>>
+>>> Again, good catch, thanks,
+>>>
+>>> Alex
+>>>
+>>> > > Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+>>> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+>>> > ---
+>>> >   arch/riscv/include/asm/pgtable.h | 5 ++---
+>>> >   1 file changed, 2 insertions(+), 3 deletions(-)
+>>> > > diff --git a/arch/riscv/include/asm/pgtable.h 
+>>> b/arch/riscv/include/asm/pgtable.h
+>>> > index 9469f464e71a..380cd3a7e548 100644
+>>> > --- a/arch/riscv/include/asm/pgtable.h
+>>> > +++ b/arch/riscv/include/asm/pgtable.h
+>>> > @@ -30,9 +30,8 @@
+>>> > >   #define BPF_JIT_REGION_SIZE    (SZ_128M)
+>>> >   #ifdef CONFIG_64BIT
+>>> > -/* KASLR should leave at least 128MB for BPF after the kernel */
+>>> > -#define BPF_JIT_REGION_START    PFN_ALIGN((unsigned long)&_end)
+>>> > -#define BPF_JIT_REGION_END    (BPF_JIT_REGION_START + 
+>>> BPF_JIT_REGION_SIZE)
+>>> > +#define BPF_JIT_REGION_START    (BPF_JIT_REGION_END - 
+>>> BPF_JIT_REGION_SIZE)
+>>> > +#define BPF_JIT_REGION_END    (MODULES_END)
+>>> >   #else
+>>> >   #define BPF_JIT_REGION_START    (PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+>>> >   #define BPF_JIT_REGION_END    (VMALLOC_END)
+>>> > 
 > 
-> At the moment, I will comment on the bindings first and my idea on how to
-> proceed.
-> The bindings mentioned here:
-> https://lore.kernel.org/dri-devel/20210521124946.3617862-3-vkoul@kernel.org/
-> seem to be just
-> taken directly from downstream which was not the plan.
+> This, when applied onto fixes, is breaking early boot on KASAN 
+> configurations for me.
+
+Not surprising, I took a shortcut when initializing KASAN for modules, 
+kernel and BPF:
+
+         kasan_populate(kasan_mem_to_shadow((const void *)MODULES_VADDR),
+                        kasan_mem_to_shadow((const void 
+*)BPF_JIT_REGION_END));
+
+The kernel is then not covered, I'm taking a look at how to fix that 
+properly.
+
 > 
-> I think all of these should be part of the generic panel bindings as none of
-> these are QC specific:
-
-Okay so we have discussed this w/ Bjorn and Abhinav and here are the
-conclusions and recommendations for binding
-
-1. the properties are generic and not msm specific
-2. The host supports multiple formats but the one we choose depends
-mostly upon panel. Notably host runs the config which the panel supports.
-
-So the recommendations is to add a table of dsc properties in the panel
-driver. No DT binding here.
-
-I should also note that for DP we should be able to calculate these
-values from EDID like the i915 driver seems to do
-
-With this I will drop the binding patch and move dsc properties to panel
-driver
-
-Thanks
-
--- 
-~Vinod
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
