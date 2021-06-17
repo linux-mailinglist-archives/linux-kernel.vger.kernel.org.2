@@ -2,90 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D1A3AB1D2
+	by mail.lfdr.de (Postfix) with ESMTP id BF8943AB1D4
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhFQLCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232127AbhFQLCi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:02:38 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744ADC061574;
-        Thu, 17 Jun 2021 04:00:30 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id f2so6231635wri.11;
-        Thu, 17 Jun 2021 04:00:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4PYymUzmy116DuPsenydXPZISGQWCoP3FrStayWVf4E=;
-        b=uWACo9J4p32zQEh3kk1gZ0JF0ZLPENV1ZYdsNew1kjWO98FVZQiQtygmIRWgz2ue0F
-         BoJkhMcn7/zPY1HiHoAK7oV/j/DEhwjO+WaprUbEkss8BAGiloJbqtuJ/d08haleIH+N
-         YtnA5gqO5HZdQa/bwix06j5MtvUtl0NfcgLhUWO8Icj/AtIkT3JCc4Tfv6qqwaKqerzi
-         rINnKF0VZR3S2gVZR1j2HZooxkNBn2KG6OzE0Z6q6ihAbrTW347I+rwLEPlYNpKICTLu
-         eek1U8O86gh40CkqY7mJx94K2YGEwxI60ycS27kUd8hrZEtCsR69exC5p48pyJqbC7j3
-         6VLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4PYymUzmy116DuPsenydXPZISGQWCoP3FrStayWVf4E=;
-        b=RZCTC+6AJEGwkAU81JCajkhVsaJfsoDigsQb/Y0vBrxmKwaJtiw7dS8U8MnW6KVEGY
-         rhwDaPJRNe7PCkTWDiFX7A6Vh5hIQGl+9cezb1unRbxF005MgYteZ7ekirs9GCz56Tgb
-         lONWkSul1WtKSaa4W0uM/+7sf6+Apsf6sXEQ5lB2pMb0sGNnbvV9VrGnBcCvRv3DPpOx
-         E1GChcOCg/Lq4FNXlggCbI2XGKBaKqVO8Rnnz/fazoAjPw8qQpYCVnlmk6H3Ti+uI/ya
-         g0LuU4Xg1uBhrhzTjcRrFR1Rtgiy0/ABlHLzwDM/Sia1BDEnQZ1v5Y63sye9oe8O/H5W
-         9YBg==
-X-Gm-Message-State: AOAM533RgRW+YFIguhekvVJut0xlMJciAc5dzRuznDeG+IrQjuk3bYFN
-        O6ENtrfFPH+YLXtGP841+jCZ34ACKMzfZQ==
-X-Google-Smtp-Source: ABdhPJxckIL/vwSiayYDANqk2+qo+5boEYAEdDPRi5+77A4YKjvjTeTTiNpi1srXk2cAzNFYLFR/hg==
-X-Received: by 2002:a5d:4fc6:: with SMTP id h6mr5064242wrw.1.1623927629127;
-        Thu, 17 Jun 2021 04:00:29 -0700 (PDT)
-Received: from debian (host-84-13-31-66.opaltelecom.net. [84.13.31.66])
-        by smtp.gmail.com with ESMTPSA id u20sm4207058wmq.24.2021.06.17.04.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 04:00:28 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 12:00:27 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/38] 5.10.45-rc1 review
-Message-ID: <YMsrS0Sded98xi5y@debian>
-References: <20210616152835.407925718@linuxfoundation.org>
+        id S232270AbhFQLCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:02:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232251AbhFQLCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 07:02:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81B67613E2;
+        Thu, 17 Jun 2021 11:00:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623927638;
+        bh=IjNco9f9EPzlQJjmK3xgbzrERQA6WBkHjH4qn50cnmw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LeEdVoxCe4TbiMFVCQSfkGnBr8MyV/ot7D6eeatqAMBpPeQPyaag5j8lWQ/drrZWU
+         utYw++QUo/2j5q5wtU/uu51PzR70hhJi7MDm/RPPT3j2NOoYl9beMQ8EKw0G8PeXvg
+         c9O2+cpvEsRd+MYv6Xu/qIQWT4XlFYjUA8m9Ay7M=
+Date:   Thu, 17 Jun 2021 13:00:35 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     arnd@arndb.de, ykaukab@suse.de, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] misc: sram: Only map reserved areas in Tegra SYSRAM
+Message-ID: <YMsrU81o9hCTNfy7@kroah.com>
+References: <20210617094804.667716-1-mperttunen@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210616152835.407925718@linuxfoundation.org>
+In-Reply-To: <20210617094804.667716-1-mperttunen@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Wed, Jun 16, 2021 at 05:33:09PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.45 release.
-> There are 38 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, Jun 17, 2021 at 12:48:04PM +0300, Mikko Perttunen wrote:
+> On Tegra186 and later, a portion of the SYSRAM may be reserved for use
+> by TZ. Non-TZ memory accesses to this portion, including speculative
+> accesses, trigger SErrors that bring down the system. This does also
+> happen in practice occasionally (due to speculative accesses).
 > 
-> Responses should be made by Fri, 18 Jun 2021 15:28:19 +0000.
-> Anything received after that time might be too late.
+> To fix the issue, add a flag to the SRAM driver to only map the
+> device tree-specified reserved areas depending on a flag set
+> based on the compatibility string. This would not affect non-Tegra
+> systems that rely on the entire thing being memory mapped.
+> 
+> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+> ---
+>  drivers/misc/sram.c | 108 +++++++++++++++++++++++++++++++-------------
+>  drivers/misc/sram.h |   9 ++++
+>  2 files changed, 86 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/misc/sram.c b/drivers/misc/sram.c
+> index 93638ae2753a..a27ffb3dbea8 100644
+> --- a/drivers/misc/sram.c
+> +++ b/drivers/misc/sram.c
+> @@ -97,7 +97,24 @@ static int sram_add_partition(struct sram_dev *sram, struct sram_reserve *block,
+>  	struct sram_partition *part = &sram->partition[sram->partitions];
+>  
+>  	mutex_init(&part->lock);
+> -	part->base = sram->virt_base + block->start;
+> +
+> +	if (sram->config->map_only_reserved) {
+> +		void *virt_base;
+> +
+> +		if (sram->no_memory_wc)
+> +			virt_base = devm_ioremap_resource(sram->dev, &block->res);
+> +		else
+> +			virt_base = devm_ioremap_resource_wc(sram->dev, &block->res);
+> +
+> +		if (IS_ERR(virt_base)) {
+> +			dev_err(sram->dev, "could not map SRAM at %pr\n", &block->res);
+> +			return PTR_ERR(virt_base);
+> +		}
+> +
+> +		part->base = virt_base;
+> +	} else {
+> +		part->base = sram->virt_base + block->start;
+> +	}
+>  
+>  	if (block->pool) {
+>  		ret = sram_add_pool(sram, block, start, part);
+> @@ -198,6 +215,7 @@ static int sram_reserve_regions(struct sram_dev *sram, struct resource *res)
+>  
+>  		block->start = child_res.start - res->start;
+>  		block->size = resource_size(&child_res);
+> +		block->res = child_res;
+>  		list_add_tail(&block->list, &reserve_list);
+>  
+>  		if (of_find_property(child, "export", NULL))
+> @@ -295,15 +313,17 @@ static int sram_reserve_regions(struct sram_dev *sram, struct resource *res)
+>  		 */
+>  		cur_size = block->start - cur_start;
+>  
+> -		dev_dbg(sram->dev, "adding chunk 0x%lx-0x%lx\n",
+> -			cur_start, cur_start + cur_size);
+> +		if (sram->pool) {
+> +			dev_dbg(sram->dev, "adding chunk 0x%lx-0x%lx\n",
+> +				cur_start, cur_start + cur_size);
+>  
+> -		ret = gen_pool_add_virt(sram->pool,
+> -				(unsigned long)sram->virt_base + cur_start,
+> -				res->start + cur_start, cur_size, -1);
+> -		if (ret < 0) {
+> -			sram_free_partitions(sram);
+> -			goto err_chunks;
+> +			ret = gen_pool_add_virt(sram->pool,
+> +					(unsigned long)sram->virt_base + cur_start,
+> +					res->start + cur_start, cur_size, -1);
+> +			if (ret < 0) {
+> +				sram_free_partitions(sram);
+> +				goto err_chunks;
+> +			}
+>  		}
+>  
+>  		/* next allocation after this reserved block */
+> @@ -331,40 +351,66 @@ static int atmel_securam_wait(void)
+>  					10000, 500000);
+>  }
+>  
+> +static const struct sram_config default_config = {
+> +};
 
-Build test:
-mips (gcc version 11.1.1 20210615): 63 configs -> no failure
-arm (gcc version 11.1.1 20210615): 105 configs -> no new failure
-arm64 (gcc version 11.1.1 20210615): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+No need for a "default" config, just do not provide one and then do not
+call it if it is not set.  Much simpler and less code churn.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
-arm64: Booted on rpi4b (4GB model). No regression.
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+> +
+> +static const struct sram_config atmel_securam_config = {
+> +	.init = atmel_securam_wait
+
+Add a trailing , please.
+
+> +};
+> +
+> +/*
+> + * SYSRAM contains areas that are not accessible by the
+> + * kernel, such as the first 256K that is reserved for TZ.
+> + * Accesses to those areas (including speculative accesses)
+> + * trigger SErrors. As such we must map only the areas of
+> + * SYSRAM specified in the device tree.
+> + */
+> +static const struct sram_config tegra_sysram_config = {
+> +	.map_only_reserved = true,
+> +};
+> +
+>  static const struct of_device_id sram_dt_ids[] = {
+> -	{ .compatible = "mmio-sram" },
+> -	{ .compatible = "atmel,sama5d2-securam", .data = atmel_securam_wait },
+> +	{ .compatible = "mmio-sram", .data = &default_config },
+> +	{ .compatible = "atmel,sama5d2-securam", .data = &atmel_securam_config },
+> +	{ .compatible = "nvidia,tegra186-sysram", .data = &tegra_sysram_config },
+> +	{ .compatible = "nvidia,tegra194-sysram", .data = &tegra_sysram_config },
+>  	{}
+>  };
+>  
+>  static int sram_probe(struct platform_device *pdev)
+>  {
+> +	const struct sram_config *config;
+>  	struct sram_dev *sram;
+>  	int ret;
+>  	struct resource *res;
+> -	int (*init_func)(void);
+> +
+> +	config = of_device_get_match_data(&pdev->dev);
+>  
+>  	sram = devm_kzalloc(&pdev->dev, sizeof(*sram), GFP_KERNEL);
+>  	if (!sram)
+>  		return -ENOMEM;
+>  
+>  	sram->dev = &pdev->dev;
+> +	sram->no_memory_wc = of_property_read_bool(pdev->dev.of_node, "no-memory-wc");
+> +	sram->config = config;
+> +
+> +	if (!config->map_only_reserved) {
+> +		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +		if (sram->no_memory_wc)
+> +			sram->virt_base = devm_ioremap_resource(&pdev->dev, res);
+> +		else
+> +			sram->virt_base = devm_ioremap_resource_wc(&pdev->dev, res);
+> +		if (IS_ERR(sram->virt_base)) {
+> +			dev_err(&pdev->dev, "could not map SRAM registers\n");
+> +			return PTR_ERR(sram->virt_base);
+> +		}
+>  
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	if (of_property_read_bool(pdev->dev.of_node, "no-memory-wc"))
+> -		sram->virt_base = devm_ioremap_resource(&pdev->dev, res);
+> -	else
+> -		sram->virt_base = devm_ioremap_resource_wc(&pdev->dev, res);
+> -	if (IS_ERR(sram->virt_base)) {
+> -		dev_err(&pdev->dev, "could not map SRAM registers\n");
+> -		return PTR_ERR(sram->virt_base);
+> +		sram->pool = devm_gen_pool_create(sram->dev, ilog2(SRAM_GRANULARITY),
+> +						  NUMA_NO_NODE, NULL);
+> +		if (IS_ERR(sram->pool))
+> +			return PTR_ERR(sram->pool);
+>  	}
+>  
+> -	sram->pool = devm_gen_pool_create(sram->dev, ilog2(SRAM_GRANULARITY),
+> -					  NUMA_NO_NODE, NULL);
+> -	if (IS_ERR(sram->pool))
+> -		return PTR_ERR(sram->pool);
+> -
+>  	sram->clk = devm_clk_get(sram->dev, NULL);
+>  	if (IS_ERR(sram->clk))
+>  		sram->clk = NULL;
+> @@ -378,15 +424,15 @@ static int sram_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, sram);
+>  
+> -	init_func = of_device_get_match_data(&pdev->dev);
+> -	if (init_func) {
+> -		ret = init_func();
+> +	if (config->init) {
+> +		ret = config->init();
+>  		if (ret)
+>  			goto err_free_partitions;
+>  	}
+>  
+> -	dev_dbg(sram->dev, "SRAM pool: %zu KiB @ 0x%p\n",
+> -		gen_pool_size(sram->pool) / 1024, sram->virt_base);
+> +	if (sram->pool)
+> +		dev_dbg(sram->dev, "SRAM pool: %zu KiB @ 0x%p\n",
+> +			gen_pool_size(sram->pool) / 1024, sram->virt_base);
+>  
+>  	return 0;
+>  
+> @@ -405,7 +451,7 @@ static int sram_remove(struct platform_device *pdev)
+>  
+>  	sram_free_partitions(sram);
+>  
+> -	if (gen_pool_avail(sram->pool) < gen_pool_size(sram->pool))
+> +	if (sram->pool && gen_pool_avail(sram->pool) < gen_pool_size(sram->pool))
+>  		dev_err(sram->dev, "removed while SRAM allocated\n");
+>  
+>  	if (sram->clk)
+> diff --git a/drivers/misc/sram.h b/drivers/misc/sram.h
+> index 9c1d21ff7347..d2058d8c8f1d 100644
+> --- a/drivers/misc/sram.h
+> +++ b/drivers/misc/sram.h
+> @@ -5,6 +5,11 @@
+>  #ifndef __SRAM_H
+>  #define __SRAM_H
+>  
+> +struct sram_config {
+> +	int (*init)(void);
+> +	bool map_only_reserved;
+> +};
+> +
+>  struct sram_partition {
+>  	void __iomem *base;
+>  
+> @@ -15,8 +20,11 @@ struct sram_partition {
+>  };
+>  
+>  struct sram_dev {
+> +	const struct sram_config *config;
+> +
+>  	struct device *dev;
+>  	void __iomem *virt_base;
+> +	bool no_memory_wc;
+
+What does "wc" here mean?
+
+thanks,
+
+greg k-h
