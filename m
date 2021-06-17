@@ -2,187 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DCF3AADFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC95F3AADE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhFQHvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 03:51:55 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:54861 "EHLO
-        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhFQHvy (ORCPT
+        id S230136AbhFQHpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 03:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229666AbhFQHpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 03:51:54 -0400
-Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 41F7EDBFB3;
-        Thu, 17 Jun 2021 07:41:59 +0000 (UTC)
-Received: (Authenticated sender: jacopo@jmondi.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id F0988FF81A;
-        Thu, 17 Jun 2021 07:41:33 +0000 (UTC)
-Date:   Thu, 17 Jun 2021 09:42:22 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 12/15] media: i2c: rdacm20: Embed 'serializer' field
-Message-ID: <20210617074222.4lbcewsydre4b2nb@uno.localdomain>
-References: <20210616124616.49249-1-jacopo+renesas@jmondi.org>
- <20210616124616.49249-13-jacopo+renesas@jmondi.org>
- <YMqTyFvxer0vjsKT@pendragon.ideasonboard.com>
- <1e6e5cd0-82b1-db7a-ec70-ebb8831c11c4@xs4all.nl>
+        Thu, 17 Jun 2021 03:45:03 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDA6C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 00:42:55 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id e22so4243719pgv.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 00:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=dlhQI9LBeuWWY/YA418crEQCoirxo4ehIW0nOzSjBfg=;
+        b=DJulBmuYSBO4muKdi/8Vu2KF3vGVxZhvjkz55/4WjZHKA29UUH/SnFs1qfTuoS6Uwz
+         vH2+PxKJCLFFFIdmU1z2SV/hlmCdNyhSbogDeVK9badYGnI9ZaMJB1HawmbSEp2n/8Ry
+         G5NaXyhPWe1Ngso956j8A7KeVG0zSoeAdLQwAGG4m/0egx5f2SBjzLjrpX8G7WxLdaqC
+         3J+TZxXbO+41tuQDFFuEfikFYL2HJl3hOpQa4QqBCbyDyQWsuAcZbyPvs3ExaH4fEfMM
+         8N1FWDkTjISZ7ZZXP4v+XzvIUCpY/5Ie/9y99xfD7x5rBb8cAIX1+b4NKIUGCg0DW1kw
+         h+ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dlhQI9LBeuWWY/YA418crEQCoirxo4ehIW0nOzSjBfg=;
+        b=OtjvB0pKvk3/GV2TNwq2/wOGyI43l31BDgvfCdCyGILVj6XP+qYPJvsFbyWai0Fb3C
+         dw28CCmTsC5NVvnGy07U84lCdb0vEGv1eeA7NP8rsIo4W7mCo9eMAi/ZeIo0QjiH5Xqz
+         hKk5YXa1gGBrQhF+Lar4H/mJi5EU59Vbd2FClAYMa7qS5rvYM4hCRp9g1PFZtLplSZAH
+         qMOeDI91HNHscyJracEhF/IbSEGINv78iS/o3bZ0DDwwjbNTzAwoAaKtWU9UL9VTcIA9
+         zGmoro3FYF/wD6csIjhPBI2ilvmGuxsGCpXeh/nxJIgZfXvXeJwSJMOZB2oQ37GemplD
+         eX8g==
+X-Gm-Message-State: AOAM531uFllFGZFOSHt/uuvl4FvvJVrCndQTnKKsShFbM7/82n5anw9e
+        EiJmZgmF01j6RS78YUP6doKKMSaVwzf4lMcNRw==
+X-Google-Smtp-Source: ABdhPJzFltPZJW+CLlqPO3ZDNVm8FYuMgndfCGkTH+NIbNsyzO3D2zxHKHJ6V972BF7TsmpoZxJ49mG+/NuxsZWcpdU=
+X-Received: by 2002:a63:dc4e:: with SMTP id f14mr3735400pgj.378.1623915775013;
+ Thu, 17 Jun 2021 00:42:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1e6e5cd0-82b1-db7a-ec70-ebb8831c11c4@xs4all.nl>
+References: <20210615130326.2044-1-fengzheng923@gmail.com> <20210615132207.GG5149@sirena.org.uk>
+In-Reply-To: <20210615132207.GG5149@sirena.org.uk>
+From:   =?UTF-8?B?54+t5rab?= <fengzheng923@gmail.com>
+Date:   Thu, 17 Jun 2021 15:42:43 +0800
+Message-ID: <CAE=m61-kHPeKNvEEc08w8DeUwssGPWNf5UaYojRPNZRJ0v=arw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
+To:     Mark Brown <broonie@kernel.org>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        mripard@kernel.org, wens@csie.org, jernej.skrabec@gmail.com,
+        p.zabel@pengutronix.de, Samuel Holland <samuel@sholland.org>,
+        krzk@kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-On Thu, Jun 17, 2021 at 08:18:42AM +0200, Hans Verkuil wrote:
-> On 17/06/2021 02:14, Laurent Pinchart wrote:
-> > Hi Jacopo,
-> >
-> > Thank you for the patch.
-> >
-> > This should be moved before 11/15 to avoid a bisection breakage (or
-> > 11/15 should be fixed, and this patch updated accordingly).
+Mark Brown <broonie@kernel.org> =E4=BA=8E2021=E5=B9=B46=E6=9C=8815=E6=97=A5=
+=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=889:22=E5=86=99=E9=81=93=EF=BC=9A
 >
-> Good catch!
+> On Tue, Jun 15, 2021 at 09:03:26PM +0800, Ban Tao wrote:
+>
+> Other than a few small things this looks good:
+>
+> > +M:   Ban Tao <fengzheng923@gmail.com>
+> > +L:   alsa-devel@alsa-project.org (moderated for non-subscribers)
+> > +S:   Maintained
+> > +F:   Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.=
+yaml
+> > +F:   sound/soc/sunxi/sun50i-dmic.c
+>
+> Not the binding document?
+>
+> > @@ -0,0 +1,408 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * ALSA SoC DMIC Audio Layer
+> > + *
+> > + * Copyright 2021 Ban Tao <fengzheng923@gmail.com>
+> > + *
+>
+> Please make the entire comment a C++ one so things look more
+> intentional.
+>
+For example;
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * This driver supports the DMIC in Allwinner's H6 SoCs.
+ *
+ * Copyright 2021 Ban Tao <fengzheng923@gmail.com>
+ *
+ */
+is this OK?
 
-Good catch indeed... Sorry about this I shuffled patches around
-multiple times and missed this one
 
+> > +static void sun50i_snd_rxctrl_enable(struct snd_pcm_substream *substre=
+am,
+> > +                                 struct sun50i_dmic_dev *host, bool en=
+able)
+> > +{
+> > +     if (enable) {
 >
-> Jacopo, I dropped the PR I made. It you just want to swap patch 11 and 12,
-> then I can do that, if you want more extensive changes, then I need a v6.
+> > +     } else {
 >
-> Let me know what you want.
+> > +static int sun50i_dmic_trigger(struct snd_pcm_substream *substream, in=
+t cmd,
+> > +                            struct snd_soc_dai *dai)
+> > +{
+> > +     int ret =3D 0;
+> > +     struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(dai);
+> > +
+> > +     if (substream->stream !=3D SNDRV_PCM_STREAM_CAPTURE)
+> > +             return -EINVAL;
+> > +
+> > +     switch (cmd) {
+> > +     case SNDRV_PCM_TRIGGER_START:
+> > +     case SNDRV_PCM_TRIGGER_RESUME:
+> > +     case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> > +             sun50i_snd_rxctrl_enable(substream, host, true);
+> > +             break;
+> > +
+> > +     case SNDRV_PCM_TRIGGER_STOP:
+> > +     case SNDRV_PCM_TRIGGER_SUSPEND:
+> > +     case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> > +             sun50i_snd_rxctrl_enable(substream, host, false);
+> > +             break;
+>
+> This is the only caller of _rxctrl_enable() and _rxctrl_enable() shares
+> no code between the two cases - just inline _rxctrl_enable() here, it's
+> clearer what's going on.
+>
+> > +     res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +     base =3D devm_ioremap_resource(&pdev->dev, res);
+>
+> devm_platform_ioremap_resource()
 
-I think swapping 11 and 12 is enough, thanks for handling it.
-(BTW there's one additional tag from Kieran to collect which is not in
-v5. Would you like a v6 for that ?)
-
-Thanks
-  j
-
->
-> 	Hans
->
-> >
-> > On Wed, Jun 16, 2021 at 02:46:13PM +0200, Jacopo Mondi wrote:
-> >> There's no reason to allocate dynamically the 'serializer' field in
-> >> the driver structure.
-> >>
-> >> Embed the field and adjust all its users in the driver.
-> >>
-> >> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> >> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> >> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> >> ---
-> >>  drivers/media/i2c/rdacm20.c | 36 +++++++++++++++---------------------
-> >>  1 file changed, 15 insertions(+), 21 deletions(-)
-> >>
-> >> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> >> index 5e0314a2b1ca..029af8fd7485 100644
-> >> --- a/drivers/media/i2c/rdacm20.c
-> >> +++ b/drivers/media/i2c/rdacm20.c
-> >> @@ -312,7 +312,7 @@ static const struct ov10635_reg {
-> >>
-> >>  struct rdacm20_device {
-> >>  	struct device			*dev;
-> >> -	struct max9271_device		*serializer;
-> >> +	struct max9271_device		serializer;
-> >>  	struct i2c_client		*sensor;
-> >>  	struct v4l2_subdev		sd;
-> >>  	struct media_pad		pad;
-> >> @@ -399,7 +399,7 @@ static int rdacm20_s_stream(struct v4l2_subdev *sd, int enable)
-> >>  {
-> >>  	struct rdacm20_device *dev = sd_to_rdacm20(sd);
-> >>
-> >> -	return max9271_set_serial_link(dev->serializer, enable);
-> >> +	return max9271_set_serial_link(&dev->serializer, enable);
-> >>  }
-> >>
-> >>  static int rdacm20_enum_mbus_code(struct v4l2_subdev *sd,
-> >> @@ -455,10 +455,10 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
-> >>  	unsigned int retry = 3;
-> >>  	int ret;
-> >>
-> >> -	max9271_wake_up(dev->serializer);
-> >> +	max9271_wake_up(&dev->serializer);
-> >>
-> >>  	/* Serial link disabled during config as it needs a valid pixel clock. */
-> >> -	ret = max9271_set_serial_link(dev->serializer, false);
-> >> +	ret = max9271_set_serial_link(&dev->serializer, false);
-> >>  	if (ret)
-> >>  		return ret;
-> >>
-> >> @@ -466,35 +466,35 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
-> >>  	 *  Ensure that we have a good link configuration before attempting to
-> >>  	 *  identify the device.
-> >>  	 */
-> >> -	max9271_configure_i2c(dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
-> >> -					       MAX9271_I2CSLVTO_1024US |
-> >> -					       MAX9271_I2CMSTBT_105KBPS);
-> >> +	max9271_configure_i2c(&dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
-> >> +						MAX9271_I2CSLVTO_1024US |
-> >> +						MAX9271_I2CMSTBT_105KBPS);
-> >>
-> >> -	max9271_configure_gmsl_link(dev->serializer);
-> >> +	max9271_configure_gmsl_link(&dev->serializer);
-> >>
-> >> -	ret = max9271_verify_id(dev->serializer);
-> >> +	ret = max9271_verify_id(&dev->serializer);
-> >>  	if (ret < 0)
-> >>  		return ret;
-> >>
-> >> -	ret = max9271_set_address(dev->serializer, dev->addrs[0]);
-> >> +	ret = max9271_set_address(&dev->serializer, dev->addrs[0]);
-> >>  	if (ret < 0)
-> >>  		return ret;
-> >> -	dev->serializer->client->addr = dev->addrs[0];
-> >> +	dev->serializer.client->addr = dev->addrs[0];
-> >>
-> >>  	/*
-> >>  	 * Reset the sensor by cycling the OV10635 reset signal connected to the
-> >>  	 * MAX9271 GPIO1 and verify communication with the OV10635.
-> >>  	 */
-> >> -	ret = max9271_enable_gpios(dev->serializer, MAX9271_GPIO1OUT);
-> >> +	ret = max9271_enable_gpios(&dev->serializer, MAX9271_GPIO1OUT);
-> >>  	if (ret)
-> >>  		return ret;
-> >>
-> >> -	ret = max9271_clear_gpios(dev->serializer, MAX9271_GPIO1OUT);
-> >> +	ret = max9271_clear_gpios(&dev->serializer, MAX9271_GPIO1OUT);
-> >>  	if (ret)
-> >>  		return ret;
-> >>  	usleep_range(10000, 15000);
-> >>
-> >> -	ret = max9271_set_gpios(dev->serializer, MAX9271_GPIO1OUT);
-> >> +	ret = max9271_set_gpios(&dev->serializer, MAX9271_GPIO1OUT);
-> >>  	if (ret)
-> >>  		return ret;
-> >>  	usleep_range(10000, 15000);
-> >> @@ -564,13 +564,7 @@ static int rdacm20_probe(struct i2c_client *client)
-> >>  	if (!dev)
-> >>  		return -ENOMEM;
-> >>  	dev->dev = &client->dev;
-> >> -
-> >> -	dev->serializer = devm_kzalloc(&client->dev, sizeof(*dev->serializer),
-> >> -				       GFP_KERNEL);
-> >> -	if (!dev->serializer)
-> >> -		return -ENOMEM;
-> >> -
-> >> -	dev->serializer->client = client;
-> >> +	dev->serializer.client = client;
-> >>
-> >>  	ret = of_property_read_u32_array(client->dev.of_node, "reg",
-> >>  					 dev->addrs, 2);
-> >
->
+But I need to get the register base address of DMIC. E.g res->start.
+host->dma_params_rx.addr =3D res->start + SUN50I_DMIC_DATA;
