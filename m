@@ -2,90 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9723ABC96
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91963ABC94
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbhFQTWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 15:22:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39650 "EHLO mail.kernel.org"
+        id S233475AbhFQTWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 15:22:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232109AbhFQTWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 15:22:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA00F613E1;
-        Thu, 17 Jun 2021 19:20:14 +0000 (UTC)
+        id S233264AbhFQTWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 15:22:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9A2F5613FB;
+        Thu, 17 Jun 2021 19:20:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623957615;
-        bh=DN1dKKh82VC332PLOIPUDfqY/yz9hU4wlhkBHuwu6eA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iEqxsgbzCNMgAi7+74kiQrGRpxLNx+5Hn6uEReR3uWptLybxcDG8aN1F2jFRkgOPi
-         mJl6F4Z3gdC3epRXEowKeReh4/F7L4njEMtsnPGs8K2n6e5rJ3Elmwbz/GbtTyqjeK
-         YnF9kpH1HbN7pukdFzhH5UcP3UoopLoKuUCkj640wYjHx+2EHAqqd7b4cU9qJMON7n
-         TiKqMIynzbr3FWQpP/H2Omrcjp/z445GqTQwTPZvFI2ADd4RQEljWqdYQIloX8exlv
-         Xi1BT7saN8vVhyaD2jB0vwPqfAFwGe8+/gXm9Sn3D1zGgVcN2xXSFmfErxnpOWfmyM
-         faQzchZQ68kVA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8987E40B1A; Thu, 17 Jun 2021 16:20:12 -0300 (-03)
-Date:   Thu, 17 Jun 2021 16:20:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 3/4] perf test: Add verbose skip output for bpf counters
-Message-ID: <YMugbNVy4hyrzYi2@kernel.org>
-References: <20210617184216.2075588-1-irogers@google.com>
- <20210617184216.2075588-3-irogers@google.com>
+        s=k20201202; t=1623957613;
+        bh=KyQZr1dUm8eihf9rmFcrwtoIVDpukIaGJ+V4Czydxz4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=nqFdhN43f5Bn5i225GM4fZOYZMVpwB+ylEtFnzGtUhUi06bK24N0xCzxa2VUSsy51
+         gs8dDGdJM2K+wbuT9dHAWbvsIqmPTfQdBGOxPD0iB4pyaTL0qAHo253RjiCXmYzvuW
+         f0YviklOjkxRho0SMkueLqMPQHhczK3iM6MAe8l+h/LDo0TkLparrHoRVpOUvkGIxc
+         eWLrDgqmnxW7cywaCBqUseeRHha78OE+I9z/n1y2qe6FOCyKdB6UGrpamCgbcd7Ias
+         UTtKr47S3pgwmLFVY+cDGMupI4YVQb7mDovIooiQulBbeEK3IT6GU8l0vS5YFyST3m
+         ukpzmSTAaaI9w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 92E8960A0A;
+        Thu, 17 Jun 2021 19:20:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617184216.2075588-3-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] r8152: store the information of the pipes
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162395761359.22568.8846076007661203766.git-patchwork-notify@kernel.org>
+Date:   Thu, 17 Jun 2021 19:20:13 +0000
+References: <1394712342-15778-367-Taiwan-albertk@realtek.com>
+In-Reply-To: <1394712342-15778-367-Taiwan-albertk@realtek.com>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jun 17, 2021 at 11:42:15AM -0700, Ian Rogers escreveu:
-> Provide additional context for when the stat bpf counters test skips.
+Hello:
 
-Thanks, applied.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-- Arnaldo
-
- 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+On Thu, 17 Jun 2021 18:00:15 +0800 you wrote:
+> Store the information of the pipes to avoid calling usb_rcvctrlpipe(),
+> usb_sndctrlpipe(), usb_rcvbulkpipe(), usb_sndbulkpipe(), and
+> usb_rcvintpipe() frequently.
+> 
+> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
 > ---
->  tools/perf/tests/shell/stat_bpf_counters.sh | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
-> index 2f9948b3d943..81d61b6e1208 100755
-> --- a/tools/perf/tests/shell/stat_bpf_counters.sh
-> +++ b/tools/perf/tests/shell/stat_bpf_counters.sh
-> @@ -22,7 +22,13 @@ compare_number()
->  }
->  
->  # skip if --bpf-counters is not supported
-> -perf stat --bpf-counters true > /dev/null 2>&1 || exit 2
-> +if ! perf stat --bpf-counters true > /dev/null 2>&1; then
-> +	if [ "$1" == "-v" ]; then
-> +		echo "Skipping: --bpf-counters not supported"
-> +		perf --no-pager stat --bpf-counters true || true
-> +	fi
-> +	exit 2
-> +fi
->  
->  base_cycles=$(perf stat --no-big-num -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
->  bpf_cycles=$(perf stat --no-big-num --bpf-counters -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
-> -- 
-> 2.32.0.288.g62a8d224e6-goog
-> 
+>  drivers/net/usb/r8152.c | 18 +++++++++++++-----
+>  1 file changed, 13 insertions(+), 5 deletions(-)
 
--- 
+Here is the summary with links:
+  - [net-next] r8152: store the information of the pipes
+    https://git.kernel.org/netdev/net-next/c/b67fda9a8280
 
-- Arnaldo
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
