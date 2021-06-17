@@ -2,137 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BA43AAA9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C283AAAA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhFQFFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 01:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49742 "EHLO
+        id S229784AbhFQFMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 01:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhFQFFd (ORCPT
+        with ESMTP id S229495AbhFQFMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 01:05:33 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7897FC061574;
-        Wed, 16 Jun 2021 22:02:34 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G590K1ttLz9sTD;
-        Thu, 17 Jun 2021 15:02:25 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623906146;
-        bh=47WqgCZJmus4rU532xR1PTRvpZRX7YBIV/XCKIhTUXY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gEblT6sB5JGUD/llPt8LMui1HQwmdYUoAMcdHeLr4HoaS7rj8VVlwewF7KV8nsZ1j
-         Qt6hpM7LiwtNJS6hEZ1sTkyeuaLbv51O9QT33LvfVS0q8vhMeuGlB5BAakHoYep3+L
-         j4+Nj1H9hHKl25uYnbyet3nxBd+dEp8ZEPMNTanpIZZ5CL3oM5qwUsklwOgGUiYqk1
-         8e10teeWzY8JX9Bv+QlYvP5DUiunapdxnBPDLle/5QBOK1mJ7eoG5sScsoLDy8+R0x
-         YuW6kZ/FBXHekKjrDxBEfQKsSZZELE7fsubx8ZEKIs60ytX4BQPFCeZLOdMiic8C+O
-         q2Eq2Vo5FC4Xg==
-Date:   Thu, 17 Jun 2021 15:02:24 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Pho Tran <pho.tran@silabs.com>, Stefan Agner <stefan@agner.ch>,
-        Tung Pham <tung.pham@silabs.com>
-Subject: linux-next: manual merge of the usb-serial tree with Linus' tree
-Message-ID: <20210617150224.19213166@canb.auug.org.au>
+        Thu, 17 Jun 2021 01:12:30 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C576C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:10:22 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id k15so4025717pfp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:10:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QrB1LaHxmsUMEUbEmWqOGvCbkMD2WMAnWAOQwFIjDR8=;
+        b=GMmlnXepyTLpaWDWNAFkKV1r5MQXomUdOXMlnkVB2r/1F2joQw7C96cD9RP1pOdt4X
+         mkeFt19wbvKKq2XGbEZaSwzpfvmQeLxbju64lXjiFOBeAZbSqITRIc0hEJmXc+hm/MUl
+         WD+RgWJPww8wJmgNak3yfSCjbF9F/9jy4XQHVlwMlMDi+Cb+c+NlPE2JA0MOXUPgSwcV
+         rySQ1PYpkn1mGdjccrtZw82IAEbm0PCZKP8Z9D/h/7hXW+nq6PK+XyzX888FZomiC4+n
+         k5JOhFHa3UZw0zi+NO61Nb+P2HxAy7X+9aFoeeTCw88v2w6eP8RHF0JwzeMvbyGCgQ+F
+         AS1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QrB1LaHxmsUMEUbEmWqOGvCbkMD2WMAnWAOQwFIjDR8=;
+        b=hsq0WHKlH+yEW1iofPhU9/s/aSYUnY4O+uYZt0EduA+H/LFlqStywAvi4jHGFzGFtp
+         9YlCdfjKhYGYvYstcaxg4/TyIjp6mjO4Ym25pCYKx/mIfYr7tqTBwXkTw27kgSnhTMjG
+         8Mxn8PMjPEpQNN5Q/JGE0/noUIg5zVwa3yfqf5/ekFIfyz5IeW/cGpZiVR0cqc84GxSY
+         u8lw6mfwP5prt7NgbSvitoqFrBS6tlxbdzKKHKlDH1gsJrQryWkF45+KCuqZe5fa9zDG
+         FCY7NRwkAlq4zdLaJHNTLhDTsWhuLKY3HENjzFfwZJkaJad+Ol/2RCDGy6Tu2F73xHah
+         pA+Q==
+X-Gm-Message-State: AOAM533RjnEiHfXLNepXFUviAR+E2BOH+cCUk2JX8zCVoj69Jg2CS5r3
+        jxi+U4ZpwfzJgAKW2y7eN2l1
+X-Google-Smtp-Source: ABdhPJzYbs81hm4LsNN9I0uXFaqOwQK9lzA7yhtoNT/J6tOdV36PA2V0NFOx6OkjvZyyKwNIOELzhQ==
+X-Received: by 2002:a63:490a:: with SMTP id w10mr3268856pga.286.1623906622151;
+        Wed, 16 Jun 2021 22:10:22 -0700 (PDT)
+Received: from localhost ([61.120.150.78])
+        by smtp.gmail.com with ESMTPSA id 11sm3652436pfh.182.2021.06.16.22.10.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 22:10:21 -0700 (PDT)
+From:   Xie Yongji <xieyongji@bytedance.com>
+To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
+        axboe@kernel.dk
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] virtio-blk: Add validation for block size in config space
+Date:   Thu, 17 Jun 2021 13:10:04 +0800
+Message-Id: <20210617051004.146-1-xieyongji@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/T2g57l+ouSSFdXgiONc8Wfh";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/T2g57l+ouSSFdXgiONc8Wfh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This ensures that we will not use an invalid block size
+in config space (might come from an untrusted device).
 
-Hi all,
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+---
+ drivers/block/virtio_blk.c | 29 +++++++++++++++++++++++------
+ 1 file changed, 23 insertions(+), 6 deletions(-)
 
-Today's linux-next merge of the usb-serial tree got a conflict in:
+diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+index b9fa3ef5b57c..bbdae989f1ea 100644
+--- a/drivers/block/virtio_blk.c
++++ b/drivers/block/virtio_blk.c
+@@ -696,6 +696,28 @@ static const struct blk_mq_ops virtio_mq_ops = {
+ static unsigned int virtblk_queue_depth;
+ module_param_named(queue_depth, virtblk_queue_depth, uint, 0444);
+ 
++static int virtblk_validate(struct virtio_device *vdev)
++{
++	u32 blk_size;
++
++	if (!vdev->config->get) {
++		dev_err(&vdev->dev, "%s failure: config access disabled\n",
++			__func__);
++		return -EINVAL;
++	}
++
++	if (!virtio_has_feature(vdev, VIRTIO_BLK_F_BLK_SIZE))
++		return 0;
++
++	blk_size = virtio_cread32(vdev,
++			offsetof(struct virtio_blk_config, blk_size));
++
++	if (blk_size < SECTOR_SIZE || blk_size > PAGE_SIZE)
++		__virtio_clear_bit(vdev, VIRTIO_BLK_F_BLK_SIZE);
++
++	return 0;
++}
++
+ static int virtblk_probe(struct virtio_device *vdev)
+ {
+ 	struct virtio_blk *vblk;
+@@ -707,12 +729,6 @@ static int virtblk_probe(struct virtio_device *vdev)
+ 	u8 physical_block_exp, alignment_offset;
+ 	unsigned int queue_depth;
+ 
+-	if (!vdev->config->get) {
+-		dev_err(&vdev->dev, "%s failure: config access disabled\n",
+-			__func__);
+-		return -EINVAL;
+-	}
+-
+ 	err = ida_simple_get(&vd_index_ida, 0, minor_to_index(1 << MINORBITS),
+ 			     GFP_KERNEL);
+ 	if (err < 0)
+@@ -994,6 +1010,7 @@ static struct virtio_driver virtio_blk = {
+ 	.driver.name			= KBUILD_MODNAME,
+ 	.driver.owner			= THIS_MODULE,
+ 	.id_table			= id_table,
++	.validate			= virtblk_validate,
+ 	.probe				= virtblk_probe,
+ 	.remove				= virtblk_remove,
+ 	.config_changed			= virtblk_config_changed,
+-- 
+2.11.0
 
-  drivers/usb/serial/cp210x.c
-
-between commit:
-
-  6f7ec77cc8b6 ("USB: serial: cp210x: fix alternate function for CP2102N QF=
-N20")
-
-from Linus' tree and commit:
-
-  8051334e901f ("USB: serial: cp210x: add support for GPIOs on CP2108")
-
-from the usb-serial tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/usb/serial/cp210x.c
-index fcb812bc832c,3d376c0b6537..000000000000
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@@ -247,12 -247,11 +247,12 @@@ struct cp210x_serial_private=20
-  #ifdef CONFIG_GPIOLIB
-  	struct gpio_chip	gc;
-  	bool			gpio_registered;
-- 	u8			gpio_pushpull;
-- 	u8			gpio_altfunc;
-- 	u8			gpio_input;
-+ 	u16			gpio_pushpull;
-+ 	u16			gpio_altfunc;
-+ 	u16			gpio_input;
-  #endif
-  	u8			partnum;
- +	u32			fw_version;
-  	speed_t			min_speed;
-  	speed_t			max_speed;
-  	bool			use_actual_rate;
-@@@ -540,13 -579,10 +582,16 @@@ struct cp210x_quad_port_config=20
-  #define CP210X_2NCONFIG_GPIO_RSTLATCH_IDX	587
-  #define CP210X_2NCONFIG_GPIO_CONTROL_IDX	600
- =20
- +/* CP2102N QFN20 port configuration values */
- +#define CP2102N_QFN20_GPIO2_TXLED_MODE		BIT(2)
- +#define CP2102N_QFN20_GPIO3_RXLED_MODE		BIT(3)
- +#define CP2102N_QFN20_GPIO1_RS485_MODE		BIT(4)
- +#define CP2102N_QFN20_GPIO0_CLK_MODE		BIT(6)
- +
-- /* CP210X_VENDOR_SPECIFIC, CP210X_WRITE_LATCH call writes these 0x2 bytes=
-. */
-+ /*
-+  * CP210X_VENDOR_SPECIFIC, CP210X_WRITE_LATCH call writes these 0x02 bytes
-+  * for CP2102N, CP2103, CP2104 and CP2105.
-+  */
-  struct cp210x_gpio_write {
-  	u8	mask;
-  	u8	state;
-
---Sig_/T2g57l+ouSSFdXgiONc8Wfh
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDK12AACgkQAVBC80lX
-0Gwq7QgAhkh2ZHA91qtxpQYkwvfFeSaiWROsoVSgYh6aIrRDbVZmFsDcTa14y8AL
-4UJh8Rv9UMV+q/AftnHhjagscWMEkUFmzBa2O1KxpUY7q0Ef3aaLzftrvABRwOpP
-DXR/EQT/w5DR595u+bwrtPlIyUibaW/EzH/T5Ph3q26SQeFVnC7Ani4JVpLsDfpM
-Yb4GFit51zcRa2089IsiJV9fANcQFnVah7staOrtL8IKpuIU/VrCXIqIniMYCbyE
-GHMHPNFUOs/AKNkNb8rHEG3ZWYxDUfLpIoMUIwpzRtklrcuh73p3V/abcL5Fi7z+
-DSJVeyCmdr4zAybN2FmmMSPm/6wczg==
-=N4DT
------END PGP SIGNATURE-----
-
---Sig_/T2g57l+ouSSFdXgiONc8Wfh--
