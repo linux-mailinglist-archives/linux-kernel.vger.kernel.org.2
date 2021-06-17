@@ -2,247 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC9B3ABE58
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 23:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9973ABE5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 23:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhFQVuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 17:50:54 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:59874 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229683AbhFQVuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 17:50:52 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623966524; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=eATf/nMRgpGYmlXyMTtnhQYqD5pqdm6H+bv15GdGkHU=; b=e2xpqdeHdOs8PD/uCZZ0zmFXG9sQ/eSAOODyYmNcHiMd3k90IKnHVd0glzW3ZDY/bLDnjiAO
- vGZiY6d9TD8mqfOdCUvYPeF157hnLlNosa26ErGfWFk63LeoFtdDlRYNxyD0tjhfkUmgzLUe
- YZDGBiDH3zckbwOT2vllTSWWekQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60cbc33af726fa4188fc5a63 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Jun 2021 21:48:42
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 37DE0C4338A; Thu, 17 Jun 2021 21:48:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.110.94.190] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91D65C433F1;
-        Thu, 17 Jun 2021 21:48:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 91D65C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v10 0/6] Re-introduce TX FIFO resize for larger EP
- bursting
-To:     Ferry Toth <fntoth@gmail.com>, balbi@kernel.org,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, frowand.list@gmail.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        jackp@codeaurora.org, heikki.krogerus@linux.intel.com,
-        andy.shevchenko@gmail.com
-References: <1623923899-16759-1-git-send-email-wcheng@codeaurora.org>
- <cfb83fe4-369c-ec72-7887-3bcb0f20fe15@gmail.com>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <ec8050c5-c013-4af6-b39e-69779c009a9c@codeaurora.org>
-Date:   Thu, 17 Jun 2021 14:48:37 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231467AbhFQVwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 17:52:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60767 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229816AbhFQVwt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 17:52:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623966640;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yF7z1ZXkbARn9qymGKtrrZ4b8LWDAO30V08q/gw5sdg=;
+        b=UOFCTrNXSoeogA47GlmFpHwl6b6Sx13P6Qv7P3pUFEzgMCr7PHRoy28D+CcoakBz3k+wj+
+        9KDOr6mHLZqD0z79dqZ29LWmF2RlrPHPpDUXddPWRuyPvHoHu08FNc6BvwGTfv3ZM4TAIV
+        /CwgSFoEjYG5ccldYAqQTRFOmqojbQ0=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-mvcSokO8OJGIrRtrBJrdcQ-1; Thu, 17 Jun 2021 17:50:38 -0400
+X-MC-Unique: mvcSokO8OJGIrRtrBJrdcQ-1
+Received: by mail-ot1-f70.google.com with SMTP id 88-20020a9d06e10000b029030513a66c79so4710308otx.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 14:50:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yF7z1ZXkbARn9qymGKtrrZ4b8LWDAO30V08q/gw5sdg=;
+        b=W4g6UzjaiWUbfdN6XSjwq1+zwgCU8GkuGGUK0dzOJrpTY3EkeFkbrSWtotLYFHi9cz
+         4m95CVEyhmPFLATspTOhuXNs1VQU1kzRxyjjcWNC5CP7ZFN4quPky4odk8thdwKtOE9P
+         G1xMKpNOh+pQOJdEnoHZAGsXh9r5A2+jrFccUXfHK663Xs1qgxQwVmm2m+v2SQLF8dYz
+         a9IkbnOS+MoylMGwWBkF8ZckGBFE16MS2oJgiVrNfEsv2H+2Fje7ZP+K5u6xk+4K5ro5
+         YdIYLHcWtzoLqQIRwkNJXDUKLNRdy7QZ7hzl05L8Zg7IZfebjQb2qA8dQTl+ojPF6aWe
+         ydGg==
+X-Gm-Message-State: AOAM531671zyQpBBCjrgE4XT4MMIzcFTSs8CMw0a2C6VrZk/0wYWqbnr
+        WOhWf6hUazx8IRsV9ziab40G20C/4phzaHrlQOkb4e4ahF4NU7wr99UAB3ex9QffvthrJjtLsFS
+        r8U3dETpAQ8NmpDF5f8Maoank
+X-Received: by 2002:aca:d0d:: with SMTP id 13mr1332444oin.25.1623966638100;
+        Thu, 17 Jun 2021 14:50:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyAPSYZqrAeOBi2iQV/XrNzGumvqJ3SGCAytVjqAecnSf7E2bcYXFHe42NZzNsRtRr+7QSciw==
+X-Received: by 2002:aca:d0d:: with SMTP id 13mr1332438oin.25.1623966637968;
+        Thu, 17 Jun 2021 14:50:37 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a7sm1456247ooo.9.2021.06.17.14.50.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 14:50:37 -0700 (PDT)
+From:   trix@redhat.com
+To:     ysato@users.sourceforge.jp
+Cc:     uclinux-h8-devel@lists.sourceforge.jp,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] h8300: bug: remove foreward decl of die()
+Date:   Thu, 17 Jun 2021 14:50:27 -0700
+Message-Id: <20210617215027.3501613-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <cfb83fe4-369c-ec72-7887-3bcb0f20fe15@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Tom Rix <trix@redhat.com>
 
-On 6/17/2021 2:01 PM, Ferry Toth wrote:
-> Hi
-> 
-> Op 17-06-2021 om 11:58 schreef Wesley Cheng:
->> Changes in V10:
->>   - Fixed compilation errors in config where OF is not used (error due to
->>     unknown symbol for of_add_property()).  Add of_add_property() stub.
->>   - Fixed compilation warning for incorrect argument being passed to
->> dwc3_mdwidth
-> This fixes the OOPS I had in V9. I do not see any change in performance
-> on Merrifield though.
+die() is defined arch/h8300/kernel/traps.c
+and is used in arch/h8300/mm/fault.c
 
-I see...thanks Ferry! With your testing, are you writing to the device's
-internal storage (ie UFS, eMMC, etc...), or did you use a ramdisk as well?
+fault.c has a local forward decl of die()
+So remove the decl in bug.h
 
-If not with a ramdisk, we might want to give that a try to avoid the
-storage path being the bottleneck.  You can use "dd" to create an empty
-file, and then just use that as the LUN's backing file.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ arch/h8300/include/asm/bug.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-echo ramdisk.img >
-/sys/kernel/config/usb_gadget/g1/functions/mass_storage.0/lun.0/file
-
-Thanks
-Wesley Cheng
-
->> Changes in V9:
->>   - Fixed incorrect patch in series.  Removed changes in DTSI, as
->> dwc3-qcom will
->>     add the property by default from the kernel.
->>
->> Changes in V8:
->>   - Rebased to usb-testing
->>   - Using devm_kzalloc for adding txfifo property in dwc3-qcom
->>   - Removed DWC3 QCOM ACPI property for enabling the txfifo resize
->>
->> Changes in V7:
->>   - Added a new property tx-fifo-max-num for limiting how much fifo
->> space the
->>     resizing logic can allocate for endpoints with large burst
->> values.  This
->>     can differ across platforms, and tie in closely with overall
->> system latency.
->>   - Added recommended checks for DWC32.
->>   - Added changes to set the tx-fifo-resize property from dwc3-qcom by
->> default
->>     instead of modifying the current DTSI files.
->>   - Added comments on all APIs/variables introduced.
->>   - Updated the DWC3 YAML to include a better description of the
->> tx-fifo-resize
->>     property and added an entry for tx-fifo-max-num.
->>
->> Changes in V6:
->>   - Rebased patches to usb-testing.
->>   - Renamed to PATCH series instead of RFC.
->>   - Checking for fs_descriptors instead of ss_descriptors for
->> determining the
->>     endpoint count for a particular configuration.
->>   - Re-ordered patch series to fix patch dependencies.
->>
->> Changes in V5:
->>   - Added check_config() logic, which is used to communicate the
->> number of EPs
->>     used in a particular configuration.  Based on this, the DWC3
->> gadget driver
->>     has the ability to know the maximum number of eps utilized in all
->> configs.
->>     This helps reduce unnecessary allocation to unused eps, and will
->> catch fifo
->>     allocation issues at bind() time.
->>   - Fixed variable declaration to single line per variable, and
->> reverse xmas.
->>   - Created a helper for fifo clearing, which is used by ep0.c
->>
->> Changes in V4:
->>   - Removed struct dwc3* as an argument for dwc3_gadget_resize_tx_fifos()
->>   - Removed WARN_ON(1) in case we run out of fifo space
->>   Changes in V3:
->>   - Removed "Reviewed-by" tags
->>   - Renamed series back to RFC
->>   - Modified logic to ensure that fifo_size is reset if we pass the
->> minimum
->>     threshold.  Tested with binding multiple FDs requesting 6 FIFOs.
->>
->> Changes in V2:
->>   - Modified TXFIFO resizing logic to ensure that each EP is reserved a
->>     FIFO.
->>   - Removed dev_dbg() prints and fixed typos from patches
->>   - Added some more description on the dt-bindings commit message
->>
->> Currently, there is no functionality to allow for resizing the
->> TXFIFOs, and
->> relying on the HW default setting for the TXFIFO depth.  In most
->> cases, the
->> HW default is probably sufficient, but for USB compositions that contain
->> multiple functions that require EP bursting, the default settings
->> might not be enough.  Also to note, the current SW will assign an EP to a
->> function driver w/o checking to see if the TXFIFO size for that
->> particular
->> EP is large enough. (this is a problem if there are multiple HW defined
->> values for the TXFIFO size)
->>
->> It is mentioned in the SNPS databook that a minimum of TX FIFO depth = 3
->> is required for an EP that supports bursting.  Otherwise, there may be
->> frequent occurences of bursts ending.  For high bandwidth functions,
->> such as data tethering (protocols that support data aggregation), mass
->> storage, and media transfer protocol (over FFS), the bMaxBurst value
->> can be
->> large, and a bigger TXFIFO depth may prove to be beneficial in terms
->> of USB
->> throughput. (which can be associated to system access latency,
->> etc...)  It
->> allows for a more consistent burst of traffic, w/o any interruptions, as
->> data is readily available in the FIFO.
->>
->> With testing done using the mass storage function driver, the results
->> show
->> that with a larger TXFIFO depth, the bandwidth increased significantly.
->>
->> Test Parameters:
->>   - Platform: Qualcomm SM8150
->>   - bMaxBurst = 6
->>   - USB req size = 256kB
->>   - Num of USB reqs = 16
->>   - USB Speed = Super-Speed
->>   - Function Driver: Mass Storage (w/ ramdisk)
->>   - Test Application: CrystalDiskMark
->>
->> Results:
->>
->> TXFIFO Depth = 3 max packets
->>
->> Test Case | Data Size | AVG tput (in MB/s)
->> -------------------------------------------
->> Sequential|1 GB x     |
->> Read      |9 loops    | 193.60
->>       |           | 195.86
->>            |           | 184.77
->>            |           | 193.60
->> -------------------------------------------
->>
->> TXFIFO Depth = 6 max packets
->>
->> Test Case | Data Size | AVG tput (in MB/s)
->> -------------------------------------------
->> Sequential|1 GB x     |
->> Read      |9 loops    | 287.35
->>       |           | 304.94
->>            |           | 289.64
->>            |           | 293.61
->> -------------------------------------------
->>
->> Wesley Cheng (6):
->>    usb: gadget: udc: core: Introduce check_config to verify USB
->>      configuration
->>    usb: gadget: configfs: Check USB configuration before adding
->>    usb: dwc3: Resize TX FIFOs to meet EP bursting requirements
->>    of: Add stub for of_add_property()
->>    usb: dwc3: dwc3-qcom: Enable tx-fifo-resize property by default
->>    dt-bindings: usb: dwc3: Update dwc3 TX fifo properties
->>
->>   .../devicetree/bindings/usb/snps,dwc3.yaml         |  15 +-
->>   drivers/usb/dwc3/core.c                            |   9 +
->>   drivers/usb/dwc3/core.h                            |  15 ++
->>   drivers/usb/dwc3/dwc3-qcom.c                       |   9 +
->>   drivers/usb/dwc3/ep0.c                             |   2 +
->>   drivers/usb/dwc3/gadget.c                          | 212
->> +++++++++++++++++++++
->>   drivers/usb/gadget/configfs.c                      |  22 +++
->>   drivers/usb/gadget/udc/core.c                      |  25 +++
->>   include/linux/of.h                                 |   5 +
->>   include/linux/usb/gadget.h                         |   5 +
->>   10 files changed, 317 insertions(+), 2 deletions(-)
->>
-
+diff --git a/arch/h8300/include/asm/bug.h b/arch/h8300/include/asm/bug.h
+index 00fe5e966bb5b..99e7be5dc6564 100644
+--- a/arch/h8300/include/asm/bug.h
++++ b/arch/h8300/include/asm/bug.h
+@@ -7,7 +7,4 @@
+ 
+ #include <asm-generic/bug.h>
+ 
+-struct pt_regs;
+-extern void die(const char *str, struct pt_regs *fp, unsigned long err);
+-
+ #endif
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.26.3
+
