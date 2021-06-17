@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF063ABD71
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 22:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B6D3ABDBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 22:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232515AbhFQUdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 16:33:02 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52348 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232271AbhFQUc7 (ORCPT
+        id S232782AbhFQU7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 16:59:04 -0400
+Received: from smtprelay0204.hostedemail.com ([216.40.44.204]:54456 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231241AbhFQU7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 16:32:59 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A9B4521B1C;
-        Thu, 17 Jun 2021 20:30:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623961850; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7MrOSZdFOt9wTUVyZxzKZ+9qRk1GhEPDQuhCcMSdan0=;
-        b=Nzml9LQc5a54Z6G6NC24xdoLvkPsFpO/is604opqVvgX7yV9TeF13FFC+5J8sv4fSo2JR8
-        ZezTUrpJe6WMXC9X7cmUOKL12NEs7iEo5p/kYbX+gYyRfSITZoHufdpn9VkFd7ki/Sg96f
-        MbB0pLsV6iBvUhdOca9xfx47z6t7ueI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623961850;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7MrOSZdFOt9wTUVyZxzKZ+9qRk1GhEPDQuhCcMSdan0=;
-        b=AFKiXakYcmVG5XKv+m6WtjG96wImTTAwKdUtoWj6WX9fuBYwl/6wkJQnxqIqUOyKcjnnVV
-        gwQh/Dw8CKd88WDA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 50E7A118DD;
-        Thu, 17 Jun 2021 20:30:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623961850; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7MrOSZdFOt9wTUVyZxzKZ+9qRk1GhEPDQuhCcMSdan0=;
-        b=Nzml9LQc5a54Z6G6NC24xdoLvkPsFpO/is604opqVvgX7yV9TeF13FFC+5J8sv4fSo2JR8
-        ZezTUrpJe6WMXC9X7cmUOKL12NEs7iEo5p/kYbX+gYyRfSITZoHufdpn9VkFd7ki/Sg96f
-        MbB0pLsV6iBvUhdOca9xfx47z6t7ueI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623961850;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7MrOSZdFOt9wTUVyZxzKZ+9qRk1GhEPDQuhCcMSdan0=;
-        b=AFKiXakYcmVG5XKv+m6WtjG96wImTTAwKdUtoWj6WX9fuBYwl/6wkJQnxqIqUOyKcjnnVV
-        gwQh/Dw8CKd88WDA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id waNDEfqwy2ASDgAALh3uQQ
-        (envelope-from <jroedel@suse.de>); Thu, 17 Jun 2021 20:30:50 +0000
-Date:   Thu, 17 Jun 2021 22:30:48 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] iommu/vt-d: Fix W=1 clang warning in intel/perf.c
-Message-ID: <YMuw+LtM/B1QTTJI@suse.de>
-References: <20210617145339.2692-1-joro@8bytes.org>
- <CAKwvOd=8jUsRFKg6+sqq2-DakbRBGR6Z6mR_smuxp+cMEmCHLw@mail.gmail.com>
+        Thu, 17 Jun 2021 16:59:02 -0400
+Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id BC68C181D341E;
+        Thu, 17 Jun 2021 20:56:52 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 67AC22EBFA9;
+        Thu, 17 Jun 2021 20:56:50 +0000 (UTC)
+Message-ID: <d6c939f27ee67dda21562e4eb1573e6180ecef1c.camel@perches.com>
+Subject: Re: Re: [PATCH] scsi: ufs: Add indent for code alignment
+From:   Joe Perches <joe@perches.com>
+To:     keosung.park@samsung.com, ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "satyat@google.com" <satyat@google.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+In-Reply-To: <2038148563.21623893584364.JavaMail.epsvc@epcpadp4>
+References: <e0950e65c5e7f8f0db132cfd22bdd24ee27c63e7.camel@perches.com>
+         <1891546521.01623299401994.JavaMail.epsvc@epcpadp3>
+         <CGME20210610040731epcms2p7533bc62d13b82a0e86590f30ac4b6c30@epcms2p1>
+         <2038148563.21623893584364.JavaMail.epsvc@epcpadp4>
+Content-Type: text/plain; charset="ISO-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOd=8jUsRFKg6+sqq2-DakbRBGR6Z6mR_smuxp+cMEmCHLw@mail.gmail.com>
+Date:   Wed, 16 Jun 2021 20:35:26 -0700
+User-Agent: Evolution 3.40.0-1 
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.82
+X-Stat-Signature: z3xgzx8m9jjdsnu1s1ughpj8i4gd4pod
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 67AC22EBFA9
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19iIO6/WA0deVKmYeoqXnlVruH+W3b95WY=
+X-HE-Tag: 1623963410-885665
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 10:16:50AM -0700, Nick Desaulniers wrote:
-> On Thu, Jun 17, 2021 at 7:54 AM Joerg Roedel <joro@8bytes.org> wrote:
-> >
-> > From: Joerg Roedel <jroedel@suse.de>
-> >
-> > Fix this warning when compiled with clang and W=1:
-> >
-> >         drivers/iommu/intel/perf.c:16: warning: Function parameter or member 'latency_lock' not described in 'DEFINE_SPINLOCK'
-> >         drivers/iommu/intel/perf.c:16: warning: expecting prototype for perf.c(). Prototype was for DEFINE_SPINLOCK() instead
+On Thu, 2021-06-17 at 10:28 +0900, Keoseong Park wrote:
+> > On Thu, 2021-06-10 at 13:07 +0900, Keoseong Park wrote:
+> > > Add indentation to return statement.
+> > []
+> > > diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> > []
+> > > @@ -903,7 +903,7 @@ static inline bool
+> > > ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
+> > >  	else
+> > >  		return false;
+> > >  #else
+> > > -return true;
+> > > +	return true;
+> > >  #endif
+> > >  }
+> > >  
+> > 
+> > Perhaps a little refactoring instead:
+> > ---
+> > drivers/scsi/ufs/ufshcd.h | 12 ++++--------
+> > 1 file changed, 4 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> > index c98d540ac044d..ed89839476b3b 100644
+> > --- a/drivers/scsi/ufs/ufshcd.h
+> > +++ b/drivers/scsi/ufs/ufshcd.h
+> > @@ -894,15 +894,11 @@ static inline bool
+> > ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
+> > static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
+> > {
+> > /* DWC UFS Core has the Interrupt aggregation feature but is not
+> > detectable*/
+> > -#ifndef CONFIG_SCSI_UFS_DWC
+> > -	if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
+> > -	    !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
+> > +	if (IS_ENABLED(CONFIG_SCSI_UFS_DWC))
+> > 		return true;
+> > -	else
+> > -		return false;
+> > -#else
+> > -return true;
+> > -#endif
+> > +
+> > +	return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
+> > +		!(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
+> > }
+> > 
+> > static inline bool ufshcd_can_aggressive_pc(struct ufs_hba *hba)
+> > 
 > 
-> I think these warnings are actually produced by kernel-doc? (not clang)
+> Hello Joe,
+> Thanks for your advice.
+> As you mentioned, refactoring looks good.
+> However, since the content does not match the title, can I submit a
+> patch with a new title?
 
-Will kernel-doc check automatically when COMPILER=clang is set and W=1?
-Because I did not explicitly enable any kernel-doc checks.
+Yes of course.
 
-Regards,
-
-	Joerg
