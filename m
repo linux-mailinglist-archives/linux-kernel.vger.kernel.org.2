@@ -2,145 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB873AAB00
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C543AAB0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 07:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhFQFX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 01:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhFQFXt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 01:23:49 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D52AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:21:42 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id o88-20020a17090a0a61b029016eeb2adf66so5205940pjo.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 22:21:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=IiEIjleBusGBa/AVKIhB+ojZDFic8IqFpbVO6kSE2bs=;
-        b=M4DsVPWi6V9ABVD4/wFHuv+DtK7vdPAeuGt4q68xjhSO+27cxKtMKV6eFaDsUwXxE8
-         sNCnMWFgnh2TiYqv8T2YiRTfJNpFBRgdpY2amsy1JgdkP+AVEQEEblnsTrBr1/i6M232
-         sc7HaBi1vN7BKaEMM7Ol+6TxXIwj415XBEGu+9OhJ1Qrc19NMT6w6NTbH+X+XDaiUE8W
-         QZiBJHopzLXOwxepkcpl/dWbDWNVzXYFYKOEXc++VBvm2xZ1zwz7C34aBkQ5yflGd4a4
-         J+lEQwF5ftbL/hXQqkolhPTLn2IFXl8mrY/aJCDPd0rt08qTMWum+5dP5X0RXSMvlFAe
-         Jo6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=IiEIjleBusGBa/AVKIhB+ojZDFic8IqFpbVO6kSE2bs=;
-        b=DtLX4k80zDDQWUtIQtDUqs4HdN14qNsogHwRYWmbDatJk3OM/Xu2tqouuWSQZzS2eM
-         hykg/FoFTSeWxkFONrOWSpuYHd9llx69HshllIfHJDblJdt7FJuKYo9UmlnQBXJCARt/
-         +VDZxUkOkG/I4+YUP+iFT3Becqr3yQgUivgblIeVQ3+ZQwAlw9Zs9cOPakzy3fz3wX7N
-         bFGBaLtUgv44bcp/68uxut/91413GWQBBbZVIqci1m5u2vtOvYPZa092UmwWzLRllBCN
-         ZgtBinUp750EmwlHc7puoIaLgcowtDIONBuNtfvY++wbrEdTg0vwNTJ58hFdep/VOfRM
-         EBQA==
-X-Gm-Message-State: AOAM532wqJH5gOvzb9WYRVyHL0g1w4C8IVkasCCQLOx3hUCIWdd6PeuE
-        iPW3Ak9lX0ZvMHNWwrEVd3I=
-X-Google-Smtp-Source: ABdhPJzBkr0iJz5bdOnzNSpA9OOHOaTorvnhWBgBCxf7FNmiUP5c7fPfcObhierQgxNTP26VcJWpJw==
-X-Received: by 2002:a17:902:8493:b029:11a:faa6:5bf6 with SMTP id c19-20020a1709028493b029011afaa65bf6mr2979254plo.42.1623907301768;
-        Wed, 16 Jun 2021 22:21:41 -0700 (PDT)
-Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
-        by smtp.gmail.com with ESMTPSA id d6sm4011456pgq.88.2021.06.16.22.21.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 22:21:41 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 15:21:36 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v4 1/2] module: add elf_check_module_arch for module
- specific elf arch checks
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal =?iso-8859-1?q?Such=E1nek?= <msuchanek@suse.de>
-References: <20210611093959.821525-1-npiggin@gmail.com>
-        <20210611093959.821525-2-npiggin@gmail.com>
-        <YMdGWjBOmcstBwOl@p200300cbcf109700df096d564fe976c3.dip0.t-ipconnect.de>
-        <1623722110.amu32mwaqs.astroid@bobo.none>
-        <YMiaZOqhHck9iy0n@p200300cbcf109700df096d564fe976c3.dip0.t-ipconnect.de>
-        <1623805495.qdikm5ks8v.astroid@bobo.none> <YMn0cvhTyRtsE7xu@linux.fritz.box>
-In-Reply-To: <YMn0cvhTyRtsE7xu@linux.fritz.box>
-MIME-Version: 1.0
-Message-Id: <1623907147.4k0ms3i41v.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
+        id S229714AbhFQFes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 01:34:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229515AbhFQFeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 01:34:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D793D613DF;
+        Thu, 17 Jun 2021 05:32:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623907959;
+        bh=17mY8uulhVndheqRcx5OgpB9j7P+oGlGE8QxNKUfcy0=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=tUpRlzj1v4+E5IgbjYIIwxCAzwHW2mIjA1hoi39H0AbTkblAL2umRUVfJtB/F/I+/
+         zuMfOgtQjZqZRrHUIja/6V1LWWieTHXM8ZNvgN5ko4SCuyyZqLHQgasR4QYwU5PNea
+         cJiQ/KZjanCdfxKPRSW3cxK78GRHUhLgcp1Pow0wNE5xJyKjTBNJbyTACusU1kTx2O
+         SUfh3c+Q/IXZAfNpl4ef9TqJXlfBQBnhDa7gacX+dzy9H9dQkLbvwR7/EU/U79tc3i
+         ae1f9tkomIaaZdfAnlMRal/Zyl6QpvtGPKZFllq05Kz8HfjPl8POX4wtJS5x3/0esv
+         WuzLjkWAUJurA==
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id EC26F27C0054;
+        Thu, 17 Jun 2021 01:32:37 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute2.internal (MEProxy); Thu, 17 Jun 2021 01:32:37 -0400
+X-ME-Sender: <xms:dd7KYHw4xnOseSIUg2a0fs-1fL1S8X85JA5uRupTPLfRn29Db4cBKA>
+    <xme:dd7KYPSQa0Si0UV8TexR9guPX5xmo9fN2rrP_Hz0F3WaQyL2h_-qJKMEHkjcpNWgh
+    AHtvtmigQcphH8zdJ8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeftddgledvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepuefgueefveekhedvtdffgfekleehgfekheevteegieekgeehiedv
+    fffgjeetudfhnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhguhidomhgvshhmthhprghu
+    thhhphgvrhhsohhnrghlihhthidqudduiedukeehieefvddqvdeifeduieeitdekqdhluh
+    htoheppehkvghrnhgvlhdrohhrgheslhhinhhugidrlhhuthhordhush
+X-ME-Proxy: <xmx:dd7KYBVIWPb4tEQdQE8KcR-DtXXhzY7DVW7Sj4K6-Tnt12hvXCw7AQ>
+    <xmx:dd7KYBj7mCJCI_fqjPbfzNdgZb-HUXLiBGgHzx8WIPl3Av6mCpiREw>
+    <xmx:dd7KYJA9HrMARep_kIRirKr8umf7iRNgOoBj8xAOe68ywZmsbgQ-Hw>
+    <xmx:dd7KYDBAa1fuSoufTDI82M9PbtDZnqb9ybBcuQ4OzeC-wq6KD8fUsIQ48mc>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 60BB951C0060; Thu, 17 Jun 2021 01:32:37 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-526-gf020ecf851-fm-20210616.001-gf020ecf8
+Mime-Version: 1.0
+Message-Id: <c3c7a1cf-1c87-42cc-b2d6-cc2df55e5b57@www.fastmail.com>
+In-Reply-To: <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
+References: <cover.1623813516.git.luto@kernel.org>
+ <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
+ <1623816595.myt8wbkcar.astroid@bobo.none>
+ <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
+ <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
+ <1623893358.bbty474jyy.astroid@bobo.none>
+ <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
+Date:   Wed, 16 Jun 2021 22:32:15 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Nicholas Piggin" <npiggin@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Rik van Riel" <riel@surriel.com>
+Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org,
+        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH 4/8] membarrier: Make the post-switch-mm barrier explicit
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Jessica Yu's message of June 16, 2021 10:54 pm:
-> +++ Nicholas Piggin [16/06/21 11:18 +1000]:
->>Excerpts from Jessica Yu's message of June 15, 2021 10:17 pm:
->>> +++ Nicholas Piggin [15/06/21 12:05 +1000]:
->>>>Excerpts from Jessica Yu's message of June 14, 2021 10:06 pm:
->>>>> +++ Nicholas Piggin [11/06/21 19:39 +1000]:
->>>>>>The elf_check_arch() function is used to test usermode binaries, but
->>>>>>kernel modules may have more specific requirements. powerpc would lik=
-e
->>>>>>to test for ABI version compatibility.
->>>>>>
->>>>>>Add an arch-overridable function elf_check_module_arch() that default=
-s
->>>>>>to elf_check_arch() and use it in elf_validity_check().
->>>>>>
->>>>>>Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
->>>>>>[np: split patch, added changelog]
->>>>>>Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->>>>>>---
->>>>>> include/linux/moduleloader.h | 5 +++++
->>>>>> kernel/module.c              | 2 +-
->>>>>> 2 files changed, 6 insertions(+), 1 deletion(-)
->>>>>>
->>>>>>diff --git a/include/linux/moduleloader.h b/include/linux/moduleloade=
-r.h
->>>>>>index 9e09d11ffe5b..fdc042a84562 100644
->>>>>>--- a/include/linux/moduleloader.h
->>>>>>+++ b/include/linux/moduleloader.h
->>>>>>@@ -13,6 +13,11 @@
->>>>>>  * must be implemented by each architecture.
->>>>>>  */
->>>>>>
->>>>>>+// Allow arch to optionally do additional checking of module ELF hea=
-der
->>>>>>+#ifndef elf_check_module_arch
->>>>>>+#define elf_check_module_arch elf_check_arch
->>>>>>+#endif
->>>>>
->>>>> Hi Nicholas,
->>>>>
->>>>> Why not make elf_check_module_arch() consistent with the other
->>>>> arch-specific functions? Please see module_frob_arch_sections(),
->>>>> module_{init,exit}_section(), etc in moduleloader.h. That is, they ar=
-e
->>>>> all __weak functions that are overridable by arches. We can maybe mak=
-e
->>>>> elf_check_module_arch() a weak symbol, available for arches to
->>>>> override if they want to perform additional elf checks. Then we don't
->>>>> have to have this one-off #define.
->>>>
->>>>
->>>>Like this? I like it. Good idea.
->>>
->>> Yeah! Also, maybe we can alternatively make elf_check_module_arch() a
->>> separate check entirely so that the powerpc implementation doesn't
->>> have to include that extra elf_check_arch() call. Something like this m=
-aybe?
->>
->>Yeah we can do that. Would you be okay if it goes via powerpc tree? If
->>yes, then we should get your Ack (or SOB because it seems to be entirely
->>your patch now :D)
+On Wed, Jun 16, 2021, at 7:57 PM, Andy Lutomirski wrote:
 >=20
-> This can go through the powerpc tree. Will you do another respin
-> of this patch? And yes, feel free to take my SOB for this one -
 >=20
->      Signed-off-by: Jessica Yu <jeyu@kernel.org>
+> On Wed, Jun 16, 2021, at 6:37 PM, Nicholas Piggin wrote:
+> > Excerpts from Andy Lutomirski's message of June 17, 2021 4:41 am:
+> > > On 6/16/21 12:35 AM, Peter Zijlstra wrote:
+> > >> On Wed, Jun 16, 2021 at 02:19:49PM +1000, Nicholas Piggin wrote:
+> > >>> Excerpts from Andy Lutomirski's message of June 16, 2021 1:21 pm=
+:
+> > >>>> membarrier() needs a barrier after any CPU changes mm.  There i=
+s currently
+> > >>>> a comment explaining why this barrier probably exists in all ca=
+ses.  This
+> > >>>> is very fragile -- any change to the relevant parts of the sche=
+duler
+> > >>>> might get rid of these barriers, and it's not really clear to m=
+e that
+> > >>>> the barrier actually exists in all necessary cases.
+> > >>>
+> > >>> The comments and barriers in the mmdrop() hunks? I don't see wha=
+t is=20
+> > >>> fragile or maybe-buggy about this. The barrier definitely exists=
+.
+> > >>>
+> > >>> And any change can change anything, that doesn't make it fragile=
+. My
+> > >>> lazy tlb refcounting change avoids the mmdrop in some cases, but=
+ it
+> > >>> replaces it with smp_mb for example.
+> > >>=20
+> > >> I'm with Nick again, on this. You're adding extra barriers for no=
 
-You're maintainer so let's go with your preference. We can always adjust=20
-the arch hooks later if a need comes up. And yes I'll re post with you=20
-cc'ed.
+> > >> discernible reason, that's not generally encouraged, seeing how e=
+xtra
+> > >> barriers is extra slow.
+> > >>=20
+> > >> Both mmdrop() itself, as well as the callsite have comments sayin=
+g how
+> > >> membarrier relies on the implied barrier, what's fragile about th=
+at?
+> > >>=20
+> > >=20
+> > > My real motivation is that mmgrab() and mmdrop() don't actually ne=
+ed to
+> > > be full barriers.  The current implementation has them being full
+> > > barriers, and the current implementation is quite slow.  So let's =
+try
+> > > that commit message again:
+> > >=20
+> > > membarrier() needs a barrier after any CPU changes mm.  There is c=
+urrently
+> > > a comment explaining why this barrier probably exists in all cases=
+. The
+> > > logic is based on ensuring that the barrier exists on every contro=
+l flow
+> > > path through the scheduler.  It also relies on mmgrab() and mmdrop=
+() being
+> > > full barriers.
+> > >=20
+> > > mmgrab() and mmdrop() would be better if they were not full barrie=
+rs.  As a
+> > > trivial optimization, mmgrab() could use a relaxed atomic and mmdr=
+op()
+> > > could use a release on architectures that have these operations.
+> >=20
+> > I'm not against the idea, I've looked at something similar before (n=
+ot
+> > for mmdrop but a different primitive). Also my lazy tlb shootdown se=
+ries=20
+> > could possibly take advantage of this, I might cherry pick it and te=
+st=20
+> > performance :)
+> >=20
+> > I don't think it belongs in this series though. Should go together w=
+ith
+> > something that takes advantage of it.
+>=20
+> I=E2=80=99m going to see if I can get hazard pointers into shape quick=
+ly.
 
-Thanks,
-Nick
+Here it is.  Not even boot tested!
+
+https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=
+=3Dsched/lazymm&id=3Decc3992c36cb88087df9c537e2326efb51c95e31
+
+Nick, I think you can accomplish much the same thing as your patch by:
+
+#define for_each_possible_lazymm_cpu while (false)
+
+although a more clever definition might be even more performant.
+
+I would appreciate everyone's thoughts as to whether this scheme is sane=
+.
+
+Paul, I'm adding you for two reasons.  First, you seem to enjoy bizarre =
+locking schemes.  Secondly, because maybe RCU could actually work here. =
+ The basic idea is that we want to keep an mm_struct from being freed at=
+ an inopportune time.  The problem with naively using RCU is that each C=
+PU can use one single mm_struct while in an idle extended quiescent stat=
+e (but not a user extended quiescent state).  So rcu_read_lock() is righ=
+t out.  If RCU could understand this concept, then maybe it could help u=
+s, but this seems a bit out of scope for RCU.
+
+--Andy
