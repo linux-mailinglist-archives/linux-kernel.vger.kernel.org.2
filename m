@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B313AB3B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8FF3AB3BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 14:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbhFQMjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 08:39:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
+        id S231403AbhFQMkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 08:40:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231345AbhFQMjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:39:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3723610CA;
-        Thu, 17 Jun 2021 12:36:59 +0000 (UTC)
+        id S230225AbhFQMkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 08:40:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 252A7610CA;
+        Thu, 17 Jun 2021 12:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623933423;
-        bh=vtIoA3RUe9cfBWUdhTz7R1sk/khl1Kit7uv87wGgMwE=;
+        s=k20201202; t=1623933478;
+        bh=JXZlIvP9Jv7f57Wfb41hYAPLe3/lzlvn9IlwjLKbrf8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N3s56ziwwBuYAAcAAaOb5NasxsTephHi7oyHCorEYVIRQufV3DpM+2sYXh/hqTEo0
-         0xZU8wn8q+6PmzRxv3He6H+rW1zIuk5XDBdfnMOV8DahEKn8nW/ZAD09IGyiH8DVeu
-         pfePkV2t/q4AZHSV7cR0iXMqNsU5geItSPo3ys2Vt7UEx53v2Kq8JiYMI86mYEW0wV
-         nqJNFxofVKcLvxWJM8mlB6i38wThfWdODjuR5vPy/U46LDlJurv8mJQQVW3no6rlXL
-         W9CC21egH4K6TdC7T9WFDEGUv5XXwPrrJ7qc9/3z/mbB3NF6vfYFvluImOdz9rGP1L
-         7DpeLTuYBaarQ==
-Date:   Thu, 17 Jun 2021 14:36:56 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        b=sLUpejLzm6khVyg99lx39uFIe+3YsyCNZ3x1fBTlmBClMnh7AasKRaTFw0zN3Ph+L
+         UVEBU6qGkRcIiGFZ3WF//KGW5U9ha0cxD8zbFjM7nNBPBUEvTpLjkMdej2B5d5nGOq
+         TvYunvw+D8eyjtjnaNC3Z/KxX5GN4QSscdln2aa2PcDoxJXO49SXw5tSCuNe/y223U
+         us4vSqdmNMTLwYsIy9IQYl9mtcFhkpuiq9JrFcJWekM4zvBRc/kt6jPGkHjX4yYqKZ
+         0L3LQQFeCGz8qp1SySWogVsfCBcVdtAPfPLUpH35shkgvkaRBVtjpzk0bQsrzQpObF
+         g4PoHrqb+poNA==
+Date:   Thu, 17 Jun 2021 13:37:38 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
         Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
-Subject: Re: [PATCH v7 0/5] printk: Userspace format indexing support
-Message-ID: <YMtB6Anv98O4mW9C@linux.fritz.box>
-References: <cover.1623775748.git.chris@chrisdown.name>
- <YMsfo3/b1LvOoiM0@alley>
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH RESEND v10 00/11] Extend regulator notification support
+Message-ID: <20210617123738.GC5067@sirena.org.uk>
+References: <cover.1622628333.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kVXhAStRUZ/+rrGn"
 Content-Disposition: inline
-In-Reply-To: <YMsfo3/b1LvOoiM0@alley>
-X-OS:   Linux linux.fritz.box 5.12.9-1-default x86_64
+In-Reply-To: <cover.1622628333.git.matti.vaittinen@fi.rohmeurope.com>
+X-Cookie: But it does move!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Petr Mladek [17/06/21 12:10 +0200]:
->On Tue 2021-06-15 17:52:20, Chris Down wrote:
->> We have a number of systems industry-wide that have a subset of their
->> functionality that works as follows:
->>
->> 1. Receive a message from local kmsg, serial console, or netconsole;
->> 2. Apply a set of rules to classify the message;
->> 3. Do something based on this classification (like scheduling a
->>    remediation for the machine), rinse, and repeat.
->>
->> This provides a solution to the issue of silently changed or deleted
->> printks: we record pointers to all printk format strings known at
->> compile time into a new .printk_index section, both in vmlinux and
->> modules. At runtime, this can then be iterated by looking at
->> <debugfs>/printk/index/<module>, which emits the following format, both
->> readable by humans and able to be parsed by machines:
->>
->>     $ head -1 vmlinux; shuf -n 5 vmlinux
->>     # <level[,flags]> filename:line function "format"
->>     <5> block/blk-settings.c:661 disk_stack_limits "%s: Warning: Device %s is misaligned\n"
->>     <4> kernel/trace/trace.c:8296 trace_create_file "Could not create tracefs '%s' entry\n"
->>     <6> arch/x86/kernel/hpet.c:144 _hpet_print_config "hpet: %s(%d):\n"
->>     <6> init/do_mounts.c:605 prepare_namespace "Waiting for root device %s...\n"
->>     <6> drivers/acpi/osl.c:1410 acpi_no_auto_serialize_setup "ACPI: auto-serialization disabled\n"
->>
->> This mitigates the majority of cases where we have a highly-specific
->> printk which we want to match on, as we can now enumerate and check
->> whether the format changed or the printk callsite disappeared entirely
->> in userspace. This allows us to catch changes to printks we monitor
->> earlier and decide what to do about it before it becomes problematic.
->>
->> There is no additional runtime cost for printk callers or printk itself,
->> and the assembly generated is exactly the same.
->>
->> Chris Down (5):
->>   string_helpers: Escape double quotes in escape_special
->>   printk: Straighten out log_flags into printk_info_flags
->>   printk: Rework parse_prefix into printk_parse_prefix
->>   printk: Userspace format indexing support
->>   printk: index: Add indexing support to dev_printk
->
->The patchset looks ready for linux-next from my POV. I could fixup the
->messages as suggested by Andy when pushing.
->
->Well, I would still like to get acks from:
->
->   + Andy for the 1st patch
->   + Jessica for the changes in the module loader code in 4th patch.
 
-Hi Petr, the module.{c,h} changes are fine by me:
+--kVXhAStRUZ/+rrGn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-     Acked-by: Jessica Yu <jeyu@kernel.org>
+On Thu, Jun 03, 2021 at 08:40:07AM +0300, Matti Vaittinen wrote:
+> Extend regulator notification support
+>=20
+> This series extends the regulator notification and error flag support.
+> Initial discussion on the topic can be found here:
+> https://lore.kernel.org/lkml/6046836e22b8252983f08d5621c35ececb97820d.cam=
+el@fi.rohmeurope.com/
 
-Thank you,
+Any thoughts on the reboot or thermal patches?  In the absence of any
+further feedback by the end of the week I might go ahead and apply
+things to the regulator tree if that's OK with people.
 
-Jessica
+--kVXhAStRUZ/+rrGn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDLQhEACgkQJNaLcl1U
+h9CFGAf/URUmhopehFCmMlbpAU+UBOk0Mjr8Ko9s6KYYgB+p4HLxz0dSmuS1+iAo
++oMzCCE6wWOR8uFQ0UvnceyS0ixGE7O2QVds0nz+nk5Kl6rAgOFVx/DpWE238ZGi
+r5v5qjX2mo92x8fvYnQGMeH8rJtXhD92r/kN7vdu+E6Dt3+HPTGS4fSxiWwAq1Pg
+46t5I2wArFhOaGCZJ/68jQJg9BZ3+wE2ThPUWy4eWTB4wwqXmoiUKaLO6Tbsuna+
+G+JbnO2md5U205F15CDlppUAl4e9HpxEYpv8I6MaWhdpsmawHLSiS/us3tqGTZE1
+zBNA4Di/Ay7xzS6WIOA0cza2giFBRg==
+=D9Xy
+-----END PGP SIGNATURE-----
+
+--kVXhAStRUZ/+rrGn--
