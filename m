@@ -2,86 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DC13AABBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973C13AABC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhFQGTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 02:19:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhFQGTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 02:19:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22CE561245;
-        Thu, 17 Jun 2021 06:17:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623910663;
-        bh=Iej6rNHKIHWDbxNC0dw+JtSIrT0pe3am0Zc+QTlD5+Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TxPXXdmGtKAuOPEwHE9jTELtT4aA1F8zUarhx9Pj3gpNcTCo64+tl2E1c5s3KiOGP
-         +DwGVg4JqKyEP4udJPKGQMNcI4Wgl0PddA3CYpF2fskJE59I8XqZ1KleocqIQICyj4
-         StANrJCP5SfqPpbkJkdiQOZiuenYMMiSzPRS7EJFIg5srnOzWtgCNBpvfHlnsBlITs
-         gvm9bjduCSbuLk0yEu2+wuZEMZc659a5KVdeDy+H7IBP/9Xz3lMQEDpfTaBKvmo+az
-         ERuSFOohARgk80ZEgWXvr6O51MoYMzBQuaR/b5youIi/N8VSEXe/NsftxIpDA56GzI
-         lqQKmPp8C/vZA==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     James Smart <james.smart@broadcom.com>,
-        Ram Vegesna <ram.vegesna@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] scsi: elx: efct: Do not use id uninitialized in efct_lio_setup_session()
-Date:   Wed, 16 Jun 2021 23:17:21 -0700
-Message-Id: <20210617061721.2405511-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890
+        id S229915AbhFQGU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 02:20:57 -0400
+Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:38111 "EHLO
+        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229515AbhFQGUz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 02:20:55 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id tlMQlmuimhg8ZtlMTlShud; Thu, 17 Jun 2021 08:18:46 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1623910726; bh=6HmWS6ynFzcb3UWknvmVlnIFSb1h9WntxYhD/ZWpF34=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=qBJReWXZezuzQcDtMbd0KgJ+8DwUXaWEeXL8Ja7ZhY5UPvjQBnvX6KJV1SAfn5Vob
+         ObcXaK+rhtmyxTUN4T/gdB5Pkp0hBEXUWvc3zQY1zZj/ur3ajp6DIVNPkAuXjMWSzB
+         lYR9lBUjjk8Gb50il+fIfOvRi2QjNsf/n2xdbPBkv6R0yRo1NqVw5mngajPGeC2Mm7
+         nTJy+egUQWAwNKerwbaTMjlBN9jDqqJUfN92U4TIYR8AJ7S1BGPXmIfNv3m7Z1MTLr
+         MZFeQ+6wtAv03dbwHNfclY21Zk1ZqDYoFw15ezWzdtLROd1PnJHc9Wo5/iWw8yi03V
+         dBiUMcMFUgLnA==
+Subject: Re: [PATCH v5 12/15] media: i2c: rdacm20: Embed 'serializer' field
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210616124616.49249-1-jacopo+renesas@jmondi.org>
+ <20210616124616.49249-13-jacopo+renesas@jmondi.org>
+ <YMqTyFvxer0vjsKT@pendragon.ideasonboard.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <1e6e5cd0-82b1-db7a-ec70-ebb8831c11c4@xs4all.nl>
+Date:   Thu, 17 Jun 2021 08:18:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YMqTyFvxer0vjsKT@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfKc9TqgYXNnwKK3A9jTVqfgmUnrCdOL1KDLjWDjAPZOnmsVcOjCr/buMwniKu0PgQ51CsqEVlLpC9qzgVKJpF6FvIWRQnv/D4eqDbsxmGLQwwsgWWa6b
+ wXDcuqMiS7M6HHFoXweEyq6yFynYqAHwcnHC3NsC7Zv4ZTVFVYcCRI8hC/pGeHe1DRRGQAAeR6gOimTu7i9+QhmSxxJKZZpnW1fGgLPP1JUAUx9B1S2KQG3M
+ 8PMobmPj+r7kkKQT5ng27G1l9vYg8usiBvGRgZpU5FYP+xBk4vtJP/bNMpqtBSHA1H8RTv2UiZZxACabgNnkTMy94H183DhS5lY+72BnPhNJoJ8TjUYGcfSx
+ /OF+Wp+4rfeupzZjXwLpPd3GDW5WzvqHM03BBls8aI/XWe7HPEdAhkQ5Jc1fjBPSuTdD62p942ymJP1pVa1xT2V/es+VxtNFIp3nF3KRg3yb4ltCt/yxPxJc
+ ZH1Vq9zj/L0k7N0JOO59eMhZtH/bYBBptbnMg16sHT+woS5DQ869CyupXRXnqK0ZF/cGCfffhcngtmiMy/KE65ANxn0x0H/lZlCP7Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clang warns:
+On 17/06/2021 02:14, Laurent Pinchart wrote:
+> Hi Jacopo,
+> 
+> Thank you for the patch.
+> 
+> This should be moved before 11/15 to avoid a bisection breakage (or
+> 11/15 should be fixed, and this patch updated accordingly).
 
-drivers/scsi/elx/efct/efct_lio.c:1216:24: warning: variable 'id' is
-uninitialized when used here [-Wuninitialized]
-                      se_sess, node, id);
-                                     ^~
+Good catch!
 
-Shuffle the debug print after id's initialization so that the actual
-value is printed.
+Jacopo, I dropped the PR I made. It you just want to swap patch 11 and 12,
+then I can do that, if you want more extensive changes, then I need a v6.
 
-Fixes: 692e5d73a811 ("scsi: elx: efct: LIO backend interface routines")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1397
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- drivers/scsi/elx/efct/efct_lio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Let me know what you want.
 
-diff --git a/drivers/scsi/elx/efct/efct_lio.c b/drivers/scsi/elx/efct/efct_lio.c
-index e1bab2b17e4d..b7d69ff29c09 100644
---- a/drivers/scsi/elx/efct/efct_lio.c
-+++ b/drivers/scsi/elx/efct/efct_lio.c
-@@ -1212,12 +1212,12 @@ static void efct_lio_setup_session(struct work_struct *work)
- 		return;
- 	}
- 
--	efc_log_debug(efct, "new initiator sess=%p node=%p id: %llx\n",
--		      se_sess, node, id);
--
- 	tgt_node = node->tgt_node;
- 	id = (u64) tgt_node->port_fc_id << 32 | tgt_node->node_fc_id;
- 
-+	efc_log_debug(efct, "new initiator sess=%p node=%p id: %llx\n",
-+		      se_sess, node, id);
-+
- 	if (xa_err(xa_store(&efct->lookup, id, tgt_node, GFP_KERNEL)))
- 		efc_log_err(efct, "Node lookup store failed\n");
- 
+	Hans
 
-base-commit: ebc076b3eddc807729bd81f7bc48e798a3ddc477
--- 
-2.32.0.93.g670b81a890
+> 
+> On Wed, Jun 16, 2021 at 02:46:13PM +0200, Jacopo Mondi wrote:
+>> There's no reason to allocate dynamically the 'serializer' field in
+>> the driver structure.
+>>
+>> Embed the field and adjust all its users in the driver.
+>>
+>> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+>> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+>> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>> ---
+>>  drivers/media/i2c/rdacm20.c | 36 +++++++++++++++---------------------
+>>  1 file changed, 15 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+>> index 5e0314a2b1ca..029af8fd7485 100644
+>> --- a/drivers/media/i2c/rdacm20.c
+>> +++ b/drivers/media/i2c/rdacm20.c
+>> @@ -312,7 +312,7 @@ static const struct ov10635_reg {
+>>  
+>>  struct rdacm20_device {
+>>  	struct device			*dev;
+>> -	struct max9271_device		*serializer;
+>> +	struct max9271_device		serializer;
+>>  	struct i2c_client		*sensor;
+>>  	struct v4l2_subdev		sd;
+>>  	struct media_pad		pad;
+>> @@ -399,7 +399,7 @@ static int rdacm20_s_stream(struct v4l2_subdev *sd, int enable)
+>>  {
+>>  	struct rdacm20_device *dev = sd_to_rdacm20(sd);
+>>  
+>> -	return max9271_set_serial_link(dev->serializer, enable);
+>> +	return max9271_set_serial_link(&dev->serializer, enable);
+>>  }
+>>  
+>>  static int rdacm20_enum_mbus_code(struct v4l2_subdev *sd,
+>> @@ -455,10 +455,10 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+>>  	unsigned int retry = 3;
+>>  	int ret;
+>>  
+>> -	max9271_wake_up(dev->serializer);
+>> +	max9271_wake_up(&dev->serializer);
+>>  
+>>  	/* Serial link disabled during config as it needs a valid pixel clock. */
+>> -	ret = max9271_set_serial_link(dev->serializer, false);
+>> +	ret = max9271_set_serial_link(&dev->serializer, false);
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> @@ -466,35 +466,35 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+>>  	 *  Ensure that we have a good link configuration before attempting to
+>>  	 *  identify the device.
+>>  	 */
+>> -	max9271_configure_i2c(dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
+>> -					       MAX9271_I2CSLVTO_1024US |
+>> -					       MAX9271_I2CMSTBT_105KBPS);
+>> +	max9271_configure_i2c(&dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
+>> +						MAX9271_I2CSLVTO_1024US |
+>> +						MAX9271_I2CMSTBT_105KBPS);
+>>  
+>> -	max9271_configure_gmsl_link(dev->serializer);
+>> +	max9271_configure_gmsl_link(&dev->serializer);
+>>  
+>> -	ret = max9271_verify_id(dev->serializer);
+>> +	ret = max9271_verify_id(&dev->serializer);
+>>  	if (ret < 0)
+>>  		return ret;
+>>  
+>> -	ret = max9271_set_address(dev->serializer, dev->addrs[0]);
+>> +	ret = max9271_set_address(&dev->serializer, dev->addrs[0]);
+>>  	if (ret < 0)
+>>  		return ret;
+>> -	dev->serializer->client->addr = dev->addrs[0];
+>> +	dev->serializer.client->addr = dev->addrs[0];
+>>  
+>>  	/*
+>>  	 * Reset the sensor by cycling the OV10635 reset signal connected to the
+>>  	 * MAX9271 GPIO1 and verify communication with the OV10635.
+>>  	 */
+>> -	ret = max9271_enable_gpios(dev->serializer, MAX9271_GPIO1OUT);
+>> +	ret = max9271_enable_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> -	ret = max9271_clear_gpios(dev->serializer, MAX9271_GPIO1OUT);
+>> +	ret = max9271_clear_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+>>  	if (ret)
+>>  		return ret;
+>>  	usleep_range(10000, 15000);
+>>  
+>> -	ret = max9271_set_gpios(dev->serializer, MAX9271_GPIO1OUT);
+>> +	ret = max9271_set_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+>>  	if (ret)
+>>  		return ret;
+>>  	usleep_range(10000, 15000);
+>> @@ -564,13 +564,7 @@ static int rdacm20_probe(struct i2c_client *client)
+>>  	if (!dev)
+>>  		return -ENOMEM;
+>>  	dev->dev = &client->dev;
+>> -
+>> -	dev->serializer = devm_kzalloc(&client->dev, sizeof(*dev->serializer),
+>> -				       GFP_KERNEL);
+>> -	if (!dev->serializer)
+>> -		return -ENOMEM;
+>> -
+>> -	dev->serializer->client = client;
+>> +	dev->serializer.client = client;
+>>  
+>>  	ret = of_property_read_u32_array(client->dev.of_node, "reg",
+>>  					 dev->addrs, 2);
+> 
 
