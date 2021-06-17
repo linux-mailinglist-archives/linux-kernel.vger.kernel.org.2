@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9A03AB4CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754C83AB4DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 15:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhFQNdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 09:33:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34030 "EHLO mail.kernel.org"
+        id S232837AbhFQNhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 09:37:03 -0400
+Received: from m12-15.163.com ([220.181.12.15]:39069 "EHLO m12-15.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231654AbhFQNdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:33:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C81D6044F;
-        Thu, 17 Jun 2021 13:31:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623936695;
-        bh=u0qd6O0XohK2blFPQxVjvBt/wYTUHl/fZzzKtLhEk7E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gsmcnqVxOrJtKmRUja/eV6hZhh9xFUtY4FQU7G4cPnZWA3Z/MNAN+W/ur6Sazs6VL
-         sI+R36fTde9mqKcZZjB3PQ48qhcdWlLZDRrZmLa7XrNtiXCzhJQkbaodqG+fs60A/h
-         06kGpw4YNvtfIm0YJD5yKXkPtL4igREkK3VE7RgY=
-Date:   Thu, 17 Jun 2021 15:31:32 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S231355AbhFQNhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:37:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=yvhTj
+        szTo8tQ9r8I8hyR5rQ1GLc/Yb4fdHEDaHDNtsI=; b=iDLkQfZIEndzvU8CZWiRM
+        C3yefEKCEbeVs3sB1d1sOSRlml12CCGExYw+PWpN+18i3YhKnUfo+sHjRh3tDGJi
+        LrBZ5HYYAB5xPcw+jpx9+1qGihk+o3cbzo4eKDKoot3ozk/pQUOSQ92725ePMqZN
+        l8uYe0Qi03p/PJBSJF58JY=
+Received: from yangjunlin.ccdomain.com (unknown [218.17.89.92])
+        by smtp11 (Coremail) with SMTP id D8CowADHz3ciT8tgUvmYAA--.257S2;
+        Thu, 17 Jun 2021 21:34:36 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     sean.wang@mediatek.com, vkoul@kernel.org, matthias.bgg@gmail.com
+Cc:     dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ikjoon Jang <ikjn@chromium.org>,
-        Tianping Fang <tianping.fang@mediatek.com>
-Subject: Re: [PATCH] usb: xhci-mtk: allow multiple Start-Split in a microframe
-Message-ID: <YMtOtC1j2DouJ9Is@kroah.com>
-References: <1623895911-29259-1-git-send-email-chunfeng.yun@mediatek.com>
+        Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH] dmaengine: mediatek: Return the correct errno code
+Date:   Thu, 17 Jun 2021 21:32:29 +0800
+Message-Id: <20210617133229.1497-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1623895911-29259-1-git-send-email-chunfeng.yun@mediatek.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: D8CowADHz3ciT8tgUvmYAA--.257S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1DJw45ZFyDGFyxGrWfKrg_yoW3Wwb_u3
+        4v9rWxWF1DAwn3Ar1rWr1Uury7tFZ5uF1fWF43Kr1avrW5ur4DCryq9rnIvw43Xwn2vF97
+        WF1UZrnakFsxGjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5PuctUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiLAy0I1spa1-21wAAsQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 10:11:51AM +0800, Chunfeng Yun wrote:
-> This patch is used to relax bandwidth schedule by allowing multiple
-> Start-Split in the same microframe.
-> 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
->  drivers/usb/host/xhci-mtk-sch.c | 16 ----------------
->  drivers/usb/host/xhci-mtk.h     |  2 --
->  2 files changed, 18 deletions(-)
-> 
-> diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
-> index c07411d9b16f..149a0f4a6ec4 100644
-> --- a/drivers/usb/host/xhci-mtk-sch.c
-> +++ b/drivers/usb/host/xhci-mtk-sch.c
-> @@ -470,11 +470,9 @@ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
->  
->  static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
->  {
-> -	struct mu3h_sch_tt *tt = sch_ep->sch_tt;
->  	u32 extra_cs_count;
->  	u32 start_ss, last_ss;
->  	u32 start_cs, last_cs;
-> -	int i;
->  
->  	if (!sch_ep->sch_tt)
->  		return 0;
-> @@ -491,10 +489,6 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
->  		if (!(start_ss == 7 || last_ss < 6))
->  			return -ESCH_SS_Y6;
->  
-> -		for (i = 0; i < sch_ep->cs_count; i++)
-> -			if (test_bit(offset + i, tt->ss_bit_map))
-> -				return -ESCH_SS_OVERLAP;
-> -
->  	} else {
->  		u32 cs_count = DIV_ROUND_UP(sch_ep->maxpkt, FS_PAYLOAD_MAX);
->  
-> @@ -521,9 +515,6 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
->  		if (cs_count > 7)
->  			cs_count = 7; /* HW limit */
->  
-> -		if (test_bit(offset, tt->ss_bit_map))
-> -			return -ESCH_SS_OVERLAP;
-> -
->  		sch_ep->cs_count = cs_count;
->  		/* one for ss, the other for idle */
->  		sch_ep->num_budget_microframes = cs_count + 2;
-> @@ -558,13 +549,6 @@ static void update_sch_tt(struct mu3h_sch_ep_info *sch_ep, bool used)
->  	for (i = 0; i < num_esit; i++) {
->  		base = sch_ep->offset + i * sch_ep->esit;
->  
-> -		for (j = 0; j < bits; j++) {
+From: Junlin Yang <yangjunlin@yulong.com>
 
-Now that bits is no longer used, we get a build warning.
+When devm_kzalloc failed, should return ENOMEM rather than ENODEV.
 
-Can you fix this patch and resend it?
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+---
+ drivers/dma/mediatek/mtk-uart-apdma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/drivers/dma/mediatek/mtk-uart-apdma.c b/drivers/dma/mediatek/mtk-uart-apdma.c
+index 375e7e6..a4cb30f 100644
+--- a/drivers/dma/mediatek/mtk-uart-apdma.c
++++ b/drivers/dma/mediatek/mtk-uart-apdma.c
+@@ -529,7 +529,7 @@ static int mtk_uart_apdma_probe(struct platform_device *pdev)
+ 	for (i = 0; i < mtkd->dma_requests; i++) {
+ 		c = devm_kzalloc(mtkd->ddev.dev, sizeof(*c), GFP_KERNEL);
+ 		if (!c) {
+-			rc = -ENODEV;
++			rc = -ENOMEM;
+ 			goto err_no_dma;
+ 		}
+ 
+-- 
+1.9.1
 
-greg k-h
