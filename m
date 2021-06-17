@@ -2,112 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538C63AAD8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E5D3AAD91
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhFQH36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 03:29:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229580AbhFQH34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 03:29:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 487CB6135C;
-        Thu, 17 Jun 2021 07:27:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623914869;
-        bh=LxxznnyPEEYU2PLFNABNQbXR+6nQy9EzVumeO20nZqQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qgi70FZhlbxWa+a5K9kY6HLxKL6Tr+uFWVDpAE9PNUHqVy2oMaxbPq1oS0NHrfmV2
-         FbyQCYgfmOz5Q53bUgnq/Khex3oEmqcRsZXxIEh/dQyfg99JiKVTvQd4FUtIWhAbb2
-         eATzGOTCXYSDtsQpsw+Xac3GDnd5LW+DTo9pR+lVZBHqCQ8OA4g5gC9Eb5TL+pB1fg
-         MxINeeVw6elc29+6CqYVQz2c2hUM4mKOtjCB7eqjPqS+XBVTw9oYIie+SNgPg2sJFe
-         Q9wcI3YZp3PJcZ30o+8itBhjC3yhr2XRSrI87z9HAqqjgyhGWHX656a+MoEwAd8bQ8
-         kJL9fqn5UDHxQ==
-Received: by pali.im (Postfix)
-        id B09AF52D; Thu, 17 Jun 2021 09:27:46 +0200 (CEST)
-Date:   Thu, 17 Jun 2021 09:27:46 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Shubhankar Kuranagatti <shubhankarvk@gmail.com>
-Cc:     dmurphy@ti.com, sre@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sanjanasrinidhi1810@gmail.com
-Subject: Re: [PATCH] drivers: power: supply: bq27xxx_battery.c: Remove spaces
- before tabs
-Message-ID: <20210617072746.rvot5wmbzmk4j6ro@pali>
-References: <20210617071732.vbsn2okr2ed3l4dk@kewl-virtual-machine>
+        id S229992AbhFQHak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 03:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhFQHai (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 03:30:38 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8AF6C061574;
+        Thu, 17 Jun 2021 00:28:30 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id u190so410367pgd.8;
+        Thu, 17 Jun 2021 00:28:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Q4eMKd/XWHD7paoLb9rqGomW2R8tJagN5j+loNDzse4=;
+        b=jJKe2wNR/ZWDKjhJAvYlE1NaharrJKID4MuOu/j7C43hKqxNR0oFDsiD2YYtrsUnQS
+         PrTOP7yA8Nr3nP54eLTVZ6tuE80lugvysmx5PmaUTSzXwuGgvAt8ZWgYDUNUlF9lci2/
+         KC5n1Z3XInptGk8uZij+pu+heyx2gb2jj+pJQ9aEXrAm/17kn2VWCaFFSH2l23y7bIRK
+         gJBRJiO8MO8EM2kMMO90vYOtyFtlWKLmX2foluOz53n5QmVgWCQEdzTIYxL349Ux10pf
+         JM11g3RPTtX91wIF51XMIKAgAteKcDcsT7E/yHR0hr/5FgB2QE5Vc2lF12W2LbPiRKJP
+         SQ2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Q4eMKd/XWHD7paoLb9rqGomW2R8tJagN5j+loNDzse4=;
+        b=gKUg862By+ee/lyMks6N0tVqobz2i3DAmjnbhUARjSVwpTkapvZOvSLbr9p6vIPP45
+         DQyxus0nZn5pKnDL/Dn8l67t04PGzFeogHI2GlT08Jut8dPmtOyQ5HEp3M5Z7owsASxM
+         A6YK6EJNKObyLdgoiJXmzJn7IpcH2a11sUsyPvmjyrH03YwlKDbwUgAAcnKe9c++quA5
+         yUFyvKviMkuyJdBlVhWR0vPZwypS39fciKMEPB0SD4E0M+d6OnY59ziSSHC8V79zsvKl
+         GQuZVtQ7K5I/kPF113yoGHrewcPTlBG7MWCvB/EBTakeS7Yeo4NAuePZguius0FVIGYQ
+         GUdA==
+X-Gm-Message-State: AOAM532jNSpwsi+HHi+68JtJZqqv3pkX6HXL7BE3bNEaYfvRbwMxaDgG
+        EOyWFJOEWgH2i0ifGfk55TMhdSIK71+aHuyQfgY=
+X-Google-Smtp-Source: ABdhPJzHrfp88VYI8UMAiktCXdAx4IALJ2MORGOLaiuA7nfv0xM7RFR+7Abm/sKvnt08BqgM5DMXEcBhwm5FeoF7qBg=
+X-Received: by 2002:a63:f10b:: with SMTP id f11mr3658783pgi.203.1623914910434;
+ Thu, 17 Jun 2021 00:28:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617071732.vbsn2okr2ed3l4dk@kewl-virtual-machine>
-User-Agent: NeoMutt/20180716
+References: <20210616190759.2832033-1-mw@semihalf.com> <20210616190759.2832033-5-mw@semihalf.com>
+ <YMpVhxxPxB/HKOn2@lunn.ch> <CAPv3WKdo_JeMRL-GtkYv7G3MUnXmyG_oJtA+=WY72-J_0jokRA@mail.gmail.com>
+In-Reply-To: <CAPv3WKdo_JeMRL-GtkYv7G3MUnXmyG_oJtA+=WY72-J_0jokRA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 17 Jun 2021 10:28:14 +0300
+Message-ID: <CAHp75VfQkAqLWSXZYsdZKDphBwGH+phXe49MA3C9kZ=DxPM0Lg@mail.gmail.com>
+Subject: Re: [net-next: PATCH v2 4/7] net: mvmdio: simplify clock handling
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 17 June 2021 12:47:32 Shubhankar Kuranagatti wrote:
-> Removed extra spaces before ','
-...
-> diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
-> index 4c4a7b1c64c5..bf090b7ebcec 100644
-> --- a/drivers/power/supply/bq27xxx_battery.c
-> +++ b/drivers/power/supply/bq27xxx_battery.c
-> @@ -938,26 +938,26 @@ static struct {
->  	enum power_supply_property *props;
->  	size_t props_size;
->  } bq27xxx_chip_data[] = {
-> -	[BQ27000]   = BQ27XXX_DATA(bq27000,   0         , BQ27XXX_O_ZERO | BQ27XXX_O_SOC_SI | BQ27XXX_O_HAS_CI),
-> -	[BQ27010]   = BQ27XXX_DATA(bq27010,   0         , BQ27XXX_O_ZERO | BQ27XXX_O_SOC_SI | BQ27XXX_O_HAS_CI),
-> -	[BQ2750X]   = BQ27XXX_DATA(bq2750x,   0         , BQ27XXX_O_OTDC),
-> -	[BQ2751X]   = BQ27XXX_DATA(bq2751x,   0         , BQ27XXX_O_OTDC),
-> -	[BQ2752X]   = BQ27XXX_DATA(bq2752x,   0         , BQ27XXX_O_OTDC),
-> +	[BQ27000]   = BQ27XXX_DATA(bq27000,   0, BQ27XXX_O_ZERO | BQ27XXX_O_SOC_SI | BQ27XXX_O_HAS_CI),
-> +	[BQ27010]   = BQ27XXX_DATA(bq27010,   0, BQ27XXX_O_ZERO | BQ27XXX_O_SOC_SI | BQ27XXX_O_HAS_CI),
-> +	[BQ2750X]   = BQ27XXX_DATA(bq2750x,   0, BQ27XXX_O_OTDC),
-> +	[BQ2751X]   = BQ27XXX_DATA(bq2751x,   0, BQ27XXX_O_OTDC),
-> +	[BQ2752X]   = BQ27XXX_DATA(bq2752x,   0, BQ27XXX_O_OTDC),
->  	[BQ27500]   = BQ27XXX_DATA(bq27500,   0x04143672, BQ27XXX_O_OTDC),
-> -	[BQ27510G1] = BQ27XXX_DATA(bq27510g1, 0         , BQ27XXX_O_OTDC),
-> -	[BQ27510G2] = BQ27XXX_DATA(bq27510g2, 0         , BQ27XXX_O_OTDC),
-> -	[BQ27510G3] = BQ27XXX_DATA(bq27510g3, 0         , BQ27XXX_O_OTDC),
-> -	[BQ27520G1] = BQ27XXX_DATA(bq27520g1, 0         , BQ27XXX_O_OTDC),
-> -	[BQ27520G2] = BQ27XXX_DATA(bq27520g2, 0         , BQ27XXX_O_OTDC),
-> -	[BQ27520G3] = BQ27XXX_DATA(bq27520g3, 0         , BQ27XXX_O_OTDC),
-> -	[BQ27520G4] = BQ27XXX_DATA(bq27520g4, 0         , BQ27XXX_O_OTDC),
-> -	[BQ27521]   = BQ27XXX_DATA(bq27521,   0         , 0),
-> -	[BQ27530]   = BQ27XXX_DATA(bq27530,   0         , BQ27XXX_O_UTOT),
-> -	[BQ27531]   = BQ27XXX_DATA(bq27531,   0         , BQ27XXX_O_UTOT),
-> -	[BQ27541]   = BQ27XXX_DATA(bq27541,   0         , BQ27XXX_O_OTDC),
-> -	[BQ27542]   = BQ27XXX_DATA(bq27542,   0         , BQ27XXX_O_OTDC),
-> -	[BQ27546]   = BQ27XXX_DATA(bq27546,   0         , BQ27XXX_O_OTDC),
-> -	[BQ27742]   = BQ27XXX_DATA(bq27742,   0         , BQ27XXX_O_OTDC),
-> +	[BQ27510G1] = BQ27XXX_DATA(bq27510g1, 0, BQ27XXX_O_OTDC),
-> +	[BQ27510G2] = BQ27XXX_DATA(bq27510g2, 0, BQ27XXX_O_OTDC),
-> +	[BQ27510G3] = BQ27XXX_DATA(bq27510g3, 0, BQ27XXX_O_OTDC),
-> +	[BQ27520G1] = BQ27XXX_DATA(bq27520g1, 0, BQ27XXX_O_OTDC),
-> +	[BQ27520G2] = BQ27XXX_DATA(bq27520g2, 0, BQ27XXX_O_OTDC),
-> +	[BQ27520G3] = BQ27XXX_DATA(bq27520g3, 0, BQ27XXX_O_OTDC),
-> +	[BQ27520G4] = BQ27XXX_DATA(bq27520g4, 0, BQ27XXX_O_OTDC),
-> +	[BQ27521]   = BQ27XXX_DATA(bq27521,   0, 0),
-> +	[BQ27530]   = BQ27XXX_DATA(bq27530,   0, BQ27XXX_O_UTOT),
-> +	[BQ27531]   = BQ27XXX_DATA(bq27531,   0, BQ27XXX_O_UTOT),
-> +	[BQ27541]   = BQ27XXX_DATA(bq27541,   0, BQ27XXX_O_OTDC),
-> +	[BQ27542]   = BQ27XXX_DATA(bq27542,   0, BQ27XXX_O_OTDC),
-> +	[BQ27546]   = BQ27XXX_DATA(bq27546,   0, BQ27XXX_O_OTDC),
-> +	[BQ27742]   = BQ27XXX_DATA(bq27742,   0, BQ27XXX_O_OTDC),
->  	[BQ27545]   = BQ27XXX_DATA(bq27545,   0x04143672, BQ27XXX_O_OTDC),
->  	[BQ27411]   = BQ27XXX_DATA(bq27411,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
->  	[BQ27421]   = BQ27XXX_DATA(bq27421,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
-> @@ -965,9 +965,9 @@ static struct {
->  	[BQ27426]   = BQ27XXX_DATA(bq27426,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
->  	[BQ27441]   = BQ27XXX_DATA(bq27441,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
->  	[BQ27621]   = BQ27XXX_DATA(bq27621,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
-> -	[BQ27Z561]  = BQ27XXX_DATA(bq27z561,  0         , BQ27Z561_O_BITS),
-> -	[BQ28Z610]  = BQ27XXX_DATA(bq28z610,  0         , BQ27Z561_O_BITS),
-> -	[BQ34Z100]  = BQ27XXX_DATA(bq34z100,  0         , BQ27XXX_O_OTDC | BQ27XXX_O_SOC_SI | \
-> +	[BQ27Z561]  = BQ27XXX_DATA(bq27z561,  0, BQ27Z561_O_BITS),
-> +	[BQ28Z610]  = BQ27XXX_DATA(bq28z610,  0, BQ27Z561_O_BITS),
-> +	[BQ34Z100]  = BQ27XXX_DATA(bq34z100,  0, BQ27XXX_O_OTDC | BQ27XXX_O_SOC_SI | \
->  							  BQ27XXX_O_HAS_CI | BQ27XXX_O_MUL_CHEM),
+On Thu, Jun 17, 2021 at 2:25 AM Marcin Wojtas <mw@semihalf.com> wrote:
+>
+> =C5=9Br., 16 cze 2021 o 21:48 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a=
+):
+> >
+> > > +     dev->clks[0].id =3D "core";
+> > > +     dev->clks[1].id =3D "mg";
+> > > +     dev->clks[2].id =3D "mg_core";
+> > > +     dev->clks[3].id =3D "axi";
+> > > +     ret =3D devm_clk_bulk_get_optional(&pdev->dev, MVMDIO_CLOCK_COU=
+NT,
+> > > +                                      dev->clks);
+> >
+> > Kirkwood:
+> >
+> >                 mdio: mdio-bus@72004 {
+> >                         compatible =3D "marvell,orion-mdio";
+> >                         #address-cells =3D <1>;
+> >                         #size-cells =3D <0>;
+> >                         reg =3D <0x72004 0x84>;
+> >                         interrupts =3D <46>;
+> >                         clocks =3D <&gate_clk 0>;
+> >                         status =3D "disabled";
+> >
+> > Does this work? There is no clock-names in DT.
+> >
+>
+> Neither are the clocks in Armada 7k8k / CN913x:
+>
+>                 CP11X_LABEL(mdio): mdio@12a200 {
+>                         #address-cells =3D <1>;
+>                         #size-cells =3D <0>;
+>                         compatible =3D "marvell,orion-mdio";
+>                         reg =3D <0x12a200 0x10>;
+>                         clocks =3D <&CP11X_LABEL(clk) 1 9>,
+> <&CP11X_LABEL(clk) 1 5>,
+>                                  <&CP11X_LABEL(clk) 1 6>,
+> <&CP11X_LABEL(clk) 1 18>;
+>                         status =3D "disabled";
+>                 };
+>
+> Apparently I misread the code and got convinced that contrary to
+> devm_clk_get_optional(), the devm_clk_get_bulk_optional() obtains the
+> clocks directly by index, not name (on the tested boards, the same
+> clocks are enabled by the other interfaces, so the problems
 
-Why to do this change? Spaces are there to visually align columns with
-values. With this proposed change, whole bq27xxx_chip_data[] table is
-less readable.
+Me too. Sorry for the wrong suggestion. I think we need something that
+actually gets clocks by indices in a bulk, but this is another story.
+
+> I will drop this patch. Thank you for spotting the issue.
+
+I'm fine with this.
+
+--=20
+With Best Regards,
+Andy Shevchenko
