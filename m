@@ -2,236 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED373AB18F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA20A3AB192
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhFQKpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 06:45:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231949AbhFQKpS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 06:45:18 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3900C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 03:43:09 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id s15so3293291edt.13
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 03:43:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ek/e+9tgXxNCKfcft5eEQgZwI99jFtBBtCRIs+kDtHg=;
-        b=uCDoSTTLXTbB/+V+mMX4KYtbf1lKlFm5cWl0thzvqFlGF+yFjogZqZ5HJfV9De9FwW
-         Pl6RZpolqW0z834dUfo8NHnXJrUd5QibPPTvFv+Voc/Irl541EqMECAUuTKwr1SzGZjQ
-         vj/VhynoDrclu5QuAGg9yKwk69oaF/Vkj9PGWRFM506RD6+3NwYJsIK7r6yqb0Gpyu8c
-         4+QNgj0AD13gHPNCi1CU1tHYpoRgMRu0OI4PkHPvhMDIeYdlh3MufoQZJSILU+KG7Wl0
-         di8usirsNalC5ehwgqlzsWfQXxGmXf3dSQ3hNv1RkIo4QpAnACnBan+uBqjPfBI81dxX
-         qbRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ek/e+9tgXxNCKfcft5eEQgZwI99jFtBBtCRIs+kDtHg=;
-        b=GmkX1ixjhTBw9nIxIDAIOs23sTX1f6IyhdHGaW7IFS0pXFZJtKGruCzfSRZjKh+YPI
-         WdIP4yuQsGizV41GSa8YaTL8mH1qTlOzX62Ck55pFnlnEgiNpckKOzCYO6lfThZSUAxv
-         z2mOWNkV8ORXjhjNOz4+no/1qDyCHFVjTTQ4rGK8aE3sSAfVuJIERlTcNhcpUTnLlNjQ
-         3I2AuKavA1mpCaoWaAdR6yQobje19KqJIrQI5XY5g8KsiFDSW9/YSjdSCUiAJLw7MU0L
-         WDXNBeZdZi8j6obm8lOsTf56SIT8aGjACCxrbzb9Hnp8YhNOTtzV4z8qjAOiCEBrGbHo
-         yKZg==
-X-Gm-Message-State: AOAM5304E4ea4UFKmWXQ/V0A+uRTAJAaCG677snm22zyQ5xvQ53KGeZU
-        KCn1H/jHXggnbU+8d2W6KXYqufmNxCKeSGDzvAj2Sg==
-X-Google-Smtp-Source: ABdhPJyyaCMsFuxBiuCT3yGiOn5g31ZI9GUFi6HOY0g6z2gw9S5WcUMSiElE/KNsl0dFdslICDfD8deCSr//G4MkIOE=
-X-Received: by 2002:a05:6402:22fa:: with SMTP id dn26mr5480111edb.230.1623926588036;
- Thu, 17 Jun 2021 03:43:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210616152834.149064097@linuxfoundation.org>
-In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 17 Jun 2021 16:12:56 +0530
-Message-ID: <CA+G9fYvRFjEk_xvtr66GM48VqATZpf6_Mr1vyPM6w2TT6xtXnQ@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/28] 5.4.127-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S232103AbhFQKpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 06:45:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232094AbhFQKp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 06:45:26 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7D2E60FDA;
+        Thu, 17 Jun 2021 10:43:18 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1ltpUS-0089ev-O8; Thu, 17 Jun 2021 11:43:16 +0100
+Date:   Thu, 17 Jun 2021 11:43:16 +0100
+Message-ID: <87lf78db5n.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     "wangyanan (Y)" <wangyanan55@huawei.com>
+Cc:     Will Deacon <will@kernel.org>, Quentin Perret <qperret@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>, <wanghaibin.wang@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>
+Subject: Re: [PATCH v6 1/4] KVM: arm64: Introduce cache maintenance callbacks for guest stage-2
+In-Reply-To: <0af45a89-03cd-ac0d-9fa2-7f57eb828c86@huawei.com>
+References: <20210616095200.38008-1-wangyanan55@huawei.com>
+        <20210616095200.38008-2-wangyanan55@huawei.com>
+        <87eed2lzcc.wl-maz@kernel.org>
+        <8340be12-cc80-8c2a-3597-ecba05eaf35a@huawei.com>
+        <87o8c4dikn.wl-maz@kernel.org>
+        <0dced974-b507-ce48-b89d-344d41a02418@huawei.com>
+        <87mtrodgn2.wl-maz@kernel.org>
+        <0af45a89-03cd-ac0d-9fa2-7f57eb828c86@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: wangyanan55@huawei.com, will@kernel.org, qperret@google.com, alexandru.elisei@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, gshan@redhat.com, wanghaibin.wang@huawei.com, zhukeqian1@huawei.com, yuzenghui@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 at 21:05, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.127 release.
-> There are 28 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 18 Jun 2021 15:28:19 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.127-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Thu, 17 Jun 2021 10:43:23 +0100,
+"wangyanan (Y)" <wangyanan55@huawei.com> wrote:
+> 
+> Hi Marc,
+> 
+> On 2021/6/17 16:44, Marc Zyngier wrote:
+> > By the way, what the status of your selftest series that originally
+> > came with this series? Are you planning to respin it? It would be
+> > useful to have something that checks for regressions, and that series
+> > did seem to do the trick.
+> Actually they have already gone into upstream, since v5.13-rc1. :)
+> The path is tools/testing/selftests/kvm/kvm_page_table_test.c, so it
+> will be much convenient to test a 5.13 kernel, you can also have a try.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Ah, I missed it! Good stuff.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+	M.
 
-## Build
-* kernel: 5.4.127-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.4.y
-* git commit: 4e778e863160695fca936b0a9452e94fc9824a76
-* git describe: v5.4.126-29-g4e778e863160
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-26-29-g4e778e863160
-
-## No regressions (compared to v5.4.125-85-g4a2dfe908c1e)
-
-
-## No fixes (compared to v5.4.125-85-g4a2dfe908c1e)
-
-
-## Test result summary
- total: 77072, pass: 62517, fail: 1192, skip: 12148, xfail: 1215,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 192 total, 192 passed, 0 failed
-* arm64: 26 total, 26 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 15 total, 15 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 26 total, 26 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Without deviation from the norm, progress is not possible.
