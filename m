@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BEF33ABD0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A6B3ABD12
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 21:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233711AbhFQTqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 15:46:23 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:43398 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231186AbhFQTqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 15:46:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=WcfYPRE0/EJf8qotBrb5aK+0y3nj++4NLAbgWTjHHrg=; b=Oo
-        dPNxwiG8q4J96mStd1uisfqYOSYVu9/iAm5VSCebDFL0XXBpP3QwOZbaYTEtAHCDE4V/MPNKxHvIV
-        IvA92ML69hEYFIUg820lYU5I8tY3e8seuFnVQfHmPdnNZ7FdUxWRQLdJRRs+Gc8dBpQ2AHIs4+zLc
-        o/0COcKLatUmDVU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1ltxvq-009xSv-Oe; Thu, 17 Jun 2021 21:44:06 +0200
-Date:   Thu, 17 Jun 2021 21:44:06 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-Cc:     "jiri@nvidia.com" <jiri@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 00/11] Marvell Prestera driver implementation of
- devlink functionality.
-Message-ID: <YMumBqQ1/gNEk6O5@lunn.ch>
-References: <20210609151602.29004-1-oleksandr.mazur@plvision.eu>
- <AM0P190MB0738F58BF9FFE2ED8073FA84E40E9@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
+        id S233033AbhFQTsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 15:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232094AbhFQTsk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 15:48:40 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5ED2C061574;
+        Thu, 17 Jun 2021 12:46:30 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id f70so5051982qke.13;
+        Thu, 17 Jun 2021 12:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EHjhxQva9EqItRDnboJPSeBtoksB4yVp/cB0goEaX5s=;
+        b=XamLhBaI1GSZ2+vrW/wyH0bL2nwlnwZAVwC3AWu7ot3as3odzo2hb7SQUDeKRjAmWH
+         /UJyzlLnW1T13BGwTRNlyuJ3rFZscMsqsRXVKgTF0L0yGC2j8ux1oFuooO5MP/uKM27T
+         Ox0R0jTY6guZIGAVJNqVo0MKVfvud5ukECGVrNEQVF4bqxE6bTILpBeQffgUbigHAKSY
+         pF4quAMPijMQHO4PQOeL1nbVJbM45MPhz62huMfxruyoSsGwqYS9pmvl3LxzENRNGs1I
+         F+ltt7K4+gR9fXEiF/DCs1mLkiuRJm0z3BTqbbocsMIzzGV9zSi8KCbabj8Hzttb+PF8
+         5hoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EHjhxQva9EqItRDnboJPSeBtoksB4yVp/cB0goEaX5s=;
+        b=NwQEjaLP4HhvqtjceeLB3KwPuoUfuIU50fKt6Rj5ZwkJU+AuEMGJoaafo37X67UIix
+         I4GKhuLUkH5S+w9gvBZlN8DgniiLZcSZL7YbeYvY0u2rTasC8s04Ipp053TJ7MYWlwpy
+         ieglxwInW5NNHde/2ekhE/X6tUFZ8RZLQqXnBrZRnZWHX0DDCPk8TdV78Fuy0QcK8gyF
+         xfM24OQW7LvPLHRe+oHp+Ij8IbBEo9dUe9mQOW1X69OKqSPxiNojMKEXE7GlnBJ5huZq
+         pNmli3DhNXaMXilBTkS+Nv3RIvukaISeZsHCVy94xeI4q9KuohqYl1XAmgZGhwtDMFll
+         sOmA==
+X-Gm-Message-State: AOAM532JlVLyDXYCP6cvtwdaqI4wKYdTJC+mL5o2JL8hgHS42brA5B85
+        Pe3QYTtWKYqv+6UH2hY1LPhKFIJFYIkDkH8tLMA=
+X-Google-Smtp-Source: ABdhPJztSCAJAPvpSrL2xIrTB+/Qq2BpIypiT4gZF4+HC3wRlJL8YTUxA/bXgqDIhV28kU2Z9wm4c+Rb4OHkfwec5OA=
+X-Received: by 2002:a25:870b:: with SMTP id a11mr828411ybl.260.1623959190021;
+ Thu, 17 Jun 2021 12:46:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <AM0P190MB0738F58BF9FFE2ED8073FA84E40E9@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
+References: <162209754288.436794.3904335049560916855.stgit@devnote2>
+ <162209762943.436794.874947392889792501.stgit@devnote2> <20210617043909.fgu2lhnkxflmy5mk@treble>
+ <20210617044032.txng4enhiduacvt6@treble> <20210617234001.54cd2ff60410ff82a39a2020@kernel.org>
+ <20210618000239.f95de17418beae6d84ce783d@kernel.org> <CAEf4Bzbob_M0aS-GUY5XaqePZr_prxUag3RLHtp=HY8Uu__10g@mail.gmail.com>
+ <20210617182159.ka227nkmhe4yu2de@treble> <CAEf4BzbQxxAWEvE7BfrBPCPzBjrAEVL9cg-duwbFNzEmbPPW2w@mail.gmail.com>
+ <20210617192608.4nt6sdass6gw5ehl@treble>
+In-Reply-To: <20210617192608.4nt6sdass6gw5ehl@treble>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 17 Jun 2021 12:46:19 -0700
+Message-ID: <CAEf4BzbGp6aGuv9CY_uAJ9JxeQy9uNDNYRCtgZSksorEcSWp6A@mail.gmail.com>
+Subject: Re: [PATCH -tip v7 09/13] kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 05:30:07PM +0000, Oleksandr Mazur wrote:
-> > Prestera Switchdev driver implements a set of devlink-based features,
-> > that include both debug functionality (traps with trap statistics), as well
-> > as functional rate limiter that is based on the devlink kernel API (interfaces).
-> 
-> > The core prestera-devlink functionality is implemented in the prestera_devlink.c.
-> 
-> > The patch series also extends the existing devlink kernel API with a list of core
-> > features:
-> >  - devlink: add API for both publish/unpublish port parameters.
-> >  - devlink: add port parameters-specific ops, as current design makes it impossible
-> >    to register one parameter for multiple ports, and effectively distinguish for
-> >   what port parameter_op is called.
-> 
-> As we discussed the storm control (BUM) done via devlink port params topic, and agreed that it shouldn't be done using the devlink API itself, there's an open question i'd like to address: the patch series included, for what i think, list of needed and benefitial changes, and those are the following patches:
+On Thu, Jun 17, 2021 at 12:26 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> On Thu, Jun 17, 2021 at 11:31:03AM -0700, Andrii Nakryiko wrote:
+> > On Thu, Jun 17, 2021 at 11:22 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > >
+> > > On Thu, Jun 17, 2021 at 10:45:41AM -0700, Andrii Nakryiko wrote:
+> > > > > > > > I know I suggested this patch, but I believe it would only be useful in
+> > > > > > > > combination with the use of UNWIND_HINT_REGS in SAVE_REGS_STRING.  But I
+> > > > > > > > think that would be tricky to pull off correctly.  Instead, we have
+> > > > > > > > UNWIND_HINT_FUNC, which is working fine.
+> > > > > > > >
+> > > > > > > > So I'd suggest dropping this patch, as the unwinder isn't actually
+> > > > > > > > reading regs->ip after all.
+> > > > > > >
+> > > > > > > ... and I guess this means patches 6-8 are no longer necessary.
+> > > > > >
+> > > > > > OK, I also confirmed that dropping those patche does not make any change
+> > > > > > on the stacktrace.
+> > > > > > Let me update the series without those.
+> > > > >
+> > > > > Oops, Andrii, can you also test the kernel without this patch?
+> > > > > (you don't need to drop patch 6-8)
+> > > >
+> > > > Hi Masami,
+> > > >
+> > > > Dropping this patch and leaving all the other in place breaks stack
+> > > > traces from kretprobes for BPF. I double checked with and without this
+> > > > patch. Without this patch we are back to having broken stack traces. I
+> > > > see either
+> > > >
+> > > >   kretprobe_trampoline+0x0
+> > > >
+> > > > or
+> > > >
+> > > >   ftrace_trampoline+0xc8
+> > > >   kretprobe_trampoline+0x0
+>
+> Do the stack traces end there?  Or do they continue normally after that?
 
-Please wrap your emails at around 70 characters.
+That's the entire stack trace.
 
-> 
-> > Oleksandr Mazur (2):
-> ...
-> >  net: core: devlink: add port_params_ops for devlink port parameters altering
-> >  drivers: net: netdevsim: add devlink port params usage
->  
-> > Sudarsana Reddy Kalluru (1):
-> >  net: core: devlink: add apis to publish/unpublish port params
-> 
-> So, should i create a new patch series that would include all of them?
-> 
-> Because in that case the series itself would lack an actual HW usage of it. The only usage would be limited to the netdevsim driver.
-
-We generally don't add APIs without a user. And in this case, i'm not
-sure netdevsim is a valid user. Can you refactor some other driver to
-make use of the new code? If not, i would suggest they are not merged
-at the moment. When you do have a valid use case, you can post them
-again.
-
-	Andrew
+>
+> --
+> Josh
+>
