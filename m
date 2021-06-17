@@ -2,69 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDBA3AAD3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE50C3AAD74
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhFQHVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 03:21:47 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4825 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhFQHVq (ORCPT
+        id S230291AbhFQH01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 03:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229848AbhFQH00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 03:21:46 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G5Cwp2nvNzXgkG;
-        Thu, 17 Jun 2021 15:14:34 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 15:19:36 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 17 Jun
- 2021 15:19:36 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-staging@lists.linux.dev>,
-        <linux-media@vger.kernel.org>
-CC:     <mchehab@kernel.org>, <sakari.ailus@linux.intel.com>
-Subject: [PATCH -next] media: staging: media: atomisp: pci: fix error return code in atomisp_pci_probe()
-Date:   Thu, 17 Jun 2021 15:23:29 +0800
-Message-ID: <20210617072329.1233662-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 17 Jun 2021 03:26:26 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4130DC061574;
+        Thu, 17 Jun 2021 00:24:19 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id r198so8716084lff.11;
+        Thu, 17 Jun 2021 00:24:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RtRECjuHE8VSl/pHqjivxGI8ToSVE21apQFUXU7vdb8=;
+        b=Z1JZqiKZBB7gCeAUgnrr58Sux4Mb1dytkvz39WcLmuJRLa/3NxdxiEkAi7B7iGK7X/
+         s8JbQifq15J0xb5c3kOS67XC6GfX/oR7EW3MR07vHdZbQlovkohPk3X1rRuxIyFUWcAU
+         cLbK13S9WJN/UXXVv7v0ia/gJXUfu1l2FtCvbz5FvQgs1yFTxEcsNBB5BgaZrimsfFFX
+         chz2rH0lBiUnda63qWfizyDL2D/Z6Rw3ipQS0RRJizxYRySvKqWea65Bh/w7PqCpJsoc
+         szyoSREiF5gg+r4p75Qqc0brdYa5xEqtYW7TLtjeTfNDSsMSGb3M6ONhfzQVRe0WPwDb
+         r5Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RtRECjuHE8VSl/pHqjivxGI8ToSVE21apQFUXU7vdb8=;
+        b=ee6mQk3rW18/I8JrsccYyw5lnjcaluGoaKpC5UIeZlYWPGOUSRhSy6yMAYEOvXu4qF
+         PEbC7Q2S9jzNNKcaAIR1jTp9dMgS2o0gp0knUKvK8UIIhDUa/oxVmnyD+POhC9RX4q3l
+         /ktbH/14lvKyscTJ/nD0anaw1gF3lDf+3z5/fd6c1Phj4uSwqG3ISEotkbgovYh/SWAg
+         +yHFAkDG9dATYGusvllZZtIMYarolxS/o/M1YVO+ucDHH2W4HUhnf11pLGyA8getzI6M
+         Znnij1/kColBML5RisMqmEPlBWbGF8WNsK3MFrMGYukMlJjq3t6KGm10QV+mGBK17xw4
+         +ZXw==
+X-Gm-Message-State: AOAM530EVSlRtFswY0Y7Vo07eVYOZGeYfYxMWCLOZmBaiQow9++xT9H8
+        Hd4kH5q+nvy8r0VbmZqiefk=
+X-Google-Smtp-Source: ABdhPJwiWJwBIEAXOcnfax5b9NHW3VV+Ld0Pc9uh1XV/GUCp9Hfb9RK3N+WJ3oHbgd5MU1L91QFkTw==
+X-Received: by 2002:ac2:5547:: with SMTP id l7mr2812424lfk.402.1623914657659;
+        Thu, 17 Jun 2021 00:24:17 -0700 (PDT)
+Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.gmail.com with ESMTPSA id d23sm487140lfi.4.2021.06.17.00.24.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 00:24:17 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v1] thermal/drivers/tegra: Correct compile-testing of drivers
+Date:   Thu, 17 Jun 2021 10:24:03 +0300
+Message-Id: <20210617072403.3487-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If init_atomisp_wdts() fails, atomisp_pci_probe() need return
-error code.
+All Tegra thermal drivers support compile-testing, but the drivers are
+not available for compile-testing because the whole Kconfig meny entry
+depends on ARCH_TEGRA, missing the alternative COMPILE_TEST dependency
+option. Correct the Kconfig entry.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/staging/media/atomisp/pci/atomisp_v4l2.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/thermal/tegra/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-index 948769ca6539..5de878fe798b 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-@@ -1763,7 +1763,8 @@ static int atomisp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *i
- 	if (err < 0)
- 		goto register_entities_fail;
- 	/* init atomisp wdts */
--	if (init_atomisp_wdts(isp) != 0)
-+	err = init_atomisp_wdts(isp);
-+	if (err != 0)
- 		goto wdt_work_queue_fail;
+diff --git a/drivers/thermal/tegra/Kconfig b/drivers/thermal/tegra/Kconfig
+index 019e3a2eb69e..cfa41d87a794 100644
+--- a/drivers/thermal/tegra/Kconfig
++++ b/drivers/thermal/tegra/Kconfig
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menu "NVIDIA Tegra thermal drivers"
+-depends on ARCH_TEGRA
++depends on ARCH_TEGRA || COMPILE_TEST
  
- 	/* save the iunit context only once after all the values are init'ed. */
+ config TEGRA_SOCTHERM
+ 	tristate "Tegra SOCTHERM thermal management"
 -- 
-2.25.1
+2.30.2
 
