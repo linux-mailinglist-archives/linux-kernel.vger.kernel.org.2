@@ -2,147 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C653AAFA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4C23AAFB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231600AbhFQJ2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
+        id S231623AbhFQJbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbhFQJ2q (ORCPT
+        with ESMTP id S231513AbhFQJbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:28:46 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DDAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:26:38 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id k15so4527971pfp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:26:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KryS05F8yykdJ8/Bn8WDRh+2BxDJ+KUha/fXyOsgM+k=;
-        b=mwkZAfu8nN4ynVz14N+KSOMx2lFJa0zpV6jz3LMyfqwWkVuUXcNe0X4Fmgf6P8LnWp
-         nfVYEamHkpIyn9n5G4puh42hw9uY3AKFIf7j+C1OoVpJC7RRJ0L2g5+QDEgFTrBJcoDl
-         bhZiSiNwD/KckITc8WjOyzFTtEXQlf2uH/GyT+4R4Qju7yKFVxqOlX+8CRTWJ+K1EVV1
-         olMd3mcghY9eIKCe6rOBwZVjOcrv76f0C/qizyrWw2kx36yLLSoBMZZb7zMr1hI3CAu/
-         rHoLsuKfIwf4FrRVutQH41m4bF2WT5kZcKb3HdHmK9bwJ+QPjUbf5HRbZK0a9EYjeVIZ
-         t4gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KryS05F8yykdJ8/Bn8WDRh+2BxDJ+KUha/fXyOsgM+k=;
-        b=hgWq0lbpQcazIFUUQHSmboUXcxBCxPuIX5Az8OvXYtD/NGYzPLP0+v8NNo3Zx5aimQ
-         UJ4tm8XMVt2Uudqv/1vpO657NUp5FhrsXWloAI1gwQeggs7DpSWMVD8rq1egWGE5lWe9
-         QGRCi0ZTcaCG4y7YBqMn+kVG6a+QDhBK8hNI3j9hKoFN4cJY2Io24psMZt4E3c2zxqdO
-         wBKRqYatiGnYTcYlvqzk4aEIX+8bdYUVD7cH/PJCA93vaeLT08e+o2pnkuxBYhZW/DGM
-         UdPv5S7/H72m51eOquDmbsvlD2ulhLvQZ7CrSu+tL2iQJ33rg2H6Zhtg1kwrN32rFwXs
-         9WEg==
-X-Gm-Message-State: AOAM533k9LCmZEUIBHhw7AOsV2VMJidbBaI963/Zoi0ravHfuq6lW+S6
-        zxZYFoAwyDz7YXL1ghqM5A==
-X-Google-Smtp-Source: ABdhPJwGLC8Fu6UDSezxtpMdxDFypGbC7quTIZJN3STK+uD+rnZ1Wpq13LqooTXVoT7ko+VN42dZfQ==
-X-Received: by 2002:a05:6a00:bc7:b029:2f5:7bdb:f694 with SMTP id x7-20020a056a000bc7b02902f57bdbf694mr4355722pfu.41.1623921997787;
-        Thu, 17 Jun 2021 02:26:37 -0700 (PDT)
-Received: from localhost.localdomain (h175-177-040-153.catv02.itscom.jp. [175.177.40.153])
-        by smtp.gmail.com with ESMTPSA id b65sm4635030pfa.32.2021.06.17.02.26.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 02:26:37 -0700 (PDT)
-From:   Naoya Horiguchi <nao.horiguchi@gmail.com>
-To:     linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH mmotm v1] mm/hwpoison: disable pcp for page_handle_poison()
-Date:   Thu, 17 Jun 2021 18:26:26 +0900
-Message-Id: <20210617092626.291006-1-nao.horiguchi@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 17 Jun 2021 05:31:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC57C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:29:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jlXDPomU3J80b7rZcVaqkAvYVsOqQvPD78Mqg6RhEJs=; b=hmoidzanKUPTg1SDOFE4/t1U3K
+        NZdjSb6RhplGpaJ80TK5s6bME7s4mdCBynJ0FaNgFXjhXs5CPKufFZ4/gwMz1zHs2G73rZ8/0blMp
+        m8hYHU+txOK0TVdEsKY8p8KgKeXratSilMtsOk5hG2AYMwzWsZWT+zU3/LQUvtc3a7H4ObN8yiSNT
+        FNuZOHGU1SOFY/tomZD/Ii4gsyUUwUVcc/IjeuLkJ92+vqZZ3CUvCZRqixAJtEhDGOgDVvXSsDIJ8
+        PHbyjkkJ20fU3/HR6kSCEKz1bE6KjPiBrslng20pb+y3cOFSgNEsfGJD3fiakN2jhul+XHb3K/Toz
+        rxv+dCSg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ltoK9-008xx7-E8; Thu, 17 Jun 2021 09:28:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 08F19300252;
+        Thu, 17 Jun 2021 11:28:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D21F32BF4234C; Thu, 17 Jun 2021 11:28:30 +0200 (CEST)
+Date:   Thu, 17 Jun 2021 11:28:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Rik van Riel <riel@surriel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [RFC][PATCH] sched: Use lightweight hazard pointers to grab lazy
+ mms
+Message-ID: <YMsVvsMRJ2yKf1WM@hirez.programming.kicks-ass.net>
+References: <cover.1623813516.git.luto@kernel.org>
+ <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
+ <1623816595.myt8wbkcar.astroid@bobo.none>
+ <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
+ <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
+ <1623893358.bbty474jyy.astroid@bobo.none>
+ <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
+ <c3c7a1cf-1c87-42cc-b2d6-cc2df55e5b57@www.fastmail.com>
+ <YMsQ82bzly2KAUsu@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMsQ82bzly2KAUsu@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+On Thu, Jun 17, 2021 at 11:08:03AM +0200, Peter Zijlstra wrote:
 
-Recent changes by patch "mm/page_alloc: allow high-order pages to be
-stored on the per-cpu lists" makes kernels determine whether to use pcp
-by pcp_allowed_order(), which breaks soft-offline for hugetlb pages.
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index e595e77913eb..57415cca088c 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -1104,6 +1104,8 @@ static inline void __mmput(struct mm_struct *mm)
+>  	}
+>  	if (mm->binfmt)
+>  		module_put(mm->binfmt->module);
+> +
+> +	mm_unlazy_mm_count(mm);
+>  	mmdrop(mm);
+>  }
+>  
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 8ac693d542f6..e102ec53c2f6 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -19,6 +19,7 @@
 
-Soft-offline dissolves a migration source page, then removes it from
-buddy free list, so it's assumed that any subpage of the soft-offlined
-hugepage are recognized as a buddy page just after returning from
-dissolve_free_huge_page().  pcp_allowed_order() returns true for
-hugetlb, so this assumption is no longer true.
+> +/*
+> + * This converts all lazy_mm references to mm to mm_count refcounts.  Our
+> + * caller holds an mm_count reference, so we don't need to worry about mm
+> + * being freed out from under us.
+> + */
+> +void mm_unlazy_mm_count(struct mm_struct *mm)
+> +{
+> +	unsigned int drop_count = num_possible_cpus();
+> +	int cpu;
+> +
+> +	/*
+> +	 * mm_users is zero, so no cpu will set its rq->lazy_mm to mm.
+> +	 */
+> +	WARN_ON_ONCE(atomic_read(&mm->mm_users) != 0);
+> +
+> +	/* Grab enough references for the rest of this function. */
+> +	atomic_add(drop_count, &mm->mm_count);
 
-So disable pcp during dissolve_free_huge_page() and
-take_page_off_buddy() to prevent soft-offlined hugepages from linking to
-pcp lists.  Soft-offline should not be common events so the impact on
-performance should be minimal.  And I think that the optimization of
-Mel's patch could benefit to hugetlb so zone_pcp_disable() is called
-only in hwpoison context.
+So that had me puzzled for a little while. Would something like this be
+a better comment?
 
-Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
----
- mm/memory-failure.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+	/*
+	 * Because this can race with mmdrop_lazy(), mm_count must be
+	 * incremented before setting any rq->drop_mm value, otherwise
+	 * it is possible to free mm early.
+	 */
 
-diff --git v5.13-rc6-mmotm-2021-06-15-20-24/mm/memory-failure.c v5.13-rc6-mmotm-2021-06-15-20-24_patched/mm/memory-failure.c
-index 1842822a10da..593079766655 100644
---- v5.13-rc6-mmotm-2021-06-15-20-24/mm/memory-failure.c
-+++ v5.13-rc6-mmotm-2021-06-15-20-24_patched/mm/memory-failure.c
-@@ -66,6 +66,19 @@ int sysctl_memory_failure_recovery __read_mostly = 1;
- 
- atomic_long_t num_poisoned_pages __read_mostly = ATOMIC_LONG_INIT(0);
- 
-+static bool __page_handle_poison(struct page *page)
-+{
-+	bool ret;
-+
-+	zone_pcp_disable(page_zone(page));
-+	ret = dissolve_free_huge_page(page);
-+	if (!ret)
-+		ret = take_page_off_buddy(page);
-+	zone_pcp_enable(page_zone(page));
-+
-+	return ret;
-+}
-+
- static bool page_handle_poison(struct page *page, bool hugepage_or_freepage, bool release)
- {
- 	if (hugepage_or_freepage) {
-@@ -73,7 +86,7 @@ static bool page_handle_poison(struct page *page, bool hugepage_or_freepage, boo
- 		 * Doing this check for free pages is also fine since dissolve_free_huge_page
- 		 * returns 0 for non-hugetlb pages as well.
- 		 */
--		if (dissolve_free_huge_page(page) || !take_page_off_buddy(page))
-+		if (!__page_handle_poison(page))
- 			/*
- 			 * We could fail to take off the target page from buddy
- 			 * for example due to racy page allocation, but that's
-@@ -986,7 +999,7 @@ static int me_huge_page(struct page *p, unsigned long pfn)
- 		 */
- 		if (PageAnon(hpage))
- 			put_page(hpage);
--		if (!dissolve_free_huge_page(p) && take_page_off_buddy(p)) {
-+		if (__page_handle_poison(p)) {
- 			page_ref_inc(p);
- 			res = MF_RECOVERED;
- 		}
-@@ -1441,7 +1454,7 @@ static int memory_failure_hugetlb(unsigned long pfn, int flags)
- 		res = get_hwpoison_page(p, flags);
- 		if (!res) {
- 			res = MF_FAILED;
--			if (!dissolve_free_huge_page(p) && take_page_off_buddy(p)) {
-+			if (__page_handle_poison(p)) {
- 				page_ref_inc(p);
- 				res = MF_RECOVERED;
- 			}
--- 
-2.25.1
+> +
+> +	for_each_possible_lazymm_cpu(cpu, mm) {
+> +		struct rq *rq = cpu_rq(cpu);
+> +		struct mm_struct *old_mm;
+> +
+> +		if (smp_load_acquire(&rq->lazy_mm) != mm)
+> +			continue;
+> +
+> +		drop_count--;	/* grab a reference; cpu will drop it later. */
+
+Totally confusing comment that :-)
+
+> +
+
+And with that, we rely on xchg() here to be at at least RELEASE, such
+that that mm_count increment must be visible when drop_mm is seen.
+
+> +		old_mm = xchg(&rq->drop_mm, mm);
+
+Similarly, we rely on it being at least ACQUIRE for the !NULL return
+case I think.
+
+> +
+> +		/*
+> +		 * We know that old_mm != mm: when we did the xchg(), we were
+> +		 * the only cpu to be putting mm into any drop_mm variable.
+> +		 */
+> +		WARN_ON_ONCE(old_mm == mm);
+> +		if (unlikely(old_mm)) {
+> +			/*
+> +			 * We just stole an mm reference from the target CPU.
+> +			 *
+> +			 * drop_mm was set to old by another call to
+> +			 * mm_unlazy_mm_count().  After that call xchg'd old
+> +			 * into drop_mm, the target CPU did:
+> +			 *
+> +			 *  smp_store_release(&rq->lazy_mm, mm);
+> +			 *
+> +			 * which synchronized with our smp_load_acquire()
+> +			 * above, so we know that the target CPU is done with
+> +			 * old. Drop old on its behalf.
+> +			 */
+> +			mmdrop(old_mm);
+> +		}
+> +	}
+> +
+> +	atomic_sub(drop_count, &mm->mm_count);
+> +}
+
+
 
