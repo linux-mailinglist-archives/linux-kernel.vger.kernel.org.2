@@ -2,143 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E6C3AB0B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF34B3AB0CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbhFQKBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 06:01:03 -0400
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:46773 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232169AbhFQKAy (ORCPT
+        id S231732AbhFQKCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 06:02:50 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:60396 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231593AbhFQKCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 06:00:54 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id tonGl2mJvhqlttonJl047h; Thu, 17 Jun 2021 11:58:42 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1623923922; bh=4+0emTt2Q486IcW98DZFNRVvjUg3qd0S7NWvP8SHwNQ=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=QezLtQe8VjcOU5spwRQxV0zjw4C+bBirjEmJeIM5iQ6sTWtdelLkAm+cYPUvleoS9
-         wU64tQZTNEyxJOfw9reO7Xarq36BXgTbAnUw+g3OukJB42KMi54hwztmw5xPXrreSw
-         ly85lxBu3fWyN6hkpzwFcFkg0nD6H4FhZFusQa3riRE4RAasPItkzRjtJ1dhscxk+h
-         Wxs+U1jDQ0fXufV19IgvO0qprxFh+4VqPlKtZQAMqAUQxd7iZwV1pKNVZzVld4/35o
-         tRML2kgauwbzGvxcwTgc33f2ZSj7SPZZNZOdQyPlL3Oo+9W+46JjWWRatpSCRut2kH
-         a32xBDC16GwSg==
-Subject: Re: [PATCH 6/7] media: v4l2-mem2mem: add v4l2_m2m_get_unmapped_area
- for no-mmu platform
-To:     dillon.minfei@gmail.com, mchehab@kernel.org,
-        mchehab+huawei@kernel.org, ezequiel@collabora.com,
-        gnurou@gmail.com, pihsun@chromium.org, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org
-Cc:     patrice.chotard@foss.st.com, hugues.fruchet@foss.st.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <1621508727-24486-1-git-send-email-dillon.minfei@gmail.com>
- <1621508727-24486-7-git-send-email-dillon.minfei@gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <d9d2a893-a159-1681-866f-e905609ce9d0@xs4all.nl>
-Date:   Thu, 17 Jun 2021 11:58:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Thu, 17 Jun 2021 06:02:45 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 15HA0PfK4010237, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 15HA0PfK4010237
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 17 Jun 2021 18:00:26 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 17 Jun 2021 18:00:25 +0800
+Received: from fc32.localdomain (172.21.177.102) by RTEXMBS04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 17 Jun
+ 2021 18:00:24 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     <kuba@kernel.org>, <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>
+Subject: [PATCH net-next] r8152: store the information of the pipes
+Date:   Thu, 17 Jun 2021 18:00:15 +0800
+Message-ID: <1394712342-15778-367-Taiwan-albertk@realtek.com>
+X-Mailer: Microsoft Office Outlook 11
 MIME-Version: 1.0
-In-Reply-To: <1621508727-24486-7-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfOlFbTk5W6IXkthnVtXy0IVODJJ0n676wOK03ANA/pMCzttcMjnZO498HSGDhrBV854jtnT690I6OQ3DFUdNRB7MAf6/5d45kK6urNVMrTqYMDOoY2f4
- mTehocGmyXrYZD+hk/9MOD3nCBGTWxadphi2I1JeXzbhugc/ytf63xCz1xWR343Ldp5YOAXspneBmoFxcd5g4GWJDmqpjwlP4Ya8fc9oeG5bWTDX/RIIJuGS
- paVgw3GFhmknu7aclVxNxK0AgrywZnTHtu41gJtOJoN9rCtAhEcqRy7/ng0cTphkZbocbONGRX7ow1tb+m3CpG+QVpfYTt+oDXMmEpS/zT2hBVCwR0Qv4a1z
- EZLobIQmFQ61BqIRSEezvXWLQcMVbETn7G/cTsBRTV60Xr72YQJ+4MPG6lVh38CgZx1KNLr6z6nMOy+CONdj/9cRJzYLOp/5P54/X76MR9jILCgIrXCAWZBq
- 3v0EwSlPVadZtbCh5A4vWB4KRCJZb29sBY1Xyh5oG1sWiOlZfZoJ7dICJShoTYNhL0UxqTIVteUVdjeKjMTaanQiv8shnVGtl8Ox7kKEGxMkiqrgaf639Wkc
- UegHoaHNKB4jtrPBJOxSAH26Egf7VDkPk9RGUE2KfFLdNaKzwiVFhqb4sZ1C7/MCDXk6NoTuCWkHEGbEQxwQX+BGweExdYLA7Fhh/Yds3DVhm77F5fVl0UAw
- JeOf1wOLQqjLzeITKCCCMMFNASv5L8VronMQwyqx1LUPnpev2glSAwsaYYjkCgamFEf4SptA5vF73jNAN5PHLNEVb4vbzyOa1NCPv07Du8M4mHX8umtHBNeE
- By7tiTIMsCcsqht+ISo3Z3fJllz/Ou0qWTl22s4J1GXAU2rDzHUGx5qLBWAd9w==
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.177.102]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: trusted connection
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/17/2021 09:38:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzYvMTcgpFekyCAwNzo1MDowMA==?=
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/17/2021 09:36:41
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164440 [Jun 17 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/17/2021 09:38:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2021 13:05, dillon.minfei@gmail.com wrote:
-> From: Dillon Min <dillon.minfei@gmail.com>
-> 
-> For platforms without MMU the m2m provides a helper method
-> v4l2_m2m_get_unmapped_area(), The mmap() routines will call
-> this to get a proposed address for the mapping.
-> 
-> More detailed information about get_unmapped_area can be found in
-> Documentation/nommu-mmap.txt
+Store the information of the pipes to avoid calling usb_rcvctrlpipe(),
+usb_sndctrlpipe(), usb_rcvbulkpipe(), usb_sndbulkpipe(), and
+usb_rcvintpipe() frequently.
 
-I'm getting checkpatch.pl --strict warnings:
+Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+---
+ drivers/net/usb/r8152.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-CHECK: Alignment should match open parenthesis
-#31: FILE: drivers/media/v4l2-core/v4l2-mem2mem.c:971:
-+unsigned long v4l2_m2m_get_unmapped_area(struct file *file, unsigned long addr,
-+               unsigned long len, unsigned long pgoff, unsigned long flags)
-
-CHECK: Alignment should match open parenthesis
-#62: FILE: include/media/v4l2-mem2mem.h:500:
-+unsigned long v4l2_m2m_get_unmapped_area(struct file *file, unsigned long addr,
-+               unsigned long len, unsigned long pgoff, unsigned long flags);
-
-Regards,
-
-	Hans
-
-> 
-> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> ---
->  drivers/media/v4l2-core/v4l2-mem2mem.c | 20 ++++++++++++++++++++
->  include/media/v4l2-mem2mem.h           |  4 ++++
->  2 files changed, 24 insertions(+)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
-> index e7f4bf5bc8dd..f82a18ecab2f 100644
-> --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-> +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-> @@ -966,6 +966,26 @@ int v4l2_m2m_mmap(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
->  }
->  EXPORT_SYMBOL(v4l2_m2m_mmap);
->  
-> +#ifndef CONFIG_MMU
-> +unsigned long v4l2_m2m_get_unmapped_area(struct file *file, unsigned long addr,
-> +		unsigned long len, unsigned long pgoff, unsigned long flags)
-> +{
-> +	struct v4l2_fh *fh = file->private_data;
-> +	unsigned long offset = pgoff << PAGE_SHIFT;
-> +	struct vb2_queue *vq;
-> +
-> +	if (offset < DST_QUEUE_OFF_BASE) {
-> +		vq = v4l2_m2m_get_src_vq(fh->m2m_ctx);
-> +	} else {
-> +		vq = v4l2_m2m_get_dst_vq(fh->m2m_ctx);
-> +		pgoff -= (DST_QUEUE_OFF_BASE >> PAGE_SHIFT);
-> +	}
-> +
-> +	return vb2_get_unmapped_area(vq, addr, len, pgoff, flags);
-> +}
-> +EXPORT_SYMBOL_GPL(v4l2_m2m_get_unmapped_area);
-> +#endif
-> +
->  #if defined(CONFIG_MEDIA_CONTROLLER)
->  void v4l2_m2m_unregister_media_controller(struct v4l2_m2m_dev *m2m_dev)
->  {
-> diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2mem.h
-> index 5a91b548ecc0..91269227c265 100644
-> --- a/include/media/v4l2-mem2mem.h
-> +++ b/include/media/v4l2-mem2mem.h
-> @@ -495,6 +495,10 @@ __poll_t v4l2_m2m_poll(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
->  int v4l2_m2m_mmap(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
->  		  struct vm_area_struct *vma);
->  
-> +#ifndef CONFIG_MMU
-> +unsigned long v4l2_m2m_get_unmapped_area(struct file *file, unsigned long addr,
-> +		unsigned long len, unsigned long pgoff, unsigned long flags);
-> +#endif
->  /**
->   * v4l2_m2m_init() - initialize per-driver m2m data
->   *
-> 
+diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+index 85039e17f4cd..62cd48dc2878 100644
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -931,6 +931,8 @@ struct r8152 {
+ 	u32 rx_pending;
+ 	u32 fc_pause_on, fc_pause_off;
+ 
++	unsigned int pipe_in, pipe_out, pipe_intr, pipe_ctrl_in, pipe_ctrl_out;
++
+ 	u32 support_2500full:1;
+ 	u32 lenovo_macpassthru:1;
+ 	u32 dell_tb_rx_agg_bug:1;
+@@ -1198,7 +1200,7 @@ int get_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
+ 	if (!tmp)
+ 		return -ENOMEM;
+ 
+-	ret = usb_control_msg(tp->udev, usb_rcvctrlpipe(tp->udev, 0),
++	ret = usb_control_msg(tp->udev, tp->pipe_ctrl_in,
+ 			      RTL8152_REQ_GET_REGS, RTL8152_REQT_READ,
+ 			      value, index, tmp, size, 500);
+ 	if (ret < 0)
+@@ -1221,7 +1223,7 @@ int set_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
+ 	if (!tmp)
+ 		return -ENOMEM;
+ 
+-	ret = usb_control_msg(tp->udev, usb_sndctrlpipe(tp->udev, 0),
++	ret = usb_control_msg(tp->udev, tp->pipe_ctrl_out,
+ 			      RTL8152_REQ_SET_REGS, RTL8152_REQT_WRITE,
+ 			      value, index, tmp, size, 500);
+ 
+@@ -2041,7 +2043,7 @@ static int alloc_all_mem(struct r8152 *tp)
+ 		goto err1;
+ 
+ 	tp->intr_interval = (int)ep_intr->desc.bInterval;
+-	usb_fill_int_urb(tp->intr_urb, tp->udev, usb_rcvintpipe(tp->udev, 3),
++	usb_fill_int_urb(tp->intr_urb, tp->udev, tp->pipe_intr,
+ 			 tp->intr_buff, INTBUFSIZE, intr_callback,
+ 			 tp, tp->intr_interval);
+ 
+@@ -2305,7 +2307,7 @@ static int r8152_tx_agg_fill(struct r8152 *tp, struct tx_agg *agg)
+ 	if (ret < 0)
+ 		goto out_tx_fill;
+ 
+-	usb_fill_bulk_urb(agg->urb, tp->udev, usb_sndbulkpipe(tp->udev, 2),
++	usb_fill_bulk_urb(agg->urb, tp->udev, tp->pipe_out,
+ 			  agg->head, (int)(tx_data - (u8 *)agg->head),
+ 			  (usb_complete_t)write_bulk_callback, agg);
+ 
+@@ -2620,7 +2622,7 @@ int r8152_submit_rx(struct r8152 *tp, struct rx_agg *agg, gfp_t mem_flags)
+ 	    !test_bit(WORK_ENABLE, &tp->flags) || !netif_carrier_ok(tp->netdev))
+ 		return 0;
+ 
+-	usb_fill_bulk_urb(agg->urb, tp->udev, usb_rcvbulkpipe(tp->udev, 1),
++	usb_fill_bulk_urb(agg->urb, tp->udev, tp->pipe_in,
+ 			  agg->buffer, tp->rx_buf_sz,
+ 			  (usb_complete_t)read_bulk_callback, agg);
+ 
+@@ -9507,6 +9509,12 @@ static int rtl8152_probe(struct usb_interface *intf,
+ 	tp->intf = intf;
+ 	tp->version = version;
+ 
++	tp->pipe_ctrl_in = usb_rcvctrlpipe(udev, 0);
++	tp->pipe_ctrl_out = usb_sndctrlpipe(udev, 0);
++	tp->pipe_in = usb_rcvbulkpipe(udev, 1);
++	tp->pipe_out = usb_sndbulkpipe(udev, 2);
++	tp->pipe_intr = usb_rcvintpipe(udev, 3);
++
+ 	switch (version) {
+ 	case RTL_VER_01:
+ 	case RTL_VER_02:
+-- 
+2.26.3
 
