@@ -2,78 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F91A3ABC03
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B279B3ABC31
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhFQSph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 14:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbhFQSpg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:45:36 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF048C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 11:43:28 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso5886591pjx.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 11:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gyq5AgwNRarelbVfRJu9j7YFTw4ZYndkdd1MENGMpcM=;
-        b=gWZpP3zIwfIurArUQbxL6x26k6M7NQMGOIoXhczSoFTIX4xSC63tPJIwWmXBQZNEv8
-         lW0gkj3uUkR5MJwga3sRLggmt5RWp9pCYEenDsV2ZNARm8piT/1jTTELCoWIW7nKgSHt
-         8PHT2Y5ldyNTLAulKlpHT3mEx8SuiatezkEwn3pzNLoyQfLNxdH26AUhQKv9cl8pVNLz
-         ZA6lvwb0EZBYSU1nngjEfSlfLjbA8Ne7uPddGLMO3IwdyOXDlOjpLz0irregyDDYnv9h
-         D8L2RpuxTDRKPAAqGt+F7OXA3lrgJ0q+oWoSGIVH4IHfVUedllnaY+OkUzoeTvPdCQ0y
-         52/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gyq5AgwNRarelbVfRJu9j7YFTw4ZYndkdd1MENGMpcM=;
-        b=UMeXI+HJboJ0NgswOPOeIuSR9SzTStgZEmmr85TBxyHEq9PMQvr+JtY5v7ZShX+eNg
-         g6F/ssw0LuefPTjYKim4hHnUW8QXLWvCc/7Y+sbg6apyz8V5XB3TtCnTBQjmArMCJtav
-         8rfPvP8tpnBqfwRq4IM7R41XKYc1iTwx+xlK900T6Yo109q2tPQa7Q5vN6+NfHCFHNAX
-         uS/CS+aSZpidm9DczpU2/saDAq/RKkn2SEq3bZh5k1ouJ17m8mrwjuXP59BQ3McZLrsC
-         nWiWFIwuEKdhpb/UNQ5TbHcir/yT7N2Y3vBIudNRM0N4c8hmdfo35UXb0r1W0CIpPo3H
-         3UXQ==
-X-Gm-Message-State: AOAM532CdbhEXFQHDNh2+Z2IbyT6VogTTiiM0eIa5cBN7xlwM+2MfaP8
-        Bjdrkjl1yAn5wum3uMw9K9pcx+lR08FkY8JqCqOWiMkeQNw=
-X-Google-Smtp-Source: ABdhPJwaFJAmgOEgRjD4cfEhmU2a7t5ghngCbSCJl04mt6VLW3ywaJLVGu0DAyE8Tgaw+glmV72oZ6LAJ0ypfw30jJM=
-X-Received: by 2002:a17:90b:1bc4:: with SMTP id oa4mr6993795pjb.18.1623955408330;
- Thu, 17 Jun 2021 11:43:28 -0700 (PDT)
+        id S232253AbhFQS7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:59:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:58570 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229671AbhFQS67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 14:58:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 73B131424;
+        Thu, 17 Jun 2021 11:56:51 -0700 (PDT)
+Received: from [10.57.9.136] (unknown [10.57.9.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A93833F694;
+        Thu, 17 Jun 2021 11:56:49 -0700 (PDT)
+Subject: Re: [PATCH v13 6/6] iommu: Remove mode argument from
+ iommu_set_dma_strict()
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org, dwmw2@infradead.org, corbet@lwn.net
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linuxarm@huawei.com, thunder.leizhen@huawei.com,
+        chenxiang66@hisilicon.com, linux-doc@vger.kernel.org
+References: <1623841437-211832-1-git-send-email-john.garry@huawei.com>
+ <1623841437-211832-7-git-send-email-john.garry@huawei.com>
+ <de6a2874-3d6d-ed2a-78f5-fb1fb0195228@linux.intel.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <7d0fb0e2-4671-16db-6963-b0493d7a549b@arm.com>
+Date:   Thu, 17 Jun 2021 19:56:44 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <1623954233-32092-1-git-send-email-bbhatt@codeaurora.org>
-In-Reply-To: <1623954233-32092-1-git-send-email-bbhatt@codeaurora.org>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Thu, 17 Jun 2021 20:52:26 +0200
-Message-ID: <CAMZdPi-r5CiuPT9vR+Pt3Q0nvy31m_NXW7fb7yJ3jPBSQBVH9A@mail.gmail.com>
-Subject: Re: [PATCH] bus: mhi: pci_generic: Apply no-op for wake using inband
- wake support flag
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?Q2FybCBZaW4o5q635byg5oiQKQ==?= <carl.yin@quectel.com>,
-        Naveen Kumar <naveen.kumar@quectel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <de6a2874-3d6d-ed2a-78f5-fb1fb0195228@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 at 20:24, Bhaumik Bhatt <bbhatt@codeaurora.org> wrote:
->
-> Devices such as SDX24 do not have the provision for inband wake
-> doorbell in the form of channel 127. Newer devices such as SDX55
-> or SDX65 have it by default. Ensure the functionality is used
-> based on this such that device wake stays held when a client
-> driver uses mhi_device_get() API or the equivalent debugfs entry.
->
-> Fixes: e3e5e6508fc1 ("bus: mhi: pci_generic: No-Op for device_wake operations")
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+On 2021-06-17 08:36, Lu Baolu wrote:
+> On 6/16/21 7:03 PM, John Garry wrote:
+>> We only ever now set strict mode enabled in iommu_set_dma_strict(), so
+>> just remove the argument.
+>>
+>> Signed-off-by: John Garry <john.garry@huawei.com>
+>> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+>> ---
+>>   drivers/iommu/amd/init.c    | 2 +-
+>>   drivers/iommu/intel/iommu.c | 6 +++---
+>>   drivers/iommu/iommu.c       | 5 ++---
+>>   include/linux/iommu.h       | 2 +-
+>>   4 files changed, 7 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+>> index fb3618af643b..7bc460052678 100644
+>> --- a/drivers/iommu/amd/init.c
+>> +++ b/drivers/iommu/amd/init.c
+>> @@ -3099,7 +3099,7 @@ static int __init parse_amd_iommu_options(char 
+>> *str)
+>>       for (; *str; ++str) {
+>>           if (strncmp(str, "fullflush", 9) == 0) {
+>>               pr_warn("amd_iommu=fullflush deprecated; use 
+>> iommu.strict instead\n");
+>> -            iommu_set_dma_strict(true);
+>> +            iommu_set_dma_strict();
+>>           }
+>>           if (strncmp(str, "force_enable", 12) == 0)
+>>               amd_iommu_force_enable = true;
+>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+>> index d586990fa751..0618c35cfb51 100644
+>> --- a/drivers/iommu/intel/iommu.c
+>> +++ b/drivers/iommu/intel/iommu.c
+>> @@ -454,7 +454,7 @@ static int __init intel_iommu_setup(char *str)
+>>               iommu_dma_forcedac = true;
+>>           } else if (!strncmp(str, "strict", 6)) {
+>>               pr_warn("intel_iommu=strict deprecated; use iommu.strict 
+>> instead\n");
+>> -            iommu_set_dma_strict(true);
+>> +            iommu_set_dma_strict();
+>>           } else if (!strncmp(str, "sp_off", 6)) {
+>>               pr_info("Disable supported super page\n");
+>>               intel_iommu_superpage = 0;
+>> @@ -4382,7 +4382,7 @@ int __init intel_iommu_init(void)
+>>            */
+>>           if (cap_caching_mode(iommu->cap)) {
+>>               pr_warn("IOMMU batching disallowed due to 
+>> virtualization\n");
+>> -            iommu_set_dma_strict(true);
+>> +            iommu_set_dma_strict();
+>>           }
+>>           iommu_device_sysfs_add(&iommu->iommu, NULL,
+>>                          intel_iommu_groups,
+>> @@ -5699,7 +5699,7 @@ static void quirk_calpella_no_shadow_gtt(struct 
+>> pci_dev *dev)
+>>       } else if (dmar_map_gfx) {
+>>           /* we have to ensure the gfx device is idle before we flush */
+>>           pci_info(dev, "Disabling batched IOTLB flush on Ironlake\n");
+>> -        iommu_set_dma_strict(true);
+>> +        iommu_set_dma_strict();
+>>       }
+>>   }
+>>   DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x0040, 
+>> quirk_calpella_no_shadow_gtt);
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index 60b1ec42e73b..ff221d3ddcbc 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -349,10 +349,9 @@ static int __init iommu_dma_setup(char *str)
+>>   }
+>>   early_param("iommu.strict", iommu_dma_setup);
+>> -void iommu_set_dma_strict(bool strict)
+>> +void iommu_set_dma_strict(void)
+>>   {
+>> -    if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
+>> -        iommu_dma_strict = strict;
+>> +    iommu_dma_strict = true;
+> 
+> Sorry, I still can't get how iommu.strict kernel option works.
+> 
+> static int __init iommu_dma_setup(char *str)
+> {
+>          int ret = kstrtobool(str, &iommu_dma_strict);
 
-Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+Note that this is the bit that does the real work - if the argument 
+parses OK then iommu_dma_strict is reassigned with the appropriate 
+value. The iommu_cmd_line stuff is a bit of additional bookkeeping, 
+basically just so we can see whether default values have been overridden.
+
+Robin.
+
+> 
+>          if (!ret)
+>                  iommu_cmd_line |= IOMMU_CMD_LINE_STRICT;
+>          return ret;
+> }
+> early_param("iommu.strict", iommu_dma_setup);
+> 
+> The bit IOMMU_CMD_LINE_STRICT is only set, but not used anywhere. Hence,
+> I am wondering how could it work? A bug or I missed anything?
+> 
+> Best regards,
+> baolu
+> 
+>>   }
+>>   bool iommu_get_dma_strict(struct iommu_domain *domain)
+>> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+>> index 32d448050bf7..754f67d6dd90 100644
+>> --- a/include/linux/iommu.h
+>> +++ b/include/linux/iommu.h
+>> @@ -476,7 +476,7 @@ int iommu_enable_nesting(struct iommu_domain 
+>> *domain);
+>>   int iommu_set_pgtable_quirks(struct iommu_domain *domain,
+>>           unsigned long quirks);
+>> -void iommu_set_dma_strict(bool val);
+>> +void iommu_set_dma_strict(void);
+>>   bool iommu_get_dma_strict(struct iommu_domain *domain);
+>>   extern int report_iommu_fault(struct iommu_domain *domain, struct 
+>> device *dev,
+>>
