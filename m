@@ -2,199 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9893E3AAFF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502393AAFF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbhFQJmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:42:50 -0400
-Received: from outbound-smtp24.blacknight.com ([81.17.249.192]:33604 "EHLO
-        outbound-smtp24.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229716AbhFQJmt (ORCPT
+        id S231728AbhFQJnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229716AbhFQJnD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:42:49 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp24.blacknight.com (Postfix) with ESMTPS id A3F9982009
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:40:41 +0100 (IST)
-Received: (qmail 19081 invoked from network); 17 Jun 2021 09:40:41 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 17 Jun 2021 09:40:41 -0000
-Date:   Thu, 17 Jun 2021 10:40:40 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] sched/fair: Age the average idle time
-Message-ID: <20210617094040.GM30378@techsingularity.net>
-References: <20210615111611.GH30378@techsingularity.net>
- <20210615204228.GB4272@worktop.programming.kicks-ass.net>
- <CAKfTPtAZ_Aq_S-O2qh5LPyxExkBq3G0kxh51fT7sSC_z8He4+w@mail.gmail.com>
- <20210617074401.GL30378@techsingularity.net>
- <CAKfTPtC8d37ZrXfDF2jkgg=tDPb1qAvFQQGXHhTf9LLR59hd8Q@mail.gmail.com>
+        Thu, 17 Jun 2021 05:43:03 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EC9C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:40:55 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id e7so2630082plj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 02:40:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=XjLNVS8FTx5mg1CNbMomnZVz+ZmOYcIpwKWpVxPSZ9w=;
+        b=BrhlGOFiuNTlT066ZSqQu5rrq81YOSSFJOCCKunAZiZjib4sCKF/bPaYURHAw27dwq
+         38+zt/0BmrWQ+sfHpwVFgLbG4748X9/IHC0igLCedTDs1uAJqQX3xDidPmJJrzNmAbr0
+         fbaEnXZbgmU6Ecyj6cDtn0QGi9j52zV/YZcNw4GjmZsqaokY+/xSlw2W1YSXcgMGZAsz
+         ov879So3M6wOtTi6SX1Eaf3D5Zcm9XSWQ9JGLPYmx/YfmX287MHNaJq5SU70ixh1pupE
+         DfKzpZZTdzoXw2GJ8VlLLYdHV3BiFLindJD1tqVxGDoYdY3bC4BnVXvkWOKE/kza/A+b
+         cHUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=XjLNVS8FTx5mg1CNbMomnZVz+ZmOYcIpwKWpVxPSZ9w=;
+        b=KZ7LhAqxzs/lKy1bm5l2RFSQ379WAc0X8ZjVwPpn4ASw5TMwH+2GrnDbCAkKOrZD6M
+         WqgP6xsFE6F4MfCnDMCERkn85sgM0M4a+hSWOgBmXBqqE5/DZZSfxMbQDdPMFJ3ToS6S
+         4aUCO4Q5Fvs+QWv/IaKX6Uat4N5ueMG8IDybC5L0K7iuvSNbzaIGZClMMGSps1CHMwIe
+         olorou12KP+3/C6+Vuqh0mcSqrKHn9Ikxx8FkLe+I1nq5IgaWnU/885pfd9tf20v+Qcy
+         XNjsqHw3tuVgdg4WYTTcqQtxI+NfqU3xGPqt0xFEgxIgaUCUHJ2dDpXj7a2/xGNadfcq
+         M3JA==
+X-Gm-Message-State: AOAM531T48yddDe1MSenOiBNV1SxZ+H3CqVXEFbOXCnflB7R4U7YqPZo
+        QE8X6kmH3y3aSTzJyc7vJvE=
+X-Google-Smtp-Source: ABdhPJz+u2UcyjxbBbFK4ixz6KbeUvY89VrD/B59FbeE5DroDqZHQH+18TpNb8AHQBe2f7CUP/+vdw==
+X-Received: by 2002:a17:903:2310:b029:109:e746:89a2 with SMTP id d16-20020a1709032310b0290109e74689a2mr3775750plh.8.1623922855231;
+        Thu, 17 Jun 2021 02:40:55 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id h8sm4506707pjf.7.2021.06.17.02.40.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 02:40:54 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 19:40:49 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH] mm/vmalloc: unbreak kasan vmalloc support
+To:     akpm@linux-foundation.org, Daniel Axtens <dja@axtens.net>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        David Gow <davidgow@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Uladzislau Rezki <urezki@gmail.com>
+References: <20210617081330.98629-1-dja@axtens.net>
+In-Reply-To: <20210617081330.98629-1-dja@axtens.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtC8d37ZrXfDF2jkgg=tDPb1qAvFQQGXHhTf9LLR59hd8Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-Id: <1623922742.sam09kpmhp.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 10:30:09AM +0200, Vincent Guittot wrote:
-> > > > I'm tempted to give it a go.. anyone object?
-> > >
-> > > Just finished running some tests on my large arm64 system.
-> > > Tbench tests are a mixed between small gain and loss
-> > >
-> >
-> > Same for tbench on three x86 machines I reran tests for
-> >
-> > <SNIP>
-> >
-> > For your arm machine, how many logical CPUs are online, what is the level
-> > of SMT if any and is the machine NUMA?
-> 
-> It's a SMT4 x 28 cores x 2 NUMA nodes = 224 CPUs
-> 
+Excerpts from Daniel Axtens's message of June 17, 2021 6:13 pm:
+> In commit 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings"),
+> __vmalloc_node_range was changed such that __get_vm_area_node was no
+> longer called with the requested/real size of the vmalloc allocation, but
+> rather with a rounded-up size.
+>=20
+> This means that __get_vm_area_node called kasan_unpoision_vmalloc() with
+> a rounded up size rather than the real size. This led to it allowing
+> access to too much memory and so missing vmalloc OOBs and failing the
+> kasan kunit tests.
+>=20
+> Pass the real size and the desired shift into __get_vm_area_node. This
+> allows it to round up the size for the underlying allocators while
+> still unpoisioning the correct quantity of shadow memory.
+>=20
+> Adjust the other call-sites to pass in PAGE_SHIFT for the shift value.
+>=20
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: David Gow <davidgow@google.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D213335
+> Fixes: 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings")
 
-Ok, SMT4 is what I was interested in. I suspected this was the case but
-was not sure. I wondered about the possibility that SMT4 should be
-accounted for in the scan depth.
+Thanks Daniel, good debugging.
 
-> >
-> > Fundamentally though, as the changelog notes "due to the nature of the
-> > patch, this is a regression magnet". There are going to be examples
-> > where a deep search is better even if a machine is fully busy or
-> > overloaded and examples where cutting off the search is better. I think
-> > it's better to have an idle estimate that gets updated if CPUs are fully
-> > busy even if it's not a universal win.
-> 
-> Although I agree that using a stall average idle time value of local
-> is not good, I'm not sure this proposal is better. The main problem is
-> that we use the avg_idle of the local CPU to estimate how many times
-> we should loop and try to find another idle CPU. But there is no
-> direct relation between both.
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
 
-This is true. The idle time of the local CPU is used to estimate the
-idle time of the domain which is inevitably going to be inaccurate but
-tracking idle time for the domain will be cache write intensive and
-potentially very expensive. I think this was discussed before but maybe
-it is my imaginaction.
-
-> Typically, a short average idle time on
-> the local CPU doesn't mean that there are less idle CPUs and that's
-> why we have a mix a gain and loss
-> 
-
-Can you evaluate if scanning proportional to cores helps if applied on
-top? The patch below is a bit of pick&mix and has only seen a basic build
-test with a distro config. While I will queue this, I don't expect it to
-have an impact on SMT2.
-
---8--
-sched/fair: Make select_idle_cpu() proportional to cores
-
-From: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-Instead of calculating how many (logical) CPUs to scan, compute how
-many cores to scan.
-
-This changes behaviour for anything !SMT2.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- kernel/sched/core.c  | 17 ++++++++++++-----
- kernel/sched/fair.c  | 11 +++++++++--
- kernel/sched/sched.h |  2 ++
- 3 files changed, 23 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 6a3fdb9f4380..1773e0707a5d 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7846,11 +7846,18 @@ int sched_cpu_activate(unsigned int cpu)
- 	balance_push_set(cpu, false);
- 
- #ifdef CONFIG_SCHED_SMT
--	/*
--	 * When going up, increment the number of cores with SMT present.
--	 */
--	if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
--		static_branch_inc_cpuslocked(&sched_smt_present);
-+	do {
-+		int weight = cpumask_weight(cpu_smt_mask(cpu));
-+
-+		if (weight > sched_smt_weight)
-+			sched_smt_weight = weight;
-+
-+		/*
-+		 * When going up, increment the number of cores with SMT present.
-+		 */
-+		if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
-+			static_branch_inc_cpuslocked(&sched_smt_present);
-+	} while (0);
- #endif
- 	set_cpu_active(cpu, true);
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index cc7d1144a356..4fc4e1f2eaae 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6037,6 +6037,8 @@ static inline int __select_idle_cpu(int cpu)
- DEFINE_STATIC_KEY_FALSE(sched_smt_present);
- EXPORT_SYMBOL_GPL(sched_smt_present);
- 
-+int __read_mostly sched_smt_weight = 1;
-+
- static inline void set_idle_cores(int cpu, int val)
- {
- 	struct sched_domain_shared *sds;
-@@ -6151,6 +6153,8 @@ static inline bool test_idle_cores(int cpu, bool def)
- 	return def;
- }
- 
-+#define sched_smt_weight 1
-+
- static inline int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
- {
- 	return __select_idle_cpu(core);
-@@ -6163,6 +6167,8 @@ static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd
- 
- #endif /* CONFIG_SCHED_SMT */
- 
-+#define sis_min_cores	2
-+
- /*
-  * Scan the LLC domain for idle CPUs; this is dynamically regulated by
-  * comparing the average scan cost (tracked in sd->avg_scan_cost) against the
-@@ -6203,11 +6209,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
- 		avg_cost = this_sd->avg_scan_cost + 1;
- 
- 		span_avg = sd->span_weight * avg_idle;
--		if (span_avg > 4*avg_cost)
-+		if (span_avg > sis_min_cores * avg_cost)
- 			nr = div_u64(span_avg, avg_cost);
- 		else
--			nr = 4;
-+			nr = sis_min_cores;
- 
-+		nr *= sched_smt_weight;
- 		time = cpu_clock(this);
- 	}
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 7bc20e5541cf..440a2bbc19d5 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1119,6 +1119,8 @@ static inline bool is_migration_disabled(struct task_struct *p)
- #ifdef CONFIG_SCHED_SMT
- extern void __update_idle_core(struct rq *rq);
- 
-+extern int sched_smt_weight;
-+
- static inline void update_idle_core(struct rq *rq)
- {
- 	if (static_branch_unlikely(&sched_smt_present))
+> Signed-off-by: Daniel Axtens <dja@axtens.net>
+> ---
+>  mm/vmalloc.c | 24 ++++++++++++++----------
+>  1 file changed, 14 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index aaad569e8963..3471cbeb083c 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2362,15 +2362,16 @@ static void clear_vm_uninitialized_flag(struct vm=
+_struct *vm)
+>  }
+> =20
+>  static struct vm_struct *__get_vm_area_node(unsigned long size,
+> -		unsigned long align, unsigned long flags, unsigned long start,
+> -		unsigned long end, int node, gfp_t gfp_mask, const void *caller)
+> +		unsigned long align, unsigned long shift, unsigned long flags,
+> +		unsigned long start, unsigned long end, int node,
+> +		gfp_t gfp_mask, const void *caller)
+>  {
+>  	struct vmap_area *va;
+>  	struct vm_struct *area;
+>  	unsigned long requested_size =3D size;
+> =20
+>  	BUG_ON(in_interrupt());
+> -	size =3D PAGE_ALIGN(size);
+> +	size =3D ALIGN(size, 1ul << shift);
+>  	if (unlikely(!size))
+>  		return NULL;
+> =20
+> @@ -2402,8 +2403,8 @@ struct vm_struct *__get_vm_area_caller(unsigned lon=
+g size, unsigned long flags,
+>  				       unsigned long start, unsigned long end,
+>  				       const void *caller)
+>  {
+> -	return __get_vm_area_node(size, 1, flags, start, end, NUMA_NO_NODE,
+> -				  GFP_KERNEL, caller);
+> +	return __get_vm_area_node(size, 1, PAGE_SHIFT, flags, start, end,
+> +				  NUMA_NO_NODE, GFP_KERNEL, caller);
+>  }
+> =20
+>  /**
+> @@ -2419,7 +2420,8 @@ struct vm_struct *__get_vm_area_caller(unsigned lon=
+g size, unsigned long flags,
+>   */
+>  struct vm_struct *get_vm_area(unsigned long size, unsigned long flags)
+>  {
+> -	return __get_vm_area_node(size, 1, flags, VMALLOC_START, VMALLOC_END,
+> +	return __get_vm_area_node(size, 1, PAGE_SHIFT, flags,
+> +				  VMALLOC_START, VMALLOC_END,
+>  				  NUMA_NO_NODE, GFP_KERNEL,
+>  				  __builtin_return_address(0));
+>  }
+> @@ -2427,7 +2429,8 @@ struct vm_struct *get_vm_area(unsigned long size, u=
+nsigned long flags)
+>  struct vm_struct *get_vm_area_caller(unsigned long size, unsigned long f=
+lags,
+>  				const void *caller)
+>  {
+> -	return __get_vm_area_node(size, 1, flags, VMALLOC_START, VMALLOC_END,
+> +	return __get_vm_area_node(size, 1, PAGE_SHIFT, flags,
+> +				  VMALLOC_START, VMALLOC_END,
+>  				  NUMA_NO_NODE, GFP_KERNEL, caller);
+>  }
+> =20
+> @@ -2949,9 +2952,9 @@ void *__vmalloc_node_range(unsigned long size, unsi=
+gned long align,
+>  	}
+> =20
+>  again:
+> -	size =3D PAGE_ALIGN(size);
+> -	area =3D __get_vm_area_node(size, align, VM_ALLOC | VM_UNINITIALIZED |
+> -				vm_flags, start, end, node, gfp_mask, caller);
+> +	area =3D __get_vm_area_node(real_size, align, shift, VM_ALLOC |
+> +				  VM_UNINITIALIZED | vm_flags, start, end, node,
+> +				  gfp_mask, caller);
+>  	if (!area) {
+>  		warn_alloc(gfp_mask, NULL,
+>  			"vmalloc error: size %lu, vm_struct allocation failed",
+> @@ -2970,6 +2973,7 @@ void *__vmalloc_node_range(unsigned long size, unsi=
+gned long align,
+>  	 */
+>  	clear_vm_uninitialized_flag(area);
+> =20
+> +	size =3D PAGE_ALIGN(size);
+>  	kmemleak_vmalloc(area, size, gfp_mask);
+> =20
+>  	return addr;
+> --=20
+> 2.30.2
+>=20
+>=20
