@@ -2,118 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140183ABACC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501E63ABAD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232624AbhFQRqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
+        id S232645AbhFQRsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232590AbhFQRqo (ORCPT
+        with ESMTP id S231249AbhFQRsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:46:44 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C58C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:44:36 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id h11-20020a05600c350bb02901b59c28e8b4so6949324wmq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:44:36 -0700 (PDT)
+        Thu, 17 Jun 2021 13:48:02 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CE9C061574;
+        Thu, 17 Jun 2021 10:45:53 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id g142so4197806qke.4;
+        Thu, 17 Jun 2021 10:45:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0gu9khqafYbRngyKiTFSC+bYHLyhKbFlrZ0UOe7U7qE=;
-        b=TtQWcNMpgBza9QW4TQTgS7qaug29DGNm1h5of6PDbO5NKu/566NDNLdiXFPjsk/tPn
-         5MQuis9g9zgNew6kPlb2UPtbpgxrY/g+J+IygEQrlm/xIfJCIS9VtJivuDmk2/k1kvtr
-         T6jJmg1SmjBCk9i6QpHnkerzC5uA+d5z+NOdw=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B7BTSgB3n3cFjChzgxeznoOj27ryM7XxSlGPdzcMAHY=;
+        b=eE2nqBZOXQlqR5DWIPcSHK9CrZBrJ6JZTmKOtx8ptpJGaB/FQsixcvEGgfrMzzabrE
+         1rKqW3N8HHOkw0ZbSry/q1v4yUp4X7nVrB+KNz63J9zX0yWRro3MgB6DRS3no2mdXmbh
+         WR72hdxX9+vL+rqKOxMFjppd8JTNAs5wsC9i9y4zR9dov5a6ZtLE5oKUiouiIGmD8v0C
+         jLpUEDZ/bGXvfenJf9+2iLtccBB1/7FI26fJF3UMdhbelnvJJpC4CTJ5ixtKBTR00Mwq
+         yN/Oc0A5O89v/1tqnDmz4yzNel6jN3Dwk9VKOoUDLCTpzLgikmKBHQ/nvVxHvQ9M8fty
+         6I6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=0gu9khqafYbRngyKiTFSC+bYHLyhKbFlrZ0UOe7U7qE=;
-        b=KLguKaM/OSZWABJvdYBBY8nb6HUrrn3xCLFkDRac1ux4rzSzHeOQaV55I0QWeeM2EW
-         O6PhmpWXjGAYvk6lzR68mrxOYgM1D/Eu+g5v9fRZDC1mYPj0Cm475CNtXesJOgGEUVbg
-         d2rB2/L++tBCq46Ial4Q8F/wn7EyCH9h5PBCF//fyhN9/uxuI+SCVfDpgmixp2/+1b4s
-         2vk8mKcAD9Omx3pwpYEULte4HMzivj1y8TAUcXiGIrDiuUDOTSLKKDBWfjOWmvE8EglU
-         /4etR/1bq3k8ioCGz8djwnM4U6G64HB7VmrAZQMn6bIZuNxiJg/ReP3v/hzpKi9c0LNg
-         auAw==
-X-Gm-Message-State: AOAM533GGKloGZL4P71ZQPHesv+yQU0/KYodZDzEe7O/kJAaUDhval6K
-        yftDYQ1VoRahniHCqmVsZHDbwg==
-X-Google-Smtp-Source: ABdhPJyTvxlyO/vdBn2yGT4wglYu6U9uOEjCwb9SQTK3XbdJmVJMN8xZehNwz7qHud6fuzXVGMfreA==
-X-Received: by 2002:a7b:c110:: with SMTP id w16mr6685991wmi.4.1623951874860;
-        Thu, 17 Jun 2021 10:44:34 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id t9sm5506437wmq.14.2021.06.17.10.44.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 10:44:34 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 19:44:32 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/i915/gt: Fix duplicate included intel_region_lmem.h
-Message-ID: <YMuKAHhaYOaLP8JL@phenom.ffwll.local>
-Mail-Followup-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <1623823318-6759-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B7BTSgB3n3cFjChzgxeznoOj27ryM7XxSlGPdzcMAHY=;
+        b=TURzGSmrMWQGp3y8ZmWGpu1urqeCvJrzPO7sI/5MYNAZnEeRCsXACHOaBBeE9sRy/q
+         5IfSmowha4rTUi4YLhR3/i3ryOTWqnJcR49D3qMN19E2oWc4R015cXBKnaM8aLuVjIC2
+         uyvCZ6xME3bYXA5S5qidrImTeVK11dQuiH5zRJRtR9chsQRKLLdtPJLFQsoMCZjhjIpP
+         66rZxLneJL8B0rYIaagBHoFgWZrN8RpR02AFD+PQnO5QwduATItYO8clgqOT6WQ51TCK
+         zN1X+r3O2ABh06XOB6VjkrIe+n9xySfRVwHyIBBvCdQ8hiMEPcOOcOf7DZXW6tTMuzQC
+         /Jmw==
+X-Gm-Message-State: AOAM5323s4uAD9o4weT54FQcSBDvC1JkbWdTqwqjLVlEmwjYc2AUfHKR
+        xBUSRHxPe701bMSnS9lcnOONMauGwHIrgKXjzbGvwPwHT2QQ/w==
+X-Google-Smtp-Source: ABdhPJyTokwFn5xvIu9181W1fbdZwMgdI5fh/nmwyY5BuPu6gxfZL0RrzBxCLwvFIs1o3aZYtfLdNWxwaH13qTqP+lg=
+X-Received: by 2002:a25:870b:: with SMTP id a11mr106565ybl.260.1623951952293;
+ Thu, 17 Jun 2021 10:45:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1623823318-6759-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+References: <162209754288.436794.3904335049560916855.stgit@devnote2>
+ <162209762943.436794.874947392889792501.stgit@devnote2> <20210617043909.fgu2lhnkxflmy5mk@treble>
+ <20210617044032.txng4enhiduacvt6@treble> <20210617234001.54cd2ff60410ff82a39a2020@kernel.org>
+ <20210618000239.f95de17418beae6d84ce783d@kernel.org>
+In-Reply-To: <20210618000239.f95de17418beae6d84ce783d@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 17 Jun 2021 10:45:41 -0700
+Message-ID: <CAEf4Bzbob_M0aS-GUY5XaqePZr_prxUag3RLHtp=HY8Uu__10g@mail.gmail.com>
+Subject: Re: [PATCH -tip v7 09/13] kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 02:01:58PM +0800, Jiapeng Chong wrote:
-> Clean up the following includecheck warning:
-> 
-> ./drivers/gpu/drm/i915/gt/intel_region_lmem.c: intel_region_lmem.h is
-> included more than once.
-> 
-> No functional change.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On Thu, Jun 17, 2021 at 8:02 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> On Thu, 17 Jun 2021 23:40:01 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> > On Wed, 16 Jun 2021 23:40:32 -0500
+> > Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > > On Wed, Jun 16, 2021 at 11:39:11PM -0500, Josh Poimboeuf wrote:
+> > > > On Thu, May 27, 2021 at 03:40:29PM +0900, Masami Hiramatsu wrote:
+> > > > > To simplify the stacktrace with pt_regs from kretprobe handler,
+> > > > > set the correct return address to the instruction pointer in
+> > > > > the pt_regs before calling kretprobe handlers.
+> > > > >
+> > > > > Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > > > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > > > Tested-by: Andrii Nakryik <andrii@kernel.org>
+> > > > > ---
+> > > > >  Changes in v3:
+> > > > >   - Cast the correct_ret_addr to unsigned long.
+> > > > > ---
+> > > > >  kernel/kprobes.c |    3 +++
+> > > > >  1 file changed, 3 insertions(+)
+> > > > >
+> > > > > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > > > > index 54e5b89aad67..1598aca375c9 100644
+> > > > > --- a/kernel/kprobes.c
+> > > > > +++ b/kernel/kprobes.c
+> > > > > @@ -1914,6 +1914,9 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+> > > > >                 BUG_ON(1);
+> > > > >         }
+> > > > >
+> > > > > +       /* Set the instruction pointer to the correct address */
+> > > > > +       instruction_pointer_set(regs, (unsigned long)correct_ret_addr);
+> > > > > +
+> > > > >         /* Run them. */
+> > > > >         first = current->kretprobe_instances.first;
+> > > > >         while (first) {
+> > > > >
+> > > >
+> > > > Hi Masami,
+> > > >
+> > > > I know I suggested this patch, but I believe it would only be useful in
+> > > > combination with the use of UNWIND_HINT_REGS in SAVE_REGS_STRING.  But I
+> > > > think that would be tricky to pull off correctly.  Instead, we have
+> > > > UNWIND_HINT_FUNC, which is working fine.
+> > > >
+> > > > So I'd suggest dropping this patch, as the unwinder isn't actually
+> > > > reading regs->ip after all.
+> > >
+> > > ... and I guess this means patches 6-8 are no longer necessary.
+> >
+> > OK, I also confirmed that dropping those patche does not make any change
+> > on the stacktrace.
+> > Let me update the series without those.
+>
+> Oops, Andrii, can you also test the kernel without this patch?
+> (you don't need to drop patch 6-8)
 
-Already merged another one of these:
+Hi Masami,
 
-commit 6796c772850574ec0a9adc977e9889606b23d0f4 (HEAD -> drm-intel-gt-next, drm-intel/drm-intel-gt-next)
-Author: Wan Jiabing <wanjiabing@vivo.com>
-Date:   Tue Jun 15 19:35:20 2021 +0800
+Dropping this patch and leaving all the other in place breaks stack
+traces from kretprobes for BPF. I double checked with and without this
+patch. Without this patch we are back to having broken stack traces. I
+see either
 
-    drm/i915: Remove duplicate include of intel_region_lmem.h
+  kretprobe_trampoline+0x0
 
-Thanks anyway.
+or
 
-Cheers, Daniel
+  ftrace_trampoline+0xc8
+  kretprobe_trampoline+0x0
 
-> ---
->  drivers/gpu/drm/i915/gt/intel_region_lmem.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/gt/intel_region_lmem.c b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
-> index f7366b0..aa3cfca 100644
-> --- a/drivers/gpu/drm/i915/gt/intel_region_lmem.c
-> +++ b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
-> @@ -5,7 +5,6 @@
->  
->  #include "i915_drv.h"
->  #include "intel_memory_region.h"
-> -#include "intel_region_lmem.h"
->  #include "intel_region_ttm.h"
->  #include "gem/i915_gem_lmem.h"
->  #include "gem/i915_gem_region.h"
-> -- 
-> 1.8.3.1
-> 
+Is there any problem if you leave this patch as is?
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> This changes the kretprobe to pass the return address via regs->ip to handler.
+> Dynamic-event doesn't use it, but I'm not sure bcc is using it or not.
+>
+> Thank you,
+>
+> >
+> > Thank you,
+> >
+> > >
+> > > --
+> > > Josh
+> > >
+> >
+> >
+> > --
+> > Masami Hiramatsu <mhiramat@kernel.org>
+>
+>
+> --
+> Masami Hiramatsu <mhiramat@kernel.org>
