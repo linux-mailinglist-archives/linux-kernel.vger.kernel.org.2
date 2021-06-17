@@ -2,100 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B153B3AB5EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB263AB5FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232316AbhFQO2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:28:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbhFQO2C (ORCPT
+        id S232488AbhFQObD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:31:03 -0400
+Received: from pv50p00im-zteg10011501.me.com ([17.58.6.42]:52060 "EHLO
+        pv50p00im-zteg10011501.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231656AbhFQObC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:28:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38382C061574;
-        Thu, 17 Jun 2021 07:25:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wzZhieUCTydu3GyeTVG9mMeeZV6Pcd3sEaD/7vJ14DE=; b=WFK4gPH3RMnGJEiPQBkbbzCReG
-        e6lx/HO4t41Z/sImtffnNLojRPbVSDUBztDOF5Cj5mCbDlO5K1py0Ud8f5E1fpuh465GetCfEDH+K
-        qUSDIj3GnT0ffxm5aRgzlCLxkDltYLm24JlVyPoV+9isVWbYcKOSb24kI6w57KhH0PP5dUXBHH40N
-        dhSfTHusBDvoxmftQBwHDyipEB6Vv9i1O1NRsvNqcWSJuODlqo20Fb/hM+6pUK1Yhuyp39iE7BIxE
-        tnoNhMHHttdV2lU3m8lLJRKpEjgyUbPTMyGLd/GsKeCMZNUlbMs3/a1umEUg42qsM3RGKPi5hiOXc
-        6m3bw7wg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltsx2-009Did-5K; Thu, 17 Jun 2021 14:25:06 +0000
-Date:   Thu, 17 Jun 2021 15:25:00 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com, miklos@szeredi.hu, stefanha@redhat.com,
-        dgilbert@redhat.com, viro@zeniv.linux.org.uk, dhowells@redhat.com,
-        richard.weinberger@gmail.com, asmadeus@codewreck.org,
-        v9fs-developer@lists.sourceforge.net
-Subject: Re: [PATCH v2 0/2] Add support to boot virtiofs and 9pfs as rootfs
-Message-ID: <YMtbPDW+T5Z1uBZt@infradead.org>
-References: <20210614174454.903555-1-vgoyal@redhat.com>
- <YMsgaPS90iKIqSvi@infradead.org>
- <20210617133052.GA1142820@redhat.com>
+        Thu, 17 Jun 2021 10:31:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1623940134; bh=LAL9LY0UrYbyJUihXjQ953KjGs5SzfoD7ucw0Wjvqfo=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=u3u0AGjv8aG5UQitLG9FCZDUidKQoIPNNuYPhCuay4SHDSieSJIIAc3/CjR4r4L3b
+         X1i7TmmOFr9YEiF4wBat5CWAoDOSST8AyeFoakoMwyALYIe3aI2phKEuB9ATe+Ev7P
+         GZ+SPGMsTYAXAjmDxTzKGxox3aYHAK+qWKaOML1ReXjVF01anlOuY5dQaaEUlMum/s
+         Lr68lZW4U16Frf/AZYSJq/uze28J53OrPXbCbZkMNmvrNpWadBzWTJzpwrmKir8LU0
+         cjpk4y1MYkngL9McJGQ1g2LPkY6KLBE+JvK7IpJYg26i2lo5LB/68xvHo6Sr9L7vOi
+         YICXO0LDK4Icg==
+Received: from xiongwei.. (unknown [120.245.2.120])
+        by pv50p00im-zteg10011501.me.com (Postfix) with ESMTPSA id 21C2DB0039B;
+        Thu, 17 Jun 2021 14:28:50 +0000 (UTC)
+From:   Xiongwei Song <sxwjean@me.com>
+To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, boqun.feng@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@me.com>
+Subject: [PATCH 0/3] some improvements for lockdep
+Date:   Thu, 17 Jun 2021 22:28:25 +0800
+Message-Id: <20210617142828.346111-1-sxwjean@me.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617133052.GA1142820@redhat.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-17_13:2021-06-15,2021-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=544 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2106170092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 09:30:52AM -0400, Vivek Goyal wrote:
-> > +static int __init mount_nodev_root(void)
-> > +{
-> > +	struct file_system_type *fs = get_fs_type(root_fs_names);
-> 
-> get_fs_type() assumes root_fs_names is not null. So if I pass
-> "root=myfs rw", it crashes with null pointer dereference.
+Unlikely the checks of return values of graph walk will improve the
+performance to some degree, patch 1 and patch 2 are for this.
 
-Ok, I'll need to fix that.
+The patch 3 will print a warning after counting lock deps when hitting
+bfs errors.
 
-> > +	int err = -ENODEV;
-> > +
-> > +	if (!fs)
-> > +		goto out;
-> > +	if (fs->fs_flags & FS_REQUIRES_DEV)
-> > +		goto out_put_filesystem;
-> > +
-> > +	fs_names = (void *)__get_free_page(GFP_KERNEL);
-> > +	if (!fs_names)
-> > +		goto out_put_filesystem;
-> > +	get_fs_names(fs_names);
-> 
-> I am wondering what use case we are trying to address by calling
-> get_fs_names() and trying do_mount_root() on all filesystems
-> returned by get_fs_names(). I am assuming following use cases
-> you have in mind.
-> 
-> A. User passes a single filesystem in rootfstype.
->    
->    root=myfs rootfstype=virtiofs rw
-> 
-> B. User passes multiple filesystems in rootfstype and kernel tries all
->    of them one after the other
-> 
->    root=myfs, rootfstype=9p,virtiofs rw
-> 
-> C. User does not pass a filesystem type at all. And kernel will get a
->    list of in-built filesystems and will try these one after the other.
-> 
->    root=myfs rw
-> 
-> If that's the thought, will it make sense to call get_fs_names() first
-> and then inside the for loop call get_fs_type() and try mounting
-> only if FS_REQUIRES_DEV is not set, otherwise skip and move onto th
-> next filesystem in the list (fs_names).
+Xiongwei Song (3):
+  locking/lockdep: unlikely bfs_error function
+  locking/lockdep: unlikely conditons about BFS_RMATCH
+  locking/lockdep: print possible warning after counting deps
 
-I thought of A and B.  I did not think at all of C and think it is
-a rather bad idea.  I'll revisit the patch to avoid C and will resend it
-as a formal patch.
+ kernel/locking/lockdep.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
+
+-- 
+2.30.2
+
