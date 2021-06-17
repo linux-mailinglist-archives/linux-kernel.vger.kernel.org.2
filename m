@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664963AB68E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59933AB698
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 16:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhFQO4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 10:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbhFQO4l (ORCPT
+        id S232110AbhFQO6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 10:58:16 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56854 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230299AbhFQO6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:56:41 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F941C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 07:54:32 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id og14so10373954ejc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 07:54:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kP9FZJ6E9jOuvBEfkZXpWLxsS4aT6M+o/FNvbytEBx4=;
-        b=TAos1Myg6tlEtCXWGma2vcvlxK36hv6B5mhPDSIIXLJYHBezJ9p5/jWLLPjdXyNYV1
-         FxomDl3fMGV0SvrzgsumjDVbUm/n8EgyOTJHV6KVK5soWZejWDV/gpXg7RtzmUyH5f7i
-         nqIcyVq1AkuAyFzDLbrtLetR1gtiFS/w6kPyk3/YUICArZ6jnEzitOo+uce7OieRAmYu
-         eZw1rgReSSuT7johry48W+XUPoF0o8ODuBNmlXNZD8e6z5wt5ZBH+R+jXKC4mgXfKJA8
-         dP5pivfJr8M3DePenSPzKXIEjFp22RUrjlGZMMHzmrfMfNqpu0p0h7dTxpinblwIIHRZ
-         ve0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kP9FZJ6E9jOuvBEfkZXpWLxsS4aT6M+o/FNvbytEBx4=;
-        b=BoaNKvYuRpSqmPc4dK703yG7qYRIYKliL460thHngecEaFyyxzgjcZf4HfUGwCByFN
-         ylO0qELdgc6JP3vOKGIZmSwf3ViKIyALlgAQlGHfSJLX+ojtC96nGrZf5WWYLTdcj5ef
-         GUfJQswW+tfHGRPHtoegxaa4hUw5rCSOZpFY+Wpae1dFZFbfvfniKLitQ3U7p7NcANQD
-         zDuF46YeVTuyb+pwGq7CKcdtjLq7sxTXCnf1InZAeSgFwKPtJ3H2yLpgTThFLjnwuNJ1
-         /A3UEEZpWfV0n8r6YOtkoGbQk8T9pSbcvNc/bb8yyyC/jgXXxJm8IuKsl0o3wez1TJL4
-         bl8A==
-X-Gm-Message-State: AOAM5326Tc/Eg7QhYI7qfl3h23VbXh1cYLvr4KF0TujM+Nh++ZSiBVc9
-        QakosVj6LKwv/6rpbMvmKvfsT2UaIBRbJVm+GNroIA==
-X-Google-Smtp-Source: ABdhPJxrtEngye1FPnWP5qJqASxWqbVqz1llqVe9GVdKKRDt8N04M+Sb6HXeXjfsZEZA3AoWNAfc503S+WZNzPFUUYE=
-X-Received: by 2002:a17:906:5648:: with SMTP id v8mr5645692ejr.421.1623941670599;
- Thu, 17 Jun 2021 07:54:30 -0700 (PDT)
+        Thu, 17 Jun 2021 10:58:13 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HEXsAu120967;
+        Thu, 17 Jun 2021 10:55:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=ZDrMf1r8Kl8gPUV4ySfa2nQ/MPIpUbeuBPOOaQuDwI4=;
+ b=QL5yStQeDXXxRRJu4EmrY9DZQjuEKj5FpFMjWmZWgNGMPkZqy2rxvEL4WMTIv+N2ufZb
+ brzzKp4igNJ2WPxwJTMVMVN489JGtYmslEnsaTlrTMwoj2/413gRqBM6ZJYtlTXEsH04
+ 0zl9csWTWYDzG2K1IQWoP69ATr06lDJ4ETaz7dwoEFi3ifOz/2V+DQVNxbisFwAOPUg/
+ BIlOSehSm1azCNiYq0uBrW+/zlZrIaHcy1TWzcolHJCyJPsuEgG927N2hbsRmjMqeM1C
+ zxx6ywGO1dOABMvGiIauF9GT8QmMBjhc8/TlYDIq9JtvFe/yYgTGfpKKu+fChUiw5h7J sw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39886p0xen-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 10:55:51 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15HEYNQT125265;
+        Thu, 17 Jun 2021 10:55:50 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39886p0xdp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 10:55:50 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15HEqWBu029030;
+        Thu, 17 Jun 2021 14:55:48 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 394mj8tse9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 14:55:48 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15HEsdIf17695074
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Jun 2021 14:54:39 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7439A4C044;
+        Thu, 17 Jun 2021 14:55:45 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 04E684C052;
+        Thu, 17 Jun 2021 14:55:45 +0000 (GMT)
+Received: from osiris (unknown [9.145.177.22])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 17 Jun 2021 14:55:44 +0000 (GMT)
+Date:   Thu, 17 Jun 2021 16:55:43 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [next] [clang] s390: clang: error: unable to execute command:
+ Segmentation fault (core dumped)
+Message-ID: <YMtib5hKVyNknZt3@osiris>
+References: <CA+G9fYsn-3rZXkHTtH33Oo0y97nfgkQmR_Echbu_-=WAbfo4Ug@mail.gmail.com>
+ <CA+G9fYu2SvwA7CDxTAJVdTi1K1267WDcdx9m6Ds6z0D3borthQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <1623924351-22489-1-git-send-email-akhilrajeev@nvidia.com>
-In-Reply-To: <1623924351-22489-1-git-send-email-akhilrajeev@nvidia.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 17 Jun 2021 16:54:18 +0200
-Message-ID: <CACRpkdYj9utWedo1-5NiRJRCHqhUmzYXHQzo8rvVq_4PETr0oA@mail.gmail.com>
-Subject: Re: [PATCH] gpio: tegra186: Add ACPI support
-To:     Akhil R <akhilrajeev@nvidia.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Suresh Mangipudi <smangipudi@nvidia.com>,
-        Krishna Yarlagadda <kyarlagadda@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYu2SvwA7CDxTAJVdTi1K1267WDcdx9m6Ds6z0D3borthQ@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: WBdfFuvlbg97OnFmhWMVfxvlf1l2TOe7
+X-Proofpoint-GUID: xsoFTxNvHHuKnwov2YPuHH_-U_2djiiw
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-17_10:2021-06-15,2021-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
+ impostorscore=0 mlxscore=0 suspectscore=0 priorityscore=1501 phishscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106170092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Akhil,
+On Thu, Jun 17, 2021 at 06:19:14PM +0530, Naresh Kamboju wrote:
+> The git bisect found the first bad commit,
+> The first bad commit:
+> commit 3abbdfde5a6588a92209cd8b131769b8058e7c21
+> Author: Heiko Carstens <hca@linux.ibm.com>
+> Date:   Wed Jun 9 22:59:13 2021 +0200
+>     s390/bitops: use register pair instead of register asm
+> 
+>     Get rid of register asm statement and use a register pair.
+>     This allows the compiler to allocate registers on its own.
+> 
+>     Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+>     Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+>  arch/s390/include/asm/bitops.h | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> Previous HEAD position was 3abbdfde5a65 s390/bitops: use register pair
+> instead of register asm
+> HEAD is now at 7d9c6b8147bd Add linux-next specific files for 20210617
 
-thanks for your patch!
+You need clang-13 development version which contains commit
+d058262b1471 ("[SystemZ] Support i128 inline asm operands.").
+Every older clang version won't be able to complile the kernel for
+s390 anymore.
 
-On Thu, Jun 17, 2021 at 12:05 PM Akhil R <akhilrajeev@nvidia.com> wrote:
-
-> From: Akhil Rajeev <akhilrajeev@nvidia.com>
->
-> Add ACPI module ID to probe the driver from the ACPI based bootloader
-> firmware.
->
-> Signed-off-by: Akhil Rajeev <akhilrajeev@nvidia.com>
-
-Please include ACPI GPIO maintainer Andy Shevchenko on subsequent
-posts, he is looking after ACPI handling in the GPIO subsystem and
-always provide excellent reviews. (Added on To:)
-
-It looks OK to my untrained eye, but I don't know ACPI details
-and expected behaviours as well as Andy.
-
-Yours,
-Linus Walleij
+This is intended and won't be fixed.
