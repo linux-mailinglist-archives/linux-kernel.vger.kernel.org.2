@@ -2,150 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40E93AA8BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37FA3AA8C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhFQBo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 21:44:27 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39171 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229713AbhFQBo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 21:44:26 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G54YJ1RNLz9sW4;
-        Thu, 17 Jun 2021 11:42:12 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623894134;
-        bh=I1EcfeSL1oQCetBOruF67yYdf2PJDFYtyBZ2rB1ehNU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rvnCAdUgg3zRF9IGVMGrShXKe5oofww8eLNjaucazTK5ld5uO7c0LJwYH0RciSl6O
-         v0HKsOCDOfGhKGJuOPr0GOd+q7WknFn8F/JfpXZw1PHiqvtB85QQTVMISFM2FaPHo9
-         xtGZBmgz5gwW4UA/u8AWZ0Kl3rRoVqL9AjAvmvYXG0yBKv70cC9EGiRpUW0D4bQQIf
-         PR+Baek376m/yel4RLbIRMHMNmzkNkLnQ6Kbm03U75j/0i7jeP/CxXipbtJHgbqpi0
-         zTDNIb26+IN07zSsNLAvWBmSshdWOrhn1BCqKhHmAIdyITpwFV0bLjeCZWJV20TJt2
-         p2lfIYxfJzGuw==
-Date:   Thu, 17 Jun 2021 11:42:11 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: linux-next: manual merge of the drm tree with the drm-misc-fixes
- tree
-Message-ID: <20210617114211.335cfceb@canb.auug.org.au>
+        id S232203AbhFQBqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 21:46:25 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:20274 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232184AbhFQBqX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 21:46:23 -0400
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 15H1huVf009347;
+        Thu, 17 Jun 2021 10:43:57 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 15H1huVf009347
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1623894237;
+        bh=wjle6ONnIAord5cqRzKuWQUDNDJxzTYVAbaSXw18SKs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qU6uBj2X7Hnfapm7LiTzm1euiOSK+bL4VVZnJ7KVTn/i5DahMqcuYZu53QEIWy3Td
+         szDZjRxMEbGVeye0BDWsFQ3KwUWiIMEY7gZOyiv+b5zi7WgC/q/4rV+8PpkwJbYFBo
+         ukreAtJk5gasEwCXa12unM/azjyYYuv8yyw0Or6wjdaZY3CUg6CnYoLM1Mq+rDFTMP
+         O4eqMzijOQMk3c46xMw12PDvOaT9y4/9Je0ewRfnBHjb3u8MY8JxI9vd5C7FtfMbyG
+         S1gjnLpE4xTSh4HTSqbr7XJ+qVOG6Iog+ZeuvYC8KoKw9ZOfEJrQODMkBFGy27BYzj
+         cna8L74KOZEiw==
+X-Nifty-SrcIP: [209.85.210.182]
+Received: by mail-pf1-f182.google.com with SMTP id g6so3703525pfq.1;
+        Wed, 16 Jun 2021 18:43:57 -0700 (PDT)
+X-Gm-Message-State: AOAM5336ZK6b3HXOdm3fJUJBKEEnMJQuJNhu5FT6guawJe29HWOYVELr
+        lFLpQz+Z8EAmM5GxL1zk53VVGkKZ1BH/+EmmX/A=
+X-Google-Smtp-Source: ABdhPJw3BCV6PVCg+sScvyPLQpDO0KODxRfAFcRXVfUn4JyQ6ZXE4MGMIGXTbKinAUO4r+NNuSOGF9iVELFEzBlofTU=
+X-Received: by 2002:aa7:962f:0:b029:2ed:cf:1f90 with SMTP id
+ r15-20020aa7962f0000b02902ed00cf1f90mr2761373pfg.76.1623894236332; Wed, 16
+ Jun 2021 18:43:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ntqrCRhKsl=qksGA+3m5hXx";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210612141838.1073085-1-maennich@google.com> <CAK7LNAQkoqTG540EOER27G83z+DO5fkeHi-in-vRYkrbX-o0cg@mail.gmail.com>
+In-Reply-To: <CAK7LNAQkoqTG540EOER27G83z+DO5fkeHi-in-vRYkrbX-o0cg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 17 Jun 2021 10:43:19 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR=Fwzio6CQqDOYQJj9tYrf5a_-sYQ+Yr2=Qt5cYq8wOA@mail.gmail.com>
+Message-ID: <CAK7LNAR=Fwzio6CQqDOYQJj9tYrf5a_-sYQ+Yr2=Qt5cYq8wOA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: mkcompile_h: consider timestamp if
+ KBUILD_BUILD_TIMESTAMP is set
+To:     Matthias Maennich <maennich@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ntqrCRhKsl=qksGA+3m5hXx
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jun 17, 2021 at 10:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Sat, Jun 12, 2021 at 11:18 PM Matthias Maennich <maennich@google.com> wrote:
+> >
+> > To avoid unnecessary recompilations, mkcompile_h does not regenerate
+> > compile.h if just the timestamp changed.
+> > Though, if KBUILD_BUILD_TIMESTAMP is set, an explicit timestamp for the
+> > build was requested, in which case we should not ignore it.
+> >
+> > If a user follows the documentation for reproducible builds [1] and
+> > defines KBUILD_BUILD_TIMESTAMP as the git commit timestamp, a clean
+> > build will have the correct timestamp. A subsequent cherry-pick (or
+> > amend) changes the commit timestamp and if an incremental build is done
+> > with a different KBUILD_BUILD_TIMESTAMP now, that new value is not taken
+> > into consideration. But it should for reproducibility.
+> >
+> > Hence, whenever KBUILD_BUILD_TIMESTAMP is explicitly set, do not ignore
+> > UTS_VERSION when making a decision about whether the regenerated version
+> > of compile.h should be moved into place.
+> >
+> > [1] https://www.kernel.org/doc/html/latest/kbuild/reproducible-builds.html
+> >
+> > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > Cc: linux-kbuild@vger.kernel.org
+> > Signed-off-by: Matthias Maennich <maennich@google.com>
+> > ---
+>
+>
+> Applied to linux-kbuild. Thanks.
+>
 
-Hi all,
+This may not be a big deal, but when KBUILD_BUILD_TIMESTAMP is unset,
+the timestamp is not updated.  It still has a user-specified string.
 
-Today's linux-next merge of the drm tree got a conflict in:
 
-  drivers/gpu/drm/vc4/vc4_hdmi.c
 
-between commit:
 
-  9984d6664ce9 ("drm/vc4: hdmi: Make sure the controller is powered in dete=
-ct")
-
-from the drm-misc-fixes tree and commit:
-
-  6800234ceee0 ("drm/vc4: hdmi: Convert to gpiod")
-
-from the drm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/vc4/vc4_hdmi.c
-index 8106b5634fe1,3c4cc133e3df..000000000000
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@@ -159,12 -166,9 +166,11 @@@ vc4_hdmi_connector_detect(struct drm_co
-  	struct vc4_hdmi *vc4_hdmi =3D connector_to_vc4_hdmi(connector);
-  	bool connected =3D false;
- =20
- +	WARN_ON(pm_runtime_resume_and_get(&vc4_hdmi->pdev->dev));
- +
-- 	if (vc4_hdmi->hpd_gpio) {
-- 		if (gpio_get_value_cansleep(vc4_hdmi->hpd_gpio) ^
-- 		    vc4_hdmi->hpd_active_low)
-- 			connected =3D true;
-+ 	if (vc4_hdmi->hpd_gpio &&
-+ 	    gpiod_get_value_cansleep(vc4_hdmi->hpd_gpio)) {
-+ 		connected =3D true;
-  	} else if (drm_probe_ddc(vc4_hdmi->ddc)) {
-  		connected =3D true;
-  	} else if (HDMI_READ(HDMI_HOTPLUG) & VC4_HDMI_HOTPLUG_CONNECTED) {
-@@@ -787,16 -942,26 +945,18 @@@ static void vc4_hdmi_encoder_pre_crtc_c
-  		return;
-  	}
- =20
- -	ret =3D clk_prepare_enable(vc4_hdmi->hsm_clock);
- -	if (ret) {
- -		DRM_ERROR("Failed to turn on HSM clock: %d\n", ret);
- -		clk_disable_unprepare(vc4_hdmi->pixel_clock);
- -		return;
- -	}
- -
-  	vc4_hdmi_cec_update_clk_div(vc4_hdmi);
- =20
-- 	/*
-- 	 * FIXME: When the pixel freq is 594MHz (4k60), this needs to be setup
-- 	 * at 300MHz.
-- 	 */
-- 	ret =3D clk_set_min_rate(vc4_hdmi->pixel_bvb_clock,
-- 			       (hsm_rate > VC4_HSM_MID_CLOCK ? 150000000 : 75000000));
-+ 	if (pixel_rate > 297000000)
-+ 		bvb_rate =3D 300000000;
-+ 	else if (pixel_rate > 148500000)
-+ 		bvb_rate =3D 150000000;
-+ 	else
-+ 		bvb_rate =3D 75000000;
-+=20
-+ 	ret =3D clk_set_min_rate(vc4_hdmi->pixel_bvb_clock, bvb_rate);
-  	if (ret) {
-  		DRM_ERROR("Failed to set pixel bvb clock rate: %d\n", ret);
- -		clk_disable_unprepare(vc4_hdmi->hsm_clock);
-  		clk_disable_unprepare(vc4_hdmi->pixel_clock);
-  		return;
-  	}
-
---Sig_/ntqrCRhKsl=qksGA+3m5hXx
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDKqHMACgkQAVBC80lX
-0GyjsQf/fVlmH4LgWpLmxEk6RZQqD3HUQP2BDiVrnQOr+s2YvPtWdd3ov4Ql6j9W
-gvnPvwZ8i//LOy9XDyKSOxiJC9v/81p1pjE+kZvZY39yv/1EGKmfeN1/uTb1kJuV
-m4cV7TzIA7vRJcQ44NjxTqT/8aqwrPyqqetY6pFGXRKiRWhpbCtRvGCVaa4a+eUI
-PvcqZLjH6zPDxTn35cCtTr0HQbaY66zGmp2vTyQSllfnCooaOXaX+24HxyI1VnbQ
-UkLRaKRiR5yDlqXnv8fcLcEIYPEwXSJ2PCd3r5mZSRn8wV9C1IStSuZlfITeU6Oy
-4ORJVJojTsI9ijX4xL9v5i/7gpr9+A==
-=FWnf
------END PGP SIGNATURE-----
-
---Sig_/ntqrCRhKsl=qksGA+3m5hXx--
+-- 
+Best Regards
+Masahiro Yamada
