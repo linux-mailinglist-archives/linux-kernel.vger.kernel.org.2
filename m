@@ -2,169 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8B03AB18D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4D53AB188
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 12:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbhFQKnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 06:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhFQKnV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 06:43:21 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F9CC061574;
-        Thu, 17 Jun 2021 03:41:14 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id b14so2549087iow.13;
-        Thu, 17 Jun 2021 03:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k5h9lWFEFZiq9DqBhAFZW6ZADMIHfKPewEhboCoUBeo=;
-        b=CjIntfsRB0lb653kwHywX8oaCwH0zs8tOBtV6/dZ12Oj961cifq9XFJgvD7XrX8M+M
-         VO8rcRQLYMugTvc6aakzNYSPbvxFiwyT+sPElt3yIdubRyYDG7wzGmlGQdl8Ey2WzquR
-         Tst426PXr4YHGK7Y7WuSs+DJKcp53ylGeRK1nV8Buo6NvmI0b0Vo6B3l4SWCeM3z7aZK
-         4LmlfYONs01M7vKWrSU6bLRGDxj3qP4lw4f0WJKAbCMMDnHsHCjQyzP9cSQYnHbUNukx
-         kkVpr5I3ftvMHoH8fJA1elFhZPMaXrT1jmg17+IPIoJ4mL8PaXJokTHADO8MSHfqUxRg
-         kurw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k5h9lWFEFZiq9DqBhAFZW6ZADMIHfKPewEhboCoUBeo=;
-        b=ILNCPQtfgh9xFECG0nmtuMpdBsi/FFHL8H0T8ZeUFoTpenVUMeFhrO0tDz981Qxsb/
-         qMETUO5SrLlCXUQddcgTa2vBmpUgIIEy3dnCIQopNTTSyo5ssZpGrXlp1HBbadjgiHDw
-         1hV/wcd56lSSKG/R4X0X6CAloKAvqQ3ehsqscc1+DDjILrMbLxIQaricH8Nr9HCW/FkR
-         abEtd/jbnW4HN70CgwfOA9zpmoNQmFJI68evFWjEnEqrd/fIEYqVAsGrvgpxxkj6eXkg
-         VTEUX8XxeHFXh6Jqza43t/vax/nQazq0KRcGhKeBEkleYujITsCujX67wuy88/Q2pooG
-         3U6A==
-X-Gm-Message-State: AOAM533AsXBerVR6rTOmDrOe9zLy3BE/zrWwl+ud40BsuDx9Z+aBGZLN
-        ahvCykpheOXe2pqbKo75ZGkB2InKfcT98eAjok8=
-X-Google-Smtp-Source: ABdhPJzZW0Z79Zpvy5uBSOey3RVZxO7W8bRda487KKxHuBlK5Y8u3PSSKBjE1BKY3xvz5YBo4H+uN60Cz8Q1GbjoFBU=
-X-Received: by 2002:a6b:6205:: with SMTP id f5mr3248085iog.60.1623926473727;
- Thu, 17 Jun 2021 03:41:13 -0700 (PDT)
+        id S231735AbhFQKnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 06:43:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:51604 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229716AbhFQKnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 06:43:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E46D31B;
+        Thu, 17 Jun 2021 03:41:00 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72B1A3F694;
+        Thu, 17 Jun 2021 03:40:57 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 11:40:46 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
+Message-ID: <20210617103524.GA82133@C02TD0UTHF1T.local>
+References: <cover.1623813516.git.luto@kernel.org>
+ <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
 MIME-Version: 1.0
-References: <1621508727-24486-1-git-send-email-dillon.minfei@gmail.com>
- <1621508727-24486-7-git-send-email-dillon.minfei@gmail.com> <d9d2a893-a159-1681-866f-e905609ce9d0@xs4all.nl>
-In-Reply-To: <d9d2a893-a159-1681-866f-e905609ce9d0@xs4all.nl>
-From:   Dillon Min <dillon.minfei@gmail.com>
-Date:   Thu, 17 Jun 2021 18:40:37 +0800
-Message-ID: <CAL9mu0JcL37XtA2NEEDUJ5MWu0gSt6sh=kmVCER9AWWHRnGDYQ@mail.gmail.com>
-Subject: Re: [PATCH 6/7] media: v4l2-mem2mem: add v4l2_m2m_get_unmapped_area
- for no-mmu platform
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        mchehab+huawei@kernel.org, ezequiel@collabora.com,
-        gnurou@gmail.com, Pi-Hsun Shih <pihsun@chromium.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Patrice CHOTARD <patrice.chotard@foss.st.com>,
-        hugues.fruchet@foss.st.com,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+On Tue, Jun 15, 2021 at 08:21:12PM -0700, Andy Lutomirski wrote:
+> On arm32, the only way to safely flush icache from usermode is to call
+> cacheflush(2).  This also handles any required pipeline flushes, so
+> membarrier's SYNC_CORE feature is useless on arm.  Remove it.
 
-On Thu, Jun 17, 2021 at 5:58 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->
-> On 20/05/2021 13:05, dillon.minfei@gmail.com wrote:
-> > From: Dillon Min <dillon.minfei@gmail.com>
-> >
-> > For platforms without MMU the m2m provides a helper method
-> > v4l2_m2m_get_unmapped_area(), The mmap() routines will call
-> > this to get a proposed address for the mapping.
-> >
-> > More detailed information about get_unmapped_area can be found in
-> > Documentation/nommu-mmap.txt
->
-> I'm getting checkpatch.pl --strict warnings:
->
-> CHECK: Alignment should match open parenthesis
-> #31: FILE: drivers/media/v4l2-core/v4l2-mem2mem.c:971:
-> +unsigned long v4l2_m2m_get_unmapped_area(struct file *file, unsigned long addr,
-> +               unsigned long len, unsigned long pgoff, unsigned long flags)
->
-> CHECK: Alignment should match open parenthesis
-> #62: FILE: include/media/v4l2-mem2mem.h:500:
-> +unsigned long v4l2_m2m_get_unmapped_area(struct file *file, unsigned long addr,
-> +               unsigned long len, unsigned long pgoff, unsigned long flags);
+Unfortunately, it's a bit more complicated than that, and these days
+SYNC_CORE is equally necessary on arm as on arm64. This is something
+that changed in the architecture over time, but since ARMv7 we generally
+need both the cache maintenance *and* a context synchronization event
+(the latter must occur on the CPU which will execute the instructions).
 
-Okay, I will add the "--strict" check to my regular patch submission.
-Thanks for the reminder.
+If you look at the latest ARMv7-AR manual (ARM DDI 406C.d), section
+A3.5.4 "Concurrent modification and execution of instructions" covers
+this. That manual can be found at:
 
-Best Regards
-Dillon
+	https://developer.arm.com/documentation/ddi0406/latest/
 
->
-> Regards,
->
->         Hans
->
-> >
-> > Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> > ---
-> >  drivers/media/v4l2-core/v4l2-mem2mem.c | 20 ++++++++++++++++++++
-> >  include/media/v4l2-mem2mem.h           |  4 ++++
-> >  2 files changed, 24 insertions(+)
-> >
-> > diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
-> > index e7f4bf5bc8dd..f82a18ecab2f 100644
-> > --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-> > +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-> > @@ -966,6 +966,26 @@ int v4l2_m2m_mmap(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
-> >  }
-> >  EXPORT_SYMBOL(v4l2_m2m_mmap);
-> >
-> > +#ifndef CONFIG_MMU
-> > +unsigned long v4l2_m2m_get_unmapped_area(struct file *file, unsigned long addr,
-> > +             unsigned long len, unsigned long pgoff, unsigned long flags)
-> > +{
-> > +     struct v4l2_fh *fh = file->private_data;
-> > +     unsigned long offset = pgoff << PAGE_SHIFT;
-> > +     struct vb2_queue *vq;
-> > +
-> > +     if (offset < DST_QUEUE_OFF_BASE) {
-> > +             vq = v4l2_m2m_get_src_vq(fh->m2m_ctx);
-> > +     } else {
-> > +             vq = v4l2_m2m_get_dst_vq(fh->m2m_ctx);
-> > +             pgoff -= (DST_QUEUE_OFF_BASE >> PAGE_SHIFT);
-> > +     }
-> > +
-> > +     return vb2_get_unmapped_area(vq, addr, len, pgoff, flags);
-> > +}
-> > +EXPORT_SYMBOL_GPL(v4l2_m2m_get_unmapped_area);
-> > +#endif
-> > +
-> >  #if defined(CONFIG_MEDIA_CONTROLLER)
-> >  void v4l2_m2m_unregister_media_controller(struct v4l2_m2m_dev *m2m_dev)
-> >  {
-> > diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2mem.h
-> > index 5a91b548ecc0..91269227c265 100644
-> > --- a/include/media/v4l2-mem2mem.h
-> > +++ b/include/media/v4l2-mem2mem.h
-> > @@ -495,6 +495,10 @@ __poll_t v4l2_m2m_poll(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
-> >  int v4l2_m2m_mmap(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
-> >                 struct vm_area_struct *vma);
-> >
-> > +#ifndef CONFIG_MMU
-> > +unsigned long v4l2_m2m_get_unmapped_area(struct file *file, unsigned long addr,
-> > +             unsigned long len, unsigned long pgoff, unsigned long flags);
-> > +#endif
-> >  /**
-> >   * v4l2_m2m_init() - initialize per-driver m2m data
-> >   *
-> >
->
+Likewise for ARMv8-A; the latest manual (ARM DDI 0487G.a) covers this in
+sections B2.2.5 and E2.3.5. That manual can be found at:
+
+	https://developer.arm.com/documentation/ddi0487/ga
+
+I am not sure about exactly what's required 11MPcore, since that's
+somewhat a special case as the only SMP design prior to ARMv7-A
+mandating broadcast maintenance.
+
+For intuition's sake, one reason for this is that once a CPU has fetched
+an instruction from an instruction cache into its pipeline and that
+instruction is "in-flight", changes to that instruction cache are not
+guaranteed to affect the "in-flight" copy (which e.g. could be
+decomposed into micro-ops and so on). While these parts of a CPU aren't
+necessarily designed as caches, they effectively transiently cache a
+stale copy of the instruction while it is being executed.
+
+This is more pronounced on newer designs with more complex execution
+pipelines (e.g. with bigger windows for out-of-order execution and
+speculation), and generally it's unlikely for this to be noticed on
+smaller/simpler designs.
+
+As above, modifying instructions requires two things:
+
+1) Making sure that *subsequent* instruction fetches will see the new
+   instructions. This is what cacheflush(2) does, and this is similar to
+   what SW does on arm64 with DC CVAU + IC IVAU instructions and
+   associated memory barriers.
+
+2) Making sure that a CPU fetches the instructions *after* the cache
+   maintenance is complete. There are a few ways to do this:
+
+   * A context synchronization event (e.g. an ISB or exception return)
+     on the CPU that will execute the instructions. This is what
+     membarrier(SYNC_CORE) does.
+
+   * In ARMv8-A there are some restrictions on the order in which
+     modified instructions are guaranteed to be observed (e.g. if you
+     publish a function, then subsequently install a branch to that new
+     function), where an ISB may not be necessary. In the latest ARMv8-A
+     manual as linked above, those are described in sections:
+
+     - B2.3.8 "Ordering of instruction fetches" (for 64-bit)
+     - E2.3.8 "Ordering of instruction fetches" (for 32-bit)
+
+   * Where we can guarantee that a CPU cannot possibly have an
+     instruction in-flight (e.g. due to a lack of a mapping to fetch
+     instructions from), nothing is necessary. This is what we rely on
+     when faulting in code pages. In these cases, the CPU is liable to
+     take fault on the missing translation anyway.
+
+Thanks,
+Mark.
+
+> 
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> ---
+>  arch/arm/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index 24804f11302d..89a885fba724 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -10,7 +10,6 @@ config ARM
+>  	select ARCH_HAS_FORTIFY_SOURCE
+>  	select ARCH_HAS_KEEPINITRD
+>  	select ARCH_HAS_KCOV
+> -	select ARCH_HAS_MEMBARRIER_SYNC_CORE
+>  	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+>  	select ARCH_HAS_PTE_SPECIAL if ARM_LPAE
+>  	select ARCH_HAS_PHYS_TO_DMA
+> -- 
+> 2.31.1
+> 
