@@ -2,204 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFB33ABBE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE573ABBE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 20:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbhFQSdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 14:33:10 -0400
-Received: from mga06.intel.com ([134.134.136.31]:41916 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232046AbhFQSdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:33:00 -0400
-IronPort-SDR: 1+8jNpWjqZw7/1nktWeQ02rieYU7V2VW+MPdfcIX61CwomdUmpNd5NkH75es0HIT9UFe9Z2o5r
- dNQzjxL1Koyw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="267575194"
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="267575194"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 11:30:51 -0700
-IronPort-SDR: /A6QnV/C6ydYqXLbvM73szmHefaiTET/74wsxacq2VOhMtJKAHVvb5JI+hSfjmcHwaYsZbVE0V
- HITqWwft7eUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="485381105"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 17 Jun 2021 11:30:48 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 03BFB431; Thu, 17 Jun 2021 21:31:12 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Cc:     Mark Gross <mgross@linux.intel.com>
-Subject: [PATCH v1 4/4] platform/x86: intel_cht_int33fe: Move to its own subfolder
-Date:   Thu, 17 Jun 2021 21:30:31 +0300
-Message-Id: <20210617183031.70685-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210617183031.70685-1-andriy.shevchenko@linux.intel.com>
-References: <20210617183031.70685-1-andriy.shevchenko@linux.intel.com>
+        id S233225AbhFQSd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231602AbhFQSdX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 14:33:23 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D702C061574;
+        Thu, 17 Jun 2021 11:31:15 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id j184so4543657qkd.6;
+        Thu, 17 Jun 2021 11:31:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mdN3+P74lXshSmLwmq8jXVTzzottgAs9RSBNmB7e3EA=;
+        b=u2I9VloRjp4sirTz6YED7fjPAlghS++A6VFWyEPCzv+f84jWGjOASSFHQ0bMqZdiOK
+         0cqNeehvUaMB8xr59Lx30f256fE6+pEPcvRco2ZO6bffKwFc0QICXscXhrx30D/zZS1e
+         s4HpekyBUj4K+pXvm1M4FopfZUF4/I5NyQUw9ak2XwW4eqGHNs+CI7vm0RNiCUxA6Jba
+         uJ7TloSlxBB4zIAIjeXORVNBfOQ6/TmzooZFvRlWjxsVDZtUPfjjZI/xrEZrnAON+6n/
+         41vBO9htiyFGuENRGm9xeAPN2AHtdzIMGd3/hai66A8/rovi0coXMrqFAyOffDt04HTq
+         g9eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mdN3+P74lXshSmLwmq8jXVTzzottgAs9RSBNmB7e3EA=;
+        b=eJ7i9ywtwwyBpY+rH9rL9Qcbbocqstz7rOT5huwcv0lA2GMZJmD2UaOwri5CnD0CjS
+         15jmDQHvfz6n9MhMLh/a3pTMiPQeOksGZrYZmAii9zh3WtvC10F/ZtFO7qmbkk91kTqQ
+         SCbRg22bGsf39pjmmjc6mpqflZFj2+2EhRAkrTBWxgqddUI/riFiUMSM5+sOgRNqJohn
+         vY08xvHfxPllc1TevsGlwyJlI2mseQeTezbNWAJ4/0VvkZXE8jsvHteVbIoPDRy4ne3q
+         Ssx3v+1W2HzLqpPZJlIXGn9c7KG0LxxYz1DEghwK+SWyzpzHd34IEqwQIy7o8t+Wan7D
+         W84A==
+X-Gm-Message-State: AOAM532QSuq0kedwSxzt+TW468vvEGNbIm3hP/EGLsuxZ2IwmGipmWT+
+        EtxDPqSn35+sPNJqMabx9jsZoP3a7+4t5MGqA+o=
+X-Google-Smtp-Source: ABdhPJwwdYD1acgsEBpF8ndRSZL+cl6G14jBl7NUiLnOvL8eBeV1bd6q2pHNfc2xJVywwFx2Gxuk7hniv4F5CQbsl9c=
+X-Received: by 2002:a25:6612:: with SMTP id a18mr8397287ybc.347.1623954674508;
+ Thu, 17 Jun 2021 11:31:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <162209754288.436794.3904335049560916855.stgit@devnote2>
+ <162209762943.436794.874947392889792501.stgit@devnote2> <20210617043909.fgu2lhnkxflmy5mk@treble>
+ <20210617044032.txng4enhiduacvt6@treble> <20210617234001.54cd2ff60410ff82a39a2020@kernel.org>
+ <20210618000239.f95de17418beae6d84ce783d@kernel.org> <CAEf4Bzbob_M0aS-GUY5XaqePZr_prxUag3RLHtp=HY8Uu__10g@mail.gmail.com>
+ <20210617182159.ka227nkmhe4yu2de@treble>
+In-Reply-To: <20210617182159.ka227nkmhe4yu2de@treble>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 17 Jun 2021 11:31:03 -0700
+Message-ID: <CAEf4BzbQxxAWEvE7BfrBPCPzBjrAEVL9cg-duwbFNzEmbPPW2w@mail.gmail.com>
+Subject: Re: [PATCH -tip v7 09/13] kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we have started collecting Intel x86 specific drivers in its own folder,
-Move intel_cht_int33fe to own subfolder there.
+On Thu, Jun 17, 2021 at 11:22 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> On Thu, Jun 17, 2021 at 10:45:41AM -0700, Andrii Nakryiko wrote:
+> > > > > > I know I suggested this patch, but I believe it would only be useful in
+> > > > > > combination with the use of UNWIND_HINT_REGS in SAVE_REGS_STRING.  But I
+> > > > > > think that would be tricky to pull off correctly.  Instead, we have
+> > > > > > UNWIND_HINT_FUNC, which is working fine.
+> > > > > >
+> > > > > > So I'd suggest dropping this patch, as the unwinder isn't actually
+> > > > > > reading regs->ip after all.
+> > > > >
+> > > > > ... and I guess this means patches 6-8 are no longer necessary.
+> > > >
+> > > > OK, I also confirmed that dropping those patche does not make any change
+> > > > on the stacktrace.
+> > > > Let me update the series without those.
+> > >
+> > > Oops, Andrii, can you also test the kernel without this patch?
+> > > (you don't need to drop patch 6-8)
+> >
+> > Hi Masami,
+> >
+> > Dropping this patch and leaving all the other in place breaks stack
+> > traces from kretprobes for BPF. I double checked with and without this
+> > patch. Without this patch we are back to having broken stack traces. I
+> > see either
+> >
+> >   kretprobe_trampoline+0x0
+> >
+> > or
+> >
+> >   ftrace_trampoline+0xc8
+> >   kretprobe_trampoline+0x0
+> >
+> > Is there any problem if you leave this patch as is?
+>
+> Hm, I must be missing something then.  The patch is probably fine to
+> keep, we just may need to improve the commit log so that it makes sense
+> to me.
+>
+> Which unwinder are you using (CONFIG_UNWINDER_*)?
+>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/platform/x86/Kconfig                  | 24 ------------------
- drivers/platform/x86/Makefile                 |  4 ---
- drivers/platform/x86/intel/Kconfig            |  1 +
- drivers/platform/x86/intel/Makefile           |  1 +
- drivers/platform/x86/intel/int33fe/Kconfig    | 25 +++++++++++++++++++
- drivers/platform/x86/intel/int33fe/Makefile   |  5 ++++
- .../int33fe}/intel_cht_int33fe_common.c       |  0
- .../int33fe}/intel_cht_int33fe_common.h       |  0
- .../int33fe}/intel_cht_int33fe_microb.c       |  0
- .../int33fe}/intel_cht_int33fe_typec.c        |  0
- 10 files changed, 32 insertions(+), 28 deletions(-)
- create mode 100644 drivers/platform/x86/intel/int33fe/Kconfig
- create mode 100644 drivers/platform/x86/intel/int33fe/Makefile
- rename drivers/platform/x86/{ => intel/int33fe}/intel_cht_int33fe_common.c (100%)
- rename drivers/platform/x86/{ => intel/int33fe}/intel_cht_int33fe_common.h (100%)
- rename drivers/platform/x86/{ => intel/int33fe}/intel_cht_int33fe_microb.c (100%)
- rename drivers/platform/x86/{ => intel/int33fe}/intel_cht_int33fe_typec.c (100%)
+$ rg UNWINDER ~/linux-build/default/.config
+5585:CONFIG_UNWINDER_ORC=y
+5586:# CONFIG_UNWINDER_FRAME_POINTER is not set
+5587:# CONFIG_UNWINDER_GUESS is not set
 
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 79d095c0ab61..7d385c3b2239 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -687,30 +687,6 @@ config INTEL_ATOMISP2_PM
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called intel_atomisp2_pm.
- 
--config INTEL_CHT_INT33FE
--	tristate "Intel Cherry Trail ACPI INT33FE Driver"
--	depends on X86 && ACPI && I2C && REGULATOR
--	depends on CHARGER_BQ24190=y || (CHARGER_BQ24190=m && m)
--	depends on USB_ROLES_INTEL_XHCI=y || (USB_ROLES_INTEL_XHCI=m && m)
--	depends on TYPEC_MUX_PI3USB30532=y || (TYPEC_MUX_PI3USB30532=m && m)
--	help
--	  This driver add support for the INT33FE ACPI device found on
--	  some Intel Cherry Trail devices.
--
--	  There are two kinds of INT33FE ACPI device possible: for hardware
--	  with USB Type-C and Micro-B connectors. This driver supports both.
--
--	  The INT33FE ACPI device has a CRS table with I2cSerialBusV2
--	  resources for Fuel Gauge Controller and (in the Type-C variant)
--	  FUSB302 USB Type-C Controller and PI3USB30532 USB switch.
--	  This driver instantiates i2c-clients for these, so that standard
--	  i2c drivers for these chips can bind to the them.
--
--	  If you enable this driver it is advised to also select
--	  CONFIG_BATTERY_BQ27XXX=m or CONFIG_BATTERY_BQ27XXX_I2C=m for Micro-B
--	  device and CONFIG_TYPEC_FUSB302=m and CONFIG_BATTERY_MAX17042=m
--	  for Type-C device.
--
- config INTEL_HID_EVENT
- 	tristate "INTEL HID Event"
- 	depends on ACPI
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index e03b59ce3f9f..7ee369aab10d 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -70,10 +70,6 @@ obj-$(CONFIG_X86_PLATFORM_DRIVERS_INTEL)		+= intel/
- 
- obj-$(CONFIG_INTEL_ATOMISP2_LED)	+= intel_atomisp2_led.o
- obj-$(CONFIG_INTEL_ATOMISP2_PM)		+= intel_atomisp2_pm.o
--obj-$(CONFIG_INTEL_CHT_INT33FE)		+= intel_cht_int33fe.o
--intel_cht_int33fe-objs			:= intel_cht_int33fe_common.o \
--					   intel_cht_int33fe_typec.o \
--					   intel_cht_int33fe_microb.o
- obj-$(CONFIG_INTEL_HID_EVENT)		+= intel-hid.o
- obj-$(CONFIG_INTEL_INT0002_VGPIO)	+= intel_int0002_vgpio.o
- obj-$(CONFIG_INTEL_MENLOW)		+= intel_menlow.o
-diff --git a/drivers/platform/x86/intel/Kconfig b/drivers/platform/x86/intel/Kconfig
-index 33f2dab03d3d..f2eef337eb98 100644
---- a/drivers/platform/x86/intel/Kconfig
-+++ b/drivers/platform/x86/intel/Kconfig
-@@ -16,6 +16,7 @@ menuconfig X86_PLATFORM_DRIVERS_INTEL
- 
- if X86_PLATFORM_DRIVERS_INTEL
- 
-+source "drivers/platform/x86/intel/int33fe/Kconfig"
- source "drivers/platform/x86/intel/int3472/Kconfig"
- 
- endif # X86_PLATFORM_DRIVERS_INTEL
-diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
-index 3ac795d810f1..0653055942d5 100644
---- a/drivers/platform/x86/intel/Makefile
-+++ b/drivers/platform/x86/intel/Makefile
-@@ -4,4 +4,5 @@
- # Intel x86 Platform-Specific Drivers
- #
- 
-+obj-$(CONFIG_INTEL_CHT_INT33FE)		+= int33fe/
- obj-$(CONFIG_INTEL_SKL_INT3472)		+= int3472/
-diff --git a/drivers/platform/x86/intel/int33fe/Kconfig b/drivers/platform/x86/intel/int33fe/Kconfig
-new file mode 100644
-index 000000000000..c7efb461d97d
---- /dev/null
-+++ b/drivers/platform/x86/intel/int33fe/Kconfig
-@@ -0,0 +1,25 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config INTEL_CHT_INT33FE
-+	tristate "Intel Cherry Trail ACPI INT33FE Driver"
-+	depends on X86 && ACPI && I2C && REGULATOR
-+	depends on CHARGER_BQ24190=y || (CHARGER_BQ24190=m && m)
-+	depends on USB_ROLES_INTEL_XHCI=y || (USB_ROLES_INTEL_XHCI=m && m)
-+	depends on TYPEC_MUX_PI3USB30532=y || (TYPEC_MUX_PI3USB30532=m && m)
-+	help
-+	  This driver add support for the INT33FE ACPI device found on
-+	  some Intel Cherry Trail devices.
-+
-+	  There are two kinds of INT33FE ACPI device possible: for hardware
-+	  with USB Type-C and Micro-B connectors. This driver supports both.
-+
-+	  The INT33FE ACPI device has a CRS table with I2cSerialBusV2
-+	  resources for Fuel Gauge Controller and (in the Type-C variant)
-+	  FUSB302 USB Type-C Controller and PI3USB30532 USB switch.
-+	  This driver instantiates i2c-clients for these, so that standard
-+	  i2c drivers for these chips can bind to the them.
-+
-+	  If you enable this driver it is advised to also select
-+	  CONFIG_BATTERY_BQ27XXX=m or CONFIG_BATTERY_BQ27XXX_I2C=m for Micro-B
-+	  device and CONFIG_TYPEC_FUSB302=m and CONFIG_BATTERY_MAX17042=m
-+	  for Type-C device.
-+
-diff --git a/drivers/platform/x86/intel/int33fe/Makefile b/drivers/platform/x86/intel/int33fe/Makefile
-new file mode 100644
-index 000000000000..cc11183ce179
---- /dev/null
-+++ b/drivers/platform/x86/intel/int33fe/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+obj-$(CONFIG_INTEL_CHT_INT33FE)		+= intel_cht_int33fe.o
-+intel_cht_int33fe-objs			:= intel_cht_int33fe_common.o \
-+					   intel_cht_int33fe_typec.o \
-+					   intel_cht_int33fe_microb.o
-diff --git a/drivers/platform/x86/intel_cht_int33fe_common.c b/drivers/platform/x86/intel/int33fe/intel_cht_int33fe_common.c
-similarity index 100%
-rename from drivers/platform/x86/intel_cht_int33fe_common.c
-rename to drivers/platform/x86/intel/int33fe/intel_cht_int33fe_common.c
-diff --git a/drivers/platform/x86/intel_cht_int33fe_common.h b/drivers/platform/x86/intel/int33fe/intel_cht_int33fe_common.h
-similarity index 100%
-rename from drivers/platform/x86/intel_cht_int33fe_common.h
-rename to drivers/platform/x86/intel/int33fe/intel_cht_int33fe_common.h
-diff --git a/drivers/platform/x86/intel_cht_int33fe_microb.c b/drivers/platform/x86/intel/int33fe/intel_cht_int33fe_microb.c
-similarity index 100%
-rename from drivers/platform/x86/intel_cht_int33fe_microb.c
-rename to drivers/platform/x86/intel/int33fe/intel_cht_int33fe_microb.c
-diff --git a/drivers/platform/x86/intel_cht_int33fe_typec.c b/drivers/platform/x86/intel/int33fe/intel_cht_int33fe_typec.c
-similarity index 100%
-rename from drivers/platform/x86/intel_cht_int33fe_typec.c
-rename to drivers/platform/x86/intel/int33fe/intel_cht_int33fe_typec.c
--- 
-2.30.2
-
+> --
+> Josh
+>
