@@ -2,117 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BA33AB988
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D80613AB990
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbhFQQ05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 12:26:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232519AbhFQQ04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 12:26:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B70B613B9;
-        Thu, 17 Jun 2021 16:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623947088;
-        bh=INq4nssCgYsIEKzYkC0Op/vH8B8aE187QI5AyGhlWxE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RtPaz8GQTTMVVgSDQIOJ+S+7TxupFal78/odxYuTkiSTyDWOtO9O73BHhefzoqrJB
-         VfailCngQHg8/m/NNIvvS+L3dfcVVEvXhNsz+jPmILsuEZspNOtPc7/MW+U1psbjzT
-         oLXqRwNwJ9DyoQdS8tSxnYjdSjWzUlTpaUA/mljCDV6mZNlUCeZIJw4inR3hTrhIRr
-         DOzlUfyLd4cu5tCrkNBUgeHBUQ45h4fikdS3ZmGnfYTOz7FBOS3f+2rUJSijUwD0dw
-         aNnF00p0XOEclfzSMbrEDAeHL0I6RBy+sd9NJ5SeJwAhvYaFgnLvrqthn9PGYKcyfr
-         60KVvSVaNxZDg==
-Date:   Thu, 17 Jun 2021 17:24:28 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     cy_huang <u0084500@gmail.com>, lgirdwood@gmail.com,
-        matthias.bgg@gmail.com, gene_chen@richtek.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        cy_huang@richtek.com, gene.chen.richtek@gmail.com
-Subject: Re: [PATCH 1/2] regulator: mt6360: Add optional
- mediatek.power-off-sequence in bindings document
-Message-ID: <20210617162428.GG5067@sirena.org.uk>
-References: <1622616875-22740-1-git-send-email-u0084500@gmail.com>
- <20210611201643.GA1583875@robh.at.kernel.org>
+        id S232361AbhFQQ2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 12:28:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38571 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229741AbhFQQ2X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 12:28:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623947175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YHaYKbSQCSs+IkcHGYTNjMBqubkgrIZAEznhO8tVtjw=;
+        b=TYoTRa1ph7oKUPrhBl2fXSNT4udHdfVYk6A6ov46EyZTGQyCie6Lq1woGUfV/oCFT1oEcm
+        WV/AxegNrBpmII1D1iGZCFXekUmi6OIW92eDntaay/y5L/eG0a7MzZD+q7ZJ5FowvgdwzZ
+        P1nWVqz4YwxJnPrPunjBsFhNJ6gyJ4Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-274-HWgQe1-KNJuHVC402lIziQ-1; Thu, 17 Jun 2021 12:26:11 -0400
+X-MC-Unique: HWgQe1-KNJuHVC402lIziQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CD87E107ACF6;
+        Thu, 17 Jun 2021 16:26:10 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-162.rdu2.redhat.com [10.10.116.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B02E45C1BB;
+        Thu, 17 Jun 2021 16:26:10 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 4B9D1220BCF; Thu, 17 Jun 2021 12:26:10 -0400 (EDT)
+Date:   Thu, 17 Jun 2021 12:26:10 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, virtio-fs@redhat.com
+Subject: Re: [PATCH 2/2] init: allow mounting arbitrary non-blockdevice
+ filesystems as root
+Message-ID: <20210617162610.GC1142820@redhat.com>
+References: <20210617153649.1886693-1-hch@lst.de>
+ <20210617153649.1886693-3-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2E/hm+v6kSLEYT3h"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210611201643.GA1583875@robh.at.kernel.org>
-X-Cookie: But it does move!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210617153649.1886693-3-hch@lst.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 17, 2021 at 05:36:49PM +0200, Christoph Hellwig wrote:
 
---2E/hm+v6kSLEYT3h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[..]
+> +static int __init try_mount_nodev(char *fstype)
+> +{
+> +	struct file_system_type *fs = get_fs_type(fstype);
+> +	int err = -EINVAL;
+> +
+> +	if (!fs)
+> +		return -EINVAL;
+> +	if (!(fs->fs_flags & (FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA)))
 
-On Fri, Jun 11, 2021 at 02:16:43PM -0600, Rob Herring wrote:
-> On Wed, Jun 02, 2021 at 02:54:34PM +0800, cy_huang wrote:
+Not sure what FS_BINARY_MOUNTDATA is why fs should not have that set. nfs
+seems to set it too. So that means they can't use try_mount_nodev().
 
-> > Originally, we think it must write in platform dependent code like as b=
-ootloader.
-> > But after the evaluation, it must write only when system normal HALT or=
- POWER_OFF.
-> > For the other cases, just follow HW immediate off by default.
+> +		err = do_mount_root(root_device_name, fstype, root_mountflags,
+> +					root_mount_data);
+> +	put_filesystem(fs);
+> +
+> +	if (err != -EACCES && err != -EINVAL)
 
-> Wouldn't this be handled by PSCI implementation?
+In case of success err == 0, but we still panic(). We will need to
+check for success as well.
+	if (err && err != -EACCES && err != -EINVAL)
 
-Ideally I think...
+> +		panic("VFS: Unable to mount root \"%s\" (%s), err=%d\n",
+> +			      root_device_name, fstype, err);
+> +	return err;
+> +}
+> +
+> +static int __init mount_nodev_root(void)
+> +{
+> +	char *fs_names, *p;
+> +	int err = -EINVAL;
+> +
+> +	fs_names = (void *)__get_free_page(GFP_KERNEL);
+> +	if (!fs_names)
+> +		return -EINVAL;
+> +	split_fs_names(fs_names, root_fs_names);
 
-> > +  mediatek,power-off-sequence:
-> > +    description: |
-> > +      Power off sequence time selection for BUCK1/BUCK2/LDO7/LDO6, res=
-petively.
-> > +      Cause these regulators are all default-on power. Each value from=
- 0 to 63,
-> > +      and step is 1. Each step means 2 millisecond delay.
-> > +      Therefore, the power off sequence delay time range is from 0ms t=
-o 126ms.
-> > +    $ref: "/schemas/types.yaml#/definitions/uint8-array"
-> > +    minItems: 4
-> > +    maxItems: 4
+root_fs_names can be NULL and it crashes with NULL pointer dereference.
 
-> So this is the delay between BUCK1 and BUCK2, then BUCK2 to LDO7, etcc?=
-=20
-> If we wanted to express this in DT, we'd made this generic which would=20
-> need to be more flexible. A poweroff delay in each regulator (similar to=
-=20
-> the existing power on delay) would be sufficient for what you need I=20
-> think.
+Vivek
 
-It's not exactly a delay that's being described there - it's a series of
-timeslots, each regulator getting assigned to a timeslot.  You could
-possibly do a general binding by specifying a delay from the start of
-the power off sequence and then (for this device) having the driver work
-out a mapping of those times to timeslots.  That feels genericish, you
-might also have things like mode changes but it'd cover a lot of the
-cases.
+> +
+> +	for (p = fs_names; *p; p += strlen(p) + 1) {
+> +		err = try_mount_nodev(p);
+> +		if (!err)
+> +			break;
+> +	}
+> +
+> +	free_page((unsigned long)fs_names);
+> +	return err;
+> +}
+> +
+>  void __init mount_root(void)
+>  {
+>  #ifdef CONFIG_ROOT_NFS
+> @@ -550,6 +588,8 @@ void __init mount_root(void)
+>  		return;
+>  	}
+>  #endif
+> +	if (ROOT_DEV == 0 && mount_nodev_root() == 0)
+> +		return;
+>  #ifdef CONFIG_BLOCK
+>  	{
+>  		int err = create_dev("/dev/root", ROOT_DEV);
+> -- 
+> 2.30.2
+> 
 
-On the other hand this is the sort of thing that is often just not
-configurable and where people often make weird and inflexible hardware
-so things that do implement it are likely to end up wanting to add a
-bunch of constraints which might be a lot of hassle.
-
---2E/hm+v6kSLEYT3h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDLdzsACgkQJNaLcl1U
-h9Cy9wf/ROgBTEBrrxZAUNZNi+NXNQw980J3z3LZGhLX5EOkMxzPPXdy0EuF0ek6
-NJuBOiyrmSj8i1YDSY9CVcR5TSDjqL8oJGzCo5KBtfW6dXEOxHfAhlQNhIlKBgVI
-YLd6Zg+D7L1EfCNx4yf98DBXaqqZuVHe4aOLP8HmjR6+8QoJBlYso0DeM7CqLKo2
-jpe6mV/ihm73qeSa0WMQ9/lEln/DZ1q/xivNbYjmLqchXIp8/KilF0vw6yuVLlJY
-QY2I012mnmGL/MtWmJohwU7aWZaTK+J8PMpKjglre25GCf2i/29PL68q9xwwwB4r
-5VVzFXJo0iqqEAShFU6/dgitjQRSGw==
-=eGjM
------END PGP SIGNATURE-----
-
---2E/hm+v6kSLEYT3h--
