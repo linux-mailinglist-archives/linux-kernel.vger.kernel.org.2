@@ -2,124 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E325A3AAD02
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5C83AAD21
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFQHJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 03:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhFQHJo (ORCPT
+        id S230268AbhFQHMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 03:12:54 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:47837
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S229580AbhFQHMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 03:09:44 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A38C06175F;
-        Thu, 17 Jun 2021 00:07:35 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id y15so4257266pfl.4;
-        Thu, 17 Jun 2021 00:07:35 -0700 (PDT)
+        Thu, 17 Jun 2021 03:12:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LTOj6xfPO3fsV1CEIiylHgE3vD+iDDnuC1azPtYCNX0=;
-        b=DRQ5tSHVtx3G7/1u/hpCsP42+aMBuGl6MJf+zD6fKAGhuB0GY0hE7tz/0AgF/Vqa5Y
-         tbVOi2NfOVFfz4/Sx8VTuhTMdMYa1Gnx1PjsReCL4ngXvg7/9jLU2lzElEAChofFi3uX
-         6W4UuK8ogbB5NwoVjkGWXv+r56GBYgZQdOwCdSBvDbf7GNP8XgvjvwymLFtCjCcI85wY
-         ahWO3PhxLnZcq2LibmiI3KQx33AIde5fmMMZFy44k1d4lRmojIeccUCF/Z5YUVPqX05t
-         W7t+fIie63EXEA+to2CDo7Ovl+LdRy8rSSGXFoTegYEr4ZzQY4ZrXRvlIv77qVArZCXZ
-         7I0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LTOj6xfPO3fsV1CEIiylHgE3vD+iDDnuC1azPtYCNX0=;
-        b=PCP2X66mClHV2GBOOw8tS/30kJbT4FWyQ9ycr5gHJc4bReCOxahzmpQGTcWk6zuviK
-         S15x1jough8JwAudOG4HKqqGrcCR8n1kYilDK4VJQxlXfsauxhNm8iDC3di+31GHjTfZ
-         ONXTQShyWxZtvEgwBk+OOuMNRethiRMN3dZdbHVA7+g61RD/2AOeIji3vD0pOrfrQgkH
-         IEeyjrpZNec9mUPPIdvzrPth37CT1+FAdyDVLynW8bsQoqExG3zFa0pwBXT+VdE8euvR
-         aMiiaDmXDOdcHlC90CLoy8vYuMron1SWPHLn6a/GQCAiQ+V0Mt3YUFu05WzO0nZrLAiS
-         J50A==
-X-Gm-Message-State: AOAM533HEdj6y3iTxaErdAbZJTVIYWu+Jvqw79S0qr59GLFXaAqCGKLK
-        tv4llEpXfwJp5Ht2hjH9m/2r0xPlzKhLKCDQ8EVyRlo23jk=
-X-Google-Smtp-Source: ABdhPJzIxRJtTuS6xsgzFG4n1rzZprPGin+rzMki23EjsAvTRZeldD9nMVWMOrUOdSqxYhJak4NoNeSLip3VKtkJOT8=
-X-Received: by 2002:a05:6a00:8c4:b029:2b4:8334:ed4d with SMTP id
- s4-20020a056a0008c4b02902b48334ed4dmr3847867pfu.36.1623913654992; Thu, 17 Jun
- 2021 00:07:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210616155706.17444-1-paul@crapouillou.net> <20210616155706.17444-2-paul@crapouillou.net>
-In-Reply-To: <20210616155706.17444-2-paul@crapouillou.net>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Thu, 17 Jun 2021 10:07:23 +0300
-Message-ID: <CA+U=Dsqcf5EERsFHh5LFHwe5U9MhpPxQNLBVUjM9boTMnp+rQQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] iio: core: Forbid use of both labels and extended names
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=RptfClq4lVC//Zpto1J6NX77le/xD91mEpWrmjb1RGA=; b=C
+        uZLQzNduNuyMh9i1HqU9MxtAnSBl+/+KRfqtdowwn8HhLDnrYy0IvxdTeVaAQ6Cf
+        wlnOGv1PjxHsbnfkjWb56Ngqzp/DqmacJpbiU3lHOerIEsBkVkeZYzfB3mhNnvRA
+        rO1r/ou9ZZZ7K8X6t4hUv6qRgYiNZlADquOmcEhh/Q=
+Received: from ubuntu (unknown [10.177.89.109])
+        by app1 (Coremail) with SMTP id XAUFCgAH6SFA9cpgKJl6AA--.64384S3;
+        Thu, 17 Jun 2021 15:09:52 +0800 (CST)
+From:   Jiajun Cao <jjcao20@fudan.edu.cn>
+Cc:     yuanxzhang@fudan.edu.cn, Jiajun Cao <jjcao20@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/meson: fix potential NULL pointer exception in meson_drv_unbind()
+Date:   Thu, 17 Jun 2021 15:07:37 +0800
+Message-Id: <20210617070737.50171-1-jjcao20@fudan.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: XAUFCgAH6SFA9cpgKJl6AA--.64384S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrtryrKF1kZryrArW8CFyfWFg_yoWDKFg_CF
+        W8Xrn7ur1Dur1Dtr429FW7ZFy2kF18ZF1fCw1kt3yfGFn7Zr1UZFWkuw1kXryfXr43ZFZx
+        Z34kGr4rury7GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbSxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_GcCE
+        3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
+        1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+        4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s
+        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
+        JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwC2zVAIFx02awCIc40Y0x0EwIxGrwCI42IY6x
+        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
+        w20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjTRAl1kUUUUU
+X-CM-SenderInfo: isqsiiasuqikmw6i3vldqovvfxof0/
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 7:01 PM Paul Cercueil <paul@crapouillou.net> wrote:
->
-> Extended names are a problem for user-space as they make the filenames
-> in sysfs sometimes not parsable. They are now deprecated in favor of
-> labels.
->
-> This change makes sure that a device driver won't provide both labels
-> and extended names for its channels. It has never been the case and we
-> don't want it to happen.
->
+Fix a potential NULL pointer exception when meson_drv_unbind()
+attempts to operate on the driver_data priv which may be NULL.
+Add a null pointer check on the priv struct to avoid the NULL
+pointer dereference after calling dev_get_drvdata(), just like
+the null pointer checks done on the struct priv in the function
+meson_drv_shutdown(), meson_drv_pm_suspend() and meson_drv_pm_resume().
 
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Signed-off-by: Jiajun Cao <jjcao20@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ drivers/gpu/drm/meson/meson_drv.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/iio/industrialio-core.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 59efb36db2c7..81f40dab778a 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -1836,6 +1836,24 @@ static int iio_check_unique_scan_index(struct iio_dev *indio_dev)
->         return 0;
->  }
->
-> +static int iio_check_extended_name(const struct iio_dev *indio_dev)
-> +{
-> +       unsigned int i;
-> +
-> +       if (!indio_dev->info->read_label)
-> +               return 0;
-> +
-> +       for (i = 0; i < indio_dev->num_channels; i++) {
-> +               if (indio_dev->channels[i].extend_name) {
-> +                       dev_err(&indio_dev->dev,
-> +                               "Cannot use labels and extend_name at the same time\n");
-> +                       return -EINVAL;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static const struct iio_buffer_setup_ops noop_ring_setup_ops;
->
->  int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
-> @@ -1860,6 +1878,10 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
->         if (ret < 0)
->                 return ret;
->
-> +       ret = iio_check_extended_name(indio_dev);
-> +       if (ret < 0)
-> +               return ret;
-> +
->         iio_device_register_debugfs(indio_dev);
->
->         ret = iio_buffers_alloc_sysfs_and_mask(indio_dev);
-> --
-> 2.30.2
->
+diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
+index 07fcd12dca16..adea6a2b28f5 100644
+--- a/drivers/gpu/drm/meson/meson_drv.c
++++ b/drivers/gpu/drm/meson/meson_drv.c
+@@ -380,6 +380,8 @@ static int meson_drv_bind(struct device *dev)
+ static void meson_drv_unbind(struct device *dev)
+ {
+ 	struct meson_drm *priv = dev_get_drvdata(dev);
++	if (!priv)
++		return;
+ 	struct drm_device *drm = priv->drm;
+ 
+ 	if (priv->canvas) {
+-- 
+2.17.1
+
