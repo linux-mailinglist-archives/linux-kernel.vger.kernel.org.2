@@ -2,149 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB0C3ABAA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1612A3ABAA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhFQRcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:32:19 -0400
-Received: from mail-am6eur05on2123.outbound.protection.outlook.com ([40.107.22.123]:61857
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231168AbhFQRcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:32:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Year5GlAbLrfNqY5GX6VZIfWsx4WHZLKd49uALQY5aPHizEbuu/XMJvyjX36/U9TL5eIlJqyIekLVYeNlwIYzsK7WGl9j0m/hPAM037z7ZgsFCVITZxpORvhBbCPY+mNolhxexz3Xi3g/gKzmETcOF6ttm0ygrw/Nj27X1IC5eBmarzNBDAXAikQJQm7gPmGPl4IVcxl7xCOj3ltnsfVKceT7djBvRcMnE+V5ssGSyWOD21lY/QjMgrEP//quj/9z6c/mduSR4v/TxNnNzhJZJfJSaLRa06rOqz+9FPbhqJBHmAvlRk1zhRQcY3hqFRU1/oGhNOWufc9o3f2Zb6A/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jlrJSEtB7FoVNjIWm9OKlD1VDc4fhVhVh5+Q4tmFt10=;
- b=KM1U8zp0ZOREKhb7s0FPPOdwCkrFpLYIvNFUJXJqwARmJGXxb5xEpLJyJLdCMzGeJwZXkEdxUjtgmozErzMFAANEfw9cptN2y1dj5WMxjran/BK/fQJzuIxVaZ8Ai0mJUL+L9PuwCfXu44tas+F861Ba1dPTe7R6UP2Kb2VLE/YCXkMaa8a4F8bUFzi/nx900sZU59mssggdKrKpUZlNuzf0fHyVtqRqW5UojkIOUEmNEW8/YAUNh+5+Lc3VlzUJovlaZb4iKH0ysdLzD4X1DMCf2zzoLq8QRGOPJoGplZmCIOAg0+8nUjOO1jpUuzRedg5WksfNr2sJWetymMXIoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jlrJSEtB7FoVNjIWm9OKlD1VDc4fhVhVh5+Q4tmFt10=;
- b=o2UfJoi+ANsqz5w6HfaJgUYEPFWRDdYC5lNCDLJhJ5kzioVNgTM0rT10asLrcJcsVGPhVF64jlBEFTFfSpHht8cUmVXV2nRQvfevqA+T9S/50FeRtw6ssg2Q/CBvq1lKwtKHII4SnYGEEztYRFgX9ZBnzGQvSZB5va6uhu0BYn0=
-Received: from AM0P190MB0738.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:19b::9)
- by AM0P190MB0723.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:19b::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15; Thu, 17 Jun
- 2021 17:30:07 +0000
-Received: from AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
- ([fe80::d018:6384:155:a2fe]) by AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
- ([fe80::d018:6384:155:a2fe%9]) with mapi id 15.20.4219.025; Thu, 17 Jun 2021
- 17:30:07 +0000
-From:   Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-To:     "jiri@nvidia.com" <jiri@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 00/11] Marvell Prestera driver implementation of
- devlink functionality.
-Thread-Topic: [PATCH net-next 00/11] Marvell Prestera driver implementation of
- devlink functionality.
-Thread-Index: AQHXXUJjufes4y4eUEeZyWSkshehZ6sYf7W4
-Date:   Thu, 17 Jun 2021 17:30:07 +0000
-Message-ID: <AM0P190MB0738F58BF9FFE2ED8073FA84E40E9@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
-References: <20210609151602.29004-1-oleksandr.mazur@plvision.eu>
-In-Reply-To: <20210609151602.29004-1-oleksandr.mazur@plvision.eu>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=plvision.eu;
-x-originating-ip: [185.145.183.53]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 62802885-d987-4f67-2800-08d931b58cd8
-x-ms-traffictypediagnostic: AM0P190MB0723:
-x-microsoft-antispam-prvs: <AM0P190MB0723EFA9B7501EAE70FC0A3CE40E9@AM0P190MB0723.EURP190.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xxinUb8gRrPo3JzJd993y/deQPnXxSL71pWcVKVYe8SX3ECIDPJxIGD+MTFGhDHRycYqnLGYyiZviolTagCezDaA3rNxVKKhYyrpFy7Y0k9iWbAHrsOka3Z7w+gZ1dAU+TJr93B7gsuoZhAEC2qzVOlZnKisyu96tA26Gw4dOtlBRwlQOQFvtwsvoFuwFM85p9+PwL8O/+XHHsA0+2uQzF1DqdMB+h5w35eFJemeFJUS9ti+1THyU/b5M4Unu23iQV5PCN+cSARg8xIT/beamztusuWIXVc2Uyokk70tXEx1AJpTpThSB/DEV/muUYBY0DwaACfvPJWTF90CWUhDXuVG9bqOFh6MIZ4CY68IWtJ+aCWKxVaueVOau/b4u7nII3hxFVxBHszypLokv4ALnL4wulfxfyYvuqZzcKfQVkmYUQUfP2PpdLGxyBuKwFmxusQrynMA3vy4LmmoBU4r0UACOIla2sHGnuvhuwI4DzFFFDOllAey4sZstuXrTjo0q7ITNw/m0gsGxBRrcyLR9SdR6vLkOaIvFjYwy/kGn/VYSnlVHW+m1HKIiVf5jaCGgDH+sT9+Mzw+0fNP/nZzuQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0P190MB0738.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(39830400003)(376002)(346002)(136003)(396003)(83380400001)(8676002)(86362001)(71200400001)(478600001)(9686003)(55016002)(6506007)(122000001)(76116006)(38100700002)(4326008)(186003)(44832011)(66476007)(66556008)(64756008)(66446008)(66946007)(316002)(110136005)(33656002)(5660300002)(8936002)(54906003)(52536014)(7696005)(26005)(91956017)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?uvDzsn0xpRCST6TsYqfT5XVa90iV5ENsopDNvgw7Ui3rgWcajbMHd/uPZp?=
- =?iso-8859-1?Q?liCFgJKYN+DUwLFXmiwhXk4kwAMzyTwBJrcplkD5Eot2LPlwP4Dq7lrsDl?=
- =?iso-8859-1?Q?sUFp9bs5Uf3/4CKk2IoOTaOrYCT0+mYFSHdZtke+XauImhpBCF55pArN/O?=
- =?iso-8859-1?Q?tma8SDSyuO23fOI3+T5ATQKigMnRNJMP5GsHo3vTwqRRdLHa22qumtwA34?=
- =?iso-8859-1?Q?12Mt2LNAEeL1j6GwXv3LCWpbSe2/c65RqcT3PqhZhKZrkwwPTCt7GttAbo?=
- =?iso-8859-1?Q?zu8LAnj3yIsHKOdOMc4JR7HW4D/boCnWFCGc4Ugunt1MrcHlsqdokFF6y+?=
- =?iso-8859-1?Q?8VMJkt6rIK0jtqtytIXWU+KgOBpsNuxOWu4K1+yUzHytA2NUWFN2Hxk5aF?=
- =?iso-8859-1?Q?kAcxdLzYi+66EbmJEPTrGv+7o+0LeDf0jByAT879/wvwAd7DTh8z9OEGlr?=
- =?iso-8859-1?Q?tz5vMiQMDPvg/vhd/66PpQ4od6GYOuj+GP4ZhK/eGqJitka3/2FNM+jFyg?=
- =?iso-8859-1?Q?looNhwVVjfBjDBM0pCCOIUfubusDqyVPDk4BonubOxfO5bPMCAaOrdKHe9?=
- =?iso-8859-1?Q?sPmUDJ0IzfqQCmKPkT+u5LqWFku40XrjTB3K3YkwJ8MDL9vJNKCZhsICPt?=
- =?iso-8859-1?Q?XKo+ruaTGvED9cgbkaqoLLon0jJwiLZpskhfotdxQjMyk+Q1kDnhitFg20?=
- =?iso-8859-1?Q?WU99yvSAW6wlIzTUfwYWB1A6DqeM2gJOShmoV5sKAvVtK6+lnEttmoTpe1?=
- =?iso-8859-1?Q?nBP/TVunb7Oqd8nKDdiArha6vx75nocXBv4t+8LEulkoyL5fwOp54/oqmr?=
- =?iso-8859-1?Q?yuSnH7IpnG2gklQtsGUYTGIceJf1IPA8dfkE6ZtOW2pka2GmuqTrNhzN8t?=
- =?iso-8859-1?Q?YvgXde84Oj6gfW37XrcprHMV/qgFpx3qMbQA7stgWXvo4h1X7JYUElO8UW?=
- =?iso-8859-1?Q?zH11XPr9o8pd8MADz4Z4MohGyhu07pa72Vwm2gvEQDu34ZanB0dgM+vUOM?=
- =?iso-8859-1?Q?/YmCey7pqcHfpmpVL/S4IQgrhNWNG9DqBlHzerC4rPqGsyL3fPI+GG7mpq?=
- =?iso-8859-1?Q?jQCnCjsK06xz8bSTLraikWcmJKFcvLuSLb/YjQ0tgE4Do2Hk17nm2sb2KF?=
- =?iso-8859-1?Q?6yzjbe7AKPrzpF1CXYa/Y7+nDAuvmQrCDx7F29gFX6AsBkTYKA3m9RFA6G?=
- =?iso-8859-1?Q?PIzsrvfa3EhjDg+WeEKKH1RXNkI1e0kuCtecHckyA5TcXschC2dpB3yhYY?=
- =?iso-8859-1?Q?WulsAGMYgz5ZrGWdXJICdJtJNQZaFDMI77os6PXA4hEOCfK9E47kFcKq1q?=
- =?iso-8859-1?Q?JzJ1qOfUW/dgUaku3lRImrIMk9qbI8/GwD6u4CLj7/FgrWA=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S232400AbhFQRcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 13:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231168AbhFQRcj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 13:32:39 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75092C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:30:31 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so6889714oth.9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 10:30:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RNIfNMMIjld5PjQjgeiM/kAf3UBf7SmlCglukGZh+kU=;
+        b=CdoJpSLAElrrZNIhunET7FF5QeI2gVaX3/gB+100FNbF9gQ/FOoQwC4wanBs59W2e1
+         iGQgCOcOKy1rULH/PdnA61FcM0LZN67dZAvWcohz6Dfhzr85/SgltGngpfEk1WBCE5Rz
+         PMI/BuX3WRtIkQGqmyz2CdEXXChlR2Z25a/49eZhFS3g6Qmo4TxbqkaJinN8Cl+IOkqK
+         3/3YV62ZPIaLAIAxLKRVkILYJphUzIBbVOXoJngKclkiH4yYp0LmKVvb5vWa9yIvwarE
+         0/SCE3szhqk9m/1mlF6ixR16YkMrqRrvj5seoMsVuIiyw0DYNiC144rBj0L0MafdGQoK
+         0sUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RNIfNMMIjld5PjQjgeiM/kAf3UBf7SmlCglukGZh+kU=;
+        b=NDtG5Ig/bKY03Eh8+b0xeSrbyeXcFdac7bwFP22FEVVTCEKpnZcWUq1xKwcGZ3sC8P
+         yanOAkyiqj0rDG4Y7uvyX/B2hZbB5vyaFoWhRlyMtbpeWJE6tUj3SGwO6EgBgS2f5oB4
+         iTAC5iDYgH0PSu/bA0TgbvDWI3OcdjmenkRj3Zv3zUWCkHdq71Kpbealkv1r8ZFEjFz4
+         siKXsunBPx8oZLaWhOHPGX+Czs4HbozN+GPOVh6T/6g/YfBGLd5zt/w1ZkfUWTR4nzHa
+         BHw348VG5WJyAKdE4JFp/eKfz2ub8TG3XAugvM/9z7QBwzHnV5GYB8snhmTeoFNagfVc
+         kxCg==
+X-Gm-Message-State: AOAM533y+YZqSpvj0CVynP5ADfgidI+gABb4oRyhtIMJnTR+CwZVyh9J
+        JPt3uYopfnaNCqO2wDuLkGTeKA==
+X-Google-Smtp-Source: ABdhPJzTlfvjcgyrdohPn8ZSyOe2Wk4p2iCv4NIaSzEF3sv8prIiuP7z25BdaL/CWgnh1wVm5NQ03Q==
+X-Received: by 2002:a9d:39e3:: with SMTP id y90mr5717111otb.257.1623951030847;
+        Thu, 17 Jun 2021 10:30:30 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t26sm1433053oth.14.2021.06.17.10.30.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 10:30:30 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 12:30:28 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, Greg KH <greg@kroah.com>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the usb tree with the arm-soc tree
+Message-ID: <YMuGtNTvZKHx4Rhr@yoga>
+References: <20210617144346.564be887@canb.auug.org.au>
+ <YMt5jTLYv+DKWKdn@google.com>
 MIME-Version: 1.0
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 62802885-d987-4f67-2800-08d931b58cd8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jun 2021 17:30:07.0199
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sxJ7U48zS1tGvBDMzp3W1x0BrnP4qc+IhIBg854wSzxuAG32dhnxebthy9UkxOwyJu4a7frJTcw/s8uvhYIvPOyN70VNLA53ngh4W8nuU+I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0P190MB0723
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMt5jTLYv+DKWKdn@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Prestera Switchdev driver implements a set of devlink-based features,=0A=
-> that include both debug functionality (traps with trap statistics), as we=
-ll=0A=
-> as functional rate limiter that is based on the devlink kernel API (inter=
-faces).=0A=
-=0A=
-> The core prestera-devlink functionality is implemented in the prestera_de=
-vlink.c.=0A=
-=0A=
-> The patch series also extends the existing devlink kernel API with a list=
- of core=0A=
-> features:=0A=
-> =A0- devlink: add API for both publish/unpublish port parameters.=0A=
-> =A0- devlink: add port parameters-specific ops, as current design makes i=
-t impossible=0A=
->  =A0 to register one parameter for multiple ports, and effectively distin=
-guish for=0A=
-> =A0 what port parameter_op is called.=0A=
-=0A=
-As we discussed the storm control (BUM) done via devlink port params topic,=
- and agreed that it shouldn't be done using the devlink API itself, there's=
- an open question i'd like to address: the patch series included, for what =
-i think, list of needed and benefitial changes, and those are the following=
- patches:=0A=
-=0A=
-> Oleksandr Mazur (2):=0A=
-...=0A=
->  net: core: devlink: add port_params_ops for devlink port parameters alte=
-ring=0A=
->  drivers: net: netdevsim: add devlink port params usage=0A=
- =0A=
-> Sudarsana Reddy Kalluru (1):=0A=
->  net: core: devlink: add apis to publish/unpublish port params=0A=
-=0A=
-So, should i create a new patch series that would include all of them?=0A=
-=0A=
-Because in that case the series itself would lack an actual HW usage of it.=
- The only usage would be limited to the netdevsim driver.=
+On Thu 17 Jun 11:34 CDT 2021, Matthias Kaehlcke wrote:
+
+> On Thu, Jun 17, 2021 at 02:43:46PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Today's linux-next merge of the usb tree got conflicts in:
+> > 
+> >   arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
+> >   arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
+> > 
+> > between commit:
+> > 
+> >   39441f73d91a ("arm64: dts: qcom: sc7180: lazor: Simplify disabling of charger thermal zone")
+> > 
+> > from the arm-soc tree and commit:
+> > 
+> >   1da8116eb0c5 ("arm64: dts: qcom: sc7180-trogdor: Add nodes for onboard USB hub")
+> > 
+> > from the usb tree.
+> > 
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> 
+> Thanks Stephen for fixing this up for -next!
+> 
+> One option would be to revert 1da8116eb0c5 ("arm64: dts: qcom: sc7180-trogdor:
+> Add nodes for onboard USB hub") from usb-next and land it through the qcom/arm-soc
+> tree with the rest of the SC7180 device tree patches.
+> 
+> Greg/Bjorn, does the above sound like a suitable solution to you or do you
+> think it would be better to deal with the conflict in a different way?
+
+Having the dts patch go through the Qualcomm tree instead would resolve
+the issue.
+
+I wasn't aware that the driver code had landed yet, so I haven't merged
+the DT patch, but can do so and include it in the pull request that I'm
+preparing for 5.14.
+
+Greg, does that sound reasonable to you?
+
+Regards,
+Bjorn
