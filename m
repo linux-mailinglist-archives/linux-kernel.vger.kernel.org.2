@@ -2,217 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4867B3AAEE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF9A3AAEDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 10:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhFQIhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 04:37:07 -0400
-Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:43972 "EHLO
-        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230494AbhFQIhF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:37:05 -0400
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15H8XtZn015730;
-        Thu, 17 Jun 2021 01:33:55 -0700
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
-        by mx0a-0064b401.pphosted.com with ESMTP id 397sbmgbtg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Jun 2021 01:33:55 -0700
+        id S230523AbhFQIgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 04:36:35 -0400
+Received: from mga05.intel.com ([192.55.52.43]:24942 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229931AbhFQIg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 04:36:27 -0400
+IronPort-SDR: 29WV+KNJhblaxIevodIDadYEGGGcE/2jcGMR24q7J3o1QL4AEK20BlatEKxYEjdKCkzDQJLOvl
+ 7ABxA5VoCjqg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="291960789"
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="291960789"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 01:34:19 -0700
+IronPort-SDR: cnd2chz6DCp9kBa4Xwsk2+Gdw8hHqdEJI+s+2afcrCRCrz0/dOX+zsMcnbEIPEwsuA0lgApTLi
+ 00B5Q7IkGDug==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="452700883"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by fmsmga008.fm.intel.com with ESMTP; 17 Jun 2021 01:34:19 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 17 Jun 2021 01:34:18 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Thu, 17 Jun 2021 01:34:18 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Thu, 17 Jun 2021 01:34:17 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Hfo0t/sdSSmSM5WUqTnd7jjaNUioQNJ5wQjqyDRvSAWXL+S2JuoOlphTUBRYZM08YTqPc+aGmCiCk7LPGL87h6pmJVIYETVnq0Hs2BzwkyxrDMP7euoyLuh2eHexS4qI9AUokBnVTCc+d4G+eD+lLdaqkOAObgACWFhicKAg2yPQfNDo4EnoL3o3h2uFRK6DDZBm9SsqJCO5kMzaRYRi1JtvaKrlQQJRQlUTErW35Crnf7T6OlWiIMgA6avApFH7p3IAPw9einYOIDWFU7tWjsF24N/EgM3Fnf07DxymxgclX56y5zKdJrVYT8f0Mm+lg7QhQKJXYjTkC01x8rCk/g==
+ b=aqFvavJpW5ENk6PIinxVb3XJ9zVFwKwLFaoJof1UbeNydLueNVeHCPNnMl8qyp4wirmDAzJtfq1JotZ+BR/LhW9/gSgMVWDttPuBk+qeCVKowC5+kcc1EGs2z9msylmECxMjMH5H6Zg3nkS5AV8k9Zn2B5J6cwMe0sQKnjC96UrN4OYYvW+Ig++lOiPDAw1q2S/rQ+4XwxQ5pXD+6wZmc1EVCD70rr8whKPijThR/RW9/UJlv0EULPHUV3hxf8b+7HRj64mnNxVk8/YBHnjmqyxdBhbL+vmWhOHq8wUIyicGt52fBM8nwo5HkDfFjV+To4G2SyVFDlECVrCo+k0U0A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fQIH4RnxcDEWAifN50ekH8nw9gtzI43t9tCF7NHgR20=;
- b=LaU6rVVfx9V1fCjwPrpj185edBiGuHeoJT2PjADOtntpAt8VWUjYkGiMGE1SSvTlOmjDTtyY7YJITr1bqLhNvkp3G7APgXLFufm6Zjt6gSnUbCVORfaEmKd0h0tgGSLqQ64iFs7hfarZTZF/VuXDGrQJ98E+ECEO7EAtFagIRc0tZpzbLg0I7a69LW6fsC+mJsg+PoEUWRNSmO/ub/UQvixszwbTTTAr1cwET2AoGHz+baXw8hWrKR5caYsYGHPclb646eMrMCiJtCxphGiNTROoVtyAMyZo9oqfVI6SN2anf919pjSDJ2ozNnam3siPmwssNEPDs/LK9qYKSnbHKg==
+ bh=E1BmaEO1REdaWCgdj9mgzndlLh2AKi2MtAUj5Vbquwc=;
+ b=U1FwerdOPBkG2qLmmN32VWCRs2bOyhqm2MVKUNPkEGnt3dkqXOg9Z5pVgxn8eFE7kAFsyhxFm/rJfGtwvQ1BL8q7JHzPotz295JGTtztGp/bFyGf8tKDi4o2hwnDWmi/ayV9tdb6gS5giru0I9IFQ9pM4J5YHlQEVfdnNmWT3bPqRuVPVITn+ui+51Qi3EDx4TqUtuV+Ac1GVJ8S0lO8OWZIa5jQHXbcCbhe8zw7MAW9k6Ghc+8hXgJl592kWeROFp/UF+OHzTX4vzPndN+hY/NlKVWWPeUeGp7jaRE8ItJtvb5HEiiPucMDAnKRPRKUSi7MfKz5xfqNJY4p0Us1cg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fQIH4RnxcDEWAifN50ekH8nw9gtzI43t9tCF7NHgR20=;
- b=btm53/y7VvX8ddQqAMJCLatb+lxAG2F0WxrIRUG+LV8SrFbetRfKSUSBuEutbK5V1x/AK8t+KIQNPUgN+oE59gsAlT7+GZsPz1JgAxWIu3wRf7xzWGKq5JkJeOOxZAsPr5jcEcKcb07t95swLV15v2+13EB3oEEeHMnhQldMzxo=
-Authentication-Results: windriver.com; dkim=none (message not signed)
- header.d=none;windriver.com; dmarc=none action=none
- header.from=windriver.com;
-Received: from MWHPR1101MB2351.namprd11.prod.outlook.com
- (2603:10b6:300:74::18) by MWHPR11MB1743.namprd11.prod.outlook.com
- (2603:10b6:300:114::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.23; Thu, 17 Jun
- 2021 08:33:50 +0000
-Received: from MWHPR1101MB2351.namprd11.prod.outlook.com
- ([fe80::c5c:9f78:ea96:40e2]) by MWHPR1101MB2351.namprd11.prod.outlook.com
- ([fe80::c5c:9f78:ea96:40e2%10]) with mapi id 15.20.4219.026; Thu, 17 Jun 2021
- 08:33:50 +0000
-Subject: Re: [PATCH v8 03/10] eventfd: Increase the recursion depth of
- eventfd_signal()
-To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
-        jasowang@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
-        parav@nvidia.com, hch@infradead.org,
-        christian.brauner@canonical.com, rdunlap@infradead.org,
-        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org,
-        gregkh@linuxfoundation.org
-Cc:     songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        He Zhe <Zhe.He@windriver.com>
-References: <20210615141331.407-1-xieyongji@bytedance.com>
- <20210615141331.407-4-xieyongji@bytedance.com>
-From:   He Zhe <zhe.he@windriver.com>
-Message-ID: <8aeac914-7602-7323-31bd-71015a26f74c@windriver.com>
-Date:   Thu, 17 Jun 2021 16:33:40 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210615141331.407-4-xieyongji@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+ bh=E1BmaEO1REdaWCgdj9mgzndlLh2AKi2MtAUj5Vbquwc=;
+ b=jv4xrGVKdAy4/tnusrxh/T/iY4c3iZsx/uAyQel8wMT6RMmnz7PXH2Q6hawQzP7/VVsO1MTEHw9AXD7qt++3AhXAhrPGf+StRCnUHcNH/UyDnrJgdePv4FZ99TJcK8HHrgMVTnFpJqj2y7xmSpIoiJbFCB4NCYL8lMQngV9F+HA=
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
+ by DM6PR11MB3243.namprd11.prod.outlook.com (2603:10b6:5:e::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4242.19; Thu, 17 Jun 2021 08:34:15 +0000
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::3dc3:868b:cec3:513b]) by DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::3dc3:868b:cec3:513b%6]) with mapi id 15.20.4219.026; Thu, 17 Jun 2021
+ 08:34:15 +0000
+From:   "Wu, Hao" <hao.wu@intel.com>
+To:     Moritz Fischer <mdf@kernel.org>
+CC:     Tom Rix <trix@redhat.com>, "corbet@lwn.net" <corbet@lwn.net>,
+        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "krzysztof.kozlowski@canonical.com" 
+        <krzysztof.kozlowski@canonical.com>,
+        "nava.manne@xilinx.com" <nava.manne@xilinx.com>,
+        "Xu, Yilun" <yilun.xu@intel.com>,
+        "davidgow@google.com" <davidgow@google.com>,
+        "fpacheco@redhat.com" <fpacheco@redhat.com>,
+        "Gong, Richard" <richard.gong@intel.com>,
+        "luca@lucaceresoli.net" <luca@lucaceresoli.net>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH v4 1/4] fpga: dfl: reorganize to subdir layout
+Thread-Topic: [PATCH v4 1/4] fpga: dfl: reorganize to subdir layout
+Thread-Index: AQHXYVpMuuq4CCKpI0OAe3HAOe9lxqsUps2ggADmEgCAAEctkIABz+UAgAA0T8A=
+Date:   Thu, 17 Jun 2021 08:34:15 +0000
+Message-ID: <DM6PR11MB381924F43550A6699CB55213850E9@DM6PR11MB3819.namprd11.prod.outlook.com>
+References: <20210614201648.3358206-1-trix@redhat.com>
+ <20210614201648.3358206-3-trix@redhat.com>
+ <DM6PR11MB381964374223D0D2958AFA6985309@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <d64b0fb8-5f83-2995-7ee9-b4ed2932ef60@redhat.com>
+ <DM6PR11MB3819259241791EB04A2CB9C8850F9@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <YMrS9OUSaCdtGwrE@epycbox.lan>
+In-Reply-To: <YMrS9OUSaCdtGwrE@epycbox.lan>
+Accept-Language: en-US
 Content-Language: en-US
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: BYAPR04CA0001.namprd04.prod.outlook.com
- (2603:10b6:a03:40::14) To MWHPR1101MB2351.namprd11.prod.outlook.com
- (2603:10b6:300:74::18)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.143.20]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 756587bf-43ca-4b0e-2014-08d9316ab0e4
+x-ms-traffictypediagnostic: DM6PR11MB3243:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB32437929E9818C9DD9855214850E9@DM6PR11MB3243.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tJFh9znL/BGrQGP+gv1xKKfuO6o6lnRuX3AGHvzzEdUjvxDJtQkxH/PqdCIcm/Gxemq9G8w9OnHbKaHhkRXy4IbpwEoLetVKlP76p6z5928l8inhCa4uEra/j85oun39EXTVmXbc8XHI/FBiLzr2ktG9jCcrmqpGxcMlUkVezzHl+bL9aqT2uD7YZWvhaM4MXlTO5qOtMlN+MdIvvkkW+jbB5u7YGrisL37Yf9T80rFaVgQZ80CGSpu2MfGTo4pPea/83fQBI3fLySNdDd1Nja0BkyXtJ7l0qdLpycs8ispp0jjhKBBo78IxDvcv2i26BMQRmhGvavK9el5R7eEFPRkLm/cdHJGnZTV9KGzKAmxHH7kjQ3sAcejn1D8WKG4VL90aCnFs+IYGVNPqe2o+MdlSfKhHsmCY2vhQUumfrjaAG3zATeBh1IFNKmh/EstHuQHacnz8SmuvikxNAolF956wqiquhJHmYj+kxH2DbXPJB9abXCkU2IybIT15Sanavuqeqf2MFpFx4cHGFV0RtAfllLa7QJU1nxUkLERDo1WPYlFfxcOvsyhEeQihtb44tgKcgqodjS6hIeqTpKxeJSVnpDCVFHyniaIpOclwdxg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(71200400001)(86362001)(54906003)(8676002)(55016002)(26005)(8936002)(186003)(2906002)(7696005)(498600001)(64756008)(53546011)(4326008)(66446008)(6506007)(76116006)(66476007)(66556008)(5660300002)(9686003)(52536014)(7416002)(6916009)(66946007)(122000001)(33656002)(38100700002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Lt7pYXZx8ymj+C3XZLCcDZ82vXEVshWrDXVIhngYvqYaxPZgqqUDHbPvGpYi?=
+ =?us-ascii?Q?5ARVcv6dCaawwyhCEWWacXect5ZoDBIHdFN2MPa0LdkU504TI5TjywZpdFMU?=
+ =?us-ascii?Q?9rqBqtrwtu+aqBIKlZNch/bmlIXdMZxDv1dCwS22yHbtMbtOUh1//pD+ToVH?=
+ =?us-ascii?Q?eJx0ebc7D/ya6QfCCptYUlUPyJPLHMkw1KByPMXtJPKrfEr1fcTihJp0WUIl?=
+ =?us-ascii?Q?j7oSNT/QYrwNo8d7H1a1MzDjp6SLqteSJRGfUaMhz2AYA2GVDBQIX/JHZQ/M?=
+ =?us-ascii?Q?f6NoGauYUJlRAnDHD3Ig2zS2a9Pdsenxdf9PUfzmHB4ErwVQ+ZBcl9Kye7hI?=
+ =?us-ascii?Q?+6ibZbpEj9H6hnGJtMyTOndSwVpqGfscI3xpnJY4rxGSJ7tucsf4+rPUp+vL?=
+ =?us-ascii?Q?FAWRf2/Px3bIAciZSE5kIomJAoumb+1MmMnFTcOvFqR421OYIJ9fKbfzsn6B?=
+ =?us-ascii?Q?9byqyIgEdzekAUZq9LiVGI9Qn7oASTBwFhj8V+3WUnPTNNnx+PYBL5mHpljI?=
+ =?us-ascii?Q?KvixH1veFGnlltUeHv9lLsBMOAG8zPPmS1upZDCjVmWF3AHcCFhyKy/IPjs4?=
+ =?us-ascii?Q?Hi+YtT7Hnl2+09nGqsTWlOz+TBFqH40xkSMR94JHazkP3v0FsEkI3p9n3aBo?=
+ =?us-ascii?Q?QYlxYkGInw/iSPnx2C8zwXI6zYqbpNCJ9ValwAjFhR41Bz9n1opZ1pkMO+9j?=
+ =?us-ascii?Q?kFSFhTBu1eV0A8M6o8SueZ512xwe/JW1rAXheGiQ8SYKfLUKRM2ayQ9U7Ae/?=
+ =?us-ascii?Q?wu0naryEAutJYTyQ+RrZyhDESktWzsV/2jMHzNd4CD+qwYzxg81NgnvxQlYo?=
+ =?us-ascii?Q?BhMV2uuXm7kDidR/UAcmcYz/YK4bKS3CQSfOAP0mPeYEnGgScm7cedswrSQE?=
+ =?us-ascii?Q?tzYX/hCijiWmsThJnoiuPmPgAHKRFLqvh6dt5IYSMNrnehJjI9hDWnCfgJS9?=
+ =?us-ascii?Q?03CMvOn0AzsfpgnHwxuZ4Hg27Kf2uuzKhW6lFzRLb5O8+DRXKxIOo8CD4Iwu?=
+ =?us-ascii?Q?6YMJdoFYXumKvtC+VeZ9zOXnbjMnQcMrlc4ceKsj+b4s+ZA8BvUFo+JCPI5E?=
+ =?us-ascii?Q?zROSzzkS4NNq2jOy/sf4tqNA8fk3rB7YJK9Xc/y2pfMwCjdUyYTJAdG6fkNI?=
+ =?us-ascii?Q?ywlG4435UB2VYYWmh5BnRtNbtrnik4l7Yi/VoKjDuB1Y9p9bYyAj5p7FOSQe?=
+ =?us-ascii?Q?ntrm1HbpjnTi7rrNjCajO8VKJKUbqjIMj49MfaF5XY0q2ec9Y9gh1M4BH50Q?=
+ =?us-ascii?Q?08nTlw3TQ83RningKVeJC96TqW+2VRLyJO32J3XkjQlRZ++tYPfJHILa9O4D?=
+ =?us-ascii?Q?wEFG1I4DcxhouvWTElTrg1e/?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.175] (60.247.85.82) by BYAPR04CA0001.namprd04.prod.outlook.com (2603:10b6:a03:40::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21 via Frontend Transport; Thu, 17 Jun 2021 08:33:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1b7a1221-56f0-40fc-3276-08d9316aa1cd
-X-MS-TrafficTypeDiagnostic: MWHPR11MB1743:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR11MB17430D16EAE2B19BAC7F4DC18F0E9@MWHPR11MB1743.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YzrjIpuQNP3Y7IcJSect/ohk2Mnc3+1E2aqQDYI36pZ3FiUvylaysGx5xAhYhRe4tpZoM9pyhC5V3R/4f+aAgjgii5VF6mo4l0BBS74sCNYu3TNqn4BQ4LQAqEqbKa6GAW/VSACL1NI5K3QrdRITKyE1RxJ6YJCDWfmmSA+NySm8afePpkqddI36bQ7uE2krj/1UXdxAgIfjajCk+0fFCP+ourBcpuTMJhN6VFPlNI+O7MZ8U3bzqqIthmrNexpexpERECJcYS/w2eUavKlh25AdU6bWNAHvjcjuhWddIBLzgeJ5DMjYdcFQud7wkm7ZeTXMdhSV3PXiQFdIZw+rAD8pHt+Drsp9XTMkN33T5+HGVnRwYmRxtwRRRPPFD6V9rvqzZUlaCosRkTTxEkUn0UybdHt+j4s9/d5Wtcbk+y9ftsmk1g2SgFYp+UqU8gDv3xYKubZ1QvO8BkGuBwWw6uHQg3pH8XdBx2G/TqmqO7cUDFKN/YdPYK+CCexQf50ElOvNaDsL3hSdRVvECnTVX7KDcG5qE94aTI4mdtlSyYp/5X2xeEbYtgNxho5gBcJ0goF56ViM+xI/sIrslfjjoju1EJn1nftshyIcNLHPgVDkXE0MlrLHbFKrnlHUUOsATzsuqIUqwrkaRduamSuknw/mkg/uem46g33gMLZA6DawCdbu+XyJ5g6WgpkNTXKQd359h8mnwSrBUk7UyAXRzedOaJxuu7y/rck5RKf8flzbkK0oeYkelfJarCMDEjFcHjRmtzYXZKJ26kpxT63o3xHCpFZWu3jpUNCpoKn/XApVB39Agss8gAdDkQOOm+XHPrHuOr/qB6YFzwY1mIuQ8ffjC5i7Hy3/RhKpSyPWF/EHOgy9T2ew9uXjZyQCdBxR
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1101MB2351.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39850400004)(396003)(346002)(376002)(83380400001)(6486002)(38350700002)(38100700002)(53546011)(66556008)(8676002)(31696002)(7416002)(52116002)(478600001)(2906002)(8936002)(966005)(316002)(16526019)(5660300002)(66946007)(66476007)(16576012)(107886003)(4326008)(921005)(956004)(86362001)(6706004)(2616005)(31686004)(6666004)(26005)(186003)(36756003)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bkYzOFV2OTZXeHJzNkVBVmFTRkQwRG41K1F1S2V6dGlYSGwvcm52eEJhVU0w?=
- =?utf-8?B?N1BJd0RnKysyQ1pOQWxsWXZUVThTenZ2b1pWUWprL3U0Rm9vcU8zM1FiUHoz?=
- =?utf-8?B?VGZPemUyc2JlZGNWYWZPdDU5YTR4WFFWSEVKQU02SmcrWkhhU3VwOURDbklI?=
- =?utf-8?B?QWxTYzZEbFE5VTQ3aHc5TDhYNFRKY3ZBQmRuazNyV2lHbGxFb2ZEb3BlUERw?=
- =?utf-8?B?ekRyaFZoR3BGNEIzR0JDUThoSFI4T1lhUHJ3dGlzY05UZytIczVKcWQ3V2Jt?=
- =?utf-8?B?eDJKTnpKQWdyRzVwNU1EK05DbHY4aG1KeGFZbjNzSElzRFB0NGxyeGRNZmhl?=
- =?utf-8?B?RjRyUjlzWFRZZitGOFdWdVV3Vk1hMDhRMGdOdXlmSHYxM1huUytVWG1FZkNZ?=
- =?utf-8?B?Q3FYRk1VQjJTKzllenBVTUQ5VnJsS0ZtVGkxVi9LbWtIOHpZUUR3L3FrTGUr?=
- =?utf-8?B?S2wwZ0xlbm53ZXpiU3IrWHR0Wm9PbEdRVkM3a3dmb1hQRFRkUml4UTVMSSts?=
- =?utf-8?B?bk1UVTBTU2I3V0IzeDIvck83NGd3cHNZTmtDSHNwNW9JMHl6cTdoT2pBdWlQ?=
- =?utf-8?B?V2dSbU16d2VNSThrN1c2YzVxQzJ4d3dSRmFScTZzTSs5Y29WTWs0SVF4eEdB?=
- =?utf-8?B?amxWaW4xMVJRcHR1T0VyZ1dtT1MzZDdkeWViclkxeUNGRVZ1RGYwMS9pWWZo?=
- =?utf-8?B?clVISmxmRlNlM0gzcjhLd3d2Vm9YVm5mUGdRRWUvWDBCNzNDd05tdFZBdlJr?=
- =?utf-8?B?M2ozN1M5Rit5TVlOZ3ZsTFk5Q3I4L1NROEN3dzU0ZEdHMjNkTDd0empzRzdG?=
- =?utf-8?B?Y2lXWXpSenI4R2tPaEdRZWVVSW5XZ3N2Z3JXL01GWEg2azNKTTZTbXoyc3Ny?=
- =?utf-8?B?RldhNmRUYUFuQUs1OFlMc3FPV0VabGdueTIvSU5uSjNYVnc2LzN1TDFVMktn?=
- =?utf-8?B?RnNqa0xCZTlEYzM1T00vR3hUTnYzaTFmMzdSOG0vaVk0bFVDNldKOUo4cHRE?=
- =?utf-8?B?YmtHblk1cEpyWjR5Zm1CTWtmNHl5MVpGWklmcmd4TC9wMnRLU01sVUx2ZzlG?=
- =?utf-8?B?aktvVVVnQ2FROHNuVUhNTXRaaURwTjY3c3MvT3pMd1F3bHRETFBTUFFPdG00?=
- =?utf-8?B?M0ZwMkUyb0FmWU0zdlZtUzVwMlNqYy80ejQ1MUJmY2dCV0xHNUFYaDNZZjUy?=
- =?utf-8?B?L0dLc0dTZW1oc0dpYSs4YjEyZERZV0RyNGExR3FLaWZtdzNwUUtTdWx3bzhL?=
- =?utf-8?B?c0NJY3BKaGh1aEFTamJ1TE1RcmRZYkVrbUxwekxJbHF5ZFJKRHVUVmhIU1B1?=
- =?utf-8?B?dE05SlMvMy9KZ2l6S0x5VHpaWk1oZWtnZGppQ1NUbmxlaG4vVGFkY3BweXZO?=
- =?utf-8?B?UjVFeHE1K2lBOXcyQnQ4Wi9vdzJlOEgzWVlmK2dPVEthOGxUKzJiMFExaXFV?=
- =?utf-8?B?YVB5MGRiRFA5SHBVSW5YZEFRcnFzTGhtcHpVQ2J6SUI3RUUzaFZyS3ZPR1R6?=
- =?utf-8?B?YUc5K2liOWZpczA3ZUk2VG41dU1lYkJ6QzhSeVJiOXYzR3FRTjN4SW9taTJ0?=
- =?utf-8?B?b1JCcGR6a2Yzb0puTWg2NHpYNDlPSUVXSDAvQURCdHdNV2x0elhaYUFNL0FV?=
- =?utf-8?B?elN4VG9wSUhTeTVzc3ZIckFLdWNDWHhkcWl0TlNQMkNvSkFjdmpQRFNxUXo0?=
- =?utf-8?B?cm1wdUVmUGpWb2M5UUIxd3lmM0llSFVYelFyN3diYWNkM2JqcEJwS1l4bFJv?=
- =?utf-8?Q?ppCBtUK8YSeKR1T9ze3qEd8Rdd2Qw1kJK7B0Mzk?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b7a1221-56f0-40fc-3276-08d9316aa1cd
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1101MB2351.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 08:33:50.4248
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 756587bf-43ca-4b0e-2014-08d9316ab0e4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jun 2021 08:34:15.2931
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jkE1xQyYga1nOu/B54fDA+LtCc41/ZXOKujN2Co7y+3ro7RA92FU2jt8GqKQTt64caZaUa6CcDvGBjyfj/nNgg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1743
-X-Proofpoint-GUID: VrqGYeW4YzfhASZIlwQwfty2ef2XwwgG
-X-Proofpoint-ORIG-GUID: VrqGYeW4YzfhASZIlwQwfty2ef2XwwgG
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-17_05:2021-06-15,2021-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- impostorscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0 spamscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106170059
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wBFFquyL7qkFY7kDFojUPUPAxQl+SX3fJ6Z9HIaYq2vlOBhYblLI81TFoVuOFkz7toGQP/555DItx4KuR7EG7w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3243
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> On Wed, Jun 16, 2021 at 01:05:36AM +0000, Wu, Hao wrote:
+> > > On 6/15/21 1:08 AM, Wu, Hao wrote:
+> > > >> Subject: [PATCH v4 1/4] fpga: dfl: reorganize to subdir layout
+> > > >>
+> > > >> From: Tom Rix <trix@redhat.com>
+> > > >>
+> > > >> Follow drivers/net/ethernet/ which has control configs
+> > > >> NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+> > > >> Since fpgas do not have many vendors, drop the 'VENDOR' and use
+> > > >> FPGA_BLA.
+> > > > Hi Tom,
+> > > >
+> > > > Thanks for this patch. : )
+> > > >
+> > > > DFL is not a vendor, but something can be shared/reused. It's possi=
+ble that
+> > > > other vendors reuse the same concepts and the drivers of DFL. If ve=
+ndor
+> > > > drivers need to be moved inside sub folders, then maybe it's better=
+ to
+> > > > leave DFL in the parent folder?
+> > >
+> > > xrt is also not a vendor, more a subdevice framework like dfl.
+> > >
+> > > I am not sure what you mean by other dfl vendors can you give an exam=
+ple ?
+> >
+> > It's fine, but the description here is a little confusing on vendor/fra=
+mework
+> > handling. No other vendor so far, but it's possible, DFL can be used in
+> > non-intel device, and related drivers can be reused as well. Then a fpg=
+a
+> > mgr driver depends on DFL, should be put inside dfl folder or new
+> > vendor's subfolder?
+> >
+> > Hao
+> >
+>=20
+> I'm somewhat neutral on this. If someone non-intel starts using DFL we co=
+uld
+> also
+> move the common parts back ...
 
+That's fine.
 
-On 6/15/21 10:13 PM, Xie Yongji wrote:
-> Increase the recursion depth of eventfd_signal() to 1. This
-> is the maximum recursion depth we have found so far, which
-> can be triggered with the following call chain:
->
->     kvm_io_bus_write                        [kvm]
->       --> ioeventfd_write                   [kvm]
->         --> eventfd_signal                  [eventfd]
->           --> vhost_poll_wakeup             [vhost]
->             --> vduse_vdpa_kick_vq          [vduse]
->               --> eventfd_signal            [eventfd]
->
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
+>=20
+> That being said, I'm not super convinced we have to move stuff in the
+> first place.
 
-The fix had been posted one year ago.
+I remember that the first submission of our code is having everything insid=
+e a sub
+folder, but was suggested that to have everything moved out, this is why we=
+ have
+dfl files here now. To be honest, I have the similar feeling as you, I didn=
+'t see any
+strong reason to make this something we must do, but both solutions should =
+be
+fine. : )
 
-https://lore.kernel.org/lkml/20200410114720.24838-1-zhe.he@windriver.com/
+Thanks
+Hao
 
-
-> ---
->  fs/eventfd.c            | 2 +-
->  include/linux/eventfd.h | 5 ++++-
->  2 files changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/eventfd.c b/fs/eventfd.c
-> index e265b6dd4f34..cc7cd1dbedd3 100644
-> --- a/fs/eventfd.c
-> +++ b/fs/eventfd.c
-> @@ -71,7 +71,7 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
->  	 * it returns true, the eventfd_signal() call should be deferred to a
->  	 * safe context.
->  	 */
-> -	if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count)))
-> +	if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count) > EFD_WAKE_DEPTH))
->  		return 0;
->  
->  	spin_lock_irqsave(&ctx->wqh.lock, flags);
-> diff --git a/include/linux/eventfd.h b/include/linux/eventfd.h
-> index fa0a524baed0..886d99cd38ef 100644
-> --- a/include/linux/eventfd.h
-> +++ b/include/linux/eventfd.h
-> @@ -29,6 +29,9 @@
->  #define EFD_SHARED_FCNTL_FLAGS (O_CLOEXEC | O_NONBLOCK)
->  #define EFD_FLAGS_SET (EFD_SHARED_FCNTL_FLAGS | EFD_SEMAPHORE)
->  
-> +/* Maximum recursion depth */
-> +#define EFD_WAKE_DEPTH 1
-> +
->  struct eventfd_ctx;
->  struct file;
->  
-> @@ -47,7 +50,7 @@ DECLARE_PER_CPU(int, eventfd_wake_count);
->  
->  static inline bool eventfd_signal_count(void)
->  {
-> -	return this_cpu_read(eventfd_wake_count);
-> +	return this_cpu_read(eventfd_wake_count) > EFD_WAKE_DEPTH;
-
-count is just count. How deep is acceptable should be put
-where eventfd_signal_count is called.
-
-
-Zhe
-
->  }
->  
->  #else /* CONFIG_EVENTFD */
-
+>=20
+> - Moritz
