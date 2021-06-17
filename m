@@ -2,110 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4A33AA821
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD8D3AA825
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 02:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234981AbhFQAbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 20:31:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231322AbhFQAbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 20:31:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A65B613CD;
-        Thu, 17 Jun 2021 00:29:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623889751;
-        bh=c6/UgIpgeNcNi4unNQ/ylhL9ijWKo/B8SV0ZczXTMVw=;
+        id S235004AbhFQAcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 20:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231322AbhFQAce (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Jun 2021 20:32:34 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EBCC061574;
+        Wed, 16 Jun 2021 17:30:27 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 10257E53;
+        Thu, 17 Jun 2021 02:30:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623889826;
+        bh=JBDmNnImH82BqV+2ZChPRpqr7p0yLYXLmBnOswUqrwo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BRmNWSOSnu7pks8kP/2h7R/hduZJGEnYVXbHIBzoqFjbXkCm75pIt2cbP+1SQehE0
-         kkG4PLADA3FtZwuOJVbpx0Wf7Hi+ViRZ1cY6SA+E8i2X9Gi+YzIf4XBmpHnQ2nI48n
-         FlbLRSJ10+tIsXy0GjF5Xe92FXqT3AGcey+2wRxcystoAF70ycYktBSJxWMRtdn3tJ
-         rhPagjvHAWU5flKRgWkEy7lkuKYy66OWiaw48XcZYk8F9dXBnLJeofh8IkDa2I26FP
-         YR2G9GS5H4kHWse9IaCsVEh2ar8xA3i1YcT27OLNB/eCss/P9Cfx2jL263dFXYpkAq
-         0L6PyFOTpuyPw==
-Date:   Wed, 16 Jun 2021 17:29:09 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v3 02/10] block: blk-crypto: introduce
- blk_crypto_bio_sectors_alignment()
-Message-ID: <YMqXVe7DdukZNSEF@sol.localdomain>
-References: <20210604195900.2096121-1-satyat@google.com>
- <20210604195900.2096121-3-satyat@google.com>
+        b=v9lJ/R6if8PMlIj3BcExEbbI4OiRFQt96oudUfepQyJ6uQ3qp1so6mMZAj2eztCTk
+         z6Hx8GW84GS86U4LWp3dl0VFHu0pGwI9yRLLmNijX74V7trZCaUq3/rGZdMiukvJAU
+         /dA4LuyQ51huvBBvE8dnvV6W1GQI893MX9D46Cdo=
+Date:   Thu, 17 Jun 2021 03:30:05 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 6/7] arm64: dts: renesas: eagle: Add GMSL .dtsi
+Message-ID: <YMqXjZREJbIEJxs5@pendragon.ideasonboard.com>
+References: <20210419142345.53152-1-jacopo+renesas@jmondi.org>
+ <20210419142345.53152-7-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210604195900.2096121-3-satyat@google.com>
+In-Reply-To: <20210419142345.53152-7-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 07:58:52PM +0000, Satya Tangirala wrote:
-> The size of any bio must be aligned to the data unit size of the bio crypt
-> context (if it exists) of that bio. This must also be ensured whenever a
-> bio is split. Introduce blk_crypto_bio_sectors_alignment() that returns the
-> required alignment in sectors. The number of sectors passed to any call of
-> bio_split() must be aligned to blk_crypto_bio_sectors_alignment().
+Hi Jacopo and Kieran,
+
+Thank you for the patch.
+
+On Mon, Apr 19, 2021 at 04:23:44PM +0200, Jacopo Mondi wrote:
+> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
 > 
-> Signed-off-by: Satya Tangirala <satyat@google.com>
+> Describe the FAKRA connector available on Eagle board that allows
+> connecting GMSL camera modules such as IMI RDACM20 and RDACM21.
+> 
+> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 > ---
->  block/blk-crypto-internal.h | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
+>  arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi | 178 ++++++++++++++++++++
+>  1 file changed, 178 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
 > 
-> diff --git a/block/blk-crypto-internal.h b/block/blk-crypto-internal.h
-> index 0d36aae538d7..7f1535cc7e7c 100644
-> --- a/block/blk-crypto-internal.h
-> +++ b/block/blk-crypto-internal.h
-> @@ -60,6 +60,21 @@ static inline bool blk_crypto_rq_is_encrypted(struct request *rq)
->  	return rq->crypt_ctx;
->  }
->  
+> diff --git a/arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi b/arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
+> new file mode 100644
+> index 000000000000..d2e48dc3e820
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
+> @@ -0,0 +1,178 @@
+> +// SPDX-License-Identifier: GPL-2.0+
 > +/*
-> + * Returns the alignment requirement for the number of sectors in this bio based
-> + * on its bi_crypt_context. Any bios split from this bio must follow this
-> + * alignment requirement as well. Note that a bio must contain a whole number of
-> + * crypto data units (which is selected by the submitter of bio), since
-> + * encryption/decryption can only be performed on a complete crypto data unit.
+> + * Device Tree Source (overlay) for the Eagle V3M GMSL connectors
+> + *
+> + * Copyright (C) 2017 Ideas on Board <kieran.bingham@ideasonboard.com>
+> + * Copyright (C) 2021 Jacopo Mondi <jacopo+renesas@jmondi.org>
+> + *
+> + * This overlay allows you to define GMSL cameras connected to the FAKRA
+> + * connectors on the Eagle-V3M (or compatible) board.
+> + *
+> + * The following cameras are currently supported: RDACM20 and RDACM21.
+> + *
+> + * The board .dts files that include this select which cameras are in use
+> + * by specifying the camera model with:
+> + *
+> + * #define GMSL_CAMERA_RDACM20
+> + * or
+> + * #define GMSL_CAMERA_RDACM21
+> + *
+> + * And which cameras are connected to the board by defining:
+> + * #define GMSL_CAMERA_0
+> + * #define GMSL_CAMERA_1
+> + * #define GMSL_CAMERA_2
+> + * #define GMSL_CAMERA_3
 > + */
-> +static inline unsigned int blk_crypto_bio_sectors_alignment(struct bio *bio)
-> +{
-> +	if (!bio_has_crypt_ctx(bio))
-> +		return 1;
-> +	return bio->bi_crypt_context->bc_key->crypto_cfg.data_unit_size >>
-> +								SECTOR_SHIFT;
-> +}
 > +
->  #else /* CONFIG_BLK_INLINE_ENCRYPTION */
->  
->  static inline bool bio_crypt_rq_ctx_compatible(struct request *rq,
-> @@ -93,6 +108,11 @@ static inline bool blk_crypto_rq_is_encrypted(struct request *rq)
->  	return false;
->  }
->  
-> +static inline unsigned int blk_crypto_bio_sectors_alignment(struct bio *bio)
-> +{
-> +	return 1;
-> +}
+> +#include <dt-bindings/gpio/gpio.h>
 > +
->  #endif /* CONFIG_BLK_INLINE_ENCRYPTION */
+> +/* Validate the board file settings. */
+> +#if !defined(GMSL_CAMERA_RDACM20) && !defined(GMSL_CAMERA_RDACM21)
+> +#error "Camera model should be defined by the board file"
+> +#endif
+> +
+> +#if defined(GMSL_CAMERA_RDACM20) && defined(GMSL_CAMERA_RDACM21)
+> +#error "A single camera model should be selected"
+> +#endif
 
-Looks fine, but I think we should rework the comment to be a bit easier to
-understand.  Maybe:
+This won't scale when we'll support more than two different cameras, but
+we'll switch to overlays then :-)
 
-/*
- * Return the number of sectors to which the size of this bio (and any bios
- * split from it) must be aligned based on its encryption context.
- */
-static inline unsigned int blk_crypto_bio_sectors_alignment(struct bio *bio)
-{
-	if (!bio_has_crypt_ctx(bio))
-		return 1;
-	/*
-	 * If the bio has an encryption context, its size must be aligned to its
-	 * crypto data unit size (which the submitter of the bio selected), as
-	 * encryption/decryption can only be done on complete crypto data units.
-	 */
-	return bio->bi_crypt_context->bc_key->crypto_cfg.data_unit_size >>
-								SECTOR_SHIFT;
-}
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +
+> +#if !defined(GMSL_CAMERA_0) && !defined(GMSL_CAMERA_1) && \
+> +    !defined(GMSL_CAMERA_2) && !defined(GMSL_CAMERA_3)
+> +#error "At least one camera should be selected"
+> +#endif
+> +
+> +#if defined(GMSL_CAMERA_RDACM20)
+> +#define GMSL_CAMERA_MODEL "imi,rdacm20"
+> +#elif defined(GMSL_CAMERA_RDACM21)
+> +#define GMSL_CAMERA_MODEL "imi,rdacm21"
+> +#endif
+> +
+> +&vin0 {
+> +	status = "okay";
+> +};
+> +
+> +&vin1 {
+> +	status = "okay";
+> +};
+> +
+> +&vin2 {
+> +	status = "okay";
+> +};
+> +
+> +&vin3 {
+> +	status = "okay";
+> +};
+> +
+> +&gmsl {
+> +	status = "okay";
+> +
+> +#if defined(GMSL_CAMERA_RDACM21)
+> +	maxim,reverse-channel-microvolt = <100000>;
+> +#endif
+> +
+> +	ports {
+> +#ifdef GMSL_CAMERA_0
+> +		port@0 {
+> +			max9286_in0: endpoint {
+> +				remote-endpoint = <&fakra_con0>;
+> +			};
+> +		};
+> +#endif
+> +
+> +#ifdef GMSL_CAMERA_1
+> +		port@1 {
+> +			max9286_in1: endpoint{
+> +				remote-endpoint = <&fakra_con1>;
+> +			};
+> +
+> +		};
+> +#endif
+> +
+> +#ifdef GMSL_CAMERA_2
+> +		port@2 {
+> +			max9286_in2: endpoint {
+> +				remote-endpoint = <&fakra_con2>;
+> +			};
+> +
+> +		};
+> +#endif
+> +
+> +#ifdef GMSL_CAMERA_3
+> +		port@3 {
+> +			max9286_in3: endpoint {
+> +				remote-endpoint = <&fakra_con3>;
+> +			};
+> +
+> +		};
+> +#endif
+> +	};
+> +
+> +	i2c-mux {
+> +#ifdef GMSL_CAMERA_0
+> +		i2c@0 {
+> +			status = "okay";
+> +
+> +			camera@51 {
+> +				compatible = GMSL_CAMERA_MODEL;
+> +				reg = <0x51>, <0x61>;
+> +
+> +				port {
+> +					fakra_con0: endpoint {
+> +						remote-endpoint = <&max9286_in0>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +#endif
+> +
+> +#ifdef GMSL_CAMERA_1
+> +		i2c@1 {
+> +			status = "okay";
+> +
+> +			camera@52 {
+> +				compatible = GMSL_CAMERA_MODEL;
+> +				reg = <0x52>, <0x62>;
+> +
+> +				port {
+> +					fakra_con1: endpoint {
+> +						remote-endpoint = <&max9286_in1>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +#endif
+> +
+> +#ifdef GMSL_CAMERA_2
+> +		i2c@2 {
+> +			status = "okay";
+> +
+> +			camera@53 {
+> +				compatible = GMSL_CAMERA_MODEL;
+> +				reg = <0x53>, <0x63>;
+> +
+> +				port {
+> +					fakra_con2: endpoint {
+> +						remote-endpoint = <&max9286_in2>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +#endif
+> +
+> +#ifdef GMSL_CAMERA_3
+> +		i2c@3 {
+> +			status = "okay";
+> +
+> +			camera@54 {
+> +				compatible = GMSL_CAMERA_MODEL;
+> +				reg = <0x54>, <0x64>;
+> +
+> +				port {
+> +					fakra_con3: endpoint {
+> +						remote-endpoint = <&max9286_in3>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +#endif
+> +	};
+> +};
+
+-- 
+Regards,
+
+Laurent Pinchart
