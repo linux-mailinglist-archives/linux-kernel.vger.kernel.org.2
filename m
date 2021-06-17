@@ -2,162 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33303AAD63
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791663AACE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhFQHYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 03:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbhFQHYY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 03:24:24 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFE5C06175F;
-        Thu, 17 Jun 2021 00:22:16 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4G5D5X0Rcrz9sX1; Thu, 17 Jun 2021 17:22:08 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1623914528;
-        bh=cv9SO0hR36Zcr4ac50I3juTYJZKB4nHG5BIWoMEa7HU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SrHIuOMI6KkBFE0XphoxAhqxIbSomglcOjfWzG2pRKq+fMlpdJGC7ht3vlkI4Aumk
-         T3GgdaSnI7DqFMrwNxLgFwaMIpVIjPuzAU3LeBt5H/nzAPIRviS3DvWX+z4EaAYsLY
-         4rsEDmf2kSgaaT5t4+LRse8bz6TuDynlENtHAgZo=
-Date:   Thu, 17 Jun 2021 15:29:30 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: Plan for /dev/ioasid RFC v2
-Message-ID: <YMrduqZj970sMC12@yekko>
-References: <YMCy48Xnt/aphfh3@8bytes.org>
- <20210609123919.GA1002214@nvidia.com>
- <YMDC8tOMvw4FtSek@8bytes.org>
- <20210609150009.GE1002214@nvidia.com>
- <YMDjfmJKUDSrbZbo@8bytes.org>
- <20210609101532.452851eb.alex.williamson@redhat.com>
- <20210609102722.5abf62e1.alex.williamson@redhat.com>
- <20210609184940.GH1002214@nvidia.com>
- <20210610093842.6b9a4e5b.alex.williamson@redhat.com>
- <20210611164529.GR1002214@nvidia.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6z+5/HR0ORsYRart"
-Content-Disposition: inline
-In-Reply-To: <20210611164529.GR1002214@nvidia.com>
+        id S229891AbhFQHDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 03:03:55 -0400
+Received: from mga18.intel.com ([134.134.136.126]:13853 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229580AbhFQHDy (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 03:03:54 -0400
+IronPort-SDR: TOAY1J5n09qSIwfDEZT3G2AvIeVCfkAjZlg95jIcIRVUwQfCKjzDkcO8HozBlgy/Sc+9phq/qJ
+ 0eHyYkvj70lA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="193626443"
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="193626443"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 00:01:27 -0700
+IronPort-SDR: ZcgPJKy4oUKavEkfM6it3kc2olRV4FPnFbI60Ni3LMwX6rpzyVtvsiCVyPX/mQ/LhMdGvjXJvr
+ cG/jChFVPdCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,278,1616482800"; 
+   d="scan'208";a="555118030"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga001.fm.intel.com with ESMTP; 17 Jun 2021 00:01:24 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf tools: Enable on a list of CPUs for hybrid
+Date:   Thu, 17 Jun 2021 15:00:26 +0800
+Message-Id: <20210617070026.14475-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The perf-record and perf-stat have supported the option '-C/--cpus'
+to count or collect only on the list of CPUs provided. This option
+needs to be supported for hybrid as well.
 
---6z+5/HR0ORsYRart
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For hybrid support, it needs to check that the CPUs are available on
+hybrid PMU. On AlderLake, for example, 'cpu_core' has CPU0-CPU15,
+and 'cpu_atom' has CPU16-CPU23.
 
-On Fri, Jun 11, 2021 at 01:45:29PM -0300, Jason Gunthorpe wrote:
-> On Thu, Jun 10, 2021 at 09:38:42AM -0600, Alex Williamson wrote:
->=20
-> > Opening the group is not the extent of the security check currently
-> > required, the group must be added to a container and an IOMMU model
-> > configured for the container *before* the user can get a devicefd.
-> > Each devicefd creates a reference to this security context, therefore
-> > access to a device does not exist without such a context.
->=20
-> Okay, I missed that detail in the organization..
->=20
-> So, if we have an independent vfio device fd then it needs to be
-> kept disable until the user joins it to an ioasid that provides the
-> security proof to allow it to work?
->=20
-> > What happens on detach?  As we've discussed elsewhere in this thread,
-> > revoking access is more difficult than holding a reference to the
-> > secure context, but I'm under the impression that moving a device
-> > between IOASIDs could be standard practice in this new model.  A device
-> > that's detached from a secure context, even temporarily, is a
-> > problem.
->=20
-> This is why I think the single iommu FD is critical, it is the FD, not
-> the IOASID that has to authorize the security. You shouldn't move
-> devices between FDs, but you can move them between IOASIDs inside the
-> same FD.
->=20
-> > How to label a device seems like a relatively mundane issue relative to
-> > ownership and isolated contexts of groups and devices.  The label is
-> > essentially just creating an identifier to device mapping, where the
-> > identifier (label) will be used in the IOASID interface, right?=20
->=20
-> It looks that way
->=20
-> > As I note above, that makes it difficult for vfio to maintain that a
-> > user only accesses a device in a secure context.  This is exactly
-> > why vfio has the model of getting a devicefd from a groupfd only
-> > when that group is in a secure context and maintaining references to
-> > that secure context for each device.  Split ownership of the secure
-> > context in IOASID vs device access in vfio and exposing devicefds
-> > outside the group is still a big question mark for me.  Thanks,
->=20
-> I think the protection model becomes different once we allow
-> individual devices inside a group to be attached to different
-> IOASID's.
+Before:
 
-I'm really wary of this.  They might be rare, but we still need to
-consider the case of devices which can't be distinguished on the bus,
-and therefore can't be attached to different IOASIDs.  That means that
-if we allow attaching devices within a group to different IOASIDs we
-effectively need to introduce two levels of "group-like" things.
-First the idenfication group, then the isolation group.
+  # perf stat -e cpu_core/cycles/ -C16 true
 
+   Performance counter stats for 'CPU(s) 16':
 
-You're using "group" for the isolation group, but then we have to
-somehow expose this concept of identification group.  That seems like
-a heap of complexity and confusion in the interface.
+     <not supported>      cpu_core/cycles/
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+The perf-stat silently returned "<not supported>" without any helpful
+information. It should error out that CPU16 was not available on
+'cpu_core'.
 
---6z+5/HR0ORsYRart
-Content-Type: application/pgp-signature; name="signature.asc"
+After:
 
------BEGIN PGP SIGNATURE-----
+  # perf stat -e cpu_core/cycles/ -C16 true
+  'cpu_core' doesn't have cpu 16
+  failed to use cpu list 16
 
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmDK3boACgkQbDjKyiDZ
-s5I9kxAA0QukseY3jKTmf0dc22wGxjZPOcBjHPo0Q0kDkFXxDCKbE+OFmwIS/Udr
-lQ2sAThf1Oy9CRMarmqN12YOtr+a02CHa+L87P4//PYb3KxVSUnfk/67MUm4KBRI
-Amkn4QWgJEXeSZRp7GjftpDjZ9hoLURDUPJRPJnDb5j0zliw/eSI4IbhIVt31XLf
-4l0ADlAaPyvwPvMPVSQSF7uIvSRsVr3M/RRWZjj6MSgJPwIMqaA7RXv8GGqutzc3
-JFwVbI5X8AfUgDdNrRpj4HPwo32+hCvAu7g70/rKSruGjAzQM2k45b8GzfQOAXPF
-JjRcSVxenCzbNmP7XlB1ZcBNQanp5KhkVReMISh2GVins129nJ2drZvaCmHUcq2v
-92ppg1uqYxQgjeRQoccuwQDvJ0dTmtPldoPbCKVDm/0nauz6htcyThh5No4Kcsl8
-RLl7mDukYKEX5yYCiTt2gBIjDCkO6foBotyuRwSGmQkTlUMDuQ1xTodnbfWRvLCF
-87OvDiYomV+elvPx06+oOPZVqHlifFa+dFN61o/m1HiJQV7Gr3ZB8wkBsDp69WYe
-FjVbJE+gDtPdZXkbS36QVY98zNWhp9wX5c4Gtl7erAzEWwgmrlg8KoD0smPKN0SQ
-z9gTR1QD7S9KxWsPQF/bf76tdecS9CGOGHmch9JbstjJU3JO3pM=
-=+5am
------END PGP SIGNATURE-----
+It also supports to count only on a given CPU.
 
---6z+5/HR0ORsYRart--
+  # perf stat -e cpu_core/cycles/ -C15 -vv true
+
+  ------------------------------------------------------------
+  perf_event_attr:
+    size                             128
+    config                           0x400000000
+    sample_type                      IDENTIFIER
+    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+    disabled                         1
+    inherit                          1
+    exclude_guest                    1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid -1  cpu 15  group_fd -1  flags 0x8 = 3
+  cycles: 0: 103287 569776 569776
+  cycles: 103287 569776 569776
+
+   Performance counter stats for 'CPU(s) 15':
+
+             103,287      cpu_core/cycles/
+
+         0.000566813 seconds time elapsed
+
+Collect the counts of 'cycles' on CPU15 (CPU15 is in 'cpu_core').
+
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/builtin-record.c     |  6 +++++
+ tools/perf/builtin-stat.c       |  5 ++++
+ tools/perf/util/evlist-hybrid.c | 43 +++++++++++++++++++++++++++++++++
+ tools/perf/util/evlist-hybrid.h |  1 +
+ tools/perf/util/evlist.c        |  1 +
+ tools/perf/util/pmu.c           | 23 ++++++++++++++++++
+ tools/perf/util/pmu.h           |  3 +++
+ 7 files changed, 82 insertions(+)
+
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index bc3dd379eb67..bd39d4260549 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -2877,6 +2877,12 @@ int cmd_record(int argc, const char **argv)
+ 	/* Enable ignoring missing threads when -u/-p option is defined. */
+ 	rec->opts.ignore_missing_thread = rec->opts.target.uid != UINT_MAX || rec->opts.target.pid;
+ 
++	if (evlist__use_cpu_list(rec->evlist, rec->opts.target.cpu_list)) {
++		pr_err("failed to use cpu list %s\n",
++		       rec->opts.target.cpu_list);
++		goto out;
++	}
++
+ 	err = -ENOMEM;
+ 	if (evlist__create_maps(rec->evlist, &rec->opts.target) < 0)
+ 		usage_with_options(record_usage, record_options);
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index f9f74a514315..9c27c90d069f 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -2427,6 +2427,11 @@ int cmd_stat(int argc, const char **argv)
+ 	if ((stat_config.aggr_mode == AGGR_THREAD) && (target.system_wide))
+ 		target.per_thread = true;
+ 
++	if (evlist__use_cpu_list(evsel_list, target.cpu_list)) {
++		pr_err("failed to use cpu list %s\n", target.cpu_list);
++		goto out;
++	}
++
+ 	if (evlist__create_maps(evsel_list, &target) < 0) {
+ 		if (target__has_task(&target)) {
+ 			pr_err("Problems finding threads of monitor\n");
+diff --git a/tools/perf/util/evlist-hybrid.c b/tools/perf/util/evlist-hybrid.c
+index db3f5fbdebe1..e8fdd98aed3f 100644
+--- a/tools/perf/util/evlist-hybrid.c
++++ b/tools/perf/util/evlist-hybrid.c
+@@ -86,3 +86,46 @@ bool evlist__has_hybrid(struct evlist *evlist)
+ 
+ 	return false;
+ }
++
++int evlist__use_cpu_list(struct evlist *evlist, const char *cpu_list)
++{
++	struct perf_cpu_map *cpus;
++	struct evsel *evsel;
++	struct perf_pmu *pmu;
++	int ret;
++
++	if (!perf_pmu__has_hybrid() || !cpu_list)
++		return 0;
++
++	cpus = perf_cpu_map__new(cpu_list);
++	if (!cpus)
++		return -1;
++
++	evlist__for_each_entry(evlist, evsel) {
++		bool exact_match;
++
++		pmu = perf_pmu__find_hybrid_pmu(evsel->pmu_name);
++		if (!pmu)
++			continue;
++
++		if (!perf_pmu__cpus_matched(pmu, cpus, &exact_match)) {
++			ret = -1;
++			goto out;
++		}
++
++		if (!exact_match) {
++			/*
++			 * Use the cpus in cpu_list.
++			 */
++			perf_cpu_map__put(evsel->core.cpus);
++			perf_cpu_map__put(evsel->core.own_cpus);
++			evsel->core.cpus = perf_cpu_map__get(cpus);
++			evsel->core.own_cpus = perf_cpu_map__get(cpus);
++		}
++	}
++
++	ret = 0;
++out:
++	perf_cpu_map__put(cpus);
++	return ret;
++}
+diff --git a/tools/perf/util/evlist-hybrid.h b/tools/perf/util/evlist-hybrid.h
+index 19f74b4c340a..f33a4e8443a1 100644
+--- a/tools/perf/util/evlist-hybrid.h
++++ b/tools/perf/util/evlist-hybrid.h
+@@ -10,5 +10,6 @@
+ int evlist__add_default_hybrid(struct evlist *evlist, bool precise);
+ void evlist__warn_hybrid_group(struct evlist *evlist);
+ bool evlist__has_hybrid(struct evlist *evlist);
++int evlist__use_cpu_list(struct evlist *evlist, const char *cpu_list);
+ 
+ #endif /* __PERF_EVLIST_HYBRID_H */
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 6ba9664089bd..e8a0f95f7f47 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -27,6 +27,7 @@
+ #include "util/perf_api_probe.h"
+ #include "util/evsel_fprintf.h"
+ #include "util/evlist-hybrid.h"
++#include "util/pmu.h"
+ #include <signal.h>
+ #include <unistd.h>
+ #include <sched.h>
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 88c8ecdc60b0..0e3a19a6736d 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -1872,3 +1872,26 @@ bool perf_pmu__has_hybrid(void)
+ 
+ 	return !list_empty(&perf_pmu__hybrid_pmus);
+ }
++
++bool perf_pmu__cpus_matched(struct perf_pmu *pmu, struct perf_cpu_map *cpus,
++			    bool *exact_match)
++{
++	struct perf_cpu_map *pmu_cpus = pmu->cpus;
++	int cpu;
++
++	*exact_match = false;
++
++	for (int i = 0; i < cpus->nr; i++) {
++		cpu = perf_cpu_map__idx(pmu_cpus, cpus->map[i]);
++		if (cpu == -1) {
++			pr_err("'%s' doesn't have cpu %d\n",
++			       pmu->name, cpus->map[i]);
++			return false;
++		}
++	}
++
++	if (cpus->nr == pmu_cpus->nr)
++		*exact_match = true;
++
++	return true;
++}
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index a790ef758171..1cca48e02b5d 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -11,6 +11,7 @@
+ #include "pmu-events/pmu-events.h"
+ 
+ struct evsel_config_term;
++struct perf_cpu_map;
+ 
+ enum {
+ 	PERF_PMU_FORMAT_VALUE_CONFIG,
+@@ -133,5 +134,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
+ 				   char *name);
+ 
+ bool perf_pmu__has_hybrid(void);
++bool perf_pmu__cpus_matched(struct perf_pmu *pmu, struct perf_cpu_map *cpus,
++			    bool *exact_match);
+ 
+ #endif /* __PMU_H */
+-- 
+2.17.1
+
