@@ -2,195 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB663AAC33
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7603AAC3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhFQGao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 02:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbhFQGai (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 02:30:38 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE1EC061768
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:28:31 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id t17so4102017pga.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 23:28:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xfRvKXXPDGozL9xpkc2RXgCWY6OxEYfQN41+lxoFnvY=;
-        b=P0DcuqP8d/CAJT5H3BXTszPLFR8/POeZwYtbY1hzB0BZSzBVE99MQjVTdgEtJMNxza
-         8C5V55pgNOpxdtHe4MvP5ZXgHC+nHMSC0PqmBhg9/ppxPOVo1PsZ+EwMp7aMo1+zOeWe
-         KqOQ2EnOhWaUxUqrPUYZrFAZhB0ZZNObJmz4g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xfRvKXXPDGozL9xpkc2RXgCWY6OxEYfQN41+lxoFnvY=;
-        b=Tfpm7UqNteATI9nCORNi5aUY7/+l6tRlRmJDvMfQW4SI4O1eSYj5RqQKU5gPjoFHKz
-         QNW46zdbAd/VMcUloa7mSTnQiM/dJpBjh6TjjY7TfShi5oJ1SiXWbmartkyY7aHusAu2
-         NTXkWIQNjGAEPeKSeFdMXtRCmKOJN6zFFNvFp1qKq+Q15z7sKGtJTNmgYWMeDdW21q3r
-         9fygGDvB0rBi5qypDjuqxAjXUXUIqo6apC9b4KDnHsnhnDJFWw/zB7te9+aIe8J45pyW
-         w+YPpNZ6uxiCdzp5wDhdI2huo1GvxFAi/eWWuv6Oi4Hz4CvYViSeA/bBj2eALuzx0z4I
-         vxoQ==
-X-Gm-Message-State: AOAM532iggn7OS0RwQV5FAaiubQoUrlTj5UvkfQNR7IVSC9eiGb2/Yc5
-        C2ZNmmbf4vYVYY/ClRpEiB3x7Q==
-X-Google-Smtp-Source: ABdhPJxBUnvdEKrFvX9gwkhRYpe6iM3TMIr0SMX+wx5+SenBzwe41Fi6FDk/v+JnW0WePmCPk48T7g==
-X-Received: by 2002:a63:f009:: with SMTP id k9mr3590765pgh.356.1623911310959;
-        Wed, 16 Jun 2021 23:28:30 -0700 (PDT)
-Received: from localhost ([2401:fa00:95:205:e349:a6ae:d3d0:1621])
-        by smtp.gmail.com with UTF8SMTPSA id o186sm3871495pfb.59.2021.06.16.23.28.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 23:28:30 -0700 (PDT)
-From:   Claire Chang <tientzu@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        tientzu@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, jxgao@google.com,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-Subject: [PATCH v13 12/12] of: Add plumbing for restricted DMA pool
-Date:   Thu, 17 Jun 2021 14:26:35 +0800
-Message-Id: <20210617062635.1660944-13-tientzu@chromium.org>
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-In-Reply-To: <20210617062635.1660944-1-tientzu@chromium.org>
-References: <20210617062635.1660944-1-tientzu@chromium.org>
+        id S229683AbhFQGco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 02:32:44 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:29067 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229515AbhFQGcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 02:32:41 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4G5Bxz2jCKzBDnG;
+        Thu, 17 Jun 2021 08:30:31 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id QpXYjQvoTAjz; Thu, 17 Jun 2021 08:30:31 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4G5Bxy1dqgzBDkw;
+        Thu, 17 Jun 2021 08:30:30 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1BE708B801;
+        Thu, 17 Jun 2021 08:30:30 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 2UIxgwKDwaK1; Thu, 17 Jun 2021 08:30:30 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EE76B8B805;
+        Thu, 17 Jun 2021 08:30:28 +0200 (CEST)
+Subject: Re: [PATCH v3 22/23] powerpc/vdso: Migrate native signals to generic
+ vdso_base
+To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+References: <20210611180242.711399-1-dima@arista.com>
+ <20210611180242.711399-23-dima@arista.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <4500e70f-19bc-588c-df8f-d5b5b304ee49@csgroup.eu>
+Date:   Thu, 17 Jun 2021 08:30:26 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210611180242.711399-23-dima@arista.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a device is not behind an IOMMU, we look up the device node and set
-up the restricted DMA when the restricted-dma-pool is presented.
 
-Signed-off-by: Claire Chang <tientzu@chromium.org>
-Tested-by: Stefano Stabellini <sstabellini@kernel.org>
-Tested-by: Will Deacon <will@kernel.org>
----
- drivers/of/address.c    | 33 +++++++++++++++++++++++++++++++++
- drivers/of/device.c     |  3 +++
- drivers/of/of_private.h |  6 ++++++
- 3 files changed, 42 insertions(+)
 
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index 73ddf2540f3f..cdf700fba5c4 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -8,6 +8,7 @@
- #include <linux/logic_pio.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/pci.h>
- #include <linux/pci_regs.h>
- #include <linux/sizes.h>
-@@ -1022,6 +1023,38 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
- 	of_node_put(node);
- 	return ret;
- }
-+
-+int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np)
-+{
-+	struct device_node *node, *of_node = dev->of_node;
-+	int count, i;
-+
-+	count = of_property_count_elems_of_size(of_node, "memory-region",
-+						sizeof(u32));
-+	/*
-+	 * If dev->of_node doesn't exist or doesn't contain memory-region, try
-+	 * the OF node having DMA configuration.
-+	 */
-+	if (count <= 0) {
-+		of_node = np;
-+		count = of_property_count_elems_of_size(
-+			of_node, "memory-region", sizeof(u32));
-+	}
-+
-+	for (i = 0; i < count; i++) {
-+		node = of_parse_phandle(of_node, "memory-region", i);
-+		/*
-+		 * There might be multiple memory regions, but only one
-+		 * restricted-dma-pool region is allowed.
-+		 */
-+		if (of_device_is_compatible(node, "restricted-dma-pool") &&
-+		    of_device_is_available(node))
-+			return of_reserved_mem_device_init_by_idx(dev, of_node,
-+								  i);
-+	}
-+
-+	return 0;
-+}
- #endif /* CONFIG_HAS_DMA */
- 
- /**
-diff --git a/drivers/of/device.c b/drivers/of/device.c
-index 6cb86de404f1..e68316836a7a 100644
---- a/drivers/of/device.c
-+++ b/drivers/of/device.c
-@@ -165,6 +165,9 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
- 
- 	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
- 
-+	if (!iommu)
-+		return of_dma_set_restricted_buffer(dev, np);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(of_dma_configure_id);
-diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-index d9e6a324de0a..25cebbed5f02 100644
---- a/drivers/of/of_private.h
-+++ b/drivers/of/of_private.h
-@@ -161,12 +161,18 @@ struct bus_dma_region;
- #if defined(CONFIG_OF_ADDRESS) && defined(CONFIG_HAS_DMA)
- int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map);
-+int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np);
- #else
- static inline int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map)
- {
- 	return -ENODEV;
- }
-+static inline int of_dma_set_restricted_buffer(struct device *dev,
-+					       struct device_node *np)
-+{
-+	return -ENODEV;
-+}
- #endif
- 
- #endif /* _LINUX_OF_PRIVATE_H */
--- 
-2.32.0.288.g62a8d224e6-goog
+Le 11/06/2021 à 20:02, Dmitry Safonov a écrit :
+> Generic way to track the land vma area.
+> Stat speaks for itself.
+> 
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> ---
 
+> diff --git a/arch/powerpc/include/asm/mmu_context.h b/arch/powerpc/include/asm/mmu_context.h
+> index 4bc45d3ed8b0..71dedeac7fdb 100644
+> --- a/arch/powerpc/include/asm/mmu_context.h
+> +++ b/arch/powerpc/include/asm/mmu_context.h
+> @@ -260,15 +260,6 @@ static inline void enter_lazy_tlb(struct mm_struct *mm,
+>   
+>   extern void arch_exit_mmap(struct mm_struct *mm);
+>   
+> -static inline void arch_unmap(struct mm_struct *mm,
+> -			      unsigned long start, unsigned long end)
+> -{
+> -	unsigned long vdso_base = (unsigned long)mm->context.vdso;
+> -
+> -	if (start <= vdso_base && vdso_base < end)
+> -		mm->context.vdso = NULL;
+> -}
+> -
+>   #ifdef CONFIG_PPC_MEM_KEYS
+>   bool arch_vma_access_permitted(struct vm_area_struct *vma, bool write,
+>   			       bool execute, bool foreign);
+
+powerpc was the only user of arch_unmap().
+
+We should get rid of it completely (Remove the stubs in arch/x86/include/asm/mmu_context.h and 
+include/asm-generic/mm_hooks.h and remove call in mm/mmap.c)
