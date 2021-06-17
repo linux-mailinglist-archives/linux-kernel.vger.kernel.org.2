@@ -2,161 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5723ABA05
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884FB3ABA0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhFQQ4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 12:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhFQQ4w (ORCPT
+        id S231476AbhFQQ5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 12:57:16 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:56232 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231345AbhFQQ5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 12:56:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69321C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 09:54:44 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1ltvHp-00088t-6u; Thu, 17 Jun 2021 18:54:37 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1ltvHl-0007GX-6x; Thu, 17 Jun 2021 18:54:33 +0200
-Date:   Thu, 17 Jun 2021 18:54:33 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
-Message-ID: <20210617165433.ltugrrj6ntmc6j57@pengutronix.de>
-References: <20210615231828.835164-1-bjorn.andersson@linaro.org>
- <20210615231828.835164-2-bjorn.andersson@linaro.org>
- <20210616075637.jtoa25uyhnqkctlu@pengutronix.de>
- <YMq/6VhXrYJoTVnj@yoga>
- <20210617062449.qwsjcpkyiwzdyfi3@pengutronix.de>
- <YMt6gvXQKijtPOql@yoga>
+        Thu, 17 Jun 2021 12:57:14 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HGrRrD026450;
+        Thu, 17 Jun 2021 18:55:02 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : from : to
+ : cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=aNdtP7w+kyv5eaEn76NL6UGrI4oOfxzgSgioTmZyLxE=;
+ b=rdGIEjL8xQXOFSNovSn+bT9CzW81HTBdGdF/NIHF9JLvcbmAIDrPDN3PtYg8oprndBn+
+ 3woUjPOMInWCTohLlva3DuRCjg+eSgCo4KVjAoPsXCxhXjjfHjFvEyqljbM9duP6Aaoh
+ C9CrrPeZh2f6BOwvpZ3DC0yJ8lF8luC7qNEJF4YS7QhbcX55cMtxYaIGl0BFE/oKOxEr
+ y9amrOvYyl8Ki6ilPeRpnCEXY+fePaU1RtWhZ8r/xqimD5U/0zRYOgk9MNo3puEn9IDK
+ AK3QaFMCVbnUkGOOsm+xWTPjq6u9rCUqEqPUaH2dSdo+Dv8QKwxdZXo2xKcPKoPLFuX+ Cw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 397p55ew51-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 18:55:02 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 131C510002A;
+        Thu, 17 Jun 2021 18:55:02 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E6CC125F3E0;
+        Thu, 17 Jun 2021 18:55:01 +0200 (CEST)
+Received: from lmecxl0889.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Jun
+ 2021 18:55:01 +0200
+Subject: Re: [PATCH 3/4] rpmsg: ctrl: Add check on rpmsg device removability
+ from user space
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210604091406.15901-1-arnaud.pouliquen@foss.st.com>
+ <20210604091406.15901-4-arnaud.pouliquen@foss.st.com>
+ <20210615174634.GB604521@p14s>
+ <b7dc5207-643b-b5e6-2bee-106b2eb87555@foss.st.com>
+ <20210616171524.GA637642@p14s>
+ <e4310ebf-4605-0462-e13b-0451ce19eea3@foss.st.com>
+Message-ID: <8278088f-b2fa-e5c9-8ae5-f5945f55b423@foss.st.com>
+Date:   Thu, 17 Jun 2021 18:55:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ynj7mvu5qvymdtyg"
-Content-Disposition: inline
-In-Reply-To: <YMt6gvXQKijtPOql@yoga>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <e4310ebf-4605-0462-e13b-0451ce19eea3@foss.st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-17_15:2021-06-15,2021-06-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ynj7mvu5qvymdtyg
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello Bjorn,
+On 6/17/21 10:02 AM, Arnaud POULIQUEN wrote:
+> Hello Mathieu,
+> 
+> On 6/16/21 7:15 PM, Mathieu Poirier wrote:
+>> On Wed, Jun 16, 2021 at 11:30:51AM +0200, Arnaud POULIQUEN wrote:
+>>>
+>>>
+>>> On 6/15/21 7:46 PM, Mathieu Poirier wrote:
+>>>> On Fri, Jun 04, 2021 at 11:14:05AM +0200, Arnaud Pouliquen wrote:
+>>>>> Using the RPMSG_RELEASE_DEV_IOCTL is possible to remove any
+>>>>> rpmsg device (such as the rpmsg ns or the rpmsg ctrldev).
+>>>>>
+>>>>> Add a new field to store the removability of the device.
+>>>>>
+>>>>> By default the rpmsg device can not be removed by user space. It is
+>>>>> set to 1 by the rpmsg ctrl on RPMSG_CREATE_DEV_IOCTL request, but
+>>>>> could also be set by an rpmsg driver during probe.
+>>>>>
+>>>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>>>>> ---
+>>>>>  drivers/rpmsg/rpmsg_ctrl.c | 17 ++++++++++++++++-
+>>>>>  include/linux/rpmsg.h      |  2 ++
+>>>>>  2 files changed, 18 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+>>>>> index cb19e32d05e1..e93c6ec49038 100644
+>>>>> --- a/drivers/rpmsg/rpmsg_ctrl.c
+>>>>> +++ b/drivers/rpmsg/rpmsg_ctrl.c
+>>>>> @@ -74,6 +74,7 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
+>>>>>  	struct rpmsg_endpoint_info eptinfo;
+>>>>>  	struct rpmsg_channel_info chinfo;
+>>>>>  	struct rpmsg_device *rpdev;
+>>>>> +	struct device *dev;
+>>>>>  	int ret = 0;
+>>>>>  
+>>>>>  	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
+>>>>> @@ -95,11 +96,25 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
+>>>>>  		if (!rpdev) {
+>>>>>  			dev_err(&ctrldev->dev, "failed to create %s channel\n", chinfo.name);
+>>>>>  			ret = -ENXIO;
+>>>>> +		} else {
+>>>>> +			/* Allow user space to release the device. */
+>>>>> +			rpdev->us_removable = 1;
+>>>>
+>>>> As a rule of thumb I try really hard to avoid introducing new flags.  In this case we
+>>>> can attain the same result by looking at chinfo->name, chinfo->src and
+>>>> chinfo->dst.  I would introduce a new inline function in rpmsg_internal.h,
+>>>> something like rpmsg_chrdev_is_ctrl_dev(), and compare the specifics in chinfo
+>>>> to rpdev->id.name, rpdev->src and rpdev->dst.  If they all match then the
+>>>> operation is refused.
+>>>
+>>> Something must have escaped me, because i turn around your your proposal,
+>>> without understand it.
+>>>
+>>> The "us_removable" flag is not only for the rpmsg_ctrl, but for any rpmsg device
+>>> that have not to be released by user application. Either because there are core
+>>> ( rpmsg_ctrl, rpmsg_ns) or because a rpmsg driver don't allow to unbind its
+>>> rpmsg devices.
+>>>
+>>
+>> I don't see how the current patch would allow a driver to prevent user space
+>> from releasing a rpmsg device since the sysfs attribute can be changed at will.
+>> So even if the driver sets the flag user space can still revert it.
+> 
+> 
+> The patch [4/4] define the a read only attribute using the rpmsg_show_attr
+> declaration[1]. So the userspace can't change it.
+> 
+> This also has the advantage of not allowing the new IOCTRL API to be used by
+> default for legacy RPMSg devices without a specific patch.
+> 
+> [1] https://elixir.bootlin.com/linux/latest/source/drivers/rpmsg/rpmsg_core.c#L362
+> 
+>>
+>>> look to me that rpmsg_chrdev_is_ctrl_dev just prevents rpmsg ctrl to be released
+>>> by the RPMSG_RELEASE_DEV_IOCTL.
+>>
+>> That is correct.  I did not address rpmsg_ns to keep things simple but it would
+>> also have to be handled properly.
+>>
+>>>
+>>> Please, could you clarify what you have in mind here?
+>>
+>> Other than rpmsg_ctrl and rpmsg_ns I don't think we should introduce any
+>> mechanism to prevent users from releasing an rpmsg.  Doing so needs root access
+>> - if a user space process with root privileges can't be trusted then we have
+>> bigger problems than unwanted releases of registered rpmsg devices.
+> 
+> That's make sense. If we go on this way we could also trust the root application
+> for the rpmsg_ns and only protect the rpmsg_ctrl which can not release itself,
+> as you proposed.
 
-On Thu, Jun 17, 2021 at 11:38:26AM -0500, Bjorn Andersson wrote:
-> On Thu 17 Jun 01:24 CDT 2021, Uwe Kleine-K?nig wrote:
-> > On Wed, Jun 16, 2021 at 10:22:17PM -0500, Bjorn Andersson wrote:
-> > > > > +static int ti_sn_pwm_apply(struct pwm_chip *chip, struct pwm_dev=
-ice *pwm,
-> > > > > +			   const struct pwm_state *state)
-> > > > > +{
-> > > > > +	struct ti_sn65dsi86 *pdata =3D pwm_chip_to_ti_sn_bridge(chip);
-> > > > > +	unsigned int pwm_en_inv;
-> > > > > +	unsigned int backlight;
-> > > > > +	unsigned int pre_div;
-> > > > > +	unsigned int scale;
-> > > > > +	int ret;
-> > > > > +
-> > > > > +	if (!pdata->pwm_enabled) {
-> > > > > +		ret =3D pm_runtime_get_sync(pdata->dev);
-> > > > > +		if (ret < 0)
-> > > > > +			return ret;
-> > > > > +
-> > > > > +		ret =3D regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
-> > > > > +				SN_GPIO_MUX_MASK << (2 * SN_PWM_GPIO_IDX),
-> > > > > +				SN_GPIO_MUX_SPECIAL << (2 * SN_PWM_GPIO_IDX));
-> > > > > +		if (ret) {
-> > > > > +			dev_err(pdata->dev, "failed to mux in PWM function\n");
-> > > > > +			goto out;
-> > > > > +		}
-> > > >=20
-> > > > Do you need to do this even if state->enabled is false?
-> > >=20
-> > > I presume I should be able to explicitly mux in the GPIO function and
-> > > configure that to output low. But I am not able to find anything in t=
-he
-> > > data sheet that would indicate this to be preferred.
-> >=20
-> > My question targetted a different case. If the PWM is off
-> > (!pdata->pwm_enabled) and should remain off (state->enabled is false)
-> > you can shortcut here, can you not?
->=20
-> Right, if we're going off->off then we don't need to touch the hardware.
->=20
-> But am I expected to -EINVAL improper period and duty cycle even though
-> enabled is false?
->=20
-> And also, what is the supposed behavior of enabled =3D false? Is it
-> supposedly equivalent of asking for a duty_cycle of 0?
+As discussed in the OpenAMP by-weekly meeting, I will send a new revision,
+without the attribute.
 
-In my book enabled =3D false is just syntactic sugar to say:
-"duty_cycle=3D0, period=3Dsomething small". So to answer your questions: if
-enabled =3D false, the consumer doesn't really care about period and
-duty_cycle. Some care that the output becomes inactive, some others
-don't, so from my POV just emit the inactive level on the output and
-ignore period and duty_cycle.
+Thanks,
+Arnaud
 
-> > > > Does this already modify the output pin?
-> > >=20
-> > > Yes, coming out of reset this pin is configured as input, so switching
-> > > the mux here will effectively start driving the pin.
-> >=20
-> > So please document this in the format the recently added drivers do,
-> > too. See e.g. drivers/pwm/pwm-sifive.c. (The idea is to start that with
-> > " * Limitations:" to make it easy to grep it.)
-> >=20
->=20
-> Okay, will do. Although I believe that for this driver it makes sense to
-> place such comment close to this function, rather than at the top of the
-> driver.
-
-Yes, agreed.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ynj7mvu5qvymdtyg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDLfkUACgkQwfwUeK3K
-7AnH5wf9GbfRNjWF8Bc/5z4m+rwW3D767cCXpR3eGzF6IIUlZfbil4VSg4h/s12J
-+RfY8gCgXx2ks8sTTI3W4lT5MyDMX3xtaxxoPxB3BJPtCGZLuXIZxNONrIyRpDHc
-4WO7T4E/UkZzQVIOlGmeGS0XT04kZoM7Zp9cjjKvwXn7h3PvOt1KT7I6oNT37iCc
-vY79UoYUAsC/JVQYgVw7p/VmpF68VwxIlrvcvLbdotMUoWNKEPGu8/ozP18hXbfA
-9+xGUIz8iptWZbhkn3jQrH2+2sg4RLleAbTKtUg1euHkcLrQbPWqaVYjcHtLgEVv
-+dnK9ZYd7PP/5FZjwhdJZ+FnAi1u0g==
-=JfHp
------END PGP SIGNATURE-----
-
---ynj7mvu5qvymdtyg--
+> 
+> Thanks,
+> 
+> Arnaud
+> 
+>>
+>>>
+>>> Thanks,
+>>> Arnaud
+>>>
+>>>>
+>>>> That way we don't introduce a new flag and there is also no need to call
+>>>> rpmsg_find_device() twice.
+>>>
+>>>
+>>>
+>>>>
+>>>> Thanks,
+>>>> Mathieu
+>>>>
+>>>>>  		}
+>>>>>  		break;
+>>>>>  
+>>>>>  	case RPMSG_RELEASE_DEV_IOCTL:
+>>>>> -		ret = rpmsg_release_channel(ctrldev->rpdev, &chinfo);
+>>>>> +		dev = rpmsg_find_device(ctrldev->rpdev->dev.parent, &chinfo);
+>>>>> +		if (!dev)
+>>>>> +			ret =  -ENXIO;
+>>>>> +
+>>>>> +		/* Verify that rpmsg device removal is allowed. */
+>>>>> +		if (!ret) {
+>>>>> +			rpdev = to_rpmsg_device(dev);
+>>>>> +			if (!rpdev->us_removable)
+>>>>> +				ret = -EACCES;
+>>>>> +		}
+>>>>> +		if (!ret)
+>>>>> +			ret = rpmsg_release_channel(ctrldev->rpdev, &chinfo);
+>>>>>  		if (ret)
+>>>>>  			dev_err(&ctrldev->dev, "failed to release %s channel (%d)\n",
+>>>>>  				chinfo.name, ret);
+>>>>> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
+>>>>> index d97dcd049f18..3642aad1a789 100644
+>>>>> --- a/include/linux/rpmsg.h
+>>>>> +++ b/include/linux/rpmsg.h
+>>>>> @@ -47,6 +47,7 @@ struct rpmsg_channel_info {
+>>>>>   * @ept: the rpmsg endpoint of this channel
+>>>>>   * @announce: if set, rpmsg will announce the creation/removal of this channel
+>>>>>   * @little_endian: True if transport is using little endian byte representation
+>>>>> + * @us_removable: True if userspace application has permission to remove the rpmsg device
+>>>>>   */
+>>>>>  struct rpmsg_device {
+>>>>>  	struct device dev;
+>>>>> @@ -57,6 +58,7 @@ struct rpmsg_device {
+>>>>>  	struct rpmsg_endpoint *ept;
+>>>>>  	bool announce;
+>>>>>  	bool little_endian;
+>>>>> +	bool us_removable;
+>>>>>  
+>>>>>  	const struct rpmsg_device_ops *ops;
+>>>>>  };
+>>>>> -- 
+>>>>> 2.17.1
+>>>>>
