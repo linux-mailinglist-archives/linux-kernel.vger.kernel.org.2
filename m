@@ -2,200 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AED23AB2C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE733AB2BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 13:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232606AbhFQLjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 07:39:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45867 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232591AbhFQLjO (ORCPT
+        id S232590AbhFQLiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 07:38:03 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:38450 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232347AbhFQLiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:39:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623929826;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zIsWIjmGNY76gABLgykoc5YhaI64FcwdtGn88E4ap8I=;
-        b=SsTcJ1VzLYnwMU+2MF7ne3dbLK6pULtMMFpb6KZrxPFG6dL7Zsx4/LUQ9u/gdX3a8knE0S
-        brsInEIWhnxGDVSLhsixOzaxr1g4+nbzRFou88chhiQcOEqGvBZscOtkGhmT1CfDFqDpt6
-        wFr9KjHmtadg8LZWYEqeBonaMAmAZM4=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-209-YRJZ5MIzNhStm8TWeNCysw-1; Thu, 17 Jun 2021 07:37:05 -0400
-X-MC-Unique: YRJZ5MIzNhStm8TWeNCysw-1
-Received: by mail-ed1-f70.google.com with SMTP id p24-20020aa7c8980000b0290393c37fdcb8so1333056eds.6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 04:37:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zIsWIjmGNY76gABLgykoc5YhaI64FcwdtGn88E4ap8I=;
-        b=OmHvvzpyfVIgGHGZ/SvElS3KlzD1GZ86Uvbd5KxbQv3i9bfDBXIcn7dKe7jv7/oJjz
-         1ljTlSHmPhtP+862Q6VtKMsNBi0Sp8sVSA/JOd5zDp2sgtnryJJrXUmJx2klSdFyjc6C
-         R5BUwgg9P7BIkx11wT7/PEe+BhXZLPiLaM8mG+PRDyPcMx8BfEgdeGEAGAjC69GUd3fM
-         2FeiBRrbLo6sTSCRePY24ItoIoU3sCgt0OqtJ00zcqKQnQTc+Z8LAIcMd25sPntXr1wb
-         AWon+2iBXPREhZmmfB726DvKB2Y4xZAghPf5Iym0AqTHI3Ox1o7zuZHPyzw/Mu+wpXuU
-         J36Q==
-X-Gm-Message-State: AOAM531gOLf1l7+zTMLb0Uf2O5GB1QJmhCp5Kh1pdVVPgOOS/JbIgo4m
-        nxki8ClRBINDwdHPs299nc1pY3e8kSxxHMnmjaLw8ySd1DvvdZk3QzY4d5vgG/HcjyrSR6lf77G
-        Y3gwE44gG67bZoRyYKdsnNLhhCIhsU0Tm77eU4wV+nSCousGz2A/IoInYAiWHEFl+zJIDdOA5Ft
-        Tx
-X-Received: by 2002:aa7:cc19:: with SMTP id q25mr5834556edt.56.1623929823901;
-        Thu, 17 Jun 2021 04:37:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzmU8SgdOE57jIvv3FPAbzafJA7zuo+uXWROMxQc7Q+Imd2O7vmt+x2HrGK92DscISS0qnusg==
-X-Received: by 2002:aa7:cc19:: with SMTP id q25mr5834537edt.56.1623929823749;
-        Thu, 17 Jun 2021 04:37:03 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id e18sm3566060ejh.64.2021.06.17.04.37.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 04:37:03 -0700 (PDT)
-Subject: Re: [PATCH 1/2] platform/x86: ISST: Optimize CPU to PCI device
- mapping
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        mgross@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210616221329.1909276-1-srinivas.pandruvada@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <b93fc0c0-77f9-a9b4-e5dd-28a781332691@redhat.com>
-Date:   Thu, 17 Jun 2021 13:37:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <20210616221329.1909276-1-srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 17 Jun 2021 07:38:00 -0400
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210617113550epoutp03c82aaf89ee78d775007fdac6f515fb3d~JW4EdPrZZ0389603896epoutp03M
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 11:35:50 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210617113550epoutp03c82aaf89ee78d775007fdac6f515fb3d~JW4EdPrZZ0389603896epoutp03M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1623929750;
+        bh=qDXigxVra/5pZtQ1wUkDfHrWD1KLEnG3NPV2b/Qa9PY=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=jU+WF0OuVRI2I9NPtMVdLQezAvqak4PrWkCMmrcd1Sg6H4bSLusQv2UqjuDubJCwb
+         70iSclRoEGCx34r4RMvTOHCTD3V13YwrYErp4ehTcWEdofECv9vNcTgUAvWedMOvhn
+         zGaQSgEtg7y94mqfDkMJDYDDz9PbbwnJ7eLqS/7Q=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20210617113550epcas5p130a2b5dbaa1dd8e52f7fc8cc288a92dc~JW4EJRxia0166001660epcas5p1B;
+        Thu, 17 Jun 2021 11:35:50 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        0E.07.09697.6933BC06; Thu, 17 Jun 2021 20:35:50 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210617113313epcas5p1fb3fff0b301b9e67a771349e72c2445b~JW1x1Ikdm0716007160epcas5p1T;
+        Thu, 17 Jun 2021 11:33:13 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210617113313epsmtrp2848197646249b270c9faa251f5d72b89~JW1x0dakw2285222852epsmtrp2L;
+        Thu, 17 Jun 2021 11:33:13 +0000 (GMT)
+X-AuditID: b6c32a4a-64fff700000025e1-58-60cb3396df83
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B6.98.08163.9F23BC06; Thu, 17 Jun 2021 20:33:13 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210617113312epsmtip261b2b076043724d1cf6cd413f54ea3d8~JW1w0I7N62977429774epsmtip2H;
+        Thu, 17 Jun 2021 11:33:12 +0000 (GMT)
+From:   Alim Akhtar <alim.akhtar@samsung.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org
+Cc:     krzysztof.kozlowski@canonical.com,
+        linux-samsung-soc@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Subject: [PATCH 1/2] arm64: dts: exynos7: Add cpu cache information
+Date:   Thu, 17 Jun 2021 17:07:38 +0530
+Message-Id: <20210617113739.66911-1-alim.akhtar@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPIsWRmVeSWpSXmKPExsWy7bCmpu4049MJBm1/RCwezNvGZrHx7Q8m
+        i02Pr7FaXN41h81ixvl9TBate4+wO7B5zGroZfPYtKqTzWPzknqPvi2rGD0+b5ILYI3isklJ
+        zcksSy3St0vgynh0dA9rQZdgxf63e5gbGKfxdjFyckgImEic/X6JvYuRi0NIYDejxJXHy9hB
+        EkICnxglDi9zhUh8ZpR4NuEFC0zHlp8vGSESuxglGi5vhXJamCRuLuxlBqliE9CWuDt9CxOI
+        LSIQI/FwzzxWEJtZoFDiRctNoBUcHMICzhJ3DyaCmCwCqhJfNiqCVPAK2Eg0X7nIBrFLXmL1
+        hgPMIOMlBBaxS7y7vogJIuEica97OiuELSzx6vgWdghbSuLzu71sIDMlBLIlenYZQ4RrJJbO
+        OwZ1v73EgStzWEBKmAU0Jdbv0ocIy0pMPbWOCeJIPone30+gNvFK7JgHY6tKNL+7CjVGWmJi
+        dzfUBR4Sm59uZYaEW6zEscOX2Scwys5C2LCAkXEVo2RqQXFuemqxaYFRXmq5XnFibnFpXrpe
+        cn7uJkZwnGt57WB8+OCD3iFGJg7GQ4wSHMxKIry6xScShHhTEiurUovy44tKc1KLDzFKc7Ao
+        ifMuZT+UICSQnliSmp2aWpBaBJNl4uCUamAyWGl+2u2Us8tb07n+p+6kCubc0Oie/+lQ69cF
+        HGySUpFbNb6KX97A+29GzPnH/PLVvHNvXePfP/ux2769ioG3+SUb2oX5J/qucQvcIlWadGDt
+        uz6eS9tUElonvZ8elPnBaoJXnInHqSNv5O329u5z7q79PH3Pwj2qC54wz4j/+3594KGbDQn3
+        df7e2ynKp3ut8mnMfTat5sctHJUnZl8/t+Gh++8romf0S1LEeOVrfdjmO0jN28Hr2eZuVXMr
+        5dHTc/PlNh15HiHiePAB+6O4o09Mok38JF2VQ/YH5+/jN/livPtkYKyuxNLE80xN8maHmhdM
+        vTPn41aHKcqnXsxoakx5+OowY6q/df+F34unKbEUZyQaajEXFScCAO+cjCxiAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKJMWRmVeSWpSXmKPExsWy7bCSvO5Po9MJBjsWcVk8mLeNzWLj2x9M
+        FpseX2O1uLxrDpvFjPP7mCxa9x5hd2DzmNXQy+axaVUnm8fmJfUefVtWMXp83iQXwBrFZZOS
+        mpNZllqkb5fAlfHo6B7Wgi7Biv1v9zA3ME7j7WLk5JAQMJHY8vMlYxcjF4eQwA5GiebGWUwQ
+        CWmJ6xsnsEPYwhIr/z1nhyhqYpJ4tvwYI0iCTUBb4u70LUANHBwiAnESreurQUxmgWKJ07/A
+        osICzhJ3DyaCmCwCqhJfNiqC9PEK2Eg0X7nIBjFcXmL1hgPMExh5FjAyrGKUTC0ozk3PLTYs
+        MMpLLdcrTswtLs1L10vOz93ECA4ZLa0djHtWfdA7xMjEwXiIUYKDWUmEV7f4RIIQb0piZVVq
+        UX58UWlOavEhRmkOFiVx3gtdJ+OFBNITS1KzU1MLUotgskwcnFINTDq3os7bSMgnrub4UbCh
+        8ONTKyGh9nNz11YJ+N/ddmuS+r3SdrldcySVPBmulVxu29Z9eM+kbJ0F9cc+Hsr2umup8Lfz
+        9IP+mFPd/WGv9nl0eN+axMWg+nN7dDbfdKv30wzqvszJcfUI2vpFskgvy2Dmah/z/smmuzRe
+        JtVu1W1hWPzqK1//HkOXFxfdp/1cpyu37M+hut3O5bwSbiX5S++fveBVUy0cIxbEHSwWKN3/
+        nMtNI2LVwTnWcj3FE7LS/y91S9CRUzrntnXGjNbbz65+cH1WuSzadObTH5+khHjMmzLK7+i5
+        NLjbZoap3366zHmN37374mklvpppmv9s/izJiiyTWi0/u+XhJPtbSizFGYmGWsxFxYkARUTM
+        FogCAAA=
+X-CMS-MailID: 20210617113313epcas5p1fb3fff0b301b9e67a771349e72c2445b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210617113313epcas5p1fb3fff0b301b9e67a771349e72c2445b
+References: <CGME20210617113313epcas5p1fb3fff0b301b9e67a771349e72c2445b@epcas5p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
+This patch adds cpu caches information to its dt
+nodes so that the same is available to userspace
+via sysfs.
+This SoC has 48/32 KB I/D cache for each cores
+and 2MB of L2 cache.
 
-On 6/17/21 12:13 AM, Srinivas Pandruvada wrote:
-> It was observed that some of the high performance benchmarks are spending
-> more time in kernel depending on which CPU package they are executing.
-> The difference is significant and benchmark scores varies more than 10%.
-> These benchmarks adjust class of service to improve thread performance
-> which run in parallel. This class of service change causes access to
-> MMIO region of Intel Speed Select PCI devices depending on the CPU
-> package they are executing.
-> 
-> This mapping from CPU to PCI device instance uses a standard Linux PCI
-> interface "pci_get_domain_bus_and_slot()". This function does a linear
-> search to get to a PCI device. Since these platforms have 100+ PCI
-> devices, this search can be expensive in fast path for benchmarks.
-> 
-> Since the device and function of PCI device is fixed for Intel
-> Speed Select PCI devices, the CPU to PCI device information can be cached
-> at the same time when bus number for the CPU is read. In this way during
-> runtime the cached information can be used. This improves performance
-> of these benchmarks significantly.
-> 
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
->  .../intel_speed_select_if/isst_if_common.c    | 29 +++++++++++++++----
->  1 file changed, 24 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/intel_speed_select_if/isst_if_common.c b/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
-> index 0c2aa22c7a12..aedb8310214c 100644
-> --- a/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
-> +++ b/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
-> @@ -281,11 +281,27 @@ static int isst_if_get_platform_info(void __user *argp)
->  struct isst_if_cpu_info {
->  	/* For BUS 0 and BUS 1 only, which we need for PUNIT interface */
->  	int bus_info[2];
-> +	struct pci_dev *pci_dev[2];
->  	int punit_cpu_id;
->  };
->  
->  static struct isst_if_cpu_info *isst_cpu_info;
->  
-> +static struct pci_dev *_isst_if_get_pci_dev(int cpu, int bus_no, int dev, int fn)
-> +{
-> +	int bus_number;
-> +
-> +	if (bus_no < 0 || bus_no > 1 || cpu < 0 || cpu >= nr_cpu_ids ||
-> +	    cpu >= num_possible_cpus())
-> +		return NULL;
-> +
-> +	bus_number = isst_cpu_info[cpu].bus_info[bus_no];
-> +	if (bus_number < 0)
-> +		return NULL;
-> +
-> +	return pci_get_domain_bus_and_slot(0, bus_number, PCI_DEVFN(dev, fn));
-> +}
-> +
->  /**
->   * isst_if_get_pci_dev() - Get the PCI device instance for a CPU
->   * @cpu: Logical CPU number.
-> @@ -300,17 +316,18 @@ static struct isst_if_cpu_info *isst_cpu_info;
->   */
->  struct pci_dev *isst_if_get_pci_dev(int cpu, int bus_no, int dev, int fn)
->  {
-> -	int bus_number;
-> +	struct pci_dev *pci_dev;
->  
->  	if (bus_no < 0 || bus_no > 1 || cpu < 0 || cpu >= nr_cpu_ids ||
->  	    cpu >= num_possible_cpus())
->  		return NULL;
->  
-> -	bus_number = isst_cpu_info[cpu].bus_info[bus_no];
-> -	if (bus_number < 0)
-> -		return NULL;
-> +	pci_dev = isst_cpu_info[cpu].pci_dev[bus_no];
+Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
+---
+ arch/arm64/boot/dts/exynos/exynos7.dtsi | 35 +++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-If the _isst_if_get_pci_dev() call below fails, then pci_dev might
-end up getting set to NULL here.
+diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+index 10244e59d56d..8b06397ba6e7 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+@@ -54,6 +54,13 @@
+ 			compatible = "arm,cortex-a57";
+ 			reg = <0x0>;
+ 			enable-method = "psci";
++			i-cache-size = <0xc000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <256>;
++			next-level-cache = <&atlas_l2>;
+ 		};
+ 
+ 		cpu_atlas1: cpu@1 {
+@@ -61,6 +68,13 @@
+ 			compatible = "arm,cortex-a57";
+ 			reg = <0x1>;
+ 			enable-method = "psci";
++			i-cache-size = <0xc000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <256>;
++			next-level-cache = <&atlas_l2>;
+ 		};
+ 
+ 		cpu_atlas2: cpu@2 {
+@@ -68,6 +82,13 @@
+ 			compatible = "arm,cortex-a57";
+ 			reg = <0x2>;
+ 			enable-method = "psci";
++			i-cache-size = <0xc000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <256>;
++			next-level-cache = <&atlas_l2>;
+ 		};
+ 
+ 		cpu_atlas3: cpu@3 {
+@@ -75,6 +96,20 @@
+ 			compatible = "arm,cortex-a57";
+ 			reg = <0x3>;
+ 			enable-method = "psci";
++			i-cache-size = <0xc000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <256>;
++			next-level-cache = <&atlas_l2>;
++		};
++
++		atlas_l2: l2-cache0 {
++			compatible = "cache";
++			cache-size = <0x200000>;
++			cache-line-size = <64>;
++			cache-sets = <2048>;
+ 		};
+ 	};
+ 
 
->  
-> -	return pci_get_domain_bus_and_slot(0, bus_number, PCI_DEVFN(dev, fn));
-> +	if (pci_dev->devfn == PCI_DEVFN(dev, fn))
-
-And then this would lead to a NULL ptr deref, I've replaced this
-the above if with:
-
-	if (pci_dev && pci_dev->devfn == PCI_DEVFN(dev, fn))
-
-to avoid this.
-
-I've applied this series with the above change
-to my review-hans  branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
-
-
-> +		return pci_dev;
-> +
-> +	return _isst_if_get_pci_dev(cpu, bus_no, dev, fn);
->  }
->  EXPORT_SYMBOL_GPL(isst_if_get_pci_dev);
->  
-> @@ -327,6 +344,8 @@ static int isst_if_cpu_online(unsigned int cpu)
->  	} else {
->  		isst_cpu_info[cpu].bus_info[0] = data & 0xff;
->  		isst_cpu_info[cpu].bus_info[1] = (data >> 8) & 0xff;
-> +		isst_cpu_info[cpu].pci_dev[0] = _isst_if_get_pci_dev(cpu, 0, 0, 1);
-> +		isst_cpu_info[cpu].pci_dev[1] = _isst_if_get_pci_dev(cpu, 1, 30, 1);
->  	}
->  
->  	ret = rdmsrl_safe(MSR_THREAD_ID_INFO, &data);
-> 
+base-commit: 614124bea77e452aa6df7a8714e8bc820b489922
+-- 
+2.17.1
 
