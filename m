@@ -2,156 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A983ABAFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 930233ABB01
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 19:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbhFQR7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 13:59:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38534 "EHLO mail.kernel.org"
+        id S232841AbhFQSAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 14:00:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:57304 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231800AbhFQR7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 13:59:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 590D8613CE;
-        Thu, 17 Jun 2021 17:57:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623952629;
-        bh=EhSsmsI9iGJevWK6dFC1JCY+kzfJnsUdrl+be5LxLiU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f125yxtkpG4p0zjEUVnwR25SUAoSZfM1gPA1tkxmH0FlV+r/AcE3al5sqb7AOw8ma
-         V49i6NeTJOv0IBS93Bn1Jp71Df3+wAleDXVYRkMNKUo4jJDWPylnS5Sv25X2AxBU0A
-         lHppEjiIUhrJocXFpqhaqGlRY83eDe6EvLXcNUOt1ZXAIcdiXKszhIOuWzQTPwDeG+
-         S0smvRD5gaqcSW8JsrjwuXWMOS2Or5X1Ejg8VCYHvP3zhZCIjQwDM/K5TiLJua0jO5
-         6tl7rlUlevzUvWZm/3ibhzMnBaVvqG7zy+sz//cB7ZAiIC/mFR1VSM2XnLTkd9Qpj+
-         XrQEl+3SYp7ug==
-Date:   Thu, 17 Jun 2021 18:57:05 +0100
-From:   Will Deacon <will@kernel.org>
-To:     "liuqi (BA)" <liuqi115@huawei.com>
-Cc:     Linuxarm <linuxarm@huawei.com>, mark.rutland@arm.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        zhangshaokun@hisilicon.com
-Subject: Re: [PATCH v6 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
- PMU
-Message-ID: <20210617175704.GF24813@willie-the-truck>
-References: <1622467951-32114-1-git-send-email-liuqi115@huawei.com>
- <1622467951-32114-3-git-send-email-liuqi115@huawei.com>
- <20210611162347.GA16284@willie-the-truck>
- <a299d053-b45f-e941-7a2e-c853079b8cdd@huawei.com>
- <20210615093519.GB19878@willie-the-truck>
- <8e15e8d6-cfe8-0926-0ca1-b162302e52a5@huawei.com>
- <20210616134257.GA22905@willie-the-truck>
- <678f7d55-9408-f323-da53-b5afe2595271@huawei.com>
+        id S232813AbhFQSAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 14:00:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D164613A1;
+        Thu, 17 Jun 2021 10:58:29 -0700 (PDT)
+Received: from merodach.members.linode.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 033583F694;
+        Thu, 17 Jun 2021 10:58:27 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        lcherian@marvell.com
+Subject: [PATCH v5 00/24] x86/resctrl: Merge the CDP resources
+Date:   Thu, 17 Jun 2021 17:57:56 +0000
+Message-Id: <20210617175820.24037-1-james.morse@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <678f7d55-9408-f323-da53-b5afe2595271@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 07:00:26PM +0800, liuqi (BA) wrote:
-> 
-> 
-> On 2021/6/16 21:42, Will Deacon wrote:
-> > Hi,
-> > 
-> > On Wed, Jun 16, 2021 at 09:54:23AM +0800, liuqi (BA) wrote:
-> > > On 2021/6/15 17:35, Will Deacon wrote:
-> > > > On Tue, Jun 15, 2021 at 04:57:09PM +0800, liuqi (BA) wrote:
-> > > > > On 2021/6/12 0:23, Will Deacon wrote:
-> > > > > > On Mon, May 31, 2021 at 09:32:31PM +0800, Qi Liu wrote:
-> > > > > > > +	/* Process data to set unit of latency as "us". */
-> > > > > > > +	if (is_latency_event(idx))
-> > > > > > > +		return div64_u64(data * us_per_cycle, data_ext);
-> > > > > > > +
-> > > > > > > +	if (is_bus_util_event(idx))
-> > > > > > > +		return div64_u64(data * us_per_cycle, data_ext);
-> > > > > > > +
-> > > > > > > +	if (is_buf_util_event(idx))
-> > > > > > > +		return div64_u64(data, data_ext * us_per_cycle);
-> > > > > > 
-> > > > > > Why do we need to do all this division in the kernel? Can't we just expose
-> > > > > > the underlying values and let userspace figure out what it wants to do with
-> > > > > > the numbers?
-> > > > > > 
-> > > > > Our PMU hardware support 8 sets of counters to count bandwidth, latency and
-> > > > > utilization events.
-> > > > > 
-> > > > > For example, when users set latency event, common counter will count delay
-> > > > > cycles, and extern counter count number of PCIe packets automaticly. And we
-> > > > > do not have a event number for counting number of PCIe packets.
-> > > > > 
-> > > > > So this division cannot move to userspace tool.
-> > > > 
-> > > > Why can't you expose the packet counter as an extra event to userspace?
-> > > > 
-> > > Maybe I didn’t express it clearly.
-> > > 
-> > > As there is no hardware event number for PCIe packets counting, extern
-> > > counter count packets *automaticly* when latency events is selected by
-> > > users.
-> > > 
-> > > This means users cannot set "config=0xXX" to start packets counting event.
-> > > So we can only get the value of counter and extern counter in driver and do
-> > > the division, then pass the result to userspace.
-> > 
-> > I still think it would be ideal if we could expose both values to userspace
-> > rather than combine them somehow. Hmm. Anyway...
-> > 
-> > I struggled to figure out exactly what's being counted from the
-> > documentation patch (please update that). Please can you explain exactly
-> > what appears in the HISI_PCIE_CNT and HISI_PCIE_EXT_CNT registers for the
-> > different modes of operation? Without that, the ratios you've chosen to
-> > report seem rather arbitrary.
-> > 
-> 
-> PCIe PMU events can be devided into 2 types: one type is counted by
-> HISI_PCIE_CNT, the other type is counted by HISI_PCIE_EXT_CNT and
-> HISI_PCIE_CNT, including bandwidth events, latency events, buffer
-> utilization and bus utilization.
-> 
-> if user sets "event=0x10, subevent=0x02", this means "latency of RX memory
-> read" is selected. HISI_PCIE_CNT counts total delay cycles and
-> HISI_PCIE_EXT_CNT counts PCIe packets number at the same time. So PMU driver
-> could obtain average latency by caculating: HISI_PCIE_CNT /
-> HISI_PCIE_EXT_CNT.
-> 
-> if users sets "event=0x04, subevent=0x01", this means bandwidth of RX memory
-> read is selected. HISI_PCIE_CNT counts total packet data volume and
-> HISI_PCIE_EXT_CNT counts cycles, so PMU driver could obtain average
-> bandwidth by caculating: HISI_PCIE_CNT / HISI_PCIE_EXT_CNT.
-> 
-> The same logic is used when calculating bus utilization and buffer
-> utilization. Seems I should add this part in Document patch,I 'll do this in
-> next version, thanks.
-> 
-> > I also couldn't figure out how the latency event works. For example, I was
-> > assuming it would be a filter (a bit like the length), so you could say
-> > things like "I'm only interested in packets with a latency higher than x"
-> > but it doesn't look like it works that way.
-> > 
-> > Thanks,
-> > 
-> latency is not a filter, PCIe PMU has a group of lactency events, their
-> event number are within the latency_events_list, and the above explains how
-> latency events work.
-> 
-> PMU drivers have TLP length filter for bandwidth events, users could set
-> like "I only interested in bandwidth of packets with TLP length bigger than
-> x".
+Hi folks,
 
-Thanks for the explanations, I think I get it a bit better now. But I still
-think we should be exposing both of the values to userspace instead of
-reporting the ratio from which the individual counters are then
-unrecoverable.
+Changes since v4? Padding in the schemata file, typos and variable name
+changes. The schemata file padding is to ensure that if CDP is supported
+but not enabled, the file looks like this:
+| root@resctrl-cdp-v5:~# cat /sys/fs/resctrl/schemata
+|    MB:0=100;1=100
+|    L3:0=7ff;1=7ff
 
-It will complicate the driver slightly, but can we instead expose the
-events independently and then allowing scheduling some of them in groups?
+Changes are noted in each patch.
+----
 
-That way we just treat HISI_PCIE_CNT and HISI_PCIE_EXT_CNT as separate
-counters, but with a scheduling constraint that events in a register pair
-must be in the same group.
+This series re-folds the resctrl code so the CDP resources (L3CODE et al)
+behaviour is all contained in the filesystem parts, with a minimum amount
+of arch specific code.
 
-Will
+Arm have some CPU support for dividing caches into portions, and
+applying bandwidth limits at various points in the SoC. The collective term
+for these features is MPAM: Memory Partitioning and Monitoring.
+
+MPAM is similar enough to Intel RDT, that it should use the defacto linux
+interface: resctrl. This filesystem currently lives under arch/x86, and is
+tightly coupled to the architecture.
+Ultimately, my plan is to split the existing resctrl code up to have an
+arch<->fs abstraction, then move all the bits out to fs/resctrl. From there
+MPAM can be wired up.
+
+x86 might have two resources with cache controls, (L2 and L3) but has
+extra copies for CDP: L{2,3}{CODE,DATA}, which are marked as enabled
+if CDP is enabled for the corresponding cache.
+
+MPAM has an equivalent feature to CDP, but its a property of the CPU,
+not the cache. Resctrl needs to have x86's odd/even behaviour, as that
+its the ABI, but this isn't how the MPAM hardware works. It is entirely
+possible that an in-kernel user of MPAM would not be using CDP, whereas
+resctrl is.
+
+Pretending L3CODE and L3DATA are entirely separate resources is a neat
+trick, but doing this is specific to x86.
+Doing this leaves the arch code in control of various parts of the
+filesystem ABI: the resources names, and the way the schemata are parsed.
+Allowing this stuff to vary between architectures is bad for user space.
+
+This series collapses the CODE/DATA resources, moving all the user-visible
+resctrl ABI into what becomes the filesystem code. CDP becomes the type of
+configuration being applied to a cache. This is done by adding a
+struct resctrl_schema to the parts of resctrl that will move to fs. This
+holds the arch-code resource that is in use for this schema, along with
+other properties like the name, and whether the configuration being applied
+is CODE/DATA/BOTH.
+
+This lets us fold the extra resources out of the arch code so that they
+don't need to be duplicated if the equivalent feature to CDP is missing, or
+implemented in a different way.
+
+
+The first two patches split the resource and domain structs to have an
+arch specific 'hw' portion, and the rest that is visible to resctrl.
+Future series massage the resctrl code so there are no accesses to 'hw'
+structures in the parts of resctrl that will move to fs, providing helpers
+where necessary.
+
+This series adds temporary scaffolding, which it removes a few patches
+later. This is to allow things like the ctrlval arrays and resources to be
+merged separately, which should make is easier to bisect. These things
+are marked temporary, and should all be gone by the end of the series.
+
+This series is a little rough around the monitors, would a fake
+struct resctrl_schema for the monitors simplify things, or be a source
+of bugs?
+
+A side effect of merging these resources, is their names are no longer printed
+in the kernel log at boot. e.g:
+| resctrl: L3 allocation detected
+| resctrl: MB allocation detected
+| resctrl: L3 monitoring detected
+would previously have had extra entries for 'L3CODE' and 'L3DATA'.
+User-space cannot rely on this to discover CDP support, as the kernel log may
+be inaccessible, may have been overwritten by newer messages, and because
+parsing the kernel log is a bad idea.
+
+This series is based on tip/master's commit eb7f1579243, and can be retrieved from:
+git://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git mpam/resctrl_merge_cdp/v5
+
+v4: https://lore.kernel.org/lkml/20210614200941.12383-1-james.morse@arm.com/
+v3: https://lore.kernel.org/lkml/20210519162424.27654-1-james.morse@arm.com/
+v2: https://lore.kernel.org/lkml/20210312175849.8327-1-james.morse@arm.com/
+v1: https://lore.kernel.org/lkml/20201030161120.227225-1-james.morse@arm.com/
+
+Parts were previously posted as an RFC here:
+https://lore.kernel.org/lkml/20200214182947.39194-1-james.morse@arm.com/
+
+James Morse (24):
+  x86/resctrl: Split struct rdt_resource
+  x86/resctrl: Split struct rdt_domain
+  x86/resctrl: Add a separate schema list for resctrl
+  x86/resctrl: Pass the schema in info dir's private pointer
+  x86/resctrl: Label the resources with their configuration type
+  x86/resctrl: Walk the resctrl schema list instead of an arch list
+  x86/resctrl: Store the effective num_closid in the schema
+  x86/resctrl: Add resctrl_arch_get_num_closid()
+  x86/resctrl: Pass the schema to resctrl filesystem functions
+  x86/resctrl: Swizzle rdt_resource and resctrl_schema in
+    pseudo_lock_region
+  x86/resctrl: Add a helper to read/set the CDP configuration
+  x86/resctrl: Move the schemata names into struct resctrl_schema
+  x86/resctrl: Group staged configuration into a separate struct
+  x86/resctrl: Allow different CODE/DATA configurations to be staged
+  x86/resctrl: Rename update_domains() resctrl_arch_update_domains()
+  x86/resctrl: Add a helper to read a closid's configuration
+  x86/resctrl: Pass configuration type to resctrl_arch_get_config()
+  x86/resctrl: Make ctrlval arrays the same size
+  x86/resctrl: Apply offset correction when config is staged
+  x86/resctrl: Calculate the index from the configuration type
+  x86/resctrl: Merge the ctrl_val arrays
+  x86/resctrl: Remove rdt_cdp_peer_get()
+  x86/resctrl: Expand resctrl_arch_update_domains()'s msr_param range
+  x86/resctrl: Merge the CDP resources
+
+ arch/x86/kernel/cpu/resctrl/core.c        | 276 ++++++-------
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 164 +++++---
+ arch/x86/kernel/cpu/resctrl/internal.h    | 232 ++++-------
+ arch/x86/kernel/cpu/resctrl/monitor.c     |  44 ++-
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  12 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 457 ++++++++++++----------
+ include/linux/resctrl.h                   | 185 +++++++++
+ 7 files changed, 776 insertions(+), 594 deletions(-)
+
+-- 
+2.30.2
+
