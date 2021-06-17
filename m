@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02103ABF9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 01:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5133ABFA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 01:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbhFQXkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 19:40:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230447AbhFQXkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 19:40:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2566C61184;
-        Thu, 17 Jun 2021 23:38:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623973089;
-        bh=KiD+BfJ+qYLwA/lIAGT2/IP2dL1kIspW0vUrVZZ4zyE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=B8l5pCGD0pgflCpjM0LQSOHGF2jPusPjl3MDXtyy3XTjEG3IAOKddf95MPxHkEO0t
-         CFJCTIixeMzjx40hNYKt2oLZZx+sOFN65yO2ELfby6qpZlra056DM/dzsIKBgraz1z
-         322TYvS9iUUTeNKLphmx2Qhr/Eg2O4fjDdG0uMsrL6jlxxTmJok+p8hwnvyGO46gKM
-         Vh23tBoPHfAr4/pBtO1ZdAgcJf/iBUqQAin3xHAeesZEO57mhR/9SIH/rp+SJEbQsk
-         zTkaZEXwq/KLnrEaFJuTGO4E4SlQLJqddPovESsHxod8V5CJGLpXwazQCrsklOsDG8
-         BDBiOfyfBx6GA==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Gaurav Srivastava <gaurav.srivastava@broadcom.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] scsi: lpfc: Reduce scope of uuid in lpfc_queuecommand()
-Date:   Thu, 17 Jun 2021 16:37:59 -0700
-Message-Id: <20210617233759.2355447-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890
+        id S232627AbhFQXqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 19:46:31 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:45077 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230447AbhFQXqa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 19:46:30 -0400
+Received: (qmail 296032 invoked by uid 1000); 17 Jun 2021 19:44:21 -0400
+Date:   Thu, 17 Jun 2021 19:44:21 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Fabien Chouteau <fabien.chouteau@barco.com>,
+        Segiy Stetsyuk <serg_stetsuk@ukr.net>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@kernel.org
+Subject: Re: [PATCH] usb: gadget: f_hid: fix endianness issue with descriptors
+Message-ID: <20210617234421.GA295854@rowland.harvard.edu>
+References: <20210617162755.29676-1-ruslan.bilovol@gmail.com>
+ <YMt95iarFDUDvjQ8@kroah.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMt95iarFDUDvjQ8@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_SCSI_LPFC_DEBUG_FS is unset, uuid's declaration is not
-present, resulting in a compiler error:
+On Thu, Jun 17, 2021 at 06:52:54PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Jun 17, 2021 at 07:27:55PM +0300, Ruslan Bilovol wrote:
+> > Running sparse checker it shows warning message about
+> > incorrect endianness used for descriptor initialization:
+> > 
+> > | f_hid.c:91:43: warning: incorrect type in initializer (different base types)
+> > | f_hid.c:91:43:    expected restricted __le16 [usertype] bcdHID
+> > | f_hid.c:91:43:    got int
+> > 
+> > Fixing issue with cpu_to_le16() macro
+> > 
+> > Fixes: 71adf1189469 ("USB: gadget: add HID gadget driver")
+> > Cc: Fabien Chouteau <fabien.chouteau@barco.com>
+> > Cc: Segiy Stetsyuk <serg_stetsuk@ukr.net>
+> > Cc: stable@kernel.org
+> > Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+> > ---
+> >  drivers/usb/gadget/function/f_hid.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
+> > index 70774d8cb14e..02683ac0719d 100644
+> > --- a/drivers/usb/gadget/function/f_hid.c
+> > +++ b/drivers/usb/gadget/function/f_hid.c
+> > @@ -88,7 +88,7 @@ static struct usb_interface_descriptor hidg_interface_desc = {
+> >  static struct hid_descriptor hidg_desc = {
+> >  	.bLength			= sizeof hidg_desc,
+> >  	.bDescriptorType		= HID_DT_HID,
+> > -	.bcdHID				= 0x0101,
+> > +	.bcdHID				= cpu_to_le16(0x0101),
+> 
+> This is a BCD value, not a little-endian value, are you sure this
+> conversion is correct?
 
-drivers/scsi/lpfc/lpfc_scsi.c:5595:3: error: use of undeclared
-identifier 'uuid'
-                uuid = lpfc_is_command_vm_io(cmnd);
-                ^
+It's a BCD value, but the storage format is little endian.  So yes, the 
+conversion is correct.
 
-uuid is only used in the if statement so reduce its scope to solve the
-build error. Additionally, uuid is a char *, instead of u8 *.
+But even more, the conversion is correct because 0x0101 yields exactly 
+the same sequence of bytes in little-endian and big-endian orders!  
+Either way, it is two bytes each containing 0x01.
 
-Fixes: 33c79741deaf ("scsi: lpfc: vmid: Introduce VMID in I/O path")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- drivers/scsi/lpfc/lpfc_scsi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
-index 46bfe251c2fe..e8af51e38614 100644
---- a/drivers/scsi/lpfc/lpfc_scsi.c
-+++ b/drivers/scsi/lpfc/lpfc_scsi.c
-@@ -5457,7 +5457,6 @@ lpfc_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *cmnd)
- 	int err, idx;
- #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
- 	uint64_t start = 0L;
--	u8 *uuid = NULL;
- 
- 	if (phba->ktime_on)
- 		start = ktime_get_ns();
-@@ -5592,7 +5591,7 @@ lpfc_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *cmnd)
- 	     LPFC_VMID_PRIO_TAG_ALL_TARGETS)) {
- 		/* is the I/O generated by a VM, get the associated virtual */
- 		/* entity id */
--		uuid = lpfc_is_command_vm_io(cmnd);
-+		char *uuid = lpfc_is_command_vm_io(cmnd);
- 
- 		if (uuid) {
- 			err = lpfc_vmid_get_appid(vport, uuid, cmnd,
-
-base-commit: ebc076b3eddc807729bd81f7bc48e798a3ddc477
--- 
-2.32.0.93.g670b81a890
-
+Alan Stern
