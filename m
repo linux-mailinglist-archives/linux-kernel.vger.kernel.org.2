@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE50C3AAD74
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14703AAD7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 09:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhFQH01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 03:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbhFQH00 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 03:26:26 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4130DC061574;
-        Thu, 17 Jun 2021 00:24:19 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id r198so8716084lff.11;
-        Thu, 17 Jun 2021 00:24:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RtRECjuHE8VSl/pHqjivxGI8ToSVE21apQFUXU7vdb8=;
-        b=Z1JZqiKZBB7gCeAUgnrr58Sux4Mb1dytkvz39WcLmuJRLa/3NxdxiEkAi7B7iGK7X/
-         s8JbQifq15J0xb5c3kOS67XC6GfX/oR7EW3MR07vHdZbQlovkohPk3X1rRuxIyFUWcAU
-         cLbK13S9WJN/UXXVv7v0ia/gJXUfu1l2FtCvbz5FvQgs1yFTxEcsNBB5BgaZrimsfFFX
-         chz2rH0lBiUnda63qWfizyDL2D/Z6Rw3ipQS0RRJizxYRySvKqWea65Bh/w7PqCpJsoc
-         szyoSREiF5gg+r4p75Qqc0brdYa5xEqtYW7TLtjeTfNDSsMSGb3M6ONhfzQVRe0WPwDb
-         r5Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RtRECjuHE8VSl/pHqjivxGI8ToSVE21apQFUXU7vdb8=;
-        b=ee6mQk3rW18/I8JrsccYyw5lnjcaluGoaKpC5UIeZlYWPGOUSRhSy6yMAYEOvXu4qF
-         PEbC7Q2S9jzNNKcaAIR1jTp9dMgS2o0gp0knUKvK8UIIhDUa/oxVmnyD+POhC9RX4q3l
-         /ktbH/14lvKyscTJ/nD0anaw1gF3lDf+3z5/fd6c1Phj4uSwqG3ISEotkbgovYh/SWAg
-         +yHFAkDG9dATYGusvllZZtIMYarolxS/o/M1YVO+ucDHH2W4HUhnf11pLGyA8getzI6M
-         Znnij1/kColBML5RisMqmEPlBWbGF8WNsK3MFrMGYukMlJjq3t6KGm10QV+mGBK17xw4
-         +ZXw==
-X-Gm-Message-State: AOAM530EVSlRtFswY0Y7Vo07eVYOZGeYfYxMWCLOZmBaiQow9++xT9H8
-        Hd4kH5q+nvy8r0VbmZqiefk=
-X-Google-Smtp-Source: ABdhPJwiWJwBIEAXOcnfax5b9NHW3VV+Ld0Pc9uh1XV/GUCp9Hfb9RK3N+WJ3oHbgd5MU1L91QFkTw==
-X-Received: by 2002:ac2:5547:: with SMTP id l7mr2812424lfk.402.1623914657659;
-        Thu, 17 Jun 2021 00:24:17 -0700 (PDT)
-Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.gmail.com with ESMTPSA id d23sm487140lfi.4.2021.06.17.00.24.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 00:24:17 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v1] thermal/drivers/tegra: Correct compile-testing of drivers
-Date:   Thu, 17 Jun 2021 10:24:03 +0300
-Message-Id: <20210617072403.3487-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S230321AbhFQH0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 03:26:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230146AbhFQH0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 03:26:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FF946135C;
+        Thu, 17 Jun 2021 07:24:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623914676;
+        bh=kYpRoCitoYvT/w7g/xkzemT/VH7zaHQLehAHc215/n0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u9nXki9XryJ0w2TIGZbHhR0OzLjq+ljjJL32qKnh1KhUhq3I1Qivim3Bv2fRyJJmR
+         Yq/h2/ofn67jCzAb0f15vDFYV9S6UC75P5E88t0YL5fzQZ6hci6niRglzQfR7VZRik
+         6ZZC30PBLFCPSQYv7F2QbzI1M6Aac8tmKU6dEYEv///jLTpOpC+A0VluUGjZtQeM3M
+         nFpBq+en+IkO1K7Ca+k3ihTF1Eju8W7Tyc64I82s8C+Nlx7fw4XlB3RJOleEQtHfU1
+         dWjk9YlMw7tSlK6pAjbHvtjYgKeUSe6+N2S3NZO7pGSfF64oC+g22KfnEh4LbFZJ+X
+         qAkZjR8r7murA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1ltmO9-0001Av-JK; Thu, 17 Jun 2021 09:24:33 +0200
+Date:   Thu, 17 Jun 2021 09:24:33 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Pho Tran <pho.tran@silabs.com>, Stefan Agner <stefan@agner.ch>,
+        Tung Pham <tung.pham@silabs.com>
+Subject: Re: linux-next: manual merge of the usb-serial tree with Linus' tree
+Message-ID: <YMr4sYHUNiGrjB8P@hovoldconsulting.com>
+References: <20210617150224.19213166@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ryjozJGk4o7WYpH/"
+Content-Disposition: inline
+In-Reply-To: <20210617150224.19213166@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All Tegra thermal drivers support compile-testing, but the drivers are
-not available for compile-testing because the whole Kconfig meny entry
-depends on ARCH_TEGRA, missing the alternative COMPILE_TEST dependency
-option. Correct the Kconfig entry.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/thermal/tegra/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--ryjozJGk4o7WYpH/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/thermal/tegra/Kconfig b/drivers/thermal/tegra/Kconfig
-index 019e3a2eb69e..cfa41d87a794 100644
---- a/drivers/thermal/tegra/Kconfig
-+++ b/drivers/thermal/tegra/Kconfig
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menu "NVIDIA Tegra thermal drivers"
--depends on ARCH_TEGRA
-+depends on ARCH_TEGRA || COMPILE_TEST
- 
- config TEGRA_SOCTHERM
- 	tristate "Tegra SOCTHERM thermal management"
--- 
-2.30.2
+On Thu, Jun 17, 2021 at 03:02:24PM +1000, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> Today's linux-next merge of the usb-serial tree got a conflict in:
+>=20
+>   drivers/usb/serial/cp210x.c
+>=20
+> between commit:
+>=20
+>   6f7ec77cc8b6 ("USB: serial: cp210x: fix alternate function for CP2102N =
+QFN20")
+>=20
+> from Linus' tree and commit:
+>=20
+>   8051334e901f ("USB: serial: cp210x: add support for GPIOs on CP2108")
+>=20
+> from the usb-serial tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
+Thanks, looks good.
+
+Johan
+
+--ryjozJGk4o7WYpH/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQQHbPq+cpGvN/peuzMLxc3C7H1lCAUCYMr4qQAKCRALxc3C7H1l
+CGrNAQCwkFz1f3N3MP+mkAJVHqoOIzGaGYlbA5RR/omLbW91kwEAnJX4plxwldbT
+XfshzbSvSlPH5yLf9N9ypudASw8AzA8=
+=Ngpi
+-----END PGP SIGNATURE-----
+
+--ryjozJGk4o7WYpH/--
