@@ -2,207 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E993AA8C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1DE3AA8C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhFQBu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 21:50:56 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:42424 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232211AbhFQBuy (ORCPT
+        id S232257AbhFQBwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 21:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232211AbhFQBwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 21:50:54 -0400
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 15H1mVE0008979;
-        Thu, 17 Jun 2021 10:48:31 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 15H1mVE0008979
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1623894512;
-        bh=zTKiASp84iI2TEThlgNhK02xs63oG3qRksk+2dZv5WI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=J3S0fh0TShrVdZRj98A94DuZvhwS+xeEq9laFGxelZozhVQLOWH+hnC4bTFUrhAXq
-         t2br1u8awFlj1efXWZsoZ3K8zGT/jrmpSaHvBfGpsCRUTk1Lc+QIW+m1P6UDk/5V3Z
-         5BhjVsvKs5STkQ+xbMaaF46V2Mz3D7UoRh2iOeuxRPgMMrqLEmUBCgobc7DJ/pUb68
-         ceYmMLAnjEQ6LlxGNaV8qf6rOJjOjn2iapgltOEmi0VIwV5svo1b/0L9eXk/GsVway
-         IjmUiCTsI6v8hjp1KWiChcRi0w2mXen/cMZa1Qwbh+PkwGaEBGYjPpp/a8cXch59SB
-         SXoST7HANrvPA==
-X-Nifty-SrcIP: [209.85.215.182]
-Received: by mail-pg1-f182.google.com with SMTP id g22so3626735pgk.1;
-        Wed, 16 Jun 2021 18:48:31 -0700 (PDT)
-X-Gm-Message-State: AOAM532qZSKN9LFKunXDsUQPB/ZQkoQPnq6dsF7rBwVNsw9ZaP6cyhDg
-        eC0vs9+Sv72ZBK8pvnvbzuneOzD3Wyv+L57+1cY=
-X-Google-Smtp-Source: ABdhPJznevqLCd9tdnsC5ZEPkZ9HCVbq/7Tgq1jV/Vzu2I2iijtQS79wWNSU63FwDDZwgezjAwTddXQ2RmUllNl51GY=
-X-Received: by 2002:a63:36c1:: with SMTP id d184mr2581388pga.47.1623894511019;
- Wed, 16 Jun 2021 18:48:31 -0700 (PDT)
+        Wed, 16 Jun 2021 21:52:50 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDE9C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 18:50:41 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id z15so2112655vsn.13
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 18:50:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T4XUxb4X2jLRPJlgce1PUKbINkwgcyiSSmfRX55y3ro=;
+        b=ZDqLAxpdz8/XV2AShxA4hfhKJV6WvaHUe4qsWjZdsv/gMVWoSKok+fdhKeN4I8JL4O
+         kX/XUGFzirvnJh5Jq/pCF2iuO+ak1c9xhNX+IkVHJ4wVYp+SyWw5m2FAHLi2/bD+uct8
+         MCw64kpOCcECw23Q3M0if1oB10ZCg/meJmwtYYK3qw71+Ax7POPbK87WEZpf+APmcG+W
+         M4NtUgY1Bqh51pFcFOIFPzcvlwW/CjO88AGScnXBdSxEGC1dmT6kK1lcJG6AYkxwIkkL
+         SK7E0JkeykUc44twXYWmE1HMmyJqNuYeSGnbo/AjmenNeLKQJtjITPLbB/OlpxMqZqvL
+         SD/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T4XUxb4X2jLRPJlgce1PUKbINkwgcyiSSmfRX55y3ro=;
+        b=Jqvm4eEws/DHT/6UrK+2E3qTzG2szP2OqskLjkmixkYwGTNoQKD00YsUHVKF95z6t6
+         2fmFW20Zzppq+KZaFFGkmEho+LTDvx0HWRwJbmYOOi8Lla2QdD0GEFqg6w2F0BX7PHm7
+         z2Wpxp/CNoetqi334d4E6cxo/PYTjIA7QnsO8HZVpzswolJnRSGcM1QZJ1V6HygQC2Yk
+         m3Yz9M7TGMt2eCtAE+hyTki8FORamvsTtTCOYTneUjmvsLDn9NrkIs0plJdM6YmQpRHu
+         9++T5Gumsb5xI1meOjBP+eg8DRzeiCrTrJXbGgc1RUjbMKy8SUr80rXKuK+kK9kbLFUW
+         zHiQ==
+X-Gm-Message-State: AOAM533DIAwXAQkdQ11eRQUi6AvE29uwQiHTvsBPDX3XDBXRb/+Hwxol
+        MfwjRCOLG3W1ArBrfI12LUgi+R0FwHilK/WvKXlymQ==
+X-Google-Smtp-Source: ABdhPJyFRSl6kVKplmXtWOV97NYN2Ps8o/fwzP+BshzExEMWH53ArDhx8EO4/LJHWDgjVj0+AWw4k/b/7JY51GZBCaY=
+X-Received: by 2002:a05:6102:2378:: with SMTP id o24mr2460396vsa.12.1623894639745;
+ Wed, 16 Jun 2021 18:50:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <892b6ab7-862c-1c0a-2996-0f8408e5043d@linux.ee>
- <89515325-fc21-31da-d238-6f7a9abbf9a0@gmx.de> <CAK7LNATuzry1MUj-VruOVUwU_nH2xJd_2SxD_s_Z1QBb3PVnQw@mail.gmail.com>
- <5dfd81eb-c8ca-b7f5-e80e-8632767c022d@gmx.de>
-In-Reply-To: <5dfd81eb-c8ca-b7f5-e80e-8632767c022d@gmx.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 17 Jun 2021 10:47:54 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATO_30uHzAe-Vsy+hgu=wwEN_aPGET4Ys78rc3=nSuJsg@mail.gmail.com>
-Message-ID: <CAK7LNATO_30uHzAe-Vsy+hgu=wwEN_aPGET4Ys78rc3=nSuJsg@mail.gmail.com>
-Subject: Re: linux-parisc compile failure in current git
-To:     Helge Deller <deller@gmx.de>
-Cc:     Parisc List <linux-parisc@vger.kernel.org>,
-        Meelis Roos <mroos@linux.ee>,
-        Linux Kernel Development <linux-kernel@vger.kernel.org>
+References: <20210616090102.1897674-1-kyletso@google.com> <YMn/x631dHngLxFw@kuha.fi.intel.com>
+In-Reply-To: <YMn/x631dHngLxFw@kuha.fi.intel.com>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Wed, 16 Jun 2021 18:50:02 -0700
+Message-ID: <CAPTae5LK0jM38roMfBz3OQ4SWK0f3h5qvmuoa=nqybjf5gjNmw@mail.gmail.com>
+Subject: Re: [PATCH v3] usb: typec: tcpm: Relax disconnect threshold during
+ power negotiation
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Kyle Tso <kyletso@google.com>, Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 4:04 PM Helge Deller <deller@gmx.de> wrote:
+On Wed, Jun 16, 2021 at 6:42 AM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
 >
-> Hi Masahiro,
->
-> On 6/10/21 4:03 AM, Masahiro Yamada wrote:
-> > On Thu, Jun 10, 2021 at 7:50 AM Helge Deller <deller@gmx.de> wrote:
-> >>
-> >> On 6/1/21 12:21 PM, Meelis Roos wrote:
-> >>> Upstream Linux git fails to compile on gentoo hppa -  .config below.
-> >>> I have 2 gcc-s as always:
-> >>> $ gcc-config -l
-> >>>    [1] hppa2.0-unknown-linux-gnu-9.3.0
-> >>>    [2] hppa2.0-unknown-linux-gnu-10.2.0 *
-> >>>
-> >>>    [3] hppa64-unknown-linux-gnu-10.2.0 *
-> >>
-> >>
-> >> I see the same issue too, but only when compiling natively on a parisc machine.
-> >> Cross-compiling on a x86 box works nicely.
-> >>
-> >> First I thought it's a problem with setting the "cross_compiling" flag in ./Makefile.
-> >> But that's not sufficient.
-> >>
-> >> On a x86 machine (which builds fine) I get
-> >> SRCARCH=parisc SUBARCH=x86 UTS_MACHINE=parisc
-> >> The arch/parisc/kernel/asm-offsets.c file gets preprocessed via:
-> >> hppa64-linux-gnu-gcc
-> >>
-> >> On a native 32bit parisc machine I have:
-> >> SRCARCH=parisc SUBARCH=parisc UTS_MACHINE=parisc
-> >> Here the arch/parisc/kernel/asm-offsets.c file gets preprocessed via:
-> >> gcc
-> >> Instead here the native hppa64-linux-gnu-gcc (cross compiler) should have been used too, since
-> >> we build a 64-bit hppa kernel (CONFIG_64BIT is set).
-> >> Note, on hppa we don't have an "-m64" compiler flag as on x86.
+> On Wed, Jun 16, 2021 at 05:01:02PM +0800, Kyle Tso wrote:
+> > If the voltage is being decreased in power negotiation, the Source will
+> > set the power supply to operate at the new voltage level before sending
+> > PS_RDY. Relax the threshold before sending Request Message so that it
+> > will not race with Source which begins to adjust the voltage right after
+> > it sends Accept Message (PPS) or tSrcTransition (25~35ms) after it sends
+> > Accept Message (non-PPS).
 > >
-> > I see.
-> > hppa is not a bi-arch compiler, in other words,
-> > http- and hppa64- are separate compilers.
->
-> Yes.
->
-> >> Mashahiro, do you maybe have an idea what gets wrong here, or which
-> >> patch has changed the behaviour how the asm-offsets.c file gets preprocessed?
+> > The real threshold will be set after Sink receives PS_RDY Message.
 > >
-> > Presumably, commit 23243c1ace9fb4eae2f75e0fe0ece8e3219fb4f3
+> > Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto Discharge disconnect support")
+> > Cc: Badhri Jagan Sridharan <badhri@google.com>
+> > Signed-off-by: Kyle Tso <kyletso@google.com>
+>
+> Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Reviewed-by: Badhri Jagan Sridharan <badhri@google.com>
+>
+> > ---
+> > Changes in v3:
+> > - move the timing of setting threshold for Fixed RDO as I did for PPS in
+> >   v2, i.e. move it to tcpm_pd_send_request.
+> > - add Cc: tag for Badhri
+> > - update the commit message for the above changes
 > >
-> > Prior to that commit, arch/parisc/Makefile was like this:
+> > Changes in v2:
+> > - move the timing of setting threshold up to "before sending Request"
+> >   for PPS power negotiation so that it won't race with the Source.
+> > - PPS: if it fails to send the Request, fallback to previous threshold
+> > - PPS: if the Source doesn't respond Accept, fallback to previous
+> >   threshold
+> > - update the commit message for above changes
 > >
-> > ifneq ($(SUBARCH),$(UTS_MACHINE))
-> >          ifeq ($(CROSS_COMPILE),)
-> >                      ...
+> >  drivers/usb/typec/tcpm/tcpm.c | 27 +++++++++++++++++++++++++++
+> >  1 file changed, 27 insertions(+)
 > >
-> > Now I understand why arch/parisc/Makefile was written this way.
+> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> > index 197556038ba4..b1d310ab84c4 100644
+> > --- a/drivers/usb/typec/tcpm/tcpm.c
+> > +++ b/drivers/usb/typec/tcpm/tcpm.c
+> > @@ -2604,6 +2604,11 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+> >                       } else {
+> >                               next_state = SNK_WAIT_CAPABILITIES;
+> >                       }
+> > +
+> > +                     /* Threshold was relaxed before sending Request. Restore it back. */
+> > +                     tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
+> > +                                                            port->pps_data.active,
+> > +                                                            port->supply_voltage);
+> >                       tcpm_set_state(port, next_state, 0);
+> >                       break;
+> >               case SNK_NEGOTIATE_PPS_CAPABILITIES:
+> > @@ -2617,6 +2622,11 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+> >                           port->send_discover)
+> >                               port->vdm_sm_running = true;
 > >
-> > Reverting the change in arch/parisc/Makefile will restore the original behavior.
->
-> Sadly, reverting this change (23243c1ace9fb4eae2f75e0fe0ece8e3219fb4f3) does not
-> restore the original behavior.
->
-> > But, please keep in mind that there is an issue remaining.
+> > +                     /* Threshold was relaxed before sending Request. Restore it back. */
+> > +                     tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
+> > +                                                            port->pps_data.active,
+> > +                                                            port->supply_voltage);
+> > +
+> >                       tcpm_set_state(port, SNK_READY, 0);
+> >                       break;
+> >               case DR_SWAP_SEND:
+> > @@ -3336,6 +3346,12 @@ static int tcpm_pd_send_request(struct tcpm_port *port)
+> >       if (ret < 0)
+> >               return ret;
 > >
-> > Please see this code:
+> > +     /*
+> > +      * Relax the threshold as voltage will be adjusted after Accept Message plus tSrcTransition.
+> > +      * It is safer to modify the threshold here.
+> > +      */
+> > +     tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, 0);
+> > +
+> >       memset(&msg, 0, sizeof(msg));
+> >       msg.header = PD_HEADER_LE(PD_DATA_REQUEST,
+> >                                 port->pwr_role,
+> > @@ -3433,6 +3449,9 @@ static int tcpm_pd_send_pps_request(struct tcpm_port *port)
+> >       if (ret < 0)
+> >               return ret;
 > >
-> > ifdef CONFIG_64BIT
-> > UTS_MACHINE := parisc64
-> > CHECKFLAGS += -D__LP64__=1
-> > CC_ARCHES = hppa64
-> > LD_BFD := elf64-hppa-linux
-> > else # 32-bit
-> > CC_ARCHES = hppa hppa2.0 hppa1.1
-> > LD_BFD := elf32-hppa-linux
-> > endif
-> >
-> >
-> > UTS_MACHINE is determined by CONFIG_64BIT.
-> >
-> > CONFIG_64BIT is defined only after Kconfig is finished.
-> > When you are trying to configure the .config,
-> > CONFIG_64BIT is not defined yet.
-> > So UTS_MACHINE is always 'parisc'.
+> > +     /* Relax the threshold as voltage will be adjusted right after Accept Message. */
+> > +     tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, 0);
+> > +
+> >       memset(&msg, 0, sizeof(msg));
+> >       msg.header = PD_HEADER_LE(PD_DATA_REQUEST,
+> >                                 port->pwr_role,
+> > @@ -4196,6 +4215,10 @@ static void run_state_machine(struct tcpm_port *port)
+> >               port->hard_reset_count = 0;
+> >               ret = tcpm_pd_send_request(port);
+> >               if (ret < 0) {
+> > +                     /* Restore back to the original state */
+> > +                     tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
+> > +                                                            port->pps_data.active,
+> > +                                                            port->supply_voltage);
+> >                       /* Let the Source send capabilities again. */
+> >                       tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
+> >               } else {
+> > @@ -4206,6 +4229,10 @@ static void run_state_machine(struct tcpm_port *port)
+> >       case SNK_NEGOTIATE_PPS_CAPABILITIES:
+> >               ret = tcpm_pd_send_pps_request(port);
+> >               if (ret < 0) {
+> > +                     /* Restore back to the original state */
+> > +                     tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
+> > +                                                            port->pps_data.active,
+> > +                                                            port->supply_voltage);
+> >                       port->pps_status = ret;
+> >                       /*
+> >                        * If this was called due to updates to sink
+> > --
+> > 2.32.0.272.g935e593368-goog
 >
-> Yes.
-> See above, but it worked when I had SUBARCH=x86 (when running my laptop).
->
->
-> > As you know, Kconfig files now have a bunch of 'cc-option' syntax
-> > to check the compiler capability in Kconfig time.
-> > Hence, you need to provide a proper compiler in Kconfig time too.
-> >
-> > When you build a 64-bit parisc kernel on a 32-bit parisc machine,
->
-> Please note, that we don't have a 64-bit parisc userspace yet (just kernel).
-> This means, that all builds on parisc machines are 32bit and do a
-> cross-compilation to a parisc64 kernel if requested in the .config.
->
-> > Kconfig is passed with CC=gcc since SUBARCH==UTS_MACHINE==parisc.
-> > After Kconfig, CROSS_COMPILE=hppa64-* is set,
-> > and the kernel is built by CC=hppa64-*-gcc.
->
-> Right. That is the old behaviour. Based on the CONFIG_64BIT option
-> the hppa64 compiler is choosen for CROSS_COMPILE.
->
-> > So, Kconfig evaluated a compiletely different compiler. This is pointless.
->
-> Yes, probably.
->
->
-> > There are some options
-> >
-> > [option 1]
-> >    revert the parisc bit of 23243c1ace9fb4eae2f75e0fe0ece8e3219fb4f3
-> >    This will restore the functionality you may want, but
-> >    as I said above, Kconfig is doing pointless things.
->
-> as mentioned above: Doesn't solve the issue.
->
-> > [option 2]
-> >     Stop using cc-cross-prefix, and pass CROSS_COMPILE explicitly.
-> >     This is what many architectures including arm, arm64 do.
-> >     You need to explicitly pass CROSS_COMPILE=aarch64-linux-gnu- etc.
-> >     if you are cross-compiling arm64.
->
-> Might be an option, but it's not as handy as simply choosing CONFIG_64BIT
-> and then things are done automatically.
->
-> > [option 3]
-> >     Introduce ARCH=parisc64.
-> >
-> >     When you are building 64-bit kernel, you can pass ARCH=parisc64
-> >      A patch attached.  (but not tested much)
->
-> Tried it, but doesn't work.
-> asm-offsets.c is still preprocessed with 32bit compiler (gcc, not hppa20-gcc).
->
-> Thanks for your help so far!
-> If you like I'm happy to give you an account on a hppa64 machine to reproduce yourself.
-> I'll now try to bisect where it goes wrong. There must be something else before commit 23243c1ace9fb4eae2f75e0fe0ece8e3219fb4f3.
->
-> Helge
-
-
-Sorry for my late reply.
-
-Did git-bisect find something?
-
-If necessary, I will be happy to try it on the hppa64 machine.
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+> --
+> heikki
