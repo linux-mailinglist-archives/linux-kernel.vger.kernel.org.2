@@ -2,179 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1DE3AA8C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F5A3AA8CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 03:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232257AbhFQBwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Jun 2021 21:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232211AbhFQBwu (ORCPT
+        id S232273AbhFQBx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Jun 2021 21:53:58 -0400
+Received: from regular1.263xmail.com ([211.150.70.206]:43056 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232191AbhFQBx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Jun 2021 21:52:50 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDE9C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 18:50:41 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id z15so2112655vsn.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Jun 2021 18:50:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T4XUxb4X2jLRPJlgce1PUKbINkwgcyiSSmfRX55y3ro=;
-        b=ZDqLAxpdz8/XV2AShxA4hfhKJV6WvaHUe4qsWjZdsv/gMVWoSKok+fdhKeN4I8JL4O
-         kX/XUGFzirvnJh5Jq/pCF2iuO+ak1c9xhNX+IkVHJ4wVYp+SyWw5m2FAHLi2/bD+uct8
-         MCw64kpOCcECw23Q3M0if1oB10ZCg/meJmwtYYK3qw71+Ax7POPbK87WEZpf+APmcG+W
-         M4NtUgY1Bqh51pFcFOIFPzcvlwW/CjO88AGScnXBdSxEGC1dmT6kK1lcJG6AYkxwIkkL
-         SK7E0JkeykUc44twXYWmE1HMmyJqNuYeSGnbo/AjmenNeLKQJtjITPLbB/OlpxMqZqvL
-         SD/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T4XUxb4X2jLRPJlgce1PUKbINkwgcyiSSmfRX55y3ro=;
-        b=Jqvm4eEws/DHT/6UrK+2E3qTzG2szP2OqskLjkmixkYwGTNoQKD00YsUHVKF95z6t6
-         2fmFW20Zzppq+KZaFFGkmEho+LTDvx0HWRwJbmYOOi8Lla2QdD0GEFqg6w2F0BX7PHm7
-         z2Wpxp/CNoetqi334d4E6cxo/PYTjIA7QnsO8HZVpzswolJnRSGcM1QZJ1V6HygQC2Yk
-         m3Yz9M7TGMt2eCtAE+hyTki8FORamvsTtTCOYTneUjmvsLDn9NrkIs0plJdM6YmQpRHu
-         9++T5Gumsb5xI1meOjBP+eg8DRzeiCrTrJXbGgc1RUjbMKy8SUr80rXKuK+kK9kbLFUW
-         zHiQ==
-X-Gm-Message-State: AOAM533DIAwXAQkdQ11eRQUi6AvE29uwQiHTvsBPDX3XDBXRb/+Hwxol
-        MfwjRCOLG3W1ArBrfI12LUgi+R0FwHilK/WvKXlymQ==
-X-Google-Smtp-Source: ABdhPJyFRSl6kVKplmXtWOV97NYN2Ps8o/fwzP+BshzExEMWH53ArDhx8EO4/LJHWDgjVj0+AWw4k/b/7JY51GZBCaY=
-X-Received: by 2002:a05:6102:2378:: with SMTP id o24mr2460396vsa.12.1623894639745;
- Wed, 16 Jun 2021 18:50:39 -0700 (PDT)
+        Wed, 16 Jun 2021 21:53:57 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by regular1.263xmail.com (Postfix) with ESMTP id 14F3B1B67;
+        Thu, 17 Jun 2021 09:51:47 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from [172.16.12.120] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P15326T140654340470528S1623894702990941_;
+        Thu, 17 Jun 2021 09:51:44 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <8676accae82e1e2e8682e39c204adf18>
+X-RL-SENDER: kever.yang@rock-chips.com
+X-SENDER: yk@rock-chips.com
+X-LOGIN-NAME: kever.yang@rock-chips.com
+X-FST-TO: macromorgan@hotmail.com
+X-RCPT-COUNT: 21
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [PATCH v7 1/9] dt-bindings: rockchip-sfc: Bindings for Rockchip
+ serial flash controller
+To:     Rob Herring <robh@kernel.org>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Jon Lin <jon.lin@rock-chips.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Johan Jonker <jbx6244@gmail.com>,
+        =?UTF-8?B?6buE5a626ZKX?= <hjc@rock-chips.com>,
+        Yifeng Zhao <yifeng.zhao@rock-chips.com>,
+        Sugar Zhang <sugar.zhang@rock-chips.com>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Chris Morgan <macroalpha82@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>
+References: <20210609140412.16058-1-jon.lin@rock-chips.com>
+ <20210609140412.16058-2-jon.lin@rock-chips.com>
+ <20210610024350.GA697147@robh.at.kernel.org>
+ <e8e7c8c1-4f71-538c-a8e1-b61a894bd4a8@rock-chips.com>
+ <CAAEAJfCyXWvcqswXfmgXBX-et0mq3vxoUacUmHGso9t+XoNqOg@mail.gmail.com>
+ <CAL_JsqL1Sb_TCw6TG7XGBDtmhMVD+_n7d-ii7N9N7w1+A627=w@mail.gmail.com>
+From:   Kever Yang <kever.yang@rock-chips.com>
+Message-ID: <e2be59ae-37a0-4455-e5a6-f7156da29e95@rock-chips.com>
+Date:   Thu, 17 Jun 2021 09:51:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210616090102.1897674-1-kyletso@google.com> <YMn/x631dHngLxFw@kuha.fi.intel.com>
-In-Reply-To: <YMn/x631dHngLxFw@kuha.fi.intel.com>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Wed, 16 Jun 2021 18:50:02 -0700
-Message-ID: <CAPTae5LK0jM38roMfBz3OQ4SWK0f3h5qvmuoa=nqybjf5gjNmw@mail.gmail.com>
-Subject: Re: [PATCH v3] usb: typec: tcpm: Relax disconnect threshold during
- power negotiation
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Kyle Tso <kyletso@google.com>, Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAL_JsqL1Sb_TCw6TG7XGBDtmhMVD+_n7d-ii7N9N7w1+A627=w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 6:42 AM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Wed, Jun 16, 2021 at 05:01:02PM +0800, Kyle Tso wrote:
-> > If the voltage is being decreased in power negotiation, the Source will
-> > set the power supply to operate at the new voltage level before sending
-> > PS_RDY. Relax the threshold before sending Request Message so that it
-> > will not race with Source which begins to adjust the voltage right after
-> > it sends Accept Message (PPS) or tSrcTransition (25~35ms) after it sends
-> > Accept Message (non-PPS).
-> >
-> > The real threshold will be set after Sink receives PS_RDY Message.
-> >
-> > Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto Discharge disconnect support")
-> > Cc: Badhri Jagan Sridharan <badhri@google.com>
-> > Signed-off-by: Kyle Tso <kyletso@google.com>
->
-> Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Reviewed-by: Badhri Jagan Sridharan <badhri@google.com>
->
-> > ---
-> > Changes in v3:
-> > - move the timing of setting threshold for Fixed RDO as I did for PPS in
-> >   v2, i.e. move it to tcpm_pd_send_request.
-> > - add Cc: tag for Badhri
-> > - update the commit message for the above changes
-> >
-> > Changes in v2:
-> > - move the timing of setting threshold up to "before sending Request"
-> >   for PPS power negotiation so that it won't race with the Source.
-> > - PPS: if it fails to send the Request, fallback to previous threshold
-> > - PPS: if the Source doesn't respond Accept, fallback to previous
-> >   threshold
-> > - update the commit message for above changes
-> >
-> >  drivers/usb/typec/tcpm/tcpm.c | 27 +++++++++++++++++++++++++++
-> >  1 file changed, 27 insertions(+)
-> >
-> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> > index 197556038ba4..b1d310ab84c4 100644
-> > --- a/drivers/usb/typec/tcpm/tcpm.c
-> > +++ b/drivers/usb/typec/tcpm/tcpm.c
-> > @@ -2604,6 +2604,11 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
-> >                       } else {
-> >                               next_state = SNK_WAIT_CAPABILITIES;
-> >                       }
-> > +
-> > +                     /* Threshold was relaxed before sending Request. Restore it back. */
-> > +                     tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
-> > +                                                            port->pps_data.active,
-> > +                                                            port->supply_voltage);
-> >                       tcpm_set_state(port, next_state, 0);
-> >                       break;
-> >               case SNK_NEGOTIATE_PPS_CAPABILITIES:
-> > @@ -2617,6 +2622,11 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
-> >                           port->send_discover)
-> >                               port->vdm_sm_running = true;
-> >
-> > +                     /* Threshold was relaxed before sending Request. Restore it back. */
-> > +                     tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
-> > +                                                            port->pps_data.active,
-> > +                                                            port->supply_voltage);
-> > +
-> >                       tcpm_set_state(port, SNK_READY, 0);
-> >                       break;
-> >               case DR_SWAP_SEND:
-> > @@ -3336,6 +3346,12 @@ static int tcpm_pd_send_request(struct tcpm_port *port)
-> >       if (ret < 0)
-> >               return ret;
-> >
-> > +     /*
-> > +      * Relax the threshold as voltage will be adjusted after Accept Message plus tSrcTransition.
-> > +      * It is safer to modify the threshold here.
-> > +      */
-> > +     tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, 0);
-> > +
-> >       memset(&msg, 0, sizeof(msg));
-> >       msg.header = PD_HEADER_LE(PD_DATA_REQUEST,
-> >                                 port->pwr_role,
-> > @@ -3433,6 +3449,9 @@ static int tcpm_pd_send_pps_request(struct tcpm_port *port)
-> >       if (ret < 0)
-> >               return ret;
-> >
-> > +     /* Relax the threshold as voltage will be adjusted right after Accept Message. */
-> > +     tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, 0);
-> > +
-> >       memset(&msg, 0, sizeof(msg));
-> >       msg.header = PD_HEADER_LE(PD_DATA_REQUEST,
-> >                                 port->pwr_role,
-> > @@ -4196,6 +4215,10 @@ static void run_state_machine(struct tcpm_port *port)
-> >               port->hard_reset_count = 0;
-> >               ret = tcpm_pd_send_request(port);
-> >               if (ret < 0) {
-> > +                     /* Restore back to the original state */
-> > +                     tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
-> > +                                                            port->pps_data.active,
-> > +                                                            port->supply_voltage);
-> >                       /* Let the Source send capabilities again. */
-> >                       tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
-> >               } else {
-> > @@ -4206,6 +4229,10 @@ static void run_state_machine(struct tcpm_port *port)
-> >       case SNK_NEGOTIATE_PPS_CAPABILITIES:
-> >               ret = tcpm_pd_send_pps_request(port);
-> >               if (ret < 0) {
-> > +                     /* Restore back to the original state */
-> > +                     tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
-> > +                                                            port->pps_data.active,
-> > +                                                            port->supply_voltage);
-> >                       port->pps_status = ret;
-> >                       /*
-> >                        * If this was called due to updates to sink
-> > --
-> > 2.32.0.272.g935e593368-goog
->
-> --
-> heikki
+Hi Rob,
+
+On 2021/6/16 下午11:38, Rob Herring wrote:
+> On Fri, Jun 11, 2021 at 10:33 AM Ezequiel Garcia
+> <ezequiel@vanguardiasur.com.ar> wrote:
+>> Hi all,
+>>
+>> On Thu, 10 Jun 2021 at 00:04, Kever Yang <kever.yang@rock-chips.com> wrote:
+>>> Hi Rob,
+>>>
+>>> On 2021/6/10 上午10:43, Rob Herring wrote:
+>>>> On Wed, Jun 09, 2021 at 10:04:04PM +0800, Jon Lin wrote:
+>>>>> From: Chris Morgan <macromorgan@hotmail.com>
+>>>>>
+>>>>> Add bindings for the Rockchip serial flash controller. New device
+>>>>> specific parameter of rockchip,sfc-no-dma included in documentation.
+>>>>>
+>>>>> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+>>>>> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+>>>>> ---
+>>>>>
+>>>>> Changes in v7:
+>>>>> - Fix up the sclk_sfc parent error in rk3036
+>>>>> - Unify to "rockchip,sfc" compatible id because all the feature update
+>>>>>     will have a new IP version, so the driver is used for the SFC IP in
+>>>>>     all SoCs
+>>>>> - Change to use node "sfc" to name the SFC pinctrl group
+>>>>> - Add subnode reg property check
+>>>>> - Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
+>>>>> - Limit max_iosize to 32KB
+>>>>>
+>>>>> Changes in v6:
+>>>>> - Add support in device trees for rv1126(Declared in series 5 but not
+>>>>>     submitted)
+>>>>> - Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
+>>>>>     affect interpretation and has been widely used
+>>>>> - Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
+>>>>> - Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
+>>>>>     in series 5 but not submitted)
+>>>>> - Support SFC ver4 ver5(Declared in series 5 but not submitted)
+>>>>> - Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
+>>>>> - Change to use devm_spi_alloc_master and spi_unregister_master
+>>>>>
+>>>>> Changes in v5:
+>>>>> - Add support in device trees for rv1126
+>>>>> - Support sfc tx_dual, tx_quad
+>>>>> - Simplify the code, such as remove "rockchip_sfc_register_all"
+>>>>> - Support SFC ver4 ver5
+>>>>>
+>>>>> Changes in v4:
+>>>>> - Changing patch back to an "RFC". An engineer from Rockchip
+>>>>>     reached out to me to let me know they are working on this patch for
+>>>>>     upstream, I am submitting this v4 for the community to see however
+>>>>>     I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+>>>>>     soon and these are the ones we should pursue for mainlining. Jon's
+>>>>>     patch series should include support for more hardware than this
+>>>>>     series.
+>>>>> - Clean up documentation more and ensure it is correct per
+>>>>>     make dt_binding_check.
+>>>>> - Add support in device trees for rk3036, rk3308, and rv1108.
+>>>>> - Add ahb clock (hclk_sfc) support for rk3036.
+>>>>> - Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+>>>>> - Change IRQ code to only mark IRQ as handled if it handles the
+>>>>>     specific IRQ (DMA transfer finish) it is supposed to handle.
+>>>>>
+>>>>> Changes in v3:
+>>>>> - Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+>>>>> - Changed the compatible string from rockchip,sfc to
+>>>>>     rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+>>>>>     driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+>>>>>     RV1108 SoCs, and possibly more. However, I am currently only able
+>>>>>     to test this on a PX30 (an RK3326). The technical reference manuals
+>>>>>     appear to list the same registers for each device.
+>>>>> - Corrected devicetree documentation for formatting and to note these
+>>>>>     changes.
+>>>>> - Replaced the maintainer with Heiko Stuebner and myself, as we will
+>>>>>     take ownership of this going forward.
+>>>>> - Noted that the device (per the reference manual) supports 4 CS, but
+>>>>>     I am only able to test a single CS (CS 0).
+>>>>> - Reordered patches to comply with upstream rules.
+>>>>>
+>>>>> Changes in v2:
+>>>>> - Reimplemented driver using spi-mem subsystem.
+>>>>> - Removed power management code as I couldn't get it working properly.
+>>>>> - Added device tree bindings for Odroid Go Advance.
+>>>>>
+>>>>> Changes in v1:
+>>>>> hanges made in this new series versus the v8 of the old series:
+>>>>> - Added function to read spi-rx-bus-width from device tree, in the
+>>>>>     event that the SPI chip supports 4x mode but only has 2 pins
+>>>>>     wired (such as the Odroid Go Advance).
+>>>>> - Changed device tree documentation from txt to yaml format.
+>>>>> - Made "reset" message a dev_dbg from a dev_info.
+>>>>> - Changed read and write fifo functions to remove redundant checks.
+>>>>> - Changed the write and read from relaxed to non-relaxed when
+>>>>>     starting the DMA transfer or reading the DMA IRQ.
+>>>>> - Changed from dma_coerce_mask_and_coherent to just
+>>>>>     dma_set_mask_and_coherent.
+>>>>> - Changed name of get_if_type to rockchip_sfc_get_if_type.
+>>>>>
+>>>>>    .../devicetree/bindings/spi/rockchip-sfc.yaml | 88 +++++++++++++++++++
+>>>>>    1 file changed, 88 insertions(+)
+>>>>>    create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+>>>>> new file mode 100644
+>>>>> index 000000000000..42e4198e92af
+>>>>> --- /dev/null
+>>>>> +++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+>>>>> @@ -0,0 +1,88 @@
+>>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>>>> +%YAML 1.2
+>>>>> +---
+>>>>> +$id: http://devicetree.org/schemas/spi/rockchip-sfc.yaml#
+>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>>> +
+>>>>> +title: Rockchip Serial Flash Controller (SFC)
+>>>>> +
+>>>>> +maintainers:
+>>>>> +  - Heiko Stuebner <heiko@sntech.de>
+>>>>> +  - Chris Morgan <macromorgan@hotmail.com>
+>>>>> +
+>>>>> +allOf:
+>>>>> +  - $ref: spi-controller.yaml#
+>>>>> +
+>>>>> +properties:
+>>>>> +  compatible:
+>>>>> +    oneOf:
+>>>>> +      - const: rockchip,sfc
+>>>> Use 'enum' instead of oneOf+const.
+>>>>
+>>>> You need an SoC specific compatible.
+>>>
+>>> The rockchip sfc controller is a standalone IP with version register,
+>>> and the driver can
+>>>
+>>> handle all the feature difference inside the IP, so we would like to use
+>>> a more generic
+> Okay, if the version register can be relied on, then this is fine.
+> Just add a comment that further differentiation is done using a
+> version register.
+
+
+Thanks for your confirm, this will make things much simple for driver 
+maintain.
+
+@Jon, please update your patch per Rob's requirement.
+
+
+Thanks,
+- Kever
+
+
