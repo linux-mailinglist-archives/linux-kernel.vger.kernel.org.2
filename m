@@ -2,179 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEAF3AB78D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DFE3AB793
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 17:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbhFQPeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 11:34:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231661AbhFQPeD (ORCPT
+        id S232465AbhFQPgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 11:36:48 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:37520 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231661AbhFQPgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:34:03 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C2BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:31:55 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id y13-20020a1c4b0d0000b02901c20173e165so3981817wma.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 08:31:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=VAjzq9mhAWtZ8EHGSkPZvo+bLtkwjx1qvP4uAFGkPj0=;
-        b=aNUg+W40bNFPooxDaKIY+OpuKpPaTYzqrKODqK7cN5q3G/gyVLwYtYExf++sTz9csm
-         D7jogoYW14iB5p3tBLglLiIKafXPxzL9EyoDpRVJOmh5d8Na1nXAL43wo2ORkUDOaHUf
-         SlRIJ3oYvBuAy+ytr6XIQ5yhORI918ReSLlEKWzwWsgLy8Hsi5hNSMX7n9RaaCHZvmOI
-         ptmSecREc6efIr9wQIbWDXWuhRayVT35fzxUy0S91oAMf0P/65mHOORw2KKJ6mBmomcd
-         9S1i6KwR8ZgPFZu+Eqn9b9ZWetH5sSUm//nCSBRkGL1ZNXp8DhXUDITM7jHI5egDgugs
-         zhzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=VAjzq9mhAWtZ8EHGSkPZvo+bLtkwjx1qvP4uAFGkPj0=;
-        b=jqnIM2MewINUz5grAboomjqXt6Ckcn5bv2EhDJXTdnfhz1tsT4JqFgjlutJT8ftVXj
-         aJ04EC5HFxPIM5GHoEOyFOrYohhl/ePh0d2N111T2o+A64TefKqnRUM4cKnV3qaPj7V5
-         CPMgrhrEFSCM1Q+LCtx1p6pLFAGU724nLQRs++45KmlLz+hjSjSpSQdUAOBXgrBjbfz2
-         ALuQp/8jSVx429QB6OBtN9oahK1eHvp1tFXaU3PR2omsee8FInLSRQeb8O+44BLD++tx
-         f5NxvQMj6YCRzEK6AK3G6ZaEVwUFR3+ZXoZXqI4GIdbDD6gjEvqB+UmSEydpZg/7ysYH
-         120Q==
-X-Gm-Message-State: AOAM530RAX0a87+0B7OBZw9k2SkFLOyBpLHOEwvuUrFKsKoRnhzu59n1
-        XVWuXMKDV5fO0k/5ozfjXv4aEK5DfYQRpYGX
-X-Google-Smtp-Source: ABdhPJxEFRrlycHoxLlGNtCO6tr3Fi4GTVtXp61cXSTq9xjkAJaYVyP2Xjo9FIGAzvm6vTe0XyqKRw==
-X-Received: by 2002:a1c:7f96:: with SMTP id a144mr5839635wmd.22.1623943913680;
-        Thu, 17 Jun 2021 08:31:53 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:a8dd:a686:47bc:b03a? ([2a01:e34:ed2f:f020:a8dd:a686:47bc:b03a])
-        by smtp.googlemail.com with ESMTPSA id z6sm2935412wrl.15.2021.06.17.08.31.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 08:31:53 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL] timer drivers for v5.14
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Evan Benn <evanbenn@chromium.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Zhou Yanjie <zhouyanjie@wanyeetech.com>,
-        Andrea Merello <andrea.merello@gmail.com>, zou_wei@huawei.com,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-ID: <65ed5f60-d7a5-b4ae-ff78-0382d4671cc5@linaro.org>
-Date:   Thu, 17 Jun 2021 17:31:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 17 Jun 2021 11:36:44 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HFQxis003388;
+        Thu, 17 Jun 2021 10:34:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=ZWlX/sKpUGcPSj/SPb1oTSUr/7SHFkb0kqclKOs2YCA=;
+ b=Z0VTMRJs6DLqlqEepZKhSG2qH+h8LtSHY90a9+/MfEtvMp7E6ZzhgMHF0856i3WysZBa
+ +ZShuFzY8xq4aIcEpaiPbB7/5HebVAFWK0VnZxnVt9vUFZie5eUUxMNbkTR7YJS1Nb1C
+ ZKzp0RNzQhAV4LPKGZ8f9MdRmgbZF3RhmeZF23/nis9QS6vdVmfr7PpqCY9dE9VAJaZ7
+ ZjJPo+k5TciZ84JsBYlBU2EbUl1VdOCROuW7/keBwZqXC+AWc59jt9pQ6mJ763sm1cHF
+ 2wzgW6rn3BezkxszftsIdbozDqP7Ij1X+dzPJt/KdKXNMj4UtoNV/WH8TrCkQcBpzGef tw== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 397ab2jq1s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 17 Jun 2021 10:34:22 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 17 Jun
+ 2021 16:34:21 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Thu, 17 Jun 2021 16:34:21 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.68])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C0BE52B2;
+        Thu, 17 Jun 2021 15:34:19 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
+        <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH] soundwire: stream: Use polling for DP Prepare completion
+Date:   Thu, 17 Jun 2021 16:34:10 +0100
+Message-ID: <20210617153410.27922-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: FPNt1Es1ya0FIeLF4-ytsavhjvH8W67v
+X-Proofpoint-GUID: FPNt1Es1ya0FIeLF4-ytsavhjvH8W67v
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
+ spamscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0 adultscore=0
+ suspectscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106170098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+sdw_prep_deprep_slave_ports() cannot use the port interrupt to signal
+CP_SM completion because it is called while holding the bus lock, which
+blocks the alert handler from running.
 
-The following changes since commit 245a057fee18be08d6ac12357463579d06bea077:
+Change to polling the PREPARESTATUS register and remove the
+infrastructure that was implemented for the previous interrupt waiting.
 
-  timer_list: Print name of per-cpu wakeup device (2021-05-31 17:04:49
-+0200)
+A new configuration field 'ch_prep_poll_us' is added to struct
+sdw_dpn_prop so that the peripheral driver may select a polling interval.
+If this is left at zero a default interval of 500 usec is used.
 
-are available in the Git repository at:
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ drivers/soundwire/bus.c       |  2 --
+ drivers/soundwire/slave.c     |  4 ----
+ drivers/soundwire/stream.c    | 24 ++++++++++++++----------
+ include/linux/soundwire/sdw.h |  8 ++++++--
+ 4 files changed, 20 insertions(+), 18 deletions(-)
 
-  https://git.linaro.org/people/daniel.lezcano/linux.git tags/timers-v5.14
-
-for you to fetch changes up to 3d41fff3ae3980c055f3c7861264c46c924f3e4c:
-
-  clocksource/drivers/timer-ti-dm: Drop unnecessary restore (2021-06-16
-17:33:04 +0200)
-
-----------------------------------------------------------------
-- Remove arch_timer_rate1 variable as it is unused in the architected
-  ARM timer (Jisheng Zhang)
-
-- Minor cleanups (whitespace, constification, ...) for the Samsung pwm
-  timer (Krzysztof Kozlowski)
-
-- Acknowledge and disable the timer interrupt at suspend time to
-  prevent the suspend to be aborted by the ATF if there is a pending
-  one on the Mediatek timer (Evan Benn)
-
-- Save and restore the configuration register at suspend/resume time
-  for TI dm timer (Tony Lindgren)
-
-- Set the scene for the next timers support by renaming the array
-  variables on the Ingenic time (Zhou Yanjie)
-
-- Add the clock rate change notification to adjust the prescalar value
-  and compensate the clock source on the ARM global timer (Andrea
-  Merello)
-
-- Add missing variable static annotation on the ARM global timer (Zou
-  Wei)
-
-- Remove a duplicate argument when building the bits field on the ARM
-  global timer (Wan Jiabing)
-
-- Improve the timer workaround function by reducing the loop on the
-  Allwinner A64 timer (Samuel Holland)
-
-- Do no restore the register context in case of error on the TI dm
-  timer (Tony Lindgren)
-
-----------------------------------------------------------------
-Andrea Merello (2):
-      clocksource/drivers/arm_global_timer: Implement rate compensation
-whenever source clock changes
-      arm: zynq: don't disable CONFIG_ARM_GLOBAL_TIMER due to
-CONFIG_CPU_FREQ anymore
-
-Evan Benn (1):
-      clocksource/drivers/mediatek: Ack and disable interrupts on suspend
-
-Jisheng Zhang (1):
-      clocksource/drivers/arm_arch_timer: Remove arch_timer_rate1
-
-Krzysztof Kozlowski (4):
-      clocksource/drivers/samsung_pwm: Minor whitespace cleanup
-      clocksource/drivers/samsung_pwm: Constify passed structure
-      clocksource/drivers/samsung_pwm: Cleanup on init error
-      clocksource/drivers/samsung_pwm: Constify source IO memory
-
-Samuel Holland (1):
-      clocksource/arm_arch_timer: Improve Allwinner A64 timer workaround
-
-Tony Lindgren (2):
-      clocksource/drivers/timer-ti-dm: Save and restore timer TIOCP_CFG
-      clocksource/drivers/timer-ti-dm: Drop unnecessary restore
-
-Wan Jiabing (1):
-      clocksource/drivers/arm_global_timer: Remove duplicated argument
-in arm_global_timer
-
-Zou Wei (1):
-      clocksource/drivers/arm_global_timer: Make symbol
-'gt_clk_rate_change_nb' static
-
-周琰杰 (Zhou Yanjie) (1):
-      clocksource/drivers/ingenic: Rename unreasonable array names
-
- arch/arm/mach-zynq/Kconfig              |   2 +-
- drivers/clocksource/Kconfig             |  14 ++++++++++++++
- drivers/clocksource/arm_arch_timer.c    |   3 +--
- drivers/clocksource/arm_global_timer.c  | 122
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------
- drivers/clocksource/ingenic-sysost.c    |  10 +++++-----
- drivers/clocksource/samsung_pwm_timer.c |  41
-+++++++++++++++++++++++++++++------------
- drivers/clocksource/timer-mediatek.c    |  24 ++++++++++++++++++++++++
- drivers/clocksource/timer-ti-dm.c       |   9 ++++++++-
- include/clocksource/samsung_pwm.h       |   3 ++-
- include/clocksource/timer-ti-dm.h       |   1 +
- 10 files changed, 197 insertions(+), 32 deletions(-)
-
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index adcbf3969110..606fc26d407f 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -1351,7 +1351,6 @@ static int sdw_handle_dp0_interrupt(struct sdw_slave *slave, u8 *slave_status)
+ 		 */
+ 
+ 		if (status & SDW_DP0_INT_PORT_READY) {
+-			complete(&slave->port_ready[0]);
+ 			clear |= SDW_DP0_INT_PORT_READY;
+ 		}
+ 
+@@ -1429,7 +1428,6 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
+ 		 * for ports implementing CP_SM.
+ 		 */
+ 		if (status & SDW_DPN_INT_PORT_READY) {
+-			complete(&slave->port_ready[port]);
+ 			clear |= SDW_DPN_INT_PORT_READY;
+ 		}
+ 
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+index 669d7573320b..55ca884ea951 100644
+--- a/drivers/soundwire/slave.c
++++ b/drivers/soundwire/slave.c
+@@ -26,7 +26,6 @@ int sdw_slave_add(struct sdw_bus *bus,
+ {
+ 	struct sdw_slave *slave;
+ 	int ret;
+-	int i;
+ 
+ 	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
+ 	if (!slave)
+@@ -62,9 +61,6 @@ int sdw_slave_add(struct sdw_bus *bus,
+ 	slave->probed = false;
+ 	slave->first_interrupt_done = false;
+ 
+-	for (i = 0; i < SDW_MAX_PORTS; i++)
+-		init_completion(&slave->port_ready[i]);
+-
+ 	mutex_lock(&bus->bus_lock);
+ 	list_add_tail(&slave->node, &bus->slaves);
+ 	mutex_unlock(&bus->bus_lock);
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index 1eaedaaba094..bd6b3b64de90 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -8,11 +8,13 @@
+ #include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/init.h>
++#include <linux/iopoll.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/slab.h>
+ #include <linux/soundwire/sdw_registers.h>
+ #include <linux/soundwire/sdw.h>
++#include <linux/time.h>
+ #include <sound/soc.h>
+ #include "bus.h"
+ 
+@@ -419,11 +421,10 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
+ 				       struct sdw_port_runtime *p_rt,
+ 				       bool prep)
+ {
+-	struct completion *port_ready;
+ 	struct sdw_dpn_prop *dpn_prop;
+ 	struct sdw_prepare_ch prep_ch;
+-	unsigned int time_left;
+ 	bool intr = false;
++	unsigned long prep_poll_us, prep_timeout_us;
+ 	int ret = 0, val;
+ 	u32 addr;
+ 
+@@ -478,16 +479,19 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
+ 		}
+ 
+ 		/* Wait for completion on port ready */
+-		port_ready = &s_rt->slave->port_ready[prep_ch.num];
+-		time_left = wait_for_completion_timeout(port_ready,
+-				msecs_to_jiffies(dpn_prop->ch_prep_timeout));
++		prep_timeout_us = dpn_prop->ch_prep_timeout * USEC_PER_MSEC;
++		if (dpn_prop->ch_prep_poll_us)
++			prep_poll_us = dpn_prop->ch_prep_poll_us;
++		else
++			prep_poll_us = SDW_DEFAULT_DP_PREP_POLL_US;
+ 
+-		val = sdw_read(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
+-		val &= p_rt->ch_mask;
+-		if (!time_left || val) {
++		ret = read_poll_timeout(sdw_read, val, ((val & p_rt->ch_mask) == 0),
++					prep_poll_us, prep_timeout_us, false,
++					s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
++		if (ret < 0) {
+ 			dev_err(&s_rt->slave->dev,
+-				"Chn prep failed for port:%d\n", prep_ch.num);
+-			return -ETIMEDOUT;
++				"Chn prep failed for port %d: %d\n", prep_ch.num, ret);
++			return ret;
+ 		}
+ 	}
+ 
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index ddbeb00799e4..4e5290b083bf 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -67,6 +67,9 @@ enum {
+ #define SDW_BLOCK_PACKG_PER_PORT	BIT(0)
+ #define SDW_BLOCK_PACKG_PER_CH		BIT(1)
+ 
++/* Default interval to poll for DP prepare completion */
++#define SDW_DEFAULT_DP_PREP_POLL_US	500
++
+ /**
+  * enum sdw_slave_status - Slave status
+  * @SDW_SLAVE_UNATTACHED: Slave is not attached with the bus.
+@@ -295,6 +298,8 @@ struct sdw_dpn_audio_mode {
+  * @simple_ch_prep_sm: If the port supports simplified channel prepare state
+  * machine
+  * @ch_prep_timeout: Port-specific timeout value, in milliseconds
++ * @ch_prep_poll_us: Interval to poll for CP_SM prepare completion. Zero means
++ *                   poll at SDW_DEFAULT_DP_PREP_POLL_US intervals.
+  * @imp_def_interrupts: If set, each bit corresponds to support for
+  * implementation-defined interrupts
+  * @max_ch: Maximum channels supported
+@@ -321,6 +326,7 @@ struct sdw_dpn_prop {
+ 	u32 max_grouping;
+ 	bool simple_ch_prep_sm;
+ 	u32 ch_prep_timeout;
++	u32 ch_prep_poll_us;
+ 	u32 imp_def_interrupts;
+ 	u32 max_ch;
+ 	u32 min_ch;
+@@ -641,7 +647,6 @@ struct sdw_slave_ops {
+  * @prop: Slave properties
+  * @debugfs: Slave debugfs
+  * @node: node for bus list
+- * @port_ready: Port ready completion flag for each Slave port
+  * @m_port_map: static Master port map for each Slave port
+  * @dev_num: Current Device Number, values can be 0 or dev_num_sticky
+  * @dev_num_sticky: one-time static Device Number assigned by Bus
+@@ -673,7 +678,6 @@ struct sdw_slave {
+ 	struct dentry *debugfs;
+ #endif
+ 	struct list_head node;
+-	struct completion port_ready[SDW_MAX_PORTS];
+ 	unsigned int m_port_map[SDW_MAX_PORTS];
+ 	u16 dev_num;
+ 	u16 dev_num_sticky;
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.20.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
