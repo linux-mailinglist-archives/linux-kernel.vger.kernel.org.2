@@ -2,81 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AEB63AAFE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5A73AAFED
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 11:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbhFQJko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 05:40:44 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7465 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230411AbhFQJkn (ORCPT
+        id S231703AbhFQJlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 05:41:24 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45962 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231697AbhFQJlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:40:43 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5H3S3CQ5zZhbh;
-        Thu, 17 Jun 2021 17:35:32 +0800 (CST)
-Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 17:38:28 +0800
-Received: from [10.174.177.125] (10.174.177.125) by
- dggpemm000001.china.huawei.com (7.185.36.245) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 17:38:28 +0800
-Subject: Re: [PATCH -next] riscv: mm: remove redundant trampoline PGD for
- 64bit
-To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <anup.patel@wdc.com>
-CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <palmerdabbelt@google.com>, <atish.patra@wdc.com>,
-        <wangkefeng.wang@huawei.com>
-References: <20210527144819.12101-1-sunnanyong@huawei.com>
-From:   "Sunnanyong (Nanyong Sun, Intelligent Computing Solution Development
-        Dep)" <sunnanyong@huawei.com>
-Message-ID: <a58c4cde-6212-29f3-080a-f4e50221db21@huawei.com>
-Date:   Thu, 17 Jun 2021 17:38:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210527144819.12101-1-sunnanyong@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.125]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm000001.china.huawei.com (7.185.36.245)
-X-CFilter-Loop: Reflected
+        Thu, 17 Jun 2021 05:41:22 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D73051FD78;
+        Thu, 17 Jun 2021 09:39:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623922754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5VAi8CEOyvuVMm+JOnGFoJmx+l/z0rHSLCmB8K2+fj0=;
+        b=EY2DE0ZoK5aqH04UFnEC4xBvskMcncqupXD1HKF8HEcN9TATSjgEjSIbZ9PLZ9XMIpGBx/
+        dZOUcUY0zFTAuyiBpSoUyBofiTMj4kIhxiloGbUMeZ69oKJ2uNWz5WaVXKM72le8UCuW2I
+        rg4p2q1aTem7t1ycLVqsWedeo2upSO8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623922754;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5VAi8CEOyvuVMm+JOnGFoJmx+l/z0rHSLCmB8K2+fj0=;
+        b=fb8MtRUUbhGOh+2Is311g8Aa4pH7LOz7xYVT8wJudwlhiv3MK770jBNSn8vgiabyP9qCuo
+        2vise5fEscqcleDQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id B9D05A3BBB;
+        Thu, 17 Jun 2021 09:39:14 +0000 (UTC)
+Date:   Thu, 17 Jun 2021 11:39:14 +0200
+Message-ID: <s5heed0zv7h.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Daehwan Jung <dh10.jung@samsung.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>,
+        Lukasz Halman <lukasz.halman@gmail.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: ALSA: usb-audio: fix rate on Ozone Z90 USB headset
+In-Reply-To: <1623836097-61918-1-git-send-email-dh10.jung@samsung.com>
+References: <CGME20210616094912epcas2p38028df32b89b7cc79ba16c0215f8f664@epcas2p3.samsung.com>
+        <1623836097-61918-1-git-send-email-dh10.jung@samsung.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/27 22:48, Nanyong Sun wrote:
+On Wed, 16 Jun 2021 11:34:55 +0200,
+Daehwan Jung wrote:
+> 
+> It mislabels its 96 kHz altsetting and that's why it causes some noise
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Daehwan Jung <dh10.jung@samsung.com>
 
-> Remove redundant trampoline PGD for 64bit and add more comment
-> for why 32bit systems need trampoline PGD.
->
-> There was a patch and discussion similar to this,refer to
-> the link [1][2].
->
-> The trampoline PGD is redundant for 64bit systems because:
-> 1. The early PGD covers the entire kernel mapping. Directly
-> loading early PGD can achieve the result in boot stage.
-> A more trampoline PGD makes code hard to understand.
-> 2. Directly loading early PGD is safe in 64bit systems since
-> the kernel virtual address starts as 0xFFFFxxxxxxxxxxxx,
-> which has a very big gap with RAM address.It won't fall into
-> the corner case that 32bit system worrys.
-> 3. Remove redundant trampoline PGD can benefit to code maintaince,
-> because 64bit systems have more page table levels.For example:
-> If we want to support SV48 which has 4 page table levels, we have
-> to add a trampoline_pud and insert it before trampoline_pmd.
->
-> Reference link:
-> [1]https://lore.kernel.org/linux-riscv/20190325092234.5451-4-anup.patel@wdc.com/
-> [2]https://lkml.org/lkml/2019/3/28/147
+Applied now.  Thanks.
 
-Long time no response.
 
-Hi anup,
-
-     do you agree this?
-
+Takashi
