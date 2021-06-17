@@ -2,198 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2303AAC6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408D93AAC6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhFQGfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 02:35:16 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:19463 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhFQGfO (ORCPT
+        id S230047AbhFQGfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 02:35:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39182 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229565AbhFQGfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 02:35:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623911587; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=R7OPAdEHaxrqtppD6tVdSS7r7R5bUdWeiKBlffdAorI=; b=jhkblW7ksYs8ewYeNJsZB1OoIs5tR8tZq9n5VdLp8a8s6TI5JtGxcY63Tji9Z/0zp+ZwiIWP
- Nofj94HbPlzgH4lHkH58IXsQJzxcelj6g7XkgiYDDrlruVREyVNlL5ErQf9k4r/R6JeYuOVb
- Y8uSZKORbeJeMy99FXSl/1aWYEE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60caec9eb6ccaab75378f363 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Jun 2021 06:33:02
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A9916C433D3; Thu, 17 Jun 2021 06:33:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.100] (unknown [49.204.182.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4F8ECC433F1;
-        Thu, 17 Jun 2021 06:32:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4F8ECC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-Subject: Re: [PATCH v12] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Qian Cai <quic_qiancai@quicinc.com>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, greg@kroah.com, glittao@gmail.com,
-        andy.shevchenko@gmail.com
-Cc:     vinmenon@codeaurora.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linux-FSDevel <linux-fsdevel@vger.kernel.org>
-References: <1623438200-19361-1-git-send-email-faiyazm@codeaurora.org>
- <8c821abf-8fa6-b78b-cea4-b7d3b3b74a69@quicinc.com>
- <ce1b3c14-ec88-c957-0694-834051d4d39e@suse.cz>
- <25d59ad1-4d21-181c-afc2-8f396672bfd1@codeaurora.org>
- <21ccb5c6-2aee-f223-cd45-52b78e1f8640@suse.cz>
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-Message-ID: <042f92b2-041d-b4c4-5419-2c4c4799e6d5@codeaurora.org>
-Date:   Thu, 17 Jun 2021 12:02:53 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <21ccb5c6-2aee-f223-cd45-52b78e1f8640@suse.cz>
+        Thu, 17 Jun 2021 02:35:53 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15H6KVqR026133;
+        Thu, 17 Jun 2021 02:33:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=PpBlJMekb7/xP2iTzZYrGLtbYT9ZT6tGKIE7GTX75SM=;
+ b=G1IjcJCT31ASjBNcOGYhDKgKRhuDPEr6b9rUhl4E/ard6X5+tH5X5ooYm+D1OGGchYrS
+ qj3uz9AnqDgeGAgSL2l0AXXeK/bsm9njz/THEaQlMm0WoT8xeGKrzvW3Y3Z4ANwIxdqR
+ D0N2tRrNZmXvZHyW2bUj8GZqqYYc431NN1Kh0WXpROqF1LaVOX+SCFHx3N//QB0NjWGN
+ oEAxJfJNBE9pfGLrTAmczOcFDzz40NOIZqCw3KHemR4NBbevgrKcGQJgcBem7TNR+7N4
+ 3Ohi22vDyRcWO+Va7Zq8lN6wfJbg3d6VQPt4L2r6mhAWIOQbJhBWOL56B97uKGiQZr7V JQ== 
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39811u88w8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 02:33:07 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15H6VVrT016986;
+        Thu, 17 Jun 2021 06:33:06 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma01wdc.us.ibm.com with ESMTP id 394mj9pgf7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 06:33:06 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15H6X51Y12649114
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Jun 2021 06:33:05 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F40C1C6059;
+        Thu, 17 Jun 2021 06:33:04 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2FBBDC6055;
+        Thu, 17 Jun 2021 06:32:59 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.36.139])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Jun 2021 06:32:58 +0000 (GMT)
+Subject: Re: [PATCH v2 0/4] Add perf interface to expose nvdimm
+To:     Nageswara Sastry <rnsastry@linux.ibm.com>
+Cc:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, maddy@linux.vnet.ibm.com, santosh@fossix.org,
+        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
+        dan.j.williams@intel.com, ira.weiny@intel.com,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>, tglx@linutronix.de
+References: <20210614052326.285710-1-kjain@linux.ibm.com>
+ <B216F74B-8542-4363-8A82-1E392D9C5929@linux.ibm.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <14a63986-8a99-26dc-d207-7ff902df3afa@linux.ibm.com>
+Date:   Thu, 17 Jun 2021 12:02:56 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+In-Reply-To: <B216F74B-8542-4363-8A82-1E392D9C5929@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 7R4RhjD38HIv6GWshwH_hBt71ej_o28-
+X-Proofpoint-GUID: 7R4RhjD38HIv6GWshwH_hBt71ej_o28-
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-17_02:2021-06-15,2021-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 mlxlogscore=999 spamscore=0 phishscore=0 mlxscore=0
+ adultscore=0 clxscore=1015 suspectscore=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106170041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 6/16/2021 9:47 PM, Vlastimil Babka wrote:
-> On 6/16/21 5:50 PM, Faiyaz Mohammed wrote:
->>
->>
->> On 6/16/2021 4:35 PM, Vlastimil Babka wrote:
->>> On 6/15/21 5:58 PM, Qian Cai wrote:
->>>>
->>>>
->>>> On 6/11/2021 3:03 PM, Faiyaz Mohammed wrote:
->>>>> alloc_calls and free_calls implementation in sysfs have two issues,
->>>>> one is PAGE_SIZE limitation of sysfs and other is it does not adhere
->>>>> to "one value per file" rule.
->>>>>
->>>>> To overcome this issues, move the alloc_calls and free_calls
->>>>> implementation to debugfs.
->>>>>
->>>>> Debugfs cache will be created if SLAB_STORE_USER flag is set.
->>>>>
->>>>> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
->>>>> to be inline with what it does.
->>>>>
->>>>> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
->>>>> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
->>>>
->>>> Reverting this commit on today's linux-next fixed all leaks (hundreds) reported by kmemleak like below,
->>>>
->>>> unreferenced object 0xffff00091ae1b540 (size 64):
->>>>   comm "lsbug", pid 1607, jiffies 4294958291 (age 1476.340s)
->>>>   hex dump (first 32 bytes):
->>>>     02 00 00 00 00 00 00 00 6b 6b 6b 6b 6b 6b 6b 6b  ........kkkkkkkk
->>>>     6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
->>>>   backtrace:
->>>>     [<ffff8000106b06b8>] slab_post_alloc_hook+0xa0/0x418
->>>>     [<ffff8000106b5c7c>] kmem_cache_alloc_trace+0x1e4/0x378
->>>>     [<ffff8000106b5e40>] slab_debugfs_start+0x30/0x50
->>>>     slab_debugfs_start at /usr/src/linux-next/mm/slub.c:5831
->>>>     [<ffff8000107b3dbc>] seq_read_iter+0x214/0xd50
->>>>     [<ffff8000107b4b84>] seq_read+0x28c/0x418
->>>>     [<ffff8000109560b4>] full_proxy_read+0xdc/0x148
->>>>     [<ffff800010738f24>] vfs_read+0x104/0x340
->>>>     [<ffff800010739ee0>] ksys_read+0xf8/0x1e0
->>>>     [<ffff80001073a03c>] __arm64_sys_read+0x74/0xa8
->>>>     [<ffff8000100358d4>] invoke_syscall.constprop.0+0xdc/0x1d8
->>>>     [<ffff800010035ab4>] do_el0_svc+0xe4/0x298
->>>>     [<ffff800011138528>] el0_svc+0x20/0x30
->>>>     [<ffff800011138b08>] el0t_64_sync_handler+0xb0/0xb8
->>>>     [<ffff80001001259c>] el0t_64_sync+0x178/0x17c
->>>>
->>>
->>> I think the problem is here:
->>>
->>>>> +static void slab_debugfs_stop(struct seq_file *seq, void *v)
->>>>> +{
->>>>> +	kfree(v);
->>>>> +}
->>>>> +
->>>>> +static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
->>>>> +{
->>>>> +	loff_t *spos = v;
->>>>> +	struct loc_track *t = seq->private;
->>>>> +
->>>>> +	if (*ppos < t->count) {
->>>>> +		*ppos = ++*spos;
->>>>> +		return spos;
->>>>> +	}
->>>>> +	*ppos = ++*spos;
->>>>> +	return NULL;
->>>>> +}
->>>
->>> If we return NULL, then NULL is passed to slab_debugfs_stop and thus we don't
->>> kfree ppos. kfree(NULL) is silently ignored.
->>>
->> I think yes, if NULL passed to kfree, it simply do return.
->>> I think as we have private struct loc_track, we can add a pos field there and
->>> avoid the kmaloc/kfree altogether.
->>>
->> Hmm, yes we can add pos field "or" we can use argument "v" mean we can
->> update v with pos in ->next() and use in ->show() to avoid the leak
->> (kmalloc/kfree).
+On 6/16/21 4:25 PM, Nageswara Sastry wrote:
 > 
-> Can you explain the "or" part more. It's exactly what we already do, no?I am thinking if we simplly do ppos return from slab_debugfs_start() and
-in slab_debugfs_next() assign ppos to "v", update it and return if
-records are there. something like below (approach 1):
-...
-static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
-{
-...
-        v = ppos;
-        if (*ppos < t->count) {
-                 ++*ppos;
-                return v;
-        }
-
-        ++*ppos;
-        return NULL;
-}
-...
-static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
-{
-        return ppos;
-}
-...
-
-> "v" as you said. The problem is, if next(); returns NULL, then stop() gets the
-> NULL as "v". It's just what I see in the code of seq_read_iter() and traverse()
-> in fs/seq_file.c. I don't see another way to say there are no more records to
-> print - only to return NULL in next().
-> Ah, ok so we could maybe do the kfree() in next() then before returning NULL,
-> which is the last moment we have the pointer. But really, if we already have a
-> loc_track in private, why kmalloc an additional loff_t.
 > 
-Yes, we can do kfree() before returning NULL, but better to add ppos in
-lock_track. (approach 2)
+>> On 14-Jun-2021, at 10:53 AM, Kajol Jain <kjain@linux.ibm.com> wrote:
+>>
+>> Patchset adds performance stats reporting support for nvdimm.
+>> Added interface includes support for pmu register/unregister
+>> functions. A structure is added called nvdimm_pmu to be used for
+>> adding arch/platform specific data such as supported events, cpumask
+>> pmu event functions like event_init/add/read/del.
+>> User could use the standard perf tool to access perf
+>> events exposed via pmu.
+>>
+>> Added implementation to expose IBM pseries platform nmem*
+>> device performance stats using this interface.
+>> ...
+>>
+>> Patch1:
+>>        Introduces the nvdimm_pmu structure
+>> Patch2:
+>> 	Adds common interface to add arch/platform specific data
+>> 	includes supported events, pmu event functions. It also
+>> 	adds code for cpu hotplug support.
+>> Patch3:
+>>        Add code in arch/powerpc/platform/pseries/papr_scm.c to expose
+>>        nmem* pmu. It fills in the nvdimm_pmu structure with event attrs
+>>        cpumask andevent functions and then registers the pmu by adding
+>>        callbacks to register_nvdimm_pmu.
+>> Patch4:
+>>        Sysfs documentation patch
+> 
+> Tested with the following scenarios:
+> 1. Check dmesg for nmem PMU registered messages.
+> 2. Listed nmem events using 'perf list and perf list nmem'
+> 3. Ran 'perf stat' with single event, grouping events, events from same pmu,
+>    different pmu and invalid events
+> 4. Read from sysfs files, Writing in to sysfs files
+> 5. While running nmem events with perf stat, offline cpu from the nmem?/cpumask
+> 
+> While running the above functionality worked as expected, no error messages seen
+> in dmesg.
+> 
+> Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
 
-> Anyway it seems to me also that
-> Documentation/filesystems/seq_file.rst should be updated, as the kfree() in
-> stop() is exactly what it suggests, and it doesn't show how next() indicates
-> that there are no more records by returning NULL, and what to do about kfree() then.
+Hi Nageswara,
+     Thanks for testing the patch-set.
+There is a nit change which need to be done in patch 4(Documentation patch).
+We need to update nvdimm mailing list from linux-nvdimm@lists.01.org to
+nvdimm@lists.linux.dev.
+I will make this change and send a new patch-set with your tested-by tag.
 
-Can you please suggest me which approach would be good to avoid the
-leak?. I will update in next patch version.
+Thanks,
+Kajol Jain
+
+> 
+>>
+>> Changelog
+>> ---
+>> PATCH v1 -> PATCH v2
+>> - Fix hotplug code by adding pmu migration call
+>>  incase current designated cpu got offline. As
+>>  pointed by Peter Zijlstra.
+>>
+>> - Removed the retun -1 part from cpu hotplug offline
+>>  function.
+>>
+>> - Link to the previous patchset : https://lkml.org/lkml/2021/6/8/500
+>> ---
+>> Kajol Jain (4):
+>>  drivers/nvdimm: Add nvdimm pmu structure
+>>  drivers/nvdimm: Add perf interface to expose nvdimm performance stats
+>>  powerpc/papr_scm: Add perf interface support
+>>  powerpc/papr_scm: Document papr_scm sysfs event format entries
+>>
+>> Documentation/ABI/testing/sysfs-bus-papr-pmem |  31 ++
+>> arch/powerpc/include/asm/device.h             |   5 +
+>> arch/powerpc/platforms/pseries/papr_scm.c     | 365 ++++++++++++++++++
+>> drivers/nvdimm/Makefile                       |   1 +
+>> drivers/nvdimm/nd_perf.c                      | 230 +++++++++++
+>> include/linux/nd.h                            |  46 +++
+>> 6 files changed, 678 insertions(+)
+>> create mode 100644 drivers/nvdimm/nd_perf.c
+>>
+> Thanks and Regards,
+> R.Nageswara Sastry
+> 
+>>
+> 
