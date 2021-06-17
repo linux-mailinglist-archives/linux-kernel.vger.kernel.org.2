@@ -2,263 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 891A33AB96D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08503AB974
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 18:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbhFQQVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 12:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231607AbhFQQVO (ORCPT
+        id S232376AbhFQQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 12:22:34 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3304 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231398AbhFQQWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 12:21:14 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C60C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 09:19:06 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id a21so4846771ljj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 09:19:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UIwDw5It67gtmh1VzMKodpZv7Vdx72o6JvpV1IeQnOg=;
-        b=JF84FlMYzrgpsHqrEnua1qeDPPUmo4iEY1m1KI3nMy4BtYk4nt8BpgbzIY2AI+oVrM
-         ylPmtmacWTin/4AMe1HKaQCim3OsL5UGKNoQpuS/lWDLHkqgj8OcstirEQPq6ziU/nXf
-         h1yYDTc+GGpusnTSWfdp8lT17VTE4LSRx4hF/QKG5uwZBaY0vGJKPlUmHj6MVdZCyQY3
-         X59TgiB25zbg94Sp8HU3Cfab518FEnfgQsE2YUb3neUs57NWxTpkR3HrI4WvwF7td3Er
-         b3Ir+mCvSNQpLiBDnT9Iv20K7DQgyBLtSi0W0rtIk2pIa+iPV69lOUN3WwEJ5xKYHZrO
-         XD/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UIwDw5It67gtmh1VzMKodpZv7Vdx72o6JvpV1IeQnOg=;
-        b=lW3k6NlZqUZIbSNf4Sc0J44KzaxHi6DIB1d2YGUuOOZ7f/L3WGrraNgvf/1uteNIei
-         HTfocmg6Iaz1f79xgAy/lsFUF0qEIy3nMdqnbvtZGzbvfwuQQknQ0AMy9gfe92YIUdwd
-         NpCYC/okzJzzoeb+fkJfCLaoCltAFmys8kodTwWKiEHFjoNlAmSIdsF1czESKk2QgZpP
-         ybsjUfwcQMazmZ9eT7zFPjXJ8SCws9dgaQAL+owQrkUSap2dcxu9oY4YnPKBw80doYnk
-         nN4s9XfgVux67cTxV681fFw4yPeZUrGUudAcDrlaX9lsNSPuAPEgv/otNP6goREiFRF5
-         Rsag==
-X-Gm-Message-State: AOAM532FBabCPT7FjXysGRt3t0GtgQAQZ75E2J06mq9SZjJ2W0q/hgbp
-        mTgpS8S0yVmut/8AzdvRtdsXwA==
-X-Google-Smtp-Source: ABdhPJxB3XkzzdmKgJC169TaqXU6SXuPvGZ+e8N8N/yZe7IC73usH961/S8Ij1xhAshPRyQ1XggmjA==
-X-Received: by 2002:a2e:8802:: with SMTP id x2mr5422195ljh.245.1623946745144;
-        Thu, 17 Jun 2021 09:19:05 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id j16sm623312lfk.155.2021.06.17.09.19.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 09:19:04 -0700 (PDT)
-Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
- <20210611101540.3379937-3-dmitry.baryshkov@linaro.org>
- <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
- <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
- <CAPDyKFoMC_7kJx_Wb4LKgxvRCoqHYFtwsJ2b7Cr4OvjA94DtHg@mail.gmail.com>
- <YMjNaM0z+OzhAeO/@yoga>
- <CAPDyKFo_eNwEx5rryg3bHt_-pxBeeYfVrUZuTOHoL-x94LBwDA@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <9136597d-f30b-bf75-77c3-b42533d822fa@linaro.org>
-Date:   Thu, 17 Jun 2021 19:19:03 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 17 Jun 2021 12:22:32 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15HG3dma189626;
+        Thu, 17 Jun 2021 12:19:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=F5HZkYdoPrbKmEsIFVYZT1eVa6wqsaU0I1Vhjae1Gc0=;
+ b=hqGy/20wcNEndULpqQnto222YzbZ7EGHC6rSST3DIE2RER6JKgftXmqmfPZaqOTBiE6a
+ ifErFb2t6wSNRffp1XctdoWihmMaRsbOCnVQ7Oy1dw2CnDE+sERHTc1DXQ3Eay8gZjLX
+ MIHcFqlWf8J6ioyC7seruWesaWg0m9J1TlOkaXA3AinIJHRJaNf0SUF/hPtojsTY+RQs
+ fZOsa/oaK74SGJTTs93Yafi+YTWAOVfzU898hEn5uxOQQF5/TrmuD490myJDdwiX1WTx
+ iEgsvHg6kSErpDMvSs4TWCELE9WiaiLlEvMHV5EeblyMkbtsR3yEmeZRTL3l43zs8GHm Bg== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3988gftxcx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 12:19:43 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15HGEWGk027958;
+        Thu, 17 Jun 2021 16:19:41 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06fra.de.ibm.com with ESMTP id 394m6h9jub-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 16:19:40 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15HGJcNd27984172
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Jun 2021 16:19:38 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9E28B11C04A;
+        Thu, 17 Jun 2021 16:19:38 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0C38411C04C;
+        Thu, 17 Jun 2021 16:19:38 +0000 (GMT)
+Received: from localhost (unknown [9.85.123.186])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Jun 2021 16:19:37 +0000 (GMT)
+Date:   Thu, 17 Jun 2021 21:49:36 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH 2/2] trace/kprobe: Remove limit on kretprobe maxactive
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Anton Blanchard <anton@ozlabs.org>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <cover.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
+        <a751a0617a2c06e7e233f2c98ccabe8b94a8076d.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
+        <20210615183527.9068ef2f70fdd2a45fea78f0@kernel.org>
+        <1623777582.jsiokbdey1.naveen@linux.ibm.com>
+        <20210616094622.c8bd37840898c67dddde1053@kernel.org>
+In-Reply-To: <20210616094622.c8bd37840898c67dddde1053@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFo_eNwEx5rryg3bHt_-pxBeeYfVrUZuTOHoL-x94LBwDA@mail.gmail.com>
+User-Agent: astroid/v0.15-23-gcdc62b30
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1623934820.8pqjdszq8o.naveen@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: sLi7ZYYQk8qxIUnfjPWNgd9NCfvrhURf
+X-Proofpoint-GUID: sLi7ZYYQk8qxIUnfjPWNgd9NCfvrhURf
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-17_14:2021-06-15,2021-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ suspectscore=0 malwarescore=0 bulkscore=0 impostorscore=0 adultscore=0
+ mlxlogscore=999 priorityscore=1501 spamscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106170102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/06/2021 12:07, Ulf Hansson wrote:
-> + Rajendra
-> 
-> On Tue, 15 Jun 2021 at 17:55, Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
->>
->> On Tue 15 Jun 05:17 CDT 2021, Ulf Hansson wrote:
->>
->>> + Mark
->>>
->>> On Fri, 11 Jun 2021 at 16:34, Dmitry Baryshkov
->>> <dmitry.baryshkov@linaro.org> wrote:
->>>>
->>>> Added Stephen to Cc list
->>>>
->>>> On Fri, 11 Jun 2021 at 16:50, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->>>>>
->>>>> On Fri, 11 Jun 2021 at 12:15, Dmitry Baryshkov
->>>>> <dmitry.baryshkov@linaro.org> wrote:
->>>>>>
->>>>>> In case of nested genpds it is easy to get the following warning from
->>>>>> lockdep, because all genpd's mutexes share same locking class. Use the
->>>>>> per-genpd locking class to stop lockdep from warning about possible
->>>>>> deadlocks. It is not possible to directly use genpd nested locking, as
->>>>>> it is not the genpd code calling genpd. There are interim calls to
->>>>>> regulator core.
->>>>>>
->>>>>> [    3.030219] ============================================
->>>>>> [    3.030220] WARNING: possible recursive locking detected
->>>>>> [    3.030221] 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480 Not tainted
->>>>>> [    3.030222] --------------------------------------------
->>>>>> [    3.030223] kworker/u16:0/7 is trying to acquire lock:
->>>>>> [    3.030224] ffffde0eabd29aa0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
->>>>>> [    3.030236]
->>>>>> [    3.030236] but task is already holding lock:
->>>>>> [    3.030236] ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
->>>>>> [    3.030240]
->>>>>> [    3.030240] other info that might help us debug this:
->>>>>> [    3.030240]  Possible unsafe locking scenario:
->>>>>> [    3.030240]
->>>>>> [    3.030241]        CPU0
->>>>>> [    3.030241]        ----
->>>>>> [    3.030242]   lock(&genpd->mlock);
->>>>>> [    3.030243]   lock(&genpd->mlock);
->>>>>> [    3.030244]
->>>>>> [    3.030244]  *** DEADLOCK ***
->>>>>> [    3.030244]
->>>>>> [    3.030244]  May be due to missing lock nesting notation
->>>>>> [    3.030244]
->>>>>> [    3.030245] 6 locks held by kworker/u16:0/7:
->>>>>> [    3.030246]  #0: ffff6cca00010938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
->>>>>> [    3.030252]  #1: ffff8000100c3db0 (deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
->>>>>> [    3.030255]  #2: ffff6cca00ce3188 (&dev->mutex){....}-{3:3}, at: __device_attach+0x3c/0x184
->>>>>> [    3.030260]  #3: ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
->>>>>> [    3.030264]  #4: ffff8000100c3968 (regulator_ww_class_acquire){+.+.}-{0:0}, at: regulator_lock_dependent+0x6c/0x1b0
->>>>>> [    3.030270]  #5: ffff6cca00a59158 (regulator_ww_class_mutex){+.+.}-{3:3}, at: regulator_lock_recursive+0x94/0x1d0
->>>>>> [    3.030273]
->>>>>> [    3.030273] stack backtrace:
->>>>>> [    3.030275] CPU: 6 PID: 7 Comm: kworker/u16:0 Not tainted 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480
->>>>>> [    3.030276] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
->>>>>> [    3.030278] Workqueue: events_unbound deferred_probe_work_func
->>>>>> [    3.030280] Call trace:
->>>>>> [    3.030281]  dump_backtrace+0x0/0x1a0
->>>>>> [    3.030284]  show_stack+0x18/0x24
->>>>>> [    3.030286]  dump_stack+0x108/0x188
->>>>>> [    3.030289]  __lock_acquire+0xa20/0x1e0c
->>>>>> [    3.030292]  lock_acquire.part.0+0xc8/0x320
->>>>>> [    3.030294]  lock_acquire+0x68/0x84
->>>>>> [    3.030296]  __mutex_lock+0xa0/0x4f0
->>>>>> [    3.030299]  mutex_lock_nested+0x40/0x50
->>>>>> [    3.030301]  genpd_lock_mtx+0x18/0x2c
->>>>>> [    3.030303]  dev_pm_genpd_set_performance_state+0x94/0x1a0
->>>>>> [    3.030305]  reg_domain_enable+0x28/0x4c
->>>>>> [    3.030308]  _regulator_do_enable+0x420/0x6b0
->>>>>> [    3.030310]  _regulator_enable+0x178/0x1f0
->>>>>> [    3.030312]  regulator_enable+0x3c/0x80
->>>>>
->>>>> At a closer look, I am pretty sure that it's the wrong code design
->>>>> that triggers this problem, rather than that we have a real problem in
->>>>> genpd. To put it simply, the code in genpd isn't designed to work like
->>>>> this. We will end up in circular looking paths, leading to deadlocks,
->>>>> sooner or later if we allow the above code path.
->>>>>
->>>>> To fix it, the regulator here needs to be converted to a proper PM
->>>>> domain. This PM domain should be assigned as the parent to the one
->>>>> that is requested to be powered on.
->>>>
->>>> This more or less resembles original design, replaced per review
->>>> request to use separate regulator
->>>> (https://lore.kernel.org/linux-arm-msm/160269659638.884498.4031967462806977493@swboyd.mtv.corp.google.com/,
->>>> https://lore.kernel.org/linux-arm-msm/20201023131925.334864-1-dmitry.baryshkov@linaro.org/).
->>>
->>> Thanks for the pointers. In hindsight, it looks like the
->>> "regulator-fixed-domain" DT binding wasn't the right thing.
->>>
->>> Fortunately, it looks like the problem can be quite easily fixed, by
->>> moving to a correct model of the domain hierarchy.
->>>
->>
->> Can you give some pointers to how we actually fix this?
->>
->> The problem that lead us down this path is that drivers/clk/qcom/gdsc.c
->> describes power domains, which are parented by domains provided by
->> drivers/soc/qcom/rpmhpd.c.
->>
->> But I am unable to find a way for the gdsc driver to get hold of the
->> struct generic_pm_domain of the resources exposed by the rpmhpd driver.
-> 
-> You don't need a handle to the struct generic_pm_domain, to assign a
-> parent/child domain. Instead you can use of_genpd_add_subdomain(),
-> which takes two "struct of_phandle_args*" corresponding to the
-> parent/child device nodes of the genpd providers and then let genpd
-> internally do the look up.
-> 
-> As an example, you may have a look at how the PM domain topology in
-> drivers/cpuidle/cpuidle-psci-domain.c are being created.
-> 
->>
->>
->> The second thing that Dmitry's regulator driver does is to cast the
->> appropriate performance state vote on the rpmhpd resource, but I _think_
->> we can do that using OPP tables in the gdsc client's node...
-> 
-> Yes, it looks like using an OPP table and to specify a
-> "required-opps", at some device node is the right thing to do.
-> 
-> In this case, I wonder if the "required-opps" belongs to the genpd
-> provider node of the new power-domain (as it seems like it only
-> supports one fixed performance state when it's powered on). On the
-> other hand, specifying this at the consumer node should work as well,
-> I think.
-> 
-> Actually, this relates to the changes [1] that Rajendra is working on
-> with "assigned-performance-state" (that we agreed to move to
-> OPP/required-opps) for genpd.
+Masami Hiramatsu wrote:
+> On Tue, 15 Jun 2021 23:11:27 +0530
+> "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+>=20
+>> Masami Hiramatsu wrote:
+>> > On Mon, 14 Jun 2021 23:33:29 +0530
+>> > "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+>> >=20
+>> >> We currently limit maxactive for a kretprobe to 4096 when registering
+>> >> the same through tracefs. The comment indicates that this is done so =
+as
+>> >> to keep list traversal reasonable. However, we don't ever iterate ove=
+r
+>> >> all kretprobe_instance structures. The core kprobes infrastructure al=
+so
+>> >> imposes no such limitation.
+>> >>=20
+>> >> Remove the limit from the tracefs interface. This limit is easy to hi=
+t
+>> >> on large cpu machines when tracing functions that can sleep.
+>> >>=20
+>> >> Reported-by: Anton Blanchard <anton@ozlabs.org>
+>> >> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>> >=20
+>> > OK, but I don't like to just remove the limit (since it can cause
+>> > memory shortage easily.)
+>> > Can't we make it configurable? I don't mean Kconfig, but=20
+>> > tracefs/options/kretprobe_maxactive, or kprobes's debugfs knob.
+>> >=20
+>> > Hmm, maybe debugfs/kprobes/kretprobe_maxactive will be better since
+>> > it can limit both trace_kprobe and kprobes itself.
+>>=20
+>> I don't think it is good to put a new tunable in debugfs -- we don't=20
+>> have any kprobes tunable there, so this adds a dependency on debugfs=20
+>> which shouldn't be necessary.
+>>=20
+>> /proc/sys/debug/ may be a better fit since we have the=20
+>> kprobes-optimization flag to disable optprobes there, though I'm not=20
+>> sure if a new sysfs file is agreeable.
+>=20
+> Indeed.
+>=20
+>> But, I'm not too sure this really is a problem. Maxactive is a user=20
+>> _opt-in_ feature which needs to be explicitly added to an event=20
+>> definition. In that sense, isn't this already a tunable?
+>=20
+> Let me explain the background of the limiation.
 
-What about the following dts snippet?
-I do not want to add power-domains directly to the dispcc node (as it's 
-not a device's power domain, just gdsc's parent power domain).
+Thanks for the background on this.
+
+>=20
+> Maxactive is currently no limit for the kprobe kernel module API,
+> because the kernel module developer must take care of the max memory
+> usage (and they can).
+>=20
+> But the tracefs user may NOT have enough information about what
+> happens if they pass something like 10M for maxactive (it will consume
+> around 500MB kernel memory for one kretprobe).
+
+Ok, thinking more about this...
+
+Right now, the only way for a user to notice that kretprobe maxactive is=20
+an issue is by looking at kprobe_profile.  This is not even possible if=20
+using a bcc tool, which uses perf_event_open().  It took the reporting=20
+team some effort to even identify that the reason why they were getting=20
+weird results when tracing was due to the default value used for=20
+kretprobe maxactive; and then that 4096 was the hard limit through=20
+tracefs.
+
+So, IMO, anyone using any existing bcc tool, or a pre-canned perf script=20
+will not even be able to identify this as a problem to begin with... at=20
+least, not without some effort.
+
+To address this, as a first step, we should probably consider parsing=20
+kprobe_profile and printing a warning with 'perf' if we detect a=20
+non-zero miss count for a probe -- both a regular probe, as well as a=20
+retprobe.
+
+If we do this, the nice thing with kprobe_profile is that the probe miss=20
+count is available, and can serve as a good way to decide what a more=20
+reasonable maxactive value should be. This should help prevent users=20
+from trying with arbitrary maxactive values.
+
+For perf_event_open(), perhaps we can introduce an ioctl to query the=20
+probe miss count.
+
+>=20
+> To avoid such trouble, I had set the 4096 limitation for the maxactive
+> parameter. Of course 4096 may not enough for some use-cases. I'm welcome
+> to expand it (e.g. 32k, isn't it enough?), but removing the limitation
+> may cause OOM trouble easily.
+
+Do you have suggestions for how we can determine a better limit? As you=20
+point out in the other email, there could very well be 64k or more=20
+processes on a large machine. Since the primary concern is memory usage,=20
+we probably need to decide this based on total memory. But, memory usage=20
+will vary depending on system load...
+
+Perhaps we can start by making maxactive limit be a tunable with a=20
+default value of 4096, with the understanding that users will be careful=20
+when bumping up this value. Hopefully, scripts won't simply start=20
+writing into this file ;)
+
+If we can feed back the probe miss count, tools should be able to guide=20
+users on what would be a reasonable maxactive value to use.
 
 
-dispcc: clock-controller@af00000 {
-	compatible = "qcom,sm8250-dispcc";
-	[....]
-	#power-domain-cells = <1>;
+Thanks,
+Naveen
 
-	mmss_gdsc {
-		power-domains = <&rpmhpd SM8250_MMCX>;
-                 required-opps = <&rpmhpd_opp_low_svs>;
-	};
-};
-
-> 
->>
->>> Beyond this, perhaps we should consider removing the
->>> "regulator-fixed-domain" DT property, as to avoid similar problems
->>> from cropping up?
->>>
->>
->> Currently there's a single user upstream, but we have the exact same
->> problem in at least 3-4 platforms with patches in the pipeline.
->>
->> In order to avoid breakage with existing DT I would prefer to see
->> regulator-fixed-domain to live for at least one kernel release beyond
->> the introduction of the other model.
-> 
-> Yes, this seems reasonable to me.
-> 
-> As Mark suggested, let's mark the regulator-fixed-domain DT property
-> as deprecated and remove it once we have the new solution in place.
-> 
-> [...]
-> 
-> Kind regards
-> Uffe
-> 
-
-
--- 
-With best wishes
-Dmitry
