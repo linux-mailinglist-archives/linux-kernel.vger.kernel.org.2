@@ -2,69 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC4B3AABCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573A33AABC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Jun 2021 08:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhFQGZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 02:25:04 -0400
-Received: from m12-17.163.com ([220.181.12.17]:54393 "EHLO m12-17.163.com"
+        id S229897AbhFQGXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 02:23:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhFQGZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 02:25:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=vRur2
-        nDprkxMjBDQqNeuKBKmkk6v6EeIS58FPxN+wF0=; b=YtoQxZ8eqfWSpO/R0fCRI
-        w1A4+oPeL4md4NkYTD2w2avbl6XFCogEvFDdXZQ1vLokaVv+iAcE7RicWtbLKT/Y
-        MrF84Njcb/BelVzT5qfhSLjuCDx1+4klFQHqiZly7JBHlmxi2Zmf47/o4XiqUCRn
-        EC7xcIYA842/mFqUnUSe9o=
-Received: from localhost.localdomain (unknown [218.17.89.111])
-        by smtp13 (Coremail) with SMTP id EcCowAB3XnbV6cpgBMM38A--.48080S2;
-        Thu, 17 Jun 2021 14:21:30 +0800 (CST)
-From:   ChunyouTang <tangchunyou@163.com>
-To:     robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, airlied@linux.ie, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        ChunyouTang <tangchunyou@icubecorp.cn>
-Subject: [PATCH v2] drm/panfrost:report the full raw fault information instead
-Date:   Thu, 17 Jun 2021 14:20:54 +0800
-Message-Id: <20210617062054.1864-1-tangchunyou@163.com>
-X-Mailer: git-send-email 2.30.0.windows.1
+        id S229515AbhFQGXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 02:23:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9D6B60FEA;
+        Thu, 17 Jun 2021 06:20:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623910859;
+        bh=57dsMicloxNOk1lyxm1iyNvezjRmT/zehpa8a/omzhY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dFt2djALGgzeWAZu+Dk2zJpX39bUyQPeCqO6YtdyHU7HLGuVBvBJzacgi/liSnitV
+         O61ASU5ehkEC0aHKQjkcPLXw7EROtY140dw5GGXNAUAusxNX3jp0rjYmxX7dnNz6MO
+         op8hoyy0aWGypOGFUsvVav8cO1NS8lbH1N1UsMWk/lEdnRgXGijCCIxUyGURAC1l4I
+         Er5E9qY1Hf/4cXbDTlXdgPk6jEJln700T5ys6wL0nzIXvciKyobgL3BZK4rKfKiMJu
+         qQ+B89er/JIrUg/rcTudzgtQCbC1IClZpuPsXz5h7K56AQl7caMOP4336TQ1lrDRpo
+         vS3c3xVpY/3XA==
+Date:   Thu, 17 Jun 2021 11:50:55 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/7] spi: spi-geni-qcom: Add support for GPI dma
+Message-ID: <YMrpx7uK2pM4AwYh@vkoul-mobl>
+References: <20210111151651.1616813-1-vkoul@kernel.org>
+ <20210111151651.1616813-5-vkoul@kernel.org>
+ <20210111163504.GD4728@sirena.org.uk>
+ <YMm7ZWXnJyb8QT1u@vkoul-mobl>
+ <20210616113505.GB6418@sirena.org.uk>
+ <YMnoXKAvL0461GRR@vkoul-mobl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowAB3XnbV6cpgBMM38A--.48080S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JrWrWFW7CF1fJr4xXFyUGFg_yoWfZrc_uw
-        17ZrnxXrsIyrn0kwsayan7urySvryUZw40yw1xG347C3W5C34ag3s2vrs8Zr1UWa15AF1D
-        ta12qF1Yyry7KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5PWrJUUUUU==
-X-Originating-IP: [218.17.89.111]
-X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/xtbBRRu0UVPAMgJUJAAAso
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMnoXKAvL0461GRR@vkoul-mobl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChunyouTang <tangchunyou@icubecorp.cn>
+On 16-06-21, 17:32, Vinod Koul wrote:
+> On 16-06-21, 12:35, Mark Brown wrote:
+> > On Wed, Jun 16, 2021 at 02:20:45PM +0530, Vinod Koul wrote:
+> > > But in this case, that wont work. We have a parent qup device which is
+> > > the parent for both spi and dma device and needs to be used for
+> > > dma-mapping! 
+> > 
+> > > If we allow drivers to set dma mapping device and use that, then I can
+> > > reuse the core. Let me know if that is agreeable to you and I can hack
+> > > this up. Maybe add a new member in spi_controller which is filled by
+> > > drivers in can_dma() callback?
+> > 
+> > Possibly, I'd need to see the code.
+> 
+> Ok, let me do a prototype and share ...
 
-of the low 8 bits.
+So setting the dma_map_dev in the can_dma() callback does not work as we
+would need device before we invoke can_dma(), so modified this to be set
+earlier by driver (in driver probe, set the dma_map_dev) and use in
+__spi_map_msg().
 
-Signed-off-by: ChunyouTang <tangchunyou@icubecorp.cn>
----
- drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+With this it works for me & I was able to get rid of driver mapping code
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-index 1fffb6a0b24f..d2d287bbf4e7 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-@@ -33,7 +33,7 @@ static irqreturn_t panfrost_gpu_irq_handler(int irq, void *data)
- 		address |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO);
+-- >8 --
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index e353b7a9e54e..315f7e7545f7 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -961,11 +961,15 @@ static int __spi_map_msg(struct spi_controller *ctlr, struct spi_message *msg)
  
- 		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at 0x%016llx\n",
--			 fault_status & 0xFF, panfrost_exception_name(pfdev, fault_status & 0xFF),
-+			 fault_status, panfrost_exception_name(pfdev, fault_status & 0xFF),
- 			 address);
+ 	if (ctlr->dma_tx)
+ 		tx_dev = ctlr->dma_tx->device->dev;
++	else if (ctlr->dma_map_dev)
++		tx_dev = ctlr->dma_map_dev;
+ 	else
+ 		tx_dev = ctlr->dev.parent;
  
- 		if (state & GPU_IRQ_MULTIPLE_FAULT)
+ 	if (ctlr->dma_rx)
+ 		rx_dev = ctlr->dma_rx->device->dev;
++	else if (ctlr->dma_map_dev)
++		rx_dev = ctlr->dma_map_dev;
+ 	else
+ 		rx_dev = ctlr->dev.parent;
+ 
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 74239d65c7fd..4d3f116f5723 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -586,6 +586,7 @@ struct spi_controller {
+ 	bool			(*can_dma)(struct spi_controller *ctlr,
+ 					   struct spi_device *spi,
+ 					   struct spi_transfer *xfer);
++	struct device *dma_map_dev;
+ 
+ 	/*
+ 	 * These hooks are for drivers that want to use the generic
+
 -- 
-2.25.1
-
-
+~Vinod
