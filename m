@@ -2,103 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7EF3AD317
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DE13AD324
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhFRTta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhFRTt0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 15:49:26 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B88C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 12:47:16 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id m17so2045496plx.7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 12:47:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=eq0N34Elw7O9e3nBxwSL+pENedj11Jkr0/H5vmh3pBo=;
-        b=md5MeIpFhcK2iIApQdDDALKT7hCraWLPVY3CbjtqgJicSzCUh6v5whBrWKvYm9kZPx
-         +vweAivEg59pZRNL+Q6LtzJ8V4rmZjLZJC/dM7v5zPpBbsQg0nMqVD3JnIhd6yklk6Y5
-         tnWZHSnsL1jw07DChiw4RbShzbMsPc3ybynFJLdK1PVN6tCOofoqrefLlTPQGy1NLtYR
-         ddrwoLzLdY1oQ/QgAm+fd0mQI6wqGZTlQvuIzY7Olj2hCF8CPtqeyQGtx+b2z5NmE74i
-         pWI39ae7i843LtjLzOWU/eneQaxPNAGa0NRPyJS0NFJu0mkBHzglNAawqyENDad+LzyE
-         nkNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=eq0N34Elw7O9e3nBxwSL+pENedj11Jkr0/H5vmh3pBo=;
-        b=bYcCbGyaVY4Zo3msgBAS4JQCw5/iim2nhcuhi+J7n4iQradN4tPm3EjKWPJ/BRKJIQ
-         hgAB6khh57Bj0PRet6+UDBeI2tTtZmwTgmMUceY3BK2ZX/hc/9VtiyYlFf1MjaH1DuxZ
-         ecuGMx37JTNgLE2r7p5H+S7XXTSEKRMqd6VXrJ3f+1FDSPSjQVF53lOHmc6upC0whIB7
-         CmW9YLGZRTNp7xZ05IDeh8Z/VYzNmAl8Ba3kCoRCA6ADWWfU7+7xW8k6lbUu0rzquzKB
-         W8lLYpU4bioR5fE3FwfdgiD/n5/Qoc2McpivFn6sOn1RyWI9vdjiJLbDnDVjZSDSJ7At
-         ES0Q==
-X-Gm-Message-State: AOAM532ZEdgew4sr6vr2QRjQSogdL18RmeQifLJQkKr/Ja24uv2uQPZ4
-        Ct2kfY/ALRJOIb2Ml2Yjvsb9+rg1JgCCew==
-X-Google-Smtp-Source: ABdhPJwIj5XwSwiZJe0QhGTCJrTe3ZX8MEoalt16+FuxZ8ezP+RY6l+/5DuS09FY/e3rd9JPPR2OkQ==
-X-Received: by 2002:a17:902:c1cc:b029:122:52b4:3855 with SMTP id c12-20020a170902c1ccb029012252b43855mr1621009plc.10.1624045635401;
-        Fri, 18 Jun 2021 12:47:15 -0700 (PDT)
-Received: from [2620:15c:17:3:3a6:a5d0:1984:a150] ([2620:15c:17:3:3a6:a5d0:1984:a150])
-        by smtp.gmail.com with ESMTPSA id s1sm9601820pgg.49.2021.06.18.12.47.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 12:47:14 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 12:47:13 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, cohuck@redhat.com, david@redhat.com,
-        linux-mm@kvack.org, Uladzislau Rezki <urezki@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v4 1/2] mm/vmalloc: add vmalloc_no_huge
-In-Reply-To: <20210614132357.10202-2-imbrenda@linux.ibm.com>
-Message-ID: <1ab3bba4-dc91-4f8-ecd5-b18b17ec6d8@google.com>
-References: <20210614132357.10202-1-imbrenda@linux.ibm.com> <20210614132357.10202-2-imbrenda@linux.ibm.com>
+        id S232796AbhFRTwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:52:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhFRTwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 15:52:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 463F6613E9;
+        Fri, 18 Jun 2021 19:50:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624045838;
+        bh=Olzy7g261M2VzBHP3yNFLi2kVn+AxxWpUNxI0dmBqcc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dcP4F/onnC+AOTwEh+lLoHTFig1Ba3jo+I4fjjCvYFbLZbVPvhtCidPPAwY/NkJIT
+         jS8iPQktgF4ztiwk8UTas962qqssLW0P29WJX2/lUIOrJGsb6gc7DjFb3lBxz2itjF
+         0mszurdnDaFarK1TslyM/1ieSnyBbG79y5AU1JZD4EcUXHViPgj5OuQu/g2xAkPwdk
+         FEuJlWIMIKRZSEfkLA17KhLw6b4Jv4AzZ6FdFtt8MN2EkoUl15Sj/adadfGjgiVF1O
+         pj58nvIs4hSfj8TmN+B/CfujaHHguA1jxkuZj/rM/t5sJUq5snviGXyQ6epvkVogp1
+         wVRYM/P5WJeyw==
+Received: by mail-ej1-f52.google.com with SMTP id og14so17559407ejc.5;
+        Fri, 18 Jun 2021 12:50:38 -0700 (PDT)
+X-Gm-Message-State: AOAM532epyVM+6mSLy7yYtAcW36EMldqHdBUUc0On0EtyUvv1CgDC9NG
+        nGt2AbvGVoASdljnUGpdRXKb005xmWqOOQNPyQ==
+X-Google-Smtp-Source: ABdhPJwKAurPVIO13QjaLe6oUgNoXTxDg/+T34lz/ida9mpMP6fVsLehR3G6dZmNY0InmWB6h6ecN/5xS0kNaklg6CQ=
+X-Received: by 2002:a17:907:2059:: with SMTP id pg25mr12140038ejb.130.1624045836720;
+ Fri, 18 Jun 2021 12:50:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <1623690937-52389-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1623690937-52389-2-git-send-email-zhouyanjie@wanyeetech.com>
+ <CAL_Jsq+7v6GRMfxWhA6g2r0GaZSO_AztgSz7rheJsE9jKYd8uQ@mail.gmail.com>
+ <20210616154526.54481912@zhouyanjie-virtual-machine> <20210617112400.5e68c172@zhouyanjie-virtual-machine>
+In-Reply-To: <20210617112400.5e68c172@zhouyanjie-virtual-machine>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 18 Jun 2021 13:50:25 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJW_L3TXTy89Y6YOyQzGzOeN3g1D7pwbuGmSW6TFaO4nA@mail.gmail.com>
+Message-ID: <CAL_JsqJW_L3TXTy89Y6YOyQzGzOeN3g1D7pwbuGmSW6TFaO4nA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: dwmac: Add bindings for new Ingenic SoCs.
+To:     =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+Cc:     sihui.liu@ingenic.com, David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe CAVALLARO <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021, Claudio Imbrenda wrote:
+On Wed, Jun 16, 2021 at 9:24 PM =E5=91=A8=E7=90=B0=E6=9D=B0 <zhouyanjie@wan=
+yeetech.com> wrote:
+>
+> Hi Rob,
+>
+> =E4=BA=8E Wed, 16 Jun 2021 15:45:26 +0800
+> =E5=91=A8=E7=90=B0=E6=9D=B0 <zhouyanjie@wanyeetech.com> =E5=86=99=E9=81=
+=93:
+>
+> > Hi Rob,
+> >
+> > =E4=BA=8E Tue, 15 Jun 2021 17:05:45 -0600
+> > Rob Herring <robh+dt@kernel.org> =E5=86=99=E9=81=93:
+> >
+> > > On Mon, Jun 14, 2021 at 11:18 AM =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Ya=
+njie)
+> > > <zhouyanjie@wanyeetech.com> wrote:
+> > > >
+> > > > Add the dwmac bindings for the JZ4775 SoC, the X1000 SoC,
+> > > > the X1600 SoC, the X1830 SoC and the X2000 SoC from Ingenic.
+> > > >
+> > > > Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanji=
+e@wanyeetech.com>
+> > > > ---
+> > > >
+> > > > Notes:
+> > > >     v1->v2:
+> > > >     No change.
+> > > >
+> > > >     v2->v3:
+> > > >     Add "ingenic,mac.yaml" for Ingenic SoCs.
+> > > >
+> > > >  .../devicetree/bindings/net/ingenic,mac.yaml       | 76
+> > > > ++++++++++++++++++++++ .../devicetree/bindings/net/snps,dwmac.yaml
+> > > > | 15 +++++ 2 files changed, 91 insertions(+)
+> > > >  create mode 100644
+> > > > Documentation/devicetree/bindings/net/ingenic,mac.yaml
+> > > >
+> > > > diff --git
+> > > > a/Documentation/devicetree/bindings/net/ingenic,mac.yaml
+> > > > b/Documentation/devicetree/bindings/net/ingenic,mac.yaml new file
+> > > > mode 100644 index 00000000..5fe2e81 --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/net/ingenic,mac.yaml
+> > > > @@ -0,0 +1,76 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/net/ingenic,mac.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Bindings for MAC in Ingenic SoCs
+> > > > +
+> > > > +maintainers:
+> > > > +  - =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wanyeete=
+ch.com>
+> > > > +
+> > > > +description:
+> > > > +  The Ethernet Media Access Controller in Ingenic SoCs.
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    enum:
+> > > > +      - ingenic,jz4775-mac
+> > > > +      - ingenic,x1000-mac
+> > > > +      - ingenic,x1600-mac
+> > > > +      - ingenic,x1830-mac
+> > > > +      - ingenic,x2000-mac
+> > > > +
+> > > > +  reg:
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  interrupts:
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  interrupt-names:
+> > > > +    const: macirq
+> > > > +
+> > > > +  clocks:
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  clock-names:
+> > > > +    const: stmmaceth
+> > > > +
+> > > > +  mode-reg:
+> > > > +    description: An extra syscon register that control ethernet
+> > > > interface and timing delay
+> > >
+> > > Needs a vendor prefix and type.
+> > >
+> > > > +
+> > > > +  rx-clk-delay-ps:
+> > > > +    description: RGMII receive clock delay defined in pico
+> > > > seconds +
+> > > > +  tx-clk-delay-ps:
+> > > > +    description: RGMII transmit clock delay defined in pico
+> > > > seconds +
+> > > > +required:
+> > > > +  - compatible
+> > > > +  - reg
+> > > > +  - interrupts
+> > > > +  - interrupt-names
+> > > > +  - clocks
+> > > > +  - clock-names
+> > > > +  - mode-reg
+> > > > +
+> > > > +additionalProperties: false
+> > > > +
+> > > > +examples:
+> > > > +  - |
+> > > > +    #include <dt-bindings/clock/x1000-cgu.h>
+> > > > +
+> > > > +    mac: ethernet@134b0000 {
+> > > > +        compatible =3D "ingenic,x1000-mac", "snps,dwmac";
+> > >
+> > > Doesn't match the schema.
+> >
+> > Sorry for that, somehow when I run "make dt_bindings_check", there is
+> > no warrning or error message about this file. I am sure that yamllint
+> > is installed and dtschema has been upgraded to 2021.6.
+>
+> I found that it seems to be because 5.13 newly introduced
+> "DT_CHECKER_FLAGS=3D-m", and I am still using the old
+> "make dt_binding_check" command, so this error is not prompted. Now I
+> can see this error message after using the
+> "make DT_CHECKER_FLAGS=3D-m dt_binding_check" command, and I will send a
+> fix soon.
 
-> Commit 121e6f3258fe3 ("mm/vmalloc: hugepage vmalloc mappings") added
-> support for hugepage vmalloc mappings, it also added the flag
-> VM_NO_HUGE_VMAP for __vmalloc_node_range to request the allocation to
-> be performed with 0-order non-huge pages.  This flag is not accessible
-> when calling vmalloc, the only option is to call directly
-> __vmalloc_node_range, which is not exported.
-> 
-> This means that a module can't vmalloc memory with small pages.
-> 
-> Case in point: KVM on s390x needs to vmalloc a large area, and it needs
-> to be mapped with non-huge pages, because of a hardware limitation.
-> 
-> This patch adds the function vmalloc_no_huge, which works like vmalloc,
-> but it is guaranteed to always back the mapping using small pages. This
-> new function is exported, therefore it is usable by modules.
-> 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> Acked-by: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Christoph Hellwig <hch@infradead.org>
+No, this error has nothing to do with the '-m' option.
 
-Acked-by: David Rientjes <rientjes@google.com>
+Rob
