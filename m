@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3E43AC9C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 13:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186303AC9C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 13:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbhFRL0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 07:26:15 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55010 "EHLO
+        id S234051AbhFRL0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 07:26:20 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55028 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231240AbhFRL0N (ORCPT
+        with ESMTP id S232671AbhFRL0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 07:26:13 -0400
-Date:   Fri, 18 Jun 2021 11:24:02 -0000
+        Fri, 18 Jun 2021 07:26:14 -0400
+Date:   Fri, 18 Jun 2021 11:24:03 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624015442;
+        s=2020; t=1624015444;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dPLZ2KZ9EEqcuTn9Ap2WMPYRrkD/DqnR0b5dZDvam6k=;
-        b=FJ4Mt3tFzwuvIaZqmqGf/bpaeptMCEeXcq+6/xelDT7zQO5o0LxwYlyhr46An1VfWFGRR1
-        8rvOEaXurzqAv6fxAhcbL9vPjP/WA83ydfeADw+67EAeDeom5tThw3OcMkRsacuIl2V9zL
-        ImI78BJfly8s2qKTCApJg5NoCjFky9zIPj5/W5n0U3KMjtHL2GLn5sIKGw/IaC5dO7lhJV
-        JZ1bUayPjk4mi+cCiLlP610Nc2qiUfZsFu0+nUT84c+pU2SU37Ba1JE/rR+trEe8q/0kXK
-        9mZLXlAV8NvcjSgQA0P4G7yuW3WiH93rIirAS6cemjcgoz3PS5K0cbKToeRADw==
+        bh=EVZLg8fmjHB0S2arhyQJRP9x6GTrH755/mwVbYBp7d0=;
+        b=b+yrGuJ5gSMTJ89J1nH/RiV4t1PtxoezEZM6FMwtRThgeqWzwEFeD/z9iCyc0XWfL0Inyn
+        Uj7wllibCOg5L5O/l041ew5BuwvAvBGYBlUikJEI6wtYPGcElgIN/TbiKsIAw5LgOlP5ID
+        4nofuEEWhGfA/4ojRtECfQr7JYnLC1CpU+hfSe1+yRA7XrjKaTdIM3cD2P8E8u34y3CTeS
+        U1kLd5hGm/SxCjyJ7OkqkLqCtyFshzKiHFF6mwkiyJ/EvW8oTSlSkD250q2OaawNn8QcYF
+        f0Q2yFfyqD29CRhYc8IE5vLJ60NY3LTJaokHYqEce7g2dfyGKa3CfhB7TQwKSQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624015442;
+        s=2020e; t=1624015444;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dPLZ2KZ9EEqcuTn9Ap2WMPYRrkD/DqnR0b5dZDvam6k=;
-        b=KtmQ4t6YblY1nCFrPibCdEebwxSWh17dCc+sSbJFhJTwj/dtVBQNryrppbJPaUE1WHJ4CU
-        j8SNzZP1cW4KwpAQ==
+        bh=EVZLg8fmjHB0S2arhyQJRP9x6GTrH755/mwVbYBp7d0=;
+        b=DdhODpYp3+T7zGp0ctgHMBt+ycRJvGPN9IClhv4kLwZzwi5C6aUuvcaQOFEIBvsYi1R6LJ
+        8VCRiy8pxXXfI/CQ==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched,arch: Remove unused TASK_STATE offsets
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: sched/core] sched: Add get_current_state()
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210611082838.472811363@infradead.org>
-References: <20210611082838.472811363@infradead.org>
+In-Reply-To: <20210611082838.347475156@infradead.org>
+References: <20210611082838.347475156@infradead.org>
 MIME-Version: 1.0
-Message-ID: <162401544225.19906.15094500140160379605.tip-bot2@tip-bot2>
+Message-ID: <162401544338.19906.292740293969092340.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,98 +58,86 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     7c3edd6d9cb4d8ea8db5b167dc2eee94d7e4667b
-Gitweb:        https://git.kernel.org/tip/7c3edd6d9cb4d8ea8db5b167dc2eee94d7e4667b
+Commit-ID:     d6c23bb3a2ad2f8f7dd46292b8bc54d27f2fb3f1
+Gitweb:        https://git.kernel.org/tip/d6c23bb3a2ad2f8f7dd46292b8bc54d27f2fb3f1
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 11 Jun 2021 10:28:16 +02:00
+AuthorDate:    Fri, 11 Jun 2021 10:28:14 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 18 Jun 2021 11:43:09 +02:00
+CommitterDate: Fri, 18 Jun 2021 11:43:08 +02:00
 
-sched,arch: Remove unused TASK_STATE offsets
+sched: Add get_current_state()
 
-All 6 architectures define TASK_STATE in asm-offsets, but then never
-actually use it. Remove the definitions to make sure they never will.
+Remove yet another few p->state accesses.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210611082838.472811363@infradead.org
+Acked-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20210611082838.347475156@infradead.org
 ---
- arch/csky/kernel/asm-offsets.c       | 1 -
- arch/h8300/kernel/asm-offsets.c      | 1 -
- arch/microblaze/kernel/asm-offsets.c | 1 -
- arch/mips/kernel/asm-offsets.c       | 1 -
- arch/openrisc/kernel/asm-offsets.c   | 1 -
- arch/parisc/kernel/asm-offsets.c     | 1 -
- 6 files changed, 6 deletions(-)
+ block/blk-mq.c        | 2 +-
+ include/linux/sched.h | 2 ++
+ kernel/freezer.c      | 2 +-
+ kernel/sched/core.c   | 6 +++---
+ 4 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/arch/csky/kernel/asm-offsets.c b/arch/csky/kernel/asm-offsets.c
-index 1747986..1cbcba4 100644
---- a/arch/csky/kernel/asm-offsets.c
-+++ b/arch/csky/kernel/asm-offsets.c
-@@ -9,7 +9,6 @@
- int main(void)
- {
- 	/* offsets into the task struct */
--	DEFINE(TASK_STATE,        offsetof(struct task_struct, state));
- 	DEFINE(TASK_THREAD_INFO,  offsetof(struct task_struct, stack));
- 	DEFINE(TASK_FLAGS,        offsetof(struct task_struct, flags));
- 	DEFINE(TASK_PTRACE,       offsetof(struct task_struct, ptrace));
-diff --git a/arch/h8300/kernel/asm-offsets.c b/arch/h8300/kernel/asm-offsets.c
-index d4b53af..65571ee 100644
---- a/arch/h8300/kernel/asm-offsets.c
-+++ b/arch/h8300/kernel/asm-offsets.c
-@@ -21,7 +21,6 @@
- int main(void)
- {
- 	/* offsets into the task struct */
--	OFFSET(TASK_STATE, task_struct, state);
- 	OFFSET(TASK_FLAGS, task_struct, flags);
- 	OFFSET(TASK_PTRACE, task_struct, ptrace);
- 	OFFSET(TASK_BLOCKED, task_struct, blocked);
-diff --git a/arch/microblaze/kernel/asm-offsets.c b/arch/microblaze/kernel/asm-offsets.c
-index 6c69ce7..b77dd18 100644
---- a/arch/microblaze/kernel/asm-offsets.c
-+++ b/arch/microblaze/kernel/asm-offsets.c
-@@ -70,7 +70,6 @@ int main(int argc, char *argv[])
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 655db5f..56270bb 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -3910,7 +3910,7 @@ int blk_poll(struct request_queue *q, blk_qc_t cookie, bool spin)
  
- 	/* struct task_struct */
- 	DEFINE(TS_THREAD_INFO, offsetof(struct task_struct, stack));
--	DEFINE(TASK_STATE, offsetof(struct task_struct, state));
- 	DEFINE(TASK_FLAGS, offsetof(struct task_struct, flags));
- 	DEFINE(TASK_PTRACE, offsetof(struct task_struct, ptrace));
- 	DEFINE(TASK_BLOCKED, offsetof(struct task_struct, blocked));
-diff --git a/arch/mips/kernel/asm-offsets.c b/arch/mips/kernel/asm-offsets.c
-index 5735b2c..04ca752 100644
---- a/arch/mips/kernel/asm-offsets.c
-+++ b/arch/mips/kernel/asm-offsets.c
-@@ -78,7 +78,6 @@ void output_ptreg_defines(void)
- void output_task_defines(void)
+ 	hctx->poll_considered++;
+ 
+-	state = current->state;
++	state = get_current_state();
+ 	do {
+ 		int ret;
+ 
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 2cd5635..395c890 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -213,6 +213,8 @@ struct task_group;
+ 
+ #endif
+ 
++#define get_current_state()	READ_ONCE(current->state)
++
+ /* Task command name length: */
+ #define TASK_COMM_LEN			16
+ 
+diff --git a/kernel/freezer.c b/kernel/freezer.c
+index dc520f0..45ab36f 100644
+--- a/kernel/freezer.c
++++ b/kernel/freezer.c
+@@ -58,7 +58,7 @@ bool __refrigerator(bool check_kthr_stop)
+ 	/* Hmm, should we be allowed to suspend when there are realtime
+ 	   processes around? */
+ 	bool was_frozen = false;
+-	long save = current->state;
++	unsigned int save = get_current_state();
+ 
+ 	pr_debug("%s entered refrigerator\n", current->comm);
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 618c2b5..45ebb3c 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9098,15 +9098,15 @@ static inline int preempt_count_equals(int preempt_offset)
+ 
+ void __might_sleep(const char *file, int line, int preempt_offset)
  {
- 	COMMENT("MIPS task_struct offsets.");
--	OFFSET(TASK_STATE, task_struct, state);
- 	OFFSET(TASK_THREAD_INFO, task_struct, stack);
- 	OFFSET(TASK_FLAGS, task_struct, flags);
- 	OFFSET(TASK_MM, task_struct, mm);
-diff --git a/arch/openrisc/kernel/asm-offsets.c b/arch/openrisc/kernel/asm-offsets.c
-index 18c703d..710651d 100644
---- a/arch/openrisc/kernel/asm-offsets.c
-+++ b/arch/openrisc/kernel/asm-offsets.c
-@@ -37,7 +37,6 @@
- int main(void)
- {
- 	/* offsets into the task_struct */
--	DEFINE(TASK_STATE, offsetof(struct task_struct, state));
- 	DEFINE(TASK_FLAGS, offsetof(struct task_struct, flags));
- 	DEFINE(TASK_PTRACE, offsetof(struct task_struct, ptrace));
- 	DEFINE(TASK_THREAD, offsetof(struct task_struct, thread));
-diff --git a/arch/parisc/kernel/asm-offsets.c b/arch/parisc/kernel/asm-offsets.c
-index cd2cc1b..33113ba 100644
---- a/arch/parisc/kernel/asm-offsets.c
-+++ b/arch/parisc/kernel/asm-offsets.c
-@@ -42,7 +42,6 @@
- int main(void)
- {
- 	DEFINE(TASK_THREAD_INFO, offsetof(struct task_struct, stack));
--	DEFINE(TASK_STATE, offsetof(struct task_struct, state));
- 	DEFINE(TASK_FLAGS, offsetof(struct task_struct, flags));
- 	DEFINE(TASK_SIGPENDING, offsetof(struct task_struct, pending));
- 	DEFINE(TASK_PTRACE, offsetof(struct task_struct, ptrace));
++	unsigned int state = get_current_state();
+ 	/*
+ 	 * Blocking primitives will set (and therefore destroy) current->state,
+ 	 * since we will exit with TASK_RUNNING make sure we enter with it,
+ 	 * otherwise we will destroy state.
+ 	 */
+-	WARN_ONCE(current->state != TASK_RUNNING && current->task_state_change,
++	WARN_ONCE(state != TASK_RUNNING && current->task_state_change,
+ 			"do not call blocking ops when !TASK_RUNNING; "
+-			"state=%lx set at [<%p>] %pS\n",
+-			current->state,
++			"state=%x set at [<%p>] %pS\n", state,
+ 			(void *)current->task_state_change,
+ 			(void *)current->task_state_change);
+ 
