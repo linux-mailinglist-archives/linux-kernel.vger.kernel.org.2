@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9B73ACE9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE163ACEA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234950AbhFRPXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235050AbhFRPV4 (ORCPT
+        id S235225AbhFRPXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:23:04 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56562 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235049AbhFRPV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:21:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9F9C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:19:47 -0700 (PDT)
-Message-Id: <20210618143446.905002907@linutronix.de>
+        Fri, 18 Jun 2021 11:21:57 -0400
+Message-Id: <20210618143447.010786126@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029585;
+        s=2020; t=1624029586;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=VeBuwCgPrVmol+2PY71uVjYPUmlDqd9wcKfy/pLX2wk=;
-        b=oZilkD1P2+PQSDjbsTLF2lCHPFfehf7L5lOE1gtbexjGowus4uul1UBIuyeFMHqnPyJfKt
-        1aQOZHCZn8SCJoqb5T1DmdmAj3h3fkzG52DnxbNkBADjtiPp66k71Jwdb5XdqjLLyicvz9
-        UnuGOtjqoSi0KFnwtONAbP7PS+RV39lQvn/V8U1p3OUaN2ST+iRWV4666h4A+x2+urS/Hi
-        8YXCatW0dMK/mWyTBrQg/uSEb3kDhj+C6akDAFONLsYDKY35iJaWxqyX0H4ysauPTcFzWI
-        Sjj7bgi3aKW24AgkOEPHKYQ1U253mg+XHo+Eesr4siS3RoM85QGQp4I4qYnl4w==
+        bh=GWHglKW7NFMg+Pcbxfd7rlWLYJlOgq9HHBZKtaeDj3g=;
+        b=oYW7kW9++xRJ+t0QDo0XXWXyMKItw+2msmON+lOA6gsbvH2mXUAQXZNS0j7+0IUzJBb9Jm
+        57s3Vq2mTwl8USIv6jYYIIUbhwu5ybDBfIApkGiWxuxi1Awdqj6K7dJV/dFIMWReC92ItM
+        w6XXjPAqCVH2Fan4Zqkt9qkceg+n60NnWwqSZWJn+6YoDijFXt3mH5H4o0OEwOJ5QG3pXG
+        HbTrjckIu7YbwMS2eA5sQbrAahCnAOl5eiYzFYd0J1zyJMa7i8+mOxSHB3lTrmC6ENHr9z
+        Js6o1QhYKfOU2ih+uu23bL7PmsPav/OtLks9s5Q9pTzE7d6O44KFipK3mLlZMA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029585;
+        s=2020e; t=1624029586;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=VeBuwCgPrVmol+2PY71uVjYPUmlDqd9wcKfy/pLX2wk=;
-        b=Zqf9DpzW6mTQPL+ANz9eJ8C3jWUsAMgbJkQHEe6Cq1J9uZq/40ym52vwme+sZY1tpCcv2U
-        9FVtxexYM/EKBoCg==
-Date:   Fri, 18 Jun 2021 16:18:45 +0200
+        bh=GWHglKW7NFMg+Pcbxfd7rlWLYJlOgq9HHBZKtaeDj3g=;
+        b=b49ufpRZRIkVoDw3HUCx99P1kB1gcPOcYEZL5/mUeKhND92AVI4h+nboaoYqEc2ZjsrKOT
+        lsTh0eeDWKaVfwDw==
+Date:   Fri, 18 Jun 2021 16:18:46 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,7 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 22/66] x86/fpu: Move fpu__write_begin() to regset
+Subject: [patch V3 23/66] x86/fpu: Get rid of using_compacted_format()
 References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,115 +53,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usecase for fpu__write_begin is the set() callback of regset, so
-the function is pointlessly global.
-
-Move it to the regset code and rename it to fpu_force_restore() which is
-exactly decribing what the function does.
+This function is pointlessly global and a complete misnomer because it's
+usage is related to both supervisor state checks and compacted format
+checks. Remove it and just make the conditions check the XSAVES feature.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Borislav Petkov <bp@suse.de>
 ---
- arch/x86/include/asm/fpu/internal.h |    1 -
- arch/x86/kernel/fpu/core.c          |   24 ------------------------
- arch/x86/kernel/fpu/regset.c        |   25 ++++++++++++++++++++++---
- 3 files changed, 22 insertions(+), 28 deletions(-)
+V2: New patch.
+---
+ arch/x86/include/asm/fpu/xstate.h |    1 -
+ arch/x86/kernel/fpu/xstate.c      |   22 ++++------------------
+ 2 files changed, 4 insertions(+), 19 deletions(-)
 
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -26,7 +26,6 @@
- /*
-  * High level FPU state handling functions:
-  */
--extern void fpu__prepare_write(struct fpu *fpu);
- extern void fpu__save(struct fpu *fpu);
- extern int  fpu__restore_sig(void __user *buf, int ia32_frame);
- extern void fpu__drop(struct fpu *fpu);
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -282,30 +282,6 @@ static void fpu__initialize(struct fpu *
+--- a/arch/x86/include/asm/fpu/xstate.h
++++ b/arch/x86/include/asm/fpu/xstate.h
+@@ -101,7 +101,6 @@ extern void __init update_regset_xstate_
+ 					     u64 xstate_mask);
+ 
+ void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr);
+-int using_compacted_format(void);
+ int xfeature_size(int xfeature_nr);
+ int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
+ int copy_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -449,20 +449,6 @@ int xfeature_size(int xfeature_nr)
+ 	return eax;
  }
  
- /*
-- * This function must be called before we write a task's fpstate.
+-/*
+- * 'XSAVES' implies two different things:
+- * 1. saving of supervisor/system state
+- * 2. using the compacted format
 - *
-- * Invalidate any cached FPU registers.
-- *
-- * After this function call, after registers in the fpstate are
-- * modified and the child task has woken up, the child task will
-- * restore the modified FPU state from the modified context. If we
-- * didn't clear its cached status here then the cached in-registers
-- * state pending on its former CPU could be restored, corrupting
-- * the modifications.
+- * Use this function when dealing with the compacted format so
+- * that it is obvious which aspect of 'XSAVES' is being handled
+- * by the calling code.
 - */
--void fpu__prepare_write(struct fpu *fpu)
+-int using_compacted_format(void)
 -{
--	/*
--	 * Only stopped child tasks can be used to modify the FPU
--	 * state in the fpstate buffer:
--	 */
--	WARN_ON_FPU(fpu == &current->thread.fpu);
--
--	/* Invalidate any cached state: */
--	__fpu_invalidate_fpregs_state(fpu);
+-	return boot_cpu_has(X86_FEATURE_XSAVES);
 -}
 -
--/*
-  * Drops current FPU state: deactivates the fpregs and
-  * the fpstate. NOTE: it still leaves previous contents
-  * in the fpregs in the eager-FPU case.
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -44,6 +44,25 @@ static void fpu_sync_fpstate(struct fpu
- 		fpu__save(fpu);
- }
- 
-+/*
-+ * Invalidate cached FPU registers before modifying the stopped target
-+ * task's fpstate.
-+ *
-+ * This forces the target task on resume to restore the FPU registers from
-+ * modified fpstate. Otherwise the task might skip the restore and operate
-+ * with the cached FPU registers which discards the modifications.
-+ */
-+static void fpu_force_restore(struct fpu *fpu)
-+{
-+	/*
-+	 * Only stopped child tasks can be used to modify the FPU
-+	 * state in the fpstate buffer:
-+	 */
-+	WARN_ON_FPU(fpu == &current->thread.fpu);
-+
-+	__fpu_invalidate_fpregs_state(fpu);
-+}
-+
- int xfpregs_get(struct task_struct *target, const struct user_regset *regset,
- 		struct membuf to)
+ /* Validate an xstate header supplied by userspace (ptrace or sigreturn) */
+ static int validate_user_xstate_header(const struct xstate_header *hdr)
  {
-@@ -89,7 +108,7 @@ int xfpregs_set(struct task_struct *targ
- 	if (newstate.mxcsr & ~mxcsr_feature_mask)
- 		ret = -EINVAL;
+@@ -581,9 +567,9 @@ static void do_extra_xstate_size_checks(
+ 		check_xstate_against_struct(i);
+ 		/*
+ 		 * Supervisor state components can be managed only by
+-		 * XSAVES, which is compacted-format only.
++		 * XSAVES.
+ 		 */
+-		if (!using_compacted_format())
++		if (!cpu_feature_enabled(X86_FEATURE_XSAVES))
+ 			XSTATE_WARN_ON(xfeature_is_supervisor(i));
  
--	fpu__prepare_write(fpu);
-+	fpu_force_restore(fpu);
- 
- 	/* Copy the state  */
- 	memcpy(&fpu->state.fxsave, &newstate, sizeof(newstate));
-@@ -147,7 +166,7 @@ int xstateregs_set(struct task_struct *t
- 		}
- 	}
- 
--	fpu__prepare_write(fpu);
-+	fpu_force_restore(fpu);
- 	ret = copy_kernel_to_xstate(&fpu->state.xsave, kbuf ?: tmpbuf);
- 
- out:
-@@ -347,7 +366,7 @@ int fpregs_set(struct task_struct *targe
- 	if (ret)
- 		return ret;
- 
--	fpu__prepare_write(fpu);
-+	fpu_force_restore(fpu);
- 
- 	if (cpu_feature_enabled(X86_FEATURE_FXSR))
- 		convert_to_fxsr(&target->thread.fpu.state.fxsave, &env);
+ 		/* Align from the end of the previous feature */
+@@ -593,9 +579,9 @@ static void do_extra_xstate_size_checks(
+ 		 * The offset of a given state in the non-compacted
+ 		 * format is given to us in a CPUID leaf.  We check
+ 		 * them for being ordered (increasing offsets) in
+-		 * setup_xstate_features().
++		 * setup_xstate_features(). XSAVES uses compacted format.
+ 		 */
+-		if (!using_compacted_format())
++		if (!cpu_feature_enabled(X86_FEATURE_XSAVES))
+ 			paranoid_xstate_size = xfeature_uncompacted_offset(i);
+ 		/*
+ 		 * The compacted-format offset always depends on where
 
