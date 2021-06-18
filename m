@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B4E3ACAF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90733ACAF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234412AbhFRMcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46200 "EHLO
+        id S234391AbhFRMcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:32:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234103AbhFRMbr (ORCPT
+        with ESMTP id S234352AbhFRMbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:31:47 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E278C061224
+        Fri, 18 Jun 2021 08:31:50 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C63C0611C0
         for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:34 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id z12so8447579edc.1
+Received: by mail-ed1-x533.google.com with SMTP id s15so8365021edt.13
         for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lOh6gFQr+zjz82LzX2/OB42mS3BaL90VV98LqFeTeuQ=;
-        b=Q6Xm+yBiq6Y/vkzxBQhJeNRY2tqA5oqBlXm5Huk/EvOXgSCj8dNZKjx0VD3nxaaA9J
-         TNPUAoUwSx/AhiCSpkM5uZxhLi42oJFvQkI1YaM4WZ6AQ+HnlI+4TMiM8kJO5SddLqHK
-         /cokBYRP42Ibfm84/YYl2fWHQ2Q7jyqj+PbNk=
+        bh=osMXZB6zVUCRxwMKbtanTuzmkF8QH55sKJbs0+x3AmY=;
+        b=fVsM4046HINJ+QXPvD+ppPBaulEvl1ZxQ1MH8dRFpJhgXjGHguP7eGr0SgfcKYh6yH
+         qIy2w8HjMHa9OCz5oyskCTQub2iP+V+NFuVDD7ZzbzbXqEBPFvgy9egJo39iARxC5Qhc
+         1vFXSaypcnh7dCd5NTYkaj5yqd70jrRQLAdlc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lOh6gFQr+zjz82LzX2/OB42mS3BaL90VV98LqFeTeuQ=;
-        b=Ie8HitLNutB8O8pRWCEgP91ii5Khmhxz7HDTQ66HwOYMxlC7n84mBn9iYDa5mWgbRw
-         QVDe56GVOEv1bDBg6thla/zXBCKvLzkDe7BK1heQ0XzdE5olVJCdaY0JCoThR3ks55s1
-         HSYh6mtPsKfc2ip0GrJYjQcSYqKNqG/ZPPC2R1Up6CEe9bx8frO3UVZz3QRv9OzO0sQL
-         vO2ZKXRDhCV22BezW0Ef3KA0dzsSxRZYNZu3tEOXGGDSGEboSI29SMtVBhw2wlu9esgV
-         VpqWSAU3/+VKOMk28Q8np6qjYWIdtbYqHHcmveoC+6JpDOttdAZG1yYjnt18MwBSnLr8
-         yL7g==
-X-Gm-Message-State: AOAM530eWF6NDBZRpLrXf5POV23FV7sasFGsDOOL7gjUOtIsfqVI0QfY
-        hhH/rexqnrziXXIHoQwaq4wPVQ==
-X-Google-Smtp-Source: ABdhPJznI00sn1T0oWPtmMeGy3P4HmXKKmAdW+6TXxV6LdU8Rd9xJYl9u8Y/VklSvnTnAtvse/J6mw==
-X-Received: by 2002:a05:6402:40d2:: with SMTP id z18mr4721724edb.366.1624019373083;
+        bh=osMXZB6zVUCRxwMKbtanTuzmkF8QH55sKJbs0+x3AmY=;
+        b=kkliibKxwq90ZzpzQP9g5pkuF+ikBr39zGd94PNTopbfXZcARvgVwLrQKRqfBryQro
+         XZAEZ14RFltMioWX1CBBex80yFsFLlsSWNBIwCsvVe0E0TLzv6J5ETkKRcdVWx7sGy62
+         ym2P/nWZU6kmwwfJvyn+axVIqxREuU8pwVM1DcaBDAptlIUO7Kz/ok84UB1nRoRdp04A
+         4q7tUtHgHa57dRWi9u1cVQ56NcFtVIr0rvUghCL2VQNF5ZTqWNH0P7NLuwuxwlAyhXVF
+         axeWW9mfw05JXuygyVdTyKz6PVXroZP76KEQImxsxJjPu1jScs+PCqzresmt24yf3TeV
+         V93w==
+X-Gm-Message-State: AOAM531cB3MZC3LR9l1iLecmwFxqoLB7U5gVPeRyhr9y8a1KL2YjWn7d
+        Hcs7sHrIUPtfji9vhUtncIGmlg==
+X-Google-Smtp-Source: ABdhPJz9wWQk+ezYuhFBHw+H6Ox6XkwxaTroqTpWAQ/XCc2CXrQpbYH0+q8ymt1/A151HmjnZQCvRA==
+X-Received: by 2002:aa7:cdd9:: with SMTP id h25mr4692295edw.246.1624019373590;
         Fri, 18 Jun 2021 05:29:33 -0700 (PDT)
 Received: from alco.lan (80.71.134.83.ipv4.parknet.dk. [80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id o26sm4336403edt.62.2021.06.18.05.29.32
+        by smtp.gmail.com with ESMTPSA id o26sm4336403edt.62.2021.06.18.05.29.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 05:29:32 -0700 (PDT)
+        Fri, 18 Jun 2021 05:29:33 -0700 (PDT)
 From:   Ricardo Ribalda <ribalda@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
@@ -53,9 +53,9 @@ To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         tfiga@chromium.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v10 11/21] media: uvcvideo: Set unique vdev name based in type
-Date:   Fri, 18 Jun 2021 14:29:13 +0200
-Message-Id: <20210618122923.385938-12-ribalda@chromium.org>
+Subject: [PATCH v10 12/21] media: uvcvideo: Increase the size of UVC_METADATA_BUF_SIZE
+Date:   Fri, 18 Jun 2021 14:29:14 +0200
+Message-Id: <20210618122923.385938-13-ribalda@chromium.org>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
 In-Reply-To: <20210618122923.385938-1-ribalda@chromium.org>
 References: <20210618122923.385938-1-ribalda@chromium.org>
@@ -65,59 +65,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All the entities must have a unique name. We can have a descriptive and
-unique name by appending the function and the entity->id.
+Hans has discovered that in his test device, for the H264 format
+bytesused goes up to about 570, for YUYV it will actually go up
+to a bit over 5000 bytes, and for MJPG up to about 2706 bytes.
 
-This is even resilent to multi chain devices.
+We should also, according to V4L2_META_FMT_UVC docs, drop headers when
+the buffer is full.
 
-Fixes v4l2-compliance:
-Media Controller ioctls:
-                fail: v4l2-test-media.cpp(205): v2_entity_names_set.find(key) != v2_entity_names_set.end()
-        test MEDIA_IOC_G_TOPOLOGY: FAIL
-                fail: v4l2-test-media.cpp(394): num_data_links != num_links
-	test MEDIA_IOC_ENUM_ENTITIES/LINKS: FAIL
-
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Credit-to: Hans Verkuil <hverkuil@xs4all.nl>
 Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_driver.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/media/usb/uvc/uvcvideo.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 14b60792ffab..037bf80d1100 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -2194,6 +2194,7 @@ int uvc_register_video_device(struct uvc_device *dev,
- 			      const struct v4l2_file_operations *fops,
- 			      const struct v4l2_ioctl_ops *ioctl_ops)
- {
-+	const char *name;
- 	int ret;
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index 5eb7e87f8430..37a092d717cf 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -524,7 +524,7 @@ struct uvc_stats_stream {
+ 	unsigned int max_sof;		/* Maximum STC.SOF value */
+ };
  
- 	/* Initialize the video buffers queue. */
-@@ -2222,16 +2223,20 @@ int uvc_register_video_device(struct uvc_device *dev,
- 	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
- 	default:
- 		vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING;
-+		name = "Video Capture";
- 		break;
- 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
- 		vdev->device_caps = V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_STREAMING;
-+		name = "Video Output";
- 		break;
- 	case V4L2_BUF_TYPE_META_CAPTURE:
- 		vdev->device_caps = V4L2_CAP_META_CAPTURE | V4L2_CAP_STREAMING;
-+		name = "Metadata";
- 		break;
- 	}
+-#define UVC_METADATA_BUF_SIZE 1024
++#define UVC_METADATA_BUF_SIZE 10240
  
--	strscpy(vdev->name, dev->name, sizeof(vdev->name));
-+	snprintf(vdev->name, sizeof(vdev->name), "%s %u", name,
-+		 stream->header.bTerminalLink);
- 
- 	/*
- 	 * Set the driver data before calling video_register_device, otherwise
+ /**
+  * struct uvc_copy_op: Context structure to schedule asynchronous memcpy
 -- 
 2.32.0.288.g62a8d224e6-goog
 
