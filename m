@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F68E3ACDD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8C63ACDDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234686AbhFROt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:49:56 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48062 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234624AbhFROtu (ORCPT
+        id S234694AbhFROuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:50:13 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:23348 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234687AbhFROuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:49:50 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 836EA21ACB;
-        Fri, 18 Jun 2021 14:47:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624027659; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ofS7wVEDsIrS30FJCm8VcnZVpnOGoYipKdIZZ4xEpsA=;
-        b=MW8ncgLSjk3Wrh8A5faRk3XwqAqJUaIzrECob2rzsFJT1qQNusNDuYRyn77DM7wk9ntO60
-        sADqxfJWJN4mqjKVWaX0ZVeXALbH0sch5GcQfu7MePe/M8wOp28SXDddGSdGMLe/69g4BE
-        jjHrIuZcmNb8SURTdUmkVUr7hjFS03M=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 64EFCA3BCF;
-        Fri, 18 Jun 2021 14:47:39 +0000 (UTC)
-Date:   Fri, 18 Jun 2021 16:47:39 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexander Potapenko <glider@google.com>
-Subject: Re: [PATCH next v4 1/2] lib/dump_stack: move cpu lock to printk.c
-Message-ID: <YMyyCwMt549micJE@alley>
-References: <20210617095051.4808-1-john.ogness@linutronix.de>
- <20210617095051.4808-2-john.ogness@linutronix.de>
- <20210617093243.795b4853@gandalf.local.home>
+        Fri, 18 Jun 2021 10:50:10 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IEkBCZ012726;
+        Fri, 18 Jun 2021 09:47:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=7iQjQe++wWGoO7R/YbIdASwb2/mpDN1SfTlBbTs/qB8=;
+ b=co6LQ7aDeUDwnRNCVCADw8l23PTidruMWJ0YnSvtxgu0MwOXAC/MMw9/eZaJ4vpDurw/
+ 1EFCOPuZvz5A7IwsUKh0sgnQJ+iLOaxkYjr2JpTgWL22GAnln1KEJ0CHfOOpNNizytXH
+ UlAv1mCqeC/EUO0miP+XeyNZtKDynwcMGJDaJbcaFj3+TBV6SCJpoTZYJKdDvPfiPoV9
+ CC4D/pv9j3oGQW1HczdW0bK/IQB/ibzUV3ZIRg392mpK7+/xaeIBuuwwW/P+bsDCH9Kl
+ irx7yPDLn0rgMN24Nn0ATxXAW5BK5hDc2biHBIK442KCYM4NnmyEd4xarBpBMKTcLpfW Gg== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 398qj8gkj6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 18 Jun 2021 09:47:49 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 18 Jun
+ 2021 15:47:47 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Fri, 18 Jun 2021 15:47:47 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.68])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 64FB92B2;
+        Fri, 18 Jun 2021 14:47:47 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
+        <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH] soundwire: stream: Fix test for DP prepare complete
+Date:   Fri, 18 Jun 2021 15:47:45 +0100
+Message-ID: <20210618144745.30629-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617093243.795b4853@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: B_pmV6x3EuB3inHcs9sadnPYReqKVlUv
+X-Proofpoint-ORIG-GUID: B_pmV6x3EuB3inHcs9sadnPYReqKVlUv
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
+ spamscore=0 adultscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0
+ suspectscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106180087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-06-17 09:32:43, Steven Rostedt wrote:
-> On Thu, 17 Jun 2021 11:56:50 +0206
-> John Ogness <john.ogness@linutronix.de> wrote:
-> 
-> > dump_stack() implements its own cpu-reentrant spinning lock to
-> > best-effort serialize stack traces in the printk log. However,
-> > there are other functions (such as show_regs()) that can also
-> > benefit from this serialization.
-> > 
-> > Move the cpu-reentrant spinning lock (cpu lock) into new helper
-> > functions printk_cpu_lock_irqsave()/printk_cpu_unlock_irqrestore()
-> > so that it is available for others as well. For !CONFIG_SMP the
-> > cpu lock is a NOP.
-> > 
-> > Note that having multiple cpu locks in the system can easily
-> > lead to deadlock. Code needing a cpu lock should use the
-> > printk cpu lock, since the printk cpu lock could be acquired
-> > from any code and any context.
-> > 
-> > Also note that it is not necessary for a cpu lock to disable
-> > interrupts. However, in upcoming work this cpu lock will be used
-> > for emergency tasks (for example, atomic consoles during kernel
-> > crashes) and any interruptions while holding the cpu lock should
-> > be avoided if possible.
-> > 
-> > Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> > ---
-> 
-> Can we add this lock to early_printk() ?
-> 
-> This would make early_printk() so much more readable.
+In sdw_prep_deprep_slave_ports(), after the wait_for_completion()
+the DP prepare status register is read. If this indicates that the
+port is now prepared, the code should continue with the port setup.
+It is irrelevant whether the wait_for_completion() timed out if the
+port is now ready.
 
-Good point! Just to be sure. Do you see the messed output with plain
-kernel? Or do you need the extra patches (from Peter Zijlstra) that
-redirect normal printk() to early_printk()?
+The previous implementation would always fail if the
+wait_for_completion() timed out, even if the port was reporting
+successful prepare.
 
-My understanding is that early_printk() is used only for very early
-boot message in plain kernel. And that there is not much concurrency
-at that time.
+This patch also fixes a minor bug where the return from sdw_read()
+was not checked for error - any error code with LSBits clear could
+be misinterpreted as a successful port prepare.
 
-That said. I always wanted to upstream Peter's patchset. But I never
-found time to clean it up.
+Fixes: 79df15b7d37c ("soundwire: Add helpers for ports operations")
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ drivers/soundwire/stream.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-Best Regards,
-Petr
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index 1eaedaaba094..1a18308f4ef4 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -422,7 +422,6 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
+ 	struct completion *port_ready;
+ 	struct sdw_dpn_prop *dpn_prop;
+ 	struct sdw_prepare_ch prep_ch;
+-	unsigned int time_left;
+ 	bool intr = false;
+ 	int ret = 0, val;
+ 	u32 addr;
+@@ -479,15 +478,15 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
+ 
+ 		/* Wait for completion on port ready */
+ 		port_ready = &s_rt->slave->port_ready[prep_ch.num];
+-		time_left = wait_for_completion_timeout(port_ready,
+-				msecs_to_jiffies(dpn_prop->ch_prep_timeout));
++		wait_for_completion_timeout(port_ready,
++			msecs_to_jiffies(dpn_prop->ch_prep_timeout));
+ 
+ 		val = sdw_read(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
+-		val &= p_rt->ch_mask;
+-		if (!time_left || val) {
++		if ((val < 0) || (val & p_rt->ch_mask)) {
++			ret = (val < 0) ? val : -ETIMEDOUT;
+ 			dev_err(&s_rt->slave->dev,
+-				"Chn prep failed for port:%d\n", prep_ch.num);
+-			return -ETIMEDOUT;
++				"Chn prep failed for port %d: %d\n", prep_ch.num, ret);
++			return ret;
+ 		}
+ 	}
+ 
+-- 
+2.20.1
+
