@@ -2,139 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4283ACF16
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA4D3ACF1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhFRPeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:34:00 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:26050 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235563AbhFRPdi (ORCPT
+        id S235334AbhFRPfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:35:10 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58464 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233169AbhFRPdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:33:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624030289; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=OxgVviWKxuFMj10LPSjFh3cD0WnhN3SYM98fOdw/uao=; b=wNl4VSH4gCyOhBQrC4oFfQC6Ib3tQWR3PwzcMi4fLhYronZx/bfRx+Blwaccq7FTVkXzbZO3
- A4ZPkY/qruXwlpCXTlvb7VMe8jK37Y0vUAOo/KhkNtyXsoWle1aKijJNWv0N/hLE8KtImciY
- QhEZ3LyIJgdz1YRWfuUblaMiD1Q=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60ccbc35e570c056195867b9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 15:31:01
- GMT
-Sender: vbadigan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2DE9BC43217; Fri, 18 Jun 2021 15:31:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.102] (unknown [49.205.245.243])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vbadigan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 667BBC433D3;
-        Fri, 18 Jun 2021 15:30:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 667BBC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vbadigan@codeaurora.org
-Subject: Re: [PATCH V1] mmc: sdhci: Update the software timeout value for sdhc
-To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
-        adrian.hunter@intel.com, ulf.hansson@linaro.org
-Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
-        rampraka@codeaurora.org, sayalil@codeaurora.org,
-        sartgarg@codeaurora.org, rnayak@codeaurora.org,
-        cang@codeaurora.org, pragalla@codeaurora.org,
-        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
-References: <1623835535-30871-1-git-send-email-sbhanu@codeaurora.org>
-From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Message-ID: <585e003c-0342-4691-ab6d-8c6a930f9404@codeaurora.org>
-Date:   Fri, 18 Jun 2021 21:00:29 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Fri, 18 Jun 2021 11:33:45 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IF3ZID103031;
+        Fri, 18 Jun 2021 11:31:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=XqU0A+B1ac7tNPPHpM0nczn7qj190C/lKCLTI9PXato=;
+ b=jmPWBFACy9e/94TEzQj6tTpj/iV0FC+pfFNK9DHnb3J6QwzqxxGJh5XtoRd4N+Xp0vGI
+ AF/bV1tgQdLgcHYzxY/aHYlFyv2DtUR4OzfA+/5Q3W8eenOMh8pnqioL2rBXqs5c6kCJ
+ pm8mFaNOL1DlYoSvh5AmQpy/FMOgdXgah3qjZZSC7Cs5XKJ6i1I+9mOHsa26pqSrMuLx
+ RMAyEejgfqGsdBtxxqtGfGANEBHTgIIh9r7I6DUq1qchTwInkPiXPZl/liOMGHkdwQIE
+ 2EjVJ14UvIWC47/k0d8JCBA/GNvcMzs01PN6lZZ3R1ZwIiTzkOcbr7+gxo1dqDZDmgxv 3g== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 398u3ay3jm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 11:31:32 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15IFIGum013032;
+        Fri, 18 Jun 2021 15:31:31 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma03wdc.us.ibm.com with ESMTP id 394mjaaa0t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 15:31:31 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IFVVuM27132274
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Jun 2021 15:31:31 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 24E2DAE06D;
+        Fri, 18 Jun 2021 15:31:31 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DC713AE062;
+        Fri, 18 Jun 2021 15:31:30 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.128.252])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 18 Jun 2021 15:31:30 +0000 (GMT)
+Subject: Re: [PATCH] s390/vfio-ap: Fix module unload memory leak of matrix_dev
+To:     "Jason J. Herne" <jjherne@linux.ibm.com>,
+        linux-s390@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com, jgg@nvidia.com
+References: <20210618133524.22386-1-jjherne@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <1eb41038-b732-7498-687e-1e8489ab04be@linux.ibm.com>
+Date:   Fri, 18 Jun 2021 11:31:30 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <1623835535-30871-1-git-send-email-sbhanu@codeaurora.org>
+In-Reply-To: <20210618133524.22386-1-jjherne@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: -xnqTyW0znWGWReU7Bgf0pmk0HWDNUOI
+X-Proofpoint-ORIG-GUID: -xnqTyW0znWGWReU7Bgf0pmk0HWDNUOI
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-18_07:2021-06-18,2021-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1015
+ bulkscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106180089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Reviewed-by: Tony Krowiak <akrowiak@linux.ibm.com>
 
-On 6/16/2021 2:55 PM, Shaik Sajida Bhanu wrote:
-> Whenever SDHC run at clock rate 50MHZ or below, the hardware data
-> timeout value will be 21.47secs, which is approx. 22secs and we have
-> a current software timeout value as 10secs. We have to set software
-> timeout value more than the hardware data timeout value to avioid seeing
-> the below register dumps.
+On 6/18/21 9:35 AM, Jason J. Herne wrote:
+> vfio_ap_matrix_dev_release is shadowing the global matrix_dev with driver
+> data that never gets set. So when release is called we end up not freeing
+> matrix_dev. The fix is to remove the shadow variable and just free the
+> global.
 >
-> [  332.953670] mmc2: Timeout waiting for hardware interrupt.
-> [  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP ===========
-> [  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  0x00007202
-> [  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000001
-> [  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 0x00000027
-> [  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 0x0000001f
-> [  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  0x00000000
-> [  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
-> [  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 0x00000000
-> [  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 0x03ff100b
-> [  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
-> [  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x0000808f
-> [  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 0x00000000
-> [  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x00000000
-> [  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
-> [  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
-> [  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
-> 0x0000000ffffff218
-> [  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
-> -----------
-> [  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
-> 0x6000642c | DLL cfg2: 0x0020a000
-> [  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
-> 0x00000000 | DDR cfg: 0x80040873
-> [  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
-> 0xf88218a8 Vndr func3: 0x02626040
-> [  333.102371] mmc2: sdhci: ============================================
->
-> So, set software timeout value more than hardware timeout value.
->
-> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+> Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
 > ---
->   drivers/mmc/host/sdhci.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
+>   drivers/s390/crypto/vfio_ap_drv.c | 2 --
+>   1 file changed, 2 deletions(-)
 >
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index bf238ad..1386f7d 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -1670,7 +1670,14 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
->   	else if (!cmd->data && cmd->busy_timeout > 9000)
->   		timeout += DIV_ROUND_UP(cmd->busy_timeout, 1000) * HZ + HZ;
->   	else
-> -		timeout += 10 * HZ;
-> +	       /*
-> +		* In some of the conditions hardware data timeout value could be
-> +		* approx 21.5 seconds and driver is setting software data timeout
-> +		* value less than the hardware data timeout value and software data
-> +		* timeout value should be more than the hardware data timeout value.
-> +		* So, set software data timeout value more than 21.5 sec i.e. 22sec.
-> +		*/
-> +		timeout += 22 * HZ;
-
-This timeout is qcom SDHC specific.
-I think right way is to, define your own set_timeout op and update 
-host->data_timeout
-in that as per qcom SDHC requirements.
-
->   	sdhci_mod_timer(host, cmd->mrq, timeout);
+> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
+> index 7dc72cb718b0..6d3eea838e18 100644
+> --- a/drivers/s390/crypto/vfio_ap_drv.c
+> +++ b/drivers/s390/crypto/vfio_ap_drv.c
+> @@ -82,8 +82,6 @@ static void vfio_ap_queue_dev_remove(struct ap_device *apdev)
 >   
->   	if (host->use_external_dma)
+>   static void vfio_ap_matrix_dev_release(struct device *dev)
+>   {
+> -	struct ap_matrix_dev *matrix_dev = dev_get_drvdata(dev);
+> -
+>   	kfree(matrix_dev);
+>   }
+>   
+
